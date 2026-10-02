@@ -3,7 +3,8 @@
 For each hole and each tee club we:
   1. Model the shot pattern as a 2-D normal around the aim point. The lateral
      "dispersion" width from the GPS app (65 / 60 / 50 yds) is treated as the
-     ~95% window (+/- 2 sigma), as in Fawcett's shot-pattern ellipses.
+     ~95% window (+/- 2 sigma), as in Fawcett's shot-pattern ellipses. Balls
+     land at carry, then roll out (less in rough, not at all in a hazard).
   2. Drop thousands of simulated tee shots onto hazard polygons traced from
      the satellite screenshots in ./screenshots.
   3. Score every landing spot with strokes-gained baselines (expected strokes
@@ -25,12 +26,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RNG = np.random.default_rng(7)
 N_SHOTS = 20000
 
-# name: (total yards, lateral 95% width, depth 95% window)
+# name: (carry yds, total yds on fairway, lateral 95% width, carry-depth 95% window)
 CLUBS = {
-    "Driver": (300, 65, 28),
-    "2-wood": (270, 60, 26),
-    "4-wood": (240, 50, 24),
+    "Driver": (275, 300, 65, 28),
+    "2-wood": (265, 280, 60, 26),
+    "4-wood": (255, 270, 50, 24),
 }
+ROUGH_ROLL = 0.3    # share of remaining roll kept once the ball is in rough
+HAZARDS = ("sand", "recovery", "native", "water")   # ball stops where it lands/enters
 
 # Expected strokes to hole out (Broadie, PGA Tour baseline), by distance in yds.
 DIST = [20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300]
@@ -130,17 +133,40 @@ def hole_frame(h):
     return tee, fwd, right, px_per_yd
 
 
+def lie_at(h, pts):
+    lie = np.array(["rough"] * len(pts), dtype=object)
+    for name, poly in h["zones"]:
+        lie[Path(poly).contains_points(pts)] = name
+    return lie
+
+
 def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS):
     h = HOLES[hole_no]
     tee, fwd, right, ppy = hole_frame(h)
-    dist, width, depth = CLUBS[club]
-    along = RNG.normal(dist, depth / 4, n)
+    carry, total, width, depth = CLUBS[club]
+    along = RNG.normal(carry, depth / 4, n)
     lat = RNG.normal(aim_lat, width / 4, n)
     pts = tee + (along[:, None] * fwd + lat[:, None] * right) * ppy
+    lie = lie_at(h, pts)
 
-    lie = np.array(["rough"] * n, dtype=object)
-    for name, poly in h["zones"]:
-        lie[Path(poly).contains_points(pts)] = name
+    # Roll out along the flight line in 2-yd steps: full roll on fairway,
+    # ROUGH_ROLL of it in rough, and the ball stops dead in any hazard.
+    heading = (pts - tee) / np.linalg.norm(pts - tee, axis=1)[:, None]
+    roll_left = np.full(n, float(total - carry))
+    roll_left[lie == "rough"] *= ROUGH_ROLL
+    while True:
+        moving = (roll_left > 0) & ~np.isin(lie, HAZARDS)
+        if not moving.any():
+            break
+        step = np.minimum(roll_left[moving], 2.0)
+        pts[moving] += heading[moving] * (step * ppy)[:, None]
+        roll_left[moving] -= step
+        new_lie = lie_at(h, pts[moving])
+        into_rough = (new_lie == "rough") & (lie[moving] == "fairway")
+        idx = np.flatnonzero(moving)
+        roll_left[idx[into_rough]] *= ROUGH_ROLL
+        lie[moving] = new_lie
+
     to_green = np.linalg.norm(pts - np.array(h["green"], float), axis=1) / ppy
 
     strokes = np.empty(n)
