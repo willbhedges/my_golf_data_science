@@ -240,7 +240,7 @@ HOLES = {
             ("water", [(720, 900), (920, 900), (920, 1800), (600, 1800), (625, 1300), (650, 1000)]),
         ]),
     17: dict(
-        par=4, image="hole17.png", length=344, irons=True,
+        par=4, image="hole17.png", length=344, irons=True, aim_min=-45,
         tee=(433, 1895), dot270=(411, 1003), green=(425, 760),
         zones=[
             ("fairway", [(250, 1250), (560, 1250), (560, 1100), (470, 950), (480, 800), (400, 700),
@@ -254,6 +254,10 @@ HOLES = {
             ("native", [(200, 1230), (400, 1230), (430, 1380), (470, 1400), (560, 1460), (720, 1470),
                         (760, 1520), (700, 1650), (560, 1640), (470, 1620), (420, 1560), (320, 1480),
                         (250, 1480)]),                                           # creek + tall grass 90-160 yds
+            ("native", [(372, 1029), (426, 1005), (502, 985), (529, 980), (513, 1053), (478, 1121),
+                        (431, 1213), (417, 1209), (374, 1124), (357, 1070)]),    # tall-grass island inside the
+                                                                                 # cart-path loop, 206-276 yds
+                                                                                 # (traced from hole17_zoom.png)
             ("sand", [(422, 828), (447, 828), (447, 872), (422, 872)]),                   # short-right of green
         ]),
     18: dict(
@@ -345,6 +349,9 @@ AIMS_WIDE = np.arange(-20, 50.1, 2.5)   # irons can lay up to a different part o
 
 
 def best_aim(hole_no, club, aims=AIMS, z=None):
+    lo = HOLES[hole_no].get("aim_min")
+    if lo is not None:                       # hole needs a wider search to the left
+        aims = np.arange(lo, aims.max() + 0.1, 2.5)
     best = None
     for aim in aims:
         _, lie, to_green, strokes = simulate(hole_no, club, aim, z=z)
