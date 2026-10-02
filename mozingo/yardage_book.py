@@ -147,7 +147,7 @@ def finish(ax):
     ax.set_ylim(2000, 540)
 
 
-def draw_tee(ax, h, club, aim, zone):
+def draw_tee(ax, h, club, aim, zone, label=None):
     hd = t.HOLES[h]
     draw_image(ax, hd["image"])
     fr = frame(hd["tee"], hd["dot270"], 270)
@@ -163,13 +163,13 @@ def draw_tee(ax, h, club, aim, zone):
     tgt = px(fr, total, aim)
     ax.plot([tee[0], tgt[0]], [tee[1], tgt[1]], color="#ffd60a", lw=2)
     ax.plot(*tgt, marker="*", ms=22, color="#ffd60a", mec="black", mew=1.2)
-    ax.annotate(f"AIM  {club}\n{side(aim)}", tgt, xytext=(14, -6), textcoords="offset points",
+    ax.annotate(label or f"AIM  {club}\n{side(aim)}", tgt, xytext=(14, -6), textcoords="offset points",
                 color="black", fontsize=9, weight="bold",
                 bbox=dict(boxstyle="round,pad=0.25", fc="#ffd60a", ec="black", lw=0.8))
     finish(ax)
 
 
-def draw_par3(ax, p, lat, dep, aim, zoom=False):
+def draw_par3(ax, p, lat, dep, aim, zoom=False, label=None):
     draw_image(ax, p["image"])
     fr = frame(p["tee"], p["flag"], p["center"])
     l0, l1 = (lat[0] - 1, lat[1] + 1) if lat[0] == lat[1] else lat
@@ -188,7 +188,7 @@ def draw_par3(ax, p, lat, dep, aim, zoom=False):
         ax.set_ylim(fy + 28 * ppy, fy - 22 * ppy)
         ax.set_title("Green close-up", fontsize=9)
         return
-    ax.annotate(f"AIM  play {aim[1]:.0f}\n{flag_side(aim[0])}", tgt, xytext=(16, 10),
+    ax.annotate(label or f"AIM  play {aim[1]:.0f}\n{flag_side(aim[0])}", tgt, xytext=(16, 10),
                 textcoords="offset points", color="black", fontsize=9, weight="bold",
                 bbox=dict(boxstyle="round,pad=0.25", fc="#ffd60a", ec="black", lw=0.8))
     finish(ax)
@@ -287,6 +287,51 @@ def par3_page(pdf, h):
                 aim=flag_side(aim[0]), zone=f"{dz} yds", conf=None)
 
 
+AIM_AT = {
+    1: "Centre of the fairway",
+    2: "Left-centre of the fairway, away from the right-side bunker",
+    3: "Left side of the fairway (trees all down the right)",
+    4: "Centre of the fairway",
+    5: "Just left of the flag",
+    6: "Left-centre of the fairway",
+    7: "Right-centre of the fairway, between the tree clumps",
+    8: "Just left of the flag, middle-to-back of the green",
+    9: "Centre of the fairway",
+    10: "Left-centre of the fairway (trees right)",
+    11: "At the flag, middle-to-back. Long-right is the safe miss",
+    12: "Centre of the fairway",
+    13: "Centre to right-centre of the fairway",
+    14: "Right-centre of the fairway",
+    15: "At the flag",
+    16: "Left-centre of the fairway",
+    17: "Left half of the upper fairway, left of the tall-grass island",
+    18: "Left edge of the fairway, away from the trees and marsh",
+}
+
+
+def aim_sheet(pdf, h):
+    """Phone-friendly page: just the screenshot, a star, and one line of words."""
+    fig = plt.figure(figsize=(6, 10.4))
+    if h in PAR3:
+        p = PAR3[h]
+        _, _, lat, dep, aim = par3_plan(p)
+        title, par = f"PLAY {aim[1]:.0f} YDS", 3
+        draw_par3(fig.add_axes([0, 0, 1, 0.89]), p, lat, dep, aim, label="AIM HERE")
+    else:
+        res, best, zone = tee_plan(h)
+        title, par = best.upper(), t.HOLES[h]["par"]
+        draw_tee(fig.add_axes([0, 0, 1, 0.89]), h, best, res[best]["aim"], zone, label="AIM HERE")
+    fig.patches.append(plt.Rectangle((0, 0.89), 1, 0.11, transform=fig.transFigure,
+                                     color="#1f5130", zorder=-1))
+    fig.text(0.04, 0.965, f"Hole {h}", fontsize=22, weight="bold", color="white", va="center")
+    fig.text(0.40, 0.965, f"Par {par}", fontsize=13, color="#cfe8d5", va="center")
+    fig.text(0.96, 0.965, title, fontsize=20, weight="bold", color="#ffd60a", va="center", ha="right")
+    for i, piece in enumerate(textwrap.wrap("Aim at the star: " + AIM_AT[h], 52)):
+        fig.text(0.04, 0.925 - i * 0.022, piece, fontsize=11, color="white", va="center")
+    pdf.savefig(fig)
+    plt.close(fig)
+
+
 def cover(pdf, rows):
     fig = plt.figure(figsize=(8.5, 11))
     fig.patches.append(plt.Rectangle((0, 0.90), 1, 0.10, transform=fig.transFigure,
@@ -345,6 +390,11 @@ def main():
             else:
                 tee_page(pdf, h, conf)
     print("wrote", OUT)
+    sheets = os.path.join(os.path.dirname(OUT), "Mozingo_Aim_Sheets.pdf")
+    with PdfPages(sheets) as pdf:
+        for h in range(1, 19):
+            aim_sheet(pdf, h)
+    print("wrote", sheets)
 
 
 if __name__ == "__main__":
