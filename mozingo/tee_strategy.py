@@ -27,7 +27,8 @@ RNG = np.random.default_rng(7)
 N_SHOTS = 20000
 # Common random numbers: every club/aim reuses the same standard-normal draws,
 # so club-vs-club differences aren't swamped by simulation noise.
-Z = np.random.default_rng(11).standard_normal((2, N_SHOTS))
+_r = np.random.default_rng(11)
+Z = np.vstack([_r.standard_normal((2, N_SHOTS)), _r.random((2, N_SHOTS))])
 
 # name: (carry yds, total yds on fairway, lateral 95% width, carry-depth 95% window)
 CLUBS = {
@@ -37,6 +38,15 @@ CLUBS = {
 }
 TREE_SEVERITY = 1.0  # 1 = blocked (recovery baseline), 0 = trees play like rough
 NATIVE_LOST = 0.5    # share of balls in native grass that are lost (penalty)
+# Irons, only offered on holes that list irons=True.
+IRONS = {
+    "Long iron": (210, 220, 40, 20),
+    "Mid iron": (185, 192, 34, 18),
+}
+# Mishits (thin / topped / heel) that fall outside the normal shot pattern:
+# chance per swing, and they carry MISHIT_CARRY of the normal carry.
+MISHIT_RATE = {"Driver": 0.05, "2-wood": 0.05, "4-wood": 0.05, "Long iron": 0.03, "Mid iron": 0.03}
+MISHIT_CARRY = (0.35, 0.75)
 ROUGH_ROLL = 0.3    # share of remaining roll kept once the ball is in rough
 HAZARDS = ("sand", "recovery", "native", "water")   # ball stops where it lands/enters
 
@@ -229,15 +239,20 @@ HOLES = {
             ("water", [(720, 900), (920, 900), (920, 1800), (600, 1800), (625, 1300), (650, 1000)]),
         ]),
     17: dict(
-        par=4, image="hole17.png", length=344,
+        par=4, image="hole17.png", length=344, irons=True,
         tee=(433, 1895), dot270=(411, 1003), green=(425, 760),
         zones=[
             ("fairway", [(250, 1250), (560, 1250), (560, 1100), (470, 950), (480, 800), (400, 700),
                          (260, 800), (220, 1000)]),
             ("recovery", [(0, 950), (170, 950), (150, 1200), (190, 1400), (0, 1400)]),     # trees left
             ("recovery", [(300, 670), (360, 670), (360, 720), (300, 720)]),
+            ("fairway", [(440, 1460), (700, 1460), (720, 1250), (660, 1100), (560, 1050),
+                         (470, 1100), (440, 1250)]),                             # lower fairway (180-230 lay-up)
             ("native", [(540, 700), (620, 700), (720, 1100), (740, 1250), (600, 1250), (560, 1100)]),
             ("native", [(0, 600), (200, 600), (180, 820), (150, 950), (0, 950)]),
+            ("native", [(200, 1230), (400, 1230), (430, 1380), (470, 1400), (560, 1460), (720, 1470),
+                        (760, 1520), (700, 1650), (560, 1640), (470, 1620), (420, 1560), (320, 1480),
+                        (250, 1480)]),                                           # creek + tall grass 90-160 yds
             ("sand", [(422, 828), (447, 828), (447, 872), (422, 872)]),                   # short-right of green
         ]),
     18: dict(
@@ -271,6 +286,10 @@ def hole_frame(h):
     return tee, fwd, right, px_per_yd
 
 
+def clubs_for(hole_no):
+    return list(CLUBS) + (list(IRONS) if HOLES[hole_no].get("irons") else [])
+
+
 def lie_at(h, pts):
     lie = np.array(["rough"] * len(pts), dtype=object)
     for name, poly in h["zones"]:
@@ -281,11 +300,14 @@ def lie_at(h, pts):
 def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS, z=None):
     h = HOLES[hole_no]
     tee, fwd, right, ppy = hole_frame(h)
-    carry, total, width, depth = CLUBS[club]
+    carry, total, width, depth = {**CLUBS, **IRONS}[club]
     if z is None:
-        z = Z if n == N_SHOTS else RNG.standard_normal((2, n))
+        z = Z if n == N_SHOTS else np.vstack([RNG.standard_normal((2, n)), RNG.random((2, n))])
     n = z.shape[1]
     along = carry + depth / 4 * z[0]
+    mishit = z[2] < MISHIT_RATE.get(club, 0.0)
+    lo, hi = MISHIT_CARRY
+    along[mishit] = carry * (lo + (hi - lo) * z[3][mishit])
     lat = aim_lat + width / 4 * z[1]
     pts = tee + (along[:, None] * fwd + lat[:, None] * right) * ppy
     lie = lie_at(h, pts)
@@ -317,7 +339,11 @@ def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS, z=None):
     return pts, lie, to_green, 1.0 + strokes   # +1 for the tee shot itself
 
 
-def best_aim(hole_no, club, aims=np.arange(-20, 20.1, 2.5), z=None):
+AIMS = np.arange(-20, 20.1, 2.5)
+AIMS_WIDE = np.arange(-20, 50.1, 2.5)   # irons can lay up to a different part of the hole
+
+
+def best_aim(hole_no, club, aims=AIMS, z=None):
     best = None
     for aim in aims:
         _, lie, to_green, strokes = simulate(hole_no, club, aim, z=z)
@@ -345,7 +371,7 @@ def plot_hole(hole_no, results, out_path):
     for name, poly in h["zones"]:
         p = np.array(poly + [poly[0]])
         ax.plot(p[:, 0], p[:, 1], color=colors[name], lw=1.2)
-    for club, c in zip(CLUBS, ("#ff3b30", "#ffcc00", "#00e5ff")):
+    for club, c in zip(clubs_for(hole_no), ("#ff3b30", "#ffcc00", "#00e5ff", "#ff00ff", "#ffffff")):
         pts, *_ = simulate(hole_no, club, results[club]["aim"], n=400)
         ax.scatter(pts[:, 0], pts[:, 1], s=2, color=c, alpha=0.6, label=club)
     ax.set_xlim(0, 920)
@@ -365,7 +391,8 @@ def main():
              "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     picks = []
     for hole_no, h in HOLES.items():
-        results = {club: best_aim(hole_no, club) for club in CLUBS}
+        results = {club: best_aim(hole_no, club, aims=AIMS_WIDE if club in IRONS else AIMS)
+                   for club in clubs_for(hole_no)}
         best_ev = min(r["ev"] for r in results.values())
         best_club = min(results, key=lambda c: results[c]["ev"])
         picks.append((hole_no, best_club, results[best_club]["aim"]))

@@ -23,7 +23,8 @@ LIE_NAME = {"recovery": "trees"}
 
 
 def sg_table(hole_no):
-    res = {c: t.best_aim(hole_no, c) for c in t.CLUBS}
+    res = {c: t.best_aim(hole_no, c, aims=t.AIMS_WIDE if c in t.IRONS else t.AIMS)
+           for c in t.clubs_for(hole_no)}
     best = min(res, key=lambda c: res[c]["ev"])
     base = t.tee_baseline(hole_no)
     rows = []
@@ -36,34 +37,42 @@ def sg_table(hole_no):
     return best, rows
 
 
-def perturbed_world(rng, holes0, clubs0):
+def perturbed_world(rng, holes0, clubs0, irons0):
     """One plausible version of reality around the measured inputs."""
     spread = rng.uniform(0.9, 1.3)                       # dispersion usually worse than the app's
-    clubs = {}
-    for c, (carry, total, w, d) in clubs0.items():
-        dc = rng.normal(0, 5)
-        roll = (total - carry) * rng.uniform(0.6, 1.3)
-        clubs[c] = (carry + dc, carry + dc + roll, w * spread, d * rng.uniform(0.9, 1.2))
+    roll_f = rng.uniform(0.6, 1.3)
+
+    def jiggle(table):
+        out = {}
+        for c, (carry, total, w, d) in table.items():
+            dc = rng.normal(0, 5)
+            out[c] = (carry + dc, carry + dc + (total - carry) * roll_f, w * spread, d * rng.uniform(0.9, 1.2))
+        return out
+    clubs, irons = jiggle(clubs0), jiggle(irons0)
     holes = copy.deepcopy(holes0)
     for h in holes.values():
         ppy = t.hole_frame(h)[3]
         h["zones"] = [(name, [(x + dx, y + dy) for x, y in poly])
                       for name, poly in h["zones"]
                       for dx, dy in [rng.normal(0, 4 * ppy, 2)]]  # each zone off by ~4 yds
-    return clubs, holes, rng.uniform(0.4, 1.0), rng.uniform(0.3, 0.7)
+    return clubs, irons, holes, rng.uniform(0.4, 1.0), rng.uniform(0.3, 0.7)
 
 
 def robustness(rng):
-    holes0, clubs0 = copy.deepcopy(t.HOLES), dict(t.CLUBS)
-    sev0, lost0 = t.TREE_SEVERITY, t.NATIVE_LOST
-    wins = {h: {c: 0 for c in clubs0} for h in holes0}
+    holes0, clubs0, irons0 = copy.deepcopy(t.HOLES), dict(t.CLUBS), dict(t.IRONS)
+    sev0, lost0, mis0 = t.TREE_SEVERITY, t.NATIVE_LOST, dict(t.MISHIT_RATE)
+    wins = {h: {c: 0 for c in t.clubs_for(h)} for h in holes0}
     for _ in range(N_SCEN):
-        t.CLUBS, t.HOLES, t.TREE_SEVERITY, t.NATIVE_LOST = perturbed_world(rng, holes0, clubs0)
-        z = rng.standard_normal((2, SCEN_SHOTS))
+        t.CLUBS, t.IRONS, t.HOLES, t.TREE_SEVERITY, t.NATIVE_LOST = perturbed_world(rng, holes0, clubs0, irons0)
+        f = rng.uniform(0.4, 2.0)                              # mishit rate anywhere from 2% to 10%
+        t.MISHIT_RATE = {c: r * f for c, r in mis0.items()}
+        z = np.vstack([rng.standard_normal((2, SCEN_SHOTS)), rng.random((2, SCEN_SHOTS))])
         for h in holes0:
-            evs = {c: t.best_aim(h, c, aims=np.arange(-15, 15.1, 5), z=z)["ev"] for c in clubs0}
+            evs = {c: t.best_aim(h, c, aims=np.arange(-15, 40.1 if c in irons0 else 15.1, 5), z=z)["ev"]
+                   for c in t.clubs_for(h)}
             wins[h][min(evs, key=evs.get)] += 1
-    t.CLUBS, t.HOLES, t.TREE_SEVERITY, t.NATIVE_LOST = clubs0, holes0, sev0, lost0
+    t.CLUBS, t.IRONS, t.HOLES, t.TREE_SEVERITY, t.NATIVE_LOST = clubs0, irons0, holes0, sev0, lost0
+    t.MISHIT_RATE = mis0
     return wins
 
 
