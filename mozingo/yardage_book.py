@@ -27,34 +27,42 @@ ZONE_TOL = 0.02
 WATER_ADD, BUNKER_ADD, TREE_ADD = 3.0, 1.0, 2.0
 ADD = {"water": WATER_ADD, "bunker": BUNKER_ADD, "trees": TREE_ADD, "rough": 0.0}
 
-# Par 3s, traced from the Caddie-view screenshots (920 x 2000 frame).
-# Edges are yards left (-) / right (+) of the tee-to-flag line at the middle of the green.
+# Par 3s, traced from the Caddie-view screenshots on a 5-yd grid centred on the flag.
+# green = putting-surface outline as (yds right of the tee-flag line, yds past the flag);
+# it matches the app's front/back numbers on the line. haz = what sits off each edge.
 PAR3 = {
-    5: dict(image="hole05.png", tee=(438, 1818), flag=(438, 922), center=182, front=166, back=199,
-            left=-16.9, right=12.6,
+    5: dict(image="hole05.png", short="Bunker hard right, trees left. Narrow green.", tee=(438, 1818), flag=(438, 922), center=182, front=166, back=199,
+            green=[(-6, 17), (2, 17), (6, 14), (8, 10), (9.5, 3), (9, -5), (8, -10), (5, -15),
+                   (0, -16.5), (-5, -15), (-8, -10), (-12, -5), (-15, 0), (-14, 6), (-11, 11), (-8, 15)],
             haz=dict(left="trees", right="bunker", short="rough", long="rough"),
-            note="Trees tight left, bunker right. Miss short is fine."),
-    8: dict(image="hole08.png", tee=(475, 1950), flag=(475, 812), center=187, front=180, back=199,
-            left=-23.0, right=19.7,
-            haz=dict(left="rough", right="water", short="water", long="trees"),
-            note="All carry over the pond. Bunker front-right with water beyond it. "
-                 "Left of the green is just rough, so that's the bail-out."),
-    11: dict(image="hole11.png", tee=(444, 1765), flag=(444, 802), center=219, front=208, back=230,
-             left=-21.4, right=20.7,
+            note="Bunker hard right (2 yds off the edge), front-left bunker and trees left. "
+                 "The green is only ~24 yds wide, so the zone is a narrow strip."),
+    8: dict(image="hole08.png", short="All carry. The front-left lobe is the safe part.", tee=(475, 1950), flag=(475, 812), center=187, front=180, back=199,
+            green=[(-14, 10), (-8, 13), (5, 13), (15, 12), (22, 9), (25, 3), (26, -2), (22, -5),
+                   (10, -5.5), (0, -6.5), (-4, -7), (-6, -14), (-10, -20), (-15, -21), (-20, -15),
+                   (-22.5, -8), (-22.5, 0), (-19, 6)],
+            haz=dict(left="rough", right="trees", short="water", long="trees"),
+            note="All carry over the pond. The bunker guards the front-right and the green's "
+                 "deepest part is the front-left lobe. Left of the green is only rough."),
+    11: dict(image="hole11.png", short="Pond short-left. The miss is long-right.", tee=(444, 1765), flag=(444, 802), center=219, front=208, back=230,
+             green=[(-15, 10), (-5, 11.5), (5, 11.5), (14, 10), (19, 6), (20.5, 0), (18, -5),
+                    (12, -9), (0, -11), (-10, -10), (-17, -7), (-21, -2), (-21.5, 3), (-19, 7)],
              haz=dict(left="water", right="rough", short="water", long="bunker"),
-             note="Pond short and short-left (carry ~206 on the line). Right of the green is "
-                  "grass: the miss is long-right, never short-left."),
-    15: dict(image="hole15.png", tee=(500, 1873), flag=(471, 806), center=174, front=164, back=189,
-             left=-15.7, right=17.8,
+             note="Pond short and short-left. Right of the green is grass, so the miss is "
+                  "long-right, never short-left."),
+    15: dict(image="hole15.png", short="Lake right, bunker front-left.", tee=(500, 1873), flag=(471, 806), center=174, front=164, back=189,
+             green=[(-15, 14), (0, 15), (12, 14.5), (20, 12), (22, 5), (20, -3), (14, -8), (5, -11),
+                    (-2, -11), (-5, -8), (-8, -3), (-12, 2), (-15, 8)],
              haz=dict(left="bunker", right="water", short="rough", long="rough"),
-             note="Lake right (about 6 yds off the right edge), bunker front-left."),
+             note="Lake off the right edge, bunker front-left. Triangular green, widest at the back."),
 }
 
 NOTES = {
     1: "2-wood is equal (0.006 apart). Driver brings the tree clumps at 270-320 into play.",
     2: "Driver carries 275, right onto the fairway bunker at 273-294 R. If driver is carrying "
        "290+ (downwind) it flies the bunker and becomes the play.",
-    3: "Trees line the right side the whole way, so aim left. Driver gets you ~220 out for a go in two.",
+    3: "Narrow: tall grass left of the landing zone (~25 yds left of the line, 220-340 out) and trees "
+       "all down the right. Aim straight down the middle; every 5 yds left of the line costs ~0.03.",
     4: "Wide open. Left prairie (~40 yds left at 300+) is only in play if your driver is ~90 yds wide.",
     6: "Lake is ~100 yds left, out of play. Driver is worth 0.12-0.17 here.",
     7: "Only if the tree clumps at 260-310 really block you. If you can usually play out of "
@@ -107,20 +115,42 @@ def tee_plan(h):
     return res, best, (ok.min(), ok.max())
 
 
-def par3_plan(p):
-    d = p["center"]
-    base = d / 20.0
+def par3_plan(p, step=0.25):
+    """DECADE edge rule applied to the traced green, point by point.
+
+    A spot is in the zone if it is at least the cushion in from the left and right
+    edges of the green along its row, and from the front and back along its column.
+    If no spot satisfies all four, every cushion is scaled down by the same
+    fraction until one does (reported as `fit`).
+    """
+    from matplotlib.path import Path
+    base = p["center"] / 20.0
     off = {k: base + ADD[v] for k, v in p["haz"].items()}
-    lat = (p["left"] + off["left"], p["right"] - off["right"])
-    if lat[0] > lat[1]:                       # sides overlap: split by the two cushions
-        w = off["left"] / (off["left"] + off["right"])
-        x = p["left"] + w * (p["right"] - p["left"])
-        lat = (x, x)
-    dep = (p["front"] + off["short"], p["back"] - off["long"])
-    if dep[0] > dep[1]:
-        m = (dep[0] + dep[1]) / 2
-        dep = (m, m)
-    return base, off, lat, dep, ((lat[0] + lat[1]) / 2, (dep[0] + dep[1]) / 2)
+    lat = np.arange(-40, 40 + step, step)
+    dep = np.arange(-30, 30 + step, step)
+    L, D = np.meshgrid(lat, dep)
+    inside = Path(p["green"]).contains_points(np.c_[L.ravel(), D.ravel()]).reshape(L.shape)
+    big = 1e9
+    left = np.where(inside, L, big).min(axis=1, keepdims=True)
+    right = np.where(inside, L, -big).max(axis=1, keepdims=True)
+    front = np.where(inside, D, big).min(axis=0, keepdims=True)
+    back = np.where(inside, D, -big).max(axis=0, keepdims=True)
+
+    def zone(f):
+        return (inside & (L - left >= f * off["left"]) & (right - L >= f * off["right"])
+                & (D - front >= f * off["short"]) & (back - D >= f * off["long"]))
+
+    fit = 1.0
+    if not zone(1.0).any():
+        lo, hi = 0.0, 1.0
+        for _ in range(30):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if zone(mid).any() else (lo, mid)
+        fit = lo * 0.97                     # back off a touch so the zone has visible area
+    z = zone(fit)
+    return dict(base=base, off=off, fit=fit, L=L, D=D, inside=inside, zone=z,
+                lat=(L[z].min(), L[z].max()), dep=(D[z].min(), D[z].max()),
+                aim=(L[z].mean(), D[z].mean()), width=L[inside].max() - L[inside].min())
 
 
 def frame(tee, toward, yds):
@@ -169,29 +199,36 @@ def draw_tee(ax, h, club, aim, zone, label=None):
     finish(ax)
 
 
-def draw_par3(ax, p, lat, dep, aim, zoom=False, label=None):
+def draw_green(ax, p, plan, title=None, aspect=None):
+    """Green-only close-up: traced outline and the rule zone. No star."""
     draw_image(ax, p["image"])
     fr = frame(p["tee"], p["flag"], p["center"])
-    l0, l1 = (lat[0] - 1, lat[1] + 1) if lat[0] == lat[1] else lat
-    d0, d1 = (dep[0] - 1.5, dep[1] + 1.5) if dep[0] == dep[1] else dep
-    box = np.array([px(fr, d0, l0), px(fr, d0, l1), px(fr, d1, l1), px(fr, d1, l0), px(fr, d0, l0)])
-    ax.fill(box[:, 0], box[:, 1], color="#00e5ff", alpha=0.35, lw=0)
-    ax.plot(box[:, 0], box[:, 1], color="#00e5ff", lw=1.5)
-    tee = px(fr, 0, 0)
-    tgt = px(fr, aim[1], aim[0])
-    ax.plot([tee[0], tgt[0]], [tee[1], tgt[1]], color="#ffd60a", lw=2)
-    ax.plot(*tgt, marker="*", ms=22, color="#ffd60a", mec="black", mew=1.2)
-    if zoom:                                  # close-up of the green, +/- 30 yds
-        ppy = fr[3]
-        fx, fy = p["flag"]
-        ax.set_xlim(fx - 30 * ppy, fx + 30 * ppy)
-        ax.set_ylim(fy + 28 * ppy, fy - 22 * ppy)
-        ax.set_title("Green close-up", fontsize=9)
-        return
-    ax.annotate(label or f"AIM  play {aim[1]:.0f}\n{flag_side(aim[0])}", tgt, xytext=(16, 10),
-                textcoords="offset points", color="black", fontsize=9, weight="bold",
-                bbox=dict(boxstyle="round,pad=0.25", fc="#ffd60a", ec="black", lw=0.8))
-    finish(ax)
+    tee, fwd, right, ppy = fr
+    L, D = plan["L"], plan["D"]
+    X = tee[0] + ((p["center"] + D) * fwd[0] + L * right[0]) * ppy
+    Y = tee[1] + ((p["center"] + D) * fwd[1] + L * right[1]) * ppy
+    ax.contourf(X, Y, plan["zone"].astype(float), levels=[0.5, 1.5], colors=["#00e5ff"], alpha=0.7,
+                zorder=5)
+    ax.contour(X, Y, plan["zone"].astype(float), levels=[0.5], colors=["#003a46"], linewidths=1.5,
+               zorder=6)
+    g = np.array(p["green"] + [p["green"][0]], float)
+    gx = tee[0] + ((p["center"] + g[:, 1]) * fwd[0] + g[:, 0] * right[0]) * ppy
+    gy = tee[1] + ((p["center"] + g[:, 1]) * fwd[1] + g[:, 0] * right[1]) * ppy
+    ax.plot(gx, gy, color="white", lw=1.2, ls="--")
+    pad = 8 * ppy
+    x0, x1, y0, y1 = gx.min() - pad, gx.max() + pad, gy.min() - pad, gy.max() + pad
+    if aspect:                                 # grow the view to fill the axes (h / w)
+        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+        w, h = x1 - x0, y1 - y0
+        if h / w < aspect:
+            h = w * aspect
+        else:
+            w = h / aspect
+        x0, x1, y0, y1 = cx - w / 2, cx + w / 2, cy - h / 2, cy + h / 2
+    ax.set_xlim(x0, x1)
+    ax.set_ylim(y1, y0)
+    if title:
+        ax.set_title(title, fontsize=10)
 
 
 def text_block(fig, x, y, lines, size=10, gap=0.021, width=44):
@@ -252,45 +289,46 @@ def tee_page(pdf, h, conf):
                 zone=f"{side(zone[0])} to {side(zone[1])}", conf=conf.get(h))
 
 
+def par3_summary(p, plan):
+    d0, d1 = (p["center"] + plan["dep"][0], p["center"] + plan["dep"][1])
+    play = p["center"] + plan["aim"][1]
+    return play, d0, d1
+
+
 def par3_page(pdf, h):
     p = PAR3[h]
-    base, off, lat, dep, aim = par3_plan(p)
+    plan = par3_plan(p)
+    play, d0, d1 = par3_summary(p, plan)
     fig = plt.figure(figsize=(8.5, 11))
     header(fig, h, 3, p["center"])
-    draw_par3(fig.add_axes([0.02, 0.03, 0.52, 0.89]), p, lat, dep, aim)
-    draw_par3(fig.add_axes([0.58, 0.07, 0.38, 0.33]), p, lat, dep, aim, zoom=True)
-    lz = "single point (cushions overlap)" if lat[0] == lat[1] else f"{side(lat[0])} to {side(lat[1])}"
-    dz = f"{dep[0]:.0f}" if dep[0] == dep[1] else f"{dep[0]:.0f} to {dep[1]:.0f}"
+    draw_green(fig.add_axes([0.03, 0.40, 0.94, 0.52]), p, plan, aspect=0.52 * 11 / (0.94 * 8.5))
+    off = plan["off"]
     lines = [
-        f"**PLAY: {aim[1]:.0f} YDS",
-        f"**Aim: {flag_side(aim[0])}",
-        f"Lateral zone: {lz}",
-        f"Distance zone: {dz} yds",
-        f"Green: front {p['front']}  ·  centre {p['center']}  ·  back {p['back']}",
+        f"**PLAY {play:.0f} YDS — land it in the blue zone",
+        f"Zone runs {d0:.0f}-{d1:.0f} yds.  Green (app): front {p['front']} · centre {p['center']} "
+        f"· back {p['back']}.  Dashed white line = the green as traced.",
         "",
-        f"**DECADE edge rule: {p['center']} / 20 = {base:.1f} yds in from an edge",
-        "+3 water  ·  +1 bunker  ·  +2 trees/tall grass",
+        f"**DECADE edge rule: {p['center']} / 20 = {plan['base']:.1f} yds in from each edge, "
+        "+3 water, +1 bunker, +2 trees/tall grass",
     ]
     for k in ("left", "right", "short", "long"):
-        lines.append(f"{k.capitalize():<6} {p['haz'][k]:<7} → {off[k]:.1f} yds in from the {k} edge")
-    if lat[0] == lat[1]:
-        lines.append("Left and right cushions overlap, so aim splits them.")
-    if dep[0] == dep[1]:
-        lines.append("Short and long cushions overlap, so the number splits them.")
+        lines.append(f"{k.capitalize()} edge: {p['haz'][k]} → {off[k]:.1f} yds in")
+    if plan["fit"] < 1:
+        lines.append(f"These cushions don't all fit on this green, so each is scaled to "
+                     f"{plan['fit']:.0%} of the rule. The blue spot is the only area that keeps "
+                     "the same share of cushion on every side.")
     lines += ["", "**Notes", p["note"]]
-    text_block(fig, 0.57, 0.90, lines)
-    fig.text(0.57, 0.035, "Yellow star = aim point.  Blue box = aim zone on the green.",
-             fontsize=8, color="#555")
+    text_block(fig, 0.05, 0.37, lines, width=95)
     pdf.savefig(fig)
     plt.close(fig)
-    return dict(hole=h, par=3, yds=p["center"], club=f"Play {aim[1]:.0f}",
-                aim=flag_side(aim[0]), zone=f"{dz} yds", conf=None)
+    return dict(hole=h, par=3, yds=p["center"], club=f"Play {play:.0f}",
+                aim="Blue zone on the green", zone=f"{d0:.0f}-{d1:.0f} yds", conf=None)
 
 
 AIM_AT = {
     1: "Centre of the fairway",
     2: "Left-centre of the fairway, away from the right-side bunker",
-    3: "Left side of the fairway (trees all down the right)",
+    3: "Middle of the fairway, between the tall grass left and the trees right",
     4: "Centre of the fairway",
     5: "Just left of the flag",
     6: "Left-centre of the fairway",
@@ -314,9 +352,10 @@ def aim_sheet(pdf, h):
     fig = plt.figure(figsize=(6, 10.4))
     if h in PAR3:
         p = PAR3[h]
-        _, _, lat, dep, aim = par3_plan(p)
-        title, par = f"PLAY {aim[1]:.0f} YDS", 3
-        draw_par3(fig.add_axes([0, 0, 1, 0.89]), p, lat, dep, aim, label="AIM HERE")
+        plan = par3_plan(p)
+        play, d0, d1 = par3_summary(p, plan)
+        title, par = f"PLAY {play:.0f} YDS", 3
+        draw_green(fig.add_axes([0, 0, 1, 0.89]), p, plan, aspect=0.89 * 10.4 / 6)
     else:
         res, best, zone = tee_plan(h)
         title, par = best.upper(), t.HOLES[h]["par"]
@@ -326,7 +365,8 @@ def aim_sheet(pdf, h):
     fig.text(0.04, 0.965, f"Hole {h}", fontsize=22, weight="bold", color="white", va="center")
     fig.text(0.40, 0.965, f"Par {par}", fontsize=13, color="#cfe8d5", va="center")
     fig.text(0.96, 0.965, title, fontsize=20, weight="bold", color="#ffd60a", va="center", ha="right")
-    for i, piece in enumerate(textwrap.wrap("Aim at the star: " + AIM_AT[h], 52)):
+    line = ("Land it in the blue zone. " + PAR3[h]["short"]) if h in PAR3 else "Aim at the star: " + AIM_AT[h]
+    for i, piece in enumerate(textwrap.wrap(line, 60)[:2]):
         fig.text(0.04, 0.925 - i * 0.022, piece, fontsize=11, color="white", va="center")
     pdf.savefig(fig)
     plt.close(fig)
