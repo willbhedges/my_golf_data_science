@@ -261,7 +261,7 @@ HOLES = {
             ("sand", [(422, 828), (447, 828), (447, 872), (422, 872)]),                   # short-right of green
         ]),
     18: dict(
-        par=4, image="hole18.png", length=407,
+        par=4, image="hole18.png", length=407, extra_roll=20,   # downhill: +10-30 yds of run
         tee=(425, 1795), dot270=(466, 1015), green=(300, 665),   # dogleg left
         zones=[
             ("fairway", [(330, 1500), (560, 1500), (600, 1200), (580, 1000), (560, 880), (500, 840),
@@ -320,7 +320,7 @@ def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS, z=None):
     # Roll out along the flight line in 2-yd steps: full roll on fairway,
     # ROUGH_ROLL of it in rough, and the ball stops dead in any hazard.
     heading = (pts - tee) / np.linalg.norm(pts - tee, axis=1)[:, None]
-    roll_left = np.full(n, float(total - carry))
+    roll_left = np.full(n, float(total - carry + h.get("extra_roll", 0)))  # e.g. downhill landing
     roll_left[lie == "rough"] *= ROUGH_ROLL
     while True:
         moving = (roll_left > 0) & ~np.isin(lie, HAZARDS)
