@@ -7,7 +7,7 @@ Run it: `python3 mozingo/tee_strategy.py` (needs `numpy`, `matplotlib`). Writes
 `output/results_table.md` and one shot-pattern overlay per hole.
 `python3 mozingo/scenarios.py` runs the what-if checks below.
 
-## Recommendations (holes 1–6, par 3 #5 skipped)
+## Recommendations (par 3s skipped; 8, 14–18 still to come)
 
 | Hole | Play | Aim | Margin over next-best club |
 |---|---|---|---|
@@ -16,6 +16,11 @@ Run it: `python3 mozingo/tee_strategy.py` (needs `numpy`, `matplotlib`). Writes
 | 3 (par 5) | **Driver** | ~12 yds left (trees line the right side) | 0.11 vs 2-wood |
 | 4 (par 4) | **Driver** | on the line | 0.05 vs 2-wood |
 | 6 (par 5) | **Driver** | ~5 yds left | 0.13 vs 2-wood |
+| 7 (par 4) | **4-wood** | ~7 yds right | 0.06 vs 2-wood, 0.08 vs driver — *only if the tree clumps at 260–310 really block you* (see below) |
+| 9 (par 4) | **Driver** | ~2 yds right | 0.05 vs 2-wood |
+| 10 (par 4) | **Driver** | ~5 yds left (trees right) | 0.03 vs 2-wood |
+| 12 (par 5) | **Driver** | on the line | 0.12 vs 2-wood |
+| 13 (par 4) | **Any** — dead heat | on the line | <0.01 between all three |
 
 ## What-if checks (`scenarios.py`)
 
@@ -31,6 +36,10 @@ Run it: `python3 mozingo/tee_strategy.py` (needs `numpy`, `matplotlib`). Writes
   line at 300+. Driver reaches it <1% of the time. 2-wood only becomes
   correct if that edge is within ~17 yds of the line. Driver is the play
   unless the prairie is a lot closer than the satellite image shows.
+- **Hole 7, tree clumps:** the model treats the trees left (260–310) and right
+  (~280) as a blocked lie. About 23% of drives finish there, and the 4-wood
+  stays mostly short of them. If they're thin enough that you usually have a
+  shot, driver wins by 0.03 instead. Your local knowledge decides this hole.
 - **Dispersion 30% wider than the app's:** same picks on every hole, and
   bigger margins for the 4-wood on holes 1 and 2.
 
