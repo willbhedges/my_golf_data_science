@@ -406,7 +406,9 @@ def cover(pdf, rows):
         "roll, hazard edges, how penal trees/grass are).",
         "Par 3: DECADE edge rule: distance/20 yds in from the trouble, +3 water, +1 bunker, "
         "+2 trees/tall grass.",
-        "Locks (97%+): 3, 4, 6, 12, 14. Coin flips: 13, 16, 18 (when firm).",
+        "Locks (95%+): " + ", ".join(str(r["hole"]) for r in rows if (r["conf"] or 0) >= 95)
+        + ".  Coin flips (under 50%): "
+        + ", ".join(str(r["hole"]) for r in rows if r["conf"] is not None and r["conf"] < 50) + ".",
     ], size=9, gap=0.017, width=105)
     pdf.savefig(fig)
     plt.close(fig)
