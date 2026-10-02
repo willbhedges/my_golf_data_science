@@ -43,10 +43,11 @@ IRONS = {
     "Long iron": (210, 220, 40, 20),
     "Mid iron": (185, 192, 34, 18),
 }
-# Mishits (thin / topped / heel) that fall outside the normal shot pattern:
-# chance per swing, and they carry MISHIT_CARRY of the normal carry.
-MISHIT_RATE = {"Driver": 0.05, "2-wood": 0.05, "4-wood": 0.05, "Long iron": 0.03, "Mid iron": 0.03}
-MISHIT_CARRY = (0.35, 0.75)
+# Slight mishits / into-wind swings (no tops or chunks, as in Fawcett's patterns):
+# chance per swing, and they carry MISHIT_CARRY of the normal carry
+# (e.g. a 275 driver carry comes up 255-265).
+MISHIT_RATE = {"Driver": 0.15, "2-wood": 0.15, "4-wood": 0.15, "Long iron": 0.15, "Mid iron": 0.15}
+MISHIT_CARRY = (0.92, 0.97)
 ROUGH_ROLL = 0.3    # share of remaining roll kept once the ball is in rough
 HAZARDS = ("sand", "recovery", "native", "water")   # ball stops where it lands/enters
 

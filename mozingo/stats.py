@@ -64,7 +64,7 @@ def robustness(rng):
     wins = {h: {c: 0 for c in t.clubs_for(h)} for h in holes0}
     for _ in range(N_SCEN):
         t.CLUBS, t.IRONS, t.HOLES, t.TREE_SEVERITY, t.NATIVE_LOST = perturbed_world(rng, holes0, clubs0, irons0)
-        f = rng.uniform(0.4, 2.0)                              # mishit rate anywhere from 2% to 10%
+        f = rng.uniform(0.4, 2.0)                              # slight-mishit rate anywhere from 6% to 30%
         t.MISHIT_RATE = {c: r * f for c, r in mis0.items()}
         z = np.vstack([rng.standard_normal((2, SCEN_SHOTS)), rng.random((2, SCEN_SHOTS))])
         for h in holes0:
