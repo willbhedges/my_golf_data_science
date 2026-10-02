@@ -6,6 +6,9 @@ Clubs (carry / total on fairway / lateral dispersion):
 Run it: `python3 mozingo/tee_strategy.py` (needs `numpy`, `matplotlib`). Writes
 `output/results_table.md` and one shot-pattern overlay per hole.
 `python3 mozingo/scenarios.py` runs the what-if checks below.
+`python3 mozingo/stats.py` writes `output/stats_report.md`: strokes gained off the tee,
+paired club-vs-club confidence intervals, how often each pick survives 100 randomly
+perturbed versions of the inputs, and a hole 13 deep dive.
 
 ## Recommendations (par 3s skipped; 8, 14–18 still to come)
 

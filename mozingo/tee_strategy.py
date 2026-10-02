@@ -25,6 +25,9 @@ from matplotlib.path import Path
 HERE = os.path.dirname(os.path.abspath(__file__))
 RNG = np.random.default_rng(7)
 N_SHOTS = 20000
+# Common random numbers: every club/aim reuses the same standard-normal draws,
+# so club-vs-club differences aren't swamped by simulation noise.
+Z = np.random.default_rng(11).standard_normal((2, N_SHOTS))
 
 # name: (carry yds, total yds on fairway, lateral 95% width, carry-depth 95% window)
 CLUBS = {
@@ -32,6 +35,8 @@ CLUBS = {
     "2-wood": (265, 280, 60, 26),
     "4-wood": (255, 270, 50, 24),
 }
+TREE_SEVERITY = 1.0  # 1 = blocked (recovery baseline), 0 = trees play like rough
+NATIVE_LOST = 0.5    # share of balls in native grass that are lost (penalty)
 ROUGH_ROLL = 0.3    # share of remaining roll kept once the ball is in rough
 HAZARDS = ("sand", "recovery", "native", "water")   # ball stops where it lands/enters
 
@@ -44,14 +49,25 @@ BASELINE = {
     "recovery": [3.40, 3.55, 3.70, 3.75, 3.80, 3.78, 3.80, 3.81, 3.82, 3.87, 3.92, 3.97, 4.03, 4.10, 4.20],
 }
 
+# From the tee (Broadie), used for strokes gained off the tee.
+TEE_DIST = [300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500, 520, 540, 560, 580, 600]
+TEE_BASE = [3.71, 3.79, 3.86, 3.92, 3.96, 3.99, 4.02, 4.08, 4.17, 4.28, 4.41, 4.54, 4.65, 4.74, 4.79, 4.82]
+
+
+def tee_baseline(hole_no):
+    return float(np.interp(HOLES[hole_no]["length"], TEE_DIST, TEE_BASE))
+
 
 def expected_strokes(lie, dist):
     dist = np.clip(dist, DIST[0], DIST[-1])
     if lie == "water":     # penalty stroke, drop in rough at same distance
         return 1.0 + np.interp(dist, DIST, BASELINE["rough"])
-    if lie == "native":    # tall prairie grass: ~half lost (re-drop w/ penalty), half hacked out
-        return 0.5 * (1.0 + np.interp(dist, DIST, BASELINE["rough"])) + \
-            0.5 * np.interp(dist, DIST, BASELINE["recovery"])
+    if lie == "native":    # tall prairie grass: some lost (re-drop w/ penalty), rest hacked out
+        return NATIVE_LOST * (1.0 + np.interp(dist, DIST, BASELINE["rough"])) + \
+            (1 - NATIVE_LOST) * np.interp(dist, DIST, BASELINE["recovery"])
+    if lie == "recovery":
+        return TREE_SEVERITY * np.interp(dist, DIST, BASELINE["recovery"]) + \
+            (1 - TREE_SEVERITY) * np.interp(dist, DIST, BASELINE["rough"])
     return np.interp(dist, DIST, BASELINE[lie])
 
 
@@ -60,7 +76,7 @@ def expected_strokes(lie, dist):
 # Order of precedence: fairway < trees < sand < native < water.
 HOLES = {
     1: dict(
-        par=4, image="hole01.png",
+        par=4, image="hole01.png", length=371,
         tee=(388, 1940), dot270=(483, 978), green=(595, 630),
         zones=[
             ("fairway", [(395, 1300), (560, 1300), (570, 1100), (585, 960), (595, 860),
@@ -75,7 +91,7 @@ HOLES = {
             ("water", [(705, 540), (920, 540), (920, 770), (740, 760)]),       # lake right of green
         ]),
     2: dict(
-        par=4, image="hole02.png",
+        par=4, image="hole02.png", length=349,
         tee=(363, 1843), dot270=(409, 920), green=(470, 655),
         zones=[
             ("fairway", [(310, 1250), (440, 1250), (450, 1100), (480, 1000), (510, 900),
@@ -88,7 +104,7 @@ HOLES = {
             ("sand", [(450, 690), (530, 680), (530, 770), (455, 770)]),                     # greenside R
         ]),
     3: dict(
-        par=5, image="hole03.png",
+        par=5, image="hole03.png", length=517,
         tee=(476, 1740), dot270=(472, 1008), green=(470, 339),
         zones=[
             ("fairway", [(330, 1450), (480, 1450), (490, 1200), (500, 1050), (520, 950),
@@ -98,7 +114,7 @@ HOLES = {
             ("native", [(650, 540), (900, 540), (900, 900), (660, 900)]),                     # prairie right
         ]),
     4: dict(
-        par=4, image="hole04.png",
+        par=4, image="hole04.png", length=361,
         tee=(471, 1822), dot270=(486, 990), green=(492, 710),
         zones=[
             ("fairway", [(420, 1300), (540, 1300), (560, 1100), (575, 900), (580, 720),
@@ -108,7 +124,7 @@ HOLES = {
             ("native", [(200, 550), (370, 550), (365, 900), (200, 900)]),        # prairie long-left
         ]),
     6: dict(
-        par=5, image="hole06.png",
+        par=5, image="hole06.png", length=491,
         tee=(481, 1890), dot270=(471, 932), green=(465, 147),
         zones=[
             ("fairway", [(330, 1500), (560, 1500), (570, 1100), (580, 900), (590, 540),
@@ -121,7 +137,7 @@ HOLES = {
             ("water", [(0, 540), (100, 540), (100, 1100), (170, 1500), (250, 2000), (0, 2000)]),  # Mozingo Lake
         ]),
     7: dict(
-        par=4, image="hole07.png",
+        par=4, image="hole07.png", length=428,
         tee=(445, 1922), dot270=(499, 1045), green=(525, 530),
         zones=[
             ("fairway", [(350, 1500), (600, 1500), (640, 1200), (610, 1050), (570, 900),
@@ -135,7 +151,7 @@ HOLES = {
                        (340, 1700), (380, 2000), (0, 2000)]),                    # Mozingo Lake
         ]),
     9: dict(
-        par=4, image="hole09.png",
+        par=4, image="hole09.png", length=348,
         tee=(469, 1862), dot270=(447, 950), green=(400, 690),
         zones=[
             ("fairway", [(330, 1250), (580, 1250), (640, 1050), (560, 900), (510, 700),
@@ -148,7 +164,7 @@ HOLES = {
                        (650, 1460), (650, 1560), (0, 1560)]),                    # lake left + carry
         ]),
     10: dict(
-        par=4, image="hole10.png",
+        par=4, image="hole10.png", length=392,
         tee=(458, 1785), dot270=(458, 963), green=(450, 600),
         zones=[
             ("fairway", [(340, 1400), (500, 1400), (510, 1100), (530, 900), (520, 650),
@@ -161,7 +177,7 @@ HOLES = {
             ("sand", [(480, 595), (510, 595), (510, 660), (480, 660)]),          # greenside
         ]),
     12: dict(
-        par=5, image="hole12.png",
+        par=5, image="hole12.png", length=517,
         tee=(375, 1660), dot270=(425, 958), green=(900, 530),   # dogleg right; green off-screen
         zones=[
             ("fairway", [(250, 1150), (420, 1150), (440, 1050), (450, 950), (520, 880),
@@ -173,7 +189,7 @@ HOLES = {
             ("sand", [(440, 965), (495, 965), (500, 1040), (445, 1040)]),             # fairway bunker
         ]),
     13: dict(
-        par=4, image="hole13.png",
+        par=4, image="hole13.png", length=394,
         tee=(480, 1825), dot270=(471, 1040), green=(305, 715),  # dogleg left
         zones=[
             ("fairway", [(420, 1500), (560, 1500), (590, 1250), (560, 1050), (500, 900),
@@ -204,12 +220,15 @@ def lie_at(h, pts):
     return lie
 
 
-def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS):
+def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS, z=None):
     h = HOLES[hole_no]
     tee, fwd, right, ppy = hole_frame(h)
     carry, total, width, depth = CLUBS[club]
-    along = RNG.normal(carry, depth / 4, n)
-    lat = RNG.normal(aim_lat, width / 4, n)
+    if z is None:
+        z = Z if n == N_SHOTS else RNG.standard_normal((2, n))
+    n = z.shape[1]
+    along = carry + depth / 4 * z[0]
+    lat = aim_lat + width / 4 * z[1]
     pts = tee + (along[:, None] * fwd + lat[:, None] * right) * ppy
     lie = lie_at(h, pts)
 
@@ -240,15 +259,16 @@ def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS):
     return pts, lie, to_green, 1.0 + strokes   # +1 for the tee shot itself
 
 
-def best_aim(hole_no, club):
+def best_aim(hole_no, club, aims=np.arange(-20, 20.1, 2.5), z=None):
     best = None
-    for aim in np.arange(-20, 20.1, 2.5):
-        _, lie, to_green, strokes = simulate(hole_no, club, aim)
+    for aim in aims:
+        _, lie, to_green, strokes = simulate(hole_no, club, aim, z=z)
         ev = strokes.mean()
         if best is None or ev < best["ev"]:
             share = {k: float(np.mean(lie == k)) for k in
                      ("fairway", "rough", "sand", "recovery", "native", "water")}
-            best = dict(aim=aim, ev=ev, approach=float(np.median(to_green)), share=share)
+            best = dict(aim=aim, ev=ev, approach=float(np.median(to_green)), share=share,
+                        strokes=strokes, lie=lie, to_green=to_green)
     return best
 
 
