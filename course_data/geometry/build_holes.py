@@ -1,13 +1,17 @@
 """OpenStreetMap golf features -> the strategy model's per-hole dicts, in the 920 x 2000 screen frame.
 
   python course_data/geometry/build_holes.py course_data/spirit_hollow [--tee blue]
-         [--lengths 1=419,2=616] [--trees course_data/spirit_hollow/naip_trees.geojson] [--check]
+         [--lengths 1=419,2=616] [--tees tees.json] [--ppy 3.4] [--trees extra_trees.geojson] [--check]
 
 Reads <dir>/osm.geojson (course_data/fetch_course.py) and writes
   <dir>/auto_holes.json   every hole: par, length, tee, dot270, green, zones (+ par-3 outline, tee options)
   <dir>/auto_course.py    loader exposing HOLES / PAR3 / ORDER / NOTES / AIM_AT / LABELS in
                           spirit_hollow/course.py's format (par 3s with a green polygon go in PAR3)
   <dir>/auto_preview.png  all holes drawn in their frames
+  <dir>/holes_osm.json    the same holes in the yard frame (tee (0,0), dot270 (0,-270); ARCHITECTURE.md 3.5)
+Tee: --tees (tee stage) > a tee box tagged --tee > the box whose playing length is closest to --lengths >
+the box nearest the hole-line start (usually the back tee). Long tee polygons also offer their ends.
+--trees adds recovery polygons from another source (imagery gap-fill); OSM here has no tree features.
 --check compares against the hand-traced spirit_hollow/course.py (length, par, lie agreement on a
 landing-zone grid) and prints which holes are missing on either side.
 
