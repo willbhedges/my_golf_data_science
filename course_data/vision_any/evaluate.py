@@ -21,6 +21,7 @@ import os
 import sys
 
 import numpy as np
+from scipy import ndimage
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -57,6 +58,7 @@ def evaluate(S, T, layers_, lie_grid, keys=None):
     """layers_: {"recovery": bool grid, "native": bool grid, "water": bool grid}. -> report dict."""
     rows, pool = [], {c: [[], []] for c in ("recovery", "native", "water", "penal")}
     pool_raw = {c: [[], []] for c in ("recovery", "native")}
+    pool_tol = {c: [0, 0, 0, 0] for c in ("recovery", "native")}
     for k in keys or T.keys:
         d = T.landing(k)
         tl = d["lie"]
@@ -77,9 +79,24 @@ def evaluate(S, T, layers_, lie_grid, keys=None):
             pool_raw[c][0].append(raw)
             pool_raw[c][1].append(tl == c)
         row["agree"] = float(np.mean(lie == tl))
+        # 5-yd tolerance (one grid step): a point counts if the other map has the class within one cell,
+        # which separates edge offsets (registration, canopy vs trunk tracing) from real misses
+        na, nl = len(np.unique(d["along"])), len(np.unique(d["lat"]))
+        for c in ("recovery", "native"):
+            A = (lie == c).reshape(nl, na)
+            B = (tl == c).reshape(nl, na)
+            Ad, Bd = ndimage.binary_dilation(A), ndimage.binary_dilation(B)
+            row[c + "_tol5"] = dict(prec=float((A & Bd).sum() / A.sum()) if A.sum() else None,
+                                    rec=float((B & Ad).sum() / B.sum()) if B.sum() else None)
+            pool_tol[c][0] += int((A & Bd).sum())
+            pool_tol[c][1] += int(A.sum())
+            pool_tol[c][2] += int((B & Ad).sum())
+            pool_tol[c][3] += int(B.sum())
         rows.append(row)
     pooled = {c: prf(np.concatenate(v[0]), np.concatenate(v[1])) for c, v in pool.items()}
     pooled.update({c + "_raw": prf(np.concatenate(v[0]), np.concatenate(v[1])) for c, v in pool_raw.items()})
+    for c, (tp_p, n_p, tp_r, n_t) in pool_tol.items():
+        pooled[c + "_tol5"] = dict(prec=tp_p / n_p if n_p else None, rec=tp_r / n_t if n_t else None)
     mean = {}
     for c in ("recovery", "native", "water", "penal"):
         vals = [r[c]["iou"] for r in rows if r[c]["iou"] is not None]

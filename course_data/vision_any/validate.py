@@ -85,7 +85,12 @@ def write_md(rep, path):
         raw = P.get(c + "_raw", {}).get("iou")
         L_.append(f"| {c} | {_r(P[c]['iou'])} | {_r(P[c]['prec'])} | {_r(P[c]['rec'])} | {_r(lz['mean_iou'][c])} | "
                   f"{_r(raw) if raw is not None else '-'} | {rep['baseline_osm_only']['pooled'].get(c)} |")
-    L_ += ["", "`penal` = any of trees / native / water (is the shot in trouble at all).", "",
+    for c in ("recovery", "native"):
+        t5 = P.get(c + "_tol5") or {}
+        L_.append(f"| {c} within 5 yds | - | {_r(t5.get('prec'))} | {_r(t5.get('rec'))} | - | - | - |")
+    L_ += ["", "`penal` = any of trees / native / water (is the shot in trouble at all). `within 5 yds`: a point counts "
+           "when the other map has the class within one 5-yd grid step (edge offsets from registration and canopy-vs-"
+           "trunk tracing).", "",
            "Tree height threshold (pooled IoU composed / raw): " + "; ".join(
                f"{k} m: {v['pooled_iou']} / {v['raw_pooled_iou']}" for k, v in rep["tree_threshold"].items()), "",
            "| hole | registration | trees IoU | trees P / R | native IoU | native P / R | water IoU | penal IoU | agree |",

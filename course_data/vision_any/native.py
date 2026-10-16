@@ -21,7 +21,7 @@ import layers as L
 
 SEED_Z = 3.0
 SEED_DIST_M = 25.0
-P_MIN = 0.7
+P_MIN = 0.85         # chosen on Mozingo (dev course) by validate.sweep; Spirit Hollow held out
 ANOM = [("nir_s3", -1), ("chroma_s3", +1), ("std_nir_7", +1), ("ndvi_s3", -1)]
 
 
@@ -62,7 +62,7 @@ def anomaly(X, names, neg):
     return np.mean(parts, 0)
 
 
-AN_FLOOR = None        # optional: final cells must also have anomaly >= this (None = off)
+AN_FLOOR = 2.0         # final cells must also be >= 2 robust units off mown turf (sweep on Mozingo)
 
 
 def predict(S, osm_m, osm_layers, trees, water, X=None, names=None, seed_z=SEED_Z, p_min=P_MIN,

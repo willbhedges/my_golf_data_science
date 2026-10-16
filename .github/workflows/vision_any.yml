@@ -144,7 +144,7 @@ jobs:
             [ -z "$slug" ] && continue
             [ -f "course_data/vision_any/$slug/raw/meta.json" ] || { echo "no raw for $slug"; continue; }
             echo "== $slug"
-            python -u course_data/vision_any/run_any.py --slug "$slug" --course-dir "$cdir" --eval --sweep \
+            python -u course_data/vision_any/run_any.py --slug "$slug" --course-dir "$cdir" --eval \
               || echo "build failed: $slug"
           done
 
