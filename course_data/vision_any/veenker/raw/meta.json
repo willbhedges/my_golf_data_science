@@ -1,0 +1,129 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "veenker",
+ "course": "Veenker Memorial Golf Course",
+ "bbox_snwe": [
+  42.033656,
+  -93.65859,
+  42.043099,
+  -93.642959
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1544,
+  "height": 1300,
+  "bounds": [
+   445364,
+   4653592,
+   446908,
+   4654892
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   445364.0,
+   0.0,
+   -1.0,
+   4654892.0
+  ],
+  "ll_bbox_wsen": [
+   -93.66016995920609,
+   42.03246948225207,
+   -93.64139711743438,
+   42.04428308085476
+  ]
+ },
+ "fetched_utc": "2026-10-16T19:46:50Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "IA_NorthCentral_2_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_NorthCentral_2_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 60040043143
+   },
+   {
+    "name": "IA_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 167692896718
+   }
+  ],
+  "used": [
+   {
+    "name": "IA_NorthCentral_2_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_NorthCentral_2_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 60040043143,
+    "cells": 1993518
+   }
+  ],
+  "valid": 0.9931835392586688,
+  "hag_mb": 0.87,
+  "frac_gt_2_5m": 0.3856466719808689,
+  "class_mb": 0.02
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021333212",
+   "021333230"
+  ],
+  "mb": 0.31,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W096",
+    "when": "2021-12-31T23:59:59Z",
+    "cells": 501800,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59Z",
+     "start_datetime": "2021-01-01T00:00:00Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 9.43,
+    "items": [
+     "ia_m_4209359_se_15_030_20230902_20240104"
+    ],
+    "acquired": [
+     "2023-09-02"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 7.21,
+    "items": [
+     "ia_m_4209359_se_15_060_20210818"
+    ],
+    "acquired": [
+     "2021-08-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
