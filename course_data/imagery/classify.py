@@ -13,7 +13,7 @@ Pipeline
      (traced_registration.json), rasterised onto the grid inside each screenshot's footprint. Same rules
      as spirit_hollow/vision.py: recovery -> trees, untraced -> rough only within 25 yds of fairway,
      OB not trained on, boundaries eroded.
-  4. HistGradientBoosting, evaluated leave-one-hole-out (train on every other hole's pixels, predict the
+  4. ExtraTrees (40 trees), evaluated leave-one-hole-out (train on every other hole's pixels, predict the
      held-out one). Note: screenshot footprints overlap, so neighbouring holes share some ground; the
      LOHO number is optimistic by that overlap.
   5. Predict the whole grid; write
@@ -21,6 +21,8 @@ Pipeline
        gapfill.geojson             WGS84 polygons of trees (lie 'recovery'), native, water with mean p,
                                    min 150 yd2, p >= 0.7, simplified to ~2 yds (ARCHITECTURE.md 3.6 rules)
        naip_trees.geojson          the recovery polygons only (course_data/geometry/build_holes.py --trees)
+       gapfill_loho/<k>.geojson    the same polygons over hole k's footprint from the model that did not
+                                   see hole k (ARCHITECTURE.md 7, circularity rule (a))
        classify_report.md / .json  LOHO accuracy, per-class IoU / precision / recall per hole
 """
 import argparse
@@ -166,9 +168,10 @@ def hole_labels(G, course, key, reg):
 
 # --------------------------------------------------------------------------- model
 def make_model():
-    from sklearn.ensemble import HistGradientBoostingClassifier
-    return HistGradientBoostingClassifier(max_iter=250, learning_rate=0.08, max_leaf_nodes=48,
-                                          l2_regularization=1.0, random_state=0)
+    # ExtraTrees: HistGradientBoosting was >100x slower in the sandbox (OpenMP contention) for similar skill
+    from sklearn.ensemble import ExtraTreesClassifier
+    return ExtraTreesClassifier(n_estimators=40, max_depth=18, min_samples_leaf=5, max_features="sqrt",
+                                class_weight="balanced_subsample", n_jobs=1, random_state=0)
 
 
 def sample(lab, n, rng):
@@ -245,10 +248,32 @@ def polygons(G, prob, cls_map, c, p_min=0.7, min_yd2=150, simplify_yd=2.0):
     return feats
 
 
+def write_loho(G, model, Xf, foot, key, margin_m=40):
+    """Predict the held-out hole's screenshot footprint (+margin) with the model that never saw it."""
+    Hg, Wg = G["shape"]
+    m = ndimage.binary_dilation(foot, iterations=int(margin_m / GRID_M))
+    idx = np.flatnonzero(m.ravel())
+    P = np.zeros((Hg * Wg, len(CLASSES)), np.float32)
+    P[idx] = model.predict_proba(Xf[idx])
+    P = P.reshape(Hg, Wg, -1)
+    cls_map = np.where(m, P.argmax(-1), 255).astype(np.uint8)
+    feats = []
+    for c in ("trees", "native", "water"):
+        ci = CLASSES.index(c)
+        feats += polygons(G, P[..., ci], cls_map, ci)
+    for f in feats:
+        f["properties"]["holdout"] = str(key)
+    d = os.path.join(IMG_DIR, "gapfill_loho")
+    os.makedirs(d, exist_ok=True)
+    json.dump(dict(type="FeatureCollection", features=feats,
+                   properties=dict(holdout=str(key), model="classify.py extratrees LOHO (hole %s unseen)" % key)),
+              open(os.path.join(d, f"{key}.geojson"), "w"))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--eval-only", action="store_true")
-    ap.add_argument("--n-per-hole", type=int, default=40000)
+    ap.add_argument("--n-per-hole", type=int, default=20000)
     a = ap.parse_args()
     rng = np.random.default_rng(0)
     course = TA.load_course()
@@ -278,9 +303,11 @@ def main():
         pred = m.predict(Xf[ev])
         truth = labs[k].ravel()[ev]
         np.add.at(tot_conf, (truth, pred), 1)
+        if not a.eval_only:                    # held-out gap-fill polygons for acceptance (circularity rule)
+            write_loho(G, m, Xf, foots[k], k)
         sc = scores(pred, truth, np.ones(len(ev), bool))
         report["holes"][str(k)] = sc
-        print(f"{str(k):>3} acc {sc['acc']:.3f}  " + "  ".join(
+        print(flush=True); print(f"{str(k):>3} acc {sc['acc']:.3f}  " + "  ".join(
             f"{nm[:5]} {sc[nm]['iou']:.2f}" if sc[nm]["iou"] is not None else f"{nm[:5]}  -  " for nm in CLASSES))
     tot = {}
     for c, nm in enumerate(CLASSES):
@@ -334,7 +361,7 @@ def main():
         feats += polygons(G, P[..., ci], cls_map, ci)
     fc = dict(type="FeatureCollection", features=feats,
               properties=dict(source="NAIP " + ",".join(G["meta"]["imagery"]["acquired"]) + " + 3DEP",
-                              model="classify.py HGB ndvi-texture-dem v1", classes=CLASSES,
+                              model="classify.py extratrees ndvi-texture-dem v1", classes=CLASSES,
                               loho_iou={c: round(tot[c]["iou"], 3) for c in CLASSES}))
     json.dump(fc, open(os.path.join(IMG_DIR, "gapfill.geojson"), "w"))
     trees = dict(fc, features=[f for f in feats if f["properties"]["lie"] == "recovery"])
