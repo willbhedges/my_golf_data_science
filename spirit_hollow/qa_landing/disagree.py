@@ -428,7 +428,8 @@ def patch_mask(comp, hand, ev, tol=TOL):
 
 def mask_polygon(h, mask, a, l, eps=1.2):
     import cv2
-    m8 = mask.astype(np.uint8)
+    # the contour runs through cell centres: grow one cell so the polygon reaches the cell edges
+    m8 = ndimage.binary_dilation(mask, iterations=1).astype(np.uint8)
     cs, _ = cv2.findContours(m8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     if not cs:
         return None
