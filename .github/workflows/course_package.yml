@@ -42,7 +42,7 @@ jobs:
         run: |
           sudo apt-get install -y -q poppler-utils >/dev/null || true
           python -m pip install --upgrade pip
-          pip install requests numpy scipy shapely pyproj matplotlib pillow pytest \
+          pip install requests numpy scipy shapely pyproj matplotlib pillow pytest opencv-python-headless \
                       pystac-client planetary-computer rasterio
 
       - name: Unit tests (offline)

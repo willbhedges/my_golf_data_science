@@ -352,6 +352,9 @@ def call_gapfill(package, img_dir, warnings):
         out = mod.gapfill(copy.deepcopy(package), img_dir)
         if not isinstance(out, dict):
             raise TypeError(f"gapfill returned {type(out).__name__}")
+        for k, h in out.get("holes", {}).items():               # keep vision's exposure through reframe
+            if h.get("exposure") != package["holes"].get(k, {}).get("exposure"):
+                h["exposure_src"] = "vision"
         if not str(out.get("stages", {}).get("vision", "")).startswith("ok"):
             out.setdefault("stages", {})["vision"] = "ok: vision_any/gapfill.py"
         return out

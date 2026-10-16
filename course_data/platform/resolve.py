@@ -159,7 +159,12 @@ def hole_counts(els):
 def reverse_town(lat, lon):
     js = pc.nominatim("reverse", lat=lat, lon=lon, zoom=12, addressdetails=1)
     a = (js or {}).get("address", {})
-    return a.get("city") or a.get("town") or a.get("village") or a.get("hamlet") or a.get("county")
+    town = a.get("city") or a.get("town") or a.get("village") or a.get("hamlet")
+    if not town:                                         # rural course: nearest named place instead of the county
+        js2 = pc.nominatim("reverse", lat=lat, lon=lon, zoom=10, addressdetails=1)
+        a2 = (js2 or {}).get("address", {})
+        town = a2.get("city") or a2.get("town") or a2.get("village") or a.get("county")
+    return town
 
 
 def search(name, state, osm=None):

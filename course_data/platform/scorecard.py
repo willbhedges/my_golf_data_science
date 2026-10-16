@@ -142,8 +142,11 @@ def parse_golfify(next_data):
         if not hi:
             continue
         name = t.get("teeName") or t.get("teeColor") or f"Tee {len(sets) + 1}"
-        if name in sets:
-            name = f"{name} ({t.get('teeColor')})"
+        if name in sets:                                    # golfify lists a set twice for M / W ratings
+            base, n = name, 2
+            while f"{base} #{n}" in sets:
+                n += 1
+            name = f"{base} #{n}"
         yards = [h.get("length") for h in hi]
         pars = [h.get("par") for h in hi]
         par = par or pars
@@ -364,7 +367,8 @@ def golfify_slugs(name, town=None):
     out = [base, f"{core}-golf-course", f"{core}-golf-club", f"{core}-country-club", core]
     if town:
         t = re.sub(r"[^a-z0-9]+", "-", town.lower()).strip("-")
-        out += [f"{base}-{t}", f"{core}-golf-course-{t}"]
+        out += [f"{base}-{t}", f"{core}-golf-course-{t}", f"{core}-{t}"]
+    out += [f"{core}-golf-links", f"{core}-golf-and-country-club", f"{core}-recreation-park-golf-course"]
     seen = []
     for s in out:
         if s and s not in seen:
@@ -373,14 +377,16 @@ def golfify_slugs(name, town=None):
 
 
 def ddg_urls(query, host):
-    """Result URLs on `host` from DuckDuckGo's HTML endpoint (best effort; may be rate-limited)."""
+    """Result URLs on `host` from DuckDuckGo's HTML endpoint and Bing (best effort; may be rate-limited)."""
     s = _session()
-    try:
-        r = s.get("https://html.duckduckgo.com/html/?q=" + quote_plus(query), timeout=30)
-        hrefs = re.findall(r'href="([^"]+)"', r.text)
-    except Exception as e:                                # noqa: BLE001
-        pc.log("ddg failed", e)
-        return []
+    hrefs = []
+    for url in ("https://html.duckduckgo.com/html/?q=" + quote_plus(query),
+                "https://www.bing.com/search?q=" + quote_plus(query)):
+        try:
+            r = s.get(url, timeout=30)
+            hrefs += re.findall(r'href="([^"]+)"', r.text)
+        except Exception as e:                            # noqa: BLE001
+            pc.log("search failed", url, e)
     out = []
     for h in hrefs:
         h = html.unescape(h)
@@ -436,7 +442,7 @@ SKIP_LINK = re.compile(r"(?i)instagram|facebook|twitter|youtube|foreup|teesnap|c
                        r"mailto:|tel:|login|cart|book|tee-?time|event|wedding|menu|news|blog")
 
 
-def fetch_club_site(website, raw_dir, n_holes=None, osm_lengths=None, max_pages=12):
+def fetch_club_site(website, raw_dir, n_holes=None, osm_lengths=None, max_pages=24):
     """Club website + its scorecard-looking links (one level) -> (card, url) or (None, reason)."""
     if not website:
         return None, "no website tag in OSM"
@@ -455,6 +461,13 @@ def fetch_club_site(website, raw_dir, n_holes=None, osm_lengths=None, max_pages=
         if (urlparse(u).netloc in (host, "") or u.lower().endswith(".pdf")) and SCORE_LINK.search(u) \
                 and not SKIP_LINK.search(u) and u not in links:
             links.append(u)
+    root = f"{urlparse(r.url).scheme}://{host}"
+    base_path = r.url.rstrip("/")
+    for guess in ("/scorecard", "/score-card", "/course", "/the-course", "/course-info", "/golf/scorecard",
+                  "/golf/course", "/hole-by-hole", "/golf/hole-by-hole", "/course-tour"):
+        for u in (root + guess, base_path + guess):
+            if u not in links:
+                links.append(u)
     links.sort(key=lambda u: (0 if re.search(r"(?i)scorecard|score-card", u) else
                               1 if re.search(r"(?i)\.pdf|card", u) else 2))
     for u in links[:max_pages]:
