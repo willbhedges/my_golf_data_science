@@ -1,0 +1,59 @@
+name: weather-fetch
+
+on:
+  push:
+    paths:
+      - ".github/workflows/weather_fetch.yml"
+      - "course_data/weather/fetch_forecast.py"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Comma-separated YYYY-MM-DD dates (default: coming Sat,Sun)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weather-fetch-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Fetch forecast
+        env:
+          DAYS: ${{ github.event.inputs.days || '2026-10-17,2026-10-18' }}
+        run: python course_data/weather/fetch_forecast.py
+
+      - name: Commit forecast
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/weather/forecast_spirit_hollow.json
+          if git diff --cached --quiet; then
+            echo "No forecast changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "Add Spirit Hollow weekend forecast (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
