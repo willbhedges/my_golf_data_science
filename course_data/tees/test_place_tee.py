@@ -141,3 +141,13 @@ def test_line_of_play_distances():
     assert lop.length == pytest.approx(300)
     assert lop.dist_to_green((0, -50)) == pytest.approx(350)
     assert lop.point_at_distance(100) == pytest.approx((0, 200))
+
+
+def test_assign_tees_to_holes_exclusive():
+    from place_tee import assign_tees_to_holes
+    # hole A runs north from (0,0); hole B runs north from (60,0): a box at x=50 belongs to B
+    lines = {"A": [ll(0, 0), ll(0, 400)], "B": [ll(60, 0), ll(60, 350)]}
+    tees = [box(0, -10, tid="a1"), box(50, -5, tid="b1"), box(300, 0, tid="nowhere")]
+    got = assign_tees_to_holes(lines, tees)
+    assert [t["id"] for t in got["A"]] == ["a1"]
+    assert [t["id"] for t in got["B"]] == ["b1"]

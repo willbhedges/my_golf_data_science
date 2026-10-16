@@ -250,3 +250,35 @@ def haversine_yd(a, b) -> float:
     la1, lo1, la2, lo2 = map(math.radians, (a[0], a[1], b[0], b[1]))
     h = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2
     return 2 * R_EARTH_M * math.asin(math.sqrt(h)) * YD_PER_M
+
+
+def assign_tees_to_holes(lines: dict, tees: Iterable[dict], *, max_offset_yd: float = 45.0,
+                         max_behind_yd: float = 150.0) -> dict:
+    """Give each tee box to exactly one hole: the hole whose first leg it sits closest to
+    (smallest |perpendicular offset|), among holes where it lies between max_behind_yd behind the
+    line start and half-way down the hole. Boxes that fit no hole are dropped.
+    `lines` maps hole ref -> [(lat, lon), ...]. Returns ref -> [tee, ...]."""
+    tees = list(tees)
+    out = {ref: [] for ref in lines}
+    if not lines:
+        return out
+    lat0 = sum(p[0] for ln in lines.values() for p in ln) / sum(len(ln) for ln in lines.values())
+    lon0 = sum(p[1] for ln in lines.values() for p in ln) / sum(len(ln) for ln in lines.values())
+    fr = Frame(lat0, lon0)
+    lops = {ref: LineOfPlay([fr.fwd(*p) for p in ln]) for ref, ln in lines.items()}
+    for t in tees:
+        ring = [fr.fwd(*p) for p in t["coords"]]
+        if len(ring) > 1 and ring[0] == ring[-1]:
+            ring = ring[:-1]
+        c = polygon_centroid(ring)
+        best = None
+        for ref, lop in lops.items():
+            along, off = lop.first_leg_coords(c)
+            if abs(off) > max_offset_yd or along > 0.5 * lop.length or along < -max_behind_yd:
+                continue
+            score = abs(off) + 0.1 * max(0.0, -along)      # prefer boxes level with the line start
+            if best is None or score < best[0]:
+                best = (score, ref)
+        if best is not None:
+            out[best[1]].append(t)
+    return out

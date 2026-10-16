@@ -12,7 +12,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from place_tee import place_tee_sets  # noqa: E402
+from place_tee import Frame, LineOfPlay, assign_tees_to_holes, place_tee_sets  # noqa: E402
 
 
 def load_osm(path):
@@ -41,17 +41,17 @@ def main():
     holes, tees = load_osm(osm)
     sets = card["tee_sets"]
     res = {}
+    by_hole = assign_tees_to_holes({h: v["line"] for h, v in holes.items()}, tees)
     print(f"{'hole':>4} {'osm':>5} " + " ".join(f"{n[:12]:>16}" for n in sets))
     for h in range(1, 19):
         if h not in holes:
             continue
         yds = {n: s["yards"][h - 1] for n, s in sets.items() if s["yards"][h - 1]}
-        placed = place_tee_sets(holes[h]["line"], tees, yds)
-        from place_tee import LineOfPlay, Frame  # noqa: E402
+        placed = place_tee_sets(holes[h]["line"], by_hole[h], yds)
         fr = Frame(*holes[h]["line"][0])
         L = LineOfPlay([fr.fwd(*p) for p in holes[h]["line"]]).length
         res[str(h)] = dict(osm_par=holes[h]["par"], card_par=card["par"][h - 1], osm_line_yd=round(L, 1),
-                           osm_hole_id=holes[h]["osm_id"],
+                           osm_hole_id=holes[h]["osm_id"], osm_tee_ids=[t["id"] for t in by_hole[h]],
                            tees={n: {k: v for k, v in r.items() if k != "candidates"} for n, r in placed.items()})
         cells = []
         for n, r in placed.items():
