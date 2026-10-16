@@ -6,39 +6,39 @@
  "mode": "quick",
  "package": "course_data/packages/spirit_hollow/package.json",
  "out": "course_data/packages/spirit_hollow/out",
- "built": "2026-10-16T19:42Z",
+ "built": "2026-10-16T19:47Z",
  "settings": {
   "swings": 8000
  },
  "forecast": "Open-Meteo (fetched now)",
  "stage_seconds": {
-  "1 package -> course module": 0.5,
-  "2 NAIP render per hole": 2.7,
-  "3 decision (quick)": 46.9,
-  "4 book + aim sheets": 14.4,
-  "5 forecast + wind grid + page": 220.5
+  "1 package -> course module": 0.3,
+  "2 NAIP render per hole": 2.2,
+  "3 decision (quick)": 40.1,
+  "4 book + aim sheets": 11.2,
+  "5 forecast + wind grid + page": 191.1
  },
- "runtime_s": 285.0,
+ "runtime_s": 244.9,
  "files": {
-  "course.py": 147575,
-  "decision.json": 15536,
+  "course.py": 147574,
+  "decision.json": 15531,
   "decision.md": 1491,
-  "Spirit_Hollow_Strategy.pdf": 8575818,
-  "Spirit_Hollow_Aim_Sheets.pdf": 13378777,
+  "Spirit_Hollow_Strategy.pdf": 8581609,
+  "Spirit_Hollow_Aim_Sheets.pdf": 13384644,
   "forecast.json": 12776,
-  "wind_grid.json": 532834,
-  "wind_page/index.html": 1754570,
+  "wind_grid.json": 532883,
+  "wind_page/index.html": 1752314,
   "screenshots/": 6469406
  },
  "picks": {
   "1": {
    "club": "Driver",
-   "aim": -37.5,
+   "aim": -45.0,
    "zone": [
-    -47.5,
-    -30.0
+    -57.5,
+    -37.5
    ],
-   "margin": 0.1188,
+   "margin": 0.0526,
    "tie": false,
    "conf": null
   },
@@ -229,6 +229,8 @@
   }
  },
  "gaps": [
+  "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 1 holes, 2-wood on 1 holes",
+  "package stage vision: failed: ModuleNotFoundError: No module named 'sklearn'",
   "hole 9: Driver best aim +85 yds off the tee line (tee line points well away from the landing area; check the hole geometry)",
   "hole 11: Driver best aim +72 yds off the tee line (tee line points well away from the landing area; check the hole geometry)",
   "hole 14: Driver best aim -72 yds off the tee line (tee line points well away from the landing area; check the hole geometry)",

@@ -4,7 +4,7 @@ Quick mode: the strategy model at the central settings of the Bayesian prior (dr
 
 | Hole | Par | Yds | Pick | Aim (yds, +R) | Zone | Runner-up | Margin | Fairway | Approach |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 391 | **Driver** | -37.5 | -48 to -30 | 2-wood | 0.119 | 22% | 48 |
+| 1 | 4 | 391 | **Driver** | -45.0 | -58 to -38 | 2-wood | 0.053 | 25% | 59 |
 | 2 | 5 | 507 | **Driver** | +7.5 | +2 to +12 | 2-wood | 0.062 | 47% | 211 |
 | 4 | 5 | 532 | **Driver** | -7.5 | -18 to +0 | 2-wood | 0.070 | 49% | 250 |
 | 5 | 4 | 384 | **4-wood** | -5.0 | -12 to +2 | 2-wood | 0.015 | 85% | 119 |
