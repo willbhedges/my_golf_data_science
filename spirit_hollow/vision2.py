@@ -61,10 +61,15 @@ def corridor(hole, msmall):
 
 def hole_data(hole):
     """Cached per-hole arrays: hand (H,W,42), deep (H,W,64), deep_rel, labels, masks."""
-    path = os.path.join(CACHE, f"hole_{hole}.npz")
-    if os.path.exists(path):
-        z = np.load(path)
-        return {k: z[k] for k in z.files}
+    path = os.path.join(CACHE, f"hole_{hole}")
+    if os.path.exists(os.path.join(path, "done")):          # memory-mapped: processes share pages
+        return {f[:-4]: np.load(os.path.join(path, f), mmap_mode="r")
+                for f in os.listdir(path) if f.endswith(".npy")}
+    if os.path.exists(path + ".npz"):                       # older single-file cache
+        z = np.load(path + ".npz")
+        d = {k: z[k] for k in z.files}
+        save_hole(path, d)
+        return hole_data(hole)
     hd = course.HOLES[hole]
     rgb = v.load_rgb(hd["image"])
     m = v.ui_mask(rgb)
@@ -81,9 +86,15 @@ def hole_data(hole):
     d = dict(hand=hand.astype(np.float16), deep=deep.astype(np.float16),
              deep_rel=(deep - dref).astype(np.float16), lab=lab, msmall=msmall, lz=lz,
              full=v.label_map_full(hole), ppy=np.float32(ppy), photo=small)
-    os.makedirs(CACHE, exist_ok=True)
-    np.savez(path, **d)
-    return d
+    save_hole(path, d)
+    return hole_data(hole)
+
+
+def save_hole(path, d):
+    os.makedirs(path, exist_ok=True)
+    for k, a in d.items():
+        np.save(os.path.join(path, k + ".npy"), np.asarray(a))
+    open(os.path.join(path, "done"), "w").close()
 
 
 def regions(hole, d):
@@ -130,8 +141,16 @@ def feats(d, kind):
     if kind == "both":
         return np.concatenate([d["hand"], d["deep"]], -1)
     if kind == "both_rel":
-        return np.concatenate([d["hand"], d["deep"], d["deep_rel"]], -1)
+        return np.concatenate([d["hand"], d["deep_rel"]], -1)
     raise ValueError(kind)
+
+
+def feats_at(d, kind, ii):
+    """Features of flat pixel indices ii without materialising the full stack."""
+    parts = {"deep": ["deep"], "hand": ["hand"], "both": ["hand", "deep"],
+             "both_rel": ["hand", "deep_rel"]}[kind]
+    return np.concatenate([np.asarray(d[p]).reshape(-1, d[p].shape[-1])[ii] for p in parts],
+                          -1).astype(np.float32)
 
 
 def sample_idx(lab, n, seed):
@@ -145,7 +164,8 @@ def fit_hgb(X, y, seed=0):
     from sklearn.ensemble import HistGradientBoostingClassifier
     clf = HistGradientBoostingClassifier(max_iter=150, learning_rate=0.08, max_leaf_nodes=48,
                                          l2_regularization=1.0, class_weight="balanced",
-                                         random_state=seed)
+                                         early_stopping=True, validation_fraction=0.1,
+                                         n_iter_no_change=10, random_state=seed)
     return clf.fit(X, y)
 
 
@@ -173,15 +193,15 @@ def smooth(P):
 
 PIXEL = {"hand": ("hand", fit_hgb), "a": ("deep", fit_logreg), "b": ("both", fit_hgb),
          "c": ("both_rel", fit_hgb)}
+# (c) = handcrafted + photo-relative DINOv2 (deep minus this photo's fairway-corridor median)
 
 
 def pixel_train(method, holes, data, n=N_PER_HOLE, seed=0):
     kind, fitter = PIXEL[method]
     X, y = [], []
     for k in holes:
-        F = feats(data[k], kind)
         ii = sample_idx(data[k]["lab"], n, seed + HOLES.index(k))
-        X.append(F.reshape(-1, F.shape[-1])[ii].astype(np.float32))
+        X.append(feats_at(data[k], kind, ii))
         y.append(data[k]["lab"].ravel()[ii])
     return fitter(np.concatenate(X), np.concatenate(y), seed)
 
@@ -420,7 +440,7 @@ DESC = {
     "hand": "Handcrafted + HGB (baseline features, this script's sampler)",
     "a": "(a) DINOv2 linear probe (std. multinomial logreg)",
     "b": "(b) DINOv2 + handcrafted, HGB",
-    "c": "(c) (b) + photo-relative DINOv2 (fairway-corridor median subtracted)",
+    "c": "(c) handcrafted + photo-relative DINOv2 (fairway-corridor median subtracted), HGB",
     "cpool": "(c) probabilities mean-pooled per region",
     "d": "(d) region classifier (mean/std per region, HGB)",
 }
