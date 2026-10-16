@@ -290,6 +290,18 @@ Writes `course_data/spirit_hollow/acceptance.json` and `acceptance.md`.
 
 (updated by the architect; newest first)
 
+### 2026-10-16 20:05 UTC (end of the architect's first shift)
+
+* Platform package rebuilt with the gap-fill (`stages.vision = ok: vision_any/1`, 19:56). Acceptance on it
+  as built (Black, vs the hand map after 8601898's fixes): same club 56%, mean regret 0.018 (meets 0.02),
+  max regret 0.105 (14; also 10 0.080, 18 0.038, 13 0.030), green within bar 75% (median 6.3 yds), trees
+  IoU 0.14, native 0.09, water 0.32, OB 0.20.
+* **Top blockers, in order:** (1) trees/long grass fidelity in the 220-340 band (IoU 0.1 vs bar 0.6) -
+  vision_any; (2) dog-leg aim line (9.1-8) - geometry/platform; (3) creek corridor width (water IoU 0.3) -
+  vision_any; (4) OSM tee boxes missing for some back tees (2 at 607, 15 at 215, 17) and the boundary
+  keeping one ring (P1) - platform; (5) NAIP registration of the last traced holes (1, 2B, 8, 13, 16, 18
+  fall back to the raster fit) - imagery.
+
 ### 2026-10-16 19:55 UTC
 
 * `vision_any/spirit_hollow/vision_any.geojson` landed (lidar HAG trees, NAIP native, never trained on hand

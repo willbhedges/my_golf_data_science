@@ -1,22 +1,22 @@
 {
  "summary": {
-  "mode": "holes.json as built",
+  "mode": "package.json as built",
   "n_tee_shots": 16,
   "missing": [],
-  "same_club": 0.688,
+  "same_club": 0.562,
   "tee_within": 0.25,
   "green_within": 0.75,
   "length_within": 0.125,
-  "median_tee_err": 23.75,
+  "median_tee_err": 26.35,
   "median_green_err": 6.3,
   "mean_iou": {
    "fairway": 0.579,
-   "rough": 0.282,
-   "recovery": 0.0,
-   "native": 0.0,
-   "water": 0.372,
-   "sand": 0.381,
-   "ob": 0.172
+   "rough": 0.174,
+   "recovery": 0.136,
+   "native": 0.091,
+   "water": 0.315,
+   "sand": 0.389,
+   "ob": 0.198
   },
   "holes_passing": [],
   "par3_length_within": [
@@ -36,11 +36,11 @@
    "regret_mean": 0.02,
    "regret_max": 0.05
   },
-  "seconds": 120,
-  "club_bar_met": false,
-  "mean_regret": 0.0116,
-  "max_regret": 0.1192,
-  "regret_bar_met": false
+  "seconds": 175,
+  "mean_regret": 0.0179,
+  "max_regret": 0.1045,
+  "regret_bar_met": false,
+  "club_bar_met": false
  },
  "tee_shots": [
   {
@@ -53,63 +53,60 @@
    "confidence": null,
    "registration": {
     "method": "lie_raster_fit",
-    "dice": 0.736,
+    "dice": 0.732,
     "classes": [
      "fairway"
     ],
-    "rot_deg": -10.7,
+    "rot_deg": -11.5,
     "shift": [
-     45.0,
-     39.0
+     46.0,
+     36.0
     ],
     "scale": 1.0
    },
-   "tee_err": 59.5,
-   "green_err": 40.2,
+   "tee_err": 58.4,
+   "green_err": 41.6,
    "green_unc": {
     "along": 2.4,
     "lat": 4.3
    },
    "iou_own_frame": {
-    "fairway": 0.268,
-    "rough": 0.271,
-    "recovery": 0.0,
+    "fairway": 0.239,
+    "rough": 0.099,
+    "recovery": 0.245,
     "native": 0.0,
-    "water": 0.0,
-    "ob": 0.0
+    "water": 0.0
    },
    "iou": {
-    "fairway": 0.742,
-    "rough": 0.466,
-    "recovery": 0.0,
-    "native": 0.0,
-    "ob": 0.0
+    "fairway": 0.668,
+    "rough": 0.303,
+    "recovery": 0.216,
+    "native": 0.0
    },
    "club_traced": "Driver",
-   "club_auto": "Driver",
-   "same_club": true,
+   "club_auto": "4-wood",
+   "same_club": false,
    "ev_traced": {
-    "Driver": 3.907,
-    "2-wood": 3.9367,
-    "4-wood": 3.9301
+    "Driver": 3.9206,
+    "2-wood": 3.9497,
+    "4-wood": 3.9378
    },
    "ev_auto": {
-    "Driver": 3.9222,
-    "2-wood": 3.9336,
-    "4-wood": 3.9416
+    "Driver": 3.9506,
+    "2-wood": 3.9504,
+    "4-wood": 3.9457
    },
    "aim_traced": 2.5,
-   "aim_auto": -40.0,
+   "aim_auto": -12.5,
+   "regret": 0.0172,
+   "traced_margin": 0.0172,
    "checks": {
     "tee": false,
     "green": false,
     "length": false,
-    "iou_ob": false,
     "iou_recovery": false,
-    "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.0231
+    "club": false
+   }
   },
   {
    "hole": "2B",
@@ -121,39 +118,39 @@
    "confidence": null,
    "registration": {
     "method": "lie_raster_fit",
-    "dice": 0.409,
+    "dice": 0.388,
     "classes": [
      "fairway",
      "water"
     ],
-    "rot_deg": -6.7,
+    "rot_deg": -9.4,
     "shift": [
-     19.0,
-     -15.0
+     32.0,
+     -25.0
     ],
     "scale": 1.0
    },
-   "tee_err": 24.2,
-   "green_err": 205.2,
+   "tee_err": 40.6,
+   "green_err": 215.4,
    "green_unc": {
     "along": 5.7,
     "lat": 8.0
    },
    "iou_own_frame": {
     "fairway": 0.486,
-    "rough": 0.252,
+    "rough": 0.253,
     "recovery": 0.0,
-    "native": 0.0,
+    "native": 0.058,
     "water": 0.118,
     "sand": 0.0,
     "ob": 0.0
    },
    "iou": {
-    "fairway": 0.642,
-    "rough": 0.286,
+    "fairway": 0.672,
+    "rough": 0.266,
     "recovery": 0.0,
-    "native": 0.0,
-    "water": 0.104,
+    "native": 0.102,
+    "water": 0.097,
     "sand": 0.0
    },
    "club_traced": "Driver",
@@ -165,12 +162,14 @@
     "4-wood": 5.0236
    },
    "ev_auto": {
-    "Driver": 4.4213,
-    "2-wood": 4.4798,
-    "4-wood": 4.4928
+    "Driver": 4.4232,
+    "2-wood": 4.4825,
+    "4-wood": 4.4937
    },
    "aim_traced": -2.5,
    "aim_auto": -5.0,
+   "regret": 0.0,
+   "traced_margin": 0.0529,
    "checks": {
     "tee": false,
     "green": false,
@@ -178,9 +177,7 @@
     "iou_water": false,
     "iou_recovery": false,
     "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.0529
+   }
   },
   {
    "hole": "2F",
@@ -204,7 +201,7 @@
    },
    "registration_check": {
     "method": "lie_raster_fit",
-    "dice": 0.404,
+    "dice": 0.393,
     "classes": [
      "fairway",
      "water",
@@ -221,21 +218,21 @@
    },
    "iou_own_frame": {
     "fairway": 0.593,
-    "rough": 0.096,
+    "rough": 0.084,
     "recovery": 0.0,
-    "native": 0.0,
+    "native": 0.085,
     "water": 0.415,
     "sand": 0.0,
-    "ob": 0.667
+    "ob": 0.148
    },
    "iou": {
     "fairway": 0.503,
-    "rough": 0.061,
-    "recovery": 0.0,
-    "native": 0.0,
+    "rough": 0.069,
+    "recovery": 0.091,
+    "native": 0.026,
     "water": 0.333,
     "sand": 0.667,
-    "ob": 0.688
+    "ob": 0.593
    },
    "club_traced": "Driver",
    "club_auto": "Driver",
@@ -246,23 +243,23 @@
     "4-wood": 4.6245
    },
    "ev_auto": {
-    "Driver": 4.4213,
-    "2-wood": 4.4798,
-    "4-wood": 4.4928
+    "Driver": 4.4232,
+    "2-wood": 4.4825,
+    "4-wood": 4.4937
    },
    "aim_traced": -2.5,
    "aim_auto": -5.0,
+   "regret": 0.0,
+   "traced_margin": 0.0581,
    "checks": {
     "tee": false,
     "green": true,
     "length": false,
     "iou_water": false,
-    "iou_ob": true,
+    "iou_ob": false,
     "iou_recovery": false,
     "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.0581
+   }
   },
   {
    "hole": "4",
@@ -302,13 +299,15 @@
    },
    "iou_own_frame": {
     "fairway": 0.741,
-    "rough": 0.436,
-    "native": 0.0
+    "rough": 0.566,
+    "recovery": 0.0,
+    "native": 0.585
    },
    "iou": {
     "fairway": 0.439,
-    "rough": 0.284,
-    "native": 0.0
+    "rough": 0.202,
+    "recovery": 0.0,
+    "native": 0.24
    },
    "club_traced": "Driver",
    "club_auto": "Driver",
@@ -319,20 +318,21 @@
     "4-wood": 4.6457
    },
    "ev_auto": {
-    "Driver": 4.5341,
-    "2-wood": 4.6272,
-    "4-wood": 4.6602
+    "Driver": 4.5788,
+    "2-wood": 4.651,
+    "4-wood": 4.6697
    },
    "aim_traced": -7.5,
    "aim_auto": 0.0,
+   "regret": 0.0,
+   "traced_margin": 0.0697,
    "checks": {
     "tee": true,
     "green": 1.0,
     "length": false,
+    "iou_recovery": false,
     "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.0697
+   }
   },
   {
    "hole": "5",
@@ -356,58 +356,58 @@
    },
    "registration_check": {
     "method": "lie_raster_fit",
-    "dice": 0.643,
+    "dice": 0.614,
     "classes": [
      "fairway",
      "sand"
     ],
-    "rot_deg": 2.6,
+    "rot_deg": 0.5,
     "shift": [
-     2.0,
-     18.0
+     9.0,
+     13.0
     ],
     "scale": 1.0,
-    "tee_err": 18.1,
-    "green_err": 4.3
+    "tee_err": 15.8,
+    "green_err": 7.8
    },
    "iou_own_frame": {
-    "fairway": 0.457,
-    "rough": 0.143,
+    "fairway": 0.525,
+    "rough": 0.126,
     "recovery": 0.0,
-    "native": 0.0,
-    "sand": 0.058
+    "native": 0.452,
+    "sand": 0.079
    },
    "iou": {
-    "fairway": 0.641,
-    "rough": 0.156,
+    "fairway": 0.665,
+    "rough": 0.145,
     "recovery": 0.0,
     "native": 0.0,
-    "sand": 0.488
+    "sand": 0.429
    },
-   "club_traced": "4-wood",
+   "club_traced": "Driver",
    "club_auto": "4-wood",
-   "same_club": true,
+   "same_club": false,
    "ev_traced": {
-    "Driver": 3.9354,
-    "2-wood": 3.8996,
-    "4-wood": 3.8982
+    "Driver": 3.8828,
+    "2-wood": 3.898,
+    "4-wood": 3.8981
    },
    "ev_auto": {
-    "Driver": 3.894,
-    "2-wood": 3.8943,
+    "Driver": 3.9091,
+    "2-wood": 3.8981,
     "4-wood": 3.8779
    },
    "aim_traced": -5.0,
    "aim_auto": 7.5,
+   "regret": 0.0153,
+   "traced_margin": 0.0152,
    "checks": {
     "tee": false,
     "green": 1.0,
     "length": false,
     "iou_recovery": false,
-    "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.0014
+    "club": false
+   }
   },
   {
    "hole": "6",
@@ -431,32 +431,32 @@
    },
    "registration_check": {
     "method": "lie_raster_fit",
-    "dice": 0.73,
+    "dice": 0.668,
     "classes": [
      "fairway",
      "water"
     ],
-    "rot_deg": -4.7,
+    "rot_deg": -3.8,
     "shift": [
-     17.0,
-     32.0
+     12.0,
+     34.0
     ],
     "scale": 1.0,
-    "tee_err": 36.2,
-    "green_err": 21.9
+    "tee_err": 36.1,
+    "green_err": 22.4
    },
    "iou_own_frame": {
     "fairway": 0.264,
-    "rough": 0.312,
+    "rough": 0.174,
     "recovery": 0.0,
-    "native": 0.0,
+    "native": 0.052,
     "ob": 0.0
    },
    "iou": {
     "fairway": 0.558,
-    "rough": 0.486,
+    "rough": 0.357,
     "recovery": 0.0,
-    "native": 0.0,
+    "native": 0.034,
     "ob": 0.0
    },
    "club_traced": "Driver",
@@ -468,12 +468,14 @@
     "4-wood": 3.9488
    },
    "ev_auto": {
-    "Driver": 3.9267,
+    "Driver": 3.9387,
     "2-wood": 3.9424,
     "4-wood": 3.9473
    },
    "aim_traced": -5.0,
-   "aim_auto": -40.0,
+   "aim_auto": -37.5,
+   "regret": 0.0,
+   "traced_margin": 0.0353,
    "checks": {
     "tee": false,
     "green": true,
@@ -481,9 +483,7 @@
     "iou_ob": false,
     "iou_recovery": false,
     "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.0353
+   }
   },
   {
    "hole": "8",
@@ -495,63 +495,67 @@
    "confidence": null,
    "registration": {
     "method": "lie_raster_fit",
-    "dice": 0.597,
+    "dice": 0.518,
     "classes": [
      "fairway",
      "water",
      "sand"
     ],
-    "rot_deg": -9.5,
+    "rot_deg": -8.3,
     "shift": [
-     28.0,
-     -7.0
+     22.0,
+     -6.0
     ],
     "scale": 1.0
    },
-   "tee_err": 28.9,
-   "green_err": 16.7,
+   "tee_err": 22.8,
+   "green_err": 15.0,
    "green_unc": {
     "along": 1.8,
     "lat": 9.1
    },
    "iou_own_frame": {
-    "fairway": 0.188,
-    "rough": 0.132,
-    "native": 0.0,
-    "sand": 0.027,
-    "ob": 0.7
+    "fairway": 0.19,
+    "rough": 0.084,
+    "recovery": 0.0,
+    "native": 0.046,
+    "water": 0.0,
+    "sand": 0.023,
+    "ob": 0.583
    },
    "iou": {
-    "fairway": 0.684,
-    "rough": 0.309,
-    "native": 0.0,
-    "sand": 0.409,
+    "fairway": 0.659,
+    "rough": 0.137,
+    "recovery": 0.0,
+    "native": 0.105,
+    "sand": 0.542,
     "ob": 0.0
    },
    "club_traced": "4-wood",
-   "club_auto": "Driver",
-   "same_club": false,
+   "club_auto": "4-wood",
+   "same_club": true,
    "ev_traced": {
-    "Driver": 4.0037,
-    "2-wood": 3.952,
-    "4-wood": 3.8845
+    "Driver": 4.1596,
+    "2-wood": 4.0149,
+    "4-wood": 3.9021
    },
    "ev_auto": {
-    "Driver": 3.9364,
-    "2-wood": 3.9664,
-    "4-wood": 3.9529
+    "Driver": 3.9827,
+    "2-wood": 3.9739,
+    "4-wood": 3.9532
    },
-   "aim_traced": 10.0,
-   "aim_auto": -30.0,
+   "aim_traced": 7.5,
+   "aim_auto": -12.5,
+   "regret": 0.0,
+   "traced_margin": 0.1128,
    "checks": {
     "tee": false,
     "green": false,
     "length": false,
     "iou_ob": false,
-    "club": false
-   },
-   "regret": 0.1192,
-   "traced_margin": 0.0675
+    "iou_recovery": false,
+    "club": true
+   }
   },
   {
    "hole": "9B",
@@ -575,57 +579,59 @@
    },
    "registration_check": {
     "method": "lie_raster_fit",
-    "dice": 0.657,
+    "dice": 0.611,
     "classes": [
      "fairway",
      "water"
     ],
-    "rot_deg": -4.5,
+    "rot_deg": -5.0,
     "shift": [
-     40.0,
-     41.0
+     44.0,
+     44.0
     ],
     "scale": 1.0,
-    "tee_err": 57.3,
-    "green_err": 24.2
+    "tee_err": 62.2,
+    "green_err": 26.1
    },
    "iou_own_frame": {
-    "fairway": 0.21,
-    "rough": 0.277,
-    "recovery": 0.0,
+    "fairway": 0.169,
+    "rough": 0.062,
+    "recovery": 0.023,
+    "native": 0.0,
     "water": 0.0
    },
    "iou": {
-    "fairway": 0.602,
-    "rough": 0.383,
-    "recovery": 0.0,
-    "water": 0.693
+    "fairway": 0.569,
+    "rough": 0.18,
+    "recovery": 0.12,
+    "native": 0.212,
+    "water": 0.72
    },
-   "club_traced": "Driver",
+   "club_traced": "4-wood",
    "club_auto": "4-wood",
-   "same_club": false,
+   "same_club": true,
    "ev_traced": {
-    "Driver": 3.939,
-    "2-wood": 3.9511,
-    "4-wood": 3.9432
+    "Driver": 3.9699,
+    "2-wood": 3.9878,
+    "4-wood": 3.9672
    },
    "ev_auto": {
-    "Driver": 3.9741,
-    "2-wood": 3.9351,
-    "4-wood": 3.8541
+    "Driver": 4.1415,
+    "2-wood": 3.9479,
+    "4-wood": 3.8565
    },
-   "aim_traced": -20.0,
+   "aim_traced": -25.0,
    "aim_auto": 7.5,
+   "regret": 0.0,
+   "traced_margin": 0.0027,
    "checks": {
     "tee": false,
     "green": true,
     "length": false,
     "iou_water": true,
     "iou_recovery": false,
-    "club": false
-   },
-   "regret": 0.0042,
-   "traced_margin": 0.0042
+    "club": true
+   }
   },
   {
    "hole": "9F",
@@ -649,49 +655,51 @@
    },
    "registration_check": {
     "method": "lie_raster_fit",
-    "dice": 0.584,
+    "dice": 0.549,
     "classes": [
      "fairway",
      "water"
     ],
-    "rot_deg": 1.4,
+    "rot_deg": -2.4,
     "shift": [
-     19.0,
-     25.0
+     34.0,
+     33.0
     ],
     "scale": 1.0,
-    "tee_err": 31.4,
-    "green_err": 20.7
+    "tee_err": 47.4,
+    "green_err": 19.8
    },
    "iou_own_frame": {
-    "fairway": 0.167,
-    "rough": 0.277,
-    "recovery": 0.0,
-    "native": 0.0,
+    "fairway": 0.135,
+    "rough": 0.123,
+    "recovery": 0.021,
+    "native": 0.123,
     "water": 0.0
    },
    "iou": {
-    "fairway": 0.449,
-    "rough": 0.324,
-    "recovery": 0.0,
-    "native": 0.0,
-    "water": 0.156
+    "fairway": 0.401,
+    "rough": 0.145,
+    "recovery": 0.079,
+    "native": 0.045,
+    "water": 0.146
    },
    "club_traced": "4-wood",
    "club_auto": "4-wood",
    "same_club": true,
    "ev_traced": {
-    "Driver": 3.8756,
-    "2-wood": 3.8503,
-    "4-wood": 3.8443
+    "Driver": 3.882,
+    "2-wood": 3.8634,
+    "4-wood": 3.8587
    },
    "ev_auto": {
-    "Driver": 3.9741,
-    "2-wood": 3.9351,
-    "4-wood": 3.8541
+    "Driver": 4.1415,
+    "2-wood": 3.9479,
+    "4-wood": 3.8565
    },
-   "aim_traced": -25.0,
+   "aim_traced": -27.5,
    "aim_auto": 7.5,
+   "regret": 0.0,
+   "traced_margin": 0.0047,
    "checks": {
     "tee": true,
     "green": true,
@@ -699,9 +707,7 @@
     "iou_water": false,
     "iou_recovery": false,
     "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.006
+   }
   },
   {
    "hole": "10",
@@ -725,60 +731,62 @@
    },
    "registration_check": {
     "method": "lie_raster_fit",
-    "dice": 0.567,
+    "dice": 0.548,
     "classes": [
      "fairway",
      "water",
      "sand"
     ],
-    "rot_deg": -0.4,
+    "rot_deg": -0.5,
     "shift": [
      7.0,
      25.0
     ],
     "scale": 1.0,
     "tee_err": 26.0,
-    "green_err": 18.5
+    "green_err": 19.3
    },
    "iou_own_frame": {
-    "fairway": 0.684,
-    "rough": 0.336,
+    "fairway": 0.614,
+    "rough": 0.251,
     "recovery": 0.0,
-    "water": 0.328,
+    "native": 0.0,
+    "water": 0.319,
     "sand": 0.0
    },
    "iou": {
-    "fairway": 0.807,
-    "rough": 0.336,
-    "recovery": 0.0,
+    "fairway": 0.695,
+    "rough": 0.324,
+    "recovery": 0.021,
+    "native": 0.0,
     "water": 0.448,
     "sand": 0.2
    },
-   "club_traced": "Driver",
+   "club_traced": "4-wood",
    "club_auto": "Driver",
-   "same_club": true,
+   "same_club": false,
    "ev_traced": {
-    "Driver": 4.4265,
-    "2-wood": 4.4689,
-    "4-wood": 4.4911
+    "Driver": 4.6252,
+    "2-wood": 4.5752,
+    "4-wood": 4.545
    },
    "ev_auto": {
-    "Driver": 4.4741,
-    "2-wood": 4.5112,
-    "4-wood": 4.5032
+    "Driver": 4.4876,
+    "2-wood": 4.5351,
+    "4-wood": 4.5175
    },
-   "aim_traced": -5.0,
-   "aim_auto": 0.0,
+   "aim_traced": 2.5,
+   "aim_auto": -2.5,
+   "regret": 0.0802,
+   "traced_margin": 0.0302,
    "checks": {
     "tee": false,
     "green": true,
     "length": false,
     "iou_water": false,
     "iou_recovery": false,
-    "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.0424
+    "club": false
+   }
   },
   {
    "hole": "11",
@@ -802,49 +810,53 @@
    },
    "registration_check": {
     "method": "lie_raster_fit",
-    "dice": 0.478,
+    "dice": 0.42,
     "classes": [
      "fairway",
      "water"
     ],
-    "rot_deg": -1.7,
+    "rot_deg": -4.3,
     "shift": [
-     3.0,
-     5.0
+     13.0,
+     -3.0
     ],
     "scale": 1.0,
-    "tee_err": 5.8,
-    "green_err": 7.0
+    "tee_err": 13.3,
+    "green_err": 13.0
    },
    "iou_own_frame": {
-    "fairway": 0.366,
-    "rough": 0.262,
-    "recovery": 0.0,
-    "water": 0.018,
+    "fairway": 0.361,
+    "rough": 0.143,
+    "recovery": 0.216,
+    "native": 0.0,
+    "water": 0.134,
     "sand": 0.0
    },
    "iou": {
-    "fairway": 0.403,
-    "rough": 0.272,
-    "recovery": 0.0,
-    "water": 0.231,
+    "fairway": 0.408,
+    "rough": 0.158,
+    "recovery": 0.241,
+    "native": 0.0,
+    "water": 0.127,
     "sand": 0.0
    },
    "club_traced": "4-wood",
    "club_auto": "4-wood",
    "same_club": true,
    "ev_traced": {
-    "Driver": 4.7145,
-    "2-wood": 4.3493,
-    "4-wood": 3.7922
+    "Driver": 4.7232,
+    "2-wood": 4.3958,
+    "4-wood": 3.8071
    },
    "ev_auto": {
-    "Driver": 4.174,
-    "2-wood": 3.9763,
-    "4-wood": 3.9189
+    "Driver": 4.7887,
+    "2-wood": 4.3075,
+    "4-wood": 3.9769
    },
-   "aim_traced": -12.5,
-   "aim_auto": -2.5,
+   "aim_traced": -10.0,
+   "aim_auto": 0.0,
+   "regret": 0.0,
+   "traced_margin": 0.5887,
    "checks": {
     "tee": true,
     "green": true,
@@ -852,9 +864,7 @@
     "iou_water": false,
     "iou_recovery": false,
     "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.5571
+   }
   },
   {
    "hole": "13",
@@ -887,15 +897,17 @@
    },
    "iou_own_frame": {
     "fairway": 0.17,
-    "rough": 0.137,
+    "rough": 0.079,
     "recovery": 0.0,
+    "native": 0.0,
     "water": 0.326,
     "sand": 0.0
    },
    "iou": {
     "fairway": 0.528,
-    "rough": 0.227,
+    "rough": 0.106,
     "recovery": 0.0,
+    "native": 0.0,
     "water": 0.782,
     "sand": 0.474
    },
@@ -908,12 +920,14 @@
     "4-wood": 4.023
    },
    "ev_auto": {
-    "Driver": 4.1152,
-    "2-wood": 4.1145,
-    "4-wood": 4.0859
+    "Driver": 4.1584,
+    "2-wood": 4.1539,
+    "4-wood": 4.1018
    },
    "aim_traced": 0.0,
-   "aim_auto": 0.0,
+   "aim_auto": 2.5,
+   "regret": 0.0297,
+   "traced_margin": 0.0297,
    "checks": {
     "tee": true,
     "green": true,
@@ -921,9 +935,7 @@
     "iou_water": true,
     "iou_recovery": false,
     "club": false
-   },
-   "regret": 0.0297,
-   "traced_margin": 0.0297
+   }
   },
   {
    "hole": "14",
@@ -947,56 +959,59 @@
    },
    "registration_check": {
     "method": "lie_raster_fit",
-    "dice": 0.507,
+    "dice": 0.53,
     "classes": [
      "fairway",
      "water"
     ],
-    "rot_deg": -9.4,
+    "rot_deg": -6.5,
     "shift": [
-     44.0,
-     39.0
+     21.0,
+     28.0
     ],
     "scale": 1.0,
-    "tee_err": 58.8,
-    "green_err": 23.3
+    "tee_err": 35.0,
+    "green_err": 6.6
    },
    "iou_own_frame": {
-    "fairway": 0.221,
-    "rough": 0.237,
+    "fairway": 0.027,
+    "rough": 0.0,
+    "recovery": 0.255,
     "native": 0.0,
     "water": 0.0
    },
    "iou": {
-    "fairway": 0.37,
-    "rough": 0.384,
-    "native": 0.0,
-    "water": 0.526
+    "fairway": 0.475,
+    "rough": 0.0,
+    "recovery": 0.656,
+    "native": 0.411,
+    "water": 0.476
    },
    "club_traced": "2-wood",
    "club_auto": "Driver",
    "same_club": false,
    "ev_traced": {
-    "Driver": 3.9433,
-    "2-wood": 3.9129,
-    "4-wood": 3.9177
+    "Driver": 4.0759,
+    "2-wood": 3.9714,
+    "4-wood": 3.9808
    },
    "ev_auto": {
-    "Driver": 3.8965,
-    "2-wood": 3.943,
-    "4-wood": 3.979
+    "Driver": 3.9406,
+    "2-wood": 3.9718,
+    "4-wood": 4.0187
    },
-   "aim_traced": -12.5,
-   "aim_auto": -47.5,
+   "aim_traced": -10.0,
+   "aim_auto": -40.0,
+   "regret": 0.1045,
+   "traced_margin": 0.0094,
    "checks": {
     "tee": false,
     "green": true,
     "length": false,
     "iou_water": false,
+    "iou_recovery": true,
     "club": false
-   },
-   "regret": 0.0304,
-   "traced_margin": 0.0048
+   }
   },
   {
    "hole": "16",
@@ -1026,18 +1041,18 @@
    "green_unc": null,
    "iou_own_frame": {
     "fairway": 0.352,
-    "rough": 0.032,
-    "recovery": 0.0,
-    "native": 0.0,
+    "rough": 0.025,
+    "recovery": 0.253,
+    "native": 0.174,
     "water": 0.0,
     "sand": 0.2,
     "ob": 0.0
    },
    "iou": {
     "fairway": 0.691,
-    "rough": 0.063,
-    "recovery": 0.0,
-    "native": 0.0,
+    "rough": 0.069,
+    "recovery": 0.329,
+    "native": 0.16,
     "water": 0.0,
     "sand": 0.593
    },
@@ -1050,12 +1065,14 @@
     "4-wood": 3.9439
    },
    "ev_auto": {
-    "Driver": 3.939,
-    "2-wood": 3.927,
-    "4-wood": 3.9188
+    "Driver": 3.967,
+    "2-wood": 3.9503,
+    "4-wood": 3.9289
    },
    "aim_traced": -5.0,
    "aim_auto": 7.5,
+   "regret": 0.0019,
+   "traced_margin": 0.0019,
    "checks": {
     "tee": false,
     "green": true,
@@ -1063,9 +1080,7 @@
     "iou_water": false,
     "iou_recovery": false,
     "club": false
-   },
-   "regret": 0.0019,
-   "traced_margin": 0.0019
+   }
   },
   {
    "hole": "17",
@@ -1105,16 +1120,16 @@
    },
    "iou_own_frame": {
     "fairway": 0.532,
-    "rough": 0.468,
-    "recovery": 0.0,
+    "rough": 0.402,
+    "recovery": 0.101,
     "native": 0.0,
     "sand": 0.0
    },
    "iou": {
     "fairway": 0.772,
-    "rough": 0.48,
-    "recovery": 0.0,
-    "native": 0.0,
+    "rough": 0.323,
+    "recovery": 0.209,
+    "native": 0.032,
     "sand": 0.6
    },
    "club_traced": "Driver",
@@ -1126,21 +1141,21 @@
     "4-wood": 4.1129
    },
    "ev_auto": {
-    "Driver": 4.0739,
-    "2-wood": 4.0913,
-    "4-wood": 4.1108
+    "Driver": 4.0867,
+    "2-wood": 4.0993,
+    "4-wood": 4.1114
    },
    "aim_traced": -7.5,
    "aim_auto": -12.5,
+   "regret": 0.0,
+   "traced_margin": 0.0502,
    "checks": {
     "tee": false,
     "green": 1.0,
     "length": false,
     "iou_recovery": false,
     "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.0502
+   }
   },
   {
    "hole": "18",
@@ -1152,64 +1167,64 @@
    "confidence": null,
    "registration": {
     "method": "lie_raster_fit",
-    "dice": 0.44,
+    "dice": 0.431,
     "classes": [
      "fairway",
      "water",
      "sand"
     ],
-    "rot_deg": 2.0,
+    "rot_deg": 11.3,
     "shift": [
-     -10.0,
-     -21.0
+     -40.0,
+     -25.0
     ],
     "scale": 1.0
    },
-   "tee_err": 23.3,
-   "green_err": 25.5,
+   "tee_err": 47.2,
+   "green_err": 72.7,
    "green_unc": {
     "along": 4.1,
     "lat": 6.7
    },
    "iou_own_frame": {
-    "fairway": 0.553,
+    "fairway": 0.603,
     "rough": 0.0,
-    "recovery": 0.0,
-    "native": 0.0,
-    "water": 0.016
+    "recovery": 0.2,
+    "native": 0.083,
+    "water": 0.121
    },
    "iou": {
-    "fairway": 0.425,
+    "fairway": 0.557,
     "rough": 0.0,
-    "recovery": 0.0,
-    "native": 0.0,
-    "water": 0.45
+    "recovery": 0.217,
+    "native": 0.097,
+    "water": 0.025
    },
-   "club_traced": "Driver",
+   "club_traced": "4-wood",
    "club_auto": "Driver",
-   "same_club": true,
+   "same_club": false,
    "ev_traced": {
-    "Driver": 4.4574,
-    "2-wood": 4.4774,
-    "4-wood": 4.5292
+    "Driver": 4.6447,
+    "2-wood": 4.6209,
+    "4-wood": 4.6069
    },
    "ev_auto": {
-    "Driver": 4.5089,
-    "2-wood": 4.5421,
-    "4-wood": 4.5833
+    "Driver": 4.6031,
+    "2-wood": 4.6356,
+    "4-wood": 4.6647
    },
-   "aim_traced": 5.0,
-   "aim_auto": 60.0,
+   "aim_traced": -12.5,
+   "aim_auto": -15.0,
+   "regret": 0.0378,
+   "traced_margin": 0.014,
    "checks": {
     "tee": false,
     "green": false,
     "length": true,
     "iou_water": false,
     "iou_recovery": false,
-    "club": true
-   },
-   "regret": 0.0,
-   "traced_margin": 0.02
+    "club": false
+   }
   }
  ],
  "par3": [
@@ -1290,9 +1305,9 @@
    },
    "haz_auto": {
     "left": "rough",
-    "right": "rough",
+    "right": "native",
     "short": "water",
-    "long": "bunker"
+    "long": "native"
    },
    "front_back_traced": [
     121,
