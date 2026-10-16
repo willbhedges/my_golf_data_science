@@ -1,0 +1,288 @@
+{
+ "backbone": "dinov2_vits14 (blocks 6,9,12; tiles 518/406 at 1.5x)",
+ "channels": 64,
+ "raw_dim": 1152,
+ "pca_explained_ratio": 0.8799989188148762,
+ "dtype": "float16",
+ "frame": {
+  "screen": [
+   920,
+   2000
+  ],
+  "grid": [
+   460,
+   1000
+  ],
+  "scale": 2
+ },
+ "storage": "npz key 'feat' = PCA features on the backbone lattice; 'cell' = lattice cell size in 920x2000 screen px. extract_features.load_grid(stem) gives the bilinearly upsampled (1000, 460, C) float16 grid array.",
+ "torch": "2.14.1+cpu",
+ "files": {
+  "hole01.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553515
+  },
+  "hole02_a.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553554
+  },
+  "hole02_b.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553311
+  },
+  "hole04.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553791
+  },
+  "hole05.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553761
+  },
+  "hole06.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553036
+  },
+  "hole07.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2552790
+  },
+  "hole08.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553480
+  },
+  "hole09_back.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553113
+  },
+  "hole09_forward.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2552655
+  },
+  "hole10.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2554183
+  },
+  "hole11.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553624
+  },
+  "hole12.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2552810
+  },
+  "hole13.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553992
+  },
+  "hole14.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553413
+  },
+  "hole15.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553731
+  },
+  "hole16.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553455
+  },
+  "hole17.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553335
+  },
+  "hole18.npz": {
+   "lattice_shape": [
+    215,
+    99,
+    64
+   ],
+   "grid_shape": [
+    1000,
+    460,
+    64
+   ],
+   "cell_screen_px": 9.333333333333334,
+   "bytes": 2553537
+  }
+ }
+}
