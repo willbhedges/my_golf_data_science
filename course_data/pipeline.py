@@ -139,13 +139,21 @@ def _norm_card(sc, tee_set):
     if "tee_sets" in sc:
         sets = {k.lower(): v for k, v in sc["tee_sets"].items()}
         key = tee_set.lower()
-        key = {k.lower(): v.lower() for k, v in sc.get("aliases", {}).items()}.get(key, key)
+        key = {k.lower(): v.lower() for k, v in (sc.get("aliases") or {}).items()}.get(key, key)
+        for name, v in sets.items():                          # per-set alias lists (tees/scorecard.json)
+            if isinstance(v, dict) and key in [str(x).lower() for x in v.get("aliases", [])]:
+                key = name
+                break
         if key not in sets:
             hit = [k for k in sets if key in k]
             if not hit:
                 return {}
             key = hit[0]
-        sc = sets[key].get("holes", sets[key])
+        s = sets[key]
+        if isinstance(s.get("yards"), list):                  # {yards: [18], par: [18] at the top level}
+            pars = s.get("par") or sc.get("par") or [None] * len(s["yards"])
+            return {str(i + 1): dict(yards=y, par=p) for i, (y, p) in enumerate(zip(s["yards"], pars))}
+        sc = s.get("holes", s)
     out = {}
     for ref, v in sc.items():
         if isinstance(v, dict):
@@ -180,11 +188,14 @@ def vision_layers(cdir):
 
 
 # ----------------------------------------------------------------------------- S3 holes
-def build_holes(fc, tee_set, lengths, extra):
+def build_holes(fc, tee_set, lengths, extra, tees=None):
     """Hole dicts in a 920x2000 pixel frame (course.py format). Geometry stage, else the spike."""
     bh = load_module(os.path.join(HERE, "geometry", "build_holes.py"), "cd_geometry_build_holes")
     if bh is not None and hasattr(bh, "build"):
-        holes, world = bh.build(fc, tee_set, lengths, extra)
+        try:
+            holes, world = bh.build(fc, tee_set, lengths, extra, tees=tees)
+        except TypeError:                                      # older geometry without the tees= argument
+            holes, world = bh.build(fc, tee_set, lengths, extra)
         return {str(k): v for k, v in holes.items()}, "geometry/build_holes.py:build", (bh, world)
     om = load_module(os.path.join(HERE, "osm_to_model.py"), "cd_osm_to_model")
     if om is None:
@@ -441,7 +452,19 @@ def note_for(h, conf, card):
     return s
 
 
-def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, quiet=False):
+def load_tee_positions(slug, cdir):
+    """S2 output: tees.json (ARCHITECTURE 3.4) or the tee scientist's tee_positions.json; None if absent."""
+    for p in (os.path.join(cdir, "tees.json"), os.path.join(HERE, "tees", slug, "tee_positions.json"),
+              os.path.join(HERE, "tees", "tee_positions.json")):
+        if os.path.exists(p):
+            try:
+                return json.load(open(p)), os.path.relpath(p, ROOT)
+            except Exception as e:                             # noqa: BLE001
+                say(f"  ! bad tee file {p}: {e}")
+    return None, None
+
+
+def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, quiet=False, tee_stage=True):
     """Run S1-S6 offline. Returns the course model dict (holes.json) without writing it."""
     del LOG[:]
     slug, d, meta = resolve(course)
@@ -464,19 +487,21 @@ def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, 
             "(pass --lengths, or run the tees fetch workflow)")
     lens = {r: float(c["yards"]) for r, c in card.items() if c.get("yards")}
     lens.update({str(k): float(v) for k, v in (lengths or {}).items()})
-    stages["tees"] = ("card yardage -> tee box (geometry.choose_tee)" if lens else
-                      "no yardages: OSM tee nearest the hole-line start")
-    place_tee = load_module(os.path.join(HERE, "tees", "place_tee.py"), "cd_tees_place_tee")
-    if place_tee is not None:
-        stages["tees"] += "; tees/place_tee.py available (not yet wired into geometry)"
+    tees, tsrc = load_tee_positions(slug, cdir) if tee_stage else (None, None)
+    if tees is not None:
+        stages["tees"] = f"ok: {tsrc} (set '{tee_set}'; card yardage -> box where the file has no point)"
+    else:
+        stages["tees"] = ("card yardage -> tee box (geometry.choose_tee)" if lens else
+                          "no yardages: OSM tee nearest the hole-line start")
+    say(f"[S2] tees: {stages['tees']}")
 
     extra, vsrc = vision_layers(cdir)
     stages["vision"] = ("ok: " + ", ".join(vsrc)) if extra else "missing (no gap-fill layers)"
     say(f"[S4] vision layers: {[(k, len(v)) for k, v in extra] or 'none'}")
 
-    holes, how, ctx = build_holes(fc, tee_set, lens or None, extra)
+    holes, how, ctx = build_holes(fc, tee_set, lens or None, extra, tees)
     stages["geometry"] = how
-    holes_osm = build_holes(fc, tee_set, lens or None, [])[0] if extra else None
+    holes_osm = build_holes(fc, tee_set, lens or None, [], tees)[0] if extra else None
     say(f"[S3] holes: {len(holes)} via {how}")
 
     props = {}

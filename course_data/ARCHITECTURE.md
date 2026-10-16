@@ -66,6 +66,7 @@ Four frames, each with one job. Every conversion goes through the hole's **tee l
 | **Local ENU** | metres east, north of a course origin (equirectangular: `e = (lon-lon0)*cos(lat0)*111320`, `n = (lat-lat0)*111320`) | Distances, buffering, imagery warping. Error < 0.1% within 3 km. |
 | **Yard frame** (proposed native model frame) | yards; `x` = right of the tee line, `y` = **minus** yards along it (screen y grows down). Tee = `(0, 0)`, `dot270 = (0, -270)`. | `holes.json`. The model runs on it directly: `hole_frame` gives `ppy = 1`, `fwd = (0,-1)`, `right = (1,0)`. |
 | **Virtual pixel frame** | 920 x 2000 px, `ppy = 3.4`, tee at `(460, 1900)`: `px = 460 + 3.4*x`, `py = 1900 + 3.4*y` | Generated `course_auto.py` and the rendered images, so `yardage_book.draw_tee` (`extent=(0,920,2000,0)`, view `y 540..2000` = 0-429 yds, `x` = +/-135 yds) works unchanged. |
+| **Fitted pixel frame** (what geometry emits by default, `frame="fit"`) | 920 x 2000 px, tee at `(tx, 1920)`, `ppy = px_per_yd` fitted per hole (<= 4.5) so the tee, the 240-330 landing box and the green are on screen | `holes.json` today. Same contract as the virtual frame (tee line straight up, `dot270` exactly 270 yds up it), so the model and the book can't tell the difference; the renderer reproduces it exactly from `tee_ll`, `aim_ll`, `px_per_yd`, `tee` (planar projection: UTM yards, not ENU; the two differ by grid convergence, ~1.2 deg here). |
 
 **The tee line.** Tee point -> *aim point*, where the aim point is the first OSM `golf=hole` node at least
 60 yds past the tee (the hole's first dog-leg node; the green for a par 3). This plays the role of the
@@ -123,6 +124,11 @@ no woods/scrub polygons, no tall-grass tagging** on this course).
  "aliases": {"middle": "white", "men": "white"}}
 ```
 Pars are tee-independent in most cards but are stored per set (some courses differ for forward tees).
+**As built** (`course_data/tees/scorecard.json`): `tee_sets.<Name> = {colour, aliases: [...], yards: [18],
+total, ratings}` with `par: [18]` at the top level. `pipeline._norm_card` reads both shapes.
+Tee set names are matched case-insensitively, then through each set's `aliases` ("blue" -> Black,
+"red" -> Rust). Spirit Hollow's White card is 6040 yds; the hand-traced holes are NOT white tees
+(1 = 413 vs White 376): they mix Black/Gold-ish boxes, so acceptance uses "oracle tees" (section 7).
 
 ### 3.4 `tees.json` (S2, tee scientist)
 ```json
@@ -131,6 +137,10 @@ Pars are tee-independent in most cards but are stored per set (some courses diff
                  "how": "tagged|length_match|interpolated|hole_line_start",
                  "scorecard_yards": 401, "measured_yards": 404, "confidence": 0.9}}}
 ```
+**As built** (`course_data/tees/tee_positions.json`): `holes.<ref>.tees.<Set> = {lat, lon, method
+(tee_centroid | tee_axis | walkback), tee_id, confidence, error_yd, dist_yd, d_front, d_back, shared_with}`.
+Geometry's `build(..., tees=<that file>, tee_tag=<set>)` uses the point as the tee (provenance
+`tee stage: White tee_axis`); `pipeline.py` passes it automatically.
 `measured_yards` = tee -> hole-line nodes -> green centre, along the line (how scorecards measure).
 `how` order of trust: `tagged` (OSM tee box tagged with the colour) > `length_match` (the box whose
 measured yards are within 8 yds of the card) > `interpolated` (box between two matched sets, or a
@@ -164,7 +174,7 @@ removes or reshapes an OSM `fairway`, `water`, `sand` or `green`. Minimum polygo
 probability >= 0.7, simplified to 2 yds.
 
 ### 3.7 Images (S5)
-`<slug>/images/holeNN.png` (and `holeNN_b.png` for second tee sets), 920 x 2000 RGB, north-unaware:
+`<slug>/screenshots/holeNN.png` (the folder `yardage_book.draw_image` reads; `holeNN_b.png` for second tee sets), 920 x 2000 RGB, north-unaware:
 rendered in the **virtual pixel frame of that hole**, so the tee is at `(460, 1900)` and the tee line runs
 straight up. Par 3s use the same frame with the flag on the line. A sidecar `images/index.json` records
 for each image the imagery date, the frame (`tee_ll`, `aim_ll`, `ppy`, `tee_px`) and the fraction of
@@ -248,8 +258,13 @@ Compares an auto build of Spirit Hollow with the hand-reviewed `spirit_hollow/co
   not OSM's. So each traced hole is first converted to yards (`hole_frame`) and then **registered** to the
   auto hole by a rigid transform (rotation +/-15 deg, shift +/-40 yds, scale 0.95-1.05) that maximises
   agreement of the hazard rasters (fairway, water, sand, which both sources map well) over the whole
-  window. The tee and green are *not* used to fit, so their errors are honest. The fitted scale is
-  reported: it measures the screenshot scale error (R5).
+  window. The tee and green are *not* used to fit, so their errors are honest. Scale is fixed at 1
+  (a free scale shrinks the hand-traced fairways, which are ~2x OSM's, onto OSM's). The imagery team's
+  NAIP registration of the screenshots (`imagery/traced_align.py` -> `traced_registration.json`, ECC on
+  gradient images) is preferred when its ECC >= 0.3; the raster fit is then reported as a cross-check.
+* The traced green is itself uncertain: it is trilaterated from three app numbers rounded to 1 yd, which is
+  ill-conditioned laterally for far greens (hole 4: +/-32 yds, 17: +/-25, 5: +/-16). The green check passes
+  within max(10 yds, that spread).
 * Per hole: tee error and green error (yds, after registration), length error (|card or measured -
   traced `length`|, frame-free), landing-zone IoU per class (220-340 along, +/-45, in the traced frame),
   and the club pick: `t.best_aim` for Driver, 2-wood and 4-wood on both maps, same club or not.
@@ -265,4 +280,44 @@ Writes `course_data/spirit_hollow/acceptance.json` and `acceptance.md`.
 
 (updated by the architect; newest first)
 
-STATUS_PLACEHOLDER
+### 2026-10-16 18:35 UTC
+
+`python3 course_data/pipeline.py --course "Spirit Hollow" --tees white` runs end to end offline in ~25 s
+and writes `course_data/spirit_hollow/{holes.json, course_auto.py, qa.md, screenshots/hole01..18.png}`.
+
+| Stage | State | Notes |
+|---|---|---|
+| S0 resolve | works (from the fetched `summary.json`) | Free-text resolve of a *new* course still needs an Actions run (`course_fetch.yml`). |
+| S1 OSM | done | 18 holes, 103 tee boxes (no colours), 26 greens, 20 fairways, 50 bunkers. No woods, scrub, tall grass or OB tags. |
+| S1 scorecard | done (tees/) | Club page, 4 sets (Gold/Black/White/Rust), pars, handicaps; aliases map blue->Black, red->Rust. |
+| S1 imagery | done (imagery/) | NAIP 2023-09-01 0.3 m RGB + NIR, USGS 3DEP DEM. |
+| S2 tees | done (tees/) | `tee_positions.json`: every set on every hole, method + confidence. Wired into geometry (`tees=`). |
+| S3 holes | done (geometry/) | Fitted pixel frame + yard frame; par-3 entries; `tee_ll/aim_ll/green_ll` + provenance per hole. |
+| S4 vision gap-fill | **missing** | No tree / tall-grass layer yet. This is the biggest gap (see acceptance). |
+| S5 images | done (imagery/render.py) | Exact re-projection of NAIP into each hole's frame. |
+| S6 merge + QA | done (pipeline.py) | Confidence per hole: 0.67-0.79 on tee holes ("check the flags"), 0.93-0.96 on par 3s. |
+| S7 book | in test | `pipeline.py --book` -> `yardage_book.use_course(...)`. |
+
+**Acceptance (oracle tees, `--fast`), see `spirit_hollow/acceptance.md`:**
+* Club pick: same club on 62% of 16 tee shots (bar 80%) - **fails**. Mismatches 1, 8, 9B, 9F, 16, 17.
+* Geometry where the same tee box is used (NAIP-registered holes): tee error 1.4-8.4 yds and green error
+  1.6-8.3 yds on 8 of 11 holes - **meets the 10-yd bar**. Failures are explained: 2F, 9B, 17 picked a
+  different box (no OSM box at the traced length; 17 is 20 yds short), 4 and 11 have traced greens that are
+  themselves uncertain (4: +/-32 yds lateral from the app-number trilateration; 11 is put on the line by hand
+  though its offset is ~34).
+* Length within 5 yds on 62% of tee shots; misses are the same box-selection cases (2B -25: the 607 back tee
+  is not mapped in OSM).
+* Landing-zone IoU: fairway 0.56, water 0.37, sand 0.40, OB 0.18, **trees 0.00, long grass 0.00**.
+  OSM water is the creek centre-line buffered 3 yds; the hand maps include the banks.
+
+**Top blockers**
+1. Trees / long grass: OSM has none on this course; S4 gap-fill must produce `recovery` and `native`
+   polygons (NAIP NDVI + NIR texture + DEM-derived canopy height). Without it every landing zone scores
+   unmapped hazards as rough, which biases toward driver.
+2. Creek corridors: buffer `waterway=stream` by the visible channel + banks (imagery), not 3 yds.
+3. Tee boxes missing from OSM (2 back 607, 15 back 215, 17): fall back to walkback but flag.
+4. OB: only the course boundary is available; houses on 2F/4/5/8/9B come from `building` tags only
+   where mapped.
+5. Acceptance needs NAIP registration of all 16 traced holes (11 now) to retire the raster-fit fallback,
+   whose rotation is poorly constrained on dog-legs (13: 84-yd green error).
+

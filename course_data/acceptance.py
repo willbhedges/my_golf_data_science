@@ -43,6 +43,7 @@ WOODS = ["Driver", "2-wood", "4-wood"]
 CLASSES = ["fairway", "rough", "recovery", "native", "water", "sand", "ob"]
 BAR = dict(tee=10.0, green=10.0, length=5.0, iou=0.6, iou_classes=("water", "ob", "recovery"), club=0.8)
 MIN_ECC = 0.3
+SCALES = (1.0,)          # both maps are in yards; a free scale lets wide traced fairways shrink onto OSM's
 
 
 def ref_of(k):
@@ -61,7 +62,7 @@ def oracle_builds():
             lens[ref_of(k)] = float(h["length"])
         for k, p in course.PAR3.items():
             lens[str(k)] = float(p["center"])
-        m = P.build_course("Spirit Hollow", "white", lens, render=False)
+        m = P.build_course("Spirit Hollow", "white", lens, render=False, tee_stage=False)
         for k in list(course.HOLES) + list(course.PAR3):
             if str(k)[-1:] in "BF" and str(k)[-1] != variant:
                 continue
@@ -110,10 +111,12 @@ def auto_frame(a, ref):
     global _RENDER
     if _RENDER is None:
         _RENDER = P.load_module(os.path.join(HERE, "imagery", "render.py"), "cd_imagery_render") or False
-    if not _RENDER or "lonlat_tee" not in a:
+    if not _RENDER:
         return None
+    if "tee_ll" in a and "aim_ll" in a:                      # geometry's frame: UTM yards, tee_ll -> aim_ll
+        return _RENDER.Frame(a["tee_ll"], a["aim_ll"], ppy=a["px_per_yd"], tee_px=a["tee"], proj="utm")
     lines = _RENDER._osm_holes(CDIR)
-    if ref not in lines:
+    if "lonlat_tee" not in a or ref not in lines:
         return None
     return _RENDER.Frame(a["lonlat_tee"], _RENDER.aim_point(a["lonlat_tee"], lines[ref], proj="utm"),
                          ppy=a["px_per_yd"], tee_px=a["tee"], proj="utm")
@@ -169,7 +172,7 @@ def raster_transform(h, a):
 
     best = (-1, 0, 0, 0, 1)
     for th in np.radians(np.arange(-15, 15.1, 1.5)):
-        for s in (0.96, 1.0, 1.04):
+        for s in SCALES:
             for dx in range(-40, 41, 5):
                 for dy in range(-40, 41, 5):
                     v = score(th, dx, dy, s)
@@ -178,7 +181,7 @@ def raster_transform(h, a):
     for step_th, step_d, step_s in ((np.radians(0.5), 2, 0.01), (np.radians(0.2), 1, 0.005)):
         v0, th0, dx0, dy0, s0 = best
         for th in th0 + step_th * np.arange(-2, 3):
-            for s in s0 + step_s * np.arange(-2, 3):
+            for s in ([s0] if len(SCALES) == 1 else s0 + step_s * np.arange(-2, 3)):
                 for dx in dx0 + step_d * np.arange(-2, 3):
                     for dy in dy0 + step_d * np.arange(-2, 3):
                         v = score(th, dx, dy, s)
@@ -216,6 +219,21 @@ def best_club(hmap, k, z):
     return b, {c: round(float(r["ev"]), 4) for c, r in res.items()}, float(res[b]["aim"])
 
 
+def green_uncertainty(k):
+    """Spread of the traced green (yds) when the app's three Center numbers move by their +/-0.5-yd
+    rounding: the trilateration is ill-conditioned laterally for far greens."""
+    if k not in course.APP or course.GREEN_SIDE.get(k, 0) == 0:
+        return None
+    d = np.array(course.APP[k], float)
+    side = course.GREEN_SIDE[k]
+    pts = []
+    for e in np.array(np.meshgrid(*[[-0.5, 0, 0.5]] * 3)).reshape(3, -1).T:
+        al, lat = course.green_from_app(*(d + e), side)
+        pts.append((al, lat))
+    pts = np.array(pts)
+    return dict(along=round(float(np.ptp(pts[:, 0]) / 2), 1), lat=round(float(np.ptp(pts[:, 1]) / 2), 1))
+
+
 def tee_hole(k, h, a, regs, z):
     am = as_model_hole(a)
     T, reg = georef_transform(k, am, regs)
@@ -229,8 +247,15 @@ def tee_hole(k, h, a, regs, z):
         row["registration"] = reg
         row["tee_err"] = round(float(np.linalg.norm(T(h["tee"])[0])), 1)
         row["green_err"] = round(float(np.linalg.norm(T(h["green"])[0] - a_green)), 1)
+        row["green_unc"] = green_uncertainty(k)
     else:
         row["registration"] = dict(method="none")
+    if reg and reg.get("method") == "naip_registration":         # independent cross-check of the georeference
+        T2, reg2 = raster_transform(h, am)
+        if T2 is not None:
+            reg2["tee_err"] = round(float(np.linalg.norm(T2(h["tee"])[0])), 1)
+            reg2["green_err"] = round(float(np.linalg.norm(T2(h["green"])[0] - a_green)), 1)
+            row["registration_check"] = reg2
     al, la = P.landing_grid()
     tpx = P.to_px(h, al, la)
     tl = t.lie_at(h, tpx)
@@ -262,7 +287,8 @@ def passes(r):
     checks = {}
     if "tee_err" in r:
         checks["tee"] = r["tee_err"] <= BAR["tee"]
-        checks["green"] = r["green_err"] <= BAR["green"]
+        u = r.get("green_unc") or {}
+        checks["green"] = r["green_err"] <= max(BAR["green"], np.hypot(u.get("along", 0), u.get("lat", 0)))
     checks["length"] = abs(r["length_err"]) <= BAR["length"]
     for c in BAR["iou_classes"]:
         if c in r.get("iou", {}):
@@ -311,7 +337,7 @@ def main():
         n_tee_shots=len(ok), missing=[r["hole"] for r in rows if r.get("missing")],
         same_club=round(float(np.mean([r["same_club"] for r in ok])), 3) if ok else None,
         tee_within=round(float(np.mean([r["tee_err"] <= BAR["tee"] for r in ok if "tee_err" in r] or [np.nan])), 3),
-        green_within=round(float(np.mean([r["green_err"] <= BAR["green"] for r in ok if "green_err" in r] or [np.nan])), 3),
+        green_within=round(float(np.mean([r["checks"]["green"] for r in ok if "green" in r["checks"]] or [np.nan])), 3),
         length_within=round(float(np.mean([abs(r["length_err"]) <= BAR["length"] for r in ok])), 3) if ok else None,
         median_tee_err=float(np.median([r["tee_err"] for r in ok if "tee_err" in r])) if ok else None,
         median_green_err=float(np.median([r["green_err"] for r in ok if "green_err" in r])) if ok else None,
@@ -334,11 +360,11 @@ def write_md(out, path):
     L = [f"# Auto-course acceptance: Spirit Hollow ({s['mode']})", "",
          f"Same club (Driver / 2-wood / 4-wood) on **{s['same_club']:.0%}** of {s['n_tee_shots']} tee shots "
          f"(bar {BAR['club']:.0%}). Tee within {BAR['tee']:.0f} yds: {s['tee_within']:.0%}; green within "
-         f"{BAR['green']:.0f}: {s['green_within']:.0%}; length within {BAR['length']:.0f}: {s['length_within']:.0%}. "
+         f"{BAR['green']:.0f} (or the traced green's own rounding spread): {s['green_within']:.0%}; length within {BAR['length']:.0f}: {s['length_within']:.0%}. "
          f"Median tee error {s['median_tee_err']} yds, green {s['median_green_err']} yds.", "",
          "Mean landing-zone IoU by class: " + ", ".join(f"{c} {v:.2f}" for c, v in s["mean_iou"].items()), "",
          f"Holes passing every check: {', '.join(s['holes_passing']) or 'none'}", "",
-         "| hole | len err | tee err | green err | registration | club traced / auto | IoU water | IoU ob | IoU trees | IoU fairway | failed |",
+         "| hole | len err | tee err | green err (traced +/-) | registration | club traced / auto | IoU water | IoU ob | IoU trees | IoU fairway | failed |",
          "|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in out["tee_shots"]:
         if r.get("missing"):
@@ -348,7 +374,9 @@ def write_md(out, path):
         rs = reg["method"] + (f" (ecc {reg['ecc']})" if "ecc" in reg else (f" (dice {reg['dice']})" if "dice" in reg else ""))
         iou = r["iou"]
         fail = [k for k, v in r["checks"].items() if not v]
-        L.append(f"| {r['hole']} | {r['length_err']:+d} | {r.get('tee_err', '-')} | {r.get('green_err', '-')} | {rs} | "
+        u = r.get("green_unc")
+        unc = f" (+/-{u['along']:.0f} along, +/-{u['lat']:.0f} lat)" if u else ""
+        L.append(f"| {r['hole']} | {r['length_err']:+d} | {r.get('tee_err', '-')} | {r.get('green_err', '-')}{unc} | {rs} | "
                  f"{r['club_traced']} / {r['club_auto']} | {iou.get('water', '-')} | {iou.get('ob', '-')} | "
                  f"{iou.get('recovery', '-')} | {iou.get('fairway', '-')} | {', '.join(fail)} |")
     L += ["", "Par 3s (centre distance):", "", "| hole | traced | auto | err | hazards traced | hazards auto |", "|---|---|---|---|---|---|"]
