@@ -119,18 +119,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--slug")
     ap.add_argument("--holes")
+    ap.add_argument("--path", help="review exactly this package.json / holes.json")
+    ap.add_argument("--tag", help="output folder name under review/ (default: the slug)")
     ap.add_argument("--kind", help="package.json or holes.json (default: package.json if present, else holes.json)")
     a = ap.parse_args()
     R = P._render()
     rng = np.random.default_rng(5)
     z = np.vstack([rng.standard_normal((2, 1000)), rng.random((2, 1000))])
-    pk_all = [p for p in P.find_packages() if not a.slug or a.slug in p.slug]
+    pk_all = [p for p in P.find_packages() if (not a.slug or a.slug in p.slug)
+              and (not a.path or os.path.abspath(p.path) == os.path.abspath(a.path))]
     by = {}
     for p in pk_all:                                     # one package per slug: prefer package.json
         if p.slug not in by or (p.kind == "package.json" and by[p.slug].kind != "package.json") or p.kind == a.kind:
             by[p.slug] = p
-    for slug, pk in by.items():
-        idir = find_imagery(pk)
+    for slug0, pk in by.items():
+        slug = a.tag or slug0
+        idir = find_imagery(pk) or (os.path.join(P.ROOT, pk.raw.get("imagery", {}).get("dir"))
+                                    if isinstance(pk.raw.get("imagery"), dict) and pk.raw["imagery"].get("dir") else None)
         if not idir:
             print(f"{slug}: no imagery (georef.json) found -> no review images")
             continue
