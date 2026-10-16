@@ -1,0 +1,58 @@
+name: deep-features
+
+on:
+  push:
+    paths:
+      - ".github/workflows/deep_features.yml"
+      - "spirit_hollow/deep/extract_features.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deep-features-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install timm numpy pillow
+
+      - name: Extract features
+        run: python spirit_hollow/deep/extract_features.py
+
+      - name: Commit features
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add spirit_hollow/deep/features
+          if git diff --cached --quiet; then
+            echo "No feature changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "Add deep features for screenshots (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
