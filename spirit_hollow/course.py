@@ -12,11 +12,52 @@ Reading the imagery (winter, dormant grass):
     slight angle, so tree lines lean and throw shadows over the fairway (left
     side of 14 and 18 especially); those shadows are treated as grass.
   * ob = houses, the highway on 5 and back yards.
-Holes 1-3 weren't provided. Hole 9 has two tees (back and forward).
+Hole 3 wasn't provided. Holes 2 and 9 have two tees (back and forward).
 """
 import numpy as np
 
 HOLES = {
+    1: dict(
+        par=4, image="hole01.png", length=419,
+        tee=(470, 2622), dot270=(479, 1290),       # tee off-screen: 9 x the 30-yd dot spacing
+        zones=[
+            ("fairway", [(340, 1600), (600, 1600), (620, 1300), (600, 1150), (540, 1000), (470, 850),
+                         (420, 700), (300, 700), (320, 900), (330, 1100), (330, 1400)]),
+            ("native", [(170, 850), (300, 850), (325, 1100), (335, 1350), (300, 1450), (230, 1300),
+                        (150, 1050)]),                                           # tan long grass left
+            ("recovery", [(0, 1000), (150, 1000), (230, 1300), (265, 1700), (0, 1700)]),  # trees left
+            ("recovery", [(470, 600), (560, 800), (660, 1000), (760, 1200), (830, 1400), (920, 1400),
+                          (920, 540), (440, 540)]),  # tree line right, traced at the trunks: the
+                                                     # photo is tilted so the canopy leans over the fairway
+        ]),
+    "2B": dict(
+        par=5, image="hole02_b.png", length=616,
+        tee=(476, 1925), dot270=(433, 895),
+        zones=[
+            ("fairway", [(300, 1150), (470, 1150), (500, 1000), (510, 850), (500, 700), (470, 540),
+                         (340, 540), (330, 700), (310, 850), (300, 1000)]),
+            ("recovery", [(0, 540), (110, 540), (200, 700), (300, 900), (380, 1050), (440, 1200),
+                          (440, 1400), (0, 1400)]),                              # woods + creek left
+            ("native", [(200, 640), (290, 640), (300, 1000), (360, 1080), (330, 1080), (260, 900)]),
+            ("native", [(520, 640), (560, 640), (610, 800), (650, 950), (690, 1100), (700, 1200),
+                        (640, 1200), (600, 1050), (560, 900), (530, 750)]),      # long grass right
+        ]),
+    "2F": dict(
+        par=5, image="hole02_a.png", length=525,
+        tee=(337, 1800), dot270=(374, 953),
+        zones=[
+            ("fairway", [(290, 1450), (440, 1450), (460, 1200), (470, 1000), (470, 850), (440, 700),
+                         (400, 620), (280, 620), (250, 800), (260, 1000), (280, 1200)]),
+            ("recovery", [(0, 540), (60, 540), (200, 800), (250, 1000), (280, 1200), (300, 1450),
+                          (0, 1450)]),                                           # trees left
+            ("water", [(0, 700), (80, 700), (170, 900), (240, 1100), (270, 1300), (200, 1300),
+                       (130, 1100), (40, 900), (0, 850)]),                       # creek left
+            ("native", [(460, 880), (495, 880), (515, 1000), (535, 1450), (470, 1450), (468, 1200)]),
+            ("recovery", [(495, 850), (920, 850), (920, 1450), (540, 1450), (520, 1100), (505, 950)]),
+            ("ob", [(400, 540), (920, 540), (920, 850), (495, 850), (470, 700)]),  # houses right
+            ("sand", [(395, 800), (450, 800), (450, 860), (400, 860)]),          # right, ~300 out
+            ("sand", [(280, 670), (330, 670), (330, 720), (285, 720)]),          # left, ~350 out
+        ]),
     4: dict(
         par=5, image="hole04.png", length=520,
         tee=(508, 1907), dot270=(435, 1188),
@@ -256,6 +297,12 @@ PAR3 = {
 }
 
 NOTES = {
+    1: "Tree line down the right is traced at the trunks: the photo is tilted, so the canopy and "
+       "shadows look like they're over the fairway. Tan long grass left at ~230-330. Driver by 0.03.",
+    "2B": "From the back tee it's ~616: the extra 20-30 yds of driver still matters (0.05). Woods and "
+          "the creek left, long grass right of the cart path.",
+    "2F": "Creek and trees left, houses (OB) and trees right. Small bunker ~5 yds right of the line "
+          "at ~300 out, so aim left-centre. Driver by 0.09.",
     4: "Woods and long grass left; tree line then houses (OB) right. Wide enough for driver, which "
        "sets up ~225 for the second. Every club gives up ~0.1 to driver here.",
     5: "Highway (OB) left, houses (OB) right. Bunkers right at ~275-300 catch ~9% of drives even "
@@ -282,6 +329,9 @@ NOTES = {
 }
 
 AIM_AT = {
+    1: "Centre of the fairway",
+    "2B": "Centre of the fairway",
+    "2F": "Left-centre of the fairway, away from the bunker on the right",
     4: "Right-centre of the fairway",
     5: "Left-centre of the fairway, away from the right-side bunkers",
     6: "Centre of the fairway",
@@ -297,5 +347,5 @@ AIM_AT = {
     18: "Left side of the fairway, well away from the creek",
 }
 
-ORDER = [4, 5, 6, 7, 8, "9B", "9F", 10, 11, 12, 13, 14, 15, 16, 17, 18]
-LABELS = {"9B": "9 back tee", "9F": "9 forward tee"}
+ORDER = [1, "2B", "2F", 4, 5, 6, 7, 8, "9B", "9F", 10, 11, 12, 13, 14, 15, 16, 17, 18]
+LABELS = {"2B": "2 back tee", "2F": "2 forward tee", "9B": "9 back tee", "9F": "9 forward tee"}

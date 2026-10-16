@@ -69,7 +69,16 @@ def tee_baseline(hole_no):
     return float(np.interp(HOLES[hole_no]["length"], TEE_DIST, TEE_BASE))
 
 
+LONG_SLOPE = 0.0035   # strokes per yd beyond 300 (tour baseline keeps rising ~0.07 per 20 yds)
+
+
 def expected_strokes(lie, dist):
+    dist = np.asarray(dist, float)
+    beyond = np.maximum(dist - DIST[-1], 0) * LONG_SLOPE      # long par-5 second shots
+    return _expected_strokes(lie, dist) + beyond
+
+
+def _expected_strokes(lie, dist):
     dist = np.clip(dist, DIST[0], DIST[-1])
     if lie == "water":     # penalty stroke, drop in rough at same distance
         return 1.0 + np.interp(dist, DIST, BASELINE["rough"])
