@@ -286,6 +286,21 @@ Writes `course_data/spirit_hollow/acceptance.json` and `acceptance.md`.
 
 (updated by the architect; newest first)
 
+### 2026-10-16 18:58 UTC
+
+* v2 folders now exist: platform/ (`package.py`, `resolve.py`, `scorecard.py`, `osm_coverage.py`,
+  `fetch_package.py`; schema `course_package/1` at `packages/<slug>/`), vision_any/ (`fetch_any.py`,
+  `layers.py` tree mask from lidar HAG, water/long-grass masks, `mask_to_polys`; Actions run committed lidar
+  rasters; **no `gapfill()` yet**), product/ (`book.py`, `decide.py`, `package.py`, wind page template; no
+  `plan.py` yet), qa/ (`packages.py`, `golden_spirit_hollow.py`, `review.py`, `REPORT.md`).
+* Contract reconciled (9.1-1, 9.2, 9.4): adopt the platform's `course_package/1` and `packages/<slug>/`;
+  **add `zones_ll` (WGS84) per hole and `platform.package.reframe()`**; request files live in
+  `course_data/requests/<kind>_<slug>.json` for every kind (imagery already does this). Spirit Hollow
+  request renamed `requests/package_spirit_hollow.json`.
+* QA's REPORT.md reproduces `acceptance.py`'s numbers (oracle tees) and adds the as-built Black package
+  (tee error ~58 yds, length ~47 yds: expected, the hand map is not Black tees; read that table as
+  "Black vs traced boxes", not a geometry failure).
+
 ### 2026-10-16 18:45 UTC
 
 * v2 team onboarded (section 9): platform/, vision_any/, product/, qa/. Contracts: package/1 (9.2),
@@ -364,7 +379,7 @@ data and product; every other team reads or augments it.
 
 | Folder | Owner | Provides (interface) | Reads |
 |---|---|---|---|
-| `course_data/platform/` | data platform | `package.json` (9.2) via `course_package.yml`; Python: `build_package(name, state, tee_sets=None) -> dict` | OSM, scorecards (Actions), `geometry/`, `tees/` |
+| `course_data/platform/` | data platform | `package.json` (9.2) via `course_package.yml`; `package.py build <request>`; `reframe(package, tee_set)` | OSM, scorecards (Actions), `geometry/`, `tees/` |
 | `course_data/vision_any/` | hazard vision | `gapfill(package: dict, imagery_dir: str) -> dict` (9.3): the same package with vision zones added | package, NAIP, USGS 3DEP lidar (HAG) |
 | `course_data/product/` | product | `plan.py --package <path> --tees Black [--wind auto]` -> book PDF + wind page; `plan_course.yml` | package, `mozingo/tee_strategy`, `yardage_book`, `spirit_hollow/wind.py` |
 | `course_data/qa/` | QA | `packages.py` (lenient reader of package.json and holes.json), contract tests, Spirit Hollow golden comparison, visual review -> `qa/REPORT.md` | every package; `spirit_hollow/course.py` |
@@ -373,10 +388,15 @@ data and product; every other team reads or augments it.
 
 ### 9.1 Decisions
 
-1. **The package is frame-free.** Everything in `package.json` is WGS84 `[lon, lat]`. The pixel/yard
-   frame is chosen by the consumer per tee set (`render.Frame(tee_ll, aim_ll, ...)`), so one package
-   serves every tee set and the book, wind page and QA can't disagree about geometry. (holes.json /
-   course_model/1 stays as the v1 per-tee-set, pixel-frame artefact; `pipeline.py` keeps producing it.)
+1. **One package, two geometries.** Adopted: the platform's `course_package/1` (as built in
+   `platform/package.py`; its docstring is the field list). Its `zones` are in the **yard frame of the
+   chosen tee set** (`tee (0,0)`, `dot270 (0,-270)`), model-ready. Required addition (architect decision,
+   18:55): every hole also carries **`zones_ll`** = the same polygons in WGS84 `[{lie, poly: [[lon, lat]...],
+   src, p}]`, plus `tee_ll`, `aim_ll`, `green_ll`, `green_polygon_ll`. Frame-free consumers (vision_any, qa,
+   the wind page, a second tee set) use `zones_ll`; `zones` is derived from it by
+   **`platform.package.reframe(package, tee_set=None)`** (platform owns it; it reuses
+   `geometry.frame_for` with `frame="yard"`). Nobody edits `zones` directly. (`qa/packages.py` today drops
+   yard-frame zones because they are not lon/lat: it must read `zones_ll`.)
 2. **Golfer's tee set: Black** at Spirit Hollow (`tees/scorecard.json`: 6589 yds). Product default
    comes from the request file; Spirit Hollow requests say `"tees": "Black"`.
 3. **Triggering Actions.** `workflow_dispatch` from the sandbox returns 403. Every workflow that must be
@@ -398,14 +418,15 @@ data and product; every other team reads or augments it.
    supplies each tee set's `bearing_deg` (tee -> aim, degrees true) and an `exposure` hint (share of the
    landing zone's edge that is trees, from vision) so the product needs no geometry of its own.
 
-### 9.2 `package.json` (schema `package/1`)
+### 9.2 `package.json` (schema `course_package/1`, as adopted)
 
-Location: `course_data/courses/<state>/<slug>/package.json` (slug = `pipeline.slugify(name)`, state = 2-letter
-lower case, e.g. `courses/ia/spirit_hollow/`). Supporting files sit next to it (`osm.geojson`, `scorecard.json`,
-`imagery/` pointer, `qa.json`).
+Location: **`course_data/packages/<slug>/package.json`** (platform's choice; slug = course name slug, add
+`_<state>` only on a collision). Supporting files next to it (`raw/`, `course_auto.py`, `qa.md`,
+`screenshots/`). The authoritative field list is `platform/package.py`'s docstring; the block below is the
+**minimum every consumer may rely on** (field names as in course_package/1, plus `zones_ll`):
 
 ```json
-{"schema": "package/1",
+{"schema": "course_package/1",
  "course": {"name": "Spirit Hollow Golf Course", "slug": "spirit_hollow", "state": "IA", "city": "Burlington",
             "osm": {"type": "relation", "id": 13353211}, "center": [-91.1442, 40.7605],
             "bbox": [-91.1522, 40.7531, -91.1362, 40.7679], "boundary": [[lon, lat], ...]},
@@ -425,7 +446,8 @@ lower case, e.g. `courses/ia/spirit_hollow/`). Supporting files sit next to it (
         "tees": {"Black": {"tee_ll": [lon, lat], "aim_ll": [lon, lat], "bearing_deg": 352.1,
                            "method": "tee_axis", "confidence": 0.9, "measured_yards": 388.6, "card_yards": 391}},
         "tee_ll": [lon, lat], "aim_ll": [lon, lat], "bearing_deg": 352.1, "length": 391,
-        "zones": [{"lie": "water", "poly": [[lon, lat], ...], "src": "osm:way/123", "p": 1.0}],
+        "zones": [["water", [[x, y], ...]], ...],          "zone_src": ["osm:way/123", ...],
+        "zones_ll": [{"lie": "water", "poly": [[lon, lat], ...], "src": "osm:way/123", "p": 1.0}],
         "exposure": 0.7,
         "provenance": {"tee": "tees:tee_axis", "green": "osm_green", "par": "card", "zones": {"recovery": "vision:lidar_hag"}},
         "confidence": {"score": 0.77, "band": "check the flags", "osm": 0.42, "imagery": 0.0, "inferred": 0.58, "flags": []}}}}
@@ -442,7 +464,8 @@ the tee). The aim point on dog-legs is often off the landing area, so consumers 
 
 * Input: a package/1 dict and a directory with NAIP (`naip_rgb.tif`, `naip_nir.tif`) and lidar/DEM
   (`dem.tif`, DSM or HAG raster).
-* Output: a new dict (do not mutate the input) with zones appended per hole:
+* Output: a new dict (do not mutate the input) with zones appended to each hole's **`zones_ll`**, then
+  `platform.package.reframe(out)` (if importable) to refresh the yard-frame `zones`:
   `{"lie": "recovery"|"native"|"water", "poly": [[lon, lat], ...], "src": "vision:lidar_hag"|"vision:naip", "p": 0.0-1.0}`,
   `stages.vision = "ok: <model id>"`, `sources.vision = {model, trained_on, imagery_date, lidar_date}`,
   `holes[ref].exposure` set, and `confidence` recomputed (or left for `pipeline.confidence`).
@@ -453,8 +476,12 @@ the tee). The aim point on dog-legs is often off the landing area, so consumers 
 
 ### 9.4 Request files (Actions triggers)
 
-`course_data/requests/<kind>_<state>_<slug>.json`, committed and pushed; the workflow's `on.push.paths`
-matches its kind and it deletes nothing (the request stays as the record).
+**`course_data/requests/<kind>_<slug>.json`** (one shared folder for every kind; `imagery_fetch.yml`
+already watches `course_data/requests/imagery_*.json`), committed and pushed; the workflow's
+`on.push.paths` matches `course_data/requests/<kind>_*.json` and it deletes nothing (the request stays as
+the record). Platform: point `course_package.yml` at `course_data/requests/package_*.json` (not
+`platform/requests/`); the request body may also carry platform's fields (`yardages`, `pars`,
+`scorecard`, `tee_set`).
 
 ```json
 {"schema": "request/1", "kind": "package", "course": "Spirit Hollow", "state": "IA", "near": "40.76,-91.14",
@@ -463,9 +490,9 @@ matches its kind and it deletes nothing (the request stays as the record).
 
 | kind | Workflow | Writes |
 |---|---|---|
-| `package` | `course_package.yml` (platform) | `courses/<state>/<slug>/package.json` (+ OSM, scorecard) |
+| `package` | `course_package.yml` (platform) | `packages/<slug>/package.json` (+ raw OSM, scorecard) |
 | `imagery` | `imagery_fetch.yml` (imagery/vision_any) | NAIP + 3DEP for the package bbox |
-| `plan` | `plan_course.yml` (product) | `courses/<state>/<slug>/output/*.pdf`, wind page |
+| `plan` | `plan_course.yml` (product) | `packages/<slug>/output/*.pdf`, wind page |
 
 ### 9.5 What pipeline.py does in v2
 
