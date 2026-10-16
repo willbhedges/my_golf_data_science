@@ -9,10 +9,17 @@ Normalised card (the shape of course_data/tees/scorecard.json, which pipeline._n
 Sources, in the order package.py tries them (fetch_* need the web, i.e. GitHub Actions):
   1. request yardages        request["yardages"] = [..] or {"1": 391, ...} (+ optional "pars")
   2. local card file         request["scorecard"] = "course_data/tees/scorecard.json" (tees/ format)
-  3. golfify.io              structured Next.js JSON (tees[].holeInformation); slug guesses, then a
-                             DuckDuckGo site: search; the facility's state must match
-  4. the club website        OSM website=* page + links that look like a scorecard (html or pdf), parsed
+  then the web cards by source reliability (RELIABILITY; never by how well a card fits the OSM map: the
+  map is often older than the card, auto_course_lookup.md 6.3), the first one that passes the
+  consistency check (`consistency`: per-hole yards sum to each set's stated total, longer sets longer on
+  every hole) winning; when none passes, the most reliable one, flagged "mixed versions":
+  3. the club website        OSM website=* page + links that look like a scorecard (html or pdf), parsed
                              with the generic text-table parser (`parse_text`)
+  4. golfify.io              structured Next.js JSON (tees[].holeInformation); slug guesses, then a
+                             DuckDuckGo site: search; the facility's state must match
+  5. OpenGolfAPI             api.opengolfapi.org (free, no key, ODbL 1.0; 1,000 anonymous calls/day):
+                             /v1/courses/search then /api/v1/courses/{id} (`fetch_opengolfapi`,
+                             `parse_opengolfapi`). Attribute "Contains data from OpenGolfAPI".
 Raw pages are saved under packages/<slug>/raw/scorecard/ for audit.
 """
 import hashlib
@@ -65,6 +72,8 @@ def normalise(card):
             s.pop("holes")
         s.setdefault("colour", name.lower())
         s.setdefault("aliases", [])
+        if s.get("total") is not None:
+            s.setdefault("total_stated", s["total"])
         s.setdefault("total", sum(y for y in s["yards"] if y))
         sets[name] = s
     out["tee_sets"] = sets = dedupe_sets(sets)
@@ -154,6 +163,84 @@ def per_hole(card, set_name, refs):
     return out
 
 
+# ----------------------------------------------------------------------------- reliability / consistency
+RELIABILITY = ["club_site", "golfify", "opengolfapi"]          # most reliable first (tees/README.md sources)
+CARD_CONFIDENCE = dict(request=1.0, file=0.95, club_site=0.9, golfify=0.85, opengolfapi=0.75)
+SUM_TOL_YD = 15
+OPENGOLFAPI_ATTRIBUTION = ("Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; "
+                           "(c) OpenStreetMap contributors")
+
+
+def consistency(card, tol=SUM_TOL_YD):
+    """Internal card check: does each set's per-hole yardage add up to the total the source states, and is
+    every longer set at least as long on each hole (5-yd slack)? A source that mixes card versions (current
+    totals over stale per-hole numbers: OpenGolfAPI's Spirit Hollow Gold sums to 7268 under a 7550 total)
+    fails it. -> {ok, sets: {name: {sum, total_stated, diff, missing, ok}}, order_violations, flags}."""
+    sets = (card or {}).get("tee_sets") or {}
+    out, flags = {}, []
+    for name, t in sets.items():
+        ys = t.get("yards") or []
+        tot = sum(y for y in ys if y)
+        miss = sum(1 for y in ys if not y)
+        stated = t.get("total_stated")
+        diff = None if stated is None else tot - int(stated)
+        ok = (diff is None or abs(diff) <= tol) and miss == 0
+        out[name] = dict(sum=tot, total_stated=stated, diff=diff, missing=miss, ok=ok)
+        if diff is not None and abs(diff) > tol:
+            flags.append(f"{name}: holes sum to {tot} but the source says {stated} ({diff:+d}): mixed card versions")
+        if miss:
+            flags.append(f"{name}: {miss} hole(s) without a yardage")
+    order = sorted((n for n in sets if sets[n].get("yards")), key=lambda n: -(sets[n].get("total") or 0))
+    viol = []
+    for a, b in zip(order, order[1:]):
+        for i, (ya, yb) in enumerate(zip(sets[a]["yards"], sets[b]["yards"])):
+            if ya and yb and ya + 5 < yb:
+                viol.append(dict(hole=i + 1, longer=a, shorter=b, yards=[ya, yb]))
+    if viol:
+        flags.append(f"{len(viol)} hole(s) where a longer set is shorter than the next set: "
+                     + ", ".join(f"{v['hole']} {v['longer']} {v['yards'][0]} < {v['shorter']} {v['yards'][1]}"
+                                 for v in viol[:4]))
+    return dict(ok=not flags, sets=out, order_violations=viol, flags=flags)
+
+
+def _set_key(name, s):
+    return {str(name).lower(), str(s.get("colour") or "").lower()} | {str(a).lower() for a in s.get("aliases", [])}
+
+
+def cross_check(card, other, tol=10):
+    """Per-hole comparison of two cards' matching sets (name / colour / alias): {set: {other_set, mae,
+    holes_over_tol: [hole, ...]}}; sets without a counterpart are skipped."""
+    out = {}
+    osets = (other or {}).get("tee_sets") or {}
+    for name, s in ((card or {}).get("tee_sets") or {}).items():
+        k = _set_key(name, s) - {""}
+        hit = next((n for n, o in osets.items() if k & (_set_key(n, o) - {""})), None)
+        if not hit:
+            continue
+        a, b = s.get("yards") or [], osets[hit].get("yards") or []
+        d = [(i + 1, abs(x - y)) for i, (x, y) in enumerate(zip(a, b)) if x and y]
+        if not d:
+            continue
+        out[name] = dict(other_set=hit, mae=round(sum(v for _, v in d) / len(d), 1),
+                         holes_over_tol=[h for h, v in d if v > tol])
+    return out
+
+
+def choose_card(cards):
+    """cards = [(kind, card, url)] from the web. -> (kind, card, url, consistency) by RELIABILITY: the most
+    reliable card that passes `consistency`, else the most reliable one (flagged). Never by map fit."""
+    ranked = sorted([c for c in cards if c[1]], key=lambda c: RELIABILITY.index(c[0]) if c[0] in RELIABILITY
+                    else len(RELIABILITY))
+    if not ranked:
+        return None
+    checked = [(c, consistency(c[1])) for c in ranked]
+    for c, chk in checked:
+        if chk["ok"]:
+            return (*c, chk)
+    c, chk = checked[0]
+    return (*c, chk)
+
+
 # ----------------------------------------------------------------------------- parsers
 def parse_golfify(next_data):
     """golfify.io __NEXT_DATA__ (dict or JSON text) -> (card, facility dict)."""
@@ -181,6 +268,7 @@ def parse_golfify(next_data):
                           aliases=sorted({str(t.get("teeColor") or "").lower()} - {""}),
                           yards=yards, par=pars, handicap=[h.get("si") for h in hi],
                           total=t.get("totalDistance") or sum(y for y in yards if y),
+                          total_stated=t.get("totalDistance"),
                           rating=t.get("rating"), slope=t.get("slope"), source="golfify")
     if not sets:
         return None, fac
@@ -189,6 +277,55 @@ def parse_golfify(next_data):
                 tee_sets=sets, facility={k: fac.get(k) for k in ("clubName", "city", "state", "address",
                                                                  "latitude", "longitude", "numberOfHoles", "website")})
     return card, fac
+
+
+def parse_opengolfapi(detail):
+    """OpenGolfAPI /api/v1/courses/{id} JSON (or a research/raw wrapper {"json": ...}) -> card or None.
+    One set per tee colour: tees[] gives name, colour, gender, rating, slope and the stated total;
+    holes_data[].yardages{colour} the per-hole yards. A colour listed for both genders keeps the men's
+    rating and puts the other in alt_ratings."""
+    d = detail.get("json", detail) if isinstance(detail, dict) else None
+    if not d:
+        return None
+    holes = sorted(d.get("holes_data") or [], key=lambda h: h.get("number") or 0)
+    if d.get("holes") in (9, 18):                         # the 9-hole Watson course lists 25 rows
+        holes = [h for h in holes if 1 <= int(h.get("number") or 0) <= d["holes"]]
+    if not holes:
+        return None
+    per = {}
+    for h in holes:
+        for col, y in (h.get("yardages") or {}).items():
+            per.setdefault(str(col).lower(), {})[int(h["number"])] = y
+    n = len(holes)
+    sets = {}
+    tees = sorted(d.get("tees") or [], key=lambda t: 0 if str(t.get("gender", "")).lower().startswith("m") else 1)
+    for t in tees:
+        col = str(t.get("tee_color") or t.get("tee_name") or "").lower()
+        name = str(t.get("tee_name") or col or "Tee").strip().title()
+        if col not in per:
+            continue
+        if name in sets:
+            sets[name].setdefault("alt_ratings", []).append(dict(
+                name=f"{name} ({t.get('gender')})", rating=t.get("course_rating"), slope=t.get("slope"),
+                total=t.get("yardage"), par=t.get("par")))
+            continue
+        ys = [per[col].get(i + 1) for i in range(n)]
+        sets[name] = dict(colour=col, aliases=sorted({col} - {""}), yards=ys, total=sum(y for y in ys if y),
+                          total_stated=t.get("yardage"), rating=t.get("course_rating"), slope=t.get("slope"),
+                          gender=t.get("gender"), source="opengolfapi")
+    for col, ys_ in per.items():                         # colours with yardages but no tee entry
+        if not any(s["colour"] == col for s in sets.values()):
+            ys = [ys_.get(i + 1) for i in range(n)]
+            sets[col.title()] = dict(colour=col, aliases=[col], yards=ys, total=sum(y for y in ys if y),
+                                     source="opengolfapi")
+    if not sets:
+        return None
+    sets = dict(sorted(sets.items(), key=lambda kv: -(kv[1].get("total") or 0)))
+    return dict(schema="scorecard/1", source=f"https://api.opengolfapi.org/api/v1/courses/{d.get('id')}",
+                par=[h.get("par") for h in holes], handicap=[h.get("handicap_index") for h in holes],
+                tee_sets=sets, attribution=OPENGOLFAPI_ATTRIBUTION, licence="ODbL-1.0",
+                facility={k: d.get(k) for k in ("id", "course_name", "club_name", "city", "state", "lat", "lng",
+                                                "holes", "yardage", "website")})
 
 
 _NUM = re.compile(r"^\d{1,3}$")
@@ -251,6 +388,8 @@ def parse_rows(text):
             hcp = hcp or vals
         elif _label_ok(label) and all(40 <= v <= 720 for v in vals) and label not in sets:
             sets[label.title()] = dict(colour=ll.split()[0], aliases=[ll], yards=vals, total=sum(vals))
+            if len(nums) in (19, 21) and nums[-1] > 720:                 # a Total column as printed
+                sets[label.title()]["total_stated"] = nums[-1]
     return sets, par, hcp
 
 
@@ -513,3 +652,103 @@ def fetch_club_site(website, raw_dir, n_holes=None, osm_lengths=None, max_pages=
             if best is None or len(card["tee_sets"]) > len(best[0]["tee_sets"]):
                 best = (card, u)
     return best if best else (None, f"club site: no parsable scorecard in {len(pages)} pages")
+
+
+# ----------------------------------------------------------------------------- OpenGolfAPI (Actions)
+OPENGOLFAPI = "https://api.opengolfapi.org"
+OPENGOLFAPI_UA = "my_golf_data_science course package builder (GitHub Actions; contact via the repo)"
+OPENGOLFAPI_MIN_INTERVAL_S = 1.1           # well under 1,000 anonymous calls/day/IP
+_last_call = [0.0]
+
+
+def _name_tokens(name):
+    stop = {"golf", "course", "club", "country", "the", "at", "and", "links", "memorial", "gc", "cc"}
+    return {w for w in re.split(r"[^a-z0-9]+", str(name).lower()) if w and w not in stop}
+
+
+def _km(a_lonlat, b_lonlat):
+    import math
+    la = math.radians((a_lonlat[1] + b_lonlat[1]) / 2)
+    return math.hypot((a_lonlat[0] - b_lonlat[0]) * math.cos(la), a_lonlat[1] - b_lonlat[1]) * 111.32
+
+
+def pick_opengolfapi_candidate(cands, name, state, center=None, max_km=5.0):
+    """Best search hit: same state, shares a name word, and (when center [lon, lat] is known) within max_km.
+    -> (candidate | None, reason)."""
+    want = _name_tokens(name)
+    st = pc.state_code(state).upper() if state else None
+    best = None
+    for c in cands or []:
+        if st and str(c.get("state", "")).upper() not in (st, str(pc.STATES.get(st, st)).upper()):
+            continue
+        overlap = len(want & _name_tokens(c.get("course_name") or c.get("name") or ""))
+        if not overlap:
+            continue
+        km = None
+        if center and c.get("latitude") is not None and c.get("longitude") is not None:
+            km = _km(center, (c["longitude"], c["latitude"]))
+            if km > max_km:
+                continue
+        score = (overlap, -(km if km is not None else max_km))
+        if best is None or score > best[0]:
+            best = (score, c, km)
+    if best is None:
+        return None, f"opengolfapi: no candidate in {state} matching '{name}'" + (f" within {max_km} km" if center else "")
+    return best[1], f"opengolfapi: {best[1].get('course_name') or best[1].get('name')} ({best[2] and round(best[2], 2)} km)"
+
+
+def _oga_get(session, url, sleep=time.sleep, now=time.time):
+    """GET with the anonymous-tier courtesy interval and one Retry-After wait on 429."""
+    for attempt in (0, 1):
+        wait = OPENGOLFAPI_MIN_INTERVAL_S - (now() - _last_call[0])
+        if wait > 0:
+            sleep(wait)
+        r = session.get(url, timeout=30, headers={"User-Agent": OPENGOLFAPI_UA, "Accept": "application/json"})
+        _last_call[0] = now()
+        if r.status_code == 429 and attempt == 0:
+            try:
+                ra = float(r.headers.get("Retry-After", 30))
+            except ValueError:
+                ra = 30.0
+            sleep(min(max(ra, 1.0), 60.0))
+            continue
+        return r
+    return r
+
+
+def fetch_opengolfapi(name, state, center, raw_dir, session=None, sleep=time.sleep, max_calls=4):
+    """OpenGolfAPI search + detail (GitHub Actions only) -> (card, url) or (None, reason). At most
+    max_calls requests; raw JSON saved to raw_dir/opengolfapi_*.json (ODbL: keep the attribution)."""
+    s = session or _session()
+    os.makedirs(raw_dir, exist_ok=True)
+    calls = 0
+    core = pc.core_name(name) if hasattr(pc, "core_name") else name
+    queries = [core, name] if core and core != name else [name]
+    cand, why = None, "opengolfapi: not tried"
+    for q in queries:
+        if calls >= max_calls:
+            break
+        url = f"{OPENGOLFAPI}/v1/courses/search?q={quote_plus(q)}&state={pc.state_code(state)}&limit=20"
+        r = _oga_get(s, url, sleep=sleep)
+        calls += 1
+        if r.status_code != 200:
+            why = f"opengolfapi search HTTP {r.status_code}"
+            continue
+        js = r.json()
+        pc.write_json(os.path.join(raw_dir, "opengolfapi_search.json"), dict(url=url, json=js))
+        cand, why = pick_opengolfapi_candidate(js.get("courses") or [], name, state, center)
+        if cand:
+            break
+    if not cand:
+        return None, why
+    url = f"{OPENGOLFAPI}/api/v1/courses/{cand['id']}"
+    r = _oga_get(s, url, sleep=sleep)
+    if r.status_code != 200:
+        return None, f"opengolfapi detail HTTP {r.status_code} ({why})"
+    js = r.json()
+    pc.write_json(os.path.join(raw_dir, f"opengolfapi_{cand['id']}.json"), dict(url=url, json=js))
+    card = parse_opengolfapi(js)
+    if not card:
+        return None, f"opengolfapi: no tees / holes_data for {cand.get('course_name')} ({why})"
+    card["source"] = url
+    return card, url

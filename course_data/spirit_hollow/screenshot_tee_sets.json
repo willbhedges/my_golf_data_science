@@ -1,0 +1,691 @@
+{
+ "schema": "screenshot_tee_sets/1",
+ "course": "Spirit Hollow Golf Course",
+ "app": "18Birdies",
+ "golfer_set": "Black",
+ "doc": "python3 course_data/tees/screenshot_sets.py          # rewrite course_data/spirit_hollow/screenshot_tee_sets.json",
+ "rule": "set = card set nearest the screenshot's measured length; position (hand_zones_ll tee_ll vs tees/tee_positions.json) is the cross-check",
+ "sources": {
+  "measured": "spirit_hollow/course.py HOLES[k]['length'] / PAR3[k]['center']",
+  "card": "course_data/tees/scorecard.json",
+  "position": "course_data/spirit_hollow/hand_zones_ll.json",
+  "placements": "course_data/tees/tee_positions.json"
+ },
+ "holes": {
+  "1": {
+   "set": "Gold",
+   "measured_length": 413.0,
+   "card_yards": {
+    "Gold": 426,
+    "Black": 391,
+    "White": 376,
+    "Rust": 299
+   },
+   "length_gap": {
+    "Gold": -13.0,
+    "Black": 22.0,
+    "White": 37.0,
+    "Rust": 114.0
+   },
+   "length_margin": 9.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 8.2,
+    "Black": 40.0,
+    "White": 50.1,
+    "Rust": 136.7
+   },
+   "position_nearest": "Gold",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923964594,
+    "yd": 8.9
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": false,
+   "note": "Gold box: 413 measured vs Gold 426 / Black 391, and the screenshot tee is 8 yds from the Gold box vs 40 from Black (commit 55b3ae4)."
+  },
+  "2B": {
+   "set": "Gold",
+   "measured_length": 609.0,
+   "card_yards": {
+    "Gold": 607,
+    "Black": 507,
+    "White": 452,
+    "Rust": 390
+   },
+   "length_gap": {
+    "Gold": 2.0,
+    "Black": 102.0,
+    "White": 157.0,
+    "Rust": 219.0
+   },
+   "length_margin": 100.0,
+   "par": 5,
+   "position_yd": {
+    "Gold": 126.1,
+    "Black": 185.5,
+    "White": 181.7,
+    "Rust": 232.4
+   },
+   "position_nearest": "Gold",
+   "registration": "screenshot_match:2F+refined",
+   "nearest_osm_box": {
+    "osm_id": 923993469,
+    "yd": 2.9
+   },
+   "confidence": "medium",
+   "flags": [
+    "screenshot tee > 25 yds from every placed set (registration or unmapped box)"
+   ],
+   "golfer_set": false,
+   "note": "Gold: 609 vs the new 607 back tee, which has no OSM box (walk-back in tee_positions)."
+  },
+  "2F": {
+   "set": "Black",
+   "measured_length": 520.0,
+   "card_yards": {
+    "Gold": 607,
+    "Black": 507,
+    "White": 452,
+    "Rust": 390
+   },
+   "length_gap": {
+    "Gold": -87.0,
+    "Black": 13.0,
+    "White": 68.0,
+    "Rust": 130.0
+   },
+   "length_margin": 55.0,
+   "par": 5,
+   "position_yd": {
+    "Gold": 112.2,
+    "Black": 99.9,
+    "White": 85.1,
+    "Rust": 137.5
+   },
+   "position_nearest": "White",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923972946,
+    "yd": 5.6
+   },
+   "confidence": "medium",
+   "flags": [
+    "position nearest White by < 15 yds",
+    "screenshot tee > 25 yds from every placed set (registration or unmapped box)"
+   ],
+   "golfer_set": true
+  },
+  "4": {
+   "set": "Black",
+   "measured_length": 520.0,
+   "card_yards": {
+    "Gold": 607,
+    "Black": 532,
+    "White": 501,
+    "Rust": 439
+   },
+   "length_gap": {
+    "Gold": -87.0,
+    "Black": -12.0,
+    "White": 19.0,
+    "Rust": 81.0
+   },
+   "length_margin": 7.0,
+   "par": 5,
+   "position_yd": {
+    "Gold": 81.5,
+    "Black": 8.8,
+    "White": 25.7,
+    "Rust": 73.1
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923974657,
+    "yd": 3.4
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": true
+  },
+  "5": {
+   "set": "Black",
+   "measured_length": 397.0,
+   "card_yards": {
+    "Gold": 468,
+    "Black": 384,
+    "White": 361,
+    "Rust": 273
+   },
+   "length_gap": {
+    "Gold": -71.0,
+    "Black": 13.0,
+    "White": 36.0,
+    "Rust": 124.0
+   },
+   "length_margin": 23.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 70.1,
+    "Black": 16.5,
+    "White": 44.0,
+    "Rust": 134.7
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923958975,
+    "yd": 4.2
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": true
+  },
+  "6": {
+   "set": "Black",
+   "measured_length": 421.0,
+   "card_yards": {
+    "Gold": 445,
+    "Black": 408,
+    "White": 365,
+    "Rust": 303
+   },
+   "length_gap": {
+    "Gold": -24.0,
+    "Black": 13.0,
+    "White": 56.0,
+    "Rust": 118.0
+   },
+   "length_margin": 11.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 33.1,
+    "Black": 19.6,
+    "White": 41.9,
+    "Rust": 121.5
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923976293,
+    "yd": 3.3
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": true
+  },
+  "8": {
+   "set": "Black",
+   "measured_length": 375.0,
+   "card_yards": {
+    "Gold": 431,
+    "Black": 383,
+    "White": 365,
+    "Rust": 332
+   },
+   "length_gap": {
+    "Gold": -56.0,
+    "Black": -8.0,
+    "White": 10.0,
+    "Rust": 43.0
+   },
+   "length_margin": 2.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 56.8,
+    "Black": 5.6,
+    "White": 12.5,
+    "Rust": 48.6
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration",
+   "nearest_osm_box": {
+    "osm_id": 923979073,
+    "yd": 0.8
+   },
+   "confidence": "medium",
+   "flags": [
+    "length margin < 5 yds"
+   ],
+   "golfer_set": true
+  },
+  "9B": {
+   "set": "Gold",
+   "measured_length": 399.0,
+   "card_yards": {
+    "Gold": 410,
+    "Black": 365,
+    "White": 323,
+    "Rust": 266
+   },
+   "length_gap": {
+    "Gold": -11.0,
+    "Black": 34.0,
+    "White": 76.0,
+    "Rust": 133.0
+   },
+   "length_margin": 23.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 49.2,
+    "Black": 82.3,
+    "White": 98.6,
+    "Rust": 150.3
+   },
+   "position_nearest": "Gold",
+   "registration": "naip_registration",
+   "nearest_osm_box": {
+    "osm_id": 923980732,
+    "yd": 2.3
+   },
+   "confidence": "medium",
+   "flags": [
+    "screenshot tee > 25 yds from every placed set (registration or unmapped box)"
+   ],
+   "golfer_set": false,
+   "note": "Gold: 399 vs Gold 410 / Black 365."
+  },
+  "9F": {
+   "set": "Black",
+   "measured_length": 373.0,
+   "card_yards": {
+    "Gold": 410,
+    "Black": 365,
+    "White": 323,
+    "Rust": 266
+   },
+   "length_gap": {
+    "Gold": -37.0,
+    "Black": 8.0,
+    "White": 50.0,
+    "Rust": 107.0
+   },
+   "length_margin": 29.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 31.0,
+    "Black": 8.9,
+    "White": 60.7,
+    "Rust": 119.9
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration",
+   "nearest_osm_box": {
+    "osm_id": 923980730,
+    "yd": 1.9
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": true
+  },
+  "10": {
+   "set": "Black",
+   "measured_length": 521.0,
+   "card_yards": {
+    "Gold": 575,
+    "Black": 502,
+    "White": 457,
+    "Rust": 394
+   },
+   "length_gap": {
+    "Gold": -54.0,
+    "Black": 19.0,
+    "White": 64.0,
+    "Rust": 127.0
+   },
+   "length_margin": 35.0,
+   "par": 5,
+   "position_yd": {
+    "Gold": 48.3,
+    "Black": 18.8,
+    "White": 59.7,
+    "Rust": 145.6
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923984304,
+    "yd": 6.3
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": true
+  },
+  "11": {
+   "set": "Gold",
+   "measured_length": 348.0,
+   "card_yards": {
+    "Gold": 352,
+    "Black": 338,
+    "White": 305,
+    "Rust": 252
+   },
+   "length_gap": {
+    "Gold": -4.0,
+    "Black": 10.0,
+    "White": 43.0,
+    "Rust": 96.0
+   },
+   "length_margin": 6.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 1.5,
+    "Black": 7.4,
+    "White": 46.9,
+    "Rust": 99.2
+   },
+   "position_nearest": "Gold",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923989256,
+    "yd": 3.1
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": false,
+   "note": "Gold: 348 vs Gold 352 / Black 338; Gold and Black share one OSM box here, 6 yds apart on it."
+  },
+  "13": {
+   "set": "Black",
+   "measured_length": 407.0,
+   "card_yards": {
+    "Gold": 480,
+    "Black": 409,
+    "White": 389,
+    "Rust": 298
+   },
+   "length_gap": {
+    "Gold": -73.0,
+    "Black": -2.0,
+    "White": 18.0,
+    "Rust": 109.0
+   },
+   "length_margin": 16.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 67.9,
+    "Black": 1.5,
+    "White": 26.2,
+    "Rust": 120.6
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923990402,
+    "yd": 1.5
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": true
+  },
+  "14": {
+   "set": "Black",
+   "measured_length": 418.0,
+   "card_yards": {
+    "Gold": 467,
+    "Black": 393,
+    "White": 370,
+    "Rust": 328
+   },
+   "length_gap": {
+    "Gold": -49.0,
+    "Black": 25.0,
+    "White": 48.0,
+    "Rust": 90.0
+   },
+   "length_margin": 23.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 44.3,
+    "Black": 35.7,
+    "White": 55.5,
+    "Rust": 104.6
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923991717,
+    "yd": 0.7
+   },
+   "confidence": "medium",
+   "flags": [
+    "screenshot tee > 25 yds from every placed set (registration or unmapped box)"
+   ],
+   "golfer_set": true
+  },
+  "16": {
+   "set": "Black",
+   "measured_length": 388.0,
+   "card_yards": {
+    "Gold": 434,
+    "Black": 378,
+    "White": 331,
+    "Rust": 282
+   },
+   "length_gap": {
+    "Gold": -46.0,
+    "Black": 10.0,
+    "White": 57.0,
+    "Rust": 106.0
+   },
+   "length_margin": 36.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 41.7,
+    "Black": 30.9,
+    "White": 73.1,
+    "Rust": 121.0
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration",
+   "nearest_osm_box": {
+    "osm_id": 923991718,
+    "yd": 7.9
+   },
+   "confidence": "medium",
+   "flags": [
+    "screenshot tee > 25 yds from every placed set (registration or unmapped box)"
+   ],
+   "golfer_set": true
+  },
+  "17": {
+   "set": "Black",
+   "measured_length": 453.0,
+   "card_yards": {
+    "Gold": 496,
+    "Black": 445,
+    "White": 397,
+    "Rust": 341
+   },
+   "length_gap": {
+    "Gold": -43.0,
+    "Black": 8.0,
+    "White": 56.0,
+    "Rust": 112.0
+   },
+   "length_margin": 35.0,
+   "par": 4,
+   "position_yd": {
+    "Gold": 71.6,
+    "Black": 29.9,
+    "White": 69.8,
+    "Rust": 124.7
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration",
+   "nearest_osm_box": {
+    "osm_id": 923993464,
+    "yd": 4.6
+   },
+   "confidence": "medium",
+   "flags": [
+    "screenshot tee > 25 yds from every placed set (registration or unmapped box)"
+   ],
+   "golfer_set": true
+  },
+  "18": {
+   "set": "Black",
+   "measured_length": 516.0,
+   "card_yards": {
+    "Gold": 579,
+    "Black": 521,
+    "White": 483,
+    "Rust": 423
+   },
+   "length_gap": {
+    "Gold": -63.0,
+    "Black": -5.0,
+    "White": 33.0,
+    "Rust": 93.0
+   },
+   "length_margin": 28.0,
+   "par": 5,
+   "position_yd": {
+    "Gold": 40.7,
+    "Black": 6.2,
+    "White": 35.0,
+    "Rust": 94.4
+   },
+   "position_nearest": "Black",
+   "registration": "naip_registration+refined",
+   "nearest_osm_box": {
+    "osm_id": 923993470,
+    "yd": 6.2
+   },
+   "confidence": "high",
+   "flags": [],
+   "golfer_set": true
+  },
+  "7": {
+   "set": "Black",
+   "measured_length": 159.0,
+   "card_yards": {
+    "Gold": 165,
+    "Black": 154,
+    "White": 136,
+    "Rust": 108
+   },
+   "length_gap": {
+    "Gold": -6.0,
+    "Black": 5.0,
+    "White": 23.0,
+    "Rust": 51.0
+   },
+   "length_margin": 1.0,
+   "par": 3,
+   "position_yd": null,
+   "confidence": "low",
+   "flags": [
+    "length margin < 5 yds",
+    "length only (no georeferenced tee)"
+   ],
+   "golfer_set": true,
+   "note": "Length only: 159 sits between Black 154 and Gold 165; Black by 1 yd."
+  },
+  "12": {
+   "set": "Black",
+   "measured_length": 177.0,
+   "card_yards": {
+    "Gold": 210,
+    "Black": 186,
+    "White": 163,
+    "Rust": 120
+   },
+   "length_gap": {
+    "Gold": -33.0,
+    "Black": -9.0,
+    "White": 14.0,
+    "Rust": 57.0
+   },
+   "length_margin": 5.0,
+   "par": 3,
+   "position_yd": null,
+   "confidence": "medium",
+   "flags": [
+    "length only (no georeferenced tee)"
+   ],
+   "golfer_set": true
+  },
+  "3": {
+   "set": "Black",
+   "measured_length": 148.0,
+   "card_yards": {
+    "Gold": 183,
+    "Black": 148,
+    "White": 134,
+    "Rust": 100
+   },
+   "length_gap": {
+    "Gold": -35.0,
+    "Black": 0.0,
+    "White": 14.0,
+    "Rust": 48.0
+   },
+   "length_margin": 14.0,
+   "par": 3,
+   "position_yd": null,
+   "confidence": "medium",
+   "flags": [
+    "length only (no georeferenced tee)"
+   ],
+   "golfer_set": true
+  },
+  "15": {
+   "set": "White",
+   "measured_length": 134.0,
+   "card_yards": {
+    "Gold": 215,
+    "Black": 145,
+    "White": 132,
+    "Rust": 105
+   },
+   "length_gap": {
+    "Gold": -81.0,
+    "Black": -11.0,
+    "White": 2.0,
+    "Rust": 29.0
+   },
+   "length_margin": 9.0,
+   "par": 3,
+   "position_yd": null,
+   "confidence": "medium",
+   "flags": [
+    "length only (no georeferenced tee)"
+   ],
+   "golfer_set": false,
+   "note": "Length only (par 3, no georeferenced tee): 134 is nearest White 132 (Black 145)."
+  }
+ },
+ "summary": {
+  "Gold": [
+   "1",
+   "2B",
+   "9B",
+   "11"
+  ],
+  "Black": [
+   "2F",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9F",
+   "10",
+   "12",
+   "13",
+   "14",
+   "16",
+   "17",
+   "18"
+  ],
+  "White": [
+   "15"
+  ],
+  "Rust": []
+ }
+}

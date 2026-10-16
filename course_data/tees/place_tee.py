@@ -238,6 +238,142 @@ def place_tee(line: Sequence[tuple[float, float]], tees: Iterable[dict], yardage
                 line_length_yd=round(lop.length, 1), candidates=summary)
 
 
+# --------------------------------------------------------------------------- joint assignment (Q2)
+SOURCE_COST = {"osm": 0.0, "borrowed": 4.0, "lidar": 6.0}
+
+
+def _hole_frame(line, green=None):
+    line = [tuple(p) for p in line]
+    if green is not None:
+        line = line[:-1] + [tuple(green)]
+    lat0 = sum(p[0] for p in line) / len(line)
+    lon0 = sum(p[1] for p in line) / len(line)
+    fr = Frame(lat0, lon0)
+    return fr, LineOfPlay([fr.fwd(*p) for p in line])
+
+
+def _candidates(fr, lop, tees, source, max_offset_yd, max_behind_yd):
+    out = []
+    for t in tees:
+        ring = [fr.fwd(*p) for p in t["coords"]]
+        if len(ring) > 1 and ring[0] == ring[-1]:
+            ring = ring[:-1]
+        c = polygon_centroid(ring)
+        along, off = lop.first_leg_coords(c)
+        if abs(off) > max_offset_yd or along > 0.5 * lop.length or along < -max_behind_yd:
+            continue
+        m = _tee_metrics(lop, ring, c)
+        out.append(dict(tee_id=t.get("id"), centroid_xy=c, offset_yd=off,
+                        source=t.get("source") or source, **m))
+    return out
+
+
+def assign_tee_sets(line, tees, yardages: dict, *, green=None, borrow=(), max_offset_yd: float = 45.0,
+                    max_behind_yd: float = 150.0, max_err_yd: float = 25.0, borrow_err_yd: float = 10.0,
+                    centre_tol_yd: float = 3.0, walkback_cost: float = 30.0, gap_weight: float = 0.25, gap_cap_yd: float = 10.0,
+                    order_tol_yd: float = 2.0, order_penalty: float = 100.0, source_cost=None,
+                    offset_free_yd: float = 45.0, offset_cost: float = 0.1) -> dict:
+    """Ordered joint assignment of every tee set on one hole (auto_course_lookup.md 4.2-1).
+
+    Sets are taken back to front by card yards (Gold >= Black >= White >= Rust); each picks one candidate
+    box (sharing allowed) or a walk-back, so that the placed points keep that order along the line of play
+    (a longer set never sits in front of a shorter one, `order_tol_yd` slack). Distances are measured to
+    `green` (the green polygon centroid; else the line's last vertex) along the hole line, through its
+    turning points (LineOfPlay). Cost, minimised exactly by dynamic programming over the sets:
+
+        sum_s [ err_s + source_cost(box) + 0.05 * |centroid - card| ]
+          + gap_weight * sum min(|e_s - e_s+1|, gap_cap_yd)      (consecutive sets, both on boxes)
+        err_s = gap from the card yardage to the box's front..back extent (0 inside it); e_s = signed error
+        walk-back (no box within max_err_yd) costs `walkback_cost`; an order violation `order_penalty`;
+        a box more than offset_free_yd off the first leg costs offset_cost per extra yard (only reachable
+        when max_offset_yd > offset_free_yd: dog-legged back tees set off to the side, e.g. SH 2 Gold).
+
+    The gap term is the 'difference' trick: matched gaps between sets are cheap even when the green centre
+    is a few yards off, so one green error cannot shuffle the sets. `tees` = the hole's own candidates
+    ({id, coords, source: osm|lidar}); `borrow` = other holes' boxes, used only within `borrow_err_yd`
+    (shared tee complexes). Returns {set: place_tee-shaped dict + source, borrowed, order_ok, shared_with}.
+    """
+    sc = dict(SOURCE_COST, **(source_cost or {}))
+    fr, lop = _hole_frame(line, green)
+    cands = _candidates(fr, lop, tees, "osm", max_offset_yd, max_behind_yd)
+    for c in _candidates(fr, lop, borrow, "osm", max_offset_yd, max_behind_yd):
+        c["borrowed"] = True
+        cands.append(c)
+    names = sorted((n for n, y in yardages.items() if y), key=lambda n: -float(yardages[n]))
+    options = []
+    for n in names:
+        y = float(yardages[n])
+        opts = []
+        for i, c in enumerate(cands):
+            p = min(max(y, c["d_front"]), c["d_back"])
+            err = abs(y - p)
+            lim = borrow_err_yd if c.get("borrowed") else max_err_yd
+            if err > lim:
+                continue
+            cost = err + 0.05 * abs(c["d_centroid"] - y) + sc.get("borrowed" if c.get("borrowed") else c["source"], 0.0) \
+                + offset_cost * max(0.0, abs(c["offset_yd"]) - offset_free_yd)
+            opts.append(dict(cand=i, p=p, e=p - y, err=err, cost=cost))
+        opts.append(dict(cand=None, p=y, e=0.0, err=None, cost=walkback_cost))
+        options.append(opts)
+    # DP over sets (back to front)
+    best = [dict() for _ in names]
+    for j, o in enumerate(options[0] if options else []):
+        best[0][j] = (o["cost"], None)
+    for i in range(1, len(names)):
+        for j, o in enumerate(options[i]):
+            cand = []
+            for jp, (cp, _) in best[i - 1].items():
+                op = options[i - 1][jp]
+                pen = 0.0 if op["p"] + order_tol_yd >= o["p"] else order_penalty
+                gap = 0.0 if op["cand"] is None or o["cand"] is None else min(abs(op["e"] - o["e"]), gap_cap_yd)
+                cand.append((cp + o["cost"] + gap_weight * gap + pen, jp))
+            best[i][j] = min(cand)
+    pick = [None] * len(names)
+    if names:
+        j = min(best[-1], key=lambda k: best[-1][k][0])
+        for i in range(len(names) - 1, -1, -1):
+            pick[i] = j
+            j = best[i][j][1]
+    out = {}
+    for i, n in enumerate(names):
+        o = options[i][pick[i]]
+        y = float(yardages[n])
+        if o["cand"] is None:
+            q = lop.point_at_distance(y)
+            lat, lon = fr.inv(*q)
+            near = min((abs(y - min(max(y, c["d_front"]), c["d_back"])) for c in cands), default=None)
+            r = dict(lat=lat, lon=lon, method="walkback", tee_id=None, confidence="low",
+                     error_yd=None if near is None else round(near, 1), dist_yd=round(y, 1), d_centroid=None,
+                     d_front=None, d_back=None, line_length_yd=round(lop.length, 1), source="hole_line")
+        else:
+            c = cands[o["cand"]]
+            if abs(c["d_centroid"] - y) <= centre_tol_yd:
+                q, method = c["centroid_xy"], "tee_centroid"
+            else:
+                q = _point_on_axis(lop, c["centroid_xy"], y, c["d_front"], c["d_back"])
+                method = "tee_axis"
+            if c["source"] == "lidar":
+                method = "lidar_pad"
+            lat, lon = fr.inv(*q)
+            conf = "high" if o["err"] <= 5 else "medium" if o["err"] <= 15 else "low"
+            if c["source"] == "lidar" and conf == "high":
+                conf = "medium"
+            r = dict(lat=lat, lon=lon, method=method, tee_id=c["tee_id"], confidence=conf,
+                     error_yd=round(o["err"], 1), dist_yd=round(lop.dist_to_green(q), 1),
+                     d_centroid=round(c["d_centroid"], 1), d_front=round(c["d_front"], 1),
+                     d_back=round(c["d_back"], 1), source=c["source"])
+            if c.get("borrowed"):
+                r["borrowed"] = True
+        out[n] = r
+    for i, n in enumerate(names):                     # order check on the result
+        r = out[n]
+        r["order_ok"] = all(out[m]["dist_yd"] + order_tol_yd >= r["dist_yd"] for m in names[:i]) and \
+            all(r["dist_yd"] + order_tol_yd >= out[m]["dist_yd"] for m in names[i + 1:])
+        r["shared_with"] = sorted(m for m, o in out.items()
+                                  if m != n and r["tee_id"] is not None and o["tee_id"] == r["tee_id"])
+    return out
+
+
 def place_tee_sets(line, tees, yardages: dict, **kw) -> dict:
     """place_tee for each {tee_set_name: yardage}; adds `shared_with` for sets on the same box."""
     tees = list(tees)
@@ -284,3 +420,79 @@ def assign_tees_to_holes(lines: dict, tees: Iterable[dict], *, max_offset_yd: fl
         if best is not None:
             out[best[1]].append(t)
     return out
+
+
+def _point_in_ring(pt, ring) -> bool:
+    x, y = pt
+    inside = False
+    n = len(ring)
+    for i in range(n):
+        x0, y0 = ring[i]
+        x1, y1 = ring[(i + 1) % n]
+        if (y0 > y) != (y1 > y) and x < x0 + (y - y0) * (x1 - x0) / (y1 - y0 + 1e-15):
+            inside = not inside
+    return inside
+
+
+def green_for_line(line, greens, max_yd: float = 40.0):
+    """Centroid (lat, lon) of the OSM green at the end of a hole line: the green polygon containing the
+    line's last vertex, else the nearest one whose centroid is within max_yd; None if neither (the
+    geometry stage's find_green rule). greens = [{"coords": [(lat, lon), ...]}]."""
+    end = tuple(line[-1])
+    fr = Frame(*end)
+    best = None
+    for g in greens:
+        ring = [fr.fwd(*p) for p in g["coords"]]
+        if len(ring) > 1 and ring[0] == ring[-1]:
+            ring = ring[:-1]
+        if len(ring) < 3:
+            continue
+        c = polygon_centroid(ring)
+        if _point_in_ring((0.0, 0.0), ring):
+            return fr.inv(*c)
+        d = min(_norm(p) for p in ring)
+        if d <= max_yd and (best is None or d < best[0]):
+            best = (d, c)
+    return fr.inv(*best[1]) if best else None
+
+
+def place_course_sets(lines: dict, tees, yardages: dict, *, greens=(), pads=(), borrow: bool = True,
+                      relaxed_offset_yd: float = 130.0, **kw) -> dict:
+    """Every hole x every tee set with assign_tee_sets. lines = {ref: [(lat, lon), ...]}, tees = OSM
+    boxes [{id, coords}], yardages = {ref: {set: yards}}, greens = OSM green rings (the measuring point
+    is the green centroid), pads = extra candidates (lidar_pads.detect_pads: {id, coords, source: 'lidar'}),
+    given to a hole only when one of its sets has no OSM box within 10 yds. Such a hole is also re-solved
+    with boxes up to relaxed_offset_yd off the first leg (any hole's, with the offset cost): new back tees
+    on dog-legs are often set well off the old line (SH 2's 607 Gold shares hole 18's complex). Returns
+    {ref: {green: {lat, lon} | None, sets_without_box: [...], tees: {set: {...}}}}."""
+    tees = list(tees)
+    pads = list(pads)
+    by_hole = assign_tees_to_holes(lines, tees)
+    pads_by_hole = assign_tees_to_holes(lines, pads) if pads else {}
+    out = {}
+    for ref, line in lines.items():
+        yds = {n: y for n, y in (yardages.get(ref) or {}).items() if y}
+        if not yds:
+            continue
+        g = green_for_line(line, list(greens)) if greens else None
+        own = [dict(t, source=t.get("source", "osm")) for t in by_hole.get(ref, [])]
+        others = [t for r, ts in by_hole.items() if r != ref for t in ts] if borrow else []
+        res = assign_tee_sets(line, own, yds, green=g, borrow=others, **kw)
+        missing = [n for n, r in res.items() if r["method"] == "walkback" or (r["error_yd"] or 0) > 10]
+        if missing:
+            near_pads = [dict(p, source="lidar") for p in pads_by_hole.get(ref, [])]
+            kw2 = dict(kw, max_offset_yd=max(relaxed_offset_yd, kw.get("max_offset_yd", 45.0)))
+            res = assign_tee_sets(line, own + near_pads, yds, green=g, borrow=others if borrow else (), **kw2)
+            for r in res.values():
+                r["relaxed"] = True
+        out[ref] = dict(green=dict(lat=g[0], lon=g[1]) if g else None, sets_without_box=missing,
+                        lidar_candidates=len(pads_by_hole.get(ref, [])), tees=res)
+    return out
+
+
+def centroid_ll(coords):
+    """Area centroid (lat, lon) of a ring given in (lat, lon), computed in a local frame (a raw lat/lon
+    shoelace loses precision to cancellation at these magnitudes)."""
+    coords = [tuple(p) for p in coords]
+    fr = Frame(*coords[0])
+    return fr.inv(*polygon_centroid([fr.fwd(*p) for p in coords]))
