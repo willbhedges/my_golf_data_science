@@ -1,0 +1,122 @@
+{
+ "course": "Veenker Memorial Golf Course",
+ "bbox_wgs84_snwe": [
+  42.0350036,
+  -93.6567753,
+  42.0417515,
+  -93.6447732
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  42.03410528882501,
+  -93.65798482665981,
+  42.04264981117499,
+  -93.6435636733402
+ ],
+ "fetched_utc": "2026-10-16T19:30:57Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "years_available": [
+   2011,
+   2013,
+   2014,
+   2015,
+   2017,
+   2019,
+   2021,
+   2023
+  ],
+  "acquired": [
+   "2023-09-02"
+  ],
+  "items": [
+   "ia_m_4209359_se_15_030_20230902_20240104"
+  ],
+  "gsd_m": 0.3,
+  "resolution_m": 0.3,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 4004,
+  "height": 3193,
+  "transform": [
+   0.3,
+   0.0,
+   445536.0,
+   0.0,
+   -0.3,
+   4654721.1
+  ],
+  "bounds_crs": [
+   445536.0,
+   4653763.2,
+   446737.2,
+   4654721.1
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 2002,
+   "height": 1596,
+   "transform": [
+    0.6,
+    0.0,
+    445536.0,
+    0.0,
+    -0.600187969924812,
+    4654721.1
+   ],
+   "resolution_m": 0.6
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 6.25,
+   "naip_nir.tif": 5.15,
+   "naip_rgb_lo.jpg": 1.14,
+   "naip_nir_lo.jpg": 0.98
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 3,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26915",
+  "width": 1202,
+  "height": 959,
+  "transform": [
+   1.0,
+   0.0,
+   445536.0,
+   0.0,
+   -1.0,
+   4654722.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 2.3,
+  "format": "COG",
+  "elev_m": [
+   270.7060546875,
+   300.1164855957031
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 16.3
+}
