@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-10-16T19:42:31Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: fallback: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red, Gold (Gold), Red (Red))).
+Built 2026-10-16T19:56:31Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: fallback: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red, Gold (Gold), Red (Red))).
 
 ## Coverage
 
@@ -51,7 +51,7 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/veenker/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **elevation**: ok: course_data/packages/veenker/imagery/dem.tif (18/18 holes)
-- **vision**: failed: IndexError: list index out of range
+- **vision**: failed: ValueError: window shape cannot be larger than input array shape
 
 ## Warnings
 

@@ -1,5 +1,5 @@
-"""Course module for Mozingo Lake Golf Course (osm_back tees), generated from package.json by
-course_data/platform/package.py on 2026-10-16T19:42:11Z. Do not edit; rebuild with
+"""Course module for Mozingo Lake Golf Course (request tees), generated from package.json by
+course_data/platform/package.py on 2026-10-16T19:56:21Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_mozingo_lake.json
 
