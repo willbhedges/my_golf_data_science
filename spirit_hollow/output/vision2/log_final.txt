@@ -16,3 +16,50 @@ method cpool
 method cpool_slic
   -> LZ 70.0% / 84.0%  hole 58.7% / 78.3%
 ens_raw {'acc6': np.float64(0.6973612530293616), 'pp': np.float64(0.842405467721655), 'rec': np.float64(0.6987850035850743), 'prec': np.float64(0.7568913240065961), 'bal6': np.float64(0.5971062298352897)}
+  wrote 1
+  wrote 2B
+  wrote 2F
+  wrote 4
+  wrote 5
+  wrote 6
+  wrote 8
+  wrote 9B
+  wrote 9F
+  wrote 10
+  wrote 11
+  wrote 13
+  wrote 14
+  wrote 16
+  wrote 17
+  wrote 18
+# Spirit Hollow — hazard classifier v2 (leave-one-hole-out)
+
+Every number is out-of-sample: each hole is scored with a model trained only on the other 15 holes. Calibration maps (when run, `--calib`) are fitted on inner 2-group-fold predictions over those 15 training holes, so the held-out hole contributes nothing to training, feature scaling, calibration or ensemble weights (the ensemble is a fixed 50/50 average). Pixel methods are 7x7-smoothed before scoring, as in vision.py. Regions: SLIC superpixels (n~2500, compactness 12, on the UI-in-painted half-res photo) and, when deep/sam/ has a mask file for every photo, Segment Anything regions (ViT-B automatic masks; SAM leaves much ground unassigned, so its gaps are split into SLIC cells).
+
+**Labels**: the main table SCORES against the current course.py (label hash `f396950c69`), but the LOHO models were TRAINED on label version `f42fad182c` (course.py after the AUDIT_FIXES landing-zone corrections, commit 8601898). Between the two versions only holes 2B and 2F changed (pond edge and long grass, commit b81bf0e: 4.4k and 2.0k grid px, none of it in the landing-zone geometry). A second table below gives the same models scored on `f42fad182c`, the labels they were trained on. The vision.py baseline row is copied from vision_report.md, which used the earlier pre-audit map. course.py's 'first_cut' bands count as fairway here, as they do in vision.label_map. The final all-holes model behind probs/ is trained on the current labels.
+
+Penal = trees/native/water/sand, playable = fairway/rough. 'bal' = mean per-class recall. Landing zones = 220-340 yds, +/-45 yds of the line.
+
+| Method | LZ 6-class | LZ bal | LZ penal-vs-playable | LZ penal recall | LZ penal precision | Hole 6-class | Hole penal-vs-playable | Hole penal recall | Hole penal precision | NLL | ECE |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| vision.py baseline (as reported) | 59.4% | | 79.2% | 69% | 55% | 52.4% | 72.5% | 72% | 75% | | |
+| Handcrafted + HGB (baseline features, this script's sampler) | 62.3% | 57.8% | 82.4% | 72% | 70% | 54.5% | 75.4% | 75% | 80% | 1.27 | 0.108 |
+| (a) DINOv2 linear probe (std. multinomial logreg) | 63.4% | 59.7% | 79.7% | 76% | 64% | 56.4% | 77.6% | 81% | 80% | 1.16 | 0.034 |
+| (b) DINOv2 + handcrafted, HGB | 67.9% | 57.2% | 83.2% | 70% | 73% | 58.9% | 78.9% | 79% | 83% | 1.14 | 0.117 |
+| (c) handcrafted + photo-relative DINOv2 (fairway-corridor median subtracted), HGB | 69.4% | 59.3% | 84.1% | 69% | 75% | 58.3% | 78.1% | 77% | 83% | 1.18 | 0.125 |
+| (d) region classifier on SAM regions (mean/std per region, HGB) | 51.0% | 50.6% | 76.5% | 52% | 63% | 48.5% | 68.3% | 62% | 78% | 1.30 | 0.154 |
+| (d') region classifier on SLIC superpixels (mean/std per region, HGB) | 67.4% | 56.6% | 83.0% | 66% | 74% | 56.9% | 77.0% | 76% | 82% | 1.17 | 0.131 |
+| (c) probabilities mean-pooled per SAM region | 59.4% | 48.7% | 77.4% | 56% | 64% | 49.2% | 70.7% | 65% | 79% | 1.19 | 0.122 |
+| (c) probabilities mean-pooled per SLIC superpixel | 70.0% | 59.9% | 84.0% | 70% | 75% | 58.7% | 78.3% | 78% | 83% | 1.14 | 0.106 |
+| **(e) ensemble 50/50 of c + b, uncalibrated** | 69.7% | 59.7% | 84.2% | 70% | 76% | 59.3% | 79.0% | 78% | 83% | 1.13 | 0.102 |
+
+Best (by landing-zone penal-vs-playable accuracy, then 6-class): **(e) ensemble 50/50 of c + b, uncalibrated**.
+
+Reliability of confident pixels (p>=0.85, whole hole, labelled pixels):
+
+| Method | share of pixels with p>=0.85 | accuracy of those |
+|---|---|---|
+| Handcrafted + HGB (baseline features, this script's sampler) | 23.5% | 79.3% |
+| (a) DINOv2 linear probe (std. multinomial logreg) | 13.0% | 83.8% |
+| (b) DINOv2 + handcrafted, HGB | 34.1% | 82.9% |
+total 861s
