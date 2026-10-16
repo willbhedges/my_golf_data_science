@@ -62,13 +62,13 @@ HOLES = {
         par=5, image="hole04.png", length=520,
         tee=(508, 1907), dot270=(435, 1188),
         zones=[
-            ("fairway", [(385, 860), (495, 860), (500, 1000), (505, 1300), (515, 1500), (400, 1500),
-                         (390, 1300), (385, 1000)]),
+            ("fairway", [(380, 860), (462, 860), (468, 1000), (472, 1300), (480, 1500), (385, 1500),
+                         (375, 1300), (372, 1000)]),             # re-traced at full zoom: ~37 yds wide
             ("recovery", [(0, 540), (300, 540), (260, 800), (215, 1000), (205, 1300), (240, 1600),
                           (0, 1600)]),                                           # woods left
-            ("native", [(225, 800), (355, 800), (358, 1000), (360, 1300), (365, 1500), (240, 1500),
+            ("native", [(225, 800), (378, 800), (370, 1000), (373, 1300), (383, 1500), (240, 1500),
                         (215, 1300), (215, 1000)]),                              # long grass left
-            ("native", [(525, 860), (585, 860), (590, 1500), (530, 1500)]),     # long grass right
+            ("native", [(463, 860), (585, 860), (590, 1500), (481, 1500), (473, 1300), (469, 1000)]),
             ("recovery", [(585, 540), (625, 540), (630, 1600), (590, 1600)]),   # tree line right
             ("ob", [(625, 540), (920, 540), (920, 1600), (630, 1600)]),         # houses right
             ("sand", [(330, 860), (372, 860), (372, 925), (330, 925)]),
@@ -84,7 +84,7 @@ HOLES = {
             ("ob", [(0, 540), (215, 540), (220, 1100), (250, 1450), (0, 1450)]),  # highway
             ("recovery", [(580, 540), (645, 540), (650, 1450), (600, 1450), (590, 1100)]),
             ("ob", [(650, 540), (920, 540), (920, 1450), (655, 1450)]),          # houses right
-            ("sand", [(490, 828), (555, 835), (555, 890), (495, 892)]),          # right, ~300 out
+            ("sand", [(490, 835), (535, 835), (535, 880), (492, 882)]),          # right, ~300 out
             ("sand", [(560, 950), (615, 950), (615, 992), (562, 992)]),          # right, ~275 out
             ("sand", [(335, 1140), (395, 1140), (400, 1260), (340, 1260)]),      # left cluster ~200
             ("sand", [(400, 1255), (455, 1255), (455, 1320), (405, 1320)]),
@@ -131,6 +131,9 @@ HOLES = {
             ("water", [(540, 690), (600, 690), (700, 620), (720, 560), (690, 560), (660, 620),
                        (580, 670), (540, 680)]),                                 # creek long-right
             ("ob", [(650, 1150), (920, 1150), (920, 1400), (650, 1400)]),        # houses
+            ("recovery", [(475, 790), (555, 780), (560, 860), (500, 870), (470, 840)]),  # trees right ~300
+            ("water", [(560, 690), (585, 690), (605, 740), (625, 790), (650, 840), (670, 880), (650, 890),
+                       (625, 850), (600, 800), (580, 750), (560, 710)]),          # creek right of the fairway
         ]),
     "9F": dict(
         par=4, image="hole09_forward.png", length=373,
@@ -143,6 +146,9 @@ HOLES = {
             ("native", [(380, 620), (620, 620), (640, 700), (560, 712), (480, 705), (380, 705)]),
             ("recovery", [(200, 540), (920, 540), (920, 615), (200, 615)]),     # trees behind green
             ("water", [(670, 630), (750, 630), (745, 780), (680, 780)]),         # creek right
+            ("recovery", [(560, 800), (600, 790), (620, 840), (600, 890), (560, 890)]),  # trees right ~300
+            ("water", [(600, 760), (620, 760), (635, 800), (650, 840), (670, 880), (650, 890), (628, 850),
+                       (612, 810), (598, 780)]),                                  # creek right of the fairway
         ]),
     10: dict(
         par=5, image="hole10.png", length=521,
@@ -227,13 +233,16 @@ HOLES = {
         par=5, image="hole18.png", length=516,
         tee=(419, 2033), dot270=(392, 1083),
         zones=[
-            ("fairway", [(130, 1450), (270, 1450), (330, 1300), (390, 1170), (440, 1050), (500, 900),
-                         (560, 780), (620, 640), (650, 560), (450, 560), (330, 720), (250, 900),
-                         (190, 1100), (150, 1300)]),                             # left of the creek
+            ("fairway", [(180, 1450), (270, 1450), (330, 1300), (390, 1170), (440, 1050), (500, 900),
+                         (560, 780), (620, 640), (650, 560), (380, 560), (345, 700), (320, 800),
+                         (295, 900), (285, 1000), (250, 1100), (215, 1200), (185, 1300)]),  # left of creek
             ("fairway", [(480, 1450), (560, 1450), (600, 1200), (650, 1050), (720, 900), (800, 700),
                          (700, 700), (640, 850), (570, 1000), (520, 1150)]),     # right of the creek
-            ("recovery", [(0, 540), (470, 540), (330, 720), (220, 900), (170, 1100), (110, 1300),
-                          (70, 1450), (0, 1450)]),                               # woods left
+            ("recovery", [(0, 540), (390, 540), (300, 750), (200, 950), (140, 1100), (95, 1300),
+                          (65, 1450), (0, 1450)]),                               # woods left, to the black line
+            ("native", [(390, 540), (380, 560), (345, 700), (320, 800), (295, 900), (285, 1000), (250, 1100),
+                        (215, 1200), (185, 1300), (180, 1450), (65, 1450), (95, 1300), (140, 1100),
+                        (200, 950), (300, 750)]),                                # tan strip inside the woods
             ("native", [(270, 1450), (480, 1450), (520, 1150), (570, 1000), (640, 850), (700, 700),
                         (760, 560), (650, 560), (620, 640), (560, 780), (500, 900), (440, 1050),
                         (390, 1170), (330, 1300)]),                              # creek banks
@@ -297,8 +306,10 @@ def _par3(image, tee, center, green_px, haz, note, short):
 
 PAR3 = {
     7: _par3("hole07.png", (449, 1828), 159,
-             [(380, 762), (440, 758), (480, 780), (490, 830), (487, 900), (470, 945), (430, 960),
-              (385, 952), (362, 915), (358, 850), (365, 795)],
+             [(365, 748), (420, 742), (470, 752), (500, 775), (505, 815), (490, 850), (478, 890),
+              (470, 925), (440, 940), (400, 942), (365, 930), (345, 900), (340, 860), (335, 820),
+              (340, 780)],                    # re-traced on a contrast-boosted zoom: the smooth oval,
+                                              # not the darker approach below it
              haz=dict(left="bunker", right="bunker", short="rough", long="native"),
              note="Bunkers both sides (the pair left, the C-shaped one right) and long grass over the "
                   "back. The front-right bunker is short-right, short of the green. Narrow, deep green.",
@@ -328,17 +339,14 @@ NOTES = {
           "the creek left, long grass right of the cart path.",
     "2F": "Creek and trees left, houses (OB) and trees right. Small bunker ~5 yds right of the line "
           "at ~300 out, so aim left-centre. Driver by 0.08.",
-    4: "Woods and long grass left; tree line then houses (OB) right. Wide enough for driver, which "
-       "sets up ~225 for the second. Every club gives up ~0.1 to driver here.",
+    4: "Narrow: the fairway is only ~37 yds wide at 300 with tan long grass both sides, so ~29% of drives find it. Driver still edges it (0.03) because it's a par 5; 4-wood is the safe alternative on a bad driving day.",
     5: "Highway (OB) left, houses (OB) right. Bunkers right at ~275-300 catch ~9% of drives even "
        "aimed left. Driver and 2-wood are a tie (0.003); 4-wood ~0.02 behind.",
     6: "Long grass both sides, nothing penal. Driver for the shorter approach.",
     8: "Bunker 5-25 yds right of the line at ~270-290 out catches about a third of drives. The "
        "4-wood stops short of it. Houses (OB) right behind the black line.",
-    "9B": "Pond right of the line from ~140 to ~250 out. Driver carries past the end of it, so aim "
-          "right-centre toward the green (it's around the corner to the right).",
-    "9F": "Coin flip: 2-wood by 0.007 over driver. The pond is right at ~150-200 and long grass "
-          "crosses at ~315-340. The green is right of the line.",
+    "9B": "Creek and a tree clump just right of the fairway at ~280-320, pond right earlier. Coin flip: driver by 0.01 over 2-wood. Aim left-centre.",
+    "9F": "2-wood and 4-wood tie (0.002); driver 0.04 behind. Pond right at ~150-200, creek and trees right at ~280-320.",
     10: "Pond right from ~237 to ~328, creek in the woods left. Aim a touch left; driver's extra "
         "20 yds is worth 0.06 on a par 5.",
     11: "Creek crosses the fairway at ~286-292. Driver carries 275 and rolls into it (3 in 4). "
@@ -349,19 +357,18 @@ NOTES = {
         "because of the camera angle; they're modelled at the trunks.",
     16: "Three-way tie (0.01). Woods both sides, bunkers right at ~300 and left at ~255.",
     17: "Woods right, open field left. The fairway bunker is ~335 out, out of reach.",
-    18: "The creek and its long-grass banks cut diagonally across from short-left to long-right. "
-        "Carry it (~190-215 out) and stay well left; the trees left lean in on the photo.",
+    18: "Narrow corridor: tan long grass inside the woods line on the left and the creek bank on the right leave ~45 yds of fairway. ~24% of drives find long grass, but the 2-wood and 4-wood land in the same band, so driver still wins (0.05).",
 }
 
 AIM_AT = {
     1: "Centre of the fairway",
     "2B": "Centre of the fairway",
     "2F": "Left side of the fairway, away from the bunker on the right",
-    4: "Right-centre of the fairway",
+    4: "Centre of the narrow fairway",
     5: "Left-centre of the fairway, away from the right-side bunkers",
     6: "Centre of the fairway",
     8: "Centre of the fairway, short of the right-side bunker",
-    "9B": "Right-centre of the fairway, past the end of the pond",
+    "9B": "Left-centre of the fairway, away from the creek on the right",
     "9F": "Left-centre of the fairway, away from the pond (2-wood or driver)",
     10: "Left-centre of the fairway, away from the pond",
     11: "Centre of the fairway, short of the creek",
@@ -369,7 +376,7 @@ AIM_AT = {
     14: "Left-centre of the fairway, away from the creek",
     16: "Left-centre of the fairway",
     17: "Centre of the fairway",
-    18: "Left side of the fairway, well away from the creek",
+    18: "Centre-left of the fairway, between the long grass and the creek",
 }
 
 ORDER = [1, "2B", "2F", 4, 5, 6, 7, 8, "9B", "9F", 10, 11, 12, 13, 14, 15, 16, 17, 18]
