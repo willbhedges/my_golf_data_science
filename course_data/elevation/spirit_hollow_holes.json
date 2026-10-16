@@ -1,0 +1,6778 @@
+{
+ "dem": {
+  "file": "course_data/elevation/spirit_hollow/dem.tif",
+  "source": "USGS 3DEP via The National Map 3DEPElevation ImageServer exportImage (best available, resampled bilinear to 1.0 m)",
+  "resolution_m": 1.0,
+  "epsg": 32615
+ },
+ "geometry": "anchor",
+ "conventions": {
+  "bearing": "compass degrees true of the tee line (tee -> 270-yd point)",
+  "delta_ft": "elevation minus tee elevation (+ = uphill)",
+  "along_pct": "+ = ground rises going away from the tee (upslope landing)",
+  "cross_pct": "+ = ground rises to the golfer's right (ball kicks left)",
+  "fall_line": "direction of steepest descent, deg clockwise from the tee line (0 = straight away, 90 = to the right, 180 = back toward the tee)"
+ },
+ "holes": {
+  "1": {
+   "par": 4,
+   "length_yd": 413,
+   "tee_ll": [
+    -91.1467845,
+    40.7590754
+   ],
+   "p270_ll": [
+    -91.1455475,
+    40.7570607
+   ],
+   "bearing_deg_true": 155.0,
+   "tee_elev": {
+    "m": 200.65,
+    "ft": 658.3
+   },
+   "green": {
+    "m": 180.9,
+    "ft": 593.5,
+    "delta_ft": -64.8,
+    "along_yd": 388.8,
+    "lateral_yd": -82.3
+   },
+   "landing": {
+    "240": {
+     "m": 187.72,
+     "ft": 615.9,
+     "delta_ft": -42.4,
+     "delta_m": -12.93
+    },
+    "270": {
+     "m": 186.73,
+     "ft": 612.6,
+     "delta_ft": -45.7,
+     "delta_m": -13.92
+    },
+    "300": {
+     "m": 185.25,
+     "ft": 607.8,
+     "delta_ft": -50.5,
+     "delta_m": -15.41
+    }
+   },
+   "landing_slope": {
+    "along_pct": -4.53,
+    "cross_pct": 3.44,
+    "magnitude_pct": 5.69,
+    "fall_line_deg_cw_from_line": 323.0,
+    "residual_rms_m": 0.29,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": -6.24,
+     "cross_pct": -0.29,
+     "magnitude_pct": 6.25,
+     "fall_line_deg_cw_from_line": 3.0,
+     "residual_rms_m": 0.27,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": -3.85,
+     "cross_pct": 2.58,
+     "magnitude_pct": 4.64,
+     "fall_line_deg_cw_from_line": 326.0,
+     "residual_rms_m": 0.24,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": -4.04,
+     "cross_pct": 4.24,
+     "magnitude_pct": 5.85,
+     "fall_line_deg_cw_from_line": 314.0,
+     "residual_rms_m": 0.28,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 200.68,
+     "ft_rel_tee": 0.1,
+     "band_ft_rel_tee": -1.1
+    },
+    {
+     "yd": 10,
+     "m": 199.58,
+     "ft_rel_tee": -3.5,
+     "band_ft_rel_tee": -4.2
+    },
+    {
+     "yd": 20,
+     "m": 198.33,
+     "ft_rel_tee": -7.6,
+     "band_ft_rel_tee": -7.0
+    },
+    {
+     "yd": 30,
+     "m": 197.93,
+     "ft_rel_tee": -8.9,
+     "band_ft_rel_tee": -7.7
+    },
+    {
+     "yd": 40,
+     "m": 197.59,
+     "ft_rel_tee": -10.0,
+     "band_ft_rel_tee": -8.6
+    },
+    {
+     "yd": 50,
+     "m": 197.19,
+     "ft_rel_tee": -11.4,
+     "band_ft_rel_tee": -10.1
+    },
+    {
+     "yd": 60,
+     "m": 196.79,
+     "ft_rel_tee": -12.7,
+     "band_ft_rel_tee": -11.5
+    },
+    {
+     "yd": 70,
+     "m": 196.27,
+     "ft_rel_tee": -14.4,
+     "band_ft_rel_tee": -13.0
+    },
+    {
+     "yd": 80,
+     "m": 195.94,
+     "ft_rel_tee": -15.4,
+     "band_ft_rel_tee": -14.3
+    },
+    {
+     "yd": 90,
+     "m": 196.01,
+     "ft_rel_tee": -15.2,
+     "band_ft_rel_tee": -14.7
+    },
+    {
+     "yd": 100,
+     "m": 195.71,
+     "ft_rel_tee": -16.2,
+     "band_ft_rel_tee": -16.0
+    },
+    {
+     "yd": 110,
+     "m": 195.15,
+     "ft_rel_tee": -18.1,
+     "band_ft_rel_tee": -18.0
+    },
+    {
+     "yd": 120,
+     "m": 194.22,
+     "ft_rel_tee": -21.1,
+     "band_ft_rel_tee": -20.6
+    },
+    {
+     "yd": 130,
+     "m": 193.38,
+     "ft_rel_tee": -23.8,
+     "band_ft_rel_tee": -23.1
+    },
+    {
+     "yd": 140,
+     "m": 193.12,
+     "ft_rel_tee": -24.7,
+     "band_ft_rel_tee": -24.5
+    },
+    {
+     "yd": 150,
+     "m": 192.86,
+     "ft_rel_tee": -25.6,
+     "band_ft_rel_tee": -25.3
+    },
+    {
+     "yd": 160,
+     "m": 192.37,
+     "ft_rel_tee": -27.2,
+     "band_ft_rel_tee": -27.2
+    },
+    {
+     "yd": 170,
+     "m": 191.81,
+     "ft_rel_tee": -29.0,
+     "band_ft_rel_tee": -29.1
+    },
+    {
+     "yd": 180,
+     "m": 191.32,
+     "ft_rel_tee": -30.6,
+     "band_ft_rel_tee": -30.9
+    },
+    {
+     "yd": 190,
+     "m": 190.66,
+     "ft_rel_tee": -32.8,
+     "band_ft_rel_tee": -32.6
+    },
+    {
+     "yd": 200,
+     "m": 189.91,
+     "ft_rel_tee": -35.2,
+     "band_ft_rel_tee": -35.0
+    },
+    {
+     "yd": 210,
+     "m": 189.19,
+     "ft_rel_tee": -37.6,
+     "band_ft_rel_tee": -37.5
+    },
+    {
+     "yd": 220,
+     "m": 188.42,
+     "ft_rel_tee": -40.1,
+     "band_ft_rel_tee": -39.7
+    },
+    {
+     "yd": 230,
+     "m": 187.9,
+     "ft_rel_tee": -41.8,
+     "band_ft_rel_tee": -41.3
+    },
+    {
+     "yd": 240,
+     "m": 187.64,
+     "ft_rel_tee": -42.7,
+     "band_ft_rel_tee": -42.5
+    },
+    {
+     "yd": 250,
+     "m": 187.49,
+     "ft_rel_tee": -43.2,
+     "band_ft_rel_tee": -42.9
+    },
+    {
+     "yd": 260,
+     "m": 187.09,
+     "ft_rel_tee": -44.5,
+     "band_ft_rel_tee": -44.0
+    },
+    {
+     "yd": 270,
+     "m": 186.62,
+     "ft_rel_tee": -46.0,
+     "band_ft_rel_tee": -45.7
+    },
+    {
+     "yd": 280,
+     "m": 186.14,
+     "ft_rel_tee": -47.6,
+     "band_ft_rel_tee": -47.3
+    },
+    {
+     "yd": 290,
+     "m": 185.6,
+     "ft_rel_tee": -49.4,
+     "band_ft_rel_tee": -49.2
+    },
+    {
+     "yd": 300,
+     "m": 185.14,
+     "ft_rel_tee": -50.9,
+     "band_ft_rel_tee": -50.6
+    },
+    {
+     "yd": 310,
+     "m": 184.81,
+     "ft_rel_tee": -52.0,
+     "band_ft_rel_tee": -51.4
+    },
+    {
+     "yd": 320,
+     "m": 184.54,
+     "ft_rel_tee": -52.9,
+     "band_ft_rel_tee": -52.5
+    },
+    {
+     "yd": 330,
+     "m": 184.16,
+     "ft_rel_tee": -54.1,
+     "band_ft_rel_tee": -54.1
+    },
+    {
+     "yd": 340,
+     "m": 181.84,
+     "ft_rel_tee": -61.7,
+     "band_ft_rel_tee": -60.6
+    },
+    {
+     "yd": 350,
+     "m": 179.64,
+     "ft_rel_tee": -68.9,
+     "band_ft_rel_tee": -67.2
+    },
+    {
+     "yd": 360,
+     "m": 178.79,
+     "ft_rel_tee": -71.7,
+     "band_ft_rel_tee": -70.3
+    },
+    {
+     "yd": 370,
+     "m": 177.94,
+     "ft_rel_tee": -74.5,
+     "band_ft_rel_tee": -72.9
+    },
+    {
+     "yd": 380,
+     "m": 177.28,
+     "ft_rel_tee": -76.7,
+     "band_ft_rel_tee": -75.1
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923964594",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 395.8,
+    "map_tee_to_green_yd": 397.4,
+    "green_angle_off_line_deg": -11.9
+   },
+   "ecc_check": {
+    "tee_offset_yd": 8.8,
+    "bearing_diff_deg": -0.3,
+    "scale_270_yd": 257.3,
+    "landing_270_delta_ft": -44.6,
+    "landing_slope_along_pct": -4.52,
+    "landing_slope_cross_pct": 4.04,
+    "quality": {
+     "corr": 0.20724188273015548,
+     "ecc": 0.2178732475874067,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "2B": {
+   "par": 5,
+   "length_yd": 609,
+   "tee_ll": [
+    -91.1421833,
+    40.7566587
+   ],
+   "p270_ll": [
+    -91.1450586,
+    40.7562545
+   ],
+   "bearing_deg_true": 259.5,
+   "tee_elev": {
+    "m": 187.59,
+    "ft": 615.5
+   },
+   "green": {
+    "m": 175.2,
+    "ft": 574.8,
+    "delta_ft": -40.7,
+    "along_yd": 560.3,
+    "lateral_yd": -219.8
+   },
+   "landing": {
+    "240": {
+     "m": 177.88,
+     "ft": 583.6,
+     "delta_ft": -31.9,
+     "delta_m": -9.71
+    },
+    "270": {
+     "m": 177.64,
+     "ft": 582.8,
+     "delta_ft": -32.7,
+     "delta_m": -9.96
+    },
+    "300": {
+     "m": 182.01,
+     "ft": 597.1,
+     "delta_ft": -18.3,
+     "delta_m": -5.59
+    }
+   },
+   "landing_slope": {
+    "along_pct": 7.84,
+    "cross_pct": 8.99,
+    "magnitude_pct": 11.93,
+    "fall_line_deg_cw_from_line": 229.0,
+    "residual_rms_m": 0.82,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": -4.26,
+     "cross_pct": 15.46,
+     "magnitude_pct": 16.03,
+     "fall_line_deg_cw_from_line": 285.0,
+     "residual_rms_m": 0.4,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": 1.08,
+     "cross_pct": 9.05,
+     "magnitude_pct": 9.11,
+     "fall_line_deg_cw_from_line": 263.0,
+     "residual_rms_m": 0.42,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 8.85,
+     "cross_pct": 8.54,
+     "magnitude_pct": 12.3,
+     "fall_line_deg_cw_from_line": 224.0,
+     "residual_rms_m": 0.67,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 187.61,
+     "ft_rel_tee": 0.1,
+     "band_ft_rel_tee": -0.2
+    },
+    {
+     "yd": 10,
+     "m": 186.42,
+     "ft_rel_tee": -3.8,
+     "band_ft_rel_tee": -3.6
+    },
+    {
+     "yd": 20,
+     "m": 185.01,
+     "ft_rel_tee": -8.5,
+     "band_ft_rel_tee": -7.9
+    },
+    {
+     "yd": 30,
+     "m": 183.51,
+     "ft_rel_tee": -13.4,
+     "band_ft_rel_tee": -13.2
+    },
+    {
+     "yd": 40,
+     "m": 181.43,
+     "ft_rel_tee": -20.2,
+     "band_ft_rel_tee": -19.8
+    },
+    {
+     "yd": 50,
+     "m": 179.47,
+     "ft_rel_tee": -26.7,
+     "band_ft_rel_tee": -26.6
+    },
+    {
+     "yd": 60,
+     "m": 177.48,
+     "ft_rel_tee": -33.2,
+     "band_ft_rel_tee": -33.0
+    },
+    {
+     "yd": 70,
+     "m": 176.06,
+     "ft_rel_tee": -37.8,
+     "band_ft_rel_tee": -37.6
+    },
+    {
+     "yd": 80,
+     "m": 175.25,
+     "ft_rel_tee": -40.5,
+     "band_ft_rel_tee": -39.4
+    },
+    {
+     "yd": 90,
+     "m": 174.55,
+     "ft_rel_tee": -42.8,
+     "band_ft_rel_tee": -42.3
+    },
+    {
+     "yd": 100,
+     "m": 173.51,
+     "ft_rel_tee": -46.2,
+     "band_ft_rel_tee": -45.9
+    },
+    {
+     "yd": 110,
+     "m": 174.39,
+     "ft_rel_tee": -43.3,
+     "band_ft_rel_tee": -43.2
+    },
+    {
+     "yd": 120,
+     "m": 174.87,
+     "ft_rel_tee": -41.7,
+     "band_ft_rel_tee": -41.4
+    },
+    {
+     "yd": 130,
+     "m": 175.35,
+     "ft_rel_tee": -40.2,
+     "band_ft_rel_tee": -40.1
+    },
+    {
+     "yd": 140,
+     "m": 176.36,
+     "ft_rel_tee": -36.8,
+     "band_ft_rel_tee": -36.5
+    },
+    {
+     "yd": 150,
+     "m": 177.68,
+     "ft_rel_tee": -32.5,
+     "band_ft_rel_tee": -32.0
+    },
+    {
+     "yd": 160,
+     "m": 178.82,
+     "ft_rel_tee": -28.8,
+     "band_ft_rel_tee": -29.0
+    },
+    {
+     "yd": 170,
+     "m": 180.68,
+     "ft_rel_tee": -22.7,
+     "band_ft_rel_tee": -23.7
+    },
+    {
+     "yd": 180,
+     "m": 181.41,
+     "ft_rel_tee": -20.3,
+     "band_ft_rel_tee": -22.1
+    },
+    {
+     "yd": 190,
+     "m": 181.29,
+     "ft_rel_tee": -20.7,
+     "band_ft_rel_tee": -22.8
+    },
+    {
+     "yd": 200,
+     "m": 180.0,
+     "ft_rel_tee": -24.9,
+     "band_ft_rel_tee": -25.8
+    },
+    {
+     "yd": 210,
+     "m": 178.82,
+     "ft_rel_tee": -28.8,
+     "band_ft_rel_tee": -30.3
+    },
+    {
+     "yd": 220,
+     "m": 177.77,
+     "ft_rel_tee": -32.2,
+     "band_ft_rel_tee": -32.0
+    },
+    {
+     "yd": 230,
+     "m": 177.73,
+     "ft_rel_tee": -32.3,
+     "band_ft_rel_tee": -32.8
+    },
+    {
+     "yd": 240,
+     "m": 177.96,
+     "ft_rel_tee": -31.6,
+     "band_ft_rel_tee": -31.8
+    },
+    {
+     "yd": 250,
+     "m": 177.93,
+     "ft_rel_tee": -31.7,
+     "band_ft_rel_tee": -31.7
+    },
+    {
+     "yd": 260,
+     "m": 177.95,
+     "ft_rel_tee": -31.6,
+     "band_ft_rel_tee": -31.8
+    },
+    {
+     "yd": 270,
+     "m": 177.48,
+     "ft_rel_tee": -33.2,
+     "band_ft_rel_tee": -33.0
+    },
+    {
+     "yd": 280,
+     "m": 178.74,
+     "ft_rel_tee": -29.1,
+     "band_ft_rel_tee": -28.9
+    },
+    {
+     "yd": 290,
+     "m": 180.37,
+     "ft_rel_tee": -23.7,
+     "band_ft_rel_tee": -23.6
+    },
+    {
+     "yd": 300,
+     "m": 182.02,
+     "ft_rel_tee": -18.3,
+     "band_ft_rel_tee": -18.2
+    },
+    {
+     "yd": 310,
+     "m": 182.32,
+     "ft_rel_tee": -17.3,
+     "band_ft_rel_tee": -17.1
+    },
+    {
+     "yd": 320,
+     "m": 181.71,
+     "ft_rel_tee": -19.3,
+     "band_ft_rel_tee": -19.2
+    },
+    {
+     "yd": 330,
+     "m": 179.68,
+     "ft_rel_tee": -26.0,
+     "band_ft_rel_tee": -25.9
+    },
+    {
+     "yd": 340,
+     "m": 177.5,
+     "ft_rel_tee": -33.1,
+     "band_ft_rel_tee": -32.2
+    },
+    {
+     "yd": 350,
+     "m": 177.57,
+     "ft_rel_tee": -32.9,
+     "band_ft_rel_tee": -31.9
+    },
+    {
+     "yd": 360,
+     "m": 179.55,
+     "ft_rel_tee": -26.4,
+     "band_ft_rel_tee": -25.9
+    },
+    {
+     "yd": 370,
+     "m": 180.7,
+     "ft_rel_tee": -22.6,
+     "band_ft_rel_tee": -22.1
+    },
+    {
+     "yd": 380,
+     "m": 182.68,
+     "ft_rel_tee": -16.1,
+     "band_ft_rel_tee": -15.3
+    },
+    {
+     "yd": 390,
+     "m": 184.91,
+     "ft_rel_tee": -8.8,
+     "band_ft_rel_tee": -8.8
+    },
+    {
+     "yd": 400,
+     "m": 185.74,
+     "ft_rel_tee": -6.1,
+     "band_ft_rel_tee": -6.4
+    },
+    {
+     "yd": 410,
+     "m": 185.82,
+     "ft_rel_tee": -5.8,
+     "band_ft_rel_tee": -5.8
+    },
+    {
+     "yd": 420,
+     "m": 185.89,
+     "ft_rel_tee": -5.6,
+     "band_ft_rel_tee": -5.6
+    },
+    {
+     "yd": 430,
+     "m": 186.65,
+     "ft_rel_tee": -3.1,
+     "band_ft_rel_tee": -3.5
+    },
+    {
+     "yd": 440,
+     "m": 187.64,
+     "ft_rel_tee": 0.1,
+     "band_ft_rel_tee": -0.8
+    },
+    {
+     "yd": 450,
+     "m": 188.04,
+     "ft_rel_tee": 1.5,
+     "band_ft_rel_tee": 0.7
+    },
+    {
+     "yd": 460,
+     "m": 188.2,
+     "ft_rel_tee": 2.0,
+     "band_ft_rel_tee": 1.7
+    },
+    {
+     "yd": 470,
+     "m": 188.18,
+     "ft_rel_tee": 1.9,
+     "band_ft_rel_tee": 1.9
+    },
+    {
+     "yd": 480,
+     "m": 188.37,
+     "ft_rel_tee": 2.6,
+     "band_ft_rel_tee": 2.7
+    },
+    {
+     "yd": 490,
+     "m": 189.02,
+     "ft_rel_tee": 4.7,
+     "band_ft_rel_tee": 5.4
+    },
+    {
+     "yd": 500,
+     "m": 188.69,
+     "ft_rel_tee": 3.6,
+     "band_ft_rel_tee": 3.0
+    },
+    {
+     "yd": 510,
+     "m": 186.86,
+     "ft_rel_tee": -2.4,
+     "band_ft_rel_tee": -1.7
+    },
+    {
+     "yd": 520,
+     "m": 185.05,
+     "ft_rel_tee": -8.3,
+     "band_ft_rel_tee": -7.9
+    },
+    {
+     "yd": 530,
+     "m": 184.57,
+     "ft_rel_tee": -9.9,
+     "band_ft_rel_tee": -9.8
+    },
+    {
+     "yd": 540,
+     "m": 184.25,
+     "ft_rel_tee": -11.0,
+     "band_ft_rel_tee": -11.1
+    },
+    {
+     "yd": 550,
+     "m": 183.99,
+     "ft_rel_tee": -11.8,
+     "band_ft_rel_tee": -12.1
+    },
+    {
+     "yd": 560,
+     "m": 184.5,
+     "ft_rel_tee": -10.1,
+     "band_ft_rel_tee": -8.0
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Gold",
+    "tee_method": "walkback",
+    "tee_confidence": "low",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 575.7,
+    "map_tee_to_green_yd": 601.8,
+    "green_angle_off_line_deg": -21.4
+   },
+   "ecc_check": {
+    "tee_offset_yd": 107.7,
+    "bearing_diff_deg": -5.1,
+    "scale_270_yd": 243.6,
+    "landing_270_delta_ft": -22.2,
+    "landing_slope_along_pct": 1.87,
+    "landing_slope_cross_pct": 7.27,
+    "quality": {
+     "corr": 0.19092680672966295,
+     "ecc": 0.2095905080214001,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "2F": {
+   "par": 5,
+   "length_yd": 520,
+   "tee_ll": [
+    -91.1434626,
+    40.7565709
+   ],
+   "p270_ll": [
+    -91.1461569,
+    40.7557073
+   ],
+   "bearing_deg_true": 247.1,
+   "tee_elev": {
+    "m": 175.26,
+    "ft": 575.0
+   },
+   "green": {
+    "m": 175.2,
+    "ft": 574.8,
+    "delta_ft": -0.2,
+    "along_yd": 481.4,
+    "lateral_yd": -130.6
+   },
+   "landing": {
+    "240": {
+     "m": 177.73,
+     "ft": 583.1,
+     "delta_ft": 8.1,
+     "delta_m": 2.47
+    },
+    "270": {
+     "m": 179.14,
+     "ft": 587.7,
+     "delta_ft": 12.7,
+     "delta_m": 3.88
+    },
+    "300": {
+     "m": 179.94,
+     "ft": 590.3,
+     "delta_ft": 15.4,
+     "delta_m": 4.68
+    }
+   },
+   "landing_slope": {
+    "along_pct": 4.56,
+    "cross_pct": 10.38,
+    "magnitude_pct": 11.34,
+    "fall_line_deg_cw_from_line": 246.0,
+    "residual_rms_m": 0.34,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": -4.14,
+     "cross_pct": 4.94,
+     "magnitude_pct": 6.44,
+     "fall_line_deg_cw_from_line": 310.0,
+     "residual_rms_m": 0.83,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": 5.36,
+     "cross_pct": 9.72,
+     "magnitude_pct": 11.1,
+     "fall_line_deg_cw_from_line": 241.0,
+     "residual_rms_m": 0.34,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 3.75,
+     "cross_pct": 11.29,
+     "magnitude_pct": 11.9,
+     "fall_line_deg_cw_from_line": 252.0,
+     "residual_rms_m": 0.3,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 175.24,
+     "ft_rel_tee": -0.1,
+     "band_ft_rel_tee": -0.5
+    },
+    {
+     "yd": 10,
+     "m": 175.75,
+     "ft_rel_tee": 1.6,
+     "band_ft_rel_tee": 0.9
+    },
+    {
+     "yd": 20,
+     "m": 176.24,
+     "ft_rel_tee": 3.2,
+     "band_ft_rel_tee": 4.7
+    },
+    {
+     "yd": 30,
+     "m": 178.58,
+     "ft_rel_tee": 10.9,
+     "band_ft_rel_tee": 10.8
+    },
+    {
+     "yd": 40,
+     "m": 178.85,
+     "ft_rel_tee": 11.8,
+     "band_ft_rel_tee": 11.4
+    },
+    {
+     "yd": 50,
+     "m": 180.22,
+     "ft_rel_tee": 16.3,
+     "band_ft_rel_tee": 15.4
+    },
+    {
+     "yd": 60,
+     "m": 181.19,
+     "ft_rel_tee": 19.5,
+     "band_ft_rel_tee": 17.7
+    },
+    {
+     "yd": 70,
+     "m": 180.91,
+     "ft_rel_tee": 18.5,
+     "band_ft_rel_tee": 16.8
+    },
+    {
+     "yd": 80,
+     "m": 179.33,
+     "ft_rel_tee": 13.4,
+     "band_ft_rel_tee": 13.5
+    },
+    {
+     "yd": 90,
+     "m": 177.59,
+     "ft_rel_tee": 7.7,
+     "band_ft_rel_tee": 7.8
+    },
+    {
+     "yd": 100,
+     "m": 176.26,
+     "ft_rel_tee": 3.3,
+     "band_ft_rel_tee": 3.9
+    },
+    {
+     "yd": 110,
+     "m": 175.68,
+     "ft_rel_tee": 1.4,
+     "band_ft_rel_tee": 2.2
+    },
+    {
+     "yd": 120,
+     "m": 175.6,
+     "ft_rel_tee": 1.1,
+     "band_ft_rel_tee": 2.0
+    },
+    {
+     "yd": 130,
+     "m": 175.92,
+     "ft_rel_tee": 2.2,
+     "band_ft_rel_tee": 2.8
+    },
+    {
+     "yd": 140,
+     "m": 176.11,
+     "ft_rel_tee": 2.8,
+     "band_ft_rel_tee": 3.1
+    },
+    {
+     "yd": 150,
+     "m": 176.32,
+     "ft_rel_tee": 3.5,
+     "band_ft_rel_tee": 3.4
+    },
+    {
+     "yd": 160,
+     "m": 176.4,
+     "ft_rel_tee": 3.7,
+     "band_ft_rel_tee": 4.2
+    },
+    {
+     "yd": 170,
+     "m": 177.51,
+     "ft_rel_tee": 7.4,
+     "band_ft_rel_tee": 7.0
+    },
+    {
+     "yd": 180,
+     "m": 178.87,
+     "ft_rel_tee": 11.9,
+     "band_ft_rel_tee": 11.3
+    },
+    {
+     "yd": 190,
+     "m": 178.97,
+     "ft_rel_tee": 12.2,
+     "band_ft_rel_tee": 11.9
+    },
+    {
+     "yd": 200,
+     "m": 178.62,
+     "ft_rel_tee": 11.0,
+     "band_ft_rel_tee": 10.8
+    },
+    {
+     "yd": 210,
+     "m": 177.83,
+     "ft_rel_tee": 8.5,
+     "band_ft_rel_tee": 8.5
+    },
+    {
+     "yd": 220,
+     "m": 176.02,
+     "ft_rel_tee": 2.5,
+     "band_ft_rel_tee": 3.3
+    },
+    {
+     "yd": 230,
+     "m": 175.91,
+     "ft_rel_tee": 2.1,
+     "band_ft_rel_tee": 3.0
+    },
+    {
+     "yd": 240,
+     "m": 177.8,
+     "ft_rel_tee": 8.3,
+     "band_ft_rel_tee": 8.5
+    },
+    {
+     "yd": 250,
+     "m": 178.18,
+     "ft_rel_tee": 9.6,
+     "band_ft_rel_tee": 9.4
+    },
+    {
+     "yd": 260,
+     "m": 178.21,
+     "ft_rel_tee": 9.7,
+     "band_ft_rel_tee": 10.0
+    },
+    {
+     "yd": 270,
+     "m": 179.15,
+     "ft_rel_tee": 12.8,
+     "band_ft_rel_tee": 12.8
+    },
+    {
+     "yd": 280,
+     "m": 179.78,
+     "ft_rel_tee": 14.9,
+     "band_ft_rel_tee": 14.9
+    },
+    {
+     "yd": 290,
+     "m": 179.64,
+     "ft_rel_tee": 14.4,
+     "band_ft_rel_tee": 15.1
+    },
+    {
+     "yd": 300,
+     "m": 179.88,
+     "ft_rel_tee": 15.2,
+     "band_ft_rel_tee": 15.2
+    },
+    {
+     "yd": 310,
+     "m": 180.79,
+     "ft_rel_tee": 18.1,
+     "band_ft_rel_tee": 17.7
+    },
+    {
+     "yd": 320,
+     "m": 181.38,
+     "ft_rel_tee": 20.1,
+     "band_ft_rel_tee": 19.9
+    },
+    {
+     "yd": 330,
+     "m": 182.74,
+     "ft_rel_tee": 24.5,
+     "band_ft_rel_tee": 23.5
+    },
+    {
+     "yd": 340,
+     "m": 183.41,
+     "ft_rel_tee": 26.7,
+     "band_ft_rel_tee": 26.5
+    },
+    {
+     "yd": 350,
+     "m": 182.77,
+     "ft_rel_tee": 24.7,
+     "band_ft_rel_tee": 24.3
+    },
+    {
+     "yd": 360,
+     "m": 181.93,
+     "ft_rel_tee": 21.9,
+     "band_ft_rel_tee": 21.2
+    },
+    {
+     "yd": 370,
+     "m": 180.64,
+     "ft_rel_tee": 17.7,
+     "band_ft_rel_tee": 17.9
+    },
+    {
+     "yd": 380,
+     "m": 179.46,
+     "ft_rel_tee": 13.8,
+     "band_ft_rel_tee": 14.4
+    },
+    {
+     "yd": 390,
+     "m": 178.45,
+     "ft_rel_tee": 10.5,
+     "band_ft_rel_tee": 11.0
+    },
+    {
+     "yd": 400,
+     "m": 178.58,
+     "ft_rel_tee": 10.9,
+     "band_ft_rel_tee": 10.9
+    },
+    {
+     "yd": 410,
+     "m": 179.3,
+     "ft_rel_tee": 13.3,
+     "band_ft_rel_tee": 12.6
+    },
+    {
+     "yd": 420,
+     "m": 181.18,
+     "ft_rel_tee": 19.4,
+     "band_ft_rel_tee": 18.7
+    },
+    {
+     "yd": 430,
+     "m": 182.82,
+     "ft_rel_tee": 24.8,
+     "band_ft_rel_tee": 25.0
+    },
+    {
+     "yd": 440,
+     "m": 183.89,
+     "ft_rel_tee": 28.3,
+     "band_ft_rel_tee": 29.4
+    },
+    {
+     "yd": 450,
+     "m": 185.13,
+     "ft_rel_tee": 32.4,
+     "band_ft_rel_tee": 33.6
+    },
+    {
+     "yd": 460,
+     "m": 186.5,
+     "ft_rel_tee": 36.9,
+     "band_ft_rel_tee": 37.3
+    },
+    {
+     "yd": 470,
+     "m": 187.75,
+     "ft_rel_tee": 41.0,
+     "band_ft_rel_tee": 41.2
+    },
+    {
+     "yd": 480,
+     "m": 188.69,
+     "ft_rel_tee": 44.1,
+     "band_ft_rel_tee": 44.2
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Black",
+    "tee_method": "tee_axis",
+    "tee_confidence": "medium",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 500.4,
+    "map_tee_to_green_yd": 498.8,
+    "green_angle_off_line_deg": -15.2
+   },
+   "ecc_check": {
+    "tee_offset_yd": 99.1,
+    "bearing_diff_deg": 11.6,
+    "scale_270_yd": 270.8,
+    "landing_270_delta_ft": -36.6,
+    "landing_slope_along_pct": 1.8,
+    "landing_slope_cross_pct": 5.69,
+    "quality": {
+     "corr": 0.37938842517024796,
+     "ecc": 0.39900187158844,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "4": {
+   "par": 5,
+   "length_yd": 520,
+   "tee_ll": [
+    -91.1489911,
+    40.7556886
+   ],
+   "p270_ll": [
+    -91.149517,
+    40.7578758
+   ],
+   "bearing_deg_true": 349.6,
+   "tee_elev": {
+    "m": 194.51,
+    "ft": 638.2
+   },
+   "green": {
+    "m": 201.08,
+    "ft": 659.7,
+    "delta_ft": 21.6,
+    "along_yd": 526.9,
+    "lateral_yd": -43.6
+   },
+   "landing": {
+    "240": {
+     "m": 197.79,
+     "ft": 648.9,
+     "delta_ft": 10.8,
+     "delta_m": 3.28
+    },
+    "270": {
+     "m": 199.7,
+     "ft": 655.2,
+     "delta_ft": 17.0,
+     "delta_m": 5.19
+    },
+    "300": {
+     "m": 199.88,
+     "ft": 655.8,
+     "delta_ft": 17.6,
+     "delta_m": 5.37
+    }
+   },
+   "landing_slope": {
+    "along_pct": 3.29,
+    "cross_pct": -4.16,
+    "magnitude_pct": 5.31,
+    "fall_line_deg_cw_from_line": 128.0,
+    "residual_rms_m": 0.44,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 4.88,
+     "cross_pct": -6.56,
+     "magnitude_pct": 8.17,
+     "fall_line_deg_cw_from_line": 127.0,
+     "residual_rms_m": 0.45,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": 6.22,
+     "cross_pct": -3.45,
+     "magnitude_pct": 7.11,
+     "fall_line_deg_cw_from_line": 151.0,
+     "residual_rms_m": 0.35,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 2.46,
+     "cross_pct": -4.99,
+     "magnitude_pct": 5.57,
+     "fall_line_deg_cw_from_line": 116.0,
+     "residual_rms_m": 0.36,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 194.54,
+     "ft_rel_tee": 0.1,
+     "band_ft_rel_tee": -0.7
+    },
+    {
+     "yd": 10,
+     "m": 194.63,
+     "ft_rel_tee": 0.4,
+     "band_ft_rel_tee": -0.3
+    },
+    {
+     "yd": 20,
+     "m": 194.33,
+     "ft_rel_tee": -0.6,
+     "band_ft_rel_tee": -0.8
+    },
+    {
+     "yd": 30,
+     "m": 194.44,
+     "ft_rel_tee": -0.2,
+     "band_ft_rel_tee": -0.2
+    },
+    {
+     "yd": 40,
+     "m": 194.37,
+     "ft_rel_tee": -0.5,
+     "band_ft_rel_tee": -0.3
+    },
+    {
+     "yd": 50,
+     "m": 194.39,
+     "ft_rel_tee": -0.4,
+     "band_ft_rel_tee": -0.3
+    },
+    {
+     "yd": 60,
+     "m": 194.61,
+     "ft_rel_tee": 0.3,
+     "band_ft_rel_tee": 0.5
+    },
+    {
+     "yd": 70,
+     "m": 195.04,
+     "ft_rel_tee": 1.7,
+     "band_ft_rel_tee": 1.6
+    },
+    {
+     "yd": 80,
+     "m": 195.33,
+     "ft_rel_tee": 2.7,
+     "band_ft_rel_tee": 2.6
+    },
+    {
+     "yd": 90,
+     "m": 195.46,
+     "ft_rel_tee": 3.1,
+     "band_ft_rel_tee": 3.2
+    },
+    {
+     "yd": 100,
+     "m": 195.42,
+     "ft_rel_tee": 3.0,
+     "band_ft_rel_tee": 3.2
+    },
+    {
+     "yd": 110,
+     "m": 195.23,
+     "ft_rel_tee": 2.3,
+     "band_ft_rel_tee": 2.5
+    },
+    {
+     "yd": 120,
+     "m": 194.84,
+     "ft_rel_tee": 1.1,
+     "band_ft_rel_tee": 1.1
+    },
+    {
+     "yd": 130,
+     "m": 195.79,
+     "ft_rel_tee": 4.2,
+     "band_ft_rel_tee": 3.6
+    },
+    {
+     "yd": 140,
+     "m": 196.06,
+     "ft_rel_tee": 5.1,
+     "band_ft_rel_tee": 4.2
+    },
+    {
+     "yd": 150,
+     "m": 195.65,
+     "ft_rel_tee": 3.8,
+     "band_ft_rel_tee": 2.7
+    },
+    {
+     "yd": 160,
+     "m": 195.1,
+     "ft_rel_tee": 1.9,
+     "band_ft_rel_tee": 0.8
+    },
+    {
+     "yd": 170,
+     "m": 195.0,
+     "ft_rel_tee": 1.6,
+     "band_ft_rel_tee": -0.1
+    },
+    {
+     "yd": 180,
+     "m": 194.01,
+     "ft_rel_tee": -1.7,
+     "band_ft_rel_tee": -1.8
+    },
+    {
+     "yd": 190,
+     "m": 193.86,
+     "ft_rel_tee": -2.2,
+     "band_ft_rel_tee": -0.8
+    },
+    {
+     "yd": 200,
+     "m": 195.52,
+     "ft_rel_tee": 3.3,
+     "band_ft_rel_tee": 3.2
+    },
+    {
+     "yd": 210,
+     "m": 196.71,
+     "ft_rel_tee": 7.2,
+     "band_ft_rel_tee": 7.3
+    },
+    {
+     "yd": 220,
+     "m": 197.42,
+     "ft_rel_tee": 9.5,
+     "band_ft_rel_tee": 8.9
+    },
+    {
+     "yd": 230,
+     "m": 197.56,
+     "ft_rel_tee": 10.0,
+     "band_ft_rel_tee": 8.9
+    },
+    {
+     "yd": 240,
+     "m": 198.04,
+     "ft_rel_tee": 11.6,
+     "band_ft_rel_tee": 10.8
+    },
+    {
+     "yd": 250,
+     "m": 198.63,
+     "ft_rel_tee": 13.5,
+     "band_ft_rel_tee": 13.3
+    },
+    {
+     "yd": 260,
+     "m": 199.16,
+     "ft_rel_tee": 15.3,
+     "band_ft_rel_tee": 15.1
+    },
+    {
+     "yd": 270,
+     "m": 199.89,
+     "ft_rel_tee": 17.6,
+     "band_ft_rel_tee": 17.0
+    },
+    {
+     "yd": 280,
+     "m": 200.34,
+     "ft_rel_tee": 19.1,
+     "band_ft_rel_tee": 18.2
+    },
+    {
+     "yd": 290,
+     "m": 199.86,
+     "ft_rel_tee": 17.5,
+     "band_ft_rel_tee": 17.0
+    },
+    {
+     "yd": 300,
+     "m": 199.96,
+     "ft_rel_tee": 17.9,
+     "band_ft_rel_tee": 17.6
+    },
+    {
+     "yd": 310,
+     "m": 200.36,
+     "ft_rel_tee": 19.2,
+     "band_ft_rel_tee": 18.9
+    },
+    {
+     "yd": 320,
+     "m": 200.77,
+     "ft_rel_tee": 20.5,
+     "band_ft_rel_tee": 20.2
+    },
+    {
+     "yd": 330,
+     "m": 200.6,
+     "ft_rel_tee": 20.0,
+     "band_ft_rel_tee": 19.9
+    },
+    {
+     "yd": 340,
+     "m": 200.66,
+     "ft_rel_tee": 20.2,
+     "band_ft_rel_tee": 20.2
+    },
+    {
+     "yd": 350,
+     "m": 201.1,
+     "ft_rel_tee": 21.6,
+     "band_ft_rel_tee": 21.5
+    },
+    {
+     "yd": 360,
+     "m": 200.97,
+     "ft_rel_tee": 21.2,
+     "band_ft_rel_tee": 21.4
+    },
+    {
+     "yd": 370,
+     "m": 200.05,
+     "ft_rel_tee": 18.2,
+     "band_ft_rel_tee": 18.7
+    },
+    {
+     "yd": 380,
+     "m": 199.45,
+     "ft_rel_tee": 16.2,
+     "band_ft_rel_tee": 16.5
+    },
+    {
+     "yd": 390,
+     "m": 199.2,
+     "ft_rel_tee": 15.4,
+     "band_ft_rel_tee": 15.3
+    },
+    {
+     "yd": 400,
+     "m": 199.18,
+     "ft_rel_tee": 15.3,
+     "band_ft_rel_tee": 15.3
+    },
+    {
+     "yd": 410,
+     "m": 199.22,
+     "ft_rel_tee": 15.4,
+     "band_ft_rel_tee": 15.7
+    },
+    {
+     "yd": 420,
+     "m": 199.73,
+     "ft_rel_tee": 17.1,
+     "band_ft_rel_tee": 17.4
+    },
+    {
+     "yd": 430,
+     "m": 200.23,
+     "ft_rel_tee": 18.8,
+     "band_ft_rel_tee": 19.0
+    },
+    {
+     "yd": 440,
+     "m": 200.51,
+     "ft_rel_tee": 19.7,
+     "band_ft_rel_tee": 20.0
+    },
+    {
+     "yd": 450,
+     "m": 200.54,
+     "ft_rel_tee": 19.8,
+     "band_ft_rel_tee": 20.0
+    },
+    {
+     "yd": 460,
+     "m": 200.43,
+     "ft_rel_tee": 19.4,
+     "band_ft_rel_tee": 19.4
+    },
+    {
+     "yd": 470,
+     "m": 200.47,
+     "ft_rel_tee": 19.5,
+     "band_ft_rel_tee": 19.6
+    },
+    {
+     "yd": 480,
+     "m": 200.45,
+     "ft_rel_tee": 19.5,
+     "band_ft_rel_tee": 20.2
+    },
+    {
+     "yd": 490,
+     "m": 200.51,
+     "ft_rel_tee": 19.7,
+     "band_ft_rel_tee": 20.6
+    },
+    {
+     "yd": 500,
+     "m": 200.49,
+     "ft_rel_tee": 19.6,
+     "band_ft_rel_tee": 20.3
+    },
+    {
+     "yd": 510,
+     "m": 200.47,
+     "ft_rel_tee": 19.5,
+     "band_ft_rel_tee": 19.7
+    },
+    {
+     "yd": 520,
+     "m": 200.51,
+     "ft_rel_tee": 19.7,
+     "band_ft_rel_tee": 19.6
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923974657",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 518.1,
+    "map_tee_to_green_yd": 528.7,
+    "green_angle_off_line_deg": -4.7
+   },
+   "ecc_check": {
+    "tee_offset_yd": 7.1,
+    "bearing_diff_deg": -9.4,
+    "scale_270_yd": 270.4,
+    "landing_270_delta_ft": 15.2,
+    "landing_slope_along_pct": 1.19,
+    "landing_slope_cross_pct": -2.72,
+    "quality": {
+     "corr": 0.33894568938125214,
+     "ecc": 0.36275026271855215,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "5": {
+   "par": 4,
+   "length_yd": 397,
+   "tee_ll": [
+    -91.1515021,
+    40.7612078
+   ],
+   "p270_ll": [
+    -91.1507552,
+    40.7633575
+   ],
+   "bearing_deg_true": 14.8,
+   "tee_elev": {
+    "m": 203.8,
+    "ft": 668.6
+   },
+   "green": {
+    "m": 206.33,
+    "ft": 676.9,
+    "delta_ft": 8.3,
+    "along_yd": 393.4,
+    "lateral_yd": -20.1
+   },
+   "landing": {
+    "240": {
+     "m": 205.21,
+     "ft": 673.3,
+     "delta_ft": 4.6,
+     "delta_m": 1.41
+    },
+    "270": {
+     "m": 205.6,
+     "ft": 674.5,
+     "delta_ft": 5.9,
+     "delta_m": 1.79
+    },
+    "300": {
+     "m": 206.04,
+     "ft": 676.0,
+     "delta_ft": 7.3,
+     "delta_m": 2.24
+    }
+   },
+   "landing_slope": {
+    "along_pct": 1.22,
+    "cross_pct": -0.23,
+    "magnitude_pct": 1.24,
+    "fall_line_deg_cw_from_line": 170.0,
+    "residual_rms_m": 0.29,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 0.15,
+     "cross_pct": -3.62,
+     "magnitude_pct": 3.63,
+     "fall_line_deg_cw_from_line": 92.0,
+     "residual_rms_m": 0.16,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": 1.47,
+     "cross_pct": -2.56,
+     "magnitude_pct": 2.95,
+     "fall_line_deg_cw_from_line": 120.0,
+     "residual_rms_m": 0.1,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 0.65,
+     "cross_pct": 2.06,
+     "magnitude_pct": 2.16,
+     "fall_line_deg_cw_from_line": 252.0,
+     "residual_rms_m": 0.27,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 203.89,
+     "ft_rel_tee": 0.3,
+     "band_ft_rel_tee": -1.0
+    },
+    {
+     "yd": 10,
+     "m": 202.96,
+     "ft_rel_tee": -2.8,
+     "band_ft_rel_tee": -2.7
+    },
+    {
+     "yd": 20,
+     "m": 202.88,
+     "ft_rel_tee": -3.0,
+     "band_ft_rel_tee": -2.8
+    },
+    {
+     "yd": 30,
+     "m": 202.78,
+     "ft_rel_tee": -3.4,
+     "band_ft_rel_tee": -3.4
+    },
+    {
+     "yd": 40,
+     "m": 202.45,
+     "ft_rel_tee": -4.4,
+     "band_ft_rel_tee": -4.4
+    },
+    {
+     "yd": 50,
+     "m": 202.47,
+     "ft_rel_tee": -4.4,
+     "band_ft_rel_tee": -4.2
+    },
+    {
+     "yd": 60,
+     "m": 202.74,
+     "ft_rel_tee": -3.5,
+     "band_ft_rel_tee": -3.5
+    },
+    {
+     "yd": 70,
+     "m": 203.07,
+     "ft_rel_tee": -2.4,
+     "band_ft_rel_tee": -2.6
+    },
+    {
+     "yd": 80,
+     "m": 203.25,
+     "ft_rel_tee": -1.8,
+     "band_ft_rel_tee": -1.9
+    },
+    {
+     "yd": 90,
+     "m": 203.56,
+     "ft_rel_tee": -0.8,
+     "band_ft_rel_tee": -0.9
+    },
+    {
+     "yd": 100,
+     "m": 203.98,
+     "ft_rel_tee": 0.6,
+     "band_ft_rel_tee": 0.4
+    },
+    {
+     "yd": 110,
+     "m": 203.84,
+     "ft_rel_tee": 0.1,
+     "band_ft_rel_tee": 0.0
+    },
+    {
+     "yd": 120,
+     "m": 203.78,
+     "ft_rel_tee": -0.1,
+     "band_ft_rel_tee": 0.0
+    },
+    {
+     "yd": 130,
+     "m": 203.97,
+     "ft_rel_tee": 0.5,
+     "band_ft_rel_tee": 0.6
+    },
+    {
+     "yd": 140,
+     "m": 204.15,
+     "ft_rel_tee": 1.1,
+     "band_ft_rel_tee": 1.3
+    },
+    {
+     "yd": 150,
+     "m": 204.38,
+     "ft_rel_tee": 1.9,
+     "band_ft_rel_tee": 2.0
+    },
+    {
+     "yd": 160,
+     "m": 204.63,
+     "ft_rel_tee": 2.7,
+     "band_ft_rel_tee": 2.8
+    },
+    {
+     "yd": 170,
+     "m": 204.85,
+     "ft_rel_tee": 3.4,
+     "band_ft_rel_tee": 3.4
+    },
+    {
+     "yd": 180,
+     "m": 205.13,
+     "ft_rel_tee": 4.4,
+     "band_ft_rel_tee": 3.7
+    },
+    {
+     "yd": 190,
+     "m": 205.35,
+     "ft_rel_tee": 5.1,
+     "band_ft_rel_tee": 4.8
+    },
+    {
+     "yd": 200,
+     "m": 205.31,
+     "ft_rel_tee": 4.9,
+     "band_ft_rel_tee": 4.9
+    },
+    {
+     "yd": 210,
+     "m": 205.2,
+     "ft_rel_tee": 4.6,
+     "band_ft_rel_tee": 4.6
+    },
+    {
+     "yd": 220,
+     "m": 205.14,
+     "ft_rel_tee": 4.4,
+     "band_ft_rel_tee": 4.6
+    },
+    {
+     "yd": 230,
+     "m": 205.22,
+     "ft_rel_tee": 4.6,
+     "band_ft_rel_tee": 4.7
+    },
+    {
+     "yd": 240,
+     "m": 205.17,
+     "ft_rel_tee": 4.5,
+     "band_ft_rel_tee": 4.6
+    },
+    {
+     "yd": 250,
+     "m": 205.29,
+     "ft_rel_tee": 4.9,
+     "band_ft_rel_tee": 4.9
+    },
+    {
+     "yd": 260,
+     "m": 205.45,
+     "ft_rel_tee": 5.4,
+     "band_ft_rel_tee": 5.5
+    },
+    {
+     "yd": 270,
+     "m": 205.58,
+     "ft_rel_tee": 5.8,
+     "band_ft_rel_tee": 5.9
+    },
+    {
+     "yd": 280,
+     "m": 205.75,
+     "ft_rel_tee": 6.4,
+     "band_ft_rel_tee": 6.4
+    },
+    {
+     "yd": 290,
+     "m": 205.97,
+     "ft_rel_tee": 7.1,
+     "band_ft_rel_tee": 7.1
+    },
+    {
+     "yd": 300,
+     "m": 206.1,
+     "ft_rel_tee": 7.5,
+     "band_ft_rel_tee": 7.4
+    },
+    {
+     "yd": 310,
+     "m": 206.11,
+     "ft_rel_tee": 7.6,
+     "band_ft_rel_tee": 7.6
+    },
+    {
+     "yd": 320,
+     "m": 205.83,
+     "ft_rel_tee": 6.7,
+     "band_ft_rel_tee": 6.8
+    },
+    {
+     "yd": 330,
+     "m": 205.36,
+     "ft_rel_tee": 5.1,
+     "band_ft_rel_tee": 5.0
+    },
+    {
+     "yd": 340,
+     "m": 205.03,
+     "ft_rel_tee": 4.0,
+     "band_ft_rel_tee": 4.0
+    },
+    {
+     "yd": 350,
+     "m": 204.82,
+     "ft_rel_tee": 3.3,
+     "band_ft_rel_tee": 3.4
+    },
+    {
+     "yd": 360,
+     "m": 204.91,
+     "ft_rel_tee": 3.6,
+     "band_ft_rel_tee": 3.8
+    },
+    {
+     "yd": 370,
+     "m": 205.42,
+     "ft_rel_tee": 5.3,
+     "band_ft_rel_tee": 5.5
+    },
+    {
+     "yd": 380,
+     "m": 205.87,
+     "ft_rel_tee": 6.8,
+     "band_ft_rel_tee": 7.1
+    },
+    {
+     "yd": 390,
+     "m": 206.58,
+     "ft_rel_tee": 9.1,
+     "band_ft_rel_tee": 8.9
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923958976",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 395.9,
+    "map_tee_to_green_yd": 393.9,
+    "green_angle_off_line_deg": -2.9
+   },
+   "ecc_check": {
+    "tee_offset_yd": 3.4,
+    "bearing_diff_deg": 0.2,
+    "scale_270_yd": 264.6,
+    "landing_270_delta_ft": 5.7,
+    "landing_slope_along_pct": 1.71,
+    "landing_slope_cross_pct": -0.24,
+    "quality": {
+     "corr": 0.4532760689044777,
+     "ecc": 0.4684997621435311,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "6": {
+   "par": 4,
+   "length_yd": 421,
+   "tee_ll": [
+    -91.1510023,
+    40.7650028
+   ],
+   "p270_ll": [
+    -91.1480814,
+    40.7648947
+   ],
+   "bearing_deg_true": 92.8,
+   "tee_elev": {
+    "m": 206.77,
+    "ft": 678.4
+   },
+   "green": {
+    "m": 199.49,
+    "ft": 654.5,
+    "delta_ft": -23.9,
+    "along_yd": 401.4,
+    "lateral_yd": -79.4
+   },
+   "landing": {
+    "240": {
+     "m": 203.97,
+     "ft": 669.2,
+     "delta_ft": -9.2,
+     "delta_m": -2.79
+    },
+    "270": {
+     "m": 203.01,
+     "ft": 666.0,
+     "delta_ft": -12.3,
+     "delta_m": -3.76
+    },
+    "300": {
+     "m": 202.43,
+     "ft": 664.1,
+     "delta_ft": -14.2,
+     "delta_m": -4.33
+    }
+   },
+   "landing_slope": {
+    "along_pct": -2.48,
+    "cross_pct": 2.52,
+    "magnitude_pct": 3.53,
+    "fall_line_deg_cw_from_line": 315.0,
+    "residual_rms_m": 0.15,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 1.62,
+     "cross_pct": 4.67,
+     "magnitude_pct": 4.95,
+     "fall_line_deg_cw_from_line": 251.0,
+     "residual_rms_m": 0.28,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": -3.18,
+     "cross_pct": 1.67,
+     "magnitude_pct": 3.6,
+     "fall_line_deg_cw_from_line": 332.0,
+     "residual_rms_m": 0.1,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": -1.85,
+     "cross_pct": 3.4,
+     "magnitude_pct": 3.88,
+     "fall_line_deg_cw_from_line": 299.0,
+     "residual_rms_m": 0.11,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 206.79,
+     "ft_rel_tee": 0.1,
+     "band_ft_rel_tee": -0.6
+    },
+    {
+     "yd": 10,
+     "m": 206.21,
+     "ft_rel_tee": -1.8,
+     "band_ft_rel_tee": -2.0
+    },
+    {
+     "yd": 20,
+     "m": 205.8,
+     "ft_rel_tee": -3.2,
+     "band_ft_rel_tee": -2.9
+    },
+    {
+     "yd": 30,
+     "m": 205.58,
+     "ft_rel_tee": -3.9,
+     "band_ft_rel_tee": -3.5
+    },
+    {
+     "yd": 40,
+     "m": 205.34,
+     "ft_rel_tee": -4.7,
+     "band_ft_rel_tee": -4.1
+    },
+    {
+     "yd": 50,
+     "m": 205.06,
+     "ft_rel_tee": -5.6,
+     "band_ft_rel_tee": -5.3
+    },
+    {
+     "yd": 60,
+     "m": 204.85,
+     "ft_rel_tee": -6.3,
+     "band_ft_rel_tee": -6.0
+    },
+    {
+     "yd": 70,
+     "m": 204.66,
+     "ft_rel_tee": -6.9,
+     "band_ft_rel_tee": -6.5
+    },
+    {
+     "yd": 80,
+     "m": 204.4,
+     "ft_rel_tee": -7.8,
+     "band_ft_rel_tee": -6.8
+    },
+    {
+     "yd": 90,
+     "m": 204.62,
+     "ft_rel_tee": -7.1,
+     "band_ft_rel_tee": -6.5
+    },
+    {
+     "yd": 100,
+     "m": 204.03,
+     "ft_rel_tee": -9.0,
+     "band_ft_rel_tee": -8.2
+    },
+    {
+     "yd": 110,
+     "m": 203.75,
+     "ft_rel_tee": -9.9,
+     "band_ft_rel_tee": -9.3
+    },
+    {
+     "yd": 120,
+     "m": 203.55,
+     "ft_rel_tee": -10.6,
+     "band_ft_rel_tee": -10.0
+    },
+    {
+     "yd": 130,
+     "m": 203.31,
+     "ft_rel_tee": -11.3,
+     "band_ft_rel_tee": -10.8
+    },
+    {
+     "yd": 140,
+     "m": 203.11,
+     "ft_rel_tee": -12.0,
+     "band_ft_rel_tee": -11.5
+    },
+    {
+     "yd": 150,
+     "m": 202.83,
+     "ft_rel_tee": -12.9,
+     "band_ft_rel_tee": -12.3
+    },
+    {
+     "yd": 160,
+     "m": 203.18,
+     "ft_rel_tee": -11.8,
+     "band_ft_rel_tee": -11.7
+    },
+    {
+     "yd": 170,
+     "m": 203.55,
+     "ft_rel_tee": -10.6,
+     "band_ft_rel_tee": -10.6
+    },
+    {
+     "yd": 180,
+     "m": 203.67,
+     "ft_rel_tee": -10.2,
+     "band_ft_rel_tee": -10.4
+    },
+    {
+     "yd": 190,
+     "m": 204.04,
+     "ft_rel_tee": -8.9,
+     "band_ft_rel_tee": -9.9
+    },
+    {
+     "yd": 200,
+     "m": 203.65,
+     "ft_rel_tee": -10.2,
+     "band_ft_rel_tee": -10.5
+    },
+    {
+     "yd": 210,
+     "m": 203.94,
+     "ft_rel_tee": -9.3,
+     "band_ft_rel_tee": -9.9
+    },
+    {
+     "yd": 220,
+     "m": 204.24,
+     "ft_rel_tee": -8.3,
+     "band_ft_rel_tee": -8.9
+    },
+    {
+     "yd": 230,
+     "m": 204.22,
+     "ft_rel_tee": -8.4,
+     "band_ft_rel_tee": -8.6
+    },
+    {
+     "yd": 240,
+     "m": 204.03,
+     "ft_rel_tee": -9.0,
+     "band_ft_rel_tee": -9.2
+    },
+    {
+     "yd": 250,
+     "m": 203.7,
+     "ft_rel_tee": -10.1,
+     "band_ft_rel_tee": -10.1
+    },
+    {
+     "yd": 260,
+     "m": 203.23,
+     "ft_rel_tee": -11.6,
+     "band_ft_rel_tee": -11.4
+    },
+    {
+     "yd": 270,
+     "m": 202.98,
+     "ft_rel_tee": -12.4,
+     "band_ft_rel_tee": -12.3
+    },
+    {
+     "yd": 280,
+     "m": 202.84,
+     "ft_rel_tee": -12.9,
+     "band_ft_rel_tee": -13.0
+    },
+    {
+     "yd": 290,
+     "m": 202.64,
+     "ft_rel_tee": -13.5,
+     "band_ft_rel_tee": -13.7
+    },
+    {
+     "yd": 300,
+     "m": 202.41,
+     "ft_rel_tee": -14.3,
+     "band_ft_rel_tee": -14.2
+    },
+    {
+     "yd": 310,
+     "m": 202.26,
+     "ft_rel_tee": -14.8,
+     "band_ft_rel_tee": -14.8
+    },
+    {
+     "yd": 320,
+     "m": 201.82,
+     "ft_rel_tee": -16.2,
+     "band_ft_rel_tee": -15.5
+    },
+    {
+     "yd": 330,
+     "m": 202.42,
+     "ft_rel_tee": -14.2,
+     "band_ft_rel_tee": -14.3
+    },
+    {
+     "yd": 340,
+     "m": 202.59,
+     "ft_rel_tee": -13.7,
+     "band_ft_rel_tee": -13.5
+    },
+    {
+     "yd": 350,
+     "m": 202.53,
+     "ft_rel_tee": -13.9,
+     "band_ft_rel_tee": -13.7
+    },
+    {
+     "yd": 360,
+     "m": 202.47,
+     "ft_rel_tee": -14.1,
+     "band_ft_rel_tee": -13.5
+    },
+    {
+     "yd": 370,
+     "m": 203.95,
+     "ft_rel_tee": -9.2,
+     "band_ft_rel_tee": -9.1
+    },
+    {
+     "yd": 380,
+     "m": 204.82,
+     "ft_rel_tee": -6.4,
+     "band_ft_rel_tee": -6.7
+    },
+    {
+     "yd": 390,
+     "m": 204.6,
+     "ft_rel_tee": -7.1,
+     "band_ft_rel_tee": -7.4
+    },
+    {
+     "yd": 400,
+     "m": 203.79,
+     "ft_rel_tee": -9.8,
+     "band_ft_rel_tee": -10.2
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923976293",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 406.5,
+    "map_tee_to_green_yd": 409.2,
+    "green_angle_off_line_deg": -11.2
+   },
+   "ecc_check": {
+    "tee_offset_yd": 3.2,
+    "bearing_diff_deg": 0.9,
+    "scale_270_yd": 268.0,
+    "landing_270_delta_ft": -12.3,
+    "landing_slope_along_pct": -2.35,
+    "landing_slope_cross_pct": 2.73,
+    "quality": {
+     "corr": 0.3126598796506971,
+     "ecc": 0.3395094964901429,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "8": {
+   "par": 4,
+   "length_yd": 375,
+   "tee_ll": [
+    -91.1451825,
+    40.7627303
+   ],
+   "p270_ll": [
+    -91.1480783,
+    40.7624214
+   ],
+   "bearing_deg_true": 262.0,
+   "tee_elev": {
+    "m": 198.71,
+    "ft": 651.9
+   },
+   "green": {
+    "m": 203.13,
+    "ft": 666.4,
+    "delta_ft": 14.5,
+    "along_yd": 372.1,
+    "lateral_yd": -26.9
+   },
+   "landing": {
+    "240": {
+     "m": 202.21,
+     "ft": 663.4,
+     "delta_ft": 11.5,
+     "delta_m": 3.51
+    },
+    "270": {
+     "m": 202.69,
+     "ft": 665.0,
+     "delta_ft": 13.1,
+     "delta_m": 3.98
+    },
+    "300": {
+     "m": 202.7,
+     "ft": 665.0,
+     "delta_ft": 13.1,
+     "delta_m": 3.99
+    }
+   },
+   "landing_slope": {
+    "along_pct": -0.3,
+    "cross_pct": 4.23,
+    "magnitude_pct": 4.24,
+    "fall_line_deg_cw_from_line": 274.0,
+    "residual_rms_m": 0.32,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 0.22,
+     "cross_pct": -1.52,
+     "magnitude_pct": 1.54,
+     "fall_line_deg_cw_from_line": 98.0,
+     "residual_rms_m": 0.35,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": 0.48,
+     "cross_pct": 2.51,
+     "magnitude_pct": 2.56,
+     "fall_line_deg_cw_from_line": 259.0,
+     "residual_rms_m": 0.18,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": -1.97,
+     "cross_pct": 5.8,
+     "magnitude_pct": 6.12,
+     "fall_line_deg_cw_from_line": 289.0,
+     "residual_rms_m": 0.29,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 198.74,
+     "ft_rel_tee": 0.1,
+     "band_ft_rel_tee": -0.8
+    },
+    {
+     "yd": 10,
+     "m": 198.63,
+     "ft_rel_tee": -0.2,
+     "band_ft_rel_tee": -1.8
+    },
+    {
+     "yd": 20,
+     "m": 197.75,
+     "ft_rel_tee": -3.1,
+     "band_ft_rel_tee": -4.4
+    },
+    {
+     "yd": 30,
+     "m": 197.77,
+     "ft_rel_tee": -3.1,
+     "band_ft_rel_tee": -3.8
+    },
+    {
+     "yd": 40,
+     "m": 197.29,
+     "ft_rel_tee": -4.6,
+     "band_ft_rel_tee": -4.3
+    },
+    {
+     "yd": 50,
+     "m": 196.44,
+     "ft_rel_tee": -7.4,
+     "band_ft_rel_tee": -7.4
+    },
+    {
+     "yd": 60,
+     "m": 194.53,
+     "ft_rel_tee": -13.7,
+     "band_ft_rel_tee": -13.9
+    },
+    {
+     "yd": 70,
+     "m": 192.31,
+     "ft_rel_tee": -21.0,
+     "band_ft_rel_tee": -20.4
+    },
+    {
+     "yd": 80,
+     "m": 192.03,
+     "ft_rel_tee": -21.9,
+     "band_ft_rel_tee": -21.9
+    },
+    {
+     "yd": 90,
+     "m": 193.29,
+     "ft_rel_tee": -17.8,
+     "band_ft_rel_tee": -17.6
+    },
+    {
+     "yd": 100,
+     "m": 196.29,
+     "ft_rel_tee": -7.9,
+     "band_ft_rel_tee": -8.5
+    },
+    {
+     "yd": 110,
+     "m": 198.86,
+     "ft_rel_tee": 0.5,
+     "band_ft_rel_tee": -0.3
+    },
+    {
+     "yd": 120,
+     "m": 198.65,
+     "ft_rel_tee": -0.2,
+     "band_ft_rel_tee": 0.2
+    },
+    {
+     "yd": 130,
+     "m": 198.77,
+     "ft_rel_tee": 0.2,
+     "band_ft_rel_tee": 0.5
+    },
+    {
+     "yd": 140,
+     "m": 199.2,
+     "ft_rel_tee": 1.6,
+     "band_ft_rel_tee": 1.8
+    },
+    {
+     "yd": 150,
+     "m": 199.68,
+     "ft_rel_tee": 3.2,
+     "band_ft_rel_tee": 3.2
+    },
+    {
+     "yd": 160,
+     "m": 200.16,
+     "ft_rel_tee": 4.8,
+     "band_ft_rel_tee": 4.9
+    },
+    {
+     "yd": 170,
+     "m": 200.38,
+     "ft_rel_tee": 5.5,
+     "band_ft_rel_tee": 5.6
+    },
+    {
+     "yd": 180,
+     "m": 200.51,
+     "ft_rel_tee": 5.9,
+     "band_ft_rel_tee": 6.2
+    },
+    {
+     "yd": 190,
+     "m": 201.02,
+     "ft_rel_tee": 7.6,
+     "band_ft_rel_tee": 7.4
+    },
+    {
+     "yd": 200,
+     "m": 201.67,
+     "ft_rel_tee": 9.7,
+     "band_ft_rel_tee": 10.2
+    },
+    {
+     "yd": 210,
+     "m": 202.0,
+     "ft_rel_tee": 10.8,
+     "band_ft_rel_tee": 11.3
+    },
+    {
+     "yd": 220,
+     "m": 201.99,
+     "ft_rel_tee": 10.8,
+     "band_ft_rel_tee": 11.0
+    },
+    {
+     "yd": 230,
+     "m": 201.98,
+     "ft_rel_tee": 10.7,
+     "band_ft_rel_tee": 10.7
+    },
+    {
+     "yd": 240,
+     "m": 202.13,
+     "ft_rel_tee": 11.2,
+     "band_ft_rel_tee": 11.5
+    },
+    {
+     "yd": 250,
+     "m": 202.46,
+     "ft_rel_tee": 12.3,
+     "band_ft_rel_tee": 12.5
+    },
+    {
+     "yd": 260,
+     "m": 202.69,
+     "ft_rel_tee": 13.1,
+     "band_ft_rel_tee": 12.9
+    },
+    {
+     "yd": 270,
+     "m": 202.75,
+     "ft_rel_tee": 13.3,
+     "band_ft_rel_tee": 13.1
+    },
+    {
+     "yd": 280,
+     "m": 202.75,
+     "ft_rel_tee": 13.3,
+     "band_ft_rel_tee": 12.7
+    },
+    {
+     "yd": 290,
+     "m": 202.85,
+     "ft_rel_tee": 13.6,
+     "band_ft_rel_tee": 13.6
+    },
+    {
+     "yd": 300,
+     "m": 202.69,
+     "ft_rel_tee": 13.1,
+     "band_ft_rel_tee": 13.1
+    },
+    {
+     "yd": 310,
+     "m": 202.29,
+     "ft_rel_tee": 11.7,
+     "band_ft_rel_tee": 11.7
+    },
+    {
+     "yd": 320,
+     "m": 201.83,
+     "ft_rel_tee": 10.3,
+     "band_ft_rel_tee": 10.5
+    },
+    {
+     "yd": 330,
+     "m": 201.62,
+     "ft_rel_tee": 9.6,
+     "band_ft_rel_tee": 9.8
+    },
+    {
+     "yd": 340,
+     "m": 201.81,
+     "ft_rel_tee": 10.2,
+     "band_ft_rel_tee": 10.5
+    },
+    {
+     "yd": 350,
+     "m": 202.41,
+     "ft_rel_tee": 12.1,
+     "band_ft_rel_tee": 12.4
+    },
+    {
+     "yd": 360,
+     "m": 202.89,
+     "ft_rel_tee": 13.7,
+     "band_ft_rel_tee": 14.0
+    },
+    {
+     "yd": 370,
+     "m": 202.94,
+     "ft_rel_tee": 13.9,
+     "band_ft_rel_tee": 14.3
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923979073",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 372.5,
+    "map_tee_to_green_yd": 373.0,
+    "green_angle_off_line_deg": -4.1
+   },
+   "ecc_check": {
+    "tee_offset_yd": 5.5,
+    "bearing_diff_deg": -1.2,
+    "scale_270_yd": 269.6,
+    "landing_270_delta_ft": 12.6,
+    "landing_slope_along_pct": -0.27,
+    "landing_slope_cross_pct": 3.97,
+    "quality": {
+     "corr": 0.25951530279512314,
+     "ecc": 0.2726040260345223,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "9B": {
+   "par": 4,
+   "length_yd": 399,
+   "tee_ll": [
+    -91.1497094,
+    40.7611489
+   ],
+   "p270_ll": [
+    -91.1469356,
+    40.7618527
+   ],
+   "bearing_deg_true": 71.5,
+   "tee_elev": {
+    "m": 202.6,
+    "ft": 664.7
+   },
+   "green": {
+    "m": 190.34,
+    "ft": 624.5,
+    "delta_ft": -40.2,
+    "along_yd": 341.6,
+    "lateral_yd": 106.6
+   },
+   "landing": {
+    "240": {
+     "m": 197.72,
+     "ft": 648.7,
+     "delta_ft": -16.0,
+     "delta_m": -4.88
+    },
+    "270": {
+     "m": 196.89,
+     "ft": 646.0,
+     "delta_ft": -18.7,
+     "delta_m": -5.7
+    },
+    "300": {
+     "m": 196.05,
+     "ft": 643.2,
+     "delta_ft": -21.5,
+     "delta_m": -6.55
+    }
+   },
+   "landing_slope": {
+    "along_pct": -2.09,
+    "cross_pct": -4.65,
+    "magnitude_pct": 5.1,
+    "fall_line_deg_cw_from_line": 66.0,
+    "residual_rms_m": 0.27,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": -2.5,
+     "cross_pct": -3.17,
+     "magnitude_pct": 4.04,
+     "fall_line_deg_cw_from_line": 52.0,
+     "residual_rms_m": 0.09,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": -2.61,
+     "cross_pct": -3.35,
+     "magnitude_pct": 4.25,
+     "fall_line_deg_cw_from_line": 52.0,
+     "residual_rms_m": 0.07,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": -0.46,
+     "cross_pct": -5.92,
+     "magnitude_pct": 5.94,
+     "fall_line_deg_cw_from_line": 86.0,
+     "residual_rms_m": 0.27,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 202.72,
+     "ft_rel_tee": 0.4,
+     "band_ft_rel_tee": -0.9
+    },
+    {
+     "yd": 10,
+     "m": 202.81,
+     "ft_rel_tee": 0.7,
+     "band_ft_rel_tee": -0.6
+    },
+    {
+     "yd": 20,
+     "m": 201.48,
+     "ft_rel_tee": -3.7,
+     "band_ft_rel_tee": -3.7
+    },
+    {
+     "yd": 30,
+     "m": 201.23,
+     "ft_rel_tee": -4.5,
+     "band_ft_rel_tee": -4.6
+    },
+    {
+     "yd": 40,
+     "m": 201.37,
+     "ft_rel_tee": -4.0,
+     "band_ft_rel_tee": -4.7
+    },
+    {
+     "yd": 50,
+     "m": 201.43,
+     "ft_rel_tee": -3.8,
+     "band_ft_rel_tee": -4.5
+    },
+    {
+     "yd": 60,
+     "m": 201.42,
+     "ft_rel_tee": -3.8,
+     "band_ft_rel_tee": -4.5
+    },
+    {
+     "yd": 70,
+     "m": 200.86,
+     "ft_rel_tee": -5.7,
+     "band_ft_rel_tee": -5.9
+    },
+    {
+     "yd": 80,
+     "m": 200.64,
+     "ft_rel_tee": -6.4,
+     "band_ft_rel_tee": -6.1
+    },
+    {
+     "yd": 90,
+     "m": 200.4,
+     "ft_rel_tee": -7.2,
+     "band_ft_rel_tee": -6.7
+    },
+    {
+     "yd": 100,
+     "m": 199.93,
+     "ft_rel_tee": -8.8,
+     "band_ft_rel_tee": -8.1
+    },
+    {
+     "yd": 110,
+     "m": 199.69,
+     "ft_rel_tee": -9.5,
+     "band_ft_rel_tee": -9.0
+    },
+    {
+     "yd": 120,
+     "m": 199.48,
+     "ft_rel_tee": -10.2,
+     "band_ft_rel_tee": -10.0
+    },
+    {
+     "yd": 130,
+     "m": 198.83,
+     "ft_rel_tee": -12.4,
+     "band_ft_rel_tee": -12.1
+    },
+    {
+     "yd": 140,
+     "m": 198.41,
+     "ft_rel_tee": -13.8,
+     "band_ft_rel_tee": -13.6
+    },
+    {
+     "yd": 150,
+     "m": 197.96,
+     "ft_rel_tee": -15.2,
+     "band_ft_rel_tee": -15.1
+    },
+    {
+     "yd": 160,
+     "m": 197.64,
+     "ft_rel_tee": -16.3,
+     "band_ft_rel_tee": -16.4
+    },
+    {
+     "yd": 170,
+     "m": 197.87,
+     "ft_rel_tee": -15.5,
+     "band_ft_rel_tee": -15.8
+    },
+    {
+     "yd": 180,
+     "m": 198.42,
+     "ft_rel_tee": -13.7,
+     "band_ft_rel_tee": -14.2
+    },
+    {
+     "yd": 190,
+     "m": 198.6,
+     "ft_rel_tee": -13.1,
+     "band_ft_rel_tee": -13.1
+    },
+    {
+     "yd": 200,
+     "m": 198.6,
+     "ft_rel_tee": -13.1,
+     "band_ft_rel_tee": -13.0
+    },
+    {
+     "yd": 210,
+     "m": 198.5,
+     "ft_rel_tee": -13.4,
+     "band_ft_rel_tee": -13.4
+    },
+    {
+     "yd": 220,
+     "m": 198.35,
+     "ft_rel_tee": -13.9,
+     "band_ft_rel_tee": -13.8
+    },
+    {
+     "yd": 230,
+     "m": 198.01,
+     "ft_rel_tee": -15.1,
+     "band_ft_rel_tee": -14.8
+    },
+    {
+     "yd": 240,
+     "m": 197.68,
+     "ft_rel_tee": -16.1,
+     "band_ft_rel_tee": -16.0
+    },
+    {
+     "yd": 250,
+     "m": 197.34,
+     "ft_rel_tee": -17.2,
+     "band_ft_rel_tee": -17.2
+    },
+    {
+     "yd": 260,
+     "m": 197.14,
+     "ft_rel_tee": -17.9,
+     "band_ft_rel_tee": -17.8
+    },
+    {
+     "yd": 270,
+     "m": 196.87,
+     "ft_rel_tee": -18.8,
+     "band_ft_rel_tee": -18.7
+    },
+    {
+     "yd": 280,
+     "m": 196.74,
+     "ft_rel_tee": -19.2,
+     "band_ft_rel_tee": -19.3
+    },
+    {
+     "yd": 290,
+     "m": 196.31,
+     "ft_rel_tee": -20.6,
+     "band_ft_rel_tee": -20.5
+    },
+    {
+     "yd": 300,
+     "m": 196.04,
+     "ft_rel_tee": -21.5,
+     "band_ft_rel_tee": -21.6
+    },
+    {
+     "yd": 310,
+     "m": 196.17,
+     "ft_rel_tee": -21.1,
+     "band_ft_rel_tee": -21.1
+    },
+    {
+     "yd": 320,
+     "m": 196.7,
+     "ft_rel_tee": -19.4,
+     "band_ft_rel_tee": -19.3
+    },
+    {
+     "yd": 330,
+     "m": 197.75,
+     "ft_rel_tee": -15.9,
+     "band_ft_rel_tee": -15.9
+    },
+    {
+     "yd": 340,
+     "m": 198.5,
+     "ft_rel_tee": -13.4,
+     "band_ft_rel_tee": -13.4
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Gold",
+    "tee_method": "tee_axis",
+    "tee_confidence": "medium",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 358.6,
+    "map_tee_to_green_yd": 357.8,
+    "green_angle_off_line_deg": 17.3
+   },
+   "ecc_check": {
+    "tee_offset_yd": 49.1,
+    "bearing_diff_deg": -7.4,
+    "scale_270_yd": 271.8,
+    "landing_270_delta_ft": -17.8,
+    "landing_slope_along_pct": -2.47,
+    "landing_slope_cross_pct": -5.37,
+    "quality": {
+     "corr": 0.35600190914555296,
+     "ecc": 0.38243299014670895,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "9F": {
+   "par": 4,
+   "length_yd": 373,
+   "tee_ll": [
+    -91.1495164,
+    40.7613758
+   ],
+   "p270_ll": [
+    -91.1466437,
+    40.7617912
+   ],
+   "bearing_deg_true": 79.2,
+   "tee_elev": {
+    "m": 202.81,
+    "ft": 665.4
+   },
+   "green": {
+    "m": 190.34,
+    "ft": 624.5,
+    "delta_ft": -40.9,
+    "along_yd": 330.1,
+    "lateral_yd": 83.7
+   },
+   "landing": {
+    "240": {
+     "m": 196.8,
+     "ft": 645.7,
+     "delta_ft": -19.7,
+     "delta_m": -6.01
+    },
+    "270": {
+     "m": 195.38,
+     "ft": 641.0,
+     "delta_ft": -24.4,
+     "delta_m": -7.43
+    },
+    "300": {
+     "m": 195.75,
+     "ft": 642.2,
+     "delta_ft": -23.2,
+     "delta_m": -7.06
+    }
+   },
+   "landing_slope": {
+    "along_pct": 0.4,
+    "cross_pct": -6.76,
+    "magnitude_pct": 6.77,
+    "fall_line_deg_cw_from_line": 93.0,
+    "residual_rms_m": 0.83,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": -3.19,
+     "cross_pct": -3.46,
+     "magnitude_pct": 4.7,
+     "fall_line_deg_cw_from_line": 47.0,
+     "residual_rms_m": 0.17,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": -5.59,
+     "cross_pct": -4.96,
+     "magnitude_pct": 7.47,
+     "fall_line_deg_cw_from_line": 42.0,
+     "residual_rms_m": 0.19,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 8.08,
+     "cross_pct": -8.77,
+     "magnitude_pct": 11.92,
+     "fall_line_deg_cw_from_line": 133.0,
+     "residual_rms_m": 0.22,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 202.81,
+     "ft_rel_tee": -0.0,
+     "band_ft_rel_tee": -0.5
+    },
+    {
+     "yd": 10,
+     "m": 202.4,
+     "ft_rel_tee": -1.3,
+     "band_ft_rel_tee": -2.0
+    },
+    {
+     "yd": 20,
+     "m": 201.46,
+     "ft_rel_tee": -4.4,
+     "band_ft_rel_tee": -4.3
+    },
+    {
+     "yd": 30,
+     "m": 201.21,
+     "ft_rel_tee": -5.2,
+     "band_ft_rel_tee": -5.0
+    },
+    {
+     "yd": 40,
+     "m": 201.06,
+     "ft_rel_tee": -5.8,
+     "band_ft_rel_tee": -5.5
+    },
+    {
+     "yd": 50,
+     "m": 200.88,
+     "ft_rel_tee": -6.3,
+     "band_ft_rel_tee": -6.2
+    },
+    {
+     "yd": 60,
+     "m": 200.68,
+     "ft_rel_tee": -7.0,
+     "band_ft_rel_tee": -6.6
+    },
+    {
+     "yd": 70,
+     "m": 200.53,
+     "ft_rel_tee": -7.5,
+     "band_ft_rel_tee": -7.2
+    },
+    {
+     "yd": 80,
+     "m": 200.69,
+     "ft_rel_tee": -7.0,
+     "band_ft_rel_tee": -7.4
+    },
+    {
+     "yd": 90,
+     "m": 199.93,
+     "ft_rel_tee": -9.5,
+     "band_ft_rel_tee": -9.1
+    },
+    {
+     "yd": 100,
+     "m": 199.4,
+     "ft_rel_tee": -11.2,
+     "band_ft_rel_tee": -10.9
+    },
+    {
+     "yd": 110,
+     "m": 198.74,
+     "ft_rel_tee": -13.3,
+     "band_ft_rel_tee": -13.2
+    },
+    {
+     "yd": 120,
+     "m": 198.22,
+     "ft_rel_tee": -15.1,
+     "band_ft_rel_tee": -14.9
+    },
+    {
+     "yd": 130,
+     "m": 197.93,
+     "ft_rel_tee": -16.0,
+     "band_ft_rel_tee": -16.1
+    },
+    {
+     "yd": 140,
+     "m": 197.82,
+     "ft_rel_tee": -16.4,
+     "band_ft_rel_tee": -16.7
+    },
+    {
+     "yd": 150,
+     "m": 198.14,
+     "ft_rel_tee": -15.3,
+     "band_ft_rel_tee": -15.8
+    },
+    {
+     "yd": 160,
+     "m": 198.53,
+     "ft_rel_tee": -14.1,
+     "band_ft_rel_tee": -14.5
+    },
+    {
+     "yd": 170,
+     "m": 198.6,
+     "ft_rel_tee": -13.8,
+     "band_ft_rel_tee": -13.9
+    },
+    {
+     "yd": 180,
+     "m": 198.53,
+     "ft_rel_tee": -14.1,
+     "band_ft_rel_tee": -14.1
+    },
+    {
+     "yd": 190,
+     "m": 198.4,
+     "ft_rel_tee": -14.5,
+     "band_ft_rel_tee": -14.6
+    },
+    {
+     "yd": 200,
+     "m": 198.13,
+     "ft_rel_tee": -15.4,
+     "band_ft_rel_tee": -15.5
+    },
+    {
+     "yd": 210,
+     "m": 197.8,
+     "ft_rel_tee": -16.4,
+     "band_ft_rel_tee": -16.7
+    },
+    {
+     "yd": 220,
+     "m": 197.3,
+     "ft_rel_tee": -18.1,
+     "band_ft_rel_tee": -18.5
+    },
+    {
+     "yd": 230,
+     "m": 197.1,
+     "ft_rel_tee": -18.7,
+     "band_ft_rel_tee": -18.9
+    },
+    {
+     "yd": 240,
+     "m": 196.81,
+     "ft_rel_tee": -19.7,
+     "band_ft_rel_tee": -19.8
+    },
+    {
+     "yd": 250,
+     "m": 196.45,
+     "ft_rel_tee": -20.9,
+     "band_ft_rel_tee": -21.0
+    },
+    {
+     "yd": 260,
+     "m": 195.97,
+     "ft_rel_tee": -22.4,
+     "band_ft_rel_tee": -22.4
+    },
+    {
+     "yd": 270,
+     "m": 195.4,
+     "ft_rel_tee": -24.3,
+     "band_ft_rel_tee": -24.4
+    },
+    {
+     "yd": 280,
+     "m": 194.87,
+     "ft_rel_tee": -26.1,
+     "band_ft_rel_tee": -26.1
+    },
+    {
+     "yd": 290,
+     "m": 194.98,
+     "ft_rel_tee": -25.7,
+     "band_ft_rel_tee": -25.7
+    },
+    {
+     "yd": 300,
+     "m": 195.69,
+     "ft_rel_tee": -23.3,
+     "band_ft_rel_tee": -23.1
+    },
+    {
+     "yd": 310,
+     "m": 196.8,
+     "ft_rel_tee": -19.7,
+     "band_ft_rel_tee": -19.9
+    },
+    {
+     "yd": 320,
+     "m": 197.63,
+     "ft_rel_tee": -17.0,
+     "band_ft_rel_tee": -17.3
+    },
+    {
+     "yd": 330,
+     "m": 197.92,
+     "ft_rel_tee": -16.0,
+     "band_ft_rel_tee": -16.2
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923980730",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 340.5,
+    "map_tee_to_green_yd": 340.5,
+    "green_angle_off_line_deg": 14.2
+   },
+   "ecc_check": {
+    "tee_offset_yd": 2.0,
+    "bearing_diff_deg": 0.3,
+    "scale_270_yd": 270.5,
+    "landing_270_delta_ft": -24.4,
+    "landing_slope_along_pct": -0.36,
+    "landing_slope_cross_pct": -6.97,
+    "quality": {
+     "corr": 0.4240870865937565,
+     "ecc": 0.44278911068303567,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "10": {
+   "par": 5,
+   "length_yd": 521,
+   "tee_ll": [
+    -91.1442568,
+    40.7608248
+   ],
+   "p270_ll": [
+    -91.1426447,
+    40.7626799
+   ],
+   "bearing_deg_true": 33.5,
+   "tee_elev": {
+    "m": 188.63,
+    "ft": 618.9
+   },
+   "green": {
+    "m": 183.38,
+    "ft": 601.6,
+    "delta_ft": -17.2,
+    "along_yd": 493.3,
+    "lateral_yd": -141.3
+   },
+   "landing": {
+    "240": {
+     "m": 179.52,
+     "ft": 589.0,
+     "delta_ft": -29.9,
+     "delta_m": -9.11
+    },
+    "270": {
+     "m": 180.04,
+     "ft": 590.7,
+     "delta_ft": -28.2,
+     "delta_m": -8.58
+    },
+    "300": {
+     "m": 180.13,
+     "ft": 591.0,
+     "delta_ft": -27.9,
+     "delta_m": -8.49
+    }
+   },
+   "landing_slope": {
+    "along_pct": 0.62,
+    "cross_pct": 2.77,
+    "magnitude_pct": 2.84,
+    "fall_line_deg_cw_from_line": 257.0,
+    "residual_rms_m": 0.16,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 1.32,
+     "cross_pct": 2.3,
+     "magnitude_pct": 2.65,
+     "fall_line_deg_cw_from_line": 240.0,
+     "residual_rms_m": 0.15,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": 1.24,
+     "cross_pct": 2.57,
+     "magnitude_pct": 2.86,
+     "fall_line_deg_cw_from_line": 244.0,
+     "residual_rms_m": 0.1,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 0.56,
+     "cross_pct": 3.03,
+     "magnitude_pct": 3.08,
+     "fall_line_deg_cw_from_line": 260.0,
+     "residual_rms_m": 0.18,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 188.77,
+     "ft_rel_tee": 0.5,
+     "band_ft_rel_tee": -1.0
+    },
+    {
+     "yd": 10,
+     "m": 188.74,
+     "ft_rel_tee": 0.4,
+     "band_ft_rel_tee": -2.4
+    },
+    {
+     "yd": 20,
+     "m": 186.43,
+     "ft_rel_tee": -7.2,
+     "band_ft_rel_tee": -7.8
+    },
+    {
+     "yd": 30,
+     "m": 184.24,
+     "ft_rel_tee": -14.4,
+     "band_ft_rel_tee": -12.8
+    },
+    {
+     "yd": 40,
+     "m": 184.1,
+     "ft_rel_tee": -14.9,
+     "band_ft_rel_tee": -15.0
+    },
+    {
+     "yd": 50,
+     "m": 183.22,
+     "ft_rel_tee": -17.7,
+     "band_ft_rel_tee": -18.8
+    },
+    {
+     "yd": 60,
+     "m": 181.43,
+     "ft_rel_tee": -23.6,
+     "band_ft_rel_tee": -24.8
+    },
+    {
+     "yd": 70,
+     "m": 180.65,
+     "ft_rel_tee": -26.2,
+     "band_ft_rel_tee": -27.4
+    },
+    {
+     "yd": 80,
+     "m": 178.96,
+     "ft_rel_tee": -31.7,
+     "band_ft_rel_tee": -32.0
+    },
+    {
+     "yd": 90,
+     "m": 176.66,
+     "ft_rel_tee": -39.3,
+     "band_ft_rel_tee": -36.6
+    },
+    {
+     "yd": 100,
+     "m": 176.6,
+     "ft_rel_tee": -39.5,
+     "band_ft_rel_tee": -37.3
+    },
+    {
+     "yd": 110,
+     "m": 176.78,
+     "ft_rel_tee": -38.9,
+     "band_ft_rel_tee": -36.9
+    },
+    {
+     "yd": 120,
+     "m": 177.8,
+     "ft_rel_tee": -35.5,
+     "band_ft_rel_tee": -36.4
+    },
+    {
+     "yd": 130,
+     "m": 178.45,
+     "ft_rel_tee": -33.4,
+     "band_ft_rel_tee": -35.2
+    },
+    {
+     "yd": 140,
+     "m": 178.73,
+     "ft_rel_tee": -32.5,
+     "band_ft_rel_tee": -33.7
+    },
+    {
+     "yd": 150,
+     "m": 178.73,
+     "ft_rel_tee": -32.5,
+     "band_ft_rel_tee": -33.3
+    },
+    {
+     "yd": 160,
+     "m": 178.68,
+     "ft_rel_tee": -32.6,
+     "band_ft_rel_tee": -33.1
+    },
+    {
+     "yd": 170,
+     "m": 178.58,
+     "ft_rel_tee": -32.9,
+     "band_ft_rel_tee": -33.0
+    },
+    {
+     "yd": 180,
+     "m": 178.65,
+     "ft_rel_tee": -32.7,
+     "band_ft_rel_tee": -32.7
+    },
+    {
+     "yd": 190,
+     "m": 178.82,
+     "ft_rel_tee": -32.2,
+     "band_ft_rel_tee": -32.1
+    },
+    {
+     "yd": 200,
+     "m": 179.05,
+     "ft_rel_tee": -31.4,
+     "band_ft_rel_tee": -31.4
+    },
+    {
+     "yd": 210,
+     "m": 179.09,
+     "ft_rel_tee": -31.3,
+     "band_ft_rel_tee": -31.2
+    },
+    {
+     "yd": 220,
+     "m": 179.1,
+     "ft_rel_tee": -31.3,
+     "band_ft_rel_tee": -31.1
+    },
+    {
+     "yd": 230,
+     "m": 179.24,
+     "ft_rel_tee": -30.8,
+     "band_ft_rel_tee": -30.6
+    },
+    {
+     "yd": 240,
+     "m": 179.48,
+     "ft_rel_tee": -30.0,
+     "band_ft_rel_tee": -29.9
+    },
+    {
+     "yd": 250,
+     "m": 179.84,
+     "ft_rel_tee": -28.8,
+     "band_ft_rel_tee": -28.7
+    },
+    {
+     "yd": 260,
+     "m": 180.0,
+     "ft_rel_tee": -28.3,
+     "band_ft_rel_tee": -28.3
+    },
+    {
+     "yd": 270,
+     "m": 180.06,
+     "ft_rel_tee": -28.1,
+     "band_ft_rel_tee": -28.2
+    },
+    {
+     "yd": 280,
+     "m": 180.05,
+     "ft_rel_tee": -28.1,
+     "band_ft_rel_tee": -28.1
+    },
+    {
+     "yd": 290,
+     "m": 179.98,
+     "ft_rel_tee": -28.4,
+     "band_ft_rel_tee": -28.3
+    },
+    {
+     "yd": 300,
+     "m": 180.17,
+     "ft_rel_tee": -27.7,
+     "band_ft_rel_tee": -27.9
+    },
+    {
+     "yd": 310,
+     "m": 180.49,
+     "ft_rel_tee": -26.7,
+     "band_ft_rel_tee": -27.0
+    },
+    {
+     "yd": 320,
+     "m": 180.27,
+     "ft_rel_tee": -27.4,
+     "band_ft_rel_tee": -27.8
+    },
+    {
+     "yd": 330,
+     "m": 179.89,
+     "ft_rel_tee": -28.7,
+     "band_ft_rel_tee": -28.7
+    },
+    {
+     "yd": 340,
+     "m": 180.11,
+     "ft_rel_tee": -28.0,
+     "band_ft_rel_tee": -28.1
+    },
+    {
+     "yd": 350,
+     "m": 180.54,
+     "ft_rel_tee": -26.5,
+     "band_ft_rel_tee": -27.1
+    },
+    {
+     "yd": 360,
+     "m": 180.49,
+     "ft_rel_tee": -26.7,
+     "band_ft_rel_tee": -27.0
+    },
+    {
+     "yd": 370,
+     "m": 180.37,
+     "ft_rel_tee": -27.1,
+     "band_ft_rel_tee": -27.2
+    },
+    {
+     "yd": 380,
+     "m": 180.18,
+     "ft_rel_tee": -27.7,
+     "band_ft_rel_tee": -27.3
+    },
+    {
+     "yd": 390,
+     "m": 180.52,
+     "ft_rel_tee": -26.6,
+     "band_ft_rel_tee": -25.7
+    },
+    {
+     "yd": 400,
+     "m": 182.27,
+     "ft_rel_tee": -20.9,
+     "band_ft_rel_tee": -20.8
+    },
+    {
+     "yd": 410,
+     "m": 183.31,
+     "ft_rel_tee": -17.5,
+     "band_ft_rel_tee": -17.2
+    },
+    {
+     "yd": 420,
+     "m": 184.43,
+     "ft_rel_tee": -13.8,
+     "band_ft_rel_tee": -13.5
+    },
+    {
+     "yd": 430,
+     "m": 185.37,
+     "ft_rel_tee": -10.7,
+     "band_ft_rel_tee": -9.4
+    },
+    {
+     "yd": 440,
+     "m": 187.26,
+     "ft_rel_tee": -4.5,
+     "band_ft_rel_tee": -4.0
+    },
+    {
+     "yd": 450,
+     "m": 188.79,
+     "ft_rel_tee": 0.5,
+     "band_ft_rel_tee": 0.8
+    },
+    {
+     "yd": 460,
+     "m": 190.07,
+     "ft_rel_tee": 4.7,
+     "band_ft_rel_tee": 5.4
+    },
+    {
+     "yd": 470,
+     "m": 192.09,
+     "ft_rel_tee": 11.4,
+     "band_ft_rel_tee": 11.7
+    },
+    {
+     "yd": 480,
+     "m": 194.09,
+     "ft_rel_tee": 17.9,
+     "band_ft_rel_tee": 17.4
+    },
+    {
+     "yd": 490,
+     "m": 194.76,
+     "ft_rel_tee": 20.1,
+     "band_ft_rel_tee": 20.4
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923984304",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 499.3,
+    "map_tee_to_green_yd": 513.1,
+    "green_angle_off_line_deg": -16.0
+   },
+   "ecc_check": {
+    "tee_offset_yd": 11.2,
+    "bearing_diff_deg": -0.6,
+    "scale_270_yd": 269.8,
+    "landing_270_delta_ft": -29.2,
+    "landing_slope_along_pct": 0.35,
+    "landing_slope_cross_pct": 2.54,
+    "quality": {
+     "corr": 0.39469386684988816,
+     "ecc": 0.41614545029322203,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "11": {
+   "par": 4,
+   "length_yd": 348,
+   "tee_ll": [
+    -91.1434288,
+    40.7654709
+   ],
+   "p270_ll": [
+    -91.1409054,
+    40.7665947
+   ],
+   "bearing_deg_true": 59.6,
+   "tee_elev": {
+    "m": 184.35,
+    "ft": 604.8
+   },
+   "green": {
+    "m": 188.03,
+    "ft": 616.9,
+    "delta_ft": 12.1,
+    "along_yd": 343.7,
+    "lateral_yd": 0.0
+   },
+   "landing": {
+    "240": {
+     "m": 185.36,
+     "ft": 608.1,
+     "delta_ft": 3.3,
+     "delta_m": 1.01
+    },
+    "270": {
+     "m": 186.16,
+     "ft": 610.8,
+     "delta_ft": 5.9,
+     "delta_m": 1.81
+    },
+    "300": {
+     "m": 184.97,
+     "ft": 606.9,
+     "delta_ft": 2.1,
+     "delta_m": 0.63
+    }
+   },
+   "landing_slope": {
+    "along_pct": -1.07,
+    "cross_pct": -7.0,
+    "magnitude_pct": 7.08,
+    "fall_line_deg_cw_from_line": 81.0,
+    "residual_rms_m": 0.89,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 3.45,
+     "cross_pct": -3.52,
+     "magnitude_pct": 4.93,
+     "fall_line_deg_cw_from_line": 134.0,
+     "residual_rms_m": 0.34,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": 1.81,
+     "cross_pct": -11.42,
+     "magnitude_pct": 11.57,
+     "fall_line_deg_cw_from_line": 99.0,
+     "residual_rms_m": 0.67,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 2.0,
+     "cross_pct": -3.43,
+     "magnitude_pct": 3.97,
+     "fall_line_deg_cw_from_line": 120.0,
+     "residual_rms_m": 0.79,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 184.43,
+     "ft_rel_tee": 0.3,
+     "band_ft_rel_tee": -0.9
+    },
+    {
+     "yd": 10,
+     "m": 184.1,
+     "ft_rel_tee": -0.8,
+     "band_ft_rel_tee": -1.7
+    },
+    {
+     "yd": 20,
+     "m": 183.9,
+     "ft_rel_tee": -1.5,
+     "band_ft_rel_tee": -2.0
+    },
+    {
+     "yd": 30,
+     "m": 183.86,
+     "ft_rel_tee": -1.6,
+     "band_ft_rel_tee": -2.2
+    },
+    {
+     "yd": 40,
+     "m": 183.27,
+     "ft_rel_tee": -3.5,
+     "band_ft_rel_tee": -3.7
+    },
+    {
+     "yd": 50,
+     "m": 183.67,
+     "ft_rel_tee": -2.2,
+     "band_ft_rel_tee": -2.8
+    },
+    {
+     "yd": 60,
+     "m": 183.6,
+     "ft_rel_tee": -2.5,
+     "band_ft_rel_tee": -3.1
+    },
+    {
+     "yd": 70,
+     "m": 183.4,
+     "ft_rel_tee": -3.1,
+     "band_ft_rel_tee": -3.8
+    },
+    {
+     "yd": 80,
+     "m": 183.64,
+     "ft_rel_tee": -2.3,
+     "band_ft_rel_tee": -3.0
+    },
+    {
+     "yd": 90,
+     "m": 183.63,
+     "ft_rel_tee": -2.3,
+     "band_ft_rel_tee": -3.2
+    },
+    {
+     "yd": 100,
+     "m": 183.32,
+     "ft_rel_tee": -3.4,
+     "band_ft_rel_tee": -3.2
+    },
+    {
+     "yd": 110,
+     "m": 183.57,
+     "ft_rel_tee": -2.6,
+     "band_ft_rel_tee": -2.5
+    },
+    {
+     "yd": 120,
+     "m": 183.55,
+     "ft_rel_tee": -2.6,
+     "band_ft_rel_tee": -2.2
+    },
+    {
+     "yd": 130,
+     "m": 183.58,
+     "ft_rel_tee": -2.5,
+     "band_ft_rel_tee": -1.8
+    },
+    {
+     "yd": 140,
+     "m": 183.63,
+     "ft_rel_tee": -2.4,
+     "band_ft_rel_tee": -1.9
+    },
+    {
+     "yd": 150,
+     "m": 183.64,
+     "ft_rel_tee": -2.3,
+     "band_ft_rel_tee": -2.4
+    },
+    {
+     "yd": 160,
+     "m": 183.47,
+     "ft_rel_tee": -2.9,
+     "band_ft_rel_tee": -2.7
+    },
+    {
+     "yd": 170,
+     "m": 183.49,
+     "ft_rel_tee": -2.8,
+     "band_ft_rel_tee": -2.7
+    },
+    {
+     "yd": 180,
+     "m": 183.27,
+     "ft_rel_tee": -3.5,
+     "band_ft_rel_tee": -2.4
+    },
+    {
+     "yd": 190,
+     "m": 184.25,
+     "ft_rel_tee": -0.3,
+     "band_ft_rel_tee": -0.3
+    },
+    {
+     "yd": 200,
+     "m": 184.42,
+     "ft_rel_tee": 0.2,
+     "band_ft_rel_tee": 0.2
+    },
+    {
+     "yd": 210,
+     "m": 184.58,
+     "ft_rel_tee": 0.8,
+     "band_ft_rel_tee": 0.8
+    },
+    {
+     "yd": 220,
+     "m": 184.77,
+     "ft_rel_tee": 1.4,
+     "band_ft_rel_tee": 1.6
+    },
+    {
+     "yd": 230,
+     "m": 184.9,
+     "ft_rel_tee": 1.8,
+     "band_ft_rel_tee": 2.5
+    },
+    {
+     "yd": 240,
+     "m": 185.04,
+     "ft_rel_tee": 2.3,
+     "band_ft_rel_tee": 3.3
+    },
+    {
+     "yd": 250,
+     "m": 185.31,
+     "ft_rel_tee": 3.2,
+     "band_ft_rel_tee": 4.3
+    },
+    {
+     "yd": 260,
+     "m": 186.13,
+     "ft_rel_tee": 5.8,
+     "band_ft_rel_tee": 6.1
+    },
+    {
+     "yd": 270,
+     "m": 186.06,
+     "ft_rel_tee": 5.6,
+     "band_ft_rel_tee": 6.1
+    },
+    {
+     "yd": 280,
+     "m": 185.41,
+     "ft_rel_tee": 3.5,
+     "band_ft_rel_tee": 4.0
+    },
+    {
+     "yd": 290,
+     "m": 184.13,
+     "ft_rel_tee": -0.7,
+     "band_ft_rel_tee": -0.2
+    },
+    {
+     "yd": 300,
+     "m": 184.89,
+     "ft_rel_tee": 1.8,
+     "band_ft_rel_tee": 2.0
+    },
+    {
+     "yd": 310,
+     "m": 185.5,
+     "ft_rel_tee": 3.8,
+     "band_ft_rel_tee": 3.8
+    },
+    {
+     "yd": 320,
+     "m": 186.1,
+     "ft_rel_tee": 5.7,
+     "band_ft_rel_tee": 6.1
+    },
+    {
+     "yd": 330,
+     "m": 186.96,
+     "ft_rel_tee": 8.6,
+     "band_ft_rel_tee": 8.6
+    },
+    {
+     "yd": 340,
+     "m": 187.95,
+     "ft_rel_tee": 11.8,
+     "band_ft_rel_tee": 11.7
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Gold",
+    "tee_method": "tee_axis",
+    "tee_confidence": "high",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 348.0,
+    "map_tee_to_green_yd": 343.7,
+    "green_angle_off_line_deg": 0.0
+   },
+   "ecc_check": {
+    "tee_offset_yd": 0.8,
+    "bearing_diff_deg": 5.9,
+    "scale_270_yd": 269.3,
+    "landing_270_delta_ft": 2.2,
+    "landing_slope_along_pct": 2.22,
+    "landing_slope_cross_pct": 2.58,
+    "quality": {
+     "corr": 0.34941555804649627,
+     "ecc": 0.37045364388211194,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "13": {
+   "par": 4,
+   "length_yd": 407,
+   "tee_ll": [
+    -91.1416561,
+    40.7644423
+   ],
+   "p270_ll": [
+    -91.1424879,
+    40.7623107
+   ],
+   "bearing_deg_true": 196.5,
+   "tee_elev": {
+    "m": 191.72,
+    "ft": 629.0
+   },
+   "green": {
+    "m": 182.19,
+    "ft": 597.7,
+    "delta_ft": -31.3,
+    "along_yd": 399.4,
+    "lateral_yd": -46.8
+   },
+   "landing": {
+    "240": {
+     "m": 180.78,
+     "ft": 593.1,
+     "delta_ft": -35.9,
+     "delta_m": -10.94
+    },
+    "270": {
+     "m": 180.99,
+     "ft": 593.8,
+     "delta_ft": -35.2,
+     "delta_m": -10.73
+    },
+    "300": {
+     "m": 179.27,
+     "ft": 588.2,
+     "delta_ft": -40.8,
+     "delta_m": -12.45
+    }
+   },
+   "landing_slope": {
+    "along_pct": -3.32,
+    "cross_pct": 0.06,
+    "magnitude_pct": 3.32,
+    "fall_line_deg_cw_from_line": 359.0,
+    "residual_rms_m": 0.46,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 1.09,
+     "cross_pct": 4.04,
+     "magnitude_pct": 4.19,
+     "fall_line_deg_cw_from_line": 255.0,
+     "residual_rms_m": 0.24,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": -0.61,
+     "cross_pct": 1.21,
+     "magnitude_pct": 1.36,
+     "fall_line_deg_cw_from_line": 297.0,
+     "residual_rms_m": 0.42,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": -5.3,
+     "cross_pct": -1.39,
+     "magnitude_pct": 5.48,
+     "fall_line_deg_cw_from_line": 15.0,
+     "residual_rms_m": 0.28,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 191.73,
+     "ft_rel_tee": 0.0,
+     "band_ft_rel_tee": -0.2
+    },
+    {
+     "yd": 10,
+     "m": 191.48,
+     "ft_rel_tee": -0.8,
+     "band_ft_rel_tee": -2.2
+    },
+    {
+     "yd": 20,
+     "m": 189.51,
+     "ft_rel_tee": -7.3,
+     "band_ft_rel_tee": -7.0
+    },
+    {
+     "yd": 30,
+     "m": 188.41,
+     "ft_rel_tee": -10.9,
+     "band_ft_rel_tee": -10.6
+    },
+    {
+     "yd": 40,
+     "m": 187.37,
+     "ft_rel_tee": -14.3,
+     "band_ft_rel_tee": -14.5
+    },
+    {
+     "yd": 50,
+     "m": 186.28,
+     "ft_rel_tee": -17.8,
+     "band_ft_rel_tee": -17.8
+    },
+    {
+     "yd": 60,
+     "m": 185.25,
+     "ft_rel_tee": -21.2,
+     "band_ft_rel_tee": -21.4
+    },
+    {
+     "yd": 70,
+     "m": 184.1,
+     "ft_rel_tee": -25.0,
+     "band_ft_rel_tee": -24.9
+    },
+    {
+     "yd": 80,
+     "m": 183.31,
+     "ft_rel_tee": -27.6,
+     "band_ft_rel_tee": -27.6
+    },
+    {
+     "yd": 90,
+     "m": 182.55,
+     "ft_rel_tee": -30.1,
+     "band_ft_rel_tee": -30.1
+    },
+    {
+     "yd": 100,
+     "m": 181.65,
+     "ft_rel_tee": -33.1,
+     "band_ft_rel_tee": -32.7
+    },
+    {
+     "yd": 110,
+     "m": 180.55,
+     "ft_rel_tee": -36.6,
+     "band_ft_rel_tee": -35.6
+    },
+    {
+     "yd": 120,
+     "m": 180.3,
+     "ft_rel_tee": -37.5,
+     "band_ft_rel_tee": -37.2
+    },
+    {
+     "yd": 130,
+     "m": 180.38,
+     "ft_rel_tee": -37.2,
+     "band_ft_rel_tee": -37.3
+    },
+    {
+     "yd": 140,
+     "m": 180.44,
+     "ft_rel_tee": -37.0,
+     "band_ft_rel_tee": -37.3
+    },
+    {
+     "yd": 150,
+     "m": 180.53,
+     "ft_rel_tee": -36.7,
+     "band_ft_rel_tee": -37.0
+    },
+    {
+     "yd": 160,
+     "m": 180.35,
+     "ft_rel_tee": -37.3,
+     "band_ft_rel_tee": -37.4
+    },
+    {
+     "yd": 170,
+     "m": 180.0,
+     "ft_rel_tee": -38.4,
+     "band_ft_rel_tee": -38.4
+    },
+    {
+     "yd": 180,
+     "m": 179.74,
+     "ft_rel_tee": -39.3,
+     "band_ft_rel_tee": -39.2
+    },
+    {
+     "yd": 190,
+     "m": 180.05,
+     "ft_rel_tee": -38.3,
+     "band_ft_rel_tee": -38.2
+    },
+    {
+     "yd": 200,
+     "m": 180.23,
+     "ft_rel_tee": -37.7,
+     "band_ft_rel_tee": -37.7
+    },
+    {
+     "yd": 210,
+     "m": 180.12,
+     "ft_rel_tee": -38.1,
+     "band_ft_rel_tee": -38.3
+    },
+    {
+     "yd": 220,
+     "m": 180.01,
+     "ft_rel_tee": -38.4,
+     "band_ft_rel_tee": -38.4
+    },
+    {
+     "yd": 230,
+     "m": 180.23,
+     "ft_rel_tee": -37.7,
+     "band_ft_rel_tee": -37.6
+    },
+    {
+     "yd": 240,
+     "m": 181.05,
+     "ft_rel_tee": -35.0,
+     "band_ft_rel_tee": -35.9
+    },
+    {
+     "yd": 250,
+     "m": 181.38,
+     "ft_rel_tee": -33.9,
+     "band_ft_rel_tee": -35.0
+    },
+    {
+     "yd": 260,
+     "m": 181.04,
+     "ft_rel_tee": -35.0,
+     "band_ft_rel_tee": -35.8
+    },
+    {
+     "yd": 270,
+     "m": 181.33,
+     "ft_rel_tee": -34.1,
+     "band_ft_rel_tee": -35.0
+    },
+    {
+     "yd": 280,
+     "m": 180.91,
+     "ft_rel_tee": -35.5,
+     "band_ft_rel_tee": -37.1
+    },
+    {
+     "yd": 290,
+     "m": 180.5,
+     "ft_rel_tee": -36.8,
+     "band_ft_rel_tee": -37.7
+    },
+    {
+     "yd": 300,
+     "m": 179.25,
+     "ft_rel_tee": -40.9,
+     "band_ft_rel_tee": -40.9
+    },
+    {
+     "yd": 310,
+     "m": 178.75,
+     "ft_rel_tee": -42.6,
+     "band_ft_rel_tee": -42.4
+    },
+    {
+     "yd": 320,
+     "m": 178.6,
+     "ft_rel_tee": -43.1,
+     "band_ft_rel_tee": -43.0
+    },
+    {
+     "yd": 330,
+     "m": 178.01,
+     "ft_rel_tee": -45.0,
+     "band_ft_rel_tee": -44.8
+    },
+    {
+     "yd": 340,
+     "m": 177.94,
+     "ft_rel_tee": -45.2,
+     "band_ft_rel_tee": -45.0
+    },
+    {
+     "yd": 350,
+     "m": 177.92,
+     "ft_rel_tee": -45.3,
+     "band_ft_rel_tee": -45.0
+    },
+    {
+     "yd": 360,
+     "m": 177.88,
+     "ft_rel_tee": -45.4,
+     "band_ft_rel_tee": -45.2
+    },
+    {
+     "yd": 370,
+     "m": 177.94,
+     "ft_rel_tee": -45.2,
+     "band_ft_rel_tee": -45.0
+    },
+    {
+     "yd": 380,
+     "m": 177.87,
+     "ft_rel_tee": -45.4,
+     "band_ft_rel_tee": -44.9
+    },
+    {
+     "yd": 390,
+     "m": 177.89,
+     "ft_rel_tee": -45.4,
+     "band_ft_rel_tee": -44.4
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Black",
+    "tee_method": "tee_centroid",
+    "tee_confidence": "high",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 401.5,
+    "map_tee_to_green_yd": 402.2,
+    "green_angle_off_line_deg": -6.7
+   },
+   "ecc_check": {
+    "tee_offset_yd": 4.8,
+    "bearing_diff_deg": -13.4,
+    "scale_270_yd": 267.4,
+    "landing_270_delta_ft": -31.3,
+    "landing_slope_along_pct": 3.17,
+    "landing_slope_cross_pct": -10.58,
+    "quality": {
+     "corr": 0.2665345876974914,
+     "ecc": 0.2889457794967541,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "14": {
+   "par": 4,
+   "length_yd": 418,
+   "tee_ll": [
+    -91.1414056,
+    40.7606979
+   ],
+   "p270_ll": [
+    -91.1424844,
+    40.7586313
+   ],
+   "bearing_deg_true": 201.7,
+   "tee_elev": {
+    "m": 195.04,
+    "ft": 639.9
+   },
+   "green": {
+    "m": 179.42,
+    "ft": 588.6,
+    "delta_ft": -51.3,
+    "along_yd": 402.4,
+    "lateral_yd": -72.9
+   },
+   "landing": {
+    "240": {
+     "m": 177.67,
+     "ft": 582.9,
+     "delta_ft": -57.0,
+     "delta_m": -17.38
+    },
+    "270": {
+     "m": 177.09,
+     "ft": 581.0,
+     "delta_ft": -58.9,
+     "delta_m": -17.95
+    },
+    "300": {
+     "m": 177.36,
+     "ft": 581.9,
+     "delta_ft": -58.0,
+     "delta_m": -17.68
+    }
+   },
+   "landing_slope": {
+    "along_pct": -0.78,
+    "cross_pct": -3.63,
+    "magnitude_pct": 3.71,
+    "fall_line_deg_cw_from_line": 78.0,
+    "residual_rms_m": 0.35,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": -4.0,
+     "cross_pct": -10.33,
+     "magnitude_pct": 11.08,
+     "fall_line_deg_cw_from_line": 69.0,
+     "residual_rms_m": 0.36,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": -1.87,
+     "cross_pct": -5.2,
+     "magnitude_pct": 5.53,
+     "fall_line_deg_cw_from_line": 70.0,
+     "residual_rms_m": 0.26,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": -1.09,
+     "cross_pct": -1.86,
+     "magnitude_pct": 2.15,
+     "fall_line_deg_cw_from_line": 60.0,
+     "residual_rms_m": 0.34,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 195.04,
+     "ft_rel_tee": -0.0,
+     "band_ft_rel_tee": -0.5
+    },
+    {
+     "yd": 10,
+     "m": 194.23,
+     "ft_rel_tee": -2.7,
+     "band_ft_rel_tee": -3.5
+    },
+    {
+     "yd": 20,
+     "m": 192.13,
+     "ft_rel_tee": -9.6,
+     "band_ft_rel_tee": -9.3
+    },
+    {
+     "yd": 30,
+     "m": 191.34,
+     "ft_rel_tee": -12.1,
+     "band_ft_rel_tee": -11.4
+    },
+    {
+     "yd": 40,
+     "m": 190.73,
+     "ft_rel_tee": -14.1,
+     "band_ft_rel_tee": -13.7
+    },
+    {
+     "yd": 50,
+     "m": 189.99,
+     "ft_rel_tee": -16.6,
+     "band_ft_rel_tee": -16.3
+    },
+    {
+     "yd": 60,
+     "m": 189.18,
+     "ft_rel_tee": -19.2,
+     "band_ft_rel_tee": -18.8
+    },
+    {
+     "yd": 70,
+     "m": 188.66,
+     "ft_rel_tee": -20.9,
+     "band_ft_rel_tee": -20.8
+    },
+    {
+     "yd": 80,
+     "m": 188.14,
+     "ft_rel_tee": -22.6,
+     "band_ft_rel_tee": -22.7
+    },
+    {
+     "yd": 90,
+     "m": 187.44,
+     "ft_rel_tee": -24.9,
+     "band_ft_rel_tee": -24.7
+    },
+    {
+     "yd": 100,
+     "m": 186.7,
+     "ft_rel_tee": -27.3,
+     "band_ft_rel_tee": -27.0
+    },
+    {
+     "yd": 110,
+     "m": 185.62,
+     "ft_rel_tee": -30.9,
+     "band_ft_rel_tee": -30.1
+    },
+    {
+     "yd": 120,
+     "m": 184.5,
+     "ft_rel_tee": -34.6,
+     "band_ft_rel_tee": -33.5
+    },
+    {
+     "yd": 130,
+     "m": 183.52,
+     "ft_rel_tee": -37.8,
+     "band_ft_rel_tee": -37.1
+    },
+    {
+     "yd": 140,
+     "m": 182.83,
+     "ft_rel_tee": -40.1,
+     "band_ft_rel_tee": -39.7
+    },
+    {
+     "yd": 150,
+     "m": 182.17,
+     "ft_rel_tee": -42.2,
+     "band_ft_rel_tee": -41.9
+    },
+    {
+     "yd": 160,
+     "m": 181.53,
+     "ft_rel_tee": -44.3,
+     "band_ft_rel_tee": -44.3
+    },
+    {
+     "yd": 170,
+     "m": 180.95,
+     "ft_rel_tee": -46.2,
+     "band_ft_rel_tee": -46.3
+    },
+    {
+     "yd": 180,
+     "m": 180.87,
+     "ft_rel_tee": -46.5,
+     "band_ft_rel_tee": -46.4
+    },
+    {
+     "yd": 190,
+     "m": 179.72,
+     "ft_rel_tee": -50.3,
+     "band_ft_rel_tee": -49.6
+    },
+    {
+     "yd": 200,
+     "m": 179.03,
+     "ft_rel_tee": -52.5,
+     "band_ft_rel_tee": -52.0
+    },
+    {
+     "yd": 210,
+     "m": 178.45,
+     "ft_rel_tee": -54.4,
+     "band_ft_rel_tee": -54.0
+    },
+    {
+     "yd": 220,
+     "m": 178.09,
+     "ft_rel_tee": -55.6,
+     "band_ft_rel_tee": -55.3
+    },
+    {
+     "yd": 230,
+     "m": 177.84,
+     "ft_rel_tee": -56.4,
+     "band_ft_rel_tee": -56.0
+    },
+    {
+     "yd": 240,
+     "m": 177.58,
+     "ft_rel_tee": -57.3,
+     "band_ft_rel_tee": -57.0
+    },
+    {
+     "yd": 250,
+     "m": 177.35,
+     "ft_rel_tee": -58.0,
+     "band_ft_rel_tee": -58.0
+    },
+    {
+     "yd": 260,
+     "m": 177.18,
+     "ft_rel_tee": -58.6,
+     "band_ft_rel_tee": -58.4
+    },
+    {
+     "yd": 270,
+     "m": 177.03,
+     "ft_rel_tee": -59.1,
+     "band_ft_rel_tee": -58.9
+    },
+    {
+     "yd": 280,
+     "m": 177.07,
+     "ft_rel_tee": -59.0,
+     "band_ft_rel_tee": -58.7
+    },
+    {
+     "yd": 290,
+     "m": 177.45,
+     "ft_rel_tee": -57.7,
+     "band_ft_rel_tee": -57.6
+    },
+    {
+     "yd": 300,
+     "m": 177.62,
+     "ft_rel_tee": -57.2,
+     "band_ft_rel_tee": -58.0
+    },
+    {
+     "yd": 310,
+     "m": 177.39,
+     "ft_rel_tee": -57.9,
+     "band_ft_rel_tee": -58.7
+    },
+    {
+     "yd": 320,
+     "m": 177.09,
+     "ft_rel_tee": -58.9,
+     "band_ft_rel_tee": -59.0
+    },
+    {
+     "yd": 330,
+     "m": 176.19,
+     "ft_rel_tee": -61.9,
+     "band_ft_rel_tee": -61.1
+    },
+    {
+     "yd": 340,
+     "m": 176.4,
+     "ft_rel_tee": -61.2,
+     "band_ft_rel_tee": -60.7
+    },
+    {
+     "yd": 350,
+     "m": 177.15,
+     "ft_rel_tee": -58.7,
+     "band_ft_rel_tee": -59.5
+    },
+    {
+     "yd": 360,
+     "m": 177.53,
+     "ft_rel_tee": -57.4,
+     "band_ft_rel_tee": -58.6
+    },
+    {
+     "yd": 370,
+     "m": 177.18,
+     "ft_rel_tee": -58.6,
+     "band_ft_rel_tee": -59.7
+    },
+    {
+     "yd": 380,
+     "m": 176.46,
+     "ft_rel_tee": -61.0,
+     "band_ft_rel_tee": -61.8
+    },
+    {
+     "yd": 390,
+     "m": 175.53,
+     "ft_rel_tee": -64.0,
+     "band_ft_rel_tee": -64.5
+    },
+    {
+     "yd": 400,
+     "m": 174.54,
+     "ft_rel_tee": -67.3,
+     "band_ft_rel_tee": -66.4
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923991717",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 405.6,
+    "map_tee_to_green_yd": 409.0,
+    "green_angle_off_line_deg": -10.3
+   },
+   "ecc_check": {
+    "tee_offset_yd": 3.4,
+    "bearing_diff_deg": -0.5,
+    "scale_270_yd": 267.6,
+    "landing_270_delta_ft": -58.4,
+    "landing_slope_along_pct": -0.71,
+    "landing_slope_cross_pct": -3.53,
+    "quality": {
+     "corr": 0.33189850903774715,
+     "ecc": 0.35194677540714653,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "16": {
+   "par": 4,
+   "length_yd": 388,
+   "tee_ll": [
+    -91.1410191,
+    40.7604101
+   ],
+   "p270_ll": [
+    -91.1380962,
+    40.7604737
+   ],
+   "bearing_deg_true": 88.4,
+   "tee_elev": {
+    "m": 196.48,
+    "ft": 644.6
+   },
+   "green": {
+    "m": 199.54,
+    "ft": 654.7,
+    "delta_ft": 10.0,
+    "along_yd": 394.0,
+    "lateral_yd": -0.0
+   },
+   "landing": {
+    "240": {
+     "m": 194.35,
+     "ft": 637.6,
+     "delta_ft": -7.0,
+     "delta_m": -2.13
+    },
+    "270": {
+     "m": 192.88,
+     "ft": 632.8,
+     "delta_ft": -11.8,
+     "delta_m": -3.61
+    },
+    "300": {
+     "m": 194.1,
+     "ft": 636.8,
+     "delta_ft": -7.8,
+     "delta_m": -2.39
+    }
+   },
+   "landing_slope": {
+    "along_pct": 1.98,
+    "cross_pct": -5.58,
+    "magnitude_pct": 5.92,
+    "fall_line_deg_cw_from_line": 110.0,
+    "residual_rms_m": 0.83,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 1.3,
+     "cross_pct": -5.04,
+     "magnitude_pct": 5.21,
+     "fall_line_deg_cw_from_line": 104.0,
+     "residual_rms_m": 0.45,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": -3.23,
+     "cross_pct": -11.26,
+     "magnitude_pct": 11.71,
+     "fall_line_deg_cw_from_line": 74.0,
+     "residual_rms_m": 0.41,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 6.56,
+     "cross_pct": 0.16,
+     "magnitude_pct": 6.57,
+     "fall_line_deg_cw_from_line": 181.0,
+     "residual_rms_m": 0.29,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 196.48,
+     "ft_rel_tee": -0.0,
+     "band_ft_rel_tee": 0.5
+    },
+    {
+     "yd": 10,
+     "m": 196.31,
+     "ft_rel_tee": -0.6,
+     "band_ft_rel_tee": -0.1
+    },
+    {
+     "yd": 20,
+     "m": 196.0,
+     "ft_rel_tee": -1.6,
+     "band_ft_rel_tee": -1.6
+    },
+    {
+     "yd": 30,
+     "m": 195.74,
+     "ft_rel_tee": -2.4,
+     "band_ft_rel_tee": -2.1
+    },
+    {
+     "yd": 40,
+     "m": 195.66,
+     "ft_rel_tee": -2.7,
+     "band_ft_rel_tee": -2.5
+    },
+    {
+     "yd": 50,
+     "m": 195.99,
+     "ft_rel_tee": -1.6,
+     "band_ft_rel_tee": -1.7
+    },
+    {
+     "yd": 60,
+     "m": 196.14,
+     "ft_rel_tee": -1.1,
+     "band_ft_rel_tee": -1.3
+    },
+    {
+     "yd": 70,
+     "m": 196.09,
+     "ft_rel_tee": -1.3,
+     "band_ft_rel_tee": -1.6
+    },
+    {
+     "yd": 80,
+     "m": 195.75,
+     "ft_rel_tee": -2.4,
+     "band_ft_rel_tee": -3.1
+    },
+    {
+     "yd": 90,
+     "m": 194.63,
+     "ft_rel_tee": -6.1,
+     "band_ft_rel_tee": -6.3
+    },
+    {
+     "yd": 100,
+     "m": 194.07,
+     "ft_rel_tee": -7.9,
+     "band_ft_rel_tee": -8.1
+    },
+    {
+     "yd": 110,
+     "m": 194.22,
+     "ft_rel_tee": -7.4,
+     "band_ft_rel_tee": -6.7
+    },
+    {
+     "yd": 120,
+     "m": 194.67,
+     "ft_rel_tee": -6.0,
+     "band_ft_rel_tee": -4.7
+    },
+    {
+     "yd": 130,
+     "m": 194.97,
+     "ft_rel_tee": -5.0,
+     "band_ft_rel_tee": -4.6
+    },
+    {
+     "yd": 140,
+     "m": 195.42,
+     "ft_rel_tee": -3.5,
+     "band_ft_rel_tee": -3.6
+    },
+    {
+     "yd": 150,
+     "m": 195.5,
+     "ft_rel_tee": -3.2,
+     "band_ft_rel_tee": -3.1
+    },
+    {
+     "yd": 160,
+     "m": 195.37,
+     "ft_rel_tee": -3.7,
+     "band_ft_rel_tee": -3.9
+    },
+    {
+     "yd": 170,
+     "m": 194.84,
+     "ft_rel_tee": -5.4,
+     "band_ft_rel_tee": -5.8
+    },
+    {
+     "yd": 180,
+     "m": 194.05,
+     "ft_rel_tee": -8.0,
+     "band_ft_rel_tee": -8.2
+    },
+    {
+     "yd": 190,
+     "m": 193.55,
+     "ft_rel_tee": -9.6,
+     "band_ft_rel_tee": -9.5
+    },
+    {
+     "yd": 200,
+     "m": 193.86,
+     "ft_rel_tee": -8.6,
+     "band_ft_rel_tee": -8.4
+    },
+    {
+     "yd": 210,
+     "m": 194.41,
+     "ft_rel_tee": -6.8,
+     "band_ft_rel_tee": -6.7
+    },
+    {
+     "yd": 220,
+     "m": 194.91,
+     "ft_rel_tee": -5.2,
+     "band_ft_rel_tee": -5.4
+    },
+    {
+     "yd": 230,
+     "m": 194.99,
+     "ft_rel_tee": -4.9,
+     "band_ft_rel_tee": -5.2
+    },
+    {
+     "yd": 240,
+     "m": 194.38,
+     "ft_rel_tee": -6.9,
+     "band_ft_rel_tee": -7.0
+    },
+    {
+     "yd": 250,
+     "m": 193.42,
+     "ft_rel_tee": -10.1,
+     "band_ft_rel_tee": -9.5
+    },
+    {
+     "yd": 260,
+     "m": 192.84,
+     "ft_rel_tee": -11.9,
+     "band_ft_rel_tee": -11.4
+    },
+    {
+     "yd": 270,
+     "m": 192.73,
+     "ft_rel_tee": -12.3,
+     "band_ft_rel_tee": -11.9
+    },
+    {
+     "yd": 280,
+     "m": 192.95,
+     "ft_rel_tee": -11.6,
+     "band_ft_rel_tee": -11.2
+    },
+    {
+     "yd": 290,
+     "m": 193.43,
+     "ft_rel_tee": -10.0,
+     "band_ft_rel_tee": -9.9
+    },
+    {
+     "yd": 300,
+     "m": 194.1,
+     "ft_rel_tee": -7.8,
+     "band_ft_rel_tee": -7.8
+    },
+    {
+     "yd": 310,
+     "m": 194.95,
+     "ft_rel_tee": -5.0,
+     "band_ft_rel_tee": -5.3
+    },
+    {
+     "yd": 320,
+     "m": 195.76,
+     "ft_rel_tee": -2.4,
+     "band_ft_rel_tee": -3.3
+    },
+    {
+     "yd": 330,
+     "m": 196.83,
+     "ft_rel_tee": 1.1,
+     "band_ft_rel_tee": 0.4
+    },
+    {
+     "yd": 340,
+     "m": 197.28,
+     "ft_rel_tee": 2.6,
+     "band_ft_rel_tee": 2.9
+    },
+    {
+     "yd": 350,
+     "m": 197.8,
+     "ft_rel_tee": 4.3,
+     "band_ft_rel_tee": 4.3
+    },
+    {
+     "yd": 360,
+     "m": 198.37,
+     "ft_rel_tee": 6.2,
+     "band_ft_rel_tee": 6.0
+    },
+    {
+     "yd": 370,
+     "m": 198.81,
+     "ft_rel_tee": 7.6,
+     "band_ft_rel_tee": 7.7
+    },
+    {
+     "yd": 380,
+     "m": 199.11,
+     "ft_rel_tee": 8.6,
+     "band_ft_rel_tee": 9.1
+    },
+    {
+     "yd": 390,
+     "m": 199.49,
+     "ft_rel_tee": 9.9,
+     "band_ft_rel_tee": 10.0
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923991718",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 388.0,
+    "map_tee_to_green_yd": 394.0,
+    "green_angle_off_line_deg": 0.0
+   },
+   "ecc_check": {
+    "tee_offset_yd": 13.3,
+    "bearing_diff_deg": 1.7,
+    "scale_270_yd": 277.1,
+    "landing_270_delta_ft": -12.4,
+    "landing_slope_along_pct": -0.21,
+    "landing_slope_cross_pct": -7.51,
+    "quality": {
+     "corr": 0.30910903824545843,
+     "ecc": NaN,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "17": {
+   "par": 4,
+   "length_yd": 453,
+   "tee_ll": [
+    -91.138082,
+    40.7592853
+   ],
+   "p270_ll": [
+    -91.1397582,
+    40.7574634
+   ],
+   "bearing_deg_true": 215.0,
+   "tee_elev": {
+    "m": 197.29,
+    "ft": 647.3
+   },
+   "green": {
+    "m": 197.79,
+    "ft": 648.9,
+    "delta_ft": 1.6,
+    "along_yd": 445.6,
+    "lateral_yd": 35.5
+   },
+   "landing": {
+    "240": {
+     "m": 196.81,
+     "ft": 645.7,
+     "delta_ft": -1.6,
+     "delta_m": -0.48
+    },
+    "270": {
+     "m": 196.61,
+     "ft": 645.1,
+     "delta_ft": -2.2,
+     "delta_m": -0.68
+    },
+    "300": {
+     "m": 197.04,
+     "ft": 646.5,
+     "delta_ft": -0.8,
+     "delta_m": -0.25
+    }
+   },
+   "landing_slope": {
+    "along_pct": 1.01,
+    "cross_pct": -9.44,
+    "magnitude_pct": 9.49,
+    "fall_line_deg_cw_from_line": 96.0,
+    "residual_rms_m": 0.46,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 0.62,
+     "cross_pct": -5.21,
+     "magnitude_pct": 5.25,
+     "fall_line_deg_cw_from_line": 97.0,
+     "residual_rms_m": 0.18,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": -1.63,
+     "cross_pct": -8.34,
+     "magnitude_pct": 8.49,
+     "fall_line_deg_cw_from_line": 79.0,
+     "residual_rms_m": 0.13,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 4.87,
+     "cross_pct": -10.44,
+     "magnitude_pct": 11.52,
+     "fall_line_deg_cw_from_line": 115.0,
+     "residual_rms_m": 0.33,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 197.31,
+     "ft_rel_tee": 0.0,
+     "band_ft_rel_tee": 0.1
+    },
+    {
+     "yd": 10,
+     "m": 197.47,
+     "ft_rel_tee": 0.6,
+     "band_ft_rel_tee": 0.4
+    },
+    {
+     "yd": 20,
+     "m": 197.41,
+     "ft_rel_tee": 0.4,
+     "band_ft_rel_tee": 0.3
+    },
+    {
+     "yd": 30,
+     "m": 196.31,
+     "ft_rel_tee": -3.2,
+     "band_ft_rel_tee": -3.4
+    },
+    {
+     "yd": 40,
+     "m": 195.85,
+     "ft_rel_tee": -4.7,
+     "band_ft_rel_tee": -4.6
+    },
+    {
+     "yd": 50,
+     "m": 196.14,
+     "ft_rel_tee": -3.8,
+     "band_ft_rel_tee": -3.4
+    },
+    {
+     "yd": 60,
+     "m": 196.33,
+     "ft_rel_tee": -3.2,
+     "band_ft_rel_tee": -2.9
+    },
+    {
+     "yd": 70,
+     "m": 196.09,
+     "ft_rel_tee": -3.9,
+     "band_ft_rel_tee": -3.7
+    },
+    {
+     "yd": 80,
+     "m": 195.94,
+     "ft_rel_tee": -4.5,
+     "band_ft_rel_tee": -4.4
+    },
+    {
+     "yd": 90,
+     "m": 195.89,
+     "ft_rel_tee": -4.6,
+     "band_ft_rel_tee": -4.2
+    },
+    {
+     "yd": 100,
+     "m": 195.68,
+     "ft_rel_tee": -5.3,
+     "band_ft_rel_tee": -5.0
+    },
+    {
+     "yd": 110,
+     "m": 195.33,
+     "ft_rel_tee": -6.4,
+     "band_ft_rel_tee": -6.2
+    },
+    {
+     "yd": 120,
+     "m": 195.01,
+     "ft_rel_tee": -7.5,
+     "band_ft_rel_tee": -7.0
+    },
+    {
+     "yd": 130,
+     "m": 194.66,
+     "ft_rel_tee": -8.7,
+     "band_ft_rel_tee": -8.4
+    },
+    {
+     "yd": 140,
+     "m": 194.25,
+     "ft_rel_tee": -10.0,
+     "band_ft_rel_tee": -10.1
+    },
+    {
+     "yd": 150,
+     "m": 194.09,
+     "ft_rel_tee": -10.5,
+     "band_ft_rel_tee": -10.4
+    },
+    {
+     "yd": 160,
+     "m": 194.59,
+     "ft_rel_tee": -8.9,
+     "band_ft_rel_tee": -8.8
+    },
+    {
+     "yd": 170,
+     "m": 195.25,
+     "ft_rel_tee": -6.7,
+     "band_ft_rel_tee": -7.0
+    },
+    {
+     "yd": 180,
+     "m": 195.58,
+     "ft_rel_tee": -5.6,
+     "band_ft_rel_tee": -5.5
+    },
+    {
+     "yd": 190,
+     "m": 196.03,
+     "ft_rel_tee": -4.1,
+     "band_ft_rel_tee": -3.9
+    },
+    {
+     "yd": 200,
+     "m": 196.47,
+     "ft_rel_tee": -2.7,
+     "band_ft_rel_tee": -2.6
+    },
+    {
+     "yd": 210,
+     "m": 196.89,
+     "ft_rel_tee": -1.3,
+     "band_ft_rel_tee": -1.3
+    },
+    {
+     "yd": 220,
+     "m": 197.0,
+     "ft_rel_tee": -1.0,
+     "band_ft_rel_tee": -0.8
+    },
+    {
+     "yd": 230,
+     "m": 196.8,
+     "ft_rel_tee": -1.6,
+     "band_ft_rel_tee": -1.4
+    },
+    {
+     "yd": 240,
+     "m": 196.78,
+     "ft_rel_tee": -1.7,
+     "band_ft_rel_tee": -1.6
+    },
+    {
+     "yd": 250,
+     "m": 196.87,
+     "ft_rel_tee": -1.4,
+     "band_ft_rel_tee": -1.2
+    },
+    {
+     "yd": 260,
+     "m": 196.85,
+     "ft_rel_tee": -1.5,
+     "band_ft_rel_tee": -1.4
+    },
+    {
+     "yd": 270,
+     "m": 196.6,
+     "ft_rel_tee": -2.3,
+     "band_ft_rel_tee": -2.2
+    },
+    {
+     "yd": 280,
+     "m": 196.35,
+     "ft_rel_tee": -3.1,
+     "band_ft_rel_tee": -3.0
+    },
+    {
+     "yd": 290,
+     "m": 196.46,
+     "ft_rel_tee": -2.7,
+     "band_ft_rel_tee": -2.7
+    },
+    {
+     "yd": 300,
+     "m": 196.96,
+     "ft_rel_tee": -1.1,
+     "band_ft_rel_tee": -0.8
+    },
+    {
+     "yd": 310,
+     "m": 197.44,
+     "ft_rel_tee": 0.5,
+     "band_ft_rel_tee": 0.9
+    },
+    {
+     "yd": 320,
+     "m": 197.33,
+     "ft_rel_tee": 0.1,
+     "band_ft_rel_tee": 1.0
+    },
+    {
+     "yd": 330,
+     "m": 197.67,
+     "ft_rel_tee": 1.2,
+     "band_ft_rel_tee": 2.3
+    },
+    {
+     "yd": 340,
+     "m": 198.96,
+     "ft_rel_tee": 5.5,
+     "band_ft_rel_tee": 5.4
+    },
+    {
+     "yd": 350,
+     "m": 198.52,
+     "ft_rel_tee": 4.0,
+     "band_ft_rel_tee": 4.0
+    },
+    {
+     "yd": 360,
+     "m": 197.95,
+     "ft_rel_tee": 2.1,
+     "band_ft_rel_tee": 2.4
+    },
+    {
+     "yd": 370,
+     "m": 197.79,
+     "ft_rel_tee": 1.6,
+     "band_ft_rel_tee": 1.6
+    },
+    {
+     "yd": 380,
+     "m": 197.68,
+     "ft_rel_tee": 1.3,
+     "band_ft_rel_tee": 1.3
+    },
+    {
+     "yd": 390,
+     "m": 197.98,
+     "ft_rel_tee": 2.2,
+     "band_ft_rel_tee": 2.2
+    },
+    {
+     "yd": 400,
+     "m": 198.52,
+     "ft_rel_tee": 4.0,
+     "band_ft_rel_tee": 3.7
+    },
+    {
+     "yd": 410,
+     "m": 199.05,
+     "ft_rel_tee": 5.8,
+     "band_ft_rel_tee": 5.1
+    },
+    {
+     "yd": 420,
+     "m": 198.81,
+     "ft_rel_tee": 5.0,
+     "band_ft_rel_tee": 5.0
+    },
+    {
+     "yd": 430,
+     "m": 198.38,
+     "ft_rel_tee": 3.6,
+     "band_ft_rel_tee": 3.9
+    },
+    {
+     "yd": 440,
+     "m": 198.04,
+     "ft_rel_tee": 2.4,
+     "band_ft_rel_tee": 2.5
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Black",
+    "tee_method": "tee_axis",
+    "tee_confidence": "high",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 450.9,
+    "map_tee_to_green_yd": 447.0,
+    "green_angle_off_line_deg": 4.6
+   },
+   "ecc_check": {
+    "tee_offset_yd": 29.9,
+    "bearing_diff_deg": -3.9,
+    "scale_270_yd": 267.7,
+    "landing_270_delta_ft": -5.6,
+    "landing_slope_along_pct": 0.39,
+    "landing_slope_cross_pct": -6.72,
+    "quality": {
+     "corr": 0.43656134836653415,
+     "ecc": 0.46674998231097387,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "18": {
+   "par": 5,
+   "length_yd": 516,
+   "tee_ll": [
+    -91.1419377,
+    40.7558919
+   ],
+   "p270_ll": [
+    -91.1433933,
+    40.7578203
+   ],
+   "bearing_deg_true": 330.1,
+   "tee_elev": {
+    "m": 195.73,
+    "ft": 642.2
+   },
+   "green": {
+    "m": 178.4,
+    "ft": 585.3,
+    "delta_ft": -56.9,
+    "along_yd": 476.4,
+    "lateral_yd": 142.9
+   },
+   "landing": {
+    "240": {
+     "m": 175.53,
+     "ft": 575.9,
+     "delta_ft": -66.3,
+     "delta_m": -20.2
+    },
+    "270": {
+     "m": 175.92,
+     "ft": 577.2,
+     "delta_ft": -65.0,
+     "delta_m": -19.82
+    },
+    "300": {
+     "m": 176.52,
+     "ft": 579.1,
+     "delta_ft": -63.0,
+     "delta_m": -19.22
+    }
+   },
+   "landing_slope": {
+    "along_pct": 3.16,
+    "cross_pct": -2.76,
+    "magnitude_pct": 4.19,
+    "fall_line_deg_cw_from_line": 139.0,
+    "residual_rms_m": 0.42,
+    "box": {
+     "along_yd": [
+      240,
+      320
+     ],
+     "lateral_yd": [
+      -15,
+      15
+     ]
+    }
+   },
+   "slope_by_zone": {
+    "200-240": {
+     "along_pct": 0.89,
+     "cross_pct": -0.21,
+     "magnitude_pct": 0.91,
+     "fall_line_deg_cw_from_line": 167.0,
+     "residual_rms_m": 0.66,
+     "box": {
+      "along_yd": [
+       200,
+       240
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "240-280": {
+     "along_pct": 1.6,
+     "cross_pct": -1.22,
+     "magnitude_pct": 2.01,
+     "fall_line_deg_cw_from_line": 143.0,
+     "residual_rms_m": 0.12,
+     "box": {
+      "along_yd": [
+       240,
+       280
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    },
+    "280-320": {
+     "along_pct": 6.08,
+     "cross_pct": -4.12,
+     "magnitude_pct": 7.34,
+     "fall_line_deg_cw_from_line": 146.0,
+     "residual_rms_m": 0.39,
+     "box": {
+      "along_yd": [
+       280,
+       320
+      ],
+      "lateral_yd": [
+       -15,
+       15
+      ]
+     }
+    }
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 195.74,
+     "ft_rel_tee": 0.0,
+     "band_ft_rel_tee": -0.5
+    },
+    {
+     "yd": 10,
+     "m": 194.37,
+     "ft_rel_tee": -4.5,
+     "band_ft_rel_tee": -5.3
+    },
+    {
+     "yd": 20,
+     "m": 192.46,
+     "ft_rel_tee": -10.7,
+     "band_ft_rel_tee": -10.4
+    },
+    {
+     "yd": 30,
+     "m": 191.83,
+     "ft_rel_tee": -12.8,
+     "band_ft_rel_tee": -12.7
+    },
+    {
+     "yd": 40,
+     "m": 191.18,
+     "ft_rel_tee": -14.9,
+     "band_ft_rel_tee": -15.5
+    },
+    {
+     "yd": 50,
+     "m": 190.12,
+     "ft_rel_tee": -18.4,
+     "band_ft_rel_tee": -17.8
+    },
+    {
+     "yd": 60,
+     "m": 189.52,
+     "ft_rel_tee": -20.4,
+     "band_ft_rel_tee": -19.3
+    },
+    {
+     "yd": 70,
+     "m": 188.94,
+     "ft_rel_tee": -22.3,
+     "band_ft_rel_tee": -21.5
+    },
+    {
+     "yd": 80,
+     "m": 187.91,
+     "ft_rel_tee": -25.7,
+     "band_ft_rel_tee": -25.4
+    },
+    {
+     "yd": 90,
+     "m": 186.64,
+     "ft_rel_tee": -29.8,
+     "band_ft_rel_tee": -30.0
+    },
+    {
+     "yd": 100,
+     "m": 184.16,
+     "ft_rel_tee": -38.0,
+     "band_ft_rel_tee": -38.4
+    },
+    {
+     "yd": 110,
+     "m": 181.93,
+     "ft_rel_tee": -45.3,
+     "band_ft_rel_tee": -45.4
+    },
+    {
+     "yd": 120,
+     "m": 180.11,
+     "ft_rel_tee": -51.3,
+     "band_ft_rel_tee": -51.3
+    },
+    {
+     "yd": 130,
+     "m": 178.59,
+     "ft_rel_tee": -56.2,
+     "band_ft_rel_tee": -56.2
+    },
+    {
+     "yd": 140,
+     "m": 177.4,
+     "ft_rel_tee": -60.2,
+     "band_ft_rel_tee": -60.0
+    },
+    {
+     "yd": 150,
+     "m": 176.39,
+     "ft_rel_tee": -63.5,
+     "band_ft_rel_tee": -63.2
+    },
+    {
+     "yd": 160,
+     "m": 175.93,
+     "ft_rel_tee": -65.0,
+     "band_ft_rel_tee": -64.9
+    },
+    {
+     "yd": 170,
+     "m": 175.74,
+     "ft_rel_tee": -65.6,
+     "band_ft_rel_tee": -65.6
+    },
+    {
+     "yd": 180,
+     "m": 175.57,
+     "ft_rel_tee": -66.1,
+     "band_ft_rel_tee": -66.2
+    },
+    {
+     "yd": 190,
+     "m": 175.33,
+     "ft_rel_tee": -66.9,
+     "band_ft_rel_tee": -66.7
+    },
+    {
+     "yd": 200,
+     "m": 175.24,
+     "ft_rel_tee": -67.2,
+     "band_ft_rel_tee": -66.9
+    },
+    {
+     "yd": 210,
+     "m": 174.19,
+     "ft_rel_tee": -70.7,
+     "band_ft_rel_tee": -70.0
+    },
+    {
+     "yd": 220,
+     "m": 174.37,
+     "ft_rel_tee": -70.1,
+     "band_ft_rel_tee": -69.6
+    },
+    {
+     "yd": 230,
+     "m": 175.43,
+     "ft_rel_tee": -66.6,
+     "band_ft_rel_tee": -67.5
+    },
+    {
+     "yd": 240,
+     "m": 175.56,
+     "ft_rel_tee": -66.2,
+     "band_ft_rel_tee": -66.2
+    },
+    {
+     "yd": 250,
+     "m": 175.66,
+     "ft_rel_tee": -65.8,
+     "band_ft_rel_tee": -65.8
+    },
+    {
+     "yd": 260,
+     "m": 175.77,
+     "ft_rel_tee": -65.5,
+     "band_ft_rel_tee": -65.4
+    },
+    {
+     "yd": 270,
+     "m": 175.9,
+     "ft_rel_tee": -65.1,
+     "band_ft_rel_tee": -65.0
+    },
+    {
+     "yd": 280,
+     "m": 176.04,
+     "ft_rel_tee": -64.6,
+     "band_ft_rel_tee": -64.6
+    },
+    {
+     "yd": 290,
+     "m": 176.28,
+     "ft_rel_tee": -63.8,
+     "band_ft_rel_tee": -63.9
+    },
+    {
+     "yd": 300,
+     "m": 176.48,
+     "ft_rel_tee": -63.2,
+     "band_ft_rel_tee": -63.1
+    },
+    {
+     "yd": 310,
+     "m": 177.06,
+     "ft_rel_tee": -61.3,
+     "band_ft_rel_tee": -61.1
+    },
+    {
+     "yd": 320,
+     "m": 178.48,
+     "ft_rel_tee": -56.6,
+     "band_ft_rel_tee": -56.7
+    },
+    {
+     "yd": 330,
+     "m": 179.32,
+     "ft_rel_tee": -53.8,
+     "band_ft_rel_tee": -53.4
+    },
+    {
+     "yd": 340,
+     "m": 180.77,
+     "ft_rel_tee": -49.1,
+     "band_ft_rel_tee": -49.4
+    },
+    {
+     "yd": 350,
+     "m": 182.24,
+     "ft_rel_tee": -44.3,
+     "band_ft_rel_tee": -44.9
+    },
+    {
+     "yd": 360,
+     "m": 182.98,
+     "ft_rel_tee": -41.8,
+     "band_ft_rel_tee": -42.9
+    },
+    {
+     "yd": 370,
+     "m": 182.06,
+     "ft_rel_tee": -44.9,
+     "band_ft_rel_tee": -45.1
+    },
+    {
+     "yd": 380,
+     "m": 180.46,
+     "ft_rel_tee": -50.1,
+     "band_ft_rel_tee": -50.1
+    },
+    {
+     "yd": 390,
+     "m": 179.62,
+     "ft_rel_tee": -52.9,
+     "band_ft_rel_tee": -52.1
+    },
+    {
+     "yd": 400,
+     "m": 179.13,
+     "ft_rel_tee": -54.5,
+     "band_ft_rel_tee": -54.0
+    },
+    {
+     "yd": 410,
+     "m": 181.24,
+     "ft_rel_tee": -47.5,
+     "band_ft_rel_tee": -47.4
+    },
+    {
+     "yd": 420,
+     "m": 182.82,
+     "ft_rel_tee": -42.4,
+     "band_ft_rel_tee": -42.3
+    },
+    {
+     "yd": 430,
+     "m": 184.78,
+     "ft_rel_tee": -35.9,
+     "band_ft_rel_tee": -35.8
+    },
+    {
+     "yd": 440,
+     "m": 185.67,
+     "ft_rel_tee": -33.0,
+     "band_ft_rel_tee": -33.7
+    },
+    {
+     "yd": 450,
+     "m": 185.96,
+     "ft_rel_tee": -32.1,
+     "band_ft_rel_tee": -32.1
+    },
+    {
+     "yd": 460,
+     "m": 186.01,
+     "ft_rel_tee": -31.9,
+     "band_ft_rel_tee": -31.0
+    },
+    {
+     "yd": 470,
+     "m": 185.94,
+     "ft_rel_tee": -32.1,
+     "band_ft_rel_tee": -31.4
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "osm_tee_923993470",
+    "tee_method": "osm_tee_centroid",
+    "tee_confidence": "n/a",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 492.1,
+    "map_tee_to_green_yd": 497.4,
+    "green_angle_off_line_deg": 16.7
+   },
+   "ecc_check": {
+    "tee_offset_yd": 7.7,
+    "bearing_diff_deg": -0.9,
+    "scale_270_yd": 268.9,
+    "landing_270_delta_ft": -64.0,
+    "landing_slope_along_pct": 3.61,
+    "landing_slope_cross_pct": -2.94,
+    "quality": {
+     "corr": 0.2626530943584815,
+     "ecc": 0.2786423273453841,
+     "source": "course_data/imagery/spirit_hollow/traced_registration.json"
+    }
+   }
+  },
+  "7": {
+   "par": 3,
+   "length_yd": 159,
+   "tee_ll": [
+    -91.1459787,
+    40.7653926
+   ],
+   "p270_ll": [
+    -91.146625,
+    40.7632241
+   ],
+   "bearing_deg_true": 192.8,
+   "tee_elev": {
+    "m": 200.57,
+    "ft": 658.0
+   },
+   "green": {
+    "m": 203.01,
+    "ft": 666.0,
+    "delta_ft": 8.0,
+    "along_yd": 152.1,
+    "lateral_yd": 0.0
+   },
+   "landing": null,
+   "landing_slope": null,
+   "green_slope": {
+    "along_pct": 3.04,
+    "cross_pct": 0.48
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 200.68,
+     "ft_rel_tee": 0.4,
+     "band_ft_rel_tee": -0.8
+    },
+    {
+     "yd": 10,
+     "m": 201.17,
+     "ft_rel_tee": 2.0,
+     "band_ft_rel_tee": 1.1
+    },
+    {
+     "yd": 20,
+     "m": 201.12,
+     "ft_rel_tee": 1.8,
+     "band_ft_rel_tee": 1.7
+    },
+    {
+     "yd": 30,
+     "m": 201.15,
+     "ft_rel_tee": 1.9,
+     "band_ft_rel_tee": 1.9
+    },
+    {
+     "yd": 40,
+     "m": 201.12,
+     "ft_rel_tee": 1.8,
+     "band_ft_rel_tee": 1.8
+    },
+    {
+     "yd": 50,
+     "m": 201.15,
+     "ft_rel_tee": 1.9,
+     "band_ft_rel_tee": 1.8
+    },
+    {
+     "yd": 60,
+     "m": 200.95,
+     "ft_rel_tee": 1.3,
+     "band_ft_rel_tee": 1.4
+    },
+    {
+     "yd": 70,
+     "m": 200.49,
+     "ft_rel_tee": -0.3,
+     "band_ft_rel_tee": 0.0
+    },
+    {
+     "yd": 80,
+     "m": 200.76,
+     "ft_rel_tee": 0.6,
+     "band_ft_rel_tee": 0.9
+    },
+    {
+     "yd": 90,
+     "m": 201.05,
+     "ft_rel_tee": 1.6,
+     "band_ft_rel_tee": 2.0
+    },
+    {
+     "yd": 100,
+     "m": 201.41,
+     "ft_rel_tee": 2.8,
+     "band_ft_rel_tee": 2.8
+    },
+    {
+     "yd": 110,
+     "m": 201.78,
+     "ft_rel_tee": 4.0,
+     "band_ft_rel_tee": 4.1
+    },
+    {
+     "yd": 120,
+     "m": 201.99,
+     "ft_rel_tee": 4.7,
+     "band_ft_rel_tee": 4.7
+    },
+    {
+     "yd": 130,
+     "m": 202.25,
+     "ft_rel_tee": 5.5,
+     "band_ft_rel_tee": 5.4
+    },
+    {
+     "yd": 140,
+     "m": 202.57,
+     "ft_rel_tee": 6.6,
+     "band_ft_rel_tee": 6.5
+    },
+    {
+     "yd": 150,
+     "m": 202.89,
+     "ft_rel_tee": 7.6,
+     "band_ft_rel_tee": 8.0
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Black",
+    "tee_method": "tee_axis",
+    "tee_confidence": "high",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 159.0,
+    "map_tee_to_green_yd": 152.1,
+    "green_angle_off_line_deg": 0.0
+   }
+  },
+  "12": {
+   "par": 3,
+   "length_yd": 177,
+   "tee_ll": [
+    -91.1396049,
+    40.7661124
+   ],
+   "p270_ll": [
+    -91.1415798,
+    40.7644725
+   ],
+   "bearing_deg_true": 222.5,
+   "tee_elev": {
+    "m": 202.22,
+    "ft": 663.5
+   },
+   "green": {
+    "m": 200.27,
+    "ft": 657.1,
+    "delta_ft": -6.4,
+    "along_yd": 185.7,
+    "lateral_yd": -0.0
+   },
+   "landing": null,
+   "landing_slope": null,
+   "green_slope": {
+    "along_pct": 1.54,
+    "cross_pct": -1.71
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 202.18,
+     "ft_rel_tee": -0.1,
+     "band_ft_rel_tee": 0.3
+    },
+    {
+     "yd": 10,
+     "m": 202.14,
+     "ft_rel_tee": -0.3,
+     "band_ft_rel_tee": -0.9
+    },
+    {
+     "yd": 20,
+     "m": 201.82,
+     "ft_rel_tee": -1.3,
+     "band_ft_rel_tee": -2.4
+    },
+    {
+     "yd": 30,
+     "m": 200.15,
+     "ft_rel_tee": -6.8,
+     "band_ft_rel_tee": -6.8
+    },
+    {
+     "yd": 40,
+     "m": 199.1,
+     "ft_rel_tee": -10.2,
+     "band_ft_rel_tee": -8.8
+    },
+    {
+     "yd": 50,
+     "m": 198.56,
+     "ft_rel_tee": -12.0,
+     "band_ft_rel_tee": -10.2
+    },
+    {
+     "yd": 60,
+     "m": 198.43,
+     "ft_rel_tee": -12.4,
+     "band_ft_rel_tee": -11.9
+    },
+    {
+     "yd": 70,
+     "m": 199.31,
+     "ft_rel_tee": -9.5,
+     "band_ft_rel_tee": -8.8
+    },
+    {
+     "yd": 80,
+     "m": 199.61,
+     "ft_rel_tee": -8.6,
+     "band_ft_rel_tee": -8.0
+    },
+    {
+     "yd": 90,
+     "m": 199.63,
+     "ft_rel_tee": -8.5,
+     "band_ft_rel_tee": -8.2
+    },
+    {
+     "yd": 100,
+     "m": 199.39,
+     "ft_rel_tee": -9.3,
+     "band_ft_rel_tee": -8.8
+    },
+    {
+     "yd": 110,
+     "m": 199.18,
+     "ft_rel_tee": -10.0,
+     "band_ft_rel_tee": -9.6
+    },
+    {
+     "yd": 120,
+     "m": 199.15,
+     "ft_rel_tee": -10.1,
+     "band_ft_rel_tee": -9.9
+    },
+    {
+     "yd": 130,
+     "m": 199.29,
+     "ft_rel_tee": -9.6,
+     "band_ft_rel_tee": -9.8
+    },
+    {
+     "yd": 140,
+     "m": 199.59,
+     "ft_rel_tee": -8.6,
+     "band_ft_rel_tee": -9.2
+    },
+    {
+     "yd": 150,
+     "m": 199.62,
+     "ft_rel_tee": -8.5,
+     "band_ft_rel_tee": -8.6
+    },
+    {
+     "yd": 160,
+     "m": 199.64,
+     "ft_rel_tee": -8.5,
+     "band_ft_rel_tee": -8.7
+    },
+    {
+     "yd": 170,
+     "m": 200.08,
+     "ft_rel_tee": -7.0,
+     "band_ft_rel_tee": -7.1
+    },
+    {
+     "yd": 180,
+     "m": 200.25,
+     "ft_rel_tee": -6.5,
+     "band_ft_rel_tee": -6.5
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Black",
+    "tee_method": "tee_axis",
+    "tee_confidence": "high",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 177.0,
+    "map_tee_to_green_yd": 185.7,
+    "green_angle_off_line_deg": 0.0
+   }
+  },
+  "15": {
+   "par": 3,
+   "length_yd": 134,
+   "tee_ll": [
+    -91.1403271,
+    40.7582296
+   ],
+   "p270_ll": [
+    -91.1410989,
+    40.7603742
+   ],
+   "bearing_deg_true": 344.7,
+   "tee_elev": {
+    "m": 191.42,
+    "ft": 628.0
+   },
+   "green": {
+    "m": 189.54,
+    "ft": 621.9,
+    "delta_ft": -6.2,
+    "along_yd": 147.5,
+    "lateral_yd": 0.0
+   },
+   "landing": null,
+   "landing_slope": null,
+   "green_slope": {
+    "along_pct": 2.36,
+    "cross_pct": 2.1
+   },
+   "profile": [
+    {
+     "yd": 0,
+     "m": 191.29,
+     "ft_rel_tee": -0.4,
+     "band_ft_rel_tee": 0.3
+    },
+    {
+     "yd": 10,
+     "m": 190.97,
+     "ft_rel_tee": -1.5,
+     "band_ft_rel_tee": -2.3
+    },
+    {
+     "yd": 20,
+     "m": 189.74,
+     "ft_rel_tee": -5.5,
+     "band_ft_rel_tee": -5.0
+    },
+    {
+     "yd": 30,
+     "m": 188.9,
+     "ft_rel_tee": -8.3,
+     "band_ft_rel_tee": -8.7
+    },
+    {
+     "yd": 40,
+     "m": 187.35,
+     "ft_rel_tee": -13.3,
+     "band_ft_rel_tee": -13.4
+    },
+    {
+     "yd": 50,
+     "m": 187.36,
+     "ft_rel_tee": -13.3,
+     "band_ft_rel_tee": -13.3
+    },
+    {
+     "yd": 60,
+     "m": 187.39,
+     "ft_rel_tee": -13.2,
+     "band_ft_rel_tee": -13.2
+    },
+    {
+     "yd": 70,
+     "m": 187.38,
+     "ft_rel_tee": -13.3,
+     "band_ft_rel_tee": -13.3
+    },
+    {
+     "yd": 80,
+     "m": 187.36,
+     "ft_rel_tee": -13.3,
+     "band_ft_rel_tee": -13.3
+    },
+    {
+     "yd": 90,
+     "m": 187.35,
+     "ft_rel_tee": -13.4,
+     "band_ft_rel_tee": -13.3
+    },
+    {
+     "yd": 100,
+     "m": 187.35,
+     "ft_rel_tee": -13.4,
+     "band_ft_rel_tee": -13.3
+    },
+    {
+     "yd": 110,
+     "m": 187.32,
+     "ft_rel_tee": -13.5,
+     "band_ft_rel_tee": -13.4
+    },
+    {
+     "yd": 120,
+     "m": 188.38,
+     "ft_rel_tee": -10.0,
+     "band_ft_rel_tee": -10.9
+    },
+    {
+     "yd": 130,
+     "m": 189.28,
+     "ft_rel_tee": -7.0,
+     "band_ft_rel_tee": -7.9
+    },
+    {
+     "yd": 140,
+     "m": 189.44,
+     "ft_rel_tee": -6.5,
+     "band_ft_rel_tee": -6.2
+    }
+   ],
+   "geometry": {
+    "method": "anchor",
+    "tee": "Black",
+    "tee_method": "tee_axis",
+    "tee_confidence": "high",
+    "green_offset_from_line_end_m": 0.0,
+    "app_tee_to_green_yd": 134.0,
+    "map_tee_to_green_yd": 147.5,
+    "green_angle_off_line_deg": 0.0
+   }
+  }
+ }
+}
