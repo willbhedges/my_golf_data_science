@@ -164,14 +164,29 @@ def _norm_card(sc, tee_set):
 
 
 # ----------------------------------------------------------------------------- S4 gap-fill layers
-def vision_layers(cdir):
+def vision_layers(cdir, files=None):
     """Extra (lie, [shapely geoms]) layers from the imagery stage, WGS84 GeoJSON with a `lie` property
-    (or one file per lie: naip_trees.geojson -> recovery). Returns (layers, sources)."""
+    (or one file per lie: naip_trees.geojson -> recovery). Returns (layers, sources).
+    `files` overrides the search (acceptance passes one leave-one-hole-out file per hole)."""
     from shapely.geometry import shape
+    if files is not None:
+        files = list(files)
+    else:
+        files = _vision_files(cdir)
+    return _read_layers(files, shape)
+
+
+def _vision_files(cdir):
     files = sorted(set(glob.glob(os.path.join(cdir, "*vision*.geojson")) +
                        glob.glob(os.path.join(cdir, "naip_*.geojson")) +
                        glob.glob(os.path.join(cdir, "imagery", "*.geojson")) +
                        glob.glob(os.path.join(HERE, "imagery", os.path.basename(cdir), "*.geojson"))))
+    if any(os.path.basename(f) == "gapfill.geojson" for f in files):    # it already holds the trees file's polygons
+        files = [f for f in files if os.path.basename(f) != "naip_trees.geojson"]
+    return files
+
+
+def _read_layers(files, shape):
     by = {}
     for f in files:
         try:
@@ -465,7 +480,7 @@ def load_tee_positions(slug, cdir):
 
 
 def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, quiet=False, tee_stage=True,
-                 vision=True):
+                 vision=True, layers=True):
     """Run S1-S6 offline. Returns the course model dict (holes.json) without writing it."""
     del LOG[:]
     slug, d, meta = resolve(course)
@@ -496,7 +511,7 @@ def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, 
                           "no yardages: OSM tee nearest the hole-line start")
     say(f"[S2] tees: {stages['tees']}")
 
-    extra, vsrc = vision_layers(cdir)
+    extra, vsrc = vision_layers(cdir) if layers else ([], [])
     stages["vision"] = ("ok: " + ", ".join(vsrc)) if extra else "missing (no gap-fill layers)"
     say(f"[S4] vision layers: {[(k, len(v)) for k, v in extra] or 'none'}")
 
@@ -506,7 +521,13 @@ def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, 
     say(f"[S3] holes: {len(holes)} via {how}")
 
     # S4 any-course gap-fill (vision_any: lidar trees, NAIP long grass, creek corridors), when present
-    ga = load_module(os.path.join(HERE, "vision_any", "gapfill.py"), "cd_vision_any_gapfill") if vision else None
+    layers = os.path.join(HERE, "vision_any", slug, "vision_any.geojson")
+    ga = None
+    if vision and not os.path.exists(layers):
+        # gapfill() would build the layers on the fly from the raw rasters: >13 min and >3.4 GB here (killed)
+        say(f"[S4] vision_any: no precomputed {os.path.relpath(layers, ROOT)} (built by vision_any.yml); skipped")
+    elif vision:
+        ga = load_module(os.path.join(HERE, "vision_any", "gapfill.py"), "cd_vision_any_gapfill")
     if ga is not None and hasattr(ga, "gapfill_holes"):
         try:
             import copy

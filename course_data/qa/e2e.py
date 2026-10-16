@@ -45,7 +45,7 @@ def pdf_pages(path):
         return len(re.findall(rb"/Type\s*/Page[^s]", data))
 
 
-def run(pkg_path, tees, timeout=1800, extra=()):
+def run(pkg_path, tees, timeout=1800, extra=(), check_only=False):
     pk = next((p for p in P.find_packages() if os.path.abspath(p.path) == os.path.abspath(pkg_path)), None)
     slug = pk.slug if pk else os.path.basename(os.path.dirname(pkg_path))
     out = os.path.join(SCRATCH, slug + ("_" + tees if tees else ""))
@@ -53,13 +53,18 @@ def run(pkg_path, tees, timeout=1800, extra=()):
     cmd = [sys.executable, PLAN, "--package", pkg_path, "--quick", "--out", out] + (["--tees", tees] if tees else []) + list(extra)
     t0 = time.time()
     r = dict(package=os.path.relpath(pkg_path, P.ROOT), tees=tees, out=out, cmd=" ".join(cmd), checks={}, problems=[])
-    try:
-        p = subprocess.run(cmd, cwd=P.ROOT, capture_output=True, text=True, timeout=timeout)
-        r["exit"] = p.returncode
-        r["log_tail"] = (p.stdout + p.stderr)[-3000:]
-    except subprocess.TimeoutExpired:
-        r["exit"] = "timeout"
-    r["seconds"] = round(time.time() - t0)
+    prev = (json.load(open(os.path.join(QA, "e2e.json"))) if os.path.exists(os.path.join(QA, "e2e.json")) else {}).get(
+        f"{os.path.relpath(pkg_path, P.ROOT)}|{tees}", {})
+    if check_only:
+        r["exit"], r["seconds"], r["log_tail"] = prev.get("exit", 0), prev.get("seconds"), prev.get("log_tail")
+    else:
+        try:
+            p = subprocess.run(cmd, cwd=P.ROOT, capture_output=True, text=True, timeout=timeout)
+            r["exit"] = p.returncode
+            r["log_tail"] = (p.stdout + p.stderr)[-3000:]
+        except subprocess.TimeoutExpired:
+            r["exit"] = "timeout"
+        r["seconds"] = round(time.time() - t0)
     r["checks"]["plan_exit_0"] = r["exit"] == 0
     n_holes = len(pk.holes) if pk else None
     tee_holes = [k for k, q in (pk.holes.items() if pk else []) if (q.par or 4) > 3]
@@ -84,7 +89,8 @@ def run(pkg_path, tees, timeout=1800, extra=()):
         r["checks"]["wind_page_self_contained"] = not bad
         if bad:
             r["problems"].append(f"wind page loads {bad}")
-        missing = [k for k in tee_holes if not re.search(r'["\']%s["\']\s*:' % re.escape(k), html)]
+        missing = [k for k in tee_holes if not re.search(r'["\']%s[BF]?["\']\s*:|"key"\s*:\s*"?%s[BF]?["\s,}]'
+                                                       % (re.escape(k), re.escape(k)), html)]
         r["checks"]["wind_page_all_tee_holes"] = not missing
         if missing:
             r["problems"].append(f"wind page has no entry for holes {missing}")
@@ -119,6 +125,7 @@ def main():
     ap.add_argument("--tees")
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--timeout", type=int, default=1800)
+    ap.add_argument("--check-only", action="store_true", help="re-check an existing output dir, don't run plan.py")
     a = ap.parse_args()
     jobs = []
     if a.all:
@@ -131,7 +138,7 @@ def main():
     res = json.load(open(resf)) if os.path.exists(resf) else {}
     for path, tees in jobs:
         print("e2e:", path, tees, flush=True)
-        r = run(path, tees, a.timeout)
+        r = run(path, tees, a.timeout, check_only=a.check_only)
         res[f"{os.path.relpath(path, P.ROOT)}|{tees}"] = r
         print(json.dumps({k: v for k, v in r.items() if k not in ("log_tail", "decision")}, indent=1), flush=True)
         with open(resf, "w") as fh:

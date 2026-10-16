@@ -42,11 +42,16 @@ def compute(slug, course_dir=None, imagery_dir=None, tree_hag=L.TREE_HAG_M):
     S = L.Stack.load(slug, cdir)
     fc = json.load(open(os.path.join(cdir, "osm.geojson")))
     M, Ly = L.osm_masks(S, fc)
+    L.log(f"  stack+osm {time.time() - t0:.0f}s")
     trees, trees_how, height = L.tree_mask(S, M, hag_min=tree_hag)
+    L.log(f"  trees {time.time() - t0:.0f}s")
     X, names = L.features(S, M, trees)
+    L.log(f"  features {X.shape} {time.time() - t0:.0f}s")
     # first pass water without banks (banks need the mown probability -> use native's p)
     water0, _ = L.water_mask(S, Ly, M)
+    L.log(f"  water0 {time.time() - t0:.0f}s")
     nat, p_nat, ninfo = N.predict(S, M, Ly, trees, water0, X, names)
+    L.log(f"  native {time.time() - t0:.0f}s")
     water, wparts = L.water_mask(S, Ly, M, mown_p=1 - p_nat, trees=trees)
     nat &= ~water
     L.log(f"[{slug}] trees {trees.mean():.1%} ({trees_how}); native {nat.mean():.1%} {ninfo.get('seed_px')} seeds; "

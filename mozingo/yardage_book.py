@@ -328,7 +328,7 @@ def tee_page(pdf, h, conf):
         f"Approach left: ~{r['approach']:.0f} yds",
         f"Strokes gained off the tee: {t.tee_baseline(h) - r['ev']:+.2f}",
         f"Edge over {others[0]}: {res[others[0]]['ev'] - r['ev']:.3f} strokes",
-        f"Confidence: best club in {conf.get(h, '?')}% of what-if worlds",
+        *([f"Confidence: best club in {conf[h]}% of what-if worlds"] if h in conf else []),
         "",
         "**Other clubs (strokes lost vs the play)",
     ]
@@ -435,7 +435,7 @@ def aim_sheet(pdf, h):
              weight="bold", color="white", va="center")
     fig.text(0.52 if len(label(h)) > 3 else 0.40, 0.965, f"Par {par}", fontsize=13, color="#cfe8d5", va="center")
     fig.text(0.96, 0.965, title, fontsize=20, weight="bold", color="#ffd60a", va="center", ha="right")
-    line = ("Land it in the blue box. " + PAR3[h]["short"]) if h in PAR3 else "Aim at the star: " + AIM_AT[h]
+    line = ("Land it in the blue box. " + PAR3[h]["short"]) if h in PAR3 else "Aim at the star. " + AIM_AT[h]
     for i, piece in enumerate(textwrap.wrap(line, 60)[:2]):
         fig.text(0.04, 0.925 - i * 0.022, piece, fontsize=11, color="white", va="center")
     pdf.savefig(fig)

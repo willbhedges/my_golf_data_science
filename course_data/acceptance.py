@@ -62,12 +62,35 @@ def oracle_builds():
             lens[ref_of(k)] = float(h["length"])
         for k, p in course.PAR3.items():
             lens[str(k)] = float(p["center"])
-        m = P.build_course("Spirit Hollow", "white", lens, render=False, tee_stage=False)
+        m = P.build_course("Spirit Hollow", "white", lens, render=False, tee_stage=False, vision=False, layers=False)
         for k in list(course.HOLES) + list(course.PAR3):
             if str(k)[-1:] in "BF" and str(k)[-1] != variant:
                 continue
             if ref_of(k) in m["holes"] and k not in out:
                 out[k] = m["holes"][ref_of(k)]
+    return out
+
+
+LOHO = os.path.join(HERE, "imagery", "spirit_hollow", "gapfill_loho")
+
+
+def loho_builds():
+    """Oracle tees + the imagery gap-fill from the leave-one-hole-out model that never saw hole k
+    (ARCHITECTURE.md section 7, circularity rule a). One geometry build per traced hole."""
+    fc = json.load(open(os.path.join(CDIR, "osm.geojson")))
+    out = {}
+    for k, h in course.HOLES.items():
+        f = os.path.join(LOHO, f"{k}.geojson")
+        if not os.path.exists(f):
+            print(f"  {k}: no LOHO gap-fill file; OSM only")
+        extra, _ = P.vision_layers(None, [f] if os.path.exists(f) else [])
+        holes, how, _ = P.build_holes(fc, "white", {ref_of(k): float(h["length"])}, extra, None)
+        a = holes[ref_of(k)]
+        a["vision"] = os.path.relpath(f, ROOT) if os.path.exists(f) else None
+        out[k] = a
+    for k, p in course.PAR3.items():
+        holes, _, _ = P.build_holes(fc, "white", {str(k): float(p["center"])}, [], None)
+        out[k] = holes[str(k)]
     return out
 
 
@@ -314,9 +337,16 @@ def main():
     ap.add_argument("--holes", help="evaluate this holes.json as built (default: oracle-tee builds)")
     ap.add_argument("--fast", action="store_true")
     ap.add_argument("--only", help="comma-separated traced keys")
+    ap.add_argument("--vision", choices=["none", "loho"], default="none",
+                    help="loho: add the imagery gap-fill from the model that did not see the hole")
     a = ap.parse_args()
     t0 = time.time()
-    auto = from_model(a.holes) if a.holes else oracle_builds()
+    if a.holes:
+        auto = from_model(a.holes)
+    elif a.vision == "loho":
+        auto = loho_builds()
+    else:
+        auto = oracle_builds()
     regs = json.load(open(REG)) if os.path.exists(REG) else {}
     regs = regs.get("holes", regs)
     n = 4000 if a.fast else t.N_SHOTS
@@ -344,7 +374,8 @@ def main():
         p3.append(r)
     ok = [r for r in rows if not r.get("missing")]
     summary = dict(
-        mode="holes.json as built" if a.holes else "oracle tees (traced lengths as the card)",
+        mode=("holes.json as built" if a.holes else "oracle tees (traced lengths as the card)"
+              + (", + LOHO imagery gap-fill" if a.vision == "loho" and not a.holes else ", OSM zones only")),
         n_tee_shots=len(ok), missing=[r["hole"] for r in rows if r.get("missing")],
         same_club=round(float(np.mean([r["same_club"] for r in ok])), 3) if ok else None,
         tee_within=round(float(np.mean([r["tee_err"] <= BAR["tee"] for r in ok if "tee_err" in r] or [np.nan])), 3),
@@ -359,7 +390,8 @@ def main():
         bar=BAR, seconds=round(time.time() - t0))
     summary["club_bar_met"] = bool(summary["same_club"] is not None and summary["same_club"] >= BAR["club"])
     out = dict(summary=summary, tee_shots=rows, par3=p3)
-    tag = "" if not a.holes else "_" + os.path.splitext(os.path.basename(a.holes))[0]
+    tag = ("" if not a.holes else "_" + os.path.splitext(os.path.basename(a.holes))[0]) + \
+        ("_loho" if a.vision == "loho" and not a.holes else "")
     with open(os.path.join(CDIR, f"acceptance{tag}.json"), "w") as fh:
         json.dump(out, fh, indent=1, default=float)
     write_md(out, os.path.join(CDIR, f"acceptance{tag}.md"))
