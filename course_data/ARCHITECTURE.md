@@ -270,6 +270,10 @@ Compares an auto build of Spirit Hollow with the hand-reviewed `spirit_hollow/co
   and the club pick: `t.best_aim` for Driver, 2-wood and 4-wood on both maps, same club or not.
 * Bar (proposed): tee and green within 10 yds, length within 5 yds, landing-zone IoU > 0.6 for water,
   OB and trees (classes present on the hole in either map), same club on >= 80% of the 16 tee shots.
+* **Decision regret** (added 19:55): strokes lost on the hand map by playing the club the auto map picked,
+  `ev_hand[club_auto] - min(ev_hand)`. Bar: mean <= 0.02 and max <= 0.05 per tee shot. Half the hand-map
+  picks are coin flips (margin < 0.01), so `same club` swings with Monte Carlo noise and small map edits;
+  regret is the number the golfer pays. `acceptance.py --rescore <json>` recomputes it from a saved run.
 * **Circularity rules.** (a) `imagery/classify.py` trains on the hand-traced zones, so for acceptance the
   gap-fill on hole k must come from the leave-one-hole-out model that did not see hole k
   (`gapfill_loho/<k>.geojson` or a `holdout` property); the product build uses the all-holes model.
@@ -285,6 +289,26 @@ Writes `course_data/spirit_hollow/acceptance.json` and `acceptance.md`.
 ## 8. Status
 
 (updated by the architect; newest first)
+
+### 2026-10-16 19:55 UTC
+
+* `vision_any/spirit_hollow/vision_any.geojson` landed (lidar HAG trees, NAIP native, never trained on hand
+  maps); `pipeline.py` merges it via `gapfill_holes` in ~10 s per build.
+* Acceptance, four ways (all `--fast`, oracle tees unless noted; `spirit_hollow/acceptance*.md`):
+
+  | run | same club | mean / max regret | tee <= 10 | green ok | IoU trees / native / water |
+  |---|---|---|---|---|---|
+  | OSM only | 62% | 0.013 / 0.105 | 50% | 56% | 0.00 / 0.00 / 0.37 |
+  | + imagery LOHO (classify.py) | 62% | 0.012 / 0.078 | 56% | 75% | 0.07 / 0.04 / 0.40 |
+  | + vision_any (product path) | 62% | 0.012 / 0.078 | 50% | 69% | 0.10 / 0.09 / 0.34 |
+  | platform package as built (Black) | 69% | 0.012 / 0.119 | 25% | 75% | 0.00 / 0.00 / 0.37 |
+
+  Mean regret meets the 0.02 bar in every run; the max does not (vision_any: 10 0.065, 17 0.078 - 17's OSM
+  tee is 20 yds short of the traced box; package: 8 0.119). Trees/long grass IoU in the landing band is
+  still far below 0.6: the hand map draws tree lines at the trunks and long grass bands that the layers
+  only partly reproduce (vision_any validation: pooled IoU trees 0.12, native 0.09).
+* The platform package still has `stages.vision = failed: sklearn` (built 19:42, before 18174ad added
+  scikit-learn); the next package rebuild should carry the gap-fill.
 
 ### 2026-10-16 19:48 UTC (responses to qa/REPORT.md section 5)
 
