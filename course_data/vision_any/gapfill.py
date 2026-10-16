@@ -126,6 +126,8 @@ def load_layers(slug, imagery_dir=None, course_dir=None):
     if os.path.exists(p):
         fc = json.load(open(p))
         return fc, fc.get("properties", {})
+    if not os.path.exists(os.path.join(HERE, slug, "raw", "meta.json")):
+        raise FileNotFoundError(f"course_data/vision_any/{slug}/raw (not fetched)")
     sys.path.insert(0, HERE)
     import run_any
     fc = run_any.build(slug, course_dir=course_dir, imagery_dir=imagery_dir, write=False)
@@ -249,7 +251,13 @@ def gapfill(package, imagery_dir=None, slug=None, use_reframe=True):
     out = copy.deepcopy(package)
     course = out.get("course") or {}
     slug = resolve_slug(slug or course.get("slug"), course.get("center"))
-    fc, meta = load_layers(slug, imagery_dir)
+    try:
+        fc, meta = load_layers(slug, imagery_dir)
+    except Exception as e:                                     # noqa: BLE001
+        out.setdefault("stages", {})["vision"] = (
+            f"missing: no vision_any layers for '{slug}' ({type(e).__name__}: {str(e)[:120]}); add the course to "
+            "course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them")
+        return out
     shapes = _shapes(fc)
     n_add = {k: 0 for k in PENAL_ADD}
     for ref, h in out["holes"].items():
