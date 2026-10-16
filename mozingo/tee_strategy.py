@@ -104,11 +104,20 @@ def expected_strokes(lie, dist):
     beyond = np.maximum(dist - DIST[-1], 0) * LONG_SLOPE      # long par-5 second shots
     e = _expected_strokes(lie, dist) + beyond
     if HCP_BASELINE:
-        # Approximate 5-handicap: ~+0.25 from 150 in the fairway, growing with distance, and
-        # every bad lie costs 1.3x what it costs a tour player (relative to the fairway).
+        # ~5-handicap, calibrated in spirit_hollow/research.md (Stagner/Arccos, Shot Scope):
+        # fairway = tour + 0.40 + 0.001*(d-150) (scratch ~3.04 from 100 vs tour 2.80; a 5 from
+        # 100 ~ scratch from 150). Lie penalties relative to the fairway scale by lie type:
+        # amateurs lose LESS than tour from rough (~0.7x), about the same from sand (1.1x),
+        # more from trees/long grass (1.3x). Water/OB keep their penalty stroke on top.
         fw = _expected_strokes("fairway", dist) + beyond
-        e = fw + 0.25 + 0.0012 * (np.clip(dist, 20, 450) - 150) + 1.3 * (e - fw)
+        base_fw = fw + 0.40 + 0.001 * (np.clip(dist, 20, 450) - 150)
+        mult = HCP_LIE_MULT.get(lie, 1.0)
+        e = base_fw + mult * (e - fw)
     return e
+
+
+HCP_LIE_MULT = {"fairway": 1.0, "rough": 0.7, "sand": 1.1, "recovery": 1.3, "native": 1.3,
+                "water": 1.0, "ob": 1.0}
 
 
 def _expected_strokes(lie, dist):

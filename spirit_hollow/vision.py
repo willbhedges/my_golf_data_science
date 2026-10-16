@@ -171,6 +171,16 @@ def fairway_reference(hole, F, msmall):
     return np.median(F[sel][:, :N_COLOUR], axis=0)
 
 
+FEATS = os.environ.get("VISION_FEATS", "hand")   # hand | deep | both
+
+
+def load_deep(image):
+    """DINOv2 ViT-S/14 patch features (computed on GitHub Actions, see deep/), on our grid."""
+    sys.path.insert(0, os.path.join(HERE, "deep"))
+    from extract_features import load_grid
+    return load_grid(os.path.splitext(image)[0]).astype(np.float32)
+
+
 def build_dataset():
     data = {}
     for h, hd in course.HOLES.items():
@@ -180,6 +190,9 @@ def build_dataset():
         msmall0 = np.asarray(Image.fromarray(m).resize((W, H), Image.NEAREST))
         ref = fairway_reference(h, F, msmall0)
         F = np.concatenate([F, F[..., :N_COLOUR] - ref], axis=-1)   # absolute + relative colour
+        if FEATS in ("deep", "both"):
+            deep = load_deep(hd["image"])
+            F = deep if FEATS == "deep" else np.concatenate([F, deep], axis=-1)
         msmall = np.asarray(Image.fromarray(m).resize((W, H), Image.NEAREST))
         lab = label_map(h)
         lab[msmall] = -1

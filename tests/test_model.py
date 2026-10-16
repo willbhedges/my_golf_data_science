@@ -71,10 +71,11 @@ def test_hcp_baseline_raises_fairway_and_resets_exactly(t):
     try:
         hcp = t.expected_strokes("fairway", D)
         assert np.all(hcp > orig["fairway"])
-        # every bad lie costs 1.3x the tour gap over the fairway
-        for lie in ("rough", "water", "ob"):
+        # each lie's gap over the fairway scales by its research-calibrated multiplier
+        for lie in ("rough", "sand", "recovery", "native", "water", "ob"):
             np.testing.assert_allclose(
-                t.expected_strokes(lie, D) - hcp, 1.3 * (orig[lie] - orig["fairway"]), atol=1e-12)
+                t.expected_strokes(lie, D) - hcp,
+                t.HCP_LIE_MULT[lie] * (orig[lie] - orig["fairway"]), atol=1e-12)
     finally:
         t.HCP_BASELINE = False
     for lie, v in orig.items():
