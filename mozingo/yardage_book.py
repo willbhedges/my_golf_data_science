@@ -22,10 +22,32 @@ from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.image import imread
 import tee_strategy as t
 
-OUT = os.path.join(t.HERE, "output", "Mozingo_Lake_Strategy.pdf")
+# Course being built; use_course() swaps these for another course.
+NAME = "Mozingo Lake GC"
+DIR = t.HERE                      # holds screenshots/ and output/
+PREFIX = "Mozingo"                # output file names
+STRATEGY_NAME = "Mozingo_Lake_Strategy.pdf"
+ORDER = list(range(1, 19))
+LABELS = {}                       # hole key -> what to print ("9 back tee")
 ZONE_TOL = 0.02
 WATER_ADD, BUNKER_ADD, TREE_ADD = 3.0, 1.0, 2.0
-ADD = {"water": WATER_ADD, "bunker": BUNKER_ADD, "trees": TREE_ADD, "rough": 0.0}
+ADD = {"water": WATER_ADD, "ob": WATER_ADD, "bunker": BUNKER_ADD, "trees": TREE_ADD,
+       "native": TREE_ADD, "rough": 0.0}
+# "Lesser of evils": when both cushions don't fit, the worse side keeps its full cushion.
+SEVERITY = {"water": 3, "ob": 3, "trees": 2, "native": 2, "bunker": 1, "rough": 0}
+
+
+def label(h):
+    return LABELS.get(h, str(h))
+
+
+def use_course(name, dir, prefix, holes, par3, notes, aim_at, order, labels=None):
+    global NAME, DIR, PREFIX, STRATEGY_NAME, ORDER, LABELS, PAR3, NOTES, AIM_AT
+    NAME, DIR, PREFIX, ORDER, LABELS = name, dir, prefix, order, labels or {}
+    STRATEGY_NAME = f"{prefix}_Strategy.pdf"
+    PAR3, NOTES, AIM_AT = par3, notes, aim_at
+    t.HOLES = holes
+    tee_plan.cache_clear()
 
 # Par 3s, traced from the Caddie-view screenshots on a 5-yd grid centred on the flag.
 # green = putting-surface outline as (yds right of the tee-flag line, yds past the flag);
@@ -37,13 +59,14 @@ PAR3 = {
             haz=dict(left="trees", right="bunker", short="rough", long="rough"),
             note="Bunker hard right (2 yds off the edge), front-left bunker and trees left. "
                  "The green is only ~24 yds wide, so the zone is a narrow strip."),
-    8: dict(image="hole08.png", short="All carry. The front-left lobe is the safe part.", tee=(475, 1950), flag=(475, 812), center=187, front=180, back=199,
+    8: dict(image="hole08.png", short="All carry. Water short keeps its full cushion.", tee=(475, 1950), flag=(475, 812), center=187, front=180, back=199,
             green=[(-14, 10), (-8, 13), (5, 13), (15, 12), (22, 9), (25, 3), (26, -2), (22, -5),
                    (10, -5.5), (0, -6.5), (-4, -7), (-6, -14), (-10, -20), (-15, -21), (-20, -15),
                    (-22.5, -8), (-22.5, 0), (-19, 6)],
             haz=dict(left="rough", right="trees", short="water", long="trees"),
-            note="All carry over the pond. The bunker guards the front-right and the green's "
-                 "deepest part is the front-left lobe. Left of the green is only rough."),
+            note="All carry over the pond, bunker front-right. The green is too shallow for both the "
+                 "water cushion short and the trees cushion long, so water wins: the box sits "
+                 "12 yds past the front edge. Left of the green is only rough."),
     11: dict(image="hole11.png", short="Pond short-left. The miss is long-right.", tee=(444, 1765), flag=(444, 802), center=219, front=208, back=230,
              green=[(-15, 10), (-5, 11.5), (5, 11.5), (14, 10), (19, 6), (20.5, 0), (18, -5),
                     (12, -9), (0, -11), (-10, -10), (-17, -7), (-21, -2), (-21.5, 3), (-19, 7)],
@@ -84,13 +107,14 @@ NOTES = {
 
 
 def confidence():
-    path = os.path.join(t.HERE, "output", "stats_report.md")
+    path = os.path.join(DIR, "output", "stats_report.md")
     conf = {}
     if os.path.exists(path):
         for line in open(path):
-            m = re.match(r"\| (\d+) \| \*\*(.+?)\*\* \|.*\| (\d+)% \|$", line.strip())
+            m = re.match(r"\| (\S+?) \| \*\*(.+?)\*\* \|.*\| (\d+)% \|$", line.strip())
             if m:
-                conf[int(m.group(1))] = int(m.group(3))
+                key = int(m.group(1)) if m.group(1).isdigit() else m.group(1)
+                conf[key] = int(m.group(3))
     return conf
 
 
@@ -109,48 +133,57 @@ def tee_plan(h):
     res = {c: t.best_aim(h, c, aims=t.AIMS_WIDE if c in t.IRONS else t.AIMS) for c in t.clubs_for(h)}
     best = min(res, key=lambda c: res[c]["ev"])
     lo = t.HOLES[h].get("aim_min", -20)
-    aims = np.arange(lo, 20.1, 2.5)
+    aims = np.arange(lo, t.HOLES[h].get("aim_max", 20) + 0.1, 2.5)
     curve = np.array([t.simulate(h, best, a)[3].mean() for a in aims])
     ok = aims[curve <= curve.min() + ZONE_TOL]
     return res, best, (ok.min(), ok.max())
 
 
-def par3_plan(p, step=0.25):
-    """DECADE edge rule applied to the traced green, point by point.
+def _axis(e_lo, e_hi, c_lo, c_hi, s_lo, s_hi):
+    """One axis of the edge rule. Returns (zone_lo, zone_hi, how)."""
+    if c_lo + c_hi <= e_hi - e_lo:
+        return e_lo + c_lo, e_hi - c_hi, "fits"
+    if s_lo == s_hi:                          # same trouble both sides: split (no hazard -> middle)
+        x = e_lo + (e_hi - e_lo) * c_lo / (c_lo + c_hi)
+        return x, x, "split"
+    x = e_lo + c_lo if s_lo > s_hi else e_hi - c_hi     # worse side keeps its full cushion
+    return x, x, "lo" if s_lo > s_hi else "hi"
 
-    A spot is in the zone if it is at least the cushion in from the left and right
-    edges of the green along its row, and from the front and back along its column.
-    If no spot satisfies all four, every cushion is scaled down by the same
-    fraction until one does (reported as `fit`).
+
+def par3_plan(p, step=0.25):
+    """DECADE edge rule on the traced green.
+
+    Cushion = distance / 20 yds in from each edge, +3 water/OB, +2 trees/tall grass,
+    +1 bunker. On each axis: if both cushions fit, the zone is what's left between
+    them. If not, the worse side (water > trees/tall grass > bunker > rough) keeps
+    its full cushion and the lesser side gives up room; with the same trouble both
+    sides (e.g. a small green with no hazards) the aim splits them, i.e. the middle.
     """
     from matplotlib.path import Path
     base = p["center"] / 20.0
     off = {k: base + ADD[v] for k, v in p["haz"].items()}
-    lat = np.arange(-40, 40 + step, step)
-    dep = np.arange(-30, 30 + step, step)
-    L, D = np.meshgrid(lat, dep)
-    inside = Path(p["green"]).contains_points(np.c_[L.ravel(), D.ravel()]).reshape(L.shape)
-    big = 1e9
-    left = np.where(inside, L, big).min(axis=1, keepdims=True)
-    right = np.where(inside, L, -big).max(axis=1, keepdims=True)
-    front = np.where(inside, D, big).min(axis=0, keepdims=True)
-    back = np.where(inside, D, -big).max(axis=0, keepdims=True)
+    sev = {k: SEVERITY[v] for k, v in p["haz"].items()}
+    path = Path(p["green"])
+    g = np.array(p["green"], float)
 
-    def zone(f):
-        return (inside & (L - left >= f * off["left"]) & (right - L >= f * off["right"])
-                & (D - front >= f * off["short"]) & (back - D >= f * off["long"]))
+    def extent(axis, at):
+        """Green edges along a line: axis 0 = lateral (row at depth `at`), 1 = depth (column)."""
+        span = np.arange(-60, 60 + step, step)
+        pts = np.c_[span, np.full_like(span, at)] if axis == 0 else np.c_[np.full_like(span, at), span]
+        inside = span[path.contains_points(pts)]
+        return (inside.min(), inside.max()) if len(inside) else (0.0, 0.0)
 
-    fit = 1.0
-    if not zone(1.0).any():
-        lo, hi = 0.0, 1.0
-        for _ in range(30):
-            mid = (lo + hi) / 2
-            lo, hi = (mid, hi) if zone(mid).any() else (lo, mid)
-        fit = lo * 0.97                     # back off a touch so the zone has visible area
-    z = zone(fit)
-    return dict(base=base, off=off, fit=fit, L=L, D=D, inside=inside, zone=z,
-                lat=(L[z].min(), L[z].max()), dep=(D[z].min(), D[z].max()),
-                aim=(L[z].mean(), D[z].mean()), width=L[inside].max() - L[inside].min())
+    lat_c = (g[:, 0].min() + g[:, 0].max()) / 2
+    dep_c = (g[:, 1].min() + g[:, 1].max()) / 2
+    for _ in range(3):                        # settle the two axes on each other
+        f, b_ = extent(1, lat_c)
+        d0, d1, how_d = _axis(f, b_, off["short"], off["long"], sev["short"], sev["long"])
+        dep_c = (d0 + d1) / 2
+        l, r = extent(0, dep_c)
+        l0, l1, how_l = _axis(l, r, off["left"], off["right"], sev["left"], sev["right"])
+        lat_c = (l0 + l1) / 2
+    return dict(base=base, off=off, sev=sev, lat=(l0, l1), dep=(d0, d1), how_lat=how_l,
+                how_dep=how_d, edges_lat=(l, r), edges_dep=(f, b_), aim=(lat_c, dep_c))
 
 
 def frame(tee, toward, yds):
@@ -167,7 +200,7 @@ def px(fr, along, lat):
 
 
 def draw_image(ax, image):
-    img = imread(os.path.join(t.HERE, "screenshots", image))
+    img = imread(os.path.join(DIR, "screenshots", image))
     ax.imshow(img, extent=(0, 920, 2000, 0))
     ax.axis("off")
 
@@ -200,22 +233,27 @@ def draw_tee(ax, h, club, aim, zone, label=None):
 
 
 def draw_green(ax, p, plan, title=None, aspect=None):
-    """Green-only close-up: traced outline and the rule zone. No star."""
+    """Green-only close-up: traced outline and the rule box. No star."""
     draw_image(ax, p["image"])
     fr = frame(p["tee"], p["flag"], p["center"])
     tee, fwd, right, ppy = fr
-    L, D = plan["L"], plan["D"]
-    X = tee[0] + ((p["center"] + D) * fwd[0] + L * right[0]) * ppy
-    Y = tee[1] + ((p["center"] + D) * fwd[1] + L * right[1]) * ppy
-    ax.contourf(X, Y, plan["zone"].astype(float), levels=[0.5, 1.5], colors=["#00e5ff"], alpha=0.7,
-                zorder=5)
-    ax.contour(X, Y, plan["zone"].astype(float), levels=[0.5], colors=["#003a46"], linewidths=1.5,
-               zorder=6)
+
+    def to_px(lat, dep):
+        return tee + ((p["center"] + dep) * fwd + lat * right) * ppy
+
+    (l0, l1), (d0, d1) = plan["lat"], plan["dep"]
+    if l1 - l0 < 2:                           # a single aim line: draw it 2 yds wide so it shows
+        l0, l1 = (l0 + l1) / 2 - 1, (l0 + l1) / 2 + 1
+    if d1 - d0 < 2:
+        d0, d1 = (d0 + d1) / 2 - 1, (d0 + d1) / 2 + 1
+    box = np.array([to_px(l0, d0), to_px(l1, d0), to_px(l1, d1), to_px(l0, d1), to_px(l0, d0)])
+    ax.fill(box[:, 0], box[:, 1], color="#00e5ff", alpha=0.55, lw=0, zorder=5)
+    ax.plot(box[:, 0], box[:, 1], color="#00e5ff", lw=2.5, zorder=6)
     g = np.array(p["green"] + [p["green"][0]], float)
-    gx = tee[0] + ((p["center"] + g[:, 1]) * fwd[0] + g[:, 0] * right[0]) * ppy
-    gy = tee[1] + ((p["center"] + g[:, 1]) * fwd[1] + g[:, 0] * right[1]) * ppy
-    ax.plot(gx, gy, color="white", lw=1.2, ls="--")
-    pad = 8 * ppy
+    gp = np.array([to_px(a_, b_) for a_, b_ in g])
+    gx, gy = gp[:, 0], gp[:, 1]
+    ax.plot(gx, gy, color="white", lw=1.2, ls="--", zorder=4)
+    pad = 10 * ppy
     x0, x1, y0, y1 = gx.min() - pad, gx.max() + pad, gy.min() - pad, gy.max() + pad
     if aspect:                                 # grow the view to fill the axes (h / w)
         cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
@@ -244,9 +282,11 @@ def text_block(fig, x, y, lines, size=10, gap=0.021, width=44):
 def header(fig, h, par, yds):
     fig.patches.append(plt.Rectangle((0, 0.94), 1, 0.06, transform=fig.transFigure,
                                      color="#1f5130", zorder=-1))
-    fig.text(0.04, 0.97, f"Hole {h}", fontsize=24, weight="bold", color="white", va="center")
-    fig.text(0.30, 0.97, f"Par {par}  ·  {yds} yds", fontsize=15, color="white", va="center")
-    fig.text(0.96, 0.97, "Mozingo Lake GC", fontsize=11, color="#cfe8d5", va="center", ha="right")
+    fig.text(0.04, 0.97, f"Hole {label(h)}", fontsize=24 if h in ORDER and len(label(h)) < 4 else 18,
+             weight="bold", color="white", va="center")
+    fig.text(0.42 if len(label(h)) > 3 else 0.30, 0.97, f"Par {par}  ·  {yds} yds", fontsize=15,
+             color="white", va="center")
+    fig.text(0.96, 0.97, NAME, fontsize=11, color="#cfe8d5", va="center", ha="right")
 
 
 def tee_page(pdf, h, conf):
@@ -268,7 +308,7 @@ def tee_page(pdf, h, conf):
         "**Expected outcome",
         f"Fairway {r['share']['fairway']:.0%}  ·  rough {r['share']['rough']:.0%}",
         f"Trees {r['share']['recovery']:.0%}  ·  sand {r['share']['sand']:.0%}  ·  "
-        f"tall grass {r['share']['native']:.0%}  ·  water {r['share']['water']:.0%}",
+        f"tall grass {r['share']['native']:.0%}  ·  water/OB {r['share']['water'] + r['share']['ob']:.0%}",
         f"Approach left: ~{r['approach']:.0f} yds",
         f"Strokes gained off the tee: {t.tee_baseline(h) - r['ev']:+.2f}",
         f"Edge over {others[0]}: {res[others[0]]['ev'] - r['ev']:.3f} strokes",
@@ -285,7 +325,7 @@ def tee_page(pdf, h, conf):
              "Blue band = aim zone.", fontsize=8, color="#555")
     pdf.savefig(fig)
     plt.close(fig)
-    return dict(hole=h, par=hd["par"], yds=hd["length"], club=best, aim=side(r["aim"]),
+    return dict(hole=label(h), par=hd["par"], yds=hd["length"], club=best, aim=side(r["aim"]),
                 zone=f"{side(zone[0])} to {side(zone[1])}", conf=conf.get(h))
 
 
@@ -293,6 +333,20 @@ def par3_summary(p, plan):
     d0, d1 = (p["center"] + plan["dep"][0], p["center"] + plan["dep"][1])
     play = p["center"] + plan["aim"][1]
     return play, d0, d1
+
+
+def _how(plan, axis, lo_name, hi_name, p):
+    how = plan["how_lat" if axis == "lat" else "how_dep"]
+    lo_h, hi_h = p["haz"][lo_name], p["haz"][hi_name]
+    if how == "fits":
+        return f"{lo_name.capitalize()}/{hi_name}: both cushions fit, the box is the room left between them."
+    if how == "split":
+        return (f"{lo_name.capitalize()}/{hi_name}: not enough room for both and the trouble is the same "
+                f"({lo_h}), so the aim splits them.")
+    worse, lesser = (lo_name, hi_name) if how == "lo" else (hi_name, lo_name)
+    return (f"{lo_name.capitalize()}/{hi_name}: not enough room for both. {worse.capitalize()} "
+            f"({p['haz'][worse]}) is the worse miss, so it keeps its full "
+            f"{plan['off'][worse]:.1f} yds and the {lesser} side ({p['haz'][lesser]}) gives up room.")
 
 
 def par3_page(pdf, h):
@@ -303,26 +357,24 @@ def par3_page(pdf, h):
     header(fig, h, 3, p["center"])
     draw_green(fig.add_axes([0.03, 0.40, 0.94, 0.52]), p, plan, aspect=0.52 * 11 / (0.94 * 8.5))
     off = plan["off"]
+    dz = f"{d0:.0f}" if d1 - d0 < 1 else f"{d0:.0f}-{d1:.0f}"
     lines = [
-        f"**PLAY {play:.0f} YDS — land it in the blue zone",
-        f"Zone runs {d0:.0f}-{d1:.0f} yds.  Green (app): front {p['front']} · centre {p['center']} "
-        f"· back {p['back']}.  Dashed white line = the green as traced.",
+        f"**PLAY {play:.0f} YDS — land it in the blue box",
+        f"Box: {dz} yds.  Green (app): front {p['front']} · centre {p['center']} · back {p['back']}.  "
+        "Dashed white line = the green as traced.",
         "",
         f"**DECADE edge rule: {p['center']} / 20 = {plan['base']:.1f} yds in from each edge, "
-        "+3 water, +1 bunker, +2 trees/tall grass",
+        "+3 water/OB, +2 trees/tall grass, +1 bunker",
     ]
     for k in ("left", "right", "short", "long"):
         lines.append(f"{k.capitalize()} edge: {p['haz'][k]} → {off[k]:.1f} yds in")
-    if plan["fit"] < 1:
-        lines.append(f"These cushions don't all fit on this green, so each is scaled to "
-                     f"{plan['fit']:.0%} of the rule. The blue spot is the only area that keeps "
-                     "the same share of cushion on every side.")
+    lines += [_how(plan, "lat", "left", "right", p), _how(plan, "dep", "short", "long", p)]
     lines += ["", "**Notes", p["note"]]
     text_block(fig, 0.05, 0.37, lines, width=95)
     pdf.savefig(fig)
     plt.close(fig)
-    return dict(hole=h, par=3, yds=p["center"], club=f"Play {play:.0f}",
-                aim="Blue zone on the green", zone=f"{d0:.0f}-{d1:.0f} yds", conf=None)
+    return dict(hole=label(h), par=3, yds=p["center"], club=f"Play {play:.0f}",
+                aim="Blue box on the green", zone=f"{dz} yds", conf=None)
 
 
 AIM_AT = {
@@ -362,10 +414,11 @@ def aim_sheet(pdf, h):
         draw_tee(fig.add_axes([0, 0, 1, 0.89]), h, best, res[best]["aim"], zone, label="AIM HERE")
     fig.patches.append(plt.Rectangle((0, 0.89), 1, 0.11, transform=fig.transFigure,
                                      color="#1f5130", zorder=-1))
-    fig.text(0.04, 0.965, f"Hole {h}", fontsize=22, weight="bold", color="white", va="center")
-    fig.text(0.40, 0.965, f"Par {par}", fontsize=13, color="#cfe8d5", va="center")
+    fig.text(0.04, 0.965, f"Hole {label(h)}", fontsize=22 if len(label(h)) < 4 else 16,
+             weight="bold", color="white", va="center")
+    fig.text(0.52 if len(label(h)) > 3 else 0.40, 0.965, f"Par {par}", fontsize=13, color="#cfe8d5", va="center")
     fig.text(0.96, 0.965, title, fontsize=20, weight="bold", color="#ffd60a", va="center", ha="right")
-    line = ("Land it in the blue zone. " + PAR3[h]["short"]) if h in PAR3 else "Aim at the star: " + AIM_AT[h]
+    line = ("Land it in the blue box. " + PAR3[h]["short"]) if h in PAR3 else "Aim at the star: " + AIM_AT[h]
     for i, piece in enumerate(textwrap.wrap(line, 60)[:2]):
         fig.text(0.04, 0.925 - i * 0.022, piece, fontsize=11, color="white", va="center")
     pdf.savefig(fig)
@@ -376,7 +429,7 @@ def cover(pdf, rows):
     fig = plt.figure(figsize=(8.5, 11))
     fig.patches.append(plt.Rectangle((0, 0.90), 1, 0.10, transform=fig.transFigure,
                                      color="#1f5130", zorder=-1))
-    fig.text(0.05, 0.955, "Mozingo Lake GC — Strategy Card", fontsize=22, weight="bold",
+    fig.text(0.05, 0.955, f"{NAME} — Strategy Card", fontsize=22, weight="bold",
              color="white", va="center")
     fig.text(0.05, 0.915, "Driver 275/300 (65 wide) · 2-wood 265/280 (60) · 4-wood 255/270 (50)",
              fontsize=11, color="#cfe8d5", va="center")
@@ -404,39 +457,46 @@ def cover(pdf, rows):
         "Zone = any aim within 0.02 strokes of the best. Confidence = how often the club "
         "stayed best across 100 'what if my inputs are off' scenarios (dispersion, carry, "
         "roll, hazard edges, how penal trees/grass are).",
-        "Par 3: DECADE edge rule: distance/20 yds in from the trouble, +3 water, +1 bunker, "
-        "+2 trees/tall grass.",
-        "Locks (95%+): " + ", ".join(str(r["hole"]) for r in rows if (r["conf"] or 0) >= 95)
+        "Par 3: DECADE edge rule: distance/20 yds in from each edge, +3 water/OB, +2 trees/tall "
+        "grass, +1 bunker. If both sides don't fit, the worse miss keeps its full cushion; same "
+        "trouble both sides (or none) splits them.",
+        "Locks (95%+): " + (", ".join(str(r["hole"]) for r in rows if (r["conf"] or 0) >= 95) or "none")
         + ".  Coin flips (under 50%): "
-        + ", ".join(str(r["hole"]) for r in rows if r["conf"] is not None and r["conf"] < 50) + ".",
+        + (", ".join(str(r["hole"]) for r in rows if r["conf"] is not None and r["conf"] < 50) or "none")
+        + ".",
     ], size=9, gap=0.017, width=105)
     pdf.savefig(fig)
     plt.close(fig)
 
 
-def main():
+def build():
     conf = confidence()
     rows = []
     # render hole pages once to a throwaway PDF so the cover can summarise them;
     # tee_plan is cached, so the second pass is just drawing
     with PdfPages(os.devnull) as tmp:
-        for h in range(1, 19):
+        for h in ORDER:
             rows.append(par3_page(tmp, h) if h in PAR3 else tee_page(tmp, h, conf))
-            print("hole", h, "done", flush=True)
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with PdfPages(OUT) as pdf:
+            print("hole", label(h), "done", flush=True)
+    out = os.path.join(DIR, "output", STRATEGY_NAME)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with PdfPages(out) as pdf:
         cover(pdf, rows)
-        for h in range(1, 19):
+        for h in ORDER:
             if h in PAR3:
                 par3_page(pdf, h)
             else:
                 tee_page(pdf, h, conf)
-    print("wrote", OUT)
-    sheets = os.path.join(os.path.dirname(OUT), "Mozingo_Aim_Sheets.pdf")
+    print("wrote", out)
+    sheets = os.path.join(DIR, "output", f"{PREFIX}_Aim_Sheets.pdf")
     with PdfPages(sheets) as pdf:
-        for h in range(1, 19):
+        for h in ORDER:
             aim_sheet(pdf, h)
     print("wrote", sheets)
+    return rows
+
+
+main = build
 
 
 if __name__ == "__main__":

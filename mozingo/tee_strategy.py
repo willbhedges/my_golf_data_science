@@ -49,7 +49,7 @@ IRONS = {
 MISHIT_RATE = {"Driver": 0.15, "2-wood": 0.15, "4-wood": 0.15, "Long iron": 0.15, "Mid iron": 0.15}
 MISHIT_CARRY = (0.92, 0.97)
 ROUGH_ROLL = 0.3    # share of remaining roll kept once the ball is in rough
-HAZARDS = ("sand", "recovery", "native", "water")   # ball stops where it lands/enters
+HAZARDS = ("sand", "recovery", "native", "water", "ob")   # ball stops where it lands/enters
 
 # Expected strokes to hole out (Broadie, PGA Tour baseline), by distance in yds.
 DIST = [20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300]
@@ -73,6 +73,8 @@ def expected_strokes(lie, dist):
     dist = np.clip(dist, DIST[0], DIST[-1])
     if lie == "water":     # penalty stroke, drop in rough at same distance
         return 1.0 + np.interp(dist, DIST, BASELINE["rough"])
+    if lie == "ob":        # out of bounds: stroke and distance, ~ one more shot than a water drop
+        return 2.0 + np.interp(dist, DIST, BASELINE["rough"])
     if lie == "native":    # tall prairie grass: some lost (re-drop w/ penalty), rest hacked out
         return NATIVE_LOST * (1.0 + np.interp(dist, DIST, BASELINE["rough"])) + \
             (1 - NATIVE_LOST) * np.interp(dist, DIST, BASELINE["recovery"])
@@ -355,15 +357,17 @@ AIMS_WIDE = np.arange(-20, 50.1, 2.5)   # irons can lay up to a different part o
 
 def best_aim(hole_no, club, aims=AIMS, z=None):
     lo = HOLES[hole_no].get("aim_min")
-    if lo is not None:                       # hole needs a wider search to the left
-        aims = np.arange(lo, aims.max() + 0.1, 2.5)
+    hi = HOLES[hole_no].get("aim_max")
+    if lo is not None or hi is not None:     # hole needs a wider search
+        aims = np.arange(lo if lo is not None else aims.min(),
+                         (hi if hi is not None else aims.max()) + 0.1, 2.5)
     best = None
     for aim in aims:
         _, lie, to_green, strokes = simulate(hole_no, club, aim, z=z)
         ev = strokes.mean()
         if best is None or ev < best["ev"]:
             share = {k: float(np.mean(lie == k)) for k in
-                     ("fairway", "rough", "sand", "recovery", "native", "water")}
+                     ("fairway", "rough", "sand", "recovery", "native", "water", "ob")}
             best = dict(aim=aim, ev=ev, approach=float(np.median(to_green)), share=share,
                         strokes=strokes, lie=lie, to_green=to_green)
     return best

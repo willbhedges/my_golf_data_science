@@ -89,9 +89,10 @@ def lie_breakdown(hole_no, club, aim):
     return ev, rows
 
 
-def main():
+def main(out=None, title="Mozingo Lake", deep=13):
+    out = out or OUT
     rng = np.random.default_rng(2026)
-    md = ["# Mozingo Lake — strokes-gained tee report", "",
+    md = [f"# {title} — strokes-gained tee report", "",
           "SG:OTT = tour expected strokes from the tee minus (1 + expected strokes after the drive). "
           "Higher is better. *Diff* is the extra strokes per round vs the best club on that hole "
           "(paired, same random draws), with a 95% confidence interval.", ""]
@@ -111,6 +112,12 @@ def main():
             md.append(f"| {h} | {tag} | {r['aim']:+.1f} | {r['fw']:.0%} | {r['appr']:.0f} | "
                       f"{r['sg']:+.3f} | {ci} | {wins[h][r['club']]}% |")
 
+    if deep is None or deep not in t.HOLES:
+        os.makedirs(os.path.dirname(out), exist_ok=True)
+        with open(out, "w") as f:
+            f.write("\n".join(md) + "\n")
+        print("\n".join(md))
+        return
     md += ["", "## Hole 13 deep dive", ""]
     _, rows13 = sg[13]
     for r in rows13:
@@ -144,8 +151,8 @@ def main():
     t.ROUGH_ROLL, r0 = 0.6, t.ROUGH_ROLL; row("Rough lets the ball run (60% roll)"); t.ROUGH_ROLL = r0
     t.TREE_SEVERITY = 0.5; row("Trees left only half as penal"); t.TREE_SEVERITY = 1.0
 
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w") as f:
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, "w") as f:
         f.write("\n".join(md) + "\n")
     print("\n".join(md))
 
