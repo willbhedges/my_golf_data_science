@@ -245,13 +245,37 @@ HOLES = {
 
 HOLES[13]["irons"] = True                    # pond + bunker squeeze the landing zone
 
-# Green centre for approach distances: along the tee line at the hole's length.
-for _h in HOLES.values():
+# The app's "Center" numbers: yds to the green centre from the 300 / 270 / 240 dots.
+APP = {1: (119, 143, 168), "2B": (316, 339, 363), "2F": (225, 250, 276), 4: (221, 250, 280),
+       5: (98, 127, 157), 6: (126, 151, 177), 8: (76, 105, 134), "9B": (115, 129, 148),
+       "9F": (89, 103, 123), 10: (227, 251, 277), 11: (53, 78, 106), 13: (110, 137, 166),
+       14: (123, 148, 175), 16: (88, 118, 148), 17: (153, 183, 212), 18: (222, 246, 271)}
+# Which side of the tee line the green sits (the three numbers fix how far, not which side).
+# From the green marker (1, 10), the hole outline (9, 18) or the app's dashed line;
+# 11 is left on the line: its offset (~34) is within the app's 1-yd rounding at that range.
+GREEN_SIDE = {1: -1, "2B": -1, "2F": -1, 4: -1, 5: -1, 6: -1, 8: -1, "9B": 1, "9F": 1, 10: -1,
+              11: 0, 13: -1, 14: -1, 16: 0, 17: 1, 18: 1}
+
+
+def green_from_app(d300, d270, d240, side):
+    """Trilaterate the green from the three dot distances: (yds along the line, yds right)."""
+    along = (d240 ** 2 - d300 ** 2 + 32400) / 120
+    lat = np.sqrt(max(d270 ** 2 - (along - 270) ** 2, 0.0))
+    return along, side * lat
+
+
+for _k, _h in HOLES.items():
     _h.setdefault("aim_min", -40)
     _h.setdefault("aim_max", 40)
     _tee, _d = np.array(_h["tee"], float), np.array(_h["dot270"], float)
     _ppy = np.linalg.norm(_d - _tee) / 270
-    _h["green"] = tuple(_tee + (_d - _tee) / np.linalg.norm(_d - _tee) * _h["length"] * _ppy)
+    _f = (_d - _tee) / np.linalg.norm(_d - _tee)
+    _r = np.array([-_f[1], _f[0]])
+    _a, _l = green_from_app(*APP[_k], GREEN_SIDE[_k])
+    if GREEN_SIDE[_k] == 0:
+        _a, _l = 270 + APP[_k][1], 0.0
+    _h["green"] = tuple(_tee + (_a * _f + _l * _r) * _ppy)
+    _h["length"] = 270 + APP[_k][1]          # same convention on every hole
 
 
 def _par3(image, tee, center, green_px, haz, note, short):
@@ -298,11 +322,12 @@ PAR3 = {
 
 NOTES = {
     1: "Tree line down the right is traced at the trunks: the photo is tilted, so the canopy and "
-       "shadows look like they're over the fairway. Tan long grass left at ~230-330. Driver by 0.03.",
-    "2B": "From the back tee it's ~616: the extra 20-30 yds of driver still matters (0.05). Woods and "
+       "shadows look like they're over the fairway. Tan long grass left at ~230-330. The green sits "
+       "left of the line; driver by only 0.02 over the 2-wood.",
+    "2B": "From the back tee it's ~616: the extra 20-30 yds of driver still matters (0.04). Woods and "
           "the creek left, long grass right of the cart path.",
     "2F": "Creek and trees left, houses (OB) and trees right. Small bunker ~5 yds right of the line "
-          "at ~300 out, so aim left-centre. Driver by 0.09.",
+          "at ~300 out, so aim left-centre. Driver by 0.08.",
     4: "Woods and long grass left; tree line then houses (OB) right. Wide enough for driver, which "
        "sets up ~225 for the second. Every club gives up ~0.1 to driver here.",
     5: "Highway (OB) left, houses (OB) right. Bunkers right at ~275-300 catch ~9% of drives even "
@@ -310,12 +335,12 @@ NOTES = {
     6: "Long grass both sides, nothing penal. Driver for the shorter approach.",
     8: "Bunker 5-25 yds right of the line at ~270-290 out catches about a third of drives. The "
        "4-wood stops short of it. Houses (OB) right behind the black line.",
-    "9B": "Pond starts ~6 yds right of the line from ~140 to ~250 out. Driver carries past the end "
-          "of it; aim left-centre so a slice doesn't find the front of the pond.",
-    "9F": "From the forward tee driver and 2-wood are a tie (0.008); the pond is right at ~150-200. "
-          "Long grass across the fairway at ~315-340, so don't hit it longer than driver.",
+    "9B": "Pond right of the line from ~140 to ~250 out. Driver carries past the end of it, so aim "
+          "right-centre toward the green (it's around the corner to the right).",
+    "9F": "Coin flip: 2-wood by 0.007 over driver. The pond is right at ~150-200 and long grass "
+          "crosses at ~315-340. The green is right of the line.",
     10: "Pond right from ~237 to ~328, creek in the woods left. Aim a touch left; driver's extra "
-        "20 yds is worth 0.08 on a par 5.",
+        "20 yds is worth 0.06 on a par 5.",
     11: "Creek crosses the fairway at ~286-292. Driver carries 275 and rolls into it (3 in 4). "
         "4-wood stops ~270, short of it. 2-wood still reaches it 1 time in 6. Irons cost 0.14+.",
     13: "Pond right from ~173 to ~295, pot bunkers left at ~280-300. The 4-wood stops short of the "
@@ -331,13 +356,13 @@ NOTES = {
 AIM_AT = {
     1: "Centre of the fairway",
     "2B": "Centre of the fairway",
-    "2F": "Left-centre of the fairway, away from the bunker on the right",
+    "2F": "Left side of the fairway, away from the bunker on the right",
     4: "Right-centre of the fairway",
     5: "Left-centre of the fairway, away from the right-side bunkers",
     6: "Centre of the fairway",
     8: "Centre of the fairway, short of the right-side bunker",
-    "9B": "Left-centre of the fairway, away from the pond",
-    "9F": "Left-centre of the fairway, away from the pond",
+    "9B": "Right-centre of the fairway, past the end of the pond",
+    "9F": "Left-centre of the fairway, away from the pond (2-wood or driver)",
     10: "Left-centre of the fairway, away from the pond",
     11: "Centre of the fairway, short of the creek",
     13: "Left side of the fairway, away from the pond",
