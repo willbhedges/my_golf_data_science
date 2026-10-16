@@ -72,8 +72,18 @@ def oracle_builds():
 
 
 def from_model(path):
+    """holes.json (course_model/1) or a platform package.json (course_package/1: yard-frame zones)."""
     m = json.load(open(path))
-    return {k: m["holes"][ref_of(k)] for k in list(course.HOLES) + list(course.PAR3) if ref_of(k) in m["holes"]}
+    out = {}
+    for k in list(course.HOLES) + list(course.PAR3):
+        h = m["holes"].get(ref_of(k))
+        if h is None:
+            continue
+        h = dict(h)
+        if "zones" in h and h["zones"] and isinstance(h["zones"][0], dict):      # [{lie, poly}] variant
+            h["zones"] = [(z["lie"], z["poly"]) for z in h["zones"]]
+        out[k] = h
+    return out
 
 
 def as_model_hole(h):
@@ -114,7 +124,8 @@ def auto_frame(a, ref):
     if not _RENDER:
         return None
     if "tee_ll" in a and "aim_ll" in a:                      # geometry's frame: UTM yards, tee_ll -> aim_ll
-        return _RENDER.Frame(a["tee_ll"], a["aim_ll"], ppy=a["px_per_yd"], tee_px=a["tee"], proj="utm")
+        ppy = float(np.hypot(*np.subtract(a["dot270"], a["tee"]))) / 270.0   # works for pixel and yard frames
+        return _RENDER.Frame(a["tee_ll"], a["aim_ll"], ppy=ppy, tee_px=a["tee"], proj="utm")
     lines = _RENDER._osm_holes(CDIR)
     if "lonlat_tee" not in a or ref not in lines:
         return None
