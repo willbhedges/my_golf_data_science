@@ -3,7 +3,7 @@
 The book code is used unchanged; three hooks adapt it to a generated course:
   * tee_plan -> the decision from decide.py (quick or full) instead of the book's own point estimate,
   * the "GPS app line" wording -> "tee line" (an auto course has no GPS app; the line runs from the tee
-    to the hole line's first turn, see ARCHITECTURE.md 9.2),
+    to the point on the hole line ~250 yds out, package.TEE_LINE),
   * the confidence line: P(best) from the full run, or "quick mode" when it was not computed.
 """
 import os
@@ -29,7 +29,7 @@ def _words(s):
     return (s.replace("on the tee line of the app line", "on the tee line")
              .replace("of the app line", "of the tee line").replace("app line", "tee line")
              .replace("Aims are yards left/right of the GPS app's tee line.",
-                      "Aims are yards left/right of the tee line (tee to the hole line's first turn).")
+                      "Aims are yards left/right of the tee line (tee to the hole line ~250 yds out).")
              .replace("best club in ?% of what-if worlds", "not computed (quick mode)")
              .replace("100 'what if my inputs are off' scenarios", "the Bayesian prior's what-if worlds")
              .replace("Green (app):", "Green (map):").replace("the green as traced", "the green as mapped")

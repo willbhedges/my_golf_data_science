@@ -22,6 +22,9 @@ Inputs accepted by --package: a package/1 package.json (course_data/platform), o
 holes.json (pipeline.py). --course "<name>" instead builds a stand-in package offline with
 course_data/pipeline.build_course (for courses whose OSM/scorecard/tee files are already fetched).
 
+Tee line: tee -> the point on the hole line 250 yds out (62% of the hole at most), so aims read as yards
+left/right of a line over the landing area (package.TEE_LINE; 'package' uses the package's aim_ll).
+
 Request-file trigger (GitHub Actions, .github/workflows/plan_course.yml): commit
 course_data/product/requests/<slug>.json = {"package": "<path>", "tees": "Black", "mode": "quick"|"full"}.
 """

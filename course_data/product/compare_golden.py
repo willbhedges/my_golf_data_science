@@ -39,7 +39,7 @@ def compare(out_dir, golden=os.path.join(ROOT, "spirit_hollow", "output", "final
           "|---|---|---|---|---|"]
     md += [f"| {a} | {b} | {c} | {d} | {e} |" for a, b, c, d, e in rows]
     md += ["", "Aims are not comparable one-to-one: the hand map's aims are off the GPS app's line, the auto "
-           "plan's off the tee line to the hole line's first turn."]
+           "plan's off the tee line (tee to the hole line ~250 yds out)."]
     path = os.path.join(out_dir, "compare_final_decision.md")
     with open(path, "w") as fh:
         fh.write("\n".join(md) + "\n")
