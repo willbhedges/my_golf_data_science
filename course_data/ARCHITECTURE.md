@@ -286,6 +286,22 @@ Writes `course_data/spirit_hollow/acceptance.json` and `acceptance.md`.
 
 (updated by the architect; newest first)
 
+### 2026-10-16 18:45 UTC
+
+* v2 team onboarded (section 9): platform/, vision_any/, product/, qa/. Contracts: package/1 (9.2),
+  `gapfill(package, imagery_dir) -> package` (9.3), request files (9.4). First request committed:
+  `course_data/requests/package_ia_spirit_hollow.json` (Black tees). None of platform/, product/ exist yet;
+  vision_any/ has a fetch commit (3DEP lidar HAG, Meta CHM, WorldCover, NAIP); qa/ has `packages.py`.
+* The committed v1 build is now **Black tees** (the golfer's set): `pipeline.py --tees black` uses
+  `tees/tee_positions.json` for every hole; card yardages 391/501/148/... match the measured lengths
+  (no >15-yd flags); confidence 0.71-0.80 on tee holes, 0.93 on par 3s.
+* S7 works: `pipeline.py --book` produced `spirit_hollow/output/Spirit_Hollow_Auto_Strategy.pdf` + aim
+  sheets from NAIP renders (white-tee build, 2 min). Found: on dog-legs the auto aim line points at the
+  first hole-line node, so the best aim hit the +/-40 search bound (hole 1: "40 yds left"). Auto holes now
+  search +/-60; better fix for geometry: aim line = tee -> hole-line point at ~250 yds along the line of play.
+* Acceptance re-run against the new hand map (first_cut + AUDIT_FIXES): unchanged headline (club 62%,
+  tee/green within 10 yds on 8 of 11 NAIP-registered holes, trees/long grass IoU 0).
+
 ### 2026-10-16 18:35 UTC
 
 `python3 course_data/pipeline.py --course "Spirit Hollow" --tees white` runs end to end offline in ~25 s
