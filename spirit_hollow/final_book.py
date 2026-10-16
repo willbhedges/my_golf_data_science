@@ -88,6 +88,10 @@ def describe(h, res, best):
     if el and abs(el[0]) >= 3:
         parts.append(f"Elevation: {'+' if el[0] > 0 else ''}{el[0]:.0f} yds carry "
                      f"({'downhill' if el[0] > 0 else 'uphill'}), roll x{el[1]:.2f}.")
+    if h == 1:
+        parts.append("Tee check: this screenshot was taken from the Gold box (413 yds measured; Gold "
+                     "card 426, Black 391). From the Black tee, about 22 yds up, it is a near tie: 4-wood "
+                     "edges driver by 0.01 (the wind page's Black option shows it).")
     return " ".join(x for x in parts if x)
 
 

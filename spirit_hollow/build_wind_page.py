@@ -183,8 +183,15 @@ def tee_options(h):
     for name in SETS:
         if str(h)[-1:] in "FB" and (name == "Gold") != (base == "Gold"):
             continue                                   # the other screenshot covers that set
-        out.append(dict(name=name, yards=CARD[name]["yards"][ref], back=CARD[name]["yards"][ref] - CARD[base]["yards"][ref]))
+        y = CARD[name]["yards"][ref]
+        # hole 1's screenshot was taken from the Gold box (413 measured vs Gold 426 / Black 391, and
+        # its tee sits 8 yds from the Gold box vs 40 from Black on the aerial photo): offsets from it
+        back = y - round(course.HOLES[h]["length"]) if h in SCREENSHOT_AT_GOLD else y - CARD[base]["yards"][ref]
+        out.append(dict(name=name, yards=y, back=back))
     return base, out
+
+
+SCREENSHOT_AT_GOLD = {1}
 
 
 def compact(holegrid):
