@@ -1,0 +1,515 @@
+{
+ "course": {
+  "name": "Spirit Hollow Golf Course",
+  "city": "Burlington",
+  "state": "IA",
+  "country": "US",
+  "address": "5592 Clubhouse Dr, Burlington, IA 52601",
+  "phone": "319-752-0004",
+  "website": "https://www.spirithollowgolfcourse.com/",
+  "designer": "Rick Jacobson (ASGCA)",
+  "opened": 2000,
+  "osm_relation": 13353211,
+  "centre": {
+   "lat": 40.7605,
+   "lon": -91.1442
+  },
+  "confirmed": "Burlington, Iowa confirmed: club site address, OSM golf_course relation 13353211 at 40.76N 91.14W (the repo's OSM/NAIP fetch), and every aggregator. (One aggregator page title says 'Illinois' in error.)"
+ },
+ "as_of": "2026-10-16",
+ "par": [
+  4,
+  5,
+  3,
+  5,
+  4,
+  4,
+  3,
+  4,
+  4,
+  5,
+  4,
+  3,
+  4,
+  4,
+  3,
+  4,
+  4,
+  5
+ ],
+ "handicap": {
+  "men": [
+   3,
+   11,
+   9,
+   13,
+   15,
+   1,
+   17,
+   5,
+   7,
+   8,
+   12,
+   14,
+   2,
+   4,
+   18,
+   16,
+   10,
+   6
+  ],
+  "women": [
+   6,
+   14,
+   16,
+   10,
+   12,
+   2,
+   18,
+   4,
+   8,
+   9,
+   15,
+   13,
+   1,
+   5,
+   17,
+   11,
+   3,
+   7
+  ],
+  "source": "https://www.golfify.io/courses/spirit-hollow-golf-course",
+  "note": "Men's stroke index (Gold/Black/Rust columns on Golfify) matches Stymie's card exactly. Women's index is Golfify's White column. The club page does not print handicaps. OpenGolfAPI shows an older/different index (3 13 15 9 11 1 17 7 5 16 6 14 2 12 18 8 4 10)."
+ },
+ "tee_sets": {
+  "Gold": {
+   "colour": "gold",
+   "aliases": [
+    "gold",
+    "back",
+    "tips",
+    "championship"
+   ],
+   "yards": [
+    426,
+    607,
+    183,
+    607,
+    468,
+    445,
+    165,
+    431,
+    410,
+    575,
+    352,
+    210,
+    480,
+    467,
+    215,
+    434,
+    496,
+    579
+   ],
+   "total": 7550,
+   "ratings": [
+    {
+     "gender": "M",
+     "rating": 74.8,
+     "slope": 134,
+     "source": "https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details",
+     "note": "GolfNow/GolfPass/TeeOff/Golfify, yardage 7550"
+    }
+   ],
+   "source": "https://www.spirithollowgolfcourse.com/golf/hole-by-hole",
+   "confidence": "high"
+  },
+  "Black": {
+   "colour": "black",
+   "aliases": [
+    "black",
+    "blue",
+    "member",
+    "middle"
+   ],
+   "yards": [
+    391,
+    507,
+    148,
+    532,
+    384,
+    408,
+    154,
+    383,
+    365,
+    502,
+    338,
+    186,
+    409,
+    393,
+    145,
+    378,
+    445,
+    521
+   ],
+   "total": 6589,
+   "ratings": [
+    {
+     "gender": "M",
+     "rating": 71.4,
+     "slope": 124,
+     "source": "https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details",
+     "note": "7550-era card (6580/6589 yd)"
+    },
+    {
+     "gender": "M",
+     "rating": 72.4,
+     "slope": 131,
+     "source": "https://stymie.golf/golf-courses/iowa/des-moines-county/burlington/spirit-hollow-golf-course-burlington",
+     "note": "Stymie (6578 yd; older per-hole yardages)"
+    }
+   ],
+   "source": "https://www.spirithollowgolfcourse.com/golf/hole-by-hole",
+   "confidence": "high"
+  },
+  "White": {
+   "colour": "white",
+   "aliases": [
+    "white"
+   ],
+   "yards": [
+    376,
+    452,
+    134,
+    501,
+    361,
+    365,
+    136,
+    365,
+    323,
+    457,
+    305,
+    163,
+    389,
+    370,
+    132,
+    331,
+    397,
+    483
+   ],
+   "total": 6040,
+   "ratings": [
+    {
+     "gender": "M",
+     "rating": 69.0,
+     "slope": 117,
+     "source": "https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details"
+    },
+    {
+     "gender": "F",
+     "rating": 71.5,
+     "slope": 120,
+     "source": "https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details"
+    }
+   ],
+   "source": "https://www.spirithollowgolfcourse.com/golf/hole-by-hole",
+   "confidence": "high"
+  },
+  "Rust": {
+   "colour": "rust",
+   "aliases": [
+    "rust",
+    "red",
+    "forward",
+    "ladies"
+   ],
+   "yards": [
+    299,
+    390,
+    100,
+    439,
+    273,
+    303,
+    108,
+    332,
+    266,
+    394,
+    252,
+    120,
+    298,
+    328,
+    105,
+    282,
+    341,
+    423
+   ],
+   "total": 5053,
+   "ratings": [
+    {
+     "gender": "F",
+     "rating": 70.3,
+     "slope": 116,
+     "source": "https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details",
+     "note": "GolfNow labels it Red (W)"
+    }
+   ],
+   "source": "https://www.spirithollowgolfcourse.com/golf/hole-by-hole",
+   "confidence": "high",
+   "note": "Club page lists 105 on 15 (Golfify/GolfLink agree); Stymie has 108."
+  }
+ },
+ "combo_sets": {
+  "Black/White Combo": {
+   "yards": [
+    391,
+    507,
+    148,
+    501,
+    361,
+    365,
+    154,
+    365,
+    365,
+    502,
+    338,
+    186,
+    389,
+    370,
+    145,
+    352,
+    397,
+    521
+   ],
+   "total": 6357,
+   "ratings": [
+    {
+     "gender": "M",
+     "rating": 71.9,
+     "slope": 128,
+     "source": "https://stymie.golf/golf-courses/iowa/des-moines-county/burlington/spirit-hollow-golf-course-burlington"
+    }
+   ],
+   "source": "https://stymie.golf/golf-courses/iowa/des-moines-county/burlington/spirit-hollow-golf-course-burlington",
+   "confidence": "medium",
+   "note": "Stymie only. Built from Black and White holes (16 = 352 matches neither current card; possibly an old value)."
+  }
+ },
+ "historical_cards": {
+  "note": "Older cards still circulating on aggregators. They differ from the club's current hole-by-hole page on Gold 2,4,5,6,7,8,9,10,12,13,14,15,16,17,18 and Black 3,7,8,13. Not used for play.",
+  "Gold_7021_GolfLink": {
+   "yards": [
+    426,
+    527,
+    183,
+    566,
+    406,
+    429,
+    154,
+    416,
+    383,
+    532,
+    352,
+    215,
+    439,
+    427,
+    165,
+    394,
+    462,
+    545
+   ],
+   "rating": 73.1,
+   "slope": 128,
+   "source": "https://www.golflink.com/golf-courses/ia/burlington/spirit-hollow-golf-course"
+  },
+  "Black_6580_GolfLink": {
+   "yards": [
+    391,
+    507,
+    141,
+    532,
+    384,
+    408,
+    136,
+    390,
+    365,
+    502,
+    338,
+    186,
+    418,
+    393,
+    145,
+    378,
+    445,
+    521
+   ],
+   "rating": 71.2,
+   "slope": 123,
+   "source": "https://www.golflink.com/golf-courses/ia/burlington/spirit-hollow-golf-course"
+  },
+  "White_6010_GolfLink": {
+   "yards": [
+    376,
+    453,
+    119,
+    501,
+    361,
+    365,
+    122,
+    365,
+    321,
+    457,
+    305,
+    163,
+    389,
+    370,
+    132,
+    331,
+    397,
+    483
+   ],
+   "rating": 69.2,
+   "slope": 112,
+   "source": "https://www.golflink.com/golf-courses/ia/burlington/spirit-hollow-golf-course"
+  },
+  "Gold_7301_Stymie": {
+   "yards": [
+    426,
+    527,
+    183,
+    607,
+    437,
+    445,
+    154,
+    416,
+    410,
+    532,
+    352,
+    215,
+    480,
+    467,
+    215,
+    394,
+    496,
+    545
+   ],
+   "rating": 75.9,
+   "slope": 135,
+   "source": "https://stymie.golf/golf-courses/iowa/des-moines-county/burlington/spirit-hollow-golf-course-burlington"
+  },
+  "Tips_7268_OpenGolfAPI": {
+   "yards": [
+    426,
+    527,
+    183,
+    585,
+    468,
+    435,
+    165,
+    431,
+    400,
+    575,
+    352,
+    210,
+    450,
+    430,
+    230,
+    400,
+    465,
+    536
+   ],
+   "rating": 74.8,
+   "slope": 134,
+   "source": "https://courses.opengolfapi.org/courses/IA/spirit-hollow-golf-course"
+  },
+  "ForeTee_totals": {
+   "gold": {
+    "yards": 7021,
+    "rating": 73.4,
+    "slope": 128
+   },
+   "black": {
+    "yards": 6580,
+    "rating": 71.2,
+    "slope": 123
+   },
+   "white": {
+    "yards": 6010,
+    "rating": 69.2,
+    "slope": 112
+   },
+   "rust": {
+    "yards": 5053,
+    "rating": 70.3,
+    "slope": 116
+   },
+   "source": "https://foretee.com/courses/iowa/burlington/usa/spirit-hollow-golf-course/5581/"
+  }
+ },
+ "sources": [
+  {
+   "url": "https://www.spirithollowgolfcourse.com/golf/hole-by-hole",
+   "what": "Club's own Hole-by-Hole page: par and 4 yardages per hole (back to front), no colours/handicaps",
+   "reliability": "authoritative",
+   "licence": "club website, all rights reserved; facts (numbers) only"
+  },
+  {
+   "url": "https://www.golfify.io/courses/spirit-hollow-golf-course",
+   "what": "Full card with colour names Gold/Black/White/Rust, stroke index, ratings/slope; matches the club page hole for hole",
+   "reliability": "high",
+   "licence": "proprietary"
+  },
+  {
+   "url": "https://stymie.golf/golf-courses/iowa/des-moines-county/burlington/spirit-hollow-golf-course-burlington",
+   "what": "7 tee sets incl. Black/White combo and M/W ratings; per-hole yardages are an older card",
+   "reliability": "medium",
+   "licence": "proprietary"
+  },
+  {
+   "url": "https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details",
+   "what": "Tee totals + ratings/slope (Gold 7550 74.8/134, Black 6580 71.4/124, White 6010 69.0/117, White(W) 71.5/120, Red(W) 5053 70.3/116)",
+   "reliability": "medium-high",
+   "licence": "proprietary"
+  },
+  {
+   "url": "https://www.golflink.com/golf-courses/ia/burlington/spirit-hollow-golf-course",
+   "what": "Older per-hole card (Gold 7021)",
+   "reliability": "low (stale)",
+   "licence": "proprietary"
+  },
+  {
+   "url": "https://courses.opengolfapi.org/courses/IA/spirit-hollow-golf-course",
+   "what": "Single tee per-hole + older handicap order",
+   "reliability": "low (stale)",
+   "licence": "see site"
+  },
+  {
+   "url": "https://foretee.com/courses/iowa/burlington/usa/spirit-hollow-golf-course/5581/",
+   "what": "Totals/ratings only (older)",
+   "reliability": "low",
+   "licence": "proprietary"
+  },
+  {
+   "url": "https://ncrdb.usga.org/",
+   "what": "USGA NCRDB: authoritative ratings/slope; 403 to scripted requests from GitHub Actions",
+   "reliability": "authoritative (not retrieved)",
+   "licence": "USGA terms; no bulk use"
+  },
+  {
+   "url": "https://www.openstreetmap.org/relation/13353211",
+   "what": "Geometry: 18 golf=hole lines (par, ref), 103 golf=tee polygons with no colour/ref tags",
+   "reliability": "good geometry, no tee identity",
+   "licence": "ODbL 1.0 (attribution + share-alike)"
+  }
+ ],
+ "app_crosscheck": {
+  "note": "spirit_hollow/course.py: length = 270 + APP[h][1] (app's yards to green centre from the 270 dot, measured from the app's tee). Best-matching set is Black (mean app-card +6 yd, MAE ~12 yd over 15 single-tee holes + 2F/9F). On 2 and 9 the 'B' (back) screenshot matches Gold and the 'F' (forward) screenshot matches Black.",
+  "hole_2": {
+   "back": "2B app 609 vs Gold 607",
+   "forward": "2F app 520 vs Black 507"
+  },
+  "hole_9": {
+   "back": "9B app 399 vs Gold 410",
+   "forward": "9F app 373 vs Black 365"
+  },
+  "golfer_tee": "Black"
+ }
+}

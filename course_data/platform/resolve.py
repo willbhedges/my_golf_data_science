@@ -36,17 +36,21 @@ AMBIGUOUS_MARGIN = 0.12        # second-best score this close to the best -> ask
 
 # ----------------------------------------------------------------------------- pure logic
 def name_similarity(want, got):
-    """0..1 similarity of the core names (generic golf words removed)."""
+    """0..1 similarity of the core names (generic golf words removed): mostly whole-word overlap
+    (a word matches with >= 0.85 character similarity, so typos still count), plus a little of the
+    character-level ratio."""
     a, b = pc.core_name(want), pc.core_name(got or "")
     if not a or not b:
         return 0.0
     if a == b:
         return 1.0
+    ta, tb = a.split(), b.split()
+
+    def hits(xs, ys):
+        return sum(1 for x in xs if max(difflib.SequenceMatcher(None, x, y).ratio() for y in ys) >= 0.85)
+    recall, precision = hits(ta, tb) / len(ta), hits(tb, ta) / len(tb)
     seq = difflib.SequenceMatcher(None, a, b).ratio()
-    ta, tb = set(a.split()), set(b.split())
-    tok = len(ta & tb) / len(ta | tb)
-    contain = 0.9 if (a in b or b in a) else 0.0
-    return max(seq, tok, contain * min(len(a), len(b)) / max(len(a), len(b)) + 0.1 * (contain > 0))
+    return round(0.75 * (0.7 * recall + 0.3 * precision) + 0.25 * seq, 4)
 
 
 def candidate(el, holes=None, town=None):
@@ -63,8 +67,21 @@ def candidate(el, holes=None, town=None):
                                                                     "golf:", "holes", "par"))})
 
 
-def score(c, want, town=None, osm=None):
+def _near(near):
+    if not near:
+        return None
+    if isinstance(near, str):
+        lat, lon = (float(v) for v in near.split(","))
+        return lat, lon
+    return float(near[0]), float(near[1])
+
+
+def score(c, want, town=None, osm=None, near=None):
     s = name_similarity(want, c["name"])
+    nr = _near(near)
+    if nr and c.get("center"):
+        d = pc.haversine_m(nr[0], nr[1], c["center"][1], c["center"][0]) / 1000
+        s += 0.3 if d < 15 else (-0.3 if d > 60 else 0.0)
     if osm and f"{c['osm']['type']}/{c['osm']['id']}" == osm:
         s += 10
     if town and c.get("town") and pc.core_name(town) == pc.core_name(c["town"]):
@@ -79,15 +96,15 @@ def score(c, want, town=None, osm=None):
     return round(s, 4)
 
 
-def rank(cands, want, town=None, osm=None):
+def rank(cands, want, town=None, osm=None, near=None):
     for c in cands:
-        c["score"] = score(c, want, town, osm)
+        c["score"] = score(c, want, town, osm, near)
     return sorted(cands, key=lambda c: -c["score"])
 
 
-def choose(cands, want, town=None, osm=None):
+def choose(cands, want, town=None, osm=None, near=None):
     """-> (status, best | None, ranked). status: ok | ambiguous | not_found."""
-    ranked = rank(cands, want, town, osm)
+    ranked = rank(cands, want, town, osm, near)
     ranked = [c for c in ranked if c["score"] > 0.35]
     if not ranked:
         return "not_found", None, ranked
@@ -184,7 +201,7 @@ def boundary(el_type, el_id):
     return geom, fc.bounds_of(els[0])
 
 
-def resolve(name, state, town=None, osm=None, with_towns=True):
+def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
     """-> course dict (ARCHITECTURE 3.1 course.json + state, town, holes, boundary, candidates).
     status: ok | ambiguous | not_found. Only 'ok' carries boundary/bbox."""
     sc = pc.state_code(state)
@@ -197,8 +214,8 @@ def resolve(name, state, town=None, osm=None, with_towns=True):
         if with_towns and not c["town"] and c["center"]:
             c["town"] = reverse_town(c["center"][1], c["center"][0])
         cands.append(c)
-    status, best, ranked = choose(cands, name, town, osm)
-    out = dict(schema="course/1", query=dict(name=name, state=sc, town=town, osm=osm), status=status,
+    status, best, ranked = choose(cands, name, town, osm, near)
+    out = dict(schema="course/1", query=dict(name=name, state=sc, town=town, osm=osm, near=near), status=status,
                candidates=[{k: c.get(k) for k in ("name", "town", "holes", "osm", "center", "score")}
                            for c in ranked])
     if status != "ok":
@@ -223,9 +240,10 @@ def main():
     ap.add_argument("state")
     ap.add_argument("--town")
     ap.add_argument("--osm", help="force an element, e.g. relation/13353211")
+    ap.add_argument("--near", help="lat,lon hint")
     ap.add_argument("--out")
     a = ap.parse_args()
-    res = resolve(a.name, a.state, a.town, a.osm)
+    res = resolve(a.name, a.state, a.town, a.osm, near=a.near)
     if a.out:
         pc.write_json(a.out, res)
     print(json.dumps({k: v for k, v in res.items() if k != "boundary"}, indent=1))

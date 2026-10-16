@@ -1,0 +1,89 @@
+name: course-package
+
+# Request-file pattern (ARCHITECTURE.md 9.4): commit course_data/requests/package_<slug>.json
+#   {"schema": "request/1", "kind": "package", "course": "Mozingo Lake", "state": "MO", "tees": "White",
+#    "town" / "near" / "osm": "way/123" (disambiguation, optional), "yardages": [..], "pars": [..],
+#    "scorecard": "<repo path>", "imagery_dir": "<repo path>", "render": false (all optional)}
+# and this workflow resolves the course in OSM, fetches OSM + scorecards + NAIP + 3DEP, builds
+# course_data/packages/<slug>/ (package.json, course_auto.py, qa.md) and commits it back.
+# Changing only platform code rebuilds every fetched package offline.
+
+on:
+  push:
+    paths:
+      - ".github/workflows/course_package.yml"
+      - "course_data/platform/**"
+      - "course_data/requests/package_*.json"
+      - "course_data/requests/survey_*.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: course-package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 50
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y -q poppler-utils >/dev/null || true
+          python -m pip install --upgrade pip
+          pip install requests numpy scipy shapely pyproj matplotlib pillow pytest \
+                      pystac-client planetary-computer rasterio
+
+      - name: Unit tests (offline)
+        run: python -m pytest -q course_data/platform
+
+      - name: Changed files
+        id: changed
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || \
+             ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git ls-files course_data/platform course_data/requests .github/workflows/course_package.yml > /tmp/changed.txt
+          else
+            git diff --name-only "$BEFORE" "${{ github.sha }}" > /tmp/changed.txt
+          fi
+          cat /tmp/changed.txt
+
+      - name: Build requested packages
+        continue-on-error: true
+        run: python course_data/platform/run_requests.py $(cat /tmp/changed.txt)
+
+      - name: Commit packages
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -d course_data/packages ] || { echo "nothing built"; exit 0; }
+          du -sh course_data/packages/* || true
+          git add course_data/packages
+          if git diff --cached --quiet; then
+            echo "No package changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "Course packages from request files (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
