@@ -1,0 +1,73 @@
+name: imagery-fetch
+
+on:
+  push:
+    paths:
+      - ".github/workflows/imagery_fetch.yml"
+      - "course_data/imagery/fetch_imagery.py"
+  workflow_dispatch:
+    inputs:
+      course_dir:
+        description: "Course data dir with summary.json (bbox source)"
+        default: "course_data/spirit_hollow"
+      name:
+        description: "Course name to geocode if there is no summary.json"
+        default: "Spirit Hollow Golf Course, Burlington, Iowa"
+      out:
+        description: "Output dir"
+        default: "course_data/imagery/spirit_hollow"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: imagery-fetch-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      COURSE_DIR: ${{ inputs.course_dir || 'course_data/spirit_hollow' }}
+      NAME: ${{ inputs.name || 'Spirit Hollow Golf Course, Burlington, Iowa' }}
+      OUT: ${{ inputs.out || 'course_data/imagery/spirit_hollow' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests numpy pillow shapely pystac-client planetary-computer rasterio
+
+      - name: Fetch NAIP + 3DEP
+        run: python course_data/imagery/fetch_imagery.py --course-dir "$COURSE_DIR" --name "$NAME" --out "$OUT"
+
+      - name: Commit imagery
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ls -la "$OUT" || true
+          git add "$OUT"
+          if git diff --cached --quiet; then
+            echo "No imagery changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "Add NAIP/3DEP imagery for $OUT (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
