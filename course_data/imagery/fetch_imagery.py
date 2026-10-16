@@ -4,6 +4,11 @@
       --out course_data/imagery/spirit_hollow
   python course_data/imagery/fetch_imagery.py --name "Spirit Hollow Golf Course, Burlington, Iowa" --out ...
   python course_data/imagery/fetch_imagery.py --bbox S,W,N,E --out ...
+  python course_data/imagery/fetch_imagery.py --request course_data/requests/imagery_ia_spirit_hollow.json
+      request/1 file (ARCHITECTURE.md 9.4): {"kind": "imagery", "course", "state", "near", optional
+      "bbox": [W,S,E,N], "slug", "out"}; bbox from the request, else the platform package
+      (course_data/packages/<STATE>/<slug>/package.json), else course_data/<slug>/summary.json, else
+      Nominatim; output defaults to course_data/imagery/<slug>.
 
 Bounding box: from <course-dir>/summary.json (OSM course + features, written by
 course_data/fetch_course.py), an explicit --bbox, or a Nominatim geocode of --name; then
@@ -328,6 +333,55 @@ def fetch_dem(bbox, out_dir, epsg, res=1.0):
                 tnm_errors=errs)
 
 
+# --------------------------------------------------------------------------- request files
+def _slugify(name):
+    import re
+    s = re.sub(r"[^a-z0-9 ]+", " ", str(name).lower().replace("&", " and "))
+    s = re.sub(r"\b(golf|course|club|country|gc|cc|links|the|and|of|at|g\s*c|c\s*c|golf\s*club)\b", " ", s)
+    return re.sub(r"[^a-z0-9]+", "_", " ".join(s.split())).strip("_") or "course"
+
+
+def _find_bbox(obj):
+    """Look for a [W,S,E,N] bbox in a package-like dict."""
+    if isinstance(obj, dict):
+        for k in ("bbox", "bbox_wgs84"):
+            v = obj.get(k)
+            if isinstance(v, (list, tuple)) and len(v) == 4:
+                return list(map(float, v))
+        for k in ("course", "resolve", "osm"):
+            if k in obj:
+                b = _find_bbox(obj[k])
+                if b:
+                    return b
+    return None
+
+
+def resolve_request(path, root):
+    rq = json.load(open(path))
+    slug = rq.get("slug") or _slugify(rq["course"])
+    state = str(rq.get("state", "")).upper()
+    out = rq.get("out") or os.path.join(root, "course_data", "imagery", slug)
+    b = rq.get("bbox")
+    src = "request"
+    if not b:
+        for pk in (os.path.join(root, "course_data", "packages", state, slug, "package.json"),
+                   os.path.join(root, "courses", state, slug, "package.json")):
+            if os.path.exists(pk):
+                b, src = _find_bbox(json.load(open(pk))), pk
+                if b:
+                    break
+    if b:
+        w, s_, e, n = b
+        return (s_, w, n, e), rq["course"], out, src
+    cd = os.path.join(root, "course_data", slug)
+    if os.path.exists(os.path.join(cd, "summary.json")):
+        bb, label = bbox_from_course_dir(cd)
+        return bb, label, out, cd
+    q = f"{rq['course']}, {rq.get('state', '')}, USA"
+    bb, label = geocode(q)
+    return bb, label, out, "nominatim"
+
+
 # --------------------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser()
@@ -338,11 +392,21 @@ def main():
     ap.add_argument("--lo-res", type=float, default=0.6)
     ap.add_argument("--max-mb", type=float, default=60.0)
     ap.add_argument("--no-dem", action="store_true")
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--request")
+    ap.add_argument("--out")
     a = ap.parse_args()
+    root = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+    bbox_src = None
+    if a.request:
+        bbox, label, out, bbox_src = resolve_request(a.request, root)
+        a.out = a.out or out
+    if not a.out:
+        raise SystemExit("--out (or --request) is required")
     os.makedirs(a.out, exist_ok=True)
 
-    if a.bbox:
+    if a.request:
+        pass
+    elif a.bbox:
         bbox, label = tuple(map(float, a.bbox.split(","))), a.name
     elif a.course_dir and os.path.exists(os.path.join(a.course_dir, "summary.json")):
         bbox, label = bbox_from_course_dir(a.course_dir)
@@ -354,7 +418,9 @@ def main():
     lat, lon = (padded[0] + padded[2]) / 2, (padded[1] + padded[3]) / 2
     log("course:", label, "bbox", bbox, "padded", padded)
 
-    meta = dict(course=label, bbox_wgs84_snwe=list(bbox), margin_m=a.margin,
+    meta = dict(course=label, bbox_wgs84_snwe=list(bbox), bbox_source=bbox_src or (
+                    "--bbox" if a.bbox else a.course_dir or "nominatim"), margin_m=a.margin,
+                request=a.request,
                 padded_bbox_wgs84_snwe=list(padded),
                 fetched_utc=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 transform_convention="GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row "

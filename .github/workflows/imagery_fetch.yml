@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/imagery_fetch.yml"
       - "course_data/imagery/fetch_imagery.py"
+      - "course_data/requests/imagery_*.json"
   workflow_dispatch:
     inputs:
       course_dir:
@@ -47,7 +48,20 @@ jobs:
           pip install requests numpy pillow shapely pystac-client planetary-computer rasterio
 
       - name: Fetch NAIP + 3DEP
-        run: python course_data/imagery/fetch_imagery.py --course-dir "$COURSE_DIR" --name "$NAME" --out "$OUT"
+        run: |
+          # request files (ARCHITECTURE.md 9.4): fetch every imagery request whose output is missing
+          ran=0
+          for rq in course_data/requests/imagery_*.json; do
+            [ -f "$rq" ] || continue
+            out=$(python -c "import sys,json,os;sys.path.insert(0,'course_data/imagery');import fetch_imagery as F;print(F.resolve_request(sys.argv[1],os.getcwd())[2])" "$rq" 2>/dev/null || true)
+            if [ -n "$out" ] && [ -f "$out/georef.json" ]; then echo "already fetched: $rq -> $out"; continue; fi
+            echo "== request $rq"
+            python course_data/imagery/fetch_imagery.py --request "$rq" || echo "request failed: $rq"
+            ran=1
+          done
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || { [ "$ran" = 0 ] && [ ! -f "$OUT/georef.json" ]; }; then
+            python course_data/imagery/fetch_imagery.py --course-dir "$COURSE_DIR" --name "$NAME" --out "$OUT"
+          fi
 
       - name: Commit imagery
         if: always()
@@ -55,12 +69,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           ls -la "$OUT" || true
-          git add "$OUT"
+          git add course_data/imagery
           if git diff --cached --quiet; then
             echo "No imagery changes to commit"; exit 0
           fi
           printf '%s\n' \
-            "Add NAIP/3DEP imagery for $OUT (GitHub Actions run ${{ github.run_id }})" \
+            "Add NAIP/3DEP imagery (GitHub Actions run ${{ github.run_id }})" \
             "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
