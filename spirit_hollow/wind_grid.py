@@ -102,15 +102,31 @@ def plays_like(dist, speed, rel):
     return dist * dist / carry
 
 
+def shift_tees(back):
+    """Move every tee-shot tee `back` yds straight back along its line (negative = forward), the
+    way most tee sets differ. Zones stay where they are on the ground; length grows by `back`."""
+    for h, hd in course.HOLES.items():
+        tee, d = np.array(hd["tee"], float), np.array(hd["dot270"], float)
+        f = (d - tee) / np.linalg.norm(d - tee)
+        ppy = np.linalg.norm(d - tee) / 270
+        hd["tee"] = tuple(tee - f * back * ppy)
+        hd["dot270"] = tuple(np.array(hd["tee"]) + f * 270 * ppy)
+        hd["length"] = hd["length"] + back
+        # elevation per club was measured from the original tee; keep it (small vs a 20-yd move)
+
+
 def main():
+    back = float(os.environ.get("TEE_BACK", 0) or 0)
+    if back:
+        shift_tees(back)
     set_prior_means()
     bearings = osm_bearings()
     E = elevation_adjust()
     rng = np.random.default_rng(31)
     z = np.vstack([rng.standard_normal((2, N)), rng.random((2, N))])
     only = [x.strip() for x in os.environ.get("WIND_HOLES", "").split(",") if x.strip()]
-    path = os.path.join(HERE, "output", "wind_grid.json")
-    out = dict(speeds=SPEEDS, dirs=DIRS, bearings={}, holes={}, par3={})
+    path = os.path.join(HERE, "output", "wind_grid.json" if not back else f"wind_grid_back{back:+.0f}.json")
+    out = dict(speeds=SPEEDS, dirs=DIRS, bearings={}, holes={}, par3={}, tee_back=back)
     if only and os.path.exists(path):                      # update just those tee holes
         out = json.load(open(path))
     for h in course.HOLES:
