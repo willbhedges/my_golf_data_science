@@ -109,6 +109,10 @@ mode.
 * **V4:** a `native` ring hugs the outside of almost every `recovery` polygon (canopy shadow / crown edge as long
   grass; 325 native polygons) - tree edges then play as 50% lost ball. Tee points inside native: 2 Gold, 6 Rust,
   18 Rust. Self-intersecting recovery/native polygons on 1, 9, 10, 11, 13, 15-18.
+* **V5b (21:05 update):** Veenker layers landed (e8096f0). QA's gapfill of `packages/veenker` adds 459 recovery /
+  162 native; on 15 the woods left/right of the corner are now `recovery` and the Driver landing is 35% trees
+  (`review/veenker_vision/15.jpg`); hole 5 landing 29% trees. The platform package itself still has the old
+  (vision-less) zones until it is rebuilt. Contracts on the gap-filled Veenker: 266 passed, 27 failed.
 * **V5 (Veenker):** no layers (`run_any`: `ValueError: window shape cannot be larger than input array shape`; a fix
   for the missing DTM landed at 20:4x, not rebuilt yet), so the 3rd course has no tree hazards and the model sends
   Driver through the woods (15, 9).
