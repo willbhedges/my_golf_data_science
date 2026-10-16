@@ -215,7 +215,8 @@ def px(fr, along, lat):
 
 
 def draw_image(ax, image):
-    img = imread(os.path.join(DIR, "screenshots", image))
+    clean = os.path.join(DIR, "screenshots_clean", image)          # app overlays removed
+    img = imread(clean if os.path.exists(clean) else os.path.join(DIR, "screenshots", image))
     ax.imshow(img, extent=(0, 920, 2000, 0))
     ax.axis("off")
 
