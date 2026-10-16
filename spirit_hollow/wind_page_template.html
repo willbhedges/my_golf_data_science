@@ -1,0 +1,268 @@
+<title>Spirit Hollow Wind Caddie</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: a caddie's card — controls band on top, hole map with the aim drawn on it, then the 18-hole strip. */
+:root{
+  --paper:#eef2ec; --card:#ffffff; --ink:#173326; --muted:#5b6f63; --line:#cfd9d1;
+  --accent:#e0a800; --accent-ink:#3b2c00; --tie:#8a6bd1; --driver:#1f6b45; --wood2:#2f6fa8; --wood4:#b0612a;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32;
+  --accent:#ffc928; --accent-ink:#2a2000; --tie:#b49cf0; --driver:#5cc48d; --wood2:#6fb0e8; --wood4:#e59a62; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32;
+  --accent:#ffc928; --accent-ink:#2a2000; --tie:#b49cf0; --driver:#5cc48d; --wood2:#6fb0e8; --wood4:#e59a62; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:14px}
+h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.02em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px}
+.label{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.controls{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+@media (max-width:640px){.controls{grid-template-columns:1fr}}
+.dial{width:150px;height:150px;touch-action:none;cursor:grab;justify-self:center}
+.dial text{font-family:var(--display);font-weight:600;fill:var(--muted);font-size:13px}
+.ctl{display:grid;gap:10px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:600 14px var(--display);letter-spacing:.04em;border:1px solid var(--line);background:transparent;color:var(--ink);
+  border-radius:999px;padding:5px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--ink)}
+.windread{font-family:var(--display);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.hole{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.hole{grid-template-columns:1fr}}
+.mapbox{position:relative;border-radius:8px;overflow:hidden;background:var(--line)}
+.mapbox img{display:block;width:100%;height:auto}
+.mapbox svg{position:absolute;inset:0;width:100%;height:100%}
+.info{display:grid;gap:12px;align-content:start;min-width:0}
+.holehead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.holeno{font-family:var(--display);font-weight:700;font-size:40px;line-height:1}
+.play{font-family:var(--display);font-weight:700;font-size:46px;line-height:1;letter-spacing:.01em}
+.pill{display:inline-block;font:600 12px var(--display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 9px;border:1px solid currentColor}
+.pill.tie{color:var(--tie)} .pill.chg{color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);font-size:14px}
+th{font:600 12px var(--display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tr.best td{font-weight:600}
+.note{color:var(--muted);font-size:14px;max-width:62ch}
+.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 4px;text-align:center;cursor:pointer;color:var(--ink)}
+.chip b{display:block;font:700 18px var(--display)}
+.chip span{font:600 13px var(--display);letter-spacing:.03em}
+.chip[aria-current="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.c-Driver{color:var(--driver)} .c-2-wood{color:var(--wood2)} .c-4-wood{color:var(--wood4)} .c-iron{color:var(--muted)}
+.foot{color:var(--muted);font-size:12.5px;max-width:80ch}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Spirit Hollow Wind Caddie</h1>
+    <div class="sub">Black tees · Driver 275/300 · 2-wood 265/280 · 4-wood 255/270 · club and aim re-solved for the wind you set</div>
+  </header>
+
+  <section class="panel controls" aria-label="Wind">
+    <svg class="dial" id="dial" viewBox="-80 -80 160 160" role="slider" aria-label="Wind direction (from)" tabindex="0">
+      <circle r="70" fill="none" stroke="var(--line)" stroke-width="2"/>
+      <g id="ticks"></g>
+      <text x="0" y="-55" text-anchor="middle">N</text><text x="57" y="5" text-anchor="middle">E</text>
+      <text x="0" y="64" text-anchor="middle">S</text><text x="-57" y="5" text-anchor="middle">W</text>
+      <g id="needle"><line x1="0" y1="-62" x2="0" y2="40" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+        <polygon points="0,52 -9,34 9,34" fill="var(--ink)"/><circle cx="0" cy="-62" r="7" fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/></g>
+    </svg>
+    <div class="ctl">
+      <div class="row"><span class="label">Wind source</span>
+        <div class="seg" id="src"><button data-v="sat">Sat 10/17</button><button data-v="sun">Sun 10/18</button><button data-v="custom">Custom</button></div></div>
+      <div class="row" id="hourRow"><span class="label">Tee time</span><input type="range" id="hour" min="7" max="18" step="1"><span id="hourLbl" class="windread"></span></div>
+      <div class="row"><span class="label">Speed</span><input type="range" id="speed" min="0" max="25" step="1"><span id="speedLbl" class="windread"></span></div>
+      <div class="windread" id="windLbl"></div>
+      <div class="sub">Drag the dial to where the wind blows <b>from</b>. The yellow end of the needle points into the wind.</div>
+    </div>
+  </section>
+
+  <section class="panel hole" aria-live="polite">
+    <div class="mapbox"><img id="map" alt="Overhead view of the hole"><svg id="ov"></svg></div>
+    <div class="info">
+      <div class="holehead"><span class="holeno" id="hNo"></span><span class="label" id="hPar"></span><span id="hBadges"></span></div>
+      <div><div class="label" id="playLbl">Play</div><div class="play" id="hPlay"></div><div class="sub" id="hAim"></div></div>
+      <div id="hTable"></div>
+      <div class="note" id="hNote"></div>
+      <div class="row"><div class="seg"><button id="prev">◀ Prev</button><button id="next">Next ▶</button></div></div>
+    </div>
+  </section>
+
+  <section class="panel"><div class="label" style="margin-bottom:8px">All holes in this wind</div><div class="strip" id="strip"></div></section>
+
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const CLUBS = ["Driver","2-wood","4-wood","Long iron","Mid iron"];
+const short = c => ({"Driver":"D","2-wood":"2W","4-wood":"4W","Long iron":"LI","Mid iron":"MI"})[c] || c;
+const cls = c => (c==="Driver"||c==="2-wood"||c==="4-wood") ? "c-"+c : "c-iron";
+const st = {src:"sun", hour:12, from:180, mph:12, idx:0};
+try{ const s = JSON.parse(localStorage.getItem("shwc")||"null"); if(s) Object.assign(st, s);}catch(e){}
+const save = () => { try{ localStorage.setItem("shwc", JSON.stringify(st)); }catch(e){} };
+
+function forecastAt(src, hour){
+  const date = src==="sat" ? "2026-10-17" : "2026-10-18";
+  return D.forecast.find(r => r.date===date && r.hour===hour) || null;
+}
+function applySource(){
+  if(st.src!=="custom"){ const f = forecastAt(st.src, st.hour); if(f){ st.mph = Math.round(f.mph); st.from = f.dir ?? st.from; } }
+}
+const card = d => ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16];
+
+/* bilinear interpolation over (speed, relative direction) of every club's numbers */
+function cell(g, sp, dir){ return sp===0 ? g["0_0"] : g[sp+"_"+((dir%360+360)%360)]; }
+function solveTee(h){
+  const rel = ((st.from - h.bearing) % 360 + 360) % 360;
+  const S = D.speeds; const mph = Math.min(st.mph, S[S.length-1]);
+  let i = 0; while(i < S.length-2 && mph > S[i+1]) i++;
+  const s0 = S[i], s1 = S[i+1], ws = (mph - s0)/(s1 - s0);
+  const d0 = Math.floor(rel/30)*30, d1 = (d0+30)%360, wd = (rel - d0)/30;
+  const corners = [[s0,d0,(1-ws)*(1-wd)],[s0,d1,(1-ws)*wd],[s1,d0,ws*(1-wd)],[s1,d1,ws*wd]];
+  const out = {};
+  for(const c of Object.keys(h.grid["0_0"].clubs)){
+    const r = {ev:0,aim:0,lo:0,hi:0,total:0,carry:0,width:0,drift:0};
+    for(const [sp,dd,w] of corners){ const v = cell(h.grid, sp, dd).clubs[c];
+      r.ev+=w*v.ev; r.aim+=w*v.aim; r.lo+=w*v.zone[0]; r.hi+=w*v.zone[1]; r.total+=w*v.total; r.carry+=w*v.carry; r.width+=w*v.width; r.drift+=w*v.drift; }
+    out[c] = r;
+  }
+  const order = Object.keys(out).sort((a,b) => out[a].ev - out[b].ev);
+  let pick = order[0], aim = out[pick].aim, tie = (out[order[1]].ev - out[pick].ev) < 0.01, bayes = false;
+  if(st.mph < 1.5 && h.calm){ pick = h.calm.pick; aim = h.calm.aim; tie = h.calm.tie; bayes = true; }
+  return {rel, out, order, pick, aim, tie, bayes, margin: out[order[1]].ev - out[order[0]].ev};
+}
+function windMod(mph){ return mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3; }
+function solvePar3(h){
+  const rel = ((st.from - h.bearing) % 360 + 360) % 360;
+  const S = D.speeds; const mph = Math.min(st.mph, S[S.length-1]);
+  let i = 0; while(i < S.length-2 && mph > S[i+1]) i++;
+  const s0 = S[i], s1 = S[i+1], ws = (mph - s0)/(s1 - s0);
+  const d0 = Math.floor(rel/30)*30, d1 = (d0+30)%360, wd = (rel - d0)/30;
+  const g = (sp,dd) => sp===0 ? h.plays["0_0"] : h.plays[sp+"_"+dd];
+  const plays = (1-ws)*((1-wd)*g(s0,d0)+wd*g(s0,d1)) + ws*((1-wd)*g(s1,d0)+wd*g(s1,d1));
+  const mod = windMod(st.mph); const b = h.boxes[String(mod)];
+  return {rel, plays, mod, box:b, play: b.play * plays / h.length};
+}
+const P = (h, p) => [(p[0]-h.x0)*h.s, (p[1]-h.y0)*h.s];
+const at = (h, along, lat) => [h.tee[0]+(along*h.f[0]+lat*h.r[0])*h.ppy, h.tee[1]+(along*h.f[1]+lat*h.r[1])*h.ppy];
+function relWords(rel, mph){
+  if(mph < 1.5) return "Calm";
+  const head = Math.cos(rel*Math.PI/180)*mph, cross = Math.sin(rel*Math.PI/180)*mph;
+  const parts = [];
+  if(Math.abs(head) >= 1.5) parts.push(head > 0 ? `${head.toFixed(0)} into you` : `${(-head).toFixed(0)} behind you`);
+  if(Math.abs(cross) >= 1.5) parts.push(cross > 0 ? `${cross.toFixed(0)} right-to-left` : `${(-cross).toFixed(0)} left-to-right`);
+  return parts.join(", ") + " mph";
+}
+function windArrow(h, rel){
+  /* screen up = the hole's line; arrow shows where the wind blows TO */
+  const a = (rel + 180) * Math.PI/180, cx = h.w - 46, cy = 46, L = 26;
+  const dx = Math.sin(a)*L, dy = -Math.cos(a)*L;
+  return `<g opacity=".95"><circle cx="${cx}" cy="${cy}" r="34" fill="rgba(10,20,15,.55)"/>
+    <line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx}" y2="${cy+dy}" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="${cx+dx}" cy="${cy+dy}" r="6" fill="#ffc928"/>
+    <text x="${cx}" y="${cy+52}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="15" text-anchor="middle" stroke="rgba(0,0,0,.6)" stroke-width="3" paint-order="stroke">${st.mph} mph</text></g>`;
+}
+function render(){
+  applySource();
+  const h = D.holes[st.idx];
+  document.getElementById("map").src = h.img;
+  const ov = document.getElementById("ov"); ov.setAttribute("viewBox", `0 0 ${h.w} ${h.h}`);
+  document.getElementById("hNo").textContent = "Hole " + h.label;
+  document.getElementById("hPar").textContent = `Par ${h.par} · ${Math.round(h.length)} yds`;
+  const badges = [];
+  if(h.kind === "tee"){
+    const r = solveTee(h), best = r.out[r.pick];
+    const star = P(h, at(h, best.total, r.aim));
+    const zl = P(h, at(h, best.total, best.lo)), zh = P(h, at(h, best.total, best.hi));
+    const land = P(h, at(h, best.total, r.aim + best.drift));
+    const rx = best.width/2*h.ppy*h.s, ry = best.width*0.22*h.ppy*h.s;
+    const ang = Math.atan2(h.f[0], -h.f[1]) * 180/Math.PI;
+    ov.innerHTML = `
+      <ellipse cx="${land[0]}" cy="${land[1]}" rx="${rx}" ry="${ry}" transform="rotate(${ang} ${land[0]} ${land[1]})" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>
+      <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="9" stroke-linecap="round" opacity=".8"/>
+      ${Math.abs(best.drift) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
+      <polygon points="${starPts(star[0], star[1], 15, 6.5)}" fill="#ffc928" stroke="#1a1a1a" stroke-width="1.6"/>
+      ${windArrow(h, r.rel)}`;
+    document.getElementById("playLbl").textContent = "Play";
+    const pe = document.getElementById("hPlay"); pe.textContent = r.pick; pe.className = "play " + cls(r.pick);
+    const calm = solveTeeCalm(h);
+    if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
+    if(calm !== r.pick) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
+    document.getElementById("hAim").innerHTML = `Aim at the star${Math.abs(best.drift) > 2 ? `; the wind carries it ${Math.abs(best.drift).toFixed(0)} yds ${best.drift < 0 ? "left" : "right"} to the dashed spot` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 128-world Bayesian run." : ""}`;
+    const rows = r.order.map(c => { const v = r.out[c]; return `<tr class="${c===r.pick?"best":""}"><td class="${cls(c)}">${c}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.order[0]?"—":"+"+(v.ev - r.out[r.order[0]].ev).toFixed(3)}</td></tr>`;}).join("");
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    let note = h.note || "";
+    if(h.calm && h.calm.flips && h.calm.flips.length) note += ` Calm day: switches ${h.calm.flips.map(f => `${f.frm}→${f.to} if your pattern is wider than ${Math.round(f.width)} yds`).join("; ")}.`;
+    document.getElementById("hNote").textContent = note;
+  } else {
+    const r = solvePar3(h);
+    const g = h.green.map(p => P(h, p).join(",")).join(" ");
+    const bp = r.box.poly.map(p => P(h, p).join(",")).join(" ");
+    ov.innerHTML = `<polygon points="${g}" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <polygon points="${bp}" fill="rgba(37,208,255,.5)" stroke="#25d0ff" stroke-width="2.5"/>${windArrow(h, r.rel)}`;
+    document.getElementById("playLbl").textContent = "Play it like";
+    const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
+    if(Math.abs(r.play - r.box.play) >= 3) badges.push(`<span class="pill chg">${Math.round(r.box.play)} on the card</span>`);
+    document.getElementById("hAim").textContent = `Land it in the blue box. ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${h.front}</td><td>${Math.round(h.length)}</td><td>${h.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
+    document.getElementById("hNote").textContent = h.note || "";
+  }
+  document.getElementById("hBadges").innerHTML = badges.join(" ");
+  renderStrip(); renderControls(); save();
+}
+function solveTeeCalm(h){ if(h.calm) return h.calm.pick; const g = h.grid["0_0"].clubs; return Object.keys(g).sort((a,b) => g[a].ev - g[b].ev)[0]; }
+function starPts(cx, cy, R, r){ const p = []; for(let i = 0; i < 10; i++){ const a = -Math.PI/2 + i*Math.PI/5, rr = i%2 ? r : R; p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1)); } return p.join(" "); }
+function renderStrip(){
+  const el = document.getElementById("strip");
+  el.innerHTML = D.holes.map((h,i) => {
+    let txt, c = "";
+    if(h.kind==="tee"){ const r = solveTee(h); txt = short(r.pick) + (r.tie ? "≈" : ""); c = cls(r.pick); }
+    else { txt = Math.round(solvePar3(h).play); }
+    return `<button class="chip" data-i="${i}" aria-current="${i===st.idx}"><b>${h.label.replace(" tee","")}</b><span class="${c}">${txt}</span></button>`;
+  }).join("");
+}
+function renderControls(){
+  document.querySelectorAll("#src button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v===st.src));
+  document.getElementById("hourRow").hidden = st.src === "custom";
+  document.getElementById("hour").value = st.hour;
+  document.getElementById("hourLbl").textContent = (st.hour > 12 ? st.hour - 12 : st.hour) + (st.hour >= 12 ? " pm" : " am");
+  document.getElementById("speed").value = st.mph;
+  document.getElementById("speedLbl").textContent = st.mph + " mph";
+  document.getElementById("needle").setAttribute("transform", `rotate(${st.from + 180})`);
+  const f = st.src !== "custom" ? forecastAt(st.src, st.hour) : null;
+  document.getElementById("windLbl").textContent = st.mph < 1.5 ? "Calm" :
+    `From the ${card(st.from)} (${Math.round(st.from)}°) at ${st.mph} mph` + (f ? ` · gusts ${Math.round(f.gust)} · ${Math.round(f.temp)}°F` : "");
+}
+/* controls */
+document.getElementById("ticks").innerHTML = Array.from({length:16}, (_,i) => { const a = i*22.5*Math.PI/180, r0 = i%4 ? 66 : 62;
+  return `<line x1="${Math.sin(a)*r0}" y1="${-Math.cos(a)*r0}" x2="${Math.sin(a)*70}" y2="${-Math.cos(a)*70}" stroke="var(--muted)" stroke-width="1.5"/>`; }).join("");
+const dial = document.getElementById("dial");
+function dialSet(ev){ const r = dial.getBoundingClientRect(); const x = ev.clientX - (r.left + r.width/2), y = ev.clientY - (r.top + r.height/2);
+  /* the yellow end points INTO the wind, i.e. toward where it comes from */
+  st.from = Math.round(((Math.atan2(x, -y)*180/Math.PI) + 360) % 360 / 5) * 5; st.src = "custom"; render(); }
+let drag = false;
+dial.addEventListener("pointerdown", e => { drag = true; dial.setPointerCapture(e.pointerId); dialSet(e); });
+dial.addEventListener("pointermove", e => { if(drag) dialSet(e); });
+dial.addEventListener("pointerup", () => drag = false);
+dial.addEventListener("keydown", e => { if(e.key==="ArrowRight"||e.key==="ArrowUp"){ st.from = (st.from+15)%360; st.src="custom"; render(); e.preventDefault(); }
+  if(e.key==="ArrowLeft"||e.key==="ArrowDown"){ st.from = (st.from+345)%360; st.src="custom"; render(); e.preventDefault(); } });
+document.getElementById("speed").addEventListener("input", e => { st.mph = +e.target.value; st.src = "custom"; render(); });
+document.getElementById("hour").addEventListener("input", e => { st.hour = +e.target.value; render(); });
+document.querySelectorAll("#src button").forEach(b => b.addEventListener("click", () => { st.src = b.dataset.v; render(); }));
+document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest(".chip"); if(b){ st.idx = +b.dataset.i; render(); } });
+document.getElementById("prev").addEventListener("click", () => { st.idx = (st.idx + D.holes.length - 1) % D.holes.length; render(); });
+document.getElementById("next").addEventListener("click", () => { st.idx = (st.idx + 1) % D.holes.length; render(); });
+document.getElementById("foot").textContent = `Forecast: Open-Meteo, fetched ${D.fetched.slice(0,16).replace("T"," ")} UTC (cross-checked with NWS). Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Each hole's map has the GPS app's markings removed; hole 3 is not mapped. Club picks in wind use the model at its central settings (driver pattern 70 yds); the calm-day pick comes from the full Bayesian run. "≈" marks a tie (within 0.01 strokes).`;
+render();
+</script>
