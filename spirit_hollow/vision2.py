@@ -97,12 +97,12 @@ def save_hole(path, d):
     open(os.path.join(path, "done"), "w").close()
 
 
-def regions(hole, d):
-    """SAM regions if available for this photo (filled to cover unassigned ground with
-    SLIC), else SLIC superpixels; cached. Returns (seg, source)."""
+def regions(hole, d, src):
+    """src='sam': SAM regions (gaps split into SLIC cells so every ground pixel has a
+    region); src='slic': SLIC superpixels. Returns (seg, src)."""
     stem = os.path.splitext(course.HOLES[hole]["image"])[0]
     sam = os.path.join(SAM_DIR, stem + ".npz")
-    if REGION_SRC == "sam":
+    if src == "sam":
         r = np.load(sam)["regions"].astype(np.int32)
         r[d["msmall"]] = -1
         # SAM leaves gaps; split them into SLIC cells so every ground pixel has a region
@@ -131,6 +131,8 @@ def sam_available():
 
 
 REGION_SRC = "sam" if sam_available() else "slic"
+REGION = {"d": REGION_SRC, "dslic": "slic"}          # region classifiers -> region source
+POOL = {"cpool": REGION_SRC, "cpool_slic": "slic"}   # (c) probabilities pooled per region
 
 
 def feats(d, kind):
@@ -213,10 +215,10 @@ def pixel_predict(method, clf, d):
     return smooth(P)
 
 
-def region_table(hole, d):
+def region_table(hole, d, src):
     """Region features (mean/std of method-c features + log size) and pure labels."""
-    seg, _ = regions(hole, d)
-    path = os.path.join(CACHE, f"rfeat_{REGION_SRC}_{hole}.npz")
+    seg, _ = regions(hole, d, src)
+    path = os.path.join(CACHE, f"rfeat_{src}_{hole}.npz")
     if os.path.exists(path):
         z = np.load(path)
         return seg, z["RF"], z["rl"]
@@ -227,16 +229,16 @@ def region_table(hole, d):
     return seg, RF, rl
 
 
-def region_train(holes, data, seed=0):
+def region_train(holes, data, src, seed=0):
     X, y = [], []
     for k in holes:
-        _, RF, rl = region_table(k, data[k])
+        _, RF, rl = region_table(k, data[k], src)
         X.append(RF[rl >= 0]); y.append(rl[rl >= 0])
     return fit_hgb(np.concatenate(X), np.concatenate(y), seed)
 
 
-def region_predict(clf, hole, d):
-    seg, RF, _ = region_table(hole, d)
+def region_predict(clf, hole, d, src):
+    seg, RF, _ = region_table(hole, d, src)
     Pr = proba(clf, RF)
     P = Pr[np.maximum(seg, 0)]
     P[seg < 0] = np.eye(NC)[CLASSES.index("rough")]
@@ -271,11 +273,11 @@ def loho(method, data):
         train = [k for k in HOLES if k != h]
         if method in PIXEL:
             P = pixel_predict(method, pixel_train(method, train, data), data[h])
-        elif method == "cpool":
-            seg, _ = regions(h, data[h])
+        elif method in POOL:
+            seg, _ = regions(h, data[h], POOL[method])
             P = pool(loho_single("c", h, data), seg)
-        elif method == "d":
-            P = region_predict(region_train(train, data), h, data[h])
+        elif method in REGION:
+            P = region_predict(region_train(train, data, REGION[method]), h, data[h], REGION[method])
         else:
             raise ValueError(method)
         np.save(p, P.astype(np.float16))
@@ -310,15 +312,15 @@ def inner_oof(method, h, data):
         rest = [k for k in train if k not in fold]
         if method in PIXEL:
             clf = pixel_train(method, rest, data)
-        elif method == "d":
-            clf = region_train(rest, data)
+        elif method in REGION:
+            clf = region_train(rest, data, REGION[method])
         for k in fold:
             if method in PIXEL:
                 P = pixel_predict(method, clf, data[k])
-            elif method == "d":
-                P = region_predict(clf, k, data[k])
-            elif method == "cpool":
-                raise ValueError
+            elif method in REGION:
+                P = region_predict(clf, k, data[k], REGION[method])
+            else:
+                raise ValueError(method)
             ii = sample_idx(data[k]["lab"], N_CAL, 1000 + HOLES.index(k))
             Ps.append(P.reshape(-1, NC)[ii]); ys.append(data[k]["lab"].ravel()[ii])
     P, y = np.concatenate(Ps), np.concatenate(ys)
@@ -441,8 +443,10 @@ DESC = {
     "a": "(a) DINOv2 linear probe (std. multinomial logreg)",
     "b": "(b) DINOv2 + handcrafted, HGB",
     "c": "(c) handcrafted + photo-relative DINOv2 (fairway-corridor median subtracted), HGB",
-    "cpool": "(c) probabilities mean-pooled per region",
-    "d": "(d) region classifier (mean/std per region, HGB)",
+    "cpool": f"(c) probabilities mean-pooled per {REGION_SRC.upper()} region",
+    "cpool_slic": "(c) probabilities mean-pooled per SLIC superpixel",
+    "d": f"(d) region classifier on {REGION_SRC.upper()} regions (mean/std per region, HGB)",
+    "dslic": "(d') region classifier on SLIC superpixels (mean/std per region, HGB)",
 }
 
 
@@ -537,7 +541,7 @@ def score_key(r):
 
 def run_all(data):
     results, maps = {}, {}
-    for m in ["hand", "a", "b", "c", "d", "cpool"]:
+    for m in ["hand", "a", "b", "c", "d", "dslic", "cpool", "cpool_slic"]:
         print("method", m, flush=True)
         maps[m] = loho(m, data)
         results[m] = evaluate(maps[m], data, DESC[m])
@@ -545,7 +549,7 @@ def run_all(data):
         print(f"  -> LZ {r['lz']['acc6']:.1%} / {r['lz']['pp']:.1%}  hole {r['all']['acc6']:.1%} / "
               f"{r['all']['pp']:.1%}", flush=True)
     # (e) calibration of the two best base methods that support inner refits, then ensemble
-    calib_ok = [m for m in ["hand", "a", "b", "c", "d"]]
+    calib_ok = ["hand", "a", "b", "c", "d", "dslic"]      # pooled maps have no inner refit
     top2 = sorted(calib_ok, key=lambda m: score_key(results[m]), reverse=True)[:2]
     for m in top2:
         for how in ("temp", "iso"):
@@ -585,9 +589,9 @@ def final_fit(best, top2, data):
         base = m
         if base in PIXEL:
             models[m] = pixel_train(base, HOLES, data)
-        elif base == "d":
-            models[m] = region_train(HOLES, data)
-        elif base == "cpool":
+        elif base in REGION:
+            models[m] = region_train(HOLES, data, REGION[base])
+        elif base in POOL:
             models[m] = pixel_train("c", HOLES, data)
     cal = {}
     if how:                    # calibration from all-holes inner folds (pool every hole's OOF)
@@ -604,10 +608,10 @@ def final_fit(best, top2, data):
         for m in parts:
             if m in PIXEL:
                 P = pixel_predict(m, models[m], data[h])
-            elif m == "d":
-                P = region_predict(models[m], h, data[h])
-            elif m == "cpool":
-                P = pool(pixel_predict("c", models[m], data[h]), regions(h, data[h])[0])
+            elif m in REGION:
+                P = region_predict(models[m], h, data[h], REGION[m])
+            elif m in POOL:
+                P = pool(pixel_predict("c", models[m], data[h]), regions(h, data[h], POOL[m])[0])
             if how == "temp":
                 P = apply_temperature(P, cal[m])
             elif how == "iso":

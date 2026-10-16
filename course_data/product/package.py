@@ -394,6 +394,7 @@ def write_module(C, path, notes=None, aim_at=None):
 
 def import_module(path, name="plan_course"):
     import importlib.util
+    sys.dont_write_bytecode = True               # keep __pycache__ out of the output folder
     spec = importlib.util.spec_from_file_location(name, path)
     mod = importlib.util.module_from_spec(spec)
     sys.modules[name] = mod

@@ -464,7 +464,8 @@ def load_tee_positions(slug, cdir):
     return None, None
 
 
-def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, quiet=False, tee_stage=True):
+def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, quiet=False, tee_stage=True,
+                 vision=True):
     """Run S1-S6 offline. Returns the course model dict (holes.json) without writing it."""
     del LOG[:]
     slug, d, meta = resolve(course)
@@ -503,6 +504,21 @@ def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, 
     stages["geometry"] = how
     holes_osm = build_holes(fc, tee_set, lens or None, [], tees)[0] if extra else None
     say(f"[S3] holes: {len(holes)} via {how}")
+
+    # S4 any-course gap-fill (vision_any: lidar trees, NAIP long grass, creek corridors), when present
+    ga = load_module(os.path.join(HERE, "vision_any", "gapfill.py"), "cd_vision_any_gapfill") if vision else None
+    if ga is not None and hasattr(ga, "gapfill_holes"):
+        try:
+            import copy
+            before = copy.deepcopy(holes)
+            g = ga.gapfill_holes(dict(holes=holes, slug=slug, course=meta or {}), slug=slug)
+            holes = {str(k): v for k, v in g["holes"].items()}
+            holes_osm = holes_osm or before
+            stages["vision"] = "ok: vision_any/gapfill.py:gapfill_holes" + (
+                "; " + stages["vision"] if extra else "")
+            say(f"[S4] vision_any gap-fill: {stages['vision']}")
+        except Exception as e:                                 # noqa: BLE001
+            say(f"  ! vision_any gapfill failed: {type(e).__name__}: {str(e)[:200]}")
 
     props = {}
     for f in fc["features"]:
@@ -588,10 +604,11 @@ def main():
     ap.add_argument("--tees", default="white", help="tee set name on the scorecard (white, blue, ...)")
     ap.add_argument("--lengths", help="override yardages, e.g. 1=413,2=609 (picks the tee boxes)")
     ap.add_argument("--no-images", action="store_true")
+    ap.add_argument("--no-vision", action="store_true", help="skip the vision_any gap-fill (OSM zones only)")
     ap.add_argument("--book", action="store_true", help="also build the strategy PDF (needs images)")
     a = ap.parse_args()
     lengths = {k: float(v) for k, v in (kv.split("=") for kv in a.lengths.split(","))} if a.lengths else None
-    model = build_course(a.course, a.tees, lengths, render=not a.no_images)
+    model = build_course(a.course, a.tees, lengths, render=not a.no_images, vision=not a.no_vision)
     slug, cdir, _ = resolve(a.course)
     write_outputs(model, cdir, a.course)
     if a.book:

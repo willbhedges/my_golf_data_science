@@ -31,7 +31,12 @@ def _words(s):
              .replace("Aims are yards left/right of the GPS app's tee line.",
                       "Aims are yards left/right of the tee line (tee to the hole line's first turn).")
              .replace("best club in ?% of what-if worlds", "not computed (quick mode)")
-             .replace("100 'what if my inputs are off' scenarios", "the Bayesian prior's what-if worlds"))
+             .replace("100 'what if my inputs are off' scenarios", "the Bayesian prior's what-if worlds")
+             .replace("Green (app):", "Green (map):").replace("the green as traced", "the green as mapped")
+             .replace("20,000 simulated tee shots per club", SIM_WORDS[0]))
+
+
+SIM_WORDS = ["8,000 simulated tee shots per club and aim"]
 
 
 def _text_block_hook(fig, x, y, lines, *a, **k):
@@ -58,6 +63,9 @@ def stats_report(results, labels, path):
 
 def build(mod, out_dir, prefix, results, log=print):
     """Write <out>/<prefix>_Strategy.pdf and <prefix>_Aim_Sheets.pdf. Images in <out>/screenshots/."""
+    r0 = next(iter(results.values()))
+    SIM_WORDS[0] = (f"{r0.get('n', 8000):,} simulated tee shots per club and aim (quick mode)" if r0.get("mode") == "quick"
+                    else f"{r0.get('S')} prior draws x {r0.get('N'):,} simulated tee shots per club and aim")
     yb.use_course(mod.NAME, out_dir, prefix, mod.HOLES, mod.PAR3, mod.NOTES, mod.AIM_AT, mod.ORDER, mod.LABELS)
     decide.bind(mod.HOLES)
     decide.set_prior_means()                    # the drawn 95% pattern = the one the decision used

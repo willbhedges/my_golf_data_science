@@ -114,7 +114,9 @@ def strategy_impact(T, polys_by_lie, keys=None, n=6000, seed=11):
     for k in keys or T.keys:
         h = T.HOLES[k]
         hv = dict(h)
-        keep = [(nm, p) for nm, p in h["zones"] if nm not in ("recovery", "native")]
+        # hand zones kept: fairway / first_cut / water / sand / ob. Dropped: recovery, native and the hand
+        # "rough" overrides (AUDIT_FIXES), which exist only to cancel hand-drawn trees / native.
+        keep = [(nm, p) for nm, p in h["zones"] if nm not in ("recovery", "native", "rough")]
         vz = vision_zones_px(T, k, polys_by_lie)
         # order: native < recovery under everything traced (fairway, water, sand, ob drawn on top)
         vz.sort(key=lambda zz: 0 if zz[0] == "native" else 1)
