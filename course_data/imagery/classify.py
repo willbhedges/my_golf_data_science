@@ -17,9 +17,11 @@ Pipeline
      held-out one). Note: screenshot footprints overlap, so neighbouring holes share some ground; the
      LOHO number is optimistic by that overlap.
   5. Predict the whole grid; write
-       classes.tif / classes.png   per-pixel class (+ probabilities of trees/native/water as p_*.tif)
+       classes.tif / classes.png   per-pixel class; p_hazards.tif = p(trees), p(native), p(water) x 20
        gapfill.geojson             WGS84 polygons of trees (lie 'recovery'), native, water with mean p,
-                                   min 150 yd2, p >= 0.7, simplified to ~2 yds (ARCHITECTURE.md 3.6 rules)
+                                   min 150 yd2, simplified to ~2 yds (ARCHITECTURE.md 3.6). Pixels need
+                                   p >= 0.5 (ExtraTrees votes are under-confident; at 0.7 most woods
+                                   drop out); each polygon carries its mean p, so filter p >= 0.7 if wanted
        naip_trees.geojson          the recovery polygons only (course_data/geometry/build_holes.py --trees)
        gapfill_loho/<k>.geojson    the same polygons over hole k's footprint from the model that did not
                                    see hole k (ARCHITECTURE.md 7, circularity rule (a))
@@ -203,11 +205,11 @@ def scores(pred, truth, mask):
     return out
 
 
-def polygons(G, prob, cls_map, c, p_min=0.7, min_yd2=150, simplify_yd=2.0):
+def polygons(G, prob, cls_map, c, p_min=0.5, min_yd2=150, simplify_yd=2.0):
     """Class c regions with p >= p_min -> WGS84 polygons (via the grid CRS)."""
     from pyproj import Transformer
+    import shapely
     from shapely.geometry import Polygon, mapping
-    from shapely.ops import transform as stransform
     m = ((cls_map == c) & (prob >= p_min)).astype(np.uint8)
     m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
     m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
@@ -241,7 +243,7 @@ def polygons(G, prob, cls_map, c, p_min=0.7, min_yd2=150, simplify_yd=2.0):
         mm = np.zeros_like(m)
         cv2.drawContours(mm, [cnt], -1, 1, -1)
         pm = float(prob[mm > 0].mean())
-        g = stransform(lambda x, y: to_ll.transform(x, y), poly)
+        g = shapely.transform(poly, lambda xy: np.c_[to_ll.transform(xy[:, 0], xy[:, 1])])
         feats.append(dict(type="Feature", geometry=mapping(g),
                           properties=dict(lie=LIE_OF[CLASSES[c]], cls=CLASSES[c], p=round(pm, 3),
                                           area_yd2=round(poly.area / YD ** 2))))
@@ -349,8 +351,8 @@ def main():
         dst.update_tags(classes=",".join(CLASSES))
     with rasterio.open(os.path.join(IMG_DIR, "p_hazards.tif"), "w", count=3, dtype="uint8", **prof) as dst:
         for i, c in enumerate(("trees", "native", "water")):
-            dst.write((P[..., CLASSES.index(c)] * 255).astype(np.uint8), i + 1)
-        dst.update_tags(bands="p_trees,p_native,p_water (x255)")
+            dst.write(np.round(P[..., CLASSES.index(c)] * 20).astype(np.uint8), i + 1)
+        dst.update_tags(bands="p_trees,p_native,p_water in 0.05 steps (value / 20)")
     pal = np.array([[60, 170, 60], [150, 200, 110], [20, 80, 20], [210, 180, 110], [40, 90, 220],
                     [245, 235, 190]], np.uint8)
     from PIL import Image
