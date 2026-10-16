@@ -280,7 +280,6 @@ AUDIT_FIXES = {
                    (470, 1300), (467, 1000)]),                 # 9-15 yds of rough before the tan, right
         ("rough", [(335, 860), (372, 860), (370, 1000), (373, 1300), (383, 1500), (345, 1500),
                    (335, 1300), (330, 1000)])],                # ...and left
-    5: [("sand", [(478, 843), (549, 843), (549, 925), (478, 925)])],   # right bunker ~2x the trace
     13: [("sand", [(377, 870), (395, 870), (395, 894), (377, 894)]),   # second pot bunker
          ("sand", [(358, 896), (382, 896), (382, 922), (358, 922)]),
          ("sand", [(402, 798), (418, 798), (418, 822), (402, 822)])],  # small third bunker ~314 out
@@ -307,8 +306,8 @@ AUDIT_FIXES = {
            ("recovery", [(300, 1060), (335, 1060), (340, 1180), (300, 1180)]),
            ("recovery", [(425, 1060), (470, 1062), (472, 1098), (430, 1098)])],
     8: [("rough", [(245, 650), (325, 650), (330, 700), (340, 900), (333, 975), (330, 975), (310, 900),
-                   (278, 800), (250, 700)]),                   # long grass ends 10-19 yds further left
-        ("fairway", [(480, 805), (520, 805), (520, 835), (480, 835)])],  # L-shaped bunker: grass block
+                   (278, 800), (250, 700)])],                  # long grass ends 10-19 yds further left
+        # (the right bunker's traced box is replaced by its OSM outline in _apply_landing_qa)
     "9F": [("rough", [(560, 790), (620, 790), (620, 890), (560, 890)]),  # trees were drawn on grass
            ("rough", [(598, 760), (670, 760), (670, 890), (598, 890)]),  # ...and so was the creek strip
            ("recovery", [(495, 885), (560, 878), (600, 890), (600, 990), (505, 1000), (495, 960)]),
@@ -336,8 +335,8 @@ AUDIT_FIXES = {
         ("recovery", [(340, 1590), (395, 1600), (400, 1690), (345, 1690)]),
         ("recovery", [(640, 1100), (760, 1100), (760, 1500), (730, 1470), (700, 1470), (660, 1440),
                       (650, 1340), (680, 1300), (660, 1200)])],  # right trees past the cart path
-    5: [("sand", [(400, 1185), (440, 1185), (440, 1255), (400, 1255)])],  # middle left bunker
-    8: [("native", [(565, 820), (605, 820), (615, 850), (625, 900), (640, 960), (615, 965), (585, 915),
+    "5b": [("sand", [(400, 1185), (440, 1185), (440, 1255), (400, 1255)])],  # middle left bunker
+    "8b": [("native", [(565, 820), (605, 820), (615, 850), (625, 900), (640, 960), (615, 965), (585, 915),
                     (570, 870)]),                              # long grass right, 250-290 out
         ("recovery", [(615, 850), (622, 870), (652, 930), (668, 960), (640, 960), (625, 900)])],
     "9B": [("recovery", [(472, 790), (480, 775), (560, 770), (590, 790), (590, 870), (480, 880),
@@ -346,8 +345,48 @@ AUDIT_FIXES = {
     10: [("native", [(398, 850), (440, 850), (432, 1000), (426, 1100), (420, 1250),
                      (412, 1250), (400, 1100)])],              # above 850 the bank is left, on the creek                           # tan creek bank left (was first cut)
 }
+# (5's old "right bunker ~2x the trace" box was superseded by the OSM bunker outline, landing QA)
+# keys like "8b" are later additions for the same hole (a dict literal silently keeps only the last
+# duplicate key, which once dropped the first 5 and 8 fixes)
 for _k, _extra in AUDIT_FIXES.items():
-    HOLES[_k]["zones"] = HOLES[_k]["zones"] + _extra
+    _h = _k if _k in HOLES else (int(_k[:-1]) if str(_k)[:-1].isdigit() else _k)
+    HOLES[_h]["zones"] = HOLES[_h]["zones"] + _extra
+
+
+def _apply_landing_qa():
+    """Landing-zone evidence check (spirit_hollow/qa_landing/: screenshot vs NAIP 2023 vs USGS lidar
+    vs the vision2 classifier vs OSM), every finding reviewed by eye. Sand boxes on 5, 8 and 13 are
+    replaced in place by the OSM outlines; the other 'map wrong' patches are appended. Skipped:
+    '8-long-grass-left' (it restores an older fix that is already back in AUDIT_FIXES)."""
+    import importlib.util
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qa_landing", "proposed_patches.py")
+    if not os.path.exists(path):
+        return []
+    spec = importlib.util.spec_from_file_location("_qa_patches", path)
+    P = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(P)
+    sand = {"13-pot-bunkers-left", "5-right-bunker-300", "8-right-bunker-280"}
+    skip = {"8-long-grass-left"} | sand
+    for h, pairs in P.REPLACE.items():
+        z = HOLES[h]["zones"]
+        for old, new in pairs:
+            hit = [i for i, (_, poly) in enumerate(z) if len(poly) == len(old)
+                   and np.allclose(np.asarray(poly, float), np.asarray(old, float))]
+            if not hit:
+                continue
+            if new is None:
+                z.pop(hit[0])
+            else:
+                z[hit[0]] = new
+    applied = []
+    for fid, f in P.PROPOSED.items():
+        if f["verdict"] == "map wrong" and f["patches"] and fid not in skip:
+            HOLES[f["hole"]]["zones"] = HOLES[f["hole"]]["zones"] + list(f["patches"])
+            applied.append(fid)
+    return applied
+
+
+LANDING_QA = _apply_landing_qa()
 
 
 # ---- Fairway width from OpenStreetMap -------------------------------------------------------
