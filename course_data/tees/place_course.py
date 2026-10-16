@@ -12,7 +12,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from place_tee import Frame, LineOfPlay, assign_tees_to_holes, place_tee_sets  # noqa: E402
+from place_tee import Frame, LineOfPlay, assign_tees_to_holes, place_tee, place_tee_sets  # noqa: E402
+
+BORROW_TOL_YD = 10.0
 
 
 def load_osm(path):
@@ -48,6 +50,15 @@ def main():
             continue
         yds = {n: s["yards"][h - 1] for n, s in sets.items() if s["yards"][h - 1]}
         placed = place_tee_sets(holes[h]["line"], by_hole[h], yds)
+        # Neighbouring holes often share a tee complex. If this hole's own boxes don't fit a set,
+        # borrow another hole's box, but only on a tight match (<= BORROW_TOL_YD).
+        for n, r in list(placed.items()):
+            if r["error_yd"] is None or r["error_yd"] > BORROW_TOL_YD or r["method"] == "walkback":
+                alt = place_tee(holes[h]["line"], tees, yds[n])
+                if alt["method"] != "walkback" and alt["error_yd"] <= BORROW_TOL_YD:
+                    alt["borrowed"] = True
+                    alt["shared_with"] = []
+                    placed[n] = alt
         fr = Frame(*holes[h]["line"][0])
         L = LineOfPlay([fr.fwd(*p) for p in holes[h]["line"]]).length
         res[str(h)] = dict(osm_par=holes[h]["par"], card_par=card["par"][h - 1], osm_line_yd=round(L, 1),
@@ -57,6 +68,7 @@ def main():
         for n, r in placed.items():
             tag = {"tee_centroid": "C", "tee_axis": "A", "walkback": "W"}[r["method"]]
             err = "" if r["error_yd"] in (None, 0) else f"+{r['error_yd']:.0f}"
+            tag += "*" if r.get("borrowed") else ""
             cells.append(f"{yds[n]:>4}{tag}{(str(r['tee_id'])[-5:] if r['tee_id'] else '-'):>6}{err:>4}")
         print(f"{h:>4} {L:>5.0f} " + " ".join(f"{c:>16}" for c in cells))
     Path(out).write_text(json.dumps(dict(source_osm=str(Path(osm).name), scorecard=str(Path(card_path).name),
@@ -65,6 +77,8 @@ def main():
                                                      walkback="no box matched: walked back from the green "
                                                               "along the hole line"),
                                          holes=res), indent=1))
+    print("C = middle of an OSM tee box, A = on a box at the card yardage, W = walked back along the "
+          "hole line (no box); * = box borrowed from a neighbouring hole; +n = yds outside the box")
     print("wrote", out)
 
 

@@ -30,6 +30,7 @@ Algorithm (place_tee)
   4. The returned point is the centroid if the yardage is within `centre_tol_yd` of the
      centroid's distance; otherwise the point on the tee's axis (the line through the centroid
      parallel to the first leg) at exactly the yardage, clamped to the tee's extent.
+  Confidence: high if the yardage is within 5 yds of a box's extent, medium within 15, else low.
   5. No acceptable tee polygon -> walk back from the green along the line by the yardage
      (extending the first leg backwards if the yardage is longer than the line). method="walkback".
 
@@ -224,13 +225,14 @@ def place_tee(line: Sequence[tuple[float, float]], tees: Iterable[dict], yardage
             p = _point_on_axis(lop, b["centroid_xy"], yardage, b["d_front"], b["d_back"])
             method = "tee_axis"
         lat, lon = fr.inv(*p)
-        return dict(lat=lat, lon=lon, method=method, tee_id=b["tee_id"],
+        conf = "high" if b["error_yd"] <= 5 else "medium" if b["error_yd"] <= 15 else "low"
+        return dict(lat=lat, lon=lon, method=method, tee_id=b["tee_id"], confidence=conf,
                     error_yd=round(b["error_yd"], 1), dist_yd=round(lop.dist_to_green(p), 1),
                     d_centroid=round(b["d_centroid"], 1), d_front=round(b["d_front"], 1),
                     d_back=round(b["d_back"], 1), candidates=summary)
     p = lop.point_at_distance(yardage)
     lat, lon = fr.inv(*p)
-    return dict(lat=lat, lon=lon, method="walkback", tee_id=None,
+    return dict(lat=lat, lon=lon, method="walkback", tee_id=None, confidence="low",
                 error_yd=None if not cands else round(cands[0]["error_yd"], 1),
                 dist_yd=round(yardage, 1), d_centroid=None, d_front=None, d_back=None,
                 line_length_yd=round(lop.length, 1), candidates=summary)
