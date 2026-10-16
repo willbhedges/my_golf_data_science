@@ -270,6 +270,12 @@ Compares an auto build of Spirit Hollow with the hand-reviewed `spirit_hollow/co
   and the club pick: `t.best_aim` for Driver, 2-wood and 4-wood on both maps, same club or not.
 * Bar (proposed): tee and green within 10 yds, length within 5 yds, landing-zone IoU > 0.6 for water,
   OB and trees (classes present on the hole in either map), same club on >= 80% of the 16 tee shots.
+* **Circularity rules.** (a) `imagery/classify.py` trains on the hand-traced zones, so for acceptance the
+  gap-fill on hole k must come from the leave-one-hole-out model that did not see hole k
+  (`gapfill_loho/<k>.geojson` or a `holdout` property); the product build uses the all-holes model.
+  (b) Since bdd4aa1, `spirit_hollow/course.py` narrows its fairways to OSM's mown width at 200-340 yds
+  (`first_cut`), so fairway IoU against OSM is partly circular; read it as a sanity check only. Water,
+  OB, trees and the club pick remain independent.
 * Hole keys: traced `2B`/`2F`/`9B`/`9F` are matched to auto holes 2/9 built with the traced length as the
   card yardage (that picks the same box), so one auto build covers both tees.
 
@@ -321,3 +327,132 @@ and writes `course_data/spirit_hollow/{holes.json, course_auto.py, qa.md, screen
 5. Acceptance needs NAIP registration of all 16 traced holes (11 now) to retire the raster-fit fallback,
    whose rotation is poorly constrained on dog-legs (13: 84-yd green error).
 
+---
+
+## 9. Any-course product (v2): teams and contracts
+
+The Spirit Hollow pipeline (sections 1-8) becomes a product for **any US course**: "Spirit Hollow, IA,
+Black tees" -> a course **package** -> a PDF book + wind page. The package is the one hand-off between
+data and product; every other team reads or augments it.
+
+```
+ request file ----> platform/ (course_package.yml) ----> package.json (WGS84, all tee sets)
+ (course, state,       OSM + scorecard + tees + geometry          |
+  tee set)                                                         v
+                     vision_any/ gapfill(package, imagery_dir) -> package.json (+ vision zones)
+                                                                   |
+                     product/ plan.py (plan_course.yml) ---------> <slug>/output/*_Strategy.pdf, wind page
+                                                                   |
+                     qa/ contract tests, Spirit Hollow golden, visual review -> qa/REPORT.md
+```
+
+| Folder | Owner | Provides (interface) | Reads |
+|---|---|---|---|
+| `course_data/platform/` | data platform | `package.json` (9.2) via `course_package.yml`; Python: `build_package(name, state, tee_sets=None) -> dict` | OSM, scorecards (Actions), `geometry/`, `tees/` |
+| `course_data/vision_any/` | hazard vision | `gapfill(package: dict, imagery_dir: str) -> dict` (9.3): the same package with vision zones added | package, NAIP, USGS 3DEP lidar (HAG) |
+| `course_data/product/` | product | `plan.py --package <path> --tees Black [--wind auto]` -> book PDF + wind page; `plan_course.yml` | package, `mozingo/tee_strategy`, `yardage_book`, `spirit_hollow/wind.py` |
+| `course_data/qa/` | QA | `packages.py` (lenient reader of package.json and holes.json), contract tests, Spirit Hollow golden comparison, visual review -> `qa/REPORT.md` | every package; `spirit_hollow/course.py` |
+| `course_data/{geometry,tees,imagery}/` | v1 engineers | libraries the platform calls (`build_holes.build`, `place_tee.place_tee_sets`, `render.Frame/render_hole`, `classify.py`) | |
+| `course_data/{ARCHITECTURE.md,pipeline.py,acceptance.py}` | architect | contracts; dev orchestrator; acceptance vs the hand map | |
+
+### 9.1 Decisions
+
+1. **The package is frame-free.** Everything in `package.json` is WGS84 `[lon, lat]`. The pixel/yard
+   frame is chosen by the consumer per tee set (`render.Frame(tee_ll, aim_ll, ...)`), so one package
+   serves every tee set and the book, wind page and QA can't disagree about geometry. (holes.json /
+   course_model/1 stays as the v1 per-tee-set, pixel-frame artefact; `pipeline.py` keeps producing it.)
+2. **Golfer's tee set: Black** at Spirit Hollow (`tees/scorecard.json`: 6589 yds). Product default
+   comes from the request file; Spirit Hollow requests say `"tees": "Black"`.
+3. **Triggering Actions.** `workflow_dispatch` from the sandbox returns 403. Every workflow that must be
+   started from here is triggered by a committed **request file** (9.4) via `on: push: paths:`.
+   Workflows commit their outputs back with the pull-rebase-retry loop from `course_fetch.yml`.
+4. **Lie classes** (model contract, `tee_strategy.lie_at`; later zones win): order
+   `ob_boundary < native < recovery < ob < first_cut < fairway < water < sand`. `first_cut` is the
+   intermediate cut beside the mown fairway (scored via `tee_strategy.FIRST_CUT_COST`); OSM rarely maps
+   it, so a package may omit it; the hand map synthesises it. `green` may appear in packages and is
+   treated as `fairway` by the model.
+5. **Vision never overrides OSM** `fairway`, `green`, `water`, `sand`; it adds `recovery`, `native`,
+   and `water` only where OSM has no polygon of that class (section 3.6 thresholds: p >= 0.7, >= 150 yd2,
+   simplified to 2 yds). Each vision zone carries `src` and `p`.
+6. **Hand-map reference.** `spirit_hollow/course.py` (with `AUDIT_FIXES` and `first_cut`) is the golden
+   map. QA's golden comparison and `acceptance.py` must use the same metric definitions (section 7);
+   QA owns the reported numbers going forward, `acceptance.py` is the reference implementation.
+7. **Wind** is a product concern: `spirit_hollow/wind.py` `adjust_clubs(clubs, speed_mph, rel_dir_deg,
+   gust_mph, temp_f, exposure)` with `hole_relative(wind_from_true, hole_bearing_true)`. The package
+   supplies each tee set's `bearing_deg` (tee -> aim, degrees true) and an `exposure` hint (share of the
+   landing zone's edge that is trees, from vision) so the product needs no geometry of its own.
+
+### 9.2 `package.json` (schema `package/1`)
+
+Location: `course_data/courses/<state>/<slug>/package.json` (slug = `pipeline.slugify(name)`, state = 2-letter
+lower case, e.g. `courses/ia/spirit_hollow/`). Supporting files sit next to it (`osm.geojson`, `scorecard.json`,
+`imagery/` pointer, `qa.json`).
+
+```json
+{"schema": "package/1",
+ "course": {"name": "Spirit Hollow Golf Course", "slug": "spirit_hollow", "state": "IA", "city": "Burlington",
+            "osm": {"type": "relation", "id": 13353211}, "center": [-91.1442, 40.7605],
+            "bbox": [-91.1522, 40.7531, -91.1362, 40.7679], "boundary": [[lon, lat], ...]},
+ "built": "2026-10-16T19:00Z",
+ "sources": {"osm": {"fetched": "...", "file": "osm.geojson"},
+             "scorecard": {"url": "...", "confidence": "high"},
+             "imagery": {"naip_date": "2023-09-01", "dir": "course_data/imagery/spirit_hollow"},
+             "dem": {"source": "USGS 3DEP", "file": "..."}},
+ "tee_set": "Black",
+ "tee_sets": {"Black": {"aliases": ["black", "blue", "member", "middle"], "total": 6589, "rating": 71.4, "slope": 124}},
+ "stages": {"osm": "ok", "scorecard": "ok", "tees": "ok", "geometry": "ok", "vision": "missing"},
+ "holes": {
+  "1": {"ref": "1", "par": 4, "hcp": 3,
+        "yards": {"Gold": 426, "Black": 391, "White": 376, "Rust": 299},
+        "hole_line_ll": [[lon, lat], ...],
+        "green_ll": [lon, lat], "green_polygon": [[lon, lat], ...],
+        "tees": {"Black": {"tee_ll": [lon, lat], "aim_ll": [lon, lat], "bearing_deg": 352.1,
+                           "method": "tee_axis", "confidence": 0.9, "measured_yards": 388.6, "card_yards": 391}},
+        "tee_ll": [lon, lat], "aim_ll": [lon, lat], "bearing_deg": 352.1, "length": 391,
+        "zones": [{"lie": "water", "poly": [[lon, lat], ...], "src": "osm:way/123", "p": 1.0}],
+        "exposure": 0.7,
+        "provenance": {"tee": "tees:tee_axis", "green": "osm_green", "par": "card", "zones": {"recovery": "vision:lidar_hag"}},
+        "confidence": {"score": 0.77, "band": "check the flags", "osm": 0.42, "imagery": 0.0, "inferred": 0.58, "flags": []}}}}
+```
+
+Rules: hole refs are strings; `tee_ll`/`aim_ll`/`bearing_deg`/`length` at the hole level repeat the
+package's `tee_set` entry (QA's reader and simple consumers use them); `zones` cover the hole window
+(+/-150 yds of the line, 40 yds behind the back tee to 40 past the green), polygons without holes (cut
+them, as `geometry._holefree` does); `aim_ll` follows the geometry rule (first hole-line node >= 60 yds past
+the tee). The aim point on dog-legs is often off the landing area, so consumers search aims over +/-60 yds
+(`aim_min/aim_max`), not +/-40. Confidence follows section 6.
+
+### 9.3 `vision_any.gapfill(package, imagery_dir) -> package`
+
+* Input: a package/1 dict and a directory with NAIP (`naip_rgb.tif`, `naip_nir.tif`) and lidar/DEM
+  (`dem.tif`, DSM or HAG raster).
+* Output: a new dict (do not mutate the input) with zones appended per hole:
+  `{"lie": "recovery"|"native"|"water", "poly": [[lon, lat], ...], "src": "vision:lidar_hag"|"vision:naip", "p": 0.0-1.0}`,
+  `stages.vision = "ok: <model id>"`, `sources.vision = {model, trained_on, imagery_date, lidar_date}`,
+  `holes[ref].exposure` set, and `confidence` recomputed (or left for `pipeline.confidence`).
+* Trees = height-above-ground >= 4 m (lidar) inside the window; long grass = NAIP texture/NDVI where HAG < 1 m
+  and not mown. Must work on courses with no hand map (no training on traced labels in the product path).
+* For acceptance on Spirit Hollow: a `--holdout` mode, or a model that never saw the traced labels
+  (decision 9.1-6, section 7 circularity rule).
+
+### 9.4 Request files (Actions triggers)
+
+`course_data/requests/<kind>_<state>_<slug>.json`, committed and pushed; the workflow's `on.push.paths`
+matches its kind and it deletes nothing (the request stays as the record).
+
+```json
+{"schema": "request/1", "kind": "package", "course": "Spirit Hollow", "state": "IA", "near": "40.76,-91.14",
+ "tees": "Black", "requested": "2026-10-16T19:00Z", "by": "architect"}
+```
+
+| kind | Workflow | Writes |
+|---|---|---|
+| `package` | `course_package.yml` (platform) | `courses/<state>/<slug>/package.json` (+ OSM, scorecard) |
+| `imagery` | `imagery_fetch.yml` (imagery/vision_any) | NAIP + 3DEP for the package bbox |
+| `plan` | `plan_course.yml` (product) | `courses/<state>/<slug>/output/*.pdf`, wind page |
+
+### 9.5 What pipeline.py does in v2
+
+`pipeline.py` stays the developer orchestrator and the reference implementation of S6 (merge, confidence,
+qa.md, course module). When a `package.json` exists for the course it will build `holes.json` from it
+(frame per tee set) instead of re-running geometry; until then it runs geometry/tees/imagery directly.

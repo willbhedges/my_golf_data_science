@@ -249,11 +249,25 @@ def aim_point(tee_ll, line_ll, proj="utm", min_leg=60.0):
     return tuple(line_ll[-1])
 
 
-def frame_for_auto_hole(hole, osm_line):
-    """Reproduce course_data/geometry/build_holes.py's frame for one auto_holes.json hole."""
-    tee_ll = hole["lonlat_tee"]
-    aim = aim_point(tee_ll, osm_line, proj="utm")
-    return Frame(tee_ll, aim, ppy=hole["px_per_yd"], tee_px=hole["tee"], proj="utm")
+def frame_for_auto_hole(hole, osm_line=None):
+    """Reproduce course_data/geometry/build_holes.py's frame for one auto_holes.json hole.
+
+    Newer builds store tee_ll / aim_ll; older ones only lonlat_tee (aim = first hole-line node >= 60 yds).
+    The projection (UTM vs ENU) is whichever puts green_ll / the hole line closest to the stored px."""
+    tee_ll = hole.get("tee_ll") or hole["lonlat_tee"]
+    aim = hole.get("aim_ll") or aim_point(tee_ll, osm_line, proj="utm")
+    checks = []
+    if hole.get("green_ll") and hole.get("green"):
+        checks.append((hole["green_ll"], hole["green"]))
+    elif osm_line is not None and hole.get("hole_line"):
+        checks.append((osm_line[-1], hole["hole_line"][-1]))
+    best = None
+    for proj in ("utm", "enu"):
+        fr = Frame(tee_ll, aim, ppy=hole["px_per_yd"], tee_px=hole["tee"], proj=proj)
+        err = sum(float(np.linalg.norm(fr.ll_to_px([ll])[0] - np.asarray(px))) for ll, px in checks)
+        if best is None or err < best[0]:
+            best = (err, fr)
+    return best[1]
 
 
 def frame_for_spec_hole(hole):
@@ -265,10 +279,10 @@ def render_hole(course_dir, hole, out_png, frame=None, imagery=None, nir=False):
     """S5 entry point. `hole`: a dict with tee_ll/aim_ll (spec) or an auto_holes.json hole (+ 'ref')."""
     from PIL import Image
     if frame is None:
-        if "tee_ll" in hole:
+        if "tee_ll" in hole and "px_per_yd" not in hole:
             frame = frame_for_spec_hole(hole)
         else:
-            frame = frame_for_auto_hole(hole, _osm_holes(course_dir)[str(hole["ref"])])
+            frame = frame_for_auto_hole(hole, _osm_holes(course_dir).get(str(hole.get("ref"))))
     elif isinstance(frame, dict):
         frame = Frame.from_json(frame)
     slug = os.path.basename(os.path.normpath(course_dir))
@@ -311,7 +325,7 @@ def main():
         out_dir = a.out_dir or os.path.join(a.imagery, "images")
         index = {}
         for ref in refs:
-            fr = frame_for_auto_hole(holes[ref], lines[ref])
+            fr = frame_for_auto_hole(holes[ref], lines.get(ref))
             out, info = render(fr, img, nir=a.nir)
             p = os.path.join(out_dir, f"hole{int(ref):02d}.png")
             os.makedirs(out_dir, exist_ok=True)

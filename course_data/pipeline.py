@@ -423,8 +423,8 @@ for _k, _h in MODEL["holes"].items():
     _h = dict(_h)
     _h["tee"], _h["dot270"], _h["green"] = tuple(_h["tee"]), tuple(_h["dot270"]), tuple(_h["green"])
     _h["zones"] = [(n, [tuple(p) for p in poly]) for n, poly in _h["zones"]]
-    _h.setdefault("aim_min", -40)
-    _h.setdefault("aim_max", 40)
+    _h.setdefault("aim_min", -60)          # wider than course.py's +/-40: the auto tee line points at the
+    _h.setdefault("aim_max", 60)           # first hole-line node, which on dog-legs is off the landing area
     _p3 = _h.pop("par3", None)
     _c = _h.get("auto", {{}})
     NOTES[_key(_k)] = _h.pop("note", "Auto-built.")
@@ -522,7 +522,12 @@ def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, 
             h["par"] = int(card[k]["par"])
         h["par"] = int(h["par"])
 
-    images, isrc = render_images(cdir, holes, ctx, fc, os.path.join(cdir, "screenshots")) if render else ({}, None)
+    if render:
+        images, isrc = render_images(cdir, holes, ctx, fc, os.path.join(cdir, "screenshots"))
+    else:                                                      # keep earlier renders (frames are deterministic)
+        images = {k: n for k in holes for n in [f"hole{int(k):02d}.png" if k.isdigit() else f"hole{k}.png"]
+                  if os.path.exists(os.path.join(cdir, "screenshots", n))}
+        isrc = "previous render (--no-images)" if images else None
     stages["images"] = f"ok: {isrc} ({len(images)}/{len(holes)})" if images else "missing"
 
     out = {}

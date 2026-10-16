@@ -1,4 +1,4 @@
-# QA: Spirit Hollow Golf Course, white tees (2026-10-16T18:32Z)
+# QA: Spirit Hollow Golf Course, white tees (2026-10-16T18:38Z)
 
 | hole | par | yds | score | band | OSM | imagery | inferred | flags |
 |---|---|---|---|---|---|---|---|---|
@@ -28,4 +28,4 @@ Stages:
 - **tees**: ok: course_data/tees/tee_positions.json (set 'white'; card yardage -> box where the file has no point)
 - **vision**: missing (no gap-fill layers)
 - **geometry**: geometry/build_holes.py:build
-- **images**: ok: imagery/render.py:render_hole (18/18)
+- **images**: ok: previous render (--no-images) (18/18)
