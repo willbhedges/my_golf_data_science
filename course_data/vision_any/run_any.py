@@ -40,6 +40,9 @@ def compute(slug, course_dir=None, imagery_dir=None, tree_hag=L.TREE_HAG_M):
     t0 = time.time()
     cdir = course_dir or course_dir_for(slug)
     S = L.Stack.load(slug, cdir)
+    if not S.naip:
+        raise FileNotFoundError(f"no NAIP for {slug} (course_data/vision_any/{slug}/raw/naip_*.tif or "
+                                f"course_data/imagery/{slug}/naip_rgb.tif); run .github/workflows/vision_any.yml")
     fc = json.load(open(os.path.join(cdir, "osm.geojson")))
     M, Ly = L.osm_masks(S, fc)
     L.log(f"  stack+osm {time.time() - t0:.0f}s")
