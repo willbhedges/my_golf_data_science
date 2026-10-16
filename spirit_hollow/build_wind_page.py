@@ -40,11 +40,11 @@ def frame(tee, toward, yds):
 def crop_jpeg(image, box, y_max=1830):
     """box in the 920x2000 frame -> (data URI, scale px/frame-px, (x0, y0), size). Rows past the
     bottom of the screenshot (a tee box the app cut off) are padded with a plain band."""
-    k = 1206 / 920
     path = os.path.join(HERE, "screenshots_clean", image)
     if not os.path.exists(path):
         path = os.path.join(HERE, "screenshots", image)
     im = Image.open(path).convert("RGB")
+    k = im.width / 920                                 # app screenshots are 1206 wide, aerial renders 920
     x0, y0, x1, y1 = box
     x0, x1 = max(0, x0), min(920, x1)
     y0, y1 = max(545, y0), min(y_max, y1)
@@ -93,11 +93,43 @@ def elev_of(h):
     return dict(green_drop=a.get("green_drop_ft"), dz=a.get("plays_like_delta_yds"))
 
 
+def par3_sets(h, opts, grid):
+    """Per tee set: card distance, DECADE boxes per wind modifier, plays-like per wind cell."""
+    import copy
+    import wind_grid as WG
+    p0 = course.PAR3[h]
+    tee, f, r, ppy = frame(p0["tee"], p0["flag"], p0["center"])
+    out = {}
+    for o in opts:
+        p = copy.deepcopy(p0)
+        p["center"] = o["yards"]
+        p["front"], p["back"] = p0["front"] - p0["center"] + o["yards"], p0["back"] - p0["center"] + o["yards"]
+        boxes = {}
+        for mod in (-1, 0, 1, 2, 3):
+            yb.WIND_NOW = mod
+            plan = yb.par3_plan(p)
+            (l0, l1), (d0, d1) = plan["lat"], plan["dep"]
+            if l1 - l0 < 2:
+                l0, l1 = (l0 + l1) / 2 - 1, (l0 + l1) / 2 + 1
+            if d1 - d0 < 2:
+                d0, d1 = (d0 + d1) / 2 - 1, (d0 + d1) / 2 + 1
+            # the green is drawn at the Black/Gold scale: box depths are yds relative to the green
+            corners = [tee + ((p0["center"] + d) * f + l * r) * ppy for l, d in ((l0, d0), (l1, d0), (l1, d1), (l0, d1))]
+            boxes[str(mod)] = dict(poly=[[float(c[0]), float(c[1])] for c in corners],
+                                   play=float(o["yards"] + plan["aim"][1]),
+                                   lo=float(o["yards"] + plan["dep"][0]), hi=float(o["yards"] + plan["dep"][1]))
+        yb.WIND_NOW = 0
+        dz = p0.get("plays_like_delta", 0.0)
+        plays = {k: WG.plays_like(o["yards"], *[int(x) for x in k.split("_")]) + dz for k in grid["par3"][str(h)]}
+        out[o["name"]] = dict(center=o["yards"], front=p["front"], back=p["back"], boxes=boxes, plays=plays)
+    return out
+
+
 def tee_hole(h):
     hd = course.HOLES[h]
     tee, f, r, ppy = frame(hd["tee"], hd["dot270"], 270)
     # whole hole from the tee box (the page can zoom to the landing area)
-    pts = [tee + (a * f + l * r) * ppy for a in (-14, 345) for l in (-75, 75)]
+    pts = [tee + (a * f + l * r) * ppy for a in (-14, 400) for l in (-75, 75)]
     xs, ys = [p[0] for p in pts], [p[1] for p in pts]
     box = (min(xs), min(ys), max(xs), max(ys))
     uri, s, (x0, y0), size = crop_jpeg(hd["image"], box, y_max=10000)
@@ -137,10 +169,40 @@ def par3_hole(h):
                 front=p["front"], back=p["back"])
 
 
+SETS = ("Gold", "Black", "White", "Rust")
+CARD = json.load(open(os.path.join(ROOT, "course_data", "tees", "scorecard.json")))["tee_sets"]
+
+
+def tee_options(h):
+    """Tee sets this page can show for hole h, as yds the tee sits BACK of the screenshot's tee.
+    Screenshot tee = Black (2F/9F and every single-tee hole) or Gold (2B/9B). Most sets differ
+    mainly along the line, so the offset is the card difference."""
+    ref = int(str(h).rstrip("FB")) - 1
+    base = "Gold" if str(h).endswith("B") else "Black"
+    out = []
+    for name in SETS:
+        if str(h)[-1:] in "FB" and (name == "Gold") != (base == "Gold"):
+            continue                                   # the other screenshot covers that set
+        out.append(dict(name=name, yards=CARD[name]["yards"][ref], back=CARD[name]["yards"][ref] - CARD[base]["yards"][ref]))
+    return base, out
+
+
+def compact(holegrid):
+    """{cell: {clubs: {c: {...}}}} -> {cell: {c: [aim, ev, zlo, zhi, carry, total, width, drift]}}"""
+    return {k: {c: [v["aim"], round(v["ev"], 4), v["zone"][0], v["zone"][1], round(v["carry"], 1),
+                    round(v["total"], 1), round(v["width"], 1), round(v["drift"], 1)]
+                for c, v in cellv["clubs"].items()} for k, cellv in holegrid.items()}
+
+
 def main():
     yb.use_course("Spirit Hollow GC", HERE, "Spirit_Hollow", course.HOLES, course.PAR3, course.NOTES,
                   course.AIM_AT, course.ORDER, course.LABELS)
     grid = json.load(open(os.path.join(HERE, "output", "wind_grid.json")))
+    import glob
+    import re
+    grids = {0: grid}
+    for path in glob.glob(os.path.join(HERE, "output", "wind_grid_back*.json")):
+        grids[int(float(re.search(r"back([+-]?[0-9.]+)", path).group(1)))] = json.load(open(path))
     final_path = os.path.join(HERE, "output", "final_decision.json")
     final = json.load(open(final_path)) if os.path.exists(final_path) else {}
     fc = json.load(open(os.path.join(ROOT, "course_data", "weather", "forecast_spirit_hollow.json")))
@@ -149,16 +211,20 @@ def main():
         d = par3_hole(h) if h in course.PAR3 else tee_hole(h)
         d["key"] = str(h)
         d["bearing"] = grid["bearings"].get(str(h))
+        base, opts = tee_options(h)
+        d["base_set"], d["tee_opts"] = base, opts
         if h in course.PAR3:
             d["plays"] = grid["par3"][str(h)]
+            d["by_set"] = par3_sets(h, opts, grid)
         else:
-            d["grid"] = grid["holes"][str(h)]
+            d["grids"] = {str(b): compact(g["holes"][str(h)]) for b, g in sorted(grids.items())
+                          if str(h) in g.get("holes", {})}
             fd = final.get(str(h))
             if fd and fd.get("tie") is not None:
                 d["calm"] = dict(pick=fd["pick"], aim=fd["aim"], tie=bool(fd["tie"]), margin=fd["margin"],
                                  flips=fd.get("width_flips", []))
         holes.append(d)
-    data = dict(speeds=grid["speeds"], dirs=grid["dirs"], holes=holes,
+    data = dict(speeds=grid["speeds"], dirs=grid["dirs"], holes=holes, offsets=sorted(grids),
                 forecast=[dict(date=r["date"], hour=r["hour"], mph=r["wind_mph"], gust=r["gust_mph"],
                                dir=r["wind_from_deg"], temp=r["temp_f"]) for r in fc["hourly"]],
                 fetched=fc["fetched_utc"])

@@ -60,7 +60,12 @@ def _label_tag():
 
 
 LABEL_TAG = _label_tag()
-LCACHE = os.path.join(CACHE, "labels_" + LABEL_TAG)     # anything that depends on labels
+LCACHE = os.path.join(CACHE, "labels_" + LABEL_TAG)     # labels rasterised from course.py now
+# LOHO maps / region tables / calibration sets are keyed by the label version they were
+# TRAINED on. VISION2_OOF_TAG=<hash> reuses maps trained on an earlier map (scored against the
+# current labels) when the map changed after the expensive LOHO runs finished.
+OOF_TAG = os.environ.get("VISION2_OOF_TAG", LABEL_TAG)
+OCACHE = os.path.join(CACHE, "labels_" + OOF_TAG)
 
 
 # ----------------------------------------------------------------------------- data
@@ -247,7 +252,7 @@ def pixel_predict(method, clf, d):
 def region_table(hole, d, src):
     """Region features (mean/std of method-c features + log size) and pure labels."""
     seg, _ = regions(hole, d, src)
-    path = os.path.join(LCACHE, f"rfeat_{src}_{hole}.npz")
+    path = os.path.join(OCACHE, f"rfeat_{src}_{hole}.npz")
     if os.path.exists(path):
         z = np.load(path)
         return seg, z["RF"], z["rl"]
@@ -287,7 +292,7 @@ def pool(P, seg):
 
 # ----------------------------------------------------------------------------- LOHO
 def oof_path(method, hole):
-    return os.path.join(LCACHE, f"oof_{method}_{hole}.npy")
+    return os.path.join(OCACHE, f"oof_{method}_{hole}.npy")
 
 
 def loho(method, data):
@@ -330,7 +335,7 @@ N_CAL = 4000                     # calibration pixels per inner-held-out hole
 def inner_oof(method, h, data):
     """Out-of-fold probabilities for a sample of labelled pixels of every TRAINING hole
     (holes other than h), from 2 group folds over those holes. h is never touched."""
-    path = os.path.join(LCACHE, f"inner_{method}_{h}.npz")
+    path = os.path.join(OCACHE, f"inner_{method}_{h}.npz")
     if os.path.exists(path):
         z = np.load(path)
         return z["P"], z["y"]
@@ -498,9 +503,22 @@ def write_report(results, best, best_maps, data, extra):
           "2-group-fold predictions over those 15 training holes, so the held-out hole contributes nothing to training, "
           "feature scaling, calibration or ensemble weights (the ensemble is a fixed 50/50 "
           "average). Pixel methods are 7x7-smoothed before scoring, as in vision.py. "
-          f"Regions for (d)/pooling: **{REGION_SRC.upper()}**"
-          + (" (SAM masks for all photos; gaps filled with SLIC cells)." if REGION_SRC == "sam"
-             else " superpixels (n~2500, compactness 12) — SAM masks were not available.") , "",
+          "Regions: SLIC superpixels (n~2500, compactness 12, on the UI-in-painted half-res "
+          "photo) and, when deep/sam/ has a mask file for every photo, Segment Anything regions "
+          "(ViT-B automatic masks; SAM leaves much ground unassigned, so its gaps are split "
+          "into SLIC cells).", "",
+          (f"**Labels**: every number in the main table was trained and scored on the current "
+           f"course.py (label hash `{LABEL_TAG}`)." if OOF_TAG == LABEL_TAG else
+           f"**Labels**: the main table SCORES against the current course.py (label hash "
+           f"`{LABEL_TAG}`), but the LOHO models were TRAINED on label version `{OOF_TAG}` "
+           "(course.py after the AUDIT_FIXES landing-zone corrections, commit 8601898). Between "
+           "the two versions only holes 2B and 2F changed (pond edge and long grass, commit "
+           "b81bf0e: 4.4k and 2.0k grid px, none of it in the landing-zone geometry). A second table "
+           f"below gives the same models scored on `{OOF_TAG}`, the labels they were trained on.")
+          + " The vision.py baseline row is copied from vision_report.md, which used the earlier "
+          "pre-audit map. course.py's 'first_cut' bands count as fairway here, as they do in "
+          "vision.label_map. The final all-holes model behind probs/ is trained on the current "
+          "labels.", "",
           "Penal = trees/native/water/sand, playable = fairway/rough. 'bal' = mean per-class "
           "recall. Landing zones = 220-340 yds, +/-45 yds of the line.", "",
           "| Method | LZ 6-class | LZ bal | LZ penal-vs-playable | LZ penal recall | LZ penal precision "
@@ -542,6 +560,34 @@ def write_report(results, best, best_maps, data, extra):
                       f"{r['seen']} | {r['p']:.2f} |")
         if not regs:
             md.append(f"| {h} | — | — | agrees | — | |")
+    same = os.path.join(OUT, f"results_{OOF_TAG}.json")
+    if OOF_TAG != LABEL_TAG and os.path.exists(same):
+        R = json.load(open(same))
+        md += [f"## Same LOHO maps scored on the labels they were trained on (`{OOF_TAG}`)", "",
+               "| Method | LZ 6-class | LZ penal-vs-playable | LZ penal recall | LZ penal precision | "
+               "Hole 6-class | Hole penal-vs-playable | Hole penal recall | Hole penal precision |",
+               "|---|---|---|---|---|---|---|---|---|"]
+        for m, r in R.items():
+            if not isinstance(r, dict) or "lz" not in r:
+                continue
+            L, A = r["lz"], r["all"]
+            md.append(f"| {r['desc']} | {L['acc6']:.1%} | {L['pp']:.1%} | {L['rec']:.0%} | "
+                      f"{L['prec']:.0%} | {A['acc6']:.1%} | {A['pp']:.1%} | {A['rec']:.0%} | {A['prec']:.0%} |")
+        md.append("")
+    old = os.path.join(OUT, "results_old_labels.json")
+    if os.path.exists(old):
+        R = json.load(open(old))
+        md += ["## Same methods on the earlier map (before AUDIT_FIXES)", "",
+               "LOHO trained and scored on the labels in course.py as of 17:58 today. Only the "
+               "first three methods finished before the map changed. Same protocol and seeds, "
+               "so the difference from the main table comes from the labels.", "",
+               "| Method | LZ 6-class | LZ penal-vs-playable | LZ penal recall | LZ penal precision | "
+               "Hole 6-class | Hole penal-vs-playable |", "|---|---|---|---|---|---|---|"]
+        for m, r in R.items():
+            L, A = r["lz"], r["all"]
+            md.append(f"| {DESC.get(m, m)} | {L['acc6']:.1%} | {L['pp']:.1%} | {L['rec']:.0%} | "
+                      f"{L['prec']:.0%} | {A['acc6']:.1%} | {A['pp']:.1%} |")
+        md.append("")
     md += ["", "## Notes", ""] + extra.get("notes", [])
     with open(os.path.join(HERE, "output", "vision2_report.md"), "w") as f:
         f.write("\n".join(md) + "\n")
@@ -603,7 +649,7 @@ def run_all(data, methods, calib):
         json.dump({k: {kk: (vv if not isinstance(vv, dict) else {a: float(b) for a, b in vv.items()})
                        for kk, vv in r.items() if kk != "desc"} | {"desc": r["desc"]}
                    for k, r in results.items()} | {"best": best, "top2": top2,
-                                                    "region_source": REGION_SRC},
+                                                    "region_source": REGION_SRC, "label_tag": LABEL_TAG, "oof_tag": OOF_TAG},
                   f, indent=1, default=float)
     return results, maps, best, top2
 
@@ -685,8 +731,13 @@ def main():
              "`classes`) come from the best configuration trained on ALL 16 holes — in-sample for "
              "every hole, so use them as the deliverable map, not for accuracy claims. The honest "
              "out-of-sample maps behind this report are in `output/vision2/probs_loho/`.",
-             "- For the all-holes model, calibration parameters are fitted on the LOHO "
-             "(out-of-fold) predictions of all 16 holes.",
+             "- If a calibrated method is chosen as best, the all-holes model's calibration is "
+             "fitted on the LOHO (out-of-fold) predictions of all 16 holes.",
+             "- HGB uses early stopping on a random 10% of the TRAINING pixels (n_iter_no_change=10).",
+             "- SAM regions (method d and SAM pooling) do worse than SLIC. There are only 60-110 "
+             "SAM masks per photo and 36-82% of the ground has none, so the regions are large, "
+             "cross class boundaries (fairway into rough, tree line into native), and the 70% "
+             "purity rule drops most of them from training.",
              f"- Training sample: {N_PER_HOLE} labelled pixels per hole (fixed seeds); HGB "
              "max_iter=150, lr 0.08, 48 leaves, balanced class weights."]
     if "--calib" not in args:

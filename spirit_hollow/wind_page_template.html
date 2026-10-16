@@ -59,6 +59,7 @@ tr.best td{font-weight:600}
 .chip span{font:600 13px var(--display);letter-spacing:.03em}
 .chip[aria-current="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .c-Driver{color:var(--driver)} .c-2-wood{color:var(--wood2)} .c-4-wood{color:var(--wood4)} .c-iron{color:var(--muted)}
+[hidden]{display:none!important}
 .foot{color:var(--muted);font-size:12.5px;max-width:80ch}
 </style>
 
@@ -82,6 +83,8 @@ tr.best td{font-weight:600}
         <div class="seg" id="src"><button data-v="sat">Sat 10/17</button><button data-v="sun">Sun 10/18</button><button data-v="custom">Custom</button></div></div>
       <div class="row" id="hourRow"><span class="label">Tee time</span><input type="range" id="hour" min="7" max="18" step="1"><span id="hourLbl" class="windread"></span></div>
       <div class="row"><span class="label">Speed</span><input type="range" id="speed" min="0" max="25" step="1"><span id="speedLbl" class="windread"></span></div>
+      <div class="row"><span class="label">Tees</span>
+        <div class="seg" id="set"><button data-v="Gold">Gold</button><button data-v="Black">Black</button><button data-v="White">White</button><button data-v="Rust">Rust</button></div></div>
       <div class="windread" id="windLbl"></div>
       <div class="sub">Drag the dial to where the wind blows <b>from</b>. The yellow end of the needle points into the wind.</div>
     </div>
@@ -96,6 +99,7 @@ tr.best td{font-weight:600}
       <div class="holehead"><span class="holeno" id="hNo"></span><span class="label" id="hPar"></span><span id="hBadges"></span></div>
       <div><div class="label" id="playLbl">Play</div><div class="play" id="hPlay"></div><div class="sub" id="hAim"></div></div>
       <div id="hTable"></div>
+      <div class="row" id="adjRow"><span class="label">Move this tee</span><input type="range" id="adj" min="-60" max="60" step="10"><span id="adjLbl" class="sub"></span></div>
       <div class="sub" id="hElev"></div>
       <div class="note" id="hNote"></div>
       <div class="row"><div class="seg"><button id="prev">◀ Prev</button><button id="next">Next ▶</button></div></div>
@@ -112,8 +116,25 @@ const D = /*__DATA__*/null;
 const CLUBS = ["Driver","2-wood","4-wood","Long iron","Mid iron"];
 const short = c => ({"Driver":"D","2-wood":"2W","4-wood":"4W","Long iron":"LI","Mid iron":"MI"})[c] || c;
 const cls = c => (c==="Driver"||c==="2-wood"||c==="4-wood") ? "c-"+c : "c-iron";
-const st = {src:"sun", hour:12, from:180, mph:12, idx:0, view:"hole"};
+const st = {src:"sun", hour:12, from:180, mph:12, idx:0, view:"hole", set:"Black", adj:{}};
 try{ const s = JSON.parse(localStorage.getItem("shwc")||"null"); if(s) Object.assign(st, s);}catch(e){}
+if(!st.adj) st.adj = {};
+/* expand the compact grids: {back: {cell: {club: [aim, ev, zlo, zhi, carry, total, width, drift]}}} */
+for(const h of D.holes){ if(h.kind !== "tee") continue; h.G = {};
+  for(const [b, g] of Object.entries(h.grids)){ const G = {};
+    for(const [k, cl] of Object.entries(g)){ const clubs = {};
+      for(const [c, a] of Object.entries(cl)) clubs[c] = {aim:a[0], ev:a[1], zone:[a[2], a[3]], carry:a[4], total:a[5], width:a[6], drift:a[7]};
+      G[k] = {clubs}; }
+    h.G[b] = G; }
+  h.grid = h.G["0"]; }
+/* the tee this hole is played from: set's card offset + this hole's own adjustment, snapped to a computed grid */
+function teeOf(h){
+  const o = (h.tee_opts || []).find(t => t.name === st.set) || (h.tee_opts || []).find(t => t.name === h.base_set);
+  const want = (o ? o.back : 0) + (st.adj[h.key] || 0);
+  const have = h.G ? Object.keys(h.G).map(Number) : [0];
+  const b = have.reduce((a, x) => Math.abs(x - want) < Math.abs(a - want) ? x : a, have[0]);
+  return {name: o ? o.name : h.base_set, card: o ? o.yards : Math.round(h.length), want, back: b, setOk: !!(o && o.name === st.set)};
+}
 const save = () => { try{ localStorage.setItem("shwc", JSON.stringify(st)); }catch(e){} };
 
 function forecastAt(src, hour){
@@ -134,10 +155,10 @@ function solveTee(h){
   const s0 = S[i], s1 = S[i+1], ws = (mph - s0)/(s1 - s0);
   const d0 = Math.floor(rel/30)*30, d1 = (d0+30)%360, wd = (rel - d0)/30;
   const corners = [[s0,d0,(1-ws)*(1-wd)],[s0,d1,(1-ws)*wd],[s1,d0,ws*(1-wd)],[s1,d1,ws*wd]];
-  const out = {};
-  for(const c of Object.keys(h.grid["0_0"].clubs)){
+  const out = {}; const T = teeOf(h); const grid = h.G[String(T.back)];
+  for(const c of Object.keys(grid["0_0"].clubs)){
     const r = {ev:0,aim:0,lo:0,hi:0,total:0,carry:0,width:0,drift:0};
-    for(const [sp,dd,w] of corners){ const v = cell(h.grid, sp, dd).clubs[c];
+    for(const [sp,dd,w] of corners){ const v = cell(grid, sp, dd).clubs[c];
       r.ev+=w*v.ev; r.aim+=w*v.aim; r.lo+=w*v.zone[0]; r.hi+=w*v.zone[1]; r.total+=w*v.total; r.carry+=w*v.carry; r.width+=w*v.width; r.drift+=w*v.drift; }
     const e = h.elev && h.elev.clubs && h.elev.clubs[c];      // ground: carry, roll and side kick
     r.kick = 0;
@@ -146,8 +167,8 @@ function solveTee(h){
   }
   const order = Object.keys(out).sort((a,b) => out[a].ev - out[b].ev);
   let pick = order[0], aim = out[pick].aim, tie = (out[order[1]].ev - out[pick].ev) < 0.01, bayes = false;
-  if(st.mph < 1.5 && h.calm){ pick = h.calm.pick; aim = h.calm.aim; tie = h.calm.tie; bayes = true; }
-  return {rel, out, order, pick, aim, tie, bayes, margin: out[order[1]].ev - out[order[0]].ev};
+  if(st.mph < 1.5 && h.calm && T.back === 0){ pick = h.calm.pick; aim = h.calm.aim; tie = h.calm.tie; bayes = true; }
+  return {rel, out, order, pick, aim, tie, bayes, T, margin: out[order[1]].ev - out[order[0]].ev};
 }
 function windMod(mph){ return mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3; }
 function solvePar3(h){
@@ -156,10 +177,12 @@ function solvePar3(h){
   let i = 0; while(i < S.length-2 && mph > S[i+1]) i++;
   const s0 = S[i], s1 = S[i+1], ws = (mph - s0)/(s1 - s0);
   const d0 = Math.floor(rel/30)*30, d1 = (d0+30)%360, wd = (rel - d0)/30;
-  const g = (sp,dd) => sp===0 ? h.plays["0_0"] : h.plays[sp+"_"+dd];
+  const S3 = (h.by_set && (h.by_set[st.set] || h.by_set[h.base_set])) || {center:h.length, boxes:h.boxes, plays:h.plays, front:h.front, back:h.back};
+  const setName = h.by_set && h.by_set[st.set] ? st.set : h.base_set;
+  const g = (sp,dd) => sp===0 ? S3.plays["0_0"] : S3.plays[sp+"_"+dd];
   const plays = (1-ws)*((1-wd)*g(s0,d0)+wd*g(s0,d1)) + ws*((1-wd)*g(s1,d0)+wd*g(s1,d1));
-  const mod = windMod(st.mph); const b = h.boxes[String(mod)];
-  return {rel, plays, mod, box:b, play: b.play * plays / h.length};
+  const mod = windMod(st.mph); const b = S3.boxes[String(mod)];
+  return {rel, plays, mod, box:b, S3, setName, play: b.play * plays / S3.center};
 }
 const P = (h, p) => [(p[0]-h.x0)*h.s, (p[1]-h.y0)*h.s];
 const at = (h, along, lat) => [h.tee[0]+(along*h.f[0]+lat*h.r[0])*h.ppy, h.tee[1]+(along*h.f[1]+lat*h.r[1])*h.ppy];
@@ -189,26 +212,35 @@ function render(){
   const h = D.holes[st.idx];
   const ov = document.getElementById("ov");
   let vb = [0, 0, h.w, h.h];
-  if(h.kind === "tee" && st.view === "land"){            // zoom to 175-345 yds, full width
-    const ys = [175, 345].flatMap(a => [-75, 75].map(l => P(h, at(h, a, l))[1]));
+  const TB = h.kind === "tee" ? teeOf(h).back : 0;
+  if(h.kind === "tee" && st.view === "land"){            // zoom to the landing area from this tee
+    const ys = [175 - TB, 345 - TB].flatMap(a => [-75, 75].map(l => P(h, at(h, a, l))[1]));
     const y0 = Math.max(0, Math.min(...ys)), y1 = Math.min(h.h, Math.max(...ys));
     vb = [0, y0, h.w, y1 - y0];
   }
   ov.setAttribute("viewBox", vb.join(" "));
   const IMG = `<image href="${h.img}" x="0" y="0" width="${h.w}" height="${h.h}"/>`;
   document.getElementById("view").hidden = h.kind !== "tee";
-  document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
+  document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; render(); }));
+document.getElementById("adj").addEventListener("input", e => { const h = D.holes[st.idx]; st.adj[h.key] = +e.target.value; render(); });
+document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
   document.getElementById("hNo").textContent = "Hole " + h.label.replace(/ (Black|Gold) tee$/, "");
-  document.getElementById("hPar").textContent = `Par ${h.par} · ${Math.round(h.length)} yds` + (h.tee_name ? ` · from the ${h.tee_name}` : "");
+  const T0 = h.kind === "tee" ? teeOf(h) : null, P3 = h.kind === "tee" ? null : solvePar3(h);
+  document.getElementById("hPar").textContent = h.kind === "tee"
+    ? `Par ${h.par} · ${T0.card + (st.adj[h.key] || 0)} yds · from the ${T0.name} tee` + (st.adj[h.key] ? ` (moved ${Math.abs(st.adj[h.key])} ${st.adj[h.key] > 0 ? "back" : "up"})` : "")
+    : `Par 3 · ${Math.round(P3.S3.center)} yds · from the ${P3.setName} tee`;
+  renderTeeCtl(h);
   const badges = [];
   if(h.kind === "tee"){
     const r = solveTee(h), best = r.out[r.pick];
-    const star = P(h, at(h, best.total, r.aim));
-    const zl = P(h, at(h, best.total, best.lo)), zh = P(h, at(h, best.total, best.hi));
-    const land = P(h, at(h, best.total, r.aim + best.drift + best.kick));
+    const B = r.T.back;                                    // tee moved B yds back along the line
+    const star = P(h, at(h, best.total - B, r.aim));
+    const zl = P(h, at(h, best.total - B, best.lo)), zh = P(h, at(h, best.total - B, best.hi));
+    const land = P(h, at(h, best.total - B, r.aim + best.drift + best.kick));
     const rx = best.width/2*h.ppy*h.s, ry = best.width*0.22*h.ppy*h.s;
     const ang = Math.atan2(h.f[0], -h.f[1]) * 180/Math.PI;
-    const tp = P(h, h.tee);
+    let tp = P(h, at(h, -B, 0)); let below = 0;
+    if(tp[1] > vb[1] + vb[3] - 14){ below = Math.round((tp[1] - (vb[1] + vb[3] - 14)) / (h.ppy * h.s)); tp = [tp[0], vb[1] + vb[3] - 14]; }
     ov.innerHTML = IMG + `
       <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#1a1a1a" stroke-width="4" opacity=".55"/>
       <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#ffc928" stroke-width="2"/>
@@ -216,14 +248,14 @@ function render(){
       <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="9" stroke-linecap="round" opacity=".8"/>
       ${Math.abs(best.drift + best.kick) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
       ${aimMark(star[0], star[1])}
-      ${h.tee_offimage ? `<text x="${h.w/2}" y="${(2000 - h.y0) * h.s + 22}" fill="#d9e3dc" font-family="Source Sans 3,Arial,sans-serif" font-size="14" text-anchor="middle">Below here: past the bottom of your app screenshot</text>` : ""}
-      ${teeMark(tp[0], tp[1], h.tee_name)}
+      ${h.tee_offimage && !below ? `<text x="${h.w/2}" y="${(2000 - h.y0) * h.s + 22}" fill="#d9e3dc" font-family="Source Sans 3,Arial,sans-serif" font-size="14" text-anchor="middle">Below here: past the bottom of your app screenshot</text>` : ""}
+      ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? ` · ${below} yds further back ↓` : ""))}
       ${windArrow(h, r.rel, vb)}`;
     document.getElementById("playLbl").textContent = "Play";
     const pe = document.getElementById("hPlay"); pe.textContent = r.pick; pe.className = "play " + cls(r.pick);
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
-    if(calm !== r.pick) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
+    if(calm !== r.pick && r.T.back === 0) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
     const mv = best.drift + best.kick;
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
@@ -231,26 +263,35 @@ function render(){
     const rows = r.order.map(c => { const v = r.out[c]; return `<tr class="${c===r.pick?"best":""}"><td class="${cls(c)}">${c}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.order[0]?"—":"+"+(v.ev - r.out[r.order[0]].ev).toFixed(3)}</td></tr>`;}).join("");
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     const be = best.e;
-    document.getElementById("hElev").innerHTML = be ? `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
+    const past = best.total - B > 345;
+    if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
+    if(B !== r.T.want) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B)} yds ${B >= 0 ? "back" : "up"}</span>`);
+    document.getElementById("hElev").innerHTML = be ? (B ? "Elevation measured from the screenshot tee. " : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
     let note = h.note || "";
     document.getElementById("hNote").textContent = note;
   } else {
-    const r = solvePar3(h);
+    const r = P3;
     const g = h.green.map(p => P(h, p).join(",")).join(" ");
     const bp = r.box.poly.map(p => P(h, p).join(",")).join(" ");
     ov.innerHTML = IMG + `<polygon points="${g}" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 4"/>
       <polygon points="${bp}" fill="rgba(37,208,255,.5)" stroke="#25d0ff" stroke-width="2.5"/>${windArrow(h, r.rel, vb)}`;
     document.getElementById("playLbl").textContent = "Play it like";
     const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
-    if(Math.abs(r.play - r.box.play) >= 3) badges.push(`<span class="pill chg">${Math.round(r.box.play)} on the card</span>`);
+    if(Math.abs(r.play - r.S3.center) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center)} on the card</span>`);
     document.getElementById("hAim").textContent = `Land it in the blue box. ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
-    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${h.front}</td><td>${Math.round(h.length)}</td><td>${h.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front}</td><td>${Math.round(r.S3.center)}</td><td>${r.S3.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
     document.getElementById("hNote").textContent = h.note || "";
     const ge = h.elev;
     document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds; "Play it like" includes this and the wind.` : "";
   }
   document.getElementById("hBadges").innerHTML = badges.join(" ");
   renderStrip(); renderControls(); save();
+}
+function renderTeeCtl(h){
+  document.querySelectorAll("#set button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.set));
+  const row = document.getElementById("adjRow"); row.hidden = h.kind !== "tee";
+  const a = st.adj[h.key] || 0; document.getElementById("adj").value = a;
+  document.getElementById("adjLbl").textContent = a === 0 ? "at the card spot" : `${Math.abs(a)} yds ${a > 0 ? "back" : "up"}`;
 }
 function solveTeeCalm(h){ if(h.calm) return h.calm.pick; const g = h.grid["0_0"].clubs; return Object.keys(g).sort((a,b) => g[a].ev - g[b].ev)[0]; }
 function aimMark(x, y){ const c = (w, col) => `<g stroke="${col}" stroke-width="${w}" fill="none"><line x1="${x-18}" y1="${y}" x2="${x+18}" y2="${y}"/><line x1="${x}" y1="${y-18}" x2="${x}" y2="${y+18}"/><circle cx="${x}" cy="${y}" r="7"/></g>`; return c(3.6, "#1a1a1a") + c(1.6, "#ffc928") + `<circle cx="${x}" cy="${y}" r="2.2" fill="#e5202a" stroke="#1a1a1a" stroke-width=".6"/>`; }
@@ -292,10 +333,12 @@ dial.addEventListener("keydown", e => { if(e.key==="ArrowRight"||e.key==="ArrowU
 document.getElementById("speed").addEventListener("input", e => { st.mph = +e.target.value; st.src = "custom"; render(); });
 document.getElementById("hour").addEventListener("input", e => { st.hour = +e.target.value; render(); });
 document.querySelectorAll("#src button").forEach(b => b.addEventListener("click", () => { st.src = b.dataset.v; render(); }));
+document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; render(); }));
+document.getElementById("adj").addEventListener("input", e => { const h = D.holes[st.idx]; st.adj[h.key] = +e.target.value; render(); });
 document.querySelectorAll("#view button").forEach(b => b.addEventListener("click", () => { st.view = b.dataset.v; render(); }));
 document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest(".chip"); if(b){ st.idx = +b.dataset.i; render(); } });
 document.getElementById("prev").addEventListener("click", () => { st.idx = (st.idx + D.holes.length - 1) % D.holes.length; render(); });
 document.getElementById("next").addEventListener("click", () => { st.idx = (st.idx + 1) % D.holes.length; render(); });
-document.getElementById("foot").textContent = `Forecast: Open-Meteo, fetched ${D.fetched.slice(0,16).replace("T"," ")} UTC (cross-checked with NWS). Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Each hole's map has the GPS app's markings removed; hole 3 is not mapped. Club picks in wind use the model at its central settings (driver pattern 70 yds); the calm-day pick comes from the full Bayesian run. "≈" marks a tie (within 0.01 strokes).`;
+document.getElementById("foot").textContent = `Forecast: Open-Meteo, fetched ${D.fetched.slice(0,16).replace("T"," ")} UTC (cross-checked with NWS). Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Each hole's map has the GPS app's markings removed; hole 3 is the 2023 aerial photo. Other tee sets move the tee back or up the line by the scorecard difference from Black (Gold on the 2 and 9 Gold pages); each is solved separately, to the nearest 20 yds. Club picks in wind use the model at its central settings (driver pattern 70 yds); the calm-day pick comes from the full Bayesian run. "≈" marks a tie (within 0.01 strokes).`;
 render();
 </script>
