@@ -3,6 +3,7 @@
 Runs on GitHub Actions (the development sandbox cannot reach weather APIs).
 Primary source: Open-Meteo (no key). Cross-check: NWS api.weather.gov
 (needs a User-Agent). Writes course_data/weather/forecast_spirit_hollow.json.
+Re-run by pushing any change to this file (last refresh request: Fri 2026-10-16 evening).
 
 Coordinates: course centroid from course_data/spirit_hollow/summary.json
 (OSM golf_course polygon), 40.7605 N, 91.1442 W.
