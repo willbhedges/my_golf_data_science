@@ -91,5 +91,96 @@
    "no elevation adjustments in the package (flat ground assumed)"
   ],
   "ok": false
+ },
+ "course_data/qa/work/v_mozingo_lake/package.json|None": {
+  "package": "course_data/qa/work/v_mozingo_lake/package.json",
+  "tees": null,
+  "out": "/tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/mozingo_lake",
+  "cmd": "/usr/local/bin/python3 /home/user/my_golf_data_science/course_data/product/plan.py --package course_data/qa/work/v_mozingo_lake/package.json --quick --out /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/mozingo_lake",
+  "checks": {
+   "plan_exit_0": true,
+   "book_pdf": true,
+   "aim_sheets_pdf": true,
+   "book_pages_ge_holes": true,
+   "wind_page": true,
+   "wind_page_self_contained": true,
+   "wind_page_all_tee_holes": true,
+   "decision_all_tee_holes": true,
+   "no_aim_on_bound": false
+  },
+  "problems": [
+   "aim on the +/-60 search bound: ['17']"
+  ],
+  "exit": 0,
+  "log_tail": "[   0.0s] == 1 package -> course module\n[   0.2s] Mozingo Lake Golf Course (mozingo_lake), request tees: 14 tee shots + 4 par 3s from course_data/qa/work/v_mozingo_lake/package.json\n[   0.4s] == 2 NAIP render per hole\n[   1.5s]   ! hole 11: 8% of the frame has no imagery\n[   2.1s] 18 images, 2.0 MB, imagery 2022-07-10\n[   2.1s] == 3 decision (quick)\n[  38.5s]   2: 4-wood aim +5.0 margin 0.029\n[  42.7s]   4: Driver aim -10.0 margin 0.025\n[  60.0s]   1: 4-wood aim -10.0 margin 0.024\n[  92.8s]   7: 4-wood aim +20.0 margin 0.031\n[  93.0s]   6: Driver aim +10.0 margin 0.111\n[  95.0s]   9: Driver aim -22.5 margin 0.011\n[  98.3s]   3: Driver aim +57.5 margin 0.112\n[ 128.5s]   10: 4-wood aim +5.0 margin 0.003 (tie)\n[ 142.8s]   12: Driver aim -32.5 margin 0.023\n[ 169.9s]   16: Driver aim -10.0 margin 0.003 (tie)\n[ 183.0s]   13: Driver aim -22.5 margin 0.042\n[ 183.3s]   17: Driver aim +62.5 margin 0.054\n[ 193.5s]   14: 4-wood aim -12.5 margin 0.004 (tie)\n[ 202.4s]   18: 2-wood aim +0.0 margin 0.007 (tie)\n[ 203.0s] == 4 book + aim sheets\nhole 1 done\nhole 2 done\nhole 3 done\nhole 4 done\nhole 5 done\nhole 6 done\nhole 7 done\nhole 8 done\nhole 9 done\nhole 10 done\nhole 11 done\nhole 12 done\nhole 13 done\nhole 14 done\nhole 15 done\nhole 16 done\nhole 17 done\nhole 18 done\nwrote /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/mozingo_lake/output/Mozingo_Lake_Strategy.pdf\nwrote /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/mozingo_lake/output/Mozingo_Lake_Aim_Sheets.pdf\n[ 218.7s] == 5 forecast + wind grid + page\n[ 359.9s]   wind grid 2: calm 4-wood\n[ 371.8s]   wind grid 4: calm Driver\n[ 459.4s]   wind grid 1: calm 4-wood\n[ 590.3s]   wind grid 6: calm Driver\n[ 596.6s]   wind grid 3: calm Driver\n[ 597.5s]   wind grid 7: calm 4-wood\n[ 615.3s]   wind grid 9: calm Driver\n[ 708.2s]   wind grid 10: calm 4-wood\n[ 783.5s]   wind grid 12: calm Driver\n[ 834.2s]   wind grid 16: calm Driver\n[ 932.3s]   wind grid 13: calm Driver\n[ 933.5s]   wind grid 17: calm Driver\n[ 934.1s]   wind grid 14: calm 4-wood\n[ 960.8s]   wind grid 18: calm 2-wood\n[ 961.2s]   wrote ../../../tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/mozingo_lake/wind_page/index.html (0.9 MB)\n[ 961.2s] done in 961s -> ../../../tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/mozingo_lake\n[ 961.2s]   gap: elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 3 holes, 4-wood on 2 holes, 2-wood on 1 holes, Long iron on 1 holes\n[ 961.2s]   gap: hole 17: Driver best aim +62 yds off the tee line (tee line points well away from the landing area; check the hole geometry)\n[ 961.2s]   gap: forecast: none attached (runs on Actions; the page falls back to a hand-set wind)\n",
+  "seconds": 962,
+  "book_pages": 19,
+  "book_mb": 4.5,
+  "aim_pages": 18,
+  "wind_page_kb": 930,
+  "decision": {
+   "1": {
+    "club": "4-wood",
+    "aim": -10.0
+   },
+   "2": {
+    "club": "4-wood",
+    "aim": 5.0
+   },
+   "3": {
+    "club": "Driver",
+    "aim": 57.5
+   },
+   "4": {
+    "club": "Driver",
+    "aim": -10.0
+   },
+   "6": {
+    "club": "Driver",
+    "aim": 10.0
+   },
+   "7": {
+    "club": "4-wood",
+    "aim": 20.0
+   },
+   "9": {
+    "club": "Driver",
+    "aim": -22.5
+   },
+   "10": {
+    "club": "4-wood",
+    "aim": 5.0
+   },
+   "12": {
+    "club": "Driver",
+    "aim": -32.5
+   },
+   "13": {
+    "club": "Driver",
+    "aim": -22.5
+   },
+   "14": {
+    "club": "4-wood",
+    "aim": -12.5
+   },
+   "16": {
+    "club": "Driver",
+    "aim": -10.0
+   },
+   "17": {
+    "club": "Driver",
+    "aim": 62.5
+   },
+   "18": {
+    "club": "2-wood",
+    "aim": 0.0
+   }
+  },
+  "data_gaps": [
+   "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 3 holes, 4-wood on 2 holes, 2-wood on 1 holes, Long iron on 1 holes",
+   "hole 17: Driver best aim +62 yds off the tee line (tee line points well away from the landing area; check the hole geometry)",
+   "forecast: none attached (runs on Actions; the page falls back to a hand-set wind)"
+  ],
+  "ok": false
  }
 }
