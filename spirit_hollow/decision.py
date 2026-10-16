@@ -59,7 +59,7 @@ S = int(os.environ.get("DECISION_DRAWS", 64))
 N = 3000
 AIM_STEP = 2.5
 CENTER_WIDTH = 70.0
-BASE = dict(clubs=copy.deepcopy(t.CLUBS), holes=copy.deepcopy(course.HOLES), sev=t.TREE_SEVERITY,
+BASE = dict(clubs=copy.deepcopy(t.CLUBS), irons=copy.deepcopy(t.IRONS), holes=copy.deepcopy(course.HOLES), sev=t.TREE_SEVERITY,
             lost=t.NATIVE_LOST, mis=dict(t.MISHIT_RATE))
 DIMS = ["width", "c_drv", "c_2w", "c_4w", "roll", "trees", "lost", "mishit", "map_seed"]
 
@@ -87,6 +87,9 @@ def apply(theta, holes_subset=None):
         t.CLUBS[k] = (c + off[k], c + off[k] + (tot - c) * theta["roll"], w * theta["width"], d)
     t.TREE_SEVERITY, t.NATIVE_LOST = theta["trees"], theta["lost"]
     t.MISHIT_RATE = {k: theta["mishit"] for k in BASE["mis"]}
+    # irons share the woods' uncertainty: same dispersion scale and roll, carry ~ the 4-wood's
+    t.IRONS = {k: (c + theta["c_4w"], c + theta["c_4w"] + (tot - c) * theta["roll"], w * theta["width"], d)
+               for k, (c, tot, w, d) in BASE["irons"].items()}
     rng = np.random.default_rng(theta["map_seed"])
     holes = copy.deepcopy(BASE["holes"])
     for h, hd in holes.items():
@@ -99,6 +102,7 @@ def apply(theta, holes_subset=None):
 
 def reset():
     t.CLUBS = copy.deepcopy(BASE["clubs"])
+    t.IRONS = copy.deepcopy(BASE["irons"])
     t.HOLES = copy.deepcopy(BASE["holes"])
     t.TREE_SEVERITY, t.NATIVE_LOST = BASE["sev"], BASE["lost"]
     t.MISHIT_RATE = dict(BASE["mis"])

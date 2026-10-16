@@ -454,7 +454,7 @@ def plot_hole(hole_no, results, out_path):
     fig, ax = plt.subplots(figsize=(4.6, 10))
     ax.imshow(img, extent=(0, 920, 2000, 0))
     colors = {"fairway": "#7CFC00", "recovery": "#8B4513", "sand": "#F5DEB3",
-              "native": "#DAA520", "water": "#1E90FF"}
+              "native": "#DAA520", "water": "#1E90FF", "ob": "#FF00FF"}
     for name, poly in h["zones"]:
         p = np.array(poly + [poly[0]])
         ax.plot(p[:, 0], p[:, 1], color=colors[name], lw=1.2)
