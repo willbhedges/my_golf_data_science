@@ -130,25 +130,59 @@ def _overlaps(xy, box):
 
 
 # ----------------------------------------------------------------------------- holes
-def pick_tee(hole_ll, tees, colour=None, length=None):
-    """Tee point for a hole: a golf=tee feature near the hole's first node, chosen by
-    colour tag, else by best match of the playing length to `length`, else the first node."""
-    start = np.array(hole_ll[0])
-    k = math.cos(math.radians(start[1]))
+def _project(xy, line):
+    """Arc-length position and distance of point xy on a polyline (extrapolated behind
+    the first node so that tees behind the line's start project to s < 0)."""
+    best = (math.inf, 0.0)
+    s0 = 0.0
+    for a, b in zip(line, line[1:]):
+        d = b - a
+        L = float(np.hypot(*d))
+        u = float(np.dot(xy - a, d) / (L * L + 1e-9))
+        u = max(u, -10.0) if s0 == 0 else min(max(u, 0.0), 1.0)
+        u = min(u, 1.0)
+        dist = float(np.hypot(*(a + u * d - xy)))
+        if dist < best[0]:
+            best = (dist, s0 + u * L)
+        s0 += L
+    return best[1], best[0]
 
-    def yd(a, b):
-        return math.hypot((a[0] - b[0]) * k, a[1] - b[1]) * 111320 / YD
-    near = [t for t in tees if yd(t["pt"], start) < 120]
+
+def pick_tee(hole_ll, tees, colour=None, length=None, min_leg=60.0):
+    """Tee for a hole + the hole-line nodes still ahead of it.
+
+    Candidates are golf=tee features within 30 yds of the hole line, from 150 yds behind its
+    start to 100 yds short of the green (a neighbouring hole's tee can sit near this hole's
+    back tee, so plain distance is not enough). Chosen by colour tag, else by the playing
+    length closest to `length` (the scorecard yardage), else the line's start. The aiming
+    node is the first one >= min_leg yds past the tee, so a node mapped right next to the
+    tee doesn't set the direction."""
+    fr = Frame(hole_ll[0], hole_ll[1])
+    line = fr.to_model(hole_ll)
+    seg = np.r_[0.0, np.cumsum(np.linalg.norm(np.diff(line, axis=0), axis=1))]
+
+    def plan(pt):
+        xy = fr.to_model([pt])[0]
+        s, off = _project(xy, line)
+        ahead = [i for i in range(1, len(line)) if seg[i] > s + min_leg] or [len(line) - 1]
+        pts = np.vstack([xy, line[ahead]])
+        return off, s, ahead, float(np.sum(np.linalg.norm(np.diff(pts, axis=0), axis=1)))
+
+    cands = []
+    for t in tees:
+        off, s, ahead, L = plan(t["pt"])
+        if off < 30 and -150 < s < seg[-1] - 100:
+            cands.append((t, ahead, L))
     if colour:
-        tagged = [t for t in near if colour.lower() in {str(t["props"].get(x, "")).lower()
-                                                        for x in ("tee", "colour", "color", "ref", "name")}]
-        if tagged:
-            return tagged[0]["pt"], "tee tagged " + colour
-    if length and near:
-        rest = sum(yd(a, b) for a, b in zip(hole_ll[1:], hole_ll[2:]))
-        best = min(near, key=lambda t: abs(yd(t["pt"], hole_ll[1]) + rest - length))
-        return best["pt"], f"tee nearest scorecard {length} yds"
-    return list(start), "hole line start"
+        for t, ahead, L in cands:
+            if colour.lower() in {str(t["props"].get(x, "")).lower()
+                                  for x in ("tee", "colour", "color", "ref", "name")}:
+                return t["pt"], ahead, "tee tagged " + colour
+    if length and cands:
+        t, ahead, L = min(cands, key=lambda c: abs(c[2] - length))
+        return t["pt"], ahead, f"tee box closest to {length:.0f} yds ({L:.0f})"
+    _, _, ahead, _ = plan(hole_ll[0])
+    return list(hole_ll[0]), ahead, "hole line start"
 
 
 def convert(fc, colour=None, lengths=None, boundary_ob=True):
@@ -167,12 +201,12 @@ def convert(fc, colour=None, lengths=None, boundary_ob=True):
         ref = p.get("ref") or str(p["osm_id"])
         line = f["geometry"]["coordinates"]
         L = (lengths or {}).get(str(ref))
-        tee_ll, how = pick_tee(line, tees, colour, L)
-        fr = Frame(tee_ll, line[1])
+        tee_ll, ahead, how = pick_tee(line, tees, colour, L)
+        fr = Frame(tee_ll, line[ahead[0]])
         green_ll = min(greens, key=lambda g: np.hypot(*(np.subtract(g["pt"], line[-1]))))["pt"] \
             if greens else line[-1]
         green = fr.to_model([green_ll])[0]
-        path = np.vstack([fr.to_model([tee_ll]), fr.to_model(line[1:])])
+        path = np.vstack([fr.to_model([tee_ll]), fr.to_model([line[i] for i in ahead])])
         length = float(np.sum(np.linalg.norm(np.diff(path, axis=0), axis=1)))
         reach = max(330.0, min(length, 450.0))
         box = np.array([[-WINDOW["lat"], WINDOW["back"]], [WINDOW["lat"], WINDOW["back"]],
