@@ -73,6 +73,9 @@ def elev_of(h):
     try:
         a = _E.adjustments(str(h))
     except Exception:
+        p = course.PAR3.get(h, {})
+        if p.get("green_drop_ft") is not None:                 # from the platform package (hole 3)
+            return dict(green_drop=p["green_drop_ft"], dz=p.get("plays_like_delta"))
         return None
     if "clubs" in a and a["clubs"]:
         sl = a.get("landing_slope") or {}

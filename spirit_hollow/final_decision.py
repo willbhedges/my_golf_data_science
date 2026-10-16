@@ -48,7 +48,8 @@ def draws():
 
 def main():
     rng = np.random.default_rng(2027)
-    E = {h: {} for h in D.BASE["holes"]}
+    only = [x.strip() for x in os.environ.get("FINAL_HOLES", "").split(",") if x.strip()]
+    E = {h: {} for h in D.BASE["holes"] if not only or str(h) in only}   # same draws/z either way
     for i, th in enumerate(draws()):
         PP.apply(th)
         t.HCP_BASELINE = False
@@ -57,7 +58,8 @@ def main():
             DS.accumulate(E[h], DS.ev_grid_halves(h, z))
         print(f"draw {i + 1}/{S}", flush=True)
     PP.reset()
-    out = {}
+    path = os.path.join(HERE, "output", "final_decision.json")
+    out = json.load(open(path)) if only and os.path.exists(path) else {}    # update those holes only
     for h in E:
         r = DS.summarize(E[h])
         cf = r["crossfit"]
@@ -70,7 +72,7 @@ def main():
         out[str(h)] = r
         print(h, r["pick"], f"aim {r['aim']:+.1f}", f"margin {r['margin']:.3f}±{r['margin_se']:.3f}",
               f"cf {cf_margin:.3f}", "TIE" if r["tie"] else "", r["width_flips"], flush=True)
-    with open(os.path.join(HERE, "output", "final_decision.json"), "w") as f:
+    with open(path, "w") as f:
         json.dump(out, f, indent=1, default=float)
     write_md(out)
 

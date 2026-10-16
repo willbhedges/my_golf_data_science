@@ -108,8 +108,14 @@ def main():
     E = elevation_adjust()
     rng = np.random.default_rng(31)
     z = np.vstack([rng.standard_normal((2, N)), rng.random((2, N))])
+    only = [x.strip() for x in os.environ.get("WIND_HOLES", "").split(",") if x.strip()]
+    path = os.path.join(HERE, "output", "wind_grid.json")
     out = dict(speeds=SPEEDS, dirs=DIRS, bearings={}, holes={}, par3={})
+    if only and os.path.exists(path):                      # update just those tee holes
+        out = json.load(open(path))
     for h in course.HOLES:
+        if only and str(h) not in only:
+            continue
         # elevation is applied inside tee_strategy.simulate via the hole's "elev" table
         b = (course.HOLES[h].get("elev_info") or {}).get("bearing") or bearings[ref(h)]
         out["bearings"][str(h)] = b
@@ -125,7 +131,7 @@ def main():
         dz = p.get("plays_like_delta", 0.0)                      # elevation
         out["par3"][str(h)] = {f"{sp}_{rel}": plays_like(p["center"], sp, rel) + dz
                                for sp in SPEEDS for rel in ([0] if sp == 0 else DIRS)}
-    with open(os.path.join(HERE, "output", "wind_grid.json"), "w") as f:
+    with open(path, "w") as f:
         json.dump(out, f)
     print("wrote wind_grid.json")
 

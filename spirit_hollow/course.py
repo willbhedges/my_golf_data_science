@@ -291,10 +291,21 @@ AUDIT_FIXES = {
                      (405, 1120), (425, 1060), (445, 1000)])],
     "2F": [("water", [(235, 900), (262, 900), (268, 950), (285, 1000), (285, 1050), (275, 1100),
                       (255, 1150), (245, 1050), (235, 950)]),  # creek reaches ~-28 yds
-           ("sand", [(420, 860), (450, 860), (450, 884), (420, 884)])],  # lower lobe of the bunker
+           ("sand", [(420, 860), (450, 860), (450, 884), (420, 884)]),  # lower lobe of the bunker
+           # pond edge check vs photo (user): the pond's lower lobe and its tan bank reach 6-8 yds
+           # into the traced fairway at 200-235 out
+           ("native", [(298, 1105), (318, 1105), (325, 1180), (328, 1260), (306, 1260), (302, 1160)]),
+           ("water", [(255, 1020), (285, 1020), (290, 1060), (297, 1100), (302, 1160), (306, 1260),
+                      (282, 1260), (275, 1150), (268, 1060)])],
     "2B": [("water", _line_poly([(205, 650), (240, 760), (290, 860), (310, 900), (330, 950),
                                  (345, 1000)], 7)),           # the creek was never mapped from this tee
-           ("native", [(310, 880), (370, 890), (375, 960), (345, 1000), (322, 950)])],
+           ("native", [(310, 880), (370, 890), (375, 960), (345, 1000), (322, 950)]),
+           # 200-250 out, left-centre: tan long-grass band and trees, not fairway (photo check)
+           ("native", [(345, 995), (370, 1000), (395, 1050), (380, 1062), (355, 1060)]),
+           ("native", [(400, 1085), (440, 1100), (500, 1125), (560, 1170), (580, 1195), (580, 1260),
+                       (540, 1260), (470, 1215), (420, 1180), (380, 1150), (360, 1110)]),
+           ("recovery", [(300, 1060), (335, 1060), (340, 1180), (300, 1180)]),
+           ("recovery", [(425, 1060), (470, 1062), (472, 1098), (430, 1098)])],
     8: [("rough", [(245, 650), (325, 650), (330, 700), (340, 900), (333, 975), (330, 975), (310, 900),
                    (278, 800), (250, 700)]),                   # long grass ends 10-19 yds further left
         ("fairway", [(480, 805), (520, 805), (520, 835), (480, 835)])],  # L-shaped bunker: grass block
@@ -498,6 +509,16 @@ PAR3 = {
               note="Round green. Bunker tight right, long grass left beyond a few yards of rough. "
                    "Short is fairway, so the short miss is fine.",
               short="Bunker right, long grass left. Short is safe."),
+    # no app screenshot for 3: NAIP 2023 aerial rendered in the same frame from the OSM hole line
+    # and the Black tee (course_data/platform package); green = OSM outline (matches the photo);
+    # hazards read off the photo by eye
+    3: _par3("hole03.jpg", (460, 1900), 148,
+             [(432, 1342), (419, 1352), (412, 1368), (415, 1386), (422, 1401), (434, 1423), (448, 1439), (465, 1452), (483, 1452), (499, 1441), (508, 1429), (509, 1414), (505, 1396), (449, 1341)],
+             haz=dict(left="trees", right="rough", short="water", long="rough"),
+             note="Pond short-left: its edge is 7-13 yds off the front-left of the green, with grass "
+                  "straight in front. Trees tight left. Rough right and over the back (trees 12+ yds "
+                  "behind). Aerial photo, no app screenshot for this hole.",
+             short="Pond short-left, trees left. Long and right are safe."),
     15: _par3("hole15.png", (395, 1672), 134,
               [(375, 1000), (390, 960), (430, 930), (470, 922), (520, 925), (545, 945), (540, 980),
                (515, 1015), (475, 1045), (440, 1052), (400, 1040), (380, 1020)],
@@ -556,7 +577,7 @@ AIM_AT = {
     18: "Centre-left of the fairway, between the long grass and the creek",
 }
 
-ORDER = [1, "2F", "2B", 4, 5, 6, 7, 8, "9F", "9B", 10, 11, 12, 13, 14, 15, 16, 17, 18]
+ORDER = [1, "2F", "2B", 3, 4, 5, 6, 7, 8, "9F", "9B", 10, 11, 12, 13, 14, 15, 16, 17, 18]
 # Official card (course_data/tees/scorecard.json): the golfer plays the Black tees. On 2 and 9 the
 # "forward" screenshots are the Black tees (2: 520 vs card 507; 9: 373 vs 365) and the "back" ones
 # are the Gold tips (2: 609 vs 607; 9: 399 vs 410).
@@ -593,3 +614,24 @@ def _load_elevation():
 
 
 ELEVATION = _load_elevation()
+
+
+def _package_par3_elevation():
+    """Holes without an app screenshot (3) aren't in the elevation agent's table: read the same
+    USGS 3DEP adjustments from the platform package instead."""
+    import json
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "course_data", "packages",
+                        "spirit_hollow", "package.json")
+    if not os.path.exists(path):
+        return
+    hs = json.load(open(path))["holes"]
+    holes = {str(k): v for k, v in hs.items()} if isinstance(hs, dict) else {str(h["ref"]): h for h in hs}
+    for k, p in PAR3.items():
+        a = (holes.get(str(k), {}).get("elevation") or {}).get("adjustments") or {}
+        if "plays_like_delta" not in p and "plays_like_delta_yds" in a:
+            p["plays_like_delta"] = float(a["plays_like_delta_yds"])
+            p["bearing"] = a.get("bearing_deg_true")
+            p["green_drop_ft"] = a.get("green_drop_ft")
+
+
+_package_par3_elevation()
