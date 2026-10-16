@@ -83,8 +83,13 @@ def find_course(name, near, radius_m):
     if not els:
         return None, []
 
+    for e in els:
+        if not e.get("center"):
+            b = bounds_of(e)
+            e["center"] = dict(lat=(b["minlat"] + b["maxlat"]) / 2, lon=(b["minlon"] + b["maxlon"]) / 2)
+
     def dist(e):
-        c = e.get("center") or {"lat": e.get("lat"), "lon": e.get("lon")}
+        c = e["center"]
         return math.hypot(c["lat"] - lat, (c["lon"] - lon) * math.cos(math.radians(lat)))
     els.sort(key=lambda e: (e["type"] == "node", dist(e)))   # prefer areas, then closest
     return els[0], els
