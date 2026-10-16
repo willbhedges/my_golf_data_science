@@ -18,13 +18,19 @@ sys.path[:0] = [HERE]
 import platform_common as pc  # noqa: E402
 
 
+# libraries the build imports: a change to one rebuilds every fetched package (offline)
+DEPS = ["course_data/vision_any/gapfill.py", "course_data/geometry/build_holes.py", "course_data/tees/place_tee.py",
+        "course_data/pipeline.py", "course_data/elevation/adjust.py"]
+
+
 def plan(changed, requests=None):
     """-> list of (request path, action) with action in fetch | build | survey | skip."""
     changed = {os.path.normpath(c) for c in changed}
     rel = lambda p: os.path.normpath(os.path.relpath(p, pc.ROOT))    # noqa: E731
+    deps = [os.path.normpath(d) for d in DEPS]
     code = any(c.startswith(os.path.normpath("course_data/platform/")) and c.endswith(".py") and
                "/test_" not in c.replace(os.sep, "/") for c in changed) or \
-        any(c.endswith("course_package.yml") for c in changed)
+        any(c.endswith("course_package.yml") or c in deps for c in changed)
     out = []
     if requests is None:
         requests = glob.glob(os.path.join(pc.REQUESTS, pc.REQUEST_PREFIX + "*.json")) + \

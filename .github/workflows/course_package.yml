@@ -15,6 +15,11 @@ on:
       - "course_data/platform/**"
       - "course_data/requests/package_*.json"
       - "course_data/requests/survey_*.json"
+      - "course_data/vision_any/gapfill.py"
+      - "course_data/geometry/build_holes.py"
+      - "course_data/tees/place_tee.py"
+      - "course_data/pipeline.py"
+      - "course_data/elevation/adjust.py"
   workflow_dispatch:
 
 permissions:
@@ -42,7 +47,7 @@ jobs:
         run: |
           sudo apt-get install -y -q poppler-utils >/dev/null || true
           python -m pip install --upgrade pip
-          pip install requests numpy scipy shapely pyproj matplotlib pillow pytest opencv-python-headless \
+          pip install requests numpy scipy shapely pyproj matplotlib pillow pytest opencv-python-headless scikit-learn scikit-image \
                       pystac-client planetary-computer rasterio
 
       - name: Unit tests (offline)
