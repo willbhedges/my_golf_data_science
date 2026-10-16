@@ -1,0 +1,48 @@
+Spirit Hollow hazard-map audit (coords in the 920x2000 frame). Crops: h<key>_raw/_traced/_balls.png, z_<key>_<x0>_<y0>[_t].png (grid every 25/50 px, _t = traces drawn).
+What-if numbers come from in-memory edits (scratchpad/whatif.py, whatif2.py); the repo is unchanged.
+
+1. Hole 4: native drawn right up to the fairway edge on both sides; the photo shows a ~9-15 yd band of lighter-green rough first.
+   Right: fairway dark green to ~475, lighter rough 475-505/520, tan from ~505 (y1050-1150) / ~525 (y1250). Map native starts at 468-475.
+   Left: tan/olive to ~330-345, light-green rough 335-370, fairway from ~372. Map native runs to 370-372.
+   Driver native 29%->6%, EV 4.632->4.472. Driver still beats the 2-wood and 4-wood. z_4_290_1080*.png, h4_balls.png
+2. Hole 5: the right bunker near 300 yds is about twice the size of the trace. The photo shows one bunker x478-549, y843-925 (the big lower lobe sits under the white 300 bar). The trace is (490-535, 835-882).
+   Driver sand 6%->14%, EV 3.855->3.900. The 2-wood (3.877) and 4-wood (3.885) now beat the driver. z_5_460_820.png, z_5_470_800_t.png
+3. Hole 13: the second pot bunker is missing. Pots in the photo: (377-395, 870-894) and (358-382, 896-922). One sand polygon (365-397, 848-892) covers only the first one, and it sits about 20 px too far up.
+   There is also a likely 3rd small bunker at (402-418, 798-822): ~314 yds, 4-10 yds left of the line, partly hidden by the red dashes.
+   4-wood sand 0%->8%, EV 3.913->3.942. 2-wood sand 6%->19%. The 4-wood stays best. z_13_270_760*.png, z_13_360_700.png
+4. Hole 18: the right native/creek-bank edge is ~10-13 yds too far left. Photo tan starts at ~(545,900),(486,1015),(456,1109),(427,1192). Map: (500,900),(454,1015),(421,1109),(~385,1192).
+   Driver native 24%->12%, EV 4.619->4.492, optimal aim -8->0. The driver stays best. z_18_180_780*.png, h18_balls.png
+   Also: there is tan/leaf litter under the trees left of the fairway at y850-920 (x295->360/370), mapped fairway. That is ~320-335 yds, so it matters little.
+5. Hole 2F: the creek (teal) reaches ~25-30 px past the water/tree trace. It runs to x≈268 at y950, ≈285 at y1000-1050, ≈275-285 with a white rock lip at y975-1020. Map: water to ~235-245, trees to ~250, fairway from ~255.
+   That puts the creek edge at ~-28 yds at ~255 yds, versus about -40 on the map. Driver water 2%->5%, EV 4.395->4.454. The driver stays best, at aim -12->-8. z_2F_180_760_t.png
+   2F bunker (395-450, 800-860): the real sand is (400-450, 800-884). The lower lobe (420-450, 860-884) is missing, and the trace's top-left (395-405) is grass. z_2F_360_760_t.png
+6. Hole 2B: the same creek is never mapped as water (on 2F it is). The white-blue streak runs (205,650)->(240,760)->(290,860)->(310,900)->(330,950)->(345,1000).
+   At y900-960 the creek and the tan bank right of it (x≈303-370) fall inside the fairway polygon. That is ~-18 to -30 yds at 255-270 yds, inside the driver pattern.
+   With water + native there: driver EV 4.888->4.939, best aim -5->0. z_2B_250_840*.png, z_2B_150_620_t.png
+7. Hole 8: the left native polygon is ~40-70 px too far right at y650-900. Photo tan ends at ~250 (y700), ~278 (y800), ~310 (y900), ~330 (y975). Map native reaches 322-340, so 10-19 yds of rough at 265-320 yds is called native. Below y950 it is fine.
+   The right bunker trace (445-520, 805-875) is a rectangle around an L-shaped bunker. The block (480-520, 805-835) is grass.
+   Both fixed: driver sand 32%->22%, native 8%->4%. The 4-wood stays best. z_8_170_600_t.png, z_8_410_770_t.png
+8. Hole 9F: the trees and the creek are in the wrong places.
+   Map trees (560-620, 790-890) sit on grass plus the west creek. The real tree clump is at (497-578, 896-972): ~245-265 yds, 11-35 yds right, currently rough/fairway.
+   The map creek strip (598-670, 760-890) is grass between two creek lines. The real west creek runs (574,809)->(580,830)->(599,873)->(642,893). The east creek runs (703,796)->(642,893).
+   Fixed: 2-wood 3.863, 4-wood 3.870, driver 3.876, aims move to -18. The 2-wood is still best by a thin margin. z_9F_500_720*.png, z_9F_400_850_t.png
+   Pond: the map's left edge (450-455) is ~5-6 yds wider than the rim (~470); it also stops at x575 though the pond goes past 650. It is ~195 yds out, so it barely matters.
+9. Hole 6: the left native band is offset ~40-50 px toward the fairway. Photo tan band at y850 ≈152-198, y900 ≈190-255, y950 ≈182-263. Map native spans 210-280 / 220-300 / 245-320, over rough and fairway; the real tan band is mostly inside the "tree row" polygon.
+   On the right, native starts ~30-40 px too far left (photo grass to the black line ~570 at y900). Effect: driver EV 3.968->3.923, no change in pick. z_6_100_700_t.png, z_6_400_650_t.png
+10. Hole 11: the native polygon (290-440, 950-1260) is mislocated. Photo x330-410 at y950-1060 is green. The real tan strip is diagonal: (356-430, ~1118) -> (373-468, ~1166) -> (387-506, ~1213), ~150-185 yds, crossing the line, with a drainage crack inside it.
+    It is outside the wood landing zones; only an edge effect on the long iron. The creek (652-692) matches the photo. z_11_230_880*.png
+11. Hole 17: the right "woods" start at the fairway edge (~490-500), but the photo shows tan/green grass to the black line ~525-540 and trees beyond. Driver aim -2 puts this at ~+33 yds, outside most of the pattern.
+    The bunker misses its right lobe (real 400-442 vs traced 400-430, y808-863); it is ~335 yds out. z_17_220_850_t.png, z_17_360_760_t.png
+12. Minor (<=5 yds or outside the pattern):
+    - Hole 5 left native at y800-950 reaches 315-330, while the photo is rough from ~275 (-45 yds).
+    - Hole 5 bunker 2 really goes to y~1003 (trace 992).
+    - Hole 10 bunker is ~15 px lower than traced (real 648-699 x 1155-1202).
+    - Hole 10 pond bottom runs to y~1140 (trace 1110).
+    - Hole 16 bunker B is really (467-506, 882-933) vs the trace (455-495, 875-920).
+    - Hole 9B pond left edge is ~437-450 vs the map's 425-430.
+    - Hole 14 has a sunlit tan patch at (270-342, 869-928) just left of the fairway edge, mapped rough (could be native, -32 yds).
+    - Hole 2F right native strip (465-495, 900-1050) is mostly green rough plus one tree.
+    - Hole 1 left: tan with tree streaks at (250-320, 1330-1480) is mapped rough.
+
+Holes that look correct in the landing zone: 1, 9B (trees, creek, fairway; pond within ~5 yds), 10, 14, 16, and 13's pond edge.
+Par 3s: the 15 green trace matches the photo closely (368-547 x 922-1053), and the bunkers and pond are where the notes say. On 7 the bunker positions match; the green outline is plausible but hard to verify in the photo. On 12 the bunker sits tight right (461-493 x 919-974) as noted; the green edge cannot be seen well enough to verify the 60-px circle.

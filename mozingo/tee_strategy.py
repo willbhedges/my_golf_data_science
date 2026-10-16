@@ -99,21 +99,40 @@ def set_tails(nu):
 LONG_SLOPE = 0.0035   # strokes per yd beyond 300 (tour baseline keeps rising ~0.07 per 20 yds)
 
 
+NATIVE_IS_PENALTY_AREA = False   # True if the long grass is staked red/yellow (then 1 + drop)
+
+
+def _lie_mixture(lie):
+    """(weight, playing lie, penalty strokes) components of each modelled lie.
+
+    A ball lost in long grass outside a penalty area is stroke and distance (or the
+    2-stroke Model Local Rule E-5), the same cost as OB. Fix from spirit_hollow/review_stats."""
+    if lie == "water":
+        return [(1.0, "rough", 1.0)]
+    if lie == "ob":
+        return [(1.0, "rough", 2.0)]
+    if lie == "native":
+        pen = 1.0 if NATIVE_IS_PENALTY_AREA else 2.0
+        return [(NATIVE_LOST, "rough", pen), (1 - NATIVE_LOST, "recovery_hard", 0.0)]
+    if lie == "recovery":
+        return [(TREE_SEVERITY, "recovery_hard", 0.0), (1 - TREE_SEVERITY, "rough", 0.0)]
+    return [(1.0, lie, 0.0)]
+
+
 def expected_strokes(lie, dist):
     dist = np.asarray(dist, float)
     beyond = np.maximum(dist - DIST[-1], 0) * LONG_SLOPE      # long par-5 second shots
-    e = _expected_strokes(lie, dist) + beyond
-    if HCP_BASELINE:
-        # ~5-handicap, calibrated in spirit_hollow/research.md (Stagner/Arccos, Shot Scope):
-        # fairway = tour + 0.40 + 0.001*(d-150) (scratch ~3.04 from 100 vs tour 2.80; a 5 from
-        # 100 ~ scratch from 150). Lie penalties relative to the fairway scale by lie type:
-        # amateurs lose LESS than tour from rough (~0.7x), about the same from sand (1.1x),
-        # more from trees/long grass (1.3x). Water/OB keep their penalty stroke on top.
-        fw = _expected_strokes("fairway", dist) + beyond
-        base_fw = fw + 0.40 + 0.001 * (np.clip(dist, 20, 450) - 150)
-        mult = HCP_LIE_MULT.get(lie, 1.0)
-        e = base_fw + mult * (e - fw)
-    return e
+    fw = _expected_strokes("fairway", dist) + beyond
+    out = np.zeros_like(dist)
+    for w, base, pen in _lie_mixture(lie):
+        key = "recovery" if base == "recovery_hard" else base
+        e = np.interp(np.clip(dist, DIST[0], DIST[-1]), DIST, BASELINE[key]) + beyond
+        if HCP_BASELINE:
+            # ~5-handicap (research.md): fairway = tour + 0.40 + 0.001*(d-150); the lie's gap over
+            # the fairway scales by lie type; penalty strokes are added unscaled.
+            e = fw + 0.40 + 0.001 * (np.clip(dist, 20, 450) - 150) + HCP_LIE_MULT.get(key, 1.0) * (e - fw)
+        out = out + w * (e + pen)
+    return out
 
 
 HCP_LIE_MULT = {"fairway": 1.0, "rough": 0.7, "sand": 1.1, "recovery": 1.3, "native": 1.3,

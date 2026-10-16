@@ -27,7 +27,7 @@ N_TEST = 2000
 
 # Globals of tee_strategy that tests (or the code under test) may change.
 _T_GLOBALS = ("HOLES", "CLUBS", "IRONS", "TAIL_NU", "CHI", "RHO", "HCP_BASELINE", "Z",
-              "TREE_SEVERITY", "NATIVE_LOST", "MISHIT_RATE", "ROUGH_ROLL", "REFINE")
+              "TREE_SEVERITY", "NATIVE_LOST", "MISHIT_RATE", "ROUGH_ROLL", "REFINE", "NATIVE_IS_PENALTY_AREA")
 _YB_GLOBALS = ("NAME", "DIR", "PREFIX", "STRATEGY_NAME", "ORDER", "LABELS", "PAR3", "NOTES",
                "AIM_AT", "WIND_NOW")
 

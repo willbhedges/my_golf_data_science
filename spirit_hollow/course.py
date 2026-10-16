@@ -254,7 +254,58 @@ HOLES = {
         ]),
 }
 
-HOLES[13]["irons"] = True                    # pond + bunker squeeze the landing zone
+HOLES[13]["irons"] = True
+
+# Corrections from the independent full-zoom map audit (spirit_hollow/output/audit_findings.txt).
+# Appended zones override earlier ones; "rough" patches undo hazards that were drawn too big.
+def _line_poly(pts, half):
+    """A strip of +/-half px around a polyline (creek beds)."""
+    left = [(x - half, y) for x, y in pts]
+    right = [(x + half, y) for x, y in pts][::-1]
+    return left + right
+
+
+AUDIT_FIXES = {
+    4: [("rough", [(468, 860), (505, 860), (508, 1150), (525, 1250), (528, 1500), (475, 1500),
+                   (470, 1300), (467, 1000)]),                 # 9-15 yds of rough before the tan, right
+        ("rough", [(335, 860), (372, 860), (370, 1000), (373, 1300), (383, 1500), (345, 1500),
+                   (335, 1300), (330, 1000)])],                # ...and left
+    5: [("sand", [(478, 843), (549, 843), (549, 925), (478, 925)])],   # right bunker ~2x the trace
+    13: [("sand", [(377, 870), (395, 870), (395, 894), (377, 894)]),   # second pot bunker
+         ("sand", [(358, 896), (382, 896), (382, 922), (358, 922)]),
+         ("sand", [(402, 798), (418, 798), (418, 822), (402, 822)])],  # small third bunker ~314 out
+    18: [("fairway", [(500, 900), (545, 900), (486, 1015), (456, 1109), (427, 1192), (385, 1192),
+                      (421, 1109), (454, 1015)]),              # creek-bank grass starts 10-13 yds further right
+         ("native", [(295, 850), (365, 850), (370, 920), (295, 920)])],  # leaf litter under the left trees
+    "2F": [("water", [(235, 900), (262, 900), (268, 950), (285, 1000), (285, 1050), (275, 1100),
+                      (255, 1150), (245, 1050), (235, 950)]),  # creek reaches ~-28 yds
+           ("sand", [(420, 860), (450, 860), (450, 884), (420, 884)])],  # lower lobe of the bunker
+    "2B": [("water", _line_poly([(205, 650), (240, 760), (290, 860), (310, 900), (330, 950),
+                                 (345, 1000)], 7)),           # the creek was never mapped from this tee
+           ("native", [(310, 880), (370, 890), (375, 960), (345, 1000), (322, 950)])],
+    8: [("rough", [(245, 650), (325, 650), (330, 700), (340, 900), (333, 975), (330, 975), (310, 900),
+                   (278, 800), (250, 700)]),                   # long grass ends 10-19 yds further left
+        ("fairway", [(480, 805), (520, 805), (520, 835), (480, 835)])],  # L-shaped bunker: grass block
+    "9F": [("rough", [(560, 790), (620, 790), (620, 890), (560, 890)]),  # trees were drawn on grass
+           ("rough", [(598, 760), (670, 760), (670, 890), (598, 890)]),  # ...and so was the creek strip
+           ("recovery", [(497, 896), (578, 896), (578, 972), (497, 972)]),  # the real tree clump
+           ("water", _line_poly([(574, 809), (599, 873), (642, 893)], 6)),  # west creek
+           ("water", _line_poly([(703, 796), (642, 893)], 6))],             # east creek
+    6: [("rough", [(200, 800), (260, 800), (300, 900), (340, 1000), (270, 1000), (220, 900)]),
+        ("native", [(140, 800), (190, 800), (198, 850), (255, 900), (263, 950), (270, 1000),
+                    (185, 1000), (182, 950), (190, 900), (152, 850)]),  # left band sits further left
+        ("rough", [(505, 690), (535, 800), (575, 900), (625, 1000), (675, 1100), (640, 1100), (590, 1000),
+                   (540, 900), (500, 800), (470, 690)])],      # right band starts 30-40 px further right
+    11: [("rough", [(290, 950), (400, 950), (430, 1100), (440, 1260), (320, 1260), (300, 1100)]),
+         ("native", [(356, 1110), (430, 1110), (506, 1205), (506, 1220), (387, 1220), (356, 1125)])],
+    17: [("rough", [(450, 1300), (470, 1150), (510, 950), (560, 800), (610, 560), (645, 560), (595, 800),
+                    (545, 950), (505, 1150), (485, 1300)]),    # grass out to the black line before the woods
+         ("sand", [(430, 815), (442, 815), (442, 860), (430, 860)])],
+    16: [("sand", [(467, 882), (506, 882), (506, 933), (467, 933)])],
+}
+for _k, _extra in AUDIT_FIXES.items():
+    HOLES[_k]["zones"] = HOLES[_k]["zones"] + _extra
+                    # pond + bunker squeeze the landing zone
 
 # The app's "Center" numbers: yds to the green centre from the 300 / 270 / 240 dots.
 APP = {1: (119, 143, 168), "2B": (316, 339, 363), "2F": (225, 250, 276), 4: (221, 250, 280),

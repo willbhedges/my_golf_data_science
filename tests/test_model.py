@@ -71,11 +71,14 @@ def test_hcp_baseline_raises_fairway_and_resets_exactly(t):
     try:
         hcp = t.expected_strokes("fairway", D)
         assert np.all(hcp > orig["fairway"])
-        # each lie's gap over the fairway scales by its research-calibrated multiplier
+        # each component's playing-lie gap scales by its multiplier; penalty strokes unscaled
+        tour = lambda b: np.interp(np.clip(D, t.DIST[0], t.DIST[-1]), t.DIST, t.BASELINE[b]) + \
+            np.maximum(D - t.DIST[-1], 0) * t.LONG_SLOPE
         for lie in ("rough", "sand", "recovery", "native", "water", "ob"):
-            np.testing.assert_allclose(
-                t.expected_strokes(lie, D) - hcp,
-                t.HCP_LIE_MULT[lie] * (orig[lie] - orig["fairway"]), atol=1e-12)
+            want = sum(w * (hcp + t.HCP_LIE_MULT.get("recovery" if b == "recovery_hard" else b, 1.0)
+                            * (tour("recovery" if b == "recovery_hard" else b) - tour("fairway")) + pen)
+                       for w, b, pen in t._lie_mixture(lie))
+            np.testing.assert_allclose(t.expected_strokes(lie, D), want, atol=1e-12)
     finally:
         t.HCP_BASELINE = False
     for lie, v in orig.items():
@@ -289,3 +292,11 @@ def test_simulated_carry_scale(t, z):
         pts, *_ = t.simulate(hole, "Driver", 0.0, z=zz)
         tee, _, _, ppy = t.hole_frame(h)
         np.testing.assert_allclose(np.linalg.norm(pts - tee, axis=1) / ppy, clubs["Driver"][0])
+
+
+def test_native_lost_ball_is_stroke_and_distance(t):
+    """A lost ball in long grass costs the same as OB unless the grass is a penalty area."""
+    t.NATIVE_LOST = 1.0
+    np.testing.assert_allclose(t.expected_strokes("native", D), t.expected_strokes("ob", D))
+    t.NATIVE_IS_PENALTY_AREA = True
+    np.testing.assert_allclose(t.expected_strokes("native", D), t.expected_strokes("water", D))
