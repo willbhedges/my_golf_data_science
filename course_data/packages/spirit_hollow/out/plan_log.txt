@@ -3,26 +3,26 @@ $ /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/my_golf_d
 exit 0
 
 [   0.0s] == 1 package -> course module
-[   0.2s] Spirit Hollow Golf Course (spirit_hollow), Black tees: 14 tee shots + 4 par 3s from course_data/packages/spirit_hollow/package.json
-[   0.3s] == 2 NAIP render per hole
-[   2.4s] 18 images, 6.5 MB, imagery 2023-09-01
-[   2.4s] == 3 decision (quick)
-[   9.3s]   4: Driver aim -7.5 margin 0.070
-[  13.4s]   5: 4-wood aim -5.0 margin 0.015
-[  14.4s]   2: Driver aim +7.5 margin 0.062
-[  18.1s]   1: Driver aim -45.0 margin 0.053
-[  21.3s]   6: Driver aim -37.5 margin 0.026
-[  23.0s]   8: 4-wood aim -5.0 margin 0.008 (tie)
-[  25.0s]   9: Driver aim +85.0 margin 0.136
-[  31.4s]   11: 4-wood aim +0.0 margin 0.081
-[  32.3s]   10: Driver aim +0.0 margin 0.042
-[  32.7s]   13: Driver aim +17.5 margin 0.034
-[  38.4s]   16: 2-wood aim -5.0 margin 0.005 (tie)
-[  39.5s]   14: Driver aim -72.5 margin 0.010 (tie)
-[  39.9s]   17: Driver aim -5.0 margin 0.031
-[  42.0s]   18: Driver aim -2.5 margin 0.028
-[  42.6s] == 4 book + aim sheets
-hole 1 done
+[   0.3s] Spirit Hollow Golf Course (spirit_hollow), Black tees: 14 tee shots + 4 par 3s from course_data/packages/spirit_hollow/package.json
+[   0.6s] == 2 NAIP render per hole
+[   3.2s] 18 images, 6.5 MB, imagery 2023-09-01
+[   3.2s] == 3 decision (quick)
+[  26.2s]   4: Driver aim -2.5 margin 0.053
+[  28.3s]   5: 4-wood aim -5.0 margin 0.015
+[  41.3s]   2: Driver aim +7.5 margin 0.067
+[  42.5s]   1: Driver aim -40.0 margin 0.034
+[  58.0s]   6: Driver aim -35.0 margin 0.012
+[  61.2s]   8: 4-wood aim -5.0 margin 0.014
+[  66.2s]   9: 4-wood aim +2.5 margin 0.065
+[  78.6s]   11: 4-wood aim +0.0 margin 0.318
+[  78.8s]   10: Driver aim +0.0 margin 0.042
+[  82.5s]   13: 4-wood aim +2.5 margin 0.001 (tie)
+[  97.1s]   16: 4-wood aim -2.5 margin 0.016
+[ 104.5s]   14: 2-wood aim -40.0 margin 0.017
+[ 105.2s]   17: Driver aim -2.5 margin 0.024
+[ 108.3s]   18: Driver aim -5.0 margin 0.036
+[ 109.1s] == 4 book + aim sheets
+hole 1 CHECK done
 hole 2 done
 hole 3 done
 hole 4 done
@@ -35,35 +35,32 @@ hole 10 done
 hole 11 done
 hole 12 done
 hole 13 done
-hole 14 done
+hole 14 CHECK done
 hole 15 done
 hole 16 done
 hole 17 done
 hole 18 done
 wrote /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/packages/spirit_hollow/out/output/Spirit_Hollow_Strategy.pdf
 wrote /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/packages/spirit_hollow/out/output/Spirit_Hollow_Aim_Sheets.pdf
-[  53.8s] == 5 forecast + wind grid + page
-[  54.9s]   forecast: Open-Meteo (fetched now) (2026-10-17, 2026-10-18)
-[  82.9s]   wind grid 4: calm Driver
-[ 100.6s]   wind grid 5: calm 4-wood
-[ 107.1s]   wind grid 2: calm Driver
-[ 143.4s]   wind grid 6: calm Driver
-[ 147.8s]   wind grid 1: calm Driver
-[ 149.8s]   wind grid 9: calm Driver
-[ 150.0s]   wind grid 8: calm 4-wood
-[ 196.1s]   wind grid 13: calm Driver
-[ 204.3s]   wind grid 11: calm 4-wood
-[ 206.3s]   wind grid 10: calm Driver
-[ 227.4s]   wind grid 16: calm 2-wood
-[ 227.5s]   wind grid 14: calm Driver
-[ 236.0s]   wind grid 17: calm Driver
-[ 244.4s]   wind grid 18: calm Driver
-[ 244.9s]   wrote course_data/packages/spirit_hollow/out/wind_page/index.html (1.8 MB)
-[ 244.9s] done in 245s -> course_data/packages/spirit_hollow/out
-[ 244.9s]   gap: elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 1 holes, 2-wood on 1 holes
-[ 244.9s]   gap: package stage vision: failed: ModuleNotFoundError: No module named 'sklearn'
-[ 244.9s]   gap: hole 9: Driver best aim +85 yds off the tee line (tee line points well away from the landing area; check the hole geometry)
-[ 244.9s]   gap: hole 11: Driver best aim +72 yds off the tee line (tee line points well away from the landing area; check the hole geometry)
-[ 244.9s]   gap: hole 14: Driver best aim -72 yds off the tee line (tee line points well away from the landing area; check the hole geometry)
-[ 244.9s]   gap: no trees or long grass in any hole (vision gap-fill missing): unmapped hazards play as rough, which biases toward driver
+[ 122.4s] == 5 forecast + wind grid + page
+[ 123.6s]   forecast: Open-Meteo (fetched now) (2026-10-17, 2026-10-18)
+[ 229.0s]   wind grid 4: calm Driver
+[ 239.3s]   wind grid 5: calm 4-wood
+[ 311.5s]   wind grid 2: calm Driver
+[ 352.2s]   wind grid 1: calm Driver
+[ 395.4s]   wind grid 8: calm 4-wood
+[ 395.5s]   wind grid 6: calm Driver
+[ 416.3s]   wind grid 9: calm 4-wood
+[ 495.6s]   wind grid 13: calm Driver
+[ 517.2s]   wind grid 11: calm 4-wood
+[ 533.8s]   wind grid 10: calm Driver
+[ 577.3s]   wind grid 16: calm 4-wood
+[ 636.6s]   wind grid 18: calm Driver
+[ 642.2s]   wind grid 14: calm 2-wood
+[ 649.5s]   wind grid 17: calm Driver
+[ 650.1s]   wrote course_data/packages/spirit_hollow/out/wind_page/index.html (1.8 MB)
+[ 650.1s] done in 650s -> course_data/packages/spirit_hollow/out
+[ 650.1s]   gap: elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 1 holes, 2-wood on 1 holes
+[ 650.1s]   gap: hole 1: CHECK - Driver best aim -42 rejected (aim -42 yds is more than 40 yds off the tee line)
+[ 650.1s]   gap: hole 14: CHECK - 2-wood best aim -50 rejected (aim -50 yds is more than 40 yds off the tee line)
 

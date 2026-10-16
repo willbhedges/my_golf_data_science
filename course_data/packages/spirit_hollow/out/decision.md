@@ -4,17 +4,22 @@ Quick mode: the strategy model at the central settings of the Bayesian prior (dr
 
 | Hole | Par | Yds | Pick | Aim (yds, +R) | Zone | Runner-up | Margin | Fairway | Approach |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 391 | **Driver** | -45.0 | -58 to -38 | 2-wood | 0.053 | 25% | 59 |
-| 2 | 5 | 507 | **Driver** | +7.5 | +2 to +12 | 2-wood | 0.062 | 47% | 211 |
-| 4 | 5 | 532 | **Driver** | -7.5 | -18 to +0 | 2-wood | 0.070 | 49% | 250 |
-| 5 | 4 | 384 | **4-wood** | -5.0 | -12 to +2 | 2-wood | 0.015 | 85% | 119 |
-| 6 | 4 | 408 | **Driver** | -37.5 | -45 to -28 | 2-wood | 0.026 | 57% | 100 |
-| 8 | 4 | 383 | **4-wood** (tie) | -5.0 | -12 to +0 | Driver | 0.008 | 65% | 125 |
-| 9 | 4 | 365 | **Driver** | +85.0 | +82 to +90 | 4-wood | 0.136 | 30% | 37 |
+| 1 CHECK | 4 | 391 | **Driver** **CHECK** | -40.0 | -40 to -35 | 2-wood | 0.034 | 25% | 61 |
+| 2 | 5 | 507 | **Driver** | +7.5 | +2 to +12 | 2-wood | 0.067 | 50% | 209 |
+| 4 | 5 | 532 | **Driver** | -2.5 | -10 to +0 | 2-wood | 0.053 | 50% | 249 |
+| 5 | 4 | 384 | **4-wood** | -5.0 | -12 to +2 | 2-wood | 0.015 | 86% | 120 |
+| 6 | 4 | 408 | **Driver** | -35.0 | -40 to -28 | 2-wood | 0.012 | 58% | 101 |
+| 8 | 4 | 383 | **4-wood** | -5.0 | -12 to +0 | 2-wood | 0.014 | 65% | 125 |
+| 9 | 4 | 365 | **4-wood** | +2.5 | -8 to +10 | 2-wood | 0.065 | 45% | 96 |
 | 10 | 5 | 502 | **Driver** | +0.0 | -5 to +2 | 4-wood | 0.042 | 48% | 209 |
-| 11 | 4 | 338 | **4-wood** | +0.0 | -20 to +8 | 2-wood | 0.081 | 16% | 78 |
-| 13 | 4 | 409 | **Driver** | +17.5 | +5 to +22 | 4-wood | 0.034 | 38% | 117 |
-| 14 | 4 | 393 | **Driver** (tie) | -72.5 | -80 to -58 | 2-wood | 0.010 | 23% | 64 |
-| 16 | 4 | 378 | **2-wood** (tie) | -5.0 | -12 to +2 | 4-wood | 0.005 | 46% | 105 |
-| 17 | 4 | 445 | **Driver** | -5.0 | -12 to +2 | 2-wood | 0.031 | 57% | 153 |
-| 18 | 5 | 521 | **Driver** | -2.5 | -10 to +5 | 2-wood | 0.028 | 43% | 217 |
+| 11 | 4 | 338 | **4-wood** | +0.0 | -2 to +8 | 2-wood | 0.318 | 16% | 78 |
+| 13 | 4 | 409 | **4-wood** (tie) | +2.5 | +0 to +8 | Driver | 0.001 | 49% | 141 |
+| 14 CHECK | 4 | 393 | **2-wood** **CHECK** | -40.0 | -40 to -40 | 4-wood | 0.017 | 35% | 92 |
+| 16 | 4 | 378 | **4-wood** | -2.5 | -10 to +0 | 2-wood | 0.016 | 62% | 114 |
+| 17 | 4 | 445 | **Driver** | -2.5 | -8 to +5 | 2-wood | 0.024 | 56% | 154 |
+| 18 | 5 | 521 | **Driver** | -5.0 | -12 to +0 | 2-wood | 0.036 | 41% | 218 |
+
+## CHECK (absurd-aim guard: look at the map before playing these)
+
+- 1 CHECK: Driver best aim -42 rejected (aim -42 yds is more than 40 yds off the tee line)
+- 14 CHECK: 2-wood best aim -50 rejected (aim -50 yds is more than 40 yds off the tee line)

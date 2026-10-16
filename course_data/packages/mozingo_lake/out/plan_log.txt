@@ -1,0 +1,67 @@
+request: course_data/product/requests/mozingo_lake.json
+$ /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/product/plan.py --package course_data/packages/mozingo_lake/package.json --tees App --mode quick
+exit 0
+
+[   0.0s] == 1 package -> course module
+[   0.4s] Mozingo Lake Golf Course (mozingo_lake), App tees: 14 tee shots + 4 par 3s from course_data/packages/mozingo_lake/package.json
+[   0.6s] == 2 NAIP render per hole
+[   1.7s]   ! hole 11: 8% of the frame has no imagery
+[   2.2s] 18 images, 2.0 MB, imagery 2022-07-10
+[   2.2s] == 3 decision (quick)
+[  17.6s]   2: 4-wood aim +5.0 margin 0.029
+[  20.2s]   4: Driver aim -12.5 margin 0.024
+[  27.6s]   1: 4-wood aim -10.0 margin 0.019
+[  41.6s]   7: 4-wood aim +20.0 margin 0.032
+[  41.9s]   9: Driver aim -22.5 margin 0.009 (tie)
+[  42.0s]   6: Driver aim +10.0 margin 0.101
+[  46.6s]   3: Driver aim +40.0 margin 0.050
+[  58.3s]   10: 4-wood aim +5.0 margin 0.002 (tie)
+[  64.1s]   12: Driver aim -32.5 margin 0.025
+[  79.3s]   16: Driver aim -10.0 margin 0.015
+[  84.6s]   17: 2-wood aim +40.0 margin 0.022
+[  90.1s]   13: Driver aim -22.5 margin 0.042
+[  97.2s]   14: 4-wood aim -12.5 margin 0.003 (tie)
+[  98.6s]   18: 2-wood aim +0.0 margin 0.005 (tie)
+[  99.6s] == 4 book + aim sheets
+hole 1 done
+hole 2 done
+hole 3 CHECK done
+hole 4 done
+hole 5 done
+hole 6 done
+hole 7 done
+hole 8 done
+hole 9 done
+hole 10 done
+hole 11 done
+hole 12 done
+hole 13 done
+hole 14 done
+hole 15 done
+hole 16 done
+hole 17 CHECK done
+hole 18 done
+wrote /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/packages/mozingo_lake/out/output/Mozingo_Lake_Strategy.pdf
+wrote /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/packages/mozingo_lake/out/output/Mozingo_Lake_Aim_Sheets.pdf
+[ 112.9s] == 5 forecast + wind grid + page
+[ 114.2s]   forecast: Open-Meteo (fetched now) (2026-10-17, 2026-10-18)
+[ 184.4s]   wind grid 2: calm 4-wood
+[ 187.4s]   wind grid 4: calm Driver
+[ 226.5s]   wind grid 1: calm 4-wood
+[ 291.3s]   wind grid 7: calm 4-wood
+[ 292.9s]   wind grid 6: calm Driver
+[ 296.1s]   wind grid 9: calm Driver
+[ 339.3s]   wind grid 3: calm Driver
+[ 363.7s]   wind grid 10: calm 4-wood
+[ 418.8s]   wind grid 12: calm Driver
+[ 455.7s]   wind grid 16: calm Driver
+[ 558.8s]   wind grid 17: calm Driver
+[ 569.6s]   wind grid 13: calm Driver
+[ 577.0s]   wind grid 18: calm 2-wood
+[ 578.5s]   wind grid 14: calm 4-wood
+[ 578.9s]   wrote course_data/packages/mozingo_lake/out/wind_page/index.html (0.9 MB)
+[ 578.9s] done in 579s -> course_data/packages/mozingo_lake/out
+[ 578.9s]   gap: elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 3 holes, 4-wood on 2 holes, 2-wood on 1 holes, Long iron on 1 holes
+[ 578.9s]   gap: hole 3: CHECK - Driver best aim +58 rejected (aim +58 yds is more than 40 yds off the tee line; the aim point is 42 yds from this hole's line of play (another hole?))
+[ 578.9s]   gap: hole 17: CHECK - Driver best aim +62 rejected (aim +62 yds is more than 40 yds off the tee line; the aim point (275 yds out) is in sand); 2-wood best aim +50 rejected (aim +50 yds is more than 40 yds off the tee line)
+
