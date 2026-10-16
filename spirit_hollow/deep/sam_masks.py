@@ -1,6 +1,7 @@
 """Segment Anything (SAM) automatic region masks for the GPS-app screenshots (run on GitHub Actions).
 
-  python spirit_hollow/deep/sam_masks.py        -> spirit_hollow/deep/sam/<stem>.npz + manifest.json
+  python spirit_hollow/deep/sam_masks.py [--shard i --nshards n]   -> sam/<stem>.npz + shard_<i>.json
+  python spirit_hollow/deep/sam_masks.py --merge                    -> sam/manifest.json
 
 Frame conventions match spirit_hollow/vision.py: each screenshot is resized to 920 x 2000
 screen px (same PIL call as vision.load_rgb); rows above TOP=545 and from BOTTOM=1830 down
@@ -40,7 +41,10 @@ TOP, BOTTOM = 545, 1830
 FILL_PX = 3
 CKPT_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth"
 CKPT = os.path.join(os.environ.get("SAM_CKPT_DIR", "/tmp"), "sam_vit_b_01ec64.pth")
-PARAMS = dict(points_per_side=32, pred_iou_thresh=0.86, stability_score_thresh=0.9,
+# Run 1 used points_per_side=32, pred_iou_thresh=0.86, stability_score_thresh=0.9: only
+# 54-126 masks per image and 50-70% of ground unassigned (large uniform grass areas were
+# rejected), so the thresholds are loosened and the point grid densified.
+PARAMS = dict(points_per_side=48, pred_iou_thresh=0.80, stability_score_thresh=0.88,
               min_mask_region_area=200, crop_n_layers=1, crop_n_points_downscale_factor=2,
               points_per_batch=64)
 BUDGET_S = 70 * 60          # drop crop_n_layers to 0 if the projected total exceeds this
@@ -100,7 +104,36 @@ def ensure_checkpoint():
     return CKPT
 
 
-def main():
+def merge():
+    shards = sorted(glob.glob(os.path.join(OUT, "shard_*.json")))
+    files, secs, torch_v = {}, [], None
+    for sp in shards:
+        with open(sp) as fh:
+            d = json.load(fh)
+        files.update(d["files"])
+        secs.append(d["shard_seconds"])
+        torch_v = d["torch"]
+        os.remove(sp)
+    stems = sorted(os.path.splitext(os.path.basename(p))[0]
+                   for p in glob.glob(os.path.join(SHOTS, "*.png")))
+    missing = [s for s in stems if s + ".npz" not in files]
+    if missing:
+        sys.exit(f"missing results for {missing}")
+    files = {k: files[k] for k in sorted(files)}
+    manifest = dict(
+        model="SAM ViT-B (sam_vit_b_01ec64.pth, facebookresearch/segment-anything)",
+        params=PARAMS, frame=dict(screen=[SCREEN_W, SCREEN_H], grid=[W, H], scale=SCALE,
+                                  crop_rows=[TOP, BOTTOM], offset_y=TOP),
+        labels=("regions int32 (1000,460): -1 = none/UI; each px = smallest SAM mask covering "
+                f"it; gaps filled by nearest region within {FILL_PX} grid px"),
+        torch=torch_v, shard_seconds=secs,
+        region_counts={k[:-4]: v["regions"] for k, v in files.items()}, files=files)
+    with open(os.path.join(OUT, "manifest.json"), "w") as fh:
+        json.dump(manifest, fh, indent=1)
+    print("merged:", len(files), "files", flush=True)
+
+
+def main(shard=0, nshards=1):
     import torch
     from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
     torch.set_num_threads(os.cpu_count() or 2)
@@ -108,6 +141,7 @@ def main():
     paths = sorted(glob.glob(os.path.join(SHOTS, "*.png")))
     if not paths:
         sys.exit(f"no screenshots in {SHOTS}")
+    paths = paths[shard::nshards]
     sam = sam_model_registry["vit_b"](checkpoint=ensure_checkpoint())
     sam.eval()
     params = dict(PARAMS)
@@ -144,18 +178,17 @@ def main():
                 params["crop_n_layers"] = 0
                 gen = SamAutomaticMaskGenerator(sam, output_mode="binary_mask", **params)
 
-    manifest = dict(
-        model="SAM ViT-B (sam_vit_b_01ec64.pth, facebookresearch/segment-anything)",
-        params=PARAMS, frame=dict(screen=[SCREEN_W, SCREEN_H], grid=[W, H], scale=SCALE,
-                                  crop_rows=[TOP, BOTTOM], offset_y=TOP),
-        labels=("regions int32 (1000,460): -1 = none/UI; each px = smallest SAM mask covering "
-                f"it; gaps filled by nearest region within {FILL_PX} grid px"),
-        torch=torch.__version__, total_seconds=round(time.time() - t_start, 1),
-        region_counts={k[:-4]: v["regions"] for k, v in files.items()}, files=files)
-    with open(os.path.join(OUT, "manifest.json"), "w") as fh:
-        json.dump(manifest, fh, indent=1)
+    with open(os.path.join(OUT, f"shard_{shard}.json"), "w") as fh:
+        json.dump(dict(torch=torch.__version__, shard_seconds=round(time.time() - t_start, 1),
+                       files=files), fh, indent=1)
     print("done:", len(files), "files", flush=True)
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--shard", type=int, default=0)
+    ap.add_argument("--nshards", type=int, default=1)
+    ap.add_argument("--merge", action="store_true")
+    a = ap.parse_args()
+    merge() if a.merge else main(a.shard, a.nshards)

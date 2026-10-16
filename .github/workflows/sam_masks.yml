@@ -18,6 +18,10 @@ jobs:
   masks:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,7 +50,40 @@ jobs:
       - name: Compute SAM masks
         env:
           SAM_CKPT_DIR: /tmp
-        run: python spirit_hollow/deep/sam_masks.py
+        run: |
+          rm -rf spirit_hollow/deep/sam
+          python spirit_hollow/deep/sam_masks.py --shard ${{ matrix.shard }} --nshards 5
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sam-shard-${{ matrix.shard }}
+          path: spirit_hollow/deep/sam/
+          retention-days: 3
+
+  merge:
+    needs: masks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sam-shard-*
+          path: spirit_hollow/deep/sam
+          merge-multiple: true
+
+      - name: Merge manifest
+        run: |
+          pip install numpy
+          python spirit_hollow/deep/sam_masks.py --merge
+          du -sh spirit_hollow/deep/sam
 
       - name: Commit masks
         run: |
