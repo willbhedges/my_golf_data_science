@@ -1,0 +1,70 @@
+name: sam-masks
+
+on:
+  push:
+    paths:
+      - ".github/workflows/sam_masks.yml"
+      - "spirit_hollow/deep/sam_masks.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sam-masks-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  masks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install numpy scipy pillow opencv-python-headless pycocotools
+          pip install git+https://github.com/facebookresearch/segment-anything.git
+
+      - name: Download SAM ViT-B checkpoint
+        run: |
+          for i in 1 2 3; do
+            curl -fL --retry 3 -o /tmp/sam_vit_b_01ec64.pth \
+              https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth && break
+            sleep $((i * 10))
+          done
+          ls -l /tmp/sam_vit_b_01ec64.pth
+
+      - name: Compute SAM masks
+        env:
+          SAM_CKPT_DIR: /tmp
+        run: python spirit_hollow/deep/sam_masks.py
+
+      - name: Commit masks
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add spirit_hollow/deep/sam
+          if git diff --cached --quiet; then
+            echo "No mask changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "Add SAM region masks for screenshots (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
