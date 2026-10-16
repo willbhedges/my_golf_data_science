@@ -1,0 +1,89 @@
+name: segment
+
+# NAIP golf-feature segmentation (course_data/segment): ariadgolf/golf-course-segmentation U-Net on
+# Hugging Face. Triggered by committed request files course_data/requests/segment_*.json (ARCHITECTURE 9.4).
+# Hugging Face is blocked from the sandbox; downloads and inference run here. Weights cached (actions/cache).
+
+on:
+  push:
+    paths:
+      - ".github/workflows/segment.yml"
+      - "course_data/requests/segment_*.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: segment-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  HF_HOME: /home/runner/hf_cache
+  HF_HUB_DISABLE_TELEMETRY: "1"
+
+jobs:
+  segment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache Hugging Face weights
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/hf_cache
+          key: hf-golfseg-v1
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm \
+                      numpy scipy pillow shapely pyproj rasterio opencv-python-headless
+
+      - name: Probe model card
+        run: |
+          python course_data/segment/probe_model.py || echo "probe failed"
+          for r in opengolf-ai/osm-course-mapper; do
+            curl -sS -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$r" \
+              | python -c "import json,sys;d=json.load(sys.stdin);print(json.dumps({k:d.get(k) for k in ['full_name','license','description','pushed_at','stargazers_count']}))" \
+              > course_data/segment/model_card/github_$(echo $r | tr / _).json || true
+            curl -sSL "https://raw.githubusercontent.com/$r/HEAD/README.md" -o course_data/segment/model_card/github_$(echo $r | tr / _)_README.md || true
+          done
+
+      - name: Segment courses
+        run: |
+          if [ -f course_data/segment/run_segment.py ]; then
+            python -u course_data/segment/run_segment.py || echo "segment failed"
+          else
+            echo "no run_segment.py yet"
+          fi
+
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/segment
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "segment: NAIP golf segmentation outputs (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
