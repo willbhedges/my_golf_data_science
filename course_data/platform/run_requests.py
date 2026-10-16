@@ -38,7 +38,7 @@ def plan(changed, requests=None):
             continue
         req = pc.read_json(p, {}) or {}
         slug = fp.request_slug(req, p)
-        fetched = os.path.exists(os.path.join(pc.PACKAGES, slug, "raw", "course.json"))
+        fetched = os.path.exists(os.path.join(pc.PACKAGES, slug, "raw", "osm.geojson"))
         if r in changed or not fetched:
             out.append((p, "fetch"))
         elif code:

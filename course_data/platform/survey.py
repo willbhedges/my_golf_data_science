@@ -3,7 +3,7 @@
   python course_data/platform/survey.py IA MO      -> course_data/packages/_survey/<STATE>.json
 
 For every leisure=golf_course area in the state: golf=hole / tee / green / fairway / bunker counts and
-tree / long-grass polygons whose centre falls inside the course bbox, plus a mapping score. Used to pick
+tree / long-grass polygons whose centre falls inside the course bbox, plus a mapping score (trees are not surveyed: too heavy statewide). Used to pick
 demo courses and to tell a golfer up front how much OSM will give them.
 """
 import os
@@ -33,9 +33,7 @@ def survey(state):
     courses = pc.overpass(q, timeout=320).get("elements", [])
     q2 = f"""[out:json][timeout:600];
     area["ISO3166-2"="{iso}"]["admin_level"="4"]->.st;
-    (way["leisure"="golf_course"](area.st); relation["leisure"="golf_course"](area.st);)->.gc;
-    .gc map_to_area->.ga;
-    (nwr["golf"](area.ga); way["natural"~"wood|scrub|grassland|heath"](area.ga); way["landuse"~"forest|meadow"](area.ga););
+    nwr["golf"~"^(hole|tee|green|fairway|bunker|water_hazard|lateral_water_hazard|rough)$"](area.st);
     out tags center;"""
     feats = pc.overpass(q2, timeout=620).get("elements", [])
     rows = []

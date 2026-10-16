@@ -76,7 +76,7 @@ def log(*a):
 
 
 # ----------------------------------------------------------------------------- network (Actions only)
-def overpass(query, tries=3, timeout=200):
+def overpass(query, tries=5, timeout=200):
     import requests
     last = None
     for attempt in range(tries):
@@ -89,7 +89,7 @@ def overpass(query, tries=3, timeout=200):
             except Exception as e:                          # noqa: BLE001
                 last = f"{url}: {e!r}"
             log("overpass failed:", last)
-        time.sleep(20 * (attempt + 1))
+        time.sleep(30 * (attempt + 1))                     # public servers are often at capacity
     raise RuntimeError(f"all Overpass endpoints failed: {last}")
 
 

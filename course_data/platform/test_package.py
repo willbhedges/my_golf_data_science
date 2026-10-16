@@ -247,7 +247,7 @@ def test_run_requests_plan(tmp_path, monkeypatch):
     for n in ("package_a.json", "package_b.json", "survey_x.json"):
         (req / n).write_text("{}")
     (tmp_path / "b" / "raw").mkdir(parents=True)
-    (tmp_path / "b" / "raw" / "course.json").write_text("{}")
+    (tmp_path / "b" / "raw" / "osm.geojson").write_text("{}")
     rel = lambda n: os.path.relpath(str(req / n), pc.ROOT)          # noqa: E731
     reqs = [str(req / n) for n in ("package_a.json", "package_b.json", "survey_x.json")]
     plan = dict((os.path.basename(p), a) for p, a in run_requests.plan([rel("package_b.json")], reqs))

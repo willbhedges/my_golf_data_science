@@ -56,8 +56,10 @@ def name_similarity(want, got):
 def candidate(el, holes=None, town=None):
     """Overpass element (out tags center bb) -> candidate dict."""
     t = el.get("tags", {})
-    c = el.get("center") or ({"lat": el["lat"], "lon": el["lon"]} if "lat" in el else None)
     b = el.get("bounds")
+    c = el.get("center") or ({"lat": el["lat"], "lon": el["lon"]} if "lat" in el else None)
+    if c is None and b:                                  # `out tags center bb` may omit center on relations
+        c = {"lat": (b["minlat"] + b["maxlat"]) / 2, "lon": (b["minlon"] + b["maxlon"]) / 2}
     town = town or t.get("addr:city") or t.get("is_in:city") or t.get("addr:town") or t.get("addr:village")
     return dict(name=t.get("name"), osm=dict(type=el["type"], id=el["id"]), town=town,
                 holes=holes, center=[c["lon"], c["lat"]] if c else None,
@@ -226,6 +228,10 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
         d = 800 / 111320.0
         b = dict(minlat=lat - d, maxlat=lat + d, minlon=lon - d / math.cos(math.radians(lat)),
                  maxlon=lon + d / math.cos(math.radians(lat)))
+    if not best.get("center"):
+        best["center"] = [(b["minlon"] + b["maxlon"]) / 2, (b["minlat"] + b["maxlat"]) / 2]
+    if with_towns and not best.get("town"):
+        best["town"] = reverse_town(best["center"][1], best["center"][0])
     out.update(name=best["name"], slug=pc.slugify(best["name"] or name), osm=best["osm"],
                center=best["center"], bbox=[b["minlon"], b["minlat"], b["maxlon"], b["maxlat"]],
                address=", ".join(x for x in (best.get("town"), sc) if x), town=best.get("town"), state=sc,
