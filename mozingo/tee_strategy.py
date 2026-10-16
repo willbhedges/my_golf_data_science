@@ -69,13 +69,33 @@ def tee_baseline(hole_no):
     return float(np.interp(HOLES[hole_no]["length"], TEE_DIST, TEE_BASE))
 
 
+# Optional model switches (all off = the published book).
+TAIL_NU = None        # e.g. 5: Student-t lateral misses with the same 95% width as the app's
+T975 = {3: 3.182, 4: 2.776, 5: 2.571, 7: 2.365, 10: 2.228}
+CHI = None            # cached chi-square draws for Z when TAIL_NU is set (see set_tails)
+RHO = 0.0             # correlation between lateral miss and carry; +0.3 = slice-type shortfall
+HCP_BASELINE = False  # approximate 5-handicap expected strokes instead of PGA Tour
+
+
+def set_tails(nu):
+    global TAIL_NU, CHI
+    TAIL_NU = nu
+    CHI = None if not nu else np.random.default_rng(13).chisquare(nu, N_SHOTS) / nu
+
+
 LONG_SLOPE = 0.0035   # strokes per yd beyond 300 (tour baseline keeps rising ~0.07 per 20 yds)
 
 
 def expected_strokes(lie, dist):
     dist = np.asarray(dist, float)
     beyond = np.maximum(dist - DIST[-1], 0) * LONG_SLOPE      # long par-5 second shots
-    return _expected_strokes(lie, dist) + beyond
+    e = _expected_strokes(lie, dist) + beyond
+    if HCP_BASELINE:
+        # Approximate 5-handicap: ~+0.25 from 150 in the fairway, growing with distance, and
+        # every bad lie costs 1.3x what it costs a tour player (relative to the fairway).
+        fw = _expected_strokes("fairway", dist) + beyond
+        e = fw + 0.25 + 0.0012 * (np.clip(dist, 20, 450) - 150) + 1.3 * (e - fw)
+    return e
 
 
 def _expected_strokes(lie, dist):
@@ -325,11 +345,18 @@ def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS, z=None):
     if z is None:
         z = Z if n == N_SHOTS else np.vstack([RNG.standard_normal((2, n)), RNG.random((2, n))])
     n = z.shape[1]
-    along = carry + depth / 4 * z[0]
+    z_lat = z[1]
+    if TAIL_NU:                                    # Student-t lateral, same 95% width
+        chi = CHI if (z is Z and CHI is not None) else RNG.chisquare(TAIL_NU, n) / TAIL_NU
+        z_lat = z[1] / np.sqrt(chi) * (1.959964 / T975[TAIL_NU])
+    z_car = z[0]
+    if RHO:                                        # +RHO: misses right also come up short
+        z_car = -RHO * z_lat + np.sqrt(1 - RHO ** 2) * z[0]
+    along = carry + depth / 4 * z_car
     mishit = z[2] < MISHIT_RATE.get(club, 0.0)
     lo, hi = MISHIT_CARRY
     along[mishit] = carry * (lo + (hi - lo) * z[3][mishit])
-    lat = aim_lat + width / 4 * z[1]
+    lat = aim_lat + width / 4 * z_lat
     pts = tee + (along[:, None] * fwd + lat[:, None] * right) * ppy
     lie = lie_at(h, pts)
 
@@ -379,7 +406,19 @@ def best_aim(hole_no, club, aims=AIMS, z=None):
                      ("fairway", "rough", "sand", "recovery", "native", "water", "ob")}
             best = dict(aim=aim, ev=ev, approach=float(np.median(to_green)), share=share,
                         strokes=strokes, lie=lie, to_green=to_green)
+    if REFINE and len(aims) > 1:
+        step = float(np.min(np.diff(np.sort(aims))))
+        for aim in np.arange(best["aim"] - step + 0.5, best["aim"] + step, 0.5):
+            _, lie, to_green, strokes = simulate(hole_no, club, aim, z=z)
+            if strokes.mean() < best["ev"]:
+                share = {k: float(np.mean(lie == k)) for k in
+                         ("fairway", "rough", "sand", "recovery", "native", "water", "ob")}
+                best = dict(aim=float(aim), ev=strokes.mean(), approach=float(np.median(to_green)),
+                            share=share, strokes=strokes, lie=lie, to_green=to_green)
     return best
+
+
+REFINE = False        # refine the best aim to 0.5 yd (analysis); off for the published book
 
 
 def plot_hole(hole_no, results, out_path):

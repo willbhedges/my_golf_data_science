@@ -202,6 +202,70 @@ def sample(F, lab, n, rng):
     return F.reshape(-1, F.shape[-1])[ii], lab.ravel()[ii]
 
 
+def superpixels(rgb, msmall, n=2500):
+    """SLIC regions on the (UI-in-painted) half-res photo."""
+    from skimage.segmentation import slic
+    small = np.asarray(Image.fromarray((rgb * 255).astype(np.uint8)).resize((W, H), Image.BILINEAR))
+    seg = slic(small, n_segments=n, compactness=12, start_label=0, mask=~msmall)
+    return seg
+
+
+def region_features(F, seg):
+    """Mean and std of every pixel feature inside each region, plus region size."""
+    nseg = seg.max() + 1
+    flat = F.reshape(-1, F.shape[-1]); sid = seg.ravel()
+    ok = sid >= 0
+    cnt = np.bincount(sid[ok], minlength=nseg).astype(np.float32)[:, None] + 1e-6
+    s1 = np.zeros((nseg, F.shape[-1]), np.float32); s2 = np.zeros_like(s1)
+    np.add.at(s1, sid[ok], flat[ok]); np.add.at(s2, sid[ok], flat[ok] ** 2)
+    mu = s1 / cnt
+    sd = np.sqrt(np.maximum(s2 / cnt - mu ** 2, 0))
+    return np.c_[mu, sd, np.log(cnt)]
+
+
+def region_labels(lab, seg):
+    nseg = seg.max() + 1
+    out = np.full(nseg, -1, np.int16)
+    sid, l = seg.ravel(), lab.ravel()
+    ok = (sid >= 0) & (l >= 0)
+    votes = np.zeros((nseg, len(CLASSES)), int)
+    np.add.at(votes, (sid[ok], l[ok]), 1)
+    tot = votes.sum(1)
+    good = (tot > 0) & (votes.max(1) >= 0.7 * tot)          # only clear-majority regions
+    out[good] = votes[good].argmax(1)
+    return out
+
+
+def main_superpixel():
+    """Leave-one-hole-out with region (superpixel) classification; prints the same metrics."""
+    data = build_dataset()
+    print("features built", flush=True)
+    reg = {}
+    for h, (F, lab, msmall, rgb) in data.items():
+        seg = superpixels(rgb, msmall)
+        reg[h] = (seg, region_features(F, seg), region_labels(lab, seg))
+    conf = np.zeros((len(CLASSES), len(CLASSES)), int); conf_lz = np.zeros_like(conf)
+    for h, (F, lab, msmall, rgb) in data.items():
+        X = np.concatenate([reg[k][1][reg[k][2] >= 0] for k in data if k != h])
+        y = np.concatenate([reg[k][2][reg[k][2] >= 0] for k in data if k != h])
+        clf = fit(X, y)
+        seg, RF, _ = reg[h]
+        P = clf.predict_proba(RF)
+        pred = np.where(seg >= 0, P.argmax(1)[np.maximum(seg, 0)], CLASSES.index("rough"))
+        ok = lab >= 0
+        lz, _ = landing_mask(h)
+        np.add.at(conf, (lab[ok], pred[ok]), 1)
+        np.add.at(conf_lz, (lab[ok & lz], pred[ok & lz]), 1)
+        print(h, "done", flush=True)
+    for cm, name in ((conf, "whole hole"), (conf_lz, "landing zones")):
+        pen = [CLASSES.index(c) for c in ("trees", "native", "water", "sand")]
+        ply = [CLASSES.index(c) for c in ("fairway", "rough")]
+        tp = cm[np.ix_(pen, pen)].sum(); fn = cm[np.ix_(pen, ply)].sum()
+        fp = cm[np.ix_(ply, pen)].sum(); tn = cm[np.ix_(ply, ply)].sum()
+        print(f"SUPERPIXEL {name}: 6-class {np.trace(cm) / cm.sum():.1%}; penal-vs-playable "
+              f"{(tp + tn) / (tp + tn + fp + fn):.1%} (recall {tp / max(tp + fn, 1):.0%}, precision {tp / max(tp + fp, 1):.0%})")
+
+
 def main():
     rng = np.random.default_rng(0)
     out_dir = os.path.join(HERE, "output", "vision")
@@ -314,4 +378,4 @@ def write_report(conf, conf_lz, flags):
 
 
 if __name__ == "__main__":
-    main()
+    main_superpixel() if "--superpixel" in sys.argv else main()
