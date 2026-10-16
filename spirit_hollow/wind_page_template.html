@@ -265,7 +265,7 @@ document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pres
     const be = best.e;
     const past = best.total - B > 345;
     if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
-    if(B !== r.T.want) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B)} yds ${B >= 0 ? "back" : "up"}</span>`);
+    if(Math.abs(B - r.T.want) > 5) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B)} yds ${B >= 0 ? "back" : "up"}</span>`);
     document.getElementById("hElev").innerHTML = be ? (B ? "Elevation measured from the screenshot tee. " : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
     let note = h.note || "";
     document.getElementById("hNote").textContent = note;
