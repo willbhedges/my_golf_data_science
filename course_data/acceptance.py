@@ -51,7 +51,7 @@ def ref_of(k):
 
 
 # ----------------------------------------------------------------------------- auto builds
-def oracle_builds():
+def oracle_builds(vision_any=False):
     """Two pipeline builds with the traced lengths as the card (B tees, then F tees), keyed like course.py."""
     out = {}
     for variant in ("B", "F"):
@@ -62,7 +62,8 @@ def oracle_builds():
             lens[ref_of(k)] = float(h["length"])
         for k, p in course.PAR3.items():
             lens[str(k)] = float(p["center"])
-        m = P.build_course("Spirit Hollow", "white", lens, render=False, tee_stage=False, vision=False, layers=False)
+        m = P.build_course("Spirit Hollow", "white", lens, render=False, tee_stage=False, vision=vision_any,
+                          layers=False)
         for k in list(course.HOLES) + list(course.PAR3):
             if str(k)[-1:] in "BF" and str(k)[-1] != variant:
                 continue
@@ -337,14 +338,17 @@ def main():
     ap.add_argument("--holes", help="evaluate this holes.json as built (default: oracle-tee builds)")
     ap.add_argument("--fast", action="store_true")
     ap.add_argument("--only", help="comma-separated traced keys")
-    ap.add_argument("--vision", choices=["none", "loho"], default="none",
-                    help="loho: add the imagery gap-fill from the model that did not see the hole")
+    ap.add_argument("--vision", choices=["none", "loho", "any"], default="none",
+                    help="loho: imagery gap-fill from the model that did not see the hole; "
+                         "any: vision_any gap-fill (lidar/NAIP, never trained on hand maps)")
     a = ap.parse_args()
     t0 = time.time()
     if a.holes:
         auto = from_model(a.holes)
     elif a.vision == "loho":
         auto = loho_builds()
+    elif a.vision == "any":
+        auto = oracle_builds(vision_any=True)
     else:
         auto = oracle_builds()
     regs = json.load(open(REG)) if os.path.exists(REG) else {}
@@ -375,7 +379,8 @@ def main():
     ok = [r for r in rows if not r.get("missing")]
     summary = dict(
         mode=(f"{os.path.basename(a.holes)} as built" if a.holes else "oracle tees (traced lengths as the card)"
-              + (", + LOHO imagery gap-fill" if a.vision == "loho" and not a.holes else ", OSM zones only")),
+              + ({"loho": ", + LOHO imagery gap-fill", "any": ", + vision_any gap-fill"}.get(a.vision, ", OSM zones only")
+                 if not a.holes else "")),
         n_tee_shots=len(ok), missing=[r["hole"] for r in rows if r.get("missing")],
         same_club=round(float(np.mean([r["same_club"] for r in ok])), 3) if ok else None,
         tee_within=round(float(np.mean([r["tee_err"] <= BAR["tee"] for r in ok if "tee_err" in r] or [np.nan])), 3),
@@ -391,7 +396,7 @@ def main():
     summary["club_bar_met"] = bool(summary["same_club"] is not None and summary["same_club"] >= BAR["club"])
     out = dict(summary=summary, tee_shots=rows, par3=p3)
     tag = ("" if not a.holes else "_" + os.path.splitext(os.path.basename(a.holes))[0]) + \
-        ("_loho" if a.vision == "loho" and not a.holes else "")
+        ("_" + a.vision if a.vision != "none" and not a.holes else "")
     with open(os.path.join(CDIR, f"acceptance{tag}.json"), "w") as fh:
         json.dump(out, fh, indent=1, default=float)
     write_md(out, os.path.join(CDIR, f"acceptance{tag}.md"))
