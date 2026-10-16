@@ -97,14 +97,19 @@ def predict(S, osm_m, osm_layers, trees, water, X=None, names=None, seed_z=SEED_
     else:
         ip, ineg = pick(seeds, n_max), pick(neg & ~seeds, n_max)
         y = np.r_[np.ones(len(ip)), np.zeros(len(ineg))]
+        # drop columns with no information on this course (all NaN: no lidar / no DTM; constant)
+        tr = Xf[np.r_[ip, ineg]]
+        good = [j for j in range(tr.shape[1]) if np.isfinite(tr[:, j]).sum() > 100
+                and np.nanstd(tr[:, j]) > 1e-6]
+        feat_idx = [feat_idx[j] for j in good]
         clf = HistGradientBoostingClassifier(max_iter=200, learning_rate=0.08, max_leaf_nodes=31,
                                              l2_regularization=1.0, random_state=0)
-        clf.fit(Xf[np.r_[ip, ineg]], y)
+        clf.fit(tr[:, good], y)
         p = np.zeros(seeds.size, np.float32)
         ev = np.flatnonzero((elig & course).ravel())
         for i in range(0, len(ev), 400000):
             j = ev[i:i + 400000]
-            p[j] = clf.predict_proba(Xf[j])[:, 1]
+            p[j] = clf.predict_proba(Xf[j][:, good])[:, 1]
         p = p.reshape(seeds.shape)
         info["features"] = [names[i] for i in feat_idx]
     m = (ndimage.uniform_filter(p, 3) >= p_min) & elig
