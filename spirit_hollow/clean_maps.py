@@ -90,7 +90,7 @@ def clean(path):
         cv2.rectangle(seam, (X0, Y0), (X1, Y1), 1, 6)
     work[top:bot] = cv2.inpaint(work[top:bot], seam[top:bot], 5, cv2.INPAINT_TELEA)
     work[:top] = work[top]                                     # flat fill (never displayed)
-    work[bot:] = work[bot - 1]
+    work[bot:] = bgr[bot:]                                     # keep the real app footer (tee area), no smear
     out = cv2.resize(work, (bgr.shape[1], bgr.shape[0]))
     return out
 
