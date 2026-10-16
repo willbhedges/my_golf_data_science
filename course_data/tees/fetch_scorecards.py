@@ -23,11 +23,7 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
 URLS = [
     # club
     "https://www.spirithollowgolfcourse.com/",
-    "https://spirithollowgolfcourse.com/",
-    "https://www.spirithollowgolfcourse.com/scorecard",
-    "https://www.spirithollowgolfcourse.com/course",
-    "https://www.spirithollowgolfcourse.com/the-course",
-    "https://www.spirithollowgolfcourse.com/course-tour",
+    "https://www.spirithollowgolfcourse.com/golf/hole-by-hole",
     # aggregators
     "https://www.golflink.com/golf-courses/ia/burlington/spirit-hollow-golf-course",
     "https://offcourse.co/courses/scorecard/spirit-hollow-golf-course/",
@@ -48,6 +44,13 @@ URLS = [
     "https://pluggedingolf.com/spirit-hollow-golf-course-review/",
     "https://golfcoursegurus.com/reviews/spirit-hollow-golf-course/",
     "https://www.golfn.com/courses/united-states-of-america/iowa/spirit-hollow-golf-course",
+    "https://courses.swingbyswing.com/courses/United-States-of-America/Iowa/Burlington/Spirit-Hollow-Golf-Course/27711",
+    "https://www.allsquaregolf.com/golf-courses/iowa/spirit-hollow-golf-course",
+    "https://www.golfsmash.com/golf-course/spirit-hollow-golf-course/courses/573bf8877d813199.html",
+    "https://golftraxx.com/scorecard?course_name=Spirit+Hollow+Golf+Course&static=true&zipcode=52601",
+    "https://www.golfadvisor.com/courses/29590-spirit-hollow-golf-course",
+    "https://www.18birdies.com/golf-courses/club/spirit-hollow-golf-course-burlington-ia",
+    "https://www.golflogix.com/golf-course-gps/us/ia/burlington/spirit-hollow-golf-course",
     # USGA NCRDB search (state + name)
     "https://ncrdb.usga.org/courseTeeInfo?CourseName=Spirit%20Hollow&State=US-IA",
     "https://ncrdb.usga.org/NCRDB/rest/v1/courses/search?name=Spirit%20Hollow&state=US-IA",
@@ -69,7 +72,8 @@ def save(url, r, idx):
     ctype = r.headers.get("content-type", "")
     ext = ".pdf" if "pdf" in ctype or url.lower().endswith(".pdf") else ".html"
     raw = OUT / f"{key}{ext}"
-    raw.write_bytes(r.content)
+    if ext == ".pdf":
+        raw.write_bytes(r.content)
     txt = OUT / f"{key}.txt"
     if ext == ".pdf":
         try:
@@ -98,8 +102,9 @@ def main():
             print(r.status_code, len(r.content), url)
             if "spirithollow" in url and body:
                 for href in re.findall(r'href="([^"]+)"', body):
-                    if re.search(r"(?i)score|card|\.pdf|course|tee|yard", href):
-                        extra.append(urljoin(r.url, href))
+                    if re.search(r"(?i)score|card|\.pdf|hole|tee|yard", href) and not re.search(
+                            r"(?i)instagram|facebook|twitter|foreup|\.css|\.js", href):
+                        extra.append(urljoin(r.url, html.unescape(href)))
         except Exception as e:  # noqa: BLE001
             idx[url] = dict(error=str(e))
             print("ERR", url, e)
