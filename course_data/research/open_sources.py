@@ -255,6 +255,7 @@ def compare() -> dict:
                                                                       "golf:par", "hole")},
                           "tee_values": [(v.get("value"), v.get("count")) for v in
                                          (((t.get("tee_values") or {}).get("json") or {}).get("data") or [])[:15]]}
+    res["spirit_hollow_card_fit_to_osm_tees"] = cardfit()
     (HERE / "probe.json").write_text(json.dumps(res, indent=1))
     print(json.dumps(res, indent=1))
     return res
@@ -278,6 +279,34 @@ def dump_resolve() -> dict:
     return out
 
 
+def cardfit() -> dict:
+    """Which card does the OSM tee geometry represent? Spirit Hollow: per card, the gap between each
+    hole's card yardage and the nearest OSM tee box (package tee_options = along-line distances)."""
+    import statistics as st
+    pkg = json.loads((ROOT / COURSES["spirit_hollow"]["package"]).read_text())
+    hl = pkg["holes"] if isinstance(pkg["holes"], list) else [pkg["holes"][str(i)] for i in range(1, 19)]
+    opts = [h.get("tee_options") or [] for h in hl]
+    card = json.loads((ROOT / "tees/scorecard.json").read_text())
+    cards = {f"club {k}": v["yards"] for k, v in card["tee_sets"].items()}
+    raw = RAW / "opengolfapi_spirit_hollow.json"
+    if raw.exists():
+        js = json.loads(raw.read_text())["details"][0]["api_v1"]["json"]
+        hd = sorted(js["holes_data"], key=lambda h: h["number"])
+        for c in ("gold", "black", "white", "red"):
+            cards[f"opengolfapi {c}"] = [h["yardages"].get(c) for h in hd]
+    hist = card.get("historical_cards") or []
+    for i, x in enumerate(hist if isinstance(hist, list) else hist.values()):
+        if isinstance(x, dict) and isinstance(x.get("yards"), list):
+            cards[f"historical {i} {x.get('source', '').split('/')[2]} ({sum(x['yards'])})"] = x["yards"]
+    out = {}
+    for k, ys in cards.items():
+        e = [min(abs(y - o) for o in op) for y, op in zip(ys, opts) if op and y is not None]
+        out[k] = {"total": sum(y for y in ys if y), "median_gap_yd": st.median(e),
+                  "holes_within_10yd": sum(v <= 10 for v in e), "holes_over_25yd": sum(v > 25 for v in e)}
+    print(json.dumps(out, indent=1))
+    return out
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "compare"
-    {"fetch": fetch, "compare": compare, "dump": dump_resolve}[cmd]()
+    {"fetch": fetch, "compare": compare, "dump": dump_resolve, "cardfit": cardfit}[cmd]()
