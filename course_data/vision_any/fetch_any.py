@@ -285,7 +285,8 @@ def fetch_ept(g1, g2, out, meta, max_projects=3):
     from pyproj import Transformer
     from shapely.geometry import box, shape
     info = dict(source="USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL")
-    if not shutil.which("pdal"):
+    pdal = os.environ.get("PDAL_BIN") or shutil.which("pdal")
+    if not pdal or not os.path.exists(pdal):
         info["error"] = "pdal CLI not installed"
         meta["ept"] = info
         return None
@@ -340,7 +341,7 @@ def fetch_ept(g1, g2, out, meta, max_projects=3):
         pj = os.path.join(tmp, "pipe.json")
         json.dump(pipe, open(pj, "w"))
         log("  PDAL", c["name"])
-        r = subprocess.run(["pdal", "pipeline", pj], capture_output=True, text=True, timeout=2400)
+        r = subprocess.run([pdal, "pipeline", pj], capture_output=True, text=True, timeout=2400)
         if r.returncode != 0:
             log("   PDAL failed:", r.stderr[-1500:])
             info.setdefault("errors", []).append(dict(name=c["name"], err=r.stderr[-800:]))
