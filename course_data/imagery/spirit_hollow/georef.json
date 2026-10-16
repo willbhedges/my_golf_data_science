@@ -1,0 +1,121 @@
+{
+ "course": "Spirit Hollow Golf Course",
+ "bbox_wgs84_snwe": [
+  40.752022,
+  -91.153642,
+  40.769011,
+  -91.134747
+ ],
+ "margin_m": 100.0,
+ "padded_bbox_wgs84_snwe": [
+  40.751123688825004,
+  -91.15482797520113,
+  40.76990931117499,
+  -91.13356102479888
+ ],
+ "fetched_utc": "2026-10-16T18:20:10Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "years_available": [
+   2011,
+   2013,
+   2014,
+   2015,
+   2017,
+   2019,
+   2021,
+   2023
+  ],
+  "acquired": [
+   "2023-09-01"
+  ],
+  "items": [
+   "ia_m_4009123_ne_15_030_20230901_20231127",
+   "ia_m_4009115_se_15_030_20230901_20231127"
+  ],
+  "gsd_m": 0.3,
+  "resolution_m": 0.3,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 6132,
+  "height": 7079,
+  "transform": [
+   0.3,
+   0.0,
+   655724.1,
+   0.0,
+   -0.3,
+   4514891.1
+  ],
+  "bounds_crs": [
+   655724.1,
+   4512767.399999999,
+   657563.7,
+   4514891.1
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 3066,
+   "height": 3540,
+   "transform": [
+    0.6,
+    0.0,
+    655724.1,
+    0.0,
+    -0.5999152542372881,
+    4514891.1
+   ],
+   "resolution_m": 0.6
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 20.58,
+   "naip_nir.tif": 14.06,
+   "naip_rgb_lo.jpg": 3.96,
+   "naip_nir_lo.jpg": 2.8
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 5,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26915",
+  "width": 1840,
+  "height": 2125,
+  "transform": [
+   1.0,
+   0.0,
+   655724.0,
+   0.0,
+   -1.0,
+   4514892.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 8.06,
+  "format": "COG",
+  "elev_m": [
+   167.343505859375,
+   208.91265869140625
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 49.9
+}
