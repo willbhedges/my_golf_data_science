@@ -1,6 +1,24 @@
 """Hand-written QA findings (visual review + bug reports), included verbatim at the end of REPORT.md by
 golden_spirit_hollow.write_report(). Edit TEXT, then re-run golden_spirit_hollow.py (or run_qa.py)."""
 
+SUMMARY = r'''
+## 0. Summary
+
+* **Contracts** (`test_contracts.py`, 7 packages, ~1,900 checks): the platform packages for all three courses load,
+  have every hole, par, tees for every card set, bearing, zones + zones_ll, provenance, and `tee_strategy` runs on
+  every hole. Failing: course boundary drops 2 of 3 rings (SH 5-9 "outside"), self-intersecting polygons on every
+  course, forward-tee lengths, tee points inside vision `native`, zones/zones_ll drift after gap-fill.
+* **Golden (Spirit Hollow)**: every bar fails. Best build (platform + vision): green within 10 yds 75%, same club as
+  final_decision.json 50% (bar 80%), trees IoU 0.15 / long grass 0.09 (bar 0.6).
+* **End to end**: plan.py produces a book, aim sheets and a wind page for Spirit Hollow, Mozingo Lake and Veenker.
+  Mozingo picks match the hand-made Mozingo plan on 8/9 holes. Veenker (no vision) prints "Driver, 120 yds right"
+  across a river on 15.
+* **Usable for a new course today? No, not without a human check.** The pipeline runs, but the printed aims are
+  relative to an arbitrary tee line, there is no guard on absurd picks, and courses without built vision layers play
+  every wood as rough. With vision layers and a human look at the review images (`review/<slug>/`), the open
+  Mozingo-type course is close.
+'''
+
 TEXT = r'''
 ## 3. Visual review findings (hand-checked, `review/<slug>/<hole>.jpg`)
 
@@ -20,7 +38,7 @@ star + dots = Driver best aim and 300 simulated balls coloured by the lie the pa
 | 13 | Woods left of the fairway unmapped; Driver goes into the fairway bunker at 290 (19% sand) with no tree cost weighed. | 150-330 yds, 30-90 L |
 | 4, 5, 10, 12, 13 | Self-intersecting zone polygons (`test_zones_valid_simple`): OB on 4 and 5, creek water on 10/12/13 (buffers folding on themselves). `matplotlib.Path` tolerates them but even-odd fill leaves holes in the hazard. | see contracts.json messages |
 
-### Spirit Hollow with vision (`qa/work/sh_v` = `vision_any/gapfill.py` on `packages/spirit_hollow`, precomputed lidar/NAIP layers; `review/spirit_hollow_vision/`)
+### Spirit Hollow with vision (`qa/work/v_spirit_hollow` = `vision_any/gapfill.py` on `packages/spirit_hollow` (same as the 19:58 Actions package), precomputed lidar/NAIP layers; `review/spirit_hollow_vision/`)
 
 Big improvement: woods right of the creek on 11 are now `recovery`, and Driver on 11 now finds the creek (78% water)
 instead of "rough", so the model will lay up; trees appear in every landing zone (exposure 0.14-0.47).
@@ -54,78 +72,68 @@ Common to every tee hole: **no `recovery` or `native` polygon anywhere** (no vis
 into woods or prairie plays as rough - the R6 failure (unmapped hazard = rough), and why the auto club pick drifts
 to Driver (see the golden table).
 
-## 4. End-to-end runs (`e2e.py`, `e2e.json`)
+## 4. End-to-end runs (`e2e.py` -> `e2e.json`; plan.py --quick into a scratch dir)
 
-| course | package | result |
-|---|---|---|
-| Spirit Hollow, Black | `product/standin/spirit_hollow` (pipeline stand-in) -> `product/plan.py --quick` | **runs**: 19-page book (8.6 MB), aim sheets, self-contained 1.7 MB wind page covering all 14 tee shots, decision for every par 4/5. 26 min wall for "quick" (shared CPU). Card picks Driver on 9 of 14 tee shots. |
-| Spirit Hollow, Black | `qa/work/spirit_hollow` = **platform `package.py` built offline** (seed_from_dir from course_data/spirit_hollow) | builds in seconds: 18 holes, all 4 card tee sets, zones + zones_ll consistent (reframe OK), elevation from the DEM. Contract failures below. |
-| Mozingo Lake, White | `qa/work/mozingo_lake` = platform `package.py` offline from course_data/mozingo | builds 18 holes, but **no scorecard, no imagery, no DEM**: tee = OSM box nearest the line start (back tee), every length "measured", stage `imagery: missing` -> no book images, no vision. Not plannable as a product yet. |
-| Spirit Hollow / Mozingo / **Veenker** (3rd) | **platform packages from Actions** `packages/{spirit_hollow,mozingo_lake,veenker}` | all three build (18 holes, imagery + DEM; Veenker card from golfify, 5 sets). **Vision failed in all three** (`stages.vision`: `IndexError` on Mozingo/Veenker, `ModuleNotFoundError: sklearn` on Spirit Hollow). plan.py e2e on these not run yet: the coordinator paused heavy local compute. |
+| course | package | plan.py | deliverables | club picks |
+|---|---|---|---|---|
+| Spirit Hollow, Black | `product/standin/spirit_hollow` | OK, 1565 s | 19-page book 8.6 MB, aim sheets, 1.7 MB self-contained wind page (all 14 tee shots), decision for every par 4/5 | Driver on 9/14; golden on the **platform** package (with vision): same club as final_decision.json on 50% of 16 tee shots |
+| Mozingo Lake (2nd) | `qa/work/v_mozingo_lake` (platform package + vision_any gapfill) | OK, 962 s | 19-page book, aim sheets, 0.9 MB wind page | **8 of 9** match the hand-mapped picks in `mozingo/README.md` (1 4w, 2 4w, 3 D, 4 D, 6 D, 7 4w, 9 D, 12 D; miss: 10 auto 4-wood vs D). Caveat: vision_any tuned its native threshold on Mozingo |
+| Veenker (3rd) | `packages/veenker` (no vision layers) | OK, 364 s | book, aim sheets, 1.6 MB wind page | 15: "Driver, aim **120 yds right** of the tee line" across the river and trees next to another hole's green; 9: 2-wood +118 yds. Driver on 11 of 14. Not playable advice. |
 
-Book review (Spirit Hollow stand-in, page 1 + hole pages): the card prints **"Driver 38 yds left" (1), "50 yds left" (14),
-"98 yds right of the tee line" (18)**. These offsets are relative to the auto tee line (tee -> first hole-line node),
-not to anything the golfer can see; on 18 the aim is on another part of the hole. The Confidence column is empty in
-quick mode. The v1 hand-reviewed decision for 1 is 4-wood 5 yds right.
+Book review: every course's card prints aims relative to the auto tee line - Spirit Hollow "38 yds left" (1),
+"50 left" (14), "98 right" (18); Mozingo 3 "58 yds right"; Veenker 15 "120 right", 9 "118 right". On the page the
+yellow tee line runs into trees and the star sits on a fairway well off it. The Confidence column is empty in quick
+mode.
 
-## 5. Bug reports by area
+## 5. Bug reports by area (state at 21:00 UTC; packages rebuilt on Actions 19:58)
 
 ### data platform (`course_data/platform/`)
 * **P1 (geometry, high):** `course.boundary` keeps only the largest ring of the course MultiPolygon (Spirit Hollow
-  relation 13353211 has 3 outer rings: 101, 20, 12 x1e-6 deg2). Greens/tees of holes 5, 6, 7, 8, 9 fall 100-550 yds
-  "outside the course" (`test_green_inside_course`, `test_tee_inside_course`). Anything that infers boundary OB from it
-  will put 5 holes in OB. Fix: store the full MultiPolygon (GeoJSON) or a list of rings.
-* **P2:** `course.state` is null when seeded from an existing fetch (`seed_from_dir`), and `town` too for Spirit Hollow;
-  the request's `state`/`town` should be copied in.
-* **P3:** Rust (forward) tees on par 3s 3, 12, 15 play 21-38% longer than the card along the hole line (e.g. 138 vs
-  card 100): the forward box sits behind where the card says (`test_every_tee_set[...-Rust]`).
-* **P4:** self-intersecting zone polygons survive into the package (water on 7/11/13/16, sand on 11):
-  `geometry._holefree` output should be `make_valid`'d before export.
-* **P6 (Veenker):** tee sets are duplicated as `Gold (Gold)` and `Red (Red)` next to `Gold`/`Red` (golfify parse);
-  Red tees on 3, 6, 8, 11 fail the length check. Requested `White` silently fell back to `Blue` (warning only) - the
-  golfer should be asked.
-* **P7:** with no card the package reports the measured length as `length` and the book prints it as the card
-  yardage (Mozingo); mark it as measured.
-* **P8:** Veenker's package says `stages.vision = "ok: vision_any/gapfill.py"` but gapfill returned *missing*
-  (`vision_any/veenker/vision_any.geojson` does not exist; gapfill error "window shape cannot be larger than input
-  array shape") - the package carries only 15 `recovery` / 7 `native` polygons (OSM) on a heavily wooded course.
-  The stage must report gapfill's own `stages.vision` string, not "ok".
-* **P5 (Mozingo):** no scorecard source found offline (request yardages / card file / golfify / club site all missing)
-  -> every hole falls back to the back-most OSM tee; the request should carry yardages or the Actions scorecard fetch
-  must run. No imagery/DEM for Mozingo in the package (imagery request missing).
+  relation 13353211 has 3 outer rings). Greens and tees of holes 5-9 fall 100-550 yds "outside the course"
+  (`test_green_inside_course`, `test_tee_inside_course`), e.g. tee 6 (-91.15081, 40.76492) is 548 yds out. Anything
+  that infers boundary OB from it puts 5 holes in OB. Fix: keep every ring (GeoJSON MultiPolygon).
+* **P8 (high):** Veenker's package reports `stages.vision = "ok: vision_any/gapfill.py"` while gapfill found no
+  layers (only 15 OSM `recovery` / 7 `native` polygons on a wooded course, `sources.vision` = null). Copy gapfill's own
+  stage string.
+* **P6 (Veenker):** duplicated tee sets `Gold (Gold)`, `Red (Red)` (golfify parse); Red tees on 3, 6, 8, 11 fail the
+  15% length check. Requested `White` silently became `Blue` (warning only): ask the golfer.
+* **P3 (Spirit Hollow):** Rust tees on par 3s 3, 12, 15 play 21-38% over the card (138 vs 100 on 3).
+* **P4:** self-intersecting polygons exported (Spirit Hollow 10 holes, Mozingo 10, Veenker 5): `make_valid` before
+  writing `zones_ll`.
+* **P7 (Mozingo):** the tee set is `request` (yardages from the request file, `par: null`); requested `App` fell back
+  silently. With no card, `length` is measured but printed as the card yardage.
 
 ### hazard vision (`course_data/vision_any/`)
-* **V1 (blocker for the club pick):** no gap-fill merged into any package: landing-zone IoU for trees and long grass is
-  0.00 on every Spirit Hollow hole. Concrete misses in section 3 (holes 1, 6, 9, 11, 13, 18).
-* **V1b:** in the Actions builds `stages.vision` = `failed: IndexError: list index out of range` (Mozingo, Veenker)
-  and `failed: ModuleNotFoundError: No module named 'sklearn'` (Spirit Hollow: add scikit-learn to the workflow).
-* **V5 (Veenker):** no layers built: `run_any` fails with `ValueError: window shape cannot be larger than input array
-  shape`, so the third course has no trees/long grass at all (see P8).
-* **V2:** `gapfill.py` first failed with `ModuleNotFoundError: run_any` (module landed later); a second run on
-  `--holes` was OOM-killed (exit 137, machine had ~9 GB free) on a 1876x2162 1-m stack; a third run on the platform
-  package is paused by the coordinator. QA has not yet seen a gap-filled package.
-* **V4:** native rings around every tree polygon; tee points inside native; zones/zones_ll order mismatch after
-  gap-fill; self-intersecting output polygons (all detailed in section 3, "Spirit Hollow with vision").
-* **V3:** creek corridors are 3-yd centre-line buffers (mean water IoU 0.37); on 10, 11, 14, 16, 18 the channel + banks
-  are 10-20 yds wide in NAIP.
+* **V1 (high):** trees / long grass still far from the hand map on Spirit Hollow: landing-zone IoU trees 0.15,
+  long grass 0.09 (bar 0.6); trees pass on 6% of holes.
+* **V4:** a `native` ring hugs the outside of almost every `recovery` polygon (canopy shadow / crown edge as long
+  grass; 325 native polygons) - tree edges then play as 50% lost ball. Tee points inside native: 2 Gold, 6 Rust,
+  18 Rust. Self-intersecting recovery/native polygons on 1, 9, 10, 11, 13, 15-18.
+* **V5 (Veenker):** no layers (`run_any`: `ValueError: window shape cannot be larger than input array shape`; a fix
+  for the missing DTM landed at 20:4x, not rebuilt yet), so the 3rd course has no tree hazards and the model sends
+  Driver through the woods (15, 9).
+* **V2:** on-the-fly gapfill (no precomputed layers) is too heavy for the sandbox (one run OOM-killed at ~9 GB free).
+  With the committed `vision_any.geojson` it takes seconds - keep that the only product path.
+* **V3:** creek corridors narrow: water IoU 0.32 mean, passes on 20% of holes with water.
 
 ### product (`course_data/product/`)
-* **R1 (high, golfer-facing):** aims are printed relative to the auto tee line; on dog-legs that line points off the
-  landing area, so the card says "98 yds right of the tee line" (18), "50 yds left" (14), "38 yds left" (1). Express the
-  aim against something visible (fairway centre / a landmark / distance from the left edge) or re-aim the frame at the
-  ~250-yd point of the line of play.
-* **R2:** `plan.py --quick` took 26 min wall for one course (shared CPU; wind grid dominates: 61 winds x 14 shots).
-  Fine for Actions, too slow for "quick".
-* **R3:** quick-mode book prints an empty Confidence column; the package's per-hole `confidence.score` exists and
-  could be printed.
-* **R4:** the stand-in package is not course_package/1 (`schema`, no `zones_ll`, `exposure`, `yards{set}`); retire it
-  in favour of the platform package (which `plan.py` should be pointed at).
+* **R1 (high, golfer-facing, all three courses):** aims printed relative to the auto tee line ("98 yds right" SH 18,
+  "58 right" Mozingo 3, "120 right" Veenker 15). Use decision 9.1-8 (aim line to the 250-yd point on the line of play)
+  and say the aim against something visible.
+* **R5 (high):** no guard on absurd aims: Veenker 15 Driver 120 yds right across the river and trees to another
+  hole's green; such picks (|aim| > ~60 or landing outside the hole's own corridor) should be refused / flagged on
+  the page, not printed as PLAY.
+* **R2:** `--quick` is 6-26 min per course (wind grid dominates).
+* **R3:** the Confidence column is empty in quick mode although `confidence.score` is in the package.
+* **R4:** `plan_course.yml`/requests should point at `packages/<slug>/package.json`, not the stand-in.
 
 ### architect (`ARCHITECTURE.md`, `pipeline.py`, `acceptance.py`)
-* **A1:** `tee_strategy.expected_strokes` raises `KeyError` for `green` and `ob_boundary`, which 9.1-4 allows in
-  packages. Either the model maps them or the contract says every consumer maps `green -> fairway`,
-  `ob_boundary -> ob` (QA's reader does).
-* **A2:** acceptance bars are unmet even with oracle tees (tee 50%, green 56%, length 62%, club 62%); the as-built Black
-  package matches `final_decision.json` on 81% of tee shots (13/16), which is the only bar met - largely because the
-  hand-reviewed picks lean Driver/4-wood on open holes where missing trees don't matter.
+* **A1:** `tee_strategy.expected_strokes` raises `KeyError` for `green` and `ob_boundary` (allowed in packages by
+  9.1-4); either map them in the model or state that consumers must.
+* **A2:** the golden bar is unmet on every build. With the corrected hand map (19:5x) the platform package with vision
+  picks the same club as final_decision.json on 50% of 16 tee shots, the OSM-only oracle on 50%. Tee/length errors on
+  the as-built package are expected (Black boxes vs traced boxes); green within the bar 75%.
+* **A3:** `pipeline.py` reads `imagery/<slug>/gapfill.geojson` (classifier trained on the hand map); any golden run on
+  a v1 holes.json built that way is circular. QA's golden uses the oracle (vision disabled) and the platform package
+  (vision_any, not hand-trained) only.
 '''

@@ -182,5 +182,93 @@
    "forecast: none attached (runs on Actions; the page falls back to a hand-set wind)"
   ],
   "ok": false
+ },
+ "course_data/packages/veenker/package.json|None": {
+  "package": "course_data/packages/veenker/package.json",
+  "tees": null,
+  "out": "/tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/veenker",
+  "cmd": "/usr/local/bin/python3 /home/user/my_golf_data_science/course_data/product/plan.py --package course_data/packages/veenker/package.json --quick --out /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/veenker",
+  "checks": {
+   "plan_exit_0": true,
+   "book_pdf": true,
+   "aim_sheets_pdf": true,
+   "book_pages_ge_holes": true,
+   "wind_page": true,
+   "wind_page_self_contained": true,
+   "wind_page_all_tee_holes": true,
+   "decision_all_tee_holes": true,
+   "no_aim_on_bound": false
+  },
+  "problems": [
+   "aim on the +/-60 search bound: ['9', '15']"
+  ],
+  "exit": 0,
+  "log_tail": "[   0.0s] == 1 package -> course module\n[   0.2s] Veenker Memorial Golf Course (veenker), Blue tees: 13 tee shots + 5 par 3s from course_data/packages/veenker/package.json\n[   0.3s] == 2 NAIP render per hole\n[   1.0s]   ! hole 4: 12% of the frame has no imagery\n[   1.6s]   ! hole 8: 12% of the frame has no imagery\n[   3.1s] 18 images, 5.8 MB, imagery 2023-09-02\n[   3.1s] == 3 decision (quick)\n[  14.9s]   2: 4-wood aim +2.5 margin 0.024\n[  16.6s]   4: Driver aim +2.5 margin 0.006 (tie)\n[  19.3s]   1: Driver aim -5.0 margin 0.048\n[  22.8s]   3: Driver aim +55.0 margin 0.006 (tie)\n[  33.7s]   5: 2-wood aim -10.0 margin 0.004 (tie)\n[  38.7s]   9: 2-wood aim +117.5 margin 0.050\n[  42.1s]   10: Driver aim +2.5 margin 0.088\n[  46.2s]   7: Driver aim -15.0 margin 0.009 (tie)\n[  51.5s]   14: Driver aim +32.5 margin 0.035\n[  53.0s]   12: Driver aim +45.0 margin 0.055\n[  58.4s]   15: Driver aim +120.0 margin 0.060\n[  60.2s]   16: Driver aim +7.5 margin 0.086\n[  63.4s]   18: Driver aim +2.5 margin 0.091\n[  63.8s] == 4 book + aim sheets\nhole 1 done\nhole 2 done\nhole 3 done\nhole 4 done\nhole 5 done\nhole 6 done\nhole 7 done\nhole 8 done\nhole 9 done\nhole 10 done\nhole 11 done\nhole 12 done\nhole 13 done\nhole 14 done\nhole 15 done\nhole 16 done\nhole 17 done\nhole 18 done\nwrote /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/veenker/output/Veenker_Memorial_Strategy.pdf\nwrote /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/veenker/output/Veenker_Memorial_Aim_Sheets.pdf\n[  80.1s] == 5 forecast + wind grid + page\n[ 139.3s]   wind grid 1: calm Driver\n[ 140.2s]   wind grid 2: calm 4-wood\n[ 140.4s]   wind grid 4: calm Driver\n[ 173.7s]   wind grid 3: calm Driver\n[ 228.5s]   wind grid 9: calm 2-wood\n[ 247.9s]   wind grid 5: calm 2-wood\n[ 256.3s]   wind grid 10: calm Driver\n[ 286.8s]   wind grid 7: calm Driver\n[ 317.0s]   wind grid 14: calm Driver\n[ 326.1s]   wind grid 12: calm Driver\n[ 339.6s]   wind grid 15: calm Driver\n[ 342.4s]   wind grid 16: calm Driver\n[ 362.6s]   wind grid 18: calm Driver\n[ 363.3s]   wrote ../../../tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/veenker/wind_page/index.html (1.6 MB)\n[ 363.3s] done in 363s -> ../../../tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/veenker\n[ 363.3s]   gap: elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 1 holes, 2-wood on 1 holes, 4-wood on 1 holes, Long iron on 1 holes\n[ 363.3s]   gap: hole 9: 2-wood best aim +118 yds off the tee line (tee line points well away from the landing area; check the hole geometry)\n[ 363.3s]   gap: hole 15: Driver best aim +120 yds off the tee line (tee line points well away from the landing area; check the hole geometry)\n[ 363.3s]   gap: forecast: none attached (runs on Actions; the page falls back to a hand-set wind)\n",
+  "seconds": 364,
+  "book_pages": 19,
+  "book_mb": 7.9,
+  "aim_pages": 18,
+  "wind_page_kb": 1639,
+  "decision": {
+   "1": {
+    "club": "Driver",
+    "aim": -5.0
+   },
+   "2": {
+    "club": "4-wood",
+    "aim": 2.5
+   },
+   "3": {
+    "club": "Driver",
+    "aim": 55.0
+   },
+   "4": {
+    "club": "Driver",
+    "aim": 2.5
+   },
+   "5": {
+    "club": "2-wood",
+    "aim": -10.0
+   },
+   "7": {
+    "club": "Driver",
+    "aim": -15.0
+   },
+   "9": {
+    "club": "2-wood",
+    "aim": 117.5
+   },
+   "10": {
+    "club": "Driver",
+    "aim": 2.5
+   },
+   "12": {
+    "club": "Driver",
+    "aim": 45.0
+   },
+   "14": {
+    "club": "Driver",
+    "aim": 32.5
+   },
+   "15": {
+    "club": "Driver",
+    "aim": 120.0
+   },
+   "16": {
+    "club": "Driver",
+    "aim": 7.5
+   },
+   "18": {
+    "club": "Driver",
+    "aim": 2.5
+   }
+  },
+  "data_gaps": [
+   "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 1 holes, 2-wood on 1 holes, 4-wood on 1 holes, Long iron on 1 holes",
+   "hole 9: 2-wood best aim +118 yds off the tee line (tee line points well away from the landing area; check the hole geometry)",
+   "hole 15: Driver best aim +120 yds off the tee line (tee line points well away from the landing area; check the hole geometry)",
+   "forecast: none attached (runs on Actions; the page falls back to a hand-set wind)"
+  ],
+  "ok": false
  }
 }
