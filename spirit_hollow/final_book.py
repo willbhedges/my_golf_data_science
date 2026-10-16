@@ -106,8 +106,11 @@ def main():
         json.dump({str(k): dict(note=notes[k], aim_at=aim_at[k]) for k in notes}, fh, indent=1)
     if os.environ.get("NOTES_ONLY"):
         return
-    yb.STRATEGY_NAME = "Spirit_Hollow_Final.pdf"
-    yb.PREFIX = "Spirit_Hollow_Final"
+    # write somewhere git never touches, then move into place when complete (other agents' git
+    # pull --autostash once reverted a half-written PDF in output/)
+    out_dir = os.environ.get("BOOK_TMP")
+    yb.STRATEGY_NAME = os.path.join(out_dir, "Spirit_Hollow_Final.pdf") if out_dir else "Spirit_Hollow_Final.pdf"
+    yb.PREFIX = os.path.join(out_dir, "Spirit_Hollow_Final") if out_dir else "Spirit_Hollow_Final"
     yb.confidence = lambda: {(int(k) if k.isdigit() else k): round(100 * v["p_best_crossfit"].get(v["pick"], 0))
                              for k, v in FINAL.items()}
     yb.build()
