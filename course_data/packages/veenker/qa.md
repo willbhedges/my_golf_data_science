@@ -1,8 +1,8 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-10-16T21:52:21Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red, Gold #2, Red #2)).
+Built 2026-10-16T21:55:27Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
-**WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red, Gold #2, Red #2**
+**WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
 ## Coverage
 
@@ -49,14 +49,14 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 - **resolve**: ok: way/44804299 Veenker Memorial Golf Course (Ames, IA)
 - **osm**: ok: 598 features
 - **scorecard**: ok: golfify (golfify)
-- **tees**: ok: tees/place_tee.py for 5 sets on the card yardages
-- **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
+- **tees**: ok: tees/place_tee.py for 3 sets on the card yardages
+- **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/veenker/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **elevation**: ok: course_data/packages/veenker/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)
 
 ## Warnings
 
-- requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red, Gold #2, Red #2
+- requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red
 - hole 7: measured 572 vs card 590 yds for Blue (no OSM tee box at that yardage?)
 - hole 10: measured 536 vs card 560 yds for Blue (no OSM tee box at that yardage?)
