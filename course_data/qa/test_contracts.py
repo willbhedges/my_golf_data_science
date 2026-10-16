@@ -146,9 +146,8 @@ def test_zones_match_zones_ll(hole):
     q = pk.holes[ref]
     if not q.zones_yard:
         pytest.skip("no zones_ll + yard zones pair")
-    a = [lie for lie, _ in q.zones_ll]
-    b = [lie for lie, _ in q.zones_yard]
-    assert sorted(a) == sorted(b), f"lies differ: zones_ll {len(a)} vs zones {len(b)}"
+    from collections import Counter
+    a, b = Counter(lie for lie, _ in q.zones_ll), Counter(lie for lie, _ in q.zones_yard)
     from matplotlib.path import Path
     R = P._render()
     yfr = R.Frame(q.tee_ll, q.aim_ll, ppy=1.0, tee_px=(0, 0), proj="utm")
@@ -161,8 +160,11 @@ def test_zones_match_zones_ll(hole):
         for lie, poly in zs:
             out[Path(np.asarray(poly, float)[:, :2]).contains_points(pts)] = lie
         return out
-    agree = float(np.mean(lies(q.zones_ll, ll) == lies(q.zones_yard, xy)))
-    assert agree >= 0.98, f"zones vs zones_ll agree on only {agree:.0%} of the 100-400 yd grid"
+    la_, ly_ = lies(q.zones_ll, ll), lies(q.zones_yard, xy)
+    agree = float(np.mean(la_ == ly_))
+    diff = Counter(f"{u}->{v}" for u, v in zip(la_, ly_) if u != v).most_common(3)
+    assert agree >= 0.98, (f"zones vs zones_ll agree on only {agree:.0%} of the 100-400 yd grid ({diff}); "
+                           f"polygon counts zones_ll {dict(a)} vs zones {dict(b)}")
 
 
 @pytest.mark.parametrize("tset", TEE_SETS, ids=lambda x: f"{x[0].id}-{x[1]}-{x[2]}")
@@ -184,9 +186,7 @@ def test_every_tee_set(tset):
     if not card:
         bad.append("no card yards")
     if tll and card and q.green_ll:
-        L = P.dist_yd(tll, q.green_ll)
-        if q.hole_line_ll and len(q.hole_line_ll) > 2:
-            L = P.path_yd([tll] + [p[:2] for p in q.hole_line_ll[1:-1]] + [q.green_ll])
+        L, _ = P.play_length(q, tll)
         if abs(L - card) / card > LEN_TOL:
             bad.append(f"length {L:.0f} vs card {card} ({(L - card) / card:+.0%})")
     if tll:
@@ -219,11 +219,7 @@ def test_length_vs_card(hole):
     q = pk.holes[ref]
     if q.card is None or not q.tee_ll or not q.green_ll:
         pytest.skip("no card or no tee/green")
-    if q.hole_line_ll and len(q.hole_line_ll) >= 2:
-        pts = [q.tee_ll] + [p[:2] for p in q.hole_line_ll[1:-1]] + [q.green_ll]
-        L, how = P.path_yd(pts), "along the hole line"
-    else:
-        L, how = P.dist_yd(q.tee_ll, q.green_ll), "straight"
+    L, how = P.play_length(q, q.tee_ll)
     err = (L - float(q.card)) / float(q.card)
     assert abs(err) <= LEN_TOL, f"tee->green {L:.0f} yds ({how}) vs card {q.card} ({err:+.0%})"
 

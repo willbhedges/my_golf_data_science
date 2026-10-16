@@ -1,0 +1,96 @@
+{
+ "course_data/product/standin/spirit_hollow/package.json|Black": {
+  "package": "course_data/product/standin/spirit_hollow/package.json",
+  "tees": "Black",
+  "out": "/tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/spirit_hollow_Black",
+  "cmd": "/usr/local/bin/python3 /home/user/my_golf_data_science/course_data/product/plan.py --package course_data/product/standin/spirit_hollow/package.json --quick --out /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/spirit_hollow_Black --tees Black",
+  "checks": {
+   "plan_exit_0": true,
+   "book_pdf": true,
+   "aim_sheets_pdf": true,
+   "book_pages_ge_holes": true,
+   "wind_page": true,
+   "wind_page_self_contained": true,
+   "wind_page_all_tee_holes": false,
+   "decision_all_tee_holes": true,
+   "no_aim_on_bound": false
+  },
+  "problems": [
+   "wind page has no entry for holes ['4', '5', '6', '8', '9', '10', '11', '13', '14', '16', '17', '18']",
+   "aim on the +/-60 search bound: ['18']"
+  ],
+  "exit": 0,
+  "log_tail": "spirit_hollow), black tees: 14 tee shots + 4 par 3s from course_data/product/standin/spirit_hollow/package.json\n[   0.5s] == 2 NAIP render per hole\n[   7.7s] 18 images, 6.5 MB, imagery 2023-09-01\n[   7.7s] == 3 decision (quick)\n[  43.9s]   1: Driver aim -37.5 margin 0.015\n[  44.4s]   4: Driver aim +0.0 margin 0.091\n[  54.5s]   2: Driver aim -5.0 margin 0.054\n[  56.9s]   5: 4-wood aim +5.0 margin 0.018\n[  87.4s]   6: Driver aim -42.5 margin 0.017\n[  89.0s]   8: Driver aim -30.0 margin 0.023\n[ 101.8s]   9: 4-wood aim +10.0 margin 0.067\n[ 111.3s]   10: Driver aim -2.5 margin 0.024\n[ 127.8s]   11: 4-wood aim -2.5 margin 0.093\n[ 135.8s]   13: 4-wood aim +0.0 margin 0.024\n[ 145.1s]   16: 4-wood aim +10.0 margin 0.009 (tie)\n[ 146.9s]   14: Driver aim -50.0 margin 0.047\n[ 157.6s]   17: Driver aim -10.0 margin 0.019\n[ 170.2s]   18: Driver aim +97.5 margin 0.064\n[ 171.1s] == 4 book + aim sheets\nhole 1 done\nhole 2 done\nhole 3 done\nhole 4 done\nhole 5 done\nhole 6 done\nhole 7 done\nhole 8 done\nhole 9 done\nhole 10 done\nhole 11 done\nhole 12 done\nhole 13 done\nhole 14 done\nhole 15 done\nhole 16 done\nhole 17 done\nhole 18 done\nwrote /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/spirit_hollow_Black/output/Spirit_Hollow_Strategy.pdf\nwrote /tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/spirit_hollow_Black/output/Spirit_Hollow_Aim_Sheets.pdf\n[ 207.1s] == 5 forecast + wind grid + page\n[ 207.1s]   forecast: course_data/weather/forecast_spirit_hollow.json (2026-10-17, 2026-10-18)\n[ 500.1s]   wind grid 1: calm Driver\n[ 502.3s]   wind grid 4: calm Driver\n[ 588.8s]   wind grid 2: calm Driver\n[ 592.1s]   wind grid 5: calm 4-wood\n[ 885.9s]   wind grid 6: calm Driver\n[ 930.0s]   wind grid 8: calm Driver\n[1005.4s]   wind grid 9: calm 4-wood\n[1154.2s]   wind grid 10: calm Driver\n[1226.7s]   wind grid 11: calm 4-wood\n[1359.6s]   wind grid 13: calm 4-wood\n[1409.2s]   wind grid 14: calm Driver\n[1436.3s]   wind grid 16: calm 4-wood\n[1498.7s]   wind grid 17: calm Driver\n[1563.0s]   wind grid 18: calm Driver\n[1564.4s]   wrote ../../../tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/spirit_hollow_Black/wind_page/index.html (1.8 MB)\n[1564.4s] done in 1564s -> ../../../tmp/claude-0/-home-user-my-golf-data-science/3c0900e1-ef71-58c8-8d72-7f70a9ca40ad/scratchpad/e2e/spirit_hollow_Black\n[1564.4s]   gap: package stage vision: missing (no gap-fill layers)\n[1564.4s]   gap: hole 11: Driver best aim +75 yds off the tee line (tee line points well away from the landing area; check the hole geometry)\n[1564.4s]   gap: hole 18: Driver best aim +98 yds off the tee line (tee line points well away from the landing area; check the hole geometry)\n[1564.4s]   gap: no trees or long grass in any hole (vision gap-fill missing): unmapped hazards play as rough, which biases toward driver\n[1564.4s]   gap: no elevation adjustments in the package (flat ground assumed)\n",
+  "seconds": 1565,
+  "book_pages": 19,
+  "book_mb": 8.6,
+  "aim_pages": 18,
+  "wind_page_kb": 1755,
+  "decision": {
+   "1": {
+    "club": "Driver",
+    "aim": -37.5
+   },
+   "2": {
+    "club": "Driver",
+    "aim": -5.0
+   },
+   "4": {
+    "club": "Driver",
+    "aim": 0.0
+   },
+   "5": {
+    "club": "4-wood",
+    "aim": 5.0
+   },
+   "6": {
+    "club": "Driver",
+    "aim": -42.5
+   },
+   "8": {
+    "club": "Driver",
+    "aim": -30.0
+   },
+   "9": {
+    "club": "4-wood",
+    "aim": 10.0
+   },
+   "10": {
+    "club": "Driver",
+    "aim": -2.5
+   },
+   "11": {
+    "club": "4-wood",
+    "aim": -2.5
+   },
+   "13": {
+    "club": "4-wood",
+    "aim": 0.0
+   },
+   "14": {
+    "club": "Driver",
+    "aim": -50.0
+   },
+   "16": {
+    "club": "4-wood",
+    "aim": 10.0
+   },
+   "17": {
+    "club": "Driver",
+    "aim": -10.0
+   },
+   "18": {
+    "club": "Driver",
+    "aim": 97.5
+   }
+  },
+  "data_gaps": [
+   "package stage vision: missing (no gap-fill layers)",
+   "hole 11: Driver best aim +75 yds off the tee line (tee line points well away from the landing area; check the hole geometry)",
+   "hole 18: Driver best aim +98 yds off the tee line (tee line points well away from the landing area; check the hole geometry)",
+   "no trees or long grass in any hole (vision gap-fill missing): unmapped hazards play as rough, which biases toward driver",
+   "no elevation adjustments in the package (flat ground assumed)"
+  ],
+  "ok": false
+ }
+}

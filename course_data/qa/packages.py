@@ -98,6 +98,22 @@ def path_yd(lls):
     return sum(dist_yd(a, b) for a, b in zip(lls[:-1], lls[1:]))
 
 
+def play_length(q, tee_ll):
+    """Tee -> green yds the way a card measures it: tee to its projection on the hole line, along the line,
+    then to the green centre. Works for any tee set (forward tees project part-way up the line)."""
+    if not q.hole_line_ll or len(q.hole_line_ll) < 2:
+        return dist_yd(tee_ll, q.green_ll), "straight"
+    from shapely.geometry import LineString, Point
+    lat0 = math.radians(tee_ll[1])
+
+    def en(p):
+        return ((p[0] - tee_ll[0]) * math.cos(lat0) * 111320 / YD, (p[1] - tee_ll[1]) * 111320 / YD)
+    line = LineString([en(p) for p in q.hole_line_ll])
+    t, g = Point(0, 0), Point(en(q.green_ll))
+    s0, s1 = line.project(t), line.project(g)
+    return t.distance(line.interpolate(s0)) + max(s1 - s0, 0) + g.distance(line.interpolate(s1)), "along the hole line"
+
+
 def _ll(p):
     """[lon, lat] from a list/tuple/dict; tolerate {lat, lon}."""
     if p is None:
@@ -291,7 +307,7 @@ def find_packages(include_holes_json=True):
     what the book reads today). Skips QA's own folder and backups."""
     seen = []
     for p in sorted(glob.glob(os.path.join(CD, "**", "package.json"), recursive=True)):
-        if "/qa/" in p or "node_modules" in p:
+        if ("/qa/" in p and "/qa/work/" not in p) or "node_modules" in p:
             continue
         try:
             raw = json.load(open(p))
@@ -305,7 +321,7 @@ def find_packages(include_holes_json=True):
         seen.append(_from_package(p, raw))
     if include_holes_json:
         for p in sorted(glob.glob(os.path.join(CD, "**", "holes.json"), recursive=True)):
-            if "/qa/" in p:
+            if "/qa/" in p and "/qa/work/" not in p:
                 continue
             try:
                 raw = json.load(open(p))
