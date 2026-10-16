@@ -73,12 +73,12 @@ def find_course(name, near, radius_m):
     lat, lon = near
     q = f"""[out:json][timeout:90];
     nwr["leisure"="golf_course"]["name"~"{rx}",i](around:{radius_m},{lat},{lon});
-    out tags bb center;"""
+    out tags center geom;"""
     els = overpass(q)["elements"]
     if not els:                                         # unnamed / differently named: nearest course
         q = f"""[out:json][timeout:90];
         nwr["leisure"="golf_course"](around:{radius_m},{lat},{lon});
-        out tags bb center;"""
+        out tags center geom;"""
         els = overpass(q)["elements"]
     if not els:
         return None, []
@@ -88,6 +88,19 @@ def find_course(name, near, radius_m):
         return math.hypot(c["lat"] - lat, (c["lon"] - lon) * math.cos(math.radians(lat)))
     els.sort(key=lambda e: (e["type"] == "node", dist(e)))   # prefer areas, then closest
     return els[0], els
+
+
+def bounds_of(el):
+    """Bounding box of an Overpass element (relations don't always carry `bounds`)."""
+    if el.get("bounds"):
+        return el["bounds"]
+    pts = [p for p in el.get("geometry", []) if p]
+    for m in el.get("members", []):
+        pts += [p for p in m.get("geometry", []) if p]
+    if not pts and "lat" in el:
+        pts = [el]
+    return dict(minlat=min(p["lat"] for p in pts), minlon=min(p["lon"] for p in pts),
+                maxlat=max(p["lat"] for p in pts), maxlon=max(p["lon"] for p in pts))
 
 
 def fetch_features(bbox):
@@ -382,7 +395,8 @@ def main():
         raise SystemExit(f"no leisure=golf_course found for {a.name!r} near {near}")
     print("course:", course["type"], course["id"], course.get("tags", {}).get("name"), course.get("bounds"))
 
-    bb = course["bounds"]
+    bb = bounds_of(course)
+    course["bounds"] = bb
     dlat = a.pad_m / 111320.0
     dlon = dlat / math.cos(math.radians(bb["minlat"]))
     bbox = (bb["minlat"] - dlat, bb["minlon"] - dlon, bb["maxlat"] + dlat, bb["maxlon"] + dlon)
