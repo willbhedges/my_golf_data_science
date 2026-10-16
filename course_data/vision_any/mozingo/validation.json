@@ -1,0 +1,1223 @@
+{
+ "slug": "mozingo",
+ "truth": "mozingo",
+ "holes_evaluated": [
+  "2",
+  "6",
+  "7",
+  "9",
+  "10",
+  "12",
+  "13",
+  "14",
+  "16",
+  "17",
+  "18"
+ ],
+ "trees_how": "3DEP lidar HAG > 2.5 m",
+ "native_info": {
+  "seed_px": 107171,
+  "neg_px": 213559,
+  "seed_z": 3.0,
+  "native_frac_course": 0.2523059985181006
+ },
+ "landing": {
+  "holes": [
+   {
+    "hole": "2",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.718
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.5405405405405406,
+     "prec": 0.7692307692307693,
+     "rec": 0.6451612903225806,
+     "n_true": 62,
+     "n_pred": 52
+    },
+    "native": {
+     "iou": 0.1797752808988764,
+     "prec": 0.42105263157894735,
+     "rec": 0.23880597014925373,
+     "n_true": 67,
+     "n_pred": 38
+    },
+    "water": {
+     "iou": null,
+     "prec": null,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 0
+    },
+    "penal": {
+     "iou": 0.37735849056603776,
+     "prec": 0.6666666666666666,
+     "rec": 0.46511627906976744,
+     "n_true": 129,
+     "n_pred": 90
+    },
+    "recovery_raw": {
+     "iou": 0.5263157894736842,
+     "prec": 0.7407407407407407,
+     "rec": 0.6451612903225806,
+     "n_true": 62,
+     "n_pred": 54
+    },
+    "native_raw": {
+     "iou": 0.1797752808988764,
+     "prec": 0.42105263157894735,
+     "rec": 0.23880597014925373,
+     "n_true": 67,
+     "n_pred": 38
+    },
+    "agree": 0.6252631578947369
+   },
+   {
+    "hole": "6",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.757
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.23529411764705882,
+     "prec": 0.2962962962962963,
+     "rec": 0.5333333333333333,
+     "n_true": 15,
+     "n_pred": 27
+    },
+    "native": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 6
+    },
+    "water": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 5
+    },
+    "penal": {
+     "iou": 0.20454545454545456,
+     "prec": 0.23684210526315788,
+     "rec": 0.6,
+     "n_true": 15,
+     "n_pred": 38
+    },
+    "recovery_raw": {
+     "iou": 0.23529411764705882,
+     "prec": 0.2962962962962963,
+     "rec": 0.5333333333333333,
+     "n_true": 15,
+     "n_pred": 27
+    },
+    "native_raw": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 6
+    },
+    "agree": 0.6042105263157894
+   },
+   {
+    "hole": "7",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.794
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.046511627906976744,
+     "prec": 0.16666666666666666,
+     "rec": 0.06060606060606061,
+     "n_true": 66,
+     "n_pred": 24
+    },
+    "native": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 13
+    },
+    "water": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 55
+    },
+    "penal": {
+     "iou": 0.20610687022900764,
+     "prec": 0.29347826086956524,
+     "rec": 0.4090909090909091,
+     "n_true": 66,
+     "n_pred": 92
+    },
+    "recovery_raw": {
+     "iou": 0.04597701149425287,
+     "prec": 0.16,
+     "rec": 0.06060606060606061,
+     "n_true": 66,
+     "n_pred": 25
+    },
+    "native_raw": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 13
+    },
+    "agree": 0.6231578947368421
+   },
+   {
+    "hole": "9",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.767
+    },
+    "n": 475,
+    "recovery": {
+     "iou": null,
+     "prec": null,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 0
+    },
+    "native": {
+     "iou": 0.054945054945054944,
+     "prec": 0.4166666666666667,
+     "rec": 0.05952380952380952,
+     "n_true": 84,
+     "n_pred": 12
+    },
+    "water": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 15
+    },
+    "penal": {
+     "iou": 0.04716981132075472,
+     "prec": 0.18518518518518517,
+     "rec": 0.05952380952380952,
+     "n_true": 84,
+     "n_pred": 27
+    },
+    "recovery_raw": {
+     "iou": null,
+     "prec": null,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 0
+    },
+    "native_raw": {
+     "iou": 0.054945054945054944,
+     "prec": 0.4166666666666667,
+     "rec": 0.05952380952380952,
+     "n_true": 84,
+     "n_pred": 12
+    },
+    "agree": 0.47578947368421054
+   },
+   {
+    "hole": "10",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.825
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.06944444444444445,
+     "prec": 1.0,
+     "rec": 0.06944444444444445,
+     "n_true": 72,
+     "n_pred": 5
+    },
+    "native": {
+     "iou": 0.4,
+     "prec": 0.4,
+     "rec": 1.0,
+     "n_true": 22,
+     "n_pred": 55
+    },
+    "water": {
+     "iou": null,
+     "prec": null,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 0
+    },
+    "penal": {
+     "iou": 0.2222222222222222,
+     "prec": 0.4666666666666667,
+     "rec": 0.2978723404255319,
+     "n_true": 94,
+     "n_pred": 60
+    },
+    "recovery_raw": {
+     "iou": 0.06944444444444445,
+     "prec": 1.0,
+     "rec": 0.06944444444444445,
+     "n_true": 72,
+     "n_pred": 5
+    },
+    "native_raw": {
+     "iou": 0.4,
+     "prec": 0.4,
+     "rec": 1.0,
+     "n_true": 22,
+     "n_pred": 55
+    },
+    "agree": 0.6294736842105263
+   },
+   {
+    "hole": "12",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.833
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": 0.0,
+     "n_true": 23,
+     "n_pred": 5
+    },
+    "native": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 58
+    },
+    "water": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 7
+    },
+    "penal": {
+     "iou": 0.273972602739726,
+     "prec": 0.2857142857142857,
+     "rec": 0.8695652173913043,
+     "n_true": 23,
+     "n_pred": 70
+    },
+    "recovery_raw": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": 0.0,
+     "n_true": 23,
+     "n_pred": 5
+    },
+    "native_raw": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 58
+    },
+    "agree": 0.68
+   },
+   {
+    "hole": "13",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.845
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.22033898305084745,
+     "prec": 0.3611111111111111,
+     "rec": 0.3611111111111111,
+     "n_true": 36,
+     "n_pred": 36
+    },
+    "native": {
+     "iou": 0.06521739130434782,
+     "prec": 0.06976744186046512,
+     "rec": 0.5,
+     "n_true": 12,
+     "n_pred": 86
+    },
+    "water": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 24
+    },
+    "penal": {
+     "iou": 0.17575757575757575,
+     "prec": 0.19863013698630136,
+     "rec": 0.6041666666666666,
+     "n_true": 48,
+     "n_pred": 146
+    },
+    "recovery_raw": {
+     "iou": 0.20967741935483872,
+     "prec": 0.3333333333333333,
+     "rec": 0.3611111111111111,
+     "n_true": 36,
+     "n_pred": 39
+    },
+    "native_raw": {
+     "iou": 0.06521739130434782,
+     "prec": 0.06976744186046512,
+     "rec": 0.5,
+     "n_true": 12,
+     "n_pred": 86
+    },
+    "agree": 0.5852631578947368
+   },
+   {
+    "hole": "14",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.816
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 11
+    },
+    "native": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 43
+    },
+    "water": {
+     "iou": 0.2777777777777778,
+     "prec": 0.37037037037037035,
+     "rec": 0.5263157894736842,
+     "n_true": 19,
+     "n_pred": 27
+    },
+    "penal": {
+     "iou": 0.1111111111111111,
+     "prec": 0.12345679012345678,
+     "rec": 0.5263157894736842,
+     "n_true": 19,
+     "n_pred": 81
+    },
+    "recovery_raw": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 13
+    },
+    "native_raw": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 43
+    },
+    "agree": 0.6421052631578947
+   },
+   {
+    "hole": "16",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.823
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.14634146341463414,
+     "prec": 0.8571428571428571,
+     "rec": 0.15,
+     "n_true": 120,
+     "n_pred": 21
+    },
+    "native": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 89
+    },
+    "water": {
+     "iou": null,
+     "prec": null,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 0
+    },
+    "penal": {
+     "iou": 0.3855421686746988,
+     "prec": 0.5818181818181818,
+     "rec": 0.5333333333333333,
+     "n_true": 120,
+     "n_pred": 110
+    },
+    "recovery_raw": {
+     "iou": 0.152,
+     "prec": 0.7916666666666666,
+     "rec": 0.15833333333333333,
+     "n_true": 120,
+     "n_pred": 24
+    },
+    "native_raw": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 89
+    },
+    "agree": 0.6210526315789474
+   },
+   {
+    "hole": "17",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.819
+    },
+    "n": 475,
+    "recovery": {
+     "iou": null,
+     "prec": null,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 0
+    },
+    "native": {
+     "iou": 0.3888888888888889,
+     "prec": 0.84,
+     "rec": 0.42,
+     "n_true": 100,
+     "n_pred": 50
+    },
+    "water": {
+     "iou": null,
+     "prec": null,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 0
+    },
+    "penal": {
+     "iou": 0.3888888888888889,
+     "prec": 0.84,
+     "rec": 0.42,
+     "n_true": 100,
+     "n_pred": 50
+    },
+    "recovery_raw": {
+     "iou": null,
+     "prec": null,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 0
+    },
+    "native_raw": {
+     "iou": 0.3888888888888889,
+     "prec": 0.84,
+     "rec": 0.42,
+     "n_true": 100,
+     "n_pred": 50
+    },
+    "agree": 0.5389473684210526
+   },
+   {
+    "hole": "18",
+    "reg": {
+     "method": "lie_raster_fit",
+     "dice": 0.7
+    },
+    "n": 475,
+    "recovery": {
+     "iou": 0.043478260869565216,
+     "prec": 0.1,
+     "rec": 0.07142857142857142,
+     "n_true": 28,
+     "n_pred": 20
+    },
+    "native": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 3
+    },
+    "water": {
+     "iou": 0.4864864864864865,
+     "prec": 0.5714285714285714,
+     "rec": 0.7659574468085106,
+     "n_true": 47,
+     "n_pred": 63
+    },
+    "penal": {
+     "iou": 0.3089430894308943,
+     "prec": 0.4418604651162791,
+     "rec": 0.5066666666666667,
+     "n_true": 75,
+     "n_pred": 86
+    },
+    "recovery_raw": {
+     "iou": 0.06521739130434782,
+     "prec": 0.14285714285714285,
+     "rec": 0.10714285714285714,
+     "n_true": 28,
+     "n_pred": 21
+    },
+    "native_raw": {
+     "iou": 0.0,
+     "prec": 0.0,
+     "rec": null,
+     "n_true": 0,
+     "n_pred": 3
+    },
+    "agree": 0.608421052631579
+   }
+  ],
+  "pooled": {
+   "recovery": {
+    "iou": 0.16885553470919323,
+    "prec": 0.44776119402985076,
+    "rec": 0.2132701421800948,
+    "n_true": 422,
+    "n_pred": 201
+   },
+   "native": {
+    "iou": 0.14064914992272023,
+    "prec": 0.20088300220750552,
+    "rec": 0.3192982456140351,
+    "n_true": 285,
+    "n_pred": 453
+   },
+   "water": {
+    "iou": 0.21296296296296297,
+    "prec": 0.23469387755102042,
+    "rec": 0.696969696969697,
+    "n_true": 66,
+    "n_pred": 196
+   },
+   "penal": {
+    "iou": 0.2571649883810999,
+    "prec": 0.3905882352941176,
+    "rec": 0.4294954721862872,
+    "n_true": 773,
+    "n_pred": 850
+   },
+   "recovery_raw": {
+    "iou": 0.1694290976058932,
+    "prec": 0.431924882629108,
+    "rec": 0.21800947867298578,
+    "n_true": 422,
+    "n_pred": 213
+   },
+   "native_raw": {
+    "iou": 0.14064914992272023,
+    "prec": 0.20088300220750552,
+    "rec": 0.3192982456140351,
+    "n_true": 285,
+    "n_pred": 453
+   }
+  },
+  "mean_iou": {
+   "recovery": 0.14466104865267415,
+   "native": 0.09898423782156072,
+   "water": 0.10918060918060919,
+   "penal": 0.2456016623169429
+  }
+ },
+ "tree_threshold": {
+  "2.5": {
+   "pooled_iou": 0.169,
+   "mean_iou": 0.145,
+   "raw_pooled_iou": 0.169
+  },
+  "4.0": {
+   "pooled_iou": 0.167,
+   "mean_iou": 0.144,
+   "raw_pooled_iou": 0.168
+  }
+ },
+ "baseline_osm_only": {
+  "pooled": {
+   "recovery": 0.0,
+   "native": 0.0,
+   "water": 0.36,
+   "penal": 0.081
+  }
+ },
+ "strategy_vision": {
+  "holes": [
+   {
+    "hole": "2",
+    "club_hand": "4-wood",
+    "club_vision": "4-wood",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": -10.0,
+     "aim_vision": -7.5,
+     "ev_hand": 3.8184,
+     "ev_vision": 3.8252
+    },
+    "2-wood": {
+     "aim_hand": -10.0,
+     "aim_vision": -5.0,
+     "ev_hand": 3.8173,
+     "ev_vision": 3.8231
+    },
+    "4-wood": {
+     "aim_hand": -7.5,
+     "aim_vision": -2.5,
+     "ev_hand": 3.7842,
+     "ev_vision": 3.7836
+    },
+    "ev_loss_on_hand_map": 0.0071
+   },
+   {
+    "hole": "6",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": -5.0,
+     "aim_vision": -7.5,
+     "ev_hand": 4.1874,
+     "ev_vision": 4.1824
+    },
+    "2-wood": {
+     "aim_hand": -10.0,
+     "aim_vision": -10.0,
+     "ev_hand": 4.3069,
+     "ev_vision": 4.303
+    },
+    "4-wood": {
+     "aim_hand": -12.5,
+     "aim_vision": -12.5,
+     "ev_hand": 4.3574,
+     "ev_vision": 4.3551
+    },
+    "ev_loss_on_hand_map": 0.0004
+   },
+   {
+    "hole": "7",
+    "club_hand": "4-wood",
+    "club_vision": "Driver",
+    "same_club": false,
+    "Driver": {
+     "aim_hand": 2.5,
+     "aim_vision": 0.0,
+     "ev_hand": 4.103,
+     "ev_vision": 3.9364
+    },
+    "2-wood": {
+     "aim_hand": 5.0,
+     "aim_vision": 2.5,
+     "ev_hand": 4.0753,
+     "ev_vision": 3.9749
+    },
+    "4-wood": {
+     "aim_hand": 7.5,
+     "aim_vision": 2.5,
+     "ev_hand": 4.0251,
+     "ev_vision": 3.9968
+    },
+    "ev_loss_on_hand_map": 0.0884
+   },
+   {
+    "hole": "9",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": 5.0,
+     "aim_vision": -5.0,
+     "ev_hand": 3.7164,
+     "ev_vision": 3.6807
+    },
+    "2-wood": {
+     "aim_hand": 5.0,
+     "aim_vision": -2.5,
+     "ev_hand": 3.7508,
+     "ev_vision": 3.7344
+    },
+    "4-wood": {
+     "aim_hand": 5.0,
+     "aim_vision": -2.5,
+     "ev_hand": 3.7581,
+     "ev_vision": 3.7534
+    },
+    "ev_loss_on_hand_map": 0.0522
+   },
+   {
+    "hole": "10",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": -5.0,
+     "aim_vision": 0.0,
+     "ev_hand": 3.8447,
+     "ev_vision": 3.8229
+    },
+    "2-wood": {
+     "aim_hand": -5.0,
+     "aim_vision": -5.0,
+     "ev_hand": 3.8696,
+     "ev_vision": 3.8553
+    },
+    "4-wood": {
+     "aim_hand": -7.5,
+     "aim_vision": -5.0,
+     "ev_hand": 3.8697,
+     "ev_vision": 3.8649
+    },
+    "ev_loss_on_hand_map": 0.0081
+   },
+   {
+    "hole": "12",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": 0.0,
+     "aim_vision": -7.5,
+     "ev_hand": 4.4463,
+     "ev_vision": 4.4615
+    },
+    "2-wood": {
+     "aim_hand": -10.0,
+     "aim_vision": -15.0,
+     "ev_hand": 4.5506,
+     "ev_vision": 4.554
+    },
+    "4-wood": {
+     "aim_hand": -12.5,
+     "aim_vision": -12.5,
+     "ev_hand": 4.5818,
+     "ev_vision": 4.5824
+    },
+    "ev_loss_on_hand_map": 0.0027
+   },
+   {
+    "hole": "13",
+    "club_hand": "4-wood",
+    "club_vision": "Driver",
+    "same_club": false,
+    "Driver": {
+     "aim_hand": 2.5,
+     "aim_vision": -2.5,
+     "ev_hand": 3.8983,
+     "ev_vision": 3.9039
+    },
+    "2-wood": {
+     "aim_hand": 2.5,
+     "aim_vision": 2.5,
+     "ev_hand": 3.9015,
+     "ev_vision": 3.9195
+    },
+    "4-wood": {
+     "aim_hand": 2.5,
+     "aim_vision": 5.0,
+     "ev_hand": 3.8957,
+     "ev_vision": 3.9069
+    },
+    "ev_loss_on_hand_map": 0.0129
+   },
+   {
+    "hole": "14",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": 2.5,
+     "aim_vision": 0.0,
+     "ev_hand": 4.0267,
+     "ev_vision": 4.0419
+    },
+    "2-wood": {
+     "aim_hand": 2.5,
+     "aim_vision": -2.5,
+     "ev_hand": 4.1193,
+     "ev_vision": 4.1285
+    },
+    "4-wood": {
+     "aim_hand": 2.5,
+     "aim_vision": -2.5,
+     "ev_hand": 4.1685,
+     "ev_vision": 4.1727
+    },
+    "ev_loss_on_hand_map": 0.0017
+   },
+   {
+    "hole": "16",
+    "club_hand": "2-wood",
+    "club_vision": "Driver",
+    "same_club": false,
+    "Driver": {
+     "aim_hand": -5.0,
+     "aim_vision": -5.0,
+     "ev_hand": 4.0305,
+     "ev_vision": 3.9777
+    },
+    "2-wood": {
+     "aim_hand": -7.5,
+     "aim_vision": -5.0,
+     "ev_hand": 4.0274,
+     "ev_vision": 4.0142
+    },
+    "4-wood": {
+     "aim_hand": -10.0,
+     "aim_vision": -7.5,
+     "ev_hand": 4.0356,
+     "ev_vision": 4.0299
+    },
+    "ev_loss_on_hand_map": 0.0032
+   },
+   {
+    "hole": "17",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": -30.0,
+     "aim_vision": -10.0,
+     "ev_hand": 3.7783,
+     "ev_vision": 3.6833
+    },
+    "2-wood": {
+     "aim_hand": -37.5,
+     "aim_vision": -15.0,
+     "ev_hand": 3.8448,
+     "ev_vision": 3.7338
+    },
+    "4-wood": {
+     "aim_hand": -40.0,
+     "aim_vision": -12.5,
+     "ev_hand": 3.8436,
+     "ev_vision": 3.7488
+    },
+    "ev_loss_on_hand_map": 0.1491
+   },
+   {
+    "hole": "18",
+    "club_hand": "Driver",
+    "club_vision": "2-wood",
+    "same_club": false,
+    "Driver": {
+     "aim_hand": -17.5,
+     "aim_vision": -17.5,
+     "ev_hand": 3.9621,
+     "ev_vision": 3.8776
+    },
+    "2-wood": {
+     "aim_hand": -5.0,
+     "aim_vision": -7.5,
+     "ev_hand": 4.0329,
+     "ev_vision": 3.8284
+    },
+    "4-wood": {
+     "aim_hand": 0.0,
+     "aim_vision": -12.5,
+     "ev_hand": 4.0302,
+     "ev_vision": 3.8374
+    },
+    "ev_loss_on_hand_map": 0.0807
+   }
+  ],
+  "same_club": 0.6363636363636364,
+  "median_aim_change_yd": 2.5,
+  "mean_ev_loss": 0.036954545454545455
+ },
+ "strategy_osm_only": {
+  "holes": [
+   {
+    "hole": "2",
+    "club_hand": "4-wood",
+    "club_vision": "4-wood",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": -10.0,
+     "aim_vision": -12.5,
+     "ev_hand": 3.8184,
+     "ev_vision": 3.7782
+    },
+    "2-wood": {
+     "aim_hand": -10.0,
+     "aim_vision": -10.0,
+     "ev_hand": 3.8173,
+     "ev_vision": 3.7922
+    },
+    "4-wood": {
+     "aim_hand": -7.5,
+     "aim_vision": -5.0,
+     "ev_hand": 3.7842,
+     "ev_vision": 3.7753
+    },
+    "ev_loss_on_hand_map": 0.0014
+   },
+   {
+    "hole": "6",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": -5.0,
+     "aim_vision": -10.0,
+     "ev_hand": 4.1874,
+     "ev_vision": 4.1776
+    },
+    "2-wood": {
+     "aim_hand": -10.0,
+     "aim_vision": -12.5,
+     "ev_hand": 4.3069,
+     "ev_vision": 4.2979
+    },
+    "4-wood": {
+     "aim_hand": -12.5,
+     "aim_vision": -15.0,
+     "ev_hand": 4.3574,
+     "ev_vision": 4.3544
+    },
+    "ev_loss_on_hand_map": 0.0046
+   },
+   {
+    "hole": "7",
+    "club_hand": "4-wood",
+    "club_vision": "Driver",
+    "same_club": false,
+    "Driver": {
+     "aim_hand": 2.5,
+     "aim_vision": 0.0,
+     "ev_hand": 4.103,
+     "ev_vision": 3.9347
+    },
+    "2-wood": {
+     "aim_hand": 5.0,
+     "aim_vision": 2.5,
+     "ev_hand": 4.0753,
+     "ev_vision": 3.9703
+    },
+    "4-wood": {
+     "aim_hand": 7.5,
+     "aim_vision": 2.5,
+     "ev_hand": 4.0251,
+     "ev_vision": 3.9947
+    },
+    "ev_loss_on_hand_map": 0.0884
+   },
+   {
+    "hole": "9",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": 5.0,
+     "aim_vision": -2.5,
+     "ev_hand": 3.7164,
+     "ev_vision": 3.6752
+    },
+    "2-wood": {
+     "aim_hand": 5.0,
+     "aim_vision": -2.5,
+     "ev_hand": 3.7508,
+     "ev_vision": 3.7337
+    },
+    "4-wood": {
+     "aim_hand": 5.0,
+     "aim_vision": -2.5,
+     "ev_hand": 3.7581,
+     "ev_vision": 3.7534
+    },
+    "ev_loss_on_hand_map": 0.0223
+   },
+   {
+    "hole": "10",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": -5.0,
+     "aim_vision": -7.5,
+     "ev_hand": 3.8447,
+     "ev_vision": 3.7994
+    },
+    "2-wood": {
+     "aim_hand": -5.0,
+     "aim_vision": -7.5,
+     "ev_hand": 3.8696,
+     "ev_vision": 3.8424
+    },
+    "4-wood": {
+     "aim_hand": -7.5,
+     "aim_vision": -10.0,
+     "ev_hand": 3.8697,
+     "ev_vision": 3.8613
+    },
+    "ev_loss_on_hand_map": 0.0014
+   },
+   {
+    "hole": "12",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": 0.0,
+     "aim_vision": 0.0,
+     "ev_hand": 4.4463,
+     "ev_vision": 4.4463
+    },
+    "2-wood": {
+     "aim_hand": -10.0,
+     "aim_vision": -10.0,
+     "ev_hand": 4.5506,
+     "ev_vision": 4.5505
+    },
+    "4-wood": {
+     "aim_hand": -12.5,
+     "aim_vision": -12.5,
+     "ev_hand": 4.5818,
+     "ev_vision": 4.5818
+    },
+    "ev_loss_on_hand_map": 0.0
+   },
+   {
+    "hole": "13",
+    "club_hand": "4-wood",
+    "club_vision": "Driver",
+    "same_club": false,
+    "Driver": {
+     "aim_hand": 2.5,
+     "aim_vision": -5.0,
+     "ev_hand": 3.8983,
+     "ev_vision": 3.8528
+    },
+    "2-wood": {
+     "aim_hand": 2.5,
+     "aim_vision": -2.5,
+     "ev_hand": 3.9015,
+     "ev_vision": 3.8783
+    },
+    "4-wood": {
+     "aim_hand": 2.5,
+     "aim_vision": 0.0,
+     "ev_hand": 3.8957,
+     "ev_vision": 3.8876
+    },
+    "ev_loss_on_hand_map": 0.0227
+   },
+   {
+    "hole": "14",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": 2.5,
+     "aim_vision": 2.5,
+     "ev_hand": 4.0267,
+     "ev_vision": 4.0267
+    },
+    "2-wood": {
+     "aim_hand": 2.5,
+     "aim_vision": 2.5,
+     "ev_hand": 4.1193,
+     "ev_vision": 4.1193
+    },
+    "4-wood": {
+     "aim_hand": 2.5,
+     "aim_vision": 2.5,
+     "ev_hand": 4.1685,
+     "ev_vision": 4.1685
+    },
+    "ev_loss_on_hand_map": 0.0
+   },
+   {
+    "hole": "16",
+    "club_hand": "2-wood",
+    "club_vision": "Driver",
+    "same_club": false,
+    "Driver": {
+     "aim_hand": -5.0,
+     "aim_vision": -7.5,
+     "ev_hand": 4.0305,
+     "ev_vision": 3.952
+    },
+    "2-wood": {
+     "aim_hand": -7.5,
+     "aim_vision": -5.0,
+     "ev_hand": 4.0274,
+     "ev_vision": 4.0023
+    },
+    "4-wood": {
+     "aim_hand": -10.0,
+     "aim_vision": -7.5,
+     "ev_hand": 4.0356,
+     "ev_vision": 4.0262
+    },
+    "ev_loss_on_hand_map": 0.0055
+   },
+   {
+    "hole": "17",
+    "club_hand": "Driver",
+    "club_vision": "Driver",
+    "same_club": true,
+    "Driver": {
+     "aim_hand": -30.0,
+     "aim_vision": -10.0,
+     "ev_hand": 3.7783,
+     "ev_vision": 3.6664
+    },
+    "2-wood": {
+     "aim_hand": -37.5,
+     "aim_vision": -7.5,
+     "ev_hand": 3.8448,
+     "ev_vision": 3.7267
+    },
+    "4-wood": {
+     "aim_hand": -40.0,
+     "aim_vision": -5.0,
+     "ev_hand": 3.8436,
+     "ev_vision": 3.745
+    },
+    "ev_loss_on_hand_map": 0.1491
+   },
+   {
+    "hole": "18",
+    "club_hand": "Driver",
+    "club_vision": "2-wood",
+    "same_club": false,
+    "Driver": {
+     "aim_hand": -17.5,
+     "aim_vision": -17.5,
+     "ev_hand": 3.9621,
+     "ev_vision": 3.872
+    },
+    "2-wood": {
+     "aim_hand": -5.0,
+     "aim_vision": -10.0,
+     "ev_hand": 4.0329,
+     "ev_vision": 3.8266
+    },
+    "4-wood": {
+     "aim_hand": 0.0,
+     "aim_vision": -15.0,
+     "ev_hand": 4.0302,
+     "ev_vision": 3.8358
+    },
+    "ev_loss_on_hand_map": 0.088
+   }
+  ],
+  "same_club": 0.6363636363636364,
+  "median_aim_change_yd": 2.5,
+  "mean_ev_loss": 0.03485454545454545
+ }
+}
