@@ -55,12 +55,21 @@ jobs:
         run: |
           if [ -f "$OUT/osm.geojson" ]; then python course_data/osm_to_model.py "$OUT"; fi
 
+      - name: Second course for an OSM-coverage comparison (Mozingo Lake, OSM only)
+        if: always()
+        continue-on-error: true
+        run: |
+          python course_data/fetch_course.py --name "Mozingo Lake Golf Course" --near "40.355,-94.800" \
+            --geocode "Mozingo Lake Golf Course, Maryville, Missouri" --out course_data/mozingo --no-naip
+          python course_data/osm_to_model.py course_data/mozingo
+
       - name: Commit results
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$OUT"
+          if [ -d course_data/mozingo ]; then git add course_data/mozingo; fi
           if git diff --cached --quiet; then
             echo "No course data changes to commit"; exit 0
           fi
