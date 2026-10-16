@@ -57,7 +57,7 @@ BASELINE = {
     "fairway":  [2.40, 2.60, 2.70, 2.75, 2.80, 2.85, 2.91, 2.98, 3.08, 3.19, 3.32, 3.45, 3.58, 3.69, 3.78],
     "rough":    [2.59, 2.78, 2.91, 2.96, 3.02, 3.08, 3.15, 3.23, 3.31, 3.42, 3.53, 3.64, 3.74, 3.83, 3.90],
     "sand":     [2.53, 2.82, 3.15, 3.24, 3.23, 3.21, 3.22, 3.28, 3.40, 3.55, 3.70, 3.84, 3.93, 4.00, 4.04],
-    "recovery": [3.40, 3.55, 3.70, 3.75, 3.80, 3.78, 3.80, 3.81, 3.82, 3.87, 3.92, 3.97, 4.03, 4.10, 4.20],
+    "recovery": [3.40, 3.55, 3.70, 3.75, 3.79, 3.79, 3.80, 3.81, 3.82, 3.87, 3.92, 3.97, 4.03, 4.10, 4.20],
 }
 
 # From the tee (Broadie), used for strokes gained off the tee.
@@ -75,6 +75,19 @@ T975 = {3: 3.182, 4: 2.776, 5: 2.571, 7: 2.365, 10: 2.228}
 CHI = None            # cached chi-square draws for Z when TAIL_NU is set (see set_tails)
 RHO = 0.0             # correlation between lateral miss and carry; +0.3 = slice-type shortfall
 HCP_BASELINE = False  # approximate 5-handicap expected strokes instead of PGA Tour
+
+
+_CHI_CACHE = {}
+
+
+def _chi_for(z, nu):
+    """Chi-square draws tied to a given z (same z -> same draws), so common random numbers
+    still hold with heavy tails and caller-supplied swings."""
+    key = (nu, z.shape, z[:, :8].tobytes())
+    if key not in _CHI_CACHE:
+        seed = int.from_bytes(np.frombuffer(key[2], np.uint8)[:8].tobytes(), "little") ^ nu
+        _CHI_CACHE[key] = np.random.default_rng(seed).chisquare(nu, z.shape[1]) / nu
+    return _CHI_CACHE[key]
 
 
 def set_tails(nu):
@@ -347,7 +360,7 @@ def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS, z=None):
     n = z.shape[1]
     z_lat = z[1]
     if TAIL_NU:                                    # Student-t lateral, same 95% width
-        chi = CHI if (z is Z and CHI is not None) else RNG.chisquare(TAIL_NU, n) / TAIL_NU
+        chi = CHI if (z is Z and CHI is not None) else _chi_for(z, TAIL_NU)
         z_lat = z[1] / np.sqrt(chi) * (1.959964 / T975[TAIL_NU])
     z_car = z[0]
     if RHO:                                        # +RHO: misses right also come up short
