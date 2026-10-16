@@ -1,6 +1,6 @@
 # Mozingo Lake Golf Course (Maryville, MO) - osm_back tees
 
-Built 2026-10-16T19:34:42Z. OSM way/385067034. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-10-16T19:42:11Z. OSM way/385067034. Scorecard: None (None). Tee set: no scorecard.
 
 ## Coverage
 

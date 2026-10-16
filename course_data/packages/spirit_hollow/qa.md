@@ -1,6 +1,6 @@
-# Spirit Hollow Golf Course (Des Moines County, IA) - Black tees
+# Spirit Hollow Golf Course (Burlington, IA) - Black tees
 
-Built 2026-10-16T19:34:45Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
+Built 2026-10-16T19:42:12Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
 
 ## Coverage
 
