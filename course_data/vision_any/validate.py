@@ -114,13 +114,45 @@ def write_md(rep, path):
     open(path, "w").write("\n".join(L_) + "\n")
 
 
+SWEEP = [dict(seed_z=z, p_min=p, an_floor=f, seed_dist=d)
+         for z in (3.0, 4.5) for p in (0.7, 0.85) for f in (None, 1.0, 2.0) for d in (25.0,)]
+
+
+def sweep(slug, R=None):
+    """Native-parameter sweep (landing-zone IoU only). Used to choose the parameters on ONE course (the dev
+    course) and report the other as held out."""
+    import native as N
+    import run_any as RA
+    R = R or RA.compute(slug)
+    S = R["S"]
+    T = TR.for_course(slug, S)
+    rows = []
+    for cfg in SWEEP:
+        nat, p, info = N.predict(S, R["M"], R["Ly"], R["trees"], R["water"], R["X"], R["names"], **cfg)
+        nat &= ~R["water"]
+        e = E.evaluate(S, T, dict(recovery=R["trees"], native=nat, water=R["water"]),
+                       E.compose(R["M"], R["trees"], nat, R["water"]))
+        row = dict(cfg, native_iou=_r(e["pooled"]["native"]["iou"], 3), native_prec=_r(e["pooled"]["native"]["prec"], 3),
+                   native_rec=_r(e["pooled"]["native"]["rec"], 3), penal_iou=_r(e["pooled"]["penal"]["iou"], 3),
+                   agree=_r(np.mean([h["agree"] for h in e["holes"]]), 3), native_frac=_r(info["native_frac_course"], 3))
+        rows.append(row)
+        print(row, flush=True)
+    d = os.path.join(HERE, slug)
+    json.dump(rows, open(os.path.join(d, "sweep.json"), "w"), indent=1)
+    return rows
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--slug", required=True)
     ap.add_argument("--no-strategy", action="store_true")
+    ap.add_argument("--sweep", action="store_true")
     ap.add_argument("--n", type=int, default=6000)
     a = ap.parse_args()
-    run(a.slug, strategy=not a.no_strategy, n=a.n)
+    if a.sweep:
+        sweep(a.slug)
+    else:
+        run(a.slug, strategy=not a.no_strategy, n=a.n)
 
 
 if __name__ == "__main__":

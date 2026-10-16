@@ -118,7 +118,7 @@ jobs:
     needs: fetch
     if: always()
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
         with:
@@ -144,7 +144,7 @@ jobs:
             [ -z "$slug" ] && continue
             [ -f "course_data/vision_any/$slug/raw/meta.json" ] || { echo "no raw for $slug"; continue; }
             echo "== $slug"
-            python -u course_data/vision_any/run_any.py --slug "$slug" --course-dir "$cdir" --eval \
+            python -u course_data/vision_any/run_any.py --slug "$slug" --course-dir "$cdir" --eval --sweep \
               || echo "build failed: $slug"
           done
 
@@ -155,7 +155,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add course_data/vision_any/*/vision_any.geojson course_data/vision_any/*/classes.jpg \
                   course_data/vision_any/*/layers.tif course_data/vision_any/*/validation.json \
-                  course_data/vision_any/*/validation.md 2>/dev/null || true
+                  course_data/vision_any/*/validation.md course_data/vision_any/*/sweep.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "Nothing to commit"; exit 0
           fi

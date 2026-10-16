@@ -441,12 +441,20 @@ def water_mask(S, fc_or_layers, osm_m, mown_p=None, trees=None):
         b = S.naip[0][1]
         nd = ndimage.gaussian_filter(np.nan_to_num((b[..., 1] - b[..., 3]) / (b[..., 1] + b[..., 3] + 1e-3)), 1)
         open_w = (nd > 0.05) & (ndvi(b) < 0.05)
+        # roofs, decks and shadows are also low-NIR: drop anything with height or a mapped building
+        struct = osm_m["building"] | osm_m["residential"] & ~osm_m["water"]
+        h = S.layers.get("hag")
+        if h is not None:
+            struct |= np.nan_to_num(h) > 1.0
+        if "lclass" in S.layers:
+            struct |= S.layers["lclass"] == 6
+        open_w &= ~ndimage.binary_dilation(struct, disk(2))
         if "lclass" in S.layers:
             open_w |= S.layers["lclass"] == 9
         open_w = ndimage.binary_opening(open_w, disk(1))
         open_w = remove_small(open_w, 40)
         lines = S.rasterize(L["stream"] + L["river"]) if (L["stream"] or L["river"]) else np.zeros_like(w)
-        near = ndimage.binary_dilation(w | lines, disk(15))
+        near = ndimage.binary_dilation(w | lines, disk(6))
         lab, n = ndimage.label(open_w)
         hit = np.unique(lab[near & open_w])
         keep = np.isin(lab, hit[hit > 0])

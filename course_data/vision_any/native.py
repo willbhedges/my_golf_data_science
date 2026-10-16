@@ -62,8 +62,11 @@ def anomaly(X, names, neg):
     return np.mean(parts, 0)
 
 
+AN_FLOOR = None        # optional: final cells must also have anomaly >= this (None = off)
+
+
 def predict(S, osm_m, osm_layers, trees, water, X=None, names=None, seed_z=SEED_Z, p_min=P_MIN,
-            n_max=60000, rng=0, return_parts=False):
+            n_max=60000, rng=0, return_parts=False, an_floor=None, seed_dist=SEED_DIST_M, cache=None):
     """-> (native bool mask, p grid, info)."""
     from sklearn.ensemble import HistGradientBoostingClassifier
     if X is None:
@@ -74,7 +77,8 @@ def predict(S, osm_m, osm_layers, trees, water, X=None, names=None, seed_z=SEED_
     dmown = ndimage.distance_transform_edt(~osm_m["mown"]) * S.res
     course = osm_m["course"] if osm_m["course"].any() else np.ones_like(elig)
     course = ndimage.binary_dilation(course, L.disk(30))
-    seeds = elig & course & (dmown >= SEED_DIST_M) & (an >= seed_z)
+    an_floor = AN_FLOOR if an_floor is None else an_floor
+    seeds = elig & course & (dmown >= seed_dist) & (an >= seed_z)
     seeds = ndimage.binary_opening(seeds, L.disk(1))
     osm_nat = osm_m.get("native")
     if osm_nat is not None and osm_nat.any():
@@ -104,6 +108,8 @@ def predict(S, osm_m, osm_layers, trees, water, X=None, names=None, seed_z=SEED_
         p = p.reshape(seeds.shape)
         info["features"] = [names[i] for i in feat_idx]
     m = (ndimage.uniform_filter(p, 3) >= p_min) & elig
+    if an_floor is not None:
+        m &= ndimage.uniform_filter(an, 5) >= an_floor
     m = ndimage.binary_opening(m, L.disk(2))
     m = ndimage.binary_closing(m, L.disk(2)) & elig
     m = L.remove_small(m, 150 * L.YD * L.YD / S.res ** 2)

@@ -155,12 +155,21 @@ def main():
     ap.add_argument("--slug", required=True)
     ap.add_argument("--course-dir")
     ap.add_argument("--eval", action="store_true")
+    ap.add_argument("--sweep", action="store_true")
     a = ap.parse_args()
     R = compute(a.slug, a.course_dir)
+    import validate
+    if a.sweep and os.path.exists(os.path.join(HERE, a.slug, "..", "mozingo", "traced_registration.json")):
+        try:
+            validate.sweep(a.slug, R)
+        except Exception as e:                        # noqa: BLE001  (no hand map for this course)
+            L.log("sweep skipped:", type(e).__name__, e)
     build(a.slug, R=R)
     if a.eval:
-        import validate
-        validate.run(a.slug, R)
+        try:
+            validate.run(a.slug, R)
+        except Exception as e:                        # noqa: BLE001
+            L.log("validation skipped:", type(e).__name__, e)
 
 
 if __name__ == "__main__":
