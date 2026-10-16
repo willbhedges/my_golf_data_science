@@ -53,6 +53,24 @@ def tee_plan(h):
     return res, best, (ok.min(), ok.max())
 
 
+def width_ranges(fd):
+    """'Driver pattern up to 60 yds: X; 60-80: Y; over 80: Z' from the fixed-width sweep."""
+    flips = sorted(fd.get("width_flips") or [], key=lambda f: f["width"])
+    if not flips:
+        return "Same club for any driver pattern from 55 to 90 yds."
+    parts, lo = [], None
+    for f in flips:
+        parts.append(f"{'up to' if lo is None else f'{lo:.0f}-'}{'' if lo is None else ''}"
+                     f"{' ' if lo is None else ''}{f['width']:.0f} yds: {f['frm']}")
+        lo = f["width"]
+    parts.append(f"over {lo:.0f} yds: {flips[-1]['to']}")
+    at70 = next((w["pick"] for w in fd.get("width_sweep", []) if w["width"] == 70), fd["pick"])
+    extra = ("" if at70 == fd["pick"] else
+             f" (At exactly 70 yds {at70} edges it; {fd['pick']} wins once the other unknowns are "
+             f"averaged in, so treat it as a near tie.)")
+    return "By driver pattern width: " + "; ".join(parts) + "." + extra
+
+
 def describe(h, res, best):
     fd = FINAL[key(h)]
     r = res[best]
@@ -60,10 +78,7 @@ def describe(h, res, best):
     lead = (f"Tie with {fd['runner']} ({fd['margin']:.3f} strokes); either is fine, play the one you trust today."
             if fd["tie"] else f"{best} by {fd['margin']:.2f} strokes over {fd['runner']}; best club in {p:.0%} of "
             f"what-if worlds.")
-    flips = fd.get("width_flips") or []
-    sw = " ".join(f"If your driver pattern is {'wider' if f['to'] != 'Driver' else 'tighter'} than "
-                  f"{f['width']:.0f} yds, {f['to']} instead of {f['frm']}." for f in flips
-                  if f["frm"] == best or f["to"] == best)
+    sw = width_ranges(fd)
     trouble = sorted(((r["share"].get(k_, 0.0), w) for k_, w in LIE_WORDS.items()), reverse=True)
     trouble = [f"{w} {q:.0%}" for q, w in trouble if q >= 0.02]
     parts = [lead, sw, f"With {best}: fairway {r['share']['fairway']:.0%}, first cut "
