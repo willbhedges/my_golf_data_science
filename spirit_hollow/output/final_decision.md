@@ -5,8 +5,8 @@
 | Hole | Pick | Aim | Margin ± SE | Cross-fitted | P(pick beats runner-up) | EVPI | Width break-even |
 |---|---|---|---|---|---|---|---|
 | 1 | **Driver** | +5.0 | 0.034 ± 0.003 vs 2-wood | 0.034 | 93% | 0.003-0.005 | Driver→4-wood at 78 |
-| 2 Gold tee | **Driver** | +0.0 | 0.052 ± 0.005 vs 2-wood | 0.052 | 91% | 0.005-0.007 | none 55-90 |
-| 2 Black tee | **Driver** | -2.5 | 0.060 ± 0.005 vs 2-wood | 0.060 | 95% | 0.004-0.006 | none 55-90 |
+| 2 Gold tee | **Driver** | +0.0 | 0.052 ± 0.005 vs 2-wood | 0.052 | 91% | 0.004-0.007 | none 55-90 |
+| 2 Black tee | **Driver** | +0.0 | 0.058 ± 0.004 vs 2-wood | 0.058 | 95% | 0.004-0.006 | none 55-90 |
 | 4 | **Driver** | -5.0 | 0.047 ± 0.004 vs 2-wood | 0.045 | 91% | 0.002-0.007 | none 55-90 |
 | 5 | **Driver** (tie) | -5.0 | 0.009 ± 0.002 vs 2-wood | 0.009 | 69% | 0.006-0.007 | Driver→4-wood at 74 |
 | 6 | **Driver** | -2.5 | 0.027 ± 0.003 vs 2-wood | 0.027 | 85% | 0.004-0.007 | none 55-90 |

@@ -603,6 +603,17 @@ def _load_elevation():
         hd["elev"] = {c: (v["carry_delta_yds"], v["roll_factor"], v["lateral_kick_yds"])
                       for c, v in a.get("clubs", {}).items()}
         hd["elev_info"] = dict(bearing=a.get("bearing_deg_true"))
+    # Prefer the same DEM analysis re-run along each screenshot's REGISTERED tee line (geo_zones.py:
+    # screenshot -> NAIP registration, 13/16 holes <= ~2 yds). The older table measured along an
+    # OSM-derived line up to 13 deg off on 2F, 2B, 4, 11, 13 and 9B (e.g. 2F driver -5.6 -> +14.9 yds).
+    reg = os.path.join(here, "..", "course_data", "spirit_hollow", "elev_registered.json")
+    if os.path.exists(reg):
+        import json as _json
+        for k, v in _json.load(open(reg)).items():
+            key = int(k) if k.isdigit() else k
+            if key in HOLES:
+                HOLES[key]["elev"] = {c: tuple(float(x) for x in e) for c, e in v["elev"].items()}
+                HOLES[key]["elev_info"] = dict(bearing=v["bearing"], source="registered line")
     for k, p in PAR3.items():
         try:
             a = _E.adjustments(str(k))

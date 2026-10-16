@@ -67,9 +67,17 @@ except Exception:
     _E = None
 
 
+_REG = os.path.join(ROOT, "course_data", "spirit_hollow", "elev_registered.json")
+_REG = json.load(open(_REG)) if os.path.exists(_REG) else {}
+
+
 def elev_of(h):
     if _E is None:
         return None
+    if str(h) in _REG and h in course.HOLES:                 # same numbers the model uses
+        drops = _REG[str(h)].get("drop_ft", {})
+        return dict(clubs={c: dict(dc=e[0], rf=e[1], kick=e[2], drop=drops.get(c, 0.0))
+                           for c, e in course.HOLES[h]["elev"].items()})
     try:
         a = _E.adjustments(str(h))
     except Exception:
