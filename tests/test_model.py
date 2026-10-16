@@ -178,6 +178,7 @@ def test_some_balls_actually_land_in_hazards(t, monkeypatch, z):
 
 @pytest.mark.parametrize("hole", SH_HOLES)
 def test_driver_wins_with_no_hazards(t, monkeypatch, z, hole):
+    t.USE_ELEVATION = False          # flat-ground property; elevation tested separately
     holes = copy.deepcopy(course_mod.HOLES)
     for h in holes.values():
         h["zones"] = [("fairway", HUGE)]
@@ -278,6 +279,7 @@ def test_hole_frame_270_dot_is_270_yds_mozingo(t, hole):
 
 
 def test_simulated_carry_scale(t, z):
+    t.USE_ELEVATION = False          # flat-ground property; elevation tested separately
     # with no mishits, no roll and no lateral spread, every ball lands at carry yds from the tee
     zz = z.copy()
     zz[0] = 0.0
@@ -305,3 +307,16 @@ def test_native_lost_ball_is_stroke_and_distance(t):
 def test_first_cut_between_fairway_and_rough(t):
     f, c, r = (t.expected_strokes(l, D) for l in ("fairway", "first_cut", "rough"))
     assert np.all(f <= c) and np.all(c <= r)
+
+
+def test_elevation_downhill_adds_carry(t, z):
+    """A hole with a carry gain from the DEM lands further than on flat ground."""
+    import course
+    h = max((k for k in course.HOLES if "elev" in course.HOLES[k]),
+            key=lambda k: course.HOLES[k]["elev"]["Driver"][0])
+    t.HOLES = course.HOLES
+    t.USE_ELEVATION = False
+    flat = t.simulate(h, "Driver", 0.0, z=z)[2].mean()
+    t.USE_ELEVATION = True
+    hilly = t.simulate(h, "Driver", 0.0, z=z)[2].mean()
+    assert hilly < flat            # closer to the green when the ball carries further

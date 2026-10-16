@@ -528,3 +528,35 @@ ORDER = [1, "2F", "2B", 4, 5, 6, 7, 8, "9F", "9B", 10, 11, 12, 13, 14, 15, 16, 1
 # "forward" screenshots are the Black tees (2: 520 vs card 507; 9: 373 vs 365) and the "back" ones
 # are the Gold tips (2: 609 vs 607; 9: 399 vs 410).
 LABELS = {"2B": "2 Gold tee", "2F": "2 Black tee", "9B": "9 Gold tee", "9F": "9 Black tee"}
+
+
+# ---- Elevation (USGS 3DEP 1 m DEM, course_data/elevation/) -----------------------------------
+# Per club: carry change from the tee-to-landing drop, roll factor from the landing slope, and the
+# sideways kick on a side slope (+ = right). Par 3s get a plays-like change.
+def _load_elevation():
+    import sys as _sys
+    here = os.path.dirname(os.path.abspath(__file__))
+    _sys.path.insert(0, os.path.join(here, "..", "course_data", "elevation"))
+    try:
+        import adjust as _E
+    except Exception:
+        return False
+    for k, hd in HOLES.items():
+        try:
+            a = _E.adjustments(str(k))
+        except Exception:
+            continue
+        hd["elev"] = {c: (v["carry_delta_yds"], v["roll_factor"], v["lateral_kick_yds"])
+                      for c, v in a.get("clubs", {}).items()}
+        hd["elev_info"] = dict(bearing=a.get("bearing_deg_true"))
+    for k, p in PAR3.items():
+        try:
+            a = _E.adjustments(str(k))
+            p["plays_like_delta"] = float(a.get("plays_like_delta_yds", 0.0))
+            p["bearing"] = a.get("bearing_deg_true")
+        except Exception:
+            pass
+    return True
+
+
+ELEVATION = _load_elevation()

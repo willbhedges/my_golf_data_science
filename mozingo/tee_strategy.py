@@ -122,6 +122,7 @@ def _lie_mixture(lie):
 
 
 FIRST_CUT_COST = 0.35    # first cut costs 35% of the fairway->rough difference
+USE_ELEVATION = True     # apply per-hole DEM adjustments when a hole carries an "elev" table
 
 
 def expected_strokes(lie, dist):
@@ -388,6 +389,13 @@ def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS, z=None):
     h = HOLES[hole_no]
     tee, fwd, right, ppy = hole_frame(h)
     carry, total, width, depth = {**CLUBS, **IRONS}[club]
+    roll0 = total - carry
+    kick = 0.0
+    elev = h.get("elev", {}).get(club) if USE_ELEVATION else None
+    if elev:                       # (carry delta yds, roll factor, lateral kick yds) from the DEM
+        carry = carry + elev[0]
+        roll0 = roll0 * elev[1]
+        kick = elev[2]
     if z is None:
         z = Z if n == N_SHOTS else np.vstack([RNG.standard_normal((2, n)), RNG.random((2, n))])
     n = z.shape[1]
@@ -409,7 +417,12 @@ def simulate(hole_no, club, aim_lat=0.0, n=N_SHOTS, z=None):
     # Roll out along the flight line in 2-yd steps: full roll on fairway,
     # ROUGH_ROLL of it in rough, and the ball stops dead in any hazard.
     heading = (pts - tee) / np.linalg.norm(pts - tee, axis=1)[:, None]
-    roll_left = np.full(n, float(total - carry + h.get("extra_roll", 0)))  # e.g. downhill landing
+    roll_total = float(roll0 + h.get("extra_roll", 0))                   # e.g. downhill landing
+    if kick and roll_total > 0:    # side slope: the roll bends toward the low side
+        heading = heading * roll_total + right[None, :] * kick
+        heading = heading / np.linalg.norm(heading, axis=1)[:, None]
+        roll_total = float(np.hypot(roll_total, kick))
+    roll_left = np.full(n, roll_total)
     roll_left[lie == "rough"] *= ROUGH_ROLL
     while True:
         moving = (roll_left > 0) & ~np.isin(lie, HAZARDS)

@@ -8,7 +8,7 @@ spirit_hollow/wind.py (carry, roll, dispersion width and depth, crosswind drift)
 model finds the best aim per club. Drift is applied to where the ball goes, so the stored aim is
 where you aim. Settings are the prior means of the final Bayesian run (driver width 70 yds, tree
 penalty 0.8, half of long-grass balls lost, 15% slight mishits, carry depth x1.25). Elevation
-adjustments are applied when course_data/elevation/adjust.py provides them.
+(DEM) is applied inside tee_strategy.simulate via each hole's 'elev' table.
 
 Par 3s get the DECADE wind modifier (+1 yd per edge at 10-20 mph, +2 at 20-30, -1 under 5)
 and a plays-like distance.
@@ -81,8 +81,6 @@ def solve(h, speed, rel, z, elev):
     res = {}
     for c in clubs_for(h):
         carry, total, width, depth, drift = W.adjust(calm[c], speed, rel, club_name=c)
-        if elev:
-            carry, total = carry + elev.get("carry", {}).get(c, 0.0), total + elev.get("carry", {}).get(c, 0.0)
         table = t.IRONS if c in t.IRONS else t.CLUBS
         saved = table[c]
         table[c] = (carry, total, width, depth)
@@ -112,14 +110,10 @@ def main():
     z = np.vstack([rng.standard_normal((2, N)), rng.random((2, N))])
     out = dict(speeds=SPEEDS, dirs=DIRS, bearings={}, holes={}, par3={})
     for h in course.HOLES:
-        b = bearings[ref(h)]
+        # elevation is applied inside tee_strategy.simulate via the hole's "elev" table
+        b = (course.HOLES[h].get("elev_info") or {}).get("bearing") or bearings[ref(h)]
         out["bearings"][str(h)] = b
         elev = None
-        if E is not None:
-            try:
-                elev = E.adjustments(str(h))
-            except Exception:
-                elev = None
         grid = {}
         for sp in SPEEDS:
             for rel in ([0] if sp == 0 else DIRS):
@@ -127,8 +121,9 @@ def main():
         out["holes"][str(h)] = grid
         print(h, "done", grid["0_0"]["pick"], flush=True)
     for h, p in course.PAR3.items():
-        out["bearings"][str(h)] = bearings[ref(h)]
-        out["par3"][str(h)] = {f"{sp}_{rel}": plays_like(p["center"], sp, rel)
+        out["bearings"][str(h)] = p.get("bearing") or bearings[ref(h)]
+        dz = p.get("plays_like_delta", 0.0)                      # elevation
+        out["par3"][str(h)] = {f"{sp}_{rel}": plays_like(p["center"], sp, rel) + dz
                                for sp in SPEEDS for rel in ([0] if sp == 0 else DIRS)}
     with open(os.path.join(HERE, "output", "wind_grid.json"), "w") as f:
         json.dump(out, f)
