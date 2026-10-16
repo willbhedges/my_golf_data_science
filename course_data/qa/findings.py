@@ -86,6 +86,10 @@ quick mode. The v1 hand-reviewed decision for 1 is 4-wood 5 yds right.
   golfer should be asked.
 * **P7:** with no card the package reports the measured length as `length` and the book prints it as the card
   yardage (Mozingo); mark it as measured.
+* **P8:** Veenker's package says `stages.vision = "ok: vision_any/gapfill.py"` but gapfill returned *missing*
+  (`vision_any/veenker/vision_any.geojson` does not exist; gapfill error "window shape cannot be larger than input
+  array shape") - the package carries only 15 `recovery` / 7 `native` polygons (OSM) on a heavily wooded course.
+  The stage must report gapfill's own `stages.vision` string, not "ok".
 * **P5 (Mozingo):** no scorecard source found offline (request yardages / card file / golfify / club site all missing)
   -> every hole falls back to the back-most OSM tee; the request should carry yardages or the Actions scorecard fetch
   must run. No imagery/DEM for Mozingo in the package (imagery request missing).
@@ -95,6 +99,8 @@ quick mode. The v1 hand-reviewed decision for 1 is 4-wood 5 yds right.
   0.00 on every Spirit Hollow hole. Concrete misses in section 3 (holes 1, 6, 9, 11, 13, 18).
 * **V1b:** in the Actions builds `stages.vision` = `failed: IndexError: list index out of range` (Mozingo, Veenker)
   and `failed: ModuleNotFoundError: No module named 'sklearn'` (Spirit Hollow: add scikit-learn to the workflow).
+* **V5 (Veenker):** no layers built: `run_any` fails with `ValueError: window shape cannot be larger than input array
+  shape`, so the third course has no trees/long grass at all (see P8).
 * **V2:** `gapfill.py` first failed with `ModuleNotFoundError: run_any` (module landed later); a second run on
   `--holes` was OOM-killed (exit 137, machine had ~9 GB free) on a 1876x2162 1-m stack; a third run on the platform
   package is paused by the coordinator. QA has not yet seen a gap-filled package.
