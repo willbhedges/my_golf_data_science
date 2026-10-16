@@ -138,10 +138,10 @@ def register(k, course, lines, img, plots=None, kind="gray"):
     rows = np.zeros(a.shape, bool)
     rows[int(Y0 * s):int(1980 * s), :] = True
     best = None
-    for sc in (0.94, 1.0, 1.06):
-        for th in range(-10, 11, 2):
-            for dy in range(-100, 101, 10):
-                for dx in range(-60, 61, 10):
+    for sc in (0.92, 0.96, 1.0, 1.04, 1.08):
+        for th in range(-12, 13, 2):
+            for dy in range(-140, 141, 10):
+                for dx in range(-140, 141, 10):
                     # M maps screenshot px -> render px
                     M = _rot(tx * s, ty * s, th, sc, dx * s, dy * s)
                     w = cv2.warpAffine(b, M, (a.shape[1], a.shape[0]), flags=cv2.WARP_INVERSE_MAP)
@@ -173,8 +173,8 @@ def register(k, course, lines, img, plots=None, kind="gray"):
             shear = abs(Ad[0] @ Ad[1]) / (np.linalg.norm(Ad[0]) * np.linalg.norm(Ad[1]))
             if 0.9 < scl < 1.1 and shear < 0.05:
                 warp, ecc = w1, float(e)
-        except cv2.error:
-            pass
+        except cv2.error as ex:
+            print("   ECC failed at scale", s, str(ex).strip().splitlines()[-1][:120])
     W2 = warp.astype(float)
     Ad = W2[:, :2]
     scl = math.sqrt(abs(np.linalg.det(Ad)))
