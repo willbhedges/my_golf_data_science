@@ -250,8 +250,8 @@ PAR3 = {
                (515, 1015), (475, 1045), (440, 1052), (400, 1040), (380, 1020)],
               haz=dict(left="rough", right="native", short="water", long="bunker"),
               note="All carry over the pond, with a bunker short and two bunkers behind. The green is "
-                   "deep enough for the full water cushion (9.7 yds) and the bunker cushion behind "
-                   "(7.7 yds), so the box sits mid-green. Never short.",
+                   "deep enough for the full water cushion (10 yds) and the bunker cushion behind "
+                   "(8 yds), so the box sits mid-green. Never short.",
               short="Pond short, sand behind. Never short."),
 }
 

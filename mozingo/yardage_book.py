@@ -31,10 +31,24 @@ ORDER = list(range(1, 19))
 LABELS = {}                       # hole key -> what to print ("9 back tee")
 ZONE_TOL = 0.02
 WATER_ADD, BUNKER_ADD, TREE_ADD = 3.0, 1.0, 2.0
+# DECADE edge modifiers (from the DECADE card): added to the baseline target number.
+#  3 water/OB, 2 trees/tall grass/bad slope, 1 bunker, 0 rough, -2 a safe side with
+#  short grass / room to run off ("runoff").
 ADD = {"water": WATER_ADD, "ob": WATER_ADD, "bunker": BUNKER_ADD, "trees": TREE_ADD,
-       "native": TREE_ADD, "rough": 0.0}
+       "native": TREE_ADD, "rough": 0.0, "runoff": -2.0}
 # "Lesser of evils": when both cushions don't fit, the worse side keeps its full cushion.
-SEVERITY = {"water": 3, "ob": 3, "trees": 2, "native": 2, "bunker": 1, "rough": 0}
+SEVERITY = {"water": 3, "ob": 3, "trees": 2, "native": 2, "bunker": 1, "rough": 0, "runoff": -1}
+# DECADE baseline target: yds in from the nearest edge, by distance (card, 60-250 yds).
+TARGET = {60: 3, 70: 4, 80: 4, 90: 5, 100: 5, 110: 6, 120: 6, 130: 7, 140: 7, 150: 8, 160: 8,
+          170: 9, 180: 9, 190: 10, 200: 10, 210: 11, 220: 11, 230: 12, 240: 12, 250: 13}
+# Wind modifier added to every edge: under 5 mph -1, 5-10 0, 10-20 +1, 20-30 +2, 30+ +3.
+WIND = {"under 5 mph": -1, "5-10 mph": 0, "10-20 mph": 1, "20-30 mph": 2, "30+ mph": 3}
+WIND_NOW = 0                                 # books are printed for a 5-10 mph day
+
+
+def baseline_target(dist):
+    d = int(round(min(max(dist, 60), 250) / 10.0) * 10)
+    return float(TARGET[d])
 
 
 def label(h):
@@ -66,7 +80,7 @@ PAR3 = {
             haz=dict(left="rough", right="trees", short="water", long="trees"),
             note="All carry over the pond, bunker front-right. The green is too shallow for both the "
                  "water cushion short and the trees cushion long, so water wins: the box sits "
-                 "12 yds past the front edge. Left of the green is only rough."),
+                 "13 yds past the front edge. Left of the green is only rough."),
     11: dict(image="hole11.png", short="Pond short-left. The miss is long-right.", tee=(444, 1765), flag=(444, 802), center=219, front=208, back=230,
              green=[(-15, 10), (-5, 11.5), (5, 11.5), (14, 10), (19, 6), (20.5, 0), (18, -5),
                     (12, -9), (0, -11), (-10, -10), (-17, -7), (-21, -2), (-21.5, 3), (-19, 7)],
@@ -143,7 +157,7 @@ def _axis(e_lo, e_hi, c_lo, c_hi, s_lo, s_hi):
     """One axis of the edge rule. Returns (zone_lo, zone_hi, how)."""
     if c_lo + c_hi <= e_hi - e_lo:
         return e_lo + c_lo, e_hi - c_hi, "fits"
-    if s_lo == s_hi:                          # same trouble both sides: split (no hazard -> middle)
+    if s_lo == s_hi:                          # equal trouble: split the room by the two edge numbers
         x = e_lo + (e_hi - e_lo) * c_lo / (c_lo + c_hi)
         return x, x, "split"
     x = e_lo + c_lo if s_lo > s_hi else e_hi - c_hi     # worse side keeps its full cushion
@@ -153,15 +167,16 @@ def _axis(e_lo, e_hi, c_lo, c_hi, s_lo, s_hi):
 def par3_plan(p, step=0.25):
     """DECADE edge rule on the traced green.
 
-    Cushion = distance / 20 yds in from each edge, +3 water/OB, +2 trees/tall grass,
-    +1 bunker. On each axis: if both cushions fit, the zone is what's left between
+    Cushion = DECADE baseline target for the distance (card table, ~distance/20)
+    yds in from each edge, +3 water/OB, +2 trees/tall grass, +1 bunker, -2 a safe
+    runoff side. On each axis: if both cushions fit, the zone is what's left between
     them. If not, the worse side (water > trees/tall grass > bunker > rough) keeps
     its full cushion and the lesser side gives up room; with the same trouble both
     sides (e.g. a small green with no hazards) the aim splits them, i.e. the middle.
     """
     from matplotlib.path import Path
-    base = p["center"] / 20.0
-    off = {k: base + ADD[v] for k, v in p["haz"].items()}
+    base = baseline_target(p["center"]) + WIND_NOW
+    off = {k: max(base + ADD[v], 0.0) for k, v in p["haz"].items()}
     sev = {k: SEVERITY[v] for k, v in p["haz"].items()}
     path = Path(p["green"])
     g = np.array(p["green"], float)
@@ -341,8 +356,8 @@ def _how(plan, axis, lo_name, hi_name, p):
     if how == "fits":
         return f"{lo_name.capitalize()}/{hi_name}: both cushions fit, the box is the room left between them."
     if how == "split":
-        return (f"{lo_name.capitalize()}/{hi_name}: not enough room for both and the trouble is the same "
-                f"({lo_h}), so the aim splits them.")
+        return (f"{lo_name.capitalize()}/{hi_name}: not enough room for both and the trouble is equal "
+                f"({lo_h} / {hi_h}), so the room is split in proportion to the two edge numbers.")
     worse, lesser = (lo_name, hi_name) if how == "lo" else (hi_name, lo_name)
     return (f"{lo_name.capitalize()}/{hi_name}: not enough room for both. {worse.capitalize()} "
             f"({p['haz'][worse]}) is the worse miss, so it keeps its full "
@@ -363,8 +378,9 @@ def par3_page(pdf, h):
         f"Box: {dz} yds.  Green (app): front {p['front']} · centre {p['center']} · back {p['back']}.  "
         "Dashed white line = the green as traced.",
         "",
-        f"**DECADE edge rule: {p['center']} / 20 = {plan['base']:.1f} yds in from each edge, "
-        "+3 water/OB, +2 trees/tall grass, +1 bunker",
+        f"**DECADE target for {p['center']} yds: {plan['base']:.0f} yds in from each edge "
+        "(+3 water/OB, +2 trees/tall grass, +1 bunker, -2 safe runoff)",
+        "Wind: add 1 yd to every edge at 10-20 mph, 2 at 20-30, 3 at 30+; take 1 off under 5 mph.",
     ]
     for k in ("left", "right", "short", "long"):
         lines.append(f"{k.capitalize()} edge: {p['haz'][k]} → {off[k]:.1f} yds in")
@@ -457,9 +473,10 @@ def cover(pdf, rows):
         "Zone = any aim within 0.02 strokes of the best. Confidence = how often the club "
         "stayed best across 100 'what if my inputs are off' scenarios (dispersion, carry, "
         "roll, hazard edges, how penal trees/grass are).",
-        "Par 3: DECADE edge rule: distance/20 yds in from each edge, +3 water/OB, +2 trees/tall "
-        "grass, +1 bunker. If both sides don't fit, the worse miss keeps its full cushion; same "
-        "trouble both sides (or none) splits them.",
+        "Par 3: DECADE target table (e.g. 160 = 8 yds, 180 = 9, 200 = 10 in from the nearest "
+        "edge), +3 water/OB, +2 trees/tall grass, +1 bunker, -2 safe runoff; wind adds 1-3. If "
+        "both sides don't fit, the worse miss keeps its full cushion; equal trouble splits the "
+        "room in proportion to the two numbers.",
         "Locks (95%+): " + (", ".join(str(r["hole"]) for r in rows if (r["conf"] or 0) >= 95) or "none")
         + ".  Coin flips (under 50%): "
         + (", ".join(str(r["hole"]) for r in rows if r["conf"] is not None and r["conf"] < 50) or "none")
