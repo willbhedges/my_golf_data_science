@@ -108,8 +108,11 @@ def test_duplicate_set_names_are_folded():
         "Gold": dict(yards=y, total=6114, rating=69.1, slope=122),
         "Gold (Gold)": dict(yards=y, total=6086, rating=75.4, slope=132),
         "Pink (Pink)": dict(yards=y, total=5000, rating=70.0, slope=118),
-        "Blue (Men)": dict(yards=y, total=7200, rating=71.5, slope=131)}))
+        "Blue (Men)": dict(yards=y, total=7200, rating=71.5, slope=131),
+        "Red": dict(yards=y, total=5295, rating=65.8, slope=112),
+        "Red #2": dict(yards=y, total=5295, rating=71.5, slope=117)}))
     sets = card["tee_sets"]
-    assert set(sets) == {"Blue", "Gold", "Pink", "Blue (Men)"}
+    assert set(sets) == {"Blue", "Gold", "Pink", "Blue (Men)", "Red"}
+    assert sets["Red"]["alt_ratings"][0]["slope"] == 117
     assert sets["Gold"]["rating"] == 69.1 and sets["Gold"]["alt_ratings"][0]["rating"] == 75.4
     assert scm.choose_tee_set(card, "pink (pink)")[0] == "Pink"

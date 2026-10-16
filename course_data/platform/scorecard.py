@@ -81,17 +81,20 @@ def normalise(card):
 
 
 _DUP = re.compile(r"^\s*(.+?)\s*\(\s*(.+?)\s*\)\s*$")
+_DUPN = re.compile(r"^\s*(.+?)\s+#\d+\s*$")             # parse_golfify's name for a repeated set
 
 
 def dedupe_sets(sets):
-    """'Gold (Gold)' -> 'Gold' (QA P6: golfify lists a set again with its other rating). When 'Gold' is
+    """'Gold (Gold)' / 'Gold #2' -> 'Gold' (QA P6: golfify lists a set again with its other rating). When 'Gold' is
     already on the card the duplicate is folded into its `alt_ratings` (name, rating, slope, par, total), else
     it is renamed; a name like 'Blue (Men)' is left alone."""
     out, dups = {}, []
     for name, s in sets.items():
-        m = _DUP.match(name)
+        m, mn = _DUP.match(name), _DUPN.match(name)
         if m and m.group(1).lower() == m.group(2).lower():
             dups.append((name, m.group(1), s))
+        elif mn and any(k.lower() == mn.group(1).lower() for k in sets):
+            dups.append((name, mn.group(1), s))
         else:
             out[name] = s
     for name, base, s in dups:
