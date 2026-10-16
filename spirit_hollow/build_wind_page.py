@@ -24,6 +24,8 @@ import tee_strategy as t                       # noqa: E402
 import yardage_book as yb                      # noqa: E402
 
 OUT = os.path.join(HERE, "output", "wind_page", "index.html")
+_fn = os.path.join(HERE, "output", "final_notes.json")         # notes generated from the final run
+FN = json.load(open(_fn)) if os.path.exists(_fn) else {}
 IMG_W = 620
 
 
@@ -63,7 +65,7 @@ def tee_hole(h):
     return dict(kind="tee", img=uri, w=size[0], h=size[1], s=s, x0=x0, y0=y0,
                 tee=list(map(float, tee)), f=list(map(float, f)), r=list(map(float, r)), ppy=float(ppy),
                 par=hd["par"], length=hd["length"], label=course.LABELS.get(h, str(h)),
-                note=course.NOTES.get(h, ""), aim_at=course.AIM_AT.get(h, ""))
+                note=FN.get(str(h), {}).get("note", ""), aim_at=FN.get(str(h), {}).get("aim_at", ""))
 
 
 def par3_hole(h):

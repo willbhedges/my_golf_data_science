@@ -87,6 +87,10 @@ def main():
         notes[h] = describe(h, res, best)
         aim_at[h] = aim_words(h, res, best)
         print(h, best, notes[h], flush=True)
+    with open(os.path.join(HERE, "output", "final_notes.json"), "w") as fh:   # also feeds the wind page
+        json.dump({str(k): dict(note=notes[k], aim_at=aim_at[k]) for k in notes}, fh, indent=1)
+    if os.environ.get("NOTES_ONLY"):
+        return
     yb.STRATEGY_NAME = "Spirit_Hollow_Final.pdf"
     yb.PREFIX = "Spirit_Hollow_Final"
     yb.confidence = lambda: {(int(k) if k.isdigit() else k): round(100 * v["p_best_crossfit"].get(v["pick"], 0))

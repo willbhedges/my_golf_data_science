@@ -199,7 +199,7 @@ function render(){
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     if(calm !== r.pick) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
-    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(best.drift) > 2 ? `; the wind carries it ${Math.abs(best.drift).toFixed(0)} yds ${best.drift < 0 ? "left" : "right"} to the dashed spot` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 128-world Bayesian run." : ""}`;
+    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(best.drift) > 2 ? `; the wind carries it ${Math.abs(best.drift).toFixed(0)} yds ${best.drift < 0 ? "left" : "right"} to the dashed spot` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 64-world Bayesian run." : ""}`;
     const rows = r.order.map(c => { const v = r.out[c]; return `<tr class="${c===r.pick?"best":""}"><td class="${cls(c)}">${c}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.order[0]?"—":"+"+(v.ev - r.out[r.order[0]].ev).toFixed(3)}</td></tr>`;}).join("");
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     let note = h.note || "";
