@@ -41,7 +41,8 @@ CDIR = os.path.join(HERE, "spirit_hollow")
 REG = os.path.join(HERE, "imagery", "spirit_hollow", "traced_registration.json")
 WOODS = ["Driver", "2-wood", "4-wood"]
 CLASSES = ["fairway", "rough", "recovery", "native", "water", "sand", "ob"]
-BAR = dict(tee=10.0, green=10.0, length=5.0, iou=0.6, iou_classes=("water", "ob", "recovery"), club=0.8)
+BAR = dict(tee=10.0, green=10.0, length=5.0, iou=0.6, iou_classes=("water", "ob", "recovery"), club=0.8,
+           regret_mean=0.02, regret_max=0.05)
 MIN_ECC = 0.3
 SCALES = (1.0,)          # both maps are in yards; a free scale lets wide traced fairways shrink onto OSM's
 
@@ -304,6 +305,17 @@ def tee_hole(k, h, a, regs, z):
     ac, aev, aaim = best_club({k: am}, k, z)
     row.update(club_traced=tc, club_auto=ac, same_club=tc == ac, ev_traced=tev, ev_auto=aev,
                aim_traced=taim, aim_auto=aaim)
+    add_regret(row)
+    return row
+
+
+def add_regret(row):
+    """Strokes lost on the hand map by playing the club the auto map picked (what the golfer pays).
+    Coin-flip holes (hand-map margin < 0.01) make `same_club` noisy; regret is not."""
+    tev = row["ev_traced"]
+    row["regret"] = round(tev[row["club_auto"]] - min(tev.values()), 4)
+    srt = sorted(tev.values())
+    row["traced_margin"] = round(srt[1] - srt[0], 4)
     return row
 
 
@@ -333,7 +345,27 @@ def passes(r):
     return checks
 
 
+def rescore(path):
+    """Recompute regret + summary fields of an existing acceptance*.json without re-simulating."""
+    out = json.load(open(path))
+    ok = [r for r in out["tee_shots"] if not r.get("missing")]
+    for r in ok:
+        add_regret(r)
+    reg = [r["regret"] for r in ok]
+    s = out["summary"]
+    s.update(mean_regret=round(float(np.mean(reg)), 4), max_regret=round(float(np.max(reg)), 4))
+    s["regret_bar_met"] = s["mean_regret"] <= BAR["regret_mean"] and s["max_regret"] <= BAR["regret_max"]
+    s["bar"] = BAR
+    json.dump(out, open(path, "w"), indent=1, default=float)
+    write_md(out, path.replace(".json", ".md"))
+    print(os.path.basename(path), "mean regret", s["mean_regret"], "max", s["max_regret"])
+
+
 def main():
+    if sys.argv[1:2] == ["--rescore"]:
+        for p in sys.argv[2:]:
+            rescore(p)
+        return
     ap = argparse.ArgumentParser()
     ap.add_argument("--holes", help="evaluate this holes.json as built (default: oracle-tee builds)")
     ap.add_argument("--fast", action="store_true")
@@ -393,6 +425,11 @@ def main():
         holes_passing=[r["hole"] for r in ok if all(r["checks"].values())],
         par3_length_within=[r["hole"] for r in p3 if r["checks"]["length"]],
         bar=BAR, seconds=round(time.time() - t0))
+    reg = [r["regret"] for r in ok if "regret" in r]
+    summary["mean_regret"] = round(float(np.mean(reg)), 4) if reg else None
+    summary["max_regret"] = round(float(np.max(reg)), 4) if reg else None
+    summary["regret_bar_met"] = bool(reg) and summary["mean_regret"] <= BAR["regret_mean"] and \
+        summary["max_regret"] <= BAR["regret_max"]
     summary["club_bar_met"] = bool(summary["same_club"] is not None and summary["same_club"] >= BAR["club"])
     out = dict(summary=summary, tee_shots=rows, par3=p3)
     tag = ("" if not a.holes else "_" + os.path.splitext(os.path.basename(a.holes))[0]) + \
@@ -410,6 +447,9 @@ def write_md(out, path):
          f"(bar {BAR['club']:.0%}). Tee within {BAR['tee']:.0f} yds: {s['tee_within']:.0%}; green within "
          f"{BAR['green']:.0f} (or the traced green's own rounding spread): {s['green_within']:.0%}; length within {BAR['length']:.0f}: {s['length_within']:.0%}. "
          f"Median tee error {s['median_tee_err']} yds, green {s['median_green_err']} yds.", "",
+         f"Decision regret (strokes lost on the hand map by playing the auto map's club): mean "
+         f"{s.get('mean_regret')}, max {s.get('max_regret')} (bar mean <= {BAR['regret_mean']}, max <= "
+         f"{BAR['regret_max']}): {'met' if s.get('regret_bar_met') else 'not met'}.", "",
          "Mean landing-zone IoU by class: " + ", ".join(f"{c} {v:.2f}" for c, v in s["mean_iou"].items()), "",
          f"Holes passing every check: {', '.join(s['holes_passing']) or 'none'}", "",
          "| hole | len err | tee err | green err (traced +/-) | registration | club traced / auto | IoU water | IoU ob | IoU trees | IoU fairway | failed |",

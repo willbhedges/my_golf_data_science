@@ -2,6 +2,8 @@
 
 Same club (Driver / 2-wood / 4-wood) on **62%** of 16 tee shots (bar 80%). Tee within 10 yds: 50%; green within 10 (or the traced green's own rounding spread): 56%; length within 5: 62%. Median tee error 10.05 yds, green 8.0 yds.
 
+Decision regret (strokes lost on the hand map by playing the auto map's club): mean 0.0128, max 0.1047 (bar mean <= 0.02, max <= 0.05): not met.
+
 Mean landing-zone IoU by class: fairway 0.56, rough 0.28, recovery 0.00, native 0.00, water 0.37, sand 0.40, ob 0.18
 
 Holes passing every check: none
