@@ -3,6 +3,8 @@
   python3 spirit_hollow/vision2.py --method all     # LOHO comparison of every method -> report
   python3 spirit_hollow/vision2.py --method best    # + train best on all holes, write prob maps
   python3 spirit_hollow/vision2.py --method c       # LOHO for one method (cached afterwards)
+  options: --methods hand,a,b,c   restrict the comparison;  --calib  add nested calibration
+  (2 inner group folds per held-out hole = 2 extra HGB fits per hole per method: slow)
 
 Everything (screenshots, UI mask, handcrafted features, labels, landing zones, metrics)
 is reused from vision.py so the numbers are directly comparable with its baseline
@@ -539,30 +541,36 @@ def score_key(r):
     return (round(r["lz"]["pp"], 3), r["lz"]["acc6"])
 
 
-def run_all(data):
+def run_all(data, methods, calib):
     results, maps = {}, {}
-    for m in ["hand", "a", "b", "c", "d", "dslic", "cpool", "cpool_slic"]:
+    for m in methods:
         print("method", m, flush=True)
         maps[m] = loho(m, data)
         results[m] = evaluate(maps[m], data, DESC[m])
         r = results[m]
         print(f"  -> LZ {r['lz']['acc6']:.1%} / {r['lz']['pp']:.1%}  hole {r['all']['acc6']:.1%} / "
               f"{r['all']['pp']:.1%}", flush=True)
-    # (e) calibration of the two best base methods that support inner refits, then ensemble
-    calib_ok = ["hand", "a", "b", "c", "d", "dslic"]      # pooled maps have no inner refit
-    top2 = sorted(calib_ok, key=lambda m: score_key(results[m]), reverse=True)[:2]
-    for m in top2:
+    # top two base methods from different families (a method and its pooled self don't pair)
+    family = lambda m: "c" if m in POOL else m                     # noqa: E731
+    ranked = sorted(methods, key=lambda m: score_key(results[m]), reverse=True)
+    top2 = [ranked[0]] + [m for m in ranked[1:] if family(m) != family(ranked[0])][:1]
+    k = "ens_raw"
+    maps[k] = {h: 0.5 * (maps[top2[0]][h] + maps[top2[1]][h]) for h in HOLES}
+    results[k] = evaluate(maps[k], data, f"(e) ensemble 50/50 of {top2[0]} + {top2[1]}, uncalibrated")
+    print(k, results[k]["lz"], flush=True)
+    # (e) nested calibration (inner group folds of the training holes): expensive, opt-in
+    if calib:
+        for m in [m for m in top2 if m in PIXEL or m in REGION]:
+            for how in ("temp", "iso"):
+                k = f"{m}+{how}"
+                maps[k] = calibrated(m, how, data)
+                results[k] = evaluate(maps[k], data, f"(e) {m}, {how}-calibrated")
         for how in ("temp", "iso"):
-            k = f"{m}+{how}"
-            maps[k] = calibrated(m, how, data)
-            results[k] = evaluate(maps[k], data, f"(e) {DESC[m].split(' ', 1)[1] if m != 'hand' else DESC[m]} — {'temperature' if how == 'temp' else 'isotonic'}-calibrated")
-            print(k, results[k]["lz"], flush=True)
-    for how in ("temp", "iso"):
-        k = f"ens_{how}"
-        a_, b_ = (f"{m}+{how}" for m in top2)
-        maps[k] = {h: 0.5 * (maps[a_][h] + maps[b_][h]) for h in HOLES}
-        results[k] = evaluate(maps[k], data, f"(e) ensemble 50/50 of {top2[0]} + {top2[1]}, {how}-calibrated")
-        print(k, results[k]["lz"], flush=True)
+            if all(f"{m}+{how}" in maps for m in top2):
+                k = f"ens_{how}"
+                maps[k] = {h: 0.5 * (maps[f"{top2[0]}+{how}"][h] + maps[f"{top2[1]}+{how}"][h])
+                           for h in HOLES}
+                results[k] = evaluate(maps[k], data, f"(e) ensemble 50/50 of {top2[0]} + {top2[1]}, {how}-calibrated")
     best = max(results, key=lambda m: score_key(results[m]))
     with open(os.path.join(OUT, "results.json"), "w") as f:
         json.dump({k: {kk: (vv if not isinstance(vv, dict) else {a: float(b) for a, b in vv.items()})
@@ -580,7 +588,7 @@ def final_fit(best, top2, data):
     parts = [best]
     how = None
     if best.startswith("ens_"):
-        how = best[4:]
+        how = None if best == "ens_raw" else best[4:]
         parts = top2
     elif "+" in best:
         parts, how = [best.split("+")[0]], best.split("+")[1]
@@ -634,7 +642,9 @@ def main():
         r = evaluate(maps, data, DESC.get(method, method))
         print(json.dumps({k: r[k] for k in ("lz", "all")}, indent=1, default=float))
         return
-    results, maps, best, top2 = run_all(data)
+    methods = (args[args.index("--methods") + 1].split(",") if "--methods" in args else
+               ["hand", "a", "b", "c", "d", "dslic", "cpool", "cpool_slic"])
+    results, maps, best, top2 = run_all(data, methods, "--calib" in args)
     flags = {}
     lohodir = os.path.join(OUT, "probs_loho")
     os.makedirs(lohodir, exist_ok=True)
@@ -652,6 +662,17 @@ def main():
              "(out-of-fold) predictions of all 16 holes.",
              f"- Training sample: {N_PER_HOLE} labelled pixels per hole (fixed seeds); HGB "
              "max_iter=150, lr 0.08, 48 leaves, balanced class weights."]
+    if "--calib" not in args:
+        notes.append("- (e) calibration: the nested temperature/isotonic calibration (inner "
+                     "group folds over the 15 training holes) is implemented (`--calib`) but was "
+                     "NOT run for this report — it costs 2 extra HGB fits per held-out hole per "
+                     "method and the shared CPU was oversubscribed. Temperature scaling cannot "
+                     "change any argmax, so it would not move the accuracy columns; it would "
+                     "only change the p>=0.85 flag set. The ensemble row is an uncalibrated "
+                     "fixed 50/50 average (no weights tuned).")
+    missing = [m for m in ["hand", "a", "b", "c", "d", "dslic", "cpool", "cpool_slic"] if m not in methods]
+    if missing:
+        notes.append(f"- Not run for this report (CPU budget): {', '.join(missing)}.")
     if method == "best":
         final_fit(best, top2, data)
     write_report(results, best, maps[best], data, dict(flags=flags, notes=notes))

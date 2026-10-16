@@ -51,8 +51,28 @@ def solve(h, speed, rel, z, centers, exposure=1.0):
         table = t.IRONS if c in t.IRONS else t.CLUBS
         saved = table[c]
         table[c] = (carry, total, width, depth)
-        aims = centers[c] + np.arange(-25, 25.01, 2.5)
-        ev = np.array([t.simulate(h, c, a + drift, z=z)[3].mean() for a in aims])
+        # local search: the wind's best aim sits near (calm aim - drift); a +/-12.5-yd window, widened
+        # (3 steps at a time, up to 4 times) while the best aim or the 0.02 zone touches its edge
+        ev_at = {}
+
+        def ev_of(a):
+            a = round(float(a), 2)
+            if a not in ev_at:
+                ev_at[a] = t.simulate(h, c, a + drift, z=z)[3].mean()
+            return ev_at[a]
+        c0 = 2.5 * round((centers[c] - drift) / 2.5)
+        aims = list(c0 + np.arange(-12.5, 12.51, 2.5))
+        for _ in range(5):
+            ev = np.array([ev_of(a) for a in aims])
+            lo_hit, hi_hit = ev[0] <= ev.min() + ZONE_TOL, ev[-1] <= ev.min() + ZONE_TOL
+            if not (lo_hit or hi_hit):
+                break
+            if lo_hit:
+                aims = [aims[0] - 2.5 * j for j in (3, 2, 1)] + aims
+            if hi_hit:
+                aims = aims + [aims[-1] + 2.5 * j for j in (1, 2, 3)]
+        aims = np.array(aims)
+        ev = np.array([ev_of(a) for a in aims])
         table[c] = saved
         i = int(ev.argmin())
         ok = aims[ev <= ev[i] + ZONE_TOL]
