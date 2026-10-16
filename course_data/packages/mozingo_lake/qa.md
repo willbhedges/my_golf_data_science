@@ -1,6 +1,6 @@
-# Mozingo Lake Golf Course (Maryville, MO) - request tees
+# Mozingo Lake Golf Course (Maryville, MO) - App tees
 
-Built 2026-10-16T19:58:12Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: fallback: longest set (tee set 'App' not on the card (sets: request)).
+Built 2026-10-16T21:48:59Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
 
 ## Coverage
 
@@ -13,9 +13,9 @@ Built 2026-10-16T19:58:12Z. OSM way/385067034. Scorecard: request (request file 
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.454 |
-| mean_confidence | 0.838 |
-| osm_score | 0.891 |
+| mean_landing_osm_share | 0.451 |
+| mean_confidence | 0.832 |
+| osm_score | 0.89 |
 
 OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, golf=driving_range 1, golf=fairway 20, golf=green 25, golf=hole 18, golf=rough 22, golf=tee 66, golf=water_hazard 3, holes_with_handicap 16, holes_with_par 18, single_trees 12, tees_with_ref 12, water_polygons 3
 
@@ -23,24 +23,24 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 371 / 361 | 180 | 0.78 | check the flags | 34% | 22% | 44% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 2 | 4 | 349 / 350 | 59 | 0.85 | auto | 46% | 24% | 30% | tee stage: request tee_centroid |  |
-| 3 | 5 | 517 / 513 | 230 | 0.79 | check the flags | 48% | 6% | 46% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 4 | 4 | 361 / 362 | 79 | 0.79 | check the flags | 46% | 12% | 42% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 5 | 3 | 182 / 174 | 210 | 0.92 | auto | 100% | 0% | 0% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 6 | 5 | 491 / 487 | 263 | 0.80 | auto | 49% | 12% | 38% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 7 | 4 | 428 / 427 | 36 | 0.81 | auto | 56% | 4% | 40% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 8 | 3 | 187 / 184 | 26 | 0.92 | auto | 100% | 0% | 0% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 9 | 4 | 348 / 346 | 17 | 0.81 | auto | 43% | 10% | 47% | tee stage: request tee_centroid |  |
-| 10 | 4 | 392 / 393 | 13 | 0.80 | check the flags | 47% | 12% | 40% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 11 | 3 | 219 / 220 | 343 | 0.95 | auto | 100% | 0% | 0% | tee stage: request tee_centroid |  |
-| 12 | 5 | 517 / 516 | 266 | 0.79 | check the flags | 45% | 11% | 45% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 13 | 4 | 394 / 393 | 177 | 0.83 | auto | 43% | 37% | 20% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 14 | 5 | 464 / 464 | 189 | 0.85 | auto | 51% | 15% | 34% | tee stage: request tee_centroid |  |
-| 15 | 3 | 174 / 176 | 80 | 0.95 | auto | 100% | 0% | 0% | tee stage: request tee_centroid |  |
-| 16 | 4 | 433 / 431 | 12 | 0.81 | auto | 50% | 18% | 32% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 17 | 4 | 344 / 326 | 47 | 0.79 | check the flags | 22% | 41% | 37% | tee stage: request tee_axis | tee: tee stage: request tee_axis |
-| 18 | 4 | 407 / 399 | 204 | 0.84 | auto | 57% | 4% | 39% | tee stage: request tee_centroid |  |
+| 1 | 4 | 371 / 361 | 183 | 0.77 | check the flags | 34% | 17% | 48% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 2 | 4 | 349 / 350 | 59 | 0.85 | auto | 46% | 24% | 30% | tee stage: App tee_centroid |  |
+| 3 | 5 | 517 / 513 | 230 | 0.78 | check the flags | 48% | 2% | 50% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 4 | 4 | 361 / 362 | 79 | 0.78 | check the flags | 44% | 7% | 49% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 5 | 3 | 182 / 174 | 210 | 0.92 | auto | 100% | 0% | 0% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 6 | 5 | 491 / 487 | 266 | 0.79 | check the flags | 50% | 3% | 47% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 7 | 4 | 428 / 427 | 36 | 0.81 | auto | 57% | 4% | 39% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 8 | 3 | 187 / 184 | 26 | 0.92 | auto | 100% | 0% | 0% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 9 | 4 | 348 / 346 | 18 | 0.81 | auto | 41% | 12% | 47% | tee stage: App tee_centroid |  |
+| 10 | 4 | 392 / 393 | 10 | 0.80 | auto | 47% | 15% | 38% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 11 | 3 | 219 / 220 | 343 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
+| 12 | 5 | 517 / 516 | 265 | 0.77 | check the flags | 45% | 4% | 51% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 13 | 4 | 394 / 393 | 177 | 0.83 | auto | 43% | 36% | 22% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 14 | 5 | 464 / 464 | 187 | 0.83 | auto | 50% | 9% | 41% | tee stage: App tee_centroid |  |
+| 15 | 3 | 174 / 176 | 80 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
+| 16 | 4 | 433 / 431 | 13 | 0.81 | auto | 50% | 17% | 33% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 17 | 4 | 344 / 326 | 47 | 0.77 | check the flags | 22% | 33% | 45% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 18 | 4 | 407 / 399 | 203 | 0.83 | auto | 55% | 2% | 43% | tee stage: App tee_centroid |  |
 
 ## Stages
 
@@ -55,5 +55,4 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 
 ## Warnings
 
-- tee set 'App' not on the card (sets: request); using the longest set 'request' instead
-- hole 17: measured 326 vs card 344 yds for request (no OSM tee box at that yardage?)
+- hole 17: measured 326 vs card 344 yds for App (no OSM tee box at that yardage?)
