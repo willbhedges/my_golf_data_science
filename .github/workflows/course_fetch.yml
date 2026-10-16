@@ -1,0 +1,78 @@
+name: course-fetch
+
+on:
+  push:
+    paths:
+      - ".github/workflows/course_fetch.yml"
+      - "course_data/fetch_course.py"
+      - "course_data/osm_to_model.py"
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Course name"
+        default: "Spirit Hollow Golf Course"
+      near:
+        description: "Approximate lat,lon"
+        default: "40.745,-91.150"
+      out:
+        description: "Output dir"
+        default: "course_data/spirit_hollow"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: course-fetch-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NAME: ${{ inputs.name || 'Spirit Hollow Golf Course' }}
+      NEAR: ${{ inputs.near || '40.745,-91.150' }}
+      OUT: ${{ inputs.out || 'course_data/spirit_hollow' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests numpy matplotlib pillow pystac-client planetary-computer rasterio
+
+      - name: Fetch OSM + NAIP
+        run: python course_data/fetch_course.py --name "$NAME" --near "$NEAR" --out "$OUT"
+
+      - name: Convert OSM holes to the model frame
+        if: always()
+        run: |
+          if [ -f "$OUT/osm.geojson" ]; then python course_data/osm_to_model.py "$OUT"; fi
+
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$OUT"
+          if git diff --cached --quiet; then
+            echo "No course data changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "Add OSM/NAIP course data for $NAME (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
