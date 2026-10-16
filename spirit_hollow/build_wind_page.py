@@ -60,6 +60,28 @@ def crop_jpeg(image, box, y_max=1830):
     return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode(), scale * k, (x0, y0), c.size
 
 
+sys.path.insert(0, os.path.join(ROOT, "course_data", "elevation"))
+try:
+    import adjust as _E                                       # USGS 3DEP elevation per club
+except Exception:
+    _E = None
+
+
+def elev_of(h):
+    if _E is None:
+        return None
+    try:
+        a = _E.adjustments(str(h))
+    except Exception:
+        return None
+    if "clubs" in a and a["clubs"]:
+        sl = a.get("landing_slope") or {}
+        return dict(clubs={c: dict(dc=v["carry_delta_yds"], rf=v["roll_factor"], kick=v["lateral_kick_yds"],
+                                   drop=v["landing_drop_ft"]) for c, v in a["clubs"].items()},
+                    along=sl.get("along_pct"), cross=sl.get("cross_pct"))
+    return dict(green_drop=a.get("green_drop_ft"), dz=a.get("plays_like_delta_yds"))
+
+
 def tee_hole(h):
     hd = course.HOLES[h]
     tee, f, r, ppy = frame(hd["tee"], hd["dot270"], 270)
@@ -72,7 +94,7 @@ def tee_hole(h):
                 tee=list(map(float, tee)), f=list(map(float, f)), r=list(map(float, r)), ppy=float(ppy),
                 par=hd["par"], length=hd["length"], label=course.LABELS.get(h, str(h)),
                 tee_name="Gold tee" if "Gold" in course.LABELS.get(h, "") else "Black tee",
-                tee_offimage=bool(hd["tee"][1] > 2000),
+                tee_offimage=bool(hd["tee"][1] > 2000), elev=elev_of(h) if course.ELEVATION else None,
                 note=FN.get(str(h), {}).get("note", ""), aim_at=FN.get(str(h), {}).get("aim_at", ""))
 
 
@@ -100,7 +122,7 @@ def par3_hole(h):
     yb.WIND_NOW = 0
     green = [[float(q[0]), float(q[1])] for q in gp]
     return dict(kind="par3", img=uri, w=size[0], h=size[1], s=s, x0=x0, y0=y0, par=3, length=p["center"],
-                label=str(h), boxes=boxes, green=green, note=p.get("note", ""), short=p.get("short", ""),
+                label=str(h), boxes=boxes, elev=elev_of(h) if course.ELEVATION else None, green=green, note=p.get("note", ""), short=p.get("short", ""),
                 front=p["front"], back=p["back"])
 
 

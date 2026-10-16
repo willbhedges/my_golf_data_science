@@ -96,6 +96,7 @@ tr.best td{font-weight:600}
       <div class="holehead"><span class="holeno" id="hNo"></span><span class="label" id="hPar"></span><span id="hBadges"></span></div>
       <div><div class="label" id="playLbl">Play</div><div class="play" id="hPlay"></div><div class="sub" id="hAim"></div></div>
       <div id="hTable"></div>
+      <div class="sub" id="hElev"></div>
       <div class="note" id="hNote"></div>
       <div class="row"><div class="seg"><button id="prev">◀ Prev</button><button id="next">Next ▶</button></div></div>
     </div>
@@ -138,6 +139,9 @@ function solveTee(h){
     const r = {ev:0,aim:0,lo:0,hi:0,total:0,carry:0,width:0,drift:0};
     for(const [sp,dd,w] of corners){ const v = cell(h.grid, sp, dd).clubs[c];
       r.ev+=w*v.ev; r.aim+=w*v.aim; r.lo+=w*v.zone[0]; r.hi+=w*v.zone[1]; r.total+=w*v.total; r.carry+=w*v.carry; r.width+=w*v.width; r.drift+=w*v.drift; }
+    const e = h.elev && h.elev.clubs && h.elev.clubs[c];      // ground: carry, roll and side kick
+    r.kick = 0;
+    if(e){ const roll = r.total - r.carry; r.carry += e.dc; r.total = r.carry + roll * e.rf; r.kick = e.kick; r.e = e; }
     out[c] = r;
   }
   const order = Object.keys(out).sort((a,b) => out[a].ev - out[b].ev);
@@ -201,7 +205,7 @@ function render(){
     const r = solveTee(h), best = r.out[r.pick];
     const star = P(h, at(h, best.total, r.aim));
     const zl = P(h, at(h, best.total, best.lo)), zh = P(h, at(h, best.total, best.hi));
-    const land = P(h, at(h, best.total, r.aim + best.drift));
+    const land = P(h, at(h, best.total, r.aim + best.drift + best.kick));
     const rx = best.width/2*h.ppy*h.s, ry = best.width*0.22*h.ppy*h.s;
     const ang = Math.atan2(h.f[0], -h.f[1]) * 180/Math.PI;
     const tp = P(h, h.tee);
@@ -210,7 +214,7 @@ function render(){
       <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#ffc928" stroke-width="2"/>
       <ellipse cx="${land[0]}" cy="${land[1]}" rx="${rx}" ry="${ry}" transform="rotate(${ang} ${land[0]} ${land[1]})" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>
       <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="9" stroke-linecap="round" opacity=".8"/>
-      ${Math.abs(best.drift) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
+      ${Math.abs(best.drift + best.kick) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
       ${aimMark(star[0], star[1])}
       ${h.tee_offimage ? `<text x="${h.w/2}" y="${(2000 - h.y0) * h.s + 22}" fill="#d9e3dc" font-family="Source Sans 3,Arial,sans-serif" font-size="14" text-anchor="middle">Below here: past the bottom of your app screenshot</text>` : ""}
       ${teeMark(tp[0], tp[1], h.tee_name)}
@@ -220,9 +224,14 @@ function render(){
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     if(calm !== r.pick) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
-    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(best.drift) > 2 ? `; the wind carries it ${Math.abs(best.drift).toFixed(0)} yds ${best.drift < 0 ? "left" : "right"} to the dashed spot` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 64-world Bayesian run." : ""}`;
+    const mv = best.drift + best.kick;
+    const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
+                 Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
+    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot (${why})` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 64-world Bayesian run." : ""}`;
     const rows = r.order.map(c => { const v = r.out[c]; return `<tr class="${c===r.pick?"best":""}"><td class="${cls(c)}">${c}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.order[0]?"—":"+"+(v.ev - r.out[r.order[0]].ev).toFixed(3)}</td></tr>`;}).join("");
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    const be = best.e;
+    document.getElementById("hElev").innerHTML = be ? `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
     let note = h.note || "";
     document.getElementById("hNote").textContent = note;
   } else {
@@ -237,6 +246,8 @@ function render(){
     document.getElementById("hAim").textContent = `Land it in the blue box. ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${h.front}</td><td>${Math.round(h.length)}</td><td>${h.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
     document.getElementById("hNote").textContent = h.note || "";
+    const ge = h.elev;
+    document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds; "Play it like" includes this and the wind.` : "";
   }
   document.getElementById("hBadges").innerHTML = badges.join(" ");
   renderStrip(); renderControls(); save();
