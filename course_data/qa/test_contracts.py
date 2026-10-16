@@ -83,6 +83,135 @@ def test_schema(hole):
     assert not bad, "; ".join(bad)
 
 
+TEE_SETS = [(pk, ref, ts) for pk in PKGS if pk.kind == "package.json" for ref in pk.holes
+            for ts in (pk.holes[ref].tee_sets or {})]
+
+
+@pytest.mark.parametrize("pk", [p for p in PKGS if p.kind == "package.json"], ids=hid)
+def test_package_header(pk):
+    """package/1 header: schema, course name/slug/state/boundary, tee_set, tee_sets, sources, stages."""
+    r, bad = pk.raw, []
+    if r.get("schema") != "course_package/1":
+        bad.append(f"schema={r.get('schema')!r} (ARCHITECTURE 9.2 says course_package/1)")
+    c = r.get("course") or {}
+    for k in ("name", "slug", "state", "boundary", "bbox"):
+        if not c.get(k):
+            bad.append(f"course.{k} missing")
+    if not pk.tee_set:
+        bad.append("tee_set missing")
+    if not isinstance(r.get("tee_sets"), dict) or not r.get("tee_sets"):
+        bad.append("tee_sets missing")
+    for k in ("sources", "stages", "built"):
+        if not r.get(k):
+            bad.append(f"{k} missing")
+    rel = os.path.relpath(pk.path, P.CD).replace(os.sep, "/")
+    if not rel.startswith("packages/") and "standin" not in rel:
+        bad.append(f"location {rel} (ARCHITECTURE 9.2: packages/<slug>/package.json)")
+    assert not bad, "; ".join(bad)
+
+
+@pytest.mark.parametrize("hole", [(pk, ref) for pk in PKGS if pk.kind == "package.json" for ref in pk.holes], ids=hid)
+def test_package_hole_fields(hole):
+    """package/1 per-hole fields the product and wind page read (9.2): yards per set, tees per set,
+    exposure, confidence, zone src."""
+    pk, ref = hole
+    h = pk.holes[ref].raw
+    bad = []
+    if not isinstance(h.get("yards"), dict):
+        bad.append("yards{set: yds} missing")
+    if not isinstance(h.get("tees"), dict) or not h.get("tees"):
+        bad.append("tees{set: {...}} missing")
+    if "exposure" not in h:
+        bad.append("exposure missing (wind page needs it)")
+    if not isinstance(h.get("confidence"), dict) or "score" not in h.get("confidence", {}):
+        bad.append("confidence.score missing")
+    for k in ("tee_ll", "aim_ll", "green_ll", "bearing_deg", "length"):
+        if h.get(k) is None:
+            bad.append(f"{k} missing")
+    if not h.get("green_polygon_ll") and h.get("par") == 3:
+        bad.append("green_polygon_ll missing")
+    zs = h.get("zones_ll")
+    if zs is None:
+        bad.append("zones_ll missing (ARCHITECTURE 9.1-1: WGS84 zones are required)")
+    elif not all(isinstance(z, dict) and z.get("lie") and z.get("poly") and z.get("src") for z in zs):
+        bad.append("zones_ll entries are not {lie, poly, src, p} dicts with src")
+    assert not bad, "; ".join(bad)
+
+
+@pytest.mark.parametrize("hole", [(pk, ref) for pk in PKGS if pk.kind == "package.json" for ref in pk.holes], ids=hid)
+def test_zones_match_zones_ll(hole):
+    """`zones` (yard frame) must be `zones_ll` reframed (9.1-1: zones is derived by reframe()): same lies in the
+    same order, and the landing grid gets the same lie from both."""
+    pk, ref = hole
+    q = pk.holes[ref]
+    if not q.zones_yard:
+        pytest.skip("no zones_ll + yard zones pair")
+    a = [lie for lie, _ in q.zones_ll]
+    b = [lie for lie, _ in q.zones_yard]
+    assert sorted(a) == sorted(b), f"lies differ: zones_ll {len(a)} vs zones {len(b)}"
+    from matplotlib.path import Path
+    R = P._render()
+    yfr = R.Frame(q.tee_ll, q.aim_ll, ppy=1.0, tee_px=(0, 0), proj="utm")
+    al, la = np.meshgrid(np.arange(100, 400, 10.0), np.arange(-60, 61, 10.0))
+    xy = np.c_[la.ravel(), -al.ravel()]
+    ll = yfr.px_to_ll(xy)
+
+    def lies(zs, pts):
+        out = np.array(["rough"] * len(pts), dtype=object)
+        for lie, poly in zs:
+            out[Path(np.asarray(poly, float)[:, :2]).contains_points(pts)] = lie
+        return out
+    agree = float(np.mean(lies(q.zones_ll, ll) == lies(q.zones_yard, xy)))
+    assert agree >= 0.98, f"zones vs zones_ll agree on only {agree:.0%} of the 100-400 yd grid"
+
+
+@pytest.mark.parametrize("tset", TEE_SETS, ids=lambda x: f"{x[0].id}-{x[1]}-{x[2]}")
+def test_every_tee_set(tset):
+    """Each tee set's entry: tee_ll, aim_ll, bearing_deg, card yards, and the tee->green length along the
+    hole line within 15% of that set's card yardage; tee not in a hazard."""
+    pk, ref, ts = tset
+    q = pk.holes[ref]
+    e = q.tee_sets[ts]
+    bad = []
+    tll, all_ = P._ll(e.get("tee_ll")), P._ll(e.get("aim_ll"))
+    if not tll:
+        bad.append("no tee_ll")
+    if not all_:
+        bad.append("no aim_ll")
+    if e.get("bearing_deg") is None:
+        bad.append("no bearing_deg")
+    card = e.get("card_yards") or P._ci(q.raw.get("yards"), ts)
+    if not card:
+        bad.append("no card yards")
+    if tll and card and q.green_ll:
+        L = P.dist_yd(tll, q.green_ll)
+        if q.hole_line_ll and len(q.hole_line_ll) > 2:
+            L = P.path_yd([tll] + [p[:2] for p in q.hole_line_ll[1:-1]] + [q.green_ll])
+        if abs(L - card) / card > LEN_TOL:
+            bad.append(f"length {L:.0f} vs card {card} ({(L - card) / card:+.0%})")
+    if tll:
+        lie = P.lie_at_ll(q, tll)
+        if lie in P.PENAL:
+            bad.append(f"tee in '{lie}'")
+    assert not bad, "; ".join(bad)
+
+
+@pytest.mark.parametrize("pk", PKGS, ids=hid)
+def test_model_understands_lies(pk):
+    """Every zone name a package uses must be scorable by tee_strategy (BASELINE + _lie_mixture) as-is;
+    ARCHITECTURE 9.1-4 allows 'green' and 'ob_boundary' in packages, so the model or every consumer must map them."""
+    import tee_strategy as t
+    names = sorted({lie for q in pk.holes.values() for lie, _ in q.zones_ll})
+    bad = []
+    for n in names:
+        try:
+            v = t.expected_strokes(n, np.array([150.0]))
+            assert np.isfinite(v).all()
+        except Exception as e:                                     # noqa: BLE001
+            bad.append(f"{n}: {type(e).__name__}: {e}")
+    assert not bad, "tee_strategy cannot score " + "; ".join(bad)
+
+
 # ----------------------------------------------------------------------------- geometry
 @pytest.mark.parametrize("hole", HOLES, ids=hid)
 def test_length_vs_card(hole):

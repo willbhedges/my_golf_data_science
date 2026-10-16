@@ -26,8 +26,10 @@ for p in (CD, os.path.join(CD, "imagery"), os.path.join(ROOT, "mozingo")):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-KNOWN_LIES = {"fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob", "green"}
-PENAL = {"sand", "recovery", "native", "water", "ob"}
+KNOWN_LIES = {"fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob", "ob_boundary", "green"}
+PENAL = {"sand", "recovery", "native", "water", "ob", "ob_boundary"}
+MODEL_ALIAS = {"green": "fairway", "ob_boundary": "ob"}     # ARCHITECTURE 9.1-4: how a consumer feeds the model
+MODEL_LIES = {"fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob"}   # tee_strategy BASELINE
 YD = 0.9144
 
 
@@ -49,6 +51,9 @@ class QHole:
         self.green_poly_ll = None
         self.hole_line_ll = None
         self.provenance = None
+        self.tee_sets = {}
+        self.zones_yard = []
+        self.zones_from = None
         self.model = None           # tee_strategy-ready dict (tee, dot270, green, zones in px)
         self.frame = None
 
@@ -63,10 +68,12 @@ class Pkg:
         self.holes = {}
         self.dir = os.path.dirname(path)
         self.errors = []            # adapter-level problems (become test failures)
+        self.tee_set = None
 
     @property
     def id(self):
-        return f"{self.slug}:{self.kind}"
+        rel = os.path.relpath(self.path, CD)
+        return rel.replace(os.sep, "/").replace("/package.json", "").replace("/holes.json", "#v1")
 
     def __repr__(self):
         return f"Pkg({self.id}, {len(self.holes)} holes)"
@@ -179,57 +186,101 @@ def _zones_generic(zs):
     return out
 
 
+def _tee_set_name(raw):
+    ts = raw.get("tee_set")
+    if isinstance(ts, dict):
+        ts = ts.get("chosen") or ts.get("requested")
+    return str(ts) if ts else None
+
+
+def _ci(d, key):
+    """case-insensitive dict lookup."""
+    if not isinstance(d, dict) or key is None:
+        return None
+    for k, v in d.items():
+        if str(k).lower() == str(key).lower():
+            return v
+    return None
+
+
+def _looks_ll(pt, near):
+    return pt is not None and near is not None and abs(pt[0] - near[0]) < 0.1 and abs(pt[1] - near[1]) < 0.1
+
+
 def _from_package(path, raw):
-    """Platform package.json. The contract is in ARCHITECTURE.md; this reader is deliberately lenient
-    about *where* fields sit so the tests report missing/invalid fields instead of crashing."""
+    """package/1 (ARCHITECTURE 9.2: WGS84 zones as {lie, poly, src, p}) or the platform's course_package/1
+    (zones [[lie, [[x, y], ...]]] in the yard frame). The reader is lenient about *where* fields sit so the
+    tests report missing/invalid fields instead of crashing."""
     R = _render()
     slug = raw.get("slug") or (raw.get("course") or {}).get("slug") or os.path.basename(os.path.dirname(path))
     pkg = Pkg(slug, path, "package.json", raw)
     pkg.course = raw.get("course", {})
+    pkg.tee_set = _tee_set_name(raw)
+    yard = raw.get("frame") == "yard" or raw.get("schema") == "course_package/1"
     holes = raw.get("holes", {})
     if isinstance(holes, list):
         holes = {str(h.get("ref") or h.get("hole") or h.get("number") or i + 1): h for i, h in enumerate(holes)}
     for ref, h in holes.items():
         q = QHole(ref, h)
         q.par = h.get("par")
-        tee = h.get("tee")
-        q.tee_ll = _ll(h.get("tee_ll")) or _ll(tee if not isinstance(tee, dict) else tee)
+        ts = _ci(h.get("tees"), pkg.tee_set) or {}
+        q.tee_ll = _ll(h.get("tee_ll")) or _ll(ts.get("tee_ll"))
+        q.aim_ll = _ll(h.get("aim_ll")) or _ll(ts.get("aim_ll"))
         g = h.get("green")
-        q.green_ll = _ll(h.get("green_ll")) or _ll(g.get("center") if isinstance(g, dict) and "center" in g else g)
-        if isinstance(g, dict) and g.get("polygon"):
-            q.green_poly_ll = g["polygon"]
-        elif h.get("green_polygon"):
-            q.green_poly_ll = h["green_polygon"]
-        q.aim_ll = _ll(h.get("aim_ll"))
-        q.bearing = h.get("bearing", h.get("bearing_deg"))
-        q.card = h.get("card_yards", h.get("yards", h.get("length")))
-        q.length = h.get("length", h.get("yards", q.card))
-        if isinstance(q.card, dict):
-            q.card = q.card.get("yards")
+        q.green_ll = _ll(h.get("green_ll")) or (_ll(g.get("center")) if isinstance(g, dict) else None)
+        q.bearing = h.get("bearing_deg", ts.get("bearing_deg", h.get("bearing")))
+        card = _ci(h.get("yards"), pkg.tee_set) if isinstance(h.get("yards"), dict) else None
+        q.card = card or ts.get("card_yards") or (h.get("length") if yard else None)
+        if card is None and not ts.get("card_yards") and isinstance(raw.get("tee_sets"), dict):
+            s = _ci(raw["tee_sets"], pkg.tee_set) or {}
+            if isinstance(s.get("yards"), list) and str(ref).isdigit() and int(ref) <= len(s["yards"]):
+                q.card = s["yards"][int(ref) - 1]
+        q.length = h.get("length", q.card)
         q.provenance = h.get("provenance")
-        q.hole_line_ll = h.get("hole_line_ll") or h.get("hole_line")
-        if q.hole_line_ll and not _ll(q.hole_line_ll[0]):
-            q.hole_line_ll = None
-        q.zones_ll = [(lie, poly) for lie, poly in _zones_generic(h.get("zones", []))
-                      if poly and _ll(poly[0])]
-        if q.tee_ll and q.aim_ll is None and q.bearing is not None:
-            th = math.radians(float(q.bearing))
-            q.aim_ll = [q.tee_ll[0] + math.sin(th) * 0.002 / math.cos(math.radians(q.tee_ll[1])),
-                        q.tee_ll[1] + math.cos(th) * 0.002]
-        if q.tee_ll and q.aim_ll is None and q.green_ll:
-            q.aim_ll = q.green_ll
-        if q.bearing is None and q.tee_ll and q.aim_ll:
+        frame_ok = bool(q.tee_ll and q.aim_ll)
+        yfr = R.Frame(q.tee_ll, q.aim_ll, ppy=1.0, tee_px=(0, 0), proj="utm") if frame_ok else None
+
+        def to_ll(poly):
+            a = np.asarray(poly, float)
+            if a.ndim != 2 or len(a) == 0:
+                return None
+            if _looks_ll(a[0], q.tee_ll) or not yard:
+                return a[:, :2].tolist()
+            return yfr.px_to_ll(a[:, :2]).tolist() if yfr is not None else None
+        gp = h.get("green_polygon_ll") or h.get("green_polygon") or (g.get("polygon") if isinstance(g, dict) else None)
+        q.green_poly_ll = to_ll(gp) if gp else None
+        hl = h.get("hole_line_ll") or h.get("hole_line")
+        q.hole_line_ll = to_ll(hl) if hl else None
+        if q.green_ll is None and yard and isinstance(g, (list, tuple)) and yfr is not None:
+            q.green_ll = yfr.px_to_ll([g])[0].tolist()
+        q.zones_ll = []
+        q.zones_yard = []
+        src = h.get("zones_ll") if h.get("zones_ll") is not None else h.get("zones", [])
+        q.zones_from = "zones_ll" if h.get("zones_ll") is not None else "zones"
+        for lie, poly in _zones_generic(src):
+            llp = to_ll(poly) if poly else None
+            if llp:
+                q.zones_ll.append((lie, llp))
+            else:
+                pkg.errors.append(f"hole {ref}: zone {lie} has no usable coordinates")
+        if h.get("zones_ll") is not None and h.get("zones") and yard:
+            q.zones_yard = [(lie, poly) for lie, poly in _zones_generic(h["zones"])]
+        if q.bearing is None and frame_ok:
             q.bearing = bearing_deg(q.tee_ll, q.aim_ll)
-        if q.tee_ll and q.aim_ll and q.green_ll:
+        if frame_ok and q.green_ll:
             try:
                 q.frame = R.Frame(q.tee_ll, q.aim_ll, ppy=3.4, tee_px=(460, 1900), proj="utm")
                 q.model = dict(par=q.par, length=q.length, tee=(460.0, 1900.0), dot270=(460.0, 1900 - 270 * 3.4),
                                tee_ll=q.tee_ll, aim_ll=q.aim_ll, px_per_yd=3.4, provenance=q.provenance,
                                green=tuple(q.frame.ll_to_px([q.green_ll])[0]),
-                               zones=[(lie, [tuple(p) for p in q.frame.ll_to_px(np.array(poly, float)[:, :2])])
+                               zones=[(MODEL_ALIAS.get(lie, lie),
+                                       [tuple(p) for p in q.frame.ll_to_px(np.array(poly, float)[:, :2])])
                                       for lie, poly in q.zones_ll], aim_min=-60, aim_max=60)
+                if h.get("par3"):
+                    q.model["par3"] = h["par3"]
             except Exception as e:                                 # noqa: BLE001
                 pkg.errors.append(f"hole {ref}: frame failed: {type(e).__name__}: {e}")
+        q.tee_sets = h.get("tees") or {}
         pkg.holes[str(ref)] = q
     return pkg
 
@@ -269,7 +320,16 @@ def course_boundary(pkg):
     """shapely geometry of the leisure=golf_course polygon (from the package or the course's osm.geojson)."""
     from shapely.geometry import shape
     from shapely.ops import unary_union
+    from shapely.geometry import Polygon
     b = (pkg.raw.get("course") or {}).get("boundary") or pkg.raw.get("boundary")
+    if isinstance(b, list) and len(b) >= 3:
+        try:
+            a = np.asarray(b, float)
+            if a.ndim == 2:
+                return Polygon(a[:, :2]).buffer(0)
+            return unary_union([Polygon(np.asarray(r, float)[:, :2]).buffer(0) for r in b])
+        except Exception:                                          # noqa: BLE001
+            pass
     if isinstance(b, dict) and "type" in b:
         try:
             return shape(b.get("geometry", b))
