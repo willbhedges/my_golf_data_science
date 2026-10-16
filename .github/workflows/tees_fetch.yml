@@ -1,0 +1,63 @@
+name: tees-fetch
+
+on:
+  push:
+    paths:
+      - ".github/workflows/tees_fetch.yml"
+      - "course_data/tees/fetch_scorecards.py"
+  workflow_dispatch:
+    inputs:
+      extra_urls:
+        description: "Extra URLs to fetch (space separated)"
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tees-fetch-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y poppler-utils >/dev/null || true
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Fetch scorecard pages
+        run: python course_data/tees/fetch_scorecards.py ${{ inputs.extra_urls }}
+
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/tees/raw
+          if git diff --cached --quiet; then
+            echo "No changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "Add raw scorecard pages for Spirit Hollow (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
