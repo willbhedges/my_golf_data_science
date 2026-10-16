@@ -1,0 +1,206 @@
+{
+ "model": "SAM ViT-B (sam_vit_b_01ec64.pth, facebookresearch/segment-anything)",
+ "params": {
+  "points_per_side": 32,
+  "pred_iou_thresh": 0.86,
+  "stability_score_thresh": 0.9,
+  "min_mask_region_area": 200,
+  "crop_n_layers": 1,
+  "crop_n_points_downscale_factor": 2,
+  "points_per_batch": 64
+ },
+ "frame": {
+  "screen": [
+   920,
+   2000
+  ],
+  "grid": [
+   460,
+   1000
+  ],
+  "scale": 2,
+  "crop_rows": [
+   545,
+   1830
+  ],
+  "offset_y": 545
+ },
+ "labels": "regions int32 (1000,460): -1 = none/UI; each px = smallest SAM mask covering it; gaps filled by nearest region within 3 grid px",
+ "torch": "2.14.1+cpu",
+ "total_seconds": 3834.5,
+ "region_counts": {
+  "hole01": 62,
+  "hole02_a": 108,
+  "hole02_b": 73,
+  "hole04": 113,
+  "hole05": 115,
+  "hole06": 83,
+  "hole07": 75,
+  "hole08": 99,
+  "hole09_back": 120,
+  "hole09_forward": 126,
+  "hole10": 74,
+  "hole11": 86,
+  "hole12": 55,
+  "hole13": 98,
+  "hole14": 72,
+  "hole15": 54,
+  "hole16": 78,
+  "hole17": 66,
+  "hole18": 76
+ },
+ "files": {
+  "hole01.npz": {
+   "sam_masks": 62,
+   "regions": 62,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 1230,
+   "seconds": 203.7,
+   "bytes": 14739
+  },
+  "hole02_a.npz": {
+   "sam_masks": 108,
+   "regions": 108,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 166638,
+   "seconds": 204.5,
+   "bytes": 19759
+  },
+  "hole02_b.npz": {
+   "sam_masks": 73,
+   "regions": 73,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 211104,
+   "seconds": 200.0,
+   "bytes": 14451
+  },
+  "hole04.npz": {
+   "sam_masks": 113,
+   "regions": 113,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 148036,
+   "seconds": 202.3,
+   "bytes": 20761
+  },
+  "hole05.npz": {
+   "sam_masks": 115,
+   "regions": 115,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 188210,
+   "seconds": 203.1,
+   "bytes": 19222
+  },
+  "hole06.npz": {
+   "sam_masks": 83,
+   "regions": 83,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 176279,
+   "seconds": 200.4,
+   "bytes": 16432
+  },
+  "hole07.npz": {
+   "sam_masks": 75,
+   "regions": 75,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 207900,
+   "seconds": 200.0,
+   "bytes": 15105
+  },
+  "hole08.npz": {
+   "sam_masks": 99,
+   "regions": 99,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 142861,
+   "seconds": 201.1,
+   "bytes": 19067
+  },
+  "hole09_back.npz": {
+   "sam_masks": 120,
+   "regions": 120,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 156769,
+   "seconds": 201.3,
+   "bytes": 21255
+  },
+  "hole09_forward.npz": {
+   "sam_masks": 126,
+   "regions": 126,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 154910,
+   "seconds": 202.7,
+   "bytes": 20073
+  },
+  "hole10.npz": {
+   "sam_masks": 74,
+   "regions": 74,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 183643,
+   "seconds": 200.9,
+   "bytes": 16737
+  },
+  "hole11.npz": {
+   "sam_masks": 86,
+   "regions": 86,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 206706,
+   "seconds": 199.7,
+   "bytes": 17620
+  },
+  "hole12.npz": {
+   "sam_masks": 55,
+   "regions": 55,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 136950,
+   "seconds": 201.8,
+   "bytes": 17016
+  },
+  "hole13.npz": {
+   "sam_masks": 98,
+   "regions": 98,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 151248,
+   "seconds": 202.7,
+   "bytes": 18439
+  },
+  "hole14.npz": {
+   "sam_masks": 72,
+   "regions": 72,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 172977,
+   "seconds": 201.7,
+   "bytes": 16950
+  },
+  "hole15.npz": {
+   "sam_masks": 54,
+   "regions": 54,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 177566,
+   "seconds": 202.4,
+   "bytes": 13803
+  },
+  "hole16.npz": {
+   "sam_masks": 78,
+   "regions": 78,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 146961,
+   "seconds": 202.6,
+   "bytes": 17272
+  },
+  "hole17.npz": {
+   "sam_masks": 66,
+   "regions": 66,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 194950,
+   "seconds": 202.8,
+   "bytes": 16602
+  },
+  "hole18.npz": {
+   "sam_masks": 76,
+   "regions": 76,
+   "crop_n_layers": 1,
+   "unassigned_ground_px": 211372,
+   "seconds": 200.7,
+   "bytes": 16064
+  }
+ }
+}
