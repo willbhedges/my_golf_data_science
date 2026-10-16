@@ -1,6 +1,6 @@
 # Spirit Hollow Golf Course (Des Moines County, IA) - Black tees
 
-Built 2026-10-16T19:26:42Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
+Built 2026-10-16T19:34:45Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
 
 ## Coverage
 
@@ -51,4 +51,4 @@ OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, go
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/imagery/spirit_hollow (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **elevation**: ok: course_data/imagery/spirit_hollow/dem.tif (18/18 holes)
-- **vision**: failed: ModuleNotFoundError: No module named 'cv2'
+- **vision**: failed: ModuleNotFoundError: No module named 'sklearn'
