@@ -180,7 +180,12 @@ def main():
     ap.add_argument("--no-oracle", action="store_true", help="skip the oracle-tee pipeline build")
     ap.add_argument("--fast", action="store_true", default=True)
     ap.add_argument("--full", action="store_true", help="20,000 swings per sim")
+    ap.add_argument("--report-only", action="store_true", help="rewrite REPORT.md from golden.json (no sims)")
     a = ap.parse_args()
+    if a.report_only:
+        write_report(json.load(open(os.path.join(QA, "golden.json"))))
+        print("wrote course_data/qa/REPORT.md")
+        return
     final = json.load(open(FINAL)) if os.path.exists(FINAL) else {}
     jobs = []
     if a.package:
