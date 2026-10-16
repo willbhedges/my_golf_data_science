@@ -123,6 +123,62 @@ def _tee_entry(h, tee_set):
     return _ll(h.get("tee_ll")), _ll(h.get("aim_ll")), card or h.get("length"), {}
 
 
+TEE_LINE = "landing"     # "landing": tee -> the hole line LANDING yds out (book/page line); "package": its aim_ll
+LANDING = 250
+
+
+def _is_ll(p, ref):
+    return abs(float(p[0]) - ref[0]) < 0.2 and abs(float(p[1]) - ref[1]) < 0.2
+
+
+def _zone_meta(zs):
+    if isinstance(zs, dict) and zs.get("type") == "FeatureCollection":
+        zs = zs["features"]
+    if isinstance(zs, dict):
+        return [{} for polys in zs.values() for _ in polys]
+    out = []
+    for z in zs or []:
+        if isinstance(z, dict):
+            g = z.get("poly") or z.get("polygon") or z.get("geometry") or z.get("coords")
+            n = len(g["coordinates"]) if isinstance(g, dict) and g.get("type") == "MultiPolygon" else 1
+            out += [z.get("properties", z)] * n
+        else:
+            out.append({})
+    return out
+
+
+def _aim_along(tee_ll, line_ll, green_ll, length):
+    """The point LANDING yds (at most 62% of the hole) along the hole line, measured from the tee's
+    projection onto it: the book's tee line then runs over the landing area even when the line's first
+    node is a short leg or the line starts at another tee box. None without a usable hole line."""
+    if not line_ll or len(line_ll) < 2:
+        return None
+    lat0 = math.radians(tee_ll[1])
+    k = np.array([math.cos(lat0) * 111320 / 0.9144, 111320 / 0.9144])
+    P = (np.array([p[:2] for p in line_ll] + [green_ll], float) - tee_ll) * k
+    best = None
+    for i in range(len(P) - 1):                   # tee's nearest point on the polyline
+        a, b = P[i], P[i + 1]
+        d = b - a
+        u = float(np.clip(-(a @ d) / max(d @ d, 1e-9), 0, 1))
+        dist = float(np.linalg.norm(a + u * d))
+        if best is None or dist < best[0]:
+            best = (dist, i, u)
+    if best[0] > 60:
+        return None
+    _, i, u = best
+    want = min(LANDING, 0.62 * length)
+    pts = [P[i] + u * (P[i + 1] - P[i])] + list(P[i + 1:])
+    run = float(np.linalg.norm(pts[0]))           # tee -> line offset counts toward the distance
+    for a, b in zip(pts[:-1], pts[1:]):
+        seg = float(np.linalg.norm(b - a))
+        if run + seg >= want and seg > 0:
+            q = a + (b - a) * (want - run) / seg
+            return [tee_ll[0] + q[0] / k[0], tee_ll[1] + q[1] / k[1]]
+        run += seg
+    return None
+
+
 def _resolve_set(pkg, tees):
     """Map a requested tee name (or alias) onto the package's tee-set key."""
     sets = pkg.get("tee_sets") or {}
@@ -132,6 +188,8 @@ def _resolve_set(pkg, tees):
     for k, v in sets.items():
         if k.lower() == t or t in [a.lower() for a in (v or {}).get("aliases", [])]:
             return k
+    if sets:
+        raise SystemExit(f"tee set {tees!r} is not in this package (sets: {', '.join(sets)})")
     return tees
 
 
@@ -140,8 +198,6 @@ def load(path, tees=None):
     raw = json.load(open(path))
     if raw.get("schema", "").startswith("course_model"):
         raw = from_course_model(path, raw)
-    if raw.get("schema", "").startswith("course_package"):
-        return _load_course_package(path, raw, tees)
     pkg = raw
     C = Course()
     C.package = pkg
@@ -151,8 +207,8 @@ def load(path, tees=None):
     C.slug = course.get("slug") or pkg.get("slug") or os.path.basename(os.path.dirname(os.path.abspath(path)))
     C.state = course.get("state")
     C.tee_set = _resolve_set(pkg, tees)
-    img = ((pkg.get("sources") or {}).get("imagery") or {}).get("dir")
-    cands = [img and os.path.join(ROOT, img), os.path.join(os.path.dirname(os.path.abspath(path)), "imagery"),
+    img = ((pkg.get("imagery") or {}).get("dir") or ((pkg.get("sources") or {}).get("imagery") or {}).get("dir"))
+    cands = [img and (img if os.path.isabs(img) else os.path.join(ROOT, img)), os.path.join(os.path.dirname(os.path.abspath(path)), "imagery"),
              os.path.join(CD, "imagery", C.slug)]
     C.imagery_dir = next((c for c in cands if c and os.path.isdir(c)), None)
 
@@ -172,27 +228,36 @@ def load(path, tees=None):
             continue
         par = int(h.get("par") or (3 if (length or 0) < 250 else 4))
         lls += [tee_ll, green_ll]
-        if par == 3 or aim_ll is None:
-            aim_ll = green_ll if par == 3 else aim_ll
-        if aim_ll is None:
-            aim_ll = green_ll
+        line_ll = h.get("hole_line_ll")
+        if par == 3:
+            aim_ll, how = green_ll, "green"
+        else:
+            own = _aim_along(tee_ll, line_ll, green_ll, float(length or 400)) if TEE_LINE == "landing" else None
+            aim_ll, how = (own, "landing") if own else (aim_ll or green_ll, "package")
         fr = R.Frame(tee_ll, aim_ll, ppy=PPY, tee_px=TEE_PX, proj=PROJ)
-        C.frames[k] = fr.to_json()
-        C.bearings[k] = float(ent.get("bearing_deg") or h.get("bearing_deg") or bearing_deg(tee_ll, aim_ll))
+        C.frames[k] = dict(fr.to_json(), aim=how)
+        C.bearings[k] = (bearing_deg(tee_ll, aim_ll) if how != "package" else
+                         float(ent.get("bearing_deg") or h.get("bearing_deg") or bearing_deg(tee_ll, aim_ll)))
+        e = _elev(ent.get("elevation") or h.get("elevation"))
         if h.get("exposure") is not None:
             C.exposure[k] = float(h["exposure"])
         conf = h.get("confidence") or {}
         C.confidence[k] = conf
         C.flags[k] = list(conf.get("flags") or [])
         zones = []
-        for lie, poly in _zones(h.get("zones_ll") or h.get("zones")):
+        raw_z = h.get("zones_ll") if h.get("zones_ll") is not None else h.get("zones")
+        for z, (lie, poly) in zip(_zone_meta(raw_z), _zones(raw_z)):
+            if not poly or len(poly) < 3 or not _is_ll(poly[0], tee_ll):
+                continue                       # yard-frame zones (a package's per-set view) are not WGS84
+            boundary = lie == "ob" and str(z.get("src", "")).endswith("course_boundary")
             lie = LIE_MAP.get(lie, lie)
-            if lie not in MODEL_LIES or not poly or len(poly) < 3:
+            if lie not in MODEL_LIES:
                 continue
-            px = fr.ll_to_px(np.array(poly, float)[:, :2])
-            zones.append((lie, [(round(float(x), 1), round(float(y), 1)) for x, y in px]))
+            q = fr.ll_to_px(np.array(poly, float)[:, :2])
+            zones.append(("ob_boundary" if boundary else lie, [(round(float(x), 1), round(float(y), 1)) for x, y in q]))
         rank = {l: i for i, l in enumerate(ORDER)}
         zones.sort(key=lambda z: rank.get(z[0], 0))
+        zones = [(LIE_MAP.get(n, n), p) for n, p in zones]
         green_px = tuple(round(float(v), 1) for v in fr.ll_to_px([green_ll])[0])
         length = int(round(float(length))) if length else int(round(np.hypot(*(np.array(green_px) - TEE_PX)) / PPY))
         image = image_name(ref)
@@ -204,9 +269,11 @@ def load(path, tees=None):
             C.holes[k] = dict(par=par, image=image, length=length, tee=TEE_PX,
                               dot270=(TEE_PX[0], TEE_PX[1] - 270 * PPY), green=green_px, zones=zones,
                               aim_min=-60, aim_max=60)
-            for extra in ("elev", "extra_roll", "irons"):
+            for extra in ("extra_roll", "irons"):
                 if h.get(extra) is not None:
                     C.holes[k][extra] = h[extra]
+            if e or h.get("elev"):
+                C.holes[k]["elev"] = e or h["elev"]
     C.order = sorted(set(C.holes) | set(C.par3), key=lambda k: (str(k).rstrip("BFabf").zfill(3), str(k)))
     c = _ll(course.get("center"))
     C.center = (c[1], c[0]) if c else tuple(np.mean(np.array(lls), 0)[::-1]) if lls else None
@@ -220,85 +287,6 @@ def _elev(e):
     out = {c: (float(v.get("carry_delta_yds", 0.0)), float(v.get("roll_factor", 1.0)),
                float(v.get("lateral_kick_yds", 0.0))) for c, v in clubs.items() if isinstance(v, dict)}
     return out or None
-
-
-def _load_course_package(path, pkg, tees):
-    """course_data/platform/package.py output (schema course_package/1): one chosen tee set, holes in the
-    yard frame of render.Frame(tee_ll, aim_ll, proj='utm') (x yds right, y = -yds along)."""
-    C = Course()
-    C.package = pkg
-    C.source = os.path.relpath(os.path.abspath(path), ROOT)
-    course = pkg.get("course", {})
-    C.name = course.get("name") or "Golf course"
-    C.slug = course.get("slug") or os.path.basename(os.path.dirname(os.path.abspath(path)))
-    C.state = course.get("state")
-    ts = pkg.get("tee_set")
-    chosen = ts.get("chosen") if isinstance(ts, dict) else ts
-    if tees and chosen and tees.lower() != str(chosen).lower():
-        al = [a.lower() for a in ((pkg.get("tee_sets") or {}).get(chosen) or {}).get("aliases", [])]
-        if tees.lower() not in al:
-            raise SystemExit(f"this package was built for the {chosen} tees, not {tees}: request a package for "
-                             f"{tees} (course_data/platform) or pass --tees {chosen}")
-    C.tee_set = chosen or tees
-    img = (pkg.get("imagery") or {}).get("dir")
-    cands = [img and (img if os.path.isabs(img) else os.path.join(ROOT, img)),
-             os.path.join(os.path.dirname(os.path.abspath(path)), "imagery"), os.path.join(CD, "imagery", C.slug)]
-    C.imagery_dir = next((c for c in cands if c and os.path.isdir(c)), None)
-    tee_px = np.array(TEE_PX)
-
-    def px(p):
-        return (round(float(tee_px[0] + PPY * p[0]), 1), round(float(tee_px[1] + PPY * p[1]), 1))
-    rank = {l: i for i, l in enumerate(ORDER)}
-    for ref, h in pkg.get("holes", {}).items():
-        k = key_of(ref)
-        if not h.get("tee_ll") or not h.get("aim_ll"):
-            C.flags[k] = ["no tee position for this tee set: hole skipped"]
-            continue
-        fr = R.Frame(h["tee_ll"], h["aim_ll"], ppy=PPY, tee_px=TEE_PX, proj=PROJ)
-        C.frames[k] = fr.to_json()
-        C.bearings[k] = float(h.get("bearing_deg") or bearing_deg(h["tee_ll"], h["aim_ll"]))
-        if h.get("exposure") is not None:
-            C.exposure[k] = float(h["exposure"])
-        C.confidence[k] = h.get("confidence") or {}
-        C.flags[k] = list(C.confidence[k].get("flags") or [])
-        zones = []
-        if h.get("zones"):                       # yard frame of the same render.Frame: exact
-            for z in h["zones"]:
-                lie, poly = (z[0], z[1]) if isinstance(z, (list, tuple)) else (z.get("lie"), z.get("poly"))
-                lie = LIE_MAP.get(lie, lie)
-                if lie in MODEL_LIES and poly and len(poly) >= 3:
-                    zones.append((lie, [px(p) for p in poly]))
-        else:                                    # frame-free WGS84 zones (9.1-1)
-            for lie, poly in _zones(h.get("zones_ll")):
-                lie = LIE_MAP.get(lie, lie)
-                if lie in MODEL_LIES and poly and len(poly) >= 3:
-                    q = fr.ll_to_px(np.array(poly, float)[:, :2])
-                    zones.append((lie, [(round(float(x), 1), round(float(y), 1)) for x, y in q]))
-        zones.sort(key=lambda z: rank.get(z[0], 0))
-        image = image_name(ref)
-        par = int(h["par"])
-        p3 = h.get("par3")
-        if par == 3 and p3:
-            C.par3[k] = dict(image=image, tee=px(p3["tee"]), flag=px(p3["flag"]), center=p3["center"],
-                             front=p3["front"], back=p3["back"], green=[tuple(q) for q in p3["green"]],
-                             haz=p3["haz"], note=p3.get("note", ""), short=p3.get("short", ""),
-                             card=h.get("length"))
-        elif par == 3 and h.get("green_ll"):
-            C.par3[k] = dict(_par3(fr, h["green_ll"], h.get("green_polygon_ll"), zones, h.get("length"), k), image=image)
-        else:
-            green = px(h["green"]) if h.get("green") else \
-                tuple(round(float(v), 1) for v in fr.ll_to_px([h["green_ll"]])[0])
-            hd = dict(par=par, image=image, length=int(round(float(h["length"]))), tee=TEE_PX,
-                      dot270=(TEE_PX[0], TEE_PX[1] - 270 * PPY), green=green, zones=zones,
-                      aim_min=-60, aim_max=60)
-            e = _elev(h.get("elevation"))
-            if e:
-                hd["elev"] = e
-            C.holes[k] = hd
-    C.order = sorted(set(C.holes) | set(C.par3), key=lambda k: (str(k).rstrip("BFabf").zfill(3), str(k)))
-    c = _ll(course.get("center"))
-    C.center = (c[1], c[0]) if c else None
-    return C
 
 
 def _par3(fr, green_ll, gpoly, zones, length, k):
@@ -416,10 +404,12 @@ def from_course_model(path, raw=None):
         zones = [{"lie": n, "poly": fr.px_to_ll(np.array(p, float)).tolist(), "src": "course_model"}
                  for n, p in h["zones"] if len(p) >= 3]
         gp = fr.px_to_ll(np.array(h["green_polygon"], float)).tolist() if h.get("green_polygon") else None
+        line = fr.px_to_ll(np.array(h["hole_line"], float)).tolist() if h.get("hole_line") else None
         conf = dict(h.get("auto") or h.get("confidence") or {})
         holes[str(ref)] = dict(ref=str(ref), par=h["par"], tee_ll=h["tee_ll"], aim_ll=h["aim_ll"],
                                green_ll=h.get("green_ll"), green_polygon=gp, green_polygon_ll=gp,
                                length=h["length"], yards={tee_set: h["length"]}, exposure=None, zones_ll=zones,
+                               hole_line_ll=line,
                                bearing_deg=bearing_deg(h["tee_ll"], h["aim_ll"]),
                                tees={tee_set: dict(tee_ll=h["tee_ll"], aim_ll=h["aim_ll"], card_yards=h["length"],
                                                    method=h.get("tee_choice"))},
