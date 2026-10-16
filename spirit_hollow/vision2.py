@@ -51,6 +51,18 @@ N_PER_HOLE = 15000
 HOLES = list(course.HOLES)
 
 
+def _label_tag():
+    """Short hash of everything the labels/landing zones depend on in course.py."""
+    import hashlib
+    blob = repr([(h, course.HOLES[h]["tee"], course.HOLES[h]["dot270"], course.HOLES[h]["zones"])
+                 for h in HOLES])
+    return hashlib.sha1(blob.encode()).hexdigest()[:10]
+
+
+LABEL_TAG = _label_tag()
+LCACHE = os.path.join(CACHE, "labels_" + LABEL_TAG)     # anything that depends on labels
+
+
 # ----------------------------------------------------------------------------- data
 def corridor(hole, msmall):
     """vision.fairway_reference's sample: 230-300 yds along the app line, 3-9 yds off it."""
@@ -65,8 +77,10 @@ def hole_data(hole):
     """Cached per-hole arrays: hand (H,W,42), deep (H,W,64), deep_rel, labels, masks."""
     path = os.path.join(CACHE, f"hole_{hole}")
     if os.path.exists(os.path.join(path, "done")):          # memory-mapped: processes share pages
-        return {f[:-4]: np.load(os.path.join(path, f), mmap_mode="r")
-                for f in os.listdir(path) if f.endswith(".npy")}
+        d = {f[:-4]: np.load(os.path.join(path, f), mmap_mode="r")
+             for f in os.listdir(path) if f.endswith(".npy")}
+        d.update(hole_labels(hole, d["msmall"]))
+        return d
     if os.path.exists(path + ".npz"):                       # older single-file cache
         z = np.load(path + ".npz")
         d = {k: z[k] for k in z.files}
@@ -90,6 +104,19 @@ def hole_data(hole):
              full=v.label_map_full(hole), ppy=np.float32(ppy), photo=small)
     save_hole(path, d)
     return hole_data(hole)
+
+
+def hole_labels(hole, msmall):
+    """Labels from the CURRENT course.py (cached per label version)."""
+    path = os.path.join(LCACHE, f"labels_{hole}.npz")
+    if not os.path.exists(path):
+        os.makedirs(LCACHE, exist_ok=True)
+        lab = v.label_map(hole)
+        lab[np.asarray(msmall)] = -1
+        lz, ppy = v.landing_mask(hole)
+        np.savez(path, lab=lab, lz=lz, full=v.label_map_full(hole), ppy=np.float32(ppy))
+    z = np.load(path)
+    return {k: z[k] for k in z.files}
 
 
 def save_hole(path, d):
@@ -220,7 +247,7 @@ def pixel_predict(method, clf, d):
 def region_table(hole, d, src):
     """Region features (mean/std of method-c features + log size) and pure labels."""
     seg, _ = regions(hole, d, src)
-    path = os.path.join(CACHE, f"rfeat_{src}_{hole}.npz")
+    path = os.path.join(LCACHE, f"rfeat_{src}_{hole}.npz")
     if os.path.exists(path):
         z = np.load(path)
         return seg, z["RF"], z["rl"]
@@ -260,7 +287,7 @@ def pool(P, seg):
 
 # ----------------------------------------------------------------------------- LOHO
 def oof_path(method, hole):
-    return os.path.join(CACHE, f"oof_{method}_{hole}.npy")
+    return os.path.join(LCACHE, f"oof_{method}_{hole}.npy")
 
 
 def loho(method, data):
@@ -303,7 +330,7 @@ N_CAL = 4000                     # calibration pixels per inner-held-out hole
 def inner_oof(method, h, data):
     """Out-of-fold probabilities for a sample of labelled pixels of every TRAINING hole
     (holes other than h), from 2 group folds over those holes. h is never touched."""
-    path = os.path.join(CACHE, f"inner_{method}_{h}.npz")
+    path = os.path.join(LCACHE, f"inner_{method}_{h}.npz")
     if os.path.exists(path):
         z = np.load(path)
         return z["P"], z["y"]

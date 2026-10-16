@@ -37,8 +37,9 @@ def frame(tee, toward, yds):
     return tee, f, np.array([-f[1], f[0]]), ppy
 
 
-def crop_jpeg(image, box):
-    """box in the 920x2000 frame -> (data URI, scale px/frame-px, (x0, y0))."""
+def crop_jpeg(image, box, y_max=1830):
+    """box in the 920x2000 frame -> (data URI, scale px/frame-px, (x0, y0), size). Rows past the
+    bottom of the screenshot (a tee box the app cut off) are padded with a plain band."""
     k = 1206 / 920
     path = os.path.join(HERE, "screenshots_clean", image)
     if not os.path.exists(path):
@@ -46,8 +47,12 @@ def crop_jpeg(image, box):
     im = Image.open(path).convert("RGB")
     x0, y0, x1, y1 = box
     x0, x1 = max(0, x0), min(920, x1)
-    y0, y1 = max(545, y0), min(1830, y1)
-    c = im.crop((int(x0 * k), int(y0 * k), int(x1 * k), int(y1 * k)))
+    y0, y1 = max(545, y0), min(y_max, y1)
+    c = im.crop((int(x0 * k), int(y0 * k), int(x1 * k), int(min(y1, 2000) * k)))
+    if y1 > 2000:                                   # pad below the screenshot
+        pad = Image.new("RGB", (c.width, int((y1 - y0) * k)), (52, 66, 56))
+        pad.paste(c, (0, 0))
+        c = pad
     scale = IMG_W / c.width
     c = c.resize((IMG_W, int(c.height * scale)), Image.LANCZOS)
     buf = io.BytesIO()
@@ -58,13 +63,16 @@ def crop_jpeg(image, box):
 def tee_hole(h):
     hd = course.HOLES[h]
     tee, f, r, ppy = frame(hd["tee"], hd["dot270"], 270)
-    pts = [tee + (a * f + l * r) * ppy for a in (175, 345) for l in (-75, 75)]
+    # whole hole from the tee box (the page can zoom to the landing area)
+    pts = [tee + (a * f + l * r) * ppy for a in (-14, 345) for l in (-75, 75)]
     xs, ys = [p[0] for p in pts], [p[1] for p in pts]
     box = (min(xs), min(ys), max(xs), max(ys))
-    uri, s, (x0, y0), size = crop_jpeg(hd["image"], box)
+    uri, s, (x0, y0), size = crop_jpeg(hd["image"], box, y_max=10000)
     return dict(kind="tee", img=uri, w=size[0], h=size[1], s=s, x0=x0, y0=y0,
                 tee=list(map(float, tee)), f=list(map(float, f)), r=list(map(float, r)), ppy=float(ppy),
                 par=hd["par"], length=hd["length"], label=course.LABELS.get(h, str(h)),
+                tee_name="Gold tee" if "Gold" in course.LABELS.get(h, "") else "Black tee",
+                tee_offimage=bool(hd["tee"][1] > 2000),
                 note=FN.get(str(h), {}).get("note", ""), aim_at=FN.get(str(h), {}).get("aim_at", ""))
 
 
