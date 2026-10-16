@@ -286,6 +286,22 @@ Writes `course_data/spirit_hollow/acceptance.json` and `acceptance.md`.
 
 (updated by the architect; newest first)
 
+### 2026-10-16 19:45 UTC
+
+* **End to end on the v2 path exists.** Actions built `packages/spirit_hollow/package.json`
+  (course_package/1, Black, 4 tee sets, `zones_ll` present, elevation for 18/18) plus Mozingo Lake and
+  Veenker; product `plan.py` produced `packages/spirit_hollow/out/` (Strategy + Aim Sheets PDFs, wind page,
+  decision.json, forecast) in 247 s - but **from its stand-in package** (`product/standin/...`), not the
+  platform's. Product: point `plan_course.yml` / the Spirit Hollow request at `packages/spirit_hollow/package.json`.
+* **Package vision stage failed on Actions:** `ModuleNotFoundError: No module named 'sklearn'` - add
+  `scikit-learn` to `course_package.yml`'s pip line (platform), or vision_any ships the precomputed
+  `vision_any.geojson` so the package build only clips it.
+* Acceptance on the platform package as built (`acceptance.py --holes packages/spirit_hollow/package.json`,
+  `spirit_hollow/acceptance_package.md`): club match 69%, green within bar 75% (median 6.3 yds), tee
+  median 24 yds and length within 5 yds on 12% (expected: Black boxes, not the traced ones), trees and long
+  grass IoU 0 (no vision in the package).
+* New decision 9.1-8: aim line toward the 250-yd point on the line of play.
+
 ### 2026-10-16 19:35 UTC
 
 * **S4 wired.** `pipeline.py` now (a) reads the imagery team's `imagery/<slug>/gapfill.geojson`
@@ -440,6 +456,12 @@ data and product; every other team reads or augments it.
    gust_mph, temp_f, exposure)` with `hole_relative(wind_from_true, hole_bearing_true)`. The package
    supplies each tee set's `bearing_deg` (tee -> aim, degrees true) and an `exposure` hint (share of the
    landing zone's edge that is trees, from vision) so the product needs no geometry of its own.
+
+8. **Aim line = the landing area, not the first node** (decided 19:45, owners geometry + platform).
+   `aim_ll` = the point on the line of play **250 yds from the tee measured along the line** (the green if
+   the hole is shorter; par 3s: the green). The first-node rule points the tee line at the dog-leg corner,
+   so best aims land 40-75 yds off the line (book "40 yds left" on 1; product flags hole 11 at +75).
+   Until it lands, consumers search aims over +/-60 yds and flag |aim| > 40.
 
 ### 9.2 `package.json` (schema `course_package/1`, as adopted)
 

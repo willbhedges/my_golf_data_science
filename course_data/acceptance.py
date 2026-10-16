@@ -374,7 +374,7 @@ def main():
         p3.append(r)
     ok = [r for r in rows if not r.get("missing")]
     summary = dict(
-        mode=("holes.json as built" if a.holes else "oracle tees (traced lengths as the card)"
+        mode=(f"{os.path.basename(a.holes)} as built" if a.holes else "oracle tees (traced lengths as the card)"
               + (", + LOHO imagery gap-fill" if a.vision == "loho" and not a.holes else ", OSM zones only")),
         n_tee_shots=len(ok), missing=[r["hole"] for r in rows if r.get("missing")],
         same_club=round(float(np.mean([r["same_club"] for r in ok])), 3) if ok else None,
