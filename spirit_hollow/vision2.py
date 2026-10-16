@@ -272,13 +272,13 @@ def loho_single(method, h, data):
 
 
 # ----------------------------------------------------------------------------- calibration
-INNER_FOLDS = 3
+INNER_FOLDS = 2
 N_CAL = 4000                     # calibration pixels per inner-held-out hole
 
 
 def inner_oof(method, h, data):
     """Out-of-fold probabilities for a sample of labelled pixels of every TRAINING hole
-    (holes other than h), from 3 group folds over those holes. h is never touched."""
+    (holes other than h), from 2 group folds over those holes. h is never touched."""
     path = os.path.join(CACHE, f"inner_{method}_{h}.npz")
     if os.path.exists(path):
         z = np.load(path)
@@ -441,7 +441,7 @@ def cm_table(cm, title):
 def write_report(results, best, best_maps, data, extra):
     md = ["# Spirit Hollow — hazard classifier v2 (leave-one-hole-out)", "",
           "Every number is out-of-sample: each hole is scored with a model trained only on the "
-          "other 15 holes. Calibration maps are fitted on inner 3-group-fold predictions over "
+          "other 15 holes. Calibration maps are fitted on inner 2-group-fold predictions over "
           "those 15 training holes, so the held-out hole contributes nothing to training, "
           "feature scaling, calibration or ensemble weights (the ensemble is a fixed 50/50 "
           "average). Pixel methods are 7x7-smoothed before scoring, as in vision.py. "

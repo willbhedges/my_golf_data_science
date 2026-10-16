@@ -30,7 +30,7 @@ lateral-mean profile along the tee line, and the least-squares plane of the 240-
      shallower angle (so it loses a bit more). Uphill costs > downhill gains for the same |dh|.
 
 2. Roll -- landing-area slope (along-line grade s, + = upslope). s is taken per club from the lateral-mean
-   profile between its adjusted landing spot - 5 yds and the end of its run-out (>= 20 yds), so a
+   profile (least-squares line) from its adjusted landing spot - 10 yds to its run-out + 10 yds, so a
    driver that flies into the face of a rise (2B) is treated differently from a 4-wood that stops short;
    the cross grade comes from the 240-320 yd plane fit.
    Rolling with constant resistance: deceleration g*(MU + s) -> roll = v^2 / (2 g (MU + s)), so the
@@ -209,9 +209,13 @@ def adjustments(hole_key, holes=None):
         carry, ang = carry_on_profile(club, g)
         dc = carry - c["carry"]
         roll = c["total"] - c["carry"]
-        # along grade where this club actually lands and runs: carry-5 .. carry+roll (>= 20 yds)
-        span = max(roll, 20.0)
-        along = (g(carry + span) - g(carry - 5)) / ((span + 5) * YD) * 100
+        # along grade where this club actually lands and runs: least squares over carry-10 ..
+        # carry+roll+10 (>= 40 yds) of the lateral-mean profile, so a single 10-yd dip doesn't dominate
+        xs = [carry - 10 + i * 2.0 for i in range(int((max(roll, 20.0) + 20) / 2) + 1)]
+        zs = [g(x) for x in xs]
+        mx, mz = sum(xs) / len(xs), sum(zs) / len(zs)
+        along = (sum((x - mx) * (z - mz) for x, z in zip(xs, zs))
+                 / sum((x - mx) ** 2 for x in xs)) / YD * 100
         rf = roll_factor(along, ang)
         new_roll = roll * rf
         out["clubs"][club] = dict(

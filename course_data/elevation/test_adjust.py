@@ -62,7 +62,9 @@ def test_lateral_kick_toward_low_side():
 
 
 def synthetic(drop_ft, along, cross):
-    prof = [dict(yd=y, band_ft_rel_tee=-drop_ft * min(y, 200) / 200.0) for y in range(0, 401, 10)]
+    # drop_ft by 200 yds, then the landing grade `along` (%) beyond
+    prof = [dict(yd=y, band_ft_rel_tee=-drop_ft * min(y, 200) / 200.0 + along / 100 * max(y - 200, 0) * 3)
+            for y in range(0, 401, 10)]
     return {"X": dict(par=4, bearing_deg_true=0.0, profile=prof,
                       landing={"270": dict(delta_ft=-drop_ft)},
                       landing_slope=dict(along_pct=along, cross_pct=cross, magnitude_pct=math.hypot(along, cross),
@@ -76,6 +78,9 @@ def test_adjustments_synthetic():
     down = A.adjustments("X", synthetic(40, -4, 3))
     d = down["clubs"]["Driver"]
     assert d["carry_delta_yds"] > 10 and d["roll_factor"] > 1 and d["lateral_kick_yds"] < 0
+    assert d["local_along_pct"] == pytest.approx(-4, abs=0.3)
+    up = A.adjustments("X", synthetic(0, 6, 0))["clubs"]["Driver"]
+    assert up["roll_factor"] < 0.75 and up["carry_delta_yds"] < 0
     t = A.apply_to_club((275, 300, 65, 28), d)
     assert t[0] > 275 and t[1] - t[0] > 25 and t[2:] == (65, 28)
 
