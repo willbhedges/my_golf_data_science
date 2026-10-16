@@ -404,8 +404,23 @@ def par3_entry(world, h, M, ppy, tee_px, flag_px, green_geom):
                 short=note.replace("Auto-built from OpenStreetMap. ", ""), source="osm")
 
 
+def _ext_tee(entry, tee_set):
+    """(lon, lat, how) from a tee-stage hole entry: tees.json (tee_ll) or tee_positions.json
+    (tees[set].lon/lat), or None."""
+    if not entry:
+        return None
+    if entry.get("tee_ll"):
+        return (*entry["tee_ll"], str(entry.get("how", "given")))
+    sets = {k.lower(): v for k, v in entry.get("tees", {}).items()}
+    t = sets.get(str(tee_set or "").lower())
+    if t and "lon" in t:
+        return t["lon"], t["lat"], f"{tee_set} {t.get('method', '')}".strip()
+    return None
+
+
 def build(fc, tee_tag=None, lengths=None, extra_layers=(), only=None, world=None, tees=None, frame="fit"):
-    """{ref: hole dict}. tees = tees.json's dict (schema tees/1): its tee_ll wins over OSM boxes."""
+    """{ref: hole dict}. tees = the tee stage's file (tees.json `tee_ll`, or tee_positions.json
+    `tees[tee_tag]`): its point wins over the OSM boxes."""
     world = world or World(fc, extra_layers)
     ext = (tees or {}).get("holes", {})
     holes = world.holes or infer_holes(world)
@@ -421,10 +436,11 @@ def build(fc, tee_tag=None, lengths=None, extra_layers=(), only=None, world=None
         green_geom = g["geom"] if g else None
         green_pt = np.array(g["pt"].coords[0]) if g else line[-1]
         opts = tee_options(hole, world, green_pt)
-        if ref in ext and ext[ref].get("tee_ll"):
-            pt = np.array(world.proj(Point(ext[ref]["tee_ll"])).coords[0])
+        given = _ext_tee(ext.get(ref), tee_tag)
+        if given:
+            pt = np.array(world.proj(Point(given[:2])).coords[0])
             pth, L, _, _, aq = _tee_path(pt, line, green_pt)
-            tee, how = dict(pt=pt, path=pth, length=L, aim=aq), "tees.json:" + str(ext[ref].get("how", "given"))
+            tee, how = dict(pt=pt, path=pth, length=L, aim=aq), "tee stage: " + given[2]
         else:
             tee, how = choose_tee(opts, line, green_pt, tee_tag, (lengths or {}).get(ref))
         path = tee["path"]
@@ -613,7 +629,8 @@ def main():
     ap.add_argument("--tee", help="tee tag to prefer (tee / golf:tee / colour / name), e.g. blue")
     ap.add_argument("--lengths", help="scorecard yardages, e.g. 1=419,2=616 (picks the tee box)")
     ap.add_argument("--trees", help="extra recovery polygons (GeoJSON in WGS84), e.g. from naip_trees.py")
-    ap.add_argument("--tees", help="tees.json (schema tees/1) from the tee stage; its tee_ll wins")
+    ap.add_argument("--tees", help="tee-stage file: tees.json (tee_ll) or course_data/tees/tee_positions.json "
+                                   "(with --tee naming the set, e.g. White); its point wins")
     ap.add_argument("--ppy", type=float, help="fixed px/yd with the tee at (460, 1900) instead of a fitted scale")
     ap.add_argument("--check", action="store_true", help="compare against spirit_hollow/course.py")
     a = ap.parse_args()
