@@ -522,6 +522,12 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     if not tee_sets:
         tee_sets["osm_back"] = dict(colour=None, aliases=["back"], yards=None, par=None, total=None, rating=None,
                                     slope=None, source="OSM tee nearest each hole-line start (no scorecard)")
+    town = course.get("town")
+    card_city = ((card or {}).get("course") or {}).get("city") if isinstance((card or {}).get("course"), dict) else None
+    card_city = card_city or ((card or {}).get("facility") or {}).get("city")
+    if card_city and (not town or "county" in str(town).lower()):
+        town = card_city
+    course = dict(course, town=town)
     bnd = course.get("boundary")
     ring = None
     if bnd:
