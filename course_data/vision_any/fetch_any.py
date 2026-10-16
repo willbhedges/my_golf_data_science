@@ -8,8 +8,9 @@ bbox padded by --margin (default 120 m). Outputs in course_data/vision_any/<slug
 
   hag.tif       uint8, height above ground in 0.25 m units (0..63.75 m), 1 m grid, 255 = nodata.
                 Source order: Planetary Computer '3dep-lidar-hag' (USGS 3DEP lidar, 2 m products),
-                else '3dep-lidar-dsm' - '3dep-lidar-dtm', else Meta/WRI 1 m global canopy height
-                (dataforgood-fb-data, ALS+GEDI model) -> written as chm_meta.tif instead.
+                else '3dep-lidar-dsm' - '3dep-lidar-dtm', else the raw 3DEP point cloud (Entwine/EPT on
+                AWS usgs-lidar-public) through PDAL (hag_nn, max per 1 m cell). No lidar at all: only
+                chm_meta.tif (Meta/WRI 1 m global canopy height) is available.
   lidar_class.tif  uint8 ASPRS class (2 ground, 3-5 vegetation, 6 building, 9 water), 1 m grid, 0 = nodata
                 ('3dep-lidar-classification'; majority class of the returns per 2 m cell).
   dtm.tif       float32 bare-earth metres, 2 m grid ('3dep-lidar-dtm'; fallback 3dep-seamless 10 m).
@@ -53,8 +54,9 @@ def bbox_from_course_dir(d):
         fc = json.load(open(geo))
         xy = []
         for f in fc["features"]:
-            if not f["properties"].get("inside_course", True) or not f.get("geometry"):
-                continue
+            pr = f["properties"]
+            if not pr.get("golf") or pr.get("golf") == "cartpath" or not f.get("geometry"):
+                continue                                  # golf features only (roads tagged inside run for km)
             c = np.array(_coords(f["geometry"]), float)
             if len(c):
                 xy.append([c[:, 1].min(), c[:, 0].min(), c[:, 1].max(), c[:, 0].max()])
@@ -237,6 +239,14 @@ def fetch_lidar(cat, g1, g2, out, meta):
         except Exception:
             info["dsm_error"] = traceback.format_exc()[-1500:]
             log(info["dsm_error"])
+    if hag is not None and np.isfinite(hag).mean() < 0.5:
+        info["hag_note"] = f"PC lidar covers {np.isfinite(hag).mean():.0%} of the grid; trying EPT"
+        hag = None
+    if dtm is not None and np.isfinite(dtm).mean() < 0.5:
+        dtm = None
+    if hag is None:
+        meta["lidar"] = info
+        return False
     if hag is not None:
         q = np.where(np.isfinite(hag), np.clip(np.round(np.maximum(hag, 0) * 4), 0, 254), 255).astype(np.uint8)
         info.setdefault("hag", {})["file"] = "hag.tif"
@@ -257,6 +267,121 @@ def fetch_lidar(cat, g1, g2, out, meta):
         info["class_error"] = traceback.format_exc()[-1500:]
         log(info["class_error"])
     meta["lidar"] = info
+    return True
+
+
+EPT_INDEX = "https://raw.githubusercontent.com/hobuinc/usgs-lidar/master/boundaries/resources.geojson"
+
+
+def fetch_ept(g1, g2, out, meta, max_projects=3):
+    """USGS 3DEP point clouds (Entwine/EPT on AWS, s3 usgs-lidar-public) -> PDAL: drop noise, height above
+    ground (filters.hag_nn), max per 1 m cell; ground Z per 2 m cell; building (class 6) return count.
+    Used where Planetary Computer has no 3dep-lidar-* items (e.g. Iowa). Needs the `pdal` CLI."""
+    import re
+    import shutil
+    import subprocess
+    import requests
+    import rasterio
+    from pyproj import Transformer
+    from shapely.geometry import box, shape
+    info = dict(source="USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL")
+    if not shutil.which("pdal"):
+        info["error"] = "pdal CLI not installed"
+        meta["ept"] = info
+        return None
+    idx = requests.get(EPT_INDEX, timeout=120).json()
+    t = Transformer.from_crs(g1.crs, "EPSG:3857", always_xy=True)
+    xs, ys = t.transform([g1.x0, g1.x1, g1.x0, g1.x1], [g1.y0, g1.y0, g1.y1, g1.y1])
+    b3857 = (min(xs) - 20, min(ys) - 20, max(xs) + 20, max(ys) + 20)
+    aoi_ll = box(*g1.ll_bbox)
+    aoi_m = box(*b3857)
+    cands = []
+    for f in idx["features"]:
+        try:
+            geom = shape(f["geometry"])
+        except Exception:                                      # noqa: BLE001
+            continue
+        aoi = aoi_ll if abs(geom.bounds[0]) <= 180 else aoi_m
+        if not geom.intersects(aoi):
+            continue
+        cov = geom.intersection(aoi).area / aoi.area
+        nm = f["properties"].get("name", "")
+        yrs = [int(y) for y in re.findall(r"(?<!\d)(20[0-2]\d|199\d)(?!\d)", nm)]
+        cands.append(dict(name=nm, url=f["properties"].get("url"), cov=round(cov, 3), year=max(yrs) if yrs else 0,
+                          count=f["properties"].get("count")))
+    cands.sort(key=lambda c: (c["cov"] > 0.9, c["year"]), reverse=True)
+    info["candidates"] = cands[:10]
+    log("  EPT candidates:", cands[:10])
+    hag = np.full((g1.H, g1.W), np.nan, np.float32)
+    dtm = np.full((g2.H, g2.W), np.nan, np.float32)
+    bld = np.zeros((g1.H, g1.W), np.float32)
+    used = []
+    for c in cands[:max_projects]:
+        url = c["url"] or f"https://s3-us-west-2.amazonaws.com/usgs-lidar-public/{c['name']}/ept.json"
+        tmp = os.path.join(out, "_ept")
+        os.makedirs(tmp, exist_ok=True)
+        common = dict(origin_x=g1.x0, origin_y=g1.y0, width=g1.W, height=g1.H, resolution=1.0, nodata=-9999)
+        pipe = [
+            dict(type="readers.ept", filename=url, bounds=f"([{b3857[0]},{b3857[2]}],[{b3857[1]},{b3857[3]}])",
+                 threads=8),
+            dict(type="filters.range", limits="Classification![7:7],Classification![18:18]"),
+            dict(type="filters.reprojection", out_srs=g1.crs, tag="pts"),
+            dict(type="filters.hag_nn", inputs=["pts"], tag="hag"),
+            dict(type="writers.gdal", inputs=["hag"], filename=os.path.join(tmp, "hag.tif"),
+                 dimension="HeightAboveGround", output_type="max", **common),
+            dict(type="filters.range", inputs=["pts"], limits="Classification[2:2]", tag="ground"),
+            dict(type="writers.gdal", inputs=["ground"], filename=os.path.join(tmp, "dtm.tif"), dimension="Z",
+                 output_type="mean", origin_x=g2.x0, origin_y=g2.y0, width=g2.W, height=g2.H, resolution=2.0,
+                 nodata=-9999, window_size=3),
+            dict(type="filters.range", inputs=["pts"], limits="Classification[6:6]", tag="bld"),
+            dict(type="writers.gdal", inputs=["bld"], filename=os.path.join(tmp, "bld.tif"), dimension="Z",
+                 output_type="count", **common),
+        ]
+        pj = os.path.join(tmp, "pipe.json")
+        json.dump(pipe, open(pj, "w"))
+        log("  PDAL", c["name"])
+        r = subprocess.run(["pdal", "pipeline", pj], capture_output=True, text=True, timeout=2400)
+        if r.returncode != 0:
+            log("   PDAL failed:", r.stderr[-1500:])
+            info.setdefault("errors", []).append(dict(name=c["name"], err=r.stderr[-800:]))
+            continue
+        with rasterio.open(os.path.join(tmp, "hag.tif")) as src:
+            a = src.read(1).astype(np.float32)
+            a[a == -9999] = np.nan
+        f = np.isnan(hag) & np.isfinite(a)
+        hag[f] = a[f]
+        p = os.path.join(tmp, "dtm.tif")
+        if os.path.exists(p):
+            with rasterio.open(p) as src:
+                a = src.read(1).astype(np.float32)
+                a[a == -9999] = np.nan
+            f2 = np.isnan(dtm) & np.isfinite(a)
+            dtm[f2] = a[f2]
+        p = os.path.join(tmp, "bld.tif")
+        if os.path.exists(p):
+            with rasterio.open(p) as src:
+                a = src.read(1).astype(np.float32)
+            bld = np.maximum(bld, np.where(a > 0, a, 0))
+        used.append(dict(c, cells=int(f.sum())))
+        shutil.rmtree(tmp, ignore_errors=True)
+        if np.isfinite(hag).mean() > 0.97:
+            break
+    info["used"] = used
+    if not used:
+        meta["ept"] = info
+        return None
+    # cells with no return at all (water, gaps): leave nodata; the canopy step treats them as open
+    info["valid"] = float(np.isfinite(hag).mean())
+    q = np.where(np.isfinite(hag), np.clip(np.round(np.maximum(hag, 0) * 4), 0, 254), 255).astype(np.uint8)
+    info["hag_mb"] = write_tif(os.path.join(out, "hag.tif"), q, g1, nodata=255, tags=dict(units="0.25 m", nodata=255))
+    info["frac_gt_2_5m"] = float(np.nanmean(hag > 2.5))
+    if np.isfinite(dtm).mean() > 0.3:
+        info["dtm_mb"] = write_tif(os.path.join(out, "dtm.tif"), dtm, g2, nodata=float("nan"))
+    cl = np.where(bld > 0, 6, np.where(np.isfinite(hag), 1, 0)).astype(np.uint8)
+    info["class_mb"] = write_tif(os.path.join(out, "lidar_class.tif"), cl, g1, nodata=0,
+                                 tags=dict(note="6 = building returns present, 1 = other (EPT path)"))
+    meta["ept"] = info
+    return hag
 
 
 def quadkeys(ll_bbox, z=9):
@@ -362,7 +487,7 @@ def fetch_naip(cat, g1, out, meta, n_years=2, res=0.6):
                 log("   no NIR band, skipping year")
                 continue
             fn = f"naip_{yr}.tif"
-            mb = write_tif(os.path.join(out, fn), bands, gn, jpeg=92)
+            mb = write_tif(os.path.join(out, fn), bands, gn, jpeg=88)
             info["years"].append(dict(year=yr, file=fn, mb=mb, items=[i.id for i in its],
                                       acquired=sorted({i.datetime.date().isoformat() for i in its}),
                                       gsd_m=its[0].properties.get("gsd"), res_m=res))
@@ -397,8 +522,21 @@ def main():
                 fetched_utc=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
     skip = set(a.skip.split(","))
     cat = stac()
+    for f in ("hag.tif", "dtm.tif", "lidar_class.tif"):           # stale layers from an earlier run
+        if os.path.exists(os.path.join(out, f)):
+            os.remove(os.path.join(out, f))
     if "lidar" not in skip:
-        fetch_lidar(cat, g1, g2, out, meta)
+        ok = False
+        try:
+            ok = fetch_lidar(cat, g1, g2, out, meta)
+        except Exception:
+            meta["lidar_error"] = traceback.format_exc()[-1500:]
+        if not ok and "ept" not in skip:
+            try:
+                fetch_ept(g1, g2, out, meta)
+            except Exception:
+                meta["ept_error"] = traceback.format_exc()[-1500:]
+                log(meta["ept_error"])
     if "meta" not in skip:
         fetch_meta_chm(g1, out, meta)
     if "worldcover" not in skip:
