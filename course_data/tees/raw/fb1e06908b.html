@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<base href="/" />
+
+		<noscript>
+			<meta http-equiv="refresh" content="0;URL=/browser/unsupported" />
+		</noscript>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+<script>
+	(function () {
+		var unsupportedBrowserPath = '/browser/unsupported';
+		var currentPath = window.location.pathname || '';
+		var userAgent = window.navigator.userAgent || '';
+
+		if (!unsupportedBrowserPath || currentPath.indexOf(unsupportedBrowserPath) === 0) {
+			return;
+		}
+
+		if (userAgent.toLowerCase().indexOf('pingdom') > -1) {
+			return;
+		}
+
+		function parseVersion(pattern) {
+			var match = userAgent.match(pattern);
+			if (!match) {
+				return null;
+			}
+
+			return [
+				parseInt(match[1], 10),
+				parseInt(match[2] || '0', 10),
+				parseInt(match[3] || '0', 10),
+			];
+		}
+
+		function isVersionLessThan(actual, minimum) {
+			if (actual === null) {
+				return false;
+			}
+
+			for (var index = 0; index < minimum.length; index++) {
+				var actualPart = actual[index] || 0;
+				var minimumPart = minimum[index] || 0;
+
+				if (actualPart < minimumPart) {
+					return true;
+				}
+
+				if (actualPart > minimumPart) {
+					return false;
+				}
+			}
+
+			return false;
+		}
+
+		function redirectToUnsupportedBrowserPage() {
+			var documentElementStyle = document.documentElement && document.documentElement.style;
+			var originalVisibility = documentElementStyle ? documentElementStyle.visibility : '';
+			var originalBackgroundColor = documentElementStyle ? documentElementStyle.backgroundColor : '';
+			var restoreVisibilityTimeoutId = null;
+
+			function restoreDocumentVisibility() {
+				if (!documentElementStyle) {
+					return;
+				}
+
+				documentElementStyle.visibility = originalVisibility;
+				documentElementStyle.backgroundColor = originalBackgroundColor;
+			}
+
+			document.title = 'Redirecting...';
+
+			if (documentElementStyle) {
+				documentElementStyle.visibility = 'hidden';
+				documentElementStyle.backgroundColor = '#fff';
+			}
+
+			restoreVisibilityTimeoutId = window.setTimeout(restoreDocumentVisibility, 1000);
+
+			try {
+				window.location.replace(unsupportedBrowserPath);
+			} catch (error) {
+				if (restoreVisibilityTimeoutId !== null) {
+					window.clearTimeout(restoreVisibilityTimeoutId);
+				}
+
+				restoreDocumentVisibility();
+				window.location.href = unsupportedBrowserPath;
+			}
+		}
+
+		var isInternetExplorer =
+			userAgent.indexOf('MSIE ') > -1 ||
+			userAgent.indexOf('Trident/') > -1 ||
+			typeof document.documentMode !== 'undefined';
+		if (isInternetExplorer) {
+			redirectToUnsupportedBrowserPage();
+			return;
+		}
+
+		var edgeVersion = parseVersion(/(?:Edg|Edge)\/(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+		if (edgeVersion !== null) {
+			if (isVersionLessThan(edgeVersion, [84, 0, 0])) {
+				redirectToUnsupportedBrowserPage();
+			}
+			return;
+		}
+
+		var samsungVersion = parseVersion(/SamsungBrowser\/(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+		if (samsungVersion !== null) {
+			if (isVersionLessThan(samsungVersion, [14, 0, 0])) {
+				redirectToUnsupportedBrowserPage();
+			}
+			return;
+		}
+
+		var isIpadOsDesktopMode =
+			userAgent.indexOf('Macintosh') > -1 &&
+			userAgent.indexOf('Mobile/') > -1 &&
+			userAgent.indexOf('Safari/') > -1;
+		if (/iP(hone|ad|od)/.test(userAgent) || isIpadOsDesktopMode) {
+			var iosVersion = parseVersion(/OS (\d+)(?:_(\d+))?(?:_(\d+))?/);
+			if (iosVersion === null && isIpadOsDesktopMode) {
+				iosVersion = parseVersion(/Version\/(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+			}
+			if (isVersionLessThan(iosVersion, [13, 7, 0])) {
+				redirectToUnsupportedBrowserPage();
+			}
+			return;
+		}
+
+		var firefoxVersion = parseVersion(/Firefox\/(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+		if (firefoxVersion !== null) {
+			if (isVersionLessThan(firefoxVersion, [87, 0, 0])) {
+				redirectToUnsupportedBrowserPage();
+			}
+			return;
+		}
+
+		var chromeVersion = parseVersion(/Chrome\/(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+		if (
+			chromeVersion !== null &&
+			userAgent.indexOf('OPR/') === -1 &&
+			userAgent.indexOf('SamsungBrowser/') === -1
+		) {
+			if (isVersionLessThan(chromeVersion, [87, 0, 0])) {
+				redirectToUnsupportedBrowserPage();
+			}
+			return;
+		}
+
+		var isSafari =
+			userAgent.indexOf('Safari/') > -1 &&
+			userAgent.indexOf('Chrome/') === -1 &&
+			userAgent.indexOf('Chromium/') === -1 &&
+			userAgent.indexOf('Android') === -1;
+		if (!isSafari) {
+			return;
+		}
+
+		var safariVersion = parseVersion(/Version\/(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+		if (isVersionLessThan(safariVersion, [14, 2, 0])) {
+			redirectToUnsupportedBrowserPage();
+		}
+	})();
+</script>
+
+	<meta name="referrer" content="default" />
+	<meta name="site-layout" content="default" />
+	
+<link rel="alternate" href="https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details" hreflang="en" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-fr" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-de" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-es" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-pt" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-ch" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-ma" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-be" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-at" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-pl" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-nl" />
+<link rel="alternate" href="https://www.golfnow.eu/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-gr" />
+<link rel="alternate" href="https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-us" />
+<link rel="alternate" href="https://www.golfnow.co.uk/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-gb" />
+<link rel="alternate" href="https://www.golfnow.co.uk/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-ie" />
+<link rel="alternate" href="https://www.golfnow.com.au/courses/1505820-spirit-hollow-golf-course-details" hreflang="en-au" />
+<link rel="alternate" href="https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details" hreflang="x-default" />
+
+		<link rel="preconnect" crossorigin href="https://www.googletagmanager.com" />
+			<meta http-equiv="delegate-ch" content="sec-ch-dpr https://gqp7knph.cdn.imgeng.in/;
+			ch-viewport-width https://gqp7knph.cdn.imgeng.in/;
+			ch-width https://gqp7knph.cdn.imgeng.in/;
+			ect https://gqp7knph.cdn.imgeng.in/;">
+			<link rel="preconnect" crossorigin href="https://gqp7knph.cdn.imgeng.in/" />
+			<link rel="preconnect" crossorigin href="https://www.golfnow.com/" />
+	<link rel="preconnect" crossorigin href="https://sb.scorecardresearch.com" />
+	<link rel="preconnect" crossorigin href="https://securepubads.g.doubleclick.net" />
+	<link rel="preconnect" crossorigin href="https://static.golfchannel.com" />
+	<link rel="preconnect" crossorigin href="https://cdn.cookielaw.org" />
+	<link rel="preconnect" crossorigin href="https://exddilid.cdn.imgeng.in/" />
+	<link rel="preconnect" crossorigin href="//cds.golfnow.com/" />
+
+	
+
+<meta name="accept-language" content="en-US"><meta name="currency-code" content="USD">		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="theme-color" content="#0076BB" />
+	<meta name="description" content="Get course info, reviews & details for Spirit Hollow Golf Course in Burlington, IA. Explore ratings, amenities, and more with GolfNow." />
+	<meta name="currency-code" content="USD" />
+		<meta property="og:locale" content="en_US">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Spirit Hollow Golf Course in Burlington, IA - Reviews & Course Info | GolfNow">
+<meta property="og:description" content="Get course info, reviews & details for Spirit Hollow Golf Course in Burlington, IA. Explore ratings, amenities, and more with GolfNow.">
+<meta property="og:url" content="https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details">
+<meta property="og:site_name" content="GolfNow">
+<meta property="og:image" content="https://www.golfnow.com/Content/images/social/facebook.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="Get course info, reviews & details for Spirit Hollow Golf Course in Burlington, IA. Explore ratings, amenities, and more with GolfNow.">
+<meta name="twitter:title" content="Spirit Hollow Golf Course in Burlington, IA - Reviews & Course Info | GolfNow">
+<meta name="twitter:image:src" content="https://www.golfnow.com/Content/images/social/twitter.png">
+
+	<meta name="msvalidate.01" content="2C823E3E6FF53A657D379E2A70599B4A" />
+
+	<title id="master-page-title">Spirit Hollow Golf Course in Burlington, IA - Reviews & Course Info | GolfNow</title>
+	<link rel="canonical" href="https://www.golfnow.com/courses/1505820-spirit-hollow-golf-course-details" />
+	<link rel="manifest" href="/site.webmanifest?v=ujykziawW8vtSDcmbelt-GIf5UY5ZphG-FUL27F0ZeY" />
+	<link rel="apple-touch-icon" href="https://gqp7knph.cdn.imgeng.in/apple-touch-icon.png?v=LFv7p_PfaQjT4YMzlJpF6qSuszFk3tacEIYg9sY2NgE&av=402041308" />
+	<link rel="apple-touch-icon" sizes="114x114" href="https://gqp7knph.cdn.imgeng.in/apple-icon-114x114-precomposed.png?v=zpA5qgJ3Fy1_QcjltgGTbt7VT_KLqMxHYD4mnSQfrrE&av=402041308" />
+	<link rel="apple-touch-icon" sizes="120x120" href="https://gqp7knph.cdn.imgeng.in/apple-icon-120x120-precomposed.png?v=KA7949J14TcV0RcHOfChNsgXSF-MzdJKlXiso4e3xGA&av=402041308" />
+	<link rel="apple-touch-icon" sizes="144x144" href="https://gqp7knph.cdn.imgeng.in/apple-icon-144x144-precomposed.png?v=uUqI_1_2mw9Weo7kgmkKQ98tACeAbXBas_aBL1lpipQ&av=402041308" />
+	<link rel="apple-touch-icon" sizes="152x152" href="https://gqp7knph.cdn.imgeng.in/apple-icon-152x152-precomposed.png?v=EuRTo30mWPam8i0FIS4GxXqG2YiUMx_CzefP3Y3QzPU&av=402041308" />
+
+	<link rel="shortcut icon" type="image/x-icon" href="https://gqp7knph.cdn.imgeng.in/favicon.ico?v=byVJE7XihY7jcSEiv8Zaj-3UuL8skNT8O7oz0yVbIHo&av=402041308" />
+	<link rel="icon" type="image/x-icon" href="https://gqp7knph.cdn.imgeng.in/favicon.ico?v=byVJE7XihY7jcSEiv8Zaj-3UuL8skNT8O7oz0yVbIHo&av=402041308" />
+	<link rel="icon" type="image/png" sizes="96x96" href="https://gqp7knph.cdn.imgeng.in/favicon-96x96.png?v=peI8oyRmrC_HJBPqjnABkHzWpp4FT94IedMYgxF0Ftw&av=402041308" />
+	<link rel="icon" type="image/png" sizes="32x32" href="https://gqp7knph.cdn.imgeng.in/favicon-32x32.png?v=lPiubQeVDR5cegbgRWtiQRg5ptPy2xHpXSsNQJh9vgg&av=402041308" />
+	<link rel="icon" type="image/png" sizes="16x16" href="https://gqp7knph.cdn.imgeng.in/favicon-16x16.png?v=xskDX5gXJywhAviaTB52t18n04ZwfxthczqSL-mb0k4&av=402041308" />
+	<link rel="preload" href="https://gqp7knph.cdn.imgeng.in/dist/fonts/nunito-sans-latin-var.woff2?av=402041308" as="font" type="font/woff2"
+	  crossorigin />
+<link rel="preload" href="https://gqp7knph.cdn.imgeng.in/dist/fonts/poppins-latin-400.woff2?av=402041308" as="font" type="font/woff2"
+	  crossorigin />
+<link rel="preload" href="https://gqp7knph.cdn.imgeng.in/dist/fonts/poppins-latin-600.woff2?av=402041308" as="font" type="font/woff2"
+	  crossorigin />
+<style>
+	@font-face {
+		font-family: "Nunito Sans";
+		font-style: normal;
+		font-weight: 300 800;
+		font-display: swap;
+		src: url("https://gqp7knph.cdn.imgeng.in/dist/fonts/nunito-sans-latin-var.woff2?av=402041308") format("woff2")
+	}
+
+	@font-face {
+		font-family: "Poppins";
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url("https://gqp7knph.cdn.imgeng.in/dist/fonts/poppins-latin-400.woff2?av=402041308") format("woff2")
+	}
+
+	@font-face {
+		font-family: "Poppins";
+		font-style: normal;
+		font-weight: 600;
+		font-display: swap;
+		src: url("https://gqp7knph.cdn.imgeng.in/dist/fonts/poppins-latin-600.woff2?av=402041308") format("woff2")
+	}
+
+	@font-face {
+		font-family: "Poppins";
+		font-style: normal;
+		font-weight: 700;
+		font-display: swap;
+		src: url("https://gqp7knph.cdn.imgeng.in/dist/fonts/poppins-latin-700.woff2?av=402041308") format("woff2")
+	}
+
+	:root {
+		--font-display: "Poppins";
+		--font-body: "Nunito Sans"
+	}
+
+	body {
+		font-family: "Nunito Sans", Arial, sans-serif
+	}
+
+	.font-display {
+		font-family: "Poppins", Arial, sans-serif
+	}
+
+	[v-cloak] {
+		visibility: hidden
+	}
+
+	#homepage-app[v-cloak] {
+		display: block;
+		min-height: 100vh
+	}
+
+	#homepage-app[v-cloak]>* {
+		visibility: hidden;
+		background-image: none
+	}
+
+	#homepage-app[v-cloak] [data-ssr-placeholder] {
+		visibility: visible
+	}
+
+	.gn_section[data-preloaded="false"]:not([data-bg-ready]) {
+		background-image: none
+	}
+</style>
+
+<link rel="preload" href="https://gqp7knph.cdn.imgeng.in/dist/css/site.bundle.css?v=Ob2UqVNtydRWUuekbtD3XHYOmed_4KVAyhJzvHIbX3I&av=402041308" as="style" onload="this.onload=null;this.rel='stylesheet'" /> 
+<link rel="preload" href="https://gqp7knph.cdn.imgeng.in/dist/css/app.bundle.css?v=hZSP2__ZyZi9OLlOMmPW4RR19lLU6aoWfbFp_g7qV-I&av=402041308" as="style" onload="this.onload=null;this.rel='stylesheet'" /> 
+<noscript>
+	<link rel="stylesheet" href="https://gqp7knph.cdn.imgeng.in/dist/css/site.bundle.css?v=Ob2UqVNtydRWUuekbtD3XHYOmed_4KVAyhJzvHIbX3I&av=402041308" /> 
+	<link rel="stylesheet" href="https://gqp7knph.cdn.imgeng.in/dist/css/app.bundle.css?v=hZSP2__ZyZi9OLlOMmPW4RR19lLU6aoWfbFp_g7qV-I&av=402041308" /> 
+</noscript>
+
+<template id="external-css-template">
+	<link data-deferred-stylesheet="external" rel="stylesheet" href="https://gqp7knph.cdn.imgeng.in/dist/css/external.bundle.css?v=G1_qfZLUFaxSbJd95Q7LHgGCfWNy3vndTgecVsfT1n8&av=402041308" />
+</template>
+<script>
+	(() => {
+		const externalStyleSelectors = [
+			'.lightSlider',
+			'.lSSlideOuter',
+			'.noUi-target',
+			'[data-external-css-trigger]',
+		];
+		let intersectionObserver;
+		let mutationObserver;
+		let fallbackListenersAttached = false;
+
+		const loadExternalStyles = () => {
+			if (document.querySelector('link[data-deferred-stylesheet="external"]')) {
+				return;
+			}
+
+			intersectionObserver?.disconnect();
+			mutationObserver?.disconnect();
+			removeFallbackListeners();
+
+			const template = document.getElementById('external-css-template');
+			const externalStyles = template?.content?.firstElementChild?.cloneNode(true);
+			if (externalStyles) {
+				document.head.appendChild(externalStyles);
+			}
+		};
+
+		function removeFallbackListeners() {
+			if (!fallbackListenersAttached) {
+				return;
+			}
+
+			window.removeEventListener('scroll', loadExternalStyles);
+			window.removeEventListener('pointerdown', loadExternalStyles);
+			window.removeEventListener('keydown', loadExternalStyles);
+			fallbackListenersAttached = false;
+		}
+
+		const attachFallbackListeners = () => {
+			if (fallbackListenersAttached) {
+				return;
+			}
+
+			window.addEventListener('scroll', loadExternalStyles, { once: true, passive: true });
+			window.addEventListener('pointerdown', loadExternalStyles, { once: true, passive: true });
+			window.addEventListener('keydown', loadExternalStyles, { once: true });
+			fallbackListenersAttached = true;
+		};
+
+		const observeExternalStyleTrigger = (trigger) => {
+			if (!('IntersectionObserver' in window)) {
+				attachFallbackListeners();
+				return;
+			}
+
+			intersectionObserver ??= new IntersectionObserver((entries) => {
+				if (entries.some((entry) => entry.isIntersecting)) {
+					loadExternalStyles();
+				}
+			}, { rootMargin: '800px 0px' });
+
+			intersectionObserver.observe(trigger);
+		};
+
+		const watchExternalStyleTriggers = () => {
+			document
+				.querySelectorAll(externalStyleSelectors.join(','))
+				.forEach(observeExternalStyleTrigger);
+		};
+
+		const startExternalStyleWatcher = () => {
+			watchExternalStyleTriggers();
+
+			const mutationTarget = document.body || document.documentElement;
+			if (!mutationTarget || !('MutationObserver' in window)) {
+				return;
+			}
+
+			mutationObserver = new MutationObserver(watchExternalStyleTriggers);
+			mutationObserver.observe(mutationTarget, { childList: true, subtree: true });
+		};
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', startExternalStyleWatcher, { once: true });
+		} else {
+			startExternalStyleWatcher();
+		}
+	})();
+</script>
+<link id="cloud-storage-deferred-style" rel="preload" href="https://cds.golfnow.com/www.golfnow.com_PROD2/dist/cloud-storage.css"
+	  as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<link id="tailwind-deferred-style" rel="preload" href="https://gqp7knph.cdn.imgeng.in/dist/css/tailwindcss.bundle.css?v=MmRtGiiZ8DJwSzDwGKd_jar81ZlmQtrhq1xK-NgIrKY&av=402041308" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<script>
+	(() => {
+		const swapToStylesheet = (link) => {
+			if (!link || link.rel !== 'preload') {
+				return;
+			}
+
+			link.rel = 'stylesheet';
+		};
+
+		const deferredLinks = [
+			document.getElementById('cloud-storage-deferred-style'),
+			document.getElementById('tailwind-deferred-style'),
+		].filter(Boolean);
+
+		if (!deferredLinks.length) {
+			return;
+		}
+
+		const ensureDeferredStylesApplied = () => {
+			deferredLinks.forEach((link) => {
+				if (link.rel === 'preload') {
+					swapToStylesheet(link);
+				}
+			});
+		};
+
+		if (document.readyState === 'complete') {
+			window.setTimeout(ensureDeferredStylesApplied, 0);
+		} else {
+			window.addEventListener('load', () => {
+				window.setTimeout(ensureDeferredStylesApplied, 0);
+			}, { once: true });
+		}
+	})();
+</script>
+<noscript>
+	<link rel="stylesheet" href="https://gqp7knph.cdn.imgeng.in/dist/css/external.bundle.css?v=G1_qfZLUFaxSbJd95Q7LHgGCfWNy3vndTgecVsfT1n8&av=402041308" />
+	<link rel="stylesheet" href="https://cds.golfnow.com/www.golfnow.com_PROD2/dist/cloud-storage.css" />
+	<link rel="stylesheet" href="https://gqp7knph.cdn.imgeng.in/dist/css/tailwindcss.bundle.css?v=MmRtGiiZ8DJwSzDwGKd_jar81ZlmQtrhq1xK-NgIrKY&av=402041308" />
+</noscript>
+
+
+	
+	<link rel="stylesheet" href="https://gqp7knph.cdn.imgeng.in/dist/css/course/details.bundle.css?v=TwhdvBJ9KX2Ht0o0hQoQM3PNi3bOtX5k1uyhEnr7hE8&av=402041308" />
+	<style>
+		#course-quick-info .teeBookBtnSticky {
+			--sticky-top-pos: 0;
+			top: var(--sticky-top-pos);
+		}
+
+		/*
+			#info-tab-panel and #info-tab-lower-panel are separate siblings so the quick-info
+			aside can sit between them in DOM order [GNSCM-10645]. Flowbite only toggles
+			.hidden on #info-tab-panel, so this sibling rule keeps the lower Course Info block
+			hidden together with it whenever the Reviews tab is active.
+		*/
+		#info-tab-panel.hidden ~ #info-tab-lower-panel {
+			display: none;
+		}
+	</style>
+
+
+	<meta name="cds-url" content="https://cds.golfnow.com" />
+<meta name="cdn-url" content="https://www.golfnow.com" />
+<meta name="asset-prefix" content="/" />
+<style>
+	:root {
+		--cds-base:
+			https://cds.golfnow.com
+		;
+	}
+</style>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	window.__SITE_CONFIG__ = window.__SITE_CONFIG__ || {};
+	window.__SITE_CONFIG__.cdsUrl = 'https://cds.golfnow.com';
+	window.__SITE_CONFIG__.cdnUrl = 'https://www.golfnow.com';
+	window.__SITE_CONFIG__.useCdn = true;
+	var googletag = googletag || {},
+		uid = '',
+		upostal = { latitude: null, longitude: null },
+		utype = '',
+		siteCode = null,
+		membershipStatus = function () { return ''; },
+		pageType = '',
+		viewOverrideParams = globalViewOverrideParams = null,
+		autoLoginProps = {},
+		gnSiteLocale = 'en-US',
+		smartBannerEnabled = ('True' === 'True') && ('False' === 'False'),
+		topDomainAssetPrefix = '/' === '/' ? undefined : '/',
+		productSubscriptionName = '',
+		cmsHeaderFooter = 'False' === 'True',
+		sessionId = 'f73a62f9c9df41b6a16b76ce2d1050b7',
+		loginUrlWprotocol = '/account/login?returnUrl=%2F',
+		createAccountUrlWprotocol = '/account/create';
+	window.__CLIENT_LOCATION_CONTEXT__ = {
+		isAuthenticated: 'False' === 'True',
+		profile: {
+			isValid: 'False' === 'True',
+			latitude: null,
+			longitude: null,
+			city: null,
+			state: null,
+			country: null
+		}
+	};
+</script>
+	
+
+	<meta name="gn:content-block-name" content="HeadInlineScript" />
+<meta name="facebook-domain-verification" content="ou3g8mkczt6qdugs64834hz70wpmex" />
+
+<script>
+	// Initialize variables for pixel LDU and opt-out status
+	var pixelLDU = '';
+	var optOutStatus = 'N';
+
+	var oneTrustJWT = sessionStorage.getItem('OneTrustJWT');
+	if (oneTrustJWT) {
+		window.OneTrust = JSON.parse(oneTrustJWT);
+	}
+
+	//If using IAB CCPA Privacy String, include the following:
+	(function () {
+		let CCPAString = new URLSearchParams(window.location.search).get('USPrivacy');
+		if (CCPAString) {
+			// CCPAString format: the 3rd character indicates opt-out status (Y = user has opted out; N = user has not opted out)
+			document.cookie = 'usprivacy=' + encodeURIComponent(CCPAString) + '; Path=/; SameSite=Lax; Secure';
+		}
+	})();
+	// This function will be called by the OneTrust script once it has loaded
+	function OptanonWrapper() {
+		// Set the value based on Allow Sale toggle.
+		// Set the pixel limited data use flag based on the Allow Sale toggle.
+		// Tag manager will use this value to determine whether to fire the Facebook pixel in LDU mode.
+		pixelLDU = OnetrustActiveGroups.indexOf(',USP,') == -1 ? 'LDU' : '';
+
+		// Set the user's CCPA opt-out status based on the Allow Sale toggle.
+		// Tag manager will use this value to determine whether the user has opted out of sale (Y) or not (N).
+		optOutStatus = OnetrustActiveGroups.indexOf(',USP,') == -1 ? 'Y' : 'N';
+	}
+</script>	<meta name="gn:content-block-status" content="OK" />
+	<meta name="gn:content-block-version" content="//cds.golfnow.com/www.golfnow.com_PROD2/" />
+
+		<script type="module">
+		const PWA_UPDATE_IDLE_DELAY_MS = 10000;
+		const canLoadPwaUpdate =
+			typeof navigator !== 'undefined' &&
+			navigator.storage &&
+			typeof navigator.storage.estimate === 'function';
+
+		const loadPwaUpdate = () => {
+			window.GolfNowPwaUpdatePath = '/pwabuilder-sw.js?skipCache=0&v=4.0.20.41308';
+
+			import('/dist/js/shared/pwa-update.bundle.js')
+				.catch(() => {
+					// Ignore optional PWA update prompt failures so the page can continue rendering.
+				});
+		};
+
+		const schedulePwaUpdateImport = () => {
+			const scheduleIdle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 1500));
+			scheduleIdle(loadPwaUpdate, { timeout: 5000 });
+		};
+
+		const scheduleDelayedPwaUpdateImport = () => {
+			window.setTimeout(schedulePwaUpdateImport, PWA_UPDATE_IDLE_DELAY_MS);
+		};
+
+		if (canLoadPwaUpdate) {
+			if (document.readyState === 'complete') {
+				scheduleDelayedPwaUpdateImport();
+			} else {
+				window.addEventListener('load', scheduleDelayedPwaUpdateImport, { once: true });
+			}
+		}
+	</script>
+	<script>
+		window.GolfNowPwaConfig = {
+			deployVersion: '4.0.20.41308',
+			serviceWorkerPath: '/pwabuilder-sw.js?skipCache=0&v=4.0.20.41308',
+			serviceWorkerScope: '/'
+		};
+	</script>
+	<script src="/dist/js/service-worker-helper.bundle.js?v=z5Qqh4iAvBG2e0tn87DGFT7UT_Btqnx2fZwjJxQXHQw&av=402041308" defer></script>
+	<script type="speculationrules">
+		{
+			"prefetch":
+			[
+				{
+					"source": "document",
+					"where": {
+					"and": [
+						{ "href_matches": "/*" },
+						{ "not": { "selector_matches": "a[data-noprerender]" } }
+					]
+					},
+					"eagerness": "moderate"
+				}
+			]
+		}
+	</script>
+<script src="/dist/js/jquery-core.bundle.js?v=G1JuPFUCzhNeO3UohbU1EUY9gLUQF7rqUvBbvDFqjII&av=402041308" defer></script> 
+<script src="/dist/js/legacy/amplify.bundle.js?v=j4Sq_UqUbslyOb8jpHxbe2N0pQZNFSZIrjuSQCJdKsA&av=402041308" defer></script> 
+<script defer="defer" src="/dist/js/runtime.bundle.js?v=to5WTwacxL4vr4Fr&av=402041308"></script><script defer="defer" src="/dist/js/widgets-runtime.bundle.js?v=1N6FmNC6d1eVKATh&av=402041308"></script><script defer="defer" src="/dist/js/app-optional-runtime.bundle.js?v=tBKovzTcpgBlU7PP&av=402041308"></script><script defer="defer" src="/dist/js/62862.bundle.js?v=M0F8FnMYLHEsmweA&av=402041308"></script><script defer="defer" src="/dist/js/64410.bundle.js?v=5pPWiZL04MRmqXWp&av=402041308"></script><script defer="defer" src="/dist/js/33534.bundle.js?v=8jUIK9bFPf-kEOeQ&av=402041308"></script><script defer="defer" src="/dist/js/72336.bundle.js?v=D3zz4x4-uBRRuo79&av=402041308"></script><script defer="defer" src="/dist/js/48377.bundle.js?v=qEiBcCi8IkQHxtHv&av=402041308"></script><script defer="defer" src="/dist/js/70383.bundle.js?v=_MKjwBbrKR4GnOv7&av=402041308"></script><script defer="defer" src="/dist/js/79162.bundle.js?v=dytieoX_YmukKPNG&av=402041308"></script><script defer="defer" src="/dist/js/52162.bundle.js?v=2VrOmZAx7u-9HIYT&av=402041308"></script><script defer="defer" src="/dist/js/app.bundle.js?v=5TVyJuz5E05lrJKO&av=402041308"></script>
+<script>
+	(() => {
+		const headerCollapseSelector = '[data-collapse-toggle="topnavigation-container"]';
+		const headerDropdownSelector = '#login-menu-large-button';
+
+		const setExpandedState = (toggle, isExpanded) => {
+			toggle?.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+		};
+
+		const setHiddenState = (target, isHidden) => {
+			target?.classList.toggle('hidden', isHidden);
+		};
+
+		const prepareHeaderDropdownForPositioning = (target) => {
+			if (!target) return;
+			target.style.position = 'fixed';
+			target.style.top = '0';
+			target.style.left = '-9999px';
+			target.style.right = 'auto';
+			target.style.visibility = 'hidden';
+			target.style.pointerEvents = 'none';
+		};
+
+		const revealHeaderDropdown = (target) => {
+			if (!target) return;
+			target.style.visibility = 'visible';
+			target.style.pointerEvents = 'auto';
+		};
+
+		const positionHeaderDropdown = () => {
+			const { toggle, target } = getDropdownElements();
+			if (!toggle || !target) return;
+
+			const toggleRect = toggle.getBoundingClientRect();
+			const targetRect = target.getBoundingClientRect();
+			const viewportPadding = 8;
+			const top = toggleRect.bottom + viewportPadding;
+			const left = Math.min(
+				Math.max(viewportPadding, toggleRect.right - targetRect.width),
+				window.innerWidth - targetRect.width - viewportPadding
+			);
+
+			target.style.position = 'fixed';
+			target.style.top = `${top}px`;
+			target.style.left = `${left}px`;
+			target.style.right = 'auto';
+			// The dropdown's content height is unbounded (GolfPass upsell block + menu items),
+			// so when it doesn't fit below the toggle, clamp it and let it scroll instead of
+			// silently clipping items like Logout with no indication a user can scroll.
+			target.style.maxHeight = `${Math.max(window.innerHeight - top - viewportPadding, 0)}px`;
+			target.style.overflowY = 'auto';
+		};
+
+		const getDropdownElements = () => {
+			const toggle = document.querySelector(headerDropdownSelector);
+			const targetId = toggle?.getAttribute('data-header-dropdown-target');
+			const target = targetId ? document.getElementById(targetId) : null;
+			return { toggle, target };
+		};
+
+		const toggleHeaderCollapse = (toggle) => {
+			const targetId = toggle?.getAttribute('data-collapse-toggle');
+			const target = targetId ? document.getElementById(targetId) : null;
+			if (!toggle || !target) return;
+
+			const shouldExpand = target.classList.contains('hidden');
+			setHiddenState(target, !shouldExpand);
+			setExpandedState(toggle, shouldExpand);
+		};
+
+		const closeHeaderDropdown = () => {
+			const { toggle, target } = getDropdownElements();
+			if (!toggle || !target) return;
+
+			setHiddenState(target, true);
+			setExpandedState(toggle, false);
+			target.style.visibility = '';
+			target.style.pointerEvents = '';
+		};
+
+		const toggleHeaderDropdown = () => {
+			const { toggle, target } = getDropdownElements();
+			if (!toggle || !target) return;
+
+			const shouldExpand = target.classList.contains('hidden');
+			setExpandedState(toggle, shouldExpand);
+			if (shouldExpand) {
+				prepareHeaderDropdownForPositioning(target);
+				setHiddenState(target, false);
+				requestAnimationFrame(() => {
+					positionHeaderDropdown();
+					requestAnimationFrame(() => {
+						revealHeaderDropdown(target);
+					});
+				});
+				return;
+			}
+
+			setHiddenState(target, true);
+		};
+
+		const onDocumentClick = (event) => {
+			const clickTarget = event.target instanceof Element ? event.target : null;
+			if (!clickTarget) return;
+
+			const collapseToggle = clickTarget.closest(headerCollapseSelector);
+			if (collapseToggle) {
+				event.preventDefault();
+				toggleHeaderCollapse(collapseToggle);
+				return;
+			}
+
+			const dropdownToggle = clickTarget.closest(headerDropdownSelector);
+			if (dropdownToggle) {
+				event.preventDefault();
+				toggleHeaderDropdown();
+				return;
+			}
+
+			const { toggle, target } = getDropdownElements();
+			if (!toggle || !target || target.classList.contains('hidden')) return;
+			if (target.contains(clickTarget) || toggle.contains(clickTarget)) return;
+
+			closeHeaderDropdown();
+		};
+
+		const onKeyDown = (event) => {
+			if (event.key === 'Escape') closeHeaderDropdown();
+		};
+
+		const onWindowChange = () => {
+			const { target } = getDropdownElements();
+			if (!target || target.classList.contains('hidden')) return;
+			positionHeaderDropdown();
+		};
+
+		const initHeaderUiLite = () => {
+			document.addEventListener('click', onDocumentClick);
+			document.addEventListener('keydown', onKeyDown);
+			window.addEventListener('resize', onWindowChange);
+			window.addEventListener('scroll', onWindowChange, true);
+		};
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initHeaderUiLite, { once: true });
+		} else {
+			initHeaderUiLite();
+		}
+	})();
+</script>
+
+	<script>
+	var GolfNow = GolfNow || {};
+	window.dataLayer = window.dataLayer ?? [];
+	var viewOverrideParams = viewOverrideParams ?? null,
+		uid = uid ?? '',
+		utype = utype ?? 'none',
+		upostal = upostal ?? { latitude: null, longitude: null },
+		membershipStatus = function () {
+			var defaultNonMemberValue = 'Non-Member';
+			if (uid === '') return defaultNonMemberValue;
+
+			var loginElem = document.querySelector('#avatar-loggedin-data-container');
+			if (!loginElem) return defaultNonMemberValue;
+
+			var isMember = loginElem.dataset.isgppmember === 'true' || loginElem.dataset.isgpmember === 'true';
+			if (!isMember) return defaultNonMemberValue;
+
+			var subscriptionProductId = (loginElem.dataset.subscriptionproductid || '').trim();
+			if (subscriptionProductId === '') return defaultNonMemberValue;
+
+			return 'ProductId ' + subscriptionProductId;
+		},
+		isAuthenticated = 'False' === 'True',
+		userName = '',
+		pageType = pageType || 'Course Details',
+		clientIP = 'ace91d3a-c377-441a-8e5d-a72a4f40c009',
+		exactTargetOrgId = '7208803',
+		defaultListView = 'Course',
+		defaultListSort = 'Facilities.Distance',
+		defaultSearchRadius = defaultCourseViewSearchRadius = defaultListViewSearchRadius = 35,
+		maximumSearchRadius = 255,
+		jsGoogleMapsUrl = '//maps.googleapis.com/maps/api/js?libraries=geometry,marker&key=AIzaSyDTnWnjzqVWxNTaz_P58koE6qN6MFwGzsQ',
+		usegoogleplaces = 'False' === 'True',
+		cdnUrl = 'https://www.golfnow.com/',
+		cdnImageUrl = 'https://gqp7knph.cdn.imgeng.in/',
+		cdnImageBaseUrl = 'https://exddilid.cdn.imgeng.in/app/ttf/image/',
+		siteCode = siteCode || 'GNUS',
+		defaultUnits = 'mi',
+		nonPostalCodeCountries = JSON.parse('["ie","bm","fj"]'),
+		countriesWithStates = JSON.parse('["au","bm","ca","cw","cz","eng","gb","hn","ie","jm","mx","nir","nx","pr","sk","sct","us","wls"]'),
+		exactTarget = null,
+		_trkexpiration = 1000 * 60 * 60 * 720,
+		requiresGooglePlaces = 'False' === 'True',
+		placeDetailService = null,
+		autoCompleteService = {},
+		showRewardsBadgeForUser = 'False' === 'True',
+		showGolfPassBadgeForUser = 'False' === 'True',
+		homeCourseEnabled = 'True' === 'True',
+		socialEnabled = 'True' === 'True',
+		authenticated = 'False' === 'True',
+		maxSearchRadius = Number('255'),
+		displayMode = 'large',
+		siteTheme = 'theme-default',
+		trkCode = '',
+		smartBannerEnabled = 'True' === 'True',
+		footerEmailFormUrl = '/api/utilities/email-subscribe',
+		isEmailFooterSubscribeSubcomponent = 'False' === 'True',
+		defaultSiteCurrencyCode = 'USD',
+		alwaysShowCurrency = 'False' === 'True',
+		alwaysHideCurrency = 'False' === 'True';
+
+	function handleGoogleMapCallback(){
+		if (google?.maps?.places) {
+			placeDetailService = new google.maps.places.PlacesService(document.getElementById('placedetail'));
+			autoCompleteService = new google.maps.places.AutocompleteService();
+		}
+	}
+	window.__CLIENT_LOCATION_CONTEXT__ = window.__CLIENT_LOCATION_CONTEXT__ ?? {
+		isAuthenticated: 'False' === 'True',
+		profile: {
+			isValid: 'False' === 'True',
+			latitude: null,
+			longitude: null,
+			city: null,
+			state: null,
+			country: null
+		}
+	};
+</script>
+	<script>
+		window.siteAppVM = {
+			gaPhotoRootUrl: 'https://exddilid.cdn.imgeng.in/app/ttf/image/hds/',
+			profilePicUrl: 'https://s3.amazonaws.com/avatars.golfnow.com/gn_users/',
+			hashedEmail: '',
+			profileZipCode: '',
+		};
+	</script>
+
+
+		<script src="//golfnow.ugc.bazaarvoice.com/static/0079-en_us/bvapi.js" defer></script>
+		<meta name="golfnow-gtm"
+		  data-container-id="GTM-RK9VV"
+		  data-defer-container="false" />
+	<script defer="defer" src="/dist/js/shared/google-tag-manager.bundle.js?v=RJR9mpdY2Abp3TGJ&av=402041308"></script>
+		<!-- Google Tag Manager -->
+		<script>
+			try {
+				(function (w, d, s, l, i) {
+					w[l] = w[l] || []; w[l].push({
+						'gtm.start': new Date().getTime(),
+						event: 'gtm.js'
+					});
+					var f = d.getElementsByTagName(s)[0];
+					var j = d.createElement(s);
+					var dl = l != 'dataLayer' ? '&l=' + l : '';
+					j.async = true;
+					j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; // frontend-guardrails-allow third-party
+					f.parentNode.insertBefore(j, f);
+				})(window, document, 'script', 'dataLayer', 'GTM-RK9VV');
+			} catch (e) { }
+		</script>
+		<!-- End Google Tag Manager -->
+
+	<!-- Begin Exact Target PI General Tracking -->
+<script defer="defer" src="/dist/js/shared/exact-target-pl.bundle.js?v=h9W-Oi8tipNfoHSV&av=402041308"></script>
+<!-- End Exact Target PI -->
+
+		<script>
+		autoLoginProps = {
+			scriptUrl: 'https://my.golfid.io/js/golfid.js',
+			clientId: 'F3QqaOLcezjIXItt',
+			redirectUrl: 'https://www.golfnow.com/golfid/oauth-callback',
+			baseUrl: 'https://my.golfid.io/',
+			securityKey: encodeURI('EAAAAMgJivgBcgGgT4Gd62hjmRdDkA1vP76XTaohbWpkQD0U'),
+			profilePicUrl: 'https://s3.amazonaws.com/avatars.golfnow.com/gn_users/',
+			avatarUrl: '',
+			homepageUrl: '/',
+			profileUrl: '/my/profile',
+			gp: 'True' === 'True',
+			rewards: 'True' === 'True',
+			social: 'True' === 'True',
+			profileId: Number('-1'),
+		};
+	</script>
+
+	<script>
+	const channelId = '331', pmpBatchCollectionName = 'pmp_logs_web';
+</script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function (evt) {
+		GolfNow.CoreWeb.App.initApp()
+		});
+	</script>
+	
+	<script>
+	const searchType_GeoLocation = "GeoLocation",
+		searchType_Facility = 'Facility',
+		searchType_Market = 'Market',
+		searchType_Destination = 'Destination',
+		searchType_GoPlay = 'GoPlay',
+		searchType_Favorites = 'Favorites',
+		homepageSearch = 'False' === 'True',
+		teetimeSearch = 'False' === 'True',
+		bestDealsFacilityPage = 'False' === 'True';
+
+	const isFacilitySearch = 'False' === 'True',
+		isHomePageSearch = 'False' === 'True',
+		isFavoritesSearch = 'False' === 'True',
+		isSpecialRatesPage = 'False' === 'True',
+		isWhiteLabelSite = 'False' === 'True',
+		isHotDealsDestination = 'False' === 'True',
+		isSubscriptionsEnabled = 'True' === 'True',
+		disableChangeLocation = 'False' === 'True',
+		disableSearchResultActions = 'False' === 'True',
+		displayFiltersButton = 'False' === 'True',
+		serverDisplayMode = 'large',
+		currentCulture = 'en-US',
+		cacheKey = 'courses-detailsseo:1505820-spirit-hollow-golf-course-f73a62f9c9df41b6a16b76ce2d1050b7-model';
+
+	const searchResultActionsParams = {
+		locationHeadingLabel: ' ',
+		disableAdvanceSearch: 'False' === 'True',
+		disableCourseView: true,
+		disableMapView: true,
+		title: "",
+		description: "",
+	};
+	const viewModel = {
+		searchViews: null,
+		refinements: []
+	};
+
+	let redirectToFacilityLink = '/tee-times/facility/~facilityid~/search',
+		redirectToFittingsFacilityLink = '/fitting/facility/~facilityid~/search',
+		noResultsMessage = 'No results found.  Please try another search.',
+		redirectToBestDealsFacilityLink = '/best-deals/facility/~facilityid~/search',
+		searchController = null,
+		searchKeyValue = '',
+		excludeFeaturedFacilitiesDefault = false,
+		datePickerSet = false,
+		viewoverridesObj = null,
+		hotDealsSearchUrl = '/tee-times/hot-deals',
+		teeTimesSearchUrl = '/tee-times/search',
+		goPlayMode = '';
+
+	// 
+	viewOverrideParams = globalViewOverrideParams = {
+		redirectOnSearch: true,
+		excludeFeaturedFacilities: false,
+		searchType: 0,
+		offPlatformCourse: false
+	};
+</script>
+
+
+	<script>
+		const pageConfigName = 'courses-detailsseo',
+			isPrivateCourse = 'False' === 'True',
+			isUserAuthenticated = 'False' === 'True',
+			returnCourseInformationURL = '/courses/details/0',
+			loadFailed = 'Load reviews failed',
+			reviewFacilityId = '29590',
+			userToken = '',
+			absolutePath = '/courses/1505820-spirit-hollow-golf-course-details',
+			decodedFacilityName = 'Spirit Hollow Golf Course',
+			geoTeeTimeSearchUrl = '/tee-times/location/lat/40.760303/lng/-91.14471/place/burlington-ia-us',
+			teeTimeSearchUrl = '/tee-times/search',
+			golfFacilityImagePath = 'https://exddilid.cdn.imgeng.in/app/ttf/image/hdm/0.jpg',
+			favoriteSpellingLower = 'favorite',
+			favoriteSpellingCapital = 'Favorite',
+			mapUrlSmall = 'https://maps.googleapis.com/maps/api/staticmap?center=40.760303,-91.14471&zoom=15&size=600x345&maptype=roadmap&markers=color%3Agreen%7Clabel%3AC%7C40.760303%2C-91.14471&client=gme-golfchannel1&signature=BmTMGqZar9imB1nw84L-3KnNBIU=',
+			mapUrlMedium = 'https://maps.googleapis.com/maps/api/staticmap?center=40.760303,-91.14471&zoom=15&size=900x545&scale=2&maptype=roadmap&markers=color%3Agreen%7Clabel%3AC%7C40.760303%2C-91.14471&client=gme-golfchannel1&signature=Cmay2C3KJZIw8UwKZYgequSmK68=',
+			viewMapLink = '//maps.apple.com/?q=5592+Clubhouse+Dr,+Burlington,+Iowa,+52601-8675',
+			authenticationUrl = '/account/login?returnUrl=%2Fcourses%2F1505820-spirit-hollow-golf-course-details',
+			writeReviewUrl = '/courses/29590/write-review/1505820',
+			bvApiVersion = '5.4',
+			bvApiPassKey = 'dx4a11tzz1dmqz8rcboufu1ry',
+			bvApiEndpoint = '//api.bazaarvoice.com/data/',
+			courseStatsAreAllEmpty = 'False' === 'True';
+
+		// 
+		viewModel.model = {"facilityDetails":{"description":"Not far from Burlington, Spirit Hollow Golf Course offers terrific views and challenging play for golfers at every skill level. Well-groomed fairways and greens keep Spirit Hollow Golf Course difficult yet friendly, and the staff can offer tips and tricks for playing your best round. Spirit Hollow Golf Course is a terrific choice for your regular rounds of golf or a new destination for you and friends when visiting Burlington.","facilityId":0,"productReviewId":1505820,"vendors":[],"name":"Spirit Hollow Golf Course","address":{"line1":"5592 Clubhouse Dr","city":"Burlington","stateProvinceCode":"IA","postalCode":"52601-8675","country":"US","stateProvince":"Iowa"},"reviewCount":0,"latitude":40.760303,"longitude":-91.14471,"distance":1.0,"isActive":false,"tags":[],"facilityTags":[],"facilityFlags":"None","courseStatistics":{"par":72,"holes":18,"yardage":7301,"slope":134,"rating":74.8},"timeZoneOffset":0.0,"promotedCampaigns":[],"reservationProductAccessCollection":[],"golfRange":"None","perks":[],"hasHotDeal":false,"hasHiddenHotDeals":false,"hasMemberPricing":false,"crmGolfCourseId":16893,"isOnPlatform":false,"showGolfpassBadge":true,"isPrivateCourseLabelEnabled":true,"isNewCourseLabelEnabled":true,"imagePathURL":"http://www.golfnow.com/coursedirectory/img/ia/burlington/spirit-hollow-golf-course/general.jpgx","hotDealCopy":"Hot Deal","topTierFacilityEnabled":true,"isSparkGolfEnabled":true,"sparkGolfLeagueStartDates":[],"isClubFittingEnabled":false,"isTwilightGolfEnabled":true,"pmpTier1Tag":"PMPT1","pmpTier2Tag":"PMPT2","smartPlayFacilityTag":"PCI","isFeatured":false,"isPremium":false,"isPrivate":false,"isSmartPlay":false,"isNewCourse":false,"isSparkGolf":false,"isTwilightGolf":false,"isTrackman":false,"isMilitaryBase":false,"isClubFitting":false,"formattedDistance":"1 mi","percentRecommended":0.0,"formattedPercentRecommended":"0%","seoFriendlyName":"0-spirit-hollow-golf-course","hasPerks":false,"isTopGolf":false,"isSimulator":false,"courseStatsAreAllEmpty":false},"sourceUrl":"TeeTimeDetails","golfAdvisorCourses":[{"id":29590,"name":"Spirit Hollow Golf Course","short_name":"Spirit Hollow","latitude":0.0,"longitude":0.0,"address":"5592 Clubhouse Dr, Burlington, Iowa 52601, Des Moines County","year_built":"2000","greens":"Bent Grass","fairways":"Bent Grass","golf_season":"Year round","zip":"52601","tees":[{"id":159584,"name":"Gold","par":"72","length":"7550","slope":"134","usga":"74.8","metrics":"yards"},{"id":159585,"name":"Black","par":"72","length":"6580","slope":"124","usga":"71.4","metrics":"yards"},{"id":159586,"name":"White","par":"72","length":"6010","slope":"117","usga":"69.0","metrics":"yards"},{"id":159587,"name":"White (W)","par":"72","length":"6010","slope":"120","usga":"71.5","metrics":"yards"},{"id":159588,"name":"Red (W)","par":"72","length":"5053","slope":"116","usga":"70.3","metrics":"yards"}],"architects":[],"images":[{"id":88222,"caption":"A view of the 1st green at Spirit Hollow Golf Course.","width":1008,"height":683,"priority":8},{"id":88223,"caption":"A view of the 6th green at Spirit Hollow Golf Course.","width":1008,"height":672,"priority":0},{"id":88220,"caption":"A view from tee #8 at Spirit Hollow Golf Course.","width":800,"height":533,"priority":0},{"id":88221,"caption":"A view of hole #11 at Spirit Hollow Golf Course.","width":800,"height":533,"priority":0}],"walking_allowed":"","metal_spikes_allowed":"","dress_code":"Appropriate golf attire.","credit_cards_accepted":"Yes","singles_allowed":"","fivesomes_allowed":"No. Only with permission.","rental_carts_available":"Yes - included in green fee","rental_clubs_available":"","caddies_available":"","driving_range_available":"Yes","pitching_chipping_available":"Yes","putting_green_available":"Yes","teaching_pro_available":"Yes"}],"golfAdvisorReviewStats":{"ratings_count":22,"recommended_count":21,"overall_rating":4.9603176,"recommended_percentage":99.20635,"secondary_ratings":{"_CourseDifficulty":3.1833334,"courseConditions":4.928571,"courseLayout":4.122807,"overallFacilitiesCondition":4.9649124,"pace":4.9365077,"staffFriendliness":4.928571,"valueForTheMoney":4.0634923}},"leaveComment":false,"reviewId":0,"isSEONameValid":true,"isOnPlatform":false,"isGADataAvailable":true,"address":"5592 Clubhouse Dr, Burlington, Iowa, 52601-8675","viewOverrides":{"facilityId":0,"facilityIds":[],"searchType":"GeoLocation","hotDealsOnly":false,"radius":35,"sortDirection":"Asc","facilityName":"Spirit Hollow Golf Course","priceMax":10000.0,"priceMin":0.0,"timePeriod":0,"holes":"Any","facilityType":"GolfCourse","players":0,"homePageSearch":false,"redirectOnSearch":true,"resetLocation":true,"searchParamsAction":"Client","teeTimeId":0,"timeMin":10,"timeMax":42,"defaultView":"Course","defaultSort":"Facilities.Distance","rateType":"all","federatedSearchSettings":{"isTeeTimeSearchInstance":false,"nonSmallDisplayItemResultsLimit":20,"smallDisplayItemResultsLimit":20},"vipSubscriptionSetting":{"isSubcriptionEnabled":true,"vipInterstitialSettings":{"interstitialInactiveDays":7}},"disableLocationChange":false,"disableViewChange":false,"disableSearchResultActions":false,"offPlatformCourse":false}};
+		viewModel.pageConfig = {"name":"Large","height":1600,"width":1200,"sections":[{"name":"GlobalTeeTimesSearch","preLoad":true,"type":"Grid","order":1,"widgets":[{"model":"","items":-1,"pageModel":{"facilityIds":[],"searchType":"GeoLocation","hotDealsOnly":false,"radius":35,"sortDirection":"Asc","priceMax":10000.0,"priceMin":0.0,"timePeriod":0,"holes":"Any","facilityType":"GolfCourse","players":0,"searchParamsAction":"Client","teeTimeId":0,"timeMin":10,"timeMax":42,"defaultView":"Course","defaultSort":"Facilities.Distance","rateType":"all","federatedSearchSettings":{"isTeeTimeSearchInstance":false,"nonSmallDisplayItemResultsLimit":20,"smallDisplayItemResultsLimit":20},"vipSubscriptionSetting":{"isSubcriptionEnabled":true,"vipInterstitialSettings":{"interstitialInactiveDays":7}},"disableLocationChange":false,"disableViewChange":false,"disableSearchResultActions":false,"offPlatformCourse":false},"children":[],"hideWhenEmpty":false,"name":"SearchInputBig","template":"_Search-Input-Big"}],"useParentAsideContainer":false,"useWidgetDimensionsOnly":false},{"name":"NearbyFacilities","preLoad":true,"css":"hidden","type":"Grid","order":2,"widgets":[{"model":"","items":6,"pageModel":{"facilityIds":[],"searchType":"GeoLocation","hotDealsOnly":false,"radius":35,"sortDirection":"Asc","priceMax":10000.0,"priceMin":0.0,"timePeriod":0,"holes":"Any","facilityType":"GolfCourse","players":0,"searchParamsAction":"Client","teeTimeId":0,"timeMin":10,"timeMax":42,"defaultView":"Course","defaultSort":"Facilities.Distance","rateType":"all","federatedSearchSettings":{"isTeeTimeSearchInstance":false,"nonSmallDisplayItemResultsLimit":20,"smallDisplayItemResultsLimit":20},"vipSubscriptionSetting":{"isSubcriptionEnabled":true,"vipInterstitialSettings":{"interstitialInactiveDays":7}},"disableLocationChange":false,"disableViewChange":false,"disableSearchResultActions":false,"offPlatformCourse":false},"css":"hidden","appendToWidgetName":"#nearby-facilities-slider","children":[],"hideWhenEmpty":false,"name":"NearbyFacilities","template":"_NearbyFacilities"},{"model":"","items":6,"pageModel":{"facilityIds":[],"searchType":"GeoLocation","hotDealsOnly":false,"radius":35,"sortDirection":"Asc","priceMax":10000.0,"priceMin":0.0,"timePeriod":0,"holes":"Any","facilityType":"GolfCourse","players":0,"searchParamsAction":"Client","teeTimeId":0,"timeMin":10,"timeMax":42,"defaultView":"Course","defaultSort":"Facilities.Distance","rateType":"all","federatedSearchSettings":{"isTeeTimeSearchInstance":false,"nonSmallDisplayItemResultsLimit":20,"smallDisplayItemResultsLimit":20},"vipSubscriptionSetting":{"isSubcriptionEnabled":true,"vipInterstitialSettings":{"interstitialInactiveDays":7}},"disableLocationChange":false,"disableViewChange":false,"disableSearchResultActions":false,"offPlatformCourse":false},"css":"hidden","appendToWidgetName":"#facility-related-courses-slider","children":[],"hideWhenEmpty":false,"name":"FacilityRelatedCourses","template":"_Facility-Related-Courses"}],"useParentAsideContainer":false,"useWidgetDimensionsOnly":false},{"name":"coursedetails_pencil","preLoad":false,"type":"Grid","order":3,"widgets":[{"items":1,"appendToWidgetName":"hot-deals-nav","height":122.0,"children":[],"hideWhenEmpty":false,"id":"DfpAd_coursedetails_pencil","name":"DfpAd","template":"_DfpAd"}],"useParentAsideContainer":false,"useWidgetDimensionsOnly":true},{"name":"HotDealsZone","preLoad":true,"css":"hidden","type":"Grid","order":4,"widgets":[{"model":"","items":8,"pageModel":{"facilityIds":[],"searchType":"GeoLocation","hotDealsOnly":false,"radius":35,"sortDirection":"Asc","priceMax":10000.0,"priceMin":0.0,"timePeriod":0,"holes":"Any","facilityType":"GolfCourse","players":0,"searchParamsAction":"Client","teeTimeId":0,"timeMin":10,"timeMax":42,"defaultView":"Course","defaultSort":"Facilities.Distance","rateType":"all","federatedSearchSettings":{"isTeeTimeSearchInstance":false,"nonSmallDisplayItemResultsLimit":20,"smallDisplayItemResultsLimit":20},"vipSubscriptionSetting":{"isSubcriptionEnabled":true,"vipInterstitialSettings":{"interstitialInactiveDays":7}},"disableLocationChange":false,"disableViewChange":false,"disableSearchResultActions":false,"offPlatformCourse":false},"children":[],"hideWhenEmpty":false,"name":"HotDealZone","template":"_Hot-Deal-Zone"},{"model":"","items":-1,"pageModel":{"facilityIds":[],"searchType":"GeoLocation","hotDealsOnly":false,"radius":35,"sortDirection":"Asc","priceMax":10000.0,"priceMin":0.0,"timePeriod":0,"holes":"Any","facilityType":"GolfCourse","players":0,"searchParamsAction":"Client","teeTimeId":0,"timeMin":10,"timeMax":42,"defaultView":"Course","defaultSort":"Facilities.Distance","rateType":"all","federatedSearchSettings":{"isTeeTimeSearchInstance":false,"nonSmallDisplayItemResultsLimit":20,"smallDisplayItemResultsLimit":20},"vipSubscriptionSetting":{"isSubcriptionEnabled":true,"vipInterstitialSettings":{"interstitialInactiveDays":7}},"disableLocationChange":false,"disableViewChange":false,"disableSearchResultActions":false,"offPlatformCourse":false},"children":[{"name":"HotDealsDateNav","template":"HotDealsDateNav"}],"hideWhenEmpty":false,"name":"HotDealsDateNav","template":"_Hot-Deals-Date-Nav"}],"useParentAsideContainer":false,"useWidgetDimensionsOnly":false}],"adUnits":[{"adUnitName":"Golfnow.com_CourseDetails_Pencil"}]};
+	</script>
+	<script defer="defer" src="/dist/js/80399.bundle.js?v=JsvEeUp0sLE2vAYU&av=402041308"></script><script defer="defer" src="/dist/js/47636.bundle.js?v=BdbTRICtZmv9Unkh&av=402041308"></script><script defer="defer" src="/dist/js/33284.bundle.js?v=17uL43BhkN7QsA4r&av=402041308"></script><script defer="defer" src="/dist/js/54668.bundle.js?v=ZDakLemGpI9Gf512&av=402041308"></script><script defer="defer" src="/dist/js/91645.bundle.js?v=ni62UJUvOiNeH1VT&av=402041308"></script><script defer="defer" src="/dist/js/70049.bundle.js?v=G8n_qj-uq31c7L_P&av=402041308"></script><script defer="defer" src="/dist/js/course/details.bundle.js?v=uiGont4u1P2vSu42&av=402041308"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+		const courseDetailsPage = new GolfNow.CoreWeb.CourseDetailsPage(pageConfigName, 'CourseDetailsApp', '#course-details', viewModel);
+		});
+	</script>
+
+	
+</head>
+
+<body class=" theme-default">
+	<!-- Google Tag Manager (noscript) -->
+	<noscript>
+		<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-RK9VV" 
+				height="0"
+				width="0"
+				style="display: none; visibility: hidden"></iframe>
+	</noscript>
+	<!-- End Google Tag Manager (noscript) -->
+
+	<div data-fr3sh="USE2GNPWW001014" data-apiepa="https://api.gnsvc.com/rest" data-v="4.0.20.41308" data-id10t="1"
+		 data-dm="Large">
+		<!-- USE2GNPWW001014 --> <!-- fR3sH|<0d€ -->
+		<!-- https://api.gnsvc.com/rest -->
+		<!-- 4.0.20.41308 -->
+		<!-- ID11T -->
+		<!-- DM-Large -->
+	</div>
+	<div class="drawer-wrap subpage" style="display: none;">
+		<div class="drawer-right-inner">
+					
+<header id="main-header" class="relative md:min-h-[6.8125rem] min-h-16 bg-skin-menu z-50" role="banner">
+	<a id="skip-to-content"
+	   class="sr-only px-4 py-3 text-center text-white rounded-b-lg bg-primary absolute left-2 -translate-y-[120%] transition-transform hover:translate-y-0 focus:translate-y-0">
+		Skip to main content</a>
+
+		<nav
+			class="fixed top-0 z-20 content-center w-full border-b border-skin-menuborder top-bar bg-skin-menu start-0 min-h-16">
+				<div id="global-nav-container" class="hidden w-full border-b border-skin-menuborder lg:justify-normal md:flex">
+					<nav class="container mx-auto overflow-hidden brand-nav bg-skin-menu">
+						<ul>
+							<li class="table-cell align-middle border-r border-gray-200 opacity-75 cursor-pointer last-of-type:border-r-0 hover:opacity-100"
+								v-for="item in navItems" :key="item.id">
+								<a :href="`${item.href}?utm_source=${item.utm_source}&utm_medium=Partnerships&utm_campaign=Universal_Navigation`"
+								   rel="noopener noreferrer" target="_blank"
+								   class="block px-5 py-3 text-sm text-black lg:py-4 hover:bg-gray-100">
+									<img class="h-3" :src="item.imgsrc" alt="item.alt" title="item.title" />
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			<div class="grid items-center header-padding-y bg-skin-menu min-h-16">
+				<div class="container flex flex-wrap justify-between mx-auto">
+					
+<a href="/" class="flex items-center md:space-x-2 lg:space-x-3 rtl:space-x-reverse">
+	<img class="hidden h-[var(--header-logo-height)] lg:block" width="138" height="28"
+		 src="/Content/images/gn-logo.svg" alt="GolfNow Official Site" />
+	<img class="block object-contain w-11 h-10 logo-image lg:hidden" width="44" height="40" src="https://gqp7knph.cdn.imgeng.in/Content/images/gn-logo-small.svg?av=402041308"
+		 alt="GolfNow Official Site" />
+</a>
+
+
+						<div id="login-menu-container" class="flex items-center space-x-6 nav:order-2 rtl:space-x-reverse">
+							<ul class="flex items-center space-x-1 nav:space-x-6 nav:order-2 lg:pt-1 rtl:space-x-reverse login-box-helper"
+								:key="componentKey">
+										<li :class="['loggedin-data-container', toggleListItemCss]" :data-firstname="firstName" :data-lastname="lastName"
+			:data-customerid="customerId" :data-profileid="profileId" :data-isgpmember="false"
+			:data-isgppmember="false">
+
+				
+		<avatar first-name="" last-name="" :profile-id="-1"
+				customer-id="" :authenticated="true" avatar-pic=""></avatar>
+
+		</li>
+		<li id="login-items" class="hidden navlg:font-light nav:block">
+			<a role="menuitem" data-noprerender
+			   class="text-xs navlg:text-sm login-link font-display text-skin-menulink hover:underline hover:text-skin-menuhover"
+			   href="/account/login?returnUrl=%2Fcourses%2F1505820-spirit-hollow-golf-course-details">
+				Log in
+			</a>
+			<span class="sr-hidden text-skin-menulink">&nbsp;/&nbsp;</span>
+		</li>
+		<li class="!m-0 navlg:font-light login-items nav:block hidden">
+			<a role="menuitem" data-noprerender
+			   class="text-xs navlg:text-sm font-display text-skin-menulink hover:underline hover:text-skin-menuhover"
+			   href="/account/login?returnUrl=%2Fcourses%2F1505820-spirit-hollow-golf-course-details">
+				Sign Up
+			</a>
+		</li>
+			<gn-drawer v-if="isDrawerOpen" :key="loginDrawerKey"></gn-drawer>
+
+							</ul>
+							<button data-collapse-toggle="topnavigation-container" type="button"
+									class="inline-flex items-center justify-center w-10 h-10 px-4 py-2 rounded-lg nav:hidden focus:outline-none focus:ring-2 focus:ring-gray-100"
+									aria-controls="topnavigation-container" aria-expanded="false">
+								<span class="sr-only">Open main menu</span>
+								<i class="text-2xl icon-Menu text-skin-menulink"></i>
+							</button>
+						</div>
+					<div id="topnavigation-container"
+						 class="items-center justify-between hidden w-full mr-auto navlg:ml-8 nav:ml-4 nav:flex nav:w-auto nav:order-1">
+						<div class="hidden nav:block">
+							
+		<ul class="flex flex-col float-left p-4 mt-4 text-xs bg-transparent navlg:text-sm navlg:font-light font-display nav:p-0 navlg:space-x-4 nav:space-x-2 rtl:space-x-reverse nav:flex-row nav:mt-0"
+			data-navigation>
+			<li class="internal-link text-skin-menulink hover:text-skin-menuhover"><a href="/tee-times/hot-deals">Hot Deals</a></li><li class="internal-link text-skin-menulink hover:text-skin-menuhover"><a href="/tee-times/courses-near-me">Courses Near Me</a></li><li class="internal-link text-skin-menulink hover:text-skin-menuhover"><a href="/destinations">Destinations</a></li><li class="internal-link text-skin-menulink hover:text-skin-menuhover"><a href="/tee-times/best-golf-courses-near-me/search">Best Courses</a></li><li class="internal-link text-skin-menulink hover:text-skin-menuhover" data-badge="-" data-rewards="true"><a data-badge="-" data-rewards="true" href="/golfpass-hub">GolfPass Hub</a></li><li class="internal-link text-skin-menulink hover:text-skin-menuhover" data-badge="-" data-rewards="true"><a data-badge="-" data-rewards="true" href="/rewards">Rewards</a></li><li class="internal-link text-skin-menulink hover:text-skin-menuhover"><a href="/memberships/golfpass">Join GolfPass</a></li><li class="internal-link text-skin-menulink hover:text-skin-menuhover"><a href="/giftcards">Gift Cards</a></li>
+</ul>
+
+						</div>
+
+						<div class="block nav:hidden">
+								<ul id="hamburger-menu"
+		class="flex flex-col float-left w-full h-screen pb-20 overflow-scroll text-sm bg-skin-menu nav:pb-0 mb-9 nav:mb-0 font-display nav:space-x-4 rtl:space-x-reverse nav:flex-row nav:mt-0 nav:border-0"
+		data-navigation>
+		<div class="w-full" data-accordion="collapse" data-active-classes="bg-blue-100 text-blue-600" data-inactive-classes="text-gray-500" id="accordion-hamburger"><div class="border-t border-gray-200 mt-3 pt-3"><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="#"></a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" data-badge="-" data-rewards="true" href="/rewards">Rewards</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="https://golfnow.my.site.com/golfnowsupport/s/">Help</a></div><div class="border-t border-gray-200 mt-3 pt-3"><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="#"></a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="/tee-times/hot-deals">Hot Deals</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="/tee-times/courses-near-me">Courses Near Me</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="/tee-times/best-golf-courses-near-me/search">Best Courses</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="/destinations">Destinations</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="/memberships/golfpass">Join GolfPass</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="/giftcards">Gift Cards</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="/golfpass-hub">GolfPass Hub</a></div><div class="border-t border-gray-200 mt-3 pt-3"><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="#"></a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" href="/mobile">Download the App</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" data-noprerender="true" href="/account/login">Log In</a></div><div><a class="flex items-center p-2 text-skin-menulink rounded-lg hover:bg-skin-menulinkhover group" data-noprerender="true" href="/account/create">Create an Account</a></div></div>
+	</ul>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+			
+<main role="main" id="course-details">
+	<modal size="medium" v-if="showCommentModal" :show="showCommentModal" :z-index="100" :hide-footer-close-button="false" @close="closeCommentModal">
+		<template #header="">
+			<div></div>
+			<Gn-Button variant="unstyled" v-on:click="closeCommentModal" class="cursor-pointer close-reveal-modal"
+					   role="button" aria-label="Close">
+				<i class="text-2xl icon-Close" aria-hidden="true"></i>
+			</Gn-Button>
+		</template>
+		<template #body="">
+			<div id="BVSubmissionContainer"></div>
+		</template>
+		<template class="min-h-0" #footer="">
+			<div></div>
+		</template>
+	</modal>
+
+
+	<!-- error handling modal -->
+
+	<section id="teetime-search" class="hide">
+		<div id="select-rate-modal-container">
+			<div id="select-rate-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle"
+				 aria-hidden="true" role="dialog"></div>
+		</div>
+	</section>
+	<modal size="small" v-if="showHtmlMessageModal" :show="showHtmlMessageModal" :z-index="100" :hide-footer-close-button="false" @close="ackBtnText ? acknowledgeHtmlMessageModal(false) : closeHtmlMessageModal()">
+	<template #htmlbody="">
+		<div v-html="htmlContent"></div>
+	</template>
+	<template #footer="">
+		<div v-if="ackBtnText" class="flex gap-10 modalButtons shared-html-modals">
+			<gn-button v-on:click="acknowledgeHtmlMessageModal(true)" variant="solid-primary"
+					   class="w-full mr-4 favs-ack-confirm-btn">
+				{{ ackBtnText }}
+			</gn-button>
+			<gn-button v-on:click="acknowledgeHtmlMessageModal(false)" variant="outline-primary"
+					   class="w-full favs-ack-cancel-btn">
+				{{ closeButtonText }}
+			</gn-button>
+		</div>
+		<div v-else class="modalButtons shared-html-modals">
+			<gn-button v-on:click="closeHtmlMessageModal" variant="solid-primary" aria-label="Close">
+				{{ closeButtonText }}
+			</gn-button>
+		</div>
+	</template>
+</modal>
+	
+<section id="gn_widget_csrf"><input name="__RequestVerificationToken" type="hidden" value="CfDJ8DbcpMWY6AhGq6iLa5TDTLp21_7Zxv0s3blaofvJQh7HSOnrDmHFBKC5xBxzTt1_ZgrhwTVDZJy2HolSdC4FtT9ug3hIaUm4kpEuvg4AAN0-BQp4T7uyZTOe8RVQTCZNRpjNAUAZ53Rs03sOW37xXsc" /></section>
+		<section id="globalteetimessearch" class=" gn_section" data-preloaded="true" style=""
+				 v-cloak>
+<search-input-big class=" gn_widget" style="" :minimumchar="3"
+				  :preview-top="20" search-cta="Search" :show-hot-deals-btn="true"
+				  :suggested-searches='[{"id":"hotDeals","name":"Hot Deals","url":"/tee-times/hot-deals","class":"bg-gradient-to-t from-deal-gradient-start to-deal-gradient-end text-white text-shadow geo-hotdeals","icon":"icon-Hot-Deals"},{"id":"coursesNearMe","name":"Courses Near Me","url":"/tee-times/courses-near-me","class":"bg-white geo-near-me","icon":"icon-Location"},{"id":"playNine","name":"9 Holes","url":"/go-play/play-nine","class":"bg-white top-rated","icon":"icon-Golfball"},{"id":"bestCoursesNearMe","name":"Best Courses","url":"/tee-times/best-golf-courses-near-me/search","class":"bg-white favorites","icon":"icon-Medal"},{"id":"privateCourses","name":"Private Courses","url":"/private-courses","class":"bg-white","icon":"icon-Flag"}]'
+				  other-searches-header=""
+				  :other-searches='[{"id":"simulators","name":"Simulators","url":"/indoor-golf-simulators","class":"bg-white simulators","icon":"icon-Golfer"},{"id":"clubFitting","name":"Custom Club Fittings","url":"/golf-club-fitting-near-me","class":"bg-white club-fitting","icon":"icon-Golfer"}]'>
+</search-input-big>
+		</section>
+		<section id="nearbyfacilities" class="hidden gn_section" data-preloaded="true" style=""
+				 v-cloak>
+
+	<nearby-facilities class="hidden gn_widget" :items-to-show="6"
+					   :latitude="40.760303" :longitude="-91.14471"
+					   :radius="25" :onplatform="false"
+					   append-to-element="#nearby-facilities-slider"
+					   title="Spirit Hollow Golf Course"
+					   style="" ref="nearbyFacilities">
+	</nearby-facilities>
+
+		</section>
+		<section id="coursedetails_pencil" class=" gn_section" data-preloaded="false" style=""
+				 v-cloak>
+				<deferred-widget-section section-id="coursedetails_pencil"></deferred-widget-section>
+		</section>
+		<section id="hotdealszone" class="hidden gn_section" data-preloaded="true" style=""
+				 v-cloak>
+
+
+<hot-deal-zone :items-to-show="8"
+			   :facility-id="0" :onplatform="false"
+			   facility-name="Spirit Hollow Golf Course" deal-copy="Hot Deal"
+			   :hide-when-empty="false"
+			   class="mb-4 gn_widget"
+			   style="" ref="hotDealZone">
+</hot-deal-zone>
+<hot-deals-date-nav location-heading-label="Hot Deals for: Spirit Hollow Golf Course" :show-filters="true"
+					class="hotdeals-date-nav gn_widget" style=""
+					ref="hotDealsDateNav"></hot-deals-date-nav>
+		</section>
+
+
+	<section id="course-detail-section" class="container grid-cols-12 gap-x-10 mx-auto md:grid" itemscope
+			 itemtype="http://schema.org/GolfCourse" v-cloak>
+		<div id="details-photo-gallery" class="col-span-12 my-6 md:contents course-detail-main">
+			<div id="default-styled-tab-content" class="contents">
+			<div id="facility-photo-gallery"
+				 class="relative col-span-12 mt-6 lg:col-span-8 lg:col-start-1 facility-image-lightbox">
+				<favorite-icon facility-id="0" facility-name="Spirit Hollow Golf Course"
+							   analytics-page="Course Details"></favorite-icon>
+					<div class="absolute z-40 flex flex-row items-center gap-2 bottom-2 left-2">
+
+</div>
+				<div id="facility-images" class="relative h-56 md:h-96">
+					<!-- Carousel wrapper -->
+
+					<carousel size="md" :items="4">
+									<div class="duration-700 ease-in-out" data-carousel-item="active">
+										<div class="absolute inset-0 z-0 bg-center bg-cover blur-md" aria-hidden="true"
+											 style="background-image: url('https://exddilid.cdn.imgeng.in/app/courses/image/preview/88222.jpg?imgeng=/w_300');">
+										</div>
+										<img class="relative object-contain h-full mx-auto max-h-56 md:max-h-96"
+											 src="https://exddilid.cdn.imgeng.in/app/courses/image/preview/88222.jpg" alt="A view of the 1st green at Spirit Hollow Golf Course." fetchpriority="high" loading="eager"
+											 decoding="async" width="800" height="600">
+									</div>
+									<div class="hidden duration-700 ease-in-out" data-carousel-item>
+										<div class="absolute inset-0 z-0 bg-center bg-cover blur-md" aria-hidden="true"
+											 style="background-image: url('https://exddilid.cdn.imgeng.in/app/courses/image/preview/88223.jpg?imgeng=/w_300');">
+										</div>
+										<img class="relative object-contain h-full mx-auto max-h-56 md:max-h-96"
+											 src="https://exddilid.cdn.imgeng.in/app/courses/image/preview/88223.jpg" alt="A view of the 6th green at Spirit Hollow Golf Course." loading="lazy" decoding="async" width="800"
+											 height="600">
+									</div>
+									<div class="hidden duration-700 ease-in-out" data-carousel-item>
+										<div class="absolute inset-0 z-0 bg-center bg-cover blur-md" aria-hidden="true"
+											 style="background-image: url('https://exddilid.cdn.imgeng.in/app/courses/image/preview/88220.jpg?imgeng=/w_300');">
+										</div>
+										<img class="relative object-contain h-full mx-auto max-h-56 md:max-h-96"
+											 src="https://exddilid.cdn.imgeng.in/app/courses/image/preview/88220.jpg" alt="A view from tee #8 at Spirit Hollow Golf Course." loading="lazy" decoding="async" width="800"
+											 height="600">
+									</div>
+									<div class="hidden duration-700 ease-in-out" data-carousel-item>
+										<div class="absolute inset-0 z-0 bg-center bg-cover blur-md" aria-hidden="true"
+											 style="background-image: url('https://exddilid.cdn.imgeng.in/app/courses/image/preview/88221.jpg?imgeng=/w_300');">
+										</div>
+										<img class="relative object-contain h-full mx-auto max-h-56 md:max-h-96"
+											 src="https://exddilid.cdn.imgeng.in/app/courses/image/preview/88221.jpg" alt="A view of hole #11 at Spirit Hollow Golf Course." loading="lazy" decoding="async" width="800"
+											 height="600">
+									</div>
+					</carousel>
+				</div>
+			</div>
+
+			<nav aria-label="Golf course details"
+				 class="mb-4 border-b border-gray-300 col-span-12 lg:col-span-8 lg:col-start-1">
+				<ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" role="tablist">
+					<li class="me-2" role="presentation">
+						<button class="inline-block p-4 text-gray-900 border-b-2 border-transparent rounded-t-lg"
+								id="info-tab" data-tabs-target="#info-tab-panel" type="button" role="tab"
+								aria-controls="info-tab-panel info-tab-lower-panel" aria-selected="false"
+								aria-label="View course information and details">
+							Course Info
+						</button>
+					</li>
+					<li class="me-2" role="presentation">
+						<button class="inline-block p-4 text-gray-900 border-b-2 border-transparent rounded-t-lg"
+								id="reviews-tab" data-tabs-target="#reviews-tab-panel" type="button" role="tab"
+								aria-controls="reviews-tab-panel" aria-selected="false"
+								aria-label="View course reviews and ratings">
+							Reviews
+						</button>
+					</li>
+				</ul>
+			</nav>
+			<div id="info-tab-panel" role="tabpanel" aria-labelledby="info-tab"
+				 class="col-span-12 lg:col-span-8 lg:col-start-1">
+				<h1 translate="no" id="course-info" class="text-2xl font-semibold font-display">
+					<span itemprop="name">Spirit Hollow Golf Course</span>
+					 in Burlington, Iowa
+				</h1>
+				<address class="not-italic" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress"
+						 translate="no">
+					<span itemprop="streetAddress">5592 Clubhouse Dr</span>,
+					<span itemprop="addressLocality">Burlington</span>,
+					<span itemprop="addressRegion">Iowa</span>,
+					<span itemprop="postalCode">52601-8675</span>
+				</address>
+				<meta itemprop="telephone" content="1-800-767-3574" />
+				<br />
+				<expandable-content :max-lines="4" class="description text-skin-base">
+					Not far from Burlington, Spirit Hollow Golf Course offers terrific views and challenging play for golfers at every skill level. Well-groomed fairways and greens keep Spirit Hollow Golf Course difficult yet friendly, and the staff can offer tips and tricks for playing your best round. Spirit Hollow Golf Course is a terrific choice for your regular rounds of golf or a new destination for you and friends when visiting Burlington.
+				</expandable-content>
+			</div>
+			<aside id="course-quick-info"
+				   class="hidden col-span-12 md:block lg:col-span-4 lg:col-start-9 lg:row-span-5 lg:row-start-1">
+				<div class="sticky p-5 my-6 bg-white border border-gray-200 rounded-lg teeBookBtnSticky">
+					<section class="" data-options="sticky_on: large">
+						<h2 itemprop="name" translate="no" class="mb-2 text-xl font-semibold font-display">
+							Spirit Hollow Golf Course
+						</h2>
+						<address itemprop="address" class="text-sm not-italic" itemscope
+								 itemtype="http://schema.org/PostalAddress" translate="no">
+							<span itemprop="streetAddress">5592 Clubhouse Dr</span>,
+							<span itemprop="addressLocality">Burlington</span>,
+							<span itemprop="addressRegion">Iowa</span>,
+							<span itemprop="postalCode">52601-8675</span>
+						</address>
+						<div class="mt-3">
+								<gn-button variant="outline" rounded="full" size="xs" title="View Map"
+										   class="inline-flex items-center gap-1 px-3 py-1 my-2 mr-2"
+									@click="showFacilityGoogleMap">
+									<i class="icon-Location text-link" aria-hidden="true"></i> View on map
+								</gn-button>
+								<gn-link variant="outline" rounded="full" size="xs"
+										 class="inline-flex items-center gap-1 px-3 py-1 my-2"
+										 href="/courses/29590/write-review/1505820">
+									<i class="icon-User-Edit text-primary" aria-hidden="true"></i>
+									Be the first to write a review
+								</gn-link>
+						</div>
+							<div id="nearby-facilities-slider" class="my-4">
+								<h3 class="mt-3 mb-2 text-xl font-semibold font-display">Related Facilities</h3>
+								<div class="container throbber">
+										<section
+			 class="result rounded-lg p-4 border border-gray-200 mb-4 bg-white overflow-hidden ">
+		<div class="relative grid grid-cols-4 gap-3 animate-pulse">
+			<div class="h-44 bg-slate-200 "></div>
+			<div class="col-span-2">
+				<div class="h-6 mx-4 mb-2 rounded bg-slate-200"></div>
+				<div class="h-3 mx-4 rounded bg-slate-200"></div>
+			</div>
+			<div class="grid items-center">
+				<div>
+					<div class="h-4 mx-4 mb-2 rounded bg-slate-200"></div>
+					<div class="h-6 mx-4 mb-4 rounded bg-slate-200"></div>
+					<div class="h-10 mx-4 mb-2 rounded bg-slate-200"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+								</div>
+							</div>
+							<div class="grid grid-cols-1 gap-4 pb-3 mb-3 border-b border-gray-200 md:grid-cols-3 feedback"
+								 itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+								<h3 class="col-span-4 mt-4 text-lg font-semibold font-display">Feedback from Golfers</h3>
+
+								<div class="text-sm recommended">
+									<template v-if="allTimeSnapshot.reviews > 0">
+										<i class="icon-Thumbs-Up-Empty" aria-hidden="true"></i>
+										{{ allTimeSnapshot.percentRecommended }}%
+
+										<gn-tooltip id="recommended-tooltip">
+											GolfPass Rating Index was created to provide a more accurate indication of a golf
+											course's
+											current overall recommendation percentage. Newer reviews are weighted heavier than
+											older ones
+											to provide a clearer picture of current conditions and service.
+										</gn-tooltip>
+									</template>
+								</div>
+
+								<div class="inline-flex items-center gap-1 average-rating whitespace-nowrap">
+									<star-ratings :facility-id="0"
+												  :average-rating="allTimeSnapshot.ratings.overall.average"
+												  :product-review-id="1505820"
+												  :include-container="false" :review-count="allTimeSnapshot.reviews"
+												  :stars-only="true">
+									</star-ratings>
+								</div>
+
+									<div class="text-sm text-right">
+										<meta itemprop="ratingValue" :content="0" />
+										<i class="icon-Pencil-Box" aria-hidden="true"></i>
+										<span itemprop="reviewCount">0</span>
+										Reviews
+									</div>
+							</div>
+
+						<div class="hidden lg:block">
+							<course-detail-review-summary :summaries="reviewSummaries"
+														  :overall-rating="allTimeSnapshot.ratings.overall.average">
+							</course-detail-review-summary>
+						</div>
+
+							<h3 class="text-lg font-semibold font-display">Quick Facts</h3>
+							
+<dl class="my-2 text-sm course-stats">
+		<dt class="inline-block mr-1 course-statistics-holes">
+			<i class="pr-1 icon-Golf-Flag text-link" aria-hidden="true"></i>
+			<strong>Holes</strong>
+		</dt>
+		<dd class="inline mr-2 course-statistics-holes">18</dd>
+		<dt class="inline-block mr-1 course-statistics-par">
+			<i class="pr-1 icon-Pencil-Detailed text-link" aria-hidden="true"></i>
+			<strong>Par</strong>
+		</dt>
+		<dd class="inline mr-2 course-statistics-par">72</dd>
+		<dt class="inline-block mr-1 course-statistics-length">
+			<i class="pr-1 icon-Binoculars text-link" aria-hidden="true"></i>
+			<strong>Length</strong>
+		</dt>
+		<dd class="inline mr-2 course-statistics-length">7301 yards</dd>
+		<dt class="inline-block mr-1 course-statistics-slope">
+			<i class="pr-1 icon-Scorecard-Solid text-link" aria-hidden="true"></i>
+			<strong>Slope</strong>
+		</dt>
+		<dd class="inline mr-2 course-statistics-slope">134</dd>
+		<dt class="inline-block mr-1 course-statistics-rating">
+			<i class="pr-1 icon-Stats text-link" aria-hidden="true"></i>
+			<strong>Rating</strong>
+		</dt>
+		<dd class="inline mr-2 course-statistics-rating">74.8</dd>
+</dl>
+						<ul class="pb-3 mt-3 ml-3 list-disc course-info-list">
+								<li>			<p class="mb-2">Year built: 2000</p>
+
+								</li>
+								<li>			<p class="mb-2">Greens: Bent Grass</p>
+</li>
+								<li>			<p class="mb-2">Fairways: Bent Grass</p>
+
+								</li>
+								<li>			<p class="mb-2">Season: Year round</p>
+
+								</li>
+						</ul>
+
+			<meta itemprop="priceRange" content="$0" />
+			<div class="text-center" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+				<meta itemprop="price" content="$0" />
+				<meta itemprop="availability" content="Out of stock" />
+				<br class="my-3" />
+				<gn-link variant="solid-secondary" href="/tee-times/location/lat/40.760303/lng/-91.14471/place/burlington-ia-us" class="block my-3">
+					Nearby Tee Times
+				</gn-link>
+			</div>
+					</section>
+				</div>
+			</aside>
+			<div id="info-tab-lower-panel" class="col-span-12 lg:col-span-8 lg:col-start-1">
+				<div class="block md:hidden mobile-tee-times">
+			<meta itemprop="priceRange" content="$0" />
+			<div class="text-center" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+				<meta itemprop="price" content="$0" />
+				<meta itemprop="availability" content="Out of stock" />
+				<br class="my-3" />
+				<gn-link variant="solid-secondary" href="/tee-times/location/lat/40.760303/lng/-91.14471/place/burlington-ia-us" class="block my-3">
+					Nearby Tee Times
+				</gn-link>
+			</div>
+				</div>
+				<div id="hot-deals-nav"></div>
+				<div id="hot-deals" class="my-6 border-gray-200 md:pb-4 md:border-b"></div>
+					<h2 class="mt-5 mb-2 text-lg font-semibold font-display">
+						Tee Details
+					</h2>
+							<table id="course-details-chart" class="w-full overflow-hidden border border-gray-300 rounded-lg">
+			<thead class="bg-primary">
+				<tr>
+					<th class="py-3 text-sm text-center text-white uppercase md:text-base">Tee</th>
+					<th class="py-3 text-sm text-center text-white uppercase md:text-base">Par</th>
+					<th class="py-3 text-sm text-center text-white uppercase md:text-base">Length</th>
+						<th class="py-3 text-sm text-center text-white uppercase md:text-base">Rating</th>
+						<th class="py-3 text-sm text-center text-white uppercase md:text-base">Slope</th>
+				</tr>
+			</thead>
+			<tbody>
+						<tr class="even:bg-gray-100 odd:bg-white">
+							<td class="px-6 py-4 text-xs text-center md:text-base">Gold</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">72</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">7550
+								yards</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">74.8</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">134</td>
+						</tr>
+						<tr class="even:bg-gray-100 odd:bg-white">
+							<td class="px-6 py-4 text-xs text-center md:text-base">Black</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">72</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">6580
+								yards</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">71.4</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">124</td>
+						</tr>
+						<tr class="even:bg-gray-100 odd:bg-white">
+							<td class="px-6 py-4 text-xs text-center md:text-base">White</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">72</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">6010
+								yards</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">69.0</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">117</td>
+						</tr>
+						<tr class="even:bg-gray-100 odd:bg-white">
+							<td class="px-6 py-4 text-xs text-center md:text-base">White (W)</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">72</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">6010
+								yards</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">71.5</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">120</td>
+						</tr>
+						<tr class="even:bg-gray-100 odd:bg-white">
+							<td class="px-6 py-4 text-xs text-center md:text-base">Red (W)</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">72</td>
+							<td class="px-6 py-4 text-xs text-center md:text-base">5053
+								yards</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">70.3</td>
+								<td class="px-6 py-4 text-xs text-center md:text-base">116</td>
+						</tr>
+			</tbody>
+		</table>
+
+				<!-- Policies and Info-->
+					<div class="grid grid-cols-1 gap-3 pb-4 my-6 mb-4 border-b border-gray-200 md:gap-5 md:grid-cols-3"
+						 id="policies-info">
+							<div>
+								<h2 class="text-lg font-semibold font-display">Policies</h2>
+								<ul class="ml-3 list-disc">
+									
+									
+												<p class="mb-2">Credit cards accepted: Yes</p>
+
+									
+												<p class="mb-2">Fivesomes allowed: No. Only with permission.</p>
+
+												<p class="mb-2">Dress Code: Appropriate golf attire.</p>
+
+								</ul>
+							</div>
+							<div>
+								<h2 class="text-lg font-semibold font-display">Rentals/Services</h2>
+								<ul class="ml-3 list-disc">
+												<p class="mb-2">Carts: Yes - included in green fee</p>
+
+									
+									
+									
+									
+								</ul>
+							</div>
+							<div>
+								<h2 class="text-lg font-semibold font-display">Practice/Instruction</h2>
+								<ul class="ml-3 list-disc">
+												<p class="mb-2">Driving range: Yes</p>
+
+												<p class="mb-2">Pitching/chipping area: Yes</p>
+
+												<p class="mb-2">Putting green: Yes</p>
+
+									
+												<p class="mb-2">Teaching pro: Yes</p>
+
+								</ul>
+							</div>
+					</div>
+				
+			</div>
+			<div id="reviews-tab-panel" role="tabpanel" aria-labelledby="reviews-tab"
+				 class="col-span-12 lg:col-span-8 lg:col-start-1">
+				<gn-tabs-pill :id="ratingsTabComponentId" class="md:float-right md:w-auto"
+							  :tab-items="ReviewTabItems" @tab-change="handleReviewTabChange"></gn-tabs-pill>
+
+				<section :id="activePanelId" role="tabpanel" :aria-labelledby="activeTabElementId" tabindex="0"
+						 class="clear-both pt-4">
+					<div id="RatingSnapshot">
+						<course-detail-snapshot :snapshot="activeSnapshot"
+												:summaries="reviewSummaries"></course-detail-snapshot>
+					</div>
+				</section>
+
+				<section id="reviews" class="mt-3">
+					<div class="grid items-center grid-cols-2 gap-3 mt-6">
+						<h2 class="col-span-2 mb-3 text-2xl font-semibold font-display" translate="no">Reviews for
+							Spirit Hollow Golf Course
+						</h2>
+						<a href="http://www.golfpass.com/" class="block mb-4 md:hidden" target="_blank"
+						   rel="noopener noreferrer">
+							<img src="https://gqp7knph.cdn.imgeng.in/Content/images/golfpass/golfpass.svg?av=402041308" width="176" height="24"
+								 class="golf-advisor w-44" alt="GolfPass logo" />
+						</a>
+					</div>
+
+					<div class="grid items-center grid-cols-12 gap-3 pb-5 border-b border-gray-200 filtering">
+						<div class="relative col-span-12 md:col-span-8">
+							<gn-button variant="solid-primary"
+								@btn-click="showFiltersDropdown = !showFiltersDropdown">
+								Filter Reviews <i class="pl-2 icon-Chevron-Down"></i>
+							</gn-button>
+							<div v-show="showFiltersDropdown" id="drop1"
+								 class="absolute left-6 top-0 z-10 grid md:w-[700px] w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+								<course-detail-review-filters :filter-totals="filterTotals"
+								@filter-btn-click="handleFilterReviewsButtonClick"></course-detail-review-filters>
+							</div>
+						</div>
+						<div class="hidden col-span-12 text-right md:col-span-4 md:block">
+							<a href="http://www.golfpass.com/" target="_blank" rel="noopener noreferrer"
+							   class="inline-block">
+								<img src="https://gqp7knph.cdn.imgeng.in/Content/images/golfpass/golfpass.svg?av=402041308" width="192" height="24"
+									 class="w-48 golf-advisor" alt="GolfPass logo" />
+							</a>
+						</div>
+					</div>
+
+					<div id="ListReviews">
+						<course-detail-review @comment-btn-click="handleCommentButtonClick"></course-detail-review>
+					</div>
+					<div class="text-center record-paging-container">
+						<gn-button variant="outline-primary" class="block w-full my-3" @btn-click="getMoreReviews"
+								   :is-loading="loadingReviews" :disabled="loadingReviews">
+							Show more reviews
+						</gn-button>
+					</div>
+				</section>
+				<section id="facilityMap" class="hidden facility-details-map">
+					<div class="map-display">
+						<i class="text-3xl icon-Loading-Sun"></i>
+					</div>
+					<div class="grid grid-cols-2 gap-4">
+						<div class="map-actions">
+							<a href="//maps.apple.com/?q=5592&#x2B;Clubhouse&#x2B;Dr,&#x2B;Burlington,&#x2B;Iowa,&#x2B;52601-8675" target="_blank" rel="noopener noreferrer">View Full Map</a>
+						</div>
+						<div class="map-actions justify-self-end">
+							<a href="//maps.apple.com/?daddr=5592&#x2B;Clubhouse&#x2B;Dr,&#x2B;Burlington,&#x2B;Iowa,&#x2B;52601-8675" class="text-right" rel="noopener noreferrer" target="_blank">
+								Get Directions
+							</a>
+						</div>
+					</div>
+				</section>
+			</div>
+			</div>
+		</div>
+	</section>
+	<modal size="small" v-if="showMessageModal" :show="showMessageModal" :z-index="100" :hide-footer-close-button="false" @close="ackBtnText.length ? acknowledgeMessageModal(false) : closeMessageModal()">
+
+	<template #footer="">
+		<div v-if="ackBtnText.length" class="flex gap-10 modalButtons shared-modals">
+			<gn-button v-on:click="acknowledgeMessageModal(true)" variant="solid-secondary"
+					   class="w-full favs-ack-confirm-btn">
+				{{ ackBtnText }}
+			</gn-button>
+			<template v-if="closeButtonText.length && closeButtonText !== ackBtnText">
+				<gn-button v-on:click="acknowledgeMessageModal(false)" variant="outline-primary"
+						   class="w-full favs-ack-cancel-btn">
+					{{ closeButtonText }}
+				</gn-button>
+			</template>
+		</div>
+		<div v-else class="modalButtons shared-modals">
+			<gn-button v-on:click="closeMessageModal" variant="solid-primary" aria-label="Close">
+				{{ closeButtonText }}
+			</gn-button>
+		</div>
+	</template>
+</modal>
+
+	<modal size="small" v-if="showHtmlMessageModal" :show="showHtmlMessageModal" :z-index="100" :hide-footer-close-button="false" @close="ackBtnText ? acknowledgeHtmlMessageModal(false) : closeHtmlMessageModal()">
+	<template #htmlbody="">
+		<div v-html="htmlContent"></div>
+	</template>
+	<template #footer="">
+		<div v-if="ackBtnText" class="flex gap-10 modalButtons shared-html-modals">
+			<gn-button v-on:click="acknowledgeHtmlMessageModal(true)" variant="solid-primary"
+					   class="w-full mr-4 favs-ack-confirm-btn">
+				{{ ackBtnText }}
+			</gn-button>
+			<gn-button v-on:click="acknowledgeHtmlMessageModal(false)" variant="outline-primary"
+					   class="w-full favs-ack-cancel-btn">
+				{{ closeButtonText }}
+			</gn-button>
+		</div>
+		<div v-else class="modalButtons shared-html-modals">
+			<gn-button v-on:click="closeHtmlMessageModal" variant="solid-primary" aria-label="Close">
+				{{ closeButtonText }}
+			</gn-button>
+		</div>
+	</template>
+</modal>
+	<Teleport to="#modal-container">
+		<select-rate-modal></select-rate-modal>
+	</Teleport>
+</main>
+
+			
+
+	<div id="cookieConsent"
+		 class="fixed bottom-0 right-0 z-10 hidden w-full py-4 text-xs bg-white border border-gray-400 rounded-lg shadow-sm md:w-96 md:right-3 md:bottom-3 text-skin-base md:text-sm"
+		 role="alert">
+		<p>Cookie Policy</p><br />
+		We and our partners use cookies on this site to improve our service, perform analytics, personalize advertising,
+		measure advertising performance, and remember website preferences. By using the site, you consent to these cookies.
+		For more information on cookies including how to manage your consent visit our
+		<a href="https://www.versantprivacy.com/privacy/cookies"
+		   rel="noopener noreferrer" target="_blank">Cookie Policy.</a>
+		<button type="button" class="accept-policy close" data-dismiss="alert" aria-label="Close"
+				data-cookie-string=".AspNet.Consent=yes; expires=Sat, 16 Oct 2027 18:19:11 GMT; path=/; secure; samesite=none">
+			<span aria-hidden="true">Accept</span>
+		</button>
+	</div>
+	<script>
+		(function () {
+			var button = document.querySelector("#cookieConsent button[data-cookie-string]");
+			button.addEventListener("click", function (event) {
+				document.cookie = button.dataset.cookieString;
+			}, false);
+		})();
+	</script>
+
+				<span id="footer-intersection"></span>
+					<section class="relative z-10 flex justify-center h-12 overflow-visible bg-secondary md:h-20">
+	<div class="flex items-center gopher-container">
+		<div class="grid items-center h-20 shrink-0">
+			<p class="text-lg font-semibold text-white uppercase lg:text-4xl md:text-2xl font-display">
+				Get your golf on
+			</p>
+		</div>
+		<img src="https://gqp7knph.cdn.imgeng.in/Content/images/Gopher-hand-ball.png?imgeng=/w_auto,96&av=402041308"
+			 sizes="(max-width: 768px) 56px, 96px" loading="lazy" width="96" height="96"
+			 class="relative gopher-hand-ball md:max-w-24 max-w-14 md:left-auto left-4 -bottom-[0.3rem]" alt=""
+			 aria-hidden="true" />
+		<img src="https://gqp7knph.cdn.imgeng.in/Content/images/Gopher-Half-head.png?imgeng=/w_auto,175&amp;h_120px&av=402041308"
+			 sizes="(max-width: 768px) 25vw, 175px" loading="lazy" width="175" height="120"
+			 class="relative w-auto md:h-[120px] h-16 gopher-half-head md:bottom-5 bottom-2 md:right-8 right-0"
+			 alt="gopher-half-head" />
+		<img src="https://gqp7knph.cdn.imgeng.in/Content/images/Gopher-glove.png?imgeng=/w_auto,96&av=402041308"
+			 sizes="(max-width: 768px) 40px, 96px" loading="lazy" width="96" height="96"
+			 class="relative right-0 w-auto aspect-square gopher-glove md:top-[2.9rem] top-6 md:right-8 md:max-w-24 max-w-10"
+			 alt="" aria-hidden="true" />
+	</div>
+</section>
+
+				<footer id="footer" class="sticky-stopper" role="contentinfo" v-cloak>
+						<div class="pt-3 bg-skin-footer md:pt-7">
+	<div id="footer-container" class="container p-4 pt-4 mx-auto lg:pt-14 pb-9">
+		<section class="grid grid-cols-2 gap-2 lg:grid-cols-6 md:grid-cols-4 lg:gap-4">
+			<div class="mr-5">
+				<h2 class="mb-3 text-base font-semibold text-white uppercase font-display font-heading">Information</h2>
+				<ul class="text-sm text-white">
+					<li class="mb-1.5 hover:text-primary-100"><a href="/support/about-us">About Us</a></li>
+						<li class="mb-1.5 hover:text-primary-100"><a rel="noopener"
+																		 href="https://careers.versantmedia.com">Careers</a></li>
+							<li class="mb-1.5 hover:text-primary-100"><a href="/support/contact-us"
+																		 rel="nofollow">Contact
+								Us</a></li>
+								<li class="mb-1.5 hover:text-primary-100"><a
+									rel="noopener noreferrer nofollow"
+									href="https://golfnow.my.site.com/golfnowsupport/s/" target="_blank">Help</a></li>
+									<li class="mb-1.5 hover:text-primary-100"><a href="/giftcards">Gift Cards</a></li>
+										<li class="mb-1.5 hover:text-primary-100"><a href="/rewards">Rewards</a></li>
+											<li class="mb-1.5 hover:text-primary-100"><a href="/home-course-advantage">Home Course Advantage</a></li>
+											<li class="mb-1.5 hover:text-primary-100"><a rel="noopener noreferrer"
+																							 href="https://memberships.golfnow.com/premier-card/" target="_blank">Premier Card</a></li>
+												<li class="mb-1.5 hover:text-primary-100"><a rel="noopener noreferrer"
+																							 href="https://www.versantprivacy.com/privacy/cookies#accordionheader3"
+																							 target="_blank">Ad
+													Choices</a></li>
+													<li class="mb-1.5 hover:text-primary-100"><a rel="noopener noreferrer"
+																									 href="https://www.versantprivacy.com/privacy?intake=Golf&amp;appname=GolfNow"
+																									 target="_blank">Privacy Policy</a></li>
+														<!-- OneTrust Cookies Settings button start -->
+														<li class="mb-1.5 hover:text-primary-100">
+															<a id="ot-sdk-btn" class="mt-2 !text-sm max-w-48 optanon-show-settings ot-sdk-show-settings">
+																<img src="https://gqp7knph.cdn.imgeng.in/Content/images/icons/privacyoptions.svg?av=402041308" alt="Privacy Options"
+																	 loading="lazy" width="30" height="14" class="float-left mt-1 mr-1 w-7" />
+																Cookie Preferences</a>
+															</li>
+															<!-- OneTrust Cookies Settings button end -->
+															<li class="mb-1.5 hover:text-primary-100"><a rel="noopener noreferrer"
+																											 href="https://www.versantprivacy.com/privacy/california-consumer-privacy-act"
+																											 target="_blank">CA Notice</a></li>
+																<li class="mb-1.5 hover:text-primary-100"><a href="/support/about-us/terms">Terms of Service</a></li>
+																</ul>
+															</div>
+															<div>
+																<h2 class="mb-3 text-base font-semibold text-white uppercase font-display font-heading">Resources</h2>
+																<ul>
+																	<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/destinations">Destinations</a></li>
+																		<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/tee-times/best-deals">Best Tee Time Deals</a>
+																		</li>
+																		<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/tee-times/weekend">Weekend Tee Times</a></li>
+																			<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/redeem">Redeem GolfPass Gift</a></li>
+																				<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/course-directory">Course Directory</a></li>
+																					<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/private-golf-club-directory">Private Club Directory</a></li>
+																						<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/golfnow-reviews">GolfNow Reviews</a></li>
+																							<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/mobile">Mobile Apps</a></li>
+																								<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a rel="noopener noreferrer"
+																																									href="https://promotions.golfnow.com/" target="_blank">Promotions</a></li>
+																									<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a rel="noopener noreferrer"
+																																										href="https://blog.golfnow.com/" target="_blank">Blog</a></li>
+																										<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/indoor-golf-simulators">Simulators</a></li>
+																											<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/private-golf-clubs">Private Clubs</a></li>
+																												<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/featured-courses">Featured Courses</a>
+																												</li>
+																												<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/spotlight">GolfNow Spotlights</a>
+																												</li>
+																												<li class="text-white hover:text-primary-100 text-sm mb-1.5"><a href="/golf-club-fitting-near-me">Custom Club Fittings</a>
+																												</li>
+																											</ul>
+																										</div>
+																										<div>
+																											<h2 class="mb-3 text-base font-semibold text-white uppercase font-display font-heading">Businesses</h2>
+																											<ul class="text-sm text-white">
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a rel="noopener noreferrer" href="https://support.business.golfnow.com/" target="_blank">
+																														Partner Support
+																													</a>
+																												</li>
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a rel="noopener noreferrer" href="https://business.golfnow.com" target="_blank">
+																														Golf Facilities
+																													</a>
+																												</li>
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a href="/golfnow-business">GolfNow for Courses</a>
+																												</li>
+																												<li class="text-white hover:text-primary-100 text-sm mb-1.5">
+																													<a href="/business-partnership/form">List My Facility on GolfNow</a>
+																												</li>
+																												<li class="text-white hover:text-primary-100 text-sm mb-1.5">
+																													<a href="/business-partnership">Other Partnership Requests</a>
+																												</li>
+																											</ul>
+																										</div>
+																										<div>
+																											<h2 class="mb-3 text-base font-semibold text-white uppercase font-display font-heading">Partner Brands
+																											</h2>
+																											<ul class="text-sm text-white">
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a rel="noopener noreferrer nofollow"
+																														   href="https://www.golfchannel.com/" target="_blank">
+																														Golf Channel
+																													</a>
+																												</li>
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a rel="noopener noreferrer nofollow"
+																														   href="https://www.golfpass.com/" target="_blank">
+																														GolfPass
+																													</a>
+																												</li>
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a rel="noopener noreferrer nofollow"
+																														   href="https://compete.golfnow.com/about" target="_blank">
+																														GolfNow Compete
+																													</a>
+																												</li>
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a rel="noopener noreferrer nofollow"
+																														   href="https://www.teeoff.com/" target="_blank">
+																														TeeOff
+																													</a>
+																												</li>
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a rel="noopener noreferrer nofollow"
+																														   href="https://www.sportsengine.com/solutions" target="_blank">
+																														SportsEngine HQ
+																													</a>
+																												</li>
+																												<li class="mb-1.5 hover:text-primary-100">
+																													<a rel="noopener noreferrer nofollow"
+																														   href="https://motion.sportsengine.com/" target="_blank">
+																														SportsEngine Motion
+																													</a>
+																												</li>
+																											</ul>
+																										</div>
+																										<div class="col-span-2">
+																											<!-- Email Signup -->
+																											<quick-optin-email-subscribe :append-to="null">
+																												<template #form>
+																														<modal size="small" v-if="showMessageModal" :show="showMessageModal" :z-index="100" :hide-footer-close-button="false" @close="ackBtnText.length ? acknowledgeMessageModal(false) : closeMessageModal()">
+
+	<template #footer="">
+		<div v-if="ackBtnText.length" class="flex gap-10 modalButtons shared-modals">
+			<gn-button v-on:click="acknowledgeMessageModal(true)" variant="solid-secondary"
+					   class="w-full favs-ack-confirm-btn">
+				{{ ackBtnText }}
+			</gn-button>
+			<template v-if="closeButtonText.length && closeButtonText !== ackBtnText">
+				<gn-button v-on:click="acknowledgeMessageModal(false)" variant="outline-primary"
+						   class="w-full favs-ack-cancel-btn">
+					{{ closeButtonText }}
+				</gn-button>
+			</template>
+		</div>
+		<div v-else class="modalButtons shared-modals">
+			<gn-button v-on:click="closeMessageModal" variant="solid-primary" aria-label="Close">
+				{{ closeButtonText }}
+			</gn-button>
+		</div>
+	</template>
+</modal>
+
+<div id="footer-email-signup" class="transparent lg:block md:hidden">
+		<div class="email-signup-header-footer">
+			<h4 class="mb-3 text-base font-semibold text-white uppercase font-display font-heading">
+				Stay Connected
+			</h4>
+			<p id="footer-email-optin-copy" class="block mb-4 text-white">
+				Yes! Please send me offers and news from GolfNow and GolfPass by email about products and services
+				offered by us and our Partners
+				<gn-tooltip id="email-signup-footer">
+					GolfNow and GolfPass will send you news, offers, and exclusives from partners that we think
+					would be of interest to golfers like you.
+				</gn-tooltip>
+			</p>
+		</div>
+
+	<form autocomplete="off" class="grid gn-form quick-optin-form" id="quickOptinForm_Footer" ref="quickOptinForm_Footer" method="post" data-prefix="footer" action="/courses/1505820-spirit-hollow-golf-course-details">
+		<gn-input type="email" id="Footer-Email" v-model="model.email" class="border-white bg-primary text-white"
+				  variant="floatingLabel" bg-color="bg-skin-footer" txt-color="text-white" name="Email" label="* Email"
+				  autocomplete="off"></gn-input>
+		<gn-input type="text" id="Footer-PostalCode" v-model="model.postalCode"
+				  class="bg-primary border-white signup-postal-footer text-white" variant="floatingLabel"
+				  bg-color="bg-skin-footer" txt-color="text-white" name="PostalCode" label="* Postal Code"
+				  autocomplete="off"></gn-input>
+		<input type="hidden" id="Footer-StateProv" class="signup-state" name="StateProv" />
+		<input type="hidden" id="Footer-Latitude" class="signup-latitude" name="Latitude" />
+		<input type="hidden" id="Footer-Longitude" class="signup-longitude" name="Longitude" />
+		<input type="hidden" id="Footer-BusinessUnitId" class="signup-businessUnitId" name="BusinessUnitId"
+			   value="1" />
+		<input type="hidden" id="Footer-Source" class="signup-source" name="Source" value="100" />
+		<input type="hidden" id="Footer-SourceType" class="signup-sourceType" name="SourceType"
+			   value="100_QuickEmailSignUp" />
+
+		<gn-button v-on:btn-click.prevent="handleEmailOptInSubmit" type="submit" variant="solid-secondary" size="md"
+				   class="w-full mb-4">Subscribe</gn-button>
+	</form>
+</div>
+
+																												</template>
+																											</quick-optin-email-subscribe>
+																											<h2 class="mt-2 mb-4 text-base font-semibold text-white uppercase font-display">Our Mobile Apps</h2>
+																											<ul class="flex items-center mb-3">
+																												<!-- GolfNow App -->
+																												<li class="inline-block">
+																													<img src="https://gqp7knph.cdn.imgeng.in/Content/images/app-icons/gn-app.webp?imgeng=/w_45&av=402041308" width="45"
+																														 sizes="45px" alt="GolfNow app" class="mr-3 rounded-lg app-icon" loading="lazy"
+																														 title="GolfNow App">
+																												</li>
+																												<li class="inline-block">
+																													<a rel="nofollow noopener noreferrer" class="self-center"
+																														   href="https://control.kochava.com/v1/cpi/click?campaign_id=kogolfnow-ios-prod-w7za918e6667c3bb&network_id=7617&site_id=1&device_id=device_id"
+																														   target="_blank">
+																														<img src="https://gqp7knph.cdn.imgeng.in/Content/images/Download_on_the_App_Store_Badge_US.svg?imgeng=/w_129&av=402041308"
+																															 sizes="129px" alt="GolfNow App Store" width="129" height="40" class="h-10 mr-2" loading="lazy"
+																															 title="GolfNow App Store" />
+																													</a>
+																												</li>
+																												<li class="inline-block">
+																													<a rel="nofollow noopener noreferrer"
+																														   href="https://control.kochava.com/v1/cpi/click?campaign_id=kogolfnow-android-prod-90lba42b8cc51249&network_id=7617&site_id=1&device_id=device_id"
+																														   target="_blank">
+																														<img src="https://gqp7knph.cdn.imgeng.in/Content/images/app-icons/google-play-badge.svg?imgeng=/w_129&av=402041308"
+																															 sizes="129px" alt="GolfNow App Google Play" width="129" height="40" class="h-10" loading="lazy" />
+																													</a>
+																												</li>
+																											</ul>
+																											<ul class="flex items-center mb-3">
+																												<!-- GolfPass App -->
+																												<li class="inline-block">
+																													<img src="https://gqp7knph.cdn.imgeng.in/Content/images/app-icons/golfpass-app.svg?imgeng=/w_45&av=402041308"
+																														 sizes="45px" width="45" class="mr-3 app-icon" loading="lazy" style="border-radius: 8px;"
+																														 alt="GolfPass App" title="GolfPass App">
+																												</li>
+																												<li class="inline-block">
+																													<a class="self-center" href="https://apps.apple.com/us/app/golfpass-video/id1448493740"
+																														   target="_blank">
+																														<img src="https://gqp7knph.cdn.imgeng.in/Content/images/Download_on_the_App_Store_Badge_US.svg?imgeng=/w_129&av=402041308"
+																															 sizes="129px" width="129" height="40" class="h-10 mr-2" loading="lazy" alt="GolfPass App Store" />
+																													</a>
+																												</li>
+																												<li class="inline-block">
+																													<a href="https://play.google.com/store/apps/details?id=com.golfchannel.pass&hl=en_US"
+																														   target="_blank">
+																														<img src="https://gqp7knph.cdn.imgeng.in/Content/images/app-icons/google-play-badge.svg?imgeng=/w_129&av=402041308"
+																															 sizes="129px" width="129" height="40" loading="lazy" class="h-10" alt="Google Play" />
+																													</a>
+																												</ul>
+																												<ul class="flex items-center mb-3">
+																													<!-- Compete App -->
+																													<li class="inline-block">
+																														<img src="https://gqp7knph.cdn.imgeng.in/Content/images/app-icons/compete-app.svg?imgeng=/w_45&av=402041308" width="45"
+																															 sizes="45px" alt="Golf Channel App" class="mr-3 rounded-lg app-icon" loading="lazy">
+																													</li>
+																													<li class="inline-block">
+																														<a class="self-center"
+																															   href="https://apps.apple.com/bm/app/golfnow-compete-tournaments/id1451640918"
+																															   target="_blank">
+																															<img src="https://gqp7knph.cdn.imgeng.in/Content/images/Download_on_the_App_Store_Badge_US.svg?imgeng=/w_129&av=402041308"
+																																 sizes="129px" alt="Golf Channel App Store" width="129" height="40" class="h-10 mr-2" loading="lazy" />
+																														</a>
+																													</li>
+																													<li class="inline-block">
+																														<a href="https://play.google.com/store/apps/details?id=com.golfnow.compete&hl=en_US"
+																															   target="_blank">
+																															<img src="https://gqp7knph.cdn.imgeng.in/Content/images/app-icons/google-play-badge.svg?imgeng=/w_129&av=402041308"
+																																 sizes="129px" alt="Golf Channel Google Play" width="129" height="40" class="h-10" loading="lazy" />
+																														</a>
+																													</ul>
+																												</div>
+																											</section>
+
+																											<div class="container mx-auto mt-6 mb-6 border-t border-gray-4"> </div>
+																											<section class="container grid grid-cols-2 gap-4 pb-10 mx-auto">
+																												<ul class="float-left">
+																													<li class="inline-block">
+																														<a rel="nofollow noopener noreferrer" href="https://www.facebook.com/golfnow" target="_blank"
+																															   class="mr-2 text-white">
+																															<i class="text-xl icon-Facebook" aria-hidden="true"></i>
+																															<span class="sr-only">Facebook</span>
+																														</a>
+																													</li>
+																													<li class="inline-block">
+																														<a rel="nofollow noopener noreferrer" href="https://twitter.com/golfnow" target="_blank"
+																															   class="mr-2 text-white">
+																															<i class="text-xl icon-X" aria-hidden="true"></i>
+																															<span class="sr-only">X</span>
+																														</a>
+																													</li>
+																													<li class="inline-block">
+																														<a rel="nofollow noopener noreferrer" href="https://instagram.com/golfnow" target="_blank"
+																															   class="mr-2 text-white">
+																															<i class="text-xl icon-Instagram" aria-hidden="true"></i>
+																															<span class="sr-only">Instagram</span>
+																														</a>
+																													</li>
+																													<li class="block">
+																														<p class="mt-3 text-white text-xxs">© Copyright 2026 GolfNow. All rights reserved.
+																														</p>
+																													</li>
+																												</ul>
+																											</section>
+																										</div>
+																									</div>
+
+				</footer>
+		</div>
+		<div id="modal-container"></div>
+		<div id="widget-holding-area" class="hidden"></div>
+		<div id="tool-tip-holding-area" class="container invisible h-0 mx-auto"></div>
+		<input id="inputCurrentDate" style="display: none" />
+	</div>
+	
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4b912030a89c651',t:'MTc5MjE3NDc1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+</html>
