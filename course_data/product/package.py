@@ -29,7 +29,9 @@ import render as R                                  # noqa: E402  course_data/im
 PPY, TEE_PX, PROJ = 3.4, (460.0, 1900.0), "utm"
 # ARCHITECTURE 9.1-4: later zones win; sort by this precedence (stable inside a class).
 ORDER = ["ob_boundary", "native", "recovery", "ob", "first_cut", "fairway", "green", "water", "sand"]
-LIE_MAP = {"ob_boundary": "ob", "green": "fairway", "trees": "recovery", "woods": "recovery",
+# package lie -> model lie, applied at package load (QA A1: tee_strategy.expected_strokes has no 'green' or
+# 'ob_boundary', which ARCHITECTURE 9.1-4 allows in zones_ll; the model itself stays as it is)
+LIE_MAP = {"ob_boundary": "ob", "green": "fairway", "tee": "fairway", "trees": "recovery", "woods": "recovery",
            "bunker": "sand", "long_grass": "native", "tall_grass": "native"}
 MODEL_LIES = {"fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob"}
 # par-3 edge hazards: model lie -> yardage_book.ADD key, and its severity for "worst on that side"
@@ -124,7 +126,7 @@ def _tee_entry(h, tee_set):
 
 
 TEE_LINE = "landing"     # "landing": tee -> the hole line LANDING yds out (book/page line); "package": its aim_ll
-LANDING = 250
+LANDING = 250            # informational: the rule (and its numbers) live in course_data/platform/tee_line.py
 
 
 def _is_ll(p, ref):
@@ -147,36 +149,24 @@ def _zone_meta(zs):
     return out
 
 
+def _tee_line_mod():
+    """course_data/platform/tee_line.py: the one tee-line rule, shared with platform.package.reframe."""
+    import importlib.util
+    name = "cdp_tee_line"
+    if name not in sys.modules:
+        spec = importlib.util.spec_from_file_location(name, os.path.join(CD, "platform", "tee_line.py"))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        sys.modules[name] = mod
+    return sys.modules[name]
+
+
 def _aim_along(tee_ll, line_ll, green_ll, length):
     """The point LANDING yds (at most 62% of the hole) along the hole line, measured from the tee's
-    projection onto it: the book's tee line then runs over the landing area even when the line's first
-    node is a short leg or the line starts at another tee box. None without a usable hole line."""
-    if not line_ll or len(line_ll) < 2:
-        return None
-    lat0 = math.radians(tee_ll[1])
-    k = np.array([math.cos(lat0) * 111320 / 0.9144, 111320 / 0.9144])
-    P = (np.array([p[:2] for p in line_ll] + [green_ll], float) - tee_ll) * k
-    best = None
-    for i in range(len(P) - 1):                   # tee's nearest point on the polyline
-        a, b = P[i], P[i + 1]
-        d = b - a
-        u = float(np.clip(-(a @ d) / max(d @ d, 1e-9), 0, 1))
-        dist = float(np.linalg.norm(a + u * d))
-        if best is None or dist < best[0]:
-            best = (dist, i, u)
-    if best[0] > 60:
-        return None
-    _, i, u = best
-    want = min(LANDING, 0.62 * length)
-    pts = [P[i] + u * (P[i + 1] - P[i])] + list(P[i + 1:])
-    run = float(np.linalg.norm(pts[0]))           # tee -> line offset counts toward the distance
-    for a, b in zip(pts[:-1], pts[1:]):
-        seg = float(np.linalg.norm(b - a))
-        if run + seg >= want and seg > 0:
-            q = a + (b - a) * (want - run) / seg
-            return [tee_ll[0] + q[0] / k[0], tee_ll[1] + q[1] / k[1]]
-        run += seg
-    return None
+    projection onto it (platform/tee_line.aim_point, ARCHITECTURE 9.1-8); without a usable hole line, the
+    green direction. Same rule as the package's aim_ll."""
+    aim, _ = _tee_line_mod().aim_point(tee_ll, line_ll, green_ll, length, None)
+    return aim
 
 
 def _resolve_set(pkg, tees):
@@ -229,11 +219,10 @@ def load(path, tees=None):
         par = int(h.get("par") or (3 if (length or 0) < 250 else 4))
         lls += [tee_ll, green_ll]
         line_ll = h.get("hole_line_ll")
-        if par == 3:
-            aim_ll, how = green_ll, "green"
+        if TEE_LINE == "landing" or not aim_ll:
+            aim_ll, how = _tee_line_mod().aim_point(tee_ll, line_ll, green_ll, float(length) if length else None, par)
         else:
-            own = _aim_along(tee_ll, line_ll, green_ll, float(length or 400)) if TEE_LINE == "landing" else None
-            aim_ll, how = (own, "landing") if own else (aim_ll or green_ll, "package")
+            how = "package"
         fr = R.Frame(tee_ll, aim_ll, ppy=PPY, tee_px=TEE_PX, proj=PROJ)
         C.frames[k] = dict(fr.to_json(), aim=how)
         C.bearings[k] = (bearing_deg(tee_ll, aim_ll) if how != "package" else
@@ -269,6 +258,9 @@ def load(path, tees=None):
             C.holes[k] = dict(par=par, image=image, length=length, tee=TEE_PX,
                               dot270=(TEE_PX[0], TEE_PX[1] - 270 * PPY), green=green_px, zones=zones,
                               aim_min=-60, aim_max=60)
+            if line_ll and len(line_ll) >= 2:      # line of play (px), for decide.py's absurd-aim guard
+                C.holes[k]["play_line"] = [(round(float(x), 1), round(float(y), 1))
+                                           for x, y in fr.ll_to_px(np.array([p[:2] for p in line_ll] + [green_ll], float))]
             for extra in ("extra_roll", "irons"):
                 if h.get(extra) is not None:
                     C.holes[k][extra] = h[extra]

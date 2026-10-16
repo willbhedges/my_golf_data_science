@@ -41,6 +41,68 @@ SHARES = ("fairway", "first_cut", "rough", "sand", "recovery", "native", "water"
 
 BASE = {}
 
+# Absurd-aim guard (QA R5): an aim is printable only if it is within GUARD_AIM yds of the tee line, its aim
+# point (the club's carry straight out on that aim) is in fairway / first cut / rough, and that point is within
+# GUARD_LINE yds of the hole's own line of play (else it is another hole's fairway). A best aim that fails, or
+# sits on the edge of the search after widening, makes the hole a CHECK: the search is re-centred on the line
+# of play and the best printable aim is used; with none, the page says CHECK instead of an aim.
+GUARD_AIM = 40.0
+GUARD_LINE = 40.0
+OK_LIES = ("fairway", "first_cut", "rough")
+LIE_WORDS = {"recovery": "trees", "native": "long grass", "water": "water", "ob": "OB", "sand": "sand"}
+
+
+def _carry(club):
+    return float({**t.CLUBS, **t.IRONS}[club][0])
+
+
+def _aim_point(hd, club, aim):
+    tee, fwd, right, ppy = t.hole_frame(hd)
+    return tee + (_carry(club) * fwd + float(aim) * right) * ppy, ppy
+
+
+def _dist_to_line(pt, line):
+    L = np.asarray(line, float)
+    a, b = L[:-1], L[1:]
+    d = b - a
+    u = np.clip(np.einsum("ij,ij->i", pt - a, d) / np.maximum(np.einsum("ij,ij->i", d, d), 1e-9), 0, 1)
+    return float(np.min(np.linalg.norm(a + u[:, None] * d - pt, axis=1)))
+
+
+def aim_problems(h, club, aim):
+    """[reason, ...] why this aim must not be printed silently (empty = fine)."""
+    hd = t.HOLES[h]
+    out = []
+    if abs(aim) > GUARD_AIM + 1e-6:
+        out.append(f"aim {aim:+.0f} yds is more than {GUARD_AIM:.0f} yds off the tee line")
+    pt, ppy = _aim_point(hd, club, aim)
+    lie = t.lie_at(hd, pt[None, :])[0]
+    if lie not in OK_LIES:
+        out.append(f"the aim point ({_carry(club):.0f} yds out) is in {LIE_WORDS.get(lie, lie)}")
+    line = hd.get("play_line")
+    if line and len(line) >= 2:
+        d = _dist_to_line(pt, line) / ppy
+        if d > GUARD_LINE:
+            out.append(f"the aim point is {d:.0f} yds from this hole's line of play (another hole?)")
+    return out
+
+
+def line_offset(h, club):
+    """Yards right of the tee line where the hole's line of play crosses the club's carry (0 without a line)."""
+    hd = t.HOLES[h]
+    line = hd.get("play_line")
+    if not line or len(line) < 2:
+        return 0.0
+    tee, fwd, right, ppy = t.hole_frame(hd)
+    rel = (np.asarray(line, float) - tee) / ppy
+    along, lat = rel @ fwd, rel @ right
+    c = _carry(club)
+    for i in range(len(along) - 1):
+        a0, a1 = along[i], along[i + 1]
+        if (a0 - c) * (a1 - c) <= 0 and a1 != a0:
+            return float(lat[i] + (lat[i + 1] - lat[i]) * (c - a0) / (a1 - a0))
+    return 0.0
+
 
 def bind(holes):
     """Point the model (and the Bayesian core) at a course's HOLES dict."""
@@ -88,10 +150,37 @@ def _club_result(h, c, aim, z):
 
 
 # ----------------------------------------------------------------------------- quick
+def guarded_best(h, c, aims, ev, evaluate=None):
+    """(aims, ev, i_best_printable | None, problems of the unconstrained best). evaluate(a) -> EV lets it
+    re-centre the search on the line of play when no aim on the grid is printable."""
+    aims, ev = np.asarray(aims, float), np.asarray(ev, float)
+    i = int(ev.argmin())
+    raw = aim_problems(h, c, aims[i])
+    if i in (0, len(aims) - 1):
+        raw = [f"best aim {aims[i]:+.0f} is on the edge of the search"] + raw
+    ok = np.array([not aim_problems(h, c, a) for a in aims])
+    if raw and not ok.any() and evaluate is not None:     # re-centre on the line of play at this club's carry
+        ctr = float(np.clip(np.round(line_offset(h, c) / AIM_STEP) * AIM_STEP, -GUARD_AIM, GUARD_AIM))
+        more = np.array([a for a in ctr + np.arange(-30, 30.01, AIM_STEP)
+                         if abs(a) <= GUARD_AIM + 1e-6 and not np.isclose(aims, a).any()])
+        if len(more):
+            aims = np.r_[aims, more]
+            ev = np.r_[ev, [evaluate(a) for a in more]]
+            o = np.argsort(aims)
+            aims, ev = aims[o], ev[o]
+            ok = np.array([not aim_problems(h, c, a) for a in aims])
+    if not raw:
+        return aims, ev, int(ev.argmin()), raw
+    if not ok.any():
+        return aims, ev, None, raw
+    j = int(np.flatnonzero(ok)[ev[ok].argmin()])
+    return aims, ev, j, raw
+
+
 def quick_hole(h, n=8000, seed=31):
     set_prior_means()
     z = _z(n, seed)
-    res, curves = {}, {}
+    res, curves, raw_ev = {}, {}, {}
     for c in clubs_for(h):
         aims = aims_for(h, c)
         ev = np.array([t.simulate(h, c, a, z=z)[3].mean() for a in aims])
@@ -102,15 +191,37 @@ def quick_hole(h, n=8000, seed=31):
             mev = np.array([t.simulate(h, c, a, z=z)[3].mean() for a in more])
             aims, ev = (np.r_[more[::-1], aims], np.r_[mev[::-1], ev]) if i == 0 else (np.r_[aims, more], np.r_[ev, mev])
             i = int(ev.argmin())
-        res[c] = _club_result(h, c, aims[i], z)
-        curves[c] = (aims, ev)
-    best = min(res, key=lambda c: res[c]["ev"])
+        raw_ev[c] = (float(aims[i]), float(ev[i]))
+        aims, ev, j, raw = guarded_best(h, c, aims, ev, lambda a, c=c: t.simulate(h, c, a, z=z)[3].mean())
+        res[c] = _club_result(h, c, raw_ev[c][0] if j is None else aims[j], z)
+        res[c].update(raw_aim=raw_ev[c][0], raw_ev=raw_ev[c][1], problems=raw, printable=j is not None)
+        curves[c] = (aims, ev, j)
+    printable = [c for c in res if res[c]["printable"]] or list(res)
+    best = min(printable, key=lambda c: res[c]["ev"])
     runner = min((c for c in res if c != best), key=lambda c: res[c]["ev"])
-    aims, ev = curves[best]
-    ok = aims[ev <= ev.min() + ZONE_TOL]
-    return dict(pick=best, aim=res[best]["aim"], ev=res[best]["ev"], runner=runner,
-                margin=res[runner]["ev"] - res[best]["ev"], zone=[float(ok.min()), float(ok.max())],
-                clubs=res, tie=bool(res[runner]["ev"] - res[best]["ev"] < 0.01), mode="quick", n=n)
+    aims, ev, j = curves[best]
+    if j is None:
+        ok = aims[ev <= ev.min() + ZONE_TOL]
+    else:
+        good = np.array([not aim_problems(h, best, a) for a in aims])
+        ok = aims[good & (ev <= ev[j] + ZONE_TOL)]
+    out = dict(pick=best, aim=res[best]["aim"], ev=res[best]["ev"], runner=runner,
+               margin=res[runner]["ev"] - res[best]["ev"], zone=[float(ok.min()), float(ok.max())],
+               clubs=res, tie=bool(res[runner]["ev"] - res[best]["ev"] < 0.01), mode="quick", n=n)
+    out["check"] = check_reasons(res, best)
+    return out
+
+
+def check_reasons(res, best):
+    """Why a hole needs a human look: the guard changed the answer (a club whose unconstrained best beat the
+    pick had an absurd aim), or the pick has no printable aim. [] = fine."""
+    why = []
+    if not res[best].get("printable", True):
+        why.append(f"no printable {best} aim: " + "; ".join(res[best]["problems"]))
+    for c, v in res.items():
+        if v.get("problems") and v.get("printable", True) and (c == best or v.get("raw_ev", -1e9) < res[best]["ev"]):
+            why.append(f"{c} best aim {v['raw_aim']:+.0f} rejected ({'; '.join(v['problems'])})")
+    return why
 
 
 # ----------------------------------------------------------------------------- full (Bayesian)
@@ -210,6 +321,19 @@ def full_hole(h, S=64, N=3000, seed=2027, sweep=True):
     curve = ((MA[r["pick"]] + MB[r["pick"]]) / 2).mean(0)
     ok = aims[r["pick"]][curve <= curve.min() + ZONE_TOL]
     r["zone"] = [float(ok.min()), float(ok.max())]
+    # absurd-aim guard on the pick (no re-search here: the Bayesian grid is fixed)
+    pa, _, j, raw = guarded_best(h, r["pick"], aims[r["pick"]], curve)
+    r["check"] = []
+    if raw:
+        if j is None:
+            r["check"].append(f"no printable {r['pick']} aim: " + "; ".join(raw))
+        else:
+            r["check"].append(f"{r['pick']} best aim {r['aim']:+.0f} rejected ({'; '.join(raw)})")
+            r["aim"] = float(pa[j])
+            r["clubs"][r["pick"]]["aim"] = r["aim"]
+            good = np.array([not aim_problems(h, r["pick"], a) for a in pa])
+            ok = pa[good & (curve <= curve[j] + ZONE_TOL)]
+            r["zone"] = [float(ok.min()), float(ok.max())]
     if sweep:
         picks, flips, _ = DS.width_sweep(h, mode="common")
         r["width_sweep"] = [dict(width=w, pick=p) for w, p in zip((55, 60, 65, 70, 75, 80, 85, 90), picks)]

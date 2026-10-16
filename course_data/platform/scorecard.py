@@ -67,7 +67,7 @@ def normalise(card):
         s.setdefault("aliases", [])
         s.setdefault("total", sum(y for y in s["yards"] if y))
         sets[name] = s
-    out["tee_sets"] = sets
+    out["tee_sets"] = sets = dedupe_sets(sets)
     for a, b in (card.get("aliases") or {}).items():        # top-level {"blue": "Black"} map
         for name in sets:
             if name.lower() == str(b).lower():
@@ -77,6 +77,30 @@ def normalise(card):
             if s.get("par"):
                 out["par"] = s["par"]
                 break
+    return out
+
+
+_DUP = re.compile(r"^\s*(.+?)\s*\(\s*(.+?)\s*\)\s*$")
+
+
+def dedupe_sets(sets):
+    """'Gold (Gold)' -> 'Gold' (QA P6: golfify lists a set again with its other rating). When 'Gold' is
+    already on the card the duplicate is folded into its `alt_ratings` (name, rating, slope, par, total), else
+    it is renamed; a name like 'Blue (Men)' is left alone."""
+    out, dups = {}, []
+    for name, s in sets.items():
+        m = _DUP.match(name)
+        if m and m.group(1).lower() == m.group(2).lower():
+            dups.append((name, m.group(1), s))
+        else:
+            out[name] = s
+    for name, base, s in dups:
+        hit = next((k for k in out if k.lower() == base.lower()), None)
+        if hit is None:
+            out[base] = dict(s, aliases=sorted(set(s.get("aliases", [])) | {name.lower()}))
+        else:
+            alt = dict({k: s.get(k) for k in ("rating", "slope", "par", "total") if s.get(k) is not None}, name=name)
+            out[hit] = dict(out[hit], alt_ratings=list(out[hit].get("alt_ratings", [])) + [alt])
     return out
 
 

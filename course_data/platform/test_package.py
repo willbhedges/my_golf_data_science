@@ -161,8 +161,73 @@ def test_request_yardages_and_unknown_set(tmp_path):
     p = pk.build_package(dict(course="Spirit Hollow", state="IA", tee_set="White", yardages=white), pkg, gapfill=False)
     assert p["scorecard"]["kind"] == "request" and p["tee_set"] == "White"
     assert [p["holes"][str(i + 1)]["length"] for i in range(18)] == white
-    p2 = pk.build_package(dict(course="Spirit Hollow", state="IA", tee_set="Purple", scorecard=CARD), pkg, gapfill=False)
+    with pytest.raises(SystemExit, match="allow_substitute"):        # QA P6: never a silent substitute
+        pk.build_package(dict(course="Spirit Hollow", state="IA", tee_set="Purple", scorecard=CARD), pkg, gapfill=False)
+    p2 = pk.build_package(dict(course="Spirit Hollow", state="IA", tee_set="Purple", scorecard=CARD,
+                               allow_substitute=True), pkg, gapfill=False)
     assert p2["tee_set"] == "Gold" and any("not on the card" in w for w in p2["warnings"])
+    ti = p2["tee_set_info"]
+    assert ti["substituted"] and "Purple" in ti["warning"] and "Gold" in ti["warning"]
+    assert "WARNING" in pk.qa_md(dict(p2, coverage=p2["coverage"])) and "Purple" in pk.qa_md(p2)
+    p3 = pk.build_package(dict(course="Spirit Hollow", state="IA", tees="App", yardages=white), pkg, gapfill=False)
+    assert p3["tee_set"] == "App" and not p3["tee_set_info"]["substituted"]    # request yardages = the asked set
+
+
+def test_tee_line_rule(black):
+    """ARCHITECTURE 9.1-8 (QA R1): aim_ll is the hole-line point 250 yds out (62% cap), par 3s the green;
+    every tee set, the hole-level fields and a reframe agree."""
+    import tee_line as tl
+    p, _ = black
+    for k, h in p["holes"].items():
+        for s, t in h["tees"].items():
+            aim, how = tl.aim_point(t["tee_ll"], h["hole_line_ll"], h["green_ll"],
+                                    t["card_yards"] or t["measured_yards"], h["par"])
+            assert np.allclose(t["aim_ll"], aim, atol=1e-6), (k, s)
+            if h["par"] == 3:
+                assert t["aim_ll"] == pytest.approx(h["green_ll"], abs=1e-6)
+            else:
+                assert how == "landing" or s != "Black", (k, s, how)   # SH 2 Gold sits >60 yds off the line
+                fr = pk._frame(t["tee_ll"], t["aim_ll"])
+                d = float(np.hypot(*fr.ll_to_yds(np.array([t["aim_ll"]]))[0]))
+                L = t["card_yards"] or t["measured_yards"]
+                want = min(250, 0.62 * L)
+                assert 0.8 * want < d <= want + 2, (k, s, d)              # chord <= distance along the line
+        assert h["aim_ll"] == h["tees"]["Black"]["aim_ll"]
+    g = pk.reframe(p, "Gold")
+    assert g["holes"]["1"]["aim_ll"] == g["holes"]["1"]["tees"]["Gold"]["aim_ll"]
+
+
+def test_tee_line_math():
+    import tee_line as tl
+    lat = 40.0
+    yd = 0.9144 / 111320                                          # yards -> degrees latitude
+    k = 1 / np.cos(np.radians(lat))
+    tee = [-91.0, lat]
+    # dog-leg right at 200 yds: north 200, then east 200
+    line = [[-91.0, lat], [-91.0, lat + 200 * yd], [-91.0 + 200 * yd * k, lat + 200 * yd]]
+    green = line[-1]
+    aim, how = tl.aim_point(tee, line, green, 500, 4)
+    assert how == "landing"
+    assert (aim[1] - lat) / yd == pytest.approx(200, abs=0.5) and (aim[0] + 91.0) / (yd * k) == pytest.approx(50, abs=0.5)
+    aim, _ = tl.aim_point(tee, line, green, 300, 4)               # short hole: 62% of 300 = 186 yds
+    assert (aim[1] - lat) / yd == pytest.approx(186, abs=0.5) and abs(aim[0] + 91.0) < 1e-9
+    assert tl.aim_point(tee, line, green, 400, 3) == (green, "green")
+    far = [[-91.0 + 100 * yd * k, lat], [-91.0 + 100 * yd * k, lat + 300 * yd]]  # line 100 yds away: green dir
+    aim, how = tl.aim_point(tee, far, far[-1], 400, 4)
+    assert how == "green_dir"
+
+
+def test_boundary_keeps_every_ring(black):
+    """QA P1: Spirit Hollow relation 13353211 has 3 outer rings; holes 5-9 are not in the largest."""
+    from shapely.geometry import Point, shape
+    p, _ = black
+    b = p["course"]["boundary"]
+    assert b["type"] == "MultiPolygon"
+    src = p["course"]["boundary_geojson"]
+    assert len(b["coordinates"]) == (1 if src["type"] == "Polygon" else len(src["coordinates"]))
+    geom = shape(b).buffer(0)
+    out = [k for k, h in p["holes"].items() if geom.distance(Point(h["green_ll"])) * 111320 / 0.9144 > 30]
+    assert not out, out
 
 
 def test_gapfill_hook_adds_zones_and_imagery_share(tmp_path, monkeypatch):
@@ -198,6 +263,38 @@ def test_gapfill_hook_adds_zones_and_imagery_share(tmp_path, monkeypatch):
 def test_gapfill_missing_is_reported(black):
     p, _ = black
     assert "vision" not in p["stages"] or "missing" in p["stages"]["vision"] or "skipped" in p["stages"]["vision"]
+
+
+def test_gapfill_without_layers_is_not_ok(tmp_path, monkeypatch):
+    """QA P8: gapfill that finds no layers (or adds nothing) must not be reported as ok."""
+    pkg = seed(tmp_path)
+    img = tmp_path / "img"
+    img.mkdir()
+    (img / "georef.json").write_text(json.dumps({"imagery": {"source": "test", "year": 2023, "files": {}}}))
+    req = dict(course="Spirit Hollow", state="IA", tee_set="Black", scorecard=CARD, imagery_dir=str(img))
+
+    def no_layers(package, imagery_dir):
+        out = json.loads(json.dumps(package))
+        out["stages"]["vision"] = "missing: no vision_any layers for 'x'"
+        return out
+    monkeypatch.setitem(pk._MODS, "cdp_vision_gapfill", types.SimpleNamespace(gapfill=no_layers))
+    p = pk.build_package(req, pkg)
+    assert p["stages"]["vision"].startswith("missing: no vision_any layers")
+    assert any(w.startswith("vision:") for w in p["warnings"])
+
+    def silent(package, imagery_dir):                              # says nothing, adds nothing
+        return json.loads(json.dumps(package))
+    monkeypatch.setitem(pk._MODS, "cdp_vision_gapfill", types.SimpleNamespace(gapfill=silent))
+    p = pk.build_package(req, pkg)
+    assert p["stages"]["vision"].startswith("missing") and "no zones" in p["stages"]["vision"]
+
+    def ok_but_empty(package, imagery_dir):
+        out = json.loads(json.dumps(package))
+        out["stages"]["vision"] = "ok: vision_any/1"
+        return out
+    monkeypatch.setitem(pk._MODS, "cdp_vision_gapfill", types.SimpleNamespace(gapfill=ok_but_empty))
+    p = pk.build_package(req, pkg)
+    assert not p["stages"]["vision"].startswith("ok")
 
 
 def test_elevation_plane():

@@ -196,12 +196,28 @@ def test_every_tee_set(tset):
     assert not bad, "; ".join(bad)
 
 
+def _product_package():
+    import importlib.util
+    name = "qa_product_package"
+    if name not in sys.modules:
+        spec = importlib.util.spec_from_file_location(name, os.path.join(P.CD, "product", "package.py"))
+        mod = importlib.util.module_from_spec(spec)
+        sys.modules[name] = mod
+        spec.loader.exec_module(mod)
+    return sys.modules[name]
+
+
 @pytest.mark.parametrize("pk", PKGS, ids=hid)
 def test_model_understands_lies(pk):
-    """Every zone name a package uses must be scorable by tee_strategy (BASELINE + _lie_mixture) as-is;
-    ARCHITECTURE 9.1-4 allows 'green' and 'ob_boundary' in packages, so the model or every consumer must map them."""
+    """Every zone name a package uses must be scorable by tee_strategy (BASELINE + _lie_mixture) once mapped at
+    package load: ARCHITECTURE 9.1-4 allows 'green', 'ob_boundary' (and 'tee') in zones_ll and the consumers map
+    them (QA A1; the model is not changed). The mapping is the product loader's (product/package.LIE_MAP), and
+    the QA reader's model view must agree with it."""
     import tee_strategy as t
-    names = sorted({lie for q in pk.holes.values() for lie, _ in q.zones_ll})
+    PK = _product_package()
+    raw = sorted({lie for q in pk.holes.values() for lie, _ in q.zones_ll})
+    names = sorted({PK.LIE_MAP.get(n, n) for n in raw})
+    assert all(P.MODEL_ALIAS.get(n, n) == PK.LIE_MAP.get(n, n) for n in raw if n in P.MODEL_ALIAS)
     bad = []
     for n in names:
         try:

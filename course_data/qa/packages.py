@@ -28,7 +28,7 @@ for p in (CD, os.path.join(CD, "imagery"), os.path.join(ROOT, "mozingo")):
 
 KNOWN_LIES = {"fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob", "ob_boundary", "green"}
 PENAL = {"sand", "recovery", "native", "water", "ob", "ob_boundary"}
-MODEL_ALIAS = {"green": "fairway", "ob_boundary": "ob"}     # ARCHITECTURE 9.1-4: how a consumer feeds the model
+MODEL_ALIAS = {"green": "fairway", "ob_boundary": "ob", "tee": "fairway"}     # ARCHITECTURE 9.1-4: how a consumer feeds the model
 MODEL_LIES = {"fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob"}   # tee_strategy BASELINE
 YD = 0.9144
 

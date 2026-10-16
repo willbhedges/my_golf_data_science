@@ -23,7 +23,12 @@ holes.json (pipeline.py). --course "<name>" instead builds a stand-in package of
 course_data/pipeline.build_course (for courses whose OSM/scorecard/tee files are already fetched).
 
 Tee line: tee -> the point on the hole line 250 yds out (62% of the hole at most), so aims read as yards
-left/right of a line over the landing area (package.TEE_LINE; 'package' uses the package's aim_ll).
+left/right of a line over the landing area: course_data/platform/tee_line.py, the same rule the platform
+uses for the package's aim_ll (package.TEE_LINE; 'package' uses the package's aim_ll as given).
+
+Absurd-aim guard (decide.aim_problems): a best aim more than 40 yds off the line, on the search edge, whose
+aim point is not fairway / first cut / rough, or that is more than 40 yds from the hole's line of play makes
+the hole CHECK (plan.json picks[k].status, "Hole N CHECK" in the book); the best printable aim is shown.
 
 Request-file trigger (GitHub Actions, .github/workflows/plan_course.yml): commit
 course_data/product/requests/<slug>.json = {"package": "<path>", "tees": "Black", "mode": "quick"|"full"}.
@@ -88,7 +93,8 @@ def write_decision(results, mod, out, mode):
     for k, r in results.items():
         hd = mod.HOLES[k]
         c = r["clubs"][r["pick"]]
-        row = (f"| {lab.get(k, k)} | {hd['par']} | {hd['length']} | **{r['pick']}**{' (tie)' if r['tie'] else ''} | "
+        row = (f"| {lab.get(k, k)} | {hd['par']} | {hd['length']} | **{r['pick']}**{' (tie)' if r['tie'] else ''}"
+               f"{' **CHECK**' if r.get('check') else ''} | "
                f"{r['aim']:+.1f} | {r['zone'][0]:+.0f} to {r['zone'][1]:+.0f} | {r['runner']} | {r['margin']:.3f} | ")
         if mode == "full":
             fl = "; ".join(f"{f['frm']}->{f['to']} at {f['width']:.0f}" for f in r.get("width_flips", [])) or "none 55-90"
@@ -96,6 +102,10 @@ def write_decision(results, mod, out, mode):
         else:
             row += f"{c['share']['fairway'] + c['share'].get('first_cut', 0):.0%} | {c['approach']:.0f} |"
         md.append(row)
+    chk = [(k, r["check"]) for k, r in results.items() if r.get("check")]
+    if chk:
+        md += ["", "## CHECK (absurd-aim guard: look at the map before playing these)", ""]
+        md += [f"- {lab.get(k, k)}: " + "; ".join(why) for k, why in chk]
     with open(os.path.join(out, "decision.md"), "w") as fh:
         fh.write("\n".join(md) + "\n")
 
@@ -169,12 +179,10 @@ def main(argv=None):
         mod = PK.import_module(mod_path)
         kw = dict(n=8000) if mode == "quick" else dict(S=a.draws, N=a.swings)
         results = decide.run(mod.HOLES, mode, workers=a.workers, log=log, **kw)
-        for k, r in results.items():
-            for c, v in r["clubs"].items():
-                if abs(v["aim"]) >= 60:
-                    gaps.append(f"hole {k}: {c} best aim {v['aim']:+.0f} yds off the tee line "
-                                "(tee line points well away from the landing area; check the hole geometry)")
-                    break
+        checks = {k: r["check"] for k, r in results.items() if r.get("check")}
+        for k, why in checks.items():                      # absurd-aim guard (decide.aim_problems): never silent
+            gaps.append(f"hole {k}: CHECK - " + "; ".join(why))
+            C.labels[k] = f"{C.labels.get(k, k)} CHECK"
         import book
         notes, aim_at = book.notes_and_aims(C.holes, C.par3, results, C.flags)
         PK.write_module(C, mod_path, notes=notes, aim_at=aim_at)
@@ -242,7 +250,11 @@ def main(argv=None):
                settings=dict(draws=a.draws, swings=a.swings) if mode == "full" else dict(swings=8000),
                forecast=fc_src, stage_seconds=TIMES, runtime_s=round(time.time() - T0, 1), files=sizes,
                picks={str(k): dict(club=r["pick"], aim=r["aim"], zone=r["zone"], margin=round(r["margin"], 4),
-                                   tie=r["tie"], conf=r.get("conf")) for k, r in results.items()},
+                                   tie=r["tie"], conf=r.get("conf"), check=r.get("check") or [],
+                                   status="CHECK" if r.get("check") else "PLAY") for k, r in results.items()},
+               check={str(k): r["check"] for k, r in results.items() if r.get("check")},
+               tee_line=dict(rule=PK._tee_line_mod().RULE,
+                             how={str(k): f.get("aim") for k, f in C.frames.items()}),
                par3={str(k): dict(center=p["center"], card=p.get("card"), haz=p["haz"]) for k, p in C.par3.items()},
                gaps=gaps)
     with open(os.path.join(out, "plan.json"), "w") as fh:

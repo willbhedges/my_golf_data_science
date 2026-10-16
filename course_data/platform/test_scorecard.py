@@ -98,3 +98,18 @@ def test_golfify_slugs():
     s = scm.golfify_slugs("Spirit Hollow Golf Course", "Burlington")
     assert s[0] == "spirit-hollow-golf-course"
     assert "spirit-hollow-golf-course-burlington" in s
+
+
+def test_duplicate_set_names_are_folded():
+    """QA P6 (Veenker): golfify gives 'Gold' and 'Gold (Gold)' (its other rating); 'Pink (Pink)' alone is renamed."""
+    y = [400] * 18
+    card = scm.normalise(dict(tee_sets={
+        "Blue": dict(yards=y, total=7200, rating=71.5, slope=131),
+        "Gold": dict(yards=y, total=6114, rating=69.1, slope=122),
+        "Gold (Gold)": dict(yards=y, total=6086, rating=75.4, slope=132),
+        "Pink (Pink)": dict(yards=y, total=5000, rating=70.0, slope=118),
+        "Blue (Men)": dict(yards=y, total=7200, rating=71.5, slope=131)}))
+    sets = card["tee_sets"]
+    assert set(sets) == {"Blue", "Gold", "Pink", "Blue (Men)"}
+    assert sets["Gold"]["rating"] == 69.1 and sets["Gold"]["alt_ratings"][0]["rating"] == 75.4
+    assert scm.choose_tee_set(card, "pink (pink)")[0] == "Pink"

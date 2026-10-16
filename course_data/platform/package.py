@@ -19,10 +19,13 @@ Outputs in packages/<slug>/:
   screenshots/    holeNN.png in each hole's pixel frame (--render; needs the imagery)
 
 package.json (course_package/1):
-  course     {name, slug, osm{type,id}, center[lon,lat], bbox[w,s,e,n], boundary (GeoJSON), town, state,
+  course     {name, slug, osm{type,id}, center[lon,lat], bbox[w,s,e,n], boundary (GeoJSON MultiPolygon, every
+              outer ring of the OSM course), town, state,
               website, holes_mapped, candidates}
   request    the request file as given
-  tee_set    {requested, chosen, how, source, warning}
+  tee_set    the chosen set's key; tee_set_info {requested, chosen, how, colour, substituted, warning}: a requested
+              set that is not on the card is an error unless the request says "allow_substitute": true
+              (CLI --allow-substitute); then the substitute is named in warning, warnings and qa.md
   tee_sets   {Name: {colour, aliases, yards[], par[], total, rating, slope, source}} (all sets on the card)
   scorecard  {source, url, kind, confidence, tried}
   frame      "yard": x = yds right of the tee line, y = -yds along it, tee (0,0), dot270 (0,-270)
@@ -55,6 +58,7 @@ sys.path[:0] = [HERE, CD]
 import osm_coverage  # noqa: E402
 import platform_common as pc  # noqa: E402
 import scorecard as scm  # noqa: E402
+import tee_line as tl  # noqa: E402
 
 SCHEMA = "course_package/1"
 W, H = 920, 2000
@@ -100,7 +104,8 @@ def pick_scorecard(req, raw_dir):
     """-> (card | None, info dict). Order: request yardages > request scorecard file > golfify > club site."""
     tried = []
     if req.get("yardages"):
-        card = scm.card_from_yardages(req["yardages"], req.get("pars"), name=req.get("tee_set") or "request")
+        card = scm.card_from_yardages(req["yardages"], req.get("pars"),
+                                      name=req.get("tee_set") or req.get("tees") or "request")
         return card, dict(kind="request", source="request file yardages", url=None, tried=tried)
     if req.get("scorecard"):
         p = req["scorecard"] if os.path.isabs(req["scorecard"]) else os.path.join(pc.ROOT, req["scorecard"])
@@ -293,6 +298,20 @@ def par3_haz(h):
 # ----------------------------------------------------------------------------- build
 LIE_ORDER = ["ob_boundary", "native", "recovery", "ob", "first_cut", "fairway", "green", "water", "sand"]
 MODEL_LIE = {"green": "fairway", "ob_boundary": "ob"}
+
+
+def apply_tee_line(h):
+    """Every tee set's aim_ll / bearing_deg from the one tee-line rule (tee_line.py, ARCHITECTURE 9.1-8):
+    tee -> the hole line 250 yds out (<= 62% of the hole), par 3s the green. Idempotent."""
+    for t in (h.get("tees") or {}).values():
+        if not t.get("tee_ll") or not h.get("green_ll"):
+            continue
+        aim, how = tl.aim_point(t["tee_ll"], h.get("hole_line_ll"), h["green_ll"],
+                                t.get("card_yards") or t.get("measured_yards"), h.get("par"))
+        t["aim_ll"] = [round(aim[0], 7), round(aim[1], 7)]
+        t["aim_rule"] = how
+        t["bearing_deg"] = bearing(t["tee_ll"], t["aim_ll"])
+    return h
 WINDOW_LAT, WINDOW_BEHIND, WINDOW_PAST, WINDOW_MIN = 150.0, 40.0, 40.0, 330.0
 
 
@@ -355,8 +374,18 @@ def call_gapfill(package, img_dir, warnings):
         for k, h in out.get("holes", {}).items():               # keep vision's exposure through reframe
             if h.get("exposure") != package["holes"].get(k, {}).get("exposure"):
                 h["exposure_src"] = "vision"
-        if not str(out.get("stages", {}).get("vision", "")).startswith("ok"):
-            out.setdefault("stages", {})["vision"] = "ok: vision_any/gapfill.py"
+        added = sum(str(z.get("src", "")).startswith("vision") for h in out.get("holes", {}).values()
+                    for z in h.get("zones_ll") or [])
+        v = str(out.get("stages", {}).get("vision", "") or "")
+        if not v or v == str(st.get("vision", "") or ""):     # gapfill said nothing about this run
+            v = (f"ok: vision_any/gapfill.py ({added} zones)" if added else
+                 "missing: vision_any/gapfill.py added no zones (no layers for this course?)")
+        elif v.startswith("ok") and not added:
+            v = f"missing: {v[3:].strip()} ran but added no zones"
+        out.setdefault("stages", {})["vision"] = v
+        if not v.startswith("ok"):
+            w = out["warnings"] if isinstance(out.get("warnings"), list) else warnings
+            w.append(f"vision: {v[:160]}; trees / long grass come from OSM only")
         return out
     except Exception as e:                                       # noqa: BLE001
         st["vision"] = f"failed: {type(e).__name__}: {e}"[:300]
@@ -418,10 +447,16 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     card, cinfo = pick_scorecard(req, raw)
     wanted = req.get("tee_set") or req.get("tees")
     chosen, how = scm.choose_tee_set(card, wanted) if card else (None, "no scorecard")
+    substituted = None
     if card and chosen is None:
         chosen, _ = scm.choose_tee_set(card, "back")
-        warnings.append(f"{how}; using the longest set '{chosen}' instead")
-        how = f"fallback: longest set ({how})"
+        if not req.get("allow_substitute"):
+            raise SystemExit(f"{how}: refusing to build another set. Ask the golfer, or set \"allow_substitute\": "
+                             f"true in the request (CLI --allow-substitute) to use the longest set '{chosen}'")
+        substituted = (f"requested tee set '{wanted}' is not on the card; using '{chosen}' instead "
+                       f"(allow_substitute). Sets on the card: {', '.join((card.get('tee_sets') or {}))}")
+        warnings.append(substituted)
+        how = f"substitute: longest set ({how})"
     refs = sorted(osm_lines(fc), key=lambda r: r.zfill(3))
     stages["scorecard"] = f"ok: {cinfo['kind']} ({cinfo['source']})" if card else "missing"
     if not card:
@@ -506,7 +541,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                  provenance=dict(green="osm_green" if b["provenance"]["green"] == "osm_green" else "hole_line_end",
                                  par=par_src.get(k, "length rule")))
         h["green_polygon"] = h["green_polygon_ll"]
-        holes[k] = h
+        holes[k] = apply_tee_line(h)
 
     img_dir = find_imagery(req, pkg_dir, slug)
     imagery, elevation = imagery_ref(img_dir)
@@ -530,9 +565,9 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     course = dict(course, town=town)
     bnd = course.get("boundary")
     ring = None
-    if bnd:
-        rings = [bnd["coordinates"][0]] if bnd["type"] == "Polygon" else [p[0] for p in bnd["coordinates"]]
-        ring = max(rings, key=len)
+    if bnd:                                       # every outer ring (QA P1: SH holes 5-9 are a 2nd/3rd ring)
+        polys = [bnd["coordinates"]] if bnd["type"] == "Polygon" else list(bnd["coordinates"])
+        ring = dict(type="MultiPolygon", coordinates=polys)
     package = dict(
         schema=SCHEMA, slug=slug, built=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         request=req,
@@ -547,7 +582,9 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         tee_set=chosen_key if chosen_key else "osm_back",
         tee_set_info=dict(requested=wanted, chosen=chosen, how=how,
                           colour=card_sets.get(chosen, {}).get("colour") if chosen else None,
-                          warning=None if card else "no scorecard: back tee (OSM tee nearest each hole-line start)"),
+                          substituted=bool(substituted),
+                          warning=substituted or (None if card else "no scorecard: back tee (OSM tee nearest each "
+                                                                    "hole-line start)")),
         tee_sets=tee_sets, scorecard=dict(kind=cinfo["kind"], source=cinfo["source"], url=cinfo.get("url"),
                                           confidence=card_confidence(cinfo["kind"])),
         imagery=imagery, elevation=elevation,
@@ -615,6 +652,7 @@ def reframe(package, tee_set=None):
     s = tee_set or p.get("tee_set")
     p["tee_set"] = s
     for k, h in p["holes"].items():
+        apply_tee_line(h)
         t = h["tees"].get(s)
         if t is None:                                            # set not on this hole: nearest by length
             t = next(iter(h["tees"].values()))
@@ -659,7 +697,7 @@ def reframe(package, tee_set=None):
                  green_polygon_yd=[[round(x, 1), round(y, 1)] for x, y in gpoly.exterior.coords[:-1]] if gpoly is not None else None,
                  zones=zones, zone_src=zsrc, elevation=t.get("elevation"))
         h["provenance"].update(tee=f"tees:{t['method']}", length=f"card:{s}" if card_y else "measured",
-                               bearing="geodesic tee -> aim_ll, degrees true")
+                               bearing="geodesic tee -> aim_ll, degrees true", aim=tl.RULE)
         # pixel frame: geometry.frame_for 'fit' in (right, along) coordinates
         gW = SPoly(W_(np.array(gpoly.exterior.coords))) if gpoly is not None else None
         _, ppy, tee_px, _, _, _ = bh.frame_for(np.zeros(2), np.array([0.0, 1.0]), gW, W_([green])[0],
@@ -792,8 +830,10 @@ def qa_md(p):
     s = p["coverage"]["summary"]
     lines = [f"# {c['name']} ({c.get('town')}, {c.get('state')}) - {p['tee_set']} tees",
              "", f"Built {p['built']}. OSM {c['osm']['type']}/{c['osm']['id']}. Scorecard: {p['scorecard']['kind']} "
-             f"({p['scorecard']['source']}). Tee set: {p['tee_set_info']['how']}.", "",
-             "## Coverage", "", "| | |", "|---|---|"]
+             f"({p['scorecard']['source']}). Tee set: {p['tee_set_info']['how']}.", ""]
+    if (p.get("tee_set_info") or {}).get("substituted"):
+        lines += [f"**WARNING: {p['tee_set_info']['warning']}**", ""]
+    lines += ["## Coverage", "", "| | |", "|---|---|"]
     lines += [f"| {k} | {v} |" for k, v in s.items()]
     lines += ["", "OSM features inside the course: " + ", ".join(f"{k} {v}" for k, v in p["coverage"]["features"].items()), "",
               "## Holes", "", "| hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |",
@@ -843,9 +883,11 @@ def write(package, pkg_dir):
     pc.write_json(os.path.join(pkg_dir, "coverage.json"), package["coverage"])
 
 
-def build_request(req_path, render=False):
+def build_request(req_path, render=False, allow_substitute=False):
     import fetch_package as fp
     req = pc.read_json(req_path)
+    if allow_substitute:
+        req = dict(req, allow_substitute=True)
     slug = fp.request_slug(req, req_path)
     pkg_dir = os.path.join(pc.PACKAGES, slug)
     package = build_package(req, pkg_dir, render=render)
@@ -861,6 +903,8 @@ def main():
     ap.add_argument("cmd", choices=["build", "run"])
     ap.add_argument("requests", nargs="+")
     ap.add_argument("--render", action="store_true", help="render holeNN.png from the imagery")
+    ap.add_argument("--allow-substitute", action="store_true",
+                    help="build the longest set when the requested tee set is not on the card (else an error)")
     a = ap.parse_args()
     paths = [p for r in a.requests for p in sorted(glob.glob(r))]
     failed = []
@@ -874,7 +918,7 @@ def main():
                     failed.append(p)
                     continue
             req = pc.read_json(p)
-            build_request(p, render=a.render or bool(req.get("render")))
+            build_request(p, render=a.render or bool(req.get("render")), allow_substitute=a.allow_substitute)
         except SystemExit as e:
             print(f"{p}: {e}")
             failed.append(p)

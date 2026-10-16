@@ -114,10 +114,17 @@ def notes_and_aims(mod_holes, par3, results, flags, labels=None):
         fl = [f for f in flags.get(k, []) if not f.startswith("tee:")]
         if fl:
             s += " Data check: " + "; ".join(fl[:2]) + "."
+        chk = r.get("check") or []
+        if chk:
+            s = "CHECK THE MAP: " + "; ".join(chk) + ". " + s
         notes[k] = s
         zone = r["zone"]
         aim_at[k] = (f"{side(r['aim'])} of the tee line (good from {side(zone[0])} to {side(zone[1])})"
                      .replace("on the tee line of the tee line", "on the tee line"))
+        if chk:
+            no_aim = not r["clubs"][r["pick"]].get("printable", True) or any(c.startswith("no printable") for c in chk)
+            aim_at[k] = ("CHECK: no safe aim found, look at the map before playing this hole" if no_aim
+                         else "CHECK the map first: " + aim_at[k])
     for k, p in par3.items():
         notes[k] = p.get("note", "")
     return notes, aim_at
