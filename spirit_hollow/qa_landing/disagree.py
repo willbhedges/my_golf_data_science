@@ -576,6 +576,20 @@ def run(holes_sel=None, n=3000, holes=None):
     return allc, ctxs, E
 
 
+def duplicate_keys(src=None, name="AUDIT_FIXES"):
+    """Keys that appear more than once in the `name = {...}` dict literal of course.py (a later
+    duplicate silently replaces the earlier entry's zones)."""
+    import ast
+    import collections
+    src = src if src is not None else open(os.path.join(SH, "course.py")).read()
+    for node in ast.walk(ast.parse(src)):
+        if (isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name)
+                and node.targets[0].id == name and isinstance(node.value, ast.Dict)):
+            keys = [ast.literal_eval(k) for k in node.value.keys if k is not None]
+            return [k for k, c in collections.Counter(keys).items() if c > 1]
+    return []
+
+
 def write_outputs(allc, out=HERE):
     rows = [{kk: v for kk, v in c.items() if kk != "mask"} for c in allc]
     json.dump(dict(doc=__doc__.split("\n\n")[0], tol_yd=TOL, along=ALONG, half=HALF, findings=rows),
@@ -585,12 +599,24 @@ def write_outputs(allc, out=HERE):
           f"+/-{HALF:.0f} yds; tolerance {TOL:.0f} yds of edge position. Score = share of simulated tee shots "
           "(pick 2/3 + runner-up 1/3) in the disputed cells x edge weight exp(-d/12), d = yds from the "
           "hand fairway / first cut. Evidence columns: mean over the disputed cells (lidar = canopy > 2.5 m; "
-          "lay = vision_any layers; v2 = vision2 LOHO probability).", "",
-          "| # | id | hole | kind | what | along | lat | edge shift med/max | d from fw | shots % | score | lidar | naip canopy | lay nat | v2 trees/nat/water/sand | osm w/b |",
-          "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+          "lay = vision_any layers; v2 = vision2 LOHO probability).", ""]
+    dup = duplicate_keys()
+    if dup:
+        md += [f"**WARNING: course.py AUDIT_FIXES has duplicate keys {dup}: the earlier entries for these holes "
+               "are silently dropped (a dict literal keeps the last one). Merge them.**", ""]
+    md += [
+          "| # | id | reviewed | hole | kind | what | along | lat | edge shift med/max | d from fw | shots % | score | lidar | naip canopy | lay nat | v2 trees/nat/water/sand | osm w/b |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    reviewed = {}
+    try:
+        for fid, f in load_proposed().PROPOSED.items():
+            for i in f.get("ids", []):
+                reviewed[i] = f"{fid}: {f['verdict']}"
+    except Exception:                                          # noqa: BLE001 (no review file yet)
+        pass
     for c in rows[:60]:
         ev = c["evidence"]
-        md.append(f"| {c['rank']} | {c['id']} | {c['hole']} | {c['kind']} | {c['what']} | "
+        md.append(f"| {c['rank']} | {c['id']} | {reviewed.get(c['id'], '')} | {c['hole']} | {c['kind']} | {c['what']} | "
                   f"{c['along'][0]:.0f}-{c['along'][1]:.0f} | {c['lat'][0]:+.0f}..{c['lat'][1]:+.0f} | "
                   f"{c['edge_shift_med']:.0f}/{c['edge_shift_max']:.0f} | {c['d_fw_min']:.0f} | "
                   f"{100 * c['share']:.2f} | {1000 * c['score']:.2f} | {ev['lidar_trees']:.2f} | {ev['naip_tree_s']:.2f} | {ev['lay_native']:.2f} | "
