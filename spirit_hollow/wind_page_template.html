@@ -192,14 +192,14 @@ function render(){
       <ellipse cx="${land[0]}" cy="${land[1]}" rx="${rx}" ry="${ry}" transform="rotate(${ang} ${land[0]} ${land[1]})" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>
       <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="9" stroke-linecap="round" opacity=".8"/>
       ${Math.abs(best.drift) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
-      <polygon points="${starPts(star[0], star[1], 15, 6.5)}" fill="#ffc928" stroke="#1a1a1a" stroke-width="1.6"/>
+      ${aimMark(star[0], star[1])}
       ${windArrow(h, r.rel)}`;
     document.getElementById("playLbl").textContent = "Play";
     const pe = document.getElementById("hPlay"); pe.textContent = r.pick; pe.className = "play " + cls(r.pick);
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     if(calm !== r.pick) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
-    document.getElementById("hAim").innerHTML = `Aim at the star${Math.abs(best.drift) > 2 ? `; the wind carries it ${Math.abs(best.drift).toFixed(0)} yds ${best.drift < 0 ? "left" : "right"} to the dashed spot` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 128-world Bayesian run." : ""}`;
+    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(best.drift) > 2 ? `; the wind carries it ${Math.abs(best.drift).toFixed(0)} yds ${best.drift < 0 ? "left" : "right"} to the dashed spot` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 128-world Bayesian run." : ""}`;
     const rows = r.order.map(c => { const v = r.out[c]; return `<tr class="${c===r.pick?"best":""}"><td class="${cls(c)}">${c}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.order[0]?"—":"+"+(v.ev - r.out[r.order[0]].ev).toFixed(3)}</td></tr>`;}).join("");
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     let note = h.note || "";
@@ -222,6 +222,7 @@ function render(){
   renderStrip(); renderControls(); save();
 }
 function solveTeeCalm(h){ if(h.calm) return h.calm.pick; const g = h.grid["0_0"].clubs; return Object.keys(g).sort((a,b) => g[a].ev - g[b].ev)[0]; }
+function aimMark(x, y){ const c = (w, col) => `<g stroke="${col}" stroke-width="${w}" fill="none"><line x1="${x-18}" y1="${y}" x2="${x+18}" y2="${y}"/><line x1="${x}" y1="${y-18}" x2="${x}" y2="${y+18}"/><circle cx="${x}" cy="${y}" r="7"/></g>`; return c(3.6, "#1a1a1a") + c(1.6, "#ffc928") + `<circle cx="${x}" cy="${y}" r="2.2" fill="#e5202a" stroke="#1a1a1a" stroke-width=".6"/>`; }
 function starPts(cx, cy, R, r){ const p = []; for(let i = 0; i < 10; i++){ const a = -Math.PI/2 + i*Math.PI/5, rr = i%2 ? r : R; p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1)); } return p.join(" "); }
 function renderStrip(){
   const el = document.getElementById("strip");

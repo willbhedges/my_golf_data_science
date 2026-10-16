@@ -241,8 +241,16 @@ def draw_tee(ax, h, club, aim, zone, label=None):
     tee = px(fr, 0, 0)
     tgt = px(fr, total, aim)
     ax.plot([tee[0], tgt[0]], [tee[1], tgt[1]], color="#ffd60a", lw=2)
-    ax.plot(*tgt, marker="*", ms=22, color="#ffd60a", mec="black", mew=1.2)
-    ax.annotate(label or f"AIM  {club}\n{side(aim)}", tgt, xytext=(14, -6), textcoords="offset points",
+    # precise aim marker: crosshair + ringed dot whose centre is exactly the aim point
+    r_ = 26                                                       # crosshair half-length, frame px
+    for d in (fwd_ := (tgt - tee) / np.linalg.norm(tgt - tee), np.array([-fwd_[1], fwd_[0]])):
+        a_, b_ = tgt - d * r_, tgt + d * r_
+        ax.plot([a_[0], b_[0]], [a_[1], b_[1]], color="black", lw=3.2, zorder=7, solid_capstyle="butt")
+        ax.plot([a_[0], b_[0]], [a_[1], b_[1]], color="#ffd60a", lw=1.4, zorder=8, solid_capstyle="butt")
+    ax.plot(*tgt, marker="o", ms=11, mfc="none", mec="black", mew=3.0, zorder=9)
+    ax.plot(*tgt, marker="o", ms=11, mfc="none", mec="#ffd60a", mew=1.4, zorder=10)
+    ax.plot(*tgt, marker="o", ms=2.6, color="#e5202a", mec="black", mew=0.6, zorder=11)
+    ax.annotate(label or f"AIM  {club}\n{side(aim)}", tgt, xytext=(16, 8), textcoords="offset points",
                 color="black", fontsize=9, weight="bold",
                 bbox=dict(boxstyle="round,pad=0.25", fc="#ffd60a", ec="black", lw=0.8))
     finish(ax)
@@ -337,7 +345,7 @@ def tee_page(pdf, h, conf):
                      f"fairway {res[c]['share']['fairway']:.0%}, ~{res[c]['approach']:.0f} in)")
     lines += ["", "**Notes", NOTES.get(h, "")]
     text_block(fig, 0.57, 0.90, lines)
-    fig.text(0.57, 0.035, "Yellow star = aim point.  Dashed oval = 95% shot pattern.\n"
+    fig.text(0.57, 0.035, "Crosshair dot = exact aim point.  Dashed oval = 95% shot pattern.\n"
              "Blue band = aim zone.", fontsize=8, color="#555")
     pdf.savefig(fig)
     plt.close(fig)
@@ -417,7 +425,7 @@ AIM_AT = {
 
 
 def aim_sheet(pdf, h):
-    """Phone-friendly page: just the screenshot, a star, and one line of words."""
+    """Phone-friendly page: just the screenshot, the aim dot, and one line of words."""
     fig = plt.figure(figsize=(6, 10.4))
     if h in PAR3:
         p = PAR3[h]
@@ -435,7 +443,7 @@ def aim_sheet(pdf, h):
              weight="bold", color="white", va="center")
     fig.text(0.52 if len(label(h)) > 3 else 0.40, 0.965, f"Par {par}", fontsize=13, color="#cfe8d5", va="center")
     fig.text(0.96, 0.965, title, fontsize=20, weight="bold", color="#ffd60a", va="center", ha="right")
-    line = ("Land it in the blue box. " + PAR3[h]["short"]) if h in PAR3 else "Aim at the star. " + AIM_AT[h]
+    line = ("Land it in the blue box. " + PAR3[h]["short"]) if h in PAR3 else "Aim at the dot. " + AIM_AT[h]
     for i, piece in enumerate(textwrap.wrap(line, 60)[:2]):
         fig.text(0.04, 0.925 - i * 0.022, piece, fontsize=11, color="white", va="center")
     pdf.savefig(fig)
