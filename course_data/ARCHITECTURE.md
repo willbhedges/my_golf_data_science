@@ -286,6 +286,29 @@ Writes `course_data/spirit_hollow/acceptance.json` and `acceptance.md`.
 
 (updated by the architect; newest first)
 
+### 2026-10-16 19:35 UTC
+
+* **S4 wired.** `pipeline.py` now (a) reads the imagery team's `imagery/<slug>/gapfill.geojson`
+  (classify.py, all-holes model) as vision layers, and (b) calls `vision_any/gapfill.py:gapfill_holes` when
+  `vision_any/<slug>/vision_any.geojson` exists. Without the precomputed file `gapfill_holes` builds the
+  layers on the fly from the raw rasters: that ran >13 min and was killed at ~3.4 GB in this sandbox, so
+  the pipeline skips it. **vision_any: precompute and commit `vision_any/<slug>/vision_any.geojson` on
+  Actions (vision_any.yml)** - that is the product path (lidar trees, not trained on hand maps).
+* Black-tee build with the imagery gap-fill: imagery now supplies 2-24% of each landing zone; 6 tee holes
+  reach "auto" (>= 0.8). Note: this classifier is trained on the hand map, so it is a Spirit Hollow-only
+  aid; any other course needs vision_any.
+* **Acceptance with leave-one-hole-out gap-fill** (`acceptance.py --vision loho`, uses
+  `imagery/spirit_hollow/gapfill_loho/<k>.geojson`; `acceptance_loho.md`): club match 62% (unchanged,
+  bar 80%); tee within 10 yds 56%, green within bar 75% (median 8.75 / 6.3 yds; the trees helped the
+  raster registration on 13); landing-zone IoU trees 0.07, long grass 0.04, water 0.40, OB 0.18. Hole 4
+  passes every check. The LOHO classifier's tree IoU is 0.59 course-wide but its polygons barely reach
+  the landing-zone band where the hand map draws tree lines at the trunks.
+* The plain oracle run (`acceptance.py`, OSM only) now explicitly disables every vision layer so the
+  all-holes classifier can't leak the hand labels into it.
+* platform/ requests moved to `course_data/requests/` (as 9.4). `course_package.yml` still watches only
+  `course_data/platform/**`: **platform, add `course_data/requests/package_*.json` to its paths**.
+  No `packages/` output yet (needs the Actions fetch).
+
 ### 2026-10-16 18:58 UTC
 
 * v2 folders now exist: platform/ (`package.py`, `resolve.py`, `scorecard.py`, `osm_coverage.py`,
