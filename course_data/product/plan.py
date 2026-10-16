@@ -136,9 +136,16 @@ def main(argv=None):
         for k, fl in C.flags.items():
             if any("skipped" in f for f in fl):
                 gaps.append(f"hole {k}: " + "; ".join(fl))
+        clamped = {}
+        for c_, raw, cl in PK.ELEV_CLAMPED:
+            clamped.setdefault(c_, 0)
+            clamped[c_] += 1
+        if clamped:
+            gaps.append("elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for "
+                        + ", ".join(f"{c_} on {n} holes" for c_, n in clamped.items()))
         stages = (C.package.get("stages") or {})
         for s_, v in stages.items():
-            if str(v).startswith("missing"):
+            if str(v).startswith(("missing", "failed", "skipped")):
                 gaps.append(f"package stage {s_}: {v}")
         mod_path = os.path.join(out, "course.py")
         PK.write_module(C, mod_path)

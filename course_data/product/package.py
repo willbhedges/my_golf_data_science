@@ -280,12 +280,24 @@ def load(path, tees=None):
     return C
 
 
+ELEV_CLAMPED = []
+
+
 def _elev(e):
     """platform hole.elevation.adjustments -> tee_strategy's hole["elev"] {club: (carry +yd, roll x, kick yd)}."""
     adj = (e or {}).get("adjustments") or {}
     clubs = adj.get("clubs") or {}
-    out = {c: (float(v.get("carry_delta_yds", 0.0)), float(v.get("roll_factor", 1.0)),
-               float(v.get("lateral_kick_yds", 0.0))) for c, v in clubs.items() if isinstance(v, dict)}
+    # sanity clamp (a DEM artefact or a frame mismatch must not move a drive 40 yds): carry +/-30 yds,
+    # roll x0.4-2.0, side kick +/-15 yds; ELEV_CLAMPED records what was cut
+    out = {}
+    for c, v in clubs.items():
+        if not isinstance(v, dict):
+            continue
+        raw = (float(v.get("carry_delta_yds", 0.0)), float(v.get("roll_factor", 1.0)), float(v.get("lateral_kick_yds", 0.0)))
+        cl = (float(np.clip(raw[0], -30, 30)), float(np.clip(raw[1], 0.4, 2.0)), float(np.clip(raw[2], -15, 15)))
+        if cl != raw:
+            ELEV_CLAMPED.append((c, raw, cl))
+        out[c] = cl
     return out or None
 
 
