@@ -44,7 +44,7 @@ def test_zone_names_known(course, t):
             assert len(poly) >= 3
 
 
-# hole 11's green is deliberately left on the line (see GREEN_SIDE); tested separately below
+# hole 11's short app numbers round coarsely; tested separately below
 @pytest.mark.parametrize("hole", [h for h in SH if h != 11])
 def test_green_reproduces_app_numbers(t, course, hole):
     hd = course.HOLES[hole]
@@ -55,12 +55,15 @@ def test_green_reproduces_app_numbers(t, course, hole):
         assert d == pytest.approx(app, abs=1.5), (hole, along, d, app)
 
 
-def test_hole11_on_the_line(t, course):
+def test_hole11_green_left_and_matches_app(t, course):
+    """11's green is ~38 yds left (verified against OSM via the NAIP registration); its app
+    numbers are short, so 1-yd rounding allows a few yards of trilateration error."""
     hd = course.HOLES[11]
     tee, fwd, right, ppy = t.hole_frame(hd)
-    rel = (np.array(hd["green"]) - tee) / ppy
-    assert rel @ right == pytest.approx(0.0, abs=1e-6)
-    assert rel @ fwd == pytest.approx(270 + course.APP[11][1])
+    g = np.array(hd["green"], float)
+    assert ((g - tee) / ppy) @ right < -20
+    for a, d in zip((300, 270, 240), course.APP[11]):
+        assert np.linalg.norm(g - (tee + a * fwd * ppy)) / ppy == pytest.approx(d, abs=6)
 
 
 @pytest.mark.parametrize("hole", SH)

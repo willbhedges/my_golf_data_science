@@ -406,8 +406,11 @@ APP = {1: (119, 143, 168), "2B": (316, 339, 363), "2F": (225, 250, 276), 4: (221
 # Which side of the tee line the green sits (the three numbers fix how far, not which side).
 # From the green marker (1, 10), the hole outline (9, 18) or the app's dashed line;
 # 11 is left on the line: its offset (~34) is within the app's 1-yd rounding at that range.
-GREEN_SIDE = {1: -1, "2B": -1, "2F": -1, 4: -1, 5: -1, 6: -1, 8: -1, "9B": 1, "9F": 1, 10: -1,
-              11: 0, 13: -1, 14: -1, 16: 0, 17: 1, 18: 1}
+GREEN_SIDE = {1: -1, "2B": -1, "2F": -1, 4: 1, 5: -1, 6: -1, 8: -1, "9B": 1, "9F": 1, 10: -1,
+              11: -1, 13: 1, 14: -1, 16: 0, 17: 1, 18: 1}
+# Verified by projecting OSM's green into each screenshot through the imagery engineer's NAIP
+# registration (course_data/imagery/traced_registration.json): 13 holes agreed within a few yards;
+# 4 and 13 had the green on the wrong side and 11 is ~38 yds left (fixed here).
 
 
 def green_from_app(d300, d270, d240, side):
@@ -425,7 +428,7 @@ for _k, _h in HOLES.items():
     _f = (_d - _tee) / np.linalg.norm(_d - _tee)
     _r = np.array([-_f[1], _f[0]])
     _a, _l = green_from_app(*APP[_k], GREEN_SIDE[_k])
-    if GREEN_SIDE[_k] == 0:
+    if GREEN_SIDE[_k] == 0:                  # straight hole: green on the line
         _a, _l = 270 + APP[_k][1], 0.0
     _h["green"] = tuple(_tee + (_a * _f + _l * _r) * _ppy)
     _h["length"] = 270 + APP[_k][1]          # same convention on every hole
