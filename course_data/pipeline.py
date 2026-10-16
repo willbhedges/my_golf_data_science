@@ -36,6 +36,13 @@ sys.path[:0] = [HERE, os.path.join(ROOT, "mozingo")]
 W, H = 920, 2000
 LANDING = dict(a0=220, a1=340, lat=45, step=5)       # landing-zone grid (yds) for confidence + acceptance
 PENAL = ("recovery", "native", "water", "sand", "ob")
+MODEL_LIE = {"green": "fairway", "ob_boundary": "ob", "tee": "fairway", "trees": "recovery", "bunker": "sand"}
+
+
+def model_zones(zones):
+    """Map package lie names onto the model's (ARCHITECTURE 9.1-4): tee_strategy only knows
+    fairway / first_cut / rough / sand / recovery / native / water / ob."""
+    return [(MODEL_LIE.get(n, n), poly) for n, poly in zones]
 LOG = []
 
 
@@ -547,6 +554,7 @@ def build_course(course, tee_set="white", lengths=None, cdir=None, render=True, 
         if p.get("golf") == "hole":
             props[str(p.get("ref"))] = p
     for k, h in holes.items():
+        h["zones"] = model_zones(h["zones"])
         h["_ref"] = k
         h["has_green_polygon"] = True
         if ctx is not None:

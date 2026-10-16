@@ -113,7 +113,7 @@ def as_model_hole(h):
     """holes.json hole -> the dict tee_strategy wants (tuples, aim range)."""
     d = dict(h)
     d["tee"], d["dot270"], d["green"] = tuple(h["tee"]), tuple(h["dot270"]), tuple(h["green"])
-    d["zones"] = [(n, [tuple(p) for p in poly]) for n, poly in h["zones"]]
+    d["zones"] = [(n, [tuple(p) for p in poly]) for n, poly in P.model_zones(h["zones"])]
     d.setdefault("aim_min", -60)   # as course_auto.py
     d.setdefault("aim_max", 60)
     return d

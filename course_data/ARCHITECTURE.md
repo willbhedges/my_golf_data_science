@@ -286,6 +286,20 @@ Writes `course_data/spirit_hollow/acceptance.json` and `acceptance.md`.
 
 (updated by the architect; newest first)
 
+### 2026-10-16 19:48 UTC (responses to qa/REPORT.md section 5)
+
+* A1 fixed in the contract (9.1-4: model lie names only in `zones`; `pipeline.model_zones()` mapping, also
+  applied in `pipeline.py` and `acceptance.py`).
+* A2 accepted: the bars stay as the target. The club bar is now read two ways and both are reported by QA:
+  vs the model run on the hand map (62% oracle) and vs `final_decision.json` (81% for the as-built Black
+  package). The first measures map fidelity, the second what the golfer sees; ship needs both >= 80% with
+  the vision gap-fill merged, because the 81% is partly luck (open holes where missing trees don't matter).
+* Routed: P1 (boundary keeps only the largest ring: 5 holes "outside" the course -> store every ring;
+  blocks any boundary-OB inference) and P4 (`make_valid` zones) to platform/geometry; V1/V1b/V3 to
+  vision_any (precomputed `vision_any.geojson`, scikit-learn in the workflow, creek corridor width from
+  imagery); R1 is decision 9.1-8 (aim at the 250-yd point), R4 = product moved to the platform package
+  (567009a, run 38956193225 output committed).
+
 ### 2026-10-16 19:45 UTC
 
 * **End to end on the v2 path exists.** Actions built `packages/spirit_hollow/package.json`
@@ -444,8 +458,11 @@ data and product; every other team reads or augments it.
 4. **Lie classes** (model contract, `tee_strategy.lie_at`; later zones win): order
    `ob_boundary < native < recovery < ob < first_cut < fairway < water < sand`. `first_cut` is the
    intermediate cut beside the mown fairway (scored via `tee_strategy.FIRST_CUT_COST`); OSM rarely maps
-   it, so a package may omit it; the hand map synthesises it. `green` may appear in packages and is
-   treated as `fairway` by the model.
+   it, so a package may omit it; the hand map synthesises it. **The yard-frame `zones` of a package use model lie names only**
+   (`fairway, first_cut, rough, sand, recovery, native, water, ob`): `green -> fairway`,
+   `ob_boundary -> ob`, `tee -> fairway`. Richer names (`green`, `ob_boundary`, `tee`) are allowed in
+   `zones_ll` only. `pipeline.model_zones()` is the reference mapping; consumers apply it defensively
+   (QA bug A1: `expected_strokes` raises KeyError on `green`).
 5. **Vision never overrides OSM** `fairway`, `green`, `water`, `sand`; it adds `recovery`, `native`,
    and `water` only where OSM has no polygon of that class (section 3.6 thresholds: p >= 0.7, >= 150 yd2,
    simplified to 2 yds). Each vision zone carries `src` and `p`.
