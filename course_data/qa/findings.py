@@ -20,6 +20,21 @@ star + dots = Driver best aim and 300 simulated balls coloured by the lie the pa
 | 13 | Woods left of the fairway unmapped; Driver goes into the fairway bunker at 290 (19% sand) with no tree cost weighed. | 150-330 yds, 30-90 L |
 | 4, 5, 10, 12, 13 | Self-intersecting zone polygons (`test_zones_valid_simple`): OB on 4 and 5, creek water on 10/12/13 (buffers folding on themselves). `matplotlib.Path` tolerates them but even-odd fill leaves holes in the hazard. | see contracts.json messages |
 
+### Spirit Hollow with vision (`qa/work/sh_v` = `vision_any/gapfill.py` on `packages/spirit_hollow`, precomputed lidar/NAIP layers; `review/spirit_hollow_vision/`)
+
+Big improvement: woods right of the creek on 11 are now `recovery`, and Driver on 11 now finds the creek (78% water)
+instead of "rough", so the model will lay up; trees appear in every landing zone (exposure 0.14-0.47).
+Remaining errors:
+
+| hole | what's wrong | where |
+|---|---|---|
+| all | Almost every `recovery` polygon has a `native` polygon hugging its outline 2-8 yds outside it (paired orange/yellow rings on 1, 9, 11): canopy shadow / crown edge classified as long grass. Inflates native (325 polygons added) and makes tree edges play as 50% lost ball. | e.g. hole 1 left woods ~(-91.1452, 40.7570) |
+| 1 | Pond right of the 260-330 landing area is still a half-disc cut off by the OB line; tree clump left at 250-280 yds 20-45 L only partly covered (balls there score rough). | (-91.14515, 40.75696) is `rough` |
+| 2 (Gold), 6 (Rust), 18 (Rust) | **Tee box inside a vision `native` polygon** (`test_every_tee_set`): gap-fill subtracts OSM tee polygons but not the package's tee points. | tees.<set>.tee_ll |
+| 2, 9, 10 | `zones` (yard) no longer equal `zones_ll` after gap-fill: 2-4% of the 100-400 yd grid differs (e.g. recovery->ob on 2, recovery->water on 10): reframe re-sorts by ZONE_ORDER but the WGS84 list keeps append order, so overlap winners differ. | `test_zones_match_zones_ll` |
+| 1, 9, 10, 11, 13, 15-18 | Self-intersecting vision polygons (recovery/native/water). | contracts.json |
+| tree polygons | stair-stepped ~5-10 yd blocks (raster outline, little simplification) - fine for the model, ugly in the book. | - |
+
 ### Veenker Memorial (Ames IA, platform `packages/veenker`, Blue tees; requested White is not on the card)
 
 | hole | what's wrong | where |
@@ -83,6 +98,8 @@ quick mode. The v1 hand-reviewed decision for 1 is 4-wood 5 yds right.
 * **V2:** `gapfill.py` first failed with `ModuleNotFoundError: run_any` (module landed later); a second run on
   `--holes` was OOM-killed (exit 137, machine had ~9 GB free) on a 1876x2162 1-m stack; a third run on the platform
   package is paused by the coordinator. QA has not yet seen a gap-filled package.
+* **V4:** native rings around every tree polygon; tee points inside native; zones/zones_ll order mismatch after
+  gap-fill; self-intersecting output polygons (all detailed in section 3, "Spirit Hollow with vision").
 * **V3:** creek corridors are 3-yd centre-line buffers (mean water IoU 0.37); on 10, 11, 14, 16, 18 the channel + banks
   are 10-20 yds wide in NAIP.
 
