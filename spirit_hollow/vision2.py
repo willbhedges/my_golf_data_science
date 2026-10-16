@@ -467,8 +467,8 @@ def cm_table(cm, title):
 def write_report(results, best, best_maps, data, extra):
     md = ["# Spirit Hollow — hazard classifier v2 (leave-one-hole-out)", "",
           "Every number is out-of-sample: each hole is scored with a model trained only on the "
-          "other 15 holes. Calibration maps are fitted on inner 2-group-fold predictions over "
-          "those 15 training holes, so the held-out hole contributes nothing to training, "
+          "other 15 holes. Calibration maps (when run, `--calib`) are fitted on inner "
+          "2-group-fold predictions over those 15 training holes, so the held-out hole contributes nothing to training, "
           "feature scaling, calibration or ensemble weights (the ensemble is a fixed 50/50 "
           "average). Pixel methods are 7x7-smoothed before scoring, as in vision.py. "
           f"Regions for (d)/pooling: **{REGION_SRC.upper()}**"
