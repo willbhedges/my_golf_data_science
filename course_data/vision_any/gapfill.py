@@ -105,6 +105,21 @@ def holefree(g):
 
 
 # --------------------------------------------------------------------------- layers
+def resolve_slug(slug, center=None):
+    """The vision_any course dir for a package: same slug, else the one whose grid contains the centre
+    (package slugs and vision_any slugs can differ, e.g. mozingo_lake vs mozingo)."""
+    if slug and os.path.isdir(os.path.join(HERE, slug, "raw")):
+        return slug
+    if center is not None:
+        for d in sorted(os.listdir(HERE)):
+            mp = os.path.join(HERE, d, "raw", "meta.json")
+            if os.path.exists(mp):
+                w, s, e, n = json.load(open(mp))["grid"]["ll_bbox_wsen"]
+                if w <= center[0] <= e and s <= center[1] <= n:
+                    return d
+    return slug
+
+
 def load_layers(slug, imagery_dir=None, course_dir=None):
     """-> (FeatureCollection of WGS84 vision polygons, meta). Builds them if the geojson is missing."""
     p = os.path.join(HERE, slug, "vision_any.geojson")
@@ -233,7 +248,7 @@ def gapfill(package, imagery_dir=None, slug=None, use_reframe=True):
     """course_package/1 dict -> new dict with vision zones (ARCHITECTURE.md 9.3)."""
     out = copy.deepcopy(package)
     course = out.get("course") or {}
-    slug = slug or course.get("slug")
+    slug = resolve_slug(slug or course.get("slug"), course.get("center"))
     fc, meta = load_layers(slug, imagery_dir)
     shapes = _shapes(fc)
     n_add = {k: 0 for k in PENAL_ADD}
@@ -295,7 +310,10 @@ def gapfill_holes(model, imagery_dir=None, slug=None):
     import render as R
     from shapely.geometry import Polygon
     out = copy.deepcopy(model)
-    slug = slug or out.get("slug") or (out.get("course") or {}).get("slug")
+    c = out.get("course") or {}
+    ctr = c.get("center")
+    ctr = [ctr["lon"], ctr["lat"]] if isinstance(ctr, dict) else ctr
+    slug = resolve_slug(slug or out.get("slug") or c.get("slug"), ctr)
     fc, meta = load_layers(slug, imagery_dir)
     shapes = _shapes(fc)
     for ref, h in out["holes"].items():
