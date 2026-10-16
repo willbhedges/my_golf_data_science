@@ -116,7 +116,12 @@ def _lie_mixture(lie):
         return [(NATIVE_LOST, "rough", pen), (1 - NATIVE_LOST, "recovery_hard", 0.0)]
     if lie == "recovery":
         return [(TREE_SEVERITY, "recovery_hard", 0.0), (1 - TREE_SEVERITY, "rough", 0.0)]
+    if lie == "first_cut":                       # intermediate cut beside the mown fairway
+        return [(1 - FIRST_CUT_COST, "fairway", 0.0), (FIRST_CUT_COST, "rough", 0.0)]
     return [(1.0, lie, 0.0)]
+
+
+FIRST_CUT_COST = 0.35    # first cut costs 35% of the fairway->rough difference
 
 
 def expected_strokes(lie, dist):
@@ -444,7 +449,7 @@ def best_aim(hole_no, club, aims=AIMS, z=None):
         ev = strokes.mean()
         if best is None or ev < best["ev"]:
             share = {k: float(np.mean(lie == k)) for k in
-                     ("fairway", "rough", "sand", "recovery", "native", "water", "ob")}
+                     ("fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob")}
             best = dict(aim=aim, ev=ev, approach=float(np.median(to_green)), share=share,
                         strokes=strokes, lie=lie, to_green=to_green)
     if REFINE and len(aims) > 1:
@@ -453,7 +458,7 @@ def best_aim(hole_no, club, aims=AIMS, z=None):
             _, lie, to_green, strokes = simulate(hole_no, club, aim, z=z)
             if strokes.mean() < best["ev"]:
                 share = {k: float(np.mean(lie == k)) for k in
-                         ("fairway", "rough", "sand", "recovery", "native", "water", "ob")}
+                         ("fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob")}
                 best = dict(aim=float(aim), ev=strokes.mean(), approach=float(np.median(to_green)),
                             share=share, strokes=strokes, lie=lie, to_green=to_green)
     return best
@@ -473,7 +478,7 @@ def plot_hole(hole_no, results, out_path):
     fig, ax = plt.subplots(figsize=(4.6, 10))
     ax.imshow(img, extent=(0, 920, 2000, 0))
     colors = {"fairway": "#7CFC00", "recovery": "#8B4513", "sand": "#F5DEB3",
-              "native": "#DAA520", "water": "#1E90FF", "ob": "#FF00FF"}
+              "native": "#DAA520", "water": "#1E90FF", "ob": "#FF00FF", "first_cut": "#B8E986", "rough": "#BBBBBB"}
     for name, poly in h["zones"]:
         p = np.array(poly + [poly[0]])
         ax.plot(p[:, 0], p[:, 1], color=colors[name], lw=1.2)

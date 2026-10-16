@@ -14,6 +14,8 @@ Reading the imagery (winter, dormant grass):
   * ob = houses, the highway on 5 and back yards.
 Hole 3 wasn't provided. Holes 2 and 9 have two tees (back and forward).
 """
+import os
+
 import numpy as np
 
 HOLES = {
@@ -305,6 +307,95 @@ AUDIT_FIXES = {
 }
 for _k, _extra in AUDIT_FIXES.items():
     HOLES[_k]["zones"] = HOLES[_k]["zones"] + _extra
+
+
+# ---- Fairway width from OpenStreetMap -------------------------------------------------------
+# Three independent checks (stats calibration: model ~75% fairways vs ~49% published for a
+# 5-hcp; OSM geometry; the course-data spike) found the traced fairways include the first cut:
+# 55-65 yds wide where the mown fairway in OSM (which sits on the stripes in the NAIP photo)
+# is 25-40. At each 10 yds from 200-340 out we narrow the traced fairway to the OSM width at
+# the same distance from the green (keeping the traced centre) and mark the trimmed edges
+# "first_cut" (scored between fairway and rough in tee_strategy).
+def _osm_widths():
+    import json
+    from matplotlib.path import Path as _P
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "course_data", "spirit_hollow",
+                        "holes_osm.json")
+    if not os.path.exists(path):
+        return {}
+    holes = json.load(open(path))["holes"]
+    out = {}
+    xs = np.arange(-80, 80.01, 0.5)
+    for ref, hd in holes.items():
+        polys = [_P(np.array(z[1])) for z in hd["zones"] if z[0] == "fairway"]
+        gy = hd["green"][1]
+
+        def width(dist_to_green, polys=polys, gy=gy):
+            y = gy + dist_to_green
+            inside = np.zeros_like(xs, bool)
+            for p in polys:
+                inside |= p.contains_points(np.c_[xs, np.full_like(xs, y)])
+            best = cur = 0
+            for v in inside:
+                cur = cur + 1 if v else 0
+                best = max(best, cur)
+            return best * 0.5
+        out[ref] = width
+    return out
+
+
+def _first_cut_bands(hd, width_at, alongs=range(200, 341, 10), min_width=18.0):
+    from matplotlib.path import Path as _P
+    tee, d = np.array(hd["tee"], float), np.array(hd["dot270"], float)
+    ppy = np.linalg.norm(d - tee) / 270
+    f = (d - tee) / np.linalg.norm(d - tee)
+    r = np.array([-f[1], f[0]])
+    lats = np.arange(-70, 70.01, 0.5)
+    left, right = [], []
+    for a in alongs:
+        pts = tee + (a * f + lats[:, None] * r) * ppy
+        lie = np.array(["rough"] * len(pts), dtype=object)
+        for name, poly in hd["zones"]:
+            lie[_P(poly).contains_points(pts)] = name
+        fw = lie == "fairway"
+        if not fw.any():
+            continue
+        runs, start = [], None                        # widest fairway run
+        for i, v in enumerate(np.r_[fw, False]):
+            if v and start is None:
+                start = i
+            elif not v and start is not None:
+                runs.append((start, i - 1)); start = None
+        i0, i1 = max(runs, key=lambda q: q[1] - q[0])
+        l0, l1 = lats[i0], lats[i1]
+        w = width_at(hd["length"] - a)
+        if w < min_width or (l1 - l0) <= w:
+            continue
+        c = (l0 + l1) / 2
+        left.append((a, l0, c - w / 2))
+        right.append((a, c + w / 2, l1))
+
+    def poly(rows):
+        if len(rows) < 2:
+            return None
+        outer = [tuple(tee + (a * f + x0 * r) * ppy) for a, x0, _ in rows]
+        inner = [tuple(tee + (a * f + x1 * r) * ppy) for a, _, x1 in rows][::-1]
+        return outer + inner
+    return [p for p in (poly(left), poly(right)) if p]
+
+
+_W = _osm_widths()
+FAIRWAY_WIDTH_SOURCE = "OSM" if _W else "traced"
+for _k, _h in HOLES.items():
+    _ref = str(_k if isinstance(_k, int) else int(_k[:-1]))
+    if _ref not in _W:
+        continue
+    _bands = _first_cut_bands(_h, _W[_ref])
+    if not _bands:
+        continue
+    _last_fw = max(i for i, (nm, _) in enumerate(_h["zones"]) if nm == "fairway")
+    _h["zones"] = (_h["zones"][:_last_fw + 1] + [("first_cut", b) for b in _bands]
+                   + _h["zones"][_last_fw + 1:])
                     # pond + bunker squeeze the landing zone
 
 # The app's "Center" numbers: yds to the green centre from the 300 / 270 / 240 dots.
@@ -432,5 +523,8 @@ AIM_AT = {
     18: "Centre-left of the fairway, between the long grass and the creek",
 }
 
-ORDER = [1, "2B", "2F", 4, 5, 6, 7, 8, "9B", "9F", 10, 11, 12, 13, 14, 15, 16, 17, 18]
-LABELS = {"2B": "2 back tee", "2F": "2 forward tee", "9B": "9 back tee", "9F": "9 forward tee"}
+ORDER = [1, "2F", "2B", 4, 5, 6, 7, 8, "9F", "9B", 10, 11, 12, 13, 14, 15, 16, 17, 18]
+# Official card (course_data/tees/scorecard.json): the golfer plays the Black tees. On 2 and 9 the
+# "forward" screenshots are the Black tees (2: 520 vs card 507; 9: 373 vs 365) and the "back" ones
+# are the Gold tips (2: 609 vs 607; 9: 399 vs 410).
+LABELS = {"2B": "2 Gold tee", "2F": "2 Black tee", "9B": "9 Gold tee", "9F": "9 Black tee"}

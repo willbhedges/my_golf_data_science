@@ -37,7 +37,7 @@ def test_app_tables_cover_holes(course):
 
 
 def test_zone_names_known(course, t):
-    known = {"fairway", "rough", *t.HAZARDS}
+    known = {"fairway", "first_cut", "rough", *t.HAZARDS}
     for h, hd in course.HOLES.items():
         for name, poly in hd["zones"]:
             assert name in known, (h, name)
@@ -118,8 +118,8 @@ def test_use_course_swaps_globals(yb, t, course):
     moz_holes = t.HOLES
     yb.use_course("Spirit Hollow GC", "/x", "Spirit_Hollow", course.HOLES, course.PAR3,
                   course.NOTES, course.AIM_AT, course.ORDER, course.LABELS)
-    assert yb.label("9B") == "9 back tee"
-    assert yb.label("2F") == "2 forward tee"
+    assert yb.label("9B") == "9 Gold tee"
+    assert yb.label("2F") == "2 Black tee"
     assert yb.label(7) == "7"
     assert yb.NAME == "Spirit Hollow GC" and yb.DIR == "/x" and yb.PREFIX == "Spirit_Hollow"
     assert yb.STRATEGY_NAME == "Spirit_Hollow_Strategy.pdf"
@@ -140,7 +140,7 @@ def test_use_course_labels_default_empty(yb, course):
 def test_build_setup(yb, t, course):
     import build
     build.setup()
-    assert yb.label("9B") == "9 back tee"
+    assert yb.label("9B") == "9 Gold tee"
     assert t.HOLES is course.HOLES
     assert yb.NAME == "Spirit Hollow GC"
 

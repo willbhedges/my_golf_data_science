@@ -300,3 +300,8 @@ def test_native_lost_ball_is_stroke_and_distance(t):
     np.testing.assert_allclose(t.expected_strokes("native", D), t.expected_strokes("ob", D))
     t.NATIVE_IS_PENALTY_AREA = True
     np.testing.assert_allclose(t.expected_strokes("native", D), t.expected_strokes("water", D))
+
+
+def test_first_cut_between_fairway_and_rough(t):
+    f, c, r = (t.expected_strokes(l, D) for l in ("fairway", "first_cut", "rough"))
+    assert np.all(f <= c) and np.all(c <= r)

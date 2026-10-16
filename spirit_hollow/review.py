@@ -12,7 +12,7 @@ import tee_strategy as t, course as c, yardage_book as yb
 t.HOLES = c.HOLES
 out = sys.argv[1]
 col = {"fairway": (124, 252, 0), "recovery": (255, 85, 0), "sand": (255, 255, 255), "native": (255, 208, 0),
-       "water": (0, 191, 255), "ob": (255, 0, 255), "rough": (200, 200, 200)}
+       "water": (0, 191, 255), "ob": (255, 0, 255), "rough": (200, 200, 200), "first_cut": (190, 240, 140)}
 k = 1206 / 920
 font = ImageFont.load_default(size=22)
 tiles = []
