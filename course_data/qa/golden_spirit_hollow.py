@@ -9,6 +9,16 @@ Reuses course_data/acceptance.py (registration, tee/green error, landing-zone Io
 only into course_data/qa/: golden.json, golden.md, and REPORT.md (which also pulls in contracts.json
 from run_qa.py and the hand-written findings.py).
 
+Tee sets (Q1): a package is scored, per traced hole, with the tee of the card set that hole's 18Birdies
+screenshot shows (spirit_hollow/screenshot_tee_sets.json: 1, 2B, 9B, 11 Gold; 15 White; the rest Black),
+because the app's tee is not always the golfer's. `--tee-set package` scores the package's own set on
+every hole (the pre-Q1 numbers); `--tee-set both` reports both. zones_ll are frame-free, so a view for
+another set only swaps the tee / aim / length of each hole (no rebuild). "measured length" = the placed
+tee's tee -> line -> green-centroid distance vs the screenshot's (the card length is a property of the card).
+
+  python3 course_data/qa/golden_spirit_hollow.py --no-oracle --package A.json --package B.json \
+          --tee-set both --out golden_tees          # writes qa/golden_tees.json/.md, leaves REPORT.md alone
+
 Extra over acceptance.py: club-pick agreement with the published decision
 (spirit_hollow/output/final_decision.json, the robust pick incl. ties) as well as with the model run on
 the traced map; per-class IoU means; pass/fail per bar of ARCHITECTURE.md section 7.
@@ -33,11 +43,37 @@ import packages as PK                                    # noqa: E402
 FINAL = os.path.join(ROOT, "spirit_hollow", "output", "final_decision.json")
 
 
-def package_auto(pkg):
-    """{traced key: auto hole dict in acceptance's format} for a Spirit Hollow package."""
+def set_view(pkg, tee_set):
+    """The same package seen from another tee set: each hole's tee_ll / aim_ll / bearing / length /
+    measured_length taken from holes[ref].tees[tee_set] (zones_ll are WGS84, so nothing else changes)."""
+    import copy
+    raw = copy.deepcopy(pkg.raw)
+    raw["tee_set"] = tee_set
+    for h in raw.get("holes", {}).values():
+        t = (h.get("tees") or {}).get(tee_set)
+        if not t:
+            continue
+        h.update(tee_ll=t["tee_ll"], aim_ll=t["aim_ll"], bearing_deg=t.get("bearing_deg"),
+                 length=int(t.get("card_yards") or round(t["measured_yards"])), measured_length=t.get("measured_yards"),
+                 tee_choice=t.get("tee_choice"))
+        if h.get("par3"):
+            h["par3"] = dict(h["par3"], center=int(round(t["measured_yards"])))
+    return PK._from_package(pkg.path, raw)
+
+
+def package_auto(pkg, tee_sets=None):
+    """{traced key: auto hole dict in acceptance's format} for a Spirit Hollow package. tee_sets = {traced
+    key: set} scores each hole from that set's tee (set_view); None = the package's own set."""
     out = {}
+    views = {}
+    if tee_sets and pkg.kind == "package.json":
+        for st in set(tee_sets.values()):
+            if st and st != pkg.tee_set:
+                views[st] = set_view(pkg, st)
     for k in list(A.course.HOLES) + list(A.course.PAR3):
-        q = pkg.holes.get(A.ref_of(k))
+        st = (tee_sets or {}).get(str(k))
+        view = views.get(st, pkg)
+        q = view.holes.get(A.ref_of(k))
         if q is None or q.model is None:
             continue
         h = dict(q.raw) if pkg.kind == "holes.json" else dict(q.model)
@@ -49,6 +85,8 @@ def package_auto(pkg):
             h["length"] = int(round(float(q.length or 0)))
             h["zones"] = [(n, [list(p) for p in poly]) for n, poly in q.model["zones"]]
             h["tee"], h["dot270"], h["green"] = list(h["tee"]), list(h["dot270"]), list(h["green"])
+            h["measured_length"] = q.raw.get("measured_length")
+            h["tee_set_scored"] = view.tee_set
         out[k] = h
     return out
 
@@ -96,6 +134,9 @@ def evaluate(auto, label, fast=True, final=None):
              median_tee_err=float(np.median([r["tee_err"] for r in ok if "tee_err" in r])) if ok else None,
              median_green_err=float(np.median([r["green_err"] for r in ok if "green_err" in r])) if ok else None,
              median_abs_len_err=float(np.median([abs(r["length_err"]) for r in ok])) if ok else None,
+             measured_length_within=frac([abs(r["measured_len_err"]) <= A.BAR["length"] for r in ok
+                                          if "measured_len_err" in r]),
+             tee_sets_scored={r["hole"]: r.get("tee_set") for r in ok if r.get("tee_set")},
              same_club_traced_model=frac([r["same_club"] for r in ok]),
              same_club_final=frac([r.get("same_as_final") for r in ok]),
              iou_pass={c: frac([r["checks"].get(f"iou_{c}") for r in ok]) for c in A.BAR["iou_classes"]},
@@ -104,6 +145,7 @@ def evaluate(auto, label, fast=True, final=None):
     bars = [("tee within 10 yds", S["tee_within"], 1.0, "of holes"),
             ("green within 10 yds (or traced spread)", S["green_within"], 1.0, "of holes"),
             ("length within 5 yds", S["length_within"], 1.0, "of holes"),
+            ("measured length within 5 yds (placed tee, not the card)", S["measured_length_within"], 1.0, "of holes"),
             ("landing IoU water > 0.6", S["iou_pass"]["water"], 1.0, "of holes with water"),
             ("landing IoU OB > 0.6", S["iou_pass"]["ob"], 1.0, "of holes with OB"),
             ("landing IoU trees > 0.6", S["iou_pass"]["recovery"], 1.0, "of holes with trees"),
@@ -123,16 +165,18 @@ def md_section(res):
         v = "n/a" if b["value"] is None else f"{b['value']:.0%}"
         L.append(f"| {b['bar']} | {v} {b['unit']} | {b['need']:.0%} | {'PASS' if b['ok'] else '**FAIL**'} |")
     L += ["", "Mean landing-zone IoU: " + ", ".join(f"{c} {v:.2f}" for c, v in S["mean_iou"].items() if v is not None), "",
-          "| hole | len err | tee err | green err | reg | club traced-model / final / auto | IoU water | ob | trees | native | fairway | failed |",
-          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+          "| hole | tee set | len err (card / measured) | tee err | green err | reg | club traced-model / final / auto | IoU water | ob | trees | native | fairway | failed |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in res["tee_shots"]:
         if "club_auto" not in r:
-            L.append(f"| {r['hole']} | {'missing' if r.get('missing') else 'ERROR ' + r.get('error', '')} |||||||||||")
+            L.append(f"| {r['hole']} | {'missing' if r.get('missing') else 'ERROR ' + r.get('error', '')} ||||||||||||")
             continue
         i = r["iou"]
         fail = [k for k, v in r["checks"].items() if not v]
         fin = r.get("club_final", "-") + ("~" if r.get("final_tie") else "")
-        L.append(f"| {r['hole']} | {r['length_err']:+d} | {r.get('tee_err', '-')} | {r.get('green_err', '-')} | "
+        mle = r.get("measured_len_err")
+        L.append(f"| {r['hole']} | {r.get('tee_set') or '-'} | {r['length_err']:+d} / {'-' if mle is None else f'{mle:+.0f}'} | "
+                 f"{r.get('tee_err', '-')} | {r.get('green_err', '-')} | "
                  f"{r['registration']['method'].replace('_registration', '').replace('lie_raster_fit', 'raster')} | "
                  f"{r['club_traced']} / {fin} / {r['club_auto']} | {i.get('water', '-')} | {i.get('ob', '-')} | "
                  f"{i.get('recovery', '-')} | {i.get('native', '-')} | {i.get('fairway', '-')} | {', '.join(fail)} |")
@@ -188,6 +232,9 @@ def main():
     ap.add_argument("--fast", action="store_true", default=True)
     ap.add_argument("--full", action="store_true", help="20,000 swings per sim")
     ap.add_argument("--report-only", action="store_true", help="rewrite REPORT.md from golden.json (no sims)")
+    ap.add_argument("--tee-set", choices=["screenshot", "package", "both"], default="screenshot",
+                    help="score packages with the screenshot's tee set per hole (Q1), the package's own set, or both")
+    ap.add_argument("--out", default="golden", help="output name in course_data/qa/ (REPORT.md only for 'golden')")
     a = ap.parse_args()
     if a.report_only:
         write_report(json.load(open(os.path.join(QA, "golden.json"))))
@@ -195,16 +242,29 @@ def main():
         return
     final = json.load(open(FINAL)) if os.path.exists(FINAL) else {}
     jobs = []
+    shots = A.screenshot_sets()
+    modes = {"screenshot": [True], "package": [False], "both": [False, True]}[a.tee_set]
+
+    def add(pk, p):
+        for per_set in modes:
+            if per_set and pk.kind == "package.json":
+                jobs.append((f"package {os.path.relpath(p, ROOT)} ({pk.kind}, tee of the screenshot's set per hole)",
+                             package_auto(pk, shots)))
+            elif not per_set or pk.kind != "package.json":
+                jobs.append((f"package {os.path.relpath(p, ROOT)} ({pk.kind}, as built: {pk.tee_set or 'its'} tees "
+                             "on every hole)", package_auto(pk)))
     if a.package:
+        found = PK.find_packages()
         for p in a.package:
-            pk = [x for x in PK.find_packages() if os.path.abspath(x.path) == os.path.abspath(p)]
+            pk = [x for x in found if os.path.abspath(x.path) == os.path.abspath(p)]
+            if not pk and os.path.exists(p):
+                pk = [PK._from_package(p, json.load(open(p)))]
             if pk:
-                jobs.append((f"package {os.path.relpath(p, ROOT)} ({pk[0].kind}, as built)", package_auto(pk[0])))
+                add(pk[0], p)
     else:
         for pk in PK.find_packages():
             if "spirit" in pk.slug:
-                jobs.append((f"package {os.path.relpath(pk.path, ROOT)} ({pk.kind}, as built: card tees, not the traced ones)",
-                             package_auto(pk)))
+                add(pk, pk.path)
     if not a.no_oracle:
         with contextlib.redirect_stdout(io.StringIO()):
             auto = A.oracle_builds()
@@ -220,10 +280,17 @@ def main():
         for b in S["bars"]:
             v = "n/a" if b["value"] is None else f"{b['value']:.0%}"
             print(f"  {b['bar']:<45} {v:>5}  {'ok' if b['ok'] else 'FAIL'}", flush=True)
-    with open(os.path.join(QA, "golden.json"), "w") as fh:
+    with open(os.path.join(QA, f"{a.out}.json"), "w") as fh:
         json.dump(golden, fh, indent=1, default=float)
-    write_report(golden)
-    print("wrote course_data/qa/golden.json, REPORT.md")
+    if a.out == "golden":
+        write_report(golden)
+        print("wrote course_data/qa/golden.json, REPORT.md")
+    else:
+        with open(os.path.join(QA, f"{a.out}.md"), "w") as fh:
+            fh.write(f"# Spirit Hollow golden ({a.out})\n\nGenerated by `course_data/qa/golden_spirit_hollow.py "
+                     f"--out {a.out}` at {time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}.\n\n"
+                     + "\n".join(md_section(r) for r in golden))
+        print(f"wrote course_data/qa/{a.out}.json, {a.out}.md")
 
 
 if __name__ == "__main__":

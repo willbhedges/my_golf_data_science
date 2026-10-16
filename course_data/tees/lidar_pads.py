@@ -124,7 +124,8 @@ def detect_pads(dem_path, greens=(), lines=None):
     gc = [pt.centroid_ll(g["coords"]) for g in greens if len(g["coords"]) >= 3]
     pads = []
     for comp in components(z, res):
-        xs, ys = T * (comp["cols"] + 0.5, comp["rows"] + 0.5)
+        cx, ry = comp["cols"] + 0.5, comp["rows"] + 0.5
+        xs, ys = T.c + T.a * cx + T.b * ry, T.f + T.d * cx + T.e * ry
         hull = _hull(np.c_[xs, ys])
         lon, lat = inv.transform([p[0] for p in hull], [p[1] for p in hull])
         cl = inv.transform(float(np.mean(xs)), float(np.mean(ys)))

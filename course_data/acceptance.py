@@ -20,6 +20,13 @@ For each traced tee shot (1, 2B, 2F, 4, 5, 6, 8, 9B, 9F, 10, 11, 13, 14, 16, 17,
 
 Bar (ARCHITECTURE.md section 7): tee and green <= 10 yds, |length| <= 5 yds, landing-zone IoU > 0.6 for
 water / OB / trees where either map has the class, same club on >= 80% of tee shots.
+
+Tee sets (Q1, auto_course_lookup.md): the screenshots are 18Birdies', whose tee is not always the golfer's
+Black (hole 1, 2B, 9B, 11 show Gold, par-3 15 White; spirit_hollow/screenshot_tee_sets.json). A package
+build is scored, per traced hole, with the tee of the set its screenshot shows (`--tee-set screenshot`,
+the default; the package is reframed to that set); `--tee-set package` scores the package's own set
+everywhere (the pre-Q1 numbers). `length` = the card yards of that set; `measured_len_err` = the
+placed tee's measured length (tee -> line -> green centroid) minus the screenshot's.
 Writes course_data/spirit_hollow/acceptance.json and acceptance.md.
 """
 import argparse
@@ -39,6 +46,7 @@ import course                                             # noqa: E402
 
 CDIR = os.path.join(HERE, "spirit_hollow")
 REG = os.path.join(HERE, "imagery", "spirit_hollow", "traced_registration.json")
+SHOT_SETS = os.path.join(CDIR, "screenshot_tee_sets.json")
 WOODS = ["Driver", "2-wood", "4-wood"]
 CLASSES = ["fairway", "rough", "recovery", "native", "water", "sand", "ob"]
 BAR = dict(tee=10.0, green=10.0, length=5.0, iou=0.6, iou_classes=("water", "ob", "recovery"), club=0.8,
@@ -96,15 +104,40 @@ def loho_builds():
     return out
 
 
-def from_model(path):
-    """holes.json (course_model/1) or a platform package.json (course_package/1: yard-frame zones)."""
+def screenshot_sets(path=SHOT_SETS):
+    """{traced key: card tee set its screenshot shows} (Q1 truth), {} when the file is absent."""
+    if not os.path.exists(path):
+        return {}
+    return {k: v["set"] for k, v in json.load(open(path))["holes"].items()}
+
+
+def _set_for(k, sets):
+    return sets.get(str(k)) if sets else None
+
+
+def from_model(path, tee_sets=None):
+    """holes.json (course_model/1) or a platform package.json (course_package/1: yard-frame zones).
+    tee_sets = {traced key: set}: a course_package/1 hole is then taken from the package reframed to that
+    set (platform/package.py reframe), so tee, length and zones are the screenshot's set's."""
     m = json.load(open(path))
+    views = {}
+    if tee_sets and m.get("schema") == "course_package/1":
+        want = {v for v in tee_sets.values() if v and v != m.get("tee_set")}
+        if want:
+            pk = P.load_module(os.path.join(HERE, "platform", "package.py"), "cd_platform_package")
+            for st in sorted(want):
+                if any(st in (h.get("tees") or {}) for h in m["holes"].values()):
+                    views[st] = pk.reframe(m, st)
     out = {}
     for k in list(course.HOLES) + list(course.PAR3):
-        h = m["holes"].get(ref_of(k))
+        st = _set_for(k, tee_sets)
+        src = views.get(st, m)
+        h = src["holes"].get(ref_of(k))
         if h is None:
             continue
         h = dict(h)
+        if m.get("schema") == "course_package/1":
+            h["tee_set_scored"] = st if st in views else m.get("tee_set")
         if "zones" in h and h["zones"] and isinstance(h["zones"][0], dict):      # [{lie, poly}] variant
             h["zones"] = [(z["lie"], z["poly"]) for z in h["zones"]]
         out[k] = h
@@ -277,7 +310,9 @@ def tee_hole(k, h, a, regs, z):
         T, reg = raster_transform(h, am)
     row = dict(hole=str(k), par=h["par"], traced_len=h["length"], auto_len=a["length"],
                length_err=a["length"] - h["length"], tee_choice=a.get("tee_choice"),
-               confidence=(a.get("auto") or {}).get("score"))
+               confidence=(a.get("auto") or {}).get("score"), tee_set=a.get("tee_set_scored"))
+    if a.get("measured_length") is not None:
+        row["measured_len_err"] = round(float(a["measured_length"]) - h["length"], 1)
     a_green = px_to_yds(am, am["green"])[0]
     if T is not None:
         row["registration"] = reg
@@ -370,13 +405,16 @@ def main():
     ap.add_argument("--holes", help="evaluate this holes.json as built (default: oracle-tee builds)")
     ap.add_argument("--fast", action="store_true")
     ap.add_argument("--only", help="comma-separated traced keys")
+    ap.add_argument("--tee-set", choices=["screenshot", "package"], default="screenshot",
+                    help="with --holes <package.json>: score each traced hole with the tee set its screenshot "
+                         "shows (default, Q1) or with the package's own set everywhere")
     ap.add_argument("--vision", choices=["none", "loho", "any"], default="none",
                     help="loho: imagery gap-fill from the model that did not see the hole; "
                          "any: vision_any gap-fill (lidar/NAIP, never trained on hand maps)")
     a = ap.parse_args()
     t0 = time.time()
     if a.holes:
-        auto = from_model(a.holes)
+        auto = from_model(a.holes, screenshot_sets() if a.tee_set == "screenshot" else None)
     elif a.vision == "loho":
         auto = loho_builds()
     elif a.vision == "any":
@@ -418,6 +456,10 @@ def main():
         tee_within=round(float(np.mean([r["tee_err"] <= BAR["tee"] for r in ok if "tee_err" in r] or [np.nan])), 3),
         green_within=round(float(np.mean([r["checks"]["green"] for r in ok if "green" in r["checks"]] or [np.nan])), 3),
         length_within=round(float(np.mean([abs(r["length_err"]) <= BAR["length"] for r in ok])), 3) if ok else None,
+        measured_length_within=round(float(np.mean([abs(r["measured_len_err"]) <= BAR["length"] for r in ok
+                                                    if "measured_len_err" in r])), 3)
+        if any("measured_len_err" in r for r in ok) else None,
+        tee_sets_scored={r["hole"]: r.get("tee_set") for r in ok if r.get("tee_set")},
         median_tee_err=float(np.median([r["tee_err"] for r in ok if "tee_err" in r])) if ok else None,
         median_green_err=float(np.median([r["green_err"] for r in ok if "green_err" in r])) if ok else None,
         mean_iou={c: round(float(np.mean([r["iou"][c] for r in ok if c in r["iou"]])), 3)
@@ -432,7 +474,8 @@ def main():
         summary["max_regret"] <= BAR["regret_max"]
     summary["club_bar_met"] = bool(summary["same_club"] is not None and summary["same_club"] >= BAR["club"])
     out = dict(summary=summary, tee_shots=rows, par3=p3)
-    tag = ("" if not a.holes else "_" + os.path.splitext(os.path.basename(a.holes))[0]) + \
+    tag = ("" if not a.holes else "_" + os.path.splitext(os.path.basename(a.holes))[0]
+           + ("_asbuilt" if a.tee_set == "package" else "")) + \
         ("_" + a.vision if a.vision != "none" and not a.holes else "")
     with open(os.path.join(CDIR, f"acceptance{tag}.json"), "w") as fh:
         json.dump(out, fh, indent=1, default=float)

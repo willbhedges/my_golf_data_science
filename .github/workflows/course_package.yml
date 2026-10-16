@@ -18,6 +18,7 @@ on:
       - "course_data/vision_any/gapfill.py"
       - "course_data/geometry/build_holes.py"
       - "course_data/tees/place_tee.py"
+      - "course_data/tees/lidar_pads.py"
       - "course_data/pipeline.py"
       - "course_data/elevation/adjust.py"
   workflow_dispatch:
@@ -65,9 +66,29 @@ jobs:
           fi
           cat /tmp/changed.txt
 
+      - name: Keep the Spirit Hollow package as built before this run (golden before/after)
+        run: |
+          mkdir -p /tmp/before_spirit_hollow
+          cp course_data/packages/spirit_hollow/package.json /tmp/before_spirit_hollow/package.json || true
+
       - name: Build requested packages
         continue-on-error: true
         run: python course_data/platform/run_requests.py $(cat /tmp/changed.txt)
+
+      # Spirit Hollow golden for the tee stage (qa/golden_spirit_hollow.py, Q1 per-screenshot tee sets), before
+      # vs after this build, each scored with the package's own set and with the screenshot's set per hole.
+      # Writes course_data/qa/golden_tees.{json,md} only (REPORT.md stays QA's).
+      - name: Spirit Hollow golden (tee stage, before / after)
+        continue-on-error: true
+        timeout-minutes: 40
+        run: |
+          if [ -f /tmp/before_spirit_hollow/package.json ] && \
+             ! cmp -s /tmp/before_spirit_hollow/package.json course_data/packages/spirit_hollow/package.json; then
+            python course_data/qa/golden_spirit_hollow.py --no-oracle --tee-set both --out golden_tees \
+              --package /tmp/before_spirit_hollow/package.json --package course_data/packages/spirit_hollow/package.json
+          else
+            echo "Spirit Hollow package unchanged: no golden run"
+          fi
 
       - name: Commit packages
         if: always()
@@ -77,6 +98,7 @@ jobs:
           [ -d course_data/packages ] || { echo "nothing built"; exit 0; }
           du -sh course_data/packages/* || true
           git add course_data/packages
+          git add course_data/qa/golden_tees.json course_data/qa/golden_tees.md 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No package changes to commit"; exit 0
           fi

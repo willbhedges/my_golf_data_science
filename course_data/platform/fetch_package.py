@@ -7,7 +7,9 @@ Writes course_data/packages/<slug>/raw/:
   osm_raw.json       Overpass response for the boundary bbox + buffer
   osm.geojson        WGS84 features with raw tags + inside_course (fetch_course.to_geojson / summarise)
   summary.json       fetch_course-style summary (tag counts, holes, tees)
-  scorecard_web.json scorecards found on the web (golfify, club site) + what was tried
+  scorecard_web.json scorecards found on the web (club site, golfify, OpenGolfAPI) + what was tried
+                     (a request with "refetch": "scorecards" and an existing raw/ re-runs only this step:
+                     fetch_scorecards_only)
   scorecard/         raw page texts (audit trail)
 and packages/<slug>/imagery/ (NAIP RGB + NIR COGs, 3DEP DEM, georef.json) via imagery/fetch_imagery.py,
 unless the request names an existing `imagery_dir` or sets "imagery": false.
@@ -74,7 +76,11 @@ def fetch_scorecards(req, course, summ, raw):
     n = len(lengths) or None
     for label, fn in (("golfify", lambda: scm.fetch_golfify(course["name"], course["state"], course.get("town"), rawdir)),
                       ("club_site", lambda: scm.fetch_club_site(req.get("website") or course.get("website"), rawdir,
-                                                                n, lengths))):
+                                                                n, lengths)),
+                      ("opengolfapi", lambda: scm.fetch_opengolfapi(course["name"], course["state"], course.get("center"),
+                                                                    rawdir))):
+        if label == "opengolfapi" and not req.get("opengolfapi", True):
+            continue
         try:
             card, info = fn()
         except Exception as e:                                # noqa: BLE001
@@ -87,6 +93,21 @@ def fetch_scorecards(req, course, summ, raw):
             out["cards"].append(dict(source=label, url=info, card=card))
     pc.write_json(os.path.join(raw, "scorecard_web.json"), out)
     return out
+
+
+def fetch_scorecards_only(req_path):
+    """Re-run only the web scorecard step for a request whose raw/ already exists (request "refetch":
+    "scorecards"): keeps the fetched OSM so a rebuild changes nothing but the cards. -> (slug, status)."""
+    req = pc.read_json(req_path)
+    slug = request_slug(req, req_path)
+    raw = os.path.join(pc.PACKAGES, slug, "raw")
+    course = pc.read_json(os.path.join(raw, "course.json"))
+    summ = pc.read_json(os.path.join(raw, "summary.json"), {}) or {}
+    if not course or course.get("status") != "ok":
+        return slug, "no resolved raw/course.json: run a full fetch"
+    sw = fetch_scorecards(req, course, summ, raw)
+    pc.log("scorecards:", json.dumps(sw["tried"]))
+    return slug, "ok"
 
 
 def fetch_imagery(course, pkg):

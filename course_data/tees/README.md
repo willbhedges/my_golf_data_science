@@ -6,7 +6,10 @@ par and yardage, and where that tee box actually sits on the ground.
 | File | What it is |
 |---|---|
 | `scorecard.json` | Spirit Hollow card: par, men's and women's handicap, the four tee sets (Gold, Black, White, Rust) with per-hole yardage and rating/slope, the Black/White combo, older cards still on aggregator sites, source URLs, confidence, and the app cross-check |
-| `place_tee.py` | Tee placement: puts the tee for a yardage on a hole's OSM line and tee polygons (`place_tee`, `place_tee_sets`, `assign_tees_to_holes`) |
+| `place_tee.py` | Tee placement: puts the tee for a yardage on a hole's OSM line and tee polygons (`place_tee`, `place_tee_sets`, `assign_tees_to_holes`); **joint ordered assignment of every set on a hole** (`assign_tee_sets`, `place_course_sets`), the green-centroid measuring point (`green_for_line`) |
+| `lidar_pads.py` | Tee-pad candidates from the 3DEP 1 m DEM (flat, levelled, banked, slightly raised), used where a set has no OSM box; `python3 course_data/tees/lidar_pads.py` validates against the OSM boxes → `lidar_pads_validation.json` |
+| `screenshot_sets.py` | Which card set each 18Birdies screenshot of the hand map shows → `spirit_hollow/screenshot_tee_sets.json` (the acceptance truth for tees) |
+| `eval_tees.py` | Before/after of the tee stage on all three courses, offline in seconds → `eval_tees.md` / `.json` |
 | `place_course.py` | Runs the placement for every hole and tee set → `tee_positions.json`, and prints the check table |
 | `tee_positions.json` | Lat/lon per hole and tee set, with the method used, the OSM tee way, and a confidence |
 | `test_place_tee.py` | Synthetic-geometry unit tests (`python -m pytest -q course_data/tees`) |
@@ -100,6 +103,87 @@ to the green centre, so it overstates doglegs. Its tee point is also whatever th
 scatter is expected, and the big outliers (1: +22, 10: +19, 14: +25) look like doglegs or tee boxes
 behind the Black marker.
 
+## Which set each screenshot shows (Q1, `screenshot_sets.py`)
+
+18Birdies sets its tee icon by hand, by default on the farthest-back set, so a traced hole is not
+automatically the Black tee. `course_data/spirit_hollow/screenshot_tee_sets.json` labels every traced
+key with the card set nearest the screenshot's measured length, cross-checked by where the screenshot
+tee sits on NAIP (`hand_zones_ll.json` `tee_ll`) against each set's placed tee:
+
+| Set | Traced keys |
+|---|---|
+| Gold | 1 (413 vs Gold 426 / Black 391; 8 yds from the Gold box, 40 from Black), 2B, 9B, 11 (348 vs 352 / 338, one shared box) |
+| White | 15 (par 3, length only: 134 vs White 132 / Black 145) |
+| Black | 2F, 3, 4, 5, 6, 7, 8, 9F, 10, 12, 13, 14, 16, 17, 18 |
+
+No label conflicts with the position evidence. The screenshot tee lies within 9 yds of an OSM box
+centroid on all 16 traced tee shots, so the app shows box centres. On 7 of the 12 Black screenshots
+that box is 9-30 yds *behind* the box that contains the card yardage (5, 6, 10, 14, 16, 17, 2F). Either
+the app chose a box behind the Black markers, or the card is measured on a different line. A
+card-driven placement cannot reproduce it, which caps "tee within 10 yds" at about half the holes.
+`acceptance.py --holes <package>` and `qa/golden_spirit_hollow.py` now score each traced hole with the
+tee of its screenshot's set (`--tee-set package` gives the old numbers).
+
+## Joint assignment (Q2, `assign_tee_sets` / `place_course_sets`)
+
+What the package (`platform/package.py`) and `place_course.py` now run:
+
+1. **One solve per hole for all sets.** Sets are taken back to front by card yards. Each set picks a
+   candidate box (sharing allowed) or a walk-back. The placed points must keep that order along the
+   line of play (2-yd slack). A dynamic programme minimises:
+   - the yards outside each box's extent,
+   - plus 0.05 x |centroid − card|,
+   - plus a source cost (borrowed box +4, lidar pad +6),
+   - plus 0.1/yd for a box more than 45 yds off the first leg,
+   - plus 0.25 x the gap mismatch between consecutive sets (capped at 10),
+   - with walk-back at 30.
+2. **Distances go to the OSM green-polygon centroid** (`green_for_line`, geometry's `find_green` rule)
+   along the OSM hole line, through its turning points. Before this change they went to the line's last
+   vertex, which disagreed with the measured length geometry reports.
+3. **A hole where some set has no box within 10 yds is re-solved with a wider window.**
+   - Boxes up to 130 yds off the first leg count, from any hole or none.
+   - The lidar pads near that hole's first leg are added as candidates.
+   - This finds SH 2's 607 Gold, which sits in hole 18's tee complex 126 yds left of the old line,
+     and the 2F/9B boxes that are set off the line.
+4. An OSM box tagged with the set's colour still wins (`tagged`).
+
+The card itself is picked in `platform/scorecard.py`: request > card file > club site > golfify >
+OpenGolfAPI, the first that passes the consistency check (per-hole sum = stated total, longer sets
+longer on every hole). It is never picked by fit to the map. The other cards are a per-hole cross-check
+(`sources.scorecard.cross_check`).
+
+Results (`eval_tees.md`, same OSM and cards, every tee measured the same way):
+
+| | before (independent) | after (joint + lidar) |
+|---|---|---|
+| SH vs screenshots, screenshot's set: tee within 10 yds | 7/16 | 7/16 (median error 17.6 → 12.4 yds; 2B 126 → 29, 2F 100 → 14, 9B 49 → 6) |
+| SH vs screenshots: measured length within 5 yds | 3/16 | 3/16 (capped by app length vs card: see Q1) |
+| Measured length within 5 yds of the card, every hole x set: SH / Veenker / Mozingo | 85% / 78% / 78% | 93% / 83% / 94% |
+| Walk-backs: SH / Veenker | 4 / 3 | 1 / 1 |
+
+## Lidar tee pads (Q3, `lidar_pads.py`)
+
+Each pad is detected on the 1 m bare-earth DEM, smoothed with sigma 1 m. A pad is a connected
+component of 30-2,000 m² with these properties:
+
+- slope under 5 %;
+- top-hat `z − opening(z, disk 15 m)` above 0.05 m: raised against a plane, even a steep one;
+- mean top-hat of at least 0.10 m;
+- at least 30 % of its 1-4 m outer ring is bank steeper than 10 %.
+
+Components within 25 yds of a green are dropped. Validation against the OSM boxes near hole starts,
+with centroids matched within 10 yds (`lidar_pads_validation.json`):
+
+| Course | Pads | OSM boxes | Precision | Recall |
+|---|---|---|---|---|
+| Spirit Hollow (tuned) | 69 | 95 | 0.72 | 0.53 |
+| Mozingo Lake (held out) | 41 | 56 | 0.66 | 0.48 |
+| Veenker (held out) | 36 | 38 | 0.28 | 0.26 |
+
+Precision counts real unmapped tees as false, so it is a lower bound. Recall loses flush tees and
+complexes that merge into one pad. Veenker is a 1938 course whose tees are mostly flush with the
+ground. Pads are used only where no OSM box fits, at +6 yds cost and medium confidence at best.
+
 ## Placement algorithm (`place_tee.py`)
 
 Scorecard yardage follows the USGA measuring convention. It's horizontal, from the permanent marker
@@ -143,6 +227,10 @@ Tests (`test_place_tee.py`, 14 cases) use synthetic geometry. They cover:
 
 ## Accuracy on Spirit Hollow (OSM tee boxes vs the card)
 
+This section describes the per-set placement *before* the joint assignment. With the joint assignment,
+Gold 2 lands on hole 18's complex box at 611 yds, Gold 7 on a lidar pad, Rust 6 and 18 on boxes, and
+Gold 15 (215) is the only walk-back left. The current table is printed by `place_course.py`.
+
 From `python course_data/tees/place_course.py`: 72 hole × tee placements.
 
 - **Black (the golfer's tee): all 18 holes land on an OSM tee box.** 17 are within 2 yd of the box's
@@ -158,6 +246,9 @@ From `python course_data/tees/place_course.py`: 72 hole × tee placements.
   15 yd short of the forward-most box.
 
 ## Gaps
+
+Some of these are closed by Q2/Q3 above: Gold 2, Rust 6 and Rust 18 now have boxes, and pads cover
+holes where OSM has none. Still open: Gold 15, colour tags, and the NCRDB.
 
 - No OSM tee polygon has a colour or `ref` tag. Tee identity comes only from distance, so on
   closely-spaced boxes (holes 1, 6 and 9) two sets may land on the same box or on a neighbour's box.

@@ -353,3 +353,46 @@ def test_run_requests_plan(tmp_path, monkeypatch):
     assert plan == {"package_a.json": "fetch", "package_b.json": "build", "survey_x.json": "skip"}
     plan = dict((os.path.basename(p), a) for p, a in run_requests.plan([rel("survey_x.json")], reqs))
     assert plan["package_b.json"] == "skip" and plan["survey_x.json"] == "survey"
+
+
+def test_pick_scorecard_reliability_and_checks(tmp_path):
+    """Web cards: club site beats golfify beats OpenGolfAPI; consistency flags and the cross-check ride along."""
+    import scorecard as scm
+    oga = json.load(open(os.path.join(FIX, "opengolfapi_spirit_hollow.json")))
+    gfy, _ = scm.parse_golfify(open(os.path.join(FIX, "golfify_spirit_hollow.json")).read())
+    web = dict(tried=[], cards=[dict(source="opengolfapi", url="u3", card=scm.parse_opengolfapi(oga["details"][0])),
+                                dict(source="golfify", url="u2", card=gfy)])
+    (tmp_path / "scorecard_web.json").write_text(json.dumps(web))
+    card, info = pk.pick_scorecard(dict(course="Spirit Hollow", state="IA"), str(tmp_path))
+    assert info["kind"] == "golfify" and info["consistency"]["ok"]
+    assert info["cross_check"]["opengolfapi"]["Gold"]["mae"] > 10
+    assert pk.card_confidence("golfify") > pk.card_confidence("opengolfapi")
+    assert pk.card_confidence("club_site", consistent=False) <= 0.6
+    web["cards"] = web["cards"][:1]
+    (tmp_path / "scorecard_web.json").write_text(json.dumps(web))
+    card, info = pk.pick_scorecard(dict(course="Spirit Hollow", state="IA"), str(tmp_path))
+    assert info["kind"] == "opengolfapi" and not info["consistency"]["ok"]
+    assert "OpenGolfAPI" in info["attribution"]
+
+
+def test_black_package_uses_the_joint_tee_stage(black):
+    p, _ = black
+    assert "place_course_sets" in p["stages"]["tees"]
+    for k, h in p["holes"].items():
+        d = {s: t["measured_yards"] for s, t in h["tees"].items()}
+        order = sorted(d, key=lambda s: -(h["yards"].get(s) or 0))
+        assert all(d[a] + 3 >= d[b] for a, b in zip(order, order[1:])), (k, d)
+    assert p["holes"]["2"]["tees"]["Gold"]["method"] != "walkback"     # 607 found off the old line
+
+
+def test_run_requests_scorecards_only(tmp_path, monkeypatch):
+    monkeypatch.setattr(pc, "PACKAGES", str(tmp_path))
+    req = tmp_path / "reqs"
+    req.mkdir()
+    (req / "package_b.json").write_text(json.dumps({"refetch": "scorecards"}))
+    (tmp_path / "b" / "raw").mkdir(parents=True)
+    (tmp_path / "b" / "raw" / "osm.geojson").write_text("{}")
+    rel = os.path.relpath(str(req / "package_b.json"), pc.ROOT)
+    plan = dict((os.path.basename(p), a) for p, a in run_requests.plan([rel], [str(req / "package_b.json")]))
+    assert plan == {"package_b.json": "scorecards"}
+    assert "course_data/tees/lidar_pads.py" in run_requests.DEPS

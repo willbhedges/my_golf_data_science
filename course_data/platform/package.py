@@ -5,10 +5,14 @@
 
 Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, imported, not rewritten):
   S0/S1   raw/course.json, raw/osm.geojson         resolve.py, fetch_package.py (Actions)
-  S1 card scorecard.py: request yardages > request["scorecard"] file (tees/ format) > golfify > club site;
+  S1 card scorecard.py: request yardages > request["scorecard"] file (tees/ format) > the web cards by source
+          reliability (club site > golfify > OpenGolfAPI; the first that passes scorecard.consistency, never the
+          best fit to the map); the others are kept as a per-hole cross-check;
           no card -> the OSM tee nearest each hole-line start (usually the back tee) + a warning
-  S2 tees tees/place_tee.py (box matched to the card yardage, walkback if none); an OSM tee box tagged with
-          the set's colour wins ("tagged")
+  S2 tees tees/place_tee.place_course_sets: every set on a hole assigned together, back to front, distances
+          to the OSM green centroid along the hole line; lidar flat-pad candidates (tees/lidar_pads.py, the
+          3DEP DEM) where a set has no OSM box; walk-back if nothing fits. An OSM tee box tagged with the
+          set's colour wins ("tagged")
   S3      geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
   S6      confidence per hole (pipeline.confidence), coverage stats, elevation (3DEP DEM + elevation/adjust.py)
@@ -96,32 +100,56 @@ def place_tee_mod():
 
 
 # ----------------------------------------------------------------------------- scorecard
-def card_confidence(kind):
-    return dict(request=1.0, file=0.95, golfify=0.9, club_site=0.85).get(kind, 0.0)
+def card_confidence(kind, consistent=True):
+    c = scm.CARD_CONFIDENCE.get(kind, 0.0)
+    return round(c if consistent else min(c, 0.6), 2)
+
+
+def _cross(card, web_cards, own_kind):
+    """Per-hole cross-check of the chosen card against every other web card (scorecard.cross_check)."""
+    out = {}
+    for c in web_cards:
+        if c["source"] == own_kind or not c.get("card"):
+            continue
+        cc = scm.cross_check(card, scm.normalise(c["card"]))
+        if cc:
+            out[c["source"]] = cc
+    return out
 
 
 def pick_scorecard(req, raw_dir):
-    """-> (card | None, info dict). Order: request yardages > request scorecard file > golfify > club site."""
+    """-> (card | None, info dict). Order: request yardages > request scorecard file > web cards by
+    scorecard.RELIABILITY (club site > golfify > OpenGolfAPI), the first that passes scorecard.consistency
+    (else the most reliable, flagged). info carries consistency (flags) and the cross-check vs the other cards."""
     tried = []
+    web = pc.read_json(os.path.join(raw_dir, "scorecard_web.json"), {}) or {}
+    web_cards = [c for c in web.get("cards", []) if c.get("card")]
+    card, info = None, None
     if req.get("yardages"):
         card = scm.card_from_yardages(req["yardages"], req.get("pars"),
                                       name=req.get("tee_set") or req.get("tees") or "request")
-        return card, dict(kind="request", source="request file yardages", url=None, tried=tried)
-    if req.get("scorecard"):
+        info = dict(kind="request", source="request file yardages", url=None)
+    if card is None and req.get("scorecard"):
         p = req["scorecard"] if os.path.isabs(req["scorecard"]) else os.path.join(pc.ROOT, req["scorecard"])
-        card = pc.read_json(p)
-        if card:
-            card = scm.normalise(card)
+        c = pc.read_json(p)
+        if c:
+            card = scm.normalise(c)
             url = card.get("source") if isinstance(card.get("source"), str) else None
-            return card, dict(kind="file", source=os.path.relpath(p, pc.ROOT), url=url, tried=tried)
-        tried.append(dict(source=req["scorecard"], ok=False, info="file missing or unreadable"))
-    web = pc.read_json(os.path.join(raw_dir, "scorecard_web.json"), {}) or {}
+            info = dict(kind="file", source=os.path.relpath(p, pc.ROOT), url=url)
+        else:
+            tried.append(dict(source=req["scorecard"], ok=False, info="file missing or unreadable"))
     tried += web.get("tried", [])
-    for want in ("golfify", "club_site"):
-        for c in web.get("cards", []):
-            if c["source"] == want and c.get("card"):
-                return scm.normalise(c["card"]), dict(kind=want, source=want, url=c.get("url"), tried=tried)
-    return None, dict(kind=None, source=None, url=None, tried=tried)
+    if card is None:
+        pick = scm.choose_card([(c["source"], scm.normalise(c["card"]), c.get("url")) for c in web_cards])
+        if pick:
+            kind, card, url, _ = pick
+            info = dict(kind=kind, source=kind, url=url)
+    if card is None:
+        return None, dict(kind=None, source=None, url=None, tried=tried, consistency=None, cross_check={})
+    chk = scm.consistency(card)
+    info.update(tried=tried, consistency=chk, cross_check=_cross(card, web_cards, info["kind"]),
+                attribution=card.get("attribution"))
+    return card, info
 
 
 # ----------------------------------------------------------------------------- tees (S2)
@@ -129,8 +157,67 @@ def _tee_tags(props):
     return " ".join(str(props.get(k, "")) for k in ("tee", "golf:tee", "colour", "color", "name")).lower().split()
 
 
+def osm_tee_inputs(fc):
+    """(hole lines {ref: [(lat, lon)]}, OSM tee boxes [{id, coords, tags}], greens [{id, coords}])."""
+    lines, tees, greens = {}, [], []
+    for f in fc["features"]:
+        p, g = f["properties"], f["geometry"]
+        if p.get("golf") == "hole" and g["type"] == "LineString" and p.get("ref"):
+            lines[str(p["ref"])] = [(c[1], c[0]) for c in g["coordinates"]]
+        elif p.get("golf") == "tee" and g["type"] in ("Polygon", "Point"):
+            cs = g["coordinates"][0] if g["type"] == "Polygon" else [g["coordinates"]]
+            tees.append(dict(id=p.get("osm_id"), coords=[(c[1], c[0]) for c in cs], tags=p))
+        elif p.get("golf") == "green" and g["type"] == "Polygon":
+            greens.append(dict(id=p.get("osm_id"), coords=[(c[1], c[0]) for c in g["coordinates"][0]]))
+    return lines, tees, greens
+
+
+def lidar_pads(fc, dem_path):
+    """tees/lidar_pads.detect_pads on the package DEM ([] when absent or failing) + a status string."""
+    if not dem_path or not os.path.exists(dem_path):
+        return [], "no DEM"
+    mod = load(os.path.join(CD, "tees", "lidar_pads.py"), "cdp_lidar_pads")
+    if mod is None:
+        return [], "tees/lidar_pads.py not importable"
+    lines, _, greens = osm_tee_inputs(fc)
+    try:
+        pads = mod.detect_pads(dem_path, greens=greens, lines=lines)
+    except Exception as e:                                       # noqa: BLE001
+        return [], f"failed: {type(e).__name__}: {e}"[:200]
+    return pads, f"{len(pads)} candidate pads near hole starts"
+
+
+def place_tees_joint(fc, per_hole_card, card_sets, pads=()):
+    """tees/place_tee.place_course_sets for every hole and every set at once -> tee_positions-shaped dict
+    {holes: {ref: {green, sets_without_box, tees: {set: {...}}}}}; a box tagged with a set's colour wins."""
+    pt = place_tee_mod()
+    if pt is None or not hasattr(pt, "place_course_sets"):
+        return None
+    lines, tees, greens = osm_tee_inputs(fc)
+    if not lines:
+        return None
+    yards = {}
+    for s, hc in per_hole_card.items():
+        for ref, c in hc.items():
+            if c.get("yards") and ref in lines:
+                yards.setdefault(ref, {})[s] = float(c["yards"])
+    res = pt.place_course_sets(lines, tees, yards, greens=greens, pads=list(pads))
+    by_hole = pt.assign_tees_to_holes(lines, tees)
+    for ref, hp in res.items():
+        for s, r in hp["tees"].items():
+            want = {str(s).lower(), str((card_sets.get(s) or {}).get("colour") or "").lower()} - {""}
+            tagged = [t for t in by_hole.get(ref, []) if want & set(_tee_tags(t["tags"]))]
+            if tagged:
+                c = pt.centroid_ll(tagged[0]["coords"])
+                hp["tees"][s] = dict(lat=c[0], lon=c[1], method="tagged", tee_id=tagged[0]["id"], confidence="high",
+                                     error_yd=0.0, source="osm_tagged")
+    return dict(schema="tees/positions", method="place_tee.place_course_sets (joint, ordered, green centroid)",
+                holes=res)
+
+
 def place_tees(fc, card_holes, set_name, colour):
-    """tees/place_tee.py for every hole -> tee_positions-shaped dict {holes: {ref: {tees: {set: {...}}}}}."""
+    """Pre-Q2 per-set placement (kept for comparison; build_package uses place_tees_joint).
+    tees/place_tee.py for every hole -> tee_positions-shaped dict {holes: {ref: {tees: {set: {...}}}}}."""
     pt = place_tee_mod()
     lines, tees = {}, []
     for f in fc["features"]:
@@ -480,17 +567,26 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
             elif str(p.get("par", "")).isdigit():
                 par_src[r] = "osm"
 
-    # S2 + S3 for every tee set on the card (zones come from the longest set's window)
+    # S2 (all sets jointly) + S3 for every tee set on the card (zones come from the longest set's window)
+    img_dir = find_imagery(req, pkg_dir, slug)
+    imagery, elevation = imagery_ref(img_dir)
+    pads, pad_status = lidar_pads(fc, os.path.join(pc.ROOT, elevation["file"]) if elevation else None) \
+        if card_sets and req.get("lidar_tees", True) else ([], "not run")
+    joint = place_tees_joint(fc, per_hole_card, card_sets, pads) if card_sets else None
     bh = geometry()
     world = bh.World(fc)
     built, tee_pos = {}, {}
     for s in (card_sets or {None: None}):
         hc = per_hole_card.get(s, {})
-        tp = place_tees(fc, hc, s, card_sets[s].get("colour")) if (s and hc) else None
+        tp = joint if (s and hc and joint) else (place_tees(fc, hc, s, card_sets[s].get("colour")) if (s and hc) else None)
         lengths = {r: float(c["yards"]) for r, c in hc.items() if c.get("yards")}
         built[s], _ = bh.build(fc, s, lengths or None, world=world, tees=tp, frame="yard")
         tee_pos[s] = tp
-    stages["tees"] = (f"ok: tees/place_tee.py for {len(card_sets)} sets on the card yardages" if card_sets else
+    n_lidar = sum(r.get("source") == "lidar" for hp in ((joint or {}).get("holes") or {}).values()
+                  for r in hp["tees"].values())
+    stages["tees"] = (f"ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for "
+                      f"{len(card_sets)} sets; lidar pads: {pad_status}, {n_lidar} placement(s) on one" if joint else
+                      f"ok: tees/place_tee.py for {len(card_sets)} sets on the card yardages" if card_sets else
                       "fallback: OSM tee nearest the hole-line start (no yardages)")
     if not built or not any(built.values()):
         raise SystemExit("no holes built (no golf=hole ways and no tee/green pairs)")
@@ -521,12 +617,14 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                 continue
             ch = per_hole_card.get(s, {}).get(k, {})
             meth = y["tee_choice"]
+            tp_r = ((tee_pos.get(s) or {}).get("holes", {}).get(k, {}).get("tees", {}).get(s, {}) or {})
             tees[s or "osm_back"] = dict(
                 tee_ll=y["tee_ll"], aim_ll=y["aim_ll"], bearing_deg=bearing(y["tee_ll"], y["aim_ll"]),
                 method=meth.replace("tee stage: ", "").replace(f"{s} ", "") if s else meth,
                 tee_choice=meth, confidence=next((v for kk, v in pipeline().TEE_TRUST if kk in meth), 0.4),
                 measured_yards=y["length"], card_yards=ch.get("yards"),
-                tee_id=((tee_pos.get(s) or {}).get("holes", {}).get(k, {}).get("tees", {}).get(s, {}) or {}).get("tee_id"))
+                tee_id=tp_r.get("tee_id"), tee_source=tp_r.get("source"), order_ok=tp_r.get("order_ok"),
+                shared_with=tp_r.get("shared_with"), box_error_yd=tp_r.get("error_yd"))
             if ch.get("yards") and abs(y["length"] - ch["yards"]) > 15 and s == chosen_key:
                 warnings.append(f"hole {k}: measured {y['length']} vs card {ch['yards']} yds for {s} "
                                 "(no OSM tee box at that yardage?)")
@@ -543,8 +641,6 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         h["green_polygon"] = h["green_polygon_ll"]
         holes[k] = apply_tee_line(h)
 
-    img_dir = find_imagery(req, pkg_dir, slug)
-    imagery, elevation = imagery_ref(img_dir)
     stages["imagery"] = f"ok: {imagery['dir']} ({imagery['source']}, {imagery['year']})" if imagery else "missing"
     tee_sets = {}
     for name, s in card_sets.items():
@@ -577,7 +673,9 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         sources=dict(osm=dict(fetched=summ.get("fetched_utc"), file=os.path.relpath(os.path.join(raw, "osm.geojson"), pc.ROOT),
                               attribution="(c) OpenStreetMap contributors, ODbL 1.0"),
                      scorecard=dict(kind=cinfo["kind"], source=cinfo["source"], url=cinfo.get("url"),
-                                    confidence=card_confidence(cinfo["kind"]), tried=cinfo["tried"]),
+                                    confidence=card_confidence(cinfo["kind"], (cinfo.get("consistency") or {}).get("ok", True)),
+                                    tried=cinfo["tried"], consistency=cinfo.get("consistency"),
+                                    cross_check=cinfo.get("cross_check"), attribution=cinfo.get("attribution")),
                      imagery=imagery, dem=elevation, vision_raw=vision_raw_dirs(slug, course)),
         tee_set=chosen_key if chosen_key else "osm_back",
         tee_set_info=dict(requested=wanted, chosen=chosen, how=how,
@@ -586,7 +684,8 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                           warning=substituted or (None if card else "no scorecard: back tee (OSM tee nearest each "
                                                                     "hole-line start)")),
         tee_sets=tee_sets, scorecard=dict(kind=cinfo["kind"], source=cinfo["source"], url=cinfo.get("url"),
-                                          confidence=card_confidence(cinfo["kind"])),
+                                          confidence=card_confidence(cinfo["kind"], (cinfo.get("consistency") or {}).get("ok", True)),
+                                          flags=(cinfo.get("consistency") or {}).get("flags", [])),
         imagery=imagery, elevation=elevation,
         frame="yard",
         frame_doc="zones_ll / *_ll are WGS84 [lon, lat] and frame-free. zones, tee, dot270, green, hole_line are "
@@ -594,7 +693,11 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                   "dot270 (0,-270)), derived by platform/package.py reframe(). Pixel frame per hole: "
                   "px = pixel.tee_px + pixel.ppy * (x, y) (920 x 2000, the image / book frame).",
         holes=holes, stages=stages, warnings=warnings,
-        attribution=["(c) OpenStreetMap contributors, ODbL 1.0", "USDA NAIP (public domain)", "USGS 3DEP (public domain)"])
+        attribution=["(c) OpenStreetMap contributors, ODbL 1.0", "USDA NAIP (public domain)", "USGS 3DEP (public domain)"]
+        + ([scm.OPENGOLFAPI_ATTRIBUTION] if cinfo.get("kind") == "opengolfapi" or "opengolfapi" in (cinfo.get("cross_check") or {})
+           else []))
+    for f in (cinfo.get("consistency") or {}).get("flags", []):
+        warnings.append(f"scorecard ({cinfo['kind']}): {f}")
     if package["tee_set"] == "osm_back":
         for h in holes.values():
             if None in h["tees"]:
@@ -657,6 +760,12 @@ def reframe(package, tee_set=None):
         if t is None:                                            # set not on this hole: nearest by length
             t = next(iter(h["tees"].values()))
             h.setdefault("flags", []).append(f"tee set {s} missing on this hole")
+        elif t.get("tee_source") == "lidar":
+            h.setdefault("flags", []).append(f"{s} tee on a lidar pad (no OSM box at {t.get('card_yards')} yds)")
+        elif str(t.get("method", "")).startswith("walkback"):
+            h.setdefault("flags", []).append(f"{s} tee walked back along the hole line (no box at {t.get('card_yards')} yds)")
+        if t.get("order_ok") is False:
+            h.setdefault("flags", []).append(f"{s} tee out of order with the other sets")
         fr = _frame(t["tee_ll"], t["aim_ll"])
         Y = lambda ll: fr.ll_to_yds(np.asarray(ll, float))      # noqa: E731
         green = Y([h["green_ll"]])[0]

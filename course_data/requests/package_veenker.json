@@ -1,4 +1,15 @@
-{"schema": "request/1", "kind": "package", "course": "Veenker Memorial", "state": "IA", "town": "Ames",
- "tees": "White", "allow_substitute": true, "requested": "2026-10-16T19:20Z", "by": "platform",
+{
+ "schema": "request/1",
+ "kind": "package",
+ "course": "Veenker Memorial",
+ "state": "IA",
+ "town": "Ames",
+ "tees": "White",
+ "allow_substitute": true,
+ "requested": "2026-10-16T19:20Z",
+ "by": "platform",
  "substitute_note": "White is not on the golfify card (Blue, Gold, Red): build the longest set (Blue) with an explicit warning until the golfer picks a set (QA P6). Rebuild 2026-10-16 product-fixes.",
- "note": "Third demo course: public 18 (Iowa State University), university-town OSM mapping."}
+ "note": "Third demo course: public 18 (Iowa State University), university-town OSM mapping.",
+ "refetch": "scorecards",
+ "rebuild": "2026-10-16T23:55Z tees: Q2 joint tee assignment + Q3 lidar pads + Q4 OpenGolfAPI card source/cross-check (refetch: scorecards keeps the fetched OSM)"
+}

@@ -1,3 +1,13 @@
-{"schema": "request/1", "kind": "package", "course": "Spirit Hollow Golf Course", "state": "IA",
- "near": "40.7605,-91.1442", "tees": "Black", "requested": "2026-10-16T18:45Z", "by": "architect",
- "note": "First any-course package; golden course for qa/. See ARCHITECTURE.md 9.2/9.4."}
+{
+ "schema": "request/1",
+ "kind": "package",
+ "course": "Spirit Hollow Golf Course",
+ "state": "IA",
+ "near": "40.7605,-91.1442",
+ "tees": "Black",
+ "requested": "2026-10-16T18:45Z",
+ "by": "architect",
+ "note": "First any-course package; golden course for qa/. See ARCHITECTURE.md 9.2/9.4.",
+ "refetch": "scorecards",
+ "rebuild": "2026-10-16T23:55Z tees: Q2 joint tee assignment + Q3 lidar pads + Q4 OpenGolfAPI card source/cross-check (refetch: scorecards keeps the fetched OSM)"
+}

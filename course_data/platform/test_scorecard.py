@@ -116,3 +116,112 @@ def test_duplicate_set_names_are_folded():
     assert sets["Red"]["alt_ratings"][0]["slope"] == 117
     assert sets["Gold"]["rating"] == 69.1 and sets["Gold"]["alt_ratings"][0]["rating"] == 75.4
     assert scm.choose_tee_set(card, "pink (pink)")[0] == "Pink"
+
+
+# ----------------------------------------------------------------------------- Q4 OpenGolfAPI + card checks
+def oga(slug):
+    return json.load(open(os.path.join(FIX, f"opengolfapi_{slug}.json")))
+
+
+def test_parse_opengolfapi_veenker():
+    card = scm.parse_opengolfapi(oga("veenker")["details"][0])
+    sets = card["tee_sets"]
+    assert list(sets) == ["Blue", "Gold", "Red"]                 # longest first
+    assert all(len(s["yards"]) == 18 and None not in s["yards"] for s in sets.values())
+    assert sets["Blue"]["total_stated"] == 6680 and sets["Blue"]["total"] == 6633
+    assert sets["Blue"]["rating"] == 71.5 and sets["Blue"]["slope"] == 131
+    assert card["par"][:3] == [4, 4, 4] and len(card["handicap"]) == 18
+    assert "OpenGolfAPI" in card["attribution"] and card["licence"] == "ODbL-1.0"
+    assert any(a.get("rating") for s in sets.values() for a in s.get("alt_ratings", []))   # the other gender
+
+
+def test_parse_opengolfapi_nine_hole_course_is_not_mozingos_eighteen():
+    card = scm.parse_opengolfapi(oga("mozingo_lake")["details"][0])
+    assert len(next(iter(card["tee_sets"].values()))["yards"]) == 9
+    assert not scm.plausible(card, n_holes=18)
+
+
+def test_consistency_flags_mixed_card_versions():
+    sh = scm.parse_opengolfapi(oga("spirit_hollow")["details"][0])
+    chk = scm.consistency(sh)
+    assert not chk["ok"] and not chk["sets"]["Gold"]["ok"] and chk["sets"]["Gold"]["diff"] == 7268 - 7550
+    assert any("mixed card versions" in f for f in chk["flags"])
+    club = scm.normalise(json.load(open(os.path.join(FIX, "spirit_hollow_scorecard.json"))))
+    assert scm.consistency(club)["ok"], scm.consistency(club)["flags"]
+
+
+def test_consistency_order_violation():
+    card = scm.card_from_yardages(BLACK, PAR, name="Black")
+    short = list(BLACK)
+    short[4] = BLACK[4] + 30                                      # the forward set longer on hole 5
+    card["tee_sets"]["White"] = dict(colour="white", aliases=[], yards=short, total=sum(short) - 400)
+    chk = scm.consistency(card)
+    assert chk["order_violations"] and chk["order_violations"][0]["hole"] == 5
+
+
+def test_choose_card_by_reliability_not_by_fit():
+    club = scm.card_from_yardages(BLACK, PAR, name="Black", source="club")
+    gfy = scm.card_from_yardages([y + 1 for y in BLACK], PAR, name="Black", source="golfify")
+    oga_card = scm.parse_opengolfapi(oga("spirit_hollow")["details"][0])
+    kind, card, url, chk = scm.choose_card([("opengolfapi", oga_card, "u3"), ("golfify", gfy, "u2"),
+                                            ("club_site", club, "u1")])
+    assert kind == "club_site" and url == "u1" and chk["ok"]
+    bad = scm.card_from_yardages(BLACK, PAR, name="Black")
+    bad["tee_sets"]["Black"]["total_stated"] = sum(BLACK) + 200     # club page with a stale total
+    kind, *_ = scm.choose_card([("club_site", bad, "u1"), ("golfify", gfy, "u2")])
+    assert kind == "golfify"
+    kind, _, _, chk = scm.choose_card([("opengolfapi", oga_card, "u3")])
+    assert kind == "opengolfapi" and not chk["ok"]                 # nothing better: used, but flagged
+
+
+def test_cross_check_matches_sets_by_colour():
+    club = scm.normalise(json.load(open(os.path.join(FIX, "spirit_hollow_scorecard.json"))))
+    sh = scm.parse_opengolfapi(oga("spirit_hollow")["details"][0])
+    cc = scm.cross_check(club, sh)
+    assert cc["Gold"]["other_set"] == "Gold" and cc["Gold"]["mae"] > 10 and 2 in cc["Gold"]["holes_over_tol"]
+    assert cc["Rust"]["other_set"] == "Red"                        # Rust's colour is red
+
+
+def test_pick_opengolfapi_candidate():
+    cands = oga("veenker")["search"]["courses"]
+    c, why = scm.pick_opengolfapi_candidate(cands, "Veenker Memorial Golf Course", "IA", center=[-93.651, 42.038])
+    assert c["id"] == "939125f5-e5e5-4c0c-84e3-4271dc5fa4c7"
+    assert scm.pick_opengolfapi_candidate(cands, "Veenker Memorial", "MO")[0] is None
+    assert scm.pick_opengolfapi_candidate(cands, "Veenker Memorial", "IA", center=[-91.14, 40.76])[0] is None
+
+
+class _Resp:
+    def __init__(self, code, js=None, headers=None):
+        self.status_code, self._js, self.headers = code, js, headers or {}
+
+    def json(self):
+        return self._js
+
+
+class _Session:
+    """Fake requests.Session: the first search call is rate-limited (429), then fixtures."""
+
+    def __init__(self, fixture):
+        self.fx, self.urls = fixture, []
+
+    def get(self, url, timeout=None, headers=None):
+        self.urls.append(url)
+        assert "User-Agent" in (headers or {})
+        if "/search" in url and len(self.urls) == 1:
+            return _Resp(429, headers={"Retry-After": "2"})
+        if "/search" in url:
+            return _Resp(200, self.fx["search"])
+        return _Resp(200, self.fx["details"][0])
+
+
+def test_fetch_opengolfapi_offline(tmp_path):
+    sess, sleeps = _Session(oga("veenker")), []
+    card, url = scm.fetch_opengolfapi("Veenker Memorial Golf Course", "IA", [-93.651, 42.038], str(tmp_path),
+                                      session=sess, sleep=sleeps.append)
+    assert card and url.endswith("/api/v1/courses/939125f5-e5e5-4c0c-84e3-4271dc5fa4c7")
+    assert len(sess.urls) == 3 and "state=IA" in sess.urls[0]       # 429, retried search, detail
+    assert 2.0 in sleeps                                          # honoured Retry-After
+    assert all(s <= 60 for s in sleeps)
+    assert (tmp_path / "opengolfapi_search.json").exists()
+    assert (tmp_path / "opengolfapi_939125f5-e5e5-4c0c-84e3-4271dc5fa4c7.json").exists()
+    assert set(card["tee_sets"]) == {"Blue", "Gold", "Red"}

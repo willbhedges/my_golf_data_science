@@ -269,7 +269,7 @@ def landing_grid():
 
 
 # ----------------------------------------------------------------------------- S6 confidence
-TEE_TRUST = [("tagged", 1.0), ("closest to", 0.9), ("length", 0.9), ("centroid", 0.9), ("axis", 0.8),
+TEE_TRUST = [("tagged", 1.0), ("lidar", 0.6), ("closest to", 0.9), ("length", 0.9), ("centroid", 0.9), ("axis", 0.8),
              ("interpol", 0.6), ("walkback", 0.5), ("nearest the hole-line start", 0.4),
              ("hole-line start", 0.3), ("hole line start", 0.3)]
 

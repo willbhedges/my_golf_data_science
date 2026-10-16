@@ -476,7 +476,8 @@ def place_course_sets(lines: dict, tees, yardages: dict, *, greens=(), pads=(), 
             continue
         g = green_for_line(line, list(greens)) if greens else None
         own = [dict(t, source=t.get("source", "osm")) for t in by_hole.get(ref, [])]
-        others = [t for r, ts in by_hole.items() if r != ref for t in ts] if borrow else []
+        mine = {id(t) for t in by_hole.get(ref, [])}
+        others = [t for t in tees if id(t) not in mine] if borrow else []     # other holes' + unassigned boxes
         res = assign_tee_sets(line, own, yds, green=g, borrow=others, **kw)
         missing = [n for n, r in res.items() if r["method"] == "walkback" or (r["error_yd"] or 0) > 10]
         if missing:
