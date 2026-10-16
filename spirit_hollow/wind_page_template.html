@@ -83,7 +83,7 @@ tr.best td{font-weight:600}
         <div class="seg" id="src"><button data-v="sat">Sat 10/17</button><button data-v="sun">Sun 10/18</button><button data-v="custom">Custom</button></div></div>
       <div class="row" id="hourRow"><span class="label">Tee time</span><input type="range" id="hour" min="7" max="18" step="1"><span id="hourLbl" class="windread"></span></div>
       <div class="row"><span class="label">Speed</span><input type="range" id="speed" min="0" max="25" step="1"><span id="speedLbl" class="windread"></span></div>
-      <div class="row"><span class="label">Tees</span>
+      <div class="row" id="setRow"><span class="label">Tees</span>
         <div class="seg" id="set"><button data-v="Gold">Gold</button><button data-v="Black">Black</button><button data-v="White">White</button><button data-v="Rust">Rust</button></div></div>
       <div class="windread" id="windLbl"></div>
       <div class="sub">Drag the dial to where the wind blows <b>from</b>. The yellow end of the needle points into the wind.</div>
@@ -289,7 +289,9 @@ document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pres
 }
 function renderTeeCtl(h){
   document.querySelectorAll("#set button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.set));
-  const row = document.getElementById("adjRow"); row.hidden = h.kind !== "tee";
+  const multi = (D.offsets || [0]).length > 1;            // tee picker only once offset grids exist
+  document.getElementById("setRow").hidden = !multi; if(!multi) st.set = "Black";
+  const row = document.getElementById("adjRow"); row.hidden = h.kind !== "tee" || !multi;
   const a = st.adj[h.key] || 0; document.getElementById("adj").value = a;
   document.getElementById("adjLbl").textContent = a === 0 ? "at the card spot" : `${Math.abs(a)} yds ${a > 0 ? "back" : "up"}`;
 }

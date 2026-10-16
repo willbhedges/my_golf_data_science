@@ -311,8 +311,8 @@ AUDIT_FIXES = {
         ("fairway", [(480, 805), (520, 805), (520, 835), (480, 835)])],  # L-shaped bunker: grass block
     "9F": [("rough", [(560, 790), (620, 790), (620, 890), (560, 890)]),  # trees were drawn on grass
            ("rough", [(598, 760), (670, 760), (670, 890), (598, 890)]),  # ...and so was the creek strip
-           ("recovery", [(455, 915), (480, 885), (560, 878), (600, 890), (600, 990), (500, 1000),
-                         (460, 975)]),                         # the real tree clump (checked vs photo)
+           ("recovery", [(495, 885), (560, 878), (600, 890), (600, 990), (505, 1000), (495, 960)]),
+                                                               # the real tree clump (canopy texture, photo)
            ("water", _line_poly([(574, 809), (599, 873), (642, 893)], 6)),  # west creek
            ("water", _line_poly([(703, 796), (642, 893)], 6))],             # east creek
     6: [("rough", [(200, 800), (260, 800), (300, 900), (340, 1000), (270, 1000), (220, 900)]),
@@ -340,11 +340,11 @@ AUDIT_FIXES = {
     8: [("native", [(565, 820), (605, 820), (615, 850), (625, 900), (640, 960), (615, 965), (585, 915),
                     (570, 870)]),                              # long grass right, 250-290 out
         ("recovery", [(615, 850), (622, 870), (652, 930), (668, 960), (640, 960), (625, 900)])],
-    "9B": [("recovery", [(448, 790), (470, 775), (560, 770), (590, 790), (590, 870), (470, 880),
-                         (448, 860)]),                         # tree clump right is wider
+    "9B": [("recovery", [(472, 790), (480, 775), (560, 770), (590, 790), (590, 870), (480, 880),
+                         (472, 860)]),                         # tree clump right (canopy texture, photo)
            ("native", [(470, 882), (630, 870), (630, 935), (500, 918), (470, 905)])],  # long grass to the pond
-    10: [("native", [(398, 760), (445, 760), (440, 900), (432, 1000), (426, 1100), (420, 1250),
-                     (412, 1250), (400, 1100)])],                           # tan creek bank left (was first cut)
+    10: [("native", [(398, 850), (440, 850), (432, 1000), (426, 1100), (420, 1250),
+                     (412, 1250), (400, 1100)])],              # above 850 the bank is left, on the creek                           # tan creek bank left (was first cut)
 }
 for _k, _extra in AUDIT_FIXES.items():
     HOLES[_k]["zones"] = HOLES[_k]["zones"] + _extra
