@@ -173,6 +173,11 @@ course, hence v2. **On a firm day, use the "v1 roll" sensitivity column:** 5 →
   the 2-wood (a tie hole). The page uses each hole's forecast temperature.
 * **Hypothetical ~235 hybrid:** never the play. Closest on 10 (+0.013 vs the 4-wood); elsewhere +0.06
   to +0.23. A gap club would not help these tee shots.
+* **Wind page limits:**
+  * At the Black tees, 28 of 3,904 wind cells still put the pick's landing line at the ±40 map
+    limit. All are 20-25 mph winds, mostly tailwinds, on 9 Black, 14 and 18; the forecast is ≤ 13 mph.
+  * From tees moved 40+ yds back (Gold on 2 and 18) or 20+ yds up, many cells hit the limit, because the
+    landing area moves off the hand-checked map. Trust those less (e.g. Gold 18 shows a Long-iron tie).
 * **Par 5s:** going for it vs laying up is priced inside the scoring tables (expected strokes from
   the second shot's distance and lie). On 2 Black (Driver), 4 (Driver), 10 (4-wood) and 18 (Driver)
   the picks hold across every sensitivity, except 18 on a firm (v1-roll) day (→ 2-wood).
@@ -187,7 +192,7 @@ course, hence v2. **On a firm day, use the "v1 roll" sensitivity column:** 5 →
 | v2, width 82 | 54% | 21% | 5.4% | 13% | 1.9% | 5.8% |
 | Published 0-5 hcp (research.md) | ~49% (Shot Scope, driver) | — | 1-3% (Shot Scope) | ~12% (Arccos scratch-4.9) | — | ~7% (Stagner) |
 
-The golfer-stated 70-yd pattern makes the model straighter than published 0-5 handicap data (beyond-40 rate 2.5% vs ~7%); at an 82-yd pattern the tails match. Picks at 82 are in the sensitivity table. Fairway % runs high in every version: the soft course stops balls on the fairway, and published figures come from courses with roll.
+The golfer-stated 70-yd pattern makes the model straighter than published 0-5 handicap data (beyond-40 rate 2.5% vs ~7%); at an 82-yd pattern the tails match. Picks at 82 are in the sensitivity table. v2's fairway share is above the published 49% because the soft course stops balls on the fairway (v1's 25-yd roll ran them through into the first cut and rough), while the published figures come from courses with normal roll. On penalties v2 (4.3%) is closer to the published 1-3% than v1 (5.6%), and on trouble it is about as far below 12% as v1 is above it. Calibration does not settle which model is right; the golfer's own fairway and miss data would.
 
 
 ## Reverse check

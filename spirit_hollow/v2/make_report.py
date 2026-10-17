@@ -188,6 +188,11 @@ course, hence v2. **On a firm day, use the "v1 roll" sensitivity column:** 5 →
   the 2-wood (a tie hole). The page uses each hole's forecast temperature.
 * **Hypothetical ~235 hybrid:** never the play. Closest on 10 (+0.013 vs the 4-wood); elsewhere +0.06
   to +0.23. A gap club would not help these tee shots.
+* **Wind page limits:**
+  * At the Black tees, 28 of 3,904 wind cells still put the pick's landing line at the ±40 map
+    limit. All are 20-25 mph winds, mostly tailwinds, on 9 Black, 14 and 18; the forecast is ≤ 13 mph.
+  * From tees moved 40+ yds back (Gold on 2 and 18) or 20+ yds up, many cells hit the limit, because the
+    landing area moves off the hand-checked map. Trust those less (e.g. Gold 18 shows a Long-iron tie).
 * **Par 5s:** going for it vs laying up is priced inside the scoring tables (expected strokes from
   the second shot's distance and lie). On 2 Black (Driver), 4 (Driver), 10 (4-wood) and 18 (Driver)
   the picks hold across every sensitivity, except 18 on a firm (v1-roll) day (→ 2-wood).
