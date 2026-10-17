@@ -100,28 +100,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           [ -d course_data/packages ] || { echo "nothing built"; exit 0; }
           du -sh course_data/packages/* || true
-          git add course_data/packages
-          git add course_data/qa/golden_tees.json course_data/qa/golden_tees.md 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "No package changes to commit"; exit 0
-          fi
           printf '%s\n' \
             "Course packages from request files (GitHub Actions run ${{ github.run_id }})" \
             "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
-          git commit -q -F /tmp/msg.txt
-          # -X theirs: on a conflict (packages/_index.json, or a package another run rebuilt meanwhile) this
-          # run's freshly built files win; a failed rebase is aborted so the next attempt starts clean
-          for i in 1 2 3 4 5 6 7 8; do
-            if git pull --rebase -X theirs origin "${{ github.ref_name }}"; then
-              git push origin "HEAD:${{ github.ref_name }}" && exit 0
-            else
-              git rebase --abort 2>/dev/null || true
-            fi
-            echo "push attempt $i failed; retrying"; sleep $((i * 10))
-          done
-          exit 1
+          # never clobber newer work: a package directory (or _index.json / golden file) that changed on origin
+          # since this run's checkout (HEAD; the build does not commit) is skipped, not overwritten; the commit
+          # is built on the current origin tip (commit_packages.sh), re-checked on every rejected push
+          P="course_data/packages"
+          for f in course_data/qa/golden_tees.json course_data/qa/golden_tees.md; do [ -e "$f" ] && P="$P $f"; done
+          bash course_data/platform/commit_packages.sh "${{ github.ref_name }}" "$(git rev-parse HEAD)" /tmp/msg.txt $P
 
       - name: Keep the built packages if the commit failed
         if: failure()
