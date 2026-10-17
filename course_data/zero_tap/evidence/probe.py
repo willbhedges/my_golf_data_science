@@ -40,12 +40,7 @@ ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 GEN = os.path.join(ROOT, "course_data", "generalize")
 
 UA_TOKEN = "golf-hole-evidence-research"
-# Browser-like (many club sites sit behind WAFs that 403 bare bots) but self-identifying; robots.txt is checked
-# for both our token and "*".
-UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36 "
-      f"({UA_TOKEN}/0.1; +https://github.com/willbhedges/my_golf_data_science)")
-GUESS_PATHS = ("/course-tour", "/hole-by-hole", "/the-course", "/course", "/golf/course-tour", "/golf/the-course",
-               "/course-layout", "/course-map", "/scorecard", "/golf/hole-by-hole", "/golf", "/course-info")
+UA = (f"Mozilla/5.0 (compatible; {UA_TOKEN}/0.1; +https://github.com/willbhedges/my_golf_data_science)")
 MAX_PAGES = 40
 MAX_IMAGES = 60
 PAGE_DELAY_S = 1.0
@@ -188,15 +183,6 @@ def crawl_site(P, website):
     host = urlparse(r.url).netloc
     queue = [(r.url, "", 0, r)]
     seen = {r.url, website}
-    home_links = links_of(r.url, r.text)
-    res["home_links"] = len(home_links)
-    res["home_links_sample"] = [u for u, _ in home_links if same_site(u, host)][:40]
-    res["home_bytes"] = len(r.text)
-    root = f"{urlparse(r.url).scheme}://{host}"
-    for g in GUESS_PATHS:
-        if root + g not in seen:
-            seen.add(root + g)
-            queue.append((root + g, "", 1, None))
     imgs = {}
     while queue and len(res["pages"]) < MAX_PAGES:
         url, label, depth, rr = queue.pop(0)
@@ -296,34 +282,8 @@ def golfify_probe(P, slug):
         if hi:
             sample_hole = sorted(hi[0].keys())
             break
-    return dict(url=urls[0], status=200, website=(pp.get("facility") or {}).get("website"),
-                geo_keys=keys, hole_geo_keys=hole_keys, hole_fields=sample_hole,
+    return dict(url=urls[0], status=200, geo_keys=keys, hole_geo_keys=hole_keys, hole_fields=sample_hole,
                 page_props=sorted(pp.keys())[:40])
-
-
-def _ll(v):
-    """Any common coordinate shape -> [lon, lat] or None."""
-    if v is None:
-        return None
-    if isinstance(v, dict):
-        for la, lo in (("lat", "lng"), ("lat", "lon"), ("latitude", "longitude")):
-            if la in v and lo in v:
-                try:
-                    return [float(v[lo]), float(v[la])]
-                except (TypeError, ValueError):
-                    return None
-        if v.get("type") == "Point":
-            return _ll(v.get("coordinates"))
-        for k in ("center", "centre", "middle", "coords", "coordinates", "point"):
-            if k in v:
-                return _ll(v[k])
-        return None
-    if isinstance(v, (list, tuple)) and len(v) == 2 and all(isinstance(x, (int, float)) for x in v):
-        a, b = float(v[0]), float(v[1])
-        return [a, b] if abs(a) > abs(b) else [b, a]          # US: |lon| > |lat|
-    if isinstance(v, list) and v and isinstance(v[0], (dict, list)):
-        return _ll(v[0])
-    return None
 
 
 def opengolfapi_probe(P, slug):
@@ -341,24 +301,7 @@ def opengolfapi_probe(P, slug):
         return dict(url=urls[0], status=r.status_code)
     d = r.json()
     hd = d.get("holes_data") or d.get("holes") or []
-    pts = []
-    sample = None
-    if isinstance(hd, list):
-        geo_f = ("tee_coords", "green", "green_polygon", "fairway_polygon", "landing_zone")
-        sample = [{k: h.get(k) for k in geo_f + ("number",)} for h in hd[:2] if isinstance(h, dict)]
-        for h in hd:
-            if not isinstance(h, dict):
-                continue
-            n = h.get("number")
-            tc = h.get("tee_coords")
-            gr = h.get("green")
-            for role, v in (("tee", tc), ("green", gr)):
-                ll = _ll(v)
-                if n and ll:
-                    pts.append(dict(hole=int(n), role=role, point=ll))
-    return dict(url=urls[0], status=200, website=d.get("website"), hole_points=pts, holes_sample=sample,
-                n_holes_with_geo=len({p["hole"] for p in pts}),
-                geo_keys=scan_geo_keys(d), top_keys=sorted(d.keys())[:60],
+    return dict(url=urls[0], status=200, geo_keys=scan_geo_keys(d), top_keys=sorted(d.keys())[:60],
                 hole_fields=sorted(hd[0].keys()) if isinstance(hd, list) and hd and isinstance(hd[0], dict) else None)
 
 
@@ -564,18 +507,9 @@ def probe_course(slug, out_dir, do_register=True):
     except Exception as e:  # noqa: BLE001
         rec["opengolfapi"] = dict(status=f"error {e!r}"[:300])
     site = None
-    web = cj.get("website")
-    rec["website_source"] = "osm" if web else None
-    if not web:
-        for key in ("opengolfapi", "golfify"):
-            w = (rec.get(key) or {}).get("website")
-            if w and not re.search(r"(?i)golfify|opengolfapi|facebook|golfnow|teeitup", w):
-                web, rec["website_source"] = w, key
-                break
-    rec["website"] = web
-    if web:
+    if cj.get("website"):
         try:
-            site = crawl_site(P, web)
+            site = crawl_site(P, cj["website"])
         except Exception as e:  # noqa: BLE001
             site = dict(error=traceback.format_exc()[-800:])
     rec["site"] = {k: v for k, v in (site or {}).items() if k != "pdfs"}
