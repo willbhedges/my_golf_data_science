@@ -275,8 +275,11 @@ def gapfill(package, imagery_dir=None, slug=None, use_reframe=True):
         pz = prov.get("zones") if isinstance(prov.get("zones"), dict) else {}
         for lie in PENAL_ADD:
             if any(z["lie"] == lie for z in add):
-                pz[lie] = "vision:" + ("lidar_hag" if lie == "recovery" and "lidar" in meta.get("trees_how", "").lower()
-                                       else "naip")
+                if meta.get("schema") == "vision_any/2" and lie != "water":
+                    pz[lie] = "vision2:" + ("lidar_canopy_buffer" if lie == "recovery" else "lgbm_naip_multiyear+lidar")
+                else:
+                    pz[lie] = "vision:" + ("lidar_hag" if lie == "recovery" and "lidar" in meta.get("trees_how", "").lower()
+                                           else "naip")
         prov["zones"] = pz if pz else prov.get("zones")
     reframe = _reframe() if use_reframe else None
     done = False
@@ -302,9 +305,10 @@ def gapfill(package, imagery_dir=None, slug=None, use_reframe=True):
                     zones.append([z["lie"], [[round(float(x), 1), round(float(y), 1)] for x, y in xy]])
                     src.append(z["src"])
             h["zones"], h["zone_src"] = _sort_zones(zones, src)
-    out.setdefault("stages", {})["vision"] = f"ok: {MODEL_ID}"
+    model_id = meta.get("model_id") or MODEL_ID
+    out.setdefault("stages", {})["vision"] = f"ok: {model_id}"
     out.setdefault("sources", {})["vision"] = dict(
-        model=MODEL_ID, trained_on="OSM labels of this course only (no hand-traced maps)",
+        model=model_id, trained_on=meta.get("trained_on") or "OSM labels of this course only (no hand-traced maps)",
         trees=meta.get("trees_how"), native=meta.get("native_how"), water=meta.get("water_how"),
         imagery_date=meta.get("naip_dates"), lidar=meta.get("lidar"), layers=f"course_data/vision_any/{slug}/vision_any.geojson",
         added=n_add)

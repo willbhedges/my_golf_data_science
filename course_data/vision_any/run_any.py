@@ -143,7 +143,10 @@ def build(slug, course_dir=None, imagery_dir=None, write=True, R=None):
     if write:
         d = os.path.join(HERE, slug)
         os.makedirs(d, exist_ok=True)
-        json.dump(fc, open(os.path.join(d, "vision_any.geojson"), "w"), separators=(",", ":"))
+        out = os.path.join(d, "vision_any.geojson")
+        if os.path.exists(out) and json.load(open(out)).get("properties", {}).get("schema") == "vision_any/2":
+            out = os.path.join(d, "vision_any_v1.geojson")       # v2 integrated (v2_model.py): keep it live
+        json.dump(fc, open(out, "w"), separators=(",", ":"))
         preview(R, os.path.join(d, "classes.jpg"))
         write_raster(R, os.path.join(d, "layers.tif"))
         n = {}
