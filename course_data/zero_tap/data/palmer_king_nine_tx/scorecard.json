@@ -1,0 +1,88 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/c4eb0cf4-31b4-4739-88e2-1395a8481b7b",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/c4eb0cf4-31b4-4739-88e2-1395a8481b7b",
+    "par": [
+     4,
+     3,
+     5,
+     4,
+     4,
+     3,
+     5,
+     4,
+     4
+    ],
+    "handicap": [
+     6,
+     9,
+     2,
+     1,
+     5,
+     8,
+     3,
+     7,
+     4
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       426,
+       178,
+       564,
+       420,
+       446,
+       202,
+       549,
+       423,
+       394
+      ],
+      "total": 3602,
+      "source": "opengolfapi",
+      "total_stated": 3602
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "c4eb0cf4-31b4-4739-88e2-1395a8481b7b",
+     "course_name": "Palmer Course - King nine",
+     "club_name": "Palmer Course - King nine",
+     "city": "The Woodlands",
+     "state": "TX",
+     "lat": 30.1852087,
+     "lng": -95.5176029,
+     "holes": 18,
+     "yardage": 3602,
+     "website": "http://www.clubcorp.com/Clubs/The-Woodlands-Country-Club"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (11 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 21 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/c4eb0cf4-31b4-4739-88e2-1395a8481b7b"
+  }
+ ]
+}

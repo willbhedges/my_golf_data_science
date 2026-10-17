@@ -1,0 +1,146 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/5d899689-0414-42a2-bffb-21b531e5855b",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/5d899689-0414-42a2-bffb-21b531e5855b",
+    "par": [
+     5,
+     4,
+     4,
+     3,
+     4,
+     5,
+     4,
+     3,
+     4
+    ],
+    "handicap": [
+     1,
+     9,
+     7,
+     6,
+     2,
+     5,
+     4,
+     8,
+     3
+    ],
+    "tee_sets": {
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       536,
+       336,
+       415,
+       212,
+       386,
+       579,
+       405,
+       185,
+       440
+      ],
+      "total": 3494,
+      "total_stated": 3494,
+      "rating": null,
+      "slope": 130,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       520,
+       321,
+       366,
+       170,
+       342,
+       528,
+       379,
+       179,
+       385
+      ],
+      "total": 3190,
+      "total_stated": 3190,
+      "rating": null,
+      "slope": 118,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       426,
+       276,
+       310,
+       124,
+       293,
+       468,
+       324,
+       151,
+       313
+      ],
+      "total": 2685,
+      "total_stated": 2685,
+      "rating": null,
+      "slope": 104,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Red (Female)",
+        "rating": null,
+        "slope": 115,
+        "total": 2685,
+        "par": 36
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "5d899689-0414-42a2-bffb-21b531e5855b",
+     "course_name": "Mountain Vista Greens Golf Course",
+     "club_name": "Mountain Vista Greens Golf Course",
+     "city": "Fort Collins",
+     "state": "CO",
+     "lat": 40.6272411,
+     "lng": -105.0002079,
+     "holes": 9,
+     "yardage": 3494,
+     "website": "http://mountainvistagreens.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (7 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 25 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/5d899689-0414-42a2-bffb-21b531e5855b"
+  }
+ ]
+}

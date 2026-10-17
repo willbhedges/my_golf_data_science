@@ -1,0 +1,221 @@
+{
+ "cards": [
+  {
+   "source": "golfify",
+   "url": "https://www.golfify.io/courses/pauls-valley-municipal-golf-course",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://www.golfify.io/courses/pauls-valley-municipal-golf-course",
+    "par": [
+     4,
+     4,
+     4,
+     5,
+     3,
+     4,
+     4,
+     3,
+     5
+    ],
+    "handicap": [
+     4,
+     3,
+     5,
+     1,
+     9,
+     7,
+     8,
+     6,
+     2
+    ],
+    "tee_sets": {
+     "Men": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       408,
+       420,
+       390,
+       573,
+       135,
+       390,
+       370,
+       207,
+       563
+      ],
+      "par": [
+       4,
+       4,
+       4,
+       5,
+       3,
+       4,
+       4,
+       3,
+       5
+      ],
+      "handicap": [
+       4,
+       3,
+       5,
+       1,
+       9,
+       7,
+       8,
+       6,
+       2
+      ],
+      "total": 3456,
+      "total_stated": 3456,
+      "rating": 35,
+      "slope": 110,
+      "source": "https://www.golfify.io/courses/pauls-valley-municipal-golf-course"
+     },
+     "Default": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       300,
+       300,
+       300,
+       300,
+       300,
+       300,
+       300,
+       300,
+       300
+      ],
+      "par": [
+       4,
+       4,
+       4,
+       4,
+       3,
+       4,
+       4,
+       3,
+       5
+      ],
+      "handicap": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9
+      ],
+      "total": 2700,
+      "total_stated": 2700,
+      "rating": null,
+      "slope": null,
+      "source": "https://www.golfify.io/courses/pauls-valley-municipal-golf-course"
+     }
+    },
+    "facility": {
+     "clubName": "Pauls Valley Municipal Golf Course",
+     "city": "Pauls Valley",
+     "state": "Oklahoma",
+     "address": "Airport Road",
+     "latitude": 34.710238,
+     "longitude": -97.229547,
+     "numberOfHoles": 9,
+     "website": "www.paulsvalleygolfcourse.com"
+    }
+   }
+  },
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/7a0f6864-1a69-4307-9cb8-0d51b0e426e8",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/7a0f6864-1a69-4307-9cb8-0d51b0e426e8",
+    "par": [
+     4,
+     4,
+     4,
+     5,
+     3,
+     4,
+     4,
+     3,
+     5
+    ],
+    "handicap": [
+     11,
+     3,
+     15,
+     1,
+     17,
+     13,
+     7,
+     9,
+     5
+    ],
+    "tee_sets": {
+     "Women": {
+      "colour": "women",
+      "aliases": [
+       "women"
+      ],
+      "yards": [
+       305,
+       295,
+       270,
+       425,
+       108,
+       330,
+       306,
+       130,
+       442
+      ],
+      "total": 2611,
+      "total_stated": 2610,
+      "rating": null,
+      "slope": 125,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "7a0f6864-1a69-4307-9cb8-0d51b0e426e8",
+     "course_name": "Pauls Valley Municipal Golf Course",
+     "club_name": "Pauls Valley Municipal Golf Course",
+     "city": "Pauls Valley",
+     "state": "OK",
+     "lat": 34.7101414528,
+     "lng": -97.2297978401,
+     "holes": 9,
+     "yardage": 3035,
+     "website": "http://paulsvalley.com"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": true,
+   "info": "https://www.golfify.io/courses/pauls-valley-municipal-golf-course"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 21 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/7a0f6864-1a69-4307-9cb8-0d51b0e426e8"
+  }
+ ]
+}

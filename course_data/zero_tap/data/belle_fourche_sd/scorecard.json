@@ -1,0 +1,264 @@
+{
+ "cards": [
+  {
+   "source": "golfify",
+   "url": "https://www.golfify.io/courses/belle-fourche-country-club",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://www.golfify.io/courses/belle-fourche-country-club",
+    "par": [
+     5,
+     3,
+     4,
+     4,
+     3,
+     4,
+     5,
+     4,
+     4
+    ],
+    "handicap": [
+     12,
+     4,
+     8,
+     2,
+     10,
+     14,
+     18,
+     16,
+     6
+    ],
+    "tee_sets": {
+     "Mens": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       422,
+       210,
+       329,
+       406,
+       160,
+       303,
+       500,
+       349,
+       348
+      ],
+      "par": [
+       5,
+       3,
+       4,
+       4,
+       3,
+       4,
+       5,
+       4,
+       4
+      ],
+      "handicap": [
+       12,
+       4,
+       8,
+       2,
+       10,
+       14,
+       18,
+       16,
+       6
+      ],
+      "total": 3027,
+      "total_stated": 3027,
+      "rating": 35.1,
+      "slope": 124,
+      "source": "https://www.golfify.io/courses/belle-fourche-country-club"
+     },
+     "Ladies (L)": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       356,
+       178,
+       251,
+       296,
+       133,
+       281,
+       466,
+       306,
+       287
+      ],
+      "par": [
+       5,
+       3,
+       4,
+       4,
+       3,
+       4,
+       5,
+       4,
+       4
+      ],
+      "handicap": [
+       3,
+       7,
+       5,
+       2,
+       9,
+       4,
+       1,
+       8,
+       6
+      ],
+      "total": 2554,
+      "total_stated": 2554,
+      "rating": 34.6,
+      "slope": 122,
+      "source": "https://www.golfify.io/courses/belle-fourche-country-club"
+     }
+    },
+    "facility": {
+     "clubName": "Belle Fourche Country Club",
+     "city": "Belle Fourche",
+     "state": "South Dakota",
+     "address": "10941 SD Highway 34",
+     "latitude": 44.647968,
+     "longitude": -103.861835,
+     "numberOfHoles": 9,
+     "website": "www.bellefourchecountryclub.com"
+    }
+   }
+  },
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/bd28f781-4d88-45ce-89a8-bf11f1597611",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/bd28f781-4d88-45ce-89a8-bf11f1597611",
+    "par": [
+     5,
+     3,
+     4,
+     4,
+     3,
+     4,
+     5,
+     4,
+     4
+    ],
+    "handicap": [
+     15,
+     3,
+     9,
+     1,
+     11,
+     17,
+     13,
+     7,
+     5
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       422,
+       228,
+       329,
+       406,
+       160,
+       303,
+       510,
+       349,
+       348
+      ],
+      "total": 3055,
+      "total_stated": 3027,
+      "rating": null,
+      "slope": 124,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       422,
+       210,
+       329,
+       406,
+       160,
+       303,
+       500,
+       349,
+       348
+      ],
+      "total": 3027,
+      "source": "opengolfapi",
+      "total_stated": 3027
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       356,
+       130,
+       285,
+       285,
+       133,
+       193,
+       392,
+       306,
+       287
+      ],
+      "total": 2367,
+      "total_stated": 2554,
+      "rating": null,
+      "slope": 122,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "bd28f781-4d88-45ce-89a8-bf11f1597611",
+     "course_name": "Belle Fourche Country Club",
+     "club_name": "Belle Fourche Country Club",
+     "city": "Belle Fourche",
+     "state": "SD",
+     "lat": 44.6481939361,
+     "lng": -103.8618007832,
+     "holes": 9,
+     "yardage": 3027,
+     "website": "http://www.bellefourchecountryclub.com"
+    }
+   }
+  }
+ ],
+ "chosen": "golfify",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": true,
+   "info": "https://www.golfify.io/courses/belle-fourche-country-club"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/bd28f781-4d88-45ce-89a8-bf11f1597611"
+  }
+ ]
+}

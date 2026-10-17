@@ -1,0 +1,137 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/48a2850c-e34e-479d-ac06-aa88d5a1325e",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/48a2850c-e34e-479d-ac06-aa88d5a1325e",
+    "par": [
+     4,
+     3,
+     4,
+     5,
+     4,
+     4,
+     4,
+     3,
+     4
+    ],
+    "handicap": [
+     9,
+     15,
+     1,
+     5,
+     7,
+     3,
+     17,
+     13,
+     11
+    ],
+    "tee_sets": {
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       354,
+       155,
+       439,
+       518,
+       354,
+       393,
+       281,
+       161,
+       325
+      ],
+      "total": 2980,
+      "total_stated": 2958,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       338,
+       142,
+       427,
+       475,
+       343,
+       376,
+       261,
+       147,
+       302
+      ],
+      "total": 2811,
+      "total_stated": 2756,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       290,
+       108,
+       376,
+       419,
+       303,
+       333,
+       226,
+       110,
+       262
+      ],
+      "total": 2427,
+      "total_stated": 2306,
+      "rating": null,
+      "slope": null,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "48a2850c-e34e-479d-ac06-aa88d5a1325e",
+     "course_name": "McCabe Golf Course",
+     "club_name": "McCabe Golf Course",
+     "city": "Nashville",
+     "state": "TN",
+     "lat": 36.1387751,
+     "lng": -86.8467445,
+     "holes": 18,
+     "yardage": 2958,
+     "website": "http://www.nashville.gov/parks/golf/mccabe/index.asp"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (9 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 22 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/48a2850c-e34e-479d-ac06-aa88d5a1325e"
+  }
+ ]
+}

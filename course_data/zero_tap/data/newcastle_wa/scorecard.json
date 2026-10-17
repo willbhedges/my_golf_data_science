@@ -1,0 +1,255 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/3ff7a08c-1cfb-4839-8607-89b04ec44132",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/3ff7a08c-1cfb-4839-8607-89b04ec44132",
+    "par": [
+     5,
+     3,
+     4,
+     5,
+     4,
+     4,
+     3,
+     5,
+     3,
+     5,
+     3,
+     4,
+     4,
+     4,
+     3,
+     4,
+     4,
+     4
+    ],
+    "handicap": [
+     13,
+     5,
+     15,
+     1,
+     7,
+     3,
+     17,
+     11,
+     9,
+     16,
+     6,
+     10,
+     12,
+     4,
+     18,
+     2,
+     14,
+     8
+    ],
+    "tee_sets": {
+     "Tournament": {
+      "colour": "tournament",
+      "aliases": [
+       "tournament"
+      ],
+      "yards": [
+       574,
+       219,
+       359,
+       522,
+       375,
+       427,
+       172,
+       611,
+       162,
+       493,
+       190,
+       393,
+       339,
+       413,
+       152,
+       447,
+       458,
+       396
+      ],
+      "total": 6702,
+      "total_stated": 6702,
+      "rating": 73.6,
+      "slope": 138,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Championship": {
+      "colour": "championship",
+      "aliases": [
+       "championship"
+      ],
+      "yards": [
+       536,
+       198,
+       307,
+       484,
+       341,
+       403,
+       147,
+       573,
+       145,
+       486,
+       167,
+       366,
+       329,
+       350,
+       141,
+       430,
+       385,
+       373
+      ],
+      "total": 6161,
+      "total_stated": 6161,
+      "rating": 70.7,
+      "slope": 134,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Combo": {
+      "colour": "combo",
+      "aliases": [
+       "combo"
+      ],
+      "yards": [
+       509,
+       172,
+       307,
+       484,
+       341,
+       403,
+       147,
+       498,
+       145,
+       486,
+       138,
+       366,
+       329,
+       319,
+       141,
+       430,
+       345,
+       333
+      ],
+      "total": 5893,
+      "total_stated": 5886,
+      "rating": 69,
+      "slope": 132,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Regular": {
+      "colour": "regular",
+      "aliases": [
+       "regular"
+      ],
+      "yards": [
+       509,
+       172,
+       280,
+       443,
+       322,
+       378,
+       127,
+       498,
+       125,
+       454,
+       138,
+       340,
+       310,
+       319,
+       122,
+       400,
+       345,
+       333
+      ],
+      "total": 5615,
+      "total_stated": 5615,
+      "rating": 67.8,
+      "slope": 129,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Regular (Female)",
+        "rating": 73.4,
+        "slope": 138,
+        "total": 5615,
+        "par": 71
+       }
+      ]
+     },
+     "Forward": {
+      "colour": "forward",
+      "aliases": [
+       "forward"
+      ],
+      "yards": [
+       466,
+       125,
+       232,
+       413,
+       271,
+       326,
+       115,
+       435,
+       107,
+       426,
+       104,
+       300,
+       294,
+       281,
+       110,
+       337,
+       285,
+       228
+      ],
+      "total": 4855,
+      "total_stated": 4855,
+      "rating": 68.7,
+      "slope": 122,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "3ff7a08c-1cfb-4839-8607-89b04ec44132",
+     "course_name": "The Golf Club at Newcastle",
+     "club_name": "The Golf Club at Newcastle",
+     "city": "Newcastle",
+     "state": "WA",
+     "lat": 47.5339867,
+     "lng": -122.1420127,
+     "holes": 18,
+     "yardage": 6702,
+     "website": "http://www.newcastlegolf.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (8 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/3ff7a08c-1cfb-4839-8607-89b04ec44132"
+  }
+ ]
+}

@@ -1,0 +1,223 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/6edd528e-e60a-4803-a35d-29aabc01d06d",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/6edd528e-e60a-4803-a35d-29aabc01d06d",
+    "par": [
+     4,
+     4,
+     4,
+     3,
+     4,
+     4,
+     5,
+     3,
+     4,
+     4,
+     5,
+     4,
+     3,
+     4,
+     4,
+     3,
+     5,
+     4
+    ],
+    "handicap": [
+     7,
+     11,
+     5,
+     13,
+     9,
+     15,
+     1,
+     17,
+     3,
+     16,
+     12,
+     10,
+     18,
+     4,
+     8,
+     14,
+     2,
+     6
+    ],
+    "tee_sets": {
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       412,
+       381,
+       402,
+       223,
+       386,
+       340,
+       542,
+       190,
+       437,
+       394,
+       504,
+       424,
+       179,
+       431,
+       422,
+       207,
+       613,
+       427
+      ],
+      "total": 6914,
+      "total_stated": 6914,
+      "rating": 73.7,
+      "slope": 131,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       390,
+       360,
+       398,
+       213,
+       380,
+       310,
+       521,
+       182,
+       422,
+       370,
+       492,
+       390,
+       159,
+       387,
+       409,
+       169,
+       569,
+       400
+      ],
+      "total": 6521,
+      "total_stated": 6521,
+      "rating": 71.9,
+      "slope": 127,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       358,
+       311,
+       347,
+       180,
+       338,
+       294,
+       491,
+       153,
+       314,
+       329,
+       480,
+       369,
+       138,
+       341,
+       340,
+       155,
+       510,
+       369
+      ],
+      "total": 5817,
+      "total_stated": 5817,
+      "rating": 68.8,
+      "slope": 119,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 73.5,
+        "slope": 133,
+        "total": 5817,
+        "par": 71
+       }
+      ]
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       310,
+       256,
+       318,
+       134,
+       309,
+       239,
+       469,
+       125,
+       289,
+       290,
+       406,
+       344,
+       129,
+       312,
+       318,
+       125,
+       464,
+       283
+      ],
+      "total": 5120,
+      "total_stated": 5120,
+      "rating": 69.6,
+      "slope": 125,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "6edd528e-e60a-4803-a35d-29aabc01d06d",
+     "course_name": "Northmoor Country Club",
+     "club_name": "Northmoor Country Club",
+     "city": "Highland Park",
+     "state": "IL",
+     "lat": 42.1606249,
+     "lng": -87.7941361,
+     "holes": 18,
+     "yardage": 6782,
+     "website": "https://www.northmoor.org/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: card at https://www.golfify.io/courses/northmoor-country-club rejected (hole count / lengths don't fit OSM)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/6edd528e-e60a-4803-a35d-29aabc01d06d"
+  }
+ ]
+}

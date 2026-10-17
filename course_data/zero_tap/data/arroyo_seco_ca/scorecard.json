@@ -1,0 +1,281 @@
+{
+ "cards": [
+  {
+   "source": "golfify",
+   "url": "https://www.golfify.io/courses/arroyo-seco-golf-course",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://www.golfify.io/courses/arroyo-seco-golf-course",
+    "par": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "handicap": [
+     17,
+     15,
+     13,
+     1,
+     7,
+     11,
+     3,
+     9,
+     5,
+     14,
+     18,
+     12,
+     2,
+     16,
+     8,
+     6,
+     4,
+     10
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       90,
+       87,
+       98,
+       118,
+       112,
+       102,
+       110,
+       115,
+       128,
+       97,
+       91,
+       104,
+       117,
+       87,
+       146,
+       120,
+       128,
+       113
+      ],
+      "par": [
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3,
+       3
+      ],
+      "handicap": [
+       17,
+       15,
+       13,
+       1,
+       7,
+       11,
+       3,
+       9,
+       5,
+       14,
+       18,
+       12,
+       2,
+       16,
+       8,
+       6,
+       4,
+       10
+      ],
+      "total": 1963,
+      "total_stated": 1963,
+      "rating": 50.7,
+      "slope": 105,
+      "source": "https://www.golfify.io/courses/arroyo-seco-golf-course"
+     }
+    },
+    "facility": {
+     "clubName": "Arroyo Seco Golf Course",
+     "city": "South Pasadena",
+     "state": "California",
+     "address": "1055 Lohman Lane",
+     "latitude": 34.1136061,
+     "longitude": -118.1718873,
+     "numberOfHoles": 18,
+     "website": "arroyosecogolf.com/Home.html"
+    }
+   }
+  },
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/551a4327-302b-4c09-ab73-96bf73d44408",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/551a4327-302b-4c09-ab73-96bf73d44408",
+    "par": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "handicap": [
+     17,
+     15,
+     13,
+     1,
+     7,
+     11,
+     3,
+     9,
+     5,
+     14,
+     18,
+     12,
+     2,
+     16,
+     8,
+     6,
+     4,
+     10
+    ],
+    "tee_sets": {
+     "Mens": {
+      "colour": "mens",
+      "aliases": [
+       "mens"
+      ],
+      "yards": [
+       88,
+       89,
+       96,
+       120,
+       111,
+       102,
+       110,
+       115,
+       127,
+       95,
+       92,
+       104,
+       116,
+       89,
+       145,
+       118,
+       129,
+       114
+      ],
+      "total": 1960,
+      "total_stated": 1960,
+      "rating": null,
+      "slope": 72,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Ladies": {
+      "colour": "ladies",
+      "aliases": [
+       "ladies"
+      ],
+      "yards": [
+       88,
+       89,
+       96,
+       120,
+       111,
+       102,
+       110,
+       115,
+       127,
+       95,
+       92,
+       104,
+       116,
+       89,
+       115,
+       118,
+       129,
+       114
+      ],
+      "total": 1930,
+      "total_stated": 1930,
+      "rating": null,
+      "slope": 76,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "551a4327-302b-4c09-ab73-96bf73d44408",
+     "course_name": "Arroyo Seco Golf Course",
+     "club_name": "Arroyo Seco Golf Course",
+     "city": "South Pasadena",
+     "state": "CA",
+     "lat": 34.1138506964,
+     "lng": -118.1720352173,
+     "holes": 18,
+     "yardage": 1960,
+     "website": "http://arroyosecogc.com"
+    }
+   }
+  }
+ ],
+ "chosen": "golfify",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": true,
+   "info": "https://www.golfify.io/courses/arroyo-seco-golf-course"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 12 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/551a4327-302b-4c09-ab73-96bf73d44408"
+  }
+ ]
+}

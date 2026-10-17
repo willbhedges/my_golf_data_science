@@ -1,0 +1,111 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/2b11d98b-0c77-41f9-b137-df92250d5f23",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/2b11d98b-0c77-41f9-b137-df92250d5f23",
+    "par": [
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     3,
+     4
+    ],
+    "handicap": [
+     1,
+     13,
+     9,
+     3,
+     5,
+     15,
+     11,
+     17,
+     7
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       138,
+       350
+      ],
+      "total": 488,
+      "total_stated": 3000,
+      "rating": null,
+      "slope": 126,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       138,
+       350
+      ],
+      "total": 488,
+      "source": "opengolfapi",
+      "total_stated": 488
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "2b11d98b-0c77-41f9-b137-df92250d5f23",
+     "course_name": "Blair Academy Golf Course",
+     "club_name": "Blair Academy Golf Course",
+     "city": "Blairstown",
+     "state": "NJ",
+     "lat": 40.9862578005,
+     "lng": -74.9657444815,
+     "holes": 9,
+     "yardage": 3000,
+     "website": "http://www.blair.edu"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (9 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/2b11d98b-0c77-41f9-b137-df92250d5f23"
+  }
+ ]
+}

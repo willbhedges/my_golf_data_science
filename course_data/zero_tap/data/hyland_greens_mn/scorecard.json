@@ -1,0 +1,91 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/985cacab-973f-480d-9e0d-7963eded677b",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/985cacab-973f-480d-9e0d-7963eded677b",
+    "par": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "handicap": [
+     4,
+     5,
+     9,
+     1,
+     7,
+     2,
+     6,
+     3,
+     8
+    ],
+    "tee_sets": {
+     "Regulation": {
+      "colour": "regulation",
+      "aliases": [
+       "regulation"
+      ],
+      "yards": [
+       173,
+       160,
+       145,
+       193,
+       143,
+       184,
+       132,
+       174,
+       136
+      ],
+      "total": 1440,
+      "total_stated": 1438,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "985cacab-973f-480d-9e0d-7963eded677b",
+     "course_name": "Hyland Greens Golf Course",
+     "club_name": "Hyland Greens Golf Course",
+     "city": "Bloomington",
+     "state": "MN",
+     "lat": 44.8209391,
+     "lng": -93.354469,
+     "holes": 9,
+     "yardage": 1438,
+     "website": "http://hylandgreensgolf.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (7 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/985cacab-973f-480d-9e0d-7963eded677b"
+  }
+ ]
+}

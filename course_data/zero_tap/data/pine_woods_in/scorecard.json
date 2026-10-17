@@ -1,0 +1,177 @@
+{
+ "cards": [
+  {
+   "source": "golfify",
+   "url": "https://www.golfify.io/courses/pine-woods-golf-course",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://www.golfify.io/courses/pine-woods-golf-course",
+    "par": [
+     4,
+     4,
+     4,
+     4,
+     3,
+     5,
+     4,
+     3,
+     4
+    ],
+    "handicap": [
+     7,
+     5,
+     4,
+     1,
+     8,
+     3,
+     2,
+     9,
+     6
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       340,
+       320,
+       325,
+       400,
+       155,
+       490,
+       410,
+       125,
+       340
+      ],
+      "par": [
+       4,
+       4,
+       4,
+       4,
+       3,
+       5,
+       4,
+       3,
+       4
+      ],
+      "handicap": [
+       7,
+       5,
+       4,
+       1,
+       8,
+       3,
+       2,
+       9,
+       6
+      ],
+      "total": 2905,
+      "total_stated": 2905,
+      "rating": null,
+      "slope": null,
+      "source": "https://www.golfify.io/courses/pine-woods-golf-course"
+     }
+    },
+    "facility": {
+     "clubName": "Pine Woods Golf Course",
+     "city": "Spencer",
+     "state": "Indiana",
+     "address": "888 Rattlesnake Road",
+     "latitude": 39.303489,
+     "longitude": -86.8153,
+     "numberOfHoles": 9,
+     "website": "pinewoodsgc.com/"
+    }
+   }
+  },
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/0c1a0cee-cd38-4785-9618-21a9461d616c",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/0c1a0cee-cd38-4785-9618-21a9461d616c",
+    "par": [
+     4,
+     4,
+     4,
+     4,
+     3,
+     5,
+     4,
+     3,
+     4
+    ],
+    "handicap": [
+     5,
+     7,
+     2,
+     9,
+     4,
+     8,
+     1,
+     6,
+     3
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       340,
+       320,
+       325,
+       400,
+       155,
+       490,
+       410,
+       125,
+       340
+      ],
+      "total": 2905,
+      "total_stated": 2905,
+      "rating": null,
+      "slope": 113,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "0c1a0cee-cd38-4785-9618-21a9461d616c",
+     "course_name": "Pine Woods Golf Course",
+     "club_name": "Pine Woods Golf Course",
+     "city": "Spencer",
+     "state": "IN",
+     "lat": 39.3023726,
+     "lng": -86.8118165,
+     "holes": 9,
+     "yardage": 2905,
+     "website": "http://www.pinewoodsgc.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "golfify",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": true,
+   "info": "https://www.golfify.io/courses/pine-woods-golf-course"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/0c1a0cee-cd38-4785-9618-21a9461d616c"
+  }
+ ]
+}

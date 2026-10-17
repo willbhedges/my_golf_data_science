@@ -1,0 +1,244 @@
+{
+ "cards": [
+  {
+   "source": "golfify",
+   "url": "https://www.golfify.io/courses/sundance-country-club",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://www.golfify.io/courses/sundance-country-club",
+    "par": [
+     4,
+     4,
+     3,
+     4,
+     4,
+     5,
+     3,
+     4,
+     4
+    ],
+    "handicap": [
+     9,
+     2,
+     8,
+     4,
+     7,
+     6,
+     3,
+     5,
+     1
+    ],
+    "tee_sets": {
+     "Mens": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       232,
+       324,
+       166,
+       400,
+       331,
+       500,
+       201,
+       358,
+       403
+      ],
+      "par": [
+       4,
+       4,
+       3,
+       4,
+       4,
+       5,
+       3,
+       4,
+       4
+      ],
+      "handicap": [
+       9,
+       2,
+       8,
+       4,
+       7,
+       6,
+       3,
+       5,
+       1
+      ],
+      "total": 2915,
+      "total_stated": 2915,
+      "rating": null,
+      "slope": 105,
+      "source": "https://www.golfify.io/courses/sundance-country-club"
+     },
+     "Ladies (L)": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       232,
+       244,
+       166,
+       362,
+       331,
+       450,
+       201,
+       358,
+       332
+      ],
+      "par": [
+       4,
+       4,
+       3,
+       4,
+       4,
+       5,
+       3,
+       4,
+       4
+      ],
+      "handicap": [
+       9,
+       2,
+       8,
+       4,
+       7,
+       6,
+       3,
+       5,
+       1
+      ],
+      "total": 2676,
+      "total_stated": 2676,
+      "rating": null,
+      "slope": 107,
+      "source": "https://www.golfify.io/courses/sundance-country-club"
+     }
+    },
+    "facility": {
+     "clubName": "Sundance Country Club",
+     "city": "Sundance",
+     "state": "Wyoming",
+     "address": "1612 East Cleveland Street",
+     "latitude": 44.410334,
+     "longitude": -104.36194,
+     "numberOfHoles": 9,
+     "website": "https://www.wyomingtourism.org/things-to-do/detail/Sundance-Country-Club/8419"
+    }
+   }
+  },
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/cff0adba-3121-4b73-9ff0-d193389311d4",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/cff0adba-3121-4b73-9ff0-d193389311d4",
+    "par": [
+     4,
+     4,
+     3,
+     4,
+     4,
+     5,
+     3,
+     4,
+     4
+    ],
+    "handicap": [
+     17,
+     3,
+     15,
+     7,
+     13,
+     11,
+     5,
+     9,
+     1
+    ],
+    "tee_sets": {
+     "Men": {
+      "colour": "men",
+      "aliases": [
+       "men"
+      ],
+      "yards": [
+       232,
+       324,
+       166,
+       400,
+       331,
+       500,
+       201,
+       358,
+       403
+      ],
+      "total": 2915,
+      "total_stated": 2915,
+      "rating": null,
+      "slope": 105,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Ladies": {
+      "colour": "ladies",
+      "aliases": [
+       "ladies"
+      ],
+      "yards": [
+       232,
+       244,
+       166,
+       362,
+       331,
+       450,
+       201,
+       358,
+       332
+      ],
+      "total": 2676,
+      "total_stated": 2676,
+      "rating": null,
+      "slope": 107,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "cff0adba-3121-4b73-9ff0-d193389311d4",
+     "course_name": "Sundance Golf Club",
+     "club_name": "Sundance Golf Club",
+     "city": "Sundance",
+     "state": "WY",
+     "lat": 44.4100621362,
+     "lng": -104.3626086918,
+     "holes": 9,
+     "yardage": 2915,
+     "website": "http://sundancecountryclub.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "golfify",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": true,
+   "info": "https://www.golfify.io/courses/sundance-country-club"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/cff0adba-3121-4b73-9ff0-d193389311d4"
+  }
+ ]
+}

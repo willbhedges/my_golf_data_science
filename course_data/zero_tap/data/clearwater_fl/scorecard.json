@@ -1,0 +1,241 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/6a15683e-8248-4fdf-83e8-59d6a1520e21",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/6a15683e-8248-4fdf-83e8-59d6a1520e21",
+    "par": [
+     4,
+     3,
+     4,
+     5,
+     5,
+     4,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     3,
+     4,
+     5,
+     4
+    ],
+    "handicap": [
+     18,
+     8,
+     2,
+     6,
+     16,
+     4,
+     10,
+     14,
+     12,
+     15,
+     1,
+     13,
+     9,
+     17,
+     7,
+     3,
+     5,
+     11
+    ],
+    "tee_sets": {
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       333,
+       213,
+       414,
+       502,
+       503,
+       399,
+       156,
+       346,
+       319,
+       341,
+       370,
+       342,
+       345,
+       245,
+       174,
+       371,
+       460,
+       367
+      ],
+      "total": 6200,
+      "total_stated": 6200,
+      "rating": 69.4,
+      "slope": 124,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       318,
+       159,
+       402,
+       475,
+       470,
+       385,
+       145,
+       339,
+       297,
+       329,
+       359,
+       315,
+       327,
+       230,
+       165,
+       355,
+       432,
+       356
+      ],
+      "total": 5858,
+      "total_stated": 5858,
+      "rating": 68,
+      "slope": 122,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 74.8,
+        "slope": 132,
+        "total": 5858,
+        "par": 72
+       }
+      ]
+     },
+     "Green": {
+      "colour": "green",
+      "aliases": [
+       "green"
+      ],
+      "yards": [
+       298,
+       139,
+       336,
+       440,
+       439,
+       355,
+       137,
+       321,
+       285,
+       320,
+       348,
+       271,
+       253,
+       220,
+       152,
+       306,
+       380,
+       350
+      ],
+      "total": 5350,
+      "total_stated": 5350,
+      "rating": 64.6,
+      "slope": 116,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Green (Female)",
+        "rating": 70.5,
+        "slope": 122,
+        "total": 5350,
+        "par": 72
+       }
+      ]
+     },
+     "Orange": {
+      "colour": "orange",
+      "aliases": [
+       "orange"
+      ],
+      "yards": [
+       265,
+       126,
+       323,
+       352,
+       341,
+       345,
+       127,
+       310,
+       273,
+       311,
+       340,
+       260,
+       249,
+       212,
+       148,
+       299,
+       371,
+       316
+      ],
+      "total": 4968,
+      "total_stated": 4968,
+      "rating": 57.7,
+      "slope": 99,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Orange (Female)",
+        "rating": 59.4,
+        "slope": 98,
+        "total": 4968,
+        "par": 72
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "6a15683e-8248-4fdf-83e8-59d6a1520e21",
+     "course_name": "Clearwater Country Club",
+     "club_name": "Clearwater Country Club",
+     "city": "Clearwater",
+     "state": "FL",
+     "lat": 27.9714647,
+     "lng": -82.7819421,
+     "holes": 18,
+     "yardage": 6200,
+     "website": "https://www.clearwatercountryclub.com"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: card at https://www.golfify.io/courses/clearwater-country-club rejected (hole count / lengths don't fit OSM)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/6a15683e-8248-4fdf-83e8-59d6a1520e21"
+  }
+ ]
+}
