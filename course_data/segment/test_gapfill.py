@@ -31,11 +31,11 @@ def package():
                            {"lie": "sand", "poly": sq(25, 200, 8, 8), "src": "osm", "p": 1.0}]}}}
 
 
-def run(feats, pkg=None):
+def run(feats, pkg=None, scope="course"):
     with tempfile.NamedTemporaryFile("w", suffix=".geojson", delete=False) as fh:
         json.dump({"type": "FeatureCollection", "features": feats, "properties": {"model_sha": "abc"}}, fh)
     try:
-        return G.segment_gapfill(pkg or package(), fh.name, reframe=False, log=lambda *a: None)
+        return G.segment_gapfill(pkg or package(), fh.name, reframe=False, scope=scope, log=lambda *a: None)
     finally:
         os.unlink(fh.name)
 
@@ -81,3 +81,11 @@ def test_provenance_fields():
     assert out["stages"]["segment"].startswith("ok: segment gap-fill")
     assert "licence" in out["sources"]["segment"]
     assert any("segment gap-fill" in f for f in out["holes"]["1"]["flags"])
+
+
+def test_hole_scope_leaves_mapped_holes_alone_and_fills_poorly_mapped_ones():
+    f = [feat("fairway", sq(-20, 280, 40, 60)), feat("bunker", sq(-35, 220, 8, 8))]
+    assert added(run(f, scope="hole")) == []                     # hole 1 has OSM fairway + sand
+    pkg = package()
+    pkg["holes"]["1"]["zones_ll"] = []                           # poorly mapped hole
+    assert sorted(z["lie"] for z in added(run(f, pkg, scope="hole"))) == ["fairway", "sand"]

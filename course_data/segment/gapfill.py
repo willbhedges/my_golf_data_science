@@ -7,6 +7,8 @@ package ONLY where OSM lacks them (ARCHITECTURE 9.1-5: never override OSM green/
     python3 course_data/segment/gapfill.py --package course_data/packages/veenker/package.json \
         [--segment course_data/segment/veenker/segment.geojson] [--out package_filled.json]
 
+Scope (default "hole"): a hole receives a lie only when it has no polygon of that lie (OSM or vision) within
+30 yds of its line, i.e. the hole is poorly mapped for that class; fully mapped holes are left untouched.
 Rules (all in a local metric projection):
   * existing = every zones_ll polygon of that lie in the package whose src is not "segment:*" (OSM and the
     vision stage), plus OSM green polygons for greens.
@@ -46,6 +48,8 @@ FAIRWAY_MIN_M2 = 600.0
 FAIRWAY_MIN_THICK_M = 8.0
 EDGE_BUFFER_M = 3.0
 HOLE_REACH_M = 160 * 0.9144
+CORRIDOR_M = 30 * 0.9144          # a hole "has" OSM <lie> when one lies within 30 yds of its line ...
+CORRIDOR_MIN_M2 = {"fairway": 300.0, "sand": 5.0, "water": 50.0}   # ... with at least this much area there
 GREEN_SNAP_M = 30 * 0.9144
 TEE_MATCH_M = 10 * 0.9144
 BOUNDARY_BUFFER_M = 10.0
@@ -173,7 +177,26 @@ def boundary(pkg, proj):
     return proj.fwd(g if g.is_valid else g.buffer(0)).buffer(BOUNDARY_BUFFER_M)
 
 
-def segment_gapfill(package, segment_path, *, reframe=True, log=print):
+def hole_has(pkg, proj, lines):
+    """{ref: {lie}} lies the hole already has from non-segment sources inside its corridor."""
+    out = {}
+    for k, h in pkg["holes"].items():
+        L = lines.get(k)
+        out[k] = set()
+        if L is None:
+            continue
+        cor = L.buffer(CORRIDOR_M)
+        for z in h.get("zones_ll") or []:
+            lie = "sand" if z.get("lie") == "bunker" else z.get("lie")
+            if lie in CORRIDOR_MIN_M2 and lie not in out[k] and not str(z.get("src", "")).startswith("segment"):
+                if proj.fwd(_poly(z["poly"])).intersection(cor).area >= CORRIDOR_MIN_M2[lie]:
+                    out[k].add(lie)
+    return out
+
+
+def segment_gapfill(package, segment_path, *, reframe=True, scope="hole", log=print):
+    """scope "hole" (default): a hole gets <lie> only when it has none within 30 yds of its line (a poorly
+    mapped hole); fully mapped holes are untouched. scope "course": any model feature OSM lacks anywhere."""
     from shapely.geometry import LineString, Point
     feats, props = load_segment(segment_path)
     pkg = copy.deepcopy(package)
@@ -194,6 +217,7 @@ def segment_gapfill(package, segment_path, *, reframe=True, log=print):
         add = [a for a in add if a[0] != "water" or not shadow(a[1])]
     stats = {"zones_added": 0, "holes": {}, "greens_added": 0, "tee_candidates": 0}
     lines = {k: proj.fwd(LineString(h["hole_line_ll"])) for k, h in pkg["holes"].items() if h.get("hole_line_ll")}
+    has = hole_has(pkg, proj, lines) if scope == "hole" else {}
     for k, h in pkg["holes"].items():
         L = lines.get(k)
         if L is None:
@@ -201,7 +225,7 @@ def segment_gapfill(package, segment_path, *, reframe=True, log=print):
         win = L.buffer(HOLE_REACH_M)
         got = {}
         for lie, g, p, src in add:
-            if not g.intersects(win):
+            if lie in has.get(k, ()) or not g.intersects(win):
                 continue
             for piece in _parts(proj.inv(g)):
                 h.setdefault("zones_ll", []).append({"lie": lie, "poly": _ring(piece), "src": src, "p": round(p, 3),
@@ -247,6 +271,7 @@ def segment_gapfill(package, segment_path, *, reframe=True, log=print):
         "model": props.get("model", "ariadgolf/golf-course-segmentation"), "model_sha": props.get("model_sha"),
         "naip": props.get("naip"), "file": os.path.relpath(os.path.abspath(segment_path), ROOT),
         "rule": "fill only where OSM lacks the class (never overrides OSM green/fairway/bunker/water)",
+        "scope": scope,
         "licence": LICENCE}
     pkg.setdefault("attribution", [])
     if isinstance(pkg["attribution"], list) and not any("NAIP" in str(a) and "segment" in str(a) for a in pkg["attribution"]):
