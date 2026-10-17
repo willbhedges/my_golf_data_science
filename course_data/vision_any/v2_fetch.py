@@ -137,24 +137,34 @@ def ept_candidates(g):
     return cands, b3857
 
 
-def pipeline(url, b3857, g, tmp):
+def pipelines(url, b3857, g, tmp):
+    """PDAL runs only ONE branch of a multi-writer pipeline, so: (1) EPT -> noise out -> UTM -> HAG -> one
+    local LAZ with HeightAboveGround as an extra dimension; (2) one short linear pipeline per band."""
+    laz = os.path.join(tmp, "pts.laz")
+    first = [dict(type="readers.ept", filename=url, bounds=f"([{b3857[0]},{b3857[2]}],[{b3857[1]},{b3857[3]}])",
+                  threads=8),
+             dict(type="filters.range", limits="Classification![7:7],Classification![18:18]"),
+             dict(type="filters.reprojection", out_srs=g.crs),
+             dict(type="filters.hag_nn"),
+             dict(type="writers.las", filename=laz, extra_dims="HeightAboveGround=float", minor_version=4)]
     common = dict(origin_x=g.x0, origin_y=g.y0, width=g.W, height=g.H, resolution=1.0, nodata=-9999)
-    p = [dict(type="readers.ept", filename=url, bounds=f"([{b3857[0]},{b3857[2]}],[{b3857[1]},{b3857[3]}])",
-              threads=8),
-         dict(type="filters.range", limits="Classification![7:7],Classification![18:18]"),
-         dict(type="filters.reprojection", out_srs=g.crs),
-         dict(type="filters.hag_nn", tag="hag")]
+    bands = []
     for name, rng, dim, ot in LIDAR_BANDS:
-        src = "hag"
+        st = [dict(type="readers.las", filename=laz)]
         if rng:
-            p.append(dict(type="filters.range", inputs=["hag"], limits=rng, tag=f"r_{name}"))
-            src = f"r_{name}"
+            st.append(dict(type="filters.range", limits=rng))
         kw = dict(common)
         if name == "dtm1":
             kw["window_size"] = 2
-        p.append(dict(type="writers.gdal", inputs=[src], filename=os.path.join(tmp, f"{name}.tif"), dimension=dim,
-                      output_type=ot, **kw))
-    return p
+        st.append(dict(type="writers.gdal", filename=os.path.join(tmp, f"{name}.tif"), dimension=dim, output_type=ot, **kw))
+        bands.append((name, st))
+    return first, bands
+
+
+def run_pdal(pdal, pipe, path, timeout=3000):
+    json.dump(pipe, open(path, "w"))
+    r = subprocess.run([pdal, "pipeline", path], capture_output=True, text=True, timeout=timeout)
+    return r.returncode, (r.stderr or "")[-800:] + (r.stdout or "")[-300:]
 
 
 def fetch_lidar_v2(g, out, meta, max_projects=2):
@@ -174,14 +184,23 @@ def fetch_lidar_v2(g, out, meta, max_projects=2):
         url = c["url"] or f"https://s3-us-west-2.amazonaws.com/usgs-lidar-public/{c['name']}/ept.json"
         tmp = os.path.join(out, "_ept2")
         os.makedirs(tmp, exist_ok=True)
-        pj = os.path.join(tmp, "pipe.json")
-        json.dump(pipeline(url, b3857, g, tmp), open(pj, "w"))
+        first, bands = pipelines(url, b3857, g, tmp)
         log("  PDAL", c["name"])
         t0 = dt.datetime.now()
-        r = subprocess.run([pdal, "pipeline", pj], capture_output=True, text=True, timeout=3000)
-        if r.returncode != 0:
-            log("   PDAL failed:", r.stderr[-1500:])
-            info.setdefault("errors", []).append(dict(name=c["name"], err=r.stderr[-800:]))
+        rc, err = run_pdal(pdal, first, os.path.join(tmp, "p0.json"))
+        laz = os.path.join(tmp, "pts.laz")
+        if rc != 0 or not os.path.exists(laz):
+            log("   PDAL read failed:", err)
+            info.setdefault("errors", []).append(dict(name=c["name"], err=err))
+            shutil.rmtree(tmp, ignore_errors=True)
+            continue
+        log(f"   points -> {os.path.getsize(laz) / 1e6:.0f} MB laz in {(dt.datetime.now() - t0).seconds}s")
+        for name, st in bands:
+            rc, err = run_pdal(pdal, st, os.path.join(tmp, f"p_{name}.json"))
+            if rc != 0:
+                log(f"   band {name} failed:", err)
+                info.setdefault("errors", []).append(dict(name=c["name"], band=name, err=err))
+        if not os.path.exists(os.path.join(tmp, "n_all.tif")):
             shutil.rmtree(tmp, ignore_errors=True)
             continue
         # cells this project covers = cells with any return; counts stay 0 elsewhere inside its footprint
