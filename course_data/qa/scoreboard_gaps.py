@@ -48,7 +48,7 @@ GAPS = [
     "7. **No truth for Veenker (or any third course).** The bar is measured on 30 tee shots from two courses, one of "
     "which (Mozingo) tuned vision thresholds. A golfer's 18Birdies screenshots + picks for Veenker would make this "
     "a generalisation test. 0 holes directly; it is what makes the other numbers trustworthy.",
-    "8. **Stale deliverables.** Every `packages/<slug>/out/` (book, wind page, decision.json) predates the 00:00-00:44 "
-    "package rebuilds; the scoreboard re-runs the decision itself, but what a golfer opens is older. Re-run the "
-    "plan_course requests after each package rebuild. 0 holes; a delivery gap.",
+    "8. **Stale deliverables.** The Spirit Hollow and Veenker books were re-planned at 01:10-01:16 on the rebuilt "
+    "packages; Mozingo's `packages/mozingo_lake/out/` (22:06) still predates its 00:00+ rebuilds. Re-run its "
+    "plan_course request after each package rebuild. 0 holes; a delivery gap.",
 ]

@@ -25,7 +25,7 @@ Path to the 80% bar on Spirit Hollow (13/16; today 9/16 vs the refreshed final_d
 5. **Water and OB corridor geometry** (water IoU 0.32, 2/10 holes pass; OB 0.12, 0/4: creek buffers narrow, OB from the course boundary, not lot lines). Expected gain: **+0 to +1 hole** (10, 2F, 6 sit on water/OB edges). Owner: platform water rule + ob/ (OB inference, in flight).
 6. **Package hygiene that can flip a pick on a new course**: Veenker tees 7 (Blue) inside OB and 12 (Blue) in a bunker since the tee rebuild; zones vs zones_ll drift (SH 9/10/11, Veenker 3/7/8/15/16); self-intersecting polygons on all three courses; forward-tee par-3 lengths 15-38% over the card. 0 holes on the scored courses, wrong-answer risk on new ones. Owner: platform / tees.
 7. **No truth for Veenker (or any third course).** The bar is measured on 30 tee shots from two courses, one of which (Mozingo) tuned vision thresholds. A golfer's 18Birdies screenshots + picks for Veenker would make this a generalisation test. 0 holes directly; it is what makes the other numbers trustworthy.
-8. **Stale deliverables.** Every `packages/<slug>/out/` (book, wind page, decision.json) predates the 00:00-00:44 package rebuilds; the scoreboard re-runs the decision itself, but what a golfer opens is older. Re-run the plan_course requests after each package rebuild. 0 holes; a delivery gap.
+8. **Stale deliverables.** The Spirit Hollow and Veenker books were re-planned at 01:10-01:16 on the rebuilt packages; Mozingo's `packages/mozingo_lake/out/` (22:06) still predates its 00:00+ rebuilds. Re-run its plan_course request after each package rebuild. 0 holes; a delivery gap.
 
 ## Spirit Hollow (Black): per tee shot
 
