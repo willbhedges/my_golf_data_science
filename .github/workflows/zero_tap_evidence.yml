@@ -44,7 +44,11 @@ jobs:
           python - <<'PY'
           import json, os
           reqs = [l.strip() for l in open("/tmp/req.txt") if l.strip() and os.path.exists(l.strip())]
-          r = json.load(open(sorted(reqs)[-1]))
+          import subprocess
+          def ct(f):   # newest-committed request wins (BEFORE may be outside the shallow clone)
+              o = subprocess.run(["git", "log", "-1", "--format=%ct", "--", f], capture_output=True, text=True).stdout
+              return int(o.strip() or 0)
+          r = json.load(open(max(reqs, key=lambda f: (ct(f), f))))
           kind = r.get("set", "validation")
           if kind == "validation":
               v = json.load(open("course_data/generalize/validation_set.json"))
@@ -60,11 +64,11 @@ jobs:
               slugs = []
           else:
               slugs = r["slugs"]
-          n = max(1, min(6, int(r.get("shards", 6))))
+          n = max(1, min(16, int(r.get("shards", 6))))
           shards = [",".join(slugs[i::n]) for i in range(n)]
           shards = [s for s in shards if s] or ["none"]
           out = dict(shards=json.dumps(shards), run=r.get("run", "probe"),
-                     args=(f"--reregister course_data/zero_tap/evidence/runs/{r['reregister']}" if r.get("reregister")
+                     args=(f"--reregister {r['reregister']}" if r.get("reregister")
                            else "" if r.get("register", True) else "--no-register"),
                      overpass="1" if r.get("overpass") else "0")
           print(out)
@@ -99,7 +103,7 @@ jobs:
     timeout-minutes: 345
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 12
       matrix:
         slugs: ${{ fromJson(needs.plan.outputs.shards) }}
     steps:

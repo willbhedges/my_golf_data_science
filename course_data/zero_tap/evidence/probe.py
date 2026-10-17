@@ -800,7 +800,10 @@ def main():
         log("=====", slug)
         try:
             if a.reregister:
-                prev = jload(os.path.join(a.reregister, f"{slug}.json"))
+                prev = None
+                for d in a.reregister.split(","):           # first earlier run that has this course
+                    d = d if os.path.isabs(d) or os.path.isdir(d) else os.path.join(HERE, "runs", d)
+                    prev = prev or jload(os.path.join(d, f"{slug}.json"))
                 if not prev:                      # not crawled yet: crawl now, then register (v2)
                     prev = probe_course(slug, a.out, False)
                 r = reregister(slug, prev, a.out)
