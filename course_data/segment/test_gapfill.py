@@ -60,7 +60,7 @@ def test_bunker_overlapping_osm_skipped_new_bunker_added():
 
 def test_unet_water_ignored_nir_water_added_and_low_p_dropped():
     out = run([feat("water", sq(40, 300, 30, 30)),                               # U-Net water: never used
-               feat("water", sq(-60, 300, 30, 30), src="segment:nir", p=0.8),
+               feat("water", sq(-80, 300, 45, 45), src="segment:nir", p=0.8),
                feat("bunker", sq(-35, 100, 8, 8), p=0.3)])                        # below MIN_P
     a = added(out)
     assert [z["lie"] for z in a] == ["water"] and a[0]["src"] == "segment:nir"

@@ -17,7 +17,7 @@ Rules (all in a local metric projection):
   * fairway: model fairway minus the existing fairway (+3 m); pieces kept when >= 600 m2 and >= 8 m thick
     (2 x area / perimeter), so edge slivers next to a mapped fairway are dropped and whole unmapped fairways
     survive even when the model joins them to a mapped one.
-  * everything is clipped to the OSM course boundary (+10 m); water pieces must be >= 300 m2.
+  * everything is clipped to the OSM course boundary (+10 m); water pieces must be >= 1500 m2 (ponds).
   * a water piece whose 6 m ring is > 35 % tree canopy (the package's recovery zones) is a tree shadow: dropped.
   * U-Net water is never used (it marks the course interior); water comes from segment:nir.
   * min probability: fairway 0.5, bunker 0.5, green 0.6, water 0.6 (mean over the polygon).
@@ -53,7 +53,7 @@ CORRIDOR_MIN_M2 = {"fairway": 300.0, "sand": 5.0, "water": 50.0}   # ... with at
 GREEN_SNAP_M = 30 * 0.9144
 TEE_MATCH_M = 10 * 0.9144
 BOUNDARY_BUFFER_M = 10.0
-WATER_MIN_M2 = 300.0
+WATER_MIN_M2 = 1500.0          # ponds only: small NIR-dark pieces were creek shade (SH 14)
 SHADOW_RING_M = 6.0
 SHADOW_TREE_FRAC = 0.35
 LICENCE = ("ariadgolf/golf-course-segmentation weights: no licence granted (Hugging Face card: 'No additional "
@@ -208,8 +208,8 @@ def segment_gapfill(package, segment_path, *, reframe=True, scope="hole", log=pr
     add = fill_geoms({k: v for k, v in cands.items() if k != "green"}, ex)
     B = boundary(pkg, proj)
     if B is not None:                                   # nothing outside the course (rivers, house ponds)
-        add = [(lie, piece, p, src) for lie, g, p, src in add for piece in _parts(g.intersection(B))
-               if piece.area >= (WATER_MIN_M2 if lie == "water" else 25.0)]
+        add = [(lie, piece, p, src) for lie, g, p, src in add for piece in _parts(g.intersection(B))]
+    add = [a for a in add if a[1].area >= (WATER_MIN_M2 if a[0] == "water" else 25.0)]
     trees = ex.get("recovery")
     if trees is not None and not trees.is_empty:        # NIR-dark + smooth next to canopy = tree shadow
         def shadow(g):
