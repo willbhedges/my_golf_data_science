@@ -71,7 +71,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -q numpy scipy shapely pyproj
+      - run: pip install -q numpy scipy shapely pyproj scikit-image
       - name: Shard ${{ matrix.shard }}
         run: |
           python -u course_data/zero_tap/bench_set.py > /dev/null
@@ -94,7 +94,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -q numpy scipy shapely pyproj
+      - run: pip install -q numpy scipy shapely pyproj scikit-image
       - name: Code from the triggering commit
         run: |
           git fetch -q --depth 1 origin ${{ github.sha }}
