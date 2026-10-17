@@ -1,0 +1,4 @@
+- scoreboard **after_irons_package** (env {'PRODUCT_IRONS': 'package'}) [219 s, exit 0]:
+  Spirit Hollow: same club 7/16, same or tie 9/16, same as hand quick 11/16; 1 4-wood, 2B Driver, 2F Driver, 4 4-wood (truth Driver), 5 4-wood, 6 4-wood (truth 2-wood), 8 4-wood, 9B Driver (truth 2-wood), 9F 4-wood, 10 4-wood (truth Driver), 11 4-wood (truth Long iron), 13 4-wood (truth Driver), 14 4-wood (truth 2-wood), 16 4-wood, 17 4-wood (truth Driver), 18 4-wood (truth 2-wood)
+  Mozingo Lake: same club 7/14, same or tie 8/14; 1 4-wood, 2 4-wood, 3 Driver, 4 Driver, 6 Driver, 7 4-wood, 9 4-wood (truth Driver), 10 4-wood (truth Driver), 12 Driver, 13 Driver (truth 4-wood), 14 2-wood (truth Driver), 16 4-wood (truth Driver), 17 4-wood (truth Driver), 18 2-wood (truth Driver)
+  Veenker / no truth: same club 0/0, same or tie 0/0; 1 4-wood, 2 4-wood, 3 Driver, 4 4-wood, 5 4-wood, 7 Driver, 9 Driver, 10 Driver, 12 4-wood, 14 4-wood, 15 4-wood, 16 Driver, 18 Driver

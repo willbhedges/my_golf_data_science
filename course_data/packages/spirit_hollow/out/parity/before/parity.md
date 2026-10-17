@@ -91,5 +91,5 @@ Both through product/decide.quick_hole (n=8000, seed 31, prior-mean settings): e
 | swings, seed | 8000, 31 (decide._z) | 4000, 31 (same draw layout) | 3000 per draw, 128 draws, seed 2027 |
 | wood aims | +/-60 capped by the hole's aim_min/max, 2.5 step, widened past the edge | -30..+30, 2.5 step | decision.aims_for: hole aim_min/max capped to +/-25 |
 | iron aims | -25..+45 | -30..+45 | -25..+45 |
-| irons offered | hole['irons'] (product: package irons rule) | course.HOLES[h]['irons'] (11, 13) | same |
+| irons offered | package.irons_offered: water / OB across the tee line 180-310 yds (or the package flag) | course.HOLES[h]['irons'] (11, 13) | same |
 | absurd-aim guard | yes (40 yds; aim point lie; play_line) | no | no |

@@ -1,12 +1,16 @@
-# Parity request course_data/requests/parity_spirit_hollow.json (run 39000530805)
+# Parity request course_data/requests/parity_spirit_hollow.json (run 39001340633)
 
-- parity **after_app_line** (env {}, app line True): parity: same club [14, 14], same or tie [14, 14], aims within 2.5 yds [14, 14] [665 s, exit 0]
-- parity **after_product_line** (env {}, app line False): parity: same club [13, 14], same or tie [14, 14], aims within 2.5 yds [11, 13] [51 s, exit 0]
-- parity **before** (env {'PRODUCT_ZONE_ORDER': 'precedence', 'PRODUCT_ELEV_LINE': '0', 'PRODUCT_IRONS': 'package', 'PRODUCT_CONDITIONS': 'normal'}, app line False): parity: same club [8, 14], same or tie [10, 14], aims within 2.5 yds [5, 8] [468 s, exit 0]
+- parity **after_app_line** (env {}, app line True): parity: same club [14, 14], same or tie [14, 14], aims within 2.5 yds [14, 14] [615 s, exit 0]
+- parity **after_product_line** (env {}, app line False): parity: same club [13, 14], same or tie [14, 14], aims within 2.5 yds [11, 13] [56 s, exit 0]
+- parity **before** (env {'PRODUCT_ZONE_ORDER': 'precedence', 'PRODUCT_ELEV_LINE': '0', 'PRODUCT_IRONS': 'package', 'PRODUCT_CONDITIONS': 'normal'}, app line False): parity: same club [8, 14], same or tie [10, 14], aims within 2.5 yds [5, 8] [611 s, exit 0]
 - parity **mode_check** (env {}, app line True): mode check: quick = final 12/16, Bayesian S=64 = final 15/16 [686 s, exit 0]
-- scoreboard **after** (env {}) [194 s, exit 0]:
+- scoreboard **after** (env {}) [297 s, exit 0]:
   Spirit Hollow: same club 8/16, same or tie 10/16, same as hand quick 12/16; 1 4-wood, 2B Driver, 2F Driver, 4 4-wood (truth Driver), 5 4-wood, 6 4-wood (truth 2-wood), 8 4-wood, 9B Driver (truth 2-wood), 9F 4-wood, 10 4-wood (truth Driver), 11 Long iron, 13 4-wood (truth Driver), 14 4-wood (truth 2-wood), 16 4-wood, 17 4-wood (truth Driver), 18 4-wood (truth 2-wood)
   Mozingo Lake: same club 7/14, same or tie 8/14; 1 4-wood, 2 4-wood, 3 Driver, 4 Driver, 6 Driver, 7 4-wood, 9 4-wood (truth Driver), 10 4-wood (truth Driver), 12 Driver, 13 Driver (truth 4-wood), 14 2-wood (truth Driver), 16 4-wood (truth Driver), 17 4-wood (truth Driver), 18 2-wood (truth Driver)
+  Veenker / no truth: same club 0/0, same or tie 0/0; 1 4-wood, 2 4-wood, 3 Driver, 4 4-wood, 5 4-wood, 7 Driver, 9 Driver, 10 Driver, 12 4-wood, 14 4-wood, 15 Long iron, 16 Driver, 18 Driver
+- scoreboard **after_conditions_normal** (env {'PRODUCT_CONDITIONS': 'normal'}) [316 s, exit 0]:
+  Spirit Hollow: same club 9/16, same or tie 10/16, same as hand quick 12/16; 1 4-wood, 2B Driver, 2F Driver, 4 4-wood (truth Driver), 5 4-wood, 6 4-wood (truth 2-wood), 8 4-wood, 9B 4-wood (truth 2-wood), 9F 4-wood, 10 4-wood (truth Driver), 11 Long iron, 13 4-wood (truth Driver), 14 Long iron (truth 2-wood), 16 4-wood, 17 Driver, 18 4-wood (truth 2-wood)
+  Mozingo Lake: same club 6/14, same or tie 8/14; 1 4-wood, 2 4-wood, 3 2-wood (truth Driver), 4 Driver, 6 Driver, 7 4-wood, 9 4-wood (truth Driver), 10 4-wood (truth Driver), 12 Driver, 13 Driver (truth 4-wood), 14 4-wood (truth Driver), 16 4-wood (truth Driver), 17 4-wood (truth Driver), 18 4-wood (truth Driver)
   Veenker / no truth: same club 0/0, same or tie 0/0; 1 4-wood, 2 4-wood, 3 Driver, 4 4-wood, 5 4-wood, 7 Driver, 9 Driver, 10 Driver, 12 4-wood, 14 4-wood, 15 Long iron, 16 Driver, 18 Driver
 - scoreboard **after_first_cut_4** (env {'PRODUCT_FIRST_CUT_YDS': '4'}) [527 s, exit 0]:
   Spirit Hollow (Black): same club 0/0, same or tie 0/0; 
@@ -16,7 +20,15 @@
   Spirit Hollow: same club 9/16, same or tie 10/16, same as hand quick 10/16; 1 4-wood, 2B Driver, 2F Driver, 4 4-wood (truth Driver), 5 4-wood, 6 4-wood (truth 2-wood), 8 4-wood, 9B 4-wood (truth 2-wood), 9F 4-wood, 10 Driver, 11 Long iron, 13 4-wood (truth Driver), 14 Long iron (truth 2-wood), 16 4-wood, 17 4-wood (truth Driver), 18 4-wood (truth 2-wood)
   Mozingo Lake: same club 7/14, same or tie 8/14; 1 4-wood, 2 4-wood, 3 Driver, 4 Driver, 6 Driver, 7 4-wood, 9 4-wood (truth Driver), 10 4-wood (truth Driver), 12 Driver, 13 Driver (truth 4-wood), 14 2-wood (truth Driver), 16 4-wood (truth Driver), 17 4-wood (truth Driver), 18 4-wood (truth Driver)
   Veenker / no truth: same club 0/0, same or tie 0/0; 1 4-wood, 2 4-wood, 3 2-wood, 4 4-wood, 5 4-wood, 7 Driver, 9 Driver, 10 Driver, 12 2-wood, 14 4-wood, 15 Long iron, 16 Driver, 18 Driver
-- scoreboard **before** (env {'PRODUCT_ELEV_LINE': '0', 'PRODUCT_IRONS': 'package', 'PRODUCT_CONDITIONS': 'normal'}) [296 s, exit 0]:
+- scoreboard **after_irons_always** (env {'PRODUCT_IRONS': 'always'}) [284 s, exit 0]:
+  Spirit Hollow: same club 6/16, same or tie 8/16, same as hand quick 10/16; 1 Long iron (truth 4-wood), 2B Driver, 2F Driver, 4 4-wood (truth Driver), 5 4-wood, 6 4-wood (truth 2-wood), 8 Long iron (truth 4-wood), 9B Driver (truth 2-wood), 9F 4-wood, 10 4-wood (truth Driver), 11 Long iron, 13 Long iron (truth Driver), 14 4-wood (truth 2-wood), 16 4-wood, 17 4-wood (truth Driver), 18 4-wood (truth 2-wood)
+  Mozingo Lake: same club 7/14, same or tie 8/14; 1 4-wood, 2 4-wood, 3 Driver, 4 Driver, 6 Driver, 7 4-wood, 9 4-wood (truth Driver), 10 4-wood (truth Driver), 12 Driver, 13 Driver (truth 4-wood), 14 2-wood (truth Driver), 16 4-wood (truth Driver), 17 4-wood (truth Driver), 18 2-wood (truth Driver)
+  Veenker / no truth: same club 0/0, same or tie 0/0; 1 4-wood, 2 Long iron, 3 Long iron, 4 4-wood, 5 Long iron, 7 Driver, 9 Driver, 10 Driver, 12 4-wood, 14 4-wood, 15 Long iron, 16 Driver, 18 Driver
+- scoreboard **after_irons_package** (env {'PRODUCT_IRONS': 'package'}) [219 s, exit 0]:
+  Spirit Hollow: same club 7/16, same or tie 9/16, same as hand quick 11/16; 1 4-wood, 2B Driver, 2F Driver, 4 4-wood (truth Driver), 5 4-wood, 6 4-wood (truth 2-wood), 8 4-wood, 9B Driver (truth 2-wood), 9F 4-wood, 10 4-wood (truth Driver), 11 4-wood (truth Long iron), 13 4-wood (truth Driver), 14 4-wood (truth 2-wood), 16 4-wood, 17 4-wood (truth Driver), 18 4-wood (truth 2-wood)
+  Mozingo Lake: same club 7/14, same or tie 8/14; 1 4-wood, 2 4-wood, 3 Driver, 4 Driver, 6 Driver, 7 4-wood, 9 4-wood (truth Driver), 10 4-wood (truth Driver), 12 Driver, 13 Driver (truth 4-wood), 14 2-wood (truth Driver), 16 4-wood (truth Driver), 17 4-wood (truth Driver), 18 2-wood (truth Driver)
+  Veenker / no truth: same club 0/0, same or tie 0/0; 1 4-wood, 2 4-wood, 3 Driver, 4 4-wood, 5 4-wood, 7 Driver, 9 Driver, 10 Driver, 12 4-wood, 14 4-wood, 15 4-wood, 16 Driver, 18 Driver
+- scoreboard **before** (env {'PRODUCT_ELEV_LINE': '0', 'PRODUCT_IRONS': 'package', 'PRODUCT_CONDITIONS': 'normal'}) [300 s, exit 0]:
   Spirit Hollow: same club 8/16, same or tie 10/16, same as hand quick 12/16; 1 4-wood, 2B Driver, 2F Driver, 4 4-wood (truth Driver), 5 4-wood, 6 4-wood (truth 2-wood), 8 4-wood, 9B 4-wood (truth 2-wood), 9F 4-wood, 10 4-wood (truth Driver), 11 4-wood (truth Long iron), 13 4-wood (truth Driver), 14 4-wood (truth 2-wood), 16 4-wood, 17 Driver, 18 4-wood (truth 2-wood)
   Mozingo Lake: same club 6/14, same or tie 8/14; 1 4-wood, 2 4-wood, 3 2-wood (truth Driver), 4 Driver, 6 Driver, 7 4-wood, 9 4-wood (truth Driver), 10 4-wood (truth Driver), 12 Driver, 13 Driver (truth 4-wood), 14 4-wood (truth Driver), 16 4-wood (truth Driver), 17 4-wood (truth Driver), 18 4-wood (truth Driver)
   Veenker / no truth: same club 0/0, same or tie 0/0; 1 4-wood, 2 4-wood, 3 Driver, 4 4-wood, 5 4-wood, 7 Driver, 9 Driver, 10 Driver, 12 4-wood, 14 4-wood, 15 4-wood, 16 Driver, 18 Driver
