@@ -60,9 +60,18 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", default="dev")
     ap.add_argument("--tiers", default=",".join(TIERS))
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--out")
     ap.add_argument("--version", default="formation-v2")
+    ap.add_argument("--strip-rows", help="drop per-course rows from the bench.py score jsons in this dir")
     a = ap.parse_args()
+    if a.strip_rows:
+        for f in sorted(os.listdir(a.strip_rows)):
+            p = os.path.join(a.strip_rows, f)
+            o = json.load(open(p))
+            o.pop("rows", None)
+            json.dump(o, open(p, "w"), indent=1)
+            print(f, {sp: (o[sp]["formed_acc"], o[sp]["n"]) for sp in ("dev", "test") if o.get(sp)})
+        return
     rows = B.courses(a.split)
     t0 = time.time()
     for tier in a.tiers.split(","):

@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: zt-formation-${{ github.ref }}-${{ github.sha }}
@@ -33,6 +34,7 @@ jobs:
     outputs:
       stage: ${{ steps.p.outputs.stage }}
       only: ${{ steps.p.outputs.only }}
+      aux_run: ${{ steps.p.outputs.aux_run }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,6 +54,7 @@ jobs:
           r = json.load(open(sys.argv[1]))
           print("stage=" + r.get("stage", "inputs"))
           print("only=" + r.get("only", ""))
+          print("aux_run=" + str(r.get("aux_run", "")))
           EOF
 
   inputs:
@@ -153,6 +156,84 @@ jobs:
           git add course_data/zero_tap/formation/inputs
           git diff --cached --quiet && exit 0
           printf '%s\n' "zero_tap formation: inputs (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
+
+  eval:
+    needs: plan
+    if: needs.plan.outputs.stage == 'eval'
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Pull latest
+        run: git pull -q --rebase origin "${{ github.ref_name }}" || true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip -q
+          pip install -q requests numpy scipy shapely pyproj rasterio affine scikit-image scikit-learn==1.9.1 networkx
+      - name: Aux layers from the inputs run (artifact zt-formation-aux)
+        if: needs.plan.outputs.aux_run != ''
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: zt-formation-aux
+          run-id: ${{ needs.plan.outputs.aux_run }}
+          github-token: ${{ github.token }}
+          path: course_data/zero_tap/formation/inputs
+      - name: Feature cache, CV, final model, one-time test scoring
+        timeout-minutes: 240
+        env:
+          ZT_FORMATION_CACHE: /tmp/zfc
+        run: |
+          ls course_data/zero_tap/formation/inputs/*/aux.npz 2>/dev/null | wc -l
+          python -u course_data/zero_tap/formation/formation.py build --procs 4 | tail -3
+          python -u course_data/zero_tap/formation/formation.py final 2>&1 | grep -v Warning
+      - name: Zero-tap benchmark results (4 tiers in parallel)
+        timeout-minutes: 90
+        env:
+          ZT_FORMATION_CACHE: /tmp/zfc
+        run: |
+          OUT=course_data/zero_tap/results/formation_v2
+          rm -rf $OUT
+          for t in nocard osm_card unmapped_nocard unmapped_card; do
+            python -u course_data/zero_tap/formation/bench_run.py --split all --tiers $t --out $OUT \
+              --version "formation-v2@${GITHUB_SHA::8}" > /tmp/br_$t.log 2>&1 &
+          done
+          wait
+          tail -n 2 /tmp/br_*.log
+          mkdir -p course_data/zero_tap/formation/bench
+          for t in nocard osm_card unmapped_nocard unmapped_card; do
+            if [ -d $OUT/$t ]; then
+              python course_data/zero_tap/bench.py score $OUT/$t --json course_data/zero_tap/formation/bench/$t.json | tail -n 3
+            fi
+          done
+          python3 course_data/zero_tap/formation/bench_run.py --strip-rows course_data/zero_tap/formation/bench
+      - name: Commit
+        if: always()
+        run: |
+          F=course_data/zero_tap/formation
+          ls -la $F/model.pkl || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for p in $F/RESULTS.md $F/results.json $F/bench course_data/zero_tap/results/formation_v2; do
+            if [ -e "$p" ]; then git add "$p"; fi
+          done
+          if [ -f $F/model.pkl ] && [ $(stat -c %s $F/model.pkl) -lt 30000000 ]; then git add -f $F/model.pkl; fi
+          git diff --cached --stat | tail -n 3
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "zero_tap formation: eval (Actions run ${{ github.run_id }})" "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
           git commit -q -F /tmp/msg.txt
