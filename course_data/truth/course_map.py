@@ -5,7 +5,7 @@ golf=hole line drawn and numbered, plus the package's own holes (tee -> green, l
       -> DIR/map.jpg (or map_r<i>c<j>.jpg tiles), DIR/features.json {G<n>: centroid + polygon, T<n>: ...}
 
 features.json is what a holes_truth.py reads to snap a hole's green / tees to the mapped OSM shapes by id
-(course_data/truth/<slug>/holes_truth.py). A UTM grid every 100 m (labels = metres from the map's SW corner)
+(course_data/truth/<slug>/holes_truth.py). A UTM grid every --grid m (100) (labels = metres from the map's SW corner)
 lets an unmapped tee or green be read off the map: features.json carries the grid origin and UTM zone.
 """
 import argparse
@@ -30,6 +30,7 @@ def main():
     ap.add_argument("--mpp", type=float, default=1.0)
     ap.add_argument("--tiles", default="1x1")
     ap.add_argument("--bbox", help="lon0,lat0,lon1,lat1 (default: the package imagery)")
+    ap.add_argument("--grid", type=float, default=100.0, help="grid step (m); labels every 2 steps")
     a = ap.parse_args()
     pk = os.path.join(CD, "packages", a.slug)
     out = a.out or os.path.join(HERE, a.slug, "map")
@@ -63,14 +64,14 @@ def main():
         return np.c_[(np.asarray(x) - x0) / a.mpp, (y1 - np.asarray(y)) / a.mpp]
 
     ov = img.copy()
-    for gx in np.arange(0, x1 - x0, 100):
+    for gx in np.arange(0, x1 - x0, a.grid):
         cv2.line(ov, (int(gx / a.mpp), 0), (int(gx / a.mpp), H), (255, 255, 255), 1)
-    for gy in np.arange(0, y1 - y0, 100):
+    for gy in np.arange(0, y1 - y0, a.grid):
         cv2.line(ov, (0, int(H - gy / a.mpp)), (W, int(H - gy / a.mpp)), (255, 255, 255), 1)
     img = cv2.addWeighted(ov, 0.3, img, 0.7, 0)
-    for gx in np.arange(0, x1 - x0, 200):
+    for gx in np.arange(0, x1 - x0, 2 * a.grid):
         cv2.putText(img, f"{int(gx)}", (int(gx / a.mpp) + 2, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
-    for gy in np.arange(0, y1 - y0, 200):
+    for gy in np.arange(0, y1 - y0, 2 * a.grid):
         cv2.putText(img, f"{int(gy)}", (2, int(H - gy / a.mpp) - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
 
     fc = json.load(open(os.path.join(pk, "raw", "osm.geojson")))
