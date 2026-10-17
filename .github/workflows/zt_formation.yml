@@ -1,0 +1,163 @@
+name: zt_formation
+
+# Zero-tap workstream A, hole formation v2 (course_data/zero_tap/formation/).
+# Request-file trigger: commit course_data/requests/zt_formation_<name>.json
+#   {"schema": "request/1", "kind": "zt_formation", "stage": "inputs" | "eval", "only": "slug1,slug2" (optional),
+#    "rev": "<anything, to re-trigger>"}
+# inputs: 6 chunk jobs; per course: stack (perception combined cache, else fetch_stack.py), aux layers (artifact
+#         zt-formation-aux, 30 days; not committed), a blind
+#         perception scene where none is committed, web scorecards (no OSM lengths) -> commit
+#         course_data/zero_tap/formation/inputs/<slug>/
+# eval:   formation.py train + evaluate on the committed inputs -> commit course_data/zero_tap/formation/results/
+
+on:
+  push:
+    paths:
+      - "course_data/requests/zt_formation_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zt-formation-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  HF_HOME: /home/runner/hf_cache
+  HF_HUB_DISABLE_TELEMETRY: "1"
+  PYTHONWARNINGS: ignore
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.p.outputs.stage }}
+      only: ${{ steps.p.outputs.only }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 50
+      - id: p
+        run: |
+          R=$(ls -t course_data/requests/zt_formation_*.json | head -1)
+          BEFORE="${{ github.event.before }}"
+          if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            C=$(git diff --name-only "$BEFORE" "${{ github.sha }}" -- 'course_data/requests/zt_formation_*.json' | tail -1)
+            [ -n "$C" ] && [ -f "$C" ] && R="$C"
+          fi
+          echo "request: $R"; cat "$R"
+          python3 - "$R" >> "$GITHUB_OUTPUT" <<'EOF'
+          import json, sys
+          r = json.load(open(sys.argv[1]))
+          print("stage=" + r.get("stage", "inputs"))
+          print("only=" + r.get("only", ""))
+          EOF
+
+  inputs:
+    needs: plan
+    if: needs.plan.outputs.stage == 'inputs'
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Pull latest
+        run: git pull -q --rebase origin "${{ github.ref_name }}" || true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/stacks
+          key: perc-stacks-all-none
+          restore-keys: perc-stacks-all-
+      - uses: actions/cache@v4
+        with:
+          path: /home/runner/hf_cache
+          key: hf-golfseg-v1
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip -q
+          pip install -q requests numpy scipy shapely pyproj rasterio affine pystac-client planetary-computer \
+                      scikit-image scikit-learn==1.9.1 networkx beautifulsoup4 lxml
+          pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -q "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm
+      - uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: pdal
+          create-args: pdal
+          init-shell: none
+          cache-environment: true
+      - name: Build inputs (chunk ${{ matrix.chunk }})
+        timeout-minutes: 320
+        run: |
+          export PDAL_BIN="${MAMBA_ROOT_PREFIX:-/nonexistent}/envs/pdal/bin/pdal"
+          ls /home/runner/stacks 2>/dev/null | wc -l
+          python -u course_data/zero_tap/formation/fetch_inputs.py run --chunk ${{ matrix.chunk }} --of 6 \
+            --stacks /home/runner/stacks --out out --only "${{ needs.plan.outputs.only }}" || true
+          du -sh out; ls out | wc -l
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zt-formation-inputs-${{ matrix.chunk }}
+          path: out
+          if-no-files-found: warn
+          retention-days: 7
+
+  collect:
+    needs: [plan, inputs]
+    if: always() && needs.plan.outputs.stage == 'inputs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: zt-formation-inputs-*
+          merge-multiple: true
+          path: /tmp/zin
+      - name: Aux rasters as one artifact (not committed)
+        run: |
+          mkdir -p /tmp/aux
+          for d in /tmp/zin/*/; do s=$(basename "$d"); [ -f "$d/aux.npz" ] && mkdir -p /tmp/aux/$s && mv "$d/aux.npz" /tmp/aux/$s/; done
+          du -sh /tmp/aux; ls /tmp/aux | wc -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zt-formation-aux
+          path: /tmp/aux
+          retention-days: 30
+      - name: Commit inputs
+        run: |
+          mkdir -p course_data/zero_tap/formation/inputs
+          cp -r /tmp/zin/* course_data/zero_tap/formation/inputs/ || true
+          python3 - <<'EOF'
+          import glob, json
+          logs = []
+          for p in sorted(glob.glob("course_data/zero_tap/formation/inputs/_log_*.json")):
+              logs += json.load(open(p))
+          json.dump(logs, open("course_data/zero_tap/formation/inputs/_log.json", "w"), indent=1)
+          print(len(logs), "courses;", sum(1 for l in logs if l.get("aux")), "aux;", sum(1 for l in logs if l.get("scene")), "scenes")
+          EOF
+          rm -f course_data/zero_tap/formation/inputs/_log_*.json
+          du -sh course_data/zero_tap/formation/inputs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/zero_tap/formation/inputs
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "zero_tap formation: inputs (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
