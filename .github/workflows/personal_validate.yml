@@ -118,6 +118,7 @@ jobs:
           path: /tmp/parts
       - name: Merge
         run: |
+          mkdir -p course_data/personal/output
           cp /tmp/parts/emulator/emulator_spirit_hollow.npz /tmp/parts/emulator/emulator_check.json course_data/personal/output/
           python course_data/personal/validate.py merge "/tmp/parts/rec-*/rec_*.jsonl"
       - name: Commit
