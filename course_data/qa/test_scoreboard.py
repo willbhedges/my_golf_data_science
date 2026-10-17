@@ -53,3 +53,16 @@ def test_agree_and_regret():
     assert SB.agree(p, tr) == (False, True)
     assert SB.regret(p, tr) == 0.004
     assert SB.agree(dict(pick="Driver", tie=True, runner="2-wood"), dict(pick="2-wood", tie=False)) == (False, True)
+
+
+def test_rebaseline_skips_drop_check_but_not_aims():
+    c = course(5, aims={"1": -45.0})
+    fails, notes = SB.guards([c], [hist(10)], dict(id="x", reason="package rebuild"))
+    assert len(fails) == 1 and "aim" in fails[0] and "re-baselined" in notes[0]
+
+
+def test_headline_mode_change_resets_baseline():
+    c = course(5)
+    c["summary"]["headline"] = "full"
+    fails, notes = SB.guards([c], [hist(10)])
+    assert not fails and "headline mode" in notes[0]

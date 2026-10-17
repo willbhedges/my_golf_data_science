@@ -2,53 +2,45 @@
 per-hole rows). Edit, then `python3 course_data/qa/scoreboard.py --md-only`."""
 
 NOTES = [
+    "Headline mode: where the truth is a Bayesian decision (Spirit Hollow, final_decision.json) the headline is the "
+    "product's full Bayesian mode (decide.full_hole, 64 draws x 3000 swings, ~11 min on 4 cores, Actions only); the "
+    "quick point estimate is kept as its own column. Mozingo's truth is the hand map through the quick decision, so its "
+    "headline stays quick.",
     "Spirit Hollow is scored on 16 tee shots: 14 from the Black plan (holes 2 and 9 -> 2F / 9F) plus 2B and 9B from a "
     "Gold-tee product plan, because those screenshots (and the hand map) play from the Gold box.",
-    "Mozingo's truth is its hand map run through the same quick decision as the product, so a disagreement there is "
-    "map error only; Spirit Hollow's truth is the published Bayesian final_decision.json (map + model-settings "
-    "error; the 'hand map, quick' column separates them).",
-    "Veenker has no hand map: agreement, regret and geometry are n/a until one exists (gap 6).",
+    "'Same club as hand map, quick' isolates map error (same decision on both maps); 'quick-mode ceiling' isolates the "
+    "decision-mode error. Decision parity (product code on the hand map vs the reference model) is 14/14 "
+    "(course_data/packages/spirit_hollow/out/parity/summary.md), and full mode on the hand map matches final_decision "
+    "15/16: what is left is the map.",
+    "Veenker has no hand map: agreement, regret and geometry are n/a until one exists.",
     "Geometry columns need a georeferenced hand map, which only Spirit Hollow has (hand_zones_ll.json).",
 ]
 
 GAPS = [
-    "Path to the 80% bar on Spirit Hollow (13/16; today 9/16 vs the refreshed final_decision.json): gaps 1-3 below "
-    "are worth about +4 to +5 holes together, and the quick-mode ceiling (hand map through the product's own "
-    "decision) is 13/16, so 1-3 are enough without changing the decision mode.",
+    "Decision parity is solved (14/14 on the hand map; full mode on the hand map 15/16 vs final_decision.json), so "
+    "**map error is now the limit**. Direction of every current miss (quick mode, 04:50 run): the product picks a "
+    "*shorter* club than the truth on all 6 Spirit Hollow misses (4, 9B, 10, 13, 17, 18) and all 6 Mozingo misses "
+    "(9, 10, 14, 16, 17, 18): since the vision_any v2 + OB rebuilds the packages over-penalise the driver landing zone.",
     "",
-    "1. **Irons are never offered on lay-up holes (product / platform).** The package carries no `irons` flag on any "
-    "hole (course.py sets it on 11 and 13), and `decide.clubs_for` only adds Long / Mid iron when the hole has it. "
-    "Hole 11 (creek across the fairway): truth and the hand map both say Long iron; the product can only say "
-    "4-wood - **the largest regret on the board, 0.22 strokes**. Fix: offer irons whenever a water / OB / tree "
-    "band crosses the line of play inside driver range (or always; it costs ~40% more sims). Expected gain: "
-    "**+1 hole** (11), and it removes the worst regret.",
-    "2. **Trees and long grass in the landing corridor (vision).** Map error alone: the product agrees with the hand "
-    "map run through the *same* quick decision on only 7/16 Spirit Hollow and 10/14 Mozingo tee shots. Corridor "
-    "IoU on Spirit Hollow: trees 0.27, long grass 0.15 (bar 0.6; one hole passes each). Misses that trace to it: "
-    "SH 18 (trees IoU 0.07: Driver vs 2-wood), 6 (trees / long grass 0.0: Driver vs 2-wood), 9B (Driver vs "
-    "2-wood); Mozingo 14 (4-wood vs Driver, 0.14 strokes) and 18. Expected gain: **+2 to +4 holes over both "
-    "courses**. Owner: vision_any v2 long grass / tree edges and the open segmentation model (in flight) - merge "
-    "into the package only when these IoU columns move.",
-    "3. **Tee boxes 20-30 yds off** where 18Birdies' marker sits on a box behind the Black one (tee error 1: 26, "
-    "16: 26, 17: 29, 14: 22, 2B: 29 yds; 8/16 within 10 yds). A 25-yd tee error moves the whole landing corridor: "
-    "1 (Driver CHECK at -40 vs 4-wood) and 16 (4-wood vs 2-wood) follow from it. Expected gain: **+1 to +2 "
-    "holes**. Owner: tees (joint assignment takes the box behind when two boxes hold similar yardage; lidar pad + "
-    "card order + the golfer's app tee when known).",
-    "4. **Decision mode (quick point estimate vs the published Bayesian pick).** On the perfect map, quick mode "
-    "matches final_decision.json on 13/16 (10, 14, 17 differ, all margins < 0.02). Scoring the product's full "
-    "Bayesian mode (plan.py default, `decide.full_hole`, minutes per hole on Actions) would remove this. Expected "
-    "gain: **+1 hole** (mostly via same-or-tie already).",
-    "5. **Water and OB corridor geometry** (water IoU 0.32, 2/10 holes pass; OB 0.12, 0/4: creek buffers narrow, OB "
-    "from the course boundary, not lot lines). Expected gain: **+0 to +1 hole** (10, 2F, 6 sit on water/OB edges). "
-    "Owner: platform water rule + ob/ (OB inference, in flight).",
-    "6. **Package hygiene that can flip a pick on a new course**: Veenker tees 7 (Blue) inside OB and 12 (Blue) in a "
-    "bunker since the tee rebuild; zones vs zones_ll drift (SH 9/10/11, Veenker 3/7/8/15/16); self-intersecting "
-    "polygons on all three courses; forward-tee par-3 lengths 15-38% over the card. 0 holes on the scored courses, "
-    "wrong-answer risk on new ones. Owner: platform / tees.",
-    "7. **No truth for Veenker (or any third course).** The bar is measured on 30 tee shots from two courses, one of "
-    "which (Mozingo) tuned vision thresholds. A golfer's 18Birdies screenshots + picks for Veenker would make this "
-    "a generalisation test. 0 holes directly; it is what makes the other numbers trustworthy.",
-    "8. **Stale deliverables.** The Spirit Hollow and Veenker books were re-planned at 01:10-01:16 on the rebuilt "
-    "packages; Mozingo's `packages/mozingo_lake/out/` (22:06) still predates its 00:00+ rebuilds. Re-run its "
-    "plan_course request after each package rebuild. 0 holes; a delivery gap.",
+    "1. **Long grass / OB over-prediction in the driver landing zone (vision_any v2 + OB inference).** The rebuilds "
+    "that took Spirit Hollow 10 -> 8/16 and Mozingo 10 -> 7/14 added long grass and inferred OB where the hand maps have "
+    "rough; on Mozingo every miss is Driver -> 4-wood / 2-wood (14: 0.09, 17: 0.05, 18: 0.04 strokes). Calibrate the v2 "
+    "long-grass threshold and the OB inference against the hand maps' corridor (long grass IoU 0.19, OB 0.39 with 0/2 "
+    "passing on Spirit Hollow) before merging into packages; gate the merge on this scoreboard. Expected gain: **+4 to "
+    "+6 holes on Mozingo, +2 to +3 on Spirit Hollow** (4, 17, 18).",
+    "2. **Tree edges in the corridor** (trees IoU 0.30, 2/16 holes > 0.6): 10 (0.05) and 18 (0.06) are tree-line "
+    "holes where the product lays up. Expected gain: **+1 to +2 holes** on Spirit Hollow. Owner: vision_any v2 tree "
+    "edges / segment model.",
+    "3. **Tee boxes 20-30 yds off** where 18Birdies' marker sits on a box behind the Black one (1: 26, 16: 26, 17: 29, "
+    "14: 22, 2B: 29 yds; 8/16 within 10 yds). 17 (4-wood vs Driver) follows from it. Expected gain: **+1 hole**. "
+    "Owner: tees.",
+    "4. **Water and OB corridor geometry** (water IoU 0.32, 2/10 holes pass): 10 and 13 sit on creek edges. Expected "
+    "gain: **0 to +1 hole**. Owner: platform water rule + ob/.",
+    "5. **Package hygiene that can flip a pick on a new course**: tees inside hazards (Veenker), zones vs zones_ll "
+    "drift, self-intersecting polygons, forward-tee par-3 lengths 15-38% over the card. 0 holes on the scored courses; "
+    "wrong-answer risk elsewhere. Owner: platform / tees.",
+    "6. **No truth for Veenker (or any third course).** The bar rests on 30 tee shots from two courses. A golfer's "
+    "18Birdies screenshots + picks for Veenker would make this a generalisation test. 0 holes directly.",
+    "7. **Ship full mode in the product's default path.** The headline uses full mode on Actions; the phone deliverables "
+    "of Mozingo / Veenker are still quick plans. 0 holes on the scoreboard; it is what the golfer gets.",
 ]

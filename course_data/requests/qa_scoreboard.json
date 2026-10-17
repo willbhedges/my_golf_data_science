@@ -1,7 +1,11 @@
 {
  "kind": "qa_scoreboard",
- "rev": 4,
- "requested": "2026-10-17T03:55Z",
+ "rev": 5,
+ "requested": "2026-10-17T06:30Z",
  "note": "Bump rev to re-run .github/workflows/scoreboard.yml (contracts, golden, acceptance_package, scoreboard + guards) after a bot-committed package / plan / final_decision rebuild.",
- "by": "ob engineer: re-score after the OB-integrated package rebuild (run 38999661754)"
+ "by": "ob engineer: re-score after the OB-integrated package rebuild (run 38999661754)",
+ "rebaseline": {
+  "id": "2026-10-17-vision-v2-ob",
+  "reason": "packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow"
+ }
 }

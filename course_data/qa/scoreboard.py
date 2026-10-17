@@ -2,6 +2,8 @@
 
   python3 course_data/qa/scoreboard.py                     # full run (Actions: .github/workflows/scoreboard.yml)
   python3 course_data/qa/scoreboard.py --check             # + regression guards (exit 1 on a regression)
+  python3 course_data/qa/scoreboard.py --check --full      # Actions: + the product's full Bayesian decision
+                                                           #   (headline where the truth is Bayesian)
   python3 course_data/qa/scoreboard.py --from-out          # light: score the committed out/decision.json
                                                            #   files instead of re-running the decision
   python3 course_data/qa/scoreboard.py --courses spirit_hollow --n 1000 --workers 1 --dry-run   # smoke test
@@ -28,6 +30,10 @@ What is scored, per course (Spirit Hollow, Mozingo Lake, Veenker):
                 +/-45 yds, 5-yd grid, inside the screenshot footprint) for trees (recovery), long grass
                 (native), water and OB, lies as the model sees them (product zone precedence vs hand-map
                 order); CHECK holes; runtime of the decision step (and plan.py's last full runtime).
+
+Re-baseline: put {"rebaseline": {"id": "...", "reason": "..."}} in course_data/requests/qa_scoreboard.json; the next
+full run records the reason on its history rows and skips the drop check once (a change of headline mode or of the
+truth also resets the baseline).
 
 Regression guards (--check, CI): fail if (a) same-club count drops by more than 1 hole vs the last
 non-regressed history row of that course with the same truth fingerprint, or (b) any printed aim is more
@@ -109,8 +115,9 @@ def load_module(path, name):
 
 
 # ----------------------------------------------------------------------------- product plan
-def product_plan(cfg, tees, keys=None, n=8000, workers=None, from_out=False):
-    """{str key: decide result} for the product on the committed package, the Course, seconds."""
+def product_plan(cfg, tees, keys=None, n=8000, workers=None, from_out=False, mode="quick", S=64, N=3000):
+    """{str key: decide result} for the product on the committed package, the Course, seconds.
+    mode "full" = decide.full_hole (the Bayesian path plan.py runs by default): S prior draws x N swings."""
     import package as PK                                   # course_data/product/package.py
     C = PK.load(os.path.join(ROOT, cfg["package"]), tees)
     if from_out and tees == cfg["tees"]:
@@ -131,7 +138,8 @@ def product_plan(cfg, tees, keys=None, n=8000, workers=None, from_out=False):
         mod = PK.import_module(mp, name=f"sb_{cfg['slug']}_{tees}".replace(" ", "_"))
     holes = {k: v for k, v in mod.HOLES.items() if keys is None or str(k) in keys}
     t0 = time.time()
-    res = decide.run(holes, "quick", workers=workers, log=lambda *a: None, n=n)
+    kw = dict(n=n) if mode == "quick" else dict(S=S, N=N, sweep=False)
+    res = decide.run(holes, mode, workers=workers, log=lambda *a: None, **kw)
     return {str(k): v for k, v in res.items()}, C, round(time.time() - t0, 1)
 
 
@@ -300,6 +308,22 @@ def summarise(rows, has_truth):
             cz = [r["hand_quick_same_truth"] for r in hq if "hand_quick_same_truth" in r]
             if cz:
                 S["ceiling_quick"] = sum(cz)
+    fl = [r for r in rows if "same_full" in r]
+    if has_truth and fl:
+        S["n_full"] = len(fl)
+        S["same_full"] = sum(r["same_full"] for r in fl)
+        S["same_or_tie_full"] = sum(r["same_or_tie_full"] for r in fl)
+        rg = [r["regret_full"] for r in fl if r.get("regret_full") is not None]
+        S["mean_regret_full"] = round(float(np.mean(rg)), 4) if rg else None
+        S["max_regret_full"] = round(float(np.max(rg)), 4) if rg else None
+        S["checks_full"] = sum(1 for r in fl if r.get("full_check"))
+    # headline: full (Bayesian) mode where the truth is Bayesian and full mode ran on every scored hole, else quick
+    full_ok = has_truth and fl and len(fl) == S.get("n_truth")
+    S["headline"] = "full" if full_ok else "quick"
+    if has_truth:
+        for k in ("same", "same_or_tie", "mean_regret", "max_regret"):
+            S[f"{k}_quick"] = S.get(k)
+            S[f"{k}_head"] = S.get(f"{k}_full") if full_ok else S.get(k)
     g = [r for r in rows if "tee_err" in r]
     if g:
         S["tee10"] = sum(r["tee_err"] <= 10 for r in g)
@@ -351,6 +375,20 @@ def score_course(cfg, a, prev):
             extra_res[st] = r2
             if s2:
                 out["decision_s"] = round((out["decision_s"] or 0) + s2, 1)
+        full = {}
+        if a.full:
+            for st in sorted({sets[str(k)] for k in sh_course().HOLES}):
+                ks = {str(k).rstrip("BF") for k in sh_course().HOLES if sets[str(k)] == st}
+                if a.holes:
+                    ks &= set(a.holes.split(","))
+                if not ks:
+                    continue
+                rf, _, sf = product_plan(cfg, st, keys=ks, workers=a.workers, mode="full", S=a.full_S, N=a.full_N)
+                full[st] = rf
+                out["decision_full_s"] = round((out.get("decision_full_s") or 0) + (sf or 0), 1)
+                log(f"  full mode ({st}, S={a.full_S} x N={a.full_N}): {len(rf)} holes in {sf:.0f} s")
+            out["full_mode"] = dict(S=a.full_S, N=a.full_N)
+            out["source"] += f" + full (decide.full_hole S={a.full_S} x N={a.full_N})"
         for key in sh_course().HOLES:
             key = str(key)
             st = sets.get(key, cfg["tees"])
@@ -363,7 +401,14 @@ def score_course(cfg, a, prev):
                 geo = sh_geometry(key, st, C_, kp)
             except Exception as e:                                 # noqa: BLE001
                 geo = dict(geo_error=f"{type(e).__name__}: {e}")
-            rows.append(row_for(key, r_[ref], final[key], (hq or {}).get(key), geo, st))
+            row = row_for(key, r_[ref], final[key], (hq or {}).get(key), geo, st)
+            fr = (full.get(st) or {}).get(ref)
+            if fr:
+                sf_, stf = agree(fr, final[key])
+                row.update(full_pick=fr["pick"], full_aim=round(float(fr["aim"]), 1), full_tie=bool(fr.get("tie")),
+                           full_runner=fr.get("runner"), full_check=list(fr.get("check") or []), same_full=sf_,
+                           same_or_tie_full=stf, regret_full=regret(fr, final[key]))
+            rows.append(row)
     elif cfg["truth"] == "mozingo":
         hand = HAND_HOLES
         out["truth"] = "hand map mozingo/tee_strategy.HOLES through the product's quick decision"
@@ -385,6 +430,8 @@ def score_course(cfg, a, prev):
     out["summary"] = summarise(rows, cfg["truth"] is not None)
     out["aim_violations"] = aim_violations(res, cfg["name"]) + sum((aim_violations(r, f"{cfg['name']} ({st})")
                                                                     for st, r in extra_res.items()), [])
+    if cfg["truth"] == "spirit_hollow" and a.full:
+        out["aim_violations"] += sum((aim_violations(r, f"{cfg['name']} (full, {st})") for st, r in full.items()), [])
     out["seconds"] = round(time.time() - t0, 1)
     return out
 
@@ -397,20 +444,43 @@ TRUTH_RAW = {}            # hand-quick truth computed or reused in this run -> s
 def history_row(c, date, commit):
     S = c["summary"]
     return dict(date=date, commit=commit, course=c["slug"], truth_fp=c.get("truth_fp"), n=S.get("n_truth", S["n"]),
-                same=S.get("same"), same_or_tie=S.get("same_or_tie"), same_pct=S.get("same_pct"),
-                mean_regret=S.get("mean_regret"), max_regret=S.get("max_regret"),
+                headline=S.get("headline", "quick"),
+                same=S.get("same_head", S.get("same")), same_or_tie=S.get("same_or_tie_head", S.get("same_or_tie")),
+                same_quick=S.get("same"), same_full=S.get("same_full"),
+                mean_regret=S.get("mean_regret_head", S.get("mean_regret")),
+                max_regret=S.get("max_regret_head", S.get("max_regret")),
                 tee10=S.get("tee10"), green10=S.get("green10"), n_geo=S.get("n_geo"),
-                iou={k: v["mean"] for k, v in (S.get("iou") or {}).items()}, checks=S["checks"],
+                iou={k: v["mean"] for k, v in (S.get("iou") or {}).items()},
+                checks=S.get("checks_full") if S.get("headline") == "full" else S["checks"],
                 same_hand_quick=S.get("same_hand_quick"), ceiling_quick=S.get("ceiling_quick"),
                 decision_s=c.get("decision_s"), source=c.get("source"))
 
 
-def guards(courses, history):
+REQUEST = os.path.join(CD, "requests", "qa_scoreboard.json")
+
+
+def pending_rebaseline(history):
+    """A one-shot re-baseline from course_data/requests/qa_scoreboard.json {"rebaseline": {"id", "reason"}}:
+    applied by the first full run that has not recorded that id yet (the row carries baseline_reset)."""
+    try:
+        rb = json.load(open(REQUEST)).get("rebaseline")
+    except Exception:                                              # noqa: BLE001
+        return None
+    if not rb or any(h.get("baseline_id") == rb.get("id") for h in history):
+        return None
+    return rb
+
+
+def guards(courses, history, rebaseline=None):
     fails, notes = [], []
     for c in courses:
         fails += c["aim_violations"]
         S = c["summary"]
-        if S.get("same") is None:
+        cur = S.get("same_head", S.get("same"))
+        if cur is None:
+            continue
+        if rebaseline:
+            notes.append(f"{c['course']}: re-baselined ({rebaseline['reason']})")
             continue
         base = [h for h in history if h["course"] == c["slug"] and not h.get("regression") and h.get("same") is not None]
         if not base:
@@ -420,9 +490,13 @@ def guards(courses, history):
         if b.get("truth_fp") != c.get("truth_fp") or b.get("n") != S.get("n_truth"):
             notes.append(f"{c['course']}: truth changed since {b['date']} (baseline reset)")
             continue
-        if S["same"] < b["same"] - 1:
-            fails.append(f"{c['course']}: same club {S['same']}/{S['n_truth']} vs {b['same']}/{b['n']} on {b['date']} "
-                         f"({b['commit']}): dropped by {b['same'] - S['same']} holes (> 1)")
+        if b.get("headline", "quick") != S.get("headline", "quick"):
+            notes.append(f"{c['course']}: headline mode {b.get('headline', 'quick')} -> {S.get('headline')} since "
+                         f"{b['date']} (baseline reset)")
+            continue
+        if cur < b["same"] - 1:
+            fails.append(f"{c['course']}: same club ({S.get('headline', 'quick')}) {cur}/{S['n_truth']} vs "
+                         f"{b['same']}/{b['n']} on {b['date']} ({b['commit']}): dropped by {b['same'] - cur} holes (> 1)")
     return fails, notes
 
 
@@ -442,10 +516,11 @@ def write_md(board):
          f"(regenerated by `.github/workflows/scoreboard.yml` on every push to platform / product / vision / segment / "
          f"ob / tees code and after every package or plan rebuild). Target: same club as the truth on >= "
          f"{CLUB_BAR:.0%} of tee shots (18Birdies-level).", "",
-         "| course (tees) | truth | same club | same or tie | mean / max regret (strokes) | same club as hand map, "
+         "| course (tees) | truth | **same club** (headline mode) | same or tie | mean / max regret (strokes) | "
+         "quick mode: same club | same club as hand map, "
          "quick (map error only) | quick-mode ceiling (hand map vs truth) | tee <= 10 yds | "
          "green <= 10 yds | IoU trees | IoU long grass | IoU water | IoU OB | CHECK holes | decision runtime |",
-         "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+         "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for c in board["courses"]:
         S = c["summary"]
         iou = S.get("iou") or {}
@@ -459,11 +534,16 @@ def write_md(board):
             (pct(S.get("same"), S.get("n_truth")) if c["slug"] == "mozingo_lake" else "n/a")
         if c.get("last_plan", {}).get("runtime_s"):
             rt += f" (plan.py {c['last_plan']['runtime_s'] / 60:.0f} min, {c['last_plan']['built']})"
-        L.append(f"| {c['course']} ({c['tees']}) | {tr} | **{pct(S.get('same'), S.get('n_truth'))}** | "
-                 f"{pct(S.get('same_or_tie'), S.get('n_truth'))} | {fmt(S.get('mean_regret'))} / {fmt(S.get('max_regret'))} | "
-                 f"{mapo} | {pct(S.get('ceiling_quick'), S.get('n_hand_quick'))} | "
+        hd = S.get("headline", "quick")
+        if c.get("decision_full_s"):
+            rt += f"; full mode {c['decision_full_s'] / 60:.0f} min"
+        chk = S.get("checks_full") if hd == "full" else S["checks"]
+        L.append(f"| {c['course']} ({c['tees']}) | {tr} | **{pct(S.get('same_head', S.get('same')), S.get('n_truth'))}** "
+                 f"({hd}) | {pct(S.get('same_or_tie_head', S.get('same_or_tie')), S.get('n_truth'))} | "
+                 f"{fmt(S.get('mean_regret_head', S.get('mean_regret')))} / {fmt(S.get('max_regret_head', S.get('max_regret')))} | "
+                 f"{pct(S.get('same'), S.get('n_truth'))} | {mapo} | {pct(S.get('ceiling_quick'), S.get('n_hand_quick'))} | "
                  f"{pct(S.get('tee10'), S.get('n_geo'))} | {pct(S.get('green10'), S.get('n_geo'))} | {i('trees')} | "
-                 f"{i('long grass')} | {i('water')} | {i('ob')} | {S['checks']}/{S['n']} | {rt} |")
+                 f"{i('long grass')} | {i('water')} | {i('ob')} | {chk}/{S['n']} | {rt} |")
     L += ["", "Notes: " + " ".join(NOTES), ""]
     if board.get("guards"):
         g = board["guards"]
@@ -481,6 +561,10 @@ def write_md(board):
         has_geo = any("tee_err" in r for r in c["holes"])
         hdr = "| hole | tee set | product pick (aim) | truth | same | regret |"
         sep = "|---|---|---|---|---|---|"
+        has_full = any("full_pick" in r for r in c["holes"])
+        if has_full:
+            hdr += " product full mode | same (full) |"
+            sep += "---|---|"
         if any("hand_quick" in r for r in c["holes"]):
             hdr += " hand map, quick |"
             sep += "---|"
@@ -495,6 +579,13 @@ def write_md(board):
             tr = (r.get("truth", "-") + (f" (tie: {r['truth_runner']})" if r.get("truth_tie") else "")) if "truth" in r else "-"
             same = "-" if "same" not in r else ("yes" if r["same"] else ("tie" if r["same_or_tie"] else "**no**"))
             line = f"| {r['hole']} | {r.get('tee_set') or c['tees']} | {pk} | {tr} | {same} | {fmt(r.get('regret'))} |"
+            if has_full:
+                if "full_pick" in r:
+                    fs = "yes" if r["same_full"] else ("tie" if r["same_or_tie_full"] else "**no**")
+                    line += (f" {r['full_pick']}{' (tie: ' + str(r['full_runner']) + ')' if r['full_tie'] else ''} "
+                             f"({r['full_aim']:+.0f}){' CHECK' if r.get('full_check') else ''} | {fs} |")
+                else:
+                    line += " - | - |"
             if "| hand map, quick |" in hdr:
                 line += (f" {r.get('hand_quick', '-')}{' (tie)' if r.get('hand_quick_tie') else ''} |")
             if has_geo:
@@ -510,16 +601,24 @@ def write_md(board):
                 L.append(f"Ceiling of quick mode: the hand map itself through the quick decision picks the truth's club on "
                          f"{S['ceiling_quick']}/{S['n_hand_quick']} tee shots (model-settings error only).")
         L.append("")
-    L += ["## History", "", "| date (UTC) | commit | course | same club | same or tie | mean / max regret | tee10 | green10 | "
-          "IoU trees / long grass / water / OB | CHECK | decision s | source |", "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    L += ["## History", "", "Same club / same or tie / regret are the headline mode of each row (quick until full mode "
+          "ran; the quick and full counts are both listed). Notes record re-baselines and attributions.", "",
+          "| date (UTC) | commit | course | same club (mode) | quick / full | same or tie | mean / max regret | tee10 | "
+          "green10 | IoU trees / long grass / water / OB | CHECK | decision s | source | note |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for h in board["history"][-60:]:
         iou = h.get("iou") or {}
-        L.append(f"| {h['date']} | {h['commit']} | {h['course']} | {pct(h.get('same'), h.get('n'))} | "
+        qf = (f"{fmt(h.get('same_quick', h.get('same')), '{}')} / {fmt(h.get('same_full'), '{}')}"
+              if h.get("same") is not None else "n/a")
+        note = "; ".join(x for x in (("**re-baseline**: " + h["baseline_reset"]) if h.get("baseline_reset") else "",
+                                     h.get("note") or "") if x)
+        L.append(f"| {h['date']} | {h['commit']} | {h['course']} | {pct(h.get('same'), h.get('n'))} "
+                 f"({h.get('headline', 'quick')}) | {qf} | "
                  f"{pct(h.get('same_or_tie'), h.get('n'))} | {fmt(h.get('mean_regret'))} / {fmt(h.get('max_regret'))} | "
                  f"{pct(h.get('tee10'), h.get('n_geo'))} | {pct(h.get('green10'), h.get('n_geo'))} | "
                  + " / ".join(fmt(iou.get(n), '{:.2f}') for n in HAZ)
                  + f" | {h.get('checks')} | {fmt(h.get('decision_s'), '{:.0f}')} | {h.get('source', '')}"
-                 + (" **regression**" if h.get("regression") else "") + " |")
+                 + (" **regression**" if h.get("regression") else "") + f" | {note} |")
     L += ["", "Definitions: see the docstring of `course_data/qa/scoreboard.py`. Same or tie = same club, or one plan "
           "calls the two clubs a tie (margin < 0.01 strokes) and the other plan picked that tie's runner-up. Regret = "
           "strokes lost on the hand map (truth EVs) by playing the product's club. IoU = landing corridor 220-340 yds "
@@ -540,6 +639,11 @@ def main():
     ap.add_argument("--no-hand-quick", action="store_true", help="Spirit Hollow: skip the hand-map quick run")
     ap.add_argument("--check", action="store_true", help="regression guards; exit 1 on a regression")
     ap.add_argument("--dry-run", action="store_true", help="print, do not write scoreboard.json / SCOREBOARD.md")
+    ap.add_argument("--full", action="store_true",
+                    help="also run the product's full Bayesian decision (decide.full_hole) where the truth is Bayesian "
+                         "(Spirit Hollow); it becomes the headline there. ~11 min on 4 cores (Actions)")
+    ap.add_argument("--full-S", type=int, default=64)
+    ap.add_argument("--full-N", type=int, default=3000)
     ap.add_argument("--md-only", action="store_true", help="re-render SCOREBOARD.md from scoreboard.json")
     ap.add_argument("--adopt", help="CI: take this freshly computed scoreboard.json as current, keeping the union of "
                                     "its history and the history in course_data/qa/scoreboard.json (concurrent runs)")
@@ -583,18 +687,21 @@ def main():
     date = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M")
     commit = git("rev-parse", "--short", "HEAD")
     history = list(prev.get("history") or [])
-    fails, notes = guards(courses, history) if a.check else ([], [])
+    partial = bool(a.holes or (want and len(want) < len(COURSES)) or a.n != 8000)
+    rb = None if partial else pending_rebaseline(history)
+    fails, notes = guards(courses, history, rb) if a.check else ([], [])
     cache = dict(prev.get("truth_cache") or {})    # hand-quick truth, recomputed only when the hand map or
     cache.update(TRUTH_RAW)                          # decide.py changes (fingerprint fp)
     board = dict(schema="scoreboard/1", generated=date + " UTC", commit=commit, courses=courses,
                  guards=dict(fails=fails, notes=notes) if a.check else prev.get("guards"),
                  truth_cache=cache, history=history)
-    partial = bool(a.holes or (want and len(want) < len(COURSES)) or a.n != 8000)
     if not partial:
         reg = {f.split(":")[0] for f in fails}
         for c in courses:
             row = history_row(c, date, commit)
             row["regression"] = c["course"] in reg or any(c["course"] in f for f in fails)
+            if rb:
+                row.update(baseline_id=rb.get("id"), baseline_reset=rb.get("reason"))
             history.append(row)
     for f in fails:
         log("REGRESSION:", f)

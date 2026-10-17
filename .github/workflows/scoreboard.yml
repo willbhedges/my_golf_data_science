@@ -47,7 +47,7 @@ jobs:
   scoreboard:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 100
     env:
       BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
     steps:
@@ -87,7 +87,7 @@ jobs:
         id: sb
         run: |
           set +e
-          ( time python course_data/qa/scoreboard.py --check ) 2>&1 | tee /tmp/scoreboard_log.txt
+          ( time python course_data/qa/scoreboard.py --check --full ) 2>&1 | tee /tmp/scoreboard_log.txt
           echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
       - name: Commit outputs
