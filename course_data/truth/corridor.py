@@ -1,7 +1,7 @@
 """Hand-checked landing-corridor truth maps: evidence renders, tracing frame, review renders, hand_zones_ll.json.
 
   python3 course_data/truth/corridor.py panels --slug veenker [--holes 1,7]    # evidence renders (Actions or local)
-  python3 course_data/truth/corridor.py review --slug veenker [--holes 1,7]    # side-by-side review of trace.json
+  python3 course_data/truth/corridor.py review --slug veenker [--holes 1,7]    # side-by-side review of trace.py
   python3 course_data/truth/corridor.py build  --slug veenker                  # -> hand_zones_ll.json
   python3 course_data/truth/corridor.py edges  --slug veenker [--holes 1]      # edge table, 2nd pass (<= 10 yds)
   python3 course_data/truth/corridor.py zoom   --slug veenker --holes 1 --box 200,260,-40,0 [--which hag]
@@ -9,7 +9,7 @@
 Every tee shot (par 4 / 5, the card set in SETS) gets ONE planar corridor frame (course_data/imagery/render.Frame,
 UTM, tee = the package's tee of that set, aim = the package's aim point): x = yds right of the tee line,
 `along` = yds out along it. All renders of a hole share that frame, so a point read off the grid of any panel
-is the same ground point. The trace (course_data/truth/<slug>/trace.json) is written by hand in those
+is the same ground point. The trace (course_data/truth/<slug>/trace.py) is written by hand in those
 (x, along) yards after looking at the renders, and converted to WGS84 by the same frame (build).
 
 Evidence (none of it is a vision layer or a model output):
@@ -224,6 +224,29 @@ def hag_m(S, fr):
     return np.where(h >= 255, np.nan, h * 0.25)
 
 
+def lidar_contour(img, S, fr, thr=2.5, color=(0, 255, 255)):
+    """Draw the lidar canopy edge (HAG > thr m) on an image of frame fr: separates crowns from cast shadows."""
+    import cv2
+    if "hag" not in S:
+        return img
+    h = hag_m(S, fr)
+    m = (np.nan_to_num(h, nan=0) > thr).astype(np.uint8)
+    m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+    cs, _ = cv2.findContours(m, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    out = img.copy()
+    cv2.drawContours(out, cs, -1, color, 1)
+    return out
+
+
+def shadow_dir(fj):
+    """Unit (x, along) direction of north-west in the hole frame (NAIP shadows fall roughly NW, late-morning sun)."""
+    fr = frame_of(fj, 1.0)
+    t = np.asarray(fj["frame"]["tee_ll"], float)
+    p = fr.ll_to_yds([t + np.array([-0.0005, 0.0004])])[0]
+    v = np.array([p[0], -p[1]])
+    return v / np.linalg.norm(v)
+
+
 def cir(S, fr, rgb=None):
     rgb = S["photo"].warp(fr) if rgb is None else rgb
     return _u8(np.dstack([S["nir"].warp(fr)[..., 0], rgb[..., 0], rgb[..., 1]]))
@@ -400,7 +423,46 @@ def stage_panels(slug, holes=None):
 
 # =========================================================================== trace -> review / build
 def trace(slug):
-    return json.load(open(tdir(slug, "trace.json")))
+    """The hand trace: course_data/truth/<slug>/trace.py (TRACE dict, written with the shape helpers below)."""
+    import importlib.util
+    if HERE not in sys.path:
+        sys.path.insert(0, HERE)
+    p = tdir(slug, "trace.py")
+    spec = importlib.util.spec_from_file_location(f"truth_trace_{slug}", p)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m.TRACE
+
+
+# ---- shape helpers for trace.py: every coordinate is (x yds right of the tee line, yds along it)
+def band(left, right):
+    """Polygon between a left and a right edge, each [(along, x), ...] (any order)."""
+    L_ = sorted(left)
+    R_ = sorted(right, reverse=True)
+    return [[float(x), float(a)] for a, x in L_] + [[float(x), float(a)] for a, x in R_]
+
+
+def ell(cx, ca, rx, ra, n=16):
+    """Ellipse centred (cx, ca) with half-widths rx (lateral) / ra (along): one tree crown."""
+    t = np.linspace(0, 2 * np.pi, n, endpoint=False)
+    return [[round(float(cx + rx * np.cos(v)), 2), round(float(ca + ra * np.sin(v)), 2)] for v in t]
+
+
+def rect(x0, x1, a0, a1):
+    return [[x0, a0], [x1, a0], [x1, a1], [x0, a1]]
+
+
+def poly(*pts):
+    """[(x, along), ...] as written."""
+    return [[float(x), float(a)] for x, a in pts]
+
+
+def Z(lie, xy, note=None):
+    assert lie in LIES, lie
+    z = dict(lie=lie, xy=xy)
+    if note:
+        z["note"] = note
+    return z
 
 
 def stage_review(slug, holes=None):
@@ -416,7 +478,8 @@ def stage_review(slug, holes=None):
         rgb = S["photo"].warp(fr)
         photo = _u8(rgb)
         P = [title(grid(draw_zones(photo, fr, zones, labels=True), fr, font=0.3), f"{slug} {ref}: trace on NAIP 2023", 0.4),
-             title(grid(draw_zones(photo, fr, zones, fill=False, width=1), fr, font=0.3), "outlines", 0.4)]
+             title(grid(draw_zones(lidar_contour(photo, S, fr), fr, zones, fill=False, width=1), fr, font=0.3),
+                   "outlines + lidar canopy edge (cyan); NW = (%+.1f, %+.1f)" % tuple(shadow_dir(FJ[ref])), 0.4)]
         other = sorted([k for k in S if k.startswith("naip_") and k != "naip_2023"], reverse=True)
         if other:
             P.append(title(grid(draw_zones(_u8(S[other[0]].warp(fr)[..., :3]), fr, zones, fill=False, width=1), fr,
@@ -438,8 +501,8 @@ def zoom_render(slug, ref, a0, a1, x0, x1, ppy=8.0, out=None, which="photo"):
     """A zoomed crop (a0-a1 along, x0-x1 lateral) with the trace outlines: the 2nd-pass look at an edge."""
     S = sources(slug)
     fj = frames(slug)[ref]
-    zones = trace(slug)["holes"].get(ref, {}).get("zones", []) if os.path.exists(tdir(slug, "trace.json")) else []
-    lat = max(abs(x0), abs(x1))
+    zones = trace(slug)["holes"].get(ref, {}).get("zones", []) if os.path.exists(tdir(slug, "trace.py")) else []
+    lat = math.ceil(max(abs(x0), abs(x1)) / 10.0) * 10.0          # grid lines on multiples of 5 yds
     fr = corridor_frame(fj["frame"]["tee_ll"], fj["frame"]["aim_ll"], ppy, a0=a0, a1=a1, lat=lat)
     if which == "hag":
         img = hag_rgb(hag_m(S, fr))
@@ -447,6 +510,10 @@ def zoom_render(slug, ref, a0, a1, x0, x1, ppy=8.0, out=None, which="photo"):
         img = cir(S, fr)
     elif which.startswith("naip_"):
         img = _u8(S[which].warp(fr)[..., :3])
+    elif which == "photol":
+        img = lidar_contour(_u8(S["photo"].warp(fr)), S, fr)
+    elif which == "cirl":
+        img = lidar_contour(cir(S, fr), S, fr)
     else:
         img = _u8(S["photo"].warp(fr))
     if zones:
@@ -455,6 +522,46 @@ def zoom_render(slug, ref, a0, a1, x0, x1, ppy=8.0, out=None, which="photo"):
     img = img[:, int((x0 + lat) * ppy):int((x1 + lat) * ppy)]
     out = out or os.path.join(HERE, slug, "_zoom.png")
     save(out, img)
+    return out
+
+
+def sheet(slug, ref, out, ppy=4.0, with_trace=False):
+    """Tracing sheet: NAIP 2023 photo | lidar canopy, same frame, 5-yd grid (10-yd labels)."""
+    S = sources(slug)
+    fj = frames(slug)[ref]
+    fr = frame_of(fj, ppy)
+    zones = trace(slug)["holes"].get(ref, {}).get("zones", []) if with_trace else []
+    a = _u8(S["photo"].warp(fr))
+    b = hag_rgb(hag_m(S, fr))
+    if zones:
+        a = draw_zones(a, fr, zones, fill=False, width=1)
+        b = draw_zones(b, fr, zones, fill=False, width=1)
+    P = [title(grid(a, fr, step=5, label_every=10, font=0.33), f"{slug} {ref} par {fj['par']} {fj.get('yards')}: NAIP 2023", 0.4),
+         title(grid(b, fr, step=5, label_every=10, font=0.33), "lidar canopy (yel 0.5-2.5, grn 2.5-8, dk > 8 m)", 0.4)]
+    save(out, stack(P, 2))
+    return out
+
+
+def sheet4(slug, ref, out, ppy=3.5, with_trace=False, years=("naip_2021",)):
+    """4 panels in one row: NAIP 2023 | CIR | an older NAIP year | lidar canopy (5-yd grid)."""
+    S = sources(slug)
+    fj = frames(slug)[ref]
+    fr = frame_of(fj, ppy)
+    zones = trace(slug)["holes"].get(ref, {}).get("zones", []) if with_trace else []
+    rgb = S["photo"].warp(fr)
+    imgs = [(_u8(rgb), f"{slug} {ref} par {fj['par']} {fj.get('yards')}: NAIP 2023"),
+            (lidar_contour(cir(S, fr, rgb), S, fr), "CIR 2023 + lidar edge; NW (%+.1f,%+.1f)" % tuple(shadow_dir(fj)))]
+    for y in years:
+        k = y if y in S else next((k for k in sorted(S, reverse=True) if k.startswith("naip_") and k != "naip_2023"), None)
+        if k:
+            imgs.append((_u8(S[k].warp(fr)[..., :3]), S[k].label))
+    imgs.append((hag_rgb(hag_m(S, fr)), "lidar canopy"))
+    P = []
+    for im, t in imgs:
+        if zones:
+            im = draw_zones(im, fr, zones, fill=False, width=1)
+        P.append(title(grid(im, fr, step=5, label_every=10, font=0.3), t, 0.38))
+    save(out, stack(P, len(P)))
     return out
 
 
@@ -493,8 +600,8 @@ def stage_build(slug):
                    "covers that area. Traced by eye in the corridor frame (frame: render.Frame, UTM, tee / aim of the "
                    "card set from the package; yard frame x right, y = -along) on NAIP 2023 0.3 m with NAIP other years "
                    "and 3DEP lidar canopy; never from a vision layer. Built by course_data/truth/corridor.py build from "
-                   "trace.json." % (FOOT["a0"], FOOT["a1"], FOOT["lat"]),
-               source=f"course_data/truth/{slug}/trace.json (hand trace; see NOTES.md)",
+                   "trace.py." % (FOOT["a0"], FOOT["a1"], FOOT["lat"]),
+               source=f"course_data/truth/{slug}/trace.py (hand trace; see NOTES.md)",
                course=pkg["course"]["name"], slug=slug, tee_set=tee_set(slug, pkg),
                registration="none needed: traced directly on georeferenced NAIP (the corridor frame is exact)",
                holes=holes, missing=T.get("missing", []))
@@ -546,7 +653,7 @@ def stage_edges(slug, holes=None):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("stage", choices=["panels", "review", "build", "edges", "zoom"])
+    ap.add_argument("stage", choices=["panels", "review", "build", "edges", "zoom", "sheet", "sheet4"])
     ap.add_argument("--slug", required=True)
     ap.add_argument("--holes")
     ap.add_argument("--box", help="zoom: a0,a1,x0,x1")
@@ -563,6 +670,10 @@ def main():
         stage_build(a.slug)
     elif a.stage == "edges":
         stage_edges(a.slug, hs)
+    elif a.stage == "sheet":
+        print(sheet(a.slug, a.holes, a.out, with_trace=a.which == "trace"))
+    elif a.stage == "sheet4":
+        print(sheet4(a.slug, a.holes, a.out, with_trace=a.which == "trace"))
     elif a.stage == "zoom":
         a0, a1, x0, x1 = map(float, a.box.split(","))
         print(zoom_render(a.slug, a.holes, a0, a1, x0, x1, ppy=a.ppy, out=a.out, which=a.which))
