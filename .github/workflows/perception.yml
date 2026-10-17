@@ -4,11 +4,12 @@ name: perception
 # (greens / practice greens, tee complexes, fairway corridors, bunkers, water, trees, cart-path graph,
 # buildings, parking, clubhouse, driving range) per course, evaluated against OSM on held-out states.
 # Request-file trigger (ARCHITECTURE 9.4): commit course_data/requests/perception_<name>.json
-#   {"schema": "request/1", "kind": "perception", "stage": "stacks" | "all",
+#   {"schema": "request/1", "kind": "perception", "stage": "stacks" | "all" | "fast",
 #    "slugs": "auto" | [...], "dev_crops": ["urbana_il"], "rev": "<anything, to re-trigger>"}
 # stacks: one job per course (max 6): rasters -> stack.npz in the Actions cache (perc-stack-v1-<slug>)
 # all:    + perceive.py per course (scene, eval, training tables) -> report job: train.py + report.py,
-#           commit models, scenes, eval, REPORT.md
+#           commit models, scenes, eval, REPORT.md; also saves every stack in one cache (perc-stacks-all-<run>)
+# fast:   one job: restore that combined cache, perceive every course (4 processes), train, report, commit
 
 on:
   push:
@@ -69,6 +70,7 @@ jobs:
 
   course:
     needs: plan
+    if: needs.plan.outputs.stage != 'fast'
     runs-on: ubuntu-latest
     timeout-minutes: 75
     strategy:
@@ -157,6 +159,13 @@ jobs:
           cp course_data/perception/work/${{ matrix.slug }}/meta.json out/meta/${{ matrix.slug }}.json 2>/dev/null || true
           find out -type f | head -50; du -sh out || true
       - uses: actions/upload-artifact@v4
+        if: always() && matrix.slug != 'none' && hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) != ''
+        with:
+          name: stack-${{ matrix.slug }}
+          path: course_data/perception/work/${{ matrix.slug }}
+          retention-days: 3
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
         if: always() && matrix.slug != 'none'
         with:
           name: perc-${{ matrix.slug }}
@@ -166,7 +175,7 @@ jobs:
 
   report:
     needs: [plan, course]
-    if: always() && needs.plan.outputs.slugs != '["none"]'
+    if: always() && needs.plan.outputs.slugs != '["none"]' && needs.plan.outputs.stage != 'fast'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -184,6 +193,17 @@ jobs:
           path: /tmp/perc
           pattern: perc-*
           merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          path: /home/runner/stacks
+          pattern: stack-*
+      - name: Combined stacks cache (for stage fast)
+        run: |
+          cd /home/runner/stacks && for d in stack-*; do [ -d "$d" ] && mv "$d" "${d#stack-}"; done; ls | wc -l; du -sh .
+      - uses: actions/cache/save@v4
+        with:
+          path: /home/runner/stacks
+          key: perc-stacks-all-${{ github.run_id }}
       - name: Gather
         run: |
           mkdir -p course_data/perception/stacks_meta
@@ -210,6 +230,65 @@ jobs:
           done
           git diff --cached --quiet && exit 0
           printf '%s\n' "perception: ${{ needs.plan.outputs.stage }} (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
+
+  fast:
+    needs: plan
+    if: needs.plan.outputs.stage == 'fast'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Pull latest
+        run: git pull -q --rebase origin "${{ github.ref_name }}" || true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely pyproj rasterio affine scikit-learn==1.9.1 scikit-image networkx matplotlib pytest
+      - uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/stacks
+          key: perc-stacks-all-none
+          restore-keys: perc-stacks-all-
+      - name: Perceive every course (4 processes)
+        env:
+          OMP_NUM_THREADS: "1"
+        run: |
+          ls /home/runner/stacks | wc -l
+          mkdir -p /tmp/perc/scenes /tmp/perc/tables /tmp/perc/logs
+          ls /home/runner/stacks | xargs -P 4 -I{} sh -c \
+            'python -u course_data/perception/perceive.py /home/runner/stacks/{} --out /tmp/perc/scenes/{} --tables /tmp/perc/tables/{} > /tmp/perc/logs/{}.txt 2>&1 || echo "perceive failed {}"'
+          grep -l Traceback /tmp/perc/logs/*.txt | head; tail -3 $(grep -l Traceback /tmp/perc/logs/*.txt | head -2) 2>/dev/null || true
+          rm -rf course_data/perception/scenes; mkdir -p course_data/perception/scenes; cp -r /tmp/perc/scenes/* course_data/perception/scenes/
+      - name: Unit tests
+        run: python -m pytest -q course_data/perception || true
+      - name: Train + report
+        env:
+          OMP_NUM_THREADS: "4"
+        run: |
+          python -u course_data/perception/train.py --tables /tmp/perc/tables || echo "train failed"
+          python -u course_data/perception/report.py --tables /tmp/perc/tables --scenes course_data/perception/scenes || echo "report failed"
+          [ -f course_data/perception/REPORT.md ] && cat course_data/perception/REPORT.md >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A course_data/perception/scenes
+          for f in course_data/perception/models course_data/perception/REPORT.md course_data/perception/eval.json; do
+            [ -e "$f" ] && git add "$f"
+          done
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "perception: fast pass (Actions run ${{ github.run_id }})" "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
           git commit -q -F /tmp/msg.txt
