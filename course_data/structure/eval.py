@@ -39,6 +39,7 @@ import scene as S                                                    # noqa: E40
 import solver as V                                                   # noqa: E402
 
 OUT = os.path.join(HERE, "eval")
+ROOT = os.environ.get("STRUCTURE_ROOT", HERE)               # where sets.json + data/ live (a checkout elsewhere ok)
 CONFIGS = {
     "full": dict(),
     "no_paths": dict(use_paths=False),
@@ -53,17 +54,17 @@ CONFIGS = {
 def courses(split=None):
     """[(slug, split, kind, state, fc, course)]"""
     out = []
-    sp = os.path.join(HERE, "sets.json")
+    sp = os.path.join(ROOT, "sets.json")
     seen = set()
     if os.path.exists(sp):
         for c in json.load(open(sp))["courses"]:
-            p = os.path.join(HERE, "data", c["slug"], "osm.geojson.gz")
+            p = os.path.join(ROOT, "data", c["slug"], "osm.geojson.gz")
             if not os.path.exists(p):
                 continue
             if split and c["split"] != split:
                 continue
             out.append(dict(slug=c["slug"], split=c["split"], kind=c["kind"], state=c["state"], path=p,
-                            course=os.path.join(HERE, "data", c["slug"], "course.json")))
+                            course=os.path.join(ROOT, "data", c["slug"], "course.json")))
             seen.add(c["osm"])
     if split in (None, "dev"):
         for p in sorted(glob.glob(os.path.join(CD, "generalize", "courses", "*", "osm_golf.geojson"))):
