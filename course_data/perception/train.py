@@ -77,8 +77,8 @@ def _metrics(clf, X, y, thr=None, pos=1):
     return out
 
 
-def oof_threshold(train_tabs, name, feats, k=3):
-    """F1-optimal decision threshold from course-grouped k-fold out-of-fold predictions on the train states."""
+def oof_threshold(train_tabs, name, feats, k=3, beta=1.0):
+    """F-beta-optimal decision threshold from course-grouped k-fold out-of-fold predictions on the train states."""
     groups = [t for t in train_tabs if t.get(name)]
     if len(groups) < k:
         return None
@@ -99,7 +99,8 @@ def oof_threshold(train_tabs, name, feats, k=3):
     best, bt = -1, 0.5
     for th in np.linspace(0.05, 0.9, 35):
         tp = float(((p >= th) & (y == 1)).sum())
-        f1 = 2 * tp / max(float((p >= th).sum() + (y == 1).sum()), 1)
+        b2 = beta * beta
+        f1 = (1 + b2) * tp / max(float((p >= th).sum() + b2 * (y == 1).sum()), 1)
         if f1 > best:
             best, bt = f1, float(th)
     return round(bt, 3)
@@ -119,7 +120,9 @@ def train_objects(tabs, out_dir, log=print):
         clf = fit(Xtr, ytr, balanced=(name == "clubhouse"))     # unweighted = calibrated-ish p; clubhouse is a ranking
         thr = None
         if name in ("parking", "tee_box", "tee_complex"):
-            thr = oof_threshold([t for t in tabs if split_of(t["meta"].get("state")) == "train"], name, feats)
+            # tees: recall matters more than precision for hole recognition (the sequence model sees p anyway)
+            thr = oof_threshold([t for t in tabs if split_of(t["meta"].get("state")) == "train"], name, feats,
+                                beta=1.5 if name.startswith("tee") else 1.0)
         Xte, yte = _xy(te, feats) if te else (np.zeros((0, len(feats))), np.zeros(0, int))
         res[name] = dict(features=feats, n_train=len(tr), n_test=len(te),
                          train_class_counts={int(k): int(v) for k, v in zip(*np.unique(ytr, return_counts=True))},
