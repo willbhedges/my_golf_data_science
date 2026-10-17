@@ -75,14 +75,18 @@ jobs:
           for r in course_data/segment/sim_*/*/plan_request.json; do
             [ -f "$r" ] || continue
             out=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['out'])" "$r")
-            [ -f "$out/decision.json" ] && { echo "done: $out"; continue; }
             P=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['package'])" "$r")
+            H=$(sha1sum "$P" | cut -c1-40)
+            if [ -f "$out/decision.json" ] && [ "$(cat "$out/package.sha1" 2>/dev/null)" = "$H" ]; then
+              echo "done: $out"; continue
+            fi
+            rm -rf "$out"
             T=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['tees'])" "$r")
             echo "== plan $P ($T) -> $out"
             python -u course_data/product/plan.py --package "$P" --tees "$T" --quick --no-wind --no-book --out "$out" \
               > /tmp/plan.log 2>&1 || echo "plan failed: $r"
             tail -30 /tmp/plan.log; mkdir -p "$out"; cp /tmp/plan.log "$out/plan_log.txt"
-            rm -rf "$out/screenshots"
+            rm -rf "$out/screenshots"; echo "$H" > "$out/package.sha1"
           done
           for d in course_data/segment/sim_*; do
             [ -d "$d" ] || continue
