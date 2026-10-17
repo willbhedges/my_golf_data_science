@@ -641,13 +641,12 @@ def assign_features(ctx, assign, w=None, rows=None):
             f[FI["cart_far"]] += far[last, t]
         if (h == n - 1 or (h == 8 and n >= 18)) and h > 0 and first >= 0 and g >= 0:
             f[FI["loop"]] += walk[g, first]
+        if t >= 0 and nT:
+            f[FI["covered_start"]] += float(S_c[t] > 0)
         if t >= 0 and g >= 0 and nT:
             cv = _cov(ctx, t, g)
             f[FI["cover"]] -= cv.sum() - float((S_c > 0) @ cv)
             S_c = np.maximum(S_c, cv)
-        if t >= 0:
-            if nT and S_c[t] > 0 and not (g >= 0 and _cov(ctx, t, g)[t] > 0 and False):
-                pass
         if t >= 0:
             f[FI["reused_tee"]] += t in used_t
             used_t.add(t)
@@ -673,6 +672,7 @@ def local_search(ctx, w, assign, hyps, fixed, max_rounds=4):
     if c is None:
         return a, np.inf, f
     n = len(a)
+    valid = [set(zip(map(int, ht), map(int, hg))) for ht, hg, _ in hyps]
     for _ in range(max_rounds):
         improved = False
         for h in range(n):
@@ -693,6 +693,8 @@ def local_search(ctx, w, assign, hyps, fixed, max_rounds=4):
         for h1 in range(n):
             for h2 in range(h1 + 1, n):
                 if str(h1 + 1) in fixed or str(h2 + 1) in fixed:
+                    continue
+                if a[h2] not in valid[h1] or a[h1] not in valid[h2]:
                     continue
                 b = list(a)
                 b[h1], b[h2] = a[h2], a[h1]
