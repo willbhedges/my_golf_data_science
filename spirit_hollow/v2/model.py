@@ -41,10 +41,15 @@ sys.path[:0] = [os.path.join(SH, "..", "mozingo"), SH]
 import course                                   # noqa: E402
 import tee_strategy as t                        # noqa: E402
 
-LIES = ["rough", "fairway", "first_cut", "sand", "recovery", "native", "water", "ob"]
+LIES = ["rough", "fairway", "first_cut", "sand", "recovery", "native", "water", "ob", "unverified"]
 CODE = {k: i for i, k in enumerate(LIES)}
-HAZ = np.array([False, False, False, True, True, True, True, True])   # ball stops where it lands
-OPEN = np.array([True, True, True, True, False, False, False, False])  # lies a tree line can block
+HAZ = np.array([False, False, False, True, True, True, True, True, True])   # ball stops where it lands
+OPEN = np.array([True, True, True, True, False, False, False, False, False])  # lies a tree line can block
+# The map was hand-checked within +/-55 yds of the line (course.py landing-zone QA). Untraced ground
+# beyond that defaults to "rough" in v1; v2 calls it "unverified" and scores it half rough, half
+# trees (the photos show both open grass and tree lines / back yards out there).
+CHECKED_HALF_WIDTH = 55.0
+UNVERIFIED_TREES = 0.5
 
 A0, A1 = -10, 430          # raster: yds along the line
 L0, L1 = -150, 150         # raster: yds right of the line
@@ -127,7 +132,9 @@ class Raster:
             if rng is not None:
                 poly = poly + rng.normal(0, jitter_yds * ppy / 1.414, 2)
             lie[Path(poly).contains_points(pts)] = CODE[name]
-        self.lie = lie.reshape(AA.shape)
+        lie = lie.reshape(AA.shape)
+        lie[(lie == CODE["rough"]) & (np.abs(LL) > CHECKED_HALF_WIDTH)] = CODE["unverified"]
+        self.lie = lie
         g = np.asarray(hd["green"], float) - tee
         self.green = np.array([g @ fwd / ppy, g @ right / ppy])
         self.dist = np.hypot(AA - self.green[0], LL - self.green[1])
@@ -215,6 +222,9 @@ class Raster:
         S[m] = 1.0 + table("rough", dw, P)
         m = lie == CODE["ob"]
         S[m] = sd_cost[m]
+        m = lie == CODE["unverified"]
+        u = 0.0 if P.get("v1_penalties") else UNVERIFIED_TREES
+        S[m] = (1 - u) * ro[m] + u * (P["trees"] * rec[m] + (1 - P["trees"]) * (ro[m] + P["tree_restricted"]))
         if P.get("block_sev", 0) > 0:
             b = self.blocked
             S[b] = S[b] + P["block_sev"] * np.maximum(rec[b] - S[b], 0)

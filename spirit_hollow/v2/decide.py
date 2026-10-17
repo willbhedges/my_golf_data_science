@@ -29,6 +29,7 @@ sys.path.insert(0, HERE)
 import model as M                               # noqa: E402
 
 AIMS = np.arange(-60, 60.001, 0.5)
+AIM_LIMIT = 40.0          # course.py's aim_min / aim_max on every hole (v1 searched only +/-25)
 WINDOW = 0.005
 TIE = 0.01
 DIMS = ["width", "r2w", "r4w", "c_common", "c_drv", "c_2w", "c_4w", "c_iron", "depth", "soft_roll",
@@ -83,25 +84,28 @@ def key(h):
 
 
 # ------------------------------------------------------------------------------- aim optimisation
-def robust_aim(aims, curve, lo=None, hi=None):
+def robust_aim(aims, curve, lo=-AIM_LIMIT, hi=AIM_LIMIT):
     """Continuous argmin of a (prior-averaged) EV curve: smooth 1 yd, Brent on a cubic spline."""
     step = aims[1] - aims[0]
     sm = gaussian_filter1d(curve, 1.0 / step, mode="nearest")
-    i = int(sm.argmin())
+    lo = aims[0] if lo is None else lo
+    hi = aims[-1] if hi is None else hi
+    inside = (aims >= lo - 1e-9) & (aims <= hi + 1e-9)
+    i = int(np.argmin(np.where(inside, sm, np.inf)))
     cs = CubicSpline(aims, sm)
-    a_lo, a_hi = max(aims[0], aims[i] - 3), min(aims[-1], aims[i] + 3)
+    a_lo, a_hi = max(lo, aims[i] - 3), min(hi, aims[i] + 3)
     r = minimize_scalar(cs, bounds=(a_lo, a_hi), method="bounded", options=dict(xatol=0.05))
     aim = float(np.round(r.x * 2) / 2)
     best = float(cs(r.x))
     ok = sm <= best + WINDOW
     j = int(np.argmin(np.abs(aims - aim)))
     a, b = j, j
-    while a > 0 and ok[a - 1]:
+    while a > 0 and ok[a - 1] and inside[a - 1]:
         a -= 1
-    while b < len(aims) - 1 and ok[b + 1]:
+    while b < len(aims) - 1 and ok[b + 1] and inside[b + 1]:
         b += 1
     ev = float(np.interp(aim, aims, curve))
-    at_bound = bool(aim <= aims[0] + 2 or aim >= aims[-1] - 2)
+    at_bound = bool(aim <= lo + 1 or aim >= hi - 1)
     return dict(aim=aim, ev=ev, ev_smooth=best, window=[float(aims[a]), float(aims[b])], at_bound=at_bound,
                 window_width=float(aims[b] - aims[a]))
 
