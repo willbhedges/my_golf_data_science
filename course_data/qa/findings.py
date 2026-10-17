@@ -19,8 +19,9 @@ SUMMARY = r'''
   14, 16, 17 from the real Black box; 2B / 9B stay Gold). Before this fix the golden scored holes 1 and 11 from the
   Gold box while the truth had moved to Black.
 * **Usable for a new course today?** With a human look at the CHECK holes, close on open courses (Mozingo); on
-  wooded / creek courses the club still disagrees with the hand plan on roughly a third of tee shots, driven by tree
-  and long-grass edges in the landing corridor and by tee boxes 20-30 yds off (see SCOREBOARD.md, ranked gaps).
+  wooded / creek courses the club disagrees with the published plan on 7 of 16 Spirit Hollow tee shots (9/16 same,
+  bar 13/16) and 4 of 14 on Mozingo: no irons on lay-up holes (11), tree / long-grass edges in the landing
+  corridor, and tee boxes 20-30 yds off (SCOREBOARD.md, ranked gaps).
 '''
 
 TEXT = r'''
