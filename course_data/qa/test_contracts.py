@@ -2,6 +2,7 @@
 
   python3 -m pytest course_data/qa/test_contracts.py -q            # all packages on disk
   QA_PACKAGE=spirit_hollow python3 -m pytest course_data/qa/test_contracts.py -q
+  QA_SKIP_WORK=1 python3 -m pytest course_data/qa/test_contracts.py -q    # committed packages only (CI, scoreboard)
 
 Checks, per ARCHITECTURE.md (sections 3.5 / 3.8 and the platform package contract):
   schema    every hole has par, tee, green, bearing, zones with known lie names, provenance
@@ -21,7 +22,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import packages as P                                     # noqa: E402
 
 WANT = os.environ.get("QA_PACKAGE")
-PKGS = [p for p in P.find_packages() if not WANT or WANT in p.slug or WANT in p.path]
+SKIP_WORK = os.environ.get("QA_SKIP_WORK") == "1"       # leave out QA's local scratch builds (qa/work, untracked)
+PKGS = [p for p in P.find_packages() if (not WANT or WANT in p.slug or WANT in p.path)
+        and not (SKIP_WORK and "/qa/work/" in p.path)]
 HOLES = [(pk, ref) for pk in PKGS for ref in pk.holes]
 LEN_TOL = 0.15
 BOUNDARY_SLACK_YD = 25

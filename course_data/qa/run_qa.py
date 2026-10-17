@@ -2,6 +2,8 @@
 
   python3 course_data/qa/run_qa.py              # contracts + golden (+ REPORT.md)
   python3 course_data/qa/run_qa.py --review     # also re-render course_data/qa/review/<slug>/*.jpg
+  python3 course_data/qa/run_qa.py --no-golden  # contracts only (light; committed packages only)
+The product scoreboard (club agreement, regret, geometry, CHECKs per course) is course_data/qa/scoreboard.py.
 """
 import argparse
 import collections
@@ -16,10 +18,11 @@ QA = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(QA))
 
 
-def contracts():
+def contracts(with_work=False):
     xml = os.path.join(QA, ".contracts.xml")
+    env = dict(os.environ, QA_SKIP_WORK="0" if with_work else "1")
     subprocess.run([sys.executable, "-m", "pytest", os.path.join(QA, "test_contracts.py"), "-q", "-p", "no:cacheprovider",
-                    f"--junitxml={xml}"], cwd=ROOT, stdout=subprocess.DEVNULL)
+                    f"--junitxml={xml}"], cwd=ROOT, stdout=subprocess.DEVNULL, env=env)
     out = collections.OrderedDict()
     for tc in ET.parse(xml).getroot().iter("testcase"):
         name = tc.get("name")
@@ -60,8 +63,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--review", action="store_true")
     ap.add_argument("--no-golden", action="store_true")
+    ap.add_argument("--with-work", action="store_true", help="also test QA's untracked scratch builds in qa/work/")
     a = ap.parse_args()
-    contracts()
+    contracts(a.with_work)
     if a.review:
         subprocess.run([sys.executable, os.path.join(QA, "review.py")], cwd=ROOT)
     if not a.no_golden:

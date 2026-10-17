@@ -694,6 +694,13 @@ _package_par3_elevation()
 # by mapping the tee -> 270-dot segment from one screenshot onto the other.
 HOLES[1]["display"] = dict(image="hole01_full.png", src=((470.0, 2622.0), (479.0, 1290.0)),
                            dst=((466.5, 1821.3), (468.0, 828.1)))
+# 10: same app tee (center 227/251/277 = traced); dots 300 (451.5, 675.1), 240 (461.2, 882.5), tee (500.0, 1705.0)
+HOLES[10]["display"] = dict(image="hole10_full.png", src=((599.0, 2021.0), (532.0, 984.0)),
+                            dst=((500.0, 1705.0), (456.3, 778.8)))
+# 18: the app's tee marker is now 36 yds further back (center 257/282/307 vs traced 222/246/271): the
+# traced tee maps to 36 yds up the new screenshot's line
+HOLES[18]["display"] = dict(image="hole18_full.png", src=((419.0, 2033.0), (392.0, 1083.0)),
+                            dst=((459.8, 1644.9), (415.6, 774.5)))
 
 
 def display_xy(hd, pts):

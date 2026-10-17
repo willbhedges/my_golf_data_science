@@ -9,9 +9,10 @@ Reuses course_data/acceptance.py (registration, tee/green error, landing-zone Io
 only into course_data/qa/: golden.json, golden.md, and REPORT.md (which also pulls in contracts.json
 from run_qa.py and the hand-written findings.py).
 
-Tee sets (Q1): a package is scored, per traced hole, with the tee of the card set that hole's 18Birdies
-screenshot shows (spirit_hollow/screenshot_tee_sets.json: 1, 2B, 9B, 11 Gold; 15 White; the rest Black),
-because the app's tee is not always the golfer's. `--tee-set package` scores the package's own set on
+Tee sets (Q1, updated for c3e54e3): a package is scored, per traced hole, with the tee set the hand map
+plays from (truth_sets()): course.py now moves the tee up to the real Black box on BLACK_TEE_FORWARD's keys
+(1, 2F, 5, 6, 10, 11, 14, 16, 17), so those are Black; elsewhere the set the 18Birdies screenshot shows
+(spirit_hollow/screenshot_tee_sets.json: 2B, 9B Gold; 15 White; the rest Black). `--tee-set package` scores the package's own set on
 every hole (the pre-Q1 numbers); `--tee-set both` reports both. zones_ll are frame-free, so a view for
 another set only swaps the tee / aim / length of each hole (no rebuild). "measured length" = the placed
 tee's tee -> line -> green-centroid distance vs the screenshot's (the card length is a property of the card).
@@ -41,6 +42,15 @@ import acceptance as A                                   # noqa: E402
 import packages as PK                                    # noqa: E402
 
 FINAL = os.path.join(ROOT, "spirit_hollow", "output", "final_decision.json")
+
+
+def truth_sets():
+    """{traced key: tee set the hand map plays from}. Since c3e54e3 spirit_hollow/course.py moves the tee up
+    to the real Black box on the keys of BLACK_TEE_FORWARD (incl. 1 and 11, whose screenshots show Gold);
+    elsewhere it is the set the 18Birdies screenshot shows (2B, 9B Gold; the rest Black)."""
+    shots = A.screenshot_sets()
+    fwd = set() if os.environ.get("SH_SCREENSHOT_TEES") else {str(k) for k in getattr(A.course, "BLACK_TEE_FORWARD", {})}
+    return {k: ("Black" if k in fwd else v) for k, v in shots.items()}
 
 
 def set_view(pkg, tee_set):
@@ -242,13 +252,14 @@ def main():
         return
     final = json.load(open(FINAL)) if os.path.exists(FINAL) else {}
     jobs = []
-    shots = A.screenshot_sets()
+    shots = truth_sets()
     modes = {"screenshot": [True], "package": [False], "both": [False, True]}[a.tee_set]
 
     def add(pk, p):
         for per_set in modes:
             if per_set and pk.kind == "package.json":
-                jobs.append((f"package {os.path.relpath(p, ROOT)} ({pk.kind}, tee of the screenshot's set per hole)",
+                jobs.append((f"package {os.path.relpath(p, ROOT)} ({pk.kind}, the hand map's tee set per hole: "
+                             "Black boxes, 2B/9B Gold)",
                              package_auto(pk, shots)))
             elif not per_set or pk.kind != "package.json":
                 jobs.append((f"package {os.path.relpath(p, ROOT)} ({pk.kind}, as built: {pk.tee_set or 'its'} tees "

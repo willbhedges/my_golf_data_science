@@ -1,0 +1,111 @@
+name: qa-scoreboard
+
+# The product scoreboard (course_data/qa/SCOREBOARD.md + scoreboard.json) and the QA reports it sits next to
+# (contracts.json, golden.json, REPORT.md). Runs on every push to platform / product / vision / segment / ob /
+# tees code, after every package / plan / vision rebuild on Actions (workflow_run: bot pushes do not fire push
+# events; note GitHub only fires workflow_run for workflow files on the default branch, so on a feature branch
+# a rebuild is picked up by the next agent push touching these paths, or by bumping
+# course_data/requests/qa_scoreboard.json - the request-file pattern), and on workflow_dispatch.
+# Regression guards (scoreboard.py --check): the job fails if club agreement drops by more than 1 hole vs the
+# last scoreboard row of a course (same truth), or if any printed aim is > 40 yds off the tee line without
+# CHECK. The scoreboard is committed either way, the regressed row marked.
+
+on:
+  push:
+    paths:
+      - ".github/workflows/scoreboard.yml"
+      - "course_data/requests/qa_scoreboard.json"
+      - "course_data/qa/*.py"
+      - "course_data/platform/**"
+      - "course_data/product/*.py"
+      - "course_data/vision_any/*.py"
+      - "course_data/segment/*.py"
+      - "course_data/ob/**"
+      - "course_data/tees/*.py"
+      - "course_data/geometry/**"
+      - "course_data/pipeline.py"
+      - "course_data/acceptance.py"
+      - "course_data/packages/*/package.json"
+      - "course_data/spirit_hollow/hand_zones_ll.json"
+      - "course_data/spirit_hollow/screenshot_tee_sets.json"
+      - "spirit_hollow/course.py"
+      - "spirit_hollow/output/final_decision.json"
+      - "mozingo/tee_strategy.py"
+  workflow_run:
+    workflows: ["course-package", "plan-spirit-hollow", "plan-course", "vision-any", "vision-any-v2", "segment"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: qa-scoreboard-${{ github.event.workflow_run.head_branch || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  scoreboard:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch || github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy matplotlib pillow shapely pyproj pytest opencv-python-headless rasterio
+
+      - name: Contract tests (committed packages)
+        continue-on-error: true
+        run: python course_data/qa/run_qa.py --no-golden
+
+      - name: Golden (Spirit Hollow, platform package vs the hand map)
+        continue-on-error: true
+        run: |
+          ( time python course_data/qa/golden_spirit_hollow.py --no-oracle \
+              --package course_data/packages/spirit_hollow/package.json ) 2>&1 | tail -40
+
+      - name: Scoreboard + regression guards
+        id: sb
+        run: |
+          set +e
+          ( time python course_data/qa/scoreboard.py --check ) 2>&1 | tee /tmp/scoreboard_log.txt
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- course_data/qa/SCOREBOARD.md course_data/qa/scoreboard.json course_data/qa/contracts.json \
+                     course_data/qa/golden.json course_data/qa/REPORT.md
+          if git diff --cached --quiet; then
+            echo "No QA output changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "QA scoreboard + contracts + golden (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "$BRANCH" && \
+              git push origin "HEAD:$BRANCH" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
+
+      - name: Fail on a scoreboard regression
+        if: steps.sb.outputs.status != '0'
+        run: |
+          grep -E "REGRESSION|Traceback|Error" /tmp/scoreboard_log.txt || true
+          exit 1
