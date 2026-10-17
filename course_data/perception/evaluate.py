@@ -31,18 +31,6 @@ def _prf(tp_p, n_p, tp_t, n_t):
                 n_pred=n_p, n_true=n_t, tp_pred=tp_p, tp_true=tp_t)
 
 
-def objects_overlap(pred_lab_mask_list, truth_mask, truth_lab, n_truth, min_frac=0.3, pred_union=None):
-    """pred objects: list of bool masks (or label image + ids); a predicted object is TP when >= min_frac of
-    its pixels fall in truth; a truth object is found when >= min_frac of its pixels are covered by predictions."""
-    tp_p = sum(1 for m in pred_lab_mask_list if m.sum() and truth_mask[m].mean() >= min_frac)
-    if n_truth and pred_union is not None:
-        cov = np.asarray(ndi.mean(pred_union.astype(np.float32), truth_lab, range(1, n_truth + 1)))
-        tp_t = int((np.nan_to_num(cov) >= min_frac).sum())
-    else:
-        tp_t = 0
-    return tp_p, tp_t
-
-
 def eval_class_overlap(st, T, pred_lab, keep_ids, truth_objs, min_area_m2=0.0, region=None):
     from rasterio import features
     import geo
