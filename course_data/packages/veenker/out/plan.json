@@ -6,29 +6,29 @@
  "mode": "quick",
  "package": "course_data/packages/veenker/package.json",
  "out": "course_data/packages/veenker/out",
- "built": "2026-10-16T22:26Z",
+ "built": "2026-10-17T01:16Z",
  "settings": {
   "swings": 8000
  },
  "forecast": "Open-Meteo (fetched now)",
  "stage_seconds": {
-  "1 package -> course module": 0.5,
-  "2 NAIP render per hole": 2.5,
-  "3 decision (quick)": 99.0,
-  "4 book + aim sheets": 13.2,
-  "5 forecast + wind grid + page": 449.6
+  "1 package -> course module": 0.3,
+  "2 NAIP render per hole": 1.7,
+  "3 decision (quick)": 63.8,
+  "4 book + aim sheets": 9.2,
+  "5 forecast + wind grid + page": 286.0
  },
- "runtime_s": 564.8,
+ "runtime_s": 360.9,
  "files": {
-  "course.py": 298881,
-  "decision.json": 19864,
-  "decision.md": 2088,
-  "Veenker_Memorial_Strategy.pdf": 7925921,
-  "Veenker_Memorial_Aim_Sheets.pdf": 11842569,
-  "forecast.json": 12866,
-  "wind_grid.json": 502139,
-  "wind_page/index.html": 1675959,
-  "screenshots/": 5839963
+  "course.py": 300622,
+  "decision.json": 20437,
+  "decision.md": 2477,
+  "Veenker_Memorial_Strategy.pdf": 7925950,
+  "Veenker_Memorial_Aim_Sheets.pdf": 11836039,
+  "forecast.json": 12868,
+  "wind_grid.json": 502317,
+  "wind_page/index.html": 1672077,
+  "screenshots/": 5844610
  },
  "picks": {
   "1": {
@@ -38,7 +38,7 @@
     -12.5,
     0.0
    ],
-   "margin": 0.0409,
+   "margin": 0.0392,
    "tie": false,
    "conf": null,
    "check": [],
@@ -97,14 +97,14 @@
    "status": "PLAY"
   },
   "7": {
-   "club": "2-wood",
-   "aim": 0.0,
+   "club": "Driver",
+   "aim": -5.0,
    "zone": [
-    -7.5,
-    5.0
+    -12.5,
+    2.5
    ],
-   "margin": 0.0015,
-   "tie": true,
+   "margin": 0.054,
+   "tie": false,
    "conf": null,
    "check": [],
    "status": "PLAY"
@@ -127,26 +127,30 @@
   },
   "10": {
    "club": "Driver",
-   "aim": -2.5,
+   "aim": -40.0,
    "zone": [
-    -7.5,
-    5.0
+    -40.0,
+    -40.0
    ],
-   "margin": 0.0631,
+   "margin": 0.03,
    "tie": false,
    "conf": null,
-   "check": [],
-   "status": "PLAY"
+   "check": [
+    "Driver best aim +38 rejected (the aim point is 94 yds from this hole's line of play (another hole?))",
+    "2-wood best aim +30 rejected (the aim point is 87 yds from this hole's line of play (another hole?))",
+    "4-wood best aim +25 rejected (the aim point is 83 yds from this hole's line of play (another hole?))"
+   ],
+   "status": "CHECK"
   },
   "12": {
-   "club": "4-wood",
-   "aim": 30.0,
+   "club": "2-wood",
+   "aim": 22.5,
    "zone": [
-    25.0,
-    32.5
+    15.0,
+    27.5
    ],
-   "margin": 0.0098,
-   "tie": true,
+   "margin": 0.0134,
+   "tie": false,
    "conf": null,
    "check": [],
    "status": "PLAY"
@@ -158,7 +162,7 @@
     2.5,
     15.0
    ],
-   "margin": 0.0035,
+   "margin": 0.0032,
    "tie": true,
    "conf": null,
    "check": [],
@@ -183,12 +187,12 @@
   },
   "16": {
    "club": "Driver",
-   "aim": -30.0,
+   "aim": -12.5,
    "zone": [
-    -37.5,
-    -25.0
+    -17.5,
+    -7.5
    ],
-   "margin": 0.0738,
+   "margin": 0.0717,
    "tie": false,
    "conf": null,
    "check": [],
@@ -198,10 +202,10 @@
    "club": "Driver",
    "aim": -2.5,
    "zone": [
-    -7.5,
+    -10.0,
     2.5
    ],
-   "margin": 0.0634,
+   "margin": 0.0683,
    "tie": false,
    "conf": null,
    "check": [],
@@ -213,11 +217,90 @@
    "2-wood best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line; the aim point is 101 yds from this hole's line of play (another hole?))",
    "4-wood best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line; the aim point is 107 yds from this hole's line of play (another hole?))"
   ],
+  "10": [
+   "Driver best aim +38 rejected (the aim point is 94 yds from this hole's line of play (another hole?))",
+   "2-wood best aim +30 rejected (the aim point is 87 yds from this hole's line of play (another hole?))",
+   "4-wood best aim +25 rejected (the aim point is 83 yds from this hole's line of play (another hole?))"
+  ],
   "15": [
    "Driver best aim +112 rejected (aim +112 yds is more than 40 yds off the tee line)",
    "2-wood best aim +90 rejected (aim +90 yds is more than 40 yds off the tee line)",
    "4-wood best aim +82 rejected (aim +82 yds is more than 40 yds off the tee line)"
   ]
+ },
+ "badges": {
+  "1": {
+   "state": "auto",
+   "line": ""
+  },
+  "2": {
+   "state": "auto",
+   "line": ""
+  },
+  "3": {
+   "state": "unverified",
+   "line": "Unverified: Is there a first cut (a strip of shorter rough) along the fairway? If not, Hole 3: Driver \u2192 4-wood, aim 20 yds right."
+  },
+  "4": {
+   "state": "auto",
+   "line": ""
+  },
+  "5": {
+   "state": "auto",
+   "line": ""
+  },
+  "6": {
+   "state": "auto",
+   "line": ""
+  },
+  "7": {
+   "state": "auto",
+   "line": ""
+  },
+  "8": {
+   "state": "auto",
+   "line": ""
+  },
+  "9": {
+   "state": "auto",
+   "line": ""
+  },
+  "10": {
+   "state": "unverified",
+   "line": "Unverified: Could you play Driver 38 yds right of the tee line (275 yds out)? Is that ground playable? If not, Hole 10: still Driver, aim moves 78 yds right."
+  },
+  "11": {
+   "state": "auto",
+   "line": ""
+  },
+  "12": {
+   "state": "unverified",
+   "line": "Unverified: Is the Blue tee here? If not, Hole 12: 2-wood \u2192 4-wood, aim on the line."
+  },
+  "13": {
+   "state": "auto",
+   "line": ""
+  },
+  "14": {
+   "state": "unverified",
+   "line": "Unverified: Is the Blue tee here? If not, Hole 14: still 4-wood, aim moves 16 yds right."
+  },
+  "15": {
+   "state": "unverified",
+   "line": "Unverified: Could you play 2-wood 60 yds right of the tee line (265 yds out)? Is that ground playable? If not, Hole 15: 4-wood \u2192 2-wood, aim 60 yds right."
+  },
+  "16": {
+   "state": "unverified",
+   "line": "Unverified: Is the Blue tee here? If not, Hole 16: still Driver, aim moves 10 yds left."
+  },
+  "17": {
+   "state": "auto",
+   "line": ""
+  },
+  "18": {
+   "state": "auto",
+   "line": ""
+  }
  },
  "tee_line": {
   "rule": "tee -> hole line 250 yds along (<= 62% of the hole); par 3: green",
@@ -231,7 +314,7 @@
    "7": "landing",
    "8": "green",
    "9": "landing",
-   "10": "landing",
+   "10": "green_dir",
    "11": "green",
    "12": "landing",
    "13": "green",
@@ -274,7 +357,7 @@
    }
   },
   "13": {
-   "center": 159,
+   "center": 160,
    "card": 160,
    "haz": {
     "left": "trees",
@@ -284,7 +367,7 @@
    }
   },
   "17": {
-   "center": 184,
+   "center": 190,
    "card": 190,
    "haz": {
     "left": "rough",
@@ -295,8 +378,9 @@
   }
  },
  "gaps": [
-  "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 3 holes, 2-wood on 1 holes, 4-wood on 1 holes, Long iron on 1 holes, Mid iron on 1 holes",
+  "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 3 holes, 2-wood on 2 holes, 4-wood on 2 holes, Long iron on 1 holes, Mid iron on 1 holes",
   "hole 9: CHECK - 2-wood best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line; the aim point is 101 yds from this hole's line of play (another hole?)); 4-wood best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line; the aim point is 107 yds from this hole's line of play (another hole?))",
+  "hole 10: CHECK - Driver best aim +38 rejected (the aim point is 94 yds from this hole's line of play (another hole?)); 2-wood best aim +30 rejected (the aim point is 87 yds from this hole's line of play (another hole?)); 4-wood best aim +25 rejected (the aim point is 83 yds from this hole's line of play (another hole?))",
   "hole 15: CHECK - Driver best aim +112 rejected (aim +112 yds is more than 40 yds off the tee line); 2-wood best aim +90 rejected (aim +90 yds is more than 40 yds off the tee line); 4-wood best aim +82 rejected (aim +82 yds is more than 40 yds off the tee line)"
  ]
 }

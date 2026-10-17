@@ -3,64 +3,65 @@ $ /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/my_golf_d
 exit 0
 
 [   0.0s] == 1 package -> course module
-[   0.3s] Veenker Memorial Golf Course (veenker), Blue tees: 13 tee shots + 5 par 3s from course_data/packages/veenker/package.json
-[   0.5s] == 2 NAIP render per hole
-[   1.2s]   ! hole 4: 12% of the frame has no imagery
-[   1.7s]   ! hole 8: 12% of the frame has no imagery
-[   3.0s] 18 images, 5.8 MB, imagery 2023-09-02
-[   3.0s] == 3 decision (quick)
-[  16.6s]   2: 4-wood aim +2.5 margin 0.049
-[  23.1s]   4: 4-wood aim -5.0 margin 0.028
-[  29.7s]   3: Driver aim +32.5 margin 0.012
-[  34.2s]   1: Driver aim -5.0 margin 0.041
-[  42.3s]   5: 4-wood aim +17.5 margin 0.320
-[  61.8s]   7: 2-wood aim +0.0 margin 0.002 (tie)
-[  66.2s]   12: 4-wood aim +30.0 margin 0.010 (tie)
-[  66.8s]   9: Driver aim +20.0 margin 0.070
-[  68.0s]   10: Driver aim -2.5 margin 0.063
-[  85.7s]   14: 4-wood aim +10.0 margin 0.003 (tie)
-[  94.4s]   18: Driver aim -2.5 margin 0.063
-[  95.7s]   16: Driver aim -30.0 margin 0.074
-[ 101.3s]   15: 4-wood aim -2.5 margin 0.113
-[ 102.0s] == 4 book + aim sheets
-hole 1 done
-hole 2 done
-hole 3 done
-hole 4 done
-hole 5 done
-hole 6 done
-hole 7 done
-hole 8 done
-hole 9 CHECK done
-hole 10 done
-hole 11 done
-hole 12 done
-hole 13 done
-hole 14 done
-hole 15 CHECK done
-hole 16 done
-hole 17 done
-hole 18 done
+[   0.2s] Veenker Memorial Golf Course (veenker), Blue tees: 13 tee shots + 5 par 3s from course_data/packages/veenker/package.json
+[   0.3s] == 2 NAIP render per hole
+[   0.7s]   ! hole 4: 12% of the frame has no imagery
+[   1.1s]   ! hole 8: 12% of the frame has no imagery
+[   2.0s] 18 images, 5.8 MB, imagery 2023-09-02
+[   2.0s] == 3 decision (quick)
+[  10.6s]   2: 4-wood aim +2.5 margin 0.049
+[  14.6s]   4: 4-wood aim -5.0 margin 0.028
+[  18.6s]   3: Driver aim +32.5 margin 0.012
+[  21.5s]   1: Driver aim -5.0 margin 0.039
+[  26.7s]   5: 4-wood aim +17.5 margin 0.320
+[  42.3s]   9: Driver aim +20.0 margin 0.070
+[  43.4s]   7: Driver aim -5.0 margin 0.054
+[  44.8s]   12: 2-wood aim +22.5 margin 0.013
+[  44.9s]   10: Driver aim -40.0 margin 0.030
+[  57.3s]   14: 4-wood aim +10.0 margin 0.003 (tie)
+[  59.0s]   16: Driver aim -12.5 margin 0.072
+[  63.4s]   18: Driver aim -2.5 margin 0.068
+[  65.3s]   15: 4-wood aim -2.5 margin 0.113
+[  65.8s] == 4 book + aim sheets
+hole 1 ✓ done
+hole 2 ✓ done
+hole 3 ⚠ done
+hole 4 ✓ done
+hole 5 ✓ done
+hole 6 ✓ done
+hole 7 ✓ done
+hole 8 ✓ done
+hole 9 CHECK ✓ done
+hole 10 CHECK ⚠ done
+hole 11 ✓ done
+hole 12 ⚠ done
+hole 13 ✓ done
+hole 14 ⚠ done
+hole 15 CHECK ⚠ done
+hole 16 ⚠ done
+hole 17 ✓ done
+hole 18 ✓ done
 wrote /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/packages/veenker/out/output/Veenker_Memorial_Strategy.pdf
 wrote /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/packages/veenker/out/output/Veenker_Memorial_Aim_Sheets.pdf
-[ 115.2s] == 5 forecast + wind grid + page
-[ 116.4s]   forecast: Open-Meteo (fetched now) (2026-10-17, 2026-10-18)
-[ 173.1s]   wind grid 2: calm 4-wood
-[ 208.8s]   wind grid 4: calm 4-wood
-[ 232.5s]   wind grid 3: calm Driver
-[ 243.8s]   wind grid 1: calm Driver
-[ 306.3s]   wind grid 5: calm 4-wood
-[ 388.0s]   wind grid 9: calm Driver
-[ 393.2s]   wind grid 10: calm Driver
-[ 394.3s]   wind grid 7: calm Driver
-[ 417.1s]   wind grid 12: calm 4-wood
-[ 517.9s]   wind grid 14: calm 4-wood
-[ 548.0s]   wind grid 18: calm Driver
-[ 557.4s]   wind grid 16: calm Driver
-[ 564.2s]   wind grid 15: calm Driver
-[ 564.8s]   wrote course_data/packages/veenker/out/wind_page/index.html (1.7 MB)
-[ 564.8s] done in 565s -> course_data/packages/veenker/out
-[ 564.8s]   gap: elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 3 holes, 2-wood on 1 holes, 4-wood on 1 holes, Long iron on 1 holes, Mid iron on 1 holes
-[ 564.8s]   gap: hole 9: CHECK - 2-wood best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line; the aim point is 101 yds from this hole's line of play (another hole?)); 4-wood best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line; the aim point is 107 yds from this hole's line of play (another hole?))
-[ 564.8s]   gap: hole 15: CHECK - Driver best aim +112 rejected (aim +112 yds is more than 40 yds off the tee line); 2-wood best aim +90 rejected (aim +90 yds is more than 40 yds off the tee line); 4-wood best aim +82 rejected (aim +82 yds is more than 40 yds off the tee line)
+[  75.0s] == 5 forecast + wind grid + page
+[  77.3s]   forecast: Open-Meteo (fetched now) (2026-10-17, 2026-10-18)
+[ 112.5s]   wind grid 2: calm 4-wood
+[ 133.9s]   wind grid 4: calm 4-wood
+[ 147.0s]   wind grid 3: calm Driver
+[ 154.1s]   wind grid 1: calm Driver
+[ 191.8s]   wind grid 5: calm 4-wood
+[ 239.2s]   wind grid 9: calm Driver
+[ 263.9s]   wind grid 7: calm Driver
+[ 272.9s]   wind grid 12: calm 2-wood
+[ 282.8s]   wind grid 10: calm Driver
+[ 318.3s]   wind grid 14: calm 4-wood
+[ 351.3s]   wind grid 16: calm Driver
+[ 356.1s]   wind grid 15: calm Driver
+[ 360.5s]   wind grid 18: calm Driver
+[ 360.9s]   wrote course_data/packages/veenker/out/wind_page/index.html (1.7 MB)
+[ 360.9s] done in 361s -> course_data/packages/veenker/out
+[ 360.9s]   gap: elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 3 holes, 2-wood on 2 holes, 4-wood on 2 holes, Long iron on 1 holes, Mid iron on 1 holes
+[ 360.9s]   gap: hole 9: CHECK - 2-wood best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line; the aim point is 101 yds from this hole's line of play (another hole?)); 4-wood best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line; the aim point is 107 yds from this hole's line of play (another hole?))
+[ 360.9s]   gap: hole 10: CHECK - Driver best aim +38 rejected (the aim point is 94 yds from this hole's line of play (another hole?)); 2-wood best aim +30 rejected (the aim point is 87 yds from this hole's line of play (another hole?)); 4-wood best aim +25 rejected (the aim point is 83 yds from this hole's line of play (another hole?))
+[ 360.9s]   gap: hole 15: CHECK - Driver best aim +112 rejected (aim +112 yds is more than 40 yds off the tee line); 2-wood best aim +90 rejected (aim +90 yds is more than 40 yds off the tee line); 4-wood best aim +82 rejected (aim +82 yds is more than 40 yds off the tee line)
 
