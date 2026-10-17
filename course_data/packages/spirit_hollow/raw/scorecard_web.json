@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-10-16T19:26:40Z",
+ "fetched_utc": "2026-10-16T23:46:40Z",
  "tried": [
   {
    "source": "golfify",
@@ -10,6 +10,11 @@
    "source": "club_site",
    "ok": false,
    "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/e0a534ea-ce55-4ddc-b370-b3b250999e6f"
   }
  ],
  "cards": [
@@ -126,6 +131,7 @@
        6
       ],
       "total": 7550,
+      "total_stated": 7550,
       "rating": 74.8,
       "slope": 134,
       "source": "https://www.golfify.io/courses/spirit-hollow-golf-course"
@@ -196,6 +202,7 @@
        7
       ],
       "total": 6589,
+      "total_stated": 6589,
       "rating": 71.4,
       "slope": 124,
       "source": "https://www.golfify.io/courses/spirit-hollow-golf-course"
@@ -266,6 +273,7 @@
        7
       ],
       "total": 6040,
+      "total_stated": 6040,
       "rating": 69,
       "slope": 117,
       "source": "https://www.golfify.io/courses/spirit-hollow-golf-course"
@@ -336,6 +344,7 @@
        6
       ],
       "total": 5053,
+      "total_stated": 5053,
       "rating": 70.3,
       "slope": 116,
       "source": "https://www.golfify.io/courses/spirit-hollow-golf-course"
@@ -350,6 +359,207 @@
      "longitude": -91.145312,
      "numberOfHoles": 18,
      "website": "spirithollowgolfcourse.com/"
+    }
+   }
+  },
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/e0a534ea-ce55-4ddc-b370-b3b250999e6f",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/e0a534ea-ce55-4ddc-b370-b3b250999e6f",
+    "par": [
+     4,
+     5,
+     3,
+     5,
+     4,
+     4,
+     3,
+     4,
+     4,
+     5,
+     4,
+     3,
+     4,
+     4,
+     3,
+     4,
+     4,
+     5
+    ],
+    "handicap": [
+     3,
+     13,
+     15,
+     9,
+     11,
+     1,
+     17,
+     7,
+     5,
+     16,
+     6,
+     14,
+     2,
+     12,
+     18,
+     8,
+     4,
+     10
+    ],
+    "tee_sets": {
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       426,
+       527,
+       183,
+       585,
+       468,
+       435,
+       165,
+       431,
+       400,
+       575,
+       352,
+       210,
+       450,
+       430,
+       230,
+       400,
+       465,
+       536
+      ],
+      "total": 7268,
+      "total_stated": 7550,
+      "rating": 74.8,
+      "slope": 134,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       391,
+       507,
+       168,
+       532,
+       384,
+       408,
+       154,
+       383,
+       365,
+       529,
+       338,
+       186,
+       427,
+       393,
+       165,
+       378,
+       445,
+       506
+      ],
+      "total": 6659,
+      "total_stated": 6580,
+      "rating": 71.4,
+      "slope": 124,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       336,
+       452,
+       134,
+       465,
+       361,
+       366,
+       136,
+       353,
+       323,
+       432,
+       305,
+       146,
+       389,
+       370,
+       132,
+       331,
+       363,
+       450
+      ],
+      "total": 5844,
+      "total_stated": 6010,
+      "rating": 69,
+      "slope": 117,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 71.5,
+        "slope": 120,
+        "total": 6010,
+        "par": 72
+       }
+      ]
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       299,
+       390,
+       100,
+       439,
+       273,
+       303,
+       108,
+       332,
+       266,
+       394,
+       252,
+       120,
+       298,
+       328,
+       120,
+       282,
+       341,
+       423
+      ],
+      "total": 5068,
+      "total_stated": 5053,
+      "rating": 70.3,
+      "slope": 116,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "e0a534ea-ce55-4ddc-b370-b3b250999e6f",
+     "course_name": "Spirit Hollow Golf Course",
+     "club_name": "Spirit Hollow Golf Course",
+     "city": "Burlington",
+     "state": "IA",
+     "lat": 40.7617415356643,
+     "lng": -91.1461178377622,
+     "holes": 18,
+     "yardage": 7550,
+     "website": "http://www.spirithollowgolfcourse.com/"
     }
    }
   }
