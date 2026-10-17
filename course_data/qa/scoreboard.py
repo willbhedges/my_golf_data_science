@@ -541,9 +541,26 @@ def main():
     ap.add_argument("--check", action="store_true", help="regression guards; exit 1 on a regression")
     ap.add_argument("--dry-run", action="store_true", help="print, do not write scoreboard.json / SCOREBOARD.md")
     ap.add_argument("--md-only", action="store_true", help="re-render SCOREBOARD.md from scoreboard.json")
+    ap.add_argument("--adopt", help="CI: take this freshly computed scoreboard.json as current, keeping the union of "
+                                    "its history and the history in course_data/qa/scoreboard.json (concurrent runs)")
     a = ap.parse_args()
     sys.path.insert(0, QA)
     prev = json.load(open(OUT_JSON)) if os.path.exists(OUT_JSON) else {}
+    if a.adopt:
+        new = json.load(open(a.adopt))
+        seen, hist = set(), []
+        for h in (prev.get("history") or []) + (new.get("history") or []):
+            key = (h.get("date"), h.get("course"), h.get("commit"))
+            if key not in seen:
+                seen.add(key)
+                hist.append(h)
+        new["history"] = sorted(hist, key=lambda h: h.get("date") or "")
+        new["truth_cache"] = {**(prev.get("truth_cache") or {}), **(new.get("truth_cache") or {})}
+        with open(OUT_JSON, "w") as fh:
+            json.dump(new, fh, indent=1, default=float)
+        write_md(new)
+        log(f"adopted {a.adopt}: {len(new['history'])} history rows")
+        return 0
     if a.md_only:
         write_md(prev)
         log(f"wrote {os.path.relpath(OUT_MD, ROOT)}")

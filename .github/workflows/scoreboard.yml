@@ -94,21 +94,26 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- course_data/qa/SCOREBOARD.md course_data/qa/scoreboard.json course_data/qa/contracts.json \
-                     course_data/qa/golden.json course_data/qa/REPORT.md \
-                     course_data/spirit_hollow/acceptance_package.json course_data/spirit_hollow/acceptance_package.md
-          if git diff --cached --quiet; then
-            echo "No QA output changes to commit"; exit 0
-          fi
+          OUT="course_data/qa/contracts.json course_data/qa/golden.json course_data/qa/REPORT.md \
+               course_data/spirit_hollow/acceptance_package.json course_data/spirit_hollow/acceptance_package.md"
+          mkdir -p /tmp/qa_out
+          cp course_data/qa/scoreboard.json /tmp/qa_out/scoreboard.json
+          for f in $OUT; do [ -f "$f" ] && cp "$f" "/tmp/qa_out/$(echo $f | tr / _)"; done
           printf '%s\n' \
             "QA scoreboard + contracts + golden (GitHub Actions run ${{ github.run_id }})" \
             "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
-          git commit -F /tmp/msg.txt
           for i in 1 2 3 4 5; do
-            git pull --rebase origin "$BRANCH" && \
-              git push origin "HEAD:$BRANCH" && exit 0
+            # rebuild the commit on the newest branch head: other runs / agents may have committed a scoreboard
+            # meanwhile, so the history is merged (scoreboard.py --adopt) instead of rebased as text
+            git fetch origin "$BRANCH" && git reset -q --hard "origin/$BRANCH"
+            for f in $OUT; do [ -f "/tmp/qa_out/$(echo $f | tr / _)" ] && cp "/tmp/qa_out/$(echo $f | tr / _)" "$f"; done
+            python course_data/qa/scoreboard.py --adopt /tmp/qa_out/scoreboard.json
+            git add -- course_data/qa/SCOREBOARD.md course_data/qa/scoreboard.json $OUT
+            if git diff --cached --quiet; then echo "No QA output changes to commit"; exit 0; fi
+            git commit -q -F /tmp/msg.txt
+            git push origin "HEAD:$BRANCH" && exit 0
             echo "push attempt $i failed; retrying"; sleep $((i * 10))
           done
           exit 1
