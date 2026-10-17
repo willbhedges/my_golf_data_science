@@ -1,6 +1,6 @@
 # Spirit Hollow Golf Course (Burlington, IA) - Black tees
 
-Built 2026-10-17T05:37:39Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
+Built 2026-10-17T07:44:04Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
 
 ## Coverage
 
@@ -11,11 +11,11 @@ Built 2026-10-17T05:37:39Z. OSM relation/13353211. Scorecard: file (course_data/
 | greens_found | 18 |
 | tee_boxes | 103 |
 | tees_with_colour | 0 |
-| holes_with_trees_or_long_grass_in_landing_zone | 14 |
+| holes_with_trees_or_long_grass_in_landing_zone | 12 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.34 |
-| mean_confidence | 0.856 |
-| osm_score | 0.868 |
+| mean_confidence | 0.818 |
+| osm_score | 0.839 |
 
 OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, golf=driving_range 1, golf=fairway 20, golf=green 25, golf=hole 18, golf=lateral_water_hazard 11, golf=path 30, golf=rough 34, golf=tee 103, holes_with_par 18, water_lines 16, water_polygons 14
 
@@ -23,24 +23,24 @@ OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, go
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 391 / 391 | 153 | 0.83 | auto | 22% | 58% | 19% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 2 | 5 | 507 / 508 | 262 | 0.82 | auto | 25% | 51% | 24% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 1 | 4 | 391 / 391 | 153 | 0.79 | check the flags | 22% | 41% | 37% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 2 | 5 | 507 / 508 | 262 | 0.78 | check the flags | 25% | 30% | 45% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 3 | 3 | 148 / 148 | 3 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 4 | 5 | 532 / 531 | 342 | 0.84 | auto | 35% | 46% | 19% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 5 | 4 | 384 / 384 | 12 | 0.86 | auto | 49% | 37% | 14% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 6 | 4 | 408 / 409 | 94 | 0.80 | check the flags | 29% | 35% | 37% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 4 | 5 | 532 / 531 | 342 | 0.76 | check the flags | 35% | 7% | 58% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 5 | 4 | 384 / 384 | 12 | 0.79 | check the flags | 49% | 2% | 49% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 6 | 4 | 408 / 409 | 94 | 0.73 | check the flags | 29% | 0% | 71% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 7 | 3 | 154 / 154 | 193 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 8 | 4 | 383 / 384 | 264 | 0.85 | auto | 34% | 52% | 14% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 9 | 4 | 365 / 368 | 78 | 0.83 | auto | 22% | 62% | 16% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 10 | 5 | 502 / 501 | 30 | 0.84 | auto | 53% | 18% | 28% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 11 | 4 | 338 / 336 | 64 | 0.82 | auto | 26% | 49% | 25% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 8 | 4 | 383 / 384 | 264 | 0.78 | check the flags | 34% | 15% | 50% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 9 | 4 | 365 / 368 | 78 | 0.81 | auto | 22% | 47% | 31% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 10 | 5 | 502 / 501 | 30 | 0.81 | auto | 53% | 6% | 41% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 11 | 4 | 338 / 336 | 64 | 0.80 | check the flags | 26% | 37% | 37% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 12 | 3 | 186 / 186 | 223 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 13 | 4 | 409 / 409 | 180 | 0.82 | auto | 35% | 36% | 29% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 14 | 4 | 393 / 393 | 208 | 0.84 | auto | 36% | 44% | 20% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 13 | 4 | 409 / 409 | 180 | 0.76 | check the flags | 35% | 7% | 58% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 14 | 4 | 393 / 393 | 208 | 0.78 | check the flags | 36% | 14% | 50% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 15 | 3 | 145 / 144 | 344 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 16 | 4 | 378 / 379 | 96 | 0.82 | auto | 32% | 42% | 26% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 17 | 4 | 445 / 445 | 217 | 0.82 | auto | 38% | 32% | 30% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 18 | 5 | 521 / 521 | 333 | 0.90 | auto | 40% | 50% | 10% | tee stage: Black tee_centroid |  |
+| 16 | 4 | 378 / 379 | 96 | 0.78 | check the flags | 32% | 23% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 17 | 4 | 445 / 445 | 217 | 0.78 | check the flags | 38% | 12% | 51% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 18 | 5 | 521 / 521 | 333 | 0.85 | auto | 40% | 27% | 33% | tee stage: Black tee_centroid |  |
 
 ## Stages
 

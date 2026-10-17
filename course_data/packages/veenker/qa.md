@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-10-17T05:37:44Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
+Built 2026-10-17T07:44:07Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
 **WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
@@ -16,7 +16,7 @@ Built 2026-10-17T05:37:44Z. OSM way/44804299. Scorecard: golfify (golfify). Tee 
 | holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 13 |
 | mean_landing_osm_share | 0.303 |
-| mean_confidence | 0.859 |
+| mean_confidence | 0.828 |
 | osm_score | 0.861 |
 
 OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, golf=fairway 30, golf=green 26, golf=hole 18, golf=lateral_water_hazard 2, golf=path 38, golf=rough 1, golf=tee 43, holes_with_handicap 18, holes_with_par 18, water_lines 1, water_polygons 2
@@ -25,24 +25,24 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 435 / 434 | 176 | 0.85 | auto | 37% | 48% | 15% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 2 | 4 | 334 / 338 | 249 | 0.87 | auto | 18% | 69% | 13% | tee stage: Blue tee_centroid |  |
-| 3 | 4 | 333 / 318 | 30 | 0.87 | auto | 22% | 62% | 17% | tee stage: Blue tee_centroid |  |
-| 4 | 4 | 349 / 348 | 298 | 0.84 | auto | 35% | 44% | 21% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 5 | 4 | 402 / 401 | 169 | 0.85 | auto | 31% | 39% | 29% | tee stage: Blue tee_centroid |  |
+| 1 | 4 | 435 / 434 | 176 | 0.78 | check the flags | 37% | 15% | 49% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 2 | 4 | 334 / 338 | 249 | 0.83 | auto | 18% | 47% | 35% | tee stage: Blue tee_centroid |  |
+| 3 | 4 | 333 / 318 | 30 | 0.82 | auto | 22% | 35% | 43% | tee stage: Blue tee_centroid |  |
+| 4 | 4 | 349 / 348 | 298 | 0.80 | check the flags | 35% | 26% | 39% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 5 | 4 | 402 / 401 | 169 | 0.82 | auto | 31% | 23% | 46% | tee stage: Blue tee_centroid |  |
 | 6 | 3 | 210 / 209 | 88 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 7 | 5 | 590 / 591 | 66 | 0.77 | check the flags | 24% | 61% | 16% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 590 yds) |
+| 7 | 5 | 590 / 591 | 66 | 0.72 | check the flags | 24% | 36% | 41% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 590 yds) |
 | 8 | 3 | 181 / 174 | 29 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 9 | 5 | 537 / 538 | 294 | 0.88 | auto | 37% | 47% | 16% | tee stage: Blue tee_centroid |  |
-| 10 | 5 | 560 / 568 | 146 | 0.84 | auto | 30% | 55% | 16% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 9 | 5 | 537 / 538 | 294 | 0.83 | auto | 37% | 20% | 43% | tee stage: Blue tee_centroid |  |
+| 10 | 5 | 560 / 568 | 146 | 0.81 | auto | 30% | 40% | 30% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 11 | 3 | 155 / 155 | 242 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 12 | 4 | 330 / 331 | 248 | 0.76 | check the flags | 23% | 58% | 19% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 330 yds) |
+| 12 | 4 | 330 / 331 | 248 | 0.69 | check the flags | 23% | 22% | 56% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 330 yds) |
 | 13 | 3 | 160 / 160 | 56 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 14 | 4 | 416 / 416 | 339 | 0.83 | auto | 26% | 56% | 18% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 15 | 4 | 420 / 419 | 237 | 0.81 | auto | 35% | 32% | 33% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 16 | 5 | 544 / 550 | 140 | 0.79 | check the flags | 45% | 40% | 15% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 544 yds) |
+| 14 | 4 | 416 / 416 | 339 | 0.80 | check the flags | 26% | 38% | 36% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 15 | 4 | 420 / 419 | 237 | 0.80 | check the flags | 35% | 25% | 40% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 16 | 5 | 544 / 550 | 140 | 0.77 | check the flags | 45% | 32% | 23% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 544 yds) |
 | 17 | 3 | 190 / 190 | 118 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 18 | 5 | 534 / 533 | 335 | 0.85 | auto | 32% | 56% | 13% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 18 | 5 | 534 / 533 | 335 | 0.80 | auto | 32% | 32% | 37% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 
 ## Stages
 
