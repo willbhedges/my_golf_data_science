@@ -33,6 +33,7 @@ h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.02e
 .seg button{font:600 14px var(--display);letter-spacing:.04em;border:1px solid var(--line);background:transparent;color:var(--ink);
   border-radius:999px;padding:5px 12px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+#start{font:600 15px var(--display);border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:6px 10px}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 input[type=range]{flex:1;min-width:140px;accent-color:var(--ink)}
@@ -83,13 +84,14 @@ tr.best td{font-weight:600}
     <div class="ctl">
       <div class="row"><span class="label">Wind source</span>
         <div class="seg" id="src"><button data-v="sat">Sat 10/17</button><button data-v="sun">Sun 10/18</button><button data-v="custom">Custom</button></div></div>
-      <div class="row" id="hourRow"><span class="label">Tee time (hole 1)</span><input type="range" id="hour" min="7" max="18" step="1"><span id="hourLbl" class="windread"></span></div>
+      <div class="row" id="hourRow"><span class="label">Tee time</span><input type="range" id="hour" min="7" max="16" step="0.25"><span id="hourLbl" class="windread"></span></div>
+      <div class="row" id="startRow"><span class="label">Starting hole</span><select id="start"></select><span class="sub">shotgun: the hole you start on</span></div>
       <div class="row"><span class="label">Speed</span><input type="range" id="speed" min="0" max="25" step="1"><span id="speedLbl" class="windread"></span></div>
       <div class="row" id="tempRow"><span class="label">Temperature</span><input type="range" id="temp" min="35" max="65" step="1"><span id="tempLbl" class="windread"></span></div>
       <div class="row" id="setRow"><span class="label">Tees</span>
         <div class="seg" id="set"><button data-v="Gold">Gold</button><button data-v="Black">Black</button><button data-v="White">White</button><button data-v="Rust">Rust</button></div></div>
       <div class="windread" id="windLbl"></div>
-      <div class="sub">Forecast mode: each hole uses the wind for when you reach it (about 14 min a hole from your tee time). Moving the dial or speed switches to Custom, one wind for every hole. Drag the dial to where the wind blows <b>from</b>. The yellow end of the needle points into the wind.</div>
+      <div class="sub">Forecast mode: each hole uses the wind for when you reach it (about 14 min a hole from your tee time, counting from your starting hole). Moving the dial or speed switches to Custom, one wind for every hole. Drag the dial to where the wind blows <b>from</b>. The yellow end of the needle points into the wind.</div>
     </div>
   </section>
 
@@ -120,12 +122,13 @@ const CLUBS = ["Driver","2-wood","4-wood","Long iron","Mid iron"];
 const short = c => ({"Driver":"D","2-wood":"2W","4-wood":"4W","Long iron":"LI","Mid iron":"MI","Hybrid ~235 (not in bag)":"HY*"})[c] || c;
 const HYPO = c => /not in bag/.test(c);       /* hypothetical club: shown for comparison, never the pick */
 const cls = c => (c==="Driver"||c==="2-wood"||c==="4-wood") ? "c-"+c : "c-iron";
-const st = {src:"sat", hour:10, from:180, mph:12, idx:0, view:"hole", set:"Black", adj:{}, club:{}};
+const st = {src:"sat", hour:11.5, start:1, from:180, mph:12, idx:0, view:"hole", set:"Black", adj:{}, club:{}};
 try{ const s = JSON.parse(localStorage.getItem("shwc_v2")||"null"); if(s) Object.assign(st, s);}catch(e){}
 if(!st.adj) st.adj = {};
 if(!st.club) st.club = {};
 if(st.temp == null) st.temp = 48;
-if(!st.v2){ st.src = "sat"; st.hour = 10; st.v2 = 1; }   /* tee time: Saturday 10 am */
+if(!st.v3){ st.src = "sat"; st.hour = 11.5; st.start = 1; st.v2 = 1; st.v3 = 1; }   /* tee time: Saturday 11:30 am shotgun */
+if(!st.start) st.start = 1;
 /* expand the compact grids: {back: {tempF: {cell: {club: [aim, ev, zlo, zhi, carry, total, width, drift]}}}} */
 for(const h of D.holes){ if(h.kind !== "tee") continue; h.G = {};
   for(const [b, byT] of Object.entries(h.grids)){ h.G[b] = {};
@@ -158,7 +161,7 @@ function forecastAt(src, hour){
    for that moment (wind interpolated between hours as a vector) */
 const MIN_PER_HOLE = 14;
 const holeNo = h => parseInt(h.key, 10);
-const holeHour = h => st.hour + (holeNo(h) - 1) * MIN_PER_HOLE / 60;
+const holeHour = h => st.hour + ((holeNo(h) - st.start + 18) % 18) * MIN_PER_HOLE / 60;   /* shotgun: count from the starting hole */
 function forecastAtTime(src, t){
   const h0 = Math.floor(t), w = t - h0, a = forecastAt(src, h0), b = forecastAt(src, h0 + 1) || a;
   if(!a) return null;
@@ -381,7 +384,9 @@ function renderControls(){
   document.getElementById("temp").value = st.temp;
   document.getElementById("tempLbl").textContent = Math.round(st.temp) + "°F";
   document.getElementById("hour").value = st.hour;
-  document.getElementById("hourLbl").textContent = (st.hour > 12 ? st.hour - 12 : st.hour) + (st.hour >= 12 ? " pm" : " am");
+  document.getElementById("hourLbl").textContent = clock(st.hour);
+  document.getElementById("startRow").hidden = st.src === "custom";
+  document.getElementById("start").value = st.start;
   document.getElementById("speed").value = st.mph;
   document.getElementById("speedLbl").textContent = Math.round(st.mph) + " mph";
   document.getElementById("needle").setAttribute("transform", `rotate(${st.from + 180})`);
@@ -406,6 +411,9 @@ dial.addEventListener("keydown", e => { if(e.key==="ArrowRight"||e.key==="ArrowU
   if(e.key==="ArrowLeft"||e.key==="ArrowDown"){ st.from = (st.from+345)%360; st.src="custom"; render(); e.preventDefault(); } });
 document.getElementById("speed").addEventListener("input", e => { st.mph = +e.target.value; st.src = "custom"; render(); });
 document.getElementById("hour").addEventListener("input", e => { st.hour = +e.target.value; render(); });
+document.getElementById("start").innerHTML = Array.from({length:18}, (_,i) => `<option value="${i+1}">Hole ${i+1}</option>`).join("");
+document.getElementById("start").addEventListener("change", e => { st.start = +e.target.value;
+  const j = D.holes.findIndex(h => holeNo(h) === st.start && shown(h)); if(j >= 0) st.idx = j; render(); });
 document.getElementById("temp").addEventListener("input", e => { st.temp = +e.target.value; render(); });
 document.querySelectorAll("#src button").forEach(b => b.addEventListener("click", () => { st.src = b.dataset.v; render(); }));
 document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; render(); }));
