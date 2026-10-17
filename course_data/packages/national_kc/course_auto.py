@@ -1,5 +1,5 @@
 """Course module for The National Golf Club (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-10-17T17:29:00Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-17T17:51:38Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_national_kc.json
 

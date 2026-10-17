@@ -1,6 +1,6 @@
 # The National Golf Club (Parkville, MO) - Black tees
 
-Built 2026-10-17T17:29:00Z. OSM relation/2630633. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-10-17T17:51:38Z. OSM relation/2630633. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
