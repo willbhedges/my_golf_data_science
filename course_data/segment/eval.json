@@ -1,169 +1,5 @@
 [
  {
-  "slug": "mozingo_lake",
-  "package": "mozingo_lake",
-  "naip": "course_data/vision_any/mozingo/raw/naip_2022.tif",
-  "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
-  "vs_osm": {
-   "segment": {
-    "green": {
-     "iou": 0.861,
-     "precision": 0.888,
-     "recall": 0.965,
-     "pred_m2": 13777,
-     "ref_m2": 12687
-    },
-    "tee": {
-     "iou": 0.617,
-     "precision": 0.715,
-     "recall": 0.819,
-     "pred_m2": 11629,
-     "ref_m2": 10152
-    },
-    "fairway": {
-     "iou": 0.807,
-     "precision": 0.89,
-     "recall": 0.896,
-     "pred_m2": 144373,
-     "ref_m2": 143317
-    },
-    "bunker": {
-     "iou": 0.7,
-     "precision": 0.765,
-     "recall": 0.891,
-     "pred_m2": 4481,
-     "ref_m2": 3845
-    },
-    "water": {
-     "iou": 0.583,
-     "precision": 0.901,
-     "recall": 0.622,
-     "pred_m2": 51769,
-     "ref_m2": 74994
-    }
-   },
-   "unet_water_class": {
-    "iou": 0.074,
-    "precision": 0.074,
-    "recall": 0.961,
-    "pred_m2": 969229,
-    "ref_m2": 74994
-   }
-  },
-  "objects_vs_osm": {
-   "green": {
-    "osm": 30,
-    "model": 30,
-    "recall_iou50": 1.0,
-    "precision_iou50": 1.0,
-    "mean_best_iou": 0.859
-   },
-   "bunker": {
-    "osm": 27,
-    "model": 32,
-    "recall_overlap": 1.0,
-    "precision_overlap": 0.844
-   },
-   "fairway": {
-    "osm": 20,
-    "model": 28,
-    "recall_overlap": 0.9,
-    "precision_overlap": 0.643
-   },
-   "tee": {
-    "osm": 84,
-    "model": 84,
-    "match_yd": 10.0,
-    "recall": 0.869,
-    "precision": 0.869
-   }
-  },
-  "osm_counts": {
-   "green": 30,
-   "tee": 84,
-   "fairway": 20,
-   "bunker": 27,
-   "water": 4
-  },
-  "tees": {
-   "unet_tees": 84,
-   "unet_tees_near_first_leg": 54,
-   "osm_boxes": 84,
-   "matched_osm": 50,
-   "unmapped_candidates": 4,
-   "corroborated_by_lidar_pad": 1,
-   "lidar_pads": 41,
-   "unmapped": [
-    {
-     "lat": 40.364402,
-     "lon": -94.763958,
-     "p": 0.59,
-     "area_m2": 60.1,
-     "lidar": false
-    },
-    {
-     "lat": 40.361941,
-     "lon": -94.765287,
-     "p": 0.591,
-     "area_m2": 29.7,
-     "lidar": false
-    },
-    {
-     "lat": 40.354713,
-     "lon": -94.766626,
-     "p": 0.541,
-     "area_m2": 36.4,
-     "lidar": true
-    },
-    {
-     "lat": 40.351895,
-     "lon": -94.768116,
-     "p": 0.671,
-     "area_m2": 208.8,
-     "lidar": false
-    }
-   ],
-   "placement": {
-    "joint": {
-     "internal": {
-      "placements": 18,
-      "card_within_5": 0.944,
-      "walkbacks": 0,
-      "order_violations": 0,
-      "on_a_shared_box": 0
-     }
-    },
-    "joint+lidar": {
-     "internal": {
-      "placements": 18,
-      "card_within_5": 0.944,
-      "walkbacks": 0,
-      "order_violations": 0,
-      "on_a_shared_box": 0
-     }
-    },
-    "joint+unet": {
-     "internal": {
-      "placements": 18,
-      "card_within_5": 0.944,
-      "walkbacks": 0,
-      "order_violations": 0,
-      "on_a_shared_box": 0
-     }
-    },
-    "joint+lidar+unet": {
-     "internal": {
-      "placements": 18,
-      "card_within_5": 0.944,
-      "walkbacks": 0,
-      "order_violations": 0,
-      "on_a_shared_box": 0
-     }
-    }
-   }
-  }
- },
- {
   "slug": "spirit_hollow",
   "package": "spirit_hollow",
   "naip": "course_data/vision_any/spirit_hollow/raw/naip_2023.tif",
@@ -519,6 +355,280 @@
       "fairway_only": 0.172,
       "bunker": 0.132,
       "water": 0.196
+     }
+    }
+   }
+  },
+  "vs_hand_landing": {
+   "total": {
+    "segment": {
+     "fairway": {
+      "iou": 0.51,
+      "precision": 0.915,
+      "recall": 0.536
+     },
+     "fairway_only": {
+      "iou": 0.546,
+      "precision": 0.751,
+      "recall": 0.668
+     },
+     "bunker": {
+      "iou": 0.574,
+      "precision": 0.857,
+      "recall": 0.635
+     },
+     "water": {
+      "iou": 0.339,
+      "precision": 0.762,
+      "recall": 0.379
+     }
+    },
+    "osm": {
+     "fairway": {
+      "iou": 0.516,
+      "precision": 0.918,
+      "recall": 0.541
+     },
+     "fairway_only": {
+      "iou": 0.555,
+      "precision": 0.756,
+      "recall": 0.676
+     },
+     "bunker": {
+      "iou": 0.685,
+      "precision": 0.885,
+      "recall": 0.752
+     },
+     "water": {
+      "iou": 0.502,
+      "precision": 0.8,
+      "recall": 0.574
+     }
+    }
+   },
+   "per_hole": {
+    "1": {
+     "segment": {
+      "fairway": 0.531,
+      "fairway_only": 0.563,
+      "bunker": null,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.522,
+      "fairway_only": 0.54,
+      "bunker": null,
+      "water": null
+     }
+    },
+    "2B": {
+     "segment": {
+      "fairway": 0.319,
+      "fairway_only": 0.271,
+      "bunker": null,
+      "water": 0.017
+     },
+     "osm": {
+      "fairway": 0.283,
+      "fairway_only": 0.233,
+      "bunker": null,
+      "water": 0.0
+     }
+    },
+    "2F": {
+     "segment": {
+      "fairway": 0.51,
+      "fairway_only": 0.533,
+      "bunker": 0.57,
+      "water": 0.524
+     },
+     "osm": {
+      "fairway": 0.444,
+      "fairway_only": 0.57,
+      "bunker": 0.621,
+      "water": 0.378
+     }
+    },
+    "4": {
+     "segment": {
+      "fairway": 0.624,
+      "fairway_only": 0.607,
+      "bunker": null,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.67,
+      "fairway_only": 0.654,
+      "bunker": null,
+      "water": null
+     }
+    },
+    "5": {
+     "segment": {
+      "fairway": 0.603,
+      "fairway_only": 0.653,
+      "bunker": 0.642,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.625,
+      "fairway_only": 0.671,
+      "bunker": 0.735,
+      "water": null
+     }
+    },
+    "6": {
+     "segment": {
+      "fairway": 0.559,
+      "fairway_only": 0.534,
+      "bunker": null,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.598,
+      "fairway_only": 0.573,
+      "bunker": null,
+      "water": null
+     }
+    },
+    "8": {
+     "segment": {
+      "fairway": 0.538,
+      "fairway_only": 0.557,
+      "bunker": 0.722,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.489,
+      "fairway_only": 0.519,
+      "bunker": 0.814,
+      "water": null
+     }
+    },
+    "9B": {
+     "segment": {
+      "fairway": 0.625,
+      "fairway_only": 0.647,
+      "bunker": null,
+      "water": 0.518
+     },
+     "osm": {
+      "fairway": 0.637,
+      "fairway_only": 0.652,
+      "bunker": null,
+      "water": 0.739
+     }
+    },
+    "9F": {
+     "segment": {
+      "fairway": 0.564,
+      "fairway_only": 0.51,
+      "bunker": null,
+      "water": 0.018
+     },
+     "osm": {
+      "fairway": 0.564,
+      "fairway_only": 0.511,
+      "bunker": null,
+      "water": 0.175
+     }
+    },
+    "10": {
+     "segment": {
+      "fairway": 0.577,
+      "fairway_only": 0.731,
+      "bunker": 0.0,
+      "water": 0.39
+     },
+     "osm": {
+      "fairway": 0.598,
+      "fairway_only": 0.713,
+      "bunker": 0.04,
+      "water": 0.56
+     }
+    },
+    "11": {
+     "segment": {
+      "fairway": 0.342,
+      "fairway_only": 0.492,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.351,
+      "fairway_only": 0.449,
+      "bunker": 0.0,
+      "water": 0.0
+     }
+    },
+    "13": {
+     "segment": {
+      "fairway": 0.401,
+      "fairway_only": 0.492,
+      "bunker": 0.632,
+      "water": 0.583
+     },
+     "osm": {
+      "fairway": 0.405,
+      "fairway_only": 0.486,
+      "bunker": 0.958,
+      "water": 0.781
+     }
+    },
+    "14": {
+     "segment": {
+      "fairway": 0.421,
+      "fairway_only": 0.439,
+      "bunker": null,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.453,
+      "fairway_only": 0.472,
+      "bunker": null,
+      "water": 0.498
+     }
+    },
+    "16": {
+     "segment": {
+      "fairway": 0.532,
+      "fairway_only": 0.572,
+      "bunker": 0.514,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.542,
+      "fairway_only": 0.631,
+      "bunker": 0.583,
+      "water": 0.0
+     }
+    },
+    "17": {
+     "segment": {
+      "fairway": 0.551,
+      "fairway_only": 0.762,
+      "bunker": 0.554,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.585,
+      "fairway_only": 0.77,
+      "bunker": 0.569,
+      "water": null
+     }
+    },
+    "18": {
+     "segment": {
+      "fairway": 0.445,
+      "fairway_only": 0.361,
+      "bunker": null,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.469,
+      "fairway_only": 0.382,
+      "bunker": null,
+      "water": 0.069
      }
     }
    }
@@ -1678,6 +1788,280 @@
     }
    }
   },
+  "vs_hand_landing": {
+   "total": {
+    "segment": {
+     "fairway": {
+      "iou": 0.497,
+      "precision": 0.921,
+      "recall": 0.519
+     },
+     "fairway_only": {
+      "iou": 0.537,
+      "precision": 0.758,
+      "recall": 0.649
+     },
+     "bunker": {
+      "iou": 0.615,
+      "precision": 0.861,
+      "recall": 0.682
+     },
+     "water": {
+      "iou": 0.145,
+      "precision": 0.535,
+      "recall": 0.166
+     }
+    },
+    "osm": {
+     "fairway": {
+      "iou": 0.516,
+      "precision": 0.918,
+      "recall": 0.541
+     },
+     "fairway_only": {
+      "iou": 0.555,
+      "precision": 0.756,
+      "recall": 0.676
+     },
+     "bunker": {
+      "iou": 0.685,
+      "precision": 0.885,
+      "recall": 0.752
+     },
+     "water": {
+      "iou": 0.502,
+      "precision": 0.8,
+      "recall": 0.574
+     }
+    }
+   },
+   "per_hole": {
+    "1": {
+     "segment": {
+      "fairway": 0.561,
+      "fairway_only": 0.587,
+      "bunker": null,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.522,
+      "fairway_only": 0.54,
+      "bunker": null,
+      "water": null
+     }
+    },
+    "2B": {
+     "segment": {
+      "fairway": 0.293,
+      "fairway_only": 0.244,
+      "bunker": null,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.283,
+      "fairway_only": 0.233,
+      "bunker": null,
+      "water": 0.0
+     }
+    },
+    "2F": {
+     "segment": {
+      "fairway": 0.487,
+      "fairway_only": 0.56,
+      "bunker": 0.612,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.444,
+      "fairway_only": 0.57,
+      "bunker": 0.621,
+      "water": 0.378
+     }
+    },
+    "4": {
+     "segment": {
+      "fairway": 0.668,
+      "fairway_only": 0.651,
+      "bunker": null,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.67,
+      "fairway_only": 0.654,
+      "bunker": null,
+      "water": null
+     }
+    },
+    "5": {
+     "segment": {
+      "fairway": 0.599,
+      "fairway_only": 0.661,
+      "bunker": 0.664,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.625,
+      "fairway_only": 0.671,
+      "bunker": 0.735,
+      "water": null
+     }
+    },
+    "6": {
+     "segment": {
+      "fairway": 0.571,
+      "fairway_only": 0.551,
+      "bunker": null,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.598,
+      "fairway_only": 0.573,
+      "bunker": null,
+      "water": null
+     }
+    },
+    "8": {
+     "segment": {
+      "fairway": 0.462,
+      "fairway_only": 0.484,
+      "bunker": 0.706,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.489,
+      "fairway_only": 0.519,
+      "bunker": 0.814,
+      "water": null
+     }
+    },
+    "9B": {
+     "segment": {
+      "fairway": 0.579,
+      "fairway_only": 0.6,
+      "bunker": null,
+      "water": 0.467
+     },
+     "osm": {
+      "fairway": 0.637,
+      "fairway_only": 0.652,
+      "bunker": null,
+      "water": 0.739
+     }
+    },
+    "9F": {
+     "segment": {
+      "fairway": 0.516,
+      "fairway_only": 0.451,
+      "bunker": null,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.564,
+      "fairway_only": 0.511,
+      "bunker": null,
+      "water": 0.175
+     }
+    },
+    "10": {
+     "segment": {
+      "fairway": 0.582,
+      "fairway_only": 0.726,
+      "bunker": 0.0,
+      "water": 0.18
+     },
+     "osm": {
+      "fairway": 0.598,
+      "fairway_only": 0.713,
+      "bunker": 0.04,
+      "water": 0.56
+     }
+    },
+    "11": {
+     "segment": {
+      "fairway": 0.307,
+      "fairway_only": 0.45,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.351,
+      "fairway_only": 0.449,
+      "bunker": 0.0,
+      "water": 0.0
+     }
+    },
+    "13": {
+     "segment": {
+      "fairway": 0.402,
+      "fairway_only": 0.488,
+      "bunker": 0.672,
+      "water": 0.051
+     },
+     "osm": {
+      "fairway": 0.405,
+      "fairway_only": 0.486,
+      "bunker": 0.958,
+      "water": 0.781
+     }
+    },
+    "14": {
+     "segment": {
+      "fairway": 0.427,
+      "fairway_only": 0.48,
+      "bunker": null,
+      "water": 0.212
+     },
+     "osm": {
+      "fairway": 0.453,
+      "fairway_only": 0.472,
+      "bunker": null,
+      "water": 0.498
+     }
+    },
+    "16": {
+     "segment": {
+      "fairway": 0.539,
+      "fairway_only": 0.569,
+      "bunker": 0.564,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.542,
+      "fairway_only": 0.631,
+      "bunker": 0.583,
+      "water": 0.0
+     }
+    },
+    "17": {
+     "segment": {
+      "fairway": 0.483,
+      "fairway_only": 0.669,
+      "bunker": 0.56,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.585,
+      "fairway_only": 0.77,
+      "bunker": 0.569,
+      "water": null
+     }
+    },
+    "18": {
+     "segment": {
+      "fairway": 0.465,
+      "fairway_only": 0.38,
+      "bunker": null,
+      "water": 0.009
+     },
+     "osm": {
+      "fairway": 0.469,
+      "fairway_only": 0.382,
+      "bunker": null,
+      "water": 0.069
+     }
+    }
+   }
+  },
   "tees": {
    "unet_tees": 105,
    "unet_tees_near_first_leg": 87,
@@ -2492,191 +2876,6 @@
      "lidar": 6.9
     }
    ]
-  }
- },
- {
-  "slug": "veenker",
-  "package": "veenker",
-  "naip": "course_data/vision_any/veenker/raw/naip_2023.tif",
-  "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
-  "vs_osm": {
-   "segment": {
-    "green": {
-     "iou": 0.59,
-     "precision": 0.751,
-     "recall": 0.734,
-     "pred_m2": 10440,
-     "ref_m2": 10670
-    },
-    "tee": {
-     "iou": 0.459,
-     "precision": 0.595,
-     "recall": 0.669,
-     "pred_m2": 13214,
-     "ref_m2": 11748
-    },
-    "fairway": {
-     "iou": 0.574,
-     "precision": 0.902,
-     "recall": 0.613,
-     "pred_m2": 83229,
-     "ref_m2": 122475
-    },
-    "bunker": {
-     "iou": 0.462,
-     "precision": 0.716,
-     "recall": 0.565,
-     "pred_m2": 2038,
-     "ref_m2": 2581
-    },
-    "water": {
-     "iou": 0.253,
-     "precision": 0.835,
-     "recall": 0.266,
-     "pred_m2": 8883,
-     "ref_m2": 27860
-    }
-   },
-   "unet_water_class": {
-    "iou": 0.046,
-    "precision": 0.046,
-    "recall": 0.947,
-    "pred_m2": 574800,
-    "ref_m2": 27860
-   }
-  },
-  "objects_vs_osm": {
-   "green": {
-    "osm": 26,
-    "model": 23,
-    "recall_iou50": 0.808,
-    "precision_iou50": 0.913,
-    "mean_best_iou": 0.604
-   },
-   "bunker": {
-    "osm": 27,
-    "model": 25,
-    "recall_overlap": 0.815,
-    "precision_overlap": 0.88
-   },
-   "fairway": {
-    "osm": 30,
-    "model": 27,
-    "recall_overlap": 0.733,
-    "precision_overlap": 0.852
-   },
-   "tee": {
-    "osm": 43,
-    "model": 42,
-    "match_yd": 10.0,
-    "recall": 0.721,
-    "precision": 0.738
-   }
-  },
-  "osm_counts": {
-   "green": 26,
-   "tee": 43,
-   "fairway": 30,
-   "bunker": 27,
-   "water": 3
-  },
-  "tees": {
-   "unet_tees": 41,
-   "unet_tees_near_first_leg": 35,
-   "osm_boxes": 43,
-   "matched_osm": 28,
-   "unmapped_candidates": 7,
-   "corroborated_by_lidar_pad": 0,
-   "lidar_pads": 36,
-   "unmapped": [
-    {
-     "lat": 42.038557,
-     "lon": -93.652171,
-     "p": 0.741,
-     "area_m2": 60.5,
-     "lidar": false
-    },
-    {
-     "lat": 42.037449,
-     "lon": -93.647092,
-     "p": 0.488,
-     "area_m2": 136.6,
-     "lidar": false
-    },
-    {
-     "lat": 42.036947,
-     "lon": -93.65205,
-     "p": 0.645,
-     "area_m2": 78.3,
-     "lidar": false
-    },
-    {
-     "lat": 42.036849,
-     "lon": -93.652347,
-     "p": 0.562,
-     "area_m2": 121.5,
-     "lidar": false
-    },
-    {
-     "lat": 42.03688,
-     "lon": -93.646283,
-     "p": 0.612,
-     "area_m2": 79.9,
-     "lidar": false
-    },
-    {
-     "lat": 42.03675,
-     "lon": -93.655178,
-     "p": 0.671,
-     "area_m2": 94.0,
-     "lidar": false
-    },
-    {
-     "lat": 42.03543,
-     "lon": -93.653492,
-     "p": 0.688,
-     "area_m2": 134.3,
-     "lidar": false
-    }
-   ],
-   "placement": {
-    "joint": {
-     "internal": {
-      "placements": 54,
-      "card_within_5": 0.833,
-      "walkbacks": 2,
-      "order_violations": 0,
-      "on_a_shared_box": 26
-     }
-    },
-    "joint+lidar": {
-     "internal": {
-      "placements": 54,
-      "card_within_5": 0.833,
-      "walkbacks": 1,
-      "order_violations": 0,
-      "on_a_shared_box": 25
-     }
-    },
-    "joint+unet": {
-     "internal": {
-      "placements": 54,
-      "card_within_5": 0.833,
-      "walkbacks": 1,
-      "order_violations": 0,
-      "on_a_shared_box": 26
-     }
-    },
-    "joint+lidar+unet": {
-     "internal": {
-      "placements": 54,
-      "card_within_5": 0.833,
-      "walkbacks": 0,
-      "order_violations": 0,
-      "on_a_shared_box": 25
-     }
-    }
-   }
   }
  }
 ]
