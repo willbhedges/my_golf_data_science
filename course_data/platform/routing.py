@@ -45,6 +45,7 @@ WALK_FREE, WALK_SCALE = 60.0, 110.0      # green -> next tee: free up to 60 yds,
 ALIGN_FW_DEG = 35.0                      # a fairway the line runs along (else it crosses it)
 CORRIDOR_BUF = 20.0                      # line points within 20 yds of a fairway count as on it (dog-legs)
 COV_W = {"osm": 0.6, "segment": 0.25, "lidar": 0.15}   # reward per tee box explained by a hole
+FINGERPRINT_W, FP_CAP = 1.0, 1.5         # tee-complex fingerprint vs every card set (see fingerprint)
 REUSED_TEE = 2.5                         # two holes from one box (shared tee complexes exist)
 COVERED_START = 2.0                      # a hole starting on a box another hole already explains
 COV_PERP, COV_BACK, COV_FWD = 18.0, 40.0, 0.45         # a box is "on" a hole: <= 18 yds off the line, from
@@ -98,10 +99,21 @@ def poly_area(xy):
 
 
 def long_axis(xy):
-    """(axis angle in radians, elongation >= 1) of a polygon from its vertex covariance."""
+    """(axis angle in radians, elongation >= 1) of a polygon: its minimum rotated rectangle when shapely is
+    available, else the vertex covariance."""
     xy = np.asarray(xy, float)
     if len(xy) < 3:
         return 0.0, 1.0
+    try:
+        from shapely.geometry import Polygon
+        r = np.asarray(Polygon(xy).buffer(0).minimum_rotated_rectangle.exterior.coords)[:4]
+        e1, e2 = r[1] - r[0], r[2] - r[1]
+        l1, l2 = float(np.hypot(*e1)), float(np.hypot(*e2))
+        if min(l1, l2) > 1e-6:
+            e = e1 if l1 >= l2 else e2
+            return math.atan2(e[1], e[0]), max(l1, l2) / min(l1, l2)
+    except Exception:                                           # noqa: BLE001
+        pass
     c = np.cov((xy - xy.mean(0)).T)
     w, v = np.linalg.eigh(c)
     if w[0] <= 1e-9:
@@ -329,6 +341,20 @@ def card_holes(card):
     return n, pars, yards
 
 
+def fingerprint(DB, yards, par):
+    """Mean over the card's tee sets of how well SOME box on the hole sits at that set's yardage (0..1.5 each):
+    a hole whose boxes match 3 of 3 card sets beats one where a single box happens to fit."""
+    tot = np.zeros(DB.shape[:2])
+    for Y in yards:
+        dd = DB - Y
+        tol = np.where(dd >= 0, 0.04 * Y + 8, (0.06 * Y + 10) if par == 3 else (0.12 * Y + 15))
+        z = np.abs(dd) / tol
+        with np.errstate(all="ignore"):
+            zmin = np.nanmin(np.where(np.isnan(DB), np.inf, z), axis=2)
+        tot += np.minimum(zmin ** 2, FP_CAP)
+    return tot / len(yards)
+
+
 def length_cost(D, yards, par):
     """(cost, matched card yards or None) for straight distance(s) D (array) on a hole."""
     D = np.asarray(D, float)
@@ -466,9 +492,19 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
             continue
         b = np.arctan2(gxy[:, 1] - txy[i, 1], gxy[:, 0] - txy[i, 0])
         d = np.abs((b - ang + np.pi / 2) % np.pi - np.pi / 2)
-        align[i] = np.minimum((np.maximum(np.degrees(d) - 18, 0) / 20) ** 2, 3.0) * 0.5
+        align[i] = np.minimum((np.maximum(np.degrees(d) - 20, 0) / 20) ** 2, 1.6) * 0.5
 
     anchors = inp.get("anchors", {}) if use_anchors else {}
+    # tee-complex fingerprint: distances to g of every box on the hole (t, g)
+    DB = None
+    if nT and nT * nT * nG <= 6_000_000:
+        dv = gxy[None, :, :] - txy[:, None, :]                       # (t, g, 2)
+        L = np.maximum(np.hypot(dv[..., 0], dv[..., 1]), 1e-6)
+        rel = txy[None, None, :, :] - txy[:, None, None, :]          # (t, 1, b, 2)
+        u = (rel[..., 0] * dv[:, :, None, 0] + rel[..., 1] * dv[:, :, None, 1]) / L[..., None]
+        v = np.abs(rel[..., 0] * dv[:, :, None, 1] - rel[..., 1] * dv[:, :, None, 0]) / L[..., None]
+        on = (u >= -COV_BACK) & (u <= COV_FWD * L[..., None]) & (v <= COV_PERP)
+        DB = np.where(on, D.T[None, :, :], np.nan)                   # D.T[g, b] -> (t, g, b)
     # hypotheses per hole: (t, g, cost, matched yards)
     hyps = []
     for h in range(n):
@@ -487,7 +523,8 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
             continue
         if nT:
             lc, which = length_cost(D, yards[h] if yards else None, par)
-            c = lc + align
+            c = lc + align + (FINGERPRINT_W * fingerprint(DB, yards[h], par) if (yards and yards[h] and DB is not None)
+                              else 0.0)
             if par != 3:
                 c = c + (1.2 * corr if has_fw else 0) + cross
             else:

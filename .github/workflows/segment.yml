@@ -86,7 +86,7 @@ jobs:
           done
           for d in course_data/segment/sim_*; do
             [ -d "$d" ] || continue
-            python -u course_data/segment/simulate.py compare --slug "${d#course_data/segment/sim_}" || echo "compare failed: $d"
+            python -u course_data/segment/simulate.py compare --dir "$d" || echo "compare failed: $d"
           done
 
       - name: Commit
