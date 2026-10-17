@@ -1,0 +1,1 @@
+- parity **after_product_line** (env {}, app line False): parity: same club [13, 14], same or tie [14, 14], aims within 2.5 yds [9, 13] [39 s, exit 0]

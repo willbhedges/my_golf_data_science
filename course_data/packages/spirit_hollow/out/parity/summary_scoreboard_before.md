@@ -1,0 +1,4 @@
+- scoreboard **before** (env {'PRODUCT_ELEV_LINE': '0', 'PRODUCT_IRONS': 'package'}) [203 s, exit 0]:
+  Spirit Hollow (Black): same club 0/0, same or tie 0/0; 
+  Mozingo Lake (App): same club 0/0, same or tie 0/0; 
+  Veenker (Blue): same club 19/30, same or tie 22/30; 1 Driver (truth 4-wood), 2B Driver, 2F Driver, 4 Driver, 5 4-wood, 6 Driver (truth 2-wood), 8 4-wood, 9B Driver (truth 2-wood), 9F 4-wood, 10 Driver, 11 4-wood (truth Long iron), 13 Driver, 14 2-wood (truth 4-wood), 16 4-wood (truth 2-wood), 17 Driver, 18 Driver (truth 2-wood), 1 4-wood, 2 4-wood, 3 Driver, 4 Driver, 6 Driver, 7 4-wood, 9 Driver, 10 4-wood (truth Driver), 12 Driver, 13 Driver (truth 4-wood), 14 4-wood (truth Driver), 16 Driver, 17 Driver, 18 2-wood (truth Driver), 1 Driver, 2 4-wood, 3 Driver, 4 4-wood, 5 4-wood, 7 Driver, 9 Driver, 10 Driver, 12 2-wood, 14 4-wood, 15 4-wood, 16 Driver, 18 Driver
