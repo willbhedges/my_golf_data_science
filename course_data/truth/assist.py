@@ -141,3 +141,41 @@ def canopy(slug, ref, thr=2.5, smooth=1.0, min_area=40.0, note=None):
         for p in clip(xy, min_area=min_area):
             out.append(C.Z("recovery", p, note or f"lidar canopy > {thr:g} m (2015 leaf-off), checked on the photo"))
     return out
+
+
+def naip_canopy(slug, ref, ndvi=0.25, dark=0.75, smooth=1.5, min_area=60.0, note=None):
+    """Tree crowns where there is no 3DEP lidar (e.g. Pine Dunes TX): NAIP NIR + RGB in the corridor frame at 1 px / yd,
+    vegetated (NDVI > ndvi) AND darker than the hole's mown turf (brightness < dark x the median brightness of the
+    vegetated pixels: crowns and their shade vs bright mown grass), opened / closed by 2-3 yds. A photo measurement,
+    not a model; every polygon is checked on the review render (shadows on the turf are the usual false positive)."""
+    import cv2
+    S = C.sources(slug)
+    if "photo" not in S or "nir" not in S:
+        return []
+    fj = _fj(slug, ref)
+    F = C.FOOT
+    fr = C.corridor_frame(fj["frame"]["tee_ll"], fj["frame"]["aim_ll"], 1.0, a0=F["a0"] - 5, a1=F["a1"] + 5,
+                          lat=F["lat"] + 5)
+    rgb = S["photo"].warp(fr)[..., :3].astype(float)
+    nir = S["nir"].warp(fr)[..., 0].astype(float)
+    r = rgb[..., 0]
+    nd = (nir - r) / np.maximum(nir + r, 1.0)
+    br = rgb.sum(-1)
+    veg = np.nan_to_num(nd) > ndvi
+    if veg.sum() < 50:
+        return []
+    m = (veg & (np.nan_to_num(br) < dark * np.nanmedian(br[veg]))).astype(np.uint8)
+    m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+    m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
+    cs, _ = cv2.findContours(m, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    out = []
+    lat, a1 = F["lat"] + 5, F["a1"] + 5
+    for c in cs:
+        if cv2.contourArea(c) < min_area:
+            continue
+        c = cv2.approxPolyDP(c, smooth, True)[:, 0, :].astype(float)
+        xy = np.c_[c[:, 0] - lat, a1 - c[:, 1]]
+        for p in clip(xy, min_area=min_area):
+            out.append(C.Z("recovery", p, note or "tree crowns from NAIP (NDVI + darker than the mown turf; no lidar), "
+                                                  "checked on the photo"))
+    return out
