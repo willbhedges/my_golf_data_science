@@ -1,16 +1,16 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-10-17 04:50 UTC",
- "commit": "c1361e3",
+ "generated": "2026-10-17 05:12 UTC",
+ "commit": "8d14f65",
  "courses": [
   {
    "course": "Spirit Hollow",
    "slug": "spirit_hollow",
    "tees": "Black",
    "package": "course_data/packages/spirit_hollow/package.json",
-   "package_commit": "0865407 2026-10-17T04:39:24Z",
+   "package_commit": "72b3fa6 2026-10-17T04:55:13Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 68.5,
+   "decision_s": 110.2,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -501,6 +501,15 @@
     "n_hand_quick": 16,
     "mean_regret_hand_quick": 0.0071,
     "ceiling_quick": 12,
+    "headline": "quick",
+    "same_quick": 8,
+    "same_head": 8,
+    "same_or_tie_quick": 10,
+    "same_or_tie_head": 10,
+    "mean_regret_quick": 0.0143,
+    "mean_regret_head": 0.0143,
+    "max_regret_quick": 0.0643,
+    "max_regret_head": 0.0643,
     "tee10": 8,
     "green10": 14,
     "n_geo": 16,
@@ -528,16 +537,16 @@
     }
    },
    "aim_violations": [],
-   "seconds": 86.9
+   "seconds": 113.5
   },
   {
    "course": "Mozingo Lake",
    "slug": "mozingo_lake",
    "tees": "App",
    "package": "course_data/packages/mozingo_lake/package.json",
-   "package_commit": "0865407 2026-10-17T04:39:24Z",
+   "package_commit": "72b3fa6 2026-10-17T04:55:13Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 59.9,
+   "decision_s": 93.1,
    "last_plan": {
     "built": "2026-10-16T22:06Z",
     "runtime_s": 578.9,
@@ -784,19 +793,28 @@
     "same_pct": 0.5,
     "same_or_tie_pct": 0.571,
     "mean_regret": 0.0164,
-    "max_regret": 0.088
+    "max_regret": 0.088,
+    "headline": "quick",
+    "same_quick": 7,
+    "same_head": 7,
+    "same_or_tie_quick": 8,
+    "same_or_tie_head": 8,
+    "mean_regret_quick": 0.0164,
+    "mean_regret_head": 0.0164,
+    "max_regret_quick": 0.088,
+    "max_regret_head": 0.088
    },
    "aim_violations": [],
-   "seconds": 73.7
+   "seconds": 94.2
   },
   {
    "course": "Veenker",
    "slug": "veenker",
    "tees": "Blue",
    "package": "course_data/packages/veenker/package.json",
-   "package_commit": "0865407 2026-10-17T04:39:24Z",
+   "package_commit": "72b3fa6 2026-10-17T04:55:13Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 59.9,
+   "decision_s": 93.4,
    "last_plan": {
     "built": "2026-10-17T01:16Z",
     "runtime_s": 360.9,
@@ -945,16 +963,18 @@
    ],
    "summary": {
     "n": 13,
-    "checks": 2
+    "checks": 2,
+    "headline": "quick"
    },
    "aim_violations": [],
-   "seconds": 60.6
+   "seconds": 94.5
   }
  ],
  "guards": {
   "fails": [],
   "notes": [
-   "Mozingo Lake: truth changed since 2026-10-17 01:55 (baseline reset)"
+   "Spirit Hollow: re-baselined (packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow)",
+   "Mozingo Lake: re-baselined (packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow)"
   ]
  },
  "truth_cache": {
@@ -2278,6 +2298,89 @@
    "decision_s": 59.9,
    "source": "product/decide.run quick n=8000",
    "regression": false
+  },
+  {
+   "date": "2026-10-17 05:12",
+   "commit": "8d14f65",
+   "course": "spirit_hollow",
+   "truth_fp": "bd4a5e2a1d",
+   "n": 16,
+   "headline": "quick",
+   "same": 8,
+   "same_or_tie": 10,
+   "same_quick": 8,
+   "same_full": null,
+   "mean_regret": 0.0143,
+   "max_regret": 0.0643,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.296,
+    "long grass": 0.189,
+    "water": 0.316,
+    "ob": 0.391
+   },
+   "checks": 2,
+   "same_hand_quick": 12,
+   "ceiling_quick": 12,
+   "decision_s": 110.2,
+   "source": "product/decide.run quick n=8000",
+   "regression": false,
+   "baseline_id": "2026-10-17-vision-v2-ob",
+   "baseline_reset": "packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow"
+  },
+  {
+   "date": "2026-10-17 05:12",
+   "commit": "8d14f65",
+   "course": "mozingo_lake",
+   "truth_fp": "2ab50d3367",
+   "n": 14,
+   "headline": "quick",
+   "same": 7,
+   "same_or_tie": 8,
+   "same_quick": 7,
+   "same_full": null,
+   "mean_regret": 0.0164,
+   "max_regret": 0.088,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 1,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 93.1,
+   "source": "product/decide.run quick n=8000",
+   "regression": false,
+   "baseline_id": "2026-10-17-vision-v2-ob",
+   "baseline_reset": "packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow"
+  },
+  {
+   "date": "2026-10-17 05:12",
+   "commit": "8d14f65",
+   "course": "veenker",
+   "truth_fp": null,
+   "n": 13,
+   "headline": "quick",
+   "same": null,
+   "same_or_tie": null,
+   "same_quick": null,
+   "same_full": null,
+   "mean_regret": null,
+   "max_regret": null,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 93.4,
+   "source": "product/decide.run quick n=8000",
+   "regression": false,
+   "baseline_id": "2026-10-17-vision-v2-ob",
+   "baseline_reset": "packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow"
   }
  ]
 }
