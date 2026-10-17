@@ -77,6 +77,9 @@ jobs:
         run: python -m pytest -q -p no:cacheprovider course_data/product/test_parity.py
       - name: Run ${{ matrix.entry }}
         run: |
+          # start from an empty output dir so this job's artifact holds only its own files (a stale copy of
+          # another entry's committed output would otherwise overwrite that entry's fresh one at commit time)
+          rm -rf "$(python -c "import json; print(json.load(open('${{ needs.plan.outputs.request }}')).get('out') or 'course_data/packages/spirit_hollow/out/parity')")"
           ( time python course_data/product/parity.py --request "${{ needs.plan.outputs.request }}" --only "${{ matrix.entry }}" ) 2>&1 | tail -60
       - name: Collect
         run: |
