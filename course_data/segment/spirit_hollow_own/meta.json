@@ -1,0 +1,35 @@
+{
+ "slug": "spirit_hollow_own",
+ "request": "course_data/requests/segment_spirit_hollow.json",
+ "request_hash": "8e7b858c1ef0",
+ "model": "/home/runner/golfseg_model",
+ "model_tag": "own-unet",
+ "model_sha": "073377ce42e82bb55e11445ab518bb19eb6a8033",
+ "tta": true,
+ "naip": "course_data/vision_any/spirit_hollow/raw/naip_2023.tif",
+ "shape": [
+  4,
+  3603,
+  3127
+ ],
+ "res_m": 0.6,
+ "crs": "EPSG:32615",
+ "seconds_infer": 40.2,
+ "seconds_total": 41.3,
+ "pixel_share": {
+  "background": 0.8529,
+  "green": 0.0027,
+  "tee": 0.0064,
+  "fairway": 0.0504,
+  "bunker": 0.0023,
+  "water": 0.0853
+ },
+ "water_shadow_filter": "lidar HAG ring: dropped 1152 components",
+ "features": {
+  "green:own-unet": 23,
+  "tee:own-unet": 114,
+  "fairway:own-unet": 49,
+  "bunker:own-unet": 59,
+  "water:nir": 33
+ }
+}

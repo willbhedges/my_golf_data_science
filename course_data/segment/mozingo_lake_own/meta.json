@@ -1,0 +1,35 @@
+{
+ "slug": "mozingo_lake_own",
+ "request": "course_data/requests/segment_mozingo_lake.json",
+ "request_hash": "762767bb521d",
+ "model": "/home/runner/golfseg_model",
+ "model_tag": "own-unet",
+ "model_sha": "073377ce42e82bb55e11445ab518bb19eb6a8033",
+ "tta": true,
+ "naip": "course_data/vision_any/mozingo/raw/naip_2022.tif",
+ "shape": [
+  4,
+  3860,
+  2590
+ ],
+ "res_m": 0.6,
+ "crs": "EPSG:32615",
+ "seconds_infer": 35.8,
+ "seconds_total": 36.8,
+ "pixel_share": {
+  "background": 0.8029,
+  "green": 0.0052,
+  "tee": 0.0035,
+  "fairway": 0.0361,
+  "bunker": 0.0017,
+  "water": 0.1507
+ },
+ "water_shadow_filter": "lidar HAG ring: dropped 303 components",
+ "features": {
+  "green:own-unet": 31,
+  "tee:own-unet": 88,
+  "fairway:own-unet": 20,
+  "bunker:own-unet": 32,
+  "water:nir": 27
+ }
+}
