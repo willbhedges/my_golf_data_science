@@ -1,0 +1,91 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/bee89348-642c-408f-bdca-eb7dbc81e65d",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/bee89348-642c-408f-bdca-eb7dbc81e65d",
+    "par": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "handicap": [
+     6,
+     9,
+     1,
+     8,
+     7,
+     5,
+     4,
+     2,
+     3
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       160,
+       118,
+       185,
+       100,
+       116,
+       135,
+       128,
+       155,
+       183
+      ],
+      "total": 1280,
+      "total_stated": 1285,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "bee89348-642c-408f-bdca-eb7dbc81e65d",
+     "course_name": "Assateague Greens Golf Center",
+     "club_name": "Assateague Greens Golf Center",
+     "city": "Ocean City",
+     "state": "MD",
+     "lat": 38.3111205018,
+     "lng": -75.132330358,
+     "holes": 9,
+     "yardage": 1285,
+     "website": null
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (9 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 21 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/bee89348-642c-408f-bdca-eb7dbc81e65d"
+  }
+ ]
+}

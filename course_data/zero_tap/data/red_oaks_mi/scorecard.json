@@ -1,0 +1,267 @@
+{
+ "cards": [
+  {
+   "source": "golfify",
+   "url": "https://www.golfify.io/courses/red-oaks-golf-course",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://www.golfify.io/courses/red-oaks-golf-course",
+    "par": [
+     4,
+     3,
+     3,
+     3,
+     4,
+     3,
+     4,
+     3,
+     4
+    ],
+    "handicap": [
+     3,
+     8,
+     9,
+     4,
+     5,
+     7,
+     1,
+     6,
+     2
+    ],
+    "tee_sets": {
+     "Back": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       366,
+       170,
+       145,
+       219,
+       383,
+       185,
+       420,
+       180,
+       374
+      ],
+      "par": [
+       4,
+       3,
+       3,
+       3,
+       4,
+       3,
+       4,
+       3,
+       4
+      ],
+      "handicap": [
+       3,
+       8,
+       9,
+       4,
+       5,
+       7,
+       1,
+       6,
+       2
+      ],
+      "total": 2442,
+      "total_stated": 2442,
+      "rating": null,
+      "slope": null,
+      "source": "https://www.golfify.io/courses/red-oaks-golf-course"
+     },
+     "Middle": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       350,
+       152,
+       135,
+       183,
+       363,
+       161,
+       396,
+       160,
+       356
+      ],
+      "par": [
+       4,
+       3,
+       3,
+       3,
+       4,
+       3,
+       4,
+       3,
+       4
+      ],
+      "handicap": [
+       3,
+       8,
+       9,
+       4,
+       5,
+       7,
+       1,
+       6,
+       2
+      ],
+      "total": 2256,
+      "total_stated": 2256,
+      "rating": null,
+      "slope": null,
+      "source": "https://www.golfify.io/courses/red-oaks-golf-course"
+     }
+    },
+    "facility": {
+     "clubName": "Red Oaks Golf Course",
+     "city": "Madison Heights",
+     "state": "Michigan",
+     "address": "29600 John R. Road",
+     "latitude": 42.510041,
+     "longitude": -83.10474,
+     "numberOfHoles": 9,
+     "website": "www.golfoakland.us"
+    }
+   }
+  },
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/5e69c5d2-9f26-482e-9226-b4dd2acbfbf7",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/5e69c5d2-9f26-482e-9226-b4dd2acbfbf7",
+    "par": [
+     4,
+     3,
+     3,
+     3,
+     4,
+     3,
+     4,
+     3,
+     4
+    ],
+    "handicap": [
+     3,
+     8,
+     9,
+     4,
+     5,
+     7,
+     1,
+     6,
+     2
+    ],
+    "tee_sets": {
+     "Back": {
+      "colour": "back",
+      "aliases": [
+       "back"
+      ],
+      "yards": [
+       366,
+       170,
+       145,
+       219,
+       383,
+       185,
+       420,
+       180,
+       374
+      ],
+      "total": 2442,
+      "total_stated": 2442,
+      "rating": null,
+      "slope": 107,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Middle": {
+      "colour": "middle",
+      "aliases": [
+       "middle"
+      ],
+      "yards": [
+       350,
+       152,
+       135,
+       183,
+       363,
+       161,
+       396,
+       160,
+       356
+      ],
+      "total": 2256,
+      "total_stated": 2256,
+      "rating": null,
+      "slope": 103,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Forward": {
+      "colour": "forward",
+      "aliases": [
+       "forward"
+      ],
+      "yards": [
+       273,
+       124,
+       80,
+       142,
+       281,
+       135,
+       283,
+       126,
+       237
+      ],
+      "total": 1681,
+      "total_stated": 1681,
+      "rating": null,
+      "slope": 95,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "5e69c5d2-9f26-482e-9226-b4dd2acbfbf7",
+     "course_name": "Red Oaks Golf Course",
+     "club_name": "Red Oaks Golf Course",
+     "city": "Madison Heights",
+     "state": "MI",
+     "lat": 42.5137684154639,
+     "lng": -83.1019413298969,
+     "holes": 9,
+     "yardage": 2442,
+     "website": "http://www.destinationoakland.com/parksandtrails/golf/redoaks/Pages/default.aspx"
+    }
+   }
+  }
+ ],
+ "chosen": "golfify",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": true,
+   "info": "https://www.golfify.io/courses/red-oaks-golf-course"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 21 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/5e69c5d2-9f26-482e-9226-b4dd2acbfbf7"
+  }
+ ]
+}

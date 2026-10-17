@@ -1,0 +1,132 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/30d135d3-3727-46f0-a2d6-50d3c568664c",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/30d135d3-3727-46f0-a2d6-50d3c568664c",
+    "par": [
+     3,
+     4,
+     4,
+     4,
+     3,
+     4,
+     4,
+     3,
+     3
+    ],
+    "handicap": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "tee_sets": {
+     "Purple": {
+      "colour": "purple",
+      "aliases": [
+       "purple"
+      ],
+      "yards": [
+       149,
+       347,
+       370,
+       310,
+       143,
+       262,
+       377,
+       205,
+       137
+      ],
+      "total": 2300,
+      "total_stated": 2300,
+      "rating": null,
+      "slope": 107,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Purple (Female)",
+        "rating": null,
+        "slope": 109,
+        "total": 2300,
+        "par": 32
+       }
+      ]
+     },
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       112,
+       317,
+       354,
+       232,
+       87,
+       192,
+       363,
+       110,
+       109
+      ],
+      "total": 1876,
+      "total_stated": 1876,
+      "rating": null,
+      "slope": 97,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Gold (Female)",
+        "rating": null,
+        "slope": 94,
+        "total": 1876,
+        "par": 32
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "30d135d3-3727-46f0-a2d6-50d3c568664c",
+     "course_name": "City Park Golf Course",
+     "club_name": "City Park Golf Course",
+     "city": "Baton Rouge",
+     "state": "LA",
+     "lat": 30.4333042,
+     "lng": -91.1667173,
+     "holes": 9,
+     "yardage": 2300,
+     "website": "http://golf.brec.org/courses/city-park/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (9 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/30d135d3-3727-46f0-a2d6-50d3c568664c"
+  }
+ ]
+}
