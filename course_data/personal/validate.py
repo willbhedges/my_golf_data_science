@@ -160,7 +160,7 @@ def run_task(task, emu_path=None):
 def merge(paths, out_dir):
     rows = [json.loads(l) for p in paths for l in open(p) if l.strip()]
     errors = [r for r in rows if "error" in r]
-    rows = [r for r in rows if "error" not in r]
+    rows = [r for r in rows if "error" not in r and all(np.isfinite(r[k]["median"]) for k in ("W", "bias", "carry"))]
     tab = {}
     for r in rows:
         key = (r["exp"], r["prior"], r["n"])
@@ -172,14 +172,15 @@ def merge(paths, out_dir):
             rel = par in ("W", "nu", "roll", "f", "ratio4")
             if rel:
                 e = np.array([np.log(r[par]["median"] / r[par]["truth"]) for r in rows])
+            sd = [r[par]["sd"] / r[par]["median"] if rel else r[par]["sd"] for r in rows]
             return dict(err_med_abs=float(np.median(np.abs(e))), rmse=float(np.sqrt(np.mean(e ** 2))),
-                        sd=float(np.median([r[par]["sd"] for r in rows])),
+                        sd=float(np.median(sd)),
                         ci_width=float(np.median([r[par]["hi"] - r[par]["lo"] for r in rows])),
                         cover=float(np.mean([r[par]["cover"] for r in rows])), rel=rel)
         pri = [r for r in rs if r["golfer"] == "prior"]
         row = dict(exp=exp, prior=prior, n=n, n_fits=len(rs), secs=float(np.median([r["secs"] for r in rs])),
                    all={p: agg(rs, p) for p in ("W", "ratio4", "carry", "bias", "ps", "nu", "roll", "f")},
-                   from_prior={p: agg(pri, p) for p in ("W", "bias", "carry")} if pri else None,
+                   from_prior={p: agg(pri, p) for p in ("W", "bias", "carry", "ps")} if pri else None,
                    scenarios={s: dict(W_median=float(np.median([r["W"]["median"] for r in rs if r["golfer"] == s])),
                                       W_truth=float(np.median([r["W"]["truth"] for r in rs if r["golfer"] == s])),
                                       W_ci=[float(np.median([r["W"]["lo"] for r in rs if r["golfer"] == s])),
@@ -210,24 +211,26 @@ LABEL = {"lm": "Launch monitor (range factor f uncertain)", "lm_f1": "Launch mon
 
 def write_md(summ):
     out = ["# Recovery study: how much of the golfer's own data pins the pattern down", "",
-           "Each row: median over simulated golfers (24 from the prior + 5 scenarios x 4). Driver width W: "
-           "posterior sd and 90% CI width in yds at W ~ 70-82 (from the log-scale sd), median |error| of the posterior "
-           "median (%), 90% CI coverage (all golfers). Break-even: share of (golfer, break-even) pairs at least 5 yds "
-           "apart where the posterior median is on the right side / where P(right side) > 90%.", ""]
+           "Medians over simulated golfers (24 drawn from the prior + 5 scenarios x 4 replicates; the scenarios are "
+           "off-prior on purpose). W = driver on-course width95. **W sd** = posterior sd / median; **±yds** = half "
+           "the 90% interval at W = 76; **|err|** = |posterior median / truth - 1|; **cover** = share of 90% intervals "
+           "holding the truth, for golfers drawn from the prior (the calibration check; scenario golfers excluded). "
+           "**Break-even**: over (golfer, v2 break-even) pairs at least 5 yds apart (62.9, 67.4, 77.7, 79.1, 81.7, 86), "
+           "the share with the posterior median on the right side, and with P(right side) > 90%.", ""]
     for exp in GRID:
         for prior in ("v2", "generic"):
             rs = [r for r in summ if r["exp"] == exp and r["prior"] == prior]
             if not rs:
                 continue
             out += [f"## {LABEL[exp]}, {prior} prior", "",
-                    f"| {UNIT[exp]} | W sd (log) | W 90% CI (yds at 76) | |err| W | cover W | bias sd | carry sd | "
-                    f"mishit sd | nu |err| (log) | right side of break-even | confident (>90%) | fits |",
-                    "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+                    f"| {UNIT[exp]} | W sd | ±yds | W \\|err\\| | cover W (prior golfers) | bias sd (yds) | carry sd (yds) | "
+                    f"mishit sd | right side of break-even | confident (>90%) | fits |",
+                    "|---|---|---|---|---|---|---|---|---|---|---|"]
             for r in rs:
-                a = r["all"]
-                out.append(f"| {r['n']} | {a['W']['sd']:.3f} | {76 * (np.exp(1.645 * a['W']['sd']) - np.exp(-1.645 * a['W']['sd'])):.1f} | "
-                           f"{100 * a['W']['err_med_abs']:.1f}% | {a['W']['cover']:.0%} | {a['bias']['sd']:.1f} | "
-                           f"{a['carry']['sd']:.1f} | {a['ps']['sd']:.3f} | {a['nu']['err_med_abs']:.2f} | "
+                a, fp = r["all"], r["from_prior"] or r["all"]
+                out.append(f"| {r['n']} | {100 * a['W']['sd']:.1f}% | {76 * 1.645 * a['W']['sd']:.1f} | "
+                           f"{100 * a['W']['err_med_abs']:.1f}% | {fp['W']['cover']:.0%} | {a['bias']['sd']:.1f} | "
+                           f"{a['carry']['sd']:.1f} | {a['ps']['sd']:.3f} | "
                            f"{r['breakeven_correct_5yd'] or 0:.0%} | {r['breakeven_confident_5yd'] or 0:.0%} | {r['n_fits']} |")
             out.append("")
             sc = rs[-1]["scenarios"]
