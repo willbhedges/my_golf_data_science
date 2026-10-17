@@ -67,14 +67,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - run: pip install -q numpy scipy shapely pyproj
       - name: Shard ${{ matrix.shard }}
         run: |
-          git pull -q --rebase origin "${{ github.ref_name }}" || true
           python -u course_data/zero_tap/bench_set.py > /dev/null
           python -u course_data/zero_tap/baselines.py --method ${{ needs.plan.outputs.methods }} \
             --tier ${{ needs.plan.outputs.tiers }} --split ${{ needs.plan.outputs.split }} \
@@ -96,6 +95,10 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -q numpy scipy shapely pyproj
+      - name: Code from the triggering commit
+        run: |
+          git fetch -q --depth 1 origin ${{ github.sha }}
+          git checkout ${{ github.sha }} -- course_data/zero_tap/fetch.py course_data/zero_tap/state_split.json course_data/zero_tap/bench.py course_data/zero_tap/bench_set.py course_data/zero_tap/truth.py course_data/zero_tap/baselines.py || true
       - uses: actions/download-artifact@v4
         if: needs.plan.outputs.stage == 'run'
         with:
@@ -104,7 +107,6 @@ jobs:
           path: /tmp/ztres
       - name: Scoreboard
         run: |
-          git pull -q --rebase origin "${{ github.ref_name }}" || true
           python -u course_data/zero_tap/bench_set.py > /dev/null
           if [ -d /tmp/ztres ]; then
             for m in /tmp/ztres/*; do
