@@ -28,7 +28,7 @@ DIRS = WG.DIRS
 N = int(os.environ.get("WIND_SWINGS", 4000))
 TEMPS = [float(x) for x in os.environ.get("WIND_TEMPS", "35,45,55,65").split(",")]
 W.SENSITIVITY.setdefault(M.HYBRID, 1.1)          # between the 4-wood (1.05) and long iron (1.15)
-AIMS = np.arange(-50, 50.001, 0.5)
+AIMS = np.arange(-75, 75.001, 0.5)      # wide enough for aim = landing line - crosswind drift
 
 
 def wind_hook(club, speed, rel):
@@ -44,7 +44,9 @@ def solve(h, P, R, S, z, speed, rel):
     for c in M.ALL_CLUBS:
         hook = wind_hook(c, speed, rel) if speed else None
         ev, _ = M.ev_curve(R, S, hd, c, P, z, AIMS, wind=hook)
-        r = D.robust_aim(AIMS, ev)
+        dr = hook(*M.club_numbers(hd, c, P))[4] if hook else 0.0
+        # the checked-map limit applies to where the ball is aimed to LAND (aim + drift), not the aim
+        r = D.robust_aim(AIMS, ev, lo=-D.AIM_LIMIT - dr, hi=D.AIM_LIMIT - dr)
         # page numbers: calm club (temperature, carry offsets) with wind, no elevation
         base = dict(P)
         carry0, total0, width0, depth0 = M.CLUBS[c]

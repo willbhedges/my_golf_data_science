@@ -92,6 +92,16 @@ def note_v2(h, r):
     return " ".join(parts)
 
 
+def compact(holegrid):
+    """Like build_wind_page.compact but shorter numbers (the page shows carry/total/width rounded; ties are
+    0.01 strokes): [aim, ev(3 dp), zlo, zhi, carry, total, width, drift(0.1)]."""
+    def n(x):
+        return int(x) if float(x).is_integer() else x
+    return {k: {c: [n(v["aim"]), round(v["ev"], 3), n(v["zone"][0]), n(v["zone"][1]), int(round(v["carry"])),
+                    int(round(v["total"])), int(round(v["width"])), round(v["drift"], 1)]
+                for c, v in cellv["clubs"].items()} for k, cellv in holegrid.items()}
+
+
 def main():
     import geom
     geom.set_geometry(os.environ.get("V2_GEOM", "scale,elev,green"))
@@ -117,7 +127,7 @@ def main():
             d["plays"] = grid["par3"][str(h)]
             d["by_set"] = BW.par3_sets(h, opts, grid)
         else:
-            d["grids"] = {str(b): {T: BW.compact(gT) for T, gT in g["holes"][str(h)].items()}
+            d["grids"] = {str(b): {T: compact(gT) for T, gT in g["holes"][str(h)].items()}
                           for b, g in sorted(grids.items()) if str(h) in g.get("holes", {})}
             Tn = min(grid["temps"], key=lambda T: abs(T - M.hole_temp(h)))
             d["cloud"] = cloud(h, grid["holes"][str(h)][f"{Tn:g}"]["0_0"], Tn)

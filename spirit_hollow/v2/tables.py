@@ -8,7 +8,8 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 SH = os.path.dirname(HERE)
 LAB = {"2B": "2 Gold", "2F": "2 Black", "9B": "9 Gold", "9F": "9 Black"}
-SHORT = {"Driver": "D", "2-wood": "2W", "4-wood": "4W", "Long iron": "LI", "Mid iron": "MI"}
+SHORT = {"Driver": "D", "2-wood": "2W", "4-wood": "4W", "Long iron": "LI", "Mid iron": "MI",
+         "Hybrid ~235 (not in bag)": "HY*"}
 
 
 def side(a):
@@ -20,7 +21,7 @@ def main():
     v2 = json.load(open(os.path.join(HERE, "output", "v2_decisions.json")))
     print("## Per hole: v1 (live page) vs v2\n")
     print("Aims in yds left (L) / right (R) of the app's line. v1 aim on a 2.5-yd grid, search ±25; v2 aim to "
-          "0.5 yd (Brent on the prior-averaged, smoothed curve), search ±60. Aim window = every aim within "
+          "0.5 yd (Brent on the prior-averaged, smoothed curve), search ±40 (course.py limits). Aim window = every aim within "
           "0.005 strokes of the best. Margin = expected strokes saved vs the runner-up club (± MC SE over 64 "
           "draws); cross-fitted = choose on half the draws, score on the other half.\n")
     print("| Hole | v1 pick, aim | v1 margin | v2 pick, aim | v2 aim window | v2 margin ± SE vs | cross-fit | "
@@ -60,16 +61,16 @@ def main():
     print(f"\nBlack-tee round (14 tee holes, Gold 2/9 excluded): v1's plays cost **{tot:.2f} strokes** "
           "per round under v2.\n")
     print("\n## Every club at its own robust aim (v2, prior-averaged EV; window in brackets)\n")
-    print("| Hole | Driver | 2-wood | 4-wood | Long iron | Mid iron |")
-    print("|---|---|---|---|---|---|")
+    print("| Hole | Driver | 2-wood | 4-wood | Long iron | Mid iron | Hybrid ~235 (not in bag) |")
+    print("|---|---|---|---|---|---|---|")
     for h, r in v2.items():
-        best = min(v["ev"] for v in r["clubs"].values())
+        best = r["clubs"][r["pick"]]["ev"]
         cells = []
-        for c in ("Driver", "2-wood", "4-wood", "Long iron", "Mid iron"):
+        for c in ("Driver", "2-wood", "4-wood", "Long iron", "Mid iron", "Hybrid ~235 (not in bag)"):
             v = r["clubs"][c]
             d = v["ev"] - best
             cells.append(("**" if d == 0 else "") + f"{side(v['aim'])} [{side(v['window'][0])}, {side(v['window'][1])}]"
-                         f" {'+%.3f' % d if d else '%.3f' % v['ev']}" + (" ⚠" if v["at_bound"] else "")
+                         f" {'%+.3f' % d if d else '%.3f' % v['ev']}" + (" ⚠" if v["at_bound"] else "")
                          + ("**" if d == 0 else ""))
         print(f"| {LAB.get(h, h)} | " + " | ".join(cells) + " |")
     print("\n## Change ladder (central world): pick / aim after each change, cumulative from v1's world\n")
