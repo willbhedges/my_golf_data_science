@@ -1,0 +1,841 @@
+{
+ "schema": "pipeline_picks/1",
+ "made_utc": "2026-10-17T15:08:17Z",
+ "n": 8000,
+ "variants": {
+  "previous": {
+   "tee_localizer": "v1"
+  },
+  "pipeline": {}
+ },
+ "courses": {
+  "spirit_hollow": {
+   "previous": {
+    "summary": {
+     "n": 16,
+     "checks": 3,
+     "n_truth": 16,
+     "same": 11,
+     "same_or_tie": 14,
+     "same_pct": 0.688,
+     "same_or_tie_pct": 0.875,
+     "mean_regret": 0.015,
+     "max_regret": 0.0934,
+     "same_hand_quick": 10,
+     "n_hand_quick": 16,
+     "mean_regret_hand_quick": 0.0153,
+     "ceiling_quick": 12,
+     "headline": "quick",
+     "same_quick": 11,
+     "same_head": 11,
+     "same_or_tie_quick": 14,
+     "same_or_tie_head": 14,
+     "mean_regret_quick": 0.015,
+     "mean_regret_head": 0.015,
+     "max_regret_quick": 0.0934,
+     "max_regret_head": 0.0934,
+     "tee10": 8,
+     "green10": 14,
+     "n_geo": 16,
+     "iou": {
+      "trees": {
+       "mean": 0.294,
+       "n": 15,
+       "pass06": 1
+      },
+      "long grass": {
+       "mean": 0.0,
+       "n": 15,
+       "pass06": 0
+      },
+      "water": {
+       "mean": 0.316,
+       "n": 10,
+       "pass06": 2
+      },
+      "ob": {
+       "mean": 0.391,
+       "n": 2,
+       "pass06": 0
+      }
+     }
+    },
+    "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 69 candidate pads near hole starts, 1 placement(s) on one",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "Driver",
+     "2B": "Driver",
+     "2F": "Driver",
+     "4": "Driver",
+     "5": "4-wood",
+     "6": "2-wood",
+     "8": "4-wood",
+     "9B": "Driver",
+     "9F": "4-wood",
+     "10": "4-wood",
+     "11": "Long iron",
+     "13": "4-wood",
+     "14": "2-wood",
+     "16": "4-wood",
+     "17": "Driver",
+     "18": "Driver"
+    },
+    "same": {
+     "1": false,
+     "2B": true,
+     "2F": true,
+     "4": true,
+     "5": true,
+     "6": true,
+     "8": true,
+     "9B": false,
+     "9F": true,
+     "10": false,
+     "11": true,
+     "13": false,
+     "14": true,
+     "16": true,
+     "17": true,
+     "18": false
+    }
+   },
+   "pipeline": {
+    "summary": {
+     "n": 16,
+     "checks": 3,
+     "n_truth": 16,
+     "same": 12,
+     "same_or_tie": 14,
+     "same_pct": 0.75,
+     "same_or_tie_pct": 0.875,
+     "mean_regret": 0.0125,
+     "max_regret": 0.0934,
+     "same_hand_quick": 11,
+     "n_hand_quick": 16,
+     "mean_regret_hand_quick": 0.0136,
+     "ceiling_quick": 12,
+     "headline": "quick",
+     "same_quick": 12,
+     "same_head": 12,
+     "same_or_tie_quick": 14,
+     "same_or_tie_head": 14,
+     "mean_regret_quick": 0.0125,
+     "mean_regret_head": 0.0125,
+     "max_regret_quick": 0.0934,
+     "max_regret_head": 0.0934,
+     "tee10": 8,
+     "green10": 14,
+     "n_geo": 16,
+     "iou": {
+      "trees": {
+       "mean": 0.294,
+       "n": 15,
+       "pass06": 1
+      },
+      "long grass": {
+       "mean": 0.0,
+       "n": 15,
+       "pass06": 0
+      },
+      "water": {
+       "mean": 0.316,
+       "n": 10,
+       "pass06": 2
+      },
+      "ob": {
+       "mean": 0.391,
+       "n": 2,
+       "pass06": 0
+      }
+     }
+    },
+    "tees": "ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment) for 4 sets; lidar pads: 69 candidate pads near hole starts",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "Driver",
+     "2B": "Driver",
+     "2F": "Driver",
+     "4": "Driver",
+     "5": "4-wood",
+     "6": "2-wood",
+     "8": "4-wood",
+     "9B": "2-wood",
+     "9F": "4-wood",
+     "10": "4-wood",
+     "11": "Long iron",
+     "13": "4-wood",
+     "14": "2-wood",
+     "16": "4-wood",
+     "17": "Driver",
+     "18": "Driver"
+    },
+    "same": {
+     "1": false,
+     "2B": true,
+     "2F": true,
+     "4": true,
+     "5": true,
+     "6": true,
+     "8": true,
+     "9B": true,
+     "9F": true,
+     "10": false,
+     "11": true,
+     "13": false,
+     "14": true,
+     "16": true,
+     "17": true,
+     "18": false
+    }
+   },
+   "changed": [
+    "9B"
+   ]
+  },
+  "mozingo_lake": {
+   "previous": {
+    "summary": {
+     "n": 14,
+     "checks": 2,
+     "n_truth": 14,
+     "same": 11,
+     "same_or_tie": 12,
+     "same_pct": 0.786,
+     "same_or_tie_pct": 0.857,
+     "mean_regret": 0.0094,
+     "max_regret": 0.088,
+     "headline": "quick",
+     "same_quick": 11,
+     "same_head": 11,
+     "same_or_tie_quick": 12,
+     "same_or_tie_head": 12,
+     "mean_regret_quick": 0.0094,
+     "mean_regret_head": 0.0094,
+     "max_regret_quick": 0.088,
+     "max_regret_head": 0.088
+    },
+    "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 1 sets; lidar pads: 41 candidate pads near hole starts, 0 placement(s) on one",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "4-wood",
+     "2": "4-wood",
+     "3": "Driver",
+     "4": "Driver",
+     "6": "Driver",
+     "7": "4-wood",
+     "9": "Driver",
+     "10": "Driver",
+     "12": "Driver",
+     "13": "Driver",
+     "14": "2-wood",
+     "16": "Driver",
+     "17": "Driver",
+     "18": "2-wood"
+    },
+    "same": {
+     "1": true,
+     "2": true,
+     "3": true,
+     "4": true,
+     "6": true,
+     "7": true,
+     "9": true,
+     "10": true,
+     "12": true,
+     "13": false,
+     "14": false,
+     "16": true,
+     "17": true,
+     "18": false
+    }
+   },
+   "pipeline": {
+    "summary": {
+     "n": 14,
+     "checks": 2,
+     "n_truth": 14,
+     "same": 11,
+     "same_or_tie": 12,
+     "same_pct": 0.786,
+     "same_or_tie_pct": 0.857,
+     "mean_regret": 0.0094,
+     "max_regret": 0.088,
+     "headline": "quick",
+     "same_quick": 11,
+     "same_head": 11,
+     "same_or_tie_quick": 12,
+     "same_or_tie_head": 12,
+     "mean_regret_quick": 0.0094,
+     "mean_regret_head": 0.0094,
+     "max_regret_quick": 0.088,
+     "max_regret_head": 0.088
+    },
+    "tees": "ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment) for 1 sets; lidar pads: 41 candidate pads near hole starts",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "4-wood",
+     "2": "4-wood",
+     "3": "Driver",
+     "4": "Driver",
+     "6": "Driver",
+     "7": "4-wood",
+     "9": "Driver",
+     "10": "Driver",
+     "12": "Driver",
+     "13": "Driver",
+     "14": "2-wood",
+     "16": "Driver",
+     "17": "Driver",
+     "18": "2-wood"
+    },
+    "same": {
+     "1": true,
+     "2": true,
+     "3": true,
+     "4": true,
+     "6": true,
+     "7": true,
+     "9": true,
+     "10": true,
+     "12": true,
+     "13": false,
+     "14": false,
+     "16": true,
+     "17": true,
+     "18": false
+    }
+   },
+   "changed": []
+  },
+  "veenker": {
+   "previous": {
+    "summary": {
+     "n": 13,
+     "checks": 2,
+     "n_truth": 13,
+     "same": 10,
+     "same_or_tie": 11,
+     "same_pct": 0.769,
+     "same_or_tie_pct": 0.846,
+     "mean_regret": 0.0082,
+     "max_regret": 0.0537,
+     "headline": "quick",
+     "same_quick": 10,
+     "same_head": 10,
+     "same_or_tie_quick": 11,
+     "same_or_tie_head": 11,
+     "mean_regret_quick": 0.0082,
+     "mean_regret_head": 0.0082,
+     "max_regret_quick": 0.0537,
+     "max_regret_head": 0.0537,
+     "tee10": 13,
+     "green10": 13,
+     "iou_fairway": 0.741,
+     "n_geo": 13,
+     "iou": {
+      "trees": {
+       "mean": 0.591,
+       "n": 13,
+       "pass06": 6
+      },
+      "long grass": {
+       "mean": 0.0,
+       "n": 1,
+       "pass06": 0
+      },
+      "water": {
+       "mean": 0.245,
+       "n": 6,
+       "pass06": 1
+      },
+      "ob": {
+       "mean": 0.0,
+       "n": 1,
+       "pass06": 0
+      }
+     }
+    },
+    "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 36 candidate pads near hole starts, 4 placement(s) on one",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "Driver",
+     "2": "4-wood",
+     "3": "Driver",
+     "4": "4-wood",
+     "5": "4-wood",
+     "7": "Driver",
+     "9": "Driver",
+     "10": "Driver",
+     "12": "2-wood",
+     "14": "2-wood",
+     "15": "Long iron",
+     "16": "Driver",
+     "18": "Driver"
+    },
+    "same": {
+     "1": true,
+     "2": true,
+     "3": false,
+     "4": true,
+     "5": true,
+     "7": true,
+     "9": true,
+     "10": true,
+     "12": false,
+     "14": false,
+     "15": true,
+     "16": true,
+     "18": true
+    }
+   },
+   "pipeline": {
+    "summary": {
+     "n": 13,
+     "checks": 1,
+     "n_truth": 13,
+     "same": 11,
+     "same_or_tie": 11,
+     "same_pct": 0.846,
+     "same_or_tie_pct": 0.846,
+     "mean_regret": 0.0126,
+     "max_regret": 0.1097,
+     "headline": "quick",
+     "same_quick": 11,
+     "same_head": 11,
+     "same_or_tie_quick": 11,
+     "same_or_tie_head": 11,
+     "mean_regret_quick": 0.0126,
+     "mean_regret_head": 0.0126,
+     "max_regret_quick": 0.1097,
+     "max_regret_head": 0.1097,
+     "tee10": 10,
+     "green10": 13,
+     "iou_fairway": 0.74,
+     "n_geo": 13,
+     "iou": {
+      "trees": {
+       "mean": 0.591,
+       "n": 13,
+       "pass06": 6
+      },
+      "long grass": {
+       "mean": 0.0,
+       "n": 1,
+       "pass06": 0
+      },
+      "water": {
+       "mean": 0.245,
+       "n": 6,
+       "pass06": 1
+      },
+      "ob": {
+       "mean": 0.0,
+       "n": 1,
+       "pass06": 0
+      }
+     }
+    },
+    "tees": "ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment) for 3 sets; lidar pads: 36 candidate pads near hole starts",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "Driver",
+     "2": "4-wood",
+     "3": "4-wood",
+     "4": "4-wood",
+     "5": "4-wood",
+     "7": "Driver",
+     "9": "Driver",
+     "10": "Driver",
+     "12": "4-wood",
+     "14": "2-wood",
+     "15": "Long iron",
+     "16": "Driver",
+     "18": "Driver"
+    },
+    "same": {
+     "1": true,
+     "2": true,
+     "3": true,
+     "4": true,
+     "5": true,
+     "7": true,
+     "9": true,
+     "10": true,
+     "12": false,
+     "14": false,
+     "15": true,
+     "16": true,
+     "18": true
+    }
+   },
+   "changed": [
+    "12",
+    "3"
+   ]
+  },
+  "coldwater": {
+   "previous": {
+    "summary": {
+     "n": 14,
+     "checks": 2,
+     "n_truth": 14,
+     "same": 12,
+     "same_or_tie": 14,
+     "same_pct": 0.857,
+     "same_or_tie_pct": 1.0,
+     "mean_regret": 0.0112,
+     "max_regret": 0.133,
+     "headline": "quick",
+     "same_quick": 12,
+     "same_head": 12,
+     "same_or_tie_quick": 14,
+     "same_or_tie_head": 14,
+     "mean_regret_quick": 0.0112,
+     "mean_regret_head": 0.0112,
+     "max_regret_quick": 0.133,
+     "max_regret_head": 0.133,
+     "tee10": 14,
+     "green10": 14,
+     "iou_fairway": 0.693,
+     "n_geo": 14,
+     "iou": {
+      "trees": {
+       "mean": 0.368,
+       "n": 7,
+       "pass06": 3
+      },
+      "long grass": {
+       "mean": 0.0,
+       "n": 13,
+       "pass06": 0
+      },
+      "water": {
+       "mean": 0.279,
+       "n": 5,
+       "pass06": 2
+      },
+      "ob": {
+       "mean": 0.071,
+       "n": 2,
+       "pass06": 0
+      }
+     }
+    },
+    "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 74 candidate pads near hole starts, 4 placement(s) on one",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "Driver",
+     "2": "Driver",
+     "3": "Driver",
+     "4": "Driver",
+     "6": "Driver",
+     "7": "Driver",
+     "9": "4-wood",
+     "10": "Driver",
+     "12": "Driver",
+     "13": "Driver",
+     "14": "Driver",
+     "15": "Driver",
+     "17": "4-wood",
+     "18": "Driver"
+    },
+    "same": {
+     "1": true,
+     "2": false,
+     "3": true,
+     "4": true,
+     "6": true,
+     "7": true,
+     "9": true,
+     "10": false,
+     "12": true,
+     "13": true,
+     "14": true,
+     "15": true,
+     "17": true,
+     "18": true
+    }
+   },
+   "pipeline": {
+    "summary": {
+     "n": 14,
+     "checks": 2,
+     "n_truth": 14,
+     "same": 12,
+     "same_or_tie": 13,
+     "same_pct": 0.857,
+     "same_or_tie_pct": 0.929,
+     "mean_regret": 0.0112,
+     "max_regret": 0.133,
+     "headline": "quick",
+     "same_quick": 12,
+     "same_head": 12,
+     "same_or_tie_quick": 13,
+     "same_or_tie_head": 13,
+     "mean_regret_quick": 0.0112,
+     "mean_regret_head": 0.0112,
+     "max_regret_quick": 0.133,
+     "max_regret_head": 0.133,
+     "tee10": 12,
+     "green10": 14,
+     "iou_fairway": 0.694,
+     "n_geo": 14,
+     "iou": {
+      "trees": {
+       "mean": 0.368,
+       "n": 7,
+       "pass06": 3
+      },
+      "long grass": {
+       "mean": 0.0,
+       "n": 13,
+       "pass06": 0
+      },
+      "water": {
+       "mean": 0.279,
+       "n": 5,
+       "pass06": 2
+      },
+      "ob": {
+       "mean": 0.071,
+       "n": 2,
+       "pass06": 0
+      }
+     }
+    },
+    "tees": "ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 74 candidate pads near hole starts",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "Driver",
+     "2": "Driver",
+     "3": "Driver",
+     "4": "Driver",
+     "6": "Driver",
+     "7": "Driver",
+     "9": "4-wood",
+     "10": "Driver",
+     "12": "Driver",
+     "13": "Driver",
+     "14": "Driver",
+     "15": "Driver",
+     "17": "4-wood",
+     "18": "Driver"
+    },
+    "same": {
+     "1": true,
+     "2": false,
+     "3": true,
+     "4": true,
+     "6": true,
+     "7": true,
+     "9": true,
+     "10": false,
+     "12": true,
+     "13": true,
+     "14": true,
+     "15": true,
+     "17": true,
+     "18": true
+    }
+   },
+   "changed": []
+  },
+  "ellis": {
+   "previous": {
+    "summary": {
+     "n": 14,
+     "checks": 2,
+     "n_truth": 14,
+     "same": 9,
+     "same_or_tie": 9,
+     "same_pct": 0.643,
+     "same_or_tie_pct": 0.643,
+     "mean_regret": 0.0186,
+     "max_regret": 0.0859,
+     "headline": "quick",
+     "same_quick": 9,
+     "same_head": 9,
+     "same_or_tie_quick": 9,
+     "same_or_tie_head": 9,
+     "mean_regret_quick": 0.0186,
+     "mean_regret_head": 0.0186,
+     "max_regret_quick": 0.0859,
+     "max_regret_head": 0.0859,
+     "tee10": 14,
+     "green10": 14,
+     "iou_fairway": 0.583,
+     "n_geo": 14,
+     "iou": {
+      "trees": {
+       "mean": 0.239,
+       "n": 14,
+       "pass06": 2
+      },
+      "long grass": {
+       "mean": 0.0,
+       "n": 3,
+       "pass06": 0
+      },
+      "water": {
+       "mean": 0.0,
+       "n": 1,
+       "pass06": 0
+      },
+      "ob": {
+       "mean": 0.077,
+       "n": 3,
+       "pass06": 0
+      }
+     }
+    },
+    "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 60 candidate pads near hole starts, 1 placement(s) on one",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "Driver",
+     "2": "Driver",
+     "3": "Driver",
+     "5": "Driver",
+     "6": "Driver",
+     "7": "Driver",
+     "9": "Driver",
+     "10": "4-wood",
+     "12": "4-wood",
+     "13": "Long iron",
+     "15": "Driver",
+     "16": "4-wood",
+     "17": "Driver",
+     "18": "2-wood"
+    },
+    "same": {
+     "1": true,
+     "2": true,
+     "3": true,
+     "5": true,
+     "6": true,
+     "7": true,
+     "9": true,
+     "10": false,
+     "12": false,
+     "13": false,
+     "15": false,
+     "16": true,
+     "17": true,
+     "18": false
+    }
+   },
+   "pipeline": {
+    "summary": {
+     "n": 14,
+     "checks": 2,
+     "n_truth": 14,
+     "same": 9,
+     "same_or_tie": 10,
+     "same_pct": 0.643,
+     "same_or_tie_pct": 0.714,
+     "mean_regret": 0.0186,
+     "max_regret": 0.0859,
+     "headline": "quick",
+     "same_quick": 9,
+     "same_head": 9,
+     "same_or_tie_quick": 10,
+     "same_or_tie_head": 10,
+     "mean_regret_quick": 0.0186,
+     "mean_regret_head": 0.0186,
+     "max_regret_quick": 0.0859,
+     "max_regret_head": 0.0859,
+     "tee10": 14,
+     "green10": 14,
+     "iou_fairway": 0.584,
+     "n_geo": 14,
+     "iou": {
+      "trees": {
+       "mean": 0.239,
+       "n": 14,
+       "pass06": 2
+      },
+      "long grass": {
+       "mean": 0.0,
+       "n": 3,
+       "pass06": 0
+      },
+      "water": {
+       "mean": 0.0,
+       "n": 1,
+       "pass06": 0
+      },
+      "ob": {
+       "mean": 0.077,
+       "n": 3,
+       "pass06": 0
+      }
+     }
+    },
+    "tees": "ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 60 candidate pads near hole starts",
+    "holes_method": {
+     "method": "osm",
+     "note": "OSM maps every hole"
+    },
+    "picks": {
+     "1": "Driver",
+     "2": "Driver",
+     "3": "Driver",
+     "5": "Driver",
+     "6": "Driver",
+     "7": "Driver",
+     "9": "Driver",
+     "10": "4-wood",
+     "12": "4-wood",
+     "13": "Long iron",
+     "15": "Driver",
+     "16": "4-wood",
+     "17": "Driver",
+     "18": "2-wood"
+    },
+    "same": {
+     "1": true,
+     "2": true,
+     "3": true,
+     "5": true,
+     "6": true,
+     "7": true,
+     "9": true,
+     "10": false,
+     "12": false,
+     "13": false,
+     "15": false,
+     "16": true,
+     "17": true,
+     "18": false
+    }
+   },
+   "changed": []
+  }
+ }
+}
