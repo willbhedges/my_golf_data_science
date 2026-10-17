@@ -145,7 +145,7 @@ function head() {
   const n = redCards;
   document.getElementById('sub').textContent = D.course + ' · ' + D.tee_set + ' tees · ' +
     (n ? n + ' check' + (n > 1 ? 's' : '') + ' that could change your club or aim, worst first (about ' + Math.max(1, Math.round((n + teeItems.length / 3) * 15 / 60)) + ' min)'
-       : 'nothing that changes your club or aim') + (ambers.length ? '; ' + ambers.length + ' more worth a glance below.' : '.');
+       : 'nothing that changes your club or aim') + (ambers.some(i => i.type !== 'tee') ? '; ' + ambers.filter(i => i.type !== 'tee').length + ' more worth a glance below.' : '.');
   const s = document.getElementById('summary');
   s.innerHTML = '';
   [['red', redCards, 'to check'], ['amber', ambers.filter(i => i.type !== 'tee').length + (!teeRed && teeItems.length ? 1 : 0), 'worth a glance'], ['ok', D.counts.green, 'checked automatically']]

@@ -199,7 +199,8 @@ def main(argv=None):
         for ref, b in badge.items():
             k = PK.key_of(ref)
             if k in C.holes or k in C.par3:
-                C.labels[k] = f"{C.labels.get(k, k)} {b['symbol']}"
+                lab = str(C.labels.get(k, k)).split(" ", 1)     # badge right after the number ("10 \u26a0 CHECK")
+                C.labels[k] = " ".join([lab[0], b["symbol"]] + lab[1:])
         book.set_badges(badge)
         notes, aim_at = book.notes_and_aims(C.holes, C.par3, results, C.flags)
         PK.write_module(C, mod_path, notes=notes, aim_at=aim_at)
