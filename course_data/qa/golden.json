@@ -31,7 +31,7 @@
     "18": "Black"
    },
    "same_club_traced_model": 0.562,
-   "same_club_final": 0.562,
+   "same_club_final": 0.688,
    "iou_pass": {
     "water": 0.2,
     "ob": 0.0,
@@ -106,13 +106,13 @@
     },
     {
      "bar": "same club as final_decision.json >= 80%",
-     "value": 0.562,
+     "value": 0.688,
      "need": 0.8,
      "unit": "of tee shots (ties count both)",
      "ok": false
     }
    ],
-   "seconds": 168
+   "seconds": 105
   },
   "tee_shots": [
    {
@@ -587,9 +587,9 @@
      "club": false
     },
     "club_final": "2-wood",
-    "final_tie": false,
+    "final_tie": true,
     "final_runner": "4-wood",
-    "same_as_final": false
+    "same_as_final": true
    },
    {
     "hole": "8",
@@ -1154,9 +1154,9 @@
      "iou_recovery": true,
      "club": false
     },
-    "club_final": "4-wood",
+    "club_final": "2-wood",
     "final_tie": true,
-    "final_runner": "2-wood",
+    "final_runner": "4-wood",
     "same_as_final": true
    },
    {
@@ -1228,10 +1228,10 @@
      "iou_recovery": true,
      "club": true
     },
-    "club_final": "2-wood",
+    "club_final": "4-wood",
     "final_tie": true,
-    "final_runner": "Driver",
-    "same_as_final": false
+    "final_runner": "2-wood",
+    "same_as_final": true
    },
    {
     "hole": "17",
@@ -1310,7 +1310,7 @@
      "club": false
     },
     "club_final": "Driver",
-    "final_tie": true,
+    "final_tie": false,
     "final_runner": "2-wood",
     "same_as_final": false
    },
@@ -1386,7 +1386,7 @@
     },
     "club_final": "2-wood",
     "final_tie": false,
-    "final_runner": "Driver",
+    "final_runner": "4-wood",
     "same_as_final": true
    }
   ],
