@@ -1,6 +1,7 @@
 {"schema": "request/1", "kind": "naip_years",
- "slugs": ["wakonda", "ellis", "spirit_hollow"],
- "apply": ["wakonda", "ellis"], "detect": true,
+ "slugs": ["wakonda", "veenker", "coldwater", "ellis", "mozingo_lake", "spirit_hollow"],
+ "apply": ["wakonda", "veenker", "coldwater", "ellis", "mozingo_lake"], "detect": true,
  "replan": ["wakonda", "veenker", "coldwater", "mozingo_lake"],
- "note": "rev 2: 1 m years are not eligible when a 0.6 m year covers the course, age penalty 0.015/yr (rev 1 picked 1 m 2014 / 2015 flights for Ellis / Wakonda); Spirit Hollow scored only (its imagery dir is shared)",
- "requested": "2026-10-17T16:05Z", "by": "aim-caddie par-3 greens / imagery year", "rev": 2}
+ "baseline": {"wakonda": 2023, "veenker": 2023, "coldwater": 2023, "ellis": 2023, "mozingo_lake": 2022, "spirit_hollow": 2023},
+ "note": "rev 3: rev 1 applied 1 m / hazy years (Ellis 2014, Wakonda 2015, Veenker 2014, Mozingo 2018). Now: 1 m years ineligible when a 0.6 m year covers the course, age penalty 0.015/yr, and a detection guard (no switch when the segment model's mean IoU vs OSM drops > 0.02 vs the original year in `baseline`). Spirit Hollow scored only (shared imagery dir).",
+ "requested": "2026-10-17T16:30Z", "by": "aim-caddie par-3 greens / imagery year", "rev": 3}

@@ -37,6 +37,7 @@ CLASSES = ["green", "tee", "fairway", "bunker", "water"]
 CODE = {c: i + 1 for i, c in enumerate(CLASSES)}
 DET_RES = 0.6
 MARGIN_M = 100.0
+DETECT_TOL = 0.02               # mean IoU the chosen year may lose vs the current one before the switch is refused
 
 
 def log(*a):
@@ -178,6 +179,7 @@ def main():
     ap.add_argument("slug")
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--detect", action="store_true")
+    ap.add_argument("--baseline", help="reference year of the detection guard (default: the package's current year)")
     ap.add_argument("--out", default=os.path.join(HERE, "years"))
     a = ap.parse_args()
     pdir = os.path.join(CD, "packages", a.slug)
@@ -200,13 +202,29 @@ def main():
     os.makedirs(a.out, exist_ok=True)
     out_path = os.path.join(a.out, f"{a.slug}.json")
     json.dump(doc, open(out_path, "w"), indent=1)
+    base = int(a.baseline) if a.baseline else current            # the detection guard's reference year
     if a.detect:
         try:
-            doc["detect"] = detect_eval(years, rec["candidates"], current, bbox, fc, course)
+            doc["detect"] = detect_eval(years, rec["candidates"], base, bbox, fc, course)
         except Exception as e:                                   # noqa: BLE001
             import traceback
             traceback.print_exc()
             doc["detect_error"] = f"{type(e).__name__}: {e}"[:500]
+        # detection guard: never switch to a year on which the segment model does worse than on the package's
+        # current year (rev 1: Mozingo 2018 0.62 vs 2022 0.72 mean IoU, Ellis 2021 0.60 vs 2023 0.63)
+        mi = (doc.get("detect") or {}).get("mean_iou") or {}
+        if base and row["year"] != int(base) and str(base) in mi and str(row["year"]) in mi \
+                and mi[str(base)] - mi[str(row["year"])] > DETECT_TOL:
+            keep = next((y for y in years if y["year"] == int(base)), None)
+            if keep is not None:
+                rec["reason"] = (f"{base}: the segment model scores {mi[str(base)]:.3f} mean IoU vs OSM on it "
+                                 f"vs {mi[str(row['year'])]:.3f} on the greener {row['year']}, so the switch is refused "
+                                 f"(scored: {rec['reason']})")
+                rec["chosen"] = int(base)
+                row = keep
+                doc["chosen"] = row["year"]
+                doc["selection"] = rec
+                log(f"{a.slug}: {rec['reason']}")
         json.dump(doc, open(out_path, "w"), indent=1)
     if a.apply:
         if current and int(current) == row["year"]:

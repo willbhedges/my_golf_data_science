@@ -88,12 +88,14 @@ jobs:
           print("apply=" + ("--apply" if (ap is True or (isinstance(ap, list) and s in ap)) else ""))
           print("detect=" + ("--detect" if r.get("detect", True) else ""))
           print("replan=" + ("true" if s in (r.get("replan") or []) else "false"))
+          b = (r.get("baseline") or {}).get(s)
+          print("baseline=" + (f"--baseline {b}" if b else ""))
           EOF
       - name: Score years / detect / apply (${{ matrix.slug }})
         id: score
         timeout-minutes: 90
         run: |
-          python -u course_data/imagery/naip_years_run.py ${{ matrix.slug }} ${{ steps.f.outputs.detect }} ${{ steps.f.outputs.apply }}
+          python -u course_data/imagery/naip_years_run.py ${{ matrix.slug }} ${{ steps.f.outputs.detect }} ${{ steps.f.outputs.apply }} ${{ steps.f.outputs.baseline }}
           python3 - course_data/imagery/years/${{ matrix.slug }}.json >> "$GITHUB_OUTPUT" <<'EOF'
           import json, sys
           d = json.load(open(sys.argv[1]))
