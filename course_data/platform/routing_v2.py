@@ -32,8 +32,13 @@ What v2 adds
                     routing leaves unused (a course uses its own area's greens), and the best wins (`facility_split`).
   constraints       fixed {ref: (tee, green)} pins a hole (a golfer's answer), exclude {ref: {green}} forbids greens:
                     one answer re-solves the whole round ("propagation").
-  posterior         the final beam's distinct routings, Boltzmann-weighted at temperature TAU: per hole the
-                    marginal of its (green, tee-complex) -> `p_hole`; status `check` when p_hole < P_CHECK.
+  search            beam (BEAM 6000) in card order, deduplicated on (green, hole 1's tee, used-green set) with
+                    a 64-bit set hash; per hole the TOPK cheapest hypotheses plus the PER_GREEN best boxes of every
+                    green; then an exact-cost local search (re-pick one hole, swap two) on the best few routings.
+  posterior         the final beam's distinct routings plus, per hole, the best routing that does NOT give it its
+                    green (leave-one-out, beam 800; `margins=True`), Boltzmann-weighted at temperature tau: per hole
+                    the marginal of its (green, tee complex) -> `p_hole`; status `check` when p_hole < p_check.
+                    tau / p_check are calibrated on the train split (route_eval.py calibrate).
 """
 from __future__ import annotations
 

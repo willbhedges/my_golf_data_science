@@ -30,6 +30,7 @@ import routing as R  # noqa: E402
 import routing_v2 as R2  # noqa: E402
 
 DOUBT = 0.02
+RISK_CONFIRM_P = 0.35
 SNAP_GREEN, SNAP_TEE = 15.0, 25.0
 
 
@@ -39,13 +40,14 @@ def entropy(ps):
 
 
 class Session:
-    def __init__(self, inp, card, fc=None, boundary=None, w=None, tau=None, p_check=None, p_stop=None):
+    def __init__(self, inp, card, fc=None, boundary=None, w=None, tau=None, p_check=None, p_stop=None, policy="risk"):
         w0, t0, p0 = R2.load_weights()
         self.w = w0 if w is None else w
         self.tau = t0 if tau is None else tau
         self.p_check = p0 if p_check is None else p_check
         self.p_stop = self.p_check if p_stop is None else p_stop
         self.inp, self.card, self.fc, self.boundary = dict(inp), card, fc, boundary
+        self.policy = policy
         self.ctx = R2.context(self.inp, card, fc=fc, boundary=boundary)
         self.fixed, self.exclude = {}, {}
         self.taps, self.history = 0, []
@@ -81,8 +83,11 @@ class Session:
         return all(h.get("p_hole", 0) >= self.p_stop for r, h in hs.items() if r not in self.fixed)
 
     # ------------------------------------------------------------------ questions
-    def questions(self, k=5):
-        """[question] sorted by expected bits per tap (best first)."""
+    def questions(self, k=5, policy=None):
+        """[question] best first. policy "eig": expected bits per tap over the posterior; "risk": the hole most
+        likely wrong first, as a confirm when p_hole >= RISK_CONFIRM_P (else, or after a "no", a locate), scored
+        by (1 - p_hole) per tap."""
+        policy = policy or self.policy
         hs = self.res.get("holes", {})
         marg = self.marginals()
         qs = []
@@ -108,7 +113,15 @@ class Session:
                            prompt=f"Tap hole {r}'s tee, then its green",
                            show=dict(line=None, tee_ll=None, green_ll=None), answers=[{"tee_ll": "[lon, lat]",
                                                                                          "green_ll": "[lon, lat]"}]))
-        qs.sort(key=lambda q: (-q["bits_per_tap"], q["taps"], int(q["ref"])))
+        if policy == "risk":
+            for q in qs:
+                p = q["p_hole"]
+                want = "locate" if (q["ref"] in self.rejected or p < RISK_CONFIRM_P) else "confirm"
+                q["risk_per_tap"] = round((1 - p) / q["taps"], 4) if q["kind"] == want else -1.0
+            qs = [q for q in qs if q["risk_per_tap"] >= 0]
+            qs.sort(key=lambda q: (-q["risk_per_tap"], int(q["ref"])))
+        else:
+            qs.sort(key=lambda q: (-q["bits_per_tap"], q["taps"], int(q["ref"])))
         self._qs = {q["id"]: q for q in qs}
         return qs[:k]
 
@@ -162,6 +175,8 @@ class Session:
                               p_hole=h.get("p_hole"), confirmed=r in self.fixed,
                               status="confirmed" if r in self.fixed else h.get("status"), flags=h.get("flags", [])))
         qs = [] if self.done() else self.questions(k)
+        for q in qs:
+            q.pop("risk_per_tap", None)
         return dict(schema="golf_confirm/1", course=course or {}, method=self.res.get("method"),
                     n_holes=self.res.get("n_holes"), card=bool(self.card), holes=holes,
                     summary=dict(confirmed=len(self.fixed), to_check=sum(1 for x in holes if x["status"] == "check"),

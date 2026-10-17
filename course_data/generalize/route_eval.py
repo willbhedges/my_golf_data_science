@@ -369,7 +369,7 @@ def simulate_confirm(c, policy="eig", max_taps=40, w=None, tau=None, p_check=Non
             st = stop or (s.taps, len(wrong))
             return dict(taps=s.taps if not wrong else None, questions=len(s.history), log=s.history,
                         stop_rule_taps=st[0], stop_rule_wrong=st[1], wrong_left=len(wrong))
-        qs = s.questions(k=200)
+        qs = s.questions(k=200, policy="risk" if policy == "risk" else "eig")
         if policy == "eig_confirm":
             qs = [q for q in qs if q["kind"] == "confirm"]
         elif policy == "flagged":            # v1's check list: each flagged hole in card order, a locate after a "no"
@@ -436,7 +436,7 @@ def confirm_agg(rows, policies):
 
 
 FINAL_EVALS = (("osm", "web"), ("model", "web"), ("osm", "none"))
-FINAL_CONFIRM = (("osm", ("eig", "eig_confirm", "flagged", "locate_all")), ("model", ("eig", "locate_all")))
+FINAL_CONFIRM = (("osm", ("risk", "eig", "flagged", "locate_all")), ("model", ("risk", "locate_all")))
 
 
 def final_shard(split, shard, n_shards, max_taps=30):
@@ -450,6 +450,62 @@ def final_shard(split, shard, n_shards, max_taps=30):
         rows, _ = confirm_study(split, pols, inputs, slugs=slugs, max_taps=max_taps)
         out["confirm"][inputs] = rows
     return out
+
+
+def results_md(ev):
+    """The numbers block of CONFIRM_UX.md (between the RESULTS markers) from eval_v2.json."""
+    sp = ev["split"]
+    L = ["<!-- RESULTS -->", "", f"## Results on the held-out test split ({sp}, `route_eval.py final`, eval_v2.json)", "",
+         "Test courses are the 32 fully mapped courses held out by `sample.py holdout` (8 per Census region). One of them "
+         "has fewer than 9 numbered OSM holes and is skipped, which leaves the counts below. They were never used to "
+         "tune `routing_v2_weights.json`. Each course's OSM golf=hole ways and refs are hidden.", "",
+         "### Automatic routing: v1 (routing.py) vs v2 (routing_v2.py)", "",
+         "| inputs | card | courses | method | hole-number acc | green acc | all holes correct, no input | every wrong hole flagged | flags / course | wrong / course |",
+         "|---|---|---|---|---|---|---|---|---|---|"]
+    names = {"osm": "OSM greens / tees + model + lidar", "model": "model + lidar only (unmapped)"}
+    for key in ("osm_card", "model_card", "osm_nocard"):
+        blk = ev.get(f"{sp}_{key}")
+        if not blk:
+            continue
+        inputs, card = key.split("_")
+        for m in ("v1", "v2"):
+            a = blk["agg"].get(m) or {}
+            if not a:
+                continue
+            L.append(f"| {names[inputs]} | {'web, else pars + lengths' if card == 'card' else 'none'} | {a['n']} | {m} | "
+                     f"{a['hole_number_acc']:.0%} | {a['green_assign_acc']:.0%} | **{a['all_correct']:.0%}** | "
+                     f"{a['correct_after_check']:.0%} | {a['flags_per_course']} | {a['wrong_per_course']} |")
+    L += ["", "### Golfer confirm: taps until every hole is right (oracle golfer, test split)", "",
+          "| inputs | policy | courses | reach 100 % (<= 30 taps) | 0 taps | <= 2 taps | <= 4 taps | <= 8 taps | median taps | mean taps | app stops after (mean taps) | all right when the app stops |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    pol_names = {"risk": "risk (default): least-sure hole first", "eig": "max bits per tap",
+                 "eig_confirm": "max bits, yes/no only", "flagged": "v1 style: confirm each flagged hole",
+                 "locate_all": "no routing: tap all 18 tees + greens"}
+    for inputs in ("osm", "model"):
+        blk = ev.get(f"confirm_{sp}_{inputs}")
+        if not blk:
+            continue
+        for pol, a in blk["agg"].items():
+            L.append(f"| {names[inputs]} | {pol_names.get(pol, pol)} | {a['n']} | {a['reached_100']:.0%} | {a['zero_taps']:.0%} | "
+                     f"{a['within_2']:.0%} | {a['within_4']:.0%} | {a['within_8']:.0%} | {a['median_taps']} | {a['mean_taps']} | "
+                     f"{a.get('stop_rule_mean_taps', '-')} | "
+                     f"{'-' if a.get('stop_rule_all_correct') is None else format(a['stop_rule_all_correct'], '.0%')} |")
+    w = ev.get("weights") or {}
+    L += ["", f"Weights: `course_data/platform/routing_v2_weights.json` ({w.get('method', '')}, train split, {w.get('n')} "
+          f"course x input runs); posterior temperature tau {w.get('tau')}, flag threshold p_hole < {w.get('p_check')}.", "",
+          "<!-- /RESULTS -->"]
+    return "\n".join(L)
+
+
+def write_results_md(ev, path=os.path.join(HERE, "CONFIRM_UX.md")):
+    txt = open(path).read()
+    block = results_md(ev)
+    if "<!-- /RESULTS -->" in txt:
+        a, b = txt.index("<!-- RESULTS -->"), txt.index("<!-- /RESULTS -->") + len("<!-- /RESULTS -->")
+        txt = txt[:a] + block + txt[b:]
+    else:
+        txt = txt.replace("<!-- RESULTS -->", block, 1)
+    open(path, "w").write(txt)
 
 
 def merge(paths, out_path=OUT):
@@ -468,6 +524,7 @@ def merge(paths, out_path=OUT):
         rows = [r for sh in shards for r in sh["confirm"].get(inputs, [])]
         out[f"confirm_{out['split']}_{inputs}"] = dict(agg=confirm_agg(rows, pols), rows=rows)
     json.dump(out, open(out_path, "w"), indent=1, default=str)
+    write_results_md(out)
     log(json.dumps({k: v["agg"] for k, v in out.items() if isinstance(v, dict) and "agg" in v}, indent=1))
     return out
 

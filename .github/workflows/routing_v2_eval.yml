@@ -70,7 +70,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add course_data/generalize/eval_v2.json course_data/generalize/eval_shards
+          git add course_data/generalize/eval_v2.json course_data/generalize/eval_shards course_data/generalize/CONFIRM_UX.md
           git diff --cached --quiet && exit 0
           printf '%s\n' "routing v2: held-out test evaluation + confirm simulation (Actions run ${{ github.run_id }})" "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
