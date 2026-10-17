@@ -84,16 +84,24 @@ jobs:
           python3 - "${{ needs.plan.outputs.req }}" "${{ matrix.slug }}" >> "$GITHUB_OUTPUT" <<'EOF'
           import json, sys
           r, s = json.load(open(sys.argv[1])), sys.argv[2]
-          print("apply=" + ("--apply" if r.get("apply") else ""))
+          ap = r.get("apply")
+          print("apply=" + ("--apply" if (ap is True or (isinstance(ap, list) and s in ap)) else ""))
           print("detect=" + ("--detect" if r.get("detect", True) else ""))
           print("replan=" + ("true" if s in (r.get("replan") or []) else "false"))
           EOF
-          python3 -c "import json;print('year_before=' + str(json.load(open('course_data/packages/${{ matrix.slug }}/imagery/georef.json'))['imagery']['year']))" >> "$GITHUB_OUTPUT"
       - name: Score years / detect / apply (${{ matrix.slug }})
+        id: score
         timeout-minutes: 90
-        run: python -u course_data/imagery/naip_years_run.py ${{ matrix.slug }} ${{ steps.f.outputs.detect }} ${{ steps.f.outputs.apply }}
+        run: |
+          python -u course_data/imagery/naip_years_run.py ${{ matrix.slug }} ${{ steps.f.outputs.detect }} ${{ steps.f.outputs.apply }}
+          python3 - course_data/imagery/years/${{ matrix.slug }}.json >> "$GITHUB_OUTPUT" <<'EOF'
+          import json, sys
+          d = json.load(open(sys.argv[1]))
+          print(f"year_before={d.get('current')}")
+          print(f"year_after={d.get('chosen')}")
+          print(f"img={d.get('imagery_dir')}")
+          EOF
       - name: Rebuild the package offline
-        id: build
         if: steps.f.outputs.apply != ''
         run: |
           python -u - <<'EOF'
@@ -103,11 +111,9 @@ jobs:
           p = pk.build_request("course_data/requests/package_${{ matrix.slug }}.json")
           print(p["stages"].get("imagery"), "|", p["stages"].get("green_visibility"))
           EOF
-          Y=$(python3 -c "import json;print(json.load(open('course_data/packages/${{ matrix.slug }}/imagery/georef.json'))['imagery']['year'])")
-          echo "year_after=$Y" >> "$GITHUB_OUTPUT"
-          echo "NAIP ${{ steps.f.outputs.year_before }} -> $Y"
+          echo "NAIP ${{ steps.score.outputs.year_before }} -> ${{ steps.score.outputs.year_after }}"
       - name: Re-plan (year changed)
-        if: steps.f.outputs.replan == 'true' && steps.build.outputs.year_after != steps.f.outputs.year_before
+        if: steps.f.outputs.apply != '' && steps.f.outputs.replan == 'true' && steps.score.outputs.year_after != steps.score.outputs.year_before
         timeout-minutes: 120
         run: |
           for d in course_data/packages/${{ matrix.slug }}/out*/; do
@@ -130,7 +136,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           paths="course_data/imagery/years/$S.json"
           if [ -n "${{ steps.f.outputs.apply }}" ]; then
-            paths="$paths $P/imagery $P/package.json $P/qa.md $P/coverage.json $P/course_auto.py"
+            paths="$paths ${{ steps.score.outputs.img }} $P/package.json $P/qa.md $P/coverage.json $P/course_auto.py"
             for d in $P/out*/; do d=${d%/}; [ "$(basename $d)" = "out_full" ] || paths="$paths $d"; done
           fi
           existing=""

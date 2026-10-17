@@ -22,7 +22,7 @@ when OSM has no turf):
   haze          dark-object level: 2nd percentile of the blue band over the box (haze lifts the shadows)
   coverage      share of the course box the year's acquisitions cover (< MIN_COVER: not eligible)
   date          leaf-on window LEAF_ON (May 1 - Sep 30); a dormant-season flight pays LEAF_OFF_PEN
-  gsd           0.3 m beats 0.6 m beats 1 m (reading the page, small-feature detection)
+  gsd           0.3 m beats 0.6 m; 1 m years are only eligible when no <= 0.6 m year covers the course
 score = turf_ndvi + EXG_W turf_exg - 0.6 bare_turf - 1.0 greens_bare - cloud - haze penalty - leaf-off penalty
         + resolution bonus - AGE_PEN x years older than the newest year (OSM, tees and bunkers describe the course
         as it is now; old flights predate renovations, so an old year has to be clearly greener to win).
@@ -48,7 +48,8 @@ BARE_NDVI = 0.15
 GREEN_REL_DROP = 0.12            # a green this far below the median green NDVI of the same flight is not turf
 LEAF_ON = ((5, 1), (9, 30))
 LEAF_OFF_PEN = 0.5               # dormant-season flights only win when no leaf-on year covers the course
-AGE_PEN = 0.008                  # per year older than the newest covering year
+AGE_PEN = 0.015                  # per year older than the newest covering year (renovations, storms: Ellis 2020 derecho)
+FINE_GSD = 0.6                   # with a year at <= 0.6 m covering the course, 1 m years are not eligible
 EXG_W = 0.001
 HAZE_FREE, HAZE_SCALE = 35.0, 400.0
 GSD_BONUS = {0.3: 0.03, 0.6: 0.0, 1.0: -0.04}
@@ -222,8 +223,12 @@ def select(cands, current_year=None):
     """[candidate] -> (chosen, reason, candidates newest first). Equal scores (to 0.001) go to the newer year."""
     cover = [c for c in cands if c.get("coverage", 1.0) >= MIN_COVER]
     newest = max((c["year"] for c in (cover or cands)), default=0)
+    fine = any(c.get("has_nir") and float(c.get("gsd_m") or 1.0) <= FINE_GSD for c in cover)
     for c in cands:
         c["score"], c["notes"] = score(c, newest)
+        if fine and c["score"] is not None and float(c.get("gsd_m") or 1.0) > FINE_GSD:
+            c["score"], c["notes"] = None, c["notes"] + [f"{c.get('gsd_m')} m: too coarse for the page "
+                                                         f"(a {FINE_GSD} m year covers the course)"]
     elig = [c for c in cands if c["score"] is not None]
     out = sorted(cands, key=lambda c: -c["year"])
     if not elig:

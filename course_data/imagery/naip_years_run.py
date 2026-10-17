@@ -181,7 +181,9 @@ def main():
     ap.add_argument("--out", default=os.path.join(HERE, "years"))
     a = ap.parse_args()
     pdir = os.path.join(CD, "packages", a.slug)
-    img = os.path.join(pdir, "imagery")
+    import package as pk                                         # the imagery dir the package build reads
+    req = json.load(open(os.path.join(ROOT, "course_data", "requests", f"package_{a.slug}.json")))
+    img = pk.find_imagery(req, pdir, a.slug) or os.path.join(pdir, "imagery")
     osm_path = os.path.join(pdir, "raw", "osm.geojson")
     fc = json.load(open(osm_path))
     bbox, course = course_box(pdir)
@@ -193,7 +195,8 @@ def main():
     row, rec = FI.choose_year(years, "auto", osm=fc, bbox=bbox, current=current)
     log(f"{a.slug}: chosen {row['year']}: {rec['reason']}")
     doc = dict(schema="naip_years_run/1", slug=a.slug, built=time.strftime("%Y-%m-%dT%H:%MZ", time.gmtime()),
-               bbox_snwe=[round(v, 6) for v in bbox], current=current, selection=rec)
+               bbox_snwe=[round(v, 6) for v in bbox], current=current, chosen=row["year"],
+               imagery_dir=os.path.relpath(img, ROOT), selection=rec)
     os.makedirs(a.out, exist_ok=True)
     out_path = os.path.join(a.out, f"{a.slug}.json")
     json.dump(doc, open(out_path, "w"), indent=1)

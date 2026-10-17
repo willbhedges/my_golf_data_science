@@ -1,5 +1,6 @@
 {"schema": "request/1", "kind": "naip_years",
- "slugs": ["wakonda", "veenker", "coldwater", "ellis", "mozingo_lake", "spirit_hollow"],
- "apply": true, "detect": true,
+ "slugs": ["wakonda", "ellis", "spirit_hollow"],
+ "apply": ["wakonda", "ellis"], "detect": true,
  "replan": ["wakonda", "veenker", "coldwater", "mozingo_lake"],
- "requested": "2026-10-17T14:50Z", "by": "aim-caddie par-3 greens / imagery year", "rev": 1}
+ "note": "rev 2: 1 m years are not eligible when a 0.6 m year covers the course, age penalty 0.015/yr (rev 1 picked 1 m 2014 / 2015 flights for Ellis / Wakonda); Spirit Hollow scored only (its imagery dir is shared)",
+ "requested": "2026-10-17T16:05Z", "by": "aim-caddie par-3 greens / imagery year", "rev": 2}
