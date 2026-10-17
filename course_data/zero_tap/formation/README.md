@@ -75,7 +75,9 @@ workstream C's sequence solver. Results: [RESULTS.md](RESULTS.md).
  "tees":   [{"id": "c4", "ll": [lon, lat], "boxes_ll": [[lon, lat], ...], "virtual": false, "p_input": 1.0,
              "p_starts_hole": 0.95}],   // sum of its marginals over greens (<= 1)
  "pairs":  [{"green": "g3", "tee": "c4", "p": 0.81, "logit": 2.4, "length_yd": 402.1, "bearing_deg": 81.2,
-             "tee_ll": [lon, lat],      // the complex's box farthest from the green (the back tee)
+             "green_ll": [lon, lat], "tee_ll": [lon, lat],   // tee_ll: the complex's back box
+             "tee_boxes_ll": [[lon, lat], ...],
+             "p_corridor": 0.93,        // per-hole pair confidence: P(this green's hole starts on this line of play)
              "covers": ["c5"]}],        // forward complexes on this pair's corridor (same hole if this pair is right)
  "map":    [{"green": "g3", "tee": "c4", "p": 0.81, "p_corridor": 0.93, "green_ll": [...], "tee_ll": [...],
              "tee_boxes_ll": [...], "length_yd": 402.1}],
@@ -87,6 +89,9 @@ workstream C's sequence solver. Results: [RESULTS.md](RESULTS.md).
   exclusivity is already in the marginals, so a solver that enforces it again only double-counts mildly.
 * `p_map_corridor` / `map[].p_corridor` is the calibrated confidence that the green's hole starts on that line of
   play (any of its tees). Calibration tables are in `RESULTS.md`.
+* Precomputed for every benchmark course and tier by the eval stage: `hole_pairs/<tier>/<slug>.json` (inputs exactly
+  as `zero_tap/bench.inputs(row, tier)`); workstream C's `sequence/solve.py --hole-pairs` reads `pairs[]`
+  (`green_ll`, `tee_ll`, `p`). For a per-hole certainty gate, use `p_corridor` of the chosen pair.
 * `tees[].virtual`: no tee box seen, a point at a fairway end. `tee_ll` of a virtual tee is that point.
 * Coordinates `[lon, lat]` WGS84. Ids are the scene's (`g*` / `t*` / `c*` OSM complexes; perception ids for scenes;
   `v*` virtual).

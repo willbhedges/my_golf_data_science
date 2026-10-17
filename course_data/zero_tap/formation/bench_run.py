@@ -28,6 +28,7 @@ import hole_pairs as HP                                              # noqa: E40
 import scene as S                                                    # noqa: E402  (structure/scene.py)
 
 TIERS = ("nocard", "osm_card", "unmapped_nocard", "unmapped_card")
+HP_OUT = None
 
 
 def run_one(row, tier, version):
@@ -41,6 +42,11 @@ def run_one(row, tier, version):
         sc = S.scene_from_osm(inp["fc"], (inp.get("course") or {}).get("boundary"))
     aux = os.path.join(D.INPUTS, row["slug"], "aux.npz")
     hp = HP.hole_pairs(sc, inp.get("card"), aux if os.path.exists(aux) else None, slug=row["slug"])
+    if HP_OUT:                                                       # hole_pairs/1 for workstream C's solver
+        od = os.path.join(HP_OUT, tier)
+        os.makedirs(od, exist_ok=True)
+        hp["tier"] = tier
+        json.dump(hp, open(os.path.join(od, row["slug"] + ".json"), "w"), separators=(",", ":"))
     N = row.get("kind") if row.get("kind") in (9, 18) else None
     if N is None and inp.get("card"):
         _, Y, _ = D.card_sets(inp["card"])
@@ -63,7 +69,10 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--version", default="formation-v2")
     ap.add_argument("--strip-rows", help="drop per-course rows from the bench.py score jsons in this dir")
+    ap.add_argument("--hole-pairs-out", help="also write hole_pairs/1 per course to <dir>/<tier>/<slug>.json")
     a = ap.parse_args()
+    global HP_OUT
+    HP_OUT = a.hole_pairs_out
     if a.strip_rows:
         for f in sorted(os.listdir(a.strip_rows)):
             p = os.path.join(a.strip_rows, f)

@@ -209,6 +209,7 @@ jobs:
           rm -rf $OUT
           for t in nocard osm_card unmapped_nocard unmapped_card; do
             python -u course_data/zero_tap/formation/bench_run.py --split all --tiers $t --out $OUT \
+              --hole-pairs-out course_data/zero_tap/formation/hole_pairs \
               --version "formation-v2@${GITHUB_SHA::8}" > /tmp/br_$t.log 2>&1 &
           done
           wait
@@ -227,7 +228,8 @@ jobs:
           ls -la $F/model.pkl || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for p in $F/RESULTS.md $F/results.json $F/bench course_data/zero_tap/results/formation_v2; do
+          du -sh $F/hole_pairs || true
+          for p in $F/RESULTS.md $F/results.json $F/bench $F/hole_pairs course_data/zero_tap/results/formation_v2; do
             if [ -e "$p" ]; then git add "$p"; fi
           done
           if [ -f $F/model.pkl ] && [ $(stat -c %s $F/model.pkl) -lt 30000000 ]; then git add -f $F/model.pkl; fi

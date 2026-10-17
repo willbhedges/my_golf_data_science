@@ -74,7 +74,10 @@ def hole_pairs(sc, card=None, aux_path=None, model_path=MODEL, slug=None):
         out_pairs.append(dict(green=sc.greens[gi]["id"], tee=cid[k], p=round(float(P[gi, k]), 4),
                               logit=round(float(S[gi, k]), 3), length_yd=round(float(p["D"]), 1),
                               bearing_deg=round((90.0 - math.degrees(math.atan2(g[1] - t[1], g[0] - t[0]))) % 360, 1),
-                              tee_ll=pj.ll(t), covers=[cid[c] for c in p.get("cover", []) if c != k]))
+                              green_ll=pj.ll(g), tee_ll=pj.ll(t),
+                              tee_boxes_ll=[pj.ll(b) for b in np.asarray(geo.cx[k]["xy"])],
+                              p_corridor=round(FM.corridor_mass(geo.G, geo.C, P[gi], gi, k), 4),
+                              covers=[cid[c] for c in p.get("cover", []) if c != k]))
     out_pairs.sort(key=lambda r: (r["green"], -r["p"]))
     greens = []
     for gi, g in enumerate(sc.greens):
