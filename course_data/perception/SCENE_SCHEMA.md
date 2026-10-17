@@ -146,11 +146,17 @@ Per course and pooled, from `course_data/perception/evaluate.py` (definitions in
 `fairways`, `bunkers`, `water`, `cart_paths {length_precision, length_recall, connectivity_acc}`,
 `buildings`, `clubhouse {error_m}`, `driving_range {hit}`.
 
+## Where the files are
+
+Actions (`perception.yml`) commits, per course, `course_data/perception/scenes/<slug>/scene.json.gz` (gzipped
+`scene.json`; `scene.geojson` is not committed: rebuild it with `scene.to_geojson(scene)`) and `eval.json`.
+`perceive.py <stack dir> --out DIR` writes the uncompressed pair locally.
+
 ## How to read it
 
 ```python
-import json
-scene = json.load(open("course_data/perception/scenes/<slug>/scene.json"))
+import gzip, json
+scene = json.load(gzip.open("course_data/perception/scenes/<slug>/scene.json.gz"))
 hole_greens = [g for g in scene["greens"] if g["kind"] == "hole"]
 complexes = sorted(scene["tee_complexes"], key=lambda t: -t["p"])
 nxt = [r for r in scene["relations"]["green_to_tee"] if r["path_m"] is not None]

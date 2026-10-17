@@ -108,33 +108,38 @@ def train_objects(tabs, out_dir, log=print):
 
 
 def train_paths(tabs, out_dir, max_rows=1_500_000, log=print):
+    """Pixel model on the features every table has (tables from different code versions may differ)."""
     import features as F
-    Xs, ys, te_X, te_y = [], [], [], []
+    zs = []
     for t in tabs:
         p = os.path.join(t["dir"], "path_px.npz")
-        if not os.path.exists(p):
-            continue
-        z = np.load(p, allow_pickle=False)
-        if list(z["features"]) != list(F.PATH_FEATURES):
-            continue
-        (Xs if split_of(t["meta"].get("state")) == "train" else te_X).append(z["X"])
-        (ys if split_of(t["meta"].get("state")) == "train" else te_y).append(z["y"])
-    if not Xs:
+        if os.path.exists(p):
+            z = np.load(p, allow_pickle=False)
+            zs.append((t, [str(f) for f in z["features"]], z["X"], z["y"]))
+    if not zs:
         return dict(skipped="no path tables")
+    common = [f for f in F.PATH_FEATURES if all(f in names for _, names, _, _ in zs)]
+    Xs, ys, te_X, te_y = [], [], [], []
+    for t, names, X, y in zs:
+        X = X[:, [names.index(f) for f in common]]
+        test = split_of(t["meta"].get("state")) == "test"
+        (te_X if test else Xs).append(X)
+        (te_y if test else ys).append(y)
+    if not Xs:
+        return dict(skipped="no train-state path tables")
     X, y = np.vstack(Xs), np.concatenate(ys)
     if len(y) > max_rows:
         ii = np.random.default_rng(0).choice(len(y), max_rows, replace=False)
         X, y = X[ii], y[ii]
     t0 = time.time()
     clf = fit(X, y, max_iter=300, balanced=False)
-    feats = list(F.PATH_FEATURES)
-    res = dict(features=feats, n_train=int(len(y)), courses_train=len(Xs), courses_test=len(te_X),
+    res = dict(features=common, n_train=int(len(y)), courses_train=len(Xs), courses_test=len(te_X),
                seconds=round(time.time() - t0, 1), train=_metrics(clf, X, y))
     if te_X:
         res["test"] = _metrics(clf, np.vstack(te_X), np.concatenate(te_y))
     thr = choose_path_threshold()
     res["thr"] = thr
-    pickle.dump(dict(clf=clf, features=feats, thr=thr), open(os.path.join(out_dir, "path_px.pkl"), "wb"))
+    pickle.dump(dict(clf=clf, features=common, thr=thr), open(os.path.join(out_dir, "path_px.pkl"), "wb"))
     log("path_px", json.dumps(res)[:800])
     return res
 

@@ -16,8 +16,12 @@ import features as F
 THR = 0.5
 SPUR_M = 10.0
 GAP_M = 14.0
+LONG_GAP_M = 40.0
+LONG_GAP_DEG = 30.0
 MIN_COMP_M = 30.0
 ROAD_WIDTH_M = 6.5
+MIN_LINE_M = 25.0
+MAX_LINE_WIDTH_M = 6.0
 
 
 def rule_prob(L):
@@ -37,10 +41,7 @@ def rule_prob(L):
 
 def model_prob(L, model):
     """model: {"clf": sklearn classifier with classes 0 other / 1 path / 2 road, "features": [...]}"""
-    X = F.path_feature_stack(L)
-    names = list(F.PATH_FEATURES)
-    idx = [names.index(f) for f in model["features"]]
-    X = X[idx]
+    X = F.path_feature_stack(L, list(model["features"]))
     n, H, W = X.shape
     flat = X.reshape(n, -1).T
     valid = L["valid"].ravel()
@@ -262,9 +263,16 @@ def bridge_gaps(G, prob, st, gap_m=GAP_M, min_p=0.12):
             continue
         d = np.hypot(*(P - P[i]).T)
         d[i] = 1e9
-        for j in np.argsort(d)[:6]:
-            if d[j] > gap_m:
+        heading = _end_heading(G, n)
+        for j in np.argsort(d)[:8]:
+            if d[j] > LONG_GAP_M:
                 break
+            if d[j] > gap_m:                       # long gaps (under canopy): only straight ahead of the dead end
+                if heading is None:
+                    continue
+                v = (P[j] - P[i]) / d[j]
+                if float(np.dot(v, heading)) < math.cos(math.radians(LONG_GAP_DEG)):
+                    continue
             m = ids[j]
             if G.has_edge(n, m):
                 continue
@@ -282,13 +290,28 @@ def bridge_gaps(G, prob, st, gap_m=GAP_M, min_p=0.12):
             r = np.clip(np.round(r).astype(int), 0, prob.shape[0] - 1)
             c = np.clip(np.round(c).astype(int), 0, prob.shape[1] - 1)
             pm = float(prob[r, c].mean())
-            if pm < min_p:
+            if pm < min_p and d[j] <= gap_m:
                 continue
             _add_edge(G, n, m, [P[i], P[j]], pm * 0.8, None)
             G.edges[n, m]["bridge"] = True
             added += 1
             break
     return G
+
+
+def _end_heading(G, n, back_m=10.0):
+    """Unit direction a dead end points to (from ~10 m back along its edge to the end)."""
+    nb = list(G.neighbors(n))
+    if len(nb) != 1:
+        return None
+    pts = _oriented(G.edges[n, nb[0]]["pts"], (G.nodes[n]["x"], G.nodes[n]["y"]))
+    end = pts[0]
+    d = np.hypot(*(pts - end).T)
+    k = int(np.searchsorted(d, back_m)) if np.all(np.diff(d) >= 0) else min(len(pts) - 1, int(back_m))
+    k = min(max(k, 1), len(pts) - 1)
+    v = end - pts[k]
+    nv = float(np.hypot(*v))
+    return v / nv if nv > 1e-6 else None
 
 
 def drop_roads(G, road_p=None, st=None, width_m=ROAD_WIDTH_M):
@@ -315,9 +338,26 @@ def build_graph(L, model=None, thr=None):
     return graph_from_prob(L, prob, road, thr), prob, road
 
 
+def linear_components(mask, res=1.0, min_len_m=MIN_LINE_M, max_width_m=MAX_LINE_WIDTH_M):
+    """Keep connected components that look like paths: a skeleton >= min_len_m long and a mean width
+    (area / skeleton length) <= max_width_m. Drops blobs (roofs, drives, bunker rims, shadow clutter)."""
+    from skimage.morphology import skeletonize
+    m = ndi.binary_closing(mask, iterations=1)
+    lab, n = ndi.label(m, structure=np.ones((3, 3)))
+    if not n:
+        return m
+    sk = skeletonize(m)
+    idx = np.arange(1, n + 1)
+    area = np.asarray(ndi.sum(np.ones_like(lab, np.float32), lab, idx)) * res * res
+    sl = np.asarray(ndi.sum(sk.astype(np.float32), lab, idx)) * res
+    keep = (sl >= min_len_m) & (area / np.maximum(sl, 1e-6) <= max_width_m)
+    keep = np.r_[False, keep]
+    return keep[lab]
+
+
 def graph_from_prob(L, prob, road, thr):
     width = L["paved_width_max"]
-    G = skeleton_graph(prob >= thr, prob, L.st, width=width)
+    G = skeleton_graph(linear_components(prob >= thr, L.st.res), prob, L.st, width=width)
     G = drop_roads(G, road, L.st)
     G = bridge_gaps(G, prob, L.st)
     return prune(G)

@@ -145,7 +145,7 @@ class Layers:
 PATH_FEATURES = ("ndvi", "bright", "nir", "r", "g", "b", "hag", "inten", "slope", "nd_contrast", "br_contrast",
                  "line_paved", "line_bright", "paved_width_max", "seg_green", "seg_tee", "seg_fairway", "seg_bunker",
                  "cls_ground", "cls_building", "ndvi_mean11", "bright_std5", "ndvi_rel", "bright_rel", "nir_rel",
-                 "line_paved_wide", "tall_frac9", "inten_contrast")
+                 "line_paved_wide", "tall_frac9", "inten_contrast", "line_inten_dark", "line_inten_bright")
 
 
 def _turf_median(L, a):
@@ -156,7 +156,17 @@ def _turf_median(L, a):
     return float(np.median(v)) if v.size > 100 else float(np.nanmedian(a))
 
 
-def path_feature_stack(L):
+def _inten_line(L, dark):
+    """Thin dark (asphalt) / bright (concrete) lines in lidar intensity; NaN without intensity."""
+    i = L["inten"]
+    if not np.isfinite(i).any() or np.isfinite(i).mean() < 0.3:
+        return np.full(i.shape, np.nan, np.float32)
+    r = line_filter(np.nan_to_num(i, nan=float(np.nanmedian(i))) / 255.0, (1.0, 1.5), black_ridges=dark)
+    r[~np.isfinite(i)] = np.nan
+    return r
+
+
+def path_feature_stack(L, names=None):
     """(n_features, H, W) float32 for the cart-path / road pixel classifier."""
     st = L.st
     n = st.naip()
@@ -176,5 +186,6 @@ def path_feature_stack(L):
         "line_paved_wide": line_filter(-np.nan_to_num(nd, nan=0.0), (2.5,)),
         "tall_frac9": ndi.uniform_filter((np.nan_to_num(L["hag"], nan=0) > 2.5).astype(np.float32), 9),
         "inten_contrast": L["inten"] - local_mean(L["inten"], 11),
+        "line_inten_dark": _inten_line(L, True), "line_inten_bright": _inten_line(L, False),
     }
-    return np.stack([np.asarray(out[k], np.float32) for k in PATH_FEATURES])
+    return np.stack([np.asarray(out[k], np.float32) for k in (names or PATH_FEATURES)])
