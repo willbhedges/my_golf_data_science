@@ -65,6 +65,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install numpy scipy matplotlib pillow shapely pyproj pytest opencv-python-headless rasterio
 
+      - name: Scoreboard unit tests (guards)
+        run: python -m pytest -q -p no:cacheprovider course_data/qa/test_scoreboard.py
+
       - name: Contract tests (committed packages)
         continue-on-error: true
         run: python course_data/qa/run_qa.py --no-golden
