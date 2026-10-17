@@ -64,7 +64,8 @@ def render(data):
         br = src["rough"]["0"]
         tee = f"{h['tee']['club']} ({h['tee']['aim']:+.1f}){' tie' if h['tee']['tie'] else ''}"
         if h["par"] == 5:
-            dist = f"{a['median']:.0f} ({a['p10']:.0f}-{a['p90']:.0f}) after the tee (box = going for it)"
+            what = "going for it" if h.get("go_boxes") else f"3rd shot after the lay-up, {bx['dist']:.0f} yd"
+            dist = f"{a['median']:.0f} ({a['p10']:.0f}-{a['p90']:.0f}) after the tee (box = {what})"
             if h.get("go_target"):
                 gt = h["go_target"]
                 dist += f"; SG prefers the apron {gt['L']:.0f} short ({gt['off']:+.0f}), {gt['shot']:.0f} yd"
