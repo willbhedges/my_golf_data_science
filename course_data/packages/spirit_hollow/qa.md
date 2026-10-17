@@ -1,6 +1,6 @@
 # Spirit Hollow Golf Course (Burlington, IA) - Black tees
 
-Built 2026-10-17T00:46:53Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
+Built 2026-10-17T01:02:26Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
 
 ## Coverage
 
@@ -13,7 +13,7 @@ Built 2026-10-17T00:46:53Z. OSM relation/13353211. Scorecard: file (course_data/
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.354 |
+| mean_landing_osm_share | 0.355 |
 | mean_confidence | 0.826 |
 | osm_score | 0.871 |
 
@@ -36,10 +36,10 @@ OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, go
 | 11 | 4 | 338 / 336 | 64 | 0.80 | auto | 26% | 39% | 35% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 12 | 3 | 186 / 186 | 223 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 13 | 4 | 409 / 409 | 180 | 0.80 | check the flags | 35% | 24% | 41% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 14 | 4 | 393 / 393 | 208 | 0.80 | auto | 35% | 27% | 38% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; imagery-model water where OSM has none (segment gap-fill; check on the map) |
+| 14 | 4 | 393 / 393 | 208 | 0.80 | auto | 36% | 26% | 38% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 15 | 3 | 145 / 144 | 344 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 16 | 4 | 378 / 379 | 96 | 0.79 | check the flags | 32% | 26% | 43% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; imagery-model water where OSM has none (segment gap-fill; check on the map) |
-| 17 | 4 | 445 / 445 | 217 | 0.78 | check the flags | 38% | 13% | 50% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; imagery-model water where OSM has none (segment gap-fill; check on the map) |
+| 16 | 4 | 378 / 379 | 96 | 0.79 | check the flags | 32% | 26% | 43% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 17 | 4 | 445 / 445 | 217 | 0.78 | check the flags | 38% | 13% | 50% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 18 | 5 | 521 / 521 | 333 | 0.85 | auto | 40% | 28% | 32% | tee stage: Black tee_centroid |  |
 
 ## Stages
@@ -52,4 +52,4 @@ OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, go
 - **imagery**: ok: course_data/imagery/spirit_hollow (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **elevation**: ok: course_data/imagery/spirit_hollow/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)
-- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+6 zones on 4 holes, +0 greens, 34 tee candidates)
+- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 34 tee candidates)
