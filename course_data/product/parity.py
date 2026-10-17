@@ -460,6 +460,62 @@ def report_md(r):
     return "\n".join(L) + "\n"
 
 
+def mode_check(S=32, N=2000, out=OUT, workers=1, log=log):
+    """Quick (prior-mean point estimate) vs the Bayesian average on the HAND map, against final_decision.json:
+    how much of the quick-vs-final gap is decision mode. decide.full_hole(S draws x N swings, no sweep) per tee hole."""
+    course = load_hand_course()
+    fin = json.load(open(os.path.join(ROOT, "spirit_hollow", "output", "final_decision.json")))
+    keys = [k for k in course.HOLES if str(k) in fin]
+    _MC.update(course=course, fin=fin, S=S, N=N)
+    if workers > 1:
+        import multiprocessing as mp
+        with mp.get_context("fork").Pool(workers) as pool:
+            rows = dict(pool.map(_mc_one, keys))
+    else:
+        rows = dict(_mc_one(k) for k in keys)
+    rows = {str(k): rows[str(k)] for k in keys}
+    return _mc_report(rows, S, N, out, log)
+
+
+_MC = {}
+
+
+def _mc_one(k):
+    import decide
+    import tee_strategy as t
+    course, fin, S, N = _MC["course"], _MC["fin"], _MC["S"], _MC["N"]
+    if True:                                         # noqa: SIM108
+        decide.bind({k: copy.deepcopy(course.HOLES[k])})
+        t.HOLES = copy.deepcopy(decide.BASE["holes"])
+        q = decide.quick_hole(k, n=8000)
+        decide.bind({k: copy.deepcopy(course.HOLES[k])})
+        t.HOLES = copy.deepcopy(decide.BASE["holes"])
+        f = decide.full_hole(k, S=S, N=N, sweep=False)
+        return str(k), dict(quick=q["pick"], quick_tie=bool(q["tie"]), quick_margin=round(float(q["margin"]), 4),
+                            full=f["pick"], full_tie=bool(f["tie"]), full_margin=round(float(f["margin"]), 4),
+                            full_runner=f["runner"], final=fin[str(k)]["pick"], final_tie=bool(fin[str(k)].get("tie")),
+                            final_runner=fin[str(k)].get("runner"))
+
+
+def _mc_report(rows, S, N, out, log):
+    nq = sum(r["quick"] == r["final"] for r in rows.values())
+    nf = sum(r["full"] == r["final"] for r in rows.values())
+    L = [f"# Decision mode on the hand map: quick vs Bayesian (S={S} x N={N}) vs final_decision.json (S=128 x 3000)", "",
+         f"**quick = final on {nq}/{len(rows)}; Bayesian S={S} = final on {nf}/{len(rows)}.**", "",
+         "| hole | quick (margin) | Bayesian small (margin) | final (tie) |", "|---|---|---|---|"]
+    for k, r in rows.items():
+        L.append(f"| {k} | {r['quick']}{' (tie)' if r['quick_tie'] else ''} {r['quick_margin']:.3f} | "
+                 f"{r['full']}{' (tie)' if r['full_tie'] else ''} {r['full_margin']:.3f} | {r['final']}"
+                 f"{' (tie: ' + str(r['final_runner']) + ')' if r['final_tie'] else ''} |")
+    os.makedirs(out, exist_ok=True)
+    with open(os.path.join(out, "mode_check.json"), "w") as fh:
+        json.dump(rows, fh, indent=1)
+    with open(os.path.join(out, "mode_check.md"), "w") as fh:
+        fh.write("\n".join(L) + "\n")
+    log(f"mode check: quick = final {nq}/{len(rows)}, Bayesian S={S} = final {nf}/{len(rows)}")
+    return rows
+
+
 def scoreboard_counts(txt):
     """Per-course agreement from a scoreboard.py --dry-run log. It prints one dict per scored hole after every
     course has run, in course order: Spirit Hollow rows carry a tee_set, Mozingo rows have a truth but no
@@ -513,6 +569,8 @@ def run_request(path, only=None):
         cmd += [] if r.get("app_line", True) else ["--product-line"]
         cmd += [] if r.get("ladder", True) else ["--no-ladder"]
         cmd += ["--holes", r["holes"]] if r.get("holes") else []
+        if r.get("mode_check"):
+            cmd += ["--mode-check", ",".join(str(x) for x in r["mode_check"])]
         env = {**os.environ, **{k: str(v) for k, v in (r.get("env") or {}).items()}}
         log(f"== parity {r['name']}: {' '.join(cmd[2:])} env {r.get('env') or {}}")
         t0 = time.time()
@@ -554,11 +612,16 @@ def main(argv=None):
     ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--product-line", action="store_true", help="the product's own tee-line rule, not the app line")
     ap.add_argument("--request", default=None, help="request JSON (see run_request)")
+    ap.add_argument("--mode-check", default=None, help="S,N: quick vs Bayesian vs final_decision on the hand map")
     ap.add_argument("--only", default=None, help="with --request: just this run / scoreboard_<name> entry")
     ap.add_argument("--entries", action="store_true", help="with --request: print the entries as a JSON list")
     a = ap.parse_args(argv)
     kw = dict(n=a.n, holes=a.holes.split(",") if a.holes else None, ladder=not a.no_ladder, out=a.out,
               pkg_path=a.package, app_line=not a.product_line, workers=a.workers)
+    if a.mode_check:
+        S_, N_ = (int(x) for x in a.mode_check.split(","))
+        mode_check(S_, N_, a.out, a.workers)
+        return
     if a.request and a.entries:
         print(json.dumps(request_entries(a.request)))
         return

@@ -1,22 +1,71 @@
 {
  "kind": "parity",
- "rev": 1,
- "requested": "2026-10-17T02:00Z",
+ "rev": 2,
+ "requested": "2026-10-17T03:00Z",
  "by": "decision-parity engineer",
- "note": "Product decision path vs the hand pipeline on the hand map (Black boxes). before = the old loader (PRODUCT_ZONE_ORDER=precedence, PRODUCT_ELEV_LINE=0, PRODUCT_IRONS=package, product tee line); after_* = zone_order given + elevation along the line + irons offered; scoreboard A/B on the auto packages (dry run, nothing committed to qa/).",
+ "note": "rev 2: hand pipeline now plays SOFT conditions (course.py _soften) and final_decision.json was regenerated; product gets conditions (soft default). before = the old loader (precedence zone order, package elevation, irons only when flagged, full DEM run-out, product tee line). mode_check = quick vs Bayesian on the hand map vs final_decision.json.",
  "out": "course_data/packages/spirit_hollow/out/parity",
  "n": 8000,
  "workers": 4,
  "runs": [
-  {"name": "before", "app_line": false, "ladder": true,
-   "env": {"PRODUCT_ZONE_ORDER": "precedence", "PRODUCT_ELEV_LINE": "0", "PRODUCT_IRONS": "package"}},
-  {"name": "after_app_line", "app_line": true, "ladder": true},
-  {"name": "after_product_line", "app_line": false, "ladder": false}
+  {
+   "name": "before",
+   "app_line": false,
+   "ladder": true,
+   "env": {
+    "PRODUCT_ZONE_ORDER": "precedence",
+    "PRODUCT_ELEV_LINE": "0",
+    "PRODUCT_IRONS": "package",
+    "PRODUCT_CONDITIONS": "normal"
+   }
+  },
+  {
+   "name": "after_app_line",
+   "app_line": true,
+   "ladder": true
+  },
+  {
+   "name": "after_product_line",
+   "app_line": false,
+   "ladder": false
+  },
+  {
+   "name": "mode_check",
+   "mode_check": [
+    64,
+    3000
+   ]
+  }
  ],
  "scoreboard": [
-  {"name": "before", "env": {"PRODUCT_ELEV_LINE": "0", "PRODUCT_IRONS": "package"}, "args": ["--workers", "4"]},
-  {"name": "after", "args": ["--workers", "4"]},
-  {"name": "after_first_cut_8", "env": {"PRODUCT_FIRST_CUT_YDS": "8"}, "args": ["--workers", "4"]},
-  {"name": "after_first_cut_4", "env": {"PRODUCT_FIRST_CUT_YDS": "4"}, "args": ["--workers", "4"]}
+  {
+   "name": "before",
+   "env": {
+    "PRODUCT_ELEV_LINE": "0",
+    "PRODUCT_IRONS": "package",
+    "PRODUCT_CONDITIONS": "normal"
+   },
+   "args": [
+    "--workers",
+    "4"
+   ]
+  },
+  {
+   "name": "after",
+   "args": [
+    "--workers",
+    "4"
+   ]
+  },
+  {
+   "name": "after_first_cut_8",
+   "env": {
+    "PRODUCT_FIRST_CUT_YDS": "8"
+   },
+   "args": [
+    "--workers",
+    "4"
+   ]
+  }
  ]
 }
