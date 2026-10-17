@@ -1,0 +1,117 @@
+name: trees-cv
+
+# Tree line (lidar canopy buffer + canopy recency) and first-cut band, re-fitted with leave-one-course-out
+# cross-validation over the five truth courses (course_data/vision_any/v2_trees_cv.py, canopy_recency.py).
+# Uses only committed rasters (course_data/vision_any/<slug>/raw). Writes course_data/vision_any/v2_trees_cv.{md,json}
+# (never integrates). Trigger: push course_data/requests/trees_cv.json ({"rev": n}).
+on:
+  push:
+    paths:
+      - "course_data/requests/trees_cv.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trees-cv-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHONWARNINGS: ignore
+  OMP_NUM_THREADS: "1"
+
+jobs:
+  layers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio scikit-learn scikit-image opencv-python-headless matplotlib
+      - run: python -u course_data/vision_any/v2_trees_cv.py layers --out /tmp/cv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: trees-cv-layers
+          path: /tmp/cv
+          retention-days: 3
+
+  score:
+    needs: layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio matplotlib opencv-python-headless scikit-learn scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          name: trees-cv-layers
+          path: /tmp/cv
+      - run: python -u course_data/vision_any/v2_trees_cv.py score --dir /tmp/cv --rows /tmp/rows_${{ matrix.shard }}.json --shard ${{ matrix.shard }} --nshards 6
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trees-cv-rows-${{ matrix.shard }}
+          path: /tmp/rows_${{ matrix.shard }}.json
+          retention-days: 3
+
+  report:
+    needs: score
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio matplotlib opencv-python-headless scikit-learn scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          name: trees-cv-layers
+          path: /tmp/cv
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: trees-cv-rows-*
+          path: /tmp/rows
+          merge-multiple: true
+      - run: |
+          mkdir -p course_data/vision_any/trees_cv
+          cp /tmp/rows/rows_*.json course_data/vision_any/trees_cv/
+          python -u course_data/vision_any/v2_trees_cv.py report --rows 'course_data/vision_any/trees_cv/rows_*.json' --dir /tmp/cv | tee -a "$GITHUB_STEP_SUMMARY"
+          for s in spirit_hollow mozingo veenker coldwater ellis; do
+            [ -f /tmp/cv/$s/recency.geojson ] && cp /tmp/cv/$s/recency.geojson course_data/vision_any/trees_cv/recency_$s.geojson
+          done
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/vision_any/v2_trees_cv.md course_data/vision_any/v2_trees_cv.json course_data/vision_any/trees_cv
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "trees-cv: tree buffer / canopy recency / first cut, leave-one-course-out (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
