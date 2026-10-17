@@ -29,7 +29,7 @@ Rule (the white stakes run along property lines, a few yards to tens of yards in
 Parameters are calibrated on the hand-checked Spirit Hollow OB (evaluate.py, leave-one-hole-out); the fitted
 values live in params.json next to this file, DEFAULTS below are used when it is missing.
 
-Each zone: {"lie": "ob", "poly": [[lon, lat], ...], "src": "ob:<evidence>", "p": confidence, "evidence": [...]},
+Each zone: {"lie": "ob", "poly": [[lon, lat], ...], "src": "ob:<evidence>", "p": confidence} (package zones_ll contract),
 where evidence is the first matching of tag > parcel > road > house > residential > property_line|outside and p is that
 evidence's precision on Spirit Hollow (P_DEFAULT when not calibrated).
 """
@@ -387,7 +387,7 @@ def hole_ob(h, R, prm, prec, comps=None):
         return []
     prot = protect_m(h, R.P)
     taken = None
-    out = []
+    out, areas = [], []
     for ev, g in (comps if comps is not None else R.components(prm)):
         piece = g.intersection(cor)
         if prot is not None:
@@ -405,8 +405,9 @@ def hole_ob(h, R, prm, prec, comps=None):
                     continue
                 ring = R.P.ll(np.asarray(q.exterior.coords)[:-1])
                 out.append(dict(lie="ob", poly=[[round(float(a), 7), round(float(b), 7)] for a, b in ring],
-                                src=f"ob:{ev}", p=round(float(prec.get(ev, P_DEFAULT.get(ev, 0.5))), 3),
-                                evidence=ev, area_yd2=round(q.area)))
+                                src=f"ob:{ev}", p=round(float(prec.get(ev, P_DEFAULT.get(ev, 0.5))), 3)))
+                areas.append(round(q.area))
+    hole_ob.last_areas = areas
     return out
 
 
@@ -445,15 +446,15 @@ def apply_ob(package, layers=None, params=None, precision=None, mode=None, use_r
             zl = [z for z in zl if not is_geometry_ob(z)]
         add = hole_ob(h, R, prm, prec, comps)
         h["zones_ll"] = zl + add
+        evs = sorted({z["src"][3:] for z in add})
         for z in add:
-            counts[z["evidence"]] = counts.get(z["evidence"], 0) + 1
+            counts[z["src"][3:]] = counts.get(z["src"][3:], 0) + 1
         if add:
             prov = h.setdefault("provenance", {})
             pz = prov.get("zones") if isinstance(prov.get("zones"), dict) else {}
-            pz["ob"] = "ob_infer:" + "+".join(sorted({z["evidence"] for z in add}))
+            pz["ob"] = "ob_infer:" + "+".join(evs)
             prov["zones"] = pz
-        h["ob_inferred"] = dict(n=len(add), area_yd2=sum(z["area_yd2"] for z in add),
-                                evidence=sorted({z["evidence"] for z in add}))
+        h["ob_inferred"] = dict(n=len(add), area_yd2=int(sum(getattr(hole_ob, "last_areas", []))), evidence=evs)
     st["ob"] = (f"ok: {MODEL_ID}; layers {'+'.join(L['have']) or 'course outline only'}; "
                 f"{sum(counts.values())} polygons ({', '.join(f'{k} {v}' for k, v in sorted(counts.items()))}); mode {mode}")
     out.setdefault("sources", {})["ob"] = dict(
@@ -490,7 +491,7 @@ def to_geojson(package):
         for z in h.get("zones_ll") or []:
             if str(z.get("src", "")).startswith("ob:"):
                 feats.append(dict(type="Feature", geometry=dict(type="Polygon", coordinates=[z["poly"] + [z["poly"][0]]]),
-                                  properties=dict(hole=ref, lie="ob", src=z["src"], p=z["p"], area_yd2=z.get("area_yd2"))))
+                                  properties=dict(hole=ref, lie="ob", src=z["src"], p=z["p"])))
     return dict(type="FeatureCollection", features=feats)
 
 

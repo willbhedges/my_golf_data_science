@@ -15,6 +15,7 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           set's colour wins ("tagged")
   S3      geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
+  S4c     course_data/ob/infer.py:apply_ob(package) when the course's OB evidence is fetched (call_ob)
   S4b     course_data/segment/gapfill.py:segment_gapfill(package, segment.geojson) when the segment workflow
           has run for the slug (requests/segment_<slug>.json): NAIP U-Net fairway / bunker / green + NIR water
           ONLY where OSM lacks them (never overrides OSM), src "segment:*", p, flags, stages.segment
@@ -447,6 +448,31 @@ def imagery_ref(img_dir):
     return imagery, elevation
 
 
+def call_ob(package, warnings):
+    """S4c OB inference (course_data/ob/infer.py, research plan B4): inferred OB polygons (property line, lots,
+    roads) appended to zones_ll as lie 'ob' (src 'ob:<evidence>', p = confidence), within 60 yds of the line of
+    play, never over fairway / green / water / sand. Runs only for a course whose OB evidence was fetched
+    (course_data/ob/<slug>/raw/, .github/workflows/ob.yml via course_data/requests/ob_*.json) once
+    course_data/ob/params.json is calibrated; otherwise the geometry stage's OSM OB stays as it is."""
+    st = package["stages"]
+    slug = package.get("slug") or (package.get("course") or {}).get("slug")
+    if not (os.path.isdir(os.path.join(CD, "ob", str(slug), "raw")) and os.path.exists(os.path.join(CD, "ob", "params.json"))):
+        st["ob"] = ("geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it "
+                    "in course_data/requests/ob_*.json")
+        return package
+    mod = load(os.path.join(CD, "ob", "infer.py"), "cdp_ob_infer")
+    if mod is None or not callable(getattr(mod, "apply_ob", None)):
+        st["ob"] = "missing (course_data/ob/infer.py not importable)"
+        return package
+    try:
+        out = mod.apply_ob(copy.deepcopy(package), use_reframe=False)
+        return reframe(out)
+    except Exception as e:                                       # noqa: BLE001
+        warnings.append(f"OB inference failed: {type(e).__name__}: {str(e)[:200]}")
+        st["ob"] = f"failed: {type(e).__name__}: {str(e)[:160]}"
+        return package
+
+
 def call_segment_fill(package, warnings):
     """S4b: imagery-model gap-fill where OSM lacks fairways / bunkers / greens / water (course_data/segment)."""
     mod = load(os.path.join(CD, "segment", "gapfill.py"), "cdp_segment_gapfill")
@@ -797,6 +823,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         package = reframe(package)
     else:
         stages["vision"] = "not run (gapfill=False)"
+    package = call_ob(package, warnings)
     package["coverage"] = osm_coverage.coverage(fc, package["holes"])
     if render:
         package["stages"]["images"] = render_images(package, pkg_dir, img_dir)

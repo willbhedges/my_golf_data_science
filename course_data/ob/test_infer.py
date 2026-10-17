@@ -161,3 +161,10 @@ def test_search_or_and_loho_pick():
 
 def test_ref_of():
     assert evaluate.ref_of("2F") == "2" and evaluate.ref_of("9B") == "9" and evaluate.ref_of("10") == "10"
+
+
+def test_zones_ll_contract_keys():
+    pkg, L, pr = synthetic()
+    out = infer.apply_ob(pkg, layers=L, params=dict(house_d=20, house_close=20, road_margin=None, out_off=None,
+                                                    parcel_off=None), mode="replace", use_reframe=False)
+    assert all(set(z) == {"lie", "poly", "src", "p"} for z in out["holes"]["1"]["zones_ll"])

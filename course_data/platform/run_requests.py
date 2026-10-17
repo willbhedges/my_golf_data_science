@@ -21,7 +21,8 @@ import platform_common as pc  # noqa: E402
 
 # libraries the build imports: a change to one rebuilds every fetched package (offline)
 DEPS = ["course_data/vision_any/gapfill.py", "course_data/geometry/build_holes.py", "course_data/tees/place_tee.py",
-        "course_data/tees/lidar_pads.py", "course_data/pipeline.py", "course_data/elevation/adjust.py"]
+        "course_data/tees/lidar_pads.py", "course_data/pipeline.py", "course_data/elevation/adjust.py",
+        "course_data/ob/infer.py", "course_data/ob/params.json"]
 
 
 def plan(changed, requests=None):
