@@ -1,0 +1,401 @@
+{
+ "schema": "naip_years_run/1",
+ "slug": "wakonda",
+ "built": "2026-10-17T15:23Z",
+ "bbox_snwe": [
+  41.54741,
+  -93.645958,
+  41.556246,
+  -93.634236
+ ],
+ "current": 2023,
+ "selection": {
+  "schema": "naip_years/1",
+  "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
+  "chosen": 2015,
+  "reason": "2015 (2015-08-24): greenest leaf-on year on the course's turf (NDVI 0.34 vs -0.05, 2% vs 87% brown) over the newest year 2023 (hazy (blue floor 64); 9 of 26 greens not visible as turf; 87% of the turf brown / bare); replaces 2023",
+  "candidates": [
+   {
+    "year": 2023,
+    "dates": [
+     "2023-09-02"
+    ],
+    "gsd_m": 0.3,
+    "coverage": 1.0,
+    "turf_ndvi": -0.0538,
+    "turf_exg": 34.0,
+    "green_ndvi": 0.1935,
+    "bare_turf": 0.8737,
+    "greens_bare": 0.3462,
+    "greens_bare_n": 9,
+    "cloud": 0.0045,
+    "haze": 64.0,
+    "turf_rgb": [
+     159.0,
+     160.0,
+     118.0
+    ],
+    "score": -0.9372,
+    "notes": [
+     "hazy (blue floor 64)",
+     "9 of 26 greens not visible as turf",
+     "87% of the turf brown / bare"
+    ],
+    "turf_source": "osm"
+   },
+   {
+    "year": 2021,
+    "dates": [
+     "2021-08-22"
+    ],
+    "gsd_m": 0.6,
+    "coverage": 1.0,
+    "turf_ndvi": 0.2244,
+    "turf_exg": 58.0,
+    "green_ndvi": 0.17,
+    "bare_turf": 0.2409,
+    "greens_bare": 0.0385,
+    "greens_bare_n": 1,
+    "cloud": 0.0,
+    "haze": 72.0,
+    "turf_rgb": [
+     118.0,
+     144.0,
+     110.0
+    ],
+    "score": -0.0091,
+    "notes": [
+     "hazy (blue floor 72)",
+     "1 of 26 greens not visible as turf"
+    ],
+    "turf_source": "osm"
+   },
+   {
+    "year": 2019,
+    "dates": [
+     "2019-08-22"
+    ],
+    "gsd_m": 0.6,
+    "coverage": 1.0,
+    "turf_ndvi": 0.2357,
+    "turf_exg": 84.0,
+    "green_ndvi": 0.0663,
+    "bare_turf": 0.1754,
+    "greens_bare": 0.0,
+    "greens_bare_n": 0,
+    "cloud": 0.0001,
+    "haze": 45.0,
+    "turf_rgb": [
+     110.0,
+     146.0,
+     95.0
+    ],
+    "score": 0.1574,
+    "notes": [],
+    "turf_source": "osm"
+   },
+   {
+    "year": 2017,
+    "dates": [
+     "2017-07-01"
+    ],
+    "gsd_m": 1.0,
+    "coverage": 1.0,
+    "turf_ndvi": 0.2808,
+    "turf_exg": 85.0,
+    "green_ndvi": 0.186,
+    "bare_turf": 0.1192,
+    "greens_bare": 0.0,
+    "greens_bare_n": 0,
+    "cloud": 0.0,
+    "haze": 49.0,
+    "turf_rgb": [
+     110.0,
+     146.0,
+     94.0
+    ],
+    "score": 0.1713,
+    "notes": [],
+    "turf_source": "osm"
+   },
+   {
+    "year": 2015,
+    "dates": [
+     "2015-08-24"
+    ],
+    "gsd_m": 1.0,
+    "coverage": 1.0,
+    "turf_ndvi": 0.3399,
+    "turf_exg": 83.0,
+    "green_ndvi": 0.2543,
+    "bare_turf": 0.015,
+    "greens_bare": 0.0,
+    "greens_bare_n": 0,
+    "cloud": 0.0004,
+    "haze": 50.0,
+    "turf_rgb": [
+     100.0,
+     143.0,
+     99.0
+    ],
+    "score": 0.272,
+    "notes": [],
+    "turf_source": "osm"
+   },
+   {
+    "year": 2014,
+    "dates": [
+     "2014-09-22"
+    ],
+    "gsd_m": 1.0,
+    "coverage": 1.0,
+    "turf_ndvi": 0.3537,
+    "turf_exg": 80.0,
+    "green_ndvi": 0.2212,
+    "bare_turf": 0.0629,
+    "greens_bare": 0.0769,
+    "greens_bare_n": 2,
+    "cloud": 0.0002,
+    "haze": 35.0,
+    "turf_rgb": [
+     97.0,
+     134.0,
+     88.0
+    ],
+    "score": 0.2069,
+    "notes": [
+     "2 of 26 greens not visible as turf"
+    ],
+    "turf_source": "osm"
+   },
+   {
+    "year": 2013,
+    "dates": [
+     "2013-07-12"
+    ],
+    "gsd_m": 1.0,
+    "coverage": 1.0,
+    "turf_ndvi": 0.2226,
+    "turf_exg": 59.0,
+    "green_ndvi": 0.1636,
+    "bare_turf": 0.1083,
+    "greens_bare": 0.0,
+    "greens_bare_n": 0,
+    "cloud": 0.0007,
+    "haze": 38.0,
+    "turf_rgb": [
+     125.0,
+     151.0,
+     117.0
+    ],
+    "score": 0.0884,
+    "notes": [],
+    "turf_source": "osm"
+   },
+   {
+    "year": 2011,
+    "dates": [
+     "2011-07-18"
+    ],
+    "gsd_m": 1.0,
+    "coverage": 1.0,
+    "turf_ndvi": 0.2739,
+    "turf_exg": 44.0,
+    "green_ndvi": 0.1796,
+    "bare_turf": 0.1338,
+    "greens_bare": 0.0,
+    "greens_bare_n": 0,
+    "cloud": 0.0,
+    "haze": 58.0,
+    "turf_rgb": [
+     108.0,
+     128.0,
+     103.0
+    ],
+    "score": 0.0441,
+    "notes": [],
+    "turf_source": "osm"
+   }
+  ]
+ },
+ "detect": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db",
+  "res_m": 0.6,
+  "reference": "OSM polygons inside the course boundary +20 m",
+  "runs": {
+   "2015": {
+    "green": {
+     "iou": 0.727,
+     "precision": 0.801,
+     "recall": 0.888
+    },
+    "tee": {
+     "iou": 0.369,
+     "precision": 0.504,
+     "recall": 0.58
+    },
+    "fairway": {
+     "iou": 0.715,
+     "precision": 0.935,
+     "recall": 0.753
+    },
+    "bunker": {
+     "iou": 0.603,
+     "precision": 0.687,
+     "recall": 0.83
+    },
+    "water": {
+     "iou": 0.32,
+     "precision": 0.459,
+     "recall": 0.515
+    }
+   },
+   "2014": {
+    "green": {
+     "iou": 0.755,
+     "precision": 0.852,
+     "recall": 0.869
+    },
+    "tee": {
+     "iou": 0.37,
+     "precision": 0.556,
+     "recall": 0.526
+    },
+    "fairway": {
+     "iou": 0.688,
+     "precision": 0.948,
+     "recall": 0.716
+    },
+    "bunker": {
+     "iou": 0.705,
+     "precision": 0.814,
+     "recall": 0.84
+    },
+    "water": {
+     "iou": 0.217,
+     "precision": 0.255,
+     "recall": 0.596
+    }
+   },
+   "2017": {
+    "green": {
+     "iou": 0.798,
+     "precision": 0.82,
+     "recall": 0.967
+    },
+    "tee": {
+     "iou": 0.453,
+     "precision": 0.564,
+     "recall": 0.698
+    },
+    "fairway": {
+     "iou": 0.709,
+     "precision": 0.94,
+     "recall": 0.743
+    },
+    "bunker": {
+     "iou": 0.758,
+     "precision": 0.804,
+     "recall": 0.929
+    },
+    "water": {
+     "iou": 0.144,
+     "precision": 0.161,
+     "recall": 0.578
+    }
+   },
+   "2023": {
+    "green": {
+     "iou": 0.547,
+     "precision": 0.625,
+     "recall": 0.814
+    },
+    "tee": {
+     "iou": 0.124,
+     "precision": 0.342,
+     "recall": 0.162
+    },
+    "fairway": {
+     "iou": 0.53,
+     "precision": 0.787,
+     "recall": 0.618
+    },
+    "bunker": {
+     "iou": 0.106,
+     "precision": 0.157,
+     "recall": 0.247
+    },
+    "water": {
+     "iou": 0.131,
+     "precision": 0.258,
+     "recall": 0.21
+    }
+   },
+   "2015+2014": {
+    "green": {
+     "iou": 0.76,
+     "precision": 0.837,
+     "recall": 0.892
+    },
+    "tee": {
+     "iou": 0.381,
+     "precision": 0.565,
+     "recall": 0.538
+    },
+    "fairway": {
+     "iou": 0.697,
+     "precision": 0.949,
+     "recall": 0.724
+    },
+    "bunker": {
+     "iou": 0.664,
+     "precision": 0.756,
+     "recall": 0.845
+    },
+    "water": {
+     "iou": 0.192,
+     "precision": 0.22,
+     "recall": 0.603
+    }
+   },
+   "2015+2014+2017": {
+    "green": {
+     "iou": 0.79,
+     "precision": 0.837,
+     "recall": 0.933
+    },
+    "tee": {
+     "iou": 0.432,
+     "precision": 0.584,
+     "recall": 0.624
+    },
+    "fairway": {
+     "iou": 0.724,
+     "precision": 0.952,
+     "recall": 0.751
+    },
+    "bunker": {
+     "iou": 0.734,
+     "precision": 0.796,
+     "recall": 0.904
+    },
+    "water": {
+     "iou": 0.362,
+     "precision": 0.503,
+     "recall": 0.563
+    }
+   }
+  },
+  "mean_iou": {
+   "2015": 0.547,
+   "2014": 0.547,
+   "2017": 0.572,
+   "2023": 0.288,
+   "2015+2014": 0.539,
+   "2015+2014+2017": 0.608
+  },
+  "current": 2023
+ },
+ "applied": "re-fetched NAIP 2015 (was 2023)"
+}
