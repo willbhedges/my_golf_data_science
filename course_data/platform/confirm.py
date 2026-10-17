@@ -57,7 +57,7 @@ class Session:
     # ------------------------------------------------------------------ solve / posterior
     def solve(self):
         self.res = R2.solve(self.ctx, w=self.w, fixed=self.fixed, exclude=self.exclude, tau=self.tau,
-                            p_check=self.p_check, keep_top=300)
+                            p_check=self.p_check, keep_top=300, margins=True)
         top = self.res.get("top") or []
         self.keys = [(c, [R2._hole_key(self.ctx, t, g) for t, g in a]) for c, a in top]
         return self.res

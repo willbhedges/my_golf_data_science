@@ -32,6 +32,7 @@ import routing_v2 as R2  # noqa: E402
 import validation_set as VS  # noqa: E402
 
 OUT = os.path.join(HERE, "eval_v2.json")
+FLAG_COST = 0.03          # calibration: one flag per course is worth 3 % of courses whose every wrong hole is flagged
 
 
 def log(*a):
@@ -110,7 +111,7 @@ def flags_from_top(res, tau, p_check, fixed=()):
 
 def run_v2(c, w=None, tau=None, p_check=None, ctx=None):
     ctx = ctx or R2.context(c["inp"], c["card"], fc=c["fc"], boundary=c["boundary"])
-    res = R2.solve(ctx, w=w, tau=tau, p_check=p_check, keep_top=300)
+    res = R2.solve(ctx, w=w, tau=tau, p_check=p_check, keep_top=300, margins=True)
     if res.get("cost") is None:
         return res, ctx
     # keep the top routings' (cost, hole keys) for re-flagging at other temperatures
@@ -238,7 +239,7 @@ def train(epochs=12, C=0.3, margin=0.5, inputs=("osm", "model"), seed=0, out=R2.
                 wrong = {r for r, v in ok.items() if not v}
                 caught += wrong <= fl
                 flags += len(fl)
-            obj = caught / len(stats) - 0.01 * flags / len(stats)
+            obj = caught / len(stats) - FLAG_COST * flags / len(stats)
             if best is None or obj > best[0]:
                 best = (obj, tau, pc, caught / len(stats), flags / len(stats))
     log("calibration: tau %.2f p_check %.2f -> correct after check %.2f, flags/course %.2f" % best[1:])
@@ -335,7 +336,7 @@ def calibrate(data, w):
                 fl = flags_from_top(res, tau, pc)
                 caught += {r for r, v in ok.items() if not v} <= fl
                 flags += len(fl)
-            obj = caught / len(stats) - 0.01 * flags / len(stats)
+            obj = caught / len(stats) - FLAG_COST * flags / len(stats)
             if best is None or obj > best[0]:
                 best = (obj, tau, pc, caught / len(stats), flags / len(stats))
     log("calibration: tau %.2f p_check %.2f -> correct after check %.2f, flags/course %.2f" % best[1:])
@@ -426,7 +427,7 @@ def confirm_study(split, policies=("eig", "eig_confirm", "flagged", "locate_all"
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["eval", "train", "tune", "confirm", "final"])
+    ap.add_argument("cmd", choices=["eval", "train", "tune", "calibrate", "confirm", "final"])
     ap.add_argument("--split", default="train")
     ap.add_argument("--methods", default="v1,v2")
     ap.add_argument("--inputs", default="osm")
@@ -446,6 +447,11 @@ def main():
         train(a.epochs)
     elif a.cmd == "tune":
         tune(a.epochs if a.epochs != 12 else 2)
+    elif a.cmd == "calibrate":                  # re-calibrate tau / p_check for the saved weights (train split)
+        js = json.load(open(R2.WEIGHTS_FILE))
+        w, _, _ = R2.load_weights()
+        js.update(calibrate(_train_data(), w))
+        json.dump(js, open(R2.WEIGHTS_FILE, "w"), indent=1)
     elif a.cmd == "confirm":
         rows, agg = confirm_study(a.split, a.policies.split(","), a.inputs)
         log(json.dumps(agg, indent=1))

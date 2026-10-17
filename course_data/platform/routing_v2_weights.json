@@ -1,0 +1,135 @@
+{
+ "tau": 3.0,
+ "p_check": 0.98,
+ "calibration": {
+  "correct_after_check": 0.684,
+  "flags_per_course": 10.47
+ },
+ "schema": "routing_v2_weights/1",
+ "method": "coordinate search (route_eval.py tune)",
+ "trained_on": "validation_set.json split train (inputs osm+model)",
+ "n": 38,
+ "w": {
+  "length": 0.5,
+  "fingerprint": 2.0,
+  "corridor": 2.4,
+  "cross_green": 1.5,
+  "align": 1.0,
+  "ch_tee1": 1.0,
+  "ch_tee10": 0.15,
+  "ch_green_end": 0.25,
+  "fac_tee1": 0.0,
+  "fac_tee10": 0.0,
+  "fac_green_end": 0.0,
+  "green_cluster": 1.0,
+  "green_model": 1.0,
+  "practice": 0.0,
+  "walk": 1.0,
+  "walk_turn": 0.15,
+  "cart_link": 0.0,
+  "cart_far": 0.0,
+  "loop": 0.0,
+  "cover": 1.0,
+  "covered_start": 2.0,
+  "reused_tee": 2.5,
+  "cross_lines": 0.75,
+  "miss_tee": 4.0,
+  "miss_hole": 8.0
+ },
+ "history": [
+  {
+   "step": "start",
+   "obj": [
+    208,
+    216,
+    2
+   ]
+  },
+  {
+   "step": "round 0 length=0.500",
+   "obj": [
+    193,
+    201,
+    2
+   ]
+  },
+  {
+   "step": "round 0 fingerprint=2.000",
+   "obj": [
+    180,
+    192,
+    3
+   ]
+  },
+  {
+   "step": "round 0 corridor=2.400",
+   "obj": [
+    162,
+    178,
+    4
+   ]
+  },
+  {
+   "step": "round 0 cross_green=0.750",
+   "obj": [
+    161,
+    177,
+    4
+   ]
+  },
+  {
+   "step": "round 0 ch_tee10=0.300",
+   "obj": [
+    153,
+    169,
+    4
+   ]
+  },
+  {
+   "step": "round 0 ch_green_end=0.250",
+   "obj": [
+    149,
+    165,
+    4
+   ]
+  },
+  {
+   "step": "round 0 walk_turn=0.150",
+   "obj": [
+    148,
+    164,
+    4
+   ]
+  },
+  {
+   "step": "round 0 cross_lines=0.750",
+   "obj": [
+    142,
+    158,
+    4
+   ]
+  },
+  {
+   "step": "round 1 cross_green=1.500",
+   "obj": [
+    140,
+    156,
+    4
+   ]
+  },
+  {
+   "step": "round 1 ch_tee10=0.150",
+   "obj": [
+    136,
+    152,
+    4
+   ]
+  }
+ ],
+ "train_objective": [
+  136,
+  152,
+  4
+ ],
+ "built_utc": "2026-10-17T05:33:39Z"
+}

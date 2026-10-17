@@ -445,7 +445,7 @@ def hole_rows(ctx, h, w, fixed=None, exclude=None, allowed=None, topk=TOPK):
 
 # ----------------------------------------------------------------------------- solve
 def solve(ctx, w=None, fixed=None, exclude=None, allowed=None, beam=BEAM, tau=None, p_check=None, keep_top=200,
-          polish=3):
+          polish=3, margins=False, margin_beam=800):
     """Beam search over the whole round. -> result dict (routing.route-compatible `holes`), plus `features` (the
     best routing's feature vector), `top` (distinct routings [(cost, [(t, g)] * n)]), `posterior` per hole."""
     if w is None or tau is None or p_check is None:
@@ -590,6 +590,25 @@ def solve(ctx, w=None, fixed=None, exclude=None, allowed=None, beam=BEAM, tau=No
                 costs.append(c2)
                 if c2 < min(costs[:-1]) - 1e-9:
                     fbest = f2
+        order = np.argsort(costs, kind="stable")
+        assigns = [assigns[i] for i in order]
+        costs = [costs[i] for i in order]
+    if margins:
+        # leave-one-out alternatives: for every free hole, the best routing that does NOT give it its green (a
+        # small beam). The final beam rarely varies the early holes, so without these the posterior is
+        # over-confident there; with them every hole has at least its best alternative.
+        best_a = assigns[0]
+        for h, (t0, g0) in enumerate(best_a):
+            ref = str(h + 1)
+            if ref in fixed or g0 < 0:
+                continue
+            ex = {k: set(v) for k, v in exclude.items()}
+            ex.setdefault(ref, set()).add(g0)
+            alt = solve(ctx, w=w, fixed=fixed, exclude=ex, allowed=allowed, beam=margin_beam, tau=tau,
+                        p_check=p_check, keep_top=8, polish=1, margins=False)
+            for c2, a2 in alt.get("top", []):
+                assigns.append([tuple(x) for x in a2])
+                costs.append(float(c2))
         order = np.argsort(costs, kind="stable")
         assigns = [assigns[i] for i in order]
         costs = [costs[i] for i in order]
@@ -779,7 +798,7 @@ def _result(ctx, assign, cost, fvec, top, tau, p_check, fixed):
                 n_check=sum(1 for v in holes.values() if v["status"] != "ok"),
                 unused_greens=[G[k]["id"] for k in range(ctx["nG"]) if k not in used],
                 clubhouse=list(ctx["clubhouse"]) if ctx.get("clubhouse") else None,
-                top=[(round(c, 3), a) for c, a, _ in top[:50]], top_p=[round(float(x), 4) for x in ptop[:50]],
+                top=[(round(c, 3), a) for c, a, _ in top[:400]], top_p=[round(float(x), 4) for x in ptop[:50]],
                 posterior=[{repr(k): round(v, 4) for k, v in sorted(d.items(), key=lambda kv: -kv[1])[:6]} for d in post],
                 inputs=dict(greens=ctx["nG"], tees=ctx["nT"], facility_points=ctx["n_fac"],
                             cart_nodes=ctx["n_cart_nodes"], fairways=len(ctx["inp"].get("fairways", []))))
@@ -804,6 +823,7 @@ def components(ctx, gap=SPLIT_GAP):
 def route(inp, card=None, fc=None, boundary=None, w=None, fixed=None, exclude=None, split=True, **kw):
     """context + solve; with many more greens than card holes, also try the facility's clusters and keep the
     cheapest routing per hole (`facility_split`)."""
+    kw.setdefault("margins", True)
     ctx = context(inp, card, fc=fc, boundary=boundary)
     res = solve(ctx, w=w, fixed=fixed, exclude=exclude, **kw)
     res["context"] = ctx
