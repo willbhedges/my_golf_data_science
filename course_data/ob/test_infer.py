@@ -66,7 +66,7 @@ def test_quadkey():
 def test_house_lots_right_only_and_protected():
     pkg, L, pr = synthetic()
     out = infer.apply_ob(pkg, layers=L, params=dict(house_d=20, house_close=20, road_margin=None, out_off=None,
-                                                    parcel_off=None), use_reframe=False)
+                                                    parcel_off=None), mode="replace", use_reframe=False)
     zs = [z for z in out["holes"]["1"]["zones_ll"] if z["lie"] == "ob"]
     assert zs and all(z["src"] == "ob:house" and 0 < z["p"] <= 1 for z in zs)
     o = pr.xy([[LON0, LAT0]])[0]
@@ -86,7 +86,7 @@ def test_house_lots_right_only_and_protected():
 def test_never_overrides_water_or_fairway():
     pkg, L, pr = synthetic()
     out = infer.apply_ob(pkg, layers=L, params=dict(house_d=None, road_margin=None, out_off=-60, out_dev=None,
-                                                    parcel_off=None), use_reframe=False)
+                                                    parcel_off=None), mode="replace", use_reframe=False)
     zs = [z for z in out["holes"]["1"]["zones_ll"] if z["lie"] == "ob"]
     g = ob_union(zs, pr)
     for z in pkg["holes"]["1"]["zones_ll"][:2]:
@@ -116,7 +116,7 @@ def test_parcels_beat_house_buffers():
     R = infer.Regions(L)
     assert len(R.private) == 1 and R.lots is not None              # the course's own parcel is dropped
     out = infer.apply_ob(pkg, layers=L, params=dict(house_d=20, house_close=20, parcel_off=0, road_margin=None,
-                                                    out_off=None), use_reframe=False)
+                                                    out_off=None), mode="replace", use_reframe=False)
     zs = [z for z in out["holes"]["1"]["zones_ll"] if z["lie"] == "ob"]
     assert {z["src"] for z in zs} == {"ob:parcel"}                  # every house is inside the lot
     o = pr.xy([[LON0, LAT0]])[0]
@@ -132,9 +132,9 @@ def test_roads_and_golf_buildings():
     R = infer.Regions(L)
     assert R.houses == []
     inside = infer.apply_ob(pkg, layers=L, params=dict(house_d=20, road_margin=5, road_inside=True, out_off=None,
-                                                       parcel_off=None), use_reframe=False)
+                                                       parcel_off=None), mode="replace", use_reframe=False)
     out = infer.apply_ob(pkg, layers=L, params=dict(house_d=20, road_margin=5, road_inside=False, out_off=None,
-                                                    parcel_off=None), use_reframe=False)
+                                                    parcel_off=None), mode="replace", use_reframe=False)
     assert any(z["src"] == "ob:road" for z in inside["holes"]["1"]["zones_ll"])
     assert not any(z["lie"] == "ob" for z in out["holes"]["1"]["zones_ll"])
 
@@ -143,7 +143,7 @@ def test_no_layers_leaves_package():
     pkg, L, pr = synthetic()
     pkg["course"]["boundary"] = None
     out = infer.apply_ob(pkg, layers=dict(course=None, buildings=[], parcels=[], roads=[], landuse=[], tags=[], have=[]),
-                         use_reframe=False)
+                         mode="replace", use_reframe=False)
     assert out["stages"]["ob"].startswith("missing") and out["holes"] == pkg["holes"]
 
 

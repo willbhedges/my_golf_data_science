@@ -43,9 +43,10 @@ GRID_FULL = dict(
     road=[None] + [(m, ins) for m in (0, 5, 10, 20) for ins in (True, False)],
     res=[None, 0, 10, 20],
     out=[None] + [(o, dv) for o in (-20, -10, 0, 10, 20, 40) for dv in (None, 30, 60)],
-    parcel=[None] + [(o, md) for o in (-10, -5, 0, 5, 10, 20) for md in ("houses", "all")])
+    parcel=[None] + [(o, md) for o in (-10, -5, 0, 5, 10, 20) for md in ("houses", "all")],
+    geom=[None, True])                    # keep the geometry stage's OSM OB too (apply_ob mode 'add')
 GRID_SMALL = dict(house=[None, (10, 20), (25, 20)], road=[None, (5, True), (5, False)], res=[None, 0],
-                  out=[None, (0, None), (10, 60)], parcel=[None, (0, "houses")])
+                  out=[None, (0, None), (10, 60)], parcel=[None, (0, "houses")], geom=[None, True])
 
 
 def log(*a):
@@ -115,13 +116,14 @@ def comp_region(R, kind, v):
 
 def to_params(sel):
     h, r, s, o, p = (sel.get(k) for k in ("house", "road", "res", "out", "parcel"))
-    return dict(house_d=h[0] if h else None, house_close=h[1] if h else 0.0,
+    return dict(mode="add" if sel.get("geom") else "replace",
+                house_d=h[0] if h else None, house_close=h[1] if h else 0.0,
                 road_margin=r[0] if r else None, road_inside=r[1] if r else True,
                 res_off=s, out_off=o[0] if o else None, out_dev=o[1] if o else None,
                 parcel_off=p[0] if p else None, parcel_mode=p[1] if p else "houses")
 
 
-def masks_for(cells, R, grid):
+def masks_for(cells, R, grid, geom=None):
     from shapely import contains_xy
     allxy = np.concatenate([c["xy"] for c in cells])
     allow = np.concatenate([c["allowed"] for c in cells])
@@ -129,6 +131,9 @@ def masks_for(cells, R, grid):
     for kind, vals in grid.items():
         M[kind] = []
         for v in vals:
+            if kind == "geom":
+                M[kind].append(np.concatenate(geom) if v and geom is not None else np.zeros(len(allxy), bool))
+                continue
             g = comp_region(R, kind, v)
             m = np.zeros(len(allxy), bool) if g is None or g.is_empty else contains_xy(g, allxy[:, 0], allxy[:, 1])
             M[kind].append(m & allow)
@@ -226,7 +231,7 @@ def calibrate(small=False):
         grid = dict(grid, parcel=[None])
     if not R.res or R.res.is_empty if R.res is not None else True:
         grid = dict(grid, res=[None])
-    M = masks_for(cells, R, grid)
+    M = masks_for(cells, R, grid, baseline_masks(cells, pkg, R, "geometry"))
     combos, I, U = search(cells, M, grid)
     log(f"  {len(combos)} combinations x {len(cells)} holes in {time.time() - t0:.0f}s")
     keys = [c["key"] for c in cells]
@@ -265,6 +270,10 @@ def calibrate(small=False):
         only[f"{k} only"] = pooled(I[n], U[n])
     prm = to_params(sel)
     prec = evidence_precision(cells, R, prm)
+    if prm["mode"] == "add":
+        g = np.concatenate(baseline_masks(cells, pkg, R, "geometry"))
+        t = np.concatenate([c["truth"] for c in cells])
+        prec["geometry"] = dict(n=int(g.sum()), tp=int((g & t).sum()), p=None)
     fit_rows = [dict(key=keys[h], truth=int(cells[h]["truth"].sum()), inter=int(I[j_all, h]), union=int(U[j_all, h]),
                      iou=round(I[j_all, h] / U[j_all, h], 3) if U[j_all, h] else None) for h in range(len(cells))]
     res = dict(schema="ob_eval/1", built=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -277,7 +286,8 @@ def calibrate(small=False):
                baseline_geometry_in_corridor=dict(iou_pooled=round(basec_iou, 3) if basec_iou is not None else None,
                                                   rows=basec_rows),
                ablation=abl, single_source=only, evidence_precision=prec)
-    json.dump(dict(params=prm, precision={k: v["p"] for k, v in prec.items()},
+    json.dump(dict(params={k: v for k, v in prm.items() if k != "mode"}, mode=prm["mode"],
+                   precision={k: v["p"] for k, v in prec.items() if k != "geometry"},
                    fitted=res["built"], iou_fit=res["fit"]["iou_pooled"], iou_loho=res["loho"]["iou_pooled"],
                    layers=L["have"], note="fitted by course_data/ob/evaluate.py calibrate on Spirit Hollow hand OB"),
               open(os.path.join(HERE, "params.json"), "w"), indent=1)
@@ -305,14 +315,14 @@ def write_md(res, dec=None):
          "Ablation at the fit (pooled IoU): " + ", ".join(f"{k} {f(v)}" for k, v in {**res['ablation'], **res['single_source']}.items()), "",
          "Evidence precision (exclusive cells, priority order; p used as confidence): "
          + ", ".join(f"{k} {v['tp']}/{v['n']} -> {v['p']}" for k, v in res["evidence_precision"].items()), "",
-         "| hole | hand OB cells | geometry today: pred / IoU | LOHO: pred / IoU | LOHO params (house d/close, road, outside) |",
+         "| hole | hand OB cells | geometry today: pred / IoU | LOHO: pred / IoU | LOHO params (house d/close, road, outside, mode) |",
          "|---|---|---|---|---|"]
     for b, l in zip(res["baseline_geometry"]["rows"], res["loho"]["rows"]):
         p = l["params"]
         bi = b["inter"] / b["union"] if b["union"] else None
         L.append(f"| {l['key']} | {l['truth']} | {b['pred']} / {f(bi)} | {l['pred']} / {f(l['iou'])} | "
                  f"{p['house_d']}/{p['house_close']}, {p['road_margin']}{'' if p['road_inside'] else ' (outside only)'}, "
-                 f"{p['out_off']}{'' if p['out_dev'] is None else ' dev ' + str(p['out_dev'])} |")
+                 f"{p['out_off']}{'' if p['out_dev'] is None else ' dev ' + str(p['out_dev'])}, {p['mode']} |")
     L += ["", "IoU is undefined (shown -) on holes with no OB in either; cells predicted there are false positives "
               "(the 'pred' column)."]
     if dec:
@@ -339,7 +349,7 @@ def _variant(pkg, kind, hand=None):
     if kind == "none":
         return p
     if kind == "inferred":
-        return infer.apply_ob(p, mode="replace", use_reframe=False)
+        return infer.apply_ob(pkg, use_reframe=False)
     if kind == "hand":
         for k, hh in hand["holes"].items():
             h = p["holes"].get(ref_of(k))
@@ -399,7 +409,7 @@ def decisions(variants=("none", "geometry", "inferred", "hand"), tees="Black"):
 # ----------------------------------------------------------------------------- per-course apply (report)
 def apply_report(slug):
     pkg = json.load(open(os.path.join(CD, "packages", slug, "package.json")))
-    o = infer.apply_ob(pkg, mode="replace", use_reframe=False)
+    o = infer.apply_ob(pkg, use_reframe=False)
     d = os.path.join(HERE, slug)
     os.makedirs(d, exist_ok=True)
     json.dump(infer.to_geojson(o), open(os.path.join(d, "ob.geojson"), "w"))

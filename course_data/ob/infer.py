@@ -83,11 +83,13 @@ def platform_reframe():
 
 
 def load_params(path=os.path.join(HERE, "params.json")):
-    p = dict(DEFAULTS)
+    """-> (params incl. 'mode', precision per evidence) from params.json (evaluate.py calibrate) or DEFAULTS."""
+    p = dict(DEFAULTS, mode="replace")
     pr = dict(P_DEFAULT)
     if os.path.exists(path):
         j = json.load(open(path))
         p.update(j.get("params") or {})
+        p["mode"] = j.get("mode", p["mode"])
         pr.update({k: v for k, v in (j.get("precision") or {}).items() if v is not None})
     return p, pr
 
@@ -404,12 +406,15 @@ def is_geometry_ob(z):
         str(z.get("src", "osm")).startswith("osm")
 
 
-def apply_ob(package, layers=None, params=None, precision=None, mode="replace", use_reframe=True):
+def apply_ob(package, layers=None, params=None, precision=None, mode=None, use_reframe=True):
     """course_package/1 dict -> new dict with inferred OB in every hole's zones_ll (+ reframed zones).
-    mode: replace = drop the geometry stage's OSM OB (outline/buildings/roads) first; add = keep it too."""
+    mode: replace = drop the geometry stage's OSM OB (outline/buildings/roads) first; add = keep it too;
+    None = the calibrated choice in params.json (default replace)."""
     out = copy.deepcopy(package)
     prm, prec = load_params()
     prm.update(params or {})
+    mode = mode or prm.pop("mode", "replace")
+    prm.pop("mode", None)
     prec.update(precision or {})
     L = layers if layers is not None else load_layers(out)
     st = out.setdefault("stages", {})
@@ -480,7 +485,7 @@ def main(argv=None):
     ap.add_argument("--package", required=True)
     ap.add_argument("--out", help="write the package with OB here")
     ap.add_argument("--geojson", help="write the inferred OB polygons here")
-    ap.add_argument("--mode", default="replace", choices=["replace", "add"])
+    ap.add_argument("--mode", default=None, choices=["replace", "add"])
     a = ap.parse_args(argv)
     pkg = json.load(open(a.package))
     o = apply_ob(pkg, mode=a.mode)
