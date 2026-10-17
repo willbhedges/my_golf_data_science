@@ -61,9 +61,9 @@ def preview(img, probs, path, max_px=2000):
     im.save(path, quality=85)
 
 
-def run_one(r, mdl, sha, force=False, tta=True):
+def run_one(r, mdl, sha, force=False, tta=True, cfg=None, model_id=M.REPO, tag="ariadgolf-v4", suffix=""):
     import rasterio
-    slug = r["slug"]
+    slug = r["slug"] + suffix
     od = os.path.join(HERE, slug)
     os.makedirs(od, exist_ok=True)
     mp = os.path.join(od, "meta.json")
@@ -81,7 +81,8 @@ def run_one(r, mdl, sha, force=False, tta=True):
     print(f"{slug}: {img.shape} res {res} m {crs}", flush=True)
     if abs(res - M.GSD_M) > 0.05:
         print(f"  WARNING: {res} m pixels, model expects {M.GSD_M} m")
-    probs = M.predict_raster(mdl, img, tta=tta)
+    cfg = cfg or {}
+    probs = M.predict_raster(mdl, img, tta=tta, mean=cfg.get("image_mean", M.MEAN), std=cfg.get("image_std", M.STD))
     t1 = time.time()
     valid = img.any(axis=0)
     q = (probs[1:] * 250).round().astype(np.uint8)
@@ -92,7 +93,7 @@ def run_one(r, mdl, sha, force=False, tta=True):
         for i, c in enumerate(M.CLASSES[1:]):
             dst.set_band_description(i + 1, c)
     preview(img, probs, os.path.join(od, "preview.jpg"))
-    m = dict(slug=slug, request=r["_file"], request_hash=r["_hash"], model=M.REPO, model_sha=sha, tta=tta,
+    m = dict(slug=slug, request=r["_file"], request_hash=r["_hash"], model=model_id, model_tag=tag, model_sha=sha, tta=tta,
              naip=r["naip"], shape=list(img.shape), res_m=res, crs=str(crs),
              seconds_infer=round(t1 - t0, 1), seconds_total=round(time.time() - t0, 1),
              pixel_share={c: round(float((probs.argmax(0) == i)[valid].mean()), 4) for i, c in enumerate(M.CLASSES)})
@@ -141,17 +142,18 @@ def build_polygons(slug):
     if hag is not None:
         wm, nd = M.drop_tree_shadows(wm, hag, res_m=abs(T.a))
         m["water_shadow_filter"] = f"lidar HAG ring: dropped {nd} components"
-    feats = P.polygonize(probs, T, crs, src=f"segment:ariadgolf-v4@{m['model_sha'][:8]}",
+    feats = P.polygonize(probs, T, crs, src=f"segment:{m.get('model_tag', 'ariadgolf-v4')}@{m['model_sha'][:8]}",
                          water=(wm, ws), valid=valid)
     json.dump({"type": "FeatureCollection", "features": feats,
-               "properties": {"model": M.REPO, "model_sha": m["model_sha"], "naip": m["naip"],
+               "properties": {"model": m.get("model", M.REPO), "model_sha": m["model_sha"], "naip": m["naip"],
                               "water": "segment:nir = model.nir_water (NAIP NIR rule), not the U-Net",
-                              "licence": "model weights: no licence granted by Ariad (research/evaluation only); "
-                                         "labels OSM ODbL; imagery USDA NAIP (public domain)"}},
+                              "licence": (("model weights: no licence granted by Ariad (research/evaluation only); "
+                                           if m.get("model", M.REPO) == M.REPO else "model: ours (segment/train); ")
+                                          + "labels OSM ODbL; imagery USDA NAIP (public domain)")}},
               open(os.path.join(od, "segment.geojson"), "w"))
     counts = {}
     for f in feats:
-        k = f"{f['properties']['class']}:{f['properties']['src'].split(':')[1].split('@')[0]}"
+        k = f"{f['properties']['class']}:{f['properties']['src'].split(':')[1].split('@')[0]}"  # noqa: E501
         counts[k] = counts.get(k, 0) + 1
     m["features"] = counts
     json.dump(m, open(mp, "w"), indent=1)
@@ -164,20 +166,25 @@ def main():
     ap.add_argument("--no-tta", action="store_true")
     ap.add_argument("--slug", nargs="*")
     ap.add_argument("--polygons-only", action="store_true", help="rebuild segment.geojson from probs.tif (no model)")
+    ap.add_argument("--model", default=M.REPO, help="Hub id or a local model folder (train/train.py output)")
+    ap.add_argument("--tag", default=None, help="src tag (default ariadgolf-v4 for the Hub model, else own-unet)")
+    ap.add_argument("--suffix", default="", help="output folder suffix, e.g. _own -> course_data/segment/<slug>_own/")
     a = ap.parse_args()
     rs = [r for r in requests() if not a.slug or r["slug"] in a.slug]
     if a.polygons_only:
         for r in rs:
-            if os.path.exists(os.path.join(HERE, r["slug"], "probs.tif")):
-                print(r["slug"], build_polygons(r["slug"]) and json.load(open(os.path.join(HERE, r["slug"], "meta.json")))["features"])
+            sl = r["slug"] + a.suffix
+            if os.path.exists(os.path.join(HERE, sl, "probs.tif")):
+                print(sl, build_polygons(sl) and json.load(open(os.path.join(HERE, sl, "meta.json")))["features"])
         return
     print("requests:", [r["slug"] for r in rs])
     if not rs:
         return
-    mdl, cfg, sha = M.load(threads=os.cpu_count())
+    mdl, cfg, sha = M.load(a.model, threads=os.cpu_count())
+    tag = a.tag or ("ariadgolf-v4" if a.model == M.REPO else "own-unet")
     for r in rs:
         try:
-            run_one(r, mdl, sha, force=a.force, tta=not a.no_tta)
+            run_one(r, mdl, sha, force=a.force, tta=not a.no_tta, cfg=cfg, model_id=a.model, tag=tag, suffix=a.suffix)
         except Exception as e:  # noqa: BLE001
             import traceback
             traceback.print_exc()

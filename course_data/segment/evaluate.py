@@ -119,7 +119,7 @@ def object_metrics(seg, osm, grid):
     from shapely.strtree import STRtree
     res = {}
     P = {c: [grid.proj(f["geometry"]).buffer(0) for f in seg if f["properties"]["class"] == c
-             and f["properties"]["src"].startswith("segment:ariadgolf")] for c in CLASSES}
+             and f["properties"]["src"] != "segment:nir"] for c in CLASSES}
     R = {c: [grid.proj(f["geometry"]).buffer(0) for f in osm if f["properties"]["class"] == c] for c in CLASSES}
 
     def best_iou(a, bs, tree):
@@ -211,7 +211,7 @@ def unet_tees(seg):
     from shapely.geometry import shape
     out = []
     for i, f in enumerate(seg):
-        if f["properties"]["class"] == "tee" and f["properties"]["src"].startswith("segment:ariadgolf"):
+        if f["properties"]["class"] == "tee" and f["properties"]["src"] != "segment:nir":
             g = shape(f["geometry"])
             gs = list(g.geoms) if g.geom_type == "MultiPolygon" else [g]
             ring = max(gs, key=lambda x: x.area).exterior.coords

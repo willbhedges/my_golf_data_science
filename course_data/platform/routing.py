@@ -46,14 +46,17 @@ ALIGN_FW_DEG = 35.0                      # a fairway the line runs along (else i
 CORRIDOR_BUF = 20.0                      # line points within 20 yds of a fairway count as on it (dog-legs)
 COV_W = {"osm": 0.6, "segment": 0.25, "lidar": 0.15}   # reward per tee box explained by a hole
 FINGERPRINT_W, FP_CAP = 1.0, 1.5         # tee-complex fingerprint vs every card set (see fingerprint)
-REUSED_TEE = 2.5                         # two holes from one box (shared tee complexes exist)
+REUSED_TEE = 2.5
+CROSS_PEN = 1.5                          # per pair of hole lines that cross (rare on real courses)                         # two holes from one box (shared tee complexes exist)
 COVERED_START = 2.0                      # a hole starting on a box another hole already explains
 COV_PERP, COV_BACK, COV_FWD = 18.0, 40.0, 0.45         # a box is "on" a hole: <= 18 yds off the line, from
                                                        # 40 yds behind the tee to 65 % of the way to the green
 BEAM = 3000
 TOPK = 90
 MISS_TEE = 4.0
-MISS_HOLE = 7.0
+MISS_HOLE = 8.0
+PRACTICE_YD, PRACTICE_PEN = 45.0, 1.0
+MODEL_GREEN_PEN = 0.6
 P_CHECK = 0.8
 PAR_RANGES = {3: (90, 260), 4: (240, 500), 5: (420, 660), 6: (560, 760)}
 
@@ -238,10 +241,11 @@ def _feat_poly(f):
 
 
 def inputs_from_fc(fc, segment=None, pads=None, boundary=None, hide_holes=False, min_p_green=0.6,
-                   min_p_tee=0.5, use_segment_tees=True):
+                   min_p_tee=0.5, use_segment_tees=True, osm_features=True):
     """-> dict(greens, tees, fairways, clubhouse, anchors, proj). Every green / tee is
     {id, ll (lon, lat), poly [[lon, lat]...] | None, src}. OSM features outside the course (inside_course False)
-    are dropped; model / lidar features are kept when within 60 yds of the boundary."""
+    are dropped; model / lidar features are kept when within 60 yds of the boundary. osm_features=False drops
+    the OSM greens / tees / fairways (simulates an unmapped course: model + lidar only)."""
     rings = _outer_rings(boundary) if isinstance(boundary, dict) else (boundary or [])
     feats = [f for f in fc.get("features", []) if f.get("geometry")]
     inside = [f for f in feats if f["properties"].get("inside_course") is not False]
@@ -249,6 +253,8 @@ def inputs_from_fc(fc, segment=None, pads=None, boundary=None, hide_holes=False,
     for f in inside:
         p = f["properties"]
         g = p.get("golf")
+        if not osm_features and g in ("green", "tee", "fairway"):
+            continue
         if g == "green":
             poly = _feat_poly(f)
             ll = _ll_of(f["geometry"])
@@ -294,7 +300,7 @@ def inputs_from_fc(fc, segment=None, pads=None, boundary=None, hide_holes=False,
                 continue
             poly = _feat_poly(f)
             if cls == "green" and float(p.get("p", 1)) >= min_p_green and 150 <= float(p.get("area_m2", 400)) <= 3000:
-                if not near_existing(ll, osm_greens, 20) and not (poly and any(
+                if not near_existing(ll, osm_greens, 35) and not (poly and any(
                         _point_in_any(g["ll"], [g["poly"]]) for g in osm_greens if g["poly"] and
                         _point_in_any(g["ll"], [poly]))):
                     greens.append(dict(id=f"segment:{i}", ll=ll, poly=poly, src="segment", p=p.get("p")))
@@ -441,6 +447,12 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
     D = np.hypot(txy[:, None, 0] - gxy[None, :, 0], txy[:, None, 1] - gxy[None, :, 1]) if nT else np.zeros((0, nG))
     W = np.hypot(gxy[:, None, 0] - txy[None, :, 0], gxy[:, None, 1] - txy[None, :, 1]) if nT else np.zeros((nG, 0))
     walk = np.minimum((np.maximum(W - WALK_FREE, 0) / WALK_SCALE) ** 2, 9.0)
+    # practice greens: a green with others within 45 yds (putting / chipping greens by the clubhouse)
+    GG = np.hypot(gxy[:, None, 0] - gxy[None, :, 0], gxy[:, None, 1] - gxy[None, :, 1])
+    gpen = np.minimum(((GG < PRACTICE_YD).sum(1) - 1) * PRACTICE_PEN, 2 * PRACTICE_PEN)
+    # model greens are less certain than mapped ones (false positives on tees / approaches)
+    gpen = gpen + np.array([0.0 if g["src"] == "osm" else MODEL_GREEN_PEN + 2.0 * (1.0 - float(g.get("p") or 0.8))
+                            for g in G])
     wt = np.array([COV_W.get(t["src"], 0.2) for t in T])
     tee_axes = np.array([long_axis(pr.ring(t["poly"])) if t.get("poly") and len(t["poly"]) >= 4 else (0.0, 1.0)
                          for t in T]).reshape(-1, 2)
@@ -531,6 +543,7 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
                 c = c + cross
             c = c + ch_cost(txy, 1.0 if h == 0 else (0.6 if h == 9 and n >= 18 else 0.0))[:, None]
             c = c + ch_cost(gxy, 0.5 if (h == n - 1 or (h == 8 and n >= 18)) else 0.0)[None, :]
+            c = c + gpen[None, :]
             ok = (lc < 9.5) & cand
             if force and ref in force:
                 ok = np.zeros_like(ok)
@@ -554,12 +567,21 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
                 cv[j] = _on_hole(txy, txy[tk], gxy[gk], tee_axes) * wt
         covs.append(cv)
 
+    # crossing lines: unique (t, g) pairs over all holes, pairwise proper intersections
+    pairs = sorted({(r[0], r[1]) for rows in hyps for r in rows if r[0] >= 0 and r[1] >= 0})
+    pidx = {p: i for i, p in enumerate(pairs)}
+    hp = [np.array([pidx.get((r[0], r[1]), -1) for r in rows]) for rows in hyps]
+    X = _crossings(np.array([txy[p[0]] for p in pairs]).reshape(-1, 2),
+                   np.array([gxy[p[1]] for p in pairs]).reshape(-1, 2)) if pairs else np.zeros((0, 0), bool)
+    NP = len(pairs)
     # beam search
+    S_x = np.zeros((1, NP + 1), np.int16)       # how many chosen lines each pair would cross
     S_cost = np.zeros(1)
     S_g = np.zeros((1, nG + 1), bool)          # last column: dummy for -1
     S_t = np.zeros((1, nT + 1), bool)
     S_c = np.zeros((1, nT), float)              # tee boxes already explained (weights)
     S_last = np.array([-1])
+    S_gap = np.array([False])
     back = []
     for h in range(n):
         rows = hyps[h]
@@ -574,10 +596,11 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
             sub = walk[np.ix_(S_last[lastok], ht[teeok])]
             if h == 9 and n >= 18:
                 sub = sub * 0.3
+            sub = sub * np.where(S_gap[lastok], 0.4, 1.0)[:, None]
             tr[np.ix_(lastok, teeok)] = sub
         cv = covs[h]
         gain = cv.sum(1)[None, :] - (S_c > 0).astype(float) @ cv.T if nT else 0.0
-        tot = S_cost[:, None] + hc[None, :] + tr - gain
+        tot = S_cost[:, None] + hc[None, :] + tr - gain + CROSS_PEN * S_x[:, hp[h]] * (hp[h] >= 0)[None, :]
         usedg = S_g[:, hg]                      # hg == -1 -> last column (never set)
         usedt = S_t[:, ht]
         tot = tot + COVERED_START * np.c_[S_c > 0, np.zeros((len(S_cost), 1), bool)][:, ht] * (ht >= 0)[None, :]
@@ -606,11 +629,17 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
         S_g = S_g[ss].copy()
         S_t = S_t[ss].copy()
         S_c = np.maximum(S_c[ss], cv[rr]) if nT else S_c[ss]
+        S_x = S_x[ss].copy()
+        pk = hp[h][rr]
+        okp = pk >= 0
+        if okp.any():
+            S_x[np.nonzero(okp)[0], :NP] += X[pk[okp]]
         ok = hg[rr] >= 0
         S_g[np.nonzero(ok)[0], hg[rr][ok]] = True
         ok = ht[rr] >= 0
         S_t[np.nonzero(ok)[0], ht[rr][ok]] = True
-        S_last = hg[rr]
+        S_gap = hg[rr] < 0
+        S_last = np.where(hg[rr] >= 0, hg[rr], S_last[ss])
         back.append((ss, rr))
 
     def trace(i):
@@ -670,6 +699,27 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
                 inputs=dict(greens=nG, greens_osm=sum(g["src"] == "osm" for g in G), tees=nT,
                             tees_by_src={s: sum(t["src"] == s for t in T) for s in ("osm", "segment", "lidar")},
                             fairways=len(inp.get("fairways", [])), anchors=len(anchors)))
+
+
+def _crossings(a, b):
+    """(P, P) int16: segment i (a[i] -> b[i]) properly crosses segment j, ignoring touches within 10 yds of
+    an end (a hole's green is next to the following tee)."""
+    P = len(a)
+    if P == 0:
+        return np.zeros((0, 0), np.int16)
+    d = b - a
+    L = np.maximum(np.hypot(d[:, 0], d[:, 1]), 1e-6)
+    rx = a[None, :, 0] - a[:, None, 0]
+    ry = a[None, :, 1] - a[:, None, 1]
+    den = d[:, None, 0] * d[None, :, 1] - d[:, None, 1] * d[None, :, 0]
+    with np.errstate(all="ignore"):
+        ti = (rx * d[None, :, 1] - ry * d[None, :, 0]) / den
+        tj = (rx * d[:, None, 1] - ry * d[:, None, 0]) / den
+        mi = 10.0 / L[:, None]
+        mj = 10.0 / L[None, :]
+        x = (np.abs(den) > 1e-9) & (ti > mi) & (ti < 1 - mi) & (tj > mj) & (tj < 1 - mj)
+    np.fill_diagonal(x, False)
+    return x.astype(np.int16)
 
 
 def _on_hole(pts, t, g, axes=None):
@@ -775,13 +825,22 @@ def score(res, truth, green_tol=20.0, tee_tol=40.0):
         e = dict(green_ok=bool(gok), hole_ok=bool(hok))
         if h.get("tee_ll") and h.get("green_ll"):
             sx, sy = pr.fwd(*t["tee_ll"])
-            e["length_err_yd"] = round(abs(h["straight_yd"] - math.hypot(sx, sy)), 1)
-            e["tee_err_yd"] = round(math.hypot(*np.subtract(pr.fwd(*h["tee_ll"]), (sx, sy))), 1)
+            # true length from the routed tee: along the true line from the routed tee's projection on it
+            p = np.asarray(pr.fwd(*h["tee_ll"]))
+            best, along = np.inf, 0.0
+            for i, (a, b) in enumerate(zip(line[:-1], line[1:])):
+                ab = b - a
+                u = np.clip(np.dot(p - a, ab) / max(np.dot(ab, ab), 1e-9), 0, 1)
+                dd = float(np.hypot(*(a + u * ab - p)))
+                if dd < best:
+                    best, along = dd, cum[-1] - (cum[i] + u * float(np.hypot(*ab)))
+            e["length_err_yd"] = round(abs(h["straight_yd"] - along), 1) if hok else None
+            e["tee_err_yd"] = round(math.hypot(*np.subtract(p, (sx, sy))), 1)
         per[ref] = e
         if any(gl is not None and tl is not None and g_ok(gl) and t_ok(tl) for tl, gl in pairs):
             found += 1
     n = max(len(truth), 1)
-    le = [e["length_err_yd"] for e in per.values() if "length_err_yd" in e]
+    le = [e["length_err_yd"] for e in per.values() if e.get("length_err_yd") is not None]
     flagged = {r for r, h in res.get("holes", {}).items() if h.get("status") != "ok"}
     wrong = {r for r, e in per.items() if not e["hole_ok"]}
     return dict(n_true=len(truth), hole_number_acc=round(sum(e["hole_ok"] for e in per.values()) / n, 3),

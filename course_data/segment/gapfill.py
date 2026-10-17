@@ -203,6 +203,7 @@ def segment_gapfill(package, segment_path, *, reframe=True, scope="hole", log=pr
     c = pkg.get("course", {}).get("center") or pkg["holes"][next(iter(pkg["holes"]))]["green_ll"]
     proj = LocalProj(c[0], c[1])
     cands, tees = candidates(feats, proj)
+    unet_src = next((f["properties"]["src"] for f in feats if f["properties"]["src"] != "segment:nir"), "segment:unet")
     ex = existing(pkg, proj)
     add = fill_geoms({k: v for k, v in cands.items() if k != "green"}, ex)
     B = boundary(pkg, proj)
@@ -254,7 +255,7 @@ def segment_gapfill(package, segment_path, *, reframe=True, scope="hole", log=pr
                 continue
             q = proj.inv(ctr)
             tc.append({"tee_ll": [round(q.x, 7), round(q.y, 7)], "p": round(p, 3), "area_m2": round(g.area, 1),
-                       "src": "segment:ariadgolf-v4"})
+                       "src": unet_src})
         if tc:
             h["tee_candidates_ll"] = tc
             stats["tee_candidates"] += len(tc)
@@ -263,16 +264,15 @@ def segment_gapfill(package, segment_path, *, reframe=True, scope="hole", log=pr
                 "imagery-model " + ", ".join(sorted(got)) + " where OSM has none (segment gap-fill; check on the map)")
             stats["holes"][k] = got
             stats["zones_added"] += sum(v for lie, v in got.items() if lie != "green")
-    sha = str(props.get("model_sha", ""))[:8]
     pkg.setdefault("stages", {})["segment"] = (
-        f"ok: segment gap-fill ariadgolf-v4@{sha} (+{stats['zones_added']} zones on {len(stats['holes'])} holes, "
+        f"ok: segment gap-fill {unet_src.split(':', 1)[1]} (+{stats['zones_added']} zones on {len(stats['holes'])} holes, "
         f"+{stats['greens_added']} greens, {stats['tee_candidates']} tee candidates)")
     pkg.setdefault("sources", {})["segment"] = {
         "model": props.get("model", "ariadgolf/golf-course-segmentation"), "model_sha": props.get("model_sha"),
         "naip": props.get("naip"), "file": os.path.relpath(os.path.abspath(segment_path), ROOT),
         "rule": "fill only where OSM lacks the class (never overrides OSM green/fairway/bunker/water)",
         "scope": scope,
-        "licence": LICENCE}
+        "licence": LICENCE if "ariadgolf" in str(props.get("model", "ariadgolf")) else str(props.get("licence", ""))}
     pkg.setdefault("attribution", [])
     if isinstance(pkg["attribution"], list) and not any("NAIP" in str(a) and "segment" in str(a) for a in pkg["attribution"]):
         pkg["attribution"].append("segment gap-fill: USDA NAIP imagery; U-Net trained on OpenStreetMap labels (ODbL)")

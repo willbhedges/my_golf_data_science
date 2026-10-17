@@ -27,12 +27,22 @@ GSD_M = 0.6
 
 
 def load(repo=REPO, revision=None, threads=None):
-    """(model, config, sha) on CPU in float32."""
+    """(model, config, sha) on CPU in float32. repo: a Hub id or a local smp save_pretrained folder with
+    preprocessor_config.json (our own model from train/train.py)."""
     import segmentation_models_pytorch as smp
     import torch
-    from huggingface_hub import HfApi, hf_hub_download
     if threads:
         torch.set_num_threads(threads)
+    if os.path.isdir(repo):
+        cfg = json.load(open(os.path.join(repo, "preprocessor_config.json")))
+        model = smp.from_pretrained(repo).float().eval()
+        import hashlib
+        h = hashlib.sha1()
+        for f in sorted(os.listdir(repo)):
+            if f.endswith((".safetensors", ".json")):
+                h.update(open(os.path.join(repo, f), "rb").read())
+        return model, cfg, h.hexdigest()
+    from huggingface_hub import HfApi, hf_hub_download
     cfg = json.load(open(hf_hub_download(repo, "preprocessor_config.json", revision=revision)))
     assert cfg["image_mean"] == MEAN and cfg["image_std"] == STD and cfg["tile_size"] == TILE, cfg
     model = smp.from_pretrained(repo, revision=revision).float().eval()
@@ -55,7 +65,7 @@ def _starts(size, tile=TILE, stride=STRIDE):
     return s + [size - tile]
 
 
-def predict_raster(model, img, tta=True, log=print):
+def predict_raster(model, img, tta=True, log=print, mean=MEAN, std=STD):
     """img: (4, H, W) uint8 R,G,B,NIR at 0.6 m -> (6, H, W) float32 probabilities (0 where no data)."""
     import torch
     _, H, W = img.shape
@@ -63,8 +73,8 @@ def predict_raster(model, img, tta=True, log=print):
     ph, pw = max(0, TILE - H), max(0, TILE - W)
     x = np.pad(img, ((0, 0), (0, ph), (0, pw)), mode="reflect") if (ph or pw) else img
     Hp, Wp = x.shape[1:]
-    mean = np.asarray(MEAN, np.float32)[:, None, None]
-    std = np.asarray(STD, np.float32)[:, None, None]
+    mean = np.asarray(mean, np.float32)[:, None, None]
+    std = np.asarray(std, np.float32)[:, None, None]
     acc = np.zeros((len(CLASSES), Hp, Wp), np.float32)
     wsum = np.zeros((Hp, Wp), np.float32)
     win = _window()
