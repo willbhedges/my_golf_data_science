@@ -152,6 +152,7 @@ function tempWeights(GB, tF){ const TT = D.temps; const t = Math.min(Math.max(tF
   let j = 0; while(j < TT.length-2 && t > TT[j+1]) j++; const w = (t - TT[j])/(TT[j+1] - TT[j]);
   return [[GB[String(TT[j])], 1-w], [GB[String(TT[j+1])], w]]; }
 /* the tee this hole is played from: set's card offset + this hole's own adjustment, snapped to a computed grid */
+const toGreen = (h, back, v) => h.green_al ? Math.round(Math.hypot(h.green_al[0] + back - v.total, h.green_al[1] - (v.aim + v.drift + (v.kick || 0)))) : "";   /* straight line from where it finishes to the green centre */
 function teeOf(h){
   const o = (h.tee_opts || []).find(t => t.name === st.set) || (h.tee_opts || []).find(t => t.name === h.base_set);
   const want = (o ? o.back : 0) + (st.adj[h.key] || 0);
@@ -337,8 +338,8 @@ function render(){
     const allC = Object.keys(r.out).sort((a,b) => r.out[a].ev - r.out[b].ev);
     const rows = allC.map(c => { const v = r.out[c], d = v.ev - r.out[r.pick].ev;
       const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (d < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
-      return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"${HYPO(c) ? ' style="font-style:italic;opacity:.8"' : ""}><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${lost}</td></tr>`;}).join("");
-    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. Tap any club to see its own best aim and pattern; tap ★ to go back. The hybrid (~235 carry) is hypothetical, not in your bag: it shows whether such a club would be the play.</div>`;
+      return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"${HYPO(c) ? ' style="font-style:italic;opacity:.8"' : ""}><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${toGreen(h, r.T.back, v)}</td><td>${Math.round(v.width)}</td><td>${lost}</td></tr>`;}).join("");
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>To green</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. To green: yards from where that club finishes to the middle of the green. Tap any club to see its own best aim and pattern; tap ★ to go back. The hybrid (~235 carry) is hypothetical, not in your bag: it shows whether such a club would be the play.</div>`;
     const be = best.e;
     const past = best.total - B > 345;
     if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);

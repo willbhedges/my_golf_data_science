@@ -159,7 +159,18 @@ def tee_hole(h):
                 par=hd["par"], length=hd["length"], label=course.LABELS.get(h, str(h)),
                 tee_name="Gold tee" if "Gold" in course.LABELS.get(h, "") else "Black tee",
                 tee_offimage=bool(hd["tee"][1] > 1990), elev=elev_of(h) if course.ELEVATION else None,
-                note=FN.get(str(h), {}).get("note", ""), aim_at=FN.get(str(h), {}).get("aim_at", ""))
+                note=FN.get(str(h), {}).get("note", ""), aim_at=FN.get(str(h), {}).get("aim_at", ""),
+                green_al=green_along_lat(course.HOLES[h]))
+
+
+def green_along_lat(hd):
+    """Green centre in the hole's (along, lateral) yards from the plan's tee (lateral + = right)."""
+    tee = np.array(hd["tee"], float)
+    v = np.array(hd["dot270"], float) - tee
+    ppy = np.linalg.norm(v) / 270.0
+    fwd = v / np.linalg.norm(v)
+    g = np.array(hd["green"], float) - tee
+    return [round(float(g @ fwd) / ppy, 1), round(float(g @ np.array([-fwd[1], fwd[0]])) / ppy, 1)]
 
 
 def par3_hole(h):

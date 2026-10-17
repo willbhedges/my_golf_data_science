@@ -143,6 +143,7 @@ for(const h of D.holes){ if(h.kind !== "tee") continue; h.G = {};
     h.G[b] = G; }
   h.grid = h.G["0"]; }
 /* the tee this hole is played from: set's card offset + this hole's own adjustment, snapped to a computed grid */
+const toGreen = (h, back, v) => h.green_al ? Math.round(Math.hypot(h.green_al[0] + back - v.total, h.green_al[1] - (v.aim + v.drift + (v.kick || 0)))) : "";   /* straight line from where it finishes to the green centre */
 function teeOf(h){
   const o = (h.tee_opts || []).find(t => t.name === st.set) || (h.tee_opts || []).find(t => t.name === h.base_set);
   const want = (o ? o.back : 0) + (st.adj[h.key] || 0);
@@ -320,8 +321,8 @@ function render(){
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
     document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Same club as the book (this wind doesn't change it)." : ""}`;
-    const rows = r.order.map(c => { const v = r.out[c]; return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.pick?"—":((d => d < 0.01 ? "≈ tie" : "+"+d.toFixed(3))(v.ev - r.out[r.pick].ev))}</td></tr>`;}).join("");
-    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. Tap any club to see its own best aim and pattern; tap ★ to go back.</div>`;
+    const rows = r.order.map(c => { const v = r.out[c]; return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${toGreen(h, r.T.back, v)}</td><td>${Math.round(v.width)}</td><td>${c===r.pick?"—":((d => d < 0.01 ? "≈ tie" : "+"+d.toFixed(3))(v.ev - r.out[r.pick].ev))}</td></tr>`;}).join("");
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>To green</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. To green: yards from where that club finishes to the middle of the green. Tap any club to see its own best aim and pattern; tap ★ to go back.</div>`;
     const be = best.e;
     const past = best.total - B > 345;
     if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
