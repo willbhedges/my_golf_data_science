@@ -201,3 +201,18 @@ def test_badges():
     b = V.badges(pkg, rv)
     assert b["1"]["state"] == "unverified" and "4-wood" in b["1"]["line"]
     assert b["2"]["state"] == "checked" and b["3"]["state"] == "auto" and V.badges(pkg, None) == {}
+
+
+def test_book_badges_in_notes_and_cover():
+    import book
+    book.set_badges({"1": {"state": "unverified", "symbol": "!", "line": "Unverified: Is the Blue tee here? If not, X."},
+                     "2": {"state": "checked", "symbol": "o", "line": "Map checked by you before the round."}})
+    try:
+        r = {"pick": "Driver", "runner": "2-wood", "margin": 0.02, "aim": 0.0, "zone": [-5, 5], "tie": False,
+             "clubs": {"Driver": {"share": {"fairway": 0.6}, "approach": 120.0}}}
+        notes, _ = book.notes_and_aims({}, {}, {1: r, 2: r, 3: r}, {})
+        assert notes[1].startswith("⚠ Unverified: Is the Blue tee here?")
+        assert notes[2].startswith("◐ Map checked") and not notes[3].startswith(("⚠", "◐"))
+        assert "unverified 1" in book.badge_line() and "checked by you 2" in book.badge_line()
+    finally:
+        book.set_badges({})
