@@ -756,3 +756,19 @@ def _move_to_black():
 
 if not os.environ.get("SH_SCREENSHOT_TEES"):
     _move_to_black()
+
+
+# ---- Soft conditions (golfer, 2026-10-17) ----------------------------------------------------
+# The course plays soft: a ball moves only a yard or two after it lands, so no side kick from slope
+# and the slope's effect on roll is capped at +/-30%. Carry change from elevation is kept.
+SOFT_ROLL = (0.7, 1.3)
+
+
+def _soften():
+    for hd in HOLES.values():
+        if "elev" in hd:
+            hd["elev"] = {c: (dc, float(min(max(rf, SOFT_ROLL[0]), SOFT_ROLL[1])), 0.0)
+                          for c, (dc, rf, _k) in hd["elev"].items()}
+
+
+_soften()
