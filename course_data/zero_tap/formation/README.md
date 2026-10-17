@@ -4,6 +4,25 @@ Pairs every green with its own tee complex, with calibrated probabilities, from 
 blind perception scene, with or without a scorecard. Output contract: **`hole_pairs/1`** (below), consumed by
 workstream C's sequence solver. Results: [RESULTS.md](RESULTS.md).
 
+## Results (eval run 39050485994)
+
+Formed = the green's MAP tee is right (RESULTS.md has the full tables, calibration and the old-baseline column).
+
+| | dev CV (train states) | held-out states (once) | generalize test (once) |
+|---|---|---|---|
+| OSM, no card | 87.5 % | 88.8 % | 87.7 % |
+| OSM + web card | 89.6 % | 89.5 % | 87.6 % |
+| blind perception, no card | 86.2 % | 84.4 % | 86.5 % |
+| blind perception + web card | 86.4 % | 85.3 % | 86.6 % |
+| old baseline (structure top-1), OSM | 71.9 % | 71.6 % | 71.1 % |
+
+Zero-tap benchmark (`bench/<tier>.json`, `bench.py` matcher, results in `zero_tap/results/formation_v2/`), **formed**
+on **test**: nocard 83.2 %, osm_card 82.1 %, unmapped_nocard 86.9 %, unmapped_card 86.3 % (dev: 91-94 %, but dev
+bench courses were trained on). Hole numbers are arbitrary in these files, so ignore `hole number`, `fully right`
+and `hole_ece` there. A card adds only ~0-1 point: pairing errors are mostly between two plausible tees of similar
+length. Every hole formed on a course: 15-27 %, so a sequence solver still needs to handle a few wrong pairs per
+course; use `p_corridor` to find them (ECE 0.04-0.09).
+
 ## Method
 
 1. **Candidates.** The structure solver's tee complexes (`structure/solver.complexes`; perception scenes already
