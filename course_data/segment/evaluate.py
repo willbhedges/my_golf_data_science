@@ -165,19 +165,24 @@ def hand_eval(grid, sources):
     from shapely.geometry import Polygon
     hz = json.load(open(os.path.join(CD, "spirit_hollow", "hand_zones_ll.json")))["holes"]
     lie_cls = {"fairway": "fairway", "first_cut": "fairway", "sand": "bunker", "water": "water"}
-    acc = {s: {c: [0, 0, 0, 0] for c in ("fairway", "bunker", "water")} for s in sources}   # inter, union, pred, ref
+    HC = ("fairway", "fairway_only", "bunker", "water")
+    acc = {s: {c: [0, 0, 0, 0] for c in HC} for s in sources}   # inter, union, pred, ref
     per_hole = {}
     for k, h in hz.items():
         fp = grid.raster([(grid.proj(Polygon(h["footprint_ll"])), 1)]) > 0
         hand = np.zeros(grid.shape, np.uint8)
+        fonly = np.zeros(grid.shape, bool)
         for z in h["zones"]:
             m = grid.raster([(grid.proj(Polygon(z["poly_ll"])).buffer(0), 1)]) > 0
             hand[m] = CODE.get(lie_cls.get(z["lie"]), 0)
+            fonly[m] = z["lie"] == "fairway"
         per_hole[k] = {}
         for s, lab in sources.items():
             ph = {}
-            for c in ("fairway", "bunker", "water"):
-                p, r = (lab == CODE[c]) & fp, (hand == CODE[c]) & fp
+            for c in HC:
+                cc = "fairway" if c == "fairway_only" else c
+                p = (lab == CODE[cc]) & fp
+                r = (fonly if c == "fairway_only" else (hand == CODE[c])) & fp
                 i, u = int((p & r).sum()), int((p | r).sum())
                 a = acc[s][c]
                 a[0] += i; a[1] += u; a[2] += int(p.sum()); a[3] += int(r.sum())
@@ -255,21 +260,27 @@ def evaluate(slug):
     grid = Grid(os.path.join(HERE, slug, "probs.tif"))
     seg = load_seg(slug)
     out = dict(slug=slug, package=pkg_slug, naip=meta["naip"], model_sha=meta["model_sha"])
-    unet = [f for f in seg if f["properties"]["src"].startswith("segment:ariadgolf")]
-    lab_u = grid.label_map(unet)
-    ndwi = grid.label_map([f for f in seg if f["properties"]["src"] == "segment:ndwi"], ["water"])
-    lab_un = lab_u.copy()
-    lab_un[lab_un == CODE["water"]] = 0
-    lab_un[ndwi == CODE["water"]] = CODE["water"]
+    lab_u = grid.label_map(seg)                                  # U-Net classes + NIR-rule water
+    raw_water = None
+    try:
+        import rasterio
+        with rasterio.open(os.path.join(HERE, slug, "probs.tif")) as s_:
+            q = s_.read().astype(np.float32)
+        am = np.concatenate([250 - q.sum(0, keepdims=True), q]).argmax(0)
+        raw_water = np.where(am == 5, CODE["water"], 0).astype(np.uint8)   # the U-Net's own water class
+    except Exception:  # noqa: BLE001
+        pass
     if pdir:
         osm = load_osm_features(pdir)
         lab_o = grid.label_map(osm)
         region = boundary_region(pkg, grid)
-        out["vs_osm"] = {"unet": iou_table(lab_u, lab_o, region), "unet+ndwi_water": iou_table(lab_un, lab_o, region)}
+        out["vs_osm"] = {"segment": iou_table(lab_u, lab_o, region)}
+        if raw_water is not None:
+            out["vs_osm"]["unet_water_class"] = iou_table(raw_water, lab_o, region)["water"]
         out["objects_vs_osm"] = object_metrics(seg, osm, grid)
         out["osm_counts"] = {c: sum(f["properties"]["class"] == c for f in osm) for c in CLASSES}
         if pkg_slug == "spirit_hollow":
-            out["vs_hand"] = hand_eval(grid, {"unet": lab_u, "unet+ndwi_water": lab_un, "osm": lab_o})
+            out["vs_hand"] = hand_eval(grid, {"segment": lab_u, "osm": lab_o})
         try:
             out["tees"] = tee_eval(slug, pkg_slug, seg)
         except Exception as e:  # noqa: BLE001
@@ -289,14 +300,15 @@ def md(res):
          "course boundary (+20 m). Label maps painted fairway < tee < green < bunker < water. OSM is the reference, "
          "so features OSM lacks count against the model's precision.", "",
          "## Pixel IoU vs OSM (precision / recall in brackets)", "",
-         "| course | NAIP | " + " | ".join(CLASSES) + " | water (NDWI) |", "|---|---|" + "---|" * (len(CLASSES) + 1)]
+         "water = NAIP NIR rule (model.nir_water); the U-Net's own water class is in the last column.", "",
+         "| course | NAIP | " + " | ".join(CLASSES) + " | U-Net water class |", "|---|---|" + "---|" * (len(CLASSES) + 1)]
     for r in res:
         if "vs_osm" not in r:
             continue
-        u, n = r["vs_osm"]["unet"], r["vs_osm"]["unet+ndwi_water"]
+        u = r["vs_osm"]["segment"]
         cells = [f"{fmt(u[c]['iou'])} ({fmt(u[c]['precision'])}/{fmt(u[c]['recall'])})" for c in CLASSES]
-        w = n["water"]
-        cells.append(f"{fmt(w['iou'])} ({fmt(w['precision'])}/{fmt(w['recall'])})")
+        w = r["vs_osm"].get("unet_water_class") or {}
+        cells.append(f"{fmt(w.get('iou'))} ({fmt(w.get('precision'))}/{fmt(w.get('recall'))})")
         L.append(f"| {r['slug']} | {os.path.basename(r['naip'])} | " + " | ".join(cells) + " |")
     L += ["", "## Objects vs OSM", "",
           "| course | greens: recall@IoU.5 / precision / mean best IoU | bunkers: recall / precision (overlap) | "
@@ -315,11 +327,12 @@ def md(res):
         if "vs_hand" not in r:
             continue
         L += ["", f"## Spirit Hollow hand map ({r['slug']}, inside the 16 screenshot footprints)", "",
-              "fairway = hand fairway + first_cut; bunker = sand. IoU (precision / recall).", "",
-              "| source | fairway | bunker | water |", "|---|---|---|---|"]
+              "fairway = hand fairway + first_cut (OSM convention); fairway only = hand fairway without first_cut; "
+              "bunker = sand. IoU (precision / recall). OSM scored the same way as the reference.", "",
+              "| source | fairway | fairway only | bunker | water |", "|---|---|---|---|---|"]
         for s, v in r["vs_hand"]["total"].items():
             L.append(f"| {s} | " + " | ".join(f"{fmt(v[c]['iou'])} ({fmt(v[c]['precision'])}/{fmt(v[c]['recall'])})"
-                                             for c in ("fairway", "bunker", "water")) + " |")
+                                             for c in ("fairway", "fairway_only", "bunker", "water")) + " |")
     L += ["", "## Tees", "",
           "U-Net tee polygons near a hole's first leg (OSM hole lines; > 20 yds from a green). *unmapped* = no OSM "
           "box centroid within 10 yds; *lidar* = a tees/lidar_pads.py pad within 10 yds.", "",

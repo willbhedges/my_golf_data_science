@@ -226,8 +226,19 @@ def finish(ax):
     ax.set_ylim(2000, 540)
 
 
+def display_hole(hd):
+    """A hole may carry 'display' = another screenshot of the same tee line (e.g. zoomed out to show
+    the tee): map tee/dot270 onto it so everything drawn from the frame lands on that image."""
+    dsp = hd.get("display")
+    if not dsp:
+        return hd
+    (a, b), (c, d) = [complex(*q) for q in dsp["src"]], [complex(*q) for q in dsp["dst"]]
+    m = lambda p: (lambda w: (w.real, w.imag))(c + (d - c) / (b - a) * (complex(*p) - a))
+    return dict(hd, image=dsp["image"], tee=m(hd["tee"]), dot270=m(hd["dot270"]))
+
+
 def draw_tee(ax, h, club, aim, zone, label=None):
-    hd = t.HOLES[h]
+    hd = display_hole(t.HOLES[h])
     draw_image(ax, hd["image"])
     fr = frame(hd["tee"], hd["dot270"], 270)
     carry, total, width, depth = {**t.CLUBS, **t.IRONS}[club]

@@ -687,6 +687,27 @@ def _package_par3_elevation():
 _package_par3_elevation()
 
 
+# ---- Display-only screenshots ------------------------------------------------------------------
+# The golfer sent a zoomed-out hole 1 that shows the tee (the traced one cuts it off). Same app tee
+# and line: its 300/270/240 dots and tee sit exactly 270.4 yds apart along the line. The model keeps
+# the traced frame (the GPS registration is tied to it); the book and wind page draw on the new image
+# by mapping the tee -> 270-dot segment from one screenshot onto the other.
+HOLES[1]["display"] = dict(image="hole01_full.png", src=((470.0, 2622.0), (479.0, 1290.0)),
+                           dst=((466.5, 1821.3), (468.0, 828.1)))
+
+
+def display_xy(hd, pts):
+    """Map frame px of the traced screenshot to the display screenshot (identity if none)."""
+    dsp = hd.get("display")
+    pts = np.asarray(pts, float)
+    if not dsp:
+        return pts
+    (a, b), (c, d) = [complex(*q) for q in dsp["src"]], [complex(*q) for q in dsp["dst"]]
+    z = pts[..., 0] + 1j * pts[..., 1]
+    w = c + (d - c) / (b - a) * (z - a)
+    return np.stack([w.real, w.imag], axis=-1)
+
+
 # ---- Play from the real Black box ------------------------------------------------------------
 # The screenshots are 18Birdies, which puts its tee on a box BEHIND the Black one on these holes:
 # the app's measured length beats the Black card by 8-25 yds and its tee sits on an OSM tee box

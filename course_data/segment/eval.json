@@ -1,0 +1,2912 @@
+[
+ {
+  "slug": "mozingo_lake",
+  "package": "mozingo_lake",
+  "naip": "course_data/vision_any/mozingo/raw/naip_2022.tif",
+  "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
+  "vs_osm": {
+   "unet": {
+    "green": {
+     "iou": 0.861,
+     "precision": 0.89,
+     "recall": 0.964,
+     "pred_m2": 13732,
+     "ref_m2": 12687
+    },
+    "tee": {
+     "iou": 0.618,
+     "precision": 0.716,
+     "recall": 0.818,
+     "pred_m2": 11590,
+     "ref_m2": 10152
+    },
+    "fairway": {
+     "iou": 0.806,
+     "precision": 0.89,
+     "recall": 0.895,
+     "pred_m2": 144060,
+     "ref_m2": 143317
+    },
+    "bunker": {
+     "iou": 0.699,
+     "precision": 0.766,
+     "recall": 0.889,
+     "pred_m2": 4461,
+     "ref_m2": 3845
+    },
+    "water": {
+     "iou": 0.074,
+     "precision": 0.074,
+     "recall": 0.961,
+     "pred_m2": 969237,
+     "ref_m2": 74994
+    }
+   },
+   "unet+ndwi_water": {
+    "green": {
+     "iou": 0.861,
+     "precision": 0.89,
+     "recall": 0.964,
+     "pred_m2": 13732,
+     "ref_m2": 12687
+    },
+    "tee": {
+     "iou": 0.618,
+     "precision": 0.716,
+     "recall": 0.818,
+     "pred_m2": 11590,
+     "ref_m2": 10152
+    },
+    "fairway": {
+     "iou": 0.806,
+     "precision": 0.89,
+     "recall": 0.895,
+     "pred_m2": 144060,
+     "ref_m2": 143317
+    },
+    "bunker": {
+     "iou": 0.4,
+     "precision": 0.753,
+     "recall": 0.46,
+     "pred_m2": 2346,
+     "ref_m2": 3845
+    },
+    "water": {
+     "iou": 0.488,
+     "precision": 0.505,
+     "recall": 0.934,
+     "pred_m2": 138611,
+     "ref_m2": 74994
+    }
+   }
+  },
+  "objects_vs_osm": {
+   "green": {
+    "osm": 30,
+    "model": 30,
+    "recall_iou50": 1.0,
+    "precision_iou50": 1.0,
+    "mean_best_iou": 0.859
+   },
+   "bunker": {
+    "osm": 27,
+    "model": 32,
+    "recall_overlap": 1.0,
+    "precision_overlap": 0.844
+   },
+   "fairway": {
+    "osm": 20,
+    "model": 28,
+    "recall_overlap": 0.9,
+    "precision_overlap": 0.643
+   },
+   "tee": {
+    "osm": 84,
+    "model": 84,
+    "match_yd": 10.0,
+    "recall": 0.869,
+    "precision": 0.869
+   }
+  },
+  "osm_counts": {
+   "green": 30,
+   "tee": 84,
+   "fairway": 20,
+   "bunker": 27,
+   "water": 4
+  },
+  "tees": {
+   "unet_tees": 84,
+   "unet_tees_near_first_leg": 54,
+   "osm_boxes": 84,
+   "matched_osm": 50,
+   "unmapped_candidates": 4,
+   "corroborated_by_lidar_pad": 1,
+   "lidar_pads": 41,
+   "unmapped": [
+    {
+     "lat": 40.364402,
+     "lon": -94.763958,
+     "p": 0.589,
+     "area_m2": 60.1,
+     "lidar": false
+    },
+    {
+     "lat": 40.361941,
+     "lon": -94.765287,
+     "p": 0.591,
+     "area_m2": 29.7,
+     "lidar": false
+    },
+    {
+     "lat": 40.354713,
+     "lon": -94.766626,
+     "p": 0.542,
+     "area_m2": 36.2,
+     "lidar": true
+    },
+    {
+     "lat": 40.351895,
+     "lon": -94.768116,
+     "p": 0.672,
+     "area_m2": 209.0,
+     "lidar": false
+    }
+   ],
+   "placement": {
+    "joint": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "joint+lidar": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "joint+unet": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "joint+lidar+unet": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    }
+   }
+  }
+ },
+ {
+  "slug": "spirit_hollow",
+  "package": "spirit_hollow",
+  "naip": "course_data/vision_any/spirit_hollow/raw/naip_2023.tif",
+  "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
+  "vs_osm": {
+   "unet": {
+    "green": {
+     "iou": 0.761,
+     "precision": 0.891,
+     "recall": 0.839,
+     "pred_m2": 10112,
+     "ref_m2": 10733
+    },
+    "tee": {
+     "iou": 0.511,
+     "precision": 0.595,
+     "recall": 0.784,
+     "pred_m2": 18995,
+     "ref_m2": 14423
+    },
+    "fairway": {
+     "iou": 0.843,
+     "precision": 0.904,
+     "recall": 0.926,
+     "pred_m2": 93046,
+     "ref_m2": 90838
+    },
+    "bunker": {
+     "iou": 0.677,
+     "precision": 0.85,
+     "recall": 0.77,
+     "pred_m2": 6830,
+     "ref_m2": 7540
+    },
+    "water": {
+     "iou": 0.056,
+     "precision": 0.056,
+     "recall": 0.98,
+     "pred_m2": 1095710,
+     "ref_m2": 63044
+    }
+   },
+   "unet+ndwi_water": {
+    "green": {
+     "iou": 0.761,
+     "precision": 0.891,
+     "recall": 0.839,
+     "pred_m2": 10112,
+     "ref_m2": 10733
+    },
+    "tee": {
+     "iou": 0.511,
+     "precision": 0.595,
+     "recall": 0.784,
+     "pred_m2": 18995,
+     "ref_m2": 14423
+    },
+    "fairway": {
+     "iou": 0.843,
+     "precision": 0.904,
+     "recall": 0.926,
+     "pred_m2": 93046,
+     "ref_m2": 90838
+    },
+    "bunker": {
+     "iou": 0.677,
+     "precision": 0.85,
+     "recall": 0.77,
+     "pred_m2": 6830,
+     "ref_m2": 7540
+    },
+    "water": {
+     "iou": 0.0,
+     "precision": 0.015,
+     "recall": 0.0,
+     "pred_m2": 1856,
+     "ref_m2": 63044
+    }
+   }
+  },
+  "objects_vs_osm": {
+   "green": {
+    "osm": 26,
+    "model": 25,
+    "recall_iou50": 0.885,
+    "precision_iou50": 0.92,
+    "mean_best_iou": 0.729
+   },
+   "bunker": {
+    "osm": 50,
+    "model": 62,
+    "recall_overlap": 1.0,
+    "precision_overlap": 0.806
+   },
+   "fairway": {
+    "osm": 20,
+    "model": 23,
+    "recall_overlap": 1.0,
+    "precision_overlap": 0.87
+   },
+   "tee": {
+    "osm": 103,
+    "model": 97,
+    "match_yd": 10.0,
+    "recall": 0.845,
+    "precision": 0.887
+   }
+  },
+  "osm_counts": {
+   "green": 26,
+   "tee": 103,
+   "fairway": 20,
+   "bunker": 50,
+   "water": 20
+  },
+  "vs_hand": {
+   "total": {
+    "unet": {
+     "fairway": {
+      "iou": 0.332,
+      "precision": 0.536,
+      "recall": 0.467
+     },
+     "bunker": {
+      "iou": 0.242,
+      "precision": 0.306,
+      "recall": 0.539
+     },
+     "water": {
+      "iou": 0.026,
+      "precision": 0.026,
+      "recall": 0.997
+     }
+    },
+    "unet+ndwi_water": {
+     "fairway": {
+      "iou": 0.332,
+      "precision": 0.536,
+      "recall": 0.467
+     },
+     "bunker": {
+      "iou": 0.242,
+      "precision": 0.306,
+      "recall": 0.539
+     },
+     "water": {
+      "iou": 0.0,
+      "precision": 0.0,
+      "recall": 0.0
+     }
+    },
+    "osm": {
+     "fairway": {
+      "iou": 0.337,
+      "precision": 0.546,
+      "recall": 0.468
+     },
+     "bunker": {
+      "iou": 0.257,
+      "precision": 0.309,
+      "recall": 0.607
+     },
+     "water": {
+      "iou": 0.203,
+      "precision": 0.252,
+      "recall": 0.511
+     }
+    }
+   },
+   "per_hole": {
+    "1": {
+     "unet": {
+      "fairway": 0.376,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.376,
+      "bunker": 0.0,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.375,
+      "bunker": 0.0,
+      "water": 0.0
+     }
+    },
+    "2B": {
+     "unet": {
+      "fairway": 0.225,
+      "bunker": 0.0,
+      "water": 0.004
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.225,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.201,
+      "bunker": 0.0,
+      "water": 0.027
+     }
+    },
+    "2F": {
+     "unet": {
+      "fairway": 0.255,
+      "bunker": 0.4,
+      "water": 0.096
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.255,
+      "bunker": 0.4,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.228,
+      "bunker": 0.401,
+      "water": 0.182
+     }
+    },
+    "4": {
+     "unet": {
+      "fairway": 0.468,
+      "bunker": 0.013,
+      "water": 0.0
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.468,
+      "bunker": 0.013,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.512,
+      "bunker": 0.012,
+      "water": null
+     }
+    },
+    "5": {
+     "unet": {
+      "fairway": 0.52,
+      "bunker": 0.397,
+      "water": 0.0
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.52,
+      "bunker": 0.397,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.536,
+      "bunker": 0.446,
+      "water": null
+     }
+    },
+    "6": {
+     "unet": {
+      "fairway": 0.489,
+      "bunker": 0.0,
+      "water": 0.011
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.489,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.5,
+      "bunker": 0.0,
+      "water": 0.594
+     }
+    },
+    "8": {
+     "unet": {
+      "fairway": 0.346,
+      "bunker": 0.496,
+      "water": 0.056
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.346,
+      "bunker": 0.496,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.335,
+      "bunker": 0.421,
+      "water": 0.382
+     }
+    },
+    "9B": {
+     "unet": {
+      "fairway": 0.342,
+      "bunker": 0.0,
+      "water": 0.083
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.342,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.348,
+      "bunker": 0.0,
+      "water": 0.63
+     }
+    },
+    "9F": {
+     "unet": {
+      "fairway": 0.281,
+      "bunker": 0.0,
+      "water": 0.038
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.281,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.298,
+      "bunker": 0.0,
+      "water": 0.267
+     }
+    },
+    "10": {
+     "unet": {
+      "fairway": 0.338,
+      "bunker": 0.195,
+      "water": 0.045
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.338,
+      "bunker": 0.195,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.367,
+      "bunker": 0.292,
+      "water": 0.144
+     }
+    },
+    "11": {
+     "unet": {
+      "fairway": 0.385,
+      "bunker": 0.0,
+      "water": 0.015
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.385,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.382,
+      "bunker": 0.0,
+      "water": 0.0
+     }
+    },
+    "13": {
+     "unet": {
+      "fairway": 0.216,
+      "bunker": 0.211,
+      "water": 0.018
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.216,
+      "bunker": 0.211,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.192,
+      "bunker": 0.254,
+      "water": 0.148
+     }
+    },
+    "14": {
+     "unet": {
+      "fairway": 0.264,
+      "bunker": 0.0,
+      "water": 0.022
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.264,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.26,
+      "bunker": 0.0,
+      "water": 0.361
+     }
+    },
+    "16": {
+     "unet": {
+      "fairway": 0.481,
+      "bunker": 0.305,
+      "water": 0.003
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.481,
+      "bunker": 0.305,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.496,
+      "bunker": 0.329,
+      "water": 0.0
+     }
+    },
+    "17": {
+     "unet": {
+      "fairway": 0.493,
+      "bunker": 0.191,
+      "water": 0.0
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.493,
+      "bunker": 0.191,
+      "water": null
+     },
+     "osm": {
+      "fairway": 0.495,
+      "bunker": 0.197,
+      "water": 0.0
+     }
+    },
+    "18": {
+     "unet": {
+      "fairway": 0.185,
+      "bunker": 0.133,
+      "water": 0.018
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.185,
+      "bunker": 0.133,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.204,
+      "bunker": 0.132,
+      "water": 0.196
+     }
+    }
+   }
+  },
+  "tees": {
+   "unet_tees": 96,
+   "unet_tees_near_first_leg": 83,
+   "osm_boxes": 103,
+   "matched_osm": 78,
+   "unmapped_candidates": 5,
+   "corroborated_by_lidar_pad": 1,
+   "lidar_pads": 69,
+   "unmapped": [
+    {
+     "lat": 40.760389,
+     "lon": -91.140267,
+     "p": 0.799,
+     "area_m2": 192.6,
+     "lidar": true
+    },
+    {
+     "lat": 40.760366,
+     "lon": -91.139705,
+     "p": 0.825,
+     "area_m2": 113.0,
+     "lidar": false
+    },
+    {
+     "lat": 40.759591,
+     "lon": -91.141689,
+     "p": 0.708,
+     "area_m2": 200.0,
+     "lidar": false
+    },
+    {
+     "lat": 40.759789,
+     "lon": -91.145578,
+     "p": 0.72,
+     "area_m2": 3116.0,
+     "lidar": false
+    },
+    {
+     "lat": 40.757212,
+     "lon": -91.143038,
+     "p": 0.812,
+     "area_m2": 114.1,
+     "lidar": false
+    }
+   ],
+   "placement": {
+    "joint": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.917,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 10
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.562,
+      "median_tee_err": 12.4,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 8.0,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 29.1,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 13.9,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 16.1,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.8,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 4.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 5.5,
+        "measured": 411.9,
+        "traced": 399,
+        "len_err": 12.9
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 8.9,
+        "measured": 366.9,
+        "traced": 373,
+        "len_err": -6.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.0,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 1.5,
+        "measured": 349.2,
+        "traced": 338,
+        "len_err": 11.2
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": -0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 31.3,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 29.9,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "tee_centroid",
+        "tee_err": 6.2,
+        "measured": 521.7,
+        "traced": 516,
+        "len_err": 5.7
+       }
+      ]
+     }
+    },
+    "joint+lidar": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.931,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 9
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.562,
+      "median_tee_err": 12.4,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 8.0,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 29.1,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 13.9,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 16.1,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.8,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 4.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 5.5,
+        "measured": 411.9,
+        "traced": 399,
+        "len_err": 12.9
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 8.9,
+        "measured": 366.9,
+        "traced": 373,
+        "len_err": -6.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.0,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 1.5,
+        "measured": 349.2,
+        "traced": 338,
+        "len_err": 11.2
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": -0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 31.3,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 29.9,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "tee_centroid",
+        "tee_err": 6.2,
+        "measured": 521.7,
+        "traced": 516,
+        "len_err": 5.7
+       }
+      ]
+     }
+    },
+    "joint+unet": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.917,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 10
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.562,
+      "median_tee_err": 12.4,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 8.0,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 29.1,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 13.9,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 16.1,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.8,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 4.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 5.5,
+        "measured": 411.9,
+        "traced": 399,
+        "len_err": 12.9
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 8.9,
+        "measured": 366.9,
+        "traced": 373,
+        "len_err": -6.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.0,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 1.5,
+        "measured": 349.2,
+        "traced": 338,
+        "len_err": 11.2
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": -0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 31.3,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 29.9,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "tee_centroid",
+        "tee_err": 6.2,
+        "measured": 521.7,
+        "traced": 516,
+        "len_err": 5.7
+       }
+      ]
+     }
+    },
+    "joint+lidar+unet": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.931,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 9
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.562,
+      "median_tee_err": 12.4,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 8.0,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 29.1,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 13.9,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 16.1,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.8,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 4.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 5.5,
+        "measured": 411.9,
+        "traced": 399,
+        "len_err": 12.9
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 8.9,
+        "measured": 366.9,
+        "traced": 373,
+        "len_err": -6.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.0,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 1.5,
+        "measured": 349.2,
+        "traced": 338,
+        "len_err": 11.2
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": -0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 31.3,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 29.9,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "tee_centroid",
+        "tee_err": 6.2,
+        "measured": 521.7,
+        "traced": 516,
+        "len_err": 5.7
+       }
+      ]
+     }
+    }
+   },
+   "screenshot_tees": [
+    {
+     "key": "1",
+     "osm_box": 8.9,
+     "unet": 9.9,
+     "lidar": 10.3
+    },
+    {
+     "key": "2B",
+     "osm_box": 2.9,
+     "unet": 3.9,
+     "lidar": 3.3
+    },
+    {
+     "key": "2F",
+     "osm_box": 5.6,
+     "unet": 4.7,
+     "lidar": 60.7
+    },
+    {
+     "key": "4",
+     "osm_box": 3.4,
+     "unet": 3.8,
+     "lidar": 32.3
+    },
+    {
+     "key": "5",
+     "osm_box": 4.2,
+     "unet": 4.7,
+     "lidar": 4.7
+    },
+    {
+     "key": "6",
+     "osm_box": 3.3,
+     "unet": 4.0,
+     "lidar": 3.3
+    },
+    {
+     "key": "8",
+     "osm_box": 0.8,
+     "unet": 2.1,
+     "lidar": 2.0
+    },
+    {
+     "key": "9B",
+     "osm_box": 2.3,
+     "unet": 3.1,
+     "lidar": 13.4
+    },
+    {
+     "key": "9F",
+     "osm_box": 1.9,
+     "unet": 1.4,
+     "lidar": 1.7
+    },
+    {
+     "key": "10",
+     "osm_box": 6.3,
+     "unet": 6.8,
+     "lidar": 63.0
+    },
+    {
+     "key": "11",
+     "osm_box": 3.1,
+     "unet": 15.1,
+     "lidar": 1.9
+    },
+    {
+     "key": "13",
+     "osm_box": 1.5,
+     "unet": 1.8,
+     "lidar": 1.9
+    },
+    {
+     "key": "14",
+     "osm_box": 0.7,
+     "unet": 0.8,
+     "lidar": 43.3
+    },
+    {
+     "key": "16",
+     "osm_box": 7.9,
+     "unet": 8.2,
+     "lidar": 7.4
+    },
+    {
+     "key": "17",
+     "osm_box": 4.6,
+     "unet": 3.9,
+     "lidar": 78.3
+    },
+    {
+     "key": "18",
+     "osm_box": 6.2,
+     "unet": 6.6,
+     "lidar": 6.9
+    }
+   ]
+  }
+ },
+ {
+  "slug": "spirit_hollow_2021",
+  "package": "spirit_hollow",
+  "naip": "course_data/vision_any/spirit_hollow/raw/naip_2021.tif",
+  "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
+  "vs_osm": {
+   "unet": {
+    "green": {
+     "iou": 0.772,
+     "precision": 0.891,
+     "recall": 0.853,
+     "pred_m2": 10284,
+     "ref_m2": 10733
+    },
+    "tee": {
+     "iou": 0.49,
+     "precision": 0.559,
+     "recall": 0.799,
+     "pred_m2": 20597,
+     "ref_m2": 14423
+    },
+    "fairway": {
+     "iou": 0.856,
+     "precision": 0.938,
+     "recall": 0.906,
+     "pred_m2": 87731,
+     "ref_m2": 90838
+    },
+    "bunker": {
+     "iou": 0.697,
+     "precision": 0.825,
+     "recall": 0.819,
+     "pred_m2": 7486,
+     "ref_m2": 7540
+    },
+    "water": {
+     "iou": 0.056,
+     "precision": 0.056,
+     "recall": 0.989,
+     "pred_m2": 1104391,
+     "ref_m2": 63044
+    }
+   },
+   "unet+ndwi_water": {
+    "green": {
+     "iou": 0.772,
+     "precision": 0.891,
+     "recall": 0.853,
+     "pred_m2": 10284,
+     "ref_m2": 10733
+    },
+    "tee": {
+     "iou": 0.491,
+     "precision": 0.561,
+     "recall": 0.798,
+     "pred_m2": 20526,
+     "ref_m2": 14423
+    },
+    "fairway": {
+     "iou": 0.852,
+     "precision": 0.941,
+     "recall": 0.899,
+     "pred_m2": 86764,
+     "ref_m2": 90838
+    },
+    "bunker": {
+     "iou": 0.611,
+     "precision": 0.814,
+     "recall": 0.711,
+     "pred_m2": 6583,
+     "ref_m2": 7540
+    },
+    "water": {
+     "iou": 0.301,
+     "precision": 0.336,
+     "recall": 0.742,
+     "pred_m2": 139286,
+     "ref_m2": 63044
+    }
+   }
+  },
+  "objects_vs_osm": {
+   "green": {
+    "osm": 26,
+    "model": 26,
+    "recall_iou50": 0.885,
+    "precision_iou50": 0.885,
+    "mean_best_iou": 0.765
+   },
+   "bunker": {
+    "osm": 50,
+    "model": 62,
+    "recall_overlap": 1.0,
+    "precision_overlap": 0.806
+   },
+   "fairway": {
+    "osm": 20,
+    "model": 24,
+    "recall_overlap": 1.0,
+    "precision_overlap": 0.833
+   },
+   "tee": {
+    "osm": 103,
+    "model": 108,
+    "match_yd": 10.0,
+    "recall": 0.854,
+    "precision": 0.806
+   }
+  },
+  "osm_counts": {
+   "green": 26,
+   "tee": 103,
+   "fairway": 20,
+   "bunker": 50,
+   "water": 20
+  },
+  "vs_hand": {
+   "total": {
+    "unet": {
+     "fairway": {
+      "iou": 0.325,
+      "precision": 0.543,
+      "recall": 0.448
+     },
+     "bunker": {
+      "iou": 0.244,
+      "precision": 0.297,
+      "recall": 0.579
+     },
+     "water": {
+      "iou": 0.025,
+      "precision": 0.025,
+      "recall": 0.994
+     }
+    },
+    "unet+ndwi_water": {
+     "fairway": {
+      "iou": 0.325,
+      "precision": 0.546,
+      "recall": 0.445
+     },
+     "bunker": {
+      "iou": 0.216,
+      "precision": 0.278,
+      "recall": 0.494
+     },
+     "water": {
+      "iou": 0.087,
+      "precision": 0.095,
+      "recall": 0.49
+     }
+    },
+    "osm": {
+     "fairway": {
+      "iou": 0.337,
+      "precision": 0.546,
+      "recall": 0.468
+     },
+     "bunker": {
+      "iou": 0.257,
+      "precision": 0.309,
+      "recall": 0.607
+     },
+     "water": {
+      "iou": 0.203,
+      "precision": 0.252,
+      "recall": 0.511
+     }
+    }
+   },
+   "per_hole": {
+    "1": {
+     "unet": {
+      "fairway": 0.396,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.396,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.375,
+      "bunker": 0.0,
+      "water": 0.0
+     }
+    },
+    "2B": {
+     "unet": {
+      "fairway": 0.204,
+      "bunker": 0.0,
+      "water": 0.004
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.204,
+      "bunker": 0.0,
+      "water": 0.033
+     },
+     "osm": {
+      "fairway": 0.201,
+      "bunker": 0.0,
+      "water": 0.027
+     }
+    },
+    "2F": {
+     "unet": {
+      "fairway": 0.239,
+      "bunker": 0.408,
+      "water": 0.099
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.239,
+      "bunker": 0.422,
+      "water": 0.154
+     },
+     "osm": {
+      "fairway": 0.228,
+      "bunker": 0.401,
+      "water": 0.182
+     }
+    },
+    "4": {
+     "unet": {
+      "fairway": 0.508,
+      "bunker": 0.012,
+      "water": 0.0
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.508,
+      "bunker": 0.012,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.512,
+      "bunker": 0.012,
+      "water": null
+     }
+    },
+    "5": {
+     "unet": {
+      "fairway": 0.528,
+      "bunker": 0.422,
+      "water": 0.0
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.528,
+      "bunker": 0.356,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.536,
+      "bunker": 0.446,
+      "water": null
+     }
+    },
+    "6": {
+     "unet": {
+      "fairway": 0.488,
+      "bunker": 0.0,
+      "water": 0.011
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.488,
+      "bunker": 0.0,
+      "water": 0.165
+     },
+     "osm": {
+      "fairway": 0.5,
+      "bunker": 0.0,
+      "water": 0.594
+     }
+    },
+    "8": {
+     "unet": {
+      "fairway": 0.33,
+      "bunker": 0.478,
+      "water": 0.055
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.33,
+      "bunker": 0.478,
+      "water": 0.178
+     },
+     "osm": {
+      "fairway": 0.335,
+      "bunker": 0.421,
+      "water": 0.382
+     }
+    },
+    "9B": {
+     "unet": {
+      "fairway": 0.319,
+      "bunker": 0.0,
+      "water": 0.08
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.319,
+      "bunker": 0.0,
+      "water": 0.216
+     },
+     "osm": {
+      "fairway": 0.348,
+      "bunker": 0.0,
+      "water": 0.63
+     }
+    },
+    "9F": {
+     "unet": {
+      "fairway": 0.271,
+      "bunker": 0.0,
+      "water": 0.036
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.271,
+      "bunker": 0.0,
+      "water": 0.078
+     },
+     "osm": {
+      "fairway": 0.298,
+      "bunker": 0.0,
+      "water": 0.267
+     }
+    },
+    "10": {
+     "unet": {
+      "fairway": 0.358,
+      "bunker": 0.195,
+      "water": 0.045
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.362,
+      "bunker": 0.195,
+      "water": 0.078
+     },
+     "osm": {
+      "fairway": 0.367,
+      "bunker": 0.292,
+      "water": 0.144
+     }
+    },
+    "11": {
+     "unet": {
+      "fairway": 0.358,
+      "bunker": 0.0,
+      "water": 0.014
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.356,
+      "bunker": 0.0,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.382,
+      "bunker": 0.0,
+      "water": 0.0
+     }
+    },
+    "13": {
+     "unet": {
+      "fairway": 0.186,
+      "bunker": 0.2,
+      "water": 0.018
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.182,
+      "bunker": 0.2,
+      "water": 0.09
+     },
+     "osm": {
+      "fairway": 0.192,
+      "bunker": 0.254,
+      "water": 0.148
+     }
+    },
+    "14": {
+     "unet": {
+      "fairway": 0.263,
+      "bunker": 0.0,
+      "water": 0.022
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.243,
+      "bunker": 0.0,
+      "water": 0.13
+     },
+     "osm": {
+      "fairway": 0.26,
+      "bunker": 0.0,
+      "water": 0.361
+     }
+    },
+    "16": {
+     "unet": {
+      "fairway": 0.483,
+      "bunker": 0.33,
+      "water": 0.003
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.483,
+      "bunker": 0.163,
+      "water": 0.007
+     },
+     "osm": {
+      "fairway": 0.496,
+      "bunker": 0.329,
+      "water": 0.0
+     }
+    },
+    "17": {
+     "unet": {
+      "fairway": 0.456,
+      "bunker": 0.206,
+      "water": 0.0
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.456,
+      "bunker": 0.206,
+      "water": 0.0
+     },
+     "osm": {
+      "fairway": 0.495,
+      "bunker": 0.197,
+      "water": 0.0
+     }
+    },
+    "18": {
+     "unet": {
+      "fairway": 0.199,
+      "bunker": 0.136,
+      "water": 0.018
+     },
+     "unet+ndwi_water": {
+      "fairway": 0.202,
+      "bunker": 0.141,
+      "water": 0.061
+     },
+     "osm": {
+      "fairway": 0.204,
+      "bunker": 0.132,
+      "water": 0.196
+     }
+    }
+   }
+  },
+  "tees": {
+   "unet_tees": 105,
+   "unet_tees_near_first_leg": 87,
+   "osm_boxes": 103,
+   "matched_osm": 79,
+   "unmapped_candidates": 8,
+   "corroborated_by_lidar_pad": 2,
+   "lidar_pads": 69,
+   "unmapped": [
+    {
+     "lat": 40.762425,
+     "lon": -91.144583,
+     "p": 0.738,
+     "area_m2": 112.1,
+     "lidar": true
+    },
+    {
+     "lat": 40.762009,
+     "lon": -91.141158,
+     "p": 0.515,
+     "area_m2": 38.9,
+     "lidar": false
+    },
+    {
+     "lat": 40.760391,
+     "lon": -91.140269,
+     "p": 0.798,
+     "area_m2": 184.3,
+     "lidar": true
+    },
+    {
+     "lat": 40.760364,
+     "lon": -91.139709,
+     "p": 0.824,
+     "area_m2": 105.3,
+     "lidar": false
+    },
+    {
+     "lat": 40.75959,
+     "lon": -91.141674,
+     "p": 0.596,
+     "area_m2": 89.8,
+     "lidar": false
+    },
+    {
+     "lat": 40.759762,
+     "lon": -91.145551,
+     "p": 0.778,
+     "area_m2": 3826.3,
+     "lidar": false
+    },
+    {
+     "lat": 40.758907,
+     "lon": -91.146795,
+     "p": 0.722,
+     "area_m2": 76.7,
+     "lidar": false
+    },
+    {
+     "lat": 40.757201,
+     "lon": -91.143053,
+     "p": 0.734,
+     "area_m2": 77.0,
+     "lidar": false
+    }
+   ],
+   "placement": {
+    "joint": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.917,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 10
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.562,
+      "median_tee_err": 12.4,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 8.0,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 29.1,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 13.9,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 16.1,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.8,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 4.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 5.5,
+        "measured": 411.9,
+        "traced": 399,
+        "len_err": 12.9
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 8.9,
+        "measured": 366.9,
+        "traced": 373,
+        "len_err": -6.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.0,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 1.5,
+        "measured": 349.2,
+        "traced": 338,
+        "len_err": 11.2
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": -0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 31.3,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 29.9,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "tee_centroid",
+        "tee_err": 6.2,
+        "measured": 521.7,
+        "traced": 516,
+        "len_err": 5.7
+       }
+      ]
+     }
+    },
+    "joint+lidar": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.931,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 9
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.562,
+      "median_tee_err": 12.4,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 8.0,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 29.1,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 13.9,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 16.1,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.8,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 4.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 5.5,
+        "measured": 411.9,
+        "traced": 399,
+        "len_err": 12.9
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 8.9,
+        "measured": 366.9,
+        "traced": 373,
+        "len_err": -6.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.0,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 1.5,
+        "measured": 349.2,
+        "traced": 338,
+        "len_err": 11.2
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": -0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 31.3,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 29.9,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "tee_centroid",
+        "tee_err": 6.2,
+        "measured": 521.7,
+        "traced": 516,
+        "len_err": 5.7
+       }
+      ]
+     }
+    },
+    "joint+unet": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.917,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 10
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.562,
+      "median_tee_err": 12.4,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 8.0,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 29.1,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 13.9,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 16.1,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.8,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 4.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 5.5,
+        "measured": 411.9,
+        "traced": 399,
+        "len_err": 12.9
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 8.9,
+        "measured": 366.9,
+        "traced": 373,
+        "len_err": -6.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.0,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 1.5,
+        "measured": 349.2,
+        "traced": 338,
+        "len_err": 11.2
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": -0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 31.3,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 29.9,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "tee_centroid",
+        "tee_err": 6.2,
+        "measured": 521.7,
+        "traced": 516,
+        "len_err": 5.7
+       }
+      ]
+     }
+    },
+    "joint+lidar+unet": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.931,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 9
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.562,
+      "median_tee_err": 12.4,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 8.0,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 29.1,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 13.9,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 16.1,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.8,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 4.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 5.5,
+        "measured": 411.9,
+        "traced": 399,
+        "len_err": 12.9
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 8.9,
+        "measured": 366.9,
+        "traced": 373,
+        "len_err": -6.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 19.0,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "tee_axis",
+        "tee_err": 1.5,
+        "measured": 349.2,
+        "traced": 338,
+        "len_err": 11.2
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": -0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 31.3,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "tee_axis",
+        "tee_err": 29.9,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "tee_centroid",
+        "tee_err": 6.2,
+        "measured": 521.7,
+        "traced": 516,
+        "len_err": 5.7
+       }
+      ]
+     }
+    }
+   },
+   "screenshot_tees": [
+    {
+     "key": "1",
+     "osm_box": 8.9,
+     "unet": 10.1,
+     "lidar": 10.3
+    },
+    {
+     "key": "2B",
+     "osm_box": 2.9,
+     "unet": 3.3,
+     "lidar": 3.3
+    },
+    {
+     "key": "2F",
+     "osm_box": 5.6,
+     "unet": 4.3,
+     "lidar": 60.7
+    },
+    {
+     "key": "4",
+     "osm_box": 3.4,
+     "unet": 4.1,
+     "lidar": 32.3
+    },
+    {
+     "key": "5",
+     "osm_box": 4.2,
+     "unet": 4.9,
+     "lidar": 4.7
+    },
+    {
+     "key": "6",
+     "osm_box": 3.3,
+     "unet": 4.9,
+     "lidar": 3.3
+    },
+    {
+     "key": "8",
+     "osm_box": 0.8,
+     "unet": 2.3,
+     "lidar": 2.0
+    },
+    {
+     "key": "9B",
+     "osm_box": 2.3,
+     "unet": 3.0,
+     "lidar": 13.4
+    },
+    {
+     "key": "9F",
+     "osm_box": 1.9,
+     "unet": 1.0,
+     "lidar": 1.7
+    },
+    {
+     "key": "10",
+     "osm_box": 6.3,
+     "unet": 7.1,
+     "lidar": 63.0
+    },
+    {
+     "key": "11",
+     "osm_box": 3.1,
+     "unet": 15.5,
+     "lidar": 1.9
+    },
+    {
+     "key": "13",
+     "osm_box": 1.5,
+     "unet": 1.9,
+     "lidar": 1.9
+    },
+    {
+     "key": "14",
+     "osm_box": 0.7,
+     "unet": 0.8,
+     "lidar": 43.3
+    },
+    {
+     "key": "16",
+     "osm_box": 7.9,
+     "unet": 8.0,
+     "lidar": 7.4
+    },
+    {
+     "key": "17",
+     "osm_box": 4.6,
+     "unet": 3.0,
+     "lidar": 78.3
+    },
+    {
+     "key": "18",
+     "osm_box": 6.2,
+     "unet": 7.0,
+     "lidar": 6.9
+    }
+   ]
+  }
+ },
+ {
+  "slug": "veenker",
+  "package": "veenker",
+  "naip": "course_data/vision_any/veenker/raw/naip_2023.tif",
+  "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
+  "vs_osm": {
+   "unet": {
+    "green": {
+     "iou": 0.59,
+     "precision": 0.752,
+     "recall": 0.733,
+     "pred_m2": 10407,
+     "ref_m2": 10670
+    },
+    "tee": {
+     "iou": 0.46,
+     "precision": 0.596,
+     "recall": 0.668,
+     "pred_m2": 13168,
+     "ref_m2": 11748
+    },
+    "fairway": {
+     "iou": 0.575,
+     "precision": 0.903,
+     "recall": 0.613,
+     "pred_m2": 83224,
+     "ref_m2": 122475
+    },
+    "bunker": {
+     "iou": 0.462,
+     "precision": 0.717,
+     "recall": 0.564,
+     "pred_m2": 2032,
+     "ref_m2": 2581
+    },
+    "water": {
+     "iou": 0.046,
+     "precision": 0.046,
+     "recall": 0.947,
+     "pred_m2": 574563,
+     "ref_m2": 27860
+    }
+   },
+   "unet+ndwi_water": {
+    "green": {
+     "iou": 0.59,
+     "precision": 0.752,
+     "recall": 0.733,
+     "pred_m2": 10407,
+     "ref_m2": 10670
+    },
+    "tee": {
+     "iou": 0.46,
+     "precision": 0.596,
+     "recall": 0.668,
+     "pred_m2": 13168,
+     "ref_m2": 11748
+    },
+    "fairway": {
+     "iou": 0.575,
+     "precision": 0.903,
+     "recall": 0.613,
+     "pred_m2": 83224,
+     "ref_m2": 122475
+    },
+    "bunker": {
+     "iou": 0.462,
+     "precision": 0.717,
+     "recall": 0.564,
+     "pred_m2": 2032,
+     "ref_m2": 2581
+    },
+    "water": {
+     "iou": 0.125,
+     "precision": 0.85,
+     "recall": 0.128,
+     "pred_m2": 4203,
+     "ref_m2": 27860
+    }
+   }
+  },
+  "objects_vs_osm": {
+   "green": {
+    "osm": 26,
+    "model": 23,
+    "recall_iou50": 0.808,
+    "precision_iou50": 0.913,
+    "mean_best_iou": 0.604
+   },
+   "bunker": {
+    "osm": 27,
+    "model": 25,
+    "recall_overlap": 0.815,
+    "precision_overlap": 0.88
+   },
+   "fairway": {
+    "osm": 30,
+    "model": 27,
+    "recall_overlap": 0.733,
+    "precision_overlap": 0.852
+   },
+   "tee": {
+    "osm": 43,
+    "model": 42,
+    "match_yd": 10.0,
+    "recall": 0.721,
+    "precision": 0.738
+   }
+  },
+  "osm_counts": {
+   "green": 26,
+   "tee": 43,
+   "fairway": 30,
+   "bunker": 27,
+   "water": 3
+  },
+  "tees": {
+   "unet_tees": 41,
+   "unet_tees_near_first_leg": 35,
+   "osm_boxes": 43,
+   "matched_osm": 28,
+   "unmapped_candidates": 7,
+   "corroborated_by_lidar_pad": 0,
+   "lidar_pads": 36,
+   "unmapped": [
+    {
+     "lat": 42.038557,
+     "lon": -93.652171,
+     "p": 0.741,
+     "area_m2": 60.5,
+     "lidar": false
+    },
+    {
+     "lat": 42.037448,
+     "lon": -93.647092,
+     "p": 0.489,
+     "area_m2": 131.9,
+     "lidar": false
+    },
+    {
+     "lat": 42.036947,
+     "lon": -93.65205,
+     "p": 0.645,
+     "area_m2": 78.3,
+     "lidar": false
+    },
+    {
+     "lat": 42.036849,
+     "lon": -93.652347,
+     "p": 0.563,
+     "area_m2": 121.5,
+     "lidar": false
+    },
+    {
+     "lat": 42.03688,
+     "lon": -93.646283,
+     "p": 0.612,
+     "area_m2": 79.9,
+     "lidar": false
+    },
+    {
+     "lat": 42.03675,
+     "lon": -93.655178,
+     "p": 0.671,
+     "area_m2": 94.0,
+     "lidar": false
+    },
+    {
+     "lat": 42.03543,
+     "lon": -93.653492,
+     "p": 0.688,
+     "area_m2": 134.3,
+     "lidar": false
+    }
+   ],
+   "placement": {
+    "joint": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 2,
+      "order_violations": 0,
+      "on_a_shared_box": 26
+     }
+    },
+    "joint+lidar": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 25
+     }
+    },
+    "joint+unet": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 26
+     }
+    },
+    "joint+lidar+unet": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 25
+     }
+    }
+   }
+  }
+ }
+]

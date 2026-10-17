@@ -126,7 +126,7 @@ def par3_sets(h, opts, grid):
 
 
 def tee_hole(h):
-    hd = course.HOLES[h]
+    hd = yb.display_hole(course.HOLES[h])
     tee, f, r, ppy = frame(hd["tee"], hd["dot270"], 270)
     # whole hole from the tee box (the page can zoom to the landing area)
     pts = [tee + (a * f + l * r) * ppy for a in (-14, 400) for l in (-75, 75)]
@@ -137,7 +137,7 @@ def tee_hole(h):
                 tee=list(map(float, tee)), f=list(map(float, f)), r=list(map(float, r)), ppy=float(ppy),
                 par=hd["par"], length=hd["length"], label=course.LABELS.get(h, str(h)),
                 tee_name="Gold tee" if "Gold" in course.LABELS.get(h, "") else "Black tee",
-                tee_offimage=bool(hd["tee"][1] > 2000), elev=elev_of(h) if course.ELEVATION else None,
+                tee_offimage=bool(hd["tee"][1] > 1990), elev=elev_of(h) if course.ELEVATION else None,
                 note=FN.get(str(h), {}).get("note", ""), aim_at=FN.get(str(h), {}).get("aim_at", ""))
 
 

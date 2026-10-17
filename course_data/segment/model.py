@@ -91,9 +91,19 @@ def predict_raster(model, img, tta=True, log=print):
     return out
 
 
-def ndwi_water(img, thr=0.15):
-    """Open water from NAIP: NDWI = (G - NIR) / (G + NIR) > thr (water is NIR-dark). Returns (mask, ndwi)."""
-    g = img[1].astype(np.float32)
+def nir_water(img, frac=0.55, sd_max=8.0):
+    """Open water from NAIP: NIR-dark (< frac x the scene's median NIR) and smooth (7 px NIR std < sd_max).
+
+    The U-Net's own class 5 "water" is not usable: on our courses it covers the whole course interior
+    (pixel precision vs OSM water 0.05-0.07; its card reports val IoU 0.03). NDWI failed on algae-green ponds
+    (Spirit Hollow 2023 IoU 0.00). This rule scored IoU 0.45-0.62, precision 0.74-0.89 vs OSM water on the
+    three courses (evaluate.py). Returns (mask, score 0-1)."""
+    from scipy import ndimage as ndi
     n = img[3].astype(np.float32)
-    ndwi = (g - n) / np.maximum(g + n, 1.0)
-    return (ndwi > thr) & img.any(axis=0), ndwi
+    valid = img.any(axis=0)
+    med = float(np.median(n[valid])) if valid.any() else 128.0
+    sd = np.sqrt(np.maximum(ndi.uniform_filter(n * n, 7) - ndi.uniform_filter(n, 7) ** 2, 0))
+    m = (n < frac * med) & (sd < sd_max) & valid
+    m = ndi.binary_opening(m, iterations=1)
+    score = np.clip((frac * med - n) / (0.3 * med), 0, 1) * 0.5 + 0.5
+    return m, score

@@ -2,8 +2,8 @@
 
 Each connected component of argmax == class (after a 1-px opening and hole filling) with area >= MIN_AREA_M2
 becomes one feature: {"class", "src", "p" (mean class probability over the component), "area_m2"}.
-Water comes from two sources: the U-Net water class (unreliable per its card, val IoU 0.03) and NAIP NDWI
-(`src` "segment:ndwi"); evaluate.py scores both.
+Water: the U-Net water class is NOT polygonised (on our courses it marks the whole course interior); water
+comes from the NAIP NIR rule model.nir_water (`src` "segment:nir").
 """
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ def _components(mask, prob, res_m, min_area, transform, to_ll, cls, src):
 
 
 def polygonize(probs, transform, crs, src="segment:unet", water=None, valid=None):
-    """probs (6, H, W) float -> list of GeoJSON features in WGS84 (lon, lat). water = (mask, score) from NDWI."""
+    """probs (6, H, W) float -> list of GeoJSON features in WGS84 (lon, lat). water = (mask, score) from model.nir_water."""
     from pyproj import Transformer
     tr = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
     res = abs(transform.a)
@@ -54,10 +54,10 @@ def polygonize(probs, transform, crs, src="segment:unet", water=None, valid=None
         am = np.where(valid, am, 0)
     feats = []
     for ci, cls in enumerate(CLASSES):
-        if cls == "background":
+        if cls in ("background", "water"):
             continue
         feats += _components(am == ci, probs[ci], res, MIN_AREA_M2[cls], transform, tr.transform, cls, src)
     if water is not None:
         feats += _components(water[0], water[1], res, MIN_AREA_M2["water"], transform, tr.transform, "water",
-                             "segment:ndwi")
+                             "segment:nir")
     return feats

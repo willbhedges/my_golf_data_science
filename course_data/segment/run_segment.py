@@ -84,14 +84,6 @@ def run_one(r, mdl, sha, force=False, tta=True):
     probs = M.predict_raster(mdl, img, tta=tta)
     t1 = time.time()
     valid = img.any(axis=0)
-    wmask, ndwi = M.ndwi_water(img)
-    wscore = np.clip((ndwi - 0.05) / 0.3, 0, 1)
-    feats = P.polygonize(probs, T, crs, src=f"segment:ariadgolf-v4@{sha[:8]}", water=(wmask, wscore), valid=valid)
-    json.dump({"type": "FeatureCollection", "features": feats,
-               "properties": {"model": M.REPO, "model_sha": sha, "naip": r["naip"],
-                              "licence": "model weights: no licence granted (research/evaluation only); "
-                                         "labels OSM ODbL; imagery USDA NAIP (public domain)"}},
-              open(os.path.join(od, "segment.geojson"), "w"))
     q = (probs[1:] * 250).round().astype(np.uint8)
     prof.update(count=5, dtype="uint8", compress="deflate", predictor=2, nodata=None, photometric=None)
     prof.pop("photometric", None)
@@ -100,17 +92,44 @@ def run_one(r, mdl, sha, force=False, tta=True):
         for i, c in enumerate(M.CLASSES[1:]):
             dst.set_band_description(i + 1, c)
     preview(img, probs, os.path.join(od, "preview.jpg"))
+    m = dict(slug=slug, request=r["_file"], request_hash=r["_hash"], model=M.REPO, model_sha=sha, tta=tta,
+             naip=r["naip"], shape=list(img.shape), res_m=res, crs=str(crs),
+             seconds_infer=round(t1 - t0, 1), seconds_total=round(time.time() - t0, 1),
+             pixel_share={c: round(float((probs.argmax(0) == i)[valid].mean()), 4) for i, c in enumerate(M.CLASSES)})
+    json.dump(m, open(mp, "w"), indent=1)
+    build_polygons(slug)
+    print(json.dumps(json.load(open(mp)))[:800], flush=True)
+    return m
+
+
+def build_polygons(slug):
+    """probs.tif + NAIP -> segment.geojson (light; also run locally: run_segment.py --polygons-only)."""
+    import rasterio
+    od = os.path.join(HERE, slug)
+    mp = os.path.join(od, "meta.json")
+    m = json.load(open(mp))
+    with rasterio.open(os.path.join(od, "probs.tif")) as s:
+        q = s.read().astype(np.float32) / 250.0
+        T, crs = s.transform, s.crs
+    with rasterio.open(os.path.join(ROOT, m["naip"])) as s:
+        img = s.read()
+    probs = np.concatenate([np.clip(1.0 - q.sum(0, keepdims=True), 0, 1), q])
+    valid = img.any(axis=0)
+    feats = P.polygonize(probs, T, crs, src=f"segment:ariadgolf-v4@{m['model_sha'][:8]}",
+                         water=M.nir_water(img), valid=valid)
+    json.dump({"type": "FeatureCollection", "features": feats,
+               "properties": {"model": M.REPO, "model_sha": m["model_sha"], "naip": m["naip"],
+                              "water": "segment:nir = model.nir_water (NAIP NIR rule), not the U-Net",
+                              "licence": "model weights: no licence granted by Ariad (research/evaluation only); "
+                                         "labels OSM ODbL; imagery USDA NAIP (public domain)"}},
+              open(os.path.join(od, "segment.geojson"), "w"))
     counts = {}
     for f in feats:
         k = f"{f['properties']['class']}:{f['properties']['src'].split(':')[1].split('@')[0]}"
         counts[k] = counts.get(k, 0) + 1
-    m = dict(slug=slug, request=r["_file"], request_hash=r["_hash"], model=M.REPO, model_sha=sha, tta=tta,
-             naip=r["naip"], shape=list(img.shape), res_m=res, crs=str(crs),
-             seconds_infer=round(t1 - t0, 1), seconds_total=round(time.time() - t0, 1), features=counts,
-             pixel_share={c: round(float((probs.argmax(0) == i)[valid].mean()), 4) for i, c in enumerate(M.CLASSES)})
+    m["features"] = counts
     json.dump(m, open(mp, "w"), indent=1)
-    print(json.dumps(m)[:600], flush=True)
-    return m
+    return feats
 
 
 def main():
@@ -118,8 +137,14 @@ def main():
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--no-tta", action="store_true")
     ap.add_argument("--slug", nargs="*")
+    ap.add_argument("--polygons-only", action="store_true", help="rebuild segment.geojson from probs.tif (no model)")
     a = ap.parse_args()
     rs = [r for r in requests() if not a.slug or r["slug"] in a.slug]
+    if a.polygons_only:
+        for r in rs:
+            if os.path.exists(os.path.join(HERE, r["slug"], "probs.tif")):
+                print(r["slug"], build_polygons(r["slug"]) and json.load(open(os.path.join(HERE, r["slug"], "meta.json")))["features"])
+        return
     print("requests:", [r["slug"] for r in rs])
     if not rs:
         return
