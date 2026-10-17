@@ -1,0 +1,92 @@
+name: zero_tap_osmcheck
+
+# OSM truth hand-check sheets (course_data/zero_tap/osm_check.py): NAIP + OSM hole lines for the 30 picked courses.
+# Request-file trigger: commit course_data/requests/ztbench_naip_<name>.json {"slugs": [optional subset]}
+# -> course_data/zero_tap/osm_check/sheets/<slug>_overview.jpg, <slug>_holes.jpg (committed, ~1800 px JPEG q72)
+
+on:
+  push:
+    paths:
+      - "course_data/requests/ztbench_naip_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ztbench-naip-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      chunks: ${{ steps.p.outputs.chunks }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - id: p
+        run: |
+          python - <<'EOF'
+          import glob, json, os
+          r = json.load(open(sorted(glob.glob("course_data/requests/ztbench_naip_*.json"))[-1]))
+          slugs = r.get("slugs") or json.load(open("course_data/zero_tap/osm_check/picks.json"))["slugs"]
+          chunks = [",".join(slugs[i::5]) for i in range(5) if slugs[i::5]]
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write("chunks=" + json.dumps(chunks) + "\n")
+          print(chunks)
+          EOF
+
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        chunk: ${{ fromJSON(needs.plan.outputs.chunks) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy requests pillow pyproj rasterio pystac-client planetary-computer shapely scipy
+      - run: |
+          python -u course_data/zero_tap/osm_check.py render $(echo "${{ matrix.chunk }}" | tr ',' ' ') --work /tmp/naip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ztsheets-${{ strategy.job-index }}
+          path: course_data/zero_tap/osm_check/sheets
+
+  commit:
+    needs: render
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ztsheets-*
+          merge-multiple: true
+          path: /tmp/sheets
+      - run: |
+          mkdir -p course_data/zero_tap/osm_check/sheets
+          cp /tmp/sheets/* course_data/zero_tap/osm_check/sheets/ || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/zero_tap/osm_check/sheets
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "zero_tap: OSM truth hand-check sheets (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6 7 8; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
