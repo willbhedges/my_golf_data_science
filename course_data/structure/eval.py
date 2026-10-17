@@ -48,7 +48,22 @@ CONFIGS = {
     "degraded": dict(degrade=1.0),
     "degraded_no_clubhouse": dict(degrade=1.0, use_clubhouse=False),
     "degraded_card": dict(degrade=1.0, card=True),
+    "perception": dict(perception=True),
+    "perception_card": dict(perception=True, card=True),
 }
+PERCEPTION = os.environ.get("PERCEPTION_SCENES", os.path.join(CD, "perception", "scenes"))
+
+
+def perception_scene(slug, proj):
+    """The perception agent's blind scene for this course (course_scene/1), in the OSM scene's frame, or None."""
+    import gzip
+    for name in ("scene.json.gz", "scene.json"):
+        p = os.path.join(PERCEPTION, slug, name)
+        if os.path.exists(p):
+            op = gzip.open if p.endswith(".gz") else open
+            with op(p, "rt") as fh:
+                return S.scene_from_perception(json.load(fh), proj=proj)
+    return None
 
 
 def courses(split=None):
@@ -204,6 +219,10 @@ def run(entries, configs, verbose=False, seed=0):
             sc = sc0
             if cfg.pop("degrade", None):
                 sc = S.degrade(sc0, random.Random(f"{seed}-{e['slug']}"), level=1.0)
+            if cfg.pop("perception", None):
+                sc = perception_scene(e["slug"], sc0.proj)
+                if sc is None or len(sc.greens) < 3 or len(sc.tees) < 3:
+                    continue
             card = card_from_truth(truth) if cfg.pop("card", False) else None
             t0 = time.time()
             try:

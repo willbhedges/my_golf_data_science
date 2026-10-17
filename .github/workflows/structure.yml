@@ -197,7 +197,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -q numpy scipy shapely
+      - run: pip install -q numpy scipy shapely scikit-image
       - run: |
           git pull -q --rebase origin "${{ github.ref_name }}" || true
           python -u course_data/structure/eval.py --all --shard ${{ matrix.shard }} --of 6 --rows-out rows/rows_${{ matrix.shard }}.json ${{ needs.plan.outputs.eval_args }}
@@ -217,7 +217,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -q numpy scipy shapely
+      - run: pip install -q numpy scipy shapely scikit-image
       - uses: actions/download-artifact@v4
         with:
           pattern: rows-*

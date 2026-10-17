@@ -64,6 +64,7 @@ TURN_VIA_H = 0.65
 FORM_W = dict(corr=2.0, chain=2.0, fw_x=2.0, length=1.0, align=0.6, fw_cov=1.0, fw_end=3.0, cross_green=3.0, fwd=0.5, far=1.5, start=0.6)
 TEMP = 1.0                                            # posterior temperature (calibrated on dev)
 LAGR_ITERS = 12
+TEE_P_W = 0.5
 POS_PAR = None                                        # P(par | hole number) / P(par), 18 x 3 (fit.py on dev)
 SWAP_W = None                                         # front / back nine classifier (fit.py --swap on dev)
 CALIB = None                                          # Platt scaling of the hole confidence (fit.py --calibrate)
@@ -568,6 +569,8 @@ def hypotheses(sc, geo=None, topk=TOPK, w=None, clubs=None):
     per = [[] for _ in range(len(geo.G))]
     for h in features(sc, geo, clubs):
         h["score"] = sum(w.get(k, 0.0) * h["f"][k] for k in FEATS)
+        # detector confidence of the tee complex (1 for OSM; perception p): a weak, fixed log-prior
+        h["score"] += TEE_P_W * math.log(max(geo.cx[h["k"]].get("conf", 1.0), 0.02))
         per[h["gi"]].append(h)
     for i in range(len(per)):
         per[i].sort(key=lambda r: -r["score"])
