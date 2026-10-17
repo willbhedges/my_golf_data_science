@@ -1,0 +1,227 @@
+name: generalize
+
+# "Pick a random US course: do we know where every hole and green is?" (course_data/generalize/).
+# Request-file trigger (ARCHITECTURE 9.4): commit course_data/requests/generalize_<name>.json
+#   {"schema": "request/1", "kind": "generalize", "stage": "all" | "sample" | "courses" | "report",
+#    "seed": 20261017, "per_tier": 7, "slugs": [optional subset for "courses"], "missing_only": false}
+# sample:  survey the seeded states (one job per state) -> sample.json, population.json, surveys/
+# courses: one job per sampled course (max 6 at a time): resolve, OSM, scorecards, NAIP + 3DEP, segment model,
+#          lidar pads, package today / with routing -> courses/<slug>/ (artifacts)
+# report:  report.py (routing + validation re-run offline) -> REPORT.md, results.json; commits course_data/generalize
+
+on:
+  push:
+    paths:
+      - "course_data/requests/generalize_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generalize-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  HF_HOME: /home/runner/hf_cache
+  HF_HUB_DISABLE_TELEMETRY: "1"
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.p.outputs.stage }}
+      states: ${{ steps.p.outputs.states }}
+      courses: ${{ steps.p.outputs.courses }}
+      seed: ${{ steps.p.outputs.seed }}
+      per_tier: ${{ steps.p.outputs.per_tier }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 50
+      - id: p
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git diff --name-only "$BEFORE" "${{ github.sha }}" -- 'course_data/requests/generalize_*.json' > /tmp/req.txt
+          else
+            ls course_data/requests/generalize_*.json > /tmp/req.txt
+          fi
+          cat /tmp/req.txt
+          python - <<'EOF'
+          import json, os, sys
+          sys.path.insert(0, "course_data/generalize")
+          import sample as S
+          reqs = [l.strip() for l in open("/tmp/req.txt") if l.strip() and os.path.exists(l.strip())]
+          r = json.load(open(sorted(reqs)[-1])) if reqs else {"stage": "report"}
+          seed, per = int(r.get("seed", 20261017)), int(r.get("per_tier", 7))
+          stage = r.get("stage", "all")
+          courses = []
+          if os.path.exists("course_data/generalize/sample.json"):
+              courses = [c["slug"] for c in json.load(open("course_data/generalize/sample.json"))["courses"]]
+          if r.get("slugs"):
+              courses = [c for c in courses if c in r["slugs"]]
+          if r.get("missing_only"):
+              courses = [c for c in courses if not os.path.exists(f"course_data/generalize/courses/{c}/result.json")]
+          out = dict(stage=stage, states=json.dumps(r.get("states") or S.states(seed)), courses=json.dumps(courses or ["none"]),
+                     seed=str(seed), per_tier=str(per))
+          print(out)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              for k, v in out.items():
+                  fh.write(f"{k}={v}\n")
+          EOF
+
+  survey:
+    needs: plan
+    if: needs.plan.outputs.stage == 'sample' || needs.plan.outputs.stage == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        state: ${{ fromJSON(needs.plan.outputs.states) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests
+      - name: Survey ${{ matrix.state }}
+        run: |
+          NAT=""
+          [ "${{ matrix.state }}" = "$(python -c "import json;print(json.loads('${{ needs.plan.outputs.states }}')[0])")" ] && NAT="--national"
+          python -u course_data/generalize/sample.py survey ${{ matrix.state }} $NAT --out survey/survey_${{ matrix.state }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: survey-${{ matrix.state }}
+          path: survey/survey_${{ matrix.state }}.json
+
+  combine:
+    needs: [plan, survey]
+    if: always() && (needs.plan.outputs.stage == 'sample' || needs.plan.outputs.stage == 'all') && needs.survey.result != 'skipped'
+    runs-on: ubuntu-latest
+    outputs:
+      courses: ${{ steps.c.outputs.courses }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: survey-*
+          merge-multiple: true
+          path: course_data/generalize/surveys
+      - id: c
+        run: |
+          ls -la course_data/generalize/surveys
+          python -u course_data/generalize/sample.py combine course_data/generalize/surveys/survey_*.json \
+            --seed ${{ needs.plan.outputs.seed }} --per-tier ${{ needs.plan.outputs.per_tier }}
+          echo "courses=$(python -c "import json;print(json.dumps([c['slug'] for c in json.load(open('course_data/generalize/sample.json'))['courses']]))")" >> "$GITHUB_OUTPUT"
+      - name: Commit sample
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/generalize/sample.json course_data/generalize/population.json course_data/generalize/surveys
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "generalize: seeded US course sample + OSM coverage survey (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
+
+  courses:
+    needs: [plan, combine]
+    if: always() && (needs.plan.outputs.stage == 'courses' || (needs.plan.outputs.stage == 'all' && needs.combine.result == 'success'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        slug: ${{ fromJSON(needs.combine.outputs.courses || needs.plan.outputs.courses) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Cache Hugging Face weights
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/hf_cache
+          key: hf-golfseg-v1
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip -q
+          pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -q "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm \
+                      requests numpy scipy shapely pyproj matplotlib pillow opencv-python-headless scikit-learn \
+                      scikit-image pystac-client planetary-computer rasterio
+      - name: Run ${{ matrix.slug }}
+        if: matrix.slug != 'none'
+        timeout-minutes: 70
+        run: |
+          git pull -q --rebase origin "${{ github.ref_name }}" || true
+          python -u course_data/generalize/run_course.py ${{ matrix.slug }} || echo "run_course failed"
+          ls -la course_data/generalize/courses/${{ matrix.slug }} || true
+      - uses: actions/upload-artifact@v4
+        if: always() && matrix.slug != 'none'
+        with:
+          name: ${{ matrix.slug }}
+          path: course_data/generalize/courses/${{ matrix.slug }}
+          if-no-files-found: warn
+
+  report:
+    needs: [plan, courses]
+    if: always() && (needs.plan.outputs.stage == 'report' || needs.courses.result == 'success' || needs.courses.result == 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely pyproj matplotlib
+      - uses: actions/download-artifact@v4
+        if: needs.courses.result != 'skipped'
+        with:
+          path: /tmp/courses
+      - name: Report
+        run: |
+          mkdir -p course_data/generalize/courses
+          for d in /tmp/courses/*; do
+            [ -d "$d" ] || continue
+            case "$(basename "$d")" in survey-*) continue;; esac
+            [ -f "$d/result.json" ] || continue
+            rm -rf "course_data/generalize/courses/$(basename "$d")"
+            cp -r "$d" "course_data/generalize/courses/$(basename "$d")"
+          done
+          python -u course_data/generalize/report.py --plots
+          cat course_data/generalize/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/generalize/courses course_data/generalize/REPORT.md course_data/generalize/results.json
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "generalize: per-course runs + report (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1

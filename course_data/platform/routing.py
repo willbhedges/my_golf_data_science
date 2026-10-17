@@ -671,6 +671,9 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
             ent.update(tee_id=T[tk]["id"], tee_ll=list(T[tk]["ll"]), tee_src=T[tk]["src"])
         if gk >= 0 and tk >= 0:
             ent.update(straight_yd=round(float(D[tk, gk]), 1), matched_card_yd=None if math.isnan(Y) else Y)
+            onh = np.nonzero(_on_hole(txy, txy[tk], gxy[gk], tee_axes))[0]
+            bk = int(onh[np.argmax(D[onh, gk])]) if len(onh) else tk
+            ent.update(back_tee_ll=list(T[bk]["ll"]), back_yd=round(float(D[bk, gk]), 1), boxes_on_hole=int(len(onh)))
         if h > 0:
             pg = hyps[h - 1][best[h - 1]][1]
             if pg >= 0 and tk >= 0:
@@ -765,12 +768,13 @@ def to_hole_features(res, fc, inp=None):
                 added.add(i)
         if ref in have or not h.get("tee_ll") or not h.get("green_ll"):
             continue
+        start = h.get("back_tee_ll") or h["tee_ll"]
         props = dict(golf="hole", ref=ref, source="routing", inside_course=True, osm_type="routing",
                      osm_id=f"routing:{ref}", routing_status=h["status"])
         if h.get("par"):
             props["par"] = str(h["par"])
         out["features"].append(dict(type="Feature", properties=props,
-                                    geometry=dict(type="LineString", coordinates=[list(h["tee_ll"]), list(h["green_ll"])])))
+                                    geometry=dict(type="LineString", coordinates=[list(start), list(h["green_ll"])])))
     return out
 
 
