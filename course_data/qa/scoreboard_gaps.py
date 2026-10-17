@@ -12,8 +12,13 @@ NOTES = [
     "decision-mode error. Decision parity (product code on the hand map vs the reference model) is 14/14 "
     "(course_data/packages/spirit_hollow/out/parity/summary.md), and full mode on the hand map matches final_decision "
     "15/16: what is left is the map.",
-    "Veenker has no hand map: agreement, regret and geometry are n/a until one exists.",
-    "Geometry columns need a georeferenced hand map, which only Spirit Hollow has (hand_zones_ll.json).",
+    "Veenker (parkland), Coldwater (links / prairie) and Ellis (wooded; 2019 lidar predates the 2020 derecho) are "
+    "scored against hand-checked landing-corridor maps (course_data/truth/<slug>/hand_zones_ll.json, NOTES.md: traced "
+    "on NAIP 2023 0.3 m + other NAIP years + 3DEP lidar, 150-340 yds x +/-60) put into the package in place of its "
+    "zones and run through the same quick decision ('hand map, quick', like Mozingo); their tees are the package "
+    "tees the map was traced from (tee err 0 by construction).",
+    "Geometry columns need a georeferenced hand map: Spirit Hollow (hand_zones_ll.json) and the three truth courses "
+    "(IoU inside the mapped corridor only).",
 ]
 
 GAPS = [
