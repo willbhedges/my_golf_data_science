@@ -1,19 +1,21 @@
 {
  "schema": "naip_years_run/1",
  "slug": "ellis",
- "built": "2026-10-17T15:08Z",
+ "built": "2026-10-17T16:48Z",
  "bbox_snwe": [
   41.991747,
   -91.705551,
   42.004513,
   -91.685935
  ],
- "current": 2023,
+ "current": 2014,
+ "chosen": 2014,
+ "imagery_dir": "course_data/packages/ellis/imagery",
  "selection": {
   "schema": "naip_years/1",
   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
   "chosen": 2014,
-  "reason": "2014 (2014-09-18): greenest leaf-on year on the course's turf (NDVI 0.44 vs 0.27, 2% vs 1% brown) over the newest year 2023 (less green); replaces 2023",
+  "reason": "2014: the segment model scores 0.619 mean IoU vs OSM on it vs 0.598 on the greener 2021, so the switch is refused (scored: 2021 (2021-09-16): greenest leaf-on year on the course's turf (NDVI 0.37 vs 0.27, 1% vs 1% brown) over the newest year 2023 (less green); replaces 2014)",
   "candidates": [
    {
     "year": 2023,
@@ -59,7 +61,7 @@
      123.0,
      85.0
     ],
-    "score": 0.3786,
+    "score": 0.3646,
     "notes": [],
     "turf_source": "osm"
    },
@@ -84,7 +86,7 @@
      134.0,
      91.0
     ],
-    "score": 0.1704,
+    "score": 0.1424,
     "notes": [],
     "turf_source": "osm"
    },
@@ -109,8 +111,9 @@
      133.0,
      89.0
     ],
-    "score": 0.2003,
-    "notes": [],
+    "notes": [
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+    ],
     "turf_source": "osm"
    },
    {
@@ -134,9 +137,9 @@
      118.0,
      80.0
     ],
-    "score": -0.1551,
     "notes": [
-     "leaf-off flight"
+     "leaf-off flight",
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
     ],
     "turf_source": "osm"
    },
@@ -160,8 +163,9 @@
      118.0,
      70.0
     ],
-    "score": 0.4008,
-    "notes": [],
+    "notes": [
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+    ],
     "turf_source": "osm"
    },
    {
@@ -184,8 +188,9 @@
      125.0,
      86.0
     ],
-    "score": 0.1752,
-    "notes": [],
+    "notes": [
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+    ],
     "turf_source": "osm"
    },
    {
@@ -209,9 +214,9 @@
      124.0,
      98.0
     ],
-    "score": -0.037,
     "notes": [
-     "hazy (blue floor 68)"
+     "hazy (blue floor 68)",
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
     ],
     "turf_source": "osm"
    }
@@ -223,33 +228,6 @@
   "res_m": 0.6,
   "reference": "OSM polygons inside the course boundary +20 m",
   "runs": {
-   "2014": {
-    "green": {
-     "iou": 0.818,
-     "precision": 0.868,
-     "recall": 0.934
-    },
-    "tee": {
-     "iou": 0.513,
-     "precision": 0.57,
-     "recall": 0.838
-    },
-    "fairway": {
-     "iou": 0.812,
-     "precision": 0.892,
-     "recall": 0.901
-    },
-    "bunker": {
-     "iou": 0.785,
-     "precision": 0.841,
-     "recall": 0.923
-    },
-    "water": {
-     "iou": 0.167,
-     "precision": 0.18,
-     "recall": 0.695
-    }
-   },
    "2021": {
     "green": {
      "iou": 0.796,
@@ -304,69 +282,124 @@
      "recall": 0.55
     }
    },
-   "2014+2021": {
+   "2019": {
     "green": {
-     "iou": 0.838,
-     "precision": 0.909,
-     "recall": 0.915
+     "iou": 0.796,
+     "precision": 0.919,
+     "recall": 0.855
     },
     "tee": {
-     "iou": 0.574,
-     "precision": 0.669,
-     "recall": 0.8
+     "iou": 0.434,
+     "precision": 0.563,
+     "recall": 0.654
     },
     "fairway": {
-     "iou": 0.815,
-     "precision": 0.891,
-     "recall": 0.905
-    },
-    "bunker": {
-     "iou": 0.745,
-     "precision": 0.826,
-     "recall": 0.883
-    },
-    "water": {
-     "iou": 0.157,
-     "precision": 0.165,
-     "recall": 0.775
-    }
-   },
-   "2014+2021+2023": {
-    "green": {
-     "iou": 0.833,
-     "precision": 0.917,
-     "recall": 0.9
-    },
-    "tee": {
-     "iou": 0.577,
-     "precision": 0.685,
-     "recall": 0.784
-    },
-    "fairway": {
-     "iou": 0.813,
-     "precision": 0.886,
+     "iou": 0.789,
+     "precision": 0.858,
      "recall": 0.908
     },
     "bunker": {
-     "iou": 0.665,
-     "precision": 0.802,
-     "recall": 0.795
+     "iou": 0.66,
+     "precision": 0.809,
+     "recall": 0.781
     },
     "water": {
-     "iou": 0.534,
-     "precision": 0.718,
-     "recall": 0.676
+     "iou": 0.145,
+     "precision": 0.164,
+     "recall": 0.564
+    }
+   },
+   "2014": {
+    "green": {
+     "iou": 0.818,
+     "precision": 0.868,
+     "recall": 0.934
+    },
+    "tee": {
+     "iou": 0.513,
+     "precision": 0.57,
+     "recall": 0.838
+    },
+    "fairway": {
+     "iou": 0.812,
+     "precision": 0.892,
+     "recall": 0.901
+    },
+    "bunker": {
+     "iou": 0.785,
+     "precision": 0.841,
+     "recall": 0.923
+    },
+    "water": {
+     "iou": 0.167,
+     "precision": 0.18,
+     "recall": 0.695
+    }
+   },
+   "2021+2023": {
+    "green": {
+     "iou": 0.804,
+     "precision": 0.924,
+     "recall": 0.862
+    },
+    "tee": {
+     "iou": 0.547,
+     "precision": 0.697,
+     "recall": 0.717
+    },
+    "fairway": {
+     "iou": 0.781,
+     "precision": 0.858,
+     "recall": 0.897
+    },
+    "bunker": {
+     "iou": 0.626,
+     "precision": 0.773,
+     "recall": 0.767
+    },
+    "water": {
+     "iou": 0.344,
+     "precision": 0.393,
+     "recall": 0.735
+    }
+   },
+   "2021+2023+2019": {
+    "green": {
+     "iou": 0.808,
+     "precision": 0.923,
+     "recall": 0.866
+    },
+    "tee": {
+     "iou": 0.546,
+     "precision": 0.698,
+     "recall": 0.714
+    },
+    "fairway": {
+     "iou": 0.797,
+     "precision": 0.872,
+     "recall": 0.902
+    },
+    "bunker": {
+     "iou": 0.648,
+     "precision": 0.793,
+     "recall": 0.78
+    },
+    "water": {
+     "iou": 0.426,
+     "precision": 0.635,
+     "recall": 0.565
     }
    }
   },
   "mean_iou": {
-   "2014": 0.619,
    "2021": 0.598,
    "2023": 0.626,
-   "2014+2021": 0.626,
-   "2014+2021+2023": 0.684
+   "2019": 0.565,
+   "2014": 0.619,
+   "2021+2023": 0.62,
+   "2021+2023+2019": 0.645
   },
-  "current": 2023
+  "current": 2014
  },
- "applied": "re-fetched NAIP 2014 (was 2023)"
+ "applied": "kept 2014; selection recorded in georef.json"
 }
