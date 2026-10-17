@@ -133,6 +133,14 @@ def test_unnamed_course_at_near_is_found(monkeypatch):
     assert status == "not_found"
 
 
+def test_named_match_beats_unnamed_near():
+    near = "38.1230,-92.7180"
+    un = dict(name=None, town="Osage Beach", holes=0, osm=dict(type="way", id=1), center=[-92.688, 38.1248])
+    oaks = dict(name="The Oaks", town="Camden County", holes=0, osm=dict(type="relation", id=2), center=[-92.696, 38.1335])
+    status, best, _ = rs.choose([un, oaks], "The Oaks at Margaritaville Lake Resort", "Osage Beach", near=near)
+    assert status == "ok" and best["osm"]["id"] == 2
+
+
 def test_from_near_box_and_outline():
     c = rs.from_near("Pine Dunes Resort & Golf Club", "TX", "31.9778,-95.5389", 1000)
     assert c["status"] == "ok" and c["osm"] == {"type": "none", "id": 0} and c["boundary"] is None

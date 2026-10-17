@@ -115,6 +115,10 @@ def choose(cands, want, town=None, osm=None, near=None):
     """-> (status, best | None, ranked). status: ok | ambiguous | not_found."""
     ranked = rank(cands, want, town, osm, near)
     ranked = [c for c in ranked if c["score"] > 0.35]
+    if not osm and any(c.get("name") and name_similarity(want, c["name"]) >= 0.35 for c in ranked):
+        # an unnamed course only wins when nothing named matches (The Oaks MO: the resort's unnamed
+        # practice / par-3 polygon outscored "The Oaks" on the near + town bonuses)
+        ranked = [c for c in ranked if c.get("name")]
     if not ranked:
         return "not_found", None, ranked
     best = ranked[0]
