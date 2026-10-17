@@ -112,3 +112,22 @@ def test_resolve_falls_back_to_words_then_nominatim(monkeypatch):
     assert res["status"] == "ok" and res["osm"]["id"] == 7
     assert any("mozingo" in q for q in seen) and any("recreation" in q for q in seen)
     assert res["boundary"] is None and res["bbox"][0] < -94.7663 < res["bbox"][2]
+
+
+def test_unnamed_course_at_near_is_found(monkeypatch):
+    """No named OSM golf_course (Pine Dunes TX): the request's near point finds the unnamed polygon."""
+    def fake_overpass(q):
+        if "around:" in q:
+            return {"elements": [{"type": "way", "id": 7, "tags": {"leisure": "golf_course"},
+                                  "center": {"lat": 31.98, "lon": -95.54},
+                                  "bounds": {"minlat": 31.97, "minlon": -95.55, "maxlat": 31.99, "maxlon": -95.53}}]}
+        return {"elements": []}
+    monkeypatch.setattr(rs.pc, "overpass", fake_overpass)
+    monkeypatch.setattr(rs.pc, "nominatim", lambda *a, **k: [])
+    els = rs.search("Pine Dunes Resort", "TX", near="31.9778,-95.5389")
+    assert [e["id"] for e in els] == [7]
+    c = rs.candidate(els[0])
+    status, best, _ = rs.choose([c], "Pine Dunes Resort", near="31.9778,-95.5389")
+    assert status == "ok" and best["osm"]["id"] == 7
+    status, _, _ = rs.choose([rs.candidate(els[0])], "Pine Dunes Resort")
+    assert status == "not_found"

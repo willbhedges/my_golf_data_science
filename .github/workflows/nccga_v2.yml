@@ -1,0 +1,158 @@
+name: nccga-v2
+
+# v2 tee-shot decisions + v2 wind grids + wind page for a tournament course (course_data/courses/v2_course.py).
+# Trigger: push course_data/requests/nccga_v2_<slug>.json
+#   {"slug": "pine_dunes", "which": "truth", "offsets": [0, -40, ...], "temps": [40, 55, 70],
+#    "decide_jobs": 3, "draws": 64, "rev": 1}
+# Jobs: one wind job per tee offset (all temperatures; holes split over the runner's cores), `decide_jobs` jobs
+# for the Bayesian calm-day pick, then merge -> course_data/courses/<slug>/<which>/v2/ + wind_page/index.html.
+on:
+  push:
+    paths:
+      - "course_data/requests/nccga_v2_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nccga-v2-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.p.outputs.matrix }}
+      reqs: ${{ steps.p.outputs.reqs }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - id: p
+        run: |
+          git diff --name-only HEAD~1 HEAD -- 'course_data/requests/nccga_v2_*.json' > /tmp/reqs.txt || true
+          cat /tmp/reqs.txt
+          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+          import json
+          reqs = [l.strip() for l in open("/tmp/reqs.txt") if l.strip()]
+          inc = []
+          for r in reqs:
+              q = json.load(open(r))
+              for b in q.get("offsets", [0]):
+                  inc.append(dict(kind="wind", slug=q["slug"], which=q.get("which", "truth"), back=b,
+                                  temps=",".join(str(t) for t in q["temps"]), part=str(b)))
+              for j in range(int(q.get("decide_jobs", 3))):
+                  inc.append(dict(kind="decide", slug=q["slug"], which=q.get("which", "truth"), back=0, temps="",
+                                  part=f"{j}/{int(q.get('decide_jobs', 3))}", draws=int(q.get("draws", 64))))
+          print("matrix=" + json.dumps({"include": inc}))
+          print("reqs=" + " ".join(reqs))
+          EOF
+
+  compute:
+    needs: plan
+    if: needs.plan.outputs.reqs != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy matplotlib pillow rasterio pyproj shapely
+      - name: Prepare course module
+        run: python course_data/courses/v2_course.py prepare --slug ${{ matrix.slug }} --which ${{ matrix.which }}
+      - name: ${{ matrix.kind }} ${{ matrix.part }}
+        run: |
+          set -e
+          S=${{ matrix.slug }}; W=${{ matrix.which }}
+          mkdir -p parts
+          HOLES=$(python3 -c "
+          import importlib.util,sys
+          s=importlib.util.spec_from_file_location('c','course_data/courses/$S/$W/course.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          print(' '.join(str(k) for k in m.ORDER if k in m.HOLES))")
+          NP=$(nproc)
+          echo "holes: $HOLES; cores: $NP"
+          if [ "${{ matrix.kind }}" = "wind" ]; then
+            # split holes over the cores; each process writes its own part
+            i=0; pids=""
+            for grp in $(python3 -c "
+          import sys
+          h='$HOLES'.split(); n=$NP
+          g=[h[i::n] for i in range(n)]
+          print(' '.join(','.join(x) for x in g if x))"); do
+              WIND_ONLY=$grp python course_data/courses/v2_course.py wind --slug $S --which $W --back ${{ matrix.back }} \
+                --temps ${{ matrix.temps }} --out parts/v2wind_${{ matrix.back }}_$i.json > parts/log_$i.txt 2>&1 &
+              pids="$pids $!"; i=$((i+1))
+            done
+            for p in $pids; do wait $p; done
+          else
+            J=$(echo "${{ matrix.part }}" | cut -d/ -f1); NJ=$(echo "${{ matrix.part }}" | cut -d/ -f2)
+            MINE=$(python3 -c "
+          h='$HOLES'.split(); print(' '.join(h[$J::$NJ]))")
+            i=0; pids=""
+            for hh in $MINE; do
+              python course_data/courses/v2_course.py decide --slug $S --which $W --holes $hh --draws ${{ matrix.draws }} \
+                --out parts/v2dec_$hh.json > parts/log_dec_$hh.txt 2>&1 &
+              pids="$pids $!"; i=$((i+1))
+              if [ $((i % NP)) -eq 0 ]; then for p in $pids; do wait $p; done; pids=""; fi
+            done
+            for p in $pids; do wait $p; done
+          fi
+          tail -n 3 parts/log_* || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v2-${{ matrix.slug }}-${{ matrix.kind }}-${{ strategy.job-index }}
+          path: parts/
+
+  merge:
+    needs: [plan, compute]
+    if: always() && needs.plan.outputs.reqs != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy matplotlib pillow rasterio pyproj shapely
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/parts
+      - name: Merge + page
+        run: |
+          for r in ${{ needs.plan.outputs.reqs }}; do
+            S=$(python3 -c "import json;print(json.load(open('$r'))['slug'])")
+            W=$(python3 -c "import json;print(json.load(open('$r')).get('which','truth'))")
+            mkdir -p /tmp/p_$S
+            cp -r /tmp/parts/v2-$S-* /tmp/p_$S/ 2>/dev/null || true
+            python course_data/courses/v2_course.py prepare --slug $S --which $W
+            python course_data/courses/v2_course.py merge --slug $S --which $W /tmp/p_$S
+            python course_data/courses/v2_course.py page --slug $S --which $W || echo "page failed"
+            git add -f course_data/courses/$S/$W/v2 course_data/courses/$S/wind_page 2>/dev/null || true
+            git add -f course_data/courses/$S/$W/course.py course_data/courses/$S/$W/meta.json 2>/dev/null || true
+          done
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "NCCGA courses: v2 decisions + wind grids + wind page (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1

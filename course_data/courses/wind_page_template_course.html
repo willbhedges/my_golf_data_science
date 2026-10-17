@@ -1,0 +1,460 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: a caddie's card — controls band on top, hole map with the aim drawn on it, then the 18-hole strip. */
+:root{
+  --paper:#eef2ec; --card:#ffffff; --ink:#173326; --muted:#5b6f63; --line:#cfd9d1;
+  --accent:#e0a800; --accent-ink:#3b2c00; --tie:#8a6bd1; --driver:#1f6b45; --wood2:#2f6fa8; --wood4:#b0612a;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32;
+  --accent:#ffc928; --accent-ink:#2a2000; --tie:#b49cf0; --driver:#5cc48d; --wood2:#6fb0e8; --wood4:#e59a62; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32;
+  --accent:#ffc928; --accent-ink:#2a2000; --tie:#b49cf0; --driver:#5cc48d; --wood2:#6fb0e8; --wood4:#e59a62; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:14px}
+h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.02em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px}
+.label{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.controls{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+@media (max-width:640px){.controls{grid-template-columns:minmax(0,1fr)}}
+.dial{width:150px;height:150px;touch-action:none;cursor:grab;justify-self:center}
+.dial text{font-family:var(--display);font-weight:600;fill:var(--muted);font-size:13px}
+.ctl{display:grid;gap:10px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:600 14px var(--display);letter-spacing:.04em;border:1px solid var(--line);background:transparent;color:var(--ink);
+  border-radius:999px;padding:5px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.topnav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.topnav button{font:700 22px var(--display);min-width:56px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--ink);color:var(--card);cursor:pointer}
+.topnav span{font:700 22px var(--display);color:var(--ink)}
+#start{font:600 15px var(--display);border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:6px 10px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--ink)}
+.windread{font-family:var(--display);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.hole{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.hole{grid-template-columns:minmax(0,1fr)}}
+.mapbox{position:relative;border-radius:8px;overflow:hidden;background:var(--line)}
+.mapbox svg{display:block;width:100%;height:auto}
+.mapcol{display:grid;gap:8px;align-content:start;min-width:0}
+.info{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-content:start;min-width:0}
+.holehead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.holeno{font-family:var(--display);font-weight:700;font-size:40px;line-height:1}
+.play{font-family:var(--display);font-weight:700;font-size:46px;line-height:1;letter-spacing:.01em}
+.adj{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.adj span{font:700 16px var(--display);letter-spacing:.02em;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink)}
+.adj .up{border-color:var(--accent)}
+.adj .eq{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.pill{display:inline-block;font:600 12px var(--display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 9px;border:1px solid currentColor}
+.pill.tie{color:var(--tie)} .pill.chg{color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);font-size:14px}
+th{font:600 12px var(--display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tr.best td{font-weight:600}
+#hTable tr[data-club]{cursor:pointer}
+#hTable tr.sel td{background:color-mix(in srgb, var(--accent) 16%, transparent)}
+.note{color:var(--muted);font-size:14px;max-width:62ch}
+.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 4px;text-align:center;cursor:pointer;color:var(--ink)}
+.chip b{display:block;font:700 18px var(--display)}
+.chip span{font:600 13px var(--display);letter-spacing:.03em}
+.chip[aria-current="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.c-Driver{color:var(--driver)} .c-2-wood{color:var(--wood2)} .c-4-wood{color:var(--wood4)} .c-iron{color:var(--muted)}
+[hidden]{display:none!important}
+.foot{color:var(--muted);font-size:12.5px;max-width:80ch}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1 id="title"></h1>
+    <div class="sub" id="subt"></div><div class="pill chg" id="phBanner" hidden style="margin-top:6px;display:inline-block"></div>
+  </header>
+
+  <section class="panel controls" aria-label="Wind">
+    <svg class="dial" id="dial" viewBox="-80 -80 160 160" role="slider" aria-label="Wind direction (from)" tabindex="0">
+      <circle r="70" fill="none" stroke="var(--line)" stroke-width="2"/>
+      <g id="ticks"></g>
+      <text x="0" y="-55" text-anchor="middle">N</text><text x="57" y="5" text-anchor="middle">E</text>
+      <text x="0" y="64" text-anchor="middle">S</text><text x="-57" y="5" text-anchor="middle">W</text>
+      <g id="needle"><line x1="0" y1="-62" x2="0" y2="40" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+        <polygon points="0,52 -9,34 9,34" fill="var(--ink)"/><circle cx="0" cy="-62" r="7" fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/></g>
+    </svg>
+    <div class="ctl">
+      <div class="row"><span class="label">Wind source</span>
+        <div class="seg" id="src"></div></div>
+      <div class="row" id="hourRow"><span class="label">Tee time</span><input type="range" id="hour" min="7" max="16" step="0.25"><span id="hourLbl" class="windread"></span></div>
+      <div class="row" id="startRow"><span class="label">Starting hole</span><select id="start"></select><span class="sub">shotgun: the hole you start on</span></div>
+      <div class="row"><span class="label">Speed</span><input type="range" id="speed" min="0" max="25" step="1"><span id="speedLbl" class="windread"></span></div>
+      <div class="row" id="tempRow"><span class="label">Temperature</span><input type="range" id="temp" min="35" max="65" step="1"><span id="tempLbl" class="windread"></span></div>
+      <div class="row" id="setRow"><span class="label">Tees</span>
+        <div class="seg" id="set"></div></div>
+      <div class="windread" id="windLbl"></div>
+      <div class="sub">Forecast mode: each hole uses the wind for when you reach it (about 14 min a hole from your tee time, counting from your starting hole). Moving the dial or speed switches to Custom, one wind for every hole. Drag the dial to where the wind blows <b>from</b>. The yellow end of the needle points into the wind.</div>
+    </div>
+  </section>
+
+  <section class="panel hole" aria-live="polite">
+    <div class="mapcol">
+      <div class="topnav"><button id="prevTop" aria-label="Previous hole">◀</button><span id="topNo"></span><button id="nextTop" aria-label="Next hole">▶</button></div>
+      <div class="seg" id="view"><button data-v="hole">Whole hole from the tee</button><button data-v="land">Landing area</button></div>
+      <div class="mapbox"><svg id="ov" role="img" aria-label="Overhead view of the hole"></svg></div>
+    </div>
+    <div class="info">
+      <div class="holehead"><span class="holeno" id="hNo"></span><span class="label" id="hPar"></span><span id="hBadges"></span></div>
+      <div><div class="label" id="playLbl">Play</div><div class="play" id="hPlay"></div><div class="adj" id="hAdj" hidden></div><div class="sub" id="hAim"></div></div>
+      <div id="hTable"></div>
+      <div class="row" id="adjRow"><span class="label">Move this tee</span><input type="range" id="adj" min="-60" max="60" step="10"><span id="adjLbl" class="sub"></span></div>
+      <div class="sub" id="hElev"></div>
+      <div class="note" id="hNote"></div>
+      <div class="row"><div class="seg"><button id="prev">◀ Prev</button><button id="next">Next ▶</button></div></div>
+    </div>
+  </section>
+
+  <section class="panel"><div class="label" style="margin-bottom:8px">All holes in this wind</div><div class="strip" id="strip"></div></section>
+
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const CLUBS = ["Driver","2-wood","4-wood","Long iron","Mid iron"];
+const short = c => ({"Driver":"D","2-wood":"2W","4-wood":"4W","Long iron":"LI","Mid iron":"MI","Hybrid ~235 (not in bag)":"HY*"})[c] || c;
+const HYPO = c => /not in bag/.test(c);       /* hypothetical club: shown for comparison, never the pick */
+const cls = c => (c==="Driver"||c==="2-wood"||c==="4-wood") ? "c-"+c : "c-iron";
+const SKEY = "nccga_wind_" + D.slug;
+const st = {src:"d0", hour:D.tee_hour, start:1, from:180, mph:10, idx:0, view:"hole", set:D.base_set, adj:{}, club:{}};
+try{ const s = JSON.parse(localStorage.getItem(SKEY)||"null"); if(s) Object.assign(st, s);}catch(e){}
+if(!D.sets.includes(st.set)) st.set = D.base_set;
+if(st.src !== "custom" && !/^d[01]$/.test(st.src)) st.src = "d0";
+document.getElementById("title").textContent = D.title;
+document.getElementById("subt").textContent = D.sub;
+if(D.placeholder){ const b = document.getElementById("phBanner"); b.hidden = false; b.textContent = "Placeholder weather (climate normals), not a forecast"; }
+document.getElementById("src").innerHTML = D.day_labels.map((l, i) => `<button data-v="d${i}">${l}</button>`).join("") + `<button data-v="custom">Custom</button>`;
+document.getElementById("set").innerHTML = D.sets.map(s => `<button data-v="${s}">${s}${D.set_totals && D.set_totals[s] ? " " + D.set_totals[s] : ""}</button>`).join("");
+if(!st.adj) st.adj = {};
+if(!st.club) st.club = {};
+if(st.temp == null) st.temp = 60;
+if(st.hour == null) st.hour = D.tee_hour;
+if(!st.start) st.start = 1;
+/* expand the compact grids: {back: {tempF: {cell: {club: [aim, ev, zlo, zhi, carry, total, width, drift]}}}} */
+for(const h of D.holes){ if(h.kind !== "tee") continue; h.G = {};
+  for(const [b, byT] of Object.entries(h.grids)){ h.G[b] = {};
+    for(const [T, g] of Object.entries(byT)){ const G = {};
+      for(const [k, cl] of Object.entries(g)){ const clubs = {};
+        for(const [c, a] of Object.entries(cl)) clubs[c] = {aim:a[0], ev:a[1], zone:[a[2], a[3]], carry:a[4], total:a[5], width:a[6], drift:a[7]};
+        G[k] = {clubs}; }
+      h.G[b][T] = G; } }
+  h.grid = h.G["0"][String(D.temps[1])]; }
+/* temperature when you reach the hole (forecast mode) or the Temperature slider (custom) */
+function tempFor(h){ const f = windFor(h); return f ? f.temp : st.temp; }
+function tempWeights(GB, tF){ const TT = D.temps; const t = Math.min(Math.max(tF, TT[0]), TT[TT.length-1]);
+  let j = 0; while(j < TT.length-2 && t > TT[j+1]) j++; const w = (t - TT[j])/(TT[j+1] - TT[j]);
+  return [[GB[String(TT[j])], 1-w], [GB[String(TT[j+1])], w]]; }
+/* the tee this hole is played from: set's card offset + this hole's own adjustment, snapped to a computed grid */
+const toGreen = (h, back, v) => h.green_al ? Math.round(Math.hypot(h.green_al[0] + back - v.total, h.green_al[1] - (v.aim + v.drift + (v.kick || 0)))) : "";   /* straight line from where it finishes to the green centre */
+function teeOf(h){
+  const o = (h.tee_opts || []).find(t => t.name === st.set) || (h.tee_opts || []).find(t => t.name === h.base_set);
+  const want = (o ? o.back : 0) + (st.adj[h.key] || 0);
+  const have = h.G ? Object.keys(h.G).map(Number) : [0];
+  const b = have.reduce((a, x) => Math.abs(x - want) < Math.abs(a - want) ? x : a, have[0]);
+  return {name: o ? o.name : h.base_set, card: o ? o.yards : Math.round(h.length), want, back: b, setOk: !!(o && o.name === st.set)};
+}
+const save = () => { try{ localStorage.setItem(SKEY, JSON.stringify(st)); }catch(e){} };
+
+function forecastAt(src, hour){
+  const date = D.days[src === "d1" ? 1 : 0];
+  return D.forecast.find(r => r.date===date && r.hour===hour) || null;
+}
+/* pace of play: you reach hole n about (n-1) x 14 min after the tee time; each hole uses the forecast
+   for that moment (wind interpolated between hours as a vector) */
+const MIN_PER_HOLE = 14;
+const holeNo = h => parseInt(h.key, 10);
+const holeHour = h => st.hour + ((holeNo(h) - st.start + 18) % 18) * MIN_PER_HOLE / 60;   /* shotgun: count from the starting hole */
+function forecastAtTime(src, t){
+  const h0 = Math.floor(t), w = t - h0, a = forecastAt(src, h0), b = forecastAt(src, h0 + 1) || a;
+  if(!a) return null;
+  const vec = r => { const d = (r.dir ?? 0) * Math.PI/180; return [r.mph*Math.sin(d), r.mph*Math.cos(d)]; };
+  const [ax, ay] = vec(a), [bx, by] = vec(b), x = ax + (bx-ax)*w, y = ay + (by-ay)*w;
+  return {mph: Math.hypot(x, y), dir: (Math.atan2(x, y)*180/Math.PI + 360) % 360,
+          gust: a.gust + (b.gust-a.gust)*w, temp: a.temp + (b.temp-a.temp)*w};
+}
+function windFor(h){
+  if(st.src === "custom") return null;
+  return forecastAtTime(st.src, holeHour(h));
+}
+function setWind(f){ if(f){ st.mph = Math.round(f.mph*10)/10; st.from = Math.round(f.dir); } }
+function applySource(){ setWind(windFor(D.holes[st.idx])); }
+function clock(t){ const hh = Math.floor(t), mm = Math.round((t - hh)*60); const H = hh > 12 ? hh - 12 : hh;
+  return `${H}:${String(mm).padStart(2,"0")} ${hh >= 12 ? "pm" : "am"}`; }
+const card = d => ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16];
+
+/* bilinear interpolation over (speed, relative direction) of every club's numbers */
+function cell(g, sp, dir){ return sp===0 ? g["0_0"] : g[sp+"_"+((dir%360+360)%360)]; }
+function solveTee(h){
+  const rel = ((st.from - h.bearing) % 360 + 360) % 360;
+  const S = D.speeds; const mph = Math.min(st.mph, S[S.length-1]);
+  let i = 0; while(i < S.length-2 && mph > S[i+1]) i++;
+  const s0 = S[i], s1 = S[i+1], ws = (mph - s0)/(s1 - s0);
+  const d0 = Math.floor(rel/30)*30, d1 = (d0+30)%360, wd = (rel - d0)/30;
+  const corners = [[s0,d0,(1-ws)*(1-wd)],[s0,d1,(1-ws)*wd],[s1,d0,ws*(1-wd)],[s1,d1,ws*wd]];
+  const out = {}; const T = teeOf(h); const GB = h.G[String(T.back)]; const tF = tempFor(h);
+  const TW = tempWeights(GB, tF); const grid = TW[0][0];
+  for(const c of Object.keys(grid["0_0"].clubs)){
+    const r = {ev:0,aim:0,lo:0,hi:0,total:0,carry:0,width:0,drift:0};
+    for(const [g, tw] of TW) for(const [sp,dd,w0] of corners){ const v = cell(g, sp, dd).clubs[c]; const w = w0*tw;
+      r.ev+=w*v.ev; r.aim+=w*v.aim; r.lo+=w*v.zone[0]; r.hi+=w*v.zone[1]; r.total+=w*v.total; r.carry+=w*v.carry; r.width+=w*v.width; r.drift+=w*v.drift; }
+    const e = h.elev && h.elev.clubs && h.elev.clubs[c];      // ground: carry, roll and side kick
+    r.kick = 0;
+    if(e){ const roll = r.total - r.carry; r.carry += e.dc; r.total = r.carry + roll * e.rf; r.kick = e.kick; r.e = e; }
+    out[c] = r;
+  }
+  const order = Object.keys(out).filter(c => !HYPO(c)).sort((a,b) => out[a].ev - out[b].ev);
+  let pick = order[0], aim = out[pick].aim, tie = (out[order[1]].ev - out[pick].ev) < 0.01, bayes = false;
+  /* light wind (< 5 mph) changes nothing that matters: use the book's full calm-day pick and aim */
+  /* Keep the book's full calm-day pick unless the wind itself changes the decision: compare the quick
+     model's pick now with its own pick in no wind. The book's aim is shifted by the wind's aim change. */
+  /* the book's pick was made for the forecast temperature at this hole (Sat 10 am tee): compare with the
+     quick model in calm air at that temperature; keep the book unless wind or temperature changes the pick */
+  const g0 = {}; for(const [g, tw] of tempWeights(GB, h.calm ? h.calm.temp : tF)) for(const [c, v] of Object.entries(g["0_0"].clubs)){
+    g0[c] = g0[c] || {ev:0, aim:0}; g0[c].ev += tw*v.ev; g0[c].aim += tw*v.aim; }
+  const calmQuick = Object.keys(g0).filter(c => !HYPO(c)).sort((a,b) => g0[a].ev - g0[b].ev)[0];
+  if(h.calm && T.back === 0 && out[h.calm.pick] && pick === calmQuick){
+    const c = h.calm.pick;
+    pick = c; aim = h.calm.aim + (out[c].aim - g0[c].aim); tie = h.calm.tie; bayes = true;
+    order.splice(order.indexOf(pick), 1); order.unshift(pick); }
+  return {rel, out, order, pick, aim, tie, bayes, T, tF, margin: out[order[1]].ev - out[order[0]].ev};
+}
+function windMod(mph){ return mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3; }
+function solvePar3(h){
+  const rel = ((st.from - h.bearing) % 360 + 360) % 360;
+  const S = D.speeds; const mph = Math.min(st.mph, S[S.length-1]);
+  let i = 0; while(i < S.length-2 && mph > S[i+1]) i++;
+  const s0 = S[i], s1 = S[i+1], ws = (mph - s0)/(s1 - s0);
+  const d0 = Math.floor(rel/30)*30, d1 = (d0+30)%360, wd = (rel - d0)/30;
+  const S3 = (h.by_set && (h.by_set[st.set] || h.by_set[h.base_set])) || {center:h.length, boxes:h.boxes, plays:h.plays, front:h.front, back:h.back};
+  const setName = h.by_set && h.by_set[st.set] ? st.set : h.base_set;
+  const g = (sp,dd) => sp===0 ? S3.plays["0_0"] : S3.plays[sp+"_"+dd];
+  const plays = (1-ws)*((1-wd)*g(s0,d0)+wd*g(s0,d1)) + ws*((1-wd)*g(s1,d0)+wd*g(s1,d1));
+  const mod = windMod(st.mph); const b = S3.boxes[String(mod)];
+  return {rel, plays, mod, box:b, S3, setName, play: b.play * plays / S3.center};
+}
+const P = (h, p) => [(p[0]-h.x0)*h.s, (p[1]-h.y0)*h.s];
+const at = (h, along, lat) => [h.tee[0]+(along*h.f[0]+lat*h.r[0])*h.ppy, h.tee[1]+(along*h.f[1]+lat*h.r[1])*h.ppy];
+function relWords(rel, mph){
+  if(mph < 1.5) return "Calm";
+  const head = Math.cos(rel*Math.PI/180)*mph, cross = Math.sin(rel*Math.PI/180)*mph;
+  const parts = [];
+  if(Math.abs(head) >= 1.5) parts.push(head > 0 ? `${head.toFixed(0)} mph into you` : `${(-head).toFixed(0)} mph behind you`);
+  if(Math.abs(cross) >= 1.5) parts.push(cross > 0 ? `${cross.toFixed(0)} mph right-to-left` : `${(-cross).toFixed(0)} mph left-to-right`);
+  return parts.length ? "Wind " + parts.join(", ") : `Light wind (${Math.round(mph)} mph)`;
+}
+const setColor = name => { const n = String(name || "").replace(/ tee.*$/, ""); return (D.colors && D.colors[n]) || "#111"; };
+function teeMark(x, y, name){
+  const t = `<text x="${x + 16}" y="${y - 12}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="17" stroke="rgba(0,0,0,.75)" stroke-width="3.5" paint-order="stroke">${(name || "Tee").toUpperCase()}</text>`;
+  return `<rect x="${x-9}" y="${y-9}" width="18" height="18" rx="3" fill="${setColor(name)}" stroke="#fff" stroke-width="2.5"/>` + t;
+}
+function windArrow(h, rel, vb){
+  /* screen up = the hole's line; arrow shows where the wind blows TO */
+  const a = (rel + 180) * Math.PI/180, cx = vb[0] + vb[2] - 46, cy = vb[1] + 46, L = 26;
+  const dx = Math.sin(a)*L, dy = -Math.cos(a)*L;
+  return `<g opacity=".95"><circle cx="${cx}" cy="${cy}" r="34" fill="rgba(10,20,15,.55)"/>
+    <line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx*0.5}" y2="${cy+dy*0.5}" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    <polygon points="${cx+dx},${cy+dy} ${cx+dx*0.42-dy*0.42},${cy+dy*0.42+dx*0.42} ${cx+dx*0.42+dy*0.42},${cy+dy*0.42-dx*0.42}" fill="#ffc928" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+    <text x="${cx}" y="${cy+52}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="15" text-anchor="middle" stroke="rgba(0,0,0,.6)" stroke-width="3" paint-order="stroke">${Math.round(st.mph)} mph</text></g>`;
+}
+/* holes 2 and 9 have two screenshots (Gold box "B", Black box "F"): show one per hole, by the chosen tees */
+const shown = (h) => !/^[29][FB]$/.test(h.key) || (h.key.endsWith("B") === (st.set === "Gold"));
+function sibling(i){ const h = D.holes[i]; if(shown(h)) return i;
+  const k = h.key.slice(0, -1) + (h.key.endsWith("B") ? "F" : "B"); const j = D.holes.findIndex(x => x.key === k); return j < 0 ? i : j; }
+function step(d){ let i = st.idx; for(let n = 0; n < D.holes.length; n++){ i = (i + d + D.holes.length) % D.holes.length; if(shown(D.holes[i])) return i; } return st.idx; }
+function render(){
+  applySource();
+  st.idx = sibling(st.idx);
+  const h = D.holes[st.idx];
+  const ov = document.getElementById("ov");
+  let vb = [0, 0, h.w, h.h];
+  const TB = h.kind === "tee" ? teeOf(h).back : 0;
+  if(h.kind === "tee" && st.view === "land"){            // zoom to the landing area from this tee
+    const ys = [175 - TB, 345 - TB].flatMap(a => [-75, 75].map(l => P(h, at(h, a, l))[1]));
+    const y0 = Math.max(0, Math.min(...ys)), y1 = Math.min(h.h, Math.max(...ys));
+    vb = [0, y0, h.w, y1 - y0];
+  }
+  ov.setAttribute("viewBox", vb.join(" "));
+  const IMG = `<image href="${h.img}" x="0" y="0" width="${h.w}" height="${h.h}"/>`;
+  document.getElementById("view").hidden = h.kind !== "tee";
+  document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
+  document.getElementById("hNo").textContent = "Hole " + h.label.replace(/ (Black|Gold) tee$/, "");
+  document.getElementById("topNo").textContent = document.getElementById("hNo").textContent;
+  const T0 = h.kind === "tee" ? teeOf(h) : null, P3 = h.kind === "tee" ? null : solvePar3(h);
+  document.getElementById("hPar").textContent = h.kind === "tee"
+    ? `Par ${h.par} · ${T0.card + (st.adj[h.key] || 0)} yds · from the ${T0.name} tee` + (st.adj[h.key] ? ` (moved ${Math.abs(st.adj[h.key])} ${st.adj[h.key] > 0 ? "back" : "up"})` : "")
+    : `Par 3 · ${Math.round(P3.S3.center)} yds · from the ${P3.setName} tee`;
+  renderTeeCtl(h);
+  const badges = [];
+  if(h.kind === "tee"){
+    const r = solveTee(h);
+    /* the golfer can overrule the pick: tap a club in the table to see ITS best aim and pattern */
+    const pickC = st.club[h.key] && r.out[st.club[h.key]] ? st.club[h.key] : r.pick;
+    const best = r.out[pickC], aimC = pickC === r.pick ? r.aim : best.aim;
+    const B = r.T.back;                                    // tee moved B yds back along the line
+    const star = P(h, at(h, best.total - B, aimC));
+    const zl = P(h, at(h, best.total - B, best.lo)), zh = P(h, at(h, best.total - B, best.hi));
+    /* the dashed pattern = where the model's simulated shots finish (elevation, slope, roll), scaled for wind */
+    const cl = h.cloud && h.cloud[pickC];
+    const cA = cl ? cl.dA : 0, cL = cl ? cl.dL : 0;
+    const land = P(h, at(h, best.total - B + cA, aimC + best.drift + best.kick + cL));
+    const rx = best.width/2*h.ppy*h.s, ry = best.width*0.22*h.ppy*h.s;
+    let pattern;
+    if(cl){ const sc = best.width / cl.width, pts = [];
+      for(let i = 0; i < 48; i++){ const a = i/48*2*Math.PI, ca = Math.cos(a)*cl.A*sc, sa = Math.sin(a)*cl.B*sc;
+        pts.push(P(h, at(h, best.total - B + cA + ca*cl.u[0] + sa*cl.w[0], aimC + best.drift + best.kick + cL + ca*cl.u[1] + sa*cl.w[1])).join(",")); }
+      pattern = `<polygon points="${pts.join(" ")}" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>`;
+    }
+    const ang = Math.atan2(h.f[0], -h.f[1]) * 180/Math.PI;
+    let tp = P(h, at(h, -B, 0)); let below = 0;
+    if(tp[1] > vb[1] + vb[3] - 14){ below = Math.round((tp[1] - (vb[1] + vb[3] - 14)) / (h.ppy * h.s)); tp = [tp[0], vb[1] + vb[3] - 14]; }
+    ov.innerHTML = IMG + `
+      <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#1a1a1a" stroke-width="4" opacity=".55"/>
+      <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#ffc928" stroke-width="2"/>
+      ${pattern || `<ellipse cx="${land[0]}" cy="${land[1]}" rx="${rx}" ry="${ry}" transform="rotate(${ang} ${land[0]} ${land[1]})" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>`}
+      <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="9" stroke-linecap="round" opacity=".8"/>
+      ${Math.abs(best.drift + best.kick) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
+      ${aimMark(star[0], star[1])}
+      ${h.tee_offimage && !below ? `<text x="${h.w/2}" y="${(2000 - h.y0) * h.s + 22}" fill="#d9e3dc" font-family="Source Sans 3,Arial,sans-serif" font-size="14" text-anchor="middle">Below here: past the bottom of your app screenshot</text>` : ""}
+      ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? ` · ${below} yds further back ↓` : ""))}
+      ${windArrow(h, r.rel, vb)}`;
+    const own = pickC !== r.pick;
+    document.getElementById("playLbl").textContent = own ? "Your club" : "Play";
+    const pe = document.getElementById("hPlay"); pe.textContent = pickC; pe.className = "play " + cls(pickC);
+    document.getElementById("hAdj").hidden = true;
+    if(own){ const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${r.pick} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
+    const calm = solveTeeCalm(h);
+    if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
+    if(calm !== r.pick && r.T.back === 0) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
+    const mv = best.drift + best.kick + cL;
+    const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
+                 Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
+    document.getElementById("hAim").innerHTML = `Aim at the dot (anywhere on the blue bar is within 0.005 strokes)${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}` : ""}. ${relWords(r.rel, st.mph)}, ${Math.round(r.tF)}°F.${r.bayes ? " Same club as the book (this wind and temperature don't change it)." : ""}`;
+    const allC = Object.keys(r.out).sort((a,b) => r.out[a].ev - r.out[b].ev);
+    const rows = allC.map(c => { const v = r.out[c], d = v.ev - r.out[r.pick].ev;
+      const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (d < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
+      return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"${HYPO(c) ? ' style="font-style:italic;opacity:.8"' : ""}><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${toGreen(h, r.T.back, v)}</td><td>${Math.round(v.width)}</td><td>${lost}</td></tr>`;}).join("");
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>To green</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. To green: yards from where that club finishes to the middle of the green. Tap any club to see its own best aim and pattern; tap ★ to go back. The hybrid (~235 carry) is hypothetical, not in your bag: it shows whether such a club would be the play.</div>`;
+    const be = best.e;
+    const past = best.total - B > 345;
+    if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
+    if(Math.abs(B - r.T.want) > 5) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B)} yds ${B >= 0 ? "back" : "up"}</span>`);
+    document.getElementById("hElev").innerHTML = be ? (B ? `Elevation measured from the ${h.base_set} tee. ` : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
+    let note = h.note || "";
+    document.getElementById("hNote").textContent = note;
+  } else {
+    const r = P3;
+    const g = h.green.map(p => P(h, p).join(",")).join(" ");
+    const bp = r.box.poly.map(p => P(h, p).join(",")).join(" ");
+    ov.innerHTML = IMG + `<polygon points="${g}" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <polygon points="${bp}" fill="rgba(37,208,255,.5)" stroke="#25d0ff" stroke-width="2.5"/>${windArrow(h, r.rel, vb)}`;
+    document.getElementById("playLbl").textContent = "Play it like";
+    const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
+    /* breakdown: box target (calm, flat) + elevation + wind = plays like; rounded parts add up exactly */
+    const T = Math.round(r.box.play), calmP = r.S3.plays["0_0"] / r.S3.center;
+    const eY = Math.round(r.box.play * calmP - r.box.play), wY = Math.round(r.play) - T - eY;
+    const sg = v => v > 0 ? "+" + v : v < 0 ? "−" + (-v) : "±0";
+    const ae = document.getElementById("hAdj"); ae.hidden = false;
+    ae.innerHTML = `<span>${T} target</span><span class="${eY > 0 ? "up" : eY < 0 ? "dn" : ""}">${sg(eY)} elevation</span><span class="${wY > 0 ? "up" : wY < 0 ? "dn" : ""}">${sg(wY)} wind</span>`;
+    if(Math.abs(r.play - r.S3.center) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center)} on the card</span>`);
+    document.getElementById("hAim").textContent = `Land it in the blue box. ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front}</td><td>${Math.round(r.S3.center)}</td><td>${r.S3.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
+    document.getElementById("hNote").textContent = h.note || "";
+    const ge = h.elev;
+    document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds; "Play it like" includes this and the wind.` : "";
+  }
+  document.getElementById("hBadges").innerHTML = badges.join(" ");
+  renderStrip(); renderControls(); save();
+}
+function renderTeeCtl(h){
+  document.querySelectorAll("#set button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.set));
+  const multi = (D.offsets || [0]).length > 1;            // tee picker only once offset grids exist
+  document.getElementById("setRow").hidden = !multi; if(!multi) st.set = D.base_set;
+  const row = document.getElementById("adjRow"); row.hidden = h.kind !== "tee" || !multi;
+  const a = st.adj[h.key] || 0; document.getElementById("adj").value = a;
+  document.getElementById("adjLbl").textContent = a === 0 ? "at the card spot" : `${Math.abs(a)} yds ${a > 0 ? "back" : "up"}`;
+}
+function solveTeeCalm(h){ if(h.calm) return h.calm.pick; const g = h.grid["0_0"].clubs; return Object.keys(g).filter(c => !HYPO(c)).sort((a,b) => g[a].ev - g[b].ev)[0]; }
+function aimMark(x, y){ const c = (w, col) => `<g stroke="${col}" stroke-width="${w}" fill="none"><line x1="${x-18}" y1="${y}" x2="${x+18}" y2="${y}"/><line x1="${x}" y1="${y-18}" x2="${x}" y2="${y+18}"/><circle cx="${x}" cy="${y}" r="7"/></g>`; return c(3.6, "#1a1a1a") + c(1.6, "#ffc928") + `<circle cx="${x}" cy="${y}" r="2.2" fill="#e5202a" stroke="#1a1a1a" stroke-width=".6"/>`; }
+function starPts(cx, cy, R, r){ const p = []; for(let i = 0; i < 10; i++){ const a = -Math.PI/2 + i*Math.PI/5, rr = i%2 ? r : R; p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1)); } return p.join(" "); }
+function renderStrip(){
+  const el = document.getElementById("strip");
+  el.innerHTML = D.holes.map((h,i) => {
+    if(!shown(h)) return "";
+    setWind(windFor(h));
+    let txt, c = "";
+    if(h.kind==="tee"){ const r = solveTee(h); txt = short(r.pick) + (r.tie ? "≈" : ""); c = cls(r.pick); }
+    else { txt = Math.round(solvePar3(h).play); }
+    return `<button class="chip" data-i="${i}" aria-current="${i===st.idx}"><b>${h.label.replace(/ (Black|Gold) tee$/,"").replace(" tee","")}</b><span class="${c}">${txt}</span></button>`;
+  }).join("");
+  applySource();                                         // back to the current hole's wind
+}
+function renderControls(){
+  document.querySelectorAll("#src button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v===st.src));
+  document.getElementById("hourRow").hidden = st.src === "custom";
+  document.getElementById("tempRow").hidden = st.src !== "custom";
+  document.getElementById("temp").value = st.temp;
+  document.getElementById("tempLbl").textContent = Math.round(st.temp) + "°F";
+  document.getElementById("hour").value = st.hour;
+  document.getElementById("hourLbl").textContent = clock(st.hour);
+  document.getElementById("startRow").hidden = st.src === "custom";
+  document.getElementById("start").value = st.start;
+  document.getElementById("speed").value = st.mph;
+  document.getElementById("speedLbl").textContent = Math.round(st.mph) + " mph";
+  document.getElementById("needle").setAttribute("transform", `rotate(${st.from + 180})`);
+  const f = st.src !== "custom" ? forecastAt(st.src, st.hour) : null;
+  const hh = D.holes[st.idx], fw = windFor(hh);
+  document.getElementById("windLbl").textContent = (fw ? `Hole ${holeNo(hh)} at about ${clock(holeHour(hh))}: ` : "") +
+    (st.mph < 1.5 ? "calm" : `from the ${card(st.from)} (${Math.round(st.from)}°) at ${Math.round(st.mph)} mph`) +
+    (fw ? ` · gusts ${Math.round(fw.gust)} · ${Math.round(fw.temp)}°F` : ` · ${Math.round(st.temp)}°F`);
+}
+/* controls */
+document.getElementById("ticks").innerHTML = Array.from({length:16}, (_,i) => { const a = i*22.5*Math.PI/180, r0 = i%4 ? 66 : 62;
+  return `<line x1="${Math.sin(a)*r0}" y1="${-Math.cos(a)*r0}" x2="${Math.sin(a)*70}" y2="${-Math.cos(a)*70}" stroke="var(--muted)" stroke-width="1.5"/>`; }).join("");
+const dial = document.getElementById("dial");
+function dialSet(ev){ const r = dial.getBoundingClientRect(); const x = ev.clientX - (r.left + r.width/2), y = ev.clientY - (r.top + r.height/2);
+  /* the yellow end points INTO the wind, i.e. toward where it comes from */
+  st.from = Math.round(((Math.atan2(x, -y)*180/Math.PI) + 360) % 360 / 5) * 5; st.src = "custom"; render(); }
+let drag = false;
+dial.addEventListener("pointerdown", e => { drag = true; dial.setPointerCapture(e.pointerId); dialSet(e); });
+dial.addEventListener("pointermove", e => { if(drag) dialSet(e); });
+dial.addEventListener("pointerup", () => drag = false);
+dial.addEventListener("keydown", e => { if(e.key==="ArrowRight"||e.key==="ArrowUp"){ st.from = (st.from+15)%360; st.src="custom"; render(); e.preventDefault(); }
+  if(e.key==="ArrowLeft"||e.key==="ArrowDown"){ st.from = (st.from+345)%360; st.src="custom"; render(); e.preventDefault(); } });
+document.getElementById("speed").addEventListener("input", e => { st.mph = +e.target.value; st.src = "custom"; render(); });
+document.getElementById("hour").addEventListener("input", e => { st.hour = +e.target.value; render(); });
+document.getElementById("start").innerHTML = Array.from({length:18}, (_,i) => `<option value="${i+1}">Hole ${i+1}</option>`).join("");
+document.getElementById("start").addEventListener("change", e => { st.start = +e.target.value;
+  const j = D.holes.findIndex(h => holeNo(h) === st.start && shown(h)); if(j >= 0) st.idx = j; render(); });
+document.getElementById("temp").addEventListener("input", e => { st.temp = +e.target.value; render(); });
+document.querySelectorAll("#src button").forEach(b => b.addEventListener("click", () => { st.src = b.dataset.v; render(); }));
+document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; render(); }));
+document.getElementById("adj").addEventListener("input", e => { const h = D.holes[st.idx]; st.adj[h.key] = +e.target.value; render(); });
+document.getElementById("hTable").addEventListener("click", e => {
+  const tr = e.target.closest("tr[data-club]"); if(!tr) return;
+  const h = D.holes[st.idx]; const r = solveTee(h);
+  if(tr.dataset.club === r.pick) delete st.club[h.key]; else st.club[h.key] = tr.dataset.club;
+  render(); });
+document.querySelectorAll("#view button").forEach(b => b.addEventListener("click", () => { st.view = b.dataset.v; render(); }));
+document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest(".chip"); if(b){ st.idx = +b.dataset.i; render(); } });
+document.getElementById("prev").addEventListener("click", () => { st.idx = step(-1); render(); });
+document.getElementById("prevTop").addEventListener("click", () => { st.idx = step(-1); render(); });
+document.getElementById("nextTop").addEventListener("click", () => { st.idx = step(1); render(); });
+document.getElementById("next").addEventListener("click", () => { st.idx = step(1); render(); });
+document.getElementById("foot").textContent = `Weather: ${D.placeholder ? D.fc_note : "forecast fetched " + D.fetched}. Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Hole maps: USDA NAIP aerial photo (${D.imagery || "date unknown"}), hand-checked against USGS 3DEP lidar. Other tee sets move the tee back or up the line by the scorecard difference from ${D.base_set}; each is solved separately, to the nearest 20 yds. ${D.foot_extra} Model v2: each club rolls to your stated total on level fairway (slope changes roll by at most ±30%, no sideways kick), carry adjusted for the temperature when you reach each hole (about 2 yds per 10°F for driver, from 70°F), slight and heavy mishits, curving misses lose carry, lost balls and OB priced as stroke and distance, water relief from where the ball went in, trees as punch-outs, scratch-5 scoring. Picks in wind use v2 at its central settings (driver pattern 70 yds); the calm-day pick and aim come from the v2 Bayesian run (64 prior draws, day-1 temperatures at the default tee time), aims to the half yard; the blue bar is every aim within 0.005 strokes. The ~235 hybrid is hypothetical. "≈" marks a tie (within 0.01 strokes).`;
+render();
+</script>

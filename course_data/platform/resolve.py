@@ -13,6 +13,8 @@ Search order
   3. Nothing: retry with each distinctive word of the name (longest first).
   4. Nothing: Nominatim "<name>, <state>, USA"; golf_course hits are taken directly, other hits
      (a town, a park) are searched for the nearest leisure=golf_course within 4 km.
+  5. Nothing and the request gives "near" (lat,lon): every leisure=golf_course within 4 km of it; an unnamed
+     one within 3 km scores as a match.
 Every candidate gets its town (addr:city, else a Nominatim reverse lookup) and the number of
 golf=hole ways inside it (Overpass map_to_area + out count).
 
@@ -90,6 +92,11 @@ def score(c, want, town=None, osm=None, near=None):
         s += 0.5
     elif town and c.get("town"):
         s -= 0.2
+    if nr and c.get("center") and not c.get("name"):
+        # an UNNAMED golf course at the request's coordinates is the course (OSM often maps the polygon with no
+        # name): name similarity is 0, so without this it never passes the 0.35 bar
+        d = pc.haversine_m(nr[0], nr[1], c["center"][1], c["center"][0]) / 1000
+        s += 0.4 if d < 3 else 0.0
     if c["osm"]["type"] == "node":
         s -= 0.15                                   # no boundary: worse than an area with the same name
     h = c.get("holes")
@@ -167,8 +174,10 @@ def reverse_town(lat, lon):
     return town
 
 
-def search(name, state, osm=None):
-    """Raw Overpass elements for the name in the state (see the module docstring for the order)."""
+def search(name, state, osm=None, near=None):
+    """Raw Overpass elements for the name in the state (see the module docstring for the order); with `near`
+    (lat,lon of the course, e.g. from its street address) every leisure=golf_course within 4 km of it is a
+    candidate too, named or not (step 5: the course is in OSM under another name, or unnamed)."""
     iso = "US-" + pc.state_code(state)
     if osm:
         typ, oid = osm.split("/")
@@ -190,6 +199,8 @@ def search(name, state, osm=None):
             out += pc.overpass(f"[out:json][timeout:60];{typ}({h['osm_id']});out tags center bb;").get("elements", [])
     if not out and hits:
         out = _around(float(hits[0]["lat"]), float(hits[0]["lon"]))
+    if not out and _near(near):
+        out = _around(*_near(near))
     return out
 
 
@@ -212,7 +223,7 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
     """-> course dict (ARCHITECTURE 3.1 course.json + state, town, holes, boundary, candidates).
     status: ok | ambiguous | not_found. Only 'ok' carries boundary/bbox."""
     sc = pc.state_code(state)
-    els = search(name, sc, osm)
+    els = search(name, sc, osm, near)
     els = [e for e in els if e.get("tags", {}).get("leisure") == "golf_course" or osm]
     counts = hole_counts(els[:12]) if els else {}
     cands = []
