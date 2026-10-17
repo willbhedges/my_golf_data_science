@@ -1,0 +1,156 @@
+name: segment-train
+
+# Our own NAIP golf-feature U-Net (course_data/segment/train): the ariadgolf weights have no licence grant.
+# 1. data: OSM-labelled NAIP for well-mapped IA/MO courses (Overpass + Planetary Computer), cached between runs.
+# 2. train: CPU U-Net/ResNet-34 within a time budget, then segment the three evaluation courses
+#    (course_data/segment/<slug>_own/) and re-run evaluate.py. The weights go to the Actions cache + an artifact.
+# Triggered by committed request files course_data/requests/segment_train_*.json (ARCHITECTURE 9.4).
+
+on:
+  push:
+    paths:
+      - ".github/workflows/segment_train.yml"
+      - "course_data/requests/segment_train_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: segment-train-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Restore dataset cache
+        uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/golfseg_data
+          key: golfseg-data-v1-${{ github.run_id }}
+          restore-keys: golfseg-data-v1-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests numpy scipy pillow shapely pyproj rasterio affine pystac-client planetary-computer
+
+      - name: Smoke test (train.py + model.load on synthetic data)
+        run: |
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm
+          python -u course_data/segment/train/smoke.py || echo "SMOKE FAILED"
+
+      - name: Build dataset
+        run: |
+          python -u course_data/segment/train/build_dataset.py --out /home/runner/golfseg_data --max 160 --minutes 110 \
+            || echo "dataset build failed"
+          ls /home/runner/golfseg_data | wc -l; du -sh /home/runner/golfseg_data
+          mkdir -p course_data/segment/train
+          python -c "import json;d=json.load(open('/home/runner/golfseg_data/index.json'));json.dump(d,open('course_data/segment/train/dataset_index.json','w'),indent=1)" || true
+
+      - name: Save dataset cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /home/runner/golfseg_data
+          key: golfseg-data-v1-${{ github.run_id }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dataset-index
+          path: course_data/segment/train/dataset_index.json
+          retention-days: 30
+
+  train:
+    needs: data
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Restore dataset cache
+        uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/golfseg_data
+          key: golfseg-data-v1-${{ github.run_id }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dataset-index
+          path: course_data/segment/train
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm \
+                      numpy scipy pillow shapely pyproj rasterio opencv-python-headless
+
+      - name: Train
+        run: |
+          ls /home/runner/golfseg_data | wc -l
+          python -u course_data/segment/train/train.py --data /home/runner/golfseg_data --out /home/runner/golfseg_model \
+            --minutes 210 2>&1 | tee /tmp/train.txt | grep -v "^step [0-9]*/[0-9]* loss" | tail -80
+          grep "^step" /tmp/train.txt | awk 'NR % 20 == 0' | tail -40
+          mkdir -p course_data/segment/train
+          cp /home/runner/golfseg_model/train_log.json /home/runner/golfseg_model/preprocessor_config.json \
+             /home/runner/golfseg_model/config.json course_data/segment/train/ || true
+
+      - name: Save model cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /home/runner/golfseg_model
+          key: golfseg-model-v1-${{ github.run_id }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golfseg-own-model
+          path: /home/runner/golfseg_model
+          retention-days: 90
+
+      - name: Segment the evaluation courses with our model + evaluate
+        run: |
+          python -u course_data/segment/run_segment.py --model /home/runner/golfseg_model --suffix _own --force \
+            || echo "segment failed"
+          python -u course_data/segment/evaluate.py || echo "evaluate failed"
+
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/segment/train course_data/segment/*_own course_data/segment/eval.json \
+                  course_data/segment/eval.md 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "segment-train: own NAIP U-Net (OSM labels), outputs + evaluation (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
