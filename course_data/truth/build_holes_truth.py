@@ -29,7 +29,7 @@ ROOT = os.path.dirname(CD)
 sys.path.insert(0, os.path.join(CD, "imagery"))
 import render as R  # noqa: E402
 
-TOL = 10.0
+TOL = 8.0
 
 
 def frame(ll0):
@@ -61,7 +61,10 @@ def build(slug):
             pads = [ll(hs["line"][0])]                       # no tee pad mapped: the line's start (OSM hole tee)
         fr = frame(g)
         tees, how, meas = {}, {}, {}
-        for s, ys in card["sets"].items():
+        used = set()
+        L = [length(fr, [p] + corners + [g]) for p in pads]
+        # longest set first; a pad serves one set (two sets on one box: the shorter is moved up the line)
+        for s, ys in sorted(card["sets"].items(), key=lambda kv: -(kv[1][i] or 0)):
             y = ys[i]
             if not y:
                 continue
@@ -69,9 +72,12 @@ def build(slug):
                 t = ll(hs["tees"][s])
                 tees[s], how[s] = t, "hand"
             elif pads:
-                L = [length(fr, [p] + corners + [g]) for p in pads]
-                k = int(np.argmin([abs(v - y) for v in L]))
-                if abs(L[k] - y) <= TOL:
+                free = [j for j in range(len(pads)) if j not in used] or list(range(len(pads)))
+                k = min(free, key=lambda j: abs(L[j] - y))
+                if abs(L[k] - y) > TOL:
+                    k = int(np.argmin([abs(v - y) for v in L]))
+                if abs(L[k] - y) <= TOL and k not in used:
+                    used.add(k)
                     tees[s], how[s] = pads[k], f"pad (measured {L[k]:.0f})"
                 else:
                     # move the closest pad along its tee line (toward the first corner / the green) by card - measured

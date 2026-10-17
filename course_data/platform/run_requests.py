@@ -45,6 +45,11 @@ def plan(changed, requests=None):
             out.append((p, "survey" if r in changed else "skip"))
             continue
         req = pc.read_json(p, {}) or {}
+        if req.get("builder") and req["builder"] != "course-package":
+            # built by its own workflow (e.g. "nccga-package"): a run here would race it and, committing later
+            # with an older request, overwrite the newer package
+            out.append((p, "skip"))
+            continue
         slug = fp.request_slug(req, p)
         fetched = os.path.exists(os.path.join(pc.PACKAGES, slug, "raw", "osm.geojson"))
         if r in changed and fetched and str(req.get("refetch", "")).lower() == "scorecards":
