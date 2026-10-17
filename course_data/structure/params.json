@@ -1,24 +1,38 @@
 {
  "form_w": {
-  "length": 1.2388,
-  "align": 1.2303,
-  "chain": 1.981,
-  "chain_neg": 2.0705,
-  "p3_fw": -0.0912,
-  "fw_cov": -0.0501,
-  "fw_x": 8.9411,
-  "fw_end": 3.5848,
-  "cross_green": 2.4613,
-  "fwd": -0.0283,
-  "far": 5.9536,
-  "start": 0.5531
+  "length": 1.438,
+  "align": 1.5051,
+  "chain": 2.151,
+  "chain_neg": 2.2268,
+  "p3_fw": -0.0775,
+  "fw_cov": -0.4493,
+  "fw_x": 8.6064,
+  "fw_end": 3.1869,
+  "cross_green": 2.9392,
+  "fwd": -0.4924,
+  "far": 5.982,
+  "start": 0.3413
  },
  "fit_note": "conditional logit on dev (254 holes clean + degraded), fit.py",
  "trans_w": {
-  "walk": -0.7378,
-  "dist": -4.8983,
-  "cos_prev": 1.4045,
-  "cos_next": 1.8926,
-  "path": 5.3477
- }
+  "walk": -0.2796,
+  "dist": -3.1705,
+  "cos_prev": 0.5394,
+  "cos_next": 0.9838,
+  "path": 3.0377
+ },
+ "turn_w": {
+  "walk": 0.1423,
+  "dist": -0.7312,
+  "cos_prev": 0.8266,
+  "cos_next": 0.8574,
+  "path": 0.2141
+ },
+ "anchor_w": {
+  "t1": 1.2917,
+  "g18": 1.4934,
+  "g9": 0.5458,
+  "t10": 0.6409
+ },
+ "crf_note": "joint max-likelihood fit (crf.py) on 19 dev routes (clean + degraded)"
 }

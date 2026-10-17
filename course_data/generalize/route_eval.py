@@ -32,7 +32,7 @@ import routing_v2 as R2  # noqa: E402
 import validation_set as VS  # noqa: E402
 
 OUT = os.path.join(HERE, "eval_v2.json")
-FLAG_COST = 0.03          # calibration: one flag per course is worth 3 % of courses whose every wrong hole is flagged
+FLAG_COST = 0.05          # calibration: one flag per course costs as much as 5 % of courses with every wrong hole flagged
 
 
 def log(*a):

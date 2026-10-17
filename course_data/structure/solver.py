@@ -67,7 +67,7 @@ LAGR_ITERS = 12
 TFEATS = ("walk", "dist", "cos_prev", "cos_next", "path")
 TRANS_W = dict(walk=1.0, dist=0.0, cos_prev=0.0, cos_next=0.0, path=1.0)
 TURN_W = dict(walk=0.3, dist=0.0, cos_prev=0.0, cos_next=0.0, path=0.3)
-ANCHOR_W = dict(t1=1.0, g18=1.0, g9=1.0, t10=1.0)
+ANCHOR_W = dict(t1=1.0, g18=1.0, g9=1.0, t10=1.0, t1_d=0.0, g18_d=0.0, g9_d=0.0, t10_d=0.0)
 
 
 def load_params(path=os.path.join(HERE, "params.json")):
@@ -466,7 +466,7 @@ def features(sc, geo, clubs=()):
         m = np.ones(nC, bool)
         m[k] = False
         fwd[i] = float(((s > 0.03) & (s < CORR_FWD) & (perp < CORR_PERP) & m).sum())
-        cover.append([k])
+        cover.append(sorted({k} | set(np.nonzero((s > 0.0) & (s < COVER_FWD) & (perp < COVER_PERP))[0].tolist())))
         far[i] = float(((s >= 0.68) & (s < 0.95) & (perp < 14) & m).sum())
     start = np.zeros(P)
     Gr = geo.gr_r
@@ -637,13 +637,24 @@ def route_dp(trans, start, end, N, turn=None, pos=None, viterbi=True, marginals=
 
 
 # ----------------------------------------------------------------------------- the solver
-def n_holes_guess(hyps):
-    """9 / 18 / 27 / 36 from the greens that have a decent hole hypothesis."""
-    good = sum(1 for hs in hyps if hs and hs[0]["score"] > -1.5)
-    for n in (36, 27, 18, 9):
-        if good >= n - 2:
-            return n
-    return 9 if good >= 5 else max(1, good)
+def n_holes_guess(hyps, n_cx=None, thr=1.0, return_scores=False):
+    """9 / 18 / 27 / 36 from the number of greens that get a decent hole in an exclusive green -> complex
+    assignment (practice greens and greens without a tee drop out)."""
+    from scipy.optimize import linear_sum_assignment
+    nG = len(hyps)
+    n_cx = n_cx or (1 + max((h["k"] for hs in hyps for h in hs), default=0))
+    S = np.full((nG, n_cx + nG), -50.0)
+    for gi, hs in enumerate(hyps):
+        for h in hs:
+            S[gi, h["k"]] = h["score"]
+        S[gi, n_cx + gi] = thr
+    r, c = linear_sum_assignment(-S)
+    good = int(sum(1 for gi, k in zip(r, c) if k < n_cx))
+    asg = np.full(nG, -50.0)
+    for gi, k in zip(r, c):
+        asg[gi] = S[gi, k] if k < n_cx else -50.0 + (hyps[gi][0]["score"] if hyps[gi] else -50.0) * 0.01
+    n = 36 if good >= 34 else 27 if good >= 26 else 18 if good >= 14 else (9 if good >= 5 else max(1, good))
+    return (n, asg) if return_scores else n
 
 
 def card_info(card):
@@ -749,8 +760,10 @@ class Problem:
         """(start log-lik per hypothesis (Mk, K), end log-lik per green (Mk,)) for clubhouse point c."""
         G = self.geo.G
         dc = np.array([np.hypot(*(cx["xy"] - c).T).min() for cx in self.geo.cx])
-        st = anchor_ll(dc)[np.maximum(self.cxk, 0)]
-        en = anchor_ll(np.maximum(np.hypot(*(G[self.keep] - c).T) - self.geo.gr_r[self.keep], 1.0))
+        dg = np.maximum(np.hypot(*(G[self.keep] - c).T) - self.geo.gr_r[self.keep], 1.0)
+        ck = np.maximum(self.cxk, 0)
+        st = np.stack([anchor_ll(dc)[ck], np.minimum(dc[ck], 1500.0) / 100.0], -1)          # (Mk, K, 2)
+        en = np.stack([anchor_ll(dg), np.minimum(dg, 1500.0) / 100.0], -1)                    # (Mk, 2)
         return st, en
 
 
@@ -760,14 +773,15 @@ def solve(sc, card=None, n_holes=None, use_paths=True, use_clubhouse=True, temp=
     clubs = list(sc.clubhouse) if use_clubhouse else []
     hyps, geo = hypotheses(sc, topk=topk, w=form_w, clubs=clubs)
     pars, yards = card_info(card)
-    N = n_holes or (len(pars) if pars else (len(yards) if yards else n_holes_guess(hyps)))
+    n_guess, asg = n_holes_guess(hyps, len(geo.C), return_scores=True)
+    N = n_holes or (len(pars) if pars else (len(yards) if yards else n_guess))
     nG = len(sc.greens)
     if nG == 0 or not len(geo.C):
         return dict(schema="course_structure/1", status="no_greens_or_tees", holes=[], n_holes=N)
     best_form = np.array([hs[0]["score"] if hs else -30.0 for hs in hyps])
     gconf = np.array([g.get("p_hole", g.get("conf", 1.0)) for g in sc.greens])
     nothole = NOT_HOLE + np.log(np.maximum(gconf, 0.02)) - 0.5 * np.log(np.maximum(1 - gconf, 0.02))
-    order = np.argsort(-(best_form + nothole))
+    order = np.argsort(-(asg + 0.3 * best_form + nothole))
     if N > 20:
         keep = sorted(order[:min(nG, N + 2)].tolist())
         return _solve_large(sc, hyps, geo, keep, N, pars, yards, temp, clubs)

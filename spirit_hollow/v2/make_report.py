@@ -82,8 +82,117 @@ amateur slope term makes each yard closer worth more than it is for a tour playe
   (stroke and distance). Model Local Rule E-5 (2 strokes, fairway drop) costs within ~0.05 of S&D here.
 """
 
-VERDICT = open(os.path.join(HERE, "output", "verdict.txt")).read() if os.path.exists(
-    os.path.join(HERE, "output", "verdict.txt")) else ""
+VERDICT = r"""
+## 3. Verdict
+
+**v2 is better, and the v2 page is built** (`spirit_hollow/v2/wind_page/index.html`, to publish as a
+NEW artifact). The reason is not that v2 scores better against outcome data. Neither model has the
+golfer's own shot data to be scored against (see Calibration). It is better because:
+
+1. **The engine is the same.** In v1's world it reproduces v1 to ≤ 0.007 strokes with the same best
+   aims.
+2. **It fixes inputs that contradict what we know:** the golfer's soft course, the golfer's own width
+   ratios, the Rules on lost balls and water relief, the measured temperature, the DEM along the real
+   Black-tee line, ground yards, and greens checked on NAIP.
+3. **It fixes numerical problems:** v1's aims sat at its ±25 search bound, v1 had a 2.5-yd aim grid,
+   and irons were offered on only 2 holes.
+
+### Holes that change, and why (from the change ladder below)
+
+* **6: 2-wood (tie) → Driver 7.5 L** (0.030, beats the 2-wood in 95% of worlds). Soft roll: v1 ran the
+  driver ~25 yds on into the long-grass bands.
+* **9 Gold: 2-wood → Driver 18.5 L** (0.083). Soft roll: v1's driver rolled into the creek/pond trouble
+  right at ~300. Gold tee only.
+* **10: Driver → 4-wood 7.5 R** (0.052, 92%). Two reasons. v1's Driver came from the final run's 4-wood
+  width (59.5 instead of the golfer's 54): in v1's own world at 70/65/54 it is already a 4-wood
+  (ladder step 0). The aim moves right because trees left block the line to the green on this par 5
+  (line of sight +1 R → +8 R), and the Black-tee DEM cuts the driver's downhill bonus from +11 to +6 yds.
+* **11: Long iron → 4-wood 1.0 L** (0.072, 89%). Soft roll: the creek is ~276-282 yds from the Black tee.
+  v1 rolled the 4-wood 15+ yds toward it; on a soft course at 50°F it stops at ~253.
+* **14: 2-wood at −25 (v1's search bound) → Driver 24 L** (0.033, 91%). Soft roll, plus v1 could not
+  aim past −25, so its 2-wood/Driver aims were not optima.
+* **18: 2-wood → Driver 1.5 L** (0.049, 92%). Soft roll: v1's driver ran ~25 yds on toward the creek
+  past 300.
+* **16: 4-wood (tie) → Driver 7.0 L** (0.020, 80%). Soft roll and the scratch-5 table; it reverts to the
+  4-wood under the tour table or a pattern ≥ 86 yds. A lean, not a lock.
+* **5: 4-wood → Driver 3.5 L, a tie** (0.004 vs 2-wood, +0.012 vs 4-wood). Any of the three woods; the
+  4-wood is the pick at an 82-yd pattern or with v1's roll.
+* **Aims only:** 2 Black 17.5 L → 12.5 L (the Black-tee DEM shortens the driver's downhill carry from
+  +15 to +11 yds, so less to hold off the right; rules-based penalties). 13 10 L → 13.5 L. 17 2.5 R →
+  1.5 L (trees on the line to the green). 9 Black 12.5 L → 14 L.
+* **Unchanged:** 1 (4-wood), 2 Gold (Driver), 4 (Driver), 8 (4-wood, now only 0.012 over the 2-wood),
+  9 Black (4-wood, a 0.007 tie with the 2-wood), 13 (Driver), 17 (Driver).
+
+### Things that look wrong in v1
+
+1. **Roll vs "soft".** The live page's model still rolls the driver ~25 yds (×0.7-1.3 slope cap only),
+   although the golfer says the ball moves 1-2 yds. This is the biggest driver of club changes (6,
+   9 Gold, 11, 14, 18; ladder step 2).
+2. **Aims at the search bound.** Hole 14's 2-wood and Driver both sat at −25 (v1 searched ±25). The
+   v1 driver aims on 11 and 9 Black sat at +25. The wind grid searched ±30 and its picks were never
+   bound-checked.
+3. **Width ratios.** final_decision.py's prior (prior_patch) centres 2-wood/4-wood at 0.94/0.85 of the
+   driver, i.e. 70/66/59.5. That contradicts the stated 70/65/54 and is what makes v1 pick Driver on 10.
+4. **Irons only on 11 and 13.** v1 never offered them anywhere else. They lose by ≥ 0.08 everywhere in
+   v2, but that had not been checked.
+5. **Lost ball / water pricing.** A lost ball was 2 + rough at the landing distance, not stroke and
+   distance. Water used the landing distance, not where the ball crossed in.
+6. **Geometry** (parity engineer, confirmed here):
+   * Elevation was measured from the screenshot tee, up to 25 yds behind the Black tee. Driver carry
+     bonus on 10: +11.2 → +6.0 yds; 2 Black +14.9 → +11.0; 14 +21.8 → +18.5.
+   * App yards ≠ ground yards: the 270 dot is 261.5 ground yds on 6 (×0.968) and 276.5 on 16 (×1.024).
+   * The app-trilaterated greens on 6 and 10 sit on the front edge of the green in NAIP, 15 and 11 yds
+     from the OSM centre.
+
+   These change one pick (13: 4-wood → Driver, already a 0.002 central-world tie) and move aims ≤ 2.5
+   yds (2 Black, 6, 14, 16). See `output/geometry_check.json`.
+7. **No temperature.** At 44-52°F the driver carries ~4 yds less than its 70°F number.
+8. **Unmapped ground.** Both versions treat untraced ground as rough. With a wider search (v2 run 1) the
+   optimiser aimed 60 yds right on 18 (across the creek to a strip traced as "fairway right of the
+   creek") and on 9 Black (over the pond toward the creek and back yards, unmapped). v2 now limits aims
+   to course.py's ±40 and scores untraced ground beyond the hand-checked ±55-yd corridor as half rough,
+   half trees. **Worth checking on the course:** is the strip right of the creek on 18 playable from the
+   Black tee? If it is, there is a second route the model cannot judge from this map.
+
+### How much it matters, both ways
+
+* **If v2's assumptions are right,** v1's club-and-aim choices cost **≈ 0.43 strokes per Black-tee round**
+  (11 0.15, 10 0.07, 14 0.06, 18 0.05, 6 0.03, ...).
+* **If v1's world is right** (25-yd roll, tour table), v2's choices cost ≈ 0.67 per round (11 0.17,
+  14 0.17, 18 0.13, 9 Gold 0.07, 5 0.06).
+
+So the choice between them is mostly the choice of **how far the ball runs**. The golfer reports a soft
+course, hence v2. **On a firm day, use the "v1 roll" sensitivity column:** 5 → 4-wood, 11 → Long iron,
+18 → 2-wood, the rest unchanged.
+
+### Robustness
+
+* **Aims:**
+  * The robust (prior-averaged) aim is within 0.5 yd of the central-world aim on 14 of 16 holes
+    (9 Black 2 yds, 14 1 yd).
+  * Aim windows (within 0.005 strokes) are 4.5-8 yds wide.
+  * No pick sits at a search bound.
+  * Per-draw optimal aims spread 3-5 yds (SD), except 9 Black and 18, where single worlds jump between
+    two routes (SD 20-30). The averaged curve still has one clear minimum there.
+* **Monte Carlo:** swing noise is 0-4% of the variance of each margin. Cross-fitted margins equal the
+  in-sample ones to 0.001 (no winner's curse).
+* **Ties and leans:**
+  * Ties (< 0.01): 5 (any wood), 9 Black (4-wood ≈ 2-wood).
+  * Leans (0.01-0.025): 1, 8, 13, 16.
+  * Everything else is ≥ 0.026 with P(beats runner-up) ≥ 83%.
+* **Wider pattern (82 yds, the published 0-5 hcp fit):** 5 and 13 go to the 4-wood. Break-evens: 4 at
+  82, 5 at 79, 13 at 78, 16 at 86, 1 (2-wood → 4-wood) at 63, 8 (2-wood → 4-wood) at 67.
+* **Miss shape:** a one-way fade or draw (one tail 30% longer) moves aims 3-7 yds away from that side and
+  changes only hole 5 (draw → 2-wood).
+* **Temperature:** 35-65°F changes no central pick (margins move, e.g. 13 0.004 → 0.033). −8°F flips 8 to
+  the 2-wood (a tie hole). The page uses each hole's forecast temperature.
+* **Hypothetical ~235 hybrid:** never the play. Closest on 10 (+0.013 vs the 4-wood); elsewhere +0.06
+  to +0.23. A gap club would not help these tee shots.
+* **Par 5s:** going for it vs laying up is priced inside the scoring tables (expected strokes from
+  the second shot's distance and lie). On 2 Black (Driver), 4 (Driver), 10 (4-wood) and 18 (Driver)
+  the picks hold across every sensitivity, except 18 on a firm (v1-roll) day (→ 2-wood).
+"""
+
 
 
 def calibration():
@@ -107,8 +216,11 @@ def main():
     md = [HEAD, VERDICT, "\n## Calibration (Driver at its best aim, mean of the 16 tee holes)\n", calibration(),
           "\nThe golfer-stated 70-yd pattern makes the model straighter than published 0-5 handicap data "
           "(beyond-40 rate 2.5% vs ~7%); at an 82-yd pattern the tails match. Picks at 82 are in the "
-          "sensitivity table. Fairway % runs high in every version: the soft course stops balls on the "
-          "fairway, and published figures come from courses with roll.\n",
+          "sensitivity table. v2's fairway share is above the published 49% because the soft course stops "
+          "balls on the fairway (v1's 25-yd roll ran them through into the first cut and rough), while the published "
+          "figures come from courses with normal roll. On penalties v2 (4.3%) is closer to the published 1-3% than "
+          "v1 (5.6%), and on trouble it is about as far below 12% as v1 is above it. Calibration does not settle which "
+          "model is right; the golfer's own fairway and miss data would.\n",
           f"\n## Reverse check\n\nIf v1's world (its central settings) were the truth, v2's plays would cost "
           f"**{rr['black_round_total']:.2f} strokes** per Black-tee round versus v1's own best plays. Per hole: "
           + ", ".join(f"{k} {v:+.3f}" for k, v in rr.items() if k != "black_round_total") + ".\n",

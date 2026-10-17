@@ -30,7 +30,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import solver as V                                                   # noqa: E402
 
-ANCH = ("t1", "g18", "g9", "t10")
+ANCH = ("t1", "g18", "g9", "t10", "t1_d", "g18_d", "g9_d", "t10_d")
 NEG = -1e30
 
 
@@ -49,13 +49,18 @@ def theta_from_params():
         elif grp == "turn":
             out.append(V.TURN_W.get(k, 0.0))
         else:
-            out.append(V.ANCHOR_W.get(k, 1.0))
+            out.append(V.ANCHOR_W.get(k, 0.0 if k.endswith("_d") else 1.0))
     return np.array(out, float)
 
 
 def split(theta):
     nf, nt = len(V.FEATS), len(V.TFEATS)
     return theta[:nf], theta[nf:nf + nt], theta[nf + nt:nf + 2 * nt], theta[nf + 2 * nt:]
+
+
+def anc(ta, A, i):
+    """Anchor potential i (0 t1, 1 g18, 2 g9, 3 t10): log-normal term + linear distance term."""
+    return ta[i] * A[..., 0] + ta[4 + i] * A[..., 1]
 
 
 def potentials(pb, se, theta, N, price=None, nh=None):
@@ -75,11 +80,11 @@ def potentials(pb, se, theta, N, price=None, nh=None):
     trans = np.where(eye, -1e4, trans)
     turn = zu = None
     if N == 18:
-        zu = u[None] + ta[3] * As[None] + pb.F @ tu
-        turn = np.where(eye, -1e4, ta[2] * Ae[:, None] + V._lse(zu, axis=2))
-    z0 = u + ta[0] * As
+        zu = u[None] + anc(ta, As, 3)[None] + pb.F @ tu
+        turn = np.where(eye, -1e4, anc(ta, Ae, 2)[:, None] + V._lse(zu, axis=2))
+    z0 = u + anc(ta, As, 0)
     start = V._lse(z0, axis=1)
-    end = ta[1] * Ae
+    end = anc(ta, Ae, 1)
     return trans, turn, start, end, dict(u=u, zt=zt, zu=zu, z0=z0)
 
 
@@ -151,26 +156,28 @@ def course_obj(theta, pb, ses, wH, N, seq, hseq):
         s = P["z0"][seq[0], hseq[0]]
         g = np.zeros(nth)
         g[:nf] += pb.Phi[seq[0], hseq[0]]
-        g[nf + 2 * nt + 0] += As[seq[0], hseq[0]]
+        A0 = nf + 2 * nt
+        g[[A0 + 0, A0 + 4]] += As[seq[0], hseq[0]]
         for k in range(1, N):
             a, b, h = seq[k - 1], seq[k], hseq[k]
             if N == 18 and k == 9:
-                s += P["zu"][a, b, h] + split(theta)[3][2] * Ae[a]
+                s += P["zu"][a, b, h] + anc(split(theta)[3], Ae[a], 2)
                 g[:nf] += pb.Phi[b, h]
                 g[nf + nt:nf + 2 * nt] += pb.F[a, b, h]
-                g[nf + 2 * nt + 2] += Ae[a]
-                g[nf + 2 * nt + 3] += As[b, h]
+                g[[A0 + 2, A0 + 6]] += Ae[a]
+                g[[A0 + 3, A0 + 7]] += As[b, h]
             else:
                 s += P["zt"][a, b, h]
                 g[:nf] += pb.Phi[b, h]
                 g[nf:nf + nt] += pb.F[a, b, h]
         s += end[seq[-1]]
-        g[nf + 2 * nt + 1] += Ae[seq[-1]]
+        g[[A0 + 1, A0 + 5]] += Ae[seq[-1]]
         logZ, marg, xi, xi_t = fb(trans, turn, start, end, N)
         e = np.zeros(nth)
+        A0 = nf + 2 * nt
         q0 = _softmax(P["z0"], 1)                                    # (b, h)
         e[:nf] += np.einsum("b,bh,bhf->f", marg[:, 0], q0, pb.Phi)
-        e[nf + 2 * nt + 0] += np.einsum("b,bh,bh->", marg[:, 0], q0, As)
+        e[[A0 + 0, A0 + 4]] += np.einsum("b,bh,bhx->x", marg[:, 0], q0, As)
         q = _softmax(P["zt"], 2)                                     # (a, b, h)
         e[:nf] += np.einsum("ab,abh,bhf->f", xi, q, pb.Phi)
         e[nf:nf + nt] += np.einsum("ab,abh,abhf->f", xi, q, pb.F)
@@ -178,9 +185,9 @@ def course_obj(theta, pb, ses, wH, N, seq, hseq):
             qu = _softmax(P["zu"], 2)
             e[:nf] += np.einsum("ab,abh,bhf->f", xi_t, qu, pb.Phi)
             e[nf + nt:nf + 2 * nt] += np.einsum("ab,abh,abhf->f", xi_t, qu, pb.F)
-            e[nf + 2 * nt + 2] += (xi_t.sum(1) * Ae).sum()
-            e[nf + 2 * nt + 3] += np.einsum("ab,abh,bh->", xi_t, qu, As)
-        e[nf + 2 * nt + 1] += (marg[:, N - 1] * Ae).sum()
+            e[[A0 + 2, A0 + 6]] += xi_t.sum(1) @ Ae
+            e[[A0 + 3, A0 + 7]] += np.einsum("ab,abh,bhx->x", xi_t, qu, As)
+        e[[A0 + 1, A0 + 5]] += marg[:, N - 1] @ Ae
         lw_true.append(math.log(w) + s)
         lw_Z.append(math.log(w) + logZ)
         g_true.append(g)
@@ -193,7 +200,7 @@ def course_obj(theta, pb, ses, wH, N, seq, hseq):
     return nll, grad
 
 
-def build_training(entries, degrade=None, extra=1, max_h=3):
+def build_training(entries, degrade=None, extra=0, max_h=2):
     """Per dev course: Problem over the true greens + `extra` other greens, the true sequence and hypotheses."""
     import random
     import eval as E
@@ -250,7 +257,7 @@ def fit(data, theta0, l2=0.5):
         g += 2 * l2 * (th - theta0)
         return tot, g
     v0, _ = f(theta0)
-    r = minimize(f, theta0, jac=True, method="L-BFGS-B", options=dict(maxiter=60))
+    r = minimize(f, theta0, jac=True, method="L-BFGS-B", options=dict(maxiter=40))
     print("nll", round(v0, 2), "->", round(r.fun, 2), r.message)
     return r.x, dict(zip([f"{a}.{b}" for a, b in names], np.round(r.x, 3)))
 
