@@ -181,7 +181,7 @@ def summary(rows):
     return dict(
         holes=len(rows), routing_ok=sum(1 for r in rows if r.get("routing") == "ok"),
         par_ok=sum(1 for r in rows if r.get("par_ok")),
-        green_within_10=sum(1 for r in rows if (r.get("green_err") or 99) <= 10),
+        green_within_10=sum(1 for r in rows if r.get("green_err") is not None and r["green_err"] <= 10),
         tees_within_10=sum(1 for v in tee_errs if v <= 10), tees_scored=len(tee_errs), tees_missing=tee_missing,
         tee_median_err=round(float(np.median(tee_errs)), 1) if tee_errs else None,
         par3_planned=sum(1 for r in p3 if r.get("par3_planned")), par3=len(p3),
