@@ -277,12 +277,25 @@ def clubhouse_candidates(sc, named=()):
         if dp > 150:
             continue
         out.append(dict(c=b["c"], w=0.25 + 0.5 * min(1.0, b["area"] / 1500), how="building"))
+    # any sizeable building next to the golf features (club houses are often mapped without a name / car park)
+    feats = [g["c"] for g in sc.greens] + [t["c"] for t in sc.tees]
+    if feats:
+        F = np.array(feats)
+        for b in sc.buildings:
+            if b["area"] < 250 or b["area"] > 8000:
+                continue
+            if any(np.hypot(*(b["c"] - o["c"])) < 40 for o in out):
+                continue
+            dmin = float(np.hypot(*(F - b["c"]).T).min())
+            if dmin > 220:
+                continue
+            out.append(dict(c=b["c"], w=0.08 + 0.17 * min(1.0, b["area"] / 2000), how="building_near"))
     if not out:
         for p in sc.parking:
             if not bd or _dist_to_rings(p, bd) < 150:
                 out.append(dict(c=p, w=0.2, how="parking"))
     out.sort(key=lambda d: -d["w"])
-    return out[:12]
+    return out[:10]
 
 
 def truth_from_osm(fc, proj):

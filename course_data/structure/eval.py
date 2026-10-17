@@ -329,7 +329,7 @@ def main():
     if a.combine:
         rows = [r for p in a.combine for r in json.load(open(p))]
         return write(rows, cfgs, a.out)
-    ents = courses(None if a.all else a.split)
+    ents = courses(a.split)
     if a.shard is not None:
         ents = [e for i, e in enumerate(ents) if i % a.of == a.shard]
     if a.slug:

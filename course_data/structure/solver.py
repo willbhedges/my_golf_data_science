@@ -576,7 +576,7 @@ def hypotheses(sc, geo=None, topk=TOPK, w=None, clubs=None):
 
 
 # ----------------------------------------------------------------------------- clubhouse candidates
-def hub_candidates(sc, geo, hyps, k=4):
+def hub_candidates(sc, geo, hyps, k=6):
     """Points where greens and hole starts meet (the clubhouse of returning nines: greens 9 / 18, tees 1 / 10)."""
     starts = np.array([h["tee"] for hs in hyps for h in hs[:1]]).reshape(-1, 2)
     G = geo.G
@@ -894,7 +894,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, use_clubhouse=True, temp=
 
     # Lagrangian prices: no complex starts two holes on the MAP route
     runs = run_all(price, marginals=False, soft=False)
-    top = sorted(runs, key=lambda r: -r["mapw"])[:3]
+    top = sorted(runs, key=lambda r: -r["mapw"])[:4]
     only = {r["i"] for r in top}
     best_i = {top[0]["i"]}
     for it in range(LAGR_ITERS):
