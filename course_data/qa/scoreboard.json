@@ -1,16 +1,16 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-10-17 03:55 UTC",
- "commit": "d8c220d",
+ "generated": "2026-10-17 04:12 UTC",
+ "commit": "5487087",
  "courses": [
   {
    "course": "Spirit Hollow",
    "slug": "spirit_hollow",
    "tees": "Black",
    "package": "course_data/packages/spirit_hollow/package.json",
-   "package_commit": "677f214 2026-10-17T01:51:42Z",
+   "package_commit": "5487087 2026-10-17T03:55:38Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 130.8,
+   "decision_s": 129.4,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -53,12 +53,12 @@
      "hole": "2B",
      "tee_set": "Gold",
      "pick": "Driver",
-     "aim": -12.5,
+     "aim": -107.5,
      "tie": false,
      "runner": "2-wood",
-     "margin": 0.0393,
+     "margin": 0.0449,
      "check": [
-      "no printable Driver aim: the aim point (275 yds out) is in trees; the aim point is 102 yds from this hole's line of play (another hole?)"
+      "no printable Driver aim: aim -108 yds is more than 40 yds off the tee line; the aim point is 197 yds from this hole's line of play (another hole?)"
      ],
      "truth": "Driver",
      "truth_tie": false,
@@ -87,7 +87,7 @@
      "aim": -35.0,
      "tie": false,
      "runner": "2-wood",
-     "margin": 0.07,
+     "margin": 0.0697,
      "check": [],
      "truth": "Driver",
      "truth_tie": false,
@@ -103,10 +103,10 @@
      "tee_err": 1.0,
      "green_err": 2.5,
      "iou": {
-      "trees": 0.121,
-      "long grass": 0.182,
+      "trees": 0.073,
+      "long grass": 0.217,
       "water": 0.39,
-      "ob": 0.057
+      "ob": 0.188
      },
      "corridor_pts": 475
     },
@@ -117,7 +117,7 @@
      "aim": -7.5,
      "tie": false,
      "runner": "Driver",
-     "margin": 0.0563,
+     "margin": 0.0582,
      "check": [],
      "truth": "Driver",
      "truth_tie": false,
@@ -190,8 +190,7 @@
      "green_err": 14.4,
      "iou": {
       "trees": 0.333,
-      "long grass": 0.171,
-      "ob": 0.0
+      "long grass": 0.171
      },
      "corridor_pts": 468
     },
@@ -202,7 +201,7 @@
      "aim": 5.0,
      "tie": false,
      "runner": "4-wood",
-     "margin": 0.065,
+     "margin": 0.0695,
      "check": [],
      "truth": "4-wood",
      "truth_tie": false,
@@ -219,8 +218,8 @@
      "green_err": 5.9,
      "iou": {
       "trees": 0.0,
-      "long grass": 0.276,
-      "ob": 0.0
+      "long grass": 0.281,
+      "ob": 0.594
      },
      "corridor_pts": 475
     },
@@ -506,12 +505,12 @@
     "n_geo": 16,
     "iou": {
      "trees": {
-      "mean": 0.299,
+      "mean": 0.296,
       "n": 16,
       "pass06": 2
      },
      "long grass": {
-      "mean": 0.187,
+      "mean": 0.189,
       "n": 16,
       "pass06": 1
      },
@@ -521,23 +520,23 @@
       "pass06": 2
      },
      "ob": {
-      "mean": 0.019,
-      "n": 3,
+      "mean": 0.391,
+      "n": 2,
       "pass06": 0
      }
     }
    },
    "aim_violations": [],
-   "seconds": 133.5
+   "seconds": 132.2
   },
   {
    "course": "Mozingo Lake",
    "slug": "mozingo_lake",
    "tees": "App",
    "package": "course_data/packages/mozingo_lake/package.json",
-   "package_commit": "677f214 2026-10-17T01:51:42Z",
+   "package_commit": "5487087 2026-10-17T03:55:38Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 118.7,
+   "decision_s": 116.3,
    "last_plan": {
     "built": "2026-10-16T22:06Z",
     "runtime_s": 578.9,
@@ -787,16 +786,16 @@
     "max_regret": 0.088
    },
    "aim_violations": [],
-   "seconds": 119.5
+   "seconds": 117.1
   },
   {
    "course": "Veenker",
    "slug": "veenker",
    "tees": "Blue",
    "package": "course_data/packages/veenker/package.json",
-   "package_commit": "677f214 2026-10-17T01:51:42Z",
+   "package_commit": "5487087 2026-10-17T03:55:38Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 117.5,
+   "decision_s": 116.4,
    "last_plan": {
     "built": "2026-10-17T01:16Z",
     "runtime_s": 360.9,
@@ -948,7 +947,7 @@
     "checks": 2
    },
    "aim_violations": [],
-   "seconds": 118.4
+   "seconds": 117.3
   }
  ],
  "guards": {
@@ -1976,6 +1975,77 @@
    "same_hand_quick": null,
    "ceiling_quick": null,
    "decision_s": 117.5,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 04:12",
+   "commit": "5487087",
+   "course": "spirit_hollow",
+   "truth_fp": "bd4a5e2a1d",
+   "n": 16,
+   "same": 6,
+   "same_or_tie": 8,
+   "same_pct": 0.375,
+   "mean_regret": 0.0239,
+   "max_regret": 0.1194,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.296,
+    "long grass": 0.189,
+    "water": 0.316,
+    "ob": 0.391
+   },
+   "checks": 2,
+   "same_hand_quick": 10,
+   "ceiling_quick": 12,
+   "decision_s": 129.4,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 04:12",
+   "commit": "5487087",
+   "course": "mozingo_lake",
+   "truth_fp": "f814612fad",
+   "n": 14,
+   "same": 7,
+   "same_or_tie": 8,
+   "same_pct": 0.5,
+   "mean_regret": 0.0164,
+   "max_regret": 0.088,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 1,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 116.3,
+   "source": "product/decide.run quick n=8000",
+   "regression": true
+  },
+  {
+   "date": "2026-10-17 04:12",
+   "commit": "5487087",
+   "course": "veenker",
+   "truth_fp": null,
+   "n": 13,
+   "same": null,
+   "same_or_tie": null,
+   "same_pct": null,
+   "mean_regret": null,
+   "max_regret": null,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 116.4,
    "source": "product/decide.run quick n=8000",
    "regression": false
   }

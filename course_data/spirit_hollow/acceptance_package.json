@@ -3,7 +3,7 @@
   "mode": "package.json as built",
   "n_tee_shots": 16,
   "missing": [],
-  "same_club": 0.688,
+  "same_club": 0.625,
   "tee_within": 0.375,
   "green_within": 0.75,
   "length_within": 0.75,
@@ -30,12 +30,12 @@
   "median_green_err": 6.3,
   "mean_iou": {
    "fairway": 0.569,
-   "rough": 0.148,
-   "recovery": 0.283,
-   "native": 0.176,
+   "rough": 0.149,
+   "recovery": 0.281,
+   "native": 0.179,
    "water": 0.31,
    "sand": 0.423,
-   "ob": 0.039
+   "ob": 0.192
   },
   "holes_passing": [],
   "par3_length_within": [
@@ -57,10 +57,10 @@
    "regret_mean": 0.02,
    "regret_max": 0.05
   },
-  "seconds": 159,
-  "mean_regret": 0.0036,
-  "max_regret": 0.0367,
-  "regret_bar_met": true,
+  "seconds": 155,
+  "mean_regret": 0.0081,
+  "max_regret": 0.0726,
+  "regret_bar_met": false,
   "club_bar_met": false
  },
  "tee_shots": [
@@ -169,11 +169,12 @@
    },
    "iou": {
     "fairway": 0.68,
-    "rough": 0.269,
-    "recovery": 0.17,
+    "rough": 0.264,
+    "recovery": 0.171,
     "native": 0.234,
     "water": 0.0,
-    "sand": 0.0
+    "sand": 0.0,
+    "ob": 0.0
    },
    "club_traced": "Driver",
    "club_auto": "Driver",
@@ -184,12 +185,12 @@
     "4-wood": 4.9254
    },
    "ev_auto": {
-    "Driver": 5.2309,
+    "Driver": 5.2176,
     "2-wood": 5.2653,
     "4-wood": 5.2993
    },
    "aim_traced": -7.5,
-   "aim_auto": -15.0,
+   "aim_auto": -60.0,
    "regret": 0.0,
    "traced_margin": 0.0417,
    "checks": {
@@ -197,6 +198,7 @@
     "green": false,
     "length": true,
     "iou_water": false,
+    "iou_ob": false,
     "iou_recovery": false,
     "club": true
    }
@@ -243,20 +245,20 @@
    "iou_own_frame": {
     "fairway": 0.174,
     "rough": 0.06,
-    "recovery": 0.098,
-    "native": 0.029,
+    "recovery": 0.078,
+    "native": 0.035,
     "water": 0.171,
     "sand": 0.0,
-    "ob": 0.15
+    "ob": 0.0
    },
    "iou": {
     "fairway": 0.432,
-    "rough": 0.069,
-    "recovery": 0.113,
-    "native": 0.208,
+    "rough": 0.062,
+    "recovery": 0.069,
+    "native": 0.25,
     "water": 0.474,
     "sand": 0.536,
-    "ob": 0.118
+    "ob": 0.147
    },
    "club_traced": "Driver",
    "club_auto": "Driver",
@@ -267,8 +269,8 @@
     "4-wood": 4.4208
    },
    "ev_auto": {
-    "Driver": 4.5547,
-    "2-wood": 4.6097,
+    "Driver": 4.5555,
+    "2-wood": 4.6102,
     "4-wood": 4.6272
    },
    "aim_traced": -20.0,
@@ -327,7 +329,7 @@
     "fairway": 0.733,
     "rough": 0.245,
     "recovery": 0.0,
-    "native": 0.41,
+    "native": 0.355,
     "ob": 0.0
    },
    "iou": {
@@ -337,28 +339,28 @@
     "native": 0.559
    },
    "club_traced": "Driver",
-   "club_auto": "Driver",
-   "same_club": true,
+   "club_auto": "4-wood",
+   "same_club": false,
    "ev_traced": {
     "Driver": 4.5582,
     "2-wood": 4.6216,
     "4-wood": 4.6308
    },
    "ev_auto": {
-    "Driver": 4.7563,
+    "Driver": 4.7572,
     "2-wood": 4.8131,
     "4-wood": 4.7569
    },
    "aim_traced": -2.5,
-   "aim_auto": -10.0,
-   "regret": 0.0,
+   "aim_auto": -7.5,
+   "regret": 0.0726,
    "traced_margin": 0.0634,
    "checks": {
     "tee": false,
     "green": 1.0,
     "length": false,
     "iou_recovery": false,
-    "club": true
+    "club": false
    }
   },
   {
@@ -478,17 +480,15 @@
    },
    "iou_own_frame": {
     "fairway": 0.358,
-    "rough": 0.176,
+    "rough": 0.283,
     "recovery": 0.0,
-    "native": 0.077,
-    "ob": 0.0
+    "native": 0.077
    },
    "iou": {
     "fairway": 0.548,
-    "rough": 0.293,
+    "rough": 0.317,
     "recovery": 0.286,
-    "native": 0.19,
-    "ob": 0.0
+    "native": 0.19
    },
    "club_traced": "Driver",
    "club_auto": "4-wood",
@@ -511,7 +511,6 @@
     "tee": false,
     "green": true,
     "length": true,
-    "iou_ob": false,
     "iou_recovery": false,
     "club": false
    }
@@ -549,19 +548,19 @@
    },
    "iou_own_frame": {
     "fairway": 0.218,
-    "rough": 0.026,
+    "rough": 0.007,
     "recovery": 0.0,
-    "native": 0.245,
+    "native": 0.271,
     "sand": 0.091,
-    "ob": 0.107
+    "ob": 0.111
    },
    "iou": {
     "fairway": 0.631,
     "rough": 0.045,
     "recovery": 0.0,
-    "native": 0.276,
+    "native": 0.286,
     "sand": 0.579,
-    "ob": 0.0
+    "ob": 0.429
    },
    "club_traced": "4-wood",
    "club_auto": "4-wood",
@@ -572,9 +571,9 @@
     "4-wood": 3.8819
    },
    "ev_auto": {
-    "Driver": 4.699,
-    "2-wood": 4.5591,
-    "4-wood": 4.1974
+    "Driver": 4.7004,
+    "2-wood": 4.5638,
+    "4-wood": 4.1993
    },
    "aim_traced": 5.0,
    "aim_auto": -2.5,

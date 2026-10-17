@@ -1,22 +1,22 @@
 # Auto-course acceptance: Spirit Hollow (package.json as built)
 
-Same club (Driver / 2-wood / 4-wood) on **69%** of 16 tee shots (bar 80%). Tee within 10 yds: 38%; green within 10 (or the traced green's own rounding spread): 75%; length within 5: 75%. Median tee error 12.5 yds, green 6.3 yds.
+Same club (Driver / 2-wood / 4-wood) on **62%** of 16 tee shots (bar 80%). Tee within 10 yds: 38%; green within 10 (or the traced green's own rounding spread): 75%; length within 5: 75%. Median tee error 12.5 yds, green 6.3 yds.
 
-Decision regret (strokes lost on the hand map by playing the auto map's club): mean 0.0036, max 0.0367 (bar mean <= 0.02, max <= 0.05): met.
+Decision regret (strokes lost on the hand map by playing the auto map's club): mean 0.0081, max 0.0726 (bar mean <= 0.02, max <= 0.05): not met.
 
-Mean landing-zone IoU by class: fairway 0.57, rough 0.15, recovery 0.28, native 0.18, water 0.31, sand 0.42, ob 0.04
+Mean landing-zone IoU by class: fairway 0.57, rough 0.15, recovery 0.28, native 0.18, water 0.31, sand 0.42, ob 0.19
 
 Holes passing every check: none
 
 | hole | len err | tee err | green err (traced +/-) | registration | club traced / auto | IoU water | IoU ob | IoU trees | IoU fairway | failed |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | +0 | 48.7 | 43.5 (+/-2 along, +/-4 lat) | lie_raster_fit (dice 0.738) | 4-wood / 4-wood | - | - | 0.451 | 0.682 | tee, green, iou_recovery |
-| 2B | -2 | 53.8 | 90.2 (+/-6 along, +/-8 lat) | lie_raster_fit (dice 0.379) | Driver / Driver | 0.0 | - | 0.17 | 0.68 | tee, green, iou_water, iou_recovery |
-| 2F | +0 | 1.2 | 4.4 (+/-4 along, +/-8 lat) | naip_registration (ecc 0.399) | Driver / Driver | 0.474 | 0.118 | 0.113 | 0.432 | iou_water, iou_ob, iou_recovery |
-| 4 | +12 | 11.2 | 4.8 (+/-4 along, +/-32 lat) | naip_registration (ecc 0.363) | Driver / Driver | - | - | 0.0 | 0.439 | tee, length, iou_recovery |
+| 2B | -2 | 53.8 | 90.2 (+/-6 along, +/-8 lat) | lie_raster_fit (dice 0.379) | Driver / Driver | 0.0 | 0.0 | 0.171 | 0.68 | tee, green, iou_water, iou_ob, iou_recovery |
+| 2F | +0 | 1.2 | 4.4 (+/-4 along, +/-8 lat) | naip_registration (ecc 0.399) | Driver / Driver | 0.474 | 0.147 | 0.069 | 0.432 | iou_water, iou_ob, iou_recovery |
+| 4 | +12 | 11.2 | 4.8 (+/-4 along, +/-32 lat) | naip_registration (ecc 0.363) | Driver / 4-wood | - | - | 0.0 | 0.439 | tee, length, iou_recovery, club |
 | 5 | +0 | 11.9 | 6.3 (+/-2 along, +/-16 lat) | naip_registration (ecc 0.468) | 4-wood / 4-wood | - | - | 0.115 | 0.665 | tee, iou_recovery |
-| 6 | +0 | 13.1 | 8.2 (+/-2 along, +/-5 lat) | naip_registration (ecc 0.34) | Driver / 4-wood | - | 0.0 | 0.286 | 0.548 | tee, iou_ob, iou_recovery, club |
-| 8 | +8 | 24.5 | 16.3 (+/-2 along, +/-9 lat) | lie_raster_fit (dice 0.563) | 4-wood / 4-wood | - | 0.0 | 0.0 | 0.631 | tee, green, length, iou_ob, iou_recovery |
+| 6 | +0 | 13.1 | 8.2 (+/-2 along, +/-5 lat) | naip_registration (ecc 0.34) | Driver / 4-wood | - | - | 0.286 | 0.548 | tee, iou_recovery, club |
+| 8 | +8 | 24.5 | 16.3 (+/-2 along, +/-9 lat) | lie_raster_fit (dice 0.563) | 4-wood / 4-wood | - | 0.429 | 0.0 | 0.631 | tee, green, length, iou_ob, iou_recovery |
 | 9B | +11 | 5.5 | 1.6 (+/-2 along, +/-2 lat) | naip_registration (ecc 0.382) | 2-wood / 4-wood | 0.693 | - | 0.438 | 0.636 | length, iou_recovery, club |
 | 9F | -8 | 9.0 | 2.9 (+/-2 along, +/-2 lat) | naip_registration (ecc 0.443) | 4-wood / 4-wood | 0.167 | - | 0.314 | 0.5 | length, iou_water, iou_recovery |
 | 10 | +0 | 5.4 | 7.8 (+/-4 along, +/-7 lat) | naip_registration (ecc 0.416) | 4-wood / 4-wood | 0.419 | - | 0.057 | 0.675 | iou_water, iou_recovery |
