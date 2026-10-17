@@ -308,14 +308,19 @@ def drop_roads(G, road_p=None, st=None, width_m=ROAD_WIDTH_M):
     return G
 
 
-def build_graph(L, model=None, thr=THR):
+def build_graph(L, model=None, thr=None):
     prob, road = path_prob(L, model)
+    if thr is None:
+        thr = float((model or {}).get("thr", THR))
+    return graph_from_prob(L, prob, road, thr), prob, road
+
+
+def graph_from_prob(L, prob, road, thr):
     width = L["paved_width_max"]
     G = skeleton_graph(prob >= thr, prob, L.st, width=width)
     G = drop_roads(G, road, L.st)
     G = bridge_gaps(G, prob, L.st)
-    G = prune(G)
-    return G, prob, road
+    return prune(G)
 
 
 def graph_length(G):

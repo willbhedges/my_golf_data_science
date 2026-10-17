@@ -47,10 +47,11 @@ def _xy(rows, feats):
     return X, y
 
 
-def fit(X, y, seed=0, max_iter=250):
+def fit(X, y, seed=0, max_iter=250, balanced=True):
     from sklearn.ensemble import HistGradientBoostingClassifier
     clf = HistGradientBoostingClassifier(max_iter=max_iter, learning_rate=0.08, max_leaf_nodes=15, min_samples_leaf=20,
-                                         l2_regularization=1.0, class_weight="balanced", random_state=seed)
+                                         l2_regularization=1.0, class_weight="balanced" if balanced else None,
+                                         random_state=seed)
     clf.fit(X, y)
     return clf
 
@@ -125,15 +126,35 @@ def train_paths(tabs, out_dir, max_rows=1_500_000, log=print):
         ii = np.random.default_rng(0).choice(len(y), max_rows, replace=False)
         X, y = X[ii], y[ii]
     t0 = time.time()
-    clf = fit(X, y, max_iter=300)
+    clf = fit(X, y, max_iter=300, balanced=False)
     feats = list(F.PATH_FEATURES)
     res = dict(features=feats, n_train=int(len(y)), courses_train=len(Xs), courses_test=len(te_X),
                seconds=round(time.time() - t0, 1), train=_metrics(clf, X, y))
     if te_X:
         res["test"] = _metrics(clf, np.vstack(te_X), np.concatenate(te_y))
-    pickle.dump(dict(clf=clf, features=feats), open(os.path.join(out_dir, "path_px.pkl"), "wb"))
+    thr = choose_path_threshold()
+    res["thr"] = thr
+    pickle.dump(dict(clf=clf, features=feats, thr=thr), open(os.path.join(out_dir, "path_px.pkl"), "wb"))
     log("path_px", json.dumps(res)[:800])
     return res
+
+
+def choose_path_threshold(scenes=os.path.join(HERE, "scenes"), default=0.5):
+    """Graph threshold with the best length F1 (+ connectivity) over the TRAIN-state courses' sweeps of the last run."""
+    acc = {}
+    for p in glob.glob(os.path.join(scenes, "*", "eval.json")):
+        e = json.load(open(p))
+        if split_of(e.get("state")) != "train":
+            continue
+        for thr, v in (e.get("path_sweep") or {}).items():
+            if not v.get("eligible") or v.get("length_precision") is None or v.get("length_recall") is None:
+                continue
+            P, R = v["length_precision"], v["length_recall"]
+            f1 = 2 * P * R / max(P + R, 1e-9)
+            acc.setdefault(thr, []).append(f1 + 0.5 * (v.get("connectivity_acc") or 0))
+    if not acc:
+        return default
+    return float(max(acc, key=lambda k: np.mean(acc[k])))
 
 
 def main():

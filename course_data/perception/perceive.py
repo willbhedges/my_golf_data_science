@@ -27,6 +27,7 @@ import scene as SC  # noqa: E402
 import stack as S  # noqa: E402
 
 MODELS = os.path.join(HERE, "models")
+PATH_SWEEP = (0.3, 0.5, 0.7, 0.85, 0.95)
 
 
 def load_models(d=MODELS):
@@ -180,6 +181,14 @@ def main():
         ev["models"] = mid or "rules-v1"
         ev["lidar"] = bool(L["lidar"])
         ev["summary"] = sc["summary"]
+        if models.get("path_px"):                               # threshold sweep (the report picks it on train states)
+            region = T.in_boundary_mask(pad_m=40)
+            ev["path_sweep"] = {}
+            for thr in PATH_SWEEP:
+                G = PT.graph_from_prob(L, D["path_prob"], D["road_prob"], thr)
+                e = EV.eval_paths(st, T, G, region)
+                ev["path_sweep"][str(thr)] = {k: e[k] for k in ("pred_km", "true_km", "length_precision", "length_recall",
+                                                                "connectivity_acc", "transitions_osm_connected", "eligible")}
         json.dump(ev, open(os.path.join(out, "eval.json"), "w"), indent=1, default=float)
         print(json.dumps({k: ev[k] for k in ("greens_hole", "tee_complexes", "cart_paths", "clubhouse")}, default=float)[:1500])
         if a.tables:
