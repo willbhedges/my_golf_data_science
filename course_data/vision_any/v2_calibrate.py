@@ -18,7 +18,7 @@ Stages (Actions, .github/workflows/vision_any_v2_calib.yml; request course_data/
           a longer club; the merge gate (decision level, vs the committed packages scored in the same harness).
 
 Held-out truth courses (hand-checked corridor maps, course_data/truth/<slug>/hand_zones_ll.json; never used to
-train or select anything here). Workflow vision_any_v2_holdout.yml; request course_data/requests/vision_v2_holdout.json:
+train or select anything here). Workflow vision_any_v2_holdout.yml; request course_data/requests/holdout_vision_v2.json:
   layers   python v2_calibrate.py layers --holdout --out DIR     (product model only: trained on SH + Mozingo, so it
            is out of sample on every held-out course)
   score    python v2_calibrate.py score --holdout --dir DIR --shard i --nshards n --out rows_i.json

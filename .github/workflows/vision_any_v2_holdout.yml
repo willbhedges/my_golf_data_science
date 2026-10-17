@@ -4,11 +4,11 @@ name: vision-any-v2-holdout
 # (course_data/truth/<slug>/hand_zones_ll.json: Veenker, Coldwater, Ellis) with the product model (trained on
 # Spirit Hollow + Mozingo only): course_data/vision_any/v2_calibrate.py layers/score --holdout, holdout-report.
 # Writes course_data/vision_any/v2_holdout_calibration.{md,json} only (never integrates, never touches the
-# training calibration report). Trigger: push course_data/requests/vision_v2_holdout.json ({"rev": n}).
+# training calibration report). Trigger: push course_data/requests/holdout_vision_v2.json ({"rev": n}).
 on:
   push:
     paths:
-      - "course_data/requests/vision_v2_holdout.json"
+      - "course_data/requests/holdout_vision_v2.json"
       - ".github/workflows/vision_any_v2_holdout.yml"
 
 permissions:
