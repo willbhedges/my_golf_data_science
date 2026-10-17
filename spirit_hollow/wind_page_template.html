@@ -213,8 +213,14 @@ function windArrow(h, rel, vb){
     <circle cx="${cx+dx}" cy="${cy+dy}" r="6" fill="#ffc928"/>
     <text x="${cx}" y="${cy+52}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="15" text-anchor="middle" stroke="rgba(0,0,0,.6)" stroke-width="3" paint-order="stroke">${st.mph} mph</text></g>`;
 }
+/* holes 2 and 9 have two screenshots (Gold box "B", Black box "F"): show one per hole, by the chosen tees */
+const shown = (h) => !/^[29][FB]$/.test(h.key) || (h.key.endsWith("B") === (st.set === "Gold"));
+function sibling(i){ const h = D.holes[i]; if(shown(h)) return i;
+  const k = h.key.slice(0, -1) + (h.key.endsWith("B") ? "F" : "B"); const j = D.holes.findIndex(x => x.key === k); return j < 0 ? i : j; }
+function step(d){ let i = st.idx; for(let n = 0; n < D.holes.length; n++){ i = (i + d + D.holes.length) % D.holes.length; if(shown(D.holes[i])) return i; } return st.idx; }
 function render(){
   applySource();
+  st.idx = sibling(st.idx);
   const h = D.holes[st.idx];
   const ov = document.getElementById("ov");
   let vb = [0, 0, h.w, h.h];
@@ -227,14 +233,7 @@ function render(){
   ov.setAttribute("viewBox", vb.join(" "));
   const IMG = `<image href="${h.img}" x="0" y="0" width="${h.w}" height="${h.h}"/>`;
   document.getElementById("view").hidden = h.kind !== "tee";
-  document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; render(); }));
-document.getElementById("adj").addEventListener("input", e => { const h = D.holes[st.idx]; st.adj[h.key] = +e.target.value; render(); });
-document.getElementById("hTable").addEventListener("click", e => {
-  const tr = e.target.closest("tr[data-club]"); if(!tr) return;
-  const h = D.holes[st.idx]; const r = solveTee(h);
-  if(tr.dataset.club === r.pick) delete st.club[h.key]; else st.club[h.key] = tr.dataset.club;
-  render(); });
-document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
+  document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
   document.getElementById("hNo").textContent = "Hole " + h.label.replace(/ (Black|Gold) tee$/, "");
   const T0 = h.kind === "tee" ? teeOf(h) : null, P3 = h.kind === "tee" ? null : solvePar3(h);
   document.getElementById("hPar").textContent = h.kind === "tee"
@@ -326,10 +325,11 @@ function starPts(cx, cy, R, r){ const p = []; for(let i = 0; i < 10; i++){ const
 function renderStrip(){
   const el = document.getElementById("strip");
   el.innerHTML = D.holes.map((h,i) => {
+    if(!shown(h)) return "";
     let txt, c = "";
     if(h.kind==="tee"){ const r = solveTee(h); txt = short(r.pick) + (r.tie ? "≈" : ""); c = cls(r.pick); }
     else { txt = Math.round(solvePar3(h).play); }
-    return `<button class="chip" data-i="${i}" aria-current="${i===st.idx}"><b>${h.label.replace(" tee","")}</b><span class="${c}">${txt}</span></button>`;
+    return `<button class="chip" data-i="${i}" aria-current="${i===st.idx}"><b>${h.label.replace(/ (Black|Gold) tee$/,"").replace(" tee","")}</b><span class="${c}">${txt}</span></button>`;
   }).join("");
 }
 function renderControls(){
@@ -369,8 +369,8 @@ document.getElementById("hTable").addEventListener("click", e => {
   render(); });
 document.querySelectorAll("#view button").forEach(b => b.addEventListener("click", () => { st.view = b.dataset.v; render(); }));
 document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest(".chip"); if(b){ st.idx = +b.dataset.i; render(); } });
-document.getElementById("prev").addEventListener("click", () => { st.idx = (st.idx + D.holes.length - 1) % D.holes.length; render(); });
-document.getElementById("next").addEventListener("click", () => { st.idx = (st.idx + 1) % D.holes.length; render(); });
-document.getElementById("foot").textContent = `Forecast: Open-Meteo, fetched ${D.fetched.slice(0,16).replace("T"," ")} UTC (cross-checked with NWS). Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Each hole's map has the GPS app's markings removed; hole 3 is the 2023 aerial photo. Other tee sets move the tee back or up the line by the scorecard difference from Black (Gold on the 2 and 9 Gold pages); each is solved separately, to the nearest 20 yds. Club picks in wind use the model at its central settings (driver pattern 70 yds); the calm-day pick comes from the full Bayesian run. "≈" marks a tie (within 0.01 strokes).`;
+document.getElementById("prev").addEventListener("click", () => { st.idx = step(-1); render(); });
+document.getElementById("next").addEventListener("click", () => { st.idx = step(1); render(); });
+document.getElementById("foot").textContent = `Forecast: Open-Meteo, fetched ${D.fetched.slice(0,16).replace("T"," ")} UTC (cross-checked with NWS). Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Each hole's map has the GPS app's markings removed; hole 3 is the 2023 aerial photo. Other tee sets move the tee back or up the line by the scorecard difference from Black (on 2 and 9, Gold uses the Gold-box screenshot); each is solved separately, to the nearest 20 yds. Club picks in wind use the model at its central settings (driver pattern 70 yds); the calm-day pick comes from the full Bayesian run. "≈" marks a tie (within 0.01 strokes).`;
 render();
 </script>
