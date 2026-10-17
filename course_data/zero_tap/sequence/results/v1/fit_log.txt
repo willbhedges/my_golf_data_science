@@ -1,0 +1,20 @@
+clubhouse top-1 within 60 yds of tee 1 / last green: structure 0.312  ranker (5-fold CV) 0.364  oracle candidate 0.805
+clubhouse top-1 within 100 yds of tee 1 / last green: structure 0.636  ranker (5-fold CV) 0.636  oracle candidate 0.961
+clubhouse top-1 within 150 yds of tee 1 / last green: structure 0.727  ranker (5-fold CV) 0.740  oracle candidate 0.987
+{'named': np.float64(0.708), 'building': np.float64(0.538), 'parking': np.float64(-0.869), 'hub': np.float64(-0.377), 'log_area': np.float64(0.465), 'small': np.float64(0.284), 'near_named': np.float64(0.792), 'd_park': np.float64(-1.401), 'n_park': np.float64(-0.141), 'd_green': np.float64(-1.175), 'd_tee': np.float64(-0.76), 'ends': np.float64(2.285), 'n_bld': np.float64(-0.003), 'd_street': np.float64(-0.073), 'has_street': np.float64(-0.0), 'outside': np.float64(-1.846), 'area_rank1': np.float64(0.068), 'hub_w': np.float64(1.024), 'd_service': np.float64(-0.847)}
+nine model: 66 dev 18-hole routes (oracle formation); structure classifier 0.621; v2 5-fold CV 0.606
+  dp           alone 0.500  nonzero 66
+  t1_club      alone 0.554  nonzero 65
+  g18_club     alone 0.576  nonzero 66
+  t1_practice  alone 0.704  nonzero 54
+  t1_range     alone 0.641  nonzero 39
+  t1_parking   alone 0.611  nonzero 54
+  front_len    alone 0.470  nonzero 66
+  t1_bigbld    alone 0.607  nonzero 56
+  t1_street    alone 0.643  nonzero 14
+  p3_1v10      alone 0.485  nonzero 66
+  p3_18v9      alone 0.439  nonzero 66
+  p5_1v10      alone 0.485  nonzero 66
+  t1_service   alone 0.569  nonzero 51
+  g18_bigbld   alone 0.544  nonzero 57
+{'dp': np.float64(0.161), 't1_club': np.float64(0.074), 'g18_club': np.float64(-0.072), 't1_practice': np.float64(0.691), 't1_range': np.float64(0.553), 't1_parking': np.float64(0.557), 'front_len': np.float64(-0.607), 't1_bigbld': np.float64(0.002), 't1_street': np.float64(0.839), 'p3_1v10': np.float64(0.291), 'p3_18v9': np.float64(-0.797), 'p5_1v10': np.float64(-0.736), 't1_service': np.float64(-0.556), 'g18_bigbld': np.float64(-0.082)}

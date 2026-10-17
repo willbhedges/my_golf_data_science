@@ -1,0 +1,43 @@
+{
+ "club_w": {
+  "named": 0.7078,
+  "building": 0.5384,
+  "parking": -0.8688,
+  "hub": -0.3774,
+  "log_area": 0.4654,
+  "small": 0.2839,
+  "near_named": 0.7917,
+  "d_park": -1.4008,
+  "n_park": -0.1411,
+  "d_green": -1.1749,
+  "d_tee": -0.7602,
+  "ends": 2.2852,
+  "n_bld": -0.003,
+  "d_street": -0.0728,
+  "has_street": -0.0,
+  "outside": -1.8463,
+  "area_rank1": 0.0682,
+  "hub_w": 1.0242,
+  "d_service": -0.847
+ },
+ "notes": {
+  "club_w": "softmax ranker on 77 dev courses; CV top-1 <=100 yds 0.636 (structure default 0.636)",
+  "nine_w": "antisymmetric logistic on 66 dev routes (oracle formation, v2 clubhouse); CV 0.606 (structure classifier 0.621)"
+ },
+ "nine_w": {
+  "dp": 0.161,
+  "t1_club": 0.0743,
+  "g18_club": -0.0724,
+  "t1_practice": 0.6908,
+  "t1_range": 0.5532,
+  "t1_parking": 0.5567,
+  "front_len": -0.6072,
+  "t1_bigbld": 0.0015,
+  "t1_street": 0.8386,
+  "p3_1v10": 0.2906,
+  "p3_18v9": -0.7967,
+  "p5_1v10": -0.7358,
+  "t1_service": -0.5562,
+  "g18_bigbld": -0.0819
+ }
+}
