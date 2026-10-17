@@ -461,22 +461,22 @@ def report_md(r):
 
 
 def scoreboard_counts(txt):
-    """Per-course agreement from a scoreboard.py --dry-run log (it prints one dict per scored hole)."""
+    """Per-course agreement from a scoreboard.py --dry-run log. It prints one dict per scored hole after every
+    course has run, in course order: Spirit Hollow rows carry a tee_set, Mozingo rows have a truth but no
+    tee_set, Veenker rows neither."""
     import ast
-    cur, rows, order = None, {}, []
+    rows = []
     for line in txt.splitlines():
-        if line.startswith("== "):
-            cur = line[3:].strip()
-            order.append(cur)
-            rows.setdefault(cur, [])
-        elif line.strip().startswith("{'hole'"):
+        if line.strip().startswith("{'hole'"):
             try:
-                rows.setdefault(cur, []).append(ast.literal_eval(line.strip()))
+                rows.append(ast.literal_eval(line.strip()))
             except Exception:                                # noqa: BLE001
                 pass
+    groups = {"Spirit Hollow": [r for r in rows if r.get("tee_set")],
+              "Mozingo Lake": [r for r in rows if not r.get("tee_set") and "truth" in r],
+              "Veenker / no truth": [r for r in rows if not r.get("tee_set") and "truth" not in r]}
     out = []
-    for c in order:
-        R_ = rows.get(c) or []
+    for c, R_ in groups.items():
         sc = [r for r in R_ if "same" in r]
         hq = [r for r in R_ if "same_hand_quick" in r]
         picks = ", ".join(f"{r['hole']} {r['pick']}" + ("" if r.get("same", True) else f" (truth {r.get('truth')})")
