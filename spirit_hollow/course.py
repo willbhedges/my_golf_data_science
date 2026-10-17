@@ -685,3 +685,31 @@ def _package_par3_elevation():
 
 
 _package_par3_elevation()
+
+
+# ---- Play from the real Black box ------------------------------------------------------------
+# The screenshots are 18Birdies, which puts its tee on a box BEHIND the Black one on these holes:
+# the app's measured length beats the Black card by 8-25 yds and its tee sits on an OSM tee box
+# 9-30 yds behind the box holding the Black yardage (course_data/tees/eval_tees.md,
+# course_data/spirit_hollow/screenshot_tee_sets.json; hole 1 and 11 are the Gold box). Each tee is
+# moved straight up its line by (app length - Black card); zones stay put on the ground, so the
+# landing area moves up with the tee. Elevation adjustments are kept (a <=25-yd move barely changes
+# the landing drop). Set SH_SCREENSHOT_TEES=1 to plan from the screenshot tees instead.
+BLACK_TEE_FORWARD = {1: 22, "2F": 13, 5: 13, 6: 13, 10: 19, 11: 10, 14: 25, 16: 10, 17: 8}
+
+
+def _move_to_black():
+    for k, fwd in BLACK_TEE_FORWARD.items():
+        hd = HOLES[k]
+        tee, d = np.array(hd["tee"], float), np.array(hd["dot270"], float)
+        ppy = np.linalg.norm(d - tee) / 270
+        f = (d - tee) / np.linalg.norm(d - tee)
+        hd["screenshot_tee"] = tuple(tee)
+        hd["tee"] = tuple(tee + f * fwd * ppy)
+        hd["dot270"] = tuple(np.array(hd["tee"]) + f * 270 * ppy)
+        hd["length"] = hd["length"] - fwd
+        hd["tee_moved"] = fwd
+
+
+if not os.environ.get("SH_SCREENSHOT_TEES"):
+    _move_to_black()

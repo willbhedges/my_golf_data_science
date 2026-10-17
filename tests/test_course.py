@@ -45,9 +45,19 @@ def test_zone_names_known(course, t):
 
 
 # hole 11's short app numbers round coarsely; tested separately below
+def app_frame(hd):
+    """The app's numbers are measured from the screenshot tee; course.py moves some tees up to the
+    real Black box (BLACK_TEE_FORWARD) and keeps the original as 'screenshot_tee'."""
+    if "screenshot_tee" not in hd:
+        return hd
+    tee = np.array(hd["screenshot_tee"], float)
+    d = np.array(hd["dot270"], float) - np.array(hd["tee"], float)
+    return dict(hd, tee=tuple(tee), dot270=tuple(tee + d), length=hd["length"] + hd["tee_moved"])
+
+
 @pytest.mark.parametrize("hole", [h for h in SH if h != 11])
 def test_green_reproduces_app_numbers(t, course, hole):
-    hd = course.HOLES[hole]
+    hd = app_frame(course.HOLES[hole])
     tee, fwd, right, ppy = t.hole_frame(hd)
     g = np.array(hd["green"], float)
     for along, app in zip((300, 270, 240), course.APP[hole]):
@@ -58,7 +68,7 @@ def test_green_reproduces_app_numbers(t, course, hole):
 def test_hole11_green_left_and_matches_app(t, course):
     """11's green is ~38 yds left (verified against OSM via the NAIP registration); its app
     numbers are short, so 1-yd rounding allows a few yards of trilateration error."""
-    hd = course.HOLES[11]
+    hd = app_frame(course.HOLES[11])
     tee, fwd, right, ppy = t.hole_frame(hd)
     g = np.array(hd["green"], float)
     assert ((g - tee) / ppy) @ right < -20
@@ -68,7 +78,7 @@ def test_hole11_green_left_and_matches_app(t, course):
 
 @pytest.mark.parametrize("hole", SH)
 def test_green_side_and_length(t, course, hole):
-    hd = course.HOLES[hole]
+    hd = app_frame(course.HOLES[hole])
     tee, fwd, right, ppy = t.hole_frame(hd)
     lat = (np.array(hd["green"]) - tee) @ right / ppy
     side = course.GREEN_SIDE[hole]

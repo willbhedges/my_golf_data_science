@@ -31,9 +31,10 @@ if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
 import apply_answers as AA                          # noqa: E402
-import package as PK                                # noqa: E402
 import render as R                                  # noqa: E402
 import verify as V                                  # noqa: E402
+
+PK = V.PK
 
 HAND = os.path.join(CD, "spirit_hollow", "hand_zones_ll.json")
 GOLDEN = os.path.join(ROOT, "spirit_hollow", "output", "final_decision.json")

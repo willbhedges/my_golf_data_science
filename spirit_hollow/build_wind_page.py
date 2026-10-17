@@ -191,7 +191,7 @@ def tee_options(h):
     return base, out
 
 
-SCREENSHOT_AT_GOLD = {1}
+SCREENSHOT_AT_GOLD = set()   # hole 1's tee is now moved to the Black box in course.py
 
 
 def compact(holegrid):

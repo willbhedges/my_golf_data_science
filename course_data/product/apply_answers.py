@@ -40,8 +40,10 @@ ROOT = os.path.dirname(CD)
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
-import package as PK                                # noqa: E402
+import verify as V                                  # noqa: E402
 import render as R                                  # noqa: E402
+
+PK = V.PK
 
 GEOM = ("moved", "absent", "present")
 

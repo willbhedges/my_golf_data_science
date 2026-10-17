@@ -55,7 +55,22 @@ ROOT = os.path.dirname(CD)
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
-import package as PK                                # noqa: E402  (puts course_data/imagery + mozingo on sys.path)
+def _product_package():
+    """product/package.py (platform/ has a package.py too; whichever loaded first owns the name 'package')."""
+    m = sys.modules.get("package")
+    if m is not None and os.path.dirname(os.path.abspath(getattr(m, "__file__", "") or "")) == HERE:
+        return m
+    import importlib.util
+    name = "product_package"
+    if name not in sys.modules:
+        spec = importlib.util.spec_from_file_location(name, os.path.join(HERE, "package.py"))
+        mod = importlib.util.module_from_spec(spec)
+        sys.modules[name] = mod
+        spec.loader.exec_module(mod)
+    return sys.modules[name]
+
+
+PK = _product_package()                             # (puts course_data/imagery + mozingo on sys.path)
 import decide                                       # noqa: E402
 import render as R                                  # noqa: E402
 
