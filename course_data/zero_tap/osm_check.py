@@ -138,8 +138,8 @@ def cardcheck():
                 d = h["length_yd"] - back[i]
                 if abs(d) > 30 and abs(d) > 0.15 * back[i]:
                     e.append(f"length {h['length_yd']:.0f} vs card {back[i]}")
-            if h["par"] and h["par_src"] == "osm" and i < len(pars) and str(pars[i]).isdigit() and int(pars[i]) != h["par"]:
-                e.append(f"par {h['par']} vs card {pars[i]}")
+            if h.get("par_osm") is not None:
+                e.append(f"par {h['par_osm']} vs card {pars[i]}")
             if e:
                 per[h["ref"]] = e
         out[r["slug"]] = dict(card=src, holes=r["kind"], flagged=per, split=r["split"])
