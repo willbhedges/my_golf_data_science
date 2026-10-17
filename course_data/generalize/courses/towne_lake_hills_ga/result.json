@@ -1,0 +1,860 @@
+{
+ "slug": "towne_lake_hills_ga",
+ "sample": {
+  "name": "Towne Lake Hills Golf Club",
+  "osm": "relation/16876944",
+  "state": "GA",
+  "center": [
+   -84.555222,
+   34.124808
+  ],
+  "area_ha": 318.0,
+  "tags": {
+   "addr:city": "Woodstock",
+   "website": "https://www.townelakehillsgc.com/"
+  },
+  "counts": {
+   "green": 20,
+   "bunker": 32,
+   "fairway": 36,
+   "tee": 60,
+   "hole": 20
+  },
+  "tier": "validation",
+  "region": "South",
+  "split": "test",
+  "slug": "towne_lake_hills_ga"
+ },
+ "run_utc": "2026-10-17T05:11:20Z",
+ "seconds": {
+  "resolve_by_name": 208.3,
+  "osm": 37.3,
+  "parking": 35.2,
+  "scorecard": 8.7,
+  "imagery": 24.0,
+  "naip4": 0.6,
+  "segment": 53.2,
+  "lidar_pads": 3.2,
+  "package_today": 4.9,
+  "routing": 0.1,
+  "package_routed": 4.8
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "relation",
+   "id": 16876944
+  },
+  "name": "Towne Lake Hills Golf Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Towne Lake Hills Golf Club",
+    "Woodstock",
+    18,
+    "relation/16876944"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 13,
+   "golf=bunker": 30,
+   "golf=cartpath": 25,
+   "golf=fairway": 19,
+   "golf=green": 18,
+   "golf=hole": 18,
+   "golf=tee": 60,
+   "golf=water_hazard": 2,
+   "holes_with_handicap": 18,
+   "holes_with_par": 18,
+   "single_trees": 1,
+   "water_lines": 4,
+   "water_polygons": 2
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 9
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/towne-lake-hills-golf-club"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/7ff7cdd7-b029-4624-b945-e4982fbac141"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Gold",
+   "Blue",
+   "White",
+   "Silver"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   2841,
+   4052
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 19,
+   "tee": 42,
+   "fairway": 23,
+   "bunker": 31
+  },
+  "greens_p06": 18,
+  "seconds_infer": 49.2
+ },
+ "lidar_pads": 963,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 17,
+  "green_osm": 17,
+  "green_segment": 0,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: relation/16876944 Towne Lake Hills Golf Club (Woodstock, GA)",
+   "osm": "ok: 1851 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 93 candidate pads near hole starts, 19 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/towne_lake_hills_ga/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/towne_lake_hills_ga/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 7 tee candidates)"
+  },
+  "tee_set": "Gold",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 377,
+    "card": 376
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 536,
+    "card": 534
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 439,
+    "card": 436
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 172,
+    "card": 173
+   },
+   "5": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 504,
+    "card": 505
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 408,
+    "card": 408
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 177,
+    "card": 178
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 409,
+    "card": 410
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 380,
+    "card": 379
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 532,
+    "card": 531
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 333,
+    "card": 333
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 202,
+    "card": 202
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 458,
+    "card": 457
+   },
+   "14": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 140,
+    "card": 156
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 349,
+    "card": 348
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 418,
+    "card": 418
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 339,
+    "card": 318
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 549,
+    "card": 559
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -2.2,
+  "n_check": 0,
+  "margins": true,
+  "unused_greens": [],
+  "clubhouse": null,
+  "inputs": {
+   "greens": 18,
+   "greens_osm": 18,
+   "tees": 287,
+   "tees_by_src": {
+    "osm": 60,
+    "segment": 14,
+    "lidar": 213
+   },
+   "fairways": 42,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 340.4,
+    "card_yards": [
+     285,
+     330,
+     364,
+     376
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 532.9,
+    "card_yards": [
+     450,
+     480,
+     502,
+     534
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 390.6,
+    "card_yards": [
+     277,
+     359,
+     393,
+     436
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 166.4,
+    "card_yards": [
+     141,
+     151,
+     173
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 494.6,
+    "card_yards": [
+     381,
+     479,
+     495,
+     505
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 396.3,
+    "card_yards": [
+     296,
+     339,
+     374,
+     408
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 177.4,
+    "card_yards": [
+     130,
+     142,
+     152,
+     178
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 413.2,
+    "card_yards": [
+     320,
+     336,
+     391,
+     410
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 360.9,
+    "card_yards": [
+     331,
+     337,
+     360,
+     379
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 502.1,
+    "card_yards": [
+     391,
+     467,
+     509,
+     531
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 305.3,
+    "card_yards": [
+     275,
+     293,
+     308,
+     333
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 183.9,
+    "card_yards": [
+     128,
+     162,
+     181,
+     202
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 407.1,
+    "card_yards": [
+     342,
+     389,
+     418,
+     457
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 125.2,
+    "card_yards": [
+     111,
+     131,
+     156
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 333.0,
+    "card_yards": [
+     310,
+     311,
+     327,
+     348
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 404.0,
+    "card_yards": [
+     283,
+     367,
+     394,
+     418
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 380.7,
+    "card_yards": [
+     243,
+     318,
+     343,
+     363
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 459.3,
+    "card_yards": [
+     438,
+     441,
+     478,
+     559
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 17,
+  "green_osm": 17,
+  "green_segment": 0,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: relation/16876944 Towne Lake Hills Golf Club (Woodstock, GA)",
+   "osm": "ok: 1852 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 93 candidate pads near hole starts, 19 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/towne_lake_hills_ga__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/towne_lake_hills_ga__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 7 tee candidates)"
+  },
+  "tee_set": "Gold",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 377,
+    "card": 376
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 536,
+    "card": 534
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 439,
+    "card": 436
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 172,
+    "card": 173
+   },
+   "5": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 504,
+    "card": 505
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 408,
+    "card": 408
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 177,
+    "card": 178
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 409,
+    "card": 410
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 380,
+    "card": 379
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 532,
+    "card": 531
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 333,
+    "card": 333
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 202,
+    "card": 202
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 458,
+    "card": 457
+   },
+   "14": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 140,
+    "card": 156
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 349,
+    "card": 348
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 418,
+    "card": 418
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 339,
+    "card": 318
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 549,
+    "card": 559
+   }
+  }
+ }
+}

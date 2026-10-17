@@ -1,0 +1,867 @@
+{
+ "slug": "bartram_trail_ga",
+ "sample": {
+  "name": "Bartram Trail Golf Club",
+  "osm": "way/589544824",
+  "state": "GA",
+  "center": [
+   -82.215854,
+   33.519809
+  ],
+  "area_ha": 258.2,
+  "tags": {},
+  "counts": {
+   "green": 19,
+   "fairway": 53,
+   "bunker": 52,
+   "hole": 18
+  },
+  "tier": "validation",
+  "region": "South",
+  "split": "test",
+  "slug": "bartram_trail_ga"
+ },
+ "run_utc": "2026-10-17T05:01:40Z",
+ "seconds": {
+  "resolve_by_name": 175.4,
+  "osm": 34.9,
+  "parking": 27.7,
+  "scorecard": 3.8,
+  "imagery": 14.9,
+  "naip4": 0.6,
+  "segment": 75.6,
+  "lidar_pads": 3.3,
+  "package_today": 5.8,
+  "routing": 0.2,
+  "package_routed": 5.6
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 589544824
+  },
+  "name": "Bartram Trail Golf Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Bartram Trail Golf Club",
+    "Columbia County",
+    18,
+    "way/589544824"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 4,
+   "golf=bunker": 52,
+   "golf=cartpath": 3,
+   "golf=clubhouse": 2,
+   "golf=fairway": 53,
+   "golf=green": 19,
+   "golf=hole": 17,
+   "golf=rough": 12,
+   "golf=water_hazard": 11,
+   "holes_with_handicap": 17,
+   "holes_with_par": 17,
+   "trees_polygons": 1,
+   "water_lines": 1,
+   "water_polygons": 11
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 9
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/bartram-trail-golf-club"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/67ec0bda-737e-4d72-b27a-5e33facc767e"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Black",
+   "Blue",
+   "White",
+   "White (L)",
+   "Green",
+   "Green (L)"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   3185,
+   2907
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 20,
+   "tee": 59,
+   "fairway": 25,
+   "bunker": 28
+  },
+  "greens_p06": 19,
+  "seconds_infer": 69.6
+ },
+ "lidar_pads": 353,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 17,
+  "green_segment": 1,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/589544824 Bartram Trail Golf Club (Columbia County, GA)",
+   "osm": "ok: 964 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 6 sets; lidar pads: 81 candidate pads near hole starts, 90 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 6 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/bartram_trail_ga/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/bartram_trail_ga/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 2 holes, +1 greens, 15 tee candidates)"
+  },
+  "tee_set": "Black",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 398,
+    "card": 400
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 370,
+    "card": 371
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 533,
+    "card": 533
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 167,
+    "card": 167
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 418,
+    "card": 417
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 417,
+    "card": 417
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 378,
+    "card": 380
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 186,
+    "card": 188
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 507,
+    "card": 511
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 400,
+    "card": 404
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 512,
+    "card": 516
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 171,
+    "card": 187
+   },
+   "13": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 557,
+    "card": 565
+   },
+   "14": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 168,
+    "card": 168
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 402,
+    "card": 402
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 200,
+    "card": 203
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 331,
+    "card": 337
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 526,
+    "card": 540
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 0.877,
+  "n_check": 0,
+  "margins": true,
+  "unused_greens": [
+   "osm:way/853508115",
+   "osm:way/853508119"
+  ],
+  "clubhouse": [
+   -82.21521343818475,
+   33.51881399076743,
+   "named"
+  ],
+  "inputs": {
+   "greens": 20,
+   "greens_osm": 19,
+   "tees": 179,
+   "tees_by_src": {
+    "osm": 0,
+    "segment": 55,
+    "lidar": 124
+   },
+   "fairways": 78,
+   "anchors": 17
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 383.0,
+    "card_yards": [
+     284,
+     324,
+     368,
+     400
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 366.4,
+    "card_yards": [
+     261,
+     297,
+     334,
+     371
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 509.5,
+    "card_yards": [
+     380,
+     463,
+     512,
+     533
+    ],
+    "p_green": 0.999,
+    "anchored": false
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 160.9,
+    "card_yards": [
+     122,
+     141,
+     150,
+     167
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 418.4,
+    "card_yards": [
+     331,
+     363,
+     394,
+     417
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 407.8,
+    "card_yards": [
+     298,
+     338,
+     376,
+     417
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 338.1,
+    "card_yards": [
+     263,
+     307,
+     340,
+     380
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 185.9,
+    "card_yards": [
+     136,
+     150,
+     172,
+     188
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 489.8,
+    "card_yards": [
+     394,
+     419,
+     491,
+     511
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 404.5,
+    "card_yards": [
+     302,
+     339,
+     375,
+     404
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 502.3,
+    "card_yards": [
+     404,
+     448,
+     483,
+     516
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 172.8,
+    "card_yards": [
+     119,
+     148,
+     170,
+     187
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 528.3,
+    "card_yards": [
+     406,
+     441,
+     533,
+     565
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 153.9,
+    "card_yards": [
+     113,
+     135,
+     159,
+     168
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 396.7,
+    "card_yards": [
+     315,
+     345,
+     377,
+     402
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 204.1,
+    "card_yards": [
+     143,
+     173,
+     191,
+     203
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 312.9,
+    "card_yards": [
+     215,
+     244,
+     291,
+     337
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 515.1,
+    "card_yards": [
+     419,
+     470,
+     510,
+     540
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/589544824 Bartram Trail Golf Club (Columbia County, GA)",
+   "osm": "ok: 983 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 6 sets; lidar pads: 81 candidate pads near hole starts, 69 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 6 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/bartram_trail_ga__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/bartram_trail_ga__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 15 tee candidates)"
+  },
+  "tee_set": "Black",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 400,
+    "card": 400
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 370,
+    "card": 371
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 533,
+    "card": 533
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 167,
+    "card": 167
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 418,
+    "card": 417
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 416,
+    "card": 417
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 378,
+    "card": 380
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 186,
+    "card": 188
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 513,
+    "card": 511
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 404,
+    "card": 404
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 514,
+    "card": 516
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 187,
+    "card": 187
+   },
+   "13": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 557,
+    "card": 565
+   },
+   "14": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 168,
+    "card": 168
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 402,
+    "card": 402
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 204,
+    "card": 203
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 331,
+    "card": 337
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 529,
+    "card": 540
+   }
+  }
+ }
+}

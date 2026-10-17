@@ -1,0 +1,865 @@
+{
+ "slug": "empire_ranch_ca",
+ "sample": {
+  "name": "Empire Ranch Golf Course",
+  "osm": "way/147947462",
+  "state": "CA",
+  "center": [
+   -121.10783,
+   38.686181
+  ],
+  "area_ha": 261.0,
+  "tags": {},
+  "counts": {
+   "tee": 57,
+   "green": 20,
+   "fairway": 20,
+   "bunker": 38,
+   "hole": 18
+  },
+  "tier": "validation",
+  "region": "West",
+  "split": "test",
+  "slug": "empire_ranch_ca"
+ },
+ "run_utc": "2026-10-17T05:36:04Z",
+ "seconds": {
+  "resolve_by_name": 416.4,
+  "osm": 149.2,
+  "parking": 14.8,
+  "scorecard": 6.3,
+  "imagery": 16.1,
+  "naip4": 0.8,
+  "segment": 90.5,
+  "lidar_pads": 4.5,
+  "package_today": 8.8,
+  "routing": 0.3,
+  "package_routed": 8.7
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 147947462
+  },
+  "name": "Empire Ranch Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Empire Ranch Golf Course",
+    "Folsom",
+    18,
+    "way/147947462"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 5,
+   "golf=bunker": 38,
+   "golf=cartpath": 19,
+   "golf=driving_range": 1,
+   "golf=fairway": 20,
+   "golf=green": 20,
+   "golf=hole": 17,
+   "golf=lateral_water_hazard": 3,
+   "golf=pin": 18,
+   "golf=tee": 57,
+   "golf=water_hazard": 4,
+   "holes_with_handicap": 17,
+   "holes_with_par": 17,
+   "trees_polygons": 9,
+   "water_lines": 2,
+   "water_polygons": 9
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 7
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/empire-ranch-golf-club"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/d7fa9aef-3b39-419a-aaf1-aa714d8b9067"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 71,
+  "sets": [
+   "Blue",
+   "Tournament",
+   "White",
+   "Combo White/Red",
+   "Red",
+   "Fast"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   4089,
+   2368
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 21,
+   "tee": 65,
+   "fairway": 19,
+   "bunker": 40
+  },
+  "greens_p06": 20,
+  "seconds_infer": 86.6
+ },
+ "lidar_pads": 768,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/147947462 Empire Ranch Golf Course (Folsom, CA)",
+   "osm": "ok: 1528 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 6 sets; lidar pads: 89 candidate pads near hole starts, 1 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 6 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/empire_ranch_ca/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/empire_ranch_ca/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 9 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 384,
+    "card": 384
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 176,
+    "card": 176
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 501,
+    "card": 504
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 399,
+    "card": 404
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 334,
+    "card": 333
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 401,
+    "card": 402
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 582,
+    "card": 582
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 171,
+    "card": 171
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 385,
+    "card": 386
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 355,
+    "card": 357
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 552,
+    "card": 553
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 161,
+    "card": 163
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 468,
+    "card": 469
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 396,
+    "card": 396
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 541,
+    "card": 547
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 187,
+    "card": 186
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 443,
+    "card": 444
+   },
+   "18": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 208,
+    "card": 211
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -14.784,
+  "n_check": 0,
+  "margins": true,
+  "unused_greens": [
+   "osm:way/162877408",
+   "osm:way/1231228011"
+  ],
+  "clubhouse": [
+   -121.10950678209637,
+   38.68773815700969,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 20,
+   "greens_osm": 20,
+   "tees": 211,
+   "tees_by_src": {
+    "osm": 57,
+    "segment": 9,
+    "lidar": 145
+   },
+   "fairways": 39,
+   "anchors": 17
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 361.2,
+    "card_yards": [
+     249,
+     325,
+     364,
+     384
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 171.5,
+    "card_yards": [
+     106,
+     151,
+     176
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 488.5,
+    "card_yards": [
+     297,
+     399,
+     472,
+     504
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 380.4,
+    "card_yards": [
+     265,
+     321,
+     366,
+     404
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 327.1,
+    "card_yards": [
+     197,
+     276,
+     311,
+     333
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 394.3,
+    "card_yards": [
+     214,
+     316,
+     368,
+     402
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 535.7,
+    "card_yards": [
+     287,
+     390,
+     538,
+     582
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 163.9,
+    "card_yards": [
+     96,
+     153,
+     171
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 366.3,
+    "card_yards": [
+     224,
+     332,
+     343,
+     386
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 343.9,
+    "card_yards": [
+     175,
+     292,
+     329,
+     357
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 521.7,
+    "card_yards": [
+     312,
+     431,
+     516,
+     553
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 160.4,
+    "card_yards": [
+     92,
+     126,
+     163
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 458.1,
+    "card_yards": [
+     213,
+     309,
+     352,
+     469
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 389.3,
+    "card_yards": [
+     206,
+     319,
+     378,
+     396
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 500.8,
+    "card_yards": [
+     255,
+     461,
+     518,
+     547
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 186.6,
+    "card_yards": [
+     107,
+     167,
+     186
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 436.2,
+    "card_yards": [
+     233,
+     351,
+     413,
+     444
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 208.1,
+    "card_yards": [
+     113,
+     191,
+     211
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/147947462 Empire Ranch Golf Course (Folsom, CA)",
+   "osm": "ok: 1529 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 6 sets; lidar pads: 89 candidate pads near hole starts, 1 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 6 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/empire_ranch_ca__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/empire_ranch_ca__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 9 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 384,
+    "card": 384
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 176,
+    "card": 176
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 501,
+    "card": 504
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 399,
+    "card": 404
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 334,
+    "card": 333
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 401,
+    "card": 402
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 582,
+    "card": 582
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 171,
+    "card": 171
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 385,
+    "card": 386
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 355,
+    "card": 357
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 552,
+    "card": 553
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 161,
+    "card": 163
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 468,
+    "card": 469
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 396,
+    "card": 396
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 541,
+    "card": 547
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 187,
+    "card": 186
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 443,
+    "card": 444
+   },
+   "18": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 208,
+    "card": 211
+   }
+  }
+ }
+}

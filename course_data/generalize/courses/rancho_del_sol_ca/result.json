@@ -1,0 +1,879 @@
+{
+ "slug": "rancho_del_sol_ca",
+ "sample": {
+  "name": "Rancho Del Sol Golf Club",
+  "osm": "relation/4079804",
+  "state": "CA",
+  "center": [
+   -117.175137,
+   33.899212
+  ],
+  "area_ha": 639.7,
+  "tags": {
+   "addr:city": "Moreno Valley",
+   "website": "https://www.ranchodelsolgolfclub.com/"
+  },
+  "counts": {
+   "tee": 75,
+   "green": 18,
+   "bunker": 43,
+   "fairway": 21,
+   "hole": 18
+  },
+  "tier": "validation",
+  "region": "West",
+  "split": "train",
+  "slug": "rancho_del_sol_ca"
+ },
+ "run_utc": "2026-10-17T05:33:39Z",
+ "seconds": {
+  "resolve_by_name": 133.2,
+  "osm": 36.7,
+  "parking": 35.2,
+  "scorecard": 50.2,
+  "imagery": 23.9,
+  "naip4": 1.1,
+  "segment": 85.5,
+  "lidar_pads": 5.9,
+  "package_today": 7.4,
+  "routing": 0.1,
+  "package_routed": 7.2
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "relation",
+   "id": 4079804
+  },
+  "name": "Rancho Del Sol Golf Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Rancho Del Sol Golf Club",
+    "Moreno Valley",
+    18,
+    "relation/4079804"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 1,
+   "built_up_landuse": 5,
+   "golf=bunker": 41,
+   "golf=cartpath": 17,
+   "golf=clubhouse": 1,
+   "golf=fairway": 21,
+   "golf=green": 18,
+   "golf=hole": 18,
+   "golf=pin": 15,
+   "golf=rough": 2,
+   "golf=tee": 73,
+   "golf=water_hazard": 1,
+   "holes_with_handicap": 6,
+   "holes_with_par": 18,
+   "single_trees": 78,
+   "tees_with_colour": 72,
+   "trees_polygons": 2,
+   "water_lines": 1,
+   "water_polygons": 1
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 8
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (10 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/b6e59ee2-556d-4c73-9d39-b85ea3e7f080"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 71,
+  "sets": [
+   "Black",
+   "Blue",
+   "White",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_rgb.tif",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   4062,
+   5103
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 30,
+   "tee": 73,
+   "fairway": 28,
+   "bunker": 43
+  },
+  "greens_p06": 27,
+  "seconds_infer": 81.1
+ },
+ "lidar_pads": 1273,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: relation/4079804 Rancho Del Sol Golf Club (Moreno Valley, CA)",
+   "osm": "ok: 876 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 127 candidate pads near hole starts, 1 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/rancho_del_sol_ca/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/rancho_del_sol_ca/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 9 tee candidates)"
+  },
+  "tee_set": "Black",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 449,
+    "card": 458
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 147,
+    "card": 219
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 520,
+    "card": 523
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 317,
+    "card": 338
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 450,
+    "card": 468
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 440,
+    "card": 459
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 542,
+    "card": 543
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 134,
+    "card": 141
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 332,
+    "card": 336
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 344,
+    "card": 341
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 392,
+    "card": 387
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 159,
+    "card": 157
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 357,
+    "card": 358
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 399,
+    "card": 448
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 501,
+    "card": 504
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 176,
+    "card": 178
+   },
+   "17": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 508,
+    "card": 536
+   },
+   "18": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 167,
+    "card": 168
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -30.079,
+  "n_check": 0,
+  "margins": true,
+  "unused_greens": [
+   "segment:10",
+   "segment:12",
+   "segment:14",
+   "segment:20",
+   "segment:22",
+   "segment:25",
+   "segment:27",
+   "segment:28",
+   "segment:29"
+  ],
+  "clubhouse": [
+   -117.17122573798294,
+   33.90197428725772,
+   "named"
+  ],
+  "inputs": {
+   "greens": 27,
+   "greens_osm": 18,
+   "tees": 668,
+   "tees_by_src": {
+    "osm": 73,
+    "segment": 24,
+    "lidar": 571
+   },
+   "fairways": 49,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 445.0,
+    "card_yards": [
+     381,
+     413,
+     442,
+     458
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 147.6,
+    "card_yards": [
+     106,
+     133,
+     147,
+     219
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 511.1,
+    "card_yards": [
+     450,
+     467,
+     496,
+     523
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 312.5,
+    "card_yards": [
+     282,
+     305,
+     322,
+     338
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 447.4,
+    "card_yards": [
+     411,
+     429,
+     450,
+     468
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 436.0,
+    "card_yards": [
+     360,
+     399,
+     436,
+     459
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 541.3,
+    "card_yards": [
+     432,
+     466,
+     503,
+     543
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 133.9,
+    "card_yards": [
+     106,
+     117,
+     130,
+     141
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 324.4,
+    "card_yards": [
+     253,
+     292,
+     313,
+     336
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 340.3,
+    "card_yards": [
+     260,
+     273,
+     323,
+     341
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 385.7,
+    "card_yards": [
+     313,
+     332,
+     370,
+     387
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 156.0,
+    "card_yards": [
+     88,
+     104,
+     137,
+     157
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 354.2,
+    "card_yards": [
+     316,
+     335,
+     349,
+     358
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 391.7,
+    "card_yards": [
+     354,
+     371,
+     395,
+     448
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 488.8,
+    "card_yards": [
+     414,
+     467,
+     485,
+     504
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 176.1,
+    "card_yards": [
+     110,
+     153,
+     165,
+     178
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 504.7,
+    "card_yards": [
+     479,
+     494,
+     510,
+     536
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 167.2,
+    "card_yards": [
+     81,
+     130,
+     148,
+     168
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: relation/4079804 Rancho Del Sol Golf Club (Moreno Valley, CA)",
+   "osm": "ok: 876 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 127 candidate pads near hole starts, 1 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/rancho_del_sol_ca__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/rancho_del_sol_ca__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 9 tee candidates)"
+  },
+  "tee_set": "Black",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 449,
+    "card": 458
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 147,
+    "card": 219
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 520,
+    "card": 523
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 317,
+    "card": 338
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 450,
+    "card": 468
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 440,
+    "card": 459
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 542,
+    "card": 543
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 134,
+    "card": 141
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 332,
+    "card": 336
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 344,
+    "card": 341
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 392,
+    "card": 387
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 159,
+    "card": 157
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 357,
+    "card": 358
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 399,
+    "card": 448
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 501,
+    "card": 504
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 176,
+    "card": 178
+   },
+   "17": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 508,
+    "card": 536
+   },
+   "18": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 167,
+    "card": 168
+   }
+  }
+ }
+}

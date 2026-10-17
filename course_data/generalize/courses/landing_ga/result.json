@@ -1,0 +1,820 @@
+{
+ "slug": "landing_ga",
+ "sample": {
+  "name": "The Landing",
+  "osm": "relation/7242424",
+  "state": "GA",
+  "center": [
+   -83.258575,
+   33.468032
+  ],
+  "area_ha": 296.0,
+  "tags": {
+   "addr:city": "Greensboro",
+   "website": "https://www.reynoldslakeoconee.com/golf/courses/landing"
+  },
+  "counts": {
+   "hole": 18
+  },
+  "tier": "validation",
+  "region": "South",
+  "split": "train",
+  "slug": "landing_ga"
+ },
+ "run_utc": "2026-10-17T05:10:37Z",
+ "seconds": {
+  "resolve_by_name": 203.4,
+  "osm": 31.1,
+  "parking": 41.0,
+  "scorecard": 82.2,
+  "imagery": 30.7,
+  "naip4": 0.6,
+  "segment": 48.8,
+  "lidar_pads": 2.8,
+  "package_today": 3.6,
+  "routing": 0.0,
+  "package_routed": 3.5
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "relation",
+   "id": 7242424
+  },
+  "name": "The Landing",
+  "same_element": true,
+  "candidates": [
+   [
+    "The Landing",
+    "Greensboro",
+    18,
+    "relation/7242424"
+   ],
+   [
+    "Southern Landings",
+    "Bonaire",
+    18,
+    "way/1062472877"
+   ],
+   [
+    "Eagle's Landing Country Club",
+    "Stockbridge",
+    0,
+    "relation/142826"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 135,
+   "built_up_landuse": 2,
+   "golf=clubhouse": 1,
+   "golf=driving_range": 1,
+   "golf=hole": 18,
+   "golf=pin": 18,
+   "golf=water_hazard": 7,
+   "water_lines": 1,
+   "water_polygons": 7
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 3
+ },
+ "scorecard": {
+  "found": [
+   "club_site",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (11 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": true,
+    "info": "https://www.reynoldslakeoconee.com/golf/courses/landing"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/4cc8cc56-994a-4fa3-8a0d-2d75705a0612"
+   }
+  ],
+  "chosen": "club_site",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Tee 1"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   2441,
+   4461
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 20,
+   "tee": 59,
+   "fairway": 24,
+   "bunker": 49
+  },
+  "greens_p06": 20,
+  "seconds_infer": 45.2
+ },
+ "lidar_pads": 357,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 0,
+  "green_segment": 18,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: relation/7242424 The Landing (Greensboro, GA)",
+   "osm": "ok: 435 features",
+   "scorecard": "ok: club_site (club_site)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 1 sets; lidar pads: 93 candidate pads near hole starts, 16 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 1 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/landing_ga/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/landing_ga/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+135 zones on 18 holes, +18 greens, 31 tee candidates)"
+  },
+  "tee_set": "Tee 1",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 417,
+    "card": 414
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 488,
+    "card": 490
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 128,
+    "card": 135
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 459,
+    "card": 458
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 389,
+    "card": 379
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 532,
+    "card": 531
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 195,
+    "card": 195
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 416,
+    "card": 412
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 447,
+    "card": 443
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 447,
+    "card": 446
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 191,
+    "card": 203
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 435,
+    "card": 439
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 350,
+    "card": 370
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 573,
+    "card": 576
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 430,
+    "card": 428
+   },
+   "16": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 545,
+    "card": 542
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 160,
+    "card": 160
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 367,
+    "card": 370
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -1.581,
+  "n_check": 2,
+  "margins": true,
+  "unused_greens": [
+   "segment:10",
+   "segment:13"
+  ],
+  "clubhouse": [
+   -83.25521326236503,
+   33.469352087652425,
+   "named"
+  ],
+  "inputs": {
+   "greens": 20,
+   "greens_osm": 0,
+   "tees": 231,
+   "tees_by_src": {
+    "osm": 0,
+    "segment": 55,
+    "lidar": 176
+   },
+   "fairways": 22,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "check",
+    "flags": [
+     "no tee found"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     414
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 481.5,
+    "card_yards": [
+     490
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 114.2,
+    "card_yards": [
+     135
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 314.1,
+    "card_yards": [
+     458
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 315.2,
+    "card_yards": [
+     379
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "check",
+    "flags": [
+     "no tee found"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     531
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 153.0,
+    "card_yards": [
+     195
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 397.8,
+    "card_yards": [
+     412
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 438.3,
+    "card_yards": [
+     443
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 447.3,
+    "card_yards": [
+     446
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 145.3,
+    "card_yards": [
+     203
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 384.0,
+    "card_yards": [
+     439
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 342.8,
+    "card_yards": [
+     370
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 487.4,
+    "card_yards": [
+     576
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 361.1,
+    "card_yards": [
+     428
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 474.1,
+    "card_yards": [
+     542
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 157.3,
+    "card_yards": [
+     160
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 332.1,
+    "card_yards": [
+     370
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: relation/7242424 The Landing (Greensboro, GA)",
+   "osm": "ok: 469 features",
+   "scorecard": "ok: club_site (club_site)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 1 sets; lidar pads: 88 candidate pads near hole starts, 8 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 1 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/landing_ga__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/landing_ga__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+91 zones on 17 holes, +0 greens, 31 tee candidates)"
+  },
+  "tee_set": "Tee 1",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 415,
+    "card": 414
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 491,
+    "card": 490
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 121,
+    "card": 135
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 459,
+    "card": 458
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 366,
+    "card": 379
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 532,
+    "card": 531
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 193,
+    "card": 195
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 412,
+    "card": 412
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 444,
+    "card": 443
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 454,
+    "card": 446
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 188,
+    "card": 203
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 435,
+    "card": 439
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 356,
+    "card": 370
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 574,
+    "card": 576
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 430,
+    "card": 428
+   },
+   "16": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 544,
+    "card": 542
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 157,
+    "card": 160
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 368,
+    "card": 370
+   }
+  }
+ }
+}

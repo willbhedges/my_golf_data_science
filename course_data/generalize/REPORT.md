@@ -25,26 +25,26 @@ States: CA, GA, IL, KY, MA, ME, MN, MS, NH, UT, WI, WY (three per Census region,
 ## Answer
 
 * **Today**: every hole and green placed on **47%** of random US courses (population-weighted by tier) - essentially the courses where OSM volunteers mapped every golf=hole way.
-* **With routing inference**: **49%** fully correct with no human input; **74%** correct once a golfer confirms the holes the router flags.
+* **With routing inference**: **50%** fully correct with no human input; **71%** correct once a golfer confirms the holes the router flags.
 * **Need a golfer check**: 53% of courses (a flagged hole, or no scorecard online).
 
 ### Per tier
 
 | tier | population share | sampled | found by name | scorecard online | NAIP | today all holes | routing all correct | after golfer check | needs check |
 |---|---|---|---|---|---|---|---|---|---|
-| full | 65% | 7 | 100% | 71% | 100% | 71% | 73% | 83% | 29% |
-| partial | 12% | 7 | 86% | 100% | 100% | 0% | 5% | 58% | 95% |
-| none | 23% | 7 | 86% | 86% | 100% | 0% | 5% | 54% | 100% |
+| full | 65% | 7 | 100% | 71% | 100% | 71% | 73% | 81% | 29% |
+| partial | 12% | 7 | 86% | 100% | 100% | 0% | 8% | 49% | 98% |
+| none | 23% | 7 | 86% | 86% | 100% | 0% | 5% | 52% | 98% |
 
 ## Routing validation (OSM hole ways and refs hidden)
 
 | inputs | card | courses | hole-number acc | green assignment acc | physical holes found | median length err (yds) | all 18 correct | correct after check | needs check | flagged / course |
 |---|---|---|---|---|---|---|---|---|---|---|
-| TODAY's fallback: geometry.infer_holes on OSM greens/tees | none | 19 | 9% | 20% | 41% | 2.1 | 0% | 0% | 0% | 0.0 |
-| OSM greens/tees + model + lidar | scorecard | 19 | 70% | 81% | 76% | 2.8 | 5% | 58% | 95% | 6.95 |
-| model + lidar only (unmapped course) | scorecard | 19 | 62% | 72% | 70% | 2.9 | 5% | 63% | 100% | 10.11 |
-| OSM greens/tees + model + lidar | none | 19 | 9% | 11% | 56% | 1.9 | 0% | 47% | 100% | 14.37 |
-| model + lidar only (unmapped course) | none | 19 | 10% | 14% | 52% | 3.3 | 0% | 68% | 100% | 16.16 |
+| TODAY's fallback: geometry.infer_holes on OSM greens/tees | none | 82 | 8% | 21% | 38% | 1.9 | 0% | 0% | 0% | 0.0 |
+| OSM greens/tees + model + lidar | scorecard | 82 | 69% | 80% | 75% | 3.0 | 8% | 49% | 98% | 7.33 |
+| model + lidar only (unmapped course) | scorecard | 82 | 61% | 72% | 67% | 2.9 | 6% | 61% | 98% | 10.17 |
+| OSM greens/tees + model + lidar | none | 82 | 10% | 14% | 58% | 3.5 | 0% | 49% | 100% | 14.89 |
+| model + lidar only (unmapped course) | none | 82 | 9% | 14% | 52% | 2.7 | 0% | 70% | 99% | 16.21 |
 
 Definitions: hole-number acc = routed hole n has the true hole n's green (within 20 yds) and its tee within 40 yds of the first 60 % of the true line; green assignment = the green alone; physical holes = true (tee, green) pairs found under any number; length error = routed straight tee->green vs the true line's length from the routed tee; `correct after check` = every wrong hole carries a `check` flag. Card = the web scorecard when found, else pars + lengths from the hidden OSM ways (`card*` below).
 
@@ -53,7 +53,7 @@ Definitions: hole-number acc = routed hole n has the true hole n's green (within
 | course | st | tier | found | OSM holes / greens / tees | scorecard | NAIP | model greens (OSM) | today: line / green / tee | routed (check) | V-osm hole / green | V-model hole / green |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | Billy Caldwell Golf Course | IL | full | yes | 9 / 10 / 19 | opengolfapi (9) | 2023 | 10 (10) | 9 / 9 / 9 of 9 | 9 (0) | 78% / 100% | 78% / 89% |
-| Black Stone Creek Golf Club | WI | full | yes | 19 / 18 / 29 | none | 2022 | 19 (18) | 17 / 17 / 0 of 18 | 17 (1) | 59% / 71%* | 71% / 82%* |
+| Black Stone Creek Golf Club | WI | full | yes | 19 / 18 / 29 | none | 2022 | 19 (18) | 17 / 17 / 0 of 18 | 17 (1) | 76% / 76%* | 71% / 82%* |
 | Elk River Golf Club | MN | full | yes | 18 / 19 / 56 | golfify (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 78% | 94% / 100% |
 | Sky Mountain Golf Course | UT | full | yes | 18 / 20 / 69 | golfify (18) | 2021 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 94% | 89% / 89% |
 | Urbana Country Club | IL | full | yes | 18 / 19 / 45 | opengolfapi (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 89% | 50% / 72% |
@@ -73,18 +73,82 @@ Definitions: hole-number acc = routed hole n has the true hole n's green (within
 | Sevillano Links | CA | none | yes | 0 / 8 / 0 | none | 2022 | 26 (8) | 0 / 0 / 0 of 18 | 14 (17) | - | - |
 | Sleepy Hollow Golf Course | KY | none | yes | 0 / 0 / 0 | opengolfapi (9) | 2022 | 9 (0) | 0 / 0 / 0 of 9 | 9 (9) | - | - |
 | The Woodford Club | KY | none | yes | 0 / 0 / 0 | opengolfapi (18) | 2022 | 19 (0) | 0 / 0 / 0 of 18 | 17 (18) | - | - |
+| Arrowhead Pointe | GA | validation | yes | 17 / 18 / 72 | golfify (18) | 2023 | 24 (18) | 18 / 18 / 17 of 18 | 18 (0) | 88% / 88% | 100% / 100% |
+| Bartram Trail Golf Club | GA | validation | yes | 17 / 19 / 0 | golfify (18) | 2023 | 19 (19) | 18 / 18 / 18 of 18 | 18 (0) | 100% / 100% | 88% / 100% |
+| Big Foot Country Club | WI | validation | yes | 18 / 24 / 49 | golfify (18) | 2022 | 21 (24) | 18 / 18 / 18 of 18 | 18 (0) | 78% / 89% | 83% / 100% |
+| Bloomington Country Club | IL | validation | yes | 18 / 24 / 46 | golfify (18) | 2023 | 20 (24) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 89% | 78% / 100% |
+| Bonneville Golf Course | UT | validation | yes | 18 / 20 / 49 | golfify (18) | 2021 | 19 (20) | 18 / 18 / 17 of 18 | 18 (0) | 83% / 83% | 72% / 78% |
+| Boots Randolph Golf Course | KY | validation | yes | 18 / 19 / 46 | none | 2022 | 20 (19) | 18 / 18 / 0 of 18 | 18 (0) | 83% / 89%* | 78% / 83%* |
+| Brae Loch Golf Course | IL | validation | yes | 18 / 18 / 22 | opengolfapi (18) | 2023 | 20 (18) | 18 / 18 / 18 of 18 | 18 (0) | 100% / 100% | 100% / 100% |
+| Browns Mill Golf Course | GA | validation | yes | 18 / 20 / 37 | golfify (18) | 2023 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 67% / 78% | 0% / 0% |
+| Canyon Lake Golf and Country Club | CA | validation | yes | 17 / 19 / 59 | golfify (18) | 2022 | 19 (19) | 18 / 18 / 13 of 18 | 17 (1) | 0% / 0% | 0% / 0% |
+| Carillon Golf Course | IL | validation | yes | 26 / 8 / 31 | none | 2023 | 31 (8) | 9 / 9 / 0 of 18 | 15 (11) | 22% / 33%* | 22% / 33%* |
+| Chaska Golf Course | WI | validation | yes | 18 / 0 / 0 | golfify (18) | 2022 | 25 (0) | 18 / 18 / 7 of 18 | 16 (2) | 67% / 94% | 67% / 94% |
+| Cinder Ridge Golf Course | IL | validation | yes | 15 / 23 / 62 | club_site (18) | 2023 | 20 (23) | 18 / 18 / 16 of 18 | 18 (1) | 13% / 20% | 60% / 87% |
+| Concord Country Club | MA | validation | yes | 17 / 24 / 57 | golfify (18) | 2023 | 22 (24) | 18 / 18 / 18 of 18 | 18 (0) | 65% / 76% | 47% / 65% |
+| The Links Golf Course | CA | validation | no (not_found) | 18 / 20 / 72 | none | 2022 | 22 (20) | 18 / 18 / 0 of 18 | 18 (0) | 56% / 56%* | 44% / 56%* |
+| Crestwood Country Club | MA | validation | yes | 18 / 22 / 38 | golfify (18) | 2023 | 24 (22) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 72% | 89% / 94% |
+| The Crossings Golf Course | KY | validation | yes | 18 / 19 / 57 | opengolfapi (18) | 2022 | 15 (19) | 18 / 18 / 18 of 18 | 18 (0) | 83% / 100% | 50% / 56% |
+| Del Rio Golf & Country Club | CA | validation | no (ambiguous: Del Rio Golf & Country Club) | 26 / 38 / 90 | none | 2022 | 31 (38) | 18 / 18 / 0 of 18 | 18 (9) | 78% / 100%* | 78% / 100%* |
+| Derryfield Country Club | NH | validation | yes | 18 / 20 / 47 | golfify (18) | 2023 | 19 (20) | 18 / 18 / 18 of 18 | 18 (0) | 67% / 67% | 56% / 56% |
 | Dwan Golf Course | MN | validation | yes | 18 / 20 / 40 | golfify (18) | 2023 | 18 (20) | 18 / 18 / 18 of 18 | 18 (0) | 89% / 94% | 72% / 89% |
+| Edgewood Park Golf Club | IL | validation | yes | 18 / 20 / 37 | golfify (18) | 2023 | 19 (20) | 18 / 18 / 18 of 18 | 18 (0) | 56% / 72% | 50% / 78% |
 | El Dorado Park Golf Course | CA | validation | yes | 18 / 18 / 37 | golfify (18) | 2022 | 25 (18) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 100% | 44% / 56% |
+| Elmcrest Country Club | MA | validation | yes | 18 / 19 / 27 | golfify (18) | 2023 | 19 (19) | 18 / 18 / 17 of 18 | 18 (0) | 89% / 100% | 78% / 89% |
+| Empire Ranch Golf Course | CA | validation | yes | 17 / 20 / 57 | golfify (18) | 2022 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 100% | 94% / 100% |
 | Fairways of Woodside | WI | validation | yes | 18 / 18 / 51 | golfify (18) | 2022 | 19 (18) | 18 / 18 / 18 of 18 | 18 (0) | 67% / 78% | 56% / 67% |
+| Falmouth Country Club | MA | validation | yes | 27 / 28 / 56 | opengolfapi (18) | 2023 | 30 (28) | 27 / 27 / 19 of 18 | 18 (0) | 67% / 83% | 67% / 83% |
+| Falmouth Country Club | ME | validation | yes | 18 / 20 / 72 | golfify (18) | 2023 | 22 (20) | 18 / 18 / 17 of 18 | 18 (0) | 83% / 100% | 78% / 89% |
+| Great Southern Golf Club | MS | validation | yes | 18 / 18 / 18 | golfify (18) | 2023 | 8 (18) | 18 / 18 / 15 of 18 | 18 (0) | 47% / 59% | 0% / 0% |
+| Green Harbor Golf Club | MA | validation | yes | 17 / 19 / 31 | golfify (18) | 2023 | 18 (19) | 18 / 18 / 18 of 18 | 17 (1) | 29% / 35% | 71% / 76% |
 | Hatherly Country Club | MA | validation | yes | 18 / 21 / 55 | golfify (18) | 2023 | 22 (21) | 18 / 18 / 18 of 18 | 17 (1) | 56% / 83% | 44% / 61% |
 | Hidden Greens North Golf Club | WI | validation | yes | 18 / 19 / 32 | opengolfapi (18) | 2022 | 19 (19) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 100% | 94% / 100% |
 | The Hideout Golf Club | UT | validation | yes | 17 / 18 / 70 | golfify (18) | 2021 | 19 (18) | 18 / 18 / 17 of 18 | 18 (0) | 88% / 100% | 94% / 100% |
+| The Huntington Club | CA | validation | yes | 18 / 19 / 64 | none | 2022 | 20 (19) | 18 / 18 / 0 of 18 | 18 (0) | 94% / 100%* | 89% / 94%* |
+| Hurstbourne Country Club | KY | validation | yes | 27 / 37 / 77 | opengolfapi (18) | 2022 | 31 (37) | 45 / 45 / 9 of 18 | 18 (18) | - | - |
+| Jato Highlands | ME | validation | yes | 18 / 19 / 33 | opengolfapi (18) | 2023 | 0 (19) | 18 / 18 / 17 of 18 | 18 (0) | 89% / 89% | 0% / 0% |
+| Kernwood Country Club | MA | validation | yes | 18 / 19 / 41 | golfify (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 28% / 28% | 61% / 100% |
+| Kingwood Country Club | GA | validation | yes | 17 / 19 / 42 | opengolfapi (18) | 2023 | 18 (19) | 18 / 18 / 16 of 18 | 17 (1) | 6% / 12% | 24% / 24% |
+| Lake Tahoe Golf Course | CA | validation | yes | 18 / 19 / 36 | golfify (18) | 2022 | 19 (19) | 18 / 18 / 18 of 18 | 18 (0) | 78% / 100% | 72% / 100% |
+| The Lakeside | CA | validation | no (ambiguous: Lakeside Golf Club) | 17 / 20 / 62 | none | 2022 | 24 (20) | 18 / 18 / 0 of 18 | 18 (0) | 59% / 82%* | 12% / 29%* |
+| Lakeside Golf Course | KY | validation | yes | 18 / 18 / 41 | golfify (18) | 2022 | 20 (18) | 18 / 18 / 15 of 18 | 18 (0) | 89% / 100% | 89% / 100% |
+| The Landing | GA | validation | yes | 18 / 0 / 0 | club_site (18) | 2023 | 20 (0) | 18 / 18 / 16 of 18 | 16 (2) | 39% / 94% | 39% / 94% |
+| Los Amigos Golf Course | CA | validation | yes | 18 / 18 / 34 | golfify (18) | 2022 | 19 (18) | 18 / 18 / 18 of 18 | 18 (0) | 78% / 89% | 78% / 89% |
 | Metamora Fields Golf Club | IL | validation | yes | 18 / 25 / 78 | golfify (18) | 2023 | 20 (25) | 18 / 18 / 18 of 18 | 18 (0) | 83% / 89% | 83% / 89% |
+| Ocean Edge Resort and Golf Club | MA | validation | yes | 18 / 20 / 60 | golfify (18) | 2023 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 61% / 78% | 56% / 78% |
+| Oneka Ridge Golf Course | MN | validation | yes | 18 / 21 / 56 | none | 2023 | 20 (21) | 18 / 18 / 0 of 18 | 18 (0) | 61% / 72%* | 50% / 67%* |
+| Ozaukee Country Club | WI | validation | yes | 18 / 22 / 30 | golfify (18) | 2022 | 21 (22) | 18 / 18 / 15 of 18 | 18 (0) | 56% / 78% | 39% / 50% |
+| Paintsville Golf Course | KY | validation | yes | 18 / 18 / 31 | golfify (18) | 2022 | 18 (18) | 18 / 18 / 9 of 18 | 18 (0) | 67% / 83% | 0% / 0% |
+| Rancho Del Sol Golf Club | CA | validation | yes | 18 / 18 / 73 | opengolfapi (18) | 2022 | 27 (18) | 18 / 18 / 18 of 18 | 18 (0) | 89% / 100% | 94% / 100% |
+| Ridge Golf Course | CA | validation | yes | 18 / 24 / 80 | opengolfapi (18) | 2022 | 22 (24) | 18 / 18 / 18 of 18 | 18 (0) | 78% / 94% | 44% / 56% |
+| Riverwood National | MN | validation | yes | 17 / 19 / 54 | golfify (18) | 2023 | 19 (19) | 26 / 23 / 16 of 18 | 18 (0) | 94% / 100% | 94% / 100% |
+| Rock River Hills Golf Course | WI | validation | yes | 17 / 19 / 42 | golfify (18) | 2022 | 18 (19) | 18 / 18 / 18 of 18 | 18 (0) | 59% / 76% | 47% / 53% |
+| Skokie Country Club | IL | validation | yes | 18 / 18 / 61 | golfify (18) | 2023 | 23 (18) | 18 / 18 / 18 of 18 | 18 (0) | 83% / 83% | 78% / 83% |
+| Smoke Rise Country Club | GA | validation | yes | 18 / 19 / 75 | golfify (18) | 2023 | 19 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 100% | 22% / 39% |
+| Somerby Golf Club | MN | validation | yes | 21 / 28 / 86 | golfify (18) | 2023 | 28 (28) | 18 / 18 / 18 of 18 | 18 (0) | 89% / 100% | 89% / 100% |
+| South Hills Country Club | CA | validation | yes | 18 / 20 / 35 | golfify (18) | 2022 | 19 (20) | 18 / 18 / 18 of 18 | 18 (0) | 100% / 100% | 100% / 100% |
+| Sun Hills Golf Course | UT | validation | yes | 18 / 18 / 0 | golfify (18) | 2021 | 18 (18) | 18 / 18 / 17 of 18 | 18 (0) | 83% / 100% | 83% / 100% |
+| Sun Valley Golf Course | KY | validation | yes | 18 / 18 / 54 | golfify (18) | 2022 | 19 (18) | 18 / 18 / 18 of 18 | 18 (0) | 83% / 100% | 83% / 94% |
 | Toscana Country Club | CA | validation | yes | 36 / 36 / 157 | opengolfapi (18) | 2022 | 42 (36) | 18 / 15 / 12 of 18 | 18 (0) | 17% / 28% | 0% / 0% |
+| Towne Lake Hills Golf Club | GA | validation | yes | 18 / 18 / 60 | golfify (18) | 2023 | 18 (18) | 18 / 17 / 16 of 18 | 18 (0) | 0% / 0% | 28% / 44% |
 | The Golf Club at Turner Hill | MA | validation | yes | 18 / 21 / 88 | golfify (18) | 2023 | 24 (21) | 18 / 18 / 18 of 18 | 18 (0) | 56% / 89% | 39% / 56% |
+| Upland Hills Country Club | CA | validation | yes | 18 / 18 / 40 | golfify (18) | 2022 | 19 (18) | 18 / 18 / 16 of 18 | 18 (0) | 83% / 89% | 83% / 89% |
+| Village Green Golf Course | MN | validation | yes | 18 / 20 / 40 | opengolfapi (18) | 2023 | 22 (20) | 18 / 18 / 18 of 18 | 18 (0) | 83% / 94% | 72% / 100% |
+| Visalia Country Club | CA | validation | yes | 16 / 21 / 31 | golfify (18) | 2022 | 19 (21) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 100% | 94% / 100% |
 | Walpole Country Club | MA | validation | yes | 18 / 21 / 54 | golfify (18) | 2023 | 20 (21) | 18 / 18 / 18 of 18 | 18 (0) | 33% / 33% | 6% / 6% |
+| Waukewan Golf Course | NH | validation | yes | 18 / 16 / 21 | golfify (18) | 2023 | 17 (16) | 18 / 18 / 15 of 18 | 18 (0) | 88% / 100% | 35% / 65% |
+| Wedgewood Golfer's Club | MS | validation | yes | 19 / 19 / 20 | none | 2023 | 19 (19) | 18 / 18 / 0 of 18 | 18 (0) | 56% / 89%* | 11% / 28%* |
 | Wellesley Country Club | MA | validation | yes | 25 / 27 / 81 | golfify (18) | 2023 | 28 (27) | 19 / 19 / 17 of 18 | 18 (0) | 83% / 100% | 72% / 94% |
+| Wentworth Golf Club | NH | validation | yes | 16 / 19 / 42 | opengolfapi (18) | 2023 | 17 (19) | 18 / 18 / 17 of 18 | 17 (1) | 25% / 31% | 38% / 56% |
+| Westchester Golf Course | CA | validation | yes | 18 / 19 / 25 | golfify (18) | 2022 | 18 (19) | 18 / 18 / 18 of 18 | 18 (0) | 100% / 100% | 61% / 61% |
+| Westhaven Golf Club | WI | validation | yes | 18 / 18 / 23 | opengolfapi (18) | 2022 | 19 (18) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 100% | 94% / 100% |
+| Whaling City Golf Course | MA | validation | yes | 18 / 20 / 41 | opengolfapi (18) | 2023 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 100% / 100% | 100% / 100% |
 | White Mountain Golf Course | WY | validation | yes | 18 / 15 / 79 | none | 2022 | 30 (15) | 18 / 18 / 0 of 18 | 18 (0) | 28% / 28%* | 33% / 39%* |
+| Wildwood Country Club | KY | validation | yes | 18 / 25 / 46 | golfify (18) | 2022 | 19 (25) | 18 / 18 / 18 of 18 | 18 (0) | 50% / 56% | 67% / 78% |
+| William J. Devine Golf Course | MA | validation | yes | 18 / 20 / 47 | opengolfapi (18) | 2023 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 100% / 100% | 94% / 100% |
+| Willowbend Country Club | MA | validation | yes | 26 / 29 / 121 | opengolfapi (18) | 2023 | 33 (29) | 18 / 18 / 14 of 18 | 18 (8) | 0% / 0% | 0% / 11% |
+| Woods Hole Golf Club | MA | validation | yes | 18 / 19 / 15 | golfify (18) | 2023 | 21 (19) | 18 / 18 / 17 of 18 | 18 (0) | 89% / 94% | 72% / 83% |
+| Wynstone Golf Club | IL | validation | yes | 18 / 20 / 72 | golfify (18) | 2023 | 25 (20) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 94% | 61% / 94% |
 
 ## Failure modes seen in the sample
 

@@ -1,0 +1,851 @@
+{
+ "slug": "chaska_wi",
+ "sample": {
+  "name": "Chaska Golf Course",
+  "osm": "way/262311914",
+  "state": "WI",
+  "center": [
+   -88.529396,
+   44.269466
+  ],
+  "area_ha": 100.3,
+  "tags": {
+   "addr:city": "Greenville",
+   "website": "https://chaskagolf.com/"
+  },
+  "counts": {
+   "hole": 18
+  },
+  "tier": "validation",
+  "region": "Midwest",
+  "split": "test",
+  "slug": "chaska_wi"
+ },
+ "run_utc": "2026-10-17T04:07:05Z",
+ "seconds": {
+  "resolve_by_name": 180.4,
+  "osm": 32.9,
+  "parking": 51.6,
+  "scorecard": 52.5,
+  "imagery": 20.3,
+  "naip4": 0.4,
+  "segment": 44.9,
+  "lidar_pads": 1.7,
+  "package_today": 3.4,
+  "routing": 0.1,
+  "package_routed": 3.3
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 262311914
+  },
+  "name": "Chaska Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Chaska Golf Course",
+    "Greenville",
+    18,
+    "way/262311914"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 8,
+   "golf=cartpath": 5,
+   "golf=clubhouse": 1,
+   "golf=driving_range": 1,
+   "golf=hole": 18,
+   "holes_with_handicap": 18,
+   "holes_with_par": 18,
+   "trees_polygons": 6,
+   "water_lines": 19,
+   "water_polygons": 7
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 6
+ },
+ "scorecard": {
+  "found": [
+   "golfify"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/chaska-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": false,
+    "info": "opengolfapi: no tees / holes_data for Chaska Golf Course (opengolfapi: Chaska Golf Course (0.0 km))"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Blue",
+   "White",
+   "Yellow"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   1749,
+   2395
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 28,
+   "tee": 50,
+   "fairway": 21,
+   "bunker": 68
+  },
+  "greens_p06": 25,
+  "seconds_infer": 39.8
+ },
+ "lidar_pads": 77,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 0,
+  "green_segment": 18,
+  "with_tee_box": 7,
+  "stages": {
+   "resolve": "ok: way/262311914 Chaska Golf Course (Greenville, WI)",
+   "osm": "ok: 280 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 22 candidate pads near hole starts, 17 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/chaska_wi/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/chaska_wi/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+331 zones on 18 holes, +18 greens, 23 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 395,
+    "card": 396
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 523,
+    "card": 523
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 436,
+    "card": 436
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 166,
+    "card": 166
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 351,
+    "card": 351
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 422,
+    "card": 422
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 549,
+    "card": 549
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 186,
+    "card": 186
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 363,
+    "card": 363
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 398,
+    "card": 398
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 499,
+    "card": 501
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 362,
+    "card": 362
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 228,
+    "card": 229
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 437,
+    "card": 437
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 548,
+    "card": 548
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 465,
+    "card": 465
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 153,
+    "card": 155
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 427,
+    "card": 425
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -5.258,
+  "n_check": 2,
+  "margins": true,
+  "unused_greens": [
+   "segment:0",
+   "segment:2",
+   "segment:8",
+   "segment:11",
+   "segment:13",
+   "segment:16",
+   "segment:27"
+  ],
+  "clubhouse": [
+   -88.52971588981785,
+   44.26948085827948,
+   "named"
+  ],
+  "inputs": {
+   "greens": 25,
+   "greens_osm": 0,
+   "tees": 88,
+   "tees_by_src": {
+    "osm": 0,
+    "segment": 40,
+    "lidar": 48
+   },
+   "fairways": 19,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 379.8,
+    "card_yards": [
+     339,
+     373,
+     396
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "check",
+    "flags": [
+     "no tee found"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     451,
+     502,
+     523
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 417.0,
+    "card_yards": [
+     383,
+     414,
+     436
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 131.2,
+    "card_yards": [
+     128,
+     147,
+     166
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 332.9,
+    "card_yards": [
+     299,
+     329,
+     351
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 396.8,
+    "card_yards": [
+     361,
+     399,
+     422
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 504.9,
+    "card_yards": [
+     470,
+     526,
+     549
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "check",
+    "flags": [
+     "no tee found"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     148,
+     167,
+     186
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 329.0,
+    "card_yards": [
+     314,
+     348,
+     363
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 366.1,
+    "card_yards": [
+     340,
+     376,
+     398
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 469.1,
+    "card_yards": [
+     421,
+     483,
+     501
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 352.8,
+    "card_yards": [
+     312,
+     342,
+     362
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 227.3,
+    "card_yards": [
+     148,
+     201,
+     229
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 422.9,
+    "card_yards": [
+     389,
+     421,
+     437
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 511.6,
+    "card_yards": [
+     487,
+     531,
+     548
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 443.6,
+    "card_yards": [
+     392,
+     445,
+     465
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 152.8,
+    "card_yards": [
+     116,
+     134,
+     155
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 369.6,
+    "card_yards": [
+     366,
+     401,
+     425
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 17,
+  "stages": {
+   "resolve": "ok: way/262311914 Chaska Golf Course (Greenville, WI)",
+   "osm": "ok: 314 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 22 candidate pads near hole starts, 7 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/chaska_wi__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/chaska_wi__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+265 zones on 18 holes, +0 greens, 23 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 395,
+    "card": 396
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 523,
+    "card": 523
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 436,
+    "card": 436
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 159,
+    "card": 166
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 351,
+    "card": 351
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 422,
+    "card": 422
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 549,
+    "card": 549
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 186,
+    "card": 186
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 361,
+    "card": 363
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 398,
+    "card": 398
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 501,
+    "card": 501
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 362,
+    "card": 362
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 228,
+    "card": 229
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 437,
+    "card": 437
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 548,
+    "card": 548
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 465,
+    "card": 465
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 154,
+    "card": 155
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 427,
+    "card": 425
+   }
+  }
+ }
+}

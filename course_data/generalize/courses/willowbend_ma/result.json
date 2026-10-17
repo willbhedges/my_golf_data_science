@@ -1,0 +1,920 @@
+{
+ "slug": "willowbend_ma",
+ "sample": {
+  "name": "Willowbend Country Club",
+  "osm": "relation/16634124",
+  "state": "MA",
+  "center": [
+   -70.459672,
+   41.62463
+  ],
+  "area_ha": 316.9,
+  "tags": {
+   "golf:course": "9_hole;9_hole;9_hole",
+   "website": "https://willowbendcapecod.com/"
+  },
+  "counts": {
+   "tee": 121,
+   "fairway": 33,
+   "bunker": 144,
+   "green": 29,
+   "hole": 27
+  },
+  "tier": "validation",
+  "region": "Northeast",
+  "split": "test",
+  "slug": "willowbend_ma"
+ },
+ "run_utc": "2026-10-17T04:38:54Z",
+ "seconds": {
+  "resolve_by_name": 152.6,
+  "osm": 29.7,
+  "parking": 20.6,
+  "scorecard": 29.8,
+  "imagery": 40.3,
+  "naip4": 0.7,
+  "segment": 55.5,
+  "lidar_pads": 3.3,
+  "package_today": 22.3,
+  "routing": 16.6,
+  "package_routed": 7.3
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "relation",
+   "id": 16634124
+  },
+  "name": "Willowbend Country Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Willowbend Country Club",
+    "Mashpee",
+    27,
+    "relation/16634124"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 38,
+   "built_up_landuse": 1,
+   "golf=bunker": 144,
+   "golf=cartpath": 103,
+   "golf=driving_range": 2,
+   "golf=fairway": 33,
+   "golf=green": 29,
+   "golf=hole": 26,
+   "golf=lateral_water_hazard": 1,
+   "golf=rough": 43,
+   "golf=tee": 121,
+   "golf=water_hazard": 10,
+   "holes_with_par": 26,
+   "long_grass_polygons": 6,
+   "single_trees": 45,
+   "tees_with_colour": 3,
+   "trees_polygons": 26,
+   "water_lines": 45,
+   "water_polygons": 40
+  },
+  "hole_refs": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 94
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (10 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/5e8f4926-f0f1-48ba-8fc2-6d0a482c239e"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 70,
+  "sets": [
+   "Gold",
+   "Black",
+   "Blue",
+   "White",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_rgb.tif",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   4458,
+   2561
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 33,
+   "tee": 112,
+   "fairway": 28,
+   "bunker": 134
+  },
+  "greens_p06": 33,
+  "seconds_infer": 50.3
+ },
+ "lidar_pads": 569,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 14,
+  "stages": {
+   "resolve": "ok: relation/16634124 Willowbend Country Club (Mashpee, MA)",
+   "osm": "ok: 2983 features",
+   "routing": "ok: platform/routing.py placed 9/9 holes OSM has no way for (7 to check; segment no, lidar pads 569)",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 114 candidate pads near hole starts, 17 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/willowbend_ma/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/willowbend_ma/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 41 tee candidates)"
+  },
+  "tee_set": "Gold",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 510,
+    "card": 510
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 424,
+    "card": 424
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 317,
+    "card": 317
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 476,
+    "card": 476
+   },
+   "5": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 210,
+    "card": 210
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 392,
+    "card": 392
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 185,
+    "card": 185
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 308,
+    "card": 309
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 449,
+    "card": 451
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 395,
+    "card": 398
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 171,
+    "card": 172
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 414,
+    "card": 414
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 437,
+    "card": 438
+   },
+   "14": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 182,
+    "card": 195
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 487,
+    "card": 486
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 404,
+    "card": 406
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 317,
+    "card": 317
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 499,
+    "card": 500
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -20.303,
+  "n_check": 8,
+  "margins": true,
+  "unused_greens": [
+   "osm:way/857667074",
+   "osm:way/876391125",
+   "osm:way/1124006061",
+   "osm:way/1220225308",
+   "osm:way/1220264242",
+   "osm:way/1220264257",
+   "osm:way/1220264273",
+   "osm:way/1220274202",
+   "osm:way/1220274210",
+   "osm:way/1220274218",
+   "osm:way/1220274220",
+   "segment:2",
+   "segment:8",
+   "segment:14",
+   "segment:17",
+   "segment:21"
+  ],
+  "clubhouse": [
+   -70.46125404555535,
+   41.622740180162786,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 34,
+   "greens_osm": 29,
+   "tees": 388,
+   "tees_by_src": {
+    "osm": 120,
+    "segment": 29,
+    "lidar": 239
+   },
+   "fairways": 61,
+   "anchors": 9
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 476.9,
+    "card_yards": [
+     429,
+     469,
+     481,
+     500,
+     510
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 187.3,
+    "card_yards": [
+     325,
+     356,
+     378,
+     405,
+     424
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 347.3,
+    "card_yards": [
+     238,
+     254,
+     280,
+     297,
+     317
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 371.3,
+    "card_yards": [
+     312,
+     348,
+     393,
+     434,
+     476
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 153.8,
+    "card_yards": [
+     127,
+     163,
+     185,
+     202,
+     210
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 408.1,
+    "card_yards": [
+     299,
+     330,
+     342,
+     370,
+     392
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 166.2,
+    "card_yards": [
+     114,
+     134,
+     155,
+     174,
+     185
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 565.3,
+    "card_yards": [
+     250,
+     279,
+     289,
+     301,
+     309
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 434.5,
+    "card_yards": [
+     290,
+     316,
+     418,
+     433,
+     451
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 387.0,
+    "card_yards": [
+     266,
+     325,
+     336,
+     378,
+     398
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "11": {
+    "status": "check",
+    "flags": [
+     "ambiguous (65% of near-best routings agree)",
+     "close alternative (+1.4 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 159.0,
+    "card_yards": [
+     92,
+     110,
+     134,
+     158,
+     172
+    ],
+    "p_green": 0.648,
+    "anchored": false
+   },
+   "12": {
+    "status": "check",
+    "flags": [
+     "ambiguous (31% of near-best routings agree)",
+     "close alternative (+0.8 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 351.8,
+    "card_yards": [
+     274,
+     348,
+     361,
+     385,
+     414
+    ],
+    "p_green": 0.31,
+    "anchored": false
+   },
+   "13": {
+    "status": "check",
+    "flags": [
+     "ambiguous (30% of near-best routings agree)",
+     "close alternative (+0.8 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 418.8,
+    "card_yards": [
+     327,
+     381,
+     410,
+     428,
+     438
+    ],
+    "p_green": 0.297,
+    "anchored": false
+   },
+   "14": {
+    "status": "check",
+    "flags": [
+     "ambiguous (19% of near-best routings agree)",
+     "close alternative (+0.8 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 195.0,
+    "card_yards": [
+     120,
+     153,
+     170,
+     186,
+     195
+    ],
+    "p_green": 0.191,
+    "anchored": false
+   },
+   "15": {
+    "status": "check",
+    "flags": [
+     "ambiguous (32% of near-best routings agree)",
+     "close alternative (+0.8 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 424.1,
+    "card_yards": [
+     385,
+     405,
+     415,
+     440,
+     486
+    ],
+    "p_green": 0.322,
+    "anchored": false
+   },
+   "16": {
+    "status": "check",
+    "flags": [
+     "close alternative (+1.9 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 323.9,
+    "card_yards": [
+     218,
+     307,
+     337,
+     363,
+     406
+    ],
+    "p_green": 0.915,
+    "anchored": false
+   },
+   "17": {
+    "status": "check",
+    "flags": [
+     "ambiguous (58% of near-best routings agree)",
+     "close alternative (+0.8 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 271.1,
+    "card_yards": [
+     215,
+     256,
+     279,
+     301,
+     317
+    ],
+    "p_green": 0.584,
+    "anchored": false
+   },
+   "18": {
+    "status": "check",
+    "flags": [
+     "ambiguous (34% of near-best routings agree)",
+     "close alternative (+0.3 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 493.7,
+    "card_yards": [
+     427,
+     466,
+     482,
+     490,
+     500
+    ],
+    "p_green": 0.344,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 15,
+  "stages": {
+   "resolve": "ok: relation/16634124 Willowbend Country Club (Mashpee, MA)",
+   "osm": "ok: 2996 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 122 candidate pads near hole starts, 17 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/willowbend_ma__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/willowbend_ma__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 39 tee candidates)"
+  },
+  "tee_set": "Gold",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 510,
+    "card": 510
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 424,
+    "card": 424
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 317,
+    "card": 317
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 476,
+    "card": 476
+   },
+   "5": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 210,
+    "card": 210
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 392,
+    "card": 392
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 185,
+    "card": 185
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 308,
+    "card": 309
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 449,
+    "card": 451
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 395,
+    "card": 398
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 171,
+    "card": 172
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 414,
+    "card": 414
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 437,
+    "card": 438
+   },
+   "14": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 195,
+    "card": 195
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 488,
+    "card": 486
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 404,
+    "card": 406
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 317,
+    "card": 317
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 499,
+    "card": 500
+   }
+  }
+ }
+}

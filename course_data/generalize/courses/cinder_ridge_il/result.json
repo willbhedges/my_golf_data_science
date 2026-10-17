@@ -1,0 +1,891 @@
+{
+ "slug": "cinder_ridge_il",
+ "sample": {
+  "name": "Cinder Ridge Golf Course",
+  "osm": "way/295949952",
+  "state": "IL",
+  "center": [
+   -88.217858,
+   41.305886
+  ],
+  "area_ha": 180.5,
+  "tags": {
+   "addr:city": "Wilmington",
+   "website": "https://www.cinderridge.com/"
+  },
+  "counts": {
+   "green": 23,
+   "bunker": 55,
+   "fairway": 21,
+   "tee": 62,
+   "hole": 18
+  },
+  "tier": "validation",
+  "region": "Midwest",
+  "split": "test",
+  "slug": "cinder_ridge_il"
+ },
+ "run_utc": "2026-10-17T04:15:25Z",
+ "seconds": {
+  "resolve_by_name": 182.5,
+  "osm": 31.3,
+  "parking": 22.8,
+  "scorecard": 21.1,
+  "imagery": 26.9,
+  "naip4": 0.4,
+  "segment": 30.9,
+  "lidar_pads": 1.8,
+  "package_today": 3.6,
+  "routing": 0.4,
+  "package_routed": 3.3
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 295949952
+  },
+  "name": "Cinder Ridge Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Cinder Ridge Golf Course",
+    "Wilmington",
+    18,
+    "way/295949952"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 6,
+   "golf=bunker": 55,
+   "golf=cartpath": 32,
+   "golf=driving_range": 1,
+   "golf=fairway": 21,
+   "golf=green": 23,
+   "golf=hole": 15,
+   "golf=lateral_water_hazard": 2,
+   "golf=path": 5,
+   "golf=tee": 62,
+   "golf=water_hazard": 3,
+   "holes_with_handicap": 15,
+   "holes_with_par": 15,
+   "water_polygons": 5
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "12",
+   "13",
+   "14",
+   "15",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "9"
+  ],
+  "parking": 1
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "club_site",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/cinder-ridge-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": true,
+    "info": "https://cinderridgegolf.com/course-tour"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/16de702e-0662-4fba-b2c0-20297f164d24"
+   }
+  ],
+  "chosen": "club_site",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Tee 1",
+   "Tee 2",
+   "Tee 3",
+   "Tee 4",
+   "Tee 5"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   2463,
+   2761
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 20,
+   "tee": 39,
+   "fairway": 19,
+   "bunker": 53
+  },
+  "greens_p06": 20,
+  "seconds_infer": 27.2
+ },
+ "lidar_pads": 185,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 17,
+  "green_segment": 1,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: way/295949952 Cinder Ridge Golf Course (Wilmington, IL)",
+   "osm": "ok: 279 features",
+   "scorecard": "ok: club_site (club_site)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 65 candidate pads near hole starts, 11 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/cinder_ridge_il/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/cinder_ridge_il/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 2 holes, +1 greens, 16 tee candidates)"
+  },
+  "tee_set": "Tee 1",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 406,
+    "card": 412
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 597,
+    "card": 596
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 412,
+    "card": 420
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 201,
+    "card": 201
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 365,
+    "card": 373
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 182,
+    "card": 182
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 407,
+    "card": 429
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 629,
+    "card": 628
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 385,
+    "card": 385
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 421,
+    "card": 427
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 552,
+    "card": 570
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 388,
+    "card": 408
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 157,
+    "card": 165
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 381,
+    "card": 392
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 311,
+    "card": 325
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 162,
+    "card": 165
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 413,
+    "card": 413
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 502,
+    "card": 504
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -12.443,
+  "n_check": 1,
+  "margins": true,
+  "unused_greens": [
+   "osm:way/904248633",
+   "osm:way/904248634",
+   "osm:way/904248635",
+   "osm:way/904248636",
+   "osm:way/904248638",
+   "osm:way/904248652",
+   "segment:18"
+  ],
+  "clubhouse": [
+   -88.21198293227027,
+   41.305504496860166,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 25,
+   "greens_osm": 23,
+   "tees": 138,
+   "tees_by_src": {
+    "osm": 60,
+    "segment": 6,
+    "lidar": 72
+   },
+   "fairways": 40,
+   "anchors": 15
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 391.5,
+    "card_yards": [
+     250,
+     340,
+     368,
+     396,
+     412
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 504.3,
+    "card_yards": [
+     420,
+     500,
+     527,
+     554,
+     596
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 390.7,
+    "card_yards": [
+     265,
+     320,
+     350,
+     410,
+     420
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 168.7,
+    "card_yards": [
+     145,
+     155,
+     169,
+     189,
+     201
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 339.9,
+    "card_yards": [
+     225,
+     328,
+     343,
+     361,
+     373
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 190.6,
+    "card_yards": [
+     135,
+     140,
+     158,
+     175,
+     182
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 402.9,
+    "card_yards": [
+     285,
+     363,
+     381,
+     398,
+     429
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "check",
+    "flags": [
+     "ambiguous (28% of near-best routings agree)",
+     "close alternative (+0.1 cost without this green)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 593.3,
+    "card_yards": [
+     285,
+     505,
+     576,
+     598,
+     628
+    ],
+    "p_green": 0.283,
+    "anchored": false
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 247.9,
+    "card_yards": [
+     306,
+     326,
+     357,
+     363,
+     385
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 417.3,
+    "card_yards": [
+     245,
+     335,
+     363,
+     385,
+     427
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 465.4,
+    "card_yards": [
+     410,
+     470,
+     530,
+     560,
+     570
+    ],
+    "p_green": 0.948,
+    "anchored": false
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 373.6,
+    "card_yards": [
+     230,
+     318,
+     334,
+     390,
+     408
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 145.5,
+    "card_yards": [
+     123,
+     142,
+     151,
+     165
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 375.6,
+    "card_yards": [
+     245,
+     325,
+     347,
+     368,
+     392
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 274.9,
+    "card_yards": [
+     280,
+     325
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 122.7,
+    "card_yards": [
+     112,
+     125,
+     132,
+     133,
+     165
+    ],
+    "p_green": 0.957,
+    "anchored": false
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 391.3,
+    "card_yards": [
+     266,
+     346,
+     372,
+     398,
+     413
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 495.8,
+    "card_yards": [
+     406,
+     436,
+     462,
+     489,
+     504
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: way/295949952 Cinder Ridge Golf Course (Wilmington, IL)",
+   "osm": "ok: 283 features",
+   "scorecard": "ok: club_site (club_site)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 64 candidate pads near hole starts, 9 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/cinder_ridge_il__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/cinder_ridge_il__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 16 tee candidates)"
+  },
+  "tee_set": "Tee 1",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 406,
+    "card": 412
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 597,
+    "card": 596
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 412,
+    "card": 420
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 201,
+    "card": 201
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 365,
+    "card": 373
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 182,
+    "card": 182
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 407,
+    "card": 429
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 629,
+    "card": 628
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 385,
+    "card": 385
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 421,
+    "card": 427
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 552,
+    "card": 570
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 388,
+    "card": 408
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 157,
+    "card": 165
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 381,
+    "card": 392
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 322,
+    "card": 325
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 162,
+    "card": 165
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 413,
+    "card": 413
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 502,
+    "card": 504
+   }
+  }
+ }
+}

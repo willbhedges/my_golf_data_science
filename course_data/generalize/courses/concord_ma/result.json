@@ -1,0 +1,907 @@
+{
+ "slug": "concord_ma",
+ "sample": {
+  "name": "Concord Country Club",
+  "osm": "way/29815319",
+  "state": "MA",
+  "center": [
+   -71.383762,
+   42.447089
+  ],
+  "area_ha": 140.1,
+  "tags": {
+   "addr:city": "Concord",
+   "website": "https://www.concordcc.org/"
+  },
+  "counts": {
+   "tee": 57,
+   "green": 24,
+   "bunker": 63,
+   "fairway": 22,
+   "hole": 18
+  },
+  "tier": "validation",
+  "region": "Northeast",
+  "split": "train",
+  "slug": "concord_ma"
+ },
+ "run_utc": "2026-10-17T04:51:22Z",
+ "seconds": {
+  "resolve_by_name": 125.6,
+  "osm": 3.3,
+  "parking": 38.5,
+  "scorecard": 10.2,
+  "imagery": 27.8,
+  "naip4": 0.4,
+  "segment": 27.8,
+  "lidar_pads": 1.7,
+  "package_today": 4.9,
+  "routing": 0.1,
+  "package_routed": 4.8
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 29815319
+  },
+  "name": "Concord Country Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Concord Country Club",
+    "Concord",
+    18,
+    "way/29815319"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 12,
+   "golf=bunker": 63,
+   "golf=cartpath": 2,
+   "golf=driving_range": 1,
+   "golf=fairway": 22,
+   "golf=green": 24,
+   "golf=hole": 17,
+   "golf=lateral_water_hazard": 3,
+   "golf=path": 29,
+   "golf=rough": 3,
+   "golf=tee": 57,
+   "holes_with_par": 17,
+   "water_lines": 4,
+   "water_polygons": 7
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 13
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/concord-country-club"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/9b739733-62ed-4b16-83c1-7af46e1886e3"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 70,
+  "sets": [
+   "Championship",
+   "Black/Blue",
+   "Blue",
+   "Blue/White",
+   "White",
+   "Red",
+   "Red/Gold",
+   "White (L)",
+   "Red (L)",
+   "Red/Gold (L)",
+   "Gold (L)"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   2917,
+   1950
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 22,
+   "tee": 54,
+   "fairway": 21,
+   "bunker": 68
+  },
+  "greens_p06": 22,
+  "seconds_infer": 23.7
+ },
+ "lidar_pads": 244,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/29815319 Concord Country Club (Concord, MA)",
+   "osm": "ok: 792 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 11 sets; lidar pads: 96 candidate pads near hole starts, 17 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 11 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/concord_ma/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/concord_ma/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 8 tee candidates)"
+  },
+  "tee_set": "Championship",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 481,
+    "card": 479
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 435,
+    "card": 435
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 424,
+    "card": 429
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 451,
+    "card": 451
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 430,
+    "card": 430
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 199,
+    "card": 199
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 381,
+    "card": 383
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 374,
+    "card": 374
+   },
+   "9": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 147,
+    "card": 147
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 403,
+    "card": 405
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 402,
+    "card": 401
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 181,
+    "card": 181
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 353,
+    "card": 352
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 417,
+    "card": 417
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 190,
+    "card": 190
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 440,
+    "card": 441
+   },
+   "17": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 532,
+    "card": 534
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 414,
+    "card": 415
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -23.434,
+  "n_check": 0,
+  "margins": true,
+  "unused_greens": [
+   "osm:way/1013909202",
+   "osm:way/1013913211",
+   "osm:way/1013913213",
+   "osm:way/1013913214",
+   "osm:way/1013913215",
+   "osm:way/1013913216",
+   "segment:17"
+  ],
+  "clubhouse": [
+   -71.3823246129033,
+   42.45015190642337,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 25,
+   "greens_osm": 24,
+   "tees": 153,
+   "tees_by_src": {
+    "osm": 57,
+    "segment": 6,
+    "lidar": 90
+   },
+   "fairways": 43,
+   "anchors": 17
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 464.8,
+    "card_yards": [
+     378,
+     392,
+     456,
+     463,
+     474,
+     479
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 416.0,
+    "card_yards": [
+     254,
+     264,
+     336,
+     389,
+     425,
+     435
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 400.7,
+    "card_yards": [
+     293,
+     359,
+     362,
+     367,
+     403,
+     429
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 408.0,
+    "card_yards": [
+     299,
+     345,
+     349,
+     359,
+     403,
+     451
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 419.3,
+    "card_yards": [
+     366,
+     412,
+     414,
+     418,
+     430
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 191.6,
+    "card_yards": [
+     159,
+     162,
+     169,
+     190,
+     199
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 375.5,
+    "card_yards": [
+     284,
+     289,
+     325,
+     341,
+     383
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 367.8,
+    "card_yards": [
+     309,
+     312,
+     342,
+     367,
+     374
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 144.0,
+    "card_yards": [
+     100,
+     120,
+     129,
+     138,
+     147
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 361.9,
+    "card_yards": [
+     313,
+     386,
+     393,
+     399,
+     405
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 397.4,
+    "card_yards": [
+     271,
+     273,
+     356,
+     360,
+     373,
+     401
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 171.1,
+    "card_yards": [
+     148,
+     154,
+     161,
+     169,
+     181
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 346.0,
+    "card_yards": [
+     194,
+     238,
+     305,
+     312,
+     343,
+     352
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 411.2,
+    "card_yards": [
+     305,
+     350,
+     356,
+     411,
+     417
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 190.2,
+    "card_yards": [
+     121,
+     138,
+     141,
+     168,
+     190
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 380.9,
+    "card_yards": [
+     356,
+     386,
+     397,
+     436,
+     441
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 520.1,
+    "card_yards": [
+     359,
+     372,
+     451,
+     477,
+     505,
+     534
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 409.1,
+    "card_yards": [
+     285,
+     290,
+     324,
+     328,
+     386,
+     415
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/29815319 Concord Country Club (Concord, MA)",
+   "osm": "ok: 792 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 11 sets; lidar pads: 96 candidate pads near hole starts, 17 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 11 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/concord_ma__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/concord_ma__routed/imagery/dem.tif (18/18 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 8 tee candidates)"
+  },
+  "tee_set": "Championship",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 481,
+    "card": 479
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 435,
+    "card": 435
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 424,
+    "card": 429
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 451,
+    "card": 451
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 430,
+    "card": 430
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 199,
+    "card": 199
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 381,
+    "card": 383
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 374,
+    "card": 374
+   },
+   "9": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 147,
+    "card": 147
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 403,
+    "card": 405
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 402,
+    "card": 401
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 181,
+    "card": 181
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 353,
+    "card": 352
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 417,
+    "card": 417
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 190,
+    "card": 190
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 440,
+    "card": 441
+   },
+   "17": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 532,
+    "card": 534
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 414,
+    "card": 415
+   }
+  }
+ }
+}

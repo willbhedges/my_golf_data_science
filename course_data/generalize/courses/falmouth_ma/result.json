@@ -1,0 +1,1047 @@
+{
+ "slug": "falmouth_ma",
+ "sample": {
+  "name": "Falmouth Country Club",
+  "osm": "way/29843255",
+  "state": "MA",
+  "center": [
+   -70.552211,
+   41.594498
+  ],
+  "area_ha": 195.7,
+  "tags": {
+   "addr:city": "East Falmouth",
+   "website": "https://www.falmouthcountryclub.com/"
+  },
+  "counts": {
+   "bunker": 54,
+   "green": 28,
+   "tee": 56,
+   "fairway": 23,
+   "hole": 27
+  },
+  "tier": "validation",
+  "region": "Northeast",
+  "split": "train",
+  "slug": "falmouth_ma"
+ },
+ "run_utc": "2026-10-17T04:52:25Z",
+ "seconds": {
+  "resolve_by_name": 178.3,
+  "osm": 20.1,
+  "parking": 27.6,
+  "scorecard": 26.1,
+  "imagery": 35.0,
+  "naip4": 0.6,
+  "segment": 47.2,
+  "lidar_pads": 4.5,
+  "package_today": 6.8,
+  "routing": 0.1,
+  "package_routed": 6.6
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 29843255
+  },
+  "name": "Falmouth Country Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Falmouth Country Club",
+    "East Falmouth",
+    27,
+    "way/29843255"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 8,
+   "golf=bunker": 54,
+   "golf=cartpath": 4,
+   "golf=driving_range": 1,
+   "golf=fairway": 23,
+   "golf=green": 28,
+   "golf=hole": 27,
+   "golf=lateral_water_hazard": 1,
+   "golf=rough": 1,
+   "golf=tee": 56,
+   "golf=water_hazard": 4,
+   "holes_with_par": 27,
+   "trees_polygons": 1,
+   "water_polygons": 6
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "Talon 1",
+   "Talon 2",
+   "Talon 3",
+   "Talon 4",
+   "Talon 5",
+   "Talon 6",
+   "Talon 7",
+   "Talon 8",
+   "Talon 9"
+  ],
+  "parking": 7
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (10 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 13 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/af01b780-0c34-4c6d-bc47-994fded98bac"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Blue",
+   "White",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_rgb.tif",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   2866,
+   2567
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 30,
+   "tee": 49,
+   "fairway": 28,
+   "bunker": 73
+  },
+  "greens_p06": 30,
+  "seconds_infer": 43.1
+ },
+ "lidar_pads": 94,
+ "today": {
+  "holes_built": 27,
+  "with_green_polygon": 27,
+  "green_osm": 27,
+  "green_segment": 0,
+  "with_tee_box": 19,
+  "stages": {
+   "resolve": "ok: way/29843255 Falmouth Country Club (East Falmouth, MA)",
+   "osm": "ok: 847 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 27 candidate pads near hole starts, 3 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (27 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/falmouth_ma/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/falmouth_ma/imagery/dem.tif (27/27 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+73 zones on 6 holes, +0 greens, 14 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 390,
+    "card": 400
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 166,
+    "card": 175
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 351,
+    "card": 370
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 379,
+    "card": 384
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 368,
+    "card": 403
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 146,
+    "card": 174
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 299,
+    "card": 318
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 483,
+    "card": 531
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 409,
+    "card": 426
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 507,
+    "card": 516
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 335,
+    "card": 385
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 138,
+    "card": 151
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 424,
+    "card": 427
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 544,
+    "card": 545
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 444,
+    "card": 500
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 383,
+    "card": 380
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 144,
+    "card": 190
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 382,
+    "card": 390
+   },
+   "Talon 1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee tagged Blue",
+    "measured": 467,
+    "card": null
+   },
+   "Talon 2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 295,
+    "card": null
+   },
+   "Talon 3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 362,
+    "card": null
+   },
+   "Talon 4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 261,
+    "card": null
+   },
+   "Talon 5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 426,
+    "card": null
+   },
+   "Talon 6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 338,
+    "card": null
+   },
+   "Talon 7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 516,
+    "card": null
+   },
+   "Talon 8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 338,
+    "card": null
+   },
+   "Talon 9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 335,
+    "card": null
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -23.242,
+  "n_check": 0,
+  "margins": true,
+  "unused_greens": [
+   "osm:way/911027923",
+   "osm:way/991714194",
+   "osm:way/1549910726",
+   "osm:way/1549910735",
+   "osm:way/1549911691",
+   "osm:way/1552709829",
+   "osm:way/1552709830",
+   "osm:way/1552709831",
+   "osm:way/1552709832",
+   "osm:way/1552709833",
+   "segment:11",
+   "segment:27"
+  ],
+  "clubhouse": [
+   -70.5562165336105,
+   41.5984556400035,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 30,
+   "greens_osm": 28,
+   "tees": 93,
+   "tees_by_src": {
+    "osm": 54,
+    "segment": 11,
+    "lidar": 28
+   },
+   "fairways": 51,
+   "anchors": 27
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 370.6,
+    "card_yards": [
+     364,
+     380,
+     400
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 145.5,
+    "card_yards": [
+     135,
+     155,
+     175
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 347.7,
+    "card_yards": [
+     360,
+     365,
+     370
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 341.2,
+    "card_yards": [
+     328,
+     351,
+     384
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 330.7,
+    "card_yards": [
+     320,
+     353,
+     403
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 136.6,
+    "card_yards": [
+     110,
+     151,
+     174
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 246.1,
+    "card_yards": [
+     228,
+     282,
+     318
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 462.9,
+    "card_yards": [
+     461,
+     488,
+     531
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 332.0,
+    "card_yards": [
+     343,
+     393,
+     426
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 451.4,
+    "card_yards": [
+     436,
+     483,
+     516
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 305.8,
+    "card_yards": [
+     312,
+     362,
+     385
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 120.6,
+    "card_yards": [
+     125,
+     135,
+     151
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 406.2,
+    "card_yards": [
+     314,
+     401,
+     427
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 505.6,
+    "card_yards": [
+     450,
+     535,
+     545
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 438.3,
+    "card_yards": [
+     435,
+     495,
+     500
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 342.1,
+    "card_yards": [
+     325,
+     370,
+     380
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 144.1,
+    "card_yards": [
+     145,
+     165,
+     190
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 380.0,
+    "card_yards": [
+     360,
+     370,
+     390
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 27,
+  "with_green_polygon": 27,
+  "green_osm": 27,
+  "green_segment": 0,
+  "with_tee_box": 19,
+  "stages": {
+   "resolve": "ok: way/29843255 Falmouth Country Club (East Falmouth, MA)",
+   "osm": "ok: 847 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 27 candidate pads near hole starts, 3 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (27 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/falmouth_ma__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/falmouth_ma__routed/imagery/dem.tif (27/27 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+73 zones on 6 holes, +0 greens, 14 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 390,
+    "card": 400
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 166,
+    "card": 175
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 351,
+    "card": 370
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 379,
+    "card": 384
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 368,
+    "card": 403
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 146,
+    "card": 174
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 299,
+    "card": 318
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 483,
+    "card": 531
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 409,
+    "card": 426
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 507,
+    "card": 516
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 335,
+    "card": 385
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 138,
+    "card": 151
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 424,
+    "card": 427
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 544,
+    "card": 545
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 444,
+    "card": 500
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 383,
+    "card": 380
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 144,
+    "card": 190
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 382,
+    "card": 390
+   },
+   "Talon 1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee tagged Blue",
+    "measured": 467,
+    "card": null
+   },
+   "Talon 2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 295,
+    "card": null
+   },
+   "Talon 3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 362,
+    "card": null
+   },
+   "Talon 4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 261,
+    "card": null
+   },
+   "Talon 5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 426,
+    "card": null
+   },
+   "Talon 6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 338,
+    "card": null
+   },
+   "Talon 7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 516,
+    "card": null
+   },
+   "Talon 8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 338,
+    "card": null
+   },
+   "Talon 9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 335,
+    "card": null
+   }
+  }
+ }
+}

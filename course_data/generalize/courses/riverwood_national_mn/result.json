@@ -1,0 +1,1048 @@
+{
+ "slug": "riverwood_national_mn",
+ "sample": {
+  "name": "Riverwood National",
+  "osm": "relation/17666418",
+  "state": "MN",
+  "center": [
+   -93.678874,
+   45.282817
+  ],
+  "area_ha": 130.8,
+  "tags": {
+   "addr:city": "Otsego"
+  },
+  "counts": {
+   "tee": 54,
+   "bunker": 33,
+   "hole": 18,
+   "fairway": 20,
+   "green": 19
+  },
+  "tier": "validation",
+  "region": "Midwest",
+  "split": "test",
+  "slug": "riverwood_national_mn"
+ },
+ "run_utc": "2026-10-17T04:19:57Z",
+ "seconds": {
+  "resolve_by_name": 165.4,
+  "osm": 19.2,
+  "parking": 23.0,
+  "scorecard": 5.8,
+  "imagery": 23.3,
+  "naip4": 0.5,
+  "segment": 57.9,
+  "lidar_pads": 2.2,
+  "package_today": 6.9,
+  "routing": 0.2,
+  "package_routed": 6.6
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "relation",
+   "id": 17666418
+  },
+  "name": "Riverwood National",
+  "same_element": true,
+  "candidates": [
+   [
+    "Riverwood National",
+    "Otsego",
+    18,
+    "relation/17666418"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 156,
+   "built_up_landuse": 11,
+   "golf=bunker": 33,
+   "golf=cartpath": 6,
+   "golf=clubhouse": 1,
+   "golf=driving_range": 1,
+   "golf=fairway": 20,
+   "golf=green": 19,
+   "golf=hole": 17,
+   "golf=pin": 18,
+   "golf=tee": 54,
+   "golf=water_hazard": 23,
+   "holes_with_par": 1,
+   "long_grass_polygons": 29,
+   "single_trees": 76,
+   "trees_polygons": 12,
+   "water_polygons": 32
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 2
+ },
+ "scorecard": {
+  "found": [
+   "golfify"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/riverwood-national-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": false,
+    "info": "opengolfapi: no candidate in MN matching 'Riverwood National' within 5.0 km"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Black",
+   "Blue",
+   "White",
+   "Gold",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   3063,
+   1697
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 19,
+   "tee": 55,
+   "fairway": 17,
+   "bunker": 30
+  },
+  "greens_p06": 19,
+  "seconds_infer": 52.7
+ },
+ "lidar_pads": 192,
+ "today": {
+  "holes_built": 26,
+  "with_green_polygon": 23,
+  "green_osm": 23,
+  "green_segment": 0,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: relation/17666418 Riverwood National (Otsego, MN)",
+   "osm": "ok: 978 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 49 candidate pads near hole starts, 3 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (26 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/riverwood_national_mn/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/riverwood_national_mn/imagery/dem.tif (23/26 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 8 tee candidates)"
+  },
+  "tee_set": "Black",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 443,
+    "card": 444
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 377,
+    "card": 377
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 206,
+    "card": 209
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 372,
+    "card": 372
+   },
+   "5": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 529,
+    "card": 531
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 226,
+    "card": 226
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 399,
+    "card": 402
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 401,
+    "card": 401
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 555,
+    "card": 558
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 487,
+    "card": 487
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 413,
+    "card": 415
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 210,
+    "card": 211
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 396,
+    "card": 396
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 505,
+    "card": 504
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 411,
+    "card": 417
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 176,
+    "card": 176
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 374,
+    "card": 377
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 519,
+    "card": 519
+   },
+   "19": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 140,
+    "card": null
+   },
+   "20": {
+    "par": 3,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 193,
+    "card": null
+   },
+   "21": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 120,
+    "card": null
+   },
+   "22": {
+    "par": 3,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 139,
+    "card": null
+   },
+   "23": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 110,
+    "card": null
+   },
+   "24": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 336,
+    "card": null
+   },
+   "25": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 346,
+    "card": null
+   },
+   "26": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 124,
+    "card": null
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -16.342,
+  "n_check": 0,
+  "margins": true,
+  "unused_greens": [
+   "osm:way/890525027"
+  ],
+  "clubhouse": [
+   -93.6798089413578,
+   45.28907608236953,
+   "named"
+  ],
+  "inputs": {
+   "greens": 19,
+   "greens_osm": 19,
+   "tees": 172,
+   "tees_by_src": {
+    "osm": 54,
+    "segment": 8,
+    "lidar": 110
+   },
+   "fairways": 37,
+   "anchors": 17
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 430.8,
+    "card_yards": [
+     295,
+     359,
+     371,
+     380,
+     444
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 379.4,
+    "card_yards": [
+     268,
+     327,
+     342,
+     362,
+     377
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 201.4,
+    "card_yards": [
+     106,
+     142,
+     147,
+     167,
+     209
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 364.8,
+    "card_yards": [
+     240,
+     243,
+     331,
+     347,
+     372
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 504.7,
+    "card_yards": [
+     388,
+     456,
+     486,
+     504,
+     531
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 222.3,
+    "card_yards": [
+     108,
+     161,
+     163,
+     184,
+     226
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 398.0,
+    "card_yards": [
+     257,
+     342,
+     349,
+     365,
+     402
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 396.9,
+    "card_yards": [
+     272,
+     359,
+     360,
+     377,
+     401
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 528.5,
+    "card_yards": [
+     400,
+     450,
+     473,
+     494,
+     558
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 455.2,
+    "card_yards": [
+     277,
+     298,
+     413,
+     427,
+     487
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 412.9,
+    "card_yards": [
+     290,
+     292,
+     358,
+     367,
+     415
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 178.8,
+    "card_yards": [
+     124,
+     153,
+     161,
+     183,
+     211
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 355.4,
+    "card_yards": [
+     271,
+     298,
+     352,
+     373,
+     396
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 439.5,
+    "card_yards": [
+     367,
+     376,
+     448,
+     466,
+     504
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 362.7,
+    "card_yards": [
+     285,
+     324,
+     367,
+     385,
+     417
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 176.0,
+    "card_yards": [
+     103,
+     140,
+     147,
+     163,
+     176
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 370.0,
+    "card_yards": [
+     255,
+     325,
+     329,
+     349,
+     377
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 517.1,
+    "card_yards": [
+     385,
+     462,
+     468,
+     481,
+     519
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 26,
+  "with_green_polygon": 23,
+  "green_osm": 23,
+  "green_segment": 0,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: relation/17666418 Riverwood National (Otsego, MN)",
+   "osm": "ok: 979 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 49 candidate pads near hole starts, 3 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (26 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/riverwood_national_mn__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/riverwood_national_mn__routed/imagery/dem.tif (23/26 holes)",
+   "ob": "geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 8 tee candidates)"
+  },
+  "tee_set": "Black",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 443,
+    "card": 444
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 377,
+    "card": 377
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 206,
+    "card": 209
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 372,
+    "card": 372
+   },
+   "5": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 529,
+    "card": 531
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 226,
+    "card": 226
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 399,
+    "card": 402
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 401,
+    "card": 401
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 555,
+    "card": 558
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 487,
+    "card": 487
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 413,
+    "card": 415
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 210,
+    "card": 211
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 396,
+    "card": 396
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 505,
+    "card": 504
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 411,
+    "card": 417
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 176,
+    "card": 176
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 374,
+    "card": 377
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 519,
+    "card": 519
+   },
+   "19": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 140,
+    "card": null
+   },
+   "20": {
+    "par": 3,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 193,
+    "card": null
+   },
+   "21": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 120,
+    "card": null
+   },
+   "22": {
+    "par": 3,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 139,
+    "card": null
+   },
+   "23": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 110,
+    "card": null
+   },
+   "24": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 336,
+    "card": null
+   },
+   "25": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 346,
+    "card": null
+   },
+   "26": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 124,
+    "card": null
+   }
+  }
+ }
+}
