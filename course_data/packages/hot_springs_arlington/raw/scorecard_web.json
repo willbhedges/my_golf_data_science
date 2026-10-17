@@ -1,5 +1,5 @@
 {
- "fetched_utc": "2026-10-17T16:53:07Z",
+ "fetched_utc": "2026-10-17T17:23:26Z",
  "tried": [
   {
    "source": "golfify",
@@ -13,9 +13,261 @@
   },
   {
    "source": "opengolfapi",
-   "ok": false,
-   "info": "opengolfapi: card at https://api.opengolfapi.org/api/v1/courses/d922c200-98e2-463a-a24a-35dfef5fe34c rejected (hole count / lengths don't fit OSM)"
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/d0ee9784-1a88-4d33-8b3e-158fa9827a46"
   }
  ],
- "cards": []
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/d0ee9784-1a88-4d33-8b3e-158fa9827a46",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/d0ee9784-1a88-4d33-8b3e-158fa9827a46",
+    "par": [
+     4,
+     3,
+     4,
+     4,
+     4,
+     5,
+     4,
+     3,
+     5,
+     5,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     3,
+     5
+    ],
+    "handicap": [
+     1,
+     17,
+     3,
+     11,
+     9,
+     15,
+     5,
+     13,
+     7,
+     12,
+     6,
+     10,
+     2,
+     8,
+     14,
+     4,
+     16,
+     18
+    ],
+    "tee_sets": {
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       426,
+       160,
+       371,
+       360,
+       356,
+       504,
+       386,
+       175,
+       565,
+       555,
+       180,
+       410,
+       448,
+       406,
+       338,
+       403,
+       150,
+       520
+      ],
+      "total": 6713,
+      "total_stated": 6713,
+      "rating": 72.8,
+      "slope": 132,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       408,
+       147,
+       364,
+       351,
+       345,
+       491,
+       374,
+       167,
+       556,
+       537,
+       177,
+       402,
+       442,
+       400,
+       332,
+       396,
+       143,
+       510
+      ],
+      "total": 6542,
+      "total_stated": 6542,
+      "rating": 72,
+      "slope": 129,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Green": {
+      "colour": "green",
+      "aliases": [
+       "green"
+      ],
+      "yards": [
+       346,
+       127,
+       355,
+       330,
+       343,
+       471,
+       368,
+       156,
+       462,
+       461,
+       141,
+       374,
+       342,
+       363,
+       328,
+       322,
+       127,
+       456
+      ],
+      "total": 5872,
+      "total_stated": 5872,
+      "rating": 68.9,
+      "slope": 120,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Green (Female)",
+        "rating": 74.4,
+        "slope": 139,
+        "total": 5872,
+        "par": 72
+       }
+      ]
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       312,
+       120,
+       355,
+       283,
+       343,
+       451,
+       322,
+       128,
+       422,
+       454,
+       141,
+       301,
+       276,
+       322,
+       325,
+       280,
+       120,
+       423
+      ],
+      "total": 5378,
+      "total_stated": 5378,
+      "rating": 66.8,
+      "slope": 116,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 71.4,
+        "slope": 128,
+        "total": 5378,
+        "par": 72
+       }
+      ]
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       306,
+       114,
+       241,
+       243,
+       267,
+       431,
+       246,
+       80,
+       415,
+       403,
+       112,
+       293,
+       276,
+       312,
+       277,
+       278,
+       119,
+       415
+      ],
+      "total": 4828,
+      "total_stated": 4828,
+      "rating": 64.5,
+      "slope": 110,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Red (Female)",
+        "rating": 68.7,
+        "slope": 124,
+        "total": 4828,
+        "par": 72
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "d0ee9784-1a88-4d33-8b3e-158fa9827a46",
+     "course_name": "Hot Springs Country Club Arlington Course",
+     "club_name": "Hot Springs Country Club Arlington Course",
+     "city": "Hot Springs",
+     "state": "AR",
+     "lat": 34.4839200273,
+     "lng": -93.0372047424,
+     "holes": 18,
+     "yardage": 6713,
+     "website": "http://www.hotspringscc.com"
+    }
+   }
+  }
+ ]
 }
