@@ -1000,7 +1000,27 @@ def render_images(package, pkg_dir, img_dir):
     return f"ok: {n}/{len(package['holes'])} rendered from {os.path.relpath(img_dir, pc.ROOT)}"
 
 
+def reapply_corrections(package, pkg_dir):
+    """Golfer corrections from the review page (packages/<slug>/corrections.json, product/apply_answers.py)
+    survive a rebuild: matched to the new zones by lie + overlap and redone. Never fails the build."""
+    path = os.path.join(pkg_dir, "corrections.json")
+    if not os.path.exists(path):
+        return None
+    try:
+        aa = load(os.path.join(CD, "product", "apply_answers.py"), "cdp_apply_answers")
+        if aa is None:
+            return None
+        res = aa.reapply(package, pc.read_json(path), reframe=reframe, log=pc.log)
+        package.setdefault("warnings", []).append(
+            f"golfer corrections re-applied: {res['applied']} (skipped {len(res['skipped'])})")
+        return res
+    except Exception as e:                                       # noqa: BLE001
+        pc.log(f"! corrections not re-applied: {type(e).__name__}: {e}")
+        return None
+
+
 def write(package, pkg_dir):
+    reapply_corrections(package, pkg_dir)
     pc.write_json(os.path.join(pkg_dir, "package.json"), package, indent=None)
     slug = package["slug"]
     with open(os.path.join(pkg_dir, "course_auto.py"), "w") as fh:

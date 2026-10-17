@@ -14,6 +14,9 @@ What each answer does (items and frames come from review.json, so the page never
           absent   the group's zones_ll are deleted
           moved    the group is translated `shift` yds toward the fairway (sideways, or along the line for a
                    hazard across it), then verified
+  fairway confirm  the hole's fairway zones get verified; moved: that side's edge moved `shift` yds toward the
+                   centre (+ = narrower; verify.fairway_moved, the same transform the review tested)
+  cut     present  the tested first-cut polygons are added (src golfer:cut); confirm: verification.no_cut = true
   gap     present  a "recovery" polygon over the tested strip is added (src golfer:gap)
           confirm  hole.verification.open_<side> = true (verify.py stops asking)
   check   playable / not_playable is recorded in hole.verification (the plan's guard still prints the CHECK)
@@ -24,6 +27,11 @@ skips that item with a warning.
 Re-plan: decide.quick_hole (the quick plan, N = 8000, same seeds) for the changed holes only; their entries in
 <plan out>/decision.json and plan.json picks are replaced and <plan out>/replan.json lists before -> after.
 The book PDFs and the wind page are not rebuilt here (commit a plan request for that).
+
+Corrections survive a package rebuild: every applied answer is also stored, with the resolved geometry (the tee's
+new lon/lat, the polygons removed / before and after a move / added), in packages/<slug>/corrections.json.
+reapply(package, corrections) matches stored polygons to the rebuilt package's zones by lie and overlap
+(IoU >= 0.5) and redoes each correction; platform/package.py write() calls it when that file exists.
 """
 import argparse
 import copy
@@ -71,13 +79,15 @@ def _fp_ok(z, fp):
     return bool(p) and abs(float(p[0][0]) - fp[0]) < 1e-6 and abs(float(p[0][1]) - fp[1]) < 1e-6
 
 
-def apply(pkg, review, answers, log=print):
-    """-> (new package dict, {hole ref: [item ids that changed geometry]}, warnings)."""
+def apply(pkg, review, answers, log=print, corrections_out=None):
+    """-> (new package dict, {hole ref: [item ids that changed geometry]}, warnings). corrections_out (a list)
+    receives the resolved corrections for store_corrections()."""
     pkg = copy.deepcopy(pkg)
     tee_set = review["tee_set"]
     items = {it["id"]: it for it in review["items"]}
     changed, warn = {}, []
     removals = {}
+    corr = []
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     for a in answers.get("answers", []):
         it = items.get(a.get("id"))
@@ -113,32 +123,51 @@ def apply(pkg, review, answers, log=print):
                 changed.setdefault(ref, []).append(it["id"])
             else:
                 ent.update(confidence=1.0, verified="golfer")
-        elif it["type"] == "hazard":
+            corr.append(dict(kind="tee", hole=ref, tee_set=tee_set, answer=ans, tee_ll=ent.get("tee_ll"), id=it["id"]))
+        elif it["type"] in ("hazard", "fairway"):
             zl = h.get("zones_ll") or []
             idx = it.get("zone_idx", [])
             fps = it.get("zone_fp", [])
             if any(i >= len(zl) or not _fp_ok(zl[i], fp) for i, fp in zip(idx, fps)):
                 warn.append(f"{a['id']}: zones changed since the review (package rebuilt?): skipped")
                 continue
-            if ans == "absent":
+            lie = zl[idx[0]].get("lie") if idx else None
+            before = [copy.deepcopy(zl[i]["poly"]) for i in idx]
+            if ans == "absent" and it["type"] == "hazard":
                 removals.setdefault(ref, set()).update(idx)
                 changed.setdefault(ref, []).append(it["id"])
+                corr.append(dict(kind="zones", hole=ref, answer="absent", lie=lie, polys=before, id=it["id"]))
             elif ans == "moved" and abs(float(a.get("shift", 0))) >= 0.5 and fr is not None:
-                vec = np.array(it["toward"], float) * float(a["shift"])
+                if it["type"] == "fairway":
+                    moved = V.fairway_moved(h, fr, idx, it["side"], float(a["shift"]), float(hv["base"]["aim"]))
+                    for i in idx:
+                        zl[i]["poly"] = moved[i]["poly"]
+                else:
+                    vec = np.array(it["toward"], float) * float(a["shift"])
+                    for i in idx:
+                        zl[i]["poly"] = _to_ll(fr, _to_yd(fr, zl[i]["poly"]) + vec)
                 for i in idx:
-                    zl[i]["poly"] = _to_ll(fr, _to_yd(fr, zl[i]["poly"]) + vec)
                     zl[i].update(verified="golfer", p=1.0, moved_yds=float(a["shift"]))
                 changed.setdefault(ref, []).append(it["id"])
+                corr.append(dict(kind="zones", hole=ref, answer="moved", lie=lie, polys=before,
+                                 after=[zl[i]["poly"] for i in idx], id=it["id"]))
             else:
                 for i in idx:
                     zl[i].update(verified="golfer", p=1.0)
-        elif it["type"] == "gap":
+                corr.append(dict(kind="zones", hole=ref, answer="confirm", lie=lie, polys=before, id=it["id"]))
+        elif it["type"] in ("gap", "cut"):
             if ans == "present" and fr is not None:
-                h.setdefault("zones_ll", []).append(dict(lie="recovery", poly=_to_ll(fr, it["strip_xa"]),
-                                                         src="golfer:gap", p=1.0, verified="golfer"))
+                lie = "recovery" if it["type"] == "gap" else "first_cut"
+                polys = [_to_ll(fr, it["strip_xa"])] if it["type"] == "gap" else [_to_ll(fr, c) for c in it["cut_xa"]]
+                for poly in polys:
+                    h.setdefault("zones_ll", []).append(dict(lie=lie, poly=poly, src=f"golfer:{it['type']}", p=1.0,
+                                                             verified="golfer"))
                 changed.setdefault(ref, []).append(it["id"])
+                corr.append(dict(kind="add", hole=ref, lie=lie, polys=polys, id=it["id"]))
             else:
-                h["verification"][f"open_{it['side']}"] = True
+                flag = f"open_{it['side']}" if it["type"] == "gap" else "no_cut"
+                h["verification"][flag] = True
+                corr.append(dict(kind="flag", hole=ref, flag=flag, id=it["id"]))
         # check: recorded only
     for ref, idx in removals.items():
         zl = pkg["holes"][ref]["zones_ll"]
@@ -147,7 +176,106 @@ def apply(pkg, review, answers, log=print):
         dict(review_built=review.get("built"), applied=now, answers=len(answers.get("answers", [])),
              changed_holes=sorted(changed)))
     _reframe(pkg, warn)
+    for c in corr:
+        c["at"] = answers.get("answered") or now
+    pkg["verification"]["rounds"][-1]["corrections"] = len(corr)
+    if corrections_out is not None:
+        corrections_out.extend(corr)
     return pkg, changed, warn
+
+
+# ----------------------------------------------------------------------------- corrections that survive a rebuild
+def _xy(poly, lat0):
+    k = np.cos(np.radians(lat0))
+    return [(float(p[0]) * k * 111320.0, float(p[1]) * 111320.0) for p in poly]
+
+
+def _iou(a, b, lat0):
+    try:
+        pa, pb = V.shapely_poly(_xy(a, lat0)), V.shapely_poly(_xy(b, lat0))
+        u = pa.union(pb).area
+        return pa.intersection(pb).area / u if u > 0 else 0.0
+    except Exception:                                        # noqa: BLE001
+        return 0.0
+
+
+def _match(zl, lie, polys, lat0, thr=0.5):
+    """Indices of zones of `lie` that overlap any stored polygon with IoU >= thr."""
+    out = []
+    for i, z in enumerate(zl):
+        if not isinstance(z, dict) or z.get("lie") != lie or len(z.get("poly") or []) < 3:
+            continue
+        if any(_iou(z["poly"], p, lat0) >= thr for p in polys):
+            out.append(i)
+    return out
+
+
+def store_corrections(slug_dir, corr, review_built=None):
+    path = os.path.join(slug_dir, "corrections.json")
+    doc = json.load(open(path)) if os.path.exists(path) else {"schema": "corrections/1", "items": []}
+    keep = {c["id"]: c for c in doc["items"]}
+    for c in corr:
+        keep[c["id"]] = dict(c, review_built=review_built)          # a later answer to the same item wins
+    doc["items"] = list(keep.values())
+    with open(path, "w") as fh:
+        json.dump(doc, fh, indent=1)
+    return path
+
+
+def reapply(pkg, corrections, reframe=None, log=print):
+    """Redo stored corrections on a (rebuilt) package, in place. -> {applied, skipped}."""
+    items = corrections.get("items", corrections) if isinstance(corrections, dict) else corrections
+    done, skipped = 0, []
+    for c in items:
+        h = (pkg.get("holes") or {}).get(c.get("hole"))
+        if h is None:
+            skipped.append(c.get("id"))
+            continue
+        lat0 = float((h.get("green_ll") or h.get("tee_ll") or [0, 40])[1])
+        zl = h.setdefault("zones_ll", [])
+        h.setdefault("verification", {})[c["id"]] = dict(answer=c.get("answer", c["kind"]), reapplied=True, at=c.get("at"))
+        if c["kind"] == "tee":
+            ent = _tee(h, c["tee_set"])
+            if ent is None or not c.get("tee_ll"):
+                skipped.append(c["id"])
+                continue
+            ent.update(tee_ll=c["tee_ll"], method="golfer" if c["answer"] == "moved" else ent.get("method"),
+                       confidence=1.0, verified="golfer")
+            aim, _ = PK._tee_line_mod().aim_point(c["tee_ll"], h.get("hole_line_ll"), PK._ll(h.get("green_ll")),
+                                                  float(ent.get("card_yards") or h.get("length") or 0) or None,
+                                                  int(h.get("par") or 4))
+            ent["aim_ll"] = aim
+            if str(pkg.get("tee_set", "")).lower() == c["tee_set"].lower():
+                h["tee_ll"], h["aim_ll"] = c["tee_ll"], aim
+        elif c["kind"] == "zones":
+            idx = _match(zl, c["lie"], c["polys"], lat0)
+            if not idx:
+                skipped.append(c["id"])
+                continue
+            if c["answer"] == "absent":
+                h["zones_ll"] = [z for i, z in enumerate(zl) if i not in set(idx)]
+            elif c["answer"] == "moved":
+                src = zl[idx[0]].get("src")
+                h["zones_ll"] = [z for i, z in enumerate(zl) if i not in set(idx)] + \
+                    [dict(lie=c["lie"], poly=p, src=f"golfer:{src}", p=1.0, verified="golfer") for p in c["after"]]
+            else:
+                for i in idx:
+                    zl[i].update(verified="golfer", p=1.0)
+        elif c["kind"] == "add":
+            for p in c["polys"]:
+                if not _match(zl, c["lie"], [p], lat0, thr=0.8):
+                    zl.append(dict(lie=c["lie"], poly=p, src="golfer:added", p=1.0, verified="golfer"))
+        elif c["kind"] == "flag":
+            h["verification"][c["flag"]] = True
+        done += 1
+    if reframe is not None and done:
+        try:
+            reframe(pkg)
+        except Exception as e:                               # noqa: BLE001
+            log(f"  ! reapply: reframe failed ({type(e).__name__}: {e})")
+    pkg.setdefault("verification", {})["reapplied"] = dict(applied=done, skipped=skipped)
+    log(f"  golfer corrections re-applied: {done}, skipped (no matching zone / hole): {len(skipped)}")
+    return dict(applied=done, skipped=skipped)
 
 
 def _tee(h, tee_set):
@@ -224,6 +352,7 @@ def main(argv=None):
     ap.add_argument("--package-out")
     ap.add_argument("--plan-out")
     ap.add_argument("--no-replan", action="store_true")
+    ap.add_argument("--no-store", action="store_true", help="do not record the corrections for rebuilds")
     ap.add_argument("--workers", type=int, default=1)
     a = ap.parse_args(argv)
     ans = _read_answers(a.answers)
@@ -233,10 +362,14 @@ def main(argv=None):
         print(f"! answers are for the review built {ans['review_built']}, this review is {review.get('built')}")
     pkg_path = os.path.join(ROOT, review["package"])
     pkg = json.load(open(pkg_path))
-    new, changed, warn = apply(pkg, review, ans)
+    corr = []
+    new, changed, warn = apply(pkg, review, ans, corrections_out=corr)
     out_pkg = a.package_out or pkg_path
     with open(out_pkg, "w") as fh:
         json.dump(new, fh, separators=(",", ":"))
+    if not a.no_store:
+        cp = store_corrections(os.path.dirname(pkg_path), corr, review.get("built"))
+        print(f"  corrections stored in {os.path.relpath(cp, ROOT)} (re-applied on the next package rebuild)")
     print(f"applied {len(ans.get('answers', []))} answers -> {os.path.relpath(out_pkg, ROOT)}; "
           f"geometry changed on holes {sorted(changed) or 'none'}")
     for w in warn:

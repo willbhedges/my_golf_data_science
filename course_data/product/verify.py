@@ -12,29 +12,37 @@ Writes <out> (default course_data/packages/<slug>/out/review/):
   review.md     the same list as a table
 
 What is an item (research/auto_course_lookup.md section 8, "show the golfer only what changes the decision"):
-  tee     the chosen set's tee on every tee-shot hole (platform confidence + card vs measured shown); tested by
-          moving it 20 yds back / forward along the tee line and 10 yds left / right
-  hazard  vision / inferred polygons (src vision:*, or p < 1) of one lie on one side of the landing corridor
-          (150-340 yds, +/-45 yds of the plan's aim), grouped as a golfer would name them ("the trees left");
-          tested by removing the group and by moving its edge 10 yds toward and 10 yds away from the fairway
-          (sideways for a side hazard, along the line for one across the corridor)
-  gap     a side of the 200-330 band with nothing penal mapped 25-65 yds off the aim (OSM and vision both
-          empty); tested by adding trees there
-  check   a hole the absurd-aim guard flags (decide.aim_problems): the unconstrained best is compared with the
-          best printable aim, so the golfer can say whether that line is playable
+  tee      the chosen set's tee on every tee-shot hole; tested by moving it back / forward along the tee line and
+           left / right, by 20 / 10 yds scaled by how unsure the platform is (p_wrong / 0.2, clipped 0.5-1.5:
+           confidence 0.8 -> 20/10 yds, 0.9 -> 10/5, a walk-back -> 30/15). The page shows all tees on one
+           "tee sheet" card.
+  hazard   penal polygons (trees, long grass, water, sand, OB) of one lie on one side of the landing corridor
+           (150-340 yds, +/-45 yds of the plan's aim), from any source (vision, OSM, the course boundary) unless
+           the golfer verified them; grouped as a golfer would name them ("the trees left"); tested by removing
+           the group and by moving its edge 10 yds toward and away from the fairway (sideways, or along the line
+           for a hazard across the corridor)
+  fairway  each side's fairway edge in the corridor; tested 10 yds narrower and 10 yds wider
+  cut      no first cut mapped beside the fairway (OSM rarely has one); tested by adding a 6-yd first cut
+  gap      a side of the 200-330 band with nothing penal mapped 25-65 yds off the aim; tested by adding trees
+  check    a hole the absurd-aim guard flags (decide.aim_problems): unconstrained best vs best printable aim
 Par 3s carry only a tee item (the plan plays them by the card yardage), green unless card vs measured > 15 yds.
 
-Sensitivity (decision-relevant only): the strategy model at the quick plan's central settings
-(decide.set_prior_means), N = 1500 swings with fixed seeds (common random numbers), coarse aims (5 yds, refined
-to 2.5 around the best). Base: every club over the hole's aim range with the guard. Each perturbation re-runs
-best_aim for the pick and the runner-up only, within +/-20 yds of their base aims.
-  red    the pick changes, or its aim moves > 5 yds (aims compared as the lateral position of the target in the
-         base frame, so tee moves are comparable), AND playing the printed plan in that world costs >= 0.005
-         strokes vs the new best (noise guard: on a flat EV curve a 6-yd aim move is a coin flip; the rule
-         without the guard is kept per outcome as `strict` and counted in review.json `counts_strict`)
-  amber  expected strokes of the hole's best play change by > 0.01, or a change that fails the noise guard
-  green  otherwise
-A hole's whole check runs in well under a minute; holes run in parallel (--workers), ~2-4 min a course on Actions.
+Sensitivity: the strategy model at the quick plan's central settings (decide.set_prior_means), N = 1500 swings
+with fixed seeds (common random numbers), coarse aims (5 yds, refined to 2.5 around the best). Base: every club
+over the hole's aim range with the guard. Each perturbation re-runs best_aim for the pick and the runner-up only,
+within +/-20 yds of their base aims. Per outcome:
+  regret   what playing the printed plan (old club, old target) costs in the perturbed world vs its new best
+  red      the pick changes or its aim moves > 5 yds (target compared in the base frame) AND regret >= 0.02
+           (the plan's own tie band is 0.01; below 0.02 a flip is a coin toss). `strict` keeps the plain rule.
+  amber    a change that fails the regret bar, or the hole's best EV moves > 0.01
+Per item: p_wrong = prior probability the map item is wrong (PRIORS: tee 1 - platform confidence, +0.15 when
+card and measured differ > 5 yds; vision trees 0.4 / long grass 0.5 (QA corridor IoU 0.27 / 0.15); OSM hazards
+0.15; course-boundary OB 0.4; OSM fairway edge 0.3; missing first cut 0.5; unmapped side 0.2; CHECK 0.5) and
+exp_regret = p_wrong x the worst regret over its tested answers. The post-pass (assign_severity, re-runnable from
+review.json without simulating) makes an item red when one of its outcomes is red and exp_regret >= 0.005, then
+keeps at most RED_CARDS = 4 red cards per course by exp_regret (all red tees count as one card, the tee sheet);
+the rest become amber ("over the budget"). Everything else amber or green as its outcomes are.
+Runtime ~2-4 min a course on Actions (4 workers).
 """
 import argparse
 import base64
@@ -86,11 +94,18 @@ GAP_ALONG = (200.0, 330.0)
 GAP_LAT = (25.0, 65.0)        # yds off the aim line on that side
 GAP_EMPTY = 0.10              # strip share covered by penal zones below which the side is "unmapped"
 MIN_AREA = 40.0               # sq yds of a hazard group inside the corridor to be worth a test
-EDGE = 10.0                   # hazard edge move (yds)
-TEE_ALONG, TEE_ACROSS = 20.0, 10.0
+EDGE = 10.0                   # hazard / fairway edge move (yds)
+TEE_ALONG, TEE_ACROSS = 20.0, 10.0   # at p_wrong 0.2 (platform confidence 0.8); scaled by p_wrong / 0.2
+TEE_SCALE = (0.5, 1.5)
+CUT_W = 6.0                   # first-cut width added by the "cut" test (yds)
 AIM_RED = 5.0
 EV_AMBER = 0.01
-REGRET_RED = 0.005            # noise guard: a change is red only if the printed play now costs >= this
+REGRET_RED = 0.02             # a change is red only if the printed play now costs >= this (tie band is 0.01)
+ER_RED = 0.005                # ... and p_wrong x worst regret >= this
+ER_AMBER = 0.002              # amber needs p_wrong x worst regret >= this (else the answer cannot matter)
+RED_CARDS = 4                 # red card budget per course (all tees = one card)
+PRIORS = {"tee": None, "vision:recovery": 0.4, "vision:native": 0.5, "vision:water": 0.3, "vision:sand": 0.3,
+          "vision:ob": 0.4, "osm": 0.15, "boundary": 0.4, "fairway": 0.3, "cut": 0.5, "gap": 0.2, "check": 0.5}
 PENAL = ("recovery", "native", "water", "sand", "ob")
 WORDS = {"recovery": "trees", "native": "long grass", "water": "water", "sand": "sand", "ob": "out of bounds"}
 SEV_RANK = {"red": 0, "amber": 1, "green": 2}
@@ -106,6 +121,29 @@ def is_uncertain(z):
         return False
     src = str(z.get("src", ""))
     return src.startswith("vision") or "inferred" in src or float(z.get("p", 1.0)) < 1.0
+
+
+def zone_prior(z, lie):
+    """Prior probability a mapped zone's edge is materially wrong (see PRIORS)."""
+    src = str(z.get("src", ""))
+    if z.get("verified"):
+        return 0.0
+    if src.endswith("course_boundary"):
+        return PRIORS["boundary"]
+    if src.startswith("vision") or "inferred" in src:
+        return PRIORS.get(f"vision:{lie}", 0.4)
+    return PRIORS["osm"]
+
+
+def tee_prior(ent, resid):
+    if ent.get("verified"):
+        return 0.0
+    p = 1.0 - float(ent.get("confidence") if ent.get("confidence") is not None else 0.7)
+    if resid is not None and resid > 5:
+        p += 0.15
+    if ent.get("method") == "walkback":
+        p = max(p, 0.5)
+    return float(np.clip(p, 0.05, 0.7))
 
 
 def tee_entry(h, tee_set):
@@ -266,10 +304,14 @@ def replan(hd, fr, base, base_fr, z, half=20.0):
     regret = max(0.0, _ev(base["pick"], old_aim[base["pick"]], z) - out[new]["ev"])
     changed = club_changed or abs(shift) > AIM_RED
     strict = "red" if changed else ("amber" if abs(d_ev) > EV_AMBER else "green")
-    sev = "red" if changed and regret >= REGRET_RED else ("amber" if changed or abs(d_ev) > EV_AMBER else "green")
+    sev = outcome_severity(changed, regret, d_ev)
     return dict(pick=new, aim=round(aim_b, 1), aim_frame=round(out[new]["aim"], 1), ev=round(out[new]["ev"], 4),
                 d_ev=round(d_ev, 4), club_changed=club_changed, aim_shift=round(shift, 1), severity=sev,
                 strict=strict, regret=round(regret, 4), evs={c: round(v["ev"], 4) for c, v in out.items()})
+
+
+def outcome_severity(changed, regret, d_ev):
+    return "red" if changed and regret >= REGRET_RED else ("amber" if changed or abs(d_ev) > EV_AMBER else "green")
 
 
 def aim_words(a):
@@ -328,7 +370,7 @@ def hazard_groups(h, fr, base):
     corr = box(aim - HALF, aim + HALF, *ALONG)
     groups = {}
     for i, z in enumerate(h.get("zones_ll") or []):
-        if not isinstance(z, dict) or not is_uncertain(z):
+        if not isinstance(z, dict) or z.get("verified"):
             continue
         lie = PK.LIE_MAP.get(z.get("lie"), z.get("lie"))
         if lie not in PENAL or len(z.get("poly") or []) < 3:
@@ -345,9 +387,11 @@ def hazard_groups(h, fr, base):
             side = "across"
         else:
             side = "left" if inter.centroid.x < aim else "right"
-        g = groups.setdefault((lie, side), dict(idx=[], area=0.0, a0=1e9, a1=-1e9, inner=[]))
+        g = groups.setdefault((lie, side), dict(idx=[], area=0.0, a0=1e9, a1=-1e9, inner=[], pw=0.0, geo=[]))
         g["idx"].append(i)
         g["area"] += inter.area
+        g["pw"] += inter.area * zone_prior(z, lie)
+        g["geo"].append(inter)
         g["a0"], g["a1"] = min(g["a0"], mina), max(g["a1"], maxa)
         g["inner"].append(maxx if side == "left" else minx if side == "right" else mina)
     out = {}
@@ -361,7 +405,9 @@ def hazard_groups(h, fr, base):
             edge = min(g["inner"]) - aim
         else:
             edge = min(g["inner"])
-        out[(lie, side)] = dict(g, toward=toward, edge=float(edge))
+        from shapely.ops import unary_union
+        out[(lie, side)] = dict(g, toward=toward, edge=float(edge), p_wrong=round(g["pw"] / g["area"], 3),
+                                clip=unary_union(g.pop("geo")))
     return out
 
 
@@ -376,6 +422,101 @@ def shifted(h, fr, idx, vec, d):
 def removed(h, idx):
     s = set(idx)
     return [z for i, z in enumerate(h["zones_ll"]) if i not in s]
+
+
+def densify(xa, step=5.0):
+    out = []
+    n = len(xa)
+    for i in range(n):
+        a, b = xa[i], xa[(i + 1) % n]
+        k = max(1, int(np.hypot(*(b - a)) // step))
+        out += [a + (b - a) * j / k for j in range(k)]
+    return np.array(out)
+
+
+def fairway_idx(h):
+    return [i for i, z in enumerate(h.get("zones_ll") or [])
+            if isinstance(z, dict) and z.get("lie") == "fairway" and not z.get("verified") and len(z.get("poly") or []) >= 3]
+
+
+def fairway_sides(h, fr, base):
+    """{side: dict(edge, along, area, clip)} for fairway in the corridor on each side of the aim."""
+    from shapely.ops import unary_union
+    aim = base["aim"]
+    polys = {i: shapely_poly(to_yd(fr, h["zones_ll"][i]["poly"])) for i in fairway_idx(h)}
+    own = box(aim - 10, aim + 10, *ALONG)                  # this hole's fairway crosses the aim line
+    idx = [i for i, p in polys.items() if p.intersects(own)] or \
+          [i for i, p in polys.items() if p.intersects(box(aim - HALF, aim + HALF, *ALONG))]
+    if not idx:
+        return {}, idx
+    fw = unary_union([polys[i] for i in idx])
+    out = {}
+    for side, x0, x1 in (("left", aim - HALF - 30, aim), ("right", aim, aim + HALF + 30)):
+        g = fw.intersection(box(x0, x1, *ALONG))
+        if g.is_empty or g.area < 50:
+            continue
+        minx, a0, maxx, a1 = g.bounds
+        if (side == "left" and minx <= x0 + 1) or (side == "right" and maxx >= x1 - 1):
+            continue                                       # the edge is beyond the corridor
+        out[side] = dict(edge=float((minx if side == "left" else maxx) - aim), along=[round(a0), round(a1)],
+                         area=g.area, clip=g)
+    return out, idx
+
+
+def fairway_moved(h, fr, idx, side, d, aim):
+    """Fairway edge on `side` moved d yds toward the centre (d > 0 narrower), full inside the corridor and
+    tapered to 0 over 25 yds outside it."""
+    zl = copy.deepcopy(h["zones_ll"])
+    for i in idx:
+        xa = densify(to_yd(fr, zl[i]["poly"]))
+        a = xa[:, 1]
+        w = np.clip(1 - np.maximum(ALONG[0] - a, a - ALONG[1]) / 25.0, 0, 1)
+        m = ((xa[:, 0] < aim) & (xa[:, 0] > aim - HALF - 30) if side == "left"
+             else (xa[:, 0] > aim) & (xa[:, 0] < aim + HALF + 30))
+        xa[m, 0] += (d if side == "left" else -d) * w[m]
+        zl[i]["poly"] = to_ll(fr, xa)
+    return zl
+
+
+def holefree(g, depth=0):
+    """Polygons without holes covering g (split by bbox halves where a piece has interiors)."""
+    from shapely.geometry import Polygon
+    parts = list(getattr(g, "geoms", [g]))
+    out = []
+    for p in parts:
+        if p.is_empty or p.geom_type != "Polygon" or p.area < 2:
+            continue
+        if not p.interiors or depth > 6:
+            out.append(Polygon(p.exterior))
+            continue
+        minx, miny, maxx, maxy = p.bounds
+        if maxx - minx > maxy - miny:
+            halves = (box(minx, (minx + maxx) / 2, miny, maxy), box((minx + maxx) / 2, maxx, miny, maxy))
+        else:
+            halves = (box(minx, maxx, miny, (miny + maxy) / 2), box(minx, maxx, (miny + maxy) / 2, maxy))
+        for hb in halves:
+            out += holefree(p.intersection(hb), depth + 1)
+    return out
+
+
+def cut_polys(h, fr):
+    """A CUT_W-yd first cut around the fairway in the tee-shot window, not over penal zones; hole-free, in yds."""
+    from shapely.ops import unary_union
+    zl = h.get("zones_ll") or []
+    if any(isinstance(z, dict) and z.get("lie") == "first_cut" for z in zl):
+        return []
+    fw = [shapely_poly(to_yd(fr, z["poly"])) for z in zl
+          if isinstance(z, dict) and z.get("lie") == "fairway" and len(z.get("poly") or []) >= 3]
+    if not fw:
+        return []
+    pen = [shapely_poly(to_yd(fr, z["poly"])) for z in zl if isinstance(z, dict) and len(z.get("poly") or []) >= 3
+           and PK.LIE_MAP.get(z.get("lie"), z.get("lie")) in PENAL]
+    f = unary_union(fw)
+    ring = f.buffer(CUT_W).difference(f)
+    if pen:
+        ring = ring.difference(unary_union(pen))
+    ring = ring.intersection(box(-150, 150, ALONG[0] - 50, ALONG[1] + 40))
+    return [np.array(p.exterior.coords)[:-1] for p in holefree(ring) if p.area >= 4]
 
 
 def gap_strip(base, side):
@@ -510,14 +651,16 @@ def verify_hole(job):
     label = hole_label(ref)
 
     # (a) tee -------------------------------------------------------------------------------------
+    p_tee = tee_prior(ent, resid)
     if ent.get("verified"):
         items.append(dict(id=f"{ref}-tee", hole=str(ref), type="tee", severity="green", par=par,
                           question=f"Is the {tee_set} tee here?", detail="Checked by you.", confidence=tee_info,
-                          options=[], tested=False))
+                          options=[], tested=False, p_wrong=0.0))
         moves = {}
     else:
-        moves = {"back": (0.0, -TEE_ALONG), "forward": (0.0, TEE_ALONG), "left": (-TEE_ACROSS, 0.0),
-                 "right": (TEE_ACROSS, 0.0)}
+        sc = float(np.clip(p_tee / 0.2, *TEE_SCALE))
+        ta, tx = round(TEE_ALONG * sc, 1), round(TEE_ACROSS * sc, 1)
+        moves = {"back": (0.0, -ta), "forward": (0.0, ta), "left": (-tx, 0.0), "right": (tx, 0.0)}
     samples = []
     for name, (dx, da) in moves.items():
         new_tee = to_ll(fr, [[dx, da]])[0]
@@ -525,24 +668,18 @@ def verify_hole(job):
         o = replan(hd2, fr2, base, fr, z)
         samples.append(dict(name=name, dx=dx, dy=da, outcome=o, text=change_text(label, base, o)))
     if samples:
-        sev = worst([s["outcome"]["severity"] for s in samples])
-        tee_item = dict(id=f"{ref}-tee", hole=str(ref), type="tee", severity=sev, par=par,
-                    question=f"Is the {tee_set} tee here?",
-                    detail=_tee_detail(tee_set, tee_info, resid), confidence=tee_info, tested=True,
-                    options=[dict(answer="confirm", label="Looks right", outcome=None, text=change_text(label, base, None)),
-                             dict(answer="moved", label="Move the tee", drag="free", samples=samples)],
-                    max_d_ev=max(abs(s["outcome"]["d_ev"]) for s in samples))
-        items.append(tee_item)
+        items.append(dict(id=f"{ref}-tee", hole=str(ref), type="tee", par=par, p_wrong=p_tee,
+                          question=f"Is the {tee_set} tee here?",
+                          detail=_tee_detail(tee_set, tee_info, resid), confidence=tee_info, tested=True,
+                          options=[dict(answer="confirm", label="Looks right", outcome=None, text=change_text(label, base, None)),
+                                   dict(answer="moved", label="Move the tee", drag="free", samples=samples)]))
 
     # (b) hazards -----------------------------------------------------------------------------------
     for (lie, side), g in sorted(hazard_groups(h, fr, base).items(), key=lambda kv: -kv[1]["area"]):
-        opts, sevs = [], []
         o_rm = replan(*hole_model(h, tee_set, zones_ll=removed(h, g["idx"])), base, fr, z)
-        sevs.append(o_rm["severity"])
         samples = []
         for name, d in (("closer", EDGE), ("farther", -EDGE)):
             o = replan(*hole_model(h, tee_set, zones_ll=shifted(h, fr, g["idx"], g["toward"], d)), base, fr, z)
-            sevs.append(o["severity"])
             samples.append(dict(name=name, shift=d, outcome=o, text=change_text(label, base, o)))
         opts = [dict(answer="confirm", label="Looks right", outcome=None, text=change_text(label, base, None)),
                 dict(answer="absent", label="Not there", outcome=o_rm, text=change_text(label, base, o_rm)),
@@ -555,41 +692,71 @@ def verify_hole(job):
         else:
             q = (f"{'Do' if lie == 'recovery' else 'Does'} the {what} on the {side} come this close to the fairway "
                  f"({abs(g['edge']):.0f} yds {side} of the aim at {a0:.0f}-{a1:.0f} yds)?")
-        items.append(dict(id=f"{ref}-{lie}-{side}", hole=str(ref), type="hazard", severity=worst(sevs), par=par,
+        items.append(dict(id=f"{ref}-{lie}-{side}", hole=str(ref), type="hazard", par=par, p_wrong=g["p_wrong"],
                           lie=lie, side=side, question=q,
-                          detail=f"Mapped from {', '.join(srcs)} (not checked by a person). "
-                                 f"{len(g['idx'])} outline{'s' if len(g['idx']) > 1 else ''} in the landing area.",
+                          detail=f"Mapped from {', '.join(srcs)}. {len(g['idx'])} outline"
+                                 f"{'s' if len(g['idx']) > 1 else ''} in the landing area.",
                           zone_idx=g["idx"], zone_fp=[[round(float(v), 7) for v in h["zones_ll"][i]["poly"][0][:2]] for i in g["idx"]],
                           toward=list(g["toward"]), edge=round(g["edge"], 1), along=[round(a0), round(a1)],
-                          area=round(g["area"]), options=opts, tested=True,
-                          max_d_ev=max([abs(o_rm["d_ev"])] + [abs(s["outcome"]["d_ev"]) for s in samples])))
+                          area=round(g["area"]), options=opts, tested=True, _clip=g["clip"]))
 
-    # (c) unmapped sides ----------------------------------------------------------------------------
+    # (c) fairway edges and first cut -----------------------------------------------------------------
+    sides, fidx = fairway_sides(h, fr, base)
+    for side, f in sides.items():
+        samples = []
+        for name, d in (("narrower", EDGE), ("wider", -EDGE)):
+            o = replan(*hole_model(h, tee_set, zones_ll=fairway_moved(h, fr, fidx, side, d, base["aim"])), base, fr, z)
+            samples.append(dict(name=name, shift=d, outcome=o, text=change_text(label, base, o)))
+        items.append(dict(id=f"{ref}-fairway-{side}", hole=str(ref), type="fairway", par=par, side=side,
+                          p_wrong=PRIORS["fairway"],
+                          question=(f"Is the {side} edge of the fairway here ({abs(f['edge']):.0f} yds {side} of the aim "
+                                    f"at {f['along'][0]}-{f['along'][1]} yds)?"),
+                          detail="Mapped from OpenStreetMap; mowing lines move and OSM fairways are often drawn loosely.",
+                          zone_idx=fidx, zone_fp=[[round(float(v), 7) for v in h["zones_ll"][i]["poly"][0][:2]] for i in fidx],
+                          toward=[1.0, 0.0] if side == "left" else [-1.0, 0.0], edge=round(f["edge"], 1),
+                          along=f["along"], tested=True, _clip=f["clip"],
+                          options=[dict(answer="confirm", label="Looks right", outcome=None, text=change_text(label, base, None)),
+                                   dict(answer="moved", label="Edge is elsewhere", drag="axis", samples=samples)]))
+    cut = cut_polys(h, fr)
+    if cut:
+        zl = list(h["zones_ll"]) + [dict(lie="first_cut", poly=to_ll(fr, c), src="verify:cut_test", p=0.0) for c in cut]
+        o = replan(*hole_model(h, tee_set, zones_ll=zl), base, fr, z)
+        items.append(dict(id=f"{ref}-cut", hole=str(ref), type="cut", par=par, p_wrong=PRIORS["cut"],
+                          question="Is there a first cut (a strip of shorter rough) along the fairway?",
+                          detail=f"No first cut is mapped, so the plan treats everything off the fairway as rough. "
+                                 f"Tested with a {CUT_W:.0f}-yd first cut.",
+                          cut_xa=[r1(c) for c in cut], tested=True,
+                          options=[dict(answer="confirm", label="No, rough to the edge", outcome=None,
+                                        text=change_text(label, base, None)),
+                                   dict(answer="present", label="Yes, a first cut", outcome=o, text=change_text(label, base, o))]))
+
+    # (d) unmapped sides ----------------------------------------------------------------------------
     for side, cov in gap_sides(h, fr, base):
         strip = gap_strip(base, side)
         zl = list(h["zones_ll"]) + [dict(lie="recovery", poly=to_ll(fr, strip), src="verify:gap_test", p=0.0)]
         o = replan(*hole_model(h, tee_set, zones_ll=zl), base, fr, z)
-        items.append(dict(id=f"{ref}-gap-{side}", hole=str(ref), type="gap", severity=o["severity"], par=par,
-                          side=side, question=f"Is it open on the {side} at {GAP_ALONG[0]:.0f}-{GAP_ALONG[1]:.0f} yds, "
-                                             f"or are there trees or long grass?",
+        items.append(dict(id=f"{ref}-gap-{side}", hole=str(ref), type="gap", par=par, side=side, p_wrong=PRIORS["gap"],
+                          question=f"Is it open on the {side} at {GAP_ALONG[0]:.0f}-{GAP_ALONG[1]:.0f} yds, "
+                                   f"or are there trees or long grass?",
                           detail=f"Nothing is mapped {GAP_LAT[0]:.0f}-{GAP_LAT[1]:.0f} yds {side} of the aim there "
                                  f"(OpenStreetMap and the tree/long-grass layer are both empty; {cov:.0%} covered).",
                           strip_xa=r1(strip), tested=True,
                           options=[dict(answer="confirm", label="Open, as mapped", outcome=None,
                                         text=change_text(label, base, None)),
                                    dict(answer="present", label="Trees or long grass", outcome=o,
-                                        text=change_text(label, base, o))],
-                          max_d_ev=abs(o["d_ev"])))
+                                        text=change_text(label, base, o))]))
 
-    # (d) absurd-aim guard ------------------------------------------------------------------------------
+    # (e) absurd-aim guard ------------------------------------------------------------------------------
     raw = base["raw"]
     if raw["club"] != base["pick"] or abs(raw["aim"] - base["aim"]) > AIM_RED:
         _bind(hd)
         why = decide.aim_problems(KEY, raw["club"], raw["aim"])
+        gain = max(0.0, base["ev"] - raw["ev"])           # what the printable plan gives up if the line is playable
         o_raw = dict(pick=raw["club"], aim=round(raw["aim"], 1), aim_frame=round(raw["aim"], 1), ev=round(raw["ev"], 4),
                      d_ev=round(raw["ev"] - base["ev"], 4), club_changed=raw["club"] != base["pick"],
-                     aim_shift=round(raw["aim"] - base["aim"], 1), severity="red", evs={})
-        items.append(dict(id=f"{ref}-check", hole=str(ref), type="check", severity="red", par=par,
+                     aim_shift=round(raw["aim"] - base["aim"], 1), regret=round(gain, 4),
+                     severity=outcome_severity(True, gain, raw["ev"] - base["ev"]), strict="red", evs={})
+        items.append(dict(id=f"{ref}-check", hole=str(ref), type="check", par=par, p_wrong=PRIORS["check"],
                           question=(f"Could you play {raw['club']} {aim_words(raw['aim'])} of the tee line "
                                     f"({decide._carry(raw['club']):.0f} yds out)? Is that ground playable?"),
                           detail="The best line on the map was rejected by the plan's safety check: "
@@ -598,17 +765,58 @@ def verify_hole(job):
                           options=[dict(answer="playable", label="Yes, playable", outcome=o_raw,
                                         text=change_text(label, base, o_raw)),
                                    dict(answer="not_playable", label="No, keep me on this hole", outcome=None,
-                                        text=change_text(label, base, None))],
-                          max_d_ev=abs(o_raw["d_ev"])))
+                                        text=change_text(label, base, None))]))
 
-    # crops (only items the golfer will see)
-    if want_crops:
+    for it in items:
+        score_item(it)
+    if want_crops:                                       # crops for anything that may be shown
         for it in items:
-            if it["severity"] == "green":
-                continue
-            it["crop"] = _crop_for(it, h, fr, base, img)
+            if it["prelim"] != "green":
+                it["crop"] = _crop_for(it, h, fr, base, img)
+    for it in items:
+        it.pop("_clip", None)
     return dict(ref=str(ref), par=par, base=base_out, frame=fr.to_json(), items=items,
                 seconds=round(time.time() - t0, 1), sims=sum(c["n_sims"] for c in base["clubs"].values()))
+
+
+def outcomes(it):
+    return [s["outcome"] for o in it.get("options", []) for s in ([o] + o.get("samples", [])) if s.get("outcome")]
+
+
+def score_item(it):
+    """worst regret over the item's answers, exp_regret = p_wrong x that, and the outcome-level severity."""
+    oc = outcomes(it)
+    it["worst_regret"] = round(max([o.get("regret", 0.0) for o in oc] or [0.0]), 4)
+    it["exp_regret"] = round(float(it.get("p_wrong") or 0.0) * it["worst_regret"], 4)
+    it["max_d_ev"] = round(max([abs(o["d_ev"]) for o in oc] or [0.0]), 4)
+    it["prelim"] = worst([o["severity"] for o in oc]) if oc else it.get("severity", "green")
+    it["strict"] = worst([o.get("strict", o["severity"]) for o in oc]) if oc else it["prelim"]
+    return it
+
+
+def assign_severity(items, er_red=ER_RED, red_cards=RED_CARDS, er_amber=ER_AMBER):
+    """Course-level post-pass: red = a red outcome and exp_regret >= er_red, then at most red_cards red cards by
+    exp_regret (all red tees together are one card, scored by their summed exp_regret); the rest amber."""
+    for it in items:
+        if not it.get("tested"):
+            it.setdefault("severity", it.get("prelim", "green"))
+            it.setdefault("strict", it["severity"])
+            continue
+        cand = it["prelim"] == "red" and it["exp_regret"] >= er_red
+        it["severity"] = ("red" if cand else "amber" if it["prelim"] in ("red", "amber") and it["exp_regret"] >= er_amber
+                          else "green")
+        it.pop("over_budget", None)
+    reds = [it for it in items if it["severity"] == "red"]
+    tees = [it for it in reds if it["type"] == "tee"]
+    cards = [("tees", sum(i["exp_regret"] for i in tees), tees)] if tees else []
+    cards += [(it["id"], it["exp_regret"], [it]) for it in reds if it["type"] != "tee"]
+    cards.sort(key=lambda c: -c[1])
+    for _, _, its in cards[red_cards:]:
+        for it in its:
+            it["severity"], it["over_budget"] = "amber", True
+    items.sort(key=lambda it: (SEV_RANK[it["severity"]], -float(it.get("exp_regret") or 0), -float(it.get("max_d_ev") or 0)))
+    n_cards = min(len(cards), red_cards)
+    return dict(red_cards=n_cards, red_candidates=sum(len(c[2]) for c in cards), red_candidate_cards=len(cards))
 
 
 def _tee_detail(tee_set, info, resid):
@@ -632,12 +840,14 @@ def _crop_for(it, h, fr, base, img):
     kind = "tee" if it["type"] == "tee" else "landing"
     spec = crop_spec(kind, base["aim"])
     polys_xa = []
-    if it["type"] == "hazard":
+    if it["type"] in ("hazard", "fairway"):
         polys_xa = [to_yd(fr, h["zones_ll"][i]["poly"]) for i in it["zone_idx"]]
     elif it["type"] == "gap":
         polys_xa = [np.array(it["strip_xa"], float)]
+    elif it["type"] == "cut":
+        polys_xa = [np.array(c, float) for c in it["cut_xa"]]
     cp = [to_crop(spec, p) for p in polys_xa]
-    c = render_crop(img, fr, spec, outline_polys=cp if it["type"] == "hazard" else ())
+    c = render_crop(img, fr, spec, outline_polys=cp if it["type"] in ("hazard", "fairway") else ())
     pick = base["pick"]
     carry = decide._carry(pick)
     w = t.CLUBS.get(pick, t.IRONS.get(pick, (0, 0, 60, 30)))
@@ -647,10 +857,58 @@ def _crop_for(it, h, fr, base, img):
               ellipse=[round(w[2] / 2 * c["s"], 1), round(w[3] / 2 * c["s"], 1)],
               line=r1(to_crop(spec, [[0.0, 0.0], [base["aim"] * 400 / max(carry, 1), 400.0]])),
               pick=pick)
-    if it["type"] == "hazard":
+    if it["type"] in ("hazard", "fairway") and it.get("_clip") is not None:
         ov["toward"] = it["toward"]
+        minx, a0, maxx, a1 = it["_clip"].bounds
+        side = it.get("side")
+        if it["type"] == "fairway":
+            hp = [minx if side == "left" else maxx, (a0 + a1) / 2]
+        elif side == "left":
+            hp = [maxx, (a0 + a1) / 2]
+        elif side == "right":
+            hp = [minx, (a0 + a1) / 2]
+        else:
+            hp = [(minx + maxx) / 2, a0]
+        ov["handle"] = r1(to_crop(spec, [hp]))[0]
     c["overlay"] = ov
     return c
+
+
+# ----------------------------------------------------------------------------- book badges
+BADGE = {"auto": "\u2713", "checked": "\u25d0", "unverified": "\u26a0"}
+
+
+def worst_text(it):
+    best = None
+    for o in it.get("options", []):
+        for x in [o] + o.get("samples", []):
+            oc = x.get("outcome")
+            if oc and (best is None or oc.get("regret", 0) > best[0]):
+                best = (oc.get("regret", 0), x.get("text", ""))
+    return best[1] if best else ""
+
+
+def badges(pkg, review):
+    """{hole ref: {state, symbol, line}} for the book (research section 8): auto (no open red check), checked
+    (the golfer answered this hole's review items), unverified (an unanswered red item: its question and what
+    changes if the map is wrong). {} without a review."""
+    if not review:
+        return {}
+    out = {}
+    for ref, h in (pkg.get("holes") or {}).items():
+        ver = h.get("verification") or {}
+        answered = {k for k in ver if "-" in k}
+        reds = [it for it in review.get("items", []) if it["hole"] == str(ref) and it["severity"] == "red"
+                and it["id"] not in answered]
+        if reds:
+            it = reds[0]
+            state, line = "unverified", f"Unverified: {it['question']} If not, {worst_text(it)}"
+        elif answered:
+            state, line = "checked", "Map checked by you before the round."
+        else:
+            state, line = "auto", ""
+        out[str(ref)] = dict(state=state, symbol=BADGE[state], line=line)
+    return out
 
 
 # ----------------------------------------------------------------------------- course
@@ -680,10 +938,8 @@ def run(pkg_path, tees=None, holes=None, n=N_SWINGS, seed=SEED, workers=1, crops
             _log_hole(r)
     res.sort(key=lambda r: (r["ref"].rstrip("BFabf").zfill(3), r["ref"]))
     items = [it for r in res for it in r["items"]]
-    items.sort(key=lambda it: (SEV_RANK[it["severity"]], -float(it.get("max_d_ev") or 0)))
+    budget = assign_severity(items)
     plan_picks = _plan_picks(pkg_path, slug)
-    for it in items:
-        it["strict"] = item_strict(it)
     counts = {s: sum(1 for it in items if it["severity"] == s) for s in ("red", "amber", "green")}
     counts_strict = {s: sum(1 for it in items if it["strict"] == s) for s in ("red", "amber", "green")}
     by_type = {}
@@ -693,11 +949,13 @@ def run(pkg_path, tees=None, holes=None, n=N_SWINGS, seed=SEED, workers=1, crops
                   package=os.path.relpath(os.path.abspath(pkg_path), ROOT), package_built=pkg.get("built"),
                   built=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
                   settings=dict(n=n, seed=seed, corridor_along=ALONG, corridor_half=HALF, edge_move=EDGE,
-                                tee_moves=[TEE_ALONG, TEE_ACROSS], aim_red=AIM_RED, ev_amber=EV_AMBER,
+                                tee_moves=[TEE_ALONG, TEE_ACROSS], tee_scale=TEE_SCALE, aim_red=AIM_RED,
+                                ev_amber=EV_AMBER, regret_red=REGRET_RED, er_red=ER_RED, er_amber=ER_AMBER, red_cards=RED_CARDS,
+                                priors=PRIORS, cut_width=CUT_W,
                                 model="decide.set_prior_means (quick plan's central settings)"),
                   imagery=dict(date=(pkg.get("imagery") or {}).get("naip_date"),
                                source=(pkg.get("imagery") or {}).get("source")),
-                  counts=counts, counts_strict=counts_strict, by_type=by_type,
+                  counts=counts, counts_strict=counts_strict, by_type=by_type, budget=budget,
                   holes={r["ref"]: dict(par=r["par"], base=r.get("base"), frame=r.get("frame"),
                                         plan=plan_picks.get(r["ref"]), seconds=r["seconds"]) for r in res},
                   items=items, runtime_s=round(time.time() - T0, 1))
@@ -714,18 +972,9 @@ def run(pkg_path, tees=None, holes=None, n=N_SWINGS, seed=SEED, workers=1, crops
     return review, out
 
 
-def item_strict(it):
-    """Severity under the spec rule without the noise guard (any club change / aim move > 5 yds is red)."""
-    if it["type"] == "check":
-        return it["severity"]
-    sev = [s["outcome"]["strict"] for o in it.get("options", []) for s in ([o] + o.get("samples", []))
-           if s.get("outcome") and "strict" in s["outcome"]]
-    return worst(sev) if sev else it["severity"]
-
-
 def _log_hole(r):
     b = r.get("base")
-    s = {k: sum(1 for i in r["items"] if i["severity"] == k) for k in ("red", "amber")}
+    s = {k: sum(1 for i in r["items"] if i.get("prelim", i.get("severity")) == k) for k in ("red", "amber")}
     log(f"  hole {r['ref']}: {(b['pick'] + ' ' + aim_words(b['aim'])) if b else 'par 3'}; "
         f"{len(r['items'])} items, red {s['red']} amber {s['amber']} ({r['seconds']}s)")
 

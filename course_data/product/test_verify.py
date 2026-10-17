@@ -62,7 +62,8 @@ def test_groups_shift_remove_gap():
     h = hole()
     _, fr = V.hole_model(h, "Blue")
     g = V.hazard_groups(h, fr, {"aim": 0.0})
-    assert list(g) == [("recovery", "left")]                  # the OSM trees on the right are not asked about
+    assert set(g) == {("recovery", "left"), ("recovery", "right")}       # vision and OSM are both asked about
+    assert g[("recovery", "left")]["p_wrong"] == 0.4 and g[("recovery", "right")]["p_wrong"] == 0.15
     grp = g[("recovery", "left")]
     assert grp["idx"] == [1] and abs(grp["edge"] + 25) < 1 and grp["toward"] == (1.0, 0.0)
     moved = V.shifted(h, fr, [1], grp["toward"], 10.0)
@@ -72,6 +73,7 @@ def test_groups_shift_remove_gap():
     h2 = dict(h, zones_ll=h["zones_ll"][:1])
     assert [s for s, _ in V.gap_sides(h2, fr, {"aim": 0.0})] == ["left", "right"]
     h2["verification"] = {"open_left": True}
+    h2["zones_ll"] = h["zones_ll"][:1]
     assert [s for s, _ in V.gap_sides(h2, fr, {"aim": 0.0})] == ["right"]
 
 
@@ -126,3 +128,76 @@ def test_page_is_self_contained(tmp_path):
     data = json.loads(html.split("const D = ")[1].split(";\nconst KEY")[0])
     assert data["items"][1].get("crop") is None and data["items"][0]["id"] == "1-tee"
     assert "<title>Test Pre-Round Check</title>" in html
+
+
+def test_priors_fairway_cut():
+    assert V.tee_prior({"confidence": 0.8}, 0) == pytest.approx(0.2)
+    assert V.tee_prior({"confidence": 0.8}, 18) == pytest.approx(0.35)
+    assert V.tee_prior({"confidence": 0.9, "method": "walkback"}, 0) == 0.5
+    assert V.tee_prior({"confidence": 0.8, "verified": "golfer"}, 30) == 0.0
+    h = hole()
+    _, fr = V.hole_model(h, "Blue")
+    sides, idx = V.fairway_sides(h, fr, {"aim": 0.0})
+    assert set(sides) == {"left", "right"} and idx == [0] and abs(sides["left"]["edge"] + 18) < 0.5
+    nz = V.fairway_moved(h, fr, idx, "left", 10.0, 0.0)          # 10 yds narrower on the left, inside the corridor
+    xa = V.to_yd(fr, nz[0]["poly"])
+    mid = (xa[:, 1] > 200) & (xa[:, 1] < 300) & (xa[:, 0] < 0)
+    assert np.allclose(xa[mid, 0], -8, atol=0.5) and xa[:, 0].max() == pytest.approx(18, abs=0.5)
+    cut = V.cut_polys(h, fr)
+    assert cut and all(V.shapely_poly(c).is_valid for c in cut)
+    total = sum(V.shapely_poly(c).area for c in cut)
+    assert 1500 < total < 4500                                  # a 6-yd ring around the fairway, trees cut out
+
+
+def _item(i, typ, prelim, er):
+    return dict(id=f"{i}-{typ}", hole=str(i), type=typ, tested=True, prelim=prelim, exp_regret=er, max_d_ev=0.0)
+
+
+def test_assign_severity_budget():
+    items = [_item(1, "tee", "red", 0.02), _item(2, "tee", "red", 0.01), _item(3, "hazard", "red", 0.03),
+             _item(4, "hazard", "red", 0.006), _item(5, "fairway", "red", 0.02), _item(6, "hazard", "red", 0.001),
+             _item(7, "cut", "amber", 0.004), _item(8, "hazard", "amber", 0.0005), _item(9, "hazard", "red", 0.01)]
+    b = V.assign_severity(items, red_cards=4)
+    sev = {it["id"]: it["severity"] for it in items}
+    # cards: tees (0.03), 3 (0.03), 5 (0.02), 9 (0.01) | 4 (0.006) over budget
+    assert sev["1-tee"] == sev["2-tee"] == sev["3-hazard"] == sev["5-fairway"] == sev["9-hazard"] == "red"
+    assert sev["4-hazard"] == "amber" and items[[i["id"] for i in items].index("4-hazard")]["over_budget"]
+    assert sev["6-hazard"] == "green" and sev["7-cut"] == "amber" and sev["8-hazard"] == "green"   # ER floor 0.002
+    assert b["red_cards"] == 4 and b["red_candidate_cards"] == 5
+
+
+def test_corrections_survive_rebuild():
+    h = hole()
+    _, fr = V.hole_model(h, "Blue")
+    pkg = {"tee_set": "Blue", "holes": {"1": h}}
+    review = {"tee_set": "Blue", "built": "x", "holes": {"1": {"frame": fr.to_json(), "base": {"aim": 0}}},
+              "items": [{"id": "1-tee", "hole": "1", "type": "tee"},
+                        {"id": "1-recovery-left", "hole": "1", "type": "hazard", "zone_idx": [1],
+                         "zone_fp": [[round(v, 7) for v in h["zones_ll"][1]["poly"][0]]], "toward": [1.0, 0.0]},
+                        {"id": "1-gap-right", "hole": "1", "type": "gap", "side": "right",
+                         "strip_xa": [[25, 200], [65, 200], [65, 330], [25, 330]]}]}
+    corr = []
+    new, _, _ = AA.apply(pkg, review, {"answers": [{"id": "1-tee", "answer": "moved", "dx": 0, "dy": -20},
+                                                   {"id": "1-recovery-left", "answer": "absent"},
+                                                   {"id": "1-gap-right", "answer": "present"}]}, corrections_out=corr)
+    assert [c["kind"] for c in corr] == ["tee", "zones", "add"]
+    rebuilt = copy.deepcopy(pkg)                          # a rebuild: same zones, slightly re-traced
+    rebuilt["holes"]["1"]["zones_ll"][1]["poly"] = rect(-61, -24, 199, 321)
+    rebuilt["holes"]["1"]["zones_ll"].insert(0, {"lie": "sand", "poly": rect(-5, 5, 330, 340), "src": "osm"})
+    res = AA.reapply(rebuilt, {"items": corr}, log=lambda *a: None)
+    rh = rebuilt["holes"]["1"]
+    assert res["applied"] == 3 and not res["skipped"]
+    assert [z["lie"] for z in rh["zones_ll"]] == ["sand", "fairway", "recovery", "recovery"]   # vision trees gone
+    assert rh["zones_ll"][-1]["src"] == "golfer:added" and rh["tees"]["Blue"]["tee_ll"] == new["holes"]["1"]["tees"]["Blue"]["tee_ll"]
+    AA.reapply(rebuilt, {"items": corr}, log=lambda *a: None)                     # idempotent for adds
+    assert len(rebuilt["holes"]["1"]["zones_ll"]) == 4
+
+
+def test_badges():
+    pkg = {"holes": {"1": {}, "2": {"verification": {"2-tee": {"answer": "confirm"}}}, "3": {}}}
+    rv = {"items": [{"id": "1-tee", "hole": "1", "severity": "red", "question": "Is the Blue tee here?",
+                     "options": [{"samples": [{"text": "Hole 1: Driver -> 4-wood.", "outcome": {"regret": 0.05}}]}]},
+                    {"id": "2-tee", "hole": "2", "severity": "red", "question": "q", "options": []}]}
+    b = V.badges(pkg, rv)
+    assert b["1"]["state"] == "unverified" and "4-wood" in b["1"]["line"]
+    assert b["2"]["state"] == "checked" and b["3"]["state"] == "auto" and V.badges(pkg, None) == {}

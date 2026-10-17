@@ -11,7 +11,11 @@ Writes to course_data/packages/<slug>/out/ (or --out):
   forecast.json            hourly forecast for the course (fetched on Actions), when available
   course.py                the generated course module (HOLES/PAR3/... in each hole's pixel frame)
   screenshots/holeNN.jpg   clean NAIP image per hole in that frame (+ index.json)
-  plan.json                manifest: inputs, stage timings, files, picks and data gaps
+  plan.json                manifest: inputs, stage timings, files, picks, data gaps and per-hole badges
+
+Badges (research/auto_course_lookup.md section 8): when out/review/review.json exists (verify.py, the 2-minute
+check), each hole's label gets \u2713 auto / \u25d0 checked by you / \u26a0 unverified, the unverified holes' notes
+open with the open question and what changes if the map is wrong, and the cover lists them.
 
 Steps: 1 package -> course module (package.py), 2 NAIP render per hole (imagery.py), 3 decision
 (decide.py: --quick = prior-mean point estimate; default/--full = Bayesian, --draws 32-128 Sobol draws),
@@ -184,6 +188,19 @@ def main(argv=None):
             gaps.append(f"hole {k}: CHECK - " + "; ".join(why))
             C.labels[k] = f"{C.labels.get(k, k)} CHECK"
         import book
+        badge = {}
+        rv_path = os.path.join(out, "review", "review.json")
+        if os.path.exists(rv_path):                        # the 2-minute check (verify.py): per-hole badges
+            try:
+                import verify
+                badge = verify.badges(C.package, json.load(open(rv_path)))
+            except Exception as e:                         # noqa: BLE001
+                log(f"  ! badges skipped: {type(e).__name__}: {e}")
+        for ref, b in badge.items():
+            k = PK.key_of(ref)
+            if k in C.holes or k in C.par3:
+                C.labels[k] = f"{C.labels.get(k, k)} {b['symbol']}"
+        book.set_badges(badge)
         notes, aim_at = book.notes_and_aims(C.holes, C.par3, results, C.flags)
         PK.write_module(C, mod_path, notes=notes, aim_at=aim_at)
         mod = PK.import_module(mod_path)
@@ -253,6 +270,7 @@ def main(argv=None):
                                    tie=r["tie"], conf=r.get("conf"), check=r.get("check") or [],
                                    status="CHECK" if r.get("check") else "PLAY") for k, r in results.items()},
                check={str(k): r["check"] for k, r in results.items() if r.get("check")},
+               badges={k: dict(state=b["state"], line=b["line"]) for k, b in badge.items()},
                tee_line=dict(rule=PK._tee_line_mod().RULE,
                              how={str(k): f.get("aim") for k, f in C.frames.items()}),
                par3={str(k): dict(center=p["center"], card=p.get("card"), haz=p["haz"]) for k, p in C.par3.items()},

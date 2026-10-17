@@ -39,8 +39,30 @@ def _words(s):
 SIM_WORDS = ["8,000 simulated tee shots per club and aim"]
 
 
+BADGES = {}
+
+
+def set_badges(b):
+    """Per-hole badges from verify.badges (shown in labels, notes and on the cover)."""
+    BADGES.clear()
+    BADGES.update(b or {})
+
+
+def badge_line():
+    un = [k for k, b in BADGES.items() if b["state"] == "unverified"]
+    ck = [k for k, b in BADGES.items() if b["state"] == "checked"]
+    if not BADGES:
+        return None
+    return ("Map check: \u26a0 unverified " + (", ".join(un) if un else "none") + " (see the hole notes; the review page "
+            "asks about them)  \u00b7  \u25d0 checked by you " + (", ".join(ck) if ck else "none") + "  \u00b7  \u2713 the rest "
+            "(nothing open that changes the club).")
+
+
 def _text_block_hook(fig, x, y, lines, *a, **k):
-    return _text_block(fig, x, y, [_words(ln) for ln in lines], *a, **k)
+    lines = [_words(ln) for ln in lines]
+    if lines and lines[0] == "**How to read this" and badge_line():
+        lines = lines + [badge_line()]
+    return _text_block(fig, x, y, lines, *a, **k)
 
 
 def _side_hook(yds):
@@ -117,6 +139,11 @@ def notes_and_aims(mod_holes, par3, results, flags, labels=None):
         chk = r.get("check") or []
         if chk:
             s = "CHECK THE MAP: " + "; ".join(chk) + ". " + s
+        b = BADGES.get(str(k))
+        if b and b["state"] == "unverified":
+            s = "\u26a0 " + b["line"] + " " + s
+        elif b and b["state"] == "checked":
+            s = "\u25d0 " + b["line"] + " " + s
         notes[k] = s
         zone = r["zone"]
         aim_at[k] = (f"{side(r['aim'])} of the tee line (good from {side(zone[0])} to {side(zone[1])})"

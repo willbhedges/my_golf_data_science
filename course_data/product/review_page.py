@@ -16,7 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE = os.path.join(HERE, "review_page_template.html")
 
 KEEP = ("id", "hole", "type", "severity", "par", "lie", "side", "question", "detail", "options", "crop", "toward",
-        "along", "edge", "confidence")
+        "along", "edge", "confidence", "p_wrong", "worst_regret", "exp_regret", "over_budget")
 
 
 def _slim_outcome(o):

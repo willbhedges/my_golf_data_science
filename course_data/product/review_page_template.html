@@ -8,7 +8,7 @@
   --paper:#eef2ec; --card:#ffffff; --ink:#173326; --muted:#566a5e; --line:#cfd9d1; --chip:#e3eae4;
   --accent:#e0a800; --accent-ink:#3b2c00;
   --red:#c2362b; --red-bg:#fbe9e6; --amber:#a86a00; --amber-bg:#fdf1d8; --ok:#2e7d4f; --ok-bg:#e3f2e8;
-  --lie-recovery:#ff8a3d; --lie-native:#ffd23f; --lie-water:#4fc3ff; --lie-sand:#fff3c4; --lie-ob:#ff5fd2; --lie-gap:#ffffff;
+  --lie-recovery:#ff8a3d; --lie-native:#ffd23f; --lie-water:#4fc3ff; --lie-sand:#fff3c4; --lie-ob:#ff5fd2; --lie-gap:#ffffff; --lie-fairway:#9dff6a; --lie-cut:#d8ffb0;
   --mark:#ffffff; --mark-ink:#0b1a12;
   --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
   --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
@@ -63,6 +63,15 @@ button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outl
 .alts{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:14px;color:var(--muted)}
 .alts li span{color:var(--ink);font-weight:600}
 .hint{font-size:14px;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 35%,var(--card));border-radius:8px;padding:6px 10px}
+.teesheet{gap:4px}
+.teesheet>.card{border:none;border-top:1px solid var(--line);border-radius:0;padding:12px 0 4px;background:transparent}
+.teesheet>.card .body{grid-template-columns:110px minmax(0,1fr)}
+.teesheet>.card.open .body{grid-template-columns:minmax(0,300px) minmax(0,1fr)}
+@media (max-width:620px){.teesheet>.card.open .body{grid-template-columns:1fr}}
+.teesheet>.card .hole{font-size:22px}
+.teesheet>.card .mapnote{display:none}
+.teesheet>.card .alts{font-size:13px}
+.why{font-size:13px;color:var(--muted);margin:0}
 details.more>summary{cursor:pointer;font:600 18px var(--display);letter-spacing:.02em;padding:6px 0}
 details.green{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 details.green summary{cursor:pointer;font-weight:600}
@@ -127,16 +136,19 @@ const LIE = {recovery: 'trees', native: 'long grass', water: 'water', sand: 'san
 const TEE_NAMES = {back: '20 yds back', forward: '20 yds forward', left: '10 yds left', right: '10 yds right'};
 const shown = D.items.filter(i => i.severity !== 'green');
 const reds = shown.filter(i => i.severity === 'red'), ambers = shown.filter(i => i.severity === 'amber');
+const teeItems = shown.filter(i => i.type === 'tee');
+const teeRed = teeItems.some(i => i.severity === 'red');
+const redCards = reds.filter(i => i.type !== 'tee').length + (teeRed ? 1 : 0);
 const greens = D.items.filter(i => i.severity === 'green');
 
 function head() {
-  const n = reds.length;
+  const n = redCards;
   document.getElementById('sub').textContent = D.course + ' · ' + D.tee_set + ' tees · ' +
-    (n ? n + ' thing' + (n > 1 ? 's' : '') + ' that could change your club or aim, worst first (about ' + Math.max(1, Math.round(n * 10 / 60)) + ' min)'
+    (n ? n + ' check' + (n > 1 ? 's' : '') + ' that could change your club or aim, worst first (about ' + Math.max(1, Math.round((n + teeItems.length / 3) * 15 / 60)) + ' min)'
        : 'nothing that changes your club or aim') + (ambers.length ? '; ' + ambers.length + ' more worth a glance below.' : '.');
   const s = document.getElementById('summary');
   s.innerHTML = '';
-  [['red', D.counts.red, 'could change a club or aim'], ['amber', D.counts.amber, 'worth a glance'], ['ok', D.counts.green, 'checked automatically']]
+  [['red', redCards, 'to check'], ['amber', ambers.filter(i => i.type !== 'tee').length + (!teeRed && teeItems.length ? 1 : 0), 'worth a glance'], ['ok', D.counts.green, 'checked automatically']]
     .forEach(([c, v, t]) => s.appendChild(el('span', {class: 'count'}, [el('span', {class: 'dot ' + c}), el('span', {text: v + ' ' + t})])));
   s.appendChild(el('span', {class: 'count', id: 'answered', style: 'margin-left:auto'}));
 }
@@ -147,6 +159,11 @@ function progress() {
   document.getElementById('bar').style.width = (reds.length ? 100 * a / reds.length : 100) + '%';
 }
 
+function sampleName(it, s) {
+  if (it.type === 'tee') return 'Tee ' + Math.round(Math.hypot(s.dx, s.dy)) + ' yds ' + {back: 'back', forward: 'forward', left: 'left', right: 'right'}[s.name];
+  if (it.type === 'fairway') return 'Fairway ' + Math.abs(s.shift) + ' yds ' + s.name;
+  return 'Edge ' + Math.abs(s.shift) + ' yds ' + s.name;
+}
 function optionOf(it, ans) { return ans && it.options.find(o => o.answer === ans.answer); }
 function confirmText(it) { const o = it.options.find(o => o.answer === 'confirm' || o.answer === 'not_playable'); return o ? o.text : 'No change.'; }
 function outcomeFor(it, ans) {
@@ -159,15 +176,16 @@ function outcomeFor(it, ans) {
     let best = null, bc = -2;
     opt.samples.forEach(s => { const c = (dx * s.dx + dy * s.dy) / (m * Math.hypot(s.dx, s.dy)); if (c > bc) { bc = c; best = s; } });
     const far = m > 1.5 * Math.hypot(best.dx, best.dy);
-    return {text: 'About like ' + TEE_NAMES[best.name] + ': ' + best.text + (far ? ' Your move is bigger; the exact plan comes back after you send answers.' : ''),
+    return {text: 'About like ' + sampleName(it, best).replace('Tee ', 'moving it ') + ': ' + best.text + (far ? ' Your move is bigger; the exact plan comes back after you send answers.' : ''),
             chg: best.outcome && best.outcome.severity === 'red'};
   }
   const sh = ans.shift || 0;
   if (Math.abs(sh) < 5) return {text: 'Moved under 5 yds. ' + confirmText(it), chg: false};
   const s = opt.samples.find(s => Math.sign(s.shift) === Math.sign(sh)) || opt.samples[0];
   const far = Math.abs(sh) > 1.5 * Math.abs(s.shift);
-  return {text: 'Edge ' + Math.round(Math.abs(sh)) + ' yds ' + (sh > 0 ? 'closer' : 'farther') + ': ' + s.text +
-          (far ? ' (Tested at 10 yds; the exact plan comes back after you send answers.)' : ''),
+  const words = it.type === 'fairway' ? (sh > 0 ? 'narrower' : 'wider') : (sh > 0 ? 'closer' : 'farther');
+  return {text: (it.type === 'fairway' ? 'Fairway ' : 'Edge ') + Math.round(Math.abs(sh)) + ' yds ' + words + ': ' + s.text +
+          (far ? ' (Tested at ' + Math.abs(s.shift) + ' yds; the exact plan comes back after you send answers.)' : ''),
           chg: s.outcome && s.outcome.severity === 'red'};
 }
 
@@ -179,7 +197,10 @@ function card(it) {
   c.appendChild(el('div', {class: 'head'}, [el('span', {class: 'hole', text: 'Hole ' + it.hole}),
     el('span', {class: 'pill ' + it.severity, text: sev}), done,
     hb ? el('span', {class: 'now', text: 'Plan now: ' + hb.pick + ', ' + aimWords(hb.aim)}) : null]));
-  const text = el('div', {class: 'text'}, [el('h2', {class: 'q', text: it.question}), el('p', {class: 'detail', text: it.detail || ''})]);
+  const why = (it.p_wrong != null && it.worst_regret) ? 'Why we ask: about a ' + Math.round(100 * it.p_wrong) + '% chance this is off; if it is, the plan can cost up to ' +
+    it.worst_regret.toFixed(2) + ' strokes on this hole.' + (it.over_budget ? ' (Over today\u2019s red budget, so it is listed here.)' : '') : '';
+  const text = el('div', {class: 'text'}, [el('h2', {class: 'q', text: it.question}), el('p', {class: 'detail', text: it.detail || ''}),
+    why ? el('p', {class: 'why', text: why}) : null]);
   const fig = it.crop ? mapFor(it) : null;
   const answers = el('div', {class: 'answers', role: 'group', 'aria-label': 'Answer'});
   const hint = el('div', {class: 'hint', text: it.type === 'tee' ? 'Drag the white tee marker on the photo to where the tee really is.' : 'Drag the yellow handle on the photo to where the edge really is.'});
@@ -197,7 +218,7 @@ function card(it) {
     });
     answers.appendChild(b);
     if (o.samples) {
-      o.samples.forEach(s => alts.appendChild(el('li', {}, [el('span', {text: (it.type === 'tee' ? 'Tee ' + TEE_NAMES[s.name] : 'Edge 10 yds ' + s.name) + ': '}), document.createTextNode(s.text)])));
+      o.samples.forEach(s => alts.appendChild(el('li', {}, [el('span', {text: sampleName(it, s) + ': '}), document.createTextNode(s.text)])));
     } else {
       alts.appendChild(el('li', {}, [el('span', {text: o.label + ': '}), document.createTextNode(o.text)]));
     }
@@ -206,6 +227,7 @@ function card(it) {
     const ans = S.answers[it.id];
     answers.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(!!ans && b.dataset.a === ans.answer)));
     done.hidden = !ans;
+    c.classList.toggle('open', !!(ans && ans.answer === 'moved'));
     hint.hidden = !(ans && ans.answer === 'moved') || !fig;
     const r = outcomeFor(it, ans);
     out.innerHTML = '';
@@ -261,15 +283,16 @@ function mapFor(it) {
     m.addEventListener('keydown', e => { const k = {ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowUp: [0, 5], ArrowDown: [0, -5]}[e.key];
       if (!k) return; e.preventDefault(); cur = {dx: cur.dx + k[0], dy: cur.dy + k[1]}; place(); api.onmove && api.onmove({dx: cur.dx, dy: cur.dy}); });
   } else {
-    const col = 'var(--lie-' + (it.type === 'gap' ? 'gap' : (it.lie || 'recovery')) + ')';
+    const col = 'var(--lie-' + ({gap: 'gap', cut: 'cut', fairway: 'fairway'}[it.type] || it.lie || 'recovery') + ')';
     const g = sv('g', {});
     ov.polys.forEach(p => {
       const a = {points: p.map(q => q.join(',')).join(' '), class: 'haz', stroke: col, fill: col};
-      if (it.type === 'gap') { a['stroke-dasharray'] = '6 5'; a.fill = 'none'; }
+      if (it.type === 'gap' || it.type === 'cut') { a['stroke-dasharray'] = '6 5'; a.fill = 'none'; }
+      if (it.type === 'fairway') a['fill-opacity'] = '0.12';
       g.appendChild(sv('polygon', a));
     });
     svg.appendChild(g);
-    if (it.type === 'hazard' && ov.toward) {
+    if ((it.type === 'hazard' || it.type === 'fairway') && ov.toward) {
       const xs = ov.polys.flat().map(p => p[0]), ys = ov.polys.flat().map(p => p[1]);
       const cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
       const [vx, va] = ov.toward, ux = vx, uy = -va;            // toward the fairway, in crop px
@@ -277,6 +300,7 @@ function mapFor(it) {
       if (ux > 0) { hx = Math.max(...xs); hy = (Math.min(...ys) + Math.max(...ys)) / 2; }
       else if (ux < 0) { hx = Math.min(...xs); hy = (Math.min(...ys) + Math.max(...ys)) / 2; }
       else { hy = Math.max(...ys); hx = (Math.min(...xs) + Math.max(...xs)) / 2; }
+      if (ov.handle) { hx = ov.handle[0]; hy = ov.handle[1]; }
       hx = cl(hx, 14, cr.w - 14); hy = cl(hy, 14, cr.h - 14);
       const h = sv('circle', {cx: hx, cy: hy, r: 11, class: 'handle', tabindex: '0', role: 'slider', 'aria-label': 'Edge position, arrow keys move it 5 yds'});
       svg.appendChild(h);
@@ -311,21 +335,35 @@ function answersJson() {
 head();
 const cards = document.getElementById('cards');
 const amberBox = document.getElementById('ambercards');
+function teeSheet() {
+  const box = el('article', {class: 'card teesheet sev-' + (teeRed ? 'red' : 'amber'), id: 'tee-sheet'});
+  const nr = teeItems.filter(i => i.severity === 'red').length;
+  box.appendChild(el('div', {class: 'head'}, [el('span', {class: 'hole', text: 'Tee sheet'}),
+    el('span', {class: 'pill ' + (teeRed ? 'red' : 'amber'), text: teeRed ? nr + ' could change your club' : 'Worth a glance'}),
+    el('span', {class: 'now', text: teeItems.length + ' hole' + (teeItems.length > 1 ? 's' : '') + ' · ' + D.tee_set + ' tees'})]));
+  box.appendChild(el('p', {class: 'detail', text: 'Glance at each photo: is the ' + D.tee_set + ' marker where the white dot is? Tap Move the tee to drag it.'}));
+  teeItems.forEach(it => { const r = card(it); box.appendChild(r); });
+  return box;
+}
 function renderCards() {
   cards.innerHTML = ''; amberBox.innerHTML = '';
-  reds.forEach(it => cards.appendChild(card(it)));
-  ambers.forEach(it => amberBox.appendChild(card(it)));
+  const redList = reds.filter(i => i.type !== 'tee'), amberList = ambers.filter(i => i.type !== 'tee');
+  if (teeItems.length && teeRed) cards.appendChild(teeSheet());
+  redList.forEach(it => cards.appendChild(card(it)));
+  if (teeItems.length && !teeRed) amberBox.appendChild(teeSheet());
+  amberList.forEach(it => amberBox.appendChild(card(it)));
 }
 renderCards();
-document.getElementById('ambersum').textContent = 'Worth a glance: ' + ambers.length + ' item' + (ambers.length === 1 ? '' : 's') + ' with a small effect on the plan';
-document.getElementById('ambers').hidden = !ambers.length;
-if (!reds.length) cards.appendChild(el('p', {class: 'detail', text: 'Nothing on this course changes the plan if it is wrong. Have a good round.'}));
+const nAmb = ambers.filter(i => i.type !== 'tee').length;
+document.getElementById('ambersum').textContent = 'Worth a glance: ' + nAmb + ' item' + (nAmb === 1 ? '' : 's') + ' with a small effect on the plan' + (!teeRed && teeItems.length ? ', plus the tee sheet' : '');
+document.getElementById('ambers').hidden = !(nAmb || (!teeRed && teeItems.length));
+if (!redCards) cards.appendChild(el('p', {class: 'detail', text: 'Nothing on this course changes the plan if it is wrong. Have a good round.'}));
 document.getElementById('greensum').textContent = 'Checked automatically: ' + greens.length + ' items where no answer changes the plan';
 greens.forEach(it => document.getElementById('greenlist').appendChild(el('li', {text: 'Hole ' + it.hole + ': ' + it.question})));
 document.getElementById('greens').hidden = !greens.length;
 document.getElementById('foot').textContent = 'Each answer was tested before you see it: the strategy model re-ran the tee shot (' + D.settings.n +
-  ' swings, same random swings every time) with the item removed, its edge moved 10 yds either way, or the tee moved 20 yds along and 10 yds across. ' +
-  'Red means the club or the aim (by more than 5 yds) changes; amber means the hole plays more than 0.01 strokes differently. Built ' + D.built + '.';
+  ' swings, same random swings every time) with the item removed, its edge moved 10 yds either way, or the tee moved along and across the line (further when we are less sure of it). ' +
+  'Red means a likely-enough mistake here changes the club or the aim (by more than 5 yds) and playing the printed plan would cost at least 0.02 strokes; at most four red checks per course, all tees together count as one. Built ' + D.built + '.';
 progress();
 
 const outBox = document.getElementById('out'), status = document.getElementById('status');
