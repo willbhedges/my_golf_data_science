@@ -1,0 +1,121 @@
+{
+ "seed": 20261017,
+ "states": [
+  "CA",
+  "GA",
+  "IL",
+  "KY",
+  "MA",
+  "ME",
+  "MN",
+  "MS",
+  "NH",
+  "UT",
+  "WI",
+  "WY"
+ ],
+ "built_utc": "2026-10-17T00:57:27Z",
+ "n": 3431,
+ "tiers": {
+  "full": 2239,
+  "partial": 416,
+  "none": 776
+ },
+ "tier_share": {
+  "full": 0.6526,
+  "partial": 0.1212,
+  "none": 0.2262
+ },
+ "per_state": {
+  "CA": {
+   "eligible": 880,
+   "all_elements": 1006,
+   "full": 535,
+   "partial": 108,
+   "none": 237
+  },
+  "GA": {
+   "eligible": 271,
+   "all_elements": 417,
+   "full": 156,
+   "partial": 22,
+   "none": 93
+  },
+  "IL": {
+   "eligible": 534,
+   "all_elements": 632,
+   "full": 327,
+   "partial": 86,
+   "none": 121
+  },
+  "KY": {
+   "eligible": 166,
+   "all_elements": 234,
+   "full": 95,
+   "partial": 26,
+   "none": 45
+  },
+  "MA": {
+   "eligible": 338,
+   "all_elements": 361,
+   "full": 313,
+   "partial": 18,
+   "none": 7
+  },
+  "ME": {
+   "eligible": 113,
+   "all_elements": 122,
+   "full": 105,
+   "partial": 4,
+   "none": 4
+  },
+  "MN": {
+   "eligible": 358,
+   "all_elements": 473,
+   "full": 229,
+   "partial": 51,
+   "none": 78
+  },
+  "MS": {
+   "eligible": 77,
+   "all_elements": 113,
+   "full": 35,
+   "partial": 5,
+   "none": 37
+  },
+  "NH": {
+   "eligible": 96,
+   "all_elements": 103,
+   "full": 78,
+   "partial": 7,
+   "none": 11
+  },
+  "UT": {
+   "eligible": 119,
+   "all_elements": 123,
+   "full": 91,
+   "partial": 8,
+   "none": 20
+  },
+  "WI": {
+   "eligible": 441,
+   "all_elements": 494,
+   "full": 224,
+   "partial": 77,
+   "none": 140
+  },
+  "WY": {
+   "eligible": 60,
+   "all_elements": 60,
+   "full": 51,
+   "partial": 4,
+   "none": 5
+  }
+ },
+ "rule": {
+  "exclude": "\\b(mini|miniature|minigolf|putt[- ]?putt|putting course|disc|frisbee|foot ?golf|driving range|golf range|practice|range|simulator|topgolf|top golf|drive shack|adventure golf|crazy golf)\\b",
+  "min_ha": 12.0,
+  "tiers": "see sample.py docstring"
+ },
+ "national": null
+}
