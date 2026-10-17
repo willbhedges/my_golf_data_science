@@ -172,6 +172,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
         for h, p in zip(holes, pars):
             if p:
                 h["par"] = int(p)
+    par_conf = [1.0 if (pars and k < len(pars) and pars[k]) else float(max(h["p_par"])) for k, h in enumerate(holes)]
     used = {pb.keep[n] for n in seq}
     # card fit: straight length vs card yards per hole (in route order)
     card_resid = None
@@ -188,7 +189,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
                 unused_greens=len(sc.greens) - N, form_top_gap=[_gap(pb.hk[n]) for n in seq],
                 walk_in=[float(pb.wd[seq[k - 1]][n][int(np.argmax(V._tee_lp(br["parts"], seq, k, N)))]) if k else None
                          for k, n in enumerate(seq)],
-                seq=[int(pb.keep[n]) for n in seq], keep=[int(x) for x in keep])
+                par_conf=par_conf, seq=[int(pb.keep[n]) for n in seq], keep=[int(x) for x in keep])
     return dict(schema="course_structure/1", status="ok", n_holes=N, holes=holes, card_used=bool(pars or yards),
                 practice_greens=[sc.greens[i]["id"] for i in range(len(sc.greens)) if i not in used],
                 clubhouse=dict(xy=[float(x) for x in br["H"]["c"]], how=br["H"]["how"],

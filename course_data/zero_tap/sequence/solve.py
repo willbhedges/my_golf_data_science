@@ -106,13 +106,20 @@ def evidence_pos(sc, geo, keep, N, ev_obj):
     return np.clip(pos, -10, 10)
 
 
-def run(fc, course=None, card=None, pairs=None, evidence=None, gate_params=None, n_holes=None):
+def run(fc, course=None, card=None, pairs=None, evidence=None, gate_params=None, n_holes=None, return_raw=False):
     course = course or {}
     sc = S.scene_from_osm(fc, course.get("boundary"))
     allh, geo = V.hypotheses(sc, topk=V.TOPK, clubs=list(sc.clubhouse))
     hyps = allh
     pars, yards = V.card_info(card)
     N = n_holes or (len(pars) if pars else (len(yards) if yards else V.n_holes_guess(hyps, len(geo.C))))
+    if N > 18:
+        # 27 / 36 holes: the structure solver's greedy loop builder; never 'certain'
+        res = V.solve(sc, card=card, n_holes=N)
+        res["diag"] = {}
+        out = contract(res, sc, course, False, 0.0, None, None, dict(formation="structure (greedy, 27/36)",
+                                                                     evidence=False, card=bool(card)))
+        return (out, res) if return_raw else out
     keep, _, _ = J.choose_keep(sc, hyps, geo, N)
     roads, street = A.roads_from_fc(fc, sc.proj), A.addr_street(course)
     models = A.load_models()
@@ -125,8 +132,9 @@ def run(fc, course=None, card=None, pairs=None, evidence=None, gate_params=None,
                   pad_extra=pad, pos_extra=pos)
     gp = gate_params if gate_params is not None else GT.load()
     certain, conf, s = GT.apply(gp, res.get("diag", {}))
-    return contract(res, sc, course, certain, conf, s, gp, dict(formation="hole_pairs/1" if pairs else "structure",
-                                                                evidence=bool(evidence), card=bool(card)))
+    out = contract(res, sc, course, certain, conf, s, gp, dict(formation="hole_pairs/1" if pairs else "structure",
+                                                               evidence=bool(evidence), card=bool(card)))
+    return (out, res) if return_raw else out
 
 
 def contract(res, sc, course, certain, conf, s, gp, inputs):
@@ -145,7 +153,7 @@ def contract(res, sc, course, certain, conf, s, gp, inputs):
             "course": {k: course.get(k) for k in ("name", "slug", "state", "osm") if course.get(k) is not None},
             "status": res.get("status"), "certain": bool(certain),
             "confidence": None if conf is None else round(float(conf), 4),
-            "gate": None if gp is None else dict(score=None if s is None else round(s, 4),
+            "gate": None if not gp else dict(score=None if s is None else round(s, 4),
                                                  threshold=gp["threshold_score"], version=gp["schema"]),
             "n_holes": res.get("n_holes"), "inputs": inputs,
             "clubhouse": dict(ll=pj.ll(ch["xy"]), how=ch.get("how"), p=ch.get("p")) if ch.get("xy") is not None else None,

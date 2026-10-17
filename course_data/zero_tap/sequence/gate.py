@@ -32,7 +32,7 @@ TARGET = 0.99
 
 FEATS = ("lp_route", "lp_route_mix", "min_num", "mean_lnum", "min_tee", "mean_ltee", "lp_front", "card",
          "card_max_resid", "card_mean_resid", "unused", "lagr", "n9", "ch_p", "min_gap", "max_walk", "cx_ratio",
-         "sum_l1m_other", "dp_front")
+         "sum_l1m_other", "dp_front", "min_par", "sum_lpar")
 
 
 def features(dg):
@@ -55,7 +55,9 @@ def features(dg):
              unused=dg.get("unused_greens", 0) / N, lagr=float(dg.get("lagr_conflict", 0) > 0), n9=float(N == 9),
              ch_p=float(max(pw)), min_gap=float(min(10.0, min(gaps))), max_walk=math.log1p(max(walks) / 100) if walks else 0.0,
              cx_ratio=dg.get("n_cx", N) / N, sum_l1m_other=float(np.log1p(-oth).sum()),
-             dp_front=0.0 if pfd is None else abs(pfd - 0.5) * 2)
+             dp_front=0.0 if pfd is None else abs(pfd - 0.5) * 2,
+             min_par=float(min(dg.get("par_conf") or [1.0])),
+             sum_lpar=float(np.log(np.clip(dg.get("par_conf") or [1.0], 1e-6, 1)).sum()))
     return np.array([f[k] for k in FEATS])
 
 
@@ -130,9 +132,9 @@ def crossfit(rows, X, y, folds=5, seed=0):
     return s
 
 
-def fit(rows_paths, out=PARAMS):
-    rows = [r for p in rows_paths for r in _read(p) if r.get("split") == "dev"]
-    rs, X, y = dataset(rows)
+def fit(rows_paths, out=PARAMS, modes=PROD, splits=("dev",)):
+    rows = [r for p in rows_paths for r in _read(p) if r.get("split") in splits]
+    rs, X, y = dataset(rows, modes)
     s_cv = crossfit(rs, X, y)
     xs, vs = isotonic(s_cv, y)
     conf_cv = iso_apply(xs, vs, s_cv)
@@ -151,7 +153,7 @@ def fit(rows_paths, out=PARAMS):
     m = fit_lr(X, y)
     sel = s_cv >= t_score
     p = dict(schema="zero_tap_gate/1", feats=list(FEATS), model=m, iso=dict(x=xs, v=vs), threshold_score=t_score,
-             threshold_conf=t0, ltt_threshold=ltt, target_precision=TARGET, modes=list(PROD),
+             threshold_conf=t0, ltt_threshold=ltt, target_precision=TARGET, modes=list(modes),
              calib=dict(rows=len(y), courses=len({r["slug"] for r in rs}), positives=int(y.sum()),
                         certified=int(sel.sum()), certified_wrong=int((sel & (y == 0)).sum())),
              note="fitted on dev rows only (bench.py); score threshold = zero cross-fitted dev errors")
@@ -173,7 +175,7 @@ def load(path=PARAMS):
 
 def apply(p, dg):
     """-> (certain, confidence, score) for one solved course."""
-    if p is None:
+    if not p:
         return False, None, None
     x = features(dg)[None]
     s = float(score(p["model"], x)[0])

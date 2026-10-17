@@ -7,6 +7,9 @@ name: zero_tap_sequence
 # bench:  bench.py, 6 shards (max 6 parallel), each -j 4
 # report: combine rows -> results/rows.json.gz + bench.md; gate.py fit (dev rows) + eval -> gate_params.json,
 #         results/gate_eval.{json,md}; commit
+# {"stage": "zbench", "tiers": "osm_card,nocard"}: workstream D's benchmark (course_data/zero_tap/BENCH.md) with the
+#         committed anchors_params.json: run_bench.py solve (6 shards) -> run_bench.py gate (fit on dev only) ->
+#         course_data/zero_tap/results/sequence/<tier>/ + sequence/results/<tag>/bench_d.{json,md}; commit
 
 on:
   push:
@@ -28,6 +31,8 @@ jobs:
       splits: ${{ steps.p.outputs.splits }}
       modes: ${{ steps.p.outputs.modes }}
       tag: ${{ steps.p.outputs.tag }}
+      stage: ${{ steps.p.outputs.stage }}
+      tiers: ${{ steps.p.outputs.tiers }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,7 +53,8 @@ jobs:
           r = json.load(open(p)) if p else {}
           out = dict(fit="true" if r.get("fit", True) else "false", splits=r.get("splits", "dev,valtest,heldout"),
                      modes=r.get("modes", "struct,struct_card,oracle,oracle_card,struct_v1,struct_card_v1,oracle_v1"),
-                     tag=os.path.basename(p)[len("zt_sequence_"):-5] if p else "default")
+                     tag=os.path.basename(p)[len("zt_sequence_"):-5] if p else "default",
+                     stage=r.get("stage", "seq"), tiers=r.get("tiers", "osm_card,nocard"))
           print(out)
           with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
               for k, v in out.items():
@@ -57,7 +63,7 @@ jobs:
 
   fit:
     needs: plan
-    if: needs.plan.outputs.fit == 'true'
+    if: needs.plan.outputs.fit == 'true' && needs.plan.outputs.stage == 'seq'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -82,7 +88,7 @@ jobs:
 
   bench:
     needs: [plan, fit]
-    if: always() && needs.plan.result == 'success' && needs.fit.result != 'failure'
+    if: always() && needs.plan.result == 'success' && needs.fit.result != 'failure' && needs.plan.outputs.stage == 'seq'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     strategy:
