@@ -79,12 +79,12 @@
   "eligible": true
  },
  "buildings": {
-  "precision": 1.0,
-  "recall": 0.9,
-  "n_pred": 33,
+  "precision": 0.4688,
+  "recall": 0.95,
+  "n_pred": 32,
   "n_true": 60,
-  "tp_pred": 33,
-  "tp_true": 54,
+  "tp_pred": 15,
+  "tp_true": 57,
   "eligible": true
  },
  "parking": {
@@ -124,7 +124,7 @@
   "top1_acc_when_path": 1.0
  },
  "clubhouse": {
-  "error_m": 2.6,
+  "error_m": 2.9,
   "truth": "tagged",
   "eligible": true
  },
@@ -135,15 +135,15 @@
   "eligible": false
  },
  "seconds": {
-  "greens": 0.8,
+  "greens": 0.9,
   "tees": 3.3,
   "fairways": 0.5,
   "bunkers_water_trees": 1.1,
-  "cart_paths": 68.1,
-  "buildings_parking_clubhouse_range": 1.1,
-  "total": 74.9
+  "cart_paths": 70.6,
+  "buildings_parking_clubhouse_range": 1.2,
+  "total": 77.5
  },
- "models": "perception-20261017-0945",
+ "models": "perception-20261017-1050",
  "lidar": true,
  "summary": {
   "greens_hole": 9,
@@ -157,7 +157,7 @@
   "trees": 327,
   "cart_path_km": 0.426,
   "cart_path_components": 6,
-  "buildings": 397,
+  "buildings": 284,
   "parking": 10,
   "clubhouse": true,
   "driving_range": false

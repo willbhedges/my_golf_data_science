@@ -1,5 +1,5 @@
 {
- "id": "perception-20261017-1050",
+ "id": "perception-20261017-1247",
  "sklearn": "1.9.1",
  "test_states": [
   "GA",
@@ -152,10 +152,10 @@
    },
    "test": {
     "n": 570,
-    "acc": 0.8526,
-    "auc_pos": 0.7905,
-    "precision_pos": 0.8902,
-    "recall_pos": 0.9598
+    "acc": 0.8544,
+    "auc_pos": 0.7749,
+    "precision_pos": 0.8852,
+    "recall_pos": 0.9619
    }
   },
   "tee_box": {
@@ -219,7 +219,7 @@
     "0": 300,
     "1": 1159
    },
-   "thr": 0.225,
+   "thr": 0.35,
    "train": {
     "n": 1459,
     "acc": 1.0,
@@ -230,9 +230,9 @@
    "test": {
     "n": 782,
     "acc": 0.8299,
-    "auc_pos": 0.8755,
-    "precision_pos": 0.8683,
-    "recall_pos": 0.9113
+    "auc_pos": 0.8743,
+    "precision_pos": 0.8781,
+    "recall_pos": 0.8976
    }
   },
   "parking": {
@@ -289,15 +289,15 @@
     "park_area_150",
     "park_area_60"
    ],
-   "n_train": 5484,
+   "n_train": 5577,
    "n_test": 1901,
    "train_class_counts": {
-    "0": 5461,
-    "1": 23
+    "0": 5553,
+    "1": 24
    },
    "thr": null,
    "train": {
-    "n": 5484,
+    "n": 5577,
     "acc": 1.0,
     "auc_pos": 1.0,
     "precision_pos": 1.0,
@@ -305,11 +305,11 @@
    },
    "test": {
     "n": 1901,
-    "acc": 0.9942,
-    "auc_pos": 0.8902,
-    "precision_pos": 0.5,
-    "recall_pos": 0.4545,
-    "top1": 0.3636,
+    "acc": 0.9947,
+    "auc_pos": 0.8938,
+    "precision_pos": 0.5714,
+    "recall_pos": 0.3636,
+    "top1": 0.2727,
     "courses": 11
    }
   },
@@ -329,28 +329,28 @@
     "tee_length",
     "tee_p"
    ],
-   "n_train": 9035,
-   "n_test": 4229,
+   "n_train": 9074,
+   "n_test": 4339,
    "train_class_counts": {
-    "0": 8261,
-    "1": 774
+    "0": 8299,
+    "1": 775
    },
    "thr": null,
    "train": {
-    "n": 9035,
-    "acc": 0.9784,
-    "auc_pos": 0.9937,
-    "precision_pos": 0.9154,
-    "recall_pos": 0.8243
+    "n": 9074,
+    "acc": 0.9767,
+    "auc_pos": 0.9932,
+    "precision_pos": 0.8939,
+    "recall_pos": 0.8258
    },
    "test": {
-    "n": 4229,
-    "acc": 0.9286,
-    "auc_pos": 0.9378,
-    "precision_pos": 0.6041,
-    "recall_pos": 0.4193,
-    "top1_when_true_present": 0.6572,
-    "greens": 353
+    "n": 4339,
+    "acc": 0.9299,
+    "auc_pos": 0.9362,
+    "precision_pos": 0.5956,
+    "recall_pos": 0.4551,
+    "top1_when_true_present": 0.6601,
+    "greens": 356
    }
   }
  },
@@ -390,7 +390,7 @@
   "n_train": 1500000,
   "courses_train": 56,
   "courses_test": 29,
-  "seconds": 66.2,
+  "seconds": 66.5,
   "train": {
    "n": 1500000,
    "acc": 0.8906,
