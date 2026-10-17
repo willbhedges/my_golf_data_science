@@ -1,0 +1,123 @@
+{
+ "course": "Coldwater Golf Links",
+ "bbox_wgs84_snwe": [
+  42.0097028,
+  -93.6294115,
+  42.0155148,
+  -93.6150751
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  42.00880448882501,
+  -93.63062053651525,
+  42.01641311117499,
+  -93.61386606348475
+ ],
+ "fetched_utc": "2026-10-17T09:06:57Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "years_available": [
+   2011,
+   2013,
+   2014,
+   2015,
+   2017,
+   2019,
+   2021,
+   2023
+  ],
+  "acquired": [
+   "2023-09-02"
+  ],
+  "items": [
+   "ia_m_4209360_sw_15_030_20230902_20240104",
+   "ia_m_4209359_se_15_030_20230902_20240104"
+  ],
+  "gsd_m": 0.3,
+  "resolution_m": 0.3,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 4646,
+  "height": 2850,
+  "transform": [
+   0.3,
+   0.0,
+   447780.3,
+   0.0,
+   -0.3,
+   4651791.0
+  ],
+  "bounds_crs": [
+   447780.3,
+   4650936.0,
+   449174.1,
+   4651791.0
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 2323,
+   "height": 1425,
+   "transform": [
+    0.6,
+    0.0,
+    447780.3,
+    0.0,
+    -0.6,
+    4651791.0
+   ],
+   "resolution_m": 0.6
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 6.48,
+   "naip_nir.tif": 4.84,
+   "naip_rgb_lo.jpg": 1.17,
+   "naip_nir_lo.jpg": 0.89
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 3,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26915",
+  "width": 1395,
+  "height": 855,
+  "transform": [
+   1.0,
+   0.0,
+   447780.0,
+   0.0,
+   -1.0,
+   4651791.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 2.27,
+  "format": "COG",
+  "elev_m": [
+   266.01568603515625,
+   278.8058776855469
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 16.1
+}
