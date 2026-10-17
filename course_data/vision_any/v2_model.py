@@ -721,7 +721,16 @@ def train_product(Ds, H, names, rep):
 
 def save_model(clf, names, rep):
     import pickle
-    meta = dict(model_id=MODEL_ID, features=names, settings=rep["settings"],
+    settings = dict(rep["settings"])
+    prev = os.path.join(MODEL_DIR, "model.json")
+    dc = None
+    if os.path.exists(prev):
+        old = json.load(open(prev))
+        dc = old.get("decision_calibration")
+        if dc:          # decision-level settings (v2_calibrate.py, merge-gated) win over the map-IoU choice
+            settings = old["settings"]
+    meta = dict(model_id=MODEL_ID, features=names, settings=settings, map_level_settings=rep["settings"],
+                decision_calibration=dc,
                 trained_on={s: rep["courses"][s]["holes"] for s in rep["courses"]},
                 built=time.strftime("%Y-%m-%dT%H:%MZ", time.gmtime()))
     try:
