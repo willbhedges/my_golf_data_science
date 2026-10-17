@@ -1,0 +1,24 @@
+# Spirit Hollow Golf Course (Black tees): tee-shot decisions
+
+Quick mode: the strategy model at the central settings of the Bayesian prior (driver pattern 70 yds, depth x1.25, trees 0.8, half of long-grass balls lost, 15% mishits, tour baselines).
+
+| Hole | Par | Yds | Pick | Aim (yds, +R) | Zone | Runner-up | Margin | Fairway | Approach |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 4 | 391 | **Driver** | -40.0 | -40 to -35 | 2-wood | 0.041 | 30% | 59 |
+| 2 | 5 | 507 | **Driver** | -35.0 | -40 to -30 | 2-wood | 0.071 | 57% | 209 |
+| 4 | 5 | 532 | **Driver** | -5.0 | -10 to +0 | 2-wood | 0.052 | 50% | 252 |
+| 5 | 4 | 384 | **4-wood** | -5.0 | -12 to +2 | 2-wood | 0.016 | 85% | 121 |
+| 6 | 4 | 408 | **Driver** | -35.0 | -40 to -28 | 2-wood | 0.012 | 58% | 101 |
+| 8 | 4 | 383 | **4-wood** | -5.0 | -12 to +0 | 2-wood | 0.014 | 64% | 124 |
+| 9 | 4 | 365 | **4-wood** | +2.5 | -5 to +10 | 2-wood | 0.063 | 42% | 96 |
+| 10 | 5 | 502 | **Driver** | +0.0 | -5 to +2 | 4-wood | 0.042 | 48% | 209 |
+| 11 | 4 | 338 | **4-wood** | +2.5 | -2 to +8 | 2-wood | 0.321 | 4% | 76 |
+| 13 | 4 | 409 | **Driver** (tie) | +12.5 | +8 to +18 | 4-wood | 0.003 | 39% | 116 |
+| 14 CHECK | 4 | 393 | **2-wood** **CHECK** | -40.0 | -40 to -40 | 4-wood | 0.011 | 35% | 90 |
+| 16 | 4 | 378 | **4-wood** | -5.0 | -10 to +0 | 2-wood | 0.016 | 61% | 113 |
+| 17 | 4 | 445 | **Driver** | +0.0 | -8 to +5 | 2-wood | 0.029 | 50% | 154 |
+| 18 | 5 | 521 | **Driver** | -5.0 | -12 to +0 | 2-wood | 0.036 | 41% | 218 |
+
+## CHECK (absurd-aim guard: look at the map before playing these)
+
+- 14 CHECK: 2-wood best aim -52 rejected (aim -52 yds is more than 40 yds off the tee line)

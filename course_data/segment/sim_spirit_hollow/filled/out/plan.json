@@ -1,0 +1,286 @@
+{
+ "schema": "plan/1",
+ "course": "Spirit Hollow Golf Course",
+ "slug": "spirit_hollow",
+ "tee_set": "Black",
+ "mode": "quick",
+ "package": "course_data/segment/sim_spirit_hollow/filled/package.json",
+ "out": "course_data/segment/sim_spirit_hollow/filled/out",
+ "built": "2026-10-17T00:47Z",
+ "settings": {
+  "swings": 8000
+ },
+ "forecast": null,
+ "stage_seconds": {
+  "1 package -> course module": 0.6,
+  "2 NAIP render per hole": 2.6,
+  "3 decision (quick)": 100.0
+ },
+ "runtime_s": 103.1,
+ "files": {
+  "course.py": 372526,
+  "decision.json": 20443,
+  "decision.md": 1652,
+  "screenshots/": 6475511
+ },
+ "picks": {
+  "1": {
+   "club": "Driver",
+   "aim": -40.0,
+   "zone": [
+    -40.0,
+    -35.0
+   ],
+   "margin": 0.0408,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "2": {
+   "club": "Driver",
+   "aim": -35.0,
+   "zone": [
+    -40.0,
+    -30.0
+   ],
+   "margin": 0.0706,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "4": {
+   "club": "Driver",
+   "aim": -5.0,
+   "zone": [
+    -10.0,
+    0.0
+   ],
+   "margin": 0.0523,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "5": {
+   "club": "4-wood",
+   "aim": -5.0,
+   "zone": [
+    -12.5,
+    2.5
+   ],
+   "margin": 0.0158,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "6": {
+   "club": "Driver",
+   "aim": -35.0,
+   "zone": [
+    -40.0,
+    -27.5
+   ],
+   "margin": 0.0123,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "8": {
+   "club": "4-wood",
+   "aim": -5.0,
+   "zone": [
+    -12.5,
+    0.0
+   ],
+   "margin": 0.0143,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "9": {
+   "club": "4-wood",
+   "aim": 2.5,
+   "zone": [
+    -5.0,
+    10.0
+   ],
+   "margin": 0.0628,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "10": {
+   "club": "Driver",
+   "aim": 0.0,
+   "zone": [
+    -5.0,
+    2.5
+   ],
+   "margin": 0.0424,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "11": {
+   "club": "4-wood",
+   "aim": 2.5,
+   "zone": [
+    -2.5,
+    7.5
+   ],
+   "margin": 0.3211,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "13": {
+   "club": "Driver",
+   "aim": 12.5,
+   "zone": [
+    7.5,
+    17.5
+   ],
+   "margin": 0.0026,
+   "tie": true,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "14": {
+   "club": "2-wood",
+   "aim": -40.0,
+   "zone": [
+    -40.0,
+    -40.0
+   ],
+   "margin": 0.011,
+   "tie": false,
+   "conf": null,
+   "check": [
+    "2-wood best aim -52 rejected (aim -52 yds is more than 40 yds off the tee line)"
+   ],
+   "status": "CHECK"
+  },
+  "16": {
+   "club": "4-wood",
+   "aim": -5.0,
+   "zone": [
+    -10.0,
+    0.0
+   ],
+   "margin": 0.016,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "17": {
+   "club": "Driver",
+   "aim": 0.0,
+   "zone": [
+    -7.5,
+    5.0
+   ],
+   "margin": 0.0287,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "18": {
+   "club": "Driver",
+   "aim": -5.0,
+   "zone": [
+    -12.5,
+    0.0
+   ],
+   "margin": 0.0362,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  }
+ },
+ "check": {
+  "14": [
+   "2-wood best aim -52 rejected (aim -52 yds is more than 40 yds off the tee line)"
+  ]
+ },
+ "tee_line": {
+  "rule": "tee -> hole line 250 yds along (<= 62% of the hole); par 3: green",
+  "how": {
+   "1": "landing",
+   "2": "landing",
+   "3": "green",
+   "4": "landing",
+   "5": "landing",
+   "6": "landing",
+   "7": "green",
+   "8": "landing",
+   "9": "landing",
+   "10": "landing",
+   "11": "landing",
+   "12": "green",
+   "13": "landing",
+   "14": "landing",
+   "15": "green",
+   "16": "landing",
+   "17": "landing",
+   "18": "landing"
+  }
+ },
+ "par3": {
+  "3": {
+   "center": 148,
+   "card": 148,
+   "haz": {
+    "left": "trees",
+    "right": "rough",
+    "short": "rough",
+    "long": "trees"
+   }
+  },
+  "7": {
+   "center": 154,
+   "card": 154,
+   "haz": {
+    "left": "bunker",
+    "right": "bunker",
+    "short": "rough",
+    "long": "rough"
+   }
+  },
+  "12": {
+   "center": 186,
+   "card": 186,
+   "haz": {
+    "left": "rough",
+    "right": "bunker",
+    "short": "rough",
+    "long": "rough"
+   }
+  },
+  "15": {
+   "center": 144,
+   "card": 145,
+   "haz": {
+    "left": "rough",
+    "right": "rough",
+    "short": "water",
+    "long": "bunker"
+   }
+  }
+ },
+ "gaps": [
+  "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 1 holes, 2-wood on 1 holes",
+  "hole 14: CHECK - 2-wood best aim -52 rejected (aim -52 yds is more than 40 yds off the tee line)"
+ ]
+}

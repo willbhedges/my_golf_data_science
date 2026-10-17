@@ -94,17 +94,17 @@ Tee placement (tees/place_tee.place_course_sets) with U-Net tees as extra candid
 | spirit_hollow | joint+lidar | 93% | 1 | 44% | 12.4 |
 | spirit_hollow | joint+unet | 92% | 1 | 44% | 12.4 |
 | spirit_hollow | joint+lidar+unet | 93% | 1 | 44% | 12.4 |
-| spirit_hollow | no OSM tees: walk-back | 100% | 72 | 19% | 22.049999999999997 |
+| spirit_hollow | no OSM tees: walk-back | 100% | 72 | 19% | 22.0 |
 | spirit_hollow | no OSM tees: lidar | 82% | 21 | 38% | 20.6 |
-| spirit_hollow | no OSM tees: unet | 86% | 10 | 38% | 17.950000000000003 |
-| spirit_hollow | no OSM tees: lidar+unet | 92% | 6 | 44% | 13.600000000000001 |
+| spirit_hollow | no OSM tees: unet | 86% | 10 | 38% | 18.0 |
+| spirit_hollow | no OSM tees: lidar+unet | 92% | 6 | 44% | 13.6 |
 | spirit_hollow_2021 | joint | 92% | 1 | 44% | 12.4 |
 | spirit_hollow_2021 | joint+lidar | 93% | 1 | 44% | 12.4 |
 | spirit_hollow_2021 | joint+unet | 92% | 1 | 44% | 12.4 |
 | spirit_hollow_2021 | joint+lidar+unet | 93% | 1 | 44% | 12.4 |
-| spirit_hollow_2021 | no OSM tees: walk-back | 100% | 72 | 19% | 22.049999999999997 |
+| spirit_hollow_2021 | no OSM tees: walk-back | 100% | 72 | 19% | 22.0 |
 | spirit_hollow_2021 | no OSM tees: lidar | 82% | 21 | 38% | 20.6 |
-| spirit_hollow_2021 | no OSM tees: unet | 86% | 10 | 31% | 19.950000000000003 |
+| spirit_hollow_2021 | no OSM tees: unet | 86% | 10 | 31% | 20.0 |
 | spirit_hollow_2021 | no OSM tees: lidar+unet | 92% | 6 | 38% | 17.8 |
 | veenker | joint | 83% | 2 | - | - |
 | veenker | joint+lidar | 83% | 1 | - | - |
