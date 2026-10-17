@@ -106,3 +106,31 @@ Before (quick plan on the auto package): same club on 9/14 tee shots.
 | 17 | Driver +0 | Driver +12 | Driver |
 | 18 | Driver -5 | Driver -8 | 2-wood |
 
+## Ceilings: the hand map's geometry on every hole (perfect answers to everything)
+
+| Geometry | Same club |
+|---|---|
+| auto package | 9/14 |
+| hand tees only | 7/14 |
+| hand zones only | 7/14 |
+| hand tees + zones | 8/14 |
+
+Hand tees + zones, per hole:
+
+| Hole | Pick | Hand map |
+|---|---|---|
+| 1 | 4-wood -2 (tie) | 4-wood |
+| 2 | Driver +40 (tie) | Driver |
+| 4 | 4-wood -15 | Driver |
+| 5 | 4-wood -5 (tie) | 2-wood (tie) |
+| 6 | 4-wood -10 | Driver |
+| 8 | 4-wood -8 | 4-wood |
+| 9 | 4-wood -8 | 4-wood |
+| 10 | Driver +2 | 4-wood |
+| 11 | 4-wood +2 | 4-wood (tie) |
+| 13 | 4-wood +0 (tie) | Driver |
+| 14 | 2-wood -18 | 2-wood |
+| 16 | Driver -2 (tie) | Driver (tie) |
+| 17 | Driver +10 | Driver |
+| 18 | Driver -12 | 2-wood |
+

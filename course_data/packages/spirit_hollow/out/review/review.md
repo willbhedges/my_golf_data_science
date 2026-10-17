@@ -1,6 +1,6 @@
 # Spirit Hollow Golf Course (Black tees): pre-round check
 
-21 red, 14 amber, 38 green items; N=1500 swings, built 2026-10-17T00:16Z in 88s.
+21 red, 14 amber, 38 green items; N=1500 swings, built 2026-10-17T00:32Z in 84s.
 
 | Sev | Hole | Type | Question | What changes (worst answer) |
 |---|---|---|---|---|

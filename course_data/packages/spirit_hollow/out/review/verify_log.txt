@@ -1,23 +1,23 @@
 verify Spirit Hollow Golf Course (Black): 18 holes, N=1500, workers=4
-  hole 3: par 3; 1 items, red 0 amber 0 (0.3s)
-  hole 4: Driver 8 yds left; 4 items, red 2 amber 1 (16.3s)
-  hole 5: 4-wood 2 yds left; 4 items, red 1 amber 0 (16.2s)
+  hole 3: par 3; 1 items, red 0 amber 0 (0.2s)
+  hole 4: Driver 8 yds left; 4 items, red 2 amber 1 (15.9s)
+  hole 5: 4-wood 2 yds left; 4 items, red 1 amber 0 (15.7s)
   hole 7: par 3; 1 items, red 0 amber 0 (0.0s)
-  hole 2: Driver 32 yds left; 5 items, red 1 amber 0 (19.9s)
-  hole 6: Driver 35 yds left; 4 items, red 2 amber 0 (24.0s)
-  hole 1: Driver 40 yds left; 5 items, red 1 amber 2 (42.3s)
-  hole 8: 4-wood 5 yds left; 6 items, red 1 amber 1 (26.6s)
+  hole 2: Driver 32 yds left; 5 items, red 1 amber 0 (18.9s)
+  hole 6: Driver 35 yds left; 4 items, red 2 amber 0 (23.0s)
+  hole 1: Driver 40 yds left; 5 items, red 1 amber 2 (40.5s)
+  hole 9: 4-wood on the line; 5 items, red 0 amber 2 (22.4s)
   hole 12: par 3; 1 items, red 0 amber 0 (0.0s)
-  hole 9: 4-wood on the line; 5 items, red 0 amber 2 (23.5s)
-  hole 13: Driver 12 yds right; 4 items, red 3 amber 1 (15.4s)
+  hole 8: 4-wood 5 yds left; 6 items, red 1 amber 1 (25.5s)
+  hole 13: Driver 12 yds right; 4 items, red 3 amber 1 (14.5s)
   hole 15: par 3; 1 items, red 0 amber 0 (0.0s)
-  hole 10: Driver on the line; 4 items, red 1 amber 1 (24.6s)
-  hole 16: 4-wood 2 yds left; 5 items, red 1 amber 2 (15.3s)
-  hole 11: 4-wood 8 yds right; 8 items, red 3 amber 0 (33.9s)
-  hole 17: Driver 2 yds left; 3 items, red 1 amber 2 (15.2s)
-  hole 14: 2-wood 40 yds left; 8 items, red 3 amber 1 (39.6s)
-  hole 18: Driver 8 yds left; 4 items, red 1 amber 1 (13.5s)
-{'red': 21, 'amber': 14, 'green': 38} in 88s -> course_data/packages/spirit_hollow/out/review (page 1.14 MB)
+  hole 10: Driver on the line; 4 items, red 1 amber 1 (23.3s)
+  hole 16: 4-wood 2 yds left; 5 items, red 1 amber 2 (14.4s)
+  hole 11: 4-wood 8 yds right; 8 items, red 3 amber 0 (31.8s)
+  hole 14: 2-wood 40 yds left; 8 items, red 3 amber 1 (35.8s)
+  hole 17: Driver 2 yds left; 3 items, red 1 amber 2 (16.3s)
+  hole 18: Driver 8 yds left; 4 items, red 1 amber 1 (13.4s)
+{'red': 21, 'amber': 14, 'green': 38} in 84s -> course_data/packages/spirit_hollow/out/review (page 1.14 MB)
 hand-truth experiment: quick plan on 14 holes (before)
   re-planned 4: Driver aim -5.0 margin 0.052
   re-planned 5: 4-wood aim -5.0 margin 0.015
@@ -31,8 +31,8 @@ hand-truth experiment: quick plan on 14 holes (before)
   re-planned 10: Driver aim +0.0 margin 0.042
   re-planned 16: 4-wood aim -5.0 margin 0.016
   re-planned 14: 2-wood aim -40.0 margin 0.011
-  re-planned 17: Driver aim +0.0 margin 0.021
   re-planned 18: Driver aim -5.0 margin 0.036
+  re-planned 17: Driver aim +0.0 margin 0.021
   re-planned 2: Driver aim +40.0 margin -0.326
   re-planned 4: Driver aim -10.0 margin 0.056
   re-planned 5: 4-wood aim -2.5 margin 0.002
@@ -42,8 +42,8 @@ hand-truth experiment: quick plan on 14 holes (before)
   re-planned 10: Driver aim +2.5 margin 0.025
   re-planned 13: Driver aim +10.0 margin 0.008
   re-planned 16: 4-wood aim +2.5 margin 0.018
-  re-planned 18: Driver aim +0.0 margin 0.040
   re-planned 14: Driver aim -30.0 margin 0.050
+  re-planned 18: Driver aim +0.0 margin 0.040
   re-planned 17: Driver aim +12.5 margin 0.034
   red: 20 answers, changed ['1', '10', '11', '13', '14', '16', '17', '18', '2', '4', '5', '6']; club agreement 9/14 -> 8/14
   re-planned 2: Driver aim +40.0 margin -0.326
@@ -57,10 +57,13 @@ hand-truth experiment: quick plan on 14 holes (before)
   re-planned 13: Driver aim +12.5 margin 0.015
   re-planned 16: 4-wood aim +2.5 margin 0.022
   re-planned 14: Driver aim -30.0 margin 0.037
-  re-planned 18: Driver aim -7.5 margin 0.027
   re-planned 17: Driver aim +12.5 margin 0.034
+  re-planned 18: Driver aim -7.5 margin 0.027
   red_amber: 34 answers, changed ['1', '10', '11', '13', '14', '16', '17', '18', '2', '4', '5', '6', '9']; club agreement 9/14 -> 8/14
+  ceiling hand_tees: club agreement 7/14
+  ceiling hand_zones: club agreement 7/14
+  ceiling hand_all: club agreement 8/14
 
-real	6m15.817s
-user	23m15.684s
-sys	0m1.212s
+real	8m49.412s
+user	32m48.573s
+sys	0m1.762s
