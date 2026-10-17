@@ -1,7 +1,7 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-10-17 02:12 UTC",
- "commit": "4634d86",
+ "generated": "2026-10-17 02:31 UTC",
+ "commit": "10c2bce",
  "courses": [
   {
    "course": "Spirit Hollow",
@@ -10,7 +10,7 @@
    "package": "course_data/packages/spirit_hollow/package.json",
    "package_commit": "677f214 2026-10-17T01:51:42Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 141.3,
+   "decision_s": 141.5,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -128,7 +128,7 @@
      "hand_quick": "Driver",
      "hand_quick_tie": false,
      "same_hand_quick": false,
-     "regret_hand_quick": 0.0566,
+     "regret_hand_quick": 0.0559,
      "hand_quick_same_truth": true,
      "tee_err": 10.9,
      "green_err": 3.4,
@@ -181,11 +181,11 @@
      "same": false,
      "same_or_tie": false,
      "regret": 0.012,
-     "hand_quick": "2-wood",
+     "hand_quick": "4-wood",
      "hand_quick_tie": true,
-     "same_hand_quick": false,
-     "regret_hand_quick": 0.0011,
-     "hand_quick_same_truth": true,
+     "same_hand_quick": true,
+     "regret_hand_quick": 0.0,
+     "hand_quick_same_truth": false,
      "tee_err": 12.9,
      "green_err": 14.4,
      "iou": {
@@ -242,7 +242,7 @@
      "hand_quick": "2-wood",
      "hand_quick_tie": true,
      "same_hand_quick": false,
-     "regret_hand_quick": 0.0001,
+     "regret_hand_quick": 0.0032,
      "hand_quick_same_truth": true,
      "tee_err": 5.5,
      "green_err": 1.6,
@@ -298,7 +298,7 @@
      "same_or_tie": false,
      "regret": 0.0383,
      "hand_quick": "4-wood",
-     "hand_quick_tie": true,
+     "hand_quick_tie": false,
      "same_hand_quick": true,
      "regret_hand_quick": 0.0,
      "hand_quick_same_truth": false,
@@ -358,7 +358,7 @@
      "hand_quick": "Driver",
      "hand_quick_tie": true,
      "same_hand_quick": false,
-     "regret_hand_quick": 0.1142,
+     "regret_hand_quick": 0.1096,
      "hand_quick_same_truth": true,
      "tee_err": 3.3,
      "green_err": 3.6,
@@ -387,7 +387,7 @@
      "same_or_tie": false,
      "regret": null,
      "hand_quick": "4-wood",
-     "hand_quick_tie": false,
+     "hand_quick_tie": true,
      "same_hand_quick": false,
      "regret_hand_quick": null,
      "hand_quick_same_truth": true,
@@ -415,11 +415,11 @@
      "same": false,
      "same_or_tie": false,
      "regret": 0.0437,
-     "hand_quick": "2-wood",
-     "hand_quick_tie": true,
-     "same_hand_quick": false,
-     "regret_hand_quick": 0.0163,
-     "hand_quick_same_truth": true,
+     "hand_quick": "4-wood",
+     "hand_quick_tie": false,
+     "same_hand_quick": true,
+     "regret_hand_quick": 0.0,
+     "hand_quick_same_truth": false,
      "tee_err": 25.6,
      "green_err": 1.7,
      "iou": {
@@ -444,11 +444,11 @@
      "same": true,
      "same_or_tie": true,
      "regret": 0.0,
-     "hand_quick": "2-wood",
+     "hand_quick": "Driver",
      "hand_quick_tie": true,
-     "same_hand_quick": false,
-     "regret_hand_quick": 0.0048,
-     "hand_quick_same_truth": false,
+     "same_hand_quick": true,
+     "regret_hand_quick": 0.0,
+     "hand_quick_same_truth": true,
      "tee_err": 28.8,
      "green_err": 2.6,
      "iou": {
@@ -473,7 +473,7 @@
      "same_or_tie": false,
      "regret": 0.0215,
      "hand_quick": "4-wood",
-     "hand_quick_tie": false,
+     "hand_quick_tie": true,
      "same_hand_quick": true,
      "regret_hand_quick": 0.0,
      "hand_quick_same_truth": false,
@@ -497,10 +497,10 @@
     "same_or_tie_pct": 0.438,
     "mean_regret": 0.0244,
     "max_regret": 0.1209,
-    "same_hand_quick": 7,
+    "same_hand_quick": 10,
     "n_hand_quick": 16,
-    "mean_regret_hand_quick": 0.0149,
-    "ceiling_quick": 13,
+    "mean_regret_hand_quick": 0.013,
+    "ceiling_quick": 12,
     "tee10": 8,
     "green10": 14,
     "n_geo": 16,
@@ -528,7 +528,7 @@
     }
    },
    "aim_violations": [],
-   "seconds": 144.0
+   "seconds": 171.8
   },
   {
    "course": "Mozingo Lake",
@@ -537,7 +537,7 @@
    "package": "course_data/packages/mozingo_lake/package.json",
    "package_commit": "677f214 2026-10-17T01:51:42Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 127.8,
+   "decision_s": 129.2,
    "last_plan": {
     "built": "2026-10-16T22:06Z",
     "runtime_s": 578.9,
@@ -788,7 +788,7 @@
     "max_regret": 0.1356
    },
    "aim_violations": [],
-   "seconds": 128.6
+   "seconds": 130.1
   },
   {
    "course": "Veenker",
@@ -797,7 +797,7 @@
    "package": "course_data/packages/veenker/package.json",
    "package_commit": "677f214 2026-10-17T01:51:42Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 123.5,
+   "decision_s": 126.0,
    "last_plan": {
     "built": "2026-10-17T01:16Z",
     "runtime_s": 360.9,
@@ -951,7 +951,7 @@
     "checks": 3
    },
    "aim_violations": [],
-   "seconds": 124.4
+   "seconds": 126.9
   }
  ],
  "guards": {
@@ -963,207 +963,207 @@
  },
  "truth_cache": {
   "spirit_hollow": {
-   "fp": "9179fa75b1",
+   "fp": "e038a3b5ad",
    "n": 8000,
    "res": {
     "1": {
      "pick": "4-wood",
      "runner": "2-wood",
-     "margin": 0.0649409220293431,
+     "margin": 0.08952140330235592,
      "tie": false,
      "aim": -2.5,
      "ev": {
-      "Driver": 4.032797699990124,
-      "2-wood": 4.016349213600851,
-      "4-wood": 3.9514082915715076
+      "Driver": 4.083086946573289,
+      "2-wood": 4.0460372969169995,
+      "4-wood": 3.9565158936146436
      }
     },
     "2B": {
      "pick": "Driver",
      "runner": "2-wood",
-     "margin": 0.04039792639188278,
+     "margin": 0.04142934752624061,
      "tie": false,
-     "aim": -7.5,
+     "aim": -10.0,
      "ev": {
-      "Driver": 4.869059530914017,
-      "2-wood": 4.9094574573058996,
-      "4-wood": 4.941559879591138
+      "Driver": 4.86962163533451,
+      "2-wood": 4.9110509828607505,
+      "4-wood": 4.94375327915124
      }
     },
     "2F": {
      "pick": "Driver",
      "runner": "2-wood",
-     "margin": 0.07049062213525215,
+     "margin": 0.07306393579008574,
      "tie": false,
-     "aim": -17.5,
+     "aim": -20.0,
      "ev": {
-      "Driver": 4.321318054124315,
-      "2-wood": 4.391808676259567,
-      "4-wood": 4.4296123050555165
+      "Driver": 4.325452497168941,
+      "2-wood": 4.398516432959027,
+      "4-wood": 4.4354526857261725
      }
     },
     "4": {
      "pick": "Driver",
      "runner": "2-wood",
-     "margin": 0.05538209112178283,
+     "margin": 0.05500640095446219,
      "tie": false,
-     "aim": -5.0,
+     "aim": -2.5,
      "ev": {
-      "Driver": 4.579693286840315,
-      "2-wood": 4.635075377962098,
-      "4-wood": 4.636292446297202
+      "Driver": 4.58228160388827,
+      "2-wood": 4.637288004842732,
+      "4-wood": 4.638139648278689
      }
     },
     "5": {
      "pick": "4-wood",
      "runner": "2-wood",
-     "margin": 0.02022569802543428,
+     "margin": 0.019929209270315162,
      "tie": false,
      "aim": -5.0,
      "ev": {
-      "Driver": 3.9355512352722326,
-      "2-wood": 3.8940953774079556,
-      "4-wood": 3.8738696793825214
+      "Driver": 3.9349021194808045,
+      "2-wood": 3.893628391129041,
+      "4-wood": 3.8736991818587256
      }
     },
     "6": {
-     "pick": "2-wood",
-     "runner": "4-wood",
-     "margin": 0.0011275998628201833,
+     "pick": "4-wood",
+     "runner": "2-wood",
+     "margin": 0.0010272555162895713,
      "tie": true,
-     "aim": -2.5,
+     "aim": -7.5,
      "ev": {
-      "Driver": 3.9152451856355173,
-      "2-wood": 3.9110956139800557,
-      "4-wood": 3.912223213842876
+      "Driver": 3.922536064483624,
+      "2-wood": 3.916024142323884,
+      "4-wood": 3.9149968868075944
      }
     },
     "8": {
      "pick": "4-wood",
      "runner": "2-wood",
-     "margin": 0.06755368668888284,
+     "margin": 0.06732773098407785,
      "tie": false,
-     "aim": 7.5,
+     "aim": 5.0,
      "ev": {
-      "Driver": 4.006696526429258,
-      "2-wood": 3.9621697887472367,
-      "4-wood": 3.894616102058354
+      "Driver": 4.012666616797795,
+      "2-wood": 3.9612472849153018,
+      "4-wood": 3.893919553931224
      }
     },
     "9B": {
      "pick": "2-wood",
      "runner": "4-wood",
-     "margin": 0.00012407212342191443,
+     "margin": 0.0031754577061273714,
      "tie": true,
-     "aim": -20.0,
+     "aim": -15.0,
      "ev": {
-      "Driver": 3.9662367804891288,
-      "2-wood": 3.9543130164198064,
-      "4-wood": 3.9544370885432283
+      "Driver": 3.990573454666959,
+      "2-wood": 3.9632689515428683,
+      "4-wood": 3.9664444092489957
      }
     },
     "9F": {
      "pick": "4-wood",
      "runner": "2-wood",
-     "margin": 0.05373975994780089,
+     "margin": 0.06750152983183932,
      "tie": false,
-     "aim": -17.5,
+     "aim": -10.0,
      "ev": {
-      "Driver": 4.152221223787636,
-      "2-wood": 3.9346564018458805,
-      "4-wood": 3.8809166418980796
+      "Driver": 4.142895048631951,
+      "2-wood": 3.9346343732874147,
+      "4-wood": 3.8671328434555754
      }
     },
     "10": {
      "pick": "4-wood",
      "runner": "Driver",
-     "margin": 0.0008261475910753546,
-     "tie": true,
-     "aim": 2.5,
+     "margin": 0.012722977870280872,
+     "tie": false,
+     "aim": 0.0,
      "ev": {
-      "Driver": 4.513638490886367,
-      "2-wood": 4.5655755373724425,
-      "4-wood": 4.512812343295292
+      "Driver": 4.520844625271117,
+      "2-wood": 4.557687259383582,
+      "4-wood": 4.508121647400836
      }
     },
     "11": {
      "pick": "Long iron",
      "runner": "Mid iron",
-     "margin": 0.07134264750961927,
+     "margin": 0.07240361725051558,
      "tie": false,
-     "aim": 2.5,
+     "aim": 0.0,
      "ev": {
-      "Driver": 4.682542207495358,
-      "2-wood": 4.615911271045992,
-      "4-wood": 4.040033311134338,
-      "Long iron": 3.8740576946753094,
-      "Mid iron": 3.9454003421849286
+      "Driver": 4.687283775470502,
+      "2-wood": 4.585134194789545,
+      "4-wood": 4.042593146636332,
+      "Long iron": 3.873952271897956,
+      "Mid iron": 3.946355889148472
      }
     },
     "13": {
      "pick": "Driver",
      "runner": "4-wood",
-     "margin": 0.0012103297943744096,
+     "margin": 0.0027855103214564636,
      "tie": true,
-     "aim": -10.0,
+     "aim": -12.5,
      "ev": {
-      "Driver": 4.006989696799853,
-      "2-wood": 4.025294235942769,
-      "4-wood": 4.008200026594228,
-      "Long iron": 4.121145069223556,
-      "Mid iron": 4.269781187071886
+      "Driver": 4.016174173581225,
+      "2-wood": 4.033288494297942,
+      "4-wood": 4.018959683902682,
+      "Long iron": 4.125807246866491,
+      "Mid iron": 4.271751773362637
      }
     },
     "14": {
      "pick": "4-wood",
-     "runner": "2-wood",
-     "margin": 0.01786709362211436,
-     "tie": false,
+     "runner": "Driver",
+     "margin": 0.0024080193938966765,
+     "tie": true,
      "aim": -17.5,
      "ev": {
-      "Driver": 3.991972076209374,
-      "2-wood": 3.9045536865177373,
-      "4-wood": 3.886686592895623
+      "Driver": 3.8791738126524664,
+      "2-wood": 3.8828926558629893,
+      "4-wood": 3.8767657932585697
      }
     },
     "16": {
-     "pick": "2-wood",
-     "runner": "Driver",
-     "margin": 0.004260328560527604,
-     "tie": true,
-     "aim": -12.5,
+     "pick": "4-wood",
+     "runner": "2-wood",
+     "margin": 0.023854169324838193,
+     "tie": false,
+     "aim": -5.0,
      "ev": {
-      "Driver": 3.9545034424026158,
-      "2-wood": 3.950243113842088,
-      "4-wood": 3.966520518805767
+      "Driver": 3.925048246018571,
+      "2-wood": 3.913082889166654,
+      "4-wood": 3.8892287198418156
      }
     },
     "17": {
-     "pick": "2-wood",
-     "runner": "Driver",
-     "margin": 0.0047846019246442495,
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.008684603935702917,
      "tie": true,
-     "aim": -5.0,
+     "aim": 2.5,
      "ev": {
-      "Driver": 4.065315682313529,
-      "2-wood": 4.060531080388885,
-      "4-wood": 4.072636510125985
+      "Driver": 4.045143306002091,
+      "2-wood": 4.053827909937794,
+      "4-wood": 4.072870959591802
      }
     },
     "18": {
      "pick": "4-wood",
      "runner": "2-wood",
-     "margin": 0.010391780835186992,
-     "tie": false,
+     "margin": 0.006827782853498832,
+     "tie": true,
      "aim": -7.5,
      "ev": {
-      "Driver": 4.594552762814429,
-      "2-wood": 4.579158933585884,
-      "4-wood": 4.568767152750697
+      "Driver": 4.665904767522619,
+      "2-wood": 4.591656121079442,
+      "4-wood": 4.584828338225943
      }
     }
    },
-   "built": "2026-10-17 01:50"
+   "built": "2026-10-17 02:26"
   },
   "mozingo": {
    "fp": "f814612fad",
@@ -1767,6 +1767,77 @@
    "same_hand_quick": null,
    "ceiling_quick": null,
    "decision_s": 123.5,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 02:31",
+   "commit": "10c2bce",
+   "course": "spirit_hollow",
+   "truth_fp": "1ee21126da",
+   "n": 16,
+   "same": 6,
+   "same_or_tie": 7,
+   "same_pct": 0.375,
+   "mean_regret": 0.0244,
+   "max_regret": 0.1209,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.299,
+    "long grass": 0.187,
+    "water": 0.316,
+    "ob": 0.019
+   },
+   "checks": 2,
+   "same_hand_quick": 10,
+   "ceiling_quick": 12,
+   "decision_s": 141.5,
+   "source": "product/decide.run quick n=8000",
+   "regression": true
+  },
+  {
+   "date": "2026-10-17 02:31",
+   "commit": "10c2bce",
+   "course": "mozingo_lake",
+   "truth_fp": "f814612fad",
+   "n": 14,
+   "same": 6,
+   "same_or_tie": 8,
+   "same_pct": 0.429,
+   "mean_regret": 0.0254,
+   "max_regret": 0.1356,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 1,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 129.2,
+   "source": "product/decide.run quick n=8000",
+   "regression": true
+  },
+  {
+   "date": "2026-10-17 02:31",
+   "commit": "10c2bce",
+   "course": "veenker",
+   "truth_fp": null,
+   "n": 13,
+   "same": null,
+   "same_or_tie": null,
+   "same_pct": null,
+   "mean_regret": null,
+   "max_regret": null,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 3,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 126.0,
    "source": "product/decide.run quick n=8000",
    "regression": false
   }
