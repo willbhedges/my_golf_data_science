@@ -564,13 +564,15 @@ def clubhouse(st, bld, parks, greens_, complexes, G=None, models=None):
 
 
 # ----------------------------------------------------------------------------- green kinds
-def classify_greens(st, greens_, complexes, ch, models=None):
+def classify_greens(st, greens_, complexes, ch, models=None, parks=(), bld=()):
     """hole vs practice: a practice green is near the clubhouse and has no tee complex at a playable distance
     that isn't itself next to the clubhouse; trained model when available."""
     tx = np.array([c["xy"] for c in complexes]) if complexes else np.zeros((0, 2))
     tp = np.array([c["p"] for c in complexes]) if complexes else np.zeros(0)
     chx = np.array(ch["xy"]) if ch else None
     gx = np.array([g["xy"] for g in greens_]) if greens_ else np.zeros((0, 2))
+    PK = np.array([p["xy"] for p in parks if p["p"] >= 0.4]) if parks else np.zeros((0, 2))
+    BL = np.array([b["xy"] for b in bld if b["area"] >= 150]) if bld else np.zeros((0, 2))
     for g in greens_:
         p = np.array(g["xy"])
         d = np.hypot(*(tx - p).T) if len(tx) else np.array([])
@@ -580,7 +582,10 @@ def classify_greens(st, greens_, complexes, ch, models=None):
         f = g["feat"]
         f.update(n_tee_80_600=float(((d >= 80) & (d <= 600) & (tp >= 0.5)).sum()) if d.size else 0.0,
                  d_tee=float(d.min()) if d.size else 999.0, d_clubhouse=dch, d_green=float(dg.min()) if dg.size else 999.0,
-                 n_green_150=float((dg < 150).sum()) if dg.size else 0.0, raised=g.get("raised") if g.get("raised") is not None else np.nan)
+                 n_green_150=float((dg < 150).sum()) if dg.size else 0.0,
+                 d_parking=float(np.hypot(*(PK - p).T).min()) if len(PK) else 999.0,
+                 d_building=float(np.hypot(*(BL - p).T).min()) if len(BL) else 999.0,
+                 n_tee_lt60=float((d < 60).sum()) if d.size else 0.0, raised=g.get("raised") if g.get("raised") is not None else np.nan)
         g["tees_in_range"] = int(f["n_tee_80_600"])
         g["d_clubhouse"] = dch if chx is not None else None
         pg = _rule_p(f["p_mean"], 0.45, 0.75) * (0.4 + 0.6 * _rule_p(f["area"], GREEN_MIN_M2, 350))

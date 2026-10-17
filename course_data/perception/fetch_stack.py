@@ -246,6 +246,29 @@ def dev_crop(stack_dir, out_dir, size_m=700, center_ll=None):
     return out_dir
 
 
+def course_from_sample(slug):
+    """No course.json yet (generalize has not run it): resolve the sampled OSM element's boundary via Overpass."""
+    import fetch_course as fcm
+    import platform_common as pc
+    entry = next(c for c in json.load(open(os.path.join(CD, "generalize", "sample.json")))["courses"] if c["slug"] == slug)
+    typ, oid = entry["osm"].split("/")
+    data = pc.overpass(f"[out:json][timeout:120];{typ}({oid});out body geom;", tries=3)
+    fc = fcm.to_geojson(data.get("elements", []))
+    if not fc["features"]:
+        raise SystemExit(f"{slug}: OSM element {entry['osm']} not found")
+    geom = fc["features"][0]["geometry"]
+    xy = np.array(S_flat(geom), float)
+    return dict(schema="course/1", status="ok", name=entry["name"], slug=slug, state=entry["state"],
+                osm=dict(type=typ, id=int(oid)), center=entry["center"],
+                bbox=[float(xy[:, 0].min()), float(xy[:, 1].min()), float(xy[:, 0].max()), float(xy[:, 1].max())],
+                boundary=geom, resolved_by="perception.fetch_stack (sample.json osm element)")
+
+
+def S_flat(geom):
+    import stack as S
+    return S.flat_coords(geom)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("slug")
@@ -256,7 +279,10 @@ def main():
     ap.add_argument("--dev-crop", type=float, default=0)
     a = ap.parse_args()
     cpath = a.course or os.path.join(CD, "generalize", "courses", a.slug, "course.json")
-    course = json.load(open(cpath))
+    if os.path.exists(cpath):
+        course = json.load(open(cpath))
+    else:
+        course = course_from_sample(a.slug)
     out = a.out or os.path.join(HERE, "work", a.slug)
     if not os.path.exists(os.path.join(out, "stack.npz")):
         build(a.slug, course, out, a.margin, segment=not a.no_segment)

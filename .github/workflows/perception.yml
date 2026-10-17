@@ -57,6 +57,11 @@ jobs:
                   c = json.load(open(p))
                   if c.get("status") == "ok" and c.get("bbox"):
                       slugs.append(os.path.basename(os.path.dirname(p)))
+              vs = "course_data/generalize/validation_set.json"
+              if os.path.exists(vs):
+                  slugs += [c["slug"] for c in json.load(open(vs))["courses"] if c["slug"] not in slugs]
+          if r.get("exclude"):
+              slugs = [s for s in slugs if s not in r["exclude"]]
           print("stage=" + r.get("stage", "all"))
           print("slugs=" + json.dumps(slugs or ["none"]))
           print("dev=" + " ".join(r.get("dev_crops", [])))

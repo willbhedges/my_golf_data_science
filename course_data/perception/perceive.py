@@ -82,7 +82,7 @@ def run(st, models=None, log=print):
     D["parking"], D["parking_lab"] = DT.parking(st, L, D["building_lab"], D["path_prob"], models)
     ch, D["ch_rows"] = DT.clubhouse(st, D["buildings"], D["parking"], D["greens"], D["complexes"], D["graph"], models)
     D["clubhouse"] = ch
-    DT.classify_greens(st, D["greens"], D["complexes"], ch, models)
+    DT.classify_greens(st, D["greens"], D["complexes"], ch, models, D["parking"], D["buildings"])
     rng = DT.driving_range(st, L, D["complexes"], [g for g in D["greens"] if g["p"] >= 0.5], ch["xy"] if ch else None)
     D["range"] = rng
     if rng:
