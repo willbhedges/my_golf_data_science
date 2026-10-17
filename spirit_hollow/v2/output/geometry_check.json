@@ -1,0 +1,638 @@
+{
+ "summary": {
+  "1": {
+   "scale": 1.009,
+   "green_shift_yd": 1.5,
+   "drv_carry_delta": [
+    17.3,
+    17.5
+   ],
+   "tee_moved": 22
+  },
+  "2B": {
+   "scale": 0.9974,
+   "green_shift_yd": 6.1,
+   "drv_carry_delta": [
+    27.9,
+    27.9
+   ],
+   "tee_moved": 0
+  },
+  "2F": {
+   "scale": 1.0016,
+   "green_shift_yd": 2.5,
+   "drv_carry_delta": [
+    14.9,
+    11.0
+   ],
+   "tee_moved": 13
+  },
+  "4": {
+   "scale": 0.9968,
+   "green_shift_yd": 3.5,
+   "drv_carry_delta": [
+    -6.1,
+    -6.1
+   ],
+   "tee_moved": 0
+  },
+  "5": {
+   "scale": 0.9902,
+   "green_shift_yd": 5.2,
+   "drv_carry_delta": [
+    -2.5,
+    -3.5
+   ],
+   "tee_moved": 13
+  },
+  "6": {
+   "scale": 0.9684,
+   "green_shift_yd": 15.2,
+   "drv_carry_delta": [
+    5.4,
+    4.4
+   ],
+   "tee_moved": 13
+  },
+  "8": {
+   "scale": 0.996,
+   "green_shift_yd": 5.9,
+   "drv_carry_delta": [
+    -5.6,
+    -5.6
+   ],
+   "tee_moved": 0
+  },
+  "9B": {
+   "scale": 1.0049,
+   "green_shift_yd": 1.6,
+   "drv_carry_delta": [
+    7.7,
+    7.7
+   ],
+   "tee_moved": 0
+  },
+  "9F": {
+   "scale": 0.9997,
+   "green_shift_yd": 3.0,
+   "drv_carry_delta": [
+    10.7,
+    10.7
+   ],
+   "tee_moved": 0
+  },
+  "10": {
+   "scale": 0.9864,
+   "green_shift_yd": 10.7,
+   "drv_carry_delta": [
+    11.2,
+    6.0
+   ],
+   "tee_moved": 19
+  },
+  "11": {
+   "scale": 1.0007,
+   "green_shift_yd": 3.9,
+   "drv_carry_delta": [
+    -0.9,
+    -0.4
+   ],
+   "tee_moved": 10
+  },
+  "13": {
+   "scale": 0.9949,
+   "green_shift_yd": 3.6,
+   "drv_carry_delta": [
+    12.0,
+    12.0
+   ],
+   "tee_moved": 0
+  },
+  "14": {
+   "scale": 0.9985,
+   "green_shift_yd": 5.4,
+   "drv_carry_delta": [
+    21.8,
+    18.5
+   ],
+   "tee_moved": 25
+  },
+  "16": {
+   "scale": 1.0239,
+   "green_shift_yd": 1.7,
+   "drv_carry_delta": [
+    5.4,
+    5.6
+   ],
+   "tee_moved": 10
+  },
+  "17": {
+   "scale": 0.9918,
+   "green_shift_yd": 2.7,
+   "drv_carry_delta": [
+    2.6,
+    1.9
+   ],
+   "tee_moved": 8
+  },
+  "18": {
+   "scale": 1.0056,
+   "green_shift_yd": 1.5,
+   "drv_carry_delta": [
+    23.5,
+    23.5
+   ],
+   "tee_moved": 0
+  }
+ },
+ "course.py as is": {
+  "1": {
+   "pick": "4-wood",
+   "aim": 3.0,
+   "margin": 0.0142,
+   "runner": "2-wood"
+  },
+  "2B": {
+   "pick": "Driver",
+   "aim": -7.5,
+   "margin": 0.0597,
+   "runner": "2-wood"
+  },
+  "2F": {
+   "pick": "Driver",
+   "aim": -14.5,
+   "margin": 0.073,
+   "runner": "2-wood"
+  },
+  "4": {
+   "pick": "Driver",
+   "aim": -2.0,
+   "margin": 0.0261,
+   "runner": "2-wood"
+  },
+  "5": {
+   "pick": "Driver",
+   "aim": -3.0,
+   "margin": 0.0101,
+   "runner": "2-wood"
+  },
+  "6": {
+   "pick": "Driver",
+   "aim": -6.5,
+   "margin": 0.0308,
+   "runner": "2-wood"
+  },
+  "8": {
+   "pick": "4-wood",
+   "aim": 6.0,
+   "margin": 0.0035,
+   "runner": "2-wood"
+  },
+  "9B": {
+   "pick": "Driver",
+   "aim": -17.5,
+   "margin": 0.0802,
+   "runner": "2-wood"
+  },
+  "9F": {
+   "pick": "4-wood",
+   "aim": -12.0,
+   "margin": 0.008,
+   "runner": "2-wood"
+  },
+  "10": {
+   "pick": "4-wood",
+   "aim": 8.5,
+   "margin": 0.0622,
+   "runner": "2-wood"
+  },
+  "11": {
+   "pick": "4-wood",
+   "aim": -0.0,
+   "margin": 0.0421,
+   "runner": "2-wood"
+  },
+  "13": {
+   "pick": "4-wood",
+   "aim": -15.5,
+   "margin": 0.001,
+   "runner": "Driver"
+  },
+  "14": {
+   "pick": "Driver",
+   "aim": -25.0,
+   "margin": 0.0348,
+   "runner": "2-wood"
+  },
+  "16": {
+   "pick": "Driver",
+   "aim": -8.5,
+   "margin": 0.0184,
+   "runner": "2-wood"
+  },
+  "17": {
+   "pick": "Driver",
+   "aim": -2.0,
+   "margin": 0.0395,
+   "runner": "2-wood"
+  },
+  "18": {
+   "pick": "Driver",
+   "aim": -1.0,
+   "margin": 0.0447,
+   "runner": "2-wood"
+  }
+ },
+ "ground yards": {
+  "1": {
+   "pick": "4-wood",
+   "aim": 3.0,
+   "margin": 0.0109,
+   "runner": "2-wood"
+  },
+  "2B": {
+   "pick": "Driver",
+   "aim": -7.0,
+   "margin": 0.0592,
+   "runner": "2-wood"
+  },
+  "2F": {
+   "pick": "Driver",
+   "aim": -14.5,
+   "margin": 0.0732,
+   "runner": "2-wood"
+  },
+  "4": {
+   "pick": "Driver",
+   "aim": -2.0,
+   "margin": 0.0264,
+   "runner": "2-wood"
+  },
+  "5": {
+   "pick": "Driver",
+   "aim": -2.5,
+   "margin": 0.0025,
+   "runner": "2-wood"
+  },
+  "6": {
+   "pick": "Driver",
+   "aim": -8.0,
+   "margin": 0.0281,
+   "runner": "2-wood"
+  },
+  "8": {
+   "pick": "4-wood",
+   "aim": 6.0,
+   "margin": 0.0066,
+   "runner": "2-wood"
+  },
+  "9B": {
+   "pick": "Driver",
+   "aim": -18.0,
+   "margin": 0.0764,
+   "runner": "2-wood"
+  },
+  "9F": {
+   "pick": "4-wood",
+   "aim": -12.0,
+   "margin": 0.0083,
+   "runner": "2-wood"
+  },
+  "10": {
+   "pick": "4-wood",
+   "aim": 7.5,
+   "margin": 0.0619,
+   "runner": "2-wood"
+  },
+  "11": {
+   "pick": "4-wood",
+   "aim": -0.0,
+   "margin": 0.0402,
+   "runner": "2-wood"
+  },
+  "13": {
+   "pick": "Driver",
+   "aim": -11.5,
+   "margin": 0.0069,
+   "runner": "4-wood"
+  },
+  "14": {
+   "pick": "Driver",
+   "aim": -25.0,
+   "margin": 0.0352,
+   "runner": "2-wood"
+  },
+  "16": {
+   "pick": "Driver",
+   "aim": -6.0,
+   "margin": 0.0217,
+   "runner": "2-wood"
+  },
+  "17": {
+   "pick": "Driver",
+   "aim": -1.0,
+   "margin": 0.0357,
+   "runner": "2-wood"
+  },
+  "18": {
+   "pick": "Driver",
+   "aim": -1.5,
+   "margin": 0.0415,
+   "runner": "2-wood"
+  }
+ },
+ "Black-tee elevation": {
+  "1": {
+   "pick": "4-wood",
+   "aim": 3.0,
+   "margin": 0.0153,
+   "runner": "2-wood"
+  },
+  "2B": {
+   "pick": "Driver",
+   "aim": -7.5,
+   "margin": 0.0597,
+   "runner": "2-wood"
+  },
+  "2F": {
+   "pick": "Driver",
+   "aim": -12.5,
+   "margin": 0.0683,
+   "runner": "2-wood"
+  },
+  "4": {
+   "pick": "Driver",
+   "aim": -2.0,
+   "margin": 0.0261,
+   "runner": "2-wood"
+  },
+  "5": {
+   "pick": "Driver",
+   "aim": -3.0,
+   "margin": 0.0113,
+   "runner": "2-wood"
+  },
+  "6": {
+   "pick": "Driver",
+   "aim": -6.5,
+   "margin": 0.0299,
+   "runner": "2-wood"
+  },
+  "8": {
+   "pick": "4-wood",
+   "aim": 6.0,
+   "margin": 0.0035,
+   "runner": "2-wood"
+  },
+  "9B": {
+   "pick": "Driver",
+   "aim": -17.5,
+   "margin": 0.0802,
+   "runner": "2-wood"
+  },
+  "9F": {
+   "pick": "4-wood",
+   "aim": -12.0,
+   "margin": 0.008,
+   "runner": "2-wood"
+  },
+  "10": {
+   "pick": "4-wood",
+   "aim": 8.5,
+   "margin": 0.0532,
+   "runner": "2-wood"
+  },
+  "11": {
+   "pick": "4-wood",
+   "aim": -0.0,
+   "margin": 0.0366,
+   "runner": "2-wood"
+  },
+  "13": {
+   "pick": "4-wood",
+   "aim": -15.5,
+   "margin": 0.001,
+   "runner": "Driver"
+  },
+  "14": {
+   "pick": "Driver",
+   "aim": -22.5,
+   "margin": 0.0346,
+   "runner": "2-wood"
+  },
+  "16": {
+   "pick": "Driver",
+   "aim": -8.5,
+   "margin": 0.0172,
+   "runner": "4-wood"
+  },
+  "17": {
+   "pick": "Driver",
+   "aim": -2.0,
+   "margin": 0.0402,
+   "runner": "2-wood"
+  },
+  "18": {
+   "pick": "Driver",
+   "aim": -1.0,
+   "margin": 0.0447,
+   "runner": "2-wood"
+  }
+ },
+ "OSM green": {
+  "1": {
+   "pick": "4-wood",
+   "aim": 3.0,
+   "margin": 0.0138,
+   "runner": "2-wood"
+  },
+  "2B": {
+   "pick": "Driver",
+   "aim": -7.0,
+   "margin": 0.0589,
+   "runner": "2-wood"
+  },
+  "2F": {
+   "pick": "Driver",
+   "aim": -14.5,
+   "margin": 0.0729,
+   "runner": "2-wood"
+  },
+  "4": {
+   "pick": "Driver",
+   "aim": -2.0,
+   "margin": 0.0251,
+   "runner": "2-wood"
+  },
+  "5": {
+   "pick": "Driver",
+   "aim": -3.0,
+   "margin": 0.0107,
+   "runner": "2-wood"
+  },
+  "6": {
+   "pick": "Driver",
+   "aim": -6.5,
+   "margin": 0.0359,
+   "runner": "2-wood"
+  },
+  "8": {
+   "pick": "4-wood",
+   "aim": 6.0,
+   "margin": 0.0021,
+   "runner": "2-wood"
+  },
+  "9B": {
+   "pick": "Driver",
+   "aim": -17.0,
+   "margin": 0.0741,
+   "runner": "2-wood"
+  },
+  "9F": {
+   "pick": "4-wood",
+   "aim": -12.0,
+   "margin": 0.0106,
+   "runner": "2-wood"
+  },
+  "10": {
+   "pick": "4-wood",
+   "aim": 8.0,
+   "margin": 0.06,
+   "runner": "2-wood"
+  },
+  "11": {
+   "pick": "4-wood",
+   "aim": -0.0,
+   "margin": 0.0426,
+   "runner": "2-wood"
+  },
+  "13": {
+   "pick": "Driver",
+   "aim": -12.5,
+   "margin": 0.0021,
+   "runner": "4-wood"
+  },
+  "14": {
+   "pick": "Driver",
+   "aim": -25.0,
+   "margin": 0.0353,
+   "runner": "2-wood"
+  },
+  "16": {
+   "pick": "Driver",
+   "aim": -8.5,
+   "margin": 0.0188,
+   "runner": "2-wood"
+  },
+  "17": {
+   "pick": "Driver",
+   "aim": -2.0,
+   "margin": 0.0398,
+   "runner": "2-wood"
+  },
+  "18": {
+   "pick": "Driver",
+   "aim": -1.5,
+   "margin": 0.0451,
+   "runner": "2-wood"
+  }
+ },
+ "all three": {
+  "1": {
+   "pick": "4-wood",
+   "aim": 3.0,
+   "margin": 0.0095,
+   "runner": "2-wood"
+  },
+  "2B": {
+   "pick": "Driver",
+   "aim": -7.0,
+   "margin": 0.059,
+   "runner": "2-wood"
+  },
+  "2F": {
+   "pick": "Driver",
+   "aim": -12.0,
+   "margin": 0.0707,
+   "runner": "2-wood"
+  },
+  "4": {
+   "pick": "Driver",
+   "aim": -2.0,
+   "margin": 0.0255,
+   "runner": "2-wood"
+  },
+  "5": {
+   "pick": "Driver",
+   "aim": -3.0,
+   "margin": 0.0051,
+   "runner": "2-wood"
+  },
+  "6": {
+   "pick": "Driver",
+   "aim": -8.0,
+   "margin": 0.0315,
+   "runner": "2-wood"
+  },
+  "8": {
+   "pick": "4-wood",
+   "aim": 6.0,
+   "margin": 0.0055,
+   "runner": "2-wood"
+  },
+  "9B": {
+   "pick": "Driver",
+   "aim": -18.0,
+   "margin": 0.0774,
+   "runner": "2-wood"
+  },
+  "9F": {
+   "pick": "4-wood",
+   "aim": -12.0,
+   "margin": 0.011,
+   "runner": "2-wood"
+  },
+  "10": {
+   "pick": "4-wood",
+   "aim": 8.0,
+   "margin": 0.0619,
+   "runner": "2-wood"
+  },
+  "11": {
+   "pick": "4-wood",
+   "aim": -0.0,
+   "margin": 0.0354,
+   "runner": "2-wood"
+  },
+  "13": {
+   "pick": "Driver",
+   "aim": -12.0,
+   "margin": 0.0094,
+   "runner": "4-wood"
+  },
+  "14": {
+   "pick": "Driver",
+   "aim": -23.0,
+   "margin": 0.0351,
+   "runner": "2-wood"
+  },
+  "16": {
+   "pick": "Driver",
+   "aim": -6.0,
+   "margin": 0.0202,
+   "runner": "2-wood"
+  },
+  "17": {
+   "pick": "Driver",
+   "aim": -1.5,
+   "margin": 0.0373,
+   "runner": "2-wood"
+  },
+  "18": {
+   "pick": "Driver",
+   "aim": -1.5,
+   "margin": 0.0416,
+   "runner": "2-wood"
+  }
+ }
+}

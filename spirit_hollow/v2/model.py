@@ -128,8 +128,9 @@ def punch_out(d, P):
 
 # ------------------------------------------------------------------------------- the map
 def frame(hd):
+    """Tee, unit vectors, px per yard. With geom.py's 'scale' correction the yard is a ground yard."""
     tee, fwd, right, ppy = t.hole_frame(hd)
-    return np.asarray(tee, float), fwd, right, ppy
+    return np.asarray(tee, float), fwd, right, ppy / hd.get("ground_scale", 1.0)
 
 
 class Raster:

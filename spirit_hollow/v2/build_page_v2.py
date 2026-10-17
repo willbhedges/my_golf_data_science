@@ -93,6 +93,8 @@ def note_v2(h, r):
 
 
 def main():
+    import geom
+    geom.set_geometry(os.environ.get("V2_GEOM", "scale,elev,green"))
     yb.use_course("Spirit Hollow GC", SH, "Spirit_Hollow", course.HOLES, course.PAR3, course.NOTES,
                   course.AIM_AT, course.ORDER, course.LABELS)
     od = IN
@@ -105,6 +107,8 @@ def main():
     holes = []
     for h in course.ORDER:
         d = BW.par3_hole(h) if h in course.PAR3 else BW.tee_hole(h)
+        if h not in course.PAR3:
+            d["ppy"] = d["ppy"] / course.HOLES[h].get("ground_scale", 1.0)     # draw in ground yards
         d["key"] = str(h)
         d["bearing"] = grid["bearings"].get(str(h))
         base, opts = BW.tee_options(h)

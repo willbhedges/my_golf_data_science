@@ -62,6 +62,8 @@ def solve(h, P, R, S, z, speed, rel):
 
 
 def main():
+    import geom
+    geom.set_geometry(os.environ.get("V2_GEOM", "scale,elev,green"))   # before any tee shift
     back = float(os.environ.get("TEE_BACK", 0) or 0)
     if back:
         WG.shift_tees(back)                      # moves course.HOLES (= M.HOLES) tees in place

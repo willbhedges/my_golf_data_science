@@ -298,6 +298,8 @@ def shares_at(h, P, club, aim, n=20000):
 
 
 def main():
+    import geom
+    flags = geom.set_geometry(os.environ.get("V2_GEOM", "scale,elev,green"))   # see geom.py
     only = [x.strip() for x in os.environ.get("V2_HOLES", "").split(",") if x.strip()]
     S = int(os.environ.get("V2_DRAWS", 64))
     N = int(os.environ.get("V2_SWINGS", 3000))
@@ -317,6 +319,7 @@ def main():
             r["sens"] = sensitivities(h, NC)
         if "sweep" in parts:
             r["width_sweep"], r["width_flips"] = width_sweep(h, NC // 2)
+        r["geometry"] = list(flags)
         out[str(h)] = r
         print(h, r.get("pick"), r.get("aim"), r.get("window"), "margin %.3f" % r.get("margin", 0),
               "cf %.3f" % r.get("crossfit_margin", 0), f"{time.time() - t0:.0f}s", flush=True)

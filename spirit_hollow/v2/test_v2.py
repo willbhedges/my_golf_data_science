@@ -100,3 +100,19 @@ def test_prior_draws_shape():
     assert 55 < w.min() and w.max() < 95
     r4 = np.array([p["width"]["4-wood"] / p["width"]["Driver"] for p in d])
     assert 0.65 < r4.mean() < 0.9
+
+
+def test_geometry_corrections_roundtrip():
+    import geom
+    before = {k: (tuple(hd["green"]), hd.get("ground_scale")) for k, hd in M.HOLES.items()}
+    try:
+        geom.set_geometry("scale,green")
+        assert abs(M.HOLES[6]["ground_scale"] - 0.968) < 0.005     # the 270 dot is ~261 ground yds out
+        assert abs(M.HOLES[16]["ground_scale"] - 1.024) < 0.005
+        _, _, _, ppy = M.frame(M.HOLES[6])
+        _, _, _, ppy_app = t.hole_frame(M.HOLES[6])
+        assert ppy > ppy_app                                          # more px per (ground) yard
+    finally:
+        geom.set_geometry("")
+    after = {k: (tuple(hd["green"]), hd.get("ground_scale")) for k, hd in M.HOLES.items()}
+    assert before == after
