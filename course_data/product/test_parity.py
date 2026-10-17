@@ -105,13 +105,19 @@ def test_elevation_follows_the_tee(sh, tmp_path):
         pytest.skip("no DEM on disk")
     pkg = copy.deepcopy(sh)
     C0 = _load(pkg, tmp_path)
-    stored = PK._elev(pkg["holes"]["14"]["tees"]["Black"]["elevation"])
+    stored = PK._elev(pkg["holes"]["14"]["tees"]["Black"]["elevation"], PK.conditions_of(pkg))
     assert C0.holes[14]["elev"]["Driver"] == stored["Driver"]        # same line -> the stored table
     t = pkg["holes"]["14"]["tees"]["Black"]
     fr = PK.R.Frame(t["tee_ll"], C0.frames[14]["aim_ll"], ppy=1.0, tee_px=(0.0, 0.0), proj="enu")
     t["tee_ll"] = [float(v) for v in fr.yds_to_ll([[0.0, -40.0]])[0]]   # 40 yds up the line
     C1 = _load(pkg, tmp_path)
     assert C1.holes[14]["elev"]["Driver"] != stored["Driver"]
+
+
+def test_soft_conditions():
+    e = {"adjustments": {"clubs": {"Driver": dict(carry_delta_yds=12.0, roll_factor=2.4, lateral_kick_yds=-9.0)}}}
+    assert PK._elev(e, "soft")["Driver"] == (12.0, 1.3, 0.0)
+    assert PK._elev(e, "normal")["Driver"] == (12.0, 2.0, -9.0)
 
 
 def test_parity_mapping_reproduces_hand_lies(sh):

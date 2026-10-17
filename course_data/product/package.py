@@ -298,8 +298,8 @@ def load(path, tees=None):
                          float(ent.get("bearing_deg") or h.get("bearing_deg") or bearing_deg(tee_ll, aim_ll)))
         e = None
         if ELEV_ALONG_LINE:              # per-club elevation along the tee line this plan actually uses
-            e = _elev(line_elevation(pkg, path, ref, par, tee_ll, aim_ll, green_ll, length))
-        e = e or _elev(ent.get("elevation") or h.get("elevation"))
+            e = _elev(line_elevation(pkg, path, ref, par, tee_ll, aim_ll, green_ll, length), conditions_of(pkg))
+        e = e or _elev(ent.get("elevation") or h.get("elevation"), conditions_of(pkg))
         if h.get("exposure") is not None:
             C.exposure[k] = float(h["exposure"])
         conf = h.get("confidence") or {}
@@ -401,12 +401,27 @@ def line_elevation(pkg, pkg_path, ref, par, tee_ll, aim_ll, green_ll, length):
         return None
 
 
-def _elev(e):
+# Ground conditions: how much the landing slope moves a ball after it lands. "soft" (default): no side kick and the
+# slope's effect on roll capped at +/-30% (roll x0.7-1.3), carry change from the height difference kept - the
+# golfer's call for Spirit Hollow (spirit_hollow/course.py _soften, 2026-10-17) and the robust default: the DEM
+# side kick is the noisiest elevation number (parity.py: 2-11 yds apart between two tee lines 2-4 deg apart).
+# "normal": the full DEM run-out (sanity clamp only). Package field "conditions" or env PRODUCT_CONDITIONS.
+CONDITIONS = {"soft": dict(roll=(0.7, 1.3), kick=0.0), "normal": dict(roll=(0.4, 2.0), kick=15.0)}
+DEFAULT_CONDITIONS = os.environ.get("PRODUCT_CONDITIONS", "soft")
+
+
+def conditions_of(pkg):
+    c = os.environ.get("PRODUCT_CONDITIONS") or (pkg or {}).get("conditions") or DEFAULT_CONDITIONS
+    return c if c in CONDITIONS else "soft"
+
+
+def _elev(e, conditions=None):
     """platform hole.elevation.adjustments -> tee_strategy's hole["elev"] {club: (carry +yd, roll x, kick yd)}."""
     adj = (e or {}).get("adjustments") or {}
     clubs = adj.get("clubs") or {}
-    # sanity clamp (a DEM artefact or a frame mismatch must not move a drive 40 yds): carry +/-30 yds,
-    # roll x0.4-2.0, side kick +/-15 yds; ELEV_CLAMPED records what was cut
+    cond = CONDITIONS[conditions if conditions in CONDITIONS else conditions_of(None)]
+    # sanity clamp (a DEM artefact or a frame mismatch must not move a drive 40 yds): carry +/-30 yds, then the
+    # ground conditions' roll range and side-kick limit; ELEV_CLAMPED records what the sanity clamp cut
     out = {}
     for c, v in clubs.items():
         if not isinstance(v, dict):
@@ -415,7 +430,7 @@ def _elev(e):
         cl = (float(np.clip(raw[0], -30, 30)), float(np.clip(raw[1], 0.4, 2.0)), float(np.clip(raw[2], -15, 15)))
         if cl != raw:
             ELEV_CLAMPED.append((c, raw, cl))
-        out[c] = cl
+        out[c] = (cl[0], float(np.clip(cl[1], *cond["roll"])), float(np.clip(cl[2], -cond["kick"], cond["kick"])))
     return out or None
 
 
