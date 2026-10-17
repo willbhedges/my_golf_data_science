@@ -469,7 +469,7 @@ def buildings(st, L):
     smooth = F.local_std(np.where(h > 0.5, h, np.nan), 3) < 0.6
     roof = (h >= 2.5) & smooth & (np.nan_to_num(L["ndvi_rel"], nan=0) < -0.1)
     has6 = (cls == 6).mean() > 0.0005
-    m = (cls == 6) & (h >= 2.0) if has6 else roof
+    m = ((cls == 6) & (h >= 2.0)) | roof if has6 else roof     # some 3DEP projects leave roofs unclassified
     m = ndi.binary_opening(ndi.binary_closing(m, iterations=1), iterations=1)
     lab, n, s = _components(st, m, 40 / st.res ** 2, dict(cls6=(cls == 6).astype(np.float32), h=h, ndvi=L["ndvi_rel"],
                                                         smooth=smooth.astype(np.float32)))
