@@ -147,6 +147,12 @@ def main():
         dz = p.get("plays_like_delta", 0.0)                      # elevation
         out["par3"][str(h)] = {f"{sp}_{rel}": plays_like(p["center"], sp, rel) + dz
                                for sp in SPEEDS for rel in ([0] if sp == 0 else DIRS)}
+    part = os.environ.get("WIND_OUT")               # Actions matrix: write just these holes
+    if part:
+        with open(part, "w") as f:
+            json.dump(dict(back=back, holes={k: out["holes"][k] for k in out["holes"] if not only or k in only},
+                           bearings=out["bearings"], par3=out["par3"]), f)
+        return
     with open(path, "w") as f:
         json.dump(out, f)
     print("wrote wind_grid.json")

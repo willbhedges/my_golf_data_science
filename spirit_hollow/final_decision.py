@@ -72,6 +72,11 @@ def main():
         out[str(h)] = r
         print(h, r["pick"], f"aim {r['aim']:+.1f}", f"margin {r['margin']:.3f}±{r['margin_se']:.3f}",
               f"cf {cf_margin:.3f}", "TIE" if r["tie"] else "", r["width_flips"], flush=True)
+    part = os.environ.get("FINAL_OUT")              # Actions matrix: write just these holes
+    if part:
+        with open(part, "w") as f:
+            json.dump({str(h): out[str(h)] for h in E}, f, indent=1, default=float)
+        return
     with open(path, "w") as f:
         json.dump(out, f, indent=1, default=float)
     write_md(out)
