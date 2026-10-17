@@ -1,6 +1,6 @@
 # Eagle Knoll Golf Club (Hartsburg, MO) - Back tees
 
-Built 2026-10-17T17:27:50Z. OSM way/389825776. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-10-17T18:14:40Z. OSM way/389825776. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
