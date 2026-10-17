@@ -249,7 +249,15 @@ def tee_eval(slug, pkg_slug, seg):
             "joint+lidar": pt.place_course_sets(lines, tees, yards, greens=greens, pads=pads),
             "joint+unet": pt.place_course_sets(lines, tees, yards, greens=greens, pads=ut_near),
             "joint+lidar+unet": pt.place_course_sets(lines, tees, yards, greens=greens, pads=pads + ut_near)}
+    # no OSM tee boxes at all (a course mapped without tees): candidates only from lidar / U-Net
+    meth.update({"no OSM tees: walk-back": pt.place_course_sets(lines, [], yards, greens=greens),
+                 "no OSM tees: lidar": pt.place_course_sets(lines, [], yards, greens=greens, pads=pads),
+                 "no OSM tees: unet": pt.place_course_sets(lines, [], yards, greens=greens, pads=ut_near),
+                 "no OSM tees: lidar+unet": pt.place_course_sets(lines, [], yards, greens=greens, pads=pads + ut_near)})
     res["placement"] = {m: dict(internal=E.internal(lines, greens, yards, p)) for m, p in meth.items()}
+    near_osm = [t for ts in pt.assign_tees_to_holes(lines, tees).values() for t in ts]
+    res["recall_of_osm_boxes"] = {"unet": lidar_pads.validate(ut_near, near_osm)["recall"],
+                                  "lidar": lidar_pads.validate(pads, near_osm)["recall"]}
     if pkg_slug == "spirit_hollow":
         for m, p in meth.items():
             s = E.spirit_hollow_truth(lines, greens, p)
@@ -360,7 +368,14 @@ def md(res):
             continue
         L.append(f"| {r['slug']} | {t['unet_tees_near_first_leg']} | {t['osm_boxes']} | {t['matched_osm']} | "
                  f"{t['unmapped_candidates']} | {t['corroborated_by_lidar_pad']} |")
-    L += ["", "Tee placement (tees/place_tee.place_course_sets) with U-Net tees as extra candidates (like lidar pads):", "",
+    L += ["", "Recall of the OSM tee boxes near a first leg (candidate centroid within 10 yds): U-Net vs lidar pads", "",
+          "| course | U-Net | lidar pads |", "|---|---|---|"]
+    for r in res:
+        t = r.get("tees") or {}
+        if t.get("recall_of_osm_boxes"):
+            L.append(f"| {r['slug']} | {t['recall_of_osm_boxes']['unet']:.2f} | {t['recall_of_osm_boxes']['lidar']:.2f} |")
+    L += ["", "Tee placement (tees/place_tee.place_course_sets) with U-Net tees as extra candidates (like lidar pads); "
+          "*no OSM tees* = every OSM box deleted, candidates only from the detectors:", "",
           "| course | method | measured within 5 yds of card | walk-backs | SH screenshot tee <= 10 yds | SH median tee err |",
           "|---|---|---|---|---|---|"]
     for r in res:
@@ -370,7 +385,7 @@ def md(res):
         for m, v in t["placement"].items():
             s = v.get("screenshot_set")
             L.append(f"| {r['slug']} | {m} | {v['internal']['card_within_5']:.0%} | {v['internal']['walkbacks']} | "
-                     + (f"{s['tee_within_10']:.0%} | {s['median_tee_err']} |" if s else "- | - |"))
+                     + (f"{s['tee_within_10']:.0%} | {s['median_tee_err']:.1f} |" if s else "- | - |"))
     for r in res:
         t = r.get("tees") or {}
         if t.get("screenshot_tees"):

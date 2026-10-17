@@ -69,7 +69,16 @@ U-Net tee polygons near a hole's first leg (OSM hole lines; > 20 yds from a gree
 | spirit_hollow_2021 | 87 | 103 | 79 | 8 | 2 |
 | veenker | 35 | 43 | 28 | 7 | 0 |
 
-Tee placement (tees/place_tee.place_course_sets) with U-Net tees as extra candidates (like lidar pads):
+Recall of the OSM tee boxes near a first leg (candidate centroid within 10 yds): U-Net vs lidar pads
+
+| course | U-Net | lidar pads |
+|---|---|---|
+| mozingo_lake | 0.89 | 0.48 |
+| spirit_hollow | 0.83 | 0.53 |
+| spirit_hollow_2021 | 0.84 | 0.53 |
+| veenker | 0.74 | 0.26 |
+
+Tee placement (tees/place_tee.place_course_sets) with U-Net tees as extra candidates (like lidar pads); *no OSM tees* = every OSM box deleted, candidates only from the detectors:
 
 | course | method | measured within 5 yds of card | walk-backs | SH screenshot tee <= 10 yds | SH median tee err |
 |---|---|---|---|---|---|
@@ -77,18 +86,34 @@ Tee placement (tees/place_tee.place_course_sets) with U-Net tees as extra candid
 | mozingo_lake | joint+lidar | 94% | 0 | - | - |
 | mozingo_lake | joint+unet | 94% | 0 | - | - |
 | mozingo_lake | joint+lidar+unet | 94% | 0 | - | - |
+| mozingo_lake | no OSM tees: walk-back | 100% | 18 | - | - |
+| mozingo_lake | no OSM tees: lidar | 94% | 6 | - | - |
+| mozingo_lake | no OSM tees: unet | 89% | 0 | - | - |
+| mozingo_lake | no OSM tees: lidar+unet | 89% | 0 | - | - |
 | spirit_hollow | joint | 92% | 1 | 44% | 12.4 |
 | spirit_hollow | joint+lidar | 93% | 1 | 44% | 12.4 |
 | spirit_hollow | joint+unet | 92% | 1 | 44% | 12.4 |
 | spirit_hollow | joint+lidar+unet | 93% | 1 | 44% | 12.4 |
+| spirit_hollow | no OSM tees: walk-back | 100% | 72 | 19% | 22.049999999999997 |
+| spirit_hollow | no OSM tees: lidar | 82% | 21 | 38% | 20.6 |
+| spirit_hollow | no OSM tees: unet | 86% | 10 | 38% | 17.950000000000003 |
+| spirit_hollow | no OSM tees: lidar+unet | 92% | 6 | 44% | 13.600000000000001 |
 | spirit_hollow_2021 | joint | 92% | 1 | 44% | 12.4 |
 | spirit_hollow_2021 | joint+lidar | 93% | 1 | 44% | 12.4 |
 | spirit_hollow_2021 | joint+unet | 92% | 1 | 44% | 12.4 |
 | spirit_hollow_2021 | joint+lidar+unet | 93% | 1 | 44% | 12.4 |
+| spirit_hollow_2021 | no OSM tees: walk-back | 100% | 72 | 19% | 22.049999999999997 |
+| spirit_hollow_2021 | no OSM tees: lidar | 82% | 21 | 38% | 20.6 |
+| spirit_hollow_2021 | no OSM tees: unet | 86% | 10 | 31% | 19.950000000000003 |
+| spirit_hollow_2021 | no OSM tees: lidar+unet | 92% | 6 | 38% | 17.8 |
 | veenker | joint | 83% | 2 | - | - |
 | veenker | joint+lidar | 83% | 1 | - | - |
 | veenker | joint+unet | 83% | 1 | - | - |
 | veenker | joint+lidar+unet | 83% | 0 | - | - |
+| veenker | no OSM tees: walk-back | 100% | 54 | - | - |
+| veenker | no OSM tees: lidar | 91% | 30 | - | - |
+| veenker | no OSM tees: unet | 83% | 9 | - | - |
+| veenker | no OSM tees: lidar+unet | 87% | 6 | - | - |
 
 Spirit Hollow screenshot tees (spirit_hollow): yds to the nearest candidate
 

@@ -159,7 +159,47 @@
       "order_violations": 0,
       "on_a_shared_box": 0
      }
+    },
+    "no OSM tees: walk-back": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 1.0,
+      "walkbacks": 18,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "no OSM tees: lidar": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 6,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "no OSM tees: unet": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.889,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "no OSM tees: lidar+unet": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.889,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
     }
+   },
+   "recall_of_osm_boxes": {
+    "unet": 0.893,
+    "lidar": 0.482
    }
   }
  },
@@ -1490,7 +1530,659 @@
        }
       ]
      }
+    },
+    "no OSM tees: walk-back": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 1.0,
+      "walkbacks": 72,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.188,
+      "length_within_5": 0.625,
+      "median_tee_err": 22.049999999999997,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 10.3,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 125.7,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 60.5,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 22.4,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 18.0,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 27.6,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 21.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 47.1,
+        "measured": 410.0,
+        "traced": 399,
+        "len_err": 11.0
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 22.6,
+        "measured": 365.0,
+        "traced": 373,
+        "len_err": -8.0
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 17.2,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": -0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 4.2,
+        "measured": 352.0,
+        "traced": 338,
+        "len_err": 14.0
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 3.5,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 29.5,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": 0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 20.8,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": 0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 54.3,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": 0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 8.7,
+        "measured": 521.0,
+        "traced": 516,
+        "len_err": 5.0
+       }
+      ]
+     }
+    },
+    "no OSM tees: lidar": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.819,
+      "walkbacks": 21,
+      "order_violations": 0,
+      "on_a_shared_box": 18
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.375,
+      "length_within_5": 0.5,
+      "median_tee_err": 20.6,
+      "median_abs_len_err": 6.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 8.9,
+        "measured": 423.3,
+        "traced": 391,
+        "len_err": 32.3
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 125.7,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 100.2,
+        "measured": 496.2,
+        "traced": 507,
+        "len_err": -10.8
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 20.6,
+        "measured": 538.3,
+        "traced": 520,
+        "len_err": 18.3
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 16.3,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 23.3,
+        "measured": 407.5,
+        "traced": 408,
+        "len_err": -0.5
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 4.9,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 8.6,
+        "measured": 410.0,
+        "traced": 399,
+        "len_err": 11.0
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 20.6,
+        "measured": 362.9,
+        "traced": 373,
+        "len_err": -10.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 49.5,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": -0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 2.3,
+        "measured": 350.0,
+        "traced": 338,
+        "len_err": 12.0
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 1.7,
+        "measured": 411.4,
+        "traced": 407,
+        "len_err": 4.4
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 29.5,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": 0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 31.9,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 54.3,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": 0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 7.0,
+        "measured": 523.6,
+        "traced": 516,
+        "len_err": 7.6
+       }
+      ]
+     }
+    },
+    "no OSM tees: unet": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.861,
+      "walkbacks": 10,
+      "order_violations": 0,
+      "on_a_shared_box": 14
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.375,
+      "length_within_5": 0.562,
+      "median_tee_err": 17.950000000000003,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 8.9,
+        "measured": 425.9,
+        "traced": 391,
+        "len_err": 34.9
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 125.7,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 99.7,
+        "measured": 501.4,
+        "traced": 507,
+        "len_err": -5.6
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 16.3,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 20.5,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 5.2,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 48.3,
+        "measured": 400.0,
+        "traced": 399,
+        "len_err": 1.0
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 9.9,
+        "measured": 365.9,
+        "traced": 373,
+        "len_err": -7.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 19.6,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 3.6,
+        "measured": 351.0,
+        "traced": 338,
+        "len_err": 13.0
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 36.6,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": 0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 30.4,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": 0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 30.8,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 6.6,
+        "measured": 521.9,
+        "traced": 516,
+        "len_err": 5.9
+       }
+      ]
+     }
+    },
+    "no OSM tees: lidar+unet": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.917,
+      "walkbacks": 6,
+      "order_violations": 0,
+      "on_a_shared_box": 10
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.438,
+      "length_within_5": 0.5,
+      "median_tee_err": 13.600000000000001,
+      "median_abs_len_err": 5.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 8.9,
+        "measured": 425.9,
+        "traced": 391,
+        "len_err": 34.9
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 125.7,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 99.7,
+        "measured": 501.4,
+        "traced": 507,
+        "len_err": -5.6
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 16.3,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 23.3,
+        "measured": 407.5,
+        "traced": 408,
+        "len_err": -0.5
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 5.2,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 8.6,
+        "measured": 410.0,
+        "traced": 399,
+        "len_err": 11.0
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 9.9,
+        "measured": 365.9,
+        "traced": 373,
+        "len_err": -7.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 19.6,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": 0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 3.6,
+        "measured": 351.0,
+        "traced": 338,
+        "len_err": 13.0
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 1.7,
+        "measured": 411.4,
+        "traced": 407,
+        "len_err": 4.4
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 36.6,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": 0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 31.9,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 30.8,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 6.6,
+        "measured": 521.9,
+        "traced": 516,
+        "len_err": 5.9
+       }
+      ]
+     }
     }
+   },
+   "recall_of_osm_boxes": {
+    "unet": 0.832,
+    "lidar": 0.526
    },
    "screenshot_tees": [
     {
@@ -2940,7 +3632,659 @@
        }
       ]
      }
+    },
+    "no OSM tees: walk-back": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 1.0,
+      "walkbacks": 72,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.188,
+      "length_within_5": 0.625,
+      "median_tee_err": 22.049999999999997,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 10.3,
+        "measured": 426.0,
+        "traced": 391,
+        "len_err": 35.0
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 125.7,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 60.5,
+        "measured": 507.0,
+        "traced": 507,
+        "len_err": 0.0
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 22.4,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 18.0,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 27.6,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": 0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 21.7,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 47.1,
+        "measured": 410.0,
+        "traced": 399,
+        "len_err": 11.0
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 22.6,
+        "measured": 365.0,
+        "traced": 373,
+        "len_err": -8.0
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 17.2,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": -0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 4.2,
+        "measured": 352.0,
+        "traced": 338,
+        "len_err": 14.0
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 3.5,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 29.5,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": 0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 20.8,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": 0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 54.3,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": 0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 8.7,
+        "measured": 521.0,
+        "traced": 516,
+        "len_err": 5.0
+       }
+      ]
+     }
+    },
+    "no OSM tees: lidar": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.819,
+      "walkbacks": 21,
+      "order_violations": 0,
+      "on_a_shared_box": 18
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.375,
+      "length_within_5": 0.5,
+      "median_tee_err": 20.6,
+      "median_abs_len_err": 6.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 8.9,
+        "measured": 423.3,
+        "traced": 391,
+        "len_err": 32.3
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 125.7,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 100.2,
+        "measured": 496.2,
+        "traced": 507,
+        "len_err": -10.8
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 20.6,
+        "measured": 538.3,
+        "traced": 520,
+        "len_err": 18.3
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 16.3,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 23.3,
+        "measured": 407.5,
+        "traced": 408,
+        "len_err": -0.5
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 4.9,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 8.6,
+        "measured": 410.0,
+        "traced": 399,
+        "len_err": 11.0
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 20.6,
+        "measured": 362.9,
+        "traced": 373,
+        "len_err": -10.1
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 49.5,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": -0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 2.3,
+        "measured": 350.0,
+        "traced": 338,
+        "len_err": 12.0
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 1.7,
+        "measured": 411.4,
+        "traced": 407,
+        "len_err": 4.4
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 29.5,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": 0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 31.9,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "walkback",
+        "tee_err": 54.3,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": 0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 7.0,
+        "measured": 523.6,
+        "traced": 516,
+        "len_err": 7.6
+       }
+      ]
+     }
+    },
+    "no OSM tees: unet": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.861,
+      "walkbacks": 10,
+      "order_violations": 0,
+      "on_a_shared_box": 15
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.312,
+      "length_within_5": 0.562,
+      "median_tee_err": 19.950000000000003,
+      "median_abs_len_err": 2.0,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 9.2,
+        "measured": 425.9,
+        "traced": 391,
+        "len_err": 34.9
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 125.7,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 99.5,
+        "measured": 500.9,
+        "traced": 507,
+        "len_err": -6.1
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 15.8,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": 0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 20.6,
+        "measured": 408.0,
+        "traced": 408,
+        "len_err": -0.0
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 5.1,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 48.6,
+        "measured": 400.2,
+        "traced": 399,
+        "len_err": 1.2
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 20.7,
+        "measured": 364.1,
+        "traced": 373,
+        "len_err": -8.9
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 19.3,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": -0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 3.7,
+        "measured": 351.3,
+        "traced": 338,
+        "len_err": 13.3
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 3.3,
+        "measured": 409.0,
+        "traced": 407,
+        "len_err": 2.0
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": 0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 30.6,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": 0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 30.8,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 7.0,
+        "measured": 522.2,
+        "traced": 516,
+        "len_err": 6.2
+       }
+      ]
+     }
+    },
+    "no OSM tees: lidar+unet": {
+     "internal": {
+      "placements": 72,
+      "card_within_5": 0.917,
+      "walkbacks": 6,
+      "order_violations": 0,
+      "on_a_shared_box": 10
+     },
+     "screenshot_set": {
+      "n": 16,
+      "tee_within_10": 0.375,
+      "length_within_5": 0.5,
+      "median_tee_err": 17.8,
+      "median_abs_len_err": 5.25,
+      "rows": [
+       {
+        "key": "1",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 9.2,
+        "measured": 425.9,
+        "traced": 391,
+        "len_err": 34.9
+       },
+       {
+        "key": "2B",
+        "set": "Gold",
+        "method": "walkback",
+        "tee_err": 125.7,
+        "measured": 607.0,
+        "traced": 609,
+        "len_err": -2.0
+       },
+       {
+        "key": "2F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 99.5,
+        "measured": 500.9,
+        "traced": 507,
+        "len_err": -6.1
+       },
+       {
+        "key": "4",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 10.9,
+        "measured": 532.0,
+        "traced": 520,
+        "len_err": 12.0
+       },
+       {
+        "key": "5",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 16.3,
+        "measured": 384.0,
+        "traced": 384,
+        "len_err": -0.0
+       },
+       {
+        "key": "6",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 23.3,
+        "measured": 407.5,
+        "traced": 408,
+        "len_err": -0.5
+       },
+       {
+        "key": "8",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 4.9,
+        "measured": 383.0,
+        "traced": 375,
+        "len_err": 8.0
+       },
+       {
+        "key": "9B",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 8.6,
+        "measured": 410.0,
+        "traced": 399,
+        "len_err": 11.0
+       },
+       {
+        "key": "9F",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 20.7,
+        "measured": 364.1,
+        "traced": 373,
+        "len_err": -8.9
+       },
+       {
+        "key": "10",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 19.3,
+        "measured": 502.0,
+        "traced": 502,
+        "len_err": -0.0
+       },
+       {
+        "key": "11",
+        "set": "Gold",
+        "method": "lidar_pad",
+        "tee_err": 3.7,
+        "measured": 351.3,
+        "traced": 338,
+        "len_err": 13.3
+       },
+       {
+        "key": "13",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 1.7,
+        "measured": 411.4,
+        "traced": 407,
+        "len_err": 4.4
+       },
+       {
+        "key": "14",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 37.3,
+        "measured": 393.0,
+        "traced": 393,
+        "len_err": 0.0
+       },
+       {
+        "key": "16",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 31.9,
+        "measured": 378.0,
+        "traced": 378,
+        "len_err": -0.0
+       },
+       {
+        "key": "17",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 30.8,
+        "measured": 445.0,
+        "traced": 445,
+        "len_err": -0.0
+       },
+       {
+        "key": "18",
+        "set": "Black",
+        "method": "lidar_pad",
+        "tee_err": 7.0,
+        "measured": 522.2,
+        "traced": 516,
+        "len_err": 6.2
+       }
+      ]
+     }
     }
+   },
+   "recall_of_osm_boxes": {
+    "unet": 0.842,
+    "lidar": 0.526
    },
    "screenshot_tees": [
     {
@@ -3223,7 +4567,47 @@
       "order_violations": 0,
       "on_a_shared_box": 25
      }
+    },
+    "no OSM tees: walk-back": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 1.0,
+      "walkbacks": 54,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "no OSM tees: lidar": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.907,
+      "walkbacks": 30,
+      "order_violations": 0,
+      "on_a_shared_box": 13
+     }
+    },
+    "no OSM tees: unet": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 9,
+      "order_violations": 0,
+      "on_a_shared_box": 31
+     }
+    },
+    "no OSM tees: lidar+unet": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.87,
+      "walkbacks": 6,
+      "order_violations": 0,
+      "on_a_shared_box": 23
+     }
     }
+   },
+   "recall_of_osm_boxes": {
+    "unet": 0.737,
+    "lidar": 0.263
    }
   }
  }
