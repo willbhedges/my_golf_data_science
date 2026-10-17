@@ -3,84 +3,84 @@
  "tier": "osm_card",
  "version": null,
  "dev": {
-  "n": 77,
-  "holes": 1386,
-  "hole_number_acc": 0.598,
-  "formed_acc": 0.744,
-  "par_acc": 0.914,
-  "courses_holes_right": 0.169,
-  "courses_fully_right": 0.156,
+  "n": 160,
+  "holes": 2853,
+  "hole_number_acc": 0.291,
+  "formed_acc": 0.361,
+  "par_acc": 0.893,
+  "courses_holes_right": 0.081,
+  "courses_fully_right": 0.069,
   "certain_n": 4,
-  "zero_tap_coverage": 0.052,
-  "zero_tap_precision": 1.0,
+  "zero_tap_coverage": 0.025,
+  "zero_tap_precision": 0.5,
   "curve": [
    {
-    "coverage": 0.052,
-    "precision": 1.0,
-    "min_conf": 1.0
-   },
-   {
-    "coverage": 0.104,
-    "precision": 0.75,
+    "coverage": 0.05,
+    "precision": 0.5,
     "min_conf": 0.3333
    },
    {
-    "coverage": 0.195,
-    "precision": 0.467,
+    "coverage": 0.1,
+    "precision": 0.375,
     "min_conf": 0.2308
    },
    {
-    "coverage": 0.299,
-    "precision": 0.348,
+    "coverage": 0.2,
+    "precision": 0.281,
     "min_conf": 0.2308
    },
    {
-    "coverage": 0.494,
-    "precision": 0.316,
-    "min_conf": 0.0909
+    "coverage": 0.3,
+    "precision": 0.229,
+    "min_conf": 0.0
    },
    {
-    "coverage": 0.701,
-    "precision": 0.222,
+    "coverage": 0.5,
+    "precision": 0.138,
+    "min_conf": 0.0
+   },
+   {
+    "coverage": 0.7,
+    "precision": 0.098,
     "min_conf": 0.0
    },
    {
     "coverage": 1.0,
-    "precision": 0.156,
+    "precision": 0.069,
     "min_conf": 0.0
    }
   ],
-  "coverage_at_p99": 0.052,
-  "coverage_at_p95": 0.052,
-  "coverage_at_p90": 0.052,
+  "coverage_at_p99": 0.0,
+  "coverage_at_p95": 0.0,
+  "coverage_at_p90": 0.0,
   "hole_ece": 0.047,
   "course_failures": {
+   "no_result": 86,
    "pairing": 55,
    "missed_tee": 4,
-   "no_result": 3,
+   "par": 2,
    "count": 1,
-   "par": 1,
    "order": 1
   },
   "hole_failures": {
-   "missing": 355,
+   "missing": 1822,
    "pairing": 225,
    "order": 105,
-   "par": 80,
+   "par": 105,
    "start_hole": 79,
    "missed_tee": 58,
    "nine_swap": 18
   },
-  "no_result": 3,
+  "no_result": 86,
   "by_kind": {
    "9": {
-    "n": 2,
-    "holes": 18,
-    "hole_number_acc": 0.667,
-    "formed_acc": 0.778,
-    "par_acc": 0.929,
-    "courses_holes_right": 0.5,
-    "courses_fully_right": 0.0,
+    "n": 21,
+    "holes": 189,
+    "hole_number_acc": 0.063,
+    "formed_acc": 0.074,
+    "par_acc": 1.0,
+    "courses_holes_right": 0.048,
+    "courses_fully_right": 0.048,
     "certain_n": 0,
     "zero_tap_coverage": 0.0,
     "zero_tap_precision": null,
@@ -89,54 +89,77 @@
     "coverage_at_p90": 0.0,
     "hole_ece": 0.341,
     "course_failures": {
-     "pairing": 1,
-     "par": 1
+     "no_result": 19,
+     "pairing": 1
     },
     "hole_failures": {
+     "missing": 175,
      "pairing": 4,
-     "missing": 4,
-     "order": 2,
-     "par": 1
+     "order": 2
     },
-    "no_result": 0
+    "no_result": 19
    },
    "18": {
-    "n": 74,
-    "holes": 1332,
-    "hole_number_acc": 0.613,
-    "formed_acc": 0.753,
-    "par_acc": 0.919,
-    "courses_holes_right": 0.162,
-    "courses_fully_right": 0.162,
+    "n": 125,
+    "holes": 2250,
+    "hole_number_acc": 0.363,
+    "formed_acc": 0.446,
+    "par_acc": 0.896,
+    "courses_holes_right": 0.096,
+    "courses_fully_right": 0.08,
     "certain_n": 4,
-    "zero_tap_coverage": 0.054,
-    "zero_tap_precision": 1.0,
-    "coverage_at_p99": 0.054,
-    "coverage_at_p95": 0.054,
-    "coverage_at_p90": 0.054,
+    "zero_tap_coverage": 0.032,
+    "zero_tap_precision": 0.5,
+    "coverage_at_p99": 0.0,
+    "coverage_at_p95": 0.0,
+    "coverage_at_p90": 0.0,
     "hole_ece": 0.049,
     "course_failures": {
+     "no_result": 54,
      "pairing": 54,
      "missed_tee": 4,
-     "no_result": 3,
+     "par": 2,
      "order": 1
     },
     "hole_failures": {
-     "missing": 329,
+     "missing": 1247,
      "pairing": 220,
+     "par": 99,
      "order": 89,
      "start_hole": 79,
-     "par": 73,
      "missed_tee": 55,
      "nine_swap": 18
     },
-    "no_result": 3
+    "no_result": 54
+   },
+   "27": {
+    "n": 10,
+    "holes": 270,
+    "hole_number_acc": 0.0,
+    "formed_acc": 0.0,
+    "par_acc": 0.0,
+    "courses_holes_right": 0.0,
+    "courses_fully_right": 0.0,
+    "certain_n": 0,
+    "zero_tap_coverage": 0.0,
+    "zero_tap_precision": null,
+    "coverage_at_p99": 0.0,
+    "coverage_at_p95": 0.0,
+    "coverage_at_p90": 0.0,
+    "hole_ece": null,
+    "course_failures": {
+     "no_result": 10
+    },
+    "hole_failures": {
+     "missing": 270
+    },
+    "no_result": 10
    },
    "36": {
-    "n": 1,
-    "holes": 36,
+    "n": 4,
+    "holes": 144,
     "hole_number_acc": 0.0,
-    "formed_acc": 0.389,
+    "formed_acc": 0.097,
     "par_acc": 0.571,
     "courses_holes_right": 0.0,
     "courses_fully_right": 0.0,
@@ -148,64 +171,99 @@
     "coverage_at_p90": 0.0,
     "hole_ece": 0.356,
     "course_failures": {
+     "no_result": 3,
      "count": 1
     },
     "hole_failures": {
-     "missing": 22,
+     "missing": 130,
      "order": 14,
      "par": 6,
      "missed_tee": 3,
      "pairing": 1
     },
-    "no_result": 0
+    "no_result": 3
    }
   }
  },
+ "dev_v0": {
+  "n": 77,
+  "holes": 1386,
+  "hole_number_acc": 0.598,
+  "formed_acc": 0.744,
+  "par_acc": 0.893,
+  "courses_holes_right": 0.169,
+  "courses_fully_right": 0.143,
+  "certain_n": 4,
+  "zero_tap_coverage": 0.052,
+  "zero_tap_precision": 0.5,
+  "coverage_at_p99": 0.0,
+  "coverage_at_p95": 0.0,
+  "coverage_at_p90": 0.0,
+  "hole_ece": 0.047,
+  "course_failures": {
+   "pairing": 55,
+   "missed_tee": 4,
+   "no_result": 3,
+   "par": 2,
+   "count": 1,
+   "order": 1
+  },
+  "hole_failures": {
+   "missing": 355,
+   "pairing": 225,
+   "order": 105,
+   "par": 105,
+   "start_hole": 79,
+   "missed_tee": 58,
+   "nine_swap": 18
+  },
+  "no_result": 3
+ },
  "test": {
-  "n": 84,
-  "holes": 1512,
-  "hole_number_acc": 0.58,
-  "formed_acc": 0.724,
-  "par_acc": 0.926,
-  "courses_holes_right": 0.131,
-  "courses_fully_right": 0.119,
+  "n": 153,
+  "holes": 2817,
+  "hole_number_acc": 0.311,
+  "formed_acc": 0.389,
+  "par_acc": 0.92,
+  "courses_holes_right": 0.072,
+  "courses_fully_right": 0.059,
   "certain_n": 7,
-  "zero_tap_coverage": 0.083,
+  "zero_tap_coverage": 0.046,
   "zero_tap_precision": 0.429,
   "curve": [
    {
-    "coverage": 0.048,
-    "precision": 0.5,
-    "min_conf": 1.0
-   },
-   {
-    "coverage": 0.095,
+    "coverage": 0.052,
     "precision": 0.5,
     "min_conf": 0.5
    },
    {
-    "coverage": 0.202,
-    "precision": 0.412,
+    "coverage": 0.098,
+    "precision": 0.4,
     "min_conf": 0.2857
    },
    {
-    "coverage": 0.298,
-    "precision": 0.4,
+    "coverage": 0.203,
+    "precision": 0.29,
     "min_conf": 0.2308
    },
    {
-    "coverage": 0.5,
-    "precision": 0.238,
+    "coverage": 0.301,
+    "precision": 0.196,
     "min_conf": 0.0
    },
    {
-    "coverage": 0.702,
-    "precision": 0.169,
+    "coverage": 0.497,
+    "precision": 0.118,
+    "min_conf": 0.0
+   },
+   {
+    "coverage": 0.699,
+    "precision": 0.084,
     "min_conf": 0.0
    },
    {
     "coverage": 1.0,
-    "precision": 0.119,
+    "precision": 0.059,
     "min_conf": 0.0
    }
   ],
@@ -214,62 +272,62 @@
   "coverage_at_p90": 0.0,
   "hole_ece": 0.052,
   "course_failures": {
+   "no_result": 72,
    "pairing": 59,
    "missed_tee": 6,
    "count": 5,
-   "no_result": 3,
-   "par": 1
+   "par": 2
   },
   "hole_failures": {
-   "missing": 417,
+   "missing": 1722,
    "pairing": 249,
    "order": 165,
-   "par": 77,
+   "par": 86,
    "missed_tee": 66,
    "start_hole": 30,
    "nine_swap": 23
   },
-  "no_result": 3,
+  "no_result": 72,
   "by_kind": {
    "9": {
-    "n": 8,
-    "holes": 72,
-    "hole_number_acc": 0.639,
-    "formed_acc": 0.694,
-    "par_acc": 0.98,
-    "courses_holes_right": 0.5,
-    "courses_fully_right": 0.375,
+    "n": 15,
+    "holes": 135,
+    "hole_number_acc": 0.341,
+    "formed_acc": 0.37,
+    "par_acc": 0.82,
+    "courses_holes_right": 0.267,
+    "courses_fully_right": 0.133,
     "certain_n": 3,
-    "zero_tap_coverage": 0.375,
+    "zero_tap_coverage": 0.2,
     "zero_tap_precision": 0.667,
     "coverage_at_p99": 0.0,
     "coverage_at_p95": 0.0,
     "coverage_at_p90": 0.0,
     "hole_ece": 0.156,
     "course_failures": {
+     "no_result": 8,
      "pairing": 3,
-     "no_result": 1,
-     "par": 1
+     "par": 2
     },
     "hole_failures": {
-     "missing": 22,
+     "missing": 85,
      "pairing": 11,
+     "par": 9,
      "start_hole": 4,
-     "missed_tee": 2,
-     "par": 1
+     "missed_tee": 2
     },
-    "no_result": 1
+    "no_result": 8
    },
    "18": {
-    "n": 71,
-    "holes": 1278,
-    "hole_number_acc": 0.649,
-    "formed_acc": 0.762,
-    "par_acc": 0.936,
-    "courses_holes_right": 0.099,
-    "courses_fully_right": 0.099,
+    "n": 124,
+    "holes": 2232,
+    "hole_number_acc": 0.372,
+    "formed_acc": 0.436,
+    "par_acc": 0.937,
+    "courses_holes_right": 0.056,
+    "courses_fully_right": 0.056,
     "certain_n": 4,
-    "zero_tap_coverage": 0.056,
+    "zero_tap_coverage": 0.032,
     "zero_tap_precision": 0.25,
     "coverage_at_p99": 0.0,
     "coverage_at_p95": 0.0,
@@ -277,26 +335,26 @@
     "hole_ece": 0.071,
     "course_failures": {
      "pairing": 55,
+     "no_result": 55,
      "missed_tee": 6,
-     "no_result": 2,
      "count": 1
     },
     "hole_failures": {
-     "missing": 304,
+     "missing": 1258,
      "pairing": 209,
      "order": 95,
-     "par": 60,
+     "par": 61,
      "missed_tee": 58,
      "start_hole": 26,
      "nine_swap": 23
     },
-    "no_result": 2
+    "no_result": 55
    },
    "27": {
-    "n": 2,
-    "holes": 54,
+    "n": 6,
+    "holes": 162,
     "hole_number_acc": 0.0,
-    "formed_acc": 0.574,
+    "formed_acc": 0.191,
     "par_acc": 1.0,
     "courses_holes_right": 0.0,
     "courses_fully_right": 0.0,
@@ -308,22 +366,23 @@
     "coverage_at_p90": 0.0,
     "hole_ece": 0.411,
     "course_failures": {
+     "no_result": 4,
      "count": 1,
      "pairing": 1
     },
     "hole_failures": {
+     "missing": 131,
      "order": 31,
-     "missing": 23,
      "pairing": 19,
      "missed_tee": 2
     },
-    "no_result": 0
+    "no_result": 4
    },
    "36": {
-    "n": 3,
-    "holes": 108,
-    "hole_number_acc": 0.009,
-    "formed_acc": 0.37,
+    "n": 8,
+    "holes": 288,
+    "hole_number_acc": 0.003,
+    "formed_acc": 0.139,
     "par_acc": 0.6,
     "courses_holes_right": 0.0,
     "courses_fully_right": 0.0,
@@ -335,20 +394,215 @@
     "coverage_at_p90": 0.0,
     "hole_ece": 0.38,
     "course_failures": {
+     "no_result": 5,
      "count": 3
     },
     "hole_failures": {
-     "missing": 68,
+     "missing": 248,
      "order": 39,
      "par": 16,
      "pairing": 10,
      "missed_tee": 4
     },
-    "no_result": 0
+    "no_result": 5
    }
   }
  },
+ "test_v0": {
+  "n": 84,
+  "holes": 1512,
+  "hole_number_acc": 0.58,
+  "formed_acc": 0.724,
+  "par_acc": 0.92,
+  "courses_holes_right": 0.131,
+  "courses_fully_right": 0.107,
+  "certain_n": 7,
+  "zero_tap_coverage": 0.083,
+  "zero_tap_precision": 0.429,
+  "coverage_at_p99": 0.0,
+  "coverage_at_p95": 0.0,
+  "coverage_at_p90": 0.0,
+  "hole_ece": 0.052,
+  "course_failures": {
+   "pairing": 59,
+   "missed_tee": 6,
+   "count": 5,
+   "no_result": 3,
+   "par": 2
+  },
+  "hole_failures": {
+   "missing": 417,
+   "pairing": 249,
+   "order": 165,
+   "par": 86,
+   "missed_tee": 66,
+   "start_hole": 30,
+   "nine_swap": 23
+  },
+  "no_result": 3
+ },
  "rows": [
+  {
+   "slug": "eagle_s_nest_al",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "AL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "highland_park_al",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "AL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "northriver_yacht_al",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "AL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "orange_beach_center_al",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "AL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "robert_trent_jones_trail_shoals_al",
+   "N": 36,
+   "kind": 36,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 36
+   },
+   "split": "dev",
+   "state": "AL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "rock_creek_al",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "AL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "turtle_point_yacht_al",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "AL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
   {
    "slug": "arroyo_seco_ca",
    "N": 18,
@@ -372,6 +626,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -381,8 +636,8 @@
    "n_pred": 18,
    "formed": 9,
    "number": 2,
-   "par_ok": 8,
-   "par_n": 8,
+   "par_ok": 9,
+   "par_n": 9,
    "holes_ok": false,
    "course_ok": false,
    "certain": false,
@@ -398,6 +653,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -419,6 +675,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -440,7 +697,31 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "mountaingate_ca",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "CA",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "orinda_ca",
@@ -462,6 +743,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -471,7 +753,7 @@
    "n_pred": 18,
    "formed": 17,
    "number": 17,
-   "par_ok": 16,
+   "par_ok": 17,
    "par_n": 17,
    "holes_ok": false,
    "course_ok": false,
@@ -481,12 +763,12 @@
    "explanation": "identity",
    "fails": {
     "missed_tee": 1,
-    "par": 1,
     "missing": 1
    },
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -514,6 +796,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -541,6 +824,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -550,7 +834,7 @@
    "n_pred": 18,
    "formed": 14,
    "number": 14,
-   "par_ok": 12,
+   "par_ok": 14,
    "par_n": 14,
    "holes_ok": false,
    "course_ok": false,
@@ -560,13 +844,36 @@
    "explanation": "identity",
    "fails": {
     "pairing": 4,
-    "par": 2,
     "missing": 4
    },
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "van_buren_center_ca",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "CA",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "westchester_ca",
@@ -592,7 +899,31 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "ansley_ga",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "GA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "browns_mill_ga",
@@ -613,6 +944,7 @@
    "split": "dev",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -638,7 +970,31 @@
    "split": "dev",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "crosswinds_ga",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "GA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "fort_benning_ga",
@@ -659,6 +1015,7 @@
    "split": "dev",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -684,6 +1041,7 @@
    "split": "dev",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -711,6 +1069,7 @@
    "split": "dev",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -736,6 +1095,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -761,6 +1121,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -785,6 +1146,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -809,6 +1171,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -835,6 +1198,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -860,6 +1224,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -886,6 +1251,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -895,7 +1261,7 @@
    "n_pred": 18,
    "formed": 12,
    "number": 6,
-   "par_ok": 9,
+   "par_ok": 10,
    "par_n": 12,
    "holes_ok": false,
    "course_ok": false,
@@ -907,12 +1273,13 @@
     "pairing": 5,
     "missed_tee": 1,
     "order": 6,
-    "par": 3,
+    "par": 2,
     "missing": 6
    },
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -922,20 +1289,19 @@
    "n_pred": 9,
    "formed": 9,
    "number": 9,
-   "par_ok": 8,
+   "par_ok": 9,
    "par_n": 9,
    "holes_ok": true,
-   "course_ok": false,
+   "course_ok": true,
    "certain": false,
    "confidence": 0.2308,
-   "primary": "par",
+   "primary": null,
    "explanation": "identity",
-   "fails": {
-    "par": 1
-   },
+   "fails": {},
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -961,7 +1327,146 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "chatham_hills_in",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "IN",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "curtis_creek_in",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "IN",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "maxwelton_in",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "IN",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "pebble_brook_in",
+   "N": 36,
+   "kind": 36,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 36
+   },
+   "split": "dev",
+   "state": "IN",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "riverbend_in",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "IN",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "wooded_view_in",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "IN",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "ben_hawes_ky",
@@ -986,6 +1491,7 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1010,7 +1516,31 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "clear_creek_center_ky",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "KY",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "keene_run_ky",
@@ -1019,7 +1549,7 @@
    "n_pred": 18,
    "formed": 13,
    "number": 13,
-   "par_ok": 13,
+   "par_ok": 10,
    "par_n": 13,
    "holes_ok": false,
    "course_ok": false,
@@ -1030,11 +1560,13 @@
    "fails": {
     "missed_tee": 3,
     "pairing": 2,
+    "par": 3,
     "missing": 5
    },
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1059,6 +1591,7 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1068,7 +1601,7 @@
    "n_pred": 18,
    "formed": 17,
    "number": 17,
-   "par_ok": 16,
+   "par_ok": 17,
    "par_n": 17,
    "holes_ok": false,
    "course_ok": false,
@@ -1078,12 +1611,12 @@
    "explanation": "identity",
    "fails": {
     "missed_tee": 1,
-    "par": 1,
     "missing": 1
    },
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1110,7 +1643,31 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "seneca_ky",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "KY",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "sun_valley_ky",
@@ -1134,6 +1691,7 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1159,6 +1717,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1184,6 +1743,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -1210,6 +1770,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1236,6 +1797,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1263,6 +1825,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1284,7 +1847,54 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "ponkapoag_ma",
+   "N": 36,
+   "kind": 36,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 36
+   },
+   "split": "dev",
+   "state": "MA",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "royal_crest_ma",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "MA",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "shaker_hills_ma",
@@ -1293,8 +1903,8 @@
    "n_pred": 18,
    "formed": 16,
    "number": 14,
-   "par_ok": 0,
-   "par_n": 0,
+   "par_ok": 15,
+   "par_n": 16,
    "holes_ok": false,
    "course_ok": false,
    "certain": false,
@@ -1305,11 +1915,13 @@
     "missed_tee": 1,
     "pairing": 1,
     "order": 2,
+    "par": 1,
     "missing": 2
    },
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1335,6 +1947,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1356,6 +1969,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1381,6 +1995,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1406,6 +2021,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1430,7 +2046,123 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:opengolfapi"
+  },
+  {
+   "slug": "crofton_md",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MD",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "lighthouse_sound_md",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MD",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "montgomery_md",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MD",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "needwood_md",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MD",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "whiskey_creek_md",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MD",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "ledges_me",
@@ -1454,6 +2186,7 @@
    "split": "dev",
    "state": "ME",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1479,6 +2212,7 @@
    "split": "dev",
    "state": "ME",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1488,8 +2222,8 @@
    "n_pred": 18,
    "formed": 15,
    "number": 14,
-   "par_ok": 0,
-   "par_n": 1,
+   "par_ok": 14,
+   "par_n": 15,
    "holes_ok": false,
    "course_ok": false,
    "certain": false,
@@ -1505,7 +2239,192 @@
    "split": "dev",
    "state": "ME",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "riverside_me",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "ME",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "summit_me",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "ME",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "angels_crossing_mi",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MI",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "huntmore_mi",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MI",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "lakeland_hills_mi",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MI",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "manistee_mi",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MI",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "oxford_hills_mi",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MI",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "red_oaks_mi",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "MI",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "dwan_mn",
@@ -1531,6 +2450,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1557,7 +2477,31 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "hyland_greens_mn",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "MN",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "north_oaks_mn",
@@ -1584,6 +2528,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1611,6 +2556,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1632,6 +2578,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1659,6 +2606,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -1683,6 +2631,7 @@
    "split": "dev",
    "state": "MS",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1705,6 +2654,7 @@
    "split": "dev",
    "state": "MS",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1731,6 +2681,7 @@
    "split": "dev",
    "state": "MS",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1757,7 +2708,169 @@
    "split": "dev",
    "state": "MS",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "bill_roberts_municipal_mt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MT",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "canyon_river_mt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MT",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "king_ranch_mt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MT",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "marias_valley_mt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MT",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "northern_pines_mt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "MT",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "river_s_bend_mt",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "MT",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "atkinson_resort_nh",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "NH",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "derryfield_nh",
@@ -1778,7 +2891,31 @@
    "split": "dev",
    "state": "NH",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "hale_s_location_nh",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "NH",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "newport_nh",
@@ -1805,6 +2942,7 @@
    "split": "dev",
    "state": "NH",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1831,6 +2969,7 @@
    "split": "dev",
    "state": "NH",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1855,6 +2994,7 @@
    "split": "dev",
    "state": "NH",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1864,7 +3004,7 @@
    "n_pred": 18,
    "formed": 15,
    "number": 15,
-   "par_ok": 15,
+   "par_ok": 7,
    "par_n": 15,
    "holes_ok": false,
    "course_ok": false,
@@ -1874,12 +3014,566 @@
    "explanation": "identity",
    "fails": {
     "pairing": 3,
+    "par": 8,
     "missing": 3
    },
    "split": "dev",
    "state": "NH",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "brookside_oh",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OH",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "forest_hills_vue_791_oh",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "OH",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "goodpark_oh",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OH",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "hickory_woods_oh",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OH",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "legends_massillon_oh",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "OH",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "meadowbrook_clayton_oh",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OH",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "miami_whitewater_forest_oh",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OH",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "claremont_or",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "OR",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "eagle_point_or",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OR",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "forest_hills_or",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OR",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "meadow_lakes_or",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OR",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "rose_city_or",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "OR",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "agawam_hunt_ri",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "RI",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "kirkbrae_ri",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "RI",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "lincoln_ri",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "RI",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "montaup_ri",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "RI",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "richmond_ri",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "RI",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "crockett_ridge_tn",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "TN",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "green_meadow_tn",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "TN",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "mccabe_tn",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "TN",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "richland_tn",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "TN",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "swan_lake_tn",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "TN",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "va_tn",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "TN",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "central_valley_ut",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "UT",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "glenmoor_ut",
@@ -1904,6 +3598,7 @@
    "split": "dev",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1931,6 +3626,7 @@
    "split": "dev",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1958,6 +3654,7 @@
    "split": "dev",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1967,7 +3664,7 @@
    "n_pred": 18,
    "formed": 15,
    "number": 15,
-   "par_ok": 13,
+   "par_ok": 15,
    "par_n": 15,
    "holes_ok": false,
    "course_ok": false,
@@ -1978,12 +3675,12 @@
    "fails": {
     "pairing": 1,
     "missed_tee": 2,
-    "par": 2,
     "missing": 3
    },
    "split": "dev",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -2006,7 +3703,31 @@
    "split": "dev",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "sunbrook_ut",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "UT",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "talonscove_ut",
@@ -2030,7 +3751,123 @@
    "split": "dev",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "chatmoss_va",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "VA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "fauquier_springs_va",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "VA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "heron_ridge_va",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "VA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "jefferson_district_va",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "VA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "westfields_va",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "VA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "big_foot_wi",
@@ -2055,7 +3892,31 @@
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "clear_lake_wi",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "WI",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "fairways_woodside_wi",
@@ -2076,6 +3937,7 @@
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -2097,7 +3959,31 @@
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:opengolfapi"
+  },
+  {
+   "slug": "mascoutin_wi",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "WI",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "old_hickory_wi",
@@ -2106,7 +3992,7 @@
    "n_pred": 18,
    "formed": 13,
    "number": 11,
-   "par_ok": 12,
+   "par_ok": 5,
    "par_n": 13,
    "holes_ok": false,
    "course_ok": false,
@@ -2117,12 +4003,13 @@
    "fails": {
     "pairing": 5,
     "order": 2,
-    "par": 1,
+    "par": 8,
     "missing": 5
    },
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2132,18 +4019,21 @@
    "n_pred": 18,
    "formed": 18,
    "number": 18,
-   "par_ok": 18,
+   "par_ok": 9,
    "par_n": 18,
    "holes_ok": true,
-   "course_ok": true,
+   "course_ok": false,
    "certain": true,
    "confidence": 1.0,
-   "primary": null,
+   "primary": "par",
    "explanation": "identity",
-   "fails": {},
+   "fails": {
+    "par": 9
+   },
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2153,7 +4043,7 @@
    "n_pred": 18,
    "formed": 8,
    "number": 0,
-   "par_ok": 7,
+   "par_ok": 5,
    "par_n": 8,
    "holes_ok": false,
    "course_ok": false,
@@ -2165,12 +4055,13 @@
     "pairing": 7,
     "missed_tee": 3,
     "start_hole": 8,
-    "par": 1,
+    "par": 3,
     "missing": 10
    },
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2197,7 +4088,169 @@
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "big_bend_wv",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "WV",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "bridge_haven_wv",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "WV",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "cacapon_wv",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "WV",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "fairmont_field_wv",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "WV",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "pipestem_resort_state_park_championship_wv",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "WV",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "south_hills_wv",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "dev",
+   "state": "WV",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "casper_municipal_wy",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "dev",
+   "state": "WY",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "olive_glenn_wy",
@@ -2206,18 +4259,21 @@
    "n_pred": 18,
    "formed": 18,
    "number": 18,
-   "par_ok": 0,
-   "par_n": 0,
+   "par_ok": 15,
+   "par_n": 18,
    "holes_ok": true,
-   "course_ok": true,
+   "course_ok": false,
    "certain": true,
    "confidence": 1.0,
-   "primary": null,
+   "primary": "par",
    "explanation": "identity",
-   "fails": {},
+   "fails": {
+    "par": 3
+   },
    "split": "dev",
    "state": "WY",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2245,7 +4301,31 @@
    "split": "dev",
    "state": "WY",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "sundance_wy",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "dev",
+   "state": "WY",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "big_sugar_ar",
@@ -2270,6 +4350,7 @@
    "split": "test",
    "state": "AR",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2292,6 +4373,7 @@
    "split": "test",
    "state": "AR",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2316,6 +4398,7 @@
    "split": "test",
    "state": "AR",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2342,7 +4425,77 @@
    "split": "test",
    "state": "AR",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "cerbat_cliffs_kingman_municipal_az",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "AZ",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "poston_butte_az",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "AZ",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "skyline_az",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "AZ",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "course_ca",
@@ -2366,6 +4519,7 @@
    "split": "test",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2390,6 +4544,7 @@
    "split": "test",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -2415,6 +4570,7 @@
    "split": "test",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -2440,7 +4596,169 @@
    "split": "test",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "cedaredge_co",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "CO",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "eisenhower_co",
+   "N": 36,
+   "kind": 36,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 36
+   },
+   "split": "test",
+   "state": "CO",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "heritage_eagle_bend_co",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "CO",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "homestead_co",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "CO",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "mountain_vista_co",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "test",
+   "state": "CO",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "todd_creek_co",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "CO",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "valley_hi_co",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "CO",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "airways_ct",
@@ -2466,6 +4784,7 @@
    "split": "test",
    "state": "CT",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2490,6 +4809,7 @@
    "split": "test",
    "state": "CT",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2511,6 +4831,7 @@
    "split": "test",
    "state": "CT",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2520,7 +4841,7 @@
    "n_pred": 18,
    "formed": 12,
    "number": 6,
-   "par_ok": 8,
+   "par_ok": 9,
    "par_n": 12,
    "holes_ok": false,
    "course_ok": false,
@@ -2532,12 +4853,13 @@
     "missed_tee": 1,
     "pairing": 5,
     "order": 6,
-    "par": 4,
+    "par": 3,
     "missing": 6
    },
    "split": "test",
    "state": "CT",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2547,7 +4869,7 @@
    "n_pred": 18,
    "formed": 11,
    "number": 4,
-   "par_ok": 7,
+   "par_ok": 8,
    "par_n": 11,
    "holes_ok": false,
    "course_ok": false,
@@ -2559,12 +4881,13 @@
     "missed_tee": 1,
     "pairing": 6,
     "order": 7,
-    "par": 4,
+    "par": 3,
     "missing": 7
    },
    "split": "test",
    "state": "CT",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2589,6 +4912,7 @@
    "split": "test",
    "state": "DE",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2616,6 +4940,7 @@
    "split": "test",
    "state": "DE",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2638,6 +4963,7 @@
    "split": "test",
    "state": "DE",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2659,7 +4985,146 @@
    "split": "test",
    "state": "DE",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "clearwater_fl",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "FL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "fleming_island_fl",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "FL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "lake_venice_fl",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "test",
+   "state": "FL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "monarch_fl",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "FL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "naval_air_station_jacksonville_fl",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "FL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "pensacola_fl",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "FL",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "smoke_rise_ga",
@@ -2686,6 +5151,7 @@
    "split": "test",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -2695,7 +5161,7 @@
    "n_pred": 18,
    "formed": 16,
    "number": 16,
-   "par_ok": 15,
+   "par_ok": 16,
    "par_n": 16,
    "holes_ok": false,
    "course_ok": false,
@@ -2705,12 +5171,12 @@
    "explanation": "identity",
    "fails": {
     "pairing": 2,
-    "par": 1,
     "missing": 2
    },
    "split": "test",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -2736,6 +5202,7 @@
    "split": "test",
    "state": "IA",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2761,6 +5228,7 @@
    "split": "test",
    "state": "IA",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2770,7 +5238,7 @@
    "n_pred": 18,
    "formed": 15,
    "number": 0,
-   "par_ok": 8,
+   "par_ok": 9,
    "par_n": 15,
    "holes_ok": false,
    "course_ok": false,
@@ -2781,12 +5249,13 @@
    "fails": {
     "pairing": 3,
     "nine_swap": 15,
-    "par": 7,
+    "par": 6,
     "missing": 3
    },
    "split": "test",
    "state": "IA",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2813,6 +5282,7 @@
    "split": "test",
    "state": "IA",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2838,6 +5308,7 @@
    "split": "test",
    "state": "IA",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2864,6 +5335,7 @@
    "split": "test",
    "state": "IA",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2873,7 +5345,7 @@
    "n_pred": 9,
    "formed": 6,
    "number": 6,
-   "par_ok": 6,
+   "par_ok": 5,
    "par_n": 6,
    "holes_ok": false,
    "course_ok": false,
@@ -2883,11 +5355,13 @@
    "explanation": "identity",
    "fails": {
     "pairing": 3,
+    "par": 1,
     "missing": 3
    },
    "split": "test",
    "state": "IA",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2914,6 +5388,7 @@
    "split": "test",
    "state": "ID",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2935,6 +5410,7 @@
    "split": "test",
    "state": "ID",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2961,6 +5437,7 @@
    "split": "test",
    "state": "ID",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -2987,6 +5464,7 @@
    "split": "test",
    "state": "ID",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3013,6 +5491,7 @@
    "split": "test",
    "state": "ID",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3022,7 +5501,7 @@
    "n_pred": 18,
    "formed": 15,
    "number": 13,
-   "par_ok": 14,
+   "par_ok": 15,
    "par_n": 15,
    "holes_ok": false,
    "course_ok": false,
@@ -3033,13 +5512,174 @@
    "fails": {
     "missed_tee": 3,
     "order": 2,
-    "par": 1,
     "missing": 3
    },
    "split": "test",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "atchison_bellevue_ks",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "KS",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "coffeyville_ks",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "KS",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "crestview_ks",
+   "N": 36,
+   "kind": 36,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 36
+   },
+   "split": "test",
+   "state": "KS",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "hallbrook_ks",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "KS",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "shady_bend_ks",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "test",
+   "state": "KS",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "sycamore_ridge_ks",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "KS",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "trails_west_ks",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "KS",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "crossings_ky",
@@ -3060,6 +5700,7 @@
    "split": "test",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -3086,7 +5727,100 @@
    "split": "test",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "city_park_la_2",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "test",
+   "state": "LA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "eagle_ridge_la",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "LA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "ellendale_la",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "LA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "kosati_pines_la",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "LA",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "elmcrest_ma",
@@ -3107,6 +5841,7 @@
    "split": "test",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -3133,6 +5868,7 @@
    "split": "test",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -3158,6 +5894,7 @@
    "split": "test",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -3184,6 +5921,7 @@
    "split": "test",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -3209,6 +5947,7 @@
    "split": "test",
    "state": "ME",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -3235,6 +5974,7 @@
    "split": "test",
    "state": "ME",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -3244,7 +5984,7 @@
    "n_pred": 18,
    "formed": 14,
    "number": 12,
-   "par_ok": 13,
+   "par_ok": 12,
    "par_n": 14,
    "holes_ok": false,
    "course_ok": false,
@@ -3256,12 +5996,13 @@
     "pairing": 3,
     "missed_tee": 1,
     "order": 2,
-    "par": 1,
+    "par": 2,
     "missing": 4
    },
    "split": "test",
    "state": "MO",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3271,8 +6012,8 @@
    "n_pred": 18,
    "formed": 10,
    "number": 3,
-   "par_ok": 0,
-   "par_n": 0,
+   "par_ok": 9,
+   "par_n": 10,
    "holes_ok": false,
    "course_ok": false,
    "certain": false,
@@ -3282,11 +6023,13 @@
    "fails": {
     "pairing": 8,
     "start_hole": 7,
+    "par": 1,
     "missing": 8
    },
    "split": "test",
    "state": "MO",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3311,6 +6054,7 @@
    "split": "test",
    "state": "MO",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3338,6 +6082,7 @@
    "split": "test",
    "state": "MO",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3347,8 +6092,8 @@
    "n_pred": 18,
    "formed": 15,
    "number": 15,
-   "par_ok": 0,
-   "par_n": 0,
+   "par_ok": 13,
+   "par_n": 15,
    "holes_ok": false,
    "course_ok": false,
    "certain": true,
@@ -3358,11 +6103,13 @@
    "fails": {
     "pairing": 2,
     "missed_tee": 1,
+    "par": 2,
     "missing": 3
    },
    "split": "test",
    "state": "MO",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3372,18 +6119,21 @@
    "n_pred": 9,
    "formed": 9,
    "number": 9,
-   "par_ok": 9,
+   "par_ok": 8,
    "par_n": 9,
    "holes_ok": true,
-   "course_ok": true,
+   "course_ok": false,
    "certain": false,
    "confidence": 0.2857,
-   "primary": null,
+   "primary": "par",
    "explanation": "identity",
-   "fails": {},
+   "fails": {
+    "par": 1
+   },
    "split": "test",
    "state": "MO",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3408,6 +6158,7 @@
    "split": "test",
    "state": "NC",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3434,6 +6185,7 @@
    "split": "test",
    "state": "NC",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3460,6 +6212,7 @@
    "split": "test",
    "state": "NC",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3486,6 +6239,7 @@
    "split": "test",
    "state": "NC",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3512,6 +6266,7 @@
    "split": "test",
    "state": "NC",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3538,7 +6293,146 @@
    "split": "test",
    "state": "NC",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "fargo_nd",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "test",
+   "state": "ND",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "king_s_walk_nd",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "ND",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "mandan_municipal_nd",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "test",
+   "state": "ND",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "rose_creek_nd",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "ND",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "watford_city_nd",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "ND",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "wildwood_nd",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "ND",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "dismal_river_ne",
@@ -3565,6 +6459,7 @@
    "split": "test",
    "state": "NE",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3586,6 +6481,7 @@
    "split": "test",
    "state": "NE",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3613,6 +6509,7 @@
    "split": "test",
    "state": "NE",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3635,6 +6532,7 @@
    "split": "test",
    "state": "NE",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3656,6 +6554,7 @@
    "split": "test",
    "state": "NE",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3682,6 +6581,7 @@
    "split": "test",
    "state": "NE",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3706,6 +6606,7 @@
    "split": "test",
    "state": "NE",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3715,8 +6616,8 @@
    "n_pred": 9,
    "formed": 9,
    "number": 9,
-   "par_ok": 7,
-   "par_n": 8,
+   "par_ok": 2,
+   "par_n": 9,
    "holes_ok": true,
    "course_ok": false,
    "certain": true,
@@ -3724,11 +6625,12 @@
    "primary": "par",
    "explanation": "identity",
    "fails": {
-    "par": 1
+    "par": 7
    },
    "split": "test",
    "state": "NJ",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3753,6 +6655,7 @@
    "split": "test",
    "state": "NJ",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3779,6 +6682,7 @@
    "split": "test",
    "state": "NJ",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3800,6 +6704,7 @@
    "split": "test",
    "state": "NJ",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3825,7 +6730,123 @@
    "split": "test",
    "state": "NJ",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "angel_fire_nm",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "NM",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "las_campanas_nm",
+   "N": 36,
+   "kind": 36,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 36
+   },
+   "split": "test",
+   "state": "NM",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "red_hawk_nm",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "NM",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "sonoma_ranch_nm",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "NM",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "university_new_mexico_championship_nm",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "NM",
+   "region": "West",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "canyon_gate_nv",
@@ -3852,6 +6873,7 @@
    "split": "test",
    "state": "NV",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3879,6 +6901,7 @@
    "split": "test",
    "state": "NV",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3904,6 +6927,7 @@
    "split": "test",
    "state": "NV",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3931,7 +6955,238 @@
    "split": "test",
    "state": "NV",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "durand_eastman_ny",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "NY",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "olde_kinderhook_ny",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "NY",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "villa_roma_ny",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "NY",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "willowbrook_ny",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "test",
+   "state": "NY",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "mohawk_ok",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "OK",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "norman_ok",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "OK",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "oklahoma_ok",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "OK",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "pauls_valley_municipal_ok",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "test",
+   "state": "OK",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "river_oaks_ok",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "OK",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "winstar_academy_ok",
+   "N": 36,
+   "kind": 36,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 36
+   },
+   "split": "test",
+   "state": "OK",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "cedarbrook_pa",
@@ -3957,6 +7212,7 @@
    "split": "test",
    "state": "PA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -3982,6 +7238,7 @@
    "split": "test",
    "state": "PA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4009,6 +7266,7 @@
    "split": "test",
    "state": "PA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4034,6 +7292,7 @@
    "split": "test",
    "state": "PA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4061,6 +7320,7 @@
    "split": "test",
    "state": "PA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4070,8 +7330,8 @@
    "n_pred": 18,
    "formed": 16,
    "number": 16,
-   "par_ok": 0,
-   "par_n": 0,
+   "par_ok": 14,
+   "par_n": 16,
    "holes_ok": false,
    "course_ok": false,
    "certain": false,
@@ -4081,11 +7341,13 @@
    "fails": {
     "pairing": 1,
     "missed_tee": 1,
+    "par": 2,
     "missing": 2
    },
    "split": "test",
    "state": "PA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4107,7 +7369,353 @@
    "split": "test",
    "state": "PA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "osm-derived"
+  },
+  {
+   "slug": "charleston_sc",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "SC",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "cobblestone_park_sc",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "SC",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "international_myrtle_beach_sc",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "SC",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "palmetto_sc",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "SC",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "bakker_crossing_championship_sd",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "SD",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "belle_fourche_sd",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "test",
+   "state": "SD",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "bluffs_sd",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "SD",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "cattail_crossing_sd",
+   "N": 27,
+   "kind": 27,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 27
+   },
+   "split": "test",
+   "state": "SD",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "central_valley_sd",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "SD",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "lee_park_sd",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "SD",
+   "region": "Midwest",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "corsicana_tx",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "TX",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "cypress_lakes_tx",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "TX",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "pecan_valley_tx",
+   "N": 36,
+   "kind": 36,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 36
+   },
+   "split": "test",
+   "state": "TX",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "pinecrest_tx",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "TX",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "tangle_ridge_tx",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "TX",
+   "region": "South",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "bonneville_ut",
@@ -4131,7 +7739,146 @@
    "split": "test",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
+  },
+  {
+   "slug": "barton_vt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "VT",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "bellows_falls_vt",
+   "N": 9,
+   "kind": 9,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 9
+   },
+   "split": "test",
+   "state": "VT",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "brattleboro_vt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "VT",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "crown_point_vt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "VT",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "mountain_spruce_peak_vt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "VT",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
+  },
+  {
+   "slug": "stowe_vt",
+   "N": 18,
+   "kind": 18,
+   "n_pred": 0,
+   "formed": 0,
+   "number": 0,
+   "par_ok": 0,
+   "par_n": 0,
+   "course_ok": false,
+   "holes_ok": false,
+   "certain": false,
+   "confidence": 0.0,
+   "primary": "no_result",
+   "fails": {
+    "missing": 18
+   },
+   "split": "test",
+   "state": "VT",
+   "region": "Northeast",
+   "v0": false,
+   "card_kind": null
   },
   {
    "slug": "apple_tree_resort_wa",
@@ -4155,6 +7902,7 @@
    "split": "test",
    "state": "WA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4179,6 +7927,7 @@
    "split": "test",
    "state": "WA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4204,6 +7953,7 @@
    "split": "test",
    "state": "WA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4230,6 +7980,7 @@
    "split": "test",
    "state": "WA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4257,6 +8008,7 @@
    "split": "test",
    "state": "WA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4282,6 +8034,7 @@
    "split": "test",
    "state": "WA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4308,6 +8061,7 @@
    "split": "test",
    "state": "WA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -4335,6 +8089,7 @@
    "split": "test",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   }
  ]

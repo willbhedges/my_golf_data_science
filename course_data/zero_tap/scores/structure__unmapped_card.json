@@ -1,15 +1,15 @@
 {
  "method": "structure",
  "tier": "unmapped_card",
- "version": "4853cb1",
+ "version": "5be3c21",
  "dev": {
   "n": 38,
   "holes": 684,
   "hole_number_acc": 0.494,
   "formed_acc": 0.677,
-  "par_acc": 0.895,
+  "par_acc": 0.899,
   "courses_holes_right": 0.026,
-  "courses_fully_right": 0.0,
+  "courses_fully_right": 0.026,
   "certain_n": 0,
   "zero_tap_coverage": 0.0,
   "zero_tap_precision": null,
@@ -41,12 +41,12 @@
    },
    {
     "coverage": 0.711,
-    "precision": 0.0,
+    "precision": 0.037,
     "min_conf": 0.1978
    },
    {
     "coverage": 1.0,
-    "precision": 0.0,
+    "precision": 0.026,
     "min_conf": 0.0058
    }
   ],
@@ -57,7 +57,6 @@
   "course_failures": {
    "pairing": 35,
    "count": 1,
-   "par": 1,
    "missed_tee": 1
   },
   "hole_failures": {
@@ -65,7 +64,7 @@
    "pairing": 140,
    "order": 76,
    "missed_tee": 63,
-   "par": 47,
+   "par": 45,
    "start_hole": 30,
    "nine_swap": 19
   },
@@ -76,9 +75,9 @@
     "holes": 18,
     "hole_number_acc": 0.5,
     "formed_acc": 0.833,
-    "par_acc": 0.933,
+    "par_acc": 1.0,
     "courses_holes_right": 0.5,
-    "courses_fully_right": 0.0,
+    "courses_fully_right": 0.5,
     "certain_n": 0,
     "zero_tap_coverage": 0.0,
     "zero_tap_precision": null,
@@ -87,14 +86,12 @@
     "coverage_at_p90": 0.0,
     "hole_ece": 0.258,
     "course_failures": {
-     "pairing": 1,
-     "par": 1
+     "pairing": 1
     },
     "hole_failures": {
      "start_hole": 6,
      "pairing": 3,
-     "missing": 3,
-     "par": 1
+     "missing": 3
     },
     "no_result": 0
    },
@@ -103,7 +100,7 @@
     "holes": 630,
     "hole_number_acc": 0.521,
     "formed_acc": 0.69,
-    "par_acc": 0.895,
+    "par_acc": 0.897,
     "courses_holes_right": 0.0,
     "courses_fully_right": 0.0,
     "certain_n": 0,
@@ -122,7 +119,7 @@
      "pairing": 133,
      "order": 64,
      "missed_tee": 62,
-     "par": 44,
+     "par": 43,
      "start_hole": 24,
      "nine_swap": 19
     },
@@ -162,7 +159,7 @@
   "holes": 306,
   "hole_number_acc": 0.48,
   "formed_acc": 0.657,
-  "par_acc": 0.915,
+  "par_acc": 0.925,
   "courses_holes_right": 0.0,
   "courses_fully_right": 0.0,
   "certain_n": 0,
@@ -219,7 +216,7 @@
    "order": 32,
    "missed_tee": 25,
    "start_hole": 22,
-   "par": 17
+   "par": 15
   },
   "no_result": 0,
   "by_kind": {
@@ -228,7 +225,7 @@
     "holes": 306,
     "hole_number_acc": 0.48,
     "formed_acc": 0.657,
-    "par_acc": 0.915,
+    "par_acc": 0.925,
     "courses_holes_right": 0.0,
     "courses_fully_right": 0.0,
     "certain_n": 0,
@@ -248,7 +245,7 @@
      "order": 32,
      "missed_tee": 25,
      "start_hole": 22,
-     "par": 17
+     "par": 15
     },
     "no_result": 0
    }
@@ -278,6 +275,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -302,6 +300,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -311,7 +310,7 @@
    "n_pred": 18,
    "formed": 16,
    "number": 16,
-   "par_ok": 15,
+   "par_ok": 14,
    "par_n": 16,
    "holes_ok": false,
    "course_ok": false,
@@ -322,12 +321,13 @@
    "fails": {
     "missed_tee": 1,
     "pairing": 1,
-    "par": 1,
+    "par": 2,
     "missing": 2
    },
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -354,6 +354,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -381,6 +382,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -390,7 +392,7 @@
    "n_pred": 18,
    "formed": 16,
    "number": 14,
-   "par_ok": 14,
+   "par_ok": 13,
    "par_n": 16,
    "holes_ok": false,
    "course_ok": false,
@@ -402,12 +404,13 @@
     "missed_tee": 1,
     "pairing": 1,
     "order": 2,
-    "par": 2,
+    "par": 3,
     "missing": 2
    },
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -434,6 +437,7 @@
    "split": "dev",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -460,6 +464,7 @@
    "split": "dev",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -485,6 +490,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -510,6 +516,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -537,6 +544,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -563,6 +571,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -572,7 +581,7 @@
    "n_pred": 18,
    "formed": 9,
    "number": 2,
-   "par_ok": 7,
+   "par_ok": 8,
    "par_n": 9,
    "holes_ok": false,
    "course_ok": false,
@@ -584,12 +593,13 @@
     "pairing": 7,
     "missed_tee": 2,
     "order": 7,
-    "par": 2,
+    "par": 1,
     "missing": 9
    },
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -599,20 +609,19 @@
    "n_pred": 9,
    "formed": 9,
    "number": 9,
-   "par_ok": 8,
+   "par_ok": 9,
    "par_n": 9,
    "holes_ok": true,
-   "course_ok": false,
+   "course_ok": true,
    "certain": false,
    "confidence": 0.2322,
-   "primary": "par",
+   "primary": null,
    "explanation": "identity",
-   "fails": {
-    "par": 1
-   },
+   "fails": {},
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -638,6 +647,7 @@
    "split": "dev",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -663,6 +673,7 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -689,6 +700,7 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -715,6 +727,7 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -741,6 +754,7 @@
    "split": "dev",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -767,6 +781,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -794,6 +809,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -820,6 +836,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -846,6 +863,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -871,6 +889,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -898,6 +917,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -925,6 +945,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -952,6 +973,7 @@
    "split": "dev",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -978,6 +1000,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1003,6 +1026,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1030,6 +1054,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1056,6 +1081,7 @@
    "split": "dev",
    "state": "MN",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -1082,6 +1108,7 @@
    "split": "dev",
    "state": "MS",
    "region": "South",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1109,6 +1136,7 @@
    "split": "dev",
    "state": "NH",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1118,7 +1146,7 @@
    "n_pred": 18,
    "formed": 17,
    "number": 17,
-   "par_ok": 13,
+   "par_ok": 15,
    "par_n": 17,
    "holes_ok": false,
    "course_ok": false,
@@ -1128,12 +1156,13 @@
    "explanation": "identity",
    "fails": {
     "pairing": 1,
-    "par": 4,
+    "par": 2,
     "missing": 1
    },
    "split": "dev",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1159,6 +1188,7 @@
    "split": "dev",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1186,6 +1216,7 @@
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1210,6 +1241,7 @@
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1235,6 +1267,7 @@
    "split": "dev",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -1260,6 +1293,7 @@
    "split": "test",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "osm-derived"
   },
   {
@@ -1284,6 +1318,7 @@
    "split": "test",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1309,6 +1344,7 @@
    "split": "test",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1336,6 +1372,7 @@
    "split": "test",
    "state": "CA",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1363,6 +1400,7 @@
    "split": "test",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1372,7 +1410,7 @@
    "n_pred": 18,
    "formed": 15,
    "number": 10,
-   "par_ok": 13,
+   "par_ok": 14,
    "par_n": 15,
    "holes_ok": false,
    "course_ok": false,
@@ -1383,12 +1421,13 @@
    "fails": {
     "pairing": 3,
     "order": 5,
-    "par": 2,
+    "par": 1,
     "missing": 3
    },
    "split": "test",
    "state": "GA",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1416,6 +1455,7 @@
    "split": "test",
    "state": "IL",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1443,6 +1483,7 @@
    "split": "test",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -1470,6 +1511,7 @@
    "split": "test",
    "state": "KY",
    "region": "South",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1496,6 +1538,7 @@
    "split": "test",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1520,6 +1563,7 @@
    "split": "test",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1546,6 +1590,7 @@
    "split": "test",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -1555,7 +1600,7 @@
    "n_pred": 18,
    "formed": 10,
    "number": 9,
-   "par_ok": 9,
+   "par_ok": 10,
    "par_n": 10,
    "holes_ok": false,
    "course_ok": false,
@@ -1567,12 +1612,12 @@
     "pairing": 5,
     "missed_tee": 3,
     "order": 1,
-    "par": 1,
     "missing": 8
    },
    "split": "test",
    "state": "MA",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1599,6 +1644,7 @@
    "split": "test",
    "state": "ME",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1626,6 +1672,7 @@
    "split": "test",
    "state": "ME",
    "region": "Northeast",
+   "v0": true,
    "card_kind": "web:opengolfapi"
   },
   {
@@ -1653,6 +1700,7 @@
    "split": "test",
    "state": "UT",
    "region": "West",
+   "v0": true,
    "card_kind": "web:golfify"
   },
   {
@@ -1680,6 +1728,7 @@
    "split": "test",
    "state": "WI",
    "region": "Midwest",
+   "v0": true,
    "card_kind": "web:golfify"
   }
  ]
