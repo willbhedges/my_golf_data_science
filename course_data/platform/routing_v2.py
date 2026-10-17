@@ -55,14 +55,21 @@ import routing as R  # noqa: E402
 FEATURES = ("length", "fingerprint", "corridor", "cross_green", "align", "ch_tee1", "ch_tee10", "ch_green_end",
             "fac_tee1", "fac_tee10", "fac_green_end", "green_cluster", "green_model", "practice",
             "walk", "walk_turn", "cart_link", "cart_far", "loop", "cover", "covered_start", "reused_tee",
-            "cross_lines", "miss_tee", "miss_hole")
+            "cross_lines", "miss_tee", "miss_hole", "struct_prior")
 FI = {k: i for i, k in enumerate(FEATURES)}
 NF = len(FEATURES)
 # v1's hand weights (routing.py) as the starting point; the new terms start small
 W_V1 = dict(length=1.0, fingerprint=1.0, corridor=1.2, cross_green=1.5, align=1.0, ch_tee1=1.0, ch_tee10=0.6,
             ch_green_end=0.5, fac_tee1=0.0, fac_tee10=0.0, fac_green_end=0.0, green_cluster=1.0, green_model=1.0,
             practice=0.0, walk=1.0, walk_turn=0.3, cart_link=0.0, cart_far=0.0, loop=0.0, cover=1.0,
-            covered_start=2.0, reused_tee=2.5, cross_lines=1.5, miss_tee=4.0, miss_hole=8.0)
+            covered_start=2.0, reused_tee=2.5, cross_lines=1.5, miss_tee=4.0, miss_hole=8.0, struct_prior=1.0)
+# struct_prior: an optional unary prior from the card-free structure solver (course_data/structure/), passed as
+# inp["struct_prior"] = {"greens_ll": [[lon, lat]] * M, "P": (M, N) P(green m is hole k), "lam": weight}: the
+# feature of (hole h, green g) is lam * -log((P + EPS) / (1/N + EPS)) of the structure green within 25 yds (0 when
+# none, or when the structure's N differs from the card's). Its weight stays 1.0; the strength is `lam`, chosen
+# on the train split (platform/pipeline_eval.py). No prior -> the column is 0 and v2 is unchanged.
+PRIOR_EPS = 0.02
+PRIOR_SNAP = 25.0
 SIGNED = {"cart_link", "cover"}            # features whose weight may take either sign (others are kept >= 0)
 WEIGHTS_FILE = os.path.join(HERE, "routing_v2_weights.json")
 BEAM = 6000
@@ -337,11 +344,30 @@ def context(inp, card=None, fc=None, n_holes=None, boundary=None, subset=None):
     elif nT:
         practice = ((fac_gd < 120) & ~((D > 90) & (D < 640)).any(0)).astype(float)
     link, far, n_cart = cart_features(fc, pr, gxy, txy)
+    ctx["prior"] = prior_plane(inp.get("struct_prior"), pr, gxy, n)
     ctx.update(gxy=gxy, txy=txy, nG=nG, nT=nT, D=D, W=W, walk=walk, loopc=loopc, gclust=gclust, gmodel=gmodel, wt=wt,
                tee_axes=tee_axes, ch_t=ch_t, ch_g=ch_g, fac_t=fac_t, fac_g=fac_g, n_fac=len(fac), corr=corr,
                cross=cross, align=align, has_fw=has_fw, holes=holes, practice=practice, cart_link=link,
                cart_far=far, n_cart_nodes=n_cart, cov_cache={}, clubhouse=ch)
     return ctx
+
+
+def prior_plane(sp, pr, gxy, n):
+    """(n, nG) struct_prior feature plane (see PRIOR_EPS above) or None."""
+    if not sp or not len(gxy):
+        return None
+    P = np.asarray(sp.get("P"), float)
+    lam = float(sp.get("lam", 1.0))
+    if P.ndim != 2 or P.shape[1] != n or not len(sp.get("greens_ll", [])) or lam == 0:
+        return None
+    sxy = np.asarray([pr.fwd(*ll) for ll in sp["greens_ll"]], float).reshape(-1, 2)
+    d = np.hypot(gxy[:, None, 0] - sxy[None, :, 0], gxy[:, None, 1] - sxy[None, :, 1])
+    out = np.zeros((n, len(gxy)))
+    for g in range(len(gxy)):
+        m = int(np.argmin(d[g]))
+        if d[g, m] <= PRIOR_SNAP:
+            out[:, g] = -np.log((P[m] + PRIOR_EPS) / (1.0 / n + PRIOR_EPS))
+    return lam * out
 
 
 def _cov(ctx, tk, gk):
@@ -381,7 +407,10 @@ def hole_rows(ctx, h, w, fixed=None, exclude=None, allowed=None, topk=TOPK):
         f[:, FI["green_cluster"]] = ctx["gclust"][gi]
         f[:, FI["green_model"]] = ctx["gmodel"][gi]
         f[:, FI["practice"]] = ctx["practice"][gi]
+        if prior is not None:
+            f[:, FI["struct_prior"]] = prior[h, gi]
         return f
+    prior = ctx.get("prior")
     if fixed is not None:
         tk, gk = fixed
         if tk >= 0 and gk >= 0:
@@ -394,6 +423,8 @@ def hole_rows(ctx, h, w, fixed=None, exclude=None, allowed=None, topk=TOPK):
                     f[0, FI["ch_green_end"]] = ctx["ch_g"][gk]
                     f[0, FI["fac_green_end"]] = ctx["fac_g"][gk]
                 f[0, FI["green_model"]] = ctx["gmodel"][gk]
+                if prior is not None:
+                    f[0, FI["struct_prior"]] = prior[h, gk]
             else:
                 f[0, FI["miss_hole"]] = 1.0
         return np.array([tk]), np.array([gk]), f
@@ -438,6 +469,8 @@ def hole_rows(ctx, h, w, fixed=None, exclude=None, allowed=None, topk=TOPK):
         f2[:, FI["fac_green_end"]] = ctx["fac_g"][gs]
     if len(gs):
         f2[:, FI["green_model"]] = ctx["gmodel"][gs]
+        if prior is not None:
+            f2[:, FI["struct_prior"]] = prior[h, gs]
     tees = np.r_[ti, -np.ones(len(gs), int)]
     greens = np.r_[gi, gs]
     F = np.vstack([F, f2])
@@ -825,11 +858,11 @@ def components(ctx, gap=SPLIT_GAP):
     return nc, lab
 
 
-def route(inp, card=None, fc=None, boundary=None, w=None, fixed=None, exclude=None, split=True, **kw):
+def route(inp, card=None, fc=None, boundary=None, w=None, fixed=None, exclude=None, split=True, n_holes=None, **kw):
     """context + solve; with many more greens than card holes, also try the facility's clusters and keep the
     cheapest routing per hole (`facility_split`)."""
     kw.setdefault("margins", True)
-    ctx = context(inp, card, fc=fc, boundary=boundary)
+    ctx = context(inp, card, fc=fc, boundary=boundary, n_holes=n_holes)
     res = solve(ctx, w=w, fixed=fixed, exclude=exclude, **kw)
     res["context"] = ctx
     if not split or not ctx.get("ok") or fixed or ctx["nG"] < 1.5 * ctx["n"] + 4:
@@ -852,7 +885,8 @@ def route(inp, card=None, fc=None, boundary=None, w=None, fixed=None, exclude=No
             continue
         gx = ctx["gxy"][gsel]
         tsel = [j for j in range(ctx["nT"]) if np.hypot(*(gx - ctx["txy"][j]).T).min() < 700]
-        sub = context(dict(inp, greens=[G[i] for i in gsel], tees=[T[j] for j in tsel]), card, fc=fc, boundary=boundary)
+        sub = context(dict(inp, greens=[G[i] for i in gsel], tees=[T[j] for j in tsel]), card, fc=fc, boundary=boundary,
+                      n_holes=n_holes)
         r2 = solve(sub, w=w, **kw)
         if r2.get("cost") is None:
             continue

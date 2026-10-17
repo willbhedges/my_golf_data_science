@@ -1,0 +1,316 @@
+"""Stage selector for platform/package.py: pick the best available hole-inference method from the data that exists.
+
+    import stage_select as SS
+    prof = SS.profile(fc, card, scene)                          # what data exists (OSM richness, card, scene)
+    res, info = SS.infer_holes(fc, card, course, seg=..., pads=..., scene=...)   # holes 1..N + which method ran
+    # res: routing.route-compatible {"holes": {ref: {tee_ll, green_ll, status, flags, p_hole, ...}}, ...}
+    # info: {"tier", "method", "tried": [...], "fallbacks": [...], "profile": {...}}
+
+Methods (each falls back to the next on any error or an empty result):
+  v2+structure  routing v2 (platform/routing_v2.py) with the card-free structure solver's exact marginals
+                P(green m is hole k) as a unary prior (routing_v2 `struct_prior`, strength lam per tier).
+                Structure runs on the OSM scene when OSM has greens / tees, else on the perception scene
+                (course_scene/1, course_data/perception/scenes/<slug>/) when one exists.
+  v2            routing v2 alone (the previous default with a card)
+  structure     the structure solver's MAP route alone (course_data/structure/structure.py)
+  geometry      no routing: geometry/build_holes.infer_holes (the previous default without a card)
+
+Tiers (from the data, `tier()`):
+  mapped_card     OSM greens and tee boxes for >= 80 % of the holes, and a card (web, file, or typed)
+  unmapped_card   OSM lacks greens / tees, card: router inputs = segment model + lidar pads (+ perception
+                  scene greens / tees / fairways as model-style candidates when a scene exists)
+  mapped_nocard   OSM greens / tees, no card
+  unmapped_nocard neither
+
+SELECT below is the per-tier choice, made on the generalize TRAIN split only (pipeline_eval.py select); the test
+split is reported once (pipeline_eval.py final -> PIPELINE.md).
+"""
+from __future__ import annotations
+
+import gzip
+import json
+import math
+import os
+import sys
+
+import numpy as np
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+CD = os.path.dirname(HERE)
+STRUCT = os.path.join(CD, "structure")
+PERC = os.path.join(CD, "perception")
+for _p in (HERE, STRUCT):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+import routing as R  # noqa: E402
+import routing_v2 as R2  # noqa: E402
+
+RICH = 0.8                        # OSM greens AND tee features for >= 80 % of the holes -> "mapped"
+SCENE_MIN_GREEN, SCENE_MIN_COMPLEX = 0.5, 0.4
+
+# per tier: (method, structure-prior strength lam, use perception candidates). Chosen on the train split
+# (pipeline_eval.py select, PIPELINE.md "Selection"); the first entry is tried first, then the fallbacks.
+SELECT = {
+    "mapped_card": dict(method="v2+structure", lam=0.5, perception=False),
+    "unmapped_card": dict(method="v2+structure", lam=0.5, perception=True),
+    "mapped_nocard": dict(method="v2+structure", lam=2.0, perception=False),
+    "unmapped_nocard": dict(method="v2+structure", lam=2.0, perception=True),
+}
+FALLBACK = {"v2+structure": ["v2", "structure", "geometry"], "v2": ["structure", "geometry"],
+            "structure": ["v2", "geometry"], "geometry": []}
+
+
+# ----------------------------------------------------------------------------- data profile
+def osm_counts(fc):
+    n = dict(greens=0, tees=0, fairways=0, hole_refs=set())
+    for f in (fc or {}).get("features", []):
+        p = f.get("properties", {})
+        if p.get("inside_course") is False:
+            continue
+        g = p.get("golf")
+        if g == "green":
+            n["greens"] += 1
+        elif g == "tee":
+            n["tees"] += 1
+        elif g == "fairway":
+            n["fairways"] += 1
+        elif g == "hole" and (f.get("geometry") or {}).get("type") == "LineString" and str(p.get("ref", "")).isdigit():
+            n["hole_refs"].add(str(int(p["ref"])))
+    return n
+
+
+def profile(fc, card=None, scene=None):
+    """What data exists: OSM greens / tees / fairways / hole ways vs the hole count, card, perception scene."""
+    c = osm_counts(fc)
+    n_card = R.card_holes(card)[0] if card else None
+    n = n_card or (18 if c["greens"] >= 13 or len(c["hole_refs"]) > 9 else 9)
+    mapped = c["greens"] >= RICH * n and c["tees"] >= RICH * n
+    return dict(n_holes=n, n_from="card" if n_card else "guess", card=bool(card), osm_greens=c["greens"],
+                osm_tees=c["tees"], osm_fairways=c["fairways"], osm_hole_ways=len(c["hole_refs"]),
+                osm_holes_complete=all(str(i) in c["hole_refs"] for i in range(1, n + 1)),
+                osm_mapped=bool(mapped), scene=bool(scene))
+
+
+def tier(prof):
+    return ("mapped" if prof["osm_mapped"] else "unmapped") + ("_card" if prof["card"] else "_nocard")
+
+
+def load_scene(slug):
+    """The perception agent's blind course_scene/1 for this slug, or None (read-only)."""
+    for name in ("scene.json.gz", "scene.json"):
+        p = os.path.join(PERC, "scenes", slug or "", name)
+        if slug and os.path.exists(p):
+            try:
+                with (gzip.open(p, "rt") if p.endswith(".gz") else open(p)) as fh:
+                    return json.load(fh)
+            except (OSError, ValueError):
+                return None
+    return None
+
+
+# ----------------------------------------------------------------------------- structure solver
+def struct_card(card):
+    """Any card shape routing accepts -> the structure solver's {par, yards} (longest set per hole)."""
+    if not card:
+        return None
+    n, pars, yards = R.card_holes(card)
+    if not n:
+        return None
+    ys = [max(r) if r else None for r in yards]
+    out = dict(par=pars if any(p for p in pars) else None)
+    if all(ys):
+        out["yards"] = ys
+    return out if (out.get("par") or out.get("yards")) else None
+
+
+_CACHE = {}
+
+
+def clear_cache():
+    _CACHE.clear()
+
+
+def structure_solve(fc=None, course=None, card=None, scene=None, n_holes=None):
+    """-> (course_structure/1 contract, prior {greens_ll, P (M, N)} for routing_v2 struct_prior, or None).
+    scene (course_scene/1) wins over fc when given. Memoised per input objects (clear_cache() between courses)."""
+    key = (id(fc), id(course), id(card), id(scene), n_holes)
+    if key not in _CACHE:
+        _CACHE[key] = _structure_solve(fc, course, card, scene, n_holes)
+    return _CACHE[key]
+
+
+def _structure_solve(fc=None, course=None, card=None, scene=None, n_holes=None):
+    import scene as S
+    import solver as V
+    import structure as ST
+    if scene is not None:
+        sc = S.scene_from_perception(scene)
+        src = "perception"
+    else:
+        sc = S.scene_from_osm(fc, (course or {}).get("boundary"))
+        src = "osm"
+    res = V.solve(sc, card=struct_card(card), n_holes=n_holes, return_debug=True)
+    dbg = res.pop("debug", None)
+    con = ST.contract(res, sc, src)
+    prior = None
+    if dbg is not None and res.get("status") == "ok":
+        gid = [sc.greens[g] for g in dbg["keep"]]
+        prior = dict(greens_ll=[list(sc.proj.ll(g["c"])) for g in gid], P=np.asarray(dbg["marg_oriented"], float).tolist(),
+                     n=int(res["n_holes"]), src=src)
+    return con, prior
+
+
+def structure_as_routing(con):
+    """course_structure/1 -> routing-compatible result (holes[ref]: tee_ll, green_ll, status, flags, p_hole)."""
+    holes = {}
+    for ref, h in (con.get("holes") or {}).items():
+        holes[ref] = dict(ref=ref, par=h.get("par"), tee_ll=list(h["tee_ll"]), green_ll=list(h["green_ll"]),
+                          straight_yd=h.get("length_yd"), p_hole=h.get("confidence"), p_green=h.get("p_number"),
+                          status=h.get("status"), flags=list(h.get("flags") or []), tee_src=con.get("input"),
+                          green_src=con.get("input"))
+    return dict(method="structure/1", status=con.get("status"), n_holes=con.get("n_holes"), holes=holes,
+                n_check=sum(h["status"] != "ok" for h in holes.values()))
+
+
+# ----------------------------------------------------------------------------- router inputs
+def _perception_scene_mod():
+    """perception/scene.py under its own module name (structure/ also has a scene.py)."""
+    if "perception_scene" in sys.modules:
+        return sys.modules["perception_scene"]
+    import importlib.util
+    if PERC not in sys.path:
+        sys.path.append(PERC)                   # for its `import geo`; appended so structure's scene.py wins
+    spec = importlib.util.spec_from_file_location("perception_scene", os.path.join(PERC, "scene.py"))
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules["perception_scene"] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def perception_candidates(scene, min_box=0.3):
+    """Scene -> (facility fc: clubhouse / buildings / parking, segment-style fc of greens / tee boxes / fairways):
+    perceived elements enter the router as model detections, like the segment model's (as
+    perception/route_check.segment_style)."""
+    feats = []
+
+    def geom(o):
+        return dict(type="Polygon", coordinates=[o["polygon"]]) if o.get("polygon") else \
+            dict(type="Point", coordinates=o["centroid"])
+    for g in scene.get("greens", []):
+        if g.get("kind") != "practice":
+            feats.append(dict(type="Feature", geometry=geom(g), properties={
+                "class": "green", "area_m2": g.get("area_m2") or 400,
+                "p": (g.get("p_hole") or 0) + 0.1 * (g.get("kind") == "hole")}))
+    for t in scene.get("tee_complexes", []):
+        for b in t.get("boxes", []):
+            p = max(b.get("p") or 0, t.get("p") or 0)
+            if p >= min_box:
+                feats.append(dict(type="Feature", geometry=geom(b), properties={
+                    "class": "tee", "p": max(p, 0.5), "area_m2": max(b.get("area_m2") or 0, 60)}))
+    for f in scene.get("fairways", []):
+        if f.get("polygon"):
+            feats.append(dict(type="Feature", geometry=geom(f), properties={"class": "fairway", "p": 1.0}))
+    fc = _perception_scene_mod().to_geojson(scene)
+    fac = dict(fc, features=[f for f in fc["features"] if f["properties"].get("class") in ("clubhouse", "building", "parking")])
+    return fac, dict(type="FeatureCollection", features=feats)
+
+
+def merge_fc(*fcs):
+    return dict(type="FeatureCollection", features=[f for fc in fcs if fc for f in fc.get("features", [])])
+
+
+def router_inputs(fc, course, seg=None, pads=None, scene=None, mapped=True, use_perception=False, hide_holes=False):
+    """routing.inputs_from_fc for the tier: OSM features when mapped; segment model + lidar pads always; the
+    perception scene's greens / tees / fairways as model-style candidates when asked (unmapped tiers)."""
+    boundary = (course or {}).get("boundary")
+    fac = None
+    if use_perception and scene is not None:
+        fac, pseg = perception_candidates(scene)
+        seg = merge_fc(seg, pseg)
+    fc_in = fc if (fac is None or mapped) else merge_fc(fc, fac)
+    return R.inputs_from_fc(fc_in, segment=seg, pads=pads or [], boundary=boundary, hide_holes=hide_holes,
+                            osm_features=mapped)
+
+
+def geometry_holes(fc):
+    """The previous no-card default: geometry/build_holes.infer_holes (green -> best tee group by fairway cover),
+    numbered in OSM green order. -> routing-compatible result."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("cdp_build_holes_ss", os.path.join(CD, "geometry", "build_holes.py"))
+    bh = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bh)
+    fc2 = dict(fc, features=[f for f in fc.get("features", []) if f["properties"].get("golf") != "hole"])
+    world = bh.World(fc2)
+    holes = {}
+    for h in bh.infer_holes(world):
+        line = np.asarray(h["line"], float) * bh.YD
+        lon, lat = world.inv.transform(line[:, 0], line[:, 1])
+        ref = h["props"]["ref"]
+        holes[ref] = dict(ref=ref, par=int(h["props"]["par"]), tee_ll=[float(lon[0]), float(lat[0])],
+                          green_ll=[float(lon[-1]), float(lat[-1])], status="check", flags=["inferred geometry"],
+                          p_hole=None, straight_yd=round(float(np.hypot(*(line[-1] - line[0]))) / bh.YD, 1))
+    return dict(method="geometry/infer_holes", status="ok" if holes else "empty", n_holes=len(holes), holes=holes)
+
+
+# ----------------------------------------------------------------------------- the selector
+def run_method(method, fc, card, course, seg=None, pads=None, scene=None, prof=None, lam=1.0, use_perception=False,
+               margins=True, hide_holes=False, w=None):
+    """One method -> (routing-compatible result, details). Raises on failure."""
+    prof = prof or profile(fc, card, scene)
+    mapped = prof["osm_mapped"]
+    if method == "geometry":
+        return geometry_holes(fc), {}
+    if method == "structure":
+        sc = scene if (not mapped and scene is not None) else None
+        if not mapped and sc is None and prof["osm_greens"] < 3:
+            raise RuntimeError("no OSM greens and no perception scene")
+        con, _ = structure_solve(fc, course, card, scene=sc)
+        if not con.get("holes"):
+            raise RuntimeError(f"structure: {con.get('status')}")
+        return structure_as_routing(con), dict(structure_input=con.get("input"))
+    if method in ("v2", "v2+structure"):
+        inp = router_inputs(fc, course, seg, pads, scene, mapped=mapped, use_perception=use_perception,
+                            hide_holes=hide_holes)
+        det = dict(router_inputs=("osm" if mapped else "model") + ("+perception" if (use_perception and scene) else ""),
+                   greens=len(inp.get("greens", [])), tees=len(inp.get("tees", [])))
+        n_holes = None if card else prof["n_holes"]
+        if method == "v2+structure":
+            sc = scene if (not mapped and scene is not None) else None
+            if not mapped and sc is None:
+                raise RuntimeError("unmapped and no perception scene: no structure prior")
+            con, prior = structure_solve(fc, course, card, scene=sc, n_holes=prof["n_holes"])
+            if prior is None:
+                raise RuntimeError(f"structure gave no marginals ({con.get('status')})")
+            inp = dict(inp, struct_prior=dict(prior, lam=lam))
+            det.update(structure_input=prior["src"], lam=lam)
+        res = R2.route(inp, card, fc=fc, boundary=(course or {}).get("boundary"), n_holes=n_holes, w=w,
+                       margins=margins)
+        if not res.get("holes"):
+            raise RuntimeError(f"routing v2: {res.get('status')}")
+        res["_inp"] = inp
+        return res, det
+    raise ValueError(method)
+
+
+def infer_holes(fc, card, course, seg=None, pads=None, scene=None, select=None, margins=True, hide_holes=False,
+                force=None):
+    """The selector: tier from the data -> SELECT[tier] -> fallbacks on error. -> (result, info)."""
+    prof = profile(fc, card, scene)
+    t = tier(prof)
+    cfg = dict((select or SELECT)[t])
+    if force:
+        cfg.update(force)
+    order = [cfg["method"]] + FALLBACK.get(cfg["method"], [])
+    tried, fallbacks = [], []
+    for m in order:
+        try:
+            res, det = run_method(m, fc, card, course, seg, pads, scene, prof, lam=cfg.get("lam", 1.0),
+                                  use_perception=cfg.get("perception", False), margins=margins, hide_holes=hide_holes)
+            tried.append(m)
+            info = dict(tier=t, method=m, chosen=cfg["method"], tried=tried, fallbacks=fallbacks, profile=prof, **det)
+            return res, info
+        except Exception as e:                                   # noqa: BLE001
+            tried.append(m)
+            fallbacks.append(f"{m}: {type(e).__name__}: {e}"[:200])
+    return dict(method="none", status="failed", holes={}), dict(tier=t, method=None, chosen=cfg["method"],
+                                                                 tried=tried, fallbacks=fallbacks, profile=prof)

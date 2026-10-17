@@ -82,8 +82,15 @@ def courses(split=None):
                             course=os.path.join(ROOT, "data", c["slug"], "course.json")))
             seen.add(c["osm"])
     if split in (None, "dev"):
+        # STRUCTURE_EXCLUDE_VALIDATION=1: leave out every course of generalize/validation_set.json (train and test),
+        # so a params file fitted this way (params_noval.json) never saw the platform's end-to-end evaluation set
+        skip = set()
+        if os.environ.get("STRUCTURE_EXCLUDE_VALIDATION"):
+            skip = {c["slug"] for c in json.load(open(os.path.join(CD, "generalize", "validation_set.json")))["courses"]}
         for p in sorted(glob.glob(os.path.join(CD, "generalize", "courses", "*", "osm_golf.geojson"))):
             d = os.path.dirname(p)
+            if os.path.basename(d) in skip:
+                continue
             cj = os.path.join(d, "course.json")
             if not os.path.exists(cj):
                 continue

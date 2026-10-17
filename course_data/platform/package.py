@@ -8,15 +8,20 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
   S1 card scorecard.py: request yardages > request["scorecard"] file (tees/ format) > the web cards by source
           reliability (club site > golfify > OpenGolfAPI; the first that passes scorecard.consistency, never the
           best fit to the map); the others are kept as a per-hole cross-check;
+          > a golfer-typed card (request "typed_card": {"yards": "391 175 ...", "pars": "..."}, typed_card.py);
           no card -> the OSM tee nearest each hole-line start (usually the back tee) + a warning
-  S2 tees tees/place_tee.place_course_sets: every set on a hole assigned together, back to front, distances
+  S2a holes  stage selector (stage_select.py, PIPELINE.md) for holes OSM has no golf=hole way for: data tier
+          (OSM greens / tees mapped?, card?) -> routing v2 + structure-solver prior (structure on OSM, or on the
+          perception scene when OSM lacks greens / tees) > routing v2 > structure > geometry fallback, on any
+          error; golfer-confirm payload -> confirm.json; package.pipeline records what ran
+  S2 tees (default) tees/localize.py - OSM boxes + lidar pads + DEM/NAIP texture pads + segment-model /
+          perception tee detections merged into one pad list, joint chain assignment, per-set uncertainty
+          (holes[].tees[set].uncertainty); any failure falls back to v1 (stages.tee_localizer says which ran)
+  S2 v1   (request "tee_localizer": "v1" or env TEE_LOCALIZER=v1, or the v2 fallback)
+          tees/place_tee.place_course_sets: every set on a hole assigned together, back to front, distances
           to the OSM green centroid along the hole line; lidar flat-pad candidates (tees/lidar_pads.py, the
           3DEP DEM) where a set has no OSM box; walk-back if nothing fits. An OSM tee box tagged with the
           set's colour wins ("tagged")
-  S2 v2   optional (request "tee_localizer": "v2" or env TEE_LOCALIZER=v2): tees/localize.py - OSM boxes +
-          lidar pads + DEM/NAIP texture pads + segment-model / perception tee detections merged into one pad
-          list, joint chain assignment, per-set uncertainty (holes[].tees[set].uncertainty); any failure falls
-          back to the S2 above (stages.tee_localizer says which ran)
   S3     geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
   S4c     course_data/ob/infer.py:apply_ob(package) when the course's OB evidence is fetched (call_ob)
@@ -51,6 +56,9 @@ package.json (course_package/1):
   elevation  {file, source, resolution_m} | null
   coverage   osm_coverage.coverage(...)
   stages, warnings, built, attribution
+  pipeline   {tier, profile (OSM greens / tees / hole ways, card, scene), card {kind}, holes {method, chosen, tried,
+              fallbacks, lam, router_inputs, structure_input} | {method: "osm"}, tees {method, requested, status},
+              confirm {file, questions}} - which method ran at each stage (PIPELINE.md)
 """
 import argparse
 import copy
@@ -152,6 +160,17 @@ def pick_scorecard(req, raw_dir):
         if pick:
             kind, card, url, _ = pick
             info = dict(kind=kind, source=kind, url=url)
+    if card is None and req.get("typed_card"):
+        # no card online: the golfer's typed yardages (+ pars), strictly validated (typed_card.py)
+        import typed_card as tc
+        t = req["typed_card"] if isinstance(req["typed_card"], dict) else dict(yards=req["typed_card"])
+        c, issues = tc.parse_typed_card(t.get("yards"), t.get("pars"), tee=t.get("tee") or req.get("tees") or "Typed",
+                                        unit=t.get("unit", "yd"), total=t.get("total"))
+        if c:
+            card = scm.normalise(c)
+            info = dict(kind="typed", source="typed by golfer", url=None, typed_issues=issues)
+        else:
+            tried.append(dict(source="typed_card", ok=False, info="; ".join(i["msg"] for i in issues)[:300]))
     if card is None:
         return None, dict(kind=None, source=None, url=None, tried=tried, consistency=None, cross_check={})
     chk = scm.consistency(card)
@@ -224,8 +243,11 @@ def place_tees_joint(fc, per_hole_card, card_sets, pads=()):
 
 
 def localizer_enabled(req):
-    """S2 v2 (tees/localize.py) is optional: request "tee_localizer": "v2" or env TEE_LOCALIZER=v2."""
-    return str(req.get("tee_localizer") or os.environ.get("TEE_LOCALIZER") or "").lower() == "v2"
+    """S2 v2 (tees/localize.py) is the default (PIPELINE.md: held-out tees with OSM boxes hidden <= 10 yds 69 -> 86 %,
+    neutral where OSM maps the boxes); request "tee_localizer": "v1" (or env TEE_LOCALIZER=v1) keeps the as-built
+    place_tee.place_course_sets. Any v2 failure falls back to v1 (stages.tee_localizer says which ran)."""
+    v = str(req.get("tee_localizer") or os.environ.get("TEE_LOCALIZER") or "v2").lower()
+    return v not in ("v1", "place_tee", "off", "false", "0")
 
 
 def place_tees_v2(fc, per_hole_card, card_sets, pads=(), img_dir=None, slug=None, req=None):
@@ -586,20 +608,32 @@ def call_gapfill(package, img_dir, warnings):
         return package
 
 
-def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages):
-    """S2a: card holes without an OSM golf=hole way -> platform/routing.py infers them (tees: OSM + segment model
-    + lidar pads; greens: OSM + segment model; the card's yardages / pars order them) and adds golf=hole lines.
-    Without a card, or with request "routing": false, the geometry fallback (infer_holes) stays.
-    -> (fc, {ref: {status, flags, p_green, margin}} for the routed holes)."""
-    if not card or not req.get("routing", True):
+def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, pipeline=None):
+    """S2a hole inference through the stage selector (platform/stage_select.py, PIPELINE.md): the data tier
+    (OSM greens / tees mapped or not, card or not) picks the method - routing v2 with the card-free structure
+    solver's marginals as a prior (structure on the OSM scene, or on the perception scene when OSM lacks greens /
+    tees), with routing v2 alone, the structure solver alone and the geometry fallback (build_holes.infer_holes)
+    as fallbacks on any error. Only the refs OSM has no golf=hole way for are added. Request "routing": false
+    keeps the geometry fallback; "hole_method": "v2" | "structure" | "geometry" forces one.
+    The golfer-confirm payload (golf_confirm/1, confirm.py) for the routed holes goes to confirm.json.
+    -> (fc, {ref: {status, flags, p_green, p_hole, ...}} for the routed holes). pipeline (dict) gets the record."""
+    pipeline = pipeline if pipeline is not None else {}
+    import routing as rt
+    import stage_select as ss
+    scene = ss.load_scene(slug)
+    prof = ss.profile(fc, card, scene)
+    pipeline.update(tier=ss.tier(prof), profile=prof)
+    have = set(osm_lines(fc))
+    missing = [str(i) for i in range(1, prof["n_holes"] + 1) if str(i) not in have]
+    if not missing:
+        pipeline["holes"] = dict(method="osm", note="OSM maps every hole")
+        stages["routing"] = "not needed: OSM has a golf=hole way for every hole"
+        return fc, {}
+    if not req.get("routing", True) or req.get("hole_method") == "geometry":
+        pipeline["holes"] = dict(method="geometry", note="request: routing off")
+        stages["routing"] = "off (request): geometry fallback for holes OSM lacks"
         return fc, {}
     try:
-        import routing as rt
-        n, _, _ = rt.card_holes(card)
-        have = set(osm_lines(fc))
-        missing = [str(i) for i in range(1, (n or 0) + 1) if str(i) not in have]
-        if not missing:
-            return fc, {}
         seg = next((pc.read_json(p) for p in (os.path.join(CD, "segment", slug, "segment.geojson"),
                                               os.path.join(pkg_dir, "segment.geojson")) if os.path.exists(p)), None)
         pads = []
@@ -609,28 +643,47 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages):
             lp = load(os.path.join(CD, "tees", "lidar_pads.py"), "cdp_lidar_pads")
             if lp is not None:
                 pads = lp.detect_pads(dem, greens=osm_tee_inputs(fc)[2], lines=None)
-        inp = rt.inputs_from_fc(fc, segment=seg, pads=pads, boundary=course.get("boundary"))
-        try:                                     # routing v2 (learned weights, posterior flags); v1 as fallback
-            import routing_v2 as rt2
-            res = rt2.strip(rt2.route(inp, card, fc=fc, boundary=course.get("boundary")))
-            res.pop("top", None)
-        except Exception as e2:                  # noqa: BLE001
-            warnings.append(f"routing v2 failed ({type(e2).__name__}: {e2}); v1 used"[:200])
-            res = rt.route(inp, card, margins=True)
+        force = dict(method=req["hole_method"]) if req.get("hole_method") in ("v2", "structure", "v2+structure") else None
+        res, info = ss.infer_holes(fc, card, course, seg=seg, pads=pads, scene=scene, force=force)
+        info.pop("profile", None)
+        pipeline["holes"] = info
+        for fb in info.get("fallbacks", []):
+            warnings.append(f"hole inference fallback: {fb}"[:200])
+        if info.get("method") in (None, "geometry"):
+            stages["routing"] = f"fallback: geometry/build_holes.infer_holes ({'; '.join(info.get('fallbacks', []))})"[:300]
+            return fc, {}
+        inp = res.pop("_inp", None)
         fc2 = rt.to_hole_features(res, fc, inp)
         routed = {r: {k: res["holes"][r].get(k) for k in ("status", "flags", "p_green", "p_hole", "margin", "green_src", "tee_src")}
                   for r in missing if res["holes"].get(r, {}).get("green_ll") and res["holes"][r].get("tee_ll")}
         for r, h in routed.items():
+            h["method"] = info["method"]
             if h["status"] != "ok":
-                warnings.append(f"hole {r}: placed by routing inference, golfer check ({'; '.join(h['flags'])})")
-        pc.write_json(os.path.join(pkg_dir, "routing.json"), res)
-        stages["routing"] = (f"ok: platform/{'routing_v2' if res.get('method') == 'routing/2' else 'routing'}.py placed {len(routed)}/{len(missing)} holes OSM has no way for "
+                warnings.append(f"hole {r}: placed by {info['method']} inference, golfer check ({'; '.join(h['flags'] or [])})")
+        out = {k: v for k, v in res.items() if k not in ("context", "top", "_inp")}
+        out["pipeline"] = info
+        pc.write_json(os.path.join(pkg_dir, "routing.json"), out)
+        stages["routing"] = (f"ok: {info['method']} ({info['tier']}"
+                             + (f", lam {info['lam']}" if info.get("lam") is not None else "")
+                             + (f", structure on {info['structure_input']}" if info.get("structure_input") else "")
+                             + f") placed {len(routed)}/{len(missing)} holes OSM has no way for "
                              f"({sum(h['status'] != 'ok' for h in routed.values())} to check; segment "
-                             f"{'yes' if seg else 'no'}, lidar pads {len(pads)})")
+                             f"{'yes' if seg else 'no'}, lidar pads {len(pads)}, perception scene {'yes' if scene else 'no'})")
+        if inp is not None and req.get("confirm", True):
+            try:                                 # golf_confirm/1 for the app (CONFIRM_UX.md)
+                import confirm as cf
+                s = cf.Session(inp, card, fc=fc, boundary=course.get("boundary"),
+                               n_holes=None if card else prof["n_holes"])
+                pc.write_json(os.path.join(pkg_dir, "confirm.json"),
+                              s.payload(course=dict(name=course.get("name"), osm=course.get("osm"), state=course.get("state"))))
+                pipeline["confirm"] = dict(file="confirm.json", questions=len(s.questions(3)) if not s.done() else 0)
+            except Exception as e:                               # noqa: BLE001
+                pipeline["confirm"] = dict(error=f"{type(e).__name__}: {e}"[:200])
         return fc2, routed
     except Exception as e:                                       # noqa: BLE001
         stages["routing"] = f"failed: {type(e).__name__}: {e}"[:300]
-        warnings.append("routing inference failed: holes without OSM ways use the geometry fallback")
+        pipeline["holes"] = dict(method="geometry", error=stages["routing"])
+        warnings.append("hole inference failed: holes without OSM ways use the geometry fallback")
         return fc, {}
 
 
@@ -698,7 +751,9 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                        f"(allow_substitute). Sets on the card: {', '.join((card.get('tee_sets') or {}))}")
         warnings.append(substituted)
         how = f"substitute: longest set ({how})"
-    fc, routed = route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages)
+    pipe = dict(schema="pipeline/1", doc="platform/PIPELINE.md: which method ran at each stage, and why",
+                card=dict(kind=cinfo["kind"], source=cinfo["source"]) if card else dict(kind=None))
+    fc, routed = route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, pipeline=pipe)
     refs = sorted(osm_lines(fc), key=lambda r: r.zfill(3))
     stages["scorecard"] = f"ok: {cinfo['kind']} ({cinfo['source']})" if card else "missing"
     if not card:
@@ -740,6 +795,11 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         joint = place_tees_joint(fc, per_hole_card, card_sets, pads) if card_sets else None
     if v2_status:
         stages["tee_localizer"] = v2_status
+    pipe["tees"] = dict(method=("tees/localize.py (v2)" if joint is not None and str(joint.get("method", "")).startswith("tees/localize")
+                                else "tees/place_tee.place_course_sets (v1)" if joint is not None
+                                else "place_tee.py per set" if card_sets else "OSM tee nearest the hole-line start"),
+                        requested=str(req.get("tee_localizer") or os.environ.get("TEE_LOCALIZER") or "default (v2)"),
+                        status=v2_status)
     bh = geometry()
     world = bh.World(fc)
     built, tee_pos = {}, {}
@@ -867,7 +927,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                   "the yard frame of tee_set (x = yds right of the tee line, y = -yds along it; tee (0,0), "
                   "dot270 (0,-270)), derived by platform/package.py reframe(). Pixel frame per hole: "
                   "px = pixel.tee_px + pixel.ppy * (x, y) (920 x 2000, the image / book frame).",
-        holes=holes, stages=stages, warnings=warnings,
+        holes=holes, stages=stages, warnings=warnings, pipeline=pipe,
         attribution=["(c) OpenStreetMap contributors, ODbL 1.0", "USDA NAIP (public domain)", "USGS 3DEP (public domain)"]
         + ([scm.OPENGOLFAPI_ATTRIBUTION] if cinfo.get("kind") == "opengolfapi" or "opengolfapi" in (cinfo.get("cross_check") or {})
            else []))

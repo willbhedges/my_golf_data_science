@@ -165,7 +165,7 @@ def per_hole(card, set_name, refs):
 
 # ----------------------------------------------------------------------------- reliability / consistency
 RELIABILITY = ["club_site", "golfify", "opengolfapi"]          # most reliable first (tees/README.md sources)
-CARD_CONFIDENCE = dict(request=1.0, file=0.95, club_site=0.9, golfify=0.85, opengolfapi=0.75)
+CARD_CONFIDENCE = dict(request=1.0, file=0.95, club_site=0.9, typed=0.9, golfify=0.85, opengolfapi=0.75)
 SUM_TOL_YD = 15
 OPENGOLFAPI_ATTRIBUTION = ("Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; "
                            "(c) OpenStreetMap contributors")

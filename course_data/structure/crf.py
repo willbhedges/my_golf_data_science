@@ -279,14 +279,14 @@ def main():
     th0 = theta_from_params()
     th, named = fit(data, th0)
     print(named)
-    p = json.load(open(os.path.join(HERE, "params.json"))) if os.path.exists(os.path.join(HERE, "params.json")) else {}
+    p = json.load(open(V.PARAMS_PATH)) if os.path.exists(V.PARAMS_PATH) else {}
     tf, tt, tu, ta = split(th)
     p["form_w"] = {k: round(float(v), 4) for k, v in zip(V.FEATS, tf)}
     p["trans_w"] = {k: round(float(v), 4) for k, v in zip(V.TFEATS, tt)}
     p["turn_w"] = {k: round(float(v), 4) for k, v in zip(V.TFEATS, tu)}
     p["anchor_w"] = {k: round(float(v), 4) for k, v in zip(ANCH, ta)}
     p["crf_note"] = f"joint max-likelihood fit (crf.py) on {len(data)} dev routes (clean + degraded)"
-    json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
+    json.dump(p, open(V.PARAMS_PATH, "w"), indent=1)
 
 
 if __name__ == "__main__":

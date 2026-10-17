@@ -81,7 +81,12 @@ TURN_W = dict(walk=0.3, dist=0.0, cos_prev=0.0, cos_next=0.0, path=0.3)
 ANCHOR_W = dict(t1=1.0, g18=1.0, g9=1.0, t10=1.0, t1_d=0.0, g18_d=0.0, g9_d=0.0, t10_d=0.0)
 
 
-def load_params(path=os.path.join(HERE, "params.json")):
+# STRUCTURE_PARAMS: another params file (e.g. params_noval.json, fitted without the generalize validation courses)
+PARAMS_PATH = os.environ.get("STRUCTURE_PARAMS") or os.path.join(HERE, "params.json")
+
+
+def load_params(path=None):
+    path = path or PARAMS_PATH
     global FORM_W, TEMP, NOT_HOLE, TURN_VIA_H, TRANS_W, TURN_W, ANCHOR_W
     if os.path.exists(path):
         p = json.load(open(path))
@@ -1045,6 +1050,7 @@ def route_swap_x(sc, geo, pb, br, seq):
 def _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, debug, runs):
     G = geo.G
     p_front = None
+    marg_dir = marg                                   # the DP's own marginals, before the nine swap
     if not (pars or yards):
         br["best"], marg, p_front = _maybe_swap(sc, geo, pb, br, marg, N)
     seq = br["best"]
@@ -1079,7 +1085,19 @@ def _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, debug, run
                p_front_nine=None if p_front is None else round(float(p_front), 3),
                p_route=round(float(np.exp(min(0.0, br["best_score"] - br["logZ"]))), 4))
     if debug:
-        out["debug"] = dict(marg=marg, keep=pb.keep, runs=[(r["H"]["how"], r["logw"]) for r in runs], price=price,
+        # marg_oriented: P(node j is hole k) in the final orientation, p_front-weighted mix with the swapped one
+        # (marg above is the swap-symmetrised confidence marginal); used as a prior by platform/stage_select.py
+        # (the DP's anchors are nearly symmetric in the two nines, so its own marginals barely know the
+        # orientation: the swap-symmetrised mass of a node goes p_front to the nine the final route puts it in)
+        if p_front is None:
+            m_or = marg_dir
+        else:
+            sym = marg_dir + np.roll(marg_dir, 9, axis=1)
+            m_or = sym * 0.5
+            for k, node in enumerate(seq):
+                same = (np.arange(N) < 9) == (k < 9)
+                m_or[node] = sym[node] * np.where(same, p_front, 1 - p_front)
+        out["debug"] = dict(marg=marg, marg_oriented=m_or, keep=pb.keep, runs=[(r["H"]["how"], r["logw"]) for r in runs], price=price,
                             mats=br.get("mats"), seq=seq, best_score=br["best_score"], br=br, pb=pb, geo=geo)
     return out
 

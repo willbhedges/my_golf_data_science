@@ -1,0 +1,102 @@
+name: pipeline_eval
+
+# End-to-end any-course pipeline (course_data/platform/stage_select.py) vs the previous package.py defaults on the
+# shared validation set, per data tier (course_data/platform/pipeline_eval.py), sharded over 12 jobs (6 at a time) and merged.
+# Offline: every input is committed (course_data/generalize/courses/, perception/scenes/, structure/params_noval.json).
+# Request-file trigger: commit course_data/requests/pipeline_eval_<name>.json
+#   {"schema": "request/1", "kind": "pipeline_eval", "stage": "select" | "final"}
+# select -> TRAIN split method grid -> course_data/platform/pipeline_select.json (chooses stage_select.SELECT)
+# final  -> TEST split baseline vs selector + golfer-confirm taps -> course_data/platform/pipeline_eval.json
+
+on:
+  push:
+    paths:
+      - "course_data/requests/pipeline_eval_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-eval-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.p.outputs.stage }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 20
+      - id: p
+        run: |
+          F=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'course_data/requests/pipeline_eval_*.json' 2>/dev/null | tail -1)
+          [ -n "$F" ] && [ -f "$F" ] || F=$(ls course_data/requests/pipeline_eval_*.json | tail -1)
+          echo "stage=$(python -c "import json;print(json.load(open('$F')).get('stage','final'))")" >> "$GITHUB_OUTPUT"
+
+  shard:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely pyproj scikit-image
+      - name: Shard ${{ matrix.shard }}
+        run: |
+          python -u course_data/platform/pipeline_eval.py ${{ needs.plan.outputs.stage }} --shard ${{ matrix.shard }}/12 \
+            --out pipeline_shard_${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-shard-${{ matrix.shard }}
+          path: pipeline_shard_${{ matrix.shard }}.json
+
+  merge:
+    needs: [plan, shard]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely pyproj scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pipeline-shard-*
+          merge-multiple: true
+          path: /tmp/shards
+      - name: Merge
+        run: |
+          ls -la /tmp/shards
+          python -u course_data/platform/pipeline_eval.py merge ${{ needs.plan.outputs.stage }} /tmp/shards/pipeline_shard_*.json
+          D=course_data/platform/pipeline_shards/${{ needs.plan.outputs.stage }}
+          mkdir -p $D && cp /tmp/shards/pipeline_shard_*.json $D/
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/platform/pipeline_select.json course_data/platform/pipeline_eval.json course_data/platform/pipeline_shards 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "pipeline: ${{ needs.plan.outputs.stage }} evaluation (Actions run ${{ github.run_id }}) [skip ci]" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1

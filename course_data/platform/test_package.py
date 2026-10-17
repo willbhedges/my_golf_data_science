@@ -377,7 +377,9 @@ def test_pick_scorecard_reliability_and_checks(tmp_path):
 
 def test_black_package_uses_the_joint_tee_stage(black):
     p, _ = black
-    assert "place_course_sets" in p["stages"]["tees"]
+    # the default S2 is tees/localize.py (v2) since PIPELINE.md; v1 (place_course_sets) is its fallback
+    assert "tees/localize" in p["stages"]["tees"] or "place_course_sets" in p["stages"]["tees"]
+    assert p["pipeline"]["tees"]["method"].startswith(("tees/localize", "tees/place_tee"))
     for k, h in p["holes"].items():
         d = {s: t["measured_yards"] for s, t in h["tees"].items()}
         order = sorted(d, key=lambda s: -(h["yards"].get(s) or 0))

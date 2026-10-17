@@ -41,7 +41,8 @@ def entropy(ps):
 
 
 class Session:
-    def __init__(self, inp, card, fc=None, boundary=None, w=None, tau=None, p_check=None, p_stop=None, policy="eig"):
+    def __init__(self, inp, card, fc=None, boundary=None, w=None, tau=None, p_check=None, p_stop=None, policy="eig",
+                 n_holes=None):
         w0, t0, p0 = R2.load_weights()
         self.w = w0 if w is None else w
         self.tau = t0 if tau is None else tau
@@ -49,7 +50,8 @@ class Session:
         self.p_stop = self.p_check if p_stop is None else p_stop
         self.inp, self.card, self.fc, self.boundary = dict(inp), card, fc, boundary
         self.policy = policy
-        self.ctx = R2.context(self.inp, card, fc=fc, boundary=boundary)
+        self.n_holes = n_holes
+        self.ctx = R2.context(self.inp, card, fc=fc, boundary=boundary, n_holes=n_holes)
         self.fixed, self.exclude = {}, {}
         self.taps, self.history = 0, []
         self.rejected = set()                  # holes answered "no": only a locate is asked next
@@ -136,7 +138,7 @@ class Session:
         new = dict(id=f"golfer:{kind}:{len(items)}", ll=tuple(ll), poly=None, src="osm")
         self.inp["greens" if kind == "green" else "tees"] = list(items) + [new]
         # appended at the end: earlier pins / exclusions (indices, hole keys) stay valid
-        self.ctx = R2.context(self.inp, self.card, fc=self.fc, boundary=self.boundary)
+        self.ctx = R2.context(self.inp, self.card, fc=self.fc, boundary=self.boundary, n_holes=self.n_holes)
         return len(items)
 
     def answer(self, a, resolve=True):

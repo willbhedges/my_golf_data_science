@@ -149,9 +149,9 @@ def calibrate(results_path):
         q = np.clip(q, 1e-6, 1 - 1e-6)
         return -(y * np.log(q) + (1 - y) * np.log(1 - q)).sum()
     r = minimize(nll, [1.0, 0.0])
-    p = json.load(open(os.path.join(HERE, "params.json")))
+    p = json.load(open(V.PARAMS_PATH))
     p["calib"] = [round(float(r.x[0]), 4), round(float(r.x[1]), 4)]
-    json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
+    json.dump(p, open(V.PARAMS_PATH, "w"), indent=1)
     print("calibration", p["calib"], "holes", len(y))
 
 
@@ -188,9 +188,9 @@ def fit_swap():
     print("swap classifier", len(X), "routes, accuracy on dev", round(acc, 3), dict(zip(V.SWAP_FEATS, np.round(r.x, 3))))
     for j, k in enumerate(V.SWAP_FEATS):
         print("  alone", k, round(float((np.sign(X[:, j]) > 0).mean()), 3), "nonzero", int((X[:, j] != 0).sum()))
-    p = json.load(open(os.path.join(HERE, "params.json")))
+    p = json.load(open(V.PARAMS_PATH))
     p["swap_w"] = {k: round(float(v), 4) for k, v in zip(V.SWAP_FEATS, r.x)}
-    json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
+    json.dump(p, open(V.PARAMS_PATH, "w"), indent=1)
 
 
 def main():
@@ -206,18 +206,18 @@ def main():
     w, f = fit(X + Xd, Y + Yd, w0)
     print("fit", dict(zip(V.FEATS, np.round(w, 3))), "nll", round(f, 1))
     print("top1", top1(X, Y, w), "degraded", top1(Xd, Yd, w))
-    p = json.load(open(os.path.join(HERE, "params.json"))) if os.path.exists(os.path.join(HERE, "params.json")) else {}
+    p = json.load(open(V.PARAMS_PATH)) if os.path.exists(V.PARAMS_PATH) else {}
     p["form_w"] = {k: round(float(v), 4) for k, v in zip(V.FEATS, w)}
     p["pos_par"] = pos_par(ents)
     p["fit_note"] = f"conditional logit on dev ({len(X)} holes clean + degraded), fit.py"
-    json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
+    json.dump(p, open(V.PARAMS_PATH, "w"), indent=1)
     V.load_params()
     td = trans_dataset(ents) + trans_dataset(ents, degrade=1.0)
     t0 = np.array([V.TRANS_W.get(k, 0.0) for k in V.TFEATS])
     tw, tf, acc, acc0 = fit_trans(td, t0)
     print("transitions", len(td), "top1 next hole", round(acc0, 3), "->", round(acc, 3), dict(zip(V.TFEATS, np.round(tw, 3))))
     p["trans_w"] = {k: round(float(v), 4) for k, v in zip(V.TFEATS, tw)}
-    json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
+    json.dump(p, open(V.PARAMS_PATH, "w"), indent=1)
 
 
 if __name__ == "__main__":
