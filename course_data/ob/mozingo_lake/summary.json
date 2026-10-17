@@ -1,0 +1,155 @@
+{
+ "slug": "mozingo_lake",
+ "stage": "ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 4 polygons (outside 4); mode replace",
+ "sources": {
+  "model": "ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB)",
+  "params": {
+   "house_d": null,
+   "house_close": 0.0,
+   "parcel_off": null,
+   "parcel_mode": "houses",
+   "road_margin": null,
+   "road_inside": true,
+   "res_off": null,
+   "out_off": -10,
+   "out_dev": 60
+  },
+  "precision": {
+   "tag": 0.95,
+   "parcel": 0.8,
+   "road": 0.75,
+   "house": 0.6,
+   "residential": 0.5,
+   "outside": 0.324
+  },
+  "layers": [
+   "osm",
+   "ms_buildings"
+  ],
+  "mode": "replace",
+  "files": "course_data/ob/mozingo_lake/raw/",
+  "calibrated_on": "Spirit Hollow hand-checked OB (spirit_hollow/hand_zones_ll.json), leave-one-hole-out",
+  "attribution": [
+   "(c) OpenStreetMap contributors, ODbL 1.0",
+   "Microsoft Global ML Building Footprints, ODbL 1.0"
+  ]
+ },
+ "holes": {
+  "1": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "2": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "3": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "4": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "5": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "6": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "7": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "8": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "9": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "10": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "11": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "12": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "13": {
+   "n": 2,
+   "area_yd2": 1275,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "14": {
+   "n": 1,
+   "area_yd2": 6994,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "15": {
+   "n": 1,
+   "area_yd2": 2498,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "16": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "17": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "18": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  }
+ },
+ "geometry_ob_polygons_before": {
+  "1": 1,
+  "2": 0,
+  "3": 1,
+  "4": 2,
+  "5": 1,
+  "6": 2,
+  "7": 2,
+  "8": 1,
+  "9": 2,
+  "10": 4,
+  "11": 2,
+  "12": 1,
+  "13": 5,
+  "14": 4,
+  "15": 3,
+  "16": 1,
+  "17": 1,
+  "18": 1
+ }
+}

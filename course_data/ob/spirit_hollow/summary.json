@@ -1,0 +1,173 @@
+{
+ "slug": "spirit_hollow",
+ "stage": "ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 18 polygons (outside 18); mode replace",
+ "sources": {
+  "model": "ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB)",
+  "params": {
+   "house_d": null,
+   "house_close": 0.0,
+   "parcel_off": null,
+   "parcel_mode": "houses",
+   "road_margin": null,
+   "road_inside": true,
+   "res_off": null,
+   "out_off": -10,
+   "out_dev": 60
+  },
+  "precision": {
+   "tag": 0.95,
+   "parcel": 0.8,
+   "road": 0.75,
+   "house": 0.6,
+   "residential": 0.5,
+   "outside": 0.324
+  },
+  "layers": [
+   "osm",
+   "ms_buildings",
+   "parcels"
+  ],
+  "mode": "replace",
+  "files": "course_data/ob/spirit_hollow/raw/",
+  "calibrated_on": "Spirit Hollow hand-checked OB (spirit_hollow/hand_zones_ll.json), leave-one-hole-out",
+  "attribution": [
+   "(c) OpenStreetMap contributors, ODbL 1.0",
+   "Microsoft Global ML Building Footprints, ODbL 1.0",
+   "Parcels: Iowa HSEMD statewide parcels 2017 (county assessors)"
+  ]
+ },
+ "holes": {
+  "1": {
+   "n": 1,
+   "area_yd2": 10569,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "2": {
+   "n": 2,
+   "area_yd2": 3948,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "3": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "4": {
+   "n": 2,
+   "area_yd2": 13226,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "5": {
+   "n": 1,
+   "area_yd2": 21059,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "6": {
+   "n": 2,
+   "area_yd2": 7313,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "7": {
+   "n": 2,
+   "area_yd2": 9639,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "8": {
+   "n": 3,
+   "area_yd2": 15452,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "9": {
+   "n": 2,
+   "area_yd2": 18831,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "10": {
+   "n": 1,
+   "area_yd2": 14354,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "11": {
+   "n": 1,
+   "area_yd2": 10797,
+   "evidence": [
+    "outside"
+   ]
+  },
+  "12": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "13": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "14": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "15": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "16": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "17": {
+   "n": 0,
+   "area_yd2": 0,
+   "evidence": []
+  },
+  "18": {
+   "n": 1,
+   "area_yd2": 2734,
+   "evidence": [
+    "outside"
+   ]
+  }
+ },
+ "geometry_ob_polygons_before": {
+  "1": 4,
+  "2": 5,
+  "3": 3,
+  "4": 8,
+  "5": 4,
+  "6": 10,
+  "7": 7,
+  "8": 7,
+  "9": 7,
+  "10": 7,
+  "11": 5,
+  "12": 1,
+  "13": 3,
+  "14": 1,
+  "15": 0,
+  "16": 1,
+  "17": 2,
+  "18": 1
+ }
+}
