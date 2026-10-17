@@ -61,9 +61,10 @@ COVER_BACK = 0.3                     # complexes a hole "uses" (its forward tees
 TOPK = 8
 NOT_HOLE = 4.0                                        # log-odds that a green with no route is a practice green
 TURN_VIA_H = 0.65
-FORM_W = dict(chain=2.0, fw_x=2.0, length=1.0, align=0.6, fw_cov=1.0, fw_end=3.0, cross_green=3.0, fwd=0.5, far=1.5, start=0.6)
+FORM_W = dict(corr=2.0, chain=2.0, fw_x=2.0, length=1.0, align=0.6, fw_cov=1.0, fw_end=3.0, cross_green=3.0, fwd=0.5, far=1.5, start=0.6)
 TEMP = 1.0                                            # posterior temperature (calibrated on dev)
 LAGR_ITERS = 12
+POS_PAR = None                                        # P(par | hole number) / P(par), 18 x 3 (fit.py on dev)
 TFEATS = ("walk", "dist", "cos_prev", "cos_next", "path")
 TRANS_W = dict(walk=1.0, dist=0.0, cos_prev=0.0, cos_next=0.0, path=1.0)
 TURN_W = dict(walk=0.3, dist=0.0, cos_prev=0.0, cos_next=0.0, path=0.3)
@@ -75,6 +76,7 @@ def load_params(path=os.path.join(HERE, "params.json")):
     if os.path.exists(path):
         p = json.load(open(path))
         TURN_W = dict(TURN_W, **p.get("turn_w", {}))
+        globals()["POS_PAR"] = p.get("pos_par")
         ANCHOR_W = dict(ANCHOR_W, **p.get("anchor_w", {}))
         FORM_W = dict(FORM_W, **p.get("form_w", {}))
         TRANS_W = dict(TRANS_W, **p.get("trans_w", {}))
@@ -267,6 +269,56 @@ class Geo:
                     self.cones[gi].append((e_f, d))
         self.fw_ends = np.array(self.fw_ends, float).reshape(-1, 2, 2)
         self.paths = PathGraph(sc.paths) if sc.paths else None
+        self._corr = None
+
+    def corridor_costs(self, cell=5.0):
+        """Least-cost 'line of play' from every green over a cost raster (fairway / green / tee 1, rough 1.8, bunker
+        1.5, water 3, woods 3.5): -> (cost per green and complex box (nG, nC) in yds-equivalent)."""
+        if self._corr is not None:
+            return self._corr
+        from skimage.graph import MCP_Geometric
+        sc = self.sc
+        pts = np.vstack([self.G, np.vstack([c["xy"] for c in self.cx])]) if len(self.cx) else self.G
+        lo = pts.min(0) - 120
+        hi = pts.max(0) + 120
+        nx, ny = int((hi[0] - lo[0]) / cell) + 1, int((hi[1] - lo[1]) / cell) + 1
+        xs = lo[0] + (np.arange(nx) + 0.5) * cell
+        ys = lo[1] + (np.arange(ny) + 0.5) * cell
+        X, Y = np.meshgrid(xs, ys)
+        fx, fy = X.ravel(), Y.ravel()
+        cost = np.full(fx.shape, 1.8)
+
+        def paint(rings, val, buf=0.0):
+            for r in rings:
+                if r is None or len(r) < 4:
+                    continue
+                p = Polygon(r).buffer(buf)
+                if p.is_empty:
+                    continue
+                b = p.bounds
+                m = (fx >= b[0]) & (fx <= b[2]) & (fy >= b[1]) & (fy <= b[3])
+                if m.any():
+                    ins = contains_xy(p, fx[m], fy[m])
+                    idx = np.nonzero(m)[0][ins]
+                    cost[idx] = val
+        paint(sc.woods, 3.5)
+        paint(sc.water, 3.0)
+        paint(sc.bunkers, 1.5)
+        paint([f.get("ring") for f in sc.fairways], 1.0, 4.0)
+        paint([g.get("ring") for g in sc.greens], 1.0, 4.0)
+        paint([t.get("ring") for t in sc.tees], 1.0, 4.0)
+        cost = cost.reshape(ny, nx)
+        nG, nC = len(self.G), len(self.cx)
+        out = np.full((nG, nC), np.inf)
+        cidx = [np.clip(((c["xy"] - lo) / cell).astype(int), 0, [nx - 1, ny - 1]) for c in self.cx]
+        for gi, g in enumerate(self.G):
+            j, i = np.clip(((g - lo) / cell).astype(int), 0, [nx - 1, ny - 1])
+            m = MCP_Geometric(cost, fully_connected=True)
+            cum, _ = m.find_costs([(i, j)])
+            for k, ci in enumerate(cidx):
+                out[gi, k] = float(cum[ci[:, 1], ci[:, 0]].min()) * cell
+        self._corr = out
+        return out
 
     def on_fairway(self, xy):
         if self.fw is None:
@@ -347,7 +399,7 @@ class PathGraph:
 
 
 # ----------------------------------------------------------------------------- hole hypotheses
-FEATS = ("length", "align", "chain", "chain_neg", "p3_fw", "fw_cov", "fw_x", "fw_end", "cross_green", "fwd", "far", "start")
+FEATS = ("length", "align", "corr", "chain", "chain_neg", "p3_fw", "fw_cov", "fw_x", "fw_end", "cross_green", "fwd", "far", "start")
 
 
 def features(sc, geo, clubs=()):
@@ -468,6 +520,11 @@ def features(sc, geo, clubs=()):
         fwd[i] = float(((s > 0.03) & (s < CORR_FWD) & (perp < CORR_PERP) & m).sum())
         cover.append(sorted({k} | set(np.nonzero((s > 0.0) & (s < COVER_FWD) & (perp < COVER_PERP))[0].tolist())))
         far[i] = float(((s >= 0.68) & (s < 0.95) & (perp < 14) & m).sum())
+    corr = np.zeros(P)
+    if geo.has_fw:
+        cc = geo.corridor_costs()
+        for i, (gi, k, _, _) in enumerate(pairs):
+            corr[i] = min(3.0, max(0.0, cc[gi, k] / D[i] - 1.0))
     start = np.zeros(P)
     Gr = geo.gr_r
     base = float(walk_ll(160.0))
@@ -484,7 +541,7 @@ def features(sc, geo, clubs=()):
         out.append(dict(gi=gi, k=k, tee=t, D=d, ppar=ppar[:, i], cover=cover[i],
                         f=dict(length=float(ll_len[i]), align=float(al[i]),
                                fw_cov=float((fal[i] - 0.4) * p45[i]) if geo.has_fw else 0.0,
-                               fw_x=-float(fx[i]), chain=float(chain[i] * p45[i]),
+                               fw_x=-float(fx[i]), chain=float(chain[i] * p45[i]), corr=-float(corr[i]),
                                chain_neg=-float(has_cone[i] * (1 - chain[i]) * p45[i]),
                                p3_fw=-float(has_cone[i] * (1 - p45[i])),
                                fw_end=float((fe[i] - 0.3) * p45[i]) if geo.has_fw else 0.0, cross_green=-cg[i],
@@ -795,6 +852,9 @@ def solve(sc, card=None, n_holes=None, use_paths=True, use_clubhouse=True, temp=
     Hc = clubs + hub_candidates(sc, geo, hyps)
     wsum = sum(h["w"] for h in Hc)
     pos_base = _card_pos(pb.hk, pars, yards, N) if (pars or yards) else None
+    pp = _par_pos(pb.hk, N)
+    if pp is not None:
+        pos_base = pp if pos_base is None else pos_base + pp
     price = np.zeros(len(geo.C) + 1)
     anchors = [pb.anchors(H["c"]) for H in Hc]
     eye = np.eye(Mk, dtype=bool)
@@ -866,6 +926,23 @@ def _coverage(pb, P, seq, N):
     for k, node in enumerate(seq):
         cnt += pb.cov[node, int(np.argmax(_tee_lp(P, seq, k, N)))]
     return cnt
+
+
+def _par_pos(hk, N):
+    """pos[j, k]: log-ratio of the par prior at hole number k (hole 1 / 10 / 18 are rarely par 3s)."""
+    if POS_PAR is None or N not in (9, 18):
+        return None
+    R = np.log(np.asarray(POS_PAR, float))                 # (18, 3)
+    pos = np.zeros((len(hk), N))
+    for j, hs in enumerate(hk):
+        if not hs:
+            continue
+        fs = np.array([h["score"] for h in hs])
+        lw = fs - _lse(fs)
+        pp = np.array([h["ppar"] for h in hs])             # (K, 3)
+        for k in range(N):
+            pos[j, k] = _lse(lw + np.log(np.maximum(np.exp(R[k])[None, :] * pp, 1e-12).sum(1)))
+    return pos
 
 
 def _card_pos(hk, pars, yards, N):

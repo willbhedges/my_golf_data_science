@@ -193,6 +193,8 @@ def run(entries, configs, verbose=False, seed=0):
             print("load failed", e["slug"], ex)
             continue
         if N not in (9, 18):
+            if e.get("kind") == 27 and "full" in configs and len(truth) >= 18:
+                rows.append(facility_row(e, sc0, truth))
             continue
         if len(sc0.greens) < N - 2 or len(sc0.tees) < N - 2:
             continue
@@ -221,7 +223,33 @@ def run(entries, configs, verbose=False, seed=0):
     return rows
 
 
+def facility_row(e, sc, truth):
+    """27 / 36-hole facilities (hole refs repeat per nine or run 1..27): formation only (every true hole way, any
+    number), with the solver's own hole-count guess."""
+    t0 = time.time()
+    res = V.solve(sc)
+    m = match(res, sc, truth)
+    found = {r for r in m if r is not None}
+    refs = [t["ref"] for t in truth]
+    return dict(slug=e["slug"], split=e["split"], config="facility", state=e.get("state"), N=len(truth),
+                n_guess=res["n_holes"], routed=len(res["holes"]), formation=len(found), refs_unique=len(set(refs)),
+                seconds=round(time.time() - t0, 2))
+
+
+def facility_table(rows):
+    rs = [r for r in rows if r.get("config") == "facility"]
+    if not rs:
+        return ""
+    lines = ["| split | facilities | true hole ways | formed (any number) | N guessed 27+ |", "|---|---|---|---|---|"]
+    for sp in sorted({r["split"] for r in rs}):
+        x = [r for r in rs if r["split"] == sp]
+        lines.append(f"| {sp} | {len(x)} | {sum(r['N'] for r in x)} | {sum(r['formation'] for r in x) / max(1, sum(r['N'] for r in x)):.1%} | "
+                     f"{sum(r['n_guess'] >= 27 for r in x)}/{len(x)} |")
+    return "\n".join(lines)
+
+
 def summarise(rows):
+    rows = [r for r in rows if r.get("config") != "facility"]
     from collections import defaultdict
     by = defaultdict(list)
     for r in rows:
@@ -260,6 +288,7 @@ def calib(conf, cor, bins=10):
 
 
 def reliability(rows, split, cfg, bins=5):
+    rows = [r for r in rows if r.get("config") != "facility"]
     conf = np.array([c for r in rows if r["split"] == split and r["config"] == cfg for c in r["conf"]])
     cor = np.array([c for r in rows if r["split"] == split and r["config"] == cfg for c in r["correct"]])
     out = []
@@ -324,7 +353,7 @@ def write(rows, cfgs, out):
     json.dump(dict(made_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), table=table, rows=rows,
                    reliability={f"{s}/{c}": reliability(rows, s, c) for s in ("dev", "heldout") for c in cfgs}),
               open(os.path.join(out, "results.json"), "w"), indent=1, default=float)
-    open(os.path.join(out, "summary.md"), "w").write(md_table(table) + "\n")
+    open(os.path.join(out, "summary.md"), "w").write(md_table(table) + "\n\n" + facility_table(rows) + "\n")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,83 @@
+name: routing_v2_eval
+
+# Routing v2 on the held-out test split (course_data/generalize/route_eval.py final): v1 vs v2 per course and the
+# golfer-confirm simulation, sharded over 6 jobs, merged into course_data/generalize/eval_v2.json (committed).
+# Offline: every input is the committed cache under course_data/generalize/courses/ (validation_set.json).
+# Request-file trigger: commit course_data/requests/routing_v2_eval_<name>.json
+#   {"schema": "request/1", "kind": "routing_v2_eval", "split": "test", "shards": 6}
+
+on:
+  push:
+    paths:
+      - "course_data/requests/routing_v2_eval_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: routing-v2-eval-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  shard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely
+      - name: Shard ${{ matrix.shard }}
+        run: |
+          python -u course_data/generalize/route_eval.py final --split test --shard ${{ matrix.shard }}/6 \
+            --out eval_shard_${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eval-shard-${{ matrix.shard }}
+          path: eval_shard_${{ matrix.shard }}.json
+
+  merge:
+    needs: shard
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: eval-shard-*
+          merge-multiple: true
+          path: /tmp/shards
+      - name: Merge
+        run: |
+          ls -la /tmp/shards
+          python -u course_data/generalize/route_eval.py merge /tmp/shards/eval_shard_*.json
+          mkdir -p course_data/generalize/eval_shards && cp /tmp/shards/eval_shard_*.json course_data/generalize/eval_shards/
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/generalize/eval_v2.json course_data/generalize/eval_shards
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "routing v2: held-out test evaluation + confirm simulation (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1

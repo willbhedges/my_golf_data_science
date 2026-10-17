@@ -257,7 +257,7 @@ def fit(data, theta0, l2=0.5):
         g += 2 * l2 * (th - theta0)
         return tot, g
     v0, _ = f(theta0)
-    r = minimize(f, theta0, jac=True, method="L-BFGS-B", options=dict(maxiter=40))
+    r = minimize(f, theta0, jac=True, method="L-BFGS-B", options=dict(maxiter=25))
     print("nll", round(v0, 2), "->", round(r.fun, 2), r.message)
     return r.x, dict(zip([f"{a}.{b}" for a, b in names], np.round(r.x, 3)))
 

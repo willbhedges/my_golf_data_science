@@ -49,6 +49,11 @@ def plot(sc, truth, res, out, title=""):
         ax.plot(*c["c"], "*", ms=14, color="#6a1b9a")
     if res.get("clubhouse"):
         ax.plot(*res["clubhouse"]["xy"], "x", ms=14, color="#d81b60", mew=3)
+    pts = np.array([g["c"] for g in sc.greens] + [t["c"] for t in sc.tees])
+    if len(pts):
+        lo, hi = pts.min(0) - 60, pts.max(0) + 60
+        ax.set_xlim(lo[0], hi[0])
+        ax.set_ylim(lo[1], hi[1])
     ax.set_aspect("equal")
     ax.set_title(title, fontsize=10)
     fig.tight_layout()

@@ -5,7 +5,8 @@ simulation (offline, one process; inputs are the committed caches).
   python course_data/generalize/route_eval.py tune                       # fits routing_v2_weights.json on train
   python course_data/generalize/route_eval.py train [--epochs 12]       # (alternative: passive-aggressive)
   python course_data/generalize/route_eval.py confirm --split test       # taps-to-correct simulation
-  python course_data/generalize/route_eval.py final                     # test split: v1 vs v2 + confirm -> eval_v2.json
+  python course_data/generalize/route_eval.py final --shard 0/6 --out s0.json   # test split: v1 vs v2 + confirm
+  python course_data/generalize/route_eval.py merge s*.json             # -> eval_v2.json (routing_v2_eval.yml)
 
 Inputs per course (`load`): the hidden-holes inputs of report.py's V-osm (OSM greens / tees / fairways + segment
 model + lidar pads) or V-model (model + lidar only); the card is the web scorecard when found, else pars +
@@ -135,9 +136,9 @@ def courses_of(split):
 
 
 # ----------------------------------------------------------------------------- eval
-def evaluate(split, methods=("v1", "v2"), inputs="osm", card_mode="web", w=None, quiet=False):
+def evaluate(split, methods=("v1", "v2"), inputs="osm", card_mode="web", w=None, quiet=False, slugs=None):
     rows = []
-    for slug in courses_of(split):
+    for slug in (slugs if slugs is not None else courses_of(split)):
         c = load(slug, inputs, card_mode)
         if c is None or len(c["truth"]) < 9:
             continue
@@ -392,9 +393,10 @@ def simulate_confirm(c, policy="eig", max_taps=40, w=None, tau=None, p_check=Non
                 s.answer(dict(question=q["id"], answer=dict(tee_ll=list(t["tee_ll"]), green_ll=list(t["green_ll"]))))
 
 
-def confirm_study(split, policies=("eig", "eig_confirm", "flagged", "locate_all"), inputs="osm", w=None, max_taps=40):
+def confirm_study(split, policies=("eig", "eig_confirm", "flagged", "locate_all"), inputs="osm", w=None, max_taps=40,
+                  slugs=None):
     rows = []
-    for slug in courses_of(split):
+    for slug in (slugs if slugs is not None else courses_of(split)):
         c = load(slug, inputs)
         if c is None or len(c["truth"]) < 9:
             continue
@@ -407,27 +409,74 @@ def confirm_study(split, policies=("eig", "eig_confirm", "flagged", "locate_all"
             row[pol]["log"] = row[pol]["log"][:40]
         rows.append(row)
         log(slug, {p: (row[p].get("taps"), row[p].get("stop_rule_taps"), row[p].get("stop_rule_wrong")) for p in policies})
+    return rows, confirm_agg(rows, policies)
+
+
+def confirm_agg(rows, policies):
     agg = {}
     for pol in policies:
-        t = [r[pol].get("taps") for r in rows]
+        rs = [r for r in rows if pol in r]
+        t = [r[pol].get("taps") for r in rs]
         ok = [x for x in t if x is not None]
-        agg[pol] = dict(n=len(rows), reached_100=round(len(ok) / max(len(rows), 1), 3),
+        n = max(len(rs), 1)
+        agg[pol] = dict(n=len(rs), reached_100=round(len(ok) / n, 3),
                         median_taps=float(np.median(ok)) if ok else None, mean_taps=round(float(np.mean(ok)), 2) if ok else None,
                         p90_taps=float(np.percentile(ok, 90)) if ok else None,
-                        zero_taps=round(sum(x == 0 for x in ok) / max(len(rows), 1), 3),
-                        within_3=round(sum(x <= 3 for x in ok) / max(len(rows), 1), 3),
-                        within_6=round(sum(x <= 6 for x in ok) / max(len(rows), 1), 3))
+                        zero_taps=round(sum(x == 0 for x in ok) / n, 3),
+                        within_2=round(sum(x <= 2 for x in ok) / n, 3),
+                        within_4=round(sum(x <= 4 for x in ok) / n, 3),
+                        within_8=round(sum(x <= 8 for x in ok) / n, 3))
         if pol != "locate_all":
-            st = [r[pol] for r in rows]
-            agg[pol].update(stop_rule_mean_taps=round(float(np.mean([s["stop_rule_taps"] for s in st])), 2),
-                            stop_rule_all_correct=round(float(np.mean([s["stop_rule_wrong"] == 0 for s in st])), 3),
-                            stop_rule_wrong_holes=round(float(np.mean([s["stop_rule_wrong"] or 0 for s in st])), 2))
-    return rows, agg
+            st = [r[pol] for r in rs if r[pol].get("stop_rule_taps") is not None]
+            if st:
+                agg[pol].update(stop_rule_mean_taps=round(float(np.mean([x["stop_rule_taps"] for x in st])), 2),
+                                stop_rule_all_correct=round(float(np.mean([x["stop_rule_wrong"] == 0 for x in st])), 3),
+                                stop_rule_wrong_holes=round(float(np.mean([x["stop_rule_wrong"] or 0 for x in st])), 2))
+    return agg
+
+
+FINAL_EVALS = (("osm", "web"), ("model", "web"), ("osm", "none"))
+FINAL_CONFIRM = (("osm", ("eig", "eig_confirm", "flagged", "locate_all")), ("model", ("eig", "locate_all")))
+
+
+def final_shard(split, shard, n_shards, max_taps=30):
+    """One shard of the final evaluation: v1 vs v2 (inputs x card) and the confirm simulation, per course."""
+    slugs = courses_of(split)[shard::n_shards]
+    out = dict(split=split, shard=shard, n_shards=n_shards, slugs=slugs, evals={}, confirm={})
+    for inputs, card in FINAL_EVALS:
+        rows, _ = evaluate(split, ("v1", "v2"), inputs, card, slugs=slugs)
+        out["evals"][f"{inputs}_{'nocard' if card == 'none' else 'card'}"] = rows
+    for inputs, pols in FINAL_CONFIRM:
+        rows, _ = confirm_study(split, pols, inputs, slugs=slugs, max_taps=max_taps)
+        out["confirm"][inputs] = rows
+    return out
+
+
+def merge(paths, out_path=OUT):
+    shards = [json.load(open(p)) for p in paths]
+    out = dict(schema="routing_v2_eval/1", built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+               split=shards[0]["split"], shards=len(shards),
+               weights=json.load(open(R2.WEIGHTS_FILE)) if os.path.exists(R2.WEIGHTS_FILE) else None,
+               doc="route_eval.py final: held-out test courses (validation_set.json split test), hole ways hidden; "
+                   "osm = OSM greens / tees / fairways + segment model + lidar pads, model = model + lidar only; card = "
+                   "web scorecard else pars + lengths of the hidden ways, nocard = none. confirm = taps for an oracle "
+                   "golfer to reach 100 % (platform/confirm.py).")
+    for key in shards[0]["evals"]:
+        rows = [r for sh in shards for r in sh["evals"][key]]
+        out[f"{out['split']}_{key}"] = dict(agg={m: summarise([r[m] for r in rows]) for m in ("v1", "v2")}, rows=rows)
+    for inputs, pols in FINAL_CONFIRM:
+        rows = [r for sh in shards for r in sh["confirm"].get(inputs, [])]
+        out[f"confirm_{out['split']}_{inputs}"] = dict(agg=confirm_agg(rows, pols), rows=rows)
+    json.dump(out, open(out_path, "w"), indent=1, default=str)
+    log(json.dumps({k: v["agg"] for k, v in out.items() if isinstance(v, dict) and "agg" in v}, indent=1))
+    return out
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["eval", "train", "tune", "calibrate", "confirm", "final"])
+    ap.add_argument("cmd", choices=["eval", "train", "tune", "calibrate", "confirm", "final", "merge"])
+    ap.add_argument("paths", nargs="*")
+    ap.add_argument("--shard", default="0/1")
     ap.add_argument("--split", default="train")
     ap.add_argument("--methods", default="v1,v2")
     ap.add_argument("--inputs", default="osm")
@@ -457,22 +506,14 @@ def main():
         log(json.dumps(agg, indent=1))
         if a.out:
             json.dump(dict(rows=rows, agg=agg), open(a.out, "w"), indent=1, default=str)
+    elif a.cmd == "final":                      # one shard (Actions matrix) or everything in this process
+        i, n = (int(x) for x in a.shard.split("/"))
+        sh = final_shard(a.split, i, n)
+        json.dump(sh, open(a.out or os.path.join(HERE, f"eval_shard_{i}.json"), "w"), indent=1, default=str)
+        if n == 1:
+            merge([a.out or os.path.join(HERE, f"eval_shard_{i}.json")])
     else:
-        out = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                   weights=json.load(open(R2.WEIGHTS_FILE)) if os.path.exists(R2.WEIGHTS_FILE) else None)
-        for split in ("train", "test"):
-            for inputs in ("osm", "model"):
-                rows, agg = evaluate(split, ("v1", "v2"), inputs)
-                out[f"{split}_{inputs}"] = dict(agg=agg, rows=rows)
-                log(split, inputs, json.dumps(agg))
-            rows, agg = evaluate(split, ("v1", "v2"), "osm", "none")
-            out[f"{split}_osm_nocard"] = dict(agg=agg, rows=rows)
-        rows, agg = confirm_study("test", a.policies.split(","), "osm")
-        out["confirm_test_osm"] = dict(agg=agg, rows=rows)
-        rows, agg = confirm_study("test", ("eig",), "model")
-        out["confirm_test_model"] = dict(agg=agg, rows=rows)
-        json.dump(out, open(a.out or OUT, "w"), indent=1, default=str)
-        log("wrote", a.out or OUT)
+        merge(a.paths)
 
 
 if __name__ == "__main__":

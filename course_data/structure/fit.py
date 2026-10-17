@@ -80,6 +80,8 @@ def trans_dataset(entries, degrade=None, use_paths=True):
         if degrade:
             sc = S.degrade(sc, random.Random(f"fit-{e['slug']}"), level=degrade)
         hyps, geo = V.hypotheses(sc)
+        if not len(geo.C) or not len(geo.G):
+            continue
         keep = list(range(len(geo.G)))
         pb = V.Problem(sc, hyps, geo, keep, use_paths=use_paths)
         tg = [E.true_green(geo.G, geo.gr_r, t["green"]) for t in truth]
@@ -119,6 +121,21 @@ def fit_trans(data, w0, l2=0.01):
     return r.x, r.fun, acc, acc0
 
 
+def pos_par(entries):
+    """P(par | hole number) / P(par) on the dev courses' OSM par tags (Dirichlet-smoothed, 18 x 3)."""
+    cnt = np.ones((18, 3)) * 2.0
+    for e in entries:
+        _, truth, N, _ = E.load(e)
+        if N != 18:
+            continue
+        for t in truth:
+            if t["par"] in (3, 4, 5):
+                cnt[t["ref"] - 1, t["par"] - 3] += 1
+    p = cnt / cnt.sum(1, keepdims=True)
+    base = cnt.sum(0) / cnt.sum()
+    return np.round(p / base[None, :], 4).tolist()
+
+
 def main():
     ents = E.courses("dev")
     X, Y, _ = dataset(ents)
@@ -130,6 +147,7 @@ def main():
     print("top1", top1(X, Y, w), "degraded", top1(Xd, Yd, w))
     p = json.load(open(os.path.join(HERE, "params.json"))) if os.path.exists(os.path.join(HERE, "params.json")) else {}
     p["form_w"] = {k: round(float(v), 4) for k, v in zip(V.FEATS, w)}
+    p["pos_par"] = pos_par(ents)
     p["fit_note"] = f"conditional logit on dev ({len(X)} holes clean + degraded), fit.py"
     json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
     V.load_params()
