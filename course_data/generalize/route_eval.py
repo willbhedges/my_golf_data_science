@@ -508,8 +508,9 @@ def write_results_md(ev, path=os.path.join(HERE, "CONFIRM_UX.md")):
     open(path, "w").write(txt)
 
 
-def merge(paths, out_path=OUT):
+def merge(paths, out_path=None):
     shards = [json.load(open(p)) for p in paths]
+    out_path = out_path or (OUT if shards[0]["split"] == "test" else OUT.replace(".json", f"_{shards[0]['split']}.json"))
     out = dict(schema="routing_v2_eval/1", built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                split=shards[0]["split"], shards=len(shards),
                weights=json.load(open(R2.WEIGHTS_FILE)) if os.path.exists(R2.WEIGHTS_FILE) else None,
@@ -524,7 +525,8 @@ def merge(paths, out_path=OUT):
         rows = [r for sh in shards for r in sh["confirm"].get(inputs, [])]
         out[f"confirm_{out['split']}_{inputs}"] = dict(agg=confirm_agg(rows, pols), rows=rows)
     json.dump(out, open(out_path, "w"), indent=1, default=str)
-    write_results_md(out)
+    if out["split"] == "test":
+        write_results_md(out)
     log(json.dumps({k: v["agg"] for k, v in out.items() if isinstance(v, dict) and "agg" in v}, indent=1))
     return out
 
@@ -568,9 +570,9 @@ def main():
         sh = final_shard(a.split, i, n)
         json.dump(sh, open(a.out or os.path.join(HERE, f"eval_shard_{i}.json"), "w"), indent=1, default=str)
         if n == 1:
-            merge([a.out or os.path.join(HERE, f"eval_shard_{i}.json")])
+            merge([a.out or os.path.join(HERE, f"eval_shard_{i}.json")], None)
     else:
-        merge(a.paths)
+        merge(a.paths, a.out)
 
 
 if __name__ == "__main__":

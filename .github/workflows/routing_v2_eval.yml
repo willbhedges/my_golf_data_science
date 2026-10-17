@@ -4,7 +4,8 @@ name: routing_v2_eval
 # golfer-confirm simulation, sharded over 6 jobs, merged into course_data/generalize/eval_v2.json (committed).
 # Offline: every input is the committed cache under course_data/generalize/courses/ (validation_set.json).
 # Request-file trigger: commit course_data/requests/routing_v2_eval_<name>.json
-#   {"schema": "request/1", "kind": "routing_v2_eval", "split": "test", "shards": 6}
+#   {"schema": "request/1", "kind": "routing_v2_eval", "split": "test" | "train"}
+# split train -> eval_v2_train.json (used to choose the confirm policy); split test -> eval_v2.json + CONFIRM_UX.md
 
 on:
   push:
@@ -19,7 +20,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      split: ${{ steps.p.outputs.split }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 20
+      - id: p
+        run: |
+          F=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'course_data/requests/routing_v2_eval_*.json' 2>/dev/null | tail -1)
+          [ -n "$F" ] && [ -f "$F" ] || F=$(ls course_data/requests/routing_v2_eval_*.json | tail -1)
+          echo "split=$(python -c "import json;print(json.load(open('$F')).get('split','test'))")" >> "$GITHUB_OUTPUT"
+
   shard:
+    needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -37,7 +54,7 @@ jobs:
       - run: pip install -q numpy scipy shapely
       - name: Shard ${{ matrix.shard }}
         run: |
-          python -u course_data/generalize/route_eval.py final --split test --shard ${{ matrix.shard }}/6 \
+          python -u course_data/generalize/route_eval.py final --split ${{ needs.plan.outputs.split }} --shard ${{ matrix.shard }}/6 \
             --out eval_shard_${{ matrix.shard }}.json
       - uses: actions/upload-artifact@v4
         with:
@@ -45,7 +62,7 @@ jobs:
           path: eval_shard_${{ matrix.shard }}.json
 
   merge:
-    needs: shard
+    needs: [plan, shard]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -65,14 +82,15 @@ jobs:
         run: |
           ls -la /tmp/shards
           python -u course_data/generalize/route_eval.py merge /tmp/shards/eval_shard_*.json
-          mkdir -p course_data/generalize/eval_shards && cp /tmp/shards/eval_shard_*.json course_data/generalize/eval_shards/
+          D=course_data/generalize/eval_shards/${{ needs.plan.outputs.split }}
+          mkdir -p $D && cp /tmp/shards/eval_shard_*.json $D/
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add course_data/generalize/eval_v2.json course_data/generalize/eval_shards course_data/generalize/CONFIRM_UX.md
+          git add course_data/generalize/eval_v2*.json course_data/generalize/eval_shards course_data/generalize/CONFIRM_UX.md
           git diff --cached --quiet && exit 0
-          printf '%s\n' "routing v2: held-out test evaluation + confirm simulation (Actions run ${{ github.run_id }})" "" \
+          printf '%s\n' "routing v2: ${{ needs.plan.outputs.split }}-split evaluation + confirm simulation (Actions run ${{ github.run_id }})" "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
           git commit -q -F /tmp/msg.txt

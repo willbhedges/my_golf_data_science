@@ -1,14 +1,14 @@
 {
- "tau": 5.0,
- "p_check": 0.98,
+ "tau": 0.75,
+ "p_check": 0.95,
  "calibration": {
-  "correct_after_check": 0.974,
-  "flags_per_course": 16.13
+  "correct_after_check": 0.52,
+  "flags_per_course": 7.25
  },
  "schema": "routing_v2_weights/1",
  "method": "coordinate search (route_eval.py tune)",
  "trained_on": "validation_set.json split train (inputs osm+model)",
- "n": 38,
+ "n": 102,
  "w": {
   "length": 0.5,
   "fingerprint": 2.0,
@@ -16,9 +16,9 @@
   "cross_green": 1.5,
   "align": 1.0,
   "ch_tee1": 1.0,
-  "ch_tee10": 0.15,
+  "ch_tee10": 0.075,
   "ch_green_end": 0.25,
-  "fac_tee1": 0.0,
+  "fac_tee1": 1.0,
   "fac_tee10": 0.0,
   "fac_green_end": 0.0,
   "green_cluster": 1.0,
@@ -26,11 +26,11 @@
   "practice": 0.0,
   "walk": 1.0,
   "walk_turn": 0.15,
-  "cart_link": 0.0,
-  "cart_far": 0.0,
+  "cart_link": -0.5,
+  "cart_far": 0.3,
   "loop": 0.0,
   "cover": 1.0,
-  "covered_start": 2.0,
+  "covered_start": 1.0,
   "reused_tee": 2.5,
   "cross_lines": 0.75,
   "miss_tee": 4.0,
@@ -40,96 +40,56 @@
   {
    "step": "start",
    "obj": [
-    208,
-    216,
-    2
+    476,
+    512,
+    9
    ]
   },
   {
-   "step": "round 0 length=0.500",
+   "step": "round 0 ch_tee10=0.075",
    "obj": [
-    193,
-    201,
-    2
+    475,
+    511,
+    9
    ]
   },
   {
-   "step": "round 0 fingerprint=2.000",
+   "step": "round 0 fac_tee1=1.000",
    "obj": [
-    180,
-    192,
-    3
+    456,
+    492,
+    9
    ]
   },
   {
-   "step": "round 0 corridor=2.400",
+   "step": "round 0 cart_link=-0.500",
    "obj": [
-    162,
-    178,
-    4
+    428,
+    468,
+    10
    ]
   },
   {
-   "step": "round 0 cross_green=0.750",
+   "step": "round 0 cart_far=0.300",
    "obj": [
-    161,
-    177,
-    4
+    427,
+    467,
+    10
    ]
   },
   {
-   "step": "round 0 ch_tee10=0.300",
+   "step": "round 0 covered_start=1.000",
    "obj": [
-    153,
-    169,
-    4
-   ]
-  },
-  {
-   "step": "round 0 ch_green_end=0.250",
-   "obj": [
-    149,
-    165,
-    4
-   ]
-  },
-  {
-   "step": "round 0 walk_turn=0.150",
-   "obj": [
-    148,
-    164,
-    4
-   ]
-  },
-  {
-   "step": "round 0 cross_lines=0.750",
-   "obj": [
-    142,
-    158,
-    4
-   ]
-  },
-  {
-   "step": "round 1 cross_green=1.500",
-   "obj": [
-    140,
-    156,
-    4
-   ]
-  },
-  {
-   "step": "round 1 ch_tee10=0.150",
-   "obj": [
-    136,
-    152,
-    4
+    421,
+    457,
+    9
    ]
   }
  ],
  "train_objective": [
-  136,
-  152,
-  4
+  421,
+  457,
+  9
  ],
- "built_utc": "2026-10-17T05:33:39Z"
+ "built_utc": "2026-10-17T08:24:59Z"
 }
