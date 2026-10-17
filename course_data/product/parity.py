@@ -358,7 +358,7 @@ def settings_table():
         ("wood aims", f"+/-{decide.AIM_LIMIT} capped by the hole's aim_min/max, 2.5 step, widened past the edge",
          "-30..+30, 2.5 step", "decision.aims_for: hole aim_min/max capped to +/-25"),
         ("iron aims", "-25..+45", "-30..+45", "-25..+45"),
-        ("irons offered", "hole['irons'] (product: package irons rule)", "course.HOLES[h]['irons'] (11, 13)", "same"),
+        ("irons offered", "package.irons_offered: water / OB across the tee line 180-310 yds (or the package flag)", "course.HOLES[h]['irons'] (11, 13)", "same"),
         ("absurd-aim guard", "yes (40 yds; aim point lie; play_line)", "no", "no"),
     ]
 

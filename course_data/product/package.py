@@ -68,18 +68,44 @@ def first_cut_band(zones, yds=None):
     return out
 
 
-# Irons off the tee: offered on every par 4 / 5 unless the package says irons = false. The hand pipeline only
-# offered them where a human flagged a lay-up (Spirit Hollow 11 and 13, Mozingo 17), so the product could never
-# say "Long iron" on SH 11 (QA's largest regret). On both hand maps an iron never beats the woods on a hole that
-# was not flagged (parity.py check, n = 2000), so offering them everywhere changes no other pick; it costs ~65%
-# more simulation per hole.
-IRONS_ALWAYS = os.environ.get("PRODUCT_IRONS", "always") != "package"
+# Irons off the tee (lay-up clubs). The hand pipeline offered them only where a human flagged a lay-up (Spirit
+# Hollow 11 and 13, Mozingo 17), so the product could never say "Long iron" on SH 11 (QA's largest regret).
+# Rule (PRODUCT_IRONS, default "crossing"): offered when water or OB crosses the line of play inside the woods'
+# range (180-310 yds out, within 8 yds of the tee line), the classic lay-up trigger;
+# "always": every par 4 / 5 (on both hand maps an iron never beats the woods on an unflagged hole, but on an auto
+# map with over-detected trees / long grass a Long iron edged the 4-wood by 0.003-0.08 on SH 1, 8, 9, 13: map
+# error the woods-only menu used to hide); "package": only the package's irons flag. An explicit package
+# irons true / false always wins.
+IRONS_RULE = os.environ.get("PRODUCT_IRONS", "crossing")
+IRON_LIES, IRON_RANGE = ("water", "ob"), (180.0, 310.0)
 
 
-def irons_offered(h):
+def _line_points(hd, a0, a1, step=4.0):
+    """Points every `step` yds from a0 to a1 out along the tee line (and 8 yds either side): where the woods fly."""
+    tee = np.array(hd["tee"], float)
+    v = np.array(hd["dot270"], float) - tee
+    ppy = np.linalg.norm(v) / 270.0
+    f = v / np.linalg.norm(v)
+    r = np.array([-f[1], f[0]])
+    A = np.arange(a0, a1 + 1e-6, step)
+    return np.vstack([tee + (A[:, None] * f + lat * r) * ppy for lat in (-8.0, 0.0, 8.0)])
+
+
+def irons_offered(h, hd=None):
+    """h: the package hole; hd: the model hole (tee, dot270, zones, play_line) the rule is tested on."""
     if h.get("irons") is not None:
         return bool(h["irons"])
-    return IRONS_ALWAYS
+    if IRONS_RULE == "always":
+        return True
+    if IRONS_RULE == "package" or hd is None:
+        return False
+    from matplotlib.path import Path
+    pts = _line_points(hd, *IRON_RANGE)
+    lie = np.array(["rough"] * len(pts), dtype=object)
+    for name, poly in hd["zones"]:
+        if len(poly) >= 3:
+            lie[Path(np.asarray(poly, float)).contains_points(pts)] = name
+    return bool(np.isin(lie, IRON_LIES).any())
 
 
 def order_zones(zones, mode=None):
@@ -337,7 +363,7 @@ def load(path, tees=None):
             for extra in ("extra_roll", "irons"):
                 if h.get(extra) is not None:
                     C.holes[k][extra] = h[extra]
-            if irons_offered(h):
+            if irons_offered(h, C.holes[k]):
                 C.holes[k]["irons"] = True
             if e or h.get("elev"):
                 C.holes[k]["elev"] = e or h["elev"]

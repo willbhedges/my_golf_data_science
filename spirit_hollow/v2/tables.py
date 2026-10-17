@@ -41,6 +41,24 @@ def main():
         print(f"| {LAB.get(h, h)} | {v1s} | {v1m} | {v2s}{bound} | {side(w[0])} to {side(w[1])} | "
               f"{r['margin']:.3f} ± {r['margin_se']:.3f} {SHORT[r['runner']]} | {r['crossfit_margin']:.3f} | "
               f"{r['p_pick_beats_runner']:.0%} | {', '.join(chg) or '—'} |")
+    print("\n## Cost of playing v1's club and aim, scored by v2 (prior-averaged curves)\n")
+    print("| Hole | v1 play | v2 play | strokes lost by v1 play |")
+    print("|---|---|---|---|")
+    import numpy as np
+    tot = 0.0
+    for h, r in v2.items():
+        a = v1.get(h)
+        if not a:
+            continue
+        x = np.array(r["curve_aims"])
+        y = np.array(r["clubs"][a["pick"]]["curve"])
+        yb = np.array(r["clubs"][r["pick"]]["curve"])
+        loss = float(np.interp(a["aim"], x, y) - np.interp(r["aim"], x, yb))
+        if h not in ("2B", "9B"):
+            tot += loss
+        print(f"| {LAB.get(h, h)} | {a['pick']} {side(a['aim'])} | {r['pick']} {side(r['aim'])} | {loss:+.3f} |")
+    print(f"\nBlack-tee round (14 tee holes, Gold 2/9 excluded): v1's plays cost **{tot:.2f} strokes** "
+          "per round under v2.\n")
     print("\n## Every club at its own robust aim (v2, prior-averaged EV; window in brackets)\n")
     print("| Hole | Driver | 2-wood | 4-wood | Long iron | Mid iron |")
     print("|---|---|---|---|---|---|")

@@ -140,3 +140,17 @@ def test_parity_mapping_reproduces_hand_lies(sh):
         assert agree > 0.99, (k, agree)
         # the mapped tee line: same bearing, ground scale of the app's 270 dot
         assert np.allclose(v["tee"], fr.ll_to_px(geo.px_to_ll([hd["tee"]]))[0])
+
+
+def test_irons_rule_water_across_the_tee_line(monkeypatch):
+    monkeypatch.setattr(PK, "IRONS_RULE", "crossing")
+    tee, ppy = np.array(PK.TEE_PX), PK.PPY
+    hd = dict(tee=tuple(tee), dot270=(tee[0], tee[1] - 270 * ppy), zones=[])
+    creek = ("water", SQ(tee[0] - 60 * ppy, tee[1] - 255 * ppy, tee[0] + 60 * ppy, tee[1] - 245 * ppy))
+    side = ("water", SQ(tee[0] + 30 * ppy, tee[1] - 300 * ppy, tee[0] + 60 * ppy, tee[1] - 200 * ppy))
+    assert PK.irons_offered({}, dict(hd, zones=[creek]))
+    assert not PK.irons_offered({}, dict(hd, zones=[side]))            # water beside the line: no lay-up
+    assert not PK.irons_offered({"irons": False}, dict(hd, zones=[creek]))
+    assert PK.irons_offered({"irons": True}, hd)
+    monkeypatch.setattr(PK, "IRONS_RULE", "always")
+    assert PK.irons_offered({}, hd)
