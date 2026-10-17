@@ -65,6 +65,14 @@ FORM_W = dict(corr=2.0, chain=2.0, fw_x=2.0, length=1.0, align=0.6, fw_cov=1.0, 
 TEMP = 1.0                                            # posterior temperature (calibrated on dev)
 LAGR_ITERS = 12
 POS_PAR = None                                        # P(par | hole number) / P(par), 18 x 3 (fit.py on dev)
+CALIB = None                                          # Platt scaling of the hole confidence (fit.py --calibrate)
+
+
+def calibrated(c):
+    if not CALIB:
+        return c
+    c = min(max(c, 1e-4), 1 - 1e-4)
+    return 1 / (1 + math.exp(-(CALIB[0] * math.log(c / (1 - c)) + CALIB[1])))
 TFEATS = ("walk", "dist", "cos_prev", "cos_next", "path")
 TRANS_W = dict(walk=1.0, dist=0.0, cos_prev=0.0, cos_next=0.0, path=1.0)
 TURN_W = dict(walk=0.3, dist=0.0, cos_prev=0.0, cos_next=0.0, path=0.3)
@@ -77,6 +85,7 @@ def load_params(path=os.path.join(HERE, "params.json")):
         p = json.load(open(path))
         TURN_W = dict(TURN_W, **p.get("turn_w", {}))
         globals()["POS_PAR"] = p.get("pos_par")
+        globals()["CALIB"] = p.get("calib")
         ANCHOR_W = dict(ANCHOR_W, **p.get("anchor_w", {}))
         FORM_W = dict(FORM_W, **p.get("form_w", {}))
         TRANS_W = dict(TRANS_W, **p.get("trans_w", {}))
@@ -694,7 +703,7 @@ def route_dp(trans, start, end, N, turn=None, pos=None, viterbi=True, marginals=
 
 
 # ----------------------------------------------------------------------------- the solver
-def n_holes_guess(hyps, n_cx=None, thr=1.0, return_scores=False):
+def n_holes_guess(hyps, n_cx=None, thr=-2.0, return_scores=False):
     """9 / 18 / 27 / 36 from the number of greens that get a decent hole in an exclusive green -> complex
     assignment (practice greens and greens without a tee drop out)."""
     from scipy.optimize import linear_sum_assignment
@@ -988,7 +997,8 @@ def _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, debug, run
                           tee_xy=[float(x) for x in h["tee"]],
                           boxes=[sc.tees[b]["id"] for b in cx["boxes"]], length_yd=round(h["D"], 1),
                           p_par=[round(float(x), 3) for x in h["ppar"]], p_number=round(p_num, 3),
-                          p_tee=round(float(ph[hi]), 3), confidence=round(p_num * float(ph[hi]), 3),
+                          p_tee=round(float(ph[hi]), 3), confidence=round(calibrated(p_num * float(ph[hi])), 3),
+                          confidence_raw=round(p_num * float(ph[hi]), 3),
                           walk_in_yd=round(float(pb.wd[seq[k - 1]][node][hi]), 1) if k > 0 else None,
                           form_score=round(h["score"], 2), feat={a: round(b, 2) for a, b in h["f"].items()}))
     pars_inf = infer_pars([h["p_par"] for h in holes], N)

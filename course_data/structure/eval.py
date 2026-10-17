@@ -181,6 +181,7 @@ def score_course(res, sc, truth, N):
                 all_correct=int(sum(num_ok) == N and len(res["holes"]) == N),
                 all_formed=int(form == N), par_ok=sum(par_ok), par_n=len(par_ok),
                 conf=[h["confidence"] for h in res["holes"]], correct=num_ok,
+                conf_raw=[h.get("confidence_raw", h["confidence"]) for h in res["holes"]],
                 formed=[int(r is not None) for r in m], refs=m)
 
 

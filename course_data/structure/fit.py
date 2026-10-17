@@ -136,7 +136,28 @@ def pos_par(entries):
     return np.round(p / base[None, :], 4).tolist()
 
 
+def calibrate(results_path):
+    """Platt scaling of the per-hole confidence on dev eval rows: P(correct) = sigmoid(a * logit(conf) + b)."""
+    from scipy.optimize import minimize
+    rows = [r for r in json.load(open(results_path))["rows"] if r.get("split") == "dev" and r.get("config") == "full"]
+    c = np.clip(np.array([x for r in rows for x in r.get("conf_raw", r["conf"])]), 1e-4, 1 - 1e-4)
+    y = np.array([x for r in rows for x in r["correct"]])
+    z = np.log(c / (1 - c))
+
+    def nll(p):
+        q = 1 / (1 + np.exp(-(p[0] * z + p[1])))
+        q = np.clip(q, 1e-6, 1 - 1e-6)
+        return -(y * np.log(q) + (1 - y) * np.log(1 - q)).sum()
+    r = minimize(nll, [1.0, 0.0])
+    p = json.load(open(os.path.join(HERE, "params.json")))
+    p["calib"] = [round(float(r.x[0]), 4), round(float(r.x[1]), 4)]
+    json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
+    print("calibration", p["calib"], "holes", len(y))
+
+
 def main():
+    if len(sys.argv) > 2 and sys.argv[1] == "--calibrate":
+        return calibrate(sys.argv[2])
     ents = E.courses("dev")
     X, Y, _ = dataset(ents)
     Xd, Yd, _ = dataset(ents, degrade=1.0)
