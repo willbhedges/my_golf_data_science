@@ -239,9 +239,9 @@ function windArrow(h, rel, vb){
   const a = (rel + 180) * Math.PI/180, cx = vb[0] + vb[2] - 46, cy = vb[1] + 46, L = 26;
   const dx = Math.sin(a)*L, dy = -Math.cos(a)*L;
   return `<g opacity=".95"><circle cx="${cx}" cy="${cy}" r="34" fill="rgba(10,20,15,.55)"/>
-    <line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx}" y2="${cy+dy}" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="${cx+dx}" cy="${cy+dy}" r="6" fill="#ffc928"/>
-    <text x="${cx}" y="${cy+52}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="15" text-anchor="middle" stroke="rgba(0,0,0,.6)" stroke-width="3" paint-order="stroke">${st.mph} mph</text></g>`;
+    <line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx*0.5}" y2="${cy+dy*0.5}" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    <polygon points="${cx+dx},${cy+dy} ${cx+dx*0.42-dy*0.42},${cy+dy*0.42+dx*0.42} ${cx+dx*0.42+dy*0.42},${cy+dy*0.42-dx*0.42}" fill="#ffc928" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+    <text x="${cx}" y="${cy+52}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="15" text-anchor="middle" stroke="rgba(0,0,0,.6)" stroke-width="3" paint-order="stroke">${Math.round(st.mph)} mph</text></g>`;
 }
 /* holes 2 and 9 have two screenshots (Gold box "B", Black box "F"): show one per hole, by the chosen tees */
 const shown = (h) => !/^[29][FB]$/.test(h.key) || (h.key.endsWith("B") === (st.set === "Gold"));
