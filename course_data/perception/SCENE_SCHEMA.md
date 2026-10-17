@@ -81,6 +81,7 @@ line up along a common axis).
 | `length_m` | extent along `axis_deg` (back box to front box) |
 | `p` | P(this is a real tee complex of a hole) |
 | `p_range_tee` | P(it is the driving-range hitting area instead) |
+| `virtual` | true = no tee box was seen: the complex is inferred at the far end of a fairway from its green (`src: ["fairway_end"]`, one box with no polygon) |
 | `elev_m` | mean DTM |
 
 ### `fairways[]`

@@ -256,6 +256,40 @@ def _complex(bs):
                 area=float(w.sum()), src=sorted({s for b in bs for s in b["src"]}))
 
 
+def fairway_end_tees(st, complexes, fairways_, greens_, reach_m=60.0, back_m=25.0):
+    """Virtual tee candidates: the end of a fairway away from its green when no tee complex is near it (forward /
+    hidden tees under trees, U-Net misses). Scored by the tee_complex model like any other complex."""
+    gx = np.array([g["xy"] for g in greens_ if g.get("p", 0) >= 0.5]) if greens_ else np.zeros((0, 2))
+    out = []
+    have = [np.array(c["xy"]) for c in complexes]
+    for f in fairways_:
+        cl = f["centerline"]
+        if len(cl) < 3 or f["length"] < 100 or not len(gx):
+            continue
+        ends = [(np.array(cl[0]), np.array(cl[min(3, len(cl) - 1)])), (np.array(cl[-1]), np.array(cl[max(-4, -len(cl))]))]
+        dg = [float(np.hypot(*(gx - e).T).min()) for e, _ in ends]
+        if min(dg) > 120:                    # no green at either end: not a hole corridor
+            continue
+        e, inner = ends[int(np.argmax(dg))]
+        if max(dg) < 150:
+            continue
+        v = e - inner
+        nv = float(np.hypot(*v))
+        if nv < 1e-6:
+            continue
+        p = e + back_m * v / nv
+        if any(float(np.hypot(*(p - h))) < reach_m for h in have):
+            continue
+        axis = (math.degrees(math.atan2(v[0], v[1])) + 360) % 180
+        box = dict(id="v", cid=None, lab=0, xy=(float(p[0]), float(p[1])), area=0.0, src=["fairway_end"], p=0.3,
+                   feat=dict(p_mean=0.0, p_max=0.0), ring=None, axis=axis)
+        c = dict(boxes=[box], xy=box["xy"], axis=axis, elong=2.0, length=0.0, p=0.3, area=0.0, src=["fairway_end"],
+                 virtual=True)
+        out.append(c)
+        have.append(p)
+    return out
+
+
 def complex_features(c, greens_, others):
     g = np.array([gr["xy"] for gr in greens_]) if greens_ else np.zeros((0, 2))
     d = np.hypot(*(g - np.array(c["xy"])).T) if len(g) else np.array([])
@@ -263,6 +297,7 @@ def complex_features(c, greens_, others):
                 max_box_p=max(b["p"] for b in c["boxes"]), mean_seg=float(np.mean([b["feat"]["p_mean"] for b in c["boxes"]])),
                 has_pad=float(any("lidar_pad" in b["src"] for b in c["boxes"])),
                 has_seg=float(any("segment" in b["src"] for b in c["boxes"])),
+                virtual=float(bool(c.get("virtual"))),
                 d_green=float(d.min()) if d.size else 999.0,
                 n_greens_80_600=float(((d >= 80) & (d <= 600)).sum()) if d.size else 0.0,
                 n_greens_lt60=float((d < 60).sum()) if d.size else 0.0)

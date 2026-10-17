@@ -132,10 +132,15 @@ def evaluate(st, L, D, T):
         c["_truth"] = c_is_true(c) if (tee_polys or starts) else None
     tp_c = sum(1 for c in cx if c["_truth"])
     # complexes per hole start: one complex should explain one start (over-splitting shows as extra complexes)
+    # diagnostics: hole starts with no OSM tee box within 30 m (OSM line starts off the tees) can't be "seen"
+    starts_with_tee = [s for s in starts if any(p.distance(Point(*s)) <= TEE_START_M for p in tee_polys)] if tee_polys else []
     allc = D["complexes"]
     rec_any = sum(1 for s in starts if allc and min(cdist(c, s) for c in allc) <= TEE_START_M)
     out["tee_complexes"] = dict(_prf(tp_c, len(cx), rec_hits, len(starts)), eligible=bool(nh >= 9), precision_eligible=bool(elig_prec),
                                 recall_any_p=round(rec_any / len(starts), 4) if starts else None, tp_true_any_p=rec_any,
+                                starts_with_osm_tee=len(starts_with_tee),
+                                recall_starts_with_osm_tee=round(sum(1 for s in starts_with_tee if cx and min(cdist(c, s) for c in cx)
+                                                                     <= TEE_START_M) / len(starts_with_tee), 4) if starts_with_tee else None,
                                 n_complex_per_hole=round(len(cx) / nh, 2) if nh else None)
     boxes = [b for b in D["boxes"] if b["p"] >= P_DET]
     for b in D["boxes"]:

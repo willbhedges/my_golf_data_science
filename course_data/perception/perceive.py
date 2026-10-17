@@ -70,6 +70,19 @@ def run(st, models=None, log=print):
             for c, row in zip(D["complexes"], pr):
                 c["p"] = float(row[cl.index(1)])
     D["fairways"], D["fairway_lab"] = DT.fairways(st, L)
+    virt = DT.fairway_end_tees(st, D["complexes"], D["fairways"], D["greens"])
+    if virt:
+        n0 = len(D["complexes"])
+        for k, c in enumerate(virt):
+            c["id"] = f"t{n0 + k + 1}"
+            c["boxes"][0]["cid"] = f"t{n0 + k + 1}.1"
+        D["complexes"] += virt
+        if models.get("tee_complex"):
+            md = models["tee_complex"]
+            rows = [DT.complex_features(c, D["greens"], D["complexes"]) for c in virt]
+            pr, cl = DT._apply(md["clf"], rows, md["features"], md.get("thr"))
+            for c, row in zip(virt, pr):
+                c["p"] = float(row[cl.index(1)])
     lap("fairways")
     D["bunkers"], D["bunker_lab"] = DT.bunkers(st, L)
     D["water"], D["water_lab"] = DT.water(st, L)

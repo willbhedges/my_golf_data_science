@@ -220,6 +220,7 @@ def build_scene(st, L, D, mode="blind", models_id=None, models=None):
         tl.append(dict(id=c["id"], p=_r(c["p"], 3), p_range_tee=_r(c.get("p_range_tee", 0.0), 3),
                        centroid=geo.pt_ll(st, *c["xy"]), polygon=hull, axis_deg=_r(c["axis"], 1) if c["elong"] >= 1.3 else None,
                        length_m=_r(c["length"], 1), elev_m=_r(c.get("elev")), src=c["src"],
+                       virtual=bool(c.get("virtual")),
                        boxes=[dict(id=b["cid"], p=_r(b["p"], 3), centroid=geo.pt_ll(st, *b["xy"]), area_m2=_r(b["area"], 1),
                                    polygon=_ring_ll(st, b.get("ring")), src=b["src"]) for b in c["boxes"]]))
     fl = []
