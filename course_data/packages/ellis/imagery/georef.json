@@ -15,11 +15,11 @@
   42.00451341117499,
   -91.68593533860194
  ],
- "fetched_utc": "2026-10-17T10:11:53Z",
+ "fetched_utc": "2026-10-17T15:11:36Z",
  "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
  "imagery": {
   "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
-  "year": 2023,
+  "year": 2014,
   "years_available": [
    2011,
    2013,
@@ -31,16 +31,224 @@
    2023
   ],
   "acquired": [
-   "2023-09-01"
+   "2014-09-18"
   ],
   "items": [
-   "ia_m_4209159_sw_15_030_20230901_20231127",
-   "ia_m_4209159_se_15_030_20230901_20231127",
-   "ia_m_4109103_nw_15_030_20230901_20231127",
-   "ia_m_4109103_ne_15_030_20230901_20231127"
+   "ia_m_4209159_sw_15_1_20140918_20141202",
+   "ia_m_4209159_se_15_1_20140918_20141202",
+   "ia_m_4109103_nw_15_1_20140918_20141202",
+   "ia_m_4109103_ne_15_1_20140918_20141202"
   ],
-  "gsd_m": 0.3,
-  "resolution_m": 0.3,
+  "selection": {
+   "schema": "naip_years/1",
+   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
+   "chosen": 2014,
+   "reason": "2014 (2014-09-18): greenest leaf-on year on the course's turf (NDVI 0.44 vs 0.27, 2% vs 1% brown) over the newest year 2023 (less green); replaces 2023",
+   "candidates": [
+    {
+     "year": 2023,
+     "dates": [
+      "2023-09-01"
+     ],
+     "gsd_m": 0.3,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2653,
+     "turf_exg": 75.0,
+     "green_ndvi": 0.1879,
+     "bare_turf": 0.013,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 55.0,
+     "turf_rgb": [
+      106.0,
+      130.0,
+      80.0
+     ],
+     "score": 0.3125,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2021,
+     "dates": [
+      "2021-09-16"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.3669,
+     "turf_exg": 74.0,
+     "green_ndvi": 0.2468,
+     "bare_turf": 0.0105,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 51.0,
+     "turf_rgb": [
+      88.0,
+      123.0,
+      85.0
+     ],
+     "score": 0.3786,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2019,
+     "dates": [
+      "2019-07-31",
+      "2019-08-04"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2381,
+     "turf_exg": 70.0,
+     "green_ndvi": 0.1677,
+     "bare_turf": 0.1011,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 53.0,
+     "turf_rgb": [
+      108.0,
+      134.0,
+      91.0
+     ],
+     "score": 0.1704,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2017,
+     "dates": [
+      "2017-08-10",
+      "2017-08-19"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2826,
+     "turf_exg": 78.0,
+     "green_ndvi": 0.1975,
+     "bare_turf": 0.033,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 56.0,
+     "turf_rgb": [
+      98.0,
+      133.0,
+      89.0
+     ],
+     "score": 0.2003,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2015,
+     "dates": [
+      "2015-09-13",
+      "2015-10-03"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.403,
+     "turf_exg": 74.0,
+     "green_ndvi": 0.2853,
+     "bare_turf": 0.001,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 46.0,
+     "turf_rgb": [
+      82.0,
+      118.0,
+      80.0
+     ],
+     "score": -0.1551,
+     "notes": [
+      "leaf-off flight"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2014,
+     "dates": [
+      "2014-09-18"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.4361,
+     "turf_exg": 92.0,
+     "green_ndvi": 0.2925,
+     "bare_turf": 0.0172,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 37.0,
+     "turf_rgb": [
+      73.0,
+      118.0,
+      70.0
+     ],
+     "score": 0.4008,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2013,
+     "dates": [
+      "2013-07-12"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2473,
+     "turf_exg": 63.0,
+     "green_ndvi": 0.1782,
+     "bare_turf": 0.0252,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 34.0,
+     "turf_rgb": [
+      102.0,
+      125.0,
+      86.0
+     ],
+     "score": 0.1752,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2011,
+     "dates": [
+      "2011-07-04",
+      "2011-07-20"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2195,
+     "turf_exg": 41.0,
+     "green_ndvi": 0.1912,
+     "bare_turf": 0.1317,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 68.0,
+     "turf_rgb": [
+      108.0,
+      124.0,
+      98.0
+     ],
+     "score": -0.037,
+     "notes": [
+      "hazy (blue floor 68)"
+     ],
+     "turf_source": "osm"
+    }
+   ]
+  },
+  "gsd_m": 1.0,
+  "resolution_m": 1.0,
   "bands": [
    "red",
    "green",
@@ -49,21 +257,21 @@
   ],
   "crs": "EPSG:26915",
   "epsg": 26915,
-  "width": 5488,
-  "height": 4809,
+  "width": 1647,
+  "height": 1443,
   "transform": [
-   0.3,
+   1.0,
    0.0,
-   607196.4,
+   607196.0,
    0.0,
-   -0.3,
-   4651112.7
+   -1.0,
+   4651113.0
   ],
   "bounds_crs": [
-   607196.4,
+   607196.0,
    4649670.0,
-   608842.7999999999,
-   4651112.7
+   608843.0,
+   4651113.0
   ],
   "files": {
    "rgb": "naip_rgb.tif",
@@ -75,26 +283,26 @@
     "rgb": "naip_rgb_lo.jpg",
     "nir": "naip_nir_lo.jpg"
    },
-   "width": 2744,
-   "height": 2404,
+   "width": 1647,
+   "height": 1443,
    "transform": [
-    0.6,
+    1.0,
     0.0,
-    607196.4,
+    607196.0,
     0.0,
-    -0.6001247920133111,
-    4651112.7
+    -1.0,
+    4651113.0
    ],
-   "resolution_m": 0.6
+   "resolution_m": 1.0
   },
   "sizes_mb": {
-   "naip_rgb.tif": 11.58,
-   "naip_nir.tif": 9.37,
-   "naip_rgb_lo.jpg": 2.3,
-   "naip_nir_lo.jpg": 1.83
+   "naip_rgb.tif": 1.64,
+   "naip_nir.tif": 1.72,
+   "naip_rgb_lo.jpg": 1.06,
+   "naip_nir_lo.jpg": 1.03
   },
   "preview": "preview.jpg",
-  "preview_scale": 4,
+  "preview_scale": 2,
   "license": "Public domain (USDA FSA)"
  },
  "dem": {
@@ -121,5 +329,5 @@
   "nan_frac": 0.0,
   "license": "Public domain (USGS)"
  },
- "total_mb": 30.4
+ "total_mb": 10.5
 }

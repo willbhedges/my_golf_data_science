@@ -1,6 +1,6 @@
 # Ellis Golf Course (Cedar Rapids, IA) - Blue tees
 
-Built 2026-10-17T13:50:00Z. OSM way/74271941. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-10-17T15:11:50Z. OSM way/74271941. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -51,7 +51,8 @@ OSM features inside the course: buildings 9, built_up_landuse 1, golf=bunker 25,
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 60 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
-- **imagery**: ok: course_data/packages/ellis/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
+- **imagery**: ok: course_data/packages/ellis/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2014)
+- **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2014
 - **elevation**: ok: course_data/packages/ellis/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
