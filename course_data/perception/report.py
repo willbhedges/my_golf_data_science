@@ -50,6 +50,9 @@ def pool(evs):
     out = {k: pool_prf(evs, k) for k in PRF}
     # tee-complex precision only where OSM tees are complete
     out["tee_complexes_precision_eligible"] = pool_prf(evs, "tee_complexes", "precision_eligible")
+    tc = [e["tee_complexes"] for e in evs if (e.get("tee_complexes") or {}).get("eligible")]
+    n_t = sum(t.get("n_true", 0) for t in tc)
+    out["tee_complexes"]["recall_any_p"] = round(sum(t.get("tp_true_any_p", 0) for t in tc) / n_t, 3) if n_t else None
     g = [e["greens_hole"] for e in evs if e.get("greens_hole", {}).get("eligible")]
     out["greens_practice"] = dict(practice_true=sum(x.get("practice_true", 0) for x in g),
                                   practice_called_hole=sum(x.get("practice_called_hole", 0) for x in g),
@@ -139,6 +142,9 @@ def write(evs, models, path_md, path_json):
                  f"{_f(b['precision'])} | {_f(b['recall'])} |")
     a, b = P["test"]["tee_complexes_precision_eligible"], P["train"]["tee_complexes_precision_eligible"]
     L.append(f"| tee complexes, precision where OSM tees complete | {a['courses']} | {_f(a['precision'])} | | {b['courses']} | {_f(b['precision'])} | |")
+    L.append(f"| tee complexes, recall of every candidate (any p: the sequence model's ceiling) | "
+             f"{P['test']['tee_complexes']['courses']} | | {_f(P['test']['tee_complexes'].get('recall_any_p'))} | "
+             f"{P['train']['tee_complexes']['courses']} | | {_f(P['train']['tee_complexes'].get('recall_any_p'))} |")
     L += ["", "## Practice greens (hole-green courses)", "", "| split | practice true | called hole | called practice | hole greens called practice | hole greens uncertain |",
           "|---|---|---|---|---|---|"]
     for s in ("test", "train"):
