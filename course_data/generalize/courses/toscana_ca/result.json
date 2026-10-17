@@ -1,0 +1,927 @@
+{
+ "slug": "toscana_ca",
+ "sample": {
+  "name": "Toscana Country Club",
+  "osm": "relation/12694210",
+  "state": "CA",
+  "center": [
+   -116.339136,
+   33.736139
+  ],
+  "area_ha": 242.9,
+  "tags": {
+   "addr:city": "Indian Wells",
+   "website": "https://www.toscanacc.com/Home.aspx"
+  },
+  "counts": {
+   "bunker": 231,
+   "hole": 36,
+   "tee": 157,
+   "green": 36,
+   "fairway": 38
+  },
+  "tier": "validation",
+  "slug": "toscana_ca"
+ },
+ "run_utc": "2026-10-17T03:29:16Z",
+ "seconds": {
+  "resolve_by_name": 188.7,
+  "osm": 31.8,
+  "parking": 34.6,
+  "scorecard": 49.5,
+  "imagery": 15.9,
+  "naip4": 0.7,
+  "segment": 89.9,
+  "lidar_pads": 3.8,
+  "package_today": 15.4,
+  "routing": 0.5,
+  "package_routed": 15.2
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "relation",
+   "id": 12694210
+  },
+  "name": "Toscana Country Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Toscana Country Club",
+    "Indian Wells",
+    36,
+    "relation/12694210"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "built_up_landuse": 1,
+   "golf=bunker": 231,
+   "golf=cartpath": 39,
+   "golf=fairway": 38,
+   "golf=green": 36,
+   "golf=hole": 36,
+   "golf=pin": 36,
+   "golf=rough": 62,
+   "golf=tee": 157,
+   "golf=water_hazard": 18,
+   "holes_with_par": 36,
+   "single_trees": 215,
+   "water_lines": 3,
+   "water_polygons": 18
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 3
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (10 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 21 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/02a9f2bb-ccc5-47bc-a2e0-80be64c56798"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Golden Bear",
+   "Black",
+   "Blue",
+   "Silver",
+   "White",
+   "Green",
+   "Yellow",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   2944,
+   2948
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 42,
+   "tee": 125,
+   "fairway": 41,
+   "bunker": 236
+  },
+  "greens_p06": 42,
+  "seconds_infer": 84.7
+ },
+ "lidar_pads": 555,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 15,
+  "green_osm": 15,
+  "green_segment": 0,
+  "with_tee_box": 12,
+  "stages": {
+   "resolve": "ok: relation/12694210 Toscana Country Club (Indian Wells, CA)",
+   "osm": "ok: 1160 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 8 sets; lidar pads: 113 candidate pads near hole starts, 15 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 8 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/toscana_ca/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/toscana_ca/imagery/dem.tif (14/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 10 tee candidates)"
+  },
+  "tee_set": "Golden Bear",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 381,
+    "card": 382
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 536,
+    "card": 538
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 197,
+    "card": 198
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 382,
+    "card": 384
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 444,
+    "card": 443
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 402,
+    "card": 401
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 177,
+    "card": 178
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 418,
+    "card": 418
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 540,
+    "card": 541
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 433,
+    "card": 434
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 209,
+    "card": 209
+   },
+   "12": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 584,
+    "card": 585
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 390,
+    "card": 391
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 398,
+    "card": 396
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 173,
+    "card": 176
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 344,
+    "card": 345
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 427,
+    "card": 429
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 595,
+    "card": 597
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -10.906,
+  "n_check": 0,
+  "margins": true,
+  "unused_greens": [
+   "osm:way/1378649048",
+   "osm:way/1378649682",
+   "osm:way/1378650841",
+   "osm:way/1378653288",
+   "osm:way/1378654707",
+   "osm:way/1378655897",
+   "osm:way/1378657518",
+   "osm:way/1378657519",
+   "osm:way/1378658917",
+   "osm:way/1378660199",
+   "osm:way/1378663079",
+   "osm:way/1378663080",
+   "osm:way/1378670869",
+   "osm:way/1378670874",
+   "osm:way/1378670878",
+   "osm:way/1378673419",
+   "osm:way/1378673421",
+   "osm:way/1378954336",
+   "segment:6",
+   "segment:11",
+   "segment:14",
+   "segment:16",
+   "segment:20",
+   "segment:21"
+  ],
+  "clubhouse": [
+   -116.33877220000002,
+   33.733591499999996,
+   "parking"
+  ],
+  "inputs": {
+   "greens": 42,
+   "greens_osm": 36,
+   "tees": 506,
+   "tees_by_src": {
+    "osm": 157,
+    "segment": 15,
+    "lidar": 334
+   },
+   "fairways": 79,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 375.2,
+    "card_yards": [
+     263,
+     300,
+     340,
+     347,
+     371,
+     382
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 532.8,
+    "card_yards": [
+     366,
+     424,
+     463,
+     492,
+     507,
+     538
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 229.4,
+    "card_yards": [
+     100,
+     141,
+     148,
+     175,
+     186,
+     198
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 379.8,
+    "card_yards": [
+     230,
+     310,
+     345,
+     355,
+     377,
+     384
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 431.6,
+    "card_yards": [
+     243,
+     330,
+     372,
+     387,
+     424,
+     443
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 402.3,
+    "card_yards": [
+     252,
+     280,
+     345,
+     357,
+     384,
+     401
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 199.2,
+    "card_yards": [
+     89,
+     129,
+     152,
+     161,
+     170,
+     178
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 441.1,
+    "card_yards": [
+     286,
+     334,
+     387,
+     399,
+     412,
+     418
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 506.2,
+    "card_yards": [
+     346,
+     468,
+     493,
+     503,
+     513,
+     541
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 420.2,
+    "card_yards": [
+     223,
+     291,
+     345,
+     373,
+     389,
+     434
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 209.1,
+    "card_yards": [
+     122,
+     131,
+     156,
+     168,
+     183,
+     209
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 577.9,
+    "card_yards": [
+     293,
+     463,
+     512,
+     538,
+     548,
+     585
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 391.4,
+    "card_yards": [
+     194,
+     252,
+     310,
+     326,
+     370,
+     391
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 359.3,
+    "card_yards": [
+     230,
+     263,
+     328,
+     353,
+     381,
+     396
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 173.5,
+    "card_yards": [
+     67,
+     116,
+     135,
+     152,
+     161,
+     176
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 339.5,
+    "card_yards": [
+     253,
+     280,
+     299,
+     311,
+     334,
+     345
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 416.3,
+    "card_yards": [
+     283,
+     342,
+     350,
+     388,
+     408,
+     429
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 468.1,
+    "card_yards": [
+     392,
+     465,
+     529,
+     539,
+     566,
+     597
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 15,
+  "green_osm": 15,
+  "green_segment": 0,
+  "with_tee_box": 12,
+  "stages": {
+   "resolve": "ok: relation/12694210 Toscana Country Club (Indian Wells, CA)",
+   "osm": "ok: 1160 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 8 sets; lidar pads: 113 candidate pads near hole starts, 15 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 8 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/toscana_ca__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/toscana_ca__routed/imagery/dem.tif (14/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 10 tee candidates)"
+  },
+  "tee_set": "Golden Bear",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 381,
+    "card": 382
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 536,
+    "card": 538
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 197,
+    "card": 198
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 382,
+    "card": 384
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 444,
+    "card": 443
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 402,
+    "card": 401
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 177,
+    "card": 178
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 418,
+    "card": 418
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 540,
+    "card": 541
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 433,
+    "card": 434
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 209,
+    "card": 209
+   },
+   "12": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 584,
+    "card": 585
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 390,
+    "card": 391
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 398,
+    "card": 396
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 173,
+    "card": 176
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 344,
+    "card": 345
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 427,
+    "card": 429
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 595,
+    "card": 597
+   }
+  }
+ }
+}

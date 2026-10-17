@@ -1,0 +1,776 @@
+{
+ "slug": "white_mountain_wy",
+ "sample": {
+  "name": "White Mountain Golf Course",
+  "osm": "way/156355318",
+  "state": "WY",
+  "center": [
+   -109.242611,
+   41.643852
+  ],
+  "area_ha": 135.2,
+  "tags": {
+   "addr:city": "Rock Springs"
+  },
+  "counts": {
+   "green": 15,
+   "bunker": 38,
+   "tee": 79,
+   "hole": 18,
+   "fairway": 31
+  },
+  "tier": "validation",
+  "slug": "white_mountain_wy"
+ },
+ "run_utc": "2026-10-17T03:37:54Z",
+ "seconds": {
+  "resolve_by_name": 128.5,
+  "osm": 31.6,
+  "parking": 30.8,
+  "scorecard": 13.9,
+  "imagery": 20.1,
+  "naip4": 0.5,
+  "segment": 34.9,
+  "lidar_pads": 3.3,
+  "package_today": 1.3,
+  "routing": 0.1,
+  "package_routed": 1.1
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 156355318
+  },
+  "name": "White Mountain Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "White Mountain Golf Course",
+    "Rock Springs",
+    18,
+    "way/156355318"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 11,
+   "golf=bunker": 38,
+   "golf=cartpath": 21,
+   "golf=clubhouse": 1,
+   "golf=driving_range": 1,
+   "golf=fairway": 31,
+   "golf=green": 15,
+   "golf=hole": 18,
+   "golf=rough": 1,
+   "golf=tee": 79,
+   "golf=water_hazard": 1,
+   "holes_with_par": 18,
+   "single_trees": 227,
+   "trees_polygons": 3,
+   "water_polygons": 8
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 7
+ },
+ "scorecard": {
+  "found": [],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (9 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": false,
+    "info": "opengolfapi: card at https://api.opengolfapi.org/api/v1/courses/e616baa2-49e4-4db9-88d7-dc19dbf09d2a rejected (hole count / lengths don't fit OSM)"
+   }
+  ],
+  "chosen": null
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   1752,
+   3137
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 32,
+   "tee": 71,
+   "fairway": 33,
+   "bunker": 72
+  },
+  "greens_p06": 30,
+  "seconds_infer": 30.6
+ },
+ "lidar_pads": 133,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 2,
+  "green_segment": 16,
+  "with_tee_box": 0,
+  "stages": {
+   "resolve": "ok: way/156355318 White Mountain Golf Course (Rock Springs, WY)",
+   "osm": "ok: 617 features",
+   "scorecard": "missing",
+   "tees": "fallback: OSM tee nearest the hole-line start (no yardages)",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 1 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/white_mountain_wy/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/white_mountain_wy/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+88 zones on 17 holes, +16 greens, 26 tee candidates)"
+  },
+  "tee_set": "osm_back",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 402,
+    "card": null
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 386,
+    "card": null
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 197,
+    "card": null
+   },
+   "4": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 583,
+    "card": null
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 383,
+    "card": null
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 408,
+    "card": null
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 155,
+    "card": null
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 544,
+    "card": null
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 394,
+    "card": null
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 413,
+    "card": null
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 542,
+    "card": null
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 393,
+    "card": null
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 207,
+    "card": null
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 562,
+    "card": null
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 414,
+    "card": null
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 451,
+    "card": null
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 157,
+    "card": null
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "segment",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 385,
+    "card": null
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": false,
+  "cost": -16.478,
+  "n_check": 0,
+  "margins": false,
+  "unused_greens": [
+   "osm:way/1387164225",
+   "osm:way/1387164228",
+   "osm:way/1387172980",
+   "osm:way/1387172990",
+   "osm:way/1387172993",
+   "osm:way/1387172996",
+   "osm:way/1387173007",
+   "osm:way/1387173019",
+   "osm:way/1387173023",
+   "osm:way/1387173027",
+   "osm:way/1387173039",
+   "osm:way/1387173044",
+   "osm:way/1387173049"
+  ],
+  "clubhouse": [
+   -109.24285605,
+   41.6415322,
+   "named"
+  ],
+  "inputs": {
+   "greens": 31,
+   "greens_osm": 15,
+   "tees": 134,
+   "tees_by_src": {
+    "osm": 79,
+    "segment": 13,
+    "lidar": 42
+   },
+   "fairways": 63,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 398.6,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 386.2,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 196.0,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 579.0,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 380.8,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 401.1,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 153.3,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 459.8,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 390.0,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 403.8,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 530.9,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 384.0,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 204.7,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 559.0,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 414.4,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 433.4,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 159.8,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 383.9,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 0,
+  "stages": {
+   "resolve": "ok: way/156355318 White Mountain Golf Course (Rock Springs, WY)",
+   "osm": "ok: 635 features",
+   "scorecard": "missing",
+   "tees": "fallback: OSM tee nearest the hole-line start (no yardages)",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 1 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/white_mountain_wy__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/white_mountain_wy__routed/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+88 zones on 11 holes, +0 greens, 24 tee candidates)"
+  },
+  "tee_set": "osm_back",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 402,
+    "card": null
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 388,
+    "card": null
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 196,
+    "card": null
+   },
+   "4": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 581,
+    "card": null
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 382,
+    "card": null
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 407,
+    "card": null
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 154,
+    "card": null
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 543,
+    "card": null
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 409,
+    "card": null
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 411,
+    "card": null
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 542,
+    "card": null
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 391,
+    "card": null
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 207,
+    "card": null
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 560,
+    "card": null
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 415,
+    "card": null
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 449,
+    "card": null
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 160,
+    "card": null
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 384,
+    "card": null
+   }
+  }
+ }
+}

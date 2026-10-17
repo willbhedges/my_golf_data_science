@@ -25,26 +25,26 @@ States: CA, GA, IL, KY, MA, ME, MN, MS, NH, UT, WI, WY (three per Census region,
 ## Answer
 
 * **Today**: every hole and green placed on **47%** of random US courses (population-weighted by tier) - essentially the courses where OSM volunteers mapped every golf=hole way.
-* **With routing inference**: **53%** fully correct with no human input; **75%** correct once a golfer confirms the holes the router flags.
-* **Need a golfer check**: 52% of courses (a flagged hole, or no scorecard online).
+* **With routing inference**: **49%** fully correct with no human input; **74%** correct once a golfer confirms the holes the router flags.
+* **Need a golfer check**: 53% of courses (a flagged hole, or no scorecard online).
 
 ### Per tier
 
 | tier | population share | sampled | found by name | scorecard online | NAIP | today all holes | routing all correct | after golfer check | needs check |
 |---|---|---|---|---|---|---|---|---|---|
-| full | 65% | 7 | 100% | 71% | 100% | 71% | 74% | 83% | 29% |
-| partial | 12% | 7 | 86% | 100% | 100% | 0% | 14% | 57% | 86% |
-| none | 23% | 7 | 86% | 86% | 100% | 0% | 12% | 61% | 100% |
+| full | 65% | 7 | 100% | 71% | 100% | 71% | 73% | 83% | 29% |
+| partial | 12% | 7 | 86% | 100% | 100% | 0% | 5% | 58% | 95% |
+| none | 23% | 7 | 86% | 86% | 100% | 0% | 5% | 54% | 100% |
 
 ## Routing validation (OSM hole ways and refs hidden)
 
 | inputs | card | courses | hole-number acc | green assignment acc | physical holes found | median length err (yds) | all 18 correct | correct after check | needs check | flagged / course |
 |---|---|---|---|---|---|---|---|---|---|---|
-| TODAY's fallback: geometry.infer_holes on OSM greens/tees | none | 7 | 8% | 14% | 44% | 1.1 | 0% | 0% | 0% | 0.0 |
-| OSM greens/tees + model + lidar | scorecard | 7 | 80% | 88% | 83% | 1.8 | 14% | 57% | 86% | 4.29 |
-| model + lidar only (unmapped course) | scorecard | 7 | 78% | 88% | 81% | 2.6 | 14% | 71% | 100% | 7.29 |
-| OSM greens/tees + model + lidar | none | 7 | 18% | 21% | 64% | 1.2 | 0% | 29% | 100% | 13.29 |
-| model + lidar only (unmapped course) | none | 7 | 18% | 25% | 56% | 3.2 | 0% | 71% | 100% | 14.29 |
+| TODAY's fallback: geometry.infer_holes on OSM greens/tees | none | 19 | 9% | 20% | 41% | 2.1 | 0% | 0% | 0% | 0.0 |
+| OSM greens/tees + model + lidar | scorecard | 19 | 70% | 81% | 76% | 2.8 | 5% | 58% | 95% | 6.95 |
+| model + lidar only (unmapped course) | scorecard | 19 | 62% | 72% | 70% | 2.9 | 5% | 63% | 100% | 10.11 |
+| OSM greens/tees + model + lidar | none | 19 | 9% | 11% | 56% | 1.9 | 0% | 47% | 100% | 14.37 |
+| model + lidar only (unmapped course) | none | 19 | 10% | 14% | 52% | 3.3 | 0% | 68% | 100% | 16.16 |
 
 Definitions: hole-number acc = routed hole n has the true hole n's green (within 20 yds) and its tee within 40 yds of the first 60 % of the true line; green assignment = the green alone; physical holes = true (tee, green) pairs found under any number; length error = routed straight tee->green vs the true line's length from the routed tee; `correct after check` = every wrong hole carries a `check` flag. Card = the web scorecard when found, else pars + lengths from the hidden OSM ways (`card*` below).
 
@@ -53,7 +53,7 @@ Definitions: hole-number acc = routed hole n has the true hole n's green (within
 | course | st | tier | found | OSM holes / greens / tees | scorecard | NAIP | model greens (OSM) | today: line / green / tee | routed (check) | V-osm hole / green | V-model hole / green |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | Billy Caldwell Golf Course | IL | full | yes | 9 / 10 / 19 | opengolfapi (9) | 2023 | 10 (10) | 9 / 9 / 9 of 9 | 9 (0) | 78% / 100% | 78% / 89% |
-| Black Stone Creek Golf Club | WI | full | yes | 19 / 18 / 29 | none | 2022 | 19 (18) | 17 / 17 / 0 of 18 | 17 (1) | 76% / 76%* | 71% / 82%* |
+| Black Stone Creek Golf Club | WI | full | yes | 19 / 18 / 29 | none | 2022 | 19 (18) | 17 / 17 / 0 of 18 | 17 (1) | 59% / 71%* | 71% / 82%* |
 | Elk River Golf Club | MN | full | yes | 18 / 19 / 56 | golfify (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 78% | 94% / 100% |
 | Sky Mountain Golf Course | UT | full | yes | 18 / 20 / 69 | golfify (18) | 2021 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 94% | 89% / 89% |
 | Urbana Country Club | IL | full | yes | 18 / 19 / 45 | opengolfapi (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 89% | 50% / 72% |
@@ -73,3 +73,24 @@ Definitions: hole-number acc = routed hole n has the true hole n's green (within
 | Sevillano Links | CA | none | yes | 0 / 8 / 0 | none | 2022 | 26 (8) | 0 / 0 / 0 of 18 | 14 (17) | - | - |
 | Sleepy Hollow Golf Course | KY | none | yes | 0 / 0 / 0 | opengolfapi (9) | 2022 | 9 (0) | 0 / 0 / 0 of 9 | 9 (9) | - | - |
 | The Woodford Club | KY | none | yes | 0 / 0 / 0 | opengolfapi (18) | 2022 | 19 (0) | 0 / 0 / 0 of 18 | 17 (18) | - | - |
+| Dwan Golf Course | MN | validation | yes | 18 / 20 / 40 | golfify (18) | 2023 | 18 (20) | 18 / 18 / 18 of 18 | 18 (0) | 89% / 94% | 72% / 89% |
+| El Dorado Park Golf Course | CA | validation | yes | 18 / 18 / 37 | golfify (18) | 2022 | 25 (18) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 100% | 44% / 56% |
+| Fairways of Woodside | WI | validation | yes | 18 / 18 / 51 | golfify (18) | 2022 | 19 (18) | 18 / 18 / 18 of 18 | 18 (0) | 67% / 78% | 56% / 67% |
+| Hatherly Country Club | MA | validation | yes | 18 / 21 / 55 | golfify (18) | 2023 | 22 (21) | 18 / 18 / 18 of 18 | 17 (1) | 56% / 83% | 44% / 61% |
+| Hidden Greens North Golf Club | WI | validation | yes | 18 / 19 / 32 | opengolfapi (18) | 2022 | 19 (19) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 100% | 94% / 100% |
+| The Hideout Golf Club | UT | validation | yes | 17 / 18 / 70 | golfify (18) | 2021 | 19 (18) | 18 / 18 / 17 of 18 | 18 (0) | 88% / 100% | 94% / 100% |
+| Metamora Fields Golf Club | IL | validation | yes | 18 / 25 / 78 | golfify (18) | 2023 | 20 (25) | 18 / 18 / 18 of 18 | 18 (0) | 83% / 89% | 83% / 89% |
+| Toscana Country Club | CA | validation | yes | 36 / 36 / 157 | opengolfapi (18) | 2022 | 42 (36) | 18 / 15 / 12 of 18 | 18 (0) | 17% / 28% | 0% / 0% |
+| The Golf Club at Turner Hill | MA | validation | yes | 18 / 21 / 88 | golfify (18) | 2023 | 24 (21) | 18 / 18 / 18 of 18 | 18 (0) | 56% / 89% | 39% / 56% |
+| Walpole Country Club | MA | validation | yes | 18 / 21 / 54 | golfify (18) | 2023 | 20 (21) | 18 / 18 / 18 of 18 | 18 (0) | 33% / 33% | 6% / 6% |
+| Wellesley Country Club | MA | validation | yes | 25 / 27 / 81 | golfify (18) | 2023 | 28 (27) | 19 / 19 / 17 of 18 | 18 (0) | 83% / 100% | 72% / 94% |
+| White Mountain Golf Course | WY | validation | yes | 18 / 15 / 79 | none | 2022 | 30 (15) | 18 / 18 / 0 of 18 | 18 (0) | 28% / 28%* | 33% / 39%* |
+
+## Failure modes seen in the sample
+
+* **No scorecard online** (Black Stone Creek, Wild Ridge, Sevillano): the router has no yardage sequence; physical holes are still found (~60 %) but hole numbers are a guess (~18 %). A golfer-typed card (18 numbers) fixes it.
+* **Adjacent / multi-course facilities** (Wild Ridge: another course's ways inside the boundary; Toscana 36 holes, Wellesley 27): extra greens and tees compete; duplicated refs in OSM.
+* **Renamed / duplicated names** (Ridges at Sand Creek, The Reserve: `ambiguous` by name + state; the golfer must pick the town or the map pin).
+* **OSM itself wrong** (Urbana: par / length swapped between 15 and 16 in the ways): the 'truth' is not always true.
+* **Model greens** miss or add greens (practice / chipping greens, collars); 9-hole courses played twice and executive courses with short par 3s give many equally good length fits.
+* **Today's fallback** (`geometry.infer_holes`, no card): numbers holes in OSM order - 8 % right; `package.py` now routes with the card instead (S2a).
