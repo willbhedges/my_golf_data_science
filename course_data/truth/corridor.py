@@ -651,9 +651,34 @@ def stage_edges(slug, holes=None):
                                     for a, s, d in flag) or "no hazard within 10 yds of the fairway"))
 
 
+def stage_notes(slug, header):
+    """NOTES.md = the hand-written header (notes_header.md) + per hole: confidence, note, zone notes, 2nd-pass edges."""
+    T = trace(slug)
+    FJ = frames(slug)
+    L_ = [open(header).read().rstrip(), "", "## Per tee shot", ""]
+    for ref, th in T["holes"].items():
+        fj = FJ[ref]
+        n = {}
+        for z in th["zones"]:
+            n[z["lie"]] = n.get(z["lie"], 0) + 1
+        L_ += [f"### {ref} (par {fj['par']}, {fj.get('set')} {fj.get('yards')} yds; tee: {fj.get('tee_method')})", "",
+               f"Confidence: {th.get('confidence', '?')}. Zones: " + ", ".join(f"{k} {v}" for k, v in n.items()) + ".", "",
+               th.get("note", ""), ""]
+        zn = [f"{z['lie']}: {z['note']}" for z in th["zones"] if z.get("note")]
+        if zn:
+            L_ += ["Zone notes: " + "; ".join(zn) + ".", ""]
+        rows = edges(th["zones"])
+        near = [f"{int(r['along'])}{s_} {r[s_]['hazard']} {r[s_]['gap']:.0f} yds out" for r in rows if "L" in r
+                for s_ in ("L", "R") if r[s_]["near"]]
+        L_ += [("Edges within 10 yds of the fairway (re-checked on zoomed photo / CIR / lidar renders): "
+                + "; ".join(near) + ".") if near else "No hazard within 10 yds of the fairway edge.", "",
+               f"Review: `review/h{int(ref):02d}.png`; evidence: `render/h{int(ref):02d}_evidence.png`.", ""]
+    open(tdir(slug, "NOTES.md"), "w").write("\n".join(L_) + "\n")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("stage", choices=["panels", "review", "build", "edges", "zoom", "sheet", "sheet4"])
+    ap.add_argument("stage", choices=["panels", "review", "build", "edges", "zoom", "sheet", "sheet4", "notes"])
     ap.add_argument("--slug", required=True)
     ap.add_argument("--holes")
     ap.add_argument("--box", help="zoom: a0,a1,x0,x1")
@@ -670,6 +695,8 @@ def main():
         stage_build(a.slug)
     elif a.stage == "edges":
         stage_edges(a.slug, hs)
+    elif a.stage == "notes":
+        stage_notes(a.slug, tdir(a.slug, "notes_header.md"))
     elif a.stage == "sheet":
         print(sheet(a.slug, a.holes, a.out, with_trace=a.which == "trace"))
     elif a.stage == "sheet4":

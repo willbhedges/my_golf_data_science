@@ -9,6 +9,7 @@ name: truth-maps
 #   2. raw2/ multi-year NAIP 1 m + lidar point statistics (v2_fetch.py; Actions cache v2raw-<slug>-<hash>, the
 #      same key vision_any_v2*.yml use; not committed)
 #   3. corridor evidence renders (photo / CIR / other years / lidar canopy / low vegetation) -> truth/<slug>/render/
+#   5. slugs in "ob": OB evidence (course_data/ob/fetch.py) so the package build infers OB as for Veenker
 #   4. slugs in "infer": the product's v2 layer (v2_model.py --infer, integrated as vision_any.geojson) so the
 #      product package of a new course gets its vision zones on the next package build
 on:
@@ -96,12 +97,19 @@ jobs:
           if python3 -c "import json,sys;sys.exit(0 if '$S' in json.load(open('course_data/requests/truth_maps.json')).get('infer', []) else 1)"; then
             python -u course_data/vision_any/v2_model.py --infer $S --integrate yes
           fi
+      - name: OB evidence (OSM, building footprints, parcels) for the product package
+        run: |
+          S=${{ matrix.slug }}
+          if python3 -c "import json,sys;sys.exit(0 if '$S' in json.load(open('course_data/requests/truth_maps.json')).get('ob', []) else 1)"; then
+            python -u course_data/ob/fetch.py $S || true
+            rm -rf course_data/ob/_work
+          fi
       - name: Collect
         run: |
           S=${{ matrix.slug }}
           mkdir -p /tmp/out
           tar czf /tmp/out/$S.tgz course_data/truth/$S/render $(ls -d course_data/vision_any/$S/raw course_data/vision_any/$S/vision_any*.geojson \
-              course_data/vision_any/$S/classes_v2.jpg course_data/vision_any/$S/layers_v2.tif 2>/dev/null)
+              course_data/vision_any/$S/classes_v2.jpg course_data/vision_any/$S/layers_v2.tif course_data/ob/$S 2>/dev/null)
       - uses: actions/upload-artifact@v4
         with:
           name: truth-${{ matrix.slug }}
@@ -129,7 +137,7 @@ jobs:
             S=$(basename "$f" .tgz)
             git add course_data/truth/$S/render
             for p in course_data/vision_any/$S/raw course_data/vision_any/$S/vision_any.geojson course_data/vision_any/$S/vision_any_v2.geojson \
-                     course_data/vision_any/$S/classes_v2.jpg course_data/vision_any/$S/layers_v2.tif; do
+                     course_data/vision_any/$S/classes_v2.jpg course_data/vision_any/$S/layers_v2.tif course_data/ob/$S; do
               [ -e "$p" ] && git add "$p"
             done
           done
