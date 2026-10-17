@@ -1,0 +1,116 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/26ca911c-61ae-4b2a-894e-a8fa0d8ddf83",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/26ca911c-61ae-4b2a-894e-a8fa0d8ddf83",
+    "par": [
+     4,
+     3,
+     4,
+     4,
+     5,
+     3,
+     4,
+     4,
+     4,
+     5,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     3,
+     5
+    ],
+    "handicap": [
+     11,
+     9,
+     5,
+     13,
+     1,
+     17,
+     7,
+     3,
+     15,
+     8,
+     14,
+     4,
+     12,
+     10,
+     6,
+     2,
+     18,
+     16
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       366,
+       199,
+       405,
+       355,
+       527,
+       162,
+       427,
+       416,
+       358,
+       547,
+       186,
+       372,
+       371,
+       384,
+       391,
+       369,
+       179,
+       487
+      ],
+      "total": 6501,
+      "source": "opengolfapi",
+      "total_stated": 6501
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "26ca911c-61ae-4b2a-894e-a8fa0d8ddf83",
+     "course_name": "Hunter Memorial Golf Course",
+     "club_name": "Hunter Memorial Golf Course",
+     "city": "Meriden",
+     "state": "CT",
+     "lat": 41.557417,
+     "lng": -72.7691226,
+     "holes": 18,
+     "yardage": 6501,
+     "website": "https://www.huntergolfclub.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (7 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/26ca911c-61ae-4b2a-894e-a8fa0d8ddf83"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

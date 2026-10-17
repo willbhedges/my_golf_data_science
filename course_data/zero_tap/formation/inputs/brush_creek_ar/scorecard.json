@@ -1,0 +1,265 @@
+{
+ "cards": [
+  {
+   "source": "golfify",
+   "url": "https://www.golfify.io/courses/brush-creek-golf-course",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://www.golfify.io/courses/brush-creek-golf-course",
+    "par": [
+     3,
+     5,
+     4,
+     3,
+     4,
+     4,
+     5,
+     4,
+     4
+    ],
+    "handicap": [
+     2,
+     1,
+     8,
+     7,
+     9,
+     3,
+     6,
+     5,
+     4
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       187,
+       462,
+       278,
+       137,
+       327,
+       381,
+       510,
+       340,
+       304
+      ],
+      "par": [
+       3,
+       5,
+       4,
+       3,
+       4,
+       4,
+       5,
+       4,
+       4
+      ],
+      "handicap": [
+       2,
+       1,
+       8,
+       7,
+       9,
+       3,
+       6,
+       5,
+       4
+      ],
+      "total": 2926,
+      "total_stated": 2926,
+      "rating": 34.6,
+      "slope": 117,
+      "source": "https://www.golfify.io/courses/brush-creek-golf-course"
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       137,
+       397,
+       228,
+       137,
+       282,
+       311,
+       410,
+       280,
+       249
+      ],
+      "par": [
+       3,
+       5,
+       4,
+       3,
+       4,
+       4,
+       5,
+       4,
+       4
+      ],
+      "handicap": [
+       2,
+       1,
+       8,
+       7,
+       9,
+       3,
+       6,
+       5,
+       4
+      ],
+      "total": 2431,
+      "total_stated": 2431,
+      "rating": 33.5,
+      "slope": 109,
+      "source": "https://www.golfify.io/courses/brush-creek-golf-course"
+     }
+    },
+    "facility": {
+     "clubName": "Brush Creek Golf Course",
+     "city": "Springdale",
+     "state": "Arkansas",
+     "address": "6220 Har Ber Avenue",
+     "latitude": 36.186745,
+     "longitude": -94.19901,
+     "numberOfHoles": 9,
+     "website": "https://www.facebook.com/pages/Brush-Creek-Golf-Course/135288416529089"
+    }
+   }
+  },
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/c465dcbc-34d9-400d-8b2b-b8080e367cbb",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/c465dcbc-34d9-400d-8b2b-b8080e367cbb",
+    "par": [
+     3,
+     5,
+     4,
+     3,
+     4,
+     4,
+     5,
+     4,
+     4
+    ],
+    "handicap": [
+     2,
+     1,
+     8,
+     7,
+     9,
+     3,
+     6,
+     5,
+     4
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       187,
+       462,
+       278,
+       137,
+       327,
+       381,
+       510,
+       340,
+       304
+      ],
+      "total": 2926,
+      "total_stated": 2926,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       187,
+       462,
+       278,
+       137,
+       327,
+       381,
+       510,
+       340,
+       304
+      ],
+      "total": 2926,
+      "source": "opengolfapi",
+      "total_stated": 2926
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       137,
+       397,
+       228,
+       137,
+       282,
+       311,
+       410,
+       280,
+       249
+      ],
+      "total": 2431,
+      "total_stated": 2431,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "c465dcbc-34d9-400d-8b2b-b8080e367cbb",
+     "course_name": "Brush Creek Golf Course",
+     "club_name": "Brush Creek Golf Course",
+     "city": "Springdale",
+     "state": "AR",
+     "lat": 36.186599,
+     "lng": -94.198987,
+     "holes": 9,
+     "yardage": 2926,
+     "website": "http://facebook.com/p/brush-creek-golf-course-100054429432973"
+    }
+   }
+  }
+ ],
+ "chosen": "golfify",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": true,
+   "info": "https://www.golfify.io/courses/brush-creek-golf-course"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/c465dcbc-34d9-400d-8b2b-b8080e367cbb"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

@@ -1,0 +1,138 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/bf6916e4-d119-4543-abd8-701521efd536",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/bf6916e4-d119-4543-abd8-701521efd536",
+    "par": [
+     5,
+     3,
+     4,
+     4,
+     3,
+     4,
+     4,
+     4,
+     4
+    ],
+    "handicap": [
+     5,
+     17,
+     1,
+     13,
+     15,
+     9,
+     7,
+     11,
+     3
+    ],
+    "tee_sets": {
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       568,
+       158,
+       473,
+       358,
+       200,
+       437,
+       371,
+       321,
+       394
+      ],
+      "total": 3280,
+      "total_stated": 3292,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       565,
+       144,
+       440,
+       354,
+       190,
+       425,
+       368,
+       315,
+       386
+      ],
+      "total": 3187,
+      "total_stated": 3160,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Green": {
+      "colour": "green",
+      "aliases": [
+       "green"
+      ],
+      "yards": [
+       510,
+       133,
+       415,
+       348,
+       155,
+       370,
+       283,
+       307,
+       365
+      ],
+      "total": 2886,
+      "total_stated": 2847,
+      "rating": null,
+      "slope": null,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "bf6916e4-d119-4543-abd8-701521efd536",
+     "course_name": "Second Nine At Montclair Golf Club",
+     "club_name": "Second Nine At Montclair Golf Club",
+     "city": "West Orange",
+     "state": "NJ",
+     "lat": 40.8200847742,
+     "lng": -74.2472204392,
+     "holes": 9,
+     "yardage": 3292,
+     "website": "http://www.montclairgolfclub.org"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/bf6916e4-d119-4543-abd8-701521efd536"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

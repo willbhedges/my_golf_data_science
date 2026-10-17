@@ -1,0 +1,116 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/94c0c67f-1649-4423-9491-da253f041fc3",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/94c0c67f-1649-4423-9491-da253f041fc3",
+    "par": [
+     4,
+     3,
+     4,
+     4,
+     3,
+     5,
+     4,
+     5,
+     4,
+     3,
+     4,
+     4,
+     5,
+     3,
+     5,
+     4,
+     4,
+     4
+    ],
+    "handicap": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       350,
+       178,
+       354,
+       424,
+       148,
+       547,
+       389,
+       506,
+       305,
+       165,
+       311,
+       329,
+       556,
+       226,
+       528,
+       393,
+       382,
+       353
+      ],
+      "total": 6444,
+      "source": "opengolfapi",
+      "total_stated": 6444
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "94c0c67f-1649-4423-9491-da253f041fc3",
+     "course_name": "Fair Play Golf Course",
+     "club_name": "Fair Play Golf Course",
+     "city": "Norfolk",
+     "state": "NE",
+     "lat": 41.9637784,
+     "lng": -97.4386001,
+     "holes": 18,
+     "yardage": 6444,
+     "website": "https://fairplaygolfcourse.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (9 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/94c0c67f-1649-4423-9491-da253f041fc3"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

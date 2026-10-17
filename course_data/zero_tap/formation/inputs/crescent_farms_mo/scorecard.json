@@ -1,0 +1,253 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/a1b7d042-a175-44a3-9f40-49fa2e3d293b",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/a1b7d042-a175-44a3-9f40-49fa2e3d293b",
+    "par": [
+     3,
+     5,
+     3,
+     4,
+     5,
+     3,
+     4,
+     4,
+     3,
+     4,
+     3,
+     4,
+     5,
+     4,
+     5,
+     3,
+     5,
+     4
+    ],
+    "handicap": [
+     14,
+     10,
+     6,
+     18,
+     8,
+     12,
+     2,
+     4,
+     16,
+     9,
+     17,
+     3,
+     1,
+     7,
+     13,
+     11,
+     5,
+     15
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       385,
+       515,
+       180,
+       450,
+       395,
+       550,
+       416,
+       160,
+       439,
+       430,
+       515,
+       212,
+       460,
+       417,
+       165,
+       553,
+       426,
+       410
+      ],
+      "total": 7078,
+      "source": "opengolfapi",
+      "total_stated": 7078
+     },
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       140,
+       508,
+       194,
+       361,
+       490,
+       168,
+       414,
+       433,
+       159,
+       414,
+       145,
+       361,
+       604,
+       413,
+       526,
+       215,
+       605,
+       360
+      ],
+      "total": 6510,
+      "total_stated": 6510,
+      "rating": 72,
+      "slope": 131,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       120,
+       482,
+       167,
+       345,
+       465,
+       152,
+       389,
+       402,
+       128,
+       382,
+       132,
+       325,
+       578,
+       365,
+       490,
+       194,
+       574,
+       343
+      ],
+      "total": 6033,
+      "total_stated": 6033,
+      "rating": 69.8,
+      "slope": 126,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       95,
+       436,
+       135,
+       298,
+       418,
+       134,
+       362,
+       377,
+       101,
+       351,
+       109,
+       277,
+       541,
+       343,
+       463,
+       162,
+       532,
+       303
+      ],
+      "total": 5437,
+      "total_stated": 5437,
+      "rating": 67.1,
+      "slope": 119,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 72.3,
+        "slope": 124,
+        "total": 5437,
+        "par": 71
+       }
+      ]
+     },
+     "Yellow": {
+      "colour": "yellow",
+      "aliases": [
+       "yellow"
+      ],
+      "yards": [
+       84,
+       358,
+       98,
+       254,
+       379,
+       117,
+       337,
+       342,
+       93,
+       328,
+       83,
+       235,
+       456,
+       284,
+       420,
+       108,
+       444,
+       268
+      ],
+      "total": 4688,
+      "total_stated": 4727,
+      "rating": 68.4,
+      "slope": 115,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "a1b7d042-a175-44a3-9f40-49fa2e3d293b",
+     "course_name": "Crescent Farms Golf Club",
+     "club_name": "Crescent Farms Golf Club",
+     "city": "Eureka",
+     "state": "MO",
+     "lat": 38.5309983,
+     "lng": -90.6098023,
+     "holes": 18,
+     "yardage": 6510,
+     "website": "https://www.crescentfarms.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 13 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/a1b7d042-a175-44a3-9f40-49fa2e3d293b"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

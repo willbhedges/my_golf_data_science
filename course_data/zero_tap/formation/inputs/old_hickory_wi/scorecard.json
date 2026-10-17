@@ -1,0 +1,247 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/55892ad1-fc87-4ef7-b3bb-bc6594d40018",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/55892ad1-fc87-4ef7-b3bb-bc6594d40018",
+    "par": [
+     4,
+     4,
+     3,
+     4,
+     4,
+     5,
+     3,
+     5,
+     4,
+     5,
+     3,
+     5,
+     3,
+     4,
+     4,
+     3,
+     5,
+     4
+    ],
+    "handicap": [
+     14,
+     10,
+     18,
+     2,
+     8,
+     4,
+     16,
+     12,
+     6,
+     11,
+     15,
+     1,
+     13,
+     3,
+     17,
+     9,
+     5,
+     7
+    ],
+    "tee_sets": {
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       446,
+       402,
+       178,
+       427,
+       430,
+       554,
+       192,
+       542,
+       455,
+       533,
+       207,
+       564,
+       168,
+       452,
+       342,
+       186,
+       623,
+       434
+      ],
+      "total": 7135,
+      "total_stated": 7150,
+      "rating": null,
+      "slope": 142,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       418,
+       388,
+       176,
+       423,
+       409,
+       546,
+       179,
+       542,
+       450,
+       529,
+       198,
+       554,
+       160,
+       428,
+       328,
+       178,
+       600,
+       411
+      ],
+      "total": 6917,
+      "total_stated": 6912,
+      "rating": null,
+      "slope": 139,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       390,
+       376,
+       163,
+       415,
+       385,
+       536,
+       158,
+       521,
+       431,
+       524,
+       184,
+       537,
+       145,
+       411,
+       284,
+       163,
+       575,
+       399
+      ],
+      "total": 6597,
+      "total_stated": 6588,
+      "rating": null,
+      "slope": 136,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Yellow": {
+      "colour": "yellow",
+      "aliases": [
+       "yellow"
+      ],
+      "yards": [
+       378,
+       329,
+       152,
+       388,
+       365,
+       475,
+       150,
+       497,
+       410,
+       472,
+       164,
+       508,
+       121,
+       383,
+       264,
+       160,
+       464,
+       350
+      ],
+      "total": 6030,
+      "total_stated": 6045,
+      "rating": null,
+      "slope": 131,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       360,
+       297,
+       134,
+       357,
+       330,
+       441,
+       112,
+       432,
+       379,
+       423,
+       146,
+       425,
+       121,
+       370,
+       264,
+       120,
+       464,
+       309
+      ],
+      "total": 5484,
+      "total_stated": 5494,
+      "rating": null,
+      "slope": 129,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "55892ad1-fc87-4ef7-b3bb-bc6594d40018",
+     "course_name": "Old Hickory Golf Club",
+     "club_name": "Old Hickory Golf Club",
+     "city": "Beaver Dam",
+     "state": "WI",
+     "lat": 43.4512132,
+     "lng": -88.7759882,
+     "holes": 18,
+     "yardage": 7150,
+     "website": "http://www.thenewoldhickory.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site unreachable: ConnectionError(MaxRetryError('HTTPConnectionPool(host=\\'www.thenewoldhickory.com\\', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPConnection(ho"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/55892ad1-fc87-4ef7-b3bb-bc6594d40018"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

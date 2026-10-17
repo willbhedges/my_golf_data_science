@@ -1,0 +1,224 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/668e9024-e359-47c0-a722-759377435240",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/668e9024-e359-47c0-a722-759377435240",
+    "par": [
+     5,
+     4,
+     4,
+     3,
+     4,
+     3,
+     5,
+     3,
+     5,
+     4,
+     4,
+     4,
+     5,
+     3,
+     5,
+     4,
+     3,
+     4
+    ],
+    "handicap": [
+     7,
+     13,
+     15,
+     17,
+     9,
+     3,
+     1,
+     11,
+     5,
+     6,
+     12,
+     14,
+     8,
+     16,
+     2,
+     18,
+     10,
+     4
+    ],
+    "tee_sets": {
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       565,
+       427,
+       375,
+       172,
+       426,
+       262,
+       584,
+       228,
+       550,
+       465,
+       389,
+       387,
+       536,
+       163,
+       591,
+       313,
+       223,
+       440
+      ],
+      "total": 7096,
+      "total_stated": 7096,
+      "rating": 72.5,
+      "slope": 127,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       535,
+       374,
+       349,
+       145,
+       379,
+       223,
+       549,
+       168,
+       515,
+       425,
+       354,
+       353,
+       502,
+       143,
+       553,
+       288,
+       188,
+       420
+      ],
+      "total": 6463,
+      "total_stated": 6463,
+      "rating": 69,
+      "slope": 119,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Silver": {
+      "colour": "silver",
+      "aliases": [
+       "silver"
+      ],
+      "yards": [
+       489,
+       343,
+       306,
+       124,
+       337,
+       187,
+       511,
+       144,
+       485,
+       392,
+       307,
+       320,
+       473,
+       141,
+       506,
+       256,
+       157,
+       396
+      ],
+      "total": 5874,
+      "total_stated": 5874,
+      "rating": 66.3,
+      "slope": 111,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Silver (Female)",
+        "rating": 71,
+        "slope": 123,
+        "total": 5874,
+        "par": 72
+       }
+      ]
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       393,
+       306,
+       271,
+       106,
+       301,
+       158,
+       475,
+       121,
+       459,
+       350,
+       252,
+       268,
+       398,
+       112,
+       435,
+       229,
+       125,
+       369
+      ],
+      "total": 5128,
+      "total_stated": 5128,
+      "rating": 67.5,
+      "slope": 116,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "668e9024-e359-47c0-a722-759377435240",
+     "course_name": "Talonscove At Saratoga Springs",
+     "club_name": "Talonscove At Saratoga Springs",
+     "city": "Saratoga Springs",
+     "state": "UT",
+     "lat": 40.3221889067,
+     "lng": -111.901320219,
+     "holes": 18,
+     "yardage": 7096,
+     "website": "http://www.talonscove.com"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (7 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/668e9024-e359-47c0-a722-759377435240"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

@@ -1,0 +1,116 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/4486b14d-5f56-4710-a4a8-d60f713393ad",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/4486b14d-5f56-4710-a4a8-d60f713393ad",
+    "par": [
+     5,
+     4,
+     4,
+     3,
+     4,
+     5,
+     4,
+     3,
+     4,
+     4,
+     5,
+     3,
+     4,
+     3,
+     4,
+     4,
+     5,
+     4
+    ],
+    "handicap": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       538,
+       399,
+       440,
+       220,
+       376,
+       540,
+       326,
+       188,
+       408,
+       418,
+       541,
+       160,
+       367,
+       240,
+       414,
+       476,
+       554,
+       416
+      ],
+      "total": 7021,
+      "source": "opengolfapi",
+      "total_stated": 7021
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "4486b14d-5f56-4710-a4a8-d60f713393ad",
+     "course_name": "Highlands Golf Course",
+     "club_name": "Highlands Golf Course",
+     "city": "Lincoln",
+     "state": "NE",
+     "lat": 40.8651547,
+     "lng": -96.7432393,
+     "holes": 18,
+     "yardage": 7021,
+     "website": "http://lincolncitygolf.org/highlands"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (7 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/4486b14d-5f56-4710-a4a8-d60f713393ad"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

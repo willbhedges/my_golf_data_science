@@ -1,0 +1,115 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/53ad56ff-32b4-412a-97f6-b58068765443",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/53ad56ff-32b4-412a-97f6-b58068765443",
+    "par": [
+     5,
+     3,
+     4,
+     4,
+     5,
+     4,
+     3,
+     4,
+     4
+    ],
+    "handicap": [
+     3,
+     13,
+     1,
+     5,
+     7,
+     9,
+     11,
+     17,
+     15
+    ],
+    "tee_sets": {
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       477,
+       157,
+       406,
+       371,
+       527,
+       335,
+       190,
+       316,
+       327
+      ],
+      "total": 3106,
+      "total_stated": 3106,
+      "rating": null,
+      "slope": 122,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       398,
+       157,
+       406,
+       291,
+       486,
+       335,
+       165,
+       316,
+       295
+      ],
+      "total": 2849,
+      "total_stated": 2849,
+      "rating": null,
+      "slope": 117,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "53ad56ff-32b4-412a-97f6-b58068765443",
+     "course_name": "Royal City Public Golf Course",
+     "club_name": "Royal City Public Golf Course",
+     "city": "Royal City",
+     "state": "WA",
+     "lat": 46.8855589008,
+     "lng": -119.5602145767,
+     "holes": 9,
+     "yardage": 3106,
+     "website": "http://www.royalcitygolfcourse.com"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (7 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/53ad56ff-32b4-412a-97f6-b58068765443"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

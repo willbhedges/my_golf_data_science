@@ -1,0 +1,116 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/1358e491-253a-4488-b4f1-7ff52baef8e5",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/1358e491-253a-4488-b4f1-7ff52baef8e5",
+    "par": [
+     4,
+     5,
+     4,
+     3,
+     5,
+     4,
+     4,
+     3,
+     4,
+     4,
+     4,
+     3,
+     5,
+     4,
+     4,
+     5,
+     3,
+     4
+    ],
+    "handicap": [
+     9,
+     7,
+     13,
+     5,
+     17,
+     11,
+     1,
+     15,
+     3,
+     16,
+     8,
+     10,
+     14,
+     2,
+     12,
+     6,
+     18,
+     4
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       437,
+       582,
+       409,
+       250,
+       533,
+       440,
+       487,
+       225,
+       490,
+       419,
+       433,
+       204,
+       579,
+       455,
+       402,
+       635,
+       179,
+       469
+      ],
+      "total": 7628,
+      "source": "opengolfapi",
+      "total_stated": 7628
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "1358e491-253a-4488-b4f1-7ff52baef8e5",
+     "course_name": "Boulder Creek Golf Course",
+     "club_name": "Boulder Creek Golf Course",
+     "city": "Boulder City",
+     "state": "NV",
+     "lat": 35.958377,
+     "lng": -114.8568408,
+     "holes": 18,
+     "yardage": 7628,
+     "website": "http://www.golfbouldercity.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (7 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/1358e491-253a-4488-b4f1-7ff52baef8e5"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

@@ -1,0 +1,119 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/561018c8-98d0-4bfe-9665-6a73ec6dcc07",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/561018c8-98d0-4bfe-9665-6a73ec6dcc07",
+    "par": [
+     4,
+     4,
+     4,
+     4,
+     5,
+     4,
+     3,
+     4,
+     3,
+     5,
+     3,
+     4,
+     4,
+     4,
+     4,
+     3,
+     4,
+     5
+    ],
+    "handicap": [
+     11,
+     13,
+     5,
+     1,
+     9,
+     7,
+     17,
+     3,
+     15,
+     2,
+     14,
+     10,
+     6,
+     18,
+     4,
+     16,
+     12,
+     8
+    ],
+    "tee_sets": {
+     "Middle": {
+      "colour": "middle",
+      "aliases": [
+       "middle"
+      ],
+      "yards": [
+       308,
+       345,
+       368,
+       388,
+       456,
+       359,
+       164,
+       351,
+       161,
+       526,
+       158,
+       345,
+       391,
+       300,
+       388,
+       167,
+       348,
+       523
+      ],
+      "total": 6046,
+      "total_stated": 6079,
+      "rating": 70.8,
+      "slope": 132,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "561018c8-98d0-4bfe-9665-6a73ec6dcc07",
+     "course_name": "North At Wilmington Country Club",
+     "club_name": "North At Wilmington Country Club",
+     "city": "Wilmington",
+     "state": "DE",
+     "lat": 39.7968645,
+     "lng": -75.5971977,
+     "holes": 18,
+     "yardage": 6390,
+     "website": "http://wilmingtoncc.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/561018c8-98d0-4bfe-9665-6a73ec6dcc07"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

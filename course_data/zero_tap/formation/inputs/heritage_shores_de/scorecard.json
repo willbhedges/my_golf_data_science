@@ -1,0 +1,256 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/209ac233-491d-410e-8a39-82bb4479947c",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/209ac233-491d-410e-8a39-82bb4479947c",
+    "par": [
+     4,
+     5,
+     4,
+     4,
+     4,
+     3,
+     4,
+     3,
+     5,
+     4,
+     4,
+     4,
+     4,
+     3,
+     5,
+     3,
+     4,
+     5
+    ],
+    "handicap": [
+     9,
+     1,
+     15,
+     7,
+     3,
+     13,
+     11,
+     17,
+     5,
+     14,
+     6,
+     18,
+     10,
+     12,
+     2,
+     16,
+     8,
+     4
+    ],
+    "tee_sets": {
+     "Tournament": {
+      "colour": "tournament",
+      "aliases": [
+       "tournament"
+      ],
+      "yards": [
+       432,
+       558,
+       352,
+       436,
+       465,
+       160,
+       342,
+       202,
+       568,
+       386,
+       453,
+       337,
+       400,
+       178,
+       578,
+       218,
+       410,
+       530
+      ],
+      "total": 7005,
+      "total_stated": 7005,
+      "rating": 73.6,
+      "slope": 139,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Championship": {
+      "colour": "championship",
+      "aliases": [
+       "championship"
+      ],
+      "yards": [
+       409,
+       511,
+       332,
+       411,
+       431,
+       141,
+       314,
+       176,
+       531,
+       363,
+       419,
+       313,
+       350,
+       156,
+       535,
+       192,
+       387,
+       506
+      ],
+      "total": 6477,
+      "total_stated": 6477,
+      "rating": 70.5,
+      "slope": 138,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Middle": {
+      "colour": "middle",
+      "aliases": [
+       "middle"
+      ],
+      "yards": [
+       378,
+       469,
+       290,
+       371,
+       394,
+       124,
+       290,
+       148,
+       492,
+       335,
+       377,
+       283,
+       324,
+       132,
+       506,
+       161,
+       357,
+       475
+      ],
+      "total": 5906,
+      "total_stated": 5906,
+      "rating": 67.9,
+      "slope": 123,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Intermediate": {
+      "colour": "intermediate",
+      "aliases": [
+       "intermediate"
+      ],
+      "yards": [
+       363,
+       455,
+       276,
+       355,
+       380,
+       110,
+       276,
+       131,
+       478,
+       323,
+       363,
+       269,
+       308,
+       120,
+       491,
+       147,
+       344,
+       462
+      ],
+      "total": 5651,
+      "total_stated": 5651,
+      "rating": 66.8,
+      "slope": 121,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Intermediate (Female)",
+        "rating": 72.9,
+        "slope": 132,
+        "total": 5651,
+        "par": 72
+       }
+      ]
+     },
+     "Forward": {
+      "colour": "forward",
+      "aliases": [
+       "forward"
+      ],
+      "yards": [
+       295,
+       407,
+       228,
+       297,
+       320,
+       93,
+       217,
+       113,
+       427,
+       257,
+       293,
+       226,
+       246,
+       107,
+       425,
+       126,
+       274,
+       389
+      ],
+      "total": 4740,
+      "total_stated": 4740,
+      "rating": 67.6,
+      "slope": 115,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "209ac233-491d-410e-8a39-82bb4479947c",
+     "course_name": "Heritage Shores Golf",
+     "club_name": "Heritage Shores Golf",
+     "city": "Bridgeville",
+     "state": "DE",
+     "lat": 38.7163714,
+     "lng": -75.5979985,
+     "holes": 18,
+     "yardage": 7005,
+     "website": "https://www.heritageshores.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (11 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 22 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/209ac233-491d-410e-8a39-82bb4479947c"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

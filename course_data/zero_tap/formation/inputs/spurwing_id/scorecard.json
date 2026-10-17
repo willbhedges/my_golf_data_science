@@ -1,0 +1,153 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/bb792819-4cb4-481a-894e-f42eee74ba6a",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/bb792819-4cb4-481a-894e-f42eee74ba6a",
+    "par": [
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3,
+     3
+    ],
+    "handicap": [
+     6,
+     4,
+     8,
+     7,
+     5,
+     1,
+     2,
+     9,
+     3
+    ],
+    "tee_sets": {
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       96,
+       133,
+       122,
+       142,
+       145,
+       160,
+       216,
+       129,
+       141
+      ],
+      "total": 1284,
+      "total_stated": 1284,
+      "rating": null,
+      "slope": 88,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Black (Female)",
+        "rating": null,
+        "slope": 91,
+        "total": 1284,
+        "par": 27
+       }
+      ]
+     },
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       96,
+       133,
+       122,
+       142,
+       145,
+       160,
+       216,
+       129,
+       141
+      ],
+      "total": 1284,
+      "source": "opengolfapi",
+      "total_stated": 1284
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       73,
+       103,
+       85,
+       114,
+       94,
+       90,
+       106,
+       104,
+       118
+      ],
+      "total": 887,
+      "total_stated": 887,
+      "rating": null,
+      "slope": 76,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": null,
+        "slope": 82,
+        "total": 887,
+        "par": 27
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "bb792819-4cb4-481a-894e-f42eee74ba6a",
+     "course_name": "The Club At Spurwing Challenge Course",
+     "club_name": "The Club At Spurwing Challenge Course",
+     "city": "Meridian",
+     "state": "ID",
+     "lat": 43.6662848,
+     "lng": -116.425309,
+     "holes": 9,
+     "yardage": 1284,
+     "website": "https://www.theclubatspurwing.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (11 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/bb792819-4cb4-481a-894e-f42eee74ba6a"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

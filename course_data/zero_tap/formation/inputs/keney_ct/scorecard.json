@@ -1,0 +1,233 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/64ac480a-5809-4f6a-8410-766a3e959b84",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/64ac480a-5809-4f6a-8410-766a3e959b84",
+    "par": [
+     4,
+     5,
+     3,
+     4,
+     4,
+     3,
+     4,
+     4,
+     4,
+     5,
+     3,
+     4,
+     3,
+     5,
+     4,
+     4,
+     4,
+     3
+    ],
+    "handicap": [
+     17,
+     11,
+     13,
+     5,
+     1,
+     15,
+     7,
+     9,
+     3,
+     6,
+     10,
+     16,
+     14,
+     12,
+     2,
+     4,
+     8,
+     18
+    ],
+    "tee_sets": {
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       332,
+       509,
+       160,
+       383,
+       428,
+       152,
+       455,
+       407,
+       457,
+       533,
+       237,
+       323,
+       188,
+       513,
+       409,
+       397,
+       369,
+       197
+      ],
+      "total": 6449,
+      "total_stated": 6449,
+      "rating": 70.6,
+      "slope": 127,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       314,
+       491,
+       136,
+       369,
+       406,
+       127,
+       406,
+       380,
+       417,
+       506,
+       204,
+       301,
+       167,
+       500,
+       393,
+       383,
+       359,
+       187
+      ],
+      "total": 6046,
+      "total_stated": 6046,
+      "rating": 68.6,
+      "slope": 124,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       297,
+       480,
+       121,
+       349,
+       373,
+       115,
+       363,
+       344,
+       380,
+       475,
+       184,
+       295,
+       144,
+       467,
+       380,
+       350,
+       349,
+       163
+      ],
+      "total": 5629,
+      "total_stated": 5629,
+      "rating": 66.5,
+      "slope": 121,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 72,
+        "slope": 124,
+        "total": 5629,
+        "par": 70
+       }
+      ]
+     },
+     "Green": {
+      "colour": "green",
+      "aliases": [
+       "green"
+      ],
+      "yards": [
+       286,
+       423,
+       100,
+       261,
+       267,
+       93,
+       324,
+       304,
+       333,
+       444,
+       127,
+       242,
+       135,
+       405,
+       329,
+       236,
+       267,
+       136
+      ],
+      "total": 4712,
+      "total_stated": 4712,
+      "rating": 63,
+      "slope": 109,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Green (Female)",
+        "rating": 66.9,
+        "slope": 113,
+        "total": 4712,
+        "par": 70
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "64ac480a-5809-4f6a-8410-766a3e959b84",
+     "course_name": "Keney Park Golf Club",
+     "club_name": "Keney Park Golf Club",
+     "city": "Windsor",
+     "state": "CT",
+     "lat": 41.805466,
+     "lng": -72.671607,
+     "holes": 18,
+     "yardage": 6449,
+     "website": "http://www.keneyparkgolfcourse.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (9 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 4 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/64ac480a-5809-4f6a-8410-766a3e959b84"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

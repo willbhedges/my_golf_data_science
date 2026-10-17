@@ -1,0 +1,135 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/fe410537-65e0-4427-a13f-643039b5a6d0",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/fe410537-65e0-4427-a13f-643039b5a6d0",
+    "par": [
+     4,
+     3,
+     4,
+     4,
+     5,
+     3,
+     4,
+     5,
+     4
+    ],
+    "handicap": [
+     1,
+     3,
+     2,
+     9,
+     5,
+     4,
+     8,
+     6,
+     7
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       400,
+       170,
+       360,
+       390,
+       530,
+       200,
+       370,
+       530,
+       380
+      ],
+      "total": 3330,
+      "source": "opengolfapi",
+      "total_stated": 3330
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       380,
+       150,
+       340,
+       370,
+       510,
+       180,
+       350,
+       480,
+       360
+      ],
+      "total": 3120,
+      "total_stated": 3330,
+      "rating": null,
+      "slope": 117,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       360,
+       140,
+       330,
+       350,
+       500,
+       170,
+       340,
+       470,
+       340
+      ],
+      "total": 3000,
+      "total_stated": 2656,
+      "rating": null,
+      "slope": 104,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "fe410537-65e0-4427-a13f-643039b5a6d0",
+     "course_name": "Deerfield Golf Club",
+     "club_name": "Deerfield Golf Club",
+     "city": "Rockford",
+     "state": "KY",
+     "lat": 38.643513,
+     "lng": -83.7863939,
+     "holes": 9,
+     "yardage": 3330,
+     "website": "http://facebook.com/deerfieldgolfcourse"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (7 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/fe410537-65e0-4427-a13f-643039b5a6d0"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}

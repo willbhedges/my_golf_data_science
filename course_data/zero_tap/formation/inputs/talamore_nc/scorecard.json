@@ -1,0 +1,274 @@
+{
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/8760cb2e-d4af-4b51-af54-ef82675f5883",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/8760cb2e-d4af-4b51-af54-ef82675f5883",
+    "par": [
+     5,
+     3,
+     4,
+     5,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     5,
+     4,
+     3,
+     4,
+     3,
+     4,
+     4,
+     4
+    ],
+    "handicap": [
+     4,
+     16,
+     6,
+     14,
+     18,
+     12,
+     2,
+     8,
+     10,
+     7,
+     15,
+     5,
+     17,
+     9,
+     13,
+     1,
+     11,
+     3
+    ],
+    "tee_sets": {
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       623,
+       201,
+       412,
+       509,
+       184,
+       354,
+       442,
+       415,
+       368,
+       370,
+       527,
+       422,
+       182,
+       383,
+       238,
+       444,
+       340,
+       426
+      ],
+      "total": 6840,
+      "total_stated": 6840,
+      "rating": 72.4,
+      "slope": 132,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       609,
+       181,
+       397,
+       494,
+       166,
+       329,
+       422,
+       400,
+       352,
+       358,
+       513,
+       409,
+       164,
+       368,
+       221,
+       428,
+       322,
+       400
+      ],
+      "total": 6533,
+      "total_stated": 6534,
+      "rating": 70.4,
+      "slope": 129,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       564,
+       164,
+       372,
+       463,
+       140,
+       304,
+       402,
+       373,
+       335,
+       309,
+       494,
+       361,
+       134,
+       333,
+       191,
+       398,
+       302,
+       368
+      ],
+      "total": 6007,
+      "total_stated": 6007,
+      "rating": 68.4,
+      "slope": 121,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 74,
+        "slope": 133,
+        "total": 6007,
+        "par": 71
+       }
+      ]
+     },
+     "Green": {
+      "colour": "green",
+      "aliases": [
+       "green"
+      ],
+      "yards": [
+       437,
+       131,
+       331,
+       454,
+       135,
+       298,
+       382,
+       325,
+       235,
+       306,
+       452,
+       355,
+       121,
+       328,
+       156,
+       370,
+       292,
+       362
+      ],
+      "total": 5470,
+      "total_stated": 5470,
+      "rating": 65.2,
+      "slope": 112,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Green (Female)",
+        "rating": 70.2,
+        "slope": 125,
+        "total": 5470,
+        "par": 71
+       }
+      ]
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       432,
+       121,
+       326,
+       412,
+       108,
+       264,
+       245,
+       320,
+       217,
+       280,
+       447,
+       350,
+       100,
+       289,
+       151,
+       362,
+       267,
+       286
+      ],
+      "total": 4977,
+      "total_stated": 4977,
+      "rating": 63.1,
+      "slope": 106,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Red (Female)",
+        "rating": 67.4,
+        "slope": 116,
+        "total": 4977,
+        "par": 71
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "8760cb2e-d4af-4b51-af54-ef82675f5883",
+     "course_name": "Talamore Golf Resort",
+     "club_name": "Talamore Golf Resort",
+     "city": "Southern Pines",
+     "state": "NC",
+     "lat": 35.2083162423,
+     "lng": -79.4088661276,
+     "holes": 18,
+     "yardage": 6840,
+     "website": "https://www.talamoregolfresort.com/"
+    }
+   }
+  }
+ ],
+ "chosen": "opengolfapi",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/8760cb2e-d4af-4b51-af54-ef82675f5883"
+  }
+ ],
+ "note": "fetched without OSM hole lengths (zero_tap/formation)"
+}
