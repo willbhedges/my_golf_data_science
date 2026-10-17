@@ -3,17 +3,25 @@
 *Updated 2026-10-17.* Contract and how to run: [BENCH.md](BENCH.md). Numbers: [SCOREBOARD.md](SCOREBOARD.md).
 OSM truth quality: [OSM_CHECK.md](OSM_CHECK.md).
 
-**Benchmark v0** (`benchmark.json`): 161 courses with complete OSM truth (145 x 18, 10 x 9, 2 x 27, 4 x 36), 24
-states, all four Census regions; dev 77 / test 84 (split by state, `state_split.json`). 50 with a fitting web card
-(others get a card derived from the hidden OSM ways), 55 with segment-model + lidar inputs, 55 with a perception
-scene. v1 (in progress on Actions): +24 states via `fetch.py` (5 x 18 + one 9 + one 27/36 per state), web cards for
-every course, NAIP segment + lidar pads for the unmapped tier.
+**Benchmark v1** (`benchmark.json`, 2026-10-17): 313 courses, dev 160 / test 153, 48 states, all four Census
+regions; 262 with a fitting web card. It is v0 (161 courses, frozen in `bench_v0.json`, every row flagged `v0`) plus
+152 courses from 24 new states. Every v0 course kept its split, so `bench.courses("dev", version="v0")` is exactly
+the dev set earlier work fitted on. v0 truth geometry is unchanged; 198 hole pars in 26 v0 courses changed because
+new web cards were found (card par is the truth). The unmapped tiers still cover only the 55 v0 courses with
+segment-model / perception inputs (NAIP + lidar for the new courses has not been fetched).
 
-**Baselines (test, osm_card, 84 courses; Actions run 39048121736):** routing_v2 69.4 % hole numbers right, 14.3 %
-courses fully right, certain 6.0 % coverage at 80 % precision; sequence (C) 58.0 % / 11.9 %, certain 8.3 % at 42.9 %;
-structure 57.7 % / 1.2 %; formation_v2 (A) forms 82 % of holes but numbers 4.6 %. No method reaches 99 % precision at
-any useful coverage yet. Dominant failure everywhere: **pairing** (green/tee of different holes). Without a card,
-numbering collapses (routing_v2 13.5 %). Full table: SCOREBOARD.md.
+**Scoreboard (test, osm_card; Actions run 39062442720):**
+
+| method | v1 test (153): holes numbered right / courses fully right | v0 test subset (84) |
+|---|---|---|
+| routing_v2 | 67.3 % / 16.3 % | 68.1 % / 11.9 % |
+| structure | 56.4 % / 0.7 % | 57.5 % / 1.2 % |
+| sequence_v2 (C) | 38.6 % / 7.8 % * | 71.8 % / 14.3 % |
+| sequence (C) | 31.1 % / 5.9 % * | 58.0 % / 10.7 % |
+| formation_v2 (A) | 2.5 % / 0 % * | 4.6 % / 0 % |
+
+\* results exist only for v0 courses (the new ones count as no_result); compare on the v0 rows until re-run on v1.
+No method reaches 99 % precision at any useful coverage; pairing is the dominant failure everywhere.
 
 **For A / B / C:** write `zero_tap_result/1` files to `results/<method>/<tier>/<slug>.json`, tune on
 `bench.courses("dev")` only, then commit a `course_data/requests/ztbench_run_<name>.json` with `{"stage": "score"}`.
