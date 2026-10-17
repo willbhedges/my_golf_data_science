@@ -111,9 +111,22 @@ jobs:
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
           git commit -q -F /tmp/msg.txt
-          for i in 1 2 3 4 5; do
-            git pull --rebase origin "${{ github.ref_name }}" && \
+          # -X theirs: on a conflict (packages/_index.json, or a package another run rebuilt meanwhile) this
+          # run's freshly built files win; a failed rebase is aborted so the next attempt starts clean
+          for i in 1 2 3 4 5 6 7 8; do
+            if git pull --rebase -X theirs origin "${{ github.ref_name }}"; then
               git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            else
+              git rebase --abort 2>/dev/null || true
+            fi
             echo "push attempt $i failed; retrying"; sleep $((i * 10))
           done
           exit 1
+
+      - name: Keep the built packages if the commit failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ github.run_id }}
+          path: course_data/packages/
+          retention-days: 5
