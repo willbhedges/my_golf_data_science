@@ -1,16 +1,16 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-10-17 06:15 UTC",
- "commit": "881de49",
+ "generated": "2026-10-17 07:08 UTC",
+ "commit": "fc52aef",
  "courses": [
   {
    "course": "Spirit Hollow",
    "slug": "spirit_hollow",
    "tees": "Black",
    "package": "course_data/packages/spirit_hollow/package.json",
-   "package_commit": "49b6d51 2026-10-17T05:09:47Z",
+   "package_commit": "912ac6d 2026-10-17T05:46:33Z",
    "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
-   "decision_s": 107.0,
+   "decision_s": 94.9,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -20,7 +20,7 @@
    "truth": "spirit_hollow/output/final_decision.json (hand map course.py; Black boxes; 2B/9B Gold)",
    "truth_fp": "bd4a5e2a1d",
    "truth_commit": "d5e1e91 2026-10-17T02:33:47Z",
-   "decision_full_s": 2701.2,
+   "decision_full_s": 2328.1,
    "full_mode": {
     "S": 64,
     "N": 3000
@@ -680,16 +680,16 @@
     }
    },
    "aim_violations": [],
-   "seconds": 2813.5
+   "seconds": 2427.5
   },
   {
    "course": "Mozingo Lake",
    "slug": "mozingo_lake",
    "tees": "App",
    "package": "course_data/packages/mozingo_lake/package.json",
-   "package_commit": "49b6d51 2026-10-17T05:09:47Z",
+   "package_commit": "912ac6d 2026-10-17T05:46:33Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 92.7,
+   "decision_s": 80.4,
    "last_plan": {
     "built": "2026-10-16T22:06Z",
     "runtime_s": 578.9,
@@ -948,21 +948,21 @@
     "max_regret_head": 0.088
    },
    "aim_violations": [],
-   "seconds": 93.7
+   "seconds": 81.3
   },
   {
    "course": "Veenker",
    "slug": "veenker",
    "tees": "Blue",
    "package": "course_data/packages/veenker/package.json",
-   "package_commit": "49b6d51 2026-10-17T05:09:47Z",
+   "package_commit": "912ac6d 2026-10-17T05:46:33Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 91.7,
+   "decision_s": 80.1,
    "last_plan": {
-    "built": "2026-10-17T01:16Z",
-    "runtime_s": 360.9,
+    "built": "2026-10-17T05:19Z",
+    "runtime_s": 357.1,
     "mode": "quick",
-    "decision_s": 63.8
+    "decision_s": 59.7
    },
    "truth": "none (no hand map for this course yet)",
    "truth_fp": null,
@@ -1110,14 +1110,12 @@
     "headline": "quick"
    },
    "aim_violations": [],
-   "seconds": 92.8
+   "seconds": 81.1
   }
  ],
  "guards": {
   "fails": [],
-  "notes": [
-   "Spirit Hollow: headline mode quick -> full since 2026-10-17 05:12 (baseline reset)"
-  ]
+  "notes": []
  },
  "truth_cache": {
   "spirit_hollow": {
@@ -2598,6 +2596,83 @@
    "same_hand_quick": null,
    "ceiling_quick": null,
    "decision_s": 91.7,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 07:08",
+   "commit": "fc52aef",
+   "course": "spirit_hollow",
+   "truth_fp": "bd4a5e2a1d",
+   "n": 16,
+   "headline": "full",
+   "same": 9,
+   "same_or_tie": 12,
+   "same_quick": 8,
+   "same_full": 9,
+   "mean_regret": 0.0194,
+   "max_regret": 0.1193,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.296,
+    "long grass": 0.189,
+    "water": 0.316,
+    "ob": 0.391
+   },
+   "checks": 2,
+   "same_hand_quick": 12,
+   "ceiling_quick": 12,
+   "decision_s": 94.9,
+   "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 07:08",
+   "commit": "fc52aef",
+   "course": "mozingo_lake",
+   "truth_fp": "2ab50d3367",
+   "n": 14,
+   "headline": "quick",
+   "same": 7,
+   "same_or_tie": 8,
+   "same_quick": 7,
+   "same_full": null,
+   "mean_regret": 0.0164,
+   "max_regret": 0.088,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 1,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 80.4,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 07:08",
+   "commit": "fc52aef",
+   "course": "veenker",
+   "truth_fp": null,
+   "n": 13,
+   "headline": "quick",
+   "same": null,
+   "same_or_tie": null,
+   "same_quick": null,
+   "same_full": null,
+   "mean_regret": null,
+   "max_regret": null,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 80.1,
    "source": "product/decide.run quick n=8000",
    "regression": false
   }
