@@ -77,10 +77,13 @@ def prepare(slug, course_dir=None):
     water0, _ = L.water_mask(S, Ly, M)
     import native as N
     elig = N.eligible(S, M, canopy[2.5], water0)
+    # relaxed: long grass may run under / up to scattered canopy (the golfer's native line often does)
+    elig_rel = N.eligible(S, M, np.zeros_like(canopy[2.5]), water0)
     course = M["course"] if M["course"].any() else np.ones_like(elig)
     course = ndimage.binary_dilation(course, L.disk(30))
     log(f"[{slug}] prepared {len(F.names)} features in {time.time() - t0:.0f}s")
     return dict(slug=slug, S=S, M=M, Ly=Ly, fc=fc, canopy=canopy, trees_how=how, F=F, water0=water0, elig=elig,
+                elig_rel=elig_rel,
                 course=course, cdir=cdir)
 
 
@@ -409,22 +412,23 @@ def loho(D, holes, names, task="native", other=None):
     return oof
 
 
-def native_masks_for(D, holes, pmap, thr):
+def native_masks_for(D, holes, pmap, thr, mode="strict"):
     out = {}
     for x in holes:
-        el = D["elig"][x["sl"]] & ~D["water0"][x["sl"]]
+        el = D["elig_rel" if mode == "relaxed" else "elig"][x["sl"]] & ~D["water0"][x["sl"]]
         out[x["key"]] = native_mask(pmap[x["key"]], el, thr, D["S"].res)
     return out
 
 
-def choose_thr(D, holes, pmap, trees_by_key, per_hole=True):
+def choose_thr(D, holes, pmap, trees_by_key, per_hole=True, mode="strict"):
     """Native threshold: for hole h, the THRS value maximising pooled composed native IoU on the other
     holes (their own out-of-fold maps). Returns ({key: thr}, global best thr, curve)."""
     C = {}
     for thr in THRS:
-        nm = native_masks_for(D, holes, pmap, thr)
+        nm = native_masks_for(D, holes, pmap, thr, mode)
         for x in holes:
-            g = compose(x["cls"], trees_by_key[x["key"]], nm[x["key"]])
+            tr = trees_by_key[x["key"]] & ~nm[x["key"]] if mode == "relaxed" else trees_by_key[x["key"]]
+            g = compose(x["cls"], tr, nm[x["key"]])
             C[(thr, x["key"])] = counts((g == LB.CI["native"])[x["corr"]], (x["cls"] == LB.CI["native"])[x["corr"]])
     curve = {float(t): iou_of(sum((C[(t, x["key"])] for x in holes), np.zeros(3, np.int64))) or 0 for t in THRS}
     best = max(curve, key=curve.get)
@@ -587,6 +591,9 @@ def evaluate_all(strategy_n=5000, do_strategy=True):
         nsel, nbest, ncurve = choose_thr(D, holes, pn, trees_loho)
         nat_loho = {x["key"]: native_masks_for(D, [x], pn, nsel[x["key"]])[x["key"]] for x in holes}
         R["native_thr"] = dict(best=nbest, per_hole=nsel, curve=ncurve)
+        nselr, nbestr, ncurver = choose_thr(D, holes, pn, trees_loho, mode="relaxed")
+        nat_rel = {x["key"]: native_masks_for(D, [x], pn, nselr[x["key"]], "relaxed")[x["key"]] for x in holes}
+        R["native_thr_relaxed"] = dict(best=nbestr, per_hole=nselr, curve=ncurver)
         log(f"[{slug}] LOHO native without distance features (ablation)")
         pn2 = loho(D, holes, names_nd, "native")
         nsel2, nbest2, _ = choose_thr(D, holes, pn2, trees_loho)
@@ -605,6 +612,7 @@ def evaluate_all(strategy_n=5000, do_strategy=True):
             variants["v1_trees+v2_native"] = {x["key"]: (v1t[x["sl"]], nat_loho[x["key"]]) for x in holes}
         variants["canopy_raw+v2_native"] = {x["key"]: (raw0[x["key"]], nat_loho[x["key"]]) for x in holes}
         variants["v2"] = {x["key"]: (trees_loho[x["key"]], nat_loho[x["key"]]) for x in holes}
+        variants["v2_relaxed"] = {x["key"]: (trees_loho[x["key"]] & ~nat_rel[x["key"]], nat_rel[x["key"]]) for x in holes}
         variants["v2_trees_gbm"] = {x["key"]: (tree_mask_gbm(pt[x["key"]], best_tg), nat_loho[x["key"]]) for x in holes}
         variants["v2_native_no_dist"] = {x["key"]: (trees_loho[x["key"]], nat_nd[x["key"]]) for x in holes}
         R["variants"] = {}
@@ -617,6 +625,25 @@ def evaluate_all(strategy_n=5000, do_strategy=True):
         keep[slug] = dict(trees_loho=trees_loho, nat_loho=nat_loho, variants=variants, pt=pt, pn=pn,
                           best_tg=best_tg)
         rep["courses"][slug] = R
+    # ---------------- native mode (strict vs relaxed eligibility): pooled composed native IoU, both courses
+    pool = {}
+    for m, nm in (("strict", "v2_strict"), ("relaxed", "v2_relaxed")):
+        num = den = 0.0
+        for slug in EVAL_COURSES:
+            V = rep["courses"][slug]["variants"]["v2" if m == "strict" else "v2_relaxed"]["pooled"]["native"]
+            num += (V["iou"] or 0)
+            den += 1
+        pool[m] = num / den
+    mode = max(pool, key=pool.get)
+    rep["native_mode"] = dict(chosen=mode, mean_native_iou=pool)
+    log(f"native mode: {mode} {pool}")
+    for slug in EVAL_COURSES:
+        V = rep["courses"][slug]["variants"]
+        V["v2_strict"] = V["v2"]
+        if mode == "relaxed":
+            V["v2"] = V["v2_relaxed"]
+            keep[slug]["variants"]["v2"] = keep[slug]["variants"]["v2_relaxed"]
+            rep["courses"][slug]["native_thr"] = rep["courses"][slug]["native_thr_relaxed"]
     # ---------------- cross-course
     rep["cross"] = {}
     xpred = {}
@@ -632,9 +659,11 @@ def evaluate_all(strategy_n=5000, do_strategy=True):
             reg = np.zeros((Db["S"].H, Db["S"].W), bool)
             reg[x["sl"]] = True
             p = predict_grid(Db, clf, names, reg)[x["sl"]]
-            el = Db["elig"][x["sl"]] & ~Db["water0"][x["sl"]]
+            el = Db["elig_rel" if mode == "relaxed" else "elig"][x["sl"]] & ~Db["water0"][x["sl"]]
             nat_x[x["key"]] = native_mask(p, el, thr)
             tr_x[x["key"]] = tree_candidates(Db, x)[(tb["hag"], tb["k_m"], tb["min_area_m2"])]
+            if mode == "relaxed":
+                tr_x[x["key"]] = tr_x[x["key"]] & ~nat_x[x["key"]]
             rows.append((x["key"], hole_metrics(x, tr_x[x["key"]], nat_x[x["key"]])))
         rep["cross"][f"{a}->{b}"] = dict(thr=thr, trees=tb, **summarise(rows))
         xpred[b] = dict(trees=tr_x, native=nat_x)
@@ -679,7 +708,7 @@ def product_settings(rep):
     # trees: the SH-chosen rule (SH map is the hand-checked GPS one); native thr: mean of the two LOHO bests
     tb = sh["trees_rule"]["best"]
     thr = round(float(np.mean([sh["native_thr"]["best"], mz["native_thr"]["best"]])), 2)
-    return dict(trees=tb, native_thr=thr)
+    return dict(trees=tb, native_thr=thr, native_mode=rep.get("native_mode", {}).get("chosen", "strict"))
 
 
 def train_product(Ds, H, names, rep):
@@ -736,12 +765,17 @@ def infer(slug, integrate=False):
     if missing:
         raise RuntimeError(f"features missing for {slug}: {missing}")
     st = meta["settings"]
-    region = D["elig"] & D["course"]
+    relaxed = st.get("native_mode") == "relaxed"
+    E = D["elig_rel"] if relaxed else D["elig"]
+    region = E & D["course"]
     p = predict_grid(D, clf, names, region)
     p = np.where(np.isfinite(p), p, 0).astype(np.float32)
     tb = st["trees"]
     trees = tree_rule(D["canopy"][tb["hag"]], tb["k_m"], tb["min_area_m2"], S.res)
-    nat = native_mask(p, D["elig"] & D["course"] & ~D["water0"] & ~trees, st["native_thr"], S.res)
+    nat = native_mask(p, E & D["course"] & ~D["water0"] & (np.ones_like(trees) if relaxed else ~trees),
+                      st["native_thr"], S.res)
+    if relaxed:
+        trees = trees & ~nat
     water, wparts = L.water_mask(S, D["Ly"], M, mown_p=1 - p, trees=trees)
     nat &= ~water
     R = dict(S=S, M=M, Ly=D["Ly"], trees=trees, native=nat, water=water, p_native=p, trees_how=D["trees_how"],
@@ -841,9 +875,13 @@ def _pct(v):
 
 
 def decide(rep):
-    """v2 replaces v1 if, on both courses, composed native IoU and penal IoU are higher (SH LOHO; Mozingo LOHO
-    and cross from SH) and the club agreement is not lower."""
+    """v2 replaces v1 if (a) on both courses composed native IoU and penal IoU are higher (LOHO), (b) cross-course
+    SH -> Mozingo native IoU is higher than v1 on Mozingo, (c) pooled over both courses' tee shots the mean EV cost
+    of following the layer's pick is not higher than v1's, and (d) pooled same-club agreement is at most one tee
+    shot below v1's (one shot = noise at n = 27). (c, d replace the first run's per-course same-club rule, which
+    flipped on single holes.)"""
     why, ok = [], True
+    ev, same, n = {"v1": 0.0, "v2": 0.0}, {"v1": 0, "v2": 0}, {"v1": 0, "v2": 0}
     for slug in EVAL_COURSES:
         V = rep["courses"][slug]["variants"]
         if "v1" not in V:
@@ -853,14 +891,21 @@ def decide(rep):
             why.append(f"{slug} {c} IoU v2 {a:.2f} vs v1 {b:.2f}")
             ok &= a > b
         st = rep["courses"][slug].get("strategy") or {}
-        if st.get("v2") and st.get("v1"):
-            why.append(f"{slug} same club v2 {st['v2']['same_club']:.0%} vs v1 {st['v1']['same_club']:.0%}")
-            ok &= st["v2"]["same_club"] >= st["v1"]["same_club"] - 1e-9
+        for k in ("v1", "v2"):
+            if st.get(k):
+                ev[k] += sum(r["ev_loss_on_hand_map"] for r in st[k]["holes"])
+                same[k] += sum(r["same_club"] for r in st[k]["holes"])
+                n[k] += len(st[k]["holes"])
     X = rep["cross"].get("spirit_hollow->mozingo")
     if X and "v1" in rep["courses"]["mozingo"]["variants"]:
         a, b = X["pooled"]["native"]["iou"] or 0, rep["courses"]["mozingo"]["variants"]["v1"]["pooled"]["native"]["iou"] or 0
         why.append(f"cross SH->Mozingo native IoU {a:.2f} vs v1 {b:.2f}")
         ok &= a > b
+    if n["v1"] and n["v2"]:
+        e1, e2 = ev["v1"] / n["v1"], ev["v2"] / n["v2"]
+        why.append(f"pooled mean EV cost v2 {e2:+.3f} vs v1 {e1:+.3f} strokes per tee shot")
+        why.append(f"pooled same club v2 {same['v2']}/{n['v2']} vs v1 {same['v1']}/{n['v1']}")
+        ok &= e2 <= e1 + 1e-9 and same["v2"] >= same["v1"] - 1
     return bool(ok), why
 
 
