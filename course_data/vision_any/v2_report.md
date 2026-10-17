@@ -6,7 +6,7 @@ Landing corridors: 190-335 yds along the tee line, +/-55 yds, 1 m cells inside t
 
 Features (76): n0_ndvi_s1, n0_ndvi_s3, n0_nir_s1, n0_nir_s3, n0_br_s1, n0_br_s3, n0_chroma_s1, n0_chroma_s3, n0_exg_s1, n0_exg_s3, n0_std_nir_3, n0_std_nir_7, n0_std_nir_15, n0_std_ndvi_7, n0_glcm_con, n0_glcm_hom, n0_lbp_ent, n0_lbp_nonuni, n0_anom, my_ndvi_mean, my_ndvi_min, my_ndvi_max, my_ndvi_std, my_nir_mean, my_nir_min, my_nir_max, my_nir_std, my_chroma_mean, my_chroma_min, my_chroma_max, my_chroma_std, my_tex_mean, my_tex_min, my_tex_max, my_tex_std, my_con_mean, my_con_min, my_con_max, my_con_std, my_anom_mean, my_anom_min, my_persist, my_persist_sm, li_hag, li_hag_max3, li_hag_low_s1, li_hag_low_s3, li_hag_low_std5, li_vlow_frac3, li_low_frac3, li_mid_frac3, li_multi_frac3, li_ground_frac3, li_density3, li_vlow_frac7, li_low_frac7, li_mid_frac7, li_multi_frac7, li_ground_frac7, li_density7, li_hagstd3, li_hagmean3, li_int_mean, li_int_ground, slope, relz25, relz8, d_fairway, d_green, d_tee, d_bunker, d_water, d_mown, d_canopy, canopy_clump_log, canopy_frac15
 
-Native eligibility mode: **strict** (mean LOHO composed native IoU over both courses: {"strict": 0.27194551537505507, "relaxed": 0.2711463838470248}); `v2` below is that mode, `v2_strict` = native never on lidar canopy and the tree buffer wins, `v2_relaxed` = native may run under canopy and wins over the tree buffer.
+Native eligibility mode: **relaxed** (mean LOHO composed native IoU over both courses: {"strict": 0.2715130749557984, "relaxed": 0.27295237650875026}); `v2` below is that mode, `v2_strict` = native never on lidar canopy and the tree buffer wins, `v2_relaxed` = native may run under canopy and wins over the tree buffer.
 
 ## spirit_hollow (LOHO, 16 holes)
 
@@ -14,36 +14,36 @@ Native eligibility mode: **strict** (mean LOHO composed native IoU over both cou
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | osm_only | 0.00 | - / 0.00 | 0.00 | 0.00 | - / 0.00 | 0.00 | 0.19 | 58% (0%) | 54% (0%) | 31% (16%) | - | 73% |
 | v1 | 0.40 | 0.70 / 0.48 | 0.38 | 0.18 | 0.43 / 0.24 | 0.16 | 0.55 | 65% (27%) | 44% (15%) | 51% (44%) | 7.0 | 80% |
-| v1_trees+v2_native | 0.40 | 0.70 / 0.48 | 0.38 | 0.28 | 0.40 / 0.48 | 0.22 | 0.59 | 65% (27%) | 37% (22%) | 47% (45%) | 7.0 | 78% |
-| canopy_raw+v2_native | 0.42 | 0.70 / 0.52 | 0.40 | 0.28 | 0.40 / 0.48 | 0.22 | 0.60 | 65% (28%) | 37% (22%) | 48% (45%) | 7.0 | 79% |
-| v2 | 0.54 | 0.65 / 0.76 | 0.47 | 0.26 | 0.42 / 0.40 | 0.22 | 0.65 | 67% (35%) | 42% (21%) | 49% (47%) | 5.0 | 80% |
-| v2_relaxed | 0.46 | 0.71 / 0.57 | 0.41 | 0.29 | 0.46 / 0.44 | 0.26 | 0.64 | 70% (35%) | 45% (21%) | 54% (48%) | 4.0 | 81% |
-| v2_trees_gbm | 0.42 | 0.62 / 0.56 | 0.38 | 0.27 | 0.44 / 0.42 | 0.22 | 0.58 | 62% (26%) | 44% (23%) | 46% (43%) | 6.0 | 79% |
+| v1_trees+v2_native | 0.40 | 0.70 / 0.48 | 0.38 | 0.28 | 0.40 / 0.48 | 0.21 | 0.59 | 65% (27%) | 37% (22%) | 47% (45%) | 7.0 | 78% |
+| canopy_raw+v2_native | 0.42 | 0.70 / 0.52 | 0.40 | 0.28 | 0.40 / 0.48 | 0.21 | 0.60 | 65% (28%) | 37% (22%) | 47% (45%) | 7.0 | 79% |
+| v2 | 0.48 | 0.71 / 0.59 | 0.42 | 0.30 | 0.48 / 0.44 | 0.27 | 0.64 | 70% (35%) | 46% (21%) | 54% (48%) | 4.5 | 82% |
+| v2_relaxed | 0.48 | 0.71 / 0.59 | 0.42 | 0.30 | 0.48 / 0.44 | 0.27 | 0.64 | 70% (35%) | 46% (21%) | 54% (48%) | 4.5 | 82% |
+| v2_trees_gbm | 0.42 | 0.62 / 0.56 | 0.38 | 0.27 | 0.44 / 0.42 | 0.21 | 0.58 | 62% (26%) | 43% (23%) | 46% (43%) | 6.0 | 79% |
 | v2_native_no_dist | 0.54 | 0.65 / 0.76 | 0.47 | 0.28 | 0.40 / 0.48 | 0.22 | 0.65 | 67% (35%) | 42% (25%) | 51% (49%) | 5.0 | 80% |
-| v2_strict | 0.54 | 0.65 / 0.76 | 0.47 | 0.26 | 0.42 / 0.40 | 0.22 | 0.65 | 67% (35%) | 42% (21%) | 49% (47%) | 5.0 | 80% |
+| v2_strict | 0.54 | 0.65 / 0.76 | 0.47 | 0.26 | 0.41 / 0.40 | 0.21 | 0.65 | 67% (35%) | 42% (21%) | 49% (47%) | 5.0 | 80% |
 
 Tree line rule chosen on all spirit_hollow holes: canopy HAG > 2.5 m, clumps >= 100 m2, buffer +5 m. Raw trees IoU by buffer k (m): -3: 0.28, -2: 0.33, -1: 0.37, 0: 0.40, 1: 0.43, 2: 0.45, 3: 0.46, 4: 0.47, 5: 0.47, 6: 0.47, 8: 0.46, 10: 0.43, 12: 0.41. By HAG / min area: 2.5/30: 0.47, 2.5/100: 0.47, 2.5/250: 0.47, 4.0/30: 0.45, 4.0/100: 0.44, 4.0/250: 0.42.
 Trees GBM alternative, raw IoU by threshold: 0.4: 0.38, 0.5: 0.35, 0.6: 0.32, 0.7: 0.28.
-Native threshold (pooled best 0.04); composed native IoU by threshold: 0.04: 0.26, 0.06: 0.25, 0.08: 0.24, 0.1: 0.24, 0.12: 0.24, 0.14: 0.24, 0.16: 0.23, 0.18: 0.23, 0.2: 0.23, 0.25: 0.21, 0.3: 0.20, 0.35: 0.19, 0.4: 0.17, 0.45: 0.15, 0.5: 0.14, 0.55: 0.14, 0.6: 0.12, 0.65: 0.11, 0.7: 0.10, 0.75: 0.08, 0.8: 0.06, 0.85: 0.04, 0.9: 0.02, 0.95: 0.01.
+Native threshold (pooled best 0.2); composed native IoU by threshold: 0.04: 0.28, 0.06: 0.29, 0.08: 0.29, 0.1: 0.30, 0.12: 0.30, 0.14: 0.30, 0.16: 0.30, 0.18: 0.30, 0.2: 0.30, 0.25: 0.29, 0.3: 0.27, 0.35: 0.26, 0.4: 0.23, 0.45: 0.21, 0.5: 0.19, 0.55: 0.18, 0.6: 0.16, 0.65: 0.15, 0.7: 0.13, 0.75: 0.10, 0.8: 0.08, 0.85: 0.05, 0.9: 0.02, 0.95: 0.01.
 
 | hole | v1 trees | v2 trees | v1 native | v2 native | v1 penal | v2 penal | v2 trees edge | v2 penal edge |
 |---|---|---|---|---|---|---|---|---|
-| 1 | 0.51 | 0.66 | 0.00 | 0.21 | 0.64 | 0.84 | 63% | 65% |
-| 2B | 0.38 | 0.45 | 0.15 | 0.01 | 0.42 | 0.44 | 40% | 32% |
-| 2F | 0.23 | 0.51 | 0.04 | 0.12 | 0.58 | 0.78 | 77% | 55% |
-| 4 | 0.27 | 0.13 | 0.42 | 0.57 | 0.51 | 0.70 | 55% | 30% |
-| 5 | 0.09 | 0.11 | 0.04 | 0.26 | 0.36 | 0.53 | 65% | 48% |
-| 6 | 0.21 | 0.44 | 0.04 | 0.18 | 0.24 | 0.45 | 70% | 55% |
-| 8 | 0.25 | 0.28 | 0.16 | 0.21 | 0.23 | 0.25 | 88% | 30% |
-| 9B | 0.57 | 0.49 | 0.26 | 0.15 | 0.82 | 0.77 | 85% | 42% |
-| 9F | 0.49 | 0.45 | 0.09 | 0.01 | 0.78 | 0.70 | 82% | 67% |
-| 10 | 0.03 | 0.46 | 0.00 | 0.05 | 0.43 | 0.69 | 58% | 57% |
-| 11 | 0.31 | 0.62 | 0.00 | 0.10 | 0.54 | 0.71 | 55% | 55% |
-| 13 | 0.28 | 0.31 | 0.00 | 0.00 | 0.72 | 0.57 | 50% | 32% |
-| 14 | 0.66 | 0.82 | 0.37 | 0.49 | 0.60 | 0.74 | 73% | 70% |
-| 16 | 0.50 | 0.76 | 0.50 | 0.70 | 0.72 | 0.84 | 72% | 90% |
-| 17 | 0.43 | 0.51 | 0.55 | 0.38 | 0.57 | 0.51 | 60% | 17% |
-| 18 | 0.14 | 0.11 | 0.08 | 0.19 | 0.33 | 0.51 | 77% | 43% |
+| 1 | 0.51 | 0.29 | 0.00 | 0.32 | 0.64 | 0.85 | 58% | 73% |
+| 2B | 0.38 | 0.45 | 0.15 | 0.00 | 0.42 | 0.45 | 40% | 37% |
+| 2F | 0.23 | 0.51 | 0.04 | 0.00 | 0.58 | 0.70 | 77% | 55% |
+| 4 | 0.27 | 0.00 | 0.42 | 0.72 | 0.51 | 0.75 | 78% | 43% |
+| 5 | 0.09 | 0.16 | 0.04 | 0.38 | 0.36 | 0.40 | 80% | 45% |
+| 6 | 0.21 | 0.08 | 0.04 | 0.20 | 0.24 | 0.40 | 68% | 40% |
+| 8 | 0.25 | 0.07 | 0.16 | 0.11 | 0.23 | 0.18 | 87% | 45% |
+| 9B | 0.57 | 0.35 | 0.26 | 0.05 | 0.82 | 0.77 | 87% | 53% |
+| 9F | 0.49 | 0.34 | 0.09 | 0.12 | 0.78 | 0.74 | 83% | 87% |
+| 10 | 0.03 | 0.46 | 0.00 | 0.00 | 0.43 | 0.69 | 58% | 72% |
+| 11 | 0.31 | 0.59 | 0.00 | 0.15 | 0.54 | 0.72 | 53% | 58% |
+| 13 | 0.28 | 0.33 | 0.00 | 0.00 | 0.72 | 0.62 | 53% | 40% |
+| 14 | 0.66 | 0.67 | 0.37 | 0.29 | 0.60 | 0.72 | 73% | 70% |
+| 16 | 0.50 | 0.74 | 0.50 | 0.58 | 0.72 | 0.77 | 73% | 83% |
+| 17 | 0.43 | 0.50 | 0.55 | 0.47 | 0.57 | 0.55 | 60% | 30% |
+| 18 | 0.14 | 0.15 | 0.08 | 0.32 | 0.33 | 0.44 | 87% | 30% |
 
 ### Decision impact, spirit_hollow
 
@@ -51,29 +51,29 @@ tee_strategy best club / aim (Driver, 2-wood, 4-wood) on the hand map vs the han
 
 | layer | same club | median aim change yd | mean EV cost |
 |---|---|---|---|
-| v2 | 81% (13/16) | 2.5 | +0.015 |
-| v1 | 88% (14/16) | 2.5 | +0.012 |
-| osm_only | 69% (11/16) | 2.5 | +0.068 |
-| v2_cross_from_mozingo | 88% (14/16) | 2.5 | +0.006 |
+| v2 | 75% (12/16) | 2.5 | +0.016 |
+| v1 | 75% (12/16) | 2.5 | +0.032 |
+| osm_only | 75% (12/16) | 2.5 | +0.066 |
+| v2_cross_from_mozingo | 75% (12/16) | 2.5 | +0.016 |
 
 | hole | club hand | v2 | v1 | osm_only | v2_cross_from_mozingo |
 |---|---|---|---|---|---|
-| 1 | 4-wood | 4-wood (+0.000) | 4-wood (+0.025) | Driver (+0.081) | 4-wood (+0.005) |
+| 1 | 4-wood | 4-wood (+0.000) | Driver (+0.265) | Driver (+0.146) | 4-wood (+0.017) |
 | 2B | Driver | Driver (+0.003) | Driver (+0.000) | Driver (+0.000) | Driver (+0.003) |
 | 2F | Driver | Driver (+0.000) | Driver (+0.000) | Driver (+0.000) | Driver (+0.000) |
-| 4 | Driver | 4-wood (+0.089) | Driver (+0.033) | Driver (+0.000) | Driver (+0.000) |
+| 4 | Driver | Driver (+0.000) | Driver (+0.026) | Driver (+0.000) | Driver (+0.000) |
 | 5 | 4-wood | 4-wood (+0.000) | 4-wood (+0.003) | 4-wood (+0.003) | 4-wood (+0.000) |
-| 6 | Driver | 2-wood (+0.005) | Driver (+0.000) | Driver (+0.000) | 2-wood (+0.005) |
-| 8 | 4-wood | 4-wood (+0.004) | 4-wood (+0.004) | 4-wood (+0.004) | 4-wood (+0.004) |
-| 9B | 2-wood | 2-wood (+0.064) | 2-wood (+0.042) | 2-wood (+0.171) | 2-wood (+0.042) |
-| 9F | 4-wood | 4-wood (+0.011) | 4-wood (+0.000) | 4-wood (+0.011) | 4-wood (+0.004) |
-| 10 | Driver | Driver (+0.044) | Driver (+0.044) | Driver (+0.044) | Driver (+0.017) |
-| 11 | 4-wood | 4-wood (+0.000) | 4-wood (+0.000) | 4-wood (+0.637) | 4-wood (+0.000) |
-| 13 | 4-wood | 4-wood (+0.000) | 4-wood (+0.001) | Driver (+0.001) | 4-wood (+0.000) |
-| 14 | 4-wood | 4-wood (+0.000) | 2-wood (+0.041) | Driver (+0.103) | 4-wood (+0.000) |
-| 16 | 2-wood | 2-wood (+0.000) | 2-wood (+0.000) | Driver (+0.030) | 2-wood (+0.000) |
-| 17 | 2-wood | 4-wood (+0.017) | Driver (+0.001) | Driver (+0.001) | Driver (+0.001) |
-| 18 | Driver | Driver (+0.010) | Driver (+0.000) | Driver (+0.000) | Driver (+0.010) |
+| 6 | Driver | 2-wood (+0.004) | Driver (+0.004) | Driver (+0.004) | 2-wood (+0.004) |
+| 8 | 4-wood | 4-wood (+0.000) | 4-wood (+0.000) | 4-wood (+0.000) | 4-wood (+0.000) |
+| 9B | 2-wood | 2-wood (+0.065) | 2-wood (+0.065) | 2-wood (+0.099) | 2-wood (+0.065) |
+| 9F | 4-wood | 4-wood (+0.000) | 4-wood (+0.000) | 4-wood (+0.007) | 4-wood (+0.000) |
+| 10 | 4-wood | Driver (+0.059) | Driver (+0.059) | Driver (+0.095) | Driver (+0.059) |
+| 11 | 4-wood | 4-wood (+0.000) | 4-wood (+0.004) | 4-wood (+0.583) | 4-wood (+0.004) |
+| 13 | Driver | 4-wood (+0.002) | 4-wood (+0.004) | Driver (+0.000) | 4-wood (+0.002) |
+| 14 | Driver | Driver (+0.028) | Driver (+0.003) | Driver (+0.003) | Driver (+0.028) |
+| 16 | 4-wood | 4-wood (+0.000) | 4-wood (+0.000) | Driver (+0.050) | 4-wood (+0.000) |
+| 17 | Driver | Driver (+0.000) | Driver (+0.001) | Driver (+0.001) | Driver (+0.000) |
+| 18 | 2-wood | Driver (+0.095) | Driver (+0.072) | Driver (+0.072) | Driver (+0.080) |
 
 ## mozingo (LOHO, 11 holes)
 
@@ -83,7 +83,7 @@ tee_strategy best club / aim (Driver, 2-wood, 4-wood) on the hand map vs the han
 | v1 | 0.32 | 0.76 / 0.36 | 0.29 | 0.18 | 0.31 / 0.31 | 0.17 | 0.32 | 75% (20%) | 41% (12%) | 36% (21%) | 6.5 | 81% |
 | v1_trees+v2_native | 0.32 | 0.76 / 0.36 | 0.29 | 0.28 | 0.40 / 0.48 | 0.25 | 0.37 | 75% (20%) | 47% (23%) | 42% (30%) | 6.5 | 82% |
 | canopy_raw+v2_native | 0.32 | 0.76 / 0.36 | 0.29 | 0.28 | 0.40 / 0.48 | 0.25 | 0.37 | 75% (21%) | 47% (23%) | 43% (30%) | 6.0 | 82% |
-| v2 | 0.36 | 0.57 / 0.49 | 0.29 | 0.29 | 0.42 / 0.47 | 0.25 | 0.40 | 70% (21%) | 49% (24%) | 43% (32%) | 4.0 | 82% |
+| v2 | 0.27 | 0.55 / 0.34 | 0.21 | 0.25 | 0.38 / 0.43 | 0.23 | 0.38 | 72% (23%) | 43% (20%) | 42% (30%) | 3.0 | 81% |
 | v2_relaxed | 0.27 | 0.55 / 0.34 | 0.21 | 0.25 | 0.38 / 0.43 | 0.23 | 0.38 | 72% (23%) | 43% (20%) | 42% (30%) | 3.0 | 81% |
 | v2_trees_gbm | 0.30 | 0.70 / 0.35 | 0.26 | 0.28 | 0.41 / 0.46 | 0.25 | 0.36 | 75% (16%) | 49% (24%) | 41% (28%) | 3.0 | 82% |
 | v2_native_no_dist | 0.36 | 0.57 / 0.49 | 0.29 | 0.28 | 0.39 / 0.49 | 0.22 | 0.42 | 70% (21%) | 49% (26%) | 46% (35%) | 4.0 | 81% |
@@ -91,21 +91,21 @@ tee_strategy best club / aim (Driver, 2-wood, 4-wood) on the hand map vs the han
 
 Tree line rule chosen on all mozingo holes: canopy HAG > 2.5 m, clumps >= 30 m2, buffer +5 m. Raw trees IoU by buffer k (m): -3: 0.22, -2: 0.25, -1: 0.27, 0: 0.29, 1: 0.31, 2: 0.33, 3: 0.35, 4: 0.36, 5: 0.36, 6: 0.36, 8: 0.35, 10: 0.33, 12: 0.32. By HAG / min area: 2.5/30: 0.36, 2.5/100: 0.33, 2.5/250: 0.33, 4.0/30: 0.36, 4.0/100: 0.33, 4.0/250: 0.31.
 Trees GBM alternative, raw IoU by threshold: 0.4: 0.26, 0.5: 0.26, 0.6: 0.26, 0.7: 0.26.
-Native threshold (pooled best 0.04); composed native IoU by threshold: 0.04: 0.29, 0.06: 0.28, 0.08: 0.27, 0.1: 0.27, 0.12: 0.26, 0.14: 0.25, 0.16: 0.24, 0.18: 0.23, 0.2: 0.22, 0.25: 0.19, 0.3: 0.18, 0.35: 0.14, 0.4: 0.14, 0.45: 0.12, 0.5: 0.11, 0.55: 0.10, 0.6: 0.10, 0.65: 0.09, 0.7: 0.09, 0.75: 0.07, 0.8: 0.06, 0.85: 0.04, 0.9: 0.03, 0.95: 0.01.
+Native threshold (pooled best 0.08); composed native IoU by threshold: 0.04: 0.25, 0.06: 0.25, 0.08: 0.25, 0.1: 0.25, 0.12: 0.25, 0.14: 0.24, 0.16: 0.23, 0.18: 0.22, 0.2: 0.21, 0.25: 0.19, 0.3: 0.17, 0.35: 0.14, 0.4: 0.14, 0.45: 0.12, 0.5: 0.11, 0.55: 0.10, 0.6: 0.10, 0.65: 0.09, 0.7: 0.09, 0.75: 0.07, 0.8: 0.06, 0.85: 0.04, 0.9: 0.03, 0.95: 0.01.
 
 | hole | v1 trees | v2 trees | v1 native | v2 native | v1 penal | v2 penal | v2 trees edge | v2 penal edge |
 |---|---|---|---|---|---|---|---|---|
-| 2 | 0.73 | 0.67 | 0.29 | 0.30 | 0.56 | 0.65 | 52% | 30% |
-| 6 | 0.37 | 0.45 | 0.09 | 0.62 | 0.31 | 0.52 | 78% | 68% |
-| 7 | 0.05 | 0.17 | 0.00 | 0.10 | 0.04 | 0.19 | 58% | 18% |
-| 9 | - | - | 0.11 | 0.71 | 0.17 | 0.73 | 100% | 53% |
-| 10 | 0.28 | 0.36 | 0.77 | 0.67 | 0.53 | 0.64 | 63% | 53% |
-| 12 | 0.09 | 0.21 | 0.00 | 0.00 | 0.18 | 0.20 | 77% | 57% |
-| 13 | 0.25 | 0.41 | 0.13 | 0.00 | 0.22 | 0.31 | 72% | 75% |
-| 14 | 0.00 | 0.00 | 0.00 | 0.00 | 0.09 | 0.06 | 67% | 8% |
-| 16 | 0.16 | 0.00 | 0.14 | 0.07 | 0.36 | 0.08 | 28% | 13% |
-| 17 | 0.00 | 0.00 | 0.17 | 0.23 | 0.20 | 0.28 | 92% | 38% |
-| 18 | 0.17 | 0.55 | 0.00 | 0.06 | 0.42 | 0.55 | 88% | 57% |
+| 2 | 0.73 | 0.37 | 0.29 | 0.19 | 0.56 | 0.65 | 57% | 30% |
+| 6 | 0.37 | 0.52 | 0.09 | 0.51 | 0.31 | 0.52 | 82% | 68% |
+| 7 | 0.05 | 0.21 | 0.00 | 0.06 | 0.04 | 0.17 | 60% | 20% |
+| 9 | - | - | 0.11 | 0.70 | 0.17 | 0.72 | 100% | 53% |
+| 10 | 0.28 | 0.24 | 0.77 | 0.45 | 0.53 | 0.51 | 63% | 38% |
+| 12 | 0.09 | 0.08 | 0.00 | 0.00 | 0.18 | 0.22 | 77% | 60% |
+| 13 | 0.25 | 0.41 | 0.13 | 0.00 | 0.22 | 0.35 | 72% | 75% |
+| 14 | 0.00 | 0.00 | 0.00 | 0.00 | 0.09 | 0.07 | 73% | 8% |
+| 16 | 0.16 | 0.00 | 0.14 | 0.08 | 0.36 | 0.05 | 28% | 8% |
+| 17 | 0.00 | 0.00 | 0.17 | 0.18 | 0.20 | 0.23 | 92% | 37% |
+| 18 | 0.17 | 0.55 | 0.00 | 0.06 | 0.42 | 0.58 | 88% | 68% |
 
 ### Decision impact, mozingo
 
@@ -113,34 +113,34 @@ tee_strategy best club / aim (Driver, 2-wood, 4-wood) on the hand map vs the han
 
 | layer | same club | median aim change yd | mean EV cost |
 |---|---|---|---|
-| v2 | 73% (8/11) | 2.5 | +0.020 |
+| v2 | 73% (8/11) | 2.5 | +0.022 |
 | v1 | 73% (8/11) | 5.0 | +0.033 |
 | osm_only | 64% (7/11) | 2.5 | +0.034 |
-| v2_cross_from_spirit_hollow | 73% (8/11) | 5.0 | +0.030 |
+| v2_cross_from_spirit_hollow | 82% (9/11) | 5.0 | +0.024 |
 
 | hole | club hand | v2 | v1 | osm_only | v2_cross_from_spirit_hollow |
 |---|---|---|---|---|---|
 | 2 | 4-wood | 4-wood (+0.006) | 4-wood (+0.006) | 4-wood (+0.002) | 4-wood (+0.006) |
 | 6 | Driver | Driver (+0.000) | Driver (+0.000) | Driver (+0.003) | Driver (+0.000) |
-| 7 | 4-wood | Driver (+0.081) | Driver (+0.081) | Driver (+0.081) | 2-wood (+0.052) |
-| 9 | Driver | Driver (+0.003) | Driver (+0.074) | Driver (+0.022) | Driver (+0.022) |
-| 10 | Driver | Driver (+0.000) | Driver (+0.000) | Driver (+0.003) | Driver (+0.034) |
-| 12 | Driver | Driver (+0.002) | Driver (+0.002) | Driver (+0.000) | Driver (+0.011) |
-| 13 | 4-wood | 4-wood (+0.003) | 4-wood (+0.003) | Driver (+0.040) | 4-wood (+0.000) |
+| 7 | 4-wood | Driver (+0.081) | Driver (+0.081) | Driver (+0.081) | Driver (+0.097) |
+| 9 | Driver | Driver (+0.003) | Driver (+0.074) | Driver (+0.022) | Driver (+0.003) |
+| 10 | Driver | Driver (+0.000) | Driver (+0.000) | Driver (+0.003) | Driver (+0.003) |
+| 12 | Driver | Driver (+0.002) | Driver (+0.002) | Driver (+0.000) | Driver (+0.006) |
+| 13 | 4-wood | 4-wood (+0.003) | 4-wood (+0.003) | Driver (+0.040) | 4-wood (+0.003) |
 | 14 | Driver | Driver (+0.006) | Driver (+0.002) | Driver (+0.000) | Driver (+0.006) |
-| 16 | 2-wood | Driver (+0.003) | Driver (+0.003) | Driver (+0.003) | 4-wood (+0.009) |
-| 17 | Driver | Driver (+0.032) | Driver (+0.100) | Driver (+0.137) | Driver (+0.051) |
-| 18 | Driver | 2-wood (+0.083) | 2-wood (+0.089) | 2-wood (+0.089) | 4-wood (+0.143) |
+| 16 | 2-wood | Driver (+0.003) | Driver (+0.003) | Driver (+0.003) | 2-wood (+0.004) |
+| 17 | Driver | Driver (+0.051) | Driver (+0.100) | Driver (+0.137) | Driver (+0.051) |
+| 18 | Driver | 2-wood (+0.089) | 2-wood (+0.089) | 2-wood (+0.089) | 2-wood (+0.083) |
 
 ## Cross-course
 
 | train -> test | thr | trees rule | trees IoU | native IoU | native P / R | penal IoU | trees edge acc | penal edge acc |
 |---|---|---|---|---|---|---|---|---|
-| spirit_hollow->mozingo | 0.04 | k +5 m | 0.38 | 0.24 | 0.30 / 0.55 | 0.40 | 74% | 40% |
-| mozingo->spirit_hollow | 0.04 | k +5 m | 0.54 | 0.18 | 0.47 / 0.23 | 0.65 | 66% | 57% |
+| spirit_hollow->mozingo | 0.2 | k +5 m | 0.39 | 0.18 | 0.29 / 0.32 | 0.37 | 75% | 39% |
+| mozingo->spirit_hollow | 0.08 | k +5 m | 0.42 | 0.20 | 0.41 / 0.29 | 0.66 | 64% | 61% |
 
 ## Decision
 
-**Integrate v2**: spirit_hollow native IoU v2 0.26 vs v1 0.18; spirit_hollow penal IoU v2 0.65 vs v1 0.55; mozingo native IoU v2 0.29 vs v1 0.18; mozingo penal IoU v2 0.40 vs v1 0.32; cross SH->Mozingo native IoU 0.24 vs v1 0.18; pooled mean EV cost v2 +0.017 vs v1 +0.021 strokes per tee shot; pooled same club v2 21/27 vs v1 22/27.
+**Keep v1**: spirit_hollow native IoU v2 0.30 vs v1 0.18; spirit_hollow penal IoU v2 0.64 vs v1 0.55; mozingo native IoU v2 0.25 vs v1 0.18; mozingo penal IoU v2 0.38 vs v1 0.32; cross SH->Mozingo native IoU 0.18 vs v1 0.18; pooled mean EV cost v2 +0.019 vs v1 +0.032 strokes per tee shot; pooled same club v2 20/27 vs v1 20/27.
 
-Product settings: {"trees": {"hag": 2.5, "k_m": 5, "min_area_m2": 100}, "native_thr": 0.04, "native_mode": "strict"}. Model: `course_data/vision_any/model_v2/` (native LightGBM trained on both hand maps).
+Product settings: {"trees": {"hag": 2.5, "k_m": 5, "min_area_m2": 100}, "native_thr": 0.14, "native_mode": "relaxed"}. Model: `course_data/vision_any/model_v2/` (native LightGBM trained on both hand maps).
