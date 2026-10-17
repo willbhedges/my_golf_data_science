@@ -89,11 +89,8 @@ def corrected(k, hd, flags):
         hd["green_hand"] = hd["green"]
         hd["green"] = osm_green_px(k)
     if "elev" in flags and "elev" in hd:
-        try:
-            hd["elev_screenshot_tee"] = hd["elev"]
-            hd["elev"] = black_elev(k, hd)
-        except Exception as ex:                       # DEM missing: keep course.py's numbers
-            hd["elev_error"] = str(ex)
+        hd["elev_screenshot_tee"] = hd["elev"]
+        hd["elev"] = black_elev(k, hd)                 # needs rasterio + pyproj; fails loudly if missing
     if "scale" in flags:
         s = ground_scale(k, hd)
         hd["ground_scale"] = s
