@@ -83,12 +83,12 @@ tr.best td{font-weight:600}
     <div class="ctl">
       <div class="row"><span class="label">Wind source</span>
         <div class="seg" id="src"><button data-v="sat">Sat 10/17</button><button data-v="sun">Sun 10/18</button><button data-v="custom">Custom</button></div></div>
-      <div class="row" id="hourRow"><span class="label">Tee time</span><input type="range" id="hour" min="7" max="18" step="1"><span id="hourLbl" class="windread"></span></div>
+      <div class="row" id="hourRow"><span class="label">Tee time (hole 1)</span><input type="range" id="hour" min="7" max="18" step="1"><span id="hourLbl" class="windread"></span></div>
       <div class="row"><span class="label">Speed</span><input type="range" id="speed" min="0" max="25" step="1"><span id="speedLbl" class="windread"></span></div>
       <div class="row" id="setRow"><span class="label">Tees</span>
         <div class="seg" id="set"><button data-v="Gold">Gold</button><button data-v="Black">Black</button><button data-v="White">White</button><button data-v="Rust">Rust</button></div></div>
       <div class="windread" id="windLbl"></div>
-      <div class="sub">Drag the dial to where the wind blows <b>from</b>. The yellow end of the needle points into the wind.</div>
+      <div class="sub">Forecast mode: each hole uses the wind for when you reach it (about 14 min a hole from your tee time). Moving the dial or speed switches to Custom, one wind for every hole. Drag the dial to where the wind blows <b>from</b>. The yellow end of the needle points into the wind.</div>
     </div>
   </section>
 
@@ -145,9 +145,27 @@ function forecastAt(src, hour){
   const date = src==="sat" ? "2026-10-17" : "2026-10-18";
   return D.forecast.find(r => r.date===date && r.hour===hour) || null;
 }
-function applySource(){
-  if(st.src!=="custom"){ const f = forecastAt(st.src, st.hour); if(f){ st.mph = Math.round(f.mph); st.from = f.dir ?? st.from; } }
+/* pace of play: you reach hole n about (n-1) x 14 min after the tee time; each hole uses the forecast
+   for that moment (wind interpolated between hours as a vector) */
+const MIN_PER_HOLE = 14;
+const holeNo = h => parseInt(h.key, 10);
+const holeHour = h => st.hour + (holeNo(h) - 1) * MIN_PER_HOLE / 60;
+function forecastAtTime(src, t){
+  const h0 = Math.floor(t), w = t - h0, a = forecastAt(src, h0), b = forecastAt(src, h0 + 1) || a;
+  if(!a) return null;
+  const vec = r => { const d = (r.dir ?? 0) * Math.PI/180; return [r.mph*Math.sin(d), r.mph*Math.cos(d)]; };
+  const [ax, ay] = vec(a), [bx, by] = vec(b), x = ax + (bx-ax)*w, y = ay + (by-ay)*w;
+  return {mph: Math.hypot(x, y), dir: (Math.atan2(x, y)*180/Math.PI + 360) % 360,
+          gust: a.gust + (b.gust-a.gust)*w, temp: a.temp + (b.temp-a.temp)*w};
 }
+function windFor(h){
+  if(st.src === "custom") return null;
+  return forecastAtTime(st.src, holeHour(h));
+}
+function setWind(f){ if(f){ st.mph = Math.round(f.mph*10)/10; st.from = Math.round(f.dir); } }
+function applySource(){ setWind(windFor(D.holes[st.idx])); }
+function clock(t){ const hh = Math.floor(t), mm = Math.round((t - hh)*60); const H = hh > 12 ? hh - 12 : hh;
+  return `${H}:${String(mm).padStart(2,"0")} ${hh >= 12 ? "pm" : "am"}`; }
 const card = d => ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16];
 
 /* bilinear interpolation over (speed, relative direction) of every club's numbers */
@@ -172,7 +190,12 @@ function solveTee(h){
   const order = Object.keys(out).sort((a,b) => out[a].ev - out[b].ev);
   let pick = order[0], aim = out[pick].aim, tie = (out[order[1]].ev - out[pick].ev) < 0.01, bayes = false;
   /* light wind (< 5 mph) changes nothing that matters: use the book's full calm-day pick and aim */
-  if(st.mph < 5 && h.calm && T.back === 0 && out[h.calm.pick]){ pick = h.calm.pick; aim = h.calm.aim; tie = h.calm.tie; bayes = true;
+  /* Keep the book's full calm-day pick unless the wind itself changes the decision: compare the quick
+     model's pick now with its own pick in no wind. The book's aim is shifted by the wind's aim change. */
+  const g0 = grid["0_0"].clubs, calmQuick = Object.keys(g0).sort((a,b) => g0[a].ev - g0[b].ev)[0];
+  if(h.calm && T.back === 0 && out[h.calm.pick] && (st.mph < 1.5 || pick === calmQuick)){
+    const c = h.calm.pick;
+    pick = c; aim = h.calm.aim + (out[c].aim - g0[c].aim); tie = h.calm.tie; bayes = true;
     order.splice(order.indexOf(pick), 1); order.unshift(pick); }
   return {rel, out, order, pick, aim, tie, bayes, T, margin: out[order[1]].ev - out[order[0]].ev};
 }
@@ -283,7 +306,7 @@ function render(){
     const mv = best.drift + best.kick + cL;
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
-    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Same pick as the book (wind under 5 mph)." : ""}`;
+    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Same club as the book (this wind doesn't change it)." : ""}`;
     const rows = r.order.map(c => { const v = r.out[c]; return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.pick?"—":((d => d < 0.01 ? "≈ tie" : "+"+d.toFixed(3))(v.ev - r.out[r.pick].ev))}</td></tr>`;}).join("");
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. Tap any club to see its own best aim and pattern; tap ★ to go back.</div>`;
     const be = best.e;
@@ -326,11 +349,13 @@ function renderStrip(){
   const el = document.getElementById("strip");
   el.innerHTML = D.holes.map((h,i) => {
     if(!shown(h)) return "";
+    setWind(windFor(h));
     let txt, c = "";
     if(h.kind==="tee"){ const r = solveTee(h); txt = short(r.pick) + (r.tie ? "≈" : ""); c = cls(r.pick); }
     else { txt = Math.round(solvePar3(h).play); }
     return `<button class="chip" data-i="${i}" aria-current="${i===st.idx}"><b>${h.label.replace(/ (Black|Gold) tee$/,"").replace(" tee","")}</b><span class="${c}">${txt}</span></button>`;
   }).join("");
+  applySource();                                         // back to the current hole's wind
 }
 function renderControls(){
   document.querySelectorAll("#src button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v===st.src));
@@ -338,11 +363,13 @@ function renderControls(){
   document.getElementById("hour").value = st.hour;
   document.getElementById("hourLbl").textContent = (st.hour > 12 ? st.hour - 12 : st.hour) + (st.hour >= 12 ? " pm" : " am");
   document.getElementById("speed").value = st.mph;
-  document.getElementById("speedLbl").textContent = st.mph + " mph";
+  document.getElementById("speedLbl").textContent = Math.round(st.mph) + " mph";
   document.getElementById("needle").setAttribute("transform", `rotate(${st.from + 180})`);
   const f = st.src !== "custom" ? forecastAt(st.src, st.hour) : null;
-  document.getElementById("windLbl").textContent = st.mph < 1.5 ? "Calm" :
-    `From the ${card(st.from)} (${Math.round(st.from)}°) at ${st.mph} mph` + (f ? ` · gusts ${Math.round(f.gust)} · ${Math.round(f.temp)}°F` : "");
+  const hh = D.holes[st.idx], fw = windFor(hh);
+  document.getElementById("windLbl").textContent = (fw ? `Hole ${holeNo(hh)} at about ${clock(holeHour(hh))}: ` : "") +
+    (st.mph < 1.5 ? "calm" : `from the ${card(st.from)} (${Math.round(st.from)}°) at ${Math.round(st.mph)} mph`) +
+    (fw ? ` · gusts ${Math.round(fw.gust)} · ${Math.round(fw.temp)}°F` : "");
 }
 /* controls */
 document.getElementById("ticks").innerHTML = Array.from({length:16}, (_,i) => { const a = i*22.5*Math.PI/180, r0 = i%4 ? 66 : 62;
