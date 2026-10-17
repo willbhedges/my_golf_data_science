@@ -921,7 +921,11 @@ def write_report(rep, path_md, path_json):
           "OB as traced). Edge accuracy: every 5 yds from 190 to 335 on each side, the first lateral distance at "
           "which the class starts (0-55 yds); agree = both absent or within 5 yds. `present` = only the rays where "
           "either map has the class.", "",
-          f"Features ({len(rep['features'])}): " + ", ".join(rep["features"]), ""]
+          f"Features ({len(rep['features'])}): " + ", ".join(rep["features"]), "",
+          f"Native eligibility mode: **{rep.get('native_mode', {}).get('chosen')}** (mean LOHO composed native IoU over "
+          f"both courses: {json.dumps(rep.get('native_mode', {}).get('mean_native_iou'))}); `v2` below is that mode, "
+          "`v2_strict` = native never on lidar canopy and the tree buffer wins, `v2_relaxed` = native may run under "
+          "canopy and wins over the tree buffer.", ""]
     for slug in EVAL_COURSES:
         R = rep["courses"][slug]
         Lm += [f"## {slug} (LOHO, {len(R['holes'])} holes)", "",
