@@ -55,6 +55,7 @@ ROOT = os.path.dirname(CD)
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
+
 def _product_package():
     """product/package.py (platform/ has a package.py too; whichever loaded first owns the name 'package')."""
     m = sys.modules.get("package")
