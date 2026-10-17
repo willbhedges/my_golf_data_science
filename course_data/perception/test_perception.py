@@ -164,3 +164,24 @@ def test_graph_bridge():
     import networkx as nx
     assert nx.number_connected_components(G) == 1
     assert 100 < PT.graph_length(G) < 120
+
+
+def test_linear_components_drop_blobs():
+    import paths as PT
+    m = np.zeros((200, 200), bool)
+    m[50:53, 10:150] = True          # a 140 m path
+    m[120:160, 120:160] = True       # a 40 x 40 m blob (roof / lot)
+    k = PT.linear_components(m)
+    assert k[51, 80] and not k[140, 140]
+
+
+def test_threshold_shift():
+    import detect as DT
+
+    class C:
+        classes_ = np.array([0, 1])
+
+        def predict_proba(self, X):
+            return np.c_[1 - X[:, 0], X[:, 0]]
+    pr, cl = DT._apply(C(), [{"a": 0.2}, {"a": 0.1}], ["a"], thr=0.2)
+    assert abs(pr[0, 1] - 0.5) < 1e-6 and pr[1, 1] < 0.5
