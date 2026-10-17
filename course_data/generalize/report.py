@@ -350,6 +350,18 @@ def md(rows, summ, pop, sample):
                  f"{card_s} | {r.get('naip') or '-'} | {seg_s} ({r['osm_greens']}) | "
                  f"{r['today_holes']} / {r['today_green']} / {r['today_tee']} of {r['expected']} | "
                  f"{r.get('routed', '-')} ({r.get('routed_check', '-')}) | {acc(vo)} | {acc(vm)} |")
+    L += ["", "## Failure modes seen in the sample", "",
+          "* **No scorecard online** (Black Stone Creek, Wild Ridge, Sevillano): the router has no yardage sequence; "
+          "physical holes are still found (~60 %) but hole numbers are a guess (~18 %). A golfer-typed card (18 numbers) fixes it.",
+          "* **Adjacent / multi-course facilities** (Wild Ridge: another course's ways inside the boundary; Toscana 36 holes, "
+          "Wellesley 27): extra greens and tees compete; duplicated refs in OSM.",
+          "* **Renamed / duplicated names** (Ridges at Sand Creek, The Reserve: `ambiguous` by name + state; the golfer "
+          "must pick the town or the map pin).",
+          "* **OSM itself wrong** (Urbana: par / length swapped between 15 and 16 in the ways): the 'truth' is not always true.",
+          "* **Model greens** miss or add greens (practice / chipping greens, collars); 9-hole courses played twice and "
+          "executive courses with short par 3s give many equally good length fits.",
+          "* **Today's fallback** (`geometry.infer_holes`, no card): numbers holes in OSM order - 8 % right; "
+          "`package.py` now routes with the card instead (S2a)."]
     return "\n".join(L) + "\n"
 
 
