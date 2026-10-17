@@ -17,8 +17,8 @@ Methods (each falls back to the next on any error or an empty result):
 
 Tiers (from the data, `tier()`):
   mapped_card     OSM greens and tee boxes for >= 80 % of the holes, and a card (web, file, or typed)
-  unmapped_card   OSM lacks greens / tees, card: router inputs = segment model + lidar pads (+ perception
-                  scene greens / tees / fairways as model-style candidates when a scene exists)
+  unmapped_card   OSM lacks greens / tees, card: router inputs = segment model + lidar pads; the perception
+                  scene feeds the structure prior (as router candidates it hurt on train; option kept)
   mapped_nocard   OSM greens / tees, no card
   unmapped_nocard neither
 
