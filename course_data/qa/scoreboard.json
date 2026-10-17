@@ -1,16 +1,16 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-10-17 05:12 UTC",
- "commit": "8d14f65",
+ "generated": "2026-10-17 06:15 UTC",
+ "commit": "881de49",
  "courses": [
   {
    "course": "Spirit Hollow",
    "slug": "spirit_hollow",
    "tees": "Black",
    "package": "course_data/packages/spirit_hollow/package.json",
-   "package_commit": "72b3fa6 2026-10-17T04:55:13Z",
-   "source": "product/decide.run quick n=8000",
-   "decision_s": 110.2,
+   "package_commit": "49b6d51 2026-10-17T05:09:47Z",
+   "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
+   "decision_s": 107.0,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -20,6 +20,11 @@
    "truth": "spirit_hollow/output/final_decision.json (hand map course.py; Black boxes; 2B/9B Gold)",
    "truth_fp": "bd4a5e2a1d",
    "truth_commit": "d5e1e91 2026-10-17T02:33:47Z",
+   "decision_full_s": 2701.2,
+   "full_mode": {
+    "S": 64,
+    "N": 3000
+   },
    "holes": [
     {
      "hole": "1",
@@ -47,7 +52,15 @@
       "trees": 0.5,
       "long grass": 0.181
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": -7.5,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "2B",
@@ -79,7 +92,17 @@
       "long grass": 0.249,
       "water": 0.0
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "Driver",
+     "full_aim": -60.0,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [
+      "no printable Driver aim: best aim -60 is on the edge of the search; aim -60 yds is more than 40 yds off the tee line; the aim point (275 yds out) is in trees; the aim point is 149 yds from this hole's line of play (another hole?)"
+     ],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "2F",
@@ -109,7 +132,15 @@
       "water": 0.39,
       "ob": 0.188
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "Driver",
+     "full_aim": -35.0,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "4",
@@ -137,7 +168,15 @@
       "trees": 0.0,
       "long grass": 0.623
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": -7.5,
+     "full_tie": true,
+     "full_runner": "Driver",
+     "full_check": [],
+     "same_full": false,
+     "same_or_tie_full": true,
+     "regret_full": 0.0643
     },
     {
      "hole": "5",
@@ -165,7 +204,15 @@
       "trees": 0.114,
       "long grass": 0.148
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": 0.0,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "6",
@@ -193,7 +240,15 @@
       "trees": 0.333,
       "long grass": 0.171
      },
-     "corridor_pts": 468
+     "corridor_pts": 468,
+     "full_pick": "4-wood",
+     "full_aim": -20.0,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": false,
+     "same_or_tie_full": true,
+     "regret_full": 0.0095
     },
     {
      "hole": "8",
@@ -222,7 +277,15 @@
       "long grass": 0.281,
       "ob": 0.594
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": 0.0,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "9B",
@@ -251,7 +314,15 @@
       "long grass": 0.132,
       "water": 0.705
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "Driver",
+     "full_aim": 15.0,
+     "full_tie": true,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": false,
+     "same_or_tie_full": true,
+     "regret_full": 0.0405
     },
     {
      "hole": "9F",
@@ -280,7 +351,15 @@
       "long grass": 0.0,
       "water": 0.186
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": 0.0,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "10",
@@ -309,7 +388,15 @@
       "long grass": 0.0,
       "water": 0.486
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "Driver",
+     "full_aim": -2.5,
+     "full_tie": false,
+     "full_runner": "4-wood",
+     "full_check": [],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "11",
@@ -338,7 +425,15 @@
       "long grass": 0.042,
       "water": 0.163
      },
-     "corridor_pts": 342
+     "corridor_pts": 342,
+     "full_pick": "Long iron",
+     "full_aim": 0.0,
+     "full_tie": false,
+     "full_runner": "Mid iron",
+     "full_check": [],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "13",
@@ -367,7 +462,15 @@
       "long grass": 0.0,
       "water": 0.773
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": 2.5,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": false,
+     "same_or_tie_full": false,
+     "regret_full": 0.0136
     },
     {
      "hole": "14",
@@ -398,7 +501,17 @@
       "long grass": 0.299,
       "water": 0.325
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "Driver",
+     "full_aim": -40.0,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [
+      "Driver best aim -60 rejected (best aim -60 is on the edge of the search; aim -60 yds is more than 40 yds off the tee line)"
+     ],
+     "same_full": false,
+     "same_or_tie_full": false,
+     "regret_full": 0.1193
     },
     {
      "hole": "16",
@@ -427,7 +540,15 @@
       "long grass": 0.277,
       "water": 0.0
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": -2.5,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": true,
+     "same_or_tie_full": true,
+     "regret_full": 0.0
     },
     {
      "hole": "17",
@@ -455,7 +576,15 @@
       "trees": 0.365,
       "long grass": 0.333
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": 2.5,
+     "full_tie": true,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": false,
+     "same_or_tie_full": false,
+     "regret_full": 0.0372
     },
     {
      "hole": "18",
@@ -484,7 +613,15 @@
       "long grass": 0.076,
       "water": 0.13
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "full_pick": "4-wood",
+     "full_aim": -15.0,
+     "full_tie": false,
+     "full_runner": "2-wood",
+     "full_check": [],
+     "same_full": false,
+     "same_or_tie_full": false,
+     "regret_full": 0.0257
     }
    ],
    "summary": {
@@ -501,15 +638,21 @@
     "n_hand_quick": 16,
     "mean_regret_hand_quick": 0.0071,
     "ceiling_quick": 12,
-    "headline": "quick",
+    "n_full": 16,
+    "same_full": 9,
+    "same_or_tie_full": 12,
+    "mean_regret_full": 0.0194,
+    "max_regret_full": 0.1193,
+    "checks_full": 2,
+    "headline": "full",
     "same_quick": 8,
-    "same_head": 8,
+    "same_head": 9,
     "same_or_tie_quick": 10,
-    "same_or_tie_head": 10,
+    "same_or_tie_head": 12,
     "mean_regret_quick": 0.0143,
-    "mean_regret_head": 0.0143,
+    "mean_regret_head": 0.0194,
     "max_regret_quick": 0.0643,
-    "max_regret_head": 0.0643,
+    "max_regret_head": 0.1193,
     "tee10": 8,
     "green10": 14,
     "n_geo": 16,
@@ -537,16 +680,16 @@
     }
    },
    "aim_violations": [],
-   "seconds": 113.5
+   "seconds": 2813.5
   },
   {
    "course": "Mozingo Lake",
    "slug": "mozingo_lake",
    "tees": "App",
    "package": "course_data/packages/mozingo_lake/package.json",
-   "package_commit": "72b3fa6 2026-10-17T04:55:13Z",
+   "package_commit": "49b6d51 2026-10-17T05:09:47Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 93.1,
+   "decision_s": 92.7,
    "last_plan": {
     "built": "2026-10-16T22:06Z",
     "runtime_s": 578.9,
@@ -805,16 +948,16 @@
     "max_regret_head": 0.088
    },
    "aim_violations": [],
-   "seconds": 94.2
+   "seconds": 93.7
   },
   {
    "course": "Veenker",
    "slug": "veenker",
    "tees": "Blue",
    "package": "course_data/packages/veenker/package.json",
-   "package_commit": "72b3fa6 2026-10-17T04:55:13Z",
+   "package_commit": "49b6d51 2026-10-17T05:09:47Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 93.4,
+   "decision_s": 91.7,
    "last_plan": {
     "built": "2026-10-17T01:16Z",
     "runtime_s": 360.9,
@@ -967,14 +1110,13 @@
     "headline": "quick"
    },
    "aim_violations": [],
-   "seconds": 94.5
+   "seconds": 92.8
   }
  ],
  "guards": {
   "fails": [],
   "notes": [
-   "Spirit Hollow: re-baselined (packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow)",
-   "Mozingo Lake: re-baselined (packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow)"
+   "Spirit Hollow: headline mode quick -> full since 2026-10-17 05:12 (baseline reset)"
   ]
  },
  "truth_cache": {
@@ -2381,6 +2523,83 @@
    "regression": false,
    "baseline_id": "2026-10-17-vision-v2-ob",
    "baseline_reset": "packages rebuilt with vision_any v2 long grass + OB inference (SH 10 -> 8/16, Mozingo 10 -> 7/14 quick; map changes, not code); headline switches to full Bayesian mode on Spirit Hollow"
+  },
+  {
+   "date": "2026-10-17 06:15",
+   "commit": "881de49",
+   "course": "spirit_hollow",
+   "truth_fp": "bd4a5e2a1d",
+   "n": 16,
+   "headline": "full",
+   "same": 9,
+   "same_or_tie": 12,
+   "same_quick": 8,
+   "same_full": 9,
+   "mean_regret": 0.0194,
+   "max_regret": 0.1193,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.296,
+    "long grass": 0.189,
+    "water": 0.316,
+    "ob": 0.391
+   },
+   "checks": 2,
+   "same_hand_quick": 12,
+   "ceiling_quick": 12,
+   "decision_s": 107.0,
+   "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 06:15",
+   "commit": "881de49",
+   "course": "mozingo_lake",
+   "truth_fp": "2ab50d3367",
+   "n": 14,
+   "headline": "quick",
+   "same": 7,
+   "same_or_tie": 8,
+   "same_quick": 7,
+   "same_full": null,
+   "mean_regret": 0.0164,
+   "max_regret": 0.088,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 1,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 92.7,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 06:15",
+   "commit": "881de49",
+   "course": "veenker",
+   "truth_fp": null,
+   "n": 13,
+   "headline": "quick",
+   "same": null,
+   "same_or_tie": null,
+   "same_quick": null,
+   "same_full": null,
+   "mean_regret": null,
+   "max_regret": null,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 91.7,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
   }
  ]
 }
