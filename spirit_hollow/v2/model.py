@@ -62,9 +62,26 @@ CLUBS = {
     "4-wood": (255, 270, 50, 24),
     "Long iron": (210, 220, 40, 20),
     "Mid iron": (185, 192, 34, 18),
+    "Hybrid ~235 (not in bag)": (235, 248, 45, 22),
 }
 WOODS = ["Driver", "2-wood", "4-wood"]
+HYBRID = "Hybrid ~235 (not in bag)"     # hypothetical gap club (golfer's request): reported, never the pick
+HYPOTHETICAL = {HYBRID}
 ALL_CLUBS = list(CLUBS)
+REAL_CLUBS = [c for c in ALL_CLUBS if c not in HYPOTHETICAL]
+
+
+def _hybrid_elevation():
+    """DEM carry/roll for the hypothetical hybrid: interpolated by carry between 4-wood and long iron."""
+    w = (235 - 210) / (255 - 210)
+    for hd in course.HOLES.values():
+        e = hd.get("elev")
+        if e and "4-wood" in e and "Long iron" in e and HYBRID not in e:
+            a, b = e["Long iron"], e["4-wood"]
+            e[HYBRID] = tuple(float(x + w * (y - x)) for x, y in zip(a, b))
+
+
+_hybrid_elevation()
 
 # ------------------------------------------------------------------------------- scoring tables
 DIST = np.array(t.DIST, float)
@@ -368,3 +385,28 @@ def clubs_for(h, P=None, all_clubs=True):
 
 
 HOLES = course.HOLES
+
+# ------------------------------------------------------------------------------- temperature
+# Carry x (1 - k (70 - T)). k = 0.00075 per F (prior 0.0005-0.0009): ~2.1 yds per 10 F on a 275 driver
+# carry, ~1.6 on a 210 iron. Published: Andrew Rice/TrackMan 2-2.5 yds per 10 F (driver, 155 mph ball
+# speed; air density), TrackMan as reported 1.3-1.7 by club, Titleist ~1.5% per 20 F. Reference 70 F:
+# the golfer's carries are summer numbers. Each hole uses the forecast for when you reach it.
+import json as _json                              # noqa: E402
+
+_FC = os.path.join(SH, "..", "course_data", "weather", "forecast_spirit_hollow.json")
+FORECAST = _json.load(open(_FC))["hourly"] if os.path.exists(_FC) else []
+TEE_DAY, TEE_HOUR, MIN_PER_HOLE = "2026-10-17", 10.0, 14.0
+
+
+def hole_number(h):
+    return int(str(h).rstrip("FB"))
+
+
+def hole_temp(h, day=TEE_DAY, tee_hour=TEE_HOUR):
+    """Forecast temperature (F) when you reach hole h: tee time + 14 min per hole, linear in time."""
+    rows = sorted((r["hour"], r["temp_f"]) for r in FORECAST if r["date"] == day)
+    if not rows:
+        return 48.0
+    t = tee_hour + (hole_number(h) - 1) * MIN_PER_HOLE / 60
+    hrs, temps = zip(*rows)
+    return float(np.interp(t, hrs, temps))

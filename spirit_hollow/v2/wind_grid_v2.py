@@ -26,6 +26,8 @@ import wind_grid as WG                          # noqa: E402  (v1: bearings, par
 SPEEDS = WG.SPEEDS
 DIRS = WG.DIRS
 N = int(os.environ.get("WIND_SWINGS", 4000))
+TEMPS = [float(x) for x in os.environ.get("WIND_TEMPS", "35,45,55,65").split(",")]
+W.SENSITIVITY.setdefault(M.HYBRID, 1.1)          # between the 4-wood (1.05) and long iron (1.15)
 AIMS = np.arange(-50, 50.001, 0.5)
 
 
@@ -53,8 +55,9 @@ def solve(h, P, R, S, z, speed, rel):
         del base
         res[c] = dict(aim=r["aim"], ev=r["ev"], zone=r["window"], carry=float(c2), total=float(t2),
                       width=float(w2), drift=float(drift), at_bound=r["at_bound"])
-    best = min(res, key=lambda c: res[c]["ev"])
-    runner = min((c for c in res if c != best), key=lambda c: res[c]["ev"])
+    real = [c for c in res if c not in M.HYPOTHETICAL]
+    best = min(real, key=lambda c: res[c]["ev"])
+    runner = min((c for c in real if c != best), key=lambda c: res[c]["ev"])
     return dict(pick=best, margin=res[runner]["ev"] - res[best]["ev"], runner=runner, clubs=res)
 
 
@@ -63,23 +66,26 @@ def main():
     if back:
         WG.shift_tees(back)                      # moves course.HOLES (= M.HOLES) tees in place
     bearings = WG.osm_bearings()
-    P = M.central()
     z = M.draws_z(N, 31)
     only = [x.strip() for x in os.environ.get("WIND_HOLES", "").split(",") if x.strip()]
-    out = dict(speeds=SPEEDS, dirs=DIRS, bearings={}, holes={}, par3={}, tee_back=back, model="v2")
+    out = dict(speeds=SPEEDS, dirs=DIRS, temps=TEMPS, bearings={}, holes={}, par3={}, tee_back=back, model="v2")
     for h in M.HOLES:
         if only and str(h) not in only:
             continue
         hd = M.HOLES[h]
         out["bearings"][str(h)] = (hd.get("elev_info") or {}).get("bearing") or bearings[WG.ref(h)]
         R = M.Raster(hd)
-        S = R.strokes(P, hd["length"])
-        grid = {}
-        for sp in SPEEDS:
-            for rel in ([0] if sp == 0 else DIRS):
-                grid[f"{sp}_{rel}"] = solve(h, P, R, S, z, sp, rel)
-        out["holes"][str(h)] = grid
-        print(h, "done", grid["0_0"]["pick"], grid["0_0"]["clubs"][grid["0_0"]["pick"]]["aim"], flush=True)
+        byT = {}
+        for T in TEMPS:
+            P = M.central(temp_f=T)
+            S = R.strokes(P, hd["length"])
+            grid = {}
+            for sp in SPEEDS:
+                for rel in ([0] if sp == 0 else DIRS):
+                    grid[f"{sp}_{rel}"] = solve(h, P, R, S, z, sp, rel)
+            byT[f"{T:g}"] = grid
+            print(h, T, "done", grid["0_0"]["pick"], grid["0_0"]["clubs"][grid["0_0"]["pick"]]["aim"], flush=True)
+        out["holes"][str(h)] = byT
     import course
     for h, p in course.PAR3.items():
         out["bearings"][str(h)] = p.get("bearing") or bearings[WG.ref(h)]

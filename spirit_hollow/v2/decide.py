@@ -38,7 +38,8 @@ DIMS = ["width", "r2w", "r4w", "c_common", "c_drv", "c_2w", "c_4w", "c_iron", "d
         "block_sev", "tree_restricted", "map_seed"]
 
 
-def prior_draws(s=64, seed=2026):
+def prior_draws(s=64, seed=2026, hole=None):
+    """Prior draws; temperature = the forecast when you reach `hole` +/- 3 F (forecast error)."""
     u = qmc.Sobol(len(DIMS), scramble=True, seed=seed).random(s)
     z = norm.ppf(np.clip(u, 1e-9, 1 - 1e-9))
     c = {k: i for i, k in enumerate(DIMS)}
@@ -55,7 +56,7 @@ def prior_draws(s=64, seed=2026):
         lost_edge=U("lost_edge", 0.1, 0.4), lost_deep=U("lost_deep", 0.5, 0.8),
         mis_slight=U("mis_slight", 0.08, 0.16), mis_heavy=U("mis_heavy", 0.01, 0.04),
         rho=U("rho", -0.1, 0.3), kappa=U("kappa", 0.0, 0.16), bias=2.0 * z[:, c["bias"]],
-        temp_f=U("temp_f", 44, 52), temp_k=U("temp_k", 0.0005, 0.0009),
+        temp_f=U("temp_f", -3, 3), temp_k=U("temp_k", 0.0005, 0.0009),   # temp_f: offset from forecast
         m_rough=U("m_rough", 0.55, 0.95), m_sand=U("m_sand", 0.9, 1.3), am_slope=U("am_slope", 0.0006, 0.0018),
         first_cut=U("first_cut", 0.2, 0.5), punch_adv=U("punch_adv", 20, 50), punch_fail=U("punch_fail", 0.0, 0.2),
         block_sev=U("block_sev", 0.2, 0.6), tree_restricted=U("tree_restricted", 0.0, 0.2),
@@ -65,22 +66,29 @@ def prior_draws(s=64, seed=2026):
         w4 = wd * r4w[i]
         P = M.central(
             width={"Driver": wd, "2-wood": wd * r2w[i], "4-wood": w4,
-                   "Long iron": w4 * 40 / 50, "Mid iron": w4 * 34 / 50},
+                   "Long iron": w4 * 40 / 50, "Mid iron": w4 * 34 / 50, M.HYBRID: w4 * 45 / 50},
             c_common=cols["c_common"][i],
             c_club={"Driver": cols["c_drv"][i], "2-wood": cols["c_2w"][i], "4-wood": cols["c_4w"][i],
-                    "Long iron": cols["c_iron"][i], "Mid iron": cols["c_iron"][i]})
+                    "Long iron": cols["c_iron"][i], "Mid iron": cols["c_iron"][i],
+                    M.HYBRID: 0.5 * (cols["c_4w"][i] + cols["c_iron"][i])})
         P["depth_mult"] = float(cols["depth"][i])
         for k in ("soft_roll", "rough_roll", "trees", "lost_edge", "lost_deep", "mis_slight", "mis_heavy", "rho",
                   "kappa", "bias", "temp_f", "temp_k", "m_rough", "m_sand", "am_slope", "first_cut", "punch_adv",
                   "punch_fail", "block_sev", "tree_restricted"):
             P[k] = float(cols[k][i])
         P["map_seed"] = int(cols["map_seed"][i])
+        P["temp_f"] = (M.hole_temp(hole) if hole is not None else 48.0) + float(cols["temp_f"][i])
         out.append(P)
     return out
 
 
 def key(h):
     return int(h) if str(h).isdigit() else str(h)
+
+
+def central(h, **over):
+    """v2 central world for hole h: prior means, forecast temperature when you reach the hole."""
+    return M.central(**dict(dict(temp_f=M.hole_temp(h)), **over))
 
 
 # ------------------------------------------------------------------------------- aim optimisation
@@ -132,7 +140,7 @@ def solve_world(h, P, n=12000, seed=7, clubs=None):
     clubs = clubs or M.ALL_CLUBS
     R, S, z, cv = curves(h, P, n, seed, clubs)
     res = {c: robust_aim(AIMS, cv[c]) for c in clubs}
-    order = sorted(clubs, key=lambda c: res[c]["ev"])
+    order = sorted((c for c in clubs if c not in M.HYPOTHETICAL), key=lambda c: res[c]["ev"])
     return dict(pick=order[0], runner=order[1], aim=res[order[0]]["aim"],
                 margin=res[order[1]]["ev"] - res[order[0]]["ev"],
                 clubs={c: dict(aim=res[c]["aim"], ev=round(res[c]["ev"], 4), window=res[c]["window"]) for c in clubs})
@@ -142,7 +150,7 @@ LADDER = [
     ("v1 world (v2 engine, v1 clubs)", {}, "v1"),
     ("+ irons on every hole", {}, "all"),
     ("+ soft course: 0.5-3.5 yd roll", dict(soft_roll=2.0, roll_noise=0.5, v1_roll=False), "all"),
-    ("+ 48°F", dict(temp_k=0.00075), "all"),
+    ("+ forecast temperature at the hole", dict(temp_k=0.00075), "all"),
     ("+ mishits 5-8% short (+ 2.5% heavy)", dict(mis_slight=0.12, mis_slight_carry=(0.92, 0.95), mis_slight_lat=1.15,
                                                 mis_heavy=0.025), "all"),
     ("+ correlated miss (rho, curvature loss)", dict(rho=0.1, kappa=0.08), "all"),
@@ -155,18 +163,19 @@ LADDER = [
 
 
 def ladder(h, n):
-    P = M.v1_world()
+    P = M.v1_world(temp_f=M.hole_temp(h))
     rows = []
     for name, ch, cl in LADDER:
         P = dict(P, **ch)
         clubs = M.clubs_for(h, all_clubs=(cl == "all"))
+        clubs = [c for c in clubs if c not in M.HYPOTHETICAL] + ([M.HYBRID] if cl == "all" else [])
         r = solve_world(h, P, n, clubs=clubs)
         rows.append(dict(step=name, pick=r["pick"], aim=r["aim"], margin=round(r["margin"], 4), runner=r["runner"]))
     return rows
 
 
 def sensitivities(h, n):
-    C = M.central()
+    C = central(h)
     w = C["width"]
     var = {
         "central": {},
@@ -180,24 +189,25 @@ def sensitivities(h, n):
         "draw: left tail 30% longer": dict(skew=-0.3),
         "no line-of-sight cost": dict(block_sev=0.0),
         "70°F": dict(temp_f=70.0),
+        "forecast -8°F (colder)": dict(temp_f=M.hole_temp(h) - 8),
         "lost ball rare (10-40%)": dict(lost_edge=0.1, lost_deep=0.4),
         "lost ball likely (40-90%)": dict(lost_edge=0.4, lost_deep=0.9),
         "trees always chip-out": dict(trees=1.0),
     }
     out = {}
     for name, ch in var.items():
-        r = solve_world(h, M.central(**ch), n)
+        r = solve_world(h, central(h, **ch), n)
         out[name] = dict(pick=r["pick"], aim=r["aim"], margin=round(r["margin"], 4), runner=r["runner"],
                          clubs=r["clubs"] if name == "central" else None)
     return out
 
 
 def width_sweep(h, n):
-    C = M.central()
+    C = central(h)
     picks, evs = [], []
     ws = [55, 60, 65, 70, 75, 80, 85, 90]
     for W in ws:
-        P = M.central(width={c: v * W / 70 for c, v in C["width"].items()})
+        P = central(h, width={c: v * W / 70 for c, v in C["width"].items()})
         r = solve_world(h, P, n, seed=9)
         picks.append(r["pick"])
         evs.append({c: v["ev"] for c, v in r["clubs"].items()})
@@ -214,7 +224,7 @@ def width_sweep(h, n):
 # ------------------------------------------------------------------------------- Bayes run
 def bayes(h, S=64, N=3000):
     hd = M.HOLES[h]
-    draws = prior_draws(S)
+    draws = prior_draws(S, hole=h)
     E = {c: [] for c in M.ALL_CLUBS}
     EA = {c: [] for c in M.ALL_CLUBS}
     EB = {c: [] for c in M.ALL_CLUBS}
@@ -233,8 +243,9 @@ def bayes(h, S=64, N=3000):
     MA = {c: np.vstack(EA[c]) for c in M.ALL_CLUBS}
     MB = {c: np.vstack(EB[c]) for c in M.ALL_CLUBS}
     res = {c: robust_aim(AIMS, Mx[c].mean(0)) for c in M.ALL_CLUBS}
-    order = sorted(M.ALL_CLUBS, key=lambda c: res[c]["ev"])
+    order = sorted(M.REAL_CLUBS, key=lambda c: res[c]["ev"])
     pick, runner = order[0], order[1]
+    vh = interp_rows(AIMS, Mx[M.HYBRID], res[M.HYBRID]["aim"])
     vp = interp_rows(AIMS, Mx[pick], res[pick]["aim"])
     vr = interp_rows(AIMS, Mx[runner], res[runner]["aim"])
     d = vr - vp
@@ -247,8 +258,8 @@ def bayes(h, S=64, N=3000):
     cf_margin, cf_same = [], []
     for f in (0, 1):
         sel, ev = folds[1 - f], folds[f]
-        rr = {c: robust_aim(AIMS, Mx[c][sel].mean(0)) for c in M.ALL_CLUBS}
-        o = sorted(M.ALL_CLUBS, key=lambda c: rr[c]["ev"])
+        rr = {c: robust_aim(AIMS, Mx[c][sel].mean(0)) for c in M.REAL_CLUBS}
+        o = sorted(M.REAL_CLUBS, key=lambda c: rr[c]["ev"])
         p_, r_ = o[0], o[1]
         e_p = interp_rows(AIMS, Mx[p_][ev], rr[p_]["aim"]).mean()
         e_r = interp_rows(AIMS, Mx[r_][ev], rr[r_]["aim"]).mean()
@@ -263,6 +274,9 @@ def bayes(h, S=64, N=3000):
         crossfit_margin=float(np.mean(cf_margin)), crossfit_same_pick=cf_same,
         p_pick_beats_runner=float(np.mean(d > 0)), tie=bool(min(d.mean(), np.mean(cf_margin)) < TIE),
         per_draw_aim_sd=float(np.std(per_draw_aim[pick])),
+        temp_f=M.hole_temp(h),
+        hybrid=dict(aim=res[M.HYBRID]["aim"], vs_pick=float((vh - vp).mean()),
+                    se=float((vh - vp).std(ddof=1) / np.sqrt(S)), p_beats_pick=float(np.mean(vh < vp))),
         clubs={c: dict(aim=res[c]["aim"], ev=round(res[c]["ev"], 4), window=res[c]["window"],
                        window_width=res[c]["window_width"], at_bound=res[c]["at_bound"],
                        curve=[round(float(x), 4) for x in gaussian_filter1d(Mx[c].mean(0), 2.0)[::2]])
@@ -296,7 +310,7 @@ def main():
         r = {}
         if "bayes" in parts:
             r = bayes(h, S, N)
-            r["shares"] = shares_at(h, M.central(), r["pick"], r["aim"])
+            r["shares"] = shares_at(h, central(h), r["pick"], r["aim"])
         if "ladder" in parts:
             r["ladder"] = ladder(h, NC)
         if "sens" in parts:

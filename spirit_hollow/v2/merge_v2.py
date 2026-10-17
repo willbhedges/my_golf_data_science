@@ -26,9 +26,11 @@ def main(parts):
     grids = {}
     for p in sorted(glob.glob(os.path.join(parts, "**", "v2wind_*.json"), recursive=True)):
         d = json.load(open(p))
-        g = grids.setdefault(d["back"], dict(speeds=d["speeds"], dirs=d["dirs"], bearings={}, holes={}, par3={},
-                                             tee_back=d["back"], model="v2"))
-        g["holes"].update(d["holes"])
+        g = grids.setdefault(d["back"], dict(speeds=d["speeds"], dirs=d["dirs"], temps=[], bearings={}, holes={},
+                                             par3={}, tee_back=d["back"], model="v2"))
+        g["temps"] = sorted(set(g["temps"]) | set(d.get("temps", [])))
+        for h, byT in d["holes"].items():
+            g["holes"].setdefault(h, {}).update(byT)
         g["bearings"].update(d["bearings"])
         g["par3"].update(d["par3"])
     for b, g in grids.items():
