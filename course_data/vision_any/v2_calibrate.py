@@ -280,7 +280,14 @@ def stage_report(pattern, out_md, out_json):
     prod = {k: v for k, v in by.items() if k[0] == "prod"}
     pbest = max(prod, key=lambda k: objective(score_rows(prod[k])))
     lbest = max(cand, key=lambda k: objective(score_rows(cand[k])))
-    res["selection"]["product"] = dict(setting=pbest[1], ob_off=pbest[2], score=res["settings"]["|".join(map(str, pbest))])
+    # the product setting is chosen on the LOCO maps (out of sample for the long-grass model); choosing on the
+    # product maps would pick up the model's in-sample fit to these two hand maps (it did: thr0.5_relaxed_k0,
+    # 22/30 on product maps but 20/30 on LOCO maps). It is then scored with the product maps.
+    pk = ("prod", lbest[1], lbest[2])
+    res["selection"]["product"] = dict(setting=lbest[1], ob_off=lbest[2], score=res["settings"]["|".join(map(str, pk))],
+                                       chosen_on="loco maps, both courses pooled")
+    res["selection"]["product_maps_in_sample_best"] = dict(setting=pbest[1], ob_off=pbest[2],
+                                                           score=res["settings"]["|".join(map(str, pbest))])
     res["selection"]["loco_pooled_best"] = dict(setting=lbest[1], ob_off=lbest[2], score=res["settings"]["|".join(map(str, lbest))])
     res["ob"] = {str(k[2]): res["settings"]["|".join(map(str, k))] for k in by if k[0] == "obonly"}
     res["gate"] = gate(res["selection"]["product"]["score"], res["current"])
@@ -334,7 +341,7 @@ def write_md(res, by, path):
               f"(SH {lh['spirit_hollow']['same']}/{lh['spirit_hollow']['n']}, Mozingo {lh['mozingo_lake']['same']}/"
               f"{lh['mozingo_lake']['n']}), regret {lh['both']['regret']:.4f}, shorter/longer {lh['both']['shorter']}/"
               f"{lh['both']['longer']}; settings chosen: {', '.join(lh['chosen'])}.")
-    for nm in ("loco_pooled_best", "product"):
+    for nm in ("loco_pooled_best", "product_maps_in_sample_best", "product"):
         v = res["selection"][nm]
         Lm.append(f"* {nm}: `{v['setting']}` (OB {v['ob_off']}): both {v['score']['both']['same']}/{v['score']['both']['n']}, "
                   f"SH {v['score']['spirit_hollow']['same']}, Mozingo {v['score']['mozingo_lake']['same']}, regret "
@@ -391,6 +398,22 @@ def stage_integrate(res_json, slugs=("spirit_hollow", "mozingo", "veenker")):
     return True
 
 
+def stage_adopt(res_json, setting, md):
+    """Re-select the product setting from an existing report (no re-scoring), re-gate, integrate if it passes."""
+    R = json.load(open(res_json))
+    k = f"prod|{setting}|None"
+    R["selection"]["product"] = dict(setting=setting, ob_off=None, score=R["settings"][k], chosen_on="adopt (request)")
+    R["gate"] = gate(R["settings"][k], R["current"])
+    json.dump(R, open(res_json, "w"), indent=1, default=float)
+    s = R["settings"][k]
+    with open(md, "a") as fh:
+        fh.write(f"\n## Adopted: `{setting}`\n\nProduct maps: SH {s['spirit_hollow']['same']}/{s['spirit_hollow']['n']}, "
+                 f"Mozingo {s['mozingo_lake']['same']}/{s['mozingo_lake']['n']}, both {s['both']['same']}/{s['both']['n']}, "
+                 f"mean regret {s['both']['regret']:.4f}, misses shorter / longer {s['both']['shorter']} / {s['both']['longer']}. "
+                 f"Merge gate: {'PASS' if R['gate']['pass_'] else 'FAIL'} ({'; '.join(R['gate']['why'])}).\n")
+    return stage_integrate(res_json)
+
+
 def main():
     ap = argparse.ArgumentParser()
     sp = ap.add_subparsers(dest="cmd")
@@ -406,12 +429,18 @@ def main():
     a3.add_argument("--md", default=os.path.join(HERE, "v2_decision_calibration.md"))
     a3.add_argument("--json", default=os.path.join(HERE, "v2_decision_calibration.json"))
     a3.add_argument("--integrate", action="store_true", help="adopt the product selection if the merge gate passes")
+    a4 = sp.add_parser("adopt")
+    a4.add_argument("--setting", required=True)
+    a4.add_argument("--md", default=os.path.join(HERE, "v2_decision_calibration.md"))
+    a4.add_argument("--json", default=os.path.join(HERE, "v2_decision_calibration.json"))
     a = ap.parse_args()
     if a.cmd == "layers":
         stage_layers(a.out)
     elif a.cmd == "score":
         extra = None
         stage_score(a.dir, a.shard, a.nshards, a.out, extra)
+    elif a.cmd == "adopt":
+        stage_adopt(a.json, a.setting, a.md)
     elif a.cmd == "report":
         r = stage_report(a.rows, a.md, a.json)
         print(open(a.md).read())
