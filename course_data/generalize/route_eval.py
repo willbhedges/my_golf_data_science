@@ -456,9 +456,10 @@ def results_md(ev):
     """The numbers block of CONFIRM_UX.md (between the RESULTS markers) from eval_v2.json."""
     sp = ev["split"]
     L = ["<!-- RESULTS -->", "", f"## Results on the held-out test split ({sp}, `route_eval.py final`, eval_v2.json)", "",
-         "Test courses are the 32 fully mapped courses held out by `sample.py holdout` (8 per Census region). One of them "
-         "has fewer than 9 numbered OSM holes and is skipped, which leaves the counts below. They were never used to "
-         "tune `routing_v2_weights.json`. Each course's OSM golf=hole ways and refs are hidden.", "",
+         "Test courses are the 32 fully mapped courses held out by `sample.py holdout` (8 per Census region). Hurstbourne "
+         "(KY, 27 holes) has fewer than 9 numbered OSM holes 1-18 and is skipped, which leaves the counts below. None "
+         "of them was used to tune `routing_v2_weights.json`. Each course's OSM golf=hole ways and refs are hidden. "
+         "Median / mean taps count only the courses that reached 100 %.", "",
          "### Automatic routing: v1 (routing.py) vs v2 (routing_v2.py)", "",
          "| inputs | card | courses | method | hole-number acc | green acc | all holes correct, no input | every wrong hole flagged | flags / course | wrong / course |",
          "|---|---|---|---|---|---|---|---|---|---|"]
@@ -478,7 +479,7 @@ def results_md(ev):
     L += ["", "### Golfer confirm: taps until every hole is right (oracle golfer, test split)", "",
           "| inputs | policy | courses | reach 100 % (<= 30 taps) | 0 taps | <= 2 taps | <= 4 taps | <= 8 taps | median taps | mean taps | app stops after (mean taps) | all right when the app stops |",
           "|---|---|---|---|---|---|---|---|---|---|---|---|"]
-    pol_names = {"risk": "risk (default): least-sure hole first", "eig": "max bits per tap",
+    pol_names = {"risk": "least-sure hole first", "eig": "max bits per tap (default)",
                  "eig_confirm": "max bits, yes/no only", "flagged": "v1 style: confirm each flagged hole",
                  "locate_all": "no routing: tap all 18 tees + greens"}
     for inputs in ("osm", "model"):

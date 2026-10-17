@@ -798,6 +798,48 @@
  },
  "questions": [
   {
+   "id": "l1",
+   "kind": "locate",
+   "ref": "1",
+   "taps": 2,
+   "bits": 2.071,
+   "bits_per_tap": 1.035,
+   "p_hole": 0.51,
+   "prompt": "Tap hole 1's tee, then its green",
+   "show": {
+    "line": null,
+    "tee_ll": null,
+    "green_ll": null
+   },
+   "answers": [
+    {
+     "tee_ll": "[lon, lat]",
+     "green_ll": "[lon, lat]"
+    }
+   ]
+  },
+  {
+   "id": "l6",
+   "kind": "locate",
+   "ref": "6",
+   "taps": 2,
+   "bits": 2.038,
+   "bits_per_tap": 1.019,
+   "p_hole": 0.2,
+   "prompt": "Tap hole 6's tee, then its green",
+   "show": {
+    "line": null,
+    "tee_ll": null,
+    "green_ll": null
+   },
+   "answers": [
+    {
+     "tee_ll": "[lon, lat]",
+     "green_ll": "[lon, lat]"
+    }
+   ]
+  },
+  {
    "id": "c1",
    "kind": "confirm",
    "ref": "1",
@@ -824,61 +866,6 @@
     "green_ll": [
      -70.8798709605101,
      42.66356747079924
-    ]
-   },
-   "answers": [
-    "yes",
-    "no"
-   ]
-  },
-  {
-   "id": "l6",
-   "kind": "locate",
-   "ref": "6",
-   "taps": 2,
-   "bits": 2.038,
-   "bits_per_tap": 1.019,
-   "p_hole": 0.2,
-   "prompt": "Tap hole 6's tee, then its green",
-   "show": {
-    "line": null,
-    "tee_ll": null,
-    "green_ll": null
-   },
-   "answers": [
-    {
-     "tee_ll": "[lon, lat]",
-     "green_ll": "[lon, lat]"
-    }
-   ]
-  },
-  {
-   "id": "c17",
-   "kind": "confirm",
-   "ref": "17",
-   "taps": 1,
-   "bits": 0.834,
-   "bits_per_tap": 0.834,
-   "p_hole": 0.735,
-   "prompt": "Is this hole 17? (par 4)",
-   "show": {
-    "line": [
-     [
-      -70.88096979323076,
-      42.66184058411112
-     ],
-     [
-      -70.88480648585308,
-      42.66353772648819
-     ]
-    ],
-    "tee_ll": [
-     -70.88096979323076,
-     42.66184058411112
-    ],
-    "green_ll": [
-     -70.88480648585308,
-     42.66353772648819
     ]
    },
    "answers": [

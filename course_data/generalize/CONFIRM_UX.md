@@ -6,7 +6,7 @@ Routing v2 (`course_data/platform/routing_v2.py`) places every hole from the sco
 
 ## Results on the held-out test split (test, `route_eval.py final`, eval_v2.json)
 
-Test courses are the 32 fully mapped courses held out by `sample.py holdout` (8 per Census region). One of them has fewer than 9 numbered OSM holes and is skipped, which leaves the counts below. They were never used to tune `routing_v2_weights.json`. Each course's OSM golf=hole ways and refs are hidden.
+Test courses are the 32 fully mapped courses held out by `sample.py holdout` (8 per Census region). Hurstbourne (KY, 27 holes) has fewer than 9 numbered OSM holes 1-18 and is skipped, which leaves the counts below. None of them was used to tune `routing_v2_weights.json`. Each course's OSM golf=hole ways and refs are hidden. Median / mean taps count only the courses that reached 100 %.
 
 ### Automatic routing: v1 (routing.py) vs v2 (routing_v2.py)
 
@@ -23,16 +23,40 @@ Test courses are the 32 fully mapped courses held out by `sample.py holdout` (8 
 
 | inputs | policy | courses | reach 100 % (<= 30 taps) | 0 taps | <= 2 taps | <= 4 taps | <= 8 taps | median taps | mean taps | app stops after (mean taps) | all right when the app stops |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| OSM greens / tees + model + lidar | risk (default): least-sure hole first | 31 | 90% | 13% | 16% | 23% | 32% | 14.0 | 14.64 | 7.43 | 23% |
-| OSM greens / tees + model + lidar | max bits per tap | 31 | 94% | 13% | 16% | 26% | 36% | 15.0 | 13.86 | 7.0 | 30% |
+| OSM greens / tees + model + lidar | least-sure hole first | 31 | 90% | 13% | 16% | 23% | 32% | 14.0 | 14.64 | 7.43 | 23% |
+| OSM greens / tees + model + lidar | max bits per tap (default) | 31 | 94% | 13% | 16% | 26% | 36% | 15.0 | 13.86 | 7.0 | 30% |
 | OSM greens / tees + model + lidar | v1 style: confirm each flagged hole | 31 | 100% | 13% | 16% | 19% | 36% | 17.0 | 14.58 | 8.29 | 42% |
 | OSM greens / tees + model + lidar | no routing: tap all 18 tees + greens | 31 | 100% | 0% | 0% | 0% | 0% | 36.0 | 34.0 | - | - |
-| model + lidar only (unmapped) | risk (default): least-sure hole first | 31 | 77% | 0% | 3% | 10% | 26% | 21.0 | 16.58 | 9.29 | 11% |
+| model + lidar only (unmapped) | least-sure hole first | 31 | 77% | 0% | 3% | 10% | 26% | 21.0 | 16.58 | 9.29 | 11% |
 | model + lidar only (unmapped) | no routing: tap all 18 tees + greens | 31 | 100% | 0% | 0% | 0% | 0% | 36.0 | 34.0 | - | - |
 
 Weights: `course_data/platform/routing_v2_weights.json` (coordinate search (route_eval.py tune), train split, 102 course x input runs); posterior temperature tau 0.75, flag threshold p_hole < 0.95.
 
 <!-- /RESULTS -->
+
+### What the numbers say
+
+* **Automatic routing improves on courses with OSM greens and tees** (the "partial" tier, plus full-tier courses with a hole way missing):
+  * hole-number accuracy goes from 68 % to 76 % and green accuracy from 76 % to 86 %
+  * wrong holes per course fall from 5.1 to 3.7, and flags per course from 7.6 to 6.7
+  * courses fully right with no input go from 10 % to 13 % (3 to 4 of 31)
+
+  The biggest per-course gains are routings v1 had shifted by whole nines: Towne Lake Hills 0 % to 78 %, Kingwood 6 % to 65 %, Cinder Ridge 13 % to 80 %. On the train split v2 reaches 83 % (eval_v2_train.json); the test figure is the honest one.
+* **"All 18 correct with no human input" stays rare**, at 13 %, because a whole round has 18 chances to be wrong. With 3.7 wrong holes per course, the golfer confirm is the realistic path to 100 %.
+* **Unmapped courses (model + lidar only) did not improve**: 62 % to 63 % hole accuracy, and all-correct fell from 6 % to 0 %. The learned weights lean on cues the model inputs lack or get wrong: exact green positions, tee polygons, and OSM fairways for the corridor term. These courses need the perception work (course_data/perception/).
+* **Without a card, numbering is still a guess**: 16 % hole accuracy. v2 flags almost every hole there (17.5 per course, so 94 % of courses have every wrong hole flagged), which is the right behaviour: ask for the card. Typing the 18 yardages (`typed_card.py`) takes the course to the "card" rows above.
+* **Flags are better targeted but not fewer than about 7 per course.** Calibrated on train at tau 0.75 and p_hole < 0.95, the posterior flags 6.7 holes per course and catches every wrong hole on 48 % of courses, the same rate as v1, which needed 7.6 flags. The remaining errors are confident ones: a green the detectors never found, or a tee complex shared between two holes.
+
+### Taps to a correct routing
+
+* With OSM greens / tees, the default policy (max bits per tap) gets **94 % of courses 100 % right within 30 taps**, at a **mean of 13.9 taps (median 15)**. Tapping every tee and green with no routing costs 34-36 taps.
+  * 13 % of courses need no input at all (the router is already right).
+  * 26 % need at most 4 taps, and 36 % at most 8.
+* The lower bound, if the app knew which holes were wrong, is 2 taps x 3.7 wrong holes, or about 7.4 taps. The policies spend the difference confirming holes that were already right.
+* The three policies are close. "Confirm each flagged hole" (v1's check list, a locate after a "no") always finishes but needs a median of 17 taps. "Max bits per tap" has the best mean, and with the stop rule it stops after 7 taps with all holes right on 30 % of courses.
+* **The stop rule is not safe yet.** When the app stops on its own (every unconfirmed hole at p_hole >= 0.95), 1.4 holes per course are still wrong on average. Until the posterior is better calibrated, the app should keep showing "this isn't hole n" during the round.
+* On unmapped courses (model + lidar only), 77 % of courses reach 100 % within 30 taps, at a mean of 16.6 taps.
+
 
 ## The questions
 

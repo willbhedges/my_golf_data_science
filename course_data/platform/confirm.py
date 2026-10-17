@@ -11,7 +11,8 @@ Questions (both re-solve the whole round with the answer as a constraint):
            that (green, tee complex) for hole 7.
   locate   "Tap hole 7's tee, then its green" - 2 taps. Pins hole 7 to the tapped points (snapped to a detected
            tee box / green within 25 / 15 yds, else the taps become new candidates).
-Choice: expected information gain per tap over the posterior's routings (routing_v2: Boltzmann over the distinct
+Choice (default policy "eig", chosen on the train split: eval_v2_train.json): expected information gain per tap over
+the posterior's routings (routing_v2: Boltzmann over the distinct
 top routings at the calibrated temperature): a confirm on hole n is worth H(p_n) bits (p_n = posterior of the
 shown answer, floored at 2 % doubt), a locate is worth the entropy of hole n's whole answer distribution.
 The session stops asking when every unconfirmed hole has p_hole >= p_stop (the flag threshold).
@@ -40,7 +41,7 @@ def entropy(ps):
 
 
 class Session:
-    def __init__(self, inp, card, fc=None, boundary=None, w=None, tau=None, p_check=None, p_stop=None, policy="risk"):
+    def __init__(self, inp, card, fc=None, boundary=None, w=None, tau=None, p_check=None, p_stop=None, policy="eig"):
         w0, t0, p0 = R2.load_weights()
         self.w = w0 if w is None else w
         self.tau = t0 if tau is None else tau
