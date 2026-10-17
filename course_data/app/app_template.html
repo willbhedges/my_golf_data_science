@@ -141,10 +141,10 @@ const yds = (v, side) => Math.abs(v) < 1.5 ? "on the line" : `${Math.abs(v).toFi
 
 /* ------------------------------------------------------------------ state (per-viewer convenience only) */
 const st = {screen: "pick", course: null, q: "", set: {}, idx: {}, src: {}, hour: {}, view: "land",
-            custom: {from: 180, mph: 10, temp: 65}, adj: {}, club: {}, answers: {}, wind_open: false};
+            custom: {from: 180, mph: 10, temp: 65}, adj: {}, club: {}, answers: {}, wind_open: false, lie: "fairway", shot: {}};
 const KEY = "aimcaddie1";
 try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && typeof s === "object") Object.assign(st, s); } catch (e) {}
-for (const k of ["set","idx","src","hour","adj","club","answers"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
+for (const k of ["set","idx","src","hour","adj","club","answers","shot"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
 if (!st.custom) st.custom = {from: 180, mph: 10, temp: 65};
 /* deep links: #c=<course>&t=<tee set>&h=<hole no> (also used by the tests) */
 (function readHash(){
@@ -159,7 +159,7 @@ function save(){
   try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
   try {
     const C = cur(); let h = "";
-    if (C) { h = "#c=" + C.id + "&t=" + encodeURIComponent(curSet(C)); if (st.screen === "hole") h += "&h=" + C.holes[holeIdx(C)].no; }
+    if (C) { h = "#c=" + C.id + "&t=" + encodeURIComponent(curSet(C)); if (st.screen === "hole") h += "&h=" + C.holes[holeIdx(C)].no + (st.view && st.view !== "land" ? "&v=" + st.view : ""); }
     history.replaceState(null, "", h || location.pathname + location.search);
   } catch (e) {}
 }
@@ -385,18 +385,77 @@ function forecastLine(C){
   return `Hole 1 at ${clock(teeHour(C))}: ${Math.round(a.mph)} mph from the ${compass(a.from)}, ${Math.round(a.temp)}°F · hole 18 at about ${clock(teeHour(C) + 17 * C.pace_min_per_hole / 60)}: ${Math.round(b.mph)} mph from the ${compass(b.from)}, ${Math.round(b.temp)}°F. Each hole uses the forecast for when you reach it (${C.pace_min_per_hole} min a hole).`;
 }
 
+/* second shot: green close-up turned so the approach plays up; DECADE box for the lie and today's wind modifier */
+const LIE = {fairway: "fairway", first_cut: "first cut", rough: "rough", sand: "sand", recovery: "trees", native: "long grass", water: "water", ob: "OB", green: "green"};
+const pct = x => Math.round(x * 100) + "%";
+const lies = o => Object.entries(o || {}).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${LIE[k] || k} ${pct(v)}`).join(" · ");
+function apronWords(txt){ const m = /^(\d+) short, ([+-]?\d+)$/.exec(txt); if (!m) return txt === "green" ? "the green box" : txt;
+  const o = +m[2]; return `the apron ${m[1]} short${o ? `, ${Math.abs(o)} ${o < 0 ? "left" : "right"}` : ""}`; }
+function renderAppr(C, H, T, W, r){
+  const V = T.V, A = V.approach, k = T.key;
+  const shots = A.shots, want = st.shot[k] || (A.par5 && A.par5.call === "go" && shots.some(s => s.id === "go") ? "go" : shots[shots.length - 1].id);
+  const S = shots.find(s => s.id === want) || shots[0], lie = st.lie === "rough" ? "rough" : "fairway";
+  const mod = windMod(W.mph), b = S.boxes[lie][String(mod)] || S.boxes[lie]["0"];
+  const rel = ((W.from - S.bearing) % 360 + 360) % 360, K = corners(W.mph, rel);
+  let ratio = 0; for (const [i, w] of K) ratio += w * S.plays_ratio[i];
+  ratio = ratio / (1 + tempK(W));
+  const plays = b.play * ratio, vb = [0, 0, A.w, A.h];
+  const poly = (pts, a) => `<polygon points="${pts.map(q => q.join(",")).join(" ")}" ${a}/>`;
+  let over = poly(A.green, `fill="none" stroke="#fff" stroke-width="1.6" stroke-dasharray="5 4"`);
+  if (S.apron) over += poly(S.apron.zone, `fill="rgba(255,201,40,.12)" stroke="#ffc928" stroke-width="1.4" stroke-dasharray="5 4"`) +
+    `<circle cx="${S.apron.target[0]}" cy="${S.apron.target[1]}" r="5" fill="#ffc928" stroke="#1a1a1a" stroke-width="1.2"/>` +
+    `<text x="${S.apron.target[0] + 9}" y="${S.apron.target[1] + 4}" ${TXT} font-size="13">APRON ${S.apron.L} SHORT</text>`;
+  if (S.sg && S.sg.recommend === "sg" && S.sg.box.length) over += poly(S.sg.box, `fill="none" stroke="#c9a7ff" stroke-width="2" stroke-dasharray="4 3"`);
+  /* going for it from beyond the green-box range: the target is the apron short of the green */
+  const P5 = A.par5, lieKey = lie === "rough" ? "rough" : "fairway";
+  const apron = S.id === "go" && S.apron && P5 && A.typical.median > P5.green_box_up_to[lieKey];
+  const area = Math.abs(b.shape.reduce((a, q, i) => { const n = b.shape[(i + 1) % b.shape.length]; return a + q[0] * n[1] - n[0] * q[1]; }, 0)) / 2;
+  over += poly(b.shape, `fill="rgba(37,208,255,${apron ? .2 : .42})" stroke="#25d0ff" stroke-width="2.2"`);
+  if (area < 60) over += `<circle cx="${b.aim[0]}" cy="${b.aim[1]}" r="14" fill="rgba(37,208,255,${apron ? .2 : .45})" stroke="#25d0ff" stroke-width="2.2"/>`;
+  over += apron ? aimMark(S.apron.target[0], S.apron.target[1]) : aimMark(b.aim[0], b.aim[1]);
+  over += windArrow({up: A.up, bearing: S.bearing}, W, vb) +
+    `<text x="${A.w / 2}" y="${A.h - 10}" ${TXT} font-size="14" text-anchor="middle">${S.id === "go" ? "FROM THE TEE BALL" : S.id === "third" ? "FROM THE LAY-UP" : "FROM THE TEE BALL"} · ${Math.round(S.dist)} YDS ↓</text>`;
+  const map = `<image href="${C.images[A.image]}" x="0" y="0" width="${A.w}" height="${A.h}"/>` + over;
+  const seg = (items, cur, attr) => `<div class="seg">${items.map(([v, l]) => `<button ${attr}="${v}" aria-pressed="${v === cur}">${esc(l)}</button>`).join("")}</div>`;
+  const controls = `<div class="row">${shots.length > 1 ? seg(shots.map(s => [s.id, s.label]), S.id, "data-shot") : ""}${seg([["fairway", "From the fairway"], ["rough", "From the rough"]], lie, "data-lie")}</div>`;
+  const haz = Object.entries(b.haz || {}).map(([side, h]) => `${LIE[h] || h} ${side}`).join(", ");
+  const play = apron ? `<div class="label">Go for it: play it like</div>
+    <div class="playrow"><span class="play">${Math.round(S.apron.shot * ratio)} yds</span><span class="sub" style="padding-bottom:5px">to the apron ${S.apron.L} short · ${Math.round(S.apron.shot)} calm${S.apron.club ? " · " + esc(S.apron.club) : ""}</span></div>`
+    : `<div class="label">${S.id === "go" ? "Go for it: play it like" : S.id === "third" ? "Third shot: play it like" : "Approach: play it like"}</div>
+    <div class="playrow"><span class="play">${Math.round(plays)} yds</span><span class="sub" style="padding-bottom:5px">box ${Math.round(b.lo)}–${Math.round(b.hi)} · ${Math.round(b.play)} calm${b.club ? " · " + esc(b.club) : ""}</span></div>`;
+  let aim = apron ? `<p><b>Aim at the dot on the apron</b>, ${S.apron.L} yds short of the green centre${S.apron.off ? `, ${Math.abs(S.apron.off)} ${S.apron.off < 0 ? "left" : "right"}` : ""}: from your usual ${Math.round(A.typical.median)} yds the green box (faint blue) only pays inside ${P5.green_box_up_to[lieKey]} yds from the ${lie}. The ball runs up from there; the dashed yellow shape is where it finishes.</p>`
+    : `<p><b>Land it in the blue box</b>: aim ${esc(b.aim_text || "centre")} of the green. DECADE cushions from the ${lie}${haz ? ` (trouble: ${esc(haz)})` : ""}; wind modifier ${mod > 0 ? "+" + mod : mod} yd on every edge. “Play it like” adds the wind along this shot's line and the temperature.</p>`;
+  if (S.sg && S.sg.recommend === "sg" && S.sg.play) aim += `<p class="sub">Strokes-gained check (16 pins): aiming at the purple dashed area, ${Math.round(S.sg.play)} yds, is ${S.sg.cost ? (+S.sg.cost).toFixed(2) : "a little"} strokes better than the box.</p>`;
+  const tp = A.typical, badges = [];
+  let info = `<p>${S.id === "third" ? "" : `Your tee shot (${esc((A.tee || {}).club || r.pick)}) typically leaves <b>${Math.round(tp.median)} yds</b> (${Math.round(tp.p10)}–${Math.round(tp.p90)})${tp.club ? `, about a ${esc(tp.club)}` : ""}. It finishes: ${esc(lies(tp.lies))}.`}</p>`;
+  if (A.par5) { const P5 = A.par5, L = P5.layup;
+    badges.push(`<span class="pill ${P5.call === "go" ? "ans" : "chg"}">The call: ${P5.call === "go" ? "go for it" : "lay up"} (${pct(P5.p_go)} of tee balls go)</span>`);
+    info += `<div class="conf auto"><b>Go or lay up?</b>
+      <div>Go when you have <b>${P5.go_up_to.fairway}</b> or less from the fairway, ${P5.go_up_to.first_cut ?? P5.go_up_to.fairway} from the first cut, ${P5.go_up_to.rough} from the rough. Aim at the green box only inside ${P5.green_box_up_to.fairway} (fairway) / ${P5.green_box_up_to.rough} (rough); beyond that, aim at ${esc(P5.go_aims.filter(a => a[0] !== "green").map(a => apronWords(a[0])).slice(0, 2).join(" or ") || "the apron")}.</div>
+      ${P5.margin ? `<div>Going beats laying up by <b>${Math.abs(P5.margin.mean).toFixed(2)} strokes</b> when it is in range.</div>` : ""}
+      <div>Lay-up: <b>${L.L} yds short of the green centre${L.off ? `, ${Math.abs(L.off)} ${L.off < 0 ? "left" : "right"}` : ""}</b>${L.club ? ` (${esc(L.club)}, ${Math.round(L.shot)} yds)` : ""}; it finishes ${esc(lies(L.lies))}.${L.full_wedge_cost ? ` Leaving a full wedge (${L.full_wedge_L}) instead costs +${(+L.full_wedge_cost).toFixed(2)}.` : ""}</div></div>`;
+  }
+  if (T.back !== 0 || (T.t && T.t.back !== 0)) info += `<p class="sub">Second-shot numbers are for the ${A.black ? "Black" : "Gold"}-tee plan; from your tee the approach is about ${Math.abs(T.back)} yds ${T.back > 0 ? "longer" : "shorter"}.</p>`;
+  const rows = ["fairway", "rough"].map(l => { const x = S.boxes[l][String(mod)] || S.boxes[l]["0"];
+    return `<tr class="${l === lie ? "sel" : ""}"><td>${l === "fairway" ? "Fairway" : "Rough"}</td><td>${Math.round(x.play * ratio)}</td><td>${Math.round(x.lo)}–${Math.round(x.hi)}</td><td>${esc(x.aim_text || "")}</td></tr>`; }).join("");
+  const table = `<div style="overflow-x:auto"><table><thead><tr><th>From</th><th>Plays</th><th>Box</th><th>Aim</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="sub">Green ${A.green_size[0]} × ${A.green_size[1]} yds. No pin: the box is pin-free (DECADE), as on the par 3s. Green slope and elevation on the approach are not modelled.</p>`;
+  return {map, vb, play: play + controls, aim: aim + info, table, badges, rel};
+}
 function renderHole(){
   const C = cur(), i = holeIdx(C), H = C.holes[i], T = teeSpot(C, H), V = T.V, W = windFor(C, H);
   const src = source(C);
   let map = "", play = "", aimTxt = "", table = "", elev = "", badges = [], vb = [0, 0, V.w, V.h], extra = "";
   const IMG = `<image href="${C.images[V.image]}" x="0" y="0" width="${V.w}" height="${V.h}"/>`;
   const tcol = setColour(C, T.name);
+  const view = st.view === "appr" && !V.approach ? "land" : (st.view === "hole" ? "hole" : st.view);
+  let relShown = null;
   if (V.kind === "tee") {
     const r = solveTee(C, H, T, W), ck = T.key + "|" + T.name;
     const pickC = st.club[ck] && r.out[st.club[ck]] ? st.club[ck] : r.pick;
     const best = r.out[pickC], aimC = pickC === r.pick ? r.aim : best.aim, B = T.back;
     const cl = V.cloud && V.cloud[pickC], cA = cl ? cl.dA : 0, cL = cl ? cl.dL : 0;
-    if (st.view === "land") {
+    if (view === "land") {
       const a0 = Math.max(0, best.total - 140) - B, a1 = best.total + 45 - B;
       const ys = [a0, a1].flatMap(a => [-80, 80].map(l => pt(V, a, l)[1]));
       const y0 = Math.max(0, Math.min(...ys)), y1 = Math.min(V.h, Math.max(...ys));
@@ -454,6 +513,8 @@ function renderHole(){
       extra += `<!--adj-->`;
       T._adj = {lo, hi};
     }
+    if (view === "appr") { const R = renderAppr(C, H, T, W, r); map = R.map; vb = R.vb; play = R.play; aimTxt = R.aim; table = R.table;
+      badges = R.badges; relShown = R.rel; elev = ""; }
   } else {
     const r = solvePar3(C, H, T, W);
     const g = V.green.map(p => p.join(",")).join(" "), bp = r.box.poly.map(p => p.join(",")).join(" ");
@@ -477,7 +538,7 @@ function renderHole(){
         ${cards.length ? `<details><summary class="sub">${cards.length} minor check${cards.length > 1 ? "s" : ""}</summary><div class="stack" style="margin-top:8px">${cards.map(c => checkCard(C, c, {img: false})).join("")}</div></details>` : ""}</div>`;
   const condTxt = W.custom ? `<span>Your wind: <b>${Math.round(W.mph)} mph</b> from the ${compass(W.from)} · <b>${Math.round(W.temp)}°F</b></span>`
     : `<span>At about <b>${clock(W.t)}</b></span><span><b>${Math.round(W.mph)} mph</b> from the ${compass(W.from)}${W.gust ? ` (gusts ${Math.round(W.gust)})` : ""}</span><span><b>${Math.round(W.temp)}°F</b></span>`;
-  const rel = ((W.from - V.bearing) % 360 + 360) % 360;
+  const rel = relShown ?? ((W.from - V.bearing) % 360 + 360) % 360;
   const adjRow = V.kind === "tee" && Object.keys(V.offsets).length > 1 ? `<div class="row"><span class="label">Move this tee</span><input type="range" id="adj" min="${T._adj.lo}" max="${T._adj.hi}" step="10" value="${T.adj}" aria-label="Move this tee back or up"><span class="sub" style="min-width:90px">${T.adj === 0 ? "card spot" : Math.abs(T.adj) + " yds " + (T.adj > 0 ? "back" : "up")}</span></div>` : "";
   const sets = C.tee_sets.filter(t => t.computed !== "missing");
   return `<div class="topbar"><button class="btn ghost" data-go="pick" aria-label="All courses">‹</button>
@@ -488,7 +549,7 @@ function renderHole(){
         <div class="row" style="justify-content:center;margin-top:4px">${badge(conf.level)}</div></div>
       <button class="navbtn" id="next" aria-label="Next hole">›</button></div>
     <section class="stack">
-      ${V.kind === "tee" ? `<div class="seg" id="view"><button data-view="land" aria-pressed="${st.view === "land"}">Landing area</button><button data-view="hole" aria-pressed="${st.view !== "land"}">Whole hole</button></div>` : ""}
+      ${V.kind === "tee" ? `<div class="seg" id="view"><button data-view="land" aria-pressed="${view === "land"}">Landing area</button><button data-view="hole" aria-pressed="${view === "hole"}">Whole hole</button>${V.approach ? `<button data-view="appr" aria-pressed="${view === "appr"}">Approach</button>` : ""}</div>` : ""}
       <div class="mapbox"><svg id="ov" viewBox="${vb.map(x => x.toFixed(1)).join(" ")}" role="img" aria-label="Overhead view of hole ${H.no} with the aim drawn on it">${map}</svg></div>
     </section>
     <section class="panel stack">
@@ -560,6 +621,8 @@ app.addEventListener("click", e => {
   if (d.src) { st.src[C.id] = d.src; if (d.src === "custom") { const W = windFor(C, C.holes[holeIdx(C)]); st.custom = {from: Math.round(W.from), mph: Math.round(W.mph), temp: Math.round(W.temp ?? 70)}; } return render(); }
   if (d.card) { const A = st.answers[C.id] = st.answers[C.id] || {}; if (A[d.card] === d.ans) delete A[d.card]; else A[d.card] = d.ans; return rerenderKeepFocus(); }
   if (d.view) { st.view = d.view; return render(); }
+  if (d.lie) { st.lie = d.lie; return render(); }
+  if (d.shot) { const H = C.holes[holeIdx(C)]; st.shot[C.id + "|" + H.no] = d.shot; return render(); }
   if (d.i !== undefined) { st.idx[C.id] = +d.i; return render(); }
   if (b.id === "prev" || b.id === "next") { const n = C.holes.length; st.idx[C.id] = (holeIdx(C) + (b.id === "next" ? 1 : n - 1)) % n; return render(); }
   if (d.club) { const H = C.holes[holeIdx(C)], T = teeSpot(C, H), r = solveTee(C, H, T, windFor(C, H)), ck = T.key + "|" + T.name;

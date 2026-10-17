@@ -43,7 +43,7 @@ fs.mkdirSync(shots, { recursive: true });
   await page.screenshot({ path: path.join(shots, "01_search.png"), fullPage: true });
   await check("search");
   await page.fill("#q", "");
-  let nHoles = 0, nClubs = 0;
+  let nHoles = 0, nClubs = 0, nAppr = 0;
   const summary = [];
   for (const C of D.courses) {
     await page.click(`[data-course="${C.id}"]`);
@@ -67,6 +67,11 @@ fs.mkdirSync(shots, { recursive: true });
         });
         summary.push(`${tag}: ${info.play} [${info.badge}]`);
         nHoles++;
+        if (S !== C.sets[0] && await page.locator('[data-view="appr"]').count()) {   // every set's approach view renders
+          await page.click('[data-view="appr"]'); await check(`${tag} approach`); nAppr++;
+          if (S === "Black") await page.locator(".mapbox").screenshot({ path: path.join(shots, `ha_${tag}.png`) });
+          await page.click('[data-view="land"]');
+        }
         if (S === C.sets[0]) {
           await page.locator(".mapbox").screenshot({ path: path.join(shots, `h_${tag}.png`) });
           for (const club of info.clubs) {                   // club override: every club draws its own aim + pattern
@@ -82,6 +87,19 @@ fs.mkdirSync(shots, { recursive: true });
             await check(`${tag} whole`);
             await page.locator(".mapbox").screenshot({ path: path.join(shots, `hw_${tag}.png`) });
             await page.click(`[data-view="land"]`);
+          }
+          if (await page.locator('[data-view="appr"]').count()) {    // second shot: green close-up + DECADE box
+            await page.click('[data-view="appr"]');
+            await check(`${tag} approach`);
+            nAppr++;
+            await page.click('[data-lie="fairway"]');
+            await page.locator(".mapbox").screenshot({ path: path.join(shots, `ha_${tag}.png`) });
+            await page.click('[data-lie="rough"]'); await check(`${tag} approach rough`);
+            const ids = await page.locator("[data-shot]").evaluateAll(b => b.map(x => x.dataset.shot));
+            for (const id of ids) { await page.click(`[data-shot="${id}"]`); await check(`${tag} approach ${id}`);
+              await page.locator(".mapbox").screenshot({ path: path.join(shots, `ha_${tag}_${id}.png`) }); }
+            await page.click('[data-lie="fairway"]');
+            await page.click('[data-view="land"]');
           }
         }
       }
@@ -115,9 +133,30 @@ fs.mkdirSync(shots, { recursive: true });
     await p2.screenshot({ path: path.join(shots, `contact_${C.id}.png`), fullPage: true });
     await p2.close();
   }
+  {                                                         // approach contact sheet (Spirit Hollow)
+    const files = fs.readdirSync(shots).filter(f => /^ha_.*\.png$/.test(f)).sort();
+    const html = `<body style="margin:0;background:#111;display:grid;grid-template-columns:repeat(6,260px);gap:6px;padding:6px;font:13px sans-serif;color:#fff">` +
+      files.map(f => `<div><div>${f.replace(/^ha_|\.png$/g, "")}</div><img src="data:image/png;base64,${fs.readFileSync(path.join(shots, f)).toString("base64")}" style="width:260px"></div>`).join("") + `</body>`;
+    const p2 = await ctx.newPage(); await p2.setViewportSize({ width: 6 * 266 + 6, height: 900 });
+    await p2.setContent(html, { waitUntil: "load" }); await p2.screenshot({ path: path.join(shots, "contact_approach.png"), fullPage: true }); await p2.close();
+  }
+  // the artifact-format copy (no doctype/head/body): wrap it the way the host does and smoke-test it
+  const art = path.join(path.dirname(page_path), "aim_caddie.html");
+  if (fs.existsSync(art)) {
+    const p3 = await ctx.newPage(); const errs = [];
+    p3.on("pageerror", e => errs.push(e.message));
+    p3.on("console", m => { const u = (m.location() || {}).url || ""; if (m.type() === "error" && !/fonts\.(googleapis|gstatic)/.test(m.text() + " " + u)) errs.push(m.text()); });
+    await p3.setContent('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>' + fs.readFileSync(art, "utf8") + "</body></html>", { waitUntil: "load" });
+    await p3.click('[data-course="spirit_hollow"]'); await p3.click('[data-go="hole"]'); await p3.click('[data-view="appr"]');
+    const ok = await p3.evaluate(() => !!document.querySelector("#ov polygon") && document.title.length > 0);
+    await p3.screenshot({ path: path.join(shots, "40_artifact_copy.png"), fullPage: false });
+    console.log(`artifact copy: ${ok ? "renders" : "DID NOT RENDER"}, errors ${errs.length}`); errs.slice(0, 5).forEach(e => console.log("  " + e));
+    if (!ok) problems.push("artifact copy did not render"); errors.push(...errs.map(e => "artifact: " + e));
+    await p3.close();
+  }
   await browser.close();
   fs.writeFileSync(path.join(shots, "summary.txt"), summary.join("\n") + "\n");
-  console.log(`courses ${D.courses.length}, hole views ${nHoles}, club taps ${nClubs}, coming-soon matches for "ames": ${soon}`);
+  console.log(`courses ${D.courses.length}, hole views ${nHoles}, club taps ${nClubs}, approach views ${nAppr}, coming-soon matches for "ames": ${soon}`);
   console.log(`console/page errors: ${errors.length}`); errors.slice(0, 20).forEach(e => console.log("  " + e));
   console.log(`layout/NaN problems: ${problems.length}`); problems.slice(0, 20).forEach(e => console.log("  " + e));
   process.exit(errors.length || problems.length ? 1 : 0);

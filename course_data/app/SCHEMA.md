@@ -83,6 +83,39 @@ Spirit Hollow's holes 2 and 9 have two variants, one per screenshot (Gold box `B
 | `mapped_along` | (verified) how far the hand-checked map reaches; landing past it shows a warning |
 | `off_image_below` | image y (px) below which the tee falls off a screenshot |
 
+#### `approach` (optional, on tee variants): the second shot
+
+Today only Spirit Hollow has it (`spirit_hollow/approach/output/{approach.json, green_views.json}`, see that
+folder's REPORT.md). The client shows it as the "Approach" view.
+
+```jsonc
+"approach": {
+  "image": "gN", "w": 360, "h": 360, "ypp": 0.25,       // green close-up, turned so the shot plays up the image
+  "up": 109.6,                                           // degrees true of "up" on that image
+  "green": [[x,y],...], "green_size": [21.4, 33.9],      // outline (image px), width x depth (yds)
+  "black": true,                                         // computed for the Black-tee plan (false: Gold box, 2B / 9B)
+  "tee": {"club": "4-wood", "aim": 0.0},                 // the tee-shot plan it starts from
+  "typical": {"median": 116.6, "p10": 101.3, "p90": 131.7, "club": "SW", "lies": {"fairway": 0.66, ...}},
+  "shots": [Shot, ...],                                  // par 4: [approach]; par 5: [go, third] or [third]
+  "par5": {"p_go": 0.93, "p_layup": 0.04, "p_forced": 0.04, "call": "go"|"layup",
+           "go_up_to": {"fairway": 300, "first_cut": 300, "rough": 270},          // go when this close or closer
+           "green_box_up_to": {...},                     // aim at the green box inside this; beyond it, the apron
+           "go_aims": [["green", 0.72], ["20 short, +0", 0.15]],
+           "margin": {"mean": -0.369, "se": 0.005},      // go minus lay-up, strokes, over balls that can go
+           "layup": {"L": 60, "off": -10, "club": "PW", "shot": 141, "lies": {...},
+                     "full_wedge_cost": 0.17, "full_wedge_L": 100, "target": [x,y] | null}}
+}
+Shot = {"id": "approach"|"go"|"third", "label": "...", "bearing": 224.1, "dist": 200.4,
+        "plays_ratio": [61],                             // plays-like / calm yardage per wind cell (relative to `bearing`)
+        "boxes": {"fairway"|"rough": {"-1".."3": {"shape": [[x,y],...], "aim": [x,y], "play", "lo", "hi",
+                                                 "aim_text", "club", "haz": {"left": "bunker", ...}}}},
+        "sg":    {"recommend": "decade"|"sg", "cost", "play", "best": [x,y], "box": [[x,y],...]},   // approach only
+        "apron": {"L": 20, "off": 5, "club", "shot", "target": [x,y], "zone": [[x,y],...]}}        // go only, if in view
+```
+
+Client: box = `boxes[lie][windMod(mph)]` (the hole's forecast wind at that time); plays like =
+`play x interp(plays_ratio) / (1 + k(T-70))`. When going for it from beyond `green_box_up_to`, the target is the apron.
+
 ### `kind: "par3"`
 
 | field | meaning |

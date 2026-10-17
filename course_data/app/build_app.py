@@ -176,6 +176,80 @@ class Images:
         return key
 
 
+# ----------------------------------------------------------------------------- second shots (Spirit Hollow)
+APPROACH_DIR = os.path.join(ROOT, "spirit_hollow", "approach", "output")
+
+
+def geo_bearing(a, b):
+    from pyproj import Geod
+    az, _, _ = Geod(ellps="WGS84").inv(a[0], a[1], b[0], b[1])
+    return round(az % 360, 1)
+
+
+def approach_block(key, rec, gv, imgs):
+    """spirit_hollow/approach output for one tee shot -> the app's `approach` block (SCHEMA.md)."""
+    import wind_grid as WG
+    centre = rec["green"]["centre"]["ll"][0]
+    img = imgs.add(f"g{key}", gv["img"])
+    P = lambda q: [r1(q[0]), r1(q[1])]                            # noqa: E731
+
+    def boxes(src_rec, src_view):
+        out = {}
+        for lie, by_w in src_view.items():
+            out[lie] = {}
+            for w, b in by_w.items():
+                full = src_rec[lie][w]
+                out[lie][w] = dict(shape=[P(q) for q in b["shape"]], aim=P(b["aim"]), play=r1(b["play"]), lo=r1(b["lo"]),
+                                   hi=r1(b["hi"]), aim_text=full.get("aim_text", ""), club=full.get("club", ""),
+                                   haz={k: v for k, v in (full.get("haz") or {}).items() if v not in ("rough", "fairway")})
+        return out
+
+    def shot(sid, label, frm_ll, box_rec, box_view):
+        brg = geo_bearing(frm_ll, centre)
+        d0 = float(box_rec["fairway"]["0"]["play"])
+        ratio = [r4(WG.plays_like(d0, *[int(x) for x in c.split("_")]) / d0) for c in CELLS]
+        return dict(id=sid, label=label, bearing=brg, dist=r1(box_rec["fairway"]["0"]["dist"]), plays_ratio=ratio,
+                    boxes=boxes(box_rec, box_view))
+    ap = rec["approach"]
+    blk = dict(image=img, w=gv["w"], h=gv["h"], ypp=gv["ypp"], up=geo_bearing(rec["box_from"]["ll"][0], centre),
+               green=[P(q) for q in gv["green"]], black=bool(rec.get("black", True)),
+               green_size=[r1(rec["green"].get("width_yd")), r1(rec["green"].get("depth_yd"))],
+               typical=dict(median=r1(ap["median"]), p10=r1(ap["p10"]), p90=r1(ap["p90"]), club=ap.get("club"),
+                            lies={k: round(v, 3) for k, v in ap["lie_share"].items() if v >= 0.01},
+                            expected=ap.get("expected_strokes")),
+               tee=rec.get("tee"), shots=[])
+    if "par5" not in rec:
+        s = shot("approach", "Approach", rec["box_from"]["ll"][0], rec["boxes"], gv["boxes"])
+        sg = rec.get("sg_check") or {}
+        if sg:
+            s["sg"] = dict(recommend=sg.get("recommend"), cost=sg.get("decade_cost"), play=sg.get("play_sg"),
+                           best=P(gv["sg_best"]) if gv.get("sg_best") else None,
+                           box=[P(q) for q in gv.get("sg_box", [])], e_box=sg.get("e_decade"), e_best=sg.get("e_best"))
+        blk["shots"].append(s)
+    else:
+        p5, lay = rec["par5"], rec["layup"]
+        go = shot("go", "Go for it", rec["go_from"]["ll"][0], rec["go_boxes"], gv["go_boxes"]) if gv.get("go_boxes") else None
+        if go:
+            gt = rec.get("go_target")
+            if gt and gv.get("go_target"):
+                go["apron"] = dict(L=gt["L"], off=gt["off"], club=gt.get("club"), shot=r1(gt.get("shot")),
+                                   target=P(gv["go_target"]["target"]), zone=[P(q) for q in gv["go_target"]["zone"]])
+            blk["shots"].append(go)
+        third = shot("third", "Lay up, then wedge", rec["box_from"]["ll"][0], rec["boxes"], gv["boxes"])
+        blk["shots"].append(third)
+        aims = sorted(p5["go_aims"].items(), key=lambda kv: -kv[1])[:3]
+        blk["par5"] = dict(
+            p_go=p5["p_go"], p_layup=p5["p_layup"], p_forced=p5["p_forced"], call="go" if p5["p_go"] >= 0.5 else "layup",
+            go_up_to={k: int(round(v["go_up_to"])) for k, v in p5["go_rule"].items()},
+            green_box_up_to={k: int(round(v["green_box_up_to"])) for k, v in p5["go_rule"].items()},
+            go_aims=[[k, v] for k, v in aims if v >= 0.05], margin=p5.get("margin_go_minus_lay"),
+            layup=dict(L=lay["L"], off=lay["off"], club=lay.get("club"), shot=r1(lay.get("shot")), ev=lay.get("ev"),
+                       lies={k: round(v, 3) for k, v in (lay.get("lie_share") or {}).items() if v >= 0.01},
+                       full_wedge_cost=lay.get("full_wedge_cost"), full_wedge_L=lay.get("full_wedge_L"),
+                       target=P(gv["layup"]["target"]) if gv.get("layup") else None))
+    return blk
+
+
 # ----------------------------------------------------------------------------- Spirit Hollow (verified)
 def build_spirit_hollow():
     import build_wind_page as BW                                   # the live page's builder (unchanged)
@@ -189,6 +263,9 @@ def build_spirit_hollow():
     for path in glob.glob(os.path.join(out_dir, "wind_grid_back*.json")):
         grids[int(float(re.search(r"back([+-]?[0-9.]+)", path).group(1)))] = json.load(open(path))
     final = json.load(open(os.path.join(out_dir, "final_decision.json")))
+    apx_path, gv_path = os.path.join(APPROACH_DIR, "approach.json"), os.path.join(APPROACH_DIR, "green_views.json")
+    APX = json.load(open(apx_path))["holes"] if os.path.exists(apx_path) else {}
+    GV = json.load(open(gv_path))["holes"] if os.path.exists(gv_path) else {}
     fc = json.load(open(os.path.join(CD, "weather", "forecast_spirit_hollow.json")))
     card = json.load(open(os.path.join(CD, "tees", "scorecard.json")))["tee_sets"]
     pkg = json.load(open(os.path.join(PKGS, "spirit_hollow", "package.json")))
@@ -242,6 +319,8 @@ def build_spirit_hollow():
                              source="full Bayesian run (final_decision.json)") if d.get("calm") else None
             if fd and v["calm"] and fd.get("zone"):
                 v["calm"]["zone"] = fd["zone"]
+            if key in APX and key in GV:
+                v["approach"] = approach_block(key, APX[key], GV[key], imgs)
         else:
             v["green"] = [P(q) for q in d["green"]]
             v["elev"] = d.get("elev")
@@ -570,6 +649,19 @@ def catalog(built_ids):
                 n_with_holes=sum(s["n_with_holes"] for s in states), upcoming=upcoming)
 
 
+def artifact_format(html):
+    """The artifact page contract: no doctype / html / head / body / charset / viewport tags (the host wraps
+    the page), <title> first."""
+    head, sep, rest = html.partition("<script>")
+    for pat in (r"<!doctype html>\s*", r"</?html[^>]*>\s*", r"</?head>\s*", r"</?body>\s*",
+                r'<meta charset="[^"]*">\s*', r'<meta name="viewport"[^>]*>\s*'):
+        head = re.sub(pat, "", head, flags=re.I)
+    tail = re.sub(r"\s*</body>\s*</html>\s*$", "\n", rest, flags=re.I)
+    m = re.search(r"<title>.*?</title>\s*", head, flags=re.S)
+    head = m.group(0).strip() + "\n" + head[:m.start()] + head[m.end():]
+    return head + sep + tail
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=OUT)
@@ -600,6 +692,10 @@ def main():
     with open(a.out, "w") as fh:
         fh.write(html)
     log(f"wrote {os.path.relpath(a.out, ROOT)} {os.path.getsize(a.out) / 1e6:.2f} MB")
+    art = os.path.join(os.path.dirname(a.out), "aim_caddie.html")
+    with open(art, "w") as fh:
+        fh.write(artifact_format(html))
+    log(f"wrote {os.path.relpath(art, ROOT)} {os.path.getsize(art) / 1e6:.2f} MB (artifact format)")
     for c in courses:
         n = len(json.dumps(c, separators=(",", ":")))
         im = sum(len(u) for u in c["images"].values()) + sum(len(json.dumps(x.get("crop", ""))) for x in c["checks"])
