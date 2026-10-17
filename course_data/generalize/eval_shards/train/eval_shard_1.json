@@ -1,0 +1,3516 @@
+{
+ "split": "train",
+ "shard": 1,
+ "n_shards": 6,
+ "slugs": [
+  "sky_mountain_ut",
+  "dwan_mn",
+  "hidden_greens_north_wi",
+  "oneka_ridge_mn",
+  "bloomington_il",
+  "waukewan_nh",
+  "paintsville_ky",
+  "canyon_lake_ca",
+  "ridge_ca"
+ ],
+ "evals": {
+  "osm_card": [
+   {
+    "slug": "sky_mountain_ut",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 1.8,
+     "p90_length_err_yd": 21.0,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 25.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 1.8,
+     "p90_length_err_yd": 21.0,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 8.8
+    }
+   },
+   {
+    "slug": "dwan_mn",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 2.2,
+     "p90_length_err_yd": 9.9,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 19.4
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 2.1,
+     "p90_length_err_yd": 9.5,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.2,
+     "seconds": 7.6
+    }
+   },
+   {
+    "slug": "hidden_greens_north_wi",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 3.3,
+     "p90_length_err_yd": 28.5,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.25,
+     "seconds": 16.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 5.5,
+     "p90_length_err_yd": 29.3,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.167,
+     "seconds": 6.1
+    }
+   },
+   {
+    "slug": "oneka_ridge_mn",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.611,
+     "green_assign_acc": 0.722,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": 9.9,
+     "p90_length_err_yd": 16.3,
+     "all_correct": false,
+     "flagged": 16,
+     "wrong": 7,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.438,
+     "seconds": 17.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.667,
+     "green_assign_acc": 0.722,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 10.2,
+     "p90_length_err_yd": 16.2,
+     "all_correct": false,
+     "flagged": 16,
+     "wrong": 6,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.375,
+     "seconds": 8.4
+    }
+   },
+   {
+    "slug": "bloomington_il",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 2.2,
+     "p90_length_err_yd": 4.8,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 5,
+     "wrong_unflagged": 3,
+     "flag_precision": 0.333,
+     "seconds": 18.5
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 2.2,
+     "p90_length_err_yd": 5.1,
+     "all_correct": false,
+     "flagged": 7,
+     "wrong": 1,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.0,
+     "seconds": 14.2
+    }
+   },
+   {
+    "slug": "waukewan_nh",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.882,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.882,
+     "median_length_err_yd": 3.0,
+     "p90_length_err_yd": 20.1,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 2,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.0,
+     "seconds": 19.8
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.882,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.882,
+     "median_length_err_yd": 2.7,
+     "p90_length_err_yd": 12.9,
+     "all_correct": false,
+     "flagged": 3,
+     "wrong": 2,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.0,
+     "seconds": 7.1
+    }
+   },
+   {
+    "slug": "paintsville_ky",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.667,
+     "green_assign_acc": 0.833,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 1.9,
+     "p90_length_err_yd": 4.7,
+     "all_correct": false,
+     "flagged": 15,
+     "wrong": 6,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.4,
+     "seconds": 19.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 1.8,
+     "p90_length_err_yd": 9.4,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 2,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.1,
+     "seconds": 5.7
+    }
+   },
+   {
+    "slug": "canyon_lake_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.529,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 17,
+     "wrong_unflagged": 9,
+     "flag_precision": 0.889,
+     "seconds": 35.3
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.882,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 17,
+     "wrong_unflagged": 12,
+     "flag_precision": 1.0,
+     "seconds": 8.8
+    }
+   },
+   {
+    "slug": "ridge_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.778,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 1.0,
+     "p90_length_err_yd": 2.4,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 4,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.222,
+     "seconds": 25.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 0.9,
+     "p90_length_err_yd": 2.3,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 3,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.4,
+     "seconds": 14.6
+    }
+   }
+  ],
+  "model_card": [
+   {
+    "slug": "sky_mountain_ut",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 4.5,
+     "p90_length_err_yd": 16.3,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 21.5
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 4.3,
+     "p90_length_err_yd": 16.6,
+     "all_correct": false,
+     "flagged": 3,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.333,
+     "seconds": 8.2
+    }
+   },
+   {
+    "slug": "dwan_mn",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 2.2,
+     "p90_length_err_yd": 5.1,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 5,
+     "wrong_unflagged": 5,
+     "flag_precision": 0.0,
+     "seconds": 19.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 2.4,
+     "p90_length_err_yd": 9.6,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.2,
+     "seconds": 6.1
+    }
+   },
+   {
+    "slug": "hidden_greens_north_wi",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 7.0,
+     "p90_length_err_yd": 34.2,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.2,
+     "seconds": 15.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 5.8,
+     "p90_length_err_yd": 27.2,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.222,
+     "seconds": 5.6
+    }
+   },
+   {
+    "slug": "oneka_ridge_mn",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.5,
+     "green_assign_acc": 0.667,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": 4.2,
+     "p90_length_err_yd": 15.7,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 9,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.471,
+     "seconds": 17.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.444,
+     "green_assign_acc": 0.611,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": 5.7,
+     "p90_length_err_yd": 20.9,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 10,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.529,
+     "seconds": 7.6
+    }
+   },
+   {
+    "slug": "bloomington_il",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.778,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 3.3,
+     "p90_length_err_yd": 6.9,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 4,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.333,
+     "seconds": 17.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 3.3,
+     "p90_length_err_yd": 6.5,
+     "all_correct": false,
+     "flagged": 8,
+     "wrong": 2,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.125,
+     "seconds": 9.8
+    }
+   },
+   {
+    "slug": "waukewan_nh",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.353,
+     "green_assign_acc": 0.647,
+     "physical_holes_found": 0.412,
+     "median_length_err_yd": 1.8,
+     "p90_length_err_yd": 5.3,
+     "all_correct": false,
+     "flagged": 15,
+     "wrong": 11,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.6,
+     "seconds": 17.3
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.353,
+     "green_assign_acc": 0.647,
+     "physical_holes_found": 0.412,
+     "median_length_err_yd": 1.8,
+     "p90_length_err_yd": 5.3,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 11,
+     "wrong_unflagged": 5,
+     "flag_precision": 0.6,
+     "seconds": 5.4
+    }
+   },
+   {
+    "slug": "paintsville_ky",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.111,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 15.2
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.056,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.167,
+     "median_length_err_yd": 1.3,
+     "p90_length_err_yd": 1.3,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.944,
+     "seconds": 4.8
+    }
+   },
+   {
+    "slug": "canyon_lake_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.765,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 12,
+     "wrong": 17,
+     "wrong_unflagged": 6,
+     "flag_precision": 0.917,
+     "seconds": 31.2
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.882,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 13,
+     "wrong": 17,
+     "wrong_unflagged": 5,
+     "flag_precision": 0.923,
+     "seconds": 8.2
+    }
+   },
+   {
+    "slug": "ridge_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.444,
+     "green_assign_acc": 0.556,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": 1.8,
+     "p90_length_err_yd": 2.9,
+     "all_correct": false,
+     "flagged": 13,
+     "wrong": 10,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.769,
+     "seconds": 22.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 2.1,
+     "p90_length_err_yd": 6.4,
+     "all_correct": false,
+     "flagged": 8,
+     "wrong": 3,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.375,
+     "seconds": 14.0
+    }
+   }
+  ],
+  "osm_nocard": [
+   {
+    "slug": "sky_mountain_ut",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 1.7,
+     "p90_length_err_yd": 8.7,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 3,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.222,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 8.0
+    }
+   },
+   {
+    "slug": "dwan_mn",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.111,
+     "green_assign_acc": 0.111,
+     "physical_holes_found": 0.444,
+     "median_length_err_yd": 2.4,
+     "p90_length_err_yd": 3.4,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 16,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.882,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 10.0
+    }
+   },
+   {
+    "slug": "hidden_greens_north_wi",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.056,
+     "green_assign_acc": 0.111,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 0.1,
+     "p90_length_err_yd": 0.1,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 17,
+     "wrong_unflagged": 8,
+     "flag_precision": 0.9,
+     "seconds": 0.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 6.6
+    }
+   },
+   {
+    "slug": "oneka_ridge_mn",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.444,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 15,
+     "wrong": 18,
+     "wrong_unflagged": 3,
+     "flag_precision": 1.0,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.278,
+     "green_assign_acc": 0.444,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": 9.9,
+     "p90_length_err_yd": 21.8,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 13,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.722,
+     "seconds": 9.6
+    }
+   },
+   {
+    "slug": "bloomington_il",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 18,
+     "wrong_unflagged": 1,
+     "flag_precision": 1.0,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.333,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 11.7
+    }
+   },
+   {
+    "slug": "waukewan_nh",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.706,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 14,
+     "wrong": 17,
+     "wrong_unflagged": 3,
+     "flag_precision": 1.0,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.529,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.944,
+     "seconds": 7.2
+    }
+   },
+   {
+    "slug": "paintsville_ky",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 18,
+     "wrong_unflagged": 9,
+     "flag_precision": 1.0,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.333,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 7.8
+    }
+   },
+   {
+    "slug": "canyon_lake_ca",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.529,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 8,
+     "wrong": 17,
+     "wrong_unflagged": 10,
+     "flag_precision": 0.875,
+     "seconds": 1.3
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.529,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 14,
+     "wrong": 17,
+     "wrong_unflagged": 4,
+     "flag_precision": 0.929,
+     "seconds": 8.0
+    }
+   },
+   {
+    "slug": "ridge_ca",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.222,
+     "green_assign_acc": 0.278,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 7.2,
+     "p90_length_err_yd": 10.4,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 14,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.778,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.167,
+     "green_assign_acc": 0.167,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 2.7,
+     "p90_length_err_yd": 4.1,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 15,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.833,
+     "seconds": 17.1
+    }
+   }
+  ]
+ },
+ "confirm": {
+  "osm": [
+   {
+    "slug": "sky_mountain_ut",
+    "risk": {
+     "taps": 2,
+     "questions": 2,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 2,
+     "questions": 2,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 2,
+     "questions": 2,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "dwan_mn",
+    "risk": {
+     "taps": 8,
+     "questions": 8,
+     "log": [
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 9,
+     "questions": 8,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 7,
+     "questions": 6,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "l17",
+       "kind": "locate",
+       "ref": "17",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 7,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "hidden_greens_north_wi",
+    "risk": {
+     "taps": 4,
+     "questions": 4,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 3,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 4,
+     "questions": 4,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 3,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 5,
+     "questions": 5,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "oneka_ridge_mn",
+    "risk": {
+     "taps": 13,
+     "questions": 11,
+     "log": [
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 13,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 21,
+     "questions": 17,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 8,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 10,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 10,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "bloomington_il",
+    "risk": {
+     "taps": 9,
+     "questions": 9,
+     "log": [
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 9,
+     "questions": 9,
+     "log": [
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 9,
+     "questions": 9,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "waukewan_nh",
+    "risk": {
+     "taps": 16,
+     "questions": 14,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 18,
+     "questions": 16,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 18,
+     "questions": 16,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "paintsville_ky",
+    "risk": {
+     "taps": 8,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 7,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 5,
+     "questions": 4,
+     "log": [
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 8,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 7,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "canyon_lake_ca",
+    "risk": {
+     "taps": null,
+     "questions": 23,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "l13",
+       "kind": "locate",
+       "ref": "13",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 30,
+     "stop_rule_wrong": 6,
+     "wrong_left": 6
+    },
+    "eig": {
+     "taps": null,
+     "questions": 20,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "l13",
+       "kind": "locate",
+       "ref": "13",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 18,
+     "stop_rule_wrong": 4,
+     "wrong_left": 1
+    },
+    "flagged": {
+     "taps": null,
+     "questions": 21,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      }
+     ],
+     "stop_rule_taps": 30,
+     "stop_rule_wrong": 5,
+     "wrong_left": 5
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "ridge_ca",
+    "risk": {
+     "taps": 9,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "l17",
+       "kind": "locate",
+       "ref": "17",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 9,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 9,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "l17",
+       "kind": "locate",
+       "ref": "17",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 9,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 11,
+     "questions": 9,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "l17",
+       "kind": "locate",
+       "ref": "17",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 11,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   }
+  ],
+  "model": [
+   {
+    "slug": "sky_mountain_ut",
+    "risk": {
+     "taps": 2,
+     "questions": 2,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "dwan_mn",
+    "risk": {
+     "taps": 18,
+     "questions": 18,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 3,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "hidden_greens_north_wi",
+    "risk": {
+     "taps": 6,
+     "questions": 5,
+     "log": [
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "oneka_ridge_mn",
+    "risk": {
+     "taps": 29,
+     "questions": 23,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 17,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "bloomington_il",
+    "risk": {
+     "taps": 8,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 8,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "waukewan_nh",
+    "risk": {
+     "taps": null,
+     "questions": 23,
+     "log": [
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "l12",
+       "kind": "locate",
+       "ref": "12",
+       "answer": "tapped"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 16,
+     "stop_rule_wrong": 6,
+     "wrong_left": 3
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "paintsville_ky",
+    "risk": {
+     "taps": null,
+     "questions": 11,
+     "log": [
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l13",
+       "kind": "locate",
+       "ref": "13",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": null,
+     "stop_rule_wrong": null,
+     "wrong_left": null
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "canyon_lake_ca",
+    "risk": {
+     "taps": null,
+     "questions": 12,
+     "log": [
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "l17",
+       "kind": "locate",
+       "ref": "17",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": null,
+     "stop_rule_wrong": null,
+     "wrong_left": null
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "ridge_ca",
+    "risk": {
+     "taps": 12,
+     "questions": 10,
+     "log": [
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "l17",
+       "kind": "locate",
+       "ref": "17",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 9,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   }
+  ]
+ }
+}

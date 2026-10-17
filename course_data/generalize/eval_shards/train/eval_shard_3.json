@@ -1,0 +1,3460 @@
+{
+ "split": "train",
+ "shard": 3,
+ "n_shards": 6,
+ "slugs": [
+  "urbana_il",
+  "toscana_ca",
+  "fairways_woodside_wi",
+  "rock_river_hills_wi",
+  "whaling_city_ma",
+  "wentworth_nh",
+  "landing_ga",
+  "huntington_ca"
+ ],
+ "evals": {
+  "osm_card": [
+   {
+    "slug": "urbana_il",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 1.4,
+     "p90_length_err_yd": 16.0,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 5,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.556,
+     "seconds": 17.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 1.4,
+     "p90_length_err_yd": 16.0,
+     "all_correct": false,
+     "flagged": 7,
+     "wrong": 5,
+     "wrong_unflagged": 3,
+     "flag_precision": 0.286,
+     "seconds": 7.8
+    }
+   },
+   {
+    "slug": "toscana_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.167,
+     "green_assign_acc": 0.278,
+     "physical_holes_found": 0.222,
+     "median_length_err_yd": 2.8,
+     "p90_length_err_yd": 3.4,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 15,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.833,
+     "seconds": 27.5
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.444,
+     "green_assign_acc": 0.444,
+     "physical_holes_found": 0.444,
+     "median_length_err_yd": 3.2,
+     "p90_length_err_yd": 14.7,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 10,
+     "wrong_unflagged": 3,
+     "flag_precision": 0.778,
+     "seconds": 87.4
+    }
+   },
+   {
+    "slug": "fairways_woodside_wi",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.667,
+     "green_assign_acc": 0.778,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 5.7,
+     "p90_length_err_yd": 20.7,
+     "all_correct": false,
+     "flagged": 7,
+     "wrong": 6,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.714,
+     "seconds": 20.3
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 4.1,
+     "p90_length_err_yd": 19.9,
+     "all_correct": false,
+     "flagged": 7,
+     "wrong": 3,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.286,
+     "seconds": 8.2
+    }
+   },
+   {
+    "slug": "rock_river_hills_wi",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.588,
+     "green_assign_acc": 0.765,
+     "physical_holes_found": 0.706,
+     "median_length_err_yd": 3.6,
+     "p90_length_err_yd": 5.6,
+     "all_correct": false,
+     "flagged": 12,
+     "wrong": 7,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.583,
+     "seconds": 17.8
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.882,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.882,
+     "median_length_err_yd": 4.2,
+     "p90_length_err_yd": 9.4,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.4,
+     "seconds": 6.3
+    }
+   },
+   {
+    "slug": "whaling_city_ma",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 1.2,
+     "p90_length_err_yd": 8.1,
+     "all_correct": true,
+     "flagged": 3,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 19.6
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 1.6,
+     "p90_length_err_yd": 12.7,
+     "all_correct": true,
+     "flagged": 5,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 7.6
+    }
+   },
+   {
+    "slug": "wentworth_nh",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 16,
+     "hole_number_acc": 0.25,
+     "green_assign_acc": 0.312,
+     "physical_holes_found": 0.625,
+     "median_length_err_yd": 2.0,
+     "p90_length_err_yd": 5.4,
+     "all_correct": false,
+     "flagged": 14,
+     "wrong": 12,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.857,
+     "seconds": 20.0
+    },
+    "v2": {
+     "n_true": 16,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 2.3,
+     "p90_length_err_yd": 6.0,
+     "all_correct": true,
+     "flagged": 4,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 6.7
+    }
+   },
+   {
+    "slug": "landing_ga",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.389,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.389,
+     "median_length_err_yd": 7.9,
+     "p90_length_err_yd": 23.5,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 11,
+     "wrong_unflagged": 8,
+     "flag_precision": 0.5,
+     "seconds": 19.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.5,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": 11.5,
+     "p90_length_err_yd": 26.3,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 9,
+     "wrong_unflagged": 6,
+     "flag_precision": 0.75,
+     "seconds": 8.0
+    }
+   },
+   {
+    "slug": "huntington_ca",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 3.6,
+     "p90_length_err_yd": 14.4,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.25,
+     "seconds": 20.7
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 3.4,
+     "p90_length_err_yd": 14.8,
+     "all_correct": false,
+     "flagged": 7,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.286,
+     "seconds": 11.6
+    }
+   }
+  ],
+  "model_card": [
+   {
+    "slug": "urbana_il",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.5,
+     "green_assign_acc": 0.722,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": 1.2,
+     "p90_length_err_yd": 6.1,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 9,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.8,
+     "seconds": 15.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 1.6,
+     "p90_length_err_yd": 7.8,
+     "all_correct": false,
+     "flagged": 8,
+     "wrong": 5,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.5,
+     "seconds": 6.7
+    }
+   },
+   {
+    "slug": "toscana_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.222,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 24.2
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.389,
+     "green_assign_acc": 0.444,
+     "physical_holes_found": 0.389,
+     "median_length_err_yd": 2.8,
+     "p90_length_err_yd": 12.0,
+     "all_correct": false,
+     "flagged": 11,
+     "wrong": 11,
+     "wrong_unflagged": 5,
+     "flag_precision": 0.545,
+     "seconds": 77.1
+    }
+   },
+   {
+    "slug": "fairways_woodside_wi",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.556,
+     "green_assign_acc": 0.667,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": 7.6,
+     "p90_length_err_yd": 19.6,
+     "all_correct": false,
+     "flagged": 16,
+     "wrong": 8,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 19.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 3.9,
+     "p90_length_err_yd": 19.9,
+     "all_correct": false,
+     "flagged": 8,
+     "wrong": 3,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.25,
+     "seconds": 7.0
+    }
+   },
+   {
+    "slug": "rock_river_hills_wi",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.471,
+     "green_assign_acc": 0.529,
+     "physical_holes_found": 0.647,
+     "median_length_err_yd": 2.5,
+     "p90_length_err_yd": 12.9,
+     "all_correct": false,
+     "flagged": 12,
+     "wrong": 9,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.75,
+     "seconds": 16.9
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.882,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.882,
+     "median_length_err_yd": 3.5,
+     "p90_length_err_yd": 15.6,
+     "all_correct": false,
+     "flagged": 3,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.667,
+     "seconds": 5.5
+    }
+   },
+   {
+    "slug": "whaling_city_ma",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 2.4,
+     "p90_length_err_yd": 8.4,
+     "all_correct": true,
+     "flagged": 7,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 17.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 2.5,
+     "p90_length_err_yd": 9.5,
+     "all_correct": true,
+     "flagged": 7,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 7.2
+    }
+   },
+   {
+    "slug": "wentworth_nh",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 16,
+     "hole_number_acc": 0.375,
+     "green_assign_acc": 0.562,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": 2.8,
+     "p90_length_err_yd": 5.5,
+     "all_correct": false,
+     "flagged": 13,
+     "wrong": 10,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.769,
+     "seconds": 17.6
+    },
+    "v2": {
+     "n_true": 16,
+     "hole_number_acc": 0.875,
+     "green_assign_acc": 0.938,
+     "physical_holes_found": 0.875,
+     "median_length_err_yd": 2.7,
+     "p90_length_err_yd": 10.5,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 2,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.5,
+     "seconds": 5.4
+    }
+   },
+   {
+    "slug": "landing_ga",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.389,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.389,
+     "median_length_err_yd": 7.9,
+     "p90_length_err_yd": 23.5,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 11,
+     "wrong_unflagged": 8,
+     "flag_precision": 0.5,
+     "seconds": 20.3
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.5,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": 11.5,
+     "p90_length_err_yd": 26.3,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 9,
+     "wrong_unflagged": 6,
+     "flag_precision": 0.75,
+     "seconds": 8.1
+    }
+   },
+   {
+    "slug": "huntington_ca",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 3.2,
+     "p90_length_err_yd": 16.3,
+     "all_correct": false,
+     "flagged": 3,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.667,
+     "seconds": 18.2
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 3.2,
+     "p90_length_err_yd": 17.0,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 7.7
+    }
+   }
+  ],
+  "osm_nocard": [
+   {
+    "slug": "urbana_il",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 18,
+     "wrong_unflagged": 1,
+     "flag_precision": 1.0,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 8.1
+    }
+   },
+   {
+    "slug": "toscana_ca",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.167,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 16,
+     "wrong": 18,
+     "wrong_unflagged": 2,
+     "flag_precision": 1.0,
+     "seconds": 1.5
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.278,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 83.3
+    }
+   },
+   {
+    "slug": "fairways_woodside_wi",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.056,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": 4.1,
+     "p90_length_err_yd": 4.1,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 17,
+     "wrong_unflagged": 8,
+     "flag_precision": 0.9,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.056,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": 4.1,
+     "p90_length_err_yd": 4.1,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.944,
+     "seconds": 8.1
+    }
+   },
+   {
+    "slug": "rock_river_hills_wi",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.176,
+     "green_assign_acc": 0.294,
+     "physical_holes_found": 0.647,
+     "median_length_err_yd": 1.9,
+     "p90_length_err_yd": 3.3,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 14,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.778,
+     "seconds": 0.9
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.824,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.944,
+     "seconds": 8.3
+    }
+   },
+   {
+    "slug": "whaling_city_ma",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.667,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 18,
+     "wrong_unflagged": 9,
+     "flag_precision": 1.0,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.667,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 7.8
+    }
+   },
+   {
+    "slug": "wentworth_nh",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 16,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.75,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 12,
+     "wrong": 16,
+     "wrong_unflagged": 6,
+     "flag_precision": 0.833,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 16,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.625,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 16,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.889,
+     "seconds": 7.2
+    }
+   },
+   {
+    "slug": "landing_ga",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 8.7
+    }
+   },
+   {
+    "slug": "huntington_ca",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 11,
+     "wrong": 18,
+     "wrong_unflagged": 7,
+     "flag_precision": 1.0,
+     "seconds": 8.3
+    }
+   }
+  ]
+ },
+ "confirm": {
+  "osm": [
+   {
+    "slug": "urbana_il",
+    "risk": {
+     "taps": 22,
+     "questions": 19,
+     "log": [
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "l13",
+       "kind": "locate",
+       "ref": "13",
+       "answer": "tapped"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 12,
+     "stop_rule_wrong": 8,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 20,
+     "questions": 17,
+     "log": [
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 3,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 19,
+     "questions": 17,
+     "log": [
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 3,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "toscana_ca",
+    "risk": {
+     "taps": 30,
+     "questions": 22,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 20,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 22,
+     "questions": 16,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 18,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 25,
+     "questions": 18,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 25,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "fairways_woodside_wi",
+    "risk": {
+     "taps": 17,
+     "questions": 16,
+     "log": [
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 16,
+     "questions": 15,
+     "log": [
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 17,
+     "questions": 16,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "rock_river_hills_wi",
+    "risk": {
+     "taps": 10,
+     "questions": 7,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 3,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 10,
+     "questions": 7,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 3,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 9,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "whaling_city_ma",
+    "risk": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "wentworth_nh",
+    "risk": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 32
+    }
+   },
+   {
+    "slug": "landing_ga",
+    "risk": {
+     "taps": null,
+     "questions": 23,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 12,
+     "stop_rule_wrong": 6,
+     "wrong_left": 1
+    },
+    "eig": {
+     "taps": null,
+     "questions": 22,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      }
+     ],
+     "stop_rule_taps": 14,
+     "stop_rule_wrong": 5,
+     "wrong_left": 1
+    },
+    "flagged": {
+     "taps": null,
+     "questions": 22,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 14,
+     "stop_rule_wrong": 5,
+     "wrong_left": 1
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "huntington_ca",
+    "risk": {
+     "taps": 14,
+     "questions": 11,
+     "log": [
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "l12",
+       "kind": "locate",
+       "ref": "12",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 14,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 8,
+     "questions": 6,
+     "log": [
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      },
+      {
+       "question": "l12",
+       "kind": "locate",
+       "ref": "12",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 8,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 7,
+     "questions": 6,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "l12",
+       "kind": "locate",
+       "ref": "12",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 7,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   }
+  ],
+  "model": [
+   {
+    "slug": "urbana_il",
+    "risk": {
+     "taps": 21,
+     "questions": 18,
+     "log": [
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "l12",
+       "kind": "locate",
+       "ref": "12",
+       "answer": "tapped"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 14,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "toscana_ca",
+    "risk": {
+     "taps": 28,
+     "questions": 21,
+     "log": [
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 26,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "fairways_woodside_wi",
+    "risk": {
+     "taps": 23,
+     "questions": 20,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "l13",
+       "kind": "locate",
+       "ref": "13",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "rock_river_hills_wi",
+    "risk": {
+     "taps": 11,
+     "questions": 8,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "whaling_city_ma",
+    "risk": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "wentworth_nh",
+    "risk": {
+     "taps": 22,
+     "questions": 19,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 32
+    }
+   },
+   {
+    "slug": "landing_ga",
+    "risk": {
+     "taps": null,
+     "questions": 23,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 12,
+     "stop_rule_wrong": 6,
+     "wrong_left": 1
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "huntington_ca",
+    "risk": {
+     "taps": 6,
+     "questions": 5,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   }
+  ]
+ }
+}

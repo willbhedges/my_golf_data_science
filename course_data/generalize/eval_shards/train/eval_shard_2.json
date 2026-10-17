@@ -1,0 +1,3935 @@
+{
+ "split": "train",
+ "shard": 2,
+ "n_shards": 6,
+ "slugs": [
+  "black_stone_creek_wi",
+  "el_dorado_park_ca",
+  "walpole_ma",
+  "wynstone_il",
+  "brae_loch_il",
+  "falmouth_ma",
+  "boots_randolph_ky",
+  "westchester_ca",
+  "sun_hills_ut"
+ ],
+ "evals": {
+  "osm_card": [
+   {
+    "slug": "black_stone_creek_wi",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.588,
+     "green_assign_acc": 0.706,
+     "physical_holes_found": 0.824,
+     "median_length_err_yd": 7.9,
+     "p90_length_err_yd": 18.2,
+     "all_correct": false,
+     "flagged": 8,
+     "wrong": 7,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.625,
+     "seconds": 18.2
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.882,
+     "green_assign_acc": 0.882,
+     "physical_holes_found": 0.882,
+     "median_length_err_yd": 4.2,
+     "p90_length_err_yd": 15.2,
+     "all_correct": false,
+     "flagged": 13,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.154,
+     "seconds": 6.9
+    }
+   },
+   {
+    "slug": "el_dorado_park_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 3.0,
+     "p90_length_err_yd": 16.6,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.25,
+     "seconds": 15.4
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 2.9,
+     "p90_length_err_yd": 17.9,
+     "all_correct": false,
+     "flagged": 3,
+     "wrong": 2,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.333,
+     "seconds": 10.9
+    }
+   },
+   {
+    "slug": "walpole_ma",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.333,
+     "green_assign_acc": 0.333,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": 11.0,
+     "p90_length_err_yd": 25.1,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 12,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.667,
+     "seconds": 20.6
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.667,
+     "green_assign_acc": 0.833,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 3.7,
+     "p90_length_err_yd": 24.0,
+     "all_correct": false,
+     "flagged": 13,
+     "wrong": 6,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.462,
+     "seconds": 10.8
+    }
+   },
+   {
+    "slug": "wynstone_il",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 2.3,
+     "p90_length_err_yd": 27.7,
+     "all_correct": false,
+     "flagged": 1,
+     "wrong": 5,
+     "wrong_unflagged": 5,
+     "flag_precision": 0.0,
+     "seconds": 20.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 2.3,
+     "p90_length_err_yd": 14.1,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 5,
+     "wrong_unflagged": 4,
+     "flag_precision": 0.167,
+     "seconds": 14.6
+    }
+   },
+   {
+    "slug": "brae_loch_il",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 1.1,
+     "p90_length_err_yd": 9.6,
+     "all_correct": true,
+     "flagged": 0,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": null,
+     "seconds": 14.5
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 1.1,
+     "p90_length_err_yd": 9.6,
+     "all_correct": true,
+     "flagged": 2,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 6.2
+    }
+   },
+   {
+    "slug": "falmouth_ma",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.667,
+     "green_assign_acc": 0.833,
+     "physical_holes_found": 0.667,
+     "median_length_err_yd": 2.6,
+     "p90_length_err_yd": 18.7,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 6,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.667,
+     "seconds": 16.2
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 2.9,
+     "p90_length_err_yd": 19.8,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 3,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.111,
+     "seconds": 15.6
+    }
+   },
+   {
+    "slug": "boots_randolph_ky",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 4.5,
+     "p90_length_err_yd": 21.5,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 3,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.4,
+     "seconds": 17.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.778,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 4.5,
+     "p90_length_err_yd": 12.3,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 4,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.444,
+     "seconds": 6.0
+    }
+   },
+   {
+    "slug": "westchester_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 2.6,
+     "p90_length_err_yd": 9.1,
+     "all_correct": true,
+     "flagged": 7,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 17.6
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 2.6,
+     "p90_length_err_yd": 9.1,
+     "all_correct": true,
+     "flagged": 3,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 8.0
+    }
+   },
+   {
+    "slug": "sun_hills_ut",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 3.6,
+     "p90_length_err_yd": 17.2,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 3,
+     "wrong_unflagged": 3,
+     "flag_precision": 0.0,
+     "seconds": 21.4
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 3.4,
+     "p90_length_err_yd": 19.9,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 2,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.0,
+     "seconds": 5.9
+    }
+   }
+  ],
+  "model_card": [
+   {
+    "slug": "black_stone_creek_wi",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.706,
+     "green_assign_acc": 0.824,
+     "physical_holes_found": 0.765,
+     "median_length_err_yd": 5.8,
+     "p90_length_err_yd": 12.2,
+     "all_correct": false,
+     "flagged": 11,
+     "wrong": 5,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.455,
+     "seconds": 16.8
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.412,
+     "green_assign_acc": 0.471,
+     "physical_holes_found": 0.588,
+     "median_length_err_yd": 1.0,
+     "p90_length_err_yd": 9.7,
+     "all_correct": false,
+     "flagged": 13,
+     "wrong": 10,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.615,
+     "seconds": 7.6
+    }
+   },
+   {
+    "slug": "el_dorado_park_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.444,
+     "green_assign_acc": 0.556,
+     "physical_holes_found": 0.667,
+     "median_length_err_yd": 2.0,
+     "p90_length_err_yd": 10.4,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 10,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.556,
+     "seconds": 14.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 2.9,
+     "p90_length_err_yd": 15.7,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 2,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.25,
+     "seconds": 10.9
+    }
+   },
+   {
+    "slug": "walpole_ma",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.056,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.222,
+     "median_length_err_yd": 0.9,
+     "p90_length_err_yd": 0.9,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.944,
+     "seconds": 19.6
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.056,
+     "green_assign_acc": 0.111,
+     "physical_holes_found": 0.444,
+     "median_length_err_yd": 4.3,
+     "p90_length_err_yd": 4.3,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.944,
+     "seconds": 9.1
+    }
+   },
+   {
+    "slug": "wynstone_il",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.611,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": 2.3,
+     "p90_length_err_yd": 30.4,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 7,
+     "wrong_unflagged": 5,
+     "flag_precision": 0.5,
+     "seconds": 18.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.611,
+     "green_assign_acc": 0.944,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": 1.8,
+     "p90_length_err_yd": 15.0,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 7,
+     "wrong_unflagged": 4,
+     "flag_precision": 0.6,
+     "seconds": 12.2
+    }
+   },
+   {
+    "slug": "brae_loch_il",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 1.2,
+     "p90_length_err_yd": 9.4,
+     "all_correct": true,
+     "flagged": 0,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": null,
+     "seconds": 14.0
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 1.0,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 1.0,
+     "median_length_err_yd": 1.2,
+     "p90_length_err_yd": 9.4,
+     "all_correct": true,
+     "flagged": 2,
+     "wrong": 0,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.0,
+     "seconds": 6.1
+    }
+   },
+   {
+    "slug": "falmouth_ma",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.667,
+     "green_assign_acc": 0.833,
+     "physical_holes_found": 0.667,
+     "median_length_err_yd": 2.5,
+     "p90_length_err_yd": 5.8,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 6,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.4,
+     "seconds": 14.3
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.389,
+     "green_assign_acc": 0.5,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": 1.9,
+     "p90_length_err_yd": 18.5,
+     "all_correct": false,
+     "flagged": 12,
+     "wrong": 11,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.75,
+     "seconds": 15.0
+    }
+   },
+   {
+    "slug": "boots_randolph_ky",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.778,
+     "green_assign_acc": 0.833,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 4.5,
+     "p90_length_err_yd": 12.4,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 4,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.4,
+     "seconds": 16.2
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.778,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 3.3,
+     "p90_length_err_yd": 12.4,
+     "all_correct": false,
+     "flagged": 14,
+     "wrong": 5,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.357,
+     "seconds": 6.6
+    }
+   },
+   {
+    "slug": "westchester_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.611,
+     "green_assign_acc": 0.611,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 2.5,
+     "p90_length_err_yd": 11.8,
+     "all_correct": false,
+     "flagged": 11,
+     "wrong": 7,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.636,
+     "seconds": 16.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.611,
+     "green_assign_acc": 0.611,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 2.9,
+     "p90_length_err_yd": 11.8,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 7,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.7,
+     "seconds": 5.4
+    }
+   },
+   {
+    "slug": "sun_hills_ut",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 3.7,
+     "p90_length_err_yd": 16.7,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 3,
+     "wrong_unflagged": 3,
+     "flag_precision": 0.0,
+     "seconds": 20.2
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 3.5,
+     "p90_length_err_yd": 11.6,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 2,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.0,
+     "seconds": 6.0
+    }
+   }
+  ],
+  "osm_nocard": [
+   {
+    "slug": "black_stone_creek_wi",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.353,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.944,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.059,
+     "physical_holes_found": 0.294,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.944,
+     "seconds": 8.8
+    }
+   },
+   {
+    "slug": "el_dorado_park_ca",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.389,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 0.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.111,
+     "green_assign_acc": 0.167,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 2.2,
+     "p90_length_err_yd": 2.7,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 16,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.889,
+     "seconds": 12.0
+    }
+   },
+   {
+    "slug": "walpole_ma",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.611,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 18,
+     "wrong_unflagged": 8,
+     "flag_precision": 1.0,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 9.0
+    }
+   },
+   {
+    "slug": "wynstone_il",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.167,
+     "green_assign_acc": 0.278,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": 15.8,
+     "p90_length_err_yd": 27.7,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 15,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.833,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.111,
+     "green_assign_acc": 0.278,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": 1.3,
+     "p90_length_err_yd": 2.1,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 16,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.889,
+     "seconds": 15.4
+    }
+   },
+   {
+    "slug": "brae_loch_il",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 17,
+     "hole_number_acc": 0.294,
+     "green_assign_acc": 0.353,
+     "physical_holes_found": 0.529,
+     "median_length_err_yd": 1.5,
+     "p90_length_err_yd": 4.4,
+     "all_correct": false,
+     "flagged": 13,
+     "wrong": 12,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.769,
+     "seconds": 0.8
+    },
+    "v2": {
+     "n_true": 17,
+     "hole_number_acc": 0.588,
+     "green_assign_acc": 0.647,
+     "physical_holes_found": 0.824,
+     "median_length_err_yd": 2.4,
+     "p90_length_err_yd": 6.3,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 7,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.389,
+     "seconds": 7.1
+    }
+   },
+   {
+    "slug": "falmouth_ma",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.056,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.389,
+     "median_length_err_yd": 1.1,
+     "p90_length_err_yd": 1.1,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 17,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 0.9
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.5,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 16.4
+    }
+   },
+   {
+    "slug": "boots_randolph_ky",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 9.3
+    }
+   },
+   {
+    "slug": "westchester_ca",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.167,
+     "green_assign_acc": 0.333,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 2.2,
+     "p90_length_err_yd": 3.9,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 15,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.833,
+     "seconds": 0.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 7.3
+    }
+   },
+   {
+    "slug": "sun_hills_ut",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 12,
+     "wrong": 18,
+     "wrong_unflagged": 6,
+     "flag_precision": 1.0,
+     "seconds": 1.1
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 15,
+     "wrong": 18,
+     "wrong_unflagged": 3,
+     "flag_precision": 1.0,
+     "seconds": 5.9
+    }
+   }
+  ]
+ },
+ "confirm": {
+  "osm": [
+   {
+    "slug": "black_stone_creek_wi",
+    "risk": {
+     "taps": 1,
+     "questions": 1,
+     "log": [
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      }
+     ],
+     "stop_rule_taps": 1,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 1,
+     "questions": 1,
+     "log": [
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      }
+     ],
+     "stop_rule_taps": 1,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 1,
+     "questions": 1,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      }
+     ],
+     "stop_rule_taps": 1,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "el_dorado_park_ca",
+    "risk": {
+     "taps": 18,
+     "questions": 17,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 15,
+     "questions": 14,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 7,
+     "questions": 6,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 7,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "walpole_ma",
+    "risk": {
+     "taps": 17,
+     "questions": 13,
+     "log": [
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 10,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 17,
+     "questions": 14,
+     "log": [
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 9,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 21,
+     "questions": 17,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 15,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "wynstone_il",
+    "risk": {
+     "taps": 25,
+     "questions": 21,
+     "log": [
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 5,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 27,
+     "questions": 22,
+     "log": [
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 5,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 27,
+     "questions": 22,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 5,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "brae_loch_il",
+    "risk": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "falmouth_ma",
+    "risk": {
+     "taps": 21,
+     "questions": 19,
+     "log": [
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 21,
+     "questions": 19,
+     "log": [
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 22,
+     "questions": 20,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 8,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "boots_randolph_ky",
+    "risk": {
+     "taps": 19,
+     "questions": 15,
+     "log": [
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 9,
+     "stop_rule_wrong": 3,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 15,
+     "questions": 11,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 12,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 13,
+     "questions": 10,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 9,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "westchester_ca",
+    "risk": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "sun_hills_ut",
+    "risk": {
+     "taps": 16,
+     "questions": 16,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 21,
+     "questions": 19,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 3,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 20,
+     "questions": 19,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   }
+  ],
+  "model": [
+   {
+    "slug": "black_stone_creek_wi",
+    "risk": {
+     "taps": 4,
+     "questions": 4,
+     "log": [
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "el_dorado_park_ca",
+    "risk": {
+     "taps": 15,
+     "questions": 14,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 7,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "walpole_ma",
+    "risk": {
+     "taps": null,
+     "questions": 23,
+     "log": [
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "l12",
+       "kind": "locate",
+       "ref": "12",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 24,
+     "stop_rule_wrong": 2,
+     "wrong_left": 1
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "wynstone_il",
+    "risk": {
+     "taps": 31,
+     "questions": 24,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "l12",
+       "kind": "locate",
+       "ref": "12",
+       "answer": "tapped"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 6,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "brae_loch_il",
+    "risk": {
+     "taps": 0,
+     "questions": 0,
+     "log": [],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 34
+    }
+   },
+   {
+    "slug": "falmouth_ma",
+    "risk": {
+     "taps": 24,
+     "questions": 19,
+     "log": [
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      },
+      {
+       "question": "l17",
+       "kind": "locate",
+       "ref": "17",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "l12",
+       "kind": "locate",
+       "ref": "12",
+       "answer": "tapped"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 24,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "boots_randolph_ky",
+    "risk": {
+     "taps": 22,
+     "questions": 17,
+     "log": [
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 15,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "westchester_ca",
+    "risk": {
+     "taps": null,
+     "questions": 22,
+     "log": [
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "l14",
+       "kind": "locate",
+       "ref": "14",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "l13",
+       "kind": "locate",
+       "ref": "13",
+       "answer": "tapped"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 30,
+     "stop_rule_wrong": 1,
+     "wrong_left": 1
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "sun_hills_ut",
+    "risk": {
+     "taps": 16,
+     "questions": 16,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   }
+  ]
+ }
+}
