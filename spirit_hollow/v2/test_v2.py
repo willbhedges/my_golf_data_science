@@ -59,9 +59,9 @@ def test_soft_roll_and_temperature():
     c_warm, roll_warm, *_ = M.club_numbers(hd, "Driver", M.central(temp_f=70.0))
     c_cold, roll_cold, *_ = M.club_numbers(hd, "Driver", M.central(temp_f=48.0))
     assert 3.5 < c_warm - c_cold < 5.5            # ~2 yds per 10 F on a ~290 carry
-    assert roll_cold < 3.0                        # soft: a couple of yards
-    _, roll_v1, *_ = M.club_numbers(hd, "Driver", M.v1_world())
-    assert roll_v1 > 20
+    assert 17 < roll_cold < 33                    # rolls to the stated 300 total (x slope factor 0.7-1.3)
+    _, roll_dead, *_ = M.club_numbers(hd, "Driver", M.central(soft_roll=2.0))
+    assert roll_dead < 3.0                        # "stops dead" sensitivity
 
 
 def test_mishit_shares_and_mean_carry():

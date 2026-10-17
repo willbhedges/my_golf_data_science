@@ -51,7 +51,7 @@ def solve(h, P, R, S, z, speed, rel):
         base = dict(P)
         carry0, total0, width0, depth0 = M.CLUBS[c]
         carry = carry0 * (1.0 - P["temp_k"] * (70.0 - P["temp_f"]))
-        roll = P["soft_roll"]
+        roll = P["soft_roll"] if P.get("soft_roll") is not None else (total0 - carry0) * P["roll_mult"]
         tup = (carry, carry + roll, P["width"][c], depth0 * P["depth_mult"])
         c2, t2, w2, d2, drift = W.adjust(tup, speed, rel, club_name=c) if speed else tup + (0.0,)
         del base

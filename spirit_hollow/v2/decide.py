@@ -51,7 +51,7 @@ def prior_draws(s=64, seed=2026, hole=None):
     cols = dict(
         c_common=5.0 * z[:, c["c_common"]], c_drv=3.0 * z[:, c["c_drv"]], c_2w=3.0 * z[:, c["c_2w"]],
         c_4w=3.0 * z[:, c["c_4w"]], c_iron=3.0 * z[:, c["c_iron"]],
-        depth=1.25 * np.exp(0.2 * z[:, c["depth"]]), soft_roll=U("soft_roll", 0.5, 3.5),
+        depth=1.25 * np.exp(0.2 * z[:, c["depth"]]), soft_roll=U("soft_roll", 0.8, 1.2),   # = roll multiplier
         rough_roll=U("rough_roll", 0.15, 0.5), trees=U("trees", 0.6, 1.0),
         lost_edge=U("lost_edge", 0.1, 0.4), lost_deep=U("lost_deep", 0.5, 0.8),
         mis_slight=U("mis_slight", 0.08, 0.16), mis_heavy=U("mis_heavy", 0.01, 0.04),
@@ -72,7 +72,8 @@ def prior_draws(s=64, seed=2026, hole=None):
                     "Long iron": cols["c_iron"][i], "Mid iron": cols["c_iron"][i],
                     M.HYBRID: 0.5 * (cols["c_4w"][i] + cols["c_iron"][i])})
         P["depth_mult"] = float(cols["depth"][i])
-        for k in ("soft_roll", "rough_roll", "trees", "lost_edge", "lost_deep", "mis_slight", "mis_heavy", "rho",
+        P["soft_roll"], P["roll_mult"] = None, float(cols["soft_roll"][i])
+        for k in ("rough_roll", "trees", "lost_edge", "lost_deep", "mis_slight", "mis_heavy", "rho",
                   "kappa", "bias", "temp_f", "temp_k", "m_rough", "m_sand", "am_slope", "first_cut", "punch_adv",
                   "punch_fail", "block_sev", "tree_restricted"):
             P[k] = float(cols[k][i])
@@ -149,7 +150,7 @@ def solve_world(h, P, n=12000, seed=7, clubs=None):
 LADDER = [
     ("v1 world (v2 engine, v1 clubs)", {}, "v1"),
     ("+ irons on every hole", {}, "all"),
-    ("+ soft course: 0.5-3.5 yd roll", dict(soft_roll=2.0, roll_noise=0.5, v1_roll=False), "all"),
+    ("+ roll noise per swing (±25%)", dict(roll_noise=0.25, v1_roll=False), "all"),
     ("+ forecast temperature at the hole", dict(temp_k=0.00075), "all"),
     ("+ mishits 5-8% short (+ 2.5% heavy)", dict(mis_slight=0.12, mis_slight_carry=(0.92, 0.95), mis_slight_lat=1.15,
                                                 mis_heavy=0.025), "all"),
@@ -183,7 +184,7 @@ def sensitivities(h, n):
         "width 60 (tighter)": dict(width={c: v * 60 / 70 for c, v in w.items()}),
         "v1-final width ratios (70/66/59.5)": dict(width=dict(w, **{"2-wood": 70 * 0.94, "4-wood": 70 * 0.85})),
         "PGA Tour scoring table": dict(table="tour"),
-        "v1 roll (~25 yds driver)": dict(soft_roll=None),
+        "ball stops dead (0.5-3.5 yd roll)": dict(soft_roll=2.0, roll_noise=0.5),
         "no heavy mishits": dict(mis_heavy=0.0),
         "fade: right tail 30% longer": dict(skew=0.3),
         "draw: left tail 30% longer": dict(skew=-0.3),

@@ -8,8 +8,10 @@ reproduced (see V1 below and validate.py):
     (along the app line, yds right of it). A shot is then an array lookup, so the expected strokes
     for every aim on a 0.5-yd grid come from one gather (common random numbers across aims and
     clubs by construction). Aim is then optimised continuously (Brent on the smoothed curve).
-  * Soft course: the ball moves ~1-2 yds after landing (golfer, 2026-10-17). v1 kept the full
-    calm-day roll (total - carry, ~25 yds for driver) and only capped the slope factor.
+  * Roll: each club rolls to the golfer's stated total on level fairway (total - carry: 25 / 15 / 15
+    yds), x the DEM slope factor capped 0.7-1.3, no side kick (the golfer's "soft" note was about kick
+    and bounce, not total roll), +/-25% per swing; slower in rough, stops in hazards. A "ball stops
+    dead" variant (soft_roll = 0.5-3.5 yds) is kept as a sensitivity.
   * Temperature: carry x (1 - k (70 - T)), k ~ 0.0005-0.0009 per F (TrackMan/Rice ~2-2.5 yd per
     10 F for driver; TrackMan secondhand 1.3-1.7; Titleist 1.5% per 20 F).
   * Shot pattern: angular lateral (sigma = width/4) with an unknown common bias; carry depth with
@@ -355,7 +357,7 @@ def central(**over):
         first_cut=0.35, trees=0.8, tree_restricted=0.10, punch_adv=35.0, punch_fail=0.10,
         lost_edge=0.25, lost_deep=0.65, lost_ramp=10.0, block_sev=0.4,
         c_common=0.0, c_club={}, temp_f=48.0, temp_k=0.00075,
-        soft_roll=2.0, roll_mult=1.0, roll_noise=0.5, rough_roll=0.3,
+        soft_roll=None, roll_mult=1.0, roll_noise=0.25, rough_roll=0.3,   # roll to the stated totals
         width={c: CLUBS[c][2] * w for c in CLUBS}, depth_mult=1.25,
         rho=0.1, kappa=0.08, bias=0.0, skew=0.0,
         mis_slight=0.12, mis_slight_carry=(0.92, 0.95), mis_slight_lat=1.15,
