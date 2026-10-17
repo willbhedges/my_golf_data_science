@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-10-17T00:11:22Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
+Built 2026-10-17T00:34:21Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
 **WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
@@ -25,8 +25,8 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 435 / 434 | 176 | 0.77 | check the flags | 37% | 9% | 54% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 2 | 4 | 334 / 338 | 249 | 0.82 | auto | 18% | 41% | 41% | tee stage: Blue tee_centroid |  |
+| 1 | 4 | 435 / 434 | 176 | 0.77 | check the flags | 37% | 9% | 54% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis; imagery-model sand where OSM has none (segment gap-fill; check on the map) |
+| 2 | 4 | 334 / 338 | 249 | 0.82 | auto | 18% | 41% | 41% | tee stage: Blue tee_centroid | imagery-model sand where OSM has none (segment gap-fill; check on the map) |
 | 3 | 4 | 333 / 318 | 30 | 0.80 | auto | 22% | 28% | 50% | tee stage: Blue tee_centroid |  |
 | 4 | 4 | 349 / 348 | 298 | 0.79 | check the flags | 35% | 22% | 42% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 5 | 4 | 402 / 401 | 169 | 0.81 | auto | 32% | 20% | 48% | tee stage: Blue tee_centroid |  |
@@ -54,6 +54,7 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 - **imagery**: ok: course_data/packages/veenker/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **elevation**: ok: course_data/packages/veenker/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)
+- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+3 zones on 2 holes, +0 greens, 18 tee candidates)
 
 ## Warnings
 

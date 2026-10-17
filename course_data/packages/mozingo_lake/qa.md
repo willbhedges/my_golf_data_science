@@ -1,6 +1,6 @@
 # Mozingo Lake Golf Course (Maryville, MO) - App tees
 
-Built 2026-10-17T00:11:11Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
+Built 2026-10-17T00:34:09Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
 
 ## Coverage
 
@@ -32,7 +32,7 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 | 7 | 4 | 428 / 428 | 36 | 0.81 | auto | 56% | 4% | 40% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
 | 8 | 3 | 187 / 187 | 26 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
 | 9 | 4 | 348 / 346 | 18 | 0.81 | auto | 41% | 12% | 47% | tee stage: App tee_centroid |  |
-| 10 | 4 | 392 / 391 | 10 | 0.80 | auto | 47% | 15% | 38% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 10 | 4 | 392 / 391 | 10 | 0.80 | auto | 47% | 15% | 38% | tee stage: App tee_axis | tee: tee stage: App tee_axis; imagery-model water where OSM has none (segment gap-fill; check on the map) |
 | 11 | 3 | 219 / 220 | 343 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
 | 12 | 5 | 517 / 518 | 265 | 0.77 | check the flags | 45% | 4% | 51% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
 | 13 | 4 | 394 / 394 | 177 | 0.83 | auto | 42% | 36% | 22% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
@@ -52,3 +52,4 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 - **imagery**: ok: course_data/packages/mozingo_lake/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
 - **elevation**: ok: course_data/packages/mozingo_lake/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)
+- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+2 zones on 1 holes, +0 greens, 32 tee candidates)
