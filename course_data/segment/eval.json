@@ -1,5 +1,169 @@
 [
  {
+  "slug": "mozingo_lake",
+  "package": "mozingo_lake",
+  "naip": "course_data/vision_any/mozingo/raw/naip_2022.tif",
+  "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
+  "vs_osm": {
+   "segment": {
+    "green": {
+     "iou": 0.861,
+     "precision": 0.888,
+     "recall": 0.965,
+     "pred_m2": 13777,
+     "ref_m2": 12687
+    },
+    "tee": {
+     "iou": 0.617,
+     "precision": 0.715,
+     "recall": 0.819,
+     "pred_m2": 11629,
+     "ref_m2": 10152
+    },
+    "fairway": {
+     "iou": 0.807,
+     "precision": 0.89,
+     "recall": 0.896,
+     "pred_m2": 144373,
+     "ref_m2": 143317
+    },
+    "bunker": {
+     "iou": 0.7,
+     "precision": 0.765,
+     "recall": 0.891,
+     "pred_m2": 4481,
+     "ref_m2": 3845
+    },
+    "water": {
+     "iou": 0.588,
+     "precision": 0.913,
+     "recall": 0.622,
+     "pred_m2": 51102,
+     "ref_m2": 74994
+    }
+   },
+   "unet_water_class": {
+    "iou": 0.074,
+    "precision": 0.074,
+    "recall": 0.961,
+    "pred_m2": 969229,
+    "ref_m2": 74994
+   }
+  },
+  "objects_vs_osm": {
+   "green": {
+    "osm": 30,
+    "model": 30,
+    "recall_iou50": 1.0,
+    "precision_iou50": 1.0,
+    "mean_best_iou": 0.859
+   },
+   "bunker": {
+    "osm": 27,
+    "model": 32,
+    "recall_overlap": 1.0,
+    "precision_overlap": 0.844
+   },
+   "fairway": {
+    "osm": 20,
+    "model": 28,
+    "recall_overlap": 0.9,
+    "precision_overlap": 0.643
+   },
+   "tee": {
+    "osm": 84,
+    "model": 84,
+    "match_yd": 10.0,
+    "recall": 0.869,
+    "precision": 0.869
+   }
+  },
+  "osm_counts": {
+   "green": 30,
+   "tee": 84,
+   "fairway": 20,
+   "bunker": 27,
+   "water": 4
+  },
+  "tees": {
+   "unet_tees": 84,
+   "unet_tees_near_first_leg": 54,
+   "osm_boxes": 84,
+   "matched_osm": 50,
+   "unmapped_candidates": 4,
+   "corroborated_by_lidar_pad": 1,
+   "lidar_pads": 41,
+   "unmapped": [
+    {
+     "lat": 40.364402,
+     "lon": -94.763958,
+     "p": 0.59,
+     "area_m2": 60.1,
+     "lidar": false
+    },
+    {
+     "lat": 40.361941,
+     "lon": -94.765287,
+     "p": 0.591,
+     "area_m2": 29.7,
+     "lidar": false
+    },
+    {
+     "lat": 40.354713,
+     "lon": -94.766626,
+     "p": 0.541,
+     "area_m2": 36.4,
+     "lidar": true
+    },
+    {
+     "lat": 40.351895,
+     "lon": -94.768116,
+     "p": 0.671,
+     "area_m2": 208.8,
+     "lidar": false
+    }
+   ],
+   "placement": {
+    "joint": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "joint+lidar": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "joint+unet": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    },
+    "joint+lidar+unet": {
+     "internal": {
+      "placements": 18,
+      "card_within_5": 0.944,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 0
+     }
+    }
+   }
+  }
+ },
+ {
   "slug": "spirit_hollow",
   "package": "spirit_hollow",
   "naip": "course_data/vision_any/spirit_hollow/raw/naip_2023.tif",
@@ -14,31 +178,31 @@
      "ref_m2": 10733
     },
     "tee": {
-     "iou": 0.513,
-     "precision": 0.6,
+     "iou": 0.51,
+     "precision": 0.595,
      "recall": 0.781,
-     "pred_m2": 18776,
+     "pred_m2": 18937,
      "ref_m2": 14423
     },
     "fairway": {
      "iou": 0.839,
      "precision": 0.904,
      "recall": 0.921,
-     "pred_m2": 92493,
+     "pred_m2": 92540,
      "ref_m2": 90838
     },
     "bunker": {
-     "iou": 0.682,
-     "precision": 0.852,
+     "iou": 0.68,
+     "precision": 0.848,
      "recall": 0.775,
-     "pred_m2": 6858,
+     "pred_m2": 6886,
      "ref_m2": 7540
     },
     "water": {
-     "iou": 0.485,
-     "precision": 0.82,
-     "recall": 0.543,
-     "pred_m2": 41696,
+     "iou": 0.488,
+     "precision": 0.898,
+     "recall": 0.517,
+     "pred_m2": 36285,
      "ref_m2": 63044
     }
    },
@@ -91,22 +255,22 @@
      "fairway": {
       "iou": 0.332,
       "precision": 0.537,
-      "recall": 0.464
+      "recall": 0.465
      },
      "fairway_only": {
-      "iou": 0.325,
+      "iou": 0.326,
       "precision": 0.468,
-      "recall": 0.516
+      "recall": 0.517
      },
      "bunker": {
-      "iou": 0.243,
-      "precision": 0.306,
+      "iou": 0.242,
+      "precision": 0.305,
       "recall": 0.541
      },
      "water": {
-      "iou": 0.156,
-      "precision": 0.239,
-      "recall": 0.311
+      "iou": 0.176,
+      "precision": 0.292,
+      "recall": 0.306
      }
     },
     "osm": {
@@ -138,7 +302,7 @@
       "fairway": 0.377,
       "fairway_only": 0.372,
       "bunker": 0.0,
-      "water": 0.0
+      "water": null
      },
      "osm": {
       "fairway": 0.375,
@@ -152,7 +316,7 @@
       "fairway": 0.225,
       "fairway_only": 0.189,
       "bunker": 0.0,
-      "water": 0.004
+      "water": 0.003
      },
      "osm": {
       "fairway": 0.201,
@@ -166,7 +330,7 @@
       "fairway": 0.254,
       "fairway_only": 0.222,
       "bunker": 0.401,
-      "water": 0.178
+      "water": 0.207
      },
      "osm": {
       "fairway": 0.228,
@@ -236,7 +400,7 @@
       "fairway": 0.342,
       "fairway_only": 0.329,
       "bunker": 0.0,
-      "water": 0.478
+      "water": 0.513
      },
      "osm": {
       "fairway": 0.348,
@@ -250,7 +414,7 @@
       "fairway": 0.281,
       "fairway_only": 0.252,
       "bunker": 0.0,
-      "water": 0.224
+      "water": 0.24
      },
      "osm": {
       "fairway": 0.298,
@@ -264,7 +428,7 @@
       "fairway": 0.342,
       "fairway_only": 0.367,
       "bunker": 0.195,
-      "water": 0.151
+      "water": 0.154
      },
      "osm": {
       "fairway": 0.367,
@@ -289,10 +453,10 @@
     },
     "13": {
      "segment": {
-      "fairway": 0.209,
-      "fairway_only": 0.21,
+      "fairway": 0.21,
+      "fairway_only": 0.212,
       "bunker": 0.208,
-      "water": 0.227
+      "water": 0.274
      },
      "osm": {
       "fairway": 0.192,
@@ -303,8 +467,8 @@
     },
     "14": {
      "segment": {
-      "fairway": 0.248,
-      "fairway_only": 0.212,
+      "fairway": 0.249,
+      "fairway_only": 0.213,
       "bunker": 0.0,
       "water": 0.0
      },
@@ -333,7 +497,7 @@
      "segment": {
       "fairway": 0.494,
       "fairway_only": 0.586,
-      "bunker": 0.199,
+      "bunker": 0.19,
       "water": 0.0
      },
      "osm": {
@@ -378,8 +542,8 @@
       "recall": 0.635
      },
      "water": {
-      "iou": 0.339,
-      "precision": 0.762,
+      "iou": 0.352,
+      "precision": 0.834,
       "recall": 0.379
      }
     },
@@ -426,7 +590,7 @@
       "fairway": 0.319,
       "fairway_only": 0.271,
       "bunker": null,
-      "water": 0.017
+      "water": 0.0
      },
      "osm": {
       "fairway": 0.283,
@@ -563,10 +727,10 @@
     },
     "13": {
      "segment": {
-      "fairway": 0.401,
-      "fairway_only": 0.492,
+      "fairway": 0.402,
+      "fairway_only": 0.493,
       "bunker": 0.632,
-      "water": 0.583
+      "water": 0.625
      },
      "osm": {
       "fairway": 0.405,
@@ -1436,24 +1600,24 @@
   "vs_osm": {
    "segment": {
     "green": {
-     "iou": 0.772,
+     "iou": 0.773,
      "precision": 0.889,
-     "recall": 0.854,
-     "pred_m2": 10310,
+     "recall": 0.855,
+     "pred_m2": 10323,
      "ref_m2": 10733
     },
     "tee": {
-     "iou": 0.49,
-     "precision": 0.56,
+     "iou": 0.489,
+     "precision": 0.559,
      "recall": 0.797,
-     "pred_m2": 20547,
+     "pred_m2": 20583,
      "ref_m2": 14423
     },
     "fairway": {
-     "iou": 0.853,
-     "precision": 0.939,
-     "recall": 0.903,
-     "pred_m2": 87336,
+     "iou": 0.856,
+     "precision": 0.938,
+     "recall": 0.907,
+     "pred_m2": 87846,
      "ref_m2": 90838
     },
     "bunker": {
@@ -1464,10 +1628,10 @@
      "ref_m2": 7540
     },
     "water": {
-     "iou": 0.449,
-     "precision": 0.72,
-     "recall": 0.544,
-     "pred_m2": 47658,
+     "iou": 0.484,
+     "precision": 0.897,
+     "recall": 0.513,
+     "pred_m2": 36044,
      "ref_m2": 63044
     }
    },
@@ -1518,14 +1682,14 @@
    "total": {
     "segment": {
      "fairway": {
-      "iou": 0.325,
-      "precision": 0.544,
-      "recall": 0.447
+      "iou": 0.326,
+      "precision": 0.543,
+      "recall": 0.449
      },
      "fairway_only": {
       "iou": 0.321,
-      "precision": 0.475,
-      "recall": 0.498
+      "precision": 0.473,
+      "recall": 0.499
      },
      "bunker": {
       "iou": 0.245,
@@ -1533,9 +1697,9 @@
       "recall": 0.584
      },
      "water": {
-      "iou": 0.108,
-      "precision": 0.162,
-      "recall": 0.245
+      "iou": 0.144,
+      "precision": 0.266,
+      "recall": 0.239
      }
     },
     "osm": {
@@ -1567,7 +1731,7 @@
       "fairway": 0.398,
       "fairway_only": 0.389,
       "bunker": 0.0,
-      "water": 0.0
+      "water": null
      },
      "osm": {
       "fairway": 0.375,
@@ -1595,7 +1759,7 @@
       "fairway": 0.239,
       "fairway_only": 0.221,
       "bunker": 0.409,
-      "water": 0.106
+      "water": 0.11
      },
      "osm": {
       "fairway": 0.228,
@@ -1623,7 +1787,7 @@
       "fairway": 0.529,
       "fairway_only": 0.553,
       "bunker": 0.425,
-      "water": 0.0
+      "water": null
      },
      "osm": {
       "fairway": 0.536,
@@ -1651,7 +1815,7 @@
       "fairway": 0.33,
       "fairway_only": 0.314,
       "bunker": 0.484,
-      "water": 0.26
+      "water": 0.331
      },
      "osm": {
       "fairway": 0.335,
@@ -1665,7 +1829,7 @@
       "fairway": 0.318,
       "fairway_only": 0.306,
       "bunker": 0.0,
-      "water": 0.32
+      "water": 0.399
      },
      "osm": {
       "fairway": 0.348,
@@ -1679,7 +1843,7 @@
       "fairway": 0.271,
       "fairway_only": 0.239,
       "bunker": 0.0,
-      "water": 0.166
+      "water": 0.214
      },
      "osm": {
       "fairway": 0.298,
@@ -1690,10 +1854,10 @@
     },
     "10": {
      "segment": {
-      "fairway": 0.36,
+      "fairway": 0.359,
       "fairway_only": 0.384,
       "bunker": 0.195,
-      "water": 0.048
+      "water": 0.054
      },
      "osm": {
       "fairway": 0.367,
@@ -1718,10 +1882,10 @@
     },
     "13": {
      "segment": {
-      "fairway": 0.185,
-      "fairway_only": 0.182,
+      "fairway": 0.184,
+      "fairway_only": 0.181,
       "bunker": 0.199,
-      "water": 0.054
+      "water": 0.076
      },
      "osm": {
       "fairway": 0.192,
@@ -1732,10 +1896,10 @@
     },
     "14": {
      "segment": {
-      "fairway": 0.248,
-      "fairway_only": 0.227,
+      "fairway": 0.263,
+      "fairway_only": 0.229,
       "bunker": 0.0,
-      "water": 0.055
+      "water": 0.089
      },
      "osm": {
       "fairway": 0.26,
@@ -1774,10 +1938,10 @@
     },
     "18": {
      "segment": {
-      "fairway": 0.201,
-      "fairway_only": 0.172,
+      "fairway": 0.199,
+      "fairway_only": 0.17,
       "bunker": 0.139,
-      "water": 0.026
+      "water": 0.046
      },
      "osm": {
       "fairway": 0.204,
@@ -1792,14 +1956,14 @@
    "total": {
     "segment": {
      "fairway": {
-      "iou": 0.497,
-      "precision": 0.921,
-      "recall": 0.519
+      "iou": 0.5,
+      "precision": 0.92,
+      "recall": 0.522
      },
      "fairway_only": {
       "iou": 0.537,
-      "precision": 0.758,
-      "recall": 0.649
+      "precision": 0.755,
+      "recall": 0.65
      },
      "bunker": {
       "iou": 0.615,
@@ -1807,8 +1971,8 @@
       "recall": 0.682
      },
      "water": {
-      "iou": 0.145,
-      "precision": 0.535,
+      "iou": 0.165,
+      "precision": 0.959,
       "recall": 0.166
      }
     },
@@ -1995,7 +2159,7 @@
       "fairway": 0.402,
       "fairway_only": 0.488,
       "bunker": 0.672,
-      "water": 0.051
+      "water": 0.055
      },
      "osm": {
       "fairway": 0.405,
@@ -2006,10 +2170,10 @@
     },
     "14": {
      "segment": {
-      "fairway": 0.427,
-      "fairway_only": 0.48,
+      "fairway": 0.464,
+      "fairway_only": 0.476,
       "bunker": null,
-      "water": 0.212
+      "water": 0.53
      },
      "osm": {
       "fairway": 0.453,
@@ -2876,6 +3040,191 @@
      "lidar": 6.9
     }
    ]
+  }
+ },
+ {
+  "slug": "veenker",
+  "package": "veenker",
+  "naip": "course_data/vision_any/veenker/raw/naip_2023.tif",
+  "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
+  "vs_osm": {
+   "segment": {
+    "green": {
+     "iou": 0.59,
+     "precision": 0.751,
+     "recall": 0.734,
+     "pred_m2": 10440,
+     "ref_m2": 10670
+    },
+    "tee": {
+     "iou": 0.459,
+     "precision": 0.595,
+     "recall": 0.669,
+     "pred_m2": 13214,
+     "ref_m2": 11748
+    },
+    "fairway": {
+     "iou": 0.576,
+     "precision": 0.902,
+     "recall": 0.614,
+     "pred_m2": 83419,
+     "ref_m2": 122475
+    },
+    "bunker": {
+     "iou": 0.462,
+     "precision": 0.716,
+     "recall": 0.565,
+     "pred_m2": 2038,
+     "ref_m2": 2581
+    },
+    "water": {
+     "iou": 0.024,
+     "precision": 1.0,
+     "recall": 0.024,
+     "pred_m2": 660,
+     "ref_m2": 27860
+    }
+   },
+   "unet_water_class": {
+    "iou": 0.046,
+    "precision": 0.046,
+    "recall": 0.947,
+    "pred_m2": 574800,
+    "ref_m2": 27860
+   }
+  },
+  "objects_vs_osm": {
+   "green": {
+    "osm": 26,
+    "model": 23,
+    "recall_iou50": 0.808,
+    "precision_iou50": 0.913,
+    "mean_best_iou": 0.604
+   },
+   "bunker": {
+    "osm": 27,
+    "model": 25,
+    "recall_overlap": 0.815,
+    "precision_overlap": 0.88
+   },
+   "fairway": {
+    "osm": 30,
+    "model": 27,
+    "recall_overlap": 0.733,
+    "precision_overlap": 0.852
+   },
+   "tee": {
+    "osm": 43,
+    "model": 42,
+    "match_yd": 10.0,
+    "recall": 0.721,
+    "precision": 0.738
+   }
+  },
+  "osm_counts": {
+   "green": 26,
+   "tee": 43,
+   "fairway": 30,
+   "bunker": 27,
+   "water": 3
+  },
+  "tees": {
+   "unet_tees": 41,
+   "unet_tees_near_first_leg": 35,
+   "osm_boxes": 43,
+   "matched_osm": 28,
+   "unmapped_candidates": 7,
+   "corroborated_by_lidar_pad": 0,
+   "lidar_pads": 36,
+   "unmapped": [
+    {
+     "lat": 42.038557,
+     "lon": -93.652171,
+     "p": 0.741,
+     "area_m2": 60.5,
+     "lidar": false
+    },
+    {
+     "lat": 42.037449,
+     "lon": -93.647092,
+     "p": 0.488,
+     "area_m2": 136.6,
+     "lidar": false
+    },
+    {
+     "lat": 42.036947,
+     "lon": -93.65205,
+     "p": 0.645,
+     "area_m2": 78.3,
+     "lidar": false
+    },
+    {
+     "lat": 42.036849,
+     "lon": -93.652347,
+     "p": 0.562,
+     "area_m2": 121.5,
+     "lidar": false
+    },
+    {
+     "lat": 42.03688,
+     "lon": -93.646283,
+     "p": 0.612,
+     "area_m2": 79.9,
+     "lidar": false
+    },
+    {
+     "lat": 42.03675,
+     "lon": -93.655178,
+     "p": 0.671,
+     "area_m2": 94.0,
+     "lidar": false
+    },
+    {
+     "lat": 42.03543,
+     "lon": -93.653492,
+     "p": 0.688,
+     "area_m2": 134.3,
+     "lidar": false
+    }
+   ],
+   "placement": {
+    "joint": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 2,
+      "order_violations": 0,
+      "on_a_shared_box": 26
+     }
+    },
+    "joint+lidar": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 25
+     }
+    },
+    "joint+unet": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 1,
+      "order_violations": 0,
+      "on_a_shared_box": 26
+     }
+    },
+    "joint+lidar+unet": {
+     "internal": {
+      "placements": 54,
+      "card_within_5": 0.833,
+      "walkbacks": 0,
+      "order_violations": 0,
+      "on_a_shared_box": 25
+     }
+    }
+   }
   }
  }
 ]

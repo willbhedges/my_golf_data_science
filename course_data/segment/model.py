@@ -107,3 +107,31 @@ def nir_water(img, frac=0.55, sd_max=8.0):
     m = ndi.binary_opening(m, iterations=1)
     score = np.clip((frac * med - n) / (0.3 * med), 0, 1) * 0.5 + 0.5
     return m, score
+
+
+def drop_tree_shadows(mask, hag_m, res_m=0.6, ring_m=10.0, tall_m=3.0, frac_max=0.25, keep_m2=2000.0):
+    """Remove NIR-water components whose ring_m surroundings are > frac_max tall canopy (HAG >= tall_m):
+    tree shadows on grass are NIR-dark and smooth like water. hag_m: height above ground (m) on the NAIP
+    grid, NaN = unknown. Components >= keep_m2 are kept (ponds; shadows are small). Returns (mask, n_dropped)."""
+    from scipy import ndimage as ndi
+    lab, n = ndi.label(mask)
+    if n == 0:
+        return mask, 0
+    r = max(1, int(round(ring_m / res_m)))
+    tall = np.nan_to_num(hag_m, nan=0.0) >= tall_m
+    known = np.isfinite(hag_m)
+    keep = np.ones(n + 1, bool)
+    keep[0] = False
+    objs = ndi.find_objects(lab)
+    for i, sl in enumerate(objs, start=1):
+        if sl is None:
+            continue
+        y0, y1 = max(sl[0].start - r, 0), min(sl[0].stop + r, mask.shape[0])
+        x0, x1 = max(sl[1].start - r, 0), min(sl[1].stop + r, mask.shape[1])
+        m = lab[y0:y1, x0:x1] == i
+        if m.sum() * res_m * res_m >= keep_m2:
+            continue
+        ring = ndi.binary_dilation(m, iterations=r) & ~m & known[y0:y1, x0:x1]
+        if ring.sum() and tall[y0:y1, x0:x1][ring].mean() > frac_max:
+            keep[i] = False
+    return keep[lab], int((~keep[1:]).sum())

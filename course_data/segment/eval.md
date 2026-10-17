@@ -8,15 +8,19 @@ water = NAIP NIR rule (model.nir_water); the U-Net's own water class is in the l
 
 | course | NAIP | green | tee | fairway | bunker | water | U-Net water class |
 |---|---|---|---|---|---|---|---|
-| spirit_hollow | naip_2023.tif | 0.76 (0.89/0.84) | 0.51 (0.60/0.78) | 0.84 (0.90/0.92) | 0.68 (0.85/0.78) | 0.48 (0.82/0.54) | 0.06 (0.06/0.98) |
-| spirit_hollow_2021 | naip_2021.tif | 0.77 (0.89/0.85) | 0.49 (0.56/0.80) | 0.85 (0.94/0.90) | 0.70 (0.82/0.82) | 0.45 (0.72/0.54) | 0.06 (0.06/0.99) |
+| mozingo_lake | naip_2022.tif | 0.86 (0.89/0.96) | 0.62 (0.71/0.82) | 0.81 (0.89/0.90) | 0.70 (0.77/0.89) | 0.59 (0.91/0.62) | 0.07 (0.07/0.96) |
+| spirit_hollow | naip_2023.tif | 0.76 (0.89/0.84) | 0.51 (0.59/0.78) | 0.84 (0.90/0.92) | 0.68 (0.85/0.78) | 0.49 (0.90/0.52) | 0.06 (0.06/0.98) |
+| spirit_hollow_2021 | naip_2021.tif | 0.77 (0.89/0.85) | 0.49 (0.56/0.80) | 0.86 (0.94/0.91) | 0.70 (0.82/0.82) | 0.48 (0.90/0.51) | 0.06 (0.06/0.99) |
+| veenker | naip_2023.tif | 0.59 (0.75/0.73) | 0.46 (0.59/0.67) | 0.58 (0.90/0.61) | 0.46 (0.72/0.56) | 0.02 (1.00/0.02) | 0.05 (0.05/0.95) |
 
 ## Objects vs OSM
 
 | course | greens: recall@IoU.5 / precision / mean best IoU | bunkers: recall / precision (overlap) | fairways: recall / precision (overlap) | tees: recall / precision (10 yds) |
 |---|---|---|---|---|
+| mozingo_lake | 1.00 / 1.00 / 0.86 (30 OSM, 30 model) | 1.00 / 0.84 (27/32) | 0.90 / 0.64 (20/28) | 0.87 / 0.87 (84/84) |
 | spirit_hollow | 0.89 / 0.92 / 0.73 (26 OSM, 25 model) | 1.00 / 0.81 (50/62) | 1.00 / 0.87 (20/23) | 0.84 / 0.89 (103/97) |
 | spirit_hollow_2021 | 0.89 / 0.89 / 0.77 (26 OSM, 26 model) | 1.00 / 0.81 (50/62) | 1.00 / 0.83 (20/24) | 0.85 / 0.81 (103/108) |
+| veenker | 0.81 / 0.91 / 0.60 (26 OSM, 23 model) | 0.81 / 0.88 (27/25) | 0.73 / 0.85 (30/27) | 0.72 / 0.74 (43/42) |
 
 ## Spirit Hollow hand map (spirit_hollow, inside the 16 screenshot footprints)
 
@@ -24,7 +28,7 @@ fairway = hand fairway + first_cut (OSM convention); fairway only = hand fairway
 
 | source | fairway | fairway only | bunker | water |
 |---|---|---|---|---|
-| segment | 0.33 (0.54/0.46) | 0.33 (0.47/0.52) | 0.24 (0.31/0.54) | 0.16 (0.24/0.31) |
+| segment | 0.33 (0.54/0.47) | 0.33 (0.47/0.52) | 0.24 (0.30/0.54) | 0.18 (0.29/0.31) |
 | osm | 0.34 (0.55/0.47) | 0.33 (0.48/0.52) | 0.26 (0.31/0.61) | 0.20 (0.25/0.51) |
 
 ## Spirit Hollow hand map (spirit_hollow, landing zones 220-340 yds x +/-45)
@@ -33,7 +37,7 @@ fairway = hand fairway + first_cut (OSM convention); fairway only = hand fairway
 
 | source | fairway | fairway only | bunker | water |
 |---|---|---|---|---|
-| segment | 0.51 (0.92/0.54) | 0.55 (0.75/0.67) | 0.57 (0.86/0.64) | 0.34 (0.76/0.38) |
+| segment | 0.51 (0.92/0.54) | 0.55 (0.75/0.67) | 0.57 (0.86/0.64) | 0.35 (0.83/0.38) |
 | osm | 0.52 (0.92/0.54) | 0.56 (0.76/0.68) | 0.69 (0.89/0.75) | 0.50 (0.80/0.57) |
 
 ## Spirit Hollow hand map (spirit_hollow_2021, inside the 16 screenshot footprints)
@@ -42,7 +46,7 @@ fairway = hand fairway + first_cut (OSM convention); fairway only = hand fairway
 
 | source | fairway | fairway only | bunker | water |
 |---|---|---|---|---|
-| segment | 0.33 (0.54/0.45) | 0.32 (0.47/0.50) | 0.24 (0.30/0.58) | 0.11 (0.16/0.24) |
+| segment | 0.33 (0.54/0.45) | 0.32 (0.47/0.50) | 0.24 (0.30/0.58) | 0.14 (0.27/0.24) |
 | osm | 0.34 (0.55/0.47) | 0.33 (0.48/0.52) | 0.26 (0.31/0.61) | 0.20 (0.25/0.51) |
 
 ## Spirit Hollow hand map (spirit_hollow_2021, landing zones 220-340 yds x +/-45)
@@ -51,7 +55,7 @@ fairway = hand fairway + first_cut (OSM convention); fairway only = hand fairway
 
 | source | fairway | fairway only | bunker | water |
 |---|---|---|---|---|
-| segment | 0.50 (0.92/0.52) | 0.54 (0.76/0.65) | 0.61 (0.86/0.68) | 0.14 (0.54/0.17) |
+| segment | 0.50 (0.92/0.52) | 0.54 (0.76/0.65) | 0.61 (0.86/0.68) | 0.17 (0.96/0.17) |
 | osm | 0.52 (0.92/0.54) | 0.56 (0.76/0.68) | 0.69 (0.89/0.75) | 0.50 (0.80/0.57) |
 
 ## Tees
@@ -60,13 +64,19 @@ U-Net tee polygons near a hole's first leg (OSM hole lines; > 20 yds from a gree
 
 | course | U-Net tees near a first leg | OSM boxes | matching an OSM box | unmapped candidates | of which lidar-corroborated |
 |---|---|---|---|---|---|
+| mozingo_lake | 54 | 84 | 50 | 4 | 1 |
 | spirit_hollow | 83 | 103 | 78 | 5 | 1 |
 | spirit_hollow_2021 | 87 | 103 | 79 | 8 | 2 |
+| veenker | 35 | 43 | 28 | 7 | 0 |
 
 Tee placement (tees/place_tee.place_course_sets) with U-Net tees as extra candidates (like lidar pads):
 
 | course | method | measured within 5 yds of card | walk-backs | SH screenshot tee <= 10 yds | SH median tee err |
 |---|---|---|---|---|---|
+| mozingo_lake | joint | 94% | 0 | - | - |
+| mozingo_lake | joint+lidar | 94% | 0 | - | - |
+| mozingo_lake | joint+unet | 94% | 0 | - | - |
+| mozingo_lake | joint+lidar+unet | 94% | 0 | - | - |
 | spirit_hollow | joint | 92% | 1 | 44% | 12.4 |
 | spirit_hollow | joint+lidar | 93% | 1 | 44% | 12.4 |
 | spirit_hollow | joint+unet | 92% | 1 | 44% | 12.4 |
@@ -75,6 +85,10 @@ Tee placement (tees/place_tee.place_course_sets) with U-Net tees as extra candid
 | spirit_hollow_2021 | joint+lidar | 93% | 1 | 44% | 12.4 |
 | spirit_hollow_2021 | joint+unet | 92% | 1 | 44% | 12.4 |
 | spirit_hollow_2021 | joint+lidar+unet | 93% | 1 | 44% | 12.4 |
+| veenker | joint | 83% | 2 | - | - |
+| veenker | joint+lidar | 83% | 1 | - | - |
+| veenker | joint+unet | 83% | 1 | - | - |
+| veenker | joint+lidar+unet | 83% | 0 | - | - |
 
 Spirit Hollow screenshot tees (spirit_hollow): yds to the nearest candidate
 

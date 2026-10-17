@@ -102,6 +102,26 @@ def run_one(r, mdl, sha, force=False, tta=True):
     return m
 
 
+def load_hag(m, T, crs, shape):
+    """Height above ground (m) on the NAIP grid from vision_any's raw/hag.tif next to the NAIP (or the
+    request's "hag"); None when absent."""
+    import rasterio
+    from rasterio.warp import Resampling, reproject
+    req = json.load(open(os.path.join(ROOT, m["request"]))) if m.get("request") else {}
+    p = req.get("hag") or os.path.join(os.path.dirname(m["naip"]), "hag.tif")
+    p = os.path.join(ROOT, p)
+    if not os.path.exists(p):
+        return None
+    out = np.full(shape, np.nan, np.float32)
+    with rasterio.open(p) as s:
+        a = s.read(1).astype(np.float32)
+        a[a == (s.nodata if s.nodata is not None else 255)] = np.nan
+        a *= 0.25                                                   # 0.25 m units (fetch_any.py)
+        reproject(a, out, src_transform=s.transform, src_crs=s.crs, dst_transform=T, dst_crs=crs,
+                  resampling=Resampling.nearest, src_nodata=np.nan, dst_nodata=np.nan)
+    return out
+
+
 def build_polygons(slug):
     """probs.tif + NAIP -> segment.geojson (light; also run locally: run_segment.py --polygons-only)."""
     import rasterio
@@ -115,8 +135,14 @@ def build_polygons(slug):
         img = s.read()
     probs = np.concatenate([np.clip(1.0 - q.sum(0, keepdims=True), 0, 1), q])
     valid = img.any(axis=0)
+    wm, ws = M.nir_water(img)
+    hag = load_hag(m, T, crs, img.shape[1:])
+    m["water_shadow_filter"] = "none (no hag.tif)"
+    if hag is not None:
+        wm, nd = M.drop_tree_shadows(wm, hag, res_m=abs(T.a))
+        m["water_shadow_filter"] = f"lidar HAG ring: dropped {nd} components"
     feats = P.polygonize(probs, T, crs, src=f"segment:ariadgolf-v4@{m['model_sha'][:8]}",
-                         water=M.nir_water(img), valid=valid)
+                         water=(wm, ws), valid=valid)
     json.dump({"type": "FeatureCollection", "features": feats,
                "properties": {"model": M.REPO, "model_sha": m["model_sha"], "naip": m["naip"],
                               "water": "segment:nir = model.nir_water (NAIP NIR rule), not the U-Net",

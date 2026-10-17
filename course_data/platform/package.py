@@ -15,6 +15,9 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           set's colour wins ("tagged")
   S3      geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
+  S4b     course_data/segment/gapfill.py:segment_gapfill(package, segment.geojson) when the segment workflow
+          has run for the slug (requests/segment_<slug>.json): NAIP U-Net fairway / bunker / green + NIR water
+          ONLY where OSM lacks them (never overrides OSM), src "segment:*", p, flags, stages.segment
   S6      confidence per hole (pipeline.confidence), coverage stats, elevation (3DEP DEM + elevation/adjust.py)
 Outputs in packages/<slug>/:
   package.json    the self-contained course package (schema course_package/1, below)
@@ -444,6 +447,22 @@ def imagery_ref(img_dir):
     return imagery, elevation
 
 
+def call_segment_fill(package, warnings):
+    """S4b: imagery-model gap-fill where OSM lacks fairways / bunkers / greens / water (course_data/segment)."""
+    mod = load(os.path.join(CD, "segment", "gapfill.py"), "cdp_segment_gapfill")
+    st = package["stages"]
+    seg = mod.segment_for(package) if mod is not None and hasattr(mod, "segment_for") else None
+    if not seg:
+        st["segment"] = "not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)"
+        return package
+    try:
+        return mod.segment_gapfill(package, seg, reframe=False, log=lambda *a: None)
+    except Exception as e:                                       # noqa: BLE001
+        st["segment"] = f"failed: {type(e).__name__}: {e}"[:300]
+        warnings.append("segment gap-fill failed; fairways / bunkers come from OSM only")
+        return package
+
+
 def call_gapfill(package, img_dir, warnings):
     mod = load(os.path.join(CD, "vision_any", "gapfill.py"), "cdp_vision_gapfill")
     st = package["stages"]
@@ -728,6 +747,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     if gapfill:
         package = call_gapfill(package, img_dir, warnings)
         package["warnings"] = warnings if package.get("warnings") is None else package["warnings"]
+        package = call_segment_fill(package, warnings)
         package = reframe(package)
     else:
         stages["vision"] = "not run (gapfill=False)"

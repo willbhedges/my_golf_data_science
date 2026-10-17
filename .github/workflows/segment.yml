@@ -46,7 +46,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm \
-                      numpy scipy pillow shapely pyproj rasterio opencv-python-headless
+                      numpy scipy pillow shapely pyproj rasterio opencv-python-headless \
+                      matplotlib requests
 
       - name: Probe model card
         run: |
@@ -65,6 +66,28 @@ jobs:
           else
             echo "no run_segment.py yet"
           fi
+
+      - name: Evaluate vs OSM / hand map / tees
+        run: python -u course_data/segment/evaluate.py || echo "evaluate failed"
+
+      - name: Simulated poorly mapped course (plan.py quick per variant)
+        run: |
+          for r in course_data/segment/sim_*/*/plan_request.json; do
+            [ -f "$r" ] || continue
+            out=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['out'])" "$r")
+            [ -f "$out/decision.json" ] && { echo "done: $out"; continue; }
+            P=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['package'])" "$r")
+            T=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['tees'])" "$r")
+            echo "== plan $P ($T) -> $out"
+            python -u course_data/product/plan.py --package "$P" --tees "$T" --quick --no-wind --no-book --out "$out" \
+              > /tmp/plan.log 2>&1 || echo "plan failed: $r"
+            tail -30 /tmp/plan.log; mkdir -p "$out"; cp /tmp/plan.log "$out/plan_log.txt"
+            rm -rf "$out/screenshots"
+          done
+          for d in course_data/segment/sim_*; do
+            [ -d "$d" ] || continue
+            python -u course_data/segment/simulate.py compare --slug "${d#course_data/segment/sim_}" || echo "compare failed: $d"
+          done
 
       - name: Commit
         if: always()
