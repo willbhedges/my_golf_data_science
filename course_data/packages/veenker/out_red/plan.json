@@ -1,0 +1,305 @@
+{
+ "schema": "plan/1",
+ "course": "Veenker Memorial Golf Course",
+ "slug": "veenker",
+ "tee_set": "Red",
+ "mode": "quick",
+ "package": "course_data/packages/veenker/package.json",
+ "out": "course_data/packages/veenker/out_red",
+ "built": "2026-10-17T04:17Z",
+ "settings": {
+  "swings": 8000
+ },
+ "forecast": "Open-Meteo (fetched now)",
+ "stage_seconds": {
+  "1 package -> course module": 0.9,
+  "2 NAIP render per hole": 2.0,
+  "3 decision (quick)": 69.1,
+  "4 book + aim sheets": 13.4,
+  "5 forecast + wind grid + page": 349.2
+ },
+ "runtime_s": 434.5,
+ "files": {
+  "course.py": 363658,
+  "decision.json": 22762,
+  "decision.md": 1968,
+  "Veenker_Memorial_Strategy.pdf": 7898734,
+  "Veenker_Memorial_Aim_Sheets.pdf": 11761197,
+  "forecast.json": 12861,
+  "wind_grid.json": 568037,
+  "wind_page/index.html": 1688164,
+  "screenshots/": 5755940
+ },
+ "picks": {
+  "1": {
+   "club": "4-wood",
+   "aim": -2.5,
+   "zone": [
+    -5.0,
+    0.0
+   ],
+   "margin": 0.0643,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "2": {
+   "club": "4-wood",
+   "aim": -20.0,
+   "zone": [
+    -25.0,
+    -17.5
+   ],
+   "margin": 0.0161,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "3": {
+   "club": "Driver",
+   "aim": -75.0,
+   "zone": [
+    -80.0,
+    -62.5
+   ],
+   "margin": 0.0117,
+   "tie": false,
+   "conf": null,
+   "check": [
+    "no printable Driver aim: aim -75 yds is more than 40 yds off the tee line; the aim point is 118 yds from this hole's line of play (another hole?)"
+   ],
+   "status": "CHECK"
+  },
+  "4": {
+   "club": "4-wood",
+   "aim": 5.0,
+   "zone": [
+    0.0,
+    7.5
+   ],
+   "margin": 0.1101,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "5": {
+   "club": "Driver",
+   "aim": 20.0,
+   "zone": [
+    15.0,
+    22.5
+   ],
+   "margin": 0.1436,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "7": {
+   "club": "Long iron",
+   "aim": 5.0,
+   "zone": [
+    2.5,
+    10.0
+   ],
+   "margin": 0.0723,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "9": {
+   "club": "Driver",
+   "aim": 20.0,
+   "zone": [
+    15.0,
+    22.5
+   ],
+   "margin": 0.0038,
+   "tie": true,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "10": {
+   "club": "4-wood",
+   "aim": 0.0,
+   "zone": [
+    -5.0,
+    2.5
+   ],
+   "margin": 0.0016,
+   "tie": true,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "12": {
+   "club": "4-wood",
+   "aim": 40.0,
+   "zone": [
+    40.0,
+    40.0
+   ],
+   "margin": 0.1165,
+   "tie": false,
+   "conf": null,
+   "check": [
+    "2-wood best aim +52 rejected (aim +52 yds is more than 40 yds off the tee line)",
+    "4-wood best aim +45 rejected (aim +45 yds is more than 40 yds off the tee line)"
+   ],
+   "status": "CHECK"
+  },
+  "14": {
+   "club": "2-wood",
+   "aim": 27.5,
+   "zone": [
+    22.5,
+    30.0
+   ],
+   "margin": 0.0064,
+   "tie": true,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "15": {
+   "club": "Long iron",
+   "aim": 40.0,
+   "zone": [
+    40.0,
+    40.0
+   ],
+   "margin": -0.0481,
+   "tie": true,
+   "conf": null,
+   "check": [
+    "Long iron best aim +50 rejected (aim +50 yds is more than 40 yds off the tee line)"
+   ],
+   "status": "CHECK"
+  },
+  "16": {
+   "club": "4-wood",
+   "aim": 5.0,
+   "zone": [
+    0.0,
+    5.0
+   ],
+   "margin": 0.1333,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "18": {
+   "club": "4-wood",
+   "aim": 25.0,
+   "zone": [
+    22.5,
+    27.5
+   ],
+   "margin": 0.1226,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  }
+ },
+ "check": {
+  "3": [
+   "no printable Driver aim: aim -75 yds is more than 40 yds off the tee line; the aim point is 118 yds from this hole's line of play (another hole?)"
+  ],
+  "12": [
+   "2-wood best aim +52 rejected (aim +52 yds is more than 40 yds off the tee line)",
+   "4-wood best aim +45 rejected (aim +45 yds is more than 40 yds off the tee line)"
+  ],
+  "15": [
+   "Long iron best aim +50 rejected (aim +50 yds is more than 40 yds off the tee line)"
+  ]
+ },
+ "badges": {},
+ "tee_line": {
+  "rule": "tee -> hole line 250 yds along (<= 62% of the hole); par 3: green",
+  "how": {
+   "1": "landing",
+   "2": "landing",
+   "3": "landing",
+   "4": "landing",
+   "5": "landing",
+   "6": "green",
+   "7": "landing",
+   "8": "green",
+   "9": "landing",
+   "10": "landing",
+   "11": "green",
+   "12": "landing",
+   "13": "green",
+   "14": "landing",
+   "15": "landing",
+   "16": "landing",
+   "17": "green",
+   "18": "green_dir"
+  }
+ },
+ "par3": {
+  "6": {
+   "center": 131,
+   "card": 132,
+   "haz": {
+    "left": "trees",
+    "right": "rough",
+    "short": "bunker",
+    "long": "native"
+   }
+  },
+  "8": {
+   "center": 123,
+   "card": 123,
+   "haz": {
+    "left": "trees",
+    "right": "native",
+    "short": "rough",
+    "long": "native"
+   }
+  },
+  "11": {
+   "center": 98,
+   "card": 98,
+   "haz": {
+    "left": "rough",
+    "right": "trees",
+    "short": "trees",
+    "long": "native"
+   }
+  },
+  "13": {
+   "center": 125,
+   "card": 125,
+   "haz": {
+    "left": "trees",
+    "right": "trees",
+    "short": "bunker",
+    "long": "trees"
+   }
+  },
+  "17": {
+   "center": 132,
+   "card": 132,
+   "haz": {
+    "left": "rough",
+    "right": "trees",
+    "short": "rough",
+    "long": "trees"
+   }
+  }
+ },
+ "gaps": [
+  "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for 2-wood on 1 holes, 4-wood on 2 holes, Mid iron on 3 holes",
+  "hole 3: CHECK - no printable Driver aim: aim -75 yds is more than 40 yds off the tee line; the aim point is 118 yds from this hole's line of play (another hole?)",
+  "hole 12: CHECK - 2-wood best aim +52 rejected (aim +52 yds is more than 40 yds off the tee line); 4-wood best aim +45 rejected (aim +45 yds is more than 40 yds off the tee line)",
+  "hole 15: CHECK - Long iron best aim +50 rejected (aim +50 yds is more than 40 yds off the tee line)"
+ ]
+}

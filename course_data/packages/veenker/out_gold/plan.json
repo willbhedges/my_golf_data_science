@@ -1,0 +1,293 @@
+{
+ "schema": "plan/1",
+ "course": "Veenker Memorial Golf Course",
+ "slug": "veenker",
+ "tee_set": "Gold",
+ "mode": "quick",
+ "package": "course_data/packages/veenker/package.json",
+ "out": "course_data/packages/veenker/out_gold",
+ "built": "2026-10-17T04:10Z",
+ "settings": {
+  "swings": 8000
+ },
+ "forecast": "Open-Meteo (fetched now)",
+ "stage_seconds": {
+  "1 package -> course module": 1.1,
+  "2 NAIP render per hole": 2.0,
+  "3 decision (quick)": 68.9,
+  "4 book + aim sheets": 13.6,
+  "5 forecast + wind grid + page": 345.0
+ },
+ "runtime_s": 430.5,
+ "files": {
+  "course.py": 360999,
+  "decision.json": 20805,
+  "decision.md": 1680,
+  "Veenker_Memorial_Strategy.pdf": 7908490,
+  "Veenker_Memorial_Aim_Sheets.pdf": 11809774,
+  "forecast.json": 12861,
+  "wind_grid.json": 545210,
+  "wind_page/index.html": 1702287,
+  "screenshots/": 5819434
+ },
+ "picks": {
+  "1": {
+   "club": "4-wood",
+   "aim": 0.0,
+   "zone": [
+    -2.5,
+    2.5
+   ],
+   "margin": 0.0726,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "2": {
+   "club": "Driver",
+   "aim": -22.5,
+   "zone": [
+    -27.5,
+    -17.5
+   ],
+   "margin": 0.0515,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "3": {
+   "club": "2-wood",
+   "aim": 32.5,
+   "zone": [
+    27.5,
+    37.5
+   ],
+   "margin": 0.0339,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "4": {
+   "club": "4-wood",
+   "aim": 2.5,
+   "zone": [
+    0.0,
+    7.5
+   ],
+   "margin": 0.0816,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "5": {
+   "club": "Mid iron",
+   "aim": -5.0,
+   "zone": [
+    -12.5,
+    0.0
+   ],
+   "margin": 0.2333,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "7": {
+   "club": "2-wood",
+   "aim": 2.5,
+   "zone": [
+    -5.0,
+    7.5
+   ],
+   "margin": 0.0292,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "9": {
+   "club": "2-wood",
+   "aim": 15.0,
+   "zone": [
+    10.0,
+    20.0
+   ],
+   "margin": 0.0021,
+   "tie": true,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "10": {
+   "club": "Driver",
+   "aim": -2.5,
+   "zone": [
+    -5.0,
+    2.5
+   ],
+   "margin": 0.0354,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "12": {
+   "club": "4-wood",
+   "aim": 37.5,
+   "zone": [
+    32.5,
+    40.0
+   ],
+   "margin": 0.062,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "14": {
+   "club": "4-wood",
+   "aim": 10.0,
+   "zone": [
+    10.0,
+    15.0
+   ],
+   "margin": 0.0008,
+   "tie": true,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "15": {
+   "club": "Long iron",
+   "aim": -10.0,
+   "zone": [
+    -15.0,
+    -5.0
+   ],
+   "margin": -0.1117,
+   "tie": true,
+   "conf": null,
+   "check": [
+    "2-wood best aim +85 rejected (aim +85 yds is more than 40 yds off the tee line)",
+    "4-wood best aim +75 rejected (aim +75 yds is more than 40 yds off the tee line)"
+   ],
+   "status": "CHECK"
+  },
+  "16": {
+   "club": "4-wood",
+   "aim": 5.0,
+   "zone": [
+    2.5,
+    7.5
+   ],
+   "margin": 0.0836,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "18": {
+   "club": "Driver",
+   "aim": 10.0,
+   "zone": [
+    5.0,
+    15.0
+   ],
+   "margin": 0.0204,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  }
+ },
+ "check": {
+  "15": [
+   "2-wood best aim +85 rejected (aim +85 yds is more than 40 yds off the tee line)",
+   "4-wood best aim +75 rejected (aim +75 yds is more than 40 yds off the tee line)"
+  ]
+ },
+ "badges": {},
+ "tee_line": {
+  "rule": "tee -> hole line 250 yds along (<= 62% of the hole); par 3: green",
+  "how": {
+   "1": "landing",
+   "2": "landing",
+   "3": "landing",
+   "4": "landing",
+   "5": "landing",
+   "6": "green",
+   "7": "landing",
+   "8": "green",
+   "9": "landing",
+   "10": "landing",
+   "11": "green",
+   "12": "landing",
+   "13": "green",
+   "14": "landing",
+   "15": "landing",
+   "16": "landing",
+   "17": "green",
+   "18": "landing"
+  }
+ },
+ "par3": {
+  "6": {
+   "center": 185,
+   "card": 185,
+   "haz": {
+    "left": "bunker",
+    "right": "rough",
+    "short": "native",
+    "long": "trees"
+   }
+  },
+  "8": {
+   "center": 159,
+   "card": 157,
+   "haz": {
+    "left": "native",
+    "right": "bunker",
+    "short": "bunker",
+    "long": "native"
+   }
+  },
+  "11": {
+   "center": 134,
+   "card": 134,
+   "haz": {
+    "left": "rough",
+    "right": "trees",
+    "short": "trees",
+    "long": "native"
+   }
+  },
+  "13": {
+   "center": 144,
+   "card": 144,
+   "haz": {
+    "left": "trees",
+    "right": "trees",
+    "short": "bunker",
+    "long": "trees"
+   }
+  },
+  "17": {
+   "center": 180,
+   "card": 180,
+   "haz": {
+    "left": "rough",
+    "right": "trees",
+    "short": "rough",
+    "long": "trees"
+   }
+  }
+ },
+ "gaps": [
+  "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for 4-wood on 1 holes, Driver on 1 holes, Long iron on 2 holes, Mid iron on 2 holes",
+  "hole 15: CHECK - 2-wood best aim +85 rejected (aim +85 yds is more than 40 yds off the tee line); 4-wood best aim +75 rejected (aim +75 yds is more than 40 yds off the tee line)"
+ ]
+}

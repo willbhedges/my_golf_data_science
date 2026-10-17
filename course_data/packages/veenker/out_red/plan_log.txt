@@ -1,0 +1,67 @@
+request: course_data/product/requests/veenker_red.json
+$ /opt/hostedtoolcache/Python/3.11.17/x64/bin/python /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/product/plan.py --package course_data/packages/veenker/package.json --tees Red --mode quick --days 2026-10-17,2026-10-18 --out course_data/packages/veenker/out_red
+exit 0
+
+[   0.0s] == 1 package -> course module
+[   0.7s] Veenker Memorial Golf Course (veenker), Red tees: 13 tee shots + 5 par 3s from course_data/packages/veenker/package.json
+[   0.9s] == 2 NAIP render per hole
+[   1.4s]   ! hole 4: 15% of the frame has no imagery
+[   2.5s]   ! hole 15: 10% of the frame has no imagery
+[   2.8s] 18 images, 5.7 MB, imagery 2023-09-02
+[   2.8s] == 3 decision (quick)
+[  12.8s]   3: Driver aim -75.0 margin 0.012
+[  13.6s]   2: 4-wood aim -20.0 margin 0.016
+[  16.0s]   4: 4-wood aim +5.0 margin 0.110
+[  24.9s]   5: Driver aim +20.0 margin 0.144
+[  26.8s]   1: 4-wood aim -2.5 margin 0.064
+[  36.8s]   12: 4-wood aim +40.0 margin 0.116
+[  43.7s]   7: Long iron aim +5.0 margin 0.072
+[  46.8s]   9: Driver aim +20.0 margin 0.004 (tie)
+[  53.5s]   14: 2-wood aim +27.5 margin 0.006 (tie)
+[  55.3s]   10: 4-wood aim +0.0 margin 0.002 (tie)
+[  58.0s]   16: 4-wood aim +5.0 margin 0.133
+[  58.1s]   15: Long iron aim +40.0 margin -0.048 (tie)
+[  71.3s]   18: 4-wood aim +25.0 margin 0.123
+[  71.9s] == 4 book + aim sheets
+hole 1 done
+hole 2 done
+hole 3 CHECK done
+hole 4 done
+hole 5 done
+hole 6 done
+hole 7 done
+hole 8 done
+hole 9 done
+hole 10 done
+hole 11 done
+hole 12 CHECK done
+hole 13 done
+hole 14 done
+hole 15 CHECK done
+hole 16 done
+hole 17 done
+hole 18 done
+wrote /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/packages/veenker/out_red/output/Veenker_Memorial_Strategy.pdf
+wrote /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/packages/veenker/out_red/output/Veenker_Memorial_Aim_Sheets.pdf
+[  85.3s] == 5 forecast + wind grid + page
+[  86.1s]   forecast: Open-Meteo (fetched now) (2026-10-17, 2026-10-18)
+[ 134.8s]   wind grid 2: calm 4-wood
+[ 145.3s]   wind grid 4: calm 4-wood
+[ 151.3s]   wind grid 3: calm Driver
+[ 194.7s]   wind grid 5: calm Driver
+[ 206.9s]   wind grid 1: calm 4-wood
+[ 269.5s]   wind grid 12: calm 4-wood
+[ 287.6s]   wind grid 9: calm Driver
+[ 338.2s]   wind grid 10: calm 4-wood
+[ 347.9s]   wind grid 7: calm Long iron
+[ 352.9s]   wind grid 14: calm 2-wood
+[ 368.3s]   wind grid 15: calm Long iron
+[ 390.2s]   wind grid 16: calm 4-wood
+[ 434.0s]   wind grid 18: calm 4-wood
+[ 434.5s]   wrote course_data/packages/veenker/out_red/wind_page/index.html (1.7 MB)
+[ 434.5s] done in 434s -> course_data/packages/veenker/out_red
+[ 434.5s]   gap: elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for 2-wood on 1 holes, 4-wood on 2 holes, Mid iron on 3 holes
+[ 434.5s]   gap: hole 3: CHECK - no printable Driver aim: aim -75 yds is more than 40 yds off the tee line; the aim point is 118 yds from this hole's line of play (another hole?)
+[ 434.5s]   gap: hole 12: CHECK - 2-wood best aim +52 rejected (aim +52 yds is more than 40 yds off the tee line); 4-wood best aim +45 rejected (aim +45 yds is more than 40 yds off the tee line)
+[ 434.5s]   gap: hole 15: CHECK - Long iron best aim +50 rejected (aim +50 yds is more than 40 yds off the tee line)
+
