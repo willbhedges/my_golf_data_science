@@ -44,7 +44,7 @@ FOOT = dict(a0=145.0, a1=345.0, lat=65.0)
 CORE = dict(a0=150.0, a1=340.0, lat=60.0)   # the corridor the task asks for (every zone traced inside it)
 PPY_PHOTO, PPY_EV = 5.0, 2.5
 # card tee set per course (the back or middle set from the card; = the scoreboard's tee set)
-SETS = {"veenker": "Blue", "coldwater": None, "wakonda": None}
+SETS = {"veenker": "Blue", "coldwater": "Blue", "ellis": "Blue"}
 LIES = ["rough", "first_cut", "fairway", "recovery", "native", "water", "sand", "ob"]
 COL = {"fairway": (40, 230, 60), "first_cut": (170, 255, 120), "rough": (255, 255, 255), "recovery": (20, 110, 20),
        "native": (230, 190, 60), "water": (40, 120, 255), "sand": (255, 240, 200), "ob": (255, 40, 40)}
