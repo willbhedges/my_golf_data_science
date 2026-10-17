@@ -208,8 +208,56 @@ def quick_hole(h, n=8000, seed=31):
     out = dict(pick=best, aim=res[best]["aim"], ev=res[best]["ev"], runner=runner,
                margin=res[runner]["ev"] - res[best]["ev"], zone=[float(ok.min()), float(ok.max())],
                clubs=res, tie=bool(res[runner]["ev"] - res[best]["ev"] < 0.01), mode="quick", n=n)
-    out["check"] = check_reasons(res, best)
+    out["check"] = check_reasons(res, best) + canopy_flags(h, best, out["aim"], z)
     return out
+
+
+HAZARD_LIES = ("sand", "recovery", "native", "water", "ob")
+CANOPY_SHARE = 0.25
+
+
+def canopy_at(hd, pts):
+    """True where the hole's lidar canopy grid (package.canopy_grid) has canopy; False off the grid / without one."""
+    g = hd.get("canopy")
+    pts = np.atleast_2d(np.asarray(pts, float))
+    if not g:
+        return np.zeros(len(pts), bool)
+    tee, fwd, right, ppy = t.hole_frame(hd)
+    rel = (pts - tee) / ppy
+    i = np.round((rel @ fwd - g["a0"]) / g["step"]).astype(int)
+    j = np.round((rel @ right - g["l0"]) / g["step"]).astype(int)
+    key = (id(g), len(g["rows"]))
+    if key not in _CANOPY:
+        _CANOPY[key] = np.array([np.unpackbits(np.frombuffer(bytes.fromhex(r), np.uint8))[:g["n_lat"]]
+                                 for r in g["rows"]], bool)
+    M = _CANOPY[key]
+    ok = (i >= 0) & (i < M.shape[0]) & (j >= 0) & (j < M.shape[1])
+    out = np.zeros(len(pts), bool)
+    out[ok] = M[i[ok], j[ok]]
+    return out
+
+
+_CANOPY = {}
+
+
+def canopy_flags(h, club, aim, z):
+    """CHECK reasons when the pick's aim point or > CANOPY_SHARE of its pattern lands on lidar canopy that the
+    map does not mark as a hazard (an independent check of the tree zones)."""
+    hd = t.HOLES[h]
+    if not hd.get("canopy"):
+        return []
+    pts, lie, _, _ = t.simulate(h, club, aim, z=z[:, :2000])
+    unmarked = canopy_at(hd, pts) & ~np.isin(lie, HAZARD_LIES)
+    pt, _ = _aim_point(hd, club, aim)
+    aim_unmarked = bool(canopy_at(hd, pt[None, :])[0]) and t.lie_at(hd, pt[None, :])[0] not in HAZARD_LIES
+    why = []
+    if aim_unmarked:
+        why.append(f"{club} aim point ({_carry(club):.0f} yds out, {aim:+.0f}) is on tree canopy (lidar) the map "
+                   "does not mark as trees")
+    if unmarked.mean() > CANOPY_SHARE:
+        why.append(f"{unmarked.mean():.0%} of the {club} pattern finishes on tree canopy (lidar) the map does not "
+                   "mark as trees")
+    return why
 
 
 def check_reasons(res, best):
@@ -334,6 +382,10 @@ def full_hole(h, S=64, N=3000, seed=2027, sweep=True):
             good = np.array([not aim_problems(h, r["pick"], a) for a in pa])
             ok = pa[good & (curve <= curve[j] + ZONE_TOL)]
             r["zone"] = [float(ok.min()), float(ok.max())]
+    set_prior_means()
+    t.HOLES = BASE["holes"]
+    r["check"] += canopy_flags(h, r["pick"], r["aim"], _z(2000, 31))
+    PP.reset()
     if sweep:
         picks, flips, _ = DS.width_sweep(h, mode="common")
         r["width_sweep"] = [dict(width=w, pick=p) for w, p in zip((55, 60, 65, 70, 75, 80, 85, 90), picks)]

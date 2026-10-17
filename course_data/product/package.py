@@ -365,6 +365,18 @@ def load(path, tees=None):
                     C.holes[k][extra] = h[extra]
             if irons_offered(h, C.holes[k]):
                 C.holes[k]["irons"] = True
+            cp = canopy_path(pkg, path)
+            if cp:
+                try:
+                    P_ = _platform_pkg()
+                    if cp not in _DEM_CACHE:
+                        _DEM_CACHE[cp] = P_.dem_sampler(cp)
+                    if _DEM_CACHE[cp] is not None:
+                        g_ = canopy_grid(_DEM_CACHE[cp], fr, length)
+                        if g_:
+                            C.holes[k]["canopy"] = g_
+                except Exception:                    # noqa: BLE001
+                    pass
             if e or h.get("elev"):
                 C.holes[k]["elev"] = e or h["elev"]
     C.order = sorted(set(C.holes) | set(C.par3), key=lambda k: (str(k).rstrip("BFabf").zfill(3), str(k)))
@@ -374,6 +386,45 @@ def load(path, tees=None):
 
 
 ELEV_CLAMPED = []
+
+# Independent canopy check (decide.canopy_flags): lidar height above ground (vision_any raw hag.tif, the same
+# 3DEP layer the tree zones come from, read here directly) > CANOPY_HAG_M on a 2-yd grid in each hole's frame,
+# stored bit-packed as hole["canopy"]; the plan flags a CHECK when the aim point, or more than a quarter of the
+# pattern, lands on canopy the package does not mark as a hazard (missing / stale tree zones).
+CANOPY_HAG_M = 2.5
+CANOPY_STEP = 2.0
+CANOPY_ALONG = (-10.0, 450.0)
+CANOPY_LAT = (-110.0, 110.0)
+
+
+def canopy_path(pkg, pkg_path=None):
+    src = (pkg or {}).get("sources") or {}
+    slug = ((pkg or {}).get("course") or {}).get("slug") or (pkg or {}).get("slug")
+    dirs = list(src.get("vision_raw") or [])
+    if slug:
+        dirs += [os.path.join("course_data", "vision_any", slug, "raw"),
+                 os.path.join("course_data", "vision_any", slug.replace("_lake", ""), "raw")]
+    for d in dirs:
+        f = os.path.join(d if os.path.isabs(d) else os.path.join(ROOT, d), "hag.tif")
+        if os.path.exists(f):
+            return f
+    return None
+
+
+def canopy_grid(sample, fr, length=None):
+    """{"a0", "l0", "step", "n_lat", "rows": [hex]} canopy bits on the hole frame grid (row = along)."""
+    a1 = min(CANOPY_ALONG[1], float(length or CANOPY_ALONG[1]) + 30.0)
+    A = np.arange(CANOPY_ALONG[0], a1 + 1e-6, CANOPY_STEP)
+    L = np.arange(CANOPY_LAT[0], CANOPY_LAT[1] + 1e-6, CANOPY_STEP)
+    AA, LL = np.meshgrid(A, L, indexing="ij")
+    px = np.c_[TEE_PX[0] + LL.ravel() * PPY, TEE_PX[1] - AA.ravel() * PPY]
+    h = sample(fr.px_to_ll(px)).reshape(AA.shape)
+    m = np.nan_to_num(h, nan=0.0) > CANOPY_HAG_M
+    if not m.any():
+        return None
+    rows = [np.packbits(r).tobytes().hex() for r in m]
+    return dict(a0=float(A[0]), l0=float(L[0]), step=CANOPY_STEP, n_lat=int(len(L)), rows=rows,
+                src=f"lidar hag > {CANOPY_HAG_M} m")
 # Elevation is a property of the LINE (tee position + bearing): the package stores it per tee set along the
 # package's own tee line, so a moved tee (golfer answer, hand map, review) or another line rule kept a stale
 # table (parity.py: Spirit Hollow carry deltas 4-6 yds and side kicks up to 11 yds apart). With the package's

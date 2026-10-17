@@ -154,3 +154,29 @@ def test_irons_rule_water_across_the_tee_line(monkeypatch):
     assert PK.irons_offered({"irons": True}, hd)
     monkeypatch.setattr(PK, "IRONS_RULE", "always")
     assert PK.irons_offered({}, hd)
+
+
+def test_canopy_grid_and_flag():
+    import decide
+    import tee_strategy as t
+    tee, ppy = np.array(PK.TEE_PX), PK.PPY
+    fr = PK.R.Frame([-93.65, 42.04], [-93.65, 42.045], ppy=ppy, tee_px=PK.TEE_PX, proj="utm")
+
+    def sample(ll):                      # canopy: a 40-yd wide block 240-320 yds out, 0-40 yds right of the line
+        yd = (fr.ll_to_px(ll) - tee) / ppy
+        a, l = -yd[:, 1], yd[:, 0]
+        return np.where((a > 240) & (a < 320) & (l > 0) & (l < 40), 15.0, 0.0)
+    g = PK.canopy_grid(sample, fr, 400)
+    hd = dict(par=4, length=400, tee=tuple(tee), dot270=(tee[0], tee[1] - 270 * ppy), green=(tee[0], tee[1] - 400 * ppy),
+              zones=[], canopy=g)
+    pt = lambda a, l: tee + np.array([l, -a]) * ppy                         # noqa: E731
+    assert decide.canopy_at(hd, [pt(280, 20), pt(280, -20), pt(200, 20)]).tolist() == [True, False, False]
+    decide.bind({"c": hd})
+    decide.set_prior_means()
+    z = decide._z(2000, 31)
+    assert any("canopy" in w for w in decide.canopy_flags("c", "Driver", 20.0, z))
+    assert decide.canopy_flags("c", "Driver", -25.0, z) == []
+    hd2 = dict(hd, zones=[("recovery", [tuple(pt(230, -5)), tuple(pt(230, 50)), tuple(pt(330, 50)), tuple(pt(330, -5))])])
+    decide.bind({"c": hd2})
+    assert decide.canopy_flags("c", "Driver", 20.0, z) == []             # the map marks those trees: no flag
+    t.HOLES = {}
