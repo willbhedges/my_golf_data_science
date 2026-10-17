@@ -1,21 +1,21 @@
 {
  "schema": "naip_years_run/1",
  "slug": "wakonda",
- "built": "2026-10-17T16:59Z",
+ "built": "2026-10-17T17:26Z",
  "bbox_snwe": [
   41.54741,
   -93.645958,
   41.556246,
   -93.634236
  ],
- "current": 2015,
+ "current": 2019,
  "chosen": 2019,
  "imagery_dir": "course_data/packages/wakonda/imagery",
  "selection": {
   "schema": "naip_years/1",
   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
   "chosen": 2019,
-  "reason": "2019 (2019-08-22): greenest leaf-on year on the course's turf (NDVI 0.24 vs -0.05, 18% vs 87% brown) over the newest year 2023 (hazy (blue floor 64); 9 of 26 greens not visible as turf; 87% of the turf brown / bare); replaces 2015",
+  "reason": "2019 (2019-08-22): greenest leaf-on year on the course's turf (NDVI 0.24 vs -0.05, 18% vs 87% brown) over the newest year 2023 (hazy (blue floor 64); 9 of 26 greens not visible as turf; 87% of the turf brown / bare)",
   "candidates": [
    {
     "year": 2023,
@@ -311,33 +311,6 @@
      "recall": 0.21
     }
    },
-   "2015": {
-    "green": {
-     "iou": 0.727,
-     "precision": 0.801,
-     "recall": 0.888
-    },
-    "tee": {
-     "iou": 0.369,
-     "precision": 0.504,
-     "recall": 0.58
-    },
-    "fairway": {
-     "iou": 0.715,
-     "precision": 0.935,
-     "recall": 0.753
-    },
-    "bunker": {
-     "iou": 0.603,
-     "precision": 0.687,
-     "recall": 0.83
-    },
-    "water": {
-     "iou": 0.32,
-     "precision": 0.459,
-     "recall": 0.515
-    }
-   },
    "2019+2021": {
     "green": {
      "iou": 0.816,
@@ -397,11 +370,10 @@
    "2019": 0.589,
    "2021": 0.562,
    "2023": 0.288,
-   "2015": 0.547,
    "2019+2021": 0.573,
    "2019+2021+2023": 0.595
   },
-  "current": 2015
+  "current": 2023
  },
- "applied": "re-fetched NAIP 2019 (was 2015)"
+ "applied": "kept 2019; selection recorded in georef.json"
 }

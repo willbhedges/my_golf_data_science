@@ -1,5 +1,5 @@
 """Course module for Wakonda Club (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-10-17T17:13:46Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-17T17:28:36Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_wakonda.json
 
