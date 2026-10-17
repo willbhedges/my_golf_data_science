@@ -36,8 +36,53 @@ jobs:
           [ -n "$F" ] && [ -f "$F" ] || F=$(ls course_data/requests/pipeline_eval_*.json | tail -1)
           echo "stage=$(python -c "import json;print(json.load(open('$F')).get('stage','final'))")" >> "$GITHUB_OUTPUT"
 
+  refit:
+    # stage "refit": course_data/structure/params_noval.json = the structure solver refitted on its dev set minus
+    # every validation-set course (fit.py -> crf.py -> fit.py --swap -> dev eval -> calibration)
+    needs: plan
+    if: needs.plan.outputs.stage == 'refit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      STRUCTURE_EXCLUDE_VALIDATION: "1"
+      STRUCTURE_PARAMS: ${{ github.workspace }}/course_data/structure/params_noval.json
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely pyproj scikit-image
+      - name: Refit
+        working-directory: course_data/structure
+        run: |
+          cp params.json params_noval.json
+          python -u fit.py
+          python -u crf.py
+          python -u fit.py --swap
+          python -u eval.py --split dev --configs full --out /tmp/sdev
+          python -u fit.py --calibrate /tmp/sdev/results.json
+          cp /tmp/sdev/summary.md /tmp/sdev_summary.md
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/structure/params_noval.json
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "structure: params_noval.json (refit without the validation set, Actions run ${{ github.run_id }}) [skip ci]" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
+
   shard:
     needs: plan
+    if: needs.plan.outputs.stage != 'refit'
     runs-on: ubuntu-latest
     timeout-minutes: 300
     strategy:
@@ -64,7 +109,7 @@ jobs:
 
   merge:
     needs: [plan, shard]
-    if: always()
+    if: always() && needs.plan.outputs.stage != 'refit'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
