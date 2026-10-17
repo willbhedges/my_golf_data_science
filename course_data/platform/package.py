@@ -13,7 +13,11 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           to the OSM green centroid along the hole line; lidar flat-pad candidates (tees/lidar_pads.py, the
           3DEP DEM) where a set has no OSM box; walk-back if nothing fits. An OSM tee box tagged with the
           set's colour wins ("tagged")
-  S3      geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
+  S2 v2   optional (request "tee_localizer": "v2" or env TEE_LOCALIZER=v2): tees/localize.py - OSM boxes +
+          lidar pads + DEM/NAIP texture pads + segment-model / perception tee detections merged into one pad
+          list, joint chain assignment, per-set uncertainty (holes[].tees[set].uncertainty); any failure falls
+          back to the S2 above (stages.tee_localizer says which ran)
+  S3     geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
   S4c     course_data/ob/infer.py:apply_ob(package) when the course's OB evidence is fetched (call_ob)
   S4b     course_data/segment/gapfill.py:segment_gapfill(package, segment.geojson) when the segment workflow
@@ -217,6 +221,63 @@ def place_tees_joint(fc, per_hole_card, card_sets, pads=()):
                                      error_yd=0.0, source="osm_tagged")
     return dict(schema="tees/positions", method="place_tee.place_course_sets (joint, ordered, green centroid)",
                 holes=res)
+
+
+def localizer_enabled(req):
+    """S2 v2 (tees/localize.py) is optional: request "tee_localizer": "v2" or env TEE_LOCALIZER=v2."""
+    return str(req.get("tee_localizer") or os.environ.get("TEE_LOCALIZER") or "").lower() == "v2"
+
+
+def place_tees_v2(fc, per_hole_card, card_sets, pads=(), img_dir=None, slug=None, req=None):
+    """tees/localize.py: OSM boxes + lidar pads + DEM/NAIP texture pads + segment-model / perception tee
+    detections, joint chain assignment with uncertainty (sigma_yd, p_assign per set). Same shape as
+    place_tees_joint (an OSM box tagged with a set's colour still wins). Raises on failure (caller falls back)."""
+    lz = load(os.path.join(CD, "tees", "localize.py"), "cdp_tee_localize")
+    if lz is None:
+        raise RuntimeError("tees/localize.py not importable")
+    lines, tees, greens = osm_tee_inputs(fc)
+    if not lines:
+        raise RuntimeError("no hole lines")
+    req = req or {}
+    yards = {}
+    for s, hc in per_hole_card.items():
+        for ref, c in hc.items():
+            if c.get("yards") and ref in lines:
+                yards.setdefault(ref, {})[s] = float(c["yards"])
+    texture, used = [], ["osm", "lidar"]
+    if img_dir and os.path.exists(os.path.join(img_dir, "dem.tif")):
+        try:
+            texture = lz.texture_pads(os.path.join(img_dir, "dem.tif"), os.path.join(img_dir, "naip_nir.tif"),
+                                      os.path.join(img_dir, "naip_rgb.tif"), greens=greens, lines=lines)
+            used.append("texture")
+        except Exception:                                          # noqa: BLE001  (optional source)
+            texture = []
+    seg = req.get("segment_geojson")
+    seg = (seg if os.path.isabs(seg) else os.path.join(pc.ROOT, seg)) if seg else \
+        os.path.join(CD, "segment", slug or "", "segment.geojson")
+    seg = seg if os.path.exists(seg) else None
+    scene = None
+    for f in (os.path.join(CD, "perception", "scenes", slug or "", "scene.json"),
+              os.path.join(CD, "perception", "scenes", slug or "", "scene.json.gz")):
+        if slug and os.path.exists(f):
+            import gzip
+            scene = json.load(gzip.open(f, "rt") if f.endswith(".gz") else open(f))
+            break
+    used += ["segment"] * bool(seg) + ["scene"] * bool(scene)
+    cands = lz.gather(osm_tees=tees, segment=seg, scene=scene, pads=list(pads), texture=texture)
+    res = lz.localize_course(lines, greens, yards, cands)
+    pt = place_tee_mod()
+    by_hole = pt.assign_tees_to_holes(lines, tees)
+    for ref, hp in res.items():
+        for s, r in hp["tees"].items():
+            want = {str(s).lower(), str((card_sets.get(s) or {}).get("colour") or "").lower()} - {""}
+            tagged = [t for t in by_hole.get(ref, []) if want & set(_tee_tags(t["tags"]))]
+            if tagged:
+                c = pt.centroid_ll(tagged[0]["coords"])
+                hp["tees"][s] = dict(lat=c[0], lon=c[1], method="tagged", tee_id=tagged[0]["id"], confidence="high",
+                                     error_yd=0.0, source="osm_tagged", sigma_yd=3.0, p_assign=1.0)
+    return dict(schema="tees/positions", method=f"{lz.VERSION} ({'+'.join(used)} pads, joint chain assignment)",
+                sources=used, holes=res)
 
 
 def place_tees(fc, card_holes, set_name, colour):
@@ -666,7 +727,19 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     imagery, elevation = imagery_ref(img_dir)
     pads, pad_status = lidar_pads(fc, os.path.join(pc.ROOT, elevation["file"]) if elevation else None) \
         if card_sets and req.get("lidar_tees", True) else ([], "not run")
-    joint = place_tees_joint(fc, per_hole_card, card_sets, pads) if card_sets else None
+    joint, v2_status = None, None
+    if card_sets and localizer_enabled(req):
+        try:
+            joint = place_tees_v2(fc, per_hole_card, card_sets, pads, img_dir=img_dir, slug=slug, req=req)
+            v2_status = f"ok: {joint['method']}"
+        except Exception as e:                                    # noqa: BLE001  fall back to the joint S2
+            joint = None
+            v2_status = f"failed ({type(e).__name__}: {e}); fell back to place_tee.place_course_sets"[:300]
+            warnings.append(f"tee localizer v2 {v2_status}")
+    if joint is None:
+        joint = place_tees_joint(fc, per_hole_card, card_sets, pads) if card_sets else None
+    if v2_status:
+        stages["tee_localizer"] = v2_status
     bh = geometry()
     world = bh.World(fc)
     built, tee_pos = {}, {}
@@ -682,6 +755,8 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                       f"{len(card_sets)} sets; lidar pads: {pad_status}, {n_lidar} placement(s) on one" if joint else
                       f"ok: tees/place_tee.py for {len(card_sets)} sets on the card yardages" if card_sets else
                       "fallback: OSM tee nearest the hole-line start (no yardages)")
+    if joint is not None and str(joint.get("method", "")).startswith("tees/localize"):
+        stages["tees"] = f"ok: {joint['method']} for {len(card_sets)} sets; lidar pads: {pad_status}"
     if not built or not any(built.values()):
         raise SystemExit("no holes built (no golf=hole ways and no tee/green pairs)")
     back = max(built, key=lambda s: sum(h["length"] for h in built[s].values()))
@@ -719,6 +794,9 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                 measured_yards=y["length"], card_yards=ch.get("yards"),
                 tee_id=tp_r.get("tee_id"), tee_source=tp_r.get("source"), order_ok=tp_r.get("order_ok"),
                 shared_with=tp_r.get("shared_with"), box_error_yd=tp_r.get("error_yd"))
+            if tp_r.get("sigma_yd") is not None:                 # S2 v2 (tees/localize.py): uncertainty
+                tees[s or "osm_back"]["uncertainty"] = {kk: tp_r.get(kk) for kk in (
+                    "sigma_yd", "sigma_along_yd", "sigma_lat_yd", "p_assign", "alternatives", "sources", "localizer")}
             if ch.get("yards") and abs(y["length"] - ch["yards"]) > 15 and s == chosen_key:
                 warnings.append(f"hole {k}: measured {y['length']} vs card {ch['yards']} yds for {s} "
                                 "(no OSM tee box at that yardage?)")
@@ -861,6 +939,9 @@ def reframe(package, tee_set=None):
             h.setdefault("flags", []).append(f"tee set {s} missing on this hole")
         elif t.get("tee_source") == "lidar":
             h.setdefault("flags", []).append(f"{s} tee on a lidar pad (no OSM box at {t.get('card_yards')} yds)")
+        elif t.get("tee_source") in ("segment", "scene", "texture"):
+            h.setdefault("flags", []).append(f"{s} tee on an imagery-detected pad ({t['tee_source']}; no OSM box at "
+                                             f"{t.get('card_yards')} yds)")
         elif str(t.get("method", "")).startswith("walkback"):
             h.setdefault("flags", []).append(f"{s} tee walked back along the hole line (no box at {t.get('card_yards')} yds)")
         if t.get("order_ok") is False:
