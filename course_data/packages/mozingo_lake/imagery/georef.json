@@ -15,11 +15,11 @@
   40.36666821117499,
   -94.75909354101015
  ],
- "fetched_utc": "2026-10-17T16:14:00Z",
+ "fetched_utc": "2026-10-17T17:32:08Z",
  "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
  "imagery": {
   "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
-  "year": 2018,
+  "year": 2022,
   "years_available": [
    2012,
    2014,
@@ -29,16 +29,16 @@
    2022
   ],
   "acquired": [
-   "2018-08-25"
+   "2022-07-10"
   ],
   "items": [
-   "mo_m_4009442_ne_15_060_20180825_20190206"
+   "mo_m_4009442_ne_15_060_20220710"
   ],
   "selection": {
    "schema": "naip_years/1",
    "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
-   "chosen": 2018,
-   "reason": "2018 (2018-08-25): greenest leaf-on year on the course's turf (NDVI 0.43 vs 0.30, 0% vs 1% brown) over the newest year 2022 (less green); replaces 2022",
+   "chosen": 2022,
+   "reason": "2022: the segment model scores 0.720 mean IoU vs OSM on it vs 0.622 on the greener 2018, so the switch is refused (scored: 2018 (2018-08-25): greenest leaf-on year on the course's turf (NDVI 0.43 vs 0.30, 0% vs 1% brown) over the newest year 2022 (less green))",
    "candidates": [
     {
      "year": 2022,
@@ -84,7 +84,7 @@
       132.0,
       88.0
      ],
-     "score": 0.2996,
+     "score": 0.2856,
      "notes": [],
      "turf_source": "osm"
     },
@@ -108,7 +108,7 @@
       143.0,
       91.0
      ],
-     "score": 0.4002,
+     "score": 0.3722,
      "notes": [
       "hazy (blue floor 76)"
      ],
@@ -134,7 +134,7 @@
       134.0,
       91.0
      ],
-     "score": 0.1602,
+     "score": 0.1182,
      "notes": [],
      "turf_source": "osm"
     },
@@ -158,9 +158,9 @@
       139.0,
       87.0
      ],
-     "score": -0.2543,
      "notes": [
-      "10 of 30 greens not visible as turf"
+      "10 of 30 greens not visible as turf",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
      ],
      "turf_source": "osm"
     },
@@ -184,11 +184,11 @@
       159.0,
       118.0
      ],
-     "score": -0.9406,
      "notes": [
       "hazy (blue floor 69)",
       "10 of 30 greens not visible as turf",
-      "92% of the turf brown / bare"
+      "92% of the turf brown / bare",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
      ],
      "turf_source": "osm"
     }
@@ -243,10 +243,10 @@
    "resolution_m": 0.6
   },
   "sizes_mb": {
-   "naip_rgb.tif": 2.6,
-   "naip_nir.tif": 2.75,
-   "naip_rgb_lo.jpg": 1.58,
-   "naip_nir_lo.jpg": 1.49
+   "naip_rgb.tif": 2.49,
+   "naip_nir.tif": 2.58,
+   "naip_rgb_lo.jpg": 1.48,
+   "naip_nir_lo.jpg": 1.39
   },
   "preview": "preview.jpg",
   "preview_scale": 3,
@@ -276,5 +276,5 @@
   "nan_frac": 0.0,
   "license": "Public domain (USGS)"
  },
- "total_mb": 13.5
+ "total_mb": 13.0
 }
