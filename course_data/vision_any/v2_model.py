@@ -772,8 +772,12 @@ def infer(slug, integrate=False):
     p = np.where(np.isfinite(p), p, 0).astype(np.float32)
     tb = st["trees"]
     trees = tree_rule(D["canopy"][tb["hag"]], tb["k_m"], tb["min_area_m2"], S.res)
-    nat = native_mask(p, E & D["course"] & ~D["water0"] & (np.ones_like(trees) if relaxed else ~trees),
-                      st["native_thr"], S.res)
+    el = E & D["course"] & ~D["water0"] & (np.ones_like(trees) if relaxed else ~trees)
+    if st.get("native_dmin_yd"):          # decision-level calibration (v2_calibrate.py): no long grass this close to OSM fairway
+        el &= ndimage.distance_transform_edt(~M["fairway"]) * S.res >= st["native_dmin_yd"] * YD
+    if st.get("native_thr") is None:
+        el &= False
+    nat = native_mask(p, el, st["native_thr"] if st.get("native_thr") is not None else 1.0, S.res)
     if relaxed:
         trees = trees & ~nat
     water, wparts = L.water_mask(S, D["Ly"], M, mown_p=1 - p, trees=trees)
