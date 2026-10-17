@@ -48,7 +48,7 @@ def pad(bbox, m):
     return (s - dlat, w - dlon, n + dlat, e + dlon)              # S, W, N, E (Overpass order)
 
 
-def fetch_osm(course, raw, drop_holes=False):
+def fetch_osm(course, raw, drop_holes=False, supplement=None):
     import fetch_course as fcm
     snwe = pad(course["bbox"], BUFFER_M)
     data = fcm.fetch_features(snwe)
@@ -56,6 +56,14 @@ def fetch_osm(course, raw, drop_holes=False):
     fc = fcm.to_geojson(data["elements"])
     if drop_holes:     # request "ignore_osm_holes": the OSM golf=hole ways belong to another course of the club
         fc["features"] = [f for f in fc["features"] if (f.get("properties") or {}).get("golf") != "hole"]
+    if supplement:
+        # request "osm_supplement": hand-mapped golf=hole / green / tee features (GeoJSON, repo path) for a course
+        # OSM barely maps (The Oaks MO: 0 greens); they enter the build exactly like OSM features, tagged src=hand
+        sp = supplement if os.path.isabs(supplement) else os.path.join(pc.ROOT, supplement)
+        extra = pc.read_json(sp)["features"]
+        for f in extra:
+            f.setdefault("properties", {})["src"] = "hand"
+        fc["features"] += extra
     rings = fcm.outer_rings(course["boundary"]) if course.get("boundary") else []
     w, s, e, n = course["bbox"]
     el = dict(type=course["osm"]["type"], id=course["osm"]["id"], tags=dict(course.get("tags") or {},
@@ -145,7 +153,7 @@ def fetch(req_path):
            [(c["name"], c["town"], c["holes"]) for c in course["candidates"][:5]])
     if course["status"] != "ok":
         return slug, course["status"]
-    fc, summ = fetch_osm(course, raw, drop_holes=bool(req.get("ignore_osm_holes")))
+    fc, summ = fetch_osm(course, raw, drop_holes=bool(req.get("ignore_osm_holes")), supplement=req.get("osm_supplement"))
     pc.log("osm:", len(fc["features"]), "features;", summ["golf_tag_counts_inside_course"])
     if req.get("web_scorecard", True):
         sw = fetch_scorecards(req, course, summ, raw)
