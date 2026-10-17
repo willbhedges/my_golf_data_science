@@ -42,7 +42,7 @@ GRID_FULL = dict(
     house=[None] + [(d, c) for d in (0, 5, 10, 15, 20, 25, 30, 40, 50) for c in (0, 20, 40)],
     road=[None] + [(m, ins) for m in (0, 5, 10, 20) for ins in (True, False)],
     res=[None, 0, 10, 20],
-    out=[None] + [(o, dv) for o in (-20, -10, 0, 10, 20, 40) for dv in (None, 30, 60)],
+    out=[None] + [(o, dv) for o in (-20, -15, -10, -5, 0, 10, 20, 40) for dv in (None, 30, 45, 60, 80, 100)],
     parcel=[None] + [(o, md) for o in (-10, -5, 0, 5, 10, 20) for md in ("houses", "all")],
     geom=[None, True])                    # keep the geometry stage's OSM OB too (apply_ob mode 'add')
 GRID_SMALL = dict(house=[None, (10, 20), (25, 20)], road=[None, (5, True), (5, False)], res=[None, 0],
@@ -249,6 +249,20 @@ def calibrate(small=False):
                               pred=int(U[j, h] - cells[h]["truth"].sum() + I[j, h]),
                               iou=round(I[j, h] / U[j, h], 3) if U[j, h] else None, params=to_params(combos[j])))
     loho = pooled(np.array(li), np.array(lu))
+    # the same LOHO picks scored against the hand OB the corridor rule can reach (within CORRIDOR yds of the
+    # package line of play, not under fairway/green/water/sand): the rule's own ceiling is 1.0 there
+    ci, cu, reach = [], [], 0
+    for h, r in enumerate(loho_rows):
+        sel_h = next(c for c in combos if to_params(c) == r["params"])
+        pred = np.zeros(len(cells[h]["truth"]), bool)
+        off = sum(len(c["truth"]) for c in cells[:h])
+        for k, v in sel_h.items():
+            pred |= M[k][grid[k].index(v)][off:off + len(cells[h]["truth"])]
+        t = cells[h]["truth"] & cells[h]["allowed"]
+        reach += int(t.sum())
+        ci.append(int((pred & t).sum())), cu.append(int((pred | t).sum()))
+        r["inter_reach"], r["union_reach"], r["truth_reach"] = ci[-1], cu[-1], int(t.sum())
+    loho_reach = pooled(np.array(ci), np.array(cu))
     # baselines
     base_rows, base_iou = score(cells, baseline_masks(cells, pkg, R, "geometry"))
     basec_rows, basec_iou = score(cells, baseline_masks(cells, pkg, R, "geometry_clipped"))
@@ -281,7 +295,9 @@ def calibrate(small=False):
                n_roads=len(R.roads), grid=dict(along=ALONG, lat=LAT, step=STEP, corridor=infer.CORRIDOR),
                holes_with_hand_ob=[keys[i] for i in pos], n_combos=len(combos),
                fit=dict(params=prm, iou_pooled=round(iou_all, 3), rows=fit_rows),
-               loho=dict(iou_pooled=round(loho, 3) if loho is not None else None, rows=loho_rows),
+               loho=dict(iou_pooled=round(loho, 3) if loho is not None else None, rows=loho_rows,
+                         iou_pooled_reachable=round(loho_reach, 3) if loho_reach is not None else None,
+                         truth_cells=int(sum(c["truth"].sum() for c in cells)), reachable_cells=reach),
                baseline_geometry=dict(iou_pooled=round(base_iou, 3) if base_iou is not None else None, rows=base_rows),
                baseline_geometry_in_corridor=dict(iou_pooled=round(basec_iou, 3) if basec_iou is not None else None,
                                                   rows=basec_rows),
@@ -310,7 +326,10 @@ def write_md(res, dec=None):
          f"| geometry stage OB today (outline + OSM buildings/roads, as packaged) | {f(res['baseline_geometry']['iou_pooled'])} |",
          f"| same, clipped to the corridor rule | {f(res['baseline_geometry_in_corridor']['iou_pooled'])} |",
          f"| inferred, fitted on all holes (in-sample) | {f(res['fit']['iou_pooled'])} |",
-         f"| **inferred, leave-one-hole-out** | **{f(res['loho']['iou_pooled'])}** |", "",
+         f"| **inferred, leave-one-hole-out** | **{f(res['loho']['iou_pooled'])}** |",
+         f"| inferred, leave-one-hole-out, vs the hand OB inside the corridor rule "
+         f"({res['loho'].get('reachable_cells')}/{res['loho'].get('truth_cells')} hand OB cells) | "
+         f"{f(res['loho'].get('iou_pooled_reachable'))} |", "",
          f"Fitted parameters ({res['n_combos']} combinations searched): `{json.dumps(res['fit']['params'])}`", "",
          "Ablation at the fit (pooled IoU): " + ", ".join(f"{k} {f(v)}" for k, v in {**res['ablation'], **res['single_source']}.items()), "",
          "Evidence precision (exclusive cells, priority order; p used as confidence): "
@@ -327,12 +346,17 @@ def write_md(res, dec=None):
               "(the 'pred' column)."]
     if dec:
         L += ["", "## Decision impact (product decide.py quick, Black tees vs spirit_hollow/output/final_decision.json)", "",
-              "| OB variant | same club | changed clubs vs no-OB |", "|---|---|---|"]
+              "| OB variant | same club | changed clubs vs no OB | expected strokes vs no OB (holes with |d| >= 0.005) |",
+              "|---|---|---|---|"]
         for v, d in dec["variants"].items():
-            L.append(f"| {v} | {d['same']}/{d['n']} | {', '.join(d['changed_vs_none']) or '-'} |")
+            ev = ", ".join(f"{k} {x:+.3f}" for k, x in (d.get("ev_vs_none") or {}).items() if abs(x) >= 0.005)
+            L.append(f"| {v} | {d['same']}/{d['n']} | {', '.join(d['changed_vs_none']) or '-'} | {ev or '-'} |")
+        L += ["", "'hand map' rows run the same quick decision on spirit_hollow/course.py itself (keys 2B/2F/9B/9F), "
+                  "with and without its OB zones: the OB sensitivity of the truth map."]
         L += ["", "| hole | final_decision | " + " | ".join(dec["variants"]) + " |",
               "|---|---|" + "---|" * len(dec["variants"])]
-        for k in dec["holes"]:
+        for k in sorted(set(dec["holes"]) | {k for d in dec["variants"].values() for k in d["picks"]},
+                        key=lambda s: (len(s), s)):
             L.append(f"| {k} | {dec['gold'].get(k, '-')} | " + " | ".join(
                 f"{d['picks'].get(k, '-')}" for d in dec["variants"].values()) + " |")
     open(os.path.join(HERE, "eval.md"), "w").write("\n".join(L) + "\n")
@@ -362,6 +386,22 @@ def _variant(pkg, kind, hand=None):
     raise KeyError(kind)
 
 
+def _summ(res, gold, tees, gold_out):
+    picks = {str(k): r["pick"] for k, r in res.items()}
+    box = "B" if str(tees).lower() == "gold" else "F"
+    same, n = 0, 0
+    for k, c in picks.items():
+        g = gold.get(k) if tees == "hand" else (gold.get(k) or gold.get(k + box))
+        if g is None:
+            continue
+        gold_out.setdefault(k if tees != "hand" else k, g["pick"])
+        n += 1
+        same += c == g["pick"]
+    return dict(picks=picks, same=same, n=n, aims={str(k): round(r["aim"], 1) for k, r in res.items()},
+                ev={str(k): round(float(r["ev"]), 4) for k, r in res.items()},
+                margin={str(k): round(float(r["margin"]), 4) for k, r in res.items()})
+
+
 def decisions(variants=("none", "geometry", "inferred", "hand"), tees="Black"):
     reframe = infer.platform_reframe()
     sys.path.insert(0, os.path.join(CD, "product"))
@@ -383,22 +423,26 @@ def decisions(variants=("none", "geometry", "inferred", "hand"), tees="Black"):
         PKm.write_module(C, mp)
         mod = PKm.import_module(mp, name=f"ob_course_{v}")
         res = decide.run(mod.HOLES, "quick", log=log, n=8000)
-        picks = {str(k): r["pick"] for k, r in res.items()}
-        box = "B" if tees.lower() == "gold" else "F"
-        same, n = 0, 0
-        for k, c in picks.items():
-            g = gold.get(k) or gold.get(k + box)
-            if g is None:
-                continue
-            out["gold"][k] = g["pick"]
-            n += 1
-            same += c == g["pick"]
-        out["variants"][v] = dict(picks=picks, same=same, n=n,
-                                  aims={str(k): round(r["aim"], 1) for k, r in res.items()})
-        log(f"  {v}: same club {same}/{n}")
-    base = out["variants"].get("none", {}).get("picks", {})
+        out["variants"][v] = _summ(res, gold, tees, out["gold"])
+        log(f"  {v}: same club {out['variants'][v]['same']}/{out['variants'][v]['n']}")
+    # the hand map itself (spirit_hollow/course.py, the truth the final decision was made on), with and without OB
+    try:
+        hm = infer.load_module(os.path.join(ROOT, "spirit_hollow", "course.py"), "ob_sh_course")
+        import copy as _copy
+        for v, keep in (("hand map", True), ("hand map without OB", False)):
+            H = _copy.deepcopy(hm.HOLES)
+            if not keep:
+                for h in H.values():
+                    h["zones"] = [z for z in h["zones"] if z[0] != "ob"]
+            res = decide.run(H, "quick", log=log, n=8000)
+            out["variants"][v] = _summ(res, gold, "hand", out["gold"])
+    except Exception as e:                                     # noqa: BLE001
+        log("  hand-map decisions failed:", type(e).__name__, e)
     for v, d in out["variants"].items():
-        d["changed_vs_none"] = [f"{k} {base.get(k)}->{c}" for k, c in d["picks"].items() if base.get(k) != c]
+        ref = out["variants"].get("hand map without OB" if v.startswith("hand map") else "none", {})
+        d["changed_vs_none"] = [f"{k} {ref['picks'].get(k)}->{c}" for k, c in d["picks"].items()
+                                if ref.get("picks", {}).get(k) not in (None, c)]
+        d["ev_vs_none"] = {k: round(e - ref["ev"][k], 4) for k, e in d["ev"].items() if k in ref.get("ev", {})}
     out["holes"] = sorted({k for d in out["variants"].values() for k in d["picks"]}, key=lambda s: (len(s), s))
     json.dump(out, open(os.path.join(HERE, "decisions.json"), "w"), indent=1)
     res = json.load(open(os.path.join(HERE, "eval.json")))
