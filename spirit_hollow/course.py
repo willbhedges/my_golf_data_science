@@ -703,12 +703,27 @@ HOLES[18]["display"] = dict(image="hole18_full.png", src=((419.0, 2033.0), (392.
                             dst=((459.8, 1644.9), (415.6, 774.5)))
 
 
+# The src/dst pairs above are first guesses; the drawing uses an image-matched similarity transform
+# (SIFT + RANSAC between the two screenshots, ~500-2500 inliers, median error <= 0.4 px), stored in
+# display_registration.json as a 2x3 matrix mapping traced-screenshot px -> display-screenshot px.
+_DR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "display_registration.json")
+if os.path.exists(_DR):
+    import json as _json
+    for _k, _m in _json.load(open(_DR)).items():
+        _k = int(_k) if _k.isdigit() else _k
+        if _k in HOLES and "display" in HOLES[_k]:
+            HOLES[_k]["display"]["M"] = _m
+
+
 def display_xy(hd, pts):
     """Map frame px of the traced screenshot to the display screenshot (identity if none)."""
     dsp = hd.get("display")
     pts = np.asarray(pts, float)
     if not dsp:
         return pts
+    if "M" in dsp:
+        M = np.asarray(dsp["M"], float)
+        return pts @ M[:, :2].T + M[:, 2]
     (a, b), (c, d) = [complex(*q) for q in dsp["src"]], [complex(*q) for q in dsp["dst"]]
     z = pts[..., 0] + 1j * pts[..., 1]
     w = c + (d - c) / (b - a) * (z - a)

@@ -181,9 +181,7 @@ def hole_model(h, tee_set, tee_ll=None, zones_ll=None, window=True):
             if yd[:, 1].max() < -420 or yd[:, 1].min() > 15 or yd[:, 0].max() < -130 or yd[:, 0].min() > 130:
                 continue
         zones.append(("ob_boundary" if boundary else lie, [(float(x), float(y)) for x, y in q]))
-    rank = {l: i for i, l in enumerate(PK.ORDER)}
-    zones.sort(key=lambda z: rank.get(z[0], 0))
-    zones = [(PK.LIE_MAP.get(n, n), p) for n, p in zones]
+    zones = PK.order_zones(zones, PK.zone_order_mode(None, h))
     green_px = tuple(float(v) for v in fr.ll_to_px([green_ll])[0])
     par = int(h.get("par") or 4)
     L = int(round(float(length))) if length else int(round(np.hypot(*(np.array(green_px) - PK.TEE_PX)) / PK.PPY))

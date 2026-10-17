@@ -27,11 +27,60 @@ for _p in (os.path.join(CD, "imagery"), os.path.join(ROOT, "mozingo")):
 import render as R                                  # noqa: E402  course_data/imagery/render.py
 
 PPY, TEE_PX, PROJ = 3.4, (460.0, 1900.0), "utm"
-# ARCHITECTURE 9.1-4: later zones win; sort by this precedence (stable inside a class).
-ORDER = ["ob_boundary", "native", "recovery", "ob", "first_cut", "fairway", "green", "water", "sand"]
+# ARCHITECTURE 9.1-4: later zones win; sort by this precedence (stable inside a class). 'rough' is a correction
+# layer (a hazard drawn too big) and must sit above the hazards it corrects (at rank 0 it was a silent no-op).
+# A hole (or package) with zone_order = "given" keeps its zones in the order listed: a hand-traced map is a
+# layer stack whose order IS the meaning (rough patches over hazards, first cut over the traced fairway, trees
+# over the fairway), exactly as tee_strategy.lie_at reads it (parity.py: sorting a hand map changed the lie on
+# 8-22% of every Spirit Hollow landing corridor).
+ORDER = ["first_cut_band", "ob_boundary", "native", "recovery", "ob", "rough", "first_cut", "fairway", "green", "water", "sand"]
+
+
+# First cut: the hand pipeline (spirit_hollow/course.py) scores the traced fairway beyond the mown (OSM) width
+# as first_cut, a median 8.5 yds per side in the landing zone (parity.py). A package whose hole has a fairway
+# but no first_cut gets a band of FIRST_CUT_YDS around the fairway, at the BOTTOM of the stack (every hazard and
+# the fairway itself override it), so it only turns rough into first cut. 0 = off.
+FIRST_CUT_YDS = float(os.environ.get("PRODUCT_FIRST_CUT_YDS", "0") or 0)
+
+
+def first_cut_band(zones, yds=None):
+    """[("first_cut_band", ring px), ...] around the fairway union (none if the hole already has first_cut)."""
+    yds = FIRST_CUT_YDS if yds is None else yds
+    if yds <= 0 or any(n == "first_cut" for n, _ in zones):
+        return []
+    fw = [p for n, p in zones if n == "fairway" and len(p) >= 3]
+    if not fw:
+        return []
+    try:
+        from shapely.geometry import Polygon
+        from shapely.ops import unary_union
+        u = unary_union([Polygon(p).buffer(0) for p in fw])
+        band = u.buffer(yds * PPY, join_style=2).difference(u)
+    except Exception:                                    # noqa: BLE001
+        return []
+    out = []
+    for g in getattr(band, "geoms", [band]):
+        if g.is_empty or g.geom_type != "Polygon" or g.area < 1:
+            continue
+        # a ring with holes is not a simple path for matplotlib: use the outer ring; the fairway (above it) and
+        # every hazard still win inside, and what remains inside is the band itself plus enclosed rough islands
+        out.append(("first_cut_band", [(round(float(x), 1), round(float(y), 1)) for x, y in g.exterior.coords[:-1]]))
+    return out
+
+
+def order_zones(zones, mode=None):
+    """[(lie, poly)] in model precedence (later wins). mode "given": as listed (hand maps)."""
+    if (mode or "precedence") != "given":
+        rank = {l: i for i, l in enumerate(ORDER)}
+        zones = sorted(zones, key=lambda z: rank.get(z[0], 0))
+    return [(LIE_MAP.get(n, n), p) for n, p in zones]
+
+
+def zone_order_mode(pkg, h):
+    return (h or {}).get("zone_order") or (pkg or {}).get("zone_order") or "precedence"
 # package lie -> model lie, applied at package load (QA A1: tee_strategy.expected_strokes has no 'green' or
 # 'ob_boundary', which ARCHITECTURE 9.1-4 allows in zones_ll; the model itself stays as it is)
-LIE_MAP = {"ob_boundary": "ob", "green": "fairway", "tee": "fairway", "trees": "recovery", "woods": "recovery",
+LIE_MAP = {"ob_boundary": "ob", "first_cut_band": "first_cut", "green": "fairway", "tee": "fairway", "trees": "recovery", "woods": "recovery",
            "bunker": "sand", "long_grass": "native", "tall_grass": "native"}
 MODEL_LIES = {"fairway", "first_cut", "rough", "sand", "recovery", "native", "water", "ob"}
 # par-3 edge hazards: model lie -> yardage_book.ADD key, and its severity for "worst on that side"
@@ -126,6 +175,9 @@ def _tee_entry(h, tee_set):
 
 
 TEE_LINE = "landing"     # "landing": tee -> the hole line LANDING yds out (book/page line); "package": its aim_ll
+# A tee set whose aim_rule is one of these carries the golfer's own line (e.g. the GPS app's tee -> 270-yd dot
+# line the golfer reads aims against): aims are then printed against THAT line, so it is kept as given.
+GIVEN_LINE = ("given", "golfer", "app")
 LANDING = 250            # informational: the rule (and its numbers) live in course_data/platform/tee_line.py
 
 
@@ -219,15 +271,19 @@ def load(path, tees=None):
         par = int(h.get("par") or (3 if (length or 0) < 250 else 4))
         lls += [tee_ll, green_ll]
         line_ll = h.get("hole_line_ll")
-        if TEE_LINE == "landing" or not aim_ll:
+        given = str((ent or {}).get("aim_rule") or "") in GIVEN_LINE
+        if (TEE_LINE == "landing" and not given) or not aim_ll:
             aim_ll, how = _tee_line_mod().aim_point(tee_ll, line_ll, green_ll, float(length) if length else None, par)
         else:
-            how = "package"
+            how = "given" if given else "package"
         fr = R.Frame(tee_ll, aim_ll, ppy=PPY, tee_px=TEE_PX, proj=PROJ)
         C.frames[k] = dict(fr.to_json(), aim=how)
         C.bearings[k] = (bearing_deg(tee_ll, aim_ll) if how != "package" else
                          float(ent.get("bearing_deg") or h.get("bearing_deg") or bearing_deg(tee_ll, aim_ll)))
-        e = _elev(ent.get("elevation") or h.get("elevation"))
+        e = None
+        if ELEV_ALONG_LINE:              # per-club elevation along the tee line this plan actually uses
+            e = _elev(line_elevation(pkg, path, ref, par, tee_ll, aim_ll, green_ll, length))
+        e = e or _elev(ent.get("elevation") or h.get("elevation"))
         if h.get("exposure") is not None:
             C.exposure[k] = float(h["exposure"])
         conf = h.get("confidence") or {}
@@ -244,9 +300,10 @@ def load(path, tees=None):
                 continue
             q = fr.ll_to_px(np.array(poly, float)[:, :2])
             zones.append(("ob_boundary" if boundary else lie, [(round(float(x), 1), round(float(y), 1)) for x, y in q]))
-        rank = {l: i for i, l in enumerate(ORDER)}
-        zones.sort(key=lambda z: rank.get(z[0], 0))
-        zones = [(LIE_MAP.get(n, n), p) for n, p in zones]
+        mode = zone_order_mode(pkg, h)
+        if mode != "given":
+            zones = first_cut_band(zones) + zones
+        zones = order_zones(zones, mode)
         green_px = tuple(round(float(v), 1) for v in fr.ll_to_px([green_ll])[0])
         length = int(round(float(length))) if length else int(round(np.hypot(*(np.array(green_px) - TEE_PX)) / PPY))
         image = image_name(ref)
@@ -273,6 +330,57 @@ def load(path, tees=None):
 
 
 ELEV_CLAMPED = []
+# Elevation is a property of the LINE (tee position + bearing): the package stores it per tee set along the
+# package's own tee line, so a moved tee (golfer answer, hand map, review) or another line rule kept a stale
+# table (parity.py: Spirit Hollow carry deltas 4-6 yds and side kicks up to 11 yds apart). With the package's
+# DEM on disk the table is recomputed along the tee -> aim line used for the frame (platform/package.
+# elevation_for_hole + elevation/adjust.py: the same code the platform ran); else the stored table is used.
+ELEV_ALONG_LINE = True
+_DEM_CACHE = {}
+
+
+def _platform_pkg():
+    name = "cdp_platform_package"
+    if name not in sys.modules:
+        import importlib.util
+        saved = list(sys.path)
+        try:
+            spec = importlib.util.spec_from_file_location(name, os.path.join(CD, "platform", "package.py"))
+            mod = importlib.util.module_from_spec(spec)
+            sys.modules[name] = mod
+            spec.loader.exec_module(mod)
+        finally:
+            sys.path[:] = saved
+    return sys.modules[name]
+
+
+def dem_path(pkg, pkg_path=None):
+    f = ((pkg or {}).get("elevation") or {}).get("file") or (((pkg or {}).get("sources") or {}).get("dem") or {}).get("file")
+    cands = [f and (f if os.path.isabs(f) else os.path.join(ROOT, f))]
+    if pkg_path:
+        cands.append(os.path.join(os.path.dirname(os.path.abspath(pkg_path)), "imagery", "dem.tif"))
+    return next((c for c in cands if c and os.path.exists(c)), None)
+
+
+def line_elevation(pkg, pkg_path, ref, par, tee_ll, aim_ll, green_ll, length):
+    """hole.elevation (platform format, with per-club 'adjustments') along tee_ll -> aim_ll; None without a DEM."""
+    path = dem_path(pkg, pkg_path)
+    if not path or tee_ll is None or aim_ll is None or green_ll is None:
+        return None
+    try:
+        P = _platform_pkg()
+        if path not in _DEM_CACHE:
+            _DEM_CACHE[path] = P.dem_sampler(path)
+        sample = _DEM_CACHE[path]
+        if sample is None:
+            return None
+        fr = R.Frame(tee_ll, aim_ll, proj="utm")
+        g = fr.ll_to_yds(np.array([green_ll[:2]], float))[0]
+        hh = dict(ref=str(ref), par=int(par), length=float(length or abs(g[1])), measured_length=float(np.hypot(*g)),
+                  green=[float(g[0]), float(g[1])], bearing_deg=bearing_deg(tee_ll, aim_ll))
+        return P.elevation_for_hole(hh, sample, fr.yds_to_ll)
+    except Exception:                                    # noqa: BLE001
+        return None
 
 
 def _elev(e):

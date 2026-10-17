@@ -232,8 +232,12 @@ def display_hole(hd):
     dsp = hd.get("display")
     if not dsp:
         return hd
-    (a, b), (c, d) = [complex(*q) for q in dsp["src"]], [complex(*q) for q in dsp["dst"]]
-    m = lambda p: (lambda w: (w.real, w.imag))(c + (d - c) / (b - a) * (complex(*p) - a))
+    if "M" in dsp:                                  # image-matched 2x3 similarity transform
+        M = np.asarray(dsp["M"], float)
+        m = lambda p: tuple(M[:, :2] @ np.asarray(p, float) + M[:, 2])
+    else:
+        (a, b), (c, d) = [complex(*q) for q in dsp["src"]], [complex(*q) for q in dsp["dst"]]
+        m = lambda p: (lambda w: (w.real, w.imag))(c + (d - c) / (b - a) * (complex(*p) - a))
     return dict(hd, image=dsp["image"], tee=m(hd["tee"]), dot270=m(hd["dot270"]))
 
 
