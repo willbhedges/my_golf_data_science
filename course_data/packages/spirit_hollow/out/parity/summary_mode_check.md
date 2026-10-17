@@ -1,0 +1,1 @@
+- parity **mode_check** (env {}, app line True): mode check: quick = final 12/16, Bayesian S=64 = final 15/16 [689 s, exit 0]
