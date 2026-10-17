@@ -555,10 +555,11 @@ def build_package(slug, entry):
         # confidence: the product's CHECK flags (decision.json) + the 2-minute check's badges (review.json)
         lines, level = [], "auto"
         b = badges.get(k) or {}
-        if not is3 and variants[primary].get("check"):
-            level = "check"
-            lines.append("CHECK: the best line on the map was rejected by the safety guard; the best printable aim "
-                         "is shown. " + "; ".join(variants[primary]["check"]))
+        for ts in variants:                                       # every tee set's own CHECK flags
+            if not is3 and variants[ts].get("check"):
+                level = "check"
+                lines.append(f"CHECK ({ts} tees): the plan's safety guard flagged this tee shot; the best printable aim "
+                             "is shown. " + "; ".join(variants[ts]["check"]))
         if b.get("state") == "unverified":
             level = "check"
             lines.append(b.get("line", ""))
