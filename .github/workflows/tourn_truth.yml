@@ -1,0 +1,163 @@
+name: tourn-truth
+
+# Tournament courses, one request file per course (copy of nccga_truth.yml / truth_maps.yml).
+# Trigger: push course_data/requests/tourn_truth_<slug>.json {"slugs": ["<slug>"], "infer": [...], "ob": [...], "rev": n}
+# Evidence renders for the hand-checked landing-corridor truth maps (course_data/truth/corridor.py).
+# (was: nccga_truth.json)
+#   {"slugs": ["veenker", "coldwater", "wakonda"], "infer": ["coldwater", "wakonda"], "rev": n}
+# Per course (packages must exist: course_data/packages/<slug>/package.json):
+#   1. vision_any raw/ (3DEP lidar HAG, 2 NAIP years) if missing (fetch_any.py; committed, as for Veenker: the
+#      package's vision stage reads it)
+#   2. raw2/ multi-year NAIP 1 m + lidar point statistics (v2_fetch.py; Actions cache v2raw-<slug>-<hash>, the
+#      same key vision_any_v2*.yml use; not committed)
+#   3. corridor evidence renders (photo / CIR / other years / lidar canopy / low vegetation) -> truth/<slug>/render/
+#   5. slugs in "ob": OB evidence (course_data/ob/fetch.py) so the package build infers OB as for Veenker
+#   4. slugs in "infer": the product's v2 layer (v2_model.py --infer, integrated as vision_any.geojson) so the
+#      product package of a new course gets its vision zones on the next package build
+on:
+  push:
+    paths:
+      - "course_data/requests/tourn_truth_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tourn-truth-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  PYTHONWARNINGS: ignore
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      slugs: ${{ steps.p.outputs.slugs }}
+      req: ${{ steps.p.outputs.req }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 30
+      - id: p
+        run: |
+          R=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'course_data/requests/tourn_truth_*.json' 2>/dev/null | tail -1)
+          [ -n "$R" ] && [ -f "$R" ] || R=$(ls -t course_data/requests/tourn_truth_*.json | head -1)
+          echo "req=$R" >> "$GITHUB_OUTPUT"
+          echo "slugs=$(python3 -c "import json;print(json.dumps(json.load(open('$R'))['slugs']))")" >> "$GITHUB_OUTPUT"
+
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        slug: ${{ fromJson(needs.plan.outputs.slugs) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests numpy scipy pillow shapely pyproj pystac-client planetary-computer rasterio \
+                      opencv-python-headless matplotlib scikit-learn scikit-image lightgbm
+      - uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: pdal
+          create-args: pdal
+          init-shell: none
+          cache-environment: true
+      - name: Locate PDAL
+        run: |
+          P="$MAMBA_ROOT_PREFIX/envs/pdal/bin/pdal"
+          ls -la "$P" && "$P" --version && echo "PDAL_BIN=$P" >> "$GITHUB_ENV" || echo "no pdal"
+      - name: vision_any raw (lidar HAG + 2 NAIP years) if missing
+        run: |
+          S=${{ matrix.slug }}
+          test -f course_data/packages/$S/package.json || { echo "no package for $S"; exit 1; }
+          if [ ! -f course_data/vision_any/$S/raw/meta.json ]; then
+            python -u course_data/vision_any/fetch_any.py --course-dir course_data/packages/$S/raw --slug $S
+          fi
+          ls -la course_data/vision_any/$S/raw
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: course_data/vision_any/${{ matrix.slug }}/raw2
+          key: v2raw-${{ matrix.slug }}-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
+      - name: raw2 (multi-year NAIP + lidar point statistics)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: python -u course_data/vision_any/v2_fetch.py --slug "${{ matrix.slug }}"
+      - name: Evidence renders
+        run: |
+          ls -la course_data/vision_any/${{ matrix.slug }}/raw2 || true
+          python -u course_data/truth/corridor.py panels --slug "${{ matrix.slug }}"
+      - name: Product v2 layer (new courses)
+        run: |
+          S=${{ matrix.slug }}
+          if python3 -c "import json,sys;sys.exit(0 if '$S' in json.load(open('${{ needs.plan.outputs.req }}')).get('infer', []) else 1)"; then
+            python -u course_data/vision_any/v2_model.py --infer $S --integrate yes
+          fi
+      - name: OB evidence (OSM, building footprints, parcels) for the product package
+        run: |
+          S=${{ matrix.slug }}
+          if python3 -c "import json,sys;sys.exit(0 if '$S' in json.load(open('${{ needs.plan.outputs.req }}')).get('ob', []) else 1)"; then
+            python -u course_data/ob/fetch.py $S || true
+            rm -rf course_data/ob/_work
+          fi
+      - name: Collect
+        run: |
+          S=${{ matrix.slug }}
+          mkdir -p /tmp/out
+          tar czf /tmp/out/$S.tgz course_data/truth/$S/render $(ls -d course_data/vision_any/$S/raw course_data/vision_any/$S/vision_any*.geojson \
+              course_data/vision_any/$S/classes_v2.jpg course_data/vision_any/$S/layers_v2.tif course_data/ob/$S 2>/dev/null)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tourn-truth-${{ matrix.slug }}
+          path: /tmp/out/${{ matrix.slug }}.tgz
+          retention-days: 7
+
+  commit:
+    needs: render
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/in
+      - name: Commit
+        run: |
+          git pull --rebase origin "${{ github.ref_name }}" || true
+          for f in /tmp/in/*/*.tgz; do tar xzf "$f"; done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in /tmp/in/*/*.tgz; do
+            S=$(basename "$f" .tgz)
+            git add course_data/truth/$S/render
+            for p in course_data/vision_any/$S/raw course_data/vision_any/$S/vision_any.geojson course_data/vision_any/$S/vision_any_v2.geojson \
+                     course_data/vision_any/$S/classes_v2.jpg course_data/vision_any/$S/layers_v2.tif course_data/ob/$S; do
+              [ -e "$p" ] && git add "$p"
+            done
+          done
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "NCCGA truth: corridor evidence renders, vision layer, OB evidence (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
