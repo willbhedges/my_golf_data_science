@@ -1,5 +1,5 @@
 """Course module for Hot Springs Country Club (osm_back tees), generated from package.json by
-course_data/platform/package.py on 2026-10-17T16:42:50Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-17T16:54:14Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_hot_springs_arlington.json
 

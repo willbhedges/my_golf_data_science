@@ -1,5 +1,5 @@
 """Course module for The National Golf Club (osm_back tees), generated from package.json by
-course_data/platform/package.py on 2026-10-17T16:22:50Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-17T17:00:57Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_national_kc.json
 

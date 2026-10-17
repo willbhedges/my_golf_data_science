@@ -1,6 +1,6 @@
 # Hot Springs Country Club (Hot Springs, AR) - osm_back tees
 
-Built 2026-10-17T16:42:50Z. OSM way/250816543. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-10-17T16:54:14Z. OSM way/250816543. Scorecard: None (None). Tee set: no scorecard.
 
 ## Coverage
 
