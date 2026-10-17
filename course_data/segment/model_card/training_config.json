@@ -1,0 +1,31 @@
+{
+  "run": "v4",
+  "encoder": "resnet34",
+  "encoder_weights": "imagenet",
+  "classes": "multi",
+  "initFrom": null,
+  "schedule": "onecycle",
+  "patience": 6,
+  "tilePx": 512,
+  "mpp": 0.6,
+  "mean": [
+    108.314,
+    118.389,
+    97.68,
+    158.925
+  ],
+  "std": [
+    42.693,
+    38.205,
+    33.022,
+    51.632
+  ],
+  "batch": 12,
+  "lr": 0.0003,
+  "epochs": 14,
+  "trainTiles": 4665,
+  "valTiles": 573,
+  "trainCourses": 790,
+  "device": "mps",
+  "seed": 0
+}

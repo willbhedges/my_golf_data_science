@@ -1,0 +1,45 @@
+{
+  "bands": [
+    "red",
+    "green",
+    "blue",
+    "near_infrared"
+  ],
+  "input_dtype": "uint8",
+  "input_range": [
+    0,
+    255
+  ],
+  "input_layout": "NCHW",
+  "do_rescale": false,
+  "do_normalize": true,
+  "image_mean": [
+    108.314,
+    118.389,
+    97.68,
+    158.925
+  ],
+  "image_std": [
+    42.693,
+    38.205,
+    33.022,
+    51.632
+  ],
+  "tile_size": 512,
+  "ground_sample_distance_m": 0.6,
+  "normalization": "(raw_uint8_as_float32 - image_mean) / image_std",
+  "test_time_augmentation": [
+    "identity",
+    "horizontal_flip",
+    "vertical_flip"
+  ],
+  "activation": "softmax",
+  "id2label": {
+    "0": "background",
+    "1": "green",
+    "2": "tee",
+    "3": "fairway",
+    "4": "bunker",
+    "5": "water"
+  }
+}

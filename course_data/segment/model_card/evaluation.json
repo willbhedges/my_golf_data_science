@@ -1,0 +1,113 @@
+{
+  "provenance": "Historical evaluations of the original v4 checkpoint; not rerun for this export.",
+  "checkpoint_epoch_zero_based": 12,
+  "checkpoint_metrics": {
+    "epoch": 13,
+    "train": {
+      "loss": 0.8420630561322281,
+      "green_iou": 0.7008157107509134,
+      "images": 4656,
+      "seconds": 279.1,
+      "class_iou": {
+        "green": 0.701,
+        "tee": 0.346,
+        "fairway": 0.648,
+        "bunker": 0.559,
+        "water": 0.029
+      }
+    },
+    "val": {
+      "loss": 0.930165826338124,
+      "green_iou": 0.6928858307247061,
+      "images": 573,
+      "seconds": 11.0,
+      "class_iou": {
+        "green": 0.693,
+        "tee": 0.331,
+        "fairway": 0.636,
+        "bunker": 0.563,
+        "water": 0.034
+      }
+    },
+    "lr": 5.171467231694576e-06,
+    "time": 1789530127.560203
+  },
+  "green_object_evaluations": {
+    "eval-negatives": {
+      "set": "negatives",
+      "threshold": 0.5,
+      "courses": 148,
+      "referenceGreens": 0,
+      "tiles": 148,
+      "candidatesPerKm2": 0.14,
+      "candidates": 2,
+      "recall50": 0.0,
+      "precision50": 0.0,
+      "recall25": 0.0,
+      "meanIoURefs": 0.0,
+      "meanIoUMatched": 0.0
+    },
+    "eval-osm_val": {
+      "set": "osm_val",
+      "threshold": 0.5,
+      "courses": 27,
+      "referenceGreens": 528,
+      "tiles": 823,
+      "candidatesPerKm2": 6.91,
+      "candidates": 537,
+      "recall50": 0.8788,
+      "precision50": 0.8641,
+      "recall25": 0.9015,
+      "meanIoURefs": 0.7303,
+      "meanIoUMatched": 0.7983
+    },
+    "eval-test_matched": {
+      "set": "test_matched",
+      "threshold": 0.5,
+      "courses": 99,
+      "referenceGreens": 1552,
+      "tiles": 2566,
+      "candidatesPerKm2": 7.14,
+      "candidates": 1729,
+      "recall50": 0.8827,
+      "precision50": 0.7924,
+      "recall25": 0.9072,
+      "meanIoURefs": 0.7283,
+      "meanIoUMatched": 0.8011
+    },
+    "eval-test_states": {
+      "set": "test_states",
+      "threshold": 0.5,
+      "courses": 40,
+      "referenceGreens": 805,
+      "tiles": 1374,
+      "candidatesPerKm2": 6.72,
+      "candidates": 871,
+      "recall50": 0.9031,
+      "precision50": 0.8347,
+      "recall25": 0.9205,
+      "meanIoURefs": 0.7616,
+      "meanIoUMatched": 0.823
+    }
+  },
+  "reviewed_green_evaluation": {
+    "set": "verified",
+    "threshold": 0.5,
+    "verified": 200,
+    "scored": 175,
+    "verdicts": {
+      "unclear": 20,
+      "osm": 17,
+      "model": 37,
+      "both": 119,
+      "reject": 5,
+      "neither": 2
+    },
+    "osmCorrectRate": 0.7771,
+    "packedModelCorrectRate": 0.8914,
+    "runMeanIoU": 0.8469,
+    "runRecall50": 0.9771,
+    "osmMeanIoU": 0.9335
+  },
+  "reviewed_reference_limitation": "136 of 175 scorable references reuse the OSM outline; this is not a fully independent human-traced benchmark."
+}
