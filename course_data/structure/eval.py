@@ -289,22 +289,41 @@ def main():
     ap.add_argument("-v", action="store_true")
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--shard", type=int)
+    ap.add_argument("--of", type=int, default=1)
+    ap.add_argument("--rows-out")
+    ap.add_argument("--combine", nargs="*")
     a = ap.parse_args()
+    cfgs = a.configs.split(",")
+    if a.combine:
+        rows = [r for p in a.combine for r in json.load(open(p))]
+        return write(rows, cfgs, a.out)
     ents = courses(None if a.all else a.split)
+    if a.shard is not None:
+        ents = [e for i, e in enumerate(ents) if i % a.of == a.shard]
     if a.slug:
         ents = [e for e in ents if e["slug"] == a.slug]
     if a.limit:
         ents = ents[:a.limit]
-    cfgs = a.configs.split(",")
     rows = run(ents, cfgs, verbose=a.v or bool(a.slug))
+    if a.rows_out:
+        os.makedirs(os.path.dirname(os.path.abspath(a.rows_out)), exist_ok=True)
+        json.dump(rows, open(a.rows_out, "w"), default=float)
+        return
     table = summarise(rows)
     print(md_table(table))
     if a.all or a.out != OUT:
-        os.makedirs(a.out, exist_ok=True)
-        json.dump(dict(made_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), table=table, rows=rows,
-                       reliability={f"{s}/{c}": reliability(rows, s, c) for s in ("dev", "heldout") for c in cfgs}),
-                  open(os.path.join(a.out, "results.json"), "w"), indent=1, default=float)
-        open(os.path.join(a.out, "summary.md"), "w").write(md_table(table) + "\n")
+        write(rows, cfgs, a.out)
+
+
+def write(rows, cfgs, out):
+    table = summarise(rows)
+    print(md_table(table))
+    os.makedirs(out, exist_ok=True)
+    json.dump(dict(made_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), table=table, rows=rows,
+                   reliability={f"{s}/{c}": reliability(rows, s, c) for s in ("dev", "heldout") for c in cfgs}),
+              open(os.path.join(out, "results.json"), "w"), indent=1, default=float)
+    open(os.path.join(out, "summary.md"), "w").write(md_table(table) + "\n")
 
 
 if __name__ == "__main__":
