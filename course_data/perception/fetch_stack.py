@@ -151,13 +151,22 @@ def build(slug, course, out, margin=150.0, segment=True, labels=True):
 
     # --- NAIP (newest full-coverage year with NIR) at 0.6 m
     t = time.time()
-    FA.fetch_naip(cat, g1, raw, meta, n_years=1, res=0.6)
+    FA.fetch_naip(cat, g1, raw, meta, n_years=3, res=0.6)
     meta["seconds"]["naip"] = round(time.time() - t, 1)
     years = (meta.get("naip") or {}).get("years") or []
     if not years:
         raise SystemExit(f"{slug}: no NAIP with NIR covering the grid")
-    naip06, _ = read_tif(os.path.join(raw, years[0]["file"]))
-    naip06 = naip06[:4]
+    naip06, used = None, None
+    for y in years:                      # newest year whose pixels actually landed on the grid (some items read empty)
+        a6, _ = read_tif(os.path.join(raw, y["file"]))
+        v = float(a6[:4].any(axis=0).mean())
+        y["valid"] = round(v, 4)
+        if v >= 0.9:
+            naip06, used = a6[:4], y
+            break
+    if naip06 is None:
+        raise SystemExit(f"{slug}: no NAIP year fills the grid {[(y['year'], y.get('valid')) for y in years]}")
+    meta["naip"]["years"] = [used] + [y for y in years if y is not used]
     H06, W06 = naip06.shape[1:]
     assert (H06, W06) == (g06.H, g06.W), ((H06, W06), (g06.H, g06.W))
     naip = np.stack([resample(b, g06, g1, nodata=0) for b in naip06])
@@ -365,6 +374,10 @@ def main():
     else:
         course = course_from_sample(a.slug)
     out = a.out or os.path.join(HERE, "work", a.slug)
+    mp = os.path.join(out, "meta.json")
+    if os.path.exists(mp) and (json.load(open(mp)).get("coverage") or {}).get("naip", 1.0) < 0.9:
+        log("cached stack has no NAIP pixels: rebuilding")
+        os.remove(os.path.join(out, "stack.npz"))
     if not os.path.exists(os.path.join(out, "stack.npz")):
         build(a.slug, course, out, a.margin, segment=not a.no_segment)
     else:

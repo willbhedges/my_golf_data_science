@@ -91,8 +91,19 @@ jobs:
           path: course_data/perception/work/${{ matrix.slug }}
           key: perc-stack-v2-${{ matrix.slug }}
           restore-keys: perc-stack-v1-${{ matrix.slug }}
+      - name: Does the stack need a (re)build?
+        id: need
+        run: |
+          python3 - "course_data/perception/work/${{ matrix.slug }}" >> "$GITHUB_OUTPUT" <<'EOF'
+          import json, os, sys
+          d = sys.argv[1]
+          ok = os.path.exists(os.path.join(d, "stack.npz")) and os.path.exists(os.path.join(d, "meta.json"))
+          if ok:
+              ok = (json.load(open(os.path.join(d, "meta.json"))).get("coverage") or {}).get("naip", 1.0) >= 0.9
+          print("build=" + ("false" if ok else "true"))
+          EOF
       - name: Cache Hugging Face weights
-        if: hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) == ''
+        if: steps.need.outputs.build == 'true'
         uses: actions/cache@v4
         with:
           path: /home/runner/hf_cache
@@ -103,19 +114,19 @@ jobs:
           pip install -q requests numpy scipy shapely pyproj rasterio affine pystac-client planetary-computer \
                       scikit-image scikit-learn==1.9.1 networkx
       - name: Install U-Net dependencies
-        if: hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) == ''
+        if: steps.need.outputs.build == 'true'
         run: |
           pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -q "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm
       - uses: mamba-org/setup-micromamba@v2
-        if: hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) == ''
+        if: steps.need.outputs.build == 'true'
         with:
           environment-name: pdal
           create-args: pdal
           init-shell: none
           cache-environment: true
       - name: Build / patch stack ${{ matrix.slug }}
-        if: steps.cache.outputs.cache-hit != 'true' && matrix.slug != 'none'
+        if: (steps.cache.outputs.cache-hit != 'true' || steps.need.outputs.build == 'true') && matrix.slug != 'none'
         timeout-minutes: 50
         run: |
           export PDAL_BIN="${MAMBA_ROOT_PREFIX:-/nonexistent}/envs/pdal/bin/pdal"
@@ -123,7 +134,7 @@ jobs:
           rm -rf course_data/perception/work/${{ matrix.slug }}/raw
           ls -la course_data/perception/work/${{ matrix.slug }} || true
       - name: Save stack cache
-        if: steps.cache.outputs.cache-hit != 'true' && hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) != ''
+        if: (steps.cache.outputs.cache-hit != 'true' || steps.need.outputs.build == 'true') && hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) != ''
         uses: actions/cache/save@v4
         with:
           path: course_data/perception/work/${{ matrix.slug }}
