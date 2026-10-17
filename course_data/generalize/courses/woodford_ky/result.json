@@ -1,0 +1,571 @@
+{
+ "slug": "woodford_ky",
+ "sample": {
+  "name": "The Woodford Club",
+  "osm": "way/297625187",
+  "state": "KY",
+  "center": [
+   -84.771627,
+   38.013279
+  ],
+  "area_ha": 91.2,
+  "tags": {
+   "addr:city": "Versailles",
+   "website": "https://www.thewoodfordclub.com/"
+  },
+  "counts": {},
+  "tier": "none",
+  "slug": "woodford_ky"
+ },
+ "run_utc": "2026-10-17T01:21:58Z",
+ "seconds": {
+  "resolve_by_name": 186.3,
+  "osm": 22.9,
+  "parking": 58.0,
+  "scorecard": 25.5,
+  "imagery": 11.0,
+  "naip4": 0.4,
+  "segment": 45.4,
+  "lidar_pads": 1.5,
+  "package_today": 1.5,
+  "routing": 1.0,
+  "package_routed": 3.5
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 297625187
+  },
+  "name": "The Woodford Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "The Woodford Club",
+    "Versailles",
+    0,
+    "way/297625187"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {},
+  "hole_refs": [],
+  "parking": 1
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (11 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/cd0db191-07a7-4683-b9a6-5e33a43da118"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 74,
+  "sets": [
+   "Blue",
+   "Web",
+   "White",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   1856,
+   2094
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 19,
+   "tee": 47,
+   "fairway": 18,
+   "bunker": 28
+  },
+  "greens_p06": 19,
+  "seconds_infer": 40.2
+ },
+ "lidar_pads": 65,
+ "errors": {
+  "package_today": "SystemExit: no holes built (no golf=hole ways and no tee/green pairs)"
+ },
+ "today": {
+  "holes_built": 0,
+  "reason": "SystemExit: no holes built (no golf=hole ways and no tee/green pairs)"
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 23.119,
+  "n_check": 18,
+  "unused_greens": [
+   "segment:0"
+  ],
+  "clubhouse": [
+   -84.7660529,
+   38.0106572,
+   "parking"
+  ],
+  "inputs": {
+   "greens": 19,
+   "greens_osm": 0,
+   "tees": 66,
+   "tees_by_src": {
+    "osm": 0,
+    "segment": 46,
+    "lidar": 20
+   },
+   "fairways": 18,
+   "anchors": 0
+  },
+  "holes": {
+   "1": {
+    "status": "check",
+    "flags": [
+     "ambiguous (64% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 461.4,
+    "card_yards": [],
+    "p_green": 0.637,
+    "anchored": false
+   },
+   "2": {
+    "status": "check",
+    "flags": [
+     "ambiguous (48% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 474.9,
+    "card_yards": [],
+    "p_green": 0.482,
+    "anchored": false
+   },
+   "3": {
+    "status": "check",
+    "flags": [
+     "ambiguous (51% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 517.3,
+    "card_yards": [],
+    "p_green": 0.512,
+    "anchored": false
+   },
+   "4": {
+    "status": "check",
+    "flags": [
+     "ambiguous (51% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 426.6,
+    "card_yards": [],
+    "p_green": 0.507,
+    "anchored": false
+   },
+   "5": {
+    "status": "check",
+    "flags": [
+     "ambiguous (50% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 437.9,
+    "card_yards": [],
+    "p_green": 0.505,
+    "anchored": false
+   },
+   "6": {
+    "status": "check",
+    "flags": [
+     "ambiguous (62% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 457.7,
+    "card_yards": [],
+    "p_green": 0.62,
+    "anchored": false
+   },
+   "7": {
+    "status": "check",
+    "flags": [
+     "ambiguous (45% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 564.9,
+    "card_yards": [],
+    "p_green": 0.452,
+    "anchored": false
+   },
+   "8": {
+    "status": "check",
+    "flags": [
+     "ambiguous (29% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 568.9,
+    "card_yards": [],
+    "p_green": 0.293,
+    "anchored": false
+   },
+   "9": {
+    "status": "check",
+    "flags": [
+     "ambiguous (38% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 418.8,
+    "card_yards": [],
+    "p_green": 0.38,
+    "anchored": false
+   },
+   "10": {
+    "status": "check",
+    "flags": [
+     "ambiguous (51% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 452.9,
+    "card_yards": [],
+    "p_green": 0.513,
+    "anchored": false
+   },
+   "11": {
+    "status": "check",
+    "flags": [
+     "ambiguous (50% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 151.8,
+    "card_yards": [],
+    "p_green": 0.502,
+    "anchored": false
+   },
+   "12": {
+    "status": "check",
+    "flags": [
+     "no tee found",
+     "ambiguous (30% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [],
+    "p_green": 0.295,
+    "anchored": false
+   },
+   "13": {
+    "status": "check",
+    "flags": [
+     "ambiguous (39% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 247.2,
+    "card_yards": [],
+    "p_green": 0.389,
+    "anchored": false
+   },
+   "14": {
+    "status": "check",
+    "flags": [
+     "ambiguous (34% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 87.5,
+    "card_yards": [],
+    "p_green": 0.338,
+    "anchored": false
+   },
+   "15": {
+    "status": "check",
+    "flags": [
+     "ambiguous (30% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 258.0,
+    "card_yards": [],
+    "p_green": 0.295,
+    "anchored": false
+   },
+   "16": {
+    "status": "check",
+    "flags": [
+     "ambiguous (29% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 147.9,
+    "card_yards": [],
+    "p_green": 0.293,
+    "anchored": false
+   },
+   "17": {
+    "status": "check",
+    "flags": [
+     "ambiguous (30% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 263.9,
+    "card_yards": [],
+    "p_green": 0.296,
+    "anchored": false
+   },
+   "18": {
+    "status": "check",
+    "flags": [
+     "ambiguous (39% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 273.9,
+    "card_yards": [
+     277,
+     333,
+     382
+    ],
+    "p_green": 0.39,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 17,
+  "with_green_polygon": 17,
+  "green_osm": 17,
+  "green_segment": 0,
+  "with_tee_box": 1,
+  "stages": {
+   "resolve": "ok: way/297625187 The Woodford Club (Versailles, KY)",
+   "osm": "ok: 86 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 27 candidate pads near hole starts, 2 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (17 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/woodford_ky__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/woodford_ky__routed/imagery/dem.tif (17/17 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+109 zones on 17 holes, +0 greens, 25 tee candidates)"
+  },
+  "tee_set": "Web",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 462,
+    "card": null
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 476,
+    "card": null
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 518,
+    "card": null
+   },
+   "4": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 427,
+    "card": null
+   },
+   "5": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 438,
+    "card": null
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 458,
+    "card": null
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 565,
+    "card": null
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 570,
+    "card": null
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 419,
+    "card": null
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 453,
+    "card": null
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 152,
+    "card": null
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 247,
+    "card": null
+   },
+   "14": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 141,
+    "card": null
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 258,
+    "card": null
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 148,
+    "card": null
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 264,
+    "card": null
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 382,
+    "card": 382
+   }
+  }
+ }
+}

@@ -1,0 +1,569 @@
+{
+ "slug": "georgia_veterans_memorial_ga",
+ "sample": {
+  "name": "Georgia Veterans Memorial Golf Course",
+  "osm": "way/357495678",
+  "state": "GA",
+  "center": [
+   -83.902052,
+   31.966888
+  ],
+  "area_ha": 122.3,
+  "tags": {
+   "addr:city": "Cordele",
+   "website": "https://www.lakeblackshearresort.com/golf/"
+  },
+  "counts": {},
+  "tier": "none",
+  "slug": "georgia_veterans_memorial_ga"
+ },
+ "run_utc": "2026-10-17T01:21:05Z",
+ "seconds": {
+  "resolve_by_name": 173.0,
+  "osm": 35.3,
+  "parking": 22.6,
+  "scorecard": 41.1,
+  "imagery": 12.3,
+  "naip4": 0.5,
+  "segment": 47.0,
+  "lidar_pads": 3.7,
+  "package_today": 3.7,
+  "routing": 1.0,
+  "package_routed": 5.4
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 357495678
+  },
+  "name": "Georgia Veterans Memorial Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Georgia Veterans Memorial Golf Course",
+    "Cordele",
+    0,
+    "way/357495678"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 2,
+   "golf=clubhouse": 1,
+   "water_polygons": 1
+  },
+  "hole_refs": [],
+  "parking": 0
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (9 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 21 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/5f4720dd-826c-4fc7-85f7-9611ca899856"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 83,
+  "sets": [
+   "Blue",
+   "White",
+   "Gold",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   1501,
+   3524
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 20,
+   "tee": 45,
+   "fairway": 28,
+   "bunker": 54
+  },
+  "greens_p06": 20,
+  "seconds_infer": 42.1
+ },
+ "lidar_pads": 113,
+ "errors": {
+  "package_today": "SystemExit: no holes built (no golf=hole ways and no tee/green pairs)"
+ },
+ "today": {
+  "holes_built": 0,
+  "reason": "SystemExit: no holes built (no golf=hole ways and no tee/green pairs)"
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 25.444,
+  "n_check": 18,
+  "unused_greens": [
+   "segment:0",
+   "segment:6"
+  ],
+  "clubhouse": [
+   -83.90291178331289,
+   31.965869341874903,
+   "named"
+  ],
+  "inputs": {
+   "greens": 20,
+   "greens_osm": 0,
+   "tees": 90,
+   "tees_by_src": {
+    "osm": 0,
+    "segment": 36,
+    "lidar": 54
+   },
+   "fairways": 25,
+   "anchors": 0
+  },
+  "holes": {
+   "1": {
+    "status": "check",
+    "flags": [
+     "ambiguous (46% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 619.8,
+    "card_yards": [],
+    "p_green": 0.465,
+    "anchored": false
+   },
+   "2": {
+    "status": "check",
+    "flags": [
+     "ambiguous (47% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 493.3,
+    "card_yards": [],
+    "p_green": 0.47,
+    "anchored": false
+   },
+   "3": {
+    "status": "check",
+    "flags": [
+     "ambiguous (33% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 457.8,
+    "card_yards": [],
+    "p_green": 0.328,
+    "anchored": false
+   },
+   "4": {
+    "status": "check",
+    "flags": [
+     "ambiguous (33% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 659.2,
+    "card_yards": [],
+    "p_green": 0.329,
+    "anchored": false
+   },
+   "5": {
+    "status": "check",
+    "flags": [
+     "no tee found",
+     "ambiguous (20% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [],
+    "p_green": 0.202,
+    "anchored": false
+   },
+   "6": {
+    "status": "check",
+    "flags": [
+     "ambiguous (19% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 462.4,
+    "card_yards": [],
+    "p_green": 0.192,
+    "anchored": false
+   },
+   "7": {
+    "status": "check",
+    "flags": [
+     "ambiguous (20% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 508.8,
+    "card_yards": [],
+    "p_green": 0.202,
+    "anchored": false
+   },
+   "8": {
+    "status": "check",
+    "flags": [
+     "ambiguous (36% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 480.0,
+    "card_yards": [],
+    "p_green": 0.358,
+    "anchored": false
+   },
+   "9": {
+    "status": "check",
+    "flags": [
+     "ambiguous (61% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 446.1,
+    "card_yards": [],
+    "p_green": 0.609,
+    "anchored": false
+   },
+   "10": {
+    "status": "check",
+    "flags": [
+     "ambiguous (71% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 520.6,
+    "card_yards": [],
+    "p_green": 0.709,
+    "anchored": false
+   },
+   "11": {
+    "status": "check",
+    "flags": [
+     "ambiguous (55% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 427.0,
+    "card_yards": [],
+    "p_green": 0.553,
+    "anchored": false
+   },
+   "12": {
+    "status": "check",
+    "flags": [
+     "ambiguous (69% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 512.0,
+    "card_yards": [],
+    "p_green": 0.691,
+    "anchored": false
+   },
+   "13": {
+    "status": "check",
+    "flags": [
+     "ambiguous (63% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 445.7,
+    "card_yards": [],
+    "p_green": 0.627,
+    "anchored": false
+   },
+   "14": {
+    "status": "check",
+    "flags": [
+     "ambiguous (79% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 306.6,
+    "card_yards": [],
+    "p_green": 0.787,
+    "anchored": false
+   },
+   "15": {
+    "status": "check",
+    "flags": [
+     "ambiguous (80% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 136.9,
+    "card_yards": [],
+    "p_green": 0.8,
+    "anchored": false
+   },
+   "16": {
+    "status": "check",
+    "flags": [
+     "no tee found",
+     "ambiguous (34% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     270,
+     320,
+     365,
+     385
+    ],
+    "p_green": 0.337,
+    "anchored": false
+   },
+   "17": {
+    "status": "check",
+    "flags": [
+     "ambiguous (49% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 163.2,
+    "card_yards": [
+     110,
+     145,
+     160,
+     175
+    ],
+    "p_green": 0.488,
+    "anchored": false
+   },
+   "18": {
+    "status": "check",
+    "flags": [
+     "no tee found",
+     "ambiguous (26% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     345,
+     370,
+     400,
+     425
+    ],
+    "p_green": 0.259,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 15,
+  "with_green_polygon": 15,
+  "green_osm": 15,
+  "green_segment": 0,
+  "with_tee_box": 1,
+  "stages": {
+   "resolve": "ok: way/357495678 Georgia Veterans Memorial Golf Course (Cordele, GA)",
+   "osm": "ok: 75 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 44 candidate pads near hole starts, 1 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (15 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/georgia_veterans_memorial_ga__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/georgia_veterans_memorial_ga__routed/imagery/dem.tif (15/15 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+211 zones on 15 holes, +0 greens, 24 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 620,
+    "card": null
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 494,
+    "card": null
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 458,
+    "card": null
+   },
+   "4": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 660,
+    "card": null
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 463,
+    "card": null
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 509,
+    "card": null
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 480,
+    "card": null
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 447,
+    "card": null
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 521,
+    "card": null
+   },
+   "11": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 427,
+    "card": null
+   },
+   "12": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 513,
+    "card": null
+   },
+   "13": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 446,
+    "card": null
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 307,
+    "card": null
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 137,
+    "card": null
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 175,
+    "card": 175
+   }
+  }
+ }
+}

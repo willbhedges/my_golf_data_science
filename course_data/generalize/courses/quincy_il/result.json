@@ -1,0 +1,664 @@
+{
+ "slug": "quincy_il",
+ "sample": {
+  "name": "Quincy Country Club",
+  "osm": "way/206629275",
+  "state": "IL",
+  "center": [
+   -91.37212,
+   39.922672
+  ],
+  "area_ha": 71.8,
+  "tags": {},
+  "counts": {
+   "fairway": 18,
+   "green": 11,
+   "bunker": 34,
+   "tee": 2
+  },
+  "tier": "partial",
+  "slug": "quincy_il"
+ },
+ "run_utc": "2026-10-17T01:07:06Z",
+ "seconds": {
+  "resolve_by_name": 168.3,
+  "osm": 28.6,
+  "parking": 28.0,
+  "scorecard": 3.9,
+  "imagery": 22.4,
+  "naip4": 0.4,
+  "segment": 31.5,
+  "lidar_pads": 1.3,
+  "package_today": 2.1,
+  "routing": 0.8,
+  "package_routed": 2.9
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 206629275
+  },
+  "name": "Quincy Country Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Quincy Country Club",
+    "Quincy",
+    0,
+    "way/206629275"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 4,
+   "golf=bunker": 34,
+   "golf=fairway": 17,
+   "golf=green": 11,
+   "golf=tee": 2,
+   "water_lines": 2,
+   "water_polygons": 1
+  },
+  "hole_refs": [],
+  "parking": 6
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/quincy-country-club"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/ac842d12-481a-4813-97a1-216e460a6319"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 70,
+  "sets": [
+   "Blue",
+   "Red",
+   "White"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   1656,
+   1907
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 21,
+   "tee": 44,
+   "fairway": 21,
+   "bunker": 42
+  },
+  "greens_p06": 21,
+  "seconds_infer": 26.5
+ },
+ "lidar_pads": 155,
+ "today": {
+  "holes_built": 2,
+  "with_green_polygon": 2,
+  "green_osm": 2,
+  "green_segment": 0,
+  "with_tee_box": 0,
+  "stages": {
+   "resolve": "ok: way/206629275 Quincy Country Club (Quincy, IL)",
+   "osm": "ok: 492 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.py for 3 sets on the card yardages",
+   "geometry": "ok: geometry/build_holes.py (2 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/quincy_il/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/quincy_il/imagery/dem.tif (2/2 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 2 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 570,
+    "card": null
+   },
+   "2": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 559,
+    "card": null
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 19.24,
+  "n_check": 10,
+  "unused_greens": [
+   "osm:way/681291434",
+   "osm:way/681291437",
+   "osm:way/681291455",
+   "osm:way/681291466",
+   "osm:way/681291467",
+   "segment:0",
+   "segment:4",
+   "segment:5"
+  ],
+  "clubhouse": [
+   -91.37576474664736,
+   39.92487480557295,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 26,
+   "greens_osm": 11,
+   "tees": 87,
+   "tees_by_src": {
+    "osm": 2,
+    "segment": 36,
+    "lidar": 49
+   },
+   "fairways": 38,
+   "anchors": 0
+  },
+  "holes": {
+   "1": {
+    "status": "check",
+    "flags": [
+     "ambiguous (77% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 295.6,
+    "card_yards": [
+     286,
+     294,
+     302
+    ],
+    "p_green": 0.772,
+    "anchored": false
+   },
+   "2": {
+    "status": "check",
+    "flags": [
+     "ambiguous (79% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 391.1,
+    "card_yards": [
+     330,
+     391,
+     402
+    ],
+    "p_green": 0.786,
+    "anchored": false
+   },
+   "3": {
+    "status": "check",
+    "flags": [
+     "ambiguous (79% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 190.2,
+    "card_yards": [
+     149,
+     190,
+     199
+    ],
+    "p_green": 0.786,
+    "anchored": false
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 531.6,
+    "card_yards": [
+     457,
+     468,
+     530
+    ],
+    "p_green": 0.972,
+    "anchored": false
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 422.5,
+    "card_yards": [
+     439,
+     459,
+     472
+    ],
+    "p_green": 0.821,
+    "anchored": false
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 442.3,
+    "card_yards": [
+     445,
+     457,
+     469
+    ],
+    "p_green": 0.909,
+    "anchored": false
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 176.2,
+    "card_yards": [
+     143,
+     181,
+     209
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 223.6,
+    "card_yards": [
+     185,
+     221,
+     239
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "9": {
+    "status": "check",
+    "flags": [
+     "ambiguous (21% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 341.9,
+    "card_yards": [
+     285,
+     369,
+     392
+    ],
+    "p_green": 0.215,
+    "anchored": false
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 395.5,
+    "card_yards": [
+     393,
+     403,
+     413
+    ],
+    "p_green": 0.861,
+    "anchored": false
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 371.5,
+    "card_yards": [
+     341,
+     374,
+     383
+    ],
+    "p_green": 0.821,
+    "anchored": false
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 372.7,
+    "card_yards": [
+     326,
+     376,
+     387
+    ],
+    "p_green": 0.821,
+    "anchored": false
+   },
+   "13": {
+    "status": "check",
+    "flags": [
+     "ambiguous (58% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 116.4,
+    "card_yards": [
+     86,
+     101,
+     116
+    ],
+    "p_green": 0.582,
+    "anchored": false
+   },
+   "14": {
+    "status": "check",
+    "flags": [
+     "no tee found",
+     "ambiguous (28% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     408,
+     419,
+     430
+    ],
+    "p_green": 0.278,
+    "anchored": false
+   },
+   "15": {
+    "status": "check",
+    "flags": [
+     "ambiguous (31% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 320.4,
+    "card_yards": [
+     324,
+     385,
+     400
+    ],
+    "p_green": 0.307,
+    "anchored": false
+   },
+   "16": {
+    "status": "check",
+    "flags": [
+     "no tee found",
+     "ambiguous (13% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     498,
+     589,
+     604
+    ],
+    "p_green": 0.129,
+    "anchored": false
+   },
+   "17": {
+    "status": "check",
+    "flags": [
+     "ambiguous (22% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 135.8,
+    "card_yards": [
+     131,
+     174,
+     187
+    ],
+    "p_green": 0.22,
+    "anchored": false
+   },
+   "18": {
+    "status": "check",
+    "flags": [
+     "ambiguous (18% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 302.4,
+    "card_yards": [
+     277,
+     298,
+     311
+    ],
+    "p_green": 0.18,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 16,
+  "with_green_polygon": 16,
+  "green_osm": 16,
+  "green_segment": 0,
+  "with_tee_box": 15,
+  "stages": {
+   "resolve": "ok: way/206629275 Quincy Country Club (Quincy, IL)",
+   "osm": "ok: 536 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 39 candidate pads near hole starts, 8 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (16 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/quincy_il__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/quincy_il__routed/imagery/dem.tif (16/16 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+16 zones on 2 holes, +0 greens, 16 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 301,
+    "card": 302
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 401,
+    "card": 402
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 199,
+    "card": 199
+   },
+   "4": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 532,
+    "card": 530
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 462,
+    "card": 472
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 463,
+    "card": 469
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 215,
+    "card": 209
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 239,
+    "card": 239
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 389,
+    "card": 392
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 407,
+    "card": 413
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 381,
+    "card": 383
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 382,
+    "card": 387
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 117,
+    "card": 116
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 399,
+    "card": 400
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 187,
+    "card": 187
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 312,
+    "card": 311
+   }
+  }
+ }
+}

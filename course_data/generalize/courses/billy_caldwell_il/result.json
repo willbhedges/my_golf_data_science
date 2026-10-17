@@ -1,0 +1,527 @@
+{
+ "slug": "billy_caldwell_il",
+ "sample": {
+  "name": "Billy Caldwell Golf Course",
+  "osm": "relation/6523351",
+  "state": "IL",
+  "center": [
+   -87.757268,
+   41.988323
+  ],
+  "area_ha": 79.2,
+  "tags": {
+   "addr:city": "Chicago",
+   "operator": "Indigo Sports",
+   "website": "https://billycaldwell.forestpreservegolf.com/"
+  },
+  "counts": {
+   "tee": 19,
+   "green": 10,
+   "fairway": 9,
+   "hole": 9
+  },
+  "tier": "full",
+  "slug": "billy_caldwell_il"
+ },
+ "run_utc": "2026-10-17T00:59:10Z",
+ "seconds": {
+  "resolve_by_name": 228.9,
+  "osm": 50.9,
+  "parking": 39.7,
+  "scorecard": 21.2,
+  "imagery": 17.3,
+  "naip4": 0.3,
+  "segment": 19.0,
+  "lidar_pads": 0.9,
+  "package_today": 1.8,
+  "routing": 0.0,
+  "package_routed": 1.7
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "relation",
+   "id": 6523351
+  },
+  "name": "Billy Caldwell Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Billy Caldwell Golf Course",
+    "Chicago",
+    9,
+    "relation/6523351"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 3,
+   "golf=clubhouse": 1,
+   "golf=fairway": 9,
+   "golf=green": 10,
+   "golf=hole": 9,
+   "golf=pin": 9,
+   "golf=tee": 19,
+   "single_trees": 1,
+   "tees_with_ref": 19,
+   "trees_polygons": 9,
+   "water_polygons": 1
+  },
+  "hole_refs": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 16
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/billy-caldwell-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 12 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/3f3e33b7-ff08-42f4-a08e-a9d3fc4ed278"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 9,
+  "par_total": 35,
+  "sets": [
+   "Blue",
+   "White",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   2067,
+   1630
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 10,
+   "tee": 21,
+   "fairway": 9,
+   "bunker": 1
+  },
+  "greens_p06": 10,
+  "seconds_infer": 14.1
+ },
+ "lidar_pads": 74,
+ "today": {
+  "holes_built": 9,
+  "with_green_polygon": 9,
+  "green_osm": 9,
+  "green_segment": 0,
+  "with_tee_box": 9,
+  "stages": {
+   "resolve": "ok: relation/6523351 Billy Caldwell Golf Course (Chicago, IL)",
+   "osm": "ok: 1379 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 16 candidate pads near hole starts, 1 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (9 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/billy_caldwell_il/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/billy_caldwell_il/imagery/dem.tif (9/9 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+3 zones on 3 holes, +0 greens, 19 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 386,
+    "card": 387
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 396,
+    "card": 396
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 284,
+    "card": 293
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 402,
+    "card": 401
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 318,
+    "card": 317
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 134,
+    "card": 149
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 375,
+    "card": 376
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 398,
+    "card": 399
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 389,
+    "card": 390
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 9,
+  "card": true,
+  "cost": -9.104,
+  "n_check": 0,
+  "unused_greens": [
+   "osm:way/195234153"
+  ],
+  "clubhouse": [
+   -87.75696426638544,
+   41.99240969478568,
+   "named"
+  ],
+  "inputs": {
+   "greens": 10,
+   "greens_osm": 10,
+   "tees": 59,
+   "tees_by_src": {
+    "osm": 19,
+    "segment": 5,
+    "lidar": 35
+   },
+   "fairways": 18,
+   "anchors": 9
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 384.8,
+    "card_yards": [
+     334,
+     357,
+     387
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 379.7,
+    "card_yards": [
+     313,
+     369,
+     396
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 275.0,
+    "card_yards": [
+     256,
+     275,
+     293
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 391.2,
+    "card_yards": [
+     347,
+     389,
+     401
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 244.9,
+    "card_yards": [
+     247,
+     299,
+     317
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 124.2,
+    "card_yards": [
+     129,
+     139,
+     149
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 374.9,
+    "card_yards": [
+     309,
+     366,
+     376
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 389.2,
+    "card_yards": [
+     357,
+     384,
+     399
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 386.5,
+    "card_yards": [
+     335,
+     363,
+     390
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 9,
+  "with_green_polygon": 9,
+  "green_osm": 9,
+  "green_segment": 0,
+  "with_tee_box": 9,
+  "stages": {
+   "resolve": "ok: relation/6523351 Billy Caldwell Golf Course (Chicago, IL)",
+   "osm": "ok: 1379 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 16 candidate pads near hole starts, 1 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (9 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/billy_caldwell_il__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/billy_caldwell_il__routed/imagery/dem.tif (9/9 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+3 zones on 3 holes, +0 greens, 19 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 386,
+    "card": 387
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 396,
+    "card": 396
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 284,
+    "card": 293
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 402,
+    "card": 401
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 318,
+    "card": 317
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 134,
+    "card": 149
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 375,
+    "card": 376
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 398,
+    "card": 399
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 389,
+    "card": 390
+   }
+  }
+ }
+}

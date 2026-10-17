@@ -1,0 +1,868 @@
+{
+ "slug": "gold_hills_il",
+ "sample": {
+  "name": "Gold Hills Golf Course",
+  "osm": "way/295771691",
+  "state": "IL",
+  "center": [
+   -90.731647,
+   40.437348
+  ],
+  "area_ha": 103.5,
+  "tags": {
+   "addr:city": "Colchester",
+   "website": "http://www.gold-hills.com/"
+  },
+  "counts": {
+   "bunker": 19,
+   "green": 18,
+   "tee": 24,
+   "fairway": 16
+  },
+  "tier": "partial",
+  "slug": "gold_hills_il"
+ },
+ "run_utc": "2026-10-17T01:13:36Z",
+ "seconds": {
+  "resolve_by_name": 162.2,
+  "osm": 35.5,
+  "parking": 29.9,
+  "scorecard": 45.7,
+  "imagery": 23.3,
+  "naip4": 0.5,
+  "segment": 52.0,
+  "lidar_pads": 1.6,
+  "package_today": 4.3,
+  "routing": 0.9,
+  "package_routed": 3.9
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 295771691
+  },
+  "name": "Gold Hills Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Gold Hills Golf Course",
+    "Colchester",
+    0,
+    "way/295771691"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 2,
+   "golf=bunker": 19,
+   "golf=fairway": 16,
+   "golf=green": 18,
+   "golf=tee": 24,
+   "tees_with_ref": 24,
+   "trees_polygons": 4,
+   "water_polygons": 10
+  },
+  "hole_refs": [],
+  "parking": 1
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (9 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site unreachable: ConnectTimeout(MaxRetryError(\"HTTPConnectionPool(host='www.gold-hills.com', port=80): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPConnection(host='www.g"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/cca13747-bbbe-469c-8fa9-9f62a2d4bce3"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 71,
+  "sets": [
+   "Blue",
+   "White",
+   "Gold",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   2072,
+   2087
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 21,
+   "tee": 9,
+   "fairway": 21,
+   "bunker": 22
+  },
+  "greens_p06": 20,
+  "seconds_infer": 47.0
+ },
+ "lidar_pads": 60,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 0,
+  "stages": {
+   "resolve": "ok: way/295771691 Gold Hills Golf Course (Colchester, IL)",
+   "osm": "ok: 152 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.py for 4 sets on the card yardages",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/gold_hills_il/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/gold_hills_il/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+2 zones on 1 holes, +0 greens, 5 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 437,
+    "card": null
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 360,
+    "card": null
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 133,
+    "card": null
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 128,
+    "card": null
+   },
+   "5": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 116,
+    "card": null
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 315,
+    "card": null
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 341,
+    "card": null
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 371,
+    "card": null
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 351,
+    "card": null
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 418,
+    "card": null
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 319,
+    "card": null
+   },
+   "12": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 539,
+    "card": null
+   },
+   "13": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 512,
+    "card": null
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 416,
+    "card": null
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 126,
+    "card": null
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 472,
+    "card": null
+   },
+   "17": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 498,
+    "card": null
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 390,
+    "card": null
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 11.646,
+  "n_check": 15,
+  "unused_greens": [
+   "osm:way/668934565",
+   "segment:3"
+  ],
+  "clubhouse": [
+   -90.73413297495681,
+   40.44073384449636,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 20,
+   "greens_osm": 18,
+   "tees": 56,
+   "tees_by_src": {
+    "osm": 24,
+    "segment": 4,
+    "lidar": 28
+   },
+   "fairways": 36,
+   "anchors": 0
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 399.8,
+    "card_yards": [
+     450,
+     500,
+     515,
+     530
+    ],
+    "p_green": 0.891,
+    "anchored": false
+   },
+   "2": {
+    "status": "check",
+    "flags": [
+     "ambiguous (80% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 300.9,
+    "card_yards": [
+     125,
+     304,
+     320,
+     330
+    ],
+    "p_green": 0.797,
+    "anchored": false
+   },
+   "3": {
+    "status": "check",
+    "flags": [
+     "ambiguous (80% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 127.3,
+    "card_yards": [
+     101,
+     118,
+     130,
+     144
+    ],
+    "p_green": 0.799,
+    "anchored": false
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 386.9,
+    "card_yards": [
+     312,
+     381,
+     396,
+     416
+    ],
+    "p_green": 0.989,
+    "anchored": false
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 363.8,
+    "card_yards": [
+     288,
+     328,
+     365,
+     393
+    ],
+    "p_green": 0.843,
+    "anchored": false
+   },
+   "6": {
+    "status": "check",
+    "flags": [
+     "ambiguous (47% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 250.9,
+    "card_yards": [
+     223,
+     240,
+     258,
+     279
+    ],
+    "p_green": 0.474,
+    "anchored": false
+   },
+   "7": {
+    "status": "check",
+    "flags": [
+     "ambiguous (26% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 290.6,
+    "card_yards": [
+     244,
+     271,
+     286,
+     294
+    ],
+    "p_green": 0.258,
+    "anchored": false
+   },
+   "8": {
+    "status": "check",
+    "flags": [
+     "ambiguous (25% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 99.7,
+    "card_yards": [
+     101,
+     158,
+     177,
+     192
+    ],
+    "p_green": 0.254,
+    "anchored": false
+   },
+   "9": {
+    "status": "check",
+    "flags": [
+     "ambiguous (30% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 521.9,
+    "card_yards": [
+     429,
+     447,
+     516,
+     524
+    ],
+    "p_green": 0.297,
+    "anchored": false
+   },
+   "10": {
+    "status": "check",
+    "flags": [
+     "ambiguous (47% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 429.6,
+    "card_yards": [
+     353,
+     410,
+     427,
+     436
+    ],
+    "p_green": 0.473,
+    "anchored": false
+   },
+   "11": {
+    "status": "check",
+    "flags": [
+     "ambiguous (62% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 318.6,
+    "card_yards": [
+     309,
+     322,
+     333,
+     343
+    ],
+    "p_green": 0.621,
+    "anchored": false
+   },
+   "12": {
+    "status": "check",
+    "flags": [
+     "ambiguous (53% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 165.4,
+    "card_yards": [
+     106,
+     148,
+     168,
+     193
+    ],
+    "p_green": 0.533,
+    "anchored": false
+   },
+   "13": {
+    "status": "check",
+    "flags": [
+     "ambiguous (61% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 143.9,
+    "card_yards": [
+     129,
+     143,
+     160,
+     207
+    ],
+    "p_green": 0.611,
+    "anchored": false
+   },
+   "14": {
+    "status": "check",
+    "flags": [
+     "ambiguous (25% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 531.9,
+    "card_yards": [
+     393,
+     505,
+     513,
+     528
+    ],
+    "p_green": 0.252,
+    "anchored": false
+   },
+   "15": {
+    "status": "check",
+    "flags": [
+     "ambiguous (39% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 431.1,
+    "card_yards": [
+     402,
+     436,
+     509,
+     530
+    ],
+    "p_green": 0.394,
+    "anchored": false
+   },
+   "16": {
+    "status": "check",
+    "flags": [
+     "ambiguous (40% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 171.9,
+    "card_yards": [
+     99,
+     162,
+     169,
+     189
+    ],
+    "p_green": 0.402,
+    "anchored": false
+   },
+   "17": {
+    "status": "check",
+    "flags": [
+     "ambiguous (65% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 389.2,
+    "card_yards": [
+     308,
+     371,
+     387,
+     404
+    ],
+    "p_green": 0.646,
+    "anchored": false
+   },
+   "18": {
+    "status": "check",
+    "flags": [
+     "ambiguous (19% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 268.9,
+    "card_yards": [
+     251,
+     254,
+     260,
+     272
+    ],
+    "p_green": 0.194,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 16,
+  "stages": {
+   "resolve": "ok: way/295771691 Gold Hills Golf Course (Colchester, IL)",
+   "osm": "ok: 179 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 20 candidate pads near hole starts, 3 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/gold_hills_il__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/gold_hills_il__routed/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+3 zones on 2 holes, +0 greens, 3 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 530,
+    "card": 530
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 318,
+    "card": 330
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 144,
+    "card": 144
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 417,
+    "card": 416
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 394,
+    "card": 393
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 260,
+    "card": 279
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 295,
+    "card": 294
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 192,
+    "card": 192
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 522,
+    "card": 524
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 436,
+    "card": 436
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 339,
+    "card": 343
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 193,
+    "card": 193
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 205,
+    "card": 207
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 527,
+    "card": 528
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 529,
+    "card": 530
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 189,
+    "card": 189
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 403,
+    "card": 404
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 269,
+    "card": 272
+   }
+  }
+ }
+}

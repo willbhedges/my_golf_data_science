@@ -1,0 +1,527 @@
+{
+ "slug": "willowhill_il",
+ "sample": {
+  "name": "Willowhill Golf Course",
+  "osm": "way/802256628",
+  "state": "IL",
+  "center": [
+   -87.815766,
+   42.110931
+  ],
+  "area_ha": 43.8,
+  "tags": {
+   "website": "https://www.willowhillgolfcourse.com/"
+  },
+  "counts": {
+   "green": 11,
+   "tee": 29,
+   "hole": 9,
+   "fairway": 9,
+   "bunker": 25
+  },
+  "tier": "full",
+  "slug": "willowhill_il"
+ },
+ "run_utc": "2026-10-17T01:06:25Z",
+ "seconds": {
+  "resolve_by_name": 168.9,
+  "osm": 32.2,
+  "parking": 23.3,
+  "scorecard": 8.7,
+  "imagery": 14.6,
+  "naip4": 0.3,
+  "segment": 26.4,
+  "lidar_pads": 0.9,
+  "package_today": 2.2,
+  "routing": 0.0,
+  "package_routed": 1.7
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 802256628
+  },
+  "name": "Willowhill Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Willowhill Golf Course",
+    "Northbrook",
+    9,
+    "way/802256628"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 3,
+   "built_up_landuse": 1,
+   "golf=bunker": 25,
+   "golf=cartpath": 15,
+   "golf=clubhouse": 1,
+   "golf=fairway": 9,
+   "golf=green": 11,
+   "golf=hole": 9,
+   "golf=pin": 9,
+   "golf=tee": 29,
+   "holes_with_handicap": 9,
+   "holes_with_par": 9
+  },
+  "hole_refs": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 9
+ },
+ "scorecard": {
+  "found": [
+   "golfify"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/willowhill-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": false,
+    "info": "opengolfapi: card at https://api.opengolfapi.org/api/v1/courses/a6a0916a-c3a9-4994-918c-38c577c4e3b8 rejected (hole count / lengths don't fit OSM)"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 9,
+  "par_total": 34,
+  "sets": [
+   "Blue",
+   "Red",
+   "White"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   1672,
+   1265
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 11,
+   "tee": 37,
+   "fairway": 9,
+   "bunker": 30
+  },
+  "greens_p06": 11,
+  "seconds_infer": 21.4
+ },
+ "lidar_pads": 85,
+ "today": {
+  "holes_built": 9,
+  "with_green_polygon": 9,
+  "green_osm": 9,
+  "green_segment": 0,
+  "with_tee_box": 9,
+  "stages": {
+   "resolve": "ok: way/802256628 Willowhill Golf Course (Northbrook, IL)",
+   "osm": "ok: 196 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 29 candidate pads near hole starts, 2 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (9 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/willowhill_il/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/willowhill_il/imagery/dem.tif (9/9 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 21 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 376,
+    "card": 377
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 343,
+    "card": 338
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 167,
+    "card": 167
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 341,
+    "card": 341
+   },
+   "5": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 146,
+    "card": 145
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 371,
+    "card": 371
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 435,
+    "card": 435
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 188,
+    "card": 188
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 477,
+    "card": 478
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 9,
+  "card": true,
+  "cost": -12.898,
+  "n_check": 0,
+  "unused_greens": [
+   "osm:way/819643170",
+   "osm:way/819643172"
+  ],
+  "clubhouse": [
+   -87.81410677255187,
+   42.10873292560472,
+   "named"
+  ],
+  "inputs": {
+   "greens": 11,
+   "greens_osm": 11,
+   "tees": 68,
+   "tees_by_src": {
+    "osm": 29,
+    "segment": 7,
+    "lidar": 32
+   },
+   "fairways": 18,
+   "anchors": 9
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 378.9,
+    "card_yards": [
+     265,
+     312,
+     377
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 386.5,
+    "card_yards": [
+     242,
+     305,
+     338
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 159.8,
+    "card_yards": [
+     97,
+     153,
+     167
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 355.2,
+    "card_yards": [
+     256,
+     320,
+     341
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 161.8,
+    "card_yards": [
+     100,
+     120,
+     145
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 371.4,
+    "card_yards": [
+     282,
+     340,
+     371
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 413.4,
+    "card_yards": [
+     351,
+     411,
+     435
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 180.6,
+    "card_yards": [
+     106,
+     138,
+     188
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 488.5,
+    "card_yards": [
+     401,
+     451,
+     478
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 9,
+  "with_green_polygon": 9,
+  "green_osm": 9,
+  "green_segment": 0,
+  "with_tee_box": 9,
+  "stages": {
+   "resolve": "ok: way/802256628 Willowhill Golf Course (Northbrook, IL)",
+   "osm": "ok: 197 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 29 candidate pads near hole starts, 2 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (9 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/willowhill_il__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/willowhill_il__routed/imagery/dem.tif (9/9 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 21 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 376,
+    "card": 377
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 343,
+    "card": 338
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 167,
+    "card": 167
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 341,
+    "card": 341
+   },
+   "5": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 146,
+    "card": 145
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 373,
+    "card": 371
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 435,
+    "card": 435
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 188,
+    "card": 188
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 477,
+    "card": 478
+   }
+  }
+ }
+}

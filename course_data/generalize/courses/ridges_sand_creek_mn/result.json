@@ -1,0 +1,816 @@
+{
+ "slug": "ridges_sand_creek_mn",
+ "sample": {
+  "name": "Ridges at Sand Creek",
+  "osm": "relation/18850821",
+  "state": "MN",
+  "center": [
+   -93.608493,
+   44.63491
+  ],
+  "area_ha": 68.0,
+  "tags": {
+   "addr:city": "Jordan"
+  },
+  "counts": {
+   "bunker": 36,
+   "tee": 32,
+   "green": 10,
+   "fairway": 9,
+   "hole": 7
+  },
+  "tier": "partial",
+  "slug": "ridges_sand_creek_mn"
+ },
+ "run_utc": "2026-10-17T01:13:04Z",
+ "seconds": {
+  "resolve_by_name": 243.7,
+  "resolve_osm": 81.4,
+  "osm": 29.3,
+  "parking": 33.4,
+  "scorecard": 17.1,
+  "imagery": 13.0,
+  "naip4": 0.4,
+  "segment": 32.4,
+  "lidar_pads": 1.2,
+  "package_today": 3.5,
+  "routing": 0.2,
+  "package_routed": 3.5
+ },
+ "resolve_by_name": {
+  "status": "ambiguous",
+  "osm": {},
+  "name": null,
+  "same_element": false,
+  "candidates": [
+   [
+    "Ridges at Sand Creek",
+    "Sand Creek Township",
+    11,
+    "way/175655077"
+   ],
+   [
+    "Ridges at Sand Creek",
+    "Jordan",
+    7,
+    "relation/18850821"
+   ],
+   [
+    "The Bridges",
+    "Winona",
+    19,
+    "way/321277104"
+   ],
+   [
+    "Albion Ridges Golf Course",
+    "Albion Township",
+    0,
+    "way/807580095"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 1,
+   "golf=bunker": 36,
+   "golf=cartpath": 18,
+   "golf=clubhouse": 1,
+   "golf=driving_range": 1,
+   "golf=fairway": 9,
+   "golf=green": 10,
+   "golf=hole": 7,
+   "golf=lateral_water_hazard": 2,
+   "golf=pin": 7,
+   "golf=rough": 4,
+   "golf=tee": 32,
+   "golf=water_hazard": 6,
+   "holes_with_handicap": 7,
+   "holes_with_par": 7,
+   "tees_with_colour": 27,
+   "water_lines": 1,
+   "water_polygons": 9
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "18",
+   "2",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 2
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (11 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/9a63d691-8cb5-4865-978e-4f2ed234f7be"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Black",
+   "Blue",
+   "White",
+   "Gold",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   1516,
+   1960
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 8,
+   "tee": 37,
+   "fairway": 9,
+   "bunker": 36
+  },
+  "greens_p06": 8,
+  "seconds_infer": 26.8
+ },
+ "lidar_pads": 100,
+ "today": {
+  "holes_built": 12,
+  "with_green_polygon": 10,
+  "green_osm": 10,
+  "green_segment": 0,
+  "with_tee_box": 10,
+  "stages": {
+   "resolve": "ok: relation/18850821 Ridges at Sand Creek (Jordan, MN)",
+   "osm": "ok: 225 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 40 candidate pads near hole starts, 0 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (12 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/ridges_sand_creek_mn/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/ridges_sand_creek_mn/imagery/dem.tif (9/12 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 7 tee candidates)"
+  },
+  "tee_set": "Black",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 548,
+    "card": 550
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 414,
+    "card": 415
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 181,
+    "card": 180
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 451,
+    "card": 447
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 425,
+    "card": 425
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 518,
+    "card": 518
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 430,
+    "card": 430
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 456,
+    "card": 452
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 604,
+    "card": 600
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 221,
+    "card": 219
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 163,
+    "card": 163
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 517,
+    "card": 516
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 71.817,
+  "n_check": 10,
+  "unused_greens": [],
+  "clubhouse": [
+   -93.61265390145842,
+   44.634065618350235,
+   "named"
+  ],
+  "inputs": {
+   "greens": 10,
+   "greens_osm": 10,
+   "tees": 71,
+   "tees_by_src": {
+    "osm": 32,
+    "segment": 6,
+    "lidar": 33
+   },
+   "fairways": 18,
+   "anchors": 7
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 546.6,
+    "card_yards": [
+     430,
+     485,
+     505,
+     530,
+     550
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 411.4,
+    "card_yards": [
+     308,
+     345,
+     360,
+     390,
+     415
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "check",
+    "flags": [
+     "no tee found"
+    ],
+    "green_src": "osm",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     101,
+     120,
+     135,
+     160,
+     180
+    ],
+    "p_green": 0.971,
+    "anchored": false
+   },
+   "4": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     302,
+     342,
+     382,
+     392,
+     447
+    ],
+    "p_green": 0.971,
+    "anchored": false
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 161.4,
+    "card_yards": [
+     122,
+     152,
+     170,
+     186,
+     202
+    ],
+    "p_green": 0.989,
+    "anchored": false
+   },
+   "6": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     323,
+     360,
+     380,
+     405,
+     425
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 493.0,
+    "card_yards": [
+     420,
+     465,
+     481,
+     504,
+     518
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 425.4,
+    "card_yards": [
+     294,
+     347,
+     372,
+     404,
+     430
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 410.1,
+    "card_yards": [
+     335,
+     373,
+     402,
+     437,
+     452
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 566.8,
+    "card_yards": [
+     461,
+     521,
+     535,
+     573,
+     600
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     125,
+     140,
+     160,
+     182,
+     219
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "12": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     285,
+     301,
+     343,
+     364,
+     394
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "13": {
+    "status": "check",
+    "flags": [
+     "ambiguous (79% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 455.9,
+    "card_yards": [
+     339,
+     411,
+     426,
+     444,
+     459
+    ],
+    "p_green": 0.787,
+    "anchored": false
+   },
+   "14": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     260,
+     271,
+     280,
+     285,
+     311
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "15": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     75,
+     87,
+     90,
+     110,
+     121
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "16": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     424,
+     471,
+     482,
+     537,
+     559
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "17": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     116,
+     132,
+     142,
+     154,
+     163
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 510.3,
+    "card_yards": [
+     416,
+     453,
+     470,
+     496,
+     516
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 14,
+  "with_green_polygon": 12,
+  "green_osm": 12,
+  "green_segment": 0,
+  "with_tee_box": 11,
+  "stages": {
+   "resolve": "ok: relation/18850821 Ridges at Sand Creek (Jordan, MN)",
+   "osm": "ok: 227 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 40 candidate pads near hole starts, 0 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (14 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/ridges_sand_creek_mn__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/ridges_sand_creek_mn__routed/imagery/dem.tif (11/14 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 10 tee candidates)"
+  },
+  "tee_set": "Black",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 548,
+    "card": 550
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 414,
+    "card": 415
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 181,
+    "card": 180
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 451,
+    "card": 447
+   },
+   "5": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 202,
+    "card": 202
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 425,
+    "card": 425
+   },
+   "7": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 518,
+    "card": 518
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 430,
+    "card": 430
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 456,
+    "card": 452
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 604,
+    "card": 600
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 221,
+    "card": 219
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 456,
+    "card": 459
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 163,
+    "card": 163
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 517,
+    "card": 516
+   }
+  }
+ }
+}

@@ -1,0 +1,810 @@
+{
+ "slug": "urbana_il",
+ "sample": {
+  "name": "Urbana Country Club",
+  "osm": "way/141166046",
+  "state": "IL",
+  "center": [
+   -88.208865,
+   40.131146
+  ],
+  "area_ha": 92.0,
+  "tags": {
+   "addr:city": "Urbana",
+   "golf:course": "18_holes",
+   "website": "https://ucc1922.com/"
+  },
+  "counts": {
+   "green": 19,
+   "bunker": 45,
+   "fairway": 21,
+   "tee": 45,
+   "hole": 18
+  },
+  "tier": "full",
+  "slug": "urbana_il"
+ },
+ "run_utc": "2026-10-17T00:59:13Z",
+ "seconds": {
+  "resolve_by_name": 191.5,
+  "osm": 34.2,
+  "parking": 49.1,
+  "scorecard": 22.4,
+  "imagery": 19.9,
+  "naip4": 0.3,
+  "segment": 21.8,
+  "lidar_pads": 1.1,
+  "package_today": 2.6,
+  "routing": 0.0,
+  "package_routed": 2.3
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 141166046
+  },
+  "name": "Urbana Country Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Urbana Country Club",
+    "Urbana",
+    18,
+    "way/141166046"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 9,
+   "golf=bunker": 45,
+   "golf=cartpath": 30,
+   "golf=clubhouse": 2,
+   "golf=fairway": 21,
+   "golf=green": 19,
+   "golf=hole": 18,
+   "golf=pin": 18,
+   "golf=tee": 45,
+   "golf=water_hazard": 1,
+   "holes_with_par": 18,
+   "single_trees": 328,
+   "tree_rows": 3,
+   "trees_polygons": 8,
+   "water_lines": 7,
+   "water_polygons": 1
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 36
+ },
+ "scorecard": {
+  "found": [
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (10 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/a96d1035-3bb5-4858-8cf3-14614879acab"
+   }
+  ],
+  "chosen": "opengolfapi",
+  "holes": 18,
+  "par_total": 71,
+  "sets": [
+   "Web"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   1743,
+   2204
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 21,
+   "tee": 43,
+   "fairway": 18,
+   "bunker": 38
+  },
+  "greens_p06": 20,
+  "seconds_infer": 17.8
+ },
+ "lidar_pads": 71,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/141166046 Urbana Country Club (Urbana, IL)",
+   "osm": "ok: 1093 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 1 sets; lidar pads: 35 candidate pads near hole starts, 2 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 1 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/urbana_il/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/urbana_il/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 29 tee candidates)"
+  },
+  "tee_set": "Web",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 550,
+    "card": 549
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 375,
+    "card": 376
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 524,
+    "card": 531
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 348,
+    "card": 348
+   },
+   "5": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 139,
+    "card": 139
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 441,
+    "card": 441
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 399,
+    "card": 393
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 160,
+    "card": 160
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 387,
+    "card": 385
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 337,
+    "card": 339
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 158,
+    "card": 158
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 416,
+    "card": 431
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 172,
+    "card": 172
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 543,
+    "card": 540
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 359,
+    "card": 358
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 489,
+    "card": 488
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 295,
+    "card": 295
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 443,
+    "card": 442
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -19.224,
+  "n_check": 0,
+  "unused_greens": [
+   "osm:way/1503461978",
+   "segment:5"
+  ],
+  "clubhouse": [
+   -88.20895222098329,
+   40.13081449614711,
+   "named"
+  ],
+  "inputs": {
+   "greens": 20,
+   "greens_osm": 19,
+   "tees": 81,
+   "tees_by_src": {
+    "osm": 45,
+    "segment": 9,
+    "lidar": 27
+   },
+   "fairways": 39,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 541.1,
+    "card_yards": [
+     549
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 362.2,
+    "card_yards": [
+     376
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 518.1,
+    "card_yards": [
+     531
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 264.1,
+    "card_yards": [
+     348
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 128.8,
+    "card_yards": [
+     139
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 402.1,
+    "card_yards": [
+     441
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 401.9,
+    "card_yards": [
+     393
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 141.3,
+    "card_yards": [
+     160
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 384.8,
+    "card_yards": [
+     385
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 323.8,
+    "card_yards": [
+     339
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 154.1,
+    "card_yards": [
+     158
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 400.1,
+    "card_yards": [
+     431
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 143.9,
+    "card_yards": [
+     172
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 545.6,
+    "card_yards": [
+     540
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 352.7,
+    "card_yards": [
+     358
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 545.7,
+    "card_yards": [
+     488
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 286.3,
+    "card_yards": [
+     295
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 435.8,
+    "card_yards": [
+     442
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/141166046 Urbana Country Club (Urbana, IL)",
+   "osm": "ok: 1094 features",
+   "scorecard": "ok: opengolfapi (opengolfapi)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 1 sets; lidar pads: 35 candidate pads near hole starts, 1 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 1 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/urbana_il__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/urbana_il__routed/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 29 tee candidates)"
+  },
+  "tee_set": "Web",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 550,
+    "card": 549
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 375,
+    "card": 376
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 524,
+    "card": 531
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 348,
+    "card": 348
+   },
+   "5": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 139,
+    "card": 139
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 441,
+    "card": 441
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 399,
+    "card": 393
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 156,
+    "card": 160
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 387,
+    "card": 385
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 337,
+    "card": 339
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 158,
+    "card": 158
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 416,
+    "card": 431
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 172,
+    "card": 172
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 543,
+    "card": 540
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 359,
+    "card": 358
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 489,
+    "card": 488
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 295,
+    "card": 295
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 443,
+    "card": 442
+   }
+  }
+ }
+}

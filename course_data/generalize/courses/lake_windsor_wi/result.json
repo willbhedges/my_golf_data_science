@@ -1,0 +1,712 @@
+{
+ "slug": "lake_windsor_wi",
+ "sample": {
+  "name": "Lake Windsor Country Club",
+  "osm": "way/28730368",
+  "state": "WI",
+  "center": [
+   -89.352611,
+   43.209042
+  ],
+  "area_ha": 158.4,
+  "tags": {
+   "addr:city": "Windsor",
+   "website": "https://www.lakewindsor.com/"
+  },
+  "counts": {
+   "green": 23,
+   "bunker": 26,
+   "fairway": 27,
+   "tee": 59,
+   "hole": 4
+  },
+  "tier": "partial",
+  "slug": "lake_windsor_wi"
+ },
+ "run_utc": "2026-10-17T01:13:10Z",
+ "seconds": {
+  "resolve_by_name": 179.2,
+  "osm": 32.6,
+  "parking": 30.1,
+  "scorecard": 13.2,
+  "imagery": 9.8,
+  "naip4": 0.4,
+  "segment": 33.0,
+  "lidar_pads": 1.7,
+  "package_today": 2.4,
+  "routing": 0.5,
+  "package_routed": 3.2
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 28730368
+  },
+  "name": "Lake Windsor Country Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Lake Windsor Country Club",
+    "Windsor",
+    4,
+    "way/28730368"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 5,
+   "golf=bunker": 26,
+   "golf=cartpath": 1,
+   "golf=driving_range": 1,
+   "golf=fairway": 27,
+   "golf=green": 23,
+   "golf=hole": 4,
+   "golf=tee": 59,
+   "holes_with_par": 1,
+   "water_lines": 6,
+   "water_polygons": 9
+  },
+  "hole_refs": [
+   "None"
+  ],
+  "parking": 4
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/lake-windsor-golf-club"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/f199309d-e688-4746-996b-d6bc92ad2d97"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Back",
+   "Back (L)",
+   "Forward",
+   "Forward (L)"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   3088,
+   2049
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 22,
+   "tee": 54,
+   "fairway": 26,
+   "bunker": 31
+  },
+  "greens_p06": 22,
+  "seconds_infer": 28.8
+ },
+ "lidar_pads": 157,
+ "today": {
+  "holes_built": 4,
+  "with_green_polygon": 4,
+  "green_osm": 4,
+  "green_segment": 0,
+  "with_tee_box": 0,
+  "stages": {
+   "resolve": "ok: way/28730368 Lake Windsor Country Club (Windsor, WI)",
+   "osm": "ok: 604 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.py for 4 sets on the card yardages",
+   "geometry": "ok: geometry/build_holes.py (4 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/lake_windsor_wi/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/lake_windsor_wi/imagery/dem.tif (4/4 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+2 zones on 2 holes, +0 greens, 3 tee candidates)"
+  },
+  "tee_set": "Back",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 317,
+    "card": null
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 385,
+    "card": null
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 308,
+    "card": null
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 156,
+    "card": null
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 2.572,
+  "n_check": 12,
+  "unused_greens": [
+   "osm:way/1046949784",
+   "osm:way/1493025816",
+   "osm:way/1493025877",
+   "osm:way/1493025931",
+   "osm:way/1493025934",
+   "segment:4"
+  ],
+  "clubhouse": [
+   -89.35495441661844,
+   43.20701664516515,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 24,
+   "greens_osm": 23,
+   "tees": 137,
+   "tees_by_src": {
+    "osm": 58,
+    "segment": 13,
+    "lidar": 66
+   },
+   "fairways": 53,
+   "anchors": 0
+  },
+  "holes": {
+   "1": {
+    "status": "check",
+    "flags": [
+     "ambiguous (58% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 394.4,
+    "card_yards": [
+     390,
+     471
+    ],
+    "p_green": 0.577,
+    "anchored": false
+   },
+   "2": {
+    "status": "check",
+    "flags": [
+     "ambiguous (66% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 317.2,
+    "card_yards": [
+     337,
+     358,
+     361
+    ],
+    "p_green": 0.657,
+    "anchored": false
+   },
+   "3": {
+    "status": "check",
+    "flags": [
+     "ambiguous (53% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 134.2,
+    "card_yards": [
+     109,
+     130,
+     154
+    ],
+    "p_green": 0.534,
+    "anchored": false
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 310.7,
+    "card_yards": [
+     299,
+     325,
+     347
+    ],
+    "p_green": 0.823,
+    "anchored": false
+   },
+   "5": {
+    "status": "check",
+    "flags": [
+     "ambiguous (49% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 482.1,
+    "card_yards": [
+     437,
+     474,
+     479
+    ],
+    "p_green": 0.491,
+    "anchored": false
+   },
+   "6": {
+    "status": "check",
+    "flags": [
+     "ambiguous (51% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 347.0,
+    "card_yards": [
+     323,
+     347,
+     352
+    ],
+    "p_green": 0.509,
+    "anchored": false
+   },
+   "7": {
+    "status": "check",
+    "flags": [
+     "ambiguous (57% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 170.3,
+    "card_yards": [
+     156,
+     165,
+     178
+    ],
+    "p_green": 0.572,
+    "anchored": false
+   },
+   "8": {
+    "status": "check",
+    "flags": [
+     "ambiguous (58% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 301.2,
+    "card_yards": [
+     293,
+     359,
+     362
+    ],
+    "p_green": 0.581,
+    "anchored": false
+   },
+   "9": {
+    "status": "check",
+    "flags": [
+     "ambiguous (38% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 281.1,
+    "card_yards": [
+     230,
+     275,
+     327
+    ],
+    "p_green": 0.381,
+    "anchored": false
+   },
+   "10": {
+    "status": "check",
+    "flags": [
+     "ambiguous (15% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 372.7,
+    "card_yards": [
+     328,
+     364
+    ],
+    "p_green": 0.153,
+    "anchored": false
+   },
+   "11": {
+    "status": "check",
+    "flags": [
+     "ambiguous (20% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 306.8,
+    "card_yards": [
+     310,
+     319,
+     321
+    ],
+    "p_green": 0.2,
+    "anchored": false
+   },
+   "12": {
+    "status": "check",
+    "flags": [
+     "ambiguous (34% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 326.9,
+    "card_yards": [
+     333,
+     384,
+     389
+    ],
+    "p_green": 0.342,
+    "anchored": false
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 308.5,
+    "card_yards": [
+     233,
+     309,
+     311
+    ],
+    "p_green": 0.852,
+    "anchored": false
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 155.6,
+    "card_yards": [
+     116,
+     148,
+     156
+    ],
+    "p_green": 0.964,
+    "anchored": false
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 502.5,
+    "card_yards": [
+     436,
+     500,
+     507
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 180.2,
+    "card_yards": [
+     148,
+     172
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 368.3,
+    "card_yards": [
+     280,
+     399,
+     403
+    ],
+    "p_green": 0.981,
+    "anchored": false
+   },
+   "18": {
+    "status": "check",
+    "flags": [
+     "ambiguous (37% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 535.5,
+    "card_yards": [
+     370,
+     464,
+     526
+    ],
+    "p_green": 0.37,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 17,
+  "stages": {
+   "resolve": "ok: way/28730368 Lake Windsor Country Club (Windsor, WI)",
+   "osm": "ok: 627 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 40 candidate pads near hole starts, 3 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/lake_windsor_wi__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/lake_windsor_wi__routed/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+6 zones on 4 holes, +0 greens, 30 tee candidates)"
+  },
+  "tee_set": "Back",
+  "per_hole": {
+   "1": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 475,
+    "card": 471
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 362,
+    "card": 361
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 140,
+    "card": 154
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 347,
+    "card": 347
+   },
+   "5": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 479,
+    "card": 479
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 352,
+    "card": 352
+   },
+   "7": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 178,
+    "card": 178
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 364,
+    "card": 362
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 327,
+    "card": 327
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 364,
+    "card": 364
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 314,
+    "card": 319
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 368,
+    "card": 389
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 309,
+    "card": 309
+   },
+   "14": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 156,
+    "card": 156
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 507,
+    "card": 507
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 172,
+    "card": 172
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 410,
+    "card": 403
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 529,
+    "card": 526
+   }
+  }
+ }
+}

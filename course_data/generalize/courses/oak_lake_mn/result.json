@@ -1,0 +1,386 @@
+{
+ "slug": "oak_lake_mn",
+ "sample": {
+  "name": "Oak Lake Golf Course",
+  "osm": "way/847229880",
+  "state": "MN",
+  "center": [
+   -95.977716,
+   47.662954
+  ],
+  "area_ha": 47.7,
+  "tags": {},
+  "counts": {
+   "green": 9,
+   "bunker": 2,
+   "fairway": 8
+  },
+  "tier": "partial",
+  "slug": "oak_lake_mn"
+ },
+ "run_utc": "2026-10-17T01:07:19Z",
+ "seconds": {
+  "resolve_by_name": 172.6,
+  "osm": 31.0,
+  "parking": 30.7,
+  "scorecard": 4.1,
+  "imagery": 15.1,
+  "naip4": 0.4,
+  "segment": 31.9,
+  "lidar_pads": 0.9,
+  "package_today": 1.0,
+  "routing": 0.4,
+  "package_routed": 2.0
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 847229880
+  },
+  "name": "Oak Lake Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Oak Lake Golf Course",
+    "Polk County",
+    0,
+    "way/847229880"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 3,
+   "golf=bunker": 2,
+   "golf=fairway": 8,
+   "golf=green": 9,
+   "tree_rows": 1,
+   "trees_polygons": 7,
+   "water_lines": 1
+  },
+  "hole_refs": [],
+  "parking": 5
+ },
+ "scorecard": {
+  "found": [
+   "golfify"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/oak-lake-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": false,
+    "info": "opengolfapi: no candidate in MN matching 'Oak Lake Golf Course' within 5.0 km"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 9,
+  "par_total": 35,
+  "sets": [
+   "Men",
+   "Women (L)"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   1383,
+   1728
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 9,
+   "tee": 10,
+   "fairway": 11
+  },
+  "greens_p06": 9,
+  "seconds_infer": 26.7
+ },
+ "lidar_pads": 46,
+ "errors": {
+  "package_today": "SystemExit: no holes built (no golf=hole ways and no tee/green pairs)"
+ },
+ "today": {
+  "holes_built": 0,
+  "reason": "SystemExit: no holes built (no golf=hole ways and no tee/green pairs)"
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 9,
+  "card": true,
+  "cost": 9.244,
+  "n_check": 0,
+  "unused_greens": [],
+  "clubhouse": [
+   -95.9844377,
+   47.6625538,
+   "parking"
+  ],
+  "inputs": {
+   "greens": 9,
+   "greens_osm": 9,
+   "tees": 23,
+   "tees_by_src": {
+    "osm": 0,
+    "segment": 9,
+    "lidar": 14
+   },
+   "fairways": 18,
+   "anchors": 0
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 395.9,
+    "card_yards": [
+     390,
+     400
+    ],
+    "p_green": 0.975,
+    "anchored": false
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 143.9,
+    "card_yards": [
+     135,
+     145
+    ],
+    "p_green": 0.99,
+    "anchored": false
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 249.8,
+    "card_yards": [
+     255
+    ],
+    "p_green": 0.997,
+    "anchored": false
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 249.4,
+    "card_yards": [
+     260
+    ],
+    "p_green": 0.998,
+    "anchored": false
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 318.8,
+    "card_yards": [
+     315
+    ],
+    "p_green": 0.994,
+    "anchored": false
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 377.1,
+    "card_yards": [
+     430
+    ],
+    "p_green": 0.932,
+    "anchored": false
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 336.4,
+    "card_yards": [
+     305,
+     335
+    ],
+    "p_green": 0.994,
+    "anchored": false
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 315.3,
+    "card_yards": [
+     310,
+     325
+    ],
+    "p_green": 0.995,
+    "anchored": false
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 145.6,
+    "card_yards": [
+     155
+    ],
+    "p_green": 0.928,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 9,
+  "with_green_polygon": 9,
+  "green_osm": 9,
+  "green_segment": 0,
+  "with_tee_box": 9,
+  "stages": {
+   "resolve": "ok: way/847229880 Oak Lake Golf Course (Polk County, MN)",
+   "osm": "ok: 139 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 2 sets; lidar pads: 22 candidate pads near hole starts, 2 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (9 holes, 2 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/oak_lake_mn__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/oak_lake_mn__routed/imagery/dem.tif (9/9 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+0 zones on 0 holes, +0 greens, 3 tee candidates)"
+  },
+  "tee_set": "Men",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 400,
+    "card": 400
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 144,
+    "card": 145
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 255,
+    "card": 255
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 260,
+    "card": 260
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 316,
+    "card": 315
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 438,
+    "card": 430
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 337,
+    "card": 335
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 324,
+    "card": 325
+   },
+   "9": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 151,
+    "card": 155
+   }
+  }
+ }
+}

@@ -1,0 +1,536 @@
+{
+ "slug": "saticoy_regional_ca",
+ "sample": {
+  "name": "Saticoy Regional Golf Course",
+  "osm": "way/76203490",
+  "state": "CA",
+  "center": [
+   -119.156404,
+   34.283803
+  ],
+  "area_ha": 47.3,
+  "tags": {},
+  "counts": {},
+  "tier": "none",
+  "slug": "saticoy_regional_ca"
+ },
+ "run_utc": "2026-10-17T01:14:07Z",
+ "seconds": {
+  "resolve_by_name": 157.0,
+  "osm": 29.9,
+  "parking": 39.7,
+  "scorecard": 4.0,
+  "imagery": 7.3,
+  "naip4": 0.2,
+  "segment": 15.5,
+  "lidar_pads": 0.6,
+  "package_today": 0.6,
+  "routing": 0.3,
+  "package_routed": 1.2
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 76203490
+  },
+  "name": "Saticoy Regional Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Saticoy Regional Golf Course",
+    "Ventura",
+    0,
+    "way/76203490"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {},
+  "hole_refs": [],
+  "parking": 5
+ },
+ "scorecard": {
+  "found": [
+   "golfify"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/saticoy-regional-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": false,
+    "info": "opengolfapi: no tees / holes_data for Saticoy Regional Golf Course (opengolfapi: Saticoy Regional Golf Course (0.15 km))"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 70,
+  "sets": [
+   "Back",
+   "Forward"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   1342,
+   1707
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 9,
+   "tee": 23,
+   "fairway": 9,
+   "bunker": 14
+  },
+  "greens_p06": 9,
+  "seconds_infer": 10.9
+ },
+ "lidar_pads": 61,
+ "errors": {
+  "package_today": "SystemExit: no holes built (no golf=hole ways and no tee/green pairs)"
+ },
+ "today": {
+  "holes_built": 0,
+  "reason": "SystemExit: no holes built (no golf=hole ways and no tee/green pairs)"
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 84.817,
+  "n_check": 14,
+  "unused_greens": [],
+  "clubhouse": [
+   -119.1550235,
+   34.2834202,
+   "parking"
+  ],
+  "inputs": {
+   "greens": 9,
+   "greens_osm": 0,
+   "tees": 42,
+   "tees_by_src": {
+    "osm": 0,
+    "segment": 21,
+    "lidar": 21
+   },
+   "fairways": 9,
+   "anchors": 0
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 426.1,
+    "card_yards": [
+     417,
+     429
+    ],
+    "p_green": 0.874,
+    "anchored": false
+   },
+   "2": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     474,
+     538
+    ],
+    "p_green": 0.874,
+    "anchored": false
+   },
+   "3": {
+    "status": "check",
+    "flags": [
+     "ambiguous (69% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 324.2,
+    "card_yards": [
+     312,
+     334
+    ],
+    "p_green": 0.688,
+    "anchored": false
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 530.6,
+    "card_yards": [
+     534,
+     584
+    ],
+    "p_green": 0.901,
+    "anchored": false
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 371.8,
+    "card_yards": [
+     350,
+     382
+    ],
+    "p_green": 0.899,
+    "anchored": false
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 153.5,
+    "card_yards": [
+     157,
+     173
+    ],
+    "p_green": 0.829,
+    "anchored": false
+   },
+   "7": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     361,
+     380
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "8": {
+    "status": "check",
+    "flags": [
+     "ambiguous (53% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 166.3,
+    "card_yards": [
+     150,
+     167
+    ],
+    "p_green": 0.532,
+    "anchored": false
+   },
+   "9": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     343,
+     368
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "10": {
+    "status": "check",
+    "flags": [
+     "ambiguous (43% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "lidar",
+    "straight_yd": 341.2,
+    "card_yards": [
+     351,
+     363
+    ],
+    "p_green": 0.429,
+    "anchored": false
+   },
+   "11": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     299,
+     322
+    ],
+    "p_green": 0.974,
+    "anchored": false
+   },
+   "12": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     347,
+     465
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "13": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     404,
+     423
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "14": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found",
+     "ambiguous (78% of near-best routings agree)"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     133,
+     144
+    ],
+    "p_green": 0.778,
+    "anchored": false
+   },
+   "15": {
+    "status": "check",
+    "flags": [
+     "ambiguous (67% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 106.6,
+    "card_yards": [
+     104,
+     112
+    ],
+    "p_green": 0.673,
+    "anchored": false
+   },
+   "16": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     329,
+     408
+    ],
+    "p_green": 1.0,
+    "anchored": false
+   },
+   "17": {
+    "status": "check",
+    "flags": [
+     "ambiguous (32% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": "segment",
+    "straight_yd": 137.8,
+    "card_yards": [
+     143,
+     169
+    ],
+    "p_green": 0.319,
+    "anchored": false
+   },
+   "18": {
+    "status": "check",
+    "flags": [
+     "no green found",
+     "no tee found",
+     "ambiguous (33% of near-best routings agree)"
+    ],
+    "green_src": null,
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     314,
+     329
+    ],
+    "p_green": 0.328,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 9,
+  "with_green_polygon": 9,
+  "green_osm": 9,
+  "green_segment": 0,
+  "with_tee_box": 8,
+  "stages": {
+   "resolve": "ok: way/76203490 Saticoy Regional Golf Course (Ventura, CA)",
+   "osm": "ok: 286 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 2 sets; lidar pads: 14 candidate pads near hole starts, 0 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (9 holes, 2 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/saticoy_regional_ca__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/saticoy_regional_ca__routed/imagery/dem.tif (9/9 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+61 zones on 9 holes, +0 greens, 21 tee candidates)"
+  },
+  "tee_set": "Back",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 426,
+    "card": 429
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 334,
+    "card": 334
+   },
+   "4": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "walkback",
+    "measured": 585,
+    "card": 584
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 379,
+    "card": 382
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 173,
+    "card": 173
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 167,
+    "card": 167
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 347,
+    "card": 363
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 112,
+    "card": 112
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 169,
+    "card": 169
+   }
+  }
+ }
+}

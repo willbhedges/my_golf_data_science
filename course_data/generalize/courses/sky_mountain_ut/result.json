@@ -1,0 +1,845 @@
+{
+ "slug": "sky_mountain_ut",
+ "sample": {
+  "name": "Sky Mountain Golf Course",
+  "osm": "relation/15023876",
+  "state": "UT",
+  "center": [
+   -113.335869,
+   37.189536
+  ],
+  "area_ha": 134.5,
+  "tags": {
+   "addr:city": "Hurricane",
+   "website": "https://www.skymountaingolf.com/homepage/start_page.php"
+  },
+  "counts": {
+   "tee": 70,
+   "green": 20,
+   "bunker": 25,
+   "fairway": 22,
+   "hole": 18
+  },
+  "tier": "full",
+  "slug": "sky_mountain_ut"
+ },
+ "run_utc": "2026-10-17T00:59:22Z",
+ "seconds": {
+  "resolve_by_name": 431.5,
+  "osm": 169.5,
+  "parking": 26.8,
+  "scorecard": 15.5,
+  "imagery": 16.5,
+  "naip4": 0.5,
+  "segment": 51.2,
+  "lidar_pads": 2.3,
+  "package_today": 5.7,
+  "routing": 0.1,
+  "package_routed": 5.4
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "relation",
+   "id": 15023876
+  },
+  "name": "Sky Mountain Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Sky Mountain Golf Course",
+    "Hurricane",
+    18,
+    "relation/15023876"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 1,
+   "golf=bunker": 25,
+   "golf=cartpath": 16,
+   "golf=fairway": 22,
+   "golf=green": 20,
+   "golf=hole": 18,
+   "golf=rough": 10,
+   "golf=tee": 69,
+   "golf=water_hazard": 2,
+   "holes_with_par": 18,
+   "tees_with_colour": 8,
+   "water_polygons": 2
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 7
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/sky-mountain-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 21 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/c3c4548d-0944-4d7e-a233-91c179bc01c5"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Blue",
+   "White",
+   "Gold",
+   "White (L)",
+   "Gold (L)"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2021,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   1978,
+   2745
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 20,
+   "tee": 62,
+   "fairway": 20,
+   "bunker": 29
+  },
+  "greens_p06": 20,
+  "seconds_infer": 46.5
+ },
+ "lidar_pads": 204,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: relation/15023876 Sky Mountain Golf Course (Hurricane, UT)",
+   "osm": "ok: 721 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 77 candidate pads near hole starts, 0 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/sky_mountain_ut/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)",
+   "elevation": "ok: course_data/generalize/work/sky_mountain_ut/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 25 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 361,
+    "card": 359
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 163,
+    "card": 167
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 298,
+    "card": 296
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 393,
+    "card": 392
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 385,
+    "card": 383
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 479,
+    "card": 481
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 417,
+    "card": 416
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 175,
+    "card": 176
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 503,
+    "card": 505
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 499,
+    "card": 500
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 374,
+    "card": 375
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 203,
+    "card": 203
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 349,
+    "card": 348
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 405,
+    "card": 408
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 308,
+    "card": 306
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 205,
+    "card": 205
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 375,
+    "card": 383
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 467,
+    "card": 485
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -28.334,
+  "n_check": 0,
+  "unused_greens": [
+   "osm:way/904470614",
+   "osm:way/973881504"
+  ],
+  "clubhouse": [
+   -113.33755332496713,
+   37.19127017076595,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 20,
+   "greens_osm": 20,
+   "tees": 165,
+   "tees_by_src": {
+    "osm": 69,
+    "segment": 14,
+    "lidar": 82
+   },
+   "fairways": 42,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 352.1,
+    "card_yards": [
+     296,
+     339,
+     359
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 162.7,
+    "card_yards": [
+     100,
+     144,
+     167
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 285.2,
+    "card_yards": [
+     226,
+     283,
+     296
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 383.6,
+    "card_yards": [
+     293,
+     354,
+     392
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 384.1,
+    "card_yards": [
+     321,
+     374,
+     383
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 454.1,
+    "card_yards": [
+     406,
+     455,
+     481
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 419.7,
+    "card_yards": [
+     356,
+     396,
+     416
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 178.8,
+    "card_yards": [
+     112,
+     176
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 497.3,
+    "card_yards": [
+     437,
+     497,
+     505
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 478.7,
+    "card_yards": [
+     368,
+     421,
+     500
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 359.8,
+    "card_yards": [
+     308,
+     351,
+     375
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 196.8,
+    "card_yards": [
+     131,
+     168,
+     203
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 340.0,
+    "card_yards": [
+     287,
+     339,
+     348
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 376.9,
+    "card_yards": [
+     347,
+     393,
+     408
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 307.4,
+    "card_yards": [
+     261,
+     301,
+     306
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 198.6,
+    "card_yards": [
+     151,
+     187,
+     205
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 345.4,
+    "card_yards": [
+     243,
+     366,
+     383
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 460.1,
+    "card_yards": [
+     401,
+     470,
+     485
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: relation/15023876 Sky Mountain Golf Course (Hurricane, UT)",
+   "osm": "ok: 721 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 5 sets; lidar pads: 77 candidate pads near hole starts, 0 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 5 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/sky_mountain_ut__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)",
+   "elevation": "ok: course_data/generalize/work/sky_mountain_ut__routed/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 25 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 361,
+    "card": 359
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tagged",
+    "measured": 163,
+    "card": 167
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 298,
+    "card": 296
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 393,
+    "card": 392
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 385,
+    "card": 383
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 479,
+    "card": 481
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 417,
+    "card": 416
+   },
+   "8": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 175,
+    "card": 176
+   },
+   "9": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 503,
+    "card": 505
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 499,
+    "card": 500
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 374,
+    "card": 375
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 203,
+    "card": 203
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 349,
+    "card": 348
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 405,
+    "card": 408
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 308,
+    "card": 306
+   },
+   "16": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 205,
+    "card": 205
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 375,
+    "card": 383
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 467,
+    "card": 485
+   }
+  }
+ }
+}

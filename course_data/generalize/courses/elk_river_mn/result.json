@@ -1,0 +1,864 @@
+{
+ "slug": "elk_river_mn",
+ "sample": {
+  "name": "Elk River Golf Club",
+  "osm": "way/490622069",
+  "state": "MN",
+  "center": [
+   -93.596695,
+   45.332587
+  ],
+  "area_ha": 88.7,
+  "tags": {},
+  "counts": {
+   "tee": 56,
+   "green": 19,
+   "bunker": 3,
+   "fairway": 19,
+   "hole": 18
+  },
+  "tier": "full",
+  "slug": "elk_river_mn"
+ },
+ "run_utc": "2026-10-17T00:59:22Z",
+ "seconds": {
+  "resolve_by_name": 164.7,
+  "osm": 38.2,
+  "parking": 40.8,
+  "scorecard": 6.5,
+  "imagery": 14.8,
+  "naip4": 0.5,
+  "segment": 37.1,
+  "lidar_pads": 1.4,
+  "package_today": 4.2,
+  "routing": 0.1,
+  "package_routed": 3.9
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 490622069
+  },
+  "name": "Elk River Golf Club",
+  "same_element": true,
+  "candidates": [
+   [
+    "Elk River Golf Club",
+    "Elk River",
+    18,
+    "way/490622069"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 2,
+   "golf=bunker": 3,
+   "golf=cartpath": 30,
+   "golf=driving_range": 1,
+   "golf=fairway": 19,
+   "golf=green": 19,
+   "golf=hole": 18,
+   "golf=lateral_water_hazard": 11,
+   "golf=pin": 18,
+   "golf=tee": 56,
+   "golf=water_hazard": 3,
+   "holes_with_handicap": 18,
+   "holes_with_par": 18,
+   "single_trees": 8,
+   "water_lines": 2,
+   "water_polygons": 16
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 3
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/elk-river-country-club"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "no website tag in OSM"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/2e2058da-7422-4372-904c-5f81e5468432"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Blue",
+   "White",
+   "Gold",
+   "Red"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "gsd_m": 0.3,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.3,
+  "shape": [
+   4,
+   1901,
+   1932
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 21,
+   "tee": 54,
+   "fairway": 20,
+   "bunker": 10
+  },
+  "greens_p06": 20,
+  "seconds_infer": 33.2
+ },
+ "lidar_pads": 110,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/490622069 Elk River Golf Club (Elk River, MN)",
+   "osm": "ok: 289 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 40 candidate pads near hole starts, 5 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/elk_river_mn/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/elk_river_mn/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+39 zones on 13 holes, +0 greens, 24 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 425,
+    "card": 425
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 168,
+    "card": 170
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 360,
+    "card": 360
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 180,
+    "card": 180
+   },
+   "5": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 494,
+    "card": 500
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 376,
+    "card": 375
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 394,
+    "card": 395
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 510,
+    "card": 510
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 415,
+    "card": 415
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 530,
+    "card": 530
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 205,
+    "card": 205
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 378,
+    "card": 380
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 295,
+    "card": 295
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 470,
+    "card": 470
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 180,
+    "card": 180
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 375,
+    "card": 375
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 340,
+    "card": 340
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 456,
+    "card": 455
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": -22.407,
+  "n_check": 0,
+  "unused_greens": [
+   "osm:way/785858175",
+   "segment:2"
+  ],
+  "clubhouse": [
+   -93.60181528316285,
+   45.33429869848867,
+   "building next to parking"
+  ],
+  "inputs": {
+   "greens": 20,
+   "greens_osm": 19,
+   "tees": 111,
+   "tees_by_src": {
+    "osm": 56,
+    "segment": 10,
+    "lidar": 45
+   },
+   "fairways": 39,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 422.2,
+    "card_yards": [
+     350,
+     375,
+     415,
+     425
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 137.1,
+    "card_yards": [
+     130,
+     135,
+     145,
+     170
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 355.2,
+    "card_yards": [
+     275,
+     305,
+     320,
+     360
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 167.0,
+    "card_yards": [
+     140,
+     150,
+     165,
+     180
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 375.3,
+    "card_yards": [
+     400,
+     435,
+     465,
+     500
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 362.6,
+    "card_yards": [
+     290,
+     320,
+     350,
+     375
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 386.4,
+    "card_yards": [
+     270,
+     310,
+     360,
+     395
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 442.4,
+    "card_yards": [
+     380,
+     420,
+     480,
+     510
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 398.4,
+    "card_yards": [
+     340,
+     365,
+     400,
+     415
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 489.7,
+    "card_yards": [
+     420,
+     460,
+     510,
+     530
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 192.2,
+    "card_yards": [
+     135,
+     145,
+     195,
+     205
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 366.7,
+    "card_yards": [
+     285,
+     350,
+     365,
+     380
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 278.4,
+    "card_yards": [
+     235,
+     275,
+     290,
+     295
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 451.2,
+    "card_yards": [
+     415,
+     435,
+     460,
+     470
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 167.0,
+    "card_yards": [
+     130,
+     150,
+     165,
+     180
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 361.6,
+    "card_yards": [
+     320,
+     335,
+     365,
+     375
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 333.3,
+    "card_yards": [
+     275,
+     310,
+     330,
+     340
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 434.3,
+    "card_yards": [
+     350,
+     365,
+     430,
+     455
+    ],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 18,
+  "green_osm": 18,
+  "green_segment": 0,
+  "with_tee_box": 18,
+  "stages": {
+   "resolve": "ok: way/490622069 Elk River Golf Club (Elk River, MN)",
+   "osm": "ok: 289 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 4 sets; lidar pads: 40 candidate pads near hole starts, 5 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 4 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/elk_river_mn__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)",
+   "elevation": "ok: course_data/generalize/work/elk_river_mn__routed/imagery/dem.tif (18/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+39 zones on 13 holes, +0 greens, 24 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 425,
+    "card": 425
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 168,
+    "card": 170
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 360,
+    "card": 360
+   },
+   "4": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 180,
+    "card": 180
+   },
+   "5": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 494,
+    "card": 500
+   },
+   "6": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 376,
+    "card": 375
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 394,
+    "card": 395
+   },
+   "8": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 510,
+    "card": 510
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 415,
+    "card": 415
+   },
+   "10": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 530,
+    "card": 530
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 205,
+    "card": 205
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 378,
+    "card": 380
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 295,
+    "card": 295
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 470,
+    "card": 470
+   },
+   "15": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 180,
+    "card": 180
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 375,
+    "card": 375
+   },
+   "17": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 340,
+    "card": 340
+   },
+   "18": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 456,
+    "card": 455
+   }
+  }
+ }
+}

@@ -1,0 +1,772 @@
+{
+ "slug": "wild_ridge_wi",
+ "sample": {
+  "name": "Wild Ridge Golf Course",
+  "osm": "way/27260407",
+  "state": "WI",
+  "center": [
+   -91.569604,
+   44.832619
+  ],
+  "area_ha": 153.3,
+  "tags": {
+   "addr:city": "Eau Claire",
+   "website": "https://wildridgegolf.com/"
+  },
+  "counts": {
+   "bunker": 71,
+   "green": 23,
+   "tee": 87,
+   "hole": 21,
+   "fairway": 22
+  },
+  "tier": "full",
+  "slug": "wild_ridge_wi"
+ },
+ "run_utc": "2026-10-17T00:59:26Z",
+ "seconds": {
+  "resolve_by_name": 161.8,
+  "osm": 41.5,
+  "parking": 43.1,
+  "scorecard": 25.8,
+  "imagery": 14.4,
+  "naip4": 0.6,
+  "segment": 66.5,
+  "lidar_pads": 2.6,
+  "package_today": 1.8,
+  "routing": 0.1,
+  "package_routed": 1.1
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 27260407
+  },
+  "name": "Wild Ridge Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Wild Ridge Golf Course",
+    "Eau Claire",
+    21,
+    "way/27260407"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 2,
+   "golf=bunker": 71,
+   "golf=cartpath": 20,
+   "golf=clubhouse": 1,
+   "golf=fairway": 22,
+   "golf=green": 23,
+   "golf=hole": 21,
+   "golf=lateral_water_hazard": 3,
+   "golf=path": 3,
+   "golf=rough": 15,
+   "golf=tee": 87,
+   "golf=water_hazard": 1,
+   "holes_with_par": 18,
+   "single_trees": 108,
+   "tees_with_ref": 78,
+   "trees_polygons": 7,
+   "water_polygons": 4
+  },
+  "hole_refs": [
+   "1",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "parking": 6
+ },
+ "scorecard": {
+  "found": [],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": false,
+    "info": "golfify: no matching page (9 URLs tried)"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 13 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": false,
+    "info": "opengolfapi: card at https://api.opengolfapi.org/api/v1/courses/5819da0b-758c-429d-99ed-42144b3d674e rejected (hole count / lengths don't fit OSM)"
+   }
+  ],
+  "chosen": null
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   1785,
+   3422
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 21,
+   "tee": 72,
+   "fairway": 22,
+   "bunker": 69
+  },
+  "greens_p06": 21,
+  "seconds_infer": 61.0
+ },
+ "lidar_pads": 161,
+ "today": {
+  "holes_built": 18,
+  "with_green_polygon": 15,
+  "green_osm": 15,
+  "green_segment": 0,
+  "with_tee_box": 0,
+  "stages": {
+   "resolve": "ok: way/27260407 Wild Ridge Golf Course (Eau Claire, WI)",
+   "osm": "ok: 549 features",
+   "scorecard": "missing",
+   "tees": "fallback: OSM tee nearest the hole-line start (no yardages)",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 1 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/wild_ridge_wi/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/wild_ridge_wi/imagery/dem.tif (14/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 27 tee candidates)"
+  },
+  "tee_set": "osm_back",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 281,
+    "card": null
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 378,
+    "card": null
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 574,
+    "card": null
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 266,
+    "card": null
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 477,
+    "card": null
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 118,
+    "card": null
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 353,
+    "card": null
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 376,
+    "card": null
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 340,
+    "card": null
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 300,
+    "card": null
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 297,
+    "card": null
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 147,
+    "card": null
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 329,
+    "card": null
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 533,
+    "card": null
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 453,
+    "card": null
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 489,
+    "card": null
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 192,
+    "card": null
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 514,
+    "card": null
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": false,
+  "cost": -10.0,
+  "n_check": 1,
+  "unused_greens": [
+   "osm:way/1022491246",
+   "osm:way/1022501340",
+   "osm:way/1022510914",
+   "osm:way/1022734232",
+   "osm:way/1037425231"
+  ],
+  "clubhouse": [
+   -91.56800796130565,
+   44.83531327838587,
+   "named"
+  ],
+  "inputs": {
+   "greens": 23,
+   "greens_osm": 23,
+   "tees": 145,
+   "tees_by_src": {
+    "osm": 87,
+    "segment": 8,
+    "lidar": 50
+   },
+   "fairways": 44,
+   "anchors": 18
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 400.6,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 335.2,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 542.4,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "4": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 299.1,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "5": {
+    "status": "check",
+    "flags": [
+     "no tee found"
+    ],
+    "green_src": "osm",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 117.7,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 351.0,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "8": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 136.7,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 388.9,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 393.8,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 278.1,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 146.4,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 325.6,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "14": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 523.9,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 442.7,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 465.9,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 188.3,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   },
+   "18": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 395.0,
+    "card_yards": [],
+    "p_green": 1.0,
+    "anchored": true
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 18,
+  "with_green_polygon": 15,
+  "green_osm": 15,
+  "green_segment": 0,
+  "with_tee_box": 0,
+  "stages": {
+   "resolve": "ok: way/27260407 Wild Ridge Golf Course (Eau Claire, WI)",
+   "osm": "ok: 549 features",
+   "scorecard": "missing",
+   "tees": "fallback: OSM tee nearest the hole-line start (no yardages)",
+   "geometry": "ok: geometry/build_holes.py (18 holes, 1 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/wild_ridge_wi__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/wild_ridge_wi__routed/imagery/dem.tif (14/18 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 27 tee candidates)"
+  },
+  "tee_set": "osm_back",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 281,
+    "card": null
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 378,
+    "card": null
+   },
+   "3": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 574,
+    "card": null
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 266,
+    "card": null
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 477,
+    "card": null
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 118,
+    "card": null
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 353,
+    "card": null
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 376,
+    "card": null
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 340,
+    "card": null
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": false,
+    "green_src": "hole_line_end",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 300,
+    "card": null
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 297,
+    "card": null
+   },
+   "12": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 147,
+    "card": null
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 329,
+    "card": null
+   },
+   "14": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 533,
+    "card": null
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 453,
+    "card": null
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 489,
+    "card": null
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 192,
+    "card": null
+   },
+   "18": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "hole-line start (no golf=tee near it)",
+    "measured": 514,
+    "card": null
+   }
+  }
+ }
+}

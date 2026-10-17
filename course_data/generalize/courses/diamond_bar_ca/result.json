@@ -1,0 +1,776 @@
+{
+ "slug": "diamond_bar_ca",
+ "sample": {
+  "name": "Diamond Bar Golf Course",
+  "osm": "way/100010941",
+  "state": "CA",
+  "center": [
+   -117.821394,
+   34.011055
+  ],
+  "area_ha": 291.6,
+  "tags": {
+   "addr:city": "Diamond Bar",
+   "website": "https://www.diamondbargc.com/"
+  },
+  "counts": {
+   "tee": 51,
+   "fairway": 27,
+   "bunker": 43,
+   "green": 15
+  },
+  "tier": "partial",
+  "slug": "diamond_bar_ca"
+ },
+ "run_utc": "2026-10-17T01:06:38Z",
+ "seconds": {
+  "resolve_by_name": 177.1,
+  "osm": 33.1,
+  "parking": 31.6,
+  "scorecard": 10.3,
+  "imagery": 17.4,
+  "naip4": 0.8,
+  "segment": 68.5,
+  "lidar_pads": 7.1,
+  "package_today": 9.1,
+  "routing": 0.9,
+  "package_routed": 8.8
+ },
+ "resolve_by_name": {
+  "status": "ok",
+  "osm": {
+   "type": "way",
+   "id": 100010941
+  },
+  "name": "Diamond Bar Golf Course",
+  "same_element": true,
+  "candidates": [
+   [
+    "Diamond Bar Golf Course",
+    "Diamond Bar",
+    0,
+    "way/100010941"
+   ]
+  ]
+ },
+ "osm": {
+  "features": {
+   "buildings": 3,
+   "built_up_landuse": 1,
+   "golf=bunker": 43,
+   "golf=cartpath": 14,
+   "golf=fairway": 27,
+   "golf=green": 15,
+   "golf=path": 2,
+   "golf=tee": 51,
+   "golf=water_hazard": 1,
+   "long_grass_polygons": 2,
+   "single_trees": 103,
+   "tees_with_ref": 51,
+   "trees_polygons": 3,
+   "water_lines": 2,
+   "water_polygons": 1
+  },
+  "hole_refs": [],
+  "parking": 27
+ },
+ "scorecard": {
+  "found": [
+   "golfify",
+   "opengolfapi"
+  ],
+  "tried": [
+   {
+    "source": "golfify",
+    "ok": true,
+    "info": "https://www.golfify.io/courses/diamond-bar-golf-course"
+   },
+   {
+    "source": "club_site",
+    "ok": false,
+    "info": "club site: no parsable scorecard in 11 pages"
+   },
+   {
+    "source": "opengolfapi",
+    "ok": true,
+    "info": "https://api.opengolfapi.org/api/v1/courses/7245a7aa-07fc-454f-9a15-14f4de68b9f7"
+   }
+  ],
+  "chosen": "golfify",
+  "holes": 18,
+  "par_total": 72,
+  "sets": [
+   "Blue",
+   "White",
+   "Silver"
+  ]
+ },
+ "imagery": {
+  "ok": true,
+  "files": [
+   "dem.tif",
+   "georef.json",
+   "naip_nir.tif",
+   "naip_nir_lo.jpg",
+   "naip_rgb.tif",
+   "naip_rgb_lo.jpg",
+   "preview.jpg"
+  ],
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "gsd_m": 0.6,
+  "dem": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)"
+ },
+ "naip4": {
+  "res_m": 0.6,
+  "native_m": 0.6,
+  "shape": [
+   4,
+   3420,
+   2998
+  ]
+ },
+ "segment": {
+  "counts": {
+   "green": 16,
+   "tee": 37,
+   "fairway": 17,
+   "bunker": 28
+  },
+  "greens_p06": 13,
+  "seconds_infer": 63.7
+ },
+ "lidar_pads": 638,
+ "today": {
+  "holes_built": 15,
+  "with_green_polygon": 15,
+  "green_osm": 15,
+  "green_segment": 0,
+  "with_tee_box": 0,
+  "stages": {
+   "resolve": "ok: way/100010941 Diamond Bar Golf Course (Diamond Bar, CA)",
+   "osm": "ok: 2343 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.py for 3 sets on the card yardages",
+   "geometry": "ok: geometry/build_holes.py (15 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/diamond_bar_ca/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/diamond_bar_ca/imagery/dem.tif (15/15 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 14 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 315,
+    "card": null
+   },
+   "2": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 139,
+    "card": null
+   },
+   "3": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 382,
+    "card": null
+   },
+   "4": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 408,
+    "card": null
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 346,
+    "card": null
+   },
+   "6": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 141,
+    "card": null
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 304,
+    "card": null
+   },
+   "8": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 335,
+    "card": null
+   },
+   "9": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 294,
+    "card": null
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 347,
+    "card": null
+   },
+   "11": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 138,
+    "card": null
+   },
+   "12": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 323,
+    "card": null
+   },
+   "13": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 342,
+    "card": null
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 429,
+    "card": null
+   },
+   "15": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": false,
+    "tee_method": "tee nearest the hole-line start",
+    "measured": 392,
+    "card": null
+   }
+  }
+ },
+ "routing": {
+  "method": "routing/1",
+  "status": "ok",
+  "n_holes": 18,
+  "card": true,
+  "cost": 6.459,
+  "n_check": 4,
+  "unused_greens": [
+   "segment:3"
+  ],
+  "clubhouse": [
+   -117.82122145,
+   34.007652050000004,
+   "parking"
+  ],
+  "inputs": {
+   "greens": 19,
+   "greens_osm": 15,
+   "tees": 155,
+   "tees_by_src": {
+    "osm": 51,
+    "segment": 21,
+    "lidar": 83
+   },
+   "fairways": 40,
+   "anchors": 0
+  },
+  "holes": {
+   "1": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 455.0,
+    "card_yards": [
+     370,
+     410,
+     459
+    ],
+    "p_green": 0.955,
+    "anchored": false
+   },
+   "2": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 380.5,
+    "card_yards": [
+     324,
+     372,
+     387
+    ],
+    "p_green": 0.954,
+    "anchored": false
+   },
+   "3": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 190.2,
+    "card_yards": [
+     119,
+     180,
+     191
+    ],
+    "p_green": 0.936,
+    "anchored": false
+   },
+   "4": {
+    "status": "check",
+    "flags": [
+     "no tee found",
+     "ambiguous (45% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     538,
+     552,
+     559
+    ],
+    "p_green": 0.448,
+    "anchored": false
+   },
+   "5": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "segment",
+    "tee_src": "osm",
+    "straight_yd": 353.9,
+    "card_yards": [
+     354,
+     365,
+     378
+    ],
+    "p_green": 0.818,
+    "anchored": false
+   },
+   "6": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 473.5,
+    "card_yards": [
+     412,
+     477,
+     488
+    ],
+    "p_green": 0.818,
+    "anchored": false
+   },
+   "7": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 374.3,
+    "card_yards": [
+     346,
+     374,
+     391
+    ],
+    "p_green": 0.818,
+    "anchored": false
+   },
+   "8": {
+    "status": "check",
+    "flags": [
+     "no tee found"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     368,
+     399,
+     420
+    ],
+    "p_green": 0.836,
+    "anchored": false
+   },
+   "9": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 165.4,
+    "card_yards": [
+     142,
+     161,
+     188
+    ],
+    "p_green": 0.831,
+    "anchored": false
+   },
+   "10": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 336.4,
+    "card_yards": [
+     320,
+     334,
+     345
+    ],
+    "p_green": 0.953,
+    "anchored": false
+   },
+   "11": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 421.4,
+    "card_yards": [
+     350,
+     410,
+     424
+    ],
+    "p_green": 0.878,
+    "anchored": false
+   },
+   "12": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 517.3,
+    "card_yards": [
+     487,
+     518,
+     530
+    ],
+    "p_green": 0.924,
+    "anchored": false
+   },
+   "13": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 196.3,
+    "card_yards": [
+     163,
+     181,
+     197
+    ],
+    "p_green": 0.923,
+    "anchored": false
+   },
+   "14": {
+    "status": "check",
+    "flags": [
+     "ambiguous (79% of near-best routings agree)"
+    ],
+    "green_src": "osm",
+    "tee_src": "segment",
+    "straight_yd": 322.0,
+    "card_yards": [
+     332,
+     343,
+     354
+    ],
+    "p_green": 0.785,
+    "anchored": false
+   },
+   "15": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 459.0,
+    "card_yards": [
+     463,
+     476,
+     486
+    ],
+    "p_green": 0.815,
+    "anchored": false
+   },
+   "16": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "lidar",
+    "straight_yd": 366.6,
+    "card_yards": [
+     397,
+     401,
+     414
+    ],
+    "p_green": 0.83,
+    "anchored": false
+   },
+   "17": {
+    "status": "ok",
+    "flags": [],
+    "green_src": "osm",
+    "tee_src": "osm",
+    "straight_yd": 140.5,
+    "card_yards": [
+     123,
+     140,
+     150
+    ],
+    "p_green": 0.855,
+    "anchored": false
+   },
+   "18": {
+    "status": "check",
+    "flags": [
+     "no tee found",
+     "ambiguous (17% of near-best routings agree)"
+    ],
+    "green_src": "segment",
+    "tee_src": null,
+    "straight_yd": null,
+    "card_yards": [
+     393,
+     404,
+     440
+    ],
+    "p_green": 0.175,
+    "anchored": false
+   }
+  }
+ },
+ "with_routing": {
+  "holes_built": 15,
+  "with_green_polygon": 15,
+  "green_osm": 15,
+  "green_segment": 0,
+  "with_tee_box": 15,
+  "stages": {
+   "resolve": "ok: way/100010941 Diamond Bar Golf Course (Diamond Bar, CA)",
+   "osm": "ok: 2364 features",
+   "scorecard": "ok: golfify (golfify)",
+   "tees": "ok: tees/place_tee.place_course_sets (joint, ordered back to front, green centroid) for 3 sets; lidar pads: 44 candidate pads near hole starts, 4 placement(s) on one",
+   "geometry": "ok: geometry/build_holes.py (15 holes, 3 tee set(s))",
+   "imagery": "ok: course_data/generalize/work/diamond_bar_ca__routed/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)",
+   "elevation": "ok: course_data/generalize/work/diamond_bar_ca__routed/imagery/dem.tif (15/15 holes)",
+   "segment": "ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 19 tee candidates)"
+  },
+  "tee_set": "Blue",
+  "per_hole": {
+   "1": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 458,
+    "card": 459
+   },
+   "2": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 386,
+    "card": 387
+   },
+   "3": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 190,
+    "card": 191
+   },
+   "5": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 376,
+    "card": 378
+   },
+   "6": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 486,
+    "card": 488
+   },
+   "7": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 392,
+    "card": 391
+   },
+   "9": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 169,
+    "card": 188
+   },
+   "10": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 343,
+    "card": 345
+   },
+   "11": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 421,
+    "card": 424
+   },
+   "12": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 526,
+    "card": 530
+   },
+   "13": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 196,
+    "card": 197
+   },
+   "14": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 343,
+    "card": 354
+   },
+   "15": {
+    "par": 5,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_axis",
+    "measured": 485,
+    "card": 486
+   },
+   "16": {
+    "par": 4,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "lidar_pad",
+    "measured": 413,
+    "card": 414
+   },
+   "17": {
+    "par": 3,
+    "line": true,
+    "green_polygon": true,
+    "green_src": "osm_green",
+    "tee": true,
+    "tee_method": "tee_centroid",
+    "measured": 151,
+    "card": 150
+   }
+  }
+ }
+}
