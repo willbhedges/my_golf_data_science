@@ -120,6 +120,10 @@ def detect_pads(dem_path, greens=(), lines=None):
             z[z == src.nodata] = np.nan
         T, crs = src.transform, src.crs
     res = abs(T.a)
+    if crs is None or crs.is_geographic or res > 2.0:
+        # not a ~1 m lidar DEM in metres (e.g. Pine Dunes TX: 3DEP only has the 1/3" ~10 m DEM, in degrees):
+        # res would be read as metres and the 15 m top-hat disk would be ~160 000 px wide (MemoryError)
+        return []
     inv = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
     gc = [pt.centroid_ll(g["coords"]) for g in greens if len(g["coords"]) >= 3]
     pads = []
