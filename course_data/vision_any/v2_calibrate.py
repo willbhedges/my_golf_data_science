@@ -17,6 +17,14 @@ Stages (Actions, .github/workflows/vision_any_v2_calib.yml; request course_data/
           HOLE-out (settings chosen on every other tee shot of both courses); bias = misses toward a shorter vs
           a longer club; the merge gate (decision level, vs the committed packages scored in the same harness).
 
+Held-out truth courses (hand-checked corridor maps, course_data/truth/<slug>/hand_zones_ll.json; never used to
+train or select anything here). Workflow vision_any_v2_holdout.yml; request course_data/requests/vision_v2_holdout.json:
+  layers   python v2_calibrate.py layers --holdout --out DIR     (product model only: trained on SH + Mozingo, so it
+           is out of sample on every held-out course)
+  score    python v2_calibrate.py score --holdout --dir DIR --shard i --nshards n --out rows_i.json
+  report   python v2_calibrate.py holdout-report --rows 'rows_*.json'  -> v2_holdout_calibration.{md,json}
+           (does not touch v2_decision_calibration.* and never integrates)
+
 Settings: native threshold (incl. off), native eligibility (strict: never on canopy / relaxed), tree buffer k m,
 native minimum distance from OSM fairway (the Driver landing zone is mostly mown rough on the hand maps),
 OB out_off (yds, ob/params.json; None = the calibrated value).
@@ -42,6 +50,22 @@ import layers as L                                           # noqa: E402
 
 YD = 0.9144
 EVAL = {"spirit_hollow": "spirit_hollow", "mozingo": "mozingo_lake"}          # vision slug -> scoreboard slug
+HOLDOUT = {"veenker": "veenker", "coldwater": "coldwater", "ellis": "ellis"}  # held-out truth courses
+ADOPTED = "throff_strict_k3_d0"           # the integrated product setting (no long grass, trees = canopy + 3 m)
+PREV_PICK = "thr0.5_relaxed_k0_d0"        # the in-sample product-map pick it replaced
+
+
+def holdouts(need_raw2=False):
+    """{vision slug: scoreboard slug} of the held-out courses with a hand map (and raw2, for layers)."""
+    out = {}
+    for v, p in HOLDOUT.items():
+        if not os.path.exists(os.path.join(CD, "truth", p, "hand_zones_ll.json")):
+            continue
+        if need_raw2 and not os.path.exists(os.path.join(HERE, v, "raw2", "meta2.json")):
+            log(f"  holdout {v}: no raw2 (skipped)")
+            continue
+        out[v] = p
+    return out
 CLUB_ORDER = ["Driver", "2-wood", "3-wood", "4-wood", "5-wood", "Hybrid", "Long iron", "Mid iron", "Short iron"]
 
 GRID = dict(thr=[None, 0.04, 0.15, 0.3, 0.5], mode=["strict", "relaxed"], k=[0, 3, 5], dmin=[0, 20])
@@ -97,6 +121,31 @@ def layer_fc(D, p, s, water_feats, tb):
     return dict(type="FeatureCollection", features=feats,
                 properties=dict(schema="vision_any/2", model_id=f"vision_any/2 calib {sid(s)}", setting=s,
                                 trained_on="calibration candidate", trees_how="lidar canopy", native_how=sid(s)))
+
+
+def stage_layers_holdout(out):
+    """Product-model layers for every setting on the held-out courses (one course in memory at a time)."""
+    import v2_model as VM
+    clf_prod, meta = VM.load_model()
+    names = meta["features"]
+    tb = meta["settings"]["trees"]
+    done = []
+    for slug in holdouts(need_raw2=True):
+        D = VM.prepare(slug)
+        region = D["elig_rel"] & D["course"]
+        p = VM.predict_grid(D, clf_prod, names, region)
+        p = np.where(np.isfinite(p), p, 0).astype(np.float32)
+        cp = os.path.join(HERE, slug, "vision_any.geojson")
+        water = [f for f in json.load(open(cp))["features"] if f["properties"]["lie"] == "water"] if os.path.exists(cp) else []
+        d = os.path.join(out, "prod", slug)
+        os.makedirs(d, exist_ok=True)
+        for st in settings():
+            json.dump(layer_fc(D, p, st, water, tb), open(os.path.join(d, sid(st) + ".geojson"), "w"), separators=(",", ":"))
+        log(f"[{slug}] holdout prod: {len(settings())} layers")
+        done.append(slug)
+        del D
+    json.dump(dict(settings=settings(), trees=tb, ob_off=[], holdout=done), open(os.path.join(out, "settings.json"), "w"),
+              indent=1)
 
 
 def stage_layers(out):
@@ -161,11 +210,18 @@ def rebuild_package(pkg_slug, fc, ob_off=None):
     return OB.apply_ob(out, params=params)
 
 
+_PREV = None
+
+
 def score_package(pkg_slug, pkg, n=8000, workers=None, holes=None):
     """scoreboard.score_course on a package dict -> list of row dicts."""
+    global _PREV
     SB = scoreboard()
     cfg = next(c for c in SB.COURSES if c["slug"] == pkg_slug)
-    prev = json.load(open(SB.OUT_JSON)) if os.path.exists(SB.OUT_JSON) else {}
+    if _PREV is None:
+        _PREV = json.load(open(SB.OUT_JSON)) if os.path.exists(SB.OUT_JSON) else {}
+    prev = _PREV
+    prev.setdefault("truth_cache", {}).update(SB.TRUTH_RAW)         # hand-map truth computed once per process
     with tempfile.TemporaryDirectory(dir=os.path.join(CD, "packages", pkg_slug)) as td:
         p = os.path.join(td, "package.json")
         json.dump(pkg, open(p, "w"))
@@ -186,6 +242,34 @@ def jobs(d):
         for s in S["settings"]:
             J.append((psrc, sid(s), s, None))
     return J
+
+
+def stage_score_holdout(d, shard, nshards, out):
+    S = json.load(open(os.path.join(d, "settings.json")))
+    J = [("current", None)] + [("prod", sid(st)) for st in S["settings"]]
+    rows = []
+    for j, (psrc, ident) in enumerate(J):
+        if j % nshards != shard:
+            continue
+        for vslug in S.get("holdout", []):
+            pslug = HOLDOUT[vslug]
+            t0 = time.time()
+            if psrc == "current":
+                pkg = json.load(open(os.path.join(CD, "packages", pslug, "package.json")))
+            else:
+                pkg = rebuild_package(pslug, json.load(open(os.path.join(d, psrc, vslug, ident + ".geojson"))))
+            try:
+                rr = score_package(pslug, pkg)
+            except Exception as e:                              # noqa: BLE001
+                log(f"   {psrc} {ident} {pslug} failed: {type(e).__name__} {e}")
+                continue
+            for r in rr:
+                r.update(psrc=psrc, setting=ident, ob_off=None, course=pslug)
+            rows += rr
+            log(f"   {psrc:>7} {ident or 'committed':>28} {pslug:>10}: same {sum(bool(r.get('same')) for r in rr)}/"
+                f"{sum(1 for r in rr if r.get('truth'))} ({time.time() - t0:.0f}s)")
+        json.dump(rows, open(out, "w"), default=float)
+    json.dump(rows, open(out, "w"), default=float)
 
 
 def stage_score(d, shard, nshards, out, extra=None):
@@ -366,6 +450,96 @@ def write_md(res, by, path):
     open(path, "w").write("\n".join(Lm) + "\n")
 
 
+def stage_holdout_report(pattern, out_md, out_json, train_json=os.path.join(HERE, "v2_decision_calibration.json")):
+    """Every setting on the held-out truth courses (product model, out of sample), pooled with the two training
+    courses' scores from the committed calibration report; the long-grass question: off vs on."""
+    rows = []
+    for f in sorted(glob.glob(pattern)):
+        rows += json.load(open(f))
+    courses = [c for c in HOLDOUT.values() if any(r["course"] == c for r in rows)]
+    by = {}
+    for r in rows:
+        by.setdefault(r["setting"] or "committed", []).append(r)
+    train = json.load(open(train_json)) if os.path.exists(train_json) else {}
+    tset = train.get("settings", {})
+    res = dict(courses=courses, settings={}, train_report=os.path.relpath(train_json, ROOT))
+    for k, rr in by.items():
+        e = {c: score_rows([r for r in rr if r["course"] == c]) for c in courses}
+        e["holdout"] = score_rows(rr)
+        t = tset.get(f"prod|{k}|None") if k != "committed" else train.get("current")
+        if t:
+            e["train"] = t["both"]
+            e["all"] = dict(same=e["holdout"]["same"] + t["both"]["same"], n=e["holdout"]["n"] + t["both"]["n"],
+                            sum_regret=e["holdout"]["sum_regret"] + t["both"]["sum_regret"])
+            e["all"]["regret"] = e["all"]["sum_regret"] / max(e["all"]["n"], 1)
+        res["settings"][k] = e
+    off = {k: v for k, v in res["settings"].items() if k.startswith("throff")}
+    on = {k: v for k, v in res["settings"].items() if k.startswith("thr") and not k.startswith("throff")}
+
+    def best(dct, key="holdout"):
+        return max(dct.items(), key=lambda kv: (kv[1][key]["same"], -kv[1][key]["sum_regret"])) if dct else (None, None)
+    res["question"] = dict(
+        adopted=ADOPTED, previous=PREV_PICK,
+        best_off=best(off)[0], best_on=best(on)[0],
+        mean_same_off=float(np.mean([v["holdout"]["same"] for v in off.values()])) if off else None,
+        mean_same_on=float(np.mean([v["holdout"]["same"] for v in on.values()])) if on else None,
+        on_beating_adopted=sorted(k for k, v in on.items() if ADOPTED in res["settings"] and
+                                  v["holdout"]["same"] > res["settings"][ADOPTED]["holdout"]["same"]),
+        by_threshold={})
+    for thr in GRID["thr"]:
+        tag = "throff" if thr is None else f"thr{thr}_"
+        sub = {k: v for k, v in res["settings"].items() if k.startswith(tag)}
+        if sub:
+            b = best(sub)
+            res["question"]["by_threshold"][str(thr)] = dict(best=b[0], same=b[1]["holdout"]["same"], n=b[1]["holdout"]["n"],
+                                                             mean_same=float(np.mean([v["holdout"]["same"] for v in sub.values()])))
+    json.dump(res, open(out_json, "w"), indent=1, default=float)
+    write_holdout_md(res, out_md)
+    return res
+
+
+def write_holdout_md(res, path):
+    C = res["courses"]
+    S = res["settings"]
+    Q = res["question"]
+
+    def cell(v):
+        return f"{v['same']}/{v['n']}"
+    Lm = ["# vision_any v2: long-grass / tree settings on held-out hand-checked courses", "",
+          "Generated by `course_data/vision_any/v2_calibrate.py holdout-report` on Actions (vision_any_v2_holdout.yml). "
+          "Truth: the hand-checked landing-corridor maps `course_data/truth/<slug>/hand_zones_ll.json` through the "
+          "product's quick decision (scoreboard 'hand map, quick'). Layers: the product long-grass model (trained on "
+          "Spirit Hollow + Mozingo only, so out of sample here) at every calibration setting; each committed package "
+          "with only its vision zones replaced, OB re-inferred, product quick decision (n = 8000). `train` = the same "
+          f"setting on SH + Mozingo from `{res['train_report']}` (product maps). Nothing here is used to select or "
+          "integrate a setting.", "",
+          "## The long-grass question", "",
+          f"* adopted `{Q['adopted']}` (no long grass): " + (f"held-out {cell(S[Q['adopted']]['holdout'])}, mean regret "
+          f"{S[Q['adopted']]['holdout']['regret']:.4f}" if Q['adopted'] in S else "not scored") + ".",
+          f"* previous in-sample pick `{Q['previous']}`: " + (f"held-out {cell(S[Q['previous']]['holdout'])}, mean regret "
+          f"{S[Q['previous']]['holdout']['regret']:.4f}" if Q['previous'] in S else "not scored") + ".",
+          f"* best long-grass-off setting on the held-out courses: `{Q['best_off']}`; best long-grass-on: `{Q['best_on']}`.",
+          f"* mean same club over settings: off {Q['mean_same_off']:.2f}, on {Q['mean_same_on']:.2f}." if Q["mean_same_on"] is not None else "",
+          f"* long-grass-on settings that beat the adopted one on the held-out courses: {len(Q['on_beating_adopted'])}"
+          + (f" ({', '.join(Q['on_beating_adopted'][:8])})" if Q['on_beating_adopted'] else "") + ".", "",
+          "| native threshold | best setting | held-out same (best) | mean same over its settings |", "|---|---|---|---|"]
+    for thr, v in Q["by_threshold"].items():
+        Lm.append(f"| {'off' if thr == 'None' else thr} | `{v['best']}` | {v['same']}/{v['n']} | {v['mean_same']:.2f} |")
+    if "committed" in S:
+        v = S["committed"]
+        Lm += ["", "Committed packages: " + ", ".join(f"{c} {cell(v[c])}" for c in C) + f"; held-out {cell(v['holdout'])}, "
+               f"mean regret {v['holdout']['regret']:.4f}."]
+    Lm += ["", "## Every setting", "", "| setting | " + " | ".join(C) + " | held-out | mean regret | shorter / longer | "
+           "SH + Mozingo (train) | all courses |", "|---|" + "---|" * len(C) + "---|---|---|---|---|"]
+    items = sorted(S.items(), key=lambda kv: (-kv[1]["holdout"]["same"], kv[1]["holdout"]["sum_regret"]))
+    for k, v in items:
+        h = v["holdout"]
+        Lm.append(f"| `{k}` | " + " | ".join(cell(v[c]) for c in C) + f" | {cell(h)} | "
+                  f"{'-' if h['regret'] is None else round(h['regret'], 4)} | {h['shorter']} / {h['longer']} | "
+                  f"{cell(v['train']) if v.get('train') else '-'} | {cell(v['all']) if v.get('all') else '-'} |")
+    open(path, "w").write("\n".join(x for x in Lm if x is not None) + "\n")
+
+
 def stage_integrate(res_json, slugs=("spirit_hollow", "mozingo", "veenker")):
     """Adopt the product selection if the merge gate passed: model_v2/model.json settings, v2 layers for every
     course (v2_model.infer, integrated), and the committed packages' vision zones rebuilt (OB re-inferred with
@@ -419,11 +593,17 @@ def main():
     sp = ap.add_subparsers(dest="cmd")
     a1 = sp.add_parser("layers")
     a1.add_argument("--out", required=True)
+    a1.add_argument("--holdout", action="store_true")
     a2 = sp.add_parser("score")
     a2.add_argument("--dir", required=True)
     a2.add_argument("--shard", type=int, default=0)
     a2.add_argument("--nshards", type=int, default=1)
     a2.add_argument("--out", required=True)
+    a2.add_argument("--holdout", action="store_true")
+    a5 = sp.add_parser("holdout-report")
+    a5.add_argument("--rows", required=True)
+    a5.add_argument("--md", default=os.path.join(HERE, "v2_holdout_calibration.md"))
+    a5.add_argument("--json", default=os.path.join(HERE, "v2_holdout_calibration.json"))
     a3 = sp.add_parser("report")
     a3.add_argument("--rows", required=True)
     a3.add_argument("--md", default=os.path.join(HERE, "v2_decision_calibration.md"))
@@ -435,7 +615,12 @@ def main():
     a4.add_argument("--json", default=os.path.join(HERE, "v2_decision_calibration.json"))
     a = ap.parse_args()
     if a.cmd == "layers":
-        stage_layers(a.out)
+        stage_layers_holdout(a.out) if a.holdout else stage_layers(a.out)
+    elif a.cmd == "score" and a.holdout:
+        stage_score_holdout(a.dir, a.shard, a.nshards, a.out)
+    elif a.cmd == "holdout-report":
+        stage_holdout_report(a.rows, a.md, a.json)
+        print(open(a.md).read())
     elif a.cmd == "score":
         extra = None
         stage_score(a.dir, a.shard, a.nshards, a.out, extra)

@@ -21,7 +21,12 @@ What is scored, per course (Spirit Hollow, Mozingo Lake, Veenker):
                 quick decision as the product ("hand-quick": isolates map error from model settings).
                 Mozingo Lake: the hand map (mozingo/tee_strategy.HOLES) through the same quick decision
                 (results_table.md predates the 10-16 model changes, so it is not used).
-                Veenker: no hand map yet -> agreement n/a (picks, CHECKs and runtime only).
+                Veenker, Coldwater, Ellis: the hand-checked landing-corridor maps course_data/truth/<slug>/
+                hand_zones_ll.json (traced on NAIP 2023 0.3 m + other NAIP years + 3DEP lidar canopy, 150-340
+                yds x +/-60 of the card set's tee line; course_data/truth/corridor.py, NOTES.md) put into the
+                committed package in place of its zones (zone order as traced; unzoned = rough; tees, greens,
+                elevation from the package) and run through the same quick decision ("hand map, quick", as
+                Mozingo). Their geometry columns compare the product's lies with the hand map in the corridor.
   metrics       same club; same-or-tie (same, or one plan calls the two clubs a tie, margin < 0.01, and the
                 other plan picked that tie's runner-up); regret = truth EV of the product's club - truth EV
                 of the truth's club (strokes, on the hand map); tee / green within 10 yds of the hand map
@@ -76,8 +81,13 @@ COURSES = [
     dict(slug="mozingo_lake", name="Mozingo Lake", package="course_data/packages/mozingo_lake/package.json",
          tees="App", truth="mozingo"),
     dict(slug="veenker", name="Veenker", package="course_data/packages/veenker/package.json",
-         tees="Blue", truth=None),
+         tees="Blue", truth="hand", hand="course_data/truth/veenker/hand_zones_ll.json"),
+    dict(slug="coldwater", name="Coldwater Golf Links", package="course_data/packages/coldwater/package.json",
+         tees="Blue", truth="hand", hand="course_data/truth/coldwater/hand_zones_ll.json"),
+    dict(slug="ellis", name="Ellis", package="course_data/packages/ellis/package.json",
+         tees="Blue", truth="hand", hand="course_data/truth/ellis/hand_zones_ll.json"),
 ]
+HAND_LABEL = "hand map, quick"
 CLUB_BAR = 0.80
 TIE = 0.01
 AIM_GUARD = 40.0
@@ -245,6 +255,73 @@ def sh_geometry(key, set_name, C, k_prod):
     return out
 
 
+# ----------------------------------------------------------------------------- hand-checked corridor maps
+def hand_package(cfg):
+    """The committed package with each mapped tee shot's zones replaced by the hand map (order as traced)."""
+    pkg = json.load(open(os.path.join(ROOT, cfg["package"])))
+    hz = json.load(open(os.path.join(ROOT, cfg["hand"])))
+    for ref, h in pkg["holes"].items():
+        m = hz["holes"].get(str(ref))
+        if m:
+            h["zones_ll"] = [dict(lie=z["lie"], poly=z["poly_ll"], src="hand") for z in m["zones"]]
+            h["zone_order"] = "given"
+            h.pop("irons", None)                  # irons offered by the product rule on the hand map
+    return pkg, hz
+
+
+def hand_holes(cfg):
+    """{key: model hole} of the hand map (only the mapped tee shots), product frames / tees / elevation."""
+    import package as PK
+    pkg, hz = hand_package(cfg)
+    with tempfile.TemporaryDirectory(dir=os.path.join(ROOT, os.path.dirname(cfg["package"]))) as td:
+        p = os.path.join(td, "package.json")
+        json.dump(pkg, open(p, "w"))
+        C = PK.load(p, cfg["tees"])
+        mp = os.path.join(td, "course.py")
+        PK.write_module(C, mp)
+        mod = PK.import_module(mp, name=f"sb_hand_{cfg['slug']}")
+    return {k: v for k, v in mod.HOLES.items() if str(k) in hz["holes"]}
+
+
+def hand_geometry(cfg, key, C, k_prod):
+    """tee / green offset and corridor IoU per hazard: product package vs the hand-checked corridor map."""
+    import render as R
+    import tee_strategy as t
+    hz = json.load(open(os.path.join(ROOT, cfg["hand"])))["holes"].get(key)
+    if not hz or k_prod not in C.holes:
+        return None
+    fr = _hand_frame(R, hz["tee_ll"], hz["dot270_ll"])
+    pf = R.Frame.from_json(C.frames[k_prod])
+    p_tee = np.asarray(C.frames[k_prod]["tee_ll"], float)
+    p_green = pf.px_to_ll([C.holes[k_prod]["green"]])[0]
+
+    def yd(a, b):
+        return float(np.linalg.norm(fr.ll_to_yds([a])[0] - fr.ll_to_yds([b])[0]))
+    out = dict(tee_err=round(yd(p_tee, hz["tee_ll"]), 1),
+               green_err=round(yd(p_green, hz["green_ll"]), 1) if hz.get("green_ll") else None)
+    al, la = np.meshgrid(ALONG, LAT)
+    ll = fr.yds_to_ll(np.c_[la.ravel(), -al.ravel()])
+    ll = ll[_inside(hz["footprint_ll"], ll)]
+    hand = np.array(["rough"] * len(ll), dtype=object)
+    for z in hz["zones"]:
+        if len(z["poly_ll"]) >= 3:
+            hand[_inside(z["poly_ll"], ll)] = z["lie"]
+    prod = t.lie_at(C.holes[k_prod], pf.ll_to_px(ll))
+    iou = {}
+    for name, lie in HAZ.items():
+        A, B = hand == lie, prod == lie
+        u = int(np.sum(A | B))
+        if u:
+            iou[name] = round(float(np.sum(A & B) / u), 3)
+    fw = {}
+    for lie in ("fairway",):
+        A, B = hand == lie, prod == lie
+        if int(np.sum(A | B)):
+            fw[lie] = round(float(np.sum(A & B) / np.sum(A | B)), 3)
+    out.update(iou=iou, iou_fairway=fw.get("fairway"), corridor_pts=int(len(ll)))
+    return out
+
+
 # ----------------------------------------------------------------------------- scoring
 def agree(p, tr):
     """(same club, same-or-tie)."""
@@ -327,7 +404,10 @@ def summarise(rows, has_truth):
     g = [r for r in rows if "tee_err" in r]
     if g:
         S["tee10"] = sum(r["tee_err"] <= 10 for r in g)
-        S["green10"] = sum(r["green_err"] <= 10 for r in g)
+        S["green10"] = sum(r["green_err"] is not None and r["green_err"] <= 10 for r in g)
+        fw = [r["iou_fairway"] for r in g if r.get("iou_fairway") is not None]
+        if fw:
+            S["iou_fairway"] = round(float(np.mean(fw)), 3)
         S["n_geo"] = len(g)
         S["iou"] = {}
         for name in HAZ:
@@ -409,6 +489,31 @@ def score_course(cfg, a, prev):
                            full_runner=fr.get("runner"), full_check=list(fr.get("check") or []), same_full=sf_,
                            same_or_tie_full=stf, regret_full=regret(fr, final[key]))
             rows.append(row)
+    elif cfg["truth"] == "hand":
+        hp = os.path.join(ROOT, cfg["hand"])
+        if not os.path.exists(hp):
+            raise SystemExit(f"no hand map {cfg['hand']}")
+        out["truth"] = f"hand-checked corridor map {cfg['hand']} in the package, through the product's quick decision"
+        out["truth_label"] = HAND_LABEL
+        fp = sha(hp, os.path.join(PROD, "decide.py"), os.path.join(PROD, "package.py"))
+        out["truth_fp"] = fp
+        out["truth_commit"] = git("log", "-1", "--format=%h %cI", "--", cfg["hand"])
+        hh = hand_holes(cfg)
+        keys = [k for k in hh if str(k) in res]
+        if a.holes:
+            keys = [k for k in keys if str(k) in set(a.holes.split(","))]
+        tr, _ = cached_hand_quick(prev, cfg["slug"], {k: hh[k] for k in keys}, fp, a.n, a.workers,
+                                  a.dry_run or a.from_out)
+        for k in res:
+            k = str(k)
+            kp = int(k) if k.isdigit() else k
+            geo = None
+            if k in {str(x) for x in keys}:
+                try:
+                    geo = hand_geometry(cfg, k, C, kp)
+                except Exception as e:                             # noqa: BLE001
+                    geo = dict(geo_error=f"{type(e).__name__}: {e}")
+            rows.append(row_for(k, res[k], (tr or {}).get(k), geo=geo))
     elif cfg["truth"] == "mozingo":
         hand = HAND_HOLES
         out["truth"] = "hand map mozingo/tee_strategy.HOLES through the product's quick decision"
@@ -528,10 +633,10 @@ def write_md(board):
         def i(name):
             v = iou.get(name)
             return "n/a" if not v else f"{v['mean']:.2f} ({v['pass06']}/{v['n']} > 0.6)"
-        tr = {"spirit_hollow": "final_decision.json", "mozingo_lake": "hand map, quick"}.get(c["slug"], "none")
+        tr = c.get("truth_label") or {"spirit_hollow": "final_decision.json", "mozingo_lake": HAND_LABEL}.get(c["slug"], "none")
         rt = f"{c['decision_s']:.0f} s" if c.get("decision_s") else "n/a"
         mapo = pct(S.get("same_hand_quick"), S.get("n_hand_quick")) if S.get("n_hand_quick") else \
-            (pct(S.get("same"), S.get("n_truth")) if c["slug"] == "mozingo_lake" else "n/a")
+            (pct(S.get("same"), S.get("n_truth")) if tr == HAND_LABEL else "n/a")
         if c.get("last_plan", {}).get("runtime_s"):
             rt += f" (plan.py {c['last_plan']['runtime_s'] / 60:.0f} min, {c['last_plan']['built']})"
         hd = S.get("headline", "quick")
@@ -675,6 +780,9 @@ def main():
     courses = []
     for cfg in COURSES:
         if want and cfg["slug"] not in want:
+            continue
+        if cfg.get("hand") and not os.path.exists(os.path.join(ROOT, cfg["hand"])):
+            log(f"== {cfg['name']}: no hand map yet ({cfg['hand']}): skipped")
             continue
         try:
             courses.append(score_course(cfg, a, prev))

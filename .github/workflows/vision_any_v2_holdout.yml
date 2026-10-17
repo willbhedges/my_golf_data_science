@@ -1,0 +1,119 @@
+name: vision-any-v2-holdout
+
+# The vision_any v2 long-grass / tree settings scored on the HELD-OUT hand-checked truth courses
+# (course_data/truth/<slug>/hand_zones_ll.json: Veenker, Coldwater, Ellis) with the product model (trained on
+# Spirit Hollow + Mozingo only): course_data/vision_any/v2_calibrate.py layers/score --holdout, holdout-report.
+# Writes course_data/vision_any/v2_holdout_calibration.{md,json} only (never integrates, never touches the
+# training calibration report). Trigger: push course_data/requests/vision_v2_holdout.json ({"rev": n}).
+on:
+  push:
+    paths:
+      - "course_data/requests/vision_v2_holdout.json"
+      - ".github/workflows/vision_any_v2_holdout.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vision-any-v2-holdout-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHONWARNINGS: ignore
+
+jobs:
+  layers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio scikit-learn scikit-image lightgbm opencv-python-headless matplotlib
+      - uses: actions/cache/restore@v4
+        with:
+          path: course_data/vision_any/veenker/raw2
+          key: v2raw-veenker-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: course_data/vision_any/coldwater/raw2
+          key: v2raw-coldwater-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: course_data/vision_any/ellis/raw2
+          key: v2raw-ellis-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
+      - run: python -u course_data/vision_any/v2_calibrate.py layers --holdout --out /tmp/calib
+      - uses: actions/upload-artifact@v4
+        with:
+          name: holdout-layers
+          path: /tmp/calib
+          retention-days: 3
+
+  score:
+    needs: layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio matplotlib opencv-python-headless scikit-learn scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          name: holdout-layers
+          path: /tmp/calib
+      - run: python -u course_data/vision_any/v2_calibrate.py score --holdout --dir /tmp/calib --shard ${{ matrix.shard }} --nshards 6 --out /tmp/rows_${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hrows-${{ matrix.shard }}
+          path: /tmp/rows_${{ matrix.shard }}.json
+          retention-days: 3
+
+  report:
+    needs: score
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio matplotlib opencv-python-headless scikit-learn scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: hrows-*
+          path: /tmp/rows
+          merge-multiple: true
+      - run: python -u course_data/vision_any/v2_calibrate.py holdout-report --rows '/tmp/rows/rows_*.json' | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/vision_any/v2_holdout_calibration.md course_data/vision_any/v2_holdout_calibration.json
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "vision_any v2: settings on the held-out hand-checked truth courses (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
