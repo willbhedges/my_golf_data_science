@@ -1,6 +1,6 @@
 {
  "slug": "spirit_hollow",
- "stage": "ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 18 polygons (outside 18); mode replace",
+ "stage": "ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 20 polygons (property_line 20); mode replace",
  "sources": {
   "model": "ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB)",
   "params": {
@@ -11,8 +11,9 @@
    "road_margin": null,
    "road_inside": true,
    "res_off": null,
-   "out_off": -10,
-   "out_dev": 60
+   "out_off": -8,
+   "out_dev": 60,
+   "out_src": "parcels"
   },
   "precision": {
    "tag": 0.95,
@@ -20,7 +21,8 @@
    "road": 0.75,
    "house": 0.6,
    "residential": 0.5,
-   "outside": 0.324
+   "property_line": 0.461,
+   "outside": 0.4
   },
   "layers": [
    "osm",
@@ -39,16 +41,16 @@
  "holes": {
   "1": {
    "n": 1,
-   "area_yd2": 10569,
+   "area_yd2": 9479,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "2": {
    "n": 2,
-   "area_yd2": 3948,
+   "area_yd2": 3121,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "3": {
@@ -58,58 +60,58 @@
   },
   "4": {
    "n": 2,
-   "area_yd2": 13226,
+   "area_yd2": 10676,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "5": {
    "n": 1,
-   "area_yd2": 21059,
+   "area_yd2": 23171,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "6": {
    "n": 2,
-   "area_yd2": 7313,
+   "area_yd2": 8417,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "7": {
    "n": 2,
-   "area_yd2": 9639,
+   "area_yd2": 8120,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "8": {
    "n": 3,
-   "area_yd2": 15452,
+   "area_yd2": 15777,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "9": {
    "n": 2,
-   "area_yd2": 18831,
+   "area_yd2": 16886,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "10": {
-   "n": 1,
-   "area_yd2": 14354,
+   "n": 3,
+   "area_yd2": 11744,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "11": {
    "n": 1,
-   "area_yd2": 10797,
+   "area_yd2": 10803,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "12": {
@@ -144,9 +146,9 @@
   },
   "18": {
    "n": 1,
-   "area_yd2": 2734,
+   "area_yd2": 2409,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   }
  },

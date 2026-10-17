@@ -1,6 +1,6 @@
 {
  "schema": "ob_eval/1",
- "built": "2026-10-17T00:51:43Z",
+ "built": "2026-10-17T03:31:04Z",
  "layers": [
   "osm",
   "ms_buildings",
@@ -23,7 +23,7 @@
   "5",
   "8"
  ],
- "n_combos": 1284192,
+ "n_combos": 1122264,
  "fit": {
   "params": {
    "mode": "replace",
@@ -32,12 +32,13 @@
    "road_margin": null,
    "road_inside": true,
    "res_off": null,
-   "out_off": -10,
+   "out_off": -8,
    "out_dev": 60,
+   "out_src": "parcels",
    "parcel_off": null,
    "parcel_mode": "houses"
   },
-  "iou_pooled": 0.276,
+  "iou_pooled": 0.365,
   "rows": [
    {
     "key": "1",
@@ -57,22 +58,22 @@
     "key": "2F",
     "truth": 29,
     "inter": 13,
-    "union": 79,
-    "iou": 0.165
+    "union": 64,
+    "iou": 0.203
    },
    {
     "key": "4",
     "truth": 0,
     "inter": 0,
-    "union": 64,
+    "union": 17,
     "iou": 0.0
    },
    {
     "key": "5",
     "truth": 36,
-    "inter": 25,
-    "union": 53,
-    "iou": 0.472
+    "inter": 21,
+    "union": 48,
+    "iou": 0.438
    },
    {
     "key": "6",
@@ -84,9 +85,9 @@
    {
     "key": "8",
     "truth": 54,
-    "inter": 40,
-    "union": 63,
-    "iou": 0.635
+    "inter": 42,
+    "union": 77,
+    "iou": 0.545
    },
    {
     "key": "9B",
@@ -106,7 +107,7 @@
     "key": "10",
     "truth": 0,
     "inter": 0,
-    "union": 24,
+    "union": 2,
     "iou": 0.0
    },
    {
@@ -154,7 +155,7 @@
   ]
  },
  "loho": {
-  "iou_pooled": 0.212,
+  "iou_pooled": 0.303,
   "rows": [
    {
     "key": "1",
@@ -170,8 +171,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -193,8 +195,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -206,9 +209,9 @@
     "key": "2F",
     "truth": 29,
     "inter": 13,
-    "union": 79,
-    "pred": 63,
-    "iou": 0.165,
+    "union": 64,
+    "pred": 48,
+    "iou": 0.203,
     "params": {
      "mode": "replace",
      "house_d": null,
@@ -216,21 +219,22 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
     "inter_reach": 13,
-    "union_reach": 63,
+    "union_reach": 48,
     "truth_reach": 13
    },
    {
     "key": "4",
     "truth": 0,
     "inter": 0,
-    "union": 64,
-    "pred": 64,
+    "union": 17,
+    "pred": 17,
     "iou": 0.0,
     "params": {
      "mode": "replace",
@@ -239,22 +243,23 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
     "inter_reach": 0,
-    "union_reach": 64,
+    "union_reach": 17,
     "truth_reach": 0
    },
    {
     "key": "5",
     "truth": 36,
-    "inter": 5,
-    "union": 44,
-    "pred": 13,
-    "iou": 0.114,
+    "inter": 6,
+    "union": 41,
+    "pred": 11,
+    "iou": 0.146,
     "params": {
      "mode": "replace",
      "house_d": null,
@@ -262,13 +267,14 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
-     "out_dev": 45,
+     "out_off": -5,
+     "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
-    "inter_reach": 5,
-    "union_reach": 33,
+    "inter_reach": 6,
+    "union_reach": 30,
     "truth_reach": 25
    },
    {
@@ -285,8 +291,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -297,10 +304,10 @@
    {
     "key": "8",
     "truth": 54,
-    "inter": 40,
-    "union": 63,
-    "pred": 49,
-    "iou": 0.635,
+    "inter": 42,
+    "union": 77,
+    "pred": 65,
+    "iou": 0.545,
     "params": {
      "mode": "replace",
      "house_d": null,
@@ -308,13 +315,14 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
-    "inter_reach": 40,
-    "union_reach": 58,
+    "inter_reach": 42,
+    "union_reach": 72,
     "truth_reach": 49
    },
    {
@@ -331,8 +339,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -354,8 +363,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -367,8 +377,8 @@
     "key": "10",
     "truth": 0,
     "inter": 0,
-    "union": 24,
-    "pred": 24,
+    "union": 2,
+    "pred": 2,
     "iou": 0.0,
     "params": {
      "mode": "replace",
@@ -377,13 +387,14 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
     "inter_reach": 0,
-    "union_reach": 24,
+    "union_reach": 2,
     "truth_reach": 0
    },
    {
@@ -400,8 +411,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -423,8 +435,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -446,8 +459,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -469,8 +483,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -492,8 +507,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -515,8 +531,9 @@
      "road_margin": null,
      "road_inside": true,
      "res_off": null,
-     "out_off": -10,
+     "out_off": -8,
      "out_dev": 60,
+     "out_src": "parcels",
      "parcel_off": null,
      "parcel_mode": "houses"
     },
@@ -525,7 +542,7 @@
     "truth_reach": 0
    }
   ],
-  "iou_pooled_reachable": 0.24,
+  "iou_pooled_reachable": 0.361,
   "truth_cells": 119,
   "reachable_cells": 87
  },
@@ -767,13 +784,13 @@
   "without out": 0.0
  },
  "single_source": {
-  "out only": 0.2756183745583039
+  "out only": 0.36538461538461536
  },
  "evidence_precision": {
-  "outside": {
-   "n": 242,
-   "tp": 78,
-   "p": 0.324
+  "property_line": {
+   "n": 165,
+   "tp": 76,
+   "p": 0.461
   }
  }
 }

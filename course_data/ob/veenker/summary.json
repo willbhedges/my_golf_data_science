@@ -1,6 +1,6 @@
 {
  "slug": "veenker",
- "stage": "ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 13 polygons (outside 13); mode replace",
+ "stage": "ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 13 polygons (property_line 13); mode replace",
  "sources": {
   "model": "ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB)",
   "params": {
@@ -11,8 +11,9 @@
    "road_margin": null,
    "road_inside": true,
    "res_off": null,
-   "out_off": -10,
-   "out_dev": 60
+   "out_off": -8,
+   "out_dev": 60,
+   "out_src": "parcels"
   },
   "precision": {
    "tag": 0.95,
@@ -20,7 +21,8 @@
    "road": 0.75,
    "house": 0.6,
    "residential": 0.5,
-   "outside": 0.324
+   "property_line": 0.461,
+   "outside": 0.4
   },
   "layers": [
    "osm",
@@ -39,9 +41,9 @@
  "holes": {
   "1": {
    "n": 1,
-   "area_yd2": 1461,
+   "area_yd2": 1259,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "2": {
@@ -51,51 +53,51 @@
   },
   "3": {
    "n": 1,
-   "area_yd2": 1228,
+   "area_yd2": 1151,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "4": {
    "n": 1,
-   "area_yd2": 1351,
+   "area_yd2": 1027,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "5": {
    "n": 3,
-   "area_yd2": 10913,
+   "area_yd2": 8634,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "6": {
    "n": 1,
-   "area_yd2": 12648,
+   "area_yd2": 12883,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "7": {
    "n": 2,
-   "area_yd2": 7451,
+   "area_yd2": 7748,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "8": {
    "n": 1,
-   "area_yd2": 234,
+   "area_yd2": 926,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "9": {
    "n": 1,
-   "area_yd2": 4144,
+   "area_yd2": 5313,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "10": {
@@ -110,9 +112,9 @@
   },
   "12": {
    "n": 1,
-   "area_yd2": 183,
+   "area_yd2": 208,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "13": {
@@ -127,9 +129,9 @@
   },
   "15": {
    "n": 1,
-   "area_yd2": 3581,
+   "area_yd2": 3202,
    "evidence": [
-    "outside"
+    "property_line"
    ]
   },
   "16": {
