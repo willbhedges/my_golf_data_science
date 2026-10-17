@@ -1,16 +1,16 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-10-17 10:56 UTC",
- "commit": "4c4ad88",
+ "generated": "2026-10-17 11:33 UTC",
+ "commit": "fb796d5",
  "courses": [
   {
    "course": "Spirit Hollow",
    "slug": "spirit_hollow",
    "tees": "Black",
    "package": "course_data/packages/spirit_hollow/package.json",
-   "package_commit": "7c60a4e 2026-10-17T07:50:20Z",
+   "package_commit": "4e7ef8f 2026-10-17T10:23:04Z",
    "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
-   "decision_s": 92.5,
+   "decision_s": 63.3,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -20,7 +20,7 @@
    "truth": "spirit_hollow/output/final_decision.json (hand map course.py; Black boxes; 2B/9B Gold)",
    "truth_fp": "bd4a5e2a1d",
    "truth_commit": "d5e1e91 2026-10-17T02:33:47Z",
-   "decision_full_s": 2246.6,
+   "decision_full_s": 1439.3,
    "full_mode": {
     "S": 64,
     "N": 3000
@@ -682,16 +682,16 @@
     }
    },
    "aim_violations": [],
-   "seconds": 2343.7
+   "seconds": 1505.7
   },
   {
    "course": "Mozingo Lake",
    "slug": "mozingo_lake",
    "tees": "App",
    "package": "course_data/packages/mozingo_lake/package.json",
-   "package_commit": "7c60a4e 2026-10-17T07:50:20Z",
+   "package_commit": "4e7ef8f 2026-10-17T10:23:04Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 70.5,
+   "decision_s": 44.4,
    "last_plan": {
     "built": "2026-10-16T22:06Z",
     "runtime_s": 578.9,
@@ -952,24 +952,26 @@
     "max_regret_head": 0.088
    },
    "aim_violations": [],
-   "seconds": 71.4
+   "seconds": 45.0
   },
   {
    "course": "Veenker",
    "slug": "veenker",
    "tees": "Blue",
    "package": "course_data/packages/veenker/package.json",
-   "package_commit": "7c60a4e 2026-10-17T07:50:20Z",
+   "package_commit": "4e7ef8f 2026-10-17T10:23:04Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 79.8,
+   "decision_s": 50.5,
    "last_plan": {
     "built": "2026-10-17T05:19Z",
     "runtime_s": 357.1,
     "mode": "quick",
     "decision_s": 59.7
    },
-   "truth": "none (no hand map for this course yet)",
-   "truth_fp": null,
+   "truth": "hand-checked corridor map course_data/truth/veenker/hand_zones_ll.json in the package, through the product's quick decision",
+   "truth_label": "hand map, quick",
+   "truth_fp": "a0763d1cf7",
+   "truth_commit": "9e69728 2026-10-17T09:35:55Z",
    "holes": [
     {
      "hole": "1",
@@ -979,7 +981,20 @@
      "tie": false,
      "runner": "2-wood",
      "margin": 0.047,
-     "check": []
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.75
+     },
+     "iou_fairway": 0.878,
+     "corridor_pts": 475
     },
     {
      "hole": "2",
@@ -989,7 +1004,21 @@
      "tie": false,
      "runner": "2-wood",
      "margin": 0.0546,
-     "check": []
+     "check": [],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.859,
+      "water": 0.0
+     },
+     "iou_fairway": 0.758,
+     "corridor_pts": 475
     },
     {
      "hole": "3",
@@ -999,7 +1028,20 @@
      "tie": true,
      "runner": "4-wood",
      "margin": 0.0031,
-     "check": []
+     "check": [],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "Driver",
+     "same": false,
+     "same_or_tie": true,
+     "regret": 0.0123,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.777
+     },
+     "iou_fairway": 0.637,
+     "corridor_pts": 475
     },
     {
      "hole": "4",
@@ -1009,7 +1051,20 @@
      "tie": false,
      "runner": "2-wood",
      "margin": 0.0445,
-     "check": []
+     "check": [],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.775
+     },
+     "iou_fairway": 0.747,
+     "corridor_pts": 475
     },
     {
      "hole": "5",
@@ -1019,7 +1074,21 @@
      "tie": false,
      "runner": "2-wood",
      "margin": 0.1182,
-     "check": []
+     "check": [],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.545,
+      "water": 0.642
+     },
+     "iou_fairway": 0.845,
+     "corridor_pts": 475
     },
     {
      "hole": "7",
@@ -1029,7 +1098,21 @@
      "tie": false,
      "runner": "2-wood",
      "margin": 0.088,
-     "check": []
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.688,
+      "water": 0.0
+     },
+     "iou_fairway": 0.755,
+     "corridor_pts": 475
     },
     {
      "hole": "9",
@@ -1039,7 +1122,20 @@
      "tie": false,
      "runner": "2-wood",
      "margin": 0.0602,
-     "check": []
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.48
+     },
+     "iou_fairway": 0.659,
+     "corridor_pts": 475
     },
     {
      "hole": "10",
@@ -1052,7 +1148,20 @@
      "check": [
       "Driver best aim -60 rejected (aim -60 yds is more than 40 yds off the tee line)",
       "2-wood best aim -60 rejected (aim -60 yds is more than 40 yds off the tee line)"
-     ]
+     ],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.467
+     },
+     "iou_fairway": 0.753,
+     "corridor_pts": 475
     },
     {
      "hole": "12",
@@ -1062,7 +1171,22 @@
      "tie": false,
      "runner": "4-wood",
      "margin": 0.013,
-     "check": []
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": false,
+     "same_or_tie": false,
+     "regret": 0.0404,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.424,
+      "water": 0.0,
+      "ob": 0.0
+     },
+     "iou_fairway": 0.648,
+     "corridor_pts": 475
     },
     {
      "hole": "14",
@@ -1072,7 +1196,20 @@
      "tie": false,
      "runner": "4-wood",
      "margin": 0.0252,
-     "check": []
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": false,
+     "same_or_tie": false,
+     "regret": 0.0537,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.568
+     },
+     "iou_fairway": 0.783,
+     "corridor_pts": 475
     },
     {
      "hole": "15",
@@ -1086,7 +1223,22 @@
       "Driver best aim +118 rejected (aim +118 yds is more than 40 yds off the tee line)",
       "2-wood best aim +90 rejected (aim +90 yds is more than 40 yds off the tee line)",
       "4-wood best aim +85 rejected (aim +85 yds is more than 40 yds off the tee line)"
-     ]
+     ],
+     "truth": "Long iron",
+     "truth_tie": false,
+     "truth_runner": "4-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.373,
+      "long grass": 0.0,
+      "water": 0.514
+     },
+     "iou_fairway": 0.721,
+     "corridor_pts": 475
     },
     {
      "hole": "16",
@@ -1096,7 +1248,21 @@
      "tie": false,
      "runner": "2-wood",
      "margin": 0.0674,
-     "check": []
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.63,
+      "water": 0.312
+     },
+     "iou_fairway": 0.714,
+     "corridor_pts": 475
     },
     {
      "hole": "18",
@@ -1106,21 +1272,881 @@
      "tie": false,
      "runner": "2-wood",
      "margin": 0.0672,
-     "check": []
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.351
+     },
+     "iou_fairway": 0.741,
+     "corridor_pts": 475
     }
    ],
    "summary": {
     "n": 13,
     "checks": 2,
-    "headline": "quick"
+    "n_truth": 13,
+    "same": 10,
+    "same_or_tie": 11,
+    "same_pct": 0.769,
+    "same_or_tie_pct": 0.846,
+    "mean_regret": 0.0082,
+    "max_regret": 0.0537,
+    "headline": "quick",
+    "same_quick": 10,
+    "same_head": 10,
+    "same_or_tie_quick": 11,
+    "same_or_tie_head": 11,
+    "mean_regret_quick": 0.0082,
+    "mean_regret_head": 0.0082,
+    "max_regret_quick": 0.0537,
+    "max_regret_head": 0.0537,
+    "tee10": 13,
+    "green10": 13,
+    "iou_fairway": 0.741,
+    "n_geo": 13,
+    "iou": {
+     "trees": {
+      "mean": 0.591,
+      "n": 13,
+      "pass06": 6
+     },
+     "long grass": {
+      "mean": 0.0,
+      "n": 1,
+      "pass06": 0
+     },
+     "water": {
+      "mean": 0.245,
+      "n": 6,
+      "pass06": 1
+     },
+     "ob": {
+      "mean": 0.0,
+      "n": 1,
+      "pass06": 0
+     }
+    }
    },
    "aim_violations": [],
-   "seconds": 80.7
+   "seconds": 69.5
+  },
+  {
+   "course": "Coldwater Golf Links",
+   "slug": "coldwater",
+   "tees": "Blue",
+   "package": "course_data/packages/coldwater/package.json",
+   "package_commit": "4e7ef8f 2026-10-17T10:23:04Z",
+   "source": "product/decide.run quick n=8000",
+   "decision_s": 65.5,
+   "truth": "hand-checked corridor map course_data/truth/coldwater/hand_zones_ll.json in the package, through the product's quick decision",
+   "truth_label": "hand map, quick",
+   "truth_fp": "b8462e21bc",
+   "truth_commit": "899c222 2026-10-17T10:02:32Z",
+   "holes": [
+    {
+     "hole": "1",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 2.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.1094,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "long grass": 0.0,
+      "water": 0.643,
+      "ob": 0.143
+     },
+     "iou_fairway": 0.62,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "2",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 7.5,
+     "tie": true,
+     "runner": "4-wood",
+     "margin": 0.0094,
+     "check": [],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "Driver",
+     "same": false,
+     "same_or_tie": true,
+     "regret": 0.0234,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.705,
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.763,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "3",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": -7.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0587,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "4-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.863,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "4",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": -17.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.018,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.0,
+      "long grass": 0.0,
+      "ob": 0.0
+     },
+     "iou_fairway": 0.661,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "6",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 5.0,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0723,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.0,
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.742,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "7",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 2.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0623,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.656,
+      "long grass": 0.0,
+      "water": 0.0
+     },
+     "iou_fairway": 0.616,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "9",
+     "tee_set": null,
+     "pick": "4-wood",
+     "aim": -40.0,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0345,
+     "check": [
+      "Driver best aim -95 rejected (aim -95 yds is more than 40 yds off the tee line)",
+      "2-wood best aim -72 rejected (aim -72 yds is more than 40 yds off the tee line)",
+      "4-wood best aim -62 rejected (aim -62 yds is more than 40 yds off the tee line)"
+     ],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "Long iron",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "long grass": 0.0,
+      "water": 0.75
+     },
+     "iou_fairway": 0.624,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "10",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": -10.0,
+     "tie": true,
+     "runner": "4-wood",
+     "margin": 0.0018,
+     "check": [
+      "2-wood best aim +70 rejected (aim +70 yds is more than 40 yds off the tee line; the aim point is 70 yds from this hole's line of play (another hole?))"
+     ],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": false,
+     "same_or_tie": true,
+     "regret": 0.133,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.0,
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.438,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "12",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 0.0,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0639,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "long grass": 0.0,
+      "water": 0.0
+     },
+     "iou_fairway": 0.693,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "13",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 2.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0407,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "4-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.692,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "14",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 2.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0706,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "4-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.677,
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.717,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "15",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": -2.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0264,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.538
+     },
+     "iou_fairway": 0.759,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "17",
+     "tee_set": null,
+     "pick": "4-wood",
+     "aim": 10.0,
+     "tie": true,
+     "runner": "2-wood",
+     "margin": 0.0099,
+     "check": [],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "long grass": 0.0,
+      "water": 0.0
+     },
+     "iou_fairway": 0.766,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "18",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": -7.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0343,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.754,
+     "corridor_pts": 475
+    }
+   ],
+   "summary": {
+    "n": 14,
+    "checks": 2,
+    "n_truth": 14,
+    "same": 12,
+    "same_or_tie": 14,
+    "same_pct": 0.857,
+    "same_or_tie_pct": 1.0,
+    "mean_regret": 0.0112,
+    "max_regret": 0.133,
+    "headline": "quick",
+    "same_quick": 12,
+    "same_head": 12,
+    "same_or_tie_quick": 14,
+    "same_or_tie_head": 14,
+    "mean_regret_quick": 0.0112,
+    "mean_regret_head": 0.0112,
+    "max_regret_quick": 0.133,
+    "max_regret_head": 0.133,
+    "tee10": 14,
+    "green10": 14,
+    "iou_fairway": 0.693,
+    "n_geo": 14,
+    "iou": {
+     "trees": {
+      "mean": 0.368,
+      "n": 7,
+      "pass06": 3
+     },
+     "long grass": {
+      "mean": 0.0,
+      "n": 13,
+      "pass06": 0
+     },
+     "water": {
+      "mean": 0.279,
+      "n": 5,
+      "pass06": 2
+     },
+     "ob": {
+      "mean": 0.071,
+      "n": 2,
+      "pass06": 0
+     }
+    }
+   },
+   "aim_violations": [],
+   "seconds": 80.0
+  },
+  {
+   "course": "Ellis",
+   "slug": "ellis",
+   "tees": "Blue",
+   "package": "course_data/packages/ellis/package.json",
+   "package_commit": "eeac3e5 2026-10-17T10:44:50Z",
+   "source": "product/decide.run quick n=8000",
+   "decision_s": 52.1,
+   "truth": "hand-checked corridor map course_data/truth/ellis/hand_zones_ll.json in the package, through the product's quick decision",
+   "truth_label": "hand map, quick",
+   "truth_fp": "135c9eedaf",
+   "truth_commit": "c1691ae 2026-10-17T10:56:34Z",
+   "holes": [
+    {
+     "hole": "1",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 5.0,
+     "tie": false,
+     "runner": "4-wood",
+     "margin": 0.0354,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.333
+     },
+     "iou_fairway": 0.531,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "2",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 40.0,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0159,
+     "check": [
+      "Driver best aim +45 rejected (aim +45 yds is more than 40 yds off the tee line)"
+     ],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.0,
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.599,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "3",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": -5.0,
+     "tie": false,
+     "runner": "4-wood",
+     "margin": 0.0335,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.183,
+      "ob": 0.0
+     },
+     "iou_fairway": 0.804,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "5",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 2.5,
+     "tie": false,
+     "runner": "4-wood",
+     "margin": 0.0212,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "4-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.0
+     },
+     "iou_fairway": 0.68,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "6",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 2.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.055,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.28
+     },
+     "iou_fairway": 0.546,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "7",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 0.0,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.069,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.0
+     },
+     "iou_fairway": 0.867,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "9",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 5.0,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0877,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.109,
+      "ob": 0.0
+     },
+     "iou_fairway": 0.507,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "10",
+     "tee_set": null,
+     "pick": "4-wood",
+     "aim": -2.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0406,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": false,
+     "same_or_tie": false,
+     "regret": 0.0361,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.364
+     },
+     "iou_fairway": 0.494,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "12",
+     "tee_set": null,
+     "pick": "4-wood",
+     "aim": 0.0,
+     "tie": true,
+     "runner": "2-wood",
+     "margin": 0.0002,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": false,
+     "same_or_tie": false,
+     "regret": 0.0859,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.658
+     },
+     "iou_fairway": 0.606,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "13",
+     "tee_set": null,
+     "pick": "Long iron",
+     "aim": 2.5,
+     "tie": false,
+     "runner": "Mid iron",
+     "margin": 0.0742,
+     "check": [],
+     "truth": "2-wood",
+     "truth_tie": false,
+     "truth_runner": "4-wood",
+     "same": false,
+     "same_or_tie": false,
+     "regret": 0.0667,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.168,
+      "ob": 0.232
+     },
+     "iou_fairway": 0.393,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "15",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": 2.5,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0682,
+     "check": [],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": false,
+     "same_or_tie": false,
+     "regret": 0.0569,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.122,
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.503,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "16",
+     "tee_set": null,
+     "pick": "4-wood",
+     "aim": -5.0,
+     "tie": false,
+     "runner": "Driver",
+     "margin": 0.0851,
+     "check": [],
+     "truth": "4-wood",
+     "truth_tie": false,
+     "truth_runner": "Driver",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.4
+     },
+     "iou_fairway": 0.64,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "17",
+     "tee_set": null,
+     "pick": "Driver",
+     "aim": -40.0,
+     "tie": false,
+     "runner": "2-wood",
+     "margin": 0.0194,
+     "check": [
+      "Driver best aim -65 rejected (aim -65 yds is more than 40 yds off the tee line; the aim point is 65 yds from this hole's line of play (another hole?))",
+      "2-wood best aim -58 rejected (aim -58 yds is more than 40 yds off the tee line; the aim point is 57 yds from this hole's line of play (another hole?))",
+      "4-wood best aim -58 rejected (aim -58 yds is more than 40 yds off the tee line; the aim point is 57 yds from this hole's line of play (another hole?))"
+     ],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": true,
+     "same_or_tie": true,
+     "regret": 0.0,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.111,
+      "long grass": 0.0
+     },
+     "iou_fairway": 0.509,
+     "corridor_pts": 475
+    },
+    {
+     "hole": "18",
+     "tee_set": null,
+     "pick": "2-wood",
+     "aim": -10.0,
+     "tie": true,
+     "runner": "4-wood",
+     "margin": 0.0031,
+     "check": [],
+     "truth": "Driver",
+     "truth_tie": false,
+     "truth_runner": "2-wood",
+     "same": false,
+     "same_or_tie": false,
+     "regret": 0.015,
+     "tee_err": 0.0,
+     "green_err": 0.0,
+     "iou": {
+      "trees": 0.615,
+      "water": 0.0
+     },
+     "iou_fairway": 0.487,
+     "corridor_pts": 475
+    }
+   ],
+   "summary": {
+    "n": 14,
+    "checks": 2,
+    "n_truth": 14,
+    "same": 9,
+    "same_or_tie": 9,
+    "same_pct": 0.643,
+    "same_or_tie_pct": 0.643,
+    "mean_regret": 0.0186,
+    "max_regret": 0.0859,
+    "headline": "quick",
+    "same_quick": 9,
+    "same_head": 9,
+    "same_or_tie_quick": 9,
+    "same_or_tie_head": 9,
+    "mean_regret_quick": 0.0186,
+    "mean_regret_head": 0.0186,
+    "max_regret_quick": 0.0859,
+    "max_regret_head": 0.0859,
+    "tee10": 14,
+    "green10": 14,
+    "iou_fairway": 0.583,
+    "n_geo": 14,
+    "iou": {
+     "trees": {
+      "mean": 0.239,
+      "n": 14,
+      "pass06": 2
+     },
+     "long grass": {
+      "mean": 0.0,
+      "n": 3,
+      "pass06": 0
+     },
+     "water": {
+      "mean": 0.0,
+      "n": 1,
+      "pass06": 0
+     },
+     "ob": {
+      "mean": 0.077,
+      "n": 3,
+      "pass06": 0
+     }
+    }
+   },
+   "aim_violations": [],
+   "seconds": 72.9
   }
  ],
  "guards": {
   "fails": [],
-  "notes": []
+  "notes": [
+   "Veenker: no baseline yet",
+   "Coldwater Golf Links: no baseline yet",
+   "Ellis: no baseline yet"
+  ]
  },
  "truth_cache": {
   "spirit_hollow": {
@@ -1502,6 +2528,525 @@
     }
    },
    "built": "2026-10-17 04:49"
+  },
+  "veenker": {
+   "fp": "a0763d1cf7",
+   "n": 8000,
+   "res": {
+    "1": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.054142293875226066,
+     "tie": false,
+     "aim": -7.5,
+     "ev": {
+      "Driver": 3.971111837690424,
+      "2-wood": 4.02525413156565,
+      "4-wood": 4.0537284556182565
+     }
+    },
+    "2": {
+     "pick": "4-wood",
+     "runner": "2-wood",
+     "margin": 0.0439176387364153,
+     "tie": false,
+     "aim": 2.5,
+     "ev": {
+      "Driver": 4.006603093280847,
+      "2-wood": 3.9300224003456625,
+      "4-wood": 3.8861047616092472
+     }
+    },
+    "3": {
+     "pick": "4-wood",
+     "runner": "Driver",
+     "margin": 0.012282909677536757,
+     "tie": false,
+     "aim": 17.5,
+     "ev": {
+      "Driver": 3.7634141365483282,
+      "2-wood": 3.7771850877869264,
+      "4-wood": 3.7511312268707915
+     }
+    },
+    "4": {
+     "pick": "4-wood",
+     "runner": "2-wood",
+     "margin": 0.044862930966231396,
+     "tie": false,
+     "aim": -2.5,
+     "ev": {
+      "Driver": 4.028127558811214,
+      "2-wood": 3.8862277877969826,
+      "4-wood": 3.8413648568307512
+     }
+    },
+    "5": {
+     "pick": "4-wood",
+     "runner": "2-wood",
+     "margin": 0.0907836328256515,
+     "tie": false,
+     "aim": 12.5,
+     "ev": {
+      "Driver": 4.495696544247299,
+      "2-wood": 4.2309138560907815,
+      "4-wood": 4.14013022326513
+     }
+    },
+    "7": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.09539351729853696,
+     "tie": false,
+     "aim": 2.5,
+     "ev": {
+      "Driver": 4.812334956231174,
+      "2-wood": 4.907728473529711,
+      "4-wood": 5.018169007174951
+     }
+    },
+    "9": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.038078216921024755,
+     "tie": false,
+     "aim": 10.0,
+     "ev": {
+      "Driver": 4.690158482830355,
+      "2-wood": 4.728236699751379,
+      "4-wood": 4.734844628261757
+     }
+    },
+    "10": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.04318965637764549,
+     "tie": false,
+     "aim": -40.0,
+     "ev": {
+      "Driver": 4.819354462339274,
+      "2-wood": 4.86254411871692,
+      "4-wood": 4.895381252994845
+     }
+    },
+    "12": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.04040072146682183,
+     "tie": false,
+     "aim": 30.0,
+     "ev": {
+      "Driver": 3.770121079794089,
+      "2-wood": 3.810521801260911,
+      "4-wood": 3.879861269551291
+     }
+    },
+    "14": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.05365354539389866,
+     "tie": false,
+     "aim": 27.5,
+     "ev": {
+      "Driver": 4.117788734703102,
+      "2-wood": 4.171442280097001,
+      "4-wood": 4.222941015962141
+     }
+    },
+    "15": {
+     "pick": "Long iron",
+     "runner": "4-wood",
+     "margin": 0.05702874455838369,
+     "tie": false,
+     "aim": -17.5,
+     "ev": {
+      "Driver": 4.496655937033996,
+      "2-wood": 4.405912317093666,
+      "4-wood": 4.237671634768369,
+      "Long iron": 4.1806428902099855,
+      "Mid iron": 4.347463174734437
+     }
+    },
+    "16": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.08145589487049598,
+     "tie": false,
+     "aim": -12.5,
+     "ev": {
+      "Driver": 4.594712203783602,
+      "2-wood": 4.676168098654098,
+      "4-wood": 4.697120694007044
+     }
+    },
+    "18": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.02717506515002377,
+     "tie": false,
+     "aim": -5.0,
+     "ev": {
+      "Driver": 4.6718697421857875,
+      "2-wood": 4.699044807335811,
+      "4-wood": 4.7154166038708825
+     }
+    }
+   },
+   "built": "2026-10-17 11:31"
+  },
+  "coldwater": {
+   "fp": "b8462e21bc",
+   "n": 8000,
+   "res": {
+    "1": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.091986823045203,
+     "tie": false,
+     "aim": 7.5,
+     "ev": {
+      "Driver": 3.5847238187500317,
+      "2-wood": 3.6767106417952347,
+      "4-wood": 3.741061074008276
+     }
+    },
+    "2": {
+     "pick": "4-wood",
+     "runner": "Driver",
+     "margin": 0.0233553712797967,
+     "tie": false,
+     "aim": 12.5,
+     "ev": {
+      "Driver": 4.122277147410024,
+      "2-wood": 4.1340355633931285,
+      "4-wood": 4.0989217761302275
+     }
+    },
+    "3": {
+     "pick": "Driver",
+     "runner": "4-wood",
+     "margin": 0.019148316945448052,
+     "tie": false,
+     "aim": -27.5,
+     "ev": {
+      "Driver": 4.478957719711652,
+      "2-wood": 4.5062102629804235,
+      "4-wood": 4.4981060366571
+     }
+    },
+    "4": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.03684919206494497,
+     "tie": false,
+     "aim": -15.0,
+     "ev": {
+      "Driver": 3.805256805387455,
+      "2-wood": 3.8421059974524,
+      "4-wood": 3.863164110192355
+     }
+    },
+    "6": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.06548115571854973,
+     "tie": false,
+     "aim": 0.0,
+     "ev": {
+      "Driver": 3.935700609820526,
+      "2-wood": 4.001181765539076,
+      "4-wood": 4.043082424230303
+     }
+    },
+    "7": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.06777789225690878,
+     "tie": false,
+     "aim": -5.0,
+     "ev": {
+      "Driver": 4.445596818340811,
+      "2-wood": 4.51337471059772,
+      "4-wood": 4.544060500173576
+     }
+    },
+    "9": {
+     "pick": "4-wood",
+     "runner": "Long iron",
+     "margin": 0.03181468782271013,
+     "tie": false,
+     "aim": -27.5,
+     "ev": {
+      "Driver": 4.2170389498013865,
+      "2-wood": 3.909260460765524,
+      "4-wood": 3.844697203021481,
+      "Long iron": 3.876511890844191,
+      "Mid iron": 3.941729292493343
+     }
+    },
+    "10": {
+     "pick": "4-wood",
+     "runner": "2-wood",
+     "margin": 0.08544436328764249,
+     "tie": false,
+     "aim": -12.5,
+     "ev": {
+      "Driver": 4.161381949324788,
+      "2-wood": 4.113814664209788,
+      "4-wood": 4.028370300922146
+     }
+    },
+    "12": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.0652555010384046,
+     "tie": false,
+     "aim": 0.0,
+     "ev": {
+      "Driver": 3.651476626344353,
+      "2-wood": 3.7167321273827576,
+      "4-wood": 3.73171903952146
+     }
+    },
+    "13": {
+     "pick": "Driver",
+     "runner": "4-wood",
+     "margin": 0.03281207199738789,
+     "tie": false,
+     "aim": 5.0,
+     "ev": {
+      "Driver": 3.9995616849850104,
+      "2-wood": 4.032439826579064,
+      "4-wood": 4.032373756982398
+     }
+    },
+    "14": {
+     "pick": "Driver",
+     "runner": "4-wood",
+     "margin": 0.040284754728456384,
+     "tie": false,
+     "aim": -2.5,
+     "ev": {
+      "Driver": 4.266102973619735,
+      "2-wood": 4.314105157717793,
+      "4-wood": 4.3063877283481915
+     }
+    },
+    "15": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.033601746793806786,
+     "tie": false,
+     "aim": -5.0,
+     "ev": {
+      "Driver": 3.9525402331333748,
+      "2-wood": 3.9861419799271816,
+      "4-wood": 3.992977123167209
+     }
+    },
+    "17": {
+     "pick": "4-wood",
+     "runner": "2-wood",
+     "margin": 0.02258222998998738,
+     "tie": false,
+     "aim": 5.0,
+     "ev": {
+      "Driver": 4.111399911596868,
+      "2-wood": 3.947661328502134,
+      "4-wood": 3.9250790985121466
+     }
+    },
+    "18": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.027645999350911943,
+     "tie": false,
+     "aim": -10.0,
+     "ev": {
+      "Driver": 4.0046146081939895,
+      "2-wood": 4.0322606075449015,
+      "4-wood": 4.038074005160193
+     }
+    }
+   },
+   "built": "2026-10-17 11:32"
+  },
+  "ellis": {
+   "fp": "135c9eedaf",
+   "n": 8000,
+   "res": {
+    "1": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.04085726110007393,
+     "tie": false,
+     "aim": -5.0,
+     "ev": {
+      "Driver": 3.878624124526225,
+      "2-wood": 3.919481385626299,
+      "4-wood": 3.925553129847856
+     }
+    },
+    "2": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.07528938571214505,
+     "tie": false,
+     "aim": 40.0,
+     "ev": {
+      "Driver": 3.7198060664184784,
+      "2-wood": 3.7950954521306235,
+      "4-wood": 3.8232140040596256
+     }
+    },
+    "3": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.05866487273223164,
+     "tie": false,
+     "aim": -2.5,
+     "ev": {
+      "Driver": 4.289061835236271,
+      "2-wood": 4.347726707968502,
+      "4-wood": 4.366884869740306
+     }
+    },
+    "5": {
+     "pick": "Driver",
+     "runner": "4-wood",
+     "margin": 0.036739337451690446,
+     "tie": false,
+     "aim": -2.5,
+     "ev": {
+      "Driver": 3.909061071595613,
+      "2-wood": 3.9514898704295693,
+      "4-wood": 3.9458004090473033
+     }
+    },
+    "6": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.05902188233135064,
+     "tie": false,
+     "aim": -5.0,
+     "ev": {
+      "Driver": 3.940486868924145,
+      "2-wood": 3.9995087512554957,
+      "4-wood": 4.015116496530667
+     }
+    },
+    "7": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.08308455525461778,
+     "tie": false,
+     "aim": -2.5,
+     "ev": {
+      "Driver": 4.152130662236531,
+      "2-wood": 4.235215217491149,
+      "4-wood": 4.26934533700331
+     }
+    },
+    "9": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.08455610551074333,
+     "tie": false,
+     "aim": -5.0,
+     "ev": {
+      "Driver": 4.501898503631753,
+      "2-wood": 4.586454609142496,
+      "4-wood": 4.616012069640719
+     }
+    },
+    "10": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.03238885342267617,
+     "tie": false,
+     "aim": 2.5,
+     "ev": {
+      "Driver": 3.724735485497964,
+      "2-wood": 3.75712433892064,
+      "4-wood": 3.7608819243760063
+     }
+    },
+    "12": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.05136568734737601,
+     "tie": false,
+     "aim": -5.0,
+     "ev": {
+      "Driver": 4.425063876591872,
+      "2-wood": 4.476429563939248,
+      "4-wood": 4.5109892384806605
+     }
+    },
+    "13": {
+     "pick": "2-wood",
+     "runner": "4-wood",
+     "margin": 0.015172655549811953,
+     "tie": false,
+     "aim": -40.0,
+     "ev": {
+      "Driver": 3.8390447159003234,
+      "2-wood": 3.8157691671102874,
+      "4-wood": 3.8309418226600993,
+      "Long iron": 3.8825142761527687,
+      "Mid iron": 3.958419350414434
+     }
+    },
+    "15": {
+     "pick": "4-wood",
+     "runner": "2-wood",
+     "margin": 0.0399101552034109,
+     "tie": false,
+     "aim": 12.5,
+     "ev": {
+      "Driver": 3.680243852384162,
+      "2-wood": 3.6632422851524398,
+      "4-wood": 3.623332129949029
+     }
+    },
+    "16": {
+     "pick": "4-wood",
+     "runner": "Driver",
+     "margin": 0.0403097492205573,
+     "tie": false,
+     "aim": -5.0,
+     "ev": {
+      "Driver": 3.800715924314015,
+      "2-wood": 3.8060541207594674,
+      "4-wood": 3.7604061750934576
+     }
+    },
+    "17": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.0216696803930283,
+     "tie": false,
+     "aim": -40.0,
+     "ev": {
+      "Driver": 4.749211166802596,
+      "2-wood": 4.770880847195624,
+      "4-wood": 4.823061751994726
+     }
+    },
+    "18": {
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.015004342784738611,
+     "tie": false,
+     "aim": -12.5,
+     "ev": {
+      "Driver": 4.017334525354325,
+      "2-wood": 4.032338868139064,
+      "4-wood": 4.040872413614444
+     }
+    }
+   },
+   "built": "2026-10-17 11:33"
   }
  },
  "history": [
@@ -2986,6 +4531,146 @@
    "same_hand_quick": null,
    "ceiling_quick": null,
    "decision_s": 79.8,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 11:33",
+   "commit": "fb796d5",
+   "course": "spirit_hollow",
+   "truth_fp": "bd4a5e2a1d",
+   "n": 16,
+   "headline": "full",
+   "same": 10,
+   "same_or_tie": 13,
+   "same_quick": 11,
+   "same_full": 10,
+   "mean_regret": 0.0271,
+   "max_regret": 0.1193,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.294,
+    "long grass": 0.0,
+    "water": 0.316,
+    "ob": 0.391
+   },
+   "checks": 3,
+   "same_hand_quick": 10,
+   "ceiling_quick": 12,
+   "decision_s": 63.3,
+   "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 11:33",
+   "commit": "fb796d5",
+   "course": "mozingo_lake",
+   "truth_fp": "2ab50d3367",
+   "n": 14,
+   "headline": "quick",
+   "same": 11,
+   "same_or_tie": 12,
+   "same_quick": 11,
+   "same_full": null,
+   "mean_regret": 0.0094,
+   "max_regret": 0.088,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 44.4,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 11:33",
+   "commit": "fb796d5",
+   "course": "veenker",
+   "truth_fp": "a0763d1cf7",
+   "n": 13,
+   "headline": "quick",
+   "same": 10,
+   "same_or_tie": 11,
+   "same_quick": 10,
+   "same_full": null,
+   "mean_regret": 0.0082,
+   "max_regret": 0.0537,
+   "tee10": 13,
+   "green10": 13,
+   "n_geo": 13,
+   "iou": {
+    "trees": 0.591,
+    "long grass": 0.0,
+    "water": 0.245,
+    "ob": 0.0
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 50.5,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 11:33",
+   "commit": "fb796d5",
+   "course": "coldwater",
+   "truth_fp": "b8462e21bc",
+   "n": 14,
+   "headline": "quick",
+   "same": 12,
+   "same_or_tie": 14,
+   "same_quick": 12,
+   "same_full": null,
+   "mean_regret": 0.0112,
+   "max_regret": 0.133,
+   "tee10": 14,
+   "green10": 14,
+   "n_geo": 14,
+   "iou": {
+    "trees": 0.368,
+    "long grass": 0.0,
+    "water": 0.279,
+    "ob": 0.071
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 65.5,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 11:33",
+   "commit": "fb796d5",
+   "course": "ellis",
+   "truth_fp": "135c9eedaf",
+   "n": 14,
+   "headline": "quick",
+   "same": 9,
+   "same_or_tie": 9,
+   "same_quick": 9,
+   "same_full": null,
+   "mean_regret": 0.0186,
+   "max_regret": 0.0859,
+   "tee10": 14,
+   "green10": 14,
+   "n_geo": 14,
+   "iou": {
+    "trees": 0.239,
+    "long grass": 0.0,
+    "water": 0.0,
+    "ob": 0.077
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 52.1,
    "source": "product/decide.run quick n=8000",
    "regression": false
   }
