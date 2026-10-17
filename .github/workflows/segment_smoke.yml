@@ -1,0 +1,29 @@
+name: segment-smoke
+
+# Fast check of course_data/segment/train (train.py, model.load on a local folder, predict_raster) on
+# synthetic data, so the long segment-train run does not die late.
+
+on:
+  push:
+    paths:
+      - ".github/workflows/segment_smoke.yml"
+      - "course_data/segment/train/train.py"
+      - "course_data/segment/train/smoke.py"
+      - "course_data/segment/model.py"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy scipy
+      - name: Smoke
+        run: python -u course_data/segment/train/smoke.py
