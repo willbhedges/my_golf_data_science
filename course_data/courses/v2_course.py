@@ -104,8 +104,55 @@ def prepare(slug, which):
             m["green_drop"] = gd
             m["dz"] = adj.get("plays_like_delta_yds", round(-gd * 0.3048 / math.tan(math.radians(50)) / 0.9144, 1))
         meta["holes"][str(k)] = m
+    dem_elevation(C, pkg_path, meta)
     json.dump(meta, open(os.path.join(out, "meta.json"), "w"), indent=1)
     print("prepared", out, len(C.holes), "tee shots,", len(C.par3), "par 3s")
+
+
+LANDING_TOTALS = {"Driver": 300, "2-wood": 280, "4-wood": 270, "Long iron": 220, "Mid iron": 192,
+                  "Hybrid ~235 (not in bag)": 248}
+
+
+def dem_elevation(C, pkg_path, meta):
+    """From the package DEM (3DEP lidar 1 m where available) at THIS module's tees (the plan's tee set):
+    par 3s: green-centre drop below the tee (ft) and the plays-like delta (elevation/adjust.py rule: an iron
+    landing at ~50 deg, -drop / tan 50); tee shots: landing drop (ft) at each club's calm total on the tee line
+    (the page's elevation line; the carry / roll numbers are the product's along-line adjustments)."""
+    PK = product_pk()
+    sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as R
+    path = PK.dem_path(C.package, pkg_path)
+    if not path:
+        meta["dem"] = None
+        return
+    f = PK._platform_pkg().dem_sampler(path)
+    meta["dem"] = os.path.relpath(path, ROOT)
+    for k in C.order:
+        fr = R.Frame.from_json(C.frames[k])
+        tee_ll = C.frames[k]["tee_ll"]
+        zt = float(f([tee_ll])[0])
+        m = meta["holes"].setdefault(str(k), {})
+        m["tee_ft"] = round(zt / 0.3048, 1) if np.isfinite(zt) else None
+        if k in C.par3:
+            g_ll = fr.px_to_ll([C.par3[k]["flag"]])[0]
+            zg = float(f([g_ll])[0])
+            if np.isfinite(zt) and np.isfinite(zg):
+                drop = (zt - zg) / 0.3048
+                m["green_drop"] = round(drop, 1)
+                m["dz"] = round(-drop * 0.3048 / math.tan(math.radians(50)) / 0.9144, 1)
+                m["green_ft"] = round(zg / 0.3048, 1)
+        else:
+            hd = C.holes[k]
+            tee = np.array(hd["tee"], float)
+            v = np.array(hd["dot270"], float) - tee
+            ppy = np.linalg.norm(v) / 270.0
+            fwd = v / np.linalg.norm(v)
+            clubs = m.setdefault("clubs", {})
+            for c, tot in LANDING_TOTALS.items():
+                ll = fr.px_to_ll([tee + fwd * tot * ppy])[0]
+                z = float(f([ll])[0])
+                if np.isfinite(z) and np.isfinite(zt):
+                    clubs.setdefault(c, {})["drop"] = round((zt - z) / 0.3048, 1)
 
 
 # ------------------------------------------------------------------------------------------------ activate
