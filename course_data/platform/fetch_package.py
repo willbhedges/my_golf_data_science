@@ -48,12 +48,14 @@ def pad(bbox, m):
     return (s - dlat, w - dlon, n + dlat, e + dlon)              # S, W, N, E (Overpass order)
 
 
-def fetch_osm(course, raw):
+def fetch_osm(course, raw, drop_holes=False):
     import fetch_course as fcm
     snwe = pad(course["bbox"], BUFFER_M)
     data = fcm.fetch_features(snwe)
     pc.write_json(os.path.join(raw, "osm_raw.json"), data, indent=None)
     fc = fcm.to_geojson(data["elements"])
+    if drop_holes:     # request "ignore_osm_holes": the OSM golf=hole ways belong to another course of the club
+        fc["features"] = [f for f in fc["features"] if (f.get("properties") or {}).get("golf") != "hole"]
     rings = fcm.outer_rings(course["boundary"]) if course.get("boundary") else []
     w, s, e, n = course["bbox"]
     el = dict(type=course["osm"]["type"], id=course["osm"]["id"], tags=dict(course.get("tags") or {},
@@ -143,7 +145,7 @@ def fetch(req_path):
            [(c["name"], c["town"], c["holes"]) for c in course["candidates"][:5]])
     if course["status"] != "ok":
         return slug, course["status"]
-    fc, summ = fetch_osm(course, raw)
+    fc, summ = fetch_osm(course, raw, drop_holes=bool(req.get("ignore_osm_holes")))
     pc.log("osm:", len(fc["features"]), "features;", summ["golf_tag_counts_inside_course"])
     if req.get("web_scorecard", True):
         sw = fetch_scorecards(req, course, summ, raw)

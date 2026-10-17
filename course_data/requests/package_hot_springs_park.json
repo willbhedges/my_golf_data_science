@@ -4,15 +4,33 @@
  "course": "Hot Springs Country Club Park Course",
  "state": "AR",
  "town": "Hot Springs",
- "tees": "Black",
+ "tees": "Gold",
  "allow_substitute": true,
  "requested": "2026-10-17T14:25Z",
  "by": "tournament mapper (NCCGA 2027)",
  "note": "BLIND auto run (no hand edits): prediction scored against course_data/truth/hot_springs_park/. NCCGA National Championship Apr 2027 (36 holes on Arlington + Park); back set.",
  "near": "34.4756,-93.0326",
- "no_osm_course": true,
  "near_radius_m": 1100,
  "opengolfapi_id": "d922c200-98e2-463a-a24a-35dfef5fe34c",
- "rev": 2,
- "rebuild_note": "v1: OSM maps one outline for the 36-hole club and only Arlington's holes: Park built from a box around OpenGolfAPI's Park point (hand outline to follow), Park card pinned"
+ "rev": 3,
+ "rebuild_note": "v2 (blind, box) used Arlington's 18 OSM hole ways with the Park card (pars off on 15 holes). v3: Park outline = the club south of the clubhouse (OSM greens / tees cluster below 34.4781 N, Arlington above 34.4798 N), OSM hole ways ignored, card-assisted routing on the Park greens / pads",
+ "boundary_ll": [
+  [
+   -93.0405,
+   34.4705
+  ],
+  [
+   -93.0235,
+   34.4705
+  ],
+  [
+   -93.0235,
+   34.479
+  ],
+  [
+   -93.0405,
+   34.479
+  ]
+ ],
+ "ignore_osm_holes": true
 }
