@@ -33,6 +33,23 @@
    "test_zones_valid_simple 15: AssertionError: 2/32 bad zones: #15 fairway: Self-intersection[-93.6154483791413 42.0100035980279]; #30 recovery: Self-intersection[-93.6152043023658 42.0139953180054]"
   ]
  },
+ "packages/eagle_knoll": {
+  "passed": 270,
+  "failed": 5,
+  "skipped": 0,
+  "holes": 18,
+  "fail_summary": [
+   "every_tee_set (2: 3-Forward,8-Forward)",
+   "zones_valid_simple (3: 3,15,16)"
+  ],
+  "messages": [
+   "test_every_tee_set 3-Forward: AssertionError: length 237 vs card 203 (+17%)",
+   "test_every_tee_set 8-Forward: AssertionError: length 385 vs card 322 (+19%)",
+   "test_zones_valid_simple 3: AssertionError: 1/13 bad zones: #2 recovery: Self-intersection[-92.2596537587178 38.6920515549797]",
+   "test_zones_valid_simple 15: AssertionError: 1/18 bad zones: #10 fairway: Ring Self-intersection[-92.267394 38.7002644]",
+   "test_zones_valid_simple 16: AssertionError: 1/13 bad zones: #9 fairway: Ring Self-intersection[-92.2673939 38.7002643]"
+  ]
+ },
  "packages/ellis": {
   "passed": 264,
   "failed": 11,
@@ -56,6 +73,23 @@
    "test_zones_valid_simple 16: AssertionError: 1/32 bad zones: #6 water: Self-intersection[-91.6925603 41.9966357]",
    "test_zones_valid_simple 17: AssertionError: 1/46 bad zones: #11 water: Self-intersection[-91.689868952172 41.9962506156402]",
    "test_zones_valid_simple 18: AssertionError: 1/40 bad zones: #6 water: Self-intersection[-91.6925604 41.9966358]"
+  ]
+ },
+ "packages/gateway_national": {
+  "passed": 288,
+  "failed": 5,
+  "skipped": 0,
+  "holes": 18,
+  "fail_summary": [
+   "every_tee_set (1: 7-Middle)",
+   "zones_valid_simple (4: 1,2,16,18)"
+  ],
+  "messages": [
+   "test_every_tee_set 7-Middle: AssertionError: length 188 vs card 160 (+18%)",
+   "test_zones_valid_simple 1: AssertionError: 1/27 bad zones: #9 fairway: Ring Self-intersection[-90.1419904 38.662629]",
+   "test_zones_valid_simple 2: AssertionError: 1/28 bad zones: #7 fairway: Ring Self-intersection[-90.1419902 38.6626285]",
+   "test_zones_valid_simple 16: AssertionError: 1/24 bad zones: #5 fairway: Ring Self-intersection[-90.1466081 38.6610008]",
+   "test_zones_valid_simple 18: AssertionError: 1/29 bad zones: #6 fairway: Ring Self-intersection[-90.1419901 38.6626285]"
   ]
  },
  "packages/mozingo_lake": {
