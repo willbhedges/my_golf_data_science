@@ -82,3 +82,19 @@ Share = long grass / OSM course outline; corridor IoU / precision / recall vs th
 | `t0.5_relaxed_d0_g0.15` | 12/16 | 11/14 | 13/13 | 12/14 | 12/14 | 13/14 | 11/13 | 84/98 | 0.0077 | 4 / 10 |
 | `t0.5_relaxed_d10_g0.15` | 12/16 | 11/14 | 13/13 | 12/14 | 12/14 | 13/14 | 11/13 | 84/98 | 0.0077 | 4 / 10 |
 | `t0.5_relaxed_d20_g0.15` | 12/16 | 11/14 | 13/13 | 12/14 | 12/14 | 13/14 | 11/13 | 84/98 | 0.0077 | 4 / 10 |
+
+## Reading (by hand, after Actions run 39054549510)
+
+* Nothing integrated: no long-grass setting beats `off` on any held-out fold, so the cross-validation picks `off` for
+  all seven folds (84/98 = 84/98). model_v2/model.json keeps `native_thr: null`; packages unchanged.
+* Long grass on only ever moves picks shorter. The 10 longer misses with `off` (Spirit Hollow 1, 6, 18; Mozingo 13;
+  Coldwater 2, 10; Ellis 15; Eagle Knoll 17; Gateway 9, 11) stay as they are at every threshold, except Coldwater 10 at
+  `t0.3_relaxed_d0`, where 14 other holes break (70/98).
+* The cause is the classifier, not the threshold: out-of-fold, it finds little of the hand-traced long grass inside
+  the landing corridors (recall at P >= 0.5: Spirit Hollow 0.02, Mozingo 0.18, Coldwater 0.03, Gateway 0.11, Ellis
+  0.35) and puts most of its long grass elsewhere (precision 0.02-0.32 on the parkland courses). Even Gateway at
+  P >= 0.3 (recall 0.25, precision 0.64) keeps 2-wood on 9 and Driver on 11.
+* Next: (1) per-miss check of where the hand map's native sits (landing-zone edges at 250-300 yds) vs what the
+  model predicts there; (2) a corridor-focused classifier (train on corridor cells only, add OSM rough/grassland
+  polygons and NAIP leaf-off/peak-season contrast) scored with this harness; (3) the remaining longer misses
+  are not all long grass (short_club_diagnosis.md: fairway width / corridor), so fix those inputs in parallel.
