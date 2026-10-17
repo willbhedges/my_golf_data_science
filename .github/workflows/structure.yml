@@ -1,0 +1,192 @@
+name: structure
+
+# Course-structure inference evaluation data + eval (course_data/structure/).
+# Request-file trigger: commit course_data/requests/structure_<name>.json
+#   {"schema": "request/1", "kind": "structure", "stage": "data" | "fetch" | "eval", "seed": 20261018,
+#    "per_state": 5, "dev_per_state": 4, "missing_only": true}
+# data:  survey the held-out states (one job per state) -> select dev + held-out sets -> fetch OSM per course
+#        (6 chunks, max 6 at a time) -> commit course_data/structure/{surveys,sets.json,data/} -> eval
+# fetch: fetch only (sets.json already committed), then eval
+# eval:  eval.py on the committed data -> REPORT tables (eval/*.json, eval/*.md)
+
+on:
+  push:
+    paths:
+      - "course_data/requests/structure_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: structure-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.p.outputs.stage }}
+      states: ${{ steps.p.outputs.states }}
+      seed: ${{ steps.p.outputs.seed }}
+      per_state: ${{ steps.p.outputs.per_state }}
+      dev_per_state: ${{ steps.p.outputs.dev_per_state }}
+      fetch_args: ${{ steps.p.outputs.fetch_args }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 50
+      - id: p
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git diff --name-only "$BEFORE" "${{ github.sha }}" -- 'course_data/requests/structure_*.json' > /tmp/req.txt
+          else
+            ls course_data/requests/structure_*.json > /tmp/req.txt
+          fi
+          python - <<'EOF'
+          import json, os, subprocess
+          reqs = [l.strip() for l in open("/tmp/req.txt") if l.strip() and os.path.exists(l.strip())]
+          r = json.load(open(sorted(reqs)[-1])) if reqs else {"stage": "eval"}
+          seed = int(r.get("seed", 20261018))
+          states = r.get("states") or json.loads(subprocess.check_output(
+              ["python", "course_data/structure/fetch.py", "states", "--seed", str(seed)]).decode())
+          out = dict(stage=r.get("stage", "data"), states=json.dumps(states), seed=str(seed),
+                     per_state=str(r.get("per_state", 5)), dev_per_state=str(r.get("dev_per_state", 4)),
+                     fetch_args="--missing-only" if r.get("missing_only") else "")
+          print(out)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              for k, v in out.items():
+                  fh.write(f"{k}={v}\n")
+          EOF
+
+  survey:
+    needs: plan
+    if: needs.plan.outputs.stage == 'data'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        state: ${{ fromJSON(needs.plan.outputs.states) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q requests
+      - run: python -u course_data/structure/fetch.py survey ${{ matrix.state }} --out survey/survey_${{ matrix.state }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: survey-${{ matrix.state }}
+          path: survey/survey_${{ matrix.state }}.json
+
+  select:
+    needs: [plan, survey]
+    if: always() && needs.plan.outputs.stage == 'data' && needs.survey.result != 'skipped'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: survey-*
+          merge-multiple: true
+          path: course_data/structure/surveys
+      - run: |
+          python -u course_data/structure/fetch.py select course_data/structure/surveys/survey_*.json \
+            --seed ${{ needs.plan.outputs.seed }} --per-state ${{ needs.plan.outputs.per_state }} \
+            --dev-per-state ${{ needs.plan.outputs.dev_per_state }}
+      - name: Commit sets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/structure/sets.json course_data/structure/surveys
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "structure: held-out state surveys + dev / held-out sets (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
+
+  fetch:
+    needs: [plan, select]
+    if: always() && (needs.plan.outputs.stage == 'fetch' || (needs.plan.outputs.stage == 'data' && needs.select.result == 'success'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q requests numpy shapely pyproj
+      - run: |
+          git pull -q --rebase origin "${{ github.ref_name }}" || true
+          python -u course_data/structure/fetch.py fetch --chunk ${{ matrix.chunk }} --of 6 ${{ needs.plan.outputs.fetch_args }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: data-${{ matrix.chunk }}
+          path: course_data/structure/data
+          if-no-files-found: warn
+
+  collect:
+    needs: [plan, fetch]
+    if: always() && (needs.plan.outputs.stage == 'eval' || needs.fetch.result == 'success' || needs.fetch.result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely
+      - uses: actions/download-artifact@v4
+        if: needs.fetch.result != 'skipped'
+        with:
+          pattern: data-*
+          merge-multiple: true
+          path: course_data/structure/data
+      - name: Eval
+        run: |
+          git pull -q --rebase origin "${{ github.ref_name }}" || true
+          ls course_data/structure/data | wc -l
+          if [ -f course_data/structure/eval.py ]; then
+            python -u course_data/structure/eval.py --all || echo "eval failed"
+            cat course_data/structure/eval/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          fi
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/structure/data course_data/structure/eval 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "structure: evaluation data + eval (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
