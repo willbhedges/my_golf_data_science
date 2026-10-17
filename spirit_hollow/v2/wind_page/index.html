@@ -33,6 +33,9 @@ h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.02e
 .seg button{font:600 14px var(--display);letter-spacing:.04em;border:1px solid var(--line);background:transparent;color:var(--ink);
   border-radius:999px;padding:5px 12px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.topnav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.topnav button{font:700 22px var(--display);min-width:56px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--ink);color:var(--card);cursor:pointer}
+.topnav span{font:700 22px var(--display);color:var(--ink)}
 #start{font:600 15px var(--display);border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:6px 10px}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -97,6 +100,7 @@ tr.best td{font-weight:600}
 
   <section class="panel hole" aria-live="polite">
     <div class="mapcol">
+      <div class="topnav"><button id="prevTop" aria-label="Previous hole">◀</button><span id="topNo"></span><button id="nextTop" aria-label="Next hole">▶</button></div>
       <div class="seg" id="view"><button data-v="hole">Whole hole from the tee</button><button data-v="land">Landing area</button></div>
       <div class="mapbox"><svg id="ov" role="img" aria-label="Overhead view of the hole"></svg></div>
     </div>
@@ -275,6 +279,7 @@ function render(){
   document.getElementById("view").hidden = h.kind !== "tee";
   document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
   document.getElementById("hNo").textContent = "Hole " + h.label.replace(/ (Black|Gold) tee$/, "");
+  document.getElementById("topNo").textContent = document.getElementById("hNo").textContent;
   const T0 = h.kind === "tee" ? teeOf(h) : null, P3 = h.kind === "tee" ? null : solvePar3(h);
   document.getElementById("hPar").textContent = h.kind === "tee"
     ? `Par ${h.par} · ${T0.card + (st.adj[h.key] || 0)} yds · from the ${T0.name} tee` + (st.adj[h.key] ? ` (moved ${Math.abs(st.adj[h.key])} ${st.adj[h.key] > 0 ? "back" : "up"})` : "")
@@ -426,6 +431,8 @@ document.getElementById("hTable").addEventListener("click", e => {
 document.querySelectorAll("#view button").forEach(b => b.addEventListener("click", () => { st.view = b.dataset.v; render(); }));
 document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest(".chip"); if(b){ st.idx = +b.dataset.i; render(); } });
 document.getElementById("prev").addEventListener("click", () => { st.idx = step(-1); render(); });
+document.getElementById("prevTop").addEventListener("click", () => { st.idx = step(-1); render(); });
+document.getElementById("nextTop").addEventListener("click", () => { st.idx = step(1); render(); });
 document.getElementById("next").addEventListener("click", () => { st.idx = step(1); render(); });
 document.getElementById("foot").textContent = `Forecast: Open-Meteo, fetched ${D.fetched.slice(0,16).replace("T"," ")} UTC (cross-checked with NWS). Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Each hole's map has the GPS app's markings removed; hole 3 is the 2023 aerial photo. Other tee sets move the tee back or up the line by the scorecard difference from Black (on 2 and 9, Gold uses the Gold-box screenshot); each is solved separately, to the nearest 20 yds. Model v2: each club rolls to your stated total on level fairway (slope changes roll by at most ±30%, no sideways kick), carry adjusted for the temperature when you reach each hole (about 2 yds per 10°F for driver, from 70°F), slight and heavy mishits, curving misses lose carry, lost balls and OB priced as stroke and distance, water relief from where the ball went in, trees as punch-outs, scratch-5 scoring. Picks in wind use v2 at its central settings (driver pattern 70 yds); the calm-day pick and aim come from the v2 Bayesian run (64 prior draws, Saturday 10 am temperatures), aims to the half yard; the blue bar is every aim within 0.005 strokes. The ~235 hybrid is hypothetical. "≈" marks a tie (within 0.01 strokes).`;
 render();
