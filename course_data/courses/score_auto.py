@@ -94,6 +94,9 @@ def plan(pkg, tees, n, name):
     with tempfile.TemporaryDirectory() as td:
         p = os.path.join(td, "package.json")
         json.dump(pkg, open(p, "w"))
+        if tees not in (pkg.get("tee_sets") or {}):
+            # a blind package with no card (sets "osm_back" ...): plan its own set; picks are still compared
+            tees = pkg.get("tee_set")
         C = PK.load(p, tees)
         mp = os.path.join(td, "course.py")
         PK.write_module(C, mp)

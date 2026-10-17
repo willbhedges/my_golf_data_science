@@ -27,6 +27,7 @@ def main():
     ap.add_argument("--osm-slug")
     ap.add_argument("--card")
     ap.add_argument("--pad-radius", type=float, default=70.0)
+    ap.add_argument("--package-lines", action="store_true", help="use the package hole lines where OSM has none")
     a = ap.parse_args()
     fpath = os.path.join(HERE, a.slug, "map", "features.json")
     F = json.load(open(fpath))["features"]
@@ -36,6 +37,12 @@ def main():
         p = f["properties"]
         if p.get("golf") == "hole" and f["geometry"]["type"] == "LineString" and str(p.get("ref", "")).isdigit():
             holes[str(p["ref"])] = (np.asarray(f["geometry"]["coordinates"], float)[:, :2], p.get("par"))
+    if a.package_lines:
+        # holes OSM has no way for: the package's routed line (checked on the routing map before use)
+        pkg = json.load(open(os.path.join(CD, "packages", a.osm_slug or a.slug, "package.json")))
+        for ref, h in pkg["holes"].items():
+            if ref not in holes and h.get("hole_line_ll"):
+                holes[ref] = (np.asarray(h["hole_line_ll"], float)[:, :2], h.get("par"))
     spec = dict(source="draft_spec.py from OSM golf=hole lines (to be checked by hand)",
                 features=os.path.relpath(fpath, ROOT), holes={})
     if a.card:
