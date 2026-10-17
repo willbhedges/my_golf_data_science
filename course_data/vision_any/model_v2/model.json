@@ -88,6 +88,38 @@
   "native_mode": "strict",
   "native_dmin_yd": 0
  },
+ "map_level_settings": {
+  "trees": {
+   "hag": 2.5,
+   "k_m": 5,
+   "min_area_m2": 100
+  },
+  "native_thr": 0.04,
+  "native_mode": "strict"
+ },
+ "decision_calibration": {
+  "previous": {
+   "trees": {
+    "hag": 2.5,
+    "k_m": 0,
+    "min_area_m2": 100
+   },
+   "native_thr": 0.5,
+   "native_mode": "relaxed",
+   "native_dmin_yd": 0
+  },
+  "chosen": "throff_strict_k3_d0",
+  "gate": {
+   "pass_": true,
+   "why": [
+    "pooled same club 22/30 vs committed 15/30",
+    "spirit_hollow 11/16 vs 8/16",
+    "mozingo_lake 11/14 vs 7/14",
+    "mean regret 0.0124 vs 0.0153"
+   ]
+  },
+  "report": "course_data/vision_any/v2_decision_calibration.md"
+ },
  "trained_on": {
   "spirit_hollow": [
    "1",
@@ -121,47 +153,24 @@
    "18"
   ]
  },
- "built": "2026-10-17T06:48Z",
+ "built": "2026-10-17T07:54Z",
  "format": "lightgbm",
  "eval": {
-  "trees_precision": 0.7149567675424011,
-  "native_precision": 0.47537762022194824,
-  "native_iou_sh_loho": 0.2963915049010186,
-  "trees_iou_sh_loho": 0.4788140311804009,
+  "trees_precision": 0.6463571136907192,
+  "native_precision": 0.41556659744882823,
+  "native_iou_sh_loho": 0.25604295179346587,
+  "trees_iou_sh_loho": 0.5380450616684471,
   "decision": {
    "integrate": false,
    "why": [
-    "spirit_hollow native IoU v2 0.30 vs v1 0.18",
-    "spirit_hollow penal IoU v2 0.64 vs v1 0.55",
-    "mozingo native IoU v2 0.25 vs v1 0.18",
-    "mozingo penal IoU v2 0.38 vs v1 0.32",
-    "cross SH->Mozingo native IoU 0.18 vs v1 0.18",
-    "pooled mean EV cost v2 +0.019 vs v1 +0.032 strokes per tee shot",
-    "pooled same club v2 20/27 vs v1 20/27"
+    "spirit_hollow native IoU v2 0.26 vs v1 0.18",
+    "spirit_hollow penal IoU v2 0.65 vs v1 0.55",
+    "mozingo native IoU v2 0.29 vs v1 0.18",
+    "mozingo penal IoU v2 0.40 vs v1 0.32",
+    "cross SH->Mozingo native IoU 0.24 vs v1 0.18",
+    "pooled mean EV cost v2 +0.022 vs v1 +0.032 strokes per tee shot",
+    "pooled same club v2 18/27 vs v1 20/27"
    ]
   }
- },
- "decision_calibration": {
-  "previous": {
-   "trees": {
-    "hag": 2.5,
-    "k_m": 0,
-    "min_area_m2": 100
-   },
-   "native_thr": 0.5,
-   "native_mode": "relaxed",
-   "native_dmin_yd": 0
-  },
-  "chosen": "throff_strict_k3_d0",
-  "gate": {
-   "pass_": true,
-   "why": [
-    "pooled same club 22/30 vs committed 15/30",
-    "spirit_hollow 11/16 vs 8/16",
-    "mozingo_lake 11/14 vs 7/14",
-    "mean regret 0.0124 vs 0.0153"
-   ]
-  },
-  "report": "course_data/vision_any/v2_decision_calibration.md"
  }
 }
