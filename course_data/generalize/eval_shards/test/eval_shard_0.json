@@ -1,0 +1,2703 @@
+{
+ "split": "test",
+ "shard": 0,
+ "n_shards": 6,
+ "slugs": [
+  "carillon_il",
+  "somerby_mn",
+  "willowbend_ma",
+  "towne_lake_hills_ga",
+  "bonneville_ut",
+  "visalia_ca"
+ ],
+ "evals": {
+  "osm_card": [
+   {
+    "slug": "carillon_il",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 9,
+     "hole_number_acc": 0.222,
+     "green_assign_acc": 0.333,
+     "physical_holes_found": 0.222,
+     "median_length_err_yd": 1.6,
+     "p90_length_err_yd": 2.6,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 7,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.778,
+     "seconds": 5.3
+    },
+    "v2": {
+     "n_true": 9,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.111,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 9,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 6.2
+    }
+   },
+   {
+    "slug": "somerby_mn",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 8.8,
+     "p90_length_err_yd": 14.8,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 2,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.25,
+     "seconds": 21.0
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.944,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 8.3,
+     "p90_length_err_yd": 11.6,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 1,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.0,
+     "seconds": 11.1
+    }
+   },
+   {
+    "slug": "willowbend_ma",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 9,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.0,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 12,
+     "wrong": 9,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.583,
+     "seconds": 68.5
+    },
+    "v2": {
+     "n_true": 9,
+     "hole_number_acc": 0.111,
+     "green_assign_acc": 0.222,
+     "physical_holes_found": 0.111,
+     "median_length_err_yd": 6.2,
+     "p90_length_err_yd": 6.2,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 8,
+     "wrong_unflagged": 5,
+     "flag_precision": 0.333,
+     "seconds": 26.3
+    }
+   },
+   {
+    "slug": "towne_lake_hills_ga",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.444,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 22.5
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.778,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 6.2,
+     "p90_length_err_yd": 30.4,
+     "all_correct": false,
+     "flagged": 2,
+     "wrong": 4,
+     "wrong_unflagged": 2,
+     "flag_precision": 1.0,
+     "seconds": 4.6
+    }
+   },
+   {
+    "slug": "bonneville_ut",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 0.833,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 1.2,
+     "p90_length_err_yd": 3.4,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 3,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.5,
+     "seconds": 14.4
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.944,
+     "median_length_err_yd": 1.3,
+     "p90_length_err_yd": 2.7,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 2,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.4,
+     "seconds": 6.5
+    }
+   },
+   {
+    "slug": "visalia_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 16,
+     "hole_number_acc": 0.938,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.938,
+     "median_length_err_yd": 1.6,
+     "p90_length_err_yd": 20.3,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 1,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.0,
+     "seconds": 14.0
+    },
+    "v2": {
+     "n_true": 16,
+     "hole_number_acc": 0.938,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.938,
+     "median_length_err_yd": 1.6,
+     "p90_length_err_yd": 20.3,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 1,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.0,
+     "seconds": 6.0
+    }
+   }
+  ],
+  "model_card": [
+   {
+    "slug": "carillon_il",
+    "card_kind": "osm-derived",
+    "v1": {
+     "n_true": 9,
+     "hole_number_acc": 0.222,
+     "green_assign_acc": 0.333,
+     "physical_holes_found": 0.222,
+     "median_length_err_yd": 2.4,
+     "p90_length_err_yd": 2.8,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 7,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.778,
+     "seconds": 5.2
+    },
+    "v2": {
+     "n_true": 9,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.111,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 6,
+     "wrong": 9,
+     "wrong_unflagged": 3,
+     "flag_precision": 1.0,
+     "seconds": 5.6
+    }
+   },
+   {
+    "slug": "somerby_mn",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 8.8,
+     "p90_length_err_yd": 11.6,
+     "all_correct": false,
+     "flagged": 7,
+     "wrong": 2,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.0,
+     "seconds": 19.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.889,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": 8.6,
+     "p90_length_err_yd": 11.6,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 2,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.0,
+     "seconds": 11.1
+    }
+   },
+   {
+    "slug": "willowbend_ma",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 9,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.111,
+     "physical_holes_found": 0.111,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 9,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 61.6
+    },
+    "v2": {
+     "n_true": 9,
+     "hole_number_acc": 0.111,
+     "green_assign_acc": 0.222,
+     "physical_holes_found": 0.111,
+     "median_length_err_yd": 5.5,
+     "p90_length_err_yd": 5.5,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 8,
+     "wrong_unflagged": 4,
+     "flag_precision": 0.4,
+     "seconds": 16.3
+    }
+   },
+   {
+    "slug": "towne_lake_hills_ga",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.278,
+     "green_assign_acc": 0.444,
+     "physical_holes_found": 0.389,
+     "median_length_err_yd": 0.7,
+     "p90_length_err_yd": 23.9,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 13,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.722,
+     "seconds": 20.6
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.222,
+     "green_assign_acc": 0.333,
+     "physical_holes_found": 0.278,
+     "median_length_err_yd": 0.8,
+     "p90_length_err_yd": 11.4,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 14,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.824,
+     "seconds": 4.4
+    }
+   },
+   {
+    "slug": "bonneville_ut",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.722,
+     "green_assign_acc": 0.778,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": 1.9,
+     "p90_length_err_yd": 3.6,
+     "all_correct": false,
+     "flagged": 7,
+     "wrong": 5,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.571,
+     "seconds": 13.2
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.833,
+     "green_assign_acc": 0.889,
+     "physical_holes_found": 0.833,
+     "median_length_err_yd": 1.9,
+     "p90_length_err_yd": 3.6,
+     "all_correct": false,
+     "flagged": 4,
+     "wrong": 3,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.5,
+     "seconds": 5.1
+    }
+   },
+   {
+    "slug": "visalia_ca",
+    "card_kind": "web",
+    "v1": {
+     "n_true": 16,
+     "hole_number_acc": 0.938,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.938,
+     "median_length_err_yd": 2.3,
+     "p90_length_err_yd": 21.8,
+     "all_correct": false,
+     "flagged": 10,
+     "wrong": 1,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.1,
+     "seconds": 12.6
+    },
+    "v2": {
+     "n_true": 16,
+     "hole_number_acc": 0.875,
+     "green_assign_acc": 1.0,
+     "physical_holes_found": 0.875,
+     "median_length_err_yd": 2.2,
+     "p90_length_err_yd": 20.2,
+     "all_correct": false,
+     "flagged": 5,
+     "wrong": 2,
+     "wrong_unflagged": 2,
+     "flag_precision": 0.0,
+     "seconds": 4.4
+    }
+   }
+  ],
+  "osm_nocard": [
+   {
+    "slug": "carillon_il",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 9,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.333,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 9,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 0.7
+    },
+    "v2": {
+     "n_true": 9,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.111,
+     "physical_holes_found": 0.444,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 9,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 12.4
+    }
+   },
+   {
+    "slug": "somerby_mn",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.222,
+     "green_assign_acc": 0.278,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 5.8,
+     "p90_length_err_yd": 10.0,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 14,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.778,
+     "seconds": 0.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.167,
+     "green_assign_acc": 0.278,
+     "physical_holes_found": 0.722,
+     "median_length_err_yd": 12.0,
+     "p90_length_err_yd": 15.8,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 15,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.833,
+     "seconds": 10.4
+    }
+   },
+   {
+    "slug": "willowbend_ma",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 9,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.333,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 9,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.5,
+     "seconds": 1.0
+    },
+    "v2": {
+     "n_true": 9,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.333,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 9,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.471,
+     "seconds": 23.3
+    }
+   },
+   {
+    "slug": "towne_lake_hills_ga",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 9,
+     "wrong": 18,
+     "wrong_unflagged": 9,
+     "flag_precision": 1.0,
+     "seconds": 0.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.556,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 4.7
+    }
+   },
+   {
+    "slug": "bonneville_ut",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.056,
+     "physical_holes_found": 0.778,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 0.8
+    },
+    "v2": {
+     "n_true": 18,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.889,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 18,
+     "wrong_unflagged": 0,
+     "flag_precision": 1.0,
+     "seconds": 6.5
+    }
+   },
+   {
+    "slug": "visalia_ca",
+    "card_kind": "none",
+    "v1": {
+     "n_true": 16,
+     "hole_number_acc": 0.312,
+     "green_assign_acc": 0.438,
+     "physical_holes_found": 0.688,
+     "median_length_err_yd": 1.6,
+     "p90_length_err_yd": 23.9,
+     "all_correct": false,
+     "flagged": 17,
+     "wrong": 11,
+     "wrong_unflagged": 1,
+     "flag_precision": 0.588,
+     "seconds": 0.7
+    },
+    "v2": {
+     "n_true": 16,
+     "hole_number_acc": 0.0,
+     "green_assign_acc": 0.0,
+     "physical_holes_found": 0.625,
+     "median_length_err_yd": null,
+     "p90_length_err_yd": null,
+     "all_correct": false,
+     "flagged": 18,
+     "wrong": 16,
+     "wrong_unflagged": 0,
+     "flag_precision": 0.889,
+     "seconds": 6.0
+    }
+   }
+  ]
+ },
+ "confirm": {
+  "osm": [
+   {
+    "slug": "carillon_il",
+    "risk": {
+     "taps": 21,
+     "questions": 14,
+     "log": [
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 13,
+     "stop_rule_wrong": 3,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 15,
+     "questions": 8,
+     "log": [
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 12,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 18,
+     "questions": 12,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 18,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 18
+    }
+   },
+   {
+    "slug": "somerby_mn",
+    "risk": {
+     "taps": 14,
+     "questions": 13,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 15,
+     "questions": 14,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 6,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 14,
+     "questions": 14,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 5,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "willowbend_ma",
+    "risk": {
+     "taps": 26,
+     "questions": 19,
+     "log": [
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 22,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 29,
+     "questions": 20,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l9",
+       "kind": "locate",
+       "ref": "9",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 22,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 18,
+     "questions": 13,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 18,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 18
+    }
+   },
+   {
+    "slug": "towne_lake_hills_ga",
+    "risk": {
+     "taps": null,
+     "questions": 23,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 4,
+     "wrong_left": 1
+    },
+    "eig": {
+     "taps": null,
+     "questions": 10,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l15",
+       "kind": "locate",
+       "ref": "15",
+       "answer": "tapped"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "no"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": null,
+     "stop_rule_wrong": null,
+     "wrong_left": null
+    },
+    "flagged": {
+     "taps": 26,
+     "questions": 22,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 0,
+     "stop_rule_wrong": 4,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "bonneville_ut",
+    "risk": {
+     "taps": 4,
+     "questions": 3,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 2,
+     "questions": 1,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 2,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 3,
+     "questions": 2,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 3,
+     "stop_rule_wrong": 0,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "visalia_ca",
+    "risk": {
+     "taps": 7,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "eig": {
+     "taps": 7,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "flagged": {
+     "taps": 7,
+     "questions": 7,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 4,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 32
+    }
+   }
+  ],
+  "model": [
+   {
+    "slug": "carillon_il",
+    "risk": {
+     "taps": 22,
+     "questions": 15,
+     "log": [
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 15,
+     "stop_rule_wrong": 3,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 18
+    }
+   },
+   {
+    "slug": "somerby_mn",
+    "risk": {
+     "taps": 21,
+     "questions": 17,
+     "log": [
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "no"
+      },
+      {
+       "question": "l11",
+       "kind": "locate",
+       "ref": "11",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 8,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "willowbend_ma",
+    "risk": {
+     "taps": 27,
+     "questions": 21,
+     "log": [
+      {
+       "question": "c14",
+       "kind": "confirm",
+       "ref": "14",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "no"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "yes"
+      },
+      {
+       "question": "c11",
+       "kind": "confirm",
+       "ref": "11",
+       "answer": "yes"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "no"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "l4",
+       "kind": "locate",
+       "ref": "4",
+       "answer": "tapped"
+      },
+      {
+       "question": "l8",
+       "kind": "locate",
+       "ref": "8",
+       "answer": "tapped"
+      },
+      {
+       "question": "l6",
+       "kind": "locate",
+       "ref": "6",
+       "answer": "tapped"
+      },
+      {
+       "question": "l5",
+       "kind": "locate",
+       "ref": "5",
+       "answer": "tapped"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "no"
+      },
+      {
+       "question": "l2",
+       "kind": "locate",
+       "ref": "2",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 9,
+     "stop_rule_wrong": 8,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 18
+    }
+   },
+   {
+    "slug": "towne_lake_hills_ga",
+    "risk": {
+     "taps": null,
+     "questions": 9,
+     "log": [
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "no"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "l18",
+       "kind": "locate",
+       "ref": "18",
+       "answer": "tapped"
+      },
+      {
+       "question": "c13",
+       "kind": "confirm",
+       "ref": "13",
+       "answer": "no"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "no"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": null,
+     "stop_rule_wrong": null,
+     "wrong_left": null
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "bonneville_ut",
+    "risk": {
+     "taps": 21,
+     "questions": 17,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "no"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "no"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "no"
+      },
+      {
+       "question": "l1",
+       "kind": "locate",
+       "ref": "1",
+       "answer": "tapped"
+      },
+      {
+       "question": "l10",
+       "kind": "locate",
+       "ref": "10",
+       "answer": "tapped"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c7",
+       "kind": "confirm",
+       "ref": "7",
+       "answer": "no"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "l3",
+       "kind": "locate",
+       "ref": "3",
+       "answer": "tapped"
+      },
+      {
+       "question": "c17",
+       "kind": "confirm",
+       "ref": "17",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "l7",
+       "kind": "locate",
+       "ref": "7",
+       "answer": "tapped"
+      }
+     ],
+     "stop_rule_taps": 7,
+     "stop_rule_wrong": 1,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 36
+    }
+   },
+   {
+    "slug": "visalia_ca",
+    "risk": {
+     "taps": 15,
+     "questions": 14,
+     "log": [
+      {
+       "question": "c1",
+       "kind": "confirm",
+       "ref": "1",
+       "answer": "yes"
+      },
+      {
+       "question": "c3",
+       "kind": "confirm",
+       "ref": "3",
+       "answer": "yes"
+      },
+      {
+       "question": "c9",
+       "kind": "confirm",
+       "ref": "9",
+       "answer": "yes"
+      },
+      {
+       "question": "c15",
+       "kind": "confirm",
+       "ref": "15",
+       "answer": "yes"
+      },
+      {
+       "question": "c8",
+       "kind": "confirm",
+       "ref": "8",
+       "answer": "yes"
+      },
+      {
+       "question": "c10",
+       "kind": "confirm",
+       "ref": "10",
+       "answer": "yes"
+      },
+      {
+       "question": "c16",
+       "kind": "confirm",
+       "ref": "16",
+       "answer": "no"
+      },
+      {
+       "question": "l16",
+       "kind": "locate",
+       "ref": "16",
+       "answer": "tapped"
+      },
+      {
+       "question": "c18",
+       "kind": "confirm",
+       "ref": "18",
+       "answer": "yes"
+      },
+      {
+       "question": "c5",
+       "kind": "confirm",
+       "ref": "5",
+       "answer": "yes"
+      },
+      {
+       "question": "c6",
+       "kind": "confirm",
+       "ref": "6",
+       "answer": "yes"
+      },
+      {
+       "question": "c12",
+       "kind": "confirm",
+       "ref": "12",
+       "answer": "yes"
+      },
+      {
+       "question": "c2",
+       "kind": "confirm",
+       "ref": "2",
+       "answer": "yes"
+      },
+      {
+       "question": "c4",
+       "kind": "confirm",
+       "ref": "4",
+       "answer": "no"
+      }
+     ],
+     "stop_rule_taps": 3,
+     "stop_rule_wrong": 2,
+     "wrong_left": 0
+    },
+    "locate_all": {
+     "taps": 32
+    }
+   }
+  ]
+ }
+}

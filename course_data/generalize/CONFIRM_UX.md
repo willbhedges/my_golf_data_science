@@ -4,6 +4,36 @@ Routing v2 (`course_data/platform/routing_v2.py`) places every hole from the sco
 
 <!-- RESULTS -->
 
+## Results on the held-out test split (test, `route_eval.py final`, eval_v2.json)
+
+Test courses are the 32 fully mapped courses held out by `sample.py holdout` (8 per Census region). One of them has fewer than 9 numbered OSM holes and is skipped, which leaves the counts below. They were never used to tune `routing_v2_weights.json`. Each course's OSM golf=hole ways and refs are hidden.
+
+### Automatic routing: v1 (routing.py) vs v2 (routing_v2.py)
+
+| inputs | card | courses | method | hole-number acc | green acc | all holes correct, no input | every wrong hole flagged | flags / course | wrong / course |
+|---|---|---|---|---|---|---|---|---|---|
+| OSM greens / tees + model + lidar | web, else pars + lengths | 31 | v1 | 68% | 76% | **10%** | 48% | 7.58 | 5.13 |
+| OSM greens / tees + model + lidar | web, else pars + lengths | 31 | v2 | 76% | 86% | **13%** | 48% | 6.74 | 3.68 |
+| model + lidar only (unmapped) | web, else pars + lengths | 31 | v1 | 62% | 73% | **6%** | 61% | 9.58 | 6.13 |
+| model + lidar only (unmapped) | web, else pars + lengths | 31 | v2 | 63% | 71% | **0%** | 45% | 8.9 | 6.03 |
+| OSM greens / tees + model + lidar | none | 31 | v1 | 10% | 15% | **0%** | 61% | 15.58 | 15.26 |
+| OSM greens / tees + model + lidar | none | 31 | v2 | 16% | 21% | **0%** | 94% | 17.52 | 14.19 |
+
+### Golfer confirm: taps until every hole is right (oracle golfer, test split)
+
+| inputs | policy | courses | reach 100 % (<= 30 taps) | 0 taps | <= 2 taps | <= 4 taps | <= 8 taps | median taps | mean taps | app stops after (mean taps) | all right when the app stops |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| OSM greens / tees + model + lidar | risk (default): least-sure hole first | 31 | 90% | 13% | 16% | 23% | 32% | 14.0 | 14.64 | 7.43 | 23% |
+| OSM greens / tees + model + lidar | max bits per tap | 31 | 94% | 13% | 16% | 26% | 36% | 15.0 | 13.86 | 7.0 | 30% |
+| OSM greens / tees + model + lidar | v1 style: confirm each flagged hole | 31 | 100% | 13% | 16% | 19% | 36% | 17.0 | 14.58 | 8.29 | 42% |
+| OSM greens / tees + model + lidar | no routing: tap all 18 tees + greens | 31 | 100% | 0% | 0% | 0% | 0% | 36.0 | 34.0 | - | - |
+| model + lidar only (unmapped) | risk (default): least-sure hole first | 31 | 77% | 0% | 3% | 10% | 26% | 21.0 | 16.58 | 9.29 | 11% |
+| model + lidar only (unmapped) | no routing: tap all 18 tees + greens | 31 | 100% | 0% | 0% | 0% | 0% | 36.0 | 34.0 | - | - |
+
+Weights: `course_data/platform/routing_v2_weights.json` (coordinate search (route_eval.py tune), train split, 102 course x input runs); posterior temperature tau 0.75, flag threshold p_hole < 0.95.
+
+<!-- /RESULTS -->
+
 ## The questions
 
 There are two kinds of question. Each answer is a constraint, and the whole round is solved again under it ("propagation"), so one answer usually fixes the holes next to it as well. Every hole is played once, greens and tee boxes are used at most once, and green n leads on to tee n+1.
