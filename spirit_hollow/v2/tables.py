@@ -19,14 +19,16 @@ def side(a):
 def main():
     v1 = json.load(open(os.path.join(SH, "output", "final_decision.json")))
     v2 = json.load(open(os.path.join(HERE, "output", "v2_decisions.json")))
+    sd_path = os.path.join(HERE, "output", "v2_decisions_stopdead.json")
+    sd = json.load(open(sd_path)) if os.path.exists(sd_path) else {}
     print("## Per hole: v1 (live page) vs v2\n")
     print("Aims in yds left (L) / right (R) of the app's line. v1 aim on a 2.5-yd grid, search ±25; v2 aim to "
           "0.5 yd (Brent on the prior-averaged, smoothed curve), search ±40 (course.py limits). Aim window = every aim within "
           "0.005 strokes of the best. Margin = expected strokes saved vs the runner-up club (± MC SE over 64 "
           "draws); cross-fitted = choose on half the draws, score on the other half.\n")
-    print("| Hole | v1 pick, aim | v1 margin | v2 pick, aim | v2 aim window | v2 margin ± SE vs | cross-fit | "
-          "P(beats runner) | change |")
-    print("|---|---|---|---|---|---|---|---|---|")
+    print("| Hole | v1 pick, aim | v1 margin | v2 if the ball stops dead (sensitivity) | **v2 corrected roll** | "
+          "v2 aim window | v2 margin ± SE vs | cross-fit | P(beats runner) | change vs v1 |")
+    print("|---|---|---|---|---|---|---|---|---|---|")
     for h, r in v2.items():
         a = v1.get(h, {})
         v1s = f"{a.get('pick')} {side(a.get('aim', 0))}" + (" (tie)" if a.get("tie") else "") if a else "—"
@@ -39,7 +41,9 @@ def main():
             chg.append("club")
         if a and a.get("pick") == r["pick"] and abs(a.get("aim", 0) - r["aim"]) >= 3:
             chg.append(f"aim {r['aim'] - a['aim']:+.1f}")
-        print(f"| {LAB.get(h, h)} | {v1s} | {v1m} | {v2s}{bound} | {side(w[0])} to {side(w[1])} | "
+        s0 = sd.get(h)
+        sds = f"{s0['pick']} {side(s0['aim'])}" + (" (tie)" if s0["tie"] else "") if s0 else "—"
+        print(f"| {LAB.get(h, h)} | {v1s} | {v1m} | {sds} | {v2s}{bound} | {side(w[0])} to {side(w[1])} | "
               f"{r['margin']:.3f} ± {r['margin_se']:.3f} {SHORT[r['runner']]} | {r['crossfit_margin']:.3f} | "
               f"{r['p_pick_beats_runner']:.0%} | {', '.join(chg) or '—'} |")
     print("\n## Cost of playing v1's club and aim, scored by v2 (prior-averaged curves)\n")
