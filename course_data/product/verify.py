@@ -551,7 +551,7 @@ def verify_hole(job):
         what = WORDS.get(lie, lie)
         srcs = sorted({str(h["zones_ll"][i].get("src")) for i in g["idx"]})
         if side == "across":
-            q = f"Is there {what} across the fairway at {a0:.0f}-{a1:.0f} yds?"
+            q = f"{'Are' if lie == 'recovery' else 'Is'} there {what} across the fairway at {a0:.0f}-{a1:.0f} yds?"
         else:
             q = (f"{'Do' if lie == 'recovery' else 'Does'} the {what} on the {side} come this close to the fairway "
                  f"({abs(g['edge']):.0f} yds {side} of the aim at {a0:.0f}-{a1:.0f} yds)?")

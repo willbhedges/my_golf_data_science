@@ -27,13 +27,13 @@
 | red | 6 | hazard | Do the trees on the left come this close to the fairway (2 yds left of the aim at 163-303 yds)? | Hole 6: Driver → 2-wood, aim 25 yds left. |
 | amber | 9 | tee | Is the Black tee here? | Hole 9: still 4-wood on the line; the hole plays 0.20 strokes harder. |
 | amber | 4 | tee | Is the Black tee here? | Hole 4: still Driver 7 yds left; the hole plays 0.13 strokes easier. |
-| amber | 9 | hazard | Is there trees across the fairway at 255-340 yds? | Hole 9: still 4-wood on the line; the hole plays 0.04 strokes harder. |
+| amber | 9 | hazard | Are there trees across the fairway at 255-340 yds? | Hole 9: still 4-wood on the line; the hole plays 0.04 strokes harder. |
 | amber | 18 | hazard | Is there water across the fairway at 150-301 yds? | Hole 18: still Driver 2 yds left; the hole plays 0.04 strokes easier. |
 | amber | 10 | hazard | Do the trees on the left come this close to the fairway (21 yds left of the aim at 150-305 yds)? | Hole 10: still Driver 2 yds right; the hole plays 0.02 strokes harder. |
 | amber | 17 | hazard | Does the long grass on the left come this close to the fairway (30 yds left of the aim at 150-340 yds)? | Hole 17: still Driver 2 yds right; the hole plays 0.02 strokes harder. |
 | amber | 14 | hazard | Do the trees on the left come this close to the fairway (22 yds left of the aim at 260-297 yds)? | Hole 14: still 2-wood 40 yds left; the hole plays 0.02 strokes harder. |
 | amber | 8 | gap | Is it open on the left at 200-330 yds, or are there trees or long grass? | Hole 8: still 4-wood 2 yds left; the hole plays 0.02 strokes harder. |
-| amber | 1 | hazard | Is there trees across the fairway at 171-322 yds? | Hole 1: still Driver 40 yds left; the hole plays 0.02 strokes easier. |
+| amber | 1 | hazard | Are there trees across the fairway at 171-322 yds? | Hole 1: still Driver 40 yds left; the hole plays 0.02 strokes easier. |
 | amber | 16 | hazard | Do the trees on the right come this close to the fairway (10 yds right of the aim at 150-333 yds)? | Hole 16: still 4-wood 5 yds left; the hole plays 0.02 strokes harder. |
 | amber | 16 | hazard | Does the long grass on the right come this close to the fairway (20 yds right of the aim at 150-340 yds)? | Hole 16: still 4-wood 5 yds left; the hole plays 0.01 strokes harder. |
 | amber | 1 | hazard | Do the trees on the right come this close to the fairway (19 yds right of the aim at 287-340 yds)? | Hole 1: still Driver 40 yds left; the hole plays 0.01 strokes harder. |

@@ -63,6 +63,7 @@ button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outl
 .alts{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:14px;color:var(--muted)}
 .alts li span{color:var(--ink);font-weight:600}
 .hint{font-size:14px;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 35%,var(--card));border-radius:8px;padding:6px 10px}
+details.more>summary{cursor:pointer;font:600 18px var(--display);letter-spacing:.02em;padding:6px 0}
 details.green{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 details.green summary{cursor:pointer;font-weight:600}
 details.green ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;font-size:14px;color:var(--muted)}
@@ -91,6 +92,7 @@ svg text{font:600 13px var(--display);fill:var(--mark);paint-order:stroke;stroke
   <section class="summary" aria-label="Summary" id="summary"></section>
   <div class="progress" aria-hidden="true"><span id="bar"></span></div>
   <main id="cards" class="wrap" style="max-width:none"></main>
+  <details class="more" id="ambers"><summary id="ambersum"></summary><div id="ambercards" class="wrap" style="max-width:none;margin-top:12px"></div></details>
   <details class="green" id="greens"><summary id="greensum"></summary><ul id="greenlist"></ul></details>
   <section class="card send" aria-label="Send answers">
     <div class="label">Send your answers</div>
@@ -124,12 +126,14 @@ function aimWords(a) { a = +a; return Math.abs(a) < 2.5 ? 'on the line' : Math.r
 const LIE = {recovery: 'trees', native: 'long grass', water: 'water', sand: 'sand', ob: 'out of bounds'};
 const TEE_NAMES = {back: '20 yds back', forward: '20 yds forward', left: '10 yds left', right: '10 yds right'};
 const shown = D.items.filter(i => i.severity !== 'green');
+const reds = shown.filter(i => i.severity === 'red'), ambers = shown.filter(i => i.severity === 'amber');
 const greens = D.items.filter(i => i.severity === 'green');
 
 function head() {
-  const n = shown.length;
+  const n = reds.length;
   document.getElementById('sub').textContent = D.course + ' · ' + D.tee_set + ' tees · ' +
-    (n ? n + ' thing' + (n > 1 ? 's' : '') + ' to look at, worst first (about ' + Math.max(1, Math.round(n * 15 / 60)) + ' min)' : 'nothing to check');
+    (n ? n + ' thing' + (n > 1 ? 's' : '') + ' that could change your club or aim, worst first (about ' + Math.max(1, Math.round(n * 10 / 60)) + ' min)'
+       : 'nothing that changes your club or aim') + (ambers.length ? '; ' + ambers.length + ' more worth a glance below.' : '.');
   const s = document.getElementById('summary');
   s.innerHTML = '';
   [['red', D.counts.red, 'could change a club or aim'], ['amber', D.counts.amber, 'worth a glance'], ['ok', D.counts.green, 'checked automatically']]
@@ -137,10 +141,10 @@ function head() {
   s.appendChild(el('span', {class: 'count', id: 'answered', style: 'margin-left:auto'}));
 }
 function progress() {
-  const a = shown.filter(i => S.answers[i.id]).length;
+  const a = reds.filter(i => S.answers[i.id]).length, b = ambers.filter(i => S.answers[i.id]).length;
   const e = document.getElementById('answered');
-  if (e) e.textContent = a + ' of ' + shown.length + ' answered';
-  document.getElementById('bar').style.width = (shown.length ? 100 * a / shown.length : 100) + '%';
+  if (e) e.textContent = a + ' of ' + reds.length + ' red answered' + (b ? ' (+' + b + ' amber)' : '');
+  document.getElementById('bar').style.width = (reds.length ? 100 * a / reds.length : 100) + '%';
 }
 
 function optionOf(it, ans) { return ans && it.options.find(o => o.answer === ans.answer); }
@@ -306,8 +310,16 @@ function answersJson() {
 
 head();
 const cards = document.getElementById('cards');
-shown.forEach(it => cards.appendChild(card(it)));
-if (!shown.length) cards.appendChild(el('p', {class: 'detail', text: 'Nothing on this course changes the plan if it is wrong. Have a good round.'}));
+const amberBox = document.getElementById('ambercards');
+function renderCards() {
+  cards.innerHTML = ''; amberBox.innerHTML = '';
+  reds.forEach(it => cards.appendChild(card(it)));
+  ambers.forEach(it => amberBox.appendChild(card(it)));
+}
+renderCards();
+document.getElementById('ambersum').textContent = 'Worth a glance: ' + ambers.length + ' item' + (ambers.length === 1 ? '' : 's') + ' with a small effect on the plan';
+document.getElementById('ambers').hidden = !ambers.length;
+if (!reds.length) cards.appendChild(el('p', {class: 'detail', text: 'Nothing on this course changes the plan if it is wrong. Have a good round.'}));
 document.getElementById('greensum').textContent = 'Checked automatically: ' + greens.length + ' items where no answer changes the plan';
 greens.forEach(it => document.getElementById('greenlist').appendChild(el('li', {text: 'Hole ' + it.hole + ': ' + it.question})));
 document.getElementById('greens').hidden = !greens.length;
@@ -332,7 +344,7 @@ document.getElementById('clear').addEventListener('click', e => {
   if (!armed) { b.textContent = 'Tap again to clear'; armed = setTimeout(() => { armed = null; b.textContent = 'Clear answers'; }, 3000); return; }
   clearTimeout(armed); armed = null; b.textContent = 'Clear answers';
   S = {answers: {}}; save();
-  cards.innerHTML = ''; shown.forEach(it => cards.appendChild(card(it)));
+  renderCards();
   outBox.hidden = true; status.textContent = 'Answers cleared.';
 });
 </script>
