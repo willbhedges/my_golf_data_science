@@ -1,0 +1,34 @@
+{
+ "slug": "veenker",
+ "request": "course_data/requests/segment_veenker.json",
+ "request_hash": "cf21c25a68ba",
+ "model": "ariadgolf/golf-course-segmentation",
+ "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
+ "tta": true,
+ "naip": "course_data/vision_any/veenker/raw/naip_2023.tif",
+ "shape": [
+  4,
+  2167,
+  2573
+ ],
+ "res_m": 0.6,
+ "crs": "EPSG:32615",
+ "seconds_infer": 52.1,
+ "seconds_total": 56.0,
+ "features": {
+  "green:ariadgolf-v4": 23,
+  "tee:ariadgolf-v4": 42,
+  "fairway:ariadgolf-v4": 27,
+  "bunker:ariadgolf-v4": 25,
+  "water:ariadgolf-v4": 2,
+  "water:ndwi": 108
+ },
+ "pixel_share": {
+  "background": 0.647,
+  "green": 0.0052,
+  "tee": 0.0066,
+  "fairway": 0.0428,
+  "bunker": 0.001,
+  "water": 0.2974
+ }
+}

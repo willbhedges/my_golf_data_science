@@ -1,0 +1,34 @@
+{
+ "slug": "mozingo_lake",
+ "request": "course_data/requests/segment_mozingo_lake.json",
+ "request_hash": "762767bb521d",
+ "model": "ariadgolf/golf-course-segmentation",
+ "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
+ "tta": true,
+ "naip": "course_data/vision_any/mozingo/raw/naip_2022.tif",
+ "shape": [
+  4,
+  3860,
+  2590
+ ],
+ "res_m": 0.6,
+ "crs": "EPSG:32615",
+ "seconds_infer": 88.0,
+ "seconds_total": 95.5,
+ "features": {
+  "green:ariadgolf-v4": 30,
+  "tee:ariadgolf-v4": 84,
+  "fairway:ariadgolf-v4": 28,
+  "bunker:ariadgolf-v4": 32,
+  "water:ariadgolf-v4": 2,
+  "water:ndwi": 67
+ },
+ "pixel_share": {
+  "background": 0.5998,
+  "green": 0.0043,
+  "tee": 0.0035,
+  "fairway": 0.0446,
+  "bunker": 0.0013,
+  "water": 0.3464
+ }
+}
