@@ -241,6 +241,30 @@ def display_hole(hd):
     return dict(hd, image=dsp["image"], tee=m(hd["tee"]), dot270=m(hd["dot270"]))
 
 
+def shot_cloud(h, club, aim, n=4000):
+    """Centre (along, lat yds) and 95% ellipse axes of the simulated finishing spots."""
+    try:
+        pts = t.simulate(h, club, aim, n=n)[0]
+    except Exception:
+        return None
+    hd = t.HOLES[h]
+    tee, fwd, right, ppy = t.hole_frame(hd)
+    rel = (np.asarray(pts, float) - tee) / ppy
+    xy = np.c_[rel @ fwd, rel @ right]
+    mu = np.median(xy, axis=0)
+    cov = np.cov((xy - mu).T)
+    w, v = np.linalg.eigh(cov)
+    k = 2.4477                                     # sqrt(chi2_2(0.95))
+    return dict(along=float(mu[0]), lat=float(mu[1]), axes=(k * np.sqrt(w[1]), k * np.sqrt(w[0])),
+                vec=(v[:, 1], v[:, 0]))
+
+
+def cloud_point(cl, a):
+    (A, Bm), (u, w) = cl["axes"], cl["vec"]
+    d = A * np.cos(a) * u + Bm * np.sin(a) * w
+    return cl["along"] + d[0], cl["lat"] + d[1]
+
+
 def draw_tee(ax, h, club, aim, zone, label=None):
     hd = display_hole(t.HOLES[h])
     draw_image(ax, hd["image"])
@@ -248,7 +272,12 @@ def draw_tee(ax, h, club, aim, zone, label=None):
     carry, total, width, depth = {**t.CLUBS, **t.IRONS}[club]
     total += hd.get("extra_roll", 0)
     th = np.linspace(0, 2 * np.pi, 80)
-    ell = np.array([px(fr, total + depth / 2 * np.sin(a), aim + width / 2 * np.cos(a)) for a in th])
+    cl = shot_cloud(h, club, aim)
+    if cl:      # 95% ellipse of where the model's simulated shots actually finish (elevation, slope, roll)
+        ell = np.array([px(fr, *cloud_point(cl, a)) for a in th])
+        total, aim_end = cl["along"], cl["lat"]
+    else:
+        ell = np.array([px(fr, total + depth / 2 * np.sin(a), aim + width / 2 * np.cos(a)) for a in th])
     ax.fill(ell[:, 0], ell[:, 1], color="#ffd60a", alpha=0.18, lw=0)
     ax.plot(ell[:, 0], ell[:, 1], color="#ffd60a", lw=1.2, ls="--")
     z = np.array([px(fr, total, zone[0]), px(fr, total, zone[1])])

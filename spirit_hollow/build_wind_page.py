@@ -126,6 +126,26 @@ def par3_sets(h, opts, grid):
     return out
 
 
+def clouds(h, grid):
+    """Per club: where the model's simulated shots finish at the calm aim, relative to the point
+    the page computes (calm total incl. elevation, aim + slope kick), plus the 95% ellipse axes."""
+    import wind_grid as WG
+    WG.set_prior_means()
+    out = {}
+    elev = course.HOLES[h].get("elev", {})
+    for c, v in grid["0_0"]["clubs"].items():
+        cl = yb.shot_cloud(h, c, v["aim"])
+        if not cl:
+            continue
+        dc, rf, kick = elev.get(c, (0.0, 1.0, 0.0))
+        page_total = (v["carry"] + dc) + (v["total"] - v["carry"]) * rf
+        (A, Bm), (u, w) = cl["axes"], cl["vec"]
+        out[c] = dict(dA=round(cl["along"] - page_total, 1), dL=round(cl["lat"] - (v["aim"] + kick), 1),
+                      A=round(float(A), 1), B=round(float(Bm), 1), u=[round(float(x), 4) for x in u],
+                      w=[round(float(x), 4) for x in w], width=v["width"])
+    return out
+
+
 def tee_hole(h):
     hd = yb.display_hole(course.HOLES[h])
     tee, f, r, ppy = frame(hd["tee"], hd["dot270"], 270)
@@ -227,6 +247,7 @@ def main():
         else:
             d["grids"] = {str(b): compact(g["holes"][str(h)]) for b, g in sorted(grids.items())
                           if str(h) in g.get("holes", {})}
+            d["cloud"] = clouds(h, grid["holes"][str(h)])
             fd = final.get(str(h))
             if fd and fd.get("tie") is not None:
                 d["calm"] = dict(pick=fd["pick"], aim=fd["aim"], tie=bool(fd["tie"]), margin=fd["margin"],

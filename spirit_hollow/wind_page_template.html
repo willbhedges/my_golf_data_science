@@ -248,15 +248,24 @@ document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pres
     const B = r.T.back;                                    // tee moved B yds back along the line
     const star = P(h, at(h, best.total - B, aimC));
     const zl = P(h, at(h, best.total - B, best.lo)), zh = P(h, at(h, best.total - B, best.hi));
-    const land = P(h, at(h, best.total - B, aimC + best.drift + best.kick));
+    /* the dashed pattern = where the model's simulated shots finish (elevation, slope, roll), scaled for wind */
+    const cl = h.cloud && h.cloud[pickC];
+    const cA = cl ? cl.dA : 0, cL = cl ? cl.dL : 0;
+    const land = P(h, at(h, best.total - B + cA, aimC + best.drift + best.kick + cL));
     const rx = best.width/2*h.ppy*h.s, ry = best.width*0.22*h.ppy*h.s;
+    let pattern;
+    if(cl){ const sc = best.width / cl.width, pts = [];
+      for(let i = 0; i < 48; i++){ const a = i/48*2*Math.PI, ca = Math.cos(a)*cl.A*sc, sa = Math.sin(a)*cl.B*sc;
+        pts.push(P(h, at(h, best.total - B + cA + ca*cl.u[0] + sa*cl.w[0], aimC + best.drift + best.kick + cL + ca*cl.u[1] + sa*cl.w[1])).join(",")); }
+      pattern = `<polygon points="${pts.join(" ")}" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>`;
+    }
     const ang = Math.atan2(h.f[0], -h.f[1]) * 180/Math.PI;
     let tp = P(h, at(h, -B, 0)); let below = 0;
     if(tp[1] > vb[1] + vb[3] - 14){ below = Math.round((tp[1] - (vb[1] + vb[3] - 14)) / (h.ppy * h.s)); tp = [tp[0], vb[1] + vb[3] - 14]; }
     ov.innerHTML = IMG + `
       <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#1a1a1a" stroke-width="4" opacity=".55"/>
       <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#ffc928" stroke-width="2"/>
-      <ellipse cx="${land[0]}" cy="${land[1]}" rx="${rx}" ry="${ry}" transform="rotate(${ang} ${land[0]} ${land[1]})" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>
+      ${pattern || `<ellipse cx="${land[0]}" cy="${land[1]}" rx="${rx}" ry="${ry}" transform="rotate(${ang} ${land[0]} ${land[1]})" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>`}
       <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="9" stroke-linecap="round" opacity=".8"/>
       ${Math.abs(best.drift + best.kick) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
       ${aimMark(star[0], star[1])}
@@ -270,7 +279,7 @@ document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pres
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     if(calm !== r.pick && r.T.back === 0) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
-    const mv = best.drift + best.kick;
+    const mv = best.drift + best.kick + cL;
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
     document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot (${why})` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 64-world Bayesian run." : ""}`;
