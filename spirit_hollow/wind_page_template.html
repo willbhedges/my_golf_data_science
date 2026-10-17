@@ -171,7 +171,9 @@ function solveTee(h){
   }
   const order = Object.keys(out).sort((a,b) => out[a].ev - out[b].ev);
   let pick = order[0], aim = out[pick].aim, tie = (out[order[1]].ev - out[pick].ev) < 0.01, bayes = false;
-  if(st.mph < 1.5 && h.calm && T.back === 0){ pick = h.calm.pick; aim = h.calm.aim; tie = h.calm.tie; bayes = true; }
+  /* light wind (< 5 mph) changes nothing that matters: use the book's full calm-day pick and aim */
+  if(st.mph < 5 && h.calm && T.back === 0 && out[h.calm.pick]){ pick = h.calm.pick; aim = h.calm.aim; tie = h.calm.tie; bayes = true;
+    order.splice(order.indexOf(pick), 1); order.unshift(pick); }
   return {rel, out, order, pick, aim, tie, bayes, T, margin: out[order[1]].ev - out[order[0]].ev};
 }
 function windMod(mph){ return mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3; }
@@ -194,9 +196,9 @@ function relWords(rel, mph){
   if(mph < 1.5) return "Calm";
   const head = Math.cos(rel*Math.PI/180)*mph, cross = Math.sin(rel*Math.PI/180)*mph;
   const parts = [];
-  if(Math.abs(head) >= 1.5) parts.push(head > 0 ? `${head.toFixed(0)} into you` : `${(-head).toFixed(0)} behind you`);
-  if(Math.abs(cross) >= 1.5) parts.push(cross > 0 ? `${cross.toFixed(0)} right-to-left` : `${(-cross).toFixed(0)} left-to-right`);
-  return parts.join(", ") + " mph";
+  if(Math.abs(head) >= 1.5) parts.push(head > 0 ? `${head.toFixed(0)} mph into you` : `${(-head).toFixed(0)} mph behind you`);
+  if(Math.abs(cross) >= 1.5) parts.push(cross > 0 ? `${cross.toFixed(0)} mph right-to-left` : `${(-cross).toFixed(0)} mph left-to-right`);
+  return parts.length ? "Wind " + parts.join(", ") : `Light wind (${Math.round(mph)} mph)`;
 }
 function teeMark(x, y, name){
   const t = `<text x="${x + 16}" y="${y - 12}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="17" stroke="rgba(0,0,0,.75)" stroke-width="3.5" paint-order="stroke">${(name || "Tee").toUpperCase()}</text>`;
@@ -275,15 +277,15 @@ document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pres
     const own = pickC !== r.pick;
     document.getElementById("playLbl").textContent = own ? "Your club" : "Play";
     const pe = document.getElementById("hPlay"); pe.textContent = pickC; pe.className = "play " + cls(pickC);
-    if(own) badges.push(`<span class="pill chg">Best: ${r.pick} · yours costs +${(best.ev - r.out[r.pick].ev).toFixed(3)} strokes</span>`);
+    if(own){ const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${r.pick} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     if(calm !== r.pick && r.T.back === 0) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
     const mv = best.drift + best.kick + cL;
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
-    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot (${why})` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 64-world Bayesian run." : ""}`;
-    const rows = r.order.map(c => { const v = r.out[c]; return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.order[0]?"—":"+"+(v.ev - r.out[r.order[0]].ev).toFixed(3)}</td></tr>`;}).join("");
+    document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Same pick as the book (wind under 5 mph)." : ""}`;
+    const rows = r.order.map(c => { const v = r.out[c]; return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.pick?"—":((d => d < 0.01 ? "≈ tie" : "+"+d.toFixed(3))(v.ev - r.out[r.pick].ev))}</td></tr>`;}).join("");
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. Tap any club to see its own best aim and pattern; tap ★ to go back.</div>`;
     const be = best.e;
     const past = best.total - B > 345;
