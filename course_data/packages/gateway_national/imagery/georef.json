@@ -1,0 +1,126 @@
+{
+ "course": "Gateway National Golf Links",
+ "bbox_wgs84_snwe": [
+  38.652609,
+  -90.1541988,
+  38.664181,
+  -90.1351006
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  38.651710688825005,
+  -90.15534917691173,
+  38.66507931117499,
+  -90.13395022308828
+ ],
+ "fetched_utc": "2026-10-17T14:39:32Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "years_available": [
+   2011,
+   2012,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "acquired": [
+   "2023-08-19"
+  ],
+  "items": [
+   "il_m_3809023_se_15_030_20230819_20231031"
+  ],
+  "gsd_m": 0.3,
+  "resolution_m": 0.3,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 6363,
+  "height": 5141,
+  "transform": [
+   0.3,
+   0.0,
+   747502.7999999999,
+   0.0,
+   -0.3,
+   4283509.8
+  ],
+  "bounds_crs": [
+   747502.7999999999,
+   4281967.5,
+   749411.7,
+   4283509.8
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 3182,
+   "height": 2570,
+   "transform": [
+    0.5999057196731615,
+    0.0,
+    747502.7999999999,
+    0.0,
+    -0.6001167315175097,
+    4283509.8
+   ],
+   "resolution_m": 0.5999
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 12.36,
+   "naip_nir.tif": 12.49,
+   "naip_rgb_lo.jpg": 2.42,
+   "naip_nir_lo.jpg": 2.2
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 4,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26915",
+  "width": 1910,
+  "height": 1543,
+  "transform": [
+   1.0,
+   0.0,
+   747502.0,
+   0.0,
+   -1.0,
+   4283510.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 5.75,
+  "format": "COG",
+  "elev_m": [
+   119.36585235595703,
+   133.74769592285156
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 35.7
+}

@@ -1,0 +1,121 @@
+{
+ "course": "Eagle Knoll Golf Club",
+ "bbox_wgs84_snwe": [
+  38.690617,
+  -92.2692963,
+  38.7016388,
+  -92.2567277
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  38.68971868882501,
+  -92.27044728352705,
+  38.70253711117499,
+  -92.25557671647294
+ ],
+ "fetched_utc": "2026-10-17T14:29:48Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2022,
+  "years_available": [
+   2012,
+   2014,
+   2016,
+   2018,
+   2020,
+   2022
+  ],
+  "acquired": [
+   "2022-06-20"
+  ],
+  "items": [
+   "mo_m_3809222_se_15_060_20220620",
+   "mo_m_3809222_ne_15_060_20220620"
+  ],
+  "gsd_m": 0.6,
+  "resolution_m": 0.6,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 2175,
+  "height": 2389,
+  "transform": [
+   0.6,
+   0.0,
+   563437.2,
+   0.0,
+   -0.6,
+   4284030.6
+  ],
+  "bounds_crs": [
+   563437.2,
+   4282597.2,
+   564742.2,
+   4284030.6
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 2175,
+   "height": 2389,
+   "transform": [
+    0.6,
+    0.0,
+    563437.2,
+    0.0,
+    -0.6,
+    4284030.6
+   ],
+   "resolution_m": 0.6
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 2.26,
+   "naip_nir.tif": 2.3,
+   "naip_rgb_lo.jpg": 1.33,
+   "naip_nir_lo.jpg": 1.21
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 2,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26915",
+  "width": 1305,
+  "height": 1434,
+  "transform": [
+   1.0,
+   0.0,
+   563437.0,
+   0.0,
+   -1.0,
+   4284031.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 4.72,
+  "format": "COG",
+  "elev_m": [
+   189.87261962890625,
+   261.0379333496094
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 12.2
+}
