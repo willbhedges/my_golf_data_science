@@ -226,15 +226,15 @@ jobs:
       - name: Combine
         run: |
           git pull -q --rebase origin "${{ github.ref_name }}" || true
-          python -u course_data/structure/eval.py --combine rows/rows_*.json
-          cat course_data/structure/eval/summary.md >> "$GITHUB_STEP_SUMMARY"
+          python -u course_data/structure/eval.py --combine rows/rows_*.json ${{ needs.plan.outputs.eval_args }}
+          cat course_data/structure/eval*/summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add course_data/structure/eval
+          git add course_data/structure/eval*
           git diff --cached --quiet && exit 0
-          printf '%s\n' "structure: held-out evaluation (Actions run ${{ github.run_id }})" "" \
+          printf '%s\n' "structure: evaluation (Actions run ${{ github.run_id }})" "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
           git commit -q -F /tmp/msg.txt
