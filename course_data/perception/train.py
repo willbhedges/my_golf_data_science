@@ -56,13 +56,15 @@ def fit(X, y, seed=0, max_iter=250, balanced=True):
     return clf
 
 
-def _metrics(clf, X, y, pos=1):
+def _metrics(clf, X, y, thr=None, pos=1):
     from sklearn.metrics import roc_auc_score
     if len(y) == 0:
         return {}
     pr = clf.predict_proba(X)
     cl = list(clf.classes_)
     pred = np.array(cl)[pr.argmax(1)]
+    if thr is not None and len(cl) == 2:
+        pred = np.where(pr[:, 1] >= thr, cl[1], cl[0])
     out = dict(n=int(len(y)), acc=round(float((pred == y).mean()), 4))
     if pos in cl and len(set(y)) > 1:
         try:
@@ -73,6 +75,34 @@ def _metrics(clf, X, y, pos=1):
         out["precision_pos"] = round(tp / max(int((pred == pos).sum()), 1), 4)
         out["recall_pos"] = round(tp / max(int((y == pos).sum()), 1), 4)
     return out
+
+
+def oof_threshold(train_tabs, name, feats, k=3):
+    """F1-optimal decision threshold from course-grouped k-fold out-of-fold predictions on the train states."""
+    groups = [t for t in train_tabs if t.get(name)]
+    if len(groups) < k:
+        return None
+    ps, ys = [], []
+    for f in range(k):
+        tr = [r for i, t in enumerate(groups) if i % k != f for r in t[name]]
+        te = [r for i, t in enumerate(groups) if i % k == f for r in t[name]]
+        if not te or len({r["y"] for r in tr}) < 2:
+            continue
+        X, y = _xy(tr, feats)
+        c = fit(X, y, balanced=False, max_iter=150)
+        Xe, ye = _xy(te, feats)
+        ps.append(c.predict_proba(Xe)[:, list(c.classes_).index(1)])
+        ys.append(ye)
+    if not ps:
+        return None
+    p, y = np.concatenate(ps), np.concatenate(ys)
+    best, bt = -1, 0.5
+    for th in np.linspace(0.05, 0.9, 35):
+        tp = float(((p >= th) & (y == 1)).sum())
+        f1 = 2 * tp / max(float((p >= th).sum() + (y == 1).sum()), 1)
+        if f1 > best:
+            best, bt = f1, float(th)
+    return round(bt, 3)
 
 
 def train_objects(tabs, out_dir, log=print):
@@ -87,10 +117,13 @@ def train_objects(tabs, out_dir, log=print):
         feats = sorted({k for r in tr for k in r if k != "y"})
         Xtr, ytr = _xy(tr, feats)
         clf = fit(Xtr, ytr, balanced=(name == "clubhouse"))     # unweighted = calibrated-ish p; clubhouse is a ranking
+        thr = None
+        if name in ("parking", "tee_box", "tee_complex"):
+            thr = oof_threshold([t for t in tabs if split_of(t["meta"].get("state")) == "train"], name, feats)
         Xte, yte = _xy(te, feats) if te else (np.zeros((0, len(feats))), np.zeros(0, int))
         res[name] = dict(features=feats, n_train=len(tr), n_test=len(te),
                          train_class_counts={int(k): int(v) for k, v in zip(*np.unique(ytr, return_counts=True))},
-                         train=_metrics(clf, Xtr, ytr), test=_metrics(clf, Xte, yte) if len(te) else {})
+                         thr=thr, train=_metrics(clf, Xtr, ytr), test=_metrics(clf, Xte, yte, thr) if len(te) else {})
         if name == "clubhouse" and te:                          # ranking: top-1 per course
             hit = n = 0
             for t in tabs:
@@ -102,7 +135,7 @@ def train_objects(tabs, out_dir, log=print):
                 hit += int(y[int(pr.argmax())] == 1)
             res[name]["test"]["top1"] = round(hit / max(n, 1), 4)
             res[name]["test"]["courses"] = n
-        pickle.dump(dict(clf=clf, features=feats), open(os.path.join(out_dir, f"{name}.pkl"), "wb"))
+        pickle.dump(dict(clf=clf, features=feats, thr=thr), open(os.path.join(out_dir, f"{name}.pkl"), "wb"))
         log(name, json.dumps(res[name])[:600])
     return res
 

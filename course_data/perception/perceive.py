@@ -66,9 +66,7 @@ def run(st, models=None, log=print):
         md = models["tee_complex"]
         rows = [DT.complex_features(c, D["greens"], D["complexes"]) for c in D["complexes"]]
         if rows:
-            X = np.array([[r.get(k, np.nan) for k in md["features"]] for r in rows], float)
-            pr = md["clf"].predict_proba(X)
-            cl = list(md["clf"].classes_)
+            pr, cl = DT._apply(md["clf"], rows, md["features"], md.get("thr"))
             for c, row in zip(D["complexes"], pr):
                 c["p"] = float(row[cl.index(1)])
     D["fairways"], D["fairway_lab"] = DT.fairways(st, L)
@@ -84,7 +82,8 @@ def run(st, models=None, log=print):
     ch, D["ch_rows"] = DT.clubhouse(st, D["buildings"], D["parking"], D["greens"], D["complexes"], D["graph"], models)
     D["clubhouse"] = ch
     DT.classify_greens(st, D["greens"], D["complexes"], ch, models, D["parking"], D["buildings"])
-    rng = DT.driving_range(st, L, D["complexes"], [g for g in D["greens"] if g["p"] >= 0.5], ch["xy"] if ch else None)
+    rng = DT.driving_range(st, L, D["complexes"], [g for g in D["greens"] if g["p"] >= 0.5], ch["xy"] if ch else None,
+                           D["fairways"])
     D["range"] = rng
     if rng:
         for c in D["complexes"]:

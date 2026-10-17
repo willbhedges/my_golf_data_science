@@ -46,12 +46,20 @@ def _components(st, mask, min_px, arrays, max_px=None):
     return lab, n, stats
 
 
-def _apply(model, rows, cols):
+def _apply(model, rows, cols, thr=None):
+    """predict_proba on feature rows; with `thr` (F1-optimal on the train states, train.py) a binary model's
+    positive probability is shifted in logit space so that thr maps to 0.5 (decisions use p >= 0.5)."""
     if model is None or not rows:
         return None
-    X = np.array([[r.get(c, np.nan) for c in cols] for r in rows], float)
+    X = np.array([[np.nan if r.get(c) is None else r.get(c) for c in cols] for r in rows], float)
     pr = model.predict_proba(X)
-    return pr, list(model.classes_)
+    cl = list(model.classes_)
+    if thr is not None and len(cl) == 2 and 0 < thr < 1:
+        p = np.clip(pr[:, 1], 1e-6, 1 - 1e-6)
+        z = np.log(p / (1 - p)) - math.log(thr / (1 - thr))
+        p2 = 1 / (1 + np.exp(-z))
+        pr = np.c_[1 - p2, p2]
+    return pr, cl
 
 
 # ----------------------------------------------------------------------------- greens
@@ -117,7 +125,7 @@ def tee_boxes(st, L, green_lab, models=None):
     if L["lidar"] and np.isfinite(L["dtm"]).mean() > 0.5:
         pad_m = lidar_pad_mask(L["dtm"], st.res)
         # pads are turf: drop pavement / roofs / trees / water
-        pad_m &= (np.nan_to_num(L["ndvi"], nan=0) > 0.15) & (np.nan_to_num(L["hag"], nan=0) < 1.0)
+        pad_m &= (np.nan_to_num(L["ndvi_rel"], nan=0) > -0.12) & (np.nan_to_num(L["hag"], nan=0) < 1.0)
     near_green = ndi.binary_dilation(green_lab > 0, iterations=int(6 / st.res))
     m = (seg_m | pad_m) & ~near_green
     arrays = dict(p=pt, pad=pad_m.astype(np.float32), seg=seg_m.astype(np.float32), tophat=L["tophat"],
@@ -144,7 +152,7 @@ def tee_boxes(st, L, green_lab, models=None):
                         length=ln[i], width=wd[i]))
     if models and models.get("tee_box"):
         md = models["tee_box"]
-        res = _apply(md["clf"], [b["feat"] for b in out], md["features"])
+        res = _apply(md["clf"], [b["feat"] for b in out], md["features"], md.get("thr"))
         if res:
             pr, cl = res
             for b, row in zip(out, pr):
@@ -416,23 +424,26 @@ def trees(st, L):
 
 # ----------------------------------------------------------------------------- buildings, parking
 def buildings(st, L):
+    """Roofs: lidar class 6 where the classification has buildings; else tall (HAG >= 2.5 m), smooth-topped
+    (3x3 HAG std < 0.6 m: canopies are rough) and much less green than this course's turf."""
     h = np.nan_to_num(L["hag"], nan=0)
     cls = st.cls()
-    if L["lidar"]:
-        roof = (h >= 2.5) & (np.nan_to_num(L["ndvi"], nan=1) < 0.2)
-        smooth = ndi.uniform_filter(h, 3)
-        flatish = np.abs(h - smooth) < 1.0
-        m = (cls == 6) | (roof & flatish)
-    else:
+    if not L["lidar"]:
         return [], np.zeros(h.shape, np.int32)
+    import features as F
+    smooth = F.local_std(np.where(h > 0.5, h, np.nan), 3) < 0.6
+    roof = (h >= 2.5) & smooth & (np.nan_to_num(L["ndvi_rel"], nan=0) < -0.1)
+    has6 = (cls == 6).mean() > 0.0005
+    m = (cls == 6) & (h >= 2.0) if has6 else roof
     m = ndi.binary_opening(ndi.binary_closing(m, iterations=1), iterations=1)
-    lab, n, s = _components(st, m, 40 / st.res ** 2, dict(cls6=(cls == 6).astype(np.float32), h=h, ndvi=L["ndvi"]))
+    lab, n, s = _components(st, m, 40 / st.res ** 2, dict(cls6=(cls == 6).astype(np.float32), h=h, ndvi=L["ndvi_rel"],
+                                                        smooth=smooth.astype(np.float32)))
     rings = geo.rings_from_labels(st, lab, simplify_m=1.0)
     out = []
     for i in range(n):
-        p = float(np.clip(0.45 + 0.5 * s["cls6"][i] + 0.1 * (s["h"][i] > 3) - 0.3 * (s["ndvi"][i] > 0.25), 0, 0.99))
+        p = 0.3 + (0.5 * s["cls6"][i] if has6 else 0.0) + 0.3 * s["smooth"][i] - 0.4 * (s["ndvi"][i] > 0.0)
         out.append(dict(id=f"bl{i + 1}", lab=i + 1, xy=_xy(st, s["r"][i], s["c"][i]), area=s["area_px"][i] * st.res ** 2,
-                        ring=rings.get(i + 1), height=float(s["h"][i]), p=p))
+                        ring=rings.get(i + 1), height=float(s["h"][i]), p=float(np.clip(p, 0.02, 0.98))))
     return out, lab
 
 
@@ -440,10 +451,18 @@ def parking(st, L, bld_lab, path_prob=None, models=None):
     paved = L["paved"] & (bld_lab == 0)
     m = ndi.binary_opening(paved, iterations=2)
     m = ndi.binary_closing(m, iterations=2)
+    import features as F
+    h = np.nan_to_num(L["hag"], nan=0)
+    car = ((h > 1.0) & (h < 2.6)).astype(np.float32)                    # parked cars
     lab, n, s = _components(st, m, 400 / st.res ** 2,
-                            dict(ndvi=L["ndvi"], bright=L["bright"], slope=L["slope"],
+                            dict(ndvi=L["ndvi_rel"], bright=L["bright"], slope=L["slope"],
                                  pathp=path_prob if path_prob is not None else np.zeros(m.shape, np.float32),
-                                 wmax=L["paved_width"]))
+                                 wmax=L["paved_width"], inten=L["inten"], tex=F.local_std(L["bright"], 5),
+                                 fair=st.seg("fairway")))
+    car_frac = np.zeros(n)
+    if n:
+        dl = ndi.grey_dilation(lab, size=(7, 7))
+        car_frac = np.asarray(ndi.mean(car, dl, range(1, n + 1)))
     ax, ln, wd, comp = geo.shape_stats(lab, n, st.res) if n else ([], [], [], [])
     rings = geo.rings_from_labels(st, lab, simplify_m=1.0)
     out = []
@@ -451,13 +470,14 @@ def parking(st, L, bld_lab, path_prob=None, models=None):
         area = s["area_px"][i] * st.res ** 2
         elong = ln[i] / max(wd[i], 1e-6)
         feat = dict(area=area, ndvi=s["ndvi"][i], bright=s["bright"][i], slope=s["slope"][i], pathp=s["pathp"][i],
-                    elong=elong, width=wd[i], length=ln[i], compact=comp[i])
+                    elong=elong, width=wd[i], length=ln[i], compact=comp[i], inten=s["inten"][i], tex=s["tex"][i],
+                    fair=s["fair"][i], car_frac=float(car_frac[i]))
         p = 0.3 + 0.4 * _rule_p(wd[i], 12, 30) + 0.2 * _rule_p(area, 400, 3000) - 0.3 * _rule_p(elong, 4, 10)
         out.append(dict(id=f"pk{i + 1}", lab=i + 1, xy=_xy(st, s["r"][i], s["c"][i]), area=area, ring=rings.get(i + 1),
                         p=float(np.clip(p, 0.02, 0.95)), feat=feat))
     if models and models.get("parking"):
         md = models["parking"]
-        res = _apply(md["clf"], [o["feat"] for o in out], md["features"])
+        res = _apply(md["clf"], [o["feat"] for o in out], md["features"], md.get("thr"))
         if res:
             pr, cl = res
             for o, row in zip(out, pr):
@@ -466,10 +486,34 @@ def parking(st, L, bld_lab, path_prob=None, models=None):
 
 
 # ----------------------------------------------------------------------------- driving range
-def driving_range(st, L, complexes, greens_, clubhouse_xy=None):
+def _range_from_fairways(st, L, fairways_, greens_, clubhouse_xy):
+    """A mown, wide (>= 40 m), 120-380 m long turf area with no green on or near it: a practice range."""
+    from shapely.geometry import Point, Polygon
+    gp = [Point(*g["xy"]).buffer(math.sqrt(g["area"] / math.pi)) for g in greens_]
+    best = None
+    for f in fairways_:
+        if f.get("ring") is None or len(f["ring"]) < 4 or not (120 <= f["length"] <= 380) or f["width"] < 40:
+            continue
+        poly = Polygon(f["ring"]).buffer(0)
+        if any(poly.distance(g) < 40 for g in gp):
+            continue
+        dch = math.hypot(f["xy"][0] - clubhouse_xy[0], f["xy"][1] - clubhouse_xy[1]) if clubhouse_xy is not None else 500.0
+        score = min(f["width"] / 70, 1.2) + 0.5 * (dch < 400) + 0.3 * (f.get("stripe_strength", 0) < 0.1)
+        if best is None or score > best[0]:
+            best = (score, f, dch)
+    if best is None:
+        return None
+    score, f, dch = best
+    cl = f["centerline"]
+    end = cl[0] if clubhouse_xy is None or len(cl) < 2 else min((cl[0], cl[-1]), key=lambda e: math.hypot(e[0] - clubhouse_xy[0], e[1] - clubhouse_xy[1]))
+    return dict(complex=None, fairway=f["id"], ring=np.asarray(f["ring"]), xy=f["xy"], hitting_end=tuple(end), axis=f["axis"],
+                length=f["length"], width=f["width"], p=float(np.clip(0.25 + 0.3 * score, 0.05, 0.85)))
+
+
+def driving_range(st, L, complexes, greens_, clubhouse_xy=None, fairways_=None):
     """A range = a wide hitting strip (a tee complex whose long axis runs ACROSS the open turf in front of it)
     + 150-300 m of open, low, mown turf with no green, typically near the clubhouse."""
-    turf = (np.nan_to_num(L["ndvi"], nan=0) > 0.2) & (np.nan_to_num(L["hag"], nan=0) < 1.0) & L["valid"]
+    turf = (np.nan_to_num(L["ndvi_rel"], nan=-1) > -0.1) & (np.nan_to_num(L["hag"], nan=0) < 1.0) & L["valid"]
     gxy = np.array([g["xy"] for g in greens_]) if greens_ else np.zeros((0, 2))
     best = None
     for c in complexes:
@@ -500,6 +544,9 @@ def driving_range(st, L, complexes, greens_, clubhouse_xy=None):
             score = frac - 0.35 * gin + 0.15 * (dch < 350) + 0.1 * min(c["length"] / 80, 1)
             if frac > 0.85 and gin <= 1 and (best is None or score > best["score"]):
                 best = dict(score=score, complex=c, bearing=brg, v=v, u=u, frac=frac, dch=dch)
+    fw = _range_from_fairways(st, L, fairways_ or [], greens_, clubhouse_xy)
+    if fw and (not best or fw["p"] >= 0.5):
+        return fw
     if not best:
         return None
     c = best["complex"]

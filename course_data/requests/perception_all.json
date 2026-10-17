@@ -1,3 +1,10 @@
-{"schema": "request/1", "kind": "perception", "stage": "all", "slugs": "auto",
- "requested": "2026-10-17T05:45Z", "by": "course-perception", "rev": 1,
- "note": "Pass 1: stacks for every validation-set course (patch DTM from TNM where the lidar DTM is missing), rule-based perception, OSM evaluation, training tables -> train models on the train states (test states GA KY MN UT ME WY held out)."}
+{
+ "schema": "request/1",
+ "kind": "perception",
+ "stage": "all",
+ "slugs": "auto",
+ "requested": "2026-10-17T07:50Z",
+ "by": "course-perception",
+ "rev": 2,
+ "note": "Pass 2: relative-NDVI paving/roof rules, lidar-smoothness buildings, parking car features, calibrated thresholds, fairway-based ranges, own-tee penalty in green->tee prior; detections with pass-1 models; retrain."
+}

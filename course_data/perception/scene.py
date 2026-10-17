@@ -96,8 +96,12 @@ def green_to_tee(G, greens, complexes, max_m=450.0, attach_m=45.0):
                 mid = nodes[1:-1]
                 direct = not any((n in near_green_nodes and G.nodes[n]["near"]["green"] != g["id"]) or
                                  (n in near_tee_nodes and G.nodes[n]["near"]["tee"] != c["id"]) for n in mid)
+            own = False                       # the tee whose line of play points at this green is its OWN hole's tee
+            if c.get("axis") is not None and c.get("elong", 1) >= 1.3 and d > 90:
+                own = geo.angle_diff(c["axis"], geo.bearing(c["xy"], g["xy"]) % 180) < 12
             cands.append(dict(green=g["id"], tee=c["id"], dist_m=round(d, 1),
-                              path_m=_r(path_m, 1), path_edges=[e for e in edges if e], path_direct=direct))
+                              path_m=_r(path_m, 1), path_edges=[e for e in edges if e], path_direct=direct,
+                              aims_at_green=bool(own), _p=c.get("p", 0.5)))
         # p_next: a soft prior over this green's candidates (short walk, direct cart path)
         if cands:
             s = []
@@ -105,11 +109,14 @@ def green_to_tee(G, greens, complexes, max_m=450.0, attach_m=45.0):
                 walk = r["path_m"] if r["path_m"] is not None else 1.5 * r["dist_m"] + 60
                 sc = -((max(walk - 40, 0)) / 110.0) ** 2 + (0.6 if r["path_direct"] else 0.0)
                 sc -= 2.0 if r["dist_m"] < 25 else 0.0
+                sc -= 1.5 if r["aims_at_green"] else 0.0
+                sc += 1.0 * (r["_p"] - 0.5)
                 s.append(sc)
             s = np.array(s)
             e = np.exp(s - s.max())
             for r, pv in zip(cands, e / e.sum()):
                 r["p_next"] = round(float(pv), 3)
+                r.pop("_p", None)
         rel += cands
     return rel
 
@@ -207,7 +214,8 @@ def build_scene(st, L, D, mode="blind", models_id=None):
     if rng:
         rngd = dict(polygon=_ring_ll(st, rng["ring"]), centroid=geo.pt_ll(st, *rng["xy"]), axis_deg=_r(rng["axis"], 1),
                     hitting_end=geo.pt_ll(st, *rng["hitting_end"]), length_m=_r(rng["length"], 1),
-                    width_m=_r(rng["width"], 1), p=_r(rng["p"], 3), tee_complex=rng.get("complex"))
+                    width_m=_r(rng["width"], 1), p=_r(rng["p"], 3), tee_complex=rng.get("complex"),
+                    fairway=rng.get("fairway"))
     g = st.meta["grid"]
     naip_years = ((st.meta.get("naip") or {}).get("years") or [{}])
     scene = dict(

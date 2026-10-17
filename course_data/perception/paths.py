@@ -32,7 +32,7 @@ def rule_prob(L):
     bunker = L.st.seg("bunker")
     c = np.clip(L["nd_contrast"] / 0.15, 0, 1)
     lp = np.clip(L["line_paved"] / 0.15, 0, 1)
-    p = (0.45 * c + 0.35 * lp + 0.2 * np.clip((0.15 - nd) / 0.2, 0, 1))
+    p = (0.45 * c + 0.35 * lp + 0.2 * np.clip((-0.1 - L["ndvi_rel"]) / 0.2, 0, 1))
     p = np.where(paved | (lp > 0.6), p, p * 0.3)
     p = np.where((width > ROAD_WIDTH_M) | (bunker > 0.5), p * 0.25, p)
     road = np.where(paved & (width > ROAD_WIDTH_M), 0.7, 0.0)

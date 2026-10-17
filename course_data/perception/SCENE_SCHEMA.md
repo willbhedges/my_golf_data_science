@@ -125,7 +125,8 @@ Buildings: `height_m` (lidar), `p`, `polygon`. Parking: large, flat, low-NDVI pa
 
 ### `practice`
 `putting_greens` lists green ids with `kind == "practice"`. `driving_range` =
-`{"polygon", "centroid", "axis_deg", "hitting_end": [lon, lat], "length_m", "width_m", "p"}` or null.
+`{"polygon", "centroid", "axis_deg", "hitting_end": [lon, lat], "length_m", "width_m", "p", "tee_complex", "fairway"}`
+or null (`tee_complex` / `fairway`: the element ids the range was found from, either may be null).
 
 ### `relations.green_to_tee`
 Ordering evidence for the hole-graph inference. One entry per (green, tee complex) pair within 450 m:
@@ -135,6 +136,7 @@ Ordering evidence for the hole-graph inference. One entry per (green, tee comple
  "path_m": 120.5,           // shortest cart-path route green -> tee (null when the graph does not connect them)
  "path_edges": ["e9", "e10"],
  "path_direct": true,       // the route passes no other green / tee complex on the way
+ "aims_at_green": false,    // the complex's long axis points at this green (likely the green's OWN hole tee)
  "p_next": 0.71}            // perception's own P(tee is the next hole's tee after this green); a prior only
 ```
 `p_next` uses only geometry + cart paths (distance, path detour, whether the tee's axis points away from

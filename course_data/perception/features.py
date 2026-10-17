@@ -106,16 +106,28 @@ class Layers:
         h = self.get("hag")
         if self.get("lidar"):
             return np.nan_to_num(h, nan=0.0) >= 2.5
-        nd = self.get("ndvi")
         tex = local_std(self.get("bright"), 5)
-        return (nd > 0.25) & (self.get("bright") < 90) & (tex > 9)
+        return (self.get("ndvi_rel") > -0.05) & (self.get("bright") < 90) & (tex > 9)
+
+    def _ndvi_turf(self):
+        """This course's mown-turf NDVI (median over U-Net fairway, else over the greener half of low ground):
+        NAIP radiometry differs a lot between states / years, so vegetation thresholds are relative to it."""
+        nd = self.get("ndvi")
+        fw = (self.st.seg("fairway") > 0.5) & np.isfinite(nd)
+        if fw.sum() > 2000:
+            return float(np.median(nd[fw]))
+        h = np.nan_to_num(self.get("hag"), nan=0.0)
+        v = nd[(h < 0.5) & np.isfinite(nd)]
+        return float(np.percentile(v, 75)) if v.size > 100 else 0.3
+
+    def _ndvi_rel(self):
+        return self.get("ndvi") - self.get("ndvi_turf")
 
     def _paved(self):
-        """Non-vegetated, low, flat-ish surfaces (paths, roads, parking, roofs filtered by HAG)."""
-        nd = self.get("ndvi")
+        """Non-vegetated, low surfaces (paths, roads, parking; roofs excluded by HAG)."""
         h = np.nan_to_num(self.get("hag"), nan=0.0)
         low = h < 1.0 if self.get("lidar") else ~self.get("tall")
-        return (nd < 0.12) & low & self.get("valid")
+        return (self.get("ndvi_rel") < -0.15) & low & self.get("valid")
 
     def _line_paved(self):
         """Thin non-vegetated lines: Sato ridges of (-NDVI) at 1-2 px."""
