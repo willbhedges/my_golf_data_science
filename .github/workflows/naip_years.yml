@@ -1,0 +1,153 @@
+name: naip-years
+
+# NAIP imagery-year selection for course packages (course_data/imagery/naip_years.py, naip_years_run.py).
+# Request-file trigger (ARCHITECTURE 9.4): commit course_data/requests/naip_years.json
+#   {"schema": "request/1", "kind": "naip_years", "slugs": ["wakonda", ...], "apply": true, "detect": true,
+#    "replan": ["wakonda", ...], "rev": "<anything, to re-trigger>"}
+# Per course (one job each, max 6 in parallel):
+#   1. score every NAIP year over the course (turf NDVI on OSM fairways / greens / tees, bare greens, haze, date,
+#      resolution, age) -> course_data/imagery/years/<slug>.json
+#   2. detect: the segment U-Net + NIR water rule on the current, the chosen and the next best years, and on the
+#      best 2 / 3 years combined, pixel IoU vs OSM -> the same json
+#   3. apply: re-fetch the chosen year into packages/<slug>/imagery (DEM kept) or record the selection, rebuild
+#      the package offline (package.build_request), and re-run every plan of the course listed in "replan"
+#      (out*/ dirs with a plan.json: product/plan.py --mode quick --no-book) when its year changed.
+# Commits the course's outputs (explicit paths only; the large-raster rule: imagery is rewritten only when the
+# chosen year differs).
+
+on:
+  push:
+    paths:
+      - "course_data/requests/naip_years*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: naip-years-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  HF_HOME: /home/runner/hf_cache
+  HF_HUB_DISABLE_TELEMETRY: "1"
+  PYTHONWARNINGS: ignore
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      slugs: ${{ steps.p.outputs.slugs }}
+      req: ${{ steps.p.outputs.req }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - id: p
+        run: |
+          R=$(ls -t course_data/requests/naip_years*.json | head -1)
+          echo "req=$R" >> "$GITHUB_OUTPUT"
+          python3 -c "import json,sys; r=json.load(open(sys.argv[1])); print('slugs=' + json.dumps(r.get('slugs') or ['none']))" "$R" >> "$GITHUB_OUTPUT"
+          cat "$R"
+
+  course:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        slug: ${{ fromJSON(needs.plan.outputs.slugs) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Cache Hugging Face weights
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/hf_cache
+          key: hf-golfseg-v1
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y -q poppler-utils >/dev/null || true
+          python -m pip install --upgrade pip -q
+          pip install -q requests numpy scipy shapely pyproj matplotlib pillow opencv-python-headless scikit-learn \
+                      scikit-image pystac-client planetary-computer rasterio affine networkx
+          pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -q "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm
+      - name: Request flags
+        id: f
+        run: |
+          python3 - "${{ needs.plan.outputs.req }}" "${{ matrix.slug }}" >> "$GITHUB_OUTPUT" <<'EOF'
+          import json, sys
+          r, s = json.load(open(sys.argv[1])), sys.argv[2]
+          print("apply=" + ("--apply" if r.get("apply") else ""))
+          print("detect=" + ("--detect" if r.get("detect", True) else ""))
+          print("replan=" + ("true" if s in (r.get("replan") or []) else "false"))
+          EOF
+          python3 -c "import json;print('year_before=' + str(json.load(open('course_data/packages/${{ matrix.slug }}/imagery/georef.json'))['imagery']['year']))" >> "$GITHUB_OUTPUT"
+      - name: Score years / detect / apply (${{ matrix.slug }})
+        timeout-minutes: 90
+        run: python -u course_data/imagery/naip_years_run.py ${{ matrix.slug }} ${{ steps.f.outputs.detect }} ${{ steps.f.outputs.apply }}
+      - name: Rebuild the package offline
+        id: build
+        if: steps.f.outputs.apply != ''
+        run: |
+          python -u - <<'EOF'
+          import sys
+          sys.path[:0] = ["course_data/platform"]
+          import package as pk
+          p = pk.build_request("course_data/requests/package_${{ matrix.slug }}.json")
+          print(p["stages"].get("imagery"), "|", p["stages"].get("green_visibility"))
+          EOF
+          Y=$(python3 -c "import json;print(json.load(open('course_data/packages/${{ matrix.slug }}/imagery/georef.json'))['imagery']['year'])")
+          echo "year_after=$Y" >> "$GITHUB_OUTPUT"
+          echo "NAIP ${{ steps.f.outputs.year_before }} -> $Y"
+      - name: Re-plan (year changed)
+        if: steps.f.outputs.replan == 'true' && steps.build.outputs.year_after != steps.f.outputs.year_before
+        timeout-minutes: 120
+        run: |
+          for d in course_data/packages/${{ matrix.slug }}/out*/; do
+            d=${d%/}
+            [ "$(basename $d)" = "out_full" ] && continue
+            [ -f "$d/plan.json" ] || continue
+            T=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['tee_set'])" "$d/plan.json")
+            echo "== plan $d ($T)"
+            python -u course_data/product/plan.py --package course_data/packages/${{ matrix.slug }}/package.json \
+              --tees "$T" --mode quick --no-book --out "$d" > "$d/plan_log.txt" 2>&1 || { tail -40 "$d/plan_log.txt"; echo "plan failed: $d"; }
+            tail -5 "$d/plan_log.txt"
+            find "$d" -type f -size +50M -print -delete
+          done
+      - name: Commit
+        if: always()
+        run: |
+          S=${{ matrix.slug }}
+          P=course_data/packages/$S
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          paths="course_data/imagery/years/$S.json"
+          if [ -n "${{ steps.f.outputs.apply }}" ]; then
+            paths="$paths $P/imagery $P/package.json $P/qa.md $P/coverage.json $P/course_auto.py"
+            for d in $P/out*/; do d=${d%/}; [ "$(basename $d)" = "out_full" ] || paths="$paths $d"; done
+          fi
+          existing=""
+          for p in $paths; do [ -e "$p" ] && existing="$existing $p"; done
+          tar -cf /tmp/keep.tar $existing
+          printf '%s\n' "NAIP year selection for $S (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git fetch -q origin "${{ github.ref_name }}"
+            git reset -q --hard "origin/${{ github.ref_name }}"
+            tar -xf /tmp/keep.tar
+            git add -- $existing
+            if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+            git diff --cached --stat | tail -5
+            git commit -q -F /tmp/msg.txt
+            git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 15))
+          done
+          exit 1

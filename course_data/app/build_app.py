@@ -651,6 +651,11 @@ def build_package(slug, entry):
         if b.get("state") == "unverified":
             level = "check"
             lines.append(b.get("line", ""))
+        gv = ph.get("green_visibility") or {}
+        if gv.get("visible") is False:                           # package.check_green_visibility
+            level = "check"
+            lines.append(f"The green does not show on the {gv.get('year')} aerial photo (bare soil or construction "
+                         "when it was flown): the dashed outline is where OpenStreetMap puts it.")
         conf = (ph.get("confidence") or {})
         holes.append(dict(no=int(k), ref=k, par=par, hcp=ph.get("hcp"), variants=variants, tees=tees,
                           confidence=dict(level=level, lines=[x for x in lines if x], map_score=conf.get("score"),
@@ -713,7 +718,9 @@ def build_package(slug, entry):
         confidence=dict(level="auto", summary=summary, red=red, amber=amber, check_holes=n_check,
                         map_score=entry.get("summary", {}).get("mean_confidence")),
         default_tee=primary, tee_sets=sets, forecast=forecast_block(fc), pace_min_per_hole=PACE_MIN,
-        imagery=f"USDA NAIP {pkg['imagery'].get('naip_date') or pkg['imagery'].get('year')} (0.3-0.6 m), re-projected so each tee line runs up the screen",
+        imagery=f"USDA NAIP {pkg['imagery'].get('naip_date') or pkg['imagery'].get('year')} (0.3-0.6 m), re-projected so each tee line runs up the screen"
+                + (f". Year: {(pkg['imagery'].get('selection') or {}).get('reason')}"
+                   if (pkg['imagery'].get('selection') or {}).get("reason") else ""),
         attribution=pkg.get("attribution", []) + ["Forecast: Open-Meteo (CC BY 4.0)"],
         model="Fawcett-style strokes-gained simulation at the model's central settings (quick mode); wind from "
               "published TrackMan/Ping/Foresight figures and a ball-flight model; par 3s: DECADE target boxes.",

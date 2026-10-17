@@ -15,7 +15,10 @@ course_data/fetch_course.py), an explicit --bbox, or a Nominatim geocode of --na
 padded by --margin metres (default 100).
 
 Outputs (in --out):
-  naip_rgb.tif       latest USDA NAIP year, R,G,B, native resolution (0.3-0.6 m), Cloud-Optimised
+  naip_rgb.tif       one USDA NAIP year, R,G,B, native resolution (0.3-0.6 m), Cloud-Optimised. Which year:
+                     --year auto (default) scores every NAIP year over the course's OSM turf (--osm) and takes
+                     the greenest leaf-on one (naip_years.py; recorded in georef.json imagery.selection);
+                     without --osm, or with --year latest, the newest covering year (the old rule)
                      GeoTIFF, JPEG q90 (YCbCr), with overviews
   naip_nir.tif       the NAIP near-infrared band, same grid, single-band COG (JPEG q92)
   naip_rgb_lo.jpg    the same imagery resampled to --lo-res metres (default 0.6) as plain JPEG,
@@ -38,6 +41,8 @@ import time
 import traceback
 
 import numpy as np
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))           # naip_years
 
 STAC = "https://planetarycomputer.microsoft.com/api/stac/v1"
 UA = "my_golf_data_science-imagery/1.0 (github actions; golf course strategy research)"
@@ -165,33 +170,67 @@ def stac_client():
     return pystac_client.Client.open(STAC, modifier=planetary_computer.sign_inplace)
 
 
-def fetch_naip(bbox, out_dir, lo_res):
+def latest_covering(years):
+    """The old rule (now `--year latest`): the newest year whose acquisitions cover the box, else the newest."""
+    for y in reversed(years):
+        if y["coverage"] > 0.995:
+            return y
+    return years[-1]
+
+
+def choose_year(years, want="auto", osm=None, bbox=None, current=None, scorer=None):
+    """years: naip_years.list_years() rows (oldest first) -> (row, selection record).
+    want: "auto" = naip_years.select (best-scoring leaf-on year on the course's OSM turf; needs `osm`, a GeoJSON
+    FeatureCollection), "latest" = the old newest-covering-year rule, or a year. scorer(row) -> candidate dict
+    (default: read the year at naip_years.SCORE_RES and score it)."""
+    import naip_years as NY
+    if str(want).isdigit():
+        row = next((y for y in years if y["year"] == int(want)), None)
+        if row is None:
+            raise RuntimeError(f"NAIP {want} not available here ({[y['year'] for y in years]})")
+        return row, dict(schema="naip_years/1", chosen=row["year"], reason=f"requested year {want}", candidates=[])
+    if want == "latest" or not osm:
+        row = latest_covering(years)
+        return row, dict(schema="naip_years/1", chosen=row["year"], method="newest covering year",
+                         reason=f"{row['year']}: newest NAIP year covering the course (no year scoring: "
+                                f"{'requested' if want == 'latest' else 'no OSM map to score on'})", candidates=[])
+    polys = NY.turf_polygons(osm)
+
+    def default_scorer(y):
+        arr, crs, tr = NY.read_year(y["items"], bbox)
+        return NY._score_array(arr, crs, tr, polys, {})
+    cands = []
+    for y in years:
+        c = dict(year=y["year"], dates=y["dates"], coverage=y["coverage"], gsd_m=y["gsd_m"])
+        try:
+            c.update((scorer or default_scorer)(y))
+        except Exception as ex:                                  # noqa: BLE001
+            c.update(has_nir=False, error=repr(ex)[:300])
+        log(f"  NAIP {c['year']} {c['dates']} cover {c['coverage']:.3f} gsd {c.get('gsd_m')}: turf NDVI "
+            f"{c.get('turf_ndvi')} bare {c.get('bare_turf')} greens bare {c.get('greens_bare_n')} haze {c.get('haze')}")
+        cands.append(c)
+    best, reason, cands = NY.select(cands, current)
+    if best is None:
+        row = latest_covering(years)
+        return row, dict(NY.record(None, f"{reason}; fell back to the newest covering year {row['year']}", cands),
+                         chosen=row["year"])
+    return next(y for y in years if y["year"] == best["year"]), NY.record(best, reason, cands)
+
+
+def fetch_naip(bbox, out_dir, lo_res, year="auto", osm=None, current=None):
     import rasterio
     from rasterio.merge import merge
     from rasterio.warp import transform_bounds
-    from shapely.geometry import box, shape
-    from shapely.ops import unary_union
+    import naip_years as NY
 
     s, w, n, e = bbox
-    cat = stac_client()
-    items = list(cat.search(collections=["naip"], bbox=[w, s, e, n]).items())
-    if not items:
+    years = NY.list_years(bbox)
+    if not years:
         raise RuntimeError("no NAIP items intersect the bbox")
-    years = sorted({it.datetime.year for it in items})
-    log("  NAIP years:", years)
-    aoi = box(w, s, e, n)
-    chosen = None
-    for yr in reversed(years):                       # latest year that fully covers the bbox
-        its = [it for it in items if it.datetime.year == yr]
-        cov = unary_union([shape(it.geometry) for it in its]).intersection(aoi).area / aoi.area
-        log(f"  {yr}: {len(its)} items, coverage {cov:.3f}")
-        if cov > 0.995:
-            chosen = (yr, its)
-            break
-    if chosen is None:
-        yr = years[-1]
-        chosen = (yr, [it for it in items if it.datetime.year == yr])
-    yr, its = chosen
+    log("  NAIP years:", [(y["year"], y["coverage"]) for y in years])
+    row, selection = choose_year(years, year, osm, bbox, current)
+    yr, its = row["year"], row["items"]
+    log(f"  chosen NAIP {yr}: {selection.get('reason')}")
     srcs = [rasterio.open(it.assets["image"].href) for it in its]
     crs = srcs[0].crs
     srcs = [sr for sr in srcs if sr.crs == crs]
@@ -223,7 +262,8 @@ def fetch_naip(bbox, out_dir, lo_res):
     acq = sorted({it.datetime.date().isoformat() for it in its})
     return dict(
         source="USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
-        year=yr, years_available=years, acquired=acq, items=[it.id for it in its],
+        year=yr, years_available=[y["year"] for y in years], acquired=acq, items=[it.id for it in its],
+        selection=selection,
         gsd_m=its[0].properties.get("gsd"), resolution_m=round(res, 4),
         bands=["red", "green", "blue"] + (["nir"] if nb >= 4 else []),
         crs=crs.to_string(), epsg=crs.to_epsg(), width=int(arr.shape[2]), height=int(arr.shape[1]),
@@ -394,6 +434,9 @@ def main():
     ap.add_argument("--no-dem", action="store_true")
     ap.add_argument("--request")
     ap.add_argument("--out")
+    ap.add_argument("--year", default="auto",
+                    help="NAIP year: auto (best-scoring leaf-on year on the --osm turf, naip_years.py), latest, or YYYY")
+    ap.add_argument("--osm", help="osm.geojson of the course (golf=fairway / green / tee) for --year auto")
     a = ap.parse_args()
     root = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
     bbox_src = None
@@ -425,8 +468,16 @@ def main():
                 fetched_utc=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 transform_convention="GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row "
                                      "(col,row of the pixel's top-left corner; +0.5 for centres)")
+    prev = {}
+    if os.path.exists(os.path.join(a.out, "georef.json")):
+        try:
+            prev = json.load(open(os.path.join(a.out, "georef.json")))
+        except ValueError:
+            prev = {}
+    osm = json.load(open(a.osm)) if a.osm and os.path.exists(a.osm) else None
     try:
-        meta["imagery"] = fetch_naip(padded, a.out, a.lo_res)
+        meta["imagery"] = fetch_naip(padded, a.out, a.lo_res, year=a.year, osm=osm,
+                                     current=(prev.get("imagery") or {}).get("year"))
     except Exception:
         tb = traceback.format_exc()
         log("NAIP failed:\n", tb)
@@ -435,6 +486,8 @@ def main():
             meta["imagery"] = fetch_s2(padded, a.out)
         except Exception:
             meta["s2_error"] = traceback.format_exc()[-1500:]
+    if a.no_dem and prev.get("dem") and os.path.exists(os.path.join(a.out, prev["dem"].get("file", "dem.tif"))):
+        meta["dem"] = prev["dem"]                                # NAIP-only refetch keeps the fetched DEM
     if not a.no_dem:
         try:
             epsg = (meta.get("imagery") or {}).get("epsg") or utm_epsg(lat, lon)

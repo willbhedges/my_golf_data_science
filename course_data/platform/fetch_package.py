@@ -110,12 +110,14 @@ def fetch_scorecards_only(req_path):
     return slug, "ok"
 
 
-def fetch_imagery(course, pkg):
+def fetch_imagery(course, pkg, year="auto"):
+    """NAIP (+ DEM) for the package; year: "auto" = the best-scoring leaf-on NAIP year on the course's OSM turf
+    (imagery/naip_years.py), "latest", or a year (request "naip_year")."""
     img = os.path.join(pkg, "imagery")
     w, s, e, n = course["bbox"]
     cmd = [sys.executable, os.path.join(pc.COURSE_DATA, "imagery", "fetch_imagery.py"),
            "--bbox", f"{s},{w},{n},{e}", "--name", course["name"], "--margin", "100", "--max-mb", "45",
-           "--out", img]
+           "--out", img, "--osm", os.path.join(pkg, "raw", "osm.geojson"), "--year", str(year or "auto")]
     pc.log("imagery:", " ".join(cmd))
     r = subprocess.run(cmd, timeout=2400)
     return r.returncode == 0
@@ -140,7 +142,7 @@ def fetch(req_path):
         pc.log("scorecards:", json.dumps(sw["tried"]))
     import package as pk
     if req.get("imagery", True) and not pk.find_imagery(req, pkg, slug):
-        ok = fetch_imagery(course, pkg)
+        ok = fetch_imagery(course, pkg, req.get("naip_year", "auto"))
         pc.log("imagery ok:", ok)
     return slug, "ok"
 

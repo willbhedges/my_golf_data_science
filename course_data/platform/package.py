@@ -107,6 +107,38 @@ def geometry():
     return load(os.path.join(CD, "geometry", "build_holes.py"), "cdp_build_holes")
 
 
+def naip_years_mod():
+    return load(os.path.join(CD, "imagery", "naip_years.py"), "cdp_naip_years")
+
+
+def check_green_visibility(holes, img_dir, imagery, stages, warnings):
+    """Is every hole's green actually visible as turf on the imagery the package ships? (imagery/naip_years.
+    green_visibility: per-green NDVI vs the course's other greens.) A green drawn from OSM on bare soil - a course
+    flown mid-renovation (Wakonda NAIP 2023: greens 5, 9, 15, 17), a dead green, a green built after the flight -
+    is the app's "green not drawn" report: the outline sits on dirt. Sets hole["green_visibility"]; reframe()
+    turns visible=False into a confidence flag."""
+    mod = naip_years_mod()
+    if mod is None or not img_dir or not imagery:
+        stages["green_visibility"] = "not run (no imagery)" if mod else "missing (imagery/naip_years.py)"
+        return
+    try:
+        vis = mod.green_visibility(holes, img_dir)
+    except Exception as e:                                       # noqa: BLE001
+        stages["green_visibility"] = f"failed ({type(e).__name__}: {e})"[:300]
+        return
+    if not vis:
+        stages["green_visibility"] = "not run (no NIR band)"
+        return
+    bad = [k for k, v in vis.items() if v.get("visible") is False]
+    for k, v in vis.items():
+        holes[k]["green_visibility"] = dict(v, year=imagery.get("year"))
+    stages["green_visibility"] = (f"ok: {len(vis) - len(bad)}/{len(vis)} greens visible as turf on NAIP "
+                                  f"{imagery.get('year')}" + (f"; NOT visible: holes {', '.join(bad)}" if bad else ""))
+    if bad:
+        warnings.append(f"greens of holes {', '.join(bad)} are not visible as turf on the NAIP {imagery.get('year')} "
+                        "imagery (bare soil / construction / dead turf): pick another NAIP year (imagery/naip_years.py)")
+
+
 def pipeline():
     return load(os.path.join(CD, "pipeline.py"), "cdp_pipeline")
 
@@ -521,6 +553,9 @@ def imagery_ref(img_dir):
                    naip_date=(im.get("acquired") or [None])[0], items=im.get("items"),
                    resolution_m=im.get("resolution_m"), crs=im.get("crs"), bands=im.get("bands"),
                    files=im.get("files"),
+                   # which NAIP year and why (imagery/naip_years.py via fetch_imagery.py; None = fetched before
+                   # year selection existed: the newest covering year)
+                   selection=im.get("selection"),
                    present=all(os.path.exists(os.path.join(img_dir, f)) for f in (im.get("files") or {}).values())) \
         if im else None
     dem = g.get("dem")
@@ -877,6 +912,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         holes[k] = apply_tee_line(h)
 
     stages["imagery"] = f"ok: {imagery['dir']} ({imagery['source']}, {imagery['year']})" if imagery else "missing"
+    check_green_visibility(holes, img_dir, imagery, stages, warnings)
     tee_sets = {}
     for name, s in card_sets.items():
         r = s.get("ratings") or []
@@ -1006,6 +1042,12 @@ def reframe(package, tee_set=None):
             h.setdefault("flags", []).append(f"{s} tee walked back along the hole line (no box at {t.get('card_yards')} yds)")
         if t.get("order_ok") is False:
             h.setdefault("flags", []).append(f"{s} tee out of order with the other sets")
+        gv = h.get("green_visibility") or {}
+        if gv.get("visible") is False:
+            h.setdefault("flags", []).append(
+                f"green not visible on the NAIP {gv.get('year')} imagery (NDVI {gv.get('ndvi')} vs "
+                f"{gv.get('course_median')} on the course's other greens: bare soil / construction); "
+                "the outline is OSM's")
         fr = _frame(t["tee_ll"], t["aim_ll"])
         Y = lambda ll: fr.ll_to_yds(np.asarray(ll, float))      # noqa: E731
         green = Y([h["green_ll"]])[0]
