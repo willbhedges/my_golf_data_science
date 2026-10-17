@@ -81,11 +81,12 @@
  "settings": {
   "trees": {
    "hag": 2.5,
-   "k_m": 5,
+   "k_m": 0,
    "min_area_m2": 100
   },
-  "native_thr": 0.14,
-  "native_mode": "relaxed"
+  "native_thr": 0.5,
+  "native_mode": "relaxed",
+  "native_dmin_yd": 0
  },
  "trained_on": {
   "spirit_hollow": [
@@ -139,5 +140,27 @@
     "pooled same club v2 20/27 vs v1 20/27"
    ]
   }
+ },
+ "decision_calibration": {
+  "previous": {
+   "trees": {
+    "hag": 2.5,
+    "k_m": 5,
+    "min_area_m2": 100
+   },
+   "native_thr": 0.14,
+   "native_mode": "relaxed"
+  },
+  "chosen": "thr0.5_relaxed_k0_d0",
+  "gate": {
+   "pass_": true,
+   "why": [
+    "pooled same club 22/30 vs committed 15/30",
+    "spirit_hollow 12/16 vs 8/16",
+    "mozingo_lake 10/14 vs 7/14",
+    "mean regret 0.0086 vs 0.0153"
+   ]
+  },
+  "report": "course_data/vision_any/v2_decision_calibration.md"
  }
 }
