@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-10-17T13:50:36Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
+Built 2026-10-17T15:59:49Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
 **WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
@@ -53,7 +53,8 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment)
 - **tees**: ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment) for 3 sets; lidar pads: 36 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
-- **imagery**: ok: course_data/packages/veenker/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
+- **imagery**: ok: course_data/packages/veenker/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2014)
+- **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2014
 - **elevation**: ok: course_data/packages/veenker/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+3 zones on 2 holes, +0 greens, 21 tee candidates)
