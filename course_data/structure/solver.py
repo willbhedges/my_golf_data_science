@@ -66,12 +66,16 @@ TEMP = 1.0                                            # posterior temperature (c
 LAGR_ITERS = 12
 TFEATS = ("walk", "dist", "cos_prev", "cos_next", "path")
 TRANS_W = dict(walk=1.0, dist=0.0, cos_prev=0.0, cos_next=0.0, path=1.0)
+TURN_W = dict(walk=0.3, dist=0.0, cos_prev=0.0, cos_next=0.0, path=0.3)
+ANCHOR_W = dict(t1=1.0, g18=1.0, g9=1.0, t10=1.0)
 
 
 def load_params(path=os.path.join(HERE, "params.json")):
-    global FORM_W, TEMP, NOT_HOLE, TURN_VIA_H, TRANS_W
+    global FORM_W, TEMP, NOT_HOLE, TURN_VIA_H, TRANS_W, TURN_W, ANCHOR_W
     if os.path.exists(path):
         p = json.load(open(path))
+        TURN_W = dict(TURN_W, **p.get("turn_w", {}))
+        ANCHOR_W = dict(ANCHOR_W, **p.get("anchor_w", {}))
         FORM_W = dict(FORM_W, **p.get("form_w", {}))
         TRANS_W = dict(TRANS_W, **p.get("trans_w", {}))
         TEMP = p.get("temp", TEMP)
@@ -727,11 +731,15 @@ class Problem:
         self.cxk = np.full((Mk, K), -1, int)
         nC = len(geo.cx)
         self.cov = np.zeros((Mk, K, nC + 1))
+        self.Phi = np.zeros((Mk, K, len(FEATS)))
+        self.pad = np.full((Mk, K), -1e4)
         for b, hs in enumerate(self.hk):
             for h, x in enumerate(hs):
                 self.form[b, h] = x["score"]
                 self.cxk[b, h] = x["k"]
                 self.cov[b, h, x["cover"]] = 1.0
+                self.Phi[b, h] = [x["f"][k] for k in FEATS]
+                self.pad[b, h] = 0.0
         self.F = transition_features(geo, hyps, keep, self.cxk, use_paths)
         self.path_used = bool(use_paths and geo.paths is not None)
         self.wl = self.F @ np.array([TRANS_W[k] for k in TFEATS])          # (Mk, Mk, K)
@@ -778,19 +786,13 @@ def solve(sc, card=None, n_holes=None, use_paths=True, use_clubhouse=True, temp=
     eye = np.eye(Mk, dtype=bool)
     NEG = -1e4
 
-    def mats(st_en, lam):
-        form = pb.form - pb.cov @ lam                                  # (Mk, K); padding stays ~ -1e4
-        st_l, en = st_en
-        trans = _lse(form[None, :, :] + pb.wl, axis=2)                 # (a, b)
-        turn = None
-        if N == 18:
-            # the turn: green 9 and tee 10 both near the clubhouse; the walk 9 -> 10 direct or through it
-            turn = _lse(form[None, :, :] + st_l[None, :, :] + _turn_walk(pb.wl), axis=2) + en[:, None]
-        start = _lse(form + st_l, axis=1)
-        trans = np.where(eye, NEG, trans - nh[None, :]) / temp
-        if turn is not None:
-            turn = np.where(eye, NEG, turn - nh[None, :]) / temp
-        return trans, turn, (start - nh) / temp, en / temp
+    import crf
+    theta = crf.theta_from_params()
+
+    def mats(st_en, lam, parts=False):
+        trans, turn, start, end, P = crf.potentials(pb, st_en, theta, N, price=lam, nh=nh)
+        out = (trans / temp, None if turn is None else turn / temp, start / temp, end / temp)
+        return (out, P) if parts else out
 
     def run_all(lam, marginals, only=None, soft=True):
         runs = []
@@ -812,7 +814,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, use_clubhouse=True, temp=
     best_i = {top[0]["i"]}
     for it in range(LAGR_ITERS):
         br = max(runs, key=lambda r: r["mapw"])
-        cnt = _coverage(pb, br["best"], br["se"], price, N)
+        cnt = _coverage(pb, mats(br["se"], price, parts=True)[1], br["best"], N)
         if cnt.max() <= 1:
             break
         price = price + 1.0 * (cnt > 1) * (1 + 0.5 * it)
@@ -822,6 +824,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, use_clubhouse=True, temp=
     pw = np.exp(lw - _lse(lw))
     marg = sum(p * r["marg"] for p, r in zip(pw, runs))
     br = max(runs, key=lambda r: r["mapw"])
+    br["mats"], br["parts"] = mats(br["se"], price, parts=True)
     return _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, return_debug, runs)
 
 
@@ -833,24 +836,21 @@ def _turn_walk(wl):
     return np.logaddexp(math.log(TURN_VIA_H) + VIA_LL, math.log(1 - TURN_VIA_H) + wl)
 
 
-def _tee_lp(pb, seq, k, se, price, N):
+def _tee_lp(P, seq, k, N):
+    """Log-weights of the hypotheses of the k-th hole of the route (given the previous green)."""
     node = seq[k]
-    st_l, _ = se
-    lp = pb.form[node] - pb.cov[node] @ price
     if k == 0:
-        lp = lp + st_l[node]
-    elif k == 9 and N == 18:
-        lp = lp + st_l[node] + _turn_walk(pb.wl[seq[k - 1], node])
-    else:
-        lp = lp + pb.wl[seq[k - 1], node]
-    return lp
+        return P["z0"][node]
+    if k == 9 and N == 18:
+        return P["zu"][seq[k - 1], node]
+    return P["zt"][seq[k - 1], node]
 
 
-def _coverage(pb, seq, se, price, N):
-    """How many holes of the route use each complex (as tee or forward tee), with each hole's best hypothesis."""
+def _coverage(pb, P, seq, N):
+    """How many holes of the route use each complex, with each hole's best hypothesis."""
     cnt = np.zeros(pb.cov.shape[2])
     for k, node in enumerate(seq):
-        cnt += pb.cov[node, int(np.argmax(_tee_lp(pb, seq, k, se, price, N)))]
+        cnt += pb.cov[node, int(np.argmax(_tee_lp(P, seq, k, N)))]
     return cnt
 
 
@@ -886,7 +886,7 @@ def _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, debug, run
     for k, node in enumerate(seq):
         gi = pb.keep[node]
         hs = pb.hk[node]
-        lp = _tee_lp(pb, seq, k, br["se"], price, N) / temp
+        lp = _tee_lp(br["parts"], seq, k, N) / temp
         ph = np.exp(lp - _lse(lp))
         hi = int(np.argmax(ph))
         h = hs[hi]
@@ -911,7 +911,8 @@ def _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, debug, run
                total_par=int(sum(pars_inf)), card_used=bool(pars or yards),
                p_route=round(float(np.exp(min(0.0, br["best_score"] - br["logZ"]))), 4))
     if debug:
-        out["debug"] = dict(marg=marg, keep=pb.keep, runs=[(r["H"]["how"], r["logw"]) for r in runs], price=price)
+        out["debug"] = dict(marg=marg, keep=pb.keep, runs=[(r["H"]["how"], r["logw"]) for r in runs], price=price,
+                            mats=br.get("mats"), seq=seq, best_score=br["best_score"])
     return out
 
 
@@ -988,3 +989,13 @@ def _solve_large(sc, hyps, geo, keep, N, pars, yards, temp, clubs):
                 practice_greens=[g["id"] for g in sc.greens if g["id"] not in used],
                 clubhouse=dict(xy=[float(x) for x in c], how=Hc[0]["how"], p=None),
                 total_par=int(sum(h["par"] for h in holes)), card_used=bool(pars or yards), p_route=None)
+
+
+def route_score(mats, seq):
+    """Log-score of a node sequence under (trans, turn, start, end) from solve(return_debug=True)."""
+    trans, turn, start, end = mats
+    s = start[seq[0]] + end[seq[-1]]
+    for k in range(1, len(seq)):
+        tr = turn if (turn is not None and k == 9) else trans
+        s += tr[seq[k - 1], seq[k]]
+    return float(s)
