@@ -29,7 +29,7 @@ def sinkhorn(S, slack, temp=1.0, iters=60):
         over = cs > 1.0 + 1e-6
         if not over.any():
             break
-        colw = np.where(over, colw / cs, np.minimum(1.0, colw * 1.0))
+        colw = np.where(over, colw / np.maximum(cs, 1e-12), colw)
         # let columns that are now under-used recover a little (avoid over-shrinking)
         colw = np.where(~over & (cs < 0.999) & (colw < 1.0), np.minimum(1.0, colw / np.maximum(cs, 1e-3) ** 0.5), colw)
     return P[:, :nC], P[:, nC]

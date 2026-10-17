@@ -102,12 +102,15 @@ def design(r):
     return np.hstack([X, perc])
 
 
+GBM1 = dict(max_iter=400, learning_rate=0.05, max_leaf_nodes=31, min_samples_leaf=40, l2_regularization=1.0)
+GBM2 = dict(max_iter=300, learning_rate=0.05, max_leaf_nodes=31, min_samples_leaf=40, l2_regularization=1.0)
+
+
 def fit_model(rows, seed=0):
     from sklearn.ensemble import HistGradientBoostingClassifier
     X = np.vstack([design(r) for r in rows])
     y = np.concatenate([r["y"] for r in rows])
-    clf = HistGradientBoostingClassifier(max_iter=400, learning_rate=0.05, max_leaf_nodes=31, min_samples_leaf=40,
-                                         l2_regularization=1.0, random_state=seed)
+    clf = HistGradientBoostingClassifier(random_state=seed, **GBM1)
     clf.fit(X, y)
     return clf
 
@@ -429,8 +432,7 @@ def fit_stage2(pairs, seed=0):
     from sklearn.ensemble import HistGradientBoostingClassifier
     X = np.vstack([np.hstack([design(r), ctx_features(r, z)]) for r, z in pairs])
     y = np.concatenate([r["y"] for r, _ in pairs])
-    clf = HistGradientBoostingClassifier(max_iter=300, learning_rate=0.05, max_leaf_nodes=31, min_samples_leaf=40,
-                                         l2_regularization=1.0, random_state=seed)
+    clf = HistGradientBoostingClassifier(random_state=seed, **GBM2)
     clf.fit(X, y)
     return clf
 
@@ -457,7 +459,7 @@ def cv(rows, k=6, cal=None, stages=None):
             if r["state"] in f:
                 oof[id(r)] = (r, pair_logit(clf, r))
         print("fold", i, sorted(f), flush=True)
-    if stages >= 2:
+    for stage in range(2, stages + 1):
         oof2 = {}
         for i, f in enumerate(fs):
             trp = [oof[id(r)] for r in tr if r["state"] not in f]          # every card variant (none, web, truth)
@@ -465,7 +467,7 @@ def cv(rows, k=6, cal=None, stages=None):
             for r in tr:
                 if r["state"] in f:
                     oof2[id(r)] = (r, stage2_logit(c2, r, oof[id(r)][1]))
-            print("stage 2 fold", i, flush=True)
+            print(f"stage {stage} fold", i, flush=True)
         oof = oof2
     return list(oof.values())
 
