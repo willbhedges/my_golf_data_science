@@ -1,0 +1,831 @@
+{
+ "kind": "final",
+ "shard": "2/12",
+ "rows": [
+  {
+   "slug": "skokie_il",
+   "state": "IL",
+   "card_kind": "web",
+   "scene": true,
+   "perception_clean": false,
+   "n_true": 18,
+   "tiers": {
+    "mapped_card": {
+     "baseline": {
+      "hole_number_acc": 0.833,
+      "green_assign_acc": 0.889,
+      "all_correct": false,
+      "flagged": 6,
+      "wrong": 3,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 5.7,
+      "method": "v2",
+      "confirm": {
+       "taps": 16,
+       "wrong_left": 0,
+       "stop_rule_taps": 6,
+       "stop_rule_wrong": 1,
+       "session": true,
+       "seconds": 36.4
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.778,
+      "green_assign_acc": 0.778,
+      "all_correct": false,
+      "flagged": 5,
+      "wrong": 4,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 8.7,
+      "tier": "mapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "router_inputs": "osm",
+      "structure_input": "osm",
+      "lam": 0.5,
+      "confirm": {
+       "taps": 8,
+       "wrong_left": 0,
+       "stop_rule_taps": 8,
+       "stop_rule_wrong": 0,
+       "session": true,
+       "seconds": 28.9
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.833,
+      "green_assign_acc": 0.889,
+      "all_correct": false,
+      "flagged": 5,
+      "wrong": 3,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 1.2,
+      "method": "v2",
+      "router_inputs": "osm"
+     },
+     "structure": {
+      "hole_number_acc": 0.722,
+      "green_assign_acc": 0.778,
+      "all_correct": false,
+      "flagged": 12,
+      "wrong": 5,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.833,
+      "seconds": 3.2,
+      "method": "structure",
+      "structure_input": "osm"
+     }
+    },
+    "unmapped_card": {
+     "baseline": {
+      "hole_number_acc": 0.833,
+      "green_assign_acc": 0.833,
+      "all_correct": false,
+      "flagged": 7,
+      "wrong": 3,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.889,
+      "seconds": 5.3,
+      "method": "v2",
+      "confirm": {
+       "taps": 15,
+       "wrong_left": 0,
+       "stop_rule_taps": 15,
+       "stop_rule_wrong": 0,
+       "session": true,
+       "seconds": 44.7
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.833,
+      "green_assign_acc": 0.833,
+      "all_correct": false,
+      "flagged": 7,
+      "wrong": 3,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.889,
+      "seconds": 17.2,
+      "tier": "unmapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "router_inputs": "model",
+      "structure_input": "perception",
+      "lam": 0.25,
+      "confirm": {
+       "taps": 6,
+       "wrong_left": 0,
+       "stop_rule_taps": 6,
+       "stop_rule_wrong": 0,
+       "session": true,
+       "seconds": 23.5
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.833,
+      "green_assign_acc": 0.833,
+      "all_correct": false,
+      "flagged": 6,
+      "wrong": 3,
+      "wrong_unflagged": 1,
+      "physical_holes_found": 0.889,
+      "seconds": 1.3,
+      "method": "v2",
+      "router_inputs": "model"
+     },
+     "structure": {
+      "hole_number_acc": 0.444,
+      "green_assign_acc": 0.556,
+      "all_correct": false,
+      "flagged": 17,
+      "wrong": 10,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.611,
+      "seconds": 11.1,
+      "method": "structure",
+      "structure_input": "perception"
+     }
+    },
+    "mapped_nocard": {
+     "baseline": {
+      "hole_number_acc": 0.222,
+      "green_assign_acc": 0.333,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 14,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.333,
+      "seconds": 0.1,
+      "method": "geometry",
+      "confirm": {
+       "taps": null,
+       "locate_all": 36,
+       "session": false,
+       "seconds": 0.0
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.833,
+      "seconds": 6.7,
+      "tier": "mapped_nocard",
+      "method": "structure",
+      "fallbacks": [],
+      "structure_input": "osm",
+      "confirm": {
+       "taps": null,
+       "wrong_left": 2,
+       "stop_rule_taps": 16,
+       "stop_rule_wrong": 9,
+       "session": true,
+       "seconds": 80.7
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.444,
+      "green_assign_acc": 0.556,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 10,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.611,
+      "seconds": 1.2,
+      "method": "v2",
+      "router_inputs": "osm"
+     },
+     "structure": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.833,
+      "seconds": 0.0,
+      "method": "structure",
+      "structure_input": "osm"
+     }
+    },
+    "unmapped_nocard": {
+     "baseline": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 0,
+      "wrong": 18,
+      "wrong_unflagged": 18,
+      "seconds": 0.0,
+      "method": "geometry",
+      "confirm": {
+       "taps": null,
+       "locate_all": 36,
+       "session": false,
+       "seconds": 0.0
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.444,
+      "seconds": 11.2,
+      "tier": "unmapped_nocard",
+      "method": "structure",
+      "fallbacks": [],
+      "structure_input": "perception",
+      "confirm": {
+       "taps": null,
+       "wrong_left": 9,
+       "session": true,
+       "seconds": 7.2
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.056,
+      "green_assign_acc": 0.056,
+      "all_correct": false,
+      "flagged": 9,
+      "wrong": 17,
+      "wrong_unflagged": 9,
+      "physical_holes_found": 0.222,
+      "seconds": 2.3,
+      "method": "v2",
+      "router_inputs": "model"
+     },
+     "structure": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.444,
+      "seconds": 0.0,
+      "method": "structure",
+      "structure_input": "perception"
+     }
+    }
+   }
+  },
+  {
+   "slug": "william_j_devine_ma",
+   "state": "MA",
+   "card_kind": "web",
+   "scene": true,
+   "perception_clean": false,
+   "n_true": 18,
+   "tiers": {
+    "mapped_card": {
+     "baseline": {
+      "hole_number_acc": 0.944,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 7,
+      "wrong": 1,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 4.8,
+      "method": "v2",
+      "confirm": {
+       "taps": 4,
+       "wrong_left": 0,
+       "stop_rule_taps": 4,
+       "stop_rule_wrong": 0,
+       "session": true,
+       "seconds": 16.2
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.944,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 6,
+      "wrong": 1,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 14.1,
+      "tier": "mapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "router_inputs": "osm",
+      "structure_input": "osm",
+      "lam": 0.5,
+      "confirm": {
+       "taps": 5,
+       "wrong_left": 0,
+       "stop_rule_taps": 5,
+       "stop_rule_wrong": 0,
+       "session": true,
+       "seconds": 21.0
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.944,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 2,
+      "wrong": 1,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 1.1,
+      "method": "v2",
+      "router_inputs": "osm"
+     },
+     "structure": {
+      "hole_number_acc": 0.722,
+      "green_assign_acc": 0.722,
+      "all_correct": false,
+      "flagged": 16,
+      "wrong": 5,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.833,
+      "seconds": 7.5,
+      "method": "structure",
+      "structure_input": "osm"
+     }
+    },
+    "unmapped_card": {
+     "baseline": {
+      "hole_number_acc": 0.944,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 8,
+      "wrong": 1,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 4.4,
+      "method": "v2",
+      "confirm": {
+       "taps": 5,
+       "wrong_left": 0,
+       "stop_rule_taps": 4,
+       "stop_rule_wrong": 1,
+       "session": true,
+       "seconds": 17.3
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.944,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 8,
+      "wrong": 1,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 15.3,
+      "tier": "unmapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "router_inputs": "model",
+      "structure_input": "perception",
+      "lam": 0.25,
+      "confirm": {
+       "taps": 10,
+       "wrong_left": 0,
+       "stop_rule_taps": 10,
+       "stop_rule_wrong": 0,
+       "session": true,
+       "seconds": 28.8
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.944,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 3,
+      "wrong": 1,
+      "wrong_unflagged": 1,
+      "physical_holes_found": 0.944,
+      "seconds": 0.9,
+      "method": "v2",
+      "router_inputs": "model"
+     },
+     "structure": {
+      "hole_number_acc": 0.278,
+      "green_assign_acc": 0.333,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 13,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.5,
+      "seconds": 10.4,
+      "method": "structure",
+      "structure_input": "perception"
+     }
+    },
+    "mapped_nocard": {
+     "baseline": {
+      "hole_number_acc": 0.222,
+      "green_assign_acc": 0.333,
+      "all_correct": false,
+      "flagged": 20,
+      "wrong": 14,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.556,
+      "seconds": 0.1,
+      "method": "geometry",
+      "confirm": {
+       "taps": null,
+       "locate_all": 36,
+       "session": false,
+       "seconds": 0.0
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.056,
+      "green_assign_acc": 0.111,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 17,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.778,
+      "seconds": 18.9,
+      "tier": "mapped_nocard",
+      "method": "structure",
+      "fallbacks": [],
+      "structure_input": "osm",
+      "confirm": {
+       "taps": 19,
+       "wrong_left": 0,
+       "stop_rule_taps": 17,
+       "stop_rule_wrong": 1,
+       "session": true,
+       "seconds": 44.9
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.167,
+      "green_assign_acc": 0.222,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 15,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.667,
+      "seconds": 0.9,
+      "method": "v2",
+      "router_inputs": "osm"
+     },
+     "structure": {
+      "hole_number_acc": 0.056,
+      "green_assign_acc": 0.111,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 17,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.778,
+      "seconds": 0.0,
+      "method": "structure",
+      "structure_input": "osm"
+     }
+    },
+    "unmapped_nocard": {
+     "baseline": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 0,
+      "wrong": 18,
+      "wrong_unflagged": 18,
+      "seconds": 0.0,
+      "method": "geometry",
+      "confirm": {
+       "taps": null,
+       "locate_all": 36,
+       "session": false,
+       "seconds": 0.0
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.722,
+      "seconds": 9.0,
+      "tier": "unmapped_nocard",
+      "method": "structure",
+      "fallbacks": [],
+      "structure_input": "perception",
+      "confirm": {
+       "taps": null,
+       "wrong_left": 9,
+       "session": true,
+       "seconds": 7.2
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 9,
+      "wrong": 18,
+      "wrong_unflagged": 9,
+      "physical_holes_found": 0.278,
+      "seconds": 2.4,
+      "method": "v2",
+      "router_inputs": "model"
+     },
+     "structure": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.722,
+      "seconds": 0.0,
+      "method": "structure",
+      "structure_input": "perception"
+     }
+    }
+   }
+  },
+  {
+   "slug": "los_amigos_ca",
+   "state": "CA",
+   "card_kind": "web",
+   "scene": true,
+   "perception_clean": false,
+   "n_true": 18,
+   "tiers": {
+    "mapped_card": {
+     "baseline": {
+      "hole_number_acc": 0.778,
+      "green_assign_acc": 0.889,
+      "all_correct": false,
+      "flagged": 5,
+      "wrong": 4,
+      "wrong_unflagged": 1,
+      "physical_holes_found": 0.778,
+      "seconds": 3.8,
+      "method": "v2",
+      "confirm": {
+       "taps": 27,
+       "wrong_left": 0,
+       "stop_rule_taps": 4,
+       "stop_rule_wrong": 4,
+       "session": true,
+       "seconds": 24.5
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.889,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 2,
+      "wrong": 2,
+      "wrong_unflagged": 1,
+      "physical_holes_found": 0.889,
+      "seconds": 7.2,
+      "tier": "mapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "router_inputs": "osm",
+      "structure_input": "osm",
+      "lam": 0.5,
+      "confirm": {
+       "taps": 23,
+       "wrong_left": 0,
+       "stop_rule_taps": 2,
+       "stop_rule_wrong": 2,
+       "session": true,
+       "seconds": 22.6
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.778,
+      "green_assign_acc": 0.889,
+      "all_correct": false,
+      "flagged": 4,
+      "wrong": 4,
+      "wrong_unflagged": 2,
+      "physical_holes_found": 0.778,
+      "seconds": 0.9,
+      "method": "v2",
+      "router_inputs": "osm"
+     },
+     "structure": {
+      "hole_number_acc": 0.889,
+      "green_assign_acc": 0.889,
+      "all_correct": false,
+      "flagged": 8,
+      "wrong": 2,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.889,
+      "seconds": 3.5,
+      "method": "structure",
+      "structure_input": "osm"
+     }
+    },
+    "unmapped_card": {
+     "baseline": {
+      "hole_number_acc": 0.778,
+      "green_assign_acc": 0.889,
+      "all_correct": false,
+      "flagged": 10,
+      "wrong": 4,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.778,
+      "seconds": 3.3,
+      "method": "v2",
+      "confirm": {
+       "taps": 21,
+       "wrong_left": 0,
+       "stop_rule_taps": 5,
+       "stop_rule_wrong": 3,
+       "session": true,
+       "seconds": 24.2
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.778,
+      "green_assign_acc": 0.889,
+      "all_correct": false,
+      "flagged": 7,
+      "wrong": 4,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.778,
+      "seconds": 11.7,
+      "tier": "unmapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "router_inputs": "model",
+      "structure_input": "perception",
+      "lam": 0.25,
+      "confirm": {
+       "taps": 17,
+       "wrong_left": 0,
+       "stop_rule_taps": 10,
+       "stop_rule_wrong": 3,
+       "session": true,
+       "seconds": 24.2
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.778,
+      "green_assign_acc": 0.889,
+      "all_correct": false,
+      "flagged": 9,
+      "wrong": 4,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.778,
+      "seconds": 0.8,
+      "method": "v2",
+      "router_inputs": "model"
+     },
+     "structure": {
+      "hole_number_acc": 0.889,
+      "green_assign_acc": 0.944,
+      "all_correct": false,
+      "flagged": 9,
+      "wrong": 2,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.889,
+      "seconds": 9.2,
+      "method": "structure",
+      "structure_input": "perception"
+     }
+    },
+    "mapped_nocard": {
+     "baseline": {
+      "hole_number_acc": 0.111,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 16,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.111,
+      "seconds": 0.0,
+      "method": "geometry",
+      "confirm": {
+       "taps": null,
+       "locate_all": 36,
+       "session": false,
+       "seconds": 0.0
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.889,
+      "seconds": 7.3,
+      "tier": "mapped_nocard",
+      "method": "structure",
+      "fallbacks": [],
+      "structure_input": "osm",
+      "confirm": {
+       "taps": null,
+       "wrong_left": 1,
+       "stop_rule_taps": 21,
+       "stop_rule_wrong": 2,
+       "session": true,
+       "seconds": 54.7
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.056,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.667,
+      "seconds": 1.0,
+      "method": "v2",
+      "router_inputs": "osm"
+     },
+     "structure": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.889,
+      "seconds": 0.0,
+      "method": "structure",
+      "structure_input": "osm"
+     }
+    },
+    "unmapped_nocard": {
+     "baseline": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 0,
+      "wrong": 18,
+      "wrong_unflagged": 18,
+      "seconds": 0.0,
+      "method": "geometry",
+      "confirm": {
+       "taps": null,
+       "locate_all": 36,
+       "session": false,
+       "seconds": 0.0
+      }
+     },
+     "selector": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.056,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.667,
+      "seconds": 9.4,
+      "tier": "unmapped_nocard",
+      "method": "structure",
+      "fallbacks": [],
+      "structure_input": "perception",
+      "confirm": {
+       "taps": null,
+       "wrong_left": 9,
+       "session": true,
+       "seconds": 6.7
+      }
+     },
+     "v2": {
+      "hole_number_acc": 0.167,
+      "green_assign_acc": 0.222,
+      "all_correct": false,
+      "flagged": 9,
+      "wrong": 15,
+      "wrong_unflagged": 9,
+      "physical_holes_found": 0.278,
+      "seconds": 1.4,
+      "method": "v2",
+      "router_inputs": "model"
+     },
+     "structure": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.056,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 18,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.667,
+      "seconds": 0.0,
+      "method": "structure",
+      "structure_input": "perception"
+     }
+    }
+   }
+  }
+ ]
+}
