@@ -301,6 +301,21 @@ def golfify_probe(P, slug):
                 page_props=sorted(pp.keys())[:40])
 
 
+def course_json(slug):
+    """course.json from generalize/courses, else the zero-tap benchmark's files.course."""
+    cj = jload(os.path.join(GEN, "courses", slug, "course.json"))
+    if cj:
+        return cj
+    b = jload(os.path.join(ROOT, "course_data", "zero_tap", "benchmark.json"), {}) or {}
+    for c in b.get("courses", []):
+        if c["slug"] == slug and (c.get("files") or {}).get("course"):
+            cj = jload(os.path.join(ROOT, c["files"]["course"]), {}) or {}
+            cj.setdefault("state", c.get("state"))
+            cj.setdefault("name", c.get("name"))
+            return cj
+    return {}
+
+
 def _ll(v):
     """Any common coordinate shape -> [lon, lat] or None."""
     if v is None:
@@ -330,8 +345,22 @@ def opengolfapi_probe(P, slug):
     raw = os.path.join(GEN, "courses", slug)
     sc = jload(os.path.join(raw, "scorecard.json"), {}) or {}
     urls = [c.get("url") for c in sc.get("cards", []) if c.get("source") == "opengolfapi" and c.get("url")]
-    if not urls:
-        return dict(status="no opengolfapi url in scorecard.json")
+    if not urls:                                  # benchmark courses outside generalize: search by name
+        cj = course_json(slug)
+        try:
+            sys.path.insert(0, os.path.join(ROOT, "course_data", "platform"))
+            import scorecard as SC
+            q = cj.get("name") or ""
+            time.sleep(1.2)
+            r = P.s.get(f"https://api.opengolfapi.org/v1/courses/search?q={quote_plus(q)}&state={cj.get('state')}"
+                        "&limit=20", timeout=30, headers={"Accept": "application/json"})
+            cand, why = SC.pick_opengolfapi_candidate((r.json() or {}).get("courses") or [], q, cj.get("state"),
+                                                      cj.get("center")) if r.status_code == 200 else (None, r.status_code)
+        except Exception as e:  # noqa: BLE001
+            cand, why = None, repr(e)[:200]
+        if not cand:
+            return dict(status=f"no opengolfapi match: {why}")
+        urls = [f"https://api.opengolfapi.org/api/v1/courses/{cand['id']}"]
     time.sleep(1.2)
     try:
         r = P.s.get(urls[0], timeout=30, headers={"Accept": "application/json"})
@@ -366,7 +395,7 @@ def opengolfapi_probe(P, slug):
 def naip_for(slug, work):
     sys.path.insert(0, os.path.join(ROOT, "course_data", "imagery"))
     import fetch_imagery as FI
-    cj = jload(os.path.join(GEN, "courses", slug, "course.json"))
+    cj = course_json(slug)
     w, s, e, n = cj["bbox"]
     out = os.path.join(work, "naip")
     os.makedirs(out, exist_ok=True)
@@ -551,7 +580,7 @@ def pdf_pages(content, work):
 # ----------------------------------------------------------------------------- per course
 def probe_course(slug, out_dir, do_register=True):
     P = Polite()
-    cj = jload(os.path.join(GEN, "courses", slug, "course.json"), {}) or {}
+    cj = course_json(slug)
     rec = dict(slug=slug, name=cj.get("name"), state=cj.get("state"), town=cj.get("town"),
                website=cj.get("website"))
     t0 = time.time()
