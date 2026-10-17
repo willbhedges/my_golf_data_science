@@ -10,5 +10,9 @@
  "by": "tournament mapper (NCCGA qualifier, Feb 27-28 2027)",
  "note": "BLIND auto run first (no hand edits): the output is the prediction scored against course_data/truth/pine_dunes/. Gold (~7,117) is the likely NCCGA men's set; Blue (~6,537) also on the card.",
  "near": "31.9778,-95.5389",
- "rebuild": "2026-10-17 blind run 1: not_found (no OSM leisure=golf_course matched the name). near = the club's street-address point (159 PR 7019) + resolver step 5 (golf courses around near, unnamed ok)"
+ "rebuild": "2026-10-17 blind run 1: not_found (no OSM leisure=golf_course matched the name). near = the club's street-address point (159 PR 7019) + resolver step 5 (golf courses around near, unnamed ok)",
+ "no_osm_ok": true,
+ "near_radius_m": 1500,
+ "rev": 2,
+ "rebuild_note": "v1: no OSM golf_course at all near the address: build from a 1.5 km box around the address point (imagery, DEM, OpenGolfAPI card) for hand tracing"
 }

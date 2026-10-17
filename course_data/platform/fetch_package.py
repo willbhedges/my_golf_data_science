@@ -78,7 +78,7 @@ def fetch_scorecards(req, course, summ, raw):
                       ("club_site", lambda: scm.fetch_club_site(req.get("website") or course.get("website"), rawdir,
                                                                 n, lengths)),
                       ("opengolfapi", lambda: scm.fetch_opengolfapi(course["name"], course["state"], course.get("center"),
-                                                                    rawdir))):
+                                                                    rawdir, course_id=req.get("opengolfapi_id")))):
         if label == "opengolfapi" and not req.get("opengolfapi", True):
             continue
         try:
@@ -86,7 +86,7 @@ def fetch_scorecards(req, course, summ, raw):
         except Exception as e:                                # noqa: BLE001
             card, info = None, f"{label} crashed: {e!r}"[:300]
             traceback.print_exc()
-        if card and not scm.plausible(card, n, lengths):
+        if card and not scm.plausible(card, n, lengths) and not (label == "opengolfapi" and req.get("opengolfapi_id")):
             info, card = f"{label}: card at {info} rejected (hole count / lengths don't fit OSM)", None
         out["tried"].append(dict(source=label, ok=bool(card), info=info))
         if card:
@@ -130,6 +130,14 @@ def fetch(req_path):
     raw = os.path.join(pkg, "raw")
     os.makedirs(raw, exist_ok=True)
     course = rs.resolve(req["course"], req["state"], req.get("town"), req.get("osm"), near=req.get("near"))
+    if req.get("boundary_ll") or (req.get("near") and req.get("no_osm_course")) or \
+            (course["status"] != "ok" and req.get("near") and req.get("no_osm_ok")):
+        # the course is not in OSM (or OSM's outline holds two courses of one club): work from the request's own
+        # location / hand outline (resolve.from_near); OSM golf features inside it are still used
+        pc.log("resolve:", course["status"], "-> request location (near / boundary_ll)")
+        course = rs.from_near(req["course"], req["state"], req.get("near") or "%f,%f" % tuple(
+            reversed(req["boundary_ll"][0][:2])), float(req.get("near_radius_m", 1200)), req.get("boundary_ll"),
+            req.get("town"))
     pc.write_json(os.path.join(raw, "course.json"), course)
     pc.log("resolve:", course["status"], course.get("name"), course.get("osm"),
            [(c["name"], c["town"], c["holes"]) for c in course["candidates"][:5]])

@@ -716,12 +716,15 @@ def _oga_get(session, url, sleep=time.sleep, now=time.time):
     return r
 
 
-def fetch_opengolfapi(name, state, center, raw_dir, session=None, sleep=time.sleep, max_calls=4):
+def fetch_opengolfapi(name, state, center, raw_dir, session=None, sleep=time.sleep, max_calls=4, course_id=None):
     """OpenGolfAPI search + detail (GitHub Actions only) -> (card, url) or (None, reason). At most
-    max_calls requests; raw JSON saved to raw_dir/opengolfapi_*.json (ODbL: keep the attribution)."""
+    max_calls requests; raw JSON saved to raw_dir/opengolfapi_*.json (ODbL: keep the attribution).
+    course_id: the request's pinned OpenGolfAPI id (e.g. one club's second course): no search."""
     s = session or _session()
     os.makedirs(raw_dir, exist_ok=True)
     calls = 0
+    if course_id:
+        return _opengolfapi_detail(s, dict(id=course_id, course_name=name), raw_dir, "pinned by the request", sleep)
     core = pc.core_name(name) if hasattr(pc, "core_name") else name
     queries = [core, name] if core and core != name else [name]
     cand, why = None, "opengolfapi: not tried"
@@ -741,6 +744,10 @@ def fetch_opengolfapi(name, state, center, raw_dir, session=None, sleep=time.sle
             break
     if not cand:
         return None, why
+    return _opengolfapi_detail(s, cand, raw_dir, why, sleep)
+
+
+def _opengolfapi_detail(s, cand, raw_dir, why, sleep=time.sleep):
     url = f"{OPENGOLFAPI}/api/v1/courses/{cand['id']}"
     r = _oga_get(s, url, sleep=sleep)
     if r.status_code != 200:

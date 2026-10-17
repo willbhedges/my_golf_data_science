@@ -233,6 +233,20 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
             c["town"] = reverse_town(c["center"][1], c["center"][0])
         cands.append(c)
     status, best, ranked = choose(cands, name, town, osm, near)
+    if status == "not_found" and _near(near) and not osm:
+        # the name matched only far-away courses (or none): every golf course within 4 km of the request's point,
+        # e.g. a resort course renamed since OSM was mapped ("The Oaks at Tan-Tar-A" -> "... at Margaritaville")
+        seen = {(c["osm"]["type"], c["osm"]["id"]) for c in cands}
+        more = [e for e in _around(*_near(near)) if (e["type"], e["id"]) not in seen
+                and e.get("tags", {}).get("leisure") == "golf_course"]
+        if more:
+            counts = hole_counts(more[:12])
+            for e in more[:12]:
+                c = candidate(e, counts.get((e["type"], e["id"])))
+                if with_towns and not c["town"] and c["center"]:
+                    c["town"] = reverse_town(c["center"][1], c["center"][0])
+                cands.append(c)
+            status, best, ranked = choose(cands, name, town, osm, near)
     out = dict(schema="course/1", query=dict(name=name, state=sc, town=town, osm=osm, near=near), status=status,
                candidates=[{k: c.get(k) for k in ("name", "town", "holes", "osm", "center", "score")}
                            for c in ranked])
@@ -254,6 +268,35 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
                holes_mapped=best.get("holes"), website=best.get("website"), tags=best.get("tags"),
                boundary=geom, boundary_note=None if geom else "course mapped as a point: bbox is 800 m around it")
     return out
+
+
+def from_near(name, state, near, radius_m=1200, boundary_ll=None, town=None):
+    """A course OSM does not map (no leisure=golf_course): status "ok" from the request's own location. The bbox is
+    `radius_m` around `near` (lat,lon), or the bounds of `boundary_ll` (a hand-traced outline, [[lon, lat], ...])
+    which then is the course boundary. osm = {type: "none", id: 0}; whatever golf=* features OSM has inside the bbox
+    are still fetched by fetch_package.fetch_osm."""
+    sc = pc.state_code(state)
+    lat, lon = _near(near)
+    geom = None
+    if boundary_ll and len(boundary_ll) >= 3:
+        ring = [list(map(float, p[:2])) for p in boundary_ll]
+        if ring[0] != ring[-1]:
+            ring.append(ring[0])
+        geom = {"type": "Polygon", "coordinates": [ring]}
+        xs, ys = [p[0] for p in ring], [p[1] for p in ring]
+        bbox = [min(xs), min(ys), max(xs), max(ys)]
+        center = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2]
+    else:
+        d = radius_m / 111320.0
+        e = d / math.cos(math.radians(lat))
+        bbox = [lon - e, lat - d, lon + e, lat + d]
+        center = [lon, lat]
+    return dict(schema="course/1", query=dict(name=name, state=sc, town=town, osm=None, near=near), status="ok",
+                candidates=[], name=name, slug=pc.slugify(name), osm=dict(type="none", id=0), center=center,
+                bbox=bbox, address=", ".join(x for x in (town, sc) if x), town=town, state=sc, holes_mapped=0,
+                website=None, tags={}, boundary=geom,
+                boundary_note="hand-traced outline from the request" if geom else
+                f"not in OSM as a golf course: bbox {radius_m:.0f} m around the request's near point")
 
 
 def main():

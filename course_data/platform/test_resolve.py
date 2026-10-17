@@ -131,3 +131,12 @@ def test_unnamed_course_at_near_is_found(monkeypatch):
     assert status == "ok" and best["osm"]["id"] == 7
     status, _, _ = rs.choose([rs.candidate(els[0])], "Pine Dunes Resort")
     assert status == "not_found"
+
+
+def test_from_near_box_and_outline():
+    c = rs.from_near("Pine Dunes Resort & Golf Club", "TX", "31.9778,-95.5389", 1000)
+    assert c["status"] == "ok" and c["osm"] == {"type": "none", "id": 0} and c["boundary"] is None
+    assert abs((c["bbox"][3] - c["bbox"][1]) * 111320 - 2000) < 5
+    ring = [[-95.54, 31.97], [-95.53, 31.97], [-95.53, 31.98]]
+    c = rs.from_near("X", "TX", "31.975,-95.535", boundary_ll=ring)
+    assert c["boundary"]["type"] == "Polygon" and c["bbox"] == [-95.54, 31.97, -95.53, 31.98]
