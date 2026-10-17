@@ -19,10 +19,13 @@ Light (rasterising polygons on the 0.6 m NAIP grid, one process); runs in the sa
 from __future__ import annotations
 
 import json
+import warnings
 import os
 import sys
 
 import numpy as np
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CD = os.path.dirname(HERE)
@@ -160,7 +163,7 @@ def boundary_region(pkg, grid):
     return grid.raster([(grid.proj(g).buffer(20), 1)]) > 0
 
 
-def hand_eval(grid, sources):
+def hand_eval(grid, sources, landing=False):
     """{source: {class: iou...}} inside the hand map footprints of Spirit Hollow (sources = {name: label map})."""
     from shapely.geometry import Polygon
     hz = json.load(open(os.path.join(CD, "spirit_hollow", "hand_zones_ll.json")))["holes"]
@@ -170,6 +173,17 @@ def hand_eval(grid, sources):
     per_hole = {}
     for k, h in hz.items():
         fp = grid.raster([(grid.proj(Polygon(h["footprint_ll"])), 1)]) > 0
+        if landing:                          # acceptance.py's landing zone: 220-340 yds along, +/-45 yds
+            from shapely.geometry import Point
+            t = grid.proj(Point(*h["tee_ll"]))
+            d = grid.proj(Point(*h["dot270_ll"]))
+            u = np.array([d.x - t.x, d.y - t.y])
+            u /= np.linalg.norm(u)
+            v = np.array([-u[1], u[0]])
+            T0 = np.array([t.x, t.y])
+            Y = 0.9144
+            rect = Polygon([T0 + u * a * Y + v * b * Y for a, b in ((220, -45), (340, -45), (340, 45), (220, 45))])
+            fp &= grid.raster([(rect, 1)]) > 0
         hand = np.zeros(grid.shape, np.uint8)
         fonly = np.zeros(grid.shape, bool)
         for z in h["zones"]:
@@ -281,6 +295,7 @@ def evaluate(slug):
         out["osm_counts"] = {c: sum(f["properties"]["class"] == c for f in osm) for c in CLASSES}
         if pkg_slug == "spirit_hollow":
             out["vs_hand"] = hand_eval(grid, {"segment": lab_u, "osm": lab_o})
+            out["vs_hand_landing"] = hand_eval(grid, {"segment": lab_u, "osm": lab_o}, landing=True)
         try:
             out["tees"] = tee_eval(slug, pkg_slug, seg)
         except Exception as e:  # noqa: BLE001
@@ -323,14 +338,15 @@ def md(res):
                  f"{fmt(b.get('recall_overlap'))} / {fmt(b.get('precision_overlap'))} ({b.get('osm')}/{b.get('model')}) | "
                  f"{fmt(f.get('recall_overlap'))} / {fmt(f.get('precision_overlap'))} ({f.get('osm')}/{f.get('model')}) | "
                  f"{fmt(t.get('recall'))} / {fmt(t.get('precision'))} ({t.get('osm')}/{t.get('model')}) |")
-    for r in res:
-        if "vs_hand" not in r:
+    for r, key, where in [(r, k, w) for r in res for k, w in (("vs_hand", "inside the 16 screenshot footprints"),
+                                                              ("vs_hand_landing", "landing zones 220-340 yds x +/-45"))]:
+        if key not in r:
             continue
-        L += ["", f"## Spirit Hollow hand map ({r['slug']}, inside the 16 screenshot footprints)", "",
+        L += ["", f"## Spirit Hollow hand map ({r['slug']}, {where})", "",
               "fairway = hand fairway + first_cut (OSM convention); fairway only = hand fairway without first_cut; "
               "bunker = sand. IoU (precision / recall). OSM scored the same way as the reference.", "",
               "| source | fairway | fairway only | bunker | water |", "|---|---|---|---|---|"]
-        for s, v in r["vs_hand"]["total"].items():
+        for s, v in r[key]["total"].items():
             L.append(f"| {s} | " + " | ".join(f"{fmt(v[c]['iou'])} ({fmt(v[c]['precision'])}/{fmt(v[c]['recall'])})"
                                              for c in ("fairway", "fairway_only", "bunker", "water")) + " |")
     L += ["", "## Tees", "",

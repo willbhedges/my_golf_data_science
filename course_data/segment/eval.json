@@ -5,79 +5,49 @@
   "naip": "course_data/vision_any/mozingo/raw/naip_2022.tif",
   "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
   "vs_osm": {
-   "unet": {
+   "segment": {
     "green": {
      "iou": 0.861,
-     "precision": 0.89,
-     "recall": 0.964,
-     "pred_m2": 13732,
+     "precision": 0.888,
+     "recall": 0.965,
+     "pred_m2": 13777,
      "ref_m2": 12687
     },
     "tee": {
-     "iou": 0.618,
-     "precision": 0.716,
-     "recall": 0.818,
-     "pred_m2": 11590,
+     "iou": 0.617,
+     "precision": 0.715,
+     "recall": 0.819,
+     "pred_m2": 11629,
      "ref_m2": 10152
     },
     "fairway": {
-     "iou": 0.806,
+     "iou": 0.807,
      "precision": 0.89,
-     "recall": 0.895,
-     "pred_m2": 144060,
+     "recall": 0.896,
+     "pred_m2": 144373,
      "ref_m2": 143317
     },
     "bunker": {
-     "iou": 0.699,
-     "precision": 0.766,
-     "recall": 0.889,
-     "pred_m2": 4461,
+     "iou": 0.7,
+     "precision": 0.765,
+     "recall": 0.891,
+     "pred_m2": 4481,
      "ref_m2": 3845
     },
     "water": {
-     "iou": 0.074,
-     "precision": 0.074,
-     "recall": 0.961,
-     "pred_m2": 969237,
+     "iou": 0.583,
+     "precision": 0.901,
+     "recall": 0.622,
+     "pred_m2": 51769,
      "ref_m2": 74994
     }
    },
-   "unet+ndwi_water": {
-    "green": {
-     "iou": 0.861,
-     "precision": 0.89,
-     "recall": 0.964,
-     "pred_m2": 13732,
-     "ref_m2": 12687
-    },
-    "tee": {
-     "iou": 0.618,
-     "precision": 0.716,
-     "recall": 0.818,
-     "pred_m2": 11590,
-     "ref_m2": 10152
-    },
-    "fairway": {
-     "iou": 0.806,
-     "precision": 0.89,
-     "recall": 0.895,
-     "pred_m2": 144060,
-     "ref_m2": 143317
-    },
-    "bunker": {
-     "iou": 0.4,
-     "precision": 0.753,
-     "recall": 0.46,
-     "pred_m2": 2346,
-     "ref_m2": 3845
-    },
-    "water": {
-     "iou": 0.488,
-     "precision": 0.505,
-     "recall": 0.934,
-     "pred_m2": 138611,
-     "ref_m2": 74994
-    }
+   "unet_water_class": {
+    "iou": 0.074,
+    "precision": 0.074,
+    "recall": 0.961,
+    "pred_m2": 969229,
+    "ref_m2": 74994
    }
   },
   "objects_vs_osm": {
@@ -127,7 +97,7 @@
     {
      "lat": 40.364402,
      "lon": -94.763958,
-     "p": 0.589,
+     "p": 0.59,
      "area_m2": 60.1,
      "lidar": false
     },
@@ -141,15 +111,15 @@
     {
      "lat": 40.354713,
      "lon": -94.766626,
-     "p": 0.542,
-     "area_m2": 36.2,
+     "p": 0.541,
+     "area_m2": 36.4,
      "lidar": true
     },
     {
      "lat": 40.351895,
      "lon": -94.768116,
-     "p": 0.672,
-     "area_m2": 209.0,
+     "p": 0.671,
+     "area_m2": 208.8,
      "lidar": false
     }
    ],
@@ -199,79 +169,49 @@
   "naip": "course_data/vision_any/spirit_hollow/raw/naip_2023.tif",
   "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
   "vs_osm": {
-   "unet": {
+   "segment": {
     "green": {
-     "iou": 0.761,
-     "precision": 0.891,
-     "recall": 0.839,
-     "pred_m2": 10112,
+     "iou": 0.755,
+     "precision": 0.887,
+     "recall": 0.836,
+     "pred_m2": 10104,
      "ref_m2": 10733
     },
     "tee": {
-     "iou": 0.511,
-     "precision": 0.595,
-     "recall": 0.784,
-     "pred_m2": 18995,
+     "iou": 0.513,
+     "precision": 0.6,
+     "recall": 0.781,
+     "pred_m2": 18776,
      "ref_m2": 14423
     },
     "fairway": {
-     "iou": 0.843,
+     "iou": 0.839,
      "precision": 0.904,
-     "recall": 0.926,
-     "pred_m2": 93046,
+     "recall": 0.921,
+     "pred_m2": 92493,
      "ref_m2": 90838
     },
     "bunker": {
-     "iou": 0.677,
-     "precision": 0.85,
-     "recall": 0.77,
-     "pred_m2": 6830,
+     "iou": 0.682,
+     "precision": 0.852,
+     "recall": 0.775,
+     "pred_m2": 6858,
      "ref_m2": 7540
     },
     "water": {
-     "iou": 0.056,
-     "precision": 0.056,
-     "recall": 0.98,
-     "pred_m2": 1095710,
+     "iou": 0.485,
+     "precision": 0.82,
+     "recall": 0.543,
+     "pred_m2": 41696,
      "ref_m2": 63044
     }
    },
-   "unet+ndwi_water": {
-    "green": {
-     "iou": 0.761,
-     "precision": 0.891,
-     "recall": 0.839,
-     "pred_m2": 10112,
-     "ref_m2": 10733
-    },
-    "tee": {
-     "iou": 0.511,
-     "precision": 0.595,
-     "recall": 0.784,
-     "pred_m2": 18995,
-     "ref_m2": 14423
-    },
-    "fairway": {
-     "iou": 0.843,
-     "precision": 0.904,
-     "recall": 0.926,
-     "pred_m2": 93046,
-     "ref_m2": 90838
-    },
-    "bunker": {
-     "iou": 0.677,
-     "precision": 0.85,
-     "recall": 0.77,
-     "pred_m2": 6830,
-     "ref_m2": 7540
-    },
-    "water": {
-     "iou": 0.0,
-     "precision": 0.015,
-     "recall": 0.0,
-     "pred_m2": 1856,
-     "ref_m2": 63044
-    }
+   "unet_water_class": {
+    "iou": 0.056,
+    "precision": 0.056,
+    "recall": 0.98,
+    "pred_m2": 1095846,
+    "ref_m2": 63044
    }
   },
   "objects_vs_osm": {
@@ -311,38 +251,26 @@
   },
   "vs_hand": {
    "total": {
-    "unet": {
+    "segment": {
      "fairway": {
       "iou": 0.332,
-      "precision": 0.536,
-      "recall": 0.467
+      "precision": 0.537,
+      "recall": 0.464
+     },
+     "fairway_only": {
+      "iou": 0.325,
+      "precision": 0.468,
+      "recall": 0.516
      },
      "bunker": {
-      "iou": 0.242,
+      "iou": 0.243,
       "precision": 0.306,
-      "recall": 0.539
+      "recall": 0.541
      },
      "water": {
-      "iou": 0.026,
-      "precision": 0.026,
-      "recall": 0.997
-     }
-    },
-    "unet+ndwi_water": {
-     "fairway": {
-      "iou": 0.332,
-      "precision": 0.536,
-      "recall": 0.467
-     },
-     "bunker": {
-      "iou": 0.242,
-      "precision": 0.306,
-      "recall": 0.539
-     },
-     "water": {
-      "iou": 0.0,
-      "precision": 0.0,
-      "recall": 0.0
+      "iou": 0.156,
+      "precision": 0.239,
+      "recall": 0.311
      }
     },
     "osm": {
@@ -350,6 +278,11 @@
       "iou": 0.337,
       "precision": 0.546,
       "recall": 0.468
+     },
+     "fairway_only": {
+      "iou": 0.332,
+      "precision": 0.477,
+      "recall": 0.522
      },
      "bunker": {
       "iou": 0.257,
@@ -365,273 +298,225 @@
    },
    "per_hole": {
     "1": {
-     "unet": {
-      "fairway": 0.376,
+     "segment": {
+      "fairway": 0.377,
+      "fairway_only": 0.372,
       "bunker": 0.0,
       "water": 0.0
      },
-     "unet+ndwi_water": {
-      "fairway": 0.376,
-      "bunker": 0.0,
-      "water": null
-     },
      "osm": {
       "fairway": 0.375,
+      "fairway_only": 0.363,
       "bunker": 0.0,
       "water": 0.0
      }
     },
     "2B": {
-     "unet": {
+     "segment": {
       "fairway": 0.225,
+      "fairway_only": 0.189,
       "bunker": 0.0,
       "water": 0.004
      },
-     "unet+ndwi_water": {
-      "fairway": 0.225,
-      "bunker": 0.0,
-      "water": 0.0
-     },
      "osm": {
       "fairway": 0.201,
+      "fairway_only": 0.163,
       "bunker": 0.0,
       "water": 0.027
      }
     },
     "2F": {
-     "unet": {
-      "fairway": 0.255,
-      "bunker": 0.4,
-      "water": 0.096
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.255,
-      "bunker": 0.4,
-      "water": 0.0
+     "segment": {
+      "fairway": 0.254,
+      "fairway_only": 0.222,
+      "bunker": 0.401,
+      "water": 0.178
      },
      "osm": {
       "fairway": 0.228,
+      "fairway_only": 0.226,
       "bunker": 0.401,
       "water": 0.182
      }
     },
     "4": {
-     "unet": {
+     "segment": {
       "fairway": 0.468,
-      "bunker": 0.013,
-      "water": 0.0
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.468,
-      "bunker": 0.013,
+      "fairway_only": 0.459,
+      "bunker": 0.012,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.512,
+      "fairway_only": 0.504,
       "bunker": 0.012,
       "water": null
      }
     },
     "5": {
-     "unet": {
+     "segment": {
       "fairway": 0.52,
-      "bunker": 0.397,
-      "water": 0.0
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.52,
-      "bunker": 0.397,
-      "water": 0.0
+      "fairway_only": 0.536,
+      "bunker": 0.398,
+      "water": null
      },
      "osm": {
       "fairway": 0.536,
+      "fairway_only": 0.55,
       "bunker": 0.446,
       "water": null
      }
     },
     "6": {
-     "unet": {
-      "fairway": 0.489,
+     "segment": {
+      "fairway": 0.491,
+      "fairway_only": 0.465,
       "bunker": 0.0,
-      "water": 0.011
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.489,
-      "bunker": 0.0,
-      "water": 0.0
+      "water": 0.667
      },
      "osm": {
       "fairway": 0.5,
+      "fairway_only": 0.474,
       "bunker": 0.0,
       "water": 0.594
      }
     },
     "8": {
-     "unet": {
+     "segment": {
       "fairway": 0.346,
-      "bunker": 0.496,
-      "water": 0.056
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.346,
-      "bunker": 0.496,
+      "fairway_only": 0.322,
+      "bunker": 0.495,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.335,
+      "fairway_only": 0.32,
       "bunker": 0.421,
       "water": 0.382
      }
     },
     "9B": {
-     "unet": {
+     "segment": {
       "fairway": 0.342,
+      "fairway_only": 0.329,
       "bunker": 0.0,
-      "water": 0.083
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.342,
-      "bunker": 0.0,
-      "water": 0.0
+      "water": 0.478
      },
      "osm": {
       "fairway": 0.348,
+      "fairway_only": 0.332,
       "bunker": 0.0,
       "water": 0.63
      }
     },
     "9F": {
-     "unet": {
+     "segment": {
       "fairway": 0.281,
+      "fairway_only": 0.252,
       "bunker": 0.0,
-      "water": 0.038
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.281,
-      "bunker": 0.0,
-      "water": 0.0
+      "water": 0.224
      },
      "osm": {
       "fairway": 0.298,
+      "fairway_only": 0.27,
       "bunker": 0.0,
       "water": 0.267
      }
     },
     "10": {
-     "unet": {
-      "fairway": 0.338,
+     "segment": {
+      "fairway": 0.342,
+      "fairway_only": 0.367,
       "bunker": 0.195,
-      "water": 0.045
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.338,
-      "bunker": 0.195,
-      "water": 0.0
+      "water": 0.151
      },
      "osm": {
       "fairway": 0.367,
+      "fairway_only": 0.383,
       "bunker": 0.292,
       "water": 0.144
      }
     },
     "11": {
-     "unet": {
-      "fairway": 0.385,
-      "bunker": 0.0,
-      "water": 0.015
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.385,
+     "segment": {
+      "fairway": 0.387,
+      "fairway_only": 0.466,
       "bunker": 0.0,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.382,
+      "fairway_only": 0.43,
       "bunker": 0.0,
       "water": 0.0
      }
     },
     "13": {
-     "unet": {
-      "fairway": 0.216,
-      "bunker": 0.211,
-      "water": 0.018
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.216,
-      "bunker": 0.211,
-      "water": 0.0
+     "segment": {
+      "fairway": 0.209,
+      "fairway_only": 0.21,
+      "bunker": 0.208,
+      "water": 0.227
      },
      "osm": {
       "fairway": 0.192,
+      "fairway_only": 0.188,
       "bunker": 0.254,
       "water": 0.148
      }
     },
     "14": {
-     "unet": {
-      "fairway": 0.264,
-      "bunker": 0.0,
-      "water": 0.022
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.264,
+     "segment": {
+      "fairway": 0.248,
+      "fairway_only": 0.212,
       "bunker": 0.0,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.26,
+      "fairway_only": 0.226,
       "bunker": 0.0,
       "water": 0.361
      }
     },
     "16": {
-     "unet": {
-      "fairway": 0.481,
-      "bunker": 0.305,
-      "water": 0.003
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.481,
-      "bunker": 0.305,
+     "segment": {
+      "fairway": 0.482,
+      "fairway_only": 0.509,
+      "bunker": 0.306,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.496,
+      "fairway_only": 0.548,
       "bunker": 0.329,
       "water": 0.0
      }
     },
     "17": {
-     "unet": {
-      "fairway": 0.493,
-      "bunker": 0.191,
+     "segment": {
+      "fairway": 0.494,
+      "fairway_only": 0.586,
+      "bunker": 0.199,
       "water": 0.0
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.493,
-      "bunker": 0.191,
-      "water": null
      },
      "osm": {
       "fairway": 0.495,
+      "fairway_only": 0.563,
       "bunker": 0.197,
       "water": 0.0
      }
     },
     "18": {
-     "unet": {
-      "fairway": 0.185,
-      "bunker": 0.133,
-      "water": 0.018
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.185,
+     "segment": {
+      "fairway": 0.188,
+      "fairway_only": 0.161,
       "bunker": 0.133,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.204,
+      "fairway_only": 0.172,
       "bunker": 0.132,
       "water": 0.196
      }
@@ -664,22 +549,22 @@
     {
      "lat": 40.759591,
      "lon": -91.141689,
-     "p": 0.708,
-     "area_m2": 200.0,
+     "p": 0.705,
+     "area_m2": 205.4,
      "lidar": false
     },
     {
      "lat": 40.759789,
      "lon": -91.145578,
      "p": 0.72,
-     "area_m2": 3116.0,
+     "area_m2": 3127.5,
      "lidar": false
     },
     {
      "lat": 40.757212,
      "lon": -91.143038,
-     "p": 0.812,
-     "area_m2": 114.1,
+     "p": 0.811,
+     "area_m2": 113.0,
      "lidar": false
     }
    ],
@@ -1415,7 +1300,7 @@
     {
      "key": "16",
      "osm_box": 7.9,
-     "unet": 8.2,
+     "unet": 8.1,
      "lidar": 7.4
     },
     {
@@ -1439,79 +1324,49 @@
   "naip": "course_data/vision_any/spirit_hollow/raw/naip_2021.tif",
   "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
   "vs_osm": {
-   "unet": {
+   "segment": {
     "green": {
      "iou": 0.772,
-     "precision": 0.891,
-     "recall": 0.853,
-     "pred_m2": 10284,
+     "precision": 0.889,
+     "recall": 0.854,
+     "pred_m2": 10310,
      "ref_m2": 10733
     },
     "tee": {
      "iou": 0.49,
-     "precision": 0.559,
-     "recall": 0.799,
-     "pred_m2": 20597,
+     "precision": 0.56,
+     "recall": 0.797,
+     "pred_m2": 20547,
      "ref_m2": 14423
     },
     "fairway": {
-     "iou": 0.856,
-     "precision": 0.938,
-     "recall": 0.906,
-     "pred_m2": 87731,
+     "iou": 0.853,
+     "precision": 0.939,
+     "recall": 0.903,
+     "pred_m2": 87336,
      "ref_m2": 90838
     },
     "bunker": {
-     "iou": 0.697,
-     "precision": 0.825,
-     "recall": 0.819,
-     "pred_m2": 7486,
+     "iou": 0.699,
+     "precision": 0.823,
+     "recall": 0.823,
+     "pred_m2": 7538,
      "ref_m2": 7540
     },
     "water": {
-     "iou": 0.056,
-     "precision": 0.056,
-     "recall": 0.989,
-     "pred_m2": 1104391,
+     "iou": 0.449,
+     "precision": 0.72,
+     "recall": 0.544,
+     "pred_m2": 47658,
      "ref_m2": 63044
     }
    },
-   "unet+ndwi_water": {
-    "green": {
-     "iou": 0.772,
-     "precision": 0.891,
-     "recall": 0.853,
-     "pred_m2": 10284,
-     "ref_m2": 10733
-    },
-    "tee": {
-     "iou": 0.491,
-     "precision": 0.561,
-     "recall": 0.798,
-     "pred_m2": 20526,
-     "ref_m2": 14423
-    },
-    "fairway": {
-     "iou": 0.852,
-     "precision": 0.941,
-     "recall": 0.899,
-     "pred_m2": 86764,
-     "ref_m2": 90838
-    },
-    "bunker": {
-     "iou": 0.611,
-     "precision": 0.814,
-     "recall": 0.711,
-     "pred_m2": 6583,
-     "ref_m2": 7540
-    },
-    "water": {
-     "iou": 0.301,
-     "precision": 0.336,
-     "recall": 0.742,
-     "pred_m2": 139286,
-     "ref_m2": 63044
-    }
+   "unet_water_class": {
+    "iou": 0.056,
+    "precision": 0.056,
+    "recall": 0.989,
+    "pred_m2": 1104579,
+    "ref_m2": 63044
    }
   },
   "objects_vs_osm": {
@@ -1520,7 +1375,7 @@
     "model": 26,
     "recall_iou50": 0.885,
     "precision_iou50": 0.885,
-    "mean_best_iou": 0.765
+    "mean_best_iou": 0.766
    },
    "bunker": {
     "osm": 50,
@@ -1551,38 +1406,26 @@
   },
   "vs_hand": {
    "total": {
-    "unet": {
+    "segment": {
      "fairway": {
       "iou": 0.325,
-      "precision": 0.543,
-      "recall": 0.448
+      "precision": 0.544,
+      "recall": 0.447
+     },
+     "fairway_only": {
+      "iou": 0.321,
+      "precision": 0.475,
+      "recall": 0.498
      },
      "bunker": {
-      "iou": 0.244,
+      "iou": 0.245,
       "precision": 0.297,
-      "recall": 0.579
+      "recall": 0.584
      },
      "water": {
-      "iou": 0.025,
-      "precision": 0.025,
-      "recall": 0.994
-     }
-    },
-    "unet+ndwi_water": {
-     "fairway": {
-      "iou": 0.325,
-      "precision": 0.546,
-      "recall": 0.445
-     },
-     "bunker": {
-      "iou": 0.216,
-      "precision": 0.278,
-      "recall": 0.494
-     },
-     "water": {
-      "iou": 0.087,
-      "precision": 0.095,
-      "recall": 0.49
+      "iou": 0.108,
+      "precision": 0.162,
+      "recall": 0.245
      }
     },
     "osm": {
@@ -1590,6 +1433,11 @@
       "iou": 0.337,
       "precision": 0.546,
       "recall": 0.468
+     },
+     "fairway_only": {
+      "iou": 0.332,
+      "precision": 0.477,
+      "recall": 0.522
      },
      "bunker": {
       "iou": 0.257,
@@ -1605,273 +1453,225 @@
    },
    "per_hole": {
     "1": {
-     "unet": {
-      "fairway": 0.396,
-      "bunker": 0.0,
-      "water": 0.0
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.396,
+     "segment": {
+      "fairway": 0.398,
+      "fairway_only": 0.389,
       "bunker": 0.0,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.375,
+      "fairway_only": 0.363,
       "bunker": 0.0,
       "water": 0.0
      }
     },
     "2B": {
-     "unet": {
-      "fairway": 0.204,
+     "segment": {
+      "fairway": 0.203,
+      "fairway_only": 0.167,
       "bunker": 0.0,
-      "water": 0.004
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.204,
-      "bunker": 0.0,
-      "water": 0.033
+      "water": 0.0
      },
      "osm": {
       "fairway": 0.201,
+      "fairway_only": 0.163,
       "bunker": 0.0,
       "water": 0.027
      }
     },
     "2F": {
-     "unet": {
+     "segment": {
       "fairway": 0.239,
-      "bunker": 0.408,
-      "water": 0.099
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.239,
-      "bunker": 0.422,
-      "water": 0.154
+      "fairway_only": 0.221,
+      "bunker": 0.409,
+      "water": 0.106
      },
      "osm": {
       "fairway": 0.228,
+      "fairway_only": 0.226,
       "bunker": 0.401,
       "water": 0.182
      }
     },
     "4": {
-     "unet": {
-      "fairway": 0.508,
-      "bunker": 0.012,
-      "water": 0.0
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.508,
+     "segment": {
+      "fairway": 0.509,
+      "fairway_only": 0.5,
       "bunker": 0.012,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.512,
+      "fairway_only": 0.504,
       "bunker": 0.012,
       "water": null
      }
     },
     "5": {
-     "unet": {
-      "fairway": 0.528,
-      "bunker": 0.422,
-      "water": 0.0
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.528,
-      "bunker": 0.356,
+     "segment": {
+      "fairway": 0.529,
+      "fairway_only": 0.553,
+      "bunker": 0.425,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.536,
+      "fairway_only": 0.55,
       "bunker": 0.446,
       "water": null
      }
     },
     "6": {
-     "unet": {
-      "fairway": 0.488,
+     "segment": {
+      "fairway": 0.489,
+      "fairway_only": 0.464,
       "bunker": 0.0,
-      "water": 0.011
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.488,
-      "bunker": 0.0,
-      "water": 0.165
+      "water": 0.66
      },
      "osm": {
       "fairway": 0.5,
+      "fairway_only": 0.474,
       "bunker": 0.0,
       "water": 0.594
      }
     },
     "8": {
-     "unet": {
+     "segment": {
       "fairway": 0.33,
-      "bunker": 0.478,
-      "water": 0.055
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.33,
-      "bunker": 0.478,
-      "water": 0.178
+      "fairway_only": 0.314,
+      "bunker": 0.484,
+      "water": 0.26
      },
      "osm": {
       "fairway": 0.335,
+      "fairway_only": 0.32,
       "bunker": 0.421,
       "water": 0.382
      }
     },
     "9B": {
-     "unet": {
-      "fairway": 0.319,
+     "segment": {
+      "fairway": 0.318,
+      "fairway_only": 0.306,
       "bunker": 0.0,
-      "water": 0.08
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.319,
-      "bunker": 0.0,
-      "water": 0.216
+      "water": 0.32
      },
      "osm": {
       "fairway": 0.348,
+      "fairway_only": 0.332,
       "bunker": 0.0,
       "water": 0.63
      }
     },
     "9F": {
-     "unet": {
+     "segment": {
       "fairway": 0.271,
+      "fairway_only": 0.239,
       "bunker": 0.0,
-      "water": 0.036
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.271,
-      "bunker": 0.0,
-      "water": 0.078
+      "water": 0.166
      },
      "osm": {
       "fairway": 0.298,
+      "fairway_only": 0.27,
       "bunker": 0.0,
       "water": 0.267
      }
     },
     "10": {
-     "unet": {
-      "fairway": 0.358,
+     "segment": {
+      "fairway": 0.36,
+      "fairway_only": 0.384,
       "bunker": 0.195,
-      "water": 0.045
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.362,
-      "bunker": 0.195,
-      "water": 0.078
+      "water": 0.048
      },
      "osm": {
       "fairway": 0.367,
+      "fairway_only": 0.383,
       "bunker": 0.292,
       "water": 0.144
      }
     },
     "11": {
-     "unet": {
-      "fairway": 0.358,
-      "bunker": 0.0,
-      "water": 0.014
-     },
-     "unet+ndwi_water": {
+     "segment": {
       "fairway": 0.356,
+      "fairway_only": 0.432,
       "bunker": 0.0,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.382,
+      "fairway_only": 0.43,
       "bunker": 0.0,
       "water": 0.0
      }
     },
     "13": {
-     "unet": {
-      "fairway": 0.186,
-      "bunker": 0.2,
-      "water": 0.018
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.182,
-      "bunker": 0.2,
-      "water": 0.09
+     "segment": {
+      "fairway": 0.185,
+      "fairway_only": 0.182,
+      "bunker": 0.199,
+      "water": 0.054
      },
      "osm": {
       "fairway": 0.192,
+      "fairway_only": 0.188,
       "bunker": 0.254,
       "water": 0.148
      }
     },
     "14": {
-     "unet": {
-      "fairway": 0.263,
+     "segment": {
+      "fairway": 0.248,
+      "fairway_only": 0.227,
       "bunker": 0.0,
-      "water": 0.022
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.243,
-      "bunker": 0.0,
-      "water": 0.13
+      "water": 0.055
      },
      "osm": {
       "fairway": 0.26,
+      "fairway_only": 0.226,
       "bunker": 0.0,
       "water": 0.361
      }
     },
     "16": {
-     "unet": {
-      "fairway": 0.483,
-      "bunker": 0.33,
-      "water": 0.003
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.483,
-      "bunker": 0.163,
-      "water": 0.007
+     "segment": {
+      "fairway": 0.485,
+      "fairway_only": 0.507,
+      "bunker": 0.332,
+      "water": 0.0
      },
      "osm": {
       "fairway": 0.496,
+      "fairway_only": 0.548,
       "bunker": 0.329,
       "water": 0.0
      }
     },
     "17": {
-     "unet": {
-      "fairway": 0.456,
-      "bunker": 0.206,
-      "water": 0.0
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.456,
-      "bunker": 0.206,
+     "segment": {
+      "fairway": 0.457,
+      "fairway_only": 0.544,
+      "bunker": 0.205,
       "water": 0.0
      },
      "osm": {
       "fairway": 0.495,
+      "fairway_only": 0.563,
       "bunker": 0.197,
       "water": 0.0
      }
     },
     "18": {
-     "unet": {
-      "fairway": 0.199,
-      "bunker": 0.136,
-      "water": 0.018
-     },
-     "unet+ndwi_water": {
-      "fairway": 0.202,
-      "bunker": 0.141,
-      "water": 0.061
+     "segment": {
+      "fairway": 0.201,
+      "fairway_only": 0.172,
+      "bunker": 0.139,
+      "water": 0.026
      },
      "osm": {
       "fairway": 0.204,
+      "fairway_only": 0.172,
       "bunker": 0.132,
       "water": 0.196
      }
@@ -1888,10 +1688,10 @@
    "lidar_pads": 69,
    "unmapped": [
     {
-     "lat": 40.762425,
+     "lat": 40.762424,
      "lon": -91.144583,
-     "p": 0.738,
-     "area_m2": 112.1,
+     "p": 0.737,
+     "area_m2": 113.6,
      "lidar": true
     },
     {
@@ -1926,7 +1726,7 @@
      "lat": 40.759762,
      "lon": -91.145551,
      "p": 0.778,
-     "area_m2": 3826.3,
+     "area_m2": 3826.4,
      "lidar": false
     },
     {
@@ -2676,7 +2476,7 @@
     {
      "key": "16",
      "osm_box": 7.9,
-     "unet": 8.0,
+     "unet": 8.1,
      "lidar": 7.4
     },
     {
@@ -2700,79 +2500,49 @@
   "naip": "course_data/vision_any/veenker/raw/naip_2023.tif",
   "model_sha": "43ee294441dbb36317aa8d969892251c1de42124",
   "vs_osm": {
-   "unet": {
+   "segment": {
     "green": {
      "iou": 0.59,
-     "precision": 0.752,
-     "recall": 0.733,
-     "pred_m2": 10407,
+     "precision": 0.751,
+     "recall": 0.734,
+     "pred_m2": 10440,
      "ref_m2": 10670
     },
     "tee": {
-     "iou": 0.46,
-     "precision": 0.596,
-     "recall": 0.668,
-     "pred_m2": 13168,
+     "iou": 0.459,
+     "precision": 0.595,
+     "recall": 0.669,
+     "pred_m2": 13214,
      "ref_m2": 11748
     },
     "fairway": {
-     "iou": 0.575,
-     "precision": 0.903,
+     "iou": 0.574,
+     "precision": 0.902,
      "recall": 0.613,
-     "pred_m2": 83224,
+     "pred_m2": 83229,
      "ref_m2": 122475
     },
     "bunker": {
      "iou": 0.462,
-     "precision": 0.717,
-     "recall": 0.564,
-     "pred_m2": 2032,
+     "precision": 0.716,
+     "recall": 0.565,
+     "pred_m2": 2038,
      "ref_m2": 2581
     },
     "water": {
-     "iou": 0.046,
-     "precision": 0.046,
-     "recall": 0.947,
-     "pred_m2": 574563,
+     "iou": 0.253,
+     "precision": 0.835,
+     "recall": 0.266,
+     "pred_m2": 8883,
      "ref_m2": 27860
     }
    },
-   "unet+ndwi_water": {
-    "green": {
-     "iou": 0.59,
-     "precision": 0.752,
-     "recall": 0.733,
-     "pred_m2": 10407,
-     "ref_m2": 10670
-    },
-    "tee": {
-     "iou": 0.46,
-     "precision": 0.596,
-     "recall": 0.668,
-     "pred_m2": 13168,
-     "ref_m2": 11748
-    },
-    "fairway": {
-     "iou": 0.575,
-     "precision": 0.903,
-     "recall": 0.613,
-     "pred_m2": 83224,
-     "ref_m2": 122475
-    },
-    "bunker": {
-     "iou": 0.462,
-     "precision": 0.717,
-     "recall": 0.564,
-     "pred_m2": 2032,
-     "ref_m2": 2581
-    },
-    "water": {
-     "iou": 0.125,
-     "precision": 0.85,
-     "recall": 0.128,
-     "pred_m2": 4203,
-     "ref_m2": 27860
-    }
+   "unet_water_class": {
+    "iou": 0.046,
+    "precision": 0.046,
+    "recall": 0.947,
+    "pred_m2": 574800,
+    "ref_m2": 27860
    }
   },
   "objects_vs_osm": {
@@ -2827,10 +2597,10 @@
      "lidar": false
     },
     {
-     "lat": 42.037448,
+     "lat": 42.037449,
      "lon": -93.647092,
-     "p": 0.489,
-     "area_m2": 131.9,
+     "p": 0.488,
+     "area_m2": 136.6,
      "lidar": false
     },
     {
@@ -2843,7 +2613,7 @@
     {
      "lat": 42.036849,
      "lon": -93.652347,
-     "p": 0.563,
+     "p": 0.562,
      "area_m2": 121.5,
      "lidar": false
     },
