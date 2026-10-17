@@ -1,0 +1,100 @@
+name: verify-course
+
+# The 2-minute pre-round check (course_data/product/verify.py): decision-sensitivity test of every uncertain map
+# item, review.json + the phone review page. Trigger: commit course_data/requests/verify_<slug>.json
+#   {"kind": "verify", "package": "course_data/packages/<slug>/package.json", "tees": "Blue",
+#    "n": 1500, "experiment": "hand_truth" (Spirit Hollow only)}
+# Outputs are committed back under course_data/packages/<slug>/out/review/.
+
+on:
+  push:
+    paths:
+      - "course_data/requests/verify_*.json"
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "Request file path(s), space separated (default: every verify request)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verify-course-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy matplotlib pillow opencv-python-headless rasterio pyproj shapely
+
+      - name: Pick the request files
+        id: req
+        env:
+          BEFORE: ${{ github.event.before }}
+          INPUT: ${{ github.event.inputs.request }}
+        run: |
+          if [ -n "$INPUT" ]; then
+            files="$INPUT"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            files=$(git diff --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- 'course_data/requests/verify_*.json' | tr '\n' ' ')
+          else
+            files=$(ls course_data/requests/verify_*.json 2>/dev/null | tr '\n' ' ')
+          fi
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+          echo "requests: $files"
+
+      - name: Run verify.py per request
+        if: steps.req.outputs.files != ''
+        run: |
+          set -o pipefail
+          status=0
+          for f in ${{ steps.req.outputs.files }}; do
+            echo "::group::verify $f"
+            slug=$(python -c "import json,sys,os; r=json.load(open('$f')); print(os.path.basename(os.path.dirname(r['package'])))")
+            mkdir -p "course_data/packages/$slug/out/review"
+            ( time python course_data/product/verify.py --request "$f" ) 2>&1 | tee "course_data/packages/$slug/out/review/verify_log.txt" || status=1
+            echo "::endgroup::"
+          done
+          exit $status
+
+      - name: Commit outputs
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for d in course_data/packages/*/out/review; do
+            [ -d "$d" ] || continue
+            find "$d" -type f -size +50M -print -delete
+            git add -- "$d"
+          done
+          if git diff --cached --quiet; then
+            echo "No review output changes to commit"; exit 0
+          fi
+          printf '%s\n' \
+            "Pre-round check: review items + page (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
