@@ -289,6 +289,75 @@ def write_md(res, path):
     open(path, "w").write("\n".join(Lm) + "\n")
 
 
+def stage_integrate(res_json, slugs=("spirit_hollow", "mozingo", "veenker", "coldwater", "ellis", "wakonda")):
+    """Adopt the report's chosen-on-all setting (only if its adoption rule passed): model_v2/model.json trees settings,
+    the tree zones of every course's vision_any.geojson rebuilt (water / other zones as committed), and the committed
+    packages' vision zones rebuilt with OB re-inferred (v2_calibrate.rebuild_package, the harness that scored it)."""
+    import run_any as RA
+    import v2_calibrate as C
+    import v2_model as VM
+    from shapely.geometry import mapping
+    R = json.load(open(res_json))
+    if not R.get("adopt"):
+        log("adoption rule failed: nothing integrated: " + "; ".join(R.get("why", [])))
+        return False
+    st = next(s for s in settings() if sid(s) == R["chosen_on_all"])
+    if st.get("fc"):
+        raise SystemExit("a first-cut band setting is a product/package.py change: integrate it by hand")
+    mp = os.path.join(VM.MODEL_DIR, "model.json")
+    meta = json.load(open(mp))
+    old = dict(meta["settings"]["trees"])
+    meta["settings"]["trees"] = dict(old, k_m=int(st["k"]), recency=st["rec"])
+    meta["trees_cv"] = dict(previous=old, chosen=sid(st), cv=R["cv"], why=R["why"],
+                            report="course_data/vision_any/v2_trees_cv.md")
+    json.dump(meta, open(mp, "w"), indent=1)
+    for vslug in slugs:
+        cp = os.path.join(HERE, vslug, "vision_any.geojson")
+        if not os.path.exists(cp):
+            continue
+        cdir = RA.course_dir_for(vslug)
+        S = L.Stack.load(vslug, cdir)
+        M, _ = L.osm_masks(S, json.load(open(os.path.join(cdir, "osm.geojson"))))
+        canopy = L.tree_mask(S, M, hag_min=HAG, min_area_m2=10.0)[0]
+        if st["rec"] != "none":
+            import canopy_recency as CR
+            area = ndimage.binary_dilation(M["course"], L.disk(30)) if M["course"].any() else np.ones_like(canopy)
+            Rr = CR.recency(S, canopy, M, area, add=st["rec"] == "add")
+            canopy = (canopy & ~Rr["removed"]) | (Rr["added"] if st["rec"] == "add" else False)
+        trees = VM.tree_rule(canopy, st["k"], MIN_AREA, S.res)
+        fc = json.load(open(cp))
+        src = f"vision2:lidar_canopy_hag>{HAG}m_buffer{int(st['k']):+d}m" + ("" if st["rec"] == "none" else f"_recency-{st['rec']}")
+        S.ll_to_rc([[0, 0]])
+        from shapely.ops import transform
+        new = []
+        for g in L.mask_to_polys(S, trees, min_yd2=150, simplify_yd=2.0):
+            gm = transform(lambda x, y: S._fwd.transform(x, y), g)
+            new.append(dict(type="Feature", geometry=mapping(g), properties=dict(
+                lie="recovery", src=src, p=0.8, area_yd2=round(gm.area / 0.9144 ** 2), model="vision_any/2")))
+        p_old = [f["properties"].get("p") for f in fc["features"] if f["properties"]["lie"] == "recovery"]
+        if p_old:
+            for f in new:
+                f["properties"]["p"] = p_old[0]
+        fc["features"] = new + [f for f in fc["features"] if f["properties"]["lie"] != "recovery"]
+        pr = fc.setdefault("properties", {})
+        pr["trees_how"] = (pr.get("trees_how", "").split("; golfer trees line")[0] +
+                           f"; golfer trees line = canopy (HAG > {HAG} m, clumps >= {MIN_AREA:g} m2) buffered "
+                           f"{int(st['k']):+d} m, recency {st['rec']} (leave-one-course-out over the five truth courses, "
+                           "course_data/vision_any/v2_trees_cv.md)")
+        pr["trees_cv"] = sid(st)
+        json.dump(fc, open(cp, "w"), separators=(",", ":"))
+        log(f"[{vslug}] vision_any.geojson: {len(new)} tree polygons ({sid(st)})")
+        pslug = COURSES.get(vslug, vslug)
+        pp = os.path.join(CD, "packages", pslug, "package.json")
+        if os.path.exists(pp):
+            pkg = C.rebuild_package(pslug, fc)
+            pkg.setdefault("stages", {})["vision"] = pkg.get("stages", {}).get("vision", "") + \
+                f" (trees re-fitted {sid(st)}; zones_ll rebuilt by v2_trees_cv.py)"
+            json.dump(pkg, open(pp, "w"))
+            log(f"rebuilt {os.path.relpath(pp, ROOT)}")
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser()
     sp = ap.add_subparsers(dest="cmd")
@@ -307,8 +376,12 @@ def main():
     a3.add_argument("--dir")
     a3.add_argument("--md", default=os.path.join(HERE, "v2_trees_cv.md"))
     a3.add_argument("--json", default=os.path.join(HERE, "v2_trees_cv.json"))
+    a4 = sp.add_parser("integrate")
+    a4.add_argument("--json", default=os.path.join(HERE, "v2_trees_cv.json"))
     a = ap.parse_args()
-    if a.cmd == "layers":
+    if a.cmd == "integrate":
+        stage_integrate(a.json)
+    elif a.cmd == "layers":
         stage_layers(a.out, a.courses.split(",") if a.courses else list(COURSES))
     elif a.cmd == "score":
         stage_score(a.dir, a.rows, a.shard, a.nshards, a.courses.split(",") if a.courses else None,

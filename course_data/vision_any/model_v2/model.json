@@ -81,8 +81,9 @@
  "settings": {
   "trees": {
    "hag": 2.5,
-   "k_m": 3,
-   "min_area_m2": 100
+   "k_m": -1,
+   "min_area_m2": 100,
+   "recency": "none"
   },
   "native_thr": null,
   "native_mode": "strict",
@@ -172,5 +173,28 @@
     "pooled same club v2 18/27 vs v1 20/27"
    ]
   }
+ },
+ "trees_cv": {
+  "previous": {
+   "hag": 2.5,
+   "k_m": 3,
+   "min_area_m2": 100
+  },
+  "chosen": "none_k-1_fc0",
+  "cv": {
+   "same": 59,
+   "n": 71,
+   "same_or_tie": 64,
+   "sum_regret": 0.6404000000000001,
+   "shorter": 4,
+   "longer": 8,
+   "regret": 0.009019718309859157
+  },
+  "why": [
+   "cross-validated 59/71 vs product setting 55/71",
+   "Spirit Hollow: CV 12 / chosen-on-all 12 vs product 12",
+   "Mozingo: CV 11 / chosen-on-all 11 vs product 11"
+  ],
+  "report": "course_data/vision_any/v2_trees_cv.md"
  }
 }

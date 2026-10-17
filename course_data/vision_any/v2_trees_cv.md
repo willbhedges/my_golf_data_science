@@ -75,3 +75,7 @@ Chosen on all five: `none_k-1_fc0`. Adopt: **yes** (cross-validated 59/71 vs pro
 | `none_k3_fc4` | 12/16 | 10/14 | 10/13 | 12/14 | 10/14 | 54/71 | 0.0118 | 9 / 8 |
 | `none_k2_fc8` | 12/16 | 11/14 | 10/13 | 12/14 | 9/14 | 54/71 | 0.0119 | 9 / 8 |
 | `none_k3_fc8` | 12/16 | 10/14 | 10/13 | 12/14 | 8/14 | 52/71 | 0.0132 | 11 / 8 |
+
+## Integrated
+
+`none_k-1_fc0` adopted (`v2_trees_cv.py integrate`): model_v2/model.json trees k_m 3 -> -1 (canopy eroded 1 m, no recency, no first-cut band); tree zones of vision_any.geojson and the packages of Spirit Hollow, Mozingo, Veenker, Coldwater, Ellis, Wakonda rebuilt (OB re-inferred). Re-scored after integration: Ellis 12/14, Veenker 13/13 (as in the table). Canopy recency ties at k -1 (remove_k-1 = 60/71) and is +2 on Ellis at k 0 / +3, but was not selected by the cross-validation, so it stays off (canopy_recency.py is ready to switch on via trees.recency).
