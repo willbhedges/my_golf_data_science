@@ -106,13 +106,14 @@ def course_key(hk):
     return int(hk) if str(hk).isdigit() else hk
 
 
-def product_course(pkg_path=SH_PACKAGE, tee_set="Black", hand=None):
-    """The product path on the hand map: package with hand zones + Black-box tees -> package.load -> Course."""
+def product_course(pkg_path=SH_PACKAGE, tee_set="Black", hand=None, app_line=True):
+    """The product path on the hand map: package with hand zones + Black-box tees (+ the app's tee line when
+    app_line, aim_rule "app") -> package.load -> Course."""
     import tempfile
     import verify_hand_truth as VH
     hand = hand or json.load(open(HAND_LL))
     pkg = json.load(open(pkg_path))
-    new = VH.hand_package(pkg, hand, tee_set)
+    new = VH.hand_package(pkg, hand, tee_set, app_line=app_line)
     with tempfile.TemporaryDirectory() as td:
         p = os.path.join(td, "package.json")
         with open(p, "w") as fh:
@@ -362,21 +363,41 @@ def settings_table():
     ]
 
 
-def run(n=8000, holes=None, ladder=True, out=OUT, pkg_path=SH_PACKAGE, tee_set="Black", log=log):
+_CTX = {}
+
+
+def _hole_job(job):
+    k, hk = job
+    c = _CTX
+    r = compare_hole(k, hk, c["course"].HOLES[course_key(hk)], c["C"].holes[k], c["C"], c["hand_ll"],
+                     c["pkg_new"]["holes"][str(k)], c["n"], c["ladder"], log=c["log"])
+    r["attribution"] = attribute(r) if r["hand"]["pick"] != r["product"]["pick"] else []
+    return hk, r
+
+
+def run(n=8000, holes=None, ladder=True, out=OUT, pkg_path=SH_PACKAGE, tee_set="Black", app_line=True, workers=1, log=log):
     hand_ll = json.load(open(HAND_LL))
     course = load_hand_course()
-    C, pkg_new = product_course(pkg_path, tee_set, hand_ll)
-    result = dict(n=n, tee_set=tee_set, package=os.path.relpath(pkg_path, ROOT), holes={}, settings=settings_table())
+    C, pkg_new = product_course(pkg_path, tee_set, hand_ll, app_line=app_line)
+    result = dict(n=n, tee_set=tee_set, package=os.path.relpath(pkg_path, ROOT), holes={}, settings=settings_table(),
+                  line="app (the hand tee line)" if app_line else "product rule (250 yds along the hole line)")
+    jobs = []
     for k in C.holes:
         hk = hand_key(k, tee_set)
         if hk not in hand_ll["holes"] or course_key(hk) not in course.HOLES:
             continue
         if holes and str(k) not in holes and hk not in holes:
             continue
-        r = compare_hole(k, hk, course.HOLES[course_key(hk)], C.holes[k], C, hand_ll, pkg_new["holes"][str(k)],
-                         n, ladder, log=log)
-        r["attribution"] = attribute(r) if r["hand"]["pick"] != r["product"]["pick"] else []
-        result["holes"][hk] = r
+        jobs.append((k, hk))
+    _CTX.update(course=course, C=C, hand_ll=hand_ll, pkg_new=pkg_new, n=n, ladder=ladder, log=log)
+    if workers and workers > 1 and len(jobs) > 1:
+        import multiprocessing as mp
+        with mp.get_context("fork").Pool(min(workers, len(jobs))) as pool:
+            done = dict(pool.imap_unordered(_hole_job, jobs))
+    else:
+        done = dict(_hole_job(j) for j in jobs)
+    for _, hk in jobs:
+        result["holes"][hk] = done[hk]
     H = result["holes"].values()
     result["same_club"] = [sum(r["hand"]["pick"] == r["product"]["pick"] for r in H), len(result["holes"])]
     result["same_or_tie"] = [sum(same_or_tie(r["hand"], r["product"]) for r in H), len(result["holes"])]
@@ -397,7 +418,8 @@ def run(n=8000, holes=None, ladder=True, out=OUT, pkg_path=SH_PACKAGE, tee_set="
 def report_md(r):
     L = [f"# Decision parity: product vs hand pipeline on the hand map ({r['tee_set']} tees)", "",
          f"Both through product/decide.quick_hole (n={r['n']}, seed 31, prior-mean settings): every difference is an "
-         "input difference. Aims are yds right of the hand (app) tee line at the club's carry.", "",
+         f"input difference. Product tee line: {r.get('line', '-')}. Aims are yds right of the hand (app) tee line "
+         "at the club's carry.", "",
          f"**Same club {r['same_club'][0]}/{r['same_club'][1]}; same or tie {r['same_or_tie'][0]}/{r['same_or_tie'][1]}; "
          f"aims within {AIM_TOL} yds on {r['aims_within'][0]}/{r['aims_within'][1]} same-club holes.**", "",
          "| hole | hand | product | same | tee err | bearing diff | ground/app yd | green err | lies agree (given order) | causes |",
@@ -438,6 +460,90 @@ def report_md(r):
     return "\n".join(L) + "\n"
 
 
+def scoreboard_counts(txt):
+    """Per-course agreement from a scoreboard.py --dry-run log (it prints one dict per scored hole)."""
+    import ast
+    cur, rows, order = None, {}, []
+    for line in txt.splitlines():
+        if line.startswith("== "):
+            cur = line[3:].strip()
+            order.append(cur)
+            rows.setdefault(cur, [])
+        elif line.strip().startswith("{'hole'"):
+            try:
+                rows.setdefault(cur, []).append(ast.literal_eval(line.strip()))
+            except Exception:                                # noqa: BLE001
+                pass
+    out = []
+    for c in order:
+        R_ = rows.get(c) or []
+        sc = [r for r in R_ if "same" in r]
+        hq = [r for r in R_ if "same_hand_quick" in r]
+        picks = ", ".join(f"{r['hole']} {r['pick']}" + ("" if r.get("same", True) else f" (truth {r.get('truth')})")
+                          for r in R_)
+        out.append(f"{c}: same club {sum(r['same'] for r in sc)}/{len(sc)}, same or tie "
+                   f"{sum(r['same_or_tie'] for r in sc)}/{len(sc)}"
+                   + (f", same as hand quick {sum(r['same_hand_quick'] for r in hq)}/{len(hq)}" if hq else "")
+                   + f"; {picks}")
+    return out
+
+
+def request_entries(path):
+    rq = json.load(open(path))
+    return [r["name"] for r in rq.get("runs") or []] + [f"scoreboard_{b['name']}" for b in rq.get("scoreboard") or []]
+
+
+def run_request(path, only=None):
+    """Request file (Actions, parity.yml): every run / scoreboard variant in its own process with its env.
+    {"out": dir, "n": 8000, "workers": 4,
+     "runs": [{"name", "app_line": true, "ladder": true, "holes": "1,2F", "env": {"PRODUCT_...": "..."}}],
+     "scoreboard": [{"name", "env": {...}, "args": ["--courses", "spirit_hollow,mozingo_lake"]}]}
+    -> <out>/<name>/parity.{json,md}, <out>/scoreboard_<name>.txt, <out>/summary.md"""
+    import subprocess
+    rq = json.load(open(path))
+    out = os.path.join(ROOT, rq.get("out") or "course_data/packages/spirit_hollow/out/parity")
+    os.makedirs(out, exist_ok=True)
+    summ = [f"# Parity request {os.path.basename(path)}", ""]
+    for r in rq.get("runs") or []:
+        if only and r["name"] != only:
+            continue
+        d = os.path.join(out, r["name"])
+        cmd = [sys.executable, os.path.abspath(__file__), "--n", str(r.get("n", rq.get("n", 8000))), "--out", d,
+               "--workers", str(r.get("workers", rq.get("workers", 1)))]
+        cmd += [] if r.get("app_line", True) else ["--product-line"]
+        cmd += [] if r.get("ladder", True) else ["--no-ladder"]
+        cmd += ["--holes", r["holes"]] if r.get("holes") else []
+        env = {**os.environ, **{k: str(v) for k, v in (r.get("env") or {}).items()}}
+        log(f"== parity {r['name']}: {' '.join(cmd[2:])} env {r.get('env') or {}}")
+        t0 = time.time()
+        p = subprocess.run(cmd, env=env, cwd=ROOT, capture_output=True, text=True)
+        open(os.path.join(out, f"{r['name']}.log"), "w").write(p.stdout + p.stderr)
+        last = (p.stdout.strip().splitlines() or ["(no output)"])[-1]
+        summ.append(f"- parity **{r['name']}** (env {r.get('env') or {}}, app line {r.get('app_line', True)}): {last} "
+                    f"[{time.time() - t0:.0f} s, exit {p.returncode}]")
+        log(summ[-1])
+    for sb in rq.get("scoreboard") or []:
+        if only and f"scoreboard_{sb['name']}" != only:
+            continue
+        cmd = [sys.executable, os.path.join(CD, "qa", "scoreboard.py"), "--dry-run"] + list(sb.get("args") or [])
+        env = {**os.environ, **{k: str(v) for k, v in (sb.get("env") or {}).items()}}
+        log(f"== scoreboard {sb['name']}: env {sb.get('env') or {}}")
+        t0 = time.time()
+        p = subprocess.run(cmd, env=env, cwd=ROOT, capture_output=True, text=True)
+        txt = p.stdout + p.stderr
+        open(os.path.join(out, f"scoreboard_{sb['name']}.txt"), "w").write(txt)
+        lines = [f"  {k}" for k in scoreboard_counts(txt)]
+        summ.append(f"- scoreboard **{sb['name']}** (env {sb.get('env') or {}}) [{time.time() - t0:.0f} s, exit {p.returncode}]:")
+        summ += lines
+        log("\n".join(summ[-1 - len(lines):]))
+    if only:
+        with open(os.path.join(out, f"summary_{only}.md"), "w") as fh:
+            fh.write("\n".join(summ[2:]) + "\n")
+        return
+    with open(os.path.join(out, "summary.md"), "w") as fh:
+        fh.write("\n".join(summ) + "\n")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--n", type=int, default=8000)
@@ -445,15 +551,19 @@ def main(argv=None):
     ap.add_argument("--no-ladder", action="store_true")
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--package", default=SH_PACKAGE)
-    ap.add_argument("--request", default=None, help="request JSON {n, holes, ladder, out}")
+    ap.add_argument("--workers", type=int, default=1)
+    ap.add_argument("--product-line", action="store_true", help="the product's own tee-line rule, not the app line")
+    ap.add_argument("--request", default=None, help="request JSON (see run_request)")
+    ap.add_argument("--only", default=None, help="with --request: just this run / scoreboard_<name> entry")
+    ap.add_argument("--entries", action="store_true", help="with --request: print the entries as a JSON list")
     a = ap.parse_args(argv)
     kw = dict(n=a.n, holes=a.holes.split(",") if a.holes else None, ladder=not a.no_ladder, out=a.out,
-              pkg_path=a.package)
+              pkg_path=a.package, app_line=not a.product_line, workers=a.workers)
+    if a.request and a.entries:
+        print(json.dumps(request_entries(a.request)))
+        return
     if a.request:
-        rq = json.load(open(a.request))
-        kw.update({k: v for k, v in rq.items() if k in ("n", "holes", "ladder", "out")})
-        if rq.get("out"):
-            kw["out"] = os.path.join(ROOT, rq["out"])
+        return run_request(a.request, a.only)
     run(**kw)
 
 

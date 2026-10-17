@@ -194,6 +194,8 @@ def hole_model(h, tee_set, tee_ll=None, zones_ll=None, window=True):
     for extra in ("extra_roll", "irons"):
         if h.get(extra) is not None:
             hd[extra] = h[extra]
+    if PK.irons_offered(h):
+        hd["irons"] = True
     e = PK._elev(ent.get("elevation") or h.get("elevation"))
     if e:
         hd["elev"] = e

@@ -220,8 +220,21 @@ def oracle(it, hv, hh, fr):
     return dict(answer="moved", shift=round(float(np.clip(d, -30, 30)), 1))
 
 
-def hand_package(pkg, hand, tee_set, tees=True, zones=True):
-    """A copy of the package with the hand map's tee (tee_ll) and/or zones on every hand-mapped tee hole."""
+def app_dot270(hh, key, fwd=None):
+    """The hand map's 270-yd dot moved up with the tee (the app line the hand pipeline aims against)."""
+    fwd = black_forward() if fwd is None else fwd
+    d = fwd.get(str(key), 0.0)
+    if not hh.get("dot270_ll") or not hh.get("tee_ll"):
+        return None
+    fr = R.Frame(hh["tee_ll"], hh["dot270_ll"], ppy=1.0, tee_px=(0.0, 0.0), proj="enu")
+    dist = float(np.hypot(*fr.ll_to_yds([hh["dot270_ll"]])[0]))
+    return [float(v) for v in fr.yds_to_ll([[0.0, -(dist + d * dist / 270.0)]])[0]]
+
+
+def hand_package(pkg, hand, tee_set, tees=True, zones=True, app_line=False):
+    """A copy of the package with the hand map's tee (tee_ll) and/or zones on every hand-mapped tee hole.
+    Hand zones keep their traced order (zone_order "given": later zones win, as tee_strategy.lie_at reads the
+    hand map). app_line: also the hand map's own tee line (toward the app's 270 dot, aim_rule "app")."""
     import copy
     new = copy.deepcopy(pkg)
     for ref, h in new["holes"].items():
@@ -235,12 +248,17 @@ def hand_package(pkg, hand, tee_set, tees=True, zones=True):
             aim, _ = PK._tee_line_mod().aim_point(tee, h.get("hole_line_ll"), PK._ll(h.get("green_ll")),
                                                   float((ent or {}).get("card_yards") or h.get("length") or 0) or None,
                                                   int(h.get("par") or 4))
+            if app_line and hh.get("dot270_ll"):
+                aim = app_dot270(hh, hk)
             if ent is not None:
                 ent.update(tee_ll=tee, aim_ll=aim)
+                if app_line:
+                    ent["aim_rule"] = "app"
             h["tee_ll"], h["aim_ll"] = tee, aim
         if zones and hh.get("zones"):
             h["zones_ll"] = [dict(lie=z["lie"], poly=z["poly_ll"], src="hand", p=1.0)
                              for z in hh["zones"] if len(z.get("poly_ll") or []) >= 3]
+            h["zone_order"] = "given"
     return new
 
 

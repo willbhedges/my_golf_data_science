@@ -68,6 +68,20 @@ def first_cut_band(zones, yds=None):
     return out
 
 
+# Irons off the tee: offered on every par 4 / 5 unless the package says irons = false. The hand pipeline only
+# offered them where a human flagged a lay-up (Spirit Hollow 11 and 13, Mozingo 17), so the product could never
+# say "Long iron" on SH 11 (QA's largest regret). On both hand maps an iron never beats the woods on a hole that
+# was not flagged (parity.py check, n = 2000), so offering them everywhere changes no other pick; it costs ~65%
+# more simulation per hole.
+IRONS_ALWAYS = os.environ.get("PRODUCT_IRONS", "always") != "package"
+
+
+def irons_offered(h):
+    if h.get("irons") is not None:
+        return bool(h["irons"])
+    return IRONS_ALWAYS
+
+
 def order_zones(zones, mode=None):
     """[(lie, poly)] in model precedence (later wins). mode "given": as listed (hand maps)."""
     if (mode or "precedence") != "given":
@@ -77,6 +91,8 @@ def order_zones(zones, mode=None):
 
 
 def zone_order_mode(pkg, h):
+    if os.environ.get("PRODUCT_ZONE_ORDER") == "precedence":      # A/B: ignore zone_order (the old loader)
+        return "precedence"
     return (h or {}).get("zone_order") or (pkg or {}).get("zone_order") or "precedence"
 # package lie -> model lie, applied at package load (QA A1: tee_strategy.expected_strokes has no 'green' or
 # 'ob_boundary', which ARCHITECTURE 9.1-4 allows in zones_ll; the model itself stays as it is)
@@ -321,6 +337,8 @@ def load(path, tees=None):
             for extra in ("extra_roll", "irons"):
                 if h.get(extra) is not None:
                     C.holes[k][extra] = h[extra]
+            if irons_offered(h):
+                C.holes[k]["irons"] = True
             if e or h.get("elev"):
                 C.holes[k]["elev"] = e or h["elev"]
     C.order = sorted(set(C.holes) | set(C.par3), key=lambda k: (str(k).rstrip("BFabf").zfill(3), str(k)))
@@ -335,7 +353,7 @@ ELEV_CLAMPED = []
 # table (parity.py: Spirit Hollow carry deltas 4-6 yds and side kicks up to 11 yds apart). With the package's
 # DEM on disk the table is recomputed along the tee -> aim line used for the frame (platform/package.
 # elevation_for_hole + elevation/adjust.py: the same code the platform ran); else the stored table is used.
-ELEV_ALONG_LINE = True
+ELEV_ALONG_LINE = os.environ.get("PRODUCT_ELEV_LINE", "1") != "0"
 _DEM_CACHE = {}
 
 

@@ -1,0 +1,22 @@
+{
+ "kind": "parity",
+ "rev": 1,
+ "requested": "2026-10-17T02:00Z",
+ "by": "decision-parity engineer",
+ "note": "Product decision path vs the hand pipeline on the hand map (Black boxes). before = the old loader (PRODUCT_ZONE_ORDER=precedence, PRODUCT_ELEV_LINE=0, PRODUCT_IRONS=package, product tee line); after_* = zone_order given + elevation along the line + irons offered; scoreboard A/B on the auto packages (dry run, nothing committed to qa/).",
+ "out": "course_data/packages/spirit_hollow/out/parity",
+ "n": 8000,
+ "workers": 4,
+ "runs": [
+  {"name": "before", "app_line": false, "ladder": true,
+   "env": {"PRODUCT_ZONE_ORDER": "precedence", "PRODUCT_ELEV_LINE": "0", "PRODUCT_IRONS": "package"}},
+  {"name": "after_app_line", "app_line": true, "ladder": true},
+  {"name": "after_product_line", "app_line": false, "ladder": false}
+ ],
+ "scoreboard": [
+  {"name": "before", "env": {"PRODUCT_ELEV_LINE": "0", "PRODUCT_IRONS": "package"}, "args": ["--workers", "4"]},
+  {"name": "after", "args": ["--workers", "4"]},
+  {"name": "after_first_cut_8", "env": {"PRODUCT_FIRST_CUT_YDS": "8"}, "args": ["--workers", "4"]},
+  {"name": "after_first_cut_4", "env": {"PRODUCT_FIRST_CUT_YDS": "4"}, "args": ["--workers", "4"]}
+ ]
+}

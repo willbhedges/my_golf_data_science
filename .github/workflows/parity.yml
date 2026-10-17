@@ -1,0 +1,124 @@
+name: decision-parity
+
+# Decision parity (course_data/product/parity.py): the product's decision path vs the hand pipeline on the same
+# hand-checked Spirit Hollow geometry, step by step + one-factor-at-a-time attribution, and scoreboard A/B runs
+# (scoreboard.py --dry-run under PRODUCT_* env switches). Trigger: commit course_data/requests/parity_<name>.json
+#   {"out": "course_data/packages/spirit_hollow/out/parity", "n": 8000, "workers": 4,
+#    "runs": [{"name": "after", "app_line": true, "ladder": true, "env": {}}, ...],
+#    "scoreboard": [{"name": "after", "env": {}, "args": []}, ...]}
+# One job per entry (max-parallel 4: the Actions pool is shared); outputs are committed under "out".
+
+on:
+  push:
+    paths:
+      - "course_data/requests/parity_*.json"
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "Request file path"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: parity-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      request: ${{ steps.req.outputs.request }}
+      entries: ${{ steps.req.outputs.entries }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - id: req
+        env:
+          BEFORE: ${{ github.event.before }}
+          INPUT: ${{ github.event.inputs.request }}
+        run: |
+          if [ -n "$INPUT" ]; then
+            f="$INPUT"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            f=$(git diff --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- 'course_data/requests/parity_*.json' | head -1)
+          else
+            f=$(ls course_data/requests/parity_*.json | head -1)
+          fi
+          echo "request=$f" >> "$GITHUB_OUTPUT"
+          echo "entries=$(python3 -c "import json,sys; r=json.load(open('$f')); print(json.dumps([x['name'] for x in r.get('runs') or []] + ['scoreboard_' + x['name'] for x in r.get('scoreboard') or []]))")" >> "$GITHUB_OUTPUT"
+          cat "$f"
+
+  run:
+    needs: plan
+    if: needs.plan.outputs.request != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        entry: ${{ fromJson(needs.plan.outputs.entries) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy matplotlib pillow shapely pyproj rasterio opencv-python-headless pytest
+      - name: Unit tests
+        run: python -m pytest -q -p no:cacheprovider course_data/product/test_parity.py
+      - name: Run ${{ matrix.entry }}
+        run: |
+          ( time python course_data/product/parity.py --request "${{ needs.plan.outputs.request }}" --only "${{ matrix.entry }}" ) 2>&1 | tail -60
+      - name: Collect
+        run: |
+          out=$(python -c "import json; print(json.load(open('${{ needs.plan.outputs.request }}')).get('out') or 'course_data/packages/spirit_hollow/out/parity')")
+          mkdir -p /tmp/res && cp -r "$out" /tmp/res/out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: parity-${{ matrix.entry }}
+          path: /tmp/res/out
+
+  commit:
+    needs: [plan, run]
+    if: always() && needs.plan.outputs.request != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/parts
+      - name: Commit outputs
+        run: |
+          out=$(python3 -c "import json; print(json.load(open('${{ needs.plan.outputs.request }}')).get('out') or 'course_data/packages/spirit_hollow/out/parity')")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          printf '%s\n' \
+            "Decision parity outputs: ${{ needs.plan.outputs.request }} (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git fetch origin "${{ github.ref_name }}" && git reset -q --hard "origin/${{ github.ref_name }}"
+            mkdir -p "$out"
+            for d in /tmp/parts/*/; do cp -r "$d"/. "$out"/; done
+            ( echo "# Parity request ${{ needs.plan.outputs.request }} (run ${{ github.run_id }})"; echo; \
+              cat "$out"/summary_*.md 2>/dev/null ) > "$out/summary.md"
+            git add -- "$out"
+            if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+            git commit -q -F /tmp/msg.txt
+            git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
