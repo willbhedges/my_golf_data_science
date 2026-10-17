@@ -1,6 +1,6 @@
 # Zero-tap benchmark scoreboard
 
-Benchmark: 161 courses ({'dev': 77, 'test': 84}), built 2026-10-17T17:19:41Z. Contract and rules: [BENCH.md](BENCH.md). Test = held-out states: report, never tune.
+Benchmark: 161 courses ({'dev': 77, 'test': 84}), built 2026-10-17T17:27:32Z. Contract and rules: [BENCH.md](BENCH.md). Test = held-out states: report, never tune.
 
 ## test
 
