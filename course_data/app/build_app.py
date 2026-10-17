@@ -57,6 +57,53 @@ PLAYER = dict(name="Default player (the book's bag)", clubs={
     "Driver": dict(carry=275, total=300), "2-wood": dict(carry=265, total=280), "4-wood": dict(carry=255, total=270),
     "Long iron": dict(carry=215, total=225), "Mid iron": dict(carry=180, total=188)},
     temp_carry_pct_per_f=0.10, temp_ref_f=70)
+# The plan's own pattern (spirit_hollow/v2 prior centre, course_data/personal/bayes.BOOK_BAG): every precomputed
+# pick, aim and drawn pattern assumes these widths. The app's "Your game" panel scales from them.
+PLAYER["clubs"]["Driver"]["width95"] = 70.0
+PLAYER["clubs"]["2-wood"]["width95"] = 65.0
+PLAYER["clubs"]["4-wood"]["width95"] = 54.0
+PLAYER["clubs"]["Long iron"]["width95"] = 43.2
+PLAYER["clubs"]["Mid iron"]["width95"] = 36.7
+# The golfer's bag as the "Your game" panel starts it (golf_player/1 `stated`; editable, kept in localStorage).
+# `plan` = the precomputed club that stands in for it; null = not in the precomputed plans yet.
+PROFILE_DEFAULTS = dict(
+    schema="golf_player/1", reference_club="Driver", prior_name="v2",
+    clubs={"Driver": dict(carry=275, total=300, width95=70.0, plan="Driver"),
+           "2-wood": dict(carry=265, total=280, width95=65.0, plan="2-wood"),
+           "4-wood": dict(carry=255, total=270, width95=54.0, plan="4-wood"),
+           "Hybrid": dict(carry=235, total=250, width95=48.6, plan=None),
+           "4-iron": dict(carry=210, total=225, width95=43.2, plan="Long iron")},
+    # bayes.Prior.v2(): driver width LN(median = stated, 90 % up to x 80/70); ratio sds; carry N(0,5) common
+    # + N(0,3) per club; range -> course width x LN(1.05, 0.08); session carry sd 3
+    prior=dict(w_logsd=round(math.log(80 / 70) / 1.645, 4), ratio_sd={"2-wood": 0.04, "4-wood": 0.06},
+               ratio_sd_default=0.08, c_common_sd=5.0, c_club_sd=3.0, f_median=1.05, f_logsd=0.08, session_sd=3.0,
+               depth_mult=1.25, aim_sd={"plan": 3.0, "aim_point": 4.0, "fairway_centre": 6.0, "green_line": 10.0},
+               gps_sd=5.0, beyond=35.0))
+PLAYER["profile_defaults"] = PROFILE_DEFAULTS
+V2_DECISIONS = os.path.join(ROOT, "spirit_hollow", "v2", "output", "v2_decisions.json")
+
+
+def width_rule(rec):
+    """spirit_hollow/v2 decision for one tee shot -> the app's `width_rule` (SCHEMA.md): the pick across the
+    driver width (sweep + break-evens) and each club's aim at 60 / 70 / 82 yds (sens runs)."""
+    if not rec or not rec.get("width_sweep"):
+        return None
+    sens = rec.get("sens") or {}
+    cen = (sens.get("central") or {}).get("clubs") or {}
+    aims = {}
+    for c, v in cen.items():
+        if "not in bag" in c:
+            continue
+        pts = [[70, r1(rec["aim"]) if c == rec["pick"] else r1(v["aim"])]]
+        for key, w in (("width 60 (tighter)", 60), ("width 82 (published 5-hcp average)", 82)):
+            e = sens.get(key)
+            if e and e.get("pick") == c and e.get("aim") is not None:      # that run's change of this club's aim
+                pts.append([w, r1(pts[0][1] + float(e["aim"]) - float(v["aim"]))])
+        aims[c] = sorted(pts)
+    return dict(base=70, pick=rec["pick"], aim=r1(rec["aim"]),
+                sweep=[[int(x["width"]), x["pick"]] for x in rec["width_sweep"]],
+                flips=[dict(width=r1(f["width"]), frm=f["frm"], to=f["to"]) for f in rec.get("width_flips") or []],
+                aims=aims, source="spirit_hollow/v2 (v2_decisions.json): width sweep 55-90, break-evens, sens runs")
 
 
 def r1(x):
@@ -263,6 +310,7 @@ def build_spirit_hollow():
     for path in glob.glob(os.path.join(out_dir, "wind_grid_back*.json")):
         grids[int(float(re.search(r"back([+-]?[0-9.]+)", path).group(1)))] = json.load(open(path))
     final = json.load(open(os.path.join(out_dir, "final_decision.json")))
+    v2 = json.load(open(V2_DECISIONS)) if os.path.exists(V2_DECISIONS) else {}
     apx_path, gv_path = os.path.join(APPROACH_DIR, "approach.json"), os.path.join(APPROACH_DIR, "green_views.json")
     APX = json.load(open(apx_path))["holes"] if os.path.exists(apx_path) else {}
     GV = json.load(open(gv_path))["holes"] if os.path.exists(gv_path) else {}
@@ -319,6 +367,9 @@ def build_spirit_hollow():
                              source="full Bayesian run (final_decision.json)") if d.get("calm") else None
             if fd and v["calm"] and fd.get("zone"):
                 v["calm"]["zone"] = fd["zone"]
+            wr = width_rule(v2.get(key))
+            if wr:
+                v["width_rule"] = wr
             if key in APX and key in GV:
                 v["approach"] = approach_block(key, APX[key], GV[key], imgs)
         else:

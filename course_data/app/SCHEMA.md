@@ -25,6 +25,14 @@ interpolates the wind grid, applies elevation and temperature, and draws the res
 }
 ```
 
+`player` also carries each plan club's `width95` (the pattern every precomputed pick assumes: Driver 70) and
+`profile_defaults`: the "Your game" panel's starting bag (`clubs: {name: {carry, total, width95, plan}}`, `plan` = the
+precomputed club it stands for, `null` = not planned yet) and the v2 prior sds (`course_data/personal/bayes.Prior.v2`).
+The page fits a `golf_player/1`-style summary in the browser (closed form: log width and carry = shared part + club
+part, shrunk toward the typed bag; launch-monitor CSVs (Garmin R10 etc.) and the generic tee-shot CSV are parsed by a
+JS port of `parsers.py`) and keeps it in localStorage only. Each plan club then gets carry/total shifted by
+(profile − default) and its drawn pattern scaled by profile width / default width.
+
 A wind cell `"<mph>_<deg>"` is the wind speed and the direction it blows **from**, relative to the tee
 line (0 = straight into the golfer, 90 = from the right, i.e. blowing right-to-left).
 
@@ -82,6 +90,14 @@ Spirit Hollow's holes 2 and 9 have two variants, one per screenshot (Gold box `B
 | `check[]` | the product's CHECK reasons (the best aim was rejected by the safety guard) |
 | `mapped_along` | (verified) how far the hand-checked map reaches; landing past it shows a warning |
 | `off_image_below` | image y (px) below which the tee falls off a screenshot |
+
+#### `width_rule` (optional, on tee variants): the pick across the golfer's driver pattern
+
+Spirit Hollow only, from `spirit_hollow/v2/output/v2_decisions.json`:
+`{base: 70, pick, aim, sweep: [[width, pick], ...55-90], flips: [{width, frm, to}], aims: {club: [[width, aim], ...]}, source}`.
+Client (tee at `back` 0): `a = sweep pick at W` (player_profile._pick_at); the calm-day pick is `a` if it differs
+from the sweep pick at `base`, else `pick`; its aim is interpolated in `aims[club]` (60 / 70 / 82 yd sens runs).
+It replaces `calm` (final_decision.json) on those holes; the wind rule above then applies as before.
 
 #### `approach` (optional, on tee variants): the second shot
 

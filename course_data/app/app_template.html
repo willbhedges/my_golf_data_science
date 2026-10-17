@@ -123,6 +123,15 @@ details[open].panel>summary::after{content:"▴"}
 .conf{border-radius:10px;padding:10px 12px;display:grid;gap:6px;font-size:14px}
 .conf.check{background:var(--warn-bg)} .conf.auto{background:var(--soft)} .conf.verified{background:var(--soft)}
 .foot{color:var(--muted);font-size:12.5px}
+/* your game */
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+label.btn{display:inline-flex;align-items:center}
+table.pf td{padding:5px 4px}
+table.pf input{width:100%;max-width:76px;font:600 16px var(--body);padding:6px 6px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);font-variant-numeric:tabular-nums}
+textarea{width:100%;font:13px/1.4 ui-monospace,Menlo,monospace;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--ink);resize:vertical}
+#pfOut td:first-child,table.pf td:first-child{white-space:nowrap}
+.pflist{margin:0;padding-left:18px;display:grid;gap:3px;font-size:14px}
+.gamecard{display:grid;gap:4px;text-align:left;cursor:pointer;width:100%}
 </style>
 </head>
 <body>
@@ -159,13 +168,251 @@ function save(){
   try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
   try {
     const C = cur(); let h = "";
-    if (C) { h = "#c=" + C.id + "&t=" + encodeURIComponent(curSet(C)); if (st.screen === "hole") h += "&h=" + C.holes[holeIdx(C)].no + (st.view && st.view !== "land" ? "&v=" + st.view : ""); }
+    if (C && st.screen !== "game") { h = "#c=" + C.id + "&t=" + encodeURIComponent(curSet(C)); if (st.screen === "hole") h += "&h=" + C.holes[holeIdx(C)].no + (st.view && st.view !== "land" ? "&v=" + st.view : ""); }
     history.replaceState(null, "", h || location.pathname + location.search);
   } catch (e) {}
 }
 const cur = () => D.courses.find(c => c.id === st.course) || null;
 function curSet(C){ const s = st.set[C.id]; return C.tee_sets.some(t => t.name === s && t.computed !== "missing") ? s : C.default_tee; }
 function holeIdx(C){ const i = st.idx[C.id] || 0; return i < C.holes.length ? i : 0; }
+
+/* ------------------------------------------------------------------ your game: the player profile (golf_player/1)
+   The golfer's bag (typed in) is the prior centre; launch-monitor / tee-shot CSVs shrink it the way
+   course_data/personal/bayes.py does, in closed form: log width and carry are normal, a common part (shared by
+   every club) plus a club part, with the v2 prior's sds. Kept in this browser only (localStorage). */
+const PD = D.player.profile_defaults, PKEY = "aimcaddie_profile1", PCLUBS = Object.keys(PD.clubs), PREF = PD.reference_club;
+const PLAN2P = {}; for (const k of PCLUBS) if (PD.clubs[k].plan) PLAN2P[PD.clubs[k].plan] = k;
+function freshProfile(){ const c = {}; for (const k of PCLUBS) c[k] = {carry: PD.clubs[k].carry, total: PD.clubs[k].total, width95: PD.clubs[k].width95};
+  return {clubs: c, prior: "v2", shots: {lm: [], course: []}, files: [], msg: ""}; }
+function loadProfile(){
+  const f = freshProfile();
+  try { const s = JSON.parse(localStorage.getItem(PKEY) || "null");
+    if (s && typeof s === "object" && s.clubs) {
+      for (const k of PCLUBS) for (const q of ["carry", "total", "width95"]) { const v = +((s.clubs[k] || {})[q]); if (isFinite(v) && v > 0) f.clubs[k][q] = v; }
+      if (s.prior === "generic") f.prior = "generic";
+      if (s.shots && Array.isArray(s.shots.lm)) f.shots.lm = s.shots.lm.filter(r => r && isFinite(r.carry));
+      if (s.shots && Array.isArray(s.shots.course)) f.shots.course = s.shots.course.filter(r => r && typeof r === "object");
+      if (Array.isArray(s.files)) f.files = s.files.slice(-20);
+    } } catch (e) {}
+  return f;
+}
+let PF = loadProfile(), POST = null;
+function saveProfile(){ try { localStorage.setItem(PKEY, JSON.stringify({clubs: PF.clubs, prior: PF.prior, shots: PF.shots, files: PF.files})); } catch (e) {} }
+
+/* ---- closed-form posterior (the summary part of bayes.py; no importance sampling) */
+const Z90 = 1.6449;
+const ncdf = x => { const t = 1 / (1 + 0.2316419 * Math.abs(x)), d = 0.3989423 * Math.exp(-x * x / 2);
+  const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return x > 0 ? 1 - p : p; };
+const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
+const sdev = a => { const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / Math.max(1, a.length - 1)); };
+const median = a => { const b = [...a].sort((x, y) => x - y), n = b.length; return n ? (n % 2 ? b[(n - 1) / 2] : (b[n / 2 - 1] + b[n / 2]) / 2) : NaN; };
+/* lateral scale s (= width95 / 4) by maximum likelihood: normal around the club's bias, plus measurement noise
+   (aim + GPS) on course, and penalty shots censored past the penalty line. Returns [log s, var of log s]. */
+function latFit(lat, noise2, cens){
+  if (lat.length < 3) return null;
+  const b = mean(lat), ll = ls => { const s2 = Math.exp(2 * ls) + noise2, s = Math.sqrt(s2); let v = 0;
+    for (const x of lat) v += -0.5 * (x - b) ** 2 / s2 - Math.log(s);
+    for (const c of cens) { const hi = 1 - ncdf((c.beyond - b) / s), lo = ncdf((-c.beyond - b) / s);
+      v += Math.log(Math.max(1e-12, c.side === "left" ? lo : c.side === "right" ? hi : lo + hi)); }
+    return v; };
+  let best = Math.log(2), bv = -Infinity;
+  for (let ls = Math.log(2); ls <= Math.log(60); ls += 0.01) { const v = ll(ls); if (v > bv) { bv = v; best = ls; } }
+  const h = 0.02, d2 = (ll(best + h) - 2 * bv + ll(best - h)) / (h * h);
+  return [best, d2 < -1e-6 ? Math.min(0.5, -1 / d2) : 0.5, b];
+}
+/* hierarchical normal: club value = centre + common + own; common ~ N(0, sc^2), own ~ N(0, sk[k]^2).
+   obs[k] = [mean offset, var]. Club k's common comes from the other clubs (no double counting). */
+function shrink(keys, obs, sc, sk){
+  const out = {};
+  for (const k of keys) {
+    let prec = 1 / (sc * sc), num = 0;
+    for (const j of keys) if (j !== k && obs[j]) { const v = obs[j][1] + sk[j] ** 2; prec += 1 / v; num += obs[j][0] / v; }
+    let m = num / prec, v = 1 / prec + sk[k] ** 2;
+    if (obs[k]) { const p = 1 / v + 1 / obs[k][1]; m = (m / v + obs[k][0] / obs[k][1]) / p; v = 1 / p; }
+    out[k] = [m, v];
+  }
+  return out;
+}
+function fitProfile(pf){
+  const P = PD.prior, gen = pf.prior === "generic";
+  const wsd = gen ? Math.log(100 / 82) / Z90 : P.w_logsd, csd = gen ? 10 : P.c_common_sd, ksd = gen ? 5 : P.c_club_sd;
+  const lmW = {}, coW = {}, carryO = {}, n = {}, bias = {};
+  for (const k of PCLUBS) {
+    const S = pf.clubs[k], depth = 0.1 * S.carry * P.depth_mult / 4, roll = S.total - S.carry;
+    const lm = pf.shots.lm.filter(r => r.club === k), co = pf.shots.course.filter(r => r.club === k);
+    n[k] = {launch_monitor: lm.length, on_course: co.length};
+    const cobs = [];
+    if (lm.length) {                                     /* launch monitor: good strikes = carry >= 88 % of the median */
+      const med = median(lm.map(r => r.carry)), good = lm.filter(r => r.carry >= 0.88 * med);
+      const sess = new Set(good.map(r => r.session || "s0")).size, cs = good.length >= 5 ? sdev(good.map(r => r.carry)) : depth;
+      cobs.push([mean(good.map(r => r.carry)) - S.carry, cs * cs / good.length + P.session_sd ** 2 / sess]);
+      const f = latFit(good.filter(r => r.side != null && isFinite(r.side)).map(r => r.side), 0, []);
+      if (f) { lmW[k] = [f[0] + Math.log(4 * P.f_median) - Math.log(S.width95), f[1]]; bias[k] = f[2]; }
+    }
+    if (co.length) {                                     /* on course: total + lateral off the intended line */
+      const ok = co.filter(r => !r.censored && r.lateral != null && isFinite(r.lateral));
+      const noise2 = ok.length ? mean(ok.map(r => (r.aim_sd ?? 6) ** 2 + (r.gps_sd ?? P.gps_sd) ** 2)) : 61;
+      const cens = co.filter(r => r.censored).map(r => ({side: r.censored, beyond: r.beyond ?? P.beyond}));
+      const f = latFit(ok.map(r => r.lateral), noise2, cens);
+      if (f) { coW[k] = [f[0] + Math.log(4) - Math.log(S.width95), f[1]]; if (bias[k] == null) bias[k] = f[2]; }
+      const tot = co.filter(r => !r.censored && r.total != null && isFinite(r.total)).map(r => r.total);
+      if (tot.length) { const med = median(tot), good = tot.filter(t => t >= 0.85 * med);
+        const v = depth * depth + (0.25 * roll) ** 2 + 25; cobs.push([mean(good) - S.total, v / good.length + P.session_sd ** 2]); }
+    }
+    if (cobs.length) { const p = cobs.reduce((s, o) => s + 1 / o[1], 0); carryO[k] = [cobs.reduce((s, o) => s + o[0] / o[1], 0) / p, 1 / p]; }
+  }
+  /* width: the range -> course factor is shared by every launch-monitor club, so it is added once to their pooled estimate */
+  const rsd = {}; for (const k of PCLUBS) rsd[k] = k === PREF ? 0 : (gen ? 0.10 : (P.ratio_sd[k] ?? P.ratio_sd_default));
+  const wObs = {};
+  for (const k of PCLUBS) {
+    const parts = [];
+    if (lmW[k]) parts.push([lmW[k][0], lmW[k][1] + P.f_logsd ** 2]);
+    if (coW[k]) parts.push(coW[k]);
+    if (parts.length) { const p = parts.reduce((s, o) => s + 1 / o[1], 0); wObs[k] = [parts.reduce((s, o) => s + o[0] / o[1], 0) / p, 1 / p]; }
+  }
+  const wPost = shrink(PCLUBS, wObs, wsd, rsd), kk = {}; for (const k of PCLUBS) kk[k] = ksd;
+  const cPost = shrink(PCLUBS, carryO, csd, kk);
+  const out = {clubs: {}, prior: gen ? "generic" : "v2", data: {launch_monitor: pf.shots.lm.length, on_course: pf.shots.course.length}};
+  for (const k of PCLUBS) {
+    const S = pf.clubs[k], [lw, vw] = wPost[k], [dc, vc] = cPost[k], sw = Math.sqrt(vw), sc = Math.sqrt(vc);
+    const W = S.width95 * Math.exp(lw), C = S.carry + dc;
+    out.clubs[k] = {stated: {carry: S.carry, total: S.total, width95: S.width95},
+      carry: {median: C, sd: sc, ci90: [C - Z90 * sc, C + Z90 * sc]},
+      total: {median: S.total + dc, sd: sc, ci90: [S.total + dc - Z90 * sc, S.total + dc + Z90 * sc]},
+      width95: {median: W, sd_log: sw, ci90: [W * Math.exp(-Z90 * sw), W * Math.exp(Z90 * sw)]},
+      bias: bias[k] ?? 0, n_shots: n[k], source: wObs[k] || carryO[k] ? "data" : (Object.keys(wObs).length ? "prior (shared)" : "stated")};
+  }
+  return out;
+}
+POST = fitProfile(PF);
+/* what the plans use: shifts and width scale per precomputed club (relative to the bag the plans were run for) */
+function planAdj(club){
+  const k = PLAN2P[club], ref = POST.clubs[PREF], refD = PD.clubs[PREF];
+  if (!k) return {dc: 0, dt: 0, ws: ref.width95.median / refD.width95};
+  const p = POST.clubs[k], d = PD.clubs[k];
+  return {dc: p.carry.median - d.carry, dt: p.total.median - d.total, ws: p.width95.median / d.width95};
+}
+const profW = () => POST.clubs[PREF].width95.median;
+const profActive = () => Math.abs(profW() - PD.clubs[PREF].width95) >= 0.5 || PCLUBS.some(k => Math.abs(POST.clubs[k].carry.median - PD.clubs[k].carry) >= 0.5);
+/* the v2 plan's pick at driver width w (player_profile._pick_at) */
+function sweepPick(R, w){ let p = R.sweep[0][1]; for (const f of [...R.flips].sort((a, b) => a.width - b.width)) if (w >= f.width) p = f.to; return p; }
+function widthPick(R, w){ const a = sweepPick(R, w); return a === sweepPick(R, R.base) ? R.pick : a; }
+function widthAim(R, c, w){ const pts = R.aims[c]; if (!pts || !pts.length) return null;
+  if (w <= pts[0][0]) return pts[0][1]; if (w >= pts[pts.length - 1][0]) return pts[pts.length - 1][1];
+  for (let i = 1; i < pts.length; i++) if (w <= pts[i][0]) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; return y0 + (y1 - y0) * (w - x0) / (x1 - x0); }
+  return pts[0][1]; }
+/* share of the posterior width (lognormal) on which the pick differs from the pick at the median */
+function pOther(R){ const W = POST.clubs[PREF].width95, pm = widthPick(R, W.median); let k = 0;
+  for (let i = 0; i < 64; i++) { const q = (i + 0.5) / 64, z = Math.sqrt(2) * erfinv(2 * q - 1); if (widthPick(R, W.median * Math.exp(z * W.sd_log)) !== pm) k++; }
+  return k / 64; }
+function erfinv(x){ const a = 0.147, l = Math.log(1 - x * x), t = 2 / (Math.PI * a) + l / 2; return Math.sign(x) * Math.sqrt(Math.sqrt(t * t - l / a) - t); }
+
+/* ---- parsers (the JS port of course_data/personal/parsers.py: launch monitors + the generic tee-shot CSV) */
+const YD_PER_M = 1.0936133;
+function canonicalClub(raw){
+  let s = String(raw ?? "").trim().toLowerCase().replace(/_/g, " "); if (!s) return "";
+  if (["d", "dr", "drv", "driver", "1w", "1 wood", "1-wood"].includes(s)) return "Driver";
+  let m = /^(\d)\s*-?\s*(w|wd|wood|fw|fairway wood|fairway)$/.exec(s) || /^(?:wood|fairway)\s*(\d)$/.exec(s); if (m) return m[1] + "-wood";
+  m = /^(\d)\s*-?\s*(h|hy|hyb|hybrid|rescue|u|ut|utility)$/.exec(s) || /^(?:hybrid|rescue)\s*(\d)$/.exec(s); if (m) return m[1] + "-hybrid";
+  m = /^(\d)\s*-?\s*(i|ir|iron)$/.exec(s) || /^iron\s*(\d)$/.exec(s); if (m) return m[1] + "-iron";
+  if (s === "hybrid" || s === "rescue") return "hybrid";
+  if (s === "long iron") return "4-iron";
+  return String(raw).trim();
+}
+function bagClub(raw){
+  const c = canonicalClub(raw);
+  if (PD.clubs[c]) return c;
+  if (/-hybrid$|^hybrid$/.test(c)) return "Hybrid";
+  return c;
+}
+const LM_ALIASES = {
+  club: ["club", "club type", "club name", "clubtype", "club_type", "schlägerart", "tipo de palo"],
+  carry: ["carry distance", "carry", "carry dist", "carry (yds)", "carry (m)", "carry flat - length", "carry_yds", "carry-distanz", "distancia de vuelo", "carry_distance"],
+  side: ["carry deviation distance", "carry side", "side", "carry flat - side", "offline", "lateral", "lateral landing", "side carry", "carry lateral", "offline (yds)", "side (yds)", "carry_side", "carry-abweichungsdistanz", "deviation", "carry deviation"],
+  session: ["session", "session id", "session name", "tag"]};
+const hnorm = h => String(h ?? "").replace(/﻿/g, "").trim().toLowerCase().replace(/\s+/g, " ");
+const hfind = (header, key) => { const hn = header.map(hnorm); for (const a of LM_ALIASES[key]) { const i = hn.indexOf(a); if (i >= 0) return i; } return null; };
+function num(v){
+  if (v == null) return null; const s = String(v).trim(); if (["", "-", "--", "n/a", "NaN", "nan"].includes(s)) return null;
+  let m = /^\s*([-+]?\d+(?:[.,]\d+)?)\s*([LRlr])?\s*$/.exec(s);
+  if (m) { let x = parseFloat(m[1].replace(",", ".")); if (m[2]) x = m[2].toUpperCase() === "L" ? -Math.abs(x) : Math.abs(x); return x; }
+  m = /^\s*([LRlr])\s*([-+]?\d+(?:[.,]\d+)?)\s*$/.exec(s);
+  if (m) { const x = Math.abs(parseFloat(m[2].replace(",", "."))); return m[1].toUpperCase() === "L" ? -x : x; }
+  const x = parseFloat(s.replace(",", ".")); return isFinite(x) && /^[-+]?[\d.,]+$/.test(s) ? x : null;
+}
+function csvRows(text){                                   /* RFC 4180: quotes, doubled quotes, CRLF */
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) { const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += ch; }
+    else if (ch === '"') q = true; else if (ch === ",") { row.push(f); f = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
+    else f += ch; }
+  if (f !== "" || row.length) { row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(c => c.trim()));
+}
+function parseLaunchMonitor(text){
+  const rows = csvRows(text), hi = rows.findIndex(r => hfind(r, "carry") !== null);
+  if (hi < 0) return null;
+  const header = rows[hi]; let body = rows.slice(hi + 1), unit = null;
+  if (body.length && body[0].filter(c => /\[.*\]|\(.*\)|^(yds|m|mph|deg|rpm|ft|%)$/i.test(c.trim())).length >= 2) { unit = body[0]; body = body.slice(1); }
+  const ic = hfind(header, "club"), ica = hfind(header, "carry"), isd = hfind(header, "side"), ise = hfind(header, "session");
+  const lab = String((unit && unit[ica]) || header[ica]).toLowerCase();
+  const k = /\bm\b|\[m\]|\(m\)|meter|metre/.test(lab) && !lab.includes("mph") ? YD_PER_M : 1;
+  const out = [];
+  for (const r of body) { const c = num(r[ica]); if (c == null || c <= 0) continue;
+    const s = isd != null ? num(r[isd]) : null;
+    out.push({club: ic != null ? bagClub(r[ic]) : "Driver", carry: c * k, side: s == null ? null : s * k,
+              session: ise != null && r[ise] && r[ise].trim() ? r[ise].trim() : "s0"}); }
+  return {kind: "launch_monitor", lm: out, course: []};
+}
+function localYds(lat0, lon0, lat, lon){ const R = 6371008.8 / 0.9144;
+  return [(lon - lon0) * Math.PI / 180 * Math.cos(lat0 * Math.PI / 180) * R, (lat - lat0) * Math.PI / 180 * R]; }
+function teeShotGeometry(s, e, t){
+  const [ex, ey] = localYds(s[0], s[1], e[0], e[1]), [tx, ty] = localYds(s[0], s[1], t[0], t[1]), tl = Math.hypot(tx, ty);
+  if (tl < 1) return [Math.hypot(ex, ey), null];
+  const ux = tx / tl, uy = ty / tl; return [Math.hypot(ex, ey), ex * uy - ey * ux];
+}
+function parseShotCsv(text){
+  const rows = csvRows(text); if (rows.length < 2) return null;
+  const h = rows[0].map(hnorm), g = (r, k) => { const i = h.indexOf(k); return i >= 0 ? r[i] : undefined; };
+  if (!h.includes("club") || !(h.includes("end_lat") || h.includes("lateral_yds") || h.includes("total_yds"))) return null;
+  const out = [];
+  for (const r of rows.slice(1)) {
+    const src = (g(r, "aim_source") || "").trim() || (g(r, "aim_lat") ? "aim_point" : "green_line");
+    const pen = ["1", "true", "yes", "t"].includes(String(g(r, "penalty") ?? "0").trim().toLowerCase());
+    let tot = num(g(r, "total_yds")), lat = num(g(r, "lateral_yds"));
+    if (tot == null && g(r, "end_lat")) {
+      const S = [+g(r, "start_lat"), +g(r, "start_lon")], E = [+g(r, "end_lat"), +g(r, "end_lon")];
+      let T = g(r, "aim_lat") ? [+g(r, "aim_lat"), +g(r, "aim_lon")] : g(r, "green_lat") ? [+g(r, "green_lat"), +g(r, "green_lon")] : null;
+      if ([...S, ...E].every(isFinite)) [tot, lat] = T && T.every(isFinite) ? teeShotGeometry(S, E, T) : [teeShotGeometry(S, E, E)[0], null];
+    }
+    const side = (g(r, "penalty_side") || "").trim().toLowerCase();
+    out.push({club: bagClub(g(r, "club")), total: pen ? null : tot, lateral: pen ? null : lat, aim_sd: PD.prior.aim_sd[src] ?? 8,
+              gps_sd: PD.prior.gps_sd, censored: pen ? (side === "left" || side === "right" ? side : "both") : null,
+              beyond: num(g(r, "beyond")) ?? PD.prior.beyond});
+  }
+  return {kind: "shot_log", lm: [], course: out};
+}
+/* add a file's shots: clubs outside the bag go to the bag club with the nearest carry (within 10 yds), else are skipped */
+function importCsv(name, text){
+  let r = null; try { r = parseShotCsv(text) || parseLaunchMonitor(text); } catch (e) { r = null; }
+  if (!r || !(r.lm.length + r.course.length)) { PF.msg = `Could not read ${name}: no carry / side columns (launch monitor) or club + start/end points (tee-shot log) found.`; return false; }
+  const rows = r.kind === "launch_monitor" ? r.lm : r.course, by = {}, skipped = {};
+  for (const x of rows) (by[x.club] = by[x.club] || []).push(x);
+  for (const [c, xs] of Object.entries(by)) { if (PD.clubs[c]) continue;
+    const med = median(xs.map(x => r.kind === "launch_monitor" ? x.carry : (x.total ?? NaN)).filter(isFinite));
+    const near = PCLUBS.map(k => [k, Math.abs((r.kind === "launch_monitor" ? PF.clubs[k].carry : PF.clubs[k].total) - med)]).sort((a, b) => a[1] - b[1])[0];
+    if (isFinite(med) && near[1] <= 10) xs.forEach(x => x.club = near[0]); else { skipped[c] = xs.length; xs.forEach(x => x.club = null); } }
+  const keep = rows.filter(x => x.club);
+  if (r.kind === "launch_monitor") PF.shots.lm = PF.shots.lm.concat(keep).slice(-3000); else PF.shots.course = PF.shots.course.concat(keep).slice(-3000);
+  const per = {}; for (const x of keep) per[x.club] = (per[x.club] || 0) + 1;
+  PF.files.push({name: String(name).slice(0, 80), kind: r.kind, n: keep.length, clubs: per, skipped});
+  PF.files = PF.files.slice(-20);
+  const sk = Object.entries(skipped).map(([c, k]) => `${c} (${k})`).join(", ");
+  PF.msg = `Added ${keep.length} ${r.kind === "launch_monitor" ? "launch-monitor" : "on-course"} shots from ${name}: ${Object.entries(per).map(([c, k]) => `${c} ${k}`).join(", ") || "none"}.${sk ? ` Skipped clubs not in your bag: ${sk}.` : ""}`;
+  return true;
+}
+function profileChanged(){ POST = fitProfile(PF); saveProfile(); }
 
 /* ------------------------------------------------------------------ geometry */
 const pt = (V, along, lat) => [V.axes.o[0] + along * V.axes.f[0] + lat * V.axes.r[0], V.axes.o[1] + along * V.axes.f[1] + lat * V.axes.r[1]];
@@ -243,6 +490,7 @@ function solveTee(C, H, T, W){
     for (const [i, w] of K) { const s = sol[c], f = V.flight[c][i];
       r.aim += w * s[0][i]; r.ev += w * s[1][i]; r.lo += w * s[2][i]; r.hi += w * s[3][i];
       r.carry += w * f[0]; r.total += w * f[1]; r.width += w * f[2]; r.drift += w * f[3]; }
+    const pa = planAdj(c); r.carry += pa.dc; r.total += pa.dt; r.width *= pa.ws;      /* your distances + pattern */
     const e = V.elev && V.elev.clubs && V.elev.clubs[c];
     if (e) { const roll = r.total - r.carry; r.carry += e.dc; r.total = r.carry + roll * e.rf; r.kick = e.kick; r.e = e; }
     r.dT = r.carry * tk; r.carry += r.dT; r.total += r.dT;
@@ -252,13 +500,18 @@ function solveTee(C, H, T, W){
   let pick = order[0], aim = out[pick].aim, tie = (out[order[1]].ev - out[pick].ev) < 0.01, how = "wind";
   const g0 = {}; for (const c of V.clubs) g0[c] = {ev: sol[c][1][0], aim: sol[c][0][0]};
   const calmQuick = Object.keys(g0).sort((a, b) => g0[a].ev - g0[b].ev)[0];
+  /* the calm-day plan: where the plan swept the driver pattern (width_rule), the pick and aim at YOUR pattern */
+  let calm = V.calm, wr = null;
+  if (V.width_rule && T.back === 0) { const R = V.width_rule, w = profW(), c = widthPick(R, w), a = widthAim(R, c, w);
+    if (out[c] && a != null) { wr = {w, pick: c, plan: R.pick, changed: c !== R.pick, near: R.flips.filter(f => Math.abs(f.width - w) < 4), p_other: pOther(R)};
+      calm = {pick: c, aim: a, tie: wr.near.length > 0}; } }
   /* keep the plan's calm-day pick unless the wind itself changes the decision; shift its aim by the wind's aim change */
-  if (V.calm && T.back === 0 && out[V.calm.pick] && (W.mph < 1.5 || pick === calmQuick)) {
-    const c = V.calm.pick; pick = c; aim = V.calm.aim + (out[c].aim - g0[c].aim); tie = V.calm.tie; how = "calm"; }
+  if (calm && T.back === 0 && out[calm.pick] && (W.mph < 1.5 || pick === calmQuick)) {
+    const c = calm.pick; pick = c; aim = calm.aim + (out[c].aim - g0[c].aim); tie = calm.tie; how = "calm"; }
   const ans = T.back === 0 ? answered(C, H, T) : null;
   if (ans && out[ans.pick]) { pick = ans.pick; aim = ans.aim + (out[pick].aim - g0[pick].aim); tie = false; how = "answer"; }
   order.splice(order.indexOf(pick), 1); order.unshift(pick);
-  return {rel, out, order, pick, aim, tie, how, ans, calmQuick};
+  return {rel, out, order, pick, aim, tie, how, ans, calmQuick, calm, wr};
 }
 const windMod = mph => mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3;
 function solvePar3(C, H, T, W){
@@ -311,6 +564,9 @@ function renderPick(){
   const states = D.catalog.states.map(s => s.state).join(" and ");
   return `<header class="stack" style="gap:4px"><div class="brand"><h1>Aim Caddie</h1><span class="tag">where to aim, which club, today's wind</span></div>
       <p class="sub">Pick your course and tees. Every hole shows the statistically best target and club (Fawcett / DECADE style), re-solved for the wind and temperature when you get there.</p></header>
+    <button class="panel gamecard" data-go="game"><span class="spread"><span class="label">Your game</span><span class="sub">Edit ›</span></span>
+      <span>Driver ${Math.round(POST.clubs[PREF].carry.median)} carry · pattern <b>${Math.round(profW())} yds</b>${POST.data.launch_monitor + POST.data.on_course ? ` · from ${POST.data.launch_monitor + POST.data.on_course} of your shots` : ""}</span>
+      <span class="sub">Type your distances and spread, or add a Garmin R10 / launch-monitor / shot-log CSV. Picks and patterns follow it.</span></button>
     <input type="search" id="q" placeholder="Search courses or towns" value="${esc(st.q)}" aria-label="Search courses">
     <div class="stack" id="list">
       ${mine.map(C => `<button class="ccard" data-course="${C.id}">
@@ -491,8 +747,13 @@ function renderHole(){
     if (own) { const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${esc(r.pick)} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     if (r.tie && !own) badges.push(`<span class="pill tie">Tie · ${esc(r.order[1])} just as good</span>`);
     if (r.how === "answer") badges.push(`<span class="pill ans">From your check answer</span>`);
-    if (V.calm && r.pick !== V.calm.pick && T.back === 0 && r.how !== "answer") badges.push(`<span class="pill chg">Calm-day pick: ${esc(V.calm.pick)}</span>`);
-    if (V.calm && V.calm.flips && V.calm.flips.length && !own) badges.push(`<span class="pill">${V.calm.flips.map(f => `${esc(f.to)} if your ${esc(f.frm)} pattern is wider than ${Math.round(f.width)} yds`).join("; ")}</span>`);
+    if (r.calm && r.pick !== r.calm.pick && T.back === 0 && r.how !== "answer") badges.push(`<span class="pill chg">Calm-day pick: ${esc(r.calm.pick)}</span>`);
+    const pw = Math.round(profW());
+    if (r.wr && r.wr.changed) badges.push(`<span class="pill chg" data-wr="changed">Your ${pw}-yd pattern: ${esc(r.wr.pick)} (plan at ${V.width_rule.base} yds: ${esc(r.wr.plan)})</span>`);
+    if (r.wr && r.wr.p_other >= 0.1) badges.push(`<span class="pill tie">Depends on your pattern: ${Math.round(r.wr.p_other * 100)}% the other club</span>`);
+    const flips = r.wr ? V.width_rule.flips : (V.calm && V.calm.flips) || [];
+    if (flips.length && !own && !(r.wr && r.wr.changed)) badges.push(`<span class="pill">${flips.map(f => `${esc(f.to)} if your ${esc(f.frm)} pattern is wider than ${Math.round(f.width)} yds`).join("; ")}</span>`);
+    if (!r.wr && Math.abs(pw - PD.clubs[PREF].width95) >= 3) badges.push(`<span class="pill">Pattern drawn at your ${pw} yds; the club pick assumes ${PD.clubs[PREF].width95}</span>`);
     if (V.mapped_along && best.total - B > V.mapped_along) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
     if (Math.abs(B - T.want) > 5) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B - T.t.back) < 1 ? "card spot" : Math.abs(B - T.t.back) + " yds " + (B > T.t.back ? "back" : "up")}</span>`);
     const mv = best.drift + best.kick + cL;
@@ -562,7 +823,8 @@ function renderHole(){
     <section class="panel stack">${table}${adjRow}
       ${elev ? `<p class="sub">${elev}</p>` : ""}
       ${V.note ? `<p class="note">${esc(V.note)}</p>` : ""}
-      ${V.calm && V.calm.source ? `<p class="foot">Calm-day pick from the ${esc(V.calm.source)}; in wind the club and aim are re-solved for the forecast at this hole.</p>` : ""}
+      ${V.kind === "tee" && V.width_rule && T.back === 0 ? `<p class="foot">Calm-day pick and aim from the v2 model at your ${Math.round(profW())}-yd driver pattern (its width sweep and break-evens); in wind the club and aim are re-solved for the forecast at this hole. <button class="btn ghost" data-go="game">Your game ›</button></p>`
+        : V.calm && V.calm.source ? `<p class="foot">Calm-day pick from the ${esc(V.calm.source)}; in wind the club and aim are re-solved for the forecast at this hole.</p>` : ""}
     </section>
     <details class="panel" id="windPanel" ${st.wind_open ? "open" : ""}><summary><span class="label">Wind &amp; tee time</span><span class="sub">${src === "custom" ? "set by hand" : esc((C.forecast.days.find(d => d.key === src) || {}).label || "") + " · tee " + clock(teeHour(C))}</span></summary>
       <div class="stack" style="margin-top:10px">
@@ -586,15 +848,62 @@ function renderHole(){
     <section class="panel stack"><div class="label">All holes${src === "custom" ? " in this wind" : " · forecast for when you reach each"}</div>
       <div class="strip" id="strip">${C.holes.map((Hh, k) => { const p = pickFor(C, Hh); return `<button class="chip" data-i="${k}" aria-current="${k === i}" aria-label="Hole ${Hh.no}">${Hh.confidence.level === "check" ? "<i>⚠</i>" : ""}<b>${Hh.no}</b><span class="${p.c}">${p.txt}</span></button>`; }).join("")}</div>
       <p class="sub">Club per tee shot (≈ tie), “plays like” yards on par 3s.</p></section>
-    <p class="foot">${C.forecast && C.forecast.fetched ? `Forecast: ${esc(C.forecast.source)}, fetched ${esc(C.forecast.fetched.slice(0, 16).replace("T", " "))} UTC. ` : ""}${esc(C.model)} Imagery: ${esc(C.imagery)}. Bag: ${Object.entries(D.player.clubs).map(([c, v]) => `${c} ${v.carry}/${v.total}`).join(", ")}.</p>`;
+    <p class="foot">${C.forecast && C.forecast.fetched ? `Forecast: ${esc(C.forecast.source)}, fetched ${esc(C.forecast.fetched.slice(0, 16).replace("T", " "))} UTC. ` : ""}${esc(C.model)} Imagery: ${esc(C.imagery)}. Your bag: ${PCLUBS.map(k => `${k} ${Math.round(POST.clubs[k].carry.median)}/${Math.round(POST.clubs[k].total.median)}`).join(", ")}; driver pattern ${Math.round(profW())} yds.</p>`;
+}
+
+/* ------------------------------------------------------------------ "Your game" screen */
+const r0 = x => Math.round(x);
+function gameOut(){
+  const P = POST, W = P.clubs[PREF].width95, sh = D.courses.find(c => c.id === "spirit_hollow");
+  const rows = PCLUBS.map(k => { const c = P.clubs[k], n = c.n_shots.launch_monitor + c.n_shots.on_course;
+    return `<tr data-pfrow="${esc(k)}"><td class="${cls(PD.clubs[k].plan || k)}">${esc(k)}</td><td>${r0(c.carry.median)}<span class="sub"> ±${r0(Z90 * c.carry.sd)}</span></td><td>${r0(c.total.median)}</td>
+      <td><b>${r0(c.width95.median)}</b><span class="sub"> ${r0(c.width95.ci90[0])}–${r0(c.width95.ci90[1])}</span></td><td class="sub">${n ? n + " shots" : c.source === "stated" ? "as typed" : "from the others"}</td></tr>`; }).join("");
+  let picks = "";
+  if (sh) {
+    const items = [];
+    for (const H of sh.holes) { const vid = (H.tees[sh.default_tee] || {}).variant, V = H.variants[vid], R = V && V.width_rule; if (!R) continue;
+      const pk = widthPick(R, W.median), po = pOther(R), ch = pk !== R.pick;
+      if (ch || po >= 0.1) items.push(`<li data-pfhole="${H.no}"><b>Hole ${H.no}</b>: ${ch ? `<b class="${cls(pk)}">${esc(pk)}</b> (plan at ${R.base} yds: ${esc(R.pick)})` : esc(pk)}${po >= 0.1 ? ` · ${Math.round(po * 100)}% chance the other club is right` : ""}${R.flips.length ? ` · break-even ${R.flips.map(f => r0(f.width)).join(", ")} yds` : ""}</li>`); }
+    picks = `<div class="label">Spirit Hollow (Black tees): holes your pattern changes</div>${items.length ? `<ul class="pflist">${items.join("")}</ul>` : `<p class="sub">None: at a ${r0(W.median)}-yd driver pattern every tee shot keeps the plan's club.</p>`}`;
+  }
+  return `<div class="label">What the app uses now</div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>Pattern (90%)</th><th>From</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="sub">${P.data.launch_monitor + P.data.on_course ? `Your ${P.data.launch_monitor ? P.data.launch_monitor + " launch-monitor" : ""}${P.data.launch_monitor && P.data.on_course ? " and " : ""}${P.data.on_course ? P.data.on_course + " on-course" : ""} shots pull these from what you typed, as much as they can: a few shots move them a little (the ${P.prior === "generic" ? "rough-guess" : "“sure”"} prior). A range pattern is widened ×${PD.prior.f_median} for the course.` : "No shots added yet: the app uses what you typed. Add a launch-monitor or tee-shot CSV and these numbers move toward what your shots show."}</p>
+    ${picks}
+    <p class="sub">Picks switch with your driver pattern where the plan swept it (Spirit Hollow, Black tees: the v2 model's width sweep and break-evens); everywhere else the drawn pattern scales to yours and the landing spot moves with your distances, but the club picks assume the plan's ${PD.clubs[PREF].width95}-yd pattern until the course is re-planned for you.</p>`;
+}
+function renderGame(){
+  const c = PF.clubs, inp = (k, q, lo, hi) => `<input type="number" inputmode="numeric" min="${lo}" max="${hi}" step="1" data-pf="${esc(k)}|${q}" value="${r0(c[k][q])}" aria-label="${esc(k)} ${q === "width95" ? "pattern width" : q}">`;
+  const files = PF.files.map(f => `<li>${esc(f.name)}: ${f.n} ${f.kind === "launch_monitor" ? "launch-monitor" : "on-course"} shots</li>`).join("");
+  return `<div class="topbar"><button class="btn ghost" data-go="${esc(st.game_back || "pick")}">‹ Back</button><span></span></div>
+    <header class="stack" style="gap:6px"><h1>Your game</h1>
+      <p class="sub">Your distances and how wide your tee shots spread. Type them in, or add a launch-monitor or shot-log file and let your shots set them. Kept on this device only.</p></header>
+    <section class="panel stack"><div class="label">Your bag (what you'd tell a caddie)</div>
+      <div style="overflow-x:auto"><table class="pf"><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>Pattern</th></tr></thead><tbody>
+      ${PCLUBS.map(k => `<tr><td class="${cls(PD.clubs[k].plan || k)}">${esc(k)}${PD.clubs[k].plan ? "" : "<span class=\"sub\"> *</span>"}</td><td>${inp(k, "carry", 80, 400)}</td><td>${inp(k, "total", 80, 420)}</td><td>${inp(k, "width95", 10, 160)}</td></tr>`).join("")}
+      </tbody></table></div>
+      <p class="sub">Yards, on a 70°F day. <b>Pattern</b>: left-to-right width that 95% of your good strikes finish inside on the course (a 70-yd driver pattern is about ±35 yds). * Not in the course plans yet: it counts toward your pattern, but no hole offers it.</p>
+      <div class="row"><span class="label">These numbers are</span><div class="seg" role="group" aria-label="How sure"><button data-pfprior="v2" aria-pressed="${PF.prior !== "generic"}">Measured / sure</button><button data-pfprior="generic" aria-pressed="${PF.prior === "generic"}">A rough guess</button></div></div>
+    </section>
+    <section class="panel stack"><div class="label">Add your shots</div>
+      <p class="sub"><b>Garmin R10 / R50</b>: Garmin Golf app → the session → share → CSV. TrackMan, FlightScope, Rapsodo and other launch monitors work if the file has club, carry and side columns. <b>Tee-shot log</b>: club, start_lat, start_lon, end_lat, end_lon (+ aim_lat, aim_lon, penalty, penalty_side).</p>
+      <div class="row"><label class="btn" for="pfFile">Upload a CSV</label><input type="file" id="pfFile" accept=".csv,text/csv,text/plain" class="vh">
+        ${PF.shots.lm.length + PF.shots.course.length ? `<button class="btn ghost" data-pfact="clear">Remove all shots</button>` : ""}<button class="btn ghost" data-pfact="reset">Reset bag</button></div>
+      <textarea id="pfPaste" rows="3" placeholder="…or paste the CSV text here" aria-label="Paste a CSV"></textarea>
+      <div class="row"><button class="btn" data-pfact="paste">Add pasted shots</button></div>
+      <p class="sub" id="pfMsg" role="status">${esc(PF.msg || "")}</p>
+      ${files ? `<ul class="pflist sub">${files}</ul>` : ""}
+    </section>
+    <section class="panel stack" id="pfOut">${gameOut()}</section>
+    <p class="foot">The fit is the closed-form summary of course_data/personal/bayes.py (golf_player/1): log pattern width and carry are normal, one part shared by every club and one per club, centred on what you typed. Mishits (carry under 88% of the club's median) are left out of the width; penalty tee shots count as balls past the penalty line.</p>`;
 }
 
 /* ------------------------------------------------------------------ render + events */
 function render(){
-  const C = cur(); if (!C) st.screen = "pick";
+  const C = cur(); if (!C && st.screen !== "game") st.screen = "pick";
   const app = $("app");
-  app.innerHTML = st.screen === "pick" ? renderPick() : st.screen === "tees" ? renderTees() : renderHole();
-  document.title = st.screen === "pick" ? "Aim Caddie" : `${cur().short} · Aim Caddie`;
+  app.innerHTML = st.screen === "game" ? renderGame() : st.screen === "pick" ? renderPick() : st.screen === "tees" ? renderTees() : renderHole();
+  document.title = st.screen === "pick" ? "Aim Caddie" : st.screen === "game" ? "Your game · Aim Caddie" : `${cur().short} · Aim Caddie`;
   save();
 }
 function rerenderKeepFocus(id){ const y = window.scrollY; render(); if (id && $(id)) { const el = $(id); el.focus(); if (el.type === "search" || el.type === "text") { const n = el.value.length; el.setSelectionRange(n, n); } } window.scrollTo(0, y); }
@@ -615,7 +924,12 @@ app.addEventListener("click", e => {
   if (b.tagName === "SUMMARY") { if (b.parentElement.id === "windPanel") setTimeout(() => { st.wind_open = b.parentElement.open; save(); }, 0); return; }
   const d = b.dataset;
   if (d.course) { st.course = d.course; st.screen = "tees"; window.scrollTo(0, 0); return render(); }
-  if (d.go) { st.screen = d.go; window.scrollTo(0, 0); return render(); }
+  if (d.go) { if (d.go === "game" && st.screen !== "game") st.game_back = st.screen; st.screen = d.go; window.scrollTo(0, 0); return render(); }
+  if (d.pfprior) { PF.prior = d.pfprior; profileChanged(); return rerenderKeepFocus(); }
+  if (d.pfact) { if (d.pfact === "clear") { PF.shots = {lm: [], course: []}; PF.files = []; PF.msg = "Removed all shots."; }
+    else if (d.pfact === "reset") { const f = freshProfile(); PF.clubs = f.clubs; PF.prior = "v2"; PF.msg = "Bag reset to the defaults."; }
+    else if (d.pfact === "paste") { const t = ($("pfPaste") || {}).value || ""; if (t.trim()) importCsv("pasted CSV", t); else PF.msg = "Paste a CSV first."; }
+    profileChanged(); return rerenderKeepFocus(); }
   if (!C) return;
   if (d.set) { st.set[C.id] = d.set; return render(); }
   if (d.src) { st.src[C.id] = d.src; if (d.src === "custom") { const W = windFor(C, C.holes[holeIdx(C)]); st.custom = {from: Math.round(W.from), mph: Math.round(W.mph), temp: Math.round(W.temp ?? 70)}; } return render(); }
@@ -627,6 +941,20 @@ app.addEventListener("click", e => {
   if (b.id === "prev" || b.id === "next") { const n = C.holes.length; st.idx[C.id] = (holeIdx(C) + (b.id === "next" ? 1 : n - 1)) % n; return render(); }
   if (d.club) { const H = C.holes[holeIdx(C)], T = teeSpot(C, H), r = solveTee(C, H, T, windFor(C, H)), ck = T.key + "|" + T.name;
     if (d.club === r.pick) delete st.club[ck]; else st.club[ck] = d.club; return rerenderKeepFocus(); }
+});
+/* your game: typed numbers apply on change (not per keystroke); files are read in the browser, never uploaded */
+app.addEventListener("change", e => {
+  const t = e.target;
+  if (t.dataset && t.dataset.pf) { const [k, q] = t.dataset.pf.split("|"), v = +t.value, lo = +t.min, hi = +t.max;
+    if (PF.clubs[k] && isFinite(v) && v >= lo && v <= hi) { PF.clubs[k][q] = v; if (q === "carry" && PF.clubs[k].total < v) PF.clubs[k].total = v; PF.msg = ""; }
+    else { PF.msg = `${k} ${q === "width95" ? "pattern" : q}: enter ${lo}–${hi} yds.`; t.value = Math.round(PF.clubs[k][q]); }
+    profileChanged(); const o = $("pfOut"), m = $("pfMsg"); if (o) o.innerHTML = gameOut(); if (m) m.textContent = PF.msg; return; }
+  if (t.id === "pfFile" && t.files && t.files[0]) { const f = t.files[0];
+    if (f.size > 5e6) { PF.msg = `${f.name} is over 5 MB.`; return rerenderKeepFocus(); }
+    const rd = new FileReader();
+    rd.onload = () => { importCsv(f.name, String(rd.result || "")); profileChanged(); rerenderKeepFocus(); };
+    rd.onerror = () => { PF.msg = `Could not read ${f.name}.`; rerenderKeepFocus(); };
+    rd.readAsText(f); }
 });
 /* wind dial: drag to where the wind blows from */
 let drag = false;
