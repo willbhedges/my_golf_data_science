@@ -20,15 +20,17 @@ Rule (the white stakes run along property lines, a few yards to tens of yards in
                 house_d yds, then closed by house_close yds so a row of houses gives one continuous line
     roads       centre line buffered by the class half-width + road_margin yds
     residential landuse polygons grown by res_off yds (None = not used)
-    outside     everything outside the course outline grown by out_off yds (None = not used), restricted to
-                within out_dev yds of a house or road when out_dev is set ("developed" outside)
+    outside     everything beyond the course's property line moved by out_off yds (negative = OB starts inside
+                it; None = not used), restricted to within out_dev yds of a house or road when out_dev is set
+                ("developed" outside). out_src 'parcels' takes the property line from the course's own county
+                parcels (evidence 'property_line'), 'osm' (or no parcel data) from the OSM outline ('outside')
   per hole: clipped to line_of_play (tee -> hole line -> green) buffered by CORRIDOR yds, minus the hole's
   fairway / green / water / sand / tee polygons (OB never overrides them), simplified 1.5 yds, pieces >= 100 yd2.
 Parameters are calibrated on the hand-checked Spirit Hollow OB (evaluate.py, leave-one-hole-out); the fitted
 values live in params.json next to this file, DEFAULTS below are used when it is missing.
 
 Each zone: {"lie": "ob", "poly": [[lon, lat], ...], "src": "ob:<evidence>", "p": confidence, "evidence": [...]},
-where evidence is the first matching of tag > parcel > road > house > residential > outside and p is that
+where evidence is the first matching of tag > parcel > road > house > residential > property_line|outside and p is that
 evidence's precision on Spirit Hollow (P_DEFAULT when not calibrated).
 """
 import argparse
@@ -49,9 +51,9 @@ CORRIDOR = 60.0
 MIN_AREA = 100.0
 SIMPLIFY = 1.5
 DEFAULTS = dict(house_d=20.0, house_close=20.0, parcel_off=0.0, parcel_mode="houses", road_margin=5.0,
-                road_inside=False, res_off=None, out_off=None, out_dev=None)
-P_DEFAULT = dict(tag=0.95, parcel=0.8, road=0.75, house=0.6, residential=0.5, outside=0.4)
-ORDER = ["tag", "parcel", "road", "house", "residential", "outside"]
+                road_inside=False, res_off=None, out_off=None, out_dev=None, out_src="osm")
+P_DEFAULT = dict(tag=0.95, parcel=0.8, road=0.75, house=0.6, residential=0.5, property_line=0.5, outside=0.4)
+ORDER = ["tag", "parcel", "road", "house", "residential", "property_line", "outside"]
 ROAD_HALF = dict(motorway=14, trunk=12, primary=10, secondary=8, tertiary=7, unclassified=5, residential=5,
                  living_street=4, motorway_link=6, trunk_link=6, primary_link=6, secondary_link=5, tertiary_link=5)
 RAIL_HALF = 5.0
@@ -230,15 +232,18 @@ class Regions:
         parcels = [P.to_m(g) for g in L["parcels"]]
         blds = [P.to_m(g) for g in L["buildings"]]
         # course parcels: mostly inside the outline (or the outline mostly inside them: the course's own parcel)
-        priv = []
+        priv, cpar = [], []
         for g in parcels:
             if g.area <= 0:
                 continue
             ov = g.intersection(self.course).area if self.course is not None else 0.0
             if ov > 0.5 * g.area or (ov > 0.3 * self.course.area if self.course is not None else False):
+                cpar.append(g)
                 continue
             priv.append(g)
         self.private = priv
+        # the course's own property (its parcels): the property line the white stakes follow
+        self.course_parcels = unary_union(cpar) if cpar else None
         ptree = STRtree(priv) if priv else None
         houses = []
         for b in blds:
@@ -298,15 +303,23 @@ class Regions:
             return None
         return self._c(("res", off), lambda: self.res.buffer(off) if off else self.res)
 
-    def outside(self, off, dev, dev_road_margin=5.0):
-        if off is None or self.course is None:
+    def property_src(self, src):
+        """'parcels' -> the course's parcels when the county data has them, else the OSM outline."""
+        return "parcels" if src == "parcels" and self.course_parcels is not None else "osm"
+
+    def outside(self, off, dev, src="osm", dev_road_margin=5.0):
+        """Everything beyond the course property line pulled in by -off yds (off < 0: OB starts inside it).
+        src 'osm' = the leisure=golf_course outline, 'parcels' = the union of the course's own parcels."""
+        src = self.property_src(src)
+        line = self.course_parcels if src == "parcels" else self.course
+        if off is None or line is None:
             return None
 
         def mk():
             from shapely.geometry import box
-            x0, y0, x1, y1 = self.course.bounds
+            x0, y0, x1, y1 = line.bounds
             big = box(x0 - 2000, y0 - 2000, x1 + 2000, y1 + 2000)
-            o = big.difference(self.course.buffer(off) if off else self.course)
+            o = big.difference(line.buffer(off) if off else line)
             if dev is not None:
                 parts = [g for g in (self.house_union, self.road(dev_road_margin)) if g is not None]
                 if not parts:
@@ -314,7 +327,7 @@ class Regions:
                 from shapely.ops import unary_union
                 o = o.intersection(unary_union(parts).buffer(dev))
             return o
-        return self._c(("out", off, dev), mk)
+        return self._c(("out", off, dev, src), mk)
 
     def components(self, prm):
         """-> [(evidence, region)] in ORDER for the parameter dict prm (None regions dropped)."""
@@ -327,7 +340,8 @@ class Regions:
                                     unlotted=self.lots is not None and prm.get("parcel_off") is not None)
                 if prm.get("house_d") is not None else None),
                ("residential", self.residential(prm.get("res_off"))),
-               ("outside", self.outside(prm.get("out_off"), prm.get("out_dev")))]
+               ("property_line" if self.property_src(prm.get("out_src", "osm")) == "parcels" else "outside",
+                self.outside(prm.get("out_off"), prm.get("out_dev"), prm.get("out_src", "osm")))]
         return [(k, g) for k, g in out if g is not None and not g.is_empty]
 
 

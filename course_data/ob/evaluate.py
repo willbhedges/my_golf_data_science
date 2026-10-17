@@ -39,14 +39,16 @@ LAT = 55
 STEP = 5
 
 GRID_FULL = dict(
-    house=[None] + [(d, c) for d in (0, 5, 10, 15, 20, 25, 30, 40, 50) for c in (0, 20, 40)],
+    house=[None] + [(d, c) for d in (0, 10, 20, 30, 40) for c in (0, 30)],
     road=[None] + [(m, ins) for m in (0, 5, 10, 20) for ins in (True, False)],
     res=[None, 0, 10, 20],
-    out=[None] + [(o, dv) for o in (-20, -15, -10, -5, 0, 10, 20, 40) for dv in (None, 30, 45, 60, 80, 100)],
+    out=[None] + [(o, dv, sr) for o in (-20, -15, -12, -10, -8, -5, 0, 10, 20) for dv in (None, 30, 45, 60, 80, 100)
+                  for sr in ("osm", "parcels")],
     parcel=[None] + [(o, md) for o in (-10, -5, 0, 5, 10, 20) for md in ("houses", "all")],
     geom=[None, True])                    # keep the geometry stage's OSM OB too (apply_ob mode 'add')
 GRID_SMALL = dict(house=[None, (10, 20), (25, 20)], road=[None, (5, True), (5, False)], res=[None, 0],
-                  out=[None, (0, None), (10, 60)], parcel=[None, (0, "houses")], geom=[None, True])
+                  out=[None, (0, None, "osm"), (-10, 60, "osm"), (-8, None, "parcels")], parcel=[None, (0, "houses")],
+                  geom=[None, True])
 
 
 def log(*a):
@@ -108,7 +110,7 @@ def comp_region(R, kind, v):
     if kind == "res":
         return R.residential(v)
     if kind == "out":
-        return R.outside(v[0], v[1])
+        return R.outside(v[0], v[1], v[2])
     if kind == "parcel":
         return R.parcel(v[0], v[1]) if R.private else None
     raise KeyError(kind)
@@ -119,7 +121,7 @@ def to_params(sel):
     return dict(mode="add" if sel.get("geom") else "replace",
                 house_d=h[0] if h else None, house_close=h[1] if h else 0.0,
                 road_margin=r[0] if r else None, road_inside=r[1] if r else True,
-                res_off=s, out_off=o[0] if o else None, out_dev=o[1] if o else None,
+                res_off=s, out_off=o[0] if o else None, out_dev=o[1] if o else None, out_src=o[2] if o else "osm",
                 parcel_off=p[0] if p else None, parcel_mode=p[1] if p else "houses")
 
 
@@ -229,6 +231,8 @@ def calibrate(small=False):
     grid = GRID_SMALL if small else GRID_FULL
     if not R.private:
         grid = dict(grid, parcel=[None])
+    if R.course_parcels is None:
+        grid = dict(grid, out=[v for v in grid["out"] if v is None or v[2] == "osm"])
     if not R.res or R.res.is_empty if R.res is not None else True:
         grid = dict(grid, res=[None])
     M = masks_for(cells, R, grid, baseline_masks(cells, pkg, R, "geometry"))
@@ -341,7 +345,7 @@ def write_md(res, dec=None):
         bi = b["inter"] / b["union"] if b["union"] else None
         L.append(f"| {l['key']} | {l['truth']} | {b['pred']} / {f(bi)} | {l['pred']} / {f(l['iou'])} | "
                  f"{p['house_d']}/{p['house_close']}, {p['road_margin']}{'' if p['road_inside'] else ' (outside only)'}, "
-                 f"{p['out_off']}{'' if p['out_dev'] is None else ' dev ' + str(p['out_dev'])}, {p['mode']} |")
+                 f"{p['out_off']} {p['out_src']}{'' if p['out_dev'] is None else ' dev ' + str(p['out_dev'])}, {p['mode']} |")
     L += ["", "IoU is undefined (shown -) on holes with no OB in either; cells predicted there are false positives "
               "(the 'pred' column)."]
     if dec:
