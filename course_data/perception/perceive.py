@@ -141,8 +141,12 @@ def tables(st, L, D, T, out_dir, rng=None):
     if T.cart_length_m() >= 1500.0 * max(nh, 9) / 18.0:
         X = F.path_feature_stack(L)
         region = T.in_boundary_mask(pad_m=30)
-        pos = T.line_raster(T.cart_paths, 2.0) & region
-        road = T.line_raster(T.roads, 5.0) & ~pos
+        # OSM lines sit 1-5 m off the imagery: positives = non-vegetated, low pixels within 5 m of a mapped path
+        # (plus the 1 m core where the path is visible but not darker than turf, e.g. gravel / shaded)
+        near = T.line_raster(T.cart_paths, 10.0) & region
+        h = np.nan_to_num(L["hag"], nan=0.0)
+        pos = (near & (L["ndvi_rel"] < -0.08) & (h < 1.0)) | (T.line_raster(T.cart_paths, 1.0) & region & (h < 1.0))
+        road = T.line_raster(T.roads, 5.0) & ~near
         anyway = T.line_raster(T.cart_paths + T.roads, 14.0)
         neg = region & ~anyway & L["valid"]
         idx, ys = [], []
