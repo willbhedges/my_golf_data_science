@@ -5,32 +5,32 @@
  "n_osm_greens": 24,
  "n_osm_tees": 49,
  "greens_any": {
-  "precision": 0.7407,
-  "recall": 0.8333,
-  "n_pred": 27,
+  "precision": 1.0,
+  "recall": 0.75,
+  "n_pred": 18,
   "n_true": 24,
-  "tp_pred": 20,
-  "tp_true": 20,
+  "tp_pred": 18,
+  "tp_true": 18,
   "eligible": true
  },
  "greens_hole": {
-  "precision": 0.72,
+  "precision": 1.0,
   "recall": 1.0,
-  "n_pred": 25,
+  "n_pred": 18,
   "n_true": 18,
   "tp_pred": 18,
   "tp_true": 18,
   "eligible": true,
   "practice_called_hole": 0,
-  "practice_called_practice": 2,
+  "practice_called_practice": 0,
   "hole_called_practice": 0,
   "practice_true": 6,
   "hole_uncertain": 0
  },
  "tee_complexes": {
-  "precision": 0.7368,
+  "precision": 1.0,
   "recall": 1.0,
-  "n_pred": 38,
+  "n_pred": 28,
   "n_true": 18,
   "tp_pred": 28,
   "tp_true": 18,
@@ -40,7 +40,7 @@
   "tp_true_any_p": 18,
   "starts_with_osm_tee": 18,
   "recall_starts_with_osm_tee": 1.0,
-  "n_complex_per_hole": 2.11
+  "n_complex_per_hole": 1.56
  },
  "tee_boxes": {
   "precision": 0.7037,
@@ -119,12 +119,12 @@
  },
  "relations": {
   "n": 17,
-  "top1_next_tee_acc": 0.6471,
+  "top1_next_tee_acc": 0.7647,
   "n_with_path": 10,
   "top1_acc_when_path": 0.6
  },
  "clubhouse": {
-  "error_m": 1265.3,
+  "error_m": 4.7,
   "truth": "tagged",
   "eligible": true
  },
@@ -135,21 +135,21 @@
   "eligible": true
  },
  "seconds": {
-  "greens": 1.2,
-  "tees": 4.0,
-  "fairways": 0.6,
-  "bunkers_water_trees": 1.3,
-  "cart_paths": 50.1,
-  "buildings_parking_clubhouse_range": 1.6,
-  "total": 58.8
+  "greens": 1.9,
+  "tees": 7.8,
+  "fairways": 1.0,
+  "bunkers_water_trees": 2.0,
+  "cart_paths": 141.1,
+  "buildings_parking_clubhouse_range": 2.3,
+  "total": 156.2
  },
- "models": "perception-20261017-0858",
+ "models": "perception-20261017-0945",
  "lidar": true,
  "summary": {
-  "greens_hole": 25,
-  "greens_practice": 2,
-  "greens_uncertain": 2,
-  "tee_complexes": 38,
+  "greens_hole": 18,
+  "greens_practice": 0,
+  "greens_uncertain": 11,
+  "tee_complexes": 28,
   "fairways": 25,
   "bunkers": 53,
   "water": 53,
@@ -158,7 +158,7 @@
   "cart_path_km": 4.501,
   "cart_path_components": 31,
   "buildings": 555,
-  "parking": 7,
+  "parking": 4,
   "clubhouse": true,
   "driving_range": false
  },

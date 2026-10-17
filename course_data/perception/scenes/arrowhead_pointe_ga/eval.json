@@ -5,32 +5,32 @@
  "n_osm_greens": 18,
  "n_osm_tees": 72,
  "greens_any": {
-  "precision": 0.8333,
-  "recall": 0.8333,
-  "n_pred": 18,
+  "precision": 0.8235,
+  "recall": 0.7778,
+  "n_pred": 17,
   "n_true": 18,
-  "tp_pred": 15,
-  "tp_true": 15,
+  "tp_pred": 14,
+  "tp_true": 14,
   "eligible": true
  },
  "greens_hole": {
-  "precision": 0.8333,
-  "recall": 0.8333,
-  "n_pred": 18,
+  "precision": 0.8235,
+  "recall": 0.7778,
+  "n_pred": 17,
   "n_true": 18,
-  "tp_pred": 15,
-  "tp_true": 15,
+  "tp_pred": 14,
+  "tp_true": 14,
   "eligible": true,
   "practice_called_hole": 0,
   "practice_called_practice": 0,
   "hole_called_practice": 0,
   "practice_true": 0,
-  "hole_uncertain": 2
+  "hole_uncertain": 3
  },
  "tee_complexes": {
-  "precision": 0.85,
+  "precision": 0.9444,
   "recall": 0.7778,
-  "n_pred": 20,
+  "n_pred": 18,
   "n_true": 18,
   "tp_pred": 17,
   "tp_true": 14,
@@ -40,7 +40,7 @@
   "tp_true_any_p": 14,
   "starts_with_osm_tee": 18,
   "recall_starts_with_osm_tee": 0.7778,
-  "n_complex_per_hole": 1.11
+  "n_complex_per_hole": 1.0
  },
  "tee_boxes": {
   "precision": 0.75,
@@ -118,13 +118,13 @@
   "components": 8
  },
  "relations": {
-  "n": 15,
-  "top1_next_tee_acc": 0.6,
-  "n_with_path": 4,
-  "top1_acc_when_path": 0.25
+  "n": 13,
+  "top1_next_tee_acc": 0.7692,
+  "n_with_path": 3,
+  "top1_acc_when_path": 0.3333
  },
  "clubhouse": {
-  "error_m": 5.5,
+  "error_m": 1104.4,
   "truth": "tagged",
   "eligible": true
  },
@@ -135,21 +135,21 @@
   "eligible": true
  },
  "seconds": {
-  "greens": 2.0,
-  "tees": 6.8,
-  "fairways": 0.9,
-  "bunkers_water_trees": 2.3,
-  "cart_paths": 90.7,
-  "buildings_parking_clubhouse_range": 2.6,
-  "total": 105.3
+  "greens": 3.0,
+  "tees": 12.7,
+  "fairways": 1.4,
+  "bunkers_water_trees": 3.4,
+  "cart_paths": 251.3,
+  "buildings_parking_clubhouse_range": 3.9,
+  "total": 275.7
  },
- "models": "perception-20261017-0858",
+ "models": "perception-20261017-0945",
  "lidar": true,
  "summary": {
-  "greens_hole": 18,
+  "greens_hole": 17,
   "greens_practice": 0,
-  "greens_uncertain": 5,
-  "tee_complexes": 20,
+  "greens_uncertain": 6,
+  "tee_complexes": 18,
   "fairways": 19,
   "bunkers": 44,
   "water": 10,

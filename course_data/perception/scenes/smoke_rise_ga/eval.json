@@ -22,17 +22,17 @@
   "tp_true": 18,
   "eligible": true,
   "practice_called_hole": 0,
-  "practice_called_practice": 1,
+  "practice_called_practice": 0,
   "hole_called_practice": 0,
   "practice_true": 1,
   "hole_uncertain": 0
  },
  "tee_complexes": {
-  "precision": 0.7667,
+  "precision": 0.88,
   "recall": 0.8889,
-  "n_pred": 30,
+  "n_pred": 25,
   "n_true": 18,
-  "tp_pred": 23,
+  "tp_pred": 22,
   "tp_true": 16,
   "eligible": true,
   "precision_eligible": true,
@@ -40,7 +40,7 @@
   "tp_true_any_p": 17,
   "starts_with_osm_tee": 18,
   "recall_starts_with_osm_tee": 0.8889,
-  "n_complex_per_hole": 1.67
+  "n_complex_per_hole": 1.39
  },
  "tee_boxes": {
   "precision": 0.82,
@@ -88,9 +88,9 @@
   "eligible": true
  },
  "parking": {
-  "precision": 0.0,
+  "precision": null,
   "recall": null,
-  "n_pred": 1,
+  "n_pred": 0,
   "n_true": 0,
   "tp_pred": 0,
   "tp_true": 0,
@@ -119,12 +119,12 @@
  },
  "relations": {
   "n": 17,
-  "top1_next_tee_acc": 0.3529,
-  "n_with_path": 7,
-  "top1_acc_when_path": 0.5714
+  "top1_next_tee_acc": 0.5294,
+  "n_with_path": 6,
+  "top1_acc_when_path": 0.5
  },
  "clubhouse": {
-  "error_m": 484.9,
+  "error_m": 882.6,
   "truth": "tagged",
   "eligible": true
  },
@@ -135,21 +135,21 @@
   "eligible": false
  },
  "seconds": {
-  "greens": 1.2,
-  "tees": 3.8,
-  "fairways": 0.6,
-  "bunkers_water_trees": 1.3,
-  "cart_paths": 44.6,
-  "buildings_parking_clubhouse_range": 1.5,
-  "total": 52.9
+  "greens": 1.7,
+  "tees": 6.8,
+  "fairways": 0.9,
+  "bunkers_water_trees": 1.9,
+  "cart_paths": 131.4,
+  "buildings_parking_clubhouse_range": 2.3,
+  "total": 145.1
  },
- "models": "perception-20261017-0858",
+ "models": "perception-20261017-0945",
  "lidar": true,
  "summary": {
   "greens_hole": 18,
-  "greens_practice": 1,
-  "greens_uncertain": 0,
-  "tee_complexes": 30,
+  "greens_practice": 0,
+  "greens_uncertain": 1,
+  "tee_complexes": 25,
   "fairways": 19,
   "bunkers": 53,
   "water": 33,
@@ -158,7 +158,7 @@
   "cart_path_km": 2.342,
   "cart_path_components": 22,
   "buildings": 385,
-  "parking": 10,
+  "parking": 8,
   "clubhouse": true,
   "driving_range": false
  },

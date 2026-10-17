@@ -1,5 +1,5 @@
 {
- "id": "perception-20261017-0945",
+ "id": "perception-20261017-1050",
  "sklearn": "1.9.1",
  "test_states": [
   "GA",
@@ -152,10 +152,10 @@
    },
    "test": {
     "n": 570,
-    "acc": 0.8561,
-    "auc_pos": 0.794,
-    "precision_pos": 0.8827,
-    "recall_pos": 0.9704
+    "acc": 0.8526,
+    "auc_pos": 0.7905,
+    "precision_pos": 0.8902,
+    "recall_pos": 0.9598
    }
   },
   "tee_box": {
@@ -219,7 +219,7 @@
     "0": 300,
     "1": 1159
    },
-   "thr": 0.35,
+   "thr": 0.225,
    "train": {
     "n": 1459,
     "acc": 1.0,
@@ -230,9 +230,9 @@
    "test": {
     "n": 782,
     "acc": 0.8299,
-    "auc_pos": 0.8743,
-    "precision_pos": 0.8781,
-    "recall_pos": 0.8976
+    "auc_pos": 0.8755,
+    "precision_pos": 0.8683,
+    "recall_pos": 0.9113
    }
   },
   "parking": {
@@ -305,9 +305,9 @@
    },
    "test": {
     "n": 1901,
-    "acc": 0.9937,
-    "auc_pos": 0.8781,
-    "precision_pos": 0.4545,
+    "acc": 0.9942,
+    "auc_pos": 0.8902,
+    "precision_pos": 0.5,
     "recall_pos": 0.4545,
     "top1": 0.3636,
     "courses": 11
@@ -329,28 +329,28 @@
     "tee_length",
     "tee_p"
    ],
-   "n_train": 10508,
-   "n_test": 4978,
+   "n_train": 9035,
+   "n_test": 4229,
    "train_class_counts": {
-    "0": 9732,
-    "1": 776
+    "0": 8261,
+    "1": 774
    },
    "thr": null,
    "train": {
-    "n": 10508,
-    "acc": 0.9541,
-    "auc_pos": 0.9719,
-    "precision_pos": 0.7106,
-    "recall_pos": 0.6392
+    "n": 9035,
+    "acc": 0.9784,
+    "auc_pos": 0.9937,
+    "precision_pos": 0.9154,
+    "recall_pos": 0.8243
    },
    "test": {
-    "n": 4978,
-    "acc": 0.9415,
-    "auc_pos": 0.9384,
-    "precision_pos": 0.6298,
-    "recall_pos": 0.4973,
-    "top1_when_true_present": 0.6438,
-    "greens": 365
+    "n": 4229,
+    "acc": 0.9286,
+    "auc_pos": 0.9378,
+    "precision_pos": 0.6041,
+    "recall_pos": 0.4193,
+    "top1_when_true_present": 0.6572,
+    "greens": 353
    }
   }
  },
@@ -390,7 +390,7 @@
   "n_train": 1500000,
   "courses_train": 56,
   "courses_test": 29,
-  "seconds": 78.4,
+  "seconds": 66.2,
   "train": {
    "n": 1500000,
    "acc": 0.8906,

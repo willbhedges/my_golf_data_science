@@ -5,18 +5,18 @@
  "n_osm_greens": 42,
  "n_osm_tees": 176,
  "greens_any": {
-  "precision": 1.0,
+  "precision": 0.9091,
   "recall": 0.9524,
-  "n_pred": 40,
+  "n_pred": 44,
   "n_true": 42,
   "tp_pred": 40,
   "tp_true": 40,
   "eligible": true
  },
  "greens_hole": {
-  "precision": 1.0,
+  "precision": 0.9302,
   "recall": 0.9524,
-  "n_pred": 40,
+  "n_pred": 43,
   "n_true": 42,
   "tp_pred": 40,
   "tp_true": 40,
@@ -28,9 +28,9 @@
   "hole_uncertain": 0
  },
  "tee_complexes": {
-  "precision": 0.8125,
+  "precision": 1.0,
   "recall": 0.6667,
-  "n_pred": 80,
+  "n_pred": 65,
   "n_true": 45,
   "tp_pred": 65,
   "tp_true": 30,
@@ -40,7 +40,7 @@
   "tp_true_any_p": 30,
   "starts_with_osm_tee": 41,
   "recall_starts_with_osm_tee": 0.7317,
-  "n_complex_per_hole": 4.44
+  "n_complex_per_hole": 3.61
  },
  "tee_boxes": {
   "precision": 0.8725,
@@ -120,8 +120,8 @@
  "relations": {
   "n": 38,
   "top1_next_tee_acc": 0.1842,
-  "n_with_path": 17,
-  "top1_acc_when_path": 0.2353
+  "n_with_path": 16,
+  "top1_acc_when_path": 0.25
  },
  "clubhouse": {
   "error_m": null,
@@ -135,21 +135,21 @@
   "eligible": false
  },
  "seconds": {
-  "greens": 1.2,
-  "tees": 4.8,
-  "fairways": 0.8,
-  "bunkers_water_trees": 1.8,
-  "cart_paths": 54.9,
-  "buildings_parking_clubhouse_range": 2.6,
-  "total": 66.0
+  "greens": 1.8,
+  "tees": 9.2,
+  "fairways": 1.3,
+  "bunkers_water_trees": 2.7,
+  "cart_paths": 160.1,
+  "buildings_parking_clubhouse_range": 3.9,
+  "total": 178.9
  },
- "models": "perception-20261017-0858",
+ "models": "perception-20261017-0945",
  "lidar": true,
  "summary": {
-  "greens_hole": 40,
-  "greens_practice": 0,
-  "greens_uncertain": 8,
-  "tee_complexes": 80,
+  "greens_hole": 43,
+  "greens_practice": 1,
+  "greens_uncertain": 4,
+  "tee_complexes": 65,
   "fairways": 44,
   "bunkers": 259,
   "water": 52,
@@ -158,7 +158,7 @@
   "cart_path_km": 14.345,
   "cart_path_components": 79,
   "buildings": 1054,
-  "parking": 3,
+  "parking": 4,
   "clubhouse": true,
   "driving_range": false
  },
