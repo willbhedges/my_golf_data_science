@@ -113,10 +113,16 @@ def side_hazards(hole, raster, fwd, right, band=BAND_PENAL, band_near=BAND):
     return out
 
 
-def decade_box(hole, raster, start, lie="fairway", wind=0, dist=None, step=0.25):
-    """The DECADE edge rule (yardage_book.par3_plan) generalised to any approach: cushion = the card
-    number for the distance x the lie's dispersion multiplier, + 3 water/OB, + 2 trees/long grass,
-    + 1 bunker, + the wind modifier, in from each edge of the real green as seen from `start`."""
+def decade_box(hole, raster, start, lie="fairway", wind=0, dist=None, step=0.5):
+    """The DECADE edge rule (yardage_book.par3_plan) generalised to any approach and any green shape.
+
+    Cushion per side = the card number for the distance x the lie's dispersion multiplier, + 3 water/OB,
+    + 2 trees/long grass, + 1 bunker, + the wind modifier. The target region is every point of the real
+    green that is at least the left/right cushion from the green's edge sideways and the short/long
+    cushion along the line of play (checked at the cushion and half of it, so a kidney's waist counts).
+    If nothing qualifies, the lesser trouble gives up room (0.5 yd at a time; the worst side keeps its
+    full cushion, equal trouble gives up equally, ending in the middle), as on the par-3 pages. Aim =
+    the region's centroid; box = its bounding rectangle; shape = its outline (convex hull)."""
     from matplotlib.path import Path
     start = np.asarray(start, float)
     fwd, right = frame(hole, start)
@@ -129,38 +135,78 @@ def decade_box(hole, raster, start, lie="fairway", wind=0, dist=None, step=0.25)
     mult = {"left": ml, "right": ml, "short": md, "long": md}
     off = {k: max(base * mult[k] + yb.ADD[v[0]] + wind, 0.0) for k, v in haz.items()}
     sev = {k: yb.SEVERITY[v[0]] for k, v in haz.items()}
+    lo, hi = g.min(axis=0), g.max(axis=0)
+    gx, gy = np.meshgrid(np.arange(lo[0], hi[0] + step, step), np.arange(lo[1], hi[1] + step, step))
+    cand = np.c_[gx.ravel(), gy.ravel()]
+    cand = cand[path.contains_points(cand)]
+    vec = {"left": (-1, 0), "right": (1, 0), "short": (0, -1), "long": (0, 1)}
+    ok_side = {}
 
-    def extent(axis, at):
-        span = np.arange(-60, 60 + step, step)
-        pts = np.c_[span, np.full_like(span, at)] if axis == 0 else np.c_[np.full_like(span, at), span]
-        inside = span[path.contains_points(pts)]
-        return (inside.min(), inside.max()) if len(inside) else (0.0, 0.0)
+    def side_ok(side, c):
+        if c not in ok_side.setdefault(side, {}):
+            v = np.array(vec[side], float)
+            ok = np.ones(len(cand), bool)
+            for f in (0.5, 1.0):
+                ok &= path.contains_points(cand + v * c * f)
+            ok_side[side][c] = ok
+        return ok_side[side][c]
 
-    lat_c = (g[:, 0].min() + g[:, 0].max()) / 2
-    dep_c = (g[:, 1].min() + g[:, 1].max()) / 2
-    for _ in range(3):
-        f, b_ = extent(1, lat_c)
-        d0, d1, how_d = yb._axis(f, b_, off["short"], off["long"], sev["short"], sev["long"])
-        dep_c = (d0 + d1) / 2
-        l, r = extent(0, dep_c)
-        l0, l1, how_l = yb._axis(l, r, off["left"], off["right"], sev["left"], sev["right"])
-        lat_c = (l0 + l1) / 2
+    cush = {k: round(v / step) * step for k, v in off.items()}
+    given = {k: 0.0 for k in cush}
+    for _ in range(400):
+        m = np.ones(len(cand), bool)
+        for side, c in cush.items():
+            m &= side_ok(side, c)
+        if m.any():
+            break
+        live = [k for k in cush if cush[k] > 0]
+        if not live:
+            m = np.ones(len(cand), bool)
+            break
+        low = min(sev[k] for k in live)
+        for k in live:
+            if sev[k] == low:
+                cush[k] = max(cush[k] - step, 0.0)
+                given[k] += step
+    region = cand[m]
+    lat_c, dep_c = region.mean(axis=0)
+    l0, d0 = region.min(axis=0)
+    l1, d1 = region.max(axis=0)
+
+    def how(a, b):
+        if not given[a] and not given[b]:
+            return "fits"
+        if given[a] and given[b]:
+            return "split"
+        return f"{b} keeps" if given[a] else f"{a} keeps"
     bl0, bl1, bd0, bd1 = l0, l1, d0, d1
     if bl1 - bl0 < 2:
         bl0, bl1 = lat_c - 1, lat_c + 1
     if bd1 - bd0 < 2:
         bd0, bd1 = dep_c - 1, dep_c + 1
     corners = np.array([(bl0, bd0), (bl1, bd0), (bl1, bd1), (bl0, bd1)])
-    shape = clip_to_rect(g, bl0, bl1, bd0, bd1)      # the box, trimmed to the putting surface
-    if len(shape) < 3:
-        shape = corners
+    shape = _hull(region, step) if len(region) >= 3 else corners
+    span = np.arange(-60, 60.01, 0.25)
+    row = span[path.contains_points(np.c_[span, np.full_like(span, dep_c)])]
+    col = span[path.contains_points(np.c_[np.full_like(span, lat_c), span])]
     return dict(dist=dist, lie=lie, wind=wind, base=float(base), haz={k: v[0] for k, v in haz.items()},
-                haz_share={k: v[1] for k, v in haz.items()}, off=off, lat=(float(l0), float(l1)),
-                dep=(float(d0), float(d1)), how_lat=how_l, how_dep=how_d, edges_lat=(float(l), float(r)),
-                edges_dep=(float(f), float(b_)), aim_ld=(float(lat_c), float(dep_c)),
-                aim_xy=from_ld(hole, [(lat_c, dep_c)], fwd, right)[0],
+                haz_share={k: v[1] for k, v in haz.items()}, off=off, used=cush, given=given,
+                lat=(float(l0), float(l1)), dep=(float(d0), float(d1)),
+                how_lat=how("left", "right"), how_dep=how("short", "long"),
+                edges_lat=(float(row.min()), float(row.max())) if len(row) else (0.0, 0.0),
+                edges_dep=(float(col.min()), float(col.max())) if len(col) else (0.0, 0.0),
+                aim_ld=(float(lat_c), float(dep_c)), aim_xy=from_ld(hole, [(lat_c, dep_c)], fwd, right)[0],
                 box_xy=from_ld(hole, corners, fwd, right), shape_ld=shape,
                 shape_xy=from_ld(hole, shape, fwd, right), green_ld=g, fwd=fwd, right=right)
+
+
+def _hull(pts, step):
+    """Outline of a set of grid points (convex hull of the cell corners)."""
+    from scipy.spatial import ConvexHull
+    h = step / 2
+    corners = np.vstack([pts + (dx, dy) for dx in (-h, h) for dy in (-h, h)])
+    hull = ConvexHull(corners)
+    return corners[hull.vertices]
 
 
 def clip_to_rect(poly, x0, x1, y0, y1):
@@ -342,7 +388,7 @@ def sg_aim_check(ap, starts, lies, m=60, step=2.0, seed=9):
 
 
 # ------------------------------------------------------------------ par 5 second shots
-LAYUP_L = np.arange(30, 171, 10)
+LAYUP_L = np.arange(20, 171, 10)
 LAYUP_OFF = np.arange(-25, 25.1, 5)
 
 
@@ -391,8 +437,30 @@ def par5_second(ap, starts, lies, m=100, seed=13, go_slack=20.0):
                 E_go=E_go, E_lay=E_lay, E_fixed=E_fixed, dist=dist, lies=np.asarray(lies))
 
 
+GO_NEAR = 40.0      # a 2nd shot aimed within this many yds of the green centre is "going for it"
+
+
+def _nanmin(a, axis=1):
+    a = np.where(np.isfinite(a), a, np.inf)
+    m = a.min(axis=axis)
+    return np.where(np.isfinite(m), m, np.nan), a.argmin(axis=axis)
+
+
+def split_families(res):
+    """Go = at the DECADE box, or at the apron/front (lay-up targets <= GO_NEAR yds from the centre);
+    lay-up = targets further back. Returns (E_go_family, go_aim_index, far_columns)."""
+    L = np.array([x[0] for x in res["targets"]])
+    near, far = np.flatnonzero(L <= GO_NEAR), np.flatnonzero(L > GO_NEAR)
+    cand = np.c_[res["E_go"], res["E_lay"][:, near]]
+    e, j = _nanmin(cand)
+    return e, np.where(j == 0, -1, near[np.maximum(j - 1, 0)]), far
+
+
 def summarize_par5(res):
-    E_go, E_lay, E_fixed, dist, lies = res["E_go"], res["E_lay"], res["E_fixed"], res["dist"], res["lies"]
+    E_go_box, E_fixed, dist, lies = res["E_go"], res["E_fixed"], res["dist"], res["lies"]
+    E_go, go_aim, far = split_families(res)
+    E_lay = res["E_lay"][:, far]
+    targets_far = [res["targets"][j] for j in far]
     best_lay = np.nanmin(np.where(np.isfinite(E_lay), E_lay, np.inf), axis=1)
     best_lay[~np.isfinite(best_lay)] = np.nan
     j_best = np.where(np.isfinite(E_lay).any(axis=1), np.nanargmin(np.where(np.isfinite(E_lay), E_lay, np.inf), axis=1), -1)
@@ -401,20 +469,21 @@ def summarize_par5(res):
     policy = np.where(~playable, E_fixed, np.where(go_better, E_go, np.fmin(best_lay, E_go)))
     # one book lay-up target: the best average over the starts that lay up (where reachable)
     lay = playable & ~go_better
+    pool = lay if lay.sum() >= 10 else playable        # (nearly) always going: still name a lay-up
     fixed_choice = None
-    if lay.any():
-        sub = E_lay[lay]
+    if pool.any():
+        sub = E_lay[pool]
         ok = np.isfinite(sub).mean(axis=0) >= 0.9
         if ok.any():
             mean = np.where(ok, np.nanmean(np.where(np.isfinite(sub), sub, np.nan), axis=0), np.inf)
             jj = int(np.argmin(mean))
-            fixed_choice = dict(L=res["targets"][jj][0], off=res["targets"][jj][1], j=jj,
+            fixed_choice = dict(L=targets_far[jj][0], off=targets_far[jj][1], j=int(far[jj]),
                                 ev=float(mean[jj]), ev_by_L={})
-            for L in sorted(set(x[0] for x in res["targets"])):
-                cols = [k for k, x in enumerate(res["targets"]) if x[0] == L and ok[k]]
+            for L in sorted(set(x[0] for x in targets_far)):
+                cols = [k for k, x in enumerate(targets_far) if x[0] == L and ok[k]]
                 if cols:
                     best_k = min(cols, key=lambda k: mean[k])
-                    fixed_choice["ev_by_L"][int(L)] = (float(mean[best_k]), res["targets"][best_k][1])
+                    fixed_choice["ev_by_L"][int(L)] = (float(mean[best_k]), targets_far[best_k][1])
     # go thresholds by lie (largest 10-yd distance bin where going wins at least half the time)
     thresh = {}
     for lie in ("fairway", "first_cut", "rough", "sand"):
@@ -428,7 +497,20 @@ def summarize_par5(res):
             if mm.sum() >= 5 and go_better[mm].mean() >= 0.5:
                 best = int(b + 10)
         thresh[lie] = best
-    return dict(p_go=float(go_better.mean()), p_lay=float(lay.mean()), p_fixed=float((~playable).mean()),
+    both = playable & np.isfinite(E_go) & np.isfinite(best_lay)
+    diff = (E_go - best_lay)[both]
+    margin = dict(n=int(both.sum()), mean=float(diff.mean()) if both.any() else None,
+                  se=float(diff.std(ddof=1) / np.sqrt(both.sum())) if both.sum() > 1 else None)
+    # when going: aim at the green box, or short of it (apron / front)?
+    gm = go_better & np.isfinite(E_go)
+    aims = {}
+    for j in go_aim[gm]:
+        key = "green" if j < 0 else f"{res['targets'][j][0]:.0f} short, {res['targets'][j][1]:+.0f}"
+        aims[key] = aims.get(key, 0) + 1
+    go_aims = {k: round(v / max(gm.sum(), 1), 2) for k, v in sorted(aims.items(), key=lambda kv: -kv[1])}
+    box_cost = (E_go_box - E_go)[gm & np.isfinite(E_go_box)]
+    return dict(go_aims=go_aims, go_box_cost=float(box_cost.mean()) if len(box_cost) else None,
+                margin_go_minus_lay=margin, p_go=float(go_better.mean()), p_lay=float(lay.mean()), p_fixed=float((~playable).mean()),
                 ev_policy=float(np.mean(policy)), go_better=go_better, best_lay=best_lay, j_best=j_best,
                 fixed=fixed_choice, go_threshold=thresh,
                 ev_go_when_possible=float(np.nanmean(np.where(playable & np.isfinite(E_go), E_go, np.nan)))
@@ -438,8 +520,9 @@ def summarize_par5(res):
 
 
 def go_sweep(ap, dists=range(150, 301, 10), lies=("fairway", "first_cut", "rough"), m=100, seed=17):
-    """Go vs best lay-up from points on the hole line at each distance from the green, per lie:
-    rows (dist, lie, E_go or None, E_best_layup or None, best (L, off))."""
+    """Go vs lay-up from points on the hole line at each distance from the green, per lie. Go = the best
+    of the DECADE box and aiming at the apron (targets <= GO_NEAR yds from the centre); lay-up = the best
+    target further back. Rows: dist, lie, e_go, go_aim, e_lay, lay (L, off)."""
     h = ap.h
     z = S.z_draws(m, seed)
     targets = layup_targets(h)
@@ -450,19 +533,44 @@ def go_sweep(ap, dists=range(150, 301, 10), lies=("fairway", "first_cut", "rough
         for lie in lies:
             e0 = float(ap.start_e(lie, dist))
             reach = S.REACH[lie]
-            e_go = None
-            if dist <= reach + 20:
+            go = lay = None
+            if dist <= reach + 5:                   # past reach, "at the green" is just an advance
                 aim = decade_box(h, ap.r, s, lie)["aim_xy"]
                 fin, _ = S.shot(s, aim, lie, z)
-                e_go = 1 + float(ap.after(fin, e0).mean())
-            best = None
+                go = (1 + float(ap.after(fin, e0).mean()), "green")
             for L, o, p in targets:
                 if np.linalg.norm(p - s) > reach or L >= dist - 20:
                     continue
                 fin, _ = S.shot(s, p, lie, z)
                 e = 1 + float(ap.after(fin, e0).mean())
-                if best is None or e < best[0]:
-                    best = (e, L, o)
-            rows.append(dict(dist=round(dist, 1), lie=lie, e_go=e_go, e_lay=best[0] if best else None,
-                             lay=(best[1], best[2]) if best else None))
+                if L <= GO_NEAR:
+                    if go is None or e < go[0]:
+                        go = (e, f"{L:.0f} short, {o:+.0f}")
+                elif lay is None or e < lay[0]:
+                    lay = (e, L, o)
+            rows.append(dict(dist=round(dist, 1), lie=lie, e_go=go[0] if go else None, go_aim=go[1] if go else None,
+                             e_lay=lay[0] if lay else None, lay=(lay[1], lay[2]) if lay else None))
     return rows
+
+
+def go_rule(sweep, tol=0.0):
+    """From go_sweep rows: per lie, the longest distance up to which going is never worse than the best
+    lay-up (scanning out from the shortest distance), and the distances where they're within 0.02."""
+    out = {}
+    for lie in sorted({r["lie"] for r in sweep}):
+        rows = sorted((r for r in sweep if r["lie"] == lie), key=lambda r: r["dist"])
+        up_to = None
+        for r in rows:
+            if r["e_go"] is None or r["e_lay"] is None or r["e_go"] > r["e_lay"] + tol:
+                break
+            up_to = r["dist"]
+        close = [r["dist"] for r in rows if r["e_go"] is not None and r["e_lay"] is not None
+                 and abs(r["e_go"] - r["e_lay"]) < 0.02]
+        go_any = [r["dist"] for r in rows if r["e_go"] is not None and r["e_lay"] is not None and r["e_go"] <= r["e_lay"]]
+        green = None                    # longest distance (scanning out) where going means the green box
+        for r in rows:
+            if r.get("go_aim") != "green" or r["e_lay"] is not None and r["e_go"] > r["e_lay"] + tol:
+                break
+            green = r["dist"]
+        out[lie] = dict(go_up_to=up_to, green_box_up_to=green, close=close, go_wins_at=go_any)
+    return out

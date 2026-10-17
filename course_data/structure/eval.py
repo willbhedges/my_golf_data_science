@@ -115,17 +115,24 @@ def _first(line, frac=0.6):
     return np.array(pts) if len(pts) >= 2 else line[:2]
 
 
+def true_green(G, R, end):
+    """Index of the green the true line ends on: nearest by edge distance (centroid - radius), <= 12 yds."""
+    if not len(G):
+        return None
+    d = np.hypot(*(G - end).T) - R
+    i = int(np.argmin(d))
+    return i if d[i] <= 12 else None
+
+
 def match(res, sc, truth):
     """-> per routed hole: (true ref of its physical hole or None)."""
     G = np.array([g["c"] for g in sc.greens])
     tid = {t["id"]: t["c"] for t in sc.tees}
     gid = {g["id"]: i for i, g in enumerate(sc.greens)}
     tg = []
+    R = np.array([np.sqrt(max(g.get("area", 400.0), 50.0) / np.pi) for g in sc.greens])
     for h in truth:
-        d = np.hypot(*(G - h["green"]).T) if len(G) else np.array([1e9])
-        # nearest green polygon (contains or edge) to the line end
-        i = int(np.argmin(d))
-        tg.append(i if d[i] <= 25 else None)
+        tg.append(true_green(G, R, h["green"]))
     out = []
     for h in res["holes"]:
         gi = gid.get(h["green"])

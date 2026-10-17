@@ -36,10 +36,11 @@ import yardage_book as yb                       # noqa: E402
 OUT_DIR = os.path.join(HERE, "output")
 FAST = bool(os.environ.get("APPROACH_FAST"))
 CFG = dict(n_tee=1500 if FAST else 4000, n_sg=60 if FAST else 250, m_sg=40 if FAST else 80,
-           n_p5=120 if FAST else 600, m_p5=60 if FAST else 120, grid=10.0 if FAST else 5.0,
-           m_grid=80 if FAST else 200, n_sens=80 if FAST else 300)
+           n_p5=120 if FAST else 500, m_p5=60 if FAST else 200, grid=10.0 if FAST else 5.0,
+           m_grid=80 if FAST else 200, n_sens=80 if FAST else 300, m_sens=60 if FAST else 200)
 LABEL = {"2B": "2 (Gold tee)", "2F": "2", "9B": "9 (Gold tee)", "9F": "9"}
 BLACK = {"2B": False, "9B": False}
+SG_TOL = 0.02          # the DECADE box stands unless the strokes-gained best aim beats it by more than this
 
 
 def key_of(k):
@@ -113,7 +114,7 @@ def hole_plan(key, log=print):
     H = geom.Hole(key)
     R = geom.Raster(H)
     pf = PageFrame(H)
-    ap = P.Approach(H, R)
+    ap = P.Approach(H, R, m=CFG["m_grid"])
     xy, club, aim = P.tee_finishes(H, n=CFG["n_tee"])
     lies = np.array([geom.LIES[i] for i in R.lie_id(xy)], dtype=object)
     dist = np.hypot(*(xy - H.green_c).T)
@@ -147,10 +148,19 @@ def hole_plan(key, log=print):
             b0 = P.decade_box(H, R, start, "fairway")
             best_ld = P.to_ld(H, sg["best_xy"], b0["fwd"], b0["right"])[0]
             inside = (b0["lat"][0] - 1 <= best_ld[0] <= b0["lat"][1] + 1) and (b0["dep"][0] - 1 <= best_ld[1] <= b0["dep"][1] + 1)
+            cost = sg["e_decade"] - sg["e_best"]
+            dx, dy = best_ld[0] - b0["aim_ld"][0], best_ld[1] - b0["aim_ld"][1]
+            shifted = P.clip_to_rect(b0["green_ld"], b0["lat"][0] + dx - (1 if np.ptp(b0["lat"]) < 2 else 0),
+                                     b0["lat"][1] + dx + (1 if np.ptp(b0["lat"]) < 2 else 0),
+                                     b0["dep"][0] + dy - (1 if np.ptp(b0["dep"]) < 2 else 0),
+                                     b0["dep"][1] + dy + (1 if np.ptp(b0["dep"]) < 2 else 0))
             rec["sg_check"] = dict(e_decade=round(sg["e_decade"], 3), e_centre=round(sg["e_centre"], 3),
                                    e_best=round(sg["e_best"], 3), best_ld=[round(float(v), 1) for v in best_ld],
                                    best=pf.geometry(sg["best_xy"]), best_in_box=bool(inside),
-                                   decade_cost=round(sg["e_decade"] - sg["e_best"], 3), n=sg["n_starts"])
+                                   decade_cost=round(cost, 3), n=sg["n_starts"],
+                                   recommend="decade" if (inside or cost <= SG_TOL) else "sg",
+                                   sg_box=pf.geometry(P.from_ld(H, shifted, b0["fwd"], b0["right"])) if len(shifted) >= 3 else None,
+                                   play_sg=round(float(np.linalg.norm(H.green_c - start)) + float(best_ld[1]), 1))
         e_all = [ap.value(s, l) for s, l in zip(xy[idx], lies[idx])]
         rec["approach"]["expected_strokes"] = round(float(np.mean(e_all)), 3)
     else:
@@ -174,8 +184,21 @@ def par5(H, R, pf, ap, xy, lies):
     start = np.median(xy[play], axis=0)
     out["par5"]["go_rate_by_lie"] = {l: round(float(s["go_better"][res["lies"] == l].mean()), 2)
                                      for l in ("fairway", "first_cut", "rough", "sand") if (res["lies"] == l).sum() >= 5}
-    out["go_boxes"] = boxes_from(H, R, pf, start)
-    out["go_from"] = pf.geometry(start)
+    out["par5"]["go_aims"] = s["go_aims"]
+    out["par5"]["go_box_cost"] = None if s["go_box_cost"] is None else round(s["go_box_cost"], 3)
+    if np.linalg.norm(H.green_c - start) <= S.REACH["fairway"] + 20:
+        out["go_boxes"] = boxes_from(H, R, pf, start)
+        out["go_from"] = pf.geometry(start)
+        top = next(iter(s["go_aims"]), "green")
+        if top != "green":                                   # going, but at the apron short of the box
+            L, off = float(top.split()[0]), float(top.split(",")[1])
+            p, fwd = H.along_line_from_green(L)
+            tgt = p + off * geom.right_of(fwd)
+            d_shot = float(np.linalg.norm(tgt - start))
+            sl, sd = S.sigma(d_shot, "fairway")
+            sdir = (tgt - start) / max(d_shot, 1e-9)
+            out["go_target"] = dict(L=L, off=off, target=pf.geometry(tgt), shot=round(d_shot, 1),
+                                    club=S.club_for(d_shot), zone=pf.geometry(ellipse(tgt, sdir, sl, sd)))
     fx = s["fixed"]
     if fx:
         L, off = fx["L"], fx["off"]
@@ -197,6 +220,9 @@ def par5(H, R, pf, ap, xy, lies):
             out["layup"]["full_wedge_cost"] = round(full[fw][0] - fx["ev"], 3)
             out["layup"]["full_wedge_L"] = fw
     out["go_sweep"] = P.go_sweep(ap, m=CFG["m_p5"])
+    out["par5"]["go_rule"] = P.go_rule(out["go_sweep"])
+    mg = s["margin_go_minus_lay"]
+    out["par5"]["margin_go_minus_lay"] = {k: (round(v, 4) if isinstance(v, float) else v) for k, v in mg.items()}
     out["sensitivity"] = sensitivity(H, R, xy, lies)
     return out
 
@@ -215,12 +241,13 @@ def sensitivity(H, R, xy, lies):
                         ("partial_wedge_0.05", lambda on: setattr(S, "PARTIAL_WEDGE", 0.05 if on else 0.0))):
         setup(True)
         try:
-            ap = P.Approach(H, R)
-            ap.build_grid(spacing=max(CFG["grid"], 10.0), )
-            res = P.par5_second(ap, xy[idx], lies[idx], m=max(CFG["m_p5"] // 2, 40))
+            ap = P.Approach(H, R, m=CFG["m_grid"])
+            ap.build_grid(spacing=max(CFG["grid"], 10.0))
+            res = P.par5_second(ap, xy[idx], lies[idx], m=CFG["m_sens"])
+            sweep = P.go_sweep(ap, m=CFG["m_sens"])
             s = P.summarize_par5(res)
             fx = s["fixed"] or {}
-            out[name] = dict(p_go=round(s["p_go"], 3), go_threshold=s["go_threshold"],
+            out[name] = dict(p_go=round(s["p_go"], 3), go_threshold=s["go_threshold"], go_rule=P.go_rule(sweep),
                              layup_L=fx.get("L"), layup_off=fx.get("off"))
         finally:
             setup(False)
@@ -254,10 +281,6 @@ def settings():
                 depth_ratio=S.DEPTH_RATIO, lie_mult=S.LIE_MULT, mishit=[S.MISHIT_FROM, S.MISHIT_RATE, list(S.MISHIT_RANGE)],
                 decade_card=yb.TARGET, decade_add=yb.ADD, wind_mods=list(P.WIND_MODS), band=[P.BAND, P.BAND_PENAL],
                 baselines="PGA Tour (Broadie) putting / short game / tee_strategy.BASELINE")
-
-
-def _ft(x):
-    return "-" if x is None else f"{x:.0f}"
 
 
 def report(data):

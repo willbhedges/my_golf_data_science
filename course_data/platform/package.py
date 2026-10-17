@@ -549,15 +549,21 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages):
             if lp is not None:
                 pads = lp.detect_pads(dem, greens=osm_tee_inputs(fc)[2], lines=None)
         inp = rt.inputs_from_fc(fc, segment=seg, pads=pads, boundary=course.get("boundary"))
-        res = rt.route(inp, card, margins=True)
+        try:                                     # routing v2 (learned weights, posterior flags); v1 as fallback
+            import routing_v2 as rt2
+            res = rt2.strip(rt2.route(inp, card, fc=fc, boundary=course.get("boundary")))
+            res.pop("top", None)
+        except Exception as e2:                  # noqa: BLE001
+            warnings.append(f"routing v2 failed ({type(e2).__name__}: {e2}); v1 used"[:200])
+            res = rt.route(inp, card, margins=True)
         fc2 = rt.to_hole_features(res, fc, inp)
-        routed = {r: {k: res["holes"][r].get(k) for k in ("status", "flags", "p_green", "margin", "green_src", "tee_src")}
+        routed = {r: {k: res["holes"][r].get(k) for k in ("status", "flags", "p_green", "p_hole", "margin", "green_src", "tee_src")}
                   for r in missing if res["holes"].get(r, {}).get("green_ll") and res["holes"][r].get("tee_ll")}
         for r, h in routed.items():
             if h["status"] != "ok":
                 warnings.append(f"hole {r}: placed by routing inference, golfer check ({'; '.join(h['flags'])})")
         pc.write_json(os.path.join(pkg_dir, "routing.json"), res)
-        stages["routing"] = (f"ok: platform/routing.py placed {len(routed)}/{len(missing)} holes OSM has no way for "
+        stages["routing"] = (f"ok: platform/{'routing_v2' if res.get('method') == 'routing/2' else 'routing'}.py placed {len(routed)}/{len(missing)} holes OSM has no way for "
                              f"({sum(h['status'] != 'ok' for h in routed.values())} to check; segment "
                              f"{'yes' if seg else 'no'}, lidar pads {len(pads)})")
         return fc2, routed

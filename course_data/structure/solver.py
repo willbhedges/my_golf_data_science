@@ -4,54 +4,79 @@
     from solver import solve
     res = solve(scene, card=None)          # card (scorecard/1) is an optional prior; works without one
 
-Model (all terms are log-likelihoods, fitted on the dev courses only; see REPORT.md):
+Model (log-likelihood terms; the weights are fitted on the dev courses only by fit.py -> params.json):
 
-1. Hole hypotheses. For every green g and every tee box t 70-700 yds away, the hole (t -> g) explains the tee boxes
-   in its corridor (from 12 % behind t to 62 % of the way, <= 22 yds off the line); its back tee is the farthest of
-   them. Its formation score `form(g, t)` (logistic model, `FORM_W`) uses: the length likelihood under a par 3/4/5
-   mixture, tee-box long axes vs the line, the share of the line on fairway, a fairway whose two ends sit at the
-   tee and the green (dog-legs), the line crossing another green, and the number of boxes explained.
-2. Sequence. A round is a path through N of the M greens (N in 9 / 18 / 27 / 36). Moving from green i to the hole
-   (t, j) costs the walk green i -> nearest box of the hole (log-normal, median ~65 yds, with a broad tail); the
-   hole formation is summed out (soft-min over j's tee hypotheses). Anchors: tee 1 and green N near the clubhouse
-   H; with 18 holes also green 9 and tee 10 (returning nines), the 9 -> 10 walk then goes through H. H is latent:
-   tagged / detected clubhouse candidates, car-park buildings and "hubs" where greens and tees meet, each with a
-   prior, marginalised.
-3. Inference. Exact forward-backward over subsets (Held-Karp in log space; one BLAS matmul per layer) gives the
-   partition function, the MAP route (Viterbi) and exact marginals P(green j is hole k). Per hole the confidence is
-   that marginal times the posterior of its tee hypothesis. Practice greens are the greens the route skips (each
-   green carries a "not a hole" score).
-4. Par from the corridor length (par-mixture posterior with a 70-72 total / ~4 par-3 prior); hole numbers from the
-   route; direction of play from tee -> green.
-A card (pars / yards per hole) adds a position term: the hole at position k vs card hole k.
+1. Tee complexes. Tee boxes within 22 yds of each other are one complex (a perception scene gives complexes).
+2. Hole hypotheses. Every (green g, complex k) 70-700 yds apart is a candidate hole. Its formation score is a
+   conditional-logit model over: the length likelihood (par 3/4/5 mixture fitted on dev holes), tee-box axes vs
+   the line of play, the share of the line on fairway, a fairway whose two ends sit at the tee and the green
+   (dog-legs keep their ends), the line crossing another green, other complexes on the corridor (forward tees)
+   and on the far part of the line (another hole's tees), and "startability": a hole starts next to some other
+   green (the previous hole) or the clubhouse, while forward-tee complexes sit in the middle of a corridor.
+3. Sequence. A round is a path through N of the M greens (N = 9 / 18 / 27 / 36). Moving from green i to hole
+   (k, j) adds the walk green i -> nearest box of k (log-normal, median ~60 yds, broad tail; when cart paths
+   join them directly a longer walk stays plausible). The complex choice is summed out inside each transition,
+   a complex can start only one hole (Lagrangian prices, subgradient until no complex is used twice).
+   Anchors: tee 1 and green N near the clubhouse H; for 18 holes also green 9 and tee 10 (returning nines; the
+   9 -> 10 walk may go through H). H is latent: tagged / detected clubhouse candidates, buildings by car parks
+   and "hubs" where greens and hole starts meet, each with a prior; marginalised.
+4. Inference: exact forward-backward over subsets (Held-Karp in log space, one BLAS matmul per layer): the
+   partition function, the MAP route (Viterbi) and exact marginals P(green j is hole k). A hole's confidence is
+   that marginal x the posterior of its tee complex given the route. Greens off the route are practice greens.
+5. Par from the length (par posterior with a prior on the number of par 3s / 5s, i.e. total par ~70-72); hole
+   numbers from the route; direction of play from tee -> green. A card adds a position term (hole k vs card k).
 """
 from __future__ import annotations
 
+import json
 import math
-from itertools import combinations
+import os
 
 import numpy as np
 
 try:
     from shapely import contains_xy, prepare
-    from shapely.geometry import Polygon
+    from shapely.geometry import LineString, Point, Polygon
     from shapely.ops import unary_union
 except Exception:                                                   # noqa: BLE001
     Polygon = None
 
-# ----------------------------------------------------------------------------- parameters (fitted on dev)
-PAR_MU = {3: 168.0, 4: 375.0, 5: 505.0}
-PAR_SD = {3: 35.0, 4: 48.0, 5: 45.0}
-PAR_PI = {3: 0.22, 4: 0.56, 5: 0.22}
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+# ----------------------------------------------------------------------------- parameters (fit.py on dev)
+PAR_MU = {3: 172.0, 4: 370.0, 5: 498.0}
+PAR_SD = {3: 32.0, 4: 55.0, 5: 55.0}
+PAR_PI = {3: 0.23, 4: 0.56, 5: 0.21}
+LEN_FLOOR = 0.06
 L_MIN, L_MAX = 70.0, 700.0
-WALK_MED, WALK_SIG, WALK_TAIL = 62.0, 0.55, 0.06      # green -> next tee: log-normal + tail (uniform to 800 yds)
-CH_MED, CH_SIG, CH_TAIL = 70.0, 0.75, 0.15            # anchor (tee 1, green 9 / 18, tee 10) to the clubhouse
-CORR_BACK, CORR_FWD, CORR_PERP = 0.12, 0.62, 22.0
+WALK_MED, WALK_SIG, WALK_TAIL = 60.0, 0.55, 0.05     # green edge -> next tee: log-normal + tail (uniform to 800)
+PATH_MED, PATH_SIG = 130.0, 0.6                       # ... along a cart path that joins them directly
+CH_MED, CH_SIG, CH_TAIL = 70.0, 0.75, 0.15            # anchor (tee 1, greens 9 / 18, tee 10) to the clubhouse
+CX_LINK = 22.0
+CX_CHAIN = 75.0
+CORR_FWD, CORR_PERP = 0.62, 25.0
+COVER_FWD, COVER_PERP = 0.5, 20.0
+BEHIND_PERP = 16.0
+COVER_BACK = 0.3                     # complexes a hole "uses" (its forward tees): exclusive
 TOPK = 8
-NOT_HOLE_BASE = 5.0                                   # cost of declaring a green "not a hole" (practice)
-FORM_W = dict(length=1.0, align=1.0, fw_cov=2.5, fw_end=2.0, cross_green=3.0, boxes=0.35, bias=0.0,
-              fw_missing=0.0, far_box=0.7)
+NOT_HOLE = 4.0                                        # log-odds that a green with no route is a practice green
+TURN_VIA_H = 0.65
+FORM_W = dict(length=1.0, align=0.6, fw_cov=1.0, fw_end=3.0, cross_green=3.0, fwd=0.5, far=1.5, start=0.6)
 TEMP = 1.0                                            # posterior temperature (calibrated on dev)
+LAGR_ITERS = 12
+
+
+def load_params(path=os.path.join(HERE, "params.json")):
+    global FORM_W, TEMP, NOT_HOLE, TURN_VIA_H
+    if os.path.exists(path):
+        p = json.load(open(path))
+        FORM_W = dict(FORM_W, **p.get("form_w", {}))
+        TEMP = p.get("temp", TEMP)
+        NOT_HOLE = p.get("not_hole", NOT_HOLE)
+        TURN_VIA_H = p.get("turn_via_h", TURN_VIA_H)
+
+
+load_params()
 
 
 def _ln_lognorm(d, med, sig, tail, tmax=800.0):
@@ -61,16 +86,20 @@ def _ln_lognorm(d, med, sig, tail, tmax=800.0):
 
 
 def length_loglik(L):
-    """log p(L | hole) - log p(L | random pair) (uniform over L_MIN..L_MAX) and the par posterior."""
+    """(log p(L | hole) - log uniform(L_MIN..L_MAX), par posterior 3 x n)."""
     L = np.asarray(L, float)
     comps = np.stack([PAR_PI[p] * np.exp(-0.5 * ((L - PAR_MU[p]) / PAR_SD[p]) ** 2) / (PAR_SD[p] * math.sqrt(2 * math.pi))
                       for p in (3, 4, 5)])
-    dens = comps.sum(0) + 0.02 / (L_MAX - L_MIN)
+    dens = (1 - LEN_FLOOR) * comps.sum(0) + LEN_FLOOR / (L_MAX - L_MIN)
     return np.log(dens * (L_MAX - L_MIN)), comps / np.maximum(comps.sum(0), 1e-300)
 
 
 def walk_ll(d):
     return _ln_lognorm(d, WALK_MED, WALK_SIG, WALK_TAIL)
+
+
+def path_ll(d):
+    return _ln_lognorm(d, PATH_MED, PATH_SIG, WALK_TAIL)
 
 
 def anchor_ll(d):
@@ -79,44 +108,123 @@ def anchor_ll(d):
 
 def _angdiff(a, b):
     """Undirected angle difference in [0, pi/2]."""
-    return abs((a - b + math.pi / 2) % math.pi - math.pi / 2)
+    return np.abs((np.asarray(a) - b + math.pi / 2) % math.pi - math.pi / 2)
+
+
+def _lse(a, axis=None):
+    a = np.asarray(a, float)
+    m = np.max(a, axis=axis, keepdims=True)
+    m = np.where(np.isfinite(m), m, 0.0)
+    r = np.log(np.sum(np.exp(a - m), axis=axis, keepdims=True)) + m
+    return np.squeeze(r, axis=axis) if axis is not None else float(r.ravel()[0])
+
+
+# ----------------------------------------------------------------------------- tee complexes
+def complexes(sc, link=CX_LINK):
+    """Tee boxes -> complexes (single linkage within `link` yds). Perception tees already are complexes (they carry
+    `box_xy`). -> [{boxes: [tee idx], xy (n x 2), c, axis, axis_w, conf, id}]"""
+    T = np.array([t["c"] for t in sc.tees], float).reshape(-1, 2)
+    n = len(T)
+    if n == 0:
+        return []
+    if sc.source == "perception":
+        out = []
+        for i, t in enumerate(sc.tees):
+            xy = np.array(t.get("box_xy") or [t["c"]], float).reshape(-1, 2)
+            out.append(dict(id=t["id"], boxes=[i], xy=xy, c=np.asarray(t["c"], float), axis=t.get("axis"),
+                            axis_w=min(1.0, max(0.0, (t.get("elong", 1.0) - 1.2) / 0.8)) if t.get("axis") is not None else 0.0,
+                            conf=t.get("conf", 1.0)))
+        return out
+    par = list(range(n))
+
+    def find(a):
+        while par[a] != a:
+            par[a] = par[par[a]]
+            a = par[a]
+        return a
+    d = np.hypot(T[:, None, 0] - T[None, :, 0], T[:, None, 1] - T[None, :, 1])
+    for i, j in zip(*np.nonzero(np.triu(d < link, 1))):
+        par[find(i)] = find(j)
+    # forward tees: boxes up to CX_CHAIN yds apart along a shared axis (each box's long axis, when it has one,
+    # points at the other within 15 deg and the two axes agree within 25 deg)
+    ax = [t.get("axis") if (t.get("axis") is not None and t.get("elong", 1) > 1.4) else None for t in sc.tees]
+    for i, j in zip(*np.nonzero(np.triu((d >= link) & (d < CX_CHAIN), 1))):
+        if ax[i] is None or ax[j] is None:
+            continue
+        dirn = math.atan2(T[j, 1] - T[i, 1], T[j, 0] - T[i, 0])
+        if _angdiff(ax[i], dirn) < math.radians(15) and _angdiff(ax[j], dirn) < math.radians(15) and \
+                _angdiff(ax[i], ax[j]) < math.radians(25):
+            par[find(i)] = find(j)
+    groups = {}
+    for i in range(n):
+        groups.setdefault(find(i), []).append(i)
+    out = []
+    for gi, idx in enumerate(groups.values()):
+        xy = T[idx]
+        # axis: elongated boxes' axes (doubled-angle mean, weighted by elongation), else the spread of the boxes
+        num = np.zeros(2)
+        for i in idx:
+            t = sc.tees[i]
+            if t.get("axis") is not None and t.get("elong", 1) > 1.3:
+                wgt = min(1.0, (t["elong"] - 1.3) / 0.7)
+                num += wgt * np.array([math.cos(2 * t["axis"]), math.sin(2 * t["axis"])])
+        ax, aw = None, 0.0
+        if len(idx) >= 2:
+            c = xy - xy.mean(0)
+            w, v = np.linalg.eigh(c.T @ c)
+            ext = math.sqrt(max(w[1], 0) / len(idx)) * 2
+            if ext > 10 and w[1] > 4 * max(w[0], 1e-9):
+                ang = math.atan2(v[1, 1], v[0, 1])
+                num += 2.0 * min(1.0, ext / 25) * np.array([math.cos(2 * ang), math.sin(2 * ang)]) * \
+                    max(1.0, np.linalg.norm(num))
+        if np.linalg.norm(num) > 1e-9:
+            ax = 0.5 * math.atan2(num[1], num[0])
+            aw = float(min(1.0, np.linalg.norm(num)))
+        out.append(dict(id=f"c{gi}", boxes=[int(i) for i in idx], xy=xy, c=xy.mean(0), axis=ax, axis_w=aw,
+                        conf=max(sc.tees[i].get("conf", 1.0) for i in idx)))
+    return out
 
 
 # ----------------------------------------------------------------------------- geometry prep
 class Geo:
     def __init__(self, sc):
+        if Polygon is None:
+            raise RuntimeError("shapely is required")
         self.sc = sc
         self.G = np.array([g["c"] for g in sc.greens], float).reshape(-1, 2)
-        self.T = np.array([t["c"] for t in sc.tees], float).reshape(-1, 2)
+        self.gr_r = np.array([math.sqrt(max(g.get("area", 400.0), 50.0) / math.pi) for g in sc.greens])
+        self.cx = complexes(sc)
+        self.C = np.array([c["c"] for c in self.cx], float).reshape(-1, 2)
         self.fw = None
-        self.gr = []
+        self.greens_u = None
         self.fw_ends = []
-        if Polygon is not None:
-            polys = []
-            for f in sc.fairways:
-                if f.get("ring") is not None and len(f["ring"]) >= 4:
-                    p = Polygon(f["ring"]).buffer(0)
-                    if p.area > 50:
-                        polys.append(p)
-                        self.fw_ends.append(_poly_ends(f["ring"]))
-                elif f.get("line") is not None:
-                    ln = np.asarray(f["line"])
-                    from shapely.geometry import LineString
-                    polys.append(LineString(ln).buffer(18))
-                    self.fw_ends.append((ln[0], ln[-1]))
-            if polys:
-                self.fw = unary_union(polys).buffer(8)
-                prepare(self.fw)
-            for g in sc.greens:
-                if g.get("ring") is not None and len(g["ring"]) >= 4:
-                    p = Polygon(g["ring"]).buffer(4)
-                else:
-                    from shapely.geometry import Point
-                    p = Point(*g["c"]).buffer(max(8.0, math.sqrt(g.get("area", 400) / math.pi)))
-                prepare(p)
-                self.gr.append(p)
+        polys = []
+        for f in sc.fairways:
+            if f.get("ring") is not None and len(f["ring"]) >= 4:
+                p = Polygon(f["ring"]).buffer(0)
+                if p.area > 50:
+                    polys.append(p)
+                    self.fw_ends.append(tuple(f["ends"]) if f.get("ends") else _poly_ends(f["ring"]))
+            elif f.get("line") is not None:
+                ln = np.asarray(f["line"])
+                polys.append(LineString(ln).buffer(18))
+                self.fw_ends.append((ln[0], ln[-1]))
+        if polys:
+            self.fw = unary_union(polys).buffer(8)
+            prepare(self.fw)
+        self.gpolys = []
+        for g in sc.greens:
+            if g.get("ring") is not None and len(g["ring"]) >= 4:
+                p = Polygon(g["ring"]).buffer(3)
+            else:
+                p = Point(*g["c"]).buffer(max(8.0, math.sqrt(g.get("area", 400) / math.pi)))
+            self.gpolys.append(p)
+        if self.gpolys:
+            self.greens_u = unary_union(self.gpolys)
+            prepare(self.greens_u)
         self.has_fw = self.fw is not None and len(sc.fairways) >= 5
         self.fw_ends = np.array(self.fw_ends, float).reshape(-1, 2, 2)
+        self.paths = PathGraph(sc.paths) if sc.paths else None
 
     def on_fairway(self, xy):
         if self.fw is None:
@@ -128,211 +236,302 @@ def _poly_ends(ring):
     """The two extreme points of a polygon along its long axis (approximate centreline ends)."""
     r = np.asarray(ring, float)
     c = r.mean(0)
-    u, s, vt = np.linalg.svd(r - c, full_matrices=False)
-    ax = vt[0]
-    pr = (r - c) @ ax
+    _, _, vt = np.linalg.svd(r - c, full_matrices=False)
+    pr = (r - c) @ vt[0]
     i, j = int(np.argmin(pr)), int(np.argmax(pr))
-    # pull the ends a little inside (centreline, not the tip vertex)
     return c + (r[i] - c) * 0.85, c + (r[j] - c) * 0.85
 
 
+class PathGraph:
+    """Cart paths as a graph (vertices of every polyline densified to 25 yds, consecutive vertices joined, vertices
+    within 10 yds snapped together). Distances from a point: shortest route from the path vertices within 35 yds of
+    it (plus that access leg); inf when not connected."""
+
+    def __init__(self, lines, snap=10.0):
+        from scipy.sparse import coo_matrix
+        from scipy.spatial import cKDTree
+        pts, ei, ej, ew = [], [], [], []
+        for ln in lines:
+            ln = np.asarray(ln, float)
+            if len(ln) < 2:
+                continue
+            dense = [ln[0]]
+            for a, b in zip(ln[:-1], ln[1:]):
+                L = float(np.hypot(*(b - a)))
+                k = max(1, int(math.ceil(L / 25)))
+                for s in range(1, k + 1):
+                    dense.append(a + (b - a) * s / k)
+            base = len(pts)
+            pts += dense
+            for i in range(len(dense) - 1):
+                ei.append(base + i)
+                ej.append(base + i + 1)
+                ew.append(float(np.hypot(*(dense[i + 1] - dense[i]))) + 0.01)
+        self.P = np.array(pts, float).reshape(-1, 2)
+        n = len(self.P)
+        self.A = None
+        if n:
+            self.tree = cKDTree(self.P)
+            for i, j in self.tree.query_pairs(snap):
+                ei.append(i)
+                ej.append(j)
+                ew.append(float(np.hypot(*(self.P[i] - self.P[j]))) + 0.1)
+            self.A = coo_matrix((ew + ew, (ei + ej, ej + ei)), shape=(n, n)).tocsr()
+
+    def from_points(self, srcs, reach=35.0):
+        from scipy.sparse.csgraph import dijkstra
+        out = []
+        for s in srcs:
+            idx = self.tree.query_ball_point(s, reach)
+            if not idx:
+                out.append(None)
+                continue
+            dd = dijkstra(self.A, indices=idx, limit=900.0)
+            leg = np.hypot(*(self.P[idx] - s).T)
+            out.append(np.min(dd + leg[:, None], axis=0))
+        return out
+
+    def to_points(self, dist_row, pts, reach=35.0):
+        if dist_row is None:
+            return np.full(len(pts), np.inf)
+        res = []
+        for p in pts:
+            idx = self.tree.query_ball_point(p, reach)
+            if not idx:
+                res.append(np.inf)
+                continue
+            res.append(float(np.min(dist_row[idx] + np.hypot(*(self.P[idx] - p).T))))
+        return np.array(res)
+
+
 # ----------------------------------------------------------------------------- hole hypotheses
-def hypotheses(sc, geo=None, topk=TOPK, w=None):
-    """Per green: up to `topk` hole hypotheses (dicts) sorted by formation log-score (higher is better)."""
+FEATS = ("length", "align", "fw_cov", "fw_end", "cross_green", "fwd", "far", "start")
+
+
+def features(sc, geo, clubs=()):
+    """Features of every (green, complex) pair 70-700 yds apart -> [{gi, k, tee (back box), D, ppar, f}]."""
+    G, C, cx = geo.G, geo.C, geo.cx
+    nG, nC = len(G), len(C)
+    if not nG or not nC:
+        return []
+    pairs = []
+    for gi in range(nG):
+        for k in range(nC):
+            xy = cx[k]["xy"]
+            dd = np.hypot(*(xy - G[gi]).T)
+            b = int(np.argmax(dd))
+            D = float(dd[b])
+            if L_MIN <= D <= L_MAX:
+                pairs.append((gi, k, xy[b], D))
+    if not pairs:
+        return []
+    # canonical hypotheses: a complex with another one behind it on the line to the same green is a forward tee of
+    # that hole -> only the back-most complex starts the hypothesis (its corridor covers the forward ones)
+    canon = []
+    for gi, k, t, D in pairs:
+        u = (G[gi] - t) / D
+        rel = C - t
+        s = rel @ u / D
+        perp = np.abs(rel[:, 0] * u[1] - rel[:, 1] * u[0])
+        behind = (s < -0.03) & (s > -0.4) & (perp < BEHIND_PERP) & (np.hypot(*(C - G[gi]).T) <= L_MAX)
+        behind[k] = False
+        if not behind.any() or True:
+            canon.append((gi, k, t, D))
+    pairs = canon
+    P = len(pairs)
+    tee = np.array([p[2] for p in pairs])
+    gxy = G[[p[0] for p in pairs]]
+    D = np.array([p[3] for p in pairs])
+    v = gxy - tee
+    u = v / D[:, None]
+    ang = np.arctan2(u[:, 1], u[:, 0])
+    ll_len, ppar = length_loglik(D)
+    al = np.zeros(P)
+    for i, (gi, k, _, _) in enumerate(pairs):
+        c = cx[k]
+        if c["axis"] is not None and c["axis_w"] > 0:
+            dd = float(_angdiff(c["axis"], ang[i]))
+            pc = 0.8 * math.exp(-0.5 * (dd / math.radians(10)) ** 2) / (math.radians(10) * math.sqrt(math.pi / 2)) \
+                + 0.2 / (math.pi / 2)
+            al[i] = math.log(pc * math.pi / 2) * c["axis_w"]
+    s_line = np.linspace(0.25, 0.85, 13)
+    pts = tee[:, None, :] + s_line[None, :, None] * v[:, None, :]
+    cov = geo.on_fairway(pts.reshape(-1, 2)).reshape(P, -1).mean(1) if geo.has_fw else np.zeros(P)
+    p45 = ppar[1] + ppar[2]
+    fe = np.zeros(P)
+    if geo.has_fw and len(geo.fw_ends):
+        e = geo.fw_ends
+        for i in range(P):
+            t, g = tee[i], gxy[i]
+            da = np.minimum(np.hypot(*(e[:, 0] - t).T) + np.hypot(*(e[:, 1] - g).T),
+                            np.hypot(*(e[:, 1] - t).T) + np.hypot(*(e[:, 0] - g).T))
+            fe[i] = max(0.0, 1.0 - (da.min() / D[i] - 0.25) / 0.45)
+    s_x = np.linspace(0.08, 0.85, 28)
+    xs = tee[:, None, :] + s_x[None, :, None] * v[:, None, :]
+    inside = contains_xy(geo.greens_u, xs[..., 0].ravel(), xs[..., 1].ravel()).reshape(P, -1)
+    cg = np.zeros(P)
+    for i in np.nonzero(inside.any(1))[0]:
+        own = contains_xy(geo.gpolys[pairs[i][0]], xs[i, :, 0], xs[i, :, 1])
+        cg[i] = float((inside[i] & ~own).any())
+    fwd = np.zeros(P)
+    far = np.zeros(P)
+    cover = []
+    for i, (gi, k, _, _) in enumerate(pairs):
+        rel = C - tee[i]
+        s = rel @ u[i] / D[i]
+        perp = np.abs(rel[:, 0] * u[i, 1] - rel[:, 1] * u[i, 0])
+        m = np.ones(nC, bool)
+        m[k] = False
+        fwd[i] = float(((s > 0.03) & (s < CORR_FWD) & (perp < CORR_PERP) & m).sum())
+        cover.append([k])
+        far[i] = float(((s >= 0.68) & (s < 0.95) & (perp < 14) & m).sum())
+    start = np.zeros(P)
+    Gr = geo.gr_r
+    base = float(walk_ll(160.0))
+    for i, (gi, k, _, _) in enumerate(pairs):
+        xy = cx[k]["xy"]
+        dg = np.hypot(G[:, None, 0] - xy[None, :, 0], G[:, None, 1] - xy[None, :, 1]).min(1) - Gr
+        dg[gi] = 1e9
+        best = float(walk_ll(max(dg.min(), 1.0)))
+        for h in clubs:
+            best = max(best, float(anchor_ll(np.hypot(*(xy - h["c"]).T).min())) - 1.0)
+        start[i] = best - base
+    out = []
+    for i, (gi, k, t, d) in enumerate(pairs):
+        out.append(dict(gi=gi, k=k, tee=t, D=d, ppar=ppar[:, i], cover=cover[i],
+                        f=dict(length=float(ll_len[i]), align=float(al[i]),
+                               fw_cov=float((cov[i] - 0.45) * p45[i]) if geo.has_fw else 0.0,
+                               fw_end=float((fe[i] - 0.4) * p45[i]) if geo.has_fw else 0.0, cross_green=-cg[i],
+                               fwd=math.log1p(fwd[i]), far=-far[i], start=max(-4.0, min(4.0, start[i])))))
+    return out
+
+
+def hypotheses(sc, geo=None, topk=TOPK, w=None, clubs=None):
+    """Per green: up to `topk` hole hypotheses sorted by formation log-score."""
     w = dict(FORM_W, **(w or {}))
     geo = geo or Geo(sc)
-    G, T = geo.G, geo.T
-    nG, nT = len(G), len(T)
-    out = []
-    if nT == 0:
-        return [[] for _ in range(nG)], geo
-    axes = np.array([t["axis"] if t.get("axis") is not None else np.nan for t in sc.tees])
-    elong = np.array([t.get("elong", 1.0) or 1.0 for t in sc.tees])
-    tconf = np.array([t.get("conf", 1.0) for t in sc.tees])
-    s_line = np.linspace(0.25, 0.85, 13)
-    s_cross = np.linspace(0.08, 0.9, 24)
-    for gi in range(nG):
-        g = G[gi]
-        d = np.hypot(*(T - g).T)
-        cand = np.nonzero((d >= L_MIN) & (d <= L_MAX))[0]
-        hy = {}
-        for ti in cand:
-            t = T[ti]
-            v = g - t
-            D = float(np.hypot(*v))
-            u = v / D
-            rel = T - t
-            s = rel @ u / D
-            perp = np.abs(rel[:, 0] * u[1] - rel[:, 1] * u[0])
-            on = np.nonzero((s >= -CORR_BACK) & (s <= CORR_FWD) & (perp <= CORR_PERP))[0]
-            back = int(on[np.argmin(s[on])])
-            if back in hy and hy[back]["ti"] != ti:
-                continue
-            hy[back] = dict(gi=gi, ti=int(ti), back=back, boxes=on, D=D)
-        res = []
-        for back, h in hy.items():
-            t = T[h["back"]]
-            v = g - t
-            D = float(np.hypot(*v))
-            if D < L_MIN:
-                continue
-            u = v / D
-            ang = math.atan2(u[1], u[0])
-            # tee-box alignment: elongated boxes point along the line of play
-            al = 0.0
-            for b in h["boxes"]:
-                if not np.isnan(axes[b]) and elong[b] > 1.3:
-                    dd = _angdiff(axes[b], ang)
-                    pc = 0.85 * math.exp(-0.5 * (dd / math.radians(9)) ** 2) / (math.radians(9) * math.sqrt(math.pi / 2)) \
-                        + 0.15 / (math.pi / 2)
-                    lr = math.log(pc * (math.pi / 2))
-                    al += lr * min(1.0, (elong[b] - 1.3) / 0.7) * tconf[b]
-            al = max(-6.0, min(4.0, al))
-            ll_len, ppar = length_loglik(np.array([D]))
-            pts = t + np.outer(s_line, v)
-            cov = float(geo.on_fairway(pts).mean()) if geo.has_fw else 0.0
-            p5 = float(ppar[1, 0] + ppar[2, 0])
-            # fairway whose ends sit at the landing area / approach of this hole (dog-legs keep their ends)
-            fe = 0.0
-            if geo.has_fw and len(geo.fw_ends):
-                e = geo.fw_ends
-                da = np.minimum(np.hypot(*(e[:, 0] - t).T) + np.hypot(*(e[:, 1] - g).T),
-                                np.hypot(*(e[:, 1] - t).T) + np.hypot(*(e[:, 0] - g).T))
-                # a fairway runs from ~60-250 yds off the tee to ~0-60 yds short of the green
-                # -> its ends' summed distance to (tee, green) is ~ 0.3 D; anything near D is unrelated
-                fe = float(max(0.0, 1.0 - (da.min() / D - 0.25) / 0.45))
-            # the line crosses another green
-            xs = t + np.outer(s_cross, v)
-            cg = 0
-            for gj, poly in enumerate(geo.gr):
-                if gj != gi and np.hypot(*(G[gj] - (t + g) / 2)) < D / 2 + 30:
-                    if contains_xy(poly, xs[:, 0], xs[:, 1]).any():
-                        cg += 1
-            # tee boxes far past the corridor's tee end but on the line (another hole's tees in play)
-            rel = T - t
-            s2 = rel @ u / D
-            perp2 = np.abs(rel[:, 0] * u[1] - rel[:, 1] * u[0])
-            far_box = int(((s2 > 0.68) & (s2 < 0.9) & (perp2 < 12)).sum())
-            nb = len(h["boxes"])
-            f = dict(length=float(ll_len[0]), align=al,
-                     fw_cov=(cov - 0.45) * p5 if geo.has_fw else 0.0,
-                     fw_end=(fe - 0.4) * p5 if geo.has_fw else 0.0,
-                     cross_green=-float(cg), boxes=math.log(nb), far_box=-float(far_box))
-            score = sum(w[k] * f[k] for k in f) + w["bias"]
-            res.append(dict(gi=gi, back=h["back"], boxes=[int(b) for b in h["boxes"]], D=D, score=score, feat=f,
-                            ppar=[float(ppar[i, 0]) for i in range(3)]))
-        res.sort(key=lambda r: -r["score"])
-        out.append(res[:topk])
-    return out, geo
+    clubs = sc.clubhouse if clubs is None else clubs
+    per = [[] for _ in range(len(geo.G))]
+    for h in features(sc, geo, clubs):
+        h["score"] = sum(w.get(k, 0.0) * h["f"][k] for k in FEATS)
+        per[h["gi"]].append(h)
+    for i in range(len(per)):
+        per[i].sort(key=lambda r: -r["score"])
+        per[i] = per[i][:topk]
+    return per, geo
 
 
 # ----------------------------------------------------------------------------- clubhouse candidates
 def hub_candidates(sc, geo, hyps, k=4):
     """Points where greens and hole starts meet (the clubhouse of returning nines: greens 9 / 18, tees 1 / 10)."""
-    pts = []
-    starts = np.array([sc.tees[h["back"]]["c"] for hs in hyps for h in hs[:2]]).reshape(-1, 2) if geo.T.size else np.zeros((0, 2))
+    starts = np.array([h["tee"] for hs in hyps for h in hs[:1]]).reshape(-1, 2)
     G = geo.G
+    cand = []
     for p in list(G) + list(starts):
-        ng = int((np.hypot(*(G - p).T) < 140).sum())
-        nt = len({tuple(np.round(q)) for q in starts[np.hypot(*(starts - p).T) < 140]}) if len(starts) else 0
-        pts.append((min(ng, 3) + min(nt, 3), p))
-    pts.sort(key=lambda r: -r[0])
+        ng = int((np.hypot(*(G - p).T) < 150).sum())
+        nt = int((np.hypot(*(starts - p).T) < 150).sum()) if len(starts) else 0
+        cand.append((min(ng, 3) + min(nt, 3), p))
+    cand.sort(key=lambda r: -r[0])
     out = []
-    for sc_, p in pts:
+    for s, p in cand:
         if any(np.hypot(*(p - q["c"])) < 150 for q in out):
             continue
-        out.append(dict(c=np.asarray(p, float), w=0.05 * sc_ / 6, how="hub"))
+        out.append(dict(c=np.asarray(p, float), w=0.04 * s / 6 + 0.005, how="hub"))
         if len(out) >= k:
             break
     return out
 
 
 # ----------------------------------------------------------------------------- the DP
+_LAYERS = {}
+
+
 def _popcount_layers(M, N):
-    masks = np.arange(1 << M, dtype=np.int64)
-    pc = np.zeros(1 << M, np.int8)
-    for b in range(M):
-        pc += ((masks >> b) & 1).astype(np.int8)
-    return [np.nonzero(pc == k)[0] for k in range(N + 1)]
+    key = (M, N)
+    if key not in _LAYERS:
+        masks = np.arange(1 << M, dtype=np.int64)
+        pc = np.zeros(1 << M, np.int8)
+        for b in range(M):
+            pc += ((masks >> b) & 1).astype(np.int8)
+        _LAYERS.clear()
+        _LAYERS[key] = [np.nonzero(pc == k)[0] for k in range(N + 1)]
+    return _LAYERS[key]
 
 
-def _lse(a, axis=None):
-    m = np.max(a, axis=axis, keepdims=True)
-    m = np.where(np.isfinite(m), m, 0.0)
-    r = np.log(np.sum(np.exp(a - m), axis=axis, keepdims=True)) + m
-    return np.squeeze(r, axis=axis) if axis is not None else float(r.ravel()[0])
+def route_dp(trans, start, end, N, turn=None, pos=None, viterbi=True, marginals=True, soft=True):
+    """Soft and hard Held-Karp over paths of N distinct nodes out of M (M <= ~20).
 
-
-def route_dp(trans, start, end, N, turn=None, pos=None, layers=None, viterbi=True):
-    """Soft and hard Held-Karp over paths of N distinct nodes out of M.
-
-    trans[i, j]  log-weight of moving from node i to node j        (M x M, -inf allowed)
+    trans[i, j]  log-weight of moving from node i to node j        (M x M, very negative = impossible)
     start[j]     log-weight of j as the first node;  end[i] of i as the last
-    turn[i, j]   replaces trans at the transition from position 9 to 10 (index 8 -> 9) when given
+    turn[i, j]   replaces trans at the move from position 9 to 10 when given
     pos[j, k]    log-weight of node j at position k (0-based), e.g. a card prior
-    -> dict(logZ, best (list of nodes), best_score, marg (M x N): P(node j at position k))."""
+    -> dict(logZ, best (node list), best_score, marg (M x N): P(node j at position k))."""
     M = trans.shape[0]
-    layers = layers or _popcount_layers(M, N)
+    layers = _popcount_layers(M, N)
     NEG = -1e30
+    bits = np.arange(M)
     alpha = np.full((1 << M, M), NEG, np.float32)
     for j in range(M):
         alpha[1 << j, j] = start[j] + (pos[j, 0] if pos is not None else 0.0)
     vit = alpha.copy() if viterbi else None
-    E = [None] * N
     for k in range(1, N):
         tr = turn if (turn is not None and k == 9) else trans
         idx = layers[k]
-        A = alpha[idx]
-        am = A.max(1, keepdims=True)
-        tm = tr.max(0, keepdims=True)
-        tm = np.where(np.isfinite(tm) & (tm > -1e29), tm, 0.0)
-        eT = np.exp(np.clip(tr - tm, -700, 0))
-        B = np.log(np.maximum(np.exp(A - am) @ eT, 1e-300)) + am + tm
-        bit = ((idx[:, None] >> np.arange(M)[None, :]) & 1).astype(bool)
-        B = np.where(bit, NEG, B)
-        if pos is not None:
-            B = B + pos[:, k][None, :]
-        new = idx[:, None] | (1 << np.arange(M))[None, :]
+        bit = ((idx[:, None] >> bits[None, :]) & 1).astype(bool)
+        new = idx[:, None] | (1 << bits)[None, :]
         rows, cols = np.nonzero(~bit)
-        alpha[new[rows, cols], cols] = B[rows, cols]
+        if not soft:
+            A = None
+        else:
+            A = alpha[idx].astype(np.float64)
+        if soft:
+            am = A.max(1, keepdims=True)
+            tm = tr.max(0, keepdims=True)
+            eT = np.exp(np.clip(tr - tm, -700, 0))
+            B = np.log(np.maximum(np.exp(A - am) @ eT, 1e-300)) + am + tm
+            if pos is not None:
+                B = B + pos[:, k][None, :]
+            alpha[new[rows, cols], cols] = B[rows, cols]
         if viterbi:
             V = vit[idx]
-            best = np.full((len(idx), M), NEG)
+            best = np.full((len(idx), M), NEG, np.float32)
+            trf = tr.astype(np.float32)
             for i in range(M):
-                cand = V[:, i:i + 1] + tr[i][None, :]
-                best = np.maximum(best, cand)
-            best = np.where(bit, NEG, best)
+                np.maximum(best, V[:, i:i + 1] + trf[i][None, :], out=best)
             if pos is not None:
-                best = best + pos[:, k][None, :]
+                best = best + pos[:, k][None, :].astype(np.float32)
             vit[new[rows, cols], cols] = best[rows, cols]
     last = layers[N]
-    fin = alpha[last] + end[None, :]
-    logZ = _lse(fin.ravel())
-    # backward
-    beta = np.full((1 << M, M), NEG, np.float32)
-    beta[last] = np.broadcast_to(end[None, :], (len(last), M))
-    for k in range(N - 1, 0, -1):
-        tr = turn if (turn is not None and k == 9) else trans
-        idx = layers[k]
-        bit = ((idx[:, None] >> np.arange(M)[None, :]) & 1).astype(bool)
-        new = idx[:, None] | (1 << np.arange(M))[None, :]
-        nb = np.where(bit, NEG, beta[np.where(bit, idx[:, None], new), np.arange(M)[None, :]])
-        if pos is not None:
-            nb = nb + pos[:, k][None, :]
-        nm = nb.max(1, keepdims=True)
-        tm = tr.max(1, keepdims=True)
-        tm = np.where(np.isfinite(tm) & (tm > -1e29), tm, 0.0)
-        eT = np.exp(np.clip(tr - tm, -700, 0))
-        Bk = np.log(np.maximum(np.exp(nb - nm) @ eT.T, 1e-300)) + nm + tm.T
-        beta[idx] = np.where(bit, Bk, NEG)
-    marg = np.zeros((M, N))
-    for k in range(N):
-        idx = layers[k + 1]
-        lp = alpha[idx] + beta[idx] - logZ
-        marg[:, k] = np.exp(np.clip(lp, -700, 0)).sum(0)
-    out = dict(logZ=float(logZ), marg=marg)
+    if soft:
+        fin = alpha[last].astype(np.float64) + end[None, :]
+        logZ = _lse(fin.ravel())
+    else:
+        logZ = float((vit[last].astype(np.float64) + end[None, :]).max())
+    out = dict(logZ=float(logZ))
+    if marginals and soft:
+        beta = np.full((1 << M, M), NEG, np.float32)
+        beta[last] = np.broadcast_to(end[None, :], (len(last), M))
+        for k in range(N - 1, 0, -1):
+            tr = turn if (turn is not None and k == 9) else trans
+            idx = layers[k]
+            bit = ((idx[:, None] >> bits[None, :]) & 1).astype(bool)
+            new = idx[:, None] | (1 << bits)[None, :]
+            nb = np.where(bit, NEG, beta[np.where(bit, idx[:, None], new), bits[None, :]]).astype(np.float64)
+            if pos is not None:
+                nb = nb + pos[:, k][None, :]
+            nm = nb.max(1, keepdims=True)
+            tm = tr.max(1, keepdims=True)
+            eT = np.exp(np.clip(tr - tm, -700, 0))
+            Bk = np.log(np.maximum(np.exp(nb - nm) @ eT.T, 1e-300)) + nm + tm.T
+            beta[idx] = np.where(bit, Bk, NEG)
+        marg = np.zeros((M, N))
+        for k in range(N):
+            idx = layers[k + 1]
+            lp = alpha[idx].astype(np.float64) + beta[idx] - logZ
+            marg[:, k] = np.exp(np.clip(lp, -700, 0)).sum(0)
+        out["marg"] = marg
     if viterbi:
-        fin_v = vit[last] + end[None, :]
+        fin_v = vit[last].astype(np.float64) + end[None, :]
         r, c = np.unravel_index(int(np.argmax(fin_v)), fin_v.shape)
         mask, j = int(last[r]), int(c)
         seq = [j]
@@ -340,7 +539,9 @@ def route_dp(trans, start, end, N, turn=None, pos=None, layers=None, viterbi=Tru
         for k in range(N - 1, 0, -1):
             tr = turn if (turn is not None and k == 9) else trans
             prev = mask & ~(1 << j)
-            cand = vit[prev] + tr[:, j]
+            cand = vit[prev].astype(np.float64) + tr[:, j]
+            if pos is not None:
+                cand = cand + pos[j, k]
             cand[[i for i in range(M) if not (prev >> i) & 1]] = NEG
             i = int(np.argmax(cand))
             seq.append(i)
@@ -350,15 +551,13 @@ def route_dp(trans, start, end, N, turn=None, pos=None, layers=None, viterbi=Tru
 
 
 # ----------------------------------------------------------------------------- the solver
-def n_holes_guess(sc, hyps):
-    """9 / 18 / 27 / 36 from the greens that have at least one decent tee hypothesis."""
-    good = sum(1 for hs in hyps if hs and hs[0]["score"] > -2.0)
-    allg = len(hyps)
+def n_holes_guess(hyps):
+    """9 / 18 / 27 / 36 from the greens that have a decent hole hypothesis."""
+    good = sum(1 for hs in hyps if hs and hs[0]["score"] > -1.5)
     for n in (36, 27, 18, 9):
-        if good >= n - 1 or allg >= n + (1 if n >= 18 else 0):
-            if good >= n - 2:
-                return n
-    return 9 if good >= 6 else max(1, good)
+        if good >= n - 2:
+            return n
+    return 9 if good >= 5 else max(1, good)
 
 
 def card_info(card):
@@ -366,189 +565,253 @@ def card_info(card):
     if not card:
         return None, None
     pars = card.get("par") or card.get("pars")
-    ys = None
-    ts = card.get("tee_sets") or {}
     best = None
-    for name, t in ts.items():
+    for name, t in (card.get("tee_sets") or {}).items():
         y = t.get("yards") if isinstance(t, dict) else t
         if y and (best is None or sum(v or 0 for v in y) > sum(v or 0 for v in best)):
             best = y
-    ys = best or card.get("yards")
-    return pars, ys
+    return pars, best or card.get("yards")
+
+
+class Problem:
+    """Padded arrays over the kept greens (nodes) and their hypotheses (K per node):
+    form[b, h], cxk[b, h] (complex index, -1 = padding), wl[a, b, h] walk log-lik green a -> hypothesis h of b."""
+
+    def __init__(self, sc, hyps, geo, keep, use_paths=True):
+        self.sc, self.hyps, self.geo, self.keep = sc, hyps, geo, keep
+        G = geo.G
+        self.hk = [hyps[g] for g in keep]
+        Mk = len(keep)
+        K = max(1, max(len(h) for h in self.hk))
+        self.K = K
+        self.form = np.full((Mk, K), -1e4)
+        self.cxk = np.full((Mk, K), -1, int)
+        nC = len(geo.cx)
+        self.cov = np.zeros((Mk, K, nC + 1))
+        for b, hs in enumerate(self.hk):
+            for h, x in enumerate(hs):
+                self.form[b, h] = x["score"]
+                self.cxk[b, h] = x["k"]
+                self.cov[b, h, x["cover"]] = 1.0
+        # green (edge) -> complex (nearest box) straight distance, and along cart paths
+        dgc = np.zeros((Mk, nC))
+        for k, c in enumerate(geo.cx):
+            xy = c["xy"]
+            dgc[:, k] = np.hypot(G[keep][:, None, 0] - xy[None, :, 0], G[keep][:, None, 1] - xy[None, :, 1]).min(1)
+        dgc = np.maximum(dgc - geo.gr_r[keep][:, None], 1.0)
+        wgc = walk_ll(dgc)
+        self.path_used = False
+        if use_paths and geo.paths is not None and len(geo.paths.P):
+            pg = geo.paths.from_points([G[g] for g in keep])
+            pgc = np.full((Mk, nC), np.inf)
+            for a in range(Mk):
+                if pg[a] is None:
+                    continue
+                for k, c in enumerate(geo.cx):
+                    pgc[a, k] = geo.paths.to_points(pg[a], c["xy"]).min()
+            ok = np.isfinite(pgc) & (pgc < 2.2 * dgc + 80)
+            wgc = np.where(ok, np.logaddexp(wgc + math.log(0.5), path_ll(np.where(ok, pgc, 1e3)) + math.log(0.5)), wgc)
+            self.path_used = bool(ok.any())
+        ck = np.maximum(self.cxk, 0)
+        self.wl = wgc[:, ck]                                   # (Mk, Mk, K)
+        self.wd = dgc[:, ck]
+        self.dgc = dgc
+
+    def anchors(self, c):
+        """(start log-lik per hypothesis (Mk, K), end log-lik per green (Mk,)) for clubhouse point c."""
+        G = self.geo.G
+        dc = np.array([np.hypot(*(cx["xy"] - c).T).min() for cx in self.geo.cx])
+        st = anchor_ll(dc)[np.maximum(self.cxk, 0)]
+        en = anchor_ll(np.maximum(np.hypot(*(G[self.keep] - c).T) - self.geo.gr_r[self.keep], 1.0))
+        return st, en
 
 
 def solve(sc, card=None, n_holes=None, use_paths=True, use_clubhouse=True, temp=None, form_w=None, topk=TOPK,
-          max_greens=20, return_debug=False):
+          max_greens=19, return_debug=False):
     temp = temp or TEMP
-    hyps, geo = hypotheses(sc, topk=topk, w=form_w)
+    clubs = list(sc.clubhouse) if use_clubhouse else []
+    hyps, geo = hypotheses(sc, topk=topk, w=form_w, clubs=clubs)
     pars, yards = card_info(card)
-    N = n_holes or (len(pars) if pars else n_holes_guess(sc, hyps))
+    N = n_holes or (len(pars) if pars else (len(yards) if yards else n_holes_guess(hyps)))
     nG = len(sc.greens)
-    if nG == 0:
-        return dict(schema="course_structure/1", status="no_greens", holes=[], n_holes=N)
-    T = geo.T
-    G = geo.G
-    # "not a hole" score per green: practice greens are small, close to the clubhouse, without a good hypothesis
-    best_form = np.array([hs[0]["score"] if hs else -20.0 for hs in hyps])
-    gconf = np.array([g.get("conf", 1.0) for g in sc.greens])
-    not_hole = NOT_HOLE_BASE + 0.0 * best_form + np.log(np.maximum(gconf, 0.05))
-    # pick the greens the route may use
-    order = np.argsort(-(best_form - not_hole + 3 * gconf))
-    M = min(nG, max(N, min(max_greens, N + 3)))
-    if N > 22:
-        M = min(nG, N + 2)
+    if nG == 0 or not len(geo.C):
+        return dict(schema="course_structure/1", status="no_greens_or_tees", holes=[], n_holes=N)
+    best_form = np.array([hs[0]["score"] if hs else -30.0 for hs in hyps])
+    gconf = np.array([g.get("p_hole", g.get("conf", 1.0)) for g in sc.greens])
+    nothole = NOT_HOLE + np.log(np.maximum(gconf, 0.02)) - 0.5 * np.log(np.maximum(1 - gconf, 0.02))
+    order = np.argsort(-(best_form + nothole))
+    if N > 20:
+        keep = sorted(order[:min(nG, N + 2)].tolist())
+        return _solve_large(sc, hyps, geo, keep, N, pars, yards, temp, clubs)
+    M = max(min(nG, max_greens, N + 3), min(nG, N))
     keep = sorted(order[:M].tolist())
-    if N > 22:
-        return _solve_large(sc, hyps, geo, keep, N, pars, yards, temp, use_clubhouse, use_paths)
-    # hole-level matrices over the kept greens
-    hk = [hyps[g] for g in keep]
-    walkd = []                                            # walkd[a][b][h] = green a -> boxes of hyp h of green b
-    for a, ga in enumerate(keep):
-        row = []
-        for b, gb in enumerate(keep):
-            row.append(np.array([min(np.hypot(*(T[h["boxes"]] - G[ga]).T)) for h in hk[b]]) if hk[b] else np.zeros(0))
-        walkd.append(row)
-    form = [np.array([h["score"] for h in hs]) / temp for hs in hk]
+    if len(keep) < N:
+        N = len(keep)
+    pb = Problem(sc, hyps, geo, keep, use_paths=use_paths)
     Mk = len(keep)
-    NEG = -1e30
-    trans = np.full((Mk, Mk), NEG)
-    for a in range(Mk):
-        for b in range(Mk):
-            if a == b or not len(form[b]):
-                continue
-            trans[a, b] = _lse(form[b] + walk_ll(walkd[a][b]) / temp)
-    # the green of node b also stops being "not a hole"
-    nh = np.array([not_hole[g] for g in keep]) / temp
-    trans = trans - nh[None, :]
-    # clubhouse candidates (latent)
-    Hc = list(sc.clubhouse) if use_clubhouse else []
-    Hc = Hc + hub_candidates(sc, geo, hyps)
+    nh = nothole[keep]
+    Hc = clubs + hub_candidates(sc, geo, hyps)
     wsum = sum(h["w"] for h in Hc)
-    runs = []
-    layers = _popcount_layers(Mk, N)
-    pos = None
-    if pars or yards:
-        pos = _card_pos(hk, pars, yards, N) / temp
-    for H in Hc:
-        c = H["c"]
-        st = np.array([_lse(form[b] + anchor_ll([min(np.hypot(*(T[h["boxes"]] - c).T)) for h in hk[b]]) / temp)
-                       if len(form[b]) else NEG for b in range(Mk)]) - nh
-        en = anchor_ll(np.hypot(*(G[keep] - c).T)) / temp
+    pos_base = _card_pos(pb.hk, pars, yards, N) if (pars or yards) else None
+    price = np.zeros(len(geo.C) + 1)
+    anchors = [pb.anchors(H["c"]) for H in Hc]
+    eye = np.eye(Mk, dtype=bool)
+    NEG = -1e4
+
+    def mats(st_en, lam):
+        form = pb.form - pb.cov @ lam                                  # (Mk, K); padding stays ~ -1e4
+        st_l, en = st_en
+        trans = _lse(form[None, :, :] + pb.wl, axis=2)                 # (a, b)
         turn = None
         if N == 18:
-            g9 = anchor_ll(np.hypot(*(G[keep] - c).T)) / temp
-            turn = np.full((Mk, Mk), NEG)
-            for a in range(Mk):
-                for b in range(Mk):
-                    if a == b or not len(form[b]):
-                        continue
-                    d10 = np.array([min(np.hypot(*(T[h["boxes"]] - c).T)) for h in hk[b]])
-                    via = g9[a] + anchor_ll(d10) / temp
-                    direct = walk_ll(walkd[a][b]) / temp + math.log(0.35)
-                    turn[a, b] = _lse(form[b] + np.logaddexp(via + math.log(0.65), direct))
-            turn = turn - nh[None, :]
-        r = route_dp(trans, st, en, N, turn=turn, pos=pos, layers=layers)
-        r["H"] = H
-        r["logw"] = r["logZ"] + math.log(H["w"] / wsum)
-        runs.append(r)
+            # the turn: green 9 and tee 10 both near the clubhouse; the walk 9 -> 10 direct or through it
+            turn = _lse(form[None, :, :] + st_l[None, :, :] + _turn_walk(pb.wl), axis=2) + en[:, None]
+        start = _lse(form + st_l, axis=1)
+        trans = np.where(eye, NEG, trans - nh[None, :]) / temp
+        if turn is not None:
+            turn = np.where(eye, NEG, turn - nh[None, :]) / temp
+        return trans, turn, (start - nh) / temp, en / temp
+
+    def run_all(lam, marginals, only=None, soft=True):
+        runs = []
+        for i, (H, se) in enumerate(zip(Hc, anchors)):
+            if only is not None and i not in only:
+                continue
+            trans, turn, start, end = mats(se, lam)
+            r = route_dp(trans, start, end, N, turn=turn, pos=None if pos_base is None else pos_base / temp,
+                         marginals=marginals, soft=soft)
+            r.update(H=H, se=se, i=i, logw=r["logZ"] + math.log(H["w"] / wsum),
+                     mapw=r["best_score"] + math.log(H["w"] / wsum))
+            runs.append(r)
+        return runs
+
+    # Lagrangian prices: no complex starts two holes on the MAP route
+    runs = run_all(price, marginals=False, soft=False)
+    top = sorted(runs, key=lambda r: -r["mapw"])[:3]
+    only = {r["i"] for r in top}
+    best_i = {top[0]["i"]}
+    for it in range(LAGR_ITERS):
+        br = max(runs, key=lambda r: r["mapw"])
+        cnt = _coverage(pb, br["best"], br["se"], price, N)
+        if cnt.max() <= 1:
+            break
+        price = price + 1.0 * (cnt > 1) * (1 + 0.5 * it)
+        runs = run_all(price, marginals=False, only=best_i, soft=False)
+    runs = run_all(price, marginals=True, only=only)
     lw = np.array([r["logw"] for r in runs])
     pw = np.exp(lw - _lse(lw))
     marg = sum(p * r["marg"] for p, r in zip(pw, runs))
-    bestrun = runs[int(np.argmax([r["best_score"] + math.log(r["H"]["w"] / wsum) for r in runs]))]
-    seq = bestrun["best"]
-    return _assemble(sc, geo, hyps, keep, seq, marg, bestrun, pw, runs, N, pars, yards, walkd, form, temp,
-                     return_debug)
+    br = max(runs, key=lambda r: r["mapw"])
+    return _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, return_debug, runs)
+
+
+VIA_LL = float(walk_ll(WALK_MED * 1.6))
+
+
+def _turn_walk(wl):
+    """Walk green 9 -> tee 10: direct, or through the clubhouse (any distance; both ends are anchored to it)."""
+    return np.logaddexp(math.log(TURN_VIA_H) + VIA_LL, math.log(1 - TURN_VIA_H) + wl)
+
+
+def _tee_lp(pb, seq, k, se, price, N):
+    node = seq[k]
+    st_l, _ = se
+    lp = pb.form[node] - pb.cov[node] @ price
+    if k == 0:
+        lp = lp + st_l[node]
+    elif k == 9 and N == 18:
+        lp = lp + st_l[node] + _turn_walk(pb.wl[seq[k - 1], node])
+    else:
+        lp = lp + pb.wl[seq[k - 1], node]
+    return lp
+
+
+def _coverage(pb, seq, se, price, N):
+    """How many holes of the route use each complex (as tee or forward tee), with each hole's best hypothesis."""
+    cnt = np.zeros(pb.cov.shape[2])
+    for k, node in enumerate(seq):
+        cnt += pb.cov[node, int(np.argmax(_tee_lp(pb, seq, k, se, price, N)))]
+    return cnt
 
 
 def _card_pos(hk, pars, yards, N):
-    """pos[j, k]: log-likelihood ratio of node j's best hypotheses being card hole k (length vs yards, par)."""
-    Mk = len(hk)
-    pos = np.zeros((Mk, N))
+    """pos[j, k]: log-likelihood ratio of node j being card hole k (straight length vs card yards; par)."""
+    pos = np.zeros((len(hk), N))
     for j, hs in enumerate(hk):
         if not hs:
             continue
         D = np.array([h["D"] for h in hs])
         fs = np.array([h["score"] for h in hs])
-        wts = np.exp(fs - fs.max())
-        wts /= wts.sum()
+        lw = fs - _lse(fs)
+        base, pp = length_loglik(D)
         for k in range(N):
             ll = np.zeros(len(hs))
             if yards and k < len(yards) and yards[k]:
                 Y = float(yards[k])
-                sd = 0.06 * Y + 12
-                # straight line is shorter than the measured line on dog-legs
-                z = (D - Y) / sd if True else 0
-                z = np.where(D < Y, (D - Y) / (sd * 1.8), z)
-                ll += -0.5 * z ** 2 - (length_loglik(D)[0])
+                sd = 0.05 * Y + 12
+                z = np.where(D > Y, (D - Y) / sd, (D - Y) / (2.0 * sd))      # dog-legs: straight < measured
+                ll += np.log(0.9 * np.exp(-0.5 * z ** 2) / (sd * 2.5) + 0.1 / 600) + math.log(600) - base
             elif pars and k < len(pars) and pars[k]:
-                p = int(pars[k])
-                pp = length_loglik(D)[1]
-                ll += np.log(np.maximum(pp[min(max(p, 3), 5) - 3], 1e-4) / PAR_PI.get(min(max(p, 3), 5), 0.3))
-            pos[j, k] = _lse(np.log(np.maximum(wts, 1e-300)) + ll)
-    return np.maximum(pos, -25.0)
+                p = min(max(int(pars[k]), 3), 5)
+                ll += np.log(np.maximum(pp[p - 3], 1e-3) / PAR_PI[p])
+            pos[j, k] = _lse(lw + ll)
+    return np.clip(pos, -20.0, 10.0)
 
 
-def _assemble(sc, geo, hyps, keep, seq, marg, bestrun, pw, runs, N, pars, yards, walkd, form, temp, debug):
-    T, G = geo.T, geo.G
+def _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, debug, runs):
+    G = geo.G
+    seq = br["best"]
+    st_l, _ = br["se"]
     holes = []
     for k, node in enumerate(seq):
-        gi = keep[node]
-        hs = hyps[gi]
-        # the hole's tee hypothesis given the previous green (posterior over hypotheses)
-        lp = form[node].copy()
-        if k > 0:
-            lp = lp + walk_ll(walkd[seq[k - 1]][node]) / temp
-        else:
-            c = bestrun["H"]["c"]
-            lp = lp + anchor_ll([min(np.hypot(*(T[h["boxes"]] - c).T)) for h in hs]) / temp
+        gi = pb.keep[node]
+        hs = pb.hk[node]
+        lp = _tee_lp(pb, seq, k, br["se"], price, N) / temp
         ph = np.exp(lp - _lse(lp))
         hi = int(np.argmax(ph))
         h = hs[hi]
-        back = T[h["back"]]
+        cx = geo.cx[h["k"]]
         p_num = float(marg[node, k])
-        ppar = np.array(h["ppar"])
-        holes.append(dict(number=k + 1, green=sc.greens[gi]["id"], green_xy=G[gi], tee=sc.tees[h["back"]]["id"],
-                          tee_xy=back, boxes=[sc.tees[b]["id"] for b in h["boxes"]], length_yd=round(h["D"], 1),
-                          p_par=[round(float(x), 3) for x in ppar], p_number=round(p_num, 3),
+        holes.append(dict(number=k + 1, green=sc.greens[gi]["id"], green_xy=[float(x) for x in G[gi]],
+                          tee_complex=cx["id"], tee=sc.tees[cx["boxes"][0]]["id"],
+                          tee_xy=[float(x) for x in h["tee"]],
+                          boxes=[sc.tees[b]["id"] for b in cx["boxes"]], length_yd=round(h["D"], 1),
+                          p_par=[round(float(x), 3) for x in h["ppar"]], p_number=round(p_num, 3),
                           p_tee=round(float(ph[hi]), 3), confidence=round(p_num * float(ph[hi]), 3),
-                          walk_in_yd=round(float(walkd[seq[k - 1]][node][hi]), 1) if k > 0 else None,
-                          form_score=round(h["score"], 2), feat={a: round(b, 2) for a, b in h["feat"].items()}))
+                          walk_in_yd=round(float(pb.wd[seq[k - 1]][node][hi]), 1) if k > 0 else None,
+                          form_score=round(h["score"], 2), feat={a: round(b, 2) for a, b in h["f"].items()}))
     pars_inf = infer_pars([h["p_par"] for h in holes], N)
     for h, p in zip(holes, pars_inf):
         h["par"] = p
-    used = {keep[n] for n in seq}
-    practice = [sc.greens[i]["id"] for i in range(len(sc.greens)) if i not in used]
-    # nines swap: probability mass of the other nine's assignment
-    out = dict(schema="course_structure/1", status="ok", n_holes=N, holes=holes, practice_greens=practice,
-               clubhouse=dict(xy=bestrun["H"]["c"], how=bestrun["H"]["how"], p=round(float(pw.max()), 3)),
+    used = {pb.keep[n] for n in seq}
+    out = dict(schema="course_structure/1", status="ok", n_holes=N, holes=holes,
+               practice_greens=[sc.greens[i]["id"] for i in range(len(sc.greens)) if i not in used],
+               clubhouse=dict(xy=[float(x) for x in br["H"]["c"]], how=br["H"]["how"],
+                              p=round(float(pw[runs.index(br)]), 3)),
                total_par=int(sum(pars_inf)), card_used=bool(pars or yards),
-               p_route=round(float(np.exp(bestrun["best_score"] - bestrun["logZ"])), 4))
+               p_route=round(float(np.exp(min(0.0, br["best_score"] - br["logZ"]))), 4))
     if debug:
-        out["debug"] = dict(marg=marg, keep=keep, runs=[(r["H"]["how"], r["logw"]) for r in runs])
+        out["debug"] = dict(marg=marg, keep=pb.keep, runs=[(r["H"]["how"], r["logw"]) for r in runs], price=price)
     return out
 
 
 def infer_pars(pp, N):
-    """Par per hole: the par posteriors with a prior on the number of par 3s / 5s (~N/4.5 each) and total par
-    (70-72 for 18): a small DP over (count of 3s, count of 5s)."""
+    """Par per hole: par posteriors + a prior on the number of par 3s / 5s (~N x 4.2 / 18 and 3.8 / 18, i.e. total
+    par ~70-72 for 18)."""
     n = len(pp)
     if n == 0:
         return []
-    lp = np.log(np.maximum(np.array(pp), 1e-6))            # n x 3
+    lp = np.log(np.maximum(np.array(pp, float), 1e-6))
+    exp3, exp5 = N * 4.2 / 18, N * 3.8 / 18
+    d3 = lp[:, 0] - lp[:, 1]
+    d5 = lp[:, 2] - lp[:, 1]
     best = None
-    exp3 = N * 4.2 / 18
-    exp5 = N * 3.8 / 18
-    # enumerate counts (n3, n5); for each, the best assignment is a greedy on score differences
     for n3 in range(0, n + 1):
+        idx3 = list(np.argsort(-d3)[:n3])
+        rest_order = [i for i in np.argsort(-d5) if i not in idx3]
         for n5 in range(0, n + 1 - n3):
-            d3 = lp[:, 0] - lp[:, 1]
-            d5 = lp[:, 2] - lp[:, 1]
-            # choose n3 holes as par 3 and n5 as par 5 maximising the sum (Hungarian-free: greedy is exact for
-            # disjoint top-k when ties are rare; good enough here)
-            idx3 = list(np.argsort(-d3)[:n3])
-            rest = [i for i in np.argsort(-d5) if i not in idx3][:n5]
-            s = lp[:, 1].sum() + d3[idx3].sum() + d5[rest].sum()
-            s += -0.5 * ((n3 - exp3) / 1.2) ** 2 - 0.5 * ((n5 - exp5) / 1.2) ** 2
+            rest = rest_order[:n5]
+            s = d3[idx3].sum() + d5[rest].sum() - 0.5 * ((n3 - exp3) / 1.3) ** 2 - 0.5 * ((n5 - exp5) / 1.3) ** 2
             if best is None or s > best[0]:
                 best = (s, idx3, rest)
     par = [4] * n
@@ -559,45 +822,49 @@ def infer_pars(pp, N):
     return par
 
 
-def _solve_large(sc, hyps, geo, keep, N, pars, yards, temp, use_clubhouse, use_paths):
-    """27 / 36 holes: greedy chaining of loops of 9 from the clubhouse (exact DP is 2^27); marginals from the local
-    soft-max at each step."""
-    T, G = geo.T, geo.G
-    Hc = (list(sc.clubhouse) if use_clubhouse else []) + hub_candidates(sc, geo, hyps)
+def _solve_large(sc, hyps, geo, keep, N, pars, yards, temp, clubs):
+    """27 / 36 holes: loops of 9 from the clubhouse, greedy (best hole by formation + walk at each step), confidence
+    from the local soft-max. Exact inference is 2^27; reported apart in the eval."""
+    G = geo.G
+    Hc = clubs + hub_candidates(sc, geo, hyps)
     c = Hc[0]["c"]
     left = set(keep)
+    used_cx = set()
     holes = []
     prev = None
     k = 0
     while left and k < N:
-        best = None
         cands = []
         for gi in left:
-            for hi, h in enumerate(hyps[gi]):
+            for h in hyps[gi]:
+                if h["k"] in used_cx:
+                    continue
+                xy = geo.cx[h["k"]]["xy"]
                 if prev is None or k % 9 == 0:
-                    wl = anchor_ll(min(np.hypot(*(T[h["boxes"]] - c).T)))
+                    wl = float(anchor_ll(np.hypot(*(xy - c).T).min()))
                 else:
-                    wl = walk_ll(min(np.hypot(*(T[h["boxes"]] - G[prev]).T)))
-                s = h["score"] + float(wl)
-                cands.append((s, gi, hi))
+                    wl = float(walk_ll(max(1.0, np.hypot(*(xy - G[prev]).T).min() - geo.gr_r[prev])))
+                cands.append((h["score"] + wl, gi, h))
         if not cands:
             break
         cands.sort(key=lambda r: -r[0])
         s0 = np.array([r[0] for r in cands]) / temp
         p = np.exp(s0 - _lse(s0))
-        s, gi, hi = cands[0]
-        h = hyps[gi][hi]
-        holes.append(dict(number=k + 1, green=sc.greens[gi]["id"], green_xy=G[gi], tee=sc.tees[h["back"]]["id"],
-                          tee_xy=T[h["back"]], boxes=[sc.tees[b]["id"] for b in h["boxes"]], length_yd=round(h["D"], 1),
-                          p_par=[round(x, 3) for x in h["ppar"]], p_number=round(float(p[0]), 3), p_tee=1.0,
+        _, gi, h = cands[0]
+        cx = geo.cx[h["k"]]
+        holes.append(dict(number=k + 1, green=sc.greens[gi]["id"], green_xy=[float(x) for x in G[gi]],
+                          tee_complex=cx["id"], tee=sc.tees[cx["boxes"][0]]["id"], tee_xy=[float(x) for x in h["tee"]],
+                          boxes=[sc.tees[b]["id"] for b in cx["boxes"]], length_yd=round(h["D"], 1),
+                          p_par=[round(float(x), 3) for x in h["ppar"]], p_number=round(float(p[0]), 3), p_tee=1.0,
                           confidence=round(float(p[0]), 3), walk_in_yd=None, form_score=round(h["score"], 2), feat={}))
         left.discard(gi)
+        used_cx.add(h["k"])
         prev = gi
         k += 1
     for h, p in zip(holes, infer_pars([h["p_par"] for h in holes], N)):
         h["par"] = p
+    used = {h["green"] for h in holes}
     return dict(schema="course_structure/1", status="ok_greedy", n_holes=N, holes=holes,
-                practice_greens=[sc.greens[i]["id"] for i in range(len(sc.greens)) if i not in {keep[0]} and
-                                 sc.greens[i]["id"] not in {h["green"] for h in holes}],
-                clubhouse=dict(xy=c, how=Hc[0]["how"], p=None), total_par=int(sum(h["par"] for h in holes)),
-                card_used=bool(pars or yards), p_route=None)
+                practice_greens=[g["id"] for g in sc.greens if g["id"] not in used],
+                clubhouse=dict(xy=[float(x) for x in c], how=Hc[0]["how"], p=None),
+                total_par=int(sum(h["par"] for h in holes)), card_used=bool(pars or yards), p_route=None)

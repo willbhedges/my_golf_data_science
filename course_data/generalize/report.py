@@ -350,6 +350,22 @@ def md(rows, summ, pop, sample):
                  f"{card_s} | {r.get('naip') or '-'} | {seg_s} ({r['osm_greens']}) | "
                  f"{r['today_holes']} / {r['today_green']} / {r['today_tee']} of {r['expected']} | "
                  f"{r.get('routed', '-')} ({r.get('routed_check', '-')}) | {acc(vo)} | {acc(vm)} |")
+    ev = rd(os.path.join(HERE, "eval_v2.json"))
+    if ev:
+        L += ["", "## Routing v2 on the held-out test split (route_eval.py final -> eval_v2.json)", "",
+              "Test = 32 fully mapped courses (8 per Census region, `sample.py holdout`), never used for tuning. "
+              "Golfer confirm: CONFIRM_UX.md.", "",
+              "| split / inputs | card | courses | method | hole-number acc | all correct (no input) | correct after check | flags / course |",
+              "|---|---|---|---|---|---|---|---|"]
+        for key, lab in (("test_osm", "test / OSM + model + lidar"), ("test_model", "test / model + lidar only"),
+                         ("test_osm_nocard", "test / OSM + model + lidar"), ("train_osm", "train / OSM + model + lidar")):
+            agg = (ev.get(key) or {}).get("agg") or {}
+            for m in ("v1", "v2"):
+                a = agg.get(m)
+                if a:
+                    L.append(f"| {lab} | {'none' if 'nocard' in key else 'web or osm-derived'} | {a['n']} | {m} | "
+                             f"{a['hole_number_acc']:.0%} | {a['all_correct']:.0%} | {a['correct_after_check']:.0%} | "
+                             f"{a['flags_per_course']} |")
     L += ["", "## Failure modes seen in the sample", "",
           "* **No scorecard online** (Black Stone Creek, Wild Ridge, Sevillano): the router has no yardage sequence; "
           "physical holes are still found (~60 %) but hole numbers are a guess (~18 %). A golfer-typed card (18 numbers) fixes it.",

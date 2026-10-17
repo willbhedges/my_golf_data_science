@@ -27,7 +27,8 @@ What v2 adds
                     `practice` feature (a putting / chipping green); greens within 45 yds of another green (v1).
   facility split    with many more greens than card holes (36-hole facilities, an adjacent course inside the
                     boundary) the greens / boxes are clustered by single-linkage (gap 230 yds); clusters are tried
-                    alone and in pairs and the cheapest routing wins (`facility_split`).
+                    alone and in pairs, each scored by its routing cost + UNUSED_GREEN_W per green of the set the
+                    routing leaves unused (a course uses its own area's greens), and the best wins (`facility_split`).
   constraints       fixed {ref: (tee, green)} pins a hole (a golfer's answer), exclude {ref: {green}} forbids greens:
                     one answer re-solves the whole round ("propagation").
   posterior         the final beam's distinct routings, Boltzmann-weighted at temperature TAU: per hole the
@@ -58,13 +59,14 @@ W_V1 = dict(length=1.0, fingerprint=1.0, corridor=1.2, cross_green=1.5, align=1.
             covered_start=2.0, reused_tee=2.5, cross_lines=1.5, miss_tee=4.0, miss_hole=8.0)
 SIGNED = {"cart_link", "cover"}            # features whose weight may take either sign (others are kept >= 0)
 WEIGHTS_FILE = os.path.join(HERE, "routing_v2_weights.json")
-BEAM = 2000
+BEAM = 6000
 TOPK = 80
 PER_GREEN = 6
 TAU = 1.0
 P_CHECK = 0.8
 FAC_FREE, FAC_SCALE = 110.0, 160.0
 SPLIT_GAP = 230.0
+UNUSED_GREEN_W = 1.0
 
 
 def load_weights(path=WEIGHTS_FILE):
@@ -478,6 +480,8 @@ def solve(ctx, w=None, fixed=None, exclude=None, allowed=None, beam=BEAM, tau=No
     S_last = np.array([-1])
     S_gap = np.array([False])
     S_first = np.array([-1])
+    S_hash = np.zeros(1, np.uint64)
+    ZG = np.random.default_rng(12345).integers(1, 2 ** 63, size=max(nG, 1), dtype=np.int64).astype(np.uint64)
     back = []
     for h in range(n):
         ht, hg, HF = hyps[h]
@@ -517,22 +521,20 @@ def solve(ctx, w=None, fixed=None, exclude=None, allowed=None, beam=BEAM, tau=No
         k = min(len(flat), beam * 4)
         idx = np.argpartition(flat, k - 1)[:k] if k < len(flat) else np.arange(len(flat))
         idx = idx[np.argsort(flat[idx])]
-        seen, keep = set(), []
-        for q in idx:
-            if not np.isfinite(flat[q]):
-                break
-            s, r = divmod(int(q), nr)
-            first = int(ht[r]) if h == 0 else int(S_first[s])
-            gset = S_g[s] if hg[r] < 0 else (S_g[s] | R._onehot(nG + 1, hg[r]))
-            key = (int(hg[r]), first, gset.tobytes())
-            if key in seen:
-                continue
-            seen.add(key)
-            keep.append((s, r))
-            if len(keep) >= beam:
-                break
-        if not keep:
+        idx = idx[np.isfinite(flat[idx])]
+        if not len(idx):
             return dict(status="infeasible", n_holes=n, holes={}, cost=None, method="routing/2")
+        # dedupe on (this green, hole 1's tee, set of used greens) with a 64-bit hash of the green set
+        s_i, r_i = np.divmod(idx, nr)
+        gnew = hg[r_i]
+        hset = S_hash[s_i] + np.where(gnew >= 0, ZG[np.maximum(gnew, 0)], np.uint64(0))
+        first = ht[r_i] if h == 0 else S_first[s_i]
+        key = hset ^ (gnew.astype(np.int64).astype(np.uint64) * np.uint64(0x9E3779B97F4A7C15)) ^ \
+            (first.astype(np.int64).astype(np.uint64) * np.uint64(0xC2B2AE3D27D4EB4F))
+        _, fi = np.unique(key, return_index=True)
+        fi = np.sort(fi)[:beam]                   # idx is cost-sorted: the first of each key is its cheapest
+        keep = list(zip(s_i[fi].tolist(), r_i[fi].tolist()))
+        S_hash = hset[fi]
         ss = np.array([s for s, _ in keep])
         rr = np.array([r for _, r in keep])
         S_cost = flat[ss * nr + rr]
@@ -806,21 +808,31 @@ def route(inp, card=None, fc=None, boundary=None, w=None, fixed=None, exclude=No
         return res
     nc, lab = components(ctx)
     sizes = np.bincount(lab)
-    best = res
     G, T = ctx["G"], ctx["T"]
+
+    def score_of(r, n_greens):
+        # a course uses (almost) every green of its own area: unused greens of the candidate set count against it
+        return r["cost"] + UNUSED_GREEN_W * (n_greens - (r["n_holes"] - sum(1 for h in r["holes"].values()
+                                                                             if h.get("g_idx", -1) < 0)))
+    best, best_s = res, score_of(res, ctx["nG"])
     cands = [[c] for c in range(nc) if sizes[c] >= 0.75 * ctx["n"]]
     big = [c for c in range(nc) if sizes[c] >= 3]
     cands += [[a, b] for i, a in enumerate(big) for b in big[i + 1:] if 0.75 * ctx["n"] <= sizes[a] + sizes[b] <= 1.6 * ctx["n"] + 4]
     for cs in cands[:8]:
         gsel = [i for i in range(ctx["nG"]) if lab[i] in cs]
+        if len(gsel) == ctx["nG"]:
+            continue
         gx = ctx["gxy"][gsel]
         tsel = [j for j in range(ctx["nT"]) if np.hypot(*(gx - ctx["txy"][j]).T).min() < 700]
         sub = context(dict(inp, greens=[G[i] for i in gsel], tees=[T[j] for j in tsel]), card, fc=fc, boundary=boundary)
         r2 = solve(sub, w=w, **kw)
-        if r2.get("cost") is not None and r2["cost"] < best["cost"] - 0.5:
+        if r2.get("cost") is None:
+            continue
+        s2 = score_of(r2, len(gsel))
+        if s2 < best_s - 0.5:
             r2["context"] = sub
             r2["facility_split"] = dict(clusters=len(cs), greens=len(gsel), of=ctx["nG"])
-            best = r2
+            best, best_s = r2, s2
     return best
 
 

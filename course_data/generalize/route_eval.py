@@ -2,7 +2,8 @@
 simulation (offline, one process; inputs are the committed caches).
 
   python course_data/generalize/route_eval.py eval --split train [--methods v1,v2] [--inputs osm|model]
-  python course_data/generalize/route_eval.py train [--epochs 12]       # fits routing_v2_weights.json on train
+  python course_data/generalize/route_eval.py tune                       # fits routing_v2_weights.json on train
+  python course_data/generalize/route_eval.py train [--epochs 12]       # (alternative: passive-aggressive)
   python course_data/generalize/route_eval.py confirm --split test       # taps-to-correct simulation
   python course_data/generalize/route_eval.py final                     # test split: v1 vs v2 + confirm -> eval_v2.json
 
@@ -144,8 +145,8 @@ def evaluate(split, methods=("v1", "v2"), inputs="osm", card_mode="web", w=None,
             t0 = time.time()
             if m == "v1":
                 res = R.route(c["inp"], c["card"], margins=c["card"] is not None)
-            else:
-                res, _ = run_v2(c, w=w)
+            else:                                  # production entry point (facility split included)
+                res = R2.route(c["inp"], c["card"], fc=c["fc"], boundary=c["boundary"], w=w)
             sc = R.score(res, c["truth"]) if res.get("holes") else dict(hole_number_acc=0, green_assign_acc=0,
                                                                           all_correct=False, flagged=0, wrong=len(c["truth"]),
                                                                           wrong_unflagged=len(c["truth"]), per_hole={})
@@ -187,7 +188,7 @@ def train(epochs=12, C=0.3, margin=0.5, inputs=("osm", "model"), seed=0, out=R2.
     def wrong_total(wv):
         tot, allc = 0, 0
         for c, ctx, _ in data:
-            res = R2.solve(ctx, w=wv, tau=1.0, p_check=0.0, keep_top=1)
+            res = R2.solve(ctx, w=wv, tau=1.0, p_check=0.0, keep_top=1, beam=3000, polish=1)
             sc = R.score(res, c["truth"])
             tot += sc["wrong"]
             allc += sc["all_correct"]
@@ -199,10 +200,10 @@ def train(epochs=12, C=0.3, margin=0.5, inputs=("osm", "model"), seed=0, out=R2.
         n_upd = 0
         for i in rnd.permutation(len(data)):
             c, ctx, allowed = data[i]
-            res = R2.solve(ctx, w=w, tau=1.0, p_check=0.0, keep_top=1)
+            res = R2.solve(ctx, w=w, tau=1.0, p_check=0.0, keep_top=1, beam=3000, polish=1)
             sc = R.score(res, c["truth"])
             if sc["wrong"] > 0:
-                rt = R2.solve(ctx, w=w, allowed=allowed, tau=1.0, p_check=0.0, keep_top=1)
+                rt = R2.solve(ctx, w=w, allowed=allowed, tau=1.0, p_check=0.0, keep_top=1, beam=3000, polish=0)
                 if rt.get("cost") is not None:
                     d = np.array(rt["features"]) - np.array(res["features"])      # f_truth - f_pred
                     loss = float(w @ d) + margin * sc["wrong"]
@@ -248,6 +249,98 @@ def train(epochs=12, C=0.3, margin=0.5, inputs=("osm", "model"), seed=0, out=R2.
               history=hist, built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
     json.dump(js, open(out, "w"), indent=1)
     return js
+
+
+def _train_data(inputs=("osm", "model")):
+    data = []
+    for slug in courses_of("train"):
+        for mode in inputs:
+            c = load(slug, mode)
+            if c is None or len(c["truth"]) < 9:
+                continue
+            ctx = R2.context(c["inp"], c["card"], fc=c["fc"], boundary=c["boundary"])
+            if ctx.get("ok"):
+                data.append((c, ctx))
+    return data
+
+
+def objective(data, w, beam=1500):
+    """Train objective: wrong holes - 4 x fully correct courses (lower is better)."""
+    wrong, allc = 0, 0
+    for c, ctx in data:
+        res = R2.solve(ctx, w=w, tau=1.0, p_check=0.0, keep_top=1, beam=beam, polish=1)
+        sc = R.score(res, c["truth"]) if res.get("holes") else dict(wrong=len(c["truth"]), all_correct=False)
+        wrong += sc["wrong"]
+        allc += sc["all_correct"]
+    return wrong - 4 * allc, wrong, allc
+
+
+def tune(rounds=2, inputs=("osm", "model"), out=R2.WEIGHTS_FILE):
+    """Coordinate search on the train split: each weight in turn is scaled (x0.5, x2) or, when 0, tried at a few
+    values; a change is kept when the train objective (wrong holes - 4 x all-correct courses) improves. Then
+    tau / p_check are calibrated (fewest flags that still cover every wrong hole)."""
+    data = _train_data(inputs)
+    log("train courses x inputs:", len(data))
+    w, _, _ = R2.load_weights(None)
+    best = objective(data, w)
+    log("start", best)
+    hist = [dict(step="start", obj=best)]
+    for rd in range(rounds):
+        changed = False
+        for k, name in enumerate(R2.FEATURES):
+            if name in ("miss_hole",):                      # the scale anchor
+                continue
+            v = w[k]
+            if name in R2.SIGNED and name != "cover":
+                trials = [v - 0.5, v + 0.5, v - 1.5]
+            elif v == 0:
+                trials = [0.3, 1.0, 3.0]
+            else:
+                trials = [v * 0.5, v * 2.0] + ([0.0] if rd == 0 else [])
+            for tv in trials:
+                w2 = w.copy()
+                w2[k] = tv
+                o = objective(data, w2)
+                log(f"  {name} {v:.2f} -> {tv:.2f}: {o}")
+                if o[0] < best[0]:
+                    best, w, changed = o, w2, True
+                    hist.append(dict(step=f"round {rd} {name}={tv:.3f}", obj=o))
+                    log("KEEP", name, tv, o)
+                    break
+        if not changed:
+            break
+    js = calibrate(data, w)
+    js.update(schema="routing_v2_weights/1", method="coordinate search (route_eval.py tune)",
+              trained_on="validation_set.json split train (inputs %s)" % "+".join(inputs), n=len(data),
+              w={k: round(float(v), 4) for k, v in zip(R2.FEATURES, w)}, history=hist, train_objective=best,
+              built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+    json.dump(js, open(out, "w"), indent=1)
+    log(json.dumps({k: js[k] for k in ("w", "tau", "p_check", "calibration", "train_objective")}))
+    return js
+
+
+def calibrate(data, w):
+    stats = []
+    for c, ctx in data:
+        res, _ = run_v2(c, w=w, tau=1.0, p_check=0.0, ctx=ctx)
+        if not res.get("holes"):
+            continue
+        _, ok = per_hole_ok(res, c["truth"])
+        stats.append((res, ok))
+    best = None
+    for tau in (0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 5.0):
+        for pc in (0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.98):
+            caught, flags = 0, 0
+            for res, ok in stats:
+                fl = flags_from_top(res, tau, pc)
+                caught += {r for r, v in ok.items() if not v} <= fl
+                flags += len(fl)
+            obj = caught / len(stats) - 0.01 * flags / len(stats)
+            if best is None or obj > best[0]:
+                best = (obj, tau, pc, caught / len(stats), flags / len(stats))
+    log("calibration: tau %.2f p_check %.2f -> correct after check %.2f, flags/course %.2f" % best[1:])
+    return dict(tau=best[1], p_check=best[2], calibration=dict(correct_after_check=round(best[3], 3),
+                                                               flags_per_course=round(best[4], 2)))
 
 
 # ----------------------------------------------------------------------------- golfer confirm simulation
@@ -333,7 +426,7 @@ def confirm_study(split, policies=("eig", "eig_confirm", "flagged", "locate_all"
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["eval", "train", "confirm", "final"])
+    ap.add_argument("cmd", choices=["eval", "train", "tune", "confirm", "final"])
     ap.add_argument("--split", default="train")
     ap.add_argument("--methods", default="v1,v2")
     ap.add_argument("--inputs", default="osm")
@@ -351,6 +444,8 @@ def main():
         if a.split != "train":
             sys.exit("training reads the train split only")
         train(a.epochs)
+    elif a.cmd == "tune":
+        tune(a.epochs if a.epochs != 12 else 2)
     elif a.cmd == "confirm":
         rows, agg = confirm_study(a.split, a.policies.split(","), a.inputs)
         log(json.dumps(agg, indent=1))

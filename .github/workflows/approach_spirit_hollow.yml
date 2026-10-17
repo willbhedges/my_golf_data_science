@@ -1,0 +1,81 @@
+name: approach-spirit-hollow
+
+# Spirit Hollow second shots (spirit_hollow/approach): DECADE green targets on every par 4/5 and the par-5
+# go / lay-up Monte Carlo at full settings, one job per par 5 and one for the par 4s; a merge job writes
+# spirit_hollow/approach/output/approach.json + REPORT.md and commits them.
+# Trigger: push a change to course_data/requests/approach_spirit_hollow.json.
+on:
+  push:
+    paths:
+      - "course_data/requests/approach_spirit_hollow.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: approach-spirit-hollow-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        holes: ["2F", "2B", "4", "10", "18", "1,5,6,8,9F,9B,11,13,14,16,17"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy matplotlib pillow
+      - name: Second shots, holes ${{ matrix.holes }}
+        env:
+          APPROACH_HOLES: ${{ matrix.holes }}
+          APPROACH_OUT: parts/approach_${{ strategy.job-index }}.json
+        run: mkdir -p parts && python spirit_hollow/approach/build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approach-${{ strategy.job-index }}
+          path: parts/
+
+  merge:
+    needs: [plan]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy matplotlib pillow
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/parts
+      - name: Merge
+        run: python spirit_hollow/approach/build.py --merge /tmp/parts
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f spirit_hollow/approach/output/approach.json spirit_hollow/approach/REPORT.md
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "Spirit Hollow second shots: approach targets + par-5 go/lay-up (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
