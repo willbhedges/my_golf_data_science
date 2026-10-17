@@ -296,8 +296,8 @@ function render(){
   document.getElementById("topNo").textContent = document.getElementById("hNo").textContent;
   const T0 = h.kind === "tee" ? teeOf(h) : null, P3 = h.kind === "tee" ? null : solvePar3(h);
   document.getElementById("hPar").textContent = h.kind === "tee"
-    ? `Par ${h.par} · ${T0.card + (st.adj[h.key] || 0)} yds · from the ${T0.name} tee` + (st.adj[h.key] ? ` (moved ${Math.abs(st.adj[h.key])} ${st.adj[h.key] > 0 ? "back" : "up"})` : "")
-    : `Par 3 · ${Math.round(P3.S3.center)} yds · from the ${P3.setName} tee`;
+    ? `Par ${h.par} · ${T0.card + (st.adj[h.key] || 0)} yds · from the ${T0.name.replace(/^the /i, "")} tee` + (st.adj[h.key] ? ` (moved ${Math.abs(st.adj[h.key])} ${st.adj[h.key] > 0 ? "back" : "up"})` : "")
+    : `Par 3 · ${Math.round(P3.S3.center)} yds · from the ${String(P3.setName).replace(/^the /i, "")} tee`;
   renderTeeCtl(h);
   const badges = [];
   if(h.kind === "tee"){
