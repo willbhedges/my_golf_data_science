@@ -14,6 +14,7 @@ on:
       - "course_data/requests/pipeline_eval_*.json"
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
@@ -25,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       stage: ${{ steps.p.outputs.stage }}
+      kind: ${{ steps.p.outputs.kind }}
+      run_id: ${{ steps.p.outputs.run_id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,7 +37,8 @@ jobs:
         run: |
           F=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'course_data/requests/pipeline_eval_*.json' 2>/dev/null | tail -1)
           [ -n "$F" ] && [ -f "$F" ] || F=$(ls course_data/requests/pipeline_eval_*.json | tail -1)
-          echo "stage=$(python -c "import json;print(json.load(open('$F')).get('stage','final'))")" >> "$GITHUB_OUTPUT"
+          # stage "collect" (+ "kind_of": select | final, "run_id"): merge + commit another run's shard artifacts
+          python -c "import json;r=json.load(open('$F'));st=r.get('stage','final');print('stage='+st);print('kind='+(r.get('kind_of',st) if st=='collect' else st));print('run_id='+str(r.get('run_id','')))" >> "$GITHUB_OUTPUT"
 
   refit:
     # stage "refit": course_data/structure/params_noval.json = the structure solver refitted on its dev set minus
@@ -82,7 +86,7 @@ jobs:
 
   shard:
     needs: plan
-    if: needs.plan.outputs.stage != 'refit'
+    if: needs.plan.outputs.stage != 'refit' && needs.plan.outputs.stage != 'collect'
     runs-on: ubuntu-latest
     timeout-minutes: 300
     strategy:
@@ -120,23 +124,34 @@ jobs:
           python-version: "3.11"
       - run: pip install -q numpy scipy shapely pyproj scikit-image
       - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.stage != 'collect'
         with:
           pattern: pipeline-shard-*
           merge-multiple: true
           path: /tmp/shards
+      - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.stage == 'collect'
+        with:
+          pattern: pipeline-shard-*
+          merge-multiple: true
+          path: /tmp/shards
+          run-id: ${{ needs.plan.outputs.run_id }}
+          github-token: ${{ github.token }}
       - name: Merge
         run: |
           ls -la /tmp/shards
-          python -u course_data/platform/pipeline_eval.py merge ${{ needs.plan.outputs.stage }} /tmp/shards/pipeline_shard_*.json
-          D=course_data/platform/pipeline_shards/${{ needs.plan.outputs.stage }}
+          python -u course_data/platform/pipeline_eval.py merge ${{ needs.plan.outputs.kind }} /tmp/shards/pipeline_shard_*.json
+          D=course_data/platform/pipeline_shards/${{ needs.plan.outputs.kind }}
           mkdir -p $D && cp /tmp/shards/pipeline_shard_*.json $D/
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add course_data/platform/pipeline_select.json course_data/platform/pipeline_eval.json course_data/platform/pipeline_shards 2>/dev/null || true
+          for f in course_data/platform/pipeline_select.json course_data/platform/pipeline_eval.json course_data/platform/pipeline_shards; do
+            if [ -e "$f" ]; then git add "$f"; fi
+          done
           git diff --cached --quiet && exit 0
-          printf '%s\n' "pipeline: ${{ needs.plan.outputs.stage }} evaluation (Actions run ${{ github.run_id }}) [skip ci]" "" \
+          printf '%s\n' "pipeline: ${{ needs.plan.outputs.kind }} evaluation (Actions run ${{ github.run_id }}) [skip ci]" "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
           git commit -q -F /tmp/msg.txt
