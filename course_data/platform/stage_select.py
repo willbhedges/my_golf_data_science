@@ -50,11 +50,18 @@ SCENE_MIN_GREEN, SCENE_MIN_COMPLEX = 0.5, 0.4
 
 # per tier: (method, structure-prior strength lam, use perception candidates). Chosen on the train split
 # (pipeline_eval.py select, PIPELINE.md "Selection"); the first entry is tried first, then the fallbacks.
+# Train split (51 courses, pipeline_select.json), hole-number accuracy of the pick vs the previous default:
+#   mapped_card      v2 + structure prior lam 0.5     0.836 vs 0.825 (all 18 right 15.7 vs 9.8 %)
+#   unmapped_card    v2 + structure(perception) 0.25  0.733 vs 0.689 (perception greens/tees as extra router
+#                    candidates hurt: 0.46-0.62, so they only feed the structure prior)
+#   mapped_nocard    structure alone                  0.219 vs 0.099 (geometry); best v2 session: lam 1.0 (0.200)
+#   unmapped_nocard  structure on the perception scene 0.140 vs 0.0; best v2 session: v2 alone (0.081)
+# "confirm": the routing v2 session behind golf_confirm/1 when the method itself has none (structure alone).
 SELECT = {
     "mapped_card": dict(method="v2+structure", lam=0.5, perception=False),
-    "unmapped_card": dict(method="v2+structure", lam=0.5, perception=True),
-    "mapped_nocard": dict(method="v2+structure", lam=2.0, perception=False),
-    "unmapped_nocard": dict(method="v2+structure", lam=2.0, perception=True),
+    "unmapped_card": dict(method="v2+structure", lam=0.25, perception=False),
+    "mapped_nocard": dict(method="structure", confirm=dict(method="v2+structure", lam=1.0)),
+    "unmapped_nocard": dict(method="structure", confirm=dict(method="v2")),
 }
 FALLBACK = {"v2+structure": ["v2", "structure", "geometry"], "v2": ["structure", "geometry"],
             "structure": ["v2", "geometry"], "geometry": []}
@@ -308,6 +315,21 @@ def infer_holes(fc, card, course, seg=None, pads=None, scene=None, select=None, 
                                   use_perception=cfg.get("perception", False), margins=margins, hide_holes=hide_holes)
             tried.append(m)
             info = dict(tier=t, method=m, chosen=cfg["method"], tried=tried, fallbacks=fallbacks, profile=prof, **det)
+            if res.get("_inp") is None and cfg.get("confirm"):
+                # a routing v2 session for the golfer confirm (the structure solver has no constraint re-solve)
+                cc = cfg["confirm"]
+                try:
+                    inp = router_inputs(fc, course, seg, pads, scene, mapped=prof["osm_mapped"],
+                                        use_perception=cc.get("perception", False), hide_holes=hide_holes)
+                    if cc["method"] == "v2+structure":
+                        sc = scene if (not prof["osm_mapped"] and scene is not None) else None
+                        _, prior = structure_solve(fc, course, card, scene=sc, n_holes=prof["n_holes"])
+                        if prior is not None:
+                            inp = dict(inp, struct_prior=dict(prior, lam=cc.get("lam", 1.0)))
+                    res["_inp"] = inp
+                    info["confirm_session"] = dict(cc)
+                except Exception as e:                           # noqa: BLE001
+                    info["confirm_session"] = dict(error=f"{type(e).__name__}: {e}"[:200])
             return res, info
         except Exception as e:                                   # noqa: BLE001
             tried.append(m)

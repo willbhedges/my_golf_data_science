@@ -39,10 +39,10 @@ def test_tiers_from_data():
 
 
 def test_fallbacks_recorded():
-    """Unmapped, no card, no scene: v2+structure cannot run (no prior) -> the chain falls through and says so."""
+    """Unmapped, no card, no scene: the structure solver has nothing to run on -> the chain falls through and says so."""
     res, info = SS.infer_holes(_fc(0, 0), None, {}, scene=None)
     assert info["tier"] == "unmapped_nocard"
-    assert info["tried"][0] == "v2+structure" and info["fallbacks"]
+    assert info["tried"][0] == SS.SELECT["unmapped_nocard"]["method"] and info["fallbacks"]
     assert info["method"] in (None, "v2", "structure", "geometry")
 
 
