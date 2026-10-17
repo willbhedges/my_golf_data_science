@@ -3,7 +3,7 @@
   "mode": "package.json as built",
   "n_tee_shots": 16,
   "missing": [],
-  "same_club": 0.625,
+  "same_club": 0.688,
   "tee_within": 0.375,
   "green_within": 0.75,
   "length_within": 0.75,
@@ -30,9 +30,9 @@
   "median_green_err": 6.3,
   "mean_iou": {
    "fairway": 0.569,
-   "rough": 0.149,
-   "recovery": 0.281,
-   "native": 0.179,
+   "rough": 0.261,
+   "recovery": 0.301,
+   "native": 0.0,
    "water": 0.31,
    "sand": 0.423,
    "ob": 0.192
@@ -57,9 +57,9 @@
    "regret_mean": 0.02,
    "regret_max": 0.05
   },
-  "seconds": 135,
-  "mean_regret": 0.0081,
-  "max_regret": 0.0726,
+  "seconds": 141,
+  "mean_regret": 0.0097,
+  "max_regret": 0.1134,
   "regret_bar_met": false,
   "club_bar_met": false
  },
@@ -95,15 +95,15 @@
    },
    "iou_own_frame": {
     "fairway": 0.298,
-    "rough": 0.103,
-    "recovery": 0.507,
-    "native": 0.253
+    "rough": 0.134,
+    "recovery": 0.54,
+    "native": 0.0
    },
    "iou": {
     "fairway": 0.682,
-    "rough": 0.156,
-    "recovery": 0.451,
-    "native": 0.038
+    "rough": 0.294,
+    "recovery": 0.391,
+    "native": 0.0
    },
    "club_traced": "4-wood",
    "club_auto": "4-wood",
@@ -114,12 +114,12 @@
     "4-wood": 3.9391
    },
    "ev_auto": {
-    "Driver": 4.2792,
-    "2-wood": 4.0965,
-    "4-wood": 4.0392
+    "Driver": 3.9592,
+    "2-wood": 3.9512,
+    "4-wood": 3.9489
    },
    "aim_traced": -5.0,
-   "aim_auto": 0.0,
+   "aim_auto": -10.0,
    "regret": 0.0,
    "traced_margin": 0.1008,
    "checks": {
@@ -162,16 +162,16 @@
    },
    "iou_own_frame": {
     "fairway": 0.0,
-    "rough": 0.016,
-    "recovery": 0.138,
-    "native": 0.177,
+    "rough": 0.089,
+    "recovery": 0.132,
+    "native": 0.0,
     "water": 0.0
    },
    "iou": {
     "fairway": 0.68,
-    "rough": 0.264,
-    "recovery": 0.171,
-    "native": 0.234,
+    "rough": 0.296,
+    "recovery": 0.182,
+    "native": 0.0,
     "water": 0.0,
     "sand": 0.0,
     "ob": 0.0
@@ -185,12 +185,12 @@
     "4-wood": 4.9254
    },
    "ev_auto": {
-    "Driver": 5.2176,
-    "2-wood": 5.2653,
-    "4-wood": 5.2993
+    "Driver": 4.9062,
+    "2-wood": 4.9575,
+    "4-wood": 4.9971
    },
    "aim_traced": -7.5,
-   "aim_auto": -60.0,
+   "aim_auto": 60.0,
    "regret": 0.0,
    "traced_margin": 0.0417,
    "checks": {
@@ -244,18 +244,18 @@
    },
    "iou_own_frame": {
     "fairway": 0.174,
-    "rough": 0.06,
-    "recovery": 0.078,
-    "native": 0.035,
+    "rough": 0.04,
+    "recovery": 0.085,
+    "native": 0.0,
     "water": 0.171,
     "sand": 0.0,
     "ob": 0.0
    },
    "iou": {
     "fairway": 0.432,
-    "rough": 0.062,
-    "recovery": 0.069,
-    "native": 0.25,
+    "rough": 0.072,
+    "recovery": 0.047,
+    "native": 0.0,
     "water": 0.474,
     "sand": 0.536,
     "ob": 0.147
@@ -269,12 +269,12 @@
     "4-wood": 4.4208
    },
    "ev_auto": {
-    "Driver": 4.5555,
-    "2-wood": 4.6102,
-    "4-wood": 4.6272
+    "Driver": 4.4475,
+    "2-wood": 4.5047,
+    "4-wood": 4.5359
    },
    "aim_traced": -20.0,
-   "aim_auto": -30.0,
+   "aim_auto": -32.5,
    "regret": 0.0,
    "traced_margin": 0.0752,
    "checks": {
@@ -327,40 +327,40 @@
    },
    "iou_own_frame": {
     "fairway": 0.733,
-    "rough": 0.245,
+    "rough": 0.467,
     "recovery": 0.0,
-    "native": 0.355,
+    "native": 0.0,
     "ob": 0.0
    },
    "iou": {
     "fairway": 0.439,
-    "rough": 0.144,
+    "rough": 0.288,
     "recovery": 0.0,
-    "native": 0.559
+    "native": 0.0
    },
    "club_traced": "Driver",
-   "club_auto": "4-wood",
-   "same_club": false,
+   "club_auto": "Driver",
+   "same_club": true,
    "ev_traced": {
     "Driver": 4.5582,
     "2-wood": 4.6216,
     "4-wood": 4.6308
    },
    "ev_auto": {
-    "Driver": 4.7572,
-    "2-wood": 4.8131,
-    "4-wood": 4.7569
+    "Driver": 4.5475,
+    "2-wood": 4.639,
+    "4-wood": 4.6696
    },
    "aim_traced": -2.5,
-   "aim_auto": -7.5,
-   "regret": 0.0726,
+   "aim_auto": -5.0,
+   "regret": 0.0,
    "traced_margin": 0.0634,
    "checks": {
     "tee": false,
     "green": 1.0,
     "length": false,
     "iou_recovery": false,
-    "club": false
+    "club": true
    }
   },
   {
@@ -403,16 +403,16 @@
    },
    "iou_own_frame": {
     "fairway": 0.693,
-    "rough": 0.096,
-    "recovery": 0.296,
-    "native": 0.155,
+    "rough": 0.315,
+    "recovery": 0.2,
+    "native": 0.0,
     "sand": 0.429
    },
    "iou": {
     "fairway": 0.665,
-    "rough": 0.153,
-    "recovery": 0.115,
-    "native": 0.15,
+    "rough": 0.314,
+    "recovery": 0.083,
+    "native": 0.0,
     "sand": 0.773
    },
    "club_traced": "4-wood",
@@ -424,12 +424,12 @@
     "4-wood": 3.8657
    },
    "ev_auto": {
-    "Driver": 4.0349,
-    "2-wood": 3.9528,
-    "4-wood": 3.8938
+    "Driver": 3.8974,
+    "2-wood": 3.8931,
+    "4-wood": 3.8776
    },
    "aim_traced": -5.0,
-   "aim_auto": -2.5,
+   "aim_auto": -7.5,
    "regret": 0.0,
    "traced_margin": 0.0175,
    "checks": {
@@ -480,18 +480,18 @@
    },
    "iou_own_frame": {
     "fairway": 0.358,
-    "rough": 0.283,
+    "rough": 0.524,
     "recovery": 0.0,
-    "native": 0.077
+    "native": 0.0
    },
    "iou": {
     "fairway": 0.548,
-    "rough": 0.317,
-    "recovery": 0.286,
-    "native": 0.19
+    "rough": 0.588,
+    "recovery": 0.4,
+    "native": 0.0
    },
    "club_traced": "Driver",
-   "club_auto": "4-wood",
+   "club_auto": "2-wood",
    "same_club": false,
    "ev_traced": {
     "Driver": 3.902,
@@ -499,13 +499,13 @@
     "4-wood": 3.9082
    },
    "ev_auto": {
-    "Driver": 3.9985,
-    "2-wood": 3.9797,
-    "4-wood": 3.9599
+    "Driver": 3.9425,
+    "2-wood": 3.9425,
+    "4-wood": 3.9469
    },
    "aim_traced": -10.0,
-   "aim_auto": -20.0,
-   "regret": 0.0062,
+   "aim_auto": -27.5,
+   "regret": 0.0036,
    "traced_margin": 0.0036,
    "checks": {
     "tee": false,
@@ -548,44 +548,41 @@
    },
    "iou_own_frame": {
     "fairway": 0.218,
-    "rough": 0.007,
-    "recovery": 0.0,
-    "native": 0.271,
+    "rough": 0.054,
+    "native": 0.0,
     "sand": 0.091,
     "ob": 0.111
    },
    "iou": {
     "fairway": 0.631,
-    "rough": 0.045,
-    "recovery": 0.0,
-    "native": 0.286,
+    "rough": 0.283,
+    "native": 0.0,
     "sand": 0.579,
     "ob": 0.429
    },
    "club_traced": "4-wood",
-   "club_auto": "4-wood",
-   "same_club": true,
+   "club_auto": "Driver",
+   "same_club": false,
    "ev_traced": {
     "Driver": 3.9953,
     "2-wood": 3.9465,
     "4-wood": 3.8819
    },
    "ev_auto": {
-    "Driver": 4.7004,
-    "2-wood": 4.5638,
-    "4-wood": 4.1993
+    "Driver": 3.9333,
+    "2-wood": 3.9662,
+    "4-wood": 3.9535
    },
    "aim_traced": 5.0,
-   "aim_auto": -2.5,
-   "regret": 0.0,
+   "aim_auto": -30.0,
+   "regret": 0.1134,
    "traced_margin": 0.0646,
    "checks": {
     "tee": false,
     "green": false,
     "length": false,
     "iou_ob": false,
-    "iou_recovery": false,
-    "club": true
+    "club": false
    }
   },
   {
@@ -628,20 +625,20 @@
    },
    "iou_own_frame": {
     "fairway": 0.212,
-    "rough": 0.082,
-    "recovery": 0.05,
-    "native": 0.07,
+    "rough": 0.09,
+    "recovery": 0.033,
+    "native": 0.0,
     "water": 0.338
    },
    "iou": {
     "fairway": 0.636,
-    "rough": 0.156,
-    "recovery": 0.438,
-    "native": 0.115,
+    "rough": 0.258,
+    "recovery": 0.5,
+    "native": 0.0,
     "water": 0.693
    },
    "club_traced": "2-wood",
-   "club_auto": "4-wood",
+   "club_auto": "Driver",
    "same_club": false,
    "ev_traced": {
     "Driver": 3.9808,
@@ -649,13 +646,13 @@
     "4-wood": 3.9565
    },
    "ev_auto": {
-    "Driver": 4.0331,
-    "2-wood": 4.0506,
-    "4-wood": 4.0168
+    "Driver": 3.925,
+    "2-wood": 3.9553,
+    "4-wood": 3.9745
    },
    "aim_traced": -15.0,
-   "aim_auto": 2.5,
-   "regret": 0.0047,
+   "aim_auto": 20.0,
+   "regret": 0.029,
    "traced_margin": 0.0047,
    "checks": {
     "tee": true,
@@ -706,15 +703,15 @@
    },
    "iou_own_frame": {
     "fairway": 0.255,
-    "rough": 0.067,
-    "recovery": 0.189,
+    "rough": 0.181,
+    "recovery": 0.198,
     "native": 0.0,
     "water": 0.0
    },
    "iou": {
     "fairway": 0.5,
-    "rough": 0.09,
-    "recovery": 0.314,
+    "rough": 0.324,
+    "recovery": 0.348,
     "native": 0.0,
     "water": 0.167
    },
@@ -727,12 +724,12 @@
     "4-wood": 3.8571
    },
    "ev_auto": {
-    "Driver": 4.2884,
-    "2-wood": 4.0079,
-    "4-wood": 3.8837
+    "Driver": 4.1266,
+    "2-wood": 3.9543,
+    "4-wood": 3.8586
    },
    "aim_traced": -10.0,
-   "aim_auto": 0.0,
+   "aim_auto": 2.5,
    "regret": 0.0,
    "traced_margin": 0.0592,
    "checks": {
@@ -785,15 +782,15 @@
    },
    "iou_own_frame": {
     "fairway": 0.739,
-    "rough": 0.488,
-    "recovery": 0.019,
+    "rough": 0.525,
+    "recovery": 0.0,
     "native": 0.0,
     "water": 0.291
    },
    "iou": {
     "fairway": 0.675,
-    "rough": 0.371,
-    "recovery": 0.057,
+    "rough": 0.491,
+    "recovery": 0.019,
     "native": 0.0,
     "water": 0.419
    },
@@ -806,9 +803,9 @@
     "4-wood": 4.4822
    },
    "ev_auto": {
-    "Driver": 4.6384,
-    "2-wood": 4.6587,
-    "4-wood": 4.6087
+    "Driver": 4.5405,
+    "2-wood": 4.559,
+    "4-wood": 4.5359
    },
    "aim_traced": 0.0,
    "aim_auto": 5.0,
@@ -863,17 +860,17 @@
    },
    "iou_own_frame": {
     "fairway": 0.389,
-    "rough": 0.268,
-    "recovery": 0.348,
+    "rough": 0.336,
+    "recovery": 0.351,
     "native": 0.0,
     "water": 0.14,
     "sand": 0.0
    },
    "iou": {
     "fairway": 0.336,
-    "rough": 0.225,
-    "recovery": 0.351,
-    "native": 0.024,
+    "rough": 0.301,
+    "recovery": 0.372,
+    "native": 0.0,
     "water": 0.14,
     "sand": 0.0
    },
@@ -886,9 +883,9 @@
     "4-wood": 3.9867
    },
    "ev_auto": {
-    "Driver": 4.5857,
-    "2-wood": 4.5408,
-    "4-wood": 4.0765
+    "Driver": 4.5222,
+    "2-wood": 4.4373,
+    "4-wood": 4.0678
    },
    "aim_traced": -2.5,
    "aim_auto": 2.5,
@@ -936,17 +933,15 @@
    },
    "iou_own_frame": {
     "fairway": 0.179,
-    "rough": 0.071,
-    "recovery": 0.091,
-    "native": 0.0,
+    "rough": 0.088,
+    "recovery": 0.045,
     "water": 0.329,
     "sand": 0.0
    },
    "iou": {
     "fairway": 0.471,
-    "rough": 0.074,
-    "recovery": 0.229,
-    "native": 0.0,
+    "rough": 0.221,
+    "recovery": 0.265,
     "water": 0.811,
     "sand": 0.8
    },
@@ -959,12 +954,12 @@
     "4-wood": 4.0134
    },
    "ev_auto": {
-    "Driver": 4.3112,
-    "2-wood": 4.2743,
-    "4-wood": 4.1958
+    "Driver": 4.1241,
+    "2-wood": 4.11,
+    "4-wood": 4.0865
    },
    "aim_traced": -10.0,
-   "aim_auto": -2.5,
+   "aim_auto": 0.0,
    "regret": 0.0035,
    "traced_margin": 0.0035,
    "checks": {
@@ -1017,34 +1012,34 @@
    "iou_own_frame": {
     "fairway": 0.114,
     "rough": 0.0,
-    "recovery": 0.667,
-    "native": 0.037,
+    "recovery": 0.542,
+    "native": 0.0,
     "water": 0.102
    },
    "iou": {
     "fairway": 0.469,
-    "rough": 0.009,
-    "recovery": 0.818,
-    "native": 0.316,
+    "rough": 0.013,
+    "recovery": 0.755,
+    "native": 0.0,
     "water": 0.316,
     "sand": 0.0
    },
    "club_traced": "Driver",
-   "club_auto": "2-wood",
-   "same_club": false,
+   "club_auto": "Driver",
+   "same_club": true,
    "ev_traced": {
     "Driver": 3.8606,
     "2-wood": 3.867,
     "4-wood": 3.8677
    },
    "ev_auto": {
-    "Driver": 4.159,
-    "2-wood": 4.0303,
-    "4-wood": 4.0676
+    "Driver": 3.9491,
+    "2-wood": 3.9776,
+    "4-wood": 4.0311
    },
    "aim_traced": -37.5,
-   "aim_auto": -30.0,
-   "regret": 0.0064,
+   "aim_auto": -37.5,
+   "regret": 0.0,
    "traced_margin": 0.0064,
    "checks": {
     "tee": false,
@@ -1052,7 +1047,7 @@
     "length": true,
     "iou_water": false,
     "iou_recovery": true,
-    "club": false
+    "club": true
    }
   },
   {
@@ -1085,17 +1080,17 @@
    "green_unc": null,
    "iou_own_frame": {
     "fairway": 0.675,
-    "rough": 0.073,
-    "recovery": 0.612,
-    "native": 0.203,
+    "rough": 0.076,
+    "recovery": 0.497,
+    "native": 0.0,
     "water": 0.0,
     "sand": 0.344
    },
    "iou": {
     "fairway": 0.683,
-    "rough": 0.092,
-    "recovery": 0.674,
-    "native": 0.231,
+    "rough": 0.091,
+    "recovery": 0.578,
+    "native": 0.0,
     "water": 0.0,
     "sand": 0.577
    },
@@ -1108,9 +1103,9 @@
     "4-wood": 3.8782
    },
    "ev_auto": {
-    "Driver": 4.062,
-    "2-wood": 4.016,
-    "4-wood": 3.9502
+    "Driver": 3.9777,
+    "2-wood": 3.9553,
+    "4-wood": 3.9234
    },
    "aim_traced": -7.5,
    "aim_auto": -2.5,
@@ -1121,7 +1116,7 @@
     "green": true,
     "length": true,
     "iou_water": false,
-    "iou_recovery": true,
+    "iou_recovery": false,
     "club": true
    }
   },
@@ -1165,41 +1160,41 @@
    },
    "iou_own_frame": {
     "fairway": 0.706,
-    "rough": 0.176,
-    "recovery": 0.37,
-    "native": 0.292,
+    "rough": 0.322,
+    "recovery": 0.413,
+    "native": 0.0,
     "sand": 0.286
    },
    "iou": {
     "fairway": 0.712,
-    "rough": 0.185,
-    "recovery": 0.413,
-    "native": 0.322,
+    "rough": 0.302,
+    "recovery": 0.456,
+    "native": 0.0,
     "sand": 0.545
    },
    "club_traced": "Driver",
-   "club_auto": "4-wood",
-   "same_club": false,
+   "club_auto": "Driver",
+   "same_club": true,
    "ev_traced": {
     "Driver": 4.0318,
     "2-wood": 4.0447,
     "4-wood": 4.0685
    },
    "ev_auto": {
-    "Driver": 4.1604,
-    "2-wood": 4.1579,
-    "4-wood": 4.1385
+    "Driver": 4.0798,
+    "2-wood": 4.0905,
+    "4-wood": 4.1097
    },
    "aim_traced": 0.0,
-   "aim_auto": 0.0,
-   "regret": 0.0367,
+   "aim_auto": -2.5,
+   "regret": 0.0,
    "traced_margin": 0.0129,
    "checks": {
     "tee": false,
     "green": 1.0,
     "length": true,
     "iou_recovery": false,
-    "club": false
+    "club": true
    }
   },
   {
@@ -1235,34 +1230,34 @@
    },
    "iou_own_frame": {
     "fairway": 0.607,
-    "rough": 0.0,
-    "recovery": 0.119,
-    "native": 0.175,
+    "rough": 0.066,
+    "recovery": 0.135,
+    "native": 0.0,
     "water": 0.107
    },
    "iou": {
     "fairway": 0.549,
-    "rough": 0.034,
-    "recovery": 0.106,
-    "native": 0.148,
+    "rough": 0.046,
+    "recovery": 0.116,
+    "native": 0.0,
     "water": 0.085
    },
    "club_traced": "2-wood",
-   "club_auto": "2-wood",
-   "same_club": true,
+   "club_auto": "4-wood",
+   "same_club": false,
    "ev_traced": {
     "Driver": 4.6361,
     "2-wood": 4.5554,
     "4-wood": 4.5605
    },
    "ev_auto": {
-    "Driver": 4.8241,
-    "2-wood": 4.813,
-    "4-wood": 4.8777
+    "Driver": 4.6526,
+    "2-wood": 4.607,
+    "4-wood": 4.6011
    },
    "aim_traced": -2.5,
-   "aim_auto": -20.0,
-   "regret": 0.0,
+   "aim_auto": 60.0,
+   "regret": 0.0051,
    "traced_margin": 0.0051,
    "checks": {
     "tee": false,
@@ -1270,7 +1265,7 @@
     "length": true,
     "iou_water": false,
     "iou_recovery": false,
-    "club": true
+    "club": false
    }
   }
  ],
@@ -1289,10 +1284,10 @@
     "long": "native"
    },
    "haz_auto": {
-    "left": "native",
-    "right": "native",
+    "left": "bunker",
+    "right": "bunker",
     "short": "rough",
-    "long": "native"
+    "long": "rough"
    },
    "front_back_traced": [
     143,
@@ -1320,10 +1315,10 @@
     "long": "rough"
    },
    "haz_auto": {
-    "left": "native",
+    "left": "rough",
     "right": "bunker",
     "short": "rough",
-    "long": "native"
+    "long": "rough"
    },
    "front_back_traced": [
     165,
@@ -1352,8 +1347,8 @@
    },
    "haz_auto": {
     "left": "trees",
-    "right": "native",
-    "short": "native",
+    "right": "rough",
+    "short": "rough",
     "long": "trees"
    },
    "front_back_traced": [
