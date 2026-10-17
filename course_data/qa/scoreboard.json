@@ -48,7 +48,8 @@
       "trees": 0.53,
       "long grass": 0.0
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "2B",
@@ -79,7 +80,8 @@
       "water": 0.0,
       "ob": 0.0
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "2F",
@@ -108,7 +110,8 @@
       "water": 0.39,
       "ob": 0.488
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "4",
@@ -134,7 +137,8 @@
      "iou": {
       "long grass": 0.308
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "5",
@@ -161,7 +165,8 @@
       "trees": 0.0,
       "long grass": 0.0
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": false
     },
     {
      "hole": "6",
@@ -189,7 +194,8 @@
       "long grass": 0.011,
       "ob": 0.0
      },
-     "corridor_pts": 468
+     "corridor_pts": 468,
+     "hand_quick_same_truth": false
     },
     {
      "hole": "8",
@@ -217,7 +223,8 @@
       "long grass": 0.11,
       "ob": 0.0
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "9B",
@@ -245,7 +252,8 @@
       "long grass": 0.296,
       "water": 0.718
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "9F",
@@ -273,7 +281,8 @@
       "long grass": 0.031,
       "water": 0.163
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "10",
@@ -301,7 +310,8 @@
       "long grass": 0.0,
       "water": 0.543
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "11",
@@ -329,7 +339,8 @@
       "long grass": 0.0,
       "water": 0.159
      },
-     "corridor_pts": 342
+     "corridor_pts": 342,
+     "hand_quick_same_truth": false
     },
     {
      "hole": "13",
@@ -357,7 +368,8 @@
       "long grass": 0.0,
       "water": 0.773
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": true
     },
     {
      "hole": "14",
@@ -387,7 +399,8 @@
       "long grass": 0.364,
       "water": 0.371
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": false
     },
     {
      "hole": "16",
@@ -415,7 +428,8 @@
       "long grass": 0.254,
       "water": 0.0
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": false
     },
     {
      "hole": "17",
@@ -442,7 +456,8 @@
       "trees": 0.55,
       "long grass": 0.833
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": false
     },
     {
      "hole": "18",
@@ -470,7 +485,8 @@
       "long grass": 0.011,
       "water": 0.167
      },
-     "corridor_pts": 475
+     "corridor_pts": 475,
+     "hand_quick_same_truth": false
     }
    ],
    "summary": {
@@ -486,6 +502,7 @@
     "same_hand_quick": 7,
     "n_hand_quick": 16,
     "mean_regret_hand_quick": 0.0206,
+    "ceiling_quick": 9,
     "tee10": 8,
     "green10": 14,
     "n_geo": 16,
@@ -1354,7 +1371,9 @@
    "checks": 3,
    "decision_s": 219.6,
    "source": "product/decide.run quick n=8000",
-   "regression": false
+   "regression": false,
+   "same_hand_quick": 7,
+   "ceiling_quick": 9
   },
   {
    "date": "2026-10-17 00:38",
@@ -1374,7 +1393,9 @@
    "checks": 1,
    "decision_s": 179.4,
    "source": "product/decide.run quick n=8000",
-   "regression": false
+   "regression": false,
+   "same_hand_quick": null,
+   "ceiling_quick": null
   },
   {
    "date": "2026-10-17 00:38",
@@ -1394,7 +1415,9 @@
    "checks": 3,
    "decision_s": 185.4,
    "source": "product/decide.run quick n=8000",
-   "regression": false
+   "regression": false,
+   "same_hand_quick": null,
+   "ceiling_quick": null
   }
  ]
 }
