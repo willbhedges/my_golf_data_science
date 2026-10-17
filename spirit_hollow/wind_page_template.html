@@ -52,6 +52,8 @@ table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);font-size:14px}
 th{font:600 12px var(--display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 tr.best td{font-weight:600}
+#hTable tr[data-club]{cursor:pointer}
+#hTable tr.sel td{background:color-mix(in srgb, var(--accent) 16%, transparent)}
 .note{color:var(--muted);font-size:14px;max-width:62ch}
 .strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
 .chip{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 4px;text-align:center;cursor:pointer;color:var(--ink)}
@@ -116,9 +118,11 @@ const D = /*__DATA__*/null;
 const CLUBS = ["Driver","2-wood","4-wood","Long iron","Mid iron"];
 const short = c => ({"Driver":"D","2-wood":"2W","4-wood":"4W","Long iron":"LI","Mid iron":"MI"})[c] || c;
 const cls = c => (c==="Driver"||c==="2-wood"||c==="4-wood") ? "c-"+c : "c-iron";
-const st = {src:"sun", hour:12, from:180, mph:12, idx:0, view:"hole", set:"Black", adj:{}};
+const st = {src:"sat", hour:10, from:180, mph:12, idx:0, view:"hole", set:"Black", adj:{}, club:{}};
 try{ const s = JSON.parse(localStorage.getItem("shwc")||"null"); if(s) Object.assign(st, s);}catch(e){}
 if(!st.adj) st.adj = {};
+if(!st.club) st.club = {};
+if(!st.v2){ st.src = "sat"; st.hour = 10; st.v2 = 1; }   /* tee time: Saturday 10 am */
 /* expand the compact grids: {back: {cell: {club: [aim, ev, zlo, zhi, carry, total, width, drift]}}} */
 for(const h of D.holes){ if(h.kind !== "tee") continue; h.G = {};
   for(const [b, g] of Object.entries(h.grids)){ const G = {};
@@ -223,6 +227,11 @@ function render(){
   document.getElementById("view").hidden = h.kind !== "tee";
   document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; render(); }));
 document.getElementById("adj").addEventListener("input", e => { const h = D.holes[st.idx]; st.adj[h.key] = +e.target.value; render(); });
+document.getElementById("hTable").addEventListener("click", e => {
+  const tr = e.target.closest("tr[data-club]"); if(!tr) return;
+  const h = D.holes[st.idx]; const r = solveTee(h);
+  if(tr.dataset.club === r.pick) delete st.club[h.key]; else st.club[h.key] = tr.dataset.club;
+  render(); });
 document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
   document.getElementById("hNo").textContent = "Hole " + h.label.replace(/ (Black|Gold) tee$/, "");
   const T0 = h.kind === "tee" ? teeOf(h) : null, P3 = h.kind === "tee" ? null : solvePar3(h);
@@ -232,11 +241,14 @@ document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pres
   renderTeeCtl(h);
   const badges = [];
   if(h.kind === "tee"){
-    const r = solveTee(h), best = r.out[r.pick];
+    const r = solveTee(h);
+    /* the golfer can overrule the pick: tap a club in the table to see ITS best aim and pattern */
+    const pickC = st.club[h.key] && r.out[st.club[h.key]] ? st.club[h.key] : r.pick;
+    const best = r.out[pickC], aimC = pickC === r.pick ? r.aim : best.aim;
     const B = r.T.back;                                    // tee moved B yds back along the line
-    const star = P(h, at(h, best.total - B, r.aim));
+    const star = P(h, at(h, best.total - B, aimC));
     const zl = P(h, at(h, best.total - B, best.lo)), zh = P(h, at(h, best.total - B, best.hi));
-    const land = P(h, at(h, best.total - B, r.aim + best.drift + best.kick));
+    const land = P(h, at(h, best.total - B, aimC + best.drift + best.kick));
     const rx = best.width/2*h.ppy*h.s, ry = best.width*0.22*h.ppy*h.s;
     const ang = Math.atan2(h.f[0], -h.f[1]) * 180/Math.PI;
     let tp = P(h, at(h, -B, 0)); let below = 0;
@@ -251,8 +263,10 @@ document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pres
       ${h.tee_offimage && !below ? `<text x="${h.w/2}" y="${(2000 - h.y0) * h.s + 22}" fill="#d9e3dc" font-family="Source Sans 3,Arial,sans-serif" font-size="14" text-anchor="middle">Below here: past the bottom of your app screenshot</text>` : ""}
       ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? ` · ${below} yds further back ↓` : ""))}
       ${windArrow(h, r.rel, vb)}`;
-    document.getElementById("playLbl").textContent = "Play";
-    const pe = document.getElementById("hPlay"); pe.textContent = r.pick; pe.className = "play " + cls(r.pick);
+    const own = pickC !== r.pick;
+    document.getElementById("playLbl").textContent = own ? "Your club" : "Play";
+    const pe = document.getElementById("hPlay"); pe.textContent = pickC; pe.className = "play " + cls(pickC);
+    if(own) badges.push(`<span class="pill chg">Best: ${r.pick} · yours costs +${(best.ev - r.out[r.pick].ev).toFixed(3)} strokes</span>`);
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     if(calm !== r.pick && r.T.back === 0) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
@@ -260,8 +274,8 @@ document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pres
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
     document.getElementById("hAim").innerHTML = `Aim at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot (${why})` : ""}. ${relWords(r.rel, st.mph)}.${r.bayes ? " Calm pick from the full 64-world Bayesian run." : ""}`;
-    const rows = r.order.map(c => { const v = r.out[c]; return `<tr class="${c===r.pick?"best":""}"><td class="${cls(c)}">${c}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.order[0]?"—":"+"+(v.ev - r.out[r.order[0]].ev).toFixed(3)}</td></tr>`;}).join("");
-    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    const rows = r.order.map(c => { const v = r.out[c]; return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${Math.round(v.width)}</td><td>${c===r.order[0]?"—":"+"+(v.ev - r.out[r.order[0]].ev).toFixed(3)}</td></tr>`;}).join("");
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. Tap any club to see its own best aim and pattern; tap ★ to go back.</div>`;
     const be = best.e;
     const past = best.total - B > 345;
     if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
@@ -337,6 +351,11 @@ document.getElementById("hour").addEventListener("input", e => { st.hour = +e.ta
 document.querySelectorAll("#src button").forEach(b => b.addEventListener("click", () => { st.src = b.dataset.v; render(); }));
 document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; render(); }));
 document.getElementById("adj").addEventListener("input", e => { const h = D.holes[st.idx]; st.adj[h.key] = +e.target.value; render(); });
+document.getElementById("hTable").addEventListener("click", e => {
+  const tr = e.target.closest("tr[data-club]"); if(!tr) return;
+  const h = D.holes[st.idx]; const r = solveTee(h);
+  if(tr.dataset.club === r.pick) delete st.club[h.key]; else st.club[h.key] = tr.dataset.club;
+  render(); });
 document.querySelectorAll("#view button").forEach(b => b.addEventListener("click", () => { st.view = b.dataset.v; render(); }));
 document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest(".chip"); if(b){ st.idx = +b.dataset.i; render(); } });
 document.getElementById("prev").addEventListener("click", () => { st.idx = (st.idx + D.holes.length - 1) % D.holes.length; render(); });

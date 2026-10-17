@@ -47,11 +47,12 @@ def crop_jpeg(image, box, y_max=1830):
     k = im.width / 920                                 # app screenshots are 1206 wide, aerial renders 920
     x0, y0, x1, y1 = box
     x0, x1 = max(0, x0), min(920, x1)
-    y0, y1 = max(545, y0), min(y_max, y1)
-    c = im.crop((int(x0 * k), int(y0 * k), int(x1 * k), int(min(y1, 2000) * k)))
-    if y1 > 2000:                                   # pad below the screenshot
+    y0, y1 = max(545 if y_max <= 2000 else 545 - 120, y0), min(y_max, y1)
+    top = max(y0, 545)                              # rows above 545 are the app's header: pad instead
+    c = im.crop((int(x0 * k), int(top * k), int(x1 * k), int(min(y1, 2000) * k)))
+    if y1 > 2000 or y0 < 545:                       # pad past the screenshot (above and/or below)
         pad = Image.new("RGB", (c.width, int((y1 - y0) * k)), (52, 66, 56))
-        pad.paste(c, (0, 0))
+        pad.paste(c, (0, int((top - y0) * k)))
         c = pad
     scale = IMG_W / c.width
     c = c.resize((IMG_W, int(c.height * scale)), Image.LANCZOS)
