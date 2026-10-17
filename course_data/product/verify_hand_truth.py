@@ -15,6 +15,9 @@ the "F" box = Black, as product/compare_golden.py):
   check   not answered (the hand map has no line-of-play truth)
 Then apply_answers.apply -> a copy of the package (never the real one), decide.quick_hole on the changed holes, and
 club agreement before (the same quick plan on the unmodified package, all tee holes) vs after.
+Ceilings: the same quick plan with the hand map's tee, its zones, or both, on every hand-mapped hole (what
+perfect answers to every possible question could reach; the rest of the gap is the hole line, the plan's own
+noise and ties).
 Writes <review dir>/experiment_hand_truth.json and .md.
 """
 import argparse
@@ -144,6 +147,30 @@ def oracle(it, hv, hh, fr):
     return dict(answer="moved", shift=round(float(np.clip(d, -30, 30)), 1))
 
 
+def hand_package(pkg, hand, tee_set, tees=True, zones=True):
+    """A copy of the package with the hand map's tee (tee_ll) and/or zones on every hand-mapped tee hole."""
+    import copy
+    new = copy.deepcopy(pkg)
+    for ref, h in new["holes"].items():
+        hk = hand_key(ref, tee_set, hand)
+        if hk is None:
+            continue
+        hh = hand["holes"][hk]
+        if tees and hh.get("tee_ll"):
+            ent = AA._tee(h, tee_set)
+            tee = [float(v) for v in hh["tee_ll"][:2]]
+            aim, _ = PK._tee_line_mod().aim_point(tee, h.get("hole_line_ll"), PK._ll(h.get("green_ll")),
+                                                  float((ent or {}).get("card_yards") or h.get("length") or 0) or None,
+                                                  int(h.get("par") or 4))
+            if ent is not None:
+                ent.update(tee_ll=tee, aim_ll=aim)
+            h["tee_ll"], h["aim_ll"] = tee, aim
+        if zones and hh.get("zones"):
+            h["zones_ll"] = [dict(lie=z["lie"], poly=z["poly_ll"], src="hand", p=1.0)
+                             for z in hh["zones"] if len(z.get("poly_ll") or []) >= 3]
+    return new
+
+
 def agreement(picks, golden, tee_set):
     box = "B" if tee_set.lower() == "gold" else "F"
     rows, same, n = [], 0, 0
@@ -214,6 +241,18 @@ def run(pkg_path, review, out_dir, levels=("red",), workers=1, log=print):
                                                  for k, r in after_changed.items() if k in before})
         log(f"  {name}: {len(answers)} answers, changed {sorted(changed)}; club agreement "
             f"{result['before']['same']}/{result['before']['n']} -> {ag['same']}/{ag['n']}")
+    # ceilings: the hand map's tee and/or zones on every hand-mapped hole (what perfect answers to everything could do)
+    result["ceilings"] = {}
+    for name, tees, zones in (("hand_tees", True, False), ("hand_zones", False, True), ("hand_all", True, True)):
+        new = hand_package(pkg, hand, tee_set, tees=tees, zones=zones)
+        npath = os.path.join(exp_dir, f"package_{name}.json")
+        with open(npath, "w") as fh:
+            json.dump(new, fh, separators=(",", ":"))
+        res = AA.replan(npath, tee_set, refs, workers=workers, log=lambda *a: None)
+        os.remove(npath)
+        ag = agreement({k: dict(pick=r["pick"], aim=r["aim"], tie=r["tie"]) for k, r in res.items()}, golden, tee_set)
+        result["ceilings"][name] = ag
+        log(f"  ceiling {name}: club agreement {ag['same']}/{ag['n']}")
     with open(os.path.join(out_dir, "experiment_hand_truth.json"), "w") as fh:
         json.dump(result, fh, indent=1, default=float)
     with open(os.path.join(out_dir, "experiment_hand_truth.md"), "w") as fh:
@@ -241,7 +280,24 @@ def report_md(r):
             L.append(f"| {x['hole']} | {y.get('auto')} {y.get('aim', 0):+.0f}{' (tie)' if y.get('tie') else ''} | "
                      f"{x['auto']} {x['aim']:+.0f}{' (tie)' if x['tie'] else ''} | {x['hand']}{' (tie)' if x['hand_tie'] else ''} |")
         L.append("")
+    L += _ceiling_md(r)
     return "\n".join(L) + "\n"
+
+
+def _ceiling_md(r):
+    c = r.get("ceilings") or {}
+    if not c:
+        return []
+    names = {"hand_tees": "hand tees only", "hand_zones": "hand zones only", "hand_all": "hand tees + zones"}
+    L = ["## Ceilings: the hand map's geometry on every hole (perfect answers to everything)", "",
+         "| Geometry | Same club |", "|---|---|", f"| auto package | {r['before']['same']}/{r['before']['n']} |"]
+    L += [f"| {names.get(k, k)} | {v['same']}/{v['n']} |" for k, v in c.items()]
+    hd = c.get("hand_all")
+    if hd:
+        L += ["", "Hand tees + zones, per hole:", "", "| Hole | Pick | Hand map |", "|---|---|---|"]
+        L += [f"| {x['hole']} | {x['auto']} {x['aim']:+.0f}{' (tie)' if x['tie'] else ''} | "
+              f"{x['hand']}{' (tie)' if x['hand_tie'] else ''} |" for x in hd["rows"]]
+    return L + [""]
 
 
 def main(argv=None):
