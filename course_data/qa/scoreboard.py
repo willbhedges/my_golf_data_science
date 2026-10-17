@@ -263,6 +263,10 @@ def hand_package(cfg):
     for ref, h in pkg["holes"].items():
         m = hz["holes"].get(str(ref))
         if m:
+            st = m.get("tee_set") or cfg["tees"]
+            ent = (h.get("tees") or {}).get(st)
+            if ent is not None:             # the hand-checked tee (the package's tee when the map was traced):
+                ent["tee_ll"] = m["tee_ll"]    # later package rebuilds that move the tee do not move the truth
             h["zones_ll"] = [dict(lie=z["lie"], poly=z["poly_ll"], src="hand") for z in m["zones"]]
             h["zone_order"] = "given"
             h.pop("irons", None)                  # irons offered by the product rule on the hand map
