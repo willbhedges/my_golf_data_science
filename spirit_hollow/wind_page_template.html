@@ -50,6 +50,10 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--ink)}
 .holehead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .holeno{font-family:var(--display);font-weight:700;font-size:40px;line-height:1}
 .play{font-family:var(--display);font-weight:700;font-size:46px;line-height:1;letter-spacing:.01em}
+.adj{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.adj span{font:700 16px var(--display);letter-spacing:.02em;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink)}
+.adj .up{border-color:var(--accent)}
+.adj .eq{background:var(--ink);color:var(--card);border-color:var(--ink)}
 .pill{display:inline-block;font:600 12px var(--display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 9px;border:1px solid currentColor}
 .pill.tie{color:var(--tie)} .pill.chg{color:var(--accent)}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
@@ -105,7 +109,7 @@ tr.best td{font-weight:600}
     </div>
     <div class="info">
       <div class="holehead"><span class="holeno" id="hNo"></span><span class="label" id="hPar"></span><span id="hBadges"></span></div>
-      <div><div class="label" id="playLbl">Play</div><div class="play" id="hPlay"></div><div class="sub" id="hAim"></div></div>
+      <div><div class="label" id="playLbl">Play</div><div class="play" id="hPlay"></div><div class="adj" id="hAdj" hidden></div><div class="sub" id="hAim"></div></div>
       <div id="hTable"></div>
       <div class="row" id="adjRow"><span class="label">Move this tee</span><input type="range" id="adj" min="-60" max="60" step="10"><span id="adjLbl" class="sub"></span></div>
       <div class="sub" id="hElev"></div>
@@ -307,6 +311,7 @@ function render(){
     const own = pickC !== r.pick;
     document.getElementById("playLbl").textContent = own ? "Your club" : "Play";
     const pe = document.getElementById("hPlay"); pe.textContent = pickC; pe.className = "play " + cls(pickC);
+    document.getElementById("hAdj").hidden = true;
     if(own){ const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${r.pick} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
@@ -332,6 +337,12 @@ function render(){
       <polygon points="${bp}" fill="rgba(37,208,255,.5)" stroke="#25d0ff" stroke-width="2.5"/>${windArrow(h, r.rel, vb)}`;
     document.getElementById("playLbl").textContent = "Play it like";
     const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
+    /* breakdown: box target (calm, flat) + elevation + wind = plays like; rounded parts add up exactly */
+    const T = Math.round(r.box.play), calmP = r.S3.plays["0_0"] / r.S3.center;
+    const eY = Math.round(r.box.play * calmP - r.box.play), wY = Math.round(r.play) - T - eY;
+    const sg = v => v > 0 ? "+" + v : v < 0 ? "−" + (-v) : "±0";
+    const ae = document.getElementById("hAdj"); ae.hidden = false;
+    ae.innerHTML = `<span>${T} target</span><span class="${eY > 0 ? "up" : eY < 0 ? "dn" : ""}">${sg(eY)} elevation</span><span class="${wY > 0 ? "up" : wY < 0 ? "dn" : ""}">${sg(wY)} wind</span>`;
     if(Math.abs(r.play - r.S3.center) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center)} on the card</span>`);
     document.getElementById("hAim").textContent = `Land it in the blue box. ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front}</td><td>${Math.round(r.S3.center)}</td><td>${r.S3.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
