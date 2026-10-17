@@ -58,9 +58,11 @@ def manifest():
     return json.load(open(MANIFEST))
 
 
-def courses(split=None, tier=None):
-    """Benchmark rows (benchmark.json) of a split ('dev' / 'test' / None = both) whose inputs exist for `tier`."""
-    rows = [r for r in manifest()["courses"] if r["in_bench"] and (split in (None, "all") or r["split"] == split)]
+def courses(split=None, tier=None, version=None):
+    """Benchmark rows (benchmark.json) of a split ('dev' / 'test' / None = both) whose inputs exist for `tier`.
+    version='v0': only the frozen 161-course v0 set (bench_v0.json), e.g. to keep tuning on the v0 dev split."""
+    rows = [r for r in manifest()["courses"] if r["in_bench"] and (split in (None, "all") or r["split"] == split)
+            and (version != "v0" or r.get("v0"))]
     if tier and tier.startswith("unmapped"):
         rows = [r for r in rows if r["files"].get("segment") or r["files"].get("scene")]
     return rows
@@ -320,7 +322,7 @@ def score(results, split="all", method=None, tier=None):
     for c in courses(None if split == "all" else split, tier):
         t = truth(c["slug"])
         r = score_course(by_slug.get(c["slug"]), t)
-        r.update(split=c["split"], state=c["state"], region=c["region"],
+        r.update(split=c["split"], state=c["state"], region=c["region"], v0=bool(c.get("v0")),
                  card_kind=(by_slug.get(c["slug"]) or {}).get("card_kind"))
         rows.append(r)
     out = dict(method=method, tier=tier, version=next((r.get("version") for r in results if r.get("version")), None))
@@ -332,6 +334,10 @@ def score(results, split="all", method=None, tier=None):
                                   for k in sorted({r["kind"] for r in rs})}
             for k in out[sp]["by_kind"].values():
                 k.pop("curve", None)
+        rv = [r for r in rs if r["v0"]]
+        if rs and rv and len(rv) < len(rs):
+            out[sp + "_v0"] = aggregate(rv)                # the frozen v0 subset, comparable with earlier boards
+            out[sp + "_v0"].pop("curve", None)
     out["rows"] = [{k: v for k, v in r.items() if k not in ("hole_conf", "hole_correct")} for r in rows]
     return out
 
@@ -343,10 +349,15 @@ def _pct(x):
 
 def md(board):
     L = ["# Zero-tap benchmark scoreboard", "",
-         f"Benchmark: {board['bench']['courses']} courses ({board['bench']['by_split']}), built {board['bench']['built']}. "
+         f"Benchmark: {board['bench']['courses']} courses ({board['bench']['by_split']}; "
+         f"{board['bench'].get('new_since_v0') or 0} new since v0), built {board['bench']['built']}. "
          "Contract and rules: [BENCH.md](BENCH.md). Test = held-out states: report, never tune.", ""]
-    for sp in ("test", "dev"):
-        L += [f"## {sp}", "",
+    names = dict(test="test", dev="dev", test_v0="test, v0 courses only (comparable with the 161-course board)",
+                 dev_v0="dev, v0 courses only")
+    for sp in ("test", "dev", "test_v0", "dev_v0"):
+        if not any((e.get(sp) or {}).get("n") for e in board["entries"]):
+            continue
+        L += [f"## {names[sp]}", "",
               "| method | tier | courses | hole number | formed | par | fully right | certain: coverage | certain: precision "
               "| cov @ P>=99% | cov @ P>=95% | top course failures |", "|" + "---|" * 12]
         for e in board["entries"]:
@@ -404,6 +415,7 @@ def scoreboard(results_root=RESULTS):
     order = {t: i for i, t in enumerate(TIERS)}
     entries.sort(key=lambda e: (order.get(e["tier"], 9), e["method"]))
     board = dict(schema="zero_tap_scoreboard/1", bench=dict(courses=m["summary"]["courses"], by_split=m["summary"]["by_split"],
+                                                            new_since_v0=m["summary"].get("new_since_v0"),
                                                             built=m["built_utc"]), entries=entries)
     json.dump(board, open(os.path.join(HERE, "scoreboard.json"), "w"), indent=1)
     open(os.path.join(HERE, "SCOREBOARD.md"), "w").write(md(board))

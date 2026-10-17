@@ -19,6 +19,11 @@ NH UT WI WY) + 11 seeded new states; **test** = the 12 structure held-out states
 WA) + 13 seeded new states. Exception: the 31 `validation_set` test courses (dev states) stay in test.
 **Never tune, fit, calibrate or look at per-course failures on test.** Report test once per method version.
 
+**Versions.** v0 = the first 161 courses (dev 77 / test 84), frozen in `bench_v0.json`; every manifest row carries
+`v0: true/false`. `bench.courses("dev", version="v0")` gives exactly the v0 dev split that earlier work fitted on.
+Later versions only add courses (from new states, so a v0 course never changes split; `bench_set.py` refuses to
+build otherwise). The scoreboard also reports the v0-only subset for comparison with earlier boards.
+
 **Truth** (`truth/<slug>.json`, `truth/1`, built by `truth.py`): the OSM `golf=hole` ways. A course is in the
 benchmark only when its refs are exactly 1..N (or 1..9 x 3/4, 1..18 x 2, 1..18 + 1..9), every line is 50-750 yds
 and >= 90 % of lines end on a mapped OSM green. Per hole: line, tee (line start), green (OSM green centroid +
