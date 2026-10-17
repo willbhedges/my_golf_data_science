@@ -44,10 +44,14 @@ def rates(h, P, n=8000, club="Driver"):
 
 
 def main():
+    import geom
     out = {}
-    for name, P in (("v1 world", M.v1_world()), ("v2 central", M.central()),
-                    ("v2, width 82", M.central(width={c: v * 82 / 70 for c, v in M.central()["width"].items()}))):
-        rows = {str(h): rates(h, P) for h in M.HOLES}
+    w82 = {c: v * 82 / 70 for c, v in M.central()["width"].items()}
+    for name, geo, mk in (("v1 world", "", lambda h: M.v1_world()),
+                          ("v2 central", "scale,elev,green", lambda h: D.central(h)),
+                          ("v2, width 82", "scale,elev,green", lambda h: D.central(h, width=w82))):
+        geom.set_geometry(geo)
+        rows = {str(h): rates(h, mk(h)) for h in M.HOLES}
         mean = {k: float(np.mean([r[k] for r in rows.values()])) for k in ("fairway", "first_cut", "penalty",
                                                                             "trouble", "sand", "beyond40")}
         out[name] = dict(holes=rows, mean=mean)

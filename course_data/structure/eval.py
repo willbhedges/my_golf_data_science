@@ -124,6 +124,20 @@ def true_green(G, R, end):
     return i if d[i] <= 12 else None
 
 
+def tee_ok(tee_xy, boxes, t):
+    """The routed hole starts where the true one does: a box of it within 35 yds of the true line's start, or its
+    back tee within 25 yds of the true line's first 60 % extended 90 yds backwards (back tees behind the mapped
+    start of the hole way)."""
+    dmin = min((float(np.hypot(*(np.asarray(b) - t["tee"]))) for b in boxes), default=1e9)
+    if dmin <= 35:
+        return True
+    line = _first(t["line"])
+    u = line[1] - line[0]
+    u = u / max(np.hypot(*u), 1e-9)
+    ext = np.vstack([line[0] - 90 * u, line])
+    return _seg_dist(np.asarray(tee_xy, float), ext) <= 25
+
+
 def match(res, sc, truth):
     """-> per routed hole: (true ref of its physical hole or None)."""
     G = np.array([g["c"] for g in sc.greens])
@@ -141,9 +155,7 @@ def match(res, sc, truth):
             if tg[j] is None or tg[j] != gi:
                 continue
             boxes = [tid[b] for b in h["boxes"] if b in tid]
-            dmin = min((float(np.hypot(*(b - t["tee"]))) for b in boxes), default=1e9)
-            ok = dmin <= 35 or _seg_dist(np.asarray(h["tee_xy"]), _first(t["line"])) <= 25
-            if ok:
+            if tee_ok(np.asarray(h["tee_xy"]), boxes, t):
                 ref = t["ref"]
                 break
         out.append(ref)

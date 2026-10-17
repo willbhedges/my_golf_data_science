@@ -17,7 +17,8 @@ What v2 adds
                     perceptron on the train split (route_eval.py train): the router's best routing vs the cheapest
                     routing that agrees with the hidden OSM holes. Defaults = v1's hand weights.
   loop closure      the beam carries hole 1's tee: green 9 (18-hole card) and the last green pay their distance
-                    back to tee 1 (both nines start and end at the clubhouse), whatever the clubhouse guess is.
+                    back to tee 1 (both nines start and end at the clubhouse), whatever the clubhouse guess is:
+                    ((d - 150) / 220)^2, capped at 4.
   facilities        all car parks, the clubhouse and big buildings by them: tee 1 / tee 10 / greens 9 / 18 pay the
                     distance to the NEAREST facility point (one wrong clubhouse guess no longer drags hole 1).
   cart paths        OSM cart paths / footways as a graph: a green -> next tee transition joined by a short path
@@ -65,6 +66,7 @@ PER_GREEN = 6
 TAU = 1.0
 P_CHECK = 0.8
 FAC_FREE, FAC_SCALE = 110.0, 160.0
+LOOP_FREE, LOOP_SCALE = 150.0, 220.0
 SPLIT_GAP = 230.0
 UNUSED_GREEN_W = 1.0
 
@@ -230,6 +232,7 @@ def context(inp, card=None, fc=None, n_holes=None, boundary=None, subset=None):
     D = np.hypot(txy[:, None, 0] - gxy[None, :, 0], txy[:, None, 1] - gxy[None, :, 1]) if nT else np.zeros((0, nG))
     W = D.T.copy()
     walk = np.minimum((np.maximum(W - R.WALK_FREE, 0) / R.WALK_SCALE) ** 2, 9.0)
+    loopc = np.minimum((np.maximum(W - LOOP_FREE, 0) / LOOP_SCALE) ** 2, 4.0)     # green 9 / 18 back to tee 1
     GG = np.hypot(gxy[:, None, 0] - gxy[None, :, 0], gxy[:, None, 1] - gxy[None, :, 1])
     gclust = np.minimum((GG < R.PRACTICE_YD).sum(1) - 1, 2).astype(float)
     gmodel = np.array([0.0 if g["src"] == "osm" else 0.6 + 2.0 * (1.0 - float(g.get("p") or 0.8)) for g in G])
@@ -329,7 +332,7 @@ def context(inp, card=None, fc=None, n_holes=None, boundary=None, subset=None):
     elif nT:
         practice = ((fac_gd < 120) & ~((D > 90) & (D < 640)).any(0)).astype(float)
     link, far, n_cart = cart_features(fc, pr, gxy, txy)
-    ctx.update(gxy=gxy, txy=txy, nG=nG, nT=nT, D=D, W=W, walk=walk, gclust=gclust, gmodel=gmodel, wt=wt,
+    ctx.update(gxy=gxy, txy=txy, nG=nG, nT=nT, D=D, W=W, walk=walk, loopc=loopc, gclust=gclust, gmodel=gmodel, wt=wt,
                tee_axes=tee_axes, ch_t=ch_t, ch_g=ch_g, fac_t=fac_t, fac_g=fac_g, n_fac=len(fac), corr=corr,
                cross=cross, align=align, has_fw=has_fw, holes=holes, practice=practice, cart_link=link,
                cart_far=far, n_cart_nodes=n_cart, cov_cache={}, clubhouse=ch)
@@ -506,7 +509,7 @@ def solve(ctx, w=None, fixed=None, exclude=None, allowed=None, beam=BEAM, tau=No
             fok = S_first >= 0
             gok = hg >= 0
             if fok.any() and gok.any():
-                floop[np.ix_(np.nonzero(fok)[0], np.nonzero(gok)[0])] = walk[np.ix_(hg[gok], S_first[fok])].T
+                floop[np.ix_(np.nonzero(fok)[0], np.nonzero(gok)[0])] = ctx["loopc"][np.ix_(hg[gok], S_first[fok])].T
         cv = covs[h]
         gain = cv.sum(1)[None, :] - (S_c > 0).astype(float) @ cv.T if nT else np.zeros((ns, nr))
         cstart = np.c_[S_c > 0, np.zeros((ns, 1), bool)][:, ht] * teeok[None, :] if nT else np.zeros((ns, nr))
@@ -642,7 +645,7 @@ def assign_features(ctx, assign, w=None, rows=None):
             f[FI["cart_link"]] += link[last, t]
             f[FI["cart_far"]] += far[last, t]
         if (h == n - 1 or (h == 8 and n >= 18)) and h > 0 and first >= 0 and g >= 0:
-            f[FI["loop"]] += walk[g, first]
+            f[FI["loop"]] += ctx["loopc"][g, first]
         if t >= 0 and nT:
             f[FI["covered_start"]] += float(S_c[t] > 0)
         if t >= 0 and g >= 0 and nT:

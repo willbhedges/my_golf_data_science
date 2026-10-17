@@ -89,9 +89,10 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: course_data/perception/work/${{ matrix.slug }}
-          key: perc-stack-v1-${{ matrix.slug }}
+          key: perc-stack-v2-${{ matrix.slug }}
+          restore-keys: perc-stack-v1-${{ matrix.slug }}
       - name: Cache Hugging Face weights
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) == ''
         uses: actions/cache@v4
         with:
           path: /home/runner/hf_cache
@@ -102,22 +103,22 @@ jobs:
           pip install -q requests numpy scipy shapely pyproj rasterio affine pystac-client planetary-computer \
                       scikit-image scikit-learn==1.9.1 networkx
       - name: Install U-Net dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) == ''
         run: |
           pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -q "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm
       - uses: mamba-org/setup-micromamba@v2
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: hashFiles(format('course_data/perception/work/{0}/stack.npz', matrix.slug)) == ''
         with:
           environment-name: pdal
           create-args: pdal
           init-shell: none
           cache-environment: true
-      - name: Build stack ${{ matrix.slug }}
+      - name: Build / patch stack ${{ matrix.slug }}
         if: steps.cache.outputs.cache-hit != 'true' && matrix.slug != 'none'
         timeout-minutes: 50
         run: |
-          export PDAL_BIN="$MAMBA_ROOT_PREFIX/envs/pdal/bin/pdal"
+          export PDAL_BIN="${MAMBA_ROOT_PREFIX:-/nonexistent}/envs/pdal/bin/pdal"
           python -u course_data/perception/fetch_stack.py ${{ matrix.slug }} || echo "stack failed"
           rm -rf course_data/perception/work/${{ matrix.slug }}/raw
           ls -la course_data/perception/work/${{ matrix.slug }} || true
@@ -126,7 +127,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: course_data/perception/work/${{ matrix.slug }}
-          key: perc-stack-v1-${{ matrix.slug }}
+          key: perc-stack-v2-${{ matrix.slug }}
       - name: Dev crop
         if: contains(needs.plan.outputs.dev, matrix.slug)
         run: |

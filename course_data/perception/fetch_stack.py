@@ -203,6 +203,7 @@ def build(slug, course, out, margin=150.0, segment=True, labels=True):
             base = float(np.floor(np.nanmin(z1)))
             dtm = np.where(np.isfinite(z1), np.clip(np.round((z1 - base) * 100), 0, 65534), 65535).astype(np.uint16)
     meta["dtm_base_m"] = base
+    meta["dtm_source"] = "3DEP lidar DTM" if base is not None else None
     iu8 = np.zeros((g1.H, g1.W), np.uint8)
     if inten is not None:
         iu8, meta["intensity_stretch"] = stretch_u8(inten)
@@ -226,6 +227,86 @@ def build(slug, course, out, margin=150.0, segment=True, labels=True):
     json.dump(meta, open(os.path.join(out, "meta.json"), "w"), indent=1, default=str)
     log(json.dumps({k: meta.get(k) for k in ("coverage", "seconds", "errors", "segment", "labels")}, default=str)[:3000])
     return meta
+
+
+def tnm_dem(g):
+    """USGS 3DEP bare earth on grid g from The National Map ImageServer (1 m where lidar exists)."""
+    import requests
+    import rasterio
+    from rasterio.io import MemoryFile
+    epsg = int(g.crs.split(":")[1])
+    url = "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage"
+    last = None
+    for attempt in range(3):
+        try:
+            r = requests.get(url, params=dict(bbox=f"{g.x0},{g.y0},{g.x1},{g.y1}", bboxSR=epsg, imageSR=epsg,
+                                              size=f"{g.W},{g.H}", format="tiff", pixelType="F32",
+                                              noDataInterpretation="esriNoDataMatchAny",
+                                              interpolation="RSP_BilinearInterpolation", f="image"),
+                             headers={"User-Agent": "golf-perception/1"}, timeout=300)
+            if r.status_code != 200 or "tif" not in r.headers.get("content-type", "").lower():
+                raise RuntimeError(f"HTTP {r.status_code} {r.text[:200]!r}")
+            with MemoryFile(r.content) as mf, mf.open() as src:
+                a = src.read(1).astype(np.float32)
+                nd = src.nodata
+            if nd is not None:
+                a[a == nd] = np.nan
+            a[a < -1000] = np.nan
+            if a.shape != (g.H, g.W):
+                raise RuntimeError(f"shape {a.shape} != {(g.H, g.W)}")
+            return a
+        except Exception as e:                                   # noqa: BLE001
+            last = repr(e)[:300]
+            log("TNM DEM failed:", last)
+            time.sleep(10 * (attempt + 1))
+    raise RuntimeError(last)
+
+
+def patch(out, slug):
+    """Fill missing layers of an existing stack: DTM from the TNM ImageServer; HAG from Meta's canopy height
+    when no lidar at all. Returns True when the stack changed."""
+    import fetch_any as FA
+    meta = json.load(open(os.path.join(out, "meta.json")))
+    z = np.load(os.path.join(out, "stack.npz"))
+    arr = {k: z[k] for k in z.files}
+    g1 = FA.Grid.__new__(FA.Grid)
+    gj = meta["grid"]
+    from affine import Affine
+    g1.__dict__.update(crs=gj["crs"], res=gj["res_m"], W=gj["width"], H=gj["height"], x0=gj["bounds"][0],
+                       y0=gj["bounds"][1], x1=gj["bounds"][2], y1=gj["bounds"][3], ll_bbox=gj["ll_bbox_wsen"],
+                       epsg=int(gj["crs"].split(":")[1]), transform=Affine(*gj["transform"][:6]))
+    changed = False
+    if (arr["dtm"] != 65535).mean() < 0.5:
+        try:
+            zz = tnm_dem(g1)
+            if np.isfinite(zz).mean() > 0.5:
+                base = float(np.floor(np.nanmin(zz)))
+                arr["dtm"] = np.where(np.isfinite(zz), np.clip(np.round((zz - base) * 100), 0, 65534), 65535).astype(np.uint16)
+                meta["dtm_base_m"] = base
+                meta["dtm_source"] = "USGS 3DEP TNM ImageServer (best available)"
+                changed = True
+        except Exception as e:                                   # noqa: BLE001
+            meta.setdefault("errors", {})["tnm_dem"] = repr(e)[:300]
+    if (arr["hag"] != 255).mean() < 0.5:
+        try:
+            raw = os.path.join(out, "raw")
+            os.makedirs(raw, exist_ok=True)
+            FA.fetch_meta_chm(g1, raw, meta)
+            p = os.path.join(raw, "chm_meta.tif")
+            if os.path.exists(p):
+                a, _ = read_tif(p)
+                h = a[0].astype(np.float32)
+                arr["hag"] = np.where(a[0] == 255, 255, np.clip(np.round(h * 4), 0, 254)).astype(np.uint8)
+                meta["hag_source"] = "Meta/WRI global canopy height 1 m (no 3DEP lidar)"
+                changed = True
+        except Exception as e:                                   # noqa: BLE001
+            meta.setdefault("errors", {})["meta_chm"] = repr(e)[:300]
+    meta["coverage"].update(hag=float((arr["hag"] != 255).mean()), dtm=float((arr["dtm"] != 65535).mean()))
+    if changed:
+        np.savez_compressed(os.path.join(out, "stack.npz"), **arr)
+    json.dump(meta, open(os.path.join(out, "meta.json"), "w"), indent=1, default=str)
+    log(slug, "patched" if changed else "patch: nothing to do", meta["coverage"])
+    return changed
 
 
 def dev_crop(stack_dir, out_dir, size_m=700, center_ll=None):
@@ -288,6 +369,7 @@ def main():
         build(a.slug, course, out, a.margin, segment=not a.no_segment)
     else:
         log("stack exists (cache):", out)
+    patch(out, a.slug)
     if a.dev_crop:
         dev_crop(out, os.path.join(HERE, "dev", a.slug), a.dev_crop)
 

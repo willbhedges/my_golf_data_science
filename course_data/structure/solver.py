@@ -61,16 +61,19 @@ COVER_BACK = 0.3                     # complexes a hole "uses" (its forward tees
 TOPK = 8
 NOT_HOLE = 4.0                                        # log-odds that a green with no route is a practice green
 TURN_VIA_H = 0.65
-FORM_W = dict(length=1.0, align=0.6, fw_cov=1.0, fw_end=3.0, cross_green=3.0, fwd=0.5, far=1.5, start=0.6)
+FORM_W = dict(chain=2.0, fw_x=2.0, length=1.0, align=0.6, fw_cov=1.0, fw_end=3.0, cross_green=3.0, fwd=0.5, far=1.5, start=0.6)
 TEMP = 1.0                                            # posterior temperature (calibrated on dev)
 LAGR_ITERS = 12
+TFEATS = ("walk", "dist", "cos_prev", "cos_next", "path")
+TRANS_W = dict(walk=1.0, dist=0.0, cos_prev=0.0, cos_next=0.0, path=1.0)
 
 
 def load_params(path=os.path.join(HERE, "params.json")):
-    global FORM_W, TEMP, NOT_HOLE, TURN_VIA_H
+    global FORM_W, TEMP, NOT_HOLE, TURN_VIA_H, TRANS_W
     if os.path.exists(path):
         p = json.load(open(path))
         FORM_W = dict(FORM_W, **p.get("form_w", {}))
+        TRANS_W = dict(TRANS_W, **p.get("trans_w", {}))
         TEMP = p.get("temp", TEMP)
         NOT_HOLE = p.get("not_hole", NOT_HOLE)
         TURN_VIA_H = p.get("turn_via_h", TURN_VIA_H)
@@ -209,6 +212,15 @@ class Geo:
                 ln = np.asarray(f["line"])
                 polys.append(LineString(ln).buffer(18))
                 self.fw_ends.append((ln[0], ln[-1]))
+        self.fw_polys = []
+        for p in polys:
+            q = p.buffer(6)
+            prepare(q)
+            r = np.asarray(p.minimum_rotated_rectangle.exterior.coords)[:4]
+            e1, e2 = r[1] - r[0], r[2] - r[1]
+            e = e1 if np.hypot(*e1) >= np.hypot(*e2) else e2
+            el = max(np.hypot(*e1), np.hypot(*e2)) / max(1.0, min(np.hypot(*e1), np.hypot(*e2)))
+            self.fw_polys.append((q, math.atan2(e[1], e[0]), el))
         if polys:
             self.fw = unary_union(polys).buffer(8)
             prepare(self.fw)
@@ -223,6 +235,32 @@ class Geo:
             self.greens_u = unary_union(self.gpolys)
             prepare(self.greens_u)
         self.has_fw = self.fw is not None and len(sc.fairways) >= 5
+        self.cones = [[] for _ in sc.greens]
+        if self.has_fw:
+            for gi, gp in enumerate(self.gpolys):
+                for fi, f in enumerate(sc.fairways):
+                    if f.get("ring") is None or len(f["ring"]) < 4:
+                        continue
+                    fp = Polygon(f["ring"]).buffer(0)
+                    if fp.distance(gp) > 35:
+                        continue
+                    r = np.asarray(f["ring"], float)
+                    dg = np.hypot(*(r - self.G[gi]).T)
+                    if dg.max() < 60:
+                        continue
+                    far = r[dg >= dg.max() - 0.35 * (dg.max() - dg.min())]
+                    e_f = r[np.argmax(dg)]
+                    near = r[dg <= dg.min() + 0.35 * (dg.max() - dg.min())].mean(0)
+                    mid = far.mean(0)
+                    d = e_f - (mid + near) / 2
+                    if far.shape[0] >= 3:
+                        c = far - far.mean(0)
+                        _, _, vt = np.linalg.svd(c, full_matrices=False)
+                        ax = vt[0] if np.dot(vt[0], d) > 0 else -vt[0]
+                        el = 1.0
+                        d = 0.5 * d / max(np.hypot(*d), 1e-9) + 0.5 * ax
+                    d = d / max(np.hypot(*d), 1e-9)
+                    self.cones[gi].append((e_f, d))
         self.fw_ends = np.array(self.fw_ends, float).reshape(-1, 2, 2)
         self.paths = PathGraph(sc.paths) if sc.paths else None
 
@@ -305,7 +343,7 @@ class PathGraph:
 
 
 # ----------------------------------------------------------------------------- hole hypotheses
-FEATS = ("length", "align", "fw_cov", "fw_end", "cross_green", "fwd", "far", "start")
+FEATS = ("length", "align", "chain", "chain_neg", "p3_fw", "fw_cov", "fw_x", "fw_end", "cross_green", "fwd", "far", "start")
 
 
 def features(sc, geo, clubs=()):
@@ -357,6 +395,23 @@ def features(sc, geo, clubs=()):
     s_line = np.linspace(0.25, 0.85, 13)
     pts = tee[:, None, :] + s_line[None, :, None] * v[:, None, :]
     cov = geo.on_fairway(pts.reshape(-1, 2)).reshape(P, -1).mean(1) if geo.has_fw else np.zeros(P)
+    # in a fairway running along the line vs across it (crossing another hole's fairway)
+    fal = np.zeros((P, len(s_line)), bool)
+    fx = np.zeros((P, len(s_line)), bool)
+    if geo.has_fw:
+        flat = pts.reshape(-1, 2)
+        for poly, fax, fel in geo.fw_polys:
+            inn = contains_xy(poly, flat[:, 0], flat[:, 1]).reshape(P, -1)
+            if not inn.any():
+                continue
+            mis = _angdiff(fax, ang) > math.radians(35)
+            if fel < 1.6:
+                mis = np.zeros(P, bool)
+            fal |= inn & ~mis[:, None]
+            fx |= inn & mis[:, None]
+    fx = fx & ~fal
+    fal = fal.mean(1)
+    fx = fx.mean(1)
     p45 = ppar[1] + ppar[2]
     fe = np.zeros(P)
     if geo.has_fw and len(geo.fw_ends):
@@ -365,7 +420,31 @@ def features(sc, geo, clubs=()):
             t, g = tee[i], gxy[i]
             da = np.minimum(np.hypot(*(e[:, 0] - t).T) + np.hypot(*(e[:, 1] - g).T),
                             np.hypot(*(e[:, 1] - t).T) + np.hypot(*(e[:, 0] - g).T))
-            fe[i] = max(0.0, 1.0 - (da.min() / D[i] - 0.25) / 0.45)
+            # fairway fit: tee -> near end -> far end -> green barely longer than the straight line, and the
+            # fairway spanning a good share of the hole (sum over the fairways that fit; dog-legs bend but fit)
+            dn1 = np.hypot(*(e[:, 0] - t).T)
+            dn2 = np.hypot(*(e[:, 1] - t).T)
+            near = np.where((dn1 <= dn2)[:, None], e[:, 0], e[:, 1])
+            farp = np.where((dn1 <= dn2)[:, None], e[:, 1], e[:, 0])
+            Lf = np.hypot(*(farp - near).T)
+            det = (np.hypot(*(near - t).T) + Lf + np.hypot(*(g - farp).T)) / D[i]
+            fe[i] = min(1.0, float((Lf / D[i] * np.exp(-np.maximum(0.0, det - 1.02) / 0.05)).sum()))
+    chain = np.zeros(P)
+    has_cone = np.zeros(P)
+    if geo.has_fw:
+        for i, (gi, k, _, _) in enumerate(pairs):
+            if not geo.cones[gi]:
+                continue
+            hit = 0.0
+            for e_f, d in geo.cones[gi]:
+                w = cx[k]["xy"] - e_f
+                along = w @ d
+                lat = np.abs(w[:, 0] * d[1] - w[:, 1] * d[0])
+                ok = (along > -25) & (along < 320)
+                if ok.any():
+                    hit = max(hit, float((lat[ok] < 25 + 0.3 * np.maximum(along[ok], 0)).any()))
+            chain[i] = hit
+            has_cone[i] = 1.0
     s_x = np.linspace(0.08, 0.85, 28)
     xs = tee[:, None, :] + s_x[None, :, None] * v[:, None, :]
     inside = contains_xy(geo.greens_u, xs[..., 0].ravel(), xs[..., 1].ravel()).reshape(P, -1)
@@ -400,8 +479,11 @@ def features(sc, geo, clubs=()):
     for i, (gi, k, t, d) in enumerate(pairs):
         out.append(dict(gi=gi, k=k, tee=t, D=d, ppar=ppar[:, i], cover=cover[i],
                         f=dict(length=float(ll_len[i]), align=float(al[i]),
-                               fw_cov=float((cov[i] - 0.45) * p45[i]) if geo.has_fw else 0.0,
-                               fw_end=float((fe[i] - 0.4) * p45[i]) if geo.has_fw else 0.0, cross_green=-cg[i],
+                               fw_cov=float((fal[i] - 0.4) * p45[i]) if geo.has_fw else 0.0,
+                               fw_x=-float(fx[i]), chain=float(chain[i] * p45[i]),
+                               chain_neg=-float(has_cone[i] * (1 - chain[i]) * p45[i]),
+                               p3_fw=-float(has_cone[i] * (1 - p45[i])),
+                               fw_end=float((fe[i] - 0.3) * p45[i]) if geo.has_fw else 0.0, cross_green=-cg[i],
                                fwd=math.log1p(fwd[i]), far=-far[i], start=max(-4.0, min(4.0, start[i])))))
     return out
 
@@ -573,6 +655,63 @@ def card_info(card):
     return pars, best or card.get("yards")
 
 
+def transition_features(geo, hyps, keep, cxk, use_paths=True):
+    """F[a, b, h, :] for the move green keep[a] -> hypothesis h of green keep[b]:
+    walk      log-normal walk log-lik of the distance green edge -> nearest box of the complex
+    dist      that distance / 100 yds
+    cos_prev  cos(direction of play of a's hole, walk direction): players walk on, not back down the hole
+    cos_next  cos(walk direction, direction of play of b's hole h): tees are reached from behind
+    path      cart paths join a to the complex directly (route <= 2.2 x straight + 80): path log-lik gain"""
+    G = geo.G
+    Mk, K = cxk.shape
+    nC = len(geo.cx)
+    kp = np.asarray(keep)
+    dgc = np.zeros((Mk, nC))
+    vec = np.zeros((Mk, nC, 2))
+    for k, c in enumerate(geo.cx):
+        xy = c["xy"]
+        dd = np.hypot(G[kp][:, None, 0] - xy[None, :, 0], G[kp][:, None, 1] - xy[None, :, 1])
+        j = dd.argmin(1)
+        dgc[:, k] = dd[np.arange(Mk), j]
+        vec[:, k] = xy[j] - G[kp]
+    dgc = np.maximum(dgc - geo.gr_r[kp][:, None], 1.0)
+    wu = vec / np.maximum(np.hypot(vec[..., 0], vec[..., 1]), 1e-6)[..., None]
+    dprev = np.zeros((Mk, 2))
+    for a, g in enumerate(kp):
+        hs = hyps[g]
+        if not hs:
+            continue
+        sc = np.array([h["score"] for h in hs])
+        p = np.exp(sc - sc.max())
+        p /= p.sum()
+        v = sum(pi * (G[g] - h["tee"]) / max(h["D"], 1.0) for pi, h in zip(p, hs))
+        dprev[a] = v / max(np.hypot(*v), 1e-6)
+    F = np.zeros((Mk, Mk, K, len(TFEATS)))
+    ck = np.maximum(cxk, 0)
+    dist = dgc[:, ck]
+    F[..., 0] = walk_ll(dist)
+    F[..., 1] = dist / 100.0
+    F[..., 2] = np.einsum("abhx,ax->abh", wu[:, ck], dprev)
+    dnext = np.zeros((Mk, K, 2))
+    for b, g in enumerate(kp):
+        for h, x in enumerate(hyps[g][:K]):
+            dnext[b, h] = (G[g] - x["tee"]) / max(x["D"], 1.0)
+    F[..., 3] = np.einsum("abhx,bhx->abh", wu[:, ck], dnext)
+    if use_paths and geo.paths is not None and len(geo.paths.P):
+        pg = geo.paths.from_points([G[g] for g in kp])
+        pgc = np.full((Mk, nC), np.inf)
+        for a in range(Mk):
+            if pg[a] is None:
+                continue
+            for k, c in enumerate(geo.cx):
+                pgc[a, k] = geo.paths.to_points(pg[a], c["xy"]).min()
+        ok = np.isfinite(pgc) & (pgc < 2.2 * dgc + 80)
+        gain = np.where(ok, np.maximum(0.0, np.logaddexp(walk_ll(dgc) + math.log(0.5),
+                                                         path_ll(np.where(ok, pgc, 1e3)) + math.log(0.5)) - walk_ll(dgc)), 0.0)
+        F[..., 4] = gain[:, ck]
+    return F
+
+
 class Problem:
     """Padded arrays over the kept greens (nodes) and their hypotheses (K per node):
     form[b, h], cxk[b, h] (complex index, -1 = padding), wl[a, b, h] walk log-lik green a -> hypothesis h of b."""
@@ -593,29 +732,10 @@ class Problem:
                 self.form[b, h] = x["score"]
                 self.cxk[b, h] = x["k"]
                 self.cov[b, h, x["cover"]] = 1.0
-        # green (edge) -> complex (nearest box) straight distance, and along cart paths
-        dgc = np.zeros((Mk, nC))
-        for k, c in enumerate(geo.cx):
-            xy = c["xy"]
-            dgc[:, k] = np.hypot(G[keep][:, None, 0] - xy[None, :, 0], G[keep][:, None, 1] - xy[None, :, 1]).min(1)
-        dgc = np.maximum(dgc - geo.gr_r[keep][:, None], 1.0)
-        wgc = walk_ll(dgc)
-        self.path_used = False
-        if use_paths and geo.paths is not None and len(geo.paths.P):
-            pg = geo.paths.from_points([G[g] for g in keep])
-            pgc = np.full((Mk, nC), np.inf)
-            for a in range(Mk):
-                if pg[a] is None:
-                    continue
-                for k, c in enumerate(geo.cx):
-                    pgc[a, k] = geo.paths.to_points(pg[a], c["xy"]).min()
-            ok = np.isfinite(pgc) & (pgc < 2.2 * dgc + 80)
-            wgc = np.where(ok, np.logaddexp(wgc + math.log(0.5), path_ll(np.where(ok, pgc, 1e3)) + math.log(0.5)), wgc)
-            self.path_used = bool(ok.any())
-        ck = np.maximum(self.cxk, 0)
-        self.wl = wgc[:, ck]                                   # (Mk, Mk, K)
-        self.wd = dgc[:, ck]
-        self.dgc = dgc
+        self.F = transition_features(geo, hyps, keep, self.cxk, use_paths)
+        self.path_used = bool(use_paths and geo.paths is not None)
+        self.wl = self.F @ np.array([TRANS_W[k] for k in TFEATS])          # (Mk, Mk, K)
+        self.wd = self.F[..., TFEATS.index("dist")] * 100.0
 
     def anchors(self, c):
         """(start log-lik per hypothesis (Mk, K), end log-lik per green (Mk,)) for clubhouse point c."""

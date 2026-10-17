@@ -144,7 +144,16 @@ class Layers:
 
 PATH_FEATURES = ("ndvi", "bright", "nir", "r", "g", "b", "hag", "inten", "slope", "nd_contrast", "br_contrast",
                  "line_paved", "line_bright", "paved_width_max", "seg_green", "seg_tee", "seg_fairway", "seg_bunker",
-                 "cls_ground", "cls_building", "ndvi_mean11", "bright_std5")
+                 "cls_ground", "cls_building", "ndvi_mean11", "bright_std5", "ndvi_rel", "bright_rel", "nir_rel",
+                 "line_paved_wide", "tall_frac9", "inten_contrast")
+
+
+def _turf_median(L, a):
+    """Median of `a` over this course's low open turf (per-course normalisation: NAIP years / sensors differ)."""
+    h = np.nan_to_num(L["hag"], nan=0.0)
+    m = (h < 0.5) & L["valid"] & (L["ndvi"] > np.nanpercentile(L["ndvi"], 40))
+    v = a[m & np.isfinite(a)]
+    return float(np.median(v)) if v.size > 100 else float(np.nanmedian(a))
 
 
 def path_feature_stack(L):
@@ -162,5 +171,10 @@ def path_feature_stack(L):
         "cls_ground": ndi.uniform_filter((cls == 2).astype(np.float32), 3),
         "cls_building": ndi.uniform_filter((cls == 6).astype(np.float32), 3),
         "ndvi_mean11": local_mean(nd, 11), "bright_std5": local_std(L["bright"], 5),
+        "ndvi_rel": nd - _turf_median(L, nd), "bright_rel": L["bright"] / max(_turf_median(L, L["bright"]), 1.0),
+        "nir_rel": n[3] / max(_turf_median(L, n[3]), 1.0),
+        "line_paved_wide": line_filter(-np.nan_to_num(nd, nan=0.0), (2.5,)),
+        "tall_frac9": ndi.uniform_filter((np.nan_to_num(L["hag"], nan=0) > 2.5).astype(np.float32), 9),
+        "inten_contrast": L["inten"] - local_mean(L["inten"], 11),
     }
     return np.stack([np.asarray(out[k], np.float32) for k in PATH_FEATURES])

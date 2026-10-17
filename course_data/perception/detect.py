@@ -158,7 +158,7 @@ def tee_boxes(st, L, green_lab, models=None):
 def lidar_pad_mask(z, res):
     import os
     import sys
-    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tees"))
+    sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tees"))
     try:
         import lidar_pads as lp
         m = np.zeros(z.shape, bool)
@@ -362,7 +362,7 @@ def bunkers(st, L):
 def water(st, L):
     import os
     import sys
-    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "segment"))
+    sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "segment"))
     from model import nir_water
     img = st.a["naip"]
     m, score = nir_water(img)
@@ -484,7 +484,7 @@ def driving_range(st, L, complexes, greens_, clubhouse_xy=None):
             ws = np.linspace(-c["length"] / 2, c["length"] / 2, 9)
             P = np.array(c["xy"])[None, None] + ts[:, None, None] * v + ws[None, :, None] * u
             r, cc = st.xy_to_rc(P[..., 0].ravel(), P[..., 1].ravel())
-            ok = (r >= 0) & (r < st.H) & (cc >= 0) & (cc < st.W)
+            ok = (r >= 0) & (r <= st.H - 1) & (cc >= 0) & (cc <= st.W - 1)
             if ok.mean() < 0.8:
                 continue
             ri, ci = np.round(r[ok]).astype(int), np.round(cc[ok]).astype(int)

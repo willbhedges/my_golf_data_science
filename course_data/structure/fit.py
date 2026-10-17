@@ -38,9 +38,7 @@ def dataset(entries, degrade=None):
                 continue
             ys = []
             for h in hyps[gi]:
-                xy = geo.cx[h["k"]]["xy"]
-                dmin = float(np.hypot(*(xy - t["tee"]).T).min())
-                ys.append(int(dmin <= 35 or E._seg_dist(h["tee"], E._first(t["line"])) <= 25))
+                ys.append(int(E.tee_ok(h["tee"], list(geo.cx[h["k"]]["xy"]), t)))
             X.append(np.array([[h["f"][k] for k in V.FEATS] for h in hyps[gi]]))
             Y.append(np.array(ys))
             meta.append((e["slug"], t["ref"]))
@@ -70,11 +68,62 @@ def top1(X, Y, w):
     return float(np.mean(ok)), int(sum(1 for y in Y if y.any())) / max(1, len(Y))
 
 
+def trans_dataset(entries, degrade=None, use_paths=True):
+    """Every true move green n -> hole n+1 (not the turn): candidates = every hypothesis of every other green."""
+    import random
+    import scene as S
+    out = []
+    for e in entries:
+        sc, truth, N, _ = E.load(e)
+        if N not in (9, 18):
+            continue
+        if degrade:
+            sc = S.degrade(sc, random.Random(f"fit-{e['slug']}"), level=degrade)
+        hyps, geo = V.hypotheses(sc)
+        keep = list(range(len(geo.G)))
+        pb = V.Problem(sc, hyps, geo, keep, use_paths=use_paths)
+        tg = [E.true_green(geo.G, geo.gr_r, t["green"]) for t in truth]
+        for n in range(N - 1):
+            if (N == 18 and n == 8) or tg[n] is None or tg[n + 1] is None:
+                continue
+            a = tg[n]
+            X, off, y = [], [], []
+            for b in range(len(keep)):
+                if b == a:
+                    continue
+                for h, x in enumerate(pb.hk[b]):
+                    X.append(pb.F[a, b, h])
+                    off.append(x["score"])
+                    y.append(int(b == tg[n + 1] and E.tee_ok(x["tee"], list(geo.cx[x["k"]]["xy"]), truth[n + 1])))
+            if any(y):
+                out.append((np.array(X), np.array(off), np.array(y)))
+    return out
+
+
+def fit_trans(data, w0, l2=0.01):
+    from scipy.optimize import minimize
+
+    def nll(w):
+        s, g = 0.0, np.zeros_like(w)
+        for x, off, y in data:
+            z = x @ w + off
+            p = np.exp(z - z.max())
+            p /= p.sum()
+            pc = p * y
+            s -= np.log(pc.sum())
+            g -= (pc / pc.sum()) @ x - p @ x
+        return s + l2 * ((w - w0) ** 2).sum(), g + 2 * l2 * (w - w0)
+    r = minimize(nll, w0, jac=True, method="L-BFGS-B")
+    acc = np.mean([y[np.argmax(x @ r.x + off)] for x, off, y in data])
+    acc0 = np.mean([y[np.argmax(x @ w0 + off)] for x, off, y in data])
+    return r.x, r.fun, acc, acc0
+
+
 def main():
     ents = E.courses("dev")
     X, Y, _ = dataset(ents)
     Xd, Yd, _ = dataset(ents, degrade=1.0)
-    w0 = np.array([V.FORM_W[k] for k in V.FEATS])
+    w0 = np.array([V.FORM_W.get(k, 0.0) for k in V.FEATS])
     print("init top1", top1(X, Y, w0), "degraded", top1(Xd, Yd, w0))
     w, f = fit(X + Xd, Y + Yd, w0)
     print("fit", dict(zip(V.FEATS, np.round(w, 3))), "nll", round(f, 1))
@@ -82,6 +131,13 @@ def main():
     p = json.load(open(os.path.join(HERE, "params.json"))) if os.path.exists(os.path.join(HERE, "params.json")) else {}
     p["form_w"] = {k: round(float(v), 4) for k, v in zip(V.FEATS, w)}
     p["fit_note"] = f"conditional logit on dev ({len(X)} holes clean + degraded), fit.py"
+    json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
+    V.load_params()
+    td = trans_dataset(ents) + trans_dataset(ents, degrade=1.0)
+    t0 = np.array([V.TRANS_W.get(k, 0.0) for k in V.TFEATS])
+    tw, tf, acc, acc0 = fit_trans(td, t0)
+    print("transitions", len(td), "top1 next hole", round(acc0, 3), "->", round(acc, 3), dict(zip(V.TFEATS, np.round(tw, 3))))
+    p["trans_w"] = {k: round(float(v), 4) for k, v in zip(V.TFEATS, tw)}
     json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
 
 
