@@ -28,25 +28,27 @@
   "hole_uncertain": 0
  },
  "tee_complexes": {
-  "precision": 0.9839,
-  "recall": 0.6444,
-  "n_pred": 62,
+  "precision": 0.8125,
+  "recall": 0.6667,
+  "n_pred": 80,
   "n_true": 45,
-  "tp_pred": 61,
-  "tp_true": 29,
+  "tp_pred": 65,
+  "tp_true": 30,
   "eligible": true,
   "precision_eligible": true,
-  "recall_any_p": 0.6444,
-  "tp_true_any_p": 29,
-  "n_complex_per_hole": 3.44
+  "recall_any_p": 0.6667,
+  "tp_true_any_p": 30,
+  "starts_with_osm_tee": 41,
+  "recall_starts_with_osm_tee": 0.7317,
+  "n_complex_per_hole": 4.44
  },
  "tee_boxes": {
-  "precision": 0.9624,
-  "recall": 0.7443,
-  "n_pred": 133,
+  "precision": 0.8725,
+  "recall": 0.7557,
+  "n_pred": 149,
   "n_true": 176,
-  "tp_pred": 128,
-  "tp_true": 131,
+  "tp_pred": 130,
+  "tp_true": 133,
   "eligible": true
  },
  "fairways": {
@@ -86,9 +88,9 @@
   "eligible": false
  },
  "parking": {
-  "precision": 0.0,
+  "precision": null,
   "recall": 0.0,
-  "n_pred": 1,
+  "n_pred": 0,
   "n_true": 1,
   "tp_pred": 0,
   "tp_true": 0,
@@ -105,21 +107,21 @@
   "stripe_strong_within_20deg": 0.833
  },
  "cart_paths": {
-  "pred_km": 29.263,
+  "pred_km": 13.072,
   "true_km": 18.028,
-  "length_precision": 0.5675,
-  "length_recall": 0.8212,
+  "length_precision": 0.8336,
+  "length_recall": 0.5783,
   "eligible": true,
   "transitions_osm_connected": 15,
-  "connectivity_acc": 0.3333,
-  "connected_route_ratio_median": 1.053,
-  "components": 69
+  "connectivity_acc": 0.4,
+  "connected_route_ratio_median": 1.144,
+  "components": 79
  },
  "relations": {
   "n": 38,
   "top1_next_tee_acc": 0.1842,
-  "n_with_path": 23,
-  "top1_acc_when_path": 0.1739
+  "n_with_path": 17,
+  "top1_acc_when_path": 0.2353
  },
  "clubhouse": {
   "error_m": null,
@@ -135,73 +137,73 @@
  "seconds": {
   "greens": 1.2,
   "tees": 4.8,
-  "fairways": 0.7,
-  "bunkers_water_trees": 1.7,
-  "cart_paths": 55.9,
+  "fairways": 0.8,
+  "bunkers_water_trees": 1.8,
+  "cart_paths": 54.9,
   "buildings_parking_clubhouse_range": 2.6,
-  "total": 67.0
+  "total": 66.0
  },
- "models": "perception-20261017-0817",
+ "models": "perception-20261017-0858",
  "lidar": true,
  "summary": {
   "greens_hole": 40,
   "greens_practice": 0,
   "greens_uncertain": 8,
-  "tee_complexes": 62,
+  "tee_complexes": 80,
   "fairways": 44,
   "bunkers": 259,
   "water": 52,
   "tree_stands": 337,
   "trees": 2342,
-  "cart_path_km": 33.816,
-  "cart_path_components": 69,
+  "cart_path_km": 14.345,
+  "cart_path_components": 79,
   "buildings": 1054,
-  "parking": 6,
+  "parking": 3,
   "clubhouse": true,
   "driving_range": false
  },
  "path_sweep": {
   "0.3": {
-   "pred_km": 56.061,
+   "pred_km": 56.382,
    "true_km": 18.028,
-   "length_precision": 0.352,
-   "length_recall": 0.9008,
+   "length_precision": 0.3144,
+   "length_recall": 0.7921,
    "connectivity_acc": 0.4,
    "transitions_osm_connected": 15,
    "eligible": true
   },
   "0.5": {
-   "pred_km": 29.263,
+   "pred_km": 31.514,
    "true_km": 18.028,
-   "length_precision": 0.5675,
-   "length_recall": 0.8212,
-   "connectivity_acc": 0.3333,
+   "length_precision": 0.49,
+   "length_recall": 0.7373,
+   "connectivity_acc": 0.5333,
    "transitions_osm_connected": 15,
    "eligible": true
   },
   "0.7": {
-   "pred_km": 11.737,
+   "pred_km": 13.072,
    "true_km": 18.028,
-   "length_precision": 0.884,
-   "length_recall": 0.5605,
+   "length_precision": 0.8336,
+   "length_recall": 0.5783,
    "connectivity_acc": 0.4,
    "transitions_osm_connected": 15,
    "eligible": true
   },
   "0.85": {
-   "pred_km": 5.528,
+   "pred_km": 6.073,
    "true_km": 18.028,
-   "length_precision": 0.9735,
-   "length_recall": 0.3084,
+   "length_precision": 0.9708,
+   "length_recall": 0.3377,
    "connectivity_acc": 0.4,
    "transitions_osm_connected": 15,
    "eligible": true
   },
   "0.95": {
-   "pred_km": 1.177,
+   "pred_km": 1.593,
    "true_km": 18.028,
    "length_precision": 1.0,
-   "length_recall": 0.07,
+   "length_recall": 0.0944,
    "connectivity_acc": 0.1333,
    "transitions_osm_connected": 15,
    "eligible": true

@@ -5,12 +5,12 @@
  "n_osm_greens": 19,
  "n_osm_tees": 0,
  "greens_any": {
-  "precision": 0.95,
-  "recall": 1.0,
-  "n_pred": 20,
+  "precision": 0.9474,
+  "recall": 0.9474,
+  "n_pred": 19,
   "n_true": 19,
-  "tp_pred": 19,
-  "tp_true": 19,
+  "tp_pred": 18,
+  "tp_true": 18,
   "eligible": true
  },
  "greens_hole": {
@@ -22,15 +22,15 @@
   "tp_true": 17,
   "eligible": true,
   "practice_called_hole": 1,
-  "practice_called_practice": 1,
+  "practice_called_practice": 0,
   "hole_called_practice": 0,
   "practice_true": 2,
   "hole_uncertain": 0
  },
  "tee_complexes": {
-  "precision": 0.6667,
+  "precision": 0.5806,
   "recall": 1.0,
-  "n_pred": 27,
+  "n_pred": 31,
   "n_true": 18,
   "tp_pred": 18,
   "tp_true": 18,
@@ -38,12 +38,14 @@
   "precision_eligible": false,
   "recall_any_p": 1.0,
   "tp_true_any_p": 18,
-  "n_complex_per_hole": 1.5
+  "starts_with_osm_tee": 0,
+  "recall_starts_with_osm_tee": null,
+  "n_complex_per_hole": 1.72
  },
  "tee_boxes": {
   "precision": 0.0,
   "recall": null,
-  "n_pred": 56,
+  "n_pred": 64,
   "n_true": 0,
   "tp_pred": 0,
   "tp_true": 0,
@@ -105,24 +107,24 @@
   "stripe_strong_within_20deg": 0.917
  },
  "cart_paths": {
-  "pred_km": 9.592,
+  "pred_km": 4.64,
   "true_km": 9.79,
-  "length_precision": 0.4473,
-  "length_recall": 0.4115,
+  "length_precision": 0.329,
+  "length_recall": 0.1456,
   "eligible": true,
   "transitions_osm_connected": 17,
-  "connectivity_acc": 0.1176,
-  "connected_route_ratio_median": 0.967,
-  "components": 45
+  "connectivity_acc": 0.0,
+  "connected_route_ratio_median": null,
+  "components": 40
  },
  "relations": {
   "n": 16,
-  "top1_next_tee_acc": 0.75,
-  "n_with_path": 9,
-  "top1_acc_when_path": 0.6667
+  "top1_next_tee_acc": 0.8125,
+  "n_with_path": 3,
+  "top1_acc_when_path": 1.0
  },
  "clubhouse": {
-  "error_m": 32.0,
+  "error_m": 901.8,
   "truth": "tagged",
   "eligible": true
  },
@@ -133,28 +135,28 @@
   "eligible": false
  },
  "seconds": {
-  "greens": 1.9,
-  "tees": 4.3,
+  "greens": 1.4,
+  "tees": 4.9,
   "fairways": 0.6,
-  "bunkers_water_trees": 1.6,
-  "cart_paths": 52.6,
-  "buildings_parking_clubhouse_range": 1.6,
-  "total": 62.4
+  "bunkers_water_trees": 1.9,
+  "cart_paths": 57.9,
+  "buildings_parking_clubhouse_range": 1.8,
+  "total": 68.6
  },
- "models": "perception-20261017-0817",
+ "models": "perception-20261017-0858",
  "lidar": true,
  "summary": {
   "greens_hole": 19,
-  "greens_practice": 1,
-  "greens_uncertain": 0,
-  "tee_complexes": 27,
+  "greens_practice": 0,
+  "greens_uncertain": 1,
+  "tee_complexes": 31,
   "fairways": 17,
   "bunkers": 26,
   "water": 6,
   "tree_stands": 175,
   "trees": 981,
-  "cart_path_km": 35.381,
-  "cart_path_components": 45,
+  "cart_path_km": 12.033,
+  "cart_path_components": 40,
   "buildings": 619,
   "parking": 0,
   "clubhouse": true,
@@ -162,37 +164,37 @@
  },
  "path_sweep": {
   "0.3": {
-   "pred_km": 18.862,
+   "pred_km": 21.225,
    "true_km": 9.79,
-   "length_precision": 0.3784,
-   "length_recall": 0.6385,
+   "length_precision": 0.3489,
+   "length_recall": 0.6515,
    "connectivity_acc": 0.4706,
    "transitions_osm_connected": 17,
    "eligible": true
   },
   "0.5": {
-   "pred_km": 9.592,
+   "pred_km": 10.991,
    "true_km": 9.79,
-   "length_precision": 0.4473,
-   "length_recall": 0.4115,
-   "connectivity_acc": 0.1176,
+   "length_precision": 0.4163,
+   "length_recall": 0.4312,
+   "connectivity_acc": 0.2353,
    "transitions_osm_connected": 17,
    "eligible": true
   },
   "0.7": {
-   "pred_km": 4.293,
+   "pred_km": 4.64,
    "true_km": 9.79,
-   "length_precision": 0.338,
-   "length_recall": 0.1526,
-   "connectivity_acc": 0.1765,
+   "length_precision": 0.329,
+   "length_recall": 0.1456,
+   "connectivity_acc": 0.0,
    "transitions_osm_connected": 17,
    "eligible": true
   },
   "0.85": {
-   "pred_km": 0.534,
+   "pred_km": 0.267,
    "true_km": 9.79,
-   "length_precision": 0.3285,
-   "length_recall": 0.0204,
+   "length_precision": 0.1637,
+   "length_recall": 0.0048,
    "connectivity_acc": 0.0,
    "transitions_osm_connected": 17,
    "eligible": true
