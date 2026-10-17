@@ -1,5 +1,5 @@
 {
- "source": "draft_spec.py from OSM golf=hole lines (to be checked by hand)",
+ "source": "OSM golf=hole ways 1-18 (pars = the card on every hole, lengths within 2% of Gold except 3 (+3%)); greens: OSM outline (12) else the OSM line end, checked on 0.3 m zooms (on the green within ~5 yds); tees: OSM pads matched to the card, else estimated along the line",
  "features": "course_data/truth/hot_springs_arlington/map/features.json",
  "holes": {
   "1": {
@@ -330,6 +330,111 @@
    ],
    "osm_par": "5",
    "note": ""
+  }
+ },
+ "card": {
+  "source": "OpenGolfAPI d0ee9784 (ODbL)",
+  "par": [
+   4,
+   3,
+   4,
+   4,
+   4,
+   5,
+   4,
+   3,
+   5,
+   5,
+   3,
+   4,
+   4,
+   4,
+   4,
+   4,
+   3,
+   5
+  ],
+  "sets": {
+   "Gold": [
+    426,
+    160,
+    371,
+    360,
+    356,
+    504,
+    386,
+    175,
+    565,
+    555,
+    180,
+    410,
+    448,
+    406,
+    338,
+    403,
+    150,
+    520
+   ],
+   "Blue": [
+    408,
+    147,
+    364,
+    351,
+    345,
+    491,
+    374,
+    167,
+    556,
+    537,
+    177,
+    402,
+    442,
+    400,
+    332,
+    396,
+    143,
+    510
+   ],
+   "Green": [
+    346,
+    127,
+    355,
+    330,
+    343,
+    471,
+    368,
+    156,
+    462,
+    461,
+    141,
+    374,
+    342,
+    363,
+    328,
+    322,
+    127,
+    456
+   ],
+   "White": [
+    312,
+    120,
+    355,
+    283,
+    343,
+    451,
+    322,
+    128,
+    422,
+    454,
+    141,
+    301,
+    276,
+    322,
+    325,
+    280,
+    120,
+    423
+   ]
   }
  }
 }
