@@ -276,13 +276,13 @@ def objective(data, w, beam=1500):
     return wrong - 4 * allc, wrong, allc
 
 
-def tune(rounds=2, inputs=("osm", "model"), out=R2.WEIGHTS_FILE):
+def tune(rounds=2, inputs=("osm", "model"), out=R2.WEIGHTS_FILE, warm=True):
     """Coordinate search on the train split: each weight in turn is scaled (x0.5, x2) or, when 0, tried at a few
     values; a change is kept when the train objective (wrong holes - 4 x all-correct courses) improves. Then
     tau / p_check are calibrated (fewest flags that still cover every wrong hole)."""
     data = _train_data(inputs)
     log("train courses x inputs:", len(data))
-    w, _, _ = R2.load_weights(None)
+    w, _, _ = R2.load_weights(out if warm else None)          # warm start from the saved weights
     best = objective(data, w)
     log("start", best)
     hist = [dict(step="start", obj=best)]
@@ -446,7 +446,7 @@ def main():
             sys.exit("training reads the train split only")
         train(a.epochs)
     elif a.cmd == "tune":
-        tune(a.epochs if a.epochs != 12 else 2)
+        tune(a.epochs if a.epochs != 12 else 1)
     elif a.cmd == "calibrate":                  # re-calibrate tau / p_check for the saved weights (train split)
         js = json.load(open(R2.WEIGHTS_FILE))
         w, _, _ = R2.load_weights()

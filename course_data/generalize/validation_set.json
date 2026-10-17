@@ -2,10 +2,10 @@
  "schema": "validation_set/1",
  "built_from": "sample.json (seed 20261017) + courses/",
  "doc": "  python course_data/generalize/validation_set.py      -> course_data/generalize/validation_set.json\n\nEvery course of sample.json whose OSM golf=hole ways give >= 9 numbered holes (the hidden truth) is listed with\nits split:\n  test   the 32 held-out courses of `sample.py holdout` (8 per Census region): never used to tune anything -\n         report them only, once per method version\n  train  everything else with truth (the 32 holdout train courses + the 19 earlier validation / full courses)\nCached inputs per course (committed under course_data/generalize/courses/<slug>/, written by run_course.py on\nGitHub Actions; ODbL for the OSM file):\n  osm_golf.geojson  OSM golf / building / parking / cart-path features of the course. The truth is its golf=hole\n                    ways: drop them and every `ref` tag before inference (routing.inputs_from_fc(hide_holes=True))\n  segment.geojson   NAIP segment-model greens / tees / fairways (p, area_m2)\n  pads.json         lidar flat-pad tee candidates\n  scorecard.json    web cards found (normalised, scorecard/1) - `card` below says whether one exists\n  course.json       resolve output (boundary)\nTruth: routing.truth_from_fc(osm_golf) (refs 1..18), scored with routing.score (green within 20 yds, tee within\n40 yds of the first 60 % of the true line).",
- "n": 83,
+ "n": 82,
  "splits": {
-  "train": 19,
-  "test": 0
+  "train": 51,
+  "test": 31
  },
  "courses": [
   {
@@ -416,7 +416,17 @@
    "region": "Midwest",
    "split": "test",
    "dir": "course_data/generalize/courses/carillon_il",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 9,
+   "card": false,
+   "card_source": null,
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 173
   },
   {
    "slug": "oneka_ridge_mn",
@@ -427,7 +437,17 @@
    "region": "Midwest",
    "split": "train",
    "dir": "course_data/generalize/courses/oneka_ridge_mn",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": false,
+   "card_source": null,
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 27
   },
   {
    "slug": "ozaukee_wi",
@@ -438,7 +458,17 @@
    "region": "Midwest",
    "split": "test",
    "dir": "course_data/generalize/courses/ozaukee_wi",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 34
   },
   {
    "slug": "skokie_il",
@@ -449,7 +479,17 @@
    "region": "Midwest",
    "split": "test",
    "dir": "course_data/generalize/courses/skokie_il",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 16
   },
   {
    "slug": "westhaven_wi",
@@ -460,7 +500,17 @@
    "region": "Midwest",
    "split": "test",
    "dir": "course_data/generalize/courses/westhaven_wi",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 62
   },
   {
    "slug": "chaska_wi",
@@ -471,7 +521,17 @@
    "region": "Midwest",
    "split": "test",
    "dir": "course_data/generalize/courses/chaska_wi",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 26
   },
   {
    "slug": "cinder_ridge_il",
@@ -482,7 +542,17 @@
    "region": "Midwest",
    "split": "test",
    "dir": "course_data/generalize/courses/cinder_ridge_il",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 15,
+   "card": true,
+   "card_source": "club_site",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 49
   },
   {
    "slug": "somerby_mn",
@@ -493,7 +563,17 @@
    "region": "Midwest",
    "split": "test",
    "dir": "course_data/generalize/courses/somerby_mn",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 63
   },
   {
    "slug": "wynstone_il",
@@ -504,7 +584,17 @@
    "region": "Midwest",
    "split": "train",
    "dir": "course_data/generalize/courses/wynstone_il",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 89
   },
   {
    "slug": "rock_river_hills_wi",
@@ -515,7 +605,17 @@
    "region": "Midwest",
    "split": "train",
    "dir": "course_data/generalize/courses/rock_river_hills_wi",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 33
   },
   {
    "slug": "riverwood_national_mn",
@@ -526,7 +626,17 @@
    "region": "Midwest",
    "split": "test",
    "dir": "course_data/generalize/courses/riverwood_national_mn",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 168
   },
   {
    "slug": "village_green_mn",
@@ -537,7 +647,17 @@
    "region": "Midwest",
    "split": "train",
    "dir": "course_data/generalize/courses/village_green_mn",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 51
   },
   {
    "slug": "edgewood_park_il",
@@ -548,7 +668,17 @@
    "region": "Midwest",
    "split": "train",
    "dir": "course_data/generalize/courses/edgewood_park_il",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 25
   },
   {
    "slug": "big_foot_wi",
@@ -559,7 +689,17 @@
    "region": "Midwest",
    "split": "train",
    "dir": "course_data/generalize/courses/big_foot_wi",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 51
   },
   {
    "slug": "bloomington_il",
@@ -570,7 +710,17 @@
    "region": "Midwest",
    "split": "train",
    "dir": "course_data/generalize/courses/bloomington_il",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 53
   },
   {
    "slug": "brae_loch_il",
@@ -581,7 +731,17 @@
    "region": "Midwest",
    "split": "train",
    "dir": "course_data/generalize/courses/brae_loch_il",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 36
   },
   {
    "slug": "ocean_edge_resort_ma",
@@ -592,7 +752,17 @@
    "region": "Northeast",
    "split": "test",
    "dir": "course_data/generalize/courses/ocean_edge_resort_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 63
   },
   {
    "slug": "falmouth_me",
@@ -603,7 +773,17 @@
    "region": "Northeast",
    "split": "test",
    "dir": "course_data/generalize/courses/falmouth_me",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 34
   },
   {
    "slug": "jato_highlands_me",
@@ -614,7 +794,17 @@
    "region": "Northeast",
    "split": "test",
    "dir": "course_data/generalize/courses/jato_highlands_me",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 7
   },
   {
    "slug": "whaling_city_ma",
@@ -625,7 +815,17 @@
    "region": "Northeast",
    "split": "train",
    "dir": "course_data/generalize/courses/whaling_city_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 39
   },
   {
    "slug": "green_harbor_ma",
@@ -636,7 +836,17 @@
    "region": "Northeast",
    "split": "test",
    "dir": "course_data/generalize/courses/green_harbor_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 24
   },
   {
    "slug": "willowbend_ma",
@@ -647,7 +857,17 @@
    "region": "Northeast",
    "split": "test",
    "dir": "course_data/generalize/courses/willowbend_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 9,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 189
   },
   {
    "slug": "kernwood_ma",
@@ -658,7 +878,17 @@
    "region": "Northeast",
    "split": "train",
    "dir": "course_data/generalize/courses/kernwood_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 44
   },
   {
    "slug": "crestwood_ma",
@@ -669,7 +899,17 @@
    "region": "Northeast",
    "split": "train",
    "dir": "course_data/generalize/courses/crestwood_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 42
   },
   {
    "slug": "elmcrest_ma",
@@ -680,7 +920,17 @@
    "region": "Northeast",
    "split": "test",
    "dir": "course_data/generalize/courses/elmcrest_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 36
   },
   {
    "slug": "william_j_devine_ma",
@@ -691,7 +941,17 @@
    "region": "Northeast",
    "split": "test",
    "dir": "course_data/generalize/courses/william_j_devine_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 58
   },
   {
    "slug": "woods_hole_ma",
@@ -702,7 +962,17 @@
    "region": "Northeast",
    "split": "test",
    "dir": "course_data/generalize/courses/woods_hole_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 33
   },
   {
    "slug": "concord_ma",
@@ -713,7 +983,17 @@
    "region": "Northeast",
    "split": "train",
    "dir": "course_data/generalize/courses/concord_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 57
   },
   {
    "slug": "waukewan_nh",
@@ -724,7 +1004,17 @@
    "region": "Northeast",
    "split": "train",
    "dir": "course_data/generalize/courses/waukewan_nh",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 14
   },
   {
    "slug": "falmouth_ma",
@@ -735,7 +1025,17 @@
    "region": "Northeast",
    "split": "train",
    "dir": "course_data/generalize/courses/falmouth_ma",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 12
   },
   {
    "slug": "wentworth_nh",
@@ -746,7 +1046,17 @@
    "region": "Northeast",
    "split": "train",
    "dir": "course_data/generalize/courses/wentworth_nh",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 16,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 69
   },
   {
    "slug": "derryfield_nh",
@@ -757,7 +1067,17 @@
    "region": "Northeast",
    "split": "train",
    "dir": "course_data/generalize/courses/derryfield_nh",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 80
   },
   {
    "slug": "lakeside_ky",
@@ -768,7 +1088,17 @@
    "region": "South",
    "split": "train",
    "dir": "course_data/generalize/courses/lakeside_ky",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 18
   },
   {
    "slug": "wedgewood_golfer_s_ms",
@@ -779,7 +1109,17 @@
    "region": "South",
    "split": "train",
    "dir": "course_data/generalize/courses/wedgewood_golfer_s_ms",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": false,
+   "card_source": null,
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 16
   },
   {
    "slug": "bartram_trail_ga",
@@ -790,7 +1130,17 @@
    "region": "South",
    "split": "test",
    "dir": "course_data/generalize/courses/bartram_trail_ga",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 23
   },
   {
    "slug": "paintsville_ky",
@@ -801,7 +1151,17 @@
    "region": "South",
    "split": "train",
    "dir": "course_data/generalize/courses/paintsville_ky",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 29
   },
   {
    "slug": "smoke_rise_ga",
@@ -812,18 +1172,17 @@
    "region": "South",
    "split": "test",
    "dir": "course_data/generalize/courses/smoke_rise_ga",
-   "status": "pending (no Actions run yet)"
-  },
-  {
-   "slug": "hurstbourne_ky",
-   "name": "Hurstbourne Country Club",
-   "state": "KY",
-   "osm": "way/220489681",
-   "tier": "validation",
-   "region": "South",
-   "split": "test",
-   "dir": "course_data/generalize/courses/hurstbourne_ky",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 36
   },
   {
    "slug": "boots_randolph_ky",
@@ -834,7 +1193,17 @@
    "region": "South",
    "split": "train",
    "dir": "course_data/generalize/courses/boots_randolph_ky",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": false,
+   "card_source": null,
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 11
   },
   {
    "slug": "landing_ga",
@@ -845,7 +1214,17 @@
    "region": "South",
    "split": "train",
    "dir": "course_data/generalize/courses/landing_ga",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "club_site",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 24
   },
   {
    "slug": "sun_valley_ky",
@@ -856,7 +1235,17 @@
    "region": "South",
    "split": "train",
    "dir": "course_data/generalize/courses/sun_valley_ky",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 27
   },
   {
    "slug": "towne_lake_hills_ga",
@@ -867,7 +1256,17 @@
    "region": "South",
    "split": "test",
    "dir": "course_data/generalize/courses/towne_lake_hills_ga",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 45
   },
   {
    "slug": "browns_mill_ga",
@@ -878,7 +1277,17 @@
    "region": "South",
    "split": "train",
    "dir": "course_data/generalize/courses/browns_mill_ga",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 31
   },
   {
    "slug": "kingwood_ga",
@@ -889,7 +1298,17 @@
    "region": "South",
    "split": "test",
    "dir": "course_data/generalize/courses/kingwood_ga",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 28
   },
   {
    "slug": "wildwood_ky",
@@ -900,7 +1319,17 @@
    "region": "South",
    "split": "test",
    "dir": "course_data/generalize/courses/wildwood_ky",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 51
   },
   {
    "slug": "arrowhead_pointe_ga",
@@ -911,7 +1340,17 @@
    "region": "South",
    "split": "test",
    "dir": "course_data/generalize/courses/arrowhead_pointe_ga",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 10
   },
   {
    "slug": "great_southern_ms",
@@ -922,7 +1361,17 @@
    "region": "South",
    "split": "train",
    "dir": "course_data/generalize/courses/great_southern_ms",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 24
   },
   {
    "slug": "crossings_ky",
@@ -933,7 +1382,17 @@
    "region": "South",
    "split": "test",
    "dir": "course_data/generalize/courses/crossings_ky",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 24
   },
   {
    "slug": "canyon_lake_ca",
@@ -944,7 +1403,17 @@
    "region": "West",
    "split": "train",
    "dir": "course_data/generalize/courses/canyon_lake_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 68
   },
   {
    "slug": "course_ca",
@@ -955,7 +1424,17 @@
    "region": "West",
    "split": "test",
    "dir": "course_data/generalize/courses/course_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": false,
+   "card_source": null,
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 63
   },
   {
    "slug": "westchester_ca",
@@ -966,7 +1445,17 @@
    "region": "West",
    "split": "train",
    "dir": "course_data/generalize/courses/westchester_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 29
   },
   {
    "slug": "bonneville_ut",
@@ -977,7 +1466,17 @@
    "region": "West",
    "split": "test",
    "dir": "course_data/generalize/courses/bonneville_ut",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 52
   },
   {
    "slug": "lake_tahoe_ca",
@@ -988,7 +1487,17 @@
    "region": "West",
    "split": "test",
    "dir": "course_data/generalize/courses/lake_tahoe_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 40
   },
   {
    "slug": "huntington_ca",
@@ -999,7 +1508,17 @@
    "region": "West",
    "split": "train",
    "dir": "course_data/generalize/courses/huntington_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": false,
+   "card_source": null,
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 67
   },
   {
    "slug": "los_amigos_ca",
@@ -1010,7 +1529,17 @@
    "region": "West",
    "split": "test",
    "dir": "course_data/generalize/courses/los_amigos_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 53
   },
   {
    "slug": "upland_hills_ca",
@@ -1021,7 +1550,17 @@
    "region": "West",
    "split": "train",
    "dir": "course_data/generalize/courses/upland_hills_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 37
   },
   {
    "slug": "rancho_del_sol_ca",
@@ -1032,7 +1571,17 @@
    "region": "West",
    "split": "train",
    "dir": "course_data/generalize/courses/rancho_del_sol_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 44
   },
   {
    "slug": "lakeside_ca",
@@ -1043,7 +1592,17 @@
    "region": "West",
    "split": "test",
    "dir": "course_data/generalize/courses/lakeside_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": false,
+   "card_source": null,
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 40
   },
   {
    "slug": "del_rio_ca",
@@ -1054,7 +1613,17 @@
    "region": "West",
    "split": "train",
    "dir": "course_data/generalize/courses/del_rio_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 9,
+   "card": false,
+   "card_source": null,
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 17
   },
   {
    "slug": "empire_ranch_ca",
@@ -1065,7 +1634,17 @@
    "region": "West",
    "split": "test",
    "dir": "course_data/generalize/courses/empire_ranch_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 17,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 35
   },
   {
    "slug": "south_hills_ca",
@@ -1076,7 +1655,17 @@
    "region": "West",
    "split": "test",
    "dir": "course_data/generalize/courses/south_hills_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 41
   },
   {
    "slug": "visalia_ca",
@@ -1087,7 +1676,17 @@
    "region": "West",
    "split": "test",
    "dir": "course_data/generalize/courses/visalia_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 16,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 50
   },
   {
    "slug": "ridge_ca",
@@ -1098,7 +1697,17 @@
    "region": "West",
    "split": "train",
    "dir": "course_data/generalize/courses/ridge_ca",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "opengolfapi",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 38
   },
   {
    "slug": "sun_hills_ut",
@@ -1109,7 +1718,17 @@
    "region": "West",
    "split": "train",
    "dir": "course_data/generalize/courses/sun_hills_ut",
-   "status": "pending (no Actions run yet)"
+   "status": "ok",
+   "truth_holes": 18,
+   "card": true,
+   "card_source": "golfify",
+   "files": {
+    "osm": true,
+    "segment": true,
+    "pads": true,
+    "course": true
+   },
+   "cart_paths": 37
   }
  ]
 }
