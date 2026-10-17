@@ -4,6 +4,8 @@
   python course_data/generalize/sample.py survey CA --out work/survey_CA.json  (Actions, one state per job)
   python course_data/generalize/sample.py combine work/survey_*.json --seed 20261017 --per-tier 7
         -> course_data/generalize/sample.json (the sample) + population.json (tier shares per state)
+  python course_data/generalize/sample.py holdout course_data/generalize/surveys/survey_*.json --n 16
+        -> + 16 fully mapped courses per Census region, half of them the held-out "test" split (routing v2)
 
 States: three per Census region (Northeast, Midwest, South, West; lower 48 only: NAIP covers them), drawn with
 random.Random(seed). Population: every named leisure=golf_course way / relation / node in those states whose
@@ -204,9 +206,48 @@ def extend(paths, seed, n, out_dir):
         print(r["slug"], r["name"], r["state"], r["osm"], r["counts"])
 
 
+def region_of(state):
+    return next((r for r, sts in REGIONS.items() if state in sts), None)
+
+
+def holdout(paths, seed, per_region, out_dir, max_holes=27):
+    """Routing v2 validation set: `per_region` more fully mapped courses (>= 18 golf=hole ways, <= max_holes so the
+    hidden truth is one course, not a 36-hole facility's two holes-1) per Census region, drawn with
+    random.Random(seed + 200 + region index) from the surveyed population, tier "validation". Half of each region
+    (a second seeded shuffle) is split "test": held out, never used to tune routing.py; the rest, and every
+    earlier validation / full course, is split "train"."""
+    sp = os.path.join(out_dir, "sample.json")
+    smp = json.load(open(sp))
+    have = {c["osm"] for c in smp["courses"]}
+    used = {c["slug"] for c in smp["courses"]}
+    for c in smp["courses"]:
+        c.setdefault("split", "train" if c["tier"] in ("validation", "full") else None)
+    pop = [r for p in paths for r in json.load(open(p))["courses"] if eligible(r) and r["tier"] == "full"
+           and r["osm"] not in have and 18 <= r["counts"].get("hole", 0) <= max_holes]
+    pop.sort(key=lambda r: r["osm"])
+    add = []
+    for i, reg in enumerate(sorted(REGIONS)):
+        rs = [r for r in pop if region_of(r["state"]) == reg]
+        pick = random.Random(seed + 200 + i).sample(rs, min(per_region, len(rs)))
+        order = list(range(len(pick)))
+        random.Random(seed + 300 + i).shuffle(order)
+        test = set(order[: len(pick) // 2])
+        for j, r in enumerate(pick):
+            add.append(dict(r, tier="validation", region=reg, split="test" if j in test else "train",
+                            slug=slug_for(r, used)))
+    smp["courses"] += add
+    smp["n"] = len(smp["courses"])
+    smp["holdout_v2"] = dict(seed=seed + 200, per_region=per_region, n=len(add), max_holes=max_holes,
+                             test=[c["slug"] for c in add if c["split"] == "test"])
+    json.dump(smp, open(sp, "w"), indent=1)
+    for r in add:
+        print(r["split"], r["region"], r["slug"], r["name"], r["state"], r["osm"], r["counts"])
+    return add
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["states", "survey", "combine", "extend"])
+    ap.add_argument("cmd", choices=["states", "survey", "combine", "extend", "holdout"])
     ap.add_argument("--n", type=int, default=12)
     ap.add_argument("args", nargs="*")
     ap.add_argument("--seed", type=int, default=20261017)
@@ -226,6 +267,8 @@ def main():
             json.dump(res, open(out, "w"))
             from collections import Counter
             print(st, res["n_elements"], "courses", Counter(r["tier"] for r in res["courses"] if eligible(r)))
+    elif a.cmd == "holdout":
+        holdout(a.args, a.seed, a.n, a.out or HERE)
     elif a.cmd == "extend":
         extend(a.args, a.seed, a.n, a.out or HERE)
     else:

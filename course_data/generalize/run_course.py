@@ -34,7 +34,16 @@ WORK = os.path.join(HERE, "work")
 OUT = os.path.join(HERE, "courses")
 KEEP_PROPS = ("golf", "ref", "par", "name", "osm_id", "osm_type", "inside_course", "amenity", "service", "building",
               "leisure", "handicap", "tee", "golf:tee", "colour", "color", "parking", "club", "landuse", "natural",
-              "surface", "access")
+              "surface", "access", "highway", "golf_cart", "motor_vehicle", "oneway", "footway")
+PATH_HW = ("path", "footway", "service", "track", "cycleway", "bridleway", "pedestrian")
+
+
+def _is_cart_path(p):
+    """A cart path / footpath the routing can follow: golf=cartpath / golf=path, golf_cart=*, or a path / footway /
+    service / track way inside the course."""
+    if p.get("golf") in ("cartpath", "path") or p.get("golf_cart") in ("yes", "designated", "permissive"):
+        return True
+    return p.get("highway") in PATH_HW and p.get("inside_course") is not False and p.get("service") != "parking_aisle"
 
 
 def log(*a):
@@ -60,8 +69,9 @@ def golf_subset(fc):
     for f in fc["features"]:
         p = f["properties"]
         if p.get("golf") or p.get("amenity") == "parking" or p.get("service") == "parking_aisle" or \
-                p.get("leisure") == "golf_course" or (p.get("building") and p.get("inside_course") is not False):
-            keep.append(dict(type="Feature", geometry=f["geometry"],
+                p.get("leisure") == "golf_course" or (p.get("building") and p.get("inside_course") is not False) or \
+                (f["geometry"]["type"] == "LineString" and _is_cart_path(p)):
+            keep.append(dict(type="Feature", geometry=dict(f["geometry"], coordinates=_round(f["geometry"]["coordinates"])),
                              properties={k: v for k, v in p.items() if k in KEEP_PROPS}))
     return dict(type="FeatureCollection", features=keep)
 
@@ -166,13 +176,43 @@ def build(pkg_dir, req, seg_path=None):
     return p
 
 
+def refresh_osm(slug):
+    import fetch_package as fp
+    out = os.path.join(OUT, slug)
+    raw = os.path.join(WORK, slug, "raw")
+    os.makedirs(raw, exist_ok=True)
+    course = pc.read_json(os.path.join(out, "course.json"))
+    if not course or course.get("status") != "ok":
+        log("no resolved course.json for", slug)
+        return
+    res = pc.read_json(os.path.join(out, "result.json"), {}) or {}
+    got = timed(res, "osm_refresh", fp.fetch_osm, course, raw)
+    if not got:
+        log("OSM refresh failed", res.get("errors"))
+        return
+    fc, _ = got
+    fc["features"] += timed(res, "parking_refresh", parking, course) or []
+    sub = golf_subset(fc)
+    pc.write_json(os.path.join(out, "osm_golf.geojson"), sub, indent=None)
+    res["osm_refreshed_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    res["osm_paths"] = sum(1 for f in sub["features"] if f["geometry"]["type"] == "LineString"
+                           and f["properties"].get("golf") != "hole")
+    json.dump(res, open(os.path.join(out, "result.json"), "w"), indent=1, default=str)
+    log(slug, "features", len(sub["features"]), "paths", res["osm_paths"])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("slug")
     ap.add_argument("--sample", default=os.path.join(HERE, "sample.json"))
     ap.add_argument("--no-segment", action="store_true")
     ap.add_argument("--no-imagery", action="store_true")
+    ap.add_argument("--refresh-osm", action="store_true",
+                    help="re-fetch only the OSM features (+ car parks) of a course already run: rewrites osm_golf.geojson "
+                         "(now with cart paths) from the committed course.json; everything else is kept")
     a = ap.parse_args()
+    if a.refresh_osm:
+        return refresh_osm(a.slug)
     entry = next(c for c in json.load(open(a.sample))["courses"] if c["slug"] == a.slug)
     pc.PACKAGES = WORK                                    # packages of this study stay out of course_data/packages
     work = os.path.join(WORK, a.slug)
