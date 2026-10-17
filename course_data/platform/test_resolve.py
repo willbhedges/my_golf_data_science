@@ -139,6 +139,10 @@ def test_named_match_beats_unnamed_near():
     oaks = dict(name="The Oaks", town="Camden County", holes=0, osm=dict(type="relation", id=2), center=[-92.696, 38.1335])
     status, best, _ = rs.choose([un, oaks], "The Oaks at Margaritaville Lake Resort", "Osage Beach", near=near)
     assert status == "ok" and best["osm"]["id"] == 2
+    syc = dict(name="Sycamore Creek Golf Club", town="Osage Beach", holes=0, osm=dict(type="way", id=3),
+               center=[-92.6775, 38.1312])
+    status, best, _ = rs.choose([syc, oaks], "The Oaks at Margaritaville Lake Resort", "Osage Beach", near=near)
+    assert best is not None and best["osm"]["id"] == 2
 
 
 def test_from_near_box_and_outline():

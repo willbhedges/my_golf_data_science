@@ -88,7 +88,9 @@ def score(c, want, town=None, osm=None, near=None):
         s += 0.3 if d < 15 else (-0.3 if d > 60 else 0.0)
     if osm and f"{c['osm']['type']}/{c['osm']['id']}" == osm:
         s += 10
-    if town and c.get("town") and pc.core_name(town) == pc.core_name(c["town"]):
+    if town and c.get("town") and c.get("name") and name_similarity(want, c["name"]) < 0.2:
+        pass        # a named course that shares only the town is another course there (Sycamore Creek vs The Oaks)
+    elif town and c.get("town") and pc.core_name(town) == pc.core_name(c["town"]):
         s += 0.5
     elif town and c.get("town"):
         s -= 0.2
