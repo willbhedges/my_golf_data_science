@@ -120,6 +120,10 @@ jobs:
           cat course_data/zero_tap/SCOREBOARD.md >> "$GITHUB_STEP_SUMMARY"
       - name: Commit
         run: |
+          # never commit code restored from the triggering sha (doing so reverted newer code twice)
+          for p in fetch.py state_split.json bench.py bench_set.py truth.py baselines.py; do
+            git checkout -q HEAD -- "course_data/zero_tap/$p" 2>/dev/null || true
+          done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add course_data/zero_tap/results course_data/zero_tap/scores course_data/zero_tap/scoreboard.json \

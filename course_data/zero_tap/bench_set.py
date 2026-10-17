@@ -84,6 +84,7 @@ def entries():
 
 def build():
     os.makedirs(TRUTH, exist_ok=True)
+    v0 = json.load(open(os.path.join(HERE, "bench_v0.json")))["courses"]   # frozen 161-course v0 (BENCH.md)
     rows, seen = [], set()
     for e in entries():
         if e["osm"] in seen:
@@ -117,7 +118,9 @@ def build():
             files=dict(osm=rel(e["osm_path"]), course=rel(e["course"]), card=rel(e["card"]) if card else None,
                        segment=rel(e["segment"]), pads=rel(e["pads"]), scene=rel(scene),
                        truth=rel(old)),
-            hand_checked=bool(t.get("hand_check"))))
+            hand_checked=bool(t.get("hand_check")), v0=e["slug"] in v0))
+        if e["slug"] in v0 and v0[e["slug"]] != e["split"]:
+            raise SystemExit(f"v0 split changed for {e['slug']}: {v0[e['slug']]} -> {e['split']}")
     rows.sort(key=lambda r: (r["split"], r["state"], r["slug"]))
     ib = [r for r in rows if r["in_bench"]]
     summary = dict(
@@ -125,6 +128,8 @@ def build():
         by_split=dict(Counter(r["split"] for r in ib)), by_kind=dict(Counter(str(r["kind"]) for r in ib)),
         by_region=dict(Counter(f"{r['region']}/{r['split']}" for r in ib)),
         states=dict(Counter(r["state"] for r in ib)),
+        v0_in_bench=sum(1 for r in ib if r["v0"]), new_since_v0=sum(1 for r in ib if not r["v0"]),
+        v0_dropped=sorted(r["slug"] for r in rows if r["v0"] and not r["in_bench"]),
         with_web_card=sum(1 for r in ib if r["card"] and r["card"]["fits"]),
         with_segment=sum(1 for r in ib if r["files"]["segment"]), with_scene=sum(1 for r in ib if r["files"]["scene"]),
         excluded=dict(Counter((r["problems"][0].split(":")[0] if r["problems"] else "?") for r in rows if not r["in_bench"])))

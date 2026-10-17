@@ -196,9 +196,12 @@ def extract(fc, slug=None, card=None):
     if card and kind in (9, 18):
         cp = card.get("par") or []
         if len(cp) == kind:
-            for e in out:
-                if e["par"] is None and str(cp[e["ref"] - 1]).isdigit():
-                    e["par"], e["par_src"] = int(cp[e["ref"] - 1]), "card"
+            for e in out:                        # the published card is the par authority (OSM par tags
+                c = cp[e["ref"] - 1]                 # disagree with it on ~1.6 % of holes, osm_check.py)
+                if str(c).isdigit():
+                    if e["par"] is not None and e["par"] != int(c):
+                        e["par_osm"] = e["par"]
+                    e["par"], e["par_src"] = int(c), "card"
     gm, tm = nG / max(n, 1), nT / max(n, 1)
     if gm < 0.9:
         problems.append(f"greens mapped {gm:.0%}")

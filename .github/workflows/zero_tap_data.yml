@@ -112,6 +112,10 @@ jobs:
           mkdir -p course_data/zero_tap/surveys
           cp /tmp/surveys/*.json course_data/zero_tap/surveys/ || true
           python -u course_data/zero_tap/fetch.py select
+          # never commit code restored from the triggering sha (doing so reverted newer code twice)
+          for p in fetch.py state_split.json bench.py bench_set.py truth.py baselines.py; do
+            git checkout -q HEAD -- "course_data/zero_tap/$p" 2>/dev/null || true
+          done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add course_data/zero_tap/surveys course_data/zero_tap/selection.json
@@ -188,6 +192,10 @@ jobs:
         run: |
           mkdir -p course_data/zero_tap/data
           cp -r /tmp/ztdata/. course_data/zero_tap/data/ || true
+          # never commit code restored from the triggering sha (doing so reverted newer code twice)
+          for p in fetch.py state_split.json bench.py bench_set.py truth.py baselines.py; do
+            git checkout -q HEAD -- "course_data/zero_tap/$p" 2>/dev/null || true
+          done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add course_data/zero_tap/data
