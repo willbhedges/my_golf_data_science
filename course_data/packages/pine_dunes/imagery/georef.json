@@ -1,0 +1,276 @@
+{
+ "course": "Pine Dunes Resort & Golf Club",
+ "bbox_wgs84_snwe": [
+  31.964325332375132,
+  -95.55478519222378,
+  31.991274667624864,
+  -95.52301480777622
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  31.96342702120014,
+  -95.5558442050387,
+  31.992172978799857,
+  -95.5219557949613
+ ],
+ "fetched_utc": "2026-10-17T17:19:57Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2020,
+  "years_available": [
+   2012,
+   2014,
+   2016,
+   2018,
+   2020,
+   2022
+  ],
+  "acquired": [
+   "2020-09-28"
+  ],
+  "items": [
+   "tx_m_3109504_ne_15_060_20200928"
+  ],
+  "selection": {
+   "schema": "naip_years/1",
+   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
+   "chosen": 2020,
+   "reason": "2020 (2020-09-28): greenest leaf-on year on the course's turf (NDVI 0.29 vs 0.19, 2% vs 16% brown) over the newest year 2022 (less green)",
+   "candidates": [
+    {
+     "year": 2022,
+     "dates": [
+      "2022-07-20"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.1908,
+     "turf_exg": 62.0,
+     "green_ndvi": 0.226,
+     "bare_turf": 0.1595,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 59.0,
+     "turf_rgb": [
+      137.0,
+      155.0,
+      111.0
+     ],
+     "score": 0.0971,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2020,
+     "dates": [
+      "2020-09-28"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2872,
+     "turf_exg": 73.0,
+     "green_ndvi": 0.2012,
+     "bare_turf": 0.0165,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 45.0,
+     "turf_rgb": [
+      104.0,
+      133.0,
+      87.0
+     ],
+     "score": 0.2953,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2018,
+     "dates": [
+      "2018-11-15"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2089,
+     "turf_exg": 35.0,
+     "green_ndvi": 0.2654,
+     "bare_turf": 0.2189,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 47.0,
+     "turf_rgb": [
+      122.0,
+      128.0,
+      94.0
+     ],
+     "score": -0.4774,
+     "notes": [
+      "leaf-off flight"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2016,
+     "dates": [
+      "2016-09-30"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2607,
+     "turf_exg": 49.0,
+     "green_ndvi": 0.2964,
+     "bare_turf": 0.0711,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 62.0,
+     "turf_rgb": [
+      112.0,
+      128.0,
+      91.0
+     ],
+     "notes": [
+      "hazy (blue floor 62)",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2014,
+     "dates": [
+      "2014-09-22"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2226,
+     "turf_exg": 67.0,
+     "green_ndvi": 0.2654,
+     "bare_turf": 0.0473,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 58.0,
+     "turf_rgb": [
+      124.0,
+      152.0,
+      110.0
+     ],
+     "notes": [
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2012,
+     "dates": [
+      "2012-07-29"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.067,
+     "turf_exg": 39.0,
+     "green_ndvi": 0.082,
+     "bare_turf": 0.9544,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 17.0,
+     "turf_rgb": [
+      166.0,
+      174.0,
+      141.0
+     ],
+     "notes": [
+      "95% of the turf brown / bare",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    }
+   ]
+  },
+  "gsd_m": 0.6,
+  "resolution_m": 0.6,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 5464,
+  "height": 5439,
+  "transform": [
+   0.6,
+   0.0,
+   258455.4,
+   0.0,
+   -0.6,
+   3542422.8
+  ],
+  "bounds_crs": [
+   258455.4,
+   3539159.4,
+   261733.8,
+   3542422.8
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 5464,
+   "height": 5439,
+   "transform": [
+    0.6,
+    0.0,
+    258455.4,
+    0.0,
+    -0.6,
+    3542422.8
+   ],
+   "resolution_m": 0.6,
+   "dropped": true
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 13.18,
+   "naip_nir.tif": 14.4,
+   "naip_rgb_lo.jpg": 9.0,
+   "naip_nir_lo.jpg": 8.9
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 4,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP seamless via Planetary Computer",
+  "resolution_m": 9.259259252584581e-05,
+  "crs": "EPSG:4269",
+  "transform": [
+   9.259259252584581e-05,
+   0.0,
+   -95.5558442050387,
+   0.0,
+   -9.259259252584581e-05,
+   31.992172978799857
+  ],
+  "file": "dem.tif",
+  "size_mb": 0.37,
+  "tnm_errors": [
+   "RuntimeError('HTTP 500 text/html;charset=utf-8 \\'<html lang=\"en\">\\\\r\\\\n<head>\\\\r\\\\n<title>\\\\r\\\\nError: Error exporting image</title>\\\\r\\\\n<link href=\"/arcgis/rest/static/main.css\" rel=\"stylesheet\" type=\"text/css\"/>\\\\r\\\\n</head>\\\\r\\\\n<body>\\\\r\\\\n<table width=\"100%\" class=\"userTable\">\\\\r\\\\n<tr>\\\\r\\\\n<",
+   "RuntimeError('HTTP 500 text/html;charset=utf-8 \\'<html lang=\"en\">\\\\r\\\\n<head>\\\\r\\\\n<title>\\\\r\\\\nError: Error exporting image</title>\\\\r\\\\n<link href=\"/arcgis/rest/static/main.css\" rel=\"stylesheet\" type=\"text/css\"/>\\\\r\\\\n</head>\\\\r\\\\n<body>\\\\r\\\\n<table width=\"100%\" class=\"userTable\">\\\\r\\\\n<tr>\\\\r\\\\n<",
+   "RuntimeError('HTTP 500 text/html;charset=utf-8 \\'<html lang=\"en\">\\\\r\\\\n<head>\\\\r\\\\n<title>\\\\r\\\\nError: Error exporting image</title>\\\\r\\\\n<link href=\"/arcgis/rest/static/main.css\" rel=\"stylesheet\" type=\"text/css\"/>\\\\r\\\\n</head>\\\\r\\\\n<body>\\\\r\\\\n<table width=\"100%\" class=\"userTable\">\\\\r\\\\n<tr>\\\\r\\\\n<"
+  ]
+ },
+ "total_mb": 46.4
+}
