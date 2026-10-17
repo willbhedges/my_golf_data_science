@@ -1,0 +1,111 @@
+name: plan-spirit-hollow-v2
+
+# v2 tee-shot model (spirit_hollow/v2): Bayesian robust club + aim per hole (one job per hole) and
+# the v2 wind grids (one job per tee offset). A merge job commits spirit_hollow/v2/output/ only.
+# Trigger: push a change to course_data/requests/plan_spirit_hollow_v2.json.
+on:
+  push:
+    paths:
+      - "course_data/requests/plan_spirit_hollow_v2.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: plan-spirit-hollow-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  decide:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        hole: ["1", "2B", "2F", "4", "5", "6", "8", "9B", "9F", "10", "11", "13", "14", "16", "17", "18"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy matplotlib pillow pytest
+      - name: Unit tests
+        if: matrix.hole == '1'
+        run: python -m pytest -q spirit_hollow/v2
+      - name: v2 decision, hole ${{ matrix.hole }}
+        env:
+          V2_HOLES: ${{ matrix.hole }}
+          V2_DRAWS: "64"
+          V2_SWINGS: "3000"
+          V2_CENTRAL_SWINGS: "12000"
+          V2_OUT: parts/v2dec_${{ matrix.hole }}.json
+        run: mkdir -p parts && python spirit_hollow/v2/decide.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v2dec-${{ matrix.hole }}
+          path: parts/
+
+  wind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        back: [0, -100, -80, -60, -40, -20, 20, 40, 60, 80]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy matplotlib pillow
+      - name: v2 wind grid, tee ${{ matrix.back }} yds back
+        env:
+          TEE_BACK: ${{ matrix.back }}
+          WIND_SWINGS: "4000"
+          WIND_OUT: parts/v2wind_${{ matrix.back }}.json
+        run: mkdir -p parts && python spirit_hollow/v2/wind_grid_v2.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v2wind-${{ strategy.job-index }}
+          path: parts/
+
+  merge:
+    needs: [decide, wind]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/parts
+      - name: Merge
+        run: python spirit_hollow/v2/merge_v2.py /tmp/parts
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f spirit_hollow/v2/output/v2_decisions.json spirit_hollow/v2/output/wind_grid*.json
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "Spirit Hollow v2 decisions + wind grids (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
