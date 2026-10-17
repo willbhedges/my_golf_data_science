@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-10-16T23:47:09Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
+Built 2026-10-17T00:11:22Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
 **WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
