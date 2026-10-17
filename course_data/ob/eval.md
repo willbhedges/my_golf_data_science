@@ -1,6 +1,6 @@
 # OB inference: Spirit Hollow evaluation
 
-Built 2026-10-17T00:36:28Z. Layers: osm, ms_buildings, parcels; 162 houses (non-golf buildings), 261 private parcels, 26 public road/rail lines.
+Built 2026-10-17T00:43:10Z. Layers: osm, ms_buildings, parcels; 162 houses (non-golf buildings), 261 private parcels, 26 public road/rail lines.
 Grid: hand tee line 190-335 yds, +/-55 yds, 5-yd cells inside the screenshot footprint; prediction limited to 60 yds of the package line of play, minus fairway/green/water/sand. Hand OB in the corridor on: 2F, 5, 8.
 
 | | pooled IoU |
