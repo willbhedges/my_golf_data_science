@@ -1,9 +1,9 @@
 {
  "kind": "parity",
- "rev": 3,
- "requested": "2026-10-17T04:05Z",
+ "rev": 4,
+ "requested": "2026-10-17T04:25Z",
  "by": "decision-parity engineer",
- "note": "rev 2: hand pipeline now plays SOFT conditions (course.py _soften) and final_decision.json was regenerated; product gets conditions (soft default). before = the old loader (precedence zone order, package elevation, irons only when flagged, full DEM run-out, product tee line). mode_check = quick vs Bayesian on the hand map vs final_decision.json. rev 3: re-run (rev 2's commit step let stale rev-1 copies overwrite fresh outputs; each job now uploads only its own files).",
+ "note": "rev 4: irons rule 'crossing' (water/OB across the tee line 180-310 yds) as the default; scoreboard A/B per factor on the rebuilt packages (before = old loader; after = all fixes; then one factor reverted at a time). Hand pipeline plays SOFT (course.py _soften).",
  "out": "course_data/packages/spirit_hollow/out/parity",
  "n": 8000,
  "workers": 4,
@@ -28,13 +28,6 @@
    "name": "after_product_line",
    "app_line": false,
    "ladder": false
-  },
-  {
-   "name": "mode_check",
-   "mode_check": [
-    64,
-    3000
-   ]
   }
  ],
  "scoreboard": [
@@ -58,9 +51,29 @@
    ]
   },
   {
-   "name": "after_first_cut_8",
+   "name": "after_irons_always",
    "env": {
-    "PRODUCT_FIRST_CUT_YDS": "8"
+    "PRODUCT_IRONS": "always"
+   },
+   "args": [
+    "--workers",
+    "4"
+   ]
+  },
+  {
+   "name": "after_irons_package",
+   "env": {
+    "PRODUCT_IRONS": "package"
+   },
+   "args": [
+    "--workers",
+    "4"
+   ]
+  },
+  {
+   "name": "after_conditions_normal",
+   "env": {
+    "PRODUCT_CONDITIONS": "normal"
    },
    "args": [
     "--workers",
