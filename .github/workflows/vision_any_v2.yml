@@ -133,10 +133,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add course_data/vision_any/v2_report.md course_data/vision_any/v2_report.json course_data/vision_any/model_v2 \
-                  course_data/vision_any/*/vision_any_v2.geojson course_data/vision_any/*/classes_v2.jpg \
-                  course_data/vision_any/*/layers_v2.tif course_data/vision_any/*/vision_any.geojson \
-                  course_data/vision_any/*/vision_any_v1.geojson 2>/dev/null || true
+          for f in course_data/vision_any/v2_report.md course_data/vision_any/v2_report.json course_data/vision_any/model_v2 \
+                   course_data/vision_any/*/vision_any_v2.geojson course_data/vision_any/*/classes_v2.jpg \
+                   course_data/vision_any/*/layers_v2.tif course_data/vision_any/*/vision_any.geojson \
+                   course_data/vision_any/*/vision_any_v1.geojson; do
+            [ -e "$f" ] && git add "$f"
+          done
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
           printf '%s\n' \
             "vision_any v2: long grass + tree edges, evaluation + layers (GitHub Actions run ${{ github.run_id }})" \

@@ -46,8 +46,8 @@ import v2_labels as LB                                       # noqa: E402
 YD = 0.9144
 MODEL_DIR = os.path.join(HERE, "model_v2")
 MODEL_ID = "vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)"
-THRS = np.round(np.arange(0.20, 0.951, 0.05), 2)
-TREE_K = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4]
+THRS = np.round(np.r_[np.arange(0.04, 0.20, 0.02), np.arange(0.20, 0.951, 0.05)], 2)
+TREE_K = [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 8, 10, 12]
 TREE_AREA = [30, 100, 250]
 TREE_HAG = [2.5, 4.0]
 EXCL_M = 20
