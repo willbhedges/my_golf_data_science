@@ -75,12 +75,12 @@
   "eligible": true
  },
  "buildings": {
-  "precision": 0.0,
-  "recall": 1.0,
-  "n_pred": 46,
+  "precision": null,
+  "recall": 0.0,
+  "n_pred": 0,
   "n_true": 3,
   "tp_pred": 0,
-  "tp_true": 3,
+  "tp_true": 0,
   "eligible": true
  },
  "parking": {
@@ -131,15 +131,15 @@
   "eligible": false
  },
  "seconds": {
-  "greens": 0.2,
-  "tees": 2.2,
+  "greens": 0.3,
+  "tees": 2.0,
   "fairways": 0.1,
-  "bunkers_water_trees": 0.4,
-  "cart_paths": 1.1,
-  "buildings_parking_clubhouse_range": 0.3,
-  "total": 4.4
+  "bunkers_water_trees": 0.5,
+  "cart_paths": 5.8,
+  "buildings_parking_clubhouse_range": 0.2,
+  "total": 8.8
  },
- "models": "rules-v1",
+ "models": "perception-20261017-0721",
  "lidar": true,
  "summary": {
   "greens_hole": 0,
@@ -153,9 +153,56 @@
   "trees": 67,
   "cart_path_km": 0.0,
   "cart_path_components": 0,
-  "buildings": 69,
+  "buildings": 0,
   "parking": 0,
-  "clubhouse": true,
+  "clubhouse": false,
   "driving_range": false
+ },
+ "path_sweep": {
+  "0.3": {
+   "pred_km": 0.0,
+   "true_km": 6.864,
+   "length_precision": null,
+   "length_recall": 0.0,
+   "connectivity_acc": 0.0,
+   "transitions_osm_connected": 15,
+   "eligible": true
+  },
+  "0.5": {
+   "pred_km": 0.0,
+   "true_km": 6.864,
+   "length_precision": null,
+   "length_recall": 0.0,
+   "connectivity_acc": 0.0,
+   "transitions_osm_connected": 15,
+   "eligible": true
+  },
+  "0.7": {
+   "pred_km": 0.0,
+   "true_km": 6.864,
+   "length_precision": null,
+   "length_recall": 0.0,
+   "connectivity_acc": 0.0,
+   "transitions_osm_connected": 15,
+   "eligible": true
+  },
+  "0.85": {
+   "pred_km": 0.0,
+   "true_km": 6.864,
+   "length_precision": null,
+   "length_recall": 0.0,
+   "connectivity_acc": 0.0,
+   "transitions_osm_connected": 15,
+   "eligible": true
+  },
+  "0.95": {
+   "pred_km": 0.0,
+   "true_km": 6.864,
+   "length_precision": null,
+   "length_recall": 0.0,
+   "connectivity_acc": 0.0,
+   "transitions_osm_connected": 15,
+   "eligible": true
+  }
  }
 }
