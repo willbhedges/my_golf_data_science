@@ -1,136 +1,228 @@
-# Hand-map answers vs the hand-traced decision (Black tees)
+# Hand-map answers vs three truths (Black tees, Black-box tees)
 
-Before (quick plan on the auto package): same club on 9/14 tee shots.
+Same club on the tee shots of the hand map (Black: 2F / 9F).
 
-## Answering the red items with the hand map
+| Geometry | answers (changing) | final_decision.json | QA hand map, quick | same plan on the hand map |
+|---|---|---|---|---|
+| auto package (before) | - | 9/14 | 6/14 | 10/14 |
+| answer the red items | 11 (7) | 9/14 | 6/14 | 10/14 |
+| answer the red + amber items | 36 (23) | 8/14 | 5/14 | 11/14 |
+| answer every tested item | 131 (79) | 9/14 | 5/14 | 9/14 |
+| hand Black-box tees, every hole | - | 8/14 | 5/14 | 11/14 |
+| hand zones, every hole | - | 7/14 | 7/14 | 12/14 |
+| hand tees + zones, every hole | - | 7/14 | 5/14 | 14/14 |
 
-20 answers; geometry changed on holes 1, 10, 11, 13, 14, 16, 17, 18, 2, 4, 5, 6. Same club: **9/14 -> 8/14**.
+Per hole (club picks):
 
-| Item | Sev | Hand-map answer |
+| Hole | before | after red | after red_amber | after all | hand all | final | QA hand | 
+|---|---|---|---|---|---|---|---|
+| 4 | Driver | Driver | Driver | Driver | 4-wood | Driver | Driver |
+| 5 | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood | 2-wood | 4-wood |
+| 2 | Driver | Driver | Driver | Driver | Driver | Driver | Driver |
+| 1 | Driver | Driver | Driver | 2-wood | 4-wood | 4-wood | 4-wood |
+| 9 | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood |
+| 6 | Driver | Driver | Driver | Driver | 4-wood | Driver | 2-wood |
+| 8 | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood |
+| 11 | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood | Long iron |
+| 13 | Driver | Driver | 4-wood | 2-wood | 4-wood | Driver | Driver |
+| 10 | Driver | Driver | Driver | Driver | Driver | 4-wood | 4-wood |
+| 16 | 4-wood | 4-wood | 4-wood | 4-wood | 4-wood | Driver | 2-wood |
+| 17 | Driver | Driver | Driver | Driver | Driver | Driver | 2-wood |
+| 14 | 2-wood | 2-wood | 2-wood | 2-wood | 2-wood | 2-wood | 4-wood |
+| 18 | Driver | Driver | Driver | 2-wood | Driver | 2-wood | 4-wood |
+
+## Answers: red
+
+| Item | Sev | Answer |
 |---|---|---|
-| 11-water-across | red | absent  |
-| 11-tee | red | moved {'dx': -1.5, 'dy': -12.3} |
-| 2-tee | red | moved {'dx': 0.5, 'dy': -14.0} |
-| 10-tee | red | moved {'dx': -6.8, 'dy': -17.8} |
-| 18-tee | red | moved {'dx': 4.5, 'dy': 4.2} |
-| 1-tee | red | moved {'dx': -25.2, 'dy': -31.4} |
-| 13-tee | red | confirm  |
-| 17-tee | red | moved {'dx': 29.5, 'dy': -4.9} |
-| 8-tee | red | confirm  |
-| 14-tee | red | moved {'dx': 24.3, 'dy': -28.2} |
-| 4-native-left | red | moved {'shift': -7.2} |
-| 4-native-right | red | moved {'shift': 9.7} |
-| 16-tee | red | moved {'dx': 24.8, 'dy': -19.1} |
-| 6-tee | red | moved {'dx': -12.7, 'dy': -15.2} |
-| 14-check |  | - {'why': 'no oracle for this item type'} |
-| 11-recovery-left | red | confirm  |
-| 5-tee | red | moved {'dx': -11.0, 'dy': -11.8} |
-| 13-native-left | red | absent  |
-| 13-recovery-right | red | confirm  |
+| 11-tee | red | confirm  |
+| 14-tee | red | moved {'dx': 21.5, 'dy': -3.4} |
 | 14-native-across | red | moved {'shift': -5.9} |
-| 6-recovery-left | red | confirm  |
+| 14-check | red | - {'why': 'no oracle'} |
+| 11-cut | red | present {'area': 2891} |
+| 2-tee | red | confirm  |
+| 13-tee | red | confirm  |
+| 8-tee | red | confirm  |
+| 1-tee | red | moved {'dx': -23.9, 'dy': -9.5} |
+| 6-tee | red | moved {'dx': -12.7, 'dy': -2.2} |
+| 16-tee | red | moved {'dx': 23.9, 'dy': -9.1} |
+| 5-tee | red | moved {'dx': -10.5, 'dy': 1.2} |
 
-| Hole | Before | After | Hand map |
-|---|---|---|---|
-| 1 | Driver -40 | 2-wood -12 | 4-wood |
-| 2 | Driver -35 | Driver +40 (tie) | Driver |
-| 4 | Driver -5 | Driver -10 | Driver |
-| 5 | 4-wood -5 | 4-wood -2 (tie) | 2-wood (tie) |
-| 6 | Driver -35 | Driver -30 | Driver |
-| 8 | 4-wood -5 | 4-wood -5 | 4-wood |
-| 9 | 4-wood +2 | 4-wood +2 | 4-wood |
-| 10 | Driver +0 | Driver +2 | 4-wood |
-| 11 | 4-wood +2 | 4-wood +5 | 4-wood (tie) |
-| 13 | Driver +12 (tie) | Driver +10 (tie) | Driver |
-| 14 | 2-wood -40 | Driver -30 | 2-wood |
-| 16 | 4-wood -5 | 4-wood +2 | Driver (tie) |
-| 17 | Driver +0 | Driver +12 | Driver |
-| 18 | Driver -5 | Driver +0 | 2-wood |
+## Answers: red + amber
 
-## Answering the red + amber items with the hand map
-
-34 answers; geometry changed on holes 1, 10, 11, 13, 14, 16, 17, 18, 2, 4, 5, 6, 9. Same club: **9/14 -> 8/14**.
-
-| Item | Sev | Hand-map answer |
+| Item | Sev | Answer |
 |---|---|---|
-| 11-water-across | red | absent  |
-| 11-tee | red | moved {'dx': -1.5, 'dy': -12.3} |
-| 2-tee | red | moved {'dx': 0.5, 'dy': -14.0} |
-| 10-tee | red | moved {'dx': -6.8, 'dy': -17.8} |
-| 18-tee | red | moved {'dx': 4.5, 'dy': 4.2} |
-| 1-tee | red | moved {'dx': -25.2, 'dy': -31.4} |
-| 13-tee | red | confirm  |
-| 17-tee | red | moved {'dx': 29.5, 'dy': -4.9} |
-| 8-tee | red | confirm  |
-| 14-tee | red | moved {'dx': 24.3, 'dy': -28.2} |
-| 4-native-left | red | moved {'shift': -7.2} |
-| 4-native-right | red | moved {'shift': 9.7} |
-| 16-tee | red | moved {'dx': 24.8, 'dy': -19.1} |
-| 6-tee | red | moved {'dx': -12.7, 'dy': -15.2} |
-| 14-check |  | - {'why': 'no oracle for this item type'} |
-| 11-recovery-left | red | confirm  |
-| 5-tee | red | moved {'dx': -11.0, 'dy': -11.8} |
-| 13-native-left | red | absent  |
-| 13-recovery-right | red | confirm  |
+| 11-tee | red | confirm  |
+| 14-tee | red | moved {'dx': 21.5, 'dy': -3.4} |
 | 14-native-across | red | moved {'shift': -5.9} |
-| 6-recovery-left | red | confirm  |
-| 9-tee | amber | moved {'dx': 1.4, 'dy': -8.9} |
-| 4-tee | amber | moved {'dx': -0.5, 'dy': 10.8} |
-| 9-recovery-across | amber | moved {'shift': 30.0} |
-| 18-water-across | amber | moved {'shift': -20.4} |
-| 10-recovery-left | amber | moved {'shift': 7.3} |
+| 14-check | red | - {'why': 'no oracle'} |
+| 11-cut | red | present {'area': 2891} |
+| 2-tee | red | confirm  |
+| 13-tee | red | confirm  |
+| 8-tee | red | confirm  |
+| 1-tee | red | moved {'dx': -23.9, 'dy': -9.5} |
+| 6-tee | red | moved {'dx': -12.7, 'dy': -2.2} |
+| 16-tee | red | moved {'dx': 23.9, 'dy': -9.1} |
+| 5-tee | red | moved {'dx': -10.5, 'dy': 1.2} |
+| 4-native-left | amber | moved {'shift': -7.2} |
+| 18-water-across | amber | confirm {'why': 'other hand trouble there'} |
+| 11-water-across | amber | confirm {'why': 'other hand trouble there'} |
+| 11-recovery-left | amber | confirm  |
 | 17-native-left | amber | confirm  |
-| 14-recovery-left | amber | moved {'shift': 6.7} |
-| 8-gap-left | amber | confirm {'cov': 0.27} |
-| 1-recovery-across | amber | moved {'shift': 13.5} |
-| 16-recovery-right | amber | moved {'shift': 6.4} |
+| 13-recovery-right | amber | confirm  |
+| 13-fairway-right | amber | moved {'shift': -10.8} |
+| 13-native-left | amber | absent  |
 | 16-native-right | amber | confirm {'why': 'other hand trouble there'} |
-| 1-recovery-right | amber | confirm  |
-| 13-native-across | amber | absent  |
-| 17-recovery-right | amber | confirm  |
+| 6-recovery-left | amber | confirm  |
+| 4-native-right | amber | moved {'shift': 9.7} |
+| 2-water-left | amber | confirm  |
+| 17-tee | amber | moved {'dx': 28.6, 'dy': 3.0} |
+| 5-fairway-right | amber | moved {'shift': 6.0} |
+| 11-fairway-left | amber | moved {'shift': -7.5} |
+| 5-fairway-left | amber | moved {'shift': -9.7} |
+| 8-fairway-left | amber | moved {'shift': -18.5} |
+| 10-tee | amber | moved {'dx': -5.9, 'dy': 1.2} |
+| 10-water-left | amber | confirm  |
+| 16-fairway-left | amber | moved {'shift': -18.0} |
+| 16-cut | amber | present {'area': 3069} |
+| 8-fairway-right | amber | moved {'shift': -15.5} |
+| 18-tee | amber | moved {'dx': 4.5, 'dy': 4.2} |
+| 16-recovery-right | amber | moved {'shift': 6.4} |
+| 9-fairway-left | amber | moved {'shift': -15.4} |
 
-| Hole | Before | After | Hand map |
-|---|---|---|---|
-| 1 | Driver -40 | 2-wood -15 (tie) | 4-wood |
-| 2 | Driver -35 | Driver +40 (tie) | Driver |
-| 4 | Driver -5 | Driver -10 | Driver |
-| 5 | 4-wood -5 | 4-wood -2 (tie) | 2-wood (tie) |
-| 6 | Driver -35 | Driver -30 | Driver |
-| 8 | 4-wood -5 | 4-wood -5 | 4-wood |
-| 9 | 4-wood +2 | 4-wood +0 | 4-wood |
-| 10 | Driver +0 | Driver +2 (tie) | 4-wood |
-| 11 | 4-wood +2 | 4-wood +5 | 4-wood (tie) |
-| 13 | Driver +12 (tie) | Driver +12 | Driver |
-| 14 | 2-wood -40 | Driver -30 | 2-wood |
-| 16 | 4-wood -5 | 4-wood +2 | Driver (tie) |
-| 17 | Driver +0 | Driver +12 | Driver |
-| 18 | Driver -5 | Driver -8 | 2-wood |
+## Answers: all
 
-## Ceilings: the hand map's geometry on every hole (perfect answers to everything)
-
-| Geometry | Same club |
-|---|---|
-| auto package | 9/14 |
-| hand tees only | 7/14 |
-| hand zones only | 7/14 |
-| hand tees + zones | 8/14 |
-
-Hand tees + zones, per hole:
-
-| Hole | Pick | Hand map |
+| Item | Sev | Answer |
 |---|---|---|
-| 1 | 4-wood -2 (tie) | 4-wood |
-| 2 | Driver +40 (tie) | Driver |
-| 4 | 4-wood -15 | Driver |
-| 5 | 4-wood -5 (tie) | 2-wood (tie) |
-| 6 | 4-wood -10 | Driver |
-| 8 | 4-wood -8 | 4-wood |
-| 9 | 4-wood -8 | 4-wood |
-| 10 | Driver +2 | 4-wood |
-| 11 | 4-wood +2 | 4-wood (tie) |
-| 13 | 4-wood +0 (tie) | Driver |
-| 14 | 2-wood -18 | 2-wood |
-| 16 | Driver -2 (tie) | Driver (tie) |
-| 17 | Driver +10 | Driver |
-| 18 | Driver -12 | 2-wood |
-
+| 11-tee | red | confirm  |
+| 14-tee | red | moved {'dx': 21.5, 'dy': -3.4} |
+| 14-native-across | red | moved {'shift': -5.9} |
+| 14-check | red | - {'why': 'no oracle'} |
+| 11-cut | red | present {'area': 2891} |
+| 2-tee | red | confirm  |
+| 13-tee | red | confirm  |
+| 8-tee | red | confirm  |
+| 1-tee | red | moved {'dx': -23.9, 'dy': -9.5} |
+| 6-tee | red | moved {'dx': -12.7, 'dy': -2.2} |
+| 16-tee | red | moved {'dx': 23.9, 'dy': -9.1} |
+| 5-tee | red | moved {'dx': -10.5, 'dy': 1.2} |
+| 4-native-left | amber | moved {'shift': -7.2} |
+| 18-water-across | amber | confirm {'why': 'other hand trouble there'} |
+| 11-water-across | amber | confirm {'why': 'other hand trouble there'} |
+| 11-recovery-left | amber | confirm  |
+| 17-native-left | amber | confirm  |
+| 13-recovery-right | amber | confirm  |
+| 13-fairway-right | amber | moved {'shift': -10.8} |
+| 13-native-left | amber | absent  |
+| 16-native-right | amber | confirm {'why': 'other hand trouble there'} |
+| 6-recovery-left | amber | confirm  |
+| 4-native-right | amber | moved {'shift': 9.7} |
+| 2-water-left | amber | confirm  |
+| 17-tee | amber | moved {'dx': 28.6, 'dy': 3.0} |
+| 5-fairway-right | amber | moved {'shift': 6.0} |
+| 11-fairway-left | amber | moved {'shift': -7.5} |
+| 5-fairway-left | amber | moved {'shift': -9.7} |
+| 8-fairway-left | amber | moved {'shift': -18.5} |
+| 10-tee | amber | moved {'dx': -5.9, 'dy': 1.2} |
+| 10-water-left | amber | confirm  |
+| 16-fairway-left | amber | moved {'shift': -18.0} |
+| 16-cut | amber | present {'area': 3069} |
+| 8-fairway-right | amber | moved {'shift': -15.5} |
+| 18-tee | amber | moved {'dx': 4.5, 'dy': 4.2} |
+| 16-recovery-right | amber | moved {'shift': 6.4} |
+| 9-fairway-left | amber | moved {'shift': -15.4} |
+| 16-fairway-right | green | moved {'shift': -5.4} |
+| 14-fairway-right | green | moved {'shift': -28.1} |
+| 13-native-across | green | absent  |
+| 4-fairway-right | green | confirm  |
+| 17-fairway-right | green | moved {'shift': -11.5} |
+| 10-fairway-left | green | moved {'shift': -8.4} |
+| 13-water-right | green | confirm  |
+| 13-cut | green | present {'area': 3928} |
+| 14-fairway-left | green | moved {'shift': -8.5} |
+| 9-fairway-right | green | confirm  |
+| 2-fairway-left | green | moved {'shift': -11.9} |
+| 5-cut | green | present {'area': 1907} |
+| 11-fairway-right | green | moved {'shift': -15.5} |
+| 17-fairway-left | green | moved {'shift': -13.3} |
+| 6-fairway-left | green | moved {'shift': -10.9} |
+| 2-ob-right | green | moved {'shift': -15.8} |
+| 10-water-right | green | confirm  |
+| 6-native-left | green | moved {'shift': 14.9} |
+| 6-fairway-right | green | confirm  |
+| 4-fairway-left | green | confirm  |
+| 10-recovery-left | green | moved {'shift': 7.3} |
+| 18-fairway-left | green | moved {'shift': -11.4} |
+| 8-gap-left | green | confirm {'cov': 0.27} |
+| 4-recovery-right | green | confirm {'why': 'other hand trouble there'} |
+| 10-fairway-right | green | moved {'shift': -12.7} |
+| 1-recovery-across | green | moved {'shift': 13.5} |
+| 6-native-right | green | confirm  |
+| 9-tee | green | moved {'dx': 1.4, 'dy': -8.9} |
+| 4-tee | green | moved {'dx': -0.5, 'dy': 10.8} |
+| 4-cut | green | present {'area': 460} |
+| 8-cut | green | present {'area': 3097} |
+| 5-sand-right | green | confirm  |
+| 17-recovery-right | green | confirm  |
+| 18-recovery-left | green | confirm {'why': 'other hand trouble there'} |
+| 2-cut | green | present {'area': 3655} |
+| 18-fairway-right | green | moved {'shift': -30.0} |
+| 9-recovery-right | green | moved {'shift': 8.6} |
+| 16-sand-left | green | confirm  |
+| 16-recovery-left | green | confirm  |
+| 1-cut | green | present {'area': 1900} |
+| 18-cut | green | present {'area': 1801} |
+| 13-sand-left | green | confirm  |
+| 9-recovery-across | green | moved {'shift': 30.0} |
+| 10-cut | green | present {'area': 1850} |
+| 1-fairway-left | green | moved {'shift': -10.7} |
+| 2-fairway-right | green | moved {'shift': -15.5} |
+| 6-cut | green | present {'area': 1316} |
+| 13-fairway-left | green | moved {'shift': -25.2} |
+| 9-cut | green | present {'area': 1669} |
+| 14-recovery-left | green | moved {'shift': 6.7} |
+| 14-cut | green | present {'area': 3708} |
+| 1-fairway-right | green | moved {'shift': -7.3} |
+| 17-cut | green | present {'area': 3187} |
+| 1-recovery-right | green | confirm  |
+| 2-sand-right | green | confirm  |
+| 9-water-right | green | confirm  |
+| 16-ob-left | green | confirm {'why': 'other hand trouble there'} |
+| 8-sand-right | green | confirm  |
+| 16-sand-right | green | confirm  |
+| 8-recovery-right | green | confirm  |
+| 14-water-right | green | confirm {'why': 'other hand trouble there'} |
+| 9-native-left | green | moved {'shift': 30.0} |
+| 16-native-left | green | confirm  |
+| 17-sand-left | green | confirm  |
+| 1-ob-right | green | absent  |
+| 5-native-right | green | absent  |
+| 8-native-right | green | confirm  |
+| 18-native-right | green | moved {'shift': 21.6} |
+| 11-water-right | green | confirm  |
+| 2-recovery-right | green | absent  |
+| 11-recovery-across | green | moved {'shift': 30.0} |
+| 1-native-left | green | moved {'shift': 30.0} |
+| 1-recovery-left | green | confirm  |
+| 2-recovery-left | green | moved {'shift': 10.0} |
+| 2-native-across | green | moved {'shift': -6.6} |
+| 2-ob-left | green | confirm {'why': 'other hand trouble there'} |
+| 2-native-right | green | confirm  |
+| 2-sand-left | green | confirm  |
+| 5-sand-left | green | confirm  |
+| 5-recovery-left | green | absent  |
+| 5-recovery-right | green | moved {'shift': -5.4} |
+| 8-ob-right | green | moved {'shift': 15.0} |
+| 8-native-left | green | confirm  |
+| 8-recovery-left | green | absent  |
+| 9-native-right | green | moved {'shift': 26.1} |
+| 10-native-right | green | absent  |
+| 10-sand-right | green | confirm  |
+| 11-native-across | green | moved {'shift': 30.0} |
+| 11-native-right | green | absent  |
+| 11-native-left | green | confirm  |
+| 11-sand-left | green | confirm {'why': 'other hand trouble there'} |
+| 14-recovery-across | green | confirm  |
+| 14-native-left | green | confirm {'why': 'other hand trouble there'} |
+| 14-sand-left | green | absent  |
+| 14-native-right | green | confirm  |

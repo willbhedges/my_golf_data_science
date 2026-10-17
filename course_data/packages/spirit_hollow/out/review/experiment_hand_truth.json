@@ -1,42 +1,783 @@
 {
  "tee_set": "Black",
- "review_built": "2026-10-17T00:32Z",
+ "review_built": "2026-10-17T00:54Z",
+ "truths": [
+  "final",
+  "qa_hand",
+  "same_plan"
+ ],
+ "before": {
+  "4": {
+   "pick": "Driver",
+   "aim": -5.0,
+   "tie": false
+  },
+  "5": {
+   "pick": "4-wood",
+   "aim": -5.0,
+   "tie": false
+  },
+  "2": {
+   "pick": "Driver",
+   "aim": -35.0,
+   "tie": false
+  },
+  "1": {
+   "pick": "Driver",
+   "aim": -40.0,
+   "tie": false
+  },
+  "9": {
+   "pick": "4-wood",
+   "aim": 2.5,
+   "tie": false
+  },
+  "6": {
+   "pick": "Driver",
+   "aim": -35.0,
+   "tie": false
+  },
+  "8": {
+   "pick": "4-wood",
+   "aim": -5.0,
+   "tie": false
+  },
+  "11": {
+   "pick": "4-wood",
+   "aim": 2.5,
+   "tie": false
+  },
+  "13": {
+   "pick": "Driver",
+   "aim": 12.5,
+   "tie": true
+  },
+  "10": {
+   "pick": "Driver",
+   "aim": 0.0,
+   "tie": false
+  },
+  "16": {
+   "pick": "4-wood",
+   "aim": -5.0,
+   "tie": false
+  },
+  "17": {
+   "pick": "Driver",
+   "aim": 0.0,
+   "tie": false
+  },
+  "14": {
+   "pick": "2-wood",
+   "aim": -40.0,
+   "tie": false
+  },
+  "18": {
+   "pick": "Driver",
+   "aim": -5.0,
+   "tie": false
+  }
+ },
+ "before_agree": {
+  "final": [
+   9,
+   14
+  ],
+  "qa_hand": [
+   6,
+   14
+  ],
+  "same_plan": [
+   10,
+   14
+  ]
+ },
+ "ceilings": {
+  "hand_tees": {
+   "picks": {
+    "4": {
+     "pick": "Driver",
+     "aim": -2.5,
+     "tie": false
+    },
+    "5": {
+     "pick": "4-wood",
+     "aim": -7.5,
+     "tie": false
+    },
+    "2": {
+     "pick": "Driver",
+     "aim": -35.0,
+     "tie": false
+    },
+    "1": {
+     "pick": "Driver",
+     "aim": -40.0,
+     "tie": true
+    },
+    "6": {
+     "pick": "Driver",
+     "aim": -37.5,
+     "tie": false
+    },
+    "9": {
+     "pick": "4-wood",
+     "aim": 0.0,
+     "tie": false
+    },
+    "8": {
+     "pick": "4-wood",
+     "aim": -7.5,
+     "tie": false
+    },
+    "11": {
+     "pick": "4-wood",
+     "aim": 2.5,
+     "tie": false
+    },
+    "13": {
+     "pick": "4-wood",
+     "aim": 5.0,
+     "tie": true
+    },
+    "10": {
+     "pick": "Driver",
+     "aim": -2.5,
+     "tie": false
+    },
+    "16": {
+     "pick": "4-wood",
+     "aim": 0.0,
+     "tie": false
+    },
+    "14": {
+     "pick": "2-wood",
+     "aim": -32.5,
+     "tie": false
+    },
+    "18": {
+     "pick": "Driver",
+     "aim": 0.0,
+     "tie": false
+    },
+    "17": {
+     "pick": "Driver",
+     "aim": 12.5,
+     "tie": false
+    }
+   },
+   "agree": {
+    "final": [
+     8,
+     14
+    ],
+    "qa_hand": [
+     5,
+     14
+    ],
+    "same_plan": [
+     11,
+     14
+    ]
+   }
+  },
+  "hand_zones": {
+   "picks": {
+    "4": {
+     "pick": "4-wood",
+     "aim": -17.5,
+     "tie": false
+    },
+    "2": {
+     "pick": "Driver",
+     "aim": -32.5,
+     "tie": false
+    },
+    "5": {
+     "pick": "4-wood",
+     "aim": -5.0,
+     "tie": false
+    },
+    "1": {
+     "pick": "4-wood",
+     "aim": -2.5,
+     "tie": false
+    },
+    "6": {
+     "pick": "4-wood",
+     "aim": -12.5,
+     "tie": false
+    },
+    "8": {
+     "pick": "4-wood",
+     "aim": -5.0,
+     "tie": false
+    },
+    "9": {
+     "pick": "4-wood",
+     "aim": -5.0,
+     "tie": false
+    },
+    "10": {
+     "pick": "Driver",
+     "aim": 0.0,
+     "tie": false
+    },
+    "11": {
+     "pick": "4-wood",
+     "aim": -5.0,
+     "tie": true
+    },
+    "13": {
+     "pick": "Driver",
+     "aim": 5.0,
+     "tie": false
+    },
+    "16": {
+     "pick": "4-wood",
+     "aim": -10.0,
+     "tie": false
+    },
+    "14": {
+     "pick": "4-wood",
+     "aim": -40.0,
+     "tie": true
+    },
+    "18": {
+     "pick": "Driver",
+     "aim": -15.0,
+     "tie": false
+    },
+    "17": {
+     "pick": "Driver",
+     "aim": -5.0,
+     "tie": false
+    }
+   },
+   "agree": {
+    "final": [
+     7,
+     14
+    ],
+    "qa_hand": [
+     7,
+     14
+    ],
+    "same_plan": [
+     12,
+     14
+    ]
+   }
+  },
+  "hand_all": {
+   "picks": {
+    "4": {
+     "pick": "4-wood",
+     "aim": -15.0,
+     "tie": false
+    },
+    "2": {
+     "pick": "Driver",
+     "aim": -35.0,
+     "tie": false
+    },
+    "5": {
+     "pick": "4-wood",
+     "aim": -7.5,
+     "tie": false
+    },
+    "1": {
+     "pick": "4-wood",
+     "aim": -5.0,
+     "tie": false
+    },
+    "6": {
+     "pick": "4-wood",
+     "aim": -15.0,
+     "tie": false
+    },
+    "8": {
+     "pick": "4-wood",
+     "aim": -7.5,
+     "tie": false
+    },
+    "9": {
+     "pick": "4-wood",
+     "aim": -7.5,
+     "tie": false
+    },
+    "10": {
+     "pick": "Driver",
+     "aim": 0.0,
+     "tie": false
+    },
+    "11": {
+     "pick": "4-wood",
+     "aim": -2.5,
+     "tie": false
+    },
+    "13": {
+     "pick": "4-wood",
+     "aim": 0.0,
+     "tie": true
+    },
+    "16": {
+     "pick": "4-wood",
+     "aim": -2.5,
+     "tie": true
+    },
+    "14": {
+     "pick": "2-wood",
+     "aim": -27.5,
+     "tie": false
+    },
+    "17": {
+     "pick": "Driver",
+     "aim": 10.0,
+     "tie": false
+    },
+    "18": {
+     "pick": "Driver",
+     "aim": -12.5,
+     "tie": false
+    }
+   },
+   "agree": {
+    "final": [
+     7,
+     14
+    ],
+    "qa_hand": [
+     5,
+     14
+    ],
+    "same_plan": [
+     14,
+     14
+    ]
+   }
+  }
+ },
  "levels": {
   "red": {
    "answers": [
     {
-     "id": "11-water-across",
-     "hole": "11",
-     "answer": "absent",
-     "severity": "red",
-     "question": "Is there water across the fairway at 150-299 yds?"
-    },
-    {
      "id": "11-tee",
      "hole": "11",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "14-tee",
+     "hole": "14",
      "answer": "moved",
-     "dx": -1.5,
-     "dy": -12.3,
+     "dx": 21.5,
+     "dy": -3.4,
+     "severity": "red"
+    },
+    {
+     "id": "14-native-across",
+     "hole": "14",
+     "answer": "moved",
+     "shift": -5.9,
+     "severity": "red"
+    },
+    {
+     "id": "14-check",
      "severity": "red",
-     "question": "Is the Black tee here?"
+     "answer": null,
+     "why": "no oracle"
+    },
+    {
+     "id": "11-cut",
+     "hole": "11",
+     "answer": "present",
+     "severity": "red",
+     "area": 2891
     },
     {
      "id": "2-tee",
      "hole": "2",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "13-tee",
+     "hole": "13",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "8-tee",
+     "hole": "8",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "1-tee",
+     "hole": "1",
      "answer": "moved",
-     "dx": 0.5,
-     "dy": -14.0,
+     "dx": -23.9,
+     "dy": -9.5,
+     "severity": "red"
+    },
+    {
+     "id": "6-tee",
+     "hole": "6",
+     "answer": "moved",
+     "dx": -12.7,
+     "dy": -2.2,
+     "severity": "red"
+    },
+    {
+     "id": "16-tee",
+     "hole": "16",
+     "answer": "moved",
+     "dx": 23.9,
+     "dy": -9.1,
+     "severity": "red"
+    },
+    {
+     "id": "5-tee",
+     "hole": "5",
+     "answer": "moved",
+     "dx": -10.5,
+     "dy": 1.2,
+     "severity": "red"
+    }
+   ],
+   "n_answers": 11,
+   "n_changing": 7,
+   "changed_holes": [
+    "1",
+    "11",
+    "14",
+    "16",
+    "5",
+    "6"
+   ],
+   "warnings": [],
+   "after": {
+    "4": {
+     "pick": "Driver",
+     "aim": -5.0,
+     "tie": false
+    },
+    "5": {
+     "pick": "4-wood",
+     "aim": -7.5,
+     "tie": false
+    },
+    "2": {
+     "pick": "Driver",
+     "aim": -35.0,
+     "tie": false
+    },
+    "1": {
+     "pick": "Driver",
+     "aim": -40.0,
+     "tie": true
+    },
+    "9": {
+     "pick": "4-wood",
+     "aim": 2.5,
+     "tie": false
+    },
+    "6": {
+     "pick": "Driver",
+     "aim": -37.5,
+     "tie": false
+    },
+    "8": {
+     "pick": "4-wood",
+     "aim": -5.0,
+     "tie": false
+    },
+    "11": {
+     "pick": "4-wood",
+     "aim": -17.5,
+     "tie": false
+    },
+    "13": {
+     "pick": "Driver",
+     "aim": 12.5,
+     "tie": true
+    },
+    "10": {
+     "pick": "Driver",
+     "aim": 0.0,
+     "tie": false
+    },
+    "16": {
+     "pick": "4-wood",
+     "aim": 0.0,
+     "tie": false
+    },
+    "17": {
+     "pick": "Driver",
+     "aim": 0.0,
+     "tie": false
+    },
+    "14": {
+     "pick": "2-wood",
+     "aim": -30.0,
+     "tie": true
+    },
+    "18": {
+     "pick": "Driver",
+     "aim": -5.0,
+     "tie": false
+    }
+   },
+   "agree": {
+    "final": [
+     9,
+     14
+    ],
+    "qa_hand": [
+     6,
+     14
+    ],
+    "same_plan": [
+     10,
+     14
+    ]
+   }
+  },
+  "red_amber": {
+   "answers": [
+    {
+     "id": "11-tee",
+     "hole": "11",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "14-tee",
+     "hole": "14",
+     "answer": "moved",
+     "dx": 21.5,
+     "dy": -3.4,
+     "severity": "red"
+    },
+    {
+     "id": "14-native-across",
+     "hole": "14",
+     "answer": "moved",
+     "shift": -5.9,
+     "severity": "red"
+    },
+    {
+     "id": "14-check",
      "severity": "red",
-     "question": "Is the Black tee here?"
+     "answer": null,
+     "why": "no oracle"
+    },
+    {
+     "id": "11-cut",
+     "hole": "11",
+     "answer": "present",
+     "severity": "red",
+     "area": 2891
+    },
+    {
+     "id": "2-tee",
+     "hole": "2",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "13-tee",
+     "hole": "13",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "8-tee",
+     "hole": "8",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "1-tee",
+     "hole": "1",
+     "answer": "moved",
+     "dx": -23.9,
+     "dy": -9.5,
+     "severity": "red"
+    },
+    {
+     "id": "6-tee",
+     "hole": "6",
+     "answer": "moved",
+     "dx": -12.7,
+     "dy": -2.2,
+     "severity": "red"
+    },
+    {
+     "id": "16-tee",
+     "hole": "16",
+     "answer": "moved",
+     "dx": 23.9,
+     "dy": -9.1,
+     "severity": "red"
+    },
+    {
+     "id": "5-tee",
+     "hole": "5",
+     "answer": "moved",
+     "dx": -10.5,
+     "dy": 1.2,
+     "severity": "red"
+    },
+    {
+     "id": "4-native-left",
+     "hole": "4",
+     "answer": "moved",
+     "shift": -7.2,
+     "severity": "amber"
+    },
+    {
+     "id": "18-water-across",
+     "hole": "18",
+     "answer": "confirm",
+     "severity": "amber",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "11-water-across",
+     "hole": "11",
+     "answer": "confirm",
+     "severity": "amber",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "11-recovery-left",
+     "hole": "11",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "17-native-left",
+     "hole": "17",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "13-recovery-right",
+     "hole": "13",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "13-fairway-right",
+     "hole": "13",
+     "answer": "moved",
+     "shift": -10.8,
+     "severity": "amber"
+    },
+    {
+     "id": "13-native-left",
+     "hole": "13",
+     "answer": "absent",
+     "severity": "amber"
+    },
+    {
+     "id": "16-native-right",
+     "hole": "16",
+     "answer": "confirm",
+     "severity": "amber",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "6-recovery-left",
+     "hole": "6",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "4-native-right",
+     "hole": "4",
+     "answer": "moved",
+     "shift": 9.7,
+     "severity": "amber"
+    },
+    {
+     "id": "2-water-left",
+     "hole": "2",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "17-tee",
+     "hole": "17",
+     "answer": "moved",
+     "dx": 28.6,
+     "dy": 3.0,
+     "severity": "amber"
+    },
+    {
+     "id": "5-fairway-right",
+     "hole": "5",
+     "answer": "moved",
+     "shift": 6.0,
+     "severity": "amber"
+    },
+    {
+     "id": "11-fairway-left",
+     "hole": "11",
+     "answer": "moved",
+     "shift": -7.5,
+     "severity": "amber"
+    },
+    {
+     "id": "5-fairway-left",
+     "hole": "5",
+     "answer": "moved",
+     "shift": -9.7,
+     "severity": "amber"
+    },
+    {
+     "id": "8-fairway-left",
+     "hole": "8",
+     "answer": "moved",
+     "shift": -18.5,
+     "severity": "amber"
     },
     {
      "id": "10-tee",
      "hole": "10",
      "answer": "moved",
-     "dx": -6.8,
-     "dy": -17.8,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "dx": -5.9,
+     "dy": 1.2,
+     "severity": "amber"
+    },
+    {
+     "id": "10-water-left",
+     "hole": "10",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "16-fairway-left",
+     "hole": "16",
+     "answer": "moved",
+     "shift": -18.0,
+     "severity": "amber"
+    },
+    {
+     "id": "16-cut",
+     "hole": "16",
+     "answer": "present",
+     "severity": "amber",
+     "area": 3069
+    },
+    {
+     "id": "8-fairway-right",
+     "hole": "8",
+     "answer": "moved",
+     "shift": -15.5,
+     "severity": "amber"
     },
     {
      "id": "18-tee",
@@ -44,135 +785,25 @@
      "answer": "moved",
      "dx": 4.5,
      "dy": 4.2,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "severity": "amber"
     },
     {
-     "id": "1-tee",
-     "hole": "1",
-     "answer": "moved",
-     "dx": -25.2,
-     "dy": -31.4,
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "13-tee",
-     "hole": "13",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "17-tee",
-     "hole": "17",
-     "answer": "moved",
-     "dx": 29.5,
-     "dy": -4.9,
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "8-tee",
-     "hole": "8",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "14-tee",
-     "hole": "14",
-     "answer": "moved",
-     "dx": 24.3,
-     "dy": -28.2,
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "4-native-left",
-     "hole": "4",
-     "answer": "moved",
-     "shift": -7.2,
-     "severity": "red",
-     "question": "Does the long grass on the left come this close to the fairway (30 yds left of the aim at 150-309 yds)?"
-    },
-    {
-     "id": "4-native-right",
-     "hole": "4",
-     "answer": "moved",
-     "shift": 9.7,
-     "severity": "red",
-     "question": "Does the long grass on the right come this close to the fairway (27 yds right of the aim at 150-340 yds)?"
-    },
-    {
-     "id": "16-tee",
+     "id": "16-recovery-right",
      "hole": "16",
      "answer": "moved",
-     "dx": 24.8,
-     "dy": -19.1,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "shift": 6.4,
+     "severity": "amber"
     },
     {
-     "id": "6-tee",
-     "hole": "6",
+     "id": "9-fairway-left",
+     "hole": "9",
      "answer": "moved",
-     "dx": -12.7,
-     "dy": -15.2,
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "14-check",
-     "answer": null,
-     "why": "no oracle for this item type"
-    },
-    {
-     "id": "11-recovery-left",
-     "hole": "11",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Do the trees on the left come this close to the fairway (26 yds left of the aim at 150-278 yds)?"
-    },
-    {
-     "id": "5-tee",
-     "hole": "5",
-     "answer": "moved",
-     "dx": -11.0,
-     "dy": -11.8,
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "13-native-left",
-     "hole": "13",
-     "answer": "absent",
-     "severity": "red",
-     "question": "Does the long grass on the left come this close to the fairway (22 yds left of the aim at 150-340 yds)?"
-    },
-    {
-     "id": "13-recovery-right",
-     "hole": "13",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Do the trees on the right come this close to the fairway (24 yds right of the aim at 275-308 yds)?"
-    },
-    {
-     "id": "14-native-across",
-     "hole": "14",
-     "answer": "moved",
-     "shift": -5.9,
-     "severity": "red",
-     "question": "Is there long grass across the fairway at 282-340 yds?"
-    },
-    {
-     "id": "6-recovery-left",
-     "hole": "6",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Do the trees on the left come this close to the fairway (2 yds left of the aim at 163-303 yds)?"
+     "shift": -15.4,
+     "severity": "amber"
     }
    ],
+   "n_answers": 36,
+   "n_changing": 23,
    "changed_holes": [
     "1",
     "10",
@@ -182,302 +813,336 @@
     "16",
     "17",
     "18",
-    "2",
     "4",
     "5",
-    "6"
+    "6",
+    "8",
+    "9"
    ],
-   "warnings": [],
+   "warnings": [
+    "5-fairway-left: zones changed since the review (package rebuilt?): skipped"
+   ],
    "after": {
-    "same": 8,
-    "n": 14,
-    "rows": [
-     {
-      "hole": "1",
-      "auto": "2-wood",
-      "aim": -12.5,
-      "tie": false,
-      "hand": "4-wood",
-      "hand_tie": false,
-      "same": false
-     },
-     {
-      "hole": "2",
-      "auto": "Driver",
-      "aim": 40.0,
-      "tie": true,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "4",
-      "auto": "Driver",
-      "aim": -10.0,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "5",
-      "auto": "4-wood",
-      "aim": -2.5,
-      "tie": true,
-      "hand": "2-wood",
-      "hand_tie": true,
-      "same": false
-     },
-     {
-      "hole": "6",
-      "auto": "Driver",
-      "aim": -30.0,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "8",
-      "auto": "4-wood",
-      "aim": -5.0,
-      "tie": false,
-      "hand": "4-wood",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "9",
-      "auto": "4-wood",
-      "aim": 2.5,
-      "tie": false,
-      "hand": "4-wood",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "10",
-      "auto": "Driver",
-      "aim": 2.5,
-      "tie": false,
-      "hand": "4-wood",
-      "hand_tie": false,
-      "same": false
-     },
-     {
-      "hole": "11",
-      "auto": "4-wood",
-      "aim": 5.0,
-      "tie": false,
-      "hand": "4-wood",
-      "hand_tie": true,
-      "same": true
-     },
-     {
-      "hole": "13",
-      "auto": "Driver",
-      "aim": 10.0,
-      "tie": true,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "14",
-      "auto": "Driver",
-      "aim": -30.0,
-      "tie": false,
-      "hand": "2-wood",
-      "hand_tie": false,
-      "same": false
-     },
-     {
-      "hole": "16",
-      "auto": "4-wood",
-      "aim": 2.5,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": true,
-      "same": false
-     },
-     {
-      "hole": "17",
-      "auto": "Driver",
-      "aim": 12.5,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "18",
-      "auto": "Driver",
-      "aim": 0.0,
-      "tie": false,
-      "hand": "2-wood",
-      "hand_tie": false,
-      "same": false
-     }
-    ]
-   },
-   "replanned": {
-    "2": {
-     "before": {
-      "pick": "Driver",
-      "aim": -35.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 40.0
-     }
-    },
     "4": {
-     "before": {
-      "pick": "Driver",
-      "aim": -5.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": -10.0
-     }
+     "pick": "Driver",
+     "aim": -10.0,
+     "tie": false
     },
     "5": {
-     "before": {
-      "pick": "4-wood",
-      "aim": -5.0
-     },
-     "after": {
-      "pick": "4-wood",
-      "aim": -2.5
-     }
+     "pick": "4-wood",
+     "aim": -10.0,
+     "tie": false
+    },
+    "2": {
+     "pick": "Driver",
+     "aim": -35.0,
+     "tie": false
     },
     "1": {
-     "before": {
-      "pick": "Driver",
-      "aim": -40.0
-     },
-     "after": {
-      "pick": "2-wood",
-      "aim": -12.5
-     }
+     "pick": "Driver",
+     "aim": -40.0,
+     "tie": true
     },
-    "11": {
-     "before": {
-      "pick": "4-wood",
-      "aim": 2.5
-     },
-     "after": {
-      "pick": "4-wood",
-      "aim": 5.0
-     }
+    "9": {
+     "pick": "4-wood",
+     "aim": -2.5,
+     "tie": false
     },
     "6": {
-     "before": {
-      "pick": "Driver",
-      "aim": -35.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": -30.0
-     }
+     "pick": "Driver",
+     "aim": -37.5,
+     "tie": false
     },
-    "10": {
-     "before": {
-      "pick": "Driver",
-      "aim": 0.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 2.5
-     }
+    "8": {
+     "pick": "4-wood",
+     "aim": -12.5,
+     "tie": false
+    },
+    "11": {
+     "pick": "4-wood",
+     "aim": -17.5,
+     "tie": false
     },
     "13": {
-     "before": {
-      "pick": "Driver",
-      "aim": 12.5
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 10.0
-     }
+     "pick": "4-wood",
+     "aim": 5.0,
+     "tie": false
+    },
+    "10": {
+     "pick": "Driver",
+     "aim": -2.5,
+     "tie": false
     },
     "16": {
-     "before": {
-      "pick": "4-wood",
-      "aim": -5.0
-     },
-     "after": {
-      "pick": "4-wood",
-      "aim": 2.5
-     }
-    },
-    "14": {
-     "before": {
-      "pick": "2-wood",
-      "aim": -40.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": -30.0
-     }
-    },
-    "18": {
-     "before": {
-      "pick": "Driver",
-      "aim": -5.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 0.0
-     }
+     "pick": "4-wood",
+     "aim": 0.0,
+     "tie": false
     },
     "17": {
-     "before": {
-      "pick": "Driver",
-      "aim": 0.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 12.5
-     }
+     "pick": "Driver",
+     "aim": 12.5,
+     "tie": false
+    },
+    "14": {
+     "pick": "2-wood",
+     "aim": -30.0,
+     "tie": true
+    },
+    "18": {
+     "pick": "Driver",
+     "aim": 0.0,
+     "tie": false
     }
+   },
+   "agree": {
+    "final": [
+     8,
+     14
+    ],
+    "qa_hand": [
+     5,
+     14
+    ],
+    "same_plan": [
+     11,
+     14
+    ]
    }
   },
-  "red_amber": {
+  "all": {
    "answers": [
-    {
-     "id": "11-water-across",
-     "hole": "11",
-     "answer": "absent",
-     "severity": "red",
-     "question": "Is there water across the fairway at 150-299 yds?"
-    },
     {
      "id": "11-tee",
      "hole": "11",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "14-tee",
+     "hole": "14",
      "answer": "moved",
-     "dx": -1.5,
-     "dy": -12.3,
+     "dx": 21.5,
+     "dy": -3.4,
+     "severity": "red"
+    },
+    {
+     "id": "14-native-across",
+     "hole": "14",
+     "answer": "moved",
+     "shift": -5.9,
+     "severity": "red"
+    },
+    {
+     "id": "14-check",
      "severity": "red",
-     "question": "Is the Black tee here?"
+     "answer": null,
+     "why": "no oracle"
+    },
+    {
+     "id": "11-cut",
+     "hole": "11",
+     "answer": "present",
+     "severity": "red",
+     "area": 2891
     },
     {
      "id": "2-tee",
      "hole": "2",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "13-tee",
+     "hole": "13",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "8-tee",
+     "hole": "8",
+     "answer": "confirm",
+     "severity": "red"
+    },
+    {
+     "id": "1-tee",
+     "hole": "1",
      "answer": "moved",
-     "dx": 0.5,
-     "dy": -14.0,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "dx": -23.9,
+     "dy": -9.5,
+     "severity": "red"
+    },
+    {
+     "id": "6-tee",
+     "hole": "6",
+     "answer": "moved",
+     "dx": -12.7,
+     "dy": -2.2,
+     "severity": "red"
+    },
+    {
+     "id": "16-tee",
+     "hole": "16",
+     "answer": "moved",
+     "dx": 23.9,
+     "dy": -9.1,
+     "severity": "red"
+    },
+    {
+     "id": "5-tee",
+     "hole": "5",
+     "answer": "moved",
+     "dx": -10.5,
+     "dy": 1.2,
+     "severity": "red"
+    },
+    {
+     "id": "4-native-left",
+     "hole": "4",
+     "answer": "moved",
+     "shift": -7.2,
+     "severity": "amber"
+    },
+    {
+     "id": "18-water-across",
+     "hole": "18",
+     "answer": "confirm",
+     "severity": "amber",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "11-water-across",
+     "hole": "11",
+     "answer": "confirm",
+     "severity": "amber",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "11-recovery-left",
+     "hole": "11",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "17-native-left",
+     "hole": "17",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "13-recovery-right",
+     "hole": "13",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "13-fairway-right",
+     "hole": "13",
+     "answer": "moved",
+     "shift": -10.8,
+     "severity": "amber"
+    },
+    {
+     "id": "13-native-left",
+     "hole": "13",
+     "answer": "absent",
+     "severity": "amber"
+    },
+    {
+     "id": "16-native-right",
+     "hole": "16",
+     "answer": "confirm",
+     "severity": "amber",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "6-recovery-left",
+     "hole": "6",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "4-native-right",
+     "hole": "4",
+     "answer": "moved",
+     "shift": 9.7,
+     "severity": "amber"
+    },
+    {
+     "id": "2-water-left",
+     "hole": "2",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "17-tee",
+     "hole": "17",
+     "answer": "moved",
+     "dx": 28.6,
+     "dy": 3.0,
+     "severity": "amber"
+    },
+    {
+     "id": "5-fairway-right",
+     "hole": "5",
+     "answer": "moved",
+     "shift": 6.0,
+     "severity": "amber"
+    },
+    {
+     "id": "11-fairway-left",
+     "hole": "11",
+     "answer": "moved",
+     "shift": -7.5,
+     "severity": "amber"
+    },
+    {
+     "id": "5-fairway-left",
+     "hole": "5",
+     "answer": "moved",
+     "shift": -9.7,
+     "severity": "amber"
+    },
+    {
+     "id": "8-fairway-left",
+     "hole": "8",
+     "answer": "moved",
+     "shift": -18.5,
+     "severity": "amber"
     },
     {
      "id": "10-tee",
      "hole": "10",
      "answer": "moved",
-     "dx": -6.8,
-     "dy": -17.8,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "dx": -5.9,
+     "dy": 1.2,
+     "severity": "amber"
+    },
+    {
+     "id": "10-water-left",
+     "hole": "10",
+     "answer": "confirm",
+     "severity": "amber"
+    },
+    {
+     "id": "16-fairway-left",
+     "hole": "16",
+     "answer": "moved",
+     "shift": -18.0,
+     "severity": "amber"
+    },
+    {
+     "id": "16-cut",
+     "hole": "16",
+     "answer": "present",
+     "severity": "amber",
+     "area": 3069
+    },
+    {
+     "id": "8-fairway-right",
+     "hole": "8",
+     "answer": "moved",
+     "shift": -15.5,
+     "severity": "amber"
     },
     {
      "id": "18-tee",
@@ -485,133 +1150,202 @@
      "answer": "moved",
      "dx": 4.5,
      "dy": 4.2,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "severity": "amber"
     },
     {
-     "id": "1-tee",
-     "hole": "1",
-     "answer": "moved",
-     "dx": -25.2,
-     "dy": -31.4,
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "13-tee",
-     "hole": "13",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "17-tee",
-     "hole": "17",
-     "answer": "moved",
-     "dx": 29.5,
-     "dy": -4.9,
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "8-tee",
-     "hole": "8",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "14-tee",
-     "hole": "14",
-     "answer": "moved",
-     "dx": 24.3,
-     "dy": -28.2,
-     "severity": "red",
-     "question": "Is the Black tee here?"
-    },
-    {
-     "id": "4-native-left",
-     "hole": "4",
-     "answer": "moved",
-     "shift": -7.2,
-     "severity": "red",
-     "question": "Does the long grass on the left come this close to the fairway (30 yds left of the aim at 150-309 yds)?"
-    },
-    {
-     "id": "4-native-right",
-     "hole": "4",
-     "answer": "moved",
-     "shift": 9.7,
-     "severity": "red",
-     "question": "Does the long grass on the right come this close to the fairway (27 yds right of the aim at 150-340 yds)?"
-    },
-    {
-     "id": "16-tee",
+     "id": "16-recovery-right",
      "hole": "16",
      "answer": "moved",
-     "dx": 24.8,
-     "dy": -19.1,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "shift": 6.4,
+     "severity": "amber"
     },
     {
-     "id": "6-tee",
-     "hole": "6",
+     "id": "9-fairway-left",
+     "hole": "9",
      "answer": "moved",
-     "dx": -12.7,
-     "dy": -15.2,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "shift": -15.4,
+     "severity": "amber"
     },
     {
-     "id": "14-check",
-     "answer": null,
-     "why": "no oracle for this item type"
-    },
-    {
-     "id": "11-recovery-left",
-     "hole": "11",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Do the trees on the left come this close to the fairway (26 yds left of the aim at 150-278 yds)?"
-    },
-    {
-     "id": "5-tee",
-     "hole": "5",
+     "id": "16-fairway-right",
+     "hole": "16",
      "answer": "moved",
-     "dx": -11.0,
-     "dy": -11.8,
-     "severity": "red",
-     "question": "Is the Black tee here?"
+     "shift": -5.4,
+     "severity": "green"
     },
     {
-     "id": "13-native-left",
-     "hole": "13",
-     "answer": "absent",
-     "severity": "red",
-     "question": "Does the long grass on the left come this close to the fairway (22 yds left of the aim at 150-340 yds)?"
-    },
-    {
-     "id": "13-recovery-right",
-     "hole": "13",
-     "answer": "confirm",
-     "severity": "red",
-     "question": "Do the trees on the right come this close to the fairway (24 yds right of the aim at 275-308 yds)?"
-    },
-    {
-     "id": "14-native-across",
+     "id": "14-fairway-right",
      "hole": "14",
      "answer": "moved",
-     "shift": -5.9,
-     "severity": "red",
-     "question": "Is there long grass across the fairway at 282-340 yds?"
+     "shift": -28.1,
+     "severity": "green"
     },
     {
-     "id": "6-recovery-left",
+     "id": "13-native-across",
+     "hole": "13",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "4-fairway-right",
+     "hole": "4",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "17-fairway-right",
+     "hole": "17",
+     "answer": "moved",
+     "shift": -11.5,
+     "severity": "green"
+    },
+    {
+     "id": "10-fairway-left",
+     "hole": "10",
+     "answer": "moved",
+     "shift": -8.4,
+     "severity": "green"
+    },
+    {
+     "id": "13-water-right",
+     "hole": "13",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "13-cut",
+     "hole": "13",
+     "answer": "present",
+     "severity": "green",
+     "area": 3928
+    },
+    {
+     "id": "14-fairway-left",
+     "hole": "14",
+     "answer": "moved",
+     "shift": -8.5,
+     "severity": "green"
+    },
+    {
+     "id": "9-fairway-right",
+     "hole": "9",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "2-fairway-left",
+     "hole": "2",
+     "answer": "moved",
+     "shift": -11.9,
+     "severity": "green"
+    },
+    {
+     "id": "5-cut",
+     "hole": "5",
+     "answer": "present",
+     "severity": "green",
+     "area": 1907
+    },
+    {
+     "id": "11-fairway-right",
+     "hole": "11",
+     "answer": "moved",
+     "shift": -15.5,
+     "severity": "green"
+    },
+    {
+     "id": "17-fairway-left",
+     "hole": "17",
+     "answer": "moved",
+     "shift": -13.3,
+     "severity": "green"
+    },
+    {
+     "id": "6-fairway-left",
+     "hole": "6",
+     "answer": "moved",
+     "shift": -10.9,
+     "severity": "green"
+    },
+    {
+     "id": "2-ob-right",
+     "hole": "2",
+     "answer": "moved",
+     "shift": -15.8,
+     "severity": "green"
+    },
+    {
+     "id": "10-water-right",
+     "hole": "10",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "6-native-left",
+     "hole": "6",
+     "answer": "moved",
+     "shift": 14.9,
+     "severity": "green"
+    },
+    {
+     "id": "6-fairway-right",
      "hole": "6",
      "answer": "confirm",
-     "severity": "red",
-     "question": "Do the trees on the left come this close to the fairway (2 yds left of the aim at 163-303 yds)?"
+     "severity": "green"
+    },
+    {
+     "id": "4-fairway-left",
+     "hole": "4",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "10-recovery-left",
+     "hole": "10",
+     "answer": "moved",
+     "shift": 7.3,
+     "severity": "green"
+    },
+    {
+     "id": "18-fairway-left",
+     "hole": "18",
+     "answer": "moved",
+     "shift": -11.4,
+     "severity": "green"
+    },
+    {
+     "id": "8-gap-left",
+     "hole": "8",
+     "answer": "confirm",
+     "severity": "green",
+     "cov": 0.27
+    },
+    {
+     "id": "4-recovery-right",
+     "hole": "4",
+     "answer": "confirm",
+     "severity": "green",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "10-fairway-right",
+     "hole": "10",
+     "answer": "moved",
+     "shift": -12.7,
+     "severity": "green"
+    },
+    {
+     "id": "1-recovery-across",
+     "hole": "1",
+     "answer": "moved",
+     "shift": 13.5,
+     "severity": "green"
+    },
+    {
+     "id": "6-native-right",
+     "hole": "6",
+     "answer": "confirm",
+     "severity": "green"
     },
     {
      "id": "9-tee",
@@ -619,8 +1353,7 @@
      "answer": "moved",
      "dx": 1.4,
      "dy": -8.9,
-     "severity": "amber",
-     "question": "Is the Black tee here?"
+     "severity": "green"
     },
     {
      "id": "4-tee",
@@ -628,102 +1361,441 @@
      "answer": "moved",
      "dx": -0.5,
      "dy": 10.8,
-     "severity": "amber",
-     "question": "Is the Black tee here?"
+     "severity": "green"
+    },
+    {
+     "id": "4-cut",
+     "hole": "4",
+     "answer": "present",
+     "severity": "green",
+     "area": 460
+    },
+    {
+     "id": "8-cut",
+     "hole": "8",
+     "answer": "present",
+     "severity": "green",
+     "area": 3097
+    },
+    {
+     "id": "5-sand-right",
+     "hole": "5",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "17-recovery-right",
+     "hole": "17",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "18-recovery-left",
+     "hole": "18",
+     "answer": "confirm",
+     "severity": "green",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "2-cut",
+     "hole": "2",
+     "answer": "present",
+     "severity": "green",
+     "area": 3655
+    },
+    {
+     "id": "18-fairway-right",
+     "hole": "18",
+     "answer": "moved",
+     "shift": -30.0,
+     "severity": "green"
+    },
+    {
+     "id": "9-recovery-right",
+     "hole": "9",
+     "answer": "moved",
+     "shift": 8.6,
+     "severity": "green"
+    },
+    {
+     "id": "16-sand-left",
+     "hole": "16",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "16-recovery-left",
+     "hole": "16",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "1-cut",
+     "hole": "1",
+     "answer": "present",
+     "severity": "green",
+     "area": 1900
+    },
+    {
+     "id": "18-cut",
+     "hole": "18",
+     "answer": "present",
+     "severity": "green",
+     "area": 1801
+    },
+    {
+     "id": "13-sand-left",
+     "hole": "13",
+     "answer": "confirm",
+     "severity": "green"
     },
     {
      "id": "9-recovery-across",
      "hole": "9",
      "answer": "moved",
      "shift": 30.0,
-     "severity": "amber",
-     "question": "Is there trees across the fairway at 255-340 yds?"
+     "severity": "green"
     },
     {
-     "id": "18-water-across",
-     "hole": "18",
-     "answer": "moved",
-     "shift": -20.4,
-     "severity": "amber",
-     "question": "Is there water across the fairway at 150-301 yds?"
-    },
-    {
-     "id": "10-recovery-left",
+     "id": "10-cut",
      "hole": "10",
-     "answer": "moved",
-     "shift": 7.3,
-     "severity": "amber",
-     "question": "Do the trees on the left come this close to the fairway (21 yds left of the aim at 150-305 yds)?"
+     "answer": "present",
+     "severity": "green",
+     "area": 1850
     },
     {
-     "id": "17-native-left",
-     "hole": "17",
-     "answer": "confirm",
-     "severity": "amber",
-     "question": "Does the long grass on the left come this close to the fairway (30 yds left of the aim at 150-340 yds)?"
+     "id": "1-fairway-left",
+     "hole": "1",
+     "answer": "moved",
+     "shift": -10.7,
+     "severity": "green"
+    },
+    {
+     "id": "2-fairway-right",
+     "hole": "2",
+     "answer": "moved",
+     "shift": -15.5,
+     "severity": "green"
+    },
+    {
+     "id": "6-cut",
+     "hole": "6",
+     "answer": "present",
+     "severity": "green",
+     "area": 1316
+    },
+    {
+     "id": "13-fairway-left",
+     "hole": "13",
+     "answer": "moved",
+     "shift": -25.2,
+     "severity": "green"
+    },
+    {
+     "id": "9-cut",
+     "hole": "9",
+     "answer": "present",
+     "severity": "green",
+     "area": 1669
     },
     {
      "id": "14-recovery-left",
      "hole": "14",
      "answer": "moved",
      "shift": 6.7,
-     "severity": "amber",
-     "question": "Do the trees on the left come this close to the fairway (22 yds left of the aim at 260-297 yds)?"
+     "severity": "green"
     },
     {
-     "id": "8-gap-left",
-     "hole": "8",
-     "answer": "confirm",
-     "severity": "amber",
-     "question": "Is it open on the left at 200-330 yds, or are there trees or long grass?",
-     "cov": 0.27
+     "id": "14-cut",
+     "hole": "14",
+     "answer": "present",
+     "severity": "green",
+     "area": 3708
     },
     {
-     "id": "1-recovery-across",
+     "id": "1-fairway-right",
      "hole": "1",
      "answer": "moved",
-     "shift": 13.5,
-     "severity": "amber",
-     "question": "Is there trees across the fairway at 171-322 yds?"
+     "shift": -7.3,
+     "severity": "green"
     },
     {
-     "id": "16-recovery-right",
-     "hole": "16",
-     "answer": "moved",
-     "shift": 6.4,
-     "severity": "amber",
-     "question": "Do the trees on the right come this close to the fairway (10 yds right of the aim at 150-333 yds)?"
-    },
-    {
-     "id": "16-native-right",
-     "hole": "16",
-     "answer": "confirm",
-     "severity": "amber",
-     "question": "Does the long grass on the right come this close to the fairway (20 yds right of the aim at 150-340 yds)?",
-     "why": "other hand trouble there"
+     "id": "17-cut",
+     "hole": "17",
+     "answer": "present",
+     "severity": "green",
+     "area": 3187
     },
     {
      "id": "1-recovery-right",
      "hole": "1",
      "answer": "confirm",
-     "severity": "amber",
-     "question": "Do the trees on the right come this close to the fairway (19 yds right of the aim at 287-340 yds)?"
+     "severity": "green"
     },
     {
-     "id": "13-native-across",
-     "hole": "13",
-     "answer": "absent",
-     "severity": "amber",
-     "question": "Is there long grass across the fairway at 274-340 yds?"
+     "id": "2-sand-right",
+     "hole": "2",
+     "answer": "confirm",
+     "severity": "green"
     },
     {
-     "id": "17-recovery-right",
+     "id": "9-water-right",
+     "hole": "9",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "16-ob-left",
+     "hole": "16",
+     "answer": "confirm",
+     "severity": "green",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "8-sand-right",
+     "hole": "8",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "16-sand-right",
+     "hole": "16",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "8-recovery-right",
+     "hole": "8",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "14-water-right",
+     "hole": "14",
+     "answer": "confirm",
+     "severity": "green",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "9-native-left",
+     "hole": "9",
+     "answer": "moved",
+     "shift": 30.0,
+     "severity": "green"
+    },
+    {
+     "id": "16-native-left",
+     "hole": "16",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "17-sand-left",
      "hole": "17",
      "answer": "confirm",
-     "severity": "amber",
-     "question": "Do the trees on the right come this close to the fairway (24 yds right of the aim at 160-339 yds)?"
+     "severity": "green"
+    },
+    {
+     "id": "1-ob-right",
+     "hole": "1",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "5-native-right",
+     "hole": "5",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "8-native-right",
+     "hole": "8",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "18-native-right",
+     "hole": "18",
+     "answer": "moved",
+     "shift": 21.6,
+     "severity": "green"
+    },
+    {
+     "id": "11-water-right",
+     "hole": "11",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "2-recovery-right",
+     "hole": "2",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "11-recovery-across",
+     "hole": "11",
+     "answer": "moved",
+     "shift": 30.0,
+     "severity": "green"
+    },
+    {
+     "id": "1-native-left",
+     "hole": "1",
+     "answer": "moved",
+     "shift": 30.0,
+     "severity": "green"
+    },
+    {
+     "id": "1-recovery-left",
+     "hole": "1",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "2-recovery-left",
+     "hole": "2",
+     "answer": "moved",
+     "shift": 10.0,
+     "severity": "green"
+    },
+    {
+     "id": "2-native-across",
+     "hole": "2",
+     "answer": "moved",
+     "shift": -6.6,
+     "severity": "green"
+    },
+    {
+     "id": "2-ob-left",
+     "hole": "2",
+     "answer": "confirm",
+     "severity": "green",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "2-native-right",
+     "hole": "2",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "2-sand-left",
+     "hole": "2",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "5-sand-left",
+     "hole": "5",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "5-recovery-left",
+     "hole": "5",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "5-recovery-right",
+     "hole": "5",
+     "answer": "moved",
+     "shift": -5.4,
+     "severity": "green"
+    },
+    {
+     "id": "8-ob-right",
+     "hole": "8",
+     "answer": "moved",
+     "shift": 15.0,
+     "severity": "green"
+    },
+    {
+     "id": "8-native-left",
+     "hole": "8",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "8-recovery-left",
+     "hole": "8",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "9-native-right",
+     "hole": "9",
+     "answer": "moved",
+     "shift": 26.1,
+     "severity": "green"
+    },
+    {
+     "id": "10-native-right",
+     "hole": "10",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "10-sand-right",
+     "hole": "10",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "11-native-across",
+     "hole": "11",
+     "answer": "moved",
+     "shift": 30.0,
+     "severity": "green"
+    },
+    {
+     "id": "11-native-right",
+     "hole": "11",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "11-native-left",
+     "hole": "11",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "11-sand-left",
+     "hole": "11",
+     "answer": "confirm",
+     "severity": "green",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "14-recovery-across",
+     "hole": "14",
+     "answer": "confirm",
+     "severity": "green"
+    },
+    {
+     "id": "14-native-left",
+     "hole": "14",
+     "answer": "confirm",
+     "severity": "green",
+     "why": "other hand trouble there"
+    },
+    {
+     "id": "14-sand-left",
+     "hole": "14",
+     "answer": "absent",
+     "severity": "green"
+    },
+    {
+     "id": "14-native-right",
+     "hole": "14",
+     "answer": "confirm",
+     "severity": "green"
     }
    ],
+   "n_answers": 131,
+   "n_changing": 79,
    "changed_holes": [
     "1",
     "10",
@@ -737,803 +1809,155 @@
     "4",
     "5",
     "6",
+    "8",
     "9"
    ],
-   "warnings": [],
+   "warnings": [
+    "5-fairway-left: zones changed since the review (package rebuilt?): skipped",
+    "16-fairway-right: zones changed since the review (package rebuilt?): skipped",
+    "9-fairway-right: zones changed since the review (package rebuilt?): skipped",
+    "11-fairway-right: zones changed since the review (package rebuilt?): skipped"
+   ],
    "after": {
-    "same": 8,
-    "n": 14,
-    "rows": [
-     {
-      "hole": "1",
-      "auto": "2-wood",
-      "aim": -15.0,
-      "tie": true,
-      "hand": "4-wood",
-      "hand_tie": false,
-      "same": false
-     },
-     {
-      "hole": "2",
-      "auto": "Driver",
-      "aim": 40.0,
-      "tie": true,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "4",
-      "auto": "Driver",
-      "aim": -10.0,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "5",
-      "auto": "4-wood",
-      "aim": -2.5,
-      "tie": true,
-      "hand": "2-wood",
-      "hand_tie": true,
-      "same": false
-     },
-     {
-      "hole": "6",
-      "auto": "Driver",
-      "aim": -30.0,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "8",
-      "auto": "4-wood",
-      "aim": -5.0,
-      "tie": false,
-      "hand": "4-wood",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "9",
-      "auto": "4-wood",
-      "aim": 0.0,
-      "tie": false,
-      "hand": "4-wood",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "10",
-      "auto": "Driver",
-      "aim": 2.5,
-      "tie": true,
-      "hand": "4-wood",
-      "hand_tie": false,
-      "same": false
-     },
-     {
-      "hole": "11",
-      "auto": "4-wood",
-      "aim": 5.0,
-      "tie": false,
-      "hand": "4-wood",
-      "hand_tie": true,
-      "same": true
-     },
-     {
-      "hole": "13",
-      "auto": "Driver",
-      "aim": 12.5,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "14",
-      "auto": "Driver",
-      "aim": -30.0,
-      "tie": false,
-      "hand": "2-wood",
-      "hand_tie": false,
-      "same": false
-     },
-     {
-      "hole": "16",
-      "auto": "4-wood",
-      "aim": 2.5,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": true,
-      "same": false
-     },
-     {
-      "hole": "17",
-      "auto": "Driver",
-      "aim": 12.5,
-      "tie": false,
-      "hand": "Driver",
-      "hand_tie": false,
-      "same": true
-     },
-     {
-      "hole": "18",
-      "auto": "Driver",
-      "aim": -7.5,
-      "tie": false,
-      "hand": "2-wood",
-      "hand_tie": false,
-      "same": false
-     }
-    ]
-   },
-   "replanned": {
-    "2": {
-     "before": {
-      "pick": "Driver",
-      "aim": -35.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 40.0
-     }
-    },
     "4": {
-     "before": {
-      "pick": "Driver",
-      "aim": -5.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": -10.0
-     }
+     "pick": "Driver",
+     "aim": -7.5,
+     "tie": false
     },
     "5": {
-     "before": {
-      "pick": "4-wood",
-      "aim": -5.0
-     },
-     "after": {
-      "pick": "4-wood",
-      "aim": -2.5
-     }
+     "pick": "4-wood",
+     "aim": -12.5,
+     "tie": false
+    },
+    "2": {
+     "pick": "Driver",
+     "aim": -35.0,
+     "tie": false
     },
     "1": {
-     "before": {
-      "pick": "Driver",
-      "aim": -40.0
-     },
-     "after": {
-      "pick": "2-wood",
-      "aim": -15.0
-     }
+     "pick": "2-wood",
+     "aim": -35.0,
+     "tie": true
     },
     "9": {
-     "before": {
-      "pick": "4-wood",
-      "aim": 2.5
-     },
-     "after": {
-      "pick": "4-wood",
-      "aim": 0.0
-     }
+     "pick": "4-wood",
+     "aim": -5.0,
+     "tie": false
     },
     "6": {
-     "before": {
-      "pick": "Driver",
-      "aim": -35.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": -30.0
-     }
+     "pick": "Driver",
+     "aim": -37.5,
+     "tie": true
     },
-    "10": {
-     "before": {
-      "pick": "Driver",
-      "aim": 0.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 2.5
-     }
+    "8": {
+     "pick": "4-wood",
+     "aim": -12.5,
+     "tie": false
     },
     "11": {
-     "before": {
-      "pick": "4-wood",
-      "aim": 2.5
-     },
-     "after": {
-      "pick": "4-wood",
-      "aim": 5.0
-     }
+     "pick": "4-wood",
+     "aim": -17.5,
+     "tie": true
     },
     "13": {
-     "before": {
-      "pick": "Driver",
-      "aim": 12.5
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 12.5
-     }
+     "pick": "2-wood",
+     "aim": 7.5,
+     "tie": false
+    },
+    "10": {
+     "pick": "Driver",
+     "aim": -2.5,
+     "tie": false
     },
     "16": {
-     "before": {
-      "pick": "4-wood",
-      "aim": -5.0
-     },
-     "after": {
-      "pick": "4-wood",
-      "aim": 2.5
-     }
-    },
-    "14": {
-     "before": {
-      "pick": "2-wood",
-      "aim": -40.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": -30.0
-     }
+     "pick": "4-wood",
+     "aim": 0.0,
+     "tie": false
     },
     "17": {
-     "before": {
-      "pick": "Driver",
-      "aim": 0.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": 12.5
-     }
+     "pick": "Driver",
+     "aim": 10.0,
+     "tie": false
+    },
+    "14": {
+     "pick": "2-wood",
+     "aim": -27.5,
+     "tie": false
     },
     "18": {
-     "before": {
-      "pick": "Driver",
-      "aim": -5.0
-     },
-     "after": {
-      "pick": "Driver",
-      "aim": -7.5
-     }
+     "pick": "2-wood",
+     "aim": -7.5,
+     "tie": true
     }
+   },
+   "agree": {
+    "final": [
+     9,
+     14
+    ],
+    "qa_hand": [
+     5,
+     14
+    ],
+    "same_plan": [
+     9,
+     14
+    ]
    }
   }
  },
- "before": {
-  "same": 9,
-  "n": 14,
-  "rows": [
-   {
-    "hole": "1",
-    "auto": "Driver",
-    "aim": -40.0,
-    "tie": false,
-    "hand": "4-wood",
-    "hand_tie": false,
-    "same": false
-   },
-   {
-    "hole": "2",
-    "auto": "Driver",
-    "aim": -35.0,
-    "tie": false,
-    "hand": "Driver",
-    "hand_tie": false,
-    "same": true
-   },
-   {
-    "hole": "4",
-    "auto": "Driver",
-    "aim": -5.0,
-    "tie": false,
-    "hand": "Driver",
-    "hand_tie": false,
-    "same": true
-   },
-   {
-    "hole": "5",
-    "auto": "4-wood",
-    "aim": -5.0,
-    "tie": false,
-    "hand": "2-wood",
-    "hand_tie": true,
-    "same": false
-   },
-   {
-    "hole": "6",
-    "auto": "Driver",
-    "aim": -35.0,
-    "tie": false,
-    "hand": "Driver",
-    "hand_tie": false,
-    "same": true
-   },
-   {
-    "hole": "8",
-    "auto": "4-wood",
-    "aim": -5.0,
-    "tie": false,
-    "hand": "4-wood",
-    "hand_tie": false,
-    "same": true
-   },
-   {
-    "hole": "9",
-    "auto": "4-wood",
-    "aim": 2.5,
-    "tie": false,
-    "hand": "4-wood",
-    "hand_tie": false,
-    "same": true
-   },
-   {
-    "hole": "10",
-    "auto": "Driver",
-    "aim": 0.0,
-    "tie": false,
-    "hand": "4-wood",
-    "hand_tie": false,
-    "same": false
-   },
-   {
-    "hole": "11",
-    "auto": "4-wood",
-    "aim": 2.5,
-    "tie": false,
-    "hand": "4-wood",
-    "hand_tie": true,
-    "same": true
-   },
-   {
-    "hole": "13",
-    "auto": "Driver",
-    "aim": 12.5,
-    "tie": true,
-    "hand": "Driver",
-    "hand_tie": false,
-    "same": true
-   },
-   {
-    "hole": "14",
-    "auto": "2-wood",
-    "aim": -40.0,
-    "tie": false,
-    "hand": "2-wood",
-    "hand_tie": false,
-    "same": true
-   },
-   {
-    "hole": "16",
-    "auto": "4-wood",
-    "aim": -5.0,
-    "tie": false,
-    "hand": "Driver",
-    "hand_tie": true,
-    "same": false
-   },
-   {
-    "hole": "17",
-    "auto": "Driver",
-    "aim": 0.0,
-    "tie": false,
-    "hand": "Driver",
-    "hand_tie": false,
-    "same": true
-   },
-   {
-    "hole": "18",
-    "auto": "Driver",
-    "aim": -5.0,
-    "tie": false,
-    "hand": "2-wood",
-    "hand_tie": false,
-    "same": false
-   }
-  ]
- },
- "ceilings": {
-  "hand_tees": {
-   "same": 7,
-   "n": 14,
-   "rows": [
-    {
-     "hole": "1",
-     "auto": "2-wood",
-     "aim": -12.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "2",
-     "auto": "Driver",
-     "aim": 40.0,
-     "tie": true,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "4",
-     "auto": "Driver",
-     "aim": -2.5,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "5",
-     "auto": "4-wood",
-     "aim": -2.5,
-     "tie": true,
-     "hand": "2-wood",
-     "hand_tie": true,
-     "same": false
-    },
-    {
-     "hole": "6",
-     "auto": "Driver",
-     "aim": -30.0,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "8",
-     "auto": "4-wood",
-     "aim": -7.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "9",
-     "auto": "4-wood",
-     "aim": 0.0,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "10",
-     "auto": "Driver",
-     "aim": 2.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "11",
-     "auto": "4-wood",
-     "aim": 2.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": true,
-     "same": true
-    },
-    {
-     "hole": "13",
-     "auto": "4-wood",
-     "aim": 5.0,
-     "tie": true,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "14",
-     "auto": "Driver",
-     "aim": -30.0,
-     "tie": false,
-     "hand": "2-wood",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "16",
-     "auto": "4-wood",
-     "aim": 2.5,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": true,
-     "same": false
-    },
-    {
-     "hole": "17",
-     "auto": "Driver",
-     "aim": 12.5,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "18",
-     "auto": "Driver",
-     "aim": 0.0,
-     "tie": false,
-     "hand": "2-wood",
-     "hand_tie": false,
-     "same": false
-    }
-   ]
+ "truth_picks": {
+  "final": {
+   "1": "4-wood",
+   "2B": "Driver",
+   "2F": "Driver",
+   "4": "Driver",
+   "5": "2-wood",
+   "6": "Driver",
+   "8": "4-wood",
+   "9B": "2-wood",
+   "9F": "4-wood",
+   "10": "4-wood",
+   "11": "4-wood",
+   "13": "Driver",
+   "14": "2-wood",
+   "16": "Driver",
+   "17": "Driver",
+   "18": "2-wood"
   },
-  "hand_zones": {
-   "same": 7,
-   "n": 14,
-   "rows": [
-    {
-     "hole": "1",
-     "auto": "4-wood",
-     "aim": -2.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "2",
-     "auto": "Driver",
-     "aim": -32.5,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "4",
-     "auto": "4-wood",
-     "aim": -17.5,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "5",
-     "auto": "4-wood",
-     "aim": -5.0,
-     "tie": false,
-     "hand": "2-wood",
-     "hand_tie": true,
-     "same": false
-    },
-    {
-     "hole": "6",
-     "auto": "4-wood",
-     "aim": -12.5,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "8",
-     "auto": "4-wood",
-     "aim": -5.0,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "9",
-     "auto": "4-wood",
-     "aim": -5.0,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "10",
-     "auto": "Driver",
-     "aim": 0.0,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "11",
-     "auto": "4-wood",
-     "aim": -5.0,
-     "tie": true,
-     "hand": "4-wood",
-     "hand_tie": true,
-     "same": true
-    },
-    {
-     "hole": "13",
-     "auto": "Driver",
-     "aim": 5.0,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "14",
-     "auto": "4-wood",
-     "aim": -40.0,
-     "tie": true,
-     "hand": "2-wood",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "16",
-     "auto": "4-wood",
-     "aim": -10.0,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": true,
-     "same": false
-    },
-    {
-     "hole": "17",
-     "auto": "Driver",
-     "aim": -5.0,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "18",
-     "auto": "Driver",
-     "aim": -15.0,
-     "tie": false,
-     "hand": "2-wood",
-     "hand_tie": false,
-     "same": false
-    }
-   ]
+  "qa_hand": {
+   "1": "4-wood",
+   "2B": "Driver",
+   "2F": "Driver",
+   "4": "Driver",
+   "5": "4-wood",
+   "6": "2-wood",
+   "8": "4-wood",
+   "9B": "2-wood",
+   "9F": "4-wood",
+   "10": "4-wood",
+   "11": "Long iron",
+   "13": "Driver",
+   "14": "4-wood",
+   "16": "2-wood",
+   "17": "2-wood",
+   "18": "4-wood"
   },
-  "hand_all": {
-   "same": 8,
-   "n": 14,
-   "rows": [
-    {
-     "hole": "1",
-     "auto": "4-wood",
-     "aim": -2.5,
-     "tie": true,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "2",
-     "auto": "Driver",
-     "aim": 40.0,
-     "tie": true,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "4",
-     "auto": "4-wood",
-     "aim": -15.0,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "5",
-     "auto": "4-wood",
-     "aim": -5.0,
-     "tie": true,
-     "hand": "2-wood",
-     "hand_tie": true,
-     "same": false
-    },
-    {
-     "hole": "6",
-     "auto": "4-wood",
-     "aim": -10.0,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "8",
-     "auto": "4-wood",
-     "aim": -7.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "9",
-     "auto": "4-wood",
-     "aim": -7.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "10",
-     "auto": "Driver",
-     "aim": 2.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "11",
-     "auto": "4-wood",
-     "aim": 2.5,
-     "tie": false,
-     "hand": "4-wood",
-     "hand_tie": true,
-     "same": true
-    },
-    {
-     "hole": "13",
-     "auto": "4-wood",
-     "aim": 0.0,
-     "tie": true,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": false
-    },
-    {
-     "hole": "14",
-     "auto": "2-wood",
-     "aim": -17.5,
-     "tie": false,
-     "hand": "2-wood",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "16",
-     "auto": "Driver",
-     "aim": -2.5,
-     "tie": true,
-     "hand": "Driver",
-     "hand_tie": true,
-     "same": true
-    },
-    {
-     "hole": "17",
-     "auto": "Driver",
-     "aim": 10.0,
-     "tie": false,
-     "hand": "Driver",
-     "hand_tie": false,
-     "same": true
-    },
-    {
-     "hole": "18",
-     "auto": "Driver",
-     "aim": -12.5,
-     "tie": false,
-     "hand": "2-wood",
-     "hand_tie": false,
-     "same": false
-    }
-   ]
+  "same_plan": {
+   "4": "4-wood",
+   "2": "Driver",
+   "5": "4-wood",
+   "1": "4-wood",
+   "6": "4-wood",
+   "8": "4-wood",
+   "9": "4-wood",
+   "10": "Driver",
+   "11": "4-wood",
+   "13": "4-wood",
+   "16": "4-wood",
+   "14": "2-wood",
+   "17": "Driver",
+   "18": "Driver"
   }
  }
 }
