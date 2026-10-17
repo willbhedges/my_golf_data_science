@@ -1,5 +1,5 @@
 """Course module for Coldwater Golf Links (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-10-17T16:44:59Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-17T17:30:45Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_coldwater.json
 

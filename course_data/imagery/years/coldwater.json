@@ -1,7 +1,7 @@
 {
  "schema": "naip_years_run/1",
  "slug": "coldwater",
- "built": "2026-10-17T15:08Z",
+ "built": "2026-10-17T17:28Z",
  "bbox_snwe": [
   42.008804,
   -93.630621,
@@ -9,6 +9,8 @@
   -93.613866
  ],
  "current": 2023,
+ "chosen": 2023,
+ "imagery_dir": "course_data/packages/coldwater/imagery",
  "selection": {
   "schema": "naip_years/1",
   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
@@ -61,7 +63,7 @@
      158.0,
      123.0
     ],
-    "score": -0.5778,
+    "score": -0.5918,
     "notes": [
      "hazy (blue floor 85)",
      "95% of the turf brown / bare"
@@ -88,7 +90,7 @@
      167.0,
      121.0
     ],
-    "score": -0.5051,
+    "score": -0.5331,
     "notes": [
      "hazy (blue floor 64)",
      "94% of the turf brown / bare"
@@ -115,8 +117,9 @@
      151.0,
      102.0
     ],
-    "score": 0.039,
-    "notes": [],
+    "notes": [
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+    ],
     "turf_source": "osm"
    },
    {
@@ -139,9 +142,9 @@
      147.0,
      99.0
     ],
-    "score": -0.1017,
     "notes": [
-     "36% of the turf brown / bare"
+     "36% of the turf brown / bare",
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
     ],
     "turf_source": "osm"
    },
@@ -166,9 +169,9 @@
      127.0,
      79.0
     ],
-    "score": -0.1749,
     "notes": [
-     "leaf-off flight"
+     "leaf-off flight",
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
     ],
     "turf_source": "osm"
    },
@@ -192,9 +195,9 @@
      139.0,
      103.0
     ],
-    "score": -0.1663,
     "notes": [
-     "39% of the turf brown / bare"
+     "39% of the turf brown / bare",
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
     ],
     "turf_source": "osm"
    },
@@ -218,9 +221,9 @@
      138.0,
      118.0
     ],
-    "score": -0.1568,
     "notes": [
-     "hazy (blue floor 70)"
+     "hazy (blue floor 70)",
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
     ],
     "turf_source": "osm"
    }
@@ -259,121 +262,121 @@
      "recall": 0.289
     }
    },
-   "2017": {
+   "2019": {
     "green": {
-     "iou": 0.803,
-     "precision": 0.856,
-     "recall": 0.928
+     "iou": 0.833,
+     "precision": 0.866,
+     "recall": 0.956
     },
     "tee": {
-     "iou": 0.509,
-     "precision": 0.59,
-     "recall": 0.788
+     "iou": 0.51,
+     "precision": 0.548,
+     "recall": 0.879
     },
     "fairway": {
-     "iou": 0.696,
-     "precision": 0.968,
-     "recall": 0.712
+     "iou": 0.747,
+     "precision": 0.981,
+     "recall": 0.757
     },
     "bunker": {
-     "iou": 0.598,
-     "precision": 0.755,
-     "recall": 0.741
+     "iou": 0.752,
+     "precision": 0.807,
+     "recall": 0.917
     },
     "water": {
-     "iou": 0.339,
-     "precision": 0.565,
-     "recall": 0.458
+     "iou": 0.604,
+     "precision": 0.792,
+     "recall": 0.718
     }
    },
-   "2015": {
+   "2021": {
     "green": {
-     "iou": 0.829,
-     "precision": 0.846,
-     "recall": 0.976
+     "iou": 0.816,
+     "precision": 0.834,
+     "recall": 0.974
     },
     "tee": {
-     "iou": 0.501,
-     "precision": 0.558,
-     "recall": 0.83
+     "iou": 0.504,
+     "precision": 0.593,
+     "recall": 0.771
     },
     "fairway": {
-     "iou": 0.716,
-     "precision": 0.962,
-     "recall": 0.737
+     "iou": 0.739,
+     "precision": 0.982,
+     "recall": 0.749
     },
     "bunker": {
-     "iou": 0.744,
-     "precision": 0.768,
-     "recall": 0.959
+     "iou": 0.782,
+     "precision": 0.832,
+     "recall": 0.929
     },
     "water": {
-     "iou": 0.614,
-     "precision": 0.879,
-     "recall": 0.671
+     "iou": 0.252,
+     "precision": 0.534,
+     "recall": 0.322
     }
    },
-   "2023+2017": {
+   "2023+2019": {
     "green": {
-     "iou": 0.793,
-     "precision": 0.857,
-     "recall": 0.914
+     "iou": 0.812,
+     "precision": 0.861,
+     "recall": 0.934
     },
     "tee": {
-     "iou": 0.508,
-     "precision": 0.592,
-     "recall": 0.782
+     "iou": 0.531,
+     "precision": 0.583,
+     "recall": 0.856
     },
     "fairway": {
-     "iou": 0.697,
-     "precision": 0.973,
-     "recall": 0.711
+     "iou": 0.725,
+     "precision": 0.976,
+     "recall": 0.738
     },
     "bunker": {
-     "iou": 0.546,
-     "precision": 0.741,
-     "recall": 0.675
+     "iou": 0.688,
+     "precision": 0.803,
+     "recall": 0.827
     },
     "water": {
-     "iou": 0.352,
-     "precision": 0.552,
-     "recall": 0.493
+     "iou": 0.61,
+     "precision": 0.764,
+     "recall": 0.751
     }
    },
-   "2023+2017+2015": {
+   "2023+2019+2021": {
     "green": {
-     "iou": 0.838,
-     "precision": 0.872,
+     "iou": 0.822,
+     "precision": 0.855,
      "recall": 0.955
     },
     "tee": {
-     "iou": 0.54,
-     "precision": 0.604,
-     "recall": 0.835
+     "iou": 0.544,
+     "precision": 0.602,
+     "recall": 0.849
     },
     "fairway": {
-     "iou": 0.709,
-     "precision": 0.972,
-     "recall": 0.724
+     "iou": 0.732,
+     "precision": 0.98,
+     "recall": 0.744
     },
     "bunker": {
-     "iou": 0.694,
-     "precision": 0.788,
-     "recall": 0.853
+     "iou": 0.759,
+     "precision": 0.827,
+     "recall": 0.902
     },
     "water": {
-     "iou": 0.412,
-     "precision": 0.851,
-     "recall": 0.444
+     "iou": 0.274,
+     "precision": 0.742,
+     "recall": 0.303
     }
    }
   },
   "mean_iou": {
    "2023": 0.541,
-   "2017": 0.589,
-   "2015": 0.681,
-   "2023+2017": 0.579,
-   "2023+2017+2015": 0.639
+   "2019": 0.689,
+   "2021": 0.619,
+   "2023+2019": 0.673,
+   "2023+2019+2021": 0.626
   },
   "current": 2023
  },
