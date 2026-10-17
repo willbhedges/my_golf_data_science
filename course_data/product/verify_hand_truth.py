@@ -46,21 +46,30 @@ def hand_key(ref, tee_set, hand):
 
 
 def _hand_polys(hh, fr, lies, clip=None):
-    from shapely.ops import unary_union
-    ps = []
-    zs = hh.get("zones") or []
-    if isinstance(zs, str):
-        return None
-    for z in zs:
+    """Union of the hand map's effective area of `lies` (later zones win, as tee_strategy.lie_at), clipped."""
+    eff = {}
+    for z in hh.get("zones") or []:
         lie = PK.LIE_MAP.get(z.get("lie"), z.get("lie"))
-        if lie in lies and len(z.get("poly_ll") or []) >= 3:
-            try:
-                p = V.shapely_poly(V.to_yd(fr, z["poly_ll"]))
-                ps.append(p if clip is None else p.intersection(clip))
-            except Exception:                                # noqa: BLE001
-                pass
-    u = unary_union([p for p in ps if not p.is_empty]) if ps else None
-    return u
+        if len(z.get("poly_ll") or []) < 3:
+            continue
+        try:
+            p = V.shapely_poly(V.to_yd(fr, z["poly_ll"]))
+        except Exception:                                    # noqa: BLE001
+            continue
+        if clip is not None:
+            p = p.intersection(clip.buffer(5))
+        if p.is_empty:
+            continue
+        for k in list(eff):
+            if k != lie:
+                eff[k] = eff[k].difference(p)
+        eff[lie] = eff[lie].union(p) if lie in eff else p
+    from shapely.ops import unary_union
+    parts = [eff[k] for k in lies if k in eff and not eff[k].is_empty]
+    if not parts:
+        return None
+    u = unary_union(parts)
+    return u.intersection(clip) if clip is not None else u
 
 
 def _edges(geom, side, bands):
