@@ -185,9 +185,29 @@ def combine(paths, seed, per_tier, out_dir):
     return sample, popd
 
 
+def extend(paths, seed, n, out_dir):
+    """Add n more fully mapped courses (tier "validation": scored only by the routing validation, not counted in
+    the tier rates) drawn with random.Random(seed + 100) from the same surveyed population."""
+    sp = os.path.join(out_dir, "sample.json")
+    smp = json.load(open(sp))
+    have = {c["osm"] for c in smp["courses"]}
+    used = {c["slug"] for c in smp["courses"]}
+    pop = [r for p in paths for r in json.load(open(p))["courses"] if eligible(r) and r["tier"] == "full"
+           and r["osm"] not in have and r["counts"].get("hole", 0) >= 18]
+    pop.sort(key=lambda r: r["osm"])
+    add = [dict(r, tier="validation", slug=slug_for(r, used)) for r in random.Random(seed + 100).sample(pop, min(n, len(pop)))]
+    smp["courses"] += add
+    smp["n"] = len(smp["courses"])
+    smp["validation_extra"] = dict(seed=seed + 100, n=len(add))
+    json.dump(smp, open(sp, "w"), indent=1)
+    for r in add:
+        print(r["slug"], r["name"], r["state"], r["osm"], r["counts"])
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["states", "survey", "combine"])
+    ap.add_argument("cmd", choices=["states", "survey", "combine", "extend"])
+    ap.add_argument("--n", type=int, default=12)
     ap.add_argument("args", nargs="*")
     ap.add_argument("--seed", type=int, default=20261017)
     ap.add_argument("--per-tier", type=int, default=7)
@@ -206,6 +226,8 @@ def main():
             json.dump(res, open(out, "w"))
             from collections import Counter
             print(st, res["n_elements"], "courses", Counter(r["tier"] for r in res["courses"] if eligible(r)))
+    elif a.cmd == "extend":
+        extend(a.args, a.seed, a.n, a.out or HERE)
     else:
         combine(a.args, a.seed, a.per_tier, a.out or HERE)
 
