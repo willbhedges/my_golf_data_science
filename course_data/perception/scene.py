@@ -47,6 +47,56 @@ def node_near(G, greens, complexes, bld, parks):
                                   building=nearest(p, bld, 25, br), parking=nearest(p, parks, 25, br))
 
 
+EDGE_FEATURES = ("dist_m", "path_m", "path_ratio", "path_direct", "aims_at_green", "tee_p", "rank_dist", "rank_path",
+                 "n_cands", "axis_off", "tee_length", "green_p_hole", "tee_elev_drop")
+
+
+def edge_features(rel, greens, complexes):
+    """Feature rows for the learned green -> next-tee model, one per relation (same order)."""
+    gi = {g["id"]: g for g in greens}
+    ci = {c["id"]: c for c in complexes}
+    by = {}
+    for r in rel:
+        by.setdefault(r["green"], []).append(r)
+    rows = []
+    for r in rel:
+        g, c = gi[r["green"]], ci[r["tee"]]
+        cs = by[r["green"]]
+        dists = sorted(x["dist_m"] for x in cs)
+        paths = sorted(x["path_m"] for x in cs if x["path_m"] is not None)
+        off = None
+        if c.get("axis") is not None and c.get("elong", 1) >= 1.3:
+            off = geo.angle_diff(c["axis"], geo.bearing(g["xy"], c["xy"]) % 180)
+        ge, te = g.get("elev"), c.get("elev")
+        rows.append(dict(dist_m=r["dist_m"], path_m=r["path_m"],
+                         path_ratio=(r["path_m"] / max(r["dist_m"], 1.0)) if r["path_m"] is not None else None,
+                         path_direct=None if r["path_direct"] is None else float(r["path_direct"]),
+                         aims_at_green=float(r.get("aims_at_green", False)), tee_p=c.get("p"),
+                         rank_dist=float(dists.index(r["dist_m"])),
+                         rank_path=float(paths.index(r["path_m"])) if r["path_m"] is not None else None,
+                         n_cands=float(len(cs)), axis_off=off, tee_length=c.get("length"),
+                         green_p_hole=g.get("p_hole"),
+                         tee_elev_drop=(ge - te) if ge is not None and te is not None else None))
+    return rows
+
+
+def apply_edge_model(rel, greens, complexes, md):
+    """Replace the rule p_next by the learned model, normalised over each green's candidates."""
+    if not rel or not md:
+        return rel
+    import detect as DT
+    rows = edge_features(rel, greens, complexes)
+    pr, cl = DT._apply(md["clf"], rows, md["features"])
+    p = pr[:, cl.index(1)]
+    tot = {}
+    for r, v in zip(rel, p):
+        tot[r["green"]] = tot.get(r["green"], 0.0) + float(v)
+    for r, v in zip(rel, p):
+        r["p_edge"] = round(float(v), 3)
+        r["p_next"] = round(float(v) / max(tot[r["green"]], 1e-9), 3)
+    return rel
+
+
 def green_to_tee(G, greens, complexes, max_m=450.0, attach_m=45.0):
     """Ordering evidence: every (green, tee complex) pair within max_m, with the cart-path route between them."""
     import networkx as nx
@@ -121,7 +171,7 @@ def green_to_tee(G, greens, complexes, max_m=450.0, attach_m=45.0):
     return rel
 
 
-def build_scene(st, L, D, mode="blind", models_id=None):
+def build_scene(st, L, D, mode="blind", models_id=None, models=None):
     """D: dict of detector outputs (perceive.run)."""
     G = D["graph"]
     greens, complexes = D["greens"], D["complexes"]
@@ -133,6 +183,7 @@ def build_scene(st, L, D, mode="blind", models_id=None):
         G.edges[u, v]["eid"] = f"e{k + 1}"
     node_near(G, greens, complexes, D["buildings"], D["parking"])
     rel = green_to_tee(G, greens, complexes)
+    rel = apply_edge_model(rel, greens, complexes, (models or {}).get("edge"))
 
     def poly_obj(o, extra=None):
         d = dict(id=o["id"], p=_r(o.get("p", 0.5), 3), centroid=geo.pt_ll(st, *o["xy"]), area_m2=_r(o["area"], 1),

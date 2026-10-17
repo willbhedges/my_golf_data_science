@@ -25,7 +25,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEST_STATES = ("GA", "KY", "MN", "UT", "ME", "WY")       # geographic hold-out (never used for training)
-OBJ_MODELS = ("green", "tee_box", "tee_complex", "parking", "clubhouse")
+OBJ_MODELS = ("green", "tee_box", "tee_complex", "parking", "clubhouse", "edge")
 
 
 def split_of(state):
@@ -114,7 +114,7 @@ def train_objects(tabs, out_dir, log=print):
             log(name, "too few rows", len(tr))
             res[name] = dict(skipped=f"{len(tr)} train rows")
             continue
-        feats = sorted({k for r in tr for k in r if k != "y"})
+        feats = sorted({k for r in tr for k in r if k not in ("y", "g")})
         Xtr, ytr = _xy(tr, feats)
         clf = fit(Xtr, ytr, balanced=(name == "clubhouse"))     # unweighted = calibrated-ish p; clubhouse is a ranking
         thr = None
@@ -124,6 +124,23 @@ def train_objects(tabs, out_dir, log=print):
         res[name] = dict(features=feats, n_train=len(tr), n_test=len(te),
                          train_class_counts={int(k): int(v) for k, v in zip(*np.unique(ytr, return_counts=True))},
                          thr=thr, train=_metrics(clf, Xtr, ytr), test=_metrics(clf, Xte, yte, thr) if len(te) else {})
+        if name == "edge" and te:                               # ranking: top-1 next tee per green
+            hit = n = 0
+            for t in tabs:
+                if split_of(t["meta"].get("state")) != "test" or not t.get(name):
+                    continue
+                by = {}
+                for r in t[name]:
+                    by.setdefault(r["g"], []).append(r)
+                for rs in by.values():
+                    if not any(r["y"] for r in rs):
+                        continue
+                    X, y = _xy(rs, feats)
+                    pr = clf.predict_proba(X)[:, list(clf.classes_).index(1)]
+                    n += 1
+                    hit += int(y[int(pr.argmax())] == 1)
+            res[name]["test"]["top1_when_true_present"] = round(hit / max(n, 1), 4)
+            res[name]["test"]["greens"] = n
         if name == "clubhouse" and te:                          # ranking: top-1 per course
             hit = n = 0
             for t in tabs:

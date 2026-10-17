@@ -137,10 +137,13 @@ Ordering evidence for the hole-graph inference. One entry per (green, tee comple
  "path_edges": ["e9", "e10"],
  "path_direct": true,       // the route passes no other green / tee complex on the way
  "aims_at_green": false,    // the complex's long axis points at this green (likely the green's OWN hole tee)
- "p_next": 0.71}            // perception's own P(tee is the next hole's tee after this green); a prior only
+ "p_edge": 0.64,            // learned P(this tee is the next hole's tee), independent per pair (absent without the model)
+ "p_next": 0.71}            // the same normalised over this green's candidates (sums to 1 per green); a prior only
 ```
-`p_next` uses only geometry + cart paths (distance, path detour, whether the tee's axis points away from
-the green); the sequence agent should treat it as a likelihood term, not a decision.
+`p_edge` / `p_next` use only geometry + cart paths (distance and its rank, cart-path detour and route, whether the
+tee's axis points at this green, the tee complex's own p, elevation change) through the `edge` model trained on
+the train states' OSM hole sequences (rule prior when no model is present); the sequence agent should treat them
+as likelihood terms, not decisions.
 
 ## Evaluation file (`eval.json`, when OSM labels exist)
 Per course and pooled, from `course_data/perception/evaluate.py` (definitions in `REPORT.md`):

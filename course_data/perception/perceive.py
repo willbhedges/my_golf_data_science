@@ -123,6 +123,19 @@ def tables(st, L, D, T, out_dir, rng=None):
         k = int(np.argmin(dd))
         if dd[k] <= 40:
             rows["clubhouse"] = [dict(r["feat"], y=int(i == k)) for i, r in enumerate(D["ch_rows"])]
+    if nh >= 9 and D.get("relations"):
+        starts = {h["ref"]: h["start"] for h in T.holes if h["ref"] is not None}
+        gref = {g["id"]: g.get("_truth_ref") for g in D["greens"]}
+        cx = {c["id"]: c for c in D["complexes"]}
+        keep = [r for r in D["relations"] if gref.get(r["green"]) is not None and gref[r["green"]] + 1 in starts]
+        feats = SC.edge_features(D["relations"], D["greens"], D["complexes"])
+        fmap = {(r["green"], r["tee"]): f for r, f in zip(D["relations"], feats)}
+        er = []
+        for r in keep:
+            s0 = starts[gref[r["green"]] + 1]
+            d = min(np.hypot(b["xy"][0] - s0[0], b["xy"][1] - s0[1]) for b in cx[r["tee"]]["boxes"])
+            er.append(dict(fmap[(r["green"], r["tee"])], y=int(d <= 30.0), g=r["green"]))
+        rows["edge"] = er
     json.dump(rows, open(os.path.join(out_dir, "objects.json"), "w"), default=lambda x: None if x is None else float(x))
     # cart-path pixels: only on courses whose cart paths are mapped densely
     if T.cart_length_m() >= 1500.0 * max(nh, 9) / 18.0:
@@ -166,7 +179,7 @@ def main():
     L, D = run(st, models)
     out = a.out or os.path.join(HERE, "scenes", st.meta.get("slug", "course"))
     os.makedirs(out, exist_ok=True)
-    sc = SC.build_scene(st, L, D, mode=a.mode, models_id=mid or "rules-v1")
+    sc = SC.build_scene(st, L, D, mode=a.mode, models_id=mid or "rules-v1", models=models)
     D["relations"] = sc["relations"]["green_to_tee"]
     json.dump(sc, open(os.path.join(out, "scene.json"), "w"), separators=(",", ":"))
     json.dump(SC.to_geojson(sc), open(os.path.join(out, "scene.geojson"), "w"), separators=(",", ":"))
