@@ -1,7 +1,7 @@
 {
  "schema": "naip_years_run/1",
  "slug": "ellis",
- "built": "2026-10-17T16:48Z",
+ "built": "2026-10-17T17:25Z",
  "bbox_snwe": [
   41.991747,
   -91.705551,
@@ -9,13 +9,13 @@
   -91.685935
  ],
  "current": 2014,
- "chosen": 2014,
+ "chosen": 2023,
  "imagery_dir": "course_data/packages/ellis/imagery",
  "selection": {
   "schema": "naip_years/1",
   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
-  "chosen": 2014,
-  "reason": "2014: the segment model scores 0.619 mean IoU vs OSM on it vs 0.598 on the greener 2021, so the switch is refused (scored: 2021 (2021-09-16): greenest leaf-on year on the course's turf (NDVI 0.37 vs 0.27, 1% vs 1% brown) over the newest year 2023 (less green); replaces 2014)",
+  "chosen": 2023,
+  "reason": "2023: the segment model scores 0.626 mean IoU vs OSM on it vs 0.598 on the greener 2021, so the switch is refused (scored: 2021 (2021-09-16): greenest leaf-on year on the course's turf (NDVI 0.37 vs 0.27, 1% vs 1% brown) over the newest year 2023 (less green); replaces 2014)",
   "candidates": [
    {
     "year": 2023,
@@ -309,33 +309,6 @@
      "recall": 0.564
     }
    },
-   "2014": {
-    "green": {
-     "iou": 0.818,
-     "precision": 0.868,
-     "recall": 0.934
-    },
-    "tee": {
-     "iou": 0.513,
-     "precision": 0.57,
-     "recall": 0.838
-    },
-    "fairway": {
-     "iou": 0.812,
-     "precision": 0.892,
-     "recall": 0.901
-    },
-    "bunker": {
-     "iou": 0.785,
-     "precision": 0.841,
-     "recall": 0.923
-    },
-    "water": {
-     "iou": 0.167,
-     "precision": 0.18,
-     "recall": 0.695
-    }
-   },
    "2021+2023": {
     "green": {
      "iou": 0.804,
@@ -395,11 +368,10 @@
    "2021": 0.598,
    "2023": 0.626,
    "2019": 0.565,
-   "2014": 0.619,
    "2021+2023": 0.62,
    "2021+2023+2019": 0.645
   },
-  "current": 2014
+  "current": 2023
  },
- "applied": "kept 2014; selection recorded in georef.json"
+ "applied": "re-fetched NAIP 2023 (was 2014)"
 }

@@ -15,11 +15,11 @@
   42.00451341117499,
   -91.68593533860194
  ],
- "fetched_utc": "2026-10-17T15:11:36Z",
+ "fetched_utc": "2026-10-17T17:28:34Z",
  "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
  "imagery": {
   "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
-  "year": 2014,
+  "year": 2023,
   "years_available": [
    2011,
    2013,
@@ -31,19 +31,19 @@
    2023
   ],
   "acquired": [
-   "2014-09-18"
+   "2023-09-01"
   ],
   "items": [
-   "ia_m_4209159_sw_15_1_20140918_20141202",
-   "ia_m_4209159_se_15_1_20140918_20141202",
-   "ia_m_4109103_nw_15_1_20140918_20141202",
-   "ia_m_4109103_ne_15_1_20140918_20141202"
+   "ia_m_4209159_sw_15_030_20230901_20231127",
+   "ia_m_4209159_se_15_030_20230901_20231127",
+   "ia_m_4109103_nw_15_030_20230901_20231127",
+   "ia_m_4109103_ne_15_030_20230901_20231127"
   ],
   "selection": {
    "schema": "naip_years/1",
    "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
-   "chosen": 2014,
-   "reason": "2014: the segment model scores 0.619 mean IoU vs OSM on it vs 0.598 on the greener 2021, so the switch is refused (scored: 2021 (2021-09-16): greenest leaf-on year on the course's turf (NDVI 0.37 vs 0.27, 1% vs 1% brown) over the newest year 2023 (less green); replaces 2014)",
+   "chosen": 2023,
+   "reason": "2023: the segment model scores 0.626 mean IoU vs OSM on it vs 0.598 on the greener 2021, so the switch is refused (scored: 2021 (2021-09-16): greenest leaf-on year on the course's turf (NDVI 0.37 vs 0.27, 1% vs 1% brown) over the newest year 2023 (less green); replaces 2014)",
    "candidates": [
     {
      "year": 2023,
@@ -250,8 +250,8 @@
     }
    ]
   },
-  "gsd_m": 1.0,
-  "resolution_m": 1.0,
+  "gsd_m": 0.3,
+  "resolution_m": 0.3,
   "bands": [
    "red",
    "green",
@@ -260,21 +260,21 @@
   ],
   "crs": "EPSG:26915",
   "epsg": 26915,
-  "width": 1647,
-  "height": 1443,
+  "width": 5488,
+  "height": 4809,
   "transform": [
-   1.0,
+   0.3,
    0.0,
-   607196.0,
+   607196.4,
    0.0,
-   -1.0,
-   4651113.0
+   -0.3,
+   4651112.7
   ],
   "bounds_crs": [
-   607196.0,
+   607196.4,
    4649670.0,
-   608843.0,
-   4651113.0
+   608842.7999999999,
+   4651112.7
   ],
   "files": {
    "rgb": "naip_rgb.tif",
@@ -286,26 +286,26 @@
     "rgb": "naip_rgb_lo.jpg",
     "nir": "naip_nir_lo.jpg"
    },
-   "width": 1647,
-   "height": 1443,
+   "width": 2744,
+   "height": 2404,
    "transform": [
-    1.0,
+    0.6,
     0.0,
-    607196.0,
+    607196.4,
     0.0,
-    -1.0,
-    4651113.0
+    -0.6001247920133111,
+    4651112.7
    ],
-   "resolution_m": 1.0
+   "resolution_m": 0.6
   },
   "sizes_mb": {
-   "naip_rgb.tif": 1.64,
-   "naip_nir.tif": 1.72,
-   "naip_rgb_lo.jpg": 1.06,
-   "naip_nir_lo.jpg": 1.03
+   "naip_rgb.tif": 11.58,
+   "naip_nir.tif": 9.37,
+   "naip_rgb_lo.jpg": 2.3,
+   "naip_nir_lo.jpg": 1.83
   },
   "preview": "preview.jpg",
-  "preview_scale": 2,
+  "preview_scale": 4,
   "license": "Public domain (USDA FSA)"
  },
  "dem": {
@@ -332,5 +332,5 @@
   "nan_frac": 0.0,
   "license": "Public domain (USGS)"
  },
- "total_mb": 10.5
+ "total_mb": 30.4
 }
