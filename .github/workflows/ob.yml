@@ -1,0 +1,110 @@
+name: ob-inference
+
+# OB inference (course_data/ob/, research plan B4). Request-file trigger (ARCHITECTURE.md 9.4):
+#   course_data/requests/ob_<name>.json = {"schema": "request/1", "kind": "ob",
+#     "courses": ["spirit_hollow", ...]   (package slugs: course_data/packages/<slug>/package.json must exist),
+#     "refetch": false, "decisions": true}
+# Steps: unit tests; fetch OB evidence per course (OSM, Microsoft building footprints, free parcels: fetch.py);
+# calibrate + leave-one-hole-out evaluation on Spirit Hollow's hand OB (evaluate.py calibrate -> params.json,
+# eval.json, eval.md); per-course OB report (ob.geojson, summary.json); decision impact on Spirit Hollow
+# (evaluate.py decisions: product decide.py quick for no OB / geometry OB / inferred OB / hand OB).
+# Commits course_data/ob/ back (pull-rebase-retry).
+
+on:
+  push:
+    paths:
+      - ".github/workflows/ob.yml"
+      - "course_data/requests/ob_*.json"
+      - "course_data/ob/*.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ob-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ob:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 20
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests numpy scipy shapely pyproj matplotlib pillow pytest opencv-python-headless rasterio
+
+      - name: Unit tests (offline)
+        run: python -m pytest -q course_data/ob
+
+      - name: Requests
+        id: req
+        run: |
+          python - <<'PY' > /tmp/req.env
+          import glob, json
+          courses, refetch, dec = [], False, False
+          for p in sorted(glob.glob("course_data/requests/ob_*.json")):
+              r = json.load(open(p))
+              courses += [c for c in r.get("courses", []) if c not in courses]
+              refetch |= bool(r.get("refetch"))
+              dec |= bool(r.get("decisions", True))
+          print("COURSES=" + " ".join(courses))
+          print("REFETCH=" + ("--refetch" if refetch else ""))
+          print("DECISIONS=" + ("1" if dec else ""))
+          PY
+          cat /tmp/req.env
+          cat /tmp/req.env >> "$GITHUB_OUTPUT"
+
+      - name: Fetch OB evidence (network)
+        continue-on-error: true
+        run: python course_data/ob/fetch.py ${{ steps.req.outputs.COURSES }} ${{ steps.req.outputs.REFETCH }}
+
+      - name: Calibrate + evaluate on Spirit Hollow (leave-one-hole-out)
+        continue-on-error: true
+        run: python course_data/ob/evaluate.py calibrate
+
+      - name: Per-course OB
+        continue-on-error: true
+        run: python course_data/ob/evaluate.py apply ${{ steps.req.outputs.COURSES }}
+
+      - name: Decision impact (Spirit Hollow, quick)
+        if: steps.req.outputs.DECISIONS == '1'
+        continue-on-error: true
+        timeout-minutes: 60
+        run: python course_data/ob/evaluate.py decisions
+
+      - name: Summary
+        if: always()
+        run: |
+          [ -f course_data/ob/eval.md ] && cat course_data/ob/eval.md >> "$GITHUB_STEP_SUMMARY" || true
+          for f in course_data/ob/*/summary.json; do echo "$f"; head -c 1500 "$f"; echo; done || true
+
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf course_data/ob/_work
+          git add course_data/ob
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "OB inference: evidence, calibration and per-course OB (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
