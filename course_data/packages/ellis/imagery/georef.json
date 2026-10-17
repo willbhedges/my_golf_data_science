@@ -1,0 +1,125 @@
+{
+ "course": "Ellis Golf Course",
+ "bbox_wgs84_snwe": [
+  41.992645,
+  -91.7043423,
+  42.0036151,
+  -91.6871441
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  41.99174668882501,
+  -91.70555106139805,
+  42.00451341117499,
+  -91.68593533860194
+ ],
+ "fetched_utc": "2026-10-17T10:11:53Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "years_available": [
+   2011,
+   2013,
+   2014,
+   2015,
+   2017,
+   2019,
+   2021,
+   2023
+  ],
+  "acquired": [
+   "2023-09-01"
+  ],
+  "items": [
+   "ia_m_4209159_sw_15_030_20230901_20231127",
+   "ia_m_4209159_se_15_030_20230901_20231127",
+   "ia_m_4109103_nw_15_030_20230901_20231127",
+   "ia_m_4109103_ne_15_030_20230901_20231127"
+  ],
+  "gsd_m": 0.3,
+  "resolution_m": 0.3,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 5488,
+  "height": 4809,
+  "transform": [
+   0.3,
+   0.0,
+   607196.4,
+   0.0,
+   -0.3,
+   4651112.7
+  ],
+  "bounds_crs": [
+   607196.4,
+   4649670.0,
+   608842.7999999999,
+   4651112.7
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 2744,
+   "height": 2404,
+   "transform": [
+    0.6,
+    0.0,
+    607196.4,
+    0.0,
+    -0.6001247920133111,
+    4651112.7
+   ],
+   "resolution_m": 0.6
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 11.58,
+   "naip_nir.tif": 9.37,
+   "naip_rgb_lo.jpg": 2.3,
+   "naip_nir_lo.jpg": 1.83
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 4,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26915",
+  "width": 1647,
+  "height": 1443,
+  "transform": [
+   1.0,
+   0.0,
+   607196.0,
+   0.0,
+   -1.0,
+   4651113.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 4.85,
+  "format": "COG",
+  "elev_m": [
+   218.72000122070312,
+   273.8757629394531
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 30.4
+}
