@@ -1,0 +1,358 @@
+{
+ "id": "perception-20261017-0721",
+ "sklearn": "1.9.1",
+ "test_states": [
+  "GA",
+  "KY",
+  "MN",
+  "UT",
+  "ME",
+  "WY"
+ ],
+ "courses": {
+  "train": [
+   "baywood_ca",
+   "big_foot_wi",
+   "billy_caldwell_il",
+   "black_stone_creek_wi",
+   "bloomington_il",
+   "brae_loch_il",
+   "canyon_lake_ca",
+   "carillon_il",
+   "chaska_wi",
+   "cinder_ridge_il",
+   "concord_ma",
+   "course_ca",
+   "crestwood_ma",
+   "del_rio_ca",
+   "derryfield_nh",
+   "diamond_bar_ca",
+   "edgewood_park_il",
+   "el_dorado_park_ca",
+   "elmcrest_ma",
+   "empire_ranch_ca",
+   "fairways_woodside_wi",
+   "falmouth_ma",
+   "gold_hills_il",
+   "great_southern_ms",
+   "green_harbor_ma",
+   "hatherly_ma",
+   "hidden_greens_north_wi",
+   "huntington_ca",
+   "kernwood_ma",
+   "lake_tahoe_ca",
+   "lake_windsor_wi",
+   "lakeside_ca",
+   "los_amigos_ca",
+   "metamora_fields_il",
+   "ocean_edge_resort_ma",
+   "ozaukee_wi",
+   "quincy_il",
+   "rancho_del_sol_ca",
+   "reserve_ca",
+   "ridge_ca",
+   "rock_river_hills_wi",
+   "saticoy_regional_ca",
+   "sevillano_ca",
+   "skokie_il",
+   "south_hills_ca",
+   "toscana_ca",
+   "turner_hill_ma",
+   "upland_hills_ca",
+   "urbana_il",
+   "visalia_ca",
+   "walpole_ma",
+   "waukewan_nh",
+   "wedgewood_golfer_s_ms",
+   "wellesley_ma",
+   "wentworth_nh",
+   "westhaven_wi",
+   "whaling_city_ma",
+   "wild_ridge_wi",
+   "william_j_devine_ma",
+   "willowbend_ma",
+   "willowhill_il",
+   "woods_hole_ma",
+   "wynstone_il"
+  ],
+  "test": [
+   "arrowhead_pointe_ga",
+   "bartram_trail_ga",
+   "bonneville_ut",
+   "boots_randolph_ky",
+   "browns_mill_ga",
+   "crossings_ky",
+   "dwan_mn",
+   "elk_river_mn",
+   "falmouth_me",
+   "georgia_veterans_memorial_ga",
+   "hideout_ut",
+   "hurstbourne_ky",
+   "jato_highlands_me",
+   "kingwood_ga",
+   "lakeside_ky",
+   "landing_ga",
+   "oak_lake_mn",
+   "oneka_ridge_mn",
+   "paintsville_ky",
+   "ridges_sand_creek_mn",
+   "riverwood_national_mn",
+   "sky_mountain_ut",
+   "sleepy_hollow_ky",
+   "smoke_rise_ga",
+   "somerby_mn",
+   "sun_hills_ut",
+   "sun_valley_ky",
+   "towne_lake_hills_ga",
+   "village_green_mn",
+   "wasioto_winds_ky",
+   "white_mountain_wy",
+   "wildwood_ky",
+   "woodford_ky"
+  ]
+ },
+ "objects": {
+  "green": {
+   "features": [
+    "area",
+    "bunker_near",
+    "compact",
+    "d_building",
+    "d_clubhouse",
+    "d_green",
+    "d_parking",
+    "d_tee",
+    "elong",
+    "fair_mean",
+    "hag",
+    "n_green_150",
+    "n_tee_80_600",
+    "n_tee_lt60",
+    "ndvi",
+    "p_max",
+    "p_mean",
+    "raised",
+    "slope",
+    "tophat"
+   ],
+   "n_train": 1202,
+   "n_test": 552,
+   "train_class_counts": {
+    "0": 154,
+    "1": 986,
+    "2": 62
+   },
+   "train": {
+    "n": 1202,
+    "acc": 1.0,
+    "auc_pos": 1.0,
+    "precision_pos": 1.0,
+    "recall_pos": 1.0
+   },
+   "test": {
+    "n": 552,
+    "acc": 0.8659,
+    "auc_pos": 0.7911,
+    "precision_pos": 0.8829,
+    "recall_pos": 0.9759
+   }
+  },
+  "tee_box": {
+   "features": [
+    "area",
+    "compact",
+    "elong",
+    "fair_mean",
+    "green_mean",
+    "hag",
+    "length",
+    "ndvi",
+    "p_max",
+    "p_mean",
+    "pad_frac",
+    "seg_frac",
+    "slope",
+    "tophat",
+    "width"
+   ],
+   "n_train": 4635,
+   "n_test": 2921,
+   "train_class_counts": {
+    "0": 2616,
+    "1": 2019
+   },
+   "train": {
+    "n": 4635,
+    "acc": 0.9659,
+    "auc_pos": 0.9959,
+    "precision_pos": 0.9546,
+    "recall_pos": 0.9678
+   },
+   "test": {
+    "n": 2921,
+    "acc": 0.898,
+    "auc_pos": 0.9559,
+    "precision_pos": 0.8808,
+    "recall_pos": 0.8122
+   }
+  },
+  "tee_complex": {
+   "features": [
+    "area",
+    "d_green",
+    "elong",
+    "has_pad",
+    "has_seg",
+    "length",
+    "max_box_p",
+    "mean_seg",
+    "n_boxes",
+    "n_greens_80_600",
+    "n_greens_lt60"
+   ],
+   "n_train": 2568,
+   "n_test": 1593,
+   "train_class_counts": {
+    "0": 1399,
+    "1": 1169
+   },
+   "train": {
+    "n": 2568,
+    "acc": 0.9813,
+    "auc_pos": 0.999,
+    "precision_pos": 0.9828,
+    "recall_pos": 0.976
+   },
+   "test": {
+    "n": 1593,
+    "acc": 0.877,
+    "auc_pos": 0.947,
+    "precision_pos": 0.8743,
+    "recall_pos": 0.7832
+   }
+  },
+  "parking": {
+   "features": [
+    "area",
+    "bright",
+    "compact",
+    "elong",
+    "length",
+    "ndvi",
+    "pathp",
+    "slope",
+    "width"
+   ],
+   "n_train": 5097,
+   "n_test": 1475,
+   "train_class_counts": {
+    "0": 4991,
+    "1": 106
+   },
+   "train": {
+    "n": 5097,
+    "acc": 1.0,
+    "auc_pos": 1.0,
+    "precision_pos": 1.0,
+    "recall_pos": 1.0
+   },
+   "test": {
+    "n": 1475,
+    "acc": 0.9844,
+    "auc_pos": 0.8565,
+    "precision_pos": 0.0,
+    "recall_pos": 0.0
+   }
+  },
+  "clubhouse": {
+   "features": [
+    "area",
+    "area_rel",
+    "d_center",
+    "d_green",
+    "d_park",
+    "d_tee",
+    "height",
+    "n_bld_100",
+    "n_green_250",
+    "n_path_nodes_80",
+    "n_tee_250",
+    "park_area_150",
+    "park_area_60"
+   ],
+   "n_train": 6422,
+   "n_test": 3485,
+   "train_class_counts": {
+    "0": 6400,
+    "1": 22
+   },
+   "train": {
+    "n": 6422,
+    "acc": 1.0,
+    "auc_pos": 1.0,
+    "precision_pos": 1.0,
+    "recall_pos": 1.0
+   },
+   "test": {
+    "n": 3485,
+    "acc": 0.9963,
+    "auc_pos": 0.946,
+    "precision_pos": 0.4,
+    "recall_pos": 0.1667,
+    "top1": 0.75,
+    "courses": 12
+   }
+  }
+ },
+ "path_px": {
+  "features": [
+   "ndvi",
+   "bright",
+   "nir",
+   "r",
+   "g",
+   "b",
+   "hag",
+   "inten",
+   "slope",
+   "nd_contrast",
+   "br_contrast",
+   "line_paved",
+   "line_bright",
+   "paved_width_max",
+   "seg_green",
+   "seg_tee",
+   "seg_fairway",
+   "seg_bunker",
+   "cls_ground",
+   "cls_building",
+   "ndvi_mean11",
+   "bright_std5",
+   "ndvi_rel",
+   "bright_rel",
+   "nir_rel",
+   "line_paved_wide",
+   "tall_frac9",
+   "inten_contrast"
+  ],
+  "n_train": 1500000,
+  "courses_train": 56,
+  "courses_test": 29,
+  "seconds": 89.0,
+  "train": {
+   "n": 1500000,
+   "acc": 0.8809,
+   "auc_pos": 0.9419,
+   "precision_pos": 0.8092,
+   "recall_pos": 0.6462
+  },
+  "test": {
+   "n": 1564954,
+   "acc": 0.819,
+   "auc_pos": 0.865,
+   "precision_pos": 0.7771,
+   "recall_pos": 0.4918
+  },
+  "thr": 0.5
+ }
+}

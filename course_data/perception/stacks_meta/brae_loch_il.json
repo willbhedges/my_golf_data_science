@@ -1,0 +1,221 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "brae_loch_il",
+ "name": "Brae Loch Golf Course",
+ "state": "IL",
+ "bbox_wsen": [
+  -88.0143867,
+  42.3473446,
+  -88.0039368,
+  42.3516418
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1168,
+  "height": 790,
+  "bounds": [
+   416298,
+   4688680,
+   417466,
+   4689470
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   416298.0,
+   0.0,
+   -1.0,
+   4689470.0
+  ],
+  "ll_bbox_wsen": [
+   -88.01630985190914,
+   42.34587938035772,
+   -88.00201711176786,
+   42.35311791200927
+  ]
+ },
+ "built_utc": "2026-10-17T06:18:18Z",
+ "seconds": {
+  "lidar": 7.5,
+  "naip": 11.8,
+  "segment": 15.4,
+  "labels": 34.2,
+  "total": 70.1
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_4County_Lake_2016_LAS_2019-hag-2m-1-2",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 900826,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_4County_Lake_2016_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.9762723252991157,
+   "file": "hag.tif",
+   "mb": 0.37,
+   "frac_gt_2_5m": 0.44208860759493673
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_4County_Lake_2016_LAS_2019-dtm-2m-1-2",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 225217,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_4County_Lake_2016_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.9763178428992544,
+   "mb": 0.53
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_4County_Lake_2016_LAS_2019-classification-2m-1-2",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 889174,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_4County_Lake_2016_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "mb": 0.1,
+   "counts": {
+    "0": 33546,
+    "1": 3426,
+    "2": 608144,
+    "3": 76488,
+    "4": 47950,
+    "5": 131002,
+    "6": 21194,
+    "9": 906,
+    "10": 64
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_IL_4County_Lake_2016_LAS_2019-intensity-2m-1-2"
+  ],
+  "valid": 0.9841512051326513
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 4.27,
+    "items": [
+     "il_m_4208848_ne_16_030_20230710_20240209",
+     "il_m_4208741_nw_16_030_20230710_20240209"
+    ],
+    "acquired": [
+     "2023-07-10"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 234.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  3048.618200683594,
+  41904.3171875
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9762723252991157,
+  "cls": 0.9636444425177736,
+  "dtm": 0.9763178428992544,
+  "intensity": 0.9841512051326513
+ },
+ "labels": {
+  "features": 425
+ },
+ "course": {
+  "name": "Brae Loch Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 61431783
+  },
+  "center": [
+   -88.009162,
+   42.349493
+  ],
+  "bbox": [
+   -88.0143867,
+   42.3473446,
+   -88.0039368,
+   42.3516418
+  ],
+  "state": "IL",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -88.0143344,
+     42.3473446
+    ],
+    [
+     -88.0044518,
+     42.347376
+    ],
+    [
+     -88.0041085,
+     42.3486288
+    ],
+    [
+     -88.0040949,
+     42.3487241
+    ],
+    [
+     -88.0039798,
+     42.3495327
+    ],
+    [
+     -88.0039368,
+     42.3516418
+    ],
+    [
+     -88.0143867,
+     42.3515943
+    ],
+    [
+     -88.0143853,
+     42.3496678
+    ],
+    [
+     -88.0143344,
+     42.3473446
+    ]
+   ]
+  ]
+ }
+}

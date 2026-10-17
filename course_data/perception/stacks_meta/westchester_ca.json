@@ -1,0 +1,278 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "westchester_ca",
+ "name": "Westchester Golf Course",
+ "state": "CA",
+ "bbox_wsen": [
+  -118.413634,
+  33.9541048,
+  -118.4045045,
+  33.9596895
+ ],
+ "grid": {
+  "crs": "EPSG:32611",
+  "res_m": 1.0,
+  "width": 1154,
+  "height": 934,
+  "bounds": [
+   369228,
+   3757804,
+   370382,
+   3758738
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   369228.0,
+   0.0,
+   -1.0,
+   3758738.0
+  ],
+  "ll_bbox_wsen": [
+   -118.41538036246129,
+   33.95261334560724,
+   -118.40275537446712,
+   33.96117747808707
+  ]
+ },
+ "built_utc": "2026-10-17T07:01:11Z",
+ "seconds": {
+  "lidar": 5.9,
+  "naip": 4.4,
+  "segment": 14.9,
+  "labels": 185.9,
+  "total": 212.5
+ },
+ "errors": {
+  "labels": "Traceback (most recent call last):\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 218, in build\n    fc = overpass_labels(g1.ll_bbox)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 86, in overpass_labels\n    data = pc.overpass(q, tries=3)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/platform/platform_common.py\", line 93, in overpass\n    raise RuntimeError(f\"all Overpass endpoints failed: {last}\")\nRuntimeError: all Overpass endpoints failed: https://overpass.private.coffee/api/interpreter: HTTP 500 <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html><head>\n<title>500 Internal Server Error</title>\n</head><body>\n<h1>Internal Server Error</h1>\n<p>The ser\n"
+ },
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018-hag-2m-6-8",
+     "when": "2018-01-01T00:00:00Z",
+     "cells": 1077820,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00Z",
+      "start_datetime": "2018-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.9999851554410875,
+   "file": "hag.tif",
+   "mb": 0.37,
+   "frac_gt_2_5m": 0.37745259946782256
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018-dtm-2m-6-8",
+     "when": "2018-01-01T00:00:00Z",
+     "cells": 269324,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00Z",
+      "start_datetime": "2018-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.9994989961367036,
+   "mb": 0.7
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018-classification-2m-6-8",
+     "when": "2018-01-01T00:00:00Z",
+     "cells": 1075064,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00Z",
+      "start_datetime": "2018-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "mb": 0.09,
+   "counts": {
+    "0": 2772,
+    "1": 434982,
+    "2": 635234,
+    "17": 4848
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_CA_LosAngeles_2016_LAS_2018-intensity-2m-6-8"
+  ],
+  "valid": 0.9999851554410875
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 3.92,
+    "items": [
+     "ca_m_3311805_ne_11_060_20220511"
+    ],
+    "acquired": [
+     "2022-05-11"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 27.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  507.37238037109375,
+  6506.436943359375
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9999851554410875,
+  "cls": 0.9974281801684115,
+  "dtm": 0.9994989961367036,
+  "intensity": 0.9999851554410875
+ },
+ "course": {
+  "name": "Westchester Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 22729525
+  },
+  "center": [
+   -118.40906925,
+   33.95689715
+  ],
+  "bbox": [
+   -118.413634,
+   33.9541048,
+   -118.4045045,
+   33.9596895
+  ],
+  "state": "CA",
+  "town": "Los Angeles"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -118.413634,
+     33.9596764
+    ],
+    [
+     -118.40932,
+     33.9596895
+    ],
+    [
+     -118.4093007,
+     33.9571979
+    ],
+    [
+     -118.409292,
+     33.9570478
+    ],
+    [
+     -118.4056504,
+     33.9570701
+    ],
+    [
+     -118.4045245,
+     33.9571174
+    ],
+    [
+     -118.4045231,
+     33.9569964
+    ],
+    [
+     -118.4045189,
+     33.9566447
+    ],
+    [
+     -118.4045045,
+     33.9554165
+    ],
+    [
+     -118.4045567,
+     33.9553462
+    ],
+    [
+     -118.40465,
+     33.955324
+    ],
+    [
+     -118.4056791,
+     33.9551839
+    ],
+    [
+     -118.4061889,
+     33.9551728
+    ],
+    [
+     -118.4066206,
+     33.9551718
+    ],
+    [
+     -118.4070648,
+     33.9551852
+    ],
+    [
+     -118.4085435,
+     33.9554406
+    ],
+    [
+     -118.4093655,
+     33.9555735
+    ],
+    [
+     -118.4093486,
+     33.9543691
+    ],
+    [
+     -118.4120396,
+     33.9541121
+    ],
+    [
+     -118.412125,
+     33.9541048
+    ],
+    [
+     -118.4122714,
+     33.9541451
+    ],
+    [
+     -118.4125697,
+     33.9542536
+    ],
+    [
+     -118.4131443,
+     33.9545133
+    ],
+    [
+     -118.4136289,
+     33.9547323
+    ],
+    [
+     -118.413634,
+     33.9596764
+    ]
+   ]
+  ]
+ }
+}

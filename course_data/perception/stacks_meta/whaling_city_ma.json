@@ -1,0 +1,336 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "whaling_city_ma",
+ "name": "Whaling City Golf Course",
+ "state": "MA",
+ "bbox_wsen": [
+  -70.9689475,
+  41.6538509,
+  -70.9504341,
+  41.6622429
+ ],
+ "grid": {
+  "crs": "EPSG:32619",
+  "res_m": 1.0,
+  "width": 1866,
+  "height": 1268,
+  "bounds": [
+   335900,
+   4613032,
+   337766,
+   4614300
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   335900.0,
+   0.0,
+   -1.0,
+   4614300.0
+  ],
+  "ll_bbox_wsen": [
+   -70.97106783557211,
+   41.65214974456844,
+   -70.94832295799395,
+   41.66394621807413
+  ]
+ },
+ "built_utc": "2026-10-17T06:20:23Z",
+ "seconds": {
+  "lidar": 166.3,
+  "naip": 12.4,
+  "segment": 65.2,
+  "labels": 34.5,
+  "total": 281.0
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-hag-2m-10-6",
+     "when": "2014-12-31T00:00:00Z",
+     "cells": 1802,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
+      "end_datetime": "2014-12-31T00:00:00Z",
+      "start_datetime": "2013-11-16T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.0007615946659633961
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dtm-2m-10-6",
+     "when": "2014-12-31T00:00:00Z",
+     "cells": 454,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
+      "end_datetime": "2014-12-31T00:00:00Z",
+      "start_datetime": "2013-11-16T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.0007675116056545657
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dsm-2m-10-6",
+     "when": "2014-12-31T00:00:00Z",
+     "cells": 1802,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
+      "end_datetime": "2014-12-31T00:00:00Z",
+      "start_datetime": "2013-11-16T00:00:00Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "MA_CentralEastern_2_2021",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MA_CentralEastern_2_2021/ept.json",
+    "cov": 1.0,
+    "year": 2021,
+    "count": 83665304691
+   },
+   {
+    "name": "ARRA-LFTNE_Massachusetts_2011",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ARRA-LFTNE_Massachusetts_2011/ept.json",
+    "cov": 1.0,
+    "year": 2011,
+    "count": 18400553200
+   },
+   {
+    "name": "MA_NE_CMGP_Sandy_Z19_A1_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MA_NE_CMGP_Sandy_Z19_A1_2015/ept.json",
+    "cov": 0.367,
+    "year": 2015,
+    "count": 22301225395
+   }
+  ],
+  "used": [
+   {
+    "name": "MA_CentralEastern_2_2021",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MA_CentralEastern_2_2021/ept.json",
+    "cov": 1.0,
+    "year": 2021,
+    "count": 83665304691,
+    "cells": 2361550
+   }
+  ],
+  "valid": 0.9980820662629624,
+  "hag_mb": 1.26,
+  "frac_gt_2_5m": 0.5726921399373143,
+  "class_mb": 0.02
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-intensity-2m-10-6"
+  ],
+  "valid": 0.0007615946659633961
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 12.53,
+    "items": [
+     "ma_m_4107017_sw_19_030_20230822_20231116"
+    ],
+    "acquired": [
+     "2023-08-22"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 15.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": [
+  56.1279967880249,
+  178.9926435852051
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9980820662629624,
+  "cls": 0.9980820662629624,
+  "dtm": 1.0,
+  "intensity": 0.0007615946659633961
+ },
+ "labels": {
+  "features": 685
+ },
+ "course": {
+  "name": "Whaling City Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 29693537
+  },
+  "center": [
+   -70.959691,
+   41.658047
+  ],
+  "bbox": [
+   -70.9689475,
+   41.6538509,
+   -70.9504341,
+   41.6622429
+  ],
+  "state": "MA",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -70.9504341,
+     41.6611935
+    ],
+    [
+     -70.9505314,
+     41.6610757
+    ],
+    [
+     -70.9518717,
+     41.6601485
+    ],
+    [
+     -70.9534711,
+     41.6595424
+    ],
+    [
+     -70.9541185,
+     41.6591888
+    ],
+    [
+     -70.9546983,
+     41.6588004
+    ],
+    [
+     -70.9549723,
+     41.658301
+    ],
+    [
+     -70.9550327,
+     41.6578224
+    ],
+    [
+     -70.9550718,
+     41.6568593
+    ],
+    [
+     -70.956128,
+     41.6565688
+    ],
+    [
+     -70.9575858,
+     41.6560654
+    ],
+    [
+     -70.9587222,
+     41.6554457
+    ],
+    [
+     -70.9588977,
+     41.6552945
+    ],
+    [
+     -70.960143,
+     41.6542221
+    ],
+    [
+     -70.960574,
+     41.6538509
+    ],
+    [
+     -70.9608918,
+     41.6540312
+    ],
+    [
+     -70.9611755,
+     41.6540423
+    ],
+    [
+     -70.9621988,
+     41.6543476
+    ],
+    [
+     -70.9654409,
+     41.6547497
+    ],
+    [
+     -70.9670824,
+     41.6544771
+    ],
+    [
+     -70.9681863,
+     41.6545986
+    ],
+    [
+     -70.9683308,
+     41.6560126
+    ],
+    [
+     -70.9686019,
+     41.658666
+    ],
+    [
+     -70.9686438,
+     41.6590765
+    ],
+    [
+     -70.9687141,
+     41.6593499
+    ],
+    [
+     -70.9688921,
+     41.6600422
+    ],
+    [
+     -70.9689475,
+     41.6602577
+    ],
+    [
+     -70.9686948,
+     41.6606041
+    ],
+    [
+     -70.9597673,
+     41.6614355
+    ],
+    [
+     -70.9509223,
+     41.6622429
+    ],
+    [
+     -70.950669,
+     41.6620924
+    ],
+    [
+     -70.9504341,
+     41.6611935
+    ]
+   ]
+  ]
+ }
+}

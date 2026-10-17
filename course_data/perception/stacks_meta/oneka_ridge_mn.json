@@ -1,0 +1,243 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "oneka_ridge_mn",
+ "name": "Oneka Ridge Golf Course",
+ "state": "MN",
+ "bbox_wsen": [
+  -92.9943817,
+  45.1238037,
+  -92.9840038,
+  45.1309841
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1120,
+  "height": 1100,
+  "bounds": [
+   500290,
+   4996552,
+   501410,
+   4997652
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   500290.0,
+   0.0,
+   -1.0,
+   4997652.0
+  ],
+  "ll_bbox_wsen": [
+   -92.99631264944749,
+   45.122437884506574,
+   -92.98206874570795,
+   45.1323411301127
+  ]
+ },
+ "built_utc": "2026-10-17T06:02:14Z",
+ "seconds": {
+  "lidar": 16.3,
+  "naip": 13.4,
+  "segment": 38.3,
+  "labels": 30.1,
+  "total": 99.7
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016-hag-2m-9-2",
+     "when": "2011-11-12T00:00:00Z",
+     "cells": 27500,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016",
+      "end_datetime": "2011-11-12T00:00:00Z",
+      "start_datetime": "2011-11-11T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.022321428571428572
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016-dtm-2m-9-2",
+     "when": "2011-11-12T00:00:00Z",
+     "cells": 6600,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016",
+      "end_datetime": "2011-11-12T00:00:00Z",
+      "start_datetime": "2011-11-11T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.02142857142857143
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016-dsm-2m-9-2",
+     "when": "2011-11-12T00:00:00Z",
+     "cells": 27500,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016",
+      "end_datetime": "2011-11-12T00:00:00Z",
+      "start_datetime": "2011-11-11T00:00:00Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016-dsm-2m-10-2",
+     "when": "2011-11-12T00:00:00Z",
+     "cells": 1204328,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016",
+      "end_datetime": "2011-11-12T00:00:00Z",
+      "start_datetime": "2011-11-11T00:00:00Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 2% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016/ept.json",
+    "cov": 1.0,
+    "year": 2016,
+    "count": 5775256707
+   },
+   {
+    "name": "MN_CentralMissRiver_5_B22",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MN_CentralMissRiver_5_B22/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 83069293873
+   },
+   {
+    "name": "MN_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MN_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 291760609591
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016/ept.json",
+    "cov": 1.0,
+    "year": 2016,
+    "count": 5775256707,
+    "cells": 1225233
+   }
+  ],
+  "valid": 0.9945073051948052,
+  "hag_mb": 0.48,
+  "frac_gt_2_5m": 0.28662256493506494,
+  "class_mb": 0.02
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016-intensity-2m-9-2"
+  ],
+  "valid": 0.020535714285714286
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 4.78,
+    "items": [
+     "mn_m_4509257_nw_15_030_20230711_20240119",
+     "mn_m_4509249_sw_15_030_20230711_20240119",
+     "mn_m_4509364_ne_15_030_20230703_20240119",
+     "mn_m_4509356_se_15_030_20230703_20240119"
+    ],
+    "acquired": [
+     "2023-07-03",
+     "2023-07-11"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 279.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": [
+  9.875028972625733,
+  77.99970306396484
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9945073051948052,
+  "cls": 0.9945073051948052,
+  "dtm": 1.0,
+  "intensity": 0.020535714285714286
+ },
+ "labels": {
+  "features": 291
+ },
+ "course": {
+  "name": "Oneka Ridge Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 977989220
+  },
+  "center": [
+   -92.989193,
+   45.127394
+  ],
+  "bbox": [
+   -92.9943817,
+   45.1238037,
+   -92.9840038,
+   45.1309841
+  ],
+  "state": "MN",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -92.9943334,
+     45.1309841
+    ],
+    [
+     -92.9943817,
+     45.1238424
+    ],
+    [
+     -92.9840038,
+     45.1238037
+    ],
+    [
+     -92.9840801,
+     45.1309599
+    ],
+    [
+     -92.9943334,
+     45.1309841
+    ]
+   ]
+  ]
+ }
+}

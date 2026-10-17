@@ -1,0 +1,302 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "rock_river_hills_wi",
+ "name": "Rock River Hills Golf Course",
+ "state": "WI",
+ "bbox_wsen": [
+  -88.6487236,
+  43.4218452,
+  -88.6317089,
+  43.4287127
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1694,
+  "height": 1092,
+  "bounds": [
+   366386,
+   4808804,
+   368080,
+   4809896
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   366386.0,
+   0.0,
+   -1.0,
+   4809896.0
+  ],
+  "ll_bbox_wsen": [
+   -88.65081433223334,
+   43.420217807327724,
+   -88.62962941695609,
+   43.43034672258203
+  ]
+ },
+ "built_utc": "2026-10-17T06:09:00Z",
+ "seconds": {
+  "lidar": 44.7,
+  "naip": 9.3,
+  "segment": 56.3,
+  "labels": 28.2,
+  "total": 140.6
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_WI_DodgeCo_2017_LAS_2019-dsm-2m-3-2",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 1847930,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_DodgeCo_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_WI_DodgeCo_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_DodgeCo_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 13085658555
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_WI_DodgeCo_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_DodgeCo_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 13085658555,
+    "cells": 1773332
+   }
+  ],
+  "valid": 0.9586366014937443,
+  "hag_mb": 0.56,
+  "frac_gt_2_5m": 0.16186465050101415,
+  "class_mb": 0.05
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 4.55,
+    "items": [
+     "wi_m_4308836_sw_16_060_20220624",
+     "wi_m_4308835_se_16_060_20220624"
+    ],
+    "acquired": [
+     "2022-06-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 260.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9586366014937443,
+  "cls": 0.9586366014937443,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 220
+ },
+ "course": {
+  "name": "Rock River Hills Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 292256121
+  },
+  "center": [
+   -88.640216,
+   43.425279
+  ],
+  "bbox": [
+   -88.6487236,
+   43.4218452,
+   -88.6317089,
+   43.4287127
+  ],
+  "state": "WI",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -88.6441909,
+     43.4283163
+    ],
+    [
+     -88.6438897,
+     43.4283354
+    ],
+    [
+     -88.6406072,
+     43.4284597
+    ],
+    [
+     -88.6385939,
+     43.4285662
+    ],
+    [
+     -88.6379292,
+     43.4287127
+    ],
+    [
+     -88.6378427,
+     43.4279342
+    ],
+    [
+     -88.6384037,
+     43.4276067
+    ],
+    [
+     -88.6380174,
+     43.4270456
+    ],
+    [
+     -88.6369445,
+     43.4268586
+    ],
+    [
+     -88.6359575,
+     43.4267651
+    ],
+    [
+     -88.6347559,
+     43.4265781
+    ],
+    [
+     -88.6335971,
+     43.4264846
+    ],
+    [
+     -88.6321768,
+     43.4259696
+    ],
+    [
+     -88.6317089,
+     43.4254561
+    ],
+    [
+     -88.6322196,
+     43.4251046
+    ],
+    [
+     -88.63446,
+     43.4252783
+    ],
+    [
+     -88.6349134,
+     43.4250463
+    ],
+    [
+     -88.6356163,
+     43.4250325
+    ],
+    [
+     -88.636433,
+     43.4250424
+    ],
+    [
+     -88.6380826,
+     43.4251626
+    ],
+    [
+     -88.6384597,
+     43.4242645
+    ],
+    [
+     -88.6391764,
+     43.4223474
+    ],
+    [
+     -88.6402212,
+     43.42193
+    ],
+    [
+     -88.6404336,
+     43.4218452
+    ],
+    [
+     -88.6426631,
+     43.4219959
+    ],
+    [
+     -88.6450384,
+     43.4220776
+    ],
+    [
+     -88.645629,
+     43.4231219
+    ],
+    [
+     -88.646403,
+     43.4240869
+    ],
+    [
+     -88.6483509,
+     43.4245614
+    ],
+    [
+     -88.6485848,
+     43.427829
+    ],
+    [
+     -88.6487236,
+     43.4280553
+    ],
+    [
+     -88.6485826,
+     43.4283067
+    ],
+    [
+     -88.6476815,
+     43.4284908
+    ],
+    [
+     -88.6441909,
+     43.4283163
+    ]
+   ]
+  ]
+ }
+}

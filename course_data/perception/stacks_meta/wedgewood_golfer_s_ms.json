@@ -1,0 +1,209 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "wedgewood_golfer_s_ms",
+ "name": "Wedgewood Golfer's Club",
+ "state": "MS",
+ "bbox_wsen": [
+  -89.901598,
+  34.9474266,
+  -89.8919059,
+  34.9571299
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1220,
+  "height": 1404,
+  "bounds": [
+   234864,
+   3870882,
+   236084,
+   3872286
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   234864.0,
+   0.0,
+   -1.0,
+   3872286.0
+  ],
+  "ll_bbox_wsen": [
+   -89.90364954139463,
+   34.94579880221813,
+   -89.88985959950139,
+   34.95876167584564
+  ]
+ },
+ "built_utc": "2026-10-17T06:36:35Z",
+ "seconds": {
+  "lidar": 30.1,
+  "naip": 12.0,
+  "segment": 21.7,
+  "labels": 46.2,
+  "total": 111.5
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "TN_ShelbyCo_2012-dsm-2m-5-6",
+     "when": "2012-01-24T00:00:00Z",
+     "cells": 210303,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TN_ShelbyCo_2012",
+      "end_datetime": "2012-01-24T00:00:00Z",
+      "start_datetime": "2012-01-23T00:00:00Z"
+     }
+    },
+    {
+     "id": "TN_ShelbyCo_2012-dsm-2m-4-6",
+     "when": "2012-01-24T00:00:00Z",
+     "cells": 474943,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TN_ShelbyCo_2012",
+      "end_datetime": "2012-01-24T00:00:00Z",
+      "start_datetime": "2012-01-23T00:00:00Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "MS_MississippiDelta_A2_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MS_MississippiDelta_A2_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 30249414547
+   },
+   {
+    "name": "TN_ShelbyCo_2012",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/TN_ShelbyCo_2012/ept.json",
+    "cov": 1.0,
+    "year": 2012,
+    "count": 4483130122
+   }
+  ],
+  "used": [
+   {
+    "name": "MS_MississippiDelta_A2_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MS_MississippiDelta_A2_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 30249414547,
+    "cells": 1679350
+   }
+  ],
+  "valid": 0.9804247816542898,
+  "hag_mb": 0.68,
+  "frac_gt_2_5m": 0.34840911213862036,
+  "class_mb": 0.02
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 7.29,
+    "items": [
+     "tn_m_3408901_ne_16_060_20231010_20240104",
+     "ms_m_3408901_ne_16_060_20230820_20240104"
+    ],
+    "acquired": [
+     "2023-08-20",
+     "2023-10-10"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 91.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9804247816542898,
+  "cls": 0.9804247816542898,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 197
+ },
+ "course": {
+  "name": "Wedgewood Golfer's Club",
+  "osm": {
+   "type": "way",
+   "id": 1071097565
+  },
+  "center": [
+   -89.896752,
+   34.952278
+  ],
+  "bbox": [
+   -89.901598,
+   34.9474266,
+   -89.8919059,
+   34.9571299
+  ],
+  "state": "MS",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -89.8919221,
+     34.9571299
+    ],
+    [
+     -89.9015329,
+     34.9570899
+    ],
+    [
+     -89.901598,
+     34.9474532
+    ],
+    [
+     -89.8919059,
+     34.9474266
+    ],
+    [
+     -89.8919148,
+     34.9527291
+    ],
+    [
+     -89.8919221,
+     34.9571299
+    ]
+   ]
+  ]
+ }
+}

@@ -1,0 +1,161 @@
+{
+ "slug": "woodford_ky",
+ "state": "KY",
+ "mapped_holes": 0,
+ "n_osm_greens": 0,
+ "n_osm_tees": 0,
+ "greens_any": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 19,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false
+ },
+ "greens_hole": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 19,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false,
+  "practice_called_hole": 0,
+  "practice_called_practice": 0,
+  "hole_called_practice": 0,
+  "practice_true": 0,
+  "hole_uncertain": 0
+ },
+ "tee_complexes": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 35,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false,
+  "precision_eligible": false,
+  "n_complex_per_hole": null
+ },
+ "tee_boxes": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 64,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false
+ },
+ "fairways": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 16,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false
+ },
+ "bunkers": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 28,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false
+ },
+ "water": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 3,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false
+ },
+ "buildings": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 17,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false
+ },
+ "parking": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 17,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": false
+ },
+ "fairway_axis": {
+  "n": 0,
+  "median_err_deg": null,
+  "within_20deg": null,
+  "stripe_n": 0,
+  "stripe_median_err_deg": null,
+  "stripe_strong_n": 0,
+  "stripe_strong_median_err_deg": null,
+  "stripe_strong_within_20deg": null
+ },
+ "cart_paths": {
+  "pred_km": 8.074,
+  "true_km": 0.585,
+  "length_precision": 0.0294,
+  "length_recall": 0.4047,
+  "eligible": false,
+  "transitions_osm_connected": 0,
+  "connectivity_acc": null,
+  "connected_route_ratio_median": null,
+  "components": 33
+ },
+ "relations": {
+  "n": 0,
+  "top1_next_tee_acc": null,
+  "n_with_path": 0,
+  "top1_acc_when_path": null
+ },
+ "clubhouse": {
+  "error_m": null,
+  "truth": null,
+  "eligible": false
+ },
+ "driving_range": {
+  "truth": 0,
+  "predicted": false,
+  "hit": null,
+  "eligible": false
+ },
+ "seconds": {
+  "greens": 0.6,
+  "tees": 2.1,
+  "fairways": 0.4,
+  "bunkers_water_trees": 0.6,
+  "cart_paths": 2.1,
+  "buildings_parking_clubhouse_range": 0.5,
+  "total": 6.4
+ },
+ "models": "rules-v1",
+ "lidar": true,
+ "summary": {
+  "greens_hole": 19,
+  "greens_practice": 0,
+  "greens_uncertain": 0,
+  "tee_complexes": 35,
+  "fairways": 17,
+  "bunkers": 28,
+  "water": 6,
+  "tree_stands": 80,
+  "trees": 801,
+  "cart_path_km": 11.332,
+  "cart_path_components": 33,
+  "buildings": 63,
+  "parking": 45,
+  "clubhouse": true,
+  "driving_range": false
+ }
+}

@@ -1,0 +1,228 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "sun_hills_ut",
+ "name": "Sun Hills Golf Course",
+ "state": "UT",
+ "bbox_wsen": [
+  -111.9494583,
+  41.1070884,
+  -111.9398023,
+  41.1161871
+ ],
+ "grid": {
+  "crs": "EPSG:32612",
+  "res_m": 1.0,
+  "width": 1124,
+  "height": 1320,
+  "bounds": [
+   420126,
+   4550920,
+   421250,
+   4552240
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   420126.0,
+   0.0,
+   -1.0,
+   4552240.0
+  ],
+  "ll_bbox_wsen": [
+   -111.95141903308146,
+   41.10563860148837,
+   -111.93786301529043,
+   41.11763738450802
+  ]
+ },
+ "built_utc": "2026-10-17T07:17:46Z",
+ "seconds": {
+  "lidar": 14.4,
+  "naip": 11.0,
+  "segment": 43.4,
+  "labels": 39.4,
+  "total": 110.7
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019-hag-2m-3-12",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 985748,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.6643939393939394,
+   "file": "hag.tif",
+   "mb": 0.18,
+   "frac_gt_2_5m": 0.057767847514288796
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019-dtm-2m-3-12",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 246486,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.6645260433516661,
+   "mb": 0.52
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019-classification-2m-3-3",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 1479624,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "mb": 0.13,
+   "counts": {
+    "0": 4056,
+    "1": 430068,
+    "2": 1049556
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_UT_Northern_QL1_2018_LAS_2019-intensity-2m-3-12"
+  ],
+  "valid": 0.6643831553973902
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 5.31,
+    "items": [
+     "ut_m_4111157_ne_12_060_20210813",
+     "ut_m_4111157_nw_12_060_20210812"
+    ],
+    "acquired": [
+     "2021-08-12",
+     "2021-08-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 1462.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  1123.4997497558593,
+  9598.17689453125
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.6643939393939394,
+  "cls": 0.9972662568747978,
+  "dtm": 0.6645260433516661,
+  "intensity": 0.6643831553973902
+ },
+ "labels": {
+  "features": 736
+ },
+ "course": {
+  "name": "Sun Hills Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 141397539
+  },
+  "center": [
+   -111.9446303,
+   41.11163775
+  ],
+  "bbox": [
+   -111.9494583,
+   41.1070884,
+   -111.9398023,
+   41.1161871
+  ],
+  "state": "UT",
+  "town": "Layton"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -111.9444286,
+     41.1071272
+    ],
+    [
+     -111.94442,
+     41.1089509
+    ],
+    [
+     -111.9454463,
+     41.1107751
+    ],
+    [
+     -111.948755,
+     41.1107912
+    ],
+    [
+     -111.9493295,
+     41.110794
+    ],
+    [
+     -111.9494583,
+     41.1126241
+    ],
+    [
+     -111.9493896,
+     41.1161871
+    ],
+    [
+     -111.9398023,
+     41.1161418
+    ],
+    [
+     -111.9398366,
+     41.1081943
+    ],
+    [
+     -111.9399225,
+     41.1070884
+    ],
+    [
+     -111.9416848,
+     41.1071036
+    ],
+    [
+     -111.9444286,
+     41.1071272
+    ]
+   ]
+  ]
+ }
+}

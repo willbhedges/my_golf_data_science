@@ -73,12 +73,12 @@
   "model": "ariadgolf/golf-course-segmentation",
   "sha": "43ee294441db"
  },
- "dtm_base_m": null,
+ "dtm_base_m": 175.0,
  "coverage": {
   "naip": 1.0,
-  "hag": 0.0,
+  "hag": 1.0,
   "cls": 0.0,
-  "dtm": 0.0,
+  "dtm": 1.0,
   "intensity": 0.0
  },
  "labels": {
@@ -341,5 +341,16 @@
     ]
    ]
   ]
- }
+ },
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111112"
+  ],
+  "mb": 0.23,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "hag_source": "Meta/WRI global canopy height 1 m (no 3DEP lidar)"
 }

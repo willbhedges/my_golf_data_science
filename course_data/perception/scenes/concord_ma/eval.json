@@ -1,0 +1,161 @@
+{
+ "slug": "concord_ma",
+ "state": "MA",
+ "mapped_holes": 18,
+ "n_osm_greens": 24,
+ "n_osm_tees": 57,
+ "greens_any": {
+  "precision": 0.9524,
+  "recall": 0.8333,
+  "n_pred": 21,
+  "n_true": 24,
+  "tp_pred": 20,
+  "tp_true": 20,
+  "eligible": true
+ },
+ "greens_hole": {
+  "precision": 0.8571,
+  "recall": 1.0,
+  "n_pred": 21,
+  "n_true": 18,
+  "tp_pred": 18,
+  "tp_true": 18,
+  "eligible": true,
+  "practice_called_hole": 2,
+  "practice_called_practice": 0,
+  "hole_called_practice": 0,
+  "practice_true": 6,
+  "hole_uncertain": 0
+ },
+ "tee_complexes": {
+  "precision": 0.4355,
+  "recall": 1.0,
+  "n_pred": 62,
+  "n_true": 18,
+  "tp_pred": 27,
+  "tp_true": 18,
+  "eligible": true,
+  "precision_eligible": true,
+  "n_complex_per_hole": 3.44
+ },
+ "tee_boxes": {
+  "precision": 0.5165,
+  "recall": 0.9474,
+  "n_pred": 91,
+  "n_true": 57,
+  "tp_pred": 47,
+  "tp_true": 54,
+  "eligible": true
+ },
+ "fairways": {
+  "precision": 1.0,
+  "recall": 0.8571,
+  "n_pred": 17,
+  "n_true": 21,
+  "tp_pred": 17,
+  "tp_true": 18,
+  "eligible": true
+ },
+ "bunkers": {
+  "precision": 0.8806,
+  "recall": 0.9524,
+  "n_pred": 67,
+  "n_true": 63,
+  "tp_pred": 59,
+  "tp_true": 60,
+  "eligible": true
+ },
+ "water": {
+  "precision": 0.8333,
+  "recall": 0.2222,
+  "n_pred": 6,
+  "n_true": 9,
+  "tp_pred": 5,
+  "tp_true": 2,
+  "eligible": true
+ },
+ "buildings": {
+  "precision": 0.1459,
+  "recall": 0.7778,
+  "n_pred": 185,
+  "n_true": 45,
+  "tp_pred": 27,
+  "tp_true": 35,
+  "eligible": true
+ },
+ "parking": {
+  "precision": 0.0,
+  "recall": null,
+  "n_pred": 38,
+  "n_true": 0,
+  "tp_pred": 0,
+  "tp_true": 0,
+  "eligible": true
+ },
+ "fairway_axis": {
+  "n": 17,
+  "median_err_deg": 6.7,
+  "within_20deg": 0.824,
+  "stripe_n": 17,
+  "stripe_median_err_deg": 19.2,
+  "stripe_strong_n": 10,
+  "stripe_strong_median_err_deg": 14.2,
+  "stripe_strong_within_20deg": 0.7
+ },
+ "cart_paths": {
+  "pred_km": 1.14,
+  "true_km": 7.351,
+  "length_precision": 0.8098,
+  "length_recall": 0.1333,
+  "eligible": true,
+  "transitions_osm_connected": 13,
+  "connectivity_acc": 0.3077,
+  "connected_route_ratio_median": 0.938,
+  "components": 38
+ },
+ "relations": {
+  "n": 17,
+  "top1_next_tee_acc": 0.5882,
+  "n_with_path": 10,
+  "top1_acc_when_path": 0.5
+ },
+ "clubhouse": {
+  "error_m": null,
+  "truth": null,
+  "eligible": false
+ },
+ "driving_range": {
+  "truth": 1,
+  "predicted": false,
+  "hit": false,
+  "eligible": true
+ },
+ "seconds": {
+  "greens": 0.9,
+  "tees": 3.3,
+  "fairways": 0.5,
+  "bunkers_water_trees": 1.1,
+  "cart_paths": 2.6,
+  "buildings_parking_clubhouse_range": 1.1,
+  "total": 9.6
+ },
+ "models": "rules-v1",
+ "lidar": true,
+ "summary": {
+  "greens_hole": 21,
+  "greens_practice": 0,
+  "greens_uncertain": 0,
+  "tee_complexes": 62,
+  "fairways": 17,
+  "bunkers": 67,
+  "water": 8,
+  "tree_stands": 77,
+  "trees": 535,
+  "cart_path_km": 2.589,
+  "cart_path_components": 38,
+  "buildings": 684,
+  "parking": 91,
+  "clubhouse": true,
+  "driving_range": false
+ }
+}

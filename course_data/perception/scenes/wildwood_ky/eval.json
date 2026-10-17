@@ -1,0 +1,161 @@
+{
+ "slug": "wildwood_ky",
+ "state": "KY",
+ "mapped_holes": 18,
+ "n_osm_greens": 25,
+ "n_osm_tees": 46,
+ "greens_any": {
+  "precision": 0.9048,
+  "recall": 0.76,
+  "n_pred": 21,
+  "n_true": 25,
+  "tp_pred": 19,
+  "tp_true": 19,
+  "eligible": true
+ },
+ "greens_hole": {
+  "precision": 0.8571,
+  "recall": 1.0,
+  "n_pred": 21,
+  "n_true": 18,
+  "tp_pred": 18,
+  "tp_true": 18,
+  "eligible": true,
+  "practice_called_hole": 1,
+  "practice_called_practice": 0,
+  "hole_called_practice": 0,
+  "practice_true": 7,
+  "hole_uncertain": 0
+ },
+ "tee_complexes": {
+  "precision": 0.4528,
+  "recall": 0.9444,
+  "n_pred": 53,
+  "n_true": 18,
+  "tp_pred": 24,
+  "tp_true": 17,
+  "eligible": true,
+  "precision_eligible": true,
+  "n_complex_per_hole": 2.94
+ },
+ "tee_boxes": {
+  "precision": 0.4925,
+  "recall": 0.8261,
+  "n_pred": 67,
+  "n_true": 46,
+  "tp_pred": 33,
+  "tp_true": 38,
+  "eligible": true
+ },
+ "fairways": {
+  "precision": 1.0,
+  "recall": 0.5517,
+  "n_pred": 16,
+  "n_true": 29,
+  "tp_pred": 16,
+  "tp_true": 16,
+  "eligible": true
+ },
+ "bunkers": {
+  "precision": 0.9787,
+  "recall": 1.0,
+  "n_pred": 47,
+  "n_true": 46,
+  "tp_pred": 46,
+  "tp_true": 46,
+  "eligible": true
+ },
+ "water": {
+  "precision": 0.6,
+  "recall": 1.0,
+  "n_pred": 5,
+  "n_true": 1,
+  "tp_pred": 3,
+  "tp_true": 1,
+  "eligible": true
+ },
+ "buildings": {
+  "precision": 0.7,
+  "recall": 0.8182,
+  "n_pred": 60,
+  "n_true": 55,
+  "tp_pred": 42,
+  "tp_true": 45,
+  "eligible": true
+ },
+ "parking": {
+  "precision": 0.125,
+  "recall": 1.0,
+  "n_pred": 8,
+  "n_true": 1,
+  "tp_pred": 1,
+  "tp_true": 1,
+  "eligible": true
+ },
+ "fairway_axis": {
+  "n": 16,
+  "median_err_deg": 4.6,
+  "within_20deg": 0.875,
+  "stripe_n": 16,
+  "stripe_median_err_deg": 19.4,
+  "stripe_strong_n": 14,
+  "stripe_strong_median_err_deg": 17.6,
+  "stripe_strong_within_20deg": 0.571
+ },
+ "cart_paths": {
+  "pred_km": 9.023,
+  "true_km": 8.708,
+  "length_precision": 0.6759,
+  "length_recall": 0.6795,
+  "eligible": true,
+  "transitions_osm_connected": 17,
+  "connectivity_acc": 0.4118,
+  "connected_route_ratio_median": 0.946,
+  "components": 77
+ },
+ "relations": {
+  "n": 17,
+  "top1_next_tee_acc": 0.4706,
+  "n_with_path": 13,
+  "top1_acc_when_path": 0.5385
+ },
+ "clubhouse": {
+  "error_m": null,
+  "truth": null,
+  "eligible": false
+ },
+ "driving_range": {
+  "truth": 1,
+  "predicted": false,
+  "hit": false,
+  "eligible": true
+ },
+ "seconds": {
+  "greens": 0.7,
+  "tees": 2.4,
+  "fairways": 0.4,
+  "bunkers_water_trees": 1.0,
+  "cart_paths": 2.6,
+  "buildings_parking_clubhouse_range": 0.7,
+  "total": 7.7
+ },
+ "models": "rules-v1",
+ "lidar": true,
+ "summary": {
+  "greens_hole": 21,
+  "greens_practice": 0,
+  "greens_uncertain": 0,
+  "tee_complexes": 53,
+  "fairways": 16,
+  "bunkers": 47,
+  "water": 5,
+  "tree_stands": 182,
+  "trees": 845,
+  "cart_path_km": 18.056,
+  "cart_path_components": 77,
+  "buildings": 243,
+  "parking": 24,
+  "clubhouse": true,
+  "driving_range": false
+ }
+}

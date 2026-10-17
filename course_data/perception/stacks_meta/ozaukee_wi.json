@@ -1,0 +1,229 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "ozaukee_wi",
+ "name": "Ozaukee Country Club",
+ "state": "WI",
+ "bbox_wsen": [
+  -87.9744031,
+  43.2142154,
+  -87.9638783,
+  43.2214204
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1166,
+  "height": 1112,
+  "bounds": [
+   420704,
+   4784904,
+   421870,
+   4786016
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   420704.0,
+   0.0,
+   -1.0,
+   4786016.0
+  ],
+  "ll_bbox_wsen": [
+   -87.97638910091909,
+   43.212755999228456,
+   -87.9618764864003,
+   43.22288944878661
+  ]
+ },
+ "built_utc": "2026-10-17T06:02:37Z",
+ "seconds": {
+  "lidar": 39.8,
+  "naip": 5.6,
+  "segment": 40.2,
+  "labels": 33.3,
+  "total": 120.3
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dsm-2m-8-4",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 1294460,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_SEWRPC_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 30532476151
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_SEWRPC_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 30532476151,
+    "cells": 1279077
+   }
+  ],
+  "valid": 0.9864915100509644,
+  "hag_mb": 0.62,
+  "frac_gt_2_5m": 0.43943353036267385,
+  "class_mb": 0.02
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 3.83,
+    "items": [
+     "wi_m_4308749_nw_16_060_20220623"
+    ],
+    "acquired": [
+     "2022-06-23"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 196.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9864915100509644,
+  "cls": 0.9864915100509644,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 443
+ },
+ "course": {
+  "name": "Ozaukee Country Club",
+  "osm": {
+   "type": "way",
+   "id": 292388760
+  },
+  "center": [
+   -87.969141,
+   43.217818
+  ],
+  "bbox": [
+   -87.9744031,
+   43.2142154,
+   -87.9638783,
+   43.2214204
+  ],
+  "state": "WI",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -87.9638993,
+     43.2142208
+    ],
+    [
+     -87.9730257,
+     43.2142154
+    ],
+    [
+     -87.9737541,
+     43.215151
+    ],
+    [
+     -87.9744031,
+     43.2174827
+    ],
+    [
+     -87.9743253,
+     43.2174822
+    ],
+    [
+     -87.9728674,
+     43.2174735
+    ],
+    [
+     -87.9728289,
+     43.221402
+    ],
+    [
+     -87.9705414,
+     43.2214204
+    ],
+    [
+     -87.964118,
+     43.2213532
+    ],
+    [
+     -87.964018,
+     43.2213474
+    ],
+    [
+     -87.9639598,
+     43.2213277
+    ],
+    [
+     -87.9639179,
+     43.2212972
+    ],
+    [
+     -87.9638894,
+     43.2211307
+    ],
+    [
+     -87.9638783,
+     43.2206045
+    ],
+    [
+     -87.9638939,
+     43.217794
+    ],
+    [
+     -87.9638993,
+     43.2142208
+    ]
+   ]
+  ]
+ }
+}
