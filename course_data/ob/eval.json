@@ -1,6 +1,6 @@
 {
  "schema": "ob_eval/1",
- "built": "2026-10-17T00:43:10Z",
+ "built": "2026-10-17T00:51:43Z",
  "layers": [
   "osm",
   "ms_buildings",
@@ -23,7 +23,7 @@
   "5",
   "8"
  ],
- "n_combos": 497952,
+ "n_combos": 1284192,
  "fit": {
   "params": {
    "mode": "replace",
@@ -154,7 +154,7 @@
   ]
  },
  "loho": {
-  "iou_pooled": 0.276,
+  "iou_pooled": 0.212,
   "rows": [
    {
     "key": "1",
@@ -174,7 +174,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "2B",
@@ -194,7 +197,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "2F",
@@ -214,7 +220,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 13,
+    "union_reach": 63,
+    "truth_reach": 13
    },
    {
     "key": "4",
@@ -234,15 +243,18 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 64,
+    "truth_reach": 0
    },
    {
     "key": "5",
     "truth": 36,
-    "inter": 25,
-    "union": 53,
-    "pred": 42,
-    "iou": 0.472,
+    "inter": 5,
+    "union": 44,
+    "pred": 13,
+    "iou": 0.114,
     "params": {
      "mode": "replace",
      "house_d": null,
@@ -251,10 +263,13 @@
      "road_inside": true,
      "res_off": null,
      "out_off": -10,
-     "out_dev": 60,
+     "out_dev": 45,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 5,
+    "union_reach": 33,
+    "truth_reach": 25
    },
    {
     "key": "6",
@@ -274,7 +289,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "8",
@@ -294,7 +312,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 40,
+    "union_reach": 58,
+    "truth_reach": 49
    },
    {
     "key": "9B",
@@ -314,7 +335,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "9F",
@@ -334,7 +358,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "10",
@@ -354,7 +381,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 24,
+    "truth_reach": 0
    },
    {
     "key": "11",
@@ -374,7 +404,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "13",
@@ -394,7 +427,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "14",
@@ -414,7 +450,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "16",
@@ -434,7 +473,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "17",
@@ -454,7 +496,10 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    },
    {
     "key": "18",
@@ -474,9 +519,15 @@
      "out_dev": 60,
      "parcel_off": null,
      "parcel_mode": "houses"
-    }
+    },
+    "inter_reach": 0,
+    "union_reach": 0,
+    "truth_reach": 0
    }
-  ]
+  ],
+  "iou_pooled_reachable": 0.24,
+  "truth_cells": 119,
+  "reachable_cells": 87
  },
  "baseline_geometry": {
   "iou_pooled": 0.125,
