@@ -1,0 +1,338 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: one column of check cards, worst first (photo + question + answers + what it does to the plan), then the send-back panel. */
+:root{
+  --paper:#eef2ec; --card:#ffffff; --ink:#173326; --muted:#566a5e; --line:#cfd9d1; --chip:#e3eae4;
+  --accent:#e0a800; --accent-ink:#3b2c00;
+  --red:#c2362b; --red-bg:#fbe9e6; --amber:#a86a00; --amber-bg:#fdf1d8; --ok:#2e7d4f; --ok-bg:#e3f2e8;
+  --lie-recovery:#ff8a3d; --lie-native:#ffd23f; --lie-water:#4fc3ff; --lie-sand:#fff3c4; --lie-ob:#ff5fd2; --lie-gap:#ffffff;
+  --mark:#ffffff; --mark-ink:#0b1a12;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32; --chip:#1f3127;
+  --accent:#ffc928; --accent-ink:#2a2000;
+  --red:#ff7a6b; --red-bg:#3a1b17; --amber:#ffc04d; --amber-bg:#3a2c10; --ok:#6fd49a; --ok-bg:#16301f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32; --chip:#1f3127;
+  --accent:#ffc928; --accent-ink:#2a2000;
+  --red:#ff7a6b; --red-bg:#3a1b17; --amber:#ffc04d; --amber-bg:#3a2c10; --ok:#6fd49a; --ok-bg:#16301f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 40px}
+.wrap{max-width:760px;margin:0 auto;display:grid;gap:16px}
+h1{font-family:var(--display);font-weight:700;font-size:32px;line-height:1.05;letter-spacing:.01em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:15px;margin-top:4px}
+.label{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.summary{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.count{font-family:var(--display);font-weight:600;font-size:18px;display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot.red{background:var(--red)} .dot.amber{background:var(--amber)} .dot.ok{background:var(--ok)}
+.progress{height:6px;background:var(--chip);border-radius:3px;overflow:hidden}
+.progress span{display:block;height:100%;background:var(--ok);width:0;transition:width .2s}
+@media (prefers-reduced-motion: reduce){.progress span{transition:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:12px;min-width:0}
+.card.sev-red{border-color:color-mix(in srgb,var(--red) 55%,var(--line))}
+.head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hole{font-family:var(--display);font-weight:700;font-size:30px;line-height:1}
+.pill{font:600 13px var(--display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 10px}
+.pill.red{color:var(--red);background:var(--red-bg)} .pill.amber{color:var(--amber);background:var(--amber-bg)}
+.pill.done{color:var(--ok);background:var(--ok-bg)}
+.now{color:var(--muted);font-size:14px;margin-left:auto}
+.body{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:620px){.body{grid-template-columns:1fr}}
+.text{display:grid;gap:10px;min-width:0}
+h2.q{font-family:var(--body);font-weight:600;font-size:19px;line-height:1.3;margin:0;text-wrap:balance}
+.detail{color:var(--muted);font-size:14px;margin:0}
+.mapbox{position:relative;border-radius:8px;overflow:hidden;background:var(--chip);max-width:100%;touch-action:none}
+.mapbox img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.mapbox svg{position:absolute;inset:0;width:100%;height:100%}
+.mapnote{font-size:12.5px;color:var(--muted);margin-top:4px}
+.answers{display:flex;flex-wrap:wrap;gap:8px}
+.answers button{font:600 16px var(--body);min-height:44px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);
+  background:var(--paper);color:var(--ink);cursor:pointer}
+.answers button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.outcome{border-radius:8px;padding:10px 12px;background:var(--chip);font-size:15px}
+.outcome b{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:block}
+.outcome.chg{background:var(--amber-bg)}
+.alts{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:14px;color:var(--muted)}
+.alts li span{color:var(--ink);font-weight:600}
+.hint{font-size:14px;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 35%,var(--card));border-radius:8px;padding:6px 10px}
+details.green{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+details.green summary{cursor:pointer;font-weight:600}
+details.green ul{margin:10px 0 0;padding-left:18px;display:grid;gap:4px;font-size:14px;color:var(--muted)}
+.send{display:grid;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:600 16px var(--body);min-height:44px;padding:8px 16px;border-radius:10px;border:1px solid var(--ink);cursor:pointer;background:var(--ink);color:var(--card)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+textarea{width:100%;min-height:110px;font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--paper);color:var(--ink);
+  border:1px solid var(--line);border-radius:8px;padding:8px}
+.status{font-size:14px;color:var(--ok)}
+.foot{color:var(--muted);font-size:13px;max-width:70ch}
+svg .haz{stroke-width:2.2;fill-opacity:.28;vector-effect:non-scaling-stroke}
+svg .ghost{fill:none;stroke:var(--mark);stroke-dasharray:4 4;stroke-opacity:.7;vector-effect:non-scaling-stroke}
+svg .aimline{stroke:var(--mark);stroke-width:1.6;stroke-dasharray:6 5;fill:none;vector-effect:non-scaling-stroke}
+svg .ell{fill:var(--mark);fill-opacity:.12;stroke:var(--mark);stroke-width:1.4;vector-effect:non-scaling-stroke}
+svg .handle{fill:var(--accent);stroke:var(--mark-ink);stroke-width:2;cursor:grab;vector-effect:non-scaling-stroke}
+svg .teemark{fill:var(--mark);stroke:var(--mark-ink);stroke-width:2;cursor:grab;vector-effect:non-scaling-stroke}
+svg text{font:600 13px var(--display);fill:var(--mark);paint-order:stroke;stroke:var(--mark-ink);stroke-width:3px}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1 id="title">__TITLE__</h1>
+    <div class="sub" id="sub"></div>
+  </header>
+  <section class="summary" aria-label="Summary" id="summary"></section>
+  <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+  <main id="cards" class="wrap" style="max-width:none"></main>
+  <details class="green" id="greens"><summary id="greensum"></summary><ul id="greenlist"></ul></details>
+  <section class="card send" aria-label="Send answers">
+    <div class="label">Send your answers</div>
+    <p class="detail" style="color:var(--ink)">Answers stay on this phone until you copy them. Tap <b>Copy answers</b> and paste the text back into the chat; only the holes you changed get re-planned.</p>
+    <div class="row">
+      <button class="btn" id="copy" type="button">Copy answers</button>
+      <button class="btn ghost" id="clear" type="button">Clear answers</button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+    <textarea id="out" readonly aria-label="Answers to paste back" hidden></textarea>
+  </section>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const KEY = 'review:' + D.slug + ':' + D.tee_set + ':' + D.built;
+let S = {answers: {}};
+try { const v = localStorage.getItem(KEY); if (v) { const p = JSON.parse(v); if (p && p.answers) S = p; } } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} progress(); }
+
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, kids) {
+  const e = document.createElement(tag);
+  for (const k in (attrs || {})) { if (k === 'text') e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]); }
+  (kids || []).forEach(c => c && e.appendChild(c));
+  return e;
+}
+function sv(tag, attrs) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; }
+function aimWords(a) { a = +a; return Math.abs(a) < 2.5 ? 'on the line' : Math.round(Math.abs(a)) + ' yds ' + (a > 0 ? 'right' : 'left'); }
+const LIE = {recovery: 'trees', native: 'long grass', water: 'water', sand: 'sand', ob: 'out of bounds'};
+const TEE_NAMES = {back: '20 yds back', forward: '20 yds forward', left: '10 yds left', right: '10 yds right'};
+const shown = D.items.filter(i => i.severity !== 'green');
+const greens = D.items.filter(i => i.severity === 'green');
+
+function head() {
+  const n = shown.length;
+  document.getElementById('sub').textContent = D.course + ' · ' + D.tee_set + ' tees · ' +
+    (n ? n + ' thing' + (n > 1 ? 's' : '') + ' to look at, worst first (about ' + Math.max(1, Math.round(n * 15 / 60)) + ' min)' : 'nothing to check');
+  const s = document.getElementById('summary');
+  s.innerHTML = '';
+  [['red', D.counts.red, 'could change a club or aim'], ['amber', D.counts.amber, 'worth a glance'], ['ok', D.counts.green, 'checked automatically']]
+    .forEach(([c, v, t]) => s.appendChild(el('span', {class: 'count'}, [el('span', {class: 'dot ' + c}), el('span', {text: v + ' ' + t})])));
+  s.appendChild(el('span', {class: 'count', id: 'answered', style: 'margin-left:auto'}));
+}
+function progress() {
+  const a = shown.filter(i => S.answers[i.id]).length;
+  const e = document.getElementById('answered');
+  if (e) e.textContent = a + ' of ' + shown.length + ' answered';
+  document.getElementById('bar').style.width = (shown.length ? 100 * a / shown.length : 100) + '%';
+}
+
+function optionOf(it, ans) { return ans && it.options.find(o => o.answer === ans.answer); }
+function confirmText(it) { const o = it.options.find(o => o.answer === 'confirm' || o.answer === 'not_playable'); return o ? o.text : 'No change.'; }
+function outcomeFor(it, ans) {
+  const opt = optionOf(it, ans);
+  if (!opt) return null;
+  if (opt.answer !== 'moved') return {text: opt.text, chg: !!(opt.outcome && opt.outcome.severity === 'red')};
+  if (it.type === 'tee') {
+    const dx = ans.dx || 0, dy = ans.dy || 0, m = Math.hypot(dx, dy);
+    if (m < 5) return {text: 'Moved under 5 yds. ' + confirmText(it), chg: false};
+    let best = null, bc = -2;
+    opt.samples.forEach(s => { const c = (dx * s.dx + dy * s.dy) / (m * Math.hypot(s.dx, s.dy)); if (c > bc) { bc = c; best = s; } });
+    const far = m > 1.5 * Math.hypot(best.dx, best.dy);
+    return {text: 'About like ' + TEE_NAMES[best.name] + ': ' + best.text + (far ? ' Your move is bigger; the exact plan comes back after you send answers.' : ''),
+            chg: best.outcome && best.outcome.severity === 'red'};
+  }
+  const sh = ans.shift || 0;
+  if (Math.abs(sh) < 5) return {text: 'Moved under 5 yds. ' + confirmText(it), chg: false};
+  const s = opt.samples.find(s => Math.sign(s.shift) === Math.sign(sh)) || opt.samples[0];
+  const far = Math.abs(sh) > 1.5 * Math.abs(s.shift);
+  return {text: 'Edge ' + Math.round(Math.abs(sh)) + ' yds ' + (sh > 0 ? 'closer' : 'farther') + ': ' + s.text +
+          (far ? ' (Tested at 10 yds; the exact plan comes back after you send answers.)' : ''),
+          chg: s.outcome && s.outcome.severity === 'red'};
+}
+
+function card(it) {
+  const hb = (D.holes[it.hole] || {}).base;
+  const sev = it.severity === 'red' ? 'Could change your club' : 'Worth a glance';
+  const done = el('span', {class: 'pill done', text: 'Answered'});
+  const c = el('article', {class: 'card sev-' + it.severity, id: 'item-' + it.id});
+  c.appendChild(el('div', {class: 'head'}, [el('span', {class: 'hole', text: 'Hole ' + it.hole}),
+    el('span', {class: 'pill ' + it.severity, text: sev}), done,
+    hb ? el('span', {class: 'now', text: 'Plan now: ' + hb.pick + ', ' + aimWords(hb.aim)}) : null]));
+  const text = el('div', {class: 'text'}, [el('h2', {class: 'q', text: it.question}), el('p', {class: 'detail', text: it.detail || ''})]);
+  const fig = it.crop ? mapFor(it) : null;
+  const answers = el('div', {class: 'answers', role: 'group', 'aria-label': 'Answer'});
+  const hint = el('div', {class: 'hint', text: it.type === 'tee' ? 'Drag the white tee marker on the photo to where the tee really is.' : 'Drag the yellow handle on the photo to where the edge really is.'});
+  hint.hidden = true;
+  const out = el('div', {class: 'outcome'});
+  const alts = el('ul', {class: 'alts'});
+  it.options.forEach(o => {
+    const b = el('button', {type: 'button', 'data-a': o.answer, 'aria-pressed': 'false', text: o.label});
+    b.addEventListener('click', () => {
+      const prev = S.answers[it.id] || {};
+      if (o.answer === 'moved') S.answers[it.id] = {answer: 'moved', dx: prev.dx || 0, dy: prev.dy || 0, shift: prev.shift || 0};
+      else S.answers[it.id] = {answer: o.answer};
+      if (o.answer !== 'moved' && fig) fig.reset();
+      save(); refresh();
+    });
+    answers.appendChild(b);
+    if (o.samples) {
+      o.samples.forEach(s => alts.appendChild(el('li', {}, [el('span', {text: (it.type === 'tee' ? 'Tee ' + TEE_NAMES[s.name] : 'Edge 10 yds ' + s.name) + ': '}), document.createTextNode(s.text)])));
+    } else {
+      alts.appendChild(el('li', {}, [el('span', {text: o.label + ': '}), document.createTextNode(o.text)]));
+    }
+  });
+  function refresh() {
+    const ans = S.answers[it.id];
+    answers.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(!!ans && b.dataset.a === ans.answer)));
+    done.hidden = !ans;
+    hint.hidden = !(ans && ans.answer === 'moved') || !fig;
+    const r = outcomeFor(it, ans);
+    out.innerHTML = '';
+    out.className = 'outcome' + (r && r.chg ? ' chg' : '');
+    out.appendChild(el('b', {text: r ? 'With your answer' : 'If you answer'}));
+    if (r) out.appendChild(document.createTextNode(r.text));
+    else out.appendChild(alts);
+  }
+  if (fig) fig.onmove = (m) => { S.answers[it.id] = Object.assign({answer: 'moved'}, m); save(); refresh(); };
+  text.append(answers, hint, out);
+  c.appendChild(el('div', {class: 'body'}, [fig ? fig.node : el('div'), text]));
+  if (fig) fig.restore(S.answers[it.id]);
+  refresh();
+  return c;
+}
+
+function mapFor(it) {
+  const cr = it.crop, ov = cr.overlay, s = cr.s;
+  const box = el('div', {class: 'mapbox'});
+  box.appendChild(el('img', {src: cr.img, alt: 'Aerial photo of hole ' + it.hole + (it.type === 'tee' ? ' around the tee' : ' in the landing area') + ', tee line straight up', width: cr.w, height: cr.h, draggable: 'false'}));
+  const svg = sv('svg', {viewBox: '0 0 ' + cr.w + ' ' + cr.h, preserveAspectRatio: 'none'});
+  box.appendChild(svg);
+  const api = {node: el('figure', {style: 'margin:0;min-width:0'}, [box, el('figcaption', {class: 'mapnote',
+    text: (it.type === 'tee' ? 'Around the tee. ' : 'Landing area. ') + 'Dashed line: the plan’s ' + ov.pick + ' aim; the oval is where most of those drives finish. NAIP ' + ((D.imagery || {}).date || '') + '.'})]),
+    onmove: null, reset() {}, restore() {}};
+  const ln = ov.line.map(p => p.join(',')).join(' ');
+  svg.appendChild(sv('polyline', {points: ln, class: 'aimline'}));
+  if (it.type !== 'tee') svg.appendChild(sv('ellipse', {cx: ov.target[0], cy: ov.target[1], rx: ov.ellipse[0], ry: ov.ellipse[1], class: 'ell'}));
+  function toSvg(ev) { const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+  function drag(handle, move, end) {
+    handle.addEventListener('pointerdown', ev => {
+      ev.preventDefault(); handle.setPointerCapture(ev.pointerId);
+      const p0 = toSvg(ev);
+      const mv = e => { const p = toSvg(e); move(p.x - p0.x, p.y - p0.y); };
+      const up = () => { handle.removeEventListener('pointermove', mv); handle.removeEventListener('pointerup', up); handle.removeEventListener('pointercancel', up); end(); };
+      handle.addEventListener('pointermove', mv); handle.addEventListener('pointerup', up); handle.addEventListener('pointercancel', up);
+    });
+  }
+  if (it.type === 'tee') {
+    const [tx, ty] = ov.tee;
+    svg.appendChild(sv('circle', {cx: tx, cy: ty, r: 9, class: 'ghost'}));
+    const g = sv('g', {});
+    const m = sv('circle', {cx: tx, cy: ty, r: 10, class: 'teemark', tabindex: '0', role: 'slider', 'aria-label': 'Tee position, use arrow keys to move 5 yds'});
+    const lab = sv('text', {x: tx + 14, y: ty + 4}); lab.textContent = D.tee_set;
+    g.append(m, lab); svg.appendChild(g);
+    let cur = {dx: 0, dy: 0}, start = null;
+    const place = () => g.setAttribute('transform', 'translate(' + (cur.dx * s) + ',' + (-cur.dy * s) + ')');
+    api.restore = a => { if (a && a.answer === 'moved') { cur = {dx: a.dx || 0, dy: a.dy || 0}; place(); } };
+    api.reset = () => { cur = {dx: 0, dy: 0}; place(); };
+    drag(m, (ddx, ddy) => { if (!start) start = Object.assign({}, cur);
+      cur = {dx: Math.round((start.dx + ddx / s) * 2) / 2, dy: Math.round((start.dy - ddy / s) * 2) / 2}; place(); },
+      () => { start = null; api.onmove && api.onmove({dx: cur.dx, dy: cur.dy}); });
+    m.addEventListener('keydown', e => { const k = {ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowUp: [0, 5], ArrowDown: [0, -5]}[e.key];
+      if (!k) return; e.preventDefault(); cur = {dx: cur.dx + k[0], dy: cur.dy + k[1]}; place(); api.onmove && api.onmove({dx: cur.dx, dy: cur.dy}); });
+  } else {
+    const col = 'var(--lie-' + (it.type === 'gap' ? 'gap' : (it.lie || 'recovery')) + ')';
+    const g = sv('g', {});
+    ov.polys.forEach(p => {
+      const a = {points: p.map(q => q.join(',')).join(' '), class: 'haz', stroke: col, fill: col};
+      if (it.type === 'gap') { a['stroke-dasharray'] = '6 5'; a.fill = 'none'; }
+      g.appendChild(sv('polygon', a));
+    });
+    svg.appendChild(g);
+    if (it.type === 'hazard' && ov.toward) {
+      const xs = ov.polys.flat().map(p => p[0]), ys = ov.polys.flat().map(p => p[1]);
+      const cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      const [vx, va] = ov.toward, ux = vx, uy = -va;            // toward the fairway, in crop px
+      let hx, hy;
+      if (ux > 0) { hx = Math.max(...xs); hy = (Math.min(...ys) + Math.max(...ys)) / 2; }
+      else if (ux < 0) { hx = Math.min(...xs); hy = (Math.min(...ys) + Math.max(...ys)) / 2; }
+      else { hy = Math.max(...ys); hx = (Math.min(...xs) + Math.max(...xs)) / 2; }
+      hx = cl(hx, 14, cr.w - 14); hy = cl(hy, 14, cr.h - 14);
+      const h = sv('circle', {cx: hx, cy: hy, r: 11, class: 'handle', tabindex: '0', role: 'slider', 'aria-label': 'Edge position, arrow keys move it 5 yds'});
+      svg.appendChild(h);
+      let shift = 0, start = null;
+      const place = () => { const tx = ux * shift * s, ty = uy * shift * s;
+        g.setAttribute('transform', 'translate(' + tx + ',' + ty + ')'); h.setAttribute('transform', 'translate(' + tx + ',' + ty + ')'); };
+      api.restore = a => { if (a && a.answer === 'moved') { shift = a.shift || 0; place(); } };
+      api.reset = () => { shift = 0; place(); };
+      drag(h, (ddx, ddy) => { if (start === null) start = shift;
+        shift = Math.max(-40, Math.min(40, Math.round((start + (ddx * ux + ddy * uy) / s) * 2) / 2)); place(); },
+        () => { start = null; api.onmove && api.onmove({shift}); });
+      h.addEventListener('keydown', e => { const k = {ArrowLeft: -ux, ArrowRight: ux, ArrowUp: -uy, ArrowDown: uy}[e.key];
+        if (k === undefined || k === 0) return; e.preventDefault(); shift = Math.max(-40, Math.min(40, shift + 5 * k)); place(); api.onmove && api.onmove({shift}); });
+    }
+  }
+  return api;
+}
+
+function answersJson() {
+  const ans = [];
+  D.items.forEach(it => {
+    const a = S.answers[it.id];
+    if (!a) return;
+    const o = {id: it.id, hole: it.hole, answer: a.answer};
+    if (a.answer === 'moved') { if (it.type === 'tee') { o.dx = +(+a.dx || 0).toFixed(1); o.dy = +(+a.dy || 0).toFixed(1); } else o.shift = +(+a.shift || 0).toFixed(1); }
+    ans.push(o);
+  });
+  return JSON.stringify({schema: 'review_answers/1', slug: D.slug, tee_set: D.tee_set, review_built: D.built,
+    answered: new Date().toISOString().slice(0, 16) + 'Z', answers: ans});
+}
+
+head();
+const cards = document.getElementById('cards');
+shown.forEach(it => cards.appendChild(card(it)));
+if (!shown.length) cards.appendChild(el('p', {class: 'detail', text: 'Nothing on this course changes the plan if it is wrong. Have a good round.'}));
+document.getElementById('greensum').textContent = 'Checked automatically: ' + greens.length + ' items where no answer changes the plan';
+greens.forEach(it => document.getElementById('greenlist').appendChild(el('li', {text: 'Hole ' + it.hole + ': ' + it.question})));
+document.getElementById('greens').hidden = !greens.length;
+document.getElementById('foot').textContent = 'Each answer was tested before you see it: the strategy model re-ran the tee shot (' + D.settings.n +
+  ' swings, same random swings every time) with the item removed, its edge moved 10 yds either way, or the tee moved 20 yds along and 10 yds across. ' +
+  'Red means the club or the aim (by more than 5 yds) changes; amber means the hole plays more than 0.01 strokes differently. Built ' + D.built + '.';
+progress();
+
+const outBox = document.getElementById('out'), status = document.getElementById('status');
+document.getElementById('copy').addEventListener('click', () => {
+  const txt = answersJson();
+  outBox.value = txt; outBox.hidden = false;
+  const n = Object.keys(S.answers).length;
+  const fallback = () => { outBox.focus(); outBox.select(); status.textContent = 'Selected: copy it and paste it into the chat.'; };
+  try {
+    navigator.clipboard.writeText(txt).then(() => { status.textContent = 'Copied ' + n + ' answer' + (n === 1 ? '' : 's') + '. Paste it into the chat.'; }, fallback);
+  } catch (e) { fallback(); }
+});
+let armed = null;
+document.getElementById('clear').addEventListener('click', e => {
+  const b = e.currentTarget;
+  if (!armed) { b.textContent = 'Tap again to clear'; armed = setTimeout(() => { armed = null; b.textContent = 'Clear answers'; }, 3000); return; }
+  clearTimeout(armed); armed = null; b.textContent = 'Clear answers';
+  S = {answers: {}}; save();
+  cards.innerHTML = ''; shown.forEach(it => cards.appendChild(card(it)));
+  outBox.hidden = true; status.textContent = 'Answers cleared.';
+});
+</script>
