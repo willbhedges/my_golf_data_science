@@ -58,7 +58,7 @@ def synthetic_card(truth):
     refs = sorted(truth, key=int)
     if len(refs) < 9:
         return None
-    n = 18 if len(refs) >= 18 else 9
+    n = 18 if max(int(r) for r in refs) > 9 else 9
     return dict(par=[truth.get(str(i), {}).get("par") for i in range(1, n + 1)],
                 yards={"osm": [int(round(truth[str(i)]["length_yd"])) if str(i) in truth else None for i in range(1, n + 1)]})
 
@@ -75,13 +75,16 @@ def validate(d, card, fc, course, seg, pads):
     out = dict(n_true=len(truth))
     used_card, kind = (card, "web") if card else (synthetic_card(truth), "osm-derived")
     out["card_kind"] = kind
+    base = geometry_fallback(fc, truth)
+    if base:
+        out["today_fallback_nocard"] = base
     for name, osm_feats in (("v_osm", True), ("v_model", False)):
         if not osm_feats and not seg:
             continue
         inp = R.inputs_from_fc(fc, segment=seg, pads=pads, boundary=course.get("boundary"), hide_holes=True,
                                osm_features=osm_feats)
         for cname, cc in (("card", used_card), ("nocard", None)):
-            res = R.route(inp, cc)
+            res = R.route(inp, cc, margins=cc is not None)
             sc = R.score(res, truth)
             sc.pop("per_hole")
             sc["inputs"] = res.get("inputs")
@@ -89,6 +92,29 @@ def validate(d, card, fc, course, seg, pads):
             if cname == "card":
                 out[f"{name}_res"] = res
     return out
+
+
+def geometry_fallback(fc, truth):
+    """Today's package without hole ways: geometry/build_holes.infer_holes (greedy green -> tee pairing, numbered
+    in OSM order), scored like the router."""
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("gen_bh", os.path.join(CD, "geometry", "build_holes.py"))
+        bh = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(bh)
+        fc0 = dict(fc, features=[f for f in fc["features"] if f["properties"].get("golf") != "hole"])
+        world = bh.World(fc0)
+        holes = {}
+        for h in bh.infer_holes(world):
+            a, b = bh._ll(world, h["line"][0]), bh._ll(world, h["line"][-1])
+            holes[h["props"]["ref"]] = dict(tee_ll=list(a), green_ll=list(b), status="ok",
+                                            straight_yd=float(np.hypot(*R.Proj(*a).fwd(*b))))
+        sc = R.score(dict(holes=holes), truth)
+        sc.pop("per_hole")
+        return sc
+    except Exception as e:                                       # noqa: BLE001
+        print("geometry fallback failed:", repr(e))
+        return None
 
 
 def plot(path, fc, course, res, truth, seg_inp):
@@ -159,7 +185,12 @@ def course_row(d, plots=False):
                today_green_seg=t.get("green_segment", 0), today_tee=t.get("with_tee_box", 0),
                today_reason=None if t.get("holes_built") else str(t.get("reason") or (res.get("errors") or {}).get("package_today"))[:120])
     exp = row["expected"]
-    row["today_all"] = bool(t.get("holes_built", 0) >= exp and t.get("with_green_polygon", 0) >= exp)
+    # placed correctly today = every card hole has its own numbered OSM golf=hole way and a green polygon (holes the
+    # geometry fallback infers from tee / green pairs are numbered in OSM order: ~8 % right, see the baseline row)
+    refs = set((res.get("osm") or {}).get("hole_refs") or [])
+    row["osm_refs_complete"] = all(str(i) in refs for i in range(1, exp + 1))
+    row["today_all"] = bool(row["osm_refs_complete"] and t.get("holes_built", 0) >= exp
+                            and t.get("with_green_polygon", 0) >= exp)
     row["today_all_tees"] = bool(row["today_all"] and t.get("with_tee_box", 0) >= exp)
     # routing, production mode, recomputed offline
     fc = rd(os.path.join(d, "osm_golf.geojson"))
@@ -167,7 +198,7 @@ def course_row(d, plots=False):
     if fc and course.get("status") == "ok":
         P = pads_in(pads)
         inp = R.inputs_from_fc(fc, segment=seg, pads=P, boundary=course.get("boundary"))
-        rt = R.route(inp, card)
+        rt = R.route(inp, card, margins=card is not None)
         hs = rt.get("holes", {})
         row.update(routed=sum(1 for h in hs.values() if h.get("green_ll") and h.get("tee_ll")),
                    routed_check=sum(1 for h in hs.values() if h["status"] != "ok"),
@@ -203,7 +234,7 @@ def summarise(rows, pop):
     by = {t: [r for r in rows if r["tier"] == t and not r.get("fatal")] for t in TIERS}
     vals = [r["validation"] for r in rows if r.get("validation")]
     agg = {}
-    for key in ("v_osm_card", "v_model_card", "v_osm_nocard", "v_model_nocard"):
+    for key in ("today_fallback_nocard", "v_osm_card", "v_model_card", "v_osm_nocard", "v_model_nocard"):
         vs = [v[key] for v in vals if key in v]
         if not vs:
             continue
@@ -234,8 +265,12 @@ def summarise(rows, pop):
     for t in TIERS:
         pt = out["per_tier"][t]
         if t == "full":
-            p_ok = p_chk = pt["today_all"] or 0
-            p_need = 0.0
+            # complete OSM holes count as today; the rest (a missing / duplicated way) are routed around the anchors
+            tod = pt["today_all"] or 0
+            p_card = pt["scorecard"] or 0
+            p_ok = tod + (1 - tod) * p_card * (vo.get("all_correct") or 0)
+            p_chk = tod + (1 - tod) * p_card * (vo.get("correct_after_check") or 0)
+            p_need = (1 - tod)
         else:
             v = vo if t == "partial" else vm
             p_card = pt["scorecard"] or 0
@@ -285,7 +320,8 @@ def md(rows, summ, pop, sample):
     L += ["", "## Routing validation (OSM hole ways and refs hidden)", "",
           "| inputs | card | courses | hole-number acc | green assignment acc | physical holes found | median length err (yds) | all 18 correct | correct after check | needs check | flagged / course |",
           "|---|---|---|---|---|---|---|---|---|---|---|"]
-    names = {"v_osm": "OSM greens/tees + model + lidar", "v_model": "model + lidar only (unmapped course)"}
+    names = {"v_osm": "OSM greens/tees + model + lidar", "v_model": "model + lidar only (unmapped course)",
+             "today_fallback": "TODAY's fallback: geometry.infer_holes on OSM greens/tees"}
     for k, v in summ["validation"].items():
         inp, cd = k.rsplit("_", 1)
         L.append(f"| {names[inp]} | {'scorecard' if cd == 'card' else 'none'} | {v['n']} | {v['hole_number_acc']:.0%} | "

@@ -58,6 +58,7 @@ MISS_HOLE = 8.0
 PRACTICE_YD, PRACTICE_PEN = 45.0, 1.0
 MODEL_GREEN_PEN = 0.6
 P_CHECK = 0.8
+MARGIN_CHECK = 2.0                       # route(margins=True): flag a hole whose green can be swapped for < 2.0
 PAR_RANGES = {3: (90, 260), 4: (240, 500), 5: (420, 660), 6: (560, 760)}
 
 
@@ -429,7 +430,8 @@ def _prep_union(polys_xy, buffer=0.0):
     return lambda x, y: contains_xy(u, x, y)
 
 
-def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_ll="auto", force=None):
+def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_ll="auto", force=None,
+          exclude=None, margins=False):
     """Infer the routing. -> dict(status, n_holes, holes {ref: {...}}, cost, unused_greens, method, inputs).
     force {ref: (tee index | -1, green index | -1)}: score a given routing instead of searching (diagnostics)."""
     pr = inp.get("proj")
@@ -545,6 +547,8 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
             c = c + ch_cost(gxy, 0.5 if (h == n - 1 or (h == 8 and n >= 18)) else 0.0)[None, :]
             c = c + gpen[None, :]
             ok = (lc < 9.5) & cand
+            if exclude and ref in exclude:
+                ok[:, exclude[ref]] = False
             if force and ref in force:
                 ok = np.zeros_like(ok)
                 if force[ref][0] >= 0 and force[ref][1] >= 0:
@@ -555,6 +559,8 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
             rows = [(int(ti[o]), int(gi[o]), float(cc[o]), float(which[ti[o], gi[o]])) for o in order]
         for k in range(nG):
             if force and ref in force and (force[ref][0] >= 0 or force[ref][1] != k):
+                continue
+            if exclude and exclude.get(ref) == k:
                 continue
             rows.append((-1, k, MISS_TEE + float(ch_cost(gxy[k], 0.5 if h == n - 1 else 0.0)), float("nan")))
         rows.append((-1, -1, MISS_HOLE, float("nan")))
@@ -692,11 +698,24 @@ def route(inp, card=None, n_holes=None, beam=BEAM, use_anchors=True, clubhouse_l
         ent["status"] = "ok" if not flags else "check"
         holes[str(h + 1)] = ent
     used = {hyps[h][best[h]][1] for h in range(n)}
+    if margins:
+        # leave-one-out: the cheapest routing that does NOT give hole n this green; a small cost increase means
+        # another green explains the card almost as well -> check (stronger signal than the beam marginal)
+        for h in range(n):
+            ref, gk = str(h + 1), hyps[h][best[h]][1]
+            if gk < 0 or holes[ref].get("anchored"):
+                continue
+            alt = route(inp, card, n_holes, beam, use_anchors, clubhouse_ll, exclude={ref: gk})
+            m = round(float(alt["cost"] - S_cost[0]), 2)
+            holes[ref]["margin"] = m
+            if m < MARGIN_CHECK:
+                holes[ref]["flags"].append(f"close alternative (+{m:.1f} cost without this green)")
+                holes[ref]["status"] = "check"
     if force is not None:
         inp["_debug"] = dict(D=D, corr=corr, cross=cross, align=align, walk=walk, W=W)
     return dict(method="routing/1", status="ok", n_holes=n, card=bool(yards and any(yards)),
                 cost=round(float(S_cost[0]), 3), holes=holes,
-                n_check=sum(1 for v in holes.values() if v["status"] != "ok"),
+                n_check=sum(1 for v in holes.values() if v["status"] != "ok"), margins=bool(margins),
                 unused_greens=[G[k]["id"] for k in range(nG) if k not in used],
                 clubhouse=list(ch) if ch else None,
                 inputs=dict(greens=nG, greens_osm=sum(g["src"] == "osm" for g in G), tees=nT,
@@ -780,11 +799,18 @@ def to_hole_features(res, fc, inp=None):
 
 # ----------------------------------------------------------------------------- validation
 def truth_from_fc(fc):
-    """{ref: {tee_ll, green_ll, line, length_yd, par}} from the OSM golf=hole ways (numeric refs only)."""
+    """{ref: {tee_ll, green_ll, line, length_yd, par}} from the OSM golf=hole ways (numeric refs, inside the
+    course; on a duplicated ref the way with a par tag wins). `dup_refs` in the dict's "_meta" is not set: callers
+    that need to know count the ways themselves."""
     out = {}
-    for f in fc.get("features", []):
+    feats = [f for f in fc.get("features", []) if f["properties"].get("golf") == "hole"
+             and f["geometry"]["type"] == "LineString" and str(f["properties"].get("ref", "")).isdigit()
+             and f["properties"].get("inside_course") is not False]
+    # two ways with one ref (an adjacent course / a 27-hole facility inside the boundary): keep the one with a par
+    feats.sort(key=lambda f: str(f["properties"].get("par", "")).isdigit())
+    for f in feats:
         p = f["properties"]
-        if p.get("golf") == "hole" and f["geometry"]["type"] == "LineString" and str(p.get("ref", "")).isdigit():
+        if True:
             c = f["geometry"]["coordinates"]
             pr = Proj(*c[0])
             xy = pr.ring(c)

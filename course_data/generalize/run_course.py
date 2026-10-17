@@ -275,7 +275,7 @@ def main():
     seg_fc, pads_js = rd(seg_path), rd(os.path.join(out, "pads.json"))
     pads_in = [dict(id=p["id"], centroid=p["centroid"], coords=[tuple(c) for c in p["coords"]]) for p in (pads_js or [])]
     inp = R.inputs_from_fc(fc, segment=seg_fc, pads=pads_in, boundary=course.get("boundary"))
-    rt = timed(res, "routing", R.route, inp, pick[1] if pick else None)
+    rt = timed(res, "routing", R.route, inp, pick[1] if pick else None, margins=bool(pick))
     if rt:
         res["routing"] = {k: v for k, v in rt.items() if k != "holes"}
         res["routing"]["holes"] = {k: {kk: v.get(kk) for kk in ("status", "flags", "green_src", "tee_src", "straight_yd",

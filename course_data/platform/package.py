@@ -499,6 +499,48 @@ def call_gapfill(package, img_dir, warnings):
         return package
 
 
+def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages):
+    """S2a: card holes without an OSM golf=hole way -> platform/routing.py infers them (tees: OSM + segment model
+    + lidar pads; greens: OSM + segment model; the card's yardages / pars order them) and adds golf=hole lines.
+    Without a card, or with request "routing": false, the geometry fallback (infer_holes) stays.
+    -> (fc, {ref: {status, flags, p_green, margin}} for the routed holes)."""
+    if not card or not req.get("routing", True):
+        return fc, {}
+    try:
+        import routing as rt
+        n, _, _ = rt.card_holes(card)
+        have = set(osm_lines(fc))
+        missing = [str(i) for i in range(1, (n or 0) + 1) if str(i) not in have]
+        if not missing:
+            return fc, {}
+        seg = next((pc.read_json(p) for p in (os.path.join(CD, "segment", slug, "segment.geojson"),
+                                              os.path.join(pkg_dir, "segment.geojson")) if os.path.exists(p)), None)
+        pads = []
+        _, elev = imagery_ref(find_imagery(req, pkg_dir, slug))
+        dem = os.path.join(pc.ROOT, elev["file"]) if elev else None
+        if dem and os.path.exists(dem):
+            lp = load(os.path.join(CD, "tees", "lidar_pads.py"), "cdp_lidar_pads")
+            if lp is not None:
+                pads = lp.detect_pads(dem, greens=osm_tee_inputs(fc)[2], lines=None)
+        inp = rt.inputs_from_fc(fc, segment=seg, pads=pads, boundary=course.get("boundary"))
+        res = rt.route(inp, card, margins=True)
+        fc2 = rt.to_hole_features(res, fc, inp)
+        routed = {r: {k: res["holes"][r].get(k) for k in ("status", "flags", "p_green", "margin", "green_src", "tee_src")}
+                  for r in missing if res["holes"].get(r, {}).get("green_ll") and res["holes"][r].get("tee_ll")}
+        for r, h in routed.items():
+            if h["status"] != "ok":
+                warnings.append(f"hole {r}: placed by routing inference, golfer check ({'; '.join(h['flags'])})")
+        pc.write_json(os.path.join(pkg_dir, "routing.json"), res)
+        stages["routing"] = (f"ok: platform/routing.py placed {len(routed)}/{len(missing)} holes OSM has no way for "
+                             f"({sum(h['status'] != 'ok' for h in routed.values())} to check; segment "
+                             f"{'yes' if seg else 'no'}, lidar pads {len(pads)})")
+        return fc2, routed
+    except Exception as e:                                       # noqa: BLE001
+        stages["routing"] = f"failed: {type(e).__name__}: {e}"[:300]
+        warnings.append("routing inference failed: holes without OSM ways use the geometry fallback")
+        return fc, {}
+
+
 def find_local_card(course):
     """A card already in the repo for this OSM course (tees/scorecard.json for Spirit Hollow)."""
     for p in glob.glob(os.path.join(CD, "tees", "*scorecard*.json")) + glob.glob(os.path.join(CD, "tees", "*", "scorecard.json")):
@@ -563,6 +605,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                        f"(allow_substitute). Sets on the card: {', '.join((card.get('tee_sets') or {}))}")
         warnings.append(substituted)
         how = f"substitute: longest set ({how})"
+    fc, routed = route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages)
     refs = sorted(osm_lines(fc), key=lambda r: r.zfill(3))
     stages["scorecard"] = f"ok: {cinfo['kind']} ({cinfo['source']})" if card else "missing"
     if not card:
@@ -658,6 +701,9 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                  provenance=dict(green="osm_green" if b["provenance"]["green"] == "osm_green" else "hole_line_end",
                                  par=par_src.get(k, "length rule")))
         h["green_polygon"] = h["green_polygon_ll"]
+        if k in routed:
+            h["provenance"]["hole"] = f"routing:{routed[k]['status']}"
+            h["routing"] = routed[k]
         holes[k] = apply_tee_line(h)
 
     stages["imagery"] = f"ok: {imagery['dir']} ({imagery['source']}, {imagery['year']})" if imagery else "missing"
