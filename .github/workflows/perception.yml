@@ -219,13 +219,15 @@ jobs:
           python -u course_data/perception/train.py --tables /tmp/perc/tables || echo "train failed"
           python -u course_data/perception/report.py --tables /tmp/perc/tables --scenes course_data/perception/scenes || echo "report failed"
           [ -f course_data/perception/REPORT.md ] && cat course_data/perception/REPORT.md >> "$GITHUB_STEP_SUMMARY" || true
+          OMP_NUM_THREADS=1 python -u course_data/perception/route_check.py || echo "route check failed"
       - name: Commit
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for f in course_data/perception/stacks_meta course_data/perception/dev course_data/perception/scenes \
-                   course_data/perception/models course_data/perception/REPORT.md course_data/perception/eval.json; do
+                   course_data/perception/models course_data/perception/REPORT.md course_data/perception/eval.json \
+                   course_data/perception/ROUTING.md course_data/perception/routing.json; do
             [ -e "$f" ] && git add "$f"
           done
           git diff --cached --quiet && exit 0
@@ -278,13 +280,15 @@ jobs:
           python -u course_data/perception/train.py --tables /tmp/perc/tables || echo "train failed"
           python -u course_data/perception/report.py --tables /tmp/perc/tables --scenes course_data/perception/scenes || echo "report failed"
           [ -f course_data/perception/REPORT.md ] && cat course_data/perception/REPORT.md >> "$GITHUB_STEP_SUMMARY" || true
+          OMP_NUM_THREADS=1 python -u course_data/perception/route_check.py || echo "route check failed"
       - name: Commit
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A course_data/perception/scenes
-          for f in course_data/perception/models course_data/perception/REPORT.md course_data/perception/eval.json; do
+          for f in course_data/perception/models course_data/perception/REPORT.md course_data/perception/eval.json \
+                   course_data/perception/ROUTING.md course_data/perception/routing.json; do
             [ -e "$f" ] && git add "$f"
           done
           git diff --cached --quiet && exit 0
