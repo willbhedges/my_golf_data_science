@@ -31,18 +31,18 @@
     "18": "Black"
    },
    "same_club_traced_model": 0.562,
-   "same_club_final": 0.562,
+   "same_club_final": 0.5,
    "iou_pass": {
     "water": 0.2,
     "ob": 0.0,
     "recovery": 0.062
    },
    "mean_iou": {
-    "fairway": 0.568,
+    "fairway": 0.569,
     "rough": 0.233,
     "recovery": 0.272,
     "native": 0.14,
-    "water": 0.32,
+    "water": 0.324,
     "sand": 0.43,
     "ob": 0.132
    },
@@ -106,13 +106,13 @@
     },
     {
      "bar": "same club as final_decision.json >= 80%",
-     "value": 0.562,
+     "value": 0.5,
      "need": 0.8,
      "unit": "of tee shots (ties count both)",
      "ok": false
     }
    ],
-   "seconds": 149
+   "seconds": 192
   },
   "tee_shots": [
    {
@@ -505,9 +505,9 @@
      "iou_recovery": false,
      "club": true
     },
-    "club_final": "2-wood",
-    "final_tie": true,
-    "final_runner": "4-wood",
+    "club_final": "4-wood",
+    "final_tie": false,
+    "final_runner": "2-wood",
     "same_as_final": true
    },
    {
@@ -587,10 +587,10 @@
      "iou_recovery": false,
      "club": true
     },
-    "club_final": "Driver",
+    "club_final": "2-wood",
     "final_tie": false,
-    "final_runner": "2-wood",
-    "same_as_final": true
+    "final_runner": "4-wood",
+    "same_as_final": false
    },
    {
     "hole": "8",
@@ -911,10 +911,10 @@
      "iou_recovery": false,
      "club": false
     },
-    "club_final": "4-wood",
+    "club_final": "Driver",
     "final_tie": false,
-    "final_runner": "2-wood",
-    "same_as_final": false
+    "final_runner": "4-wood",
+    "same_as_final": true
    },
    {
     "hole": "11",
@@ -995,10 +995,10 @@
      "iou_recovery": false,
      "club": true
     },
-    "club_final": "4-wood",
-    "final_tie": true,
-    "final_runner": "Long iron",
-    "same_as_final": true
+    "club_final": "Long iron",
+    "final_tie": false,
+    "final_runner": "Mid iron",
+    "same_as_final": false
    },
    {
     "hole": "13",
@@ -1101,33 +1101,33 @@
     },
     "registration_check": {
      "method": "lie_raster_fit",
-     "dice": 0.476,
+     "dice": 0.537,
      "classes": [
       "fairway",
       "water"
      ],
      "rot_deg": -8.5,
      "shift": [
-      31.0,
-      12.0
+      32.0,
+      13.0
      ],
      "scale": 1.0,
-     "tee_err": 33.2,
-     "green_err": 16.9
+     "tee_err": 34.5,
+     "green_err": 17.8
     },
     "iou_own_frame": {
-     "fairway": 0.112,
+     "fairway": 0.114,
      "rough": 0.0,
      "recovery": 0.438,
      "native": 0.027,
-     "water": 0.046
+     "water": 0.049
     },
     "iou": {
-     "fairway": 0.455,
+     "fairway": 0.469,
      "rough": 0.011,
      "recovery": 0.74,
      "native": 0.375,
-     "water": 0.312,
+     "water": 0.357,
      "sand": 0.0
     },
     "club_traced": "4-wood",
@@ -1155,9 +1155,9 @@
      "iou_recovery": true,
      "club": false
     },
-    "club_final": "2-wood",
-    "final_tie": false,
-    "final_runner": "4-wood",
+    "club_final": "4-wood",
+    "final_tie": true,
+    "final_runner": "2-wood",
     "same_as_final": false
    },
    {
@@ -1229,9 +1229,9 @@
      "iou_recovery": false,
      "club": false
     },
-    "club_final": "Driver",
+    "club_final": "2-wood",
     "final_tie": true,
-    "final_runner": "2-wood",
+    "final_runner": "Driver",
     "same_as_final": false
    },
    {
@@ -1311,7 +1311,7 @@
      "club": false
     },
     "club_final": "Driver",
-    "final_tie": false,
+    "final_tie": true,
     "final_runner": "2-wood",
     "same_as_final": true
    },
