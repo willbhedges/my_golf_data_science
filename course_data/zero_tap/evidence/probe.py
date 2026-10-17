@@ -685,16 +685,127 @@ def summarize_site(site):
                 pdfs=len(site.get("pdfs", [])), videos=len(site.get("videos", [])))
 
 
+CAND_URL = re.compile(r"(?i)hole|layout|map|routing|overview|aerial|drone|dji|birds?.?eye|overhead|gps|flyover|"
+                      r"score.?card|yardage")
+
+
+def is_candidate(r):
+    """Images worth registering: per-hole images, layout maps, scorecard / map PDF pages, aerial-looking photos."""
+    k = r.get("kind")
+    t = (r.get("url") or "") + " " + (r.get("alt") or "")
+    if k in ("hole", "layout"):
+        return True
+    if k in ("pdf_page", "scorecard", "other"):
+        return bool(CAND_URL.search(t))
+    return False
+
+
+def reregister(slug, prev, out_dir):
+    """Second-pass registration (register.py: coarse NCC search + local SIFT verification) of the candidate
+    images found by an earlier crawl, without re-crawling the site."""
+    import register as REG
+    P = Polite()
+    t0 = time.time()
+    rec = dict(prev)
+    if prev.get("registrations"):
+        cands = [r for r in prev["registrations"] if is_candidate(r) and r.get("status") in ("matched", "no_match")]
+    else:                                         # fresh crawl without first-pass registration
+        site = prev.get("site") or {}
+        cands = [dict(url=im["url"], kind=im["kind"], hole=im.get("hole"), page=im.get("page"), alt=im.get("alt"))
+                 for im in site.get("images", [])]
+        cands += [dict(url=f"{p['url']}#page={i}", kind="pdf_page", hole=p.get("hole"), page=p["url"],
+                       alt=p.get("label", "")) for p in site.get("pdfs", [])[:6] for i in (1, 2, 3)]
+        cands = [c for c in cands if is_candidate(c)]
+        for c in cands:
+            c["status"] = "matched"
+    pri = {"hole": 0, "layout": 1, "pdf_page": 2, "scorecard": 3}
+    cands = sorted(cands, key=lambda c: pri.get(c["kind"], 4))[:16]
+    regs = []
+    work = tempfile.mkdtemp(prefix=f"ev2_{slug}_")
+    meta = img = None
+    if cands:
+        try:
+            img, meta = naip_for(slug, work)
+        except Exception:  # noqa: BLE001
+            rec["naip_error"] = traceback.format_exc()[-800:]
+    pdf_cache = {}
+    corridors = {}
+    if img is not None and any(c["kind"] == "hole" for c in cands):
+        import evaluate as EV
+        to_px = lonlat_to_px_fn(meta)
+        corridors = {n: (to_px(*h["tee"]), to_px(*h["green"])) for n, h in EV.truth_holes(slug).items()}
+    for c in cands if img is not None else []:
+        rr = {k: c.get(k) for k in ("url", "kind", "hole", "page", "alt")}
+        im = None
+        if c["kind"] == "pdf_page":
+            base, _, pg = c["url"].partition("#page=")
+            if base not in pdf_cache:
+                r = P.get(base, timeout=60)
+                pdf_cache[base] = pdf_pages(r.content, work)[1] if r is not None and r.status_code == 200 else []
+            pages = pdf_cache[base]
+            i = int(pg or 1) - 1
+            im = pages[i] if 0 <= i < len(pages) else None
+        else:
+            r = P.get(c["url"], timeout=40)
+            if r is not None and r.status_code == 200 and len(r.content) <= IMG_MAX_BYTES:
+                im = decode_image(r.content)
+        if im is None or min(im.shape[:2]) < 200:
+            rr["status"] = "download_failed_or_small"
+            regs.append(rr)
+            continue
+        rr["wh"] = [int(im.shape[1]), int(im.shape[0])]
+        try:
+            m = REG.register(im, img, meta["lo"]["resolution_m"])
+        except Exception as e:  # noqa: BLE001
+            m = None
+            rr["match_error"] = repr(e)[:300]
+        rr["status"] = "matched" if m else "no_match"
+        if m:
+            m["sane"] = m["refined"]
+            rr["match"] = m
+            if m["refined"] and c["kind"] != "hole":
+                rr["ocr"] = ocr_numbers(im)
+        if c["kind"] == "hole" and corridors:
+            # Upper bound for the "which pair is this image" use: candidate corridors = the true tee-green
+            # pairs (in deployment they come from workstream A's hole_pairs/1).
+            try:
+                cs = REG.match_corridors(im, img, corridors, meta["lo"]["resolution_m"])
+                rr["corridor_scores_oracle_pairs"] = dict(list(cs.items())[:6])
+            except Exception as e:  # noqa: BLE001
+                rr["corridor_error"] = repr(e)[:200]
+        regs.append(rr)
+        log(" ", c["kind"], c.get("hole"), rr["status"], (m or {}).get("inliers"), (m or {}).get("refined"),
+            c["url"][-70:])
+    rec["registrar"] = "register.py v2"
+    rec["registrations"] = regs
+    rec["n_candidates"] = len(cands)
+    if meta:
+        rec["naip"] = dict(year=meta.get("year"), crs=meta["crs"], lo=meta["lo"])
+    rec["seconds_rereg"] = round(time.time() - t0, 1)
+    with open(os.path.join(out_dir, f"{slug}.json"), "w") as fh:
+        json.dump(rec, fh, indent=1, default=str)
+    return rec
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--slugs", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--no-register", action="store_true")
+    ap.add_argument("--reregister", help="earlier run dir: re-register its candidate images (register.py)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
+    sys.path.insert(0, HERE)
     for slug in [s for s in a.slugs.split(",") if s]:
         log("=====", slug)
         try:
+            if a.reregister:
+                prev = jload(os.path.join(a.reregister, f"{slug}.json"))
+                if not prev:                      # not crawled yet: crawl now, then register (v2)
+                    prev = probe_course(slug, a.out, False)
+                r = reregister(slug, prev, a.out)
+                log("rereg", len(r.get("registrations", [])), r.get("seconds_rereg"))
+                continue
             r = probe_course(slug, a.out, not a.no_register)
             log(json.dumps(r.get("site_summary")), "regs", len(r.get("registrations", [])), r.get("seconds"))
         except Exception:  # noqa: BLE001

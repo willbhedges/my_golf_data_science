@@ -49,13 +49,13 @@ jobs:
           if kind == "validation":
               v = json.load(open("course_data/generalize/validation_set.json"))
               slugs = [c["slug"] for c in v["courses"] if c.get("status") == "ok"]
-          elif kind in ("bench", "bench_rest"):
+          elif kind in ("bench", "bench_rest", "bench_all"):
               b = json.load(open("course_data/zero_tap/benchmark.json"))["courses"]
-              done = set()
-              if kind == "bench_rest":
-                  v = json.load(open("course_data/generalize/validation_set.json"))
-                  done = {c["slug"] for c in v["courses"]}
+              v = [c["slug"] for c in json.load(open("course_data/generalize/validation_set.json"))["courses"]]
+              done = set(v) if kind == "bench_rest" else set()
               slugs = [c["slug"] for c in b if c.get("in_bench") and c["slug"] not in done]
+              if kind == "bench_all":
+                  slugs += [s for s in v if s not in slugs]
           elif kind == "none":
               slugs = []
           else:
@@ -64,7 +64,8 @@ jobs:
           shards = [",".join(slugs[i::n]) for i in range(n)]
           shards = [s for s in shards if s] or ["none"]
           out = dict(shards=json.dumps(shards), run=r.get("run", "probe"),
-                     args="" if r.get("register", True) else "--no-register",
+                     args=(f"--reregister course_data/zero_tap/evidence/runs/{r['reregister']}" if r.get("reregister")
+                           else "" if r.get("register", True) else "--no-register"),
                      overpass="1" if r.get("overpass") else "0")
           print(out)
           with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
@@ -95,7 +96,7 @@ jobs:
     needs: plan
     if: needs.plan.outputs.shards != '["none"]'
     runs-on: ubuntu-latest
-    timeout-minutes: 170
+    timeout-minutes: 345
     strategy:
       fail-fast: false
       max-parallel: 5

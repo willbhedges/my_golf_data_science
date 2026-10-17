@@ -194,6 +194,13 @@ def ev_website(rec):
         return out
     to_ll = px_to_lonlat(naip)
     for r in rec.get("registrations", []):
+        cs = r.get("corridor_scores_oracle_pairs")
+        if cs and r.get("hole"):
+            ks = list(cs)
+            margin = cs[ks[0]] - (cs[ks[1]] if len(ks) > 1 else 0)
+            out.append(dict(hole=r["hole"], role="pair_match", pair=int(ks[0]), score=cs[ks[0]],
+                            margin=round(margin, 4), source="website_hole_image_pairmatch", url=r["url"],
+                            confidence=round(min(0.9, max(0.05, 10 * margin)), 3), oracle_pairs=True))
         m = r.get("match")
         if not m or not m.get("sane") or m["inliers"] < MIN_INLIERS:
             continue
@@ -233,6 +240,8 @@ def score_item(it, holes):
         if n is None or d > MATCH_RADIUS_M:
             return False, False, dict(nearest=n, d=round(d, 1))
         return True, n == it["hole"], dict(nearest=n, d=round(d, 1))
+    if it["role"] == "pair_match":
+        return True, it["pair"] == it["hole"], dict(pair=it["pair"])
     if it["role"] == "footprint":
         fr = {n: line_frac_inside(h["line"], it["footprint"]) for n, h in holes.items()}
         best = max(fr, key=fr.get) if fr else None
