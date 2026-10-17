@@ -4,7 +4,8 @@ name: zt_formation
 # Request-file trigger: commit course_data/requests/zt_formation_<name>.json
 #   {"schema": "request/1", "kind": "zt_formation", "stage": "inputs" | "eval", "only": "slug1,slug2" (optional),
 #    "rev": "<anything, to re-trigger>"}
-# inputs: 6 chunk jobs; per course: stack (perception combined cache, else fetch_stack.py), aux layers, a blind
+# inputs: 6 chunk jobs; per course: stack (perception combined cache, else fetch_stack.py), aux layers (artifact
+#         zt-formation-aux, 30 days; not committed), a blind
 #         perception scene where none is committed, web scorecards (no OSM lengths) -> commit
 #         course_data/zero_tap/formation/inputs/<slug>/
 # eval:   formation.py train + evaluate on the committed inputs -> commit course_data/zero_tap/formation/results/
@@ -123,6 +124,16 @@ jobs:
           pattern: zt-formation-inputs-*
           merge-multiple: true
           path: /tmp/zin
+      - name: Aux rasters as one artifact (not committed)
+        run: |
+          mkdir -p /tmp/aux
+          for d in /tmp/zin/*/; do s=$(basename "$d"); [ -f "$d/aux.npz" ] && mkdir -p /tmp/aux/$s && mv "$d/aux.npz" /tmp/aux/$s/; done
+          du -sh /tmp/aux; ls /tmp/aux | wc -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zt-formation-aux
+          path: /tmp/aux
+          retention-days: 30
       - name: Commit inputs
         run: |
           mkdir -p course_data/zero_tap/formation/inputs
