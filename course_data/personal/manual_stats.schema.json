@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "golf_app/manual_stats/1",
+  "title": "Manual tee-shot stats (read off any app's stats screen or a scorecard)",
+  "description": "Counts over the same set of rounds. Give counts or percentages (percentages need rounds and tee_shots_per_round). Only tee shots on par 4s and 5s. Fairway = on the short grass (first cut is a miss). A miss is left or right of the fairway as the app reports it; misses short of the fairway count by side if the app gives one, else leave them out.",
+  "type": "object",
+  "required": ["rounds"],
+  "properties": {
+    "schema": {"const": "golf_app/manual_stats/1"},
+    "player": {"type": "string"},
+    "source": {"type": "string", "description": "where the numbers came from", "examples": ["arccos", "18birdies", "shot_scope", "thegrint", "golfshot", "garmin", "golfpad", "scorecard"]},
+    "course": {"type": "string", "description": "home course id the rounds were played on (needs an emulator); all rounds on one course and tee", "default": "spirit_hollow"},
+    "tee": {"type": "string", "examples": ["Black"]},
+    "holes": {"type": ["array", "null"], "items": {"type": "string"}, "description": "driving holes the stats cover (default: every par 4/5 of that tee)"},
+    "club": {"type": "string", "default": "Driver", "description": "the club hit off these tees (mostly)"},
+    "period": {"type": "string", "description": "free text, e.g. 'last 20 rounds, 2026 season'"},
+    "rounds": {"type": "integer", "minimum": 1},
+    "tee_shots_per_round": {"type": "number", "default": 14, "description": "par 4s + par 5s per round"},
+    "n_tee": {"type": "integer", "minimum": 1, "description": "tee shots counted (default rounds x tee_shots_per_round)"},
+    "fairways": {"type": "integer", "minimum": 0},
+    "fairway_pct": {"type": "number", "minimum": 0, "maximum": 100},
+    "miss_left": {"type": "integer", "minimum": 0},
+    "miss_left_pct": {"type": "number", "minimum": 0, "maximum": 100, "description": "of all tee shots, as apps report it"},
+    "miss_right": {"type": "integer", "minimum": 0},
+    "miss_right_pct": {"type": "number", "minimum": 0, "maximum": 100},
+    "tee_penalties": {"type": "integer", "minimum": 0, "description": "penalty strokes from tee shots (water, OB, lost, unplayable) over all the rounds"},
+    "tee_penalties_per_round": {"type": "number", "minimum": 0},
+    "avg_drive": {"type": "number", "minimum": 100, "maximum": 400, "description": "average driving distance in yards (tee to ball), as the app reports it (most drop mishits)"},
+    "n_drives": {"type": "integer", "minimum": 1, "description": "drives behind avg_drive (default n_tee)"},
+    "clubs": {
+      "type": "object",
+      "description": "optional stock numbers per club: carry and total in yards (feeds the bag, not the likelihood)",
+      "additionalProperties": {"type": "object", "properties": {"carry": {"type": "number"}, "total": {"type": "number"}}}
+    }
+  },
+  "examples": [{
+    "schema": "golf_app/manual_stats/1", "player": "example", "source": "arccos", "course": "spirit_hollow", "tee": "Black",
+    "rounds": 20, "tee_shots_per_round": 14, "fairway_pct": 52, "miss_left_pct": 22, "miss_right_pct": 26,
+    "tee_penalties_per_round": 0.6, "avg_drive": 288
+  }]
+}
