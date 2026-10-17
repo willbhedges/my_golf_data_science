@@ -1,16 +1,16 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-10-17 04:38 UTC",
- "commit": "36efe64",
+ "generated": "2026-10-17 04:50 UTC",
+ "commit": "c1361e3",
  "courses": [
   {
    "course": "Spirit Hollow",
    "slug": "spirit_hollow",
    "tees": "Black",
    "package": "course_data/packages/spirit_hollow/package.json",
-   "package_commit": "5487087 2026-10-17T03:55:38Z",
+   "package_commit": "0865407 2026-10-17T04:39:24Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 84.1,
+   "decision_s": 68.5,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -58,7 +58,8 @@
      "runner": "2-wood",
      "margin": 0.0449,
      "check": [
-      "no printable Driver aim: aim -108 yds is more than 40 yds off the tee line; the aim point is 197 yds from this hole's line of play (another hole?)"
+      "no printable Driver aim: aim -108 yds is more than 40 yds off the tee line; the aim point is 197 yds from this hole's line of play (another hole?)",
+      "28% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
      ],
      "truth": "Driver",
      "truth_tie": false,
@@ -527,16 +528,16 @@
     }
    },
    "aim_violations": [],
-   "seconds": 86.3
+   "seconds": 86.9
   },
   {
    "course": "Mozingo Lake",
    "slug": "mozingo_lake",
    "tees": "App",
    "package": "course_data/packages/mozingo_lake/package.json",
-   "package_commit": "5487087 2026-10-17T03:55:38Z",
+   "package_commit": "0865407 2026-10-17T04:39:24Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 71.9,
+   "decision_s": 59.9,
    "last_plan": {
     "built": "2026-10-16T22:06Z",
     "runtime_s": 578.9,
@@ -544,7 +545,7 @@
     "decision_s": 97.4
    },
    "truth": "hand map mozingo/tee_strategy.HOLES through the product's quick decision",
-   "truth_fp": "f814612fad",
+   "truth_fp": "2ab50d3367",
    "truth_commit": "3d37942 2026-10-16T18:42:17Z",
    "holes": [
     {
@@ -786,16 +787,16 @@
     "max_regret": 0.088
    },
    "aim_violations": [],
-   "seconds": 72.5
+   "seconds": 73.7
   },
   {
    "course": "Veenker",
    "slug": "veenker",
    "tees": "Blue",
    "package": "course_data/packages/veenker/package.json",
-   "package_commit": "5487087 2026-10-17T03:55:38Z",
+   "package_commit": "0865407 2026-10-17T04:39:24Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 71.4,
+   "decision_s": 59.9,
    "last_plan": {
     "built": "2026-10-17T01:16Z",
     "runtime_s": 360.9,
@@ -947,18 +948,18 @@
     "checks": 2
    },
    "aim_violations": [],
-   "seconds": 72.1
+   "seconds": 60.6
   }
  ],
  "guards": {
-  "fails": [
-   "Mozingo Lake: same club 7/14 vs 10/14 on 2026-10-17 01:55 (2f8e5ab): dropped by 3 holes (> 1)"
-  ],
-  "notes": []
+  "fails": [],
+  "notes": [
+   "Mozingo Lake: truth changed since 2026-10-17 01:55 (baseline reset)"
+  ]
  },
  "truth_cache": {
   "spirit_hollow": {
-   "fp": "e038a3b5ad",
+   "fp": "9c465bf99a",
    "n": 8000,
    "res": {
     "1": {
@@ -1158,10 +1159,10 @@
      }
     }
    },
-   "built": "2026-10-17 02:26"
+   "built": "2026-10-17 04:48"
   },
   "mozingo": {
-   "fp": "f814612fad",
+   "fp": "2ab50d3367",
    "n": 8000,
    "res": {
     "1": {
@@ -1335,7 +1336,7 @@
      }
     }
    },
-   "built": "2026-10-17 00:35"
+   "built": "2026-10-17 04:49"
   }
  },
  "history": [
@@ -2188,6 +2189,77 @@
    "same_hand_quick": null,
    "ceiling_quick": null,
    "decision_s": 71.4,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 04:50",
+   "commit": "c1361e3",
+   "course": "spirit_hollow",
+   "truth_fp": "bd4a5e2a1d",
+   "n": 16,
+   "same": 8,
+   "same_or_tie": 10,
+   "same_pct": 0.5,
+   "mean_regret": 0.0143,
+   "max_regret": 0.0643,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.296,
+    "long grass": 0.189,
+    "water": 0.316,
+    "ob": 0.391
+   },
+   "checks": 2,
+   "same_hand_quick": 12,
+   "ceiling_quick": 12,
+   "decision_s": 68.5,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 04:50",
+   "commit": "c1361e3",
+   "course": "mozingo_lake",
+   "truth_fp": "2ab50d3367",
+   "n": 14,
+   "same": 7,
+   "same_or_tie": 8,
+   "same_pct": 0.5,
+   "mean_regret": 0.0164,
+   "max_regret": 0.088,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 1,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 59.9,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-10-17 04:50",
+   "commit": "c1361e3",
+   "course": "veenker",
+   "truth_fp": null,
+   "n": 13,
+   "same": null,
+   "same_or_tie": null,
+   "same_pct": null,
+   "mean_regret": null,
+   "max_regret": null,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 59.9,
    "source": "product/decide.run quick n=8000",
    "regression": false
   }
