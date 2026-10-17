@@ -44,7 +44,8 @@ def choose_keep(sc, hyps, geo, N, max_greens=19):
 
 
 def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep=None, cands=None,
-          pos_extra=None, pad_extra=None, nine=None, max_h=6, max_greens=19, hyps_all=None):
+          pos_extra=None, pad_extra=None, nine=None, max_h=6, max_greens=19, hyps_all=None, form_lp=None,
+          nothole_override=None):
     """-> result dict (holes numbered 1..N, as structure.solver.solve) with result['diag'] for the gate.
 
     hyps/geo: formation hypotheses (structure.solver.hypotheses output, possibly re-scored / restricted);
@@ -69,6 +70,11 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
     pb = V.Problem(sc, hyps, geo, keep, use_paths=use_paths)
     if pad_extra is not None:
         pb.pad = pb.pad + pad_extra[:, :pb.K]
+    if form_lp is not None:
+        tf = crf.split(crf.theta_from_params())[0]
+        pb.pad = np.where(pb.cxk >= 0, form_lp[:, :pb.K] - pb.Phi @ tf, pb.pad)
+    if nothole_override is not None:
+        nothole = np.asarray(nothole_override, float)
     Mk = len(keep)
     nh = nothole[keep]
     Hc = cands if cands is not None else default_cands(sc, geo, hyps_all or hyps)
@@ -164,7 +170,10 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
                           tee_xy=[float(x) for x in h["tee"]], boxes=[sc.tees[b]["id"] for b in cx["boxes"]],
                           length_yd=round(h["D"], 1), p_par=[round(float(x), 3) for x in h["ppar"]],
                           p_number=round(float(marg[node, k]), 4), p_tee=round(float(ph[hi]), 4),
-                          confidence=round(float(marg[node, k]) * float(ph[hi]), 4), form_score=round(h["score"], 2)))
+                          confidence=round(float(marg[node, k]) * float(ph[hi]), 4), form_score=round(h["score"], 2),
+                          p_pair=h.get("p_pair"), p_corridor=h.get("p_corridor"), a_map=h.get("a_map"),
+                          p_tee_corr=round(float(sum(ph[j] for j, x in enumerate(hs) if x["k"] == h["k"] or
+                                                     x["k"] in h.get("cover", []) or h["k"] in x.get("cover", []))), 4)))
     pars_inf = V.infer_pars([h["p_par"] for h in holes], N)
     for h, p in zip(holes, pars_inf):
         h["par"] = p

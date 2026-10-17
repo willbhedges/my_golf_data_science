@@ -33,9 +33,32 @@ TARGET = 0.99
 FEATS = ("lp_route", "lp_route_mix", "min_num", "mean_lnum", "min_tee", "mean_ltee", "lp_front", "card",
          "card_max_resid", "card_mean_resid", "unused", "lagr", "n9", "ch_p", "min_gap", "max_walk", "cx_ratio",
          "sum_l1m_other", "dp_front", "min_par", "sum_lpar")
+# v2: per-pair certainty from workstream A's hole_pairs/1 (pairs mode; 0 / neutral otherwise)
+PC_LO = 0.9            # a hole whose chosen pair has p_corridor below this counts as uncertain
+FEATS_V2 = FEATS + ("pairs", "perc", "pc_min", "pc_sum_log", "pc_n_lo", "ptc_min", "ptc_sum_log", "n_reassigned",
+                    "paired_min", "unused_paired_max", "n_off")
+PAR_SURE = 0.95        # hard rule: no card -> never certain unless every par is this sure (length mixture)
 
 
-def features(dg):
+def hard_ok(dg):
+    """Hard rules applied on top of the score: a course with no card is never certain unless every hole's par is
+    known with confidence (min P(par) >= PAR_SURE); a route with no diagnostics is never certain."""
+    if not dg:
+        return False
+    if not dg.get("card"):
+        pc = dg.get("par_conf") or [0.0]
+        if min(pc) < PAR_SURE:
+            return False
+    return True
+
+
+def features(dg, feats=None):
+    feats = feats or FEATS
+    f = _features(dg)
+    return np.array([f[k] for k in feats])
+
+
+def _features(dg):
     N = max(1, dg.get("N", 18))
     num = np.clip(np.array(dg.get("marg_num") or [0.0]), 1e-6, 1)
     pt = np.clip(np.array(dg.get("p_tee") or [0.0]), 1e-6, 1)
@@ -58,7 +81,19 @@ def features(dg):
              dp_front=0.0 if pfd is None else abs(pfd - 0.5) * 2,
              min_par=float(min(dg.get("par_conf") or [1.0])),
              sum_lpar=float(np.log(np.clip(dg.get("par_conf") or [1.0], 1e-6, 1)).sum()))
-    return np.array([f[k] for k in FEATS])
+    pm = bool(dg.get("pairs_mode"))
+    pc = np.clip(np.array(dg.get("p_corridor") or [1.0], float), 1e-4, 1)
+    ptc = np.clip(np.array(dg.get("p_tee_corr") or [1.0], float), 1e-4, 1)
+    pu = np.clip(np.array(dg.get("p_paired_used") or [1.0], float), 1e-4, 1)
+    f.update(pairs=float(pm), perc=float(bool(dg.get("perception"))),
+             pc_min=float(pc.min()) if pm else 1.0, pc_sum_log=float(np.log(pc).sum()) if pm else 0.0,
+             pc_n_lo=float((pc < PC_LO).sum()) if pm else 0.0,
+             ptc_min=float(ptc.min()) if pm else 1.0, ptc_sum_log=float(np.log(ptc).sum()) if pm else 0.0,
+             n_reassigned=float(sum(1 for a in (dg.get("a_map") or []) if not a)) if pm else 0.0,
+             paired_min=float(pu.min()) if pm else 1.0,
+             unused_paired_max=float(dg.get("p_paired_unused_max") or 0.0) if pm else 0.0,
+             n_off=float(abs((dg.get("N_pairs") or N) - N) > 0) if pm else 0.0)
+    return f
 
 
 def dataset(rows, modes=PROD):
@@ -177,10 +212,78 @@ def apply(p, dg):
     """-> (certain, confidence, score) for one solved course."""
     if not p:
         return False, None, None
-    x = features(dg)[None]
+    x = features(dg, p.get("feats"))[None]
     s = float(score(p["model"], x)[0])
     c = float(iso_apply(p["iso"]["x"], p["iso"]["v"], [s])[0])
-    return bool(s >= p["threshold_score"]), c, s
+    ok = hard_ok(dg) if p.get("hard_rules") else True
+    return bool(ok and s >= p["threshold_score"]), (c if ok else min(c, 0.5)), s
+
+
+# ----------------------------------------------------------------------------- gate v2 (pairs mode)
+# candidate feature sets, chosen by cross-fitted coverage at zero dev errors (dev only)
+V2_SETS = {
+    "full": FEATS_V2,
+    "pairs_small": ("lp_route_mix", "min_num", "mean_lnum", "card", "perc", "pc_min", "pc_sum_log", "pc_n_lo",
+                    "ptc_min", "ptc_sum_log", "n_reassigned", "unused_paired_max", "min_par", "sum_lpar", "lp_front"),
+    "pairs_tiny": ("lp_route_mix", "mean_lnum", "card", "pc_sum_log", "ptc_sum_log", "unused_paired_max", "sum_lpar"),
+}
+V2_L2 = (1.0, 5.0)
+
+
+def _zero_err(s, y, ok):
+    """Score threshold just above the best-scoring wrong course among those the hard rules let through."""
+    wrong = (y == 0) & ok
+    if y[ok].sum() == 0:
+        return 1e9
+    return float(s[wrong].max()) + 1e-9 if wrong.any() else float(s[ok].min()) - 1e-9
+
+
+def fit_v2(rows, modes=None, folds=5, seeds=(0, 1, 2)):
+    """Gate v2 on DEV rows only: for each candidate feature set x L2, cross-fitted scores (grouped by course, every
+    tier of a course in the same fold, averaged over `seeds` fold splits); zero-error threshold among courses the
+    hard rules let through; pick the setting with the most certified dev courses (ties: fewer features). Then refit on
+    all dev rows; the threshold is the chosen setting's cross-fitted one."""
+    rs = [r for r in rows if "error" not in r and r.get("diag") and (modes is None or r.get("mode") in modes)]
+    y = np.array([int(r["all_correct"]) for r in rs])
+    ok = np.array([hard_ok(r["diag"]) for r in rs])
+    trials = []
+    for name, feats in V2_SETS.items():
+        X = np.array([features(r["diag"], feats) for r in rs]).reshape(-1, len(feats))
+        for l2 in V2_L2:
+            s = np.mean([_crossfit_l2(rs, X, y, folds, sd, l2) for sd in seeds], axis=0)
+            t = _zero_err(s, y, ok)
+            cert = ok & (s >= t)
+            trials.append(dict(name=name, l2=l2, certified=int(cert.sum()), n_feats=len(feats), t=t, s=s, X=X))
+    for t in trials:
+        print(f"gate v2 trial {t['name']:12s} l2={t['l2']:4.1f}: certified {t['certified']} (zero cross-fitted errors)")
+    best = sorted(trials, key=lambda t: (-t["certified"], t["n_feats"], -t["l2"]))[0]
+    m = fit_lr(best["X"], y, l2=best["l2"])
+    s_cv = best["s"]
+    xs, vs = isotonic(s_cv, y)
+    cert = ok & (s_cv >= best["t"])
+    p = dict(schema="zero_tap_gate/2", feats=list(V2_SETS[best["name"]]), feat_set=best["name"], l2=best["l2"],
+             model=m, iso=dict(x=xs, v=vs), threshold_score=best["t"], hard_rules=dict(par_sure=PAR_SURE),
+             target_precision=TARGET, modes=sorted({r["mode"] for r in rs}),
+             trials=[dict(name=t["name"], l2=t["l2"], certified=t["certified"]) for t in trials],
+             calib=dict(rows=len(y), courses=len({r["slug"] for r in rs}), positives=int(y.sum()),
+                        hard_ok=int(ok.sum()), certified=int(cert.sum()), certified_wrong=int((cert & (y == 0)).sum())),
+             note="fitted on dev rows only; threshold = zero cross-fitted dev errors among hard-rule-eligible courses")
+    return p, {(r["slug"], r["tier"]): float(v) for r, v in zip(rs, s_cv)}
+
+
+def _crossfit_l2(rows, X, y, folds, seed, l2):
+    slugs = sorted({r["slug"] for r in rows})
+    rng = np.random.RandomState(seed)
+    fid = dict(zip(slugs, rng.permutation(len(slugs)) % folds))
+    f = np.array([fid[r["slug"]] for r in rows])
+    s = np.zeros(len(y))
+    for k in range(folds):
+        tr = f != k
+        if y[tr].sum() == 0:
+            s[~tr] = -10
+            continue
+        s[~tr] = score(fit_lr(X[tr], y[tr], l2=l2), X[~tr])
+    return s
 
 
 def curve(s, y, n_pts=None):

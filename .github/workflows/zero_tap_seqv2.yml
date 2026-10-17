@@ -1,0 +1,194 @@
+name: zero_tap_seqv2
+
+# Zero-tap workstream C v2 on workstream D's benchmark: workstream A's hole_pairs/1 as the formation + the route CRF
+# + certainty gate v2 (per-pair p_corridor features, hard no-card par rule). Method `sequence_v2`.
+# Request-file trigger: commit course_data/requests/zt_seqv2_<tag>.json
+#   {"tiers": "nocard,osm_card,unmapped_nocard,unmapped_card", "form_w": "1,3,8", "aux_run": "39039826490"}
+# oof:    A's feature cache (formation.py build, aux artifact zt-formation-aux of `aux_run`) -> per-state-fold models
+#         (sequence/oof_pairs.py models) -> OUT-OF-FOLD hole_pairs/1 for the dev courses, 4 tiers (artifact, not committed)
+# zsolve: run_bench.py solve per formation weight W x 8 shards; dev courses read the OOF pairs, test courses A's committed
+#         course_data/zero_tap/formation/hole_pairs/
+# zgate:  run_bench.py pick (W on dev rows only) -> gate2 (fit on dev only, test scored once) ->
+#         course_data/zero_tap/results/sequence_v2/<tier>/<slug>.json + sequence/results/<tag>/; commit
+
+on:
+  push:
+    paths:
+      - "course_data/requests/zt_seqv2_*.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: zt-seqv2-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  PYTHONWARNINGS: ignore
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.p.outputs.tag }}
+      tiers: ${{ steps.p.outputs.tiers }}
+      form_w: ${{ steps.p.outputs.form_w }}
+      aux_run: ${{ steps.p.outputs.aux_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 20
+      - id: p
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git diff --name-only "$BEFORE" "${{ github.sha }}" -- 'course_data/requests/zt_seqv2_*.json' > /tmp/req.txt
+          else
+            ls course_data/requests/zt_seqv2_*.json > /tmp/req.txt
+          fi
+          python - <<'EOF'
+          import json, os
+          reqs = [l.strip() for l in open("/tmp/req.txt") if l.strip() and os.path.exists(l.strip())]
+          p = sorted(reqs)[-1] if reqs else None
+          r = json.load(open(p)) if p else {}
+          ws = [str(float(w)) for w in str(r.get("form_w", "1,3,8")).split(",")]
+          out = dict(tag=os.path.basename(p)[len("zt_seqv2_"):-5] if p else "v2",
+                     tiers=r.get("tiers", "nocard,osm_card,unmapped_nocard,unmapped_card"),
+                     form_w=json.dumps(ws), aux_run=str(r.get("aux_run", "39039826490")))
+          print(out)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              for k, v in out.items():
+                  fh.write(f"{k}={v}\n")
+          EOF
+
+  oof:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q requests numpy scipy shapely pyproj rasterio affine scikit-image scikit-learn==1.9.1 networkx
+      - name: Aux layers (artifact zt-formation-aux)
+        uses: actions/download-artifact@v4
+        with:
+          name: zt-formation-aux
+          run-id: ${{ needs.plan.outputs.aux_run }}
+          github-token: ${{ github.token }}
+          path: course_data/zero_tap/formation/inputs
+      - name: A's feature cache + per-fold models
+        timeout-minutes: 200
+        env:
+          ZT_FORMATION_CACHE: /tmp/zfc
+        run: |
+          ls course_data/zero_tap/formation/inputs/*/aux.npz | wc -l
+          python -u course_data/zero_tap/formation/formation.py build --procs 4 | tail -3
+          python -u course_data/zero_tap/sequence/oof_pairs.py models --out /tmp/oofm
+          rm -rf /tmp/zfc
+      - name: Out-of-fold hole_pairs/1 for the dev courses (4 tiers in parallel)
+        timeout-minutes: 90
+        run: |
+          for t in $(echo "${{ needs.plan.outputs.tiers }}" | tr ',' ' '); do
+            python -u course_data/zero_tap/sequence/oof_pairs.py pairs --models /tmp/oofm --tier $t --out hp_oof > /tmp/oof_$t.log 2>&1 &
+          done
+          wait
+          tail -n 3 /tmp/oof_*.log
+          for t in hp_oof/*; do echo "$t $(ls $t | wc -l)"; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zt-hp-oof
+          path: hp_oof/
+          retention-days: 30
+
+  zsolve:
+    needs: [plan, oof]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 24
+      matrix:
+        w: ${{ fromJSON(needs.plan.outputs.form_w) }}
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          name: zt-hp-oof
+          path: hp_oof
+      - env:
+          ZT_PAIRS_FORM_W: ${{ matrix.w }}
+        run: |
+          python -u course_data/zero_tap/sequence/run_bench.py solve --tiers ${{ needs.plan.outputs.tiers }} \
+            --pairs-root course_data/zero_tap/formation/hole_pairs --pairs-root-dev hp_oof \
+            --shard ${{ matrix.shard }}/8 --out zrows/w${{ matrix.w }}/zb_${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zrows2-w${{ matrix.w }}-${{ matrix.shard }}
+          path: zrows/
+
+  zgate:
+    needs: [plan, zsolve]
+    if: always() && needs.zsolve.result != 'skipped'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: zrows2-*
+          merge-multiple: true
+          path: zrows
+      - name: Pick W on dev, gate v2, write results
+        run: |
+          git pull -q --rebase origin "${{ github.ref_name }}" || true
+          R=course_data/zero_tap/sequence/results/${{ needs.plan.outputs.tag }}
+          mkdir -p $R /tmp/zw
+          python - <<'EOF'
+          import glob, gzip, json, os
+          for d in sorted(glob.glob("zrows/w*")):
+              rows = [r for p in sorted(glob.glob(d + "/zb_*.json")) for r in json.load(open(p))]
+              w = os.path.basename(d)[1:]
+              with gzip.open(f"/tmp/zw/zrows_w{w}.json.gz", "wt") as fh:
+                  json.dump(rows, fh)
+              print(w, len(rows), "rows")
+          EOF
+          python -u course_data/zero_tap/sequence/run_bench.py pick /tmp/zw/zrows_w*.json.gz --out $R/pick_w.json
+          P=$(python -c "import json; print(json.load(open('$R/pick_w.json'))['path'])")
+          cp "$P" $R/zrows.json.gz
+          rm -rf course_data/zero_tap/results/sequence_v2
+          python -u course_data/zero_tap/sequence/run_bench.py gate2 $R/zrows.json.gz --tag ${{ needs.plan.outputs.tag }} --method sequence_v2
+          cat $R/bench_d_table.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/zero_tap/sequence/results/${{ needs.plan.outputs.tag }} course_data/zero_tap/results/sequence_v2
+          git diff --cached --stat | tail -n 3
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "zero_tap sequence v2 on the D benchmark (${{ needs.plan.outputs.tag }}, Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
