@@ -64,6 +64,12 @@ def build(slug, holes_rule="odd"):
     from shapely.ops import unary_union
     src_pkg = os.path.join(CD, "packages", slug, "package.json")
     pkg = json.load(open(src_pkg))
+    if any(z.get("gapfill") == "segment" for h in pkg["holes"].values() for z in h.get("zones_ll") or []):
+        for h in pkg["holes"].values():                 # baseline = OSM (+ vision) only, no segment zones
+            h["zones_ll"] = [z for z in h.get("zones_ll") or [] if z.get("gapfill") != "segment"]
+            h.pop("tee_candidates_ll", None)
+        pkg["stages"]["segment"] = "removed for the simulation baseline"
+        pkg = G.platform_module().reframe(pkg)
     refs = sorted(pkg["holes"], key=lambda r: int("".join(c for c in r if c.isdigit()) or 0))
     chosen = [r for i, r in enumerate(refs) if (i % 2 == 0) == (holes_rule == "odd")]
     c = pkg["course"]["center"]
