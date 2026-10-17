@@ -31,7 +31,7 @@ import bayes as B                                      # noqa: E402
 import simulate as S                                   # noqa: E402
 
 BAG = {k: v for k, v in B.BOOK_BAG.items() if k in ("Driver", "4-wood")}
-BREAK_EVENS = [62.9, 67.4, 77.7, 79.1, 81.7, 86.0]    # v2 width break-evens (holes 1, 8, 13, 5, 4, 16)
+BREAK_EVENS = [62.9, 67.4, 77.7, 79.1, 81.7, 86.0]    # a grid of decision lines (v2 break-evens before the roll fix)
 SCEN = {"book70": dict(W=70.0), "published82": dict(W=82.0), "wide95_t4": dict(W=95.0, nu=4.0),
         "fader+8": dict(beta=8.0), "mishit25": dict(ps=0.25)}
 N_PRIOR, N_REP = 24, 4

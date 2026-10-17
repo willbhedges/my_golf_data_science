@@ -23,6 +23,7 @@ exports (CSV / JSON / form) --parsers.py--> bayes.Data --bayes.Model.fit--> post
 | `player_profile.py` | builds the `golf_player/1` JSON, `to_v2_params` (profile draw -> v2 model overrides), `picks_at_interval` (Spirit Hollow picks across the width interval) |
 | `PROFILE.md` | **the profile contract** |
 | `simulate.py`, `validate.py` | synthetic golfers and the recovery study |
+| `examples/profile_example.json` | a profile fitted to the synthetic examples (R10 session + 30 logged tee shots + a manual form) |
 | `test_personal.py` | unit tests (`python3 -m pytest -q course_data/personal`, ~45 s) |
 | `examples/` | synthetic example files for each parser, a bag, a manual form |
 | `output/` | `recovery.md` / `recovery.json` / `recovery_fits.jsonl`, `emulator_spirit_hollow.npz`, `emulator_check.json` (GitHub Actions) |
@@ -110,7 +111,58 @@ adaptive Metropolis chain from the MAP takes over. A fit takes 4-10 s.
 
 ## 3. Recovery study: how much data is enough
 
-RESULTS_PLACEHOLDER
+Full tables: `output/recovery.md` (GitHub Actions run 39019293550: 2,726 fits, 2 failed fits dropped).
+Simulated golfers: 24 drawn from each prior + 5 off-prior scenarios (book 70; published 82; wide 95 with
+nu = 4 tails; fader bias +8; mishits 25 %) x 4 replicates. Bag: Driver + 4-wood. Each golfer's data are
+simulated, fitted, and the posterior compared with the truth. W sd = posterior sd / median of the driver's
+on-course width; for scale, **the v2 prior is 8.1 % (90 % 62-80)** and the generic prior 12 %.
+
+| Data | v2 prior: W sd (±yds 90 % at 76) | generic prior: W sd | bias sd (yds) | 90 % coverage (prior golfers) |
+|---|---|---|---|---|
+| none (prior) | 8.1 % (±10) | 12 % (±15) | 2.0 / 6.0 | — |
+| Launch monitor, 50 shots/club, range factor f uncertain | 6.6 % (±8.3) | 8.6 % | 1.3 / 2.1 | 92 % / 79 % |
+| Launch monitor, 200 shots/club, f uncertain | **6.1 % (±7.6): the floor** | 7.4 % | 0.9 / 1.3 | 100 % / 79 % |
+| Launch monitor, 200 shots/club, range = course (f = 1) | 4.0 % (±4.9) | 4.5 % | 0.9 / 1.3 | 92 % / 83 % |
+| On course, aim logged, 5 rounds (50 drives + 15 4-woods) | 6.5 % (±8.1) | 8.2 % | 1.5 / 2.4 | 92 % / 92 % |
+| On course, aim logged, 10 rounds | 5.6 % (±7.0) | 6.7 % | 1.3 / 1.8 | 88 % / 92 % |
+| On course, aim logged, 20 rounds | 4.6 % (±5.7) | 5.3 % | 1.0 / 1.4 | 92 % / 96 % |
+| On course, aim logged, 40 rounds | **3.6 % (±4.5)** | 4.1 % | 0.8 / 1.0 | 92 % / 83 % |
+| On course, tee -> pin line (aim sd 10), 40 rounds | 3.8 % (±4.8) | 4.3 % | 0.9 / 1.1 | 83 % / 96 % |
+| 50 LM shots/club + 10 rounds on course | 5.1 % (±6.3) | 6.0 % | 1.1 / 1.5 | 92 % / 88 % |
+| Summary stats only, 20 rounds | 6.7 % (±8.4) | 8.6 % | 1.1 / 1.6 | 88 % / 92 % |
+| Summary stats only, 80 rounds | 5.6 % (±7.0) | 7.3 % | 0.7 / 0.8 | 75 % / 83 % |
+
+What this says:
+
+1. **The current prior is already worth ~75 shots.** Driver width is only learned at the rate of 1/sqrt(2n)
+   per shot (8 % = 75 normal shots), so small samples barely move it. Carry (sd 2.5-3 yds after 25 shots or
+   3 rounds) and bias (1-1.5 yds after ~10 rounds) are learned much faster than width.
+2. **On-course tee shots are the data that count.** About **20 rounds** of logged tee shots take the width
+   from ±10 to ±6 yds, **40 rounds** to ±4.5 yds (the spacing of Spirit Hollow's break-evens), with ~90 %
+   coverage. Logging the aim helps less than expected (aim sd 3 vs 10: 3.6 % vs 3.8 % at 40 rounds), because the
+   aim noise adds in quadrature to a ~18-yd sigma; it matters more for bias.
+3. **A launch monitor alone can't pin the on-course width**, because range-to-course is unknown: with
+   f ~ 1.05 ± 8 % the posterior stops at ~6 % however many shots. If the golfer trusts the range/sim as the course
+   (f = 1), 200 shots/club reach 4 %. Launch-monitor data are still the cheap way to get **carry, ratios between
+   clubs, bias and mishit rate**, and they make f learnable once some on-course shots exist.
+4. **Summary stats (fairway %, L/R, penalties, average drive) are weak for width** (80 rounds ~ 5.6 %, coverage
+   75-83 %: the emulator's lost-ball nuisance and the fairway-centre aim assumption leak in) but good for
+   **bias** (L/R split: 0.7 yds at 80 rounds) and average carry. Use them to check the profile's calibration,
+   not to set the width.
+5. **Prior matters for off-prior golfers.** Under the tight v2 prior a published-82 golfer is recovered at 82
+   only from 40 logged rounds (LM 200 shots: 75); a fader's +8 is shrunk to +5.5-6.0 even with lots of data
+   (bias prior sd 2). For new app users use `Prior.generic()` (recovers 82 and +8 at 20-40 rounds).
+6. **Heavy tails are the hard part.** A 95-yd golfer with nu = 4 is read as ~80-85 everywhere: most of the tail
+   is beyond the 35-yd penalty line (censored, so only its frequency is seen) and it trades off against the
+   mishit rate. Tail weight needs penalty counts over many rounds; report `nu` with its wide interval.
+7. **Decisions:** with on-course data, the posterior is on the right side of a break-even (>= 5 yds from the
+   truth) 96-98 % of the time at 40 rounds and confident (> 90 %) 89-92 %; with the prior alone 68-74 % confident.
+   With break-evens at 70.5 / 71.5 / 73.6 yds (v2 holes 18, 16, 13), a golfer near 70 is never settled; one at
+   <= 66 or >= 78 is after ~20 rounds.
+
+Emulator accuracy (`output/emulator_check.json`, held-out 20 % of the 4,096-pattern bank): fairway rate RMSE
+0.015 (spread 0.11), miss-left share 0.023 (0.24), average drive 0.46 yds (30); tee-penalty rate 0.010 (0.023),
+the residual being the lost-ball-rate nuisance the surface averages over.
 
 ## 4. How picks change across the profile's interval
 
@@ -120,26 +172,29 @@ RESULTS_PLACEHOLDER
 median and at both ends of the 90 % interval, and **P(other club right)** = the posterior mass on the far side
 of a break-even.
 
-v2 break-evens (`spirit_hollow/v2/output/v2_decisions.json`): 1 (2-wood -> 4-wood) 63, 8 (2-wood -> 4-wood) 67,
-13 (Driver -> 4-wood) 78, 5 79, 4 82, 16 86; the other ten holes do not change between 55 and 90 yds.
-With the **current prior** (62-80) four break-evens (1, 8, 13, 5) sit inside the interval, so those four picks
-are decided by the prior, not by evidence. P(other club right) at a few profiles (central-world sweep):
+v2 break-evens (`spirit_hollow/v2/output/v2_decisions.json`, roll-to-stated-totals run, Actions 39011577014):
+18 (2-wood -> 4-wood) 70.5, 16 (Driver -> 4-wood) 71.5, 13 (Driver -> 4-wood) 73.6, 5 (Driver -> 2-wood 58.5,
+2-wood -> 4-wood 64.6), 14 84.3, 6 86.6, 17 86.9; the other holes do not change between 55 and 90 yds.
+**Three break-evens sit within 4 yds of the prior's 70-yd median**, so with the current prior 13, 16 and 18
+are decided by the prior, not by evidence. P(other club right) at a few profiles (central-world sweeps;
+`picks_at_interval` with lognormal draws):
 
-| Profile driver width (90%) | Holes where the other club has > 5 % | Note |
+| Profile driver width (90%) | Holes where the other club has > 5 % | Picks that differ from the plan's |
 |---|---|---|
-| 70 (62-80), the prior itself | 8 (33 %), 1 (9 %), 13 (8 %) | 8 is a coin flip near 67 |
-| 65 (61-69) | 1 (20 %), 8 (16 %, now 2-wood) | tighter golfer: 2-wood on 1 and 8 |
-| 76 (72-80) | 13 (24 %), 5 (10 %) | 1 and 8 settled on the 4-wood |
-| 82 (78-86), published 0-5 hcp | 4 (47 %, 4-wood), 5 (12 %, 4-wood), 16 (5 %) | 5 and 13 to the 4-wood, 4 a coin flip |
+| 70 (62-80), the prior itself | 18 (46 %), 16 (39 %), 13 (26 %), 5 (15 %) | none (6 is a 0.003 tie) |
+| 65 (61-69) | 5 (45 %: 2-wood vs 4-wood) | none |
+| 70 (66-74), +/-4 yds | 18 (41 %), 16 (27 %), 13 (8 %) | none |
+| 76 (72-80) | 13 (17 %) | 13, 16 -> 4-wood; 18 -> 4-wood |
+| 82 (78-86), published 0-5 hcp | 14 (17 %) | 13, 16, 18 -> 4-wood |
 
-The live page (v1, `final_decision.json`) has different break-evens: 6, 14, 18 near 68-69 (2-wood/Driver ->
-4-wood), 10 at 61, 17 at 77. At the prior's 70 those three are 34-46 % coin flips; a profile that pins the
-width to +/-4 yds settles them. Picks that are ties in the plan (5, 9 Black) stay ties: their margins are not
-about width.
+The live page (v1, `final_decision.json`) has its own break-evens: 6, 14, 18 at 68-69 (2-wood/Driver -> 4-wood),
+10 at 61, 17 at 77; at the prior's 70 those are 34-46 % coin flips. Ties in the plan (6 in v2) stay ties: their
+margins are not about width.
 
-Rule of thumb from the break-even spacing (4-5 yds between 13/5/4, and between 1/8): a profile resolves the
-width-sensitive Spirit Hollow picks once its 90 % interval is about **+/-4 yds** (log sd ~ 0.03). Section 3 says
-how much data that takes.
+Rule of thumb from the break-even spacing (70.5, 71.5, 73.6 sit 1-3 yds apart): a golfer near 70-74 never gets
+all three settled; a golfer at <= 66 or >= 78 does once the 90 % interval is about **+/-4 yds** (sd ~ 3 %).
+Section 3 says how much data that takes. Being wrong on a near-break-even hole costs little (the two clubs are
+within a few hundredths of a stroke there); the profile matters most for golfers far from 70.
 
 ## 5. Limits
 
