@@ -71,7 +71,33 @@ def ref_num(v):
 
 
 # ----------------------------------------------------------------------------- truth
+BENCH = jload(os.path.join(ROOT, "course_data", "zero_tap", "benchmark.json"), {}) or {}
+BENCH_ROWS = {c["slug"]: c for c in BENCH.get("courses", [])}
+
+
+def osm_features(slug):
+    g = jload(os.path.join(GEN, "courses", slug, "osm_golf.geojson"))
+    if g:
+        return g
+    p = ((BENCH_ROWS.get(slug) or {}).get("files") or {}).get("osm")
+    if p and os.path.exists(os.path.join(ROOT, p)):
+        import gzip
+        op = gzip.open if p.endswith(".gz") else open
+        with op(os.path.join(ROOT, p), "rt") as fh:
+            return json.load(fh)
+    return {}
+
+
 def truth_holes(slug):
+    """Zero-tap benchmark truth (truth/1) when the course has one, else the generalize OSM hole lines.
+    Courses with repeated refs (27 / 36 holes) keep the first nine / eighteen of each ref."""
+    t = jload(os.path.join(ROOT, "course_data", "zero_tap", "truth", f"{slug}.json"))
+    if t and t.get("holes"):
+        holes = {}
+        for h in t["holes"]:
+            if h["ref"] not in holes:
+                holes[h["ref"]] = dict(line=h["line"], tee=h["tee_ll"], green=h["green_ll"])
+        return holes
     g = jload(os.path.join(GEN, "courses", slug, "osm_golf.geojson"), {}) or {}
     holes = {}
     for f in g.get("features", []):
@@ -120,8 +146,9 @@ def line_frac_inside(line, poly, k=20):
 
 # ----------------------------------------------------------------------------- sources
 def ev_osm_ref(slug):
-    """Evidence from OSM green / tee / pin features that carry their own `ref` (not the hole lines)."""
-    g = jload(os.path.join(GEN, "courses", slug, "osm_golf.geojson"), {}) or {}
+    """Evidence from OSM green / tee / pin features that carry their own `ref` (not the hole lines).
+    Note: the benchmark's osm_card tier hides these refs; this source is scored for its own sake."""
+    g = osm_features(slug)
     out = []
     for f in g.get("features", []):
         p = f["properties"]
@@ -226,8 +253,11 @@ def main():
     ap.add_argument("--run", action="append", default=[])
     ap.add_argument("--out", default=os.path.join(HERE, "results.json"))
     a = ap.parse_args()
+    # Universe: the zero-tap benchmark (in_bench, split dev / test by state); generalize validation courses
+    # outside the benchmark are kept as "offbench".
     val = jload(os.path.join(GEN, "validation_set.json"))
-    split = {c["slug"]: c["split"] for c in val["courses"]}
+    split = {c["slug"]: "offbench" for c in val["courses"]}
+    split.update({s: r["split"] for s, r in BENCH_ROWS.items() if r.get("in_bench")})
     recs = {}
     for r in a.run:
         d = r if os.path.isabs(r) else os.path.join(HERE, r)
@@ -267,7 +297,7 @@ def main():
             hs = {it["hole"] for it in items if it["source"] == s}
             stats[s][sp]["courses"] += 1
             stats[s][sp]["holes_covered"] += len(hs & set(holes))
-        for sp2 in (sp, "all"):
+        for sp2 in ((sp, "all") if sp != "offbench" else (sp,)):
             stats["_truth"][sp2]["courses"] += 1
             stats["_truth"][sp2]["holes"] += len(holes)
         if rec:
@@ -306,10 +336,10 @@ def main():
         if s == "_truth":
             continue
         row = {}
-        for sp in ("train", "test", "all"):
+        for sp in ("dev", "test", "all", "offbench"):
             c = Counter()
             for k, v in bysp.items():
-                if sp == "all" or k == sp:
+                if (sp == "all" and k != "offbench") or k == sp:
                     c.update(v)
             n_courses = stats["_truth"][sp]["courses"] if sp != "all" else stats["_truth"]["all"]["courses"]
             row[sp] = dict(courses_with_evidence=c["courses"], courses_total=n_courses,
