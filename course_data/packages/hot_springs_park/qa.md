@@ -1,6 +1,6 @@
 # Hot Springs Country Club Park Course (Hot Springs, AR) - Gold tees
 
-Built 2026-10-17T17:42:43Z. OSM none/0. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-10-17T17:42:29Z. OSM none/0. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 

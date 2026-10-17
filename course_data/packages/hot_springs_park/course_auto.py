@@ -1,5 +1,5 @@
 """Course module for Hot Springs Country Club Park Course (Gold tees), generated from package.json by
-course_data/platform/package.py on 2026-10-17T17:42:43Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-17T17:42:29Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_hot_springs_park.json
 

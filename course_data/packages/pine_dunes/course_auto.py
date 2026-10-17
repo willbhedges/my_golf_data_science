@@ -1,5 +1,5 @@
 """Course module for Pine Dunes Resort & Golf Club (Gold tees), generated from package.json by
-course_data/platform/package.py on 2026-10-17T17:24:00Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-17T18:01:19Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_pine_dunes.json
 

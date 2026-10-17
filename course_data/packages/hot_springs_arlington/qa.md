@@ -1,8 +1,6 @@
 # Hot Springs Country Club (Hot Springs, AR) - Gold tees
 
-Built 2026-10-17T17:23:53Z. OSM way/250816543. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Gold, Blue, Green, White, Red)).
-
-**WARNING: requested tee set 'Black' is not on the card; using 'Gold' instead (allow_substitute). Sets on the card: Gold, Blue, Green, White, Red**
+Built 2026-10-17T17:36:33Z. OSM way/250816543. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -62,5 +60,4 @@ OSM features inside the course: golf=bunker 53, golf=cartpath 10, golf=green 21,
 
 ## Warnings
 
-- requested tee set 'Black' is not on the card; using 'Gold' instead (allow_substitute). Sets on the card: Gold, Blue, Green, White, Red
 - vision: missing: no vision_any layers for 'hot_springs_arlington' (FileNotFoundError: course_data/vision_any/hot_springs_arlington/raw (not fetched)); add the course to; trees / long grass come from OSM only

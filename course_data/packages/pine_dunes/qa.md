@@ -1,6 +1,6 @@
 # Pine Dunes Resort & Golf Club (Frankston, TX) - Gold tees
 
-Built 2026-10-17T17:24:00Z. OSM none/0. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-10-17T18:01:19Z. OSM none/0. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
