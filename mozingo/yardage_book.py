@@ -252,11 +252,11 @@ def shot_cloud(h, club, aim, n=4000):
     rel = (np.asarray(pts, float) - tee) / ppy
     xy = np.c_[rel @ fwd, rel @ right]
     mu = np.median(xy, axis=0)
-    cov = np.cov((xy - mu).T)
-    w, v = np.linalg.eigh(cov)
-    k = 2.4477                                     # sqrt(chi2_2(0.95))
-    return dict(along=float(mu[0]), lat=float(mu[1]), axes=(k * np.sqrt(w[1]), k * np.sqrt(w[0])),
-                vec=(v[:, 1], v[:, 0]))
+    w, v = np.linalg.eigh(np.cov((xy - mu).T))     # orientation from the covariance
+    # size from the 2.5-97.5 percentile spread along each axis (the same 95% "width" as Fawcett's
+    # dispersion numbers; a joint 95% ellipse or the heavy-tailed covariance would draw it ~25% wider)
+    half = [0.5 * float(np.subtract(*np.percentile((xy - mu) @ v[:, i], [97.5, 2.5]))) for i in (1, 0)]
+    return dict(along=float(mu[0]), lat=float(mu[1]), axes=(half[0], half[1]), vec=(v[:, 1], v[:, 0]))
 
 
 def cloud_point(cl, a):
