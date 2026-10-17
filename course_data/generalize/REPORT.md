@@ -41,10 +41,10 @@ States: CA, GA, IL, KY, MA, ME, MN, MS, NH, UT, WI, WY (three per Census region,
 | inputs | card | courses | hole-number acc | green assignment acc | physical holes found | median length err (yds) | all 18 correct | correct after check | needs check | flagged / course |
 |---|---|---|---|---|---|---|---|---|---|---|
 | TODAY's fallback: geometry.infer_holes on OSM greens/tees | none | 82 | 8% | 21% | 38% | 1.9 | 0% | 0% | 0% | 0.0 |
-| OSM greens/tees + model + lidar | scorecard | 82 | 69% | 80% | 75% | 3.0 | 8% | 49% | 98% | 7.33 |
+| OSM greens/tees + model + lidar | scorecard | 82 | 69% | 80% | 75% | 3.0 | 8% | 49% | 98% | 7.37 |
 | model + lidar only (unmapped course) | scorecard | 82 | 61% | 72% | 67% | 2.9 | 6% | 61% | 98% | 10.17 |
-| OSM greens/tees + model + lidar | none | 82 | 10% | 14% | 58% | 3.5 | 0% | 49% | 100% | 14.89 |
-| model + lidar only (unmapped course) | none | 82 | 9% | 14% | 52% | 2.7 | 0% | 70% | 99% | 16.21 |
+| OSM greens/tees + model + lidar | none | 82 | 10% | 14% | 58% | 2.6 | 0% | 52% | 100% | 14.7 |
+| model + lidar only (unmapped course) | none | 82 | 9% | 14% | 51% | 3.0 | 0% | 67% | 99% | 16.12 |
 
 Definitions: hole-number acc = routed hole n has the true hole n's green (within 20 yds) and its tee within 40 yds of the first 60 % of the true line; green assignment = the green alone; physical holes = true (tee, green) pairs found under any number; length error = routed straight tee->green vs the true line's length from the routed tee; `correct after check` = every wrong hole carries a `check` flag. Card = the web scorecard when found, else pars + lengths from the hidden OSM ways (`card*` below).
 
@@ -53,7 +53,7 @@ Definitions: hole-number acc = routed hole n has the true hole n's green (within
 | course | st | tier | found | OSM holes / greens / tees | scorecard | NAIP | model greens (OSM) | today: line / green / tee | routed (check) | V-osm hole / green | V-model hole / green |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | Billy Caldwell Golf Course | IL | full | yes | 9 / 10 / 19 | opengolfapi (9) | 2023 | 10 (10) | 9 / 9 / 9 of 9 | 9 (0) | 78% / 100% | 78% / 89% |
-| Black Stone Creek Golf Club | WI | full | yes | 19 / 18 / 29 | none | 2022 | 19 (18) | 17 / 17 / 0 of 18 | 17 (1) | 76% / 76%* | 71% / 82%* |
+| Black Stone Creek Golf Club | WI | full | yes | 19 / 18 / 29 | none | 2022 | 19 (18) | 17 / 17 / 0 of 18 | 17 (1) | 59% / 71%* | 71% / 82%* |
 | Elk River Golf Club | MN | full | yes | 18 / 19 / 56 | golfify (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 78% | 94% / 100% |
 | Sky Mountain Golf Course | UT | full | yes | 18 / 20 / 69 | golfify (18) | 2021 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 94% | 89% / 89% |
 | Urbana Country Club | IL | full | yes | 18 / 19 / 45 | opengolfapi (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 89% | 50% / 72% |
