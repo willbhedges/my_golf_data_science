@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aim Caddie</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Phone-first caddie: course list -> tees + tee time (+ the pre-round check) -> one hole at a time. */
+:root{
+  --paper:#eef2ec; --card:#ffffff; --ink:#173326; --muted:#5b6f63; --line:#d3ddd5; --soft:#f5f8f4;
+  --accent:#e0a800; --accent-ink:#3b2c00; --tie:#7b5cc9; --driver:#1f6b45; --wood2:#2f6fa8; --wood4:#b0612a;
+  --ok:#1f7a4a; --auto:#2f6fa8; --warn:#b26a00; --warn-bg:#fff4dc; --red:#b42318; --red-bg:#fde8e6; --map:#26352c;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32; --soft:#1b2b22;
+  --accent:#ffc928; --accent-ink:#2a2000; --tie:#b49cf0; --driver:#5cc48d; --wood2:#6fb0e8; --wood4:#e59a62;
+  --ok:#5cc48d; --auto:#6fb0e8; --warn:#ffb74a; --warn-bg:#33270f; --red:#ff8a80; --red-bg:#3a1714; --map:#0b130e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32; --soft:#1b2b22;
+  --accent:#ffc928; --accent-ink:#2a2000; --tie:#b49cf0; --driver:#5cc48d; --wood2:#6fb0e8; --wood4:#e59a62;
+  --ok:#5cc48d; --auto:#6fb0e8; --warn:#ffb74a; --warn-bg:#33270f; --red:#ff8a80; --red-bg:#3a1714; --map:#0b130e; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:max(12px,env(safe-area-inset-top,0px));padding-bottom:max(28px,env(safe-area-inset-bottom,0px));overflow-x:hidden}
+.app{max-width:640px;margin:0 auto;display:grid;gap:12px;min-width:0}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:.01em;text-wrap:balance}
+h1{font-size:32px;font-weight:700} h2{font-size:22px;font-weight:700} h3{font-size:17px;font-weight:600}
+p{margin:0}
+.sub{color:var(--muted);font-size:13.5px}
+.label{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+.stack{display:grid;gap:10px;min-width:0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
+.spread{display:flex;gap:8px;align-items:center;justify-content:space-between;min-width:0}
+button{font:inherit;color:inherit}
+.btn{font:600 15px var(--display);letter-spacing:.04em;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:999px;padding:7px 14px;cursor:pointer;min-height:36px}
+.btn.primary{background:var(--ink);color:var(--card);border-color:var(--ink);font-size:18px;padding:10px 18px;min-height:46px}
+.btn.ghost{background:transparent}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:600 14px var(--display);letter-spacing:.04em;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer;min-height:32px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--ink)}
+input[type=search]{width:100%;font:16px var(--body);padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.badge{display:inline-flex;align-items:center;gap:4px;font:700 12.5px var(--display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 9px;border:1px solid currentColor;white-space:nowrap}
+.badge.verified{color:var(--ok)} .badge.auto{color:var(--auto)} .badge.check{color:var(--warn);background:var(--warn-bg)}
+.badge.red{color:var(--red);background:var(--red-bg)} .badge.amber{color:var(--warn);background:var(--warn-bg)}
+.pill{display:inline-block;font:600 12px var(--display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 9px;border:1px solid currentColor}
+.pill.tie{color:var(--tie)} .pill.chg{color:var(--warn)} .pill.ans{color:var(--auto)}
+[hidden]{display:none!important}
+/* course list */
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand .tag{color:var(--muted);font-size:14px}
+.ccard{display:grid;gap:6px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;width:100%}
+.ccard:hover{border-color:var(--muted)}
+.ccard .name{font:700 21px var(--display)}
+.dots{display:flex;gap:4px;align-items:center}
+.dot{width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(0,0,0,.35);display:inline-block}
+.soon{display:grid;gap:4px;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:14px}
+.soon b{color:var(--ink)}
+/* tee screen */
+.tees{display:grid;gap:8px}
+.tee{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;width:100%}
+.tee[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.tee[disabled]{opacity:.5;cursor:not-allowed}
+.tee .sw{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,.35)}
+.tee .nm{font:700 19px var(--display)}
+.tee .yd{font:600 19px var(--display);font-variant-numeric:tabular-nums}
+/* check cards */
+.chk{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:10px 12px;display:grid;gap:8px;background:var(--card);min-width:0}
+.chk.red{border-left-color:var(--red)}
+.chk .q{font-weight:700}
+.chk figure{margin:0;position:relative;border-radius:8px;overflow:hidden;background:var(--map);max-width:200px}
+.chk figure img{display:block;width:100%;height:auto}
+.chk figure svg{position:absolute;inset:0;width:100%;height:100%}
+.chk .out{font-size:14px;color:var(--muted)} .chk .out b{color:var(--ink)}
+.chk .out.chg b{color:var(--warn)}
+/* hole screen */
+.topbar{display:flex;gap:8px;align-items:center;justify-content:space-between;min-width:0}
+.topbar .ttl{min-width:0;text-align:center;flex:1}
+.topbar .ttl b{display:block;font:700 18px var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.holehead{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.holeno{font:700 40px/1 var(--display)}
+.navbtn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);font:700 20px var(--display);cursor:pointer;color:var(--ink)}
+.mapbox{position:relative;border-radius:12px;overflow:hidden;background:var(--map);display:grid;place-items:center}
+.mapbox svg{display:block;width:100%;height:auto;max-height:76vh}
+.play{font:700 46px/1 var(--display);letter-spacing:.01em}
+.playrow{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.cond{display:flex;gap:6px 12px;flex-wrap:wrap;font-size:14px}
+.cond span b{font-family:var(--display);font-size:17px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);font-size:14.5px}
+th{font:600 12px var(--display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tr[data-club]{cursor:pointer}
+tr.sel td{background:color-mix(in srgb, var(--accent) 18%, transparent)}
+tr.best td{font-weight:700}
+.note{color:var(--muted);font-size:14px}
+.strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:5px 2px;text-align:center;cursor:pointer;color:var(--ink);position:relative;min-width:0}
+.chip b{display:block;font:700 17px var(--display)}
+.chip span{font:600 13px var(--display);letter-spacing:.02em;white-space:nowrap}
+.chip[aria-current="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.chip i{position:absolute;top:1px;right:4px;font-style:normal;font-size:11px;color:var(--warn)}
+.c-Driver{color:var(--driver)} .c-2-wood{color:var(--wood2)} .c-4-wood{color:var(--wood4)} .c-iron{color:var(--muted)}
+details.panel>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary::after{content:"▾";color:var(--muted)}
+details[open].panel>summary::after{content:"▴"}
+.dialrow{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+@media (max-width:440px){.dialrow{grid-template-columns:1fr}}
+.dial{width:140px;height:140px;touch-action:none;cursor:grab;justify-self:center}
+.dial text{font-family:var(--display);font-weight:600;fill:var(--muted);font-size:13px}
+.windread{font:600 19px var(--display);font-variant-numeric:tabular-nums;min-width:62px}
+.conf{border-radius:10px;padding:10px 12px;display:grid;gap:6px;font-size:14px}
+.conf.check{background:var(--warn-bg)} .conf.auto{background:var(--soft)} .conf.verified{background:var(--soft)}
+.foot{color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+const D = /*__DATA__*/null;
+const CELLS = D.wind_axes.cells, SPEEDS = D.wind_axes.speeds, CI = {};
+CELLS.forEach((c, i) => CI[c] = i);
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const SHORT = {"Driver":"D","2-wood":"2W","4-wood":"4W","Long iron":"LI","Mid iron":"MI"};
+const cls = c => (c === "Driver" || c === "2-wood" || c === "4-wood") ? "c-" + c : "c-iron";
+const COMPASS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+const compass = d => COMPASS[Math.round(((d % 360) + 360) % 360 / 22.5) % 16];
+const yds = (v, side) => Math.abs(v) < 1.5 ? "on the line" : `${Math.abs(v).toFixed(0)} yds ${v < 0 ? "left" : "right"}`;
+
+/* ------------------------------------------------------------------ state (per-viewer convenience only) */
+const st = {screen: "pick", course: null, q: "", set: {}, idx: {}, src: {}, hour: {}, view: "land",
+            custom: {from: 180, mph: 10, temp: 65}, adj: {}, club: {}, answers: {}, wind_open: false};
+const KEY = "aimcaddie1";
+try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && typeof s === "object") Object.assign(st, s); } catch (e) {}
+for (const k of ["set","idx","src","hour","adj","club","answers"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
+if (!st.custom) st.custom = {from: 180, mph: 10, temp: 65};
+/* deep links: #c=<course>&t=<tee set>&h=<hole no> (also used by the tests) */
+(function readHash(){
+  const m = new URLSearchParams((location.hash || "").replace(/^#/, ""));
+  const c = m.get("c"); if (!c || !D.courses.some(x => x.id === c)) return;
+  st.course = c; st.screen = m.get("h") ? "hole" : "tees";
+  if (m.get("t")) st.set[c] = m.get("t");
+  if (m.get("h")) { const C = D.courses.find(x => x.id === c); const i = C.holes.findIndex(H => String(H.no) === m.get("h")); if (i >= 0) st.idx[c] = i; }
+  if (m.get("v")) st.view = m.get("v");
+})();
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
+  try {
+    const C = cur(); let h = "";
+    if (C) { h = "#c=" + C.id + "&t=" + encodeURIComponent(curSet(C)); if (st.screen === "hole") h += "&h=" + C.holes[holeIdx(C)].no; }
+    history.replaceState(null, "", h || location.pathname + location.search);
+  } catch (e) {}
+}
+const cur = () => D.courses.find(c => c.id === st.course) || null;
+function curSet(C){ const s = st.set[C.id]; return C.tee_sets.some(t => t.name === s && t.computed !== "missing") ? s : C.default_tee; }
+function holeIdx(C){ const i = st.idx[C.id] || 0; return i < C.holes.length ? i : 0; }
+
+/* ------------------------------------------------------------------ geometry */
+const pt = (V, along, lat) => [V.axes.o[0] + along * V.axes.f[0] + lat * V.axes.r[0], V.axes.o[1] + along * V.axes.f[1] + lat * V.axes.r[1]];
+const fmt = p => p[0].toFixed(1) + "," + p[1].toFixed(1);
+
+/* which variant + tee spot this hole is played from for the chosen set (+ the golfer's own tee move) */
+function teeSpot(C, H){
+  const S = curSet(C);
+  let t = H.tees[S], ok = !!t, name = S;
+  if (!t) { name = H.tees[C.default_tee] ? C.default_tee : Object.keys(H.tees)[0]; t = H.tees[name]; }
+  const V = H.variants[t.variant], k = C.id + "|" + H.no, adj = V.kind === "tee" ? (st.adj[k] || 0) : 0;
+  let back = 0, want = 0;
+  if (V.kind === "tee") { want = t.back + adj; const have = Object.keys(V.offsets).map(Number);
+    back = have.reduce((a, x) => Math.abs(x - want) < Math.abs(a - want) ? x : a, have[0]); }
+  return {S, name, ok, t, V, adj, want, back, key: k, yards: Math.round((t.yards ?? V.length) + adj)};
+}
+
+/* ------------------------------------------------------------------ weather: forecast for when you reach each hole */
+function source(C){ const s = st.src[C.id]; if (!C.forecast || !C.forecast.days.length) return "custom";
+  return (s === "custom" || C.forecast.days.some(d => d.key === s)) ? s : C.forecast.days[0].key; }
+const teeHour = C => st.hour[C.id] ?? 10;
+const holeTime = (C, H) => teeHour(C) + (H.no - 1) * C.pace_min_per_hole / 60;
+function fcRow(C, day, hour){ return C.forecast.hourly.find(r => r.date === day && r.hour === hour) || null; }
+function fcAt(C, day, t){
+  const rows = C.forecast.hourly.filter(r => r.date === day); if (!rows.length) return null;
+  t = Math.max(rows[0].hour, Math.min(rows[rows.length - 1].hour, t));
+  const h0 = Math.floor(t), w = t - h0, a = fcRow(C, day, h0), b = fcRow(C, day, h0 + 1) || a;
+  if (!a) return null;
+  const vec = r => { const d = (r.dir ?? 0) * Math.PI / 180; return [r.mph * Math.sin(d), r.mph * Math.cos(d)]; };
+  const [ax, ay] = vec(a), [bx, by] = vec(b), x = ax + (bx - ax) * w, y = ay + (by - ay) * w;
+  return {mph: Math.hypot(x, y), from: (Math.atan2(x, y) * 180 / Math.PI + 360) % 360, gust: a.gust + (b.gust - a.gust) * w,
+          temp: a.temp + (b.temp - a.temp) * w, pop: a.pop};
+}
+function windFor(C, H){
+  const s = source(C);
+  if (s !== "custom") { const t = holeTime(C, H), f = fcAt(C, s, t); if (f) return Object.assign(f, {t, custom: false}); }
+  return {mph: st.custom.mph, from: st.custom.from, temp: st.custom.temp, gust: null, custom: true};
+}
+function clock(t){ const hh = Math.floor(t), mm = Math.round((t - hh) * 60), H = ((hh + 11) % 12) + 1;
+  return `${H}:${String(mm).padStart(2, "0")} ${hh >= 12 ? "pm" : "am"}`; }
+function relWords(rel, mph){
+  if (mph < 1.5) return "Calm";
+  const head = Math.cos(rel * Math.PI / 180) * mph, cross = Math.sin(rel * Math.PI / 180) * mph, parts = [];
+  if (Math.abs(head) >= 1.5) parts.push(head > 0 ? `${head.toFixed(0)} into you` : `${(-head).toFixed(0)} behind you`);
+  if (Math.abs(cross) >= 1.5) parts.push(cross > 0 ? `${cross.toFixed(0)} right-to-left` : `${(-cross).toFixed(0)} left-to-right`);
+  return parts.length ? parts.join(", ") + " mph" : `Light (${Math.round(mph)} mph)`;
+}
+const tempK = W => W.temp == null ? 0 : (W.temp - D.player.temp_ref_f) * D.player.temp_carry_pct_per_f / 100;
+
+/* bilinear weights over (speed, wind direction relative to the tee line) */
+function corners(mph, rel){
+  const S = SPEEDS; mph = Math.max(0, Math.min(mph, S[S.length - 1]));
+  let i = 0; while (i < S.length - 2 && mph > S[i + 1]) i++;
+  const s0 = S[i], s1 = S[i + 1], ws = (mph - s0) / (s1 - s0);
+  const base = Math.floor(rel / 30) * 30, d0 = base % 360, d1 = (base + 30) % 360, wd = (rel - base) / 30;
+  const ci = (sp, d) => sp === 0 ? 0 : CI[sp + "_" + d];
+  return [[ci(s0, d0), (1 - ws) * (1 - wd)], [ci(s0, d1), (1 - ws) * wd], [ci(s1, d0), ws * (1 - wd)], [ci(s1, d1), ws * wd]];
+}
+
+/* the golfer's answers to the pre-round check can change a hole's plan (outcomes computed by verify.py) */
+function answered(C, H, T){
+  const A = st.answers[C.id] || {}; let res = null;
+  for (const card of C.checks) { if (card.hole !== H.no) continue;
+    const a = A[card.id]; if (!a) continue;
+    const o = card.options.find(x => x.answer === a);
+    if (o && o.outcome && card.tee_set === T.name) res = {pick: o.outcome.pick, aim: o.outcome.aim, q: card.question, label: o.label}; }
+  return res;
+}
+
+function solveTee(C, H, T, W){
+  const V = T.V, rel = ((W.from - V.bearing) % 360 + 360) % 360, K = corners(W.mph, rel), sol = V.offsets[String(T.back)];
+  const tk = tempK(W), out = {};
+  for (const c of V.clubs) {
+    const r = {aim:0, ev:0, lo:0, hi:0, carry:0, total:0, width:0, drift:0, kick:0, e:null};
+    for (const [i, w] of K) { const s = sol[c], f = V.flight[c][i];
+      r.aim += w * s[0][i]; r.ev += w * s[1][i]; r.lo += w * s[2][i]; r.hi += w * s[3][i];
+      r.carry += w * f[0]; r.total += w * f[1]; r.width += w * f[2]; r.drift += w * f[3]; }
+    const e = V.elev && V.elev.clubs && V.elev.clubs[c];
+    if (e) { const roll = r.total - r.carry; r.carry += e.dc; r.total = r.carry + roll * e.rf; r.kick = e.kick; r.e = e; }
+    r.dT = r.carry * tk; r.carry += r.dT; r.total += r.dT;
+    out[c] = r;
+  }
+  const order = Object.keys(out).sort((a, b) => out[a].ev - out[b].ev);
+  let pick = order[0], aim = out[pick].aim, tie = (out[order[1]].ev - out[pick].ev) < 0.01, how = "wind";
+  const g0 = {}; for (const c of V.clubs) g0[c] = {ev: sol[c][1][0], aim: sol[c][0][0]};
+  const calmQuick = Object.keys(g0).sort((a, b) => g0[a].ev - g0[b].ev)[0];
+  /* keep the plan's calm-day pick unless the wind itself changes the decision; shift its aim by the wind's aim change */
+  if (V.calm && T.back === 0 && out[V.calm.pick] && (W.mph < 1.5 || pick === calmQuick)) {
+    const c = V.calm.pick; pick = c; aim = V.calm.aim + (out[c].aim - g0[c].aim); tie = V.calm.tie; how = "calm"; }
+  const ans = T.back === 0 ? answered(C, H, T) : null;
+  if (ans && out[ans.pick]) { pick = ans.pick; aim = ans.aim + (out[pick].aim - g0[pick].aim); tie = false; how = "answer"; }
+  order.splice(order.indexOf(pick), 1); order.unshift(pick);
+  return {rel, out, order, pick, aim, tie, how, ans, calmQuick};
+}
+const windMod = mph => mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3;
+function solvePar3(C, H, T, W){
+  const V = T.V, rel = ((W.from - V.bearing) % 360 + 360) % 360, K = corners(W.mph, rel);
+  const S3 = V.sets[T.name] || Object.values(V.sets)[0];
+  let plays = 0; for (const [i, w] of K) plays += w * S3.plays[i];
+  plays = plays / (1 + tempK(W));
+  const mod = windMod(W.mph), b = S3.boxes[String(mod)];
+  return {rel, plays, mod, box: b, S3, play: b.play * plays / S3.center};
+}
+function pickFor(C, H){
+  const T = teeSpot(C, H), W = windFor(C, H);
+  if (T.V.kind === "tee") { const r = solveTee(C, H, T, W); return {txt: SHORT[r.pick] + (r.tie ? "≈" : ""), c: cls(r.pick)}; }
+  return {txt: String(Math.round(solvePar3(C, H, T, W).play)), c: ""};
+}
+
+/* ------------------------------------------------------------------ drawing */
+function aimMark(x, y){ const c = (w, col) => `<g stroke="${col}" stroke-width="${w}" fill="none"><line x1="${x-18}" y1="${y}" x2="${x+18}" y2="${y}"/><line x1="${x}" y1="${y-18}" x2="${x}" y2="${y+18}"/><circle cx="${x}" cy="${y}" r="7"/></g>`;
+  return c(3.6, "#1a1a1a") + c(1.6, "#ffc928") + `<circle cx="${x}" cy="${y}" r="2.2" fill="#e5202a" stroke="#1a1a1a" stroke-width=".6"/>`; }
+const TXT = `font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" stroke="rgba(0,0,0,.75)" stroke-width="3.5" paint-order="stroke" fill="#fff"`;
+function teeMark(x, y, label, colour, vbw){
+  const right = x < vbw - 120, tx = right ? x + 16 : x - 16;
+  return `<rect x="${x-9}" y="${y-9}" width="18" height="18" rx="3" fill="${colour || "#111"}" stroke="#fff" stroke-width="2.5"/>
+    <text x="${tx}" y="${y - 12}" ${TXT} font-size="17" text-anchor="${right ? "start" : "end"}">${esc(label.toUpperCase())}</text>`;
+}
+function windArrow(V, W, vb){
+  const up = V.up ?? V.bearing, a = ((W.from + 180) - up) * Math.PI / 180, R = Math.max(26, vb[2] * 0.055);
+  const cx = vb[0] + vb[2] - R - 14, cy = vb[1] + R + 14, L = R * 0.75, dx = Math.sin(a) * L, dy = -Math.cos(a) * L;
+  return `<g><circle cx="${cx}" cy="${cy}" r="${R}" fill="rgba(10,20,15,.6)"/>
+    ${W.mph >= 1 ? `<line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx}" y2="${cy+dy}" stroke="#fff" stroke-width="${R/7}" stroke-linecap="round"/><circle cx="${cx+dx}" cy="${cy+dy}" r="${R/5}" fill="#ffc928"/>` : ""}
+    <text x="${cx}" y="${cy + R + 18}" ${TXT} font-size="${Math.max(15, R*0.55)}" text-anchor="middle">${W.mph < 1 ? "calm" : Math.round(W.mph) + " mph"}</text></g>`;
+}
+function setColour(C, name){ const s = C.tee_sets.find(t => t.name === name); return s ? s.colour : "#111"; }
+
+/* ------------------------------------------------------------------ screens */
+function badge(level, extra){
+  if (level === "verified") return `<span class="badge verified" title="Hand-checked map">✓ Verified</span>`;
+  if (level === "check") return `<span class="badge check" title="Something on this hole's map needs a look">⚠ Check${extra ? " " + extra : ""}</span>`;
+  return `<span class="badge auto" title="Auto-mapped; passed the automatic checks">Auto ✓</span>`;
+}
+function courseBadge(C){ return C.confidence.level === "verified" ? badge("verified") :
+  (C.confidence.check_holes ? `<span class="badge auto">Auto ✓</span> <span class="badge check">⚠ ${C.confidence.check_holes} to check</span>` : badge("auto")); }
+function dots(C){ return `<span class="dots">${C.tee_sets.map(t => `<span class="dot" style="background:${t.colour}${t.computed === "missing" ? ";opacity:.35" : ""}" title="${esc(t.name)}"></span>`).join("")}</span>`; }
+
+function renderPick(){
+  const q = st.q.trim().toLowerCase();
+  const match = s => !q || s.toLowerCase().includes(q);
+  const mine = D.courses.filter(C => match(`${C.name} ${C.town} ${C.state}`));
+  const up = q.length >= 2 ? D.catalog.upcoming.filter(c => match(`${c[0]} ${c[1]} ${c[2]}`)).slice(0, 8) : [];
+  const states = D.catalog.states.map(s => s.state).join(" and ");
+  return `<header class="stack" style="gap:4px"><div class="brand"><h1>Aim Caddie</h1><span class="tag">where to aim, which club, today's wind</span></div>
+      <p class="sub">Pick your course and tees. Every hole shows the statistically best target and club (Fawcett / DECADE style), re-solved for the wind and temperature when you get there.</p></header>
+    <input type="search" id="q" placeholder="Search courses or towns" value="${esc(st.q)}" aria-label="Search courses">
+    <div class="stack" id="list">
+      ${mine.map(C => `<button class="ccard" data-course="${C.id}">
+          <span class="spread"><span class="name">${esc(C.name)}</span></span>
+          <span class="row">${courseBadge(C)}</span>
+          <span class="sub">${esc(C.town || "")}, ${esc(C.state || "")} · ${C.holes.length} holes · ${C.tee_sets.filter(t => t.computed !== "missing").length} of ${C.tee_sets.length} tee sets ready</span>
+          <span class="row">${dots(C)}<span class="sub">${esc(C.tee_sets.map(t => t.name).join(" · "))}</span></span>
+        </button>`).join("") || (q ? `<p class="sub">No ready course matches “${esc(st.q)}”.</p>` : "")}
+      ${up.map(c => `<div class="soon"><span><b>${esc(c[0])}</b> · ${esc(c[1] ? c[1] + ", " : "")}${esc(c[2])}</span><span>${c[3]} holes mapped on OpenStreetMap · coming soon</span></div>`).join("")}
+    </div>
+    <section class="panel stack" style="gap:6px">
+      <div class="label">Coming soon: any US course</div>
+      <p>We've surveyed <b>${D.catalog.n_courses.toLocaleString()}</b> courses in ${esc(states)}; <b>${D.catalog.n_with_holes}</b> already have their holes mapped on OpenStreetMap, the starting point for an automatic plan. Type a name above to see if yours is one of them.</p>
+      <p class="sub">Each new course is mapped automatically from OpenStreetMap, USDA aerial imagery and USGS lidar, then gets a two-minute “check this” pass for anything the map isn't sure about.</p>
+    </section>
+    <p class="foot">Prototype · data built ${esc(D.built)} · badges: <b>✓ Verified</b> hand-checked map · <b>Auto ✓</b> auto-mapped, passed the checks · <b>⚠ Check</b> look before you trust it.</p>`;
+}
+
+function checkCard(C, card, opts){
+  const A = st.answers[C.id] || {}, a = A[card.id], o = a ? card.options.find(x => x.answer === a) : null;
+  const img = opts.img && card.crop ? cropFig(card) : "";
+  const out = o ? `<div class="out${o.outcome ? " chg" : ""}"><b>Your answer: ${esc(o.label)}.</b> ${esc(o.text || "")}${o.outcome ? (card.tee_set === curSet(C) ? " The hole now shows this plan." : ` (Computed for the ${esc(card.tee_set)} tees.)`) : (o.answer === "moved" ? " Noted: a full re-plan applies a moved edge or tee (on the backend)." : "")}</div>`
+    : `<div class="out">${card.options.filter(x => x.text).map(x => `<div><b>${esc(x.label)}:</b> ${esc(x.text)}</div>`).join("")}</div>`;
+  return `<article class="chk ${card.severity}" id="chk-${esc(card.id)}">
+    <div class="row"><span class="badge ${card.severity}">${card.severity === "red" ? "Matters" : "Minor"}</span><span class="label">Hole ${card.hole} · ${esc(card.type)}</span></div>
+    <div class="q">${esc(card.question)}</div>
+    ${card.detail ? `<div class="sub">${esc(card.detail)}</div>` : ""}
+    ${img}
+    <div class="seg" role="group" aria-label="Answer">${card.options.map(x => `<button data-card="${esc(card.id)}" data-ans="${esc(x.answer)}" aria-pressed="${a === x.answer}">${esc(x.label)}</button>`).join("")}</div>
+    ${out}
+  </article>`;
+}
+function cropFig(card){
+  const cr = card.crop, ov = cr.overlay || {};
+  const polys = (ov.polys || []).map(p => `<polygon points="${p.map(q => q.join(",")).join(" ")}" fill="rgba(255,120,60,.25)" stroke="#ff7a3c" stroke-width="2"/>`).join("");
+  const line = ov.line ? `<polyline points="${ov.line.map(q => q.join(",")).join(" ")}" fill="none" stroke="#ffc928" stroke-width="2" stroke-dasharray="6 5"/>` : "";
+  const ell = ov.target && ov.ellipse ? `<ellipse cx="${ov.target[0]}" cy="${ov.target[1]}" rx="${ov.ellipse[0]}" ry="${ov.ellipse[1]}" fill="rgba(255,201,40,.15)" stroke="#ffc928" stroke-width="1.5" stroke-dasharray="5 4"/>` : "";
+  const tee = ov.tee ? `<circle cx="${ov.tee[0]}" cy="${ov.tee[1]}" r="8" fill="#fff" stroke="#111" stroke-width="2"/>` : "";
+  return `<figure><img src="${cr.img}" alt="Aerial photo for hole ${card.hole}" width="${cr.w}" height="${cr.h}"><svg viewBox="0 0 ${cr.w} ${cr.h}" preserveAspectRatio="none" aria-hidden="true">${polys}${line}${ell}${tee}</svg></figure>`;
+}
+
+function renderTees(){
+  const C = cur(), S = curSet(C), src = source(C);
+  const red = C.checks.filter(c => c.severity === "red"), amber = C.checks.filter(c => c.severity === "amber");
+  const fc = C.forecast;
+  return `<div class="topbar"><button class="btn ghost" data-go="pick">‹ Courses</button><span></span></div>
+    <header class="stack" style="gap:6px"><h1>${esc(C.name)}</h1><div class="row">${courseBadge(C)}<span class="sub">${esc(C.town || "")}, ${esc(C.state || "")}</span></div>
+      <p class="sub">${esc(C.confidence.summary)}</p></header>
+    <section class="stack"><div class="label">Your tees</div><div class="tees">
+      ${C.tee_sets.map(t => `<button class="tee" data-set="${esc(t.name)}" aria-pressed="${t.name === S}" ${t.computed === "missing" ? "disabled" : ""}>
+        <span class="sw" style="background:${t.colour}"></span>
+        <span><span class="nm">${esc(t.name)}</span><br><span class="sub">${t.rating ? `${t.rating} / ${t.slope} · ` : ""}${esc(t.note)}</span></span>
+        <span class="yd">${t.total ? t.total.toLocaleString() + " yds" : ""}</span></button>`).join("")}
+    </div></section>
+    <section class="panel stack"><div class="label">Tee time</div>
+      ${fc ? `<div class="seg" id="srcSeg">${fc.days.map(d => `<button data-src="${d.key}" aria-pressed="${src === d.key}">${esc(d.label)}</button>`).join("")}<button data-src="custom" aria-pressed="${src === "custom"}">Set wind myself</button></div>` : `<p class="sub">No forecast attached: set the wind on each hole.</p>`}
+      ${src !== "custom" ? `<div class="row"><input type="range" id="hourT" min="7" max="17" step="0.25" value="${teeHour(C)}" aria-label="Tee time"><span class="windread">${clock(teeHour(C))}</span></div>
+      <p class="sub">${forecastLine(C)}</p>` : ""}
+    </section>
+    ${C.checks.length ? `<section class="stack"><div class="spread"><h2>Before you play: ${red.length} quick check${red.length === 1 ? "" : "s"}</h2></div>
+      <p class="sub">The map was built automatically. These are the spots where a wrong map would change your club or aim; answer what you can see from the tee (or skip: the plan stands, and those holes stay marked ⚠).</p>
+      ${red.map(c => checkCard(C, c, {img: true})).join("")}
+      ${amber.length ? `<details class="panel"><summary><span class="label">${amber.length} minor checks</span></summary><div class="stack" style="margin-top:10px">${amber.map(c => checkCard(C, c, {img: false})).join("")}</div></details>` : ""}
+    </section>` : ""}
+    <button class="btn primary" data-go="hole">Start at hole ${C.holes[holeIdx(C)].no} ›</button>
+    <p class="foot">${esc(C.model)} Imagery: ${esc(C.imagery)}. ${esc((C.attribution || []).join(" · "))}</p>`;
+}
+function forecastLine(C){
+  const s = source(C); if (s === "custom") return "";
+  const a = fcAt(C, s, teeHour(C)), b = fcAt(C, s, teeHour(C) + 17 * C.pace_min_per_hole / 60);
+  if (!a || !b) return "";
+  return `Hole 1 at ${clock(teeHour(C))}: ${Math.round(a.mph)} mph from the ${compass(a.from)}, ${Math.round(a.temp)}°F · hole 18 at about ${clock(teeHour(C) + 17 * C.pace_min_per_hole / 60)}: ${Math.round(b.mph)} mph from the ${compass(b.from)}, ${Math.round(b.temp)}°F. Each hole uses the forecast for when you reach it (${C.pace_min_per_hole} min a hole).`;
+}
+
+function renderHole(){
+  const C = cur(), i = holeIdx(C), H = C.holes[i], T = teeSpot(C, H), V = T.V, W = windFor(C, H);
+  const src = source(C);
+  let map = "", play = "", aimTxt = "", table = "", elev = "", badges = [], vb = [0, 0, V.w, V.h], extra = "";
+  const IMG = `<image href="${C.images[V.image]}" x="0" y="0" width="${V.w}" height="${V.h}"/>`;
+  const tcol = setColour(C, T.name);
+  if (V.kind === "tee") {
+    const r = solveTee(C, H, T, W), ck = T.key + "|" + T.name;
+    const pickC = st.club[ck] && r.out[st.club[ck]] ? st.club[ck] : r.pick;
+    const best = r.out[pickC], aimC = pickC === r.pick ? r.aim : best.aim, B = T.back;
+    const cl = V.cloud && V.cloud[pickC], cA = cl ? cl.dA : 0, cL = cl ? cl.dL : 0;
+    if (st.view === "land") {
+      const a0 = Math.max(0, best.total - 140) - B, a1 = best.total + 45 - B;
+      const ys = [a0, a1].flatMap(a => [-80, 80].map(l => pt(V, a, l)[1]));
+      const y0 = Math.max(0, Math.min(...ys)), y1 = Math.min(V.h, Math.max(...ys));
+      vb = [0, y0, V.w, Math.max(60, y1 - y0)];
+    }
+    const star = pt(V, best.total - B, aimC);
+    const zl = pt(V, best.total - B, best.lo + (aimC - best.aim)), zh = pt(V, best.total - B, best.hi + (aimC - best.aim));
+    const landA = best.total - B + cA, landL = aimC + best.drift + best.kick + cL, land = pt(V, landA, landL);
+    let pattern;
+    if (cl) { const sc = best.width / cl.width, pts = [];
+      for (let k = 0; k < 48; k++) { const a = k / 48 * 2 * Math.PI, ca = Math.cos(a) * cl.A * sc, sa = Math.sin(a) * cl.B * sc;
+        pts.push(fmt(pt(V, landA + ca * cl.u[0] + sa * cl.w[0], landL + ca * cl.u[1] + sa * cl.w[1]))); }
+      pattern = `<polygon points="${pts.join(" ")}" fill="rgba(255,201,40,.14)" stroke="#ffc928" stroke-width="1.8" stroke-dasharray="6 5"/>`;
+    } else { const pts = [];
+      for (let k = 0; k < 48; k++) { const a = k / 48 * 2 * Math.PI; pts.push(fmt(pt(V, landA + Math.sin(a) * best.width * 0.22, landL + Math.cos(a) * best.width / 2))); }
+      pattern = `<polygon points="${pts.join(" ")}" fill="rgba(255,201,40,.14)" stroke="#ffc928" stroke-width="1.8" stroke-dasharray="6 5"/>`; }
+    let tp = pt(V, -B, 0), below = 0;
+    const bottom = vb[1] + vb[3] - 16;
+    if (tp[1] > bottom) { below = Math.round((tp[1] - bottom) / Math.hypot(V.axes.f[0], V.axes.f[1]));
+      const k = (bottom - star[1]) / (tp[1] - star[1]); tp = [star[0] + (tp[0] - star[0]) * k, bottom]; }
+    const sw = vb[2] / 400;
+    map = IMG + `
+      <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#1a1a1a" stroke-width="${4*sw}" opacity=".55"/>
+      <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#ffc928" stroke-width="${2*sw}"/>
+      ${pattern}
+      <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="9" stroke-linecap="round" opacity=".85"/>
+      ${Math.abs(best.drift + best.kick + cL) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
+      ${aimMark(star[0], star[1])}
+      ${teeMark(tp[0], tp[1], T.name + " tee" + (below ? ` · ${below} yds back ↓` : ""), tcol, vb[0] + vb[2])}
+      ${windArrow(V, W, vb)}`;
+    const own = pickC !== r.pick;
+    play = `<div class="label">${own ? "Your club" : "Play"}</div><div class="playrow"><span class="play ${cls(pickC)}">${esc(pickC)}</span><span class="sub" style="padding-bottom:5px">${Math.round(best.carry)} carry · ${Math.round(best.total)} total</span></div>`;
+    if (own) { const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${esc(r.pick)} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
+    if (r.tie && !own) badges.push(`<span class="pill tie">Tie · ${esc(r.order[1])} just as good</span>`);
+    if (r.how === "answer") badges.push(`<span class="pill ans">From your check answer</span>`);
+    if (V.calm && r.pick !== V.calm.pick && T.back === 0 && r.how !== "answer") badges.push(`<span class="pill chg">Calm-day pick: ${esc(V.calm.pick)}</span>`);
+    if (V.calm && V.calm.flips && V.calm.flips.length && !own) badges.push(`<span class="pill">${V.calm.flips.map(f => `${esc(f.to)} if your ${esc(f.frm)} pattern is wider than ${Math.round(f.width)} yds`).join("; ")}</span>`);
+    if (V.mapped_along && best.total - B > V.mapped_along) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
+    if (Math.abs(B - T.want) > 5) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B - T.t.back) < 1 ? "card spot" : Math.abs(B - T.t.back) + " yds " + (B > T.t.back ? "back" : "up")}</span>`);
+    const mv = best.drift + best.kick + cL;
+    const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
+                 Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
+    aimTxt = `<p><b>Aim ${yds(aimC)}</b> of the tee line, at the dot${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"}${why ? ` (${why})` : ""}` : ""}. The blue bar is every aim within 0.02 strokes of the best; the dashed shape is where 95% of these shots finish.</p>`;
+    const rows = r.order.map(c => { const v = r.out[c], d = v.ev - r.out[r.pick].ev;
+      return `<tr data-club="${esc(c)}" class="${c === pickC ? "sel" : ""} ${c === r.pick ? "best" : ""}"><td class="${cls(c)}">${c === pickC ? "● " : ""}${esc(c)}${c === r.pick ? " ★" : ""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${yds(c === r.pick ? r.aim : v.aim).replace(" yds", "")}</td><td>${c === r.pick ? "best" : (d < 0.01 ? "≈ tie" : "+" + d.toFixed(3))}</td></tr>`; }).join("");
+    table = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>Its aim</th><th>Strokes</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <p class="sub">Tap a club to see its own best aim and pattern; tap ★ to go back.</p>`;
+    const be = best.e;
+    elev = be ? `<b>Elevation</b> (USGS lidar): ${be.drop != null ? `the landing area is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so ` : ""}${esc(pickC)} carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}.` : "";
+    if (Math.abs(best.dT) >= 0.5) elev += ` <b>Temperature</b> ${Math.round(W.temp)}°F: ${best.dT > 0 ? "+" : "−"}${Math.abs(best.dT).toFixed(0)} yds of carry vs 70°F.`;
+    if (V.check && V.check.length) extra = V.check.map(x => `<li>${esc(x)}</li>`).join("");
+    const offs = Object.keys(V.offsets).map(Number);
+    if (offs.length > 1) {
+      const lo = Math.ceil(Math.max(-60, Math.min(...offs) - T.t.back) / 10) * 10, hi = Math.floor(Math.min(60, Math.max(...offs) - T.t.back) / 10) * 10;
+      extra += `<!--adj-->`;
+      T._adj = {lo, hi};
+    }
+  } else {
+    const r = solvePar3(C, H, T, W);
+    const g = V.green.map(p => p.join(",")).join(" "), bp = r.box.poly.map(p => p.join(",")).join(" ");
+    map = IMG + `<polygon points="${g}" fill="none" stroke="#fff" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <polygon points="${bp}" fill="rgba(37,208,255,.45)" stroke="#25d0ff" stroke-width="2.5"/>${windArrow(V, W, vb)}
+      <text x="${V.w / 2}" y="${V.h - 12}" ${TXT} font-size="16" text-anchor="middle">${esc(T.name.toUpperCase())} TEE ${Math.round(r.S3.center)} YDS ↓</text>`;
+    play = `<div class="label">Play it like</div><div class="playrow"><span class="play">${Math.round(r.play)} yds</span><span class="sub" style="padding-bottom:5px">${Math.round(r.S3.center)} on the card</span></div>`;
+    aimTxt = `<p><b>Land it in the blue box</b> (DECADE target: green centre moved away from the trouble). Wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.${V.short ? " " + esc(V.short) : ""}</p>`;
+    table = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody>
+      <tr><td>Card</td><td>${Math.round(r.S3.front)}</td><td>${Math.round(r.S3.center)}</td><td>${Math.round(r.S3.back)}</td></tr>
+      <tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds (calm)</td></tr></tbody></table></div>`;
+    const ge = V.elev;
+    elev = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds${ge.approx ? " (measured from the plan's main tee)" : ""}. “Play it like” includes this, the wind and the temperature.` : "“Play it like” includes the wind and the temperature.";
+  }
+  const conf = H.confidence, cards = C.checks.filter(c => c.hole === H.no);
+  const confBox = conf.level === "verified" ? `<div class="conf verified"><div class="row">${badge("verified")}<span class="sub">${esc(conf.lines[0] || "")}</span></div></div>`
+    : conf.level === "check" ? `<div class="conf check"><div class="row">${badge("check")}<b>Look before you trust this hole</b></div>
+        ${conf.lines.map(l => `<div>${esc(l)}</div>`).join("")}${extra && extra.includes("<li>") ? "" : ""}
+        ${cards.length ? `<div class="stack">${cards.map(c => checkCard(C, c, {img: c.severity === "red"})).join("")}</div>` : ""}</div>`
+    : `<div class="conf auto"><div class="row">${badge("auto")}<span class="sub">Auto-mapped${conf.map_score ? `, map confidence ${Math.round(conf.map_score * 100)}%` : ""}; no open questions changed this hole's plan.</span></div>
+        ${cards.length ? `<details><summary class="sub">${cards.length} minor check${cards.length > 1 ? "s" : ""}</summary><div class="stack" style="margin-top:8px">${cards.map(c => checkCard(C, c, {img: false})).join("")}</div></details>` : ""}</div>`;
+  const condTxt = W.custom ? `<span>Your wind: <b>${Math.round(W.mph)} mph</b> from the ${compass(W.from)} · <b>${Math.round(W.temp)}°F</b></span>`
+    : `<span>At about <b>${clock(W.t)}</b></span><span><b>${Math.round(W.mph)} mph</b> from the ${compass(W.from)}${W.gust ? ` (gusts ${Math.round(W.gust)})` : ""}</span><span><b>${Math.round(W.temp)}°F</b></span>`;
+  const rel = ((W.from - V.bearing) % 360 + 360) % 360;
+  const adjRow = V.kind === "tee" && Object.keys(V.offsets).length > 1 ? `<div class="row"><span class="label">Move this tee</span><input type="range" id="adj" min="${T._adj.lo}" max="${T._adj.hi}" step="10" value="${T.adj}" aria-label="Move this tee back or up"><span class="sub" style="min-width:90px">${T.adj === 0 ? "card spot" : Math.abs(T.adj) + " yds " + (T.adj > 0 ? "back" : "up")}</span></div>` : "";
+  const sets = C.tee_sets.filter(t => t.computed !== "missing");
+  return `<div class="topbar"><button class="btn ghost" data-go="pick" aria-label="All courses">‹</button>
+      <div class="ttl"><b>${esc(C.short)}</b><span class="sub">${esc(T.name)} tees${!T.ok ? ` (no ${esc(T.S)} tee here)` : ""}</span></div>
+      <button class="btn" data-go="tees">Tees ⚙</button></div>
+    <div class="holehead"><button class="navbtn" id="prev" aria-label="Previous hole">‹</button>
+      <div style="text-align:center;min-width:0"><div class="holeno">Hole ${H.no}</div><div class="sub">Par ${H.par} · ${T.yards} yds${H.hcp ? ` · hcp ${H.hcp}` : ""}${T.adj ? ` · moved ${Math.abs(T.adj)} ${T.adj > 0 ? "back" : "up"}` : ""}</div>
+        <div class="row" style="justify-content:center;margin-top:4px">${badge(conf.level)}</div></div>
+      <button class="navbtn" id="next" aria-label="Next hole">›</button></div>
+    <section class="stack">
+      ${V.kind === "tee" ? `<div class="seg" id="view"><button data-view="land" aria-pressed="${st.view === "land"}">Landing area</button><button data-view="hole" aria-pressed="${st.view !== "land"}">Whole hole</button></div>` : ""}
+      <div class="mapbox"><svg id="ov" viewBox="${vb.map(x => x.toFixed(1)).join(" ")}" role="img" aria-label="Overhead view of hole ${H.no} with the aim drawn on it">${map}</svg></div>
+    </section>
+    <section class="panel stack">
+      <div>${play}</div>
+      ${aimTxt}
+      ${badges.length ? `<div class="row">${badges.join(" ")}</div>` : ""}
+      <div class="cond">${condTxt}<span>${esc(relWords(rel, W.mph))}</span></div>
+    </section>
+    ${confBox}
+    <section class="panel stack">${table}${adjRow}
+      ${elev ? `<p class="sub">${elev}</p>` : ""}
+      ${V.note ? `<p class="note">${esc(V.note)}</p>` : ""}
+      ${V.calm && V.calm.source ? `<p class="foot">Calm-day pick from the ${esc(V.calm.source)}; in wind the club and aim are re-solved for the forecast at this hole.</p>` : ""}
+    </section>
+    <details class="panel" id="windPanel" ${st.wind_open ? "open" : ""}><summary><span class="label">Wind &amp; tee time</span><span class="sub">${src === "custom" ? "set by hand" : esc((C.forecast.days.find(d => d.key === src) || {}).label || "") + " · tee " + clock(teeHour(C))}</span></summary>
+      <div class="stack" style="margin-top:10px">
+        ${C.forecast ? `<div class="seg" id="srcSeg">${C.forecast.days.map(d => `<button data-src="${d.key}" aria-pressed="${src === d.key}">${esc(d.label)}</button>`).join("")}<button data-src="custom" aria-pressed="${src === "custom"}">Custom</button></div>` : ""}
+        ${src !== "custom" ? `<div class="row"><span class="label">Tee time</span><input type="range" id="hourT" min="7" max="17" step="0.25" value="${teeHour(C)}" aria-label="Tee time"><span class="windread">${clock(teeHour(C))}</span></div>` : ""}
+        <div class="dialrow">
+          <svg class="dial" id="dial" viewBox="-80 -80 160 160" role="slider" aria-label="Wind direction (from)" aria-valuenow="${Math.round(W.from)}" tabindex="0">
+            <circle r="70" fill="none" stroke="var(--line)" stroke-width="2"/>
+            ${Array.from({length: 16}, (_, k) => { const a = k * 22.5 * Math.PI / 180, r0 = k % 4 ? 66 : 61; return `<line x1="${Math.sin(a)*r0}" y1="${-Math.cos(a)*r0}" x2="${Math.sin(a)*70}" y2="${-Math.cos(a)*70}" stroke="var(--muted)" stroke-width="1.5"/>`; }).join("")}
+            <text x="0" y="-50" text-anchor="middle">N</text><text x="54" y="5" text-anchor="middle">E</text><text x="0" y="60" text-anchor="middle">S</text><text x="-54" y="5" text-anchor="middle">W</text>
+            <g transform="rotate(${W.from + 180})"><line x1="0" y1="-60" x2="0" y2="38" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/><polygon points="0,50 -9,32 9,32" fill="var(--ink)"/><circle cx="0" cy="-60" r="7" fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/></g>
+          </svg>
+          <div class="stack">
+            <div class="row"><span class="label">Speed</span><input type="range" id="mph" min="0" max="25" step="1" value="${Math.round(W.mph)}" aria-label="Wind speed"><span class="windread">${Math.round(W.mph)} mph</span></div>
+            <div class="row"><span class="label">Temp</span><input type="range" id="temp" min="30" max="100" step="1" value="${Math.round(W.temp ?? 70)}" aria-label="Temperature"><span class="windread">${Math.round(W.temp ?? 70)}°F</span></div>
+            <p class="sub">Drag the dial to where the wind blows <b>from</b> (yellow end). Moving the dial, speed or temperature switches to Custom: one wind for every hole.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+    <section class="panel stack"><div class="label">All holes${src === "custom" ? " in this wind" : " · forecast for when you reach each"}</div>
+      <div class="strip" id="strip">${C.holes.map((Hh, k) => { const p = pickFor(C, Hh); return `<button class="chip" data-i="${k}" aria-current="${k === i}" aria-label="Hole ${Hh.no}">${Hh.confidence.level === "check" ? "<i>⚠</i>" : ""}<b>${Hh.no}</b><span class="${p.c}">${p.txt}</span></button>`; }).join("")}</div>
+      <p class="sub">Club per tee shot (≈ tie), “plays like” yards on par 3s.</p></section>
+    <p class="foot">${C.forecast && C.forecast.fetched ? `Forecast: ${esc(C.forecast.source)}, fetched ${esc(C.forecast.fetched.slice(0, 16).replace("T", " "))} UTC. ` : ""}${esc(C.model)} Imagery: ${esc(C.imagery)}. Bag: ${Object.entries(D.player.clubs).map(([c, v]) => `${c} ${v.carry}/${v.total}`).join(", ")}.</p>`;
+}
+
+/* ------------------------------------------------------------------ render + events */
+function render(){
+  const C = cur(); if (!C) st.screen = "pick";
+  const app = $("app");
+  app.innerHTML = st.screen === "pick" ? renderPick() : st.screen === "tees" ? renderTees() : renderHole();
+  document.title = st.screen === "pick" ? "Aim Caddie" : `${cur().short} · Aim Caddie`;
+  save();
+}
+function rerenderKeepFocus(id){ const y = window.scrollY; render(); if (id && $(id)) { const el = $(id); el.focus(); if (el.type === "search" || el.type === "text") { const n = el.value.length; el.setSelectionRange(n, n); } } window.scrollTo(0, y); }
+const app = $("app");
+app.addEventListener("input", e => {
+  const C = cur(), t = e.target;
+  if (t.id === "q") { st.q = t.value; rerenderKeepFocus("q"); return; }
+  if (!C) return;
+  if (t.id === "hourT") { st.hour[C.id] = +t.value; rerenderKeepFocus("hourT"); }
+  else if (t.id === "mph" || t.id === "temp") { const H = C.holes[holeIdx(C)], W = windFor(C, H);
+    st.custom = {from: Math.round(W.from), mph: t.id === "mph" ? +t.value : Math.round(W.mph), temp: t.id === "temp" ? +t.value : Math.round(W.temp ?? 70)};
+    st.src[C.id] = "custom"; st.wind_open = true; rerenderKeepFocus(t.id); }
+  else if (t.id === "adj") { const H = C.holes[holeIdx(C)]; st.adj[C.id + "|" + H.no] = +t.value; rerenderKeepFocus("adj"); }
+});
+app.addEventListener("click", e => {
+  const C = cur(), b = e.target.closest("button, tr[data-club], summary");
+  if (!b) return;
+  if (b.tagName === "SUMMARY") { if (b.parentElement.id === "windPanel") setTimeout(() => { st.wind_open = b.parentElement.open; save(); }, 0); return; }
+  const d = b.dataset;
+  if (d.course) { st.course = d.course; st.screen = "tees"; window.scrollTo(0, 0); return render(); }
+  if (d.go) { st.screen = d.go; window.scrollTo(0, 0); return render(); }
+  if (!C) return;
+  if (d.set) { st.set[C.id] = d.set; return render(); }
+  if (d.src) { st.src[C.id] = d.src; if (d.src === "custom") { const W = windFor(C, C.holes[holeIdx(C)]); st.custom = {from: Math.round(W.from), mph: Math.round(W.mph), temp: Math.round(W.temp ?? 70)}; } return render(); }
+  if (d.card) { const A = st.answers[C.id] = st.answers[C.id] || {}; if (A[d.card] === d.ans) delete A[d.card]; else A[d.card] = d.ans; return rerenderKeepFocus(); }
+  if (d.view) { st.view = d.view; return render(); }
+  if (d.i !== undefined) { st.idx[C.id] = +d.i; return render(); }
+  if (b.id === "prev" || b.id === "next") { const n = C.holes.length; st.idx[C.id] = (holeIdx(C) + (b.id === "next" ? 1 : n - 1)) % n; return render(); }
+  if (d.club) { const H = C.holes[holeIdx(C)], T = teeSpot(C, H), r = solveTee(C, H, T, windFor(C, H)), ck = T.key + "|" + T.name;
+    if (d.club === r.pick) delete st.club[ck]; else st.club[ck] = d.club; return rerenderKeepFocus(); }
+});
+/* wind dial: drag to where the wind blows from */
+let drag = false;
+function dialSet(ev){ const C = cur(), dl = $("dial"); if (!C || !dl) return; const r = dl.getBoundingClientRect();
+  const x = ev.clientX - (r.left + r.width / 2), y = ev.clientY - (r.top + r.height / 2), W = windFor(C, C.holes[holeIdx(C)]);
+  st.custom = {from: Math.round(((Math.atan2(x, -y) * 180 / Math.PI) + 360) % 360 / 5) * 5, mph: Math.round(W.mph), temp: Math.round(W.temp ?? 70)};
+  st.src[C.id] = "custom"; st.wind_open = true; render(); }
+app.addEventListener("pointerdown", e => { if (e.target.closest("#dial")) { drag = true; dialSet(e); e.preventDefault(); } });
+window.addEventListener("pointermove", e => { if (drag) dialSet(e); });
+window.addEventListener("pointerup", () => { drag = false; });
+app.addEventListener("keydown", e => {
+  if (!e.target.closest || !e.target.closest("#dial")) return;
+  const C = cur(), W = windFor(C, C.holes[holeIdx(C)]), k = {ArrowRight: 15, ArrowUp: 15, ArrowLeft: -15, ArrowDown: -15}[e.key];
+  if (!k) return; e.preventDefault();
+  st.custom = {from: (Math.round(W.from) + k + 360) % 360, mph: Math.round(W.mph), temp: Math.round(W.temp ?? 70)}; st.src[C.id] = "custom"; st.wind_open = true;
+  render(); $("dial") && $("dial").focus();
+});
+render();
+</script>
+</body>
+</html>
