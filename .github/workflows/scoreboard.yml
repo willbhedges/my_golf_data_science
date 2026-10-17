@@ -75,6 +75,11 @@ jobs:
           ( time python course_data/qa/golden_spirit_hollow.py --no-oracle \
               --package course_data/packages/spirit_hollow/package.json ) 2>&1 | tail -40
 
+      - name: Acceptance (course_data/acceptance.py on the platform package, hand map's tee sets)
+        continue-on-error: true
+        run: |
+          ( time python course_data/acceptance.py --holes course_data/packages/spirit_hollow/package.json --fast ) 2>&1 | tail -30
+
       - name: Scoreboard + regression guards
         id: sb
         run: |
@@ -87,7 +92,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- course_data/qa/SCOREBOARD.md course_data/qa/scoreboard.json course_data/qa/contracts.json \
-                     course_data/qa/golden.json course_data/qa/REPORT.md
+                     course_data/qa/golden.json course_data/qa/REPORT.md \
+                     course_data/spirit_hollow/acceptance_package.json course_data/spirit_hollow/acceptance_package.md
           if git diff --cached --quiet; then
             echo "No QA output changes to commit"; exit 0
           fi

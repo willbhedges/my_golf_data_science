@@ -2,21 +2,25 @@
 golden_spirit_hollow.write_report(). Edit TEXT, then re-run golden_spirit_hollow.py (or run_qa.py)."""
 
 SUMMARY = r'''
-## 0. Summary
+## 0. Summary (2026-10-17; the headline numbers now live in `SCOREBOARD.md`)
 
-* **Contracts** (`test_contracts.py`, 7 packages, ~1,900 checks): the platform packages for all three courses load,
-  have every hole, par, tees for every card set, bearing, zones + zones_ll, provenance, and `tee_strategy` runs on
-  every hole. Failing: course boundary drops 2 of 3 rings (SH 5-9 "outside"), self-intersecting polygons on every
-  course, forward-tee lengths, tee points inside vision `native`, zones/zones_ll drift after gap-fill.
-* **Golden (Spirit Hollow)**: every bar fails. Best build (platform + vision): green within 10 yds 75%, same club as
-  final_decision.json 50% (bar 80%), trees IoU 0.15 / long grass 0.09 (bar 0.6).
-* **End to end**: plan.py produces a book, aim sheets and a wind page for Spirit Hollow, Mozingo Lake and Veenker.
-  Mozingo picks match the hand-made Mozingo plan on 8/9 holes. Veenker (no vision) prints "Driver, 120 yds right"
-  across a river on 15.
-* **Usable for a new course today? No, not without a human check.** The pipeline runs, but the printed aims are
-  relative to an arbitrary tee line, there is no guard on absurd picks, and courses without built vision layers play
-  every wood as rough. With vision layers and a human look at the review images (`review/<slug>/`), the open
-  Mozingo-type course is close.
+* **Scoreboard** (`scoreboard.py` -> `SCOREBOARD.md` / `scoreboard.json`, regenerated on Actions by
+  `.github/workflows/scoreboard.yml`): the product's own quick decision on each committed platform package vs the
+  truth, per course - club agreement (same / same-or-tie), regret, tee and green within 10 yds, landing-corridor
+  IoU for trees / long grass / water / OB, CHECK holes, runtime, plus a dated history and CI regression guards.
+  Bar: same club on >= 80% of tee shots.
+* **Contracts** (`test_contracts.py`, committed packages only - `qa/work/` scratch builds are excluded by default
+  now): boundary rings (P1), aims on an arbitrary tee line (R1), no absurd-aim guard (R5), duplicate Veenker tee
+  sets (P6), lie names the model cannot read (A1) and tees inside vision long grass on Spirit Hollow are **fixed**.
+  Still failing: self-intersecting polygons on all three courses (P4), zones vs zones_ll drift after gap-fill
+  (SH 9/10/11, Veenker 3/7/8/15/16), forward-tee lengths on par 3s (SH Rust 3/12/15, White 12; Veenker Red 3/6/8),
+  and **new since the 00:00 tee rebuild: Veenker tee 7 (Blue) inside OB, 12 (Blue) in a bunker, 7 (Gold) in trees**.
+* **Golden (Spirit Hollow)**: re-pointed at the hand map's tee per hole (course.py now plays 1, 2F, 5, 6, 10, 11,
+  14, 16, 17 from the real Black box; 2B / 9B stay Gold). Before this fix the golden scored holes 1 and 11 from the
+  Gold box while the truth had moved to Black.
+* **Usable for a new course today?** With a human look at the CHECK holes, close on open courses (Mozingo); on
+  wooded / creek courses the club still disagrees with the hand plan on roughly a third of tee shots, driven by tree
+  and long-grass edges in the landing corridor and by tee boxes 20-30 yds off (see SCOREBOARD.md, ranked gaps).
 '''
 
 TEXT = r'''
@@ -72,7 +76,7 @@ Common to every tee hole: **no `recovery` or `native` polygon anywhere** (no vis
 into woods or prairie plays as rough - the R6 failure (unmapped hazard = rough), and why the auto club pick drifts
 to Driver (see the golden table).
 
-## 4. End-to-end runs (`e2e.py` -> `e2e.json`; plan.py --quick into a scratch dir)
+## 4. End-to-end runs (`e2e.py` -> `e2e.json`; plan.py --quick into a scratch dir; state at 2026-10-16 21:00, before the product fixes)
 
 | course | package | plan.py | deliverables | club picks |
 |---|---|---|---|---|
@@ -85,7 +89,28 @@ Book review: every course's card prints aims relative to the auto tee line - Spi
 yellow tee line runs into trees and the star sits on a fairway well off it. The Confidence column is empty in quick
 mode.
 
-## 5. Bug reports by area (state at 21:00 UTC; packages rebuilt on Actions 19:58)
+## 5. Bug reports by area
+
+### Status 2026-10-17 00:30 UTC (re-run on the packages rebuilt by Actions at 00:00, run 38982965322)
+
+| id | state | evidence |
+|---|---|---|
+| P1 boundary rings | **fixed** (df7be43) | green/tee_inside_course pass on all 3 packages |
+| P3 forward-tee par-3 lengths | open | SH 3-Rust +38%, 12-White +15%, 12-Rust +20%, 15-Rust +24%; Veenker 3/6/8-Red +18-29% |
+| P4 self-intersecting polygons | open | SH 11 holes, Veenker 10, Mozingo 4 (`test_zones_valid_simple`) |
+| P6 Veenker duplicate sets | **fixed** (bae55a3) | sets Blue / Gold / Red |
+| P7 / R4 Mozingo card, plan requests | **fixed** | request yardages as the App card; plan requests point at packages/<slug> |
+| P8 vision stage string | **fixed** | stages.vision = vision_any/1 with layer counts on all 3 |
+| V4 tee inside long grass (SH) | **fixed** | every_tee_set fails only on lengths now |
+| zones vs zones_ll drift | open | SH 9/10/11, Veenker 3/7/8/15/16 (recovery->water / ->rough) |
+| R1 aims vs arbitrary tee line | **fixed** (df7be43, one tee-line rule) | - |
+| R5 absurd-aim guard | **fixed** (CHECK) | scoreboard guard: no aim > 40 yds without CHECK |
+| A1 green / ob_boundary KeyError | **fixed** in product (LIE_MAP at load) | - |
+| **N1 Veenker tees in hazards (new)** | open | 7-Blue tee in `ob`, 12-Blue in `sand`, 7-Gold in `recovery` after the joint tee assignment + lidar pads rebuild |
+| **N2 stale product outputs** | open | every `packages/<slug>/out/` predates the 00:00 package rebuild (plan.py 22:06-22:26); the scoreboard re-runs the decision itself |
+| **N3 golden tee sets** | **fixed** (QA) | golden_spirit_hollow.truth_sets(): Black boxes per course.BLACK_TEE_FORWARD, 2B/9B Gold |
+
+### Original reports (state at 2026-10-16 21:00 UTC; packages rebuilt on Actions 19:58)
 
 ### data platform (`course_data/platform/`)
 * **P1 (geometry, high):** `course.boundary` keeps only the largest ring of the course MultiPolygon (Spirit Hollow

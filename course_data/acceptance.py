@@ -111,6 +111,15 @@ def screenshot_sets(path=SHOT_SETS):
     return {k: v["set"] for k, v in json.load(open(path))["holes"].items()}
 
 
+def truth_sets():
+    """{traced key: tee set the hand map plays from}: course.py moves the tee up to the real Black box on
+    course.BLACK_TEE_FORWARD's keys (c3e54e3; incl. 1 and 11, whose screenshots show Gold), elsewhere the
+    screenshot's set (2B, 9B Gold). SH_SCREENSHOT_TEES=1 keeps the screenshot tees (and sets)."""
+    shots = screenshot_sets()
+    fwd = set() if os.environ.get("SH_SCREENSHOT_TEES") else {str(k) for k in getattr(course, "BLACK_TEE_FORWARD", {})}
+    return {k: ("Black" if k in fwd else v) for k, v in shots.items()}
+
+
 def _set_for(k, sets):
     return sets.get(str(k)) if sets else None
 
@@ -414,7 +423,7 @@ def main():
     a = ap.parse_args()
     t0 = time.time()
     if a.holes:
-        auto = from_model(a.holes, screenshot_sets() if a.tee_set == "screenshot" else None)
+        auto = from_model(a.holes, truth_sets() if a.tee_set == "screenshot" else None)
     elif a.vision == "loho":
         auto = loho_builds()
     elif a.vision == "any":
