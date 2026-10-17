@@ -1,0 +1,1143 @@
+{
+ "schema": "hole_evidence_eval/1",
+ "runs": [
+  "runs/val1",
+  "runs/bench1",
+  "runs/v2"
+ ],
+ "match_radius_m": 60.0,
+ "min_inliers": 12,
+ "truth": {
+  "courses": 161,
+  "holes": 2808
+ },
+ "sources": {
+  "website_hole_image_pairmatch": {
+   "dev": {
+    "courses_with_evidence": 8,
+    "courses_total": 77,
+    "course_coverage": 0.104,
+    "hole_coverage": 0.023,
+    "items": 48,
+    "scored": 48,
+    "correct": 5,
+    "accuracy": 0.104
+   },
+   "test": {
+    "courses_with_evidence": 7,
+    "courses_total": 84,
+    "course_coverage": 0.083,
+    "hole_coverage": 0.031,
+    "items": 57,
+    "scored": 57,
+    "correct": 6,
+    "accuracy": 0.105
+   },
+   "all": {
+    "courses_with_evidence": 15,
+    "courses_total": 161,
+    "course_coverage": 0.093,
+    "hole_coverage": 0.027,
+    "items": 105,
+    "scored": 105,
+    "correct": 11,
+    "accuracy": 0.105
+   },
+   "offbench": {
+    "courses_with_evidence": 1,
+    "courses_total": 27,
+    "course_coverage": 0.037,
+    "hole_coverage": 0.037,
+    "items": 16,
+    "scored": 16,
+    "correct": 1,
+    "accuracy": 0.062
+   }
+  },
+  "osm_feature_ref": {
+   "dev": {
+    "courses_with_evidence": 12,
+    "courses_total": 77,
+    "course_coverage": 0.156,
+    "hole_coverage": 0.139,
+    "items": 375,
+    "scored": 331,
+    "correct": 325,
+    "accuracy": 0.982
+   },
+   "test": {
+    "courses_with_evidence": 10,
+    "courses_total": 84,
+    "course_coverage": 0.119,
+    "hole_coverage": 0.079,
+    "items": 370,
+    "scored": 260,
+    "correct": 251,
+    "accuracy": 0.965
+   },
+   "all": {
+    "courses_with_evidence": 22,
+    "courses_total": 161,
+    "course_coverage": 0.137,
+    "hole_coverage": 0.108,
+    "items": 745,
+    "scored": 591,
+    "correct": 576,
+    "accuracy": 0.975
+   },
+   "offbench": {
+    "courses_with_evidence": 5,
+    "courses_total": 27,
+    "course_coverage": 0.185,
+    "hole_coverage": 0.165,
+    "items": 290,
+    "scored": 224,
+    "correct": 216,
+    "accuracy": 0.964
+   }
+  }
+ },
+ "website_survey": {
+  "probed": 188,
+  "has_website": 162,
+  "reachable": 121,
+  "robots_blocked_home": 18,
+  "hole_pages>=9": 2,
+  "hole_images>=9": 8,
+  "any_hole_images": 21,
+  "layout_images": 25,
+  "pdfs": 42,
+  "videos": 34,
+  "images_tried": 337,
+  "images_registered": 0,
+  "courses_with_registered_image": 0,
+  "golfify_page": 55,
+  "golfify_hole_geo": 0,
+  "opengolfapi_detail": 144,
+  "opengolfapi_hole_geo": 5
+ },
+ "per_course": {
+  "acorns_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "airways_ct": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "algonquin_mo": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "apple_tree_resort_wa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "arrowhead_pointe_ga": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "arroyo_seco_ca": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "bartram_trail_ga": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "beaver_creek_ia": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "ben_hawes_ky": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "big_foot_wi": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "big_sugar_ar": {
+   "split": "test",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 5
+  },
+  "billy_caldwell_il": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 9
+  },
+  "black_stone_creek_wi": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "blair_nj": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 1
+  },
+  "bloomington_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "bonneville_ut": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "boots_randolph_ky": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "brae_loch_il": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "brentwood_ca": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "bridges_ms": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "brigantine_nj": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "browns_mill_ga": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "brush_creek_ar": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "callahan_ga": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "canyon_gate_nv": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref",
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 15
+  },
+  "canyon_lake_ca": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "carillon_il": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "cedarbrook_pa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "chaska_wi": {
+   "split": "offbench",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 16
+  },
+  "cinder_ridge_il": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "cleveland_ms": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "colts_neck_nj": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "concord_ma": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "copper_creek_ia": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "coronado_ar": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "course_ca": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "creekmoor_mo": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "crestwood_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "crossings_ky": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "crown_pointe_mo": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "del_rio_ca": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "derryfield_nh": {
+   "split": "dev",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 1
+  },
+  "desert_aire_wa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "dismal_river_ne": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "dwan_mn": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "edgewood_park_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "el_dorado_park_ca": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "elk_river_mn": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "elmcrest_ma": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "empire_ranch_ca": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "exmoor_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "fair_play_ne": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "fairways_woodside_wi": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "falmouth_ma": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "falmouth_me": {
+   "split": "test",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 1
+  },
+  "fayetteville_ar": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "finkbine_ia": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 1
+  },
+  "fort_benning_ga": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "gannon_municipal_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "geneva_ia": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "glenhardie_pa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "glenmoor_ut": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "great_southern_ms": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "green_harbor_ma": {
+   "split": "offbench",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 17
+  },
+  "hatherly_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "heritage_shores_de": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "hidden_greens_north_wi": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "hideout_ut": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "highlands_ne": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "hope_valley_nc": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "hunter_memorial_ct": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "huntington_ca": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "jackrabbit_run_ne": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "jato_highlands_me": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "jefferson_hills_id": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "jefferson_landing_nc": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "jonathan_s_landing_de": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "kalispel_wa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "keene_run_ky": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "keney_ct": {
+   "split": "test",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 4
+  },
+  "kennett_square_pa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "kernwood_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "kingwood_ga": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "lake_ridge_nv": {
+   "split": "test",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 1
+  },
+  "lake_tahoe_ca": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "lakeside_ca": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "lakeside_ky": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "lakevue_north_pa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "landing_ga": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "ledges_me": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "lookout_mountain_ga": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "los_amigos_ca": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "majestic_hills_ia": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "metamora_fields_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "midway_par_3_de": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "mingo_springs_me": {
+   "split": "dev",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 3
+  },
+  "murray_city_ut": {
+   "split": "dev",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 1
+  },
+  "newcastle_wa": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "newport_nh": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "north_oaks_mn": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "northwood_ms": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 3
+  },
+  "ocean_edge_resort_ma": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "old_hickory_wi": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "olive_glenn_wy": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "oneka_ridge_mn": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "orinda_ca": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "ottumwa_ia": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "outlook_me": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "owl_s_nest_resort_nh": {
+   "split": "dev",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 2
+  },
+  "ozaukee_wi": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "paintsville_ky": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "palouse_ridge_wa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "paradise_valley_wy": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "passaconaway_nh": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref",
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "peachtree_ga": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "pezhekee_national_mn": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "pinecrest_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "pinehurst_id": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "pinehurst_nc": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "pinehurst_no_7_nc": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "promontory_jack_nicklaus_ut": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "punxsutawney_pa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "rancho_del_sol_ca": {
+   "split": "dev",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 3
+  },
+  "reedy_creek_nc": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "richter_park_ct": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "ridge_ca": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "ridge_mo": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "river_bend_ky": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "riverbend_ymca_nc": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "riverwood_national_mn": {
+   "split": "offbench",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 3
+  },
+  "rock_river_hills_wi": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "royal_city_wa": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 9
+  },
+  "ruffled_feathers_community_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "rupert_id": {
+   "split": "test",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 15
+  },
+  "scenic_valley_pa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "schifferdecker_mo": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "seward_community_ne": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 9
+  },
+  "shaker_hills_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "shorehaven_ct": {
+   "split": "test",
+   "sources": [
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 4
+  },
+  "silver_oak_nv": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "skokie_il": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "sky_mountain_ut": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "skytop_pa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "smoke_rise_ga": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "somerby_mn": {
+   "split": "offbench",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "south_hills_ca": {
+   "split": "test",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "spooky_brook_nj": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "springfield_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "spurwing_id": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "sun_hills_ut": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "sun_valley_ky": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "suneagles_nj": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "sunrise_vista_nellis_air_force_base_nv": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "talonscove_ut": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "tarkio_mo": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "tatanka_ne": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "three_rivers_wa": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "toscana_ca": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "towne_lake_hills_ga": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "turner_hill_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "twin_falls_id": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "upland_hills_ca": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "urbana_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "urbandale_ia": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "village_green_mn": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "visalia_ca": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "walpole_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "watertown_coutry_wi": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "waukewan_nh": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "wedgewood_golfer_s_ms": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "wellesley_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "wentworth_nh": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "westchester_ca": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "westhaven_wi": {
+   "split": "offbench",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "whaling_city_ma": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "whistling_straits_wi": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref",
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 17
+  },
+  "white_mountain_wy": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "wild_quail_de": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "wild_ridge_wi": {
+   "split": "offbench",
+   "sources": [
+    "osm_feature_ref"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "wild_rock_wilderness_wi": {
+   "split": "dev",
+   "sources": [
+    "osm_feature_ref",
+    "website_hole_image_pairmatch"
+   ],
+   "n_holes_with_evidence": 18
+  },
+  "wildwood_ky": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "william_j_devine_ma": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "willowbend_ma": {
+   "split": "offbench",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "willowhill_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "windham_nh": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "woodland_hills_ne": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "woods_hole_ma": {
+   "split": "test",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  },
+  "wynstone_il": {
+   "split": "dev",
+   "sources": [],
+   "n_holes_with_evidence": 0
+  }
+ }
+}
