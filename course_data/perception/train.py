@@ -86,7 +86,7 @@ def train_objects(tabs, out_dir, log=print):
             continue
         feats = sorted({k for r in tr for k in r if k != "y"})
         Xtr, ytr = _xy(tr, feats)
-        clf = fit(Xtr, ytr)
+        clf = fit(Xtr, ytr, balanced=(name == "clubhouse"))     # unweighted = calibrated-ish p; clubhouse is a ranking
         Xte, yte = _xy(te, feats) if te else (np.zeros((0, len(feats))), np.zeros(0, int))
         res[name] = dict(features=feats, n_train=len(tr), n_test=len(te),
                          train_class_counts={int(k): int(v) for k, v in zip(*np.unique(ytr, return_counts=True))},

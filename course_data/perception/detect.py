@@ -527,6 +527,8 @@ def clubhouse(st, bld, parks, greens_, complexes, G=None, models=None):
     course_c = np.vstack([gx, tx]).mean(0) if len(gx) + len(tx) else np.array([st.x0 + st.W / 2, st.y1 - st.H / 2])
     nodes = np.array([(G.nodes[n]["x"], G.nodes[n]["y"]) for n in G.nodes]) if G is not None and G.number_of_nodes() else np.zeros((0, 2))
     rows = []
+    BX = np.array([b["xy"] for b in bld if b["area"] >= 60]) if bld else np.zeros((0, 2))
+    amax = max([b["area"] for b in bld] + [1.0])
     for b in bld:
         if b["area"] < 120:
             continue
@@ -539,9 +541,13 @@ def clubhouse(st, bld, parks, greens_, complexes, G=None, models=None):
                  park_area_150=float(PA[dpk < 150].sum()) if len(PA) else 0.0,
                  d_green=float(dg.min()), n_green_250=float((dg < 250).sum()), d_tee=float(dt.min()),
                  n_tee_250=float((dt < 250).sum()), d_center=float(np.hypot(*(course_c - p))),
-                 n_path_nodes_80=float((dn < 80).sum()))
+                 n_path_nodes_80=float((dn < 80).sum()),
+                 park_area_60=float(PA[dpk < 60].sum()) if len(PA) else 0.0,
+                 area_rel=b["area"] / amax,
+                 n_bld_100=float((np.hypot(*(BX - p).T) < 100).sum() - 1) if len(BX) else 0.0)
         s = (math.log(max(b["area"], 1)) + 1.2 * math.log1p(f["park_area_150"] / 500) + 0.8 * min(f["n_green_250"], 2)
-             + 0.6 * min(f["n_tee_250"], 2) - f["d_center"] / 800 - (2.0 if f["d_green"] > 500 else 0))
+             + 0.6 * min(f["n_tee_250"], 2) - f["d_center"] / 800 - (2.0 if f["d_green"] > 500 else 0)
+             - 0.15 * min(f["n_bld_100"], 10) + 1.0 * f["area_rel"])
         rows.append(dict(b=b, feat=f, score=s))
     if not rows:
         return None, []
