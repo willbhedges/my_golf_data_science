@@ -22,29 +22,29 @@
   "tp_true": 18,
   "eligible": true,
   "practice_called_hole": 1,
-  "practice_called_practice": 1,
+  "practice_called_practice": 0,
   "hole_called_practice": 0,
   "practice_true": 3,
   "hole_uncertain": 0
  },
  "tee_complexes": {
-  "precision": 0.9,
+  "precision": 0.56,
   "recall": 0.9444,
-  "n_pred": 30,
+  "n_pred": 50,
   "n_true": 18,
-  "tp_pred": 27,
+  "tp_pred": 28,
   "tp_true": 17,
   "eligible": true,
   "precision_eligible": true,
-  "n_complex_per_hole": 1.67
+  "n_complex_per_hole": 2.78
  },
  "tee_boxes": {
-  "precision": 0.8627,
-  "recall": 0.8571,
-  "n_pred": 51,
+  "precision": 0.5476,
+  "recall": 0.8929,
+  "n_pred": 84,
   "n_true": 56,
-  "tp_pred": 44,
-  "tp_true": 48,
+  "tp_pred": 46,
+  "tp_true": 50,
   "eligible": true
  },
  "fairways": {
@@ -75,21 +75,21 @@
   "eligible": true
  },
  "buildings": {
-  "precision": 0.7778,
-  "recall": 0.4,
-  "n_pred": 9,
+  "precision": 0.1702,
+  "recall": 0.44,
+  "n_pred": 47,
   "n_true": 25,
-  "tp_pred": 7,
-  "tp_true": 10,
+  "tp_pred": 8,
+  "tp_true": 11,
   "eligible": true
  },
  "parking": {
-  "precision": null,
-  "recall": 0.0,
-  "n_pred": 0,
+  "precision": 0.0312,
+  "recall": 1.0,
+  "n_pred": 32,
   "n_true": 1,
-  "tp_pred": 0,
-  "tp_true": 0,
+  "tp_pred": 1,
+  "tp_true": 1,
   "eligible": true
  },
  "fairway_axis": {
@@ -103,21 +103,21 @@
   "stripe_strong_within_20deg": 0.929
  },
  "cart_paths": {
-  "pred_km": 3.582,
+  "pred_km": 1.501,
   "true_km": 4.357,
-  "length_precision": 0.7313,
-  "length_recall": 0.5707,
+  "length_precision": 0.9563,
+  "length_recall": 0.3394,
   "eligible": true,
   "transitions_osm_connected": 11,
-  "connectivity_acc": 0.4545,
-  "connected_route_ratio_median": 1.398,
-  "components": 21
+  "connectivity_acc": 0.2727,
+  "connected_route_ratio_median": 0.923,
+  "components": 19
  },
  "relations": {
   "n": 17,
-  "top1_next_tee_acc": 0.2941,
-  "n_with_path": 14,
-  "top1_acc_when_path": 0.2857
+  "top1_next_tee_acc": 0.1765,
+  "n_with_path": 13,
+  "top1_acc_when_path": 0.2308
  },
  "clubhouse": {
   "error_m": null,
@@ -133,76 +133,29 @@
  "seconds": {
   "greens": 0.5,
   "tees": 1.6,
-  "fairways": 0.3,
+  "fairways": 0.4,
   "bunkers_water_trees": 0.7,
-  "cart_paths": 19.4,
-  "buildings_parking_clubhouse_range": 0.6,
-  "total": 23.2
+  "cart_paths": 1.6,
+  "buildings_parking_clubhouse_range": 0.5,
+  "total": 5.3
  },
- "models": "perception-20261017-0721",
+ "models": "rules-v1",
  "lidar": true,
  "summary": {
   "greens_hole": 19,
-  "greens_practice": 1,
-  "greens_uncertain": 0,
-  "tee_complexes": 30,
+  "greens_practice": 0,
+  "greens_uncertain": 1,
+  "tee_complexes": 50,
   "fairways": 16,
   "bunkers": 26,
   "water": 5,
   "tree_stands": 58,
   "trees": 880,
-  "cart_path_km": 4.131,
-  "cart_path_components": 21,
-  "buildings": 65,
-  "parking": 0,
+  "cart_path_km": 1.563,
+  "cart_path_components": 19,
+  "buildings": 120,
+  "parking": 62,
   "clubhouse": true,
   "driving_range": false
- },
- "path_sweep": {
-  "0.3": {
-   "pred_km": 10.006,
-   "true_km": 4.357,
-   "length_precision": 0.3821,
-   "length_recall": 0.7496,
-   "connectivity_acc": 0.4545,
-   "transitions_osm_connected": 11,
-   "eligible": true
-  },
-  "0.5": {
-   "pred_km": 3.582,
-   "true_km": 4.357,
-   "length_precision": 0.7313,
-   "length_recall": 0.5707,
-   "connectivity_acc": 0.4545,
-   "transitions_osm_connected": 11,
-   "eligible": true
-  },
-  "0.7": {
-   "pred_km": 1.419,
-   "true_km": 4.357,
-   "length_precision": 0.9702,
-   "length_recall": 0.3254,
-   "connectivity_acc": 0.0909,
-   "transitions_osm_connected": 11,
-   "eligible": true
-  },
-  "0.85": {
-   "pred_km": 0.211,
-   "true_km": 4.357,
-   "length_precision": 1.0,
-   "length_recall": 0.0545,
-   "connectivity_acc": 0.0,
-   "transitions_osm_connected": 11,
-   "eligible": true
-  },
-  "0.95": {
-   "pred_km": 0.0,
-   "true_km": 4.357,
-   "length_precision": null,
-   "length_recall": 0.0,
-   "connectivity_acc": 0.0,
-   "transitions_osm_connected": 11,
-   "eligible": true
-  }
  }
 }

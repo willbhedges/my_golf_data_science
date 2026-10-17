@@ -65,6 +65,7 @@ FORM_W = dict(corr=2.0, chain=2.0, fw_x=2.0, length=1.0, align=0.6, fw_cov=1.0, 
 TEMP = 1.0                                            # posterior temperature (calibrated on dev)
 LAGR_ITERS = 12
 POS_PAR = None                                        # P(par | hole number) / P(par), 18 x 3 (fit.py on dev)
+SWAP_W = None                                         # front / back nine classifier (fit.py --swap on dev)
 CALIB = None                                          # Platt scaling of the hole confidence (fit.py --calibrate)
 
 
@@ -86,6 +87,7 @@ def load_params(path=os.path.join(HERE, "params.json")):
         TURN_W = dict(TURN_W, **p.get("turn_w", {}))
         globals()["POS_PAR"] = p.get("pos_par")
         globals()["CALIB"] = p.get("calib")
+        globals()["SWAP_W"] = p.get("swap_w")
         ANCHOR_W = dict(ANCHOR_W, **p.get("anchor_w", {}))
         FORM_W = dict(FORM_W, **p.get("form_w", {}))
         TRANS_W = dict(TRANS_W, **p.get("trans_w", {}))
@@ -978,10 +980,71 @@ def _card_pos(hk, pars, yards, N):
     return np.clip(pos, -20.0, 10.0)
 
 
+SWAP_FEATS = ("dp", "t1_club", "g18_club", "t1_practice", "t1_range", "t1_parking", "front_len")
+def _slog(v, s=30.0):
+    return float(np.sign(v) * math.log1p(abs(v) / s))
+
+
+def swap_features(sc, A_tee, B_tee, A_last, B_last, A_len, B_len, H, practice):
+    """Antisymmetric cues that nine A (tees A_tee[0], last green A_last) is the front nine and B the back:
+    tee 1 / green 18 nearer the clubhouse, tee 1 nearer the practice green / range / car park, front nine longer
+    or shorter. Swapping A and B negates every feature."""
+    def dmin(p, pts):
+        return min((float(np.hypot(*(np.asarray(p) - np.asarray(q)))) for q in pts), default=None)
+    out = {}
+    if H is not None:
+        out["t1_club"] = _slog(dmin(B_tee, [H]) - dmin(A_tee, [H]))
+        out["g18_club"] = _slog(dmin(A_last, [H]) - dmin(B_last, [H]))
+    if practice:
+        out["t1_practice"] = _slog(dmin(B_tee, practice) - dmin(A_tee, practice))
+    rng = [np.mean(r, 0) for r in sc.ranges]
+    if rng:
+        out["t1_range"] = _slog(dmin(B_tee, rng) - dmin(A_tee, rng))
+    if len(sc.parking):
+        out["t1_parking"] = _slog(dmin(B_tee, sc.parking) - dmin(A_tee, sc.parking))
+    out["front_len"] = (A_len - B_len) / 300.0
+    return out
+
+
+def _maybe_swap(sc, geo, pb, br, marg, N):
+    """18 holes: choose which loop is the front nine with the dev-fitted classifier (DP score difference + cues);
+    -> (seq, marg, p_front)."""
+    seq = br["best"]
+    if N != 18 or SWAP_W is None:
+        return seq, marg, None
+    sw = seq[9:] + seq[:9]
+    dp = route_score(br["mats"], seq) - route_score(br["mats"], sw)
+    x = route_swap_x(sc, geo, pb, br, seq)
+    x["dp"] = dp
+    z = sum(SWAP_W.get(k, 0.0) * x.get(k, 0.0) for k in SWAP_FEATS)
+    p = 1 / (1 + math.exp(-max(-30, min(30, z))))
+    sym = marg + np.roll(marg, 9, axis=1)
+    if p < 0.5:
+        seq, p = sw, 1 - p
+    return seq, np.clip(sym * p, 0, 1), p
+
+
+def route_swap_x(sc, geo, pb, br, seq):
+    parts = br["parts"]
+    tees, lens = [], []
+    for k, node in enumerate(seq):
+        lp = _tee_lp(parts, seq, k, 18)
+        h = pb.hk[node][int(np.argmax(lp))]
+        tees.append(h["tee"])
+        lens.append(h["D"])
+    G = geo.G
+    used = {pb.keep[n] for n in seq}
+    practice = [G[i] for i in range(len(G)) if i not in used]
+    return swap_features(sc, tees[0], tees[9], G[pb.keep[seq[8]]], G[pb.keep[seq[17]]], sum(lens[:9]),
+                         sum(lens[9:]), br["H"]["c"], practice)
+
+
 def _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, debug, runs):
     G = geo.G
+    p_front = None
+    if not (pars or yards):
+        br["best"], marg, p_front = _maybe_swap(sc, geo, pb, br, marg, N)
     seq = br["best"]
-    st_l, _ = br["se"]
     holes = []
     for k, node in enumerate(seq):
         gi = pb.keep[node]
@@ -1010,10 +1073,11 @@ def _assemble(sc, geo, pb, br, marg, pw, N, pars, yards, temp, price, debug, run
                clubhouse=dict(xy=[float(x) for x in br["H"]["c"]], how=br["H"]["how"],
                               p=round(float(pw[runs.index(br)]), 3)),
                total_par=int(sum(pars_inf)), card_used=bool(pars or yards),
+               p_front_nine=None if p_front is None else round(float(p_front), 3),
                p_route=round(float(np.exp(min(0.0, br["best_score"] - br["logZ"]))), 4))
     if debug:
         out["debug"] = dict(marg=marg, keep=pb.keep, runs=[(r["H"]["how"], r["logw"]) for r in runs], price=price,
-                            mats=br.get("mats"), seq=seq, best_score=br["best_score"])
+                            mats=br.get("mats"), seq=seq, best_score=br["best_score"], br=br, pb=pb, geo=geo)
     return out
 
 

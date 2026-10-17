@@ -155,7 +155,47 @@ def calibrate(results_path):
     print("calibration", p["calib"], "holes", len(y))
 
 
+def fit_swap():
+    """Front / back nine classifier on the dev courses' true routes: features of the true orientation (DP score
+    difference under the fitted model + clubhouse / practice / range / parking / length cues), antisymmetric
+    logistic regression without intercept."""
+    from scipy.optimize import minimize
+    X = []
+    for e in E.courses("dev"):
+        sc, truth, N, _ = E.load(e)
+        if N != 18 or len(sc.greens) < 16 or len(sc.tees) < 16:
+            continue
+        try:
+            res = V.solve(sc, n_holes=18, return_debug=True)
+        except Exception:                                                 # noqa: BLE001
+            continue
+        d = res["debug"]
+        geo, pb, br = d["geo"], d["pb"], d["br"]
+        tg = [E.true_green(geo.G, geo.gr_r, t["green"]) for t in truth]
+        if any(g is None or g not in pb.keep for g in tg):
+            continue
+        seq = [pb.keep.index(g) for g in tg]
+        x = V.route_swap_x(sc, geo, pb, br, seq)
+        x["dp"] = V.route_score(br["mats"], seq) - V.route_score(br["mats"], seq[9:] + seq[:9])
+        X.append([x.get(k, 0.0) for k in V.SWAP_FEATS])
+    X = np.array(X)
+
+    def nll(w):
+        z = X @ w
+        return np.logaddexp(0, -z).sum() + 0.5 * (w ** 2).sum()
+    r = minimize(nll, np.zeros(X.shape[1]))
+    acc = float(((X @ r.x) > 0).mean())
+    print("swap classifier", len(X), "routes, accuracy on dev", round(acc, 3), dict(zip(V.SWAP_FEATS, np.round(r.x, 3))))
+    for j, k in enumerate(V.SWAP_FEATS):
+        print("  alone", k, round(float((np.sign(X[:, j]) > 0).mean()), 3), "nonzero", int((X[:, j] != 0).sum()))
+    p = json.load(open(os.path.join(HERE, "params.json")))
+    p["swap_w"] = {k: round(float(v), 4) for k, v in zip(V.SWAP_FEATS, r.x)}
+    json.dump(p, open(os.path.join(HERE, "params.json"), "w"), indent=1)
+
+
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "--swap":
+        return fit_swap()
     if len(sys.argv) > 2 and sys.argv[1] == "--calibrate":
         return calibrate(sys.argv[2])
     ents = E.courses("dev")

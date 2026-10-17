@@ -37,6 +37,8 @@ from scipy import optimize, special, stats
 Z95 = stats.norm.ppf(0.97725)                 # = 2.0: width95 = 4 sigma for a normal (v2 convention)
 GH_X, GH_W = np.polynomial.hermite_e.hermegauss(9)    # E[f(e)], e ~ N(0,1) = sum w f(x) / sqrt(2 pi)
 GH_W = GH_W / np.sqrt(2 * np.pi)
+GH_X24, GH_W24 = np.polynomial.hermite_e.hermegauss(24)  # finer rule where the 'not a penalty' indicator cuts in
+GH_W24 = GH_W24 / np.sqrt(2 * np.pi)
 
 SLIGHT = dict(lo=0.92, hi=0.95, lat=1.15)     # v2 model.central
 HEAVY = dict(lo=0.65, hi=0.85, lat=1.5)
@@ -363,13 +365,17 @@ class Model:
             lat = D["lat"][None, :]
             hasl = ~np.isnan(lat) & (D["cens"][None, :] == 0)
             noise = np.sqrt(D["aim_sd"] ** 2 + D["gps_sd"] ** 2)[None, :, None]
-            dv = np.where(hasl, lat - c["bias"][:, None], 0.0)[:, :, None] - noise * GH_X[None, None, :]
+            # true lateral (from the aim) = observed - aim/GPS noise; a found ball had |true| <= beyond
+            # (beyond = penalty / lost), so the density is truncated there, matching the censored shots
+            xt = np.where(hasl, lat, 0.0)[:, :, None] - noise * GH_X24[None, None, :]
+            inside = np.abs(xt) <= D["beyond"][None, :, None]
+            dv = xt - c["bias"][:, None, None]
             cen = D["cens"][None, :]
             beyond = D["beyond"][None, :]
             ll_lat = []
             for m in (1.0, SLIGHT["lat"], HEAVY["lat"]):
                 sm = (s * m)[:, :, None]
-                dens = np.log(np.maximum((np.exp(t_logpdf(dv, nu[:, :, None], sm)) * GH_W).sum(2), 1e-300))
+                dens = np.log(np.maximum((np.exp(t_logpdf(dv, nu[:, :, None], sm)) * inside * GH_W24).sum(2), 1e-300))
                 sc = (s * m)
                 bR = (beyond - c["bias"][:, None]) / sc
                 bL = (beyond + c["bias"][:, None]) / sc
@@ -418,7 +424,9 @@ class Model:
     # ---------------------------------------------------------------- inference
     def fit(self, n_draws=4000, seed=0, chunk=400, verbose=False, mcmc_if_ess_below=300):
         rng = np.random.default_rng(seed)
-        f = lambda x: -float(self.logpost(x[None, :])[0])      # noqa: E731
+        def f(x):
+            v = -float(self.logpost(x[None, :])[0])
+            return v if np.isfinite(v) else 1e12
         x0 = self.prior_mean()
         best = None
         for start in (x0, x0 + 0.1 * rng.standard_normal(self.d)):
@@ -441,6 +449,7 @@ class Model:
         X = xm + (Z @ L.T) / np.sqrt(g)[:, None]
         lq = stats.multivariate_t(loc=xm, shape=cov * 1.2, df=df).logpdf(X)
         lp = np.concatenate([self.logpost(X[i:i + chunk]) for i in range(0, n_draws, chunk)])
+        lp = np.where(np.isfinite(lp), lp, -np.inf)          # an extreme draw (nu -> 0, ...) gets no weight
         lw = lp - lq
         lw -= lw.max()
         w = np.exp(lw)
@@ -466,13 +475,17 @@ class Model:
         for it in range(burn + n * thin):
             y = x + L @ rng.standard_normal(d)
             ly = float(self.logpost(y[None])[0])
+            ly = ly if np.isfinite(ly) else -np.inf
             if math.log(rng.random()) < ly - lp:
                 x, lp = y, ly
                 acc += 1
             hist.append(x.copy())
             if it == burn // 2:                            # adapt once
                 C = np.cov(np.array(hist[burn // 4:]).T) + 1e-8 * np.eye(d)
-                L = np.linalg.cholesky(C * scale)
+                try:
+                    L = np.linalg.cholesky(C * scale)
+                except np.linalg.LinAlgError:
+                    pass
             if it >= burn and (it - burn) % thin == 0:
                 out.append(x.copy())
         X = np.array(out)
