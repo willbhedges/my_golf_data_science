@@ -1,1 +1,1 @@
-- parity **before** (env {'PRODUCT_ZONE_ORDER': 'precedence', 'PRODUCT_ELEV_LINE': '0', 'PRODUCT_IRONS': 'package'}, app line False): parity: same club [7, 14], same or tie [10, 14], aims within 2.5 yds [4, 7] [379 s, exit 0]
+- parity **before** (env {'PRODUCT_ZONE_ORDER': 'precedence', 'PRODUCT_ELEV_LINE': '0', 'PRODUCT_IRONS': 'package', 'PRODUCT_CONDITIONS': 'normal'}, app line False): parity: same club [8, 14], same or tie [10, 14], aims within 2.5 yds [5, 8] [468 s, exit 0]

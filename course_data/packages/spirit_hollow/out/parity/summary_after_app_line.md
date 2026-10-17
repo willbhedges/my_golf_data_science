@@ -1,1 +1,1 @@
-- parity **after_app_line** (env {}, app line True): parity: same club [13, 14], same or tie [14, 14], aims within 2.5 yds [12, 13] [720 s, exit 0]
+- parity **after_app_line** (env {}, app line True): parity: same club [14, 14], same or tie [14, 14], aims within 2.5 yds [14, 14] [665 s, exit 0]
