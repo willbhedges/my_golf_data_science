@@ -1,0 +1,226 @@
+name: longgrass-cv
+
+# Long grass (native) on the automatic map, re-fitted with leave-one-course-out cross-validation over the seven
+# truth courses (course_data/vision_any/v2_longgrass_cv.py). Writes course_data/vision_any/v2_longgrass_cv.{md,json}
+# and, only if the adoption rule passes and the request says "integrate": true, model_v2 (seven-course model +
+# settings), vision_any.geojson and the packages of every course, then re-scores them.
+# Trigger: push course_data/requests/longgrass_cv.json ({"rev": n, "integrate": true}).
+on:
+  push:
+    paths:
+      - "course_data/requests/longgrass_cv.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: longgrass-cv-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHONWARNINGS: ignore
+  OMP_NUM_THREADS: "1"
+
+jobs:
+  samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        slug: [spirit_hollow, mozingo, veenker, coldwater, ellis, eagle_knoll, gateway_national, wakonda]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests numpy scipy pillow shapely pyproj pystac-client planetary-computer rasterio scikit-learn scikit-image lightgbm opencv-python-headless matplotlib
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: course_data/vision_any/${{ matrix.slug }}/raw2
+          key: v2raw-${{ matrix.slug }}-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
+      - uses: mamba-org/setup-micromamba@v2
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          environment-name: pdal
+          create-args: pdal
+          init-shell: none
+          cache-environment: true
+      - name: raw2 (multi-year NAIP + lidar point statistics) if not cached
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          export PDAL_BIN="$MAMBA_ROOT_PREFIX/envs/pdal/bin/pdal"
+          python -u course_data/vision_any/v2_fetch.py --slug "${{ matrix.slug }}"
+      - run: ls -la course_data/vision_any/${{ matrix.slug }}/raw2 || true
+      - name: samples
+        if: matrix.slug != 'wakonda'
+        run: python -u course_data/vision_any/v2_longgrass_cv.py samples --slug ${{ matrix.slug }} --out /tmp/smp
+      - uses: actions/upload-artifact@v4
+        if: matrix.slug != 'wakonda'
+        with:
+          name: lg-samples-${{ matrix.slug }}
+          path: /tmp/smp
+          retention-days: 3
+
+  model:
+    needs: samples
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio scikit-learn scikit-image lightgbm opencv-python-headless matplotlib
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lg-samples-*
+          path: /tmp/smp
+          merge-multiple: true
+      - run: python -u course_data/vision_any/v2_longgrass_cv.py model --samples /tmp/smp --out /tmp/mdl
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lg-model
+          path: /tmp/mdl
+          retention-days: 3
+
+  layers:
+    needs: model
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        slug: [spirit_hollow, mozingo, veenker, coldwater, ellis, eagle_knoll, gateway_national, wakonda]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio scikit-learn scikit-image lightgbm opencv-python-headless matplotlib
+      - uses: actions/cache/restore@v4
+        with:
+          path: course_data/vision_any/${{ matrix.slug }}/raw2
+          key: v2raw-${{ matrix.slug }}-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
+          fail-on-cache-miss: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lg-samples-*
+          path: /tmp/smp
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: lg-model
+          path: /tmp/mdl
+      - run: python -u course_data/vision_any/v2_longgrass_cv.py layers --slug ${{ matrix.slug }} --samples /tmp/smp --model /tmp/mdl --out /tmp/lay
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lg-layers-${{ matrix.slug }}
+          path: /tmp/lay
+          retention-days: 3
+
+  score:
+    needs: layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio matplotlib opencv-python-headless scikit-learn scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lg-layers-*
+          path: /tmp/lay
+          merge-multiple: true
+      - run: python -u course_data/vision_any/v2_longgrass_cv.py score --dir /tmp/lay --rows /tmp/rows_${{ matrix.shard }}.json --shard ${{ matrix.shard }} --nshards 10
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lg-rows-${{ matrix.shard }}
+          path: /tmp/rows_${{ matrix.shard }}.json
+          retention-days: 3
+
+  report:
+    needs: score
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pillow shapely pyproj rasterio matplotlib opencv-python-headless scikit-learn scikit-image lightgbm
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lg-layers-*
+          path: /tmp/lay
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: lg-model
+          path: /tmp/mdl
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lg-rows-*
+          path: /tmp/rows
+          merge-multiple: true
+      - name: Report (+ integrate and re-score if adopted)
+        run: |
+          git pull --rebase origin "${{ github.ref_name }}" || true
+          mkdir -p course_data/vision_any/longgrass_cv
+          cp /tmp/rows/rows_*.json course_data/vision_any/longgrass_cv/
+          cp /tmp/lay/info_*.json course_data/vision_any/longgrass_cv/
+          python -u course_data/vision_any/v2_longgrass_cv.py report --rows 'course_data/vision_any/longgrass_cv/rows_*.json' --dir /tmp/lay | tee -a "$GITHUB_STEP_SUMMARY"
+          if python3 -c "import json,sys;sys.exit(0 if json.load(open('course_data/requests/longgrass_cv.json')).get('integrate') else 1)"; then
+            python -u course_data/vision_any/v2_longgrass_cv.py integrate --dir /tmp/lay --model /tmp/mdl | tee /tmp/integ.txt
+            if grep -q '^integrated' /tmp/integ.txt; then
+              python -u course_data/vision_any/v2_longgrass_cv.py rescore
+              tail -n 15 course_data/vision_any/v2_longgrass_cv.md >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/vision_any/v2_longgrass_cv.md course_data/vision_any/v2_longgrass_cv.json course_data/vision_any/longgrass_cv
+          git add course_data/vision_any/model_v2/model.json
+          [ -f course_data/vision_any/model_v2/native_lgbm_7c.txt ] && git add course_data/vision_any/model_v2/native_lgbm_7c.txt
+          for v in spirit_hollow mozingo veenker coldwater ellis eagle_knoll gateway_national wakonda; do
+            git add course_data/vision_any/$v/vision_any.geojson
+          done
+          for p in spirit_hollow mozingo_lake veenker coldwater ellis eagle_knoll gateway_national wakonda; do
+            git add course_data/packages/$p/package.json
+          done
+          git diff --cached --stat
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "longgrass-cv: long grass on the automatic map, leave-one-course-out over seven truth courses (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1

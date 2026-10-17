@@ -756,7 +756,7 @@ def load_model():
     meta = json.load(open(os.path.join(MODEL_DIR, "model.json")))
     if meta["format"] == "lightgbm":
         import lightgbm as lgb
-        clf = _Booster(lgb.Booster(model_file=os.path.join(MODEL_DIR, "native_lgbm.txt")))
+        clf = _Booster(lgb.Booster(model_file=os.path.join(MODEL_DIR, meta.get("native_model_file", "native_lgbm.txt"))))
     else:
         import pickle
         clf = pickle.load(open(os.path.join(MODEL_DIR, "native_hgb.pkl"), "rb"))
@@ -787,6 +787,11 @@ def infer(slug, integrate=False):
     if st.get("native_thr") is None:
         el &= False
     nat = native_mask(p, el, st["native_thr"] if st.get("native_thr") is not None else 1.0, S.res)
+    gate = st.get("native_gate_share") or 0
+    if gate:              # v2_longgrass_cv.py: long grass only where it covers >= gate of the OSM course outline
+        c = M["course"] if M["course"].any() else D["course"]
+        if (nat & c).sum() < gate * max(c.sum(), 1):
+            nat[:] = False
     if relaxed:
         trees = trees & ~nat
     water, wparts = L.water_mask(S, D["Ly"], M, mown_p=1 - p, trees=trees)
