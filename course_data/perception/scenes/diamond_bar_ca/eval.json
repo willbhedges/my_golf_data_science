@@ -5,18 +5,18 @@
  "n_osm_greens": 15,
  "n_osm_tees": 51,
  "greens_any": {
-  "precision": 0.6923,
-  "recall": 0.6,
-  "n_pred": 13,
+  "precision": 0.75,
+  "recall": 0.4,
+  "n_pred": 8,
   "n_true": 15,
-  "tp_pred": 9,
-  "tp_true": 9,
+  "tp_pred": 6,
+  "tp_true": 6,
   "eligible": true
  },
  "greens_hole": {
   "precision": 0.0,
   "recall": null,
-  "n_pred": 13,
+  "n_pred": 8,
   "n_true": 0,
   "tp_pred": 0,
   "tp_true": 0,
@@ -28,23 +28,25 @@
   "hole_uncertain": 0
  },
  "tee_complexes": {
-  "precision": 0.0946,
+  "precision": 1.0,
   "recall": null,
-  "n_pred": 74,
+  "n_pred": 4,
   "n_true": 0,
-  "tp_pred": 7,
+  "tp_pred": 4,
   "tp_true": 0,
   "eligible": false,
   "precision_eligible": false,
+  "recall_any_p": null,
+  "tp_true_any_p": 0,
   "n_complex_per_hole": null
  },
  "tee_boxes": {
-  "precision": 0.1028,
-  "recall": 0.2941,
-  "n_pred": 107,
+  "precision": 0.8,
+  "recall": 0.2353,
+  "n_pred": 10,
   "n_true": 51,
-  "tp_pred": 11,
-  "tp_true": 15,
+  "tp_pred": 8,
+  "tp_true": 12,
   "eligible": false
  },
  "fairways": {
@@ -75,21 +77,21 @@
   "eligible": true
  },
  "buildings": {
-  "precision": 0.0373,
-  "recall": 0.9608,
-  "n_pred": 322,
+  "precision": 0.2467,
+  "recall": 0.8824,
+  "n_pred": 150,
   "n_true": 51,
-  "tp_pred": 12,
-  "tp_true": 49,
+  "tp_pred": 37,
+  "tp_true": 45,
   "eligible": true
  },
  "parking": {
-  "precision": 0.0,
-  "recall": 0.3333,
-  "n_pred": 28,
+  "precision": null,
+  "recall": 0.0,
+  "n_pred": 0,
   "n_true": 3,
   "tp_pred": 0,
-  "tp_true": 1,
+  "tp_true": 0,
   "eligible": true
  },
  "fairway_axis": {
@@ -103,15 +105,15 @@
   "stripe_strong_within_20deg": null
  },
  "cart_paths": {
-  "pred_km": 4.021,
+  "pred_km": 6.822,
   "true_km": 8.994,
-  "length_precision": 0.5428,
-  "length_recall": 0.2437,
+  "length_precision": 0.483,
+  "length_recall": 0.3393,
   "eligible": true,
   "transitions_osm_connected": 0,
   "connectivity_acc": null,
   "connected_route_ratio_median": null,
-  "components": 244
+  "components": 73
  },
  "relations": {
   "n": 0,
@@ -126,36 +128,83 @@
  },
  "driving_range": {
   "truth": 0,
-  "predicted": false,
+  "predicted": true,
   "hit": null,
   "eligible": false
  },
  "seconds": {
-  "greens": 1.5,
+  "greens": 1.6,
   "tees": 5.5,
   "fairways": 0.7,
-  "bunkers_water_trees": 1.9,
-  "cart_paths": 5.3,
-  "buildings_parking_clubhouse_range": 2.7,
-  "total": 17.5
+  "bunkers_water_trees": 1.8,
+  "cart_paths": 65.7,
+  "buildings_parking_clubhouse_range": 2.9,
+  "total": 78.2
  },
- "models": "rules-v1",
+ "models": "perception-20261017-0817",
  "lidar": true,
  "summary": {
-  "greens_hole": 13,
+  "greens_hole": 8,
   "greens_practice": 0,
-  "greens_uncertain": 0,
-  "tee_complexes": 74,
+  "greens_uncertain": 5,
+  "tee_complexes": 4,
   "fairways": 13,
   "bunkers": 25,
   "water": 6,
   "tree_stands": 318,
   "trees": 2712,
-  "cart_path_km": 22.271,
-  "cart_path_components": 244,
-  "buildings": 1194,
-  "parking": 79,
+  "cart_path_km": 25.686,
+  "cart_path_components": 73,
+  "buildings": 1051,
+  "parking": 6,
   "clubhouse": true,
-  "driving_range": false
+  "driving_range": true
+ },
+ "path_sweep": {
+  "0.3": {
+   "pred_km": 22.885,
+   "true_km": 8.994,
+   "length_precision": 0.3024,
+   "length_recall": 0.6361,
+   "connectivity_acc": null,
+   "transitions_osm_connected": 0,
+   "eligible": true
+  },
+  "0.5": {
+   "pred_km": 6.822,
+   "true_km": 8.994,
+   "length_precision": 0.483,
+   "length_recall": 0.3393,
+   "connectivity_acc": null,
+   "transitions_osm_connected": 0,
+   "eligible": true
+  },
+  "0.7": {
+   "pred_km": 2.174,
+   "true_km": 8.994,
+   "length_precision": 0.8959,
+   "length_recall": 0.2152,
+   "connectivity_acc": null,
+   "transitions_osm_connected": 0,
+   "eligible": true
+  },
+  "0.85": {
+   "pred_km": 0.948,
+   "true_km": 8.994,
+   "length_precision": 0.9459,
+   "length_recall": 0.108,
+   "connectivity_acc": null,
+   "transitions_osm_connected": 0,
+   "eligible": true
+  },
+  "0.95": {
+   "pred_km": 0.0,
+   "true_km": 8.994,
+   "length_precision": null,
+   "length_recall": 0.0,
+   "connectivity_acc": null,
+   "transitions_osm_connected": 0,
+   "eligible": true
+  }
  }
 }
