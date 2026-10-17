@@ -1,0 +1,196 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "hidden_greens_north_wi",
+ "name": "Hidden Greens North Golf Club",
+ "state": "WI",
+ "bbox_wsen": [
+  -91.7920269,
+  46.3577289,
+  -91.7799027,
+  46.3669182
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1250,
+  "height": 1338,
+  "bounds": [
+   592764,
+   5134352,
+   594014,
+   5135690
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   592764.0,
+   0.0,
+   -1.0,
+   5135690.0
+  ],
+  "ll_bbox_wsen": [
+   -91.79423005171299,
+   46.35621301089405,
+   -91.77771748086477,
+   46.368424495764145
+  ]
+ },
+ "built_utc": "2026-10-17T04:26:50Z",
+ "seconds": {
+  "lidar": 150.6,
+  "naip": 7.7,
+  "segment": 50.4,
+  "labels": 40.4,
+  "total": 251.3
+ },
+ "errors": {},
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "WI_12County_10_B22",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WI_12County_10_B22/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 97143910501
+   }
+  ],
+  "used": [
+   {
+    "name": "WI_12County_10_B22",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WI_12County_10_B22/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 97143910501,
+    "cells": 1669102
+   }
+  ],
+  "valid": 0.9979683109118087,
+  "hag_mb": 1.08,
+  "frac_gt_2_5m": 0.7049793721973094,
+  "class_mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 6.62,
+    "items": [
+     "wi_m_4609142_ne_15_060_20220721"
+    ],
+    "acquired": [
+     "2022-07-21"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9979683109118087,
+  "cls": 0.9979683109118087,
+  "dtm": 0.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 160
+ },
+ "course": {
+  "name": "Hidden Greens North Golf Club",
+  "osm": {
+   "type": "way",
+   "id": 1561063393
+  },
+  "center": [
+   -91.78596479999999,
+   46.36232355
+  ],
+  "bbox": [
+   -91.7920269,
+   46.3577289,
+   -91.7799027,
+   46.3669182
+  ],
+  "state": "WI",
+  "town": "Solon Springs"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -91.7799508,
+     46.3669182
+    ],
+    [
+     -91.7893827,
+     46.3666303
+    ],
+    [
+     -91.7877627,
+     46.3612276
+    ],
+    [
+     -91.7895007,
+     46.3602975
+    ],
+    [
+     -91.7894765,
+     46.3598314
+    ],
+    [
+     -91.7920269,
+     46.3589512
+    ],
+    [
+     -91.7914362,
+     46.3577289
+    ],
+    [
+     -91.78932,
+     46.3579307
+    ],
+    [
+     -91.7869621,
+     46.3589449
+    ],
+    [
+     -91.7867401,
+     46.3600553
+    ],
+    [
+     -91.7847307,
+     46.3602768
+    ],
+    [
+     -91.7832837,
+     46.3596022
+    ],
+    [
+     -91.7803972,
+     46.3608162
+    ],
+    [
+     -91.7799027,
+     46.362705
+    ],
+    [
+     -91.7799421,
+     46.3658628
+    ],
+    [
+     -91.7799508,
+     46.3669182
+    ]
+   ]
+  ]
+ }
+}

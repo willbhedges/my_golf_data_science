@@ -1,0 +1,415 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "black_stone_creek_wi",
+ "name": "Black Stone Creek Golf Club",
+ "state": "WI",
+ "bbox_wsen": [
+  -88.1328084,
+  43.2209514,
+  -88.1205691,
+  43.232371
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1314,
+  "height": 1584,
+  "bounds": [
+   407846,
+   4785810,
+   409160,
+   4787394
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   407846.0,
+   0.0,
+   -1.0,
+   4787394.0
+  ],
+  "ll_bbox_wsen": [
+   -88.13491433461017,
+   43.21945253801804,
+   -88.11847413581556,
+   43.23387261688631
+  ]
+ },
+ "built_utc": "2026-10-17T04:15:38Z",
+ "seconds": {
+  "lidar": 57.2,
+  "naip": 9.5,
+  "segment": 48.5,
+  "labels": 39.3,
+  "total": 157.0
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-hag-2m-6-10",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 118260,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.056818181818181816
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dtm-2m-6-10",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 29565,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    }
+   ],
+   "valid": 0.056818181818181816
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dsm-2m-6-4",
+     "when": "2019-01-01T00:00:00Z",
+     "cells": 2071320,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00Z",
+      "start_datetime": "2019-01-01T00:00:00Z"
+     }
+    },
+    {
+     "id": "WI_WashingtonCo_2006-dsm-2m-3-4",
+     "when": "2006-12-19T00:00:00Z",
+     "cells": 7717,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_WashingtonCo_2006",
+      "end_datetime": "2006-12-19T00:00:00Z",
+      "start_datetime": "2006-12-18T00:00:00Z"
+     }
+    },
+    {
+     "id": "WI_WashingtonCo_2006-dsm-2m-2-4",
+     "when": "2006-12-19T00:00:00Z",
+     "cells": 1908,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_WashingtonCo_2006",
+      "end_datetime": "2006-12-19T00:00:00Z",
+      "start_datetime": "2006-12-18T00:00:00Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 6% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_SEWRPC_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 30532476151
+   },
+   {
+    "name": "WI_WashingtonCo_2006",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WI_WashingtonCo_2006/ept.json",
+    "cov": 1.0,
+    "year": 2006,
+    "count": 2512445291
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_SEWRPC_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 30532476151,
+    "cells": 2024762
+   }
+  ],
+  "valid": 0.9727997247974417,
+  "hag_mb": 0.79,
+  "frac_gt_2_5m": 0.35258021616469104,
+  "class_mb": 0.04
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_WI_SEWRPC_2017_LAS_2019-intensity-2m-6-10"
+  ],
+  "valid": 0.056818181818181816
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 6.62,
+    "items": [
+     "wi_m_4308856_nw_16_060_20220623",
+     "wi_m_4308855_ne_16_060_20220623"
+    ],
+    "acquired": [
+     "2022-06-23"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": null,
+ "intensity_stretch": [
+  21.187397003173828,
+  197.12444946289062
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9727997247974417,
+  "cls": 0.9727997247974417,
+  "dtm": 0.0,
+  "intensity": 0.056818181818181816
+ },
+ "labels": {
+  "features": 680
+ },
+ "course": {
+  "name": "Black Stone Creek Golf Club",
+  "osm": {
+   "type": "way",
+   "id": 39525266
+  },
+  "center": [
+   -88.12668875,
+   43.226661199999995
+  ],
+  "bbox": [
+   -88.1328084,
+   43.2209514,
+   -88.1205691,
+   43.232371
+  ],
+  "state": "WI",
+  "town": "Germantown"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -88.1328062,
+     43.2214294
+    ],
+    [
+     -88.1328075,
+     43.2212312
+    ],
+    [
+     -88.1328077,
+     43.2212004
+    ],
+    [
+     -88.1328084,
+     43.2210893
+    ],
+    [
+     -88.1327055,
+     43.2210872
+    ],
+    [
+     -88.1326486,
+     43.221086
+    ],
+    [
+     -88.1311217,
+     43.2210545
+    ],
+    [
+     -88.1291319,
+     43.2210608
+    ],
+    [
+     -88.1274684,
+     43.2210406
+    ],
+    [
+     -88.1265511,
+     43.2210294
+    ],
+    [
+     -88.1241245,
+     43.2209638
+    ],
+    [
+     -88.1231153,
+     43.2209526
+    ],
+    [
+     -88.1230119,
+     43.2209514
+    ],
+    [
+     -88.1230108,
+     43.2210251
+    ],
+    [
+     -88.1230104,
+     43.2210507
+    ],
+    [
+     -88.1230083,
+     43.2211847
+    ],
+    [
+     -88.1229869,
+     43.221345
+    ],
+    [
+     -88.1229171,
+     43.2216382
+    ],
+    [
+     -88.1229855,
+     43.2217344
+    ],
+    [
+     -88.12317,
+     43.2219636
+    ],
+    [
+     -88.1237981,
+     43.2248944
+    ],
+    [
+     -88.1230071,
+     43.2249615
+    ],
+    [
+     -88.1230244,
+     43.2280942
+    ],
+    [
+     -88.1257089,
+     43.2280685
+    ],
+    [
+     -88.1241811,
+     43.2300572
+    ],
+    [
+     -88.123091,
+     43.2299321
+    ],
+    [
+     -88.1230875,
+     43.2282924
+    ],
+    [
+     -88.1217729,
+     43.2282956
+    ],
+    [
+     -88.1205691,
+     43.2295664
+    ],
+    [
+     -88.1205744,
+     43.2305932
+    ],
+    [
+     -88.1205916,
+     43.2317705
+    ],
+    [
+     -88.1224044,
+     43.232371
+    ],
+    [
+     -88.1228765,
+     43.2318207
+    ],
+    [
+     -88.1231425,
+     43.2318242
+    ],
+    [
+     -88.1278288,
+     43.2318854
+    ],
+    [
+     -88.1295815,
+     43.2319083
+    ],
+    [
+     -88.1295987,
+     43.2300547
+    ],
+    [
+     -88.1289455,
+     43.2292907
+    ],
+    [
+     -88.1287736,
+     43.228414
+    ],
+    [
+     -88.1288252,
+     43.2275498
+    ],
+    [
+     -88.1295128,
+     43.2266481
+    ],
+    [
+     -88.1291174,
+     43.2257087
+    ],
+    [
+     -88.1295987,
+     43.2245188
+    ],
+    [
+     -88.130355,
+     43.2242182
+    ],
+    [
+     -88.1327399,
+     43.2239604
+    ],
+    [
+     -88.13279,
+     43.223955
+    ],
+    [
+     -88.1328053,
+     43.2215818
+    ],
+    [
+     -88.1328062,
+     43.2214294
+    ]
+   ]
+  ]
+ }
+}

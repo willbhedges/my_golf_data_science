@@ -1,0 +1,192 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "wasioto_winds_ky",
+ "name": "Wasioto Winds Golf Course",
+ "state": "KY",
+ "bbox_wsen": [
+  -83.7132454,
+  36.7349635,
+  -83.6936116,
+  36.7436644
+ ],
+ "grid": {
+  "crs": "EPSG:32617",
+  "res_m": 1.0,
+  "width": 2082,
+  "height": 1316,
+  "bounds": [
+   257574,
+   4068704,
+   259656,
+   4070020
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   257574.0,
+   0.0,
+   -1.0,
+   4070020.0
+  ],
+  "ll_bbox_wsen": [
+   -83.71528649307822,
+   36.73312212286543,
+   -83.69157645844683,
+   36.745501934147654
+  ]
+ },
+ "built_utc": "2026-10-17T04:51:02Z",
+ "seconds": {
+  "lidar": 69.1,
+  "naip": 11.9,
+  "segment": 66.2,
+  "labels": 39.3,
+  "total": 189.5
+ },
+ "errors": {},
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "KY_CentralEast_3_A23",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KY_CentralEast_3_A23/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 150886548815
+   },
+   {
+    "name": "KY_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KY_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 448685375365
+   }
+  ],
+  "used": [
+   {
+    "name": "KY_CentralEast_3_A23",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KY_CentralEast_3_A23/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 150886548815,
+    "cells": 2657857
+   }
+  ],
+  "valid": 0.9700519578730996,
+  "hag_mb": 1.75,
+  "frac_gt_2_5m": 0.7113940155742228,
+  "class_mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 11.18,
+    "items": [
+     "ky_m_3608319_nw_17_060_20220619",
+     "ky_m_3608319_ne_17_060_20220619"
+    ],
+    "acquired": [
+     "2022-06-19"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9700519578730996,
+  "cls": 0.9700519578730996,
+  "dtm": 0.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 215
+ },
+ "course": {
+  "name": "Wasioto Winds Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 848663384
+  },
+  "center": [
+   -83.7034285,
+   36.739313949999996
+  ],
+  "bbox": [
+   -83.7132454,
+   36.7349635,
+   -83.6936116,
+   36.7436644
+  ],
+  "state": "KY",
+  "town": "Bell County"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -83.7132454,
+     36.7379212
+    ],
+    [
+     -83.7108851,
+     36.7363048
+    ],
+    [
+     -83.7034178,
+     36.7362188
+    ],
+    [
+     -83.7021947,
+     36.7349635
+    ],
+    [
+     -83.6981821,
+     36.7369238
+    ],
+    [
+     -83.6964655,
+     36.7373881
+    ],
+    [
+     -83.6962939,
+     36.7386434
+    ],
+    [
+     -83.6951137,
+     36.7403286
+    ],
+    [
+     -83.6941481,
+     36.7420309
+    ],
+    [
+     -83.6936116,
+     36.7436644
+    ],
+    [
+     -83.6985469,
+     36.7432689
+    ],
+    [
+     -83.7061215,
+     36.7402082
+    ],
+    [
+     -83.7132454,
+     36.7379212
+    ]
+   ]
+  ]
+ }
+}

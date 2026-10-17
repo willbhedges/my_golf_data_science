@@ -1,0 +1,309 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "dwan_mn",
+ "name": "Dwan Golf Course",
+ "state": "MN",
+ "bbox_wsen": [
+  -93.3270215,
+  44.7977039,
+  -93.3195349,
+  44.8046804
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 898,
+  "height": 1080,
+  "bounds": [
+   473984,
+   4960376,
+   474882,
+   4961456
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   473984.0,
+   0.0,
+   -1.0,
+   4961456.0
+  ],
+  "ll_bbox_wsen": [
+   -93.32898011005389,
+   44.79630959617348,
+   -93.31757146983806,
+   44.80606400239163
+  ]
+ },
+ "built_utc": "2026-10-17T04:16:14Z",
+ "seconds": {
+  "lidar": 17.8,
+  "naip": 7.2,
+  "segment": 29.9,
+  "labels": 34.5,
+  "total": 90.8
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_MN_Phase4_Metro_Dakota_2011_LAS_2016-dsm-2m-0-0",
+     "when": "2011-11-15T00:00:00Z",
+     "cells": 968240,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MN_Phase4_Metro_Dakota_2011_LAS_2016",
+      "end_datetime": "2011-11-15T00:00:00Z",
+      "start_datetime": "2011-11-12T00:00:00Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_MN_Phase4_Metro_Dakota_2011_LAS_2016",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MN_Phase4_Metro_Dakota_2011_LAS_2016/ept.json",
+    "cov": 1.0,
+    "year": 2016,
+    "count": 3549025185
+   },
+   {
+    "name": "MN_CentralMissRiver_4_B22",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MN_CentralMissRiver_4_B22/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 215065503920
+   },
+   {
+    "name": "MN_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MN_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 291760609591
+   },
+   {
+    "name": "USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MN_Phase4_Metro_F_2011_LAS_2016/ept.json",
+    "cov": 0.191,
+    "year": 2016,
+    "count": 5775256707
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_MN_Phase4_Metro_Dakota_2011_LAS_2016",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MN_Phase4_Metro_Dakota_2011_LAS_2016/ept.json",
+    "cov": 1.0,
+    "year": 2016,
+    "count": 3549025185,
+    "cells": 962156
+   }
+  ],
+  "valid": 0.9920770436360636,
+  "hag_mb": 0.49,
+  "frac_gt_2_5m": 0.3350459869669224,
+  "class_mb": 0.02
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 4.68,
+    "items": [
+     "mn_m_4409314_sw_15_030_20230803_20240119"
+    ],
+    "acquired": [
+     "2023-08-03"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": null,
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9920770436360636,
+  "cls": 0.9920770436360636,
+  "dtm": 0.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 799
+ },
+ "course": {
+  "name": "Dwan Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 98557181
+  },
+  "center": [
+   -93.3232782,
+   44.801192150000006
+  ],
+  "bbox": [
+   -93.3270215,
+   44.7977039,
+   -93.3195349,
+   44.8046804
+  ],
+  "state": "MN",
+  "town": "Bloomington"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -93.3263559,
+     44.8046804
+    ],
+    [
+     -93.3264044,
+     44.8011771
+    ],
+    [
+     -93.3270215,
+     44.801176
+    ],
+    [
+     -93.3269825,
+     44.7982744
+    ],
+    [
+     -93.3269748,
+     44.7977039
+    ],
+    [
+     -93.3265596,
+     44.7977068
+    ],
+    [
+     -93.3261184,
+     44.7978652
+    ],
+    [
+     -93.3254059,
+     44.798121
+    ],
+    [
+     -93.3251692,
+     44.7986169
+    ],
+    [
+     -93.3247822,
+     44.7994339
+    ],
+    [
+     -93.3240761,
+     44.7994464
+    ],
+    [
+     -93.323813,
+     44.7993635
+    ],
+    [
+     -93.3233253,
+     44.7992352
+    ],
+    [
+     -93.3223699,
+     44.7990073
+    ],
+    [
+     -93.3214362,
+     44.7987846
+    ],
+    [
+     -93.3207229,
+     44.7988389
+    ],
+    [
+     -93.320492,
+     44.7988985
+    ],
+    [
+     -93.320065,
+     44.7991792
+    ],
+    [
+     -93.3197541,
+     44.7992789
+    ],
+    [
+     -93.3195349,
+     44.7992948
+    ],
+    [
+     -93.3195382,
+     44.7999785
+    ],
+    [
+     -93.3195508,
+     44.8025712
+    ],
+    [
+     -93.3195499,
+     44.802719
+    ],
+    [
+     -93.3195441,
+     44.8037204
+    ],
+    [
+     -93.3195389,
+     44.8046239
+    ],
+    [
+     -93.3223235,
+     44.8046499
+    ],
+    [
+     -93.3224101,
+     44.8046516
+    ],
+    [
+     -93.3225387,
+     44.8046542
+    ],
+    [
+     -93.3252057,
+     44.8046709
+    ],
+    [
+     -93.325334,
+     44.8046729
+    ],
+    [
+     -93.3263559,
+     44.8046804
+    ]
+   ]
+  ]
+ }
+}
