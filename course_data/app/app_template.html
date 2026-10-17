@@ -132,10 +132,21 @@ textarea{width:100%;font:13px/1.4 ui-monospace,Menlo,monospace;padding:8px 10px;
 #pfOut td:first-child,table.pf td:first-child{white-space:nowrap}
 .pflist{margin:0;padding-left:18px;display:grid;gap:3px;font-size:14px}
 .gamecard{display:grid;gap:4px;text-align:left;cursor:pointer;width:100%}
+/* hole map (golfer confirm) */
+.cmap svg{max-height:70vh}
+.qcard h2{font-size:26px}
+.hstrip{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}
+.hchip{border:1px solid var(--line);border-radius:8px;padding:3px 0;text-align:center;font:600 12px var(--display);color:var(--muted);min-width:0}
+.hchip b{display:block;font:700 16px var(--display);color:var(--ink)}
+.hchip.ok{border-color:var(--ok);color:var(--ok)} .hchip.chk{background:var(--warn-bg);color:var(--warn)}
+.tc-err{color:var(--red)} .tc-warn{color:var(--warn)}
+input.tcin{width:100%;font:16px var(--body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink)}
+#routeStrip .btn{white-space:nowrap}
 </style>
 </head>
 <body>
 <div class="app" id="app"></div>
+<script>/*__ENGINE__*/</script>
 <script>
 const D = /*__DATA__*/null;
 const CELLS = D.wind_axes.cells, SPEEDS = D.wind_axes.speeds, CI = {};
@@ -150,10 +161,11 @@ const yds = (v, side) => Math.abs(v) < 1.5 ? "on the line" : `${Math.abs(v).toFi
 
 /* ------------------------------------------------------------------ state (per-viewer convenience only) */
 const st = {screen: "pick", course: null, q: "", set: {}, idx: {}, src: {}, hour: {}, view: "land",
-            custom: {from: 180, mph: 10, temp: 65}, adj: {}, club: {}, answers: {}, wind_open: false, lie: "fairway", shot: {}};
+            custom: {from: 180, mph: 10, temp: 65}, adj: {}, club: {}, answers: {}, wind_open: false, lie: "fairway", shot: {},
+            confirm: {}, cfocus: {}, creturn: {}, cmore: {}, cskipcard: {}, ctyped: {}, cstep: null};
 const KEY = "aimcaddie1";
 try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && typeof s === "object") Object.assign(st, s); } catch (e) {}
-for (const k of ["set","idx","src","hour","adj","club","answers","shot"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
+for (const k of ["set","idx","src","hour","adj","club","answers","shot","confirm","cfocus","creturn","cmore","cskipcard","ctyped"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
 if (!st.custom) st.custom = {from: 180, mph: 10, temp: 65};
 /* deep links: #c=<course>&t=<tee set>&h=<hole no> (also used by the tests) */
 (function readHash(){
@@ -571,7 +583,7 @@ function renderPick(){
     <div class="stack" id="list">
       ${mine.map(C => `<button class="ccard" data-course="${C.id}">
           <span class="spread"><span class="name">${esc(C.name)}</span></span>
-          <span class="row">${courseBadge(C)}</span>
+          <span class="row">${courseBadge(C)}${C.mapping === "hand" ? `<span class="sub">Hand-mapped</span>` : C.confirm ? `<span class="sub">Hole order auto-placed · confirm in a few taps${C.confirm.card_known ? "" : " · no card online"}</span>` : ""}</span>
           <span class="sub">${esc(C.town || "")}, ${esc(C.state || "")} · ${C.holes.length} holes · ${C.tee_sets.filter(t => t.computed !== "missing").length} of ${C.tee_sets.length} tee sets ready</span>
           <span class="row">${dots(C)}<span class="sub">${esc(C.tee_sets.map(t => t.name).join(" · "))}</span></span>
         </button>`).join("") || (q ? `<p class="sub">No ready course matches “${esc(st.q)}”.</p>` : "")}
@@ -631,8 +643,17 @@ function renderTees(){
       ${red.map(c => checkCard(C, c, {img: true})).join("")}
       ${amber.length ? `<details class="panel"><summary><span class="label">${amber.length} minor checks</span></summary><div class="stack" style="margin-top:10px">${amber.map(c => checkCard(C, c, {img: false})).join("")}</div></details>` : ""}
     </section>` : ""}
-    <button class="btn primary" data-go="hole">Start at hole ${C.holes[holeIdx(C)].no} ›</button>
+    ${teesStart(C)}
     <p class="foot">${esc(C.model)} Imagery: ${esc(C.imagery)}. ${esc((C.attribution || []).join(" · "))}</p>`;
+}
+function teesStart(C){
+  const S = sess(C), go = `<button class="btn primary" data-go="hole">Start at hole ${C.holes[holeIdx(C)].no} ›</button>`;
+  if (!S) return go;
+  const pl = S.payload(), sm = pl.summary, k = pl.holes.filter(h => !h.confirmed && h.status === "check").length;
+  const head = cardNeeded(C, S) ? "No scorecard online: type yours, then check the holes" : S.done() ? `All ${S.n} holes placed${sm.confirmed ? `, ${sm.confirmed} confirmed by you` : ""}` : `${k} of ${S.n} holes need a look`;
+  return `<section class="panel stack" id="mapPanel"><div class="label">Hole map</div><h3>${head}</h3>
+      <p class="sub">This course was mapped automatically: we placed its ${S.n} holes from the aerial map${C.confirm.card_known || S.card ? " and the scorecard" : ""}. A few one-tap questions (“Is this hole 7?”) make the order right; each answer re-solves the round.</p>
+      <div class="row"><button class="btn primary" data-go="confirm" id="goConfirm">${S.done() && !cardNeeded(C, S) ? "Review the hole map ›" : "Check the hole map ›"}</button>${S.done() ? go.replace("btn primary", "btn") : `<button class="btn" data-go="hole">Skip, start at hole ${C.holes[holeIdx(C)].no}</button>`}</div></section>`;
 }
 function forecastLine(C){
   const s = source(C); if (s === "custom") return "";
@@ -809,6 +830,7 @@ function renderHole(){
       <div style="text-align:center;min-width:0"><div class="holeno">Hole ${H.no}</div><div class="sub">Par ${H.par} · ${T.yards} yds${H.hcp ? ` · hcp ${H.hcp}` : ""}${T.adj ? ` · moved ${Math.abs(T.adj)} ${T.adj > 0 ? "back" : "up"}` : ""}</div>
         <div class="row" style="justify-content:center;margin-top:4px">${badge(conf.level)}</div></div>
       <button class="navbtn" id="next" aria-label="Next hole">›</button></div>
+    ${C.confirm ? routeStrip(C, H) : ""}
     <section class="stack">
       ${V.kind === "tee" ? `<div class="seg" id="view"><button data-view="land" aria-pressed="${view === "land"}">Landing area</button><button data-view="hole" aria-pressed="${view === "hole"}">Whole hole</button>${V.approach ? `<button data-view="appr" aria-pressed="${view === "appr"}">Approach</button>` : ""}</div>` : ""}
       <div class="mapbox"><svg id="ov" viewBox="${vb.map(x => x.toFixed(1)).join(" ")}" role="img" aria-label="Overhead view of hole ${H.no} with the aim drawn on it">${map}</svg></div>
@@ -849,6 +871,177 @@ function renderHole(){
       <div class="strip" id="strip">${C.holes.map((Hh, k) => { const p = pickFor(C, Hh); return `<button class="chip" data-i="${k}" aria-current="${k === i}" aria-label="Hole ${Hh.no}">${Hh.confidence.level === "check" ? "<i>⚠</i>" : ""}<b>${Hh.no}</b><span class="${p.c}">${p.txt}</span></button>`; }).join("")}</div>
       <p class="sub">Club per tee shot (≈ tie), “plays like” yards on par 3s.</p></section>
     <p class="foot">${C.forecast && C.forecast.fetched ? `Forecast: ${esc(C.forecast.source)}, fetched ${esc(C.forecast.fetched.slice(0, 16).replace("T", " "))} UTC. ` : ""}${esc(C.model)} Imagery: ${esc(C.imagery)}. Your bag: ${PCLUBS.map(k => `${k} ${Math.round(POST.clubs[k].carry.median)}/${Math.round(POST.clubs[k].total.median)}`).join(", ")}; driver pattern ${Math.round(profW())} yds.</p>`;
+}
+
+/* ------------------------------------------------------------------ hole map: golfer confirm (golf_confirm/1, in the browser)
+   Auto-mapped courses place their holes with routing v2 (OSM hole lines are not used). The page asks the questions of
+   course_data/platform/confirm.py ("Is this hole 7?" 1 tap / "Tap hole 7's tee, then its green" 2 taps, max bits per
+   tap) and re-solves the round after every answer over the precomputed routing pool (confirm_engine.js). The answers
+   live in localStorage (st.confirm) and replay onto the pool on reload. */
+const SESS = {};
+function sess(C){
+  if (!C.confirm || typeof ConfirmEngine === "undefined") return null;
+  if (!SESS[C.id]) { const saved = st.confirm[C.id] && typeof st.confirm[C.id] === "object" ? st.confirm[C.id] : null;
+    const S = new ConfirmEngine.ConfirmSession(ConfirmEngine.poolFor(C.confirm.pool, C.confirm.typed_pools, saved && saved.card));
+    if (saved) { try { S.restore(saved); } catch (e) { S.restore({}); } }
+    SESS[C.id] = S; }
+  return SESS[C.id];
+}
+function saveSess(C){ const S = SESS[C.id]; if (S) st.confirm[C.id] = S.save(); }
+const cardNeeded = (C, S) => C.confirm && !C.confirm.card_known && !S.card && !st.cskipcard[C.id];
+const OV = C => C.confirm.overview;
+function ovPx(C, ll){ const o = OV(C), dx = ll[0] - o.ll0[0], dy = ll[1] - o.ll0[1];
+  return [o.ax[0] * dx + o.ax[1] * dy + o.ax[2], o.ay[0] * dx + o.ay[1] * dy + o.ay[2]]; }
+function ovLL(C, px){ const o = OV(C), a = o.ax[0], b = o.ax[1], c = o.ay[0], d = o.ay[1], det = a * d - b * c;
+  const x = px[0] - o.ax[2], y = px[1] - o.ay[2]; return [o.ll0[0] + (d * x - b * y) / det, o.ll0[1] + (-c * x + a * y) / det]; }
+/* does the routed hole n sit where the plan's hole n was computed? (routing.score's rule) */
+function planMatches(C, H){ const S = sess(C); if (!S || !H.geo) return true;
+  return ConfirmEngine.holeOk(S.holes[String(H.no)], H.geo); }
+function routeLine(H){ return H.back_tee_ll && H.green_ll ? [H.back_tee_ll, H.green_ll] : null; }
+function nextQuestion(C, S){
+  const f = st.cfocus[C.id];
+  if (f) { const ref = f.slice(1), H = S.holes[ref];
+    if (H && (f[0] === "l" || !H.fixed)) return f[0] === "l" ? {id: f, kind: "locate", ref, taps: 2, prompt: `Tap hole ${ref}'s tee, then its green`}
+      : {id: f, kind: "confirm", ref, taps: 1, prompt: `Is this hole ${ref}?` + (H.par ? ` (par ${H.par})` : ""), show: {line: routeLine(H)}};
+    delete st.cfocus[C.id]; }
+  if (S.done() && !st.cmore[C.id]) return null;
+  const qs = S.questions(1); return qs.length ? qs[0] : null;
+}
+function confirmMap(C, S, q){
+  const o = OV(C), W = o.w, Hh = o.h, P = ll => ovPx(C, ll);
+  const lines = [], labels = [], cands = [];
+  let vb = [0, 0, W, Hh];
+  for (const H of Object.values(S.holes)) { const L = routeLine(H); if (!L) continue;
+    const a = P(L[0]), b = P(L[1]), on = q && q.kind === "confirm" && q.ref === H.ref, conf = H.fixed;
+    if (on) continue;
+    lines.push(`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${conf ? "#7ee2a8" : H.status === "check" ? "#ffc928" : "#fff"}" stroke-width="${q ? 1.6 : 2.2}" stroke-opacity="${q ? .55 : .9}"/>`);
+    labels.push(`<text x="${b[0].toFixed(1)}" y="${(b[1] - 6).toFixed(1)}" ${TXT} font-size="15" text-anchor="middle" opacity="${q ? .7 : 1}">${H.ref}</text>`); }
+  let focus = "";
+  if (q && q.kind === "confirm") { const H = S.holes[q.ref], L = routeLine(H);
+    if (L) { const a = P(L[0]), b = P(L[1]);
+      focus = `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="rgba(0,0,0,.6)" stroke-width="7"/>
+        <line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="#ffc928" stroke-width="4"/>
+        <circle cx="${a[0].toFixed(1)}" cy="${a[1].toFixed(1)}" r="7" fill="#fff" stroke="#111" stroke-width="2.5"/>
+        <circle cx="${b[0].toFixed(1)}" cy="${b[1].toFixed(1)}" r="9" fill="#ffc928" stroke="#111" stroke-width="2.5"/>
+        <text x="${b[0].toFixed(1)}" y="${(b[1] - 14).toFixed(1)}" ${TXT} font-size="20" text-anchor="middle">${H.ref}</text>`;
+      const pad = Math.max(60, 0.35 * Math.hypot(b[0] - a[0], b[1] - a[1]));
+      let x0 = Math.min(a[0], b[0]) - pad, x1 = Math.max(a[0], b[0]) + pad, y0 = Math.min(a[1], b[1]) - pad, y1 = Math.max(a[1], b[1]) + pad;
+      const minW = W * 0.5, ar = 0.8;                               /* zoomed to the line, never below half the course */
+      if (x1 - x0 < minW) { const m = (x0 + x1) / 2; x0 = m - minW / 2; x1 = m + minW / 2; }
+      if (y1 - y0 < (x1 - x0) * ar) { const m = (y0 + y1) / 2, hh = (x1 - x0) * ar; y0 = m - hh / 2; y1 = m + hh / 2; }
+      x0 = Math.max(0, x0); y0 = Math.max(0, y0); x1 = Math.min(W, x1); y1 = Math.min(Hh, y1);
+      vb = [x0, y0, x1 - x0, y1 - y0]; } }
+  if (q && q.kind === "locate") {
+    const step = st.cstep && st.cstep.q === q.id ? st.cstep : null, kind = step ? "green" : "tee";
+    const arr = kind === "green" ? S.pool.greens : S.pool.tees;
+    for (const c of arr) { const p = P(c.ll);
+      cands.push(kind === "green" ? `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="5" fill="rgba(126,226,168,.35)" stroke="#7ee2a8" stroke-width="1.5"/>`
+        : `<rect x="${(p[0] - 3.5).toFixed(1)}" y="${(p[1] - 3.5).toFixed(1)}" width="7" height="7" fill="rgba(255,255,255,.3)" stroke="#fff" stroke-width="1.2"/>`); }
+    if (step) { const p = P(step.tee); cands.push(`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="8" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="${p[0].toFixed(1)}" y="${(p[1] - 12).toFixed(1)}" ${TXT} font-size="16" text-anchor="middle">${q.ref}</text>`); }
+  }
+  return `<div class="mapbox cmap"><svg id="cmap" viewBox="${vb.map(x => x.toFixed(1)).join(" ")}" data-vb="${vb.join(",")}" role="img" aria-label="Aerial map of the course${q ? ": " + esc(q.prompt) : ""}" style="${q && q.kind === "locate" ? "cursor:crosshair;touch-action:manipulation" : ""}">
+    <image href="${o.img}" x="0" y="0" width="${W}" height="${Hh}"/>${lines.join("")}${labels.join("")}${cands.join("")}${focus}</svg></div>`;
+}
+function typedCardPanel(C, S){
+  const T = st.ctyped[C.id] || {yards: "", pars: "", unit: "yd"}, iss = T.issues || [];
+  return `<section class="panel stack" id="typedCard"><div class="label">Your scorecard</div>
+    <p class="sub">${esc(C.confirm.card_note || "Type the yardages from your card.")}</p>
+    <label class="stack" style="gap:4px"><span class="sub"><b>Yardages</b>, holes 1-18 in order, from the tees you play (spaces or commas; OUT / IN columns are fine)</span>
+      <textarea id="tcYards" rows="3" inputmode="numeric" placeholder="391 175 520 402 …">${esc(T.yards)}</textarea></label>
+    <label class="stack" style="gap:4px"><span class="sub"><b>Pars</b> (optional, e.g. 443545344…)</span>
+      <input type="text" id="tcPars" inputmode="numeric" value="${esc(T.pars)}" placeholder="4 3 5 4 …" class="tcin"></label>
+    <div class="row"><div class="seg" role="group" aria-label="Units"><button data-tcunit="yd" aria-pressed="${T.unit !== "m"}">Yards</button><button data-tcunit="m" aria-pressed="${T.unit === "m"}">Metres</button></div>
+      <button class="btn primary" data-tc="use" style="font-size:16px;min-height:40px;padding:7px 16px">Use this card</button>
+      ${S.card ? `<button class="btn ghost" data-tc="clear">Forget my card</button>` : `<button class="btn ghost" data-tc="skip">No card with me</button>`}</div>
+    ${iss.length ? `<ul class="pflist" id="tcIssues">${iss.map(i => `<li class="${i.level === "error" ? "tc-err" : "tc-warn"}">${i.level === "error" ? "✗" : "⚠"} ${esc(i.msg)}</li>`).join("")}</ul>` : ""}
+    ${S.card ? `<p class="sub" id="tcOk">✓ Using your card: ${S.card.tee_sets[Object.keys(S.card.tee_sets)[0]].yards.length} holes, ${S.card.tee_sets[Object.keys(S.card.tee_sets)[0]].total.toLocaleString()} yds${S.card.par ? ", par " + S.card.par.reduce((a, b) => a + b, 0) : ""}. ${T.resolved ? "The hole order was re-solved with it." : "The hole order was re-scored with its lengths (approximate until it is re-solved online)."}</p>` : ""}
+  </section>`;
+}
+function renderConfirm(){
+  const C = cur(), S = sess(C);
+  if (!S) { st.screen = "hole"; return renderHole(); }
+  const pl = S.payload(), sm = pl.summary, q = cardNeeded(C, S) ? null : nextQuestion(C, S);
+  const back = st.creturn[C.id] === "hole" ? "hole" : "tees", n = S.n;
+  const nChk = pl.holes.filter(h => !h.confirmed && h.status === "check").length;
+  let card = "";
+  if (cardNeeded(C, S)) card = typedCardPanel(C, S);
+  else if (q && q.kind === "confirm") card = `<section class="panel stack qcard" data-q="${esc(q.id)}"><div class="label">Question ${S.history.length + 1} · 1 tap</div>
+      <h2 id="qPrompt">${esc(q.prompt)}</h2><p class="sub">The yellow line runs from the back tee to the green we think is hole ${q.ref}${S.holes[q.ref].card_yards && S.holes[q.ref].card_yards.length ? ` (card: ${S.holes[q.ref].card_yards.join(" / ")} yds)` : ""}.</p>
+      <div class="row"><button class="btn primary" data-cans="yes" id="qYes">Yes, that's hole ${q.ref}</button><button class="btn" data-cans="no" id="qNo" style="min-height:46px;font-size:18px">No</button></div></section>`;
+  else if (q && q.kind === "locate") { const step = st.cstep && st.cstep.q === q.id;
+    card = `<section class="panel stack qcard" data-q="${esc(q.id)}"><div class="label">Question ${S.history.length + 1} · 2 taps</div>
+      <h2 id="qPrompt">${step ? `Now tap hole ${q.ref}'s green` : `Tap hole ${q.ref}'s tee`}</h2>
+      <p class="sub">${step ? "Tap the green (the light circles are the greens we found)." : `Tap where hole ${q.ref} starts, any of its tee boxes (white squares: the tee boxes we found).`} A spot we missed works too.</p>
+      ${step ? `<div class="row"><button class="btn ghost" data-cstep="reset">Re-tap the tee</button></div>` : ""}</section>`; }
+  else card = `<section class="panel stack" id="cDone"><h2>All ${n} holes placed</h2>
+      <p class="sub">${sm.confirmed} confirmed by you${sm.taps_so_far ? ` in ${sm.taps_so_far} tap${sm.taps_so_far === 1 ? "" : "s"}` : ""}; the rest are at least ${Math.round(S.P.p_stop * 100)}% sure. A few can still be wrong: on any hole, <b>This isn't hole n</b> fixes it.</p>
+      <div class="row"><button class="btn primary" data-go="hole" id="cStart">Start the round ›</button><button class="btn" data-cmore="1">Keep checking</button></div></section>`;
+  const list = pl.holes.map(h => `<span class="hchip ${h.confirmed ? "ok" : h.status === "check" ? "chk" : ""}" title="${h.confirmed ? "confirmed" : Math.round(h.p_hole * 100) + "% sure"}"><b>${h.ref}</b>${h.confirmed ? "✓" : Math.round((h.p_hole || 0) * 100) + "%"}</span>`).join("");
+  return `<div class="topbar"><button class="btn ghost" data-go="${back}">‹ ${back === "hole" ? "Back to the hole" : "Tees"}</button><span class="sub" id="cTaps">${sm.taps_so_far} tap${sm.taps_so_far === 1 ? "" : "s"}</span></div>
+    <header class="stack" style="gap:4px"><h1>Hole map</h1>
+      <p class="sub">${esc(C.short)}: we placed ${n} holes from the aerial map${S.card || C.confirm.card_known ? " and the scorecard" : ""}${nChk ? `; ${nChk} need a look` : ""}. Each answer re-solves the whole round, so one answer often fixes its neighbours too.</p></header>
+    ${card}
+    ${confirmMap(C, S, cardNeeded(C, S) ? null : q)}
+    <div class="row">${S.log && S.log.length ? `<button class="btn ghost" data-cundo="1">Undo last answer</button>` : ""}${q ? `<button class="btn ghost" data-cskip="1">Skip the questions, start the round</button>` : ""}</div>
+    <section class="panel stack"><div class="spread"><span class="label">Holes</span><span class="sub">expect ${sm.expected_correct_holes} of ${n} right</span></div><div class="hstrip" id="hstrip">${list}</div>
+      <p class="sub">✓ confirmed by you · % how sure the map is · yellow: needs a look.</p></section>
+    ${!cardNeeded(C, S) && !C.confirm.card_known ? typedCardPanel(C, S) : ""}
+    <p class="foot">Hole order: routing v2 over OpenStreetMap greens / tees, the NAIP segment model and lidar tee pads (the course's OSM hole lines are not used). Questions pick the most bits per tap (course_data/platform/confirm.py); the round is re-solved in this page over ${S.pool.routings.length.toLocaleString()} precomputed routings${S.pool !== C.confirm.pool ? " (routed with your card)" : ""}. Aerial: ${esc(OV(C).source || "")} ${esc(OV(C).year || "")}.</p>`;
+}
+function confirmClick(C, b){
+  const S = sess(C), d = b.dataset;
+  if (d.cans) { const q = nextQuestion(C, S); if (!q) return;
+    S.act({question: q.id, kind: "confirm", ref: q.ref, answer: d.cans});
+    if (st.cfocus[C.id] === q.id) delete st.cfocus[C.id];
+    saveSess(C); return true; }
+  if (d.cstep) { st.cstep = null; return true; }
+  if (d.cundo) { S.undoLast(); st.cstep = null; delete st.cfocus[C.id]; saveSess(C); return true; }
+  if (d.cskip) { st.cmore[C.id] = false; st.cstep = null; delete st.cfocus[C.id]; st.screen = "hole"; saveSess(C); return true; }
+  if (d.cmore) { st.cmore[C.id] = true; return true; }
+  if (d.tcunit) { const T = st.ctyped[C.id] = Object.assign({yards: "", pars: ""}, st.ctyped[C.id] || {}, readTyped()); T.unit = d.tcunit; return true; }
+  if (d.tc === "use") { const T = st.ctyped[C.id] = Object.assign({unit: "yd"}, st.ctyped[C.id] || {}, readTyped());
+    const [card, iss] = TypedCard.parseTypedCard(T.yards, {pars: T.pars, unit: T.unit, tee: "Typed"});
+    T.issues = iss;
+    if (card && card.tee_sets.Typed.yards.length !== S.n) { T.issues = iss.concat([{level: "error", code: "count", msg: `${card.tee_sets.Typed.yards.length} holes typed; this course has ${S.n}`}]); return true; }
+    if (card) { useCard(C, card); T.resolved = sess(C).pool !== C.confirm.pool; delete st.cskipcard[C.id]; saveSess(C); }
+    return true; }
+  if (d.tc === "clear") { useCard(C, null); st.ctyped[C.id] = {yards: "", pars: "", unit: "yd"}; saveSess(C); return true; }
+  if (d.tc === "skip") { st.cskipcard[C.id] = true; return true; }
+  if (d.nothole) { const n = d.nothole; S.act({not: n}); st.cfocus[C.id] = "l" + n; st.creturn[C.id] = "hole"; st.cstep = null;
+    st.screen = "confirm"; saveSess(C); window.scrollTo(0, 0); return true; }
+  return false;
+}
+/* a typed card: the pool re-solved with that card when the page has it (the backend's answer for a known card),
+   else the current pool re-scored with the card's lengths (approximate) */
+function useCard(C, card){
+  const S = sess(C), log = S.log, P2 = ConfirmEngine.poolFor(C.confirm.pool, C.confirm.typed_pools, card);
+  const S2 = P2 === S.pool ? S : (SESS[C.id] = new ConfirmEngine.ConfirmSession(P2));
+  S2.restore({log, card});
+}
+function readTyped(){ const y = $("tcYards"), p = $("tcPars"); const o = {}; if (y) o.yards = y.value; if (p) o.pars = p.value; return o; }
+function confirmTap(C, ev){
+  const S = sess(C), svg = $("cmap"); if (!S || !svg) return;
+  const q = nextQuestion(C, S); if (!q || q.kind !== "locate") return;
+  const m = svg.getScreenCTM(); if (!m) return;                   /* screen -> image px (viewBox, letterboxing included) */
+  const sp = svg.createSVGPoint(); sp.x = ev.clientX; sp.y = ev.clientY;
+  const ip = sp.matrixTransform(m.inverse()), px = [ip.x, ip.y];
+  const step = st.cstep && st.cstep.q === q.id ? st.cstep : null, kind = step ? "green" : "tee";
+  /* the tapped spot; the engine snaps it to a detected tee box / green within 25 / 15 yds (confirm.py), else it
+     becomes the golfer's own point */
+  const ll = ovLL(C, px).map(v => +v.toFixed(7));
+  if (!step) { st.cstep = {q: q.id, tee: ll}; return render(); }
+  S.act({question: q.id, kind: "locate", ref: q.ref, answer: {tee_ll: step.tee, green_ll: ll}});
+  st.cstep = null;
+  if (st.cfocus[C.id] === q.id) { delete st.cfocus[C.id]; if (st.creturn[C.id] === "hole") { st.creturn[C.id] = null; st.screen = "hole"; } }
+  saveSess(C); render();
+}
+function routeStrip(C, H){
+  const S = sess(C); if (!S) return "";
+  const R = S.holes[String(H.no)]; if (!R) return "";
+  const ok = planMatches(C, H);
+  const state = R.fixed ? `<b>✓ Hole ${H.no} confirmed</b> by you` : `Hole ${H.no} placed automatically · <b>${Math.round(R.p_hole * 100)}% sure</b>`;
+  return `<div class="conf ${ok ? "auto" : "check"}" id="routeStrip"><div class="spread"><span>${state}</span><button class="btn" data-nothole="${H.no}" id="notHole">This isn't hole ${H.no}</button></div>
+    ${ok ? "" : `<div>The hole map puts hole ${H.no} somewhere other than where this plan was computed: the plan below is for the hole the course data calls ${H.no}. <button class="btn ghost" data-go="confirm">Check the map ›</button></div>`}</div>`;
 }
 
 /* ------------------------------------------------------------------ "Your game" screen */
@@ -902,8 +1095,9 @@ function renderGame(){
 function render(){
   const C = cur(); if (!C && st.screen !== "game") st.screen = "pick";
   const app = $("app");
-  app.innerHTML = st.screen === "game" ? renderGame() : st.screen === "pick" ? renderPick() : st.screen === "tees" ? renderTees() : renderHole();
-  document.title = st.screen === "pick" ? "Aim Caddie" : st.screen === "game" ? "Your game · Aim Caddie" : `${cur().short} · Aim Caddie`;
+  if (st.screen === "confirm" && !(C && C.confirm)) st.screen = "hole";
+  app.innerHTML = st.screen === "game" ? renderGame() : st.screen === "pick" ? renderPick() : st.screen === "tees" ? renderTees() : st.screen === "confirm" ? renderConfirm() : renderHole();
+  document.title = st.screen === "pick" ? "Aim Caddie" : st.screen === "game" ? "Your game · Aim Caddie" : st.screen === "confirm" ? `Hole map · ${cur().short}` : `${cur().short} · Aim Caddie`;
   save();
 }
 function rerenderKeepFocus(id){ const y = window.scrollY; render(); if (id && $(id)) { const el = $(id); el.focus(); if (el.type === "search" || el.type === "text") { const n = el.value.length; el.setSelectionRange(n, n); } } window.scrollTo(0, y); }
@@ -920,17 +1114,21 @@ app.addEventListener("input", e => {
 });
 app.addEventListener("click", e => {
   const C = cur(), b = e.target.closest("button, tr[data-club], summary");
+  if (!b && C && e.target.closest && e.target.closest("#cmap")) return confirmTap(C, e);
   if (!b) return;
   if (b.tagName === "SUMMARY") { if (b.parentElement.id === "windPanel") setTimeout(() => { st.wind_open = b.parentElement.open; save(); }, 0); return; }
   const d = b.dataset;
   if (d.course) { st.course = d.course; st.screen = "tees"; window.scrollTo(0, 0); return render(); }
-  if (d.go) { if (d.go === "game" && st.screen !== "game") st.game_back = st.screen; st.screen = d.go; window.scrollTo(0, 0); return render(); }
+  if (d.go) { if (d.go === "game" && st.screen !== "game") st.game_back = st.screen;
+    if (d.go === "confirm" && C) st.creturn[C.id] = st.screen === "hole" ? "hole" : "tees";
+    st.screen = d.go; window.scrollTo(0, 0); return render(); }
   if (d.pfprior) { PF.prior = d.pfprior; profileChanged(); return rerenderKeepFocus(); }
   if (d.pfact) { if (d.pfact === "clear") { PF.shots = {lm: [], course: []}; PF.files = []; PF.msg = "Removed all shots."; }
     else if (d.pfact === "reset") { const f = freshProfile(); PF.clubs = f.clubs; PF.prior = "v2"; PF.msg = "Bag reset to the defaults."; }
     else if (d.pfact === "paste") { const t = ($("pfPaste") || {}).value || ""; if (t.trim()) importCsv("pasted CSV", t); else PF.msg = "Paste a CSV first."; }
     profileChanged(); return rerenderKeepFocus(); }
   if (!C) return;
+  if (C.confirm && confirmClick(C, b)) { if (st.screen === "hole") window.scrollTo(0, 0); return render(); }
   if (d.set) { st.set[C.id] = d.set; return render(); }
   if (d.src) { st.src[C.id] = d.src; if (d.src === "custom") { const W = windFor(C, C.holes[holeIdx(C)]); st.custom = {from: Math.round(W.from), mph: Math.round(W.mph), temp: Math.round(W.temp ?? 70)}; } return render(); }
   if (d.card) { const A = st.answers[C.id] = st.answers[C.id] || {}; if (A[d.card] === d.ans) delete A[d.card]; else A[d.card] = d.ans; return rerenderKeepFocus(); }

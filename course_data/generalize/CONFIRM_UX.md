@@ -115,6 +115,8 @@ Screen flow (the minimal confirm):
 3. After each answer the map animates to the re-solved routing, so the holes that changed show the propagation. The next card is whatever `questions[0]` says.
 4. Done: "All 18 holes placed", then the hole list. Holes the golfer confirmed get a check mark, and the rest show their confidence.
 
+**In the app prototype** (`course_data/app`): `confirm_engine.js` runs this flow in the page (same questions, policy and stop rule) over a routing pool precomputed by `confirm_pool.py` (base solve + every hole's likely greens pinned; the page keeps the posterior exact over the pool), and `typed_card.js` ports `typed_card.py`. `app/SCHEMA.md` ("Hole map confirm") documents the data; `test_confirm.js` / `test_confirm_ui.js` replay the oracle golfer against `confirm.Session` on the same courses.
+
 ## Cards when none is online: typed yardages (`platform/typed_card.py`)
 
 Without a card, routing has no yardage sequence and hole numbers are close to a guess (REPORT.md). The cheapest fix is to ask for the 18 numbers on the card. `parse_typed_card(yards, pars=None, tee=..., unit="yd"|"m", total=...)` returns a `scorecard/1` card, which routing reads directly, plus a list of issues:

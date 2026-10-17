@@ -118,7 +118,7 @@ fs.mkdirSync(shots, { recursive: true });
     await page.locator("#temp").fill("45");
     await check(`${C.id} custom wind`);
     await page.screenshot({ path: path.join(shots, `30_custom_${C.id}.png`), fullPage: true });
-    await page.click(`[data-src]`);                           // back to the first forecast day
+    if (await page.locator(`[data-src]`).count()) await page.click(`[data-src]`);   // back to the first forecast day (if the course has one)
     await page.click(`[data-go="pick"]`);
   }
   // contact sheets: every hole map of each course's first tee set, 6 across

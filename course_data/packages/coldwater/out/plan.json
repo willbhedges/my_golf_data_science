@@ -1,0 +1,301 @@
+{
+ "schema": "plan/1",
+ "course": "Coldwater Golf Links",
+ "slug": "coldwater",
+ "tee_set": "Blue",
+ "mode": "quick",
+ "package": "course_data/packages/coldwater/package.json",
+ "out": "course_data/packages/coldwater/out",
+ "built": "2026-10-17T10:21Z",
+ "settings": {
+  "swings": 8000
+ },
+ "forecast": null,
+ "stage_seconds": {
+  "1 package -> course module": 1.2,
+  "2 NAIP render per hole": 2.7,
+  "3 decision (quick)": 105.8,
+  "5 forecast + wind grid + page": 446.8
+ },
+ "runtime_s": 556.6,
+ "files": {
+  "course.py": 381161,
+  "decision.json": 21378,
+  "decision.md": 1996,
+  "wind_grid.json": 554892,
+  "wind_page/index.html": 1634036,
+  "screenshots/": 5800647
+ },
+ "picks": {
+  "1": {
+   "club": "Driver",
+   "aim": 2.5,
+   "zone": [
+    -2.5,
+    7.5
+   ],
+   "margin": 0.1094,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "2": {
+   "club": "Driver",
+   "aim": 7.5,
+   "zone": [
+    2.5,
+    15.0
+   ],
+   "margin": 0.0094,
+   "tie": true,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "3": {
+   "club": "Driver",
+   "aim": -7.5,
+   "zone": [
+    -20.0,
+    2.5
+   ],
+   "margin": 0.0587,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "4": {
+   "club": "Driver",
+   "aim": -17.5,
+   "zone": [
+    -27.5,
+    -10.0
+   ],
+   "margin": 0.018,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "6": {
+   "club": "Driver",
+   "aim": 5.0,
+   "zone": [
+    -5.0,
+    12.5
+   ],
+   "margin": 0.0723,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "7": {
+   "club": "Driver",
+   "aim": 2.5,
+   "zone": [
+    -5.0,
+    7.5
+   ],
+   "margin": 0.0623,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "9": {
+   "club": "4-wood",
+   "aim": -40.0,
+   "zone": [
+    -40.0,
+    -37.5
+   ],
+   "margin": 0.0345,
+   "tie": false,
+   "conf": null,
+   "check": [
+    "Driver best aim -95 rejected (aim -95 yds is more than 40 yds off the tee line)",
+    "2-wood best aim -72 rejected (aim -72 yds is more than 40 yds off the tee line)",
+    "4-wood best aim -62 rejected (aim -62 yds is more than 40 yds off the tee line)"
+   ],
+   "status": "CHECK"
+  },
+  "10": {
+   "club": "Driver",
+   "aim": -10.0,
+   "zone": [
+    -20.0,
+    0.0
+   ],
+   "margin": 0.0018,
+   "tie": true,
+   "conf": null,
+   "check": [
+    "2-wood best aim +70 rejected (aim +70 yds is more than 40 yds off the tee line; the aim point is 70 yds from this hole's line of play (another hole?))"
+   ],
+   "status": "CHECK"
+  },
+  "12": {
+   "club": "Driver",
+   "aim": 0.0,
+   "zone": [
+    -7.5,
+    7.5
+   ],
+   "margin": 0.0639,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "13": {
+   "club": "Driver",
+   "aim": 2.5,
+   "zone": [
+    -5.0,
+    10.0
+   ],
+   "margin": 0.0407,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "14": {
+   "club": "Driver",
+   "aim": 2.5,
+   "zone": [
+    -2.5,
+    10.0
+   ],
+   "margin": 0.0706,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "15": {
+   "club": "Driver",
+   "aim": -2.5,
+   "zone": [
+    -10.0,
+    5.0
+   ],
+   "margin": 0.0264,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "17": {
+   "club": "4-wood",
+   "aim": 10.0,
+   "zone": [
+    2.5,
+    15.0
+   ],
+   "margin": 0.0099,
+   "tie": true,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  },
+  "18": {
+   "club": "Driver",
+   "aim": -7.5,
+   "zone": [
+    -12.5,
+    0.0
+   ],
+   "margin": 0.0343,
+   "tie": false,
+   "conf": null,
+   "check": [],
+   "status": "PLAY"
+  }
+ },
+ "check": {
+  "9": [
+   "Driver best aim -95 rejected (aim -95 yds is more than 40 yds off the tee line)",
+   "2-wood best aim -72 rejected (aim -72 yds is more than 40 yds off the tee line)",
+   "4-wood best aim -62 rejected (aim -62 yds is more than 40 yds off the tee line)"
+  ],
+  "10": [
+   "2-wood best aim +70 rejected (aim +70 yds is more than 40 yds off the tee line; the aim point is 70 yds from this hole's line of play (another hole?))"
+  ]
+ },
+ "badges": {},
+ "tee_line": {
+  "rule": "tee -> hole line 250 yds along (<= 62% of the hole); par 3: green",
+  "how": {
+   "1": "landing",
+   "2": "landing",
+   "3": "landing",
+   "4": "landing",
+   "5": "green",
+   "6": "landing",
+   "7": "landing",
+   "8": "green",
+   "9": "landing",
+   "10": "landing",
+   "11": "green",
+   "12": "landing",
+   "13": "landing",
+   "14": "landing",
+   "15": "landing",
+   "16": "green",
+   "17": "landing",
+   "18": "landing"
+  }
+ },
+ "par3": {
+  "5": {
+   "center": 184,
+   "card": 185,
+   "haz": {
+    "left": "rough",
+    "right": "rough",
+    "short": "bunker",
+    "long": "rough"
+   }
+  },
+  "8": {
+   "center": 137,
+   "card": 139,
+   "haz": {
+    "left": "trees",
+    "right": "rough",
+    "short": "bunker",
+    "long": "rough"
+   }
+  },
+  "11": {
+   "center": 147,
+   "card": 147,
+   "haz": {
+    "left": "rough",
+    "right": "rough",
+    "short": "bunker",
+    "long": "rough"
+   }
+  },
+  "16": {
+   "center": 169,
+   "card": 170,
+   "haz": {
+    "left": "rough",
+    "right": "bunker",
+    "short": "bunker",
+    "long": "rough"
+   }
+  }
+ },
+ "gaps": [
+  "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 1 holes, 2-wood on 1 holes",
+  "hole 9: CHECK - Driver best aim -95 rejected (aim -95 yds is more than 40 yds off the tee line); 2-wood best aim -72 rejected (aim -72 yds is more than 40 yds off the tee line); 4-wood best aim -62 rejected (aim -62 yds is more than 40 yds off the tee line)",
+  "hole 10: CHECK - 2-wood best aim +70 rejected (aim +70 yds is more than 40 yds off the tee line; the aim point is 70 yds from this hole's line of play (another hole?))",
+  "forecast: none attached (runs on Actions; the page falls back to a hand-set wind)"
+ ]
+}

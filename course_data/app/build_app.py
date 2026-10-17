@@ -12,6 +12,10 @@ What goes in (course_data/app/SCHEMA.md documents the format, `golf_app/1`):
     plan dir per tee set (out/, out_gold/, ...) gets real per-set picks; every set is drawn on the primary
     set's image through the WGS84 frames (course_data/imagery/render.Frame), so a hole ships one image.
   * the IA / MO OpenStreetMap survey (course_data/packages/_survey) as the "coming soon" catalogue.
+  * per auto course, the golfer-confirm data (course_data/app/pools/<slug>.json from confirm_pool.py: the routing v2
+    pool the page re-solves over, the course's aerial overview) and the JS of confirm_engine.js (golf_confirm/1 in
+    the browser) and typed_card.js (typed scorecard checks): "I'm playing course X from tees Y" on a course whose
+    holes were placed automatically (SCHEMA.md, "Hole map confirm").
 
 Nothing here re-runs the strategy model except the shot-pattern clouds of the auto courses
 (yardage_book.shot_cloud, 4000 swings per club, seconds). The page itself needs no network: images are
@@ -36,6 +40,8 @@ CD = os.path.dirname(HERE)
 ROOT = os.path.dirname(CD)
 PKGS = os.path.join(CD, "packages")
 TEMPLATE = os.path.join(HERE, "app_template.html")
+POOLS = os.path.join(HERE, "pools")
+ENGINE_JS = [os.path.join(HERE, "typed_card.js"), os.path.join(HERE, "confirm_engine.js")]
 OUT = os.path.join(HERE, "out", "index.html")
 
 for _p in (os.path.join(ROOT, "spirit_hollow"), os.path.join(ROOT, "mozingo"), os.path.join(CD, "product"),
@@ -410,7 +416,7 @@ def build_spirit_hollow():
                      "Forecast: Open-Meteo (CC BY 4.0), NWS"],
         model="Fawcett-style strokes-gained simulation (mozingo/tee_strategy.py); wind from published TrackMan/"
               "Ping/Foresight figures and a ball-flight model; par 3s: DECADE target boxes.",
-        checks=[], images=imgs.d, holes=[holes[k] for k in sorted(holes)])
+        checks=[], images=imgs.d, holes=[holes[k] for k in sorted(holes)], mapping="hand", confirm=None)
 
 
 # ----------------------------------------------------------------------------- auto courses (packages)
@@ -466,6 +472,37 @@ def strip_badge(note, line):
             if note.startswith(pre):
                 return note[len(pre):].strip()
     return re.sub(r"^⚠ Unverified:.*?(?:yds? (?:right|left)\.|on the line\.|harder\.|easier\.)\s*", "", note)
+
+
+def plan_geo(ph, primary):
+    """Where the plan's hole n is (the package's line, WGS84): the confirm step matches a routed hole to it
+    (routing.score's rule: green within 20 yds, tee within 40 yds of the line's first 60 %)."""
+    line = ph.get("hole_line_ll") or []
+    tee = ((ph.get("tees") or {}).get(primary) or {}).get("tee_ll") or (line[0] if line else None)
+    if not line or not ph.get("green_ll"):
+        return None
+    return dict(tee_ll=[round(x, 7) for x in tee], green_ll=[round(x, 7) for x in ph["green_ll"]],
+                line=[[round(x, 7) for x in q] for q in line])
+
+
+def confirm_block(slug, pkg):
+    """The golfer-confirm data for a package course (course_data/app/pools/<slug>.json, confirm_pool.py), or None."""
+    path = os.path.join(POOLS, f"{slug}.json")
+    if not os.path.exists(path):
+        return None
+    pool = json.load(open(path))
+    ov = pool.pop("overview", None)
+    card_known = bool(pool.get("card"))
+    typed = []
+    tp = os.path.join(POOLS, "typed", f"{slug}.json")
+    if os.path.exists(tp):                       # the pool re-solved with the package request's card
+        t = json.load(open(tp))
+        t.pop("overview", None)
+        typed.append(t)
+    return dict(pool=pool, overview=ov, card_known=card_known, typed_pools=typed,
+                card_note=None if card_known else (
+                    "No scorecard was found online for this course (golfify, the club site and OpenGolfAPI were "
+                    "tried). Type the yardages from your card and the hole order gets much better."))
 
 
 def build_package(slug, entry):
@@ -617,7 +654,8 @@ def build_package(slug, entry):
         conf = (ph.get("confidence") or {})
         holes.append(dict(no=int(k), ref=k, par=par, hcp=ph.get("hcp"), variants=variants, tees=tees,
                           confidence=dict(level=level, lines=[x for x in lines if x], map_score=conf.get("score"),
-                                          flags=conf.get("flags", []))))
+                                          flags=conf.get("flags", [])),
+                          geo=plan_geo(ph, primary)))
     # pre-round check cards (red and amber items of out/review/review.json)
     checks, red, amber = [], 0, 0
     if review:
@@ -679,7 +717,7 @@ def build_package(slug, entry):
         attribution=pkg.get("attribution", []) + ["Forecast: Open-Meteo (CC BY 4.0)"],
         model="Fawcett-style strokes-gained simulation at the model's central settings (quick mode); wind from "
               "published TrackMan/Ping/Foresight figures and a ball-flight model; par 3s: DECADE target boxes.",
-        checks=checks, images=imgs.d, holes=holes)
+        checks=checks, images=imgs.d, holes=holes, mapping="auto", confirm=confirm_block(slug, pkg))
 
 
 # ----------------------------------------------------------------------------- catalogue + page
@@ -739,7 +777,8 @@ def main():
             with open(os.path.join(a.json, f"{c['id']}.json"), "w") as fh:
                 json.dump(dict(schema="golf_app/1#course", wind_axes=bundle["wind_axes"], player=PLAYER, course=c), fh)
     blob = json.dumps(bundle, separators=(",", ":")).replace("</", "<\\/")
-    html = open(TEMPLATE).read().replace("/*__DATA__*/null", blob)
+    engine = "\n".join(open(p).read() for p in ENGINE_JS).replace("</", "<\\/")
+    html = open(TEMPLATE).read().replace("/*__ENGINE__*/", engine).replace("/*__DATA__*/null", blob)
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w") as fh:
         fh.write(html)
