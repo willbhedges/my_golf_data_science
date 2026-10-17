@@ -6,64 +6,64 @@
  "mode": "quick",
  "package": "course_data/packages/wakonda/package.json",
  "out": "course_data/packages/wakonda/out",
- "built": "2026-10-17T15:35Z",
+ "built": "2026-10-17T17:10Z",
  "settings": {
   "swings": 8000
  },
  "forecast": "Open-Meteo (fetched now)",
  "stage_seconds": {
   "1 package -> course module": 1.3,
-  "2 NAIP render per hole": 1.1,
-  "3 decision (quick)": 106.3,
-  "5 forecast + wind grid + page": 496.1
+  "2 NAIP render per hole": 1.3,
+  "3 decision (quick)": 102.8,
+  "5 forecast + wind grid + page": 471.4
  },
- "runtime_s": 604.8,
+ "runtime_s": 576.8,
  "files": {
-  "course.py": 475087,
-  "decision.json": 22115,
-  "decision.md": 2065,
-  "forecast.json": 12136,
-  "wind_grid.json": 581354,
-  "wind_page/index.html": 922642,
-  "screenshots/": 1773239
+  "course.py": 453286,
+  "decision.json": 22006,
+  "decision.md": 1970,
+  "forecast.json": 11689,
+  "wind_grid.json": 582149,
+  "wind_page/index.html": 1058387,
+  "screenshots/": 2427798
  },
  "picks": {
   "1": {
    "club": "2-wood",
-   "aim": -37.5,
+   "aim": -40.0,
    "zone": [
     -40.0,
-    -30.0
+    -32.5
    ],
-   "margin": 0.0342,
+   "margin": 0.0145,
    "tie": false,
    "conf": null,
-   "check": [],
-   "status": "PLAY"
+   "check": [
+    "2-wood best aim -42 rejected (aim -42 yds is more than 40 yds off the tee line)"
+   ],
+   "status": "CHECK"
   },
   "3": {
    "club": "Driver",
    "aim": -40.0,
    "zone": [
     -40.0,
-    -37.5
+    -35.0
    ],
-   "margin": 0.0169,
+   "margin": 0.0253,
    "tie": false,
    "conf": null,
-   "check": [
-    "Driver best aim -45 rejected (aim -45 yds is more than 40 yds off the tee line)"
-   ],
-   "status": "CHECK"
+   "check": [],
+   "status": "PLAY"
   },
   "4": {
    "club": "4-wood",
-   "aim": 2.5,
+   "aim": 0.0,
    "zone": [
     -5.0,
     7.5
    ],
-   "margin": 0.0235,
+   "margin": 0.0152,
    "tie": false,
    "conf": null,
    "check": [],
@@ -73,28 +73,27 @@
    "club": "4-wood",
    "aim": -10.0,
    "zone": [
-    -12.5,
+    -15.0,
     -5.0
    ],
-   "margin": 0.0379,
+   "margin": 0.0232,
    "tie": false,
    "conf": null,
    "check": [],
    "status": "PLAY"
   },
   "6": {
-   "club": "Driver",
-   "aim": 20.0,
+   "club": "4-wood",
+   "aim": 7.5,
    "zone": [
-    12.5,
-    27.5
+    5.0,
+    12.5
    ],
-   "margin": 0.0002,
+   "margin": 0.0096,
    "tie": true,
    "conf": null,
    "check": [
-    "Driver aim point (275 yds out, +20) is on tree canopy (lidar) the map does not mark as trees",
-    "28% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
+    "28% of the 4-wood pattern finishes on tree canopy (lidar) the map does not mark as trees"
    ],
    "status": "CHECK"
   },
@@ -102,10 +101,10 @@
    "club": "Long iron",
    "aim": 10.0,
    "zone": [
-    5.0,
-    12.5
+    7.5,
+    15.0
    ],
-   "margin": 0.0152,
+   "margin": 0.0266,
    "tie": false,
    "conf": null,
    "check": [],
@@ -113,12 +112,12 @@
   },
   "8": {
    "club": "Driver",
-   "aim": 7.5,
+   "aim": 5.0,
    "zone": [
     0.0,
-    15.0
+    12.5
    ],
-   "margin": 0.0719,
+   "margin": 0.0732,
    "tie": false,
    "conf": null,
    "check": [],
@@ -126,28 +125,28 @@
   },
   "10": {
    "club": "Driver",
-   "aim": 25.0,
+   "aim": 22.5,
    "zone": [
-    12.5,
+    10.0,
     37.5
    ],
-   "margin": 0.0744,
+   "margin": 0.0738,
    "tie": false,
    "conf": null,
    "check": [
-    "Driver aim point (275 yds out, +25) is on tree canopy (lidar) the map does not mark as trees",
-    "42% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
+    "Driver aim point (275 yds out, +22) is on tree canopy (lidar) the map does not mark as trees",
+    "39% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
    ],
    "status": "CHECK"
   },
   "11": {
    "club": "Driver",
-   "aim": 0.0,
+   "aim": 2.5,
    "zone": [
     -5.0,
-    7.5
+    10.0
    ],
-   "margin": 0.0123,
+   "margin": 0.0256,
    "tie": false,
    "conf": null,
    "check": [],
@@ -157,10 +156,10 @@
    "club": "4-wood",
    "aim": -2.5,
    "zone": [
-    -5.0,
+    -7.5,
     2.5
    ],
-   "margin": 0.0598,
+   "margin": 0.0266,
    "tie": false,
    "conf": null,
    "check": [],
@@ -173,7 +172,7 @@
     7.5,
     25.0
    ],
-   "margin": 0.0846,
+   "margin": 0.0833,
    "tie": false,
    "conf": null,
    "check": [],
@@ -186,7 +185,7 @@
     -10.0,
     2.5
    ],
-   "margin": 0.0637,
+   "margin": 0.0645,
    "tie": false,
    "conf": null,
    "check": [],
@@ -197,9 +196,9 @@
    "aim": 5.0,
    "zone": [
     0.0,
-    10.0
+    12.5
    ],
-   "margin": 0.021,
+   "margin": 0.0174,
    "tie": false,
    "conf": null,
    "check": [],
@@ -212,7 +211,7 @@
     2.5,
     12.5
    ],
-   "margin": 0.0246,
+   "margin": 0.0207,
    "tie": false,
    "conf": null,
    "check": [],
@@ -220,16 +219,15 @@
   }
  },
  "check": {
-  "3": [
-   "Driver best aim -45 rejected (aim -45 yds is more than 40 yds off the tee line)"
+  "1": [
+   "2-wood best aim -42 rejected (aim -42 yds is more than 40 yds off the tee line)"
   ],
   "6": [
-   "Driver aim point (275 yds out, +20) is on tree canopy (lidar) the map does not mark as trees",
-   "28% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
+   "28% of the 4-wood pattern finishes on tree canopy (lidar) the map does not mark as trees"
   ],
   "10": [
-   "Driver aim point (275 yds out, +25) is on tree canopy (lidar) the map does not mark as trees",
-   "42% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
+   "Driver aim point (275 yds out, +22) is on tree canopy (lidar) the map does not mark as trees",
+   "39% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
   ]
  },
  "badges": {},
@@ -261,7 +259,7 @@
    "center": 114,
    "card": 114,
    "haz": {
-    "left": "trees",
+    "left": "rough",
     "right": "trees",
     "short": "bunker",
     "long": "ob"
@@ -300,8 +298,8 @@
  },
  "gaps": [
   "elevation: package adjustments clamped (carry +/-30, roll x0.4-2, kick +/-15 yds) for Driver on 4 holes, 4-wood on 1 holes, Mid iron on 5 holes, Long iron on 2 holes",
-  "hole 3: CHECK - Driver best aim -45 rejected (aim -45 yds is more than 40 yds off the tee line)",
-  "hole 6: CHECK - Driver aim point (275 yds out, +20) is on tree canopy (lidar) the map does not mark as trees; 28% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees",
-  "hole 10: CHECK - Driver aim point (275 yds out, +25) is on tree canopy (lidar) the map does not mark as trees; 42% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
+  "hole 1: CHECK - 2-wood best aim -42 rejected (aim -42 yds is more than 40 yds off the tee line)",
+  "hole 6: CHECK - 28% of the 4-wood pattern finishes on tree canopy (lidar) the map does not mark as trees",
+  "hole 10: CHECK - Driver aim point (275 yds out, +22) is on tree canopy (lidar) the map does not mark as trees; 39% of the Driver pattern finishes on tree canopy (lidar) the map does not mark as trees"
  ]
 }

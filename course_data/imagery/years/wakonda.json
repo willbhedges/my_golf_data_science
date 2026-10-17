@@ -1,19 +1,21 @@
 {
  "schema": "naip_years_run/1",
  "slug": "wakonda",
- "built": "2026-10-17T15:23Z",
+ "built": "2026-10-17T16:59Z",
  "bbox_snwe": [
   41.54741,
   -93.645958,
   41.556246,
   -93.634236
  ],
- "current": 2023,
+ "current": 2015,
+ "chosen": 2019,
+ "imagery_dir": "course_data/packages/wakonda/imagery",
  "selection": {
   "schema": "naip_years/1",
   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
-  "chosen": 2015,
-  "reason": "2015 (2015-08-24): greenest leaf-on year on the course's turf (NDVI 0.34 vs -0.05, 2% vs 87% brown) over the newest year 2023 (hazy (blue floor 64); 9 of 26 greens not visible as turf; 87% of the turf brown / bare); replaces 2023",
+  "chosen": 2019,
+  "reason": "2019 (2019-08-22): greenest leaf-on year on the course's turf (NDVI 0.24 vs -0.05, 18% vs 87% brown) over the newest year 2023 (hazy (blue floor 64); 9 of 26 greens not visible as turf; 87% of the turf brown / bare); replaces 2015",
   "candidates": [
    {
     "year": 2023,
@@ -63,7 +65,7 @@
      144.0,
      110.0
     ],
-    "score": -0.0091,
+    "score": -0.0231,
     "notes": [
      "hazy (blue floor 72)",
      "1 of 26 greens not visible as turf"
@@ -90,7 +92,7 @@
      146.0,
      95.0
     ],
-    "score": 0.1574,
+    "score": 0.1294,
     "notes": [],
     "turf_source": "osm"
    },
@@ -114,8 +116,9 @@
      146.0,
      94.0
     ],
-    "score": 0.1713,
-    "notes": [],
+    "notes": [
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+    ],
     "turf_source": "osm"
    },
    {
@@ -138,8 +141,9 @@
      143.0,
      99.0
     ],
-    "score": 0.272,
-    "notes": [],
+    "notes": [
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+    ],
     "turf_source": "osm"
    },
    {
@@ -162,9 +166,9 @@
      134.0,
      88.0
     ],
-    "score": 0.2069,
     "notes": [
-     "2 of 26 greens not visible as turf"
+     "2 of 26 greens not visible as turf",
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
     ],
     "turf_source": "osm"
    },
@@ -188,8 +192,9 @@
      151.0,
      117.0
     ],
-    "score": 0.0884,
-    "notes": [],
+    "notes": [
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+    ],
     "turf_source": "osm"
    },
    {
@@ -212,8 +217,9 @@
      128.0,
      103.0
     ],
-    "score": 0.0441,
-    "notes": [],
+    "notes": [
+     "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+    ],
     "turf_source": "osm"
    }
   ]
@@ -224,85 +230,58 @@
   "res_m": 0.6,
   "reference": "OSM polygons inside the course boundary +20 m",
   "runs": {
-   "2015": {
+   "2019": {
     "green": {
-     "iou": 0.727,
-     "precision": 0.801,
-     "recall": 0.888
-    },
-    "tee": {
-     "iou": 0.369,
-     "precision": 0.504,
-     "recall": 0.58
-    },
-    "fairway": {
-     "iou": 0.715,
-     "precision": 0.935,
-     "recall": 0.753
-    },
-    "bunker": {
-     "iou": 0.603,
-     "precision": 0.687,
-     "recall": 0.83
-    },
-    "water": {
-     "iou": 0.32,
-     "precision": 0.459,
-     "recall": 0.515
-    }
-   },
-   "2014": {
-    "green": {
-     "iou": 0.755,
-     "precision": 0.852,
-     "recall": 0.869
-    },
-    "tee": {
-     "iou": 0.37,
-     "precision": 0.556,
-     "recall": 0.526
-    },
-    "fairway": {
-     "iou": 0.688,
-     "precision": 0.948,
-     "recall": 0.716
-    },
-    "bunker": {
-     "iou": 0.705,
-     "precision": 0.814,
-     "recall": 0.84
-    },
-    "water": {
-     "iou": 0.217,
-     "precision": 0.255,
-     "recall": 0.596
-    }
-   },
-   "2017": {
-    "green": {
-     "iou": 0.798,
-     "precision": 0.82,
+     "iou": 0.833,
+     "precision": 0.858,
      "recall": 0.967
     },
     "tee": {
-     "iou": 0.453,
-     "precision": 0.564,
-     "recall": 0.698
+     "iou": 0.462,
+     "precision": 0.53,
+     "recall": 0.783
     },
     "fairway": {
-     "iou": 0.709,
-     "precision": 0.94,
-     "recall": 0.743
+     "iou": 0.719,
+     "precision": 0.944,
+     "recall": 0.751
     },
     "bunker": {
-     "iou": 0.758,
-     "precision": 0.804,
-     "recall": 0.929
+     "iou": 0.75,
+     "precision": 0.817,
+     "recall": 0.901
     },
     "water": {
-     "iou": 0.144,
-     "precision": 0.161,
-     "recall": 0.578
+     "iou": 0.181,
+     "precision": 0.208,
+     "recall": 0.579
+    }
+   },
+   "2021": {
+    "green": {
+     "iou": 0.766,
+     "precision": 0.823,
+     "recall": 0.917
+    },
+    "tee": {
+     "iou": 0.512,
+     "precision": 0.602,
+     "recall": 0.773
+    },
+    "fairway": {
+     "iou": 0.695,
+     "precision": 0.932,
+     "recall": 0.732
+    },
+    "bunker": {
+     "iou": 0.736,
+     "precision": 0.824,
+     "recall": 0.873
+    },
+    "water": {
+     "iou": 0.101,
+     "precision": 0.12,
+     "recall": 0.395
     }
    },
    "2023": {
@@ -332,70 +311,97 @@
      "recall": 0.21
     }
    },
-   "2015+2014": {
+   "2015": {
     "green": {
-     "iou": 0.76,
-     "precision": 0.837,
-     "recall": 0.892
+     "iou": 0.727,
+     "precision": 0.801,
+     "recall": 0.888
     },
     "tee": {
-     "iou": 0.381,
-     "precision": 0.565,
-     "recall": 0.538
+     "iou": 0.369,
+     "precision": 0.504,
+     "recall": 0.58
     },
     "fairway": {
-     "iou": 0.697,
-     "precision": 0.949,
-     "recall": 0.724
+     "iou": 0.715,
+     "precision": 0.935,
+     "recall": 0.753
     },
     "bunker": {
-     "iou": 0.664,
-     "precision": 0.756,
-     "recall": 0.845
+     "iou": 0.603,
+     "precision": 0.687,
+     "recall": 0.83
     },
     "water": {
-     "iou": 0.192,
-     "precision": 0.22,
-     "recall": 0.603
+     "iou": 0.32,
+     "precision": 0.459,
+     "recall": 0.515
     }
    },
-   "2015+2014+2017": {
+   "2019+2021": {
     "green": {
-     "iou": 0.79,
-     "precision": 0.837,
-     "recall": 0.933
+     "iou": 0.816,
+     "precision": 0.853,
+     "recall": 0.949
     },
     "tee": {
-     "iou": 0.432,
-     "precision": 0.584,
-     "recall": 0.624
+     "iou": 0.507,
+     "precision": 0.595,
+     "recall": 0.775
     },
     "fairway": {
-     "iou": 0.724,
-     "precision": 0.952,
+     "iou": 0.691,
+     "precision": 0.945,
+     "recall": 0.72
+    },
+    "bunker": {
+     "iou": 0.737,
+     "precision": 0.823,
+     "recall": 0.875
+    },
+    "water": {
+     "iou": 0.114,
+     "precision": 0.123,
+     "recall": 0.606
+    }
+   },
+   "2019+2021+2023": {
+    "green": {
+     "iou": 0.802,
+     "precision": 0.83,
+     "recall": 0.96
+    },
+    "tee": {
+     "iou": 0.517,
+     "precision": 0.636,
+     "recall": 0.734
+    },
+    "fairway": {
+     "iou": 0.715,
+     "precision": 0.938,
      "recall": 0.751
     },
     "bunker": {
-     "iou": 0.734,
-     "precision": 0.796,
-     "recall": 0.904
+     "iou": 0.75,
+     "precision": 0.839,
+     "recall": 0.876
     },
     "water": {
-     "iou": 0.362,
-     "precision": 0.503,
-     "recall": 0.563
+     "iou": 0.191,
+     "precision": 0.279,
+     "recall": 0.377
     }
    }
   },
   "mean_iou": {
-   "2015": 0.547,
-   "2014": 0.547,
-   "2017": 0.572,
+   "2019": 0.589,
+   "2021": 0.562,
    "2023": 0.288,
-   "2015+2014": 0.539,
-   "2015+2014+2017": 0.608
+   "2015": 0.547,
+   "2019+2021": 0.573,
+   "2019+2021+2023": 0.595
   },
-  "current": 2023
+  "current": 2015
  },
- "applied": "re-fetched NAIP 2015 (was 2023)"
+ "applied": "re-fetched NAIP 2019 (was 2015)"
 }
