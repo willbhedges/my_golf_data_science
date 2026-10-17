@@ -1,0 +1,134 @@
+name: zero_tap_bench
+
+# Zero-tap benchmark scoreboard (course_data/zero_tap/, BENCH.md). Offline: every input is committed.
+# Request-file trigger: commit course_data/requests/ztbench_run_<name>.json
+#   {"schema": "request/1", "kind": "ztbench_run", "stage": "run" | "score",
+#    "methods": "routing_v2,structure", "tiers": "all" | "osm_card,nocard", "split": "all" | "dev" | "test"}
+# run:   bench_set.py (manifest + truth) -> baselines.py in 6 shards -> results/<method>/<tier>/ -> scoreboard
+# score: re-score whatever is committed under course_data/zero_tap/results/ (any method that wrote
+#        zero_tap_result/1 files there) -> scoreboard.json, SCOREBOARD.md, scores/
+# Other workstreams: commit your results/<method>/<tier>/<slug>.json files, then a "score" request.
+
+on:
+  push:
+    paths:
+      - "course_data/requests/ztbench_run_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ztbench-run-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.p.outputs.stage }}
+      methods: ${{ steps.p.outputs.methods }}
+      tiers: ${{ steps.p.outputs.tiers }}
+      split: ${{ steps.p.outputs.split }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 50
+      - id: p
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git diff --name-only "$BEFORE" "${{ github.sha }}" -- 'course_data/requests/ztbench_run_*.json' > /tmp/req.txt
+          else
+            ls course_data/requests/ztbench_run_*.json > /tmp/req.txt
+          fi
+          python - <<'EOF'
+          import json, os
+          reqs = [l.strip() for l in open("/tmp/req.txt") if l.strip() and os.path.exists(l.strip())]
+          r = json.load(open(sorted(reqs)[-1])) if reqs else {"stage": "score"}
+          out = dict(stage=r.get("stage", "run"), methods=r.get("methods", "all"), tiers=r.get("tiers", "all"),
+                     split=r.get("split", "all"))
+          print(out)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              for k, v in out.items():
+                  fh.write(f"{k}={v}\n")
+          EOF
+
+  shard:
+    needs: plan
+    if: needs.plan.outputs.stage == 'run'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely pyproj
+      - name: Shard ${{ matrix.shard }}
+        run: |
+          git pull -q --rebase origin "${{ github.ref_name }}" || true
+          python -u course_data/zero_tap/bench_set.py > /dev/null
+          python -u course_data/zero_tap/baselines.py --method ${{ needs.plan.outputs.methods }} \
+            --tier ${{ needs.plan.outputs.tiers }} --split ${{ needs.plan.outputs.split }} \
+            --shard ${{ matrix.shard }}/6 --out /tmp/ztres
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ztres-${{ matrix.shard }}
+          path: /tmp/ztres
+
+  score:
+    needs: [plan, shard]
+    if: always() && (needs.plan.outputs.stage == 'score' || needs.shard.result == 'success' || needs.shard.result == 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely pyproj
+      - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.stage == 'run'
+        with:
+          pattern: ztres-*
+          merge-multiple: true
+          path: /tmp/ztres
+      - name: Scoreboard
+        run: |
+          git pull -q --rebase origin "${{ github.ref_name }}" || true
+          python -u course_data/zero_tap/bench_set.py > /dev/null
+          if [ -d /tmp/ztres ]; then
+            for m in /tmp/ztres/*; do
+              for t in "$m"/*; do
+                d="course_data/zero_tap/results/$(basename "$m")/$(basename "$t")"
+                rm -rf "$d"; mkdir -p "$d"; cp "$t"/*.json "$d"/
+              done
+            done
+          fi
+          python -u course_data/zero_tap/bench.py scoreboard
+          cat course_data/zero_tap/SCOREBOARD.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/zero_tap/results course_data/zero_tap/scores course_data/zero_tap/scoreboard.json \
+                  course_data/zero_tap/SCOREBOARD.md course_data/zero_tap/benchmark.json course_data/zero_tap/truth
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "zero_tap: benchmark scoreboard (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6 7 8; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
