@@ -24,26 +24,27 @@ States: CA, GA, IL, KY, MA, ME, MN, MS, NH, UT, WI, WY (three per Census region,
 
 ## Answer
 
-* **Today**: every hole and green placed on **50%** of random US courses (population-weighted by tier) - essentially the courses where OSM volunteers mapped every golf=hole way.
-* **With routing inference**: **51%** fully correct with no human input; **60%** correct once a golfer confirms the holes the router flags.
-* **Need a golfer check**: 33% of courses (a flagged hole, or no scorecard online).
+* **Today**: every hole and green placed on **47%** of random US courses (population-weighted by tier) - essentially the courses where OSM volunteers mapped every golf=hole way.
+* **With routing inference**: **53%** fully correct with no human input; **75%** correct once a golfer confirms the holes the router flags.
+* **Need a golfer check**: 52% of courses (a flagged hole, or no scorecard online).
 
 ### Per tier
 
 | tier | population share | sampled | found by name | scorecard online | NAIP | today all holes | routing all correct | after golfer check | needs check |
 |---|---|---|---|---|---|---|---|---|---|
-| full | 65% | 7 | 100% | 71% | 100% | 71% | 71% | 71% | 0% |
-| partial | 12% | 7 | 86% | 100% | 100% | 29% | 12% | 50% | 88% |
-| none | 23% | 7 | 86% | 86% | 100% | 0% | 11% | 32% | 100% |
+| full | 65% | 7 | 100% | 71% | 100% | 71% | 74% | 83% | 29% |
+| partial | 12% | 7 | 86% | 100% | 100% | 0% | 14% | 57% | 86% |
+| none | 23% | 7 | 86% | 86% | 100% | 0% | 12% | 61% | 100% |
 
 ## Routing validation (OSM hole ways and refs hidden)
 
 | inputs | card | courses | hole-number acc | green assignment acc | physical holes found | median length err (yds) | all 18 correct | correct after check | needs check | flagged / course |
 |---|---|---|---|---|---|---|---|---|---|---|
-| OSM greens/tees + model + lidar | scorecard | 8 | 61% | 68% | 65% | 1.6 | 12% | 50% | 88% | 6.12 |
-| model + lidar only (unmapped course) | scorecard | 8 | 55% | 61% | 61% | 2.3 | 12% | 38% | 100% | 5.75 |
-| OSM greens/tees + model + lidar | none | 8 | 15% | 17% | 61% | 1.5 | 0% | 50% | 100% | 13.12 |
-| model + lidar only (unmapped course) | none | 8 | 15% | 22% | 52% | 3.2 | 0% | 62% | 100% | 13.62 |
+| TODAY's fallback: geometry.infer_holes on OSM greens/tees | none | 7 | 8% | 14% | 44% | 1.1 | 0% | 0% | 0% | 0.0 |
+| OSM greens/tees + model + lidar | scorecard | 7 | 80% | 88% | 83% | 1.8 | 14% | 57% | 86% | 4.29 |
+| model + lidar only (unmapped course) | scorecard | 7 | 78% | 88% | 81% | 2.6 | 14% | 71% | 100% | 7.29 |
+| OSM greens/tees + model + lidar | none | 7 | 18% | 21% | 64% | 1.2 | 0% | 29% | 100% | 13.29 |
+| model + lidar only (unmapped course) | none | 7 | 18% | 25% | 56% | 3.2 | 0% | 71% | 100% | 14.29 |
 
 Definitions: hole-number acc = routed hole n has the true hole n's green (within 20 yds) and its tee within 40 yds of the first 60 % of the true line; green assignment = the green alone; physical holes = true (tee, green) pairs found under any number; length error = routed straight tee->green vs the true line's length from the routed tee; `correct after check` = every wrong hole carries a `check` flag. Card = the web scorecard when found, else pars + lengths from the hidden OSM ways (`card*` below).
 
@@ -52,23 +53,23 @@ Definitions: hole-number acc = routed hole n has the true hole n's green (within
 | course | st | tier | found | OSM holes / greens / tees | scorecard | NAIP | model greens (OSM) | today: line / green / tee | routed (check) | V-osm hole / green | V-model hole / green |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | Billy Caldwell Golf Course | IL | full | yes | 9 / 10 / 19 | opengolfapi (9) | 2023 | 10 (10) | 9 / 9 / 9 of 9 | 9 (0) | 78% / 100% | 78% / 89% |
-| Black Stone Creek Golf Club | WI | full | yes | 19 / 18 / 29 | none | 2022 | 19 (18) | 17 / 17 / 0 of 18 | 17 (1) | 24% / 24%* | 12% / 12%* |
+| Black Stone Creek Golf Club | WI | full | yes | 19 / 18 / 29 | none | 2022 | 19 (18) | 17 / 17 / 0 of 18 | 17 (1) | 76% / 76%* | 71% / 82%* |
 | Elk River Golf Club | MN | full | yes | 18 / 19 / 56 | golfify (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 78% | 94% / 100% |
 | Sky Mountain Golf Course | UT | full | yes | 18 / 20 / 69 | golfify (18) | 2021 | 20 (20) | 18 / 18 / 18 of 18 | 18 (0) | 94% / 94% | 89% / 89% |
 | Urbana Country Club | IL | full | yes | 18 / 19 / 45 | opengolfapi (18) | 2023 | 20 (19) | 18 / 18 / 18 of 18 | 18 (0) | 72% / 89% | 50% / 72% |
-| Wild Ridge Golf Course | WI | full | yes | 21 / 23 / 87 | none | 2022 | 21 (23) | 18 / 15 / 0 of 18 | 17 (1) | 22% / 33%* | 17% / 28%* |
+| Wild Ridge Golf Course | WI | full | yes | 21 / 23 / 87 | none | 2022 | 21 (23) | 18 / 15 / 0 of 18 | 17 (1) | 67% / 78%* | 67% / 83%* |
 | Willowhill Golf Course | IL | full | yes | 9 / 11 / 29 | golfify (9) | 2023 | 11 (11) | 9 / 9 / 9 of 9 | 9 (0) | 100% / 100% | 100% / 100% |
-| Diamond Bar Golf Course | CA | partial | yes | 0 / 15 / 51 | golfify (18) | 2022 | 13 (15) | 15 / 15 / 0 of 18 | 15 (4) | - | - |
-| Gold Hills Golf Course | IL | partial | yes | 0 / 18 / 24 | opengolfapi (18) | 2023 | 20 (18) | 18 / 18 / 0 of 18 | 18 (15) | - | - |
-| Lake Windsor Country Club | WI | partial | yes | 4 / 23 / 59 | golfify (18) | 2022 | 22 (23) | 4 / 4 / 0 of 18 | 18 (12) | - | - |
-| Oak Lake Golf Course | MN | partial | yes | 0 / 9 / 0 | golfify (9) | 2023 | 9 (9) | 0 / 0 / 0 of 9 | 9 (0) | - | - |
-| Quincy Country Club | IL | partial | yes | 0 / 11 / 2 | golfify (18) | 2023 | 21 (11) | 2 / 2 / 0 of 18 | 16 (10) | - | - |
-| Ridges at Sand Creek | MN | partial | no (ambiguous: Ridges at Sand Creek) | 7 / 10 / 32 | opengolfapi (18) | 2023 | 8 (10) | 12 / 10 / 10 of 18 | 9 (10) | 25% / 25% | 0% / 0% |
-| Wasioto Winds Golf Course | KY | partial | yes | 0 / 18 / 86 | opengolfapi (18) | 2022 | 20 (18) | 18 / 18 / 0 of 18 | 17 (1) | - | - |
+| Diamond Bar Golf Course | CA | partial | yes | 0 / 15 / 51 | golfify (18) | 2022 | 13 (15) | 15 / 15 / 0 of 18 | 15 (15) | - | - |
+| Gold Hills Golf Course | IL | partial | yes | 0 / 18 / 24 | opengolfapi (18) | 2023 | 20 (18) | 18 / 18 / 0 of 18 | 18 (17) | - | - |
+| Lake Windsor Country Club | WI | partial | yes | 4 / 23 / 59 | golfify (18) | 2022 | 22 (23) | 4 / 4 / 0 of 18 | 18 (15) | - | - |
+| Oak Lake Golf Course | MN | partial | yes | 0 / 9 / 0 | golfify (9) | 2023 | 9 (9) | 0 / 0 / 0 of 9 | 9 (2) | - | - |
+| Quincy Country Club | IL | partial | yes | 0 / 11 / 2 | golfify (18) | 2023 | 21 (11) | 2 / 2 / 0 of 18 | 16 (17) | - | - |
+| Ridges at Sand Creek | MN | partial | no (ambiguous: Ridges at Sand Creek) | 7 / 10 / 32 | opengolfapi (18) | 2023 | 8 (10) | 12 / 10 / 10 of 18 | 9 (11) | - | - |
+| Wasioto Winds Golf Course | KY | partial | yes | 0 / 18 / 86 | opengolfapi (18) | 2022 | 20 (18) | 18 / 18 / 0 of 18 | 17 (4) | - | - |
 | Baywood Golf Course | CA | none | yes | 0 / 0 / 0 | opengolfapi (18) | 2022 | 17 (0) | 0 / 0 / 0 of 18 | 15 (18) | - | - |
-| Georgia Veterans Memorial Golf Course | GA | none | yes | 0 / 0 / 0 | opengolfapi (18) | 2023 | 20 (0) | 0 / 0 / 0 of 18 | 15 (17) | - | - |
-| The Reserve Golf Club | CA | none | no (ambiguous: The Reserve Golf Club) | 0 / 0 / 0 | opengolfapi (18) | 2022 | 30 (0) | 0 / 0 / 0 of 18 | 14 (14) | - | - |
-| Saticoy Regional Golf Course | CA | none | yes | 0 / 0 / 0 | golfify (18) | 2022 | 9 (0) | 0 / 0 / 0 of 18 | 9 (14) | - | - |
+| Georgia Veterans Memorial Golf Course | GA | none | yes | 0 / 0 / 0 | opengolfapi (18) | 2023 | 20 (0) | 0 / 0 / 0 of 18 | 15 (18) | - | - |
+| The Reserve Golf Club | CA | none | no (ambiguous: The Reserve Golf Club) | 0 / 0 / 0 | opengolfapi (18) | 2022 | 30 (0) | 0 / 0 / 0 of 18 | 14 (18) | - | - |
+| Saticoy Regional Golf Course | CA | none | yes | 0 / 0 / 0 | golfify (18) | 2022 | 9 (0) | 0 / 0 / 0 of 18 | 9 (18) | - | - |
 | Sevillano Links | CA | none | yes | 0 / 8 / 0 | none | 2022 | 26 (8) | 0 / 0 / 0 of 18 | 14 (17) | - | - |
-| Sleepy Hollow Golf Course | KY | none | yes | 0 / 0 / 0 | opengolfapi (9) | 2022 | 9 (0) | 0 / 0 / 0 of 9 | 9 (6) | - | - |
+| Sleepy Hollow Golf Course | KY | none | yes | 0 / 0 / 0 | opengolfapi (9) | 2022 | 9 (0) | 0 / 0 / 0 of 9 | 9 (9) | - | - |
 | The Woodford Club | KY | none | yes | 0 / 0 / 0 | opengolfapi (18) | 2022 | 19 (0) | 0 / 0 / 0 of 18 | 17 (18) | - | - |
