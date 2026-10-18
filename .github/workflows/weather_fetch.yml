@@ -34,7 +34,7 @@ jobs:
 
       - name: Fetch forecast
         env:
-          DAYS: ${{ github.event.inputs.days || '2026-10-17,2026-10-18' }}
+          DAYS: ${{ github.event.inputs.days || '2026-10-18' }}
         run: python course_data/weather/fetch_forecast.py
 
       - name: Commit forecast
