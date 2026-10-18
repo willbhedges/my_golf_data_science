@@ -136,6 +136,7 @@ if(!st.adj) st.adj = {};
 if(!st.club) st.club = {};
 if(st.temp == null) st.temp = 48;
 if(!st.v3){ st.src = "sat"; st.hour = 11.5; st.start = 1; st.v2 = 1; st.v3 = 1; }   /* tee time: Saturday 11:30 am shotgun */
+if(!st.v4){ st.src = "sun"; st.hour = 11.5; st.start = 6; st.v4 = 1; st.goStart = 1; }   /* round 2: Sunday 11:30 am shotgun, starting on 6 */
 if(!st.start) st.start = 1;
 /* expand the compact grids: {back: {tempF: {cell: {club: [aim, ev, zlo, zhi, carry, total, width, drift]}}}} */
 for(const h of D.holes){ if(h.kind !== "tee") continue; h.G = {};
@@ -447,5 +448,6 @@ document.getElementById("prevTop").addEventListener("click", () => { st.idx = st
 document.getElementById("nextTop").addEventListener("click", () => { st.idx = step(1); render(); });
 document.getElementById("next").addEventListener("click", () => { st.idx = step(1); render(); });
 document.getElementById("foot").textContent = `Forecast: Open-Meteo, fetched ${D.fetched.slice(0,16).replace("T"," ")} UTC (cross-checked with NWS). Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Each hole's map has the GPS app's markings removed; hole 3 is the 2023 aerial photo. Other tee sets move the tee back or up the line by the scorecard difference from Black (on 2 and 9, Gold uses the Gold-box screenshot); each is solved separately, to the nearest 20 yds. Model v2: each club rolls to your stated total on level fairway (slope changes roll by at most ±30%, no sideways kick), carry adjusted for the temperature when you reach each hole (about 2 yds per 10°F for driver, from 70°F), slight and heavy mishits, curving misses lose carry, lost balls and OB priced as stroke and distance, water relief from where the ball went in, trees as punch-outs, scratch-5 scoring. Picks in wind use v2 at its central settings (driver pattern 70 yds); the calm-day pick and aim come from the v2 Bayesian run (64 prior draws, Saturday 10 am temperatures), aims to the half yard; the blue bar is every aim within 0.005 strokes. The ~235 hybrid is hypothetical. "≈" marks a tie (within 0.01 strokes).`;
+if(st.goStart){ const j = D.holes.findIndex(h => holeNo(h) === st.start && shown(h)); if(j >= 0) st.idx = j; st.goStart = 0; }
 render();
 </script>
