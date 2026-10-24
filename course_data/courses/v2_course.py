@@ -67,12 +67,26 @@ def product_pk():
     return PK
 
 
+def base_tees(cfg, which):
+    """The tee set a `which` is solved for: config "alt_bases" {set: which} names extra fully solved base sets
+    (e.g. {"Blue": "truth_blue"}: the same truth map, solved from the Blue tees); else config "tees"."""
+    for s, w in (cfg.get("alt_bases") or {}).items():
+        if w == which:
+            return s
+    return cfg["tees"]
+
+
+def main_which(cfg, which):
+    """An alt base's page is the main page (its holes are folded in as D.alt): the `which` that owns the page."""
+    return "truth" if which in (cfg.get("alt_bases") or {}).values() else which
+
+
 def prepare(slug, which):
     cfg = config(slug)
-    pkg_path = os.path.join(ROOT, cfg["truth_package" if which == "truth" else "package"])
+    pkg_path = os.path.join(ROOT, cfg["truth_package" if which.startswith("truth") else "package"])
     PK = product_pk()
     import imagery
-    C = PK.load(pkg_path, cfg["tees"])
+    C = PK.load(pkg_path, base_tees(cfg, which))
     out = cdir(slug, which)
     os.makedirs(out, exist_ok=True)
     PK.write_module(C, os.path.join(out, "course.py"))
@@ -295,8 +309,26 @@ def crop_factory(shots):
     return crop_jpeg
 
 
-def build_page(slug, which, out=None):
+def build_page(slug, which, out=None, data_out=None):
+    """The wind page. With config "alt_bases" {set: which}, each alt base is built in its own process (the v2
+    engine binds one course module per process) with data_out, and its holes ride along as D.alt[set]: the page
+    swaps to them when that set is picked, so that set is a fully solved base (own tees, aims, calm-day picks)."""
     cfg = config(slug)
+    if data_out is None and main_which(cfg, which) != which:
+        which = main_which(cfg, which)
+    alt = {}
+    if data_out is None:
+        import subprocess
+        import tempfile
+        for s, w in (cfg.get("alt_bases") or {}).items():
+            if not os.path.exists(cdir(slug, w, "v2", "wind_grid.json")):
+                print("alt base", s, "(", w, ") not computed yet: skipped")
+                continue
+            with tempfile.TemporaryDirectory() as td:
+                p = os.path.join(td, "alt.json")
+                subprocess.run([sys.executable, os.path.abspath(__file__), "page", "--slug", slug, "--which", w,
+                                "--data-out", p], check=True)
+                alt[s] = json.load(open(p))["holes"]
     course, meta, M, D = activate(slug, which)
     import build_wind_page as BW
     import build_page_v2 as BP
@@ -377,7 +409,12 @@ def build_page(slug, which, out=None):
                 speeds=grid["speeds"], dirs=grid["dirs"], temps=grid["temps"], holes=holes, offsets=sorted(grids),
                 forecast=[dict(date=r["date"], hour=r["hour"], mph=r["wind_mph"], gust=r["gust_mph"],
                                dir=r["wind_from_deg"], temp=r["temp_f"]) for r in fc["hourly"]],
-                fetched=fc.get("fetched_utc", ""))
+                fetched=fc.get("fetched_utc", ""), draws=int(cfg.get("draws", 64)))
+    if data_out:
+        json.dump(data, open(data_out, "w"), separators=(",", ":"))
+        return
+    if alt:
+        data["alt"] = alt
     html = open(TEMPLATE).read().replace("/*__DATA__*/null", json.dumps(data, separators=(",", ":")))
     html = html.replace("__TITLE__", data["title"])
     out = out or cdir(slug, "wind_page", "index.html")
@@ -398,6 +435,7 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--draws", type=int, default=64)
     ap.add_argument("--swings", type=int, default=0)
+    ap.add_argument("--data-out")
     a = ap.parse_intermixed_args()
     if a.cmd == "prepare":
         prepare(a.slug, a.which)
@@ -410,7 +448,7 @@ def main():
     elif a.cmd == "merge":
         merge(a.slug, a.which, a.parts)
     elif a.cmd == "page":
-        build_page(a.slug, a.which, a.out)
+        build_page(a.slug, a.which, a.out, data_out=a.data_out)
     elif a.cmd == "offsets":
         print(json.dumps(offsets(a.slug, a.which)))
 

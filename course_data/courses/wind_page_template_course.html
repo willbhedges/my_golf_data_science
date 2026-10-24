@@ -146,7 +146,10 @@ if(st.temp == null) st.temp = 60;
 if(st.hour == null) st.hour = D.tee_hour;
 if(!st.start) st.start = 1;
 /* expand the compact grids: {back: {tempF: {cell: {club: [aim, ev, zlo, zhi, carry, total, width, drift]}}}} */
-for(const h of D.holes){ if(h.kind !== "tee") continue; h.G = {};
+/* D.alt {set: holes}: extra fully solved base sets (own tees, aims, calm-day picks); picking that set swaps to them */
+const MAIN_HOLES = D.holes;
+const useSet = () => { D.holes = (D.alt && D.alt[st.set]) || MAIN_HOLES; };
+for(const h of [].concat(MAIN_HOLES, ...Object.values(D.alt || {}))){ if(h.kind !== "tee") continue; h.G = {};
   for(const [b, byT] of Object.entries(h.grids)){ h.G[b] = {};
     for(const [T, g] of Object.entries(byT)){ const G = {};
       for(const [k, cl] of Object.entries(g)){ const clubs = {};
@@ -442,7 +445,7 @@ document.getElementById("start").addEventListener("change", e => { st.start = +e
   const j = D.holes.findIndex(h => holeNo(h) === st.start && shown(h)); if(j >= 0) st.idx = j; render(); });
 document.getElementById("temp").addEventListener("input", e => { st.temp = +e.target.value; render(); });
 document.querySelectorAll("#src button").forEach(b => b.addEventListener("click", () => { st.src = b.dataset.v; render(); }));
-document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; render(); }));
+document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; useSet(); render(); }));
 document.getElementById("adj").addEventListener("input", e => { const h = D.holes[st.idx]; st.adj[h.key] = +e.target.value; render(); });
 document.getElementById("hTable").addEventListener("click", e => {
   const tr = e.target.closest("tr[data-club]"); if(!tr) return;
@@ -455,6 +458,7 @@ document.getElementById("prev").addEventListener("click", () => { st.idx = step(
 document.getElementById("prevTop").addEventListener("click", () => { st.idx = step(-1); render(); });
 document.getElementById("nextTop").addEventListener("click", () => { st.idx = step(1); render(); });
 document.getElementById("next").addEventListener("click", () => { st.idx = step(1); render(); });
-document.getElementById("foot").textContent = `Weather: ${D.placeholder ? D.fc_note : "forecast fetched " + D.fetched}. Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Hole maps: USDA NAIP aerial photo (${D.imagery || "date unknown"}), hand-checked against USGS 3DEP lidar. Other tee sets move the tee back or up the line by the scorecard difference from ${D.base_set}; each is solved separately, to the nearest 20 yds. ${D.foot_extra} Model v2: each club rolls to your stated total on level fairway (slope changes roll by at most ±30%, no sideways kick), carry adjusted for the temperature when you reach each hole (about 2 yds per 10°F for driver, from 70°F), slight and heavy mishits, curving misses lose carry, lost balls and OB priced as stroke and distance, water relief from where the ball went in, trees as punch-outs, scratch-5 scoring. Picks in wind use v2 at its central settings (driver pattern 70 yds); the calm-day pick and aim come from the v2 Bayesian run (64 prior draws, day-1 temperatures at the default tee time), aims to the half yard; the blue bar is every aim within 0.005 strokes. The ~235 hybrid is hypothetical. "≈" marks a tie (within 0.01 strokes).`;
+document.getElementById("foot").textContent = `Weather: ${D.placeholder ? D.fc_note : "forecast fetched " + D.fetched}. Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Hole maps: USDA NAIP aerial photo (${D.imagery || "date unknown"}), hand-checked against USGS 3DEP lidar. ${D.alt ? [D.base_set].concat(Object.keys(D.alt)).join(" and ") + " are each solved from their own tee boxes. " : ""}Other tee sets move the tee back or up the line by the scorecard difference from ${D.base_set}; each is solved separately, to the nearest 20 yds. ${D.foot_extra} Model v2: each club rolls to your stated total on level fairway (slope changes roll by at most ±30%, no sideways kick), carry adjusted for the temperature when you reach each hole (about 2 yds per 10°F for driver, from 70°F), slight and heavy mishits, curving misses lose carry, lost balls and OB priced as stroke and distance, water relief from where the ball went in, trees as punch-outs, scratch-5 scoring. Picks in wind use v2 at its central settings (driver pattern 70 yds); the calm-day pick and aim come from the v2 Bayesian run (${D.draws || 64} prior draws, day-1 temperatures at the default tee time), aims to the half yard; the blue bar is every aim within 0.005 strokes. The ~235 hybrid is hypothetical. "≈" marks a tie (within 0.01 strokes).`;
+useSet();
 render();
 </script>
