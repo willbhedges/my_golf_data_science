@@ -48,3 +48,7 @@ right from the first build; what the first build lacked was trees.
 * Tree edges: the 2006 lidar corrected by eye on 1 m / 0.6 m photos; new-tree crowns +/-3 yds (11 right especially).
 * 17: creek channel edges +/-4 yds; the far-bank vegetation (traced as trees) may be a wider pool.
 * OB = the OSM course outline (no stakes visible in NAIP): +/-5 yds.
+* Page, forward sets (offset solve along the Black tee line): on the doglegs 4 (Gold/Red, Red), 7 (Gold, Gold/Red,
+  Red), 17 (Gold and shorter: the forward box is 80+ yds up and the tee line no longer points down the fairway) and
+  18 (White/Gold and shorter) the calm pick's aim sits on the engine's 40-yd search bound: treat those forward-set
+  picks as rough guides. Black, Blue and Blue/White are solved from their own boxes (no bound hits).
