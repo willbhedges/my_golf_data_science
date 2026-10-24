@@ -1,5 +1,5 @@
 // Hole-by-hole browser check of a course wind page (Playwright, chromium at /opt/pw-browsers/chromium).
-//   node course_data/courses/qa_page.js course_data/courses/<slug>/wind_page/index.html <out_dir>
+//   node course_data/courses/qa_page.js course_data/courses/<slug>/wind_page/index.html <out_dir> [tee set]
 // For each hole (top next arrow, 400 px phone and 1280 px desktop): a JPEG screenshot of the hole panel and a
 // record {hole, par line, play, aim text, table rows, elevation line, note, badges, problems}. Problems: console
 // errors, NaN / undefined / Infinity in the text, empty play, image missing, table without rows, page wider than
@@ -10,7 +10,7 @@ const fs = require("fs");
 const path = require("path");
 
 (async () => {
-  const [page_path, out] = process.argv.slice(2);
+  const [page_path, out, set0] = process.argv.slice(2);     // optional set0: check every hole from that tee set
   fs.mkdirSync(out, { recursive: true });
   const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
   const report = { page: page_path, views: {} };
@@ -22,6 +22,7 @@ const path = require("path");
     page.on("pageerror", e => errors.push(String(e)));
     await page.goto("file://" + path.resolve(page_path));
     await page.waitForTimeout(400);
+    if (set0) { await page.click(`#set button[data-v="${set0}"]`); await page.waitForTimeout(150); }
     const D = await page.evaluate(() => ({ n: D.holes.length, sets: D.sets, days: D.days, keys: D.holes.map(h => h.key) }));
     const holes = [];
     for (let i = 0; i < D.n; i++) {
@@ -56,7 +57,7 @@ const path = require("path");
       await page.waitForTimeout(80);
       ctl.push({ set: s, par: await page.textContent("#hPar"), play: await page.textContent("#hPlay") });
     }
-    await page.click('#src button[data-v="d1"]');
+    if (await page.$('#src button[data-v="d1"]')) await page.click('#src button[data-v="d1"]');   // one-day events
     await page.selectOption("#start", "10");
     await page.waitForTimeout(100);
     ctl.push({ day2_start10: await page.textContent("#windLbl"), hole: await page.textContent("#hNo") });

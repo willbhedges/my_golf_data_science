@@ -394,7 +394,7 @@ def build_page(slug, which, out=None, data_out=None):
             r = dec.get(str(h))
             d["note"] = ""
             if r and "pick" in r:
-                d["note"] = BP.note_v2(h, r)
+                d["note"] = BP.note_v2(h, r).replace(" of 64 what-if worlds", f" of {r.get('draws', 64)} what-if worlds")
                 d["calm"] = dict(pick=r["pick"], aim=r["aim"], tie=bool(r["tie"]), margin=r["margin"],
                                  flips=r.get("width_flips", []), temp=r.get("temp_f", M.hole_temp(h)),
                                  window=r.get("window"))
