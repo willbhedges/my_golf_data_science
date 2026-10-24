@@ -1,0 +1,100 @@
+name: v2-remerge
+
+# Re-merge the compute artifacts of an earlier nccga-v2 run, split by `which` using the matrix index (the runs before
+# the per-which artifact fix named every part v2-<slug>-<kind>-<i>, so a course with several solved bases got its
+# bases' parts mixed). Trigger: push course_data/requests/v2remerge_<slug>.json
+#   {"slug": "blue_hills", "run_id": 123, "parts": {"truth": "0-14", "truth_blue": "15-19"}, "rev": n}
+# Then: prepare + merge per which (v2_course.py), wind page, commit (as nccga_v2.yml's merge job).
+on:
+  push:
+    paths:
+      - "course_data/requests/v2remerge_*.json"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  remerge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy matplotlib pillow rasterio pyproj shapely opencv-python-headless
+      - id: req
+        run: |
+          R=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/v2remerge_*.json' | tail -1)
+          [ -n "$R" ] || R=$(ls -t course_data/requests/v2remerge_*.json | head -1)
+          echo "req=$R" >> "$GITHUB_OUTPUT"
+          echo "run=$(python3 -c "import json;print(json.load(open('$R'))['run_id'])")" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/parts
+          run-id: ${{ steps.req.outputs.run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Split, merge, page
+        run: |
+          ls /tmp/parts
+          python3 - "${{ steps.req.outputs.req }}" <<'EOF'
+          import json, os, re, shutil, sys
+          q = json.load(open(sys.argv[1]))
+          S = q["slug"]
+          for w, rng in q["parts"].items():
+              a, b = (int(v) for v in rng.split("-"))
+              d = f"/tmp/w_{w}"
+              os.makedirs(d, exist_ok=True)
+              n = 0
+              for name in os.listdir("/tmp/parts"):
+                  m = re.match(rf"v2-{S}-(wind|decide)-(\d+)$", name)
+                  if m and a <= int(m.group(2)) <= b:
+                      shutil.copytree(f"/tmp/parts/{name}", f"{d}/{name}")
+                      n += 1
+              print(w, rng, n, "artifacts")
+          EOF
+          S=$(python3 -c "import json;print(json.load(open('${{ steps.req.outputs.req }}'))['slug'])")
+          for W in $(python3 -c "import json;print(' '.join(json.load(open('${{ steps.req.outputs.req }}'))['parts']))"); do
+            python course_data/courses/v2_course.py prepare --slug $S --which $W
+            rm -rf course_data/courses/$S/$W/v2
+            python course_data/courses/v2_course.py merge --slug $S --which $W /tmp/w_$W
+            # check: each wind part's bearings belong to this which's tees
+            python3 - $S $W /tmp/w_$W <<'EOF'
+          import glob, importlib.util, json, sys
+          S, W, d = sys.argv[1:4]
+          sp = importlib.util.spec_from_file_location("c", f"course_data/courses/{S}/{W}/course.py")
+          m = importlib.util.module_from_spec(sp); sp.loader.exec_module(m)
+          bad = 0
+          for p in glob.glob(f"{d}/**/v2wind_*.json", recursive=True):
+              g = json.load(open(p))
+              for h, b in g["bearings"].items():
+                  k = int(h) if h.isdigit() else h
+                  if k in m.BEARINGS and abs(((b - m.BEARINGS[k] + 180) % 360) - 180) > 0.5 and g["back"] == 0:
+                      bad += 1
+          print(W, "wind parts with bearings off this which's tees:", bad)
+          EOF
+          done
+          for W in $(python3 -c "import json;print(' '.join(json.load(open('${{ steps.req.outputs.req }}'))['parts']))"); do
+            git add -f course_data/courses/$S/$W/v2 course_data/courses/$S/$W/course.py course_data/courses/$S/$W/meta.json
+          done
+          python course_data/courses/v2_course.py page --slug $S --which truth
+          ls -la course_data/courses/$S/wind_page/
+          git add -f course_data/courses/$S/wind_page
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' "v2 remerge: decisions + wind grids split per base, wind page (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i * 10))
+          done
+          exit 1
