@@ -5,6 +5,7 @@ name: v2-remerge
 # bases' parts mixed). Trigger: push course_data/requests/v2remerge_<slug>.json
 #   {"slug": "blue_hills", "run_id": 123, "parts": {"truth": "0-14", "truth_blue": "15-19"}, "rev": n}
 # (ranges like "0-10,15"; the merge overwrites the grids / decisions it is given and keeps the rest)
+# optional "run_id2": a later nccga-v2 run (per-which artifacts) merged on top, e.g. a decide-only rerun
 # Then: prepare + merge per which (v2_course.py), wind page, commit (as nccga_v2.yml's merge job).
 on:
   push:
@@ -34,10 +35,19 @@ jobs:
           [ -n "$R" ] || R=$(ls -t course_data/requests/v2remerge_*.json | head -1)
           echo "req=$R" >> "$GITHUB_OUTPUT"
           echo "run=$(python3 -c "import json;print(json.load(open('$R'))['run_id'])")" >> "$GITHUB_OUTPUT"
+          echo "run2=$(python3 -c "import json;print(json.load(open('$R')).get('run_id2', ''))")" >> "$GITHUB_OUTPUT"
       - uses: actions/download-artifact@v4
         with:
           path: /tmp/parts
           run-id: ${{ steps.req.outputs.run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # optional later run with per-which artifact names (v2-<slug>--<which>--<kind>-<i>): merged after the first,
+      # so its decisions / grids win
+      - if: steps.req.outputs.run2 != ''
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/parts2
+          run-id: ${{ steps.req.outputs.run2 }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Split, merge, page
         run: |
@@ -65,6 +75,10 @@ jobs:
           for W in $(python3 -c "import json;print(' '.join(json.load(open('${{ steps.req.outputs.req }}'))['parts']))"); do
             python course_data/courses/v2_course.py prepare --slug $S --which $W
             python course_data/courses/v2_course.py merge --slug $S --which $W /tmp/w_$W
+            if ls -d /tmp/parts2/v2-$S--$W--* >/dev/null 2>&1; then
+              mkdir -p /tmp/w2_$W; cp -r /tmp/parts2/v2-$S--$W--* /tmp/w2_$W/
+              python course_data/courses/v2_course.py merge --slug $S --which $W /tmp/w2_$W
+            fi
             # check: each wind part's bearings belong to this which's tees
             python3 - $S $W /tmp/w_$W <<'EOF'
           import glob, importlib.util, json, sys
