@@ -196,6 +196,9 @@ def activate(slug, which):
     fc = forecast(slug)
     M.FORECAST = fc["hourly"]
     M.TEE_DAY, M.TEE_HOUR = cfg["days"][0], float(cfg.get("tee_hour", 9.0))
+    # hole_temp(h, day=TEE_DAY, tee_hour=TEE_HOUR) bound Spirit Hollow's day at import: without this every hole of
+    # another course got the no-forecast fallback (48 F) in the decide runs and the page's calm temperature
+    M.hole_temp.__defaults__ = (M.TEE_DAY, M.TEE_HOUR)
     import decide as D
     return course, meta, M, D
 

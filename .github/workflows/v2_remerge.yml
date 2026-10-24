@@ -4,6 +4,7 @@ name: v2-remerge
 # the per-which artifact fix named every part v2-<slug>-<kind>-<i>, so a course with several solved bases got its
 # bases' parts mixed). Trigger: push course_data/requests/v2remerge_<slug>.json
 #   {"slug": "blue_hills", "run_id": 123, "parts": {"truth": "0-14", "truth_blue": "15-19"}, "rev": n}
+# (ranges like "0-10,15"; the merge overwrites the grids / decisions it is given and keeps the rest)
 # Then: prepare + merge per which (v2_course.py), wind page, commit (as nccga_v2.yml's merge job).
 on:
   push:
@@ -46,13 +47,16 @@ jobs:
           q = json.load(open(sys.argv[1]))
           S = q["slug"]
           for w, rng in q["parts"].items():
-              a, b = (int(v) for v in rng.split("-"))
+              idx = set()
+              for part in rng.split(","):                 # "0-10,15" style ranges of matrix indices
+                  a, _, b = part.partition("-")
+                  idx |= set(range(int(a), int(b or a) + 1))
               d = f"/tmp/w_{w}"
               os.makedirs(d, exist_ok=True)
               n = 0
               for name in os.listdir("/tmp/parts"):
                   m = re.match(rf"v2-{S}-(wind|decide)-(\d+)$", name)
-                  if m and a <= int(m.group(2)) <= b:
+                  if m and int(m.group(2)) in idx:
                       shutil.copytree(f"/tmp/parts/{name}", f"{d}/{name}")
                       n += 1
               print(w, rng, n, "artifacts")
@@ -60,7 +64,6 @@ jobs:
           S=$(python3 -c "import json;print(json.load(open('${{ steps.req.outputs.req }}'))['slug'])")
           for W in $(python3 -c "import json;print(' '.join(json.load(open('${{ steps.req.outputs.req }}'))['parts']))"); do
             python course_data/courses/v2_course.py prepare --slug $S --which $W
-            rm -rf course_data/courses/$S/$W/v2
             python course_data/courses/v2_course.py merge --slug $S --which $W /tmp/w_$W
             # check: each wind part's bearings belong to this which's tees
             python3 - $S $W /tmp/w_$W <<'EOF'
