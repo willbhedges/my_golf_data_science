@@ -65,7 +65,33 @@ LATE = {           # added after the auto layers (win over them): hand correctio
     "18": [Z("recovery", ell(-42, 352, 10, 6), "left trees past the 2006 lidar edge (NAIP 2021 / 2023)")],
 }
 LOTS = {}           # ref -> False where the house-lot rule draws OB that is not OB on the ground
-NOTE = {}
+NOTE = {
+    "1": ("Par 5 north from the clubhouse: fairway 150-480 bending right (corner ~290 yds, 35 right); trees left between "
+          "the fairway and the houses, OB beyond the course outline 35-50 yds left; bunkers right 265-305; trees right "
+          "beyond them. 2006 crowns right at 325-360 are gone (rough).", "high"),
+    "2": ("Fairway 200-400; houses left behind a tree line (OB at the course outline 30-50 yds left); tree lines both "
+          "sides; fairway bunker left 270-285.", "high"),
+    "3": ("Narrow fairway (25-30 yds) bending left through trees, tree-lined both sides; a tree grown since 2006 right "
+          "at 240.", "high"),
+    "4": ("Fairway 160-400 bending left; houses left (OB 35+ yds left); trees both sides.", "high"),
+    "6": ("Par 5 over the pond (carry ~110 from Black); fairway 190-440 bending right; houses / OB left along the "
+          "course outline; scattered trees both sides, one grown since 2006 left at 330.", "high"),
+    "7": ("Fairway to ~300, then a dogleg left around a clump of trees; bunkers left 260-280 and 300-320; houses far "
+          "left.", "high"),
+    "9": ("Straight fairway; bunkers left 265 and right 280-290; the right tree line 5-10 yds off the fairway; houses / "
+          "OB left beyond the trees.", "high"),
+    "10": ("Fairway bending left toward the green; clumps of trees right at 290-345; houses / OB left.", "high"),
+    "11": ("Narrow fairway bending left; trees right at 300-340 grown since 2006 (2006 lidar < 2.5 m there); houses / OB "
+           "left.", "medium (young trees right: crown size +/-3 yds)"),
+    "13": ("Par 5: long fairway drifting left; tree lines both sides; creek and OB far left.", "high"),
+    "15": ("Straight chute: tree lines both sides 12-18 yds off the fairway centre.", "high"),
+    "16": ("Straight, narrow fairway (~25 yds); trees both sides 10-15 yds off the line.", "high"),
+    "17": ("Dogleg right: fairway 160-325; the creek crosses at 338-360 from Black (300-325 from Blue): its channel is "
+           "15-20 yds wide at the line, 2-3x the OSM strip; vegetation on the far bank; trees both sides at the corner.",
+           "medium (creek width / far-bank vegetation +/-4 yds)"),
+    "18": ("Par 5 home: fairway from 225 bending left; houses / OB left (outline 30-40 yds left); trees right; fairway "
+           "bunker right at 320.", "high"),
+}
 TEE_SHOTS = ("1", "2", "3", "4", "6", "7", "9", "10", "11", "13", "15", "16", "17", "18")
 for _r in TEE_SHOTS:
     _n, _c = NOTE.get(_r, ("Auto start layers (lidar canopy, OSM fairway / water / sand, house lots) checked on the "

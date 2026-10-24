@@ -4,6 +4,8 @@ name: nccga-v2
 # Trigger: push course_data/requests/nccga_v2_<slug>.json
 #   {"slug": "pine_dunes", "which": "truth", "offsets": [0, -40, ...], "temps": [40, 55, 70],
 #    "decide_jobs": 3, "draws": 64, "rev": 1}
+#   optional "holes": [3, 17] limits the decide jobs to those holes (e.g. a close call re-run with more draws; the
+#   merge keeps the other holes' decisions); "offsets": [] then skips the wind grids.
 # Jobs: one wind job per tee offset (all temperatures; holes split over the runner's cores), `decide_jobs` jobs
 # for the Bayesian calm-day pick, then merge -> course_data/courses/<slug>/<which>/v2/ + wind_page/index.html.
 on:
@@ -44,7 +46,8 @@ jobs:
                                   temps=",".join(str(t) for t in q["temps"]), part=str(b)))
               for j in range(int(q.get("decide_jobs", 3))):
                   inc.append(dict(kind="decide", slug=q["slug"], which=q.get("which", "truth"), back=0, temps="",
-                                  part=f"{j}/{int(q.get('decide_jobs', 3))}", draws=int(q.get("draws", 64))))
+                                  part=f"{j}/{int(q.get('decide_jobs', 3))}", draws=int(q.get("draws", 64)),
+                                  holes=",".join(str(h) for h in q.get("holes", []))))
           print("matrix=" + json.dumps({"include": inc}))
           print("reqs=" + " ".join(reqs))
           EOF
@@ -77,6 +80,7 @@ jobs:
           import importlib.util,sys
           s=importlib.util.spec_from_file_location('c','course_data/courses/$S/$W/course.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
           print(' '.join(str(k) for k in m.ORDER if k in m.HOLES))")
+          if [ -n "${{ matrix.holes }}" ]; then HOLES=$(echo "${{ matrix.holes }}" | tr ',' ' '); fi
           NP=$(nproc)
           echo "holes: $HOLES; cores: $NP"
           if [ "${{ matrix.kind }}" = "wind" ]; then
