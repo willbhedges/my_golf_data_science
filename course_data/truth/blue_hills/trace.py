@@ -49,7 +49,20 @@ LATE = {           # added after the auto layers (win over them): hand correctio
     "17": [Z("water", poly((-70, 349), (-50, 342), (-30, 338), (-10, 338), (10, 343), (30, 347), (50, 352), (70, 358),
                            (70, 366), (50, 361), (30, 358), (10, 356), (-10, 357), (-30, 359), (-50, 360), (-70, 363)),
              "creek across the hole: the channel (dark in CIR 2021 / NAIP 2023) is 15-20 yds wide at x -30..0, "
-             "2-3x the OSM water strip")],
+             "2-3x the OSM water strip"),
+           Z("recovery", poly((-30, 359), (-20, 358), (0, 357), (12, 357), (12, 371), (0, 376), (-20, 374), (-30, 368)),
+             "far bank of the creek: dense vegetation (dark in NAIP 2021 / 2023 and CIR, no 2006 lidar height); "
+             "uncertain: shrubs / young trees or a wider pool")],
+    "1": [Z("rough", rect(-8, 12, 322, 362), "2006 lidar crowns right of the fairway at 325-360 are gone: mown rough "
+                                             "with a path in NAIP 2021 / 2023 and CIR")],
+    "3": [Z("recovery", ell(24, 241, 7, 7), "tree grown since 2006 right of the fairway (NAIP 2021 / 2023, CIR)"),
+          Z("recovery", ell(-25, 223, 5, 7), "tree crown left of the fairway past the 2006 lidar edge")],
+    "6": [Z("recovery", ell(-35, 331, 8, 10), "tree grown since 2006 left of the fairway (NAIP 2021 / 2023, CIR)")],
+    "9": [Z("recovery", ell(-19, 229, 5, 9), "left tree line: crowns 5-8 yds past the 2006 lidar edge")],
+    "11": [Z("recovery", ell(9, 332, 7, 6), "trees grown since 2006 right of the fairway (2006 lidar < 2.5 m there)"),
+           Z("recovery", ell(17, 317, 6, 6), "tree grown since 2006 right of the fairway"),
+           Z("recovery", ell(9, 306, 5, 5), "tree grown since 2006 right of the fairway")],
+    "18": [Z("recovery", ell(-42, 352, 10, 6), "left trees past the 2006 lidar edge (NAIP 2021 / 2023)")],
 }
 LOTS = {}           # ref -> False where the house-lot rule draws OB that is not OB on the ground
 NOTE = {}
