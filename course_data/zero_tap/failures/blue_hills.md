@@ -37,6 +37,9 @@ right from the first build; what the first build lacked was trees.
 | T1 | - | tooling | the sandbox cannot reach GolfPass / BlueGolf / golfify / OpenGolfAPI / weather APIs | network policy | `.github/workflows/web_fetch.yml` (request-file page fetch) and `weather_course.yml` + `weather/fetch_course_forecast.py` (any course's forecast) added | - |
 | T2 | - | tooling | the v2 page solved one base tee set; other sets were offsets of it (20-yd grid) | single `which` per page | `alt_bases` in config: a set can be a fully solved base (own tees, aims, Bayesian calm-day picks) shown in the same page (Blue and Blue/White here); `nccga_v2.yml` takes an optional `holes` list for decide re-runs | - |
 
+| T3 | - | tooling (all v2 courses) | the calm-day Bayesian decide ran every hole at 48 F on every course built with `v2_course.py` (Eagle Knoll, Gateway, National KC, Pine Dunes, Arlington too) | `spirit_hollow/v2/model.hole_temp(h, day=TEE_DAY, ...)` binds Spirit Hollow's day as a default at import; setting `M.TEE_DAY` later does not change it, no forecast row matches, fallback 48 F | `v2_course.activate` rebinds the defaults; Blue Hills decisions rerun at the Oct 27 forecast (60-68 F by hole). The other courses' decisions should be rerun (decide-only request: `"offsets": []`) | - |
+| T4 | - | tooling | two solved bases of one course merged each other's parts (identical v2 dirs) | artifacts named `v2-<slug>-<kind>-<i>`, the merge copied every `v2-<slug>-*` | artifacts carry the which; `.github/workflows/v2_remerge.yml` re-merges an earlier run by matrix index | - |
+
 ## Uncertain in the truth
 
 * Black tees on 2, 5 and 6: 5 yds short of the card at the back of the pad (no box visible further back).
