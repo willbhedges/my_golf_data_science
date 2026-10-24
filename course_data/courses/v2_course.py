@@ -381,8 +381,14 @@ def build_page(slug, which, out=None, data_out=None):
         else:
             d["tee_name"] = base + " tee"
             d["tee_offimage"] = False
+            keep = set(grids)
+            if cfg.get("grid_prune"):
+                # page size: only the grids some offered set snaps to on this hole (alt bases carry their own holes)
+                have = [b for b, g in grids.items() if str(h) in g.get("holes", {})]
+                keep = {0} | {min(have, key=lambda b: abs(b - o["back"])) for o in opts
+                              if o["name"] not in (cfg.get("alt_bases") or {})}
             d["grids"] = {str(b): {T: BP.compact(gT) for T, gT in g["holes"][str(h)].items()}
-                          for b, g in sorted(grids.items()) if str(h) in g.get("holes", {})}
+                          for b, g in sorted(grids.items()) if str(h) in g.get("holes", {}) and b in keep}
             Tn = min(grid["temps"], key=lambda T: abs(T - M.hole_temp(h)))
             d["cloud"] = BP.cloud(h, grid["holes"][str(h)][f"{Tn:g}"]["0_0"], Tn)
             r = dec.get(str(h))

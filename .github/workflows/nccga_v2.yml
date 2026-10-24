@@ -112,7 +112,7 @@ jobs:
           tail -n 3 parts/log_* || true
       - uses: actions/upload-artifact@v4
         with:
-          name: v2-${{ matrix.slug }}-${{ matrix.kind }}-${{ strategy.job-index }}
+          name: v2-${{ matrix.slug }}--${{ matrix.which }}--${{ matrix.kind }}-${{ strategy.job-index }}
           path: parts/
 
   merge:
@@ -136,7 +136,7 @@ jobs:
             S=$(python3 -c "import json;print(json.load(open('$r'))['slug'])")
             W=$(python3 -c "import json;print(json.load(open('$r')).get('which','truth'))")
             mkdir -p /tmp/p_$S
-            cp -r /tmp/parts/v2-$S-* /tmp/p_$S/ 2>/dev/null || true
+            rm -rf /tmp/p_$S; mkdir -p /tmp/p_$S; cp -r /tmp/parts/v2-$S--$W--* /tmp/p_$S/ 2>/dev/null || true   # parts of THIS which only (two whiches of one course share part file names)
             python course_data/courses/v2_course.py prepare --slug $S --which $W
             python course_data/courses/v2_course.py merge --slug $S --which $W /tmp/p_$S
             python course_data/courses/v2_course.py page --slug $S --which $W || echo "page failed"
