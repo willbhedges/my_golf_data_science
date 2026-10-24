@@ -1,5 +1,5 @@
 """Course module for Blue Hills Country Club (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-10-24T17:51:49Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-24T18:19:59Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_blue_hills.json
 
