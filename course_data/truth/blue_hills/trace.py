@@ -9,8 +9,8 @@ post-renovation layout: they match NAIP 2021 / 2023), 3DEP lidar canopy (KS_Jack
 NAIP 2021 (0.6 m) + CIR, NAIP 2018-2022, and the Meta / WRI 2024 canopy-height map (CHM from ~2018-2020 Maxar
 imagery) as the recency check of the 2006 crowns; then corrected by hand (see notes).
 
-The footprint is extended to 415 yds along (FOOT a1 345 -> 415) on this course: the Blue tees are up to 65 yds ahead
-of Black (18), and Blue is also solved as a full base set, so its drives (to ~330 from Blue) stay on the hand map.
+The footprint is extended to 440 yds along (FOOT a1 345 -> 440) on this course: the Blue tees are up to 65 yds and Blue/White up to 99 yds ahead
+of Black (18), and Blue and Blue/White are also solved as full base sets, so their drives stay on the hand map.
 """
 import os
 import sys
@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import corridor as C  # noqa: E402
 from corridor import Z, band, ell, poly, rect  # noqa: E402,F401
 
-C.FOOT.update(a1=415.0)            # before any assist call: assist clips to C.FOOT; build writes the footprint
+C.FOOT.update(a1=440.0)            # before any assist call: assist clips to C.FOOT; build writes the footprint
 import assist as A  # noqa: E402
 
 S = "blue_hills"
@@ -53,16 +53,21 @@ LATE = {           # added after the auto layers (win over them): hand correctio
            Z("recovery", poly((-30, 359), (-20, 358), (0, 357), (12, 357), (12, 371), (0, 376), (-20, 374), (-30, 368)),
              "far bank of the creek: dense vegetation (dark in NAIP 2021 / 2023 and CIR, no 2006 lidar height); "
              "uncertain: shrubs / young trees or a wider pool")],
-    "1": [Z("rough", rect(-8, 12, 322, 362), "2006 lidar crowns right of the fairway at 325-360 are gone: mown rough "
+    "1": [Z("recovery", ell(-37, 295, 4, 5), "small tree left grown since 2006 (NAIP 2021 / 2023)"),
+          Z("rough", rect(-8, 12, 322, 362), "2006 lidar crowns right of the fairway at 325-360 are gone: mown rough "
                                              "with a path in NAIP 2021 / 2023 and CIR")],
     "3": [Z("recovery", ell(24, 241, 7, 7), "tree grown since 2006 right of the fairway (NAIP 2021 / 2023, CIR)"),
           Z("recovery", ell(-25, 223, 5, 7), "tree crown left of the fairway past the 2006 lidar edge")],
+    "13": [Z("recovery", ell(33, 372, 9, 10), "trees right at 360-385 grown since 2006 (NAIP 2021 / 2023)")],
     "6": [Z("recovery", ell(-35, 331, 8, 10), "tree grown since 2006 left of the fairway (NAIP 2021 / 2023, CIR)")],
     "9": [Z("recovery", ell(-19, 229, 5, 9), "left tree line: crowns 5-8 yds past the 2006 lidar edge")],
     "11": [Z("recovery", ell(9, 332, 7, 6), "trees grown since 2006 right of the fairway (2006 lidar < 2.5 m there)"),
            Z("recovery", ell(17, 317, 6, 6), "tree grown since 2006 right of the fairway"),
            Z("recovery", ell(9, 306, 5, 5), "tree grown since 2006 right of the fairway")],
-    "18": [Z("recovery", ell(-42, 352, 10, 6), "left trees past the 2006 lidar edge (NAIP 2021 / 2023)")],
+    "18": [Z("recovery", ell(-42, 352, 10, 6), "left trees past the 2006 lidar edge (NAIP 2021 / 2023)"),
+           Z("rough", poly((-12, 333), (24, 333), (28, 350), (26, 386), (-6, 386), (-12, 360)),
+             "2006 lidar canopy right of the fairway at 333-386 is gone: uniform mown rough in NAIP 2021 / 2023 and "
+             "CIR (cleared with the renovation; a few young trees only)")],
 }
 LOTS = {}           # ref -> False where the house-lot rule draws OB that is not OB on the ground
 NOTE = {
