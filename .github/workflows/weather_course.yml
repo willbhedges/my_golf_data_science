@@ -1,0 +1,45 @@
+name: weather-course
+
+# Hourly forecast for a tournament course. Trigger: push course_data/requests/weather_<slug>.json
+#   {"slug", "name", "lat", "lon", "days": [YYYY-MM-DD, ...], "hours": [6, 19], "rev": n}
+# -> course_data/weather/forecast_<slug>.json (course_data/weather/fetch_course_forecast.py)
+on:
+  push:
+    paths:
+      - "course_data/requests/weather_*.json"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fetch
+        run: |
+          git diff --name-only HEAD~1 HEAD -- 'course_data/requests/weather_*.json' > /tmp/reqs.txt || true
+          [ -s /tmp/reqs.txt ] || ls -t course_data/requests/weather_*.json | head -1 > /tmp/reqs.txt
+          for r in $(cat /tmp/reqs.txt); do python course_data/weather/fetch_course_forecast.py "$r" || echo "failed $r"; done
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/weather/forecast_*.json
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' "weather-course: course forecast (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i * 10))
+          done
+          exit 1
