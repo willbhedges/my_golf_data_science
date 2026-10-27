@@ -1,0 +1,66 @@
+name: blue-hills-sharp-page
+
+# Blue Hills wind page rebuilt on the sharper NAIP 2023 photo (0.3 m, display only: the picks, maps and
+# forecast are unchanged). Fetches 2023 into a temp dir, points the truth package at it for the render only,
+# re-renders the hole images for every solved base and rebuilds the page. Commits only the page.
+# Trigger: push course_data/requests/bh_sharp.json.
+on:
+  push:
+    paths:
+      - "course_data/requests/bh_sharp.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bh-sharp-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  page:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests numpy scipy matplotlib pillow shapely pyproj rasterio pystac-client planetary-computer opencv-python-headless
+      - name: Fetch NAIP 2023 (0.3 m)
+        run: |
+          python course_data/imagery/fetch_imagery.py --bbox 38.89084,-94.60483,38.90502,-94.59385 --margin 0 \
+            --year 2023 --lo-res 0.3 --no-dem --name "Blue Hills Country Club" --out /tmp/bh2023
+          python -c "import json;g=json.load(open('/tmp/bh2023/georef.json'));print(g['imagery'].get('year'), g.get('gsd_m'), g['width'], g['height'])"
+      - name: Re-render holes on 2023 and rebuild the page
+        run: |
+          python - <<'EOF'
+          import json
+          p = "course_data/courses/blue_hills/truth/package.json"
+          d = json.load(open(p))
+          im = d.setdefault("sources", {}).setdefault("imagery", {})
+          im.update(dir="/tmp/bh2023", year=2023, naip_date="2023-08-16", acquired=["2023-08-16"], resolution_m=0.3)
+          json.dump(d, open(p, "w"), indent=1)
+          EOF
+          for W in truth truth_blue truth_bluewhite; do
+            python course_data/courses/v2_course.py prepare --slug blue_hills --which $W
+          done
+          python course_data/courses/v2_course.py page --slug blue_hills --which truth
+          git checkout -- course_data/courses/blue_hills/truth/package.json course_data/courses/blue_hills/*/course.py course_data/courses/blue_hills/*/meta.json 2>/dev/null || true
+          ls -la course_data/courses/blue_hills/wind_page/index.html
+      - name: Commit page
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f course_data/courses/blue_hills/wind_page/index.html
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' "Blue Hills page on NAIP 2023 0.3 m photo (display only) (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            git rebase --abort 2>/dev/null || true; sleep $((i * 10))
+          done
+          exit 1
