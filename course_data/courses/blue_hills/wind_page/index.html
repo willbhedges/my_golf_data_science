@@ -141,6 +141,8 @@ if(D.placeholder){ const b = document.getElementById("phBanner"); b.hidden = fal
 document.getElementById("src").innerHTML = D.day_labels.map((l, i) => `<button data-v="d${i}">${l}</button>`).join("") + `<button data-v="custom">Custom</button>`;
 document.getElementById("set").innerHTML = D.sets.map(s => `<button data-v="${s}">${s}${D.set_totals && D.set_totals[s] ? " " + D.set_totals[s] : ""}</button>`).join("");
 if(!st.adj) st.adj = {};
+if(!st.fwa1){ st.set = "Blue"; st.src = "d0"; st.hour = D.tee_hour; st.start = 1; st.idx = 0;   /* FWA Tour Championship: Blue, 9:10 off hole 1 */
+  st.adj = {"2":-10,"3":-10,"6":-10,"9":-10,"15":-20,"16":10,"17":10}; st.fwa1 = 1; }   /* tournament card vs the Blue card, nearest 10 yds */
 if(!st.club) st.club = {};
 if(st.temp == null) st.temp = 60;
 if(st.hour == null) st.hour = D.tee_hour;
