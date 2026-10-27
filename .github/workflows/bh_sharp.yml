@@ -32,7 +32,7 @@ jobs:
         run: |
           python course_data/imagery/fetch_imagery.py --bbox 38.89084,-94.60483,38.90502,-94.59385 --margin 0 \
             --year 2023 --lo-res 0.3 --no-dem --name "Blue Hills Country Club" --out /tmp/bh2023
-          python -c "import json;g=json.load(open('/tmp/bh2023/georef.json'));print(g['imagery'].get('year'), g.get('gsd_m'), g['width'], g['height'])"
+          python -c "import json;g=json.load(open('/tmp/bh2023/georef.json'));print(g['imagery'].get('year'), g.get('gsd_m'), g.get('width'), g.get('height'))"
       - name: Re-render holes on 2023 and rebuild the page
         run: |
           python - <<'EOF'
