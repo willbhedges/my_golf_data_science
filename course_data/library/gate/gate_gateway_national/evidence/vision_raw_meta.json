@@ -1,0 +1,162 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "gate_gateway_national",
+ "course": "Gateway National Golf Links",
+ "bbox_snwe": [
+  38.651262,
+  -90.155924,
+  38.665528,
+  -90.133375
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 2254,
+  "height": 1886,
+  "bounds": [
+   747330,
+   4281796,
+   749584,
+   4283682
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   747330.0,
+   0.0,
+   -1.0,
+   4283682.0
+  ],
+  "ll_bbox_wsen": [
+   -90.15792303270864,
+   38.649594705948715,
+   -90.13137465567038,
+   38.667202062941115
+  ]
+ },
+ "fetched_utc": "2026-10-29T20:26:25Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_MadisonCo_2014_LAS_2016-hag-2m-1-0",
+     "when": "2014-03-31T00:00:00.000000Z",
+     "cells": 4228123,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_MadisonCo_2014_LAS_2016",
+      "end_datetime": "2014-03-31T00:00:00.000000Z",
+      "start_datetime": "2014-03-23T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9946081480219918,
+   "file": "hag.tif",
+   "mb": 1.23,
+   "frac_gt_2_5m": 0.2764638521737249
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_MadisonCo_2014_LAS_2016-dtm-2m-1-0",
+     "when": "2014-03-31T00:00:00.000000Z",
+     "cells": 1056672,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_MadisonCo_2014_LAS_2016",
+      "end_datetime": "2014-03-31T00:00:00.000000Z",
+      "start_datetime": "2014-03-23T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9942705838848057,
+   "mb": 3.04
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_MadisonCo_2014_LAS_2016-classification-2m-1-0",
+     "when": "2014-03-31T00:00:00.000000Z",
+     "cells": 4151737,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_MadisonCo_2014_LAS_2016",
+      "end_datetime": "2014-03-31T00:00:00.000000Z",
+      "start_datetime": "2014-03-23T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.72,
+   "counts": {
+    "0": 99307,
+    "1": 2358557,
+    "2": 974477,
+    "3": 48967,
+    "4": 332855,
+    "5": 220408,
+    "6": 62288,
+    "9": 152484,
+    "10": 1701
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111311"
+  ],
+  "mb": 0.23,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1062761,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.05
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 16.83,
+    "items": [
+     "il_m_3809023_se_15_030_20230819_20231031"
+    ],
+    "acquired": [
+     "2023-08-19"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 13.16,
+    "items": [
+     "mo_m_3809023_se_15_060_20220618"
+    ],
+    "acquired": [
+     "2022-06-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
