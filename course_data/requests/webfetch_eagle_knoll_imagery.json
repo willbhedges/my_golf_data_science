@@ -1,0 +1,17 @@
+{
+ "name": "eagle_knoll_imagery",
+ "rev": 1,
+ "note": "Newer / sharper photo sources for Eagle Knoll (38.6961 N, 92.2630 W) than Planetary Computer's NAIP (2012-2022, 0.6 m at best): the MSDIS (Missouri) image services incl. NAIP 2024, and the USDA APFO NAIP service.",
+ "urls": [
+  "https://moimagery.missouri.edu/arcgis/rest/services/MSDIS?f=pjson",
+  "https://moimagery.missouri.edu/arcgis/rest/services?f=pjson",
+  "https://moimagery.missouri.edu/arcgis/rest/services/MSDIS/NAIP2024/ImageServer?f=pjson",
+  "https://moimagery.missouri.edu/arcgis/rest/services/MSDIS/NAIP2024/ImageServer/info/iteminfo?f=pjson",
+  "https://moimagery.missouri.edu/arcgis/rest/services/MSDIS/NAIP2024/ImageServer/identify?geometry=%7B%22x%22%3A-92.263%2C%22y%22%3A38.6961%2C%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%7D&geometryType=esriGeometryPoint&returnGeometry=false&returnCatalogItems=true&f=pjson",
+  "https://moimagery.missouri.edu/arcgis/rest/services/MSDIS/NAIP2022/ImageServer?f=pjson",
+  "https://moimagery.missouri.edu/arcgis/rest/services/MSDIS/NAIP2023/ImageServer?f=pjson",
+  "https://gis.apfo.usda.gov/arcgis/rest/services/NAIP?f=pjson",
+  "https://gis.apfo.usda.gov/arcgis/rest/services/NAIP/USDA_CONUS_PRIME/ImageServer/identify?geometry=%7B%22x%22%3A-92.263%2C%22y%22%3A38.6961%2C%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%7D&geometryType=esriGeometryPoint&returnGeometry=false&returnCatalogItems=true&f=pjson",
+  "https://naip-usdaonline.hub.arcgis.com/"
+ ]
+}
