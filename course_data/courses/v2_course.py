@@ -18,7 +18,12 @@ frames are already ground yards. Bearings come from the package (tee -> aim, deg
 config.json (course_data/courses/<slug>/config.json):
   {"name", "package", "truth_package", "tees" (base set), "sets" [men's sets to offer], "colors" {set: css},
    "days" [YYYY-MM-DD, YYYY-MM-DD], "tee_hour" 9.0, "temps" [..], "forecast" (file, optional),
-   "climate" {"temp_lo", "temp_hi", "wind_mph", "wind_from"} (placeholder forecast)}
+   "climate" {"temp_lo", "temp_hi", "wind_mph", "wind_from"} (placeholder forecast),
+   "alt_bases" {set: which} (extra fully solved base sets), "display_imagery" {"year": 2023} (a sharper NAIP year for
+   the page photos only: `fetch-display` fetches it on Actions, prepare / page render from it when present)}
+
+  python3 course_data/courses/v2_course.py fetch-display --slug S      -> /tmp/v2_display_<slug>_<year> (Actions)
+  python3 course_data/courses/v2_course.py prepare-all   --slug S      -> prepare truth + every alt base
 """
 import argparse
 import base64
@@ -81,12 +86,71 @@ def main_which(cfg, which):
     return "truth" if which in (cfg.get("alt_bases") or {}).values() else which
 
 
+def display_dir(slug):
+    """config "display_imagery" {"year": 2023[, "dir": ...]}: a sharper photo for the page only (picks, maps and grids
+    are unchanged). Its folder (env V2_DISPLAY_DIR, else "dir", else /tmp/v2_display_<slug>_<year>) is filled by
+    `fetch-display` (course_data/imagery/display_imagery.py, Actions); prepare renders the hole photos from it when
+    it exists, else from the package imagery. V2_NO_DISPLAY=1 turns it off."""
+    di = config(slug).get("display_imagery")
+    if not di or os.environ.get("V2_NO_DISPLAY") == "1":
+        return None
+    d = os.environ.get("V2_DISPLAY_DIR") or di.get("dir") or f"/tmp/v2_display_{slug}_{di.get('year', 'best')}"
+    d = d if os.path.isabs(d) else os.path.join(ROOT, d)
+    return d if os.path.exists(os.path.join(d, "georef.json")) else None
+
+
+def fetch_display(slug):
+    di = config(slug).get("display_imagery")
+    if not di:
+        print(slug, "has no display_imagery in config.json: nothing to fetch")
+        return None
+    d = os.environ.get("V2_DISPLAY_DIR") or di.get("dir") or f"/tmp/v2_display_{slug}_{di.get('year', 'best')}"
+    d = d if os.path.isabs(d) else os.path.join(ROOT, d)
+    if not os.path.exists(os.path.join(d, "georef.json")):
+        sys.path.insert(0, os.path.join(CD, "imagery"))
+        import display_imagery as DI
+        DI.fetch(slug, str(di.get("year", "best")), d)
+    return d
+
+
+def whiches(slug):
+    cfg = config(slug)
+    return ["truth"] + [w for w in (cfg.get("alt_bases") or {}).values()]
+
+
+def ensure_shots(slug, which):
+    """Re-render a which's hole photos (prepare, own process) when they are missing (alt-base screenshots are not
+    committed) or were rendered from other imagery than the display / package imagery now in use."""
+    shots = cdir(slug, which, "screenshots", "index.json")
+    want = display_dir(slug)
+    have = None
+    if os.path.exists(shots):
+        try:
+            have = next(iter(json.load(open(shots)).values())).get("imagery_date")
+        except Exception:                                      # noqa: BLE001
+            have = None
+    if want:
+        g = json.load(open(os.path.join(want, "georef.json"))).get("imagery", {})
+        want_date = ",".join(g.get("acquired", [])) or None
+    else:
+        want_date = json.load(open(cdir(slug, which, "meta.json"))).get("imagery_date") if have else None
+    if have is None or (want and have != want_date):
+        import subprocess
+        print("re-rendering", which, "photos:", have, "->", want_date or "package imagery")
+        subprocess.run([sys.executable, os.path.abspath(__file__), "prepare", "--slug", slug, "--which", which],
+                       check=True)
+
+
 def prepare(slug, which):
     cfg = config(slug)
     pkg_path = os.path.join(ROOT, cfg["truth_package" if which.startswith("truth") else "package"])
     PK = product_pk()
     import imagery
     C = PK.load(pkg_path, base_tees(cfg, which))
+    disp = display_dir(slug) if which.startswith("truth") else None
+    if disp:
+        C.imagery_dir = disp                    # display only: the module, frames and zones do not depend on it
+        print("display imagery:", disp)
     out = cdir(slug, which)
     os.makedirs(out, exist_ok=True)
     PK.write_module(C, os.path.join(out, "course.py"))
@@ -323,10 +387,12 @@ def build_page(slug, which, out=None, data_out=None):
     if data_out is None:
         import subprocess
         import tempfile
+        ensure_shots(slug, which)
         for s, w in (cfg.get("alt_bases") or {}).items():
             if not os.path.exists(cdir(slug, w, "v2", "wind_grid.json")):
                 print("alt base", s, "(", w, ") not computed yet: skipped")
                 continue
+            ensure_shots(slug, w)
             with tempfile.TemporaryDirectory() as td:
                 p = os.path.join(td, "alt.json")
                 subprocess.run([sys.executable, os.path.abspath(__file__), "page", "--slug", slug, "--which", w,
@@ -434,7 +500,8 @@ def build_page(slug, which, out=None, data_out=None):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["prepare", "decide", "wind", "merge", "page", "offsets"])
+    ap.add_argument("cmd", choices=["prepare", "decide", "wind", "merge", "page", "offsets", "fetch-display",
+                                    "prepare-all"])
     ap.add_argument("parts", nargs="?")
     ap.add_argument("--slug", required=True)
     ap.add_argument("--which", default="truth")
@@ -460,6 +527,12 @@ def main():
         build_page(a.slug, a.which, a.out, data_out=a.data_out)
     elif a.cmd == "offsets":
         print(json.dumps(offsets(a.slug, a.which)))
+    elif a.cmd == "fetch-display":
+        fetch_display(a.slug)
+    elif a.cmd == "prepare-all":
+        for w in whiches(a.slug):
+            if os.path.exists(cdir(a.slug, w)) or w == "truth":
+                prepare(a.slug, w)
 
 
 if __name__ == "__main__":

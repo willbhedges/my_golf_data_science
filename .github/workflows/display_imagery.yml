@@ -1,0 +1,94 @@
+name: display-imagery
+
+# A sharper photo for a course (generic form of bh_sharp.yml). Trigger: push course_data/requests/display_<slug>.json
+#   {"slug": "eagle_knoll", "year": "best" | 2023, "scan": true, "review": "Back,Eagle,Middle" | "", "page": false,
+#    "holes": "" (review only these), "rev": n}
+#   scan    every NAIP year over the course (dates, GSD, coverage, leaf-on, sharpness) + the APFO service's newest item
+#           -> course_data/imagery/years/<slug>_display.json (course_data/imagery/display_imagery.py)
+#   fetch   that year (best = leaf-on, smallest GSD, sharpest, newest) into /tmp (never committed)
+#   review  course_data/truth/recheck.py on it: tee boxes per set vs the card, landing zones with the hand zones + the
+#           lidar edge, doglegs, par-3 greens -> course_data/truth/<slug>/recheck/*.jpg + summary.json
+#   page    the wind page re-rendered on it (config "display_imagery" must name the year; display only: picks, maps
+#           and grids unchanged) -> course_data/courses/<slug>/wind_page/index.html
+# nccga_v2.yml / v2_remerge.yml fetch the display imagery themselves when the config has "display_imagery".
+on:
+  push:
+    paths:
+      - "course_data/requests/display_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: display-imagery-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests numpy scipy matplotlib pillow shapely pyproj rasterio pystac-client planetary-computer opencv-python-headless
+      - id: req
+        run: |
+          R=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/display_*.json' | tail -1)
+          [ -n "$R" ] || R=$(ls -t course_data/requests/display_*.json | head -1)
+          echo "req=$R" >> "$GITHUB_OUTPUT"
+          python3 - "$R" >> "$GITHUB_OUTPUT" <<'EOF'
+          import json, sys
+          q = json.load(open(sys.argv[1]))
+          print("slug=" + q["slug"])
+          print("year=" + str(q.get("year", "best")))
+          print("scan=" + ("1" if q.get("scan", True) else ""))
+          print("review=" + (q.get("review") or ""))
+          print("holes=" + (q.get("holes") or ""))
+          print("page=" + ("1" if q.get("page") else ""))
+          EOF
+          cat "$R"
+      - name: Scan NAIP years
+        if: steps.req.outputs.scan == '1'
+        run: python -u course_data/imagery/display_imagery.py scan --slug ${{ steps.req.outputs.slug }}
+      - name: Fetch the display year
+        run: |
+          python -u course_data/imagery/display_imagery.py fetch --slug ${{ steps.req.outputs.slug }} \
+            --year ${{ steps.req.outputs.year }} --dir /tmp/disp
+          ls -la /tmp/disp
+      - name: Truth re-check renders
+        if: steps.req.outputs.review != ''
+        run: |
+          S=${{ steps.req.outputs.slug }}
+          python -u course_data/truth/recheck.py --slug $S --img /tmp/disp --sets "${{ steps.req.outputs.review }}" \
+            --holes "${{ steps.req.outputs.holes }}"
+          du -sh course_data/truth/$S/recheck
+      - name: Page on the display year
+        if: steps.req.outputs.page == '1'
+        run: |
+          S=${{ steps.req.outputs.slug }}
+          V2_DISPLAY_DIR=/tmp/disp python course_data/courses/v2_course.py page --slug $S --which truth
+          git checkout -- course_data/courses/$S/*/course.py course_data/courses/$S/*/meta.json 2>/dev/null || true
+      - name: Commit
+        run: |
+          S=${{ steps.req.outputs.slug }}
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for p in course_data/imagery/years/${S}_display.json course_data/truth/$S/recheck; do
+            [ -e "$p" ] && git add "$p"
+          done
+          if [ "${{ steps.req.outputs.page }}" = "1" ]; then git add -f course_data/courses/$S/wind_page/index.html; fi
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' "display-imagery: $S NAIP scan / re-check renders / page photo (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            git rebase --abort 2>/dev/null || true; sleep $((i * 10))
+          done
+          exit 1
