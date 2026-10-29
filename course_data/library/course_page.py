@@ -438,14 +438,14 @@ def run_checks(q, cfg):
     return res
 
 
-def run_qa_page(q, page, sets):
+def run_qa_page(q, page, sets, cfg_set="page"):
     out = {}
     for s in sets:
-        d = f"/tmp/qa_{q['slug']}_{slugify(s)}"
-        r = subprocess.run(["node", os.path.join(CD, "courses", "qa_page.js"), page, d, s], capture_output=True,
-                           text=True, timeout=900)
+        d = f"/tmp/qa_{q['slug']}_{slugify(s or 'page')}"
+        r = subprocess.run(["node", os.path.join(CD, "courses", "qa_page.js"), page, d] + ([s] if s else []),
+                           capture_output=True, text=True, timeout=900)
         log(r.stdout[-1500:], r.stderr[-1500:])
-        out[s] = dict(rc=r.returncode, report=rj(os.path.join(d, "qa.json")), stdout=r.stdout[-1500:], stderr=r.stderr[-800:])
+        out[s or cfg_set] = dict(rc=r.returncode, report=rj(os.path.join(d, "qa.json")), stdout=r.stdout[-1500:], stderr=r.stderr[-800:])
     return out
 
 
@@ -550,7 +550,9 @@ def finish(q, parts):
     open(page, "w").write(pack_page(head, data, code, tail))
     pkg = rj(out_dir(q, "package.json"))
     checks = run_checks(q, cfg)
-    qa = run_qa_page(q, page, [cfg["tees"]] + list(cfg.get("alt_bases") or {}))
+    solved = [cfg["tees"]] + list(cfg.get("alt_bases") or {})
+    # the tee picker exists only with more than one set on the page; a single-set page is checked as it opens
+    qa = run_qa_page(q, page, solved if len(solved) > 1 else [None], cfg_set=solved[0])
     status, reasons, check_holes, page_bad = course_gate(pkg, checks, qa, cfg)
     # the page says what was checked: status in the subtitle, the reasons in each CHECK hole's note
     data["sub"] = cfg["sub"].replace("automatic page", f"automatic page: {status.upper()}" +

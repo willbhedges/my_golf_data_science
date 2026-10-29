@@ -95,7 +95,13 @@ jobs:
           echo "OUT=$O" >> "$GITHUB_ENV"; echo "S=$S" >> "$GITHUB_ENV"
           mkdir -p "$O"
           python3 course_data/library/course_page.py pkgreq "$R"
-          python course_data/platform/package.py run "$O/package_request.json" 2>&1 | tee /tmp/pkg_v0.log || true
+          # Overpass / Nominatim rate limits come back as "not_found": retry with a back-off
+          for t in 1 2 3; do
+            python course_data/platform/package.py run "$O/package_request.json" 2>&1 | tee /tmp/pkg_v0.log || true
+            [ -f course_data/packages/$S/package.json ] && break
+            grep -q "ambiguous" /tmp/pkg_v0.log && break
+            sleep $((t * 90))
+          done
           if [ ! -f course_data/packages/$S/package.json ]; then
             python3 course_data/library/course_page.py failed "$R" package "$(tail -n 3 /tmp/pkg_v0.log | tr '\n' ' ' | cut -c1-400)"
             echo "ok=0" >> "$GITHUB_OUTPUT"; exit 0
