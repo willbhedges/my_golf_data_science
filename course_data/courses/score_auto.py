@@ -107,13 +107,18 @@ def plan(pkg, tees, n, name):
     return out, C, mod
 
 
-def score(slug, auto_path, label, n=8000):
+def score(slug, auto_path, label, n=8000, tees=None, out_dir=None):
+    """out_dir: where score_<label>.json / .md go (default course_data/courses/<slug>/, which also gets the truth
+    package for v2_course); tees: the scored set (default the tournament config's "tees")."""
     import scoreboard as SB
     auto = json.load(open(auto_path))
-    tees = json.load(open(os.path.join(HERE, slug, "config.json")))["tees"]
+    tees = tees or json.load(open(os.path.join(HERE, slug, "config.json")))["tees"]
     tpkg, T, HZ = truth_package(slug, auto, tees)
-    os.makedirs(os.path.join(HERE, slug, "truth"), exist_ok=True)
-    json.dump(tpkg, open(os.path.join(HERE, slug, "truth", "package.json"), "w"))      # the plan's map (v2_course)
+    if out_dir is None:
+        out_dir = os.path.join(HERE, slug)
+        os.makedirs(os.path.join(out_dir, "truth"), exist_ok=True)
+        json.dump(tpkg, open(os.path.join(out_dir, "truth", "package.json"), "w"))      # the plan's map (v2_course)
+    os.makedirs(out_dir, exist_ok=True)
     rows = []
     a_res, aC, amod = plan(auto, tees, n, f"sa_{slug}_auto")
     t_res, tC, tmod = plan(tpkg, tees, n, f"sa_{slug}_truth")
@@ -166,8 +171,8 @@ def score(slug, auto_path, label, n=8000):
         rows.append(r)
     S = summary(rows)
     out = dict(slug=slug, label=label, auto=os.path.relpath(auto_path, ROOT), tees=tees, n=n, rows=rows, summary=S)
-    json.dump(out, open(os.path.join(HERE, slug, f"score_{label}.json"), "w"), indent=1, default=float)
-    open(os.path.join(HERE, slug, f"score_{label}.md"), "w").write(md(out))
+    json.dump(out, open(os.path.join(out_dir, f"score_{label}.json"), "w"), indent=1, default=float)
+    open(os.path.join(out_dir, f"score_{label}.md"), "w").write(md(out))
     print(md(out))
     return out
 
@@ -230,8 +235,11 @@ def main():
     ap.add_argument("--auto")
     ap.add_argument("--label", default="before")
     ap.add_argument("--n", type=int, default=8000)
+    ap.add_argument("--tees", help="tee set to score (default: course_data/courses/<slug>/config.json tees)")
+    ap.add_argument("--out-dir", help="write score_<label>.* here instead of course_data/courses/<slug>/")
     a = ap.parse_args()
-    score(a.slug, a.auto or os.path.join(HERE, a.slug, "auto", "package.json"), a.label, a.n)
+    score(a.slug, a.auto or os.path.join(HERE, a.slug, "auto", "package.json"), a.label, a.n, tees=a.tees,
+          out_dir=a.out_dir)
 
 
 if __name__ == "__main__":

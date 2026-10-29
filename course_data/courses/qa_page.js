@@ -12,7 +12,9 @@ const path = require("path");
 (async () => {
   const [page_path, out, set0] = process.argv.slice(2);     // optional set0: check every hole from that tee set
   fs.mkdirSync(out, { recursive: true });
-  const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  // PW_CHROMIUM overrides the sandbox's chromium path (on Actions: playwright's own download)
+  const exe = process.env.PW_CHROMIUM || (fs.existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : undefined);
+  const browser = await chromium.launch(exe ? { executablePath: exe } : {});
   const report = { page: page_path, views: {} };
   for (const [name, vp] of [["phone", { width: 400, height: 860 }], ["desktop", { width: 1280, height: 900 }]]) {
     const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: 1 });
@@ -22,6 +24,8 @@ const path = require("path");
     page.on("pageerror", e => errors.push(String(e)));
     await page.goto("file://" + path.resolve(page_path));
     await page.waitForTimeout(400);
+    // library pages inline their data gzip-compressed and start once it is unpacked
+    await page.waitForFunction(() => typeof D !== "undefined" && D && D.holes, null, { timeout: 15000 });
     if (set0) { await page.click(`#set button[data-v="${set0}"]`); await page.waitForTimeout(150); }
     const D = await page.evaluate(() => ({ n: D.holes.length, sets: D.sets, days: D.days, keys: D.holes.map(h => h.key) }));
     const holes = [];

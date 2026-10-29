@@ -49,8 +49,14 @@ IMG_W = 620
 CHECKED_HALF_WIDTH = 65.0          # hand-checked corridors are +/-65 yds (corridor.FOOT); v2 default 55
 
 
+# course folders live here; the course-page workflow (course_data/library/course_page.py) points it at
+# course_data/library so automatic pages never land beside the hand-checked tournament pages
+COURSES = os.path.abspath(os.environ.get("V2_COURSES_DIR") or HERE)
+JPEG_Q = int(os.environ.get("V2_JPEG_Q", "76"))      # hole-image quality in the page (library pages use less)
+
+
 def cdir(slug, *p):
-    return os.path.join(HERE, slug, *p)
+    return os.path.join(COURSES, slug, *p)
 
 
 def config(slug):
@@ -82,8 +88,9 @@ def base_tees(cfg, which):
 
 
 def main_which(cfg, which):
-    """An alt base's page is the main page (its holes are folded in as D.alt): the `which` that owns the page."""
-    return "truth" if which in (cfg.get("alt_bases") or {}).values() else which
+    """An alt base's page is the main page (its holes are folded in as D.alt): the `which` that owns the page
+    (config "main_which", default "truth"; automatic library pages use "auto")."""
+    return cfg.get("main_which", "truth") if which in (cfg.get("alt_bases") or {}).values() else which
 
 
 def display_dir(slug):
@@ -371,7 +378,7 @@ def crop_factory(shots):
         scale = IMG_W / c.width
         c = c.resize((IMG_W, int(c.height * scale)), Image.LANCZOS)
         buf = io.BytesIO()
-        c.save(buf, "JPEG", quality=76, optimize=True)
+        c.save(buf, "JPEG", quality=JPEG_Q, optimize=True)
         return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode(), scale * k, (x0, y0), c.size
     return crop_jpeg
 
