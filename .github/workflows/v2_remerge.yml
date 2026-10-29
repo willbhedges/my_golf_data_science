@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install numpy scipy matplotlib pillow rasterio pyproj shapely opencv-python-headless
+      - run: pip install numpy scipy matplotlib pillow rasterio pyproj shapely opencv-python-headless requests pystac-client planetary-computer
       - id: req
         run: |
           R=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/v2remerge_*.json' | tail -1)
@@ -98,6 +98,7 @@ jobs:
           for W in $(python3 -c "import json;print(' '.join(json.load(open('${{ steps.req.outputs.req }}'))['parts']))"); do
             git add -f course_data/courses/$S/$W/v2 course_data/courses/$S/$W/course.py course_data/courses/$S/$W/meta.json
           done
+          python course_data/courses/v2_course.py fetch-display --slug $S || echo "display imagery fetch failed: package photo"
           python course_data/courses/v2_course.py page --slug $S --which truth
           ls -la course_data/courses/$S/wind_page/
           git add -f course_data/courses/$S/wind_page

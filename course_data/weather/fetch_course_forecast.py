@@ -3,7 +3,7 @@ fetch_forecast.py (Open-Meteo primary, NWS hourly cross-check), so v2_course.py 
 
   python course_data/weather/fetch_course_forecast.py course_data/requests/weather_<slug>.json
      request: {"slug": "blue_hills", "name": "...", "lat": 38.898, "lon": -94.599, "days": ["2026-10-27"],
-               "hours": [6, 19], "rev": n}
+               "hours": [6, 19], "rev": n, optional "not_before": "YYYY-MM-DD" (skip until then)}
   -> course_data/weather/forecast_<slug>.json
 
 Runs on GitHub Actions (.github/workflows/weather_course.yml); the sandbox cannot reach weather APIs.
@@ -20,6 +20,10 @@ import fetch_forecast as F  # noqa: E402
 
 def main(req):
     q = json.load(open(req))
+    nb = q.get("not_before")            # optional "YYYY-MM-DD": before it a forecast for the days is not worth it
+    if nb and dt.date.today() < dt.date.fromisoformat(nb):
+        print(f"{q['slug']}: not before {nb} (today {dt.date.today()}): skipped; the page keeps climate normals")
+        return
     F.LAT, F.LON = float(q["lat"]), float(q["lon"])
     h0, h1 = q.get("hours", [6, 19])
     F.HOURS = range(int(h0), int(h1) + 1)
