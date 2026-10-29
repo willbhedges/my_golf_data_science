@@ -1,0 +1,289 @@
+{
+ "gate": {
+  "schema": "zero_tap_gate/2",
+  "feat_set": "full",
+  "feats": [
+   "lp_route",
+   "lp_route_mix",
+   "min_num",
+   "mean_lnum",
+   "min_tee",
+   "mean_ltee",
+   "lp_front",
+   "card",
+   "card_max_resid",
+   "card_mean_resid",
+   "unused",
+   "lagr",
+   "n9",
+   "ch_p",
+   "min_gap",
+   "max_walk",
+   "cx_ratio",
+   "sum_l1m_other",
+   "dp_front",
+   "min_par",
+   "sum_lpar",
+   "pairs",
+   "perc",
+   "pc_min",
+   "pc_sum_log",
+   "pc_n_lo",
+   "ptc_min",
+   "ptc_sum_log",
+   "n_reassigned",
+   "paired_min",
+   "unused_paired_max",
+   "n_off"
+  ],
+  "l2": 1.0,
+  "threshold_score": 2.329503902546767,
+  "hard_rules": {
+   "par_sure": 0.95
+  },
+  "calib": {
+   "rows": 368,
+   "courses": 155,
+   "positives": 58,
+   "hard_ok": 194,
+   "certified": 3,
+   "certified_wrong": 0
+  },
+  "trials": [
+   {
+    "name": "full",
+    "l2": 1.0,
+    "certified": 3
+   },
+   {
+    "name": "full",
+    "l2": 5.0,
+    "certified": 0
+   },
+   {
+    "name": "pairs_small",
+    "l2": 1.0,
+    "certified": 2
+   },
+   {
+    "name": "pairs_small",
+    "l2": 5.0,
+    "certified": 2
+   },
+   {
+    "name": "pairs_tiny",
+    "l2": 1.0,
+    "certified": 0
+   },
+   {
+    "name": "pairs_tiny",
+    "l2": 5.0,
+    "certified": 0
+   },
+   {
+    "name": "pairs_card",
+    "l2": 1.0,
+    "certified": 2
+   },
+   {
+    "name": "pairs_card",
+    "l2": 5.0,
+    "certified": 2
+   }
+  ]
+ },
+ "board": {
+  "dev/osm_card": {
+   "n": 160,
+   "holes_right": 0.678583946722748,
+   "formed": 0.8065194532071503,
+   "fully": 0.23125,
+   "certain": 2,
+   "certain_right": 2,
+   "coverage": 0.0125,
+   "precision": 1.0,
+   "cov99": 0.01875,
+   "cov95": 0.01875,
+   "cov90": 0.01875,
+   "hard_ok": 153,
+   "certified": [
+    "forest_hills_vue_791_oh",
+    "hyland_greens_mn"
+   ],
+   "primary": {
+    "count": 10,
+    "pairing": 92,
+    "None": 37,
+    "no_result": 2,
+    "order": 1,
+    "missed_tee": 18
+   }
+  },
+  "dev/nocard": {
+   "n": 160,
+   "holes_right": 0.26954083420960395,
+   "formed": 0.8005608131791097,
+   "fully": 0.025,
+   "certain": 0,
+   "certain_right": 0,
+   "coverage": 0.0,
+   "precision": null,
+   "cov99": 0.0,
+   "cov95": 0.0,
+   "cov90": 0.0,
+   "hard_ok": 2,
+   "certified": [],
+   "primary": {
+    "count": 12,
+    "pairing": 95,
+    "start_hole": 10,
+    "nine_swap": 7,
+    "None": 4,
+    "no_result": 2,
+    "order": 4,
+    "missed_tee": 19,
+    "par": 7
+   }
+  },
+  "dev/unmapped_card": {
+   "n": 38,
+   "holes_right": 0.8011695906432749,
+   "formed": 0.8903508771929824,
+   "fully": 0.3684210526315789,
+   "certain": 1,
+   "certain_right": 1,
+   "coverage": 0.02631578947368421,
+   "precision": 1.0,
+   "cov99": 0.02631578947368421,
+   "cov95": 0.02631578947368421,
+   "cov90": 0.02631578947368421,
+   "hard_ok": 38,
+   "certified": [
+    "willowhill_il"
+   ],
+   "primary": {
+    "count": 1,
+    "pairing": 16,
+    "None": 14,
+    "order": 3,
+    "missed_tee": 4
+   }
+  },
+  "dev/unmapped_nocard": {
+   "n": 38,
+   "holes_right": 0.25877192982456143,
+   "formed": 0.9049707602339181,
+   "fully": 0.07894736842105263,
+   "certain": 0,
+   "certain_right": 0,
+   "coverage": 0.0,
+   "precision": null,
+   "cov99": 0.02631578947368421,
+   "cov95": 0.02631578947368421,
+   "cov90": 0.02631578947368421,
+   "hard_ok": 1,
+   "certified": [],
+   "primary": {
+    "count": 2,
+    "pairing": 18,
+    "start_hole": 5,
+    "nine_swap": 2,
+    "None": 3,
+    "order": 1,
+    "missed_tee": 6,
+    "par": 1
+   }
+  },
+  "test/osm_card": {
+   "n": 153,
+   "holes_right": 0.6631167909123181,
+   "formed": 0.7831025914093007,
+   "fully": 0.2222222222222222,
+   "certain": 3,
+   "certain_right": 3,
+   "coverage": 0.0196078431372549,
+   "precision": 1.0,
+   "cov99": 0.026143790849673203,
+   "cov95": 0.026143790849673203,
+   "cov90": 0.026143790849673203,
+   "hard_ok": 145,
+   "certified": null,
+   "primary": {
+    "count": 11,
+    "pairing": 85,
+    "None": 34,
+    "no_result": 3,
+    "missed_tee": 20
+   }
+  },
+  "test/nocard": {
+   "n": 153,
+   "holes_right": 0.23606673766418176,
+   "formed": 0.7987220447284346,
+   "fully": 0.0,
+   "certain": 0,
+   "certain_right": 0,
+   "coverage": 0.0,
+   "precision": null,
+   "cov99": 0.0,
+   "cov95": 0.0,
+   "cov90": 0.0,
+   "hard_ok": 1,
+   "certified": null,
+   "primary": {
+    "count": 10,
+    "pairing": 101,
+    "start_hole": 7,
+    "nine_swap": 7,
+    "no_result": 3,
+    "order": 2,
+    "missed_tee": 18,
+    "par": 5
+   }
+  },
+  "test/unmapped_card": {
+   "n": 17,
+   "holes_right": 0.7712418300653595,
+   "formed": 0.869281045751634,
+   "fully": 0.23529411764705882,
+   "certain": 0,
+   "certain_right": 0,
+   "coverage": 0.0,
+   "precision": null,
+   "cov99": 0.11764705882352941,
+   "cov95": 0.11764705882352941,
+   "cov90": 0.11764705882352941,
+   "hard_ok": 17,
+   "certified": null,
+   "primary": {
+    "missed_tee": 2,
+    "count": 1,
+    "None": 4,
+    "pairing": 10
+   }
+  },
+  "test/unmapped_nocard": {
+   "n": 17,
+   "holes_right": 0.434640522875817,
+   "formed": 0.8725490196078431,
+   "fully": 0.0,
+   "certain": 0,
+   "certain_right": 0,
+   "coverage": 0.0,
+   "precision": null,
+   "cov99": 0.0,
+   "cov95": 0.0,
+   "cov90": 0.0,
+   "hard_ok": 0,
+   "certified": null,
+   "primary": {
+    "count": 1,
+    "pairing": 8,
+    "nine_swap": 2,
+    "order": 1,
+    "missed_tee": 4,
+    "par": 1
+   }
+  }
+ }
+}
