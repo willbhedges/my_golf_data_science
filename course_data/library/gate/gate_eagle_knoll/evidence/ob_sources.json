@@ -1,0 +1,41 @@
+{
+ "slug": "gate_eagle_knoll",
+ "state": "MO",
+ "bbox": [
+  -92.2739,
+  38.687024,
+  -92.252124,
+  38.705232
+ ],
+ "pad_m": 400.0,
+ "osm": {
+  "status": "ok",
+  "licence": "(c) OpenStreetMap contributors, ODbL 1.0",
+  "n": 162,
+  "file": "course_data/ob/gate_eagle_knoll/raw/osm.geojson",
+  "fetched": "2026-10-29T20:34:44Z"
+ },
+ "ms_buildings": {
+  "status": "ok",
+  "licence": "Microsoft Global ML Building Footprints, ODbL 1.0 (https://github.com/microsoft/GlobalMLBuildingFootprints)",
+  "quadkeys": [
+   "023111300"
+  ],
+  "files": [
+   "https://minedbuildings.z5.web.core.windows.net/global-buildings/2026-02-03/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=023111300/part-00139-4feead82-d499-422b-94cb-c036c212127a.c000.csv.gz"
+  ],
+  "n": 83,
+  "file": "course_data/ob/gate_eagle_knoll/raw/ms_buildings.geojson",
+  "fetched": "2026-10-29T20:34:47Z"
+ },
+ "parcels": {
+  "status": "no free source",
+  "licence": "n/a",
+  "note": "Missouri has no free statewide parcel layer (MSDIS has none; gis.mo.gov FMDC covers state-owned land only). Nodaway County (Mozingo Lake) publishes no open parcel service: buildings + OSM only.",
+  "fetched": "2026-10-29T20:34:47Z"
+ },
+ "mo_probe": {
+  "https://msdisweb.missouri.edu/arcgis/rest/services?f=pjson": "error: RuntimeError('https://msdisweb.missouri.edu/arcgis/rest/services?f=pjson: ConnectionError(MaxRetryError(\\'HTTPSConnectionPool(host=\\\\\\'msdisweb.missouri.edu\\\\\\', port=443): Max retries exceeded",
+  "https://gis.mo.gov/arcgis/rest/services?f=pjson": "19 services/folders, none named *parcel*"
+ }
+}

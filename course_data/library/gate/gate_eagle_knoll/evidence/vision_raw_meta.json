@@ -1,0 +1,196 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "gate_eagle_knoll",
+ "course": "Eagle Knoll Golf Club",
+ "bbox_snwe": [
+  38.68927,
+  -92.271023,
+  38.702986,
+  -92.255001
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1648,
+  "height": 1776,
+  "bounds": [
+   563266,
+   4282426,
+   564914,
+   4284202
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   563266.0,
+   0.0,
+   -1.0,
+   4284202.0
+  ],
+  "ll_bbox_wsen": [
+   -92.27256249693492,
+   38.68806456129577,
+   -92.25344879250748,
+   38.704187668503764
+  ]
+ },
+ "fetched_utc": "2026-10-29T20:24:49Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_BooneCo_2015_LAS_2017-hag-2m-3-0",
+     "when": "2015-03-12T00:00:00.000000Z",
+     "cells": 2922288,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_BooneCo_2015_LAS_2017",
+      "end_datetime": "2015-03-12T00:00:00.000000Z",
+      "start_datetime": "2015-01-30T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9984420099711362,
+   "file": "hag.tif",
+   "mb": 1.36,
+   "frac_gt_2_5m": 0.6459556492171783
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_BooneCo_2015_LAS_2017-dtm-2m-3-0",
+     "when": "2015-03-12T00:00:00.000000Z",
+     "cells": 730465,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_BooneCo_2015_LAS_2017",
+      "end_datetime": "2015-03-12T00:00:00.000000Z",
+      "start_datetime": "2015-01-30T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9982957775736901,
+   "mb": 2.04
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_BooneCo_2015_LAS_2017-classification-2m-3-0",
+     "when": "2015-03-12T00:00:00.000000Z",
+     "cells": 2909212,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_BooneCo_2015_LAS_2017",
+      "end_datetime": "2015-03-12T00:00:00.000000Z",
+      "start_datetime": "2015-01-30T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "MO_BooneCo_2009-classification-2m-4-1",
+     "when": "2009-03-19T00:00:00.000000Z",
+     "cells": 372,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_BooneCo_2009",
+      "end_datetime": "2009-03-19T00:00:00.000000Z",
+      "start_datetime": "2009-03-18T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "MO_BooneCo_2009-classification-2m-3-1",
+     "when": "2009-03-19T00:00:00.000000Z",
+     "cells": 780,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_BooneCo_2009",
+      "end_datetime": "2009-03-19T00:00:00.000000Z",
+      "start_datetime": "2009-03-18T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "MO_BooneCo_2009-classification-2m-3-0",
+     "when": "2009-03-19T00:00:00.000000Z",
+     "cells": 759,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_BooneCo_2009",
+      "end_datetime": "2009-03-19T00:00:00.000000Z",
+      "start_datetime": "2009-03-18T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.35,
+   "counts": {
+    "0": 15725,
+    "1": 1050261,
+    "2": 1274386,
+    "9": 420,
+    "10": 208,
+    "17": 585848
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111300"
+  ],
+  "mb": 0.59,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 731712,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 8.9,
+    "items": [
+     "mo_m_3809223_nw_15_060_20220620",
+     "mo_m_3809222_se_15_060_20220620",
+     "mo_m_3809222_ne_15_060_20220620"
+    ],
+    "acquired": [
+     "2022-06-20"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 11.02,
+    "items": [
+     "mo_m_3809223_nw_15_060_20200708",
+     "mo_m_3809222_se_15_060_20200708",
+     "mo_m_3809222_ne_15_060_20200708"
+    ],
+    "acquired": [
+     "2020-07-08"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
