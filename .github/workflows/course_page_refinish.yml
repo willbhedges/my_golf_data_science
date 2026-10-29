@@ -1,0 +1,143 @@
+name: course-page-refinish
+
+# Re-run only the finish stage (merge, page, checks, report, commit) of an earlier course-page run, from its
+# artifacts (kept 7 days). Use after a fix to course_page.py / picture_checks.py / the page.
+# Trigger: push course_data/requests/course_finish_<name>.json {"run_id": 123, "requests": [paths], "rev": n}
+on:
+  push:
+    paths:
+      - "course_data/requests/course_finish_*.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: course-page-refinish-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHONWARNINGS: ignore
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      courses: ${{ steps.p.outputs.courses }}
+      run: ${{ steps.p.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - id: p
+        run: |
+          R=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/course_finish_*.json' | tail -1)
+          [ -n "$R" ] || R=$(ls -t course_data/requests/course_finish_*.json | head -1)
+          echo "run=$(python3 -c "import json;print(json.load(open('$R'))['run_id'])")" >> "$GITHUB_OUTPUT"
+          python3 - "$R" > /tmp/c.json <<'EOF'
+          import json, subprocess, sys
+          q = json.load(open(sys.argv[1]))
+          out = []
+          for p in q["requests"]:
+              s = subprocess.run([sys.executable, "course_data/library/course_page.py", "slug", p], capture_output=True, text=True).stdout.split()
+              out.append(dict(req=p, slug=s[0]))
+          print(json.dumps(out))
+          EOF
+          echo "courses=$(cat /tmp/c.json)" >> "$GITHUB_OUTPUT"
+
+  finish:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include: ${{ fromJson(needs.plan.outputs.courses) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: |
+          pip install numpy scipy matplotlib pillow rasterio pyproj shapely opencv-python-headless
+          npm install --no-save --no-package-lock playwright@1.47.2
+          npx playwright install --with-deps chromium
+      - run: |
+          O=$(python3 course_data/library/course_page.py slug "${{ matrix.req }}" | cut -d' ' -f2)
+          echo "OUT=$O" >> "$GITHUB_ENV"; echo "S=${{ matrix.slug }}" >> "$GITHUB_ENV"
+          if python3 -c "import json,sys;sys.exit(0 if json.load(open('$O/config.json')).get('hand_checked') else 1)" 2>/dev/null; then
+            echo "hand_checked page at $O: refusing to overwrite"; exit 1
+          fi
+      - uses: actions/download-artifact@v4
+        with:
+          name: lib-${{ matrix.slug }}-pkg
+          path: ${{ env.OUT }}
+          run-id: ${{ needs.plan.outputs.run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: lib-${{ matrix.slug }}-part-*
+          path: /tmp/parts
+          run-id: ${{ needs.plan.outputs.run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Merge, page, checks, report
+        run: |
+          python3 course_data/library/course_page.py finish "${{ matrix.req }}" /tmp/parts || \
+            python3 course_data/library/course_page.py failed "${{ matrix.req }}" finish "merge / page / checks failed (see the Actions log)"
+          head -40 "$OUT/qa_report.md" || true
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in config.json package_request.json package.json package_v0_no_vision.json package_qa.md package_confirm.json \
+                   weather.json sharp.json page.html qa_report.md qa.json status.json raw/course.json raw/summary.json \
+                   raw/scorecard_web.json evidence/vision_any.geojson evidence/ob_sources.json evidence/vision_raw_meta.json; do
+            [ -f "$OUT/$f" ] && git add -f "$OUT/$f"
+          done
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' "course-page refinish: $S (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6 7 8; do
+            if git pull --rebase origin "${{ github.ref_name }}"; then
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            else
+              git rebase --abort 2>/dev/null || true
+            fi
+            sleep $((i * 10 + RANDOM % 10))
+          done
+          exit 1
+
+  index:
+    needs: finish
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - run: |
+          git pull --rebase origin "${{ github.ref_name }}" || true
+          python3 course_data/library/course_page.py index
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/library/index.json
+          if git diff --cached --quiet; then exit 0; fi
+          printf '%s\n' "course-page: library index (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            git rebase --abort 2>/dev/null || true; sleep $((i * 10))
+          done
+          exit 1

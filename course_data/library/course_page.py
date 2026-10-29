@@ -52,7 +52,7 @@ COLOURS = {"black": "#111", "blue": "#2a5bd7", "white": "#f2f2f2", "gold": "#d4a
 
 
 def log(*a):
-    print(*a, flush=True)
+    print(*a, file=sys.stderr, flush=True)
 
 
 def rj(p, default=None):
