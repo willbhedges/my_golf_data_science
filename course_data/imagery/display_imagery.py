@@ -11,7 +11,7 @@ ground), and the USDA APFO NAIP image service's newest catalog item at the centr
 catalog shows up there first). best = among leaf-on years covering the course, the smallest GSD, then the sharpest,
 then the newest.
 
-fetch: fetch_imagery.py --year Y --lo-res <gsd> --no-dem over the package box (+60 m) into --dir (not committed).
+fetch: fetch_imagery.py --year Y --lo-res <gsd> --no-dem over the package box (+150 m: the hole frames reach past it) into --dir (not committed).
 v2_course.py reads it through config "display_imagery" {"year": Y} (prepare renders the page photos from it).
 """
 import argparse
@@ -111,7 +111,7 @@ def scan(slug, out=None):
     return doc
 
 
-def fetch(slug, year, d, margin=60.0):
+def fetch(slug, year, d, margin=150.0):
     if year == "best":
         p = os.path.join(HERE, "years", f"{slug}_display.json")
         doc = json.load(open(p)) if os.path.exists(p) else scan(slug)

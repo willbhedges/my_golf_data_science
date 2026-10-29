@@ -1,10 +1,18 @@
 {
  "slug": "eagle_knoll",
  "which": "truth",
- "offsets": [0, -40, -60, -80, -100, -120, -140, -200],
- "temps": [35, 50, 65],
- "decide_jobs": 3,
- "draws": 128,
- "rev": 4,
- "note": "Eagle Knoll (NCCGA Central Regional 2, Nov 7-8 2026) on the hand-checked truth map, Back (blue) base; Eagle (gold) and Middle (white) are fully solved alt bases (nccga_v2_eagle_knoll_eagle.json / _middle.json); the offsets cover Forward only. rev 4: truth 3rd pass on NAIP 2020 / 2022 + CIR (5 left woods and 9 right crowns grown since the 2015 lidar; Back 4 on its own pad; footprint to 440 yds) and the calm-day decide at the event-week temperature of each hole (rev <= 3 used the 48 F fallback: v2_course hole_temp fix); 128 prior draws."
+ "offsets": [],
+ "temps": [
+  35,
+  50,
+  65
+ ],
+ "decide_jobs": 2,
+ "draws": 512,
+ "rev": 5,
+ "note": "Eagle Knoll (NCCGA Central Regional 2, Nov 7-8 2026) on the hand-checked truth map, Back (blue) base; Eagle (gold) and Middle (white) are fully solved alt bases (nccga_v2_eagle_knoll_eagle.json / _middle.json); the offsets cover Forward only. rev 4: truth 3rd pass on NAIP 2020 / 2022 + CIR (5 left woods and 9 right crowns grown since the 2015 lidar; Back 4 on its own pad; footprint to 440 yds) and the calm-day decide at the event-week temperature of each hole (rev <= 3 used the 48 F fallback: v2_course hole_temp fix); 128 prior draws. rev 5: decisions only (the wind grids of the previous rev stand): close calls (tie, or margin under 0.03 strokes) re-run with 512 draws: Back 15 (4-wood over 2-wood by 0.021) and 18 (Driver over 4-wood by 0.023).",
+ "holes": [
+  15,
+  18
+ ]
 }
