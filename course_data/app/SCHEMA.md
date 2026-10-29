@@ -223,10 +223,12 @@ Boltzmann posterior covers the union (~4-6 k routings, 0.2-0.5 MB).
 Sources, merged by normalised name + state (first wins, later ones fill empty fields): the app's courses; the
 hand-checked tournament courses (`course_data/courses/<slug>/config.json` + `truth/package.json`, linked to their
 published wind page, `build_app.WIND_PAGES`); course packages with no plan yet; `course_data/library/index.json`
-when it exists (read tolerantly: a list, or `{courses: [...]}` / `{courses: {id: {...}}}`; `name`, `town`|`city`,
-`state`, `holes`|`n_holes`, `status` (any string with hand / verified / truth, confirm / check, auto / ok),
-`tees`|`tee_sets` (list of `[name, colour, yds]` or `{name, colour, total}`, or a `{name: {colour, total}}` map),
-`link`|`url`, `note`); the IA / MO OpenStreetMap survey (courses with 9+ OSM holes).
+(`course_library/1`, course_data/library/README.md) when it exists: `slug`, `name`, `city`, `state`, `holes`,
+`status` (`hand-checked` / `auto-OK` / `needs confirm` / `failed` -> hand / auto / confirm / none), `tee_sets`
+(`{name, yards, colour, on_page}`: `on_page` null -> drawn dimmed with "*"), `check_holes` + `reasons` (the card's
+note), `page` (a built page with no published URL is noted "page built, not published yet"; a `url`/`link` field,
+or a slug in `WIND_PAGES`, becomes the card's link). The loader also accepts a plain list and `tees` as
+`[name, colour, yds]` lists. Then the IA / MO OpenStreetMap survey (courses with 9+ OSM holes).
 
 The page shows a status per entry: **Hand-checked**; for app courses with a hole-map confirm, live from the session
 (every golfer's shared answers applied): **Auto-OK** when every hole is pinned or at least `p_stop` sure (and no

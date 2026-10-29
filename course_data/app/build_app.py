@@ -74,7 +74,7 @@ IMG_W = 560
 PACE_MIN = 14
 COLOURS = {"black": "#1b1b1b", "gold": "#d4a017", "blue": "#2563c9", "white": "#f4f4f4", "red": "#c8312b",
            "rust": "#a5502a", "green": "#2f8f4e", "silver": "#a8b0b5", "yellow": "#e5c228", "orange": "#e07a1f",
-           "app": "#6b7c72", "combo": "#7a6bd1"}
+           "app": "#6b7c72", "combo": "#7a6bd1", "turquoise": "#2bb3b1", "brown": "#7a5230"}
 PLAYER = dict(name="Default player (the book's bag)", clubs={
     "Driver": dict(carry=275, total=300), "2-wood": dict(carry=265, total=280), "4-wood": dict(carry=255, total=270),
     "Long iron": dict(carry=215, total=225), "Mid iron": dict(carry=180, total=188)},
@@ -840,7 +840,7 @@ def library(courses):
                  tees=_tees(pk.get("tee_sets")), app=None, link=None, src="package",
                  note="Mapped automatically (course package built); the club-and-aim plan has not been run yet"))
     lib_src = None
-    if os.path.exists(LIBRARY_INDEX):                    # 4. the course library (another pipeline's output)
+    if os.path.exists(LIBRARY_INDEX):                    # 4. the course library (course_library/1, library/README.md)
         try:
             li = json.load(open(LIBRARY_INDEX))
             rows = li.get("courses", li) if isinstance(li, dict) else li
@@ -852,17 +852,35 @@ def library(courses):
                 tees = r.get("tees") or r.get("tee_sets") or []
                 if isinstance(tees, dict):
                     tees = _tees(tees)
-                elif tees and isinstance(tees[0], dict):
-                    tees = [[t.get("name"), COLOURS.get(str(t.get("colour") or t.get("color") or t.get("name") or "").lower(), "#888"),
-                             t.get("total") or t.get("yards")] for t in tees]
-                tees = [list(t)[:3] for t in tees if isinstance(t, (list, tuple)) and t and t[0]][:10]
-                add(dict(id=r.get("id") or r.get("slug"), name=r["name"], town=r.get("town") or r.get("city"),
-                         state=r.get("state"), holes=r.get("holes") or r.get("n_holes"),
-                         status=_status_of(r.get("status")), tees=tees, app=None,
-                         link=r.get("link") or r.get("url"), note=r.get("note") or "", src="library"))
-            lib_src = dict(path=os.path.relpath(LIBRARY_INDEX, ROOT), n=len(rows), added=len(ents) - n0)
+                elif tees and isinstance(tees[0], dict):    # {name, yards, colour, on_page: solved | offset | null}
+                    tees = [[t.get("name"), COLOURS.get(str(t.get("colour") or t.get("color") or t.get("name") or "").split(" ")[0].lower(), "#888"),
+                             t.get("total") or t.get("yards")] + ([int(bool(t["on_page"]))] if "on_page" in t else [])
+                            for t in tees]
+                tees = [list(t)[:4] for t in tees if isinstance(t, (list, tuple)) and t and t[0]][:10]
+                slug = r.get("id") or r.get("slug")
+                status = _status_of(r.get("status"))
+                link = r.get("link") or r.get("url") or WIND_PAGES.get(slug)
+                chk = [int(h) for h in (r.get("check_holes") or []) if str(h).isdigit()]
+                why = "; ".join(str(x) for x in (r.get("reasons") or [])[:3])
+                note = r.get("note") or (
+                    f"Auto-mapped wind page; confirm hole{'s' if len(chk) != 1 else ''} {', '.join(map(str, chk))}" + (f" ({why})" if why else "")
+                    if status == "confirm" and chk else
+                    "Auto-mapped wind page: every hole passed the picture checks" if status == "auto" else
+                    f"Not built: {why}" if str(r.get("status")).lower() == "failed" and why else "")
+                if r.get("page") and not link and status != "none":
+                    note += (" · " if note else "") + "page built, not published yet"
+                e = add(dict(id=slug, name=r["name"], town=r.get("town") or r.get("city"),
+                             state=r.get("state"), holes=r.get("holes") or r.get("n_holes"),
+                             status=status, tees=tees, app=None, link=link, note=note, src="library"))
+                if e.get("src") == "wind_page" and tees:     # the index knows which sets the wind page shows
+                    e["tees"] = tees
+                if e.get("src") != "app" and str(r.get("status")).lower() == "failed":
+                    e["status"] = "none"
+            lib_src = dict(path=os.path.relpath(LIBRARY_INDEX, ROOT), n=len(rows), added=len(ents) - n0,
+                           updated=li.get("updated") if isinstance(li, dict) else None)
         except Exception as e:                           # noqa: BLE001
             log(f"  library/index.json not used: {e}")
+
     survey = []
     for path in sorted(glob.glob(os.path.join(PKGS, "_survey", "*.json"))):   # 5. the OSM survey
         s = json.load(open(path))
