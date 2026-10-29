@@ -1,0 +1,64 @@
+{
+ "name": "Coldwater Golf Links",
+ "title": "Coldwater Golf Links Caddie",
+ "auto": true,
+ "hand_checked": false,
+ "main_which": "auto",
+ "slug": "gate_coldwater",
+ "sub": "Ames, IA \u00b7 automatic page \u00b7 Blue 6,406 / Black 6,787 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
+ "event": "",
+ "package": "course_data/library/gate/gate_coldwater/package.json",
+ "truth_package": "course_data/library/gate/gate_coldwater/package.json",
+ "tees": "Blue",
+ "alt_bases": {
+  "Black": "auto_b"
+ },
+ "sets": [
+  "Blue",
+  "Black"
+ ],
+ "colors": {
+  "Blue": "#2a5bd7",
+  "Black": "#111"
+ },
+ "days": [
+  "2026-10-31",
+  "2026-11-01"
+ ],
+ "day_labels": [
+  "Sat 10/31",
+  "Sun 11/1"
+ ],
+ "tee_hour": 9.0,
+ "temps": [
+  50,
+  60,
+  70
+ ],
+ "draws": 48,
+ "swings": 2500,
+ "forecast": "course_data/library/gate/gate_coldwater/weather.json",
+ "weather_kind": "forecast",
+ "climate": {
+  "temp_lo": 53.4,
+  "temp_hi": 65.4,
+  "wind_mph": 7.7,
+  "wind_from": 117,
+  "source": "Open-Meteo hourly forecast"
+ },
+ "grid_prune": true,
+ "bases_why": "tee sets of interest + the longest other set (Black)",
+ "request": "course_data/requests/course_page_gate_coldwater.json",
+ "rev": 1,
+ "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from golfify, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Blue, Black. See qa_report.md for the hole-by-hole checks.",
+ "built": "2026-10-29T20:46Z",
+ "offsets": {
+  "auto": [
+   0
+  ],
+  "auto_b": [
+   0
+  ]
+ },
+ "imagery_display": "2023-09-02"
+}
