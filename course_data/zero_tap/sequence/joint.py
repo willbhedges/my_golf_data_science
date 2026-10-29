@@ -45,12 +45,15 @@ def choose_keep(sc, hyps, geo, N, max_greens=19):
 
 def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep=None, cands=None,
           pos_extra=None, pad_extra=None, nine=None, max_h=6, max_greens=19, hyps_all=None, form_lp=None,
-          nothole_override=None):
+          nothole_override=None, card_fn=None):
     """-> result dict (holes numbered 1..N, as structure.solver.solve) with result['diag'] for the gate.
 
     hyps/geo: formation hypotheses (structure.solver.hypotheses output, possibly re-scored / restricted);
     keep: the greens the route may use (default: the structure solver's choice); cands: [{c, w, how}];
-    pos_extra: (len(keep), N) log-ratios; pad_extra: (len(keep), K) formation offsets added to the potentials."""
+    pos_extra: (len(keep), N) log-ratios; pad_extra: (len(keep), K) formation offsets added to the potentials.
+    card_fn: (keep, N) -> card_hk (len(keep), K, N) or None: a per (node, tee hypothesis, card position) card term
+    (cardgeo.card_hk); it replaces the marginalised card position prior and enters the route DP inside each
+    position's tee sum, so the card chooses the tee as well as the number."""
     temp = V.TEMP
     if hyps is None:
         hyps, geo = V.hypotheses(sc, topk=V.TOPK, clubs=list(sc.clubhouse))
@@ -82,7 +85,12 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
     if not Hc:
         Hc = V.hub_candidates(sc, geo, hyps_all or hyps)[:1]
     wsum = sum(h["w"] for h in Hc)
-    pos_base = V._card_pos(pb.hk, pars, yards, N) if (pars or yards) else None
+    chk = card_fn(keep, N) if card_fn is not None else None
+    if chk is not None:
+        chk = chk[:, :pb.K, :N]
+        if chk.shape[1] < pb.K:
+            chk = np.concatenate([chk, np.zeros((chk.shape[0], pb.K - chk.shape[1], N))], 1)
+    pos_base = None if chk is not None else (V._card_pos(pb.hk, pars, yards, N) if (pars or yards) else None)
     pp = V._par_pos(pb.hk, N)
     if pp is not None:
         pos_base = pp if pos_base is None else pos_base + pp
@@ -93,7 +101,10 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
     theta = crf.theta_from_params()
 
     def mats(st_en, lam, parts=False):
-        trans, turn, start, end, P = crf.potentials(pb, st_en, theta, N, price=lam, nh=nh)
+        if chk is not None:
+            trans, turn, start, end, P = potentials_k(pb, st_en, theta, N, lam, nh, chk)
+        else:
+            trans, turn, start, end, P = crf.potentials(pb, st_en, theta, N, price=lam, nh=nh)
         out = (trans / temp, None if turn is None else turn / temp, start / temp, end / temp)
         return (out, P) if parts else out
 
@@ -103,7 +114,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
             if only is not None and i not in only:
                 continue
             trans, turn, start, end = mats(se, lam)
-            r = V.route_dp(trans, start, end, N, turn=turn, pos=None if pos_base is None else pos_base / temp,
+            r = route_dp(trans, start, end, N, turn=turn, pos=None if pos_base is None else pos_base / temp,
                            marginals=marginals, soft=soft)
             r.update(H=H, se=se, i=i, logw=r["logZ"] + math.log(H["w"] / wsum),
                      mapw=r["best_score"] + math.log(H["w"] / wsum))
@@ -117,7 +128,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
     lagr_conflict = 0
     for it in range(LAGR_ITERS):
         br = max(runs, key=lambda r: r["mapw"])
-        cnt = V._coverage(pb, mats(br["se"], price, parts=True)[1], br["best"], N)
+        cnt = _coverage(pb, mats(br["se"], price, parts=True)[1], br["best"], N)
         if cnt.max() <= 1:
             break
         lagr_conflict = it + 1
@@ -131,7 +142,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
     br["mats"], br["parts"] = mats(br["se"], price, parts=True)
     seq = list(br["best"])
     # the DP's own P(MAP route) under the mixture of clubhouse candidates
-    p_route_mix = float(sum(p * math.exp(min(0.0, V.route_score(mats(r["se"], price), seq) +
+    p_route_mix = float(sum(p * math.exp(min(0.0, route_score(mats(r["se"], price), seq) +
                                               (0.0 if pos_base is None else sum(pos_base[n, k] / temp for k, n in enumerate(seq)))
                                               - r["logZ"])) for p, r in zip(pw, runs)))
     p_front = None
@@ -139,7 +150,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
     sw_x = None
     if N == 18 and not (pars or yards):
         sw = seq[9:] + seq[:9]
-        dp = V.route_score(br["mats"], seq) - V.route_score(br["mats"], sw)
+        dp = route_score(br["mats"], seq) - route_score(br["mats"], sw)
         p_front_dp = 1 / (1 + math.exp(-max(-30, min(30, dp))))
         if nine is not None:
             p, sw_x = nine.prob(sc, geo, pb, br, seq, Hc, pw, runs, dp)
@@ -159,7 +170,7 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
     for k, node in enumerate(seq):
         gi = pb.keep[node]
         hs = pb.hk[node]
-        lp = V._tee_lp(br["parts"], seq, k, N) / temp
+        lp = _tee_lp(br["parts"], seq, k, N) / temp
         ph = np.exp(lp - V._lse(lp))
         hi = int(np.argmax(ph))
         h = hs[hi]
@@ -194,9 +205,11 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
                 br_how=br["H"]["how"], p_front=p_front, p_front_dp=p_front_dp, swap_x=sw_x,
                 marg_num=[float(marg[n, k]) for k, n in enumerate(seq)], p_tee=ptee,
                 marg_max_other=[float(np.delete(marg[n], k).max()) if N > 1 else 0.0 for k, n in enumerate(seq)],
-                lagr_conflict=lagr_conflict, card=bool(pars or yards), card_resid=card_resid,
+                lagr_conflict=lagr_conflict, card=bool(pars or yards), card_resid=card_resid, card_geo=chk is not None,
+                card_ll=[float(chk[n, int(np.argmax(_tee_lp(br["parts"], seq, k, N))), k]) for k, n in enumerate(seq)]
+                if chk is not None else None,
                 unused_greens=len(sc.greens) - N, form_top_gap=[_gap(pb.hk[n]) for n in seq],
-                walk_in=[float(pb.wd[seq[k - 1]][n][int(np.argmax(V._tee_lp(br["parts"], seq, k, N)))]) if k else None
+                walk_in=[float(pb.wd[seq[k - 1]][n][int(np.argmax(_tee_lp(br["parts"], seq, k, N)))]) if k else None
                          for k, n in enumerate(seq)],
                 par_conf=par_conf, seq=[int(pb.keep[n]) for n in seq], keep=[int(x) for x in keep])
     return dict(schema="course_structure/1", status="ok", n_holes=N, holes=holes, card_used=bool(pars or yards),
@@ -205,6 +218,153 @@ def solve(sc, card=None, n_holes=None, use_paths=True, hyps=None, geo=None, keep
                                p=round(float(pw[runs.index(br)]), 3)),
                 total_par=int(sum(h["par"] for h in holes)), p_front_nine=p_front, diag=diag,
                 _debug=dict(pb=pb, geo=geo, br=br, runs=runs, marg=marg, seq=seq, Hc=Hc))
+
+
+# ----------------------------------------------------------------------------- per-position potentials (card_hk)
+def potentials_k(pb, se, theta, N, price, nh, chk):
+    """crf.potentials with a per (node, hypothesis, position) card term: trans (N, M, M), trans[k] = the move into
+    position k (k >= 1); turn = the move into position 9 (18 holes); start includes position 0's card term."""
+    tf, tt, tu, ta = crf.split(theta)
+    As, Ae = se
+    u = pb.Phi @ tf + pb.pad
+    if price is not None:
+        u = u - pb.cov @ price
+    if nh is not None:
+        u = u - nh[:, None]
+    gt = pb.F @ tt                                                   # (a, b, h)
+    M = u.shape[0]
+    eye = np.eye(M, dtype=bool)
+    zt = u[None, None] + gt[None] + np.transpose(chk, (2, 0, 1))[:, None]       # (N, a, b, h)
+    trans = np.where(eye[None], -1e4, V._lse(zt, axis=3))
+    turn = zu = None
+    if N == 18:
+        zu = u[None] + anc_(ta, As, 3)[None] + pb.F @ tu + chk[None, :, :, 9]
+        turn = np.where(eye, -1e4, anc_(ta, Ae, 2)[:, None] + V._lse(zu, axis=2))
+    z0 = u + anc_(ta, As, 0) + chk[:, :, 0]
+    start = V._lse(z0, axis=1)
+    end = anc_(ta, Ae, 1)
+    return trans, turn, start, end, dict(u=u, zt=zt, zu=zu, z0=z0, per_k=True)
+
+
+def anc_(ta, A, i):
+    return crf.anc(ta, A, i)
+
+
+def _tr(trans, turn, k):
+    if turn is not None and k == 9:
+        return turn
+    return trans[k] if trans.ndim == 3 else trans
+
+
+def _tee_lp(P, seq, k, N):
+    if not P.get("per_k"):
+        return V._tee_lp(P, seq, k, N)
+    node = seq[k]
+    if k == 0:
+        return P["z0"][node]
+    if k == 9 and N == 18:
+        return P["zu"][seq[k - 1], node]
+    return P["zt"][k][seq[k - 1], node]
+
+
+def _coverage(pb, P, seq, N):
+    cnt = np.zeros(pb.cov.shape[2])
+    for k, node in enumerate(seq):
+        cnt += pb.cov[node, int(np.argmax(_tee_lp(P, seq, k, N)))]
+    return cnt
+
+
+def route_score(mats, seq):
+    trans, turn, start, end = mats
+    s = start[seq[0]] + end[seq[-1]]
+    for k in range(1, len(seq)):
+        s += _tr(trans, turn, k)[seq[k - 1], seq[k]]
+    return float(s)
+
+
+def route_dp(trans, start, end, N, turn=None, pos=None, viterbi=True, marginals=True, soft=True):
+    """structure.solver.route_dp, with trans either (M, M) or per position (N, M, M)."""
+    if trans.ndim == 2:
+        return V.route_dp(trans, start, end, N, turn=turn, pos=pos, viterbi=viterbi, marginals=marginals, soft=soft)
+    M = trans.shape[1]
+    layers = V._popcount_layers(M, N)
+    NEG = -1e30
+    bits = np.arange(M)
+    alpha = np.full((1 << M, M), NEG, np.float32)
+    for j in range(M):
+        alpha[1 << j, j] = start[j] + (pos[j, 0] if pos is not None else 0.0)
+    vit = alpha.copy() if viterbi else None
+    for k in range(1, N):
+        tr = _tr(trans, turn, k)
+        idx = layers[k]
+        bit = ((idx[:, None] >> bits[None, :]) & 1).astype(bool)
+        new = idx[:, None] | (1 << bits)[None, :]
+        rows, cols = np.nonzero(~bit)
+        if soft:
+            A = alpha[idx].astype(np.float64)
+            am = A.max(1, keepdims=True)
+            tm = tr.max(0, keepdims=True)
+            eT = np.exp(np.clip(tr - tm, -700, 0))
+            B = np.log(np.maximum(np.exp(A - am) @ eT, 1e-300)) + am + tm
+            if pos is not None:
+                B = B + pos[:, k][None, :]
+            alpha[new[rows, cols], cols] = B[rows, cols]
+        if viterbi:
+            Vv = vit[idx]
+            best = np.full((len(idx), M), NEG, np.float32)
+            trf = tr.astype(np.float32)
+            for i in range(M):
+                np.maximum(best, Vv[:, i:i + 1] + trf[i][None, :], out=best)
+            if pos is not None:
+                best = best + pos[:, k][None, :].astype(np.float32)
+            vit[new[rows, cols], cols] = best[rows, cols]
+    last = layers[N]
+    if soft:
+        fin = alpha[last].astype(np.float64) + end[None, :]
+        logZ = V._lse(fin.ravel())
+    else:
+        logZ = float((vit[last].astype(np.float64) + end[None, :]).max())
+    out = dict(logZ=float(logZ))
+    if marginals and soft:
+        beta = np.full((1 << M, M), NEG, np.float32)
+        beta[last] = np.broadcast_to(end[None, :], (len(last), M))
+        for k in range(N - 1, 0, -1):
+            tr = _tr(trans, turn, k)
+            idx = layers[k]
+            bit = ((idx[:, None] >> bits[None, :]) & 1).astype(bool)
+            new = idx[:, None] | (1 << bits)[None, :]
+            nb = np.where(bit, NEG, beta[np.where(bit, idx[:, None], new), bits[None, :]]).astype(np.float64)
+            if pos is not None:
+                nb = nb + pos[:, k][None, :]
+            nm = nb.max(1, keepdims=True)
+            tm = tr.max(1, keepdims=True)
+            eT = np.exp(np.clip(tr - tm, -700, 0))
+            Bk = np.log(np.maximum(np.exp(nb - nm) @ eT.T, 1e-300)) + nm + tm.T
+            beta[idx] = np.where(bit, Bk, NEG)
+        marg = np.zeros((M, N))
+        for k in range(N):
+            idx = layers[k + 1]
+            lp = alpha[idx].astype(np.float64) + beta[idx] - logZ
+            marg[:, k] = np.exp(np.clip(lp, -700, 0)).sum(0)
+        out["marg"] = marg
+    if viterbi:
+        fin_v = vit[last].astype(np.float64) + end[None, :]
+        r, c = np.unravel_index(int(np.argmax(fin_v)), fin_v.shape)
+        mask, j = int(last[r]), int(c)
+        seq = [j]
+        score = float(fin_v[r, c])
+        for k in range(N - 1, 0, -1):
+            tr = _tr(trans, turn, k)
+            prev = mask & ~(1 << j)
+            cand = vit[prev].astype(np.float64) + tr[:, j]
+            if pos is not None:
+                cand = cand + pos[j, k]
+            cand[[i for i in range(M) if not (prev >> i) & 1]] = NEG
+            i = int(np.argmax(cand))
+            seq.append(i)
+            mask, j = prev, i
+        out.update(best=seq[::-1], best_score=score)
+    return out
 
 
 def _gap(hs):

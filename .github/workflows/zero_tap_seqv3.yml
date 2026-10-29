@@ -1,0 +1,162 @@
+name: zero_tap_seqv3
+
+# Zero-tap sequence v3 on workstream D's benchmark: v2 (A's hole_pairs/1 as the formation, route CRF, gate v2) plus
+# the scorecard's own geometry inside the route DP (course_data/zero_tap/sequence/cardgeo.py: every tee set's
+# yardage per hole jointly -- back box, nested forward boxes along the line of play, box spacing = yardage
+# differences, per-set par-by-length, handicap order -- scored per (green, tee hypothesis, card number)).
+# Method `sequence_v3`.
+# Request-file trigger: commit course_data/requests/zt_seqv3_<tag>.json
+#   {"variants": "c0,c0.5,c1,c2,c1n", "oof_run": "39054373440", "form_w": "3"}
+#   c<W>: card-geometry weight W (c0 = v2's card prior, which also supplies the no-card tiers); suffix n = no nesting
+# zsolve: run_bench.py solve per variant x 6 shards; dev courses read the OUT-OF-FOLD hole_pairs/1 of `oof_run`
+#         (artifact zt-hp-oof, A's model refit without the course's state), test courses A's committed files;
+#         courses A never paired (benchmark v1's new states) fall back to the structure solver's hypotheses
+# zgate:  run_bench.py pick_card (variant chosen on DEV card-tier rows only) -> gate2 (fit on dev only, test scored
+#         once) -> course_data/zero_tap/results/sequence_v3/<tier>/<slug>.json + sequence/results/<tag>/; commit
+
+on:
+  push:
+    paths:
+      - "course_data/requests/zt_seqv3_*.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: zt-seqv3-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  PYTHONWARNINGS: ignore
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.p.outputs.tag }}
+      variants: ${{ steps.p.outputs.variants }}
+      oof_run: ${{ steps.p.outputs.oof_run }}
+      form_w: ${{ steps.p.outputs.form_w }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 20
+      - id: p
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git diff --name-only "$BEFORE" "${{ github.sha }}" -- 'course_data/requests/zt_seqv3_*.json' > /tmp/req.txt
+          else
+            ls course_data/requests/zt_seqv3_*.json > /tmp/req.txt
+          fi
+          python - <<'EOF'
+          import json, os
+          reqs = [l.strip() for l in open("/tmp/req.txt") if l.strip() and os.path.exists(l.strip())]
+          p = sorted(reqs)[-1] if reqs else None
+          r = json.load(open(p)) if p else {}
+          vs = [v.strip() for v in str(r.get("variants", "c0,c0.5,c1,c2,c1n")).split(",") if v.strip()]
+          assert "c0" in vs, "c0 (v2's card prior) is needed for the no-card tiers"
+          out = dict(tag=os.path.basename(p)[len("zt_seqv3_"):-5] if p else "v3", variants=json.dumps(vs),
+                     oof_run=str(r.get("oof_run", "39054373440")), form_w=str(r.get("form_w", "3")))
+          print(out)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              for k, v in out.items():
+                  fh.write(f"{k}={v}\n")
+          EOF
+
+  zsolve:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        v: ${{ fromJSON(needs.plan.outputs.variants) }}
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          name: zt-hp-oof
+          run-id: ${{ needs.plan.outputs.oof_run }}
+          github-token: ${{ github.token }}
+          path: hp_oof
+      - run: |
+          V="${{ matrix.v }}"
+          W="${V#c}"; NEST=1
+          case "$W" in *n) W="${W%n}"; NEST=0;; esac
+          TIERS=osm_card,unmapped_card
+          [ "$V" = "c0" ] && TIERS=nocard,osm_card,unmapped_nocard,unmapped_card
+          echo "variant $V: card weight $W nest $NEST tiers $TIERS"
+          ZT_PAIRS_FORM_W=${{ needs.plan.outputs.form_w }} ZT_CARD_W=$W ZT_CARD_NEST=$NEST ZT_STRUCT_FALLBACK=1 \
+          python -u course_data/zero_tap/sequence/run_bench.py solve --tiers $TIERS \
+            --pairs-root course_data/zero_tap/formation/hole_pairs --pairs-root-dev hp_oof \
+            --shard ${{ matrix.shard }}/6 --out zrows/$V/zb_${{ matrix.shard }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zrows3-${{ matrix.v }}-${{ matrix.shard }}
+          path: zrows/
+          retention-days: 14
+
+  zgate:
+    needs: [plan, zsolve]
+    if: always() && needs.zsolve.result != 'skipped'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy shapely scikit-image
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: zrows3-*
+          merge-multiple: true
+          path: zrows
+      - name: Pick the card variant on dev, gate v2, write results
+        run: |
+          git pull -q --rebase origin "${{ github.ref_name }}" || true
+          R=course_data/zero_tap/sequence/results/${{ needs.plan.outputs.tag }}
+          mkdir -p $R /tmp/zv
+          python - <<'EOF'
+          import glob, gzip, json, os
+          for d in sorted(glob.glob("zrows/c*")):
+              rows = [r for p in sorted(glob.glob(d + "/zb_*.json")) for r in json.load(open(p))]
+              v = os.path.basename(d)
+              with gzip.open(f"/tmp/zv/zrows_{v}.json.gz", "wt") as fh:
+                  json.dump(rows, fh)
+              print(v, len(rows), "rows")
+          EOF
+          python -u course_data/zero_tap/sequence/run_bench.py pick_card /tmp/zv/zrows_*.json.gz --out $R/pick_card.json \
+            --merged $R/zrows.json.gz
+          cp /tmp/zv/zrows_c0.json.gz $R/zrows_c0.json.gz
+          rm -rf course_data/zero_tap/results/sequence_v3
+          python -u course_data/zero_tap/sequence/run_bench.py gate2 $R/zrows.json.gz --tag ${{ needs.plan.outputs.tag }} --method sequence_v3
+          cat $R/bench_d_table.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/zero_tap/sequence/results/${{ needs.plan.outputs.tag }} course_data/zero_tap/results/sequence_v3
+          git diff --cached --stat | tail -n 3
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "zero_tap sequence v3 (card geometry) on the D benchmark (${{ needs.plan.outputs.tag }}, Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1

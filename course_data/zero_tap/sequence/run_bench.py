@@ -39,6 +39,7 @@ _spec.loader.exec_module(DB)
 
 assert hasattr(DB, "inputs"), "expected workstream D's course_data/zero_tap/bench.py"
 METHOD = "sequence"
+FALLBACK = os.environ.get("ZT_STRUCT_FALLBACK", "0") == "1"      # v3: no hole_pairs/1 -> structure hypotheses
 
 
 def _pairs_for(slug, tier, split, pairs_root, pairs_root_dev):
@@ -65,10 +66,12 @@ def solve_rows(tiers, split, shard, of, slugs=None, pairs_root=None, pairs_root_
             t0 = time.time()
             try:
                 x = DB.inputs(r, tier)
+                hp = None
                 if pairs_root:
                     hp, src = _pairs_for(r["slug"], tier, r["split"], pairs_root, pairs_root_dev)
-                    if hp is None:
+                    if hp is None and not (FALLBACK and not tier.startswith("unmapped")):
                         raise RuntimeError(f"no hole_pairs/1 for {r['slug']} {tier}")
+                if hp is not None:
                     scene = None
                     if tier.startswith("unmapped"):
                         scene = x.get("scene") or SV._formation_data().perception_scene_obj(r["slug"])
@@ -81,7 +84,11 @@ def solve_rows(tiers, split, shard, of, slugs=None, pairs_root=None, pairs_root_
                         raw["diag"]["perception"] = bool(scene)
                     res["pairs_src"] = os.path.relpath(src, os.path.dirname(os.path.dirname(ZT)))
                 else:
+                    # v1 path; in v3 also the fallback for courses A never paired (benchmark v1's new courses):
+                    # the structure solver's hypotheses (+ the card-geometry term when ZT_CARD_W > 0)
                     res, raw = SV.run(x["fc"], x["course"], x["card"], gate_params={}, n_holes=None, return_raw=True)
+                    if pairs_root:
+                        res["formation_fallback"] = "structure (no hole_pairs/1 for this course)"
                 diag = raw.get("diag") or {}
             except Exception as e:                                    # noqa: BLE001
                 traceback.print_exc()
@@ -244,9 +251,50 @@ def pick(paths, out):
     return best
 
 
+CARD_TIERS = ("osm_card", "unmapped_card")
+
+
+def pick_card(paths, out, merged):
+    """v3: choose the card-geometry variant on DEV card-tier rows only. Files zrows_<variant>.json.gz, variant
+    c<CARD_W>[n] ('n' = no nesting); c0 is v2's card prior (and holds the no-card tiers). Most dev card-tier courses
+    fully right, then most dev holes numbered right, then the simpler variant (smaller weight, nesting off last).
+    Writes the merged rows: no-card tiers from c0, card tiers from the chosen variant. Test rows are not read for
+    the choice."""
+    stats, rows_by = [], {}
+    for p in paths:
+        v = os.path.basename(p).split("zrows_")[1].split(".json")[0]
+        rows = GT._read(p)
+        rows_by[v] = (p, rows)
+        dev = [r for r in rows if r["split"] == "dev" and r["tier"] in CARD_TIERS]
+        by = {}
+        for r in dev:
+            b = by.setdefault(r["tier"], [0, 0, 0, 0])
+            b[0] += r["all_correct"]
+            b[1] += r["number"]
+            b[2] += r["N"]
+            b[3] += 1
+        w = float(v[1:].rstrip("n"))
+        stats.append(dict(variant=v, w=w, nest=not v.endswith("n"), path=p, courses=len(dev),
+                          fully=sum(r["all_correct"] for r in dev), numbered=sum(r["number"] for r in dev),
+                          holes=sum(r["N"] for r in dev), by_tier=by))
+        print(f"dev {v:6s}: card tiers fully right {stats[-1]['fully']} / {len(dev)}, numbered "
+              f"{stats[-1]['numbered']} / {stats[-1]['holes']}  " +
+              "  ".join(f"{t}: {b[0]}/{b[3]} {b[1] / max(b[2], 1):.1%}" for t, b in sorted(by.items())), flush=True)
+    best = sorted(stats, key=lambda s: (-s["fully"], -s["numbered"], s["w"], s["nest"]))[0]
+    base = rows_by["c0"][1]
+    ch = rows_by[best["variant"]][1]
+    out_rows = [r for r in base if r["tier"] not in CARD_TIERS] + [r for r in ch if r["tier"] in CARD_TIERS]
+    import gzip
+    with gzip.open(merged, "wt") as fh:
+        json.dump(out_rows, fh)
+    json.dump(dict(chosen=best["variant"], merged=merged, dev=stats), open(out, "w"), indent=1)
+    print("chosen card variant", best["variant"], "->", merged, len(out_rows), "rows")
+    return best
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("what", choices=["solve", "gate", "gate2", "pick"])
+    ap.add_argument("what", choices=["solve", "gate", "gate2", "pick", "pick_card"])
     ap.add_argument("paths", nargs="*")
     ap.add_argument("--tiers", default="osm_card,nocard")
     ap.add_argument("--split", default="all")
@@ -257,6 +305,7 @@ def main():
     ap.add_argument("--pairs-root", help="v2: hole_pairs/1 per <tier>/<slug>.json (workstream A)")
     ap.add_argument("--pairs-root-dev", help="v2: out-of-fold hole_pairs/1 for the dev courses (oof_pairs.py)")
     ap.add_argument("--method", default="sequence_v2")
+    ap.add_argument("--merged", help="pick_card: merged rows file (.json.gz)")
     a = ap.parse_args()
     if a.what == "solve":
         k, of = (int(v) for v in a.shard.split("/"))
@@ -266,6 +315,8 @@ def main():
         json.dump(rows, open(a.out, "w"), default=float)
     elif a.what == "pick":
         pick(a.paths, a.out)
+    elif a.what == "pick_card":
+        pick_card(a.paths, a.out, a.merged)
     elif a.what == "gate2":
         gate_and_write_v2(a.paths, a.tag, a.method)
     else:

@@ -93,6 +93,13 @@ def _features(dg):
              paired_min=float(pu.min()) if pm else 1.0,
              unused_paired_max=float(dg.get("p_paired_unused_max") or 0.0) if pm else 0.0,
              n_off=float(abs((dg.get("N_pairs") or N) - N) > 0) if pm else 0.0)
+    # v3: the card's own geometry per chosen hole (cardgeo.py log-ratio of the chosen tee at its number; neutral 0
+    # without the joint card term)
+    cl = dg.get("card_ll")
+    cl = np.clip(np.array(cl, float), -20, 12) if cl else None
+    f.update(cg=float(cl is not None), cg_min=float(cl.min()) if cl is not None else 0.0,
+             cg_n_lo=float((cl < 0).sum()) if cl is not None else 0.0,
+             cg_sum_neg=float(np.minimum(cl, 0).sum()) if cl is not None else 0.0)
     return f
 
 
@@ -226,6 +233,9 @@ V2_SETS = {
     "pairs_small": ("lp_route_mix", "min_num", "mean_lnum", "card", "perc", "pc_min", "pc_sum_log", "pc_n_lo",
                     "ptc_min", "ptc_sum_log", "n_reassigned", "unused_paired_max", "min_par", "sum_lpar", "lp_front"),
     "pairs_tiny": ("lp_route_mix", "mean_lnum", "card", "pc_sum_log", "ptc_sum_log", "unused_paired_max", "sum_lpar"),
+    # v3: + the joint card term's agreement on the chosen holes (all 0 when the card term is off)
+    "pairs_card": ("lp_route_mix", "mean_lnum", "card", "pc_sum_log", "ptc_sum_log", "unused_paired_max", "sum_lpar",
+                   "cg_min", "cg_n_lo", "cg_sum_neg"),
 }
 V2_L2 = (1.0, 5.0)
 

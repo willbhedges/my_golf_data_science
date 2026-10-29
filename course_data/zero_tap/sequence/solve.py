@@ -31,6 +31,7 @@ sys.path.insert(0, HERE)
 import anchors as A                                                  # noqa: E402
 import gate as GT                                                    # noqa: E402
 import joint as J                                                    # noqa: E402
+import cardgeo as CG                                                 # noqa: E402
 
 V = A.V
 import scene as S                                                    # noqa: E402
@@ -42,6 +43,8 @@ STRUCT_W = 0.0        # weight of the structure formation score added to log P(p
 PAIRS_FORM_W = float(os.environ.get("ZT_PAIRS_FORM_W", "1.0"))   # weight of log P(pair) in pairs mode
 PAIR_FLOOR = 1e-3
 EV_W = 1.0
+CARD_W = float(os.environ.get("ZT_CARD_W", "0"))          # v3: weight of cardgeo's joint card term (0 = v2's card prior)
+NEST = os.environ.get("ZT_CARD_NEST", "1") != "0"          # v3: use the shorter tee sets (nesting) too
 
 
 def _ll(obj, *keys):
@@ -192,8 +195,16 @@ def run_pairs(sc, fc, course, card, pairs, evidence, n_holes):
     nine = nine.with_context(roads, street) if nine is not None else None
     Nk = min(N, len(keep))
     pos = evidence_pos(sc, geo, keep, Nk, evidence) if evidence else None
+    card_fn = None
+    if card and CARD_W > 0:
+        cgp = CG.load()
+
+        def card_fn(kp, n):
+            m = CG.card_hk(sc, geo, hyps, kp, card, n, cgp, nest=NEST)
+            return None if m is None else CARD_W * m
     res = J.solve(sc, card=card, n_holes=Nk, hyps=hyps, geo=geo, keep=keep, cands=cands, nine=nine,
-                  pos_extra=pos, form_lp=form_lp, nothole_override=np.zeros(len(sc.greens)))
+                  pos_extra=pos, form_lp=form_lp, nothole_override=np.zeros(len(sc.greens)), card_fn=card_fn)
+    inputs["card_geo"] = card_fn is not None
     dg = res.get("diag") or {}
     if dg:
         hs = res["holes"]
@@ -265,8 +276,15 @@ def run(fc, course=None, card=None, pairs=None, evidence=None, gate_params=None,
     nine = nine.with_context(roads, street) if nine is not None else None
     pad = pair_offsets(sc, geo, hyps, keep, pairs) if pairs else None
     pos = evidence_pos(sc, geo, keep, N, evidence) if evidence else None
+    card_fn = None
+    if card and CARD_W > 0:
+        cgp = CG.load()
+
+        def card_fn(kp, n):
+            m = CG.card_hk(sc, geo, hyps, kp, card, n, cgp, nest=NEST)
+            return None if m is None else CARD_W * m
     res = J.solve(sc, card=card, n_holes=N, hyps=hyps, geo=geo, keep=keep, cands=cands, nine=nine,
-                  pad_extra=pad, pos_extra=pos)
+                  pad_extra=pad, pos_extra=pos, card_fn=card_fn)
     gp = gate_params if gate_params is not None else GT.load()
     certain, conf, s = GT.apply(gp, res.get("diag", {}))
     out = contract(res, sc, course, certain, conf, s, gp, dict(formation="hole_pairs/1" if pairs else "structure",
