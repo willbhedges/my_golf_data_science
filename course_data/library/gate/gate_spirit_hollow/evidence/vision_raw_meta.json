@@ -1,0 +1,145 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "gate_spirit_hollow",
+ "course": "Spirit Hollow Golf Course",
+ "bbox_snwe": [
+  40.751752,
+  -91.153998,
+  40.76928,
+  -91.134391
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1938,
+  "height": 2222,
+  "bounds": [
+   655674,
+   4512718,
+   657612,
+   4514940
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   655674.0,
+   0.0,
+   -1.0,
+   4514940.0
+  ],
+  "ll_bbox_wsen": [
+   -91.15595408336199,
+   40.75032565595861,
+   -91.13244886994723,
+   40.77070141350876
+  ]
+ },
+ "fetched_utc": "2026-10-29T21:02:40Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": []
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "IA_Eastern_1_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_Eastern_1_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 154630110433
+   },
+   {
+    "name": "IA_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 167692896718
+   }
+  ],
+  "used": [
+   {
+    "name": "IA_Eastern_1_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_Eastern_1_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 154630110433,
+    "cells": 4253706
+   }
+  ],
+  "valid": 0.9878014117201194,
+  "hag_mb": 1.33,
+  "frac_gt_2_5m": 0.2588931493768572,
+  "class_mb": 0.05
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111110"
+  ],
+  "mb": 0.4,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1076559,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 18.64,
+    "items": [
+     "ia_m_4009123_ne_15_030_20230901_20231127",
+     "ia_m_4009115_se_15_030_20230901_20231127"
+    ],
+    "acquired": [
+     "2023-09-01"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 16.35,
+    "items": [
+     "ia_m_4009123_ne_15_060_20210828",
+     "ia_m_4009115_se_15_060_20210828"
+    ],
+    "acquired": [
+     "2021-08-28"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
