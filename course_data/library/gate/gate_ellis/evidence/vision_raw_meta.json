@@ -1,0 +1,144 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "gate_ellis",
+ "course": "Ellis Golf Course",
+ "bbox_snwe": [
+  41.991298,
+  -91.706155,
+  42.004963,
+  -91.685331
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1990,
+  "height": 1786,
+  "bounds": [
+   607024,
+   4649498,
+   609014,
+   4651284
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   607024.0,
+   0.0,
+   -1.0,
+   4651284.0
+  ],
+  "ll_bbox_wsen": [
+   -91.70792412101729,
+   41.989949314197666,
+   -91.68357393109892,
+   42.00630402060601
+  ]
+ },
+ "fetched_utc": "2026-10-29T20:20:31Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "IA_Eastern_1_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_Eastern_1_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 154630110433
+   },
+   {
+    "name": "IA_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 167692896718
+   }
+  ],
+  "used": [
+   {
+    "name": "IA_Eastern_1_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_Eastern_1_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 154630110433,
+    "cells": 3471776
+   }
+  ],
+  "valid": 0.9768258988109642,
+  "hag_mb": 1.86,
+  "frac_gt_2_5m": 0.5272440027686023,
+  "class_mb": 0.05
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021333321"
+  ],
+  "mb": 0.45,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 340787,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   },
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 547748,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 15.08,
+    "items": [
+     "ia_m_4209159_sw_15_030_20230901_20231127",
+     "ia_m_4209159_se_15_030_20230901_20231127",
+     "ia_m_4109103_nw_15_030_20230901_20231127",
+     "ia_m_4109103_ne_15_030_20230901_20231127"
+    ],
+    "acquired": [
+     "2023-09-01"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 13.48,
+    "items": [
+     "ia_m_4209159_sw_15_060_20210916",
+     "ia_m_4209159_se_15_060_20210916",
+     "ia_m_4109103_nw_15_060_20210916",
+     "ia_m_4109103_ne_15_060_20210916"
+    ],
+    "acquired": [
+     "2021-09-16"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
