@@ -40,7 +40,7 @@ NOTE = {
     "1": ("Fairway (OSM) 140-270 then the hole turns left between tree lines: trees right from 220 (lidar edge = "
           "2022 photo), trees left 240-300 (x < -45), one tree left at 150. Bunker left 225. The mounded rough left "
           "of the fairway (150-240) is mown in every year: rough.", "high"),
-    "3": ("Forced carry over the ravine woods / pond to a fairway that starts ~185 and bends left; woods left all the "
+    "3": ("Forced carry over the ravine woods / pond to a fairway that starts ~185, is widest left at 200-270 and turns right to the green; woods left all the "
           "way (rough strip 7-15 yds). The OSM course outline crosses the ravine: not OB on the ground (no fence, "
           "no houses; woods continue), so no OB in the corridor.", "high"),
     "4": ("Fairway (OSM) 180-345 x -15..+15; woods left 20-30 yds off; hole 8's fairway right (fairway lie). The "

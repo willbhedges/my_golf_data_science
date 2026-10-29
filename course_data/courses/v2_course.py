@@ -122,7 +122,7 @@ def fetch_display(slug):
 
 def whiches(slug):
     cfg = config(slug)
-    return ["truth"] + [w for w in (cfg.get("alt_bases") or {}).values()]
+    return [cfg.get("main_which", "truth")] + [w for w in (cfg.get("alt_bases") or {}).values()]
 
 
 def ensure_shots(slug, which):
@@ -154,7 +154,7 @@ def prepare(slug, which):
     PK = product_pk()
     import imagery
     C = PK.load(pkg_path, base_tees(cfg, which))
-    disp = display_dir(slug) if which.startswith("truth") else None
+    disp = display_dir(slug)
     if disp:
         C.imagery_dir = disp                    # display only: the module, frames and zones do not depend on it
         print("display imagery:", disp)

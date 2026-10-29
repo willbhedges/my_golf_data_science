@@ -49,8 +49,8 @@ NOTES = {
     "1": "Par 4 downhill from the clubhouse; fairway 140-270 then turns left between tree lines (left 240-300, right "
          "from 220); bunker left at 225.",
     "2": "Par 3, open; green outline OSM. No water near the green.",
-    "3": "Par 4 over a wooded ravine and the pond (forced carry ~200 from Back): fairway starts at ~185 and bends "
-         "left; woods left all the way; the OSM course outline crosses the ravine woods (not OB on the ground).",
+    "3": "Par 4 over a wooded ravine and the pond (forced carry ~200 from Back): fairway starts at ~185, widest left "
+         "at 200-270, then turns right to the green; woods left all the way; the OSM course outline crosses the ravine woods (not OB on the ground).",
     "4": "Par 4 uphill; woods left 20-30 yds off the fairway; hole 8's fairway right (playable).",
     "5": "Par 4, tree-lined: woods right within 0-10 yds of the fairway edge the whole way; open rough + cart path left.",
     "6": "Par 3 over the pond: water short, left and right of the green; bunkers long.",
