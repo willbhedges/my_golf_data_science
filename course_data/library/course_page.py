@@ -404,6 +404,13 @@ def split_page(html):
 def pack_page(head, data, code, tail):
     code = code.replace("hand-checked against USGS 3DEP lidar", "mapped automatically (not hand checked) from OSM, "
                         "NAIP and USGS 3DEP lidar")
+    # the template shows the tee picker only once offset grids exist; a page whose second set is a solved base
+    # (D.alt) and has no offsets needs it too
+    old = 'document.getElementById("setRow").hidden = !multi; if(!multi) st.set = D.base_set;'
+    new = ('const multiSet = multi || !!(D.alt && Object.keys(D.alt).length); '
+           'document.getElementById("setRow").hidden = !multiSet; if(!multiSet) st.set = D.base_set;')
+    if old in code:
+        code = code.replace(old, new)
     z = base64.b64encode(gzip.compress(json.dumps(data, separators=(",", ":")).encode(), 9)).decode()
     return (head + f'<script id="pg-data" type="application/octet-stream">{z}</script>\n'
             f'<script id="pg-main" type="text/plain">{code}</script>\n' + BOOT + tail)
@@ -476,8 +483,9 @@ def course_gate(pkg, checks, qa, cfg):
             reasons.append(f"qa_page.js did not run for {s} (rc {r.get('rc')})")
             continue
         for v, vr in rep["views"].items():
-            if vr.get("errors"):
-                reasons.append(f"page console errors ({v}, {s})")
+            errs = [e for e in vr.get("errors") or [] if "Failed to load resource" not in e]   # web fonts offline
+            if errs:
+                reasons.append(f"page console errors ({v}, {s}): {errs[0][:120]}")
             for i, hr in enumerate(vr["holes"]):
                 if hr["problems"]:
                     page_bad.setdefault(i, []).append(f"{s} {v}: {'; '.join(hr['problems'])}")
