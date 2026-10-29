@@ -35,6 +35,16 @@ SRC = os.path.join(CD, "courses", "eagle_knoll", "auto", "package_v0_no_vision.j
 TOL = 8.0
 CARD_PAR = [4, 3, 4, 4, 4, 3, 5, 4, 5, 4, 4, 3, 5, 4, 4, 3, 5, 4]     # golfify = OpenGolfAPI card
 
+# Re-check on the sharper photo (course_data/truth/recheck.py renders, recheck/): hand-placed tees and hole-line bends,
+# in each hole's reference frame (ref_frame: the first-pass Back tee -> its 250-yd hole-line point; par 3: -> green):
+# (x yds right of that line, along yds from that tee toward the green).
+TEE_AT = {          # ref -> {set: (x, along, note)}
+    "4": {"Back": (-4.9, 7.6, "the Back box is the small OSM pad 7-20 yds ahead of the Eagle pad (x -10..0), at the "
+                               "back of its centre line, which measures the card 399; the first pass had it on the "
+                               "front edge of the Eagle pad (406, +7)")},
+}
+LINE_AT = {}        # ref -> ([(x, along), ...] new hole-line vertices from the tee end to before the green, note)
+
 NOTES = {
     "1": "Par 4 downhill from the clubhouse; fairway 140-270 then turns left between tree lines (left 240-300, right "
          "from 220); bunker left at 225.",
@@ -61,6 +71,18 @@ NOTES = {
           "woods right.",
     "18": "Par 4 home: trees right 240-340 beyond the cart path, trees left 140-220; houses far left (x < -75).",
 }
+
+
+def ref_frame(h, tee_ll, par, length=None):
+    sys.path.insert(0, os.path.join(CD, "platform"))
+    import tee_line as TL
+    aim, _ = TL.aim_point(tee_ll, h.get("hole_line_ll"), h["green_ll"], length, par)
+    return dict(tee_ll=[round(float(v), 7) for v in tee_ll], aim_ll=[round(float(v), 7) for v in aim])
+
+
+def at(rf, x, along):
+    fr = R.Frame(rf["tee_ll"], rf["aim_ll"], ppy=1.0, proj="utm")
+    return [round(float(v), 7) for v in fr.yds_to_ll([[float(x), -float(along)]])[0]]
 
 
 def main():
@@ -90,8 +112,17 @@ def main():
             else:
                 how[s] = f"pad ({t.get('method')}), measured {meas} vs card {card[s]}"
             tees[s] = [round(float(ll[0]), 7), round(float(ll[1]), 7)]
+        rf = ref_frame(h, tees.get("Back") or next(iter(tees.values())), par, card.get("Back"))
+        for s, (x, al, note) in TEE_AT.get(ref, {}).items():
+            tees[s] = at(rf, x, al)
+            how[s] = f"recheck: {note}"
+        line = h.get("hole_line_ll")
+        if ref in LINE_AT:
+            pts, note = LINE_AT[ref]
+            line = [at(rf, x, al) for x, al in pts]
+            how["line"] = f"hole line bent by hand: {note}"
         out[ref] = dict(par=par, card=card, tees=tees, tee_how=how, green_ll=h["green_ll"],
-                        green_poly_ll=h.get("green_polygon_ll"), hole_line_ll=h.get("hole_line_ll"),
+                        green_poly_ll=h.get("green_polygon_ll"), hole_line_ll=line, ref_frame=rf,
                         note=NOTES.get(ref, ""))
     doc = dict(schema="holes_truth/1", course="Eagle Knoll Golf Club", slug="eagle_knoll", likely_set="Back",
                sets=sets, source=os.path.relpath(SRC, ROOT), method=__doc__.strip().split("\n\n", 1)[1],

@@ -10,7 +10,12 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import corridor as C  # noqa: E402
 from corridor import Z, band, ell, poly, rect  # noqa: E402,F401
+
+# Footprint to 440 yds along (FOOT a1 345 -> 440), as Blue Hills: the Middle tees are up to 85 yds ahead of Back (5)
+# and Middle and Eagle are solved as full base sets, so their drives stay on the hand map.
+C.FOOT.update(a1=440.0)            # before any assist call: assist clips to C.FOOT; build writes the footprint
 import assist as A  # noqa: E402
 
 S = "eagle_knoll"
@@ -80,6 +85,14 @@ LATE = {
     "10": [Z("recovery", band([(145, 21), (165, 20), (175, 22), (185, 21), (200, 21), (230, 22), (262, 24)],
                               [(145, 42), (262, 42)]),
              "right tree line: 2020 / 2022 crowns reach x +20..+24 (2015 lidar edge +22..+37 at 170-180)")],
+    # third pass (recheck/ renders: NAIP 2020, the sharpest year here, + CIR and NAIP 2022, with the 2015 lidar edge)
+    "5": [Z("recovery", band([(145, -75), (262, -75)], [(145, -39), (175, -38), (205, -38), (235, -37), (262, -38)]),
+            "left woods beyond the cart path at 145-262: continuous canopy from x -38 in NAIP 2020 / 2022 and CIR "
+            "(the 2015 lidar has only scattered crowns > 2.5 m there: grown since)")],
+    "9": [Z("recovery", ell(17, 263, 7, 12), "crown over the cart path right at 250-275 (NAIP 2020 / 2022, CIR; "
+                                             "past the 2015 lidar edge)"),
+          Z("recovery", band([(148, 30), (165, 29), (185, 28), (200, 28)], [(148, 66), (200, 66)]),
+            "right woods at 148-200 filled in since 2015 (continuous canopy from x +28 in NAIP 2020 / 2022)")],
 }
 for _r, (_n, _c) in NOTE.items():
     H[_r] = dict(zones=EXTRA.get(_r, []) + auto(_r) + LATE.get(_r, []), note=_n, confidence=_c)

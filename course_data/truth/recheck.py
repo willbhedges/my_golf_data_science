@@ -45,10 +45,13 @@ def _k(lat):
 
 
 def measure(tee, line, green):
-    """tee -> nearest point of the hole line -> along it -> green centre (yds), and the tee's distance off the line."""
+    """Card convention (tees/place_tee.LineOfPlay.dist_to_green, USGA): the hole line with its last point replaced by
+    the green centre; straight from the tee to the next turning point in front of it, then along the line. Returns
+    (yds, the tee's distance off the line)."""
     tee = np.asarray(tee[:2], float)
     k = _k(tee[1])
-    P = (np.array([p[:2] for p in (line or [])] + [list(green[:2])], float) - tee) * k
+    pts = [p[:2] for p in (line or [])][:-1] + [list(green[:2])]
+    P = (np.array(pts, float) - tee) * k
     if len(P) < 2:
         return float(np.linalg.norm(P[-1])), 0.0
     best = None
@@ -57,11 +60,10 @@ def measure(tee, line, green):
         d = b - a
         u = float(np.clip(-(a @ d) / max(float(d @ d), 1e-9), 0, 1))
         dist = float(np.linalg.norm(a + u * d))
-        if best is None or dist < best[0]:
-            best = (dist, i, u)
-    _, i, u = best
-    pts = [P[i] + u * (P[i + 1] - P[i])] + list(P[i + 1:])
-    return float(np.linalg.norm(pts[0])) + sum(float(np.linalg.norm(b - a)) for a, b in zip(pts[:-1], pts[1:])), best[0]
+        if best is None or dist < best[0] - 1e-9:
+            best = (dist, i + 1)
+    j = best[1]
+    return float(np.linalg.norm(P[j])) + sum(float(np.linalg.norm(b - a)) for a, b in zip(P[j:-1], P[j + 1:])), best[0]
 
 
 def tee_line():
@@ -209,6 +211,8 @@ def main():
         s0 = sets[0] if sets[0] in tees else next(iter(tees))
         t0 = tees[s0]
         a0_ll = aims[s0] if par > 3 else green
+        if h.get("ref_frame"):              # holes_truth.py's fixed reference frame (TEE_AT / LINE_AT coordinates)
+            t0, a0_ll = h["ref_frame"]["tee_ll"], h["ref_frame"]["aim_ll"]
         # ---- tees: every set in s0's frame
         fr1 = R.Frame(t0, a0_ll, ppy=1.0, proj="utm")
         al = {s: -float(fr1.ll_to_yds([t])[0][1]) for s, t in tees.items()}
@@ -235,7 +239,7 @@ def main():
                     title(old, OLD.label)]))
         # ---- whole hole
         L = max(rec[s0]["measured"], 150) + 30
-        ppy = 1.6
+        ppy = 2.2
         lat = 110.0
         fr = frame(t0, a0_ll if par > 3 else green, ppy, min(lo, -10), L, lat)
         img = u8(NEW.warp(fr)[..., :3])

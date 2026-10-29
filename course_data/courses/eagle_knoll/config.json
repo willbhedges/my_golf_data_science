@@ -1,18 +1,35 @@
 {
  "name": "Eagle Knoll Golf Club",
  "title": "Eagle Knoll Caddie",
- "sub": "NCCGA Regional 2, Nov 7-8 2026 · Driver 275/300 · 2-wood 265/280 · 4-wood 255/270 at 70°F · club and aim re-solved for the wind and temperature at each hole",
- "event": "NCCGA Regional 2",
+ "sub": "NCCGA Central Regional 2, Sat-Sun Nov 7-8 2026 · Driver 275/300 · 2-wood 265/280 · 4-wood 255/270 at 70°F · club and aim re-solved for the wind and temperature at each hole",
+ "event": "NCCGA Central Regional Tournament 2 (Sat-Sun Nov 7-8 2026, 9:00 am both days)",
  "package": "course_data/courses/eagle_knoll/auto/package.json",
  "truth_package": "course_data/courses/eagle_knoll/truth/package.json",
  "tees": "Back",
+ "alt_bases": {
+  "Eagle": "truth_eagle",
+  "Middle": "truth_middle"
+ },
  "sets": ["Eagle", "Back", "Middle", "Forward"],
  "colors": {"Eagle": "#d4a017", "Back": "#2a5bd7", "Middle": "#f2f2f2", "Forward": "#d22"},
  "days": ["2026-11-07", "2026-11-08"],
  "day_labels": ["Sat 11/7", "Sun 11/8"],
  "tee_hour": 9.0,
  "temps": [35, 50, 65],
+ "draws": 128,
+ "forecast": "course_data/weather/forecast_eagle_knoll.json",
  "climate": {"temp_lo": 37, "temp_hi": 58, "wind_mph": 9, "wind_from": 200,
-             "source": "early-November normals for Columbia, MO (lows ~37 F, highs ~58 F, prevailing SSW wind ~9 mph)"},
- "foot": "Tee set: Back (blue, 6,667, 72.8/134) is the likely NCCGA set (the NCCGA played the blue tees here in 2015 and 2025); Eagle (gold, 6,920), Middle and Forward are on the tee picker. Imagery: USDA NAIP 2022-06-20 (growing season)."
+             "source": "early-November normals for Columbia, MO (lows ~37 F, highs ~58 F, prevailing SSW wind ~9 mph); used until the forecast file exists (course_data/requests/weather_eagle_knoll.json, from Nov 1)"},
+ "display_imagery": {"year": 2020},
+ "grid_prune": true,
+ "foot": "Tee sets: Back (blue, 6,667, 72.8/134; the NCCGA played the blue tees here in 2015 and 2024), Eagle (gold, back, 6,920, 73.8/141) and Middle (white, 6,186, 70.8/130) are each fully solved from their own boxes; Forward (red, 5,174) moves the Back tee along the line. Card: golfify = OpenGolfAPI (= the NCCGA 2015 sheet). Calm-day picks: 128 prior draws per hole, 512 on the close calls. Photo: USDA NAIP 2020 (0.6 m, the sharpest year available here; no 0.3 m year covers the course); the map was checked on NAIP 2020 / 2022 and the 2015 3DEP lidar. Start time and starting hole are adjustable (default 9:00 shotgun on hole 1; the NCCGA lists 9:00 am both days, tee sheet not yet posted).",
+ "hole_notes": {
+  "3": "forced carry over the wooded ravine and the pond to a fairway that starts ~185 yds out (Back) and bends right toward the green; woods left all the way.",
+  "5": "woods left beyond the cart path the whole way (grown in since the 2015 lidar); woods right 0-10 yds off the fairway.",
+  "9": "unmown grass right beyond the cart path from ~280; trees right 150-280.",
+  "11": "a strip of unmown grass left (175-305 from Back), trees right 220-285 beyond the cart path.",
+  "14": "the pond crosses the line ~200-260 yds out in front of the green: lay up short of ~200 or carry ~265.",
+  "17": "the creek runs down the left at 140-240 and then crosses diagonally 240-345 yds from Back between the two fairways; woods right.",
+  "18": "house lots / OB 45-70 yds left; trees right 240-340 beyond the cart path."
+ }
 }
