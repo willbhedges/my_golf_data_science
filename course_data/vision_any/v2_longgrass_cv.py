@@ -68,6 +68,168 @@ PRODUCT = "off"
 CLUB_ORDER = ["Driver", "2-wood", "3-wood", "4-wood", "5-wood", "Hybrid", "Long iron", "Mid iron", "Short iron"]
 
 
+# =========================================================================== rev 2
+# rev 2 (request {"rev": 2}): a landing-corridor-focused classifier. Training cells are only the hand maps' corridor
+# cells 145-440 yds off the tee (|lateral| <= 55 yds), the four newer truth courses join the leave-one-course-out,
+# and five feature groups are added on top of the v2 stack (add_rev2_features). Same settings grid, same scorer,
+# same adoption rule.
+def _request_rev():
+    try:
+        return int(json.load(open(os.path.join(CD, "requests", "longgrass_cv.json"))).get("rev", 1))
+    except Exception:                                          # noqa: BLE001
+        return 1
+
+
+REV = int(os.environ.get("LONGGRASS_REV") or _request_rev())
+SUFFIX = "" if REV < 2 else f"_rev{REV}"                 # rev >= 2 writes v2_longgrass_cv_rev<n>.{md,json}
+TRAIN_CORRIDOR = dict(a0=145.0, a1=440.0, lat=55.0)
+REV2_COURSES = ("blue_hills", "pine_dunes", "national_kc", "hot_springs_arlington")
+REV2_FEATS = ("r2_season_ndvi", "r2_season_nir", "r2_season_slope", "r2_nirtex5_my", "r2_nirtex_ratio",
+              "r2_lowveg3", "r2_lowveg7", "r2_lowfrac7", "r2_coh2", "r2_coh5", "r2_grad3", "r2_d_edge",
+              "r2_osm_native_in", "r2_d_osm_native", "r2_osm_rough_in")
+
+
+def _rev2_setup():
+    names = {"blue_hills": "Blue Hills", "pine_dunes": "Pine Dunes", "national_kc": "National KC",
+             "hot_springs_arlington": "Hot Springs Arlington"}
+    for v in REV2_COURSES:
+        hp = os.path.join(CD, "truth", v, "hand_zones_ll.json")
+        pp = os.path.join(CD, "packages", v, "package.json")
+        if not (os.path.exists(hp) and os.path.exists(pp)):
+            continue
+        COURSES[v] = v
+        NAMES[v] = names[v]
+        tees = json.load(open(hp)).get("tee_set")
+        pk = json.load(open(pp))
+        sets = pk.get("tee_sets") or {}
+        sets = list(sets) if isinstance(sets, dict) else [t.get("name") for t in sets]
+        if tees not in sets:                                   # e.g. National KC: the package has only osm_back
+            tees = pk.get("tee_set") or (sets[0] if sets else tees)
+        EXTRA_SB.append(dict(slug=v, name=names[v], tees=tees, truth="hand",
+                             package=f"course_data/packages/{v}/package.json",
+                             hand=f"course_data/truth/{v}/hand_zones_ll.json"))
+
+
+if REV >= 2:
+    _rev2_setup()
+
+
+def feature_names():
+    return list(model_meta()["features"]) + (list(REV2_FEATS) if REV >= 2 else [])
+
+
+def add_rev2_features(D):
+    """The rev-2 feature groups, course-relative like the v2 stack (robust z vs the course's own mown turf):
+      seasonal contrast  NAIP years ordered by how green the course's mown turf is that year; a cell's NDVI / NIR
+                         z-score in the most dormant year minus the greenest (unmown grass browns and greens on its
+                         own schedule), and the slope of its NDVI z against turf greenness across years
+      NIR texture        multi-year mean of the 5 m NIR local std; 3 m / 15 m texture ratio (fine stems vs patches)
+      lidar 0.2-1.5 m    share of cells around whose highest return is 0.2-1.5 m above ground (3 / 7 m windows;
+                         3DEP point statistics when present, else the 1 m HAG raster); the 0.3-1.5 m return share
+      mowing edges       structure-tensor coherence of the latest NIR (2 / 5 m: mowing stripes are coherent),
+                         gradient magnitude, distance to the nearest strong NIR edge (mown / unmown boundary)
+      OSM polygons       inside / distance to OSM natural=grassland / heath / scrub / wetland, landuse=meadow,
+                         golf=native; inside golf=rough"""
+    import v2_features as VF
+    S, F, M = D["S"], D["F"], D["M"]
+    ref = F.ref
+    nan = np.full((S.H, S.W), np.nan, np.float32)
+    ys = []
+    for yr, b in S.naip:
+        m = VF.year_maps(b)
+        valid = np.isfinite(b).all(-1)
+        g = float(np.nanmedian(np.where(ref & valid, m["ndvi"], np.nan))) if (ref & valid).any() else np.nan
+        zn = VF.robust_norm(ndimage.gaussian_filter(m["ndvi"], 1.5), ref)
+        zi = VF.robust_norm(ndimage.gaussian_filter(m["nir"], 1.5), ref)
+        tx = VF.robust_norm(VF.local_std(m["nir"], 5), ref)
+        ys.append((g, np.where(valid, zn, np.nan), np.where(valid, zi, np.nan), np.where(valid, tx, np.nan), m["nir"]))
+    ok = [y for y in ys if np.isfinite(y[0])]
+    if len(ok) >= 2:
+        ok.sort(key=lambda y: y[0])
+        F.add("r2_season_ndvi", ok[0][1] - ok[-1][1])
+        F.add("r2_season_nir", ok[0][2] - ok[-1][2])
+        gv = np.array([y[0] for y in ok])
+        gv = (gv - gv.mean()) / (gv.std() + 1e-6)
+        Z = np.stack([np.nan_to_num(y[1]) for y in ok])
+        F.add("r2_season_slope", np.tensordot(gv, Z, 1) / len(ok))
+    else:
+        for n in ("r2_season_ndvi", "r2_season_nir", "r2_season_slope"):
+            F.add(n, nan)
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        F.add("r2_nirtex5_my", np.nanmean(np.stack([y[3] for y in ys]), 0) if ys else nan)
+    if ys:
+        nir0 = np.nan_to_num(ys[0][4])
+        F.add("r2_nirtex_ratio", np.log((VF.local_std(nir0, 3) + 1e-3) / (VF.local_std(nir0, 15) + 1e-3)))
+    else:
+        F.add("r2_nirtex_ratio", nan)
+    hm = None
+    if S.lidar2 and np.isfinite(S.lidar2.get("hag_max", np.array([np.nan]))).mean() > 0.5:
+        hm = S.lidar2["hag_max"]
+    elif S.layers.get("hag") is not None and np.isfinite(S.layers["hag"]).mean() > 0.6:
+        hm = S.layers["hag"]
+    if hm is not None:
+        lv = ((hm >= 0.2) & (hm <= 1.5)).astype(np.float32)
+        cov = np.isfinite(hm)
+        F.add("r2_lowveg3", np.where(cov, ndimage.uniform_filter(lv, 3), np.nan))
+        F.add("r2_lowveg7", np.where(cov, ndimage.uniform_filter(lv, 7), np.nan))
+    else:
+        F.add("r2_lowveg3", nan)
+        F.add("r2_lowveg7", nan)
+    Z = S.lidar2
+    if Z and np.isfinite(Z.get("n_all", np.array([np.nan]))).mean() > 0.5:
+        tot = ndimage.uniform_filter(np.nan_to_num(Z["n_all"]), 7)
+        F.add("r2_lowfrac7", np.where(tot > 0.2, ndimage.uniform_filter(np.nan_to_num(Z["n_low"]), 7) /
+                                      np.maximum(tot, 1e-3), np.nan))
+    else:
+        F.add("r2_lowfrac7", nan)
+    if ys:
+        x = ndimage.gaussian_filter(nir0, 0.7)
+        gy, gx = np.gradient(x)
+        for nm, s in (("r2_coh2", 2.0), ("r2_coh5", 5.0)):
+            jxx = ndimage.gaussian_filter(gx * gx, s)
+            jyy = ndimage.gaussian_filter(gy * gy, s)
+            jxy = ndimage.gaussian_filter(gx * gy, s)
+            lam = np.sqrt((jxx - jyy) ** 2 + 4 * jxy ** 2)
+            F.add(nm, lam / (jxx + jyy + 1e-6))
+        gm = np.hypot(*np.gradient(ndimage.gaussian_filter(nir0, 1.5)))
+        F.add("r2_grad3", VF.robust_norm(ndimage.uniform_filter(gm, 3), ref))
+        thr = np.percentile(gm[S.H // 10:-S.H // 10 or None, S.W // 10:-S.W // 10 or None], 92)
+        edge = gm > thr
+        F.add("r2_d_edge", np.minimum(ndimage.distance_transform_edt(~edge) * S.res, 40.0) if edge.any()
+              else np.full((S.H, S.W), 40.0, np.float32))
+    else:
+        for n in ("r2_coh2", "r2_coh5", "r2_grad3", "r2_d_edge"):
+            F.add(n, nan)
+    nat = M.get("native", np.zeros((S.H, S.W), bool))
+    F.add("r2_osm_native_in", nat.astype(np.float32))
+    F.add("r2_d_osm_native", np.minimum(ndimage.distance_transform_edt(~nat) * S.res, 60.0) if nat.any()
+          else np.full((S.H, S.W), 60.0, np.float32))
+    F.add("r2_osm_rough_in", M.get("rough", np.zeros((S.H, S.W), bool)).astype(np.float32))
+    return D
+
+
+def prepare(vslug):
+    import v2_model as VM
+    D = VM.prepare(vslug)
+    if REV >= 2:
+        add_rev2_features(D)
+    return D
+
+
+def corridor_only(H, c=TRAIN_CORRIDOR):
+    """rev 2: keep only the training cells inside the hand map's landing corridors (145-440 yds off the tee)."""
+    import v2_labels as LB
+    for x in H:
+        tm = LB.train_mask(x["cls"])
+        rr, cc = np.nonzero(tm)
+        keep = (x["along"][rr, cc] >= c["a0"]) & (x["along"][rr, cc] <= c["a1"]) & (np.abs(x["lat"][rr, cc]) <= c["lat"])
+        assert len(keep) == len(x["tidx"])
+        x["tidx"], x["tcls"] = x["tidx"][keep], x["tcls"][keep]
+    return H
+
+
 def log(*a):
     print(time.strftime("%H:%M:%S"), *a, flush=True)
 
@@ -129,9 +291,11 @@ def model_meta():
 def stage_samples(vslug, out):
     import v2_model as VM
     install_truth_labels()
-    names = model_meta()["features"]
-    D = VM.prepare(vslug)
+    names = feature_names()
+    D = prepare(vslug)
     H = VM.hole_data(D)
+    if REV >= 2:
+        H = corridor_only(H)
     idx, y = VM.task_xy(H, "native")
     idx, y = VM.balanced(idx, y)
     X = D["F"].matrix(idx, names).astype(np.float32)
@@ -238,8 +402,8 @@ def stage_layers(vslug, samples, model_dir, out):
     import v2_model as VM
     install_truth_labels()
     meta = model_meta()
-    names, tb = meta["features"], meta["settings"]["trees"]
-    D = VM.prepare(vslug)
+    names, tb = feature_names(), meta["settings"]["trees"]
+    D = prepare(vslug)
     S = D["S"]
     H = VM.hole_data(D) if vslug in COURSES else []
     region = D["elig_rel"] & D["course"]
@@ -436,17 +600,21 @@ def write_md(res, path, d=None):
     def sl(v):
         return f"{v['shorter']} / {v['longer']}"
     b, cv = T[res["product"]]["all"], res["cv"]
-    Lm = ["# Long grass on the automatic map: leave-one-course-out over the seven truth courses", "",
+    nC = len(C)
+    rev2 = (" Rev 2: corridor-focused classifier, trained only on the hand maps' landing-corridor cells 145-440 yds "
+            "off the tee, with seasonal NAIP contrast, NIR texture, lidar 0.2-1.5 m height share, mowing-pattern edges "
+            "and OSM grassland / heath / rough polygons added (`add_rev2_features`).") if REV >= 2 else ""
+    Lm = [f"# Long grass on the automatic map (rev {REV}): leave-one-course-out over the {nC} truth courses", "",
           "Generated by `course_data/vision_any/v2_longgrass_cv.py` (workflow `.github/workflows/longgrass_cv.yml`). "
           "Classifier: the v2 long-grass LightGBM (multi-year NAIP RGB + NIR, texture, lidar height / low-return "
           "fractions / roughness, terrain, OSM turf distances) trained for each test course on the hand maps of the other "
-          "six. Each setting: the committed package with its vision zones replaced (trees = the product's line, lidar "
+          f"{nC - 1}.{rev2} Each setting: the committed package with its vision zones replaced (trees = the product's line, lidar "
           "canopy eroded 1 m; water as committed), OB re-inferred, product quick decision (n = 8000) per tee shot vs the "
           "hand truth (scoreboard rows; Eagle Knoll and Gateway through the same hand-map scorer, Back tees). "
           "Setting ids: `t<P(native) threshold>_<strict|relaxed>_d<min yds from OSM fairway>_g<course share gate>`; "
           "`off` = no long grass (the product).", "",
           "## Cross-validation (leave one course out)", "",
-          "| test course | setting chosen on the other six | train same | test same (layer used) | product (off) on test |",
+          f"| test course | setting chosen on the other {nC - 1} | train same | test same (layer used) | product (off) on test |",
           "|---|---|---|---|---|"]
     for c, v in res["loco"].items():
         Lm.append(f"| {NAMES[c]} | `{v['chosen']}` | {cell(v['train'])} | {cell(v['test'])} (`{v['layer']}`) | "
@@ -454,7 +622,7 @@ def write_md(res, path, d=None):
     Lm += ["", "| | same club | mean regret | misses shorter / longer |", "|---|---|---|---|",
            f"| before: product, no long grass | {cell(b)} | {b['regret']:.4f} | {sl(b)} |",
            f"| after: cross-validated | {cell(cv)} | {cv['regret']:.4f} | {sl(cv)} |",
-           f"| chosen on all seven `{res['chosen_on_all']}` (in sample) | {cell(T[res['chosen_on_all']]['all'])} | "
+           f"| chosen on all {nC} `{res['chosen_on_all']}` (in sample) | {cell(T[res['chosen_on_all']]['all'])} | "
            f"{T[res['chosen_on_all']]['all']['regret']:.4f} | {sl(T[res['chosen_on_all']]['all'])} |", "",
            "Per course, before -> after (cross-validated): " + ", ".join(
                f"{NAMES[c]} {T[res['product']][c]['same']} -> {res['loco'][c]['test']['same']}" for c in C) + ".", "",
@@ -473,7 +641,7 @@ def write_md(res, path, d=None):
             return f"{e.get('iou', 0):.2f} / {e.get('prec', 0):.2f} / {e.get('rec', 0):.2f}" if e else "-"
         Lm.append(f"| {NAMES[c]} | {a.get('truth_m2', 0):.0f} | {a.get('share', 0):.3f} | {ipr(a)} | "
                   f"{z.get('share', 0):.3f} | {ipr(z)} |")
-    Lm += ["", "## Settings (top 40 by same club over all seven, then regret; every row in the .json)", "",
+    Lm += ["", f"## Settings (top 40 by same club over all {nC}, then regret; every row in the .json)", "",
            "| setting | " + " | ".join(NAMES[c] for c in C) + " | all | mean regret | shorter / longer |",
            "|---|" + "---|" * len(C) + "---|---|---|"]
     order = sorted(T.items(), key=lambda kv: (-kv[1]["all"]["same"], kv[1]["all"]["sum_regret"]))
@@ -594,15 +762,15 @@ def main():
     a = sp.add_parser("report")
     a.add_argument("--rows", required=True)
     a.add_argument("--dir", required=True)
-    a.add_argument("--md", default=os.path.join(HERE, "v2_longgrass_cv.md"))
-    a.add_argument("--json", default=os.path.join(HERE, "v2_longgrass_cv.json"))
+    a.add_argument("--md", default=os.path.join(HERE, f"v2_longgrass_cv{SUFFIX}.md"))
+    a.add_argument("--json", default=os.path.join(HERE, f"v2_longgrass_cv{SUFFIX}.json"))
     a = sp.add_parser("integrate")
     a.add_argument("--dir", required=True)
     a.add_argument("--model", required=True)
-    a.add_argument("--json", default=os.path.join(HERE, "v2_longgrass_cv.json"))
+    a.add_argument("--json", default=os.path.join(HERE, f"v2_longgrass_cv{SUFFIX}.json"))
     a = sp.add_parser("rescore")
-    a.add_argument("--md", default=os.path.join(HERE, "v2_longgrass_cv.md"))
-    a.add_argument("--json", default=os.path.join(HERE, "v2_longgrass_cv.json"))
+    a.add_argument("--md", default=os.path.join(HERE, f"v2_longgrass_cv{SUFFIX}.md"))
+    a.add_argument("--json", default=os.path.join(HERE, f"v2_longgrass_cv{SUFFIX}.json"))
     a = ap.parse_args()
     if a.cmd == "samples":
         stage_samples(a.slug, a.out)

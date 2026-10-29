@@ -27,8 +27,9 @@ jobs:
     timeout-minutes: 90
     strategy:
       fail-fast: false
+      max-parallel: 6
       matrix:
-        slug: [spirit_hollow, mozingo, veenker, coldwater, ellis, eagle_knoll, gateway_national, wakonda]
+        slug: [spirit_hollow, mozingo, veenker, coldwater, ellis, eagle_knoll, gateway_national, wakonda, blue_hills, pine_dunes, national_kc, hot_springs_arlington]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -95,8 +96,9 @@ jobs:
     timeout-minutes: 90
     strategy:
       fail-fast: false
+      max-parallel: 6
       matrix:
-        slug: [spirit_hollow, mozingo, veenker, coldwater, ellis, eagle_knoll, gateway_national, wakonda]
+        slug: [spirit_hollow, mozingo, veenker, coldwater, ellis, eagle_knoll, gateway_national, wakonda, blue_hills, pine_dunes, national_kc, hot_springs_arlington]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -132,9 +134,9 @@ jobs:
     timeout-minutes: 300
     strategy:
       fail-fast: false
-      max-parallel: 10
+      max-parallel: 6
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        shard: [0, 1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -148,7 +150,7 @@ jobs:
           pattern: lg-layers-*
           path: /tmp/lay
           merge-multiple: true
-      - run: python -u course_data/vision_any/v2_longgrass_cv.py score --dir /tmp/lay --rows /tmp/rows_${{ matrix.shard }}.json --shard ${{ matrix.shard }} --nshards 10
+      - run: python -u course_data/vision_any/v2_longgrass_cv.py score --dir /tmp/lay --rows /tmp/rows_${{ matrix.shard }}.json --shard ${{ matrix.shard }} --nshards 6
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -186,34 +188,39 @@ jobs:
       - name: Report (+ integrate and re-score if adopted)
         run: |
           git pull --rebase origin "${{ github.ref_name }}" || true
-          mkdir -p course_data/vision_any/longgrass_cv
-          cp /tmp/rows/rows_*.json course_data/vision_any/longgrass_cv/
-          cp /tmp/lay/info_*.json course_data/vision_any/longgrass_cv/
-          python -u course_data/vision_any/v2_longgrass_cv.py report --rows 'course_data/vision_any/longgrass_cv/rows_*.json' --dir /tmp/lay | tee -a "$GITHUB_STEP_SUMMARY"
+          REV=$(python3 -c "import json;print(int(json.load(open('course_data/requests/longgrass_cv.json')).get('rev',1)))")
+          SUF=""; [ "$REV" -ge 2 ] && SUF="_rev$REV"          # rev >= 2 keeps rev 1's outputs as they are
+          OUT=course_data/vision_any/longgrass_cv$SUF
+          mkdir -p $OUT
+          cp /tmp/rows/rows_*.json $OUT/
+          cp /tmp/lay/info_*.json $OUT/
+          python -u course_data/vision_any/v2_longgrass_cv.py report --rows "$OUT/rows_*.json" --dir /tmp/lay | tee -a "$GITHUB_STEP_SUMMARY"
           if python3 -c "import json,sys;sys.exit(0 if json.load(open('course_data/requests/longgrass_cv.json')).get('integrate') else 1)"; then
             python -u course_data/vision_any/v2_longgrass_cv.py integrate --dir /tmp/lay --model /tmp/mdl | tee /tmp/integ.txt
             if grep -q '^integrated' /tmp/integ.txt; then
               python -u course_data/vision_any/v2_longgrass_cv.py rescore
-              tail -n 15 course_data/vision_any/v2_longgrass_cv.md >> "$GITHUB_STEP_SUMMARY"
+              tail -n 15 course_data/vision_any/v2_longgrass_cv$SUF.md >> "$GITHUB_STEP_SUMMARY"
             fi
           fi
+          echo "OUT=$OUT" >> "$GITHUB_ENV"
+          echo "SUF=$SUF" >> "$GITHUB_ENV"
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add course_data/vision_any/v2_longgrass_cv.md course_data/vision_any/v2_longgrass_cv.json course_data/vision_any/longgrass_cv
+          git add course_data/vision_any/v2_longgrass_cv$SUF.md course_data/vision_any/v2_longgrass_cv$SUF.json $OUT
           git add course_data/vision_any/model_v2/model.json
           [ -f course_data/vision_any/model_v2/native_lgbm_7c.txt ] && git add course_data/vision_any/model_v2/native_lgbm_7c.txt
-          for v in spirit_hollow mozingo veenker coldwater ellis eagle_knoll gateway_national wakonda; do
-            git add course_data/vision_any/$v/vision_any.geojson
+          for v in spirit_hollow mozingo veenker coldwater ellis eagle_knoll gateway_national wakonda blue_hills pine_dunes national_kc hot_springs_arlington; do
+            [ -f course_data/vision_any/$v/vision_any.geojson ] && git add course_data/vision_any/$v/vision_any.geojson
           done
-          for p in spirit_hollow mozingo_lake veenker coldwater ellis eagle_knoll gateway_national wakonda; do
-            git add course_data/packages/$p/package.json
+          for p in spirit_hollow mozingo_lake veenker coldwater ellis eagle_knoll gateway_national wakonda blue_hills pine_dunes national_kc hot_springs_arlington; do
+            [ -f course_data/packages/$p/package.json ] && git add course_data/packages/$p/package.json
           done
           git diff --cached --stat
           if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
           printf '%s\n' \
-            "longgrass-cv: long grass on the automatic map, leave-one-course-out over seven truth courses (GitHub Actions run ${{ github.run_id }})" \
+            "longgrass-cv$SUF: long grass on the automatic map, leave-one-course-out over the truth courses (GitHub Actions run ${{ github.run_id }})" \
             "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
