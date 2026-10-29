@@ -142,6 +142,45 @@ textarea{width:100%;font:13px/1.4 ui-monospace,Menlo,monospace;padding:8px 10px;
 .tc-err{color:var(--red)} .tc-warn{color:var(--warn)}
 input.tcin{width:100%;font:16px var(--body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink)}
 #routeStrip .btn{white-space:nowrap}
+/* v3: big touch targets */
+.btn{min-height:44px;padding:9px 16px}
+.btn.primary{min-height:50px}
+.seg button{min-height:42px;padding:7px 14px;font-size:15px}
+.chip{min-height:50px}
+.navbtn{width:56px;height:56px;font-size:26px;flex:none}
+/* library */
+.app[data-screen="pick"]{max-width:1100px}
+.libgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));align-items:start}
+.lcard{display:grid;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+.lcard.none{background:transparent;border-style:dashed}
+.lcard .name{font:700 21px/1.1 var(--display);margin:0;min-width:0;overflow-wrap:anywhere}
+.lcard .acts{display:flex;gap:8px;flex-wrap:wrap}
+.lcard a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.teerow{display:flex;gap:4px 10px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.teerow span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.teerow i{width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(0,0,0,.35);display:inline-block}
+.badge.hand{color:var(--ok)} .badge.none{color:var(--muted);border-style:dashed} .badge.confirm{color:var(--warn);background:var(--warn-bg)}
+.badge.shared{color:var(--auto);background:var(--soft)}
+.filters{display:grid;gap:8px}
+select{font:600 16px var(--body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);min-height:44px}
+.counts{font:600 13px var(--display);letter-spacing:.04em;opacity:.7;margin-left:6px}
+/* hole screen: sticky header with the hole arrows */
+.hhead{position:sticky;top:0;z-index:6;background:var(--paper);display:grid;gap:6px;padding:6px 0 8px;margin:-6px 0 0;border-bottom:1px solid var(--line)}
+/* "plays like" breakdown (as on the wind pages): rounded parts add up exactly */
+.adj{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.adj span{font:700 16px var(--display);letter-spacing:.02em;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink);white-space:nowrap}
+.adj .up{border-color:var(--accent)} .adj .dn{border-color:var(--auto)}
+.adj .eq{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.windico{display:inline-flex;align-items:center;gap:6px}
+.windico svg{width:30px;height:30px;flex:none}
+/* shared confirmations + reports */
+.sync{font-size:13.5px;color:var(--muted);display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.sync b{color:var(--ink)}
+.sync.ok b{color:var(--ok)} .sync.warn b{color:var(--warn)}
+.rlist{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.rlist li{border-left:3px solid var(--warn);padding:4px 10px;background:var(--soft);border-radius:0 8px 8px 0;font-size:14px;overflow-wrap:anywhere}
+.rlist .meta{color:var(--muted);font-size:12.5px}
+textarea.rtext{font:15px/1.4 var(--body);min-height:72px}
 </style>
 </head>
 <body>
@@ -162,20 +201,24 @@ const yds = (v, side) => Math.abs(v) < 1.5 ? "on the line" : `${Math.abs(v).toFi
 /* ------------------------------------------------------------------ state (per-viewer convenience only) */
 const st = {screen: "pick", course: null, q: "", set: {}, idx: {}, src: {}, hour: {}, view: "land",
             custom: {from: 180, mph: 10, temp: 65}, adj: {}, club: {}, answers: {}, wind_open: false, lie: "fairway", shot: {},
-            confirm: {}, cfocus: {}, creturn: {}, cmore: {}, cskipcard: {}, ctyped: {}, cstep: null};
+            confirm: {}, cfocus: {}, creturn: {}, cmore: {}, cskipcard: {}, ctyped: {}, cstep: null,
+            lf: {status: "all", state: "all"}, libmore: 0, report: null, rkind: "wrong_hole"};
 const KEY = "aimcaddie1";
 try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && typeof s === "object") Object.assign(st, s); } catch (e) {}
 for (const k of ["set","idx","src","hour","adj","club","answers","shot","confirm","cfocus","creturn","cmore","cskipcard","ctyped"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
 if (!st.custom) st.custom = {from: 180, mph: 10, temp: 65};
+if (!st.lf || typeof st.lf !== "object") st.lf = {status: "all", state: "all"};
+st.report = null; st.libmore = 0; st.rmsg = null; st.cstep = null;
 /* deep links: #c=<course>&t=<tee set>&h=<hole no> (also used by the tests) */
-(function readHash(){
+function readHash(){
   const m = new URLSearchParams((location.hash || "").replace(/^#/, ""));
   const c = m.get("c"); if (!c || !D.courses.some(x => x.id === c)) return;
   st.course = c; st.screen = m.get("h") ? "hole" : "tees";
   if (m.get("t")) st.set[c] = m.get("t");
   if (m.get("h")) { const C = D.courses.find(x => x.id === c); const i = C.holes.findIndex(H => String(H.no) === m.get("h")); if (i >= 0) st.idx[c] = i; }
   if (m.get("v")) st.view = m.get("v");
-})();
+}
+readHash();
 function save(){
   try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
   try {
@@ -503,6 +546,7 @@ function solveTee(C, H, T, W){
       r.aim += w * s[0][i]; r.ev += w * s[1][i]; r.lo += w * s[2][i]; r.hi += w * s[3][i];
       r.carry += w * f[0]; r.total += w * f[1]; r.width += w * f[2]; r.drift += w * f[3]; }
     const pa = planAdj(c); r.carry += pa.dc; r.total += pa.dt; r.width *= pa.ws;      /* your distances + pattern */
+    r.base = V.flight[c][0][0] + pa.dc; r.dW = r.carry - r.base;                      /* calm, flat carry; the wind's part */
     const e = V.elev && V.elev.clubs && V.elev.clubs[c];
     if (e) { const roll = r.total - r.carry; r.carry += e.dc; r.total = r.carry + roll * e.rf; r.kick = e.kick; r.e = e; }
     r.dT = r.carry * tk; r.carry += r.dT; r.total += r.dT;
@@ -530,9 +574,10 @@ function solvePar3(C, H, T, W){
   const V = T.V, rel = ((W.from - V.bearing) % 360 + 360) % 360, K = corners(W.mph, rel);
   const S3 = V.sets[T.name] || Object.values(V.sets)[0];
   let plays = 0; for (const [i, w] of K) plays += w * S3.plays[i];
+  const playsNoT = plays;
   plays = plays / (1 + tempK(W));
   const mod = windMod(W.mph), b = S3.boxes[String(mod)];
-  return {rel, plays, mod, box: b, S3, play: b.play * plays / S3.center};
+  return {rel, plays, mod, box: b, S3, play: b.play * plays / S3.center, playNoT: b.play * playsNoT / S3.center};
 }
 function pickFor(C, H){
   const T = teeSpot(C, H), W = windFor(C, H);
@@ -557,6 +602,19 @@ function windArrow(V, W, vb){
     <text x="${cx}" y="${cy + R + 18}" ${TXT} font-size="${Math.max(15, R*0.55)}" text-anchor="middle">${W.mph < 1 ? "calm" : Math.round(W.mph) + " mph"}</text></g>`;
 }
 function setColour(C, name){ const s = C.tee_sets.find(t => t.name === name); return s ? s.colour : "#111"; }
+/* "plays like" chips: [[value, label]] parts (the first is the base), rounded so they add up to the total exactly */
+function adjChips(base, baseLabel, parts, total, totalLabel){
+  const B = Math.round(base), R = parts.map(([v, l]) => [Math.round(v), l]);
+  const T = Math.round(total), sum = B + R.reduce((s, p) => s + p[0], 0);
+  if (R.length) R[R.length - 1][0] += T - sum;                 /* rounding lands on the last part */
+  const sg = v => v > 0 ? "+" + v : v < 0 ? "−" + (-v) : "±0";
+  return `<div class="adj" data-adj="1"><span>${B} ${esc(baseLabel)}</span>${R.filter(p => p[0] !== 0 || p[1] === "wind").map(([v, l]) => `<span class="${v > 0 ? "up" : v < 0 ? "dn" : ""}">${sg(v)} ${esc(l)}</span>`).join("")}<span class="eq">= ${T} ${esc(totalLabel)}</span></div>`;
+}
+/* the wind relative to the shot: arrow points where it blows TO, the shot plays up the icon */
+function windIcon(rel, mph){
+  const a = rel + 180;
+  return `<span class="windico"><svg viewBox="-16 -16 32 32" aria-hidden="true"><circle r="15" fill="var(--soft)" stroke="var(--line)"/><line x1="0" y1="-12" x2="0" y2="-8" stroke="var(--muted)" stroke-width="2"/>${mph >= 1 ? `<g transform="rotate(${a.toFixed(0)})"><line x1="0" y1="9" x2="0" y2="-7" stroke="var(--ink)" stroke-width="2.6" stroke-linecap="round"/><polygon points="0,-12 -5,-4 5,-4" fill="var(--ink)"/></g>` : `<circle r="3" fill="var(--muted)"/>`}</svg></span>`;
+}
 
 /* ------------------------------------------------------------------ screens */
 function badge(level, extra){
@@ -568,33 +626,80 @@ function courseBadge(C){ return C.confidence.level === "verified" ? badge("verif
   (C.confidence.check_holes ? `<span class="badge auto">Auto ✓</span> <span class="badge check">⚠ ${C.confidence.check_holes} to check</span>` : badge("auto")); }
 function dots(C){ return `<span class="dots">${C.tee_sets.map(t => `<span class="dot" style="background:${t.colour}${t.computed === "missing" ? ";opacity:.35" : ""}" title="${esc(t.name)}"></span>`).join("")}</span>`; }
 
+/* ------------------------------------------------------------------ the course library (golf_library/1)
+   Every course the page knows: playable here (built in), hand-checked courses with their own wind page (linked),
+   auto-mapped courses (auto-OK / needs confirm, from the hole-map confirm with everyone's shared answers), and
+   courses not built yet (course packages without a plan, the OpenStreetMap survey, course_data/library/index.json). */
+const LIB = D.library.entries;
+const STATUS = {hand: ["hand", "✓ Hand-checked", "Hand-checked map"], auto: ["auto", "Auto-OK", "Auto-mapped; every hole placed with confidence"],
+                confirm: ["confirm", "⚠ Needs confirm", "Auto-mapped; a few taps confirm the hole order"], none: ["none", "Not built yet", "Not in the app yet"]};
+const statusBadge = k => { const s = STATUS[k] || STATUS.none; return `<span class="badge ${s[0]}" title="${esc(s[2])}">${s[1]}</span>`; };
+let LSTAT = null;
+/* a library entry's live status: app courses re-derive it from their hole-map session (shared answers included) */
+function libStatus(e){
+  if (e.app) { const C = D.courses.find(c => c.id === e.app);
+    if (C && C.mapping === "hand") return {k: "hand"};
+    const S = C && sess(C);
+    if (S) { const fixed = Object.values(S.holes).filter(H => H.fixed).length;
+      return {k: S.done() && !cardNeeded(C, S) ? "auto" : "confirm", fixed, golfers: S.golfers, n: S.n}; } }
+  return {k: e.status === "auto" && !e.app ? "auto" : e.status};
+}
+function libStatuses(){ if (!LSTAT) LSTAT = LIB.map(libStatus); return LSTAT; }
+function libMatches(){
+  const q = st.q.trim().toLowerCase(), words = q.split(/[\s,]+/).filter(Boolean), stt = libStatuses();
+  const f = st.lf.status, sf = st.lf.state;
+  const hay = e => `${e.name} ${e.town || ""} ${e.state || ""} ${(e.event || "")}`.toLowerCase();
+  const base = LIB.map((e, i) => ({e, i, s: stt[i]})).filter(x => (sf === "all" || x.e.state === sf) && words.every(w => hay(x.e).includes(w)));
+  const counts = {all: base.length, app: 0, hand: 0, auto: 0, confirm: 0, none: 0};
+  for (const x of base) { counts[x.s.k] = (counts[x.s.k] || 0) + 1; if (x.e.app) counts.app++; }
+  const rows = base.filter(x => f === "all" || (f === "app" ? !!x.e.app : x.s.k === f));
+  const rank = x => x.e.app ? 0 : x.e.link ? 1 : x.s.k !== "none" ? 2 : x.e.src === "package" || x.e.src === "library" ? 3 : 4;
+  rows.sort((a, b) => rank(a) - rank(b) || a.e.name.localeCompare(b.e.name));
+  return {rows, counts};
+}
+function teeRow(tees, max){
+  if (!tees || !tees.length) return "";
+  const shown = tees.slice(0, max || 5);
+  return `<div class="teerow">${shown.map(t => `<span${t[3] === 0 ? ` style="opacity:.55" title="Not planned yet"` : ""}><i style="background:${esc(t[1] || "#888")}"></i>${esc(t[0])}${t[2] ? " " + Number(t[2]).toLocaleString() : ""}${t[3] === 0 ? "*" : ""}</span>`).join("")}${tees.length > shown.length ? `<span>+${tees.length - shown.length} more</span>` : ""}${shown.some(t => t[3] === 0) ? `<span>* not planned yet</span>` : ""}</div>`;
+}
+function libCard(x){
+  const e = x.e, s = x.s, nRep = e.app ? STORE.reports(e.app).length : 0;
+  const shared = s.fixed ? `<span class="badge shared" title="Holes golfers confirmed or fixed: saved for everyone">${s.fixed} of ${s.n} holes confirmed${s.golfers ? ` by ${s.golfers} golfer${s.golfers === 1 ? "" : "s"}` : ""}</span>` : "";
+  const acts = [];
+  if (e.app) acts.push(`<button class="btn primary" data-course="${esc(e.app)}">Play this course ›</button>`);
+  if (e.link) acts.push(`<a class="btn${e.app ? "" : " primary"}" href="${esc(e.link)}" target="_blank" rel="noopener" data-link="${esc(e.id || "")}">${e.app ? "Full wind page ↗" : "Open its wind page ↗"}</a>`);
+  return `<article class="lcard ${s.k === "none" ? "none soon" : ""}" data-lib="${x.i}" data-status="${s.k}">
+      <div class="spread" style="align-items:flex-start"><h3 class="name">${esc(e.name)}</h3>${statusBadge(s.k)}</div>
+      <div class="sub">${esc([e.town, e.state].filter(Boolean).join(", "))}${e.holes ? ` · ${e.holes} holes` : ""}${e.event ? ` · ${esc(e.event)}` : ""}</div>
+      ${teeRow(e.tees)}
+      ${shared || nRep ? `<div class="row">${shared}${nRep ? `<span class="badge check">${nRep} problem${nRep === 1 ? "" : "s"} reported</span>` : ""}</div>` : ""}
+      <div class="sub">${esc(s.k === "confirm" && e.app ? "Auto-mapped: confirm the hole order in a few taps; your answers are saved for everyone after you." : e.note || "")}</div>
+      ${acts.length ? `<div class="acts">${acts.join("")}</div>` : ""}
+    </article>`;
+}
 function renderPick(){
-  const q = st.q.trim().toLowerCase();
-  const match = s => !q || s.toLowerCase().includes(q);
-  const mine = D.courses.filter(C => match(`${C.name} ${C.town} ${C.state}`));
-  const up = q.length >= 2 ? D.catalog.upcoming.filter(c => match(`${c[0]} ${c[1]} ${c[2]}`)).slice(0, 8) : [];
-  const states = D.catalog.states.map(s => s.state).join(" and ");
+  const {rows, counts} = libMatches(), lim = 36 + st.libmore * 60, shown = rows.slice(0, lim);
+  const F = [["all", "All"], ["app", "Play here"], ["hand", "Hand-checked"], ["auto", "Auto-OK"], ["confirm", "Needs confirm"], ["none", "Not built yet"]];
+  const sv = D.library.survey || [];
   return `<header class="stack" style="gap:4px"><div class="brand"><h1>Aim Caddie</h1><span class="tag">where to aim, which club, today's wind</span></div>
-      <p class="sub">Pick your course and tees. Every hole shows the statistically best target and club (Fawcett / DECADE style), re-solved for the wind and temperature when you get there.</p></header>
+      <p class="sub">Pick any course. Every hole shows the statistically best target and club (Fawcett / DECADE style), re-solved for the wind and temperature when you get there. Auto-mapped courses need a few confirming taps once; after that everyone gets the confirmed map.</p></header>
     <button class="panel gamecard" data-go="game"><span class="spread"><span class="label">Your game</span><span class="sub">Edit ›</span></span>
       <span>Driver ${Math.round(POST.clubs[PREF].carry.median)} carry · pattern <b>${Math.round(profW())} yds</b>${POST.data.launch_monitor + POST.data.on_course ? ` · from ${POST.data.launch_monitor + POST.data.on_course} of your shots` : ""}</span>
       <span class="sub">Type your distances and spread, or add a Garmin R10 / launch-monitor / shot-log CSV. Picks and patterns follow it.</span></button>
-    <input type="search" id="q" placeholder="Search courses or towns" value="${esc(st.q)}" aria-label="Search courses">
-    <div class="stack" id="list">
-      ${mine.map(C => `<button class="ccard" data-course="${C.id}">
-          <span class="spread"><span class="name">${esc(C.name)}</span></span>
-          <span class="row">${courseBadge(C)}${C.mapping === "hand" ? `<span class="sub">Hand-mapped</span>` : C.confirm ? `<span class="sub">Hole order auto-placed · confirm in a few taps${C.confirm.card_known ? "" : " · no card online"}</span>` : ""}</span>
-          <span class="sub">${esc(C.town || "")}, ${esc(C.state || "")} · ${C.holes.length} holes · ${C.tee_sets.filter(t => t.computed !== "missing").length} of ${C.tee_sets.length} tee sets ready</span>
-          <span class="row">${dots(C)}<span class="sub">${esc(C.tee_sets.map(t => t.name).join(" · "))}</span></span>
-        </button>`).join("") || (q ? `<p class="sub">No ready course matches “${esc(st.q)}”.</p>` : "")}
-      ${up.map(c => `<div class="soon"><span><b>${esc(c[0])}</b> · ${esc(c[1] ? c[1] + ", " : "")}${esc(c[2])}</span><span>${c[3]} holes mapped on OpenStreetMap · coming soon</span></div>`).join("")}
-    </div>
-    <section class="panel stack" style="gap:6px">
-      <div class="label">Coming soon: any US course</div>
-      <p>We've surveyed <b>${D.catalog.n_courses.toLocaleString()}</b> courses in ${esc(states)}; <b>${D.catalog.n_with_holes}</b> already have their holes mapped on OpenStreetMap, the starting point for an automatic plan. Type a name above to see if yours is one of them.</p>
-      <p class="sub">Each new course is mapped automatically from OpenStreetMap, USDA aerial imagery and USGS lidar, then gets a two-minute “check this” pass for anything the map isn't sure about.</p>
+    <section class="filters" aria-label="Find a course">
+      <input type="search" id="q" placeholder="Search by course, city or state" value="${esc(st.q)}" aria-label="Search courses by name, city or state" autocomplete="off">
+      <div class="seg" id="fStatus" role="group" aria-label="Status">${F.map(([k, l]) => `<button data-lf="${k}" aria-pressed="${st.lf.status === k}">${l}<span class="counts">${counts[k] || 0}</span></button>`).join("")}</div>
+      <div class="row"><label class="sub" for="fState">State</label><select id="fState" aria-label="State">${["all"].concat(D.library.states).map(s => `<option value="${esc(s)}" ${st.lf.state === s ? "selected" : ""}>${s === "all" ? "All states" : esc(s)}</option>`).join("")}</select>
+        <span class="sub" id="libCount" role="status">${rows.length.toLocaleString()} course${rows.length === 1 ? "" : "s"}${rows.length > shown.length ? `, showing ${shown.length}` : ""}</span></div>
     </section>
-    <p class="foot">Prototype · data built ${esc(D.built)} · badges: <b>✓ Verified</b> hand-checked map · <b>Auto ✓</b> auto-mapped, passed the checks · <b>⚠ Check</b> look before you trust it.</p>`;
+    <div class="libgrid" id="list">${shown.map(libCard).join("") || `<p class="sub">No course matches${st.q ? ` “${esc(st.q)}”` : ""} with these filters.</p>`}</div>
+    ${rows.length > shown.length ? `<div class="row" style="justify-content:center"><button class="btn" data-libmore="1">Show ${Math.min(60, rows.length - shown.length)} more</button></div>` : ""}
+    <section class="panel stack" style="gap:6px">
+      <div class="label">How a course gets into the app</div>
+      <p>${sv.length ? `We've surveyed <b>${sv.reduce((s, x) => s + x.n_courses, 0).toLocaleString()}</b> courses in ${esc(sv.map(x => x.state).join(" and "))}; <b>${sv.reduce((s, x) => s + x.n_with_holes, 0)}</b> have their holes on OpenStreetMap, the start of an automatic map.` : ""} Each course is mapped automatically (OpenStreetMap, USDA aerial photos, USGS lidar). Hands-free mapping gets most holes right but not all: typing the scorecard raises it to about 70–77% of holes, and a few “Is this hole 7?” taps get 90–97% of courses fully right. A course is confirmed once; everyone after gets the confirmed map.</p>
+      <p class="sub">${statusBadge("hand")} map checked by hand · ${statusBadge("auto")} every hole placed with confidence · ${statusBadge("confirm")} a few taps needed · ${statusBadge("none")} not built yet</p>
+    </section>
+    <p class="foot">Prototype · data built ${esc(D.built)}${D.library.index ? ` · library index ${esc(D.library.index.path)} (${D.library.index.n} courses)` : ""} · ${esc(storeLine())}</p>`;
 }
 
 function checkCard(C, card, opts){
@@ -626,7 +731,8 @@ function renderTees(){
   const fc = C.forecast;
   return `<div class="topbar"><button class="btn ghost" data-go="pick">‹ Courses</button><span></span></div>
     <header class="stack" style="gap:6px"><h1>${esc(C.name)}</h1><div class="row">${courseBadge(C)}<span class="sub">${esc(C.town || "")}, ${esc(C.state || "")}</span></div>
-      <p class="sub">${esc(C.confidence.summary)}</p></header>
+      <p class="sub">${esc(C.confidence.summary)}</p>
+      ${(() => { const e = LIB.find(x => x.app === C.id); return e && e.link ? `<div class="row"><a class="btn" href="${esc(e.link)}" target="_blank" rel="noopener">Full wind page for this course ↗</a></div>` : ""; })()}</header>
     <section class="stack"><div class="label">Your tees</div><div class="tees">
       ${C.tee_sets.map(t => `<button class="tee" data-set="${esc(t.name)}" aria-pressed="${t.name === S}" ${t.computed === "missing" ? "disabled" : ""}>
         <span class="sw" style="background:${t.colour}"></span>
@@ -644,7 +750,16 @@ function renderTees(){
       ${amber.length ? `<details class="panel"><summary><span class="label">${amber.length} minor checks</span></summary><div class="stack" style="margin-top:10px">${amber.map(c => checkCard(C, c, {img: false})).join("")}</div></details>` : ""}
     </section>` : ""}
     ${teesStart(C)}
-    <p class="foot">${esc(C.model)} Imagery: ${esc(C.imagery)}. ${esc((C.attribution || []).join(" · "))}</p>`;
+    ${courseReports(C)}
+    <p class="foot">${esc(C.model)} Imagery: ${esc(C.imagery)}. ${esc((C.attribution || []).join(" · "))} · ${esc(storeLine())}</p>`;
+}
+/* every problem golfers reported on this course, by hole */
+function courseReports(C){
+  const R = STORE.reports(C.id);
+  if (!R.length) return "";
+  return `<section class="panel stack" id="courseReports"><div class="spread"><span class="label">Problems golfers reported</span><span class="sub">${R.length}</span></div>
+    <ul class="rlist">${R.slice(0, 40).map(r => `<li data-rep="${esc(r.id || "")}"><b>Hole ${r.hole}</b> · ${esc(RKIND[r.kind] || r.kind)}${r.text ? `: ${esc(r.text)}` : ""}<div class="meta">${esc(r.at.slice(0, 10))}${r.tee ? ` · ${esc(r.tee)} tees` : ""}${r.mine ? " · you" : ""}</div></li>`).join("")}</ul>
+    <p class="sub">Reports are ${STORE.mode === "shared" ? "shared with everyone on this page" : "kept on this device"}; they flag the hole for a re-check. To fix a hole's place yourself, open it and tap <b>This isn't hole n</b>.</p></section>`;
 }
 function teesStart(C){
   const S = sess(C), go = `<button class="btn primary" data-go="hole">Start at hole ${C.holes[holeIdx(C)].no} ›</button>`;
@@ -653,6 +768,7 @@ function teesStart(C){
   const head = cardNeeded(C, S) ? "No scorecard online: type yours, then check the holes" : S.done() ? `All ${S.n} holes placed${sm.confirmed ? `, ${sm.confirmed} confirmed by you` : ""}` : `${k} of ${S.n} holes need a look`;
   return `<section class="panel stack" id="mapPanel"><div class="label">Hole map</div><h3>${head}</h3>
       <p class="sub">This course was mapped automatically: we placed its ${S.n} holes from the aerial map${C.confirm.card_known || S.card ? " and the scorecard" : ""}. A few one-tap questions (“Is this hole 7?”) make the order right; each answer re-solves the round.</p>
+      ${syncLine(C, S)}
       <div class="row"><button class="btn primary" data-go="confirm" id="goConfirm">${S.done() && !cardNeeded(C, S) ? "Review the hole map ›" : "Check the hole map ›"}</button>${S.done() ? go.replace("btn primary", "btn") : `<button class="btn" data-go="hole">Skip, start at hole ${C.holes[holeIdx(C)].no}</button>`}</div></section>`;
 }
 function forecastLine(C){
@@ -675,6 +791,7 @@ function renderAppr(C, H, T, W, r){
   const mod = windMod(W.mph), b = S.boxes[lie][String(mod)] || S.boxes[lie]["0"];
   const rel = ((W.from - S.bearing) % 360 + 360) % 360, K = corners(W.mph, rel);
   let ratio = 0; for (const [i, w] of K) ratio += w * S.plays_ratio[i];
+  const ratioNoT = ratio;
   ratio = ratio / (1 + tempK(W));
   const plays = b.play * ratio, vb = [0, 0, A.w, A.h];
   const poly = (pts, a) => `<polygon points="${pts.map(q => q.join(",")).join(" ")}" ${a}/>`;
@@ -699,7 +816,8 @@ function renderAppr(C, H, T, W, r){
   const play = apron ? `<div class="label">Go for it: play it like</div>
     <div class="playrow"><span class="play">${Math.round(S.apron.shot * ratio)} yds</span><span class="sub" style="padding-bottom:5px">to the apron ${S.apron.L} short · ${Math.round(S.apron.shot)} calm${S.apron.club ? " · " + esc(S.apron.club) : ""}</span></div>`
     : `<div class="label">${S.id === "go" ? "Go for it: play it like" : S.id === "third" ? "Third shot: play it like" : "Approach: play it like"}</div>
-    <div class="playrow"><span class="play">${Math.round(plays)} yds</span><span class="sub" style="padding-bottom:5px">box ${Math.round(b.lo)}–${Math.round(b.hi)} · ${Math.round(b.play)} calm${b.club ? " · " + esc(b.club) : ""}</span></div>`;
+    <div class="playrow"><span class="play">${Math.round(plays)} yds</span><span class="sub" style="padding-bottom:5px">box ${Math.round(b.lo)}–${Math.round(b.hi)} · ${Math.round(b.play)} calm${b.club ? " · " + esc(b.club) : ""}</span></div>
+    ${adjChips(b.play, "target", [[plays - b.play * ratioNoT, "temp"], [b.play * ratioNoT - b.play, "wind"]], plays, "plays like")}`;
   let aim = apron ? `<p><b>Aim at the dot on the apron</b>, ${S.apron.L} yds short of the green centre${S.apron.off ? `, ${Math.abs(S.apron.off)} ${S.apron.off < 0 ? "left" : "right"}` : ""}: from your usual ${Math.round(A.typical.median)} yds the green box (faint blue) only pays inside ${P5.green_box_up_to[lieKey]} yds from the ${lie}. The ball runs up from there; the dashed yellow shape is where it finishes.</p>`
     : `<p><b>Land it in the blue box</b>: aim ${esc(b.aim_text || "centre")} of the green. DECADE cushions from the ${lie}${haz ? ` (trouble: ${esc(haz)})` : ""}; wind modifier ${mod > 0 ? "+" + mod : mod} yd on every edge. “Play it like” adds the wind along this shot's line and the temperature.</p>`;
   if (S.sg && S.sg.recommend === "sg" && S.sg.play) aim += `<p class="sub">Strokes-gained check (16 pins): aiming at the purple dashed area, ${Math.round(S.sg.play)} yds, is ${S.sg.cost ? (+S.sg.cost).toFixed(2) : "a little"} strokes better than the box.</p>`;
@@ -764,7 +882,8 @@ function renderHole(){
       ${teeMark(tp[0], tp[1], T.name + " tee" + (below ? ` · ${below} yds back ↓` : ""), tcol, vb[0] + vb[2])}
       ${windArrow(V, W, vb)}`;
     const own = pickC !== r.pick;
-    play = `<div class="label">${own ? "Your club" : "Play"}</div><div class="playrow"><span class="play ${cls(pickC)}">${esc(pickC)}</span><span class="sub" style="padding-bottom:5px">${Math.round(best.carry)} carry · ${Math.round(best.total)} total</span></div>`;
+    play = `<div class="label">${own ? "Your club" : "Play"}</div><div class="playrow"><span class="play ${cls(pickC)}">${esc(pickC)}</span><span class="sub" style="padding-bottom:5px">${Math.round(best.carry)} carry · ${Math.round(best.total)} total</span></div>
+      ${adjChips(best.base, "your carry", [[best.e ? best.e.dc : 0, "elevation"], [best.dT, "temp"], [best.dW, "wind"]], best.carry, "carry today")}`;
     if (own) { const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${esc(r.pick)} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     if (r.tie && !own) badges.push(`<span class="pill tie">Tie · ${esc(r.order[1])} just as good</span>`);
     if (r.how === "answer") badges.push(`<span class="pill ans">From your check answer</span>`);
@@ -803,7 +922,9 @@ function renderHole(){
     map = IMG + `<polygon points="${g}" fill="none" stroke="#fff" stroke-width="1.6" stroke-dasharray="5 4"/>
       <polygon points="${bp}" fill="rgba(37,208,255,.45)" stroke="#25d0ff" stroke-width="2.5"/>${windArrow(V, W, vb)}
       <text x="${V.w / 2}" y="${V.h - 12}" ${TXT} font-size="16" text-anchor="middle">${esc(T.name.toUpperCase())} TEE ${Math.round(r.S3.center)} YDS ↓</text>`;
-    play = `<div class="label">Play it like</div><div class="playrow"><span class="play">${Math.round(r.play)} yds</span><span class="sub" style="padding-bottom:5px">${Math.round(r.S3.center)} on the card</span></div>`;
+    const calmP = r.S3.plays[0] / r.S3.center, eY = r.box.play * calmP - r.box.play;
+    play = `<div class="label">Play it like</div><div class="playrow"><span class="play">${Math.round(r.play)} yds</span><span class="sub" style="padding-bottom:5px">${Math.round(r.S3.center)} on the card</span></div>
+      ${adjChips(r.box.play, "target", [[eY, "elevation"], [r.play - r.playNoT, "temp"], [r.playNoT - r.box.play - eY, "wind"]], r.play, "plays like")}`;
     aimTxt = `<p><b>Land it in the blue box</b> (DECADE target: green centre moved away from the trouble). Wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.${V.short ? " " + esc(V.short) : ""}</p>`;
     table = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody>
       <tr><td>Card</td><td>${Math.round(r.S3.front)}</td><td>${Math.round(r.S3.center)}</td><td>${Math.round(r.S3.back)}</td></tr>
@@ -823,13 +944,13 @@ function renderHole(){
   const rel = relShown ?? ((W.from - V.bearing) % 360 + 360) % 360;
   const adjRow = V.kind === "tee" && Object.keys(V.offsets).length > 1 ? `<div class="row"><span class="label">Move this tee</span><input type="range" id="adj" min="${T._adj.lo}" max="${T._adj.hi}" step="10" value="${T.adj}" aria-label="Move this tee back or up"><span class="sub" style="min-width:90px">${T.adj === 0 ? "card spot" : Math.abs(T.adj) + " yds " + (T.adj > 0 ? "back" : "up")}</span></div>` : "";
   const sets = C.tee_sets.filter(t => t.computed !== "missing");
-  return `<div class="topbar"><button class="btn ghost" data-go="pick" aria-label="All courses">‹</button>
+  return `<div class="hhead" id="hhead"><div class="topbar"><button class="btn ghost" data-go="pick" aria-label="All courses">‹ Courses</button>
       <div class="ttl"><b>${esc(C.short)}</b><span class="sub">${esc(T.name)} tees${!T.ok ? ` (no ${esc(T.S)} tee here)` : ""}</span></div>
       <button class="btn" data-go="tees">Tees ⚙</button></div>
     <div class="holehead"><button class="navbtn" id="prev" aria-label="Previous hole">‹</button>
       <div style="text-align:center;min-width:0"><div class="holeno">Hole ${H.no}</div><div class="sub">Par ${H.par} · ${T.yards} yds${H.hcp ? ` · hcp ${H.hcp}` : ""}${T.adj ? ` · moved ${Math.abs(T.adj)} ${T.adj > 0 ? "back" : "up"}` : ""}</div>
-        <div class="row" style="justify-content:center;margin-top:4px">${badge(conf.level)}</div></div>
-      <button class="navbtn" id="next" aria-label="Next hole">›</button></div>
+        <div class="row" style="justify-content:center;margin-top:4px">${badge(conf.level)}${STORE.reports(C.id).some(r => r.hole === H.no) ? `<span class="badge check">reported</span>` : ""}</div></div>
+      <button class="navbtn" id="next" aria-label="Next hole">›</button></div></div>
     ${C.confirm ? routeStrip(C, H) : ""}
     <section class="stack">
       ${V.kind === "tee" ? `<div class="seg" id="view"><button data-view="land" aria-pressed="${view === "land"}">Landing area</button><button data-view="hole" aria-pressed="${view === "hole"}">Whole hole</button>${V.approach ? `<button data-view="appr" aria-pressed="${view === "appr"}">Approach</button>` : ""}</div>` : ""}
@@ -839,9 +960,10 @@ function renderHole(){
       <div>${play}</div>
       ${aimTxt}
       ${badges.length ? `<div class="row">${badges.join(" ")}</div>` : ""}
-      <div class="cond">${condTxt}<span>${esc(relWords(rel, W.mph))}</span></div>
+      <div class="cond">${condTxt}<span class="windico">${windIcon(rel, W.mph)}${esc(relWords(rel, W.mph))}</span></div>
     </section>
     ${confBox}
+    ${reportBox(C, H, T)}
     <section class="panel stack">${table}${adjRow}
       ${elev ? `<p class="sub">${elev}</p>` : ""}
       ${V.note ? `<p class="note">${esc(V.note)}</p>` : ""}
@@ -878,16 +1000,126 @@ function renderHole(){
    course_data/platform/confirm.py ("Is this hole 7?" 1 tap / "Tap hole 7's tee, then its green" 2 taps, max bits per
    tap) and re-solves the round after every answer over the precomputed routing pool (confirm_engine.js). The answers
    live in localStorage (st.confirm) and replay onto the pool on reload. */
+/* ------------------------------------------------------------------ shared confirmations (golf_shared/1, shared_store.js)
+   A golfer's answers are saved geo-anchored ("hole 7 is this green + this tee", "hole 7 is not this one"), so they
+   replay onto the pool in any order. The session a golfer sees = every other golfer's saved answers for the course
+   (oldest first) + their own (this device). Each answer is written straight away: to the artifact's shared database
+   when this view has it (everyone after gets the confirmed map), else to localStorage. */
+let LSX = null; try { LSX = window.localStorage; } catch (e) {}
+const STORE = SharedStore.createStore({localStorage: LSX, claude: window.claude});
+const SYNC = {};                                                 /* course -> "saving" | "shared" | "local" */
+function storeLine(){
+  return STORE.mode === "shared" ? "Confirmations and reports are shared with everyone who opens this page."
+    : STORE.mode === "connecting" ? "Connecting to shared storage…"
+    : `Confirmations and reports are saved on this device only (${STORE.why}).`;
+}
+function sigOf(doc){ if (!doc) return ""; const o = {}; for (const [g, e] of Object.entries(doc.logs || {})) if (g !== STORE.gid) o[g] = e.at + ":" + e.log.length;
+  return JSON.stringify([o, doc.card || null]); }
+/* this golfer's own answers for a course: {v: 2, log: [canonical], taps, card?} (localStorage via st.confirm) */
+function myState(C){
+  let m = st.confirm[C.id];
+  if (m && typeof m === "object" && m.v !== 2) m = st.confirm[C.id] = migrate(C, m);
+  if (!m || typeof m !== "object") {
+    const doc = STORE.map(C.id), e = doc && doc.logs[STORE.gid];   /* my answers from another device */
+    m = st.confirm[C.id] = {v: 2, log: e ? e.log.slice() : [], taps: e ? e.taps : 0};
+  }
+  if (!Array.isArray(m.log)) m.log = [];
+  return m;
+}
+/* v2 pages kept raw answers ("yes" to whatever hole 7 was then): replay them once and keep the canonical form */
+function migrate(C, old){
+  const card = old.card || null, S = new ConfirmEngine.ConfirmSession(ConfirmEngine.poolFor(C.confirm.pool, C.confirm.typed_pools, card));
+  try { S.restore({log: [], card}); } catch (e) {}
+  const log = []; let taps = 0;
+  for (const a of old.log || []) { let c = null; try { c = S.canonical(a); if (c) S.act(c); } catch (e) { break; }
+    if (c) { log.push(c); taps += a.kind === "locate" ? 2 : 1; } }
+  const m = {v: 2, log, taps};
+  if (old.card !== undefined && old.card !== null) { m.card = old.card; m.cardDirty = true; }
+  return m;
+}
 const SESS = {};
+function buildSess(C){
+  const doc = STORE.map(C.id), m = myState(C);
+  const card = m.card !== undefined ? m.card : (doc && doc.card) || null;          /* my typed card, else a shared one */
+  const S = new ConfirmEngine.ConfirmSession(ConfirmEngine.poolFor(C.confirm.pool, C.confirm.typed_pools, card));
+  const log = SharedStore.replayLog(doc, STORE.gid, m.log);
+  try { S.restore({log, card}); } catch (e) { S.restore({log: [], card}); }
+  S.myLog = m.log.slice(); S.myTaps = m.taps || 0; S.sharedN = log.length - S.myLog.length;
+  S.golfers = SharedStore.golferCount(doc, STORE.gid, S.myLog.length); S.sig = sigOf(doc);
+  S.cardShared = m.card === undefined && !!(doc && doc.card);
+  return S;
+}
 function sess(C){
   if (!C.confirm || typeof ConfirmEngine === "undefined") return null;
-  if (!SESS[C.id]) { const saved = st.confirm[C.id] && typeof st.confirm[C.id] === "object" ? st.confirm[C.id] : null;
-    const S = new ConfirmEngine.ConfirmSession(ConfirmEngine.poolFor(C.confirm.pool, C.confirm.typed_pools, saved && saved.card));
-    if (saved) { try { S.restore(saved); } catch (e) { S.restore({}); } }
-    SESS[C.id] = S; }
+  if (!SESS[C.id]) { SESS[C.id] = buildSess(C); LSTAT = null; }
   return SESS[C.id];
 }
-function saveSess(C){ const S = SESS[C.id]; if (S) st.confirm[C.id] = S.save(); }
+function rebuildSess(C){ delete SESS[C.id]; LSTAT = null; return sess(C); }
+/* write this golfer's answers (and a typed card) for the course */
+function persist(C){
+  const m = myState(C), card = m.cardDirty ? (m.card === undefined ? null : m.card) : undefined;
+  save(); SYNC[C.id] = "saving";
+  STORE.saveLog(C.id, m.log, {taps: m.taps, card}).then(r => { SYNC[C.id] = r; if (r === "shared" || STORE.mode !== "shared") m.cardDirty = false; save(); softRender(); });
+}
+function doAct(C, raw){
+  const S = sess(C), c = S.canonical(raw); if (!c) return false;
+  S.act(c);
+  const m = myState(C); m.log.push(c); m.taps = (m.taps || 0) + (raw.kind === "locate" ? 2 : 1);
+  S.myLog = m.log.slice(); S.myTaps = m.taps; LSTAT = null;
+  persist(C); return true;
+}
+function syncLine(C, S){
+  const s = SYNC[C.id], others = S ? S.sharedN : 0;
+  const head = STORE.mode === "shared" ? (s === "saving" ? `<b>Saving…</b>` : s === "local" || STORE.canWrite === false ?`<b>Saved on this device only</b> (this view can't write the shared map${STORE.lastError ? ": " + esc(STORE.lastError) : ""})` : `<b>✓ Shared:</b> your answers are saved for everyone who opens this course`)
+    : STORE.mode === "connecting" ? `<b>Connecting…</b>` : `<b>Saved on this device</b> (${esc(STORE.why)})`;
+  return `<div class="sync ${STORE.mode === "shared" && s !== "local" && STORE.canWrite !== false ? "ok" : "warn"}" id="syncLine">${head}${others ? ` · <span id="sharedN">${others} answer${others === 1 ? "" : "s"} from ${S.golfers - (S.myLog.length ? 1 : 0)} other golfer${S.golfers - (S.myLog.length ? 1 : 0) === 1 ? "" : "s"} already applied</span>` : ""}${S && S.cardShared ? " · using the scorecard another golfer typed" : ""}</div>`;
+}
+/* store changes (another golfer's answers arrive, the mode settles): rebuild the affected sessions */
+let pendingRender = false;
+function softRender(){
+  const a = document.activeElement;
+  if (a && a.closest && a.closest("#app") && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.type !== "range") { pendingRender = true; return; }
+  pendingRender = false; const y = window.scrollY; render(); window.scrollTo(0, y);
+}
+STORE.onChange(kind => {
+  if (kind === "maps" || kind === "mode") {
+    for (const C of D.courses) { const S = SESS[C.id]; if (!S) continue;
+      if (sigOf(STORE.map(C.id)) !== S.sig && !(st.cstep && st.course === C.id)) rebuildSess(C); }
+    LSTAT = null;
+  }
+  softRender();
+});
+document.addEventListener("focusout", () => { if (pendingRender) setTimeout(() => { if (pendingRender) softRender(); }, 0); });
+
+/* ------------------------------------------------------------------ "report a problem with this hole" */
+const RKIND = {wrong_hole: "Wrong hole: the map shows another hole", tee: "The tee is in the wrong place", green: "The green is wrong",
+               hazard: "A hazard is missing or wrong", advice: "The club or aim looks wrong", other: "Something else"};
+function reportBox(C, H, T){
+  const R = STORE.reports(C.id).filter(r => r.hole === H.no), open = st.report === C.id + "|" + H.no;
+  const list = R.length ? `<ul class="rlist" id="holeReports">${R.slice(0, 8).map(r => `<li><b>${esc(RKIND[r.kind] || r.kind)}</b>${r.text ? `: ${esc(r.text)}` : ""}<div class="meta">${esc(r.at.slice(0, 10))}${r.tee ? ` · ${esc(r.tee)} tees` : ""}${r.mine ? " · you" : ""}</div></li>`).join("")}</ul>` : "";
+  const form = open ? `<div class="stack" id="reportForm"><div class="seg" role="group" aria-label="What is wrong">${Object.entries(RKIND).map(([k, l]) => `<button data-rkind="${k}" aria-pressed="${st.rkind === k}">${esc(l)}</button>`).join("")}</div>
+      <textarea id="rText" class="rtext" maxlength="500" rows="3" placeholder="What did you see? (optional)" aria-label="Describe the problem">${esc(st.rdraft || "")}</textarea>
+      ${st.rkind === "wrong_hole" && C.confirm ? `<p class="sub">You can also fix it now: <button class="btn ghost" data-nothole="${H.no}">This isn't hole ${H.no} ›</button></p>` : ""}
+      <div class="row"><button class="btn primary" data-report="send" id="reportSend">Send report</button><button class="btn ghost" data-report="cancel">Cancel</button></div></div>` : "";
+  return `<section class="panel stack" id="reportBox"><div class="spread"><span class="label">${R.length ? `${R.length} problem${R.length === 1 ? "" : "s"} reported here` : "Something wrong here?"}</span>
+      ${open ? "" : `<button class="btn" data-report="open" id="reportBtn">Report a problem with this hole</button>`}</div>
+    ${list}${form}${st.rmsg && st.rmsg.k === C.id + "|" + H.no ? `<p class="sub" id="reportMsg" role="status">${esc(st.rmsg.t)}</p>` : ""}</section>`;
+}
+function reportClick(C, b){
+  const d = b.dataset, H = C.holes[holeIdx(C)], k = C.id + "|" + H.no;
+  if (d.rkind) { st.rdraft = ($("rText") || {}).value || st.rdraft || ""; st.rkind = d.rkind; return true; }
+  if (d.report === "open") { st.report = k; st.rmsg = null; return true; }
+  if (d.report === "cancel") { st.report = null; st.rdraft = ""; return true; }
+  if (d.report === "send") {
+    const text = (($("rText") || {}).value || "").trim().slice(0, 500), T = teeSpot(C, H);
+    st.report = null; st.rdraft = ""; st.rmsg = {k, t: "Sending…"};
+    STORE.addReport({course: C.id, hole: H.no, kind: st.rkind, text, tee: T.name}).then(r => {
+      st.rmsg = {k, t: r === "shared" ? "Thanks: reported for everyone. The hole is flagged for a re-check." : "Thanks: saved on this device (shared storage isn't available here)."}; softRender(); },
+      () => { st.rmsg = {k, t: "Could not save the report."}; softRender(); });
+    return true; }
+  return false;
+}
+
 const cardNeeded = (C, S) => C.confirm && !C.confirm.card_known && !S.card && !st.cskipcard[C.id];
 const OV = C => C.confirm.overview;
 function ovPx(C, ll){ const o = OV(C), dx = ll[0] - o.ll0[0], dy = ll[1] - o.ll0[1];
@@ -965,58 +1197,58 @@ function renderConfirm(){
   const nChk = pl.holes.filter(h => !h.confirmed && h.status === "check").length;
   let card = "";
   if (cardNeeded(C, S)) card = typedCardPanel(C, S);
-  else if (q && q.kind === "confirm") card = `<section class="panel stack qcard" data-q="${esc(q.id)}"><div class="label">Question ${S.history.length + 1} · 1 tap</div>
+  else if (q && q.kind === "confirm") card = `<section class="panel stack qcard" data-q="${esc(q.id)}"><div class="label">Question ${S.myLog.length + 1} · 1 tap</div>
       <h2 id="qPrompt">${esc(q.prompt)}</h2><p class="sub">The yellow line runs from the back tee to the green we think is hole ${q.ref}${S.holes[q.ref].card_yards && S.holes[q.ref].card_yards.length ? ` (card: ${S.holes[q.ref].card_yards.join(" / ")} yds)` : ""}.</p>
       <div class="row"><button class="btn primary" data-cans="yes" id="qYes">Yes, that's hole ${q.ref}</button><button class="btn" data-cans="no" id="qNo" style="min-height:46px;font-size:18px">No</button></div></section>`;
   else if (q && q.kind === "locate") { const step = st.cstep && st.cstep.q === q.id;
-    card = `<section class="panel stack qcard" data-q="${esc(q.id)}"><div class="label">Question ${S.history.length + 1} · 2 taps</div>
+    card = `<section class="panel stack qcard" data-q="${esc(q.id)}"><div class="label">Question ${S.myLog.length + 1} · 2 taps</div>
       <h2 id="qPrompt">${step ? `Now tap hole ${q.ref}'s green` : `Tap hole ${q.ref}'s tee`}</h2>
       <p class="sub">${step ? "Tap the green (the light circles are the greens we found)." : `Tap where hole ${q.ref} starts, any of its tee boxes (white squares: the tee boxes we found).`} A spot we missed works too.</p>
       ${step ? `<div class="row"><button class="btn ghost" data-cstep="reset">Re-tap the tee</button></div>` : ""}</section>`; }
   else card = `<section class="panel stack" id="cDone"><h2>All ${n} holes placed</h2>
-      <p class="sub">${sm.confirmed} confirmed by you${sm.taps_so_far ? ` in ${sm.taps_so_far} tap${sm.taps_so_far === 1 ? "" : "s"}` : ""}; the rest are at least ${Math.round(S.P.p_stop * 100)}% sure. A few can still be wrong: on any hole, <b>This isn't hole n</b> fixes it.</p>
+      <p class="sub">${sm.confirmed} confirmed${S.sharedN ? ` (${S.myLog.length ? "by you and " : "by "}other golfers)` : sm.confirmed ? " by you" : ""}${S.myTaps ? ` in ${S.myTaps} tap${S.myTaps === 1 ? "" : "s"} of yours` : ""}; the rest are at least ${Math.round(S.P.p_stop * 100)}% sure. A few can still be wrong: on any hole, <b>This isn't hole n</b> fixes it.</p>
       <div class="row"><button class="btn primary" data-go="hole" id="cStart">Start the round ›</button><button class="btn" data-cmore="1">Keep checking</button></div></section>`;
   const list = pl.holes.map(h => `<span class="hchip ${h.confirmed ? "ok" : h.status === "check" ? "chk" : ""}" title="${h.confirmed ? "confirmed" : Math.round(h.p_hole * 100) + "% sure"}"><b>${h.ref}</b>${h.confirmed ? "✓" : Math.round((h.p_hole || 0) * 100) + "%"}</span>`).join("");
-  return `<div class="topbar"><button class="btn ghost" data-go="${back}">‹ ${back === "hole" ? "Back to the hole" : "Tees"}</button><span class="sub" id="cTaps">${sm.taps_so_far} tap${sm.taps_so_far === 1 ? "" : "s"}</span></div>
+  return `<div class="topbar"><button class="btn ghost" data-go="${back}">‹ ${back === "hole" ? "Back to the hole" : "Tees"}</button><span class="sub" id="cTaps">${S.myTaps} tap${S.myTaps === 1 ? "" : "s"}</span></div>
     <header class="stack" style="gap:4px"><h1>Hole map</h1>
-      <p class="sub">${esc(C.short)}: we placed ${n} holes from the aerial map${S.card || C.confirm.card_known ? " and the scorecard" : ""}${nChk ? `; ${nChk} need a look` : ""}. Each answer re-solves the whole round, so one answer often fixes its neighbours too.</p></header>
+      <p class="sub">${esc(C.short)}: we placed ${n} holes from the aerial map${S.card || C.confirm.card_known ? " and the scorecard" : ""}${nChk ? `; ${nChk} need a look` : ""}. Each answer re-solves the whole round, so one answer often fixes its neighbours too.</p>
+      ${syncLine(C, S)}</header>
     ${card}
     ${confirmMap(C, S, cardNeeded(C, S) ? null : q)}
-    <div class="row">${S.log && S.log.length ? `<button class="btn ghost" data-cundo="1">Undo last answer</button>` : ""}${q ? `<button class="btn ghost" data-cskip="1">Skip the questions, start the round</button>` : ""}</div>
+    <div class="row">${S.myLog.length ? `<button class="btn ghost" data-cundo="1">Undo my last answer</button>` : ""}${q ? `<button class="btn ghost" data-cskip="1">Skip the questions, start the round</button>` : ""}</div>
     <section class="panel stack"><div class="spread"><span class="label">Holes</span><span class="sub">expect ${sm.expected_correct_holes} of ${n} right</span></div><div class="hstrip" id="hstrip">${list}</div>
-      <p class="sub">✓ confirmed by you · % how sure the map is · yellow: needs a look.</p></section>
+      <p class="sub">✓ confirmed by a golfer · % how sure the map is · yellow: needs a look.</p></section>
     ${!cardNeeded(C, S) && !C.confirm.card_known ? typedCardPanel(C, S) : ""}
     <p class="foot">Hole order: routing v2 over OpenStreetMap greens / tees, the NAIP segment model and lidar tee pads (the course's OSM hole lines are not used). Questions pick the most bits per tap (course_data/platform/confirm.py); the round is re-solved in this page over ${S.pool.routings.length.toLocaleString()} precomputed routings${S.pool !== C.confirm.pool ? " (routed with your card)" : ""}. Aerial: ${esc(OV(C).source || "")} ${esc(OV(C).year || "")}.</p>`;
 }
 function confirmClick(C, b){
   const S = sess(C), d = b.dataset;
   if (d.cans) { const q = nextQuestion(C, S); if (!q) return;
-    S.act({question: q.id, kind: "confirm", ref: q.ref, answer: d.cans});
+    doAct(C, {question: q.id, kind: "confirm", ref: q.ref, answer: d.cans});
     if (st.cfocus[C.id] === q.id) delete st.cfocus[C.id];
-    saveSess(C); return true; }
+    return true; }
   if (d.cstep) { st.cstep = null; return true; }
-  if (d.cundo) { S.undoLast(); st.cstep = null; delete st.cfocus[C.id]; saveSess(C); return true; }
-  if (d.cskip) { st.cmore[C.id] = false; st.cstep = null; delete st.cfocus[C.id]; st.screen = "hole"; saveSess(C); return true; }
+  if (d.cundo) { const m = myState(C), a = m.log.pop(); if (a) m.taps = Math.max(0, (m.taps || 0) - (a.taps || 1)); st.cstep = null; delete st.cfocus[C.id]; rebuildSess(C); persist(C); return true; }
+  if (d.cskip) { st.cmore[C.id] = false; st.cstep = null; delete st.cfocus[C.id]; st.screen = "hole"; return true; }
   if (d.cmore) { st.cmore[C.id] = true; return true; }
   if (d.tcunit) { const T = st.ctyped[C.id] = Object.assign({yards: "", pars: ""}, st.ctyped[C.id] || {}, readTyped()); T.unit = d.tcunit; return true; }
   if (d.tc === "use") { const T = st.ctyped[C.id] = Object.assign({unit: "yd"}, st.ctyped[C.id] || {}, readTyped());
     const [card, iss] = TypedCard.parseTypedCard(T.yards, {pars: T.pars, unit: T.unit, tee: "Typed"});
     T.issues = iss;
     if (card && card.tee_sets.Typed.yards.length !== S.n) { T.issues = iss.concat([{level: "error", code: "count", msg: `${card.tee_sets.Typed.yards.length} holes typed; this course has ${S.n}`}]); return true; }
-    if (card) { useCard(C, card); T.resolved = sess(C).pool !== C.confirm.pool; delete st.cskipcard[C.id]; saveSess(C); }
+    if (card) { useCard(C, card); T.resolved = sess(C).pool !== C.confirm.pool; delete st.cskipcard[C.id]; }
     return true; }
-  if (d.tc === "clear") { useCard(C, null); st.ctyped[C.id] = {yards: "", pars: "", unit: "yd"}; saveSess(C); return true; }
+  if (d.tc === "clear") { useCard(C, null); st.ctyped[C.id] = {yards: "", pars: "", unit: "yd"}; return true; }
   if (d.tc === "skip") { st.cskipcard[C.id] = true; return true; }
-  if (d.nothole) { const n = d.nothole; S.act({not: n}); st.cfocus[C.id] = "l" + n; st.creturn[C.id] = "hole"; st.cstep = null;
-    st.screen = "confirm"; saveSess(C); window.scrollTo(0, 0); return true; }
+  if (d.nothole) { const n = d.nothole; doAct(C, {not: n}); st.cfocus[C.id] = "l" + n; st.creturn[C.id] = "hole"; st.cstep = null;
+    st.report = null; st.screen = "confirm"; window.scrollTo(0, 0); return true; }
   return false;
 }
 /* a typed card: the pool re-solved with that card when the page has it (the backend's answer for a known card),
    else the current pool re-scored with the card's lengths (approximate) */
 function useCard(C, card){
-  const S = sess(C), log = S.log, P2 = ConfirmEngine.poolFor(C.confirm.pool, C.confirm.typed_pools, card);
-  const S2 = P2 === S.pool ? S : (SESS[C.id] = new ConfirmEngine.ConfirmSession(P2));
-  S2.restore({log, card});
+  const m = myState(C); m.card = card || null; m.cardDirty = true;
+  rebuildSess(C); persist(C);                      /* the card is shared too: the next golfer gets its pool */
 }
 function readTyped(){ const y = $("tcYards"), p = $("tcPars"); const o = {}; if (y) o.yards = y.value; if (p) o.pars = p.value; return o; }
 function confirmTap(C, ev){
@@ -1030,10 +1262,10 @@ function confirmTap(C, ev){
      becomes the golfer's own point */
   const ll = ovLL(C, px).map(v => +v.toFixed(7));
   if (!step) { st.cstep = {q: q.id, tee: ll}; return render(); }
-  S.act({question: q.id, kind: "locate", ref: q.ref, answer: {tee_ll: step.tee, green_ll: ll}});
   st.cstep = null;
+  doAct(C, {question: q.id, kind: "locate", ref: q.ref, answer: {tee_ll: step.tee, green_ll: ll}});
   if (st.cfocus[C.id] === q.id) { delete st.cfocus[C.id]; if (st.creturn[C.id] === "hole") { st.creturn[C.id] = null; st.screen = "hole"; } }
-  saveSess(C); render();
+  render();
 }
 function routeStrip(C, H){
   const S = sess(C); if (!S) return "";
@@ -1096,6 +1328,7 @@ function render(){
   const C = cur(); if (!C && st.screen !== "game") st.screen = "pick";
   const app = $("app");
   if (st.screen === "confirm" && !(C && C.confirm)) st.screen = "hole";
+  app.dataset.screen = st.screen;
   app.innerHTML = st.screen === "game" ? renderGame() : st.screen === "pick" ? renderPick() : st.screen === "tees" ? renderTees() : st.screen === "confirm" ? renderConfirm() : renderHole();
   document.title = st.screen === "pick" ? "Aim Caddie" : st.screen === "game" ? "Your game · Aim Caddie" : st.screen === "confirm" ? `Hole map · ${cur().short}` : `${cur().short} · Aim Caddie`;
   save();
@@ -1104,7 +1337,7 @@ function rerenderKeepFocus(id){ const y = window.scrollY; render(); if (id && $(
 const app = $("app");
 app.addEventListener("input", e => {
   const C = cur(), t = e.target;
-  if (t.id === "q") { st.q = t.value; rerenderKeepFocus("q"); return; }
+  if (t.id === "q") { st.q = t.value; st.libmore = 0; rerenderKeepFocus("q"); return; }
   if (!C) return;
   if (t.id === "hourT") { st.hour[C.id] = +t.value; rerenderKeepFocus("hourT"); }
   else if (t.id === "mph" || t.id === "temp") { const H = C.holes[holeIdx(C)], W = windFor(C, H);
@@ -1119,6 +1352,8 @@ app.addEventListener("click", e => {
   if (b.tagName === "SUMMARY") { if (b.parentElement.id === "windPanel") setTimeout(() => { st.wind_open = b.parentElement.open; save(); }, 0); return; }
   const d = b.dataset;
   if (d.course) { st.course = d.course; st.screen = "tees"; window.scrollTo(0, 0); return render(); }
+  if (d.lf) { st.lf.status = d.lf; st.libmore = 0; return rerenderKeepFocus(); }
+  if (d.libmore) { st.libmore++; return rerenderKeepFocus(); }
   if (d.go) { if (d.go === "game" && st.screen !== "game") st.game_back = st.screen;
     if (d.go === "confirm" && C) st.creturn[C.id] = st.screen === "hole" ? "hole" : "tees";
     st.screen = d.go; window.scrollTo(0, 0); return render(); }
@@ -1128,6 +1363,7 @@ app.addEventListener("click", e => {
     else if (d.pfact === "paste") { const t = ($("pfPaste") || {}).value || ""; if (t.trim()) importCsv("pasted CSV", t); else PF.msg = "Paste a CSV first."; }
     profileChanged(); return rerenderKeepFocus(); }
   if (!C) return;
+  if ((d.report || d.rkind) && reportClick(C, b)) return rerenderKeepFocus(d.report === "open" || d.rkind ? "rText" : null);
   if (C.confirm && confirmClick(C, b)) { if (st.screen === "hole") window.scrollTo(0, 0); return render(); }
   if (d.set) { st.set[C.id] = d.set; return render(); }
   if (d.src) { st.src[C.id] = d.src; if (d.src === "custom") { const W = windFor(C, C.holes[holeIdx(C)]); st.custom = {from: Math.round(W.from), mph: Math.round(W.mph), temp: Math.round(W.temp ?? 70)}; } return render(); }
@@ -1135,14 +1371,15 @@ app.addEventListener("click", e => {
   if (d.view) { st.view = d.view; return render(); }
   if (d.lie) { st.lie = d.lie; return render(); }
   if (d.shot) { const H = C.holes[holeIdx(C)]; st.shot[C.id + "|" + H.no] = d.shot; return render(); }
-  if (d.i !== undefined) { st.idx[C.id] = +d.i; return render(); }
-  if (b.id === "prev" || b.id === "next") { const n = C.holes.length; st.idx[C.id] = (holeIdx(C) + (b.id === "next" ? 1 : n - 1)) % n; return render(); }
+  if (d.i !== undefined) { st.idx[C.id] = +d.i; st.report = null; return render(); }
+  if (b.id === "prev" || b.id === "next") { const n = C.holes.length; st.idx[C.id] = (holeIdx(C) + (b.id === "next" ? 1 : n - 1)) % n; st.report = null; render(); const h = $("hhead"); if (h && h.getBoundingClientRect().top < 0) window.scrollTo(0, 0); return; }
   if (d.club) { const H = C.holes[holeIdx(C)], T = teeSpot(C, H), r = solveTee(C, H, T, windFor(C, H)), ck = T.key + "|" + T.name;
     if (d.club === r.pick) delete st.club[ck]; else st.club[ck] = d.club; return rerenderKeepFocus(); }
 });
 /* your game: typed numbers apply on change (not per keystroke); files are read in the browser, never uploaded */
 app.addEventListener("change", e => {
   const t = e.target;
+  if (t.id === "fState") { st.lf.state = t.value; st.libmore = 0; return rerenderKeepFocus("fState"); }
   if (t.dataset && t.dataset.pf) { const [k, q] = t.dataset.pf.split("|"), v = +t.value, lo = +t.min, hi = +t.max;
     if (PF.clubs[k] && isFinite(v) && v >= lo && v <= hi) { PF.clubs[k][q] = v; if (q === "carry" && PF.clubs[k].total < v) PF.clubs[k].total = v; PF.msg = ""; }
     else { PF.msg = `${k} ${q === "width95" ? "pattern" : q}: enter ${lo}–${hi} yds.`; t.value = Math.round(PF.clubs[k][q]); }
@@ -1171,6 +1408,7 @@ app.addEventListener("keydown", e => {
   render(); $("dial") && $("dial").focus();
 });
 render();
+window.addEventListener("hashchange", () => { readHash(); st.report = null; window.scrollTo(0, 0); render(); });   /* a deep link opened on a loaded page */
 </script>
 </body>
 </html>

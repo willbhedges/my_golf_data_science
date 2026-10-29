@@ -11,7 +11,8 @@
 //   agrees with the plan). Fails on any page error.
 const path = require("path");
 const fs = require("fs");
-const { chromium } = require("playwright");
+let pw; try { pw = require("playwright"); } catch (e) { pw = require("/opt/node22/lib/node_modules/playwright"); }
+const { chromium } = pw;
 const TIMEOUT = 8000;
 const E = require("./confirm_engine.js");
 

@@ -239,16 +239,45 @@
           delete this.pins[h];
           this.rejected.add(ref);
         }
+      } else if (q.kind === "reject") {
+        /* canonical "no" (shared confirmations): the answer names the green and tee the golfer was shown, so it
+           replays the same in any order and onto any routing: drop that green with any box within reject_r of
+           that tee (exactly what the "no" above does for the hole on screen) */
+        this.taps += a.taps || 1;
+        const gk = ans && ans.green_ll ? this.snap("green", ans.green_ll, 3) : -1;
+        if (gk >= 0 && ans.tee_ll) this.excl.push({h, g: gk, xy: this.proj.fwd(ans.tee_ll[0], ans.tee_ll[1]), r: this.P.reject_r});
+        else if (gk >= 0) this.excl.push({h, key: this.keyOf(-1, gk)});      /* the hole had a green but no tee */
+        /* a pin on another green stays (another golfer's "no" to a different green says nothing against it):
+           order-free merging of golfers */
+        if (this.pins[h] && (gk < 0 || this.pins[h].g === gk)) delete this.pins[h];
+        this.rejected.add(ref);
       } else {
-        this.taps += 2;
-        const gk = ans.green_ll ? this.snap("green", ans.green_ll, this.P.snap_green) : H.g_idx;
-        const tk = ans.tee_ll ? this.snap("tee", ans.tee_ll, this.P.snap_tee) : H.t_idx;
+        this.taps += a.taps || 2;
+        const gk = ans.green_ll ? this.snap("green", ans.green_ll, this.P.snap_green) : -1;   /* null: none (replays the same in any order) */
+        const tk = ans.tee_ll ? this.snap("tee", ans.tee_ll, this.P.snap_tee) : -1;
         const green_ll = gk >= 0 ? this.pool.greens[gk].ll : ans.green_ll, tee_ll = tk >= 0 ? this.pool.tees[tk].ll : ans.tee_ll;
-        const key = gk >= 0 && tk >= 0 ? this.keyOf(tk, gk) : null;
+        /* no tee given and none found: the key of "this green, no tee" (a confirmed hole that had no tee) */
+        const key = gk >= 0 && tk >= 0 ? this.keyOf(tk, gk) : gk >= 0 && !ans.tee_ll ? this.keyOf(-1, gk) : null;
         this.pins[h] = {key, t: tk, g: gk, tee_ll, green_ll};
       }
-      this.history.push({question: q.id || null, kind: q.kind, ref, answer: typeof ans === "string" ? ans : "tapped"});
+      this.history.push({question: q.id || null, kind: q.kind, ref, answer: typeof ans === "string" ? ans : q.kind === "reject" ? "no" : "tapped"});
       return this.solve();
+    }
+    /* an answer as the page shows it -> the geo-anchored form that is saved and shared (golf_shared/1): "yes" pins
+       the green + tee on screen (a locate of exactly those points), "no" / "this isn't hole n" rejects them */
+    canonical(a) {
+      if (a.not != null) a = {question: "c" + a.not, kind: "confirm", ref: String(a.not), answer: "no"};
+      const ref = String(a.ref), H = this.holes[ref];
+      if (!H) return null;
+      if (a.kind === "confirm") {
+        const shown = {tee_ll: H.tee_ll, green_ll: H.green_ll};
+        if (!shown.green_ll && !shown.tee_ll) return null;
+        return a.answer === "yes" || a.answer === true ? {question: "l" + ref, kind: "locate", ref, answer: shown, taps: 1}
+          : {question: "r" + ref, kind: "reject", ref, answer: shown, taps: 1};
+      }
+      if (a.kind === "locate") return {question: "l" + ref, kind: "locate", ref, answer: {tee_ll: a.answer.tee_ll || null, green_ll: a.answer.green_ll || null}, taps: 2};
+      if (a.kind === "reject") return a;
+      return null;
     }
     notHole(ref) { this.questions(); return this.answer({question: "c" + ref, kind: "confirm", ref: String(ref), answer: "no"}); }
 

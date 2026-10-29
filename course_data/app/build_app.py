@@ -11,7 +11,11 @@ What goes in (course_data/app/SCHEMA.md documents the format, `golf_app/1`):
     out/review/review.json (the 2-minute pre-round check) and plan.json (CHECK flags). A course with one
     plan dir per tee set (out/, out_gold/, ...) gets real per-set picks; every set is drawn on the primary
     set's image through the WGS84 frames (course_data/imagery/render.Frame), so a hole ships one image.
-  * the IA / MO OpenStreetMap survey (course_data/packages/_survey) as the "coming soon" catalogue.
+  * the course library (SCHEMA.md "Library"): the app's courses, the hand-checked tournament courses linked to their
+    published wind pages (WIND_PAGES), packages without a plan, course_data/library/index.json when present, and the
+    IA / MO OpenStreetMap survey (course_data/packages/_survey).
+  * shared_store.js: golfer confirmations and "problem with this hole" reports, in the artifact's shared db when
+    the page is published with the db capability (SCHEMA.md "Publishing with shared storage"), else localStorage.
   * per auto course, the golfer-confirm data (course_data/app/pools/<slug>.json from confirm_pool.py: the routing v2
     pool the page re-solves over, the course's aerial overview) and the JS of confirm_engine.js (golf_confirm/1 in
     the browser) and typed_card.js (typed scorecard checks): "I'm playing course X from tees Y" on a course whose
@@ -41,7 +45,19 @@ ROOT = os.path.dirname(CD)
 PKGS = os.path.join(CD, "packages")
 TEMPLATE = os.path.join(HERE, "app_template.html")
 POOLS = os.path.join(HERE, "pools")
-ENGINE_JS = [os.path.join(HERE, "typed_card.js"), os.path.join(HERE, "confirm_engine.js")]
+ENGINE_JS = [os.path.join(HERE, "typed_card.js"), os.path.join(HERE, "confirm_engine.js"), os.path.join(HERE, "shared_store.js")]
+COURSES_DIR = os.path.join(CD, "courses")
+LIBRARY_INDEX = os.path.join(CD, "library", "index.json")
+# Hand-checked courses with their own published wind page (linked, not embedded: each page is ~10 MB).
+WIND_PAGES = {
+    "blue_hills": "https://claude.ai/artifact/HKvWb1BjemS8rfomZTWRY6",
+    "eagle_knoll": "https://claude.ai/artifact/QQkFta99SEstd6Dv8wzgf8",
+    "gateway_national": "https://claude.ai/artifact/PCn2RTEcicJs2LrEC2ZBLb",
+    "pine_dunes": "https://claude.ai/artifact/6aCeobGkESNQXPiZefXFVq",
+    "national_kc": "https://claude.ai/artifact/X9Kn1MzX1CAgST63WpEuMP",
+    "hot_springs_arlington": "https://claude.ai/artifact/PzgE7wAjaMXRn8AeewEAeQ",
+    "spirit_hollow": "https://claude.ai/artifact/NroPJCYdEmhdN1osK23x4E",
+}
 OUT = os.path.join(HERE, "out", "index.html")
 
 for _p in (os.path.join(ROOT, "spirit_hollow"), os.path.join(ROOT, "mozingo"), os.path.join(CD, "product"),
@@ -746,6 +762,124 @@ def catalog(built_ids):
                 n_with_holes=sum(s["n_with_holes"] for s in states), upcoming=upcoming)
 
 
+def _norm(name):
+    return re.sub(r"[^a-z0-9]", "", (name or "").lower().replace("&", "and"))
+
+
+def _tees(tee_sets):
+    """{name: {colour, total}} -> [[name, hex colour, total yds]], longest first."""
+    out = []
+    for name, ts in (tee_sets or {}).items():
+        out.append([name, COLOURS.get(str(ts.get("colour") or name).split()[0].lower(), "#888"), ts.get("total")])
+    return sorted(out, key=lambda t: -(t[2] or 0))
+
+
+def _status_of(raw):
+    """a library/index.json status string -> the page's status key"""
+    s = str(raw or "").lower()
+    if "hand" in s or "verified" in s or "truth" in s:
+        return "hand"
+    if "confirm" in s or "check" in s:
+        return "confirm"
+    if "auto" in s or s in ("ok", "ready"):
+        return "auto"
+    return "none"
+
+
+def library(courses):
+    """Every course the page knows, light (golf_library/1, SCHEMA.md "Library"): the courses playable in this page,
+    the hand-checked tournament courses (a link to their wind page), the course packages without a plan yet, and the
+    IA / MO OpenStreetMap survey. course_data/library/index.json (when present) adds courses and fills gaps.
+    Entry: {id, name, town, state, holes, status, tees: [[name, colour, yds]], app, link, event, note, src}
+      status: "hand" (hand-checked) | "auto" (auto-mapped; the page re-derives auto-OK / needs-confirm from the
+              hole-map confirm, shared confirmations included) | "confirm" (needs confirm, from the library index)
+              | "none" (not built yet)"""
+    ents, seen = [], {}
+
+    def add(e):
+        k = _norm(e["name"]) + "|" + (e.get("state") or "")
+        if k in seen:
+            old = seen[k]
+            for f, v in e.items():
+                if old.get(f) in (None, "", []) and v not in (None, "", []):
+                    old[f] = v
+            return old
+        e.setdefault("tees", [])
+        seen[k] = e
+        ents.append(e)
+        return e
+    for c in courses:                                   # 1. playable here
+        add(dict(id=c["id"], name=c["name"], town=c.get("town"), state=c.get("state"), holes=len(c["holes"]),
+                 status="hand" if c["mapping"] == "hand" else "auto",
+                 tees=[[t["name"], t["colour"], t["total"], int(t["computed"] != "missing")] for t in c["tee_sets"]], app=c["id"],
+                 link=WIND_PAGES.get(c["id"]), src="app",
+                 note="Hand-checked map: GPS-app screenshots traced hole by hole" if c["mapping"] == "hand" else
+                      "Auto-mapped (OpenStreetMap + NAIP + lidar); golfers confirm the hole order"))
+    for cfg_path in sorted(glob.glob(os.path.join(COURSES_DIR, "*", "config.json"))):   # 2. hand-checked wind pages
+        slug = os.path.basename(os.path.dirname(cfg_path))
+        if slug not in WIND_PAGES:
+            continue
+        cfg = json.load(open(cfg_path))
+        tp = os.path.join(COURSES_DIR, slug, "truth", "package.json")
+        pk = json.load(open(tp)) if os.path.exists(tp) else json.load(open(os.path.join(PKGS, slug, "package.json")))
+        c = pk.get("course") or {}
+        days = cfg.get("day_labels") or []
+        add(dict(id=slug, name=cfg.get("name") or c.get("name"), town=c.get("town") or c.get("city"), state=c.get("state"),
+                 holes=len(pk.get("holes") or {}) or 18, status="hand", tees=_tees(pk.get("tee_sets")), app=None,
+                 link=WIND_PAGES[slug], event=(cfg.get("event") or "") + (f" · {' & '.join(days)}" if days and "(" not in (cfg.get("event") or "") else ""),
+                 note="Hand-checked map with its own wind page (club and aim in the event's forecast)", src="wind_page"))
+    idx = json.load(open(os.path.join(PKGS, "_index.json")))
+    for slug, entry in sorted(idx.items()):              # 3. packages without a plan
+        pj = os.path.join(PKGS, slug, "package.json")
+        if entry.get("status") != "ok" or not os.path.exists(pj):
+            continue
+        pk = json.load(open(pj))
+        c = pk.get("course") or {}
+        add(dict(id=slug, name=c.get("name") or entry.get("name"), town=c.get("town") or entry.get("town"),
+                 state=c.get("state") or entry.get("state"), holes=len(pk.get("holes") or {}), status="none",
+                 tees=_tees(pk.get("tee_sets")), app=None, link=None, src="package",
+                 note="Mapped automatically (course package built); the club-and-aim plan has not been run yet"))
+    lib_src = None
+    if os.path.exists(LIBRARY_INDEX):                    # 4. the course library (another pipeline's output)
+        try:
+            li = json.load(open(LIBRARY_INDEX))
+            rows = li.get("courses", li) if isinstance(li, dict) else li
+            rows = list(rows.values()) if isinstance(rows, dict) else rows
+            n0 = len(ents)
+            for r in rows:
+                if not isinstance(r, dict) or not r.get("name"):
+                    continue
+                tees = r.get("tees") or r.get("tee_sets") or []
+                if isinstance(tees, dict):
+                    tees = _tees(tees)
+                elif tees and isinstance(tees[0], dict):
+                    tees = [[t.get("name"), COLOURS.get(str(t.get("colour") or t.get("color") or t.get("name") or "").lower(), "#888"),
+                             t.get("total") or t.get("yards")] for t in tees]
+                tees = [list(t)[:3] for t in tees if isinstance(t, (list, tuple)) and t and t[0]][:10]
+                add(dict(id=r.get("id") or r.get("slug"), name=r["name"], town=r.get("town") or r.get("city"),
+                         state=r.get("state"), holes=r.get("holes") or r.get("n_holes"),
+                         status=_status_of(r.get("status")), tees=tees, app=None,
+                         link=r.get("link") or r.get("url"), note=r.get("note") or "", src="library"))
+            lib_src = dict(path=os.path.relpath(LIBRARY_INDEX, ROOT), n=len(rows), added=len(ents) - n0)
+        except Exception as e:                           # noqa: BLE001
+            log(f"  library/index.json not used: {e}")
+    survey = []
+    for path in sorted(glob.glob(os.path.join(PKGS, "_survey", "*.json"))):   # 5. the OSM survey
+        s = json.load(open(path))
+        survey.append(dict(state=s["state"], n_courses=s["n_courses"], n_with_holes=s["n_with_holes"]))
+        for c in s["courses"]:
+            holes = (c.get("counts") or {}).get("hole", 0)
+            if holes < 9 or not c.get("name"):
+                continue
+            add(dict(id=None, name=c["name"], town=c.get("town") or "", state=s["state"], holes=holes, status="none",
+                     tees=[], app=None, link=None, src="survey", note=f"{holes} holes mapped on OpenStreetMap"))
+    for e in ents:                                        # compact: drop empty fields
+        for k in [k for k, v in e.items() if v in (None, "", [])]:
+            del e[k]
+    return dict(schema="golf_library/1", entries=ents, survey=survey, index=lib_src,
+                states=sorted({e["state"] for e in ents if e.get("state")}))
+
+
 def artifact_format(html):
     """The artifact page contract: no doctype / html / head / body / charset / viewport tags (the host wraps
     the page), <title> first."""
@@ -777,7 +911,8 @@ def main():
             courses.append(c)
     bundle = dict(schema="golf_app/1", built=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
                   wind_axes=dict(speeds=SPEEDS, dirs=DIRS, cells=CELLS), player=PLAYER,
-                  catalog=catalog([c["name"].lower() for c in courses]), courses=courses)
+                  catalog=catalog([c["name"].lower() for c in courses]), library=library(courses), courses=courses)
+    bundle["catalog"].pop("upcoming", None)              # the library carries those courses now
     if a.json:
         os.makedirs(a.json, exist_ok=True)
         for c in courses:
@@ -794,6 +929,12 @@ def main():
     with open(art, "w") as fh:
         fh.write(artifact_format(html))
     log(f"wrote {os.path.relpath(art, ROOT)} {os.path.getsize(art) / 1e6:.2f} MB (artifact format)")
+    L = bundle["library"]
+    by = {}
+    for e in L["entries"]:
+        by[e["status"]] = by.get(e["status"], 0) + 1
+    log(f"  library: {len(L['entries'])} courses {by}, {len(json.dumps(L, separators=(',', ':'))) / 1e3:.0f} kB"
+        + (f"; library/index.json: {L['index']}" if L["index"] else "; no library/index.json yet"))
     for c in courses:
         n = len(json.dumps(c, separators=(",", ":")))
         im = sum(len(u) for u in c["images"].values()) + sum(len(json.dumps(x.get("crop", ""))) for x in c["checks"])

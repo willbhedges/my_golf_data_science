@@ -19,8 +19,8 @@ interpolates the wind grid, applies elevation and temperature, and draws the res
                 "cells": ["0_0","5_0","5_30",...,"25_330"]},   // 61 cells; every per-cell array follows this order
   "player": {"clubs": {"Driver": {"carry":275,"total":300}, ...},
              "temp_carry_pct_per_f": 0.10, "temp_ref_f": 70},   // carry changes 0.1 % per deg F from 70 F
-  "catalog": {"n_courses": 709, "n_with_holes": 366, "states": [{"state":"IA","n_courses":397,...}],
-              "upcoming": [["Coldwater Golf Links","Ames","IA",18], ...]},  // searchable, not built yet
+  "catalog": {"n_courses": 709, "n_with_holes": 366, "states": [{"state":"IA","n_courses":397,...}]},
+  "library": Library,                                    // every course the page can list (below)
   "courses": [Course, ...]
 }
 ```
@@ -200,7 +200,102 @@ Boltzmann posterior covers the union (~4-6 k routings, 0.2-0.5 MB).
    routing re-solved with it (what a backend would return). Any other card re-scores the current pool's length and
    fingerprint terms (`routing.length_cost` / `fingerprint` per pair): approximate, and weak when the pool was routed
    without a card, since such a pool rarely holds a routing that fits a card on all 18 holes.
-5. The answers (and the typed card) are kept in localStorage and replayed onto the pool on reload.
+5. The answers (and the typed card) are saved in their canonical form and replayed onto the pool on reload; shared with
+   every golfer when the page has the artifact database ("Shared confirmations" below).
+
+## Library (`bundle.library`, `golf_library/1`): "pick any course"
+
+`build_app.library()` lists every course the page knows, light (no holes, images or plans): ~52 kB for 333 courses.
+
+```jsonc
+"library": {"schema": "golf_library/1", "states": ["AR","IA","IL","MO","TX"],
+  "survey": [{"state":"IA","n_courses":397,"n_with_holes":191}, ...],
+  "index": {"path": "course_data/library/index.json", "n": 1234, "added": 900} | null,
+  "entries": [{"id": "coldwater", "name": "Coldwater Golf Links", "town": "Ames", "state": "IA", "holes": 18,
+               "status": "hand" | "auto" | "confirm" | "none",
+               "tees": [["Blue", "#2563c9", 6406, 1], ...],   // name, colour, yds, (app courses) 0 = not planned yet
+               "app": "coldwater",                            // playable in this page: D.courses id
+               "link": "https://claude.ai/artifact/...",      // hand-checked course with its own wind page
+               "event": "NCCGA Regional 2 · Sat 11/7 & Sun 11/8", "note": "...",
+               "src": "app" | "wind_page" | "package" | "library" | "survey"}]}
+```
+
+Sources, merged by normalised name + state (first wins, later ones fill empty fields): the app's courses; the
+hand-checked tournament courses (`course_data/courses/<slug>/config.json` + `truth/package.json`, linked to their
+published wind page, `build_app.WIND_PAGES`); course packages with no plan yet; `course_data/library/index.json`
+when it exists (read tolerantly: a list, or `{courses: [...]}` / `{courses: {id: {...}}}`; `name`, `town`|`city`,
+`state`, `holes`|`n_holes`, `status` (any string with hand / verified / truth, confirm / check, auto / ok),
+`tees`|`tee_sets` (list of `[name, colour, yds]` or `{name, colour, total}`, or a `{name: {colour, total}}` map),
+`link`|`url`, `note`); the IA / MO OpenStreetMap survey (courses with 9+ OSM holes).
+
+The page shows a status per entry: **Hand-checked**; for app courses with a hole-map confirm, live from the session
+(every golfer's shared answers applied): **Auto-OK** when every hole is pinned or at least `p_stop` sure (and no
+typed card is still needed), else **Needs confirm**; **Not built yet** for the rest. Search matches every word
+against name + town + state + event; filters: status (All / Play here / Hand-checked / Auto-OK / Needs confirm /
+Not built yet) and state.
+
+## Shared confirmations and reports (`golf_shared/1`, `shared_store.js`)
+
+A course needs confirming once: what one golfer confirms or fixes, everyone after gets. The page keeps two kinds of
+documents, in the artifact's shared database when the view has it, else in this browser's localStorage
+(`aimcaddie_shared1`; same documents, same code). Everything read back is untrusted and goes through
+`cleanAction` / `cleanMap` / `cleanReport` (shape, lengths, coordinates) before use; strings are escaped on display.
+
+```jsonc
+// maps/<course id>: one document per course
+{"schema": "golf_shared_map/1", "course": "coldwater",
+ "card": TypedCard | null, "card_at": "2026-10-29T20:15:00Z",   // the last typed scorecard (others get its pool)
+ "logs": {"<golfer id>": {"log": [Action, ...], "at": "...", "taps": 6}}}   // each golfer writes only their key
+// Action (canonical, geo-anchored: replays the same in any order and onto any routing of the pool)
+{"question": "l7", "kind": "locate", "ref": "7", "answer": {"tee_ll": [lon, lat] | null, "green_ll": [lon, lat] | null}, "taps": 1 | 2}
+{"question": "r7", "kind": "reject", "ref": "7", "answer": {"tee_ll": ..., "green_ll": ...}, "taps": 1}
+// reports/<id>: one document per report
+{"schema": "golf_report/1", "course": "coldwater", "hole": 4, "kind": "wrong_hole" | "tee" | "green" | "hazard" | "advice" | "other",
+ "text": "≤ 500 chars", "tee": "Blue", "at": "2026-10-29T20:15:00Z", "by": "<golfer id>"}
+```
+
+* **Canonical answers** (`ConfirmSession.canonical`): "Yes, that's hole 7" is saved as a locate of exactly the green
+  and tee on screen (the engine snaps them back to the same detected boxes: the same pin); "No" and "This isn't hole
+  7" as a `reject` of them (the engine drops that green with any box within `reject_r` of that tee, as "no" does); a
+  2-tap locate as itself. A reject never removes another golfer's pin on a different green, so merged logs give the
+  same pins in either order. `test_store.js` checks raw vs canonical vs stored-and-cleaned vs two golfers in both
+  orders on the 4 app pools and the 10 confirm test pools.
+* **The session a golfer sees** = every other golfer's log (oldest `at` first) + their own (kept in this browser,
+  `st.confirm[course] = {v: 2, log, taps, card}`; v2 pages' raw logs are migrated once). "Undo my last answer" edits
+  only their own log. Their own entry from another device is adopted when this device has none.
+* **Writes**: after every answer, one at a time: `get` the course doc, `set` it if absent, else `update({logs:
+  {<me>: {...}}})` (nested merge: only my key changes, so two golfers answering at once both survive; removing my
+  entry re-reads and `set`s). A refused write (`invalid_argument`: a view-only viewer) keeps the answer on this device
+  and the page says so; earlier local-only answers are pushed once when shared storage appears.
+* **Reads**: two listeners for the whole page: `maps` (every course's doc) and `reports` ordered by `at` desc,
+  limit 500. A changed doc (another golfer's answers) rebuilds that course's session and re-renders, unless the
+  golfer is mid-locate or typing.
+* **Golfer id**: `user.id()` (needs the `user` capability); without it a random per-browser id
+  (`aimcaddie_gid`).
+* **Reports** show on the hole ("Report a problem with this hole": kind + optional text), on the tee screen (all of
+  the course's reports), as a "reported" badge in the hole header and a count on the library card.
+
+### Publishing with shared storage
+
+The coordinator publishes `out/aim_caddie.html` with:
+
+```json
+"capabilities": {
+  "db": {"rules": [
+    {"path": "maps", "read": "view", "write": "interact"},
+    {"path": "reports", "read": "view", "write": "interact"}
+  ]},
+  "user": {}
+}
+```
+
+Everyone admitted reads the confirmed maps and reports; Contributors and up (and organisation members arriving by
+link) write them; Viewers / Commenters / outside visitors read only, and their own answers stay on their device
+(the page says "Saved on this device only"). Signed-out visitors get no db: the page runs on localStorage alone.
+These rules equal the defaults, stated so a later tightening (e.g. `write: "admin"` on `reports` for a moderated
+list) is a one-line change. Without the `capabilities` field the page still works, on localStorage only.
+After publishing: `ArtifactData` `list` on `maps` and `reports` should be empty until a golfer answers; nothing
+needs seeding (an absent doc is an unconfirmed course).
 
 ## Check card (`course.checks[]`)
 

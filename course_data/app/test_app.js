@@ -5,15 +5,17 @@
 // Writes per-hole screenshots of the map + a contact sheet per course (contact_<course>.png).
 const path = require("path");
 const fs = require("fs");
-const { chromium } = require("playwright");
+let pw; try { pw = require("playwright"); } catch (e) { pw = require("/opt/node22/lib/node_modules/playwright"); }
+const { chromium } = pw;
+const VW = +(process.env.VW || 420);                       // viewport width (the v3 runs use 400 and 1280)
 
 const page_path = path.resolve(process.argv[2] || path.join(__dirname, "out", "index.html"));
 const shots = path.resolve(process.argv[3] || path.join(__dirname, "out", "test"));
 fs.mkdirSync(shots, { recursive: true });
 
 (async () => {
-  const browser = await chromium.launch();
-  const ctx = await browser.newContext({ viewport: { width: 420, height: 900 }, deviceScaleFactor: 1 });
+  const fs_ = require("fs"), browser = await chromium.launch({ executablePath: fs_.existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : undefined });
+  const ctx = await browser.newContext({ viewport: { width: VW, height: 900 }, deviceScaleFactor: 1 });
   const page = await ctx.newPage();
   const errors = [];
   page.on("console", m => { const u = (m.location() || {}).url || ""; if (m.type() === "error" && !/fonts\.(googleapis|gstatic)/.test(m.text() + " " + u)) errors.push("console: " + m.text() + " " + u); });
