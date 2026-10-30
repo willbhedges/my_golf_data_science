@@ -65,7 +65,22 @@ Course status (`status.json`, `index.json`):
 * **failed**: no page (resolve ambiguous / not found, package or compute failure). `reasons` says where it
   stopped. `qa_report.md` lists the OSM candidates for an ambiguous name, so the request can add `osm` or `near`.
 
-How the gate scores against the hand-checked courses is in `gate/GATE.md`.
+How the gate scores against the hand-checked courses is in `gate/GATE.md`. In short, no blind build passes the
+strict gate: every course with a card still has 1-17 CHECK holes, mostly tees on lidar pads or walk-backs,
+yardage more than 10 off the card, and calm picks landing in rough just off the mapped fairway. CHECK holes are
+where wrong clubs concentrate (about 4x the PASS-hole rate), but hazard-perception errors (trees, long grass)
+also cause wrong picks on PASS holes, and no geometry check can see those.
+
+## Starter library (40 courses, MO / KS / IA / IL)
+
+Requests: `course_data/requests/course_page_<slug>.json`. The status of each course is in `index.json`.
+
+| outcome | courses | why |
+|---|---|---|
+| needs confirm: complete OSM holes + web card, only per-hole CHECKs | 18 | 1-17 CHECK holes each (Old Kinderhook 1; Annbriar, Prairie Highlands 2; Rivercut, Shoal Creek, Tiffany Greens 3) |
+| needs confirm: no usable web card | 9 | no golfify / club-site / OpenGolfAPI card, or mixed card versions; holes and tees come from OSM only (the page solves the back OSM tee). A typed card (`"typed_card"`) moves these up a tier. |
+| needs confirm: OSM holes incomplete | 9 | holes routed by routing v2 / structure / geometry; some courses come out short of 18 holes |
+| failed | 4 | Deer Creek (OSM marks it "Former": closed); Lake of the Woods (OSM has no greens or tees); Longview Lake / Fred Arbanas (package job hit the 150-min timeout); Kokopelli (resolve: not found in OSM under that name; add `near` or `osm`) |
 
 ## `index.json` (schema `course_library/1`)
 
@@ -114,9 +129,15 @@ Committed per course (`course_data/library/<slug>/`):
 
 * `page.html`, `qa_report.md`, `qa.json`, `status.json`, `config.json`, `weather.json`, `sharp.json`
 * rebuild data: `package_request.json`, `package.json` (the built course package: holes, tees, zones, card),
-  `package_v0_no_vision.json` (before the vision layer), `package_qa.md`, `raw/course.json`, `raw/summary.json`,
+  `package_qa.md`, `raw/course.json`, `raw/summary.json`,
   `raw/scorecard_web.json`, `evidence/vision_any.geojson` (the inferred tree / long-grass / water layer),
   `evidence/ob_sources.json`, `evidence/vision_raw_meta.json`
+
+Measured on the starter library (36 pages + 10 gate pages): page median 2.6 MB, largest 6.1 MB, 151 MB of pages
+in all. With the packages and vision layers the checked-out `course_data/library/` is about 260 MB, and the JSON
+part compresses about 5x in git. `package_v0_no_vision.json` (the package before the vision layer) was committed
+for the first runs and is no longer committed. The pages are the largest part: if the library grows past about
+100 courses, keep only the auto-OK and recently requested pages in the repo and rebuild the others on request.
 
 Not committed: NAIP / DEM / lidar rasters, `course_data/packages/<slug>/` and `course_data/vision_any/<slug>/raw`
 (the workflow's scratch), course modules, hole pictures, and the raw wind grids. Re-running the request (bump

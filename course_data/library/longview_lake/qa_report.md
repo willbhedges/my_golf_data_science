@@ -1,5 +1,5 @@
-# Longview Lake Golf Course: no page
+# Fred Arbanas Golf Course: no page
 
-**Status: failed** at package: resolve: ambiguous None None [('Mozingo Lake Golf Course', 'Maryville', 18), ('Lake Valley Golf Club', 'Camdenton', 18), ('Meadow Lake Acres Country Club', 'New Bloomfield', 18)] longview_lake: ambiguous; see packages/longview_lake/raw/course.json for the candidates 
+**Status: failed** at package: rev 2 (Fred Arbanas Golf Course): the package job hit the 150-minute Actions timeout (run 40995505206); rev 1: resolve ambiguous under the old name
 
-Resolve: {"status": "ambiguous", "candidates": [{"name": "Mozingo Lake Golf Course", "town": "Maryville", "holes": 18, "osm": {"type": "way", "id": 385067034}}, {"name": "Lake Valley Golf Club", "town": "Camdenton", "holes": 18, "osm": {"type": "way", "id": 393080132}}, {"name": "Meadow Lake Acres Country Club", "town": "New Bloomfield", "holes": 18, "osm": {"type": "way", "id": 389825787}}]}
+Resolve: {"status": null, "candidates": []}

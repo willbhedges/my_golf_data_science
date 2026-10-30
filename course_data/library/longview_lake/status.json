@@ -1,13 +1,13 @@
 {
  "slug": "longview_lake",
- "name": "Longview Lake Golf Course",
- "request_name": "Longview Lake Golf Course",
+ "name": "Fred Arbanas Golf Course",
+ "request_name": "Fred Arbanas Golf Course",
  "city": "Lee's Summit",
  "state": "MO",
  "group": "library",
  "status": "failed",
  "reasons": [
-  "package: resolve: ambiguous None None [('Mozingo Lake Golf Course', 'Maryville', 18), ('Lake Valley Golf Club', 'Camdenton', 18), ('Meadow Lake Acres Country Club', 'New Bloomfield', 18)] longview_lake: ambiguous; see packages/longview_lake/raw/course.json for the candidates "
+  "package: rev 2 (Fred Arbanas Golf Course): the package job hit the 150-minute Actions timeout (run 40995505206); rev 1: resolve ambiguous under the old name"
  ],
  "check_holes": [],
  "tee_sets": [],
@@ -15,36 +15,8 @@
  "page_bytes": null,
  "request": "course_data/requests/course_page_longview_lake.json",
  "resolve": {
-  "status": "ambiguous",
-  "candidates": [
-   {
-    "name": "Mozingo Lake Golf Course",
-    "town": "Maryville",
-    "holes": 18,
-    "osm": {
-     "type": "way",
-     "id": 385067034
-    }
-   },
-   {
-    "name": "Lake Valley Golf Club",
-    "town": "Camdenton",
-    "holes": 18,
-    "osm": {
-     "type": "way",
-     "id": 393080132
-    }
-   },
-   {
-    "name": "Meadow Lake Acres Country Club",
-    "town": "New Bloomfield",
-    "holes": 18,
-    "osm": {
-     "type": "way",
-     "id": 389825787
-    }
-   }
-  ]
+  "status": null,
+  "candidates": []
  },
- "built": "2026-10-30T00:11Z"
+ "built": "2026-10-30T15:16Z"
 }

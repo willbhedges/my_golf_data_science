@@ -266,7 +266,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # committed: the page, its checks and the small course data to rebuild it (README.md "size policy");
           # never the course modules, hole pictures, wind grids or rasters
-          for f in config.json package_request.json package.json package_v0_no_vision.json package_qa.md package_confirm.json \
+          for f in config.json package_request.json package.json package_qa.md package_confirm.json \
                    weather.json sharp.json page.html qa_report.md qa.json status.json raw/course.json raw/summary.json \
                    raw/scorecard_web.json evidence/vision_any.geojson evidence/ob_sources.json evidence/vision_raw_meta.json; do
             [ -f "$OUT/$f" ] && git add -f "$OUT/$f"
