@@ -1,0 +1,160 @@
+{
+ "kind": "v3",
+ "shard": "10/12",
+ "rows": [
+  {
+   "slug": "jato_highlands_me",
+   "state": "ME",
+   "card_kind": "web",
+   "scene": true,
+   "perception_clean": true,
+   "n_true": 18,
+   "tiers": {
+    "mapped_card": {
+     "selector": {
+      "hole_number_acc": 1.0,
+      "green_assign_acc": 1.0,
+      "all_correct": true,
+      "flagged": 3,
+      "wrong": 0,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 1.0,
+      "seconds": 10.0,
+      "tier": "mapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "structure_input": "osm",
+      "lam": 0.5
+     },
+     "sequence_v3": {
+      "hole_number_acc": 0.944,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 6,
+      "wrong": 1,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.944,
+      "seconds": 17.7,
+      "tier": "mapped_card",
+      "method": "sequence_v3",
+      "fallbacks": [],
+      "certain": false,
+      "course_confidence": 0.3214,
+      "structure_input": "osm"
+     }
+    },
+    "unmapped_card": {
+     "selector": {
+      "hole_number_acc": 0.056,
+      "green_assign_acc": 0.111,
+      "all_correct": false,
+      "flagged": 18,
+      "wrong": 17,
+      "wrong_unflagged": 0,
+      "physical_holes_found": 0.5,
+      "seconds": 11.6,
+      "tier": "unmapped_card",
+      "method": "structure",
+      "fallbacks": [
+       "v2+structure: RuntimeError: routing v2: no greens",
+       "v2: RuntimeError: routing v2: no greens"
+      ],
+      "structure_input": "perception"
+     },
+     "sequence_v3": {
+      "hole_number_acc": 0.056,
+      "green_assign_acc": 0.111,
+      "all_correct": false,
+      "flagged": 17,
+      "wrong": 17,
+      "wrong_unflagged": 1,
+      "physical_holes_found": 0.556,
+      "seconds": 11.4,
+      "tier": "unmapped_card",
+      "method": "sequence_v3",
+      "fallbacks": [],
+      "certain": false,
+      "course_confidence": 0.2069,
+      "structure_input": "perception"
+     }
+    }
+   }
+  },
+  {
+   "slug": "crossings_ky",
+   "state": "KY",
+   "card_kind": "web",
+   "scene": true,
+   "perception_clean": true,
+   "n_true": 18,
+   "tiers": {
+    "mapped_card": {
+     "selector": {
+      "hole_number_acc": 0.833,
+      "green_assign_acc": 1.0,
+      "all_correct": false,
+      "flagged": 1,
+      "wrong": 3,
+      "wrong_unflagged": 2,
+      "physical_holes_found": 0.833,
+      "seconds": 9.9,
+      "tier": "mapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "structure_input": "osm",
+      "lam": 0.5
+     },
+     "sequence_v3": {
+      "hole_number_acc": 0.833,
+      "green_assign_acc": 0.944,
+      "all_correct": false,
+      "flagged": 2,
+      "wrong": 3,
+      "wrong_unflagged": 2,
+      "physical_holes_found": 0.833,
+      "seconds": 16.0,
+      "tier": "mapped_card",
+      "method": "sequence_v3",
+      "fallbacks": [],
+      "certain": false,
+      "course_confidence": 0.3214,
+      "structure_input": "osm"
+     }
+    },
+    "unmapped_card": {
+     "selector": {
+      "hole_number_acc": 0.556,
+      "green_assign_acc": 0.611,
+      "all_correct": false,
+      "flagged": 7,
+      "wrong": 8,
+      "wrong_unflagged": 3,
+      "physical_holes_found": 0.667,
+      "seconds": 1.5,
+      "tier": "unmapped_card",
+      "method": "v2+structure",
+      "fallbacks": [],
+      "structure_input": "perception",
+      "lam": 0.25
+     },
+     "sequence_v3": {
+      "hole_number_acc": 0.0,
+      "green_assign_acc": 0.0,
+      "all_correct": false,
+      "flagged": 6,
+      "wrong": 18,
+      "wrong_unflagged": 12,
+      "physical_holes_found": 0.389,
+      "seconds": 1.7,
+      "tier": "unmapped_card",
+      "method": "sequence_v3",
+      "fallbacks": [],
+      "certain": false,
+      "course_confidence": 0.0,
+      "structure_input": "perception"
+     }
+    }
+   }
+  }
+ ]
+}
