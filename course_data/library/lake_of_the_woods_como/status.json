@@ -1,0 +1,41 @@
+{
+ "slug": "lake_of_the_woods_como",
+ "name": "Lake of the Woods Golf Course",
+ "request_name": "Lake of the Woods Golf Course",
+ "city": "Columbia",
+ "state": "MO",
+ "group": "library",
+ "status": "failed",
+ "reasons": [
+  "package: osm: 137 features; {'cartpath': 22, 'bunker': 3} scorecards: [{\"source\": \"golfify\", \"ok\": true, \"info\": \"https://www.golfify.io/courses/lake-of-the-woods-golf-course\"}, {\"source\": \"club_site\", \"ok\": false, \"info\": \"club site: no parsable scorecard in 21 pages\"}, {\"source\": \"opengolfapi\", \"ok\": false, \"info\": \"opengolfapi: no tees / holes_data for Lake of the Woods Golf Course (opengolfapi: Lake of"
+ ],
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_lake_of_the_woods_como.json",
+ "resolve": {
+  "status": "ok",
+  "candidates": [
+   {
+    "name": "Lake of the Woods Golf Course",
+    "town": "Columbia",
+    "holes": 0,
+    "osm": {
+     "type": "way",
+     "id": 387184389
+    }
+   },
+   {
+    "name": "Woods Fort Golf Course",
+    "town": "Troy",
+    "holes": 18,
+    "osm": {
+     "type": "relation",
+     "id": 9392550
+    }
+   }
+  ]
+ },
+ "built": "2026-10-30T04:23Z"
+}
