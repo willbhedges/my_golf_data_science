@@ -1,0 +1,214 @@
+{
+ "course_review/1": {
+  "slug": "finkbine",
+  "reviewer": "agent",
+  "card_source": "golfimprovement.ai/course/14552-finkbine-golf-course (current Black/Gold/White/Gray card, Black 6951; matches the OSM tee boxes and opengolfapi on 16/18 holes). golfify/AllSquare (7017) and foretee (Blue 7030) carry older cards. Fetched: course_data/research/web/rv02_cards2/02.txt",
+  "card": {
+   "Black": [
+    375,
+    537,
+    418,
+    206,
+    368,
+    524,
+    382,
+    207,
+    428,
+    410,
+    577,
+    374,
+    182,
+    428,
+    486,
+    405,
+    195,
+    449
+   ],
+   "Gold": [
+    360,
+    511,
+    394,
+    163,
+    355,
+    504,
+    368,
+    185,
+    414,
+    395,
+    530,
+    357,
+    160,
+    397,
+    462,
+    369,
+    158,
+    426
+   ],
+   "par": [
+    4,
+    5,
+    4,
+    3,
+    4,
+    5,
+    4,
+    3,
+    4,
+    4,
+    5,
+    4,
+    3,
+    4,
+    5,
+    4,
+    3,
+    4
+   ]
+  },
+  "course_level": [
+   "COURSE CLOSED: finkbine.com says the course and range are CLOSED FOR RENOVATION for the whole 2026 season (construction began after the 2025 season; $11M Scott Hoffman redesign with a rerouting, reopening about May 2027). The page is built for Sat 10/31 and Sun 11/1 2026 on the pre-renovation layout (2021 imagery). Do not publish.",
+   "The web card used (golfify, 7017) is an older card: 6 of the 6 Black CHECK/yardage problems disappear with the current 6951 card."
+  ],
+  "publish": "no - course closed for renovation through spring 2027, and the post-renovation routing will differ from OSM/2021 imagery",
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify Black 415 and walks the tee back 37 yds off the OSM back box onto the grass/cart area behind it. Current club card (Black/Gold/White/Gray, golfimprovement.ai; opengolfapi agrees) says Black 375, which is exactly the OSM hole-line start box (375 yds). Gold 360 (page 401/387).",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       41.6574517,
+       -91.565092
+      ]
+     },
+     "yards": 375
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Black 537 on OSM box, matches both cards."
+   },
+   {
+    "n": 3,
+    "verdict": "wrong par or yardage",
+    "notes": "Current card Black 418 = OSM hole-line start (417). Page Black sits on a forward box at 394 (old golfify card); Gold 394 vs page 368. Club pick computed from ~24 yds too far forward.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       41.6634251,
+       -91.5731999
+      ]
+     },
+     "yards": 418
+    }
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Black 201 on OSM box (current card 206)."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Black 368 on OSM box; card 368."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Black 525 on OSM box; card 524."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Black 382 on OSM box; card 382."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "tee_axis marker 6 yds off the box edge (CHECK) is box depth; 207 matches card 207."
+   },
+   {
+    "n": 9,
+    "verdict": "wrong par or yardage",
+    "notes": "Black on the back OSM box (461 measured); current card 428, golfify 449. Measured tee-to-green fits a box ~33 yds behind the card tee; minor for the pick (Driver).",
+    "fix": {
+     "yards": 428
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "wrong par or yardage",
+    "notes": "Golfify 449 (duplicate of 9/18, a card typo); page walked the tee 43 yds back past the OSM line start into rough by the road. Current card Black 410 = OSM hole-line start (408).",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       41.6577156,
+       -91.5643708
+      ]
+     },
+     "yards": 410
+    }
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Black 562 on OSM box (current card 577; OSM boxes at 566-593, close enough)."
+   },
+   {
+    "n": 12,
+    "verdict": "wrong tee position",
+    "notes": "Black marker on a lidar pad 21 yds right of the hole line (not an OSM box). Current card Black 374 = straight tee-to-green from the OSM line start (373). Tee should be on the OSM hole-line start box.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       41.6641803,
+       -91.5722805
+      ]
+     },
+     "yards": 374
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "wrong par or yardage",
+    "notes": "Golfify 199; page walked back 24 yds behind the OSM line start onto no tee. Current card Black 182 matches the OSM back box (177); Gold 160.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       41.6644155,
+       -91.5682134
+      ]
+     },
+     "yards": 182
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Black 407 on OSM box; current card 428 (OSM line start 421) - 15-20 yds short, small effect on the pick."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Black 487 on OSM box; card 486."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Black 398 on OSM box; card 398/405."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Black 195 on OSM box; card 195."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Black 449 on OSM box; card 449."
+   }
+  ]
+ }
+}

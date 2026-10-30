@@ -1,0 +1,190 @@
+{
+ "course_review/1": {
+  "slug": "harvester",
+  "reviewer": "agent",
+  "card_source": "golfify (= AllSquare, round numbers, 7340) as the card of record; opengolfapi (7463) and the OSM tee boxes used to overrule holes 13, 14, 16. Club site harvestergolf.com returns 403; no BlueGolf/GolfPass card reachable.",
+  "card": {
+   "Black": [
+    425,
+    360,
+    195,
+    575,
+    370,
+    560,
+    405,
+    225,
+    465,
+    470,
+    385,
+    410,
+    390,
+    230,
+    650,
+    480,
+    180,
+    565
+   ],
+   "Blue": [
+    390,
+    345,
+    180,
+    545,
+    320,
+    530,
+    370,
+    200,
+    430,
+    450,
+    355,
+    390,
+    355,
+    205,
+    600,
+    440,
+    165,
+    540
+   ],
+   "par": [
+    4,
+    4,
+    3,
+    5,
+    4,
+    5,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    3,
+    5
+   ]
+  },
+  "course_level": [
+   "Pars are right (both cards agree, sum 72).",
+   "Golfify Black yardages are wrong on 13 (390, ground 414), 14 (230, ground 180) and 16 (480, ground 500); hole 9 Black tee placement is doubtful (box 88 yds off the hole line)."
+  ],
+  "publish": "not as-is: needs the hole 14 tee/yardage fix (wrong club on a par 3: 230 vs 180 yds), and holes 9 and 18 confirmed",
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Black 423 on OSM back box at line start; card 425."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Black 361 on OSM box at line start; card 360."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Black marker on a lidar pad exactly at the OSM hole-line start (195 yds, card 195, opengolfapi 202); the back tee is simply not drawn in OSM (nearest OSM box is 54 yds forward at 144). Blue texture pad at 179 also on the line (card 180). Added the back tee to osm_supplement.geojson."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Black 575 on OSM box; card 575."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Black 364 on OSM box; card 370."
+   },
+   {
+    "n": 6,
+    "verdict": "uncertain",
+    "notes": "Black walked back 19 yds behind the back OSM box (538 to green). Both cards say 560/561, so an unmapped back tee is plausible; effect on the pick is small (par 5, Driver)."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Black 398 on OSM box at line start; card 405. Blue/White on texture pads 25/42 yds up the line (370/352 match card)."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Black 226 on OSM box; card 225. Blue on a lidar pad 25 yds left of the line at 200 (card 200) - plausible unmapped box."
+   },
+   {
+    "n": 9,
+    "verdict": "uncertain",
+    "notes": "Black placed on OSM box 1080111038, 88 yds RIGHT of the hole line (458 yds straight to the green; golfify 465). The OSM hole line starts on box 1080114243 at 435-437 (opengolfapi Black 437). Either an angled tips box or a box of another hole; tee line and landing zone differ a lot between the two. Confirm on site; if not a hole-9 tee, use the line-start box.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       41.8669588,
+       -93.2115003
+      ]
+     },
+     "yards": 437
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Black 464 on OSM box; card 470."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Black 385 on OSM box; card 385."
+   },
+   {
+    "n": 12,
+    "verdict": "bad pick",
+    "notes": "Tee fine (410, card 410). Calm pick Driver +17 lands 293 yds out in a fairway bunker 3 yds off the fairway (aim CHECK); the aim should come off the bunker (straighter / shorter). Blue measured 404 vs card 390 (shares the Black box)."
+   },
+   {
+    "n": 13,
+    "verdict": "wrong par or yardage",
+    "notes": "Black on the OSM back box at line start, 409-414 yds; golfify 390 is short (opengolfapi 418). Tee position is right; the card value is wrong.",
+    "fix": {
+     "yards": 414
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "wrong tee position",
+    "notes": "Golfify Black 230 / Blue 205 have no tee on the ground: the tee was walked 54 yds (Black) and 29 yds (Blue) behind the OSM back box into rough. The OSM hole line starts on box 1080146929 at 176-177 yds; opengolfapi Black 180 / Blue 155 fit the OSM boxes (176, 153). Golfify hole 14 is wrong.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       41.8670889,
+       -93.2174521
+      ]
+     },
+     "yards": 180
+    }
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Black 651 on OSM box; card 650."
+   },
+   {
+    "n": 16,
+    "verdict": "wrong par or yardage",
+    "notes": "Black on the OSM back box at line start, 497-500 yds; golfify 480 is short (opengolfapi 521). Tee is right; card value wrong.",
+    "fix": {
+     "yards": 500
+    }
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Black 176 on OSM box; card 180."
+   },
+   {
+    "n": 18,
+    "verdict": "uncertain",
+    "notes": "Black walked back 39 yds behind the OSM line-start box (hole line 527 yds around the dogleg, card 565, opengolfapi 560). A back tee by the lake may be unmapped; otherwise the Black tee is the line-start box shared with Blue (530). Confirm."
+   }
+  ]
+ }
+}
