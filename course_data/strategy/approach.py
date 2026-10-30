@@ -510,7 +510,7 @@ class ValueGrid:
         self.hole, self.xs, self.ys = hole, np.asarray(xs, float), np.asarray(ys, float)
         self.tee_ev = tee_ev
         self.V = {}
-        for lie in ("fairway", "rough", "sand", "recovery"):
+        for lie in ("fairway", "rough", "sand"):
             g = np.empty((len(xs), len(ys)))
             for i, x in enumerate(xs):
                 for j, y in enumerate(ys):
@@ -525,6 +525,12 @@ class ValueGrid:
                 fb = baseline(lie, np.hypot(XX - hole.green_c[0], YY - hole.green_c[1]), hcp)
                 g = np.where(np.isnan(g), fb, g)
             self.V[lie] = g
+        # Trees: the open-lie solve can't see a blocked line, so keep the tee model's Broadie gap over rough
+        # (recovery row minus rough row, x TREE_SEVERITY) on top of the geometric rough value.
+        XX, YY = np.meshgrid(xs, ys, indexing="ij")
+        d = np.hypot(XX - hole.green_c[0], YY - hole.green_c[1])
+        gap = baseline("recovery", d, hcp) - baseline("rough", d, hcp)
+        self.V["recovery"] = self.V["rough"] + t.TREE_SEVERITY * gap
         self.hcp = hcp
 
     def _interp(self, lie, p):

@@ -93,7 +93,8 @@ family the tee engine uses. `hcp=True` adds the ~5-handicap offsets from `resear
 
 **Whole-hole tee value** (`ValueGrid`, `tee_compare`).
 - V(x, y, lie) is the optimal approach EV on a 10-yd grid over the tee-ball landing area, for fairway, rough,
-  sand and trees, with bilinear interpolation between grid points.
+  sand, with bilinear interpolation between grid points. Trees = V_rough + the Broadie recovery-minus-rough gap (x
+  `TREE_SEVERITY`), because a geometric solve from the trees cannot see a blocked line to the green.
 - Penalty lies map exactly as in the tee model: water = 1 + V_rough, OB = 2 + V_rough, first cut = the
   `FIRST_CUT_COST` mix.
 - `tee_compare` runs the tee engine's own `simulate` (same clubs, Driver to Mid iron, aims −30..+30 every
