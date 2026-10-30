@@ -11,10 +11,10 @@ const LIBD = {}, LIBERR = {};
 const libEntry = slug => LIB.find(e => e.lib && e.id === slug) || null;
 function libLoad(slug){
   const e = libEntry(slug); if (!e) return null;
-  if (LIBD[slug] || LIBERR[slug] === "loading") return LIBD[slug] || null;
+  if (LIBD[slug] || LIBERR[slug]) return LIBD[slug] || null;          /* loaded, loading, or failed (retry clears it) */
   LIBERR[slug] = "loading";
   const inl = window.AIM_LIB_INLINE && window.AIM_LIB_INLINE[slug];
-  (inl ? Promise.resolve(inl) : fetch(e.lib, {cache: "force-cache"}).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }))
+  (inl ? Promise.resolve(inl) : fetch(e.lib).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }))
     .then(d => { if (!d || d.schema !== "golf_lib_play/1" || !Array.isArray(d.holes)) throw new Error("not a course record");
       LIBD[slug] = d; delete LIBERR[slug]; LSTAT = null; softRender(); },
       err => { LIBERR[slug] = String(err && err.message || err); softRender(); });

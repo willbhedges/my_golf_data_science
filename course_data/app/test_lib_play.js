@@ -166,9 +166,13 @@ async function holeState(page) {
     const doc = server.get("maps/" + e.id);
     expect(doc && doc.logs && doc.logs["golfer-a"] && doc.logs["golfer-a"].log.length === 2, `shared doc maps/${e.id}: ${JSON.stringify(doc).slice(0, 200)}`);
     const cb = await sharedContext(browser, server, "golfer-b", { width: 1280, height: 900 }), pb = await cb.newPage(); watch(pb, "B");
-    await pb.goto(base + "aim_caddie.html"); await pb.fill("#q", e.name); await pb.$eval("#q", el => el.blur());
-    await pb.waitForFunction(id => { const c = document.querySelector(`[data-libplay="${id}"]`); return c && /1 of \d+ holes confirmed/.test(c.closest("article").innerText); }, e.id, { timeout: 8000 })
-      .catch(() => problems.push("B: library card does not count A's confirmed hole"));
+    await pb.goto(base + "aim_caddie.html");
+    await pb.waitForFunction(() => STORE.mode !== "connecting", null, { timeout: 15000 }).catch(() => {});
+    const modeB = await pb.evaluate(() => STORE.mode + " " + STORE.why + " " + (STORE.lastError || ""));
+    expect(/^shared/.test(modeB), "B: store mode " + modeB);
+    await pb.fill("#q", e.name); await pb.$eval("#q", el => el.blur());
+    await pb.waitForFunction(id => { const c = document.querySelector(`[data-libplay="${id}"]`); return c && /1 of \d+ holes confirmed/i.test(c.closest("article").innerText); }, e.id, { timeout: 8000 })
+      .catch(async () => problems.push("B: library card does not count A's confirmed hole: " + await pb.evaluate(id => { const c = document.querySelector(`[data-libplay="${id}"]`); return c ? c.closest("article").innerText.replace(/\s+/g, " ") : "no card"; }, e.id)));
     await pb.click(`[data-libplay="${e.id}"]`); await pb.waitForSelector("#lpPlay");
     await pb.click('[data-lpi="0"]');
     expect(/confirmed this hole/.test(await pb.$eval("#lpAns", el => el.textContent)), "B: hole 1 not shown as confirmed");
@@ -178,7 +182,7 @@ async function holeState(page) {
     // B reports a problem; A sees it
     await pb.click("#reportBtn"); await pb.click('[data-rkind="tee"]'); await pb.fill("#rText", "tee is further back"); await pb.click("#reportSend");
     await pb.waitForFunction(() => /Thanks/.test((document.getElementById("reportMsg") || {}).textContent || ""), null, { timeout: 8000 }).catch(() => problems.push("B: report not acknowledged"));
-    expect(server.list("reports").some(r => r.data.course === e.id && r.data.hole === 2), "B's report not in the shared reports");
+    expect(server.list("reports").some(r => r.data.course === e.id && r.data.kind === "tee"), "B's report not in the shared reports");
     await ca.close(); await cb.close();
     // local mode: answer survives a reload
     const cl = await browser.newContext({ viewport: { width: 400, height: 900 } }), pl = await cl.newPage(); watch(pl, "local");
@@ -188,9 +192,11 @@ async function holeState(page) {
     expect(await pl.$eval(".holeno", el => el.textContent) === h3, `local: reload did not return to ${h3}`);
     expect(/confirmed this hole/.test(await pl.$eval("#lpAns", el => el.textContent)), "local: answer lost on reload");
     // 4. a missing record
-    await pl.evaluate(() => { const e = D.library.entries.find(x => x.lib); e.lib = "lib/missing_course.json"; LP().slug = e.id; delete LIBD[e.id]; delete LIBERR[e.id]; st.screen = "lib"; render(); });
-    await pl.waitForSelector("#libErr", { timeout: 5000 }).catch(() => problems.push("missing record: no error panel"));
-    await cl.close();
+    const pm = await cl.newPage(); watch(pm, "missing");
+    await pm.route("**/lib/*.json", r => r.fulfill({ status: 404, body: "not found" }));
+    await pm.goto(base + "aim_caddie.html#lib=" + e.id); const pl0 = pl; { const pl = pm;
+    await pl.waitForSelector("#libErr", { timeout: 5000 }).catch(async () => problems.push("missing record: no error panel: " + (await pl.evaluate(() => document.getElementById("app").innerText.slice(0, 200))).replace(/\s+/g, " ")));
+    } await cl.close();
   }
   await browser.close(); srv.close();
   const all = problems.filter(Boolean).concat(errors);
