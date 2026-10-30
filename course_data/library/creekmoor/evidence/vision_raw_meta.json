@@ -1,0 +1,169 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "creekmoor",
+ "course": "Creekmoor Golf Club",
+ "bbox_snwe": [
+  38.825435,
+  -94.482932,
+  38.841393,
+  -94.454898
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 2704,
+  "height": 2052,
+  "bounds": [
+   371152,
+   4298290,
+   373856,
+   4300342
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   371152.0,
+   0.0,
+   -1.0,
+   4300342.0
+  ],
+  "ll_bbox_wsen": [
+   -94.48467136206875,
+   38.82397824726,
+   -94.45314752128357,
+   38.84285567835094
+  ]
+ },
+ "fetched_utc": "2026-10-30T00:12:58Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "MO_WestCentral_1_2018-hag-2m-1-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 5396804,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9726410660115113,
+   "file": "hag.tif",
+   "mb": 1.69,
+   "frac_gt_2_5m": 0.3089385662133638
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "MO_WestCentral_1_2018-dtm-2m-1-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1347717,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.971571248140074,
+   "mb": 3.0
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "MO_WestCentral_1_2018-classification-2m-1-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 5482176,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-classification-2m-1-0",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 148,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.39,
+   "counts": {
+    "0": 66284,
+    "1": 1317302,
+    "2": 3790990,
+    "9": 373996,
+    "17": 36
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111023"
+  ],
+  "mb": 0.47,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1387152,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.05
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 14.37,
+    "items": [
+     "mo_m_3809413_nw_15_060_20220629"
+    ],
+    "acquired": [
+     "2022-06-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 17.87,
+    "items": [
+     "mo_m_3809413_nw_15_060_20200607"
+    ],
+    "acquired": [
+     "2020-06-07"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
