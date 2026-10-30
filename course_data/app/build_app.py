@@ -46,6 +46,7 @@ PKGS = os.path.join(CD, "packages")
 TEMPLATE = os.path.join(HERE, "app_template.html")
 POOLS = os.path.join(HERE, "pools")
 ENGINE_JS = [os.path.join(HERE, "typed_card.js"), os.path.join(HERE, "confirm_engine.js"), os.path.join(HERE, "shared_store.js")]
+ENGINE_JS.append(os.path.join(HERE, "course_index.js"))   # national index + "Request this course" (course_index.py)
 COURSES_DIR = os.path.join(CD, "courses")
 LIBRARY_INDEX = os.path.join(CD, "library", "index.json")
 # Hand-checked courses with their own published wind page (linked, not embedded: each page is ~10 MB).
@@ -938,6 +939,9 @@ def main():
                 json.dump(dict(schema="golf_app/1#course", wind_axes=bundle["wind_axes"], player=PLAYER, course=c), fh)
     blob = json.dumps(bundle, separators=(",", ":")).replace("</", "<\\/")
     engine = "\n".join(open(p).read() for p in ENGINE_JS).replace("</", "<\\/")
+    import course_index                                   # national index (course_index.py, SCHEMA.md)
+    engine, natidx = course_index.inject(engine)
+    log(f"  national index: {natidx['n']} courses, {len(natidx['b64']) / 1e6:.2f} MB" if natidx else "  national index: none yet")
     html = open(TEMPLATE).read().replace("/*__ENGINE__*/", engine).replace("/*__DATA__*/null", blob)
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w") as fh:
