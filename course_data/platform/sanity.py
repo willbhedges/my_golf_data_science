@@ -239,10 +239,10 @@ def guard_tees(tp, fc, max_forward=MAX_FORWARD_YD):
                     q = (S[0] - u[0] * d, S[1] - u[1] * d)
                     h = _hit(Point(q), obs, own)
                     if h:
-                        back = max(0.0, d - OBSTACLE_MARGIN_YD)
-                        new = (S[0] - u[0] * back, S[1] - u[1] * back)
+                        cap = max(0.0, d - OBSTACLE_MARGIN_YD)
+                        new = (S[0] - u[0] * cap, S[1] - u[1] * cap)
                         why = (f"walk-back ran onto a {h[0]} (OSM {h[1]}) {d:.0f} yds behind the line start: "
-                               f"capped there ({-along - back:.0f} yds short of the card)")
+                               f"capped there ({-along - cap:.0f} yds short of the card)")
                         break
             elif _hit(Point(T), hard, own):            # a box-based point: residential land is not proof
                 h = _hit(Point(T), hard, own)

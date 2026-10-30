@@ -1070,7 +1070,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         warnings.append(substituted)
         how = f"substitute: longest set ({how})"
     card, card_fixes = apply_card_overrides(card, req, chosen)
-    if card and req.get("auto_renumber", True):          # sanity.renumber_holes: OSM hole order != card order
+    if card and req.get("auto_renumber", True) and not req.get("hole_renumber"):          # sanity.renumber_holes: OSM hole order != card order
         fc, renum = sanity.renumber_holes(fc, card)
         if renum:
             stages["renumber"] = "ok: OSM hole refs -> card holes " + ", ".join(f"{a}->{b}" for a, b in sorted(

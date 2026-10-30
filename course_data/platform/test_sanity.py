@@ -102,6 +102,7 @@ def test_walkback_capped_before_green_road_building():
         fc = _hole_fc([obstacle])
         tp = dict(holes={})
         tee_at(tp, "1", "Black", 0, -60)
+        tee_at(tp, "1", "Red", 0, 100, method="tee_centroid")           # a second set on the hole
         notes = sanity.guard_tees(tp, fc)
         r = tp["holes"]["1"]["tees"]["Black"]
         y = yards_of(r)[1]
