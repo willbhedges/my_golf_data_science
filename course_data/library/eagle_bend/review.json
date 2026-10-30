@@ -1,0 +1,291 @@
+{
+ "course_review/1": {
+  "slug": "eagle_bend",
+  "reviewer": "agent",
+  "card_source": "OpenGolfAPI (api.opengolfapi.org course c0b97f70) + OSM golf=hole refs/pars/lengths; golfify sets re-ordered (course_data/library/eagle_bend/card_fix.json)",
+  "card": {
+   "Gold": [
+    411,
+    362,
+    574,
+    163,
+    383,
+    460,
+    560,
+    172,
+    430,
+    417,
+    385,
+    165,
+    610,
+    429,
+    340,
+    448,
+    196,
+    547
+   ],
+   "Blue": [
+    397,
+    344,
+    545,
+    140,
+    368,
+    439,
+    540,
+    147,
+    410,
+    396,
+    366,
+    139,
+    527,
+    368,
+    320,
+    430,
+    175,
+    491
+   ],
+   "par": [
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    4,
+    4,
+    3,
+    5
+   ]
+  },
+  "summary": "golfify card has holes 2-9 and 11-18 swapped and the 547-yd hole as par 4 (par 71). OSM ways and OpenGolfAPI agree on the true order (par 72, Gold 7052, Blue 6542). Only holes 1 and 10 are right on the page. Fix: rebuild with request \"scorecard\": \"course_data/library/eagle_bend/card_fix.json\" (no geometry supplement needed; OSM has 18 hole ways, 20 greens, 74 tees).",
+  "publish_as_is": false,
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Page card matches the corrected card (par 4, Gold 411, Blue 397); tees on/near the OSM boxes."
+   },
+   {
+    "n": 2,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 385, Blue 366. True card (OSM hole way ref 2: par 4, OpenGolfAPI): par 4, Gold 362, Blue 344. Geometry (OSM hole 2 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong.",
+    "fix": {
+     "par": 4,
+     "yards": 362,
+     "yards_by_set": {
+      "Gold": 362,
+      "Blue": 344
+     }
+    }
+   },
+   {
+    "n": 3,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 3, Gold 165, Blue 139. True card (OSM hole way ref 3: par 5, OpenGolfAPI): par 5, Gold 574, Blue 545. Geometry (OSM hole 3 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Par differs, so the hole is solved as the wrong kind of hole.",
+    "fix": {
+     "par": 5,
+     "yards": 574,
+     "yards_by_set": {
+      "Gold": 574,
+      "Blue": 545
+     }
+    }
+   },
+   {
+    "n": 4,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 5, Gold 542, Blue 527. True card (OSM hole way ref 4: par 3, OpenGolfAPI): par 3, Gold 163, Blue 140. Geometry (OSM hole 4 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Par differs, so the hole is solved as the wrong kind of hole.",
+    "fix": {
+     "par": 3,
+     "yards": 163,
+     "yards_by_set": {
+      "Gold": 163,
+      "Blue": 140
+     }
+    }
+   },
+   {
+    "n": 5,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 429, Blue 368. True card (OSM hole way ref 5: par 4, OpenGolfAPI): par 4, Gold 383, Blue 368. Geometry (OSM hole 5 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Blue is already right on the page (368); Gold is wrong.",
+    "fix": {
+     "par": 4,
+     "yards": 383,
+     "yards_by_set": {
+      "Gold": 383,
+      "Blue": 368
+     }
+    }
+   },
+   {
+    "n": 6,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 340, Blue 320. True card (OSM hole way ref 6: par 4, OpenGolfAPI): par 4, Gold 460, Blue 439. Geometry (OSM hole 6 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong.",
+    "fix": {
+     "par": 4,
+     "yards": 460,
+     "yards_by_set": {
+      "Gold": 460,
+      "Blue": 439
+     }
+    }
+   },
+   {
+    "n": 7,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 448, Blue 430. True card (OSM hole way ref 7: par 5, OpenGolfAPI): par 5, Gold 560, Blue 540. Geometry (OSM hole 7 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Par differs, so the hole is solved as the wrong kind of hole.",
+    "fix": {
+     "par": 5,
+     "yards": 560,
+     "yards_by_set": {
+      "Gold": 560,
+      "Blue": 540
+     }
+    }
+   },
+   {
+    "n": 8,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 3, Gold 196, Blue 175. True card (OSM hole way ref 8: par 3, OpenGolfAPI): par 3, Gold 172, Blue 147. Geometry (OSM hole 8 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong.",
+    "fix": {
+     "par": 3,
+     "yards": 172,
+     "yards_by_set": {
+      "Gold": 172,
+      "Blue": 147
+     }
+    }
+   },
+   {
+    "n": 9,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 547, Blue 491. True card (OSM hole way ref 9: par 4, OpenGolfAPI): par 4, Gold 430, Blue 410. Geometry (OSM hole 9 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong.",
+    "fix": {
+     "par": 4,
+     "yards": 430,
+     "yards_by_set": {
+      "Gold": 430,
+      "Blue": 410
+     }
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Page card matches the corrected card (par 4, Gold 417, Blue 396); tees on/near the OSM boxes. Gold tee is a lidar pad 13 yds from the nearest OSM box; acceptable."
+   },
+   {
+    "n": 11,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 362, Blue 344. True card (OSM hole way ref 11: par 4, OpenGolfAPI): par 4, Gold 385, Blue 366. Geometry (OSM hole 11 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong.",
+    "fix": {
+     "par": 4,
+     "yards": 385,
+     "yards_by_set": {
+      "Gold": 385,
+      "Blue": 366
+     }
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 5, Gold 574, Blue 545. True card (OSM hole way ref 12: par 3, OpenGolfAPI): par 3, Gold 165, Blue 139. Geometry (OSM hole 12 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Par differs, so the hole is solved as the wrong kind of hole.",
+    "fix": {
+     "par": 3,
+     "yards": 165,
+     "yards_by_set": {
+      "Gold": 165,
+      "Blue": 139
+     }
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 3, Gold 163, Blue 140. True card (OSM hole way ref 13: par 5, OpenGolfAPI): par 5, Gold 610, Blue 527. Geometry (OSM hole 13 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Par differs, so the hole is solved as the wrong kind of hole.",
+    "fix": {
+     "par": 5,
+     "yards": 610,
+     "yards_by_set": {
+      "Gold": 610,
+      "Blue": 527
+     }
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 383, Blue 368. True card (OSM hole way ref 14: par 4, OpenGolfAPI): par 4, Gold 429, Blue 368. Geometry (OSM hole 14 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Blue is already right on the page (368); Gold is wrong.",
+    "fix": {
+     "par": 4,
+     "yards": 429,
+     "yards_by_set": {
+      "Gold": 429,
+      "Blue": 368
+     }
+    }
+   },
+   {
+    "n": 15,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 460, Blue 439. True card (OSM hole way ref 15: par 4, OpenGolfAPI): par 4, Gold 340, Blue 320. Geometry (OSM hole 15 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong.",
+    "fix": {
+     "par": 4,
+     "yards": 340,
+     "yards_by_set": {
+      "Gold": 340,
+      "Blue": 320
+     }
+    }
+   },
+   {
+    "n": 16,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 5, Gold 560, Blue 540. True card (OSM hole way ref 16: par 4, OpenGolfAPI): par 4, Gold 448, Blue 430. Geometry (OSM hole 16 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Par differs, so the hole is solved as the wrong kind of hole.",
+    "fix": {
+     "par": 4,
+     "yards": 448,
+     "yards_by_set": {
+      "Gold": 448,
+      "Blue": 430
+     }
+    }
+   },
+   {
+    "n": 17,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 3, Gold 172, Blue 147. True card (OSM hole way ref 17: par 3, OpenGolfAPI): par 3, Gold 196, Blue 175. Geometry (OSM hole 17 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong.",
+    "fix": {
+     "par": 3,
+     "yards": 196,
+     "yards_by_set": {
+      "Gold": 196,
+      "Blue": 175
+     }
+    }
+   },
+   {
+    "n": 18,
+    "verdict": "wrong par or yardage",
+    "notes": "Page uses golfify's scrambled card: par 4, Gold 430, Blue 410. True card (OSM hole way ref 18: par 5, OpenGolfAPI): par 5, Gold 547, Blue 491. Geometry (OSM hole 18 green/line) is right; tees were walked back or onto lidar pads to force the wrong yardage, so the tee markers and every pick on this hole are wrong. Par differs, so the hole is solved as the wrong kind of hole.",
+    "fix": {
+     "par": 5,
+     "yards": 547,
+     "yards_by_set": {
+      "Gold": 547,
+      "Blue": 491
+     }
+    }
+   }
+  ]
+ }
+}

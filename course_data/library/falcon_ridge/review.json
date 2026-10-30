@@ -1,0 +1,179 @@
+{
+ "course_review/1": {
+  "slug": "falcon_ridge",
+  "reviewer": "agent",
+  "card_source": "golfify (pars and hole order match the OSM hole ways; OpenGolfAPI back-nine yardages differ and look like an older card)",
+  "card": {
+   "Black": [
+    375,
+    419,
+    370,
+    486,
+    172,
+    499,
+    186,
+    513,
+    415,
+    417,
+    568,
+    169,
+    436,
+    187,
+    529,
+    161,
+    517,
+    401
+   ],
+   "Blue": [
+    338,
+    383,
+    348,
+    450,
+    151,
+    477,
+    161,
+    500,
+    387,
+    364,
+    548,
+    137,
+    409,
+    153,
+    499,
+    153,
+    498,
+    373
+   ],
+   "par": [
+    4,
+    4,
+    4,
+    4,
+    3,
+    5,
+    3,
+    5,
+    4,
+    4,
+    5,
+    3,
+    4,
+    3,
+    5,
+    3,
+    5,
+    4
+   ]
+  },
+  "summary": "Routing, pars and card are right. Only two Blue tees are wrong (11, 18). Holes 6-9 and 12-15 have no OSM fairway/green, so those CHECKs are mostly spurious (picks land on visible fairway; the estimated par-3 greens sit on the real greens). osm_supplement.geojson adds blue-tagged tee boxes for 11 and 18.",
+  "publish_as_is": false,
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "OK: tees on OSM boxes, OSM green, fairway mapped."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "OK."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "OK: Blue tee on an OSM tee point, 340 vs card 348 (within 10)."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "OK."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "OK: par 3 box on the OSM green."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "OK (tee uncertain): no OSM fairway/green; the line follows the visible fairway and the green is the OSM way end. Both tees sit in rough at the back of the tee area (a box is visible ~40-60 yds ahead), but the straight, wide fairway makes the Driver pick insensitive. 'Lands in rough' CHECK is because no fairway is mapped, not a bad landing."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "OK: estimated green (OSM way end) lies on the real green (the green extends further front-left). Tee on a lidar pad, length matches card."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "OK: Black tee on a visible box; measured 500 vs card 513 (Black tee may be ~10 yds further back). Fairway visible but unmapped, so the 'rough' CHECK is spurious."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "OK: tees on visible boxes, green visible at ~410. Fairway unmapped."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "OK."
+   },
+   {
+    "n": 11,
+    "verdict": "wrong tee position",
+    "notes": "Black OK. Blue tee WRONG: the lidar pad is ~45 yds right of the line in trees beside houses. Move it onto the Black tee -> green line, 20 yds ahead of Black.",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.9494415,
+       -94.8259402
+      ]
+     }
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "OK: estimated green on the real green (green extends further back-right)."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "OK: tees on visible boxes, pond left of the corridor 100-200 yds (mapped water). Fairway unmapped."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "OK: estimated green on the real green."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "OK: tee on a visible box. Fairway unmapped."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "OK."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "OK: Black tee sits on the cart path ~15 yds right of the box; pond in front (mapped). Minor."
+   },
+   {
+    "n": 18,
+    "verdict": "wrong tee position",
+    "notes": "Black OK (OSM box). Blue tee WRONG: placed in the maintenance/parking lot east of the tee. Move it onto the Black tee -> green line, 28 yds ahead of Black (OSM box 1392245465).",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.946047,
+       -94.819982
+      ]
+     }
+    }
+   }
+  ]
+ }
+}
