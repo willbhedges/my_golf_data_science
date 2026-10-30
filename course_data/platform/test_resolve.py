@@ -172,3 +172,18 @@ def test_closed_course(monkeypatch):
     monkeypatch.setattr(rs, "boundary", lambda *a: pytest.fail("a closed course must not fetch its boundary"))
     res = rs.resolve("Deer Creek Golf Club", "KS", town="Overland Park", with_towns=False)
     assert res["status"] == "closed" and "4253531" in res["closed"] and "bbox" not in res
+
+
+def test_partial_name_in_another_town_is_not_a_candidate():
+    """Longview Lake GC (Lee's Summit MO) rev 1: the word fallback "lake" matched three other MO courses and resolve
+    said "ambiguous" between them; a partial match in another town is another course -> not_found."""
+    cands = [rs.candidate(el("way", 385067034, "Mozingo Lake Golf Course", 40.35, -94.82), holes=18, town="Maryville"),
+             rs.candidate(el("way", 393080132, "Lake Valley Golf Club", 38.0, -92.7), holes=18, town="Camdenton"),
+             rs.candidate(el("way", 389825787, "Meadow Lake Acres Country Club", 38.7, -92.0), holes=18,
+                          town="New Bloomfield")]
+    status, best, _ = rs.choose([dict(c) for c in cands], "Longview Lake Golf Course", town="Lee's Summit")
+    assert status == "not_found" and best is None
+    # the full name in another town (OSM's addr:city is the post town) still resolves
+    arb = rs.candidate(el("way", 9, "Fred Arbanas Golf Course", 38.91, -94.47), holes=18, town="Kansas City")
+    status, best, _ = rs.choose([arb], "Fred Arbanas Golf Course", town="Lee's Summit")
+    assert status == "ok" and best["osm"]["id"] == 9

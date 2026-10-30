@@ -36,6 +36,7 @@ sys.path[:0] = [HERE, os.path.dirname(HERE)]
 import platform_common as pc  # noqa: E402
 
 AMBIGUOUS_MARGIN = 0.12        # second-best score this close to the best -> ask the golfer
+PARTIAL_OTHER_TOWN = 0.75      # below this name similarity, a candidate in another town than the request's is dropped
 # OSM keeps closed courses as leisure=golf_course with the name prefixed ("Former Deer Creek Golf Club", Overland
 # Park KS, closed 2022) or lifecycle tags; the package then fails deep in the build with "no holes built" after
 # three retries, so resolve reports them as status "closed" instead. ("Old" is NOT a marker: Old Kinderhook.)
@@ -141,6 +142,18 @@ def choose(cands, want, town=None, osm=None, near=None):
     """-> (status, best | None, ranked). status: ok | ambiguous | not_found."""
     ranked = rank(cands, want, town, osm, near)
     ranked = [c for c in ranked if c["score"] > 0.35]
+    if town and not osm:
+        # a PARTIAL name match in another town is another course: "Longview Lake Golf Course" (Lee's Summit) found
+        # nothing by its full name, the one-word fallback "lake" found Mozingo Lake / Lake Valley / Meadow Lake in
+        # three other towns and the request came back "ambiguous" between three wrong courses
+        # (unless it is close to the request's "near" point: a reverse-geocoded town can be the county, The Oaks MO)
+        nr = _near(near)
+
+        def close(c):
+            return bool(nr and c.get("center") and
+                        pc.haversine_m(nr[0], nr[1], c["center"][1], c["center"][0]) < 15000)
+        ranked = [c for c in ranked if close(c) or not (c.get("town") and pc.core_name(town) != pc.core_name(c["town"])
+                                                        and name_similarity(want, c["name"]) < PARTIAL_OTHER_TOWN)]
     if not osm and any(c.get("name") and name_similarity(want, c["name"]) >= 0.35 for c in ranked):
         # an unnamed course only wins when nothing named matches (The Oaks MO: the resort's unnamed
         # practice / par-3 polygon outscored "The Oaks" on the near + town bonuses)
