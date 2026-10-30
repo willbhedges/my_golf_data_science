@@ -1,0 +1,170 @@
+{
+ "course_review/1": {
+  "slug": "st_andrews_op",
+  "reviewer": "agent",
+  "card_source": "golfify https://www.golfify.io/courses/st-andrews-golf-club-overland-park (re-fetched 2026-10-30, course_data/research/web/rv09_cards/10.txt: identical Black 6362 / Blue 5986, par 71; OSM hole dist tags agree on 17/18 holes)",
+  "card": {
+   "Black": [
+    560,
+    354,
+    343,
+    161,
+    330,
+    178,
+    524,
+    384,
+    386,
+    577,
+    384,
+    168,
+    328,
+    178,
+    498,
+    419,
+    193,
+    397
+   ],
+   "Blue": [
+    518,
+    332,
+    313,
+    155,
+    323,
+    158,
+    503,
+    373,
+    368,
+    541,
+    358,
+    155,
+    304,
+    158,
+    474,
+    391,
+    174,
+    388
+   ],
+   "par": [
+    5,
+    4,
+    4,
+    3,
+    4,
+    3,
+    5,
+    4,
+    4,
+    5,
+    4,
+    3,
+    4,
+    3,
+    5,
+    4,
+    3,
+    4
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Routing and tees fine. Dogleg-left par 4: the calm pick (4-wood aimed 40 yds left, cutting the corner) lands just off the fairway at the corner by the left trees for Blue (CHECK aim, 10 yds from fairway); Black passes. Marginal aim, not a geometry error."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "Black tee on the back OSM box measures 378 vs 386 on the card (within 10)."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Black (577) on a lidar pad 36 yds behind the Blue box (541), on a mowed area between the cart paths south-west of the 9th green, behind a tree cluster. OSM maps only 4 boxes for 10 (longest 539). Plausibly the real unmapped back tee; uncertain, not moved."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 15,
+    "verdict": "bad pick",
+    "notes": "Routing/tees fine. Black calm pick 4-wood aimed 40 yds left lands 286 yds out at the inside of the dogleg-left corner, at the cart path with trees left/long (51% trees/water/OB in the pattern). A straighter, shorter club (long iron / hybrid down the right-centre, as the Blue set picks) is the sensible play. Pick is a model output; flagged, no geometry fix."
+   },
+   {
+    "n": 16,
+    "verdict": "wrong tee position",
+    "notes": "Black tee was walked back 28 yds from the Blue box to match the 419 card yardage, which puts it on the 15th green (11 m from the 15th green centre). There is no tee box behind the Blue box on the photo (water left, cart path and 15th green behind). Move the Black tee to the back of the rearmost OSM box (Blue box, ~393 yds); the card's 419 cannot be found on the ground.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       38.87844,
+       -94.70809
+      ]
+     },
+     "yards": 393
+    }
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "OSM routing, tee boxes and green match the photo; card yardage within 10 on both solved sets."
+   }
+  ]
+ }
+}
