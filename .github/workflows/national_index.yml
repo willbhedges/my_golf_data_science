@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: national-index-${{ github.ref }}
+  group: national-index-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
@@ -43,7 +43,7 @@ jobs:
           import national_index as ni
           q = json.load(open(sys.argv[1]))
           states = [s.upper() for s in (q.get("states") or ni.STATES)]
-          n = min(8, len(states))
+          n = min(12, len(states))
           chunks = [" ".join(states[i::n]) for i in range(n)]
           with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
               fh.write("chunks=" + json.dumps(chunks) + "\n")
@@ -57,7 +57,7 @@ jobs:
     timeout-minutes: 150
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 12
       matrix:
         chunk: ${{ fromJSON(needs.plan.outputs.chunks) }}
     steps:

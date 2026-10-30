@@ -55,7 +55,7 @@ def log(*a):
 
 
 # ------------------------------------------------------------------------------------------------ fetch (Actions)
-def overpass(q, tries=6, timeout=900):
+def overpass(q, tries=4, timeout=700):
     last = None
     for attempt in range(tries):
         for url in OVERPASS:
@@ -76,7 +76,7 @@ def overpass(q, tries=6, timeout=900):
 
 
 def state_query(st):
-    return f"""[out:json][timeout:800][maxsize:1073741824];
+    return f"""[out:json][timeout:650][maxsize:1073741824];
 area["ISO3166-2"="US-{st}"]["admin_level"="4"]->.st;
 (way["leisure"="golf_course"](area.st); relation["leisure"="golf_course"](area.st););
 out tags center bb;
