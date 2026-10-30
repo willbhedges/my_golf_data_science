@@ -1,0 +1,184 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "colbert_hills",
+ "course": "Colbert Hills Golf Course",
+ "bbox_snwe": [
+  39.20236,
+  -96.655648,
+  39.222487,
+  -96.625692
+ ],
+ "grid": {
+  "crs": "EPSG:32614",
+  "res_m": 1.0,
+  "width": 2888,
+  "height": 2544,
+  "bounds": [
+   702254,
+   4341730,
+   705142,
+   4344274
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   702254.0,
+   0.0,
+   -1.0,
+   4344274.0
+  ],
+  "ll_bbox_wsen": [
+   -96.6577617433578,
+   39.20063049583884,
+   -96.623571103552,
+   39.22421235063002
+  ]
+ },
+ "fetched_utc": "2026-10-30T03:49:55Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_KS_South_Central_AOI_2_Manhattan_2015_LAS_2017-hag-2m-0-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 7344684,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_KS_South_Central_AOI_2_Manhattan_2015_LAS_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2015-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9996749725604975,
+   "file": "hag.tif",
+   "mb": 1.97,
+   "frac_gt_2_5m": 0.2746788108242304
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_KS_South_Central_AOI_2_Manhattan_2015_LAS_2017-dtm-2m-0-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 1835939,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_KS_South_Central_AOI_2_Manhattan_2015_LAS_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2015-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9995486637397865,
+   "mb": 4.5
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_KS_South_Central_AOI_2_Manhattan_2015_LAS_2017-classification-2m-0-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 7335860,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_KS_South_Central_AOI_2_Manhattan_2015_LAS_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2015-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_Manhattan_2006-classification-2m-2-3",
+     "when": "2006-04-09T00:00:00.000000Z",
+     "cells": 5672,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_Manhattan_2006",
+      "end_datetime": "2006-04-09T00:00:00.000000Z",
+      "start_datetime": "2006-04-09T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_Manhattan_2006-classification-2m-2-2",
+     "when": "2006-04-09T00:00:00.000000Z",
+     "cells": 12,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_Manhattan_2006",
+      "end_datetime": "2006-04-09T00:00:00.000000Z",
+      "start_datetime": "2006-04-09T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.73,
+   "counts": {
+    "0": 5528,
+    "1": 2804644,
+    "2": 4529400,
+    "9": 6604,
+    "10": 348,
+    "17": 548
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023110132"
+  ],
+  "mb": 0.5,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W099",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1836768,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.07
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 29.72,
+    "items": [
+     "ks_m_3909651_ne_14_030_20230606_20231127",
+     "ks_m_3909652_nw_14_030_20230520_20231127"
+    ],
+    "acquired": [
+     "2023-05-20",
+     "2023-06-06"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 22.63,
+    "items": [
+     "ks_m_3909652_nw_14_060_20210824",
+     "ks_m_3909651_ne_14_060_20210824"
+    ],
+    "acquired": [
+     "2021-08-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
