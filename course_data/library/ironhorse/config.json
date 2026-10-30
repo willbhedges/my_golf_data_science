@@ -1,0 +1,64 @@
+{
+ "name": "Ironhorse Golf Club",
+ "title": "Ironhorse Golf Club Caddie",
+ "auto": true,
+ "hand_checked": false,
+ "main_which": "auto",
+ "slug": "ironhorse",
+ "sub": "Leawood, KS \u00b7 automatic page \u00b7 Black 6,889 / Blue 6,375 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
+ "event": "",
+ "package": "course_data/library/ironhorse/package.json",
+ "truth_package": "course_data/library/ironhorse/package.json",
+ "tees": "Black",
+ "alt_bases": {
+  "Blue": "auto_b"
+ },
+ "sets": [
+  "Black",
+  "Blue"
+ ],
+ "colors": {
+  "Black": "#111",
+  "Blue": "#2a5bd7"
+ },
+ "days": [
+  "2026-10-31",
+  "2026-11-01"
+ ],
+ "day_labels": [
+  "Sat 10/31",
+  "Sun 11/1"
+ ],
+ "tee_hour": 9.0,
+ "temps": [
+  55,
+  65,
+  75
+ ],
+ "draws": 48,
+ "swings": 2500,
+ "forecast": "course_data/library/ironhorse/weather.json",
+ "weather_kind": "forecast",
+ "climate": {
+  "temp_lo": 55.2,
+  "temp_hi": 70.7,
+  "wind_mph": 6.7,
+  "wind_from": 135,
+  "source": "Open-Meteo hourly forecast"
+ },
+ "grid_prune": true,
+ "bases_why": "the two longest sets on the card (combination sets skipped)",
+ "request": "course_data/requests/course_page_ironhorse.json",
+ "rev": 1,
+ "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from golfify, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Black, Blue. See qa_report.md for the hole-by-hole checks.",
+ "built": "2026-10-30T03:31Z",
+ "offsets": {
+  "auto": [
+   0
+  ],
+  "auto_b": [
+   0
+  ]
+ },
+ "imagery_display": "2023-08-16"
+}
