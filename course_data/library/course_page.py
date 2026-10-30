@@ -3,6 +3,8 @@
 Request (course_data/requests/course_page_<slug>.json, schema course_page/1):
   {"name": "Swope Memorial Golf Course", "city": "Kansas City", "state": "MO",
    "near": "lat,lon" | "osm": "way/123"      (optional disambiguation),
+   "osm_supplement" / "no_osm_ok" / "website" / "scorecard" / "hole_method" ... (optional package-request data
+                                              fixes, passed through by pkgreq),
    "tees": ["Blue", "White"]                 (optional tee sets of interest; default: the two longest sets),
    "days": ["2026-11-07", "2026-11-08"]       (optional event days; default the next Saturday + Sunday),
    "tee_hour": 9.0, "slug": "...", "group": "library" | "gate", "compute": {"draws": 48, "swings": 2500},
@@ -141,8 +143,12 @@ def pkgreq(q):
          "note": f"course-page workflow, from {q['path']} (only what a golfer types: name, town, state, tees)"}
     if q.get("city"):
         r["town"] = q["city"]
-    for k in ("near", "osm", "typed_card", "yardages", "pars"):
-        if q.get(k):
+    # the package request's data fixes pass straight through (platform/package.py + fetch_package.py read them): a
+    # course OSM maps badly is fixed in its course-page request, never by hand-editing package_request.json
+    for k in ("near", "osm", "typed_card", "yardages", "pars", "scorecard", "website", "opengolfapi_id",
+              "osm_supplement", "boundary_ll", "no_osm_ok", "no_osm_course", "near_radius_m", "ignore_osm_holes",
+              "hole_method", "routing", "naip_year"):
+        if q.get(k) not in (None, "", [], {}):            # "routing": false passes too
             r[k] = q[k]
     wj(out_dir(q, "package_request.json"), r)
     print(q["slug"])

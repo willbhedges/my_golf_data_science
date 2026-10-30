@@ -165,6 +165,8 @@ def fetch(req_path):
     pc.write_json(os.path.join(raw, "course.json"), course)
     pc.log("resolve:", course["status"], course.get("name"), course.get("osm"),
            [(c["name"], c["town"], c["holes"]) for c in course["candidates"][:5]])
+    if course["status"] == "closed":
+        return slug, f"closed: {course.get('closed')} (the course has closed; nothing to build)"
     if course["status"] != "ok":
         return slug, course["status"]
     fc, summ = fetch_osm(course, raw, drop_holes=bool(req.get("ignore_osm_holes")), supplement=req.get("osm_supplement"))

@@ -21,12 +21,14 @@ golf=hole ways inside it (Overpass map_to_area + out count).
 Disambiguation (`choose`): candidates are scored on name similarity, town match, area vs node, and
 mapped holes. One clear winner -> status "ok"; several near-equal ones -> status "ambiguous" with the
 candidate list (name, town, holes, OSM id) so the golfer can pick (`town` or `osm` in the request).
+A winner OSM marks as closed ("Former ..." name, disused / end_date lifecycle tags) -> status "closed" (`closed_reason`).
 """
 import argparse
 import difflib
 import json
 import math
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +36,12 @@ sys.path[:0] = [HERE, os.path.dirname(HERE)]
 import platform_common as pc  # noqa: E402
 
 AMBIGUOUS_MARGIN = 0.12        # second-best score this close to the best -> ask the golfer
+# OSM keeps closed courses as leisure=golf_course with the name prefixed ("Former Deer Creek Golf Club", Overland
+# Park KS, closed 2022) or lifecycle tags; the package then fails deep in the build with "no holes built" after
+# three retries, so resolve reports them as status "closed" instead. ("Old" is NOT a marker: Old Kinderhook.)
+CLOSED_NAME = re.compile(r"^\s*(former|closed|defunct|abandoned|demolished)\b|\((former|closed|defunct|abandoned)\)", re.I)
+CLOSED_TAGS = ("disused:leisure", "abandoned:leisure", "demolished:leisure", "was:leisure", "end_date", "disused",
+               "abandoned")
 
 
 # ----------------------------------------------------------------------------- pure logic
@@ -68,7 +76,23 @@ def candidate(el, holes=None, town=None):
                 bbox=[b["minlon"], b["minlat"], b["maxlon"], b["maxlat"]] if b else None,
                 website=t.get("website") or t.get("contact:website") or t.get("url"),
                 tags={k: v for k, v in t.items() if k.startswith(("addr:", "name", "operator", "access",
-                                                                    "golf:", "holes", "par"))})
+                                                                    "golf:", "holes", "par")) or k in CLOSED_TAGS})
+
+
+def closed_reason(c, want=None):
+    """Why OSM says this candidate is a closed course (name prefix "Former ..." / "(closed)", or a lifecycle tag),
+    or None. A golfer who types the marker themselves ("Former X") gets no verdict from the name."""
+    name, tags = c.get("name") or "", c.get("tags") or {}
+    if CLOSED_NAME.search(name) and not (want and CLOSED_NAME.search(want)):
+        return f"OSM names it '{name}'"
+    for k in CLOSED_TAGS:
+        v = str(tags.get(k) or "").strip()
+        if not v or v.lower() == "no":
+            continue
+        if k == "end_date" and not re.match(r"^\d{4}", v):
+            continue
+        return f"OSM tag {k}={v}"
+    return None
 
 
 def _near(near):
@@ -256,7 +280,11 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
     out = dict(schema="course/1", query=dict(name=name, state=sc, town=town, osm=osm, near=near), status=status,
                candidates=[{k: c.get(k) for k in ("name", "town", "holes", "osm", "center", "score")}
                            for c in ranked])
-    if status != "ok":
+    why = closed_reason(best, name) if status == "ok" else None
+    if why:
+        # the course has closed: nothing to build (its holes are usually gone from OSM too)
+        out.update(status="closed", closed=f"{best['name']} ({best['osm']['type']}/{best['osm']['id']}): {why}")
+    if out["status"] != "ok":
         return out
     geom, b = boundary(best["osm"]["type"], best["osm"]["id"])
     if b is None and best.get("center"):

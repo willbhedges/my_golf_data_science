@@ -152,3 +152,23 @@ def test_from_near_box_and_outline():
     ring = [[-95.54, 31.97], [-95.53, 31.97], [-95.53, 31.98]]
     c = rs.from_near("X", "TX", "31.975,-95.535", boundary_ll=ring)
     assert c["boundary"]["type"] == "Polygon" and c["bbox"] == [-95.54, 31.97, -95.53, 31.98]
+
+
+def test_closed_course(monkeypatch):
+    """Deer Creek GC (Overland Park KS) closed in 2022; OSM keeps it as relation 4253531 'Former Deer Creek Golf Club'
+    with no holes: resolve says "closed" instead of letting the build fail with "no holes built" after 3 retries."""
+    former = rs.candidate(el("relation", 4253531, "Former Deer Creek Golf Club", 38.884, -94.672), holes=0,
+                          town="Overland Park")
+    assert "Former Deer Creek" in rs.closed_reason(former)
+    assert rs.closed_reason(former, "Former Deer Creek") is None          # the golfer typed the marker
+    tagged = rs.candidate(el("way", 1, "Sunset Links", 39.0, -94.6, end_date="2019-10"))
+    assert "end_date=2019-10" in rs.closed_reason(tagged)
+    for name in ("Old Kinderhook Golf Club", "Old Warson Country Club", "Formerly Known Links"):
+        assert rs.closed_reason(rs.candidate(el("way", 2, name, 38.0, -92.7))) is None
+    assert rs.closed_reason(rs.candidate(el("way", 3, "Elm Ridge", 38.0, -92.7, disused="no"))) is None
+    monkeypatch.setattr(rs, "search", lambda *a, **k: [el("relation", 4253531, "Former Deer Creek Golf Club",
+                                                           38.884, -94.672)])
+    monkeypatch.setattr(rs, "hole_counts", lambda els: {})
+    monkeypatch.setattr(rs, "boundary", lambda *a: pytest.fail("a closed course must not fetch its boundary"))
+    res = rs.resolve("Deer Creek Golf Club", "KS", town="Overland Park", with_towns=False)
+    assert res["status"] == "closed" and "4253531" in res["closed"] and "bbox" not in res

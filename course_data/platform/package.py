@@ -725,6 +725,14 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, 
         return fc, {}
 
 
+def ss_scene(slug):
+    try:
+        import stage_select as ss
+        return ss.load_scene(slug) is not None
+    except Exception:                                            # noqa: BLE001
+        return False
+
+
 def find_local_card(course):
     """A card already in the repo for this OSM course (tees/scorecard.json for Spirit Hollow)."""
     for p in glob.glob(os.path.join(CD, "tees", "*scorecard*.json")) + glob.glob(os.path.join(CD, "tees", "*", "scorecard.json")):
@@ -856,7 +864,10 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     if joint is not None and str(joint.get("method", "")).startswith("tees/localize"):
         stages["tees"] = f"ok: {joint['method']} for {len(card_sets)} sets; lidar pads: {pad_status}"
     if not built or not any(built.values()):
-        raise SystemExit("no holes built (no golf=hole ways and no tee/green pairs)")
+        n = {k: sum((f.get("properties") or {}).get("golf") == k for f in fc["features"]) for k in ("hole", "green", "tee")}
+        raise SystemExit(f"no holes built (no golf=hole ways and no tee/green pairs: OSM maps {n['hole']} holes, "
+                         f"{n['green']} greens, {n['tee']} tees; perception scene {'yes' if ss_scene(slug) else 'no'}). "
+                         "Fix the data: map the course in OSM, add an osm_supplement, or build a perception scene")
     back = max(built, key=lambda s: sum(h["length"] for h in built[s].values()))
     chosen_key = chosen if chosen in built else back
     base = built[back]

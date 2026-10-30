@@ -57,11 +57,18 @@ jobs:
           echo "OUT=$O" >> "$GITHUB_ENV"; echo "S=$S" >> "$GITHUB_ENV"
           mkdir -p "$O"
           python3 course_data/library/course_page.py pkgreq "$R"
-          # Overpass / Nominatim rate limits come back as "not_found": retry with a back-off
+          # Overpass / Nominatim rate limits come back as "not_found": retry with a back-off. Each attempt is capped
+          # (an Overpass outage made one attempt run > 1 h: Fred Arbanas hit the 150-min job timeout, so nothing was
+          # recorded), no attempt starts after 70 min, and failures a retry cannot fix stop the loop at once.
+          T0=$SECONDS
           for t in 1 2 3; do
-            python course_data/platform/package.py run "$O/package_request.json" 2>&1 | tee /tmp/pkg_v0.log || true
+            set +e
+            timeout 40m python course_data/platform/package.py run "$O/package_request.json" 2>&1 | tee /tmp/pkg_v0.log
+            rc=${PIPESTATUS[0]}; set -e
+            [ "$rc" = 124 ] && echo "package attempt $t: timed out after 40 min (Overpass endpoints down or at capacity?)" | tee -a /tmp/pkg_v0.log
             [ -f course_data/packages/$S/package.json ] && break
-            grep -q "ambiguous" /tmp/pkg_v0.log && break
+            grep -qE "ambiguous|: closed: |no holes built" /tmp/pkg_v0.log && break
+            [ $((SECONDS - T0)) -gt 4200 ] && break
             sleep $((t * 90))
           done
           if [ ! -f course_data/packages/$S/package.json ]; then
