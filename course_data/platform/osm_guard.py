@@ -38,8 +38,6 @@ MIRRORS = list(pc.OVERPASS) + ["https://maps.mail.ru/osm/tools/overpass/api/inte
 KINDS = ("hole", "green", "tee", "pin", "bunker", "fairway")
 REMARK_BAD = re.compile(r"runtime error|timed out|timeout|out of memory|maxsize|dispatcher|too busy|rate_limited",
                         re.I)
-STRUCTURE_DATA = os.path.join(pc.COURSE_DATA, "structure", "data")
-LIBRARY = os.path.join(pc.COURSE_DATA, "library")
 DEADLINE_S = 900          # the whole OSM step; Longview Lake once spent the job clock in pc.overpass retries
 PASS_SLEEP_S = 30
 
@@ -137,28 +135,41 @@ def _osm_key(course):
     return (o.get("type"), o.get("id")) if o.get("id") else None
 
 
-def snapshot_paths(course=None, slug=None, packages=None, library=None, structure=None):
-    """Candidate cached snapshot files for a course: [(kind, geojson path, summary path or None)]."""
-    packages, library, structure = packages or pc.PACKAGES, library or LIBRARY, structure or STRUCTURE_DATA
+# (kind, glob relative to course_data) of every OSM cache the repo keeps; course.json / summary.json sit beside the
+# file (or in its raw/ dir) and give the OSM course id to match on; otherwise the directory name is the slug
+SNAPSHOT_GLOBS = (("structure", "structure/data/*/osm.geojson.gz"),
+                  ("zero_tap", "zero_tap/*/*/osm.geojson.gz"),
+                  ("generalize", "generalize/courses/*/osm_golf.geojson"),
+                  ("package", "packages/*/raw/osm.geojson"),
+                  ("library", "library/*/raw/osm.geojson"),
+                  ("library", "library/gate/*/raw/osm.geojson"))
+
+
+def _snapshot_key(path):
+    """-> (OSM key or None, slug-like dir name, summary path or None) for a cached snapshot file."""
+    d = os.path.dirname(path)
+    name = os.path.basename(os.path.dirname(d)) if os.path.basename(d) == "raw" else os.path.basename(d)
+    cj = pc.read_json(os.path.join(d, "course.json"))
+    sp = os.path.join(d, "summary.json")
+    summ = pc.read_json(sp) if os.path.exists(sp) else None
+    key = _osm_key(cj)
+    if not key and summ and (summ.get("course") or {}).get("osm_id"):
+        key = (summ["course"].get("osm_type"), summ["course"].get("osm_id"))
+    return key, name, (sp if summ else None), (cj or {}).get("state")
+
+
+def snapshot_paths(course=None, slug=None, roots=None):
+    """Candidate cached snapshot files for a course: [(kind, geojson path, summary path or None)].
+    roots: {kind: glob} to override SNAPSHOT_GLOBS (tests)."""
     key = _osm_key(course)
+    globs = roots.items() if roots else [(k, os.path.join(pc.COURSE_DATA, g)) for k, g in SNAPSHOT_GLOBS]
     out = []
-    for cj in sorted(glob.glob(os.path.join(structure, "*", "course.json"))):
-        d = os.path.dirname(cj)
-        sc = pc.read_json(cj) or {}
-        if (key and _osm_key(sc) == key) or (slug and os.path.basename(d) in (slug, f"{slug}_{sc.get('state', '')}".lower())):
-            p = os.path.join(d, "osm.geojson.gz")
-            if os.path.exists(p):
-                out.append(("structure", p, None))
-    for kind, base in (("package", packages), ("library", library)):
-        for d in glob.glob(os.path.join(base, "*", "raw")):
-            s = os.path.basename(os.path.dirname(d))
-            cj = pc.read_json(os.path.join(d, "course.json")) or {}
-            if not ((key and _osm_key(cj) == key) or (slug and s == slug)):
-                continue
-            for name in ("osm.geojson", "osm.geojson.gz"):
-                p = os.path.join(d, name)
-                if os.path.exists(p):
-                    out.append((kind, p, os.path.join(d, "summary.json")))
+    for kind, g in globs:
+        for p in sorted(glob.glob(g)):
+            k, name, sp, st = _snapshot_key(p)
+            names = {slug, f"{slug}_{st}".lower(), f"gate_{slug}"} if slug else set()
+            if (key and k == key) or (not (key and k) and name in names):
+                out.append((kind, p, sp))
     return out
 
 

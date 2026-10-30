@@ -169,9 +169,9 @@ def test_snapshot_discovery(tmp_path):
     (pk / "course.json").write_text(json.dumps(dict(osm=dict(type="relation", id=4249741))))
     (pk / "summary.json").write_text(json.dumps(dict(fetched_utc="2026-10-30T00:11:10Z")))
     (pk / "osm.geojson").write_text(json.dumps(fc_of(response(holes=0, pins=0))))
-    snaps = og.load_snapshots(dict(osm=dict(type="relation", id=4249741)), "creekmoor",
-                              packages=str(tmp_path / "packages"), library=str(tmp_path / "lib"),
-                              structure=str(tmp_path / "structure"))
+    roots = dict(structure=str(tmp_path / "structure" / "*" / "osm.geojson.gz"),
+                 package=str(tmp_path / "packages" / "*" / "raw" / "osm.geojson"))
+    snaps = og.load_snapshots(dict(osm=dict(type="relation", id=4249741)), "creekmoor", roots=roots)
     assert [s["kind"] for s in snaps] == ["package", "structure"]        # newest first
     assert og.reference(snaps)["kind"] == "structure"                    # the thin package fetch is no reference
 
