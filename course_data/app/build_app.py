@@ -45,6 +45,7 @@ ROOT = os.path.dirname(CD)
 PKGS = os.path.join(CD, "packages")
 TEMPLATE = os.path.join(HERE, "app_template.html")
 POOLS = os.path.join(HERE, "pools")
+LIBPLAY_JS = os.path.join(HERE, "lib_play.js")
 ENGINE_JS = [os.path.join(HERE, "typed_card.js"), os.path.join(HERE, "confirm_engine.js"), os.path.join(HERE, "shared_store.js")]
 ENGINE_JS.append(os.path.join(HERE, "course_index.js"))   # national index + "Request this course" (course_index.py)
 COURSES_DIR = os.path.join(CD, "courses")
@@ -932,6 +933,17 @@ def main():
                   wind_axes=dict(speeds=SPEEDS, dirs=DIRS, cells=CELLS), player=PLAYER,
                   catalog=catalog([c["name"].lower() for c in courses]), library=library(courses), courses=courses)
     bundle["catalog"].pop("upcoming", None)              # the library carries those courses now
+    log("library play records (out/lib/<slug>.json, fetched by the page; build_library_play.py)")
+    import build_library_play
+    lib_dir = os.path.join(os.path.dirname(a.out), "lib")
+    played = build_library_play.build(lib_dir, log=log)
+    for e in bundle["library"]["entries"]:
+        x = played.get(e.get("id")) if not e.get("app") else None
+        if x:
+            e["lib"] = x["file"]
+            e["checks"] = x["check_holes"]
+            e["holes"] = x["holes"]
+    log(f"  {len(played)} library courses playable, {sum(x['bytes'] for x in played.values()) / 1e6:.1f} MB in {os.path.relpath(lib_dir, ROOT)}")
     if a.json:
         os.makedirs(a.json, exist_ok=True)
         for c in courses:
@@ -942,7 +954,8 @@ def main():
     import course_index                                   # national index (course_index.py, SCHEMA.md)
     engine, natidx = course_index.inject(engine)
     log(f"  national index: {natidx['n']} courses, {len(natidx['b64']) / 1e6:.2f} MB" if natidx else "  national index: none yet")
-    html = open(TEMPLATE).read().replace("/*__ENGINE__*/", engine).replace("/*__DATA__*/null", blob)
+    libplay = open(LIBPLAY_JS).read().replace("</", "<\\/")
+    html = open(TEMPLATE).read().replace("/*__ENGINE__*/", engine).replace("/*__LIBPLAY__*/", libplay).replace("/*__DATA__*/null", blob)
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w") as fh:
         fh.write(html)

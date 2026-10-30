@@ -212,6 +212,8 @@ st.report = null; st.libmore = 0; st.rmsg = null; st.cstep = null;
 /* deep links: #c=<course>&t=<tee set>&h=<hole no> (also used by the tests) */
 function readHash(){
   const m = new URLSearchParams((location.hash || "").replace(/^#/, ""));
+  const lb = m.get("lib"); if (lb && D.library.entries.some(e => e.lib && e.id === lb)) { const lp = LP(); lp.slug = lb; st.screen = "lib";
+    if (m.get("t")) lp.set[lb] = m.get("t"); if (m.get("h")) lp.want = {slug: lb, h: +m.get("h")}; return; }
   const c = m.get("c"); if (!c || !D.courses.some(x => x.id === c)) return;
   st.course = c; st.screen = m.get("h") ? "hole" : "tees";
   if (m.get("t")) st.set[c] = m.get("t");
@@ -223,7 +225,8 @@ function save(){
   try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
   try {
     const C = cur(); let h = "";
-    if (C && st.screen !== "game") { h = "#c=" + C.id + "&t=" + encodeURIComponent(curSet(C)); if (st.screen === "hole") h += "&h=" + C.holes[holeIdx(C)].no + (st.view && st.view !== "land" ? "&v=" + st.view : ""); }
+    if (st.screen === "lib" && st.lp && st.lp.slug) { const L = LIBD[st.lp.slug]; h = "#lib=" + st.lp.slug + (L ? "&t=" + encodeURIComponent(lpSet(L)) + "&h=" + L.holes[lpIdx(L)].no : ""); }
+    if (C && st.screen !== "game" && st.screen !== "lib") { h = "#c=" + C.id + "&t=" + encodeURIComponent(curSet(C)); if (st.screen === "hole") h += "&h=" + C.holes[holeIdx(C)].no + (st.view && st.view !== "land" ? "&v=" + st.view : ""); }
     history.replaceState(null, "", h || location.pathname + location.search);
   } catch (e) {}
 }
@@ -637,6 +640,7 @@ const statusBadge = k => { const s = STATUS[k] || STATUS.none; return `<span cla
 let LSTAT = null;
 /* a library entry's live status: app courses re-derive it from their hole-map session (shared answers included) */
 function libStatus(e){
+  if (e.lib) return lpStatus(e);
   if (e.app) { const C = D.courses.find(c => c.id === e.app);
     if (C && C.mapping === "hand") return {k: "hand"};
     const S = C && sess(C);
@@ -651,9 +655,9 @@ function libMatches(){
   const hay = e => `${e.name} ${e.town || ""} ${e.state || ""} ${(e.event || "")}`.toLowerCase();
   const base = LIB.map((e, i) => ({e, i, s: stt[i]})).filter(x => (sf === "all" || x.e.state === sf) && words.every(w => hay(x.e).includes(w)));
   const counts = {all: base.length, app: 0, hand: 0, auto: 0, confirm: 0, none: 0};
-  for (const x of base) { counts[x.s.k] = (counts[x.s.k] || 0) + 1; if (x.e.app) counts.app++; }
-  const rows = base.filter(x => f === "all" || (f === "app" ? !!x.e.app : x.s.k === f));
-  const rank = x => x.e.app ? 0 : x.e.link ? 1 : x.s.k !== "none" ? 2 : x.e.src === "package" || x.e.src === "library" ? 3 : 4;
+  for (const x of base) { counts[x.s.k] = (counts[x.s.k] || 0) + 1; if (x.e.app || x.e.lib) counts.app++; }
+  const rows = base.filter(x => f === "all" || (f === "app" ? !!(x.e.app || x.e.lib) : x.s.k === f));
+  const rank = x => x.e.app || x.e.lib ? 0 : x.e.link ? 1 : x.s.k !== "none" ? 2 : x.e.src === "package" || x.e.src === "library" ? 3 : 4;
   rows.sort((a, b) => rank(a) - rank(b) || a.e.name.localeCompare(b.e.name));
   return {rows, counts};
 }
@@ -663,17 +667,18 @@ function teeRow(tees, max){
   return `<div class="teerow">${shown.map(t => `<span${t[3] === 0 ? ` style="opacity:.55" title="Not planned yet"` : ""}><i style="background:${esc(t[1] || "#888")}"></i>${esc(t[0])}${t[2] ? " " + Number(t[2]).toLocaleString() : ""}${t[3] === 0 ? "*" : ""}</span>`).join("")}${tees.length > shown.length ? `<span>+${tees.length - shown.length} more</span>` : ""}${shown.some(t => t[3] === 0) ? `<span>* not planned yet</span>` : ""}</div>`;
 }
 function libCard(x){
-  const e = x.e, s = x.s, nRep = e.app ? STORE.reports(e.app).length : 0;
+  const e = x.e, s = x.s, nRep = e.app || e.lib ? STORE.reports(e.app || e.id).length : 0;
   const shared = s.fixed ? `<span class="badge shared" title="Holes golfers confirmed or fixed: saved for everyone">${s.fixed} of ${s.n} holes confirmed${s.golfers ? ` by ${s.golfers} golfer${s.golfers === 1 ? "" : "s"}` : ""}</span>` : "";
   const acts = [];
   if (e.app) acts.push(`<button class="btn primary" data-course="${esc(e.app)}">Play this course ›</button>`);
+  else if (e.lib) acts.push(`<button class="btn primary" data-libplay="${esc(e.id)}">Play this course ›</button>`);
   if (e.link) acts.push(`<a class="btn${e.app ? "" : " primary"}" href="${esc(e.link)}" target="_blank" rel="noopener" data-link="${esc(e.id || "")}">${e.app ? "Full wind page ↗" : "Open its wind page ↗"}</a>`);
   return `<article class="lcard ${s.k === "none" ? "none soon" : ""}" data-lib="${x.i}" data-status="${s.k}">
       <div class="spread" style="align-items:flex-start"><h3 class="name">${esc(e.name)}</h3>${statusBadge(s.k)}</div>
       <div class="sub">${esc([e.town, e.state].filter(Boolean).join(", "))}${e.holes ? ` · ${e.holes} holes` : ""}${e.event ? ` · ${esc(e.event)}` : ""}</div>
       ${teeRow(e.tees)}
       ${shared || nRep ? `<div class="row">${shared}${nRep ? `<span class="badge check">${nRep} problem${nRep === 1 ? "" : "s"} reported</span>` : ""}</div>` : ""}
-      <div class="sub">${esc(s.k === "confirm" && e.app ? "Auto-mapped: confirm the hole order in a few taps; your answers are saved for everyone after you." : e.note || "")}</div>
+      <div class="sub">${esc(s.k === "confirm" && e.lib ? `Auto-mapped wind page: ${e.checks && e.checks.length ? "CHECK hole" + (e.checks.length === 1 ? " " : "s ") + e.checks.join(", ") + "; " : ""}confirm holes as you play, saved for everyone after you.` : s.k === "confirm" && e.app ? "Auto-mapped: confirm the hole order in a few taps; your answers are saved for everyone after you." : e.note || "")}</div>
       ${acts.length ? `<div class="acts">${acts.join("")}</div>` : ""}
     </article>`;
 }
@@ -1323,14 +1328,16 @@ function renderGame(){
     <p class="foot">The fit is the closed-form summary of course_data/personal/bayes.py (golf_player/1): log pattern width and carry are normal, one part shared by every club and one per club, centred on what you typed. Mishits (carry under 88% of the club's median) are left out of the width; penalty tee shots count as balls past the penalty line.</p>`;
 }
 
+/*__LIBPLAY__*/
+
 /* ------------------------------------------------------------------ render + events */
 function render(){
-  const C = cur(); if (!C && st.screen !== "game") st.screen = "pick";
+  const C = cur(); if (!C && st.screen !== "game" && !(st.screen === "lib" && st.lp && st.lp.slug)) st.screen = "pick";
   const app = $("app");
   if (st.screen === "confirm" && !(C && C.confirm)) st.screen = "hole";
   app.dataset.screen = st.screen;
-  app.innerHTML = st.screen === "game" ? renderGame() : st.screen === "pick" ? renderPick() : st.screen === "tees" ? renderTees() : st.screen === "confirm" ? renderConfirm() : renderHole();
-  document.title = st.screen === "pick" ? "Aim Caddie" : st.screen === "game" ? "Your game · Aim Caddie" : st.screen === "confirm" ? `Hole map · ${cur().short}` : `${cur().short} · Aim Caddie`;
+  app.innerHTML = st.screen === "lib" ? renderLib() : st.screen === "game" ? renderGame() : st.screen === "pick" ? renderPick() : st.screen === "tees" ? renderTees() : st.screen === "confirm" ? renderConfirm() : renderHole();
+  document.title = st.screen === "lib" ? `${(libEntry(LP().slug) || {}).name || "Course"} · Aim Caddie` : st.screen === "pick" ? "Aim Caddie" : st.screen === "game" ? "Your game · Aim Caddie" : st.screen === "confirm" ? `Hole map · ${cur().short}` : `${cur().short} · Aim Caddie`;
   save();
 }
 function rerenderKeepFocus(id){ const y = window.scrollY; render(); if (id && $(id)) { const el = $(id); el.focus(); if (el.type === "search" || el.type === "text") { const n = el.value.length; el.setSelectionRange(n, n); } } window.scrollTo(0, y); }
@@ -1338,6 +1345,7 @@ const app = $("app");
 app.addEventListener("input", e => {
   const C = cur(), t = e.target;
   if (t.id === "q") { st.q = t.value; st.libmore = 0; rerenderKeepFocus("q"); return; }
+  if (st.screen === "lib") { if (lpInput(t)) rerenderKeepFocus(t.id); return; }
   if (!C) return;
   if (t.id === "hourT") { st.hour[C.id] = +t.value; rerenderKeepFocus("hourT"); }
   else if (t.id === "mph" || t.id === "temp") { const H = C.holes[holeIdx(C)], W = windFor(C, H);
@@ -1351,6 +1359,8 @@ app.addEventListener("click", e => {
   if (!b) return;
   if (b.tagName === "SUMMARY") { if (b.parentElement.id === "windPanel") setTimeout(() => { st.wind_open = b.parentElement.open; save(); }, 0); return; }
   const d = b.dataset;
+  if (d.libplay) { LP().slug = d.libplay; st.course = null; st.screen = "lib"; st.report = null; libLoad(d.libplay); window.scrollTo(0, 0); return render(); }
+  if (st.screen === "lib" && !d.go && !d.lf && !d.libmore) { if (lpClick(b)) { const nav = d.lpnav || d.lpi !== undefined; rerenderKeepFocus(d.report === "open" || d.rkind ? "rText" : null); if (nav) { const h = $("hhead"); if (h && h.getBoundingClientRect().top < 0) window.scrollTo(0, 0); } } return; }
   if (d.course) { st.course = d.course; st.screen = "tees"; window.scrollTo(0, 0); return render(); }
   if (d.lf) { st.lf.status = d.lf; st.libmore = 0; return rerenderKeepFocus(); }
   if (d.libmore) { st.libmore++; return rerenderKeepFocus(); }
