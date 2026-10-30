@@ -1,0 +1,128 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "buffalo_ridge",
+ "course": "Buffalo Ridge Springs Golf Course",
+ "bbox_snwe": [
+  36.5633394,
+  -93.210061,
+  36.586494,
+  -93.182954
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 2672,
+  "height": 2816,
+  "bounds": [
+   481082,
+   4046328,
+   483754,
+   4049144
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   481082.0,
+   0.0,
+   -1.0,
+   4049144.0
+  ],
+  "ll_bbox_wsen": [
+   -93.21148214386189,
+   36.562196601925855,
+   -93.18155287233301,
+   36.58763213415665
+  ]
+ },
+ "fetched_utc": "2026-10-30T11:57:49Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "MO_FEMANRCS_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MO_FEMANRCS_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 55630370830
+   }
+  ],
+  "used": [
+   {
+    "name": "MO_FEMANRCS_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MO_FEMANRCS_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 55630370830,
+    "cells": 7497220
+   }
+  ],
+  "valid": 0.9963941080906369,
+  "hag_mb": 3.73,
+  "frac_gt_2_5m": 0.5250114561360234,
+  "class_mb": 0.07
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023113011"
+  ],
+  "mb": 1.4,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1881088,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 23.0,
+    "items": [
+     "mo_m_3609331_sw_15_060_20220630",
+     "mo_m_3609331_se_15_060_20220630",
+     "mo_m_3609331_nw_15_060_20220630",
+     "mo_m_3609331_ne_15_060_20220630"
+    ],
+    "acquired": [
+     "2022-06-30"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 29.01,
+    "items": [
+     "mo_m_3609331_se_15_060_20200726",
+     "mo_m_3609331_ne_15_060_20200726",
+     "mo_m_3609331_sw_15_060_20200708",
+     "mo_m_3609331_nw_15_060_20200708"
+    ],
+    "acquired": [
+     "2020-07-08",
+     "2020-07-26"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
