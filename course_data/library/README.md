@@ -21,9 +21,16 @@ Without them the page uses the next Saturday and Sunday, with climate normals. `
 `library/gate/<slug>/` and is used for the blind gate builds of the hand-checked courses (below).
 
 To rebuild a list of courses, push `course_data/requests/course_batch_<name>.json` `{"requests": [paths], "rev": n}`.
-Push one batch at a time. The workflow allows one queued run, so a third push would cancel the second.
-Push the next batch only after the queued run has started. If a run was cancelled, list its requests in a
-`course_batch_*.json`: a run only sees the request files its own push changed.
+One batch can hold many courses (the 60-course `course_batch_us60.json` is one run). Each course runs as its own
+call of `course_page_one.yml` (package -> compute -> finish -> commit), up to 20 courses at a time, so the first
+courses are committed while later ones are still packaging. Runs no longer share a branch-wide concurrency group, so
+a later push never cancels an earlier one; parallel runs only share the account's limit of 20 concurrent jobs (extra
+jobs wait in the queue). A run only sees the request files its own push changed: to rebuild courses from an older
+run, list their requests in a new `course_batch_*.json`.
+
+Picking courses: OSM completeness (every `golf=hole` ref 1-18 inside the course, 18 greens and 18 tees) is counted
+on Actions by `osm_check.py` (workflow `osm_check.yml`, trigger `course_data/requests/osm_check_<name>.json`,
+result `course_data/library/osm_check/<name>.json`). Requests built from it carry the checked `osm` id.
 
 ## What the workflow does
 
@@ -153,4 +160,5 @@ or re-score a page without a refetch.
 | `weather.py` | forecast or climate normals |
 | `gate_eval.py`, `gate/GATE.md` | blind gate builds of the hand-checked courses scored against their truth |
 | `index.json` | the library index (above) |
-| `../../.github/workflows/course_page.yml` | the workflow |
+| `../../.github/workflows/course_page.yml` | the workflow (plan, one `course_page_one.yml` call per course, index) |
+| `osm_check.py`, `../../.github/workflows/osm_check.yml` | Overpass completeness counts for candidate courses |

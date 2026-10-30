@@ -1,0 +1,245 @@
+name: course-page-one
+
+# One course of a course-page run (called by course_page.yml, one call per course in its matrix), so each course
+# goes package -> compute -> finish -> commit on its own: the first courses of a big batch are committed while the
+# rest are still packaging (a plain job matrix would hold every finish until the slowest compute).
+on:
+  workflow_call:
+    inputs:
+      req:
+        type: string
+        required: true
+      slug:
+        type: string
+        required: true
+      compute:
+        description: "JSON list of this course's compute cells [{req, slug, slot, kind}]"
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  PYTHONWARNINGS: ignore
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests numpy scipy shapely pyproj matplotlib pillow opencv-python-headless scikit-learn scikit-image \
+                      pystac-client planetary-computer rasterio lightgbm
+      - uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: pdal
+          create-args: pdal
+          init-shell: none
+          cache-environment: true
+      - name: Locate PDAL
+        run: |
+          P="$MAMBA_ROOT_PREFIX/envs/pdal/bin/pdal"
+          ls -la "$P" && "$P" --version && echo "PDAL_BIN=$P" >> "$GITHUB_ENV" || echo "no pdal"
+      - name: Resolve, package, scorecard
+        id: pkg
+        run: |
+          R="${{ inputs.req }}"; S="${{ inputs.slug }}"
+          O=$(python3 course_data/library/course_page.py slug "$R" | cut -d' ' -f2)
+          echo "OUT=$O" >> "$GITHUB_ENV"; echo "S=$S" >> "$GITHUB_ENV"
+          mkdir -p "$O"
+          python3 course_data/library/course_page.py pkgreq "$R"
+          # Overpass / Nominatim rate limits come back as "not_found": retry with a back-off
+          for t in 1 2 3; do
+            python course_data/platform/package.py run "$O/package_request.json" 2>&1 | tee /tmp/pkg_v0.log || true
+            [ -f course_data/packages/$S/package.json ] && break
+            grep -q "ambiguous" /tmp/pkg_v0.log && break
+            sleep $((t * 90))
+          done
+          if [ ! -f course_data/packages/$S/package.json ]; then
+            python3 course_data/library/course_page.py failed "$R" package "$(tail -n 3 /tmp/pkg_v0.log | tr '\n' ' ' | cut -c1-400)"
+            echo "ok=0" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          cp course_data/packages/$S/package.json "$O/package_v0_no_vision.json"
+          echo "ok=1" >> "$GITHUB_OUTPUT"
+      - name: Vision layer raw (3DEP lidar HAG + NAIP years)
+        if: steps.pkg.outputs.ok == '1'
+        continue-on-error: true
+        run: python -u course_data/vision_any/fetch_any.py --course-dir course_data/packages/$S/raw --slug $S
+      - id: cache
+        if: steps.pkg.outputs.ok == '1'
+        uses: actions/cache@v4
+        with:
+          path: course_data/vision_any/${{ inputs.slug }}/raw2
+          key: v2raw-${{ inputs.slug }}-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
+      - name: Vision v2 rasters (multi-year NAIP + lidar points)
+        if: steps.pkg.outputs.ok == '1' && steps.cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        run: python -u course_data/vision_any/v2_fetch.py --slug $S
+      - name: Vision v2 inference (trees, long grass, water) + OB evidence
+        if: steps.pkg.outputs.ok == '1'
+        continue-on-error: true
+        run: |
+          python -u course_data/vision_any/v2_model.py --infer $S --integrate yes || echo "v2 infer failed"
+          python -u course_data/ob/fetch.py $S || echo "ob fetch failed"
+          rm -rf course_data/ob/_work
+      - name: Rebuild the package with vision + OB
+        if: steps.pkg.outputs.ok == '1'
+        run: |
+          python course_data/platform/package.py build "$OUT/package_request.json" || echo "rebuild failed: keeping v0"
+          grep -E '"(vision|ob)":' -o course_data/packages/$S/package.json | head -3 || true
+      - name: Bases, weather, display imagery
+        if: steps.pkg.outputs.ok == '1'
+        id: cfg
+        run: |
+          python3 course_data/library/course_page.py configure "${{ inputs.req }}" | tee /tmp/cfg.txt
+          grep '^SHARP_' /tmp/cfg.txt >> "$GITHUB_OUTPUT"
+      - name: Sharpest leaf-on NAIP (display only)
+        if: steps.pkg.outputs.ok == '1' && steps.cfg.outputs.SHARP_YEAR != ''
+        continue-on-error: true
+        run: |
+          python course_data/imagery/fetch_imagery.py --bbox ${{ steps.cfg.outputs.SHARP_BBOX }} --margin 0 \
+            --year ${{ steps.cfg.outputs.SHARP_YEAR }} --lo-res 0.3 --no-dem --name "$S" --out /tmp/sharp
+      - name: Prepare the solved bases (course module, hole pictures, elevation)
+        if: steps.pkg.outputs.ok == '1'
+        run: |
+          IM=""; [ -f /tmp/sharp/georef.json ] && IM="--imagery /tmp/sharp"
+          python3 course_data/library/course_page.py prepare "${{ inputs.req }}" $IM || \
+            python3 course_data/library/course_page.py prepare "${{ inputs.req }}"
+          du -sh "$OUT" "$OUT"/* || true
+      - name: Keep the vision layer + OB evidence (small) with the course data
+        if: steps.pkg.outputs.ok == '1'
+        run: |
+          mkdir -p "$OUT/evidence"
+          cp course_data/vision_any/$S/vision_any.geojson "$OUT/evidence/" 2>/dev/null || true
+          cp course_data/ob/$S/sources.json "$OUT/evidence/ob_sources.json" 2>/dev/null || true
+          cp course_data/vision_any/$S/raw/meta.json "$OUT/evidence/vision_raw_meta.json" 2>/dev/null || true
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lib-${{ inputs.slug }}-pkg
+          path: ${{ env.OUT }}
+          retention-days: 7
+
+  compute:
+    needs: [package]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(inputs.compute) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy matplotlib pillow rasterio pyproj shapely opencv-python-headless
+      - name: Course data from the package job
+        id: get
+        run: |
+          O=$(python3 course_data/library/course_page.py slug "${{ inputs.req }}" | cut -d' ' -f2)
+          echo "OUT=$O" >> "$GITHUB_ENV"
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: lib-${{ inputs.slug }}-pkg
+          path: ${{ env.OUT }}
+      - name: ${{ matrix.kind }} (base ${{ matrix.slot }})
+        run: |
+          if [ ! -f "$OUT/auto/course.py" ]; then echo "no prepared course (package failed)"; mkdir -p parts; exit 0; fi
+          python3 course_data/library/course_page.py compute "${{ inputs.req }}" ${{ matrix.slot }} ${{ matrix.kind }} parts
+          tail -n 2 parts/log_* 2>/dev/null | tail -n 40 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lib-${{ inputs.slug }}-part-${{ matrix.slot }}-${{ matrix.kind }}
+          path: parts/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  finish:
+    needs: [package, compute]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: |
+          pip install numpy scipy matplotlib pillow rasterio pyproj shapely opencv-python-headless
+          npm install --no-save --no-package-lock playwright@1.47.2
+          npx playwright install --with-deps chromium
+      - id: get
+        run: |
+          O=$(python3 course_data/library/course_page.py slug "${{ inputs.req }}" | cut -d' ' -f2)
+          echo "OUT=$O" >> "$GITHUB_ENV"; echo "S=${{ inputs.slug }}" >> "$GITHUB_ENV"
+      - name: Never overwrite a hand-checked page
+        run: |
+          if python3 -c "import json,sys;sys.exit(0 if json.load(open('$OUT/config.json')).get('hand_checked') else 1)" 2>/dev/null; then
+            echo "hand_checked page at $OUT: refusing to overwrite"; exit 1
+          fi
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: lib-${{ inputs.slug }}-pkg
+          path: ${{ env.OUT }}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: lib-${{ inputs.slug }}-part-*
+          path: /tmp/parts
+      - name: Merge, page, checks, report
+        run: |
+          ls /tmp/parts || true
+          if [ -f "$OUT/auto/course.py" ]; then
+            python3 course_data/library/course_page.py finish "${{ inputs.req }}" /tmp/parts || \
+              python3 course_data/library/course_page.py failed "${{ inputs.req }}" finish "merge / page / checks failed (see the Actions log)"
+          elif [ ! -f "$OUT/status.json" ]; then
+            python3 course_data/library/course_page.py failed "${{ inputs.req }}" package "no prepared course (see the Actions log)"
+          fi
+          cat "$OUT/qa_report.md" | head -60 || true
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # committed: the page, its checks and the small course data to rebuild it (README.md "size policy");
+          # never the course modules, hole pictures, wind grids or rasters
+          for f in config.json package_request.json package.json package_qa.md package_confirm.json \
+                   weather.json sharp.json page.html qa_report.md qa.json status.json raw/course.json raw/summary.json \
+                   raw/scorecard_web.json evidence/vision_any.geojson evidence/ob_sources.json evidence/vision_raw_meta.json; do
+            [ -f "$OUT/$f" ] && git add -f "$OUT/$f"
+          done
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git diff --cached --stat | tail -3
+          printf '%s\n' "course-page: $S (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6 7 8; do
+            if git pull --rebase origin "${{ github.ref_name }}"; then
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            else
+              git rebase --abort 2>/dev/null || true
+            fi
+            sleep $((i * 10 + RANDOM % 10))
+          done
+          exit 1
+
