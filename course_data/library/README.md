@@ -151,10 +151,66 @@ Not committed: NAIP / DEM / lidar rasters, `course_data/packages/<slug>/` and `c
 `rev`) rebuilds everything from public sources. The committed `package.json` and the vision layer let you inspect
 or re-score a page without a refetch.
 
+## National course index
+
+`us_courses.json.gz` (schema `us_courses/1`) lists every named `leisure=golf_course` in the 50 states + DC on
+OpenStreetMap, with how completely OSM maps it. `national_index.py` builds it on Actions
+(`.github/workflows/national_index.yml`; push `course_data/requests/national_index_<name>.json`
+`{"states": [] (all) or ["IA", ...], "oga": true, "rev": n}`). The sandbox cannot reach Overpass. Each state is one
+Overpass query (course outlines + `golf=hole|green|tee` + place names for the city), with retries over three
+endpoints. A second pass retries failed states, and a state a run does not fetch keeps its rows from the committed
+file. OpenGolfAPI's state listings (about 200 calls in all) mark courses it knows, matched by name + state, or by a
+shared name stem within 1.5 km.
+
+Columnar: `{"fields": [...], "rows": [[...]]}`. Fields: `name, city, state, lat, lon, osm, holes, osm_holes,
+greens, tees, card, tier, closed`. `city` is `addr:city`, else the nearest city / town / village node. `holes` is
+the outline's `holes` tag, else 18 or 9 from the mapped holes. `osm_holes` counts the distinct `ref`s of the golf=hole
+ways inside the outline's bbox (a feature in two bboxes goes to the smaller course). `card` is `library` (a library
+build found a web card), `oga` (OpenGolfAPI lists it with a par; its detail call usually gives the card), `oga?`
+(listed without a par) or empty.
+
+| tier | meaning | what the course_page pipeline does |
+|---|---|---|
+| A | OSM has a hole, a green and a tee per hole, and a card is known | its best case: holes by OSM, card cross-check (auto-OK candidates) |
+| B | complete OSM holes, no card known | page from OSM tees; a typed card moves it to A |
+| C | some OSM holes / greens / tees | routing v2 places the holes; often short of 18 (the "OSM holes incomplete" row above) |
+| D | outline only | no page until someone maps it |
+
+`us_readiness.json` has the per-state and national counts (`national`, `states.<ST>`, `best_states`).
+
+<!-- NATIONAL_COUNTS -->
+
+## Requests
+
+Golfers ask for courses from the app (`course_data/app/course_index.js`, SCHEMA.md "National index and requests").
+Every course in the national index can be searched on the pick screen. A course with no page yet has a
+**Request this course** button, which writes one doc per golfer per course to the published app's shared db
+collection `requests`:
+`{schema: "golf_request/1", slug, name, city, state, osm, lat, lon, holes, requested_at, user_id}`. Publish the app
+with the rule `{"path": "requests", "read": "view", "write": "interact"}` next to `maps` and `reports`.
+
+Turning requests into pages (coordinator):
+
+1. Read the collection: `ArtifactData` `list` (or `query`) on the app artifact's URL, collection `requests`. Save the
+   result as JSON (any wrapper works: a list of docs, `{"docs": [...]}`, `{"documents": [{"id", "data"}]}`).
+2. `python course_data/library/requests_to_batch.py requests.json --name req_nov01 --max 10`. It groups docs by
+   OSM id (else state + slug), ranks courses by how many golfers asked (then by the earliest request), and skips
+   courses that already have a library folder, request file, index entry or tournament folder. It writes
+   `course_data/requests/course_page_<slug>.json` (`course_page/1`, with `osm` and `near` from the index, so resolve
+   is not ambiguous) and `course_data/requests/course_batch_<name>.json`. `--dry-run` only prints the plan. Run it in
+   a full checkout so the skip list sees every library folder.
+3. Commit those files and push. One push starts one `course_page.yml` run. Push the next batch only after that run
+   has started (see "Request" above). Requests are not deleted. A course whose page is built is skipped next time.
+
+Docs are untrusted: the converter checks every field (state code, name length, `osm` pattern, coordinates inside
+the US) and drops anything else.
+
 ## Files
 
 | file | what |
 |---|---|
+| `national_index.py`, `us_courses.json.gz`, `us_readiness.json` | the national course index (above) and its readiness counts |
+| `requests_to_batch.py` | app request docs -> course_page request files + a course_batch (above) |
 | `course_page.py` | every stage (plan, pkgreq, configure, prepare, compute, finish, index) |
 | `picture_checks.py` | the per-hole picture checks for one solved base |
 | `weather.py` | forecast or climate normals |

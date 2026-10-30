@@ -285,7 +285,8 @@ The coordinator publishes `out/aim_caddie.html` with:
 "capabilities": {
   "db": {"rules": [
     {"path": "maps", "read": "view", "write": "interact"},
-    {"path": "reports", "read": "view", "write": "interact"}
+    {"path": "reports", "read": "view", "write": "interact"},
+    {"path": "requests", "read": "view", "write": "interact"}
   ]},
   "user": {}
 }
@@ -330,3 +331,35 @@ on the backend (`course_data/product/apply_answers.py`).
 `plan.py` (course_data/product) already writes everything a course document needs into
 `packages/<slug>/out*/`. `build_app.build_package()` is the adapter: a backend runs the plan per (course,
 tee set) on request, then the adapter, and caches the document.
+
+## National index and requests (`course_index/1`, `golf_request/1`, `course_index.js`)
+
+The pick screen searches every US course on OpenStreetMap, not only the library. `course_index.py` turns
+`course_data/library/us_courses.json.gz` (`us_courses/1`, course_data/library/README.md "National course index") into
+a gzip + base64 string; `build_app.py` concatenates `course_index.js` into the engine script and fills its
+`/*__COURSE_INDEX__*/null` placeholder with `{schema, n, built, b64}`. The gzip holds one line per open course,
+`name|city|ST|lat|lon|osm|holes|tier` (`osm` = `w123` / `r45` / `n6`, `tier` A-D as in the README); about 16 k
+courses come to well under 1 MB of base64. The page unpacks it with `DecompressionStream` when the pick screen first
+shows (Chrome 80+, Safari 16.4+, Firefox 113+; older browsers see "national index unavailable").
+
+`course_index.js` touches no template code: after each pick-screen render (a MutationObserver on `#app`) it
+
+* adds a **More US courses** section under `#list`: national rows matching every word of `#q` (and the `#fState`
+  filter) that the library does not already list (normalised name + state), at most 30, tier A first; each card shows
+  its OSM mapping tier and a **Request this course** button;
+* adds the same button to library cards with no page yet (`.lcard[data-status="none"]`).
+
+A request is one document per golfer per course in the shared db collection `requests`
+(id `<st>_<slug>__<user id>`, so asking twice overwrites):
+
+```jsonc
+{"schema": "golf_request/1", "slug": "pebble_beach_links", "name": "Pebble Beach Golf Links", "city": "Pebble Beach",
+ "state": "CA", "osm": "way/9" | null, "lat": 36.568, "lon": -121.95, "holes": 18,
+ "requested_at": "2026-10-30T19:00:00Z", "user_id": "<user.id() or the per-browser aimcaddie_gid>"}
+```
+
+`slug` follows `slugOf` (lower case, drop golf / course / club / country / and / the / cc / gc, non-alphanumerics to
+`_`); `requests_to_batch.py` uses the same rule. One listener on `requests` gives the "n golfers asked" count per
+course. Without the db (file://, signed out, view-only) the request is kept in localStorage (`aimcaddie_requests1`)
+and the card says it is saved on this device only. Read back, every field is untrusted: the converter re-checks it.
+`test_course_index.js` covers unpack, search, slug and a shared write.
