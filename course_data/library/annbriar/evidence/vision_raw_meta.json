@@ -1,0 +1,124 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "annbriar",
+ "course": "Annbriar Golf Course",
+ "bbox_snwe": [
+  38.343123,
+  -90.209364,
+  38.358922,
+  -90.190039
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1986,
+  "height": 2046,
+  "bounds": [
+   743712,
+   4247452,
+   745698,
+   4249498
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   743712.0,
+   0.0,
+   -1.0,
+   4249498.0
+  ],
+  "ll_bbox_wsen": [
+   -90.21140382559607,
+   38.34154281024948,
+   -90.1879921760516,
+   38.36050259178727
+  ]
+ },
+ "fetched_utc": "2026-10-30T11:38:34Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "IL_HicksDome_FluorsparDist_3_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IL_HicksDome_FluorsparDist_3_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 62219693555
+   }
+  ],
+  "used": [
+   {
+    "name": "IL_HicksDome_FluorsparDist_3_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IL_HicksDome_FluorsparDist_3_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 62219693555,
+    "cells": 4003815
+   }
+  ],
+  "valid": 0.9853468413793918,
+  "hag_mb": 1.93,
+  "frac_gt_2_5m": 0.41549891272140566,
+  "class_mb": 0.04
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111311"
+  ],
+  "mb": 0.37,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1015839,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 18.75,
+    "items": [
+     "il_m_3809047_ne_15_030_20230819_20231031",
+     "il_m_3809047_nw_15_030_20230818_20231031"
+    ],
+    "acquired": [
+     "2023-08-18",
+     "2023-08-19"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 13.09,
+    "items": [
+     "il_m_3809047_nw_15_060_20210616",
+     "il_m_3809047_ne_15_060_20210616"
+    ],
+    "acquired": [
+     "2021-06-16"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
