@@ -33,7 +33,7 @@
 * If the club card matches OpenGolfAPI, rebuild with:
 
   ```
-  "scorecard": "course_data/library/tiffany_greens/card_review.json"
+  "scorecard": "course_data/library/tiffany_greens/candidate_opengolfapi.json"
   "tees": ["The_Tiffs", "Gold"]
   ```
 
