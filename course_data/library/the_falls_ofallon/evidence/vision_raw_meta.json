@@ -1,0 +1,158 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "the_falls_ofallon",
+ "course": "The Falls Golf Club",
+ "bbox_snwe": [
+  38.779647,
+  -90.734396,
+  38.799368,
+  -90.713026
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 2152,
+  "height": 2478,
+  "bounds": [
+   696626,
+   4294640,
+   698778,
+   4297118
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   696626.0,
+   0.0,
+   -1.0,
+   4297118.0
+  ],
+  "ll_bbox_wsen": [
+   -90.73644198007925,
+   38.77810536718857,
+   -90.71097262949634,
+   38.80090119311079
+  ]
+ },
+ "fetched_utc": "2026-10-30T04:13:02Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "MO_WestCentral_2_2018-hag-2m-2-3",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 5323124,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_2_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9982125229904197,
+   "file": "hag.tif",
+   "mb": 2.65,
+   "frac_gt_2_5m": 0.5681697825623854
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "MO_WestCentral_2_2018-dtm-2m-2-3",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1330255,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_2_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9978179728825561,
+   "mb": 3.45
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "MO_WestCentral_2_2018-classification-2m-2-3",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 5297930,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_2_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.4,
+   "counts": {
+    "0": 34726,
+    "1": 1429770,
+    "2": 3867936,
+    "9": 176,
+    "17": 48
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111310"
+  ],
+  "mb": 0.74,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1333164,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.07
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 19.06,
+    "items": [
+     "mo_m_3809011_sw_15_060_20220618"
+    ],
+    "acquired": [
+     "2022-06-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 20.44,
+    "items": [
+     "mo_m_3809011_sw_15_060_20200713"
+    ],
+    "acquired": [
+     "2020-07-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
