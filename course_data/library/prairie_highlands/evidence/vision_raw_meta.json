@@ -1,0 +1,170 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "prairie_highlands",
+ "course": "Prairie Highlands Golf Course",
+ "bbox_snwe": [
+  38.853377,
+  -94.892085,
+  38.870186,
+  -94.874334
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1820,
+  "height": 2140,
+  "bounds": [
+   335696,
+   4302054,
+   337516,
+   4304194
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   335696.0,
+   0.0,
+   -1.0,
+   4304194.0
+  ],
+  "ll_bbox_wsen": [
+   -94.89395378781809,
+   38.85197765424731,
+   -94.87247913758169,
+   38.87159015341347
+  ]
+ },
+ "fetched_utc": "2026-10-30T03:19:08Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "KS_JohnsonCo_2006-hag-2m-1-2",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 3417932,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.8775629043853342,
+   "file": "hag.tif",
+   "mb": 0.74,
+   "frac_gt_2_5m": 0.1641152305638287
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "KS_JohnsonCo_2006-dtm-2m-1-2",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 854483,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.8775629043853342,
+   "mb": 1.94
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "KS_JohnsonCo_2006-classification-2m-1-2",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 3396768,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JohnsonCo_2006-classification-2m-1-1",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 476780,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.22,
+   "counts": {
+    "0": 21252,
+    "1": 422296,
+    "2": 3451252
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111023"
+  ],
+  "mb": 0.34,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 973700,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 14.13,
+    "items": [
+     "ks_m_3809410_nw_15_030_20230817_20240209",
+     "ks_m_3809409_ne_15_030_20230817_20240209",
+     "ks_m_3809402_sw_15_030_20230817_20240209"
+    ],
+    "acquired": [
+     "2023-08-17"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 11.51,
+    "items": [
+     "ks_m_3809410_nw_15_060_20210613",
+     "ks_m_3809409_ne_15_060_20210613"
+    ],
+    "acquired": [
+     "2021-06-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
