@@ -636,8 +636,6 @@ def _name_variants(name):
     out = [base]
     no_the = re.sub(r"^the-", "", base)
     out.append(no_the)
-    if base == no_the:
-        out.append("the-" + base)                                          # golfify: the-harvester-golf-club
     out.append(re.sub(r"-(jr|sr|ii|iii)(?=-|$)", "", base))               # 'Jr.' often dropped
     out.append(re.sub(r"\b([a-z])-(?=[a-z]-)", r"\1", base))            # a-l-gustin -> al-gustin
     core = _slug(pc.core_name(str(name).replace("'", "").replace("\u2019", "")))
@@ -646,6 +644,8 @@ def _name_variants(name):
         if m:
             out += [f"{m.group(1)}-golf-club", f"golf-club-at-{m.group(1)}"]
         out += [f"{core}-golf-course", f"{core}-golf-club", f"{core}-country-club"]
+    if base == no_the:
+        out.insert(min(len(out), 3), "the-" + base)                       # golfify: the-harvester-golf-club
     seen = []
     for s in out:
         if s and s not in seen:
@@ -653,13 +653,13 @@ def _name_variants(name):
     return seen
 
 
-def golfify_urls(name, town=None, limit=6):
+def golfify_urls(name, town=None, limit=10):
     """golfify course-page URLs to try, best first (exact name slug, its variants, then '-<town>' forms that
     golfify uses when two facilities share a name: st-andrews-golf-club-overland-park)."""
     slugs = _name_variants(name)
     if town:
         t = _slug(town)
-        slugs += [f"{s}-{t}" for s in slugs[:2]]
+        slugs += [f"{s}-{t}" for s in slugs if not s.startswith("the-")][:4]
     for s in golfify_slugs(name, town):
         if s not in slugs:
             slugs.append(s)
