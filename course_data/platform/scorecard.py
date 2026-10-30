@@ -17,6 +17,11 @@ Sources, in the order package.py tries them (fetch_* need the web, i.e. GitHub A
                              with the generic text-table parser (`parse_text`)
   4. golfify.io              structured Next.js JSON (tees[].holeInformation); slug guesses, then a
                              DuckDuckGo site: search; the facility's state must match
+  4b. BlueGolf / GolfPass / AllSquare  course directories with a scorecard page (`fetch_directory`, DIRECTORIES):
+                             DuckDuckGo (then Bing) for the course on the site, the page's scorecard URL
+                             parsed with `parse_text`; the page must name the course's state (or town) and the
+                             card must fit the OSM hole count / lengths (`plausible`). Tried only when no
+                             consistent card was found above (fetch_package.fetch_scorecards)
   5. OpenGolfAPI             api.opengolfapi.org (free, no key, ODbL 1.0; 1,000 anonymous calls/day):
                              /v1/courses/search then /api/v1/courses/{id} (`fetch_opengolfapi`,
                              `parse_opengolfapi`). Attribute "Contains data from OpenGolfAPI".
@@ -164,8 +169,9 @@ def per_hole(card, set_name, refs):
 
 
 # ----------------------------------------------------------------------------- reliability / consistency
-RELIABILITY = ["club_site", "golfify", "opengolfapi"]          # most reliable first (tees/README.md sources)
-CARD_CONFIDENCE = dict(request=1.0, file=0.95, club_site=0.9, typed=0.9, golfify=0.85, opengolfapi=0.75)
+RELIABILITY = ["club_site", "golfify", "bluegolf", "golfpass", "allsquare", "opengolfapi"]   # most reliable first
+CARD_CONFIDENCE = dict(request=1.0, file=0.95, club_site=0.9, typed=0.9, golfify=0.85, bluegolf=0.85, golfpass=0.8,
+                       allsquare=0.8, opengolfapi=0.75)
 SUM_TOL_YD = 15
 OPENGOLFAPI_ATTRIBUTION = ("Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; "
                            "(c) OpenStreetMap contributors")
@@ -652,6 +658,73 @@ def fetch_club_site(website, raw_dir, n_holes=None, osm_lengths=None, max_pages=
             if best is None or len(card["tee_sets"]) > len(best[0]["tee_sets"]):
                 best = (card, u)
     return best if best else (None, f"club site: no parsable scorecard in {len(pages)} pages")
+
+
+# ----------------------------------------------------------------------------- course directories (Actions)
+# label -> (host, regex for a course page URL on the host (group 1 = the course key), scorecard URL from the key)
+DIRECTORIES = {
+    "bluegolf": ("bluegolf.com", r"https?://course\.bluegolf\.com/bluegolf/course/course/([a-z0-9]+)/",
+                 "https://course.bluegolf.com/bluegolf/course/course/{}/detailedscorecard.htm"),
+    "golfpass": ("golfpass.com", r"https?://www\.golfpass\.com/travel-advisor/courses/(\d+-[a-z0-9-]+)",
+                 "https://www.golfpass.com/travel-advisor/courses/{}/scorecard-and-layout"),
+    "allsquare": ("allsquaregolf.com", r"https?://allsquaregolf\.com/golf-courses/([a-z0-9-]+/[a-z0-9-]+/[a-z0-9-]+)",
+                  "https://allsquaregolf.com/golf-courses/{}/scorecard"),
+}
+
+
+def directory_urls(label, name, state, town=None, search=None):
+    """Scorecard URLs on a directory site for this course, from a web search (best first, at most 3)."""
+    host, pat, fmt = DIRECTORIES[label]
+    st = pc.STATES[pc.state_code(state)]
+    search = search or ddg_urls
+    out = []
+    for q in (f"{name} {town or ''} {st} scorecard site:{host}", f"{pc.core_name(name)} golf {town or st} {host}"):
+        for u in search(q, host):
+            m = re.match(pat, u)
+            if m and fmt.format(m.group(1)) not in out:
+                out.append(fmt.format(m.group(1)))
+        if out:
+            break
+        time.sleep(3)
+    return out[:3]
+
+
+def _names_course(text, name, state, town=None):
+    """The page is about this course: half its distinctive name tokens and its state (or town) appear."""
+    low = text.lower()
+    toks = [t for t in _name_tokens(name) if len(t) > 2]
+    st = pc.state_code(state)
+    where = (pc.STATES[st].lower() in low or re.search(rf"\b{st}\b", text) is not None
+             or (town and town.lower() in low))
+    return bool(where) and (not toks or sum(t in low for t in toks) >= max(1, (len(toks) + 1) // 2))
+
+
+def fetch_directory(label, name, state, town, raw_dir, n_holes=None, osm_lengths=None, search=None, get=None):
+    """One directory site (DIRECTORIES) -> (card, url) or (None, reason)."""
+    urls = directory_urls(label, name, state, town, search=search)
+    if not urls:
+        return None, f"{label}: no course page found by search"
+    s = None if get else _session()
+    get = get or (lambda u: s.get(u, timeout=30))
+    for u in urls:
+        try:
+            r = get(u)
+        except Exception as e:                            # noqa: BLE001
+            pc.log(label, u, e)
+            continue
+        time.sleep(1)
+        if r.status_code != 200:
+            continue
+        text = _save(raw_dir, u, r)
+        if not _names_course(text, name, state, town):
+            pc.log(f"{label}: page does not name the course / state", u)
+            continue
+        card = parse_text(text, source=u)
+        if plausible(card, n_holes, osm_lengths):
+            for ts in card["tee_sets"].values():
+                ts["source"] = u
+            return card, u
+    return None, f"{label}: no parsable scorecard ({len(urls)} page(s): {', '.join(urls)})"[:300]
 
 
 # ----------------------------------------------------------------------------- OpenGolfAPI (Actions)

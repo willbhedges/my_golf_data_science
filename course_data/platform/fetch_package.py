@@ -101,6 +101,20 @@ def fetch_scorecards(req, course, summ, raw):
         out["tried"].append(dict(source=label, ok=bool(card), info=info))
         if card:
             out["cards"].append(dict(source=label, url=info, card=card))
+    # no consistent card yet: the course directories (BlueGolf, GolfPass, AllSquare), most reliable first
+    if req.get("directories", True) and not any(scm.consistency(scm.normalise(c["card"]))["ok"] for c in out["cards"]):
+        for label in scm.DIRECTORIES:
+            try:
+                card, info = scm.fetch_directory(label, course["name"], course["state"], course.get("town"), rawdir,
+                                                 n, lengths)
+            except Exception as e:                            # noqa: BLE001
+                card, info = None, f"{label} crashed: {e!r}"[:300]
+                traceback.print_exc()
+            out["tried"].append(dict(source=label, ok=bool(card), info=info))
+            if card:
+                out["cards"].append(dict(source=label, url=info, card=card))
+                if scm.consistency(scm.normalise(card))["ok"]:
+                    break
     pc.write_json(os.path.join(raw, "scorecard_web.json"), out)
     return out
 

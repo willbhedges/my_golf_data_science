@@ -159,6 +159,30 @@ def test_consistency_order_violation():
     assert chk["order_violations"] and chk["order_violations"][0]["hole"] == 5
 
 
+def test_fetch_directory_offline(tmp_path):
+    """BlueGolf-style directory: search hit -> the detailed scorecard URL -> the generic table parser; a page that
+    does not name the course's state is skipped."""
+    front, back = BLACK[:9], BLACK[9:]
+    table = ("Hole 1 2 3 4 5 6 7 8 9 Out 10 11 12 13 14 15 16 17 18 In Tot\n"
+             f"Blue {' '.join(map(str, front))} {sum(front)} {' '.join(map(str, back))} {sum(back)} {sum(BLACK)}\n"
+             f"Par {' '.join(map(str, PAR[:9]))} 36 {' '.join(map(str, PAR[9:]))} 36 72\n")
+
+    class R:
+        def __init__(self, text):
+            self.text, self.status_code, self.headers, self.content = text, 200, {}, text.encode()
+    pages = {"https://course.bluegolf.com/bluegolf/course/course/wrongia/detailedscorecard.htm":
+             "<p>Adams Pointe Golf Club, Des Moines, Iowa</p>\n" + table,
+             "https://course.bluegolf.com/bluegolf/course/course/adampointgc/detailedscorecard.htm":
+             "<p>Adams Pointe Golf Club, Blue Springs, Missouri</p>\n" + table}
+    hits = ["https://course.bluegolf.com/bluegolf/course/course/wrongia/index.htm",
+            "https://course.bluegolf.com/bluegolf/course/course/adampointgc/index.htm", "https://example.com/x"]
+    card, url = scm.fetch_directory("bluegolf", "Adams Pointe Golf Club", "MO", "Blue Springs", str(tmp_path),
+                                    18, search=lambda q, host: hits, get=lambda u: R(pages[u]))
+    assert url.endswith("adampointgc/detailedscorecard.htm")
+    assert card["tee_sets"]["Blue"]["yards"] == BLACK and card["par"] == PAR
+    assert scm.RELIABILITY.index("golfify") < scm.RELIABILITY.index("bluegolf") < scm.RELIABILITY.index("opengolfapi")
+
+
 def test_choose_card_by_reliability_not_by_fit():
     club = scm.card_from_yardages(BLACK, PAR, name="Black", source="club")
     gfy = scm.card_from_yardages([y + 1 for y in BLACK], PAR, name="Black", source="golfify")
