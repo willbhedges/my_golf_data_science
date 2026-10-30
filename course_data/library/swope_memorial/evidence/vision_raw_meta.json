@@ -1,0 +1,202 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "swope_memorial",
+ "course": "Swope Memorial Golf Course",
+ "bbox_snwe": [
+  38.993423,
+  -94.519013,
+  39.004191,
+  -94.50724
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1280,
+  "height": 1454,
+  "bounds": [
+   368330,
+   4317006,
+   369610,
+   4318460
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   368330.0,
+   0.0,
+   -1.0,
+   4318460.0
+  ],
+  "ll_bbox_wsen": [
+   -94.52065865725525,
+   38.992160601474815,
+   -94.5056030385295,
+   39.005450211958
+  ]
+ },
+ "fetched_utc": "2026-10-30T00:40:08Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "KS_JacksonCo_2006-hag-2m-1-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 1401656,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-hag-2m-0-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 459464,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "file": "hag.tif",
+   "mb": 1.02,
+   "frac_gt_2_5m": 0.6998828662310866
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "KS_JacksonCo_2006-dtm-2m-1-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 350414,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-dtm-2m-0-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 114866,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "mb": 1.29
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "KS_JacksonCo_2006-classification-2m-1-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 1397592,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-classification-2m-0-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 442916,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.2,
+   "counts": {
+    "0": 20612,
+    "1": 766856,
+    "2": 908280,
+    "10": 165372
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111023"
+  ],
+  "mb": 0.42,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 190203,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   },
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 275077,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.01
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 6.07,
+    "items": [
+     "mo_m_3909460_se_15_060_20220629",
+     "mo_m_3809404_ne_15_060_20220629"
+    ],
+    "acquired": [
+     "2022-06-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 7.55,
+    "items": [
+     "mo_m_3909460_se_15_060_20200607",
+     "mo_m_3809404_ne_15_060_20200607"
+    ],
+    "acquired": [
+     "2020-06-07"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
