@@ -219,6 +219,18 @@ def review_of(slug):
     return dict(safe=bool(verdict), why=why or "", holes=bad)
 
 
+def inputs_sig(slug, page):
+    """what a record is built from (the page, review.json, qa.json, config.json, this builder), by content: git checkouts
+    reset mtimes, so a cached record is reused only when this matches its `inputs`"""
+    h = hashlib.md5()
+    for f in (page, os.path.join(LIBDIR, slug, "review.json"), os.path.join(LIBDIR, slug, "qa.json"),
+              os.path.join(LIBDIR, slug, "config.json"), os.path.abspath(__file__)):
+        h.update(f.encode())
+        if os.path.exists(f):
+            h.update(open(f, "rb").read())
+    return h.hexdigest()[:16]
+
+
 def _card_review(rv):
     return dict(safe=rv["safe"], why=rv["why"]) if rv else None
 
@@ -328,7 +340,7 @@ def build_one(slug, idx_row, out_dir):
                sets=[dict(name=s, colour=(D.get("colors") or {}).get(s, "#888"), total=(D.get("set_totals") or {}).get(s)) for s in sets],
                card_sets=[[t.get("name"), t.get("yards"), t.get("on_page")] for t in (idx_row.get("tee_sets") or [])],
                clubs=clubs, speeds=SPEEDS, dirs=DIRS8, imagery=D.get("imagery"),
-               foot=D.get("foot_extra", ""), review=review_of(slug), images=images, holes=holes)
+               foot=D.get("foot_extra", ""), review=review_of(slug), inputs=inputs_sig(slug, page), images=images, holes=holes)
     os.makedirs(out_dir, exist_ok=True)
     fn = os.path.join(out_dir, f"{slug}.json")
     with open(fn, "w") as fh:
@@ -348,10 +360,13 @@ def build(out_dir=OUT, only=None, log=print):
             continue
         fn = os.path.join(out_dir, f"{slug}.json")
         src = os.path.join(ROOT, pg)
-        rvp = os.path.join(LIBDIR, slug, "review.json")
-        newest = max(os.path.getmtime(src), os.path.getmtime(__file__), os.path.getmtime(rvp) if os.path.exists(rvp) else 0)
-        if os.path.exists(fn) and os.path.getmtime(fn) > newest:
-            d = json.load(open(fn))
+        d = None
+        if os.path.exists(fn):
+            try:
+                d = json.load(open(fn))
+            except Exception:                           # noqa: BLE001
+                d = None
+        if d and d.get("inputs") == inputs_sig(slug, src):
             res[slug] = dict(file=f"lib/{slug}.json", bytes=os.path.getsize(fn), holes=len(d["holes"]),
                              check_holes=d["check_holes"], sets=[s["name"] for s in d["sets"]], review=_card_review(d.get("review")))
             continue
