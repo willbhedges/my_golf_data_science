@@ -68,11 +68,12 @@ jobs:
           sparse-checkout: |
             course_data/library/national_index.py
       - run: |
-          python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx
+          NATIDX_BUDGET_MIN=95 python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx || true
           # second pass for any state that failed (the script skips states already fetched)
-          python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx
+          NATIDX_BUDGET_MIN=25 python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx || true
           ls -la /tmp/natidx
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: natidx-${{ strategy.job-index }}
           path: /tmp/natidx

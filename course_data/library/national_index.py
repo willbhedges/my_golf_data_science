@@ -93,9 +93,15 @@ out body;"""
 def fetch(states, out):
     os.makedirs(out, exist_ok=True)
     bad = []
+    t_start = time.time()
+    budget = float(os.environ.get("NATIDX_BUDGET_MIN", "100")) * 60   # the job must still upload what it has
     for st in states:
         path = os.path.join(out, f"{st}.json")
         if os.path.exists(path):
+            continue
+        if time.time() - t_start > budget:
+            log(st, "skipped: time budget used (re-run this state)")
+            bad.append(st)
             continue
         t0 = time.time()
         try:
