@@ -1,0 +1,235 @@
+{
+ "course_review/1": {
+  "slug": "swope_memorial",
+  "reviewer": "agent",
+  "card_source": "golfify (golfify.io/courses/swope-memorial-golf-course), fetched 2026-10-30; AllSquare (meters) and OpenGolfAPI agree hole for hole; club site has no scorecard page (2026 PDF unreadable via web fetch), GolfLink 403, BlueGolf 405",
+  "card": {
+   "set": {
+    "Blue": [
+     372,
+     317,
+     267,
+     368,
+     451,
+     172,
+     330,
+     167,
+     477,
+     384,
+     361,
+     504,
+     235,
+     416,
+     349,
+     134,
+     566,
+     404
+    ],
+    "White": [
+     344,
+     301,
+     226,
+     345,
+     429,
+     148,
+     307,
+     162,
+     465,
+     370,
+     340,
+     463,
+     189,
+     375,
+     287,
+     116,
+     538,
+     365
+    ],
+    "Red": [
+     235,
+     215,
+     183,
+     294,
+     380,
+     126,
+     244,
+     100,
+     346,
+     233,
+     274,
+     398,
+     141,
+     286,
+     241,
+     101,
+     374,
+     346
+    ]
+   },
+   "par": [
+    4,
+    4,
+    4,
+    4,
+    5,
+    3,
+    4,
+    3,
+    5,
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    3,
+    5,
+    4
+   ]
+  },
+  "page_set": "Blue",
+  "page_set_should_be": "Blue",
+  "course_notes": [
+   "Front-nine numbering mismatch: OSM's golf=hole refs 3-9 follow a different order than every card source (OSM pars 4 4 4 3 5 5 3 4 4 vs card 4 4 4 4 5 3 4 3 5). Both orders chain green-to-tee, but the card's (OSM 1,2,8,9,6,7,3,4,5) is the one golfify, AllSquare and OpenGolfAPI publish. The build put card holes 3-9 on the wrong OSM ways: par 4s on a par-3 line (4), a par 3 on a par-5 line (6), tees walked back into the woods (4, 6).",
+   "Holes 1, 2 and 10-18 are right: routing, green, par and Blue/White tees on OSM boxes within 1-7 yds of the card.",
+   "Fix: rebuild with \"scorecard\": \"course_data/library/swope_memorial/card_review.json\", \"osm_supplement\": \"course_data/library/swope_memorial/osm_supplement.geojson\", \"ignore_osm_holes\": true, tees [\"Blue\", \"White\"].",
+   "Renovation: the course was closed Jan 2025 - Jul 2026 (new tees, greens, bunkers, a new pond; kcparks.org). The card and NAIP 2020 imagery predate it, so yardages and hazards may have changed; check the 2026 club card (swopememorialgolfcourse.com/docs/Scorecard-2026.pdf) before publishing."
+  ],
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Blue 373 vs card 372, White 345 vs 344, both on OSM tee boxes."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Blue 316 vs card 317, White 300 vs 301, both on OSM tee boxes. Blue calm pick Driver +6 finishes 306 yds out in a fairway bunker 9 yds off the fairway (317-yd par 4, near the green); a lay-up may be the better book; uncertain pick.",
+    "uncertain": true
+   },
+   {
+    "n": 3,
+    "verdict": "wrong hole geometry",
+    "notes": "Card hole 3 (par 4, Blue 267) was solved on OSM hole 3's way, which is a different hole (OSM par 4, 334 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_centroid, 86 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649935 (OSM ref 8, 277 yds, OSM par 4).",
+    "fix": {
+     "osm_hole_way": 692649935,
+     "osm_ref": "8",
+     "par": 4,
+     "yards": 267
+    }
+   },
+   {
+    "n": 4,
+    "verdict": "wrong hole geometry",
+    "notes": "Card hole 4 (par 4, Blue 368) was solved on OSM hole 4's way, which is a different hole (OSM par 3, 169 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: hole_line/walkback, 200 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649958 (OSM ref 9, 370 yds, OSM par 4).",
+    "fix": {
+     "osm_hole_way": 692649958,
+     "osm_ref": "9",
+     "par": 4,
+     "yards": 368
+    }
+   },
+   {
+    "n": 5,
+    "verdict": "wrong hole geometry",
+    "notes": "Card hole 5 (par 5, Blue 451) was solved on OSM hole 5's way, which is a different hole (OSM par 5, 457 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 5 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649955 (OSM ref 6, 407 yds, OSM par 5). Uncertain yardage: the OSM way is 407 yds vs Blue 451 / White 429; the back box may be unmapped or the card measures the dogleg; expect a CHECK.",
+    "fix": {
+     "osm_hole_way": 692649955,
+     "osm_ref": "6",
+     "par": 5,
+     "yards": 451
+    },
+    "uncertain": true
+   },
+   {
+    "n": 6,
+    "verdict": "wrong hole geometry",
+    "notes": "Card hole 6 (par 3, Blue 172) was solved on OSM hole 6's way, which is a different hole (OSM par 5, 407 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: hole_line/walkback, 232 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649965 (OSM ref 7, 172 yds, OSM par 3).",
+    "fix": {
+     "osm_hole_way": 692649965,
+     "osm_ref": "7",
+     "par": 3,
+     "yards": 172
+    }
+   },
+   {
+    "n": 7,
+    "verdict": "wrong hole geometry",
+    "notes": "Card hole 7 (par 4, Blue 330) was solved on OSM hole 7's way, which is a different hole (OSM par 3, 172 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 158 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649973 (OSM ref 3, 334 yds, OSM par 4).",
+    "fix": {
+     "osm_hole_way": 692649973,
+     "osm_ref": "3",
+     "par": 4,
+     "yards": 330
+    }
+   },
+   {
+    "n": 8,
+    "verdict": "wrong hole geometry",
+    "notes": "Card hole 8 (par 3, Blue 167) was solved on OSM hole 8's way, which is a different hole (OSM par 4, 277 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 133 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692651032 (OSM ref 4, 169 yds, OSM par 3).",
+    "fix": {
+     "osm_hole_way": 692651032,
+     "osm_ref": "4",
+     "par": 3,
+     "yards": 167
+    }
+   },
+   {
+    "n": 9,
+    "verdict": "wrong hole geometry",
+    "notes": "Card hole 9 (par 5, Blue 477) was solved on OSM hole 9's way, which is a different hole (OSM par 4, 370 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_centroid, 108 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692651031 (OSM ref 5, 457 yds, OSM par 5). OSM way 457 yds vs Blue 477 (White 465): back tee ~20 yds behind the mapped start.",
+    "fix": {
+     "osm_hole_way": 692651031,
+     "osm_ref": "5",
+     "par": 5,
+     "yards": 477
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Blue 385 vs card 384, White 371 vs 370, both on OSM tee boxes."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Blue 361 vs card 361, White 340 vs 340, both on OSM tee boxes."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Routing, green, par 5 OK. Blue 503 vs card 504, White 462 vs 463, both on OSM tee boxes."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Blue 235 vs card 235, White 189 vs 189, both on OSM tee boxes."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Blue 416 vs card 416, White 375 vs 375, both on OSM tee boxes."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Blue 350 vs card 349, White 287 vs 287, both on OSM tee boxes."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Blue 134 vs card 134, White 116 vs 116, both on OSM tee boxes."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Routing, green, par 5 OK. Blue 565 vs card 566, White 537 vs 538, both on OSM tee boxes."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Blue 405 vs card 404, White 366 vs 365, both on OSM tee boxes."
+   }
+  ]
+ }
+}
