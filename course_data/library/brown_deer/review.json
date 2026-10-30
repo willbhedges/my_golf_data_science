@@ -1,0 +1,174 @@
+{
+ "course_review/1": {
+  "slug": "brown_deer",
+  "reviewer": "agent",
+  "card_source": "https://www.golfify.io/courses/brown-deer-golf-club",
+  "card": {
+   "set": "Gold",
+   "Gold": [
+    329,
+    559,
+    326,
+    513,
+    182,
+    405,
+    383,
+    414,
+    246,
+    480,
+    357,
+    200,
+    275,
+    120,
+    496,
+    459,
+    178,
+    393
+   ],
+   "Blue": [
+    297,
+    535,
+    300,
+    485,
+    166,
+    375,
+    369,
+    388,
+    217,
+    445,
+    330,
+    180,
+    245,
+    106,
+    474,
+    403,
+    166,
+    372
+   ],
+   "par": [
+    4,
+    5,
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    3,
+    4,
+    3,
+    5,
+    4,
+    3,
+    4
+   ],
+   "total_gold": 6315,
+   "total_blue": 5853
+  },
+  "summary": "OSM has no golf=hole ways here; the v2+structure routing built 17 of 18 holes (hole 1 missing) and mis-routes several back-nine holes across the lake. 6 OK, 7 wrong (1 missing, 7, 8, 10, 15, 16, 18), 5 uncertain (2, 4, 9, 13, 14). Not publishable. Needs a hand-mapped osm_supplement (golf=hole ways for all 18 holes) from the OSM tee/green polygons; Overpass extract requested via webfetch_rv01_amana_browndeer.json but still queued at review time.",
+  "publish": false,
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong routing",
+    "notes": "Hole missing from the page (17 holes built). OSM green way/690066085 at [41.70317,-91.56778] is hole 1's green per the routing confirm file, but no tee was found. Card Gold 329 / Blue 297, par 4. Needs a hand-mapped hole 1 (tee near the clubhouse/first-tee area ~329 yds from that green).",
+    "fix": {
+     "green_ll": [
+      41.70317,
+      -91.56778
+     ],
+     "par": 4,
+     "yards": 329
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "uncertain",
+    "notes": "Tee on an OSM box, length 560 = card 559, but the routing is 'check' (75%) and the tee line plays over/next to another green ~50-80 yds in front of the tee (the G6 complex). Plausible but not confirmed."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Tee on box, fairway and green match the photo."
+   },
+   {
+    "n": 4,
+    "verdict": "uncertain",
+    "notes": "Routing and green right; Gold tee on a lidar pad 28 yds from the OSM box and measured 525 vs card 513 (+12): the Gold tee should probably be on the OSM box ~12 yds forward. Minor; pick unlikely to change."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Par 3, tee on box, target box on the green."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Tee on box, fairway and green match."
+   },
+   {
+    "n": 7,
+    "verdict": "wrong tee",
+    "notes": "Gold tee walked back 61 yds onto a spot next to another green; the line runs down a cart path/rough strip beside the road and the Long iron -40 pick lands in rough. The routing (75% check) is doubtful too. Tee/green need a hand map from OSM."
+   },
+   {
+    "n": 8,
+    "verdict": "wrong tee",
+    "notes": "Gold tee walked back 191 yds into the woods (Blue lidar pad 162 yds off); the line crosses trees. Card 414. Routing 'check' (25% posterior - the weakest hole)."
+   },
+   {
+    "n": 9,
+    "verdict": "uncertain",
+    "notes": "Green beside the clubhouse is plausible for a 9th green, but the Gold tee is a lidar pad 67 yds from the nearest OSM box (Blue 83 yds). Card 246 par 3. Tee position unconfirmed."
+   },
+   {
+    "n": 10,
+    "verdict": "wrong routing",
+    "notes": "Tee behind the clubhouse and the line goes straight across the big lake (landing pattern 83-100% water). A par 5 of 480 does not play over 300 yds of lake; the tee and/or green are mismatched (routing 'check', 67%)."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Tee on box, straight par 4 to the green, matches the photo."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Par 3, measured 192 vs card 200 (within 10); target on the green."
+   },
+   {
+    "n": 13,
+    "verdict": "uncertain",
+    "notes": "Short par 4 (275) over the pond edge to the green; plausible, but the Gold tee is a lidar pad 25 yds from the OSM box. Blue PASS."
+   },
+   {
+    "n": 14,
+    "verdict": "uncertain",
+    "notes": "Par 3 of 120; green plausible but the tee is 94-106 yds from the nearest OSM tee box (tee_axis placement). Tee position unconfirmed."
+   },
+   {
+    "n": 15,
+    "verdict": "wrong tee",
+    "notes": "Gold tee among back yards of the houses west of the course; the line runs through trees and gardens (landing 54% trees/OB). Tee is wrong (lidar pad 45 yds off the OSM box)."
+   },
+   {
+    "n": 16,
+    "verdict": "wrong tee",
+    "notes": "Tee in rough left of the hole; the line runs along the tree line/cart path left of the fairway; measured 445 vs card 459. Tee needs to move onto the OSM box."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Par 3 of 178, length matches; green right. Tee on a lidar pad but consistent with the card."
+   },
+   {
+    "n": 18,
+    "verdict": "wrong routing",
+    "notes": "Tee beside houses and the line crosses the lake to a green by the clubhouse; Mid iron -38 lands 81 yds from fairway. The 18th tee/green pairing is wrong (routing 'check', 85%)."
+   }
+  ]
+ }
+}
