@@ -1,0 +1,311 @@
+{
+ "course_review/1": {
+  "slug": "the_falls_ofallon",
+  "reviewer": "agent",
+  "card_source": "golfify (golfify.io/courses/the-falls-golf-club-o-fallon), fetched 2026-10-30; AllSquare (meters) agrees hole for hole; club site thefallsgolfclub.com does not resolve (fallsgolf.com is the club site), GolfLink 403, BlueGolf 405",
+  "card": {
+   "set": {
+    "Gold": [
+     416,
+     412,
+     388,
+     171,
+     419,
+     524,
+     428,
+     193,
+     491,
+     380,
+     392,
+     181,
+     370,
+     184,
+     530,
+     342,
+     178,
+     511
+    ],
+    "Blue": [
+     386,
+     379,
+     341,
+     149,
+     389,
+     492,
+     378,
+     170,
+     449,
+     360,
+     365,
+     165,
+     345,
+     160,
+     510,
+     330,
+     144,
+     499
+    ],
+    "White": [
+     363,
+     350,
+     332,
+     132,
+     356,
+     451,
+     355,
+     145,
+     434,
+     341,
+     338,
+     145,
+     311,
+     143,
+     483,
+     319,
+     133,
+     463
+    ],
+    "Red": [
+     310,
+     305,
+     280,
+     116,
+     310,
+     410,
+     315,
+     124,
+     361,
+     307,
+     288,
+     103,
+     254,
+     124,
+     400,
+     267,
+     114,
+     437
+    ]
+   },
+   "par": [
+    4,
+    4,
+    4,
+    3,
+    4,
+    5,
+    4,
+    3,
+    5,
+    4,
+    4,
+    3,
+    4,
+    3,
+    5,
+    4,
+    3,
+    5
+   ]
+  },
+  "page_set": "Gold",
+  "page_set_should_be": "Blue",
+  "course_notes": [
+   "Card, pars (36-35 = 71) and routing are right on all 18 holes; the build used the right card (golfify) and the right set names.",
+   "OSM maps 67 tees but no Gold boxes on 2, 3, 9, 10, 11, 13, 15, 16, 18: the build invented Gold tees 19-48 yds behind the back OSM tee (lidar pads / walkbacks). On 11, 13, 15, 16 and 18 they sit on streets, house lots or the road; on 2, 3, 9, 10 they are in trees / beside cart paths (uncertain). The Gold yardages on the page are card numbers measured from places nobody tees off.",
+   "Blue is on OSM tee boxes within 7 yds of the card on 17 holes; hole 18 Blue is a walkback (18 yds off an OSM box).",
+   "Fix: rebuild with \"scorecard\": \"course_data/library/the_falls_ofallon/card_review.json\" and tees [\"Blue\", \"White\"] (both sets sit on mapped OSM boxes). Gold needs the Gold boxes mapped (an osm_supplement from better imagery); none were visible on NAIP 2022, so none was written."
+  ],
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Gold tee 413 yds vs card 416 (osm/tee_axis); Blue tee 387 vs card 386 (osm/tee_axis) (within ~6)."
+   },
+   {
+    "n": 2,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Blue tee 380 vs card 379 (osm/tee_axis) OK. Gold tee wrong: no OSM tee box at the Gold card yardage, so the build put a synthetic lidar_pad tee 29 yds behind the back OSM tee, in the tree line behind the tee complex (NAIP 2022). The back OSM tee box measures 390 yds vs Gold card 412; the card yardage is probably measured along the dogleg / from an unmapped box. fix.tee_ll = the back OSM tee box (hole-line start or the Blue box, whichever is longer); Gold shares it. Uncertain: a lidar pad was found here, so an unmapped Gold box may exist nearby.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7922952,
+       -90.7199168
+      ]
+     },
+     "par": 4,
+     "yards": 390
+    },
+    "uncertain": true
+   },
+   {
+    "n": 3,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Blue tee 341 vs card 341 (osm/tee_axis) OK. Gold tee wrong: no OSM tee box at the Gold card yardage, so the build put a synthetic lidar_pad tee 45 yds behind the back OSM tee, in the trees behind the back tee (NAIP 2022). The back OSM tee box measures 368 yds vs Gold card 388; the card yardage is probably measured along the dogleg / from an unmapped box. fix.tee_ll = the back OSM tee box (hole-line start or the Blue box, whichever is longer); Gold shares it. Uncertain: a lidar pad was found here, so an unmapped Gold box may exist nearby.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7930774,
+       -90.7152072
+      ]
+     },
+     "par": 4,
+     "yards": 368
+    },
+    "uncertain": true
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Gold tee 171 yds vs card 171 (osm/tee_centroid); Blue tee 149 vs card 149 (osm/tee_axis) (within ~6)."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Gold tee 413 yds vs card 419 (osm/tee_axis); Blue tee 389 vs card 389 (osm/tee_centroid) (within ~6)."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Routing, green, par 5 OK. Gold tee 518 yds vs card 524 (osm/tee_axis); Blue tee 497 vs card 492 (osm/tee_axis) (within ~6)."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Gold tee 429 yds vs card 428 (osm/tee_axis); Blue tee 383 vs card 378 (osm/tee_axis) (within ~6)."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Gold tee 190 yds vs card 193 (osm/tee_axis); Blue tee 170 vs card 170 (osm/tee_axis) (within ~6)."
+   },
+   {
+    "n": 9,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 5 OK (par matches the card). Blue tee 442 vs card 449 (osm/tee_axis) OK. Gold tee wrong: no OSM tee box at the Gold card yardage, so the build put a synthetic lidar_pad tee 19 yds behind the back OSM tee, on the cart path beside the pond (NAIP 2022). The back OSM tee box measures 476 yds vs Gold card 491; the card yardage is probably measured along the dogleg / from an unmapped box. fix.tee_ll = the back OSM tee box (hole-line start or the Blue box, whichever is longer); Gold shares it. Uncertain: a lidar pad was found here, so an unmapped Gold box may exist nearby.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7935015,
+       -90.7304745
+      ]
+     },
+     "par": 5,
+     "yards": 476
+    },
+    "uncertain": true
+   },
+   {
+    "n": 10,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Blue tee 365 vs card 360 (osm/tee_axis) OK. Gold tee wrong: no OSM tee box at the Gold card yardage, so the build put a synthetic lidar_pad tee 20 yds behind the back OSM tee, beside the cart path by the clubhouse lot (NAIP 2022). The back OSM tee box measures 374 yds vs Gold card 380; the card yardage is probably measured along the dogleg / from an unmapped box. fix.tee_ll = the back OSM tee box (hole-line start or the Blue box, whichever is longer); Gold shares it. Uncertain: a lidar pad was found here, so an unmapped Gold box may exist nearby.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7924091,
+       -90.7247157
+      ]
+     },
+     "par": 4,
+     "yards": 374
+    },
+    "uncertain": true
+   },
+   {
+    "n": 11,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Blue tee 365 vs card 365 (osm/tee_axis) OK. Gold tee wrong: no OSM tee box at the Gold card yardage, so the build put a synthetic lidar_pad tee 48 yds behind the back OSM tee, on the residential street behind the tee (NAIP 2022). The back OSM tee box measures 365 yds vs Gold card 392; the card yardage is probably measured along the dogleg / from an unmapped box. fix.tee_ll = the back OSM tee box (hole-line start or the Blue box, whichever is longer); Gold shares it.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7908507,
+       -90.7209104
+      ]
+     },
+     "par": 4,
+     "yards": 365
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Gold tee 181 yds vs card 181 (osm/tee_axis); Blue tee 165 vs card 165 (osm/tee_axis) (within ~6)."
+   },
+   {
+    "n": 13,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Blue tee 344 vs card 345 (osm/tee_axis) OK. Gold tee wrong: no OSM tee box at the Gold card yardage, so the build put a synthetic walkback tee 29 yds behind the back OSM tee, on the road behind the hole (NAIP 2022). The back OSM tee box measures 344 yds vs Gold card 370; the card yardage is probably measured along the dogleg / from an unmapped box. fix.tee_ll = the back OSM tee box (hole-line start or the Blue box, whichever is longer); Gold shares it.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7877494,
+       -90.7266738
+      ]
+     },
+     "par": 4,
+     "yards": 344
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Gold tee 179 yds vs card 184 (osm/tee_axis); Blue tee 160 vs card 160 (osm/tee_axis) (within ~6)."
+   },
+   {
+    "n": 15,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 5 OK (par matches the card). Blue tee 506 vs card 510 (osm/tee_axis) OK. Gold tee wrong: no OSM tee box at the Gold card yardage, so the build put a synthetic walkback tee 30 yds behind the back OSM tee, on a house lot behind the hole (NAIP 2022). The back OSM tee box measures 506 yds vs Gold card 530; the card yardage is probably measured along the dogleg / from an unmapped box. fix.tee_ll = the back OSM tee box (hole-line start or the Blue box, whichever is longer); Gold shares it.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7827026,
+       -90.7262078
+      ]
+     },
+     "par": 5,
+     "yards": 506
+    }
+   },
+   {
+    "n": 16,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Blue tee 330 vs card 330 (osm/tee_axis) OK. Gold tee wrong: no OSM tee box at the Gold card yardage, so the build put a synthetic lidar_pad tee 39 yds behind the back OSM tee, in a back yard / tree line behind the hole (NAIP 2022). The back OSM tee box measures 330 yds vs Gold card 342; the card yardage is probably measured along the dogleg / from an unmapped box. fix.tee_ll = the back OSM tee box (hole-line start or the Blue box, whichever is longer); Gold shares it. Blue calm pick Driver -40 lands 300 yds out in the greenside sand 4 yds off the fairway on a 330-yd par 4 (go-for-it line); plausible but check the pick (uncertain).",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7819347,
+       -90.7325544
+      ]
+     },
+     "par": 4,
+     "yards": 330
+    },
+    "uncertain": true
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Gold tee 178 yds vs card 178 (osm/tee_centroid); Blue tee 144 vs card 144 (osm/tee_centroid) (within ~6)."
+   },
+   {
+    "n": 18,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 5 OK. Both Blue (499) and Gold (511) tees are walkbacks 23 / 35 yds behind the back OSM tee, near the road; the back OSM tee measures 482 yds along the hole line, White 463 is on an OSM box. fix.tee_ll puts Gold and Blue on the back OSM tee. Uncertain: the card may measure the dogleg differently.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       38.7882176,
+       -90.7273409
+      ],
+      "Blue": [
+       38.7882176,
+       -90.7273409
+      ]
+     },
+     "par": 5,
+     "yards": 482
+    },
+    "uncertain": true
+   }
+  ]
+ }
+}
