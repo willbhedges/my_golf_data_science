@@ -1,0 +1,166 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "old_kinderhook",
+ "course": "Old Kinderhook Resort, Golf, Club & Spa",
+ "bbox_snwe": [
+  37.993628,
+  -92.816596,
+  38.009359,
+  -92.791918
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 2412,
+  "height": 1992,
+  "bounds": [
+   515980,
+   4205002,
+   518392,
+   4206994
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   515980.0,
+   0.0,
+   -1.0,
+   4206994.0
+  ],
+  "ll_bbox_wsen": [
+   -92.81800843539231,
+   37.99248581242138,
+   -92.79048795340908,
+   38.01048512681195
+  ]
+ },
+ "fetched_utc": "2026-10-30T04:00:03Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_MO_FEMAR7_North_A4_2017_LAS_2019-dsm-2m-9-9",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 1308824,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_FEMAR7_North_A4_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_MO_FEMAR7_North_A4_2017_LAS_2019-dsm-2m-8-9",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 3470068,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_FEMAR7_North_A4_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_MO_FEMAR7_North_A4_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MO_FEMAR7_North_A4_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 67251978397
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_MO_FEMAR7_North_A4_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MO_FEMAR7_North_A4_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 67251978397,
+    "cells": 4711606
+   }
+  ],
+  "valid": 0.9806235722325455,
+  "hag_mb": 2.81,
+  "frac_gt_2_5m": 0.6959527579638621,
+  "class_mb": 0.06
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111213",
+   "023111302"
+  ],
+  "mb": 0.95,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1201176,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 14.72,
+    "items": [
+     "mo_m_3809258_sw_15_060_20220621",
+     "mo_m_3809258_se_15_060_20220621",
+     "mo_m_3709202_nw_15_060_20220621",
+     "mo_m_3709202_ne_15_060_20220621"
+    ],
+    "acquired": [
+     "2022-06-21"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 18.58,
+    "items": [
+     "mo_m_3809258_sw_15_060_20200724",
+     "mo_m_3809258_se_15_060_20200724",
+     "mo_m_3709202_nw_15_060_20200724",
+     "mo_m_3709202_ne_15_060_20200724"
+    ],
+    "acquired": [
+     "2020-07-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
