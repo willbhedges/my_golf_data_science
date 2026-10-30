@@ -340,7 +340,8 @@ def test_elevation_plane():
 def test_coverage_counts(black):
     p, _ = black
     f = p["coverage"]["features"]
-    assert f["golf=hole"] == 18 and f["golf=tee"] == 103 and f["golf=bunker"] == 50
+    assert f["golf=hole"] == 18 and f["golf=tee"] == 101  # 103 minus 2 practice tees in the driving range (sanity.py)
+    assert f["golf=bunker"] == 50
     assert f.get("trees_polygons", 0) == 0
     s = p["coverage"]["summary"]
     assert s["greens_found"] == 18 and s["of_par4_5"] == 14 and 0 < s["osm_score"] < 1

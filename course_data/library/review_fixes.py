@@ -25,7 +25,8 @@ import os
 import re
 
 CARD_FILES = ("card_review.json", "card_fix.json", "card_golfify.json")
-HINT_KEYS = ("yardages", "pars", "tees", "scorecard", "osm_supplement", "typed_card", "near", "osm", "ignore_osm_holes")
+HINT_KEYS = ("yardages", "pars", "tees", "scorecard", "osm_supplement", "typed_card", "near", "osm", "ignore_osm_holes",
+             "boundary_ll")
 
 
 def _read(p):

@@ -84,6 +84,7 @@ CD = os.path.dirname(HERE)
 sys.path[:0] = [HERE, CD]
 import osm_coverage  # noqa: E402
 import platform_common as pc  # noqa: E402
+import sanity  # noqa: E402
 import scorecard as scm  # noqa: E402
 import tee_line as tl  # noqa: E402
 
@@ -172,7 +173,37 @@ def _cross(card, web_cards, own_kind):
     return out
 
 
-def pick_scorecard(req, raw_dir):
+CONSENSUS_MIN_HOLES = 9     # OSM hole lines the consensus needs before it may overrule source reliability
+
+
+def card_ground(fc, raw_dir):
+    """card_consensus ground at build time: OSM hole lines + nearby tee boxes (fc), else raw/summary.json."""
+    import card_consensus as cc
+    g = cc.ground_from_fc(fc) if fc else {}
+    if not g:
+        g = cc.ground_from_summary(pc.read_json(os.path.join(raw_dir, "summary.json"), {}) or {})
+    return g
+
+
+def consensus_card(web_cards, ground):
+    """-> (card, info) from card_consensus.consensus over the web cards (metres -> yards, swapped set names moved
+    back, a stale / scrambled card never the base, per-hole fixes on the OSM ground), or None when the ground is
+    too thin (fewer than CONSENSUS_MIN_HOLES hole lines) or no card is usable."""
+    import card_consensus as cc
+    if sum(1 for g in ground.values() if g.get("line")) < CONSENSUS_MIN_HOLES or not web_cards:
+        return None
+    try:
+        res = cc.consensus([(c["source"], c["card"], c.get("url")) for c in web_cards], ground)
+    except Exception:                                            # noqa: BLE001  (advisory: fall back to choose_card)
+        return None
+    if not res or not res.get("card"):
+        return None
+    info = dict(kind=res["base"], source=res["base"], url=res.get("base_url"),
+                consensus=dict(changes=res["changes"], flags=res["flags"], method="card_consensus.py"))
+    return scm.normalise(res["card"]), info
+
+
+def pick_scorecard(req, raw_dir, fc=None):
     """-> (card | None, info dict). Order: request yardages > request scorecard file > web cards by
     scorecard.RELIABILITY (club site > golfify > OpenGolfAPI), the first that passes scorecard.consistency
     (else the most reliable, flagged). info carries consistency (flags) and the cross-check vs the other cards."""
@@ -194,6 +225,21 @@ def pick_scorecard(req, raw_dir):
         else:
             tried.append(dict(source=req["scorecard"], ok=False, info="file missing or unreadable"))
     tried += web.get("tried", [])
+    ground = card_ground(fc, raw_dir) if (fc or raw_dir) else {}
+    if card is not None and ground:                     # an explicit card wins; only its units are checked
+        others = [scm.normalise(c["card"]) for c in web_cards]
+        try:
+            import card_consensus as cc
+            card2, unit_flag = cc.check_units(scm.normalise(card), ground, others)
+        except Exception:                                        # noqa: BLE001
+            card2, unit_flag = card, None
+        if unit_flag:
+            card = card2
+            info["units"] = unit_flag
+    if card is None:
+        cons = consensus_card(web_cards, ground)
+        if cons:
+            card, info = cons
     if card is None:
         pick = scm.choose_card([(c["source"], scm.normalise(c["card"]), c.get("url")) for c in web_cards])
         if pick:
@@ -909,6 +955,8 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, 
             stages["routing"] = f"fallback: geometry/build_holes.infer_holes ({'; '.join(info.get('fallbacks', []))})"[:300]
             return fc, {}
         inp = res.pop("_inp", None)
+        for n_ in sanity.guard_routed(res, fc, missing, (inp or {}).get("greens") or ()):
+            warnings.append(n_[:240])
         fc2 = rt.to_hole_features(res, fc, inp)
         routed = {r: {k: res["holes"][r].get(k) for k in ("status", "flags", "p_green", "p_hole", "margin", "green_src", "tee_src")}
                   for r in missing if res["holes"].get(r, {}).get("green_ll") and res["holes"][r].get("tee_ll")}
@@ -1002,7 +1050,13 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         local = find_local_card(course)
         if local:
             req["scorecard"] = local
-    card, cinfo = pick_scorecard(req, raw)
+    fc, osm_notes = sanity.clean_osm(fc)
+    warnings += osm_notes
+    card, cinfo = pick_scorecard(req, raw, fc)
+    if cinfo.get("units"):
+        warnings.append(f"scorecard units: {cinfo['units']}")
+    for f_ in ((cinfo.get("consensus") or {}).get("flags") or [])[:6]:
+        warnings.append(f"card consensus: {f_}"[:240])
     wanted = req.get("tee_set") or req.get("tees")
     chosen, how = scm.choose_tee_set(card, wanted) if card else (None, "no scorecard")
     substituted = None
@@ -1016,6 +1070,12 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         warnings.append(substituted)
         how = f"substitute: longest set ({how})"
     card, card_fixes = apply_card_overrides(card, req, chosen)
+    if card and req.get("auto_renumber", True):          # sanity.renumber_holes: OSM hole order != card order
+        fc, renum = sanity.renumber_holes(fc, card)
+        if renum:
+            stages["renumber"] = "ok: OSM hole refs -> card holes " + ", ".join(f"{a}->{b}" for a, b in sorted(
+                renum.items(), key=lambda kv: kv[0].zfill(3)))
+            warnings.append("OSM hole numbering differs from the card: " + stages["renumber"][4:] + " (CHECK)")
     if card_fixes:
         stages["card_overrides"] = f"ok: {len(card_fixes)} review fix(es): " + "; ".join(card_fixes)[:400]
     pipe = dict(schema="pipeline/1", doc="platform/PIPELINE.md: which method ran at each stage, and why",
@@ -1067,6 +1127,9 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
             warnings.append(f"tee localizer v2 {v2_status}")
     if joint is None:
         joint = place_tees_joint(fc, per_hole_card, card_sets, pads) if card_sets else None
+    if joint is not None and req.get("tee_guard", True):     # sanity.guard_tees: forward walk-backs, tees on greens / buildings
+        for n_ in sanity.guard_tees(joint, fc):
+            warnings.append(n_[:240])
     if v2_status:
         stages["tee_localizer"] = v2_status
     pipe["tees"] = dict(method=("tees/localize.py (v2)" if joint is not None and str(joint.get("method", "")).startswith("tees/localize")

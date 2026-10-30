@@ -50,6 +50,39 @@ def ground_from_package(pkg):
     return out
 
 
+def ground_from_fc(fc, max_perp_yd=30.0):
+    """OSM GeoJSON (build time) -> ground: each golf=hole line's length plus the distances to the green of the
+    golf=tee boxes near its first leg (within max_perp_yd of it, 80 behind to 150 ahead of the start)."""
+    import math
+    lines, tees = {}, []
+    for f in fc.get("features", []):
+        p, g = f.get("properties") or {}, f.get("geometry") or {}
+        if p.get("golf") == "hole" and g.get("type") == "LineString" and str(p.get("ref", "")).isdigit():
+            lines[str(p["ref"])] = [c[:2] for c in g["coordinates"]]
+        elif p.get("golf") == "tee" and g.get("type") in ("Polygon", "Point"):
+            cs = g["coordinates"][0] if g["type"] == "Polygon" else [g["coordinates"]]
+            cs = cs[:-1] if len(cs) > 2 and cs[0] == cs[-1] else cs
+            tees.append((sum(c[0] for c in cs) / len(cs), sum(c[1] for c in cs) / len(cs)))
+    out = {}
+    for ref, ll in lines.items():
+        if len(ll) < 2:
+            continue
+        L = sum(_yd(a, b) for a, b in zip(ll, ll[1:]))
+        kx = math.cos(math.radians(ll[0][1])) * 111320 / M_PER_YD
+        ky = 111320 / M_PER_YD
+        s, p1 = ll[0], ll[1]
+        dx, dy = (p1[0] - s[0]) * kx, (p1[1] - s[1]) * ky
+        n = math.hypot(dx, dy) or 1.0
+        ds = []
+        for t in tees:
+            x, y = (t[0] - s[0]) * kx, (t[1] - s[1]) * ky
+            a, v = (x * dx + y * dy) / n, abs(x * dy - y * dx) / n
+            if v <= max_perp_yd and -80 <= a <= 150 and L - a > 60:
+                ds.append(round(L - a))
+        out[ref] = dict(line=round(L), tees=sorted(ds))
+    return out
+
+
 def ground_from_summary(summ):
     """raw/summary.json (fetch-time OSM) -> ground with hole lines only."""
     return {str(h["ref"]): dict(line=h.get("length_yd"), tees=[]) for h in summ.get("holes") or []
