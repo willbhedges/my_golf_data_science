@@ -116,4 +116,57 @@ family the tee engine uses. `hcp=True` adds the ~5-handicap offsets from `resear
 
 ## Evaluation (Blue Hills, Eagle Knoll; `eval_approach.py` → `output/approach_eval.json`)
 
-RESULTS_PLACEHOLDER
+Run: `python3 course_data/strategy/eval_approach.py`, about 13 min on 4 cores. The run covers all 28 par 4s and
+par 5s on Blue Hills (Black tees) and Eagle Knoll. Approach starts are 40 finishing spots of each hole's
+tee-only pick, from the fairway, first cut, rough or sand. The pin is unknown (12-pin average). Calm, 70 °F.
+
+**Approach picks vs "aim at the green centre"** (same swings and same club logic; only the aim differs):
+- Mean EV gain is **0.037 strokes per approach**. Per hole it runs from 0.002 (EK 14, a 265-yd par 4 with a
+  short wedge in) to 0.19 (BH 1, where you lay up short of a green guarded by OB and trees). On a typical
+  par 4 the gain is 0.01–0.05.
+- The aim is 3–10 yds from the centre (mean |offset| per hole). Most often it is **short of the centre**
+  (−4 to −7 yds long) where the green front is open fairway and the trouble is long, and away from
+  water/OB/sand.
+- In 30–90% of spots the club changes, usually one club less, because the shorter aim plays shorter.
+- An aim off the green itself is chosen when the green is out of reach or nearly so: par-5 second shots and
+  long approaches from the rough, e.g. EK 13 69% and EK 17 88% (lay-ups).
+
+| hole | start (yd frame) | best: club, plays-like, aim vs centre (long/right) | EV best | EV centre | why |
+|---|---|---|---|---|---|
+| BH 17 (P4) | fairway, 163 out | 8-iron 163, −6.7 / +0.3 | 3.328 | 3.395 | centre aim needs a 7-iron; long side has OB/water (P 1.8% → 0.7%) |
+| BH 1 (P5, 2nd) | fairway, ~235 out | 4-iron 220 lay-up, −13.7 / −4.1 (rough short) | 3.649 | 3.743 | going at the centre with a 4-wood: 6.8% penalty, P(green) only 10% either way |
+| EK 15 (P4) | fairway, 170 out | 8-iron 159, −5.8 / +0.7 | 3.310 | 3.360 | trouble long; short is fairway |
+| EK 7 (P5, 2nd) | fairway, 174 out | 8-iron 168, −6.5 / −3.0 | 3.474 | 3.515 | |
+| EK 4 (P4) | fairway, 118 out | SW 114, −4.0 / −1.0 | 3.257 | 3.279 | |
+
+**Tucked pin vs "aim at the flag"** (the pin farthest from the centre):
+- EK 7: the flag is 9 yds right of the centre. Best is an 8-iron aimed 14.5 short and 2 left of the centre,
+  EV 3.484 vs 3.612 at the flag (−0.13).
+- BH 1: going at a back-left pin costs 14% penalty; laying up is worth 0.24.
+- EK 4: SW aimed ~2 yds inside the flag (+3.9 right vs +5.7), worth 0.015.
+- On open greens (EK 15, BH 17) the flag aim and the best aim differ by <0.01.
+
+**Whole-hole tee choice.** Every tee club (Driver to Mid iron) × aim (−30..+30 every 5 yds) uses the tee
+engine's own swings. Scoring them by the approach value instead of the distance/lie table:
+- **The tee club changes on 5 of 28 holes, and the club or aim on 8 of 28.** The club changes are BH 1, BH 7,
+  BH 10, EK 11 and EK 17. The aim-only changes are EK 3, EK 9 and EK 15, by 5 yds.
+- The cost of keeping the tee-only pick, under the whole-hole objective, is **0.002 strokes on average**.
+  It is ≤ 0.008 everywhere except **EK 17**: on that 489-yd par 5 the tee-only pick (4-wood +15) costs 0.043
+  vs a Long iron −5 that sets up a better lay-up / go angle.
+- BH 10 and EK 11 move up to the Driver (4-wood → Driver, +0.007 / +0.008), and BH 1 drops to the 2-wood.
+- Conclusion: the tee-shot table is a good proxy for this golfer on these courses. Whole-hole optimisation
+  matters mainly on reachable or near-reachable par 5s and where the green complex punishes one side of the
+  approach. The pages are not changed.
+
+An earlier run scored tree finishes with a geometric solve from the trees (reach 140, wider pattern) and
+did not include the Broadie blocked-line gap. That made trees cheap and pushed 12 of 28 picks toward the
+Driver, with regrets up to 0.11. The released ValueGrid keeps the tee model's recovery gap (see above).
+That sensitivity is the biggest open question for a whole-hole objective.
+
+Tests: `python3 -m pytest course_data/strategy/test_approach.py` (14 pass, ~7 s). They cover:
+- table monotonicity, and bag gapping / consistency with the tee clubs;
+- an open green aims at the centre; water right moves the aim left; OB long moves it short;
+- a tucked pin over a bunker aims inside the flag, and short-side cost;
+- uphill plays longer; head wind, cold, and the cross-wind aim-off sign;
+- out-of-reach lay-up; rough worse than fairway;
+- the proximity calibration; ValueGrid penalty mapping; a Blue Hills package hole solves.
