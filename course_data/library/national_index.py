@@ -10,7 +10,8 @@ Per course (schema us_courses/1, columnar: "fields" + "rows"):
   name, city, state, lat, lon, osm ("way/123"), holes (the course's `holes` tag, else inferred),
   osm_holes (golf=hole ways: distinct refs, else count), greens, tees (golf=green / golf=tee features whose centre is
   inside the course outline's bbox; a feature in two bboxes goes to the smaller course), card ("" unknown,
-  "library" a library build found a web card, "oga" OpenGolfAPI lists it with hole data, "oga?" listed, no hole data),
+  "library" a library build found a web card, "oga" OpenGolfAPI lists it with a course par (its detail call
+  usually returns the card), "oga?" listed without a par),
   tier (readiness, below), closed (1 when the name / tags say former / disused / abandoned).
 
 Readiness tiers (what the course_page pipeline does with the course, course_data/library/README.md):
@@ -136,12 +137,17 @@ def oga(states, out, max_calls=700):
         rows, page = [], 0
         while calls < max_calls and page < 40:
             url = f"{OPENGOLFAPI}/v1/courses/search?state={st}&limit=100&offset={page * 100}&page={page + 1}"
-            try:
-                req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
-                with urllib.request.urlopen(req, timeout=60) as r:
-                    js = json.loads(r.read().decode())
-            except Exception as e:                                  # noqa: BLE001
-                log(st, "oga failed:", repr(e)[:200])
+            js = None
+            for attempt in range(3):
+                try:
+                    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
+                    with urllib.request.urlopen(req, timeout=60) as r:
+                        js = json.loads(r.read().decode())
+                    break
+                except Exception as e:                              # noqa: BLE001
+                    log(st, "oga failed:", repr(e)[:200])
+                    time.sleep(10 * (attempt + 1))
+            if js is None:
                 break
             calls += 1
             cs = js.get("courses") if isinstance(js, dict) else js
@@ -272,6 +278,9 @@ def attach_cards(rows, oga_dir):
                 r["card"] = "library"
             r["slug"] = c.get("slug")
     n_oga = 0
+    grid = {}
+    for r in rows:
+        grid.setdefault((r["state"], int(r["lat"] * 20), int(r["lon"] * 20)), []).append(r)
     for path in sorted(glob.glob(os.path.join(oga_dir or "/nonexistent", "oga_*.json"))):
         js = json.load(open(path))
         for c in js.get("courses") or []:
@@ -279,6 +288,18 @@ def attach_cards(rows, oga_dir):
             st = (c.get("state") or js["state"] or "").upper()[:2]
             cands = by.get((st, norm(nm)), [])
             lat, lon = c.get("latitude") or c.get("lat"), c.get("longitude") or c.get("lon") or c.get("lng")
+            if not cands and lat and lon:          # fuzzy: an OSM course within 1.5 km whose name shares a stem
+                n1 = norm(nm)
+                try:
+                    la, lo = float(lat), float(lon)
+                    cell = grid.get((st, int(la * 20), int(lo * 20)), [])
+                    near = [r for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+                            for r in grid.get((st, int(la * 20) + dx, int(lo * 20) + dy), [])] if n1 else cell
+                    near = [r for r in near if dist_km(r["lat"], r["lon"], la, lo) <= 1.5]
+                    n2s = [(r, norm(r["name"])) for r in near]
+                    cands = [r for r, n2 in n2s if n2 and (n1 in n2 or n2 in n1 or n1[:6] == n2[:6])]
+                except (TypeError, ValueError):
+                    cands = []
             for r in cands:
                 if lat and lon:
                     try:
@@ -288,7 +309,7 @@ def attach_cards(rows, oga_dir):
                         pass
                 if r["card"] == "library":
                     continue
-                rich = any(c.get(k) for k in ("tees", "holes_data", "scorecard", "holes"))
+                rich = bool(c.get("par")) or any(c.get(k) for k in ("tees", "holes_data", "scorecard"))
                 r["card"] = "oga" if rich else (r["card"] or "oga?")
                 n_oga += 1
     log("opengolfapi matches:", n_oga)
