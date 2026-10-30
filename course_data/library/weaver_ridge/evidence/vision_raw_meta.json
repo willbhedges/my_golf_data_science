@@ -1,0 +1,195 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "weaver_ridge",
+ "course": "WeaverRidge Golf Club",
+ "bbox_snwe": [
+  40.739918,
+  -89.668902,
+  40.755871,
+  -89.648642
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 2006,
+  "height": 2064,
+  "bounds": [
+   274528,
+   4513140,
+   276534,
+   4515204
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   274528.0,
+   0.0,
+   -1.0,
+   4515204.0
+  ],
+  "ll_bbox_wsen": [
+   -89.67101533309355,
+   40.738329588113174,
+   -89.64653887378493,
+   40.75745052652453
+  ]
+ },
+ "fetched_utc": "2026-10-30T12:12:27Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_District4_Peoria_2014_LAS_2016-hag-2m-3-3",
+     "when": "2016-01-01T00:00:00.000000Z",
+     "cells": 4127502,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_District4_Peoria_2014_LAS_2016",
+      "end_datetime": "2016-01-01T00:00:00.000000Z",
+      "start_datetime": "2016-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "IL_Peoria_2008-hag-2m-3-3",
+     "when": "2008-03-29T00:00:00.000000Z",
+     "cells": 11924,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "IL_Peoria_2008",
+      "end_datetime": "2008-03-29T00:00:00.000000Z",
+      "start_datetime": "2008-03-25T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9997686204951038,
+   "file": "hag.tif",
+   "mb": 1.85,
+   "frac_gt_2_5m": 0.5275430974518306
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_District4_Peoria_2014_LAS_2016-dtm-2m-3-3",
+     "when": "2016-01-01T00:00:00.000000Z",
+     "cells": 1031726,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_District4_Peoria_2014_LAS_2016",
+      "end_datetime": "2016-01-01T00:00:00.000000Z",
+      "start_datetime": "2016-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "IL_Peoria_2008-dtm-2m-3-3",
+     "when": "2008-03-29T00:00:00.000000Z",
+     "cells": 3066,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "IL_Peoria_2008",
+      "end_datetime": "2008-03-29T00:00:00.000000Z",
+      "start_datetime": "2008-03-25T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9997063074342862,
+   "mb": 2.9
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_IL_District4_Peoria_2014_LAS_2016-classification-2m-3-3",
+     "when": "2016-01-01T00:00:00.000000Z",
+     "cells": 4107742,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_District4_Peoria_2014_LAS_2016",
+      "end_datetime": "2016-01-01T00:00:00.000000Z",
+      "start_datetime": "2016-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "IL_Peoria_2008-classification-2m-3-3",
+     "when": "2008-03-29T00:00:00.000000Z",
+     "cells": 1366,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "IL_Peoria_2008",
+      "end_datetime": "2008-03-29T00:00:00.000000Z",
+      "start_datetime": "2008-03-25T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.4,
+   "counts": {
+    "0": 31276,
+    "1": 2100564,
+    "2": 2007606,
+    "3": 64,
+    "5": 60,
+    "9": 138,
+    "10": 676
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032000000"
+  ],
+  "mb": 0.64,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W090",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1035096,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 20.7,
+    "items": [
+     "il_m_4008919_ne_16_030_20230725_20240209",
+     "il_m_4008911_se_16_030_20230725_20240209"
+    ],
+    "acquired": [
+     "2023-07-25"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 17.0,
+    "items": [
+     "il_m_4008919_ne_16_060_20210804",
+     "il_m_4008911_se_16_060_20210804"
+    ],
+    "acquired": [
+     "2021-08-04"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
