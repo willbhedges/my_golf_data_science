@@ -1,0 +1,307 @@
+{
+ "course": "Tomahawk Hills Golf Course",
+ "bbox_wgs84_snwe": [
+  38.9928225,
+  -94.7975085,
+  39.0015565,
+  -94.7825582
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  38.99192418882501,
+  -94.79866436458582,
+  39.00245481117499,
+  -94.78140233541419
+ ],
+ "fetched_utc": "2026-10-30T20:56:45Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2021,
+  "years_available": [
+   2012,
+   2014,
+   2015,
+   2017,
+   2019,
+   2021,
+   2023
+  ],
+  "acquired": [
+   "2021-06-12",
+   "2021-06-13"
+  ],
+  "items": [
+   "ks_m_3809402_ne_15_060_20210613",
+   "ks_m_3909458_se_15_060_20210612"
+  ],
+  "selection": {
+   "schema": "naip_years/1",
+   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
+   "chosen": 2021,
+   "reason": "2021 (2021-06-12, 2021-06-13): greenest leaf-on year on the course's turf (NDVI 0.29 vs 0.20, 2% vs 15% brown) over the newest year 2023 (less green)",
+   "candidates": [
+    {
+     "year": 2023,
+     "dates": [
+      "2023-08-16"
+     ],
+     "gsd_m": 0.3,
+     "coverage": 1.0,
+     "turf_ndvi": 0.1988,
+     "turf_exg": 85.0,
+     "green_ndvi": 0.1486,
+     "bare_turf": 0.1537,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 56.0,
+     "turf_rgb": [
+      127.0,
+      154.0,
+      93.0
+     ],
+     "score": 0.1691,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2021,
+     "dates": [
+      "2021-06-12",
+      "2021-06-13"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2897,
+     "turf_exg": 95.0,
+     "green_ndvi": 0.2744,
+     "bare_turf": 0.0185,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 60.0,
+     "turf_rgb": [
+      114.0,
+      155.0,
+      100.0
+     ],
+     "score": 0.2811,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2019,
+     "dates": [
+      "2019-07-14"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2163,
+     "turf_exg": 67.0,
+     "green_ndvi": 0.239,
+     "bare_turf": 0.1316,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 59.0,
+     "turf_rgb": [
+      116.0,
+      140.0,
+      96.0
+     ],
+     "score": 0.0843,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2017,
+     "dates": [
+      "2017-08-19"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.145,
+     "turf_exg": 76.0,
+     "green_ndvi": 0.1822,
+     "bare_turf": 0.5486,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 60.0,
+     "turf_rgb": [
+      130.0,
+      155.0,
+      104.0
+     ],
+     "notes": [
+      "55% of the turf brown / bare",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2015,
+     "dates": [
+      "2015-06-25",
+      "2015-06-29"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2361,
+     "turf_exg": 63.0,
+     "green_ndvi": 0.233,
+     "bare_turf": 0.0402,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 52.0,
+     "turf_rgb": [
+      113.0,
+      139.0,
+      101.0
+     ],
+     "notes": [
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2014,
+     "dates": [
+      "2014-06-24"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.4048,
+     "turf_exg": 51.0,
+     "green_ndvi": 0.3883,
+     "bare_turf": 0.0014,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 34.0,
+     "turf_rgb": [
+      86.0,
+      114.0,
+      89.0
+     ],
+     "notes": [
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2012,
+     "dates": [
+      "2012-06-09"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.1522,
+     "turf_exg": 53.0,
+     "green_ndvi": 0.296,
+     "bare_turf": 0.4884,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 60.0,
+     "turf_rgb": [
+      145.0,
+      158.0,
+      115.0
+     ],
+     "notes": [
+      "49% of the turf brown / bare",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    }
+   ]
+  },
+  "gsd_m": 0.6,
+  "resolution_m": 0.6,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 2531,
+  "height": 1998,
+  "transform": [
+   0.6,
+   0.0,
+   344227.2,
+   0.0,
+   -0.6,
+   4318588.2
+  ],
+  "bounds_crs": [
+   344227.2,
+   4317389.399999999,
+   345745.8,
+   4318588.2
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 2531,
+   "height": 1998,
+   "transform": [
+    0.6,
+    0.0,
+    344227.2,
+    0.0,
+    -0.6,
+    4318588.2
+   ],
+   "resolution_m": 0.6
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 2.14,
+   "naip_nir.tif": 1.8,
+   "naip_rgb_lo.jpg": 1.42,
+   "naip_nir_lo.jpg": 1.05
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 2,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26915",
+  "width": 1519,
+  "height": 1199,
+  "transform": [
+   1.0,
+   0.0,
+   344227.0,
+   0.0,
+   -1.0,
+   4318588.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 3.93,
+  "format": "COG",
+  "elev_m": [
+   243.567626953125,
+   310.8755187988281
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 10.7
+}

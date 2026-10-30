@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-10-30T18:49:52Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
+Built 2026-10-30T20:58:04Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
 **WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
@@ -15,8 +15,8 @@ Built 2026-10-30T18:49:52Z. OSM way/44804299. Scorecard: golfify (golfify). Tee 
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 13 |
-| mean_landing_osm_share | 0.306 |
-| mean_confidence | 0.801 |
+| mean_landing_osm_share | 0.307 |
+| mean_confidence | 0.809 |
 | osm_score | 0.861 |
 
 OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, golf=fairway 30, golf=green 26, golf=hole 18, golf=lateral_water_hazard 2, golf=path 38, golf=rough 1, golf=tee 43, holes_with_handicap 18, holes_with_par 18, water_lines 1, water_polygons 2
@@ -31,10 +31,10 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 | 4 | 4 | 349 / 348 | 298 | 0.78 | check the flags | 35% | 16% | 49% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 5 | 4 | 402 / 401 | 169 | 0.80 | auto | 32% | 14% | 54% | tee stage: Blue tee_centroid |  |
 | 6 | 3 | 210 / 209 | 88 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 7 | 5 | 590 / 591 | 66 | 0.68 | check the flags | 24% | 18% | 58% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 590 yds) |
+| 7 | 5 | 590 / 580 | 66 | 0.68 | check the flags | 25% | 13% | 62% | tee stage: Blue lidar_pad_capped | tee: tee stage: Blue lidar_pad_capped; Blue tee on a lidar pad (no OSM box at 590 yds) |
 | 8 | 3 | 181 / 181 | 19 | 0.86 | auto | 100% | 0% | 0% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 181 yds) |
 | 9 | 5 | 537 / 537 | 294 | 0.81 | auto | 38% | 8% | 55% | tee stage: Blue tee_centroid |  |
-| 10 | 5 | 560 / 560 | 148 | 0.66 | check the flags | 29% | 17% | 54% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 560 yds) |
+| 10 | 5 | 520 / 520 | 149 | 0.80 | auto | 29% | 17% | 54% | tee stage: Blue tee_centroid |  |
 | 11 | 3 | 155 / 155 | 242 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 12 | 4 | 330 / 317 | 245 | 0.72 | check the flags | 18% | 12% | 70% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 13 | 3 | 160 / 160 | 56 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
@@ -63,3 +63,4 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 ## Warnings
 
 - requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red
+- hole 7 Blue: CHECK, tee was on a road (OSM 16037399): moved 11 yds forward off it
