@@ -1,0 +1,235 @@
+{
+ "course_review/1": {
+  "slug": "old_kinderhook",
+  "reviewer": "agent",
+  "card_source": "club site hole-by-hole guide (https://www.oldkinderhook.com/golf/, fetched course_data/research/web/rv14_cards/16.txt): Championship tee column. It matches the OpenGolfAPI 'Web' card on every hole except 15 (402 vs 273). The site states 6726 for the Championship tees, but its hole values sum to 6855. Its Club/Member/Forward columns sum to 6310/5798/4962, against the stated 6316/5794/4960.",
+  "card": {
+   "Championship": [
+    430,
+    386,
+    206,
+    432,
+    446,
+    344,
+    152,
+    416,
+    514,
+    423,
+    202,
+    408,
+    437,
+    559,
+    402,
+    206,
+    376,
+    516
+   ],
+   "par": [
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    3,
+    4,
+    5,
+    4,
+    3,
+    4,
+    4,
+    5,
+    4,
+    3,
+    4,
+    5
+   ],
+   "Club": [
+    394,
+    359,
+    182,
+    398,
+    420,
+    306,
+    143,
+    390,
+    480,
+    377,
+    168,
+    400,
+    401,
+    538,
+    365,
+    175,
+    338,
+    476
+   ],
+   "Member": [
+    365,
+    318,
+    158,
+    371,
+    387,
+    281,
+    130,
+    354,
+    443,
+    321,
+    153,
+    391,
+    351,
+    524,
+    332,
+    162,
+    315,
+    442
+   ],
+   "Forward": [
+    323,
+    270,
+    128,
+    311,
+    316,
+    247,
+    113,
+    309,
+    409,
+    289,
+    127,
+    304,
+    320,
+    429,
+    293,
+    132,
+    236,
+    406
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Tee on OSM tee; 429 vs 430. Routing and par fine."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Par 3 over the ravine; 145 measured vs 152 card (-7), within tolerance."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 9,
+    "verdict": "wrong tee position",
+    "notes": "Page tee is a lidar pad in the woods ~22 yds left of the hole line and only ~8 yds behind its start, not a back tee. The OSM hole line starts on a visible tee pad (505 yds to the green vs card 514). Move the tee to the hole-line start; line and length then match.",
+    "fix": {
+     "tee_ll": {
+      "Web": [
+       38.0073507,
+       -92.808971
+      ]
+     }
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Tee is a lidar pad 11 yds left of the hole-line start; 424 vs 423. Harmless."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Par 3, 202 exact (the club guide's '302' is a typo; its other tee columns are 168/153/127)."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 15,
+    "verdict": "wrong yardage",
+    "notes": "Card says 273 but the club's hole-by-hole guide gives 402-365-332-293 (the other columns of that guide sum to the club totals; a 273 back tee would be shorter than the 365 Club tee; and the hole is described with water crossing the fairway about 300 yds out). The page tee is a forward box on the W edge of the pond (272 measured, about the 293 forward tee); the OSM hole line starts 60 yds further N and measures 332 (= the Member tee). The championship tee is about 70 yds behind that, roughly on the line extension (estimated 38.00318,-92.80561, 404 yds, about 48 yds W of the 18 green; position not visible in the page imagery). The page plays hole 15 as a 273-yd par 4 (4-wood -40), so the play is wrong.",
+    "fix": {
+     "tee_ll": {
+      "Web": [
+       38.0031769,
+       -92.8056077
+      ]
+     },
+     "yards": 402
+    }
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Tee on the OSM tee box at the hole-line start; measured within 7 yds of the card; routing follows the fairway; par matches the club's hole-by-hole guide."
+   }
+  ],
+  "summary": {
+   "ok": 16,
+   "fixed": 0,
+   "needs_fix": [
+    9,
+    15
+   ],
+   "routing_errors": 0,
+   "par_errors": 0,
+   "publish": "not safe as-is: hole 15 is played as a 273-yd hole from a forward tee (card says 402). Hole 9 tee is off the line (minor). Rebuild with request yardages = Championship column and the osm_supplement tees.",
+   "rebuild_hint": {
+    "yardages": "430 386 206 432 446 344 152 416 514 423 202 408 437 559 402 206 376 516",
+    "pars": "4 4 3 4 4 4 3 4 5 4 3 4 4 5 4 3 4 5",
+    "tees": "Championship",
+    "osm_supplement": "course_data/library/old_kinderhook/osm_supplement.geojson"
+   }
+  }
+ }
+}

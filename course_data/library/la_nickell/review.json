@@ -1,0 +1,209 @@
+{
+ "course_review/1": {
+  "slug": "la_nickell",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/l-a-nickell-golf-course), confirmed by AllSquare (same card in metres, ratings Blue 69.9/121, White 67.7/116); fetched course_data/research/web/rv14_cards/",
+  "card": {
+   "Blue": [
+    372,
+    369,
+    385,
+    224,
+    325,
+    196,
+    500,
+    392,
+    379,
+    384,
+    174,
+    526,
+    376,
+    194,
+    377,
+    328,
+    407,
+    427
+   ],
+   "White": [
+    350,
+    350,
+    365,
+    187,
+    315,
+    162,
+    465,
+    351,
+    358,
+    364,
+    158,
+    480,
+    359,
+    182,
+    339,
+    321,
+    374,
+    382
+   ],
+   "Red": [
+    289,
+    313,
+    331,
+    120,
+    270,
+    136,
+    397,
+    302,
+    304,
+    290,
+    147,
+    365,
+    258,
+    160,
+    275,
+    292,
+    246,
+    276
+   ],
+   "par": [
+    4,
+    4,
+    4,
+    3,
+    4,
+    3,
+    5,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Routing and par fine. Blue tee sits on the OSM tee box that is also hole 10's White tee (about 30 yds W of the 1 White tee); 365 measured vs 372 card. Shared tee complex is plausible; White CHECK is only the calm pick landing in rough 7 yds off the mapped fairway (model aim, not geometry)."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Blue/White tees on an OSM tee box ~60 yds W of the hole-line start (Red); the Blue-Red gap (55 yds) matches the card (56). CHECK is only 6 yds from the OSM tee polygon."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "All three tees on the hole line; 385/362/331 measured vs 385/365/331."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Par 3. Blue tee is a texture pad ~35 yds E of the White tee, on the line extension; 227 vs card 224, the gap matches the card (37). Plausible back tee, not on an OSM polygon."
+   },
+   {
+    "n": 5,
+    "verdict": "wrong yardage",
+    "notes": "Blue tee is the same point as the White tee (313 measured), so Blue plays 12 yds short of the 325 card. Blue tee is probably ~12 yds behind White (north, toward G4); not visible in the page imagery. Small effect on the pick (2-wood -34).",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.9746675,
+       -92.370716
+      ]
+     },
+     "yards": 325
+    }
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Par 3, tees on the line, yardages exact."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Blue tee shares the 4 White tee complex; measured 507/471 vs 500/465."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Blue tee on OSM tee box at the line start (391 vs 392). White/Red are lidar pads ~35 yds left of the Blue line near the 2 green, measured 350/302 matching the card; they look like forward tees on the left side but are not OSM-mapped. White CHECK = tee check only. Uncertain but harmless."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "Routing fine. Blue/White are walk-backs 46/25 yds behind the OSM Red tee along the hole line, in the gap between the trees east of G8; lengths match the card. Exact box positions unconfirmed in the 2022 NAIP (shade); line is unchanged, so picks are unaffected."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "White tee on OSM box (360 vs 364). Blue walk-back 24 yds behind toward the clubhouse lot (383 vs 384); exact box unconfirmed, line unchanged. White CHECK is the calm aim 6 yds off fairway."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Par 3, all tees on the line, yardages exact."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "White on OSM box (479 vs 480). Blue walk-back 32 yds behind, just W of the 11 green, in a grass opening; plausible, line unchanged."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Light tee pad visible at the OSM hole start; Blue/White lidar pads 29/16 yds behind it toward the MKT trail, measured 375/358 vs 376/359. Plausible back tees, not OSM-mapped."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Par 3, tees on the line, yardages exact."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Tees on line, 377/339 exact. Dogleg left; Driver -33 cuts the corner with some trees in the pattern (check passed)."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Tees on OSM box, 329/322. Dogleg right; 2-wood +40 aims at the fairway elbow."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Tees on OSM box; Blue 397 vs 407 (-10, at the tolerance). White CHECK = 4-wood -40 lands 13 yds off the mapped fairway at the dogleg (model aim choice)."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "White on OSM box (380 vs 382). Blue walk-back 46 yds behind, 40 yds ESE of G17 by the cart path (426 vs 427); plausible, unconfirmed. Driver +40 lands on the fairway right side with trees in the right half of the pattern (check passed)."
+   }
+  ],
+  "summary": {
+   "ok": 17,
+   "fixed": 0,
+   "needs_fix": [
+    5
+   ],
+   "uncertain_tee_boxes": [
+    1,
+    8,
+    9,
+    10,
+    12,
+    13,
+    18
+   ],
+   "routing_errors": 0,
+   "par_errors": 0,
+   "publish": "safe as-is; hole 5 Blue plays 12 yds short (optional fix)"
+  }
+ }
+}
