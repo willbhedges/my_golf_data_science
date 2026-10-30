@@ -13,7 +13,8 @@ Model (APPROACH.md has the evidence and the numbers):
   * Bag: the golfer's woods / 4-iron / 6-iron numbers exactly as the tee model (tee_strategy.CLUBS / IRONS:
     Driver 275/300, 2-wood 265/280, 4-wood 255/270, "Long iron" = 4-iron 210/220, "Mid iron" = 6-iron 185/192)
     plus 12-yd gapping down to a 100-yd lob wedge. Off the deck the woods lose ~10 yds (no tee). Each club
-    covers [total - 10, total + 2] (smooth / choke-down to a stock swing); under 100 yds a partial wedge.
+    covers [total - 12, total + 3] (smooth / choke-down; the 4-wood swung smooth down to 222 fills the gap
+    to the 4-iron); under 100 yds a partial wedge.
   * Plays-like distance to an aim point = horizontal yds + elevation (green higher than the ball by dh ft ->
     dh*0.3048/tan(50 deg)/0.9144 yds, course_data/elevation/adjust.py's par-3 rule) / the wind + temperature
     carry factor of the club that plays that distance (spirit_hollow/wind.py adjust / temperature_adjust:
@@ -74,7 +75,11 @@ BAG = {
     "LW": ((100, 101), "Mid iron"),
 }
 DECK_LOSS = {"2-wood": 15.0, "4-wood": 10.0}     # off the turf, no tee (approach/shots.py: 265 / 258)
-CLUB_LOW, CLUB_HIGH = 10.0, 2.0                  # a club covers [total - 10, total + 2]
+CLUB_LOW, CLUB_HIGH = 12.0, 3.0                  # a club covers [total - 12, total + 3]
+# The golfer's bag has no club between the 4-iron (220) and the 4-wood off the deck (~260): the 4-wood is
+# swung smooth down to the 4-iron (approach/shots.py CLUB_FOR: "4-wood (smooth)"); v2 lists a ~235 hybrid
+# as a hypothetical gap club, never in the bag.
+SMOOTH_LOW = {"2-wood": 20.0, "4-wood": 40.0}
 MIN_SHOT = 5.0
 REACH = {"fairway": 275.0, "first_cut": 268.0, "rough": 235.0, "sand": 190.0, "recovery": 140.0,
          "green": 275.0}
@@ -354,7 +359,7 @@ def club_for(dist_eff, lie, cond, bearing):
         if lie in ("rough", "sand", "recovery") and name in DECK_LOSS:
             continue
         c, tot, wf, df, drift = cond.club(name, bearing, lie)
-        lo, hi = tot - CLUB_LOW, tot + CLUB_HIGH
+        lo, hi = tot - SMOOTH_LOW.get(name, CLUB_LOW), tot + CLUB_HIGH
         if name == "LW":
             lo = MIN_SHOT
         if lo <= dist_eff <= hi:
