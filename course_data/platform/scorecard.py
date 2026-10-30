@@ -571,11 +571,12 @@ def ddg_urls(query, host):
     return out
 
 
-def fetch_golfify(name, state, town, raw_dir):
-    """-> (card, url) or (None, reason)."""
+def fetch_golfify(name, state, town, raw_dir, center=None):
+    """-> (card, url) or (None, reason). Derived URLs first (`golfify_urls`), then a web search; the page
+    must pass `page_matches` (state, fuzzy name, distance when center [lon, lat] is given)."""
     s = _session()
     st = pc.STATES[pc.state_code(state)].lower()
-    urls = [f"https://www.golfify.io/courses/{g}" for g in golfify_slugs(name, town)]
+    urls = golfify_urls(name, town, limit=10)
     tried = []
     for extra in (None, "search"):
         if extra == "search":
@@ -600,13 +601,244 @@ def fetch_golfify(name, state, town, raw_dir):
             except Exception as e:                        # noqa: BLE001
                 pc.log("golfify parse", u, e)
                 continue
-            if card and str(fac.get("state", "")).lower() in (st, pc.state_code(state).lower()):
+            ok, how = page_matches(golfify_page_info(fac), name, state, town, center)
+            if card and ok:
                 card["source"] = u
                 for ts in card["tee_sets"].values():
                     ts["source"] = u
                 return card, u
-            pc.log("golfify: wrong state or no tees", u, fac.get("state"))
+            pc.log("golfify: not this course or no tees", u, how)
     return None, f"golfify: no matching page ({len(tried)} URLs tried)"
+
+
+# ----------------------------------------------------------------------------- derived directory URLs (no search engine)
+# Card discovery that does not need DuckDuckGo / Bing (both bot-challenge GitHub runners after a few queries):
+# golfify and AllSquare put the course page at a URL built from the course name (CARDS.md):
+#   golfify    https://www.golfify.io/courses/<name-slug>[-<town>]          (__NEXT_DATA__ pageProps.tees, yards)
+#   AllSquare  https://www.allsquaregolf.com/golf-courses/<state-name>/<name-slug>   (__NEXT_DATA__ apolloState
+#              Teebox.distances in YARDS; the HTML table shows METRES on first render)
+# A fetched page must pass `page_matches` (fuzzy name + state, + town or distance when known).
+M_PER_YD = 0.9144
+
+
+def metres_to_yards(m):
+    """AllSquare's rendered table is in metres: 379 m -> 414 yd (rounded like their own toggle)."""
+    return None if m is None else int(round(float(m) / M_PER_YD))
+
+
+def _slug(s):
+    return re.sub(r"[^a-z0-9]+", "-", str(s).lower().replace("&", " and ").replace("'", "")).strip("-")
+
+
+def _name_variants(name):
+    """'A.L. Gustin Jr. Golf Course' -> slugs a-l-gustin-jr-golf-course, a-l-gustin-golf-course, al-gustin-..."""
+    base = _slug(name)
+    out = [base]
+    no_the = re.sub(r"^the-", "", base)
+    out.append(no_the)
+    if base == no_the:
+        out.append("the-" + base)                                          # golfify: the-harvester-golf-club
+    out.append(re.sub(r"-(jr|sr|ii|iii)(?=-|$)", "", base))               # 'Jr.' often dropped
+    out.append(re.sub(r"\b([a-z])-(?=[a-z]-)", r"\1", base))            # a-l-gustin -> al-gustin
+    core = _slug(pc.core_name(str(name).replace("'", "").replace("\u2019", "")))
+    if core:
+        m = re.match(r"^the-golf-club-at-(.+)$", base)                     # 'The Golf Club at Creekmoor'
+        if m:
+            out += [f"{m.group(1)}-golf-club", f"golf-club-at-{m.group(1)}"]
+        out += [f"{core}-golf-course", f"{core}-golf-club", f"{core}-country-club"]
+    seen = []
+    for s in out:
+        if s and s not in seen:
+            seen.append(s)
+    return seen
+
+
+def golfify_urls(name, town=None, limit=6):
+    """golfify course-page URLs to try, best first (exact name slug, its variants, then '-<town>' forms that
+    golfify uses when two facilities share a name: st-andrews-golf-club-overland-park)."""
+    slugs = _name_variants(name)
+    if town:
+        t = _slug(town)
+        slugs += [f"{s}-{t}" for s in slugs[:2]]
+    for s in golfify_slugs(name, town):
+        if s not in slugs:
+            slugs.append(s)
+    return [f"https://www.golfify.io/courses/{s}" for s in slugs[:limit]]
+
+
+def allsquare_urls(name, state, limit=4):
+    """AllSquare course-page URLs: /golf-courses/<state name>/<name slug>. A slug clash gets '-<id>' appended
+    on AllSquare (elks-country-club-27821), which cannot be derived: those need search."""
+    st = _slug(pc.STATES[pc.state_code(state)])
+    return [f"https://www.allsquaregolf.com/golf-courses/{st}/{s}" for s in _name_variants(name)[:limit]]
+
+
+def derived_card_urls(name, state, town=None):
+    return dict(golfify=golfify_urls(name, town), allsquare=allsquare_urls(name, state))
+
+
+def _tokens(s):
+    stop = {"golf", "course", "club", "country", "the", "at", "and", "links", "gc", "cc", "of", "jr", "sr",
+            "municipal", "muni", "resort", "community", "public"}
+    toks = set()
+    for w in re.split(r"[^a-z0-9]+", str(s or "").lower().replace(".", "")):
+        if w and w not in stop:
+            toks.add(w)
+    return toks
+
+
+def name_similarity(a, b):
+    """Token overlap of the distinctive name words (Jaccard; initials 'A. L.' == 'AL', "Dub's" == 'dubs')."""
+    def norm(x):
+        words = re.split(r"[^a-z0-9]+", str(x or "").lower().replace("'", "").replace("\u2019", ""))
+        merged, run = [], ""
+        for w in words + [""]:
+            if len(w) == 1:
+                run += w
+                continue
+            if run:
+                merged.append(run)
+                run = ""
+            if w:
+                merged.append(w)
+        return _tokens(" ".join(merged))
+    ta, tb = norm(a), norm(b)
+    if not ta or not tb:
+        return 0.0
+    return len(ta & tb) / len(ta | tb)
+
+
+def page_matches(page, name, state, town=None, center=None, min_sim=0.5, max_km=8.0):
+    """Is a directory page (dict name, state, city, lat, lon) this course? -> (ok, why). The state must match;
+    the name must be similar; when both carry a position it must be within max_km, else the town must match
+    when the names are only partly similar."""
+    st = pc.state_code(state)
+    pst = pc.state_code(page.get("state")) if page.get("state") else None
+    if pst and pst != st:
+        return False, f"state {page.get('state')} != {st}"
+    sim = name_similarity(page.get("name"), name)
+    if sim < min_sim:
+        return False, f"name '{page.get('name')}' vs '{name}' similarity {sim:.2f}"
+    if center and page.get("lat") is not None and page.get("lon") is not None:
+        km = _km(center, (float(page["lon"]), float(page["lat"])))
+        if km > max_km:
+            return False, f"{km:.1f} km from the course"
+        return True, f"name {sim:.2f}, {km:.1f} km"
+    if sim < 1.0 and town and page.get("city") and _slug(town) != _slug(page["city"]):
+        return False, f"town {page.get('city')} != {town} and name only {sim:.2f}"
+    if not pst:
+        return False, "page has no state"
+    return True, f"name {sim:.2f}, state {st}"
+
+
+def golfify_page_info(fac):
+    return dict(name=fac.get("clubName"), state=fac.get("state"), city=fac.get("city"),
+                lat=fac.get("latitude"), lon=fac.get("longitude"))
+
+
+def _next_data(html_text):
+    m = re.search(r'(?is)<script[^>]*__NEXT_DATA__[^>]*>(.*?)</script>', html_text or "")
+    return json.loads(m.group(1)) if m else None
+
+
+def parse_allsquare(page_html):
+    """AllSquare course page -> (card | None, page info {name, state, city, lat, lon, last_edit}).
+    Reads __NEXT_DATA__ apolloState: Club (zipcode 'IA 52242' gives the state), Scorecard.grid[] (par,
+    handicap, Men/Women teebox groups) and Teebox.distances (yards). Without that JSON the rendered table is
+    read and its metres converted to yards."""
+    d = _next_data(page_html)
+    if not d:
+        return _allsquare_table(page_html)
+    a = (d.get("props") or {}).get("apolloState") or {}
+    slug = ((d.get("query") or {}).get("slug") or "")
+    clubs = [v for k, v in a.items() if k.startswith("Club:") and "zipcode" in v]
+    club = next((c for c in clubs if c.get("slug") == slug), clubs[0] if clubs else {})
+    zm = re.match(r"\s*([A-Z]{2})\b", str(club.get("zipcode") or ""))
+    info = dict(name=club.get("name"), state=zm.group(1) if zm else None, city=club.get("city"),
+                lat=club.get("latitude"), lon=club.get("longitude"), slug=club.get("slug"))
+    cards = sorted([v for k, v in a.items() if k.startswith("Scorecard:")], key=lambda s: s.get("position") or 0)
+    if not cards:
+        return None, info
+    sc = cards[0]
+    info["last_edit"] = sc.get("lastEdit")
+    info["scorecards"] = [c.get("name") for c in cards]
+    sets, par, hcp = {}, None, None
+    n = sc.get("holesCount")
+    for grp in sc.get("grid") or []:
+        gpar, ghcp = grp.get("par"), grp.get("handicap")
+        men = str(grp.get("teeboxType") or "").lower().startswith("men")
+        if gpar and (par is None or men):
+            par = par if (par and not men) else gpar
+        if ghcp and men and hcp is None:
+            hcp = ghcp
+        for ref in grp.get("teeboxes") or []:
+            t = a.get(ref.get("__ref") if isinstance(ref, dict) else ref) or {}
+            ys = [int(y) if y else None for y in (t.get("distances") or [])]
+            if not ys or not any(ys):
+                continue
+            col = a.get(((t.get("color") or {}).get("__ref")) or "", {}).get("name") or t.get("name")
+            name = str(t.get("name") or col or f"Tee {len(sets) + 1}").strip()
+            if name in sets:
+                if sets[name]["yards"] == ys:
+                    sets[name].setdefault("alt_ratings", []).append(dict(
+                        name=f"{name} ({grp.get('teeboxType')})", rating=t.get("rating"), slope=t.get("slope")))
+                    continue
+                name = f"{name} ({grp.get('teeboxType')})"
+            sets[name] = dict(colour=str(col or name).lower(), aliases=sorted({str(col or "").lower()} - {""}),
+                              yards=ys, par=gpar, total=sum(y for y in ys if y), rating=t.get("rating"),
+                              slope=t.get("slope"), source="allsquare", teebox_type=grp.get("teeboxType"))
+    if not sets:
+        return None, info
+    if n:
+        sets = {k: v for k, v in sets.items() if len(v["yards"]) == n} or sets
+    sets = dict(sorted(sets.items(), key=lambda kv: -(kv[1]["total"] or 0)))
+    card = dict(schema="scorecard/1", source="allsquaregolf.com", par=par, handicap=hcp, tee_sets=sets,
+                facility=info, card_name=sc.get("name"),
+                card_date=time.strftime("%Y-%m-%d", time.gmtime(sc["lastEdit"] / 1000)) if sc.get("lastEdit") else None)
+    return card, info
+
+
+def _allsquare_table(page_html):
+    """Fallback: the rendered scorecard table (metres when the Meters toggle is active) -> yards."""
+    metres = re.search(r'as-button--primary-flat[^>]*>\s*Meters', page_html or "") is not None
+    card = parse_text(text_of(page_html or ""), source="allsquaregolf.com")
+    if card and metres:
+        for s in card["tee_sets"].values():
+            s["yards"] = [metres_to_yards(y) for y in s["yards"]]
+            s["total"] = sum(y for y in s["yards"] if y)
+            s.pop("total_stated", None)
+            s["note"] = "converted from metres"
+    return card, {}
+
+
+def fetch_allsquare(name, state, town, raw_dir, center=None, get=None):
+    """AllSquare by derived URL (no search) -> (card, url) or (None, reason)."""
+    s = None if get else _session()
+    get = get or (lambda u: s.get(u, timeout=30))
+    why = []
+    for u in allsquare_urls(name, state):
+        try:
+            r = get(u)
+        except Exception as e:                            # noqa: BLE001
+            why.append(f"{u}: {e!r}"[:120])
+            continue
+        time.sleep(1)
+        if r.status_code != 200:
+            why.append(f"{u.rsplit('/', 1)[-1]}: HTTP {r.status_code}")
+            continue
+        _save(raw_dir, u, r)
+        card, info = parse_allsquare(r.text)
+        ok, how = page_matches(info, name, state, town, center)
+        if not ok:
+            why.append(f"{u.rsplit('/', 1)[-1]}: {how}")
+            continue
+        if card:
+            card["source"] = u
+            for ts in card["tee_sets"].values():
+                ts["source"] = u
+            return card, u
+        why.append(f"{u.rsplit('/', 1)[-1]}: no scorecard on the page")
+    return None, ("allsquare: " + "; ".join(why))[:300]
 
 
 SCORE_LINK = re.compile(r"(?i)score|card|\.pdf|hole|tee|yard|course-info|the-course|layout")
