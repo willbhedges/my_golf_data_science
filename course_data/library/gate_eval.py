@@ -76,6 +76,10 @@ def score_one(slug, n):
                 SB.HAND_HOLES = copy.deepcopy(t.HOLES)
             cfg = dict(next(c for c in SB.COURSES if c["slug"] == slug))
             cfg["package"] = os.path.relpath(pkg, ROOT)
+            pk = rj(pkg) or {}
+            if cfg["tees"] not in (pk.get("tee_sets") or {}):
+                out["tee_note"] = f"{cfg['tees']} not on the blind package's card; scored its own set {pk.get('tee_set')}"
+                cfg["tees"] = pk.get("tee_set")
             a = types.SimpleNamespace(n=n, workers=None, from_out=False, holes=None, no_hand_quick=True, full=False,
                                       dry_run=False, full_S=64, full_N=3000)
             o = SB.score_course(cfg, a, {})
@@ -92,7 +96,7 @@ def score_one(slug, n):
         scored = [r for r in rows if r.get("same_or_tie") is not None]
         route_ok = all(r.get("routing", "ok") == "ok" and r.get("par_ok", True) is not False for r in rows)
         out["match"] = bool(scored) and all(r["same_or_tie"] for r in scored) and route_ok
-    except Exception as e:                                       # noqa: BLE001
+    except (Exception, SystemExit) as e:                         # noqa: BLE001
         import traceback
         out["error"] = f"{type(e).__name__}: {e}"
         out["trace"] = traceback.format_exc()[-1500:]
