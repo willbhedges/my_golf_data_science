@@ -1,6 +1,6 @@
 # Eagle Knoll Golf Club (Hartsburg, MO) - Back tees
 
-Built 2026-10-17T19:26:58Z. OSM way/389825776. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-10-30T18:49:04Z. OSM way/389825776. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
@@ -29,7 +29,7 @@ OSM features inside the course: buildings 1, golf=bunker 41, golf=cartpath 14, g
 | 4 | 4 | 399 / 405 | 16 | 0.77 | check the flags | 37% | 6% | 57% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 5 | 4 | 465 / 466 | 282 | 0.85 | auto | 39% | 26% | 35% | tee stage: Back tee_centroid |  |
 | 6 | 3 | 138 / 138 | 48 | 0.96 | auto | 100% | 0% | 0% | tee stage: Back tee_centroid |  |
-| 7 | 5 | 475 / 476 | 121 | 0.81 | auto | 40% | 24% | 35% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
+| 7 | 5 | 475 / 471 | 121 | 0.81 | auto | 40% | 24% | 36% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 8 | 4 | 407 / 406 | 169 | 0.74 | check the flags | 32% | 0% | 67% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 9 | 5 | 510 / 508 | 33 | 0.75 | check the flags | 31% | 8% | 62% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 10 | 4 | 405 / 405 | 322 | 0.89 | auto | 39% | 47% | 14% | tee stage: Back tee_centroid |  |

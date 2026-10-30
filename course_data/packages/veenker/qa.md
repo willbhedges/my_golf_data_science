@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-10-17T19:27:37Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
+Built 2026-10-30T18:49:52Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
 **WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
@@ -41,7 +41,7 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 | 14 | 4 | 416 / 416 | 339 | 0.76 | check the flags | 26% | 18% | 56% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 15 | 4 | 420 / 419 | 237 | 0.78 | check the flags | 35% | 15% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 16 | 5 | 544 / 550 | 140 | 0.75 | check the flags | 45% | 22% | 33% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 544 yds) |
-| 17 | 3 | 190 / 190 | 118 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 17 | 3 | 190 / 184 | 109 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 18 | 5 | 534 / 533 | 335 | 0.75 | check the flags | 32% | 8% | 61% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 
 ## Stages

@@ -1,5 +1,5 @@
 """Course module for Spirit Hollow Golf Course (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-10-17T19:27:32Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-10-30T18:49:45Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_spirit_hollow.json
 

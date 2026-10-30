@@ -1,6 +1,6 @@
 # Gateway National Golf Links (Madison, IL) - Back tees
 
-Built 2026-10-17T19:27:17Z. OSM way/782435512. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Blue' not on the card (sets: Back, Champions, Forward, Middle, The Tips)).
+Built 2026-10-30T18:49:27Z. OSM way/782435512. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Blue' not on the card (sets: Back, Champions, Forward, Middle, The Tips)).
 
 **WARNING: requested tee set 'Blue' is not on the card; using 'Back' instead (allow_substitute). Sets on the card: Back, Champions, Forward, Middle, The Tips**
 
@@ -15,9 +15,9 @@ Built 2026-10-17T19:27:17Z. OSM way/782435512. Scorecard: golfify (golfify). Tee
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 3 |
 | of_par4_5 | 13 |
-| mean_landing_osm_share | 0.471 |
-| mean_confidence | 0.838 |
-| osm_score | 0.74 |
+| mean_landing_osm_share | 0.474 |
+| mean_confidence | 0.842 |
+| osm_score | 0.741 |
 
 OSM features inside the course: buildings 4, golf=bunker 73, golf=cartpath 23, golf=fairway 28, golf=green 20, golf=hole 18, golf=pin 18, golf=rough 1, golf=tee 75, golf=water_hazard 10, holes_with_handicap 18, holes_with_par 18, single_trees 1, water_polygons 11
 
@@ -32,7 +32,7 @@ OSM features inside the course: buildings 4, golf=bunker 73, golf=cartpath 23, g
 | 5 | 4 | 452 / 453 | 80 | 0.78 | check the flags | 45% | 0% | 55% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 6 | 5 | 530 / 531 | 244 | 0.80 | auto | 47% | 10% | 43% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 7 | 3 | 180 / 180 | 61 | 0.93 | auto | 100% | 0% | 0% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
-| 8 | 4 | 408 / 409 | 54 | 0.69 | check the flags | 34% | 8% | 58% | tee stage: Back lidar_pad | tee: tee stage: Back lidar_pad; Back tee on a lidar pad (no OSM box at 408 yds) |
+| 8 | 4 | 408 / 412 | 56 | 0.76 | check the flags | 34% | 8% | 59% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 9 | 4 | 390 / 391 | 58 | 0.78 | check the flags | 35% | 0% | 65% | tee stage: Back tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 10 | 4 | 271 / 272 | 254 | 0.80 | check the flags | 39% | 0% | 61% | tee stage: Back tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 11 | 4 | 416 / 417 | 236 | 0.81 | auto | 43% | 0% | 57% | tee stage: Back tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
@@ -42,7 +42,7 @@ OSM features inside the course: buildings 4, golf=bunker 73, golf=cartpath 23, g
 | 15 | 4 | 428 / 427 | 250 | 0.79 | check the flags | 51% | 0% | 49% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 16 | 4 | 354 / 354 | 44 | 0.82 | auto | 50% | 0% | 50% | tee stage: Back tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 17 | 3 | 195 / 195 | 39 | 0.96 | auto | 100% | 0% | 0% | tee stage: Back tee_centroid |  |
-| 18 | 5 | 527 / 533 | 155 | 0.81 | auto | 56% | 0% | 44% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 18 | 5 | 527 / 519 | 155 | 0.82 | auto | 60% | 0% | 40% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 
 ## Stages
 
