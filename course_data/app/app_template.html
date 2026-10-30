@@ -160,6 +160,7 @@ input.tcin{width:100%;font:16px var(--body);padding:9px 12px;border-radius:10px;
 .teerow span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .teerow i{width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(0,0,0,.35);display:inline-block}
 .badge.hand{color:var(--ok)} .badge.none{color:var(--muted);border-style:dashed} .badge.confirm{color:var(--warn);background:var(--warn-bg)}
+.review{border-radius:8px;padding:6px 10px;font-size:13.5px;line-height:1.35} .review.bad{color:var(--red);background:var(--red-bg);font-weight:600} .review.ok{color:var(--ok);background:var(--soft)}
 .badge.shared{color:var(--auto);background:var(--soft)}
 .filters{display:grid;gap:8px}
 select{font:600 16px var(--body);padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);min-height:44px}
@@ -657,7 +658,7 @@ function libMatches(){
   const counts = {all: base.length, app: 0, hand: 0, auto: 0, confirm: 0, none: 0};
   for (const x of base) { counts[x.s.k] = (counts[x.s.k] || 0) + 1; if (x.e.app || x.e.lib) counts.app++; }
   const rows = base.filter(x => f === "all" || (f === "app" ? !!(x.e.app || x.e.lib) : x.s.k === f));
-  const rank = x => x.e.app || x.e.lib ? 0 : x.e.link ? 1 : x.s.k !== "none" ? 2 : x.e.src === "package" || x.e.src === "library" ? 3 : 4;
+  const rank = x => x.e.app ? 0 : x.e.lib ? 0.5 : x.e.link ? 1 : x.s.k !== "none" ? 2 : x.e.src === "package" || x.e.src === "library" ? 3 : 4;   /* the app courses first, then the library courses that play here */
   rows.sort((a, b) => rank(a) - rank(b) || a.e.name.localeCompare(b.e.name));
   return {rows, counts};
 }
@@ -666,6 +667,7 @@ function teeRow(tees, max){
   const shown = tees.slice(0, max || 5);
   return `<div class="teerow">${shown.map(t => `<span${t[3] === 0 ? ` style="opacity:.55" title="Not planned yet"` : ""}><i style="background:${esc(t[1] || "#888")}"></i>${esc(t[0])}${t[2] ? " " + Number(t[2]).toLocaleString() : ""}${t[3] === 0 ? "*" : ""}</span>`).join("")}${tees.length > shown.length ? `<span>+${tees.length - shown.length} more</span>` : ""}${shown.some(t => t[3] === 0) ? `<span>* not planned yet</span>` : ""}</div>`;
 }
+const reviewBanner = rv => rv ? `<div class="review ${rv.safe ? "ok" : "bad"}" data-review="${rv.safe ? "ok" : "unsafe"}">${rv.safe ? "✓ Reviewed OK" : "⚠ Reviewed: not safe yet"}${rv.why ? ` — ${esc(rv.why)}` : ""}</div>` : "";
 function libCard(x){
   const e = x.e, s = x.s, nRep = e.app || e.lib ? STORE.reports(e.app || e.id).length : 0;
   const shared = s.fixed ? `<span class="badge shared" title="Holes golfers confirmed or fixed: saved for everyone">${s.fixed} of ${s.n} holes confirmed${s.golfers ? ` by ${s.golfers} golfer${s.golfers === 1 ? "" : "s"}` : ""}</span>` : "";
@@ -677,6 +679,7 @@ function libCard(x){
       <div class="spread" style="align-items:flex-start"><h3 class="name">${esc(e.name)}</h3>${statusBadge(s.k)}</div>
       <div class="sub">${esc([e.town, e.state].filter(Boolean).join(", "))}${e.holes ? ` · ${e.holes} holes` : ""}${e.event ? ` · ${esc(e.event)}` : ""}</div>
       ${teeRow(e.tees)}
+      ${reviewBanner(e.review)}
       ${shared || nRep ? `<div class="row">${shared}${nRep ? `<span class="badge check">${nRep} problem${nRep === 1 ? "" : "s"} reported</span>` : ""}</div>` : ""}
       <div class="sub">${esc(s.k === "confirm" && e.lib ? `Auto-mapped wind page: ${e.checks && e.checks.length ? "CHECK hole" + (e.checks.length === 1 ? " " : "s ") + e.checks.join(", ") + "; " : ""}confirm holes as you play, saved for everyone after you.` : s.k === "confirm" && e.app ? "Auto-mapped: confirm the hole order in a few taps; your answers are saved for everyone after you." : e.note || "")}</div>
       ${acts.length ? `<div class="acts">${acts.join("")}</div>` : ""}

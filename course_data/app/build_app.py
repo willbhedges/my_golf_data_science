@@ -943,6 +943,8 @@ def main():
             e["lib"] = x["file"]
             e["checks"] = x["check_holes"]
             e["holes"] = x["holes"]
+            if x.get("review"):
+                e["review"] = x["review"]
     log(f"  {len(played)} library courses playable, {sum(x['bytes'] for x in played.values()) / 1e6:.1f} MB in {os.path.relpath(lib_dir, ROOT)}")
     if a.json:
         os.makedirs(a.json, exist_ok=True)

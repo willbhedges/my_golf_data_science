@@ -378,5 +378,11 @@ relative to the tee line (page grids at the middle temperature, elevation applie
 `green, boxes, center, plays[17]`. Client: bilinear interpolation, pick = heaviest-weighted club.
 Confirm: "Is this hole N as drawn?" saves a canonical locate (yes) / reject (no) of the hole's tee_ll + green_ll in
 `maps/<slug>` (shared like the app courses); the card turns Auto-OK once every CHECK hole has a yes. Reports: `reports`.
+Course review (`review`, from `course_data/library/<slug>/review.json` when present, `build_library_play.review_of`):
+`{safe, why, holes: {n: [verdict, note]}}`; the library entry carries `review: {safe, why}`. The card and every hole screen
+show "Reviewed: not safe yet — <why>" or "Reviewed OK — <why>", and a hole the reviewer marked wrong shows its verdict.
+The verdict is read, in order, from: a closed course, `publish` / `publish_as_is` / `summary.publish` (or the summary's
+"safe to publish" sentence), swapped nines (`renumber`), then the per-hole verdicts (any wrong routing / par / missing
+hole, or 3+ wrong tees or picks = not safe).
 Publishing: every record goes in `files` as `lib/<slug>.json` -> `course_data/app/out/lib/<slug>.json`; without them a
 library course shows "Could not load this course's data" with a retry. Test: `test_lib_play.js` (serves out/ over http).

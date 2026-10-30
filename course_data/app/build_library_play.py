@@ -134,6 +134,95 @@ def qa_holes(slug, set_of_which):
     return out
 
 
+WRONG = re.compile(r"routing|missing|par", re.I)
+
+
+def _sentences(t):
+    return [x for x in re.split(r"(?<=[.!?])\s+(?=[A-Z0-9(])", re.sub(r"\s+", " ", str(t)).strip()) if x]
+
+
+def _line(t, n=170):
+    """whole sentences of t, as many as fit in n characters (at least one, cut at a word)"""
+    out = ""
+    for x in _sentences(t):
+        if out and len(out) + 1 + len(x) > n:
+            break
+        out = (out + " " + x).strip()
+    return out if len(out) <= n else out[:n - 1].rsplit(" ", 1)[0] + "…"
+
+
+def _hn(x):
+    return int(x) if str(x).isdigit() else 99
+
+
+def review_of(slug):
+    """course_data/library/<slug>/review.json (course_review/1, the per-course reviews) -> {safe, why, holes} or None.
+    The reviews are free-form; the verdict is read from, in order: a closed course (course_level / course_notes),
+    publish / publish_as_is / summary.publish (bool or text), swapped nines (renumber), then the per-hole verdicts
+    (any hole with wrong routing / par / missing, or 3+ wrong tees or picks = not safe). `holes` keeps every
+    non-OK hole verdict {hole: [verdict, note]} for the hole screen."""
+    p = os.path.join(LIBDIR, slug, "review.json")
+    if not os.path.exists(p):
+        return None
+    try:
+        r = json.load(open(p))
+    except Exception:                                   # noqa: BLE001
+        return None
+    r = r.get("course_review/1", r)
+    bad = {}
+    for h in (r.get("holes") or []):
+        if not isinstance(h, dict):
+            continue
+        v = str(h.get("verdict") or "")
+        if v and v.lower() != "ok":
+            bad[str(h.get("n") or h.get("hole") or "")] = [v.replace("_", " "), _line(h.get("notes") or "", 220)]
+    summ = r.get("summary")
+    text, verdict = None, None
+    for k in ("publish", "publish_as_is"):
+        if k in r:
+            if isinstance(r[k], bool):
+                verdict = r[k]
+            elif isinstance(r[k], str):
+                text = r[k]
+    if verdict is None and text is None and isinstance(summ, dict) and isinstance(summ.get("publish"), str):
+        text = summ["publish"]
+    if verdict is None and text is None and isinstance(summ, str):
+        text = next((x for x in _sentences(summ) if re.search(r"safe to publish|not safe|publishable", x, re.I)), None)
+    if verdict is None and text:
+        tl = text.strip().lower()
+        verdict = not (tl.startswith("no") or tl.startswith("not") or "not safe" in tl or "not publishable" in tl
+                       or tl.startswith("publishable after") or "not as-is" in tl)
+    notes = [str(x) for x in (r.get("course_level") or [])] + [str(x) for x in (r.get("course_notes") or [])]
+    closed = next((x for x in notes if re.search(r"\bclosed\b", x, re.I)), None)
+    why = None
+    if closed:
+        verdict, why = False, _line(re.sub(r"^(no|not)\s*[-:–]\s*", "", text.strip(), flags=re.I) if text else closed, 150)
+    elif verdict is None and r.get("renumber"):
+        verdict, why = False, "the page's hole numbers are off: its nines are swapped against the card"
+    wrong = sorted((k for k, v in bad.items() if WRONG.search(v[0])), key=_hn)
+    tee = sorted((k for k, v in bad.items() if not WRONG.search(v[0]) and not v[0].lower().startswith("uncertain")), key=_hn)
+    if verdict is None:
+        verdict = not wrong and len(tee) < 3
+    if not why:
+        if not verdict and text and not re.match(r"^\s*(no|not)\s*$", text, re.I):
+            why = _line(re.sub(r"^(no|not( safe)?( as-is)?)\s*[-:–]\s*", "", text.strip(), flags=re.I))
+        elif not verdict and isinstance(summ, str):
+            why = _line(summ, 200)
+        elif not verdict and wrong:
+            why = f"hole{'s' if len(wrong) > 1 else ''} {', '.join(wrong[:8])}: {bad[wrong[0]][0]}" + (f"; {len(tee)} more with a wrong tee or pick" if tee else "")
+        elif not verdict:
+            why = f"{len(tee)} holes with a wrong tee or pick ({', '.join(tee[:8])})"
+        elif text:
+            why = _line(text)
+        elif bad:
+            why = f"minor notes on hole{'s' if len(bad) > 1 else ''} {', '.join(sorted(bad, key=_hn)[:8])}"
+    return dict(safe=bool(verdict), why=why or "", holes=bad)
+
+
+def _card_review(rv):
+    return dict(safe=rv["safe"], why=rv["why"]) if rv else None
+
+
 def build_one(slug, idx_row, out_dir):
     page = os.path.join(LIBDIR, slug, "page.html")
     D = load_page(page)
@@ -239,13 +328,13 @@ def build_one(slug, idx_row, out_dir):
                sets=[dict(name=s, colour=(D.get("colors") or {}).get(s, "#888"), total=(D.get("set_totals") or {}).get(s)) for s in sets],
                card_sets=[[t.get("name"), t.get("yards"), t.get("on_page")] for t in (idx_row.get("tee_sets") or [])],
                clubs=clubs, speeds=SPEEDS, dirs=DIRS8, imagery=D.get("imagery"),
-               foot=D.get("foot_extra", ""), images=images, holes=holes)
+               foot=D.get("foot_extra", ""), review=review_of(slug), images=images, holes=holes)
     os.makedirs(out_dir, exist_ok=True)
     fn = os.path.join(out_dir, f"{slug}.json")
     with open(fn, "w") as fh:
         json.dump(rec, fh, separators=(",", ":"))
     return dict(file=f"lib/{slug}.json", bytes=os.path.getsize(fn), holes=len(holes), check_holes=rec["check_holes"],
-                sets=[s["name"] for s in rec["sets"]])
+                sets=[s["name"] for s in rec["sets"]], review=_card_review(rec["review"]))
 
 
 def build(out_dir=OUT, only=None, log=print):
@@ -259,10 +348,12 @@ def build(out_dir=OUT, only=None, log=print):
             continue
         fn = os.path.join(out_dir, f"{slug}.json")
         src = os.path.join(ROOT, pg)
-        if os.path.exists(fn) and os.path.getmtime(fn) > max(os.path.getmtime(src), os.path.getmtime(__file__)):
+        rvp = os.path.join(LIBDIR, slug, "review.json")
+        newest = max(os.path.getmtime(src), os.path.getmtime(__file__), os.path.getmtime(rvp) if os.path.exists(rvp) else 0)
+        if os.path.exists(fn) and os.path.getmtime(fn) > newest:
             d = json.load(open(fn))
             res[slug] = dict(file=f"lib/{slug}.json", bytes=os.path.getsize(fn), holes=len(d["holes"]),
-                             check_holes=d["check_holes"], sets=[s["name"] for s in d["sets"]])
+                             check_holes=d["check_holes"], sets=[s["name"] for s in d["sets"]], review=_card_review(d.get("review")))
             continue
         try:
             x = build_one(slug, r, out_dir)

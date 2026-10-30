@@ -198,6 +198,28 @@ async function holeState(page) {
     await pl.waitForSelector("#libErr", { timeout: 5000 }).catch(async () => problems.push("missing record: no error panel: " + (await pl.evaluate(() => document.getElementById("app").innerText.slice(0, 200))).replace(/\s+/g, " ")));
     } await cl.close();
   }
+  // ------------------------------------------------------------------ 5. course reviews (review.json): card + hole banners
+  {
+    const ctx = await browser.newContext({ viewport: { width: 400, height: 900 } }); const page = await ctx.newPage(); watch(page, "review");
+    await page.goto(base + "aim_caddie.html");
+    const rv = await page.evaluate(() => D.library.entries.filter(e => e.lib && e.review).map(e => ({ id: e.id, name: e.name, safe: e.review.safe, why: e.review.why })));
+    console.log(`reviews: ${rv.length} courses, ${rv.filter(r => !r.safe).length} not safe yet: ${rv.filter(r => !r.safe).map(r => r.id).join(", ")}`);
+    expect(rv.length >= 20, `only ${rv.length} reviewed courses carry a review`);
+    for (const id of ["finkbine", "eagle_bend", "tournament_club_iowa", "creekmoor"]) expect(rv.some(r => r.id === id && !r.safe && r.why), `${id}: not flagged unsafe`);
+    for (const r of [rv.find(x => !x.safe && x.id === "finkbine"), rv.find(x => x.safe)].filter(Boolean)) {
+      await page.fill("#q", r.name); await page.$eval("#q", el => el.blur());
+      const card = await page.$eval(`[data-libplay="${r.id}"]`, b => { const a = b.closest("article"), v = a.querySelector("[data-review]"); return v ? v.dataset.review + "|" + v.innerText : ""; });
+      expect(card.startsWith(r.safe ? "ok|✓ Reviewed OK" : "unsafe|⚠ Reviewed: not safe yet"), `${r.id} card banner: ${card}`);
+      await page.click(`[data-libplay="${r.id}"]`); await page.waitForSelector("#lpPlay");
+      const hole = await page.$eval("#app", a => { const v = a.querySelector(".review[data-review]"); return v ? v.dataset.review : ""; });
+      expect(hole === (r.safe ? "ok" : "unsafe"), `${r.id} hole banner: ${hole}`);
+      await check(page, `${r.id} review`);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.screenshot({ path: path.join(shots, `review_${r.id}.jpg`), type: "jpeg", quality: 60 });
+      await page.click('[data-go="pick"]');
+    }
+    await ctx.close();
+  }
   await browser.close(); srv.close();
   const all = problems.filter(Boolean).concat(errors);
   const summary = `test_lib_play: seed ${seed0}, ${pick.length} courses x 2 widths, ${walked} hole screens; ${all.length ? all.length + " PROBLEMS" : "OK"}`;

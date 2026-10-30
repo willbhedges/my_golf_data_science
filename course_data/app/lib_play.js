@@ -136,6 +136,7 @@ function renderLib(){
       <div class="row" style="justify-content:center;margin-top:4px">${chk ? badge("check") : `<span class="badge auto">PASS</span>`}${STORE.reports(slug).some(x => x.hole === H.no) ? `<span class="badge check">reported</span>` : ""}</div></div>
       <button class="navbtn" id="lnext" data-lpnav="1" aria-label="Next hole">›</button></div></div>
     <div class="seg" id="lpSets" role="group" aria-label="Tee set">${L.sets.map(s => `<button data-lpset="${esc(s.name)}" aria-pressed="${s.name === r.setName}">${esc(s.name)}${s.total ? " " + Number(s.total).toLocaleString() : ""}</button>`).join("")}</div>
+    ${reviewBanner(L.review)}${L.review && L.review.holes && L.review.holes[String(H.no)] ? `<div class="review bad" id="lpHoleReview">Reviewer, hole ${H.no}: ${esc(L.review.holes[String(H.no)][0])}${L.review.holes[String(H.no)][1] ? ` — ${esc(L.review.holes[String(H.no)][1])}` : ""}</div>` : ""}
     ${lpDraw(L, H, r, W)}
     <section class="panel stack">${play}<div class="cond"><span>${cond}</span><span class="windico">${windIcon(r.rel, W.mph)}${esc(relTxt)}</span></div>
       ${W.mph > 20 ? `<p class="sub">Picks use the 20 mph table: stronger wind plays even more so.</p>` : ""}</section>
