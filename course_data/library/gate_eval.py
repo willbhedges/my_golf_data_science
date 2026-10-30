@@ -140,6 +140,19 @@ def md(res):
             hp[k + "_wrong"] += 0 if row["same_or_tie"] else 1
     L += [f"* tee shots on PASS holes: {hp['pass_n']}, wrong club (not same or tie) {hp['pass_wrong']}; "
           f"on CHECK holes: {hp['check_n']}, wrong {hp['check_wrong']}", ""]
+    cc = {"PASS": [0, 0], "CHECK": [0, 0]}
+    for r in res:
+        if not r.get("rows") or "scorecard not matched" in " ".join(r.get("reasons") or []):
+            continue
+        hs = r.get("hole_status") or {}
+        for x in r["rows"]:
+            if x.get("same_or_tie") is None or str(x["hole"]) not in hs:
+                continue
+            k = hs[str(x["hole"])]
+            cc[k][0] += 1
+            cc[k][1] += 0 if x["same_or_tie"] else 1
+    L += [f"* courses with a web card only: PASS holes {cc['PASS'][0]} tee shots, {cc['PASS'][1]} wrong club; CHECK holes "
+          f"{cc['CHECK'][0]}, {cc['CHECK'][1]} wrong. Pine Dunes: no build (Overpass timed out in all three runs).", ""]
     # which check carries the signal (main solved base = the scored set), and looser course thresholds
     kind = {}
     rows_c = []
