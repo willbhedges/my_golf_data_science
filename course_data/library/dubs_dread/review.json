@@ -1,0 +1,215 @@
+{
+ "course_review/1": {
+  "slug": "dubs_dread",
+  "reviewer": "agent",
+  "card_source": "golfify https://www.golfify.io/courses/dubs-dread-golf-club (fetched by web_fetch.yml: course_data/research/web/rv05_colbert_dubs/18.txt). Championship 7230 / Back 6687 / Middle 6277 / Middle-Forward 5897 / Forward 5350, par 72. The page's osm_back set corresponds to Championship.",
+  "card": {
+   "osm_back (= Championship)": [
+    515,
+    410,
+    446,
+    216,
+    382,
+    467,
+    550,
+    210,
+    418,
+    362,
+    234,
+    547,
+    420,
+    444,
+    409,
+    212,
+    555,
+    433
+   ],
+   "Back": [
+    491,
+    367,
+    420,
+    189,
+    351,
+    427,
+    535,
+    178,
+    381,
+    344,
+    200,
+    530,
+    358,
+    425,
+    361,
+    185,
+    530,
+    415
+   ],
+   "par": [
+    5,
+    4,
+    4,
+    3,
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    3,
+    5,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "515 card vs 513 measured; par 5 = card. Tee is the OSM box by the clubhouse lot; the dogleg-right pick Driver +25 has 26% trees in the pattern (judgement call, not a geometry error)."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Card 410 vs page 401 yds (within 10), par 4 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   },
+   {
+    "n": 3,
+    "verdict": "wrong par or yardage",
+    "notes": "Card 446, page 434 (-12) from the back OSM box; tee probably 10-12 yds further back (unmapped). Par 4 = card.",
+    "fix": {
+     "yards": 446
+    }
+   },
+   {
+    "n": 4,
+    "verdict": "wrong routing",
+    "notes": "Page hole 4 is a copy of hole 13 (same tee and green; structure inference). The real hole 4 is a par 3, card 216: OSM has it as way 1029130675 with no ref. Tee = OSM tee way/505295054 (218 yds to the green), green = OSM green way/505295060, both near the 3rd green / 5th tee. osm_supplement.geojson adds the hole way with ref 4.",
+    "fix": {
+     "tee_ll": {
+      "osm_back": [
+       39.1657274,
+       -94.8808435
+      ]
+     },
+     "green_ll": [
+      39.1675037,
+      -94.8811725
+     ],
+     "par": 3,
+     "yards": 216
+    }
+   },
+   {
+    "n": 5,
+    "verdict": "wrong tee position",
+    "notes": "Card 382, page 352 from a forward box; the OSM hole way starts ~25 yds further back (way length 378). Tee moved to the hole-way start (supplement adds a tee box there).",
+    "fix": {
+     "tee_ll": {
+      "osm_back": [
+       39.1678401,
+       -94.880564
+      ]
+     },
+     "yards": 382
+    }
+   },
+   {
+    "n": 6,
+    "verdict": "wrong par or yardage",
+    "notes": "Card 467; page shows 488 (measured along the bent hole line; straight 441). Tee on the back OSM box is right; only the shown yardage is off.",
+    "fix": {
+     "yards": 467
+    }
+   },
+   {
+    "n": 7,
+    "verdict": "wrong par or yardage",
+    "notes": "Card 550; page shows 570 (hole-line path; straight 554). Tee OK.",
+    "fix": {
+     "yards": 550
+    }
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Card 210 vs page 210 yds (within 10), par 3 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   },
+   {
+    "n": 9,
+    "verdict": "wrong tee position",
+    "notes": "Card 418, page 367 from a forward box; the OSM hole way starts ~29 yds back (way 399 yds). Moved to the hole-way start (~390-399 yds); the last ~20 yds are still unexplained (tips may share the 18th tee area). Uncertain.",
+    "fix": {
+     "tee_ll": {
+      "osm_back": [
+       39.168163,
+       -94.8766445
+      ]
+     },
+     "yards": 418
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Card 362 vs page 371 yds (within 10), par 4 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Card 234 vs page 232 yds (within 10), par 3 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   },
+   {
+    "n": 12,
+    "verdict": "wrong par or yardage",
+    "notes": "Par 5 on the card (547), page plays it as a par 4 (OSM tag par=4) at 555. Wrong par changes the strategy (driver vs layup to a par-5 second).",
+    "fix": {
+     "par": 5,
+     "yards": 547
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "wrong par or yardage",
+    "notes": "Card 420, page 407 (-13). Tee on the back OSM box; probably a small unmapped walk-back. Hole 13 itself is right (page hole 4 duplicated it).",
+    "fix": {
+     "yards": 420
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Card 444 vs page 445 yds (within 10), par 4 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Card 409 vs page 405 yds (within 10), par 4 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Card 212 vs page 206 yds (within 10), par 3 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Card 555 vs page 561 yds (within 10), par 5 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Card 433 vs page 433 yds (within 10), par 4 = page; tee on the OSM box, routing consistent (previous green -> this tee)."
+   }
+  ],
+  "course_notes": [
+   "No card on the page although golfify has one (the pipeline's golfify lookup missed the URL dubs-dread-golf-club). A full card is in course_data/library/dubs_dread/card_golfify.json (scorecard/1).",
+   "Rebuild needs: the card (request yardages + pars for Championship, or the scorecard file) and osm_supplement.geojson (hole 4). course_page.py pkgreq passes only near/osm/typed_card/yardages/pars, so osm_supplement must be added to that list or set in package_request.json.",
+   "OSM also has a ref-less par-3 hole way (1029130675) for hole 4; with the supplement there are two lines for hole 4, so check the rebuilt routing.",
+   "Page renders cleanly (qa_page.js: 18 holes, 0 problems)."
+  ]
+ }
+}
