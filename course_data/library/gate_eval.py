@@ -140,6 +140,34 @@ def md(res):
             hp[k + "_wrong"] += 0 if row["same_or_tie"] else 1
     L += [f"* tee shots on PASS holes: {hp['pass_n']}, wrong club (not same or tie) {hp['pass_wrong']}; "
           f"on CHECK holes: {hp['check_n']}, wrong {hp['check_wrong']}", ""]
+    # which check carries the signal (main solved base = the scored set), and looser course thresholds
+    kind = {}
+    rows_c = []
+    for r in res:
+        if not r.get("rows"):
+            continue
+        qa = rj(os.path.join(GATE, "gate_" + r["slug"], "qa.json")) or {}
+        ch = (((qa.get("checks") or {}).get("auto")) or {}).get("holes", {})
+        structural = [x for x in (r.get("reasons") or []) if "hole(s) with a CHECK" not in x]
+        rows_c.append((r, structural, len(r.get("check_holes") or [])))
+        for row in r["rows"]:
+            h = ch.get(str(row["hole"]))
+            if row.get("same_or_tie") is None or not h:
+                continue
+            for k in {x.split(":")[0] for x in h["reasons"]} or {"(none: PASS)"}:
+                a = kind.setdefault(k, [0, 0])
+                a[0] += 1
+                a[1] += 0 if row["same_or_tie"] else 1
+    L += ["Wrong tee-shot club (not the same club, not a tie) by failed check, on the scored set:", "",
+          "| check failed | tee shots | wrong club |", "|---|---|---|"]
+    L += [f"| {k} | {v[0]} | {v[1]} ({100 * v[1] / max(v[0], 1):.0f}%) |" for k, v in sorted(kind.items())]
+    L += ["", "Looser course thresholds (sensitivity, same courses): OSM holes + card matched + page clean, and at most "
+          "K holes with a CHECK (the CHECK holes are then the golfer's confirm list):", "",
+          "| K | courses passing | of them match truth |", "|---|---|---|"]
+    for K in (0, 2, 3, 5):
+        ok_ = [r for r, st, n in rows_c if not st and n <= K]
+        L.append(f"| {K} | {len(ok_)} ({', '.join(r['slug'] for r in ok_) or '-'}) | {sum(bool(r.get('match')) for r in ok_)} |")
+    L.append("")
     return "\n".join(L) + "\n", dict(auto_ok=len(ok), auto_ok_match=sum(r["match"] for r in ok), needs_confirm=len(nc),
                                      needs_confirm_match=sum(r["match"] for r in nc), holes=hp)
 
