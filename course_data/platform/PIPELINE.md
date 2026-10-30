@@ -125,3 +125,27 @@ have every hole in OSM, so only the tee stage differs.
 | `platform/picks_pipeline.py`, `pipeline_picks.json` | product picks before / after on the 5 truth courses |
 | `structure/params_noval.json` | structure weights without any validation-set course |
 | `platform/commit_packages.sh` | course-package commit step: never overwrites a package that changed on origin since the run's checkout |
+
+## 8. sequence_v3 (formation-v2 pairs + zero-tap sequence solver v3): built, not adopted
+
+`stage_select.sequence_v3`: hole_pairs/1 from `zero_tap/formation/hole_pairs.py` (no aux layers in production) on
+the OSM scene (mapped) or the perception scene (unmapped), then `zero_tap/sequence/solve.run` with the v3 settings
+(PAIRS_FORM_W 3, CARD_W 2, nesting). Card tiers only; falls back to v2+structure > v2 > structure > geometry on any
+error; its golfer-confirm session is the tier's v2+structure. `package.json["pipeline"]["holes"]` records `method`,
+`chosen`, `tried` and `fallbacks`. Opt in per request with `"hole_method": "sequence_v3"`; `stage_select.USE_V3`
+(False) would make `SELECT_V3` the default.
+
+Held-out test (`pipeline_eval.py v3`, request `requests/pipeline_eval_v3.json`, Actions run 41109695224 ->
+`pipeline_eval_v3.json` when its last shards finish). Partial read (courses scored so far, same scorer as section 3):
+
+| tier | courses | selector (v2 + structure prior) | sequence_v3 |
+|---|---|---|---|
+| mapped + card | 15 | 78.1 % hole-number acc, 3 all right | 66.9 %, 1 all right |
+| unmapped + card | 11 | 65.0 %, 0 all right | 43.9 %, 1 all right |
+
+Gate courses (`library/gate_eval.py`): a tie by construction. 9 of the 10 builds have a golf=hole way for every
+hole (the hole stage is `osm`), National KC has no card (mapped_nocard: v3 does not run), Pine Dunes has no build.
+
+Decision: **not adopted** (test is worse). The zero-tap benchmark gain (fully right 17 -> 22 %) used aux layers and
+D's per-course scorer on courses where the router is not an option; against routing v2 + structure prior, with
+hole ways and refs hidden, v3 loses many holes (e.g. riverwood_national_mn 1.00 -> 0.41).
