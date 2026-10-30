@@ -441,3 +441,48 @@ def test_review_overrides(tmp_path, black):
     assert p["holes"]["1"]["par"] == 5 and p["tee_sets"]["Black"]["total"] == sum(BLACK) - 507 + 499 - 532 + 530
     assert "review" in p["stages"]["card_overrides"] and "Black" in p["stages"]["tee_overrides"]
     assert pk.override_set("osm_back (= Championship)", {"Champ": dict(aliases=["championship"])}, "X") == "Champ"
+
+
+def test_renumber_and_green_override_helpers():
+    """apply_hole_renumber renames all at once, drops a clashing hole, skips an entry whose review point is far
+    off the line; apply_green_overrides moves a line end, re-draws a long move from the review tee, adds a
+    missed hole from its review tee."""
+    ln = lambda ref, a, b: dict(type="Feature", properties=dict(golf="hole", ref=ref),             # noqa: E731
+                                geometry=dict(type="LineString", coordinates=[a, b]))
+    fc = dict(type="FeatureCollection", features=[ln("1", [-94.0, 39.0], [-94.0, 39.003]),
+                                                  ln("2", [-94.01, 39.0], [-94.01, 39.003]),
+                                                  ln("3", [-94.02, 39.0], [-94.02, 39.003]),
+                                                  ln("18", [-94.03, 39.0], [-94.03, 39.003])])
+    out, routed, notes = pk.apply_hole_renumber(fc, {"2": {"status": "ok"}}, {
+        "1": {"to": 18, "near_ll": [39.001, -94.0001]}, "2": 1, "3": {"to": 2, "near_ll": [39.0, -93.9]}})
+    refs = {f["properties"]["ref"]: f["geometry"]["coordinates"][0][0] for f in out["features"]}
+    assert refs == {"18": -94.0, "1": -94.01, "3": -94.02}            # old 18 dropped, 3 kept (point far off)
+    assert routed == {"1": {"status": "ok"}} and any("not renumbered" in n for n in notes)
+    assert [f["properties"]["ref"] for f in fc["features"]] == ["1", "2", "3", "18"]          # input untouched
+    req = dict(green_overrides={"1": [39.0031, -94.0], "2": [39.006, -94.012], "7": [39.01, -94.05]},
+               tee_overrides={"2": {"Blue": [39.0005, -94.0101], "White": [39.001, -94.0101]},
+                              "7": {"Blue": [39.008, -94.05]}}, par_overrides={"7": 3})
+    out, notes = pk.apply_green_overrides(fc, req)
+    hs = {f["properties"]["ref"]: f for f in out["features"]}
+    assert hs["1"]["geometry"]["coordinates"] == [[-94.0, 39.0], [-94.0, 39.0031]]
+    assert hs["2"]["geometry"]["coordinates"] == [[-94.0101, 39.0005], [-94.012, 39.006]]   # farthest review tee
+    assert hs["7"]["properties"]["par"] == "3" and hs["7"]["properties"]["src"] == "review" and len(notes) == 3
+
+
+def test_review_renumber_and_green_in_build(tmp_path, black):
+    """The build renumbers before the card is joined (hole 2's way plays as hole 1 with hole 1's card) and ends
+    a hole on a review green away from any OSM green (provenance green = review)."""
+    p0, _ = black
+    t1, t2 = p0["holes"]["1"]["tees"]["Black"]["tee_ll"], p0["holes"]["2"]["tees"]["Black"]["tee_ll"]
+    g4 = p0["holes"]["4"]["green_ll"]
+    pkg = seed(tmp_path)
+    req = dict(course="Spirit Hollow", state="IA", tee_set="Black", scorecard=CARD,
+               hole_renumber={"1": {"to": 2, "near_ll": [t1[1], t1[0]]}, "2": {"to": 1, "near_ll": [t2[1], t2[0]]}},
+               green_overrides={"4": [g4[1] + 60 / 111320, g4[0]]})
+    p = pk.build_package(req, pkg, gapfill=False)
+    assert p["holes"]["1"]["green_ll"] == pytest.approx(p0["holes"]["2"]["green_ll"], abs=1e-6)
+    assert p["holes"]["2"]["green_ll"] == pytest.approx(p0["holes"]["1"]["green_ll"], abs=1e-6)
+    assert p["holes"]["1"]["yards"]["Black"] == BLACK[0] and p["holes"]["1"]["provenance"]["number"] == "review: was hole 2"
+    assert "hole 1 -> 2" in p["stages"]["hole_renumber"]
+    assert p["holes"]["4"]["green_ll"] == pytest.approx([g4[0], g4[1] + 60 / 111320], abs=2e-6)
+    assert p["holes"]["4"]["provenance"]["green"] == "review" and "hole 4" in p["stages"]["green_overrides"]

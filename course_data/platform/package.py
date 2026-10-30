@@ -24,6 +24,9 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           to the OSM green centroid along the hole line; lidar flat-pad candidates (tees/lidar_pads.py, the
           3DEP DEM) where a set has no OSM box; walk-back if nothing fits. An OSM tee box tagged with the
           set's colour wins ("tagged")
+  S2n     request "hole_renumber" {old: new | {to, near_ll}} renames hole ways / routed holes after S2a (a review
+          found OSM or the router numbered them unlike the card); "green_overrides" {ref: [lat, lon]} ends the hole
+          line on a review green (re-drawn from the review tee when it moves > GREEN_MOVE_YD; a missed hole is added)
   S2r     request "tee_overrides" {ref: {set: [lat, lon]}} (course reviews): that set's tee on that hole, snapped
           to an OSM tee box within OVERRIDE_SNAP_YD (else the point as given); wins over S2 (method "review")
   S3     geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
@@ -304,6 +307,126 @@ def with_tee_overrides(tp, set_key, ov):
             e.setdefault("tees", {})[set_key] = dict(lat=lat, lon=lon, method=how, source="review",
                                                      confidence="high", error_yd=0.0)
     return tp
+
+
+RENUMBER_NEAR_YD = 120.0      # a renumber's near_ll must lie this close to the hole line it renames
+GREEN_MOVE_YD = 60.0          # a green override this far from the line end re-draws the line tee -> green
+
+
+def _yd(a, b):
+    """Yards between two [lon, lat] points (local equirectangular)."""
+    kx = math.cos(math.radians((a[1] + b[1]) / 2)) * 111320 / 0.9144
+    return math.hypot((a[0] - b[0]) * kx, (a[1] - b[1]) * 111320 / 0.9144)
+
+
+def _yd_to_line(p, line):
+    """Yards from [lon, lat] p to a polyline of [lon, lat] (segment distance in a local frame around p)."""
+    kx, ky = math.cos(math.radians(p[1])) * 111320 / 0.9144, 111320 / 0.9144
+    pts = [((c[0] - p[0]) * kx, (c[1] - p[1]) * ky) for c in line]
+    best = min(math.hypot(*q) for q in pts)
+    for (x1, y1), (x2, y2) in zip(pts, pts[1:]):
+        dx, dy = x2 - x1, y2 - y1
+        L2 = dx * dx + dy * dy
+        if L2 > 0:
+            t = max(0.0, min(1.0, -(x1 * dx + y1 * dy) / L2))
+            best = min(best, math.hypot(x1 + t * dx, y1 + t * dy))
+    return best
+
+
+def _hole_feats(fc):
+    return {str(f["properties"]["ref"]): f for f in fc["features"]
+            if f["properties"].get("golf") == "hole" and f["geometry"]["type"] == "LineString"
+            and f["properties"].get("ref")}
+
+
+def apply_hole_renumber(fc, routed, ren):
+    """Request "hole_renumber" {old ref: new ref | {to, near_ll [lat, lon]}} (course reviews: OSM / the router
+    numbered holes differently from the card) -> (fc copy, routed rekeyed, [notes]). Applied after routing, so
+    it renames OSM ways, supplement ways and routed holes alike, all at once (1->18, 2->1, ... is fine). An entry
+    whose near_ll (a review point on the hole, e.g. its tee) is more than RENUMBER_NEAR_YD from the line is
+    skipped: the numbering it was written against changed. A hole that keeps its number but sits on a renamed
+    hole's new number is dropped (the review says the renamed hole is that card hole)."""
+    if not ren:
+        return fc, routed, []
+    fc = copy.deepcopy(fc)
+    feats, notes, valid = _hole_feats(fc), [], {}
+    for old, spec in ren.items():
+        old = str(old)
+        new = str(spec.get("to") if isinstance(spec, dict) else spec)
+        near = spec.get("near_ll") if isinstance(spec, dict) else None
+        if not new.isdigit() or old == new:
+            continue
+        if old not in feats:
+            notes.append(f"hole {old} -> {new}: no hole {old} in this build (not renumbered)")
+            continue
+        if near and len(near) >= 2:
+            d = _yd_to_line([float(near[1]), float(near[0])], feats[old]["geometry"]["coordinates"])
+            if d > RENUMBER_NEAR_YD:
+                notes.append(f"hole {old} -> {new}: review point {d:.0f} yds off hole {old}'s line (not renumbered)")
+                continue
+        valid[old] = new
+    if len(set(valid.values())) < len(valid):
+        return fc, routed, notes + [f"hole_renumber maps two holes to one number ({valid}); not applied"]
+    targets, keep = set(valid.values()), []
+    for f in fc["features"]:
+        p = f["properties"]
+        r = str(p.get("ref")) if p.get("golf") == "hole" and f["geometry"]["type"] == "LineString" else None
+        if r in valid:
+            p["ref"], p["renumbered_from"] = valid[r], r
+        elif r in targets:
+            notes.append(f"hole {r} dropped: its number goes to renumbered hole "
+                         f"{next(o for o, n in valid.items() if n == r)}")
+            continue
+        keep.append(f)
+    fc["features"] = keep
+    notes += [f"hole {o} -> {n}" for o, n in sorted(valid.items(), key=lambda kv: kv[0].zfill(3))]
+    routed = {valid.get(r, r): v for r, v in (routed or {}).items() if r in valid or r not in targets}
+    return fc, routed, notes
+
+
+def apply_green_overrides(fc, req):
+    """Request "green_overrides" {ref: [lat, lon]} (course reviews: the green centre when OSM has no outline, or
+    the build used another hole's green) -> (fc copy, [notes]). The hole line now ends on the point (build_holes
+    then snaps to an OSM green within 40 m, else uses the point). A move of more than GREEN_MOVE_YD re-draws the
+    line straight from the hole's review tee (tee_overrides, the farthest set) or its own start; a hole with no
+    line gets one from its review tee (a hole the build missed), tagged src=review."""
+    go = req.get("green_overrides") or {}
+    if not go:
+        return fc, []
+    fc, notes = copy.deepcopy(fc), []
+    feats = _hole_feats(fc)
+    for ref, ll in go.items():
+        ref = str(ref)
+        if not ll or len(ll) < 2:
+            continue
+        g = [float(ll[1]), float(ll[0])]
+        tees = [[float(t[1]), float(t[0])] for t in ((req.get("tee_overrides") or {}).get(ref) or {}).values()
+                if isinstance(t, (list, tuple)) and len(t) >= 2]
+        tee = max(tees, key=lambda t: _yd(t, g)) if tees else None
+        f = feats.get(ref)
+        if f is not None:
+            line = f["geometry"]["coordinates"]
+            d = _yd(line[-1], g)
+            if d < 3:
+                continue
+            if d > GREEN_MOVE_YD:
+                f["geometry"]["coordinates"] = [tee or list(line[0]), g]
+                notes.append(f"hole {ref}: green moved {d:.0f} yds, line re-drawn {'review tee' if tee else 'start'} -> green")
+            else:
+                f["geometry"]["coordinates"] = [list(c) for c in line[:-1]] + [g]
+                notes.append(f"hole {ref}: green moved {d:.0f} yds")
+            f["properties"]["review_green"] = True
+        elif tee:
+            par = (req.get("par_overrides") or {}).get(ref)
+            props = dict(golf="hole", ref=ref, src="review", review_green=True)
+            if par:
+                props["par"] = str(par)
+            fc["features"].append(dict(type="Feature", properties=props,
+                                       geometry=dict(type="LineString", coordinates=[tee, g])))
+            notes.append(f"hole {ref}: added (review tee -> green, {_yd(tee, g):.0f} yds)")
+        else:
+            notes.append(f"hole {ref}: green override but no hole line and no review tee (not applied)")
+    return fc, notes
 
 
 # ----------------------------------------------------------------------------- tees (S2)
@@ -898,7 +1021,14 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     pipe = dict(schema="pipeline/1", doc="platform/PIPELINE.md: which method ran at each stage, and why",
                 card=dict(kind=cinfo["kind"], source=cinfo["source"]) if card else dict(kind=None))
     fc, routed = route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, pipeline=pipe)
-    refs = sorted(osm_lines(fc), key=lambda r: r.zfill(3))
+    fc, routed, ren_notes = apply_hole_renumber(fc, routed, req.get("hole_renumber"))
+    if ren_notes:
+        stages["hole_renumber"] = "ok: " + "; ".join(ren_notes)[:400]
+        warnings += [f"review renumber: {n}" for n in ren_notes if "not " in n or "dropped" in n]
+    fc, green_notes = apply_green_overrides(fc, req)
+    if green_notes:
+        stages["green_overrides"] = "ok: " + "; ".join(green_notes)[:400]
+    refs =sorted(osm_lines(fc), key=lambda r: r.zfill(3))
     stages["scorecard"] = f"ok: {cinfo['kind']} ({cinfo['source']})" if card else "missing"
     if not card:
         warnings.append("no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM "
@@ -977,6 +1107,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     stages["geometry"] = f"ok: geometry/build_holes.py ({len(base)} holes, {len(built)} tee set(s))"
 
     lines = osm_lines(fc)
+    feats_now = _hole_feats(fc)
     holes = {}
     for k in sorted(base, key=lambda r: str(r).zfill(3)):
         b = base[k]
@@ -1023,6 +1154,11 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                  provenance=dict(green="osm_green" if b["provenance"]["green"] == "osm_green" else "hole_line_end",
                                  par=par_src.get(k, "length rule")))
         h["green_polygon"] = h["green_polygon_ll"]
+        hp = (feats_now.get(k) or {}).get("properties", {})
+        if hp.get("review_green"):
+            h["provenance"]["green"] = "review (snapped to OSM green)" if b["provenance"]["green"] == "osm_green" else "review"
+        if hp.get("renumbered_from"):
+            h["provenance"]["number"] = f"review: was hole {hp['renumbered_from']}"
         if k in routed:
             h["provenance"]["hole"] = f"routing:{routed[k]['status']}"
             h["routing"] = routed[k]

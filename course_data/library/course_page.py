@@ -153,7 +153,8 @@ def pkgreq(q):
     # course OSM maps badly is fixed in its course-page request, never by hand-editing package_request.json
     for k in ("near", "osm", "typed_card", "yardages", "pars", "scorecard", "website", "opengolfapi_id",
               "osm_supplement", "boundary_ll", "no_osm_ok", "no_osm_course", "near_radius_m", "ignore_osm_holes",
-              "hole_method", "routing", "naip_year", "tee_overrides", "yardage_overrides", "par_overrides"):
+              "hole_method", "routing", "naip_year", "tee_overrides", "yardage_overrides", "par_overrides",
+              "green_overrides", "hole_renumber"):
         if q.get(k) not in (None, "", [], {}):            # "routing": false passes too
             r[k] = q[k]
     if q.get("library_fixes"):

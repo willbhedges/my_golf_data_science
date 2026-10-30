@@ -9,10 +9,15 @@ A review agent leaves, in course_data/library/<slug>/:
   card_review.json, card_fix.json, card_golfify.json, card_*.json   scorecard/1 full cards
   osm_supplement.geojson hand-mapped golf=hole / tee / green features (fetch_package.py "osm_supplement")
 library_request(folder) -> {scorecard, osm_supplement, tees, tee_overrides {ref: {set: [lat, lon]}},
-yardage_overrides {ref: {set | "*": yds}}, par_overrides {ref: par}, yardages, pars, ...}. A set name the
+yardage_overrides {ref: {set | "*": yds}}, par_overrides {ref: par}, green_overrides {ref: [lat, lon]},
+hole_renumber {page ref: {to: card ref, near_ll: [lat, lon]} | card ref}, yardages, pars, ...}. A set name the
 rebuilt card does not have ("Web", "osm_back") or "*" means the solved set (platform/package.py override_set).
-Not applied: green_ll (the build takes greens from OSM; map them with an osm_supplement) and holes with
-"renumber_as" (a routing fix: the hole's other fixes refer to the old number, so they are skipped too).
+Renumbering (platform/package.py apply_hole_renumber): "renumber": {"page_to_card": {...}} or a hole's fix
+"renumber_as" / "card_hole" maps the page's (OSM / router) hole number to the card's; every per-hole fix is
+re-keyed to the card number (the build applies overrides after renumbering). With "ignore_osm_holes" and an
+osm_supplement the supplement's ways are taken as already card-numbered, so no hole_renumber is sent.
+green_ll (platform/package.py apply_green_overrides): the hole line ends on that green (a missed hole is added
+from its review tee).
 """
 import glob
 import json
@@ -32,24 +37,25 @@ def _read(p):
 
 
 def load_review(folder):
-    """review.json in its schema variants -> {holes: {ref: {verdict, tee_ll, yards, par}}, tees, hint, notes}."""
+    """review.json in its schema variants -> {holes: {card ref: {verdict, tee_ll, yards, par, green_ll}}, tees, hint,
+    renumber {page ref: card ref | {to, near_ll}}, skipped}."""
     d = _read(os.path.join(folder, "review.json"))
     if not isinstance(d, dict):
         return None
     d = d.get("course_review/1", d)
     holes, skipped = {}, []
     raw = d.get("holes") or []
-    items = raw.items() if isinstance(raw, dict) else ((h.get("n") or h.get("hole") or h.get("ref"), h) for h in raw)
+    items = list(raw.items() if isinstance(raw, dict) else ((h.get("n") or h.get("hole") or h.get("ref"), h) for h in raw))
+    ren = _renumber_map(d, items)
+    cand = []
     for ref, h in items:
         if not isinstance(h, dict) or ref is None:
             continue
-        ref = str(ref)
         f = h.get("fix") or {}
         if not isinstance(f, dict):
             f = {}
-        if f.get("renumber_as") is not None:
-            skipped.append(f"hole {ref}: renumber_as {f['renumber_as']} (routing fix; not applied)")
-            continue
+        n0 = ref
+        ref = ren.get(str(ref), str(ref))                      # fixes are keyed by the card (renumbered) hole
         e = dict(verdict=h.get("verdict"))
         if isinstance(f.get("tee_ll"), dict):
             e["tee_ll"] = {s: ll for s, ll in f["tee_ll"].items() if isinstance(ll, (list, tuple)) and len(ll) >= 2}
@@ -60,9 +66,15 @@ def load_review(folder):
             e["yards"] = {"*": int(y)}
         if f.get("par"):
             e["par"] = int(f["par"])
-        if f.get("green_ll"):
-            skipped.append(f"hole {ref}: green_ll (greens come from OSM; not applied)")
-        holes[ref] = e
+        g = f.get("green_ll")
+        if isinstance(g, (list, tuple)) and len(g) >= 2:
+            e["green_ll"] = [float(g[0]), float(g[1])]
+        cand.append((str(n0) in ren, str(n0), ref, e))
+    for moved, n0, ref, e in sorted(cand, key=lambda c: c[0]):   # renumbered holes last: they win the number
+        if ref in holes and len(holes[ref]) > 1 and len(e) > 1 and moved:
+            skipped.append(f"hole {ref}: its fixes dropped (renumbered hole {n0} is now card hole {ref})")
+        if len(e) > 1 or ref not in holes:
+            holes[ref] = e
     summ = d.get("summary") if isinstance(d.get("summary"), dict) else {}
     texts = [x for k in ("course_notes", "summary", "course_level", "rebuild_advice", "publish") for x in
              (d.get(k) if isinstance(d.get(k), list) else [d.get(k)]) if isinstance(x, str)]
@@ -76,7 +88,30 @@ def load_review(folder):
     tees = hint.pop("tees", None) or d.get("tees") or _tees_in(texts) or d.get("page_set_should_be")
     if isinstance(tees, str):
         tees = [t.strip() for t in tees.split(",") if t.strip()]
-    return dict(holes=holes, tees=tees, hint=hint, skipped=skipped, publish=d.get("publish", d.get("publish_as_is")))
+    renumber = {}
+    for old, new in ren.items():                               # near_ll: the review's tee point on that hole
+        tee = next((ll for ll in (holes.get(new, {}).get("tee_ll") or {}).values()), None)
+        renumber[old] = dict(to=int(new), near_ll=list(tee)) if tee else int(new)
+    if ren and hint.get("ignore_osm_holes") and os.path.exists(os.path.join(folder, "osm_supplement.geojson")):
+        renumber = {}            # the supplement's hole ways replace OSM's and are already in card numbering
+    return dict(holes=holes, tees=tees, hint=hint, skipped=skipped, renumber=renumber,
+                publish=d.get("publish", d.get("publish_as_is")))
+
+
+def _renumber_map(d, items):
+    """{page ref: card ref} from "renumber": {"page_to_card": {...}} (or the map bare) and per-hole fix
+    "renumber_as" / "card_hole"; identity entries dropped."""
+    m = {}
+    top = d.get("renumber")
+    if isinstance(top, dict):
+        top = top.get("page_to_card", top)
+        m.update({str(k): str(v) for k, v in top.items() if str(v).isdigit()})
+    for ref, h in items:
+        f = (h.get("fix") if isinstance(h, dict) else None) or {}
+        to = f.get("renumber_as", f.get("card_hole")) if isinstance(f, dict) else None
+        if ref is not None and to is not None and str(to).isdigit():
+            m[str(ref)] = str(int(to))
+    return {k: v for k, v in m.items() if k != v}
 
 
 def _tees_in(texts):
@@ -127,6 +162,11 @@ def library_request(folder, root):
             out["yardage_overrides"] = yards
         if pars:
             out["par_overrides"] = pars
+        greens = {r: h["green_ll"] for r, h in rv["holes"].items() if h.get("green_ll")}
+        if greens:
+            out["green_overrides"] = greens
+        if rv["renumber"]:
+            out["hole_renumber"] = rv["renumber"]
         if rv["skipped"]:
             out["review_not_applied"] = rv["skipped"]
     if out:

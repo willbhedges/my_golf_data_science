@@ -29,10 +29,12 @@ def test_variants(tmp_path):
     r = rf.library_request(str(f), str(tmp_path))
     assert r["scorecard"] == "x/card_review.json" and r["osm_supplement"] == "x/osm_supplement.geojson"
     assert r["tees"] == ["Gold", "Black"]
-    assert r["tee_overrides"] == {"2": {"Web": [38.1, -94.2]}}                 # renumbered hole 5 skipped
+    assert r["tee_overrides"] == {"2": {"Web": [38.1, -94.2]}, "18": {"Blue": [1, 2]}}   # hole 5 -> card 18
     assert r["yardage_overrides"] == {"2": {"*": 590}, "3": {"Black": 399}, "4": {"Gold": 362, "Blue": 344}}
     assert r["par_overrides"] == {"3": 3, "4": 4}
-    assert len(r["review_not_applied"]) == 2
+    assert r["green_overrides"] == {"3": [38.0, -94.0]}
+    assert r["hole_renumber"] == {"5": {"to": 18, "near_ll": [1, 2]}}
+    assert "review_not_applied" not in r
 
 
 def test_bare_body_hint_and_merge(tmp_path):
@@ -48,3 +50,27 @@ def test_bare_body_hint_and_merge(tmp_path):
     assert q["tees"] == ["White"] and q["yardages"] == [430, 386]          # the request's own keys win
     assert rf.merge({"name": "Y", "library_fixes": False}, str(f), str(tmp_path)) == {"name": "Y", "library_fixes": False}
     assert rf.merge({"name": "Z"}, str(tmp_path / "missing"), str(tmp_path)) == {"name": "Z"}
+
+
+def test_renumber_rekeys_fixes(tmp_path):
+    """Page-numbered fixes move to the card number; the renumbered hole wins a clash; a card-numbered
+    supplement with ignore_osm_holes sends no hole_renumber (its ways are already renumbered)."""
+    f = tmp_path / "r"
+    f.mkdir()
+    body = {"renumber": {"page_to_card": {"1": 10, "10": 1, "2": 2}},
+            "holes": [{"n": 1, "fix": {"tee_ll": {"King": [41.0, -93.0]}, "par": 4}},
+                      {"n": 10, "fix": {"card_hole": 1, "par": 5, "yards": {"King": 553}}},
+                      {"n": 3, "fix": {"renumber_as": 4, "yards": 300}},
+                      {"n": 4, "fix": {"yards": 999}}]}
+    _w(f / "review.json", {"course_review/1": body})
+    r = rf.library_request(str(f), str(tmp_path))
+    assert r["par_overrides"] == {"10": 4, "1": 5}
+    assert r["tee_overrides"] == {"10": {"King": [41.0, -93.0]}}
+    assert r["yardage_overrides"] == {"1": {"King": 553}, "4": {"*": 300}}       # page 4's own fix dropped
+    assert r["hole_renumber"] == {"1": {"to": 10, "near_ll": [41.0, -93.0]}, "10": 1, "3": 4}
+    assert any("hole 4" in s for s in r["review_not_applied"])
+    body["rebuild_advice"] = "request ignore_osm_holes: true"
+    _w(f / "review.json", {"course_review/1": body})
+    (f / "osm_supplement.geojson").write_text('{"type": "FeatureCollection", "features": []}')
+    r = rf.library_request(str(f), str(tmp_path))
+    assert r["ignore_osm_holes"] is True and "hole_renumber" not in r and r["par_overrides"] == {"10": 4, "1": 5}
