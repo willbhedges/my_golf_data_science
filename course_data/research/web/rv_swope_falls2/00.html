@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+
+    <title>Swope Memorial | About Our Course</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+
+    <link href="//fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/all.min.css"> <!--FontAwesome-->
+    <link rel="stylesheet" type="text/css" href="/css/style.css?v=2">
+    <link rel="stylesheet" type="text/css" href="/css/responsive-style.css">
+    <link rel="stylesheet" type="text/css" href="/css/overrides.css">
+
+    <style>
+        body {
+            position: relative;
+        }
+
+        #notice-container {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.25);
+            top: -120px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9000;
+        }
+
+        #notice {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, 0);
+            margin-top: 50px;
+            background-color: #fff;
+            padding: 0px;
+            /*width: 100%;*/
+        }
+
+        @media screen and ( max-width: 767px) {
+            #notice {
+                width: 100%;
+            }
+
+            #notice-container {
+                top: -42px;
+            }
+        }
+    </style>
+
+    
+    <style>
+        #Tour {
+            scroll-margin-top: 8rem;
+        }
+
+        /*@media (min-width: 992px) {
+            #Tour {
+                scroll-margin-top: 8rem;
+            }
+        }*/
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio (9 / 16 * 100) */
+            height: 0;
+            overflow: hidden;
+        }
+
+            .video-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+    </style>
+
+
+    <script src="/Scripts/modernizr-2.8.3.js" type="text/javascript"></script>
+    
+    <!-- Google Analytics -->
+        <script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-64264788-5', 'auto');
+            ga('send', 'pageview');
+
+        </script>
+</head>
+<body>
+
+    <div id="notice-container">
+        <div id="notice">
+            <img src="/images/COVID-19-Swope.png?v=639289713674477033" alt="COVID-19 Notice" class="img-fluid" />
+        </div>
+    </div>
+
+    <section class="nav_section">
+        <div class="top_list">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="list-inline">
+                            
+                            
+                            <li class="list-inline-item"><a href="/Contact">Contact</a></li>
+                            <li class="list-inline-item"><a href="/TeeTimes">Book a tee time</a></li>
+                            <li class="list-inline-item"><a href="https://join.ghin.com/enyhfy/club/16766" target="_blank">GHIN</a></li>
+                            <li class="list-inline-item"><a href="https://www.surveymonkey.com/r/oriongolf" target="_blank">Feedback</a></li>
+                            <li class="list-inline-item"><a href="https://www.orion-mgmt.com/contact/employment-application" target="_blank">Careers</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bot_list">
+            <div class="container">
+                <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+                    <!-- Brand -->
+                    <a class="navbar-brand" href="/"><img src="/images/logo.png" alt="Logo"></a>
+                    <!-- Toggler/collapsibe Button -->
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                        Menu <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Navbar links -->
+                    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="golf" id="navbardrop" data-toggle="dropdown">
+                                    Golf
+                                </a>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a class="dropdown-item" href="/TeeTimes">Book a tee time</a></li>
+                                        <li><a class="dropdown-item" href="/Rates">Rates</a></li>
+                                        <li><a class="dropdown-item" href="https://join.ghin.com/enyhfy/club/16766" target="_blank">GHIN</a></li>
+                                        <li><a class="dropdown-item" href="/Offers">Offers</a></li>
+                                        <li><a class="dropdown-item" href="/Lessons">Lessons</a></li>
+                                        <li class="dropdown">
+                                            <a class="dropdown-item dropdown-toggle" href="#" id="navbardrop01" data-toggle="dropdown">About our course</a>
+                                            <div class="dropdown-menu1">
+                                                <ul>
+                                                    <li><a class="dropdown-item" href="/About">Overview & history</a></li>
+                                                    
+                                                    <li><a class="dropdown-item" href="/About#Scorecard">Scorecards</a></li>
+                                                    <li><a class="dropdown-item" href="/About#Map">Where to find us</a></li>
+                                                    <li><a class="dropdown-item" href="/Renovations">Renovations</a></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop2" data-toggle="dropdown">
+                                    Activities & Events
+                                </a>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a class="dropdown-item" href="/Calendar/UpcomingEvents">Upcoming events</a></li>
+                                        
+                                        <li><a class="dropdown-item" href="/Events">Plan a golf event</a></li>
+                                        <li><a class="dropdown-item" href="/Events/VenueRental">Venue rental</a></li>
+                                        <li><a class="dropdown-item" href="https://swopememorialgc1934.blogspot.com/" target="_blank">Blog</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/OnlineStore">Shop</a>
+                            </li>
+                            <li id="hiddenMenu" class="nav-item dropdown" style="display:none;">
+                                <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                    Hidden
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/GPSMenu">GPS Menu</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item d-inline-block d-md-none">
+                                <a class="nav-link" href="https://www.orion-mgmt.com/contact/employment-application" target="_blank">Careers</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </section>
+
+    
+
+
+<section class="header header2 banner-about">
+    <div class="heading" data-section="Heading-v2021">
+        <div>About our golf course</div>
+    </div>
+</section>
+<section class="record_section">
+    <div class="container">
+        <div class="row" data-section="Page-v2021">
+            <div class="col-12">
+<p>Following an extensive restoration that returned Swope Memorial Golf Course to A.W. Tillinghast's original design, Kansas City's Home Course enters a new era while honoring its rich history. Carved through the wooded landscape of Swope Park, the course features a tight, strategic layout with rolling fairways and undulating greens that provide a true test of golf. Sweeping views of the downtown Kansas City skyline, paired with the unmistakable roars of the lions from the Kansas City Zoo below, create a golfing experience unlike any other in the city.</p>
+</div>
+
+<div class="col-12 col-md-3">
+<div class="record_box">
+<div class="head_text">6,324</div>
+
+<p>Yardage</p>
+</div>
+</div>
+
+<div class="col-12 col-md-3">
+<div class="record_box">
+<div class="head_text">71</div>
+
+<p>Par</p>
+</div>
+</div>
+
+<div class="col-12 col-md-3">
+<div class="record_box">
+<div class="head_text">18</div>
+
+<p>Holes</p>
+</div>
+</div>
+
+<div class="col-12 col-md-3">
+<div class="record_box">
+<div class="head_text">1915</div>
+
+<p>Year opened</p>
+</div>
+</div>
+
+<div class="col-12"><a class="btn_green" href="/TeeTimes">Book a tee time <i class="fas fa-lg fa-angle-double-right"></i></a></div>
+
+            
+        </div>
+    </div>
+    <div class="container">
+        <div class="overlay"></div>
+        <div class="row" data-section="WhyPlay-v2021">
+            <div class="col-12">
+<h3>Why play golf at Swope Memorial?</h3>
+</div>
+
+<div class="col-12 col-md-6">
+<div class="whitebox h-100">
+<h4>Unique setting</h4>
+
+<p>Skyline views of downtown, accompanied by the roars of lions from the K.C. Zoo below, give this course character that is unmatched anywhere in the city.</p>
+</div>
+</div>
+
+<div class="col-12 col-md-6">
+<div class="whitebox h-100">
+<h4>Historic design</h4>
+
+<p>Originally opened in 1915, the course was completely re-designed by A.W. Tillinghast in 1934. In 2025, the course went through a complete historic restoration to bring it back to Tillinghast's original intent.</p>
+</div>
+</div>
+
+            
+        </div>
+    </div>
+</section>
+
+<section class="score_section" id="Scorecard">
+    <div class="container">
+        <div class="row" data-section="Scorecard-v2021">
+            <div class="col-12 col-md-6">
+<div class="flexer">
+<div>
+<h3>Scorecards</h3>
+
+<p>Pick up a scorecard at the course or download and print today. </p>
+<a class="btn_green" href="/docs/Scorecard-2026.pdf" target="_blank">Download & print <i class="fas fa-lg fa-angle-double-right"></i></a></div>
+</div>
+</div>
+
+<div class="col-12 col-md-6"><img alt="#" class="scorecard" src="/images/Scorecard-2026.png" /></div>
+
+            
+        </div>
+    </div>
+</section>
+<section class="map_section" id="Map">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="map_box" data-section="Map-v2021">
+                    <img src="/images/map1.jpg" alt="Map" class="map">
+<div class="whitebox">
+<h3>Where we are</h3>
+<p>In downtown Kansas City Missouri right by<br> the Kansas City Zoo.</p>
+<a href="https://goo.gl/maps/22ppQLMao8QNc6Zv9" class="btn_green">Where are we <i class="fas fa-lg fa-angle-double-right"></i></a>
+</div>
+                    
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="green_box">
+                    <h3>Book a tee time</h3>
+                    <p>Why waste time searching when you can book your next tee time right here? </p>
+                    <a href="/TeeTimes" class="event_link">Book a time now<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 -32 426.66667 426" style="width: 1em; height: 1em;"><path d="m213.332031 181.667969c0 4.265625-1.277343 8.53125-3.625 11.730469l-106.667969 160c-3.839843 5.761718-10.238281 9.601562-17.707031 9.601562h-64c-11.730469 0-21.332031-9.601562-21.332031-21.332031 0-4.269531 1.28125-8.535157 3.625-11.734375l98.773438-148.265625-98.773438-148.269531c-2.34375-3.199219-3.625-7.464844-3.625-11.730469 0-11.734375 9.601562-21.335938 21.332031-21.335938h64c7.46875 0 13.867188 3.839844 17.707031 9.601563l106.667969 160c2.347657 3.199218 3.625 7.464844 3.625 11.734375zm0 0"></path><path d="m426.667969 181.667969c0 4.265625-1.28125 8.53125-3.628907 11.730469l-106.664062 160c-3.839844 5.761718-10.242188 9.601562-17.707031 9.601562h-64c-11.734375 0-21.335938-9.601562-21.335938-21.332031 0-4.269531 1.28125-8.535157 3.628907-11.734375l98.773437-148.265625-98.773437-148.269531c-2.347657-3.199219-3.628907-7.464844-3.628907-11.730469 0-11.734375 9.601563-21.335938 21.335938-21.335938h64c7.464843 0 13.867187 3.839844 17.707031 9.601563l106.664062 160c2.347657 3.199218 3.628907 7.464844 3.628907 11.734375zm0 0"></path></svg></a>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="green_box">
+                    <h3>Lessons</h3>
+                    <p>Improve your golf game with individual, couples, junior, or playing lessons!</p>
+                    <a href="/Lessons" class="event_link">Up your game<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 -32 426.66667 426" style="width: 1em; height: 1em;"><path d="m213.332031 181.667969c0 4.265625-1.277343 8.53125-3.625 11.730469l-106.667969 160c-3.839843 5.761718-10.238281 9.601562-17.707031 9.601562h-64c-11.730469 0-21.332031-9.601562-21.332031-21.332031 0-4.269531 1.28125-8.535157 3.625-11.734375l98.773438-148.265625-98.773438-148.269531c-2.34375-3.199219-3.625-7.464844-3.625-11.730469 0-11.734375 9.601562-21.335938 21.332031-21.335938h64c7.46875 0 13.867188 3.839844 17.707031 9.601563l106.667969 160c2.347657 3.199218 3.625 7.464844 3.625 11.734375zm0 0"></path><path d="m426.667969 181.667969c0 4.265625-1.28125 8.53125-3.628907 11.730469l-106.664062 160c-3.839844 5.761718-10.242188 9.601562-17.707031 9.601562h-64c-11.734375 0-21.335938-9.601562-21.335938-21.332031 0-4.269531 1.28125-8.535157 3.628907-11.734375l98.773437-148.265625-98.773437-148.269531c-2.347657-3.199219-3.628907-7.464844-3.628907-11.730469 0-11.734375 9.601563-21.335938 21.335938-21.335938h64c7.464843 0 13.867187 3.839844 17.707031 9.601563l106.664062 160c2.347657 3.199218 3.628907 7.464844 3.628907 11.734375zm0 0"></path></svg></a>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="green_box">
+                    <h3>Leagues</h3>
+                    <p>Swope Memorial Golf Course has several regularly meeting golf leagues.</p>
+                    <a href="/Leagues" class="event_link">Join a league<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 -32 426.66667 426" style="width: 1em; height: 1em;"><path d="m213.332031 181.667969c0 4.265625-1.277343 8.53125-3.625 11.730469l-106.667969 160c-3.839843 5.761718-10.238281 9.601562-17.707031 9.601562h-64c-11.730469 0-21.332031-9.601562-21.332031-21.332031 0-4.269531 1.28125-8.535157 3.625-11.734375l98.773438-148.265625-98.773438-148.269531c-2.34375-3.199219-3.625-7.464844-3.625-11.730469 0-11.734375 9.601562-21.335938 21.332031-21.335938h64c7.46875 0 13.867188 3.839844 17.707031 9.601563l106.667969 160c2.347657 3.199218 3.625 7.464844 3.625 11.734375zm0 0"></path><path d="m426.667969 181.667969c0 4.265625-1.28125 8.53125-3.628907 11.730469l-106.664062 160c-3.839844 5.761718-10.242188 9.601562-17.707031 9.601562h-64c-11.734375 0-21.335938-9.601562-21.335938-21.332031 0-4.269531 1.28125-8.535157 3.628907-11.734375l98.773437-148.265625-98.773437-148.269531c-2.347657-3.199219-3.628907-7.464844-3.628907-11.730469 0-11.734375 9.601563-21.335938 21.335938-21.335938h64c7.464843 0 13.867187 3.839844 17.707031 9.601563l106.664062 160c2.347657 3.199218 3.628907 7.464844 3.628907 11.734375zm0 0"></path></svg></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <section class="promotion_section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Get the latest news & promotions!</h3>
+                </div>
+                <div class="col-md-6">
+                    <form id="emailSignup">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email address">
+                            <button class="btn_green">Subscribe</button>
+                        </div>
+                    </form>
+                    <div id="form-info" class="alert alert-danger"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-3">
+                    <a href="/"><img src="/images/logo.png" alt="Logo"></a>
+                </div>
+                <div class="col-12 col-md-9">
+                    <div class="row">
+                        <div class="col-12 col-md-3">
+                            <ul>
+                                
+                                <li><a href="/TeeTimes">Book a tee time</a></li>
+                                <li><a href="/Lessons">Lessons</a></li>
+                                <li><a href="/About">About our course</a></li>
+                                <li><a href="/Calendar/UpcomingEvents">Activities & events</a></li>
+                                <li><a href="https://swopememorialgc1934.blogspot.com/" target="_blank">Blog</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <ul>
+                                
+                                <li><a href="/Rates">Rates</a></li>
+                                <li><a href="https://join.ghin.com/enyhfy/club/16766" target="_blank">GHIN</a></li>
+                                <li><a href="/OnlineStore">Shop</a></li>
+                                <li><a href="/Contact">Contact</a></li>
+                                <li><a href="https://play.google.com/store/apps/details?id=com.gallusgolf.c179.android.swopememgc&hl=en_US&gl=US" target="_blank">Download Android App</a></li>
+                                <li><a href="https://apps.apple.com/us/app/swope-memorial-golf-course/id599039543" target="_blank">Download iOS App</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <ul>
+                                <li><a href="tel: 816-513-8910">816-513-8910</a></li>
+                                <li><a href="mailto: info@swopememorialgolfcourse.com">info@swopememorialgolfcourse.com</a></li>
+                                <li><a href="https://goo.gl/maps/mdJkvUUM9LRzKTbD8">6900 Swope Memorial Drive<br>Kansas City, MO 64132</a></li>
+                            </ul>
+                            <p>
+                                <a href="https://facebook.com/swopememorial" target="_blank">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 112 112" x="0px" y="0px" id="svg-4d6e">
+                                    <path d="M75.5,28.8H65.4c-1.5,0-4,0.9-4,4.3v9.4h13.9l-1.5,15.8H61.4v45.1H42.8V58.3h-8.8V42.4h8.8V32.2 c0-7.4,3.4-18.8,18.8-18.8h13.8v15.4H75.5z"></path>
+                                </svg>
+                                </a>
+                                <a href="https://www.instagram.com/swopememorialgolf/" target="_blank">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 112 112" x="0px" y="0px" id="svg-fc76">
+                                    <path d="M55.9,32.9c-12.8,0-23.2,10.4-23.2,23.2s10.4,23.2,23.2,23.2s23.2-10.4,23.2-23.2S68.7,32.9,55.9,32.9z M55.9,69.4c-7.4,0-13.3-6-13.3-13.3c-0.1-7.4,6-13.3,13.3-13.3s13.3,6,13.3,13.3C69.3,63.5,63.3,69.4,55.9,69.4z"></path>
+                                    <path d="M79.7,26.8c-3,0-5.4,2.5-5.4,5.4s2.5,5.4,5.4,5.4c3,0,5.4-2.5,5.4-5.4S82.7,26.8,79.7,26.8z"></path>
+                                    <path d="M78.2,11H33.5C21,11,10.8,21.3,10.8,33.7v44.7c0,12.6,10.2,22.8,22.7,22.8h44.7c12.6,0,22.7-10.2,22.7-22.7 V33.7C100.8,21.1,90.6,11,78.2,11z M91,78.4c0,7.1-5.8,12.8-12.8,12.8H33.5c-7.1,0-12.8-5.8-12.8-12.8V33.7 c0-7.1,5.8-12.8,12.8-12.8h44.7c7.1,0,12.8,5.8,12.8,12.8V78.4z"></path>
+                                </svg>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row py-2 py-md-5">
+                <div id="powered-by-teequest" class="col-12 text-center">
+                    <a href="https://portal.teequest.net/portal" target="_blank" style="font-size: 0.7em; color: #004E38;">
+                        <i class="fa fa-cogs fa-lg"></i>
+                        <span><i>powered by TeeQuest</i></span>
+                        <sup>TM</sup>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="/bundles/jqueryval?v=1JOva1TtAasjAVPR4sIF9tSsHrK0L4EZcerlvIb-z3U1"></script>
+
+    <script src="/bundles/bootstrapbundle?v=cACW5_waT3azse3UwFvBKotUB559JI9U2ADvNi93fjw1"></script>
+
+    <script src="/bundles/knockout?v=8C2HZTEhg-4SlR23jR0VIRqK2jmCLEckMvQFq6wFpeY1"></script>
+
+
+    <script type="text/javascript" src="/js/custom.js"></script>
+
+    <script>
+        $(function () {
+            $("#notice, #notice-container").click(function () {
+                $(this).fadeOut();
+            });
+            $(".covid-19-notice-trigger").click(function () {
+                $("#notice-container, #notice").fadeIn();
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            $("form#emailSignup").validate({
+                rules: {
+                    email: {
+                        required: true,
+                        email: true
+                    }
+                },
+                messages: {
+                    email: {
+                        required: "Email is required."
+                    }
+                },
+                highlight: function (element, errorClass) {
+                    $(element).removeClass("is-valid").addClass("is-invalid");
+                },
+                unhighlight: function (element, errorClass) {
+                    $(element).removeClass("is-invalid").addClass("is-valid");
+                },
+                submitHandler: function (form) {
+                    var $form = $(form);
+                    var $formInfo = $("#form-info");
+                    var $formButton = $form.find("button[type='submit']");
+
+                    $formButton.attr("disabled", true);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/EmailSignup",
+                        data: $form.serialize(),
+                        success: function (result) {
+                            if (result.success) {
+                                $formInfo.removeClass("alert-danger").addClass("alert-success").css({ "margin-top": "0px", "margin-bottom": "0px" }).show().text(result.message);
+                                $form.hide();
+                            } else {
+                                $formInfo.empty().append(result.message).removeClass("alert-success").addClass("alert-danger").show();
+                                if (result.errors) {
+                                    var $ul = $("<ul></ul>");
+                                    for (var i = 0; i < result.errors.length; i++) {
+                                        $ul.append("<li>" + result.errors[i] + "</li>");
+                                    }
+                                    $formInfo.append($ul);
+                                }
+                                $formButton.attr("disabled", false);
+                            }
+                        },
+                        error: function () {
+                            $formInfo.empty().text("Unexpected error occurred.").removeClass("alert-success").addClass("alert-danger").show();
+                            $formButton.attr("disabled", false);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    
+
+    <script>
+        document.getElementById("hiddenMenu").style.display = (window.top !== window.self) ? "list-item" : "none";
+    </script>
+
+    <script src="https://portal.teequest.net/editor/getEditor.js" type="text/javascript"></script>
+</body>
+</html>
