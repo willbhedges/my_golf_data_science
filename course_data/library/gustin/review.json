@@ -1,0 +1,195 @@
+{
+ "course_review/1": {
+  "slug": "gustin",
+  "reviewer": "agent",
+  "card_source": "golfify (golfify.io/courses/a-l-gustin-golf-course) = AllSquare Golf (allsquaregolf.com/golf-courses/missouri/a-l-gustin-golf-course, shown in metres, same card: 69.8/122, 67.8/115), fetched 2026-10-30. GolfPass/GolfLink 403, BlueGolf 405, club site unreachable.",
+  "card": {
+   "set": {
+    "Black": [
+     492,
+     162,
+     440,
+     384,
+     201,
+     418,
+     369,
+     376,
+     338,
+     205,
+     424,
+     518,
+     205,
+     378,
+     467,
+     332,
+     405,
+     378
+    ],
+    "Gold": [
+     470,
+     140,
+     351,
+     360,
+     170,
+     393,
+     305,
+     346,
+     323,
+     166,
+     397,
+     493,
+     176,
+     348,
+     350,
+     311,
+     375,
+     365
+    ],
+    "White": [
+     350,
+     132,
+     284,
+     290,
+     135,
+     277,
+     254,
+     270,
+     310,
+     129,
+     300,
+     438,
+     150,
+     260,
+     250,
+     258,
+     305,
+     270
+    ]
+   },
+   "par": [
+    5,
+    3,
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    3,
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Black 487 / Gold 470 on the OSM boxes behind the clubhouse; dogleg-left par 5, picks reasonable."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Par 3, both tees on OSM boxes, 158/140 vs card 162/140."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Black CHECK on Gold only (Gold is a lidar pad). Black sits on the hole-6 tee complex (shared box), 440 = card exactly; Gold on a small forward box by the cart path, 351 = card. Both plausible in the 0.3 m NAIP."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Black CHECK: tee 5 yds from the OSM box in a narrow tree chute behind the hole-way start; 385 vs card 384. Plausible."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Par 3, OSM boxes, yardages match the card."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Downhill dogleg left (93 ft drop). 4-wood aimed 40 left lands on the fairway past the corner; aggressive but sensible."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Uncertain. Black CHECK: lidar pad 42 yds behind the hole-way start, under full tree canopy (leaf-on imagery shows no chute). The pad is flat and the tee-to-green distance (364) matches the card (369), so it is probably a back tee in a tree chute. Gold on the OSM box, 303 vs 305."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Tees on OSM boxes, 372/347 vs card 376/346."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "Tees on OSM boxes, yardages match."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Par 3, OSM boxes, yardages match."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Black CHECK: lidar pad about 13 yds behind the visible OSM box, at the cart path. 423 vs card 424 (the box alone would be about 410). Minor; it does not change the pick (4-wood, tie)."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Tees on OSM boxes, 515/488 vs 518/493."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Par 3, OSM boxes, yardages match."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "CHECK because OSM maps no tee boxes for hole 14 (the 183/150 yd 'distance to nearest OSM box' is meaningless). Both tees are lidar pads at the hole-way start (Black) and by the path (Gold), 380/348 vs 378/348. Plausible."
+   },
+   {
+    "n": 15,
+    "verdict": "wrong tee position",
+    "notes": "Black tee is a walk-back placed 67 yds behind the OSM hole-way start, in trees on a hillside beside the pond (ground falls 11 ft in the first 20 yds; no flat pad in the lidar, no box in the imagery). The visible back box is at the OSM hole-way start next to green 14: 399 yds along the dogleg (363 straight). The card's 467 (golfify and AllSquare agree) cannot be found on the ground, so the Black yardage on this hole is uncertain. Gold on the OSM box at the foot of the fairway, 345 vs card 350: OK.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       38.9306123,
+       -92.3470947
+      ]
+     },
+     "yards": {
+      "Black": 399
+     }
+    }
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Dogleg right 332; 4-wood aimed 40 right at the corner (fairway 27%, trees 16%). Aggressive but the model's margin is real; tees on OSM boxes."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Tees on OSM boxes, yardages match."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Tees on OSM boxes, yardages match."
+   }
+  ],
+  "summary": "17 of 18 holes OK (holes 7 and 11 have small doubts). Hole 15 Black tee is wrong (walk-back in the trees); move it to the OSM back box (~399 yds). Pars and yardages match the card on every other hole. Publishable after the hole-15 fix; as-is the hole-15 Black advice is from an imaginary tee."
+ }
+}
