@@ -1,0 +1,226 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "adams_pointe",
+ "course": "Adams Pointe Golf Course",
+ "bbox_snwe": [
+  39.012653,
+  -94.254399,
+  39.027105,
+  -94.228468
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 2508,
+  "height": 1876,
+  "bounds": [
+   391276,
+   4318778,
+   393784,
+   4320654
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   391276.0,
+   0.0,
+   -1.0,
+   4320654.0
+  ],
+  "ll_bbox_wsen": [
+   -94.2560703006026,
+   39.01127636018298,
+   -94.22680991040717,
+   39.0284859085121
+  ]
+ },
+ "fetched_utc": "2026-10-30T00:22:25Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "MO_WestCentral_1_2018-hag-2m-4-7",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 706328,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-hag-2m-4-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 679332,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-hag-2m-3-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 3297982,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9954588812601382,
+   "file": "hag.tif",
+   "mb": 1.45,
+   "frac_gt_2_5m": 0.2969091657229913
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "MO_WestCentral_1_2018-dtm-2m-4-7",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 176215,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-dtm-2m-4-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 169841,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-dtm-2m-3-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 824647,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9952824734835732,
+   "mb": 2.93
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "MO_WestCentral_1_2018-classification-2m-4-7",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 682240,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_WestCentral_1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-classification-2m-4-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 690360,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JacksonCo_2006-classification-2m-3-2",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 3217064,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.39,
+   "counts": {
+    "0": 115344,
+    "1": 935018,
+    "2": 3463198,
+    "10": 191344,
+    "17": 104
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111023"
+  ],
+  "mb": 0.56,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1176252,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 14.98,
+    "items": [
+     "mo_m_3909463_sw_15_060_20220629",
+     "mo_m_3909462_se_15_060_20220629"
+    ],
+    "acquired": [
+     "2022-06-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 17.53,
+    "items": [
+     "mo_m_3909463_sw_15_060_20200607",
+     "mo_m_3909462_se_15_060_20200607"
+    ],
+    "acquired": [
+     "2020-06-07"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
