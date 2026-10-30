@@ -18,3 +18,7 @@
 
 **Fix (no osm_supplement needed: OSM maps 65 tees):** rebuild with
 `"scorecard": "course_data/library/tpc_deere_run/card_review.json", "tees": ["Gold", "Black"]`.
+
+## Addendum (coordinator)
+
+The AllSquare card used above is printed in metres. In yards Gold is 7,268 (the TPC Deere Run championship length), Black 6,985. `card_review.json` is now in yards. The tee comparisons above were made against metre values, so the per-hole tee fixes are withdrawn (kept in review.json as `fix_withdrawn`). For example, hole 2's page tee at 549 yds fits the Gold 561 yds. The rebuild should use the yard card and let the tee localizer choose the OSM tees; the holes then need a fresh look.
