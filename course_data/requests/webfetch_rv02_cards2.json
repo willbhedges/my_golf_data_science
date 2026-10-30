@@ -1,7 +1,7 @@
 {
  "name": "rv02_cards2",
- "rev": 1,
- "note": "rv02 course review, round 2: independent scorecards for Finkbine GC (2025 club card PDF, closed for 2026 renovation) and The Harvester GC (golfify vs opengolfapi disagree).",
+ "rev": 2,
+ "note": "rv02 course review, round 2: independent scorecards for Finkbine GC (2025 club card PDF, closed for 2026 renovation) and The Harvester GC (golfify vs opengolfapi disagree). rev 2: re-run (rev 1 produced no output) + OSM golf features for The Harvester.",
  "urls": [
   "https://www.finkbine.com/images/documents/FINAL-2025Scorecard-compressed.pdf",
   "https://gcr.foretee.com/golf-course-scorecard/iowa/iowa-city/usa/finkbine-golf-course/5166/",
@@ -20,6 +20,8 @@
   "http://www.harvestergolf.com/",
   "https://harvestergolf.com/",
   "https://www.theharvestergolfclub.com/",
-  "https://www.bing.com/search?q=Harvester+Golf+Club+Rhodes+Iowa"
+  "https://www.bing.com/search?q=Harvester+Golf+Club+Rhodes+Iowa",
+  "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A60%5D%3B%28way%5B%22golf%22%5D%2841.8619%2C-93.2259%2C41.8792%2C-93.2014%29%3Bnode%5B%22golf%22%5D%2841.8619%2C-93.2259%2C41.8792%2C-93.2014%29%3B%29%3Bout%20geom%20tags%3B",
+  "https://api.openstreetmap.org/api/0.6/map.json?bbox=-93.2259,41.8619,-93.2014,41.8792"
  ]
 }
