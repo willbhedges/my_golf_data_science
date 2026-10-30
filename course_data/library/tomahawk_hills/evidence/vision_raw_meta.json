@@ -1,0 +1,179 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "tomahawk_hills",
+ "course": "Tomahawk Hills Golf Course",
+ "bbox_snwe": [
+  38.991475,
+  -94.799242,
+  39.002904,
+  -94.780824
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1862,
+  "height": 1542,
+  "bounds": [
+   344056,
+   4317218,
+   345918,
+   4318760
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   344056.0,
+   0.0,
+   -1.0,
+   4318760.0
+  ],
+  "ll_bbox_wsen": [
+   -94.80094887918582,
+   38.990082030706276,
+   -94.77910701705521,
+   39.00430057665613
+  ]
+ },
+ "fetched_utc": "2026-10-30T03:35:16Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "KS_JohnsonCo_2006-dsm-2m-3-0",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 206628,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_JohnsonCo_2006-dsm-2m-2-0",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 2660824,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "KS_Statewide_B16_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KS_Statewide_B16_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 27840677365
+   },
+   {
+    "name": "KS_JohnsonCo_2006",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KS_JohnsonCo_2006/ept.json",
+    "cov": 1.0,
+    "year": 2006,
+    "count": 1212434469
+   }
+  ],
+  "used": [
+   {
+    "name": "KS_Statewide_B16_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KS_Statewide_B16_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 27840677365,
+    "cells": 2865737
+   }
+  ],
+  "valid": 0.9980959207356914,
+  "hag_mb": 1.51,
+  "frac_gt_2_5m": 0.4429511104052516,
+  "class_mb": 0.02
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111023"
+  ],
+  "mb": 0.49,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 213757,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   },
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 504044,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 13.15,
+    "items": [
+     "ks_m_3909458_se_15_030_20230816_20240209",
+     "ks_m_3809402_ne_15_030_20230816_20240209"
+    ],
+    "acquired": [
+     "2023-08-16"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 8.88,
+    "items": [
+     "ks_m_3809402_ne_15_060_20210613",
+     "ks_m_3909458_se_15_060_20210612"
+    ],
+    "acquired": [
+     "2021-06-12",
+     "2021-06-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
