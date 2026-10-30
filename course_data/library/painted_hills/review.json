@@ -1,0 +1,189 @@
+{
+ "course_review/1": {
+  "slug": "painted_hills",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/painted-hills-golf-course), re-fetched 2026-10-30 (course_data/research/web/rv08_shawnee_painted/01.txt); OpenGolfAPI has only White and disagrees on 2/6/11 with an internally inconsistent total (5352 vs stated 5440)",
+  "card": {
+   "Blue": [
+    381,
+    430,
+    158,
+    500,
+    478,
+    179,
+    327,
+    194,
+    307,
+    522,
+    196,
+    492,
+    181,
+    364,
+    290,
+    391,
+    144,
+    297
+   ],
+   "White": [
+    362,
+    405,
+    146,
+    462,
+    437,
+    162,
+    303,
+    166,
+    288,
+    496,
+    177,
+    465,
+    151,
+    337,
+    270,
+    356,
+    142,
+    273
+   ],
+   "par": [
+    4,
+    4,
+    3,
+    5,
+    5,
+    3,
+    4,
+    3,
+    4,
+    5,
+    3,
+    5,
+    3,
+    4,
+    4,
+    4,
+    3,
+    4
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "ok",
+    "notes": "Tee by the clubhouse, routing matches OSM hole way. Blue lidar pad 376 vs card 381, White 357 vs 362. Landing on fairway near a cart-path crossing. Tee CHECK is only because OSM maps no tee boxes here."
+   },
+   {
+    "n": 2,
+    "verdict": "ok",
+    "notes": "Routing OK. Blue 427/430, White 404/405 (golfify; OpenGolfAPI's White 380 is an outlier, its own total does not add up). Landing pattern edges into trees right; pick Driver plausible."
+   },
+   {
+    "n": 3,
+    "verdict": "ok",
+    "notes": "Par 3, 157/158; target box on the OSM green. OK."
+   },
+   {
+    "n": 4,
+    "verdict": "ok",
+    "notes": "Par 5, 499/500, White 461/462. OK."
+   },
+   {
+    "n": 5,
+    "verdict": "ok",
+    "notes": "Par 5, 477/478, White 436/437. Landing near a fairway bunker; pick plausible."
+   },
+   {
+    "n": 6,
+    "verdict": "ok",
+    "notes": "Par 3, Blue walkback 179 (= card by construction), White lidar pad 160/162. Box on green. OK."
+   },
+   {
+    "n": 7,
+    "verdict": "ok",
+    "notes": "Par 4 dogleg left. Blue lidar pad measures 316 vs card 327 (-11); a tee pad is visible at the marker and no clearer pad ~11 yds behind on 2021 NAIP 0.6 m, so likely a measuring difference. White 303/303. Calm pick aims 40 yds left (cutting the dogleg; tie at Blue) - plausible but the least certain pick on the course."
+   },
+   {
+    "n": 8,
+    "verdict": "ok",
+    "notes": "Par 3, 194/194; White pad 176 vs card 166 (+10). Box on green. OK."
+   },
+   {
+    "n": 9,
+    "verdict": "ok",
+    "notes": "Par 4, 307/307, finishing by the clubhouse. Driver toward the green-side bunkers is plausible on a 307-yd hole."
+   },
+   {
+    "n": 10,
+    "verdict": "ok",
+    "notes": "Par 5, 521/522 (Blue on a texture pad), White 495/496. Landing ellipse over a brownish strip (long grass?) right of centre; pick plausible."
+   },
+   {
+    "n": 11,
+    "verdict": "ok",
+    "notes": "Par 3, 196/196 (OpenGolfAPI White 159 is an outlier; golfify 177 matches the 176 pad). Box on green. OK."
+   },
+   {
+    "n": 12,
+    "verdict": "ok",
+    "notes": "Par 5 dogleg, 483 vs 492 (-9), White 458/465. Aims 28-40 yds left with the dogleg. OK."
+   },
+   {
+    "n": 13,
+    "verdict": "ok",
+    "notes": "Par 3, 179/181. Box on green. OK."
+   },
+   {
+    "n": 14,
+    "verdict": "ok",
+    "notes": "Par 4, 365/364, White 338/337. OK."
+   },
+   {
+    "n": 15,
+    "verdict": "ok",
+    "notes": "Par 4, 290/290, short hole by the pond. OK."
+   },
+   {
+    "n": 16,
+    "verdict": "ok",
+    "notes": "Par 4, Blue walkback 390/391 sits ~8 yds behind the visible pad; within tolerance. Landing area has a tree clump and cart path - pick 4-wood plausible."
+   },
+   {
+    "n": 17,
+    "verdict": "wrong_par",
+    "notes": "OSM has no golf=hole way for 17 (17 of 18), so the geometry fallback built it with par '17', hcp 3 and no card yards; the page treats it as a tee-shot hole (Mid iron landing 192 yds out on a 139-yd hole). Card: par 3, hcp 18, Blue 144, White 142. The green and the back tee pad (hole-line start, 139 yds) look right on the picture; forward pads ~23/45 yds ahead match Gold 121 / Red 101.",
+    "fix": {
+     "par": 3,
+     "yards": {
+      "Blue": 144,
+      "White": 142
+     },
+     "tee_ll": {
+      "Blue": [
+       39.1270554,
+       -94.7411253
+      ],
+      "White": [
+       39.1270554,
+       -94.7411253
+      ]
+     },
+     "green_ll": [
+      39.1259173,
+      -94.7412439
+     ]
+    }
+   },
+   {
+    "n": 18,
+    "verdict": "ok",
+    "notes": "Par 4, 295/297, finishing at the clubhouse; driveable, aim near the green. OK."
+   }
+  ],
+  "course_notes": [
+   "17 of 18 holes OK (all tee CHECKs are because OSM maps no tee boxes; measured lengths are within 11 yds of the card).",
+   "Hole 17 must be fixed before publishing: par 17 / tee-shot play on a 144-yd par 3; course par sums to 84 instead of 70.",
+   "osm_supplement.geojson adds the missing golf=hole way for 17 (ref 17, par 3) and its back tee pad."
+  ],
+  "publish": false,
+  "publish_after_fix": true
+ }
+}

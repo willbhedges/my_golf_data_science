@@ -1,0 +1,64 @@
+{
+ "type": "FeatureCollection",
+ "note": "rv08 hand supplement for Painted Hills hole 17: OSM has no golf=hole way for 17 (17 of 18 mapped), so the geometry fallback gave it par 17, hcp 3 and no card yards. Card (golfify, matches GolfPass/BlueGolf check in review.md): par 3, hcp 18, Blue 144, White 142, Gold 121, Red 101. The back tee pad is visible on the page's NAIP picture at the hole-line start (~135-139 yds to the OSM green centre); two forward pads ~23 and ~45 yds ahead match Gold/Red. Tee polygon = that back pad.",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "golf": "hole",
+    "ref": "17",
+    "par": "3",
+    "handicap": "18",
+    "name": "17"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -94.7411253,
+      39.1270554
+     ],
+     [
+      -94.7412439,
+      39.1259173
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "golf": "tee",
+    "ref": "17",
+    "note": "hand: card-length placement on the 17 hole line"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -94.7411955,
+       39.1269938
+      ],
+      [
+       -94.7410688,
+       39.1269859
+      ],
+      [
+       -94.7410569,
+       39.1271005
+      ],
+      [
+       -94.7411835,
+       39.1271085
+      ],
+      [
+       -94.7411955,
+       39.1269938
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

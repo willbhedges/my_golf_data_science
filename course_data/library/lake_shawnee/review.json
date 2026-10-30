@@ -1,0 +1,240 @@
+{
+ "course_review/1": {
+  "slug": "lake_shawnee",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/lake-shawnee-golf-course), identical to OpenGolfAPI yardages/pars; re-fetched 2026-10-30 (course_data/research/web/rv08_shawnee_painted/00.txt)",
+  "card": {
+   "Blue": [
+    348,
+    369,
+    353,
+    148,
+    474,
+    179,
+    419,
+    391,
+    625,
+    364,
+    412,
+    429,
+    156,
+    338,
+    199,
+    515,
+    183,
+    455
+   ],
+   "White": [
+    334,
+    330,
+    320,
+    128,
+    460,
+    159,
+    388,
+    364,
+    596,
+    332,
+    394,
+    395,
+    139,
+    316,
+    181,
+    487,
+    163,
+    429
+   ],
+   "par": [
+    4,
+    4,
+    4,
+    3,
+    5,
+    3,
+    4,
+    4,
+    5,
+    4,
+    4,
+    4,
+    3,
+    4,
+    3,
+    5,
+    3,
+    4
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong_routing",
+    "notes": "Page hole 1 is most likely card hole 18. OSM tee boxes on this hole sit at 434/406/383/366 yds, which fit card hole 18 (White 429, Red 405, Gold 389) and not hole 1 (348/334/300/263); its green is beside the clubhouse (4141 SE East Edge Rd) and the next tee, so this is the finishing hole. Blue 455 is ~20 yds behind the back OSM box (extrapolated on the hole line). Tee fix points are on the hole line at the card length from the OSM green centre (approximate).",
+    "fix": {
+     "renumber_as": 18,
+     "par": 4,
+     "yards": {
+      "Blue": 455,
+      "White": 429
+     },
+     "tee_ll": {
+      "Blue": [
+       38.9907245,
+       -95.6274183
+      ],
+      "White": [
+       38.9908898,
+       -95.6272443
+      ]
+     }
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "wrong_routing",
+    "notes": "Page hole 2 is most likely card hole 1. Tee is next to the clubhouse and car park (page picture). OSM tee boxes at 341/308/260 fit card hole 1 (348/334?/300/263). The page's Blue tee is a lidar pad at 369 yds, 16 yds off any OSM box: with the right number it should sit on the back OSM box (~348). Tee fix points are on the hole line at the card length from the OSM green centre (approximate).",
+    "fix": {
+     "renumber_as": 1,
+     "par": 4,
+     "yards": {
+      "Blue": 348,
+      "White": 334
+     },
+     "tee_ll": {
+      "Blue": [
+       38.9936757,
+       -95.6237436
+      ],
+      "White": [
+       38.9935626,
+       -95.6237709
+      ]
+     }
+    }
+   },
+   {
+    "n": 3,
+    "verdict": "wrong_routing",
+    "notes": "Page hole 3 is most likely card hole 2. Follows on from the clubhouse-side hole. OSM boxes at 366/385; card hole 2 Blue 369 fits the 366 box (the page puts Blue on a lidar pad at 352, 6 yds from it). White 330 is a walkback on the page (320). Tee fix points are on the hole line at the card length from the OSM green centre (approximate).",
+    "fix": {
+     "renumber_as": 2,
+     "par": 4,
+     "yards": {
+      "Blue": 369,
+      "White": 330
+     },
+     "tee_ll": {
+      "Blue": [
+       38.9913567,
+       -95.6252788
+      ],
+      "White": [
+       38.9911041,
+       -95.6255323
+      ]
+     }
+    }
+   },
+   {
+    "n": 4,
+    "verdict": "wrong_routing",
+    "notes": "Page hole 4 is most likely card hole 3. OSM tags this hole par 4 (provenance: 'card (OSM says 4)'), hole line 339 yds, tee boxes at 365/338/306/277: it is a ~350-yd par 4, not the 148-yd par-3 hole 4. The page walked the tee 125 yds up the fairway to fake a 148-yd par 3: the page hole is unplayable as drawn. Next in the chain after hole 2, so card hole 3 (par 4, 353/320). Tee fix points are on the hole line at the card length from the OSM green centre (approximate).",
+    "fix": {
+     "renumber_as": 3,
+     "par": 4,
+     "yards": {
+      "Blue": 353,
+      "White": 320
+     },
+     "tee_ll": {
+      "Blue": [
+       38.9889822,
+       -95.6268104
+      ],
+      "White": [
+       38.9887611,
+       -95.6270122
+      ]
+     }
+    }
+   },
+   {
+    "n": 5,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 6,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 7,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 8,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 9,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 10,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 11,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 12,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 13,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 14,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 15,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 16,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 17,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   },
+   {
+    "n": 18,
+    "verdict": "missing",
+    "notes": "Not on the page: OSM maps only 4 holes (4 greens, 13 tees, 5 fairways) on this 18-hole course; the structure/v2 routers could not place the rest."
+   }
+  ],
+  "course_notes": [
+   "Only 4 of 18 holes exist on the page (OSM maps 4); not publishable.",
+   "The 4 built holes are numbered 1-4 by structure inference, but the evidence (OSM tee-box distances, OSM par 4 on page hole 4, clubhouse beside page hole 2's tee) says they are card holes 18, 1, 2, 3.",
+   "Page hole 4 is a par-4 corridor shown as a 148-yd par 3 with the tee walked 125 yds up the fairway.",
+   "No osm_supplement written: the fix needs the 14 unmapped holes traced from imagery (or mapped in OSM); renumbering 4 holes alone would not make the page usable."
+  ],
+  "publish": false
+ }
+}
