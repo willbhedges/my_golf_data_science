@@ -649,7 +649,9 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, 
     solver's marginals as a prior (structure on the OSM scene, or on the perception scene when OSM lacks greens /
     tees), with routing v2 alone, the structure solver alone and the geometry fallback (build_holes.infer_holes)
     as fallbacks on any error. Only the refs OSM has no golf=hole way for are added. Request "routing": false
-    keeps the geometry fallback; "hole_method": "v2" | "structure" | "geometry" forces one.
+    keeps the geometry fallback; "hole_method": "v2" | "structure" | "v2+structure" | "sequence_v3" | "geometry"
+    forces one (sequence_v3: formation-v2 pairs + zero-tap sequence solver v3, card tiers; falls back to
+    v2+structure > v2 > structure > geometry on any error). package.json["pipeline"]["holes"]["method"] is what ran.
     The golfer-confirm payload (golf_confirm/1, confirm.py) for the routed holes goes to confirm.json.
     -> (fc, {ref: {status, flags, p_green, p_hole, ...}} for the routed holes). pipeline (dict) gets the record."""
     pipeline = pipeline if pipeline is not None else {}
@@ -678,7 +680,8 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, 
             lp = load(os.path.join(CD, "tees", "lidar_pads.py"), "cdp_lidar_pads")
             if lp is not None:
                 pads = lp.detect_pads(dem, greens=osm_tee_inputs(fc)[2], lines=None)
-        force = dict(method=req["hole_method"]) if req.get("hole_method") in ("v2", "structure", "v2+structure") else None
+        force = dict(method=req["hole_method"]) if req.get("hole_method") in ("v2", "structure", "v2+structure",
+                                                                               "sequence_v3") else None
         res, info = ss.infer_holes(fc, card, course, seg=seg, pads=pads, scene=scene, force=force)
         info.pop("profile", None)
         pipeline["holes"] = info

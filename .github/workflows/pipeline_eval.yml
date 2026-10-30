@@ -4,7 +4,8 @@ name: pipeline_eval
 # shared validation set, per data tier (course_data/platform/pipeline_eval.py), sharded over 12 jobs (6 at a time) and merged.
 # Offline: every input is committed (course_data/generalize/courses/, perception/scenes/, structure/params_noval.json).
 # Request-file trigger: commit course_data/requests/pipeline_eval_<name>.json
-#   {"schema": "request/1", "kind": "pipeline_eval", "stage": "select" | "final"}
+#   {"schema": "request/1", "kind": "pipeline_eval", "stage": "select" | "final" | "v3"}
+# v3     -> TEST split, card tiers: selector vs sequence_v3 -> course_data/platform/pipeline_eval_v3.json
 # select -> TRAIN split method grid -> course_data/platform/pipeline_select.json (chooses stage_select.SELECT)
 # final  -> TEST split baseline vs selector + golfer-confirm taps -> course_data/platform/pipeline_eval.json
 
@@ -101,7 +102,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -q numpy scipy shapely pyproj scikit-image
+      - run: pip install -q numpy scipy shapely pyproj scikit-image scikit-learn==1.9.1
       - name: Shard ${{ matrix.shard }}
         run: |
           python -u course_data/platform/pipeline_eval.py ${{ needs.plan.outputs.stage }} --shard ${{ matrix.shard }}/12 \
@@ -147,7 +148,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for f in course_data/platform/pipeline_select.json course_data/platform/pipeline_eval.json course_data/platform/pipeline_shards; do
+          for f in course_data/platform/pipeline_select.json course_data/platform/pipeline_eval.json course_data/platform/pipeline_eval_v3.json course_data/platform/pipeline_shards; do
             if [ -e "$f" ]; then git add "$f"; fi
           done
           git diff --cached --quiet && exit 0

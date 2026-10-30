@@ -14,6 +14,10 @@ Methods (each falls back to the next on any error or an empty result):
   v2            routing v2 alone (the previous default with a card)
   structure     the structure solver's MAP route alone (course_data/structure/structure.py)
   geometry      no routing: geometry/build_holes.infer_holes (the previous default without a card)
+  sequence_v3   card tiers only: formation-v2 pair probabilities (zero_tap/formation/hole_pairs.py, hole_pairs/1)
+                as the formation, then the zero-tap sequence solver v3 (zero_tap/sequence/solve.py: route CRF +
+                card geometry, PAIRS_FORM_W 3, CARD_W 2, nesting on: zero_tap/sequence/results/v3/bench_d.md).
+                OSM scene when mapped, else the perception scene. Its confirm session is the tier's v2+structure.
 
 Tiers (from the data, `tier()`):
   mapped_card     OSM greens and tee boxes for >= 80 % of the holes, and a card (web, file, or typed)
@@ -63,7 +67,17 @@ SELECT = {
     "mapped_nocard": dict(method="structure", confirm=dict(method="v2+structure", lam=1.0)),
     "unmapped_nocard": dict(method="structure", confirm=dict(method="v2")),
 }
-FALLBACK = {"v2+structure": ["v2", "structure", "geometry"], "v2": ["structure", "geometry"],
+# sequence_v3 (formation-v2 pairs + sequence solver v3) for the card tiers: PIPELINE.md section 8. It becomes the
+# default only if the held-out test (pipeline_eval.py v3) and the gate courses improve or tie; otherwise SELECT
+# stays as above and SELECT_V3 is opt-in (request "hole_method": "sequence_v3").
+SELECT_V3 = {
+    "mapped_card": dict(method="sequence_v3", confirm=dict(method="v2+structure", lam=0.5)),
+    "unmapped_card": dict(method="sequence_v3", confirm=dict(method="v2+structure", lam=0.25)),
+}
+V3 = dict(form_w=3.0, card_w=2.0, nest=True)       # zero_tap_seqv3.yml variant c2 (chosen on dev)
+USE_V3 = False                                      # True: SELECT_V3 overrides SELECT for the card tiers
+FALLBACK = {"sequence_v3": ["v2+structure", "v2", "structure", "geometry"],
+            "v2+structure": ["v2", "structure", "geometry"], "v2": ["structure", "geometry"],
             "structure": ["v2", "geometry"], "geometry": []}
 
 
@@ -259,6 +273,83 @@ def geometry_holes(fc):
     return dict(method="geometry/infer_holes", status="ok" if holes else "empty", n_holes=len(holes), holes=holes)
 
 
+# ----------------------------------------------------------------------------- sequence v3 (zero-tap)
+ZT = os.path.join(CD, "zero_tap")
+
+
+def scorecard1(card):
+    """Any card shape routing accepts -> scorecard/1 {par, tee_sets {name: {yards}}, handicap} (what the zero-tap
+    formation and sequence code read), including {"par", "yards": {set: [...]}} and {"par", "yards": [...]}."""
+    if not card:
+        return None
+    ts = card.get("tee_sets")
+    if not ts:
+        y = card.get("yards")
+        ts = {k: dict(yards=v) for k, v in y.items()} if isinstance(y, dict) else ({"card": dict(yards=y)} if y else {})
+    ts = {k: (v if isinstance(v, dict) else dict(yards=v)) for k, v in ts.items() if v}
+
+    def num(x):
+        try:
+            return int(round(float(x))) if x not in (None, "") else None
+        except (TypeError, ValueError):
+            return None
+    ts = {k: dict(v, yards=[num(x) for x in v["yards"]]) for k, v in ts.items() if v.get("yards")}
+    pars = card.get("par") or card.get("pars") or next((v.get("par") for v in ts.values() if v.get("par")), None)
+    out = dict(par=[num(p) for p in pars] if pars else None, tee_sets=ts)
+    if card.get("handicap"):
+        out["handicap"] = card["handicap"]
+    return out if (out["tee_sets"] or out["par"]) else None
+
+
+def _zero_tap_mods():
+    for d in (os.path.join(ZT, "sequence"), os.path.join(ZT, "formation")):
+        if d not in sys.path:
+            sys.path.append(d)
+    import solve as SQ                                   # zero_tap/sequence/solve.py
+    import hole_pairs as HP                              # zero_tap/formation/hole_pairs.py
+    SQ.PAIRS_FORM_W, SQ.CARD_W, SQ.NEST = V3["form_w"], V3["card_w"], V3["nest"]
+    return SQ, HP
+
+
+def sequence_v3(fc, course, card, scene=None, mapped=True, slug=None):
+    """formation-v2 hole_pairs/1 + sequence solver v3 -> (routing-compatible result, details). Raises on failure."""
+    import scene as S
+    SQ, HP = _zero_tap_mods()
+    c1 = scorecard1(card)
+    if not c1:
+        raise RuntimeError("sequence_v3 needs a scorecard")
+    if not mapped and scene is None:
+        raise RuntimeError("unmapped and no perception scene")
+    sc = S.scene_from_osm(fc, (course or {}).get("boundary")) if mapped else S.scene_from_perception(scene)
+    hp = HP.hole_pairs(sc, card=c1, slug=slug)
+    if not hp.get("pairs"):
+        raise RuntimeError("hole_pairs: no pairs")
+    n_card = R.card_holes(card)[0]
+    out = SQ.run(fc, course or {}, c1, pairs=hp, n_holes=n_card if n_card and n_card <= 18 else None,
+                 scene=None if mapped else scene)
+    if not out.get("holes"):
+        raise RuntimeError(f"sequence_v3: {out.get('status')}")
+    holes = {}
+    for h in out["holes"]:
+        ref = str(int(h["number"]))
+        conf = h.get("confidence")
+        ok = bool(out.get("certain")) or (conf is not None and conf >= 0.9)
+        holes[ref] = dict(ref=ref, par=h.get("par"), tee_ll=list(h["tee_ll"]), green_ll=list(h["green_ll"]),
+                          straight_yd=h.get("length_yd"), p_hole=conf, p_green=h.get("p_number"),
+                          status="ok" if ok else "check",
+                          flags=[] if ok else [f"sequence_v3 confidence {0 if conf is None else conf:.2f}"],
+                          tee_src="osm" if mapped else "perception", green_src="osm" if mapped else "perception")
+    res = dict(method="sequence_v3", status=out.get("status") or "ok", n_holes=out.get("n_holes"), holes=holes,
+               n_check=sum(h["status"] != "ok" for h in holes.values()), certain=bool(out.get("certain")),
+               confidence=out.get("confidence"))
+    inputs = out.get("inputs") or {}
+    det = dict(formation="hole_pairs/1 (" + str(hp.get("model", "?")) + ")", sequence="sequence_v3",
+               certain=bool(out.get("certain")), course_confidence=out.get("confidence"),
+               pairs_join=inputs.get("join"), card_geo=inputs.get("card_geo"),
+               structure_input="osm" if mapped else "perception")
+    return res, det
+
+
 # ----------------------------------------------------------------------------- the selector
 def run_method(method, fc, card, course, seg=None, pads=None, scene=None, prof=None, lam=1.0, use_perception=False,
                margins=True, hide_holes=False, w=None):
@@ -267,6 +358,8 @@ def run_method(method, fc, card, course, seg=None, pads=None, scene=None, prof=N
     mapped = prof["osm_mapped"]
     if method == "geometry":
         return geometry_holes(fc), {}
+    if method == "sequence_v3":
+        return sequence_v3(fc, course, card, scene=scene, mapped=mapped, slug=(course or {}).get("slug"))
     if method == "structure":
         sc = scene if (not mapped and scene is not None) else None
         if not mapped and sc is None and prof["osm_greens"] < 3:
@@ -304,7 +397,10 @@ def infer_holes(fc, card, course, seg=None, pads=None, scene=None, select=None, 
     """The selector: tier from the data -> SELECT[tier] -> fallbacks on error. -> (result, info)."""
     prof = profile(fc, card, scene)
     t = tier(prof)
-    cfg = dict((select or SELECT)[t])
+    base = select or (dict(SELECT, **SELECT_V3) if USE_V3 else SELECT)
+    cfg = dict(base[t])
+    if force and force.get("method") == "sequence_v3" and t in SELECT_V3:
+        cfg = dict(SELECT_V3[t])
     if force:
         cfg.update(force)
     order = [cfg["method"]] + FALLBACK.get(cfg["method"], [])

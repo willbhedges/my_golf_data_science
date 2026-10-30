@@ -50,6 +50,8 @@ LAMS = (0.25, 0.5, 1.0, 2.0, 4.0)
 MAX_TAPS = 30
 OUT_SELECT = os.path.join(HERE, "pipeline_select.json")
 OUT_FINAL = os.path.join(HERE, "pipeline_eval.json")
+OUT_V3 = os.path.join(HERE, "pipeline_eval_v3.json")
+V3_TIERS = ("mapped_card", "unmapped_card")
 
 
 def log(*a):
@@ -145,7 +147,9 @@ def method(c, tier, name, margins=False):
     fc, card = variant(c, tier)
     kw = dict(seg=c["seg"], pads=c["pads"], scene=c["scene"], margins=margins)
     if name == "selector":
-        return SS.infer_holes(fc, card, c["course"], **kw)
+        return SS.infer_holes(fc, card, c["course"], select=SS.SELECT, **kw)
+    if name == "sequence_v3":                     # the selector with SELECT_V3 (falls back like package.py)
+        return SS.infer_holes(fc, card, dict(c["course"], slug=c["slug"]), select=dict(SS.SELECT, **SS.SELECT_V3), **kw)
     if name == "baseline":
         return baseline(c, tier, margins)
     persp = name.startswith("v2p")
@@ -267,6 +271,37 @@ def run_final(rows, confirm=True):
     return out
 
 
+def run_v3(rows):
+    """TEST split, card tiers: the current selector (SELECT: v2 + structure prior) vs sequence_v3 (SELECT_V3:
+    formation-v2 pairs + sequence solver v3, with the selector's fallbacks). No confirm: sequence_v3's golfer
+    confirm session is the same v2 + structure session, so its taps equal the selector's."""
+    out = []
+    for row in rows:
+        SS.clear_cache()
+        c = load(row)
+        if c is None or len(c["truth"]) < 9:
+            continue
+        rec = dict(slug=c["slug"], state=c["state"], card_kind=c["card_kind"], scene=c["scene"] is not None,
+                   perception_clean=c["perception_clean"], n_true=len(c["truth"]), tiers={})
+        for tier in V3_TIERS:
+            rec["tiers"][tier] = {}
+            for name in ("selector", "sequence_v3"):
+                t0 = time.time()
+                try:
+                    res, det = method(c, tier, name, margins=False)
+                except Exception as e:                           # noqa: BLE001
+                    res, det = {}, dict(error=f"{type(e).__name__}: {e}"[:200])
+                s = score(res, c["truth"])
+                s.update(seconds=round(time.time() - t0, 1),
+                         **{k: v for k, v in det.items() if k in ("method", "error", "tier", "fallbacks", "lam",
+                                                                   "structure_input", "certain", "course_confidence")})
+                rec["tiers"][tier][name] = s
+            log(c["slug"], tier, {k: (v["hole_number_acc"], v.get("all_correct"), v.get("method"))
+                                  for k, v in rec["tiers"][tier].items()})
+        out.append(rec)
+    return out
+
+
 # ----------------------------------------------------------------------------- aggregation
 def agg_rows(recs, tier, name, subset=None):
     rs = [r for r in recs if (subset is None or subset(r)) and name in r["tiers"].get(tier, {})]
@@ -311,7 +346,7 @@ def merge(kind, paths):
                made_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                structure_params=os.path.relpath(os.environ["STRUCTURE_PARAMS"], os.path.dirname(CD)),
                select=SS.SELECT, summary=summary, rows=recs)
-    path = OUT_SELECT if kind == "select" else OUT_FINAL
+    path = OUT_SELECT if kind == "select" else (OUT_V3 if kind == "v3" else OUT_FINAL)
     json.dump(out, open(path, "w"), indent=1, default=float)
     for tier in TIERS:
         for sname in subsets:
@@ -322,7 +357,7 @@ def merge(kind, paths):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["select", "final", "merge", "one"])
+    ap.add_argument("cmd", choices=["select", "final", "v3", "merge", "one"])
     ap.add_argument("args", nargs="*")
     ap.add_argument("--shard", default="0/1")
     ap.add_argument("--out")
@@ -344,7 +379,8 @@ def main():
                     round(time.time() - t0, 1), "s")
         return
     rows = courses_of("train" if a.cmd == "select" else "test")[i::n]
-    recs = run_select(rows) if a.cmd == "select" else run_final(rows, confirm=not a.no_confirm)
+    recs = run_select(rows) if a.cmd == "select" else (run_v3(rows) if a.cmd == "v3" else
+                                                       run_final(rows, confirm=not a.no_confirm))
     json.dump(dict(kind=a.cmd, shard=a.shard, rows=recs), open(a.out or f"pipeline_{a.cmd}_{i}.json", "w"),
               indent=1, default=float)
 
