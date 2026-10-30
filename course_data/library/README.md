@@ -22,6 +22,8 @@ Without them the page uses the next Saturday and Sunday, with climate normals. `
 
 To rebuild a list of courses, push `course_data/requests/course_batch_<name>.json` `{"requests": [paths], "rev": n}`.
 Push one batch at a time. The workflow allows one queued run, so a third push would cancel the second.
+Push the next batch only after the queued run has started. If a run was cancelled, list its requests in a
+`course_batch_*.json`: a run only sees the request files its own push changed.
 
 ## What the workflow does
 
