@@ -1,0 +1,357 @@
+{
+ "course_review/1": {
+  "slug": "tiffany_greens",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/tiffany-greens-golf-club), the build's card: Gold 6,977 (73.8/137) / Blue 6,613 / White 6,173 / Red 4,497. CONFLICT: OpenGolfAPI (e8a36281-7eb1-4c8f-b98a-694876b9ad7c) lists The_Tiffs 7,034 / Gold 6,648 stated (6,633 summed; 72.3/135) / Blue 6,218 / Blue-White 5,992 / White 5,674 / Red. Hole by hole, golfify Gold ~= OGA The_Tiffs, golfify Blue ~= OGA Gold, golfify White ~= OGA Blue (same numbers on many holes, e.g. 2: 385/372/355). OGA yardages match OSM tee boxes better (47 of 72 set-holes within 6 yds vs 29 of 54 for golfify). Club site / AllSquare fetch (course_data/requests/webfetch_rv_ph_tg.json) was still queued in Actions at review end, so the naming is unconfirmed.",
+  "card": {
+   "golfify": {
+    "Gold": [
+     510,
+     385,
+     425,
+     195,
+     370,
+     234,
+     410,
+     430,
+     575,
+     188,
+     530,
+     410,
+     400,
+     370,
+     195,
+     535,
+     395,
+     420
+    ],
+    "Blue": [
+     485,
+     372,
+     410,
+     170,
+     348,
+     210,
+     390,
+     410,
+     553,
+     175,
+     505,
+     395,
+     398,
+     345,
+     165,
+     505,
+     387,
+     390
+    ],
+    "White": [
+     465,
+     355,
+     385,
+     148,
+     325,
+     187,
+     365,
+     390,
+     528,
+     156,
+     485,
+     370,
+     379,
+     285,
+     145,
+     485,
+     365,
+     355
+    ],
+    "Red": [
+     350,
+     238,
+     278,
+     120,
+     238,
+     140,
+     258,
+     257,
+     380,
+     120,
+     350,
+     266,
+     231,
+     255,
+     115,
+     385,
+     261,
+     255
+    ]
+   },
+   "opengolfapi": {
+    "The_Tiffs": [
+     525,
+     385,
+     425,
+     199,
+     370,
+     234,
+     400,
+     420,
+     575,
+     188,
+     540,
+     426,
+     410,
+     370,
+     195,
+     535,
+     413,
+     424
+    ],
+    "Gold": [
+     495,
+     372,
+     394,
+     189,
+     348,
+     210,
+     390,
+     390,
+     543,
+     180,
+     505,
+     410,
+     383,
+     360,
+     165,
+     505,
+     387,
+     407
+    ],
+    "Blue": [
+     485,
+     355,
+     361,
+     170,
+     334,
+     187,
+     349,
+     370,
+     504,
+     153,
+     485,
+     374,
+     361,
+     345,
+     145,
+     485,
+     365,
+     390
+    ],
+    "Blue/White": [
+     485,
+     355,
+     345,
+     148,
+     334,
+     163,
+     349,
+     340,
+     504,
+     153,
+     451,
+     374,
+     325,
+     345,
+     145,
+     485,
+     343,
+     348
+    ],
+    "White": [
+     444,
+     338,
+     345,
+     148,
+     300,
+     163,
+     313,
+     340,
+     475,
+     137,
+     451,
+     336,
+     325,
+     269,
+     117,
+     445,
+     343,
+     348
+    ],
+    "Red": [
+     195,
+     333,
+     323,
+     120,
+     238,
+     140,
+     258,
+     257,
+     380,
+     102,
+     445,
+     330,
+     320,
+     255,
+     93,
+     440,
+     261,
+     255
+    ]
+   },
+   "par": [
+    5,
+    4,
+    4,
+    3,
+    4,
+    3,
+    4,
+    4,
+    5,
+    3,
+    5,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    4
+   ]
+  },
+  "page_set": "Gold (6,977), Blue (6,613) per golfify",
+  "page_set_should_be": "unconfirmed: if the club's current card is the OpenGolfAPI one, the page's 'Gold' is really the back 'Tiffs' tees and the page's 'Blue' is really Gold; the real Blue (6,218) is not on the page.",
+  "summary": {
+   "ok": 16,
+   "fixed": 0,
+   "needs_fix": [
+    1,
+    16
+   ],
+   "uncertain": [
+    1
+   ],
+   "routing_errors": 0,
+   "par_errors": 0,
+   "set_naming": "possibly wrong (see card_source): golfify names may be one set too long; a Gold-tee golfer may be shown Tiffs yardages (+330 yds total).",
+   "publish": "geometry safe: pars, routing, greens and tee positions are right on all 18 holes for the yardages the page states, and qa_page.js finds 0 problems. Two Blue calm picks are bad tee-shot advice (1: 4-wood into the lake edge; 16: Driver into the trees left of the dogleg). The tee-set NAMES may be shifted one set (club card unconfirmed). Keep published with that caveat; do not call it hand-checked.",
+   "rebuild_hint": {
+    "scorecard": "course_data/library/tiffany_greens/card_review.json",
+    "tees": [
+     "The_Tiffs",
+     "Gold"
+    ],
+    "note": "ONLY after the club card confirms the OpenGolfAPI naming (check course_data/research/web/rv_ph_tg/ from webfetch_rv_ph_tg.json). If the club card matches golfify, rebuild is not needed for naming; only re-check Blue 1 and 16 picks."
+   }
+  },
+  "course_notes": [
+   "qa_page.js re-run 2026-10-30 on Gold and Blue: 18 holes, 0 problems each (only a sandbox cert console error).",
+   "All 18 holes drawn on the page photo with OSM greens, hole lines, all four tee sets and the calm landing spot. Every hole routes correctly; greens are the OSM greens; pars 5 4 4 3 4 3 4 4 5 / 3 5 4 4 4 3 5 4 4 = 72 agree on both cards.",
+   "Page tees mostly come from 'tee_axis' (slid along the tee box axis to hit the card yardage), so measured-vs-card agreement is by construction; the tee positions sit on or next to real OSM boxes on every hole (Gold 1 is a lidar pad under trees behind the Blue box).",
+   "Request asked for 'Black' (not on the card); build substituted Gold."
+  ],
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong aim pick",
+    "notes": "Routing, green, par 5 OK. Page Gold tee is a lidar pad under trees ~25 yds behind the Blue box (18 yds from the nearest OSM box; 514 vs card 510), plausible for a back tee but unconfirmed. Page Blue calm pick is 4-wood +1 landing 285 yds out at the edge of the lake that crosses the fairway (rough, pattern 36% water; page QA flagged it). That is a bad tee-shot recommendation: the fairway ends at the lake ~280 yds from the Blue tee, so the play is a club that stays ~250 or shorter. Gold pick (2-wood -10, 295 from 25 yds further back, fairway) is fine. Needs a solver re-check / rebuild; no geometry fix.",
+    "uncertain": true
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 388 vs card 385 (+3), calm pick Driver -8 lands 291 in fairway. Page Blue: 373 vs card 372 (+1), calm pick Driver -7.5 lands 290 in fairway. OSM tee boxes on this hole measure [339, 357, 373, 394]."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 426 vs card 425 (+1), calm pick Driver +4.5 lands 316 in fairway. Page Blue: 414 vs card 410 (+4), calm pick Driver +4.5 lands 316 in fairway. OSM tee boxes on this hole measure [322, 349, 389, 424]."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Routing, green and par 3 match the imagery and both cards. Page Gold: 195 vs card 195 (+0). Page Blue: 170 vs card 170 (+0). OSM tee boxes on this hole measure [119, 145, 169, 193]."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 371 vs card 370 (+1), calm pick 4-wood +2.5 lands 263 in fairway. Page Blue: 349 vs card 348 (+1), calm pick Driver +13 lands 286 in fairway. OSM tee boxes on this hole measure [301, 344, 375]."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Routing, green and par 3 match the imagery and both cards. Page Gold: 234 vs card 234 (+0). Page Blue: 210 vs card 210 (+0). OSM tee boxes on this hole measure [157, 181, 205, 227]."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 409 vs card 410 (-1), calm pick 2-wood -0.5 lands 290 in fairway. Page Blue: 391 vs card 390 (+1), calm pick 4-wood -3.5 lands 278 in fairway. OSM tee boxes on this hole measure [313, 350, 396]."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 431 vs card 430 (+1), calm pick Driver +10 lands 291 in fairway. Page Blue: 411 vs card 410 (+1), calm pick Driver +9 lands 292 in fairway. OSM tee boxes on this hole measure [339, 381, 423]."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "Routing, green and par 5 match the imagery and both cards. Page Gold: 576 vs card 575 (+1), calm pick Driver -26 lands 322 in fairway. Page Blue: 554 vs card 553 (+1), calm pick Driver -24 lands 320 in fairway. OSM tee boxes on this hole measure [473, 502, 524, 549, 578]."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Routing, green and par 3 match the imagery and both cards. Page Gold: 188 vs card 188 (+0). Page Blue: 175 vs card 175 (+0). OSM tee boxes on this hole measure [172, 177, 182]. Gold tee (tee_axis) is 3 yds off the OSM box; harmless (page CHECK only for that)."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Routing, green and par 5 match the imagery and both cards. Page Gold: 531 vs card 530 (+1), calm pick Driver -3.5 lands 295 in fairway. Page Blue: 505 vs card 505 (+0), calm pick Driver -18.5 lands 290 in fairway. OSM tee boxes on this hole measure [452, 495, 535, 628]."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 413 vs card 410 (+3), calm pick 4-wood +4 lands 278 in fairway. Page Blue: 395 vs card 395 (+0), calm pick 4-wood +4 lands 278 in fairway. OSM tee boxes on this hole measure [319, 346, 380, 427]. OSM has a box at 427 (OpenGolfAPI back tee 426) behind the page Gold tee (413, tee_axis, golfify 410)."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 399 vs card 400 (-1), calm pick 4-wood +4.5 lands 271 in fairway. Page Blue: 397 vs card 398 (-1), calm pick 4-wood +5 lands 272 in fairway. OSM tee boxes on this hole measure [383, 404]."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 370 vs card 370 (+0), calm pick Driver +11.5 lands 305 in fairway. Page Blue: 345 vs card 345 (+0), calm pick Driver +15 lands 298 in fairway. OSM tee boxes on this hole measure [246, 270, 340, 368, 457]."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Routing, green and par 3 match the imagery and both cards. Page Gold: 195 vs card 195 (+0). Page Blue: 165 vs card 165 (+0). OSM tee boxes on this hole measure [90, 118, 145, 170, 199]."
+   },
+   {
+    "n": 16,
+    "verdict": "wrong aim pick",
+    "notes": "Routing, green, par 5 OK; dogleg left with the fairway ending ~260 yds from the Blue tee and trees in the left corner. Page Blue calm pick Driver -40 (the edge of the aim window) lands 292 yds out in rough among the trees left of the corner (23 yds off the fairway, 14% trees; page QA flagged it). A shorter club to the fairway (~250) is the sensible play. Page Gold pick Driver -19 lands at the left edge of the fairway (OK). Page Gold tee measures 526 vs card 535 (-9; OSM boxes top out at 518)."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 395 vs card 395 (+0), calm pick Driver -35 lands 302 in fairway. Page Blue: 383 vs card 387 (-4), calm pick Driver -40 lands 306 in fairway. OSM tee boxes on this hole measure [351, 376, 396, 418]. Picks at -35/-40 cut the dogleg-left corner and land on the fairway at the bend (checked on the photo); OK."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and both cards. Page Gold: 420 vs card 420 (+0), calm pick 2-wood +27.5 lands 280 in fairway. Page Blue: 390 vs card 390 (+0), calm pick 4-wood +40 lands 274 in fairway. OSM tee boxes on this hole measure [345, 388, 421]. Dogleg right; Blue 4-wood +40 carries the right-hand trees and lands on the fairway at the corner, Gold 2-wood +27.5 on the hole line at the corner; OK but aggressive."
+   }
+  ]
+ }
+}
