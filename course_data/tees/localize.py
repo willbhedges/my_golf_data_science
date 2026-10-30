@@ -74,6 +74,10 @@ PARAMS = dict(
     max_err_yd=25.0, borrow_err_yd=10.0, borrow_cost=4.0,
     walkback=20.0, order=100.0, order_tol=2.0, gap_w=0.25, gap_cap=10.0, share=2.0,
     bias_sd=3.0, bias_max=0.0, bias_step=2.0, temp=3.0,
+    card_tol_yd=10.0,      # an OSM box whose extent is within this of the set's card yardage is the card's box:
+    osm_tol_w=0.15,        # its yardage error costs osm_tol_w per yd (not 1), so it beats an unmapped lidar /
+                           # texture pad or a walk-back that only matches the card more exactly (library QA);
+                           # only the hole's own boxes within off_free_yd of its first leg (not borrowed ones)
 )
 
 
@@ -279,7 +283,9 @@ def _hole_cands(fr, lop, cands, P, borrowed=False):
 def _unary(c, t, P):
     p = min(max(t, c["lo"]), c["hi"])
     err = abs(t - p)
-    cost = err + P["centre_w"] * abs(c["d_centroid"] - t) + P["prior_yd"] * -math.log(max(c["p"], 1e-3)) \
+    own = not c["borrowed"] and abs(c["offset_yd"]) <= P["off_free_yd"]       # this hole's box, on its line
+    w = P["osm_tol_w"] if own and "osm" in c["sources"] and err <= P["card_tol_yd"] else 1.0
+    cost = w * err + P["centre_w"] * abs(c["d_centroid"] - t) + P["prior_yd"] * -math.log(max(c["p"], 1e-3)) \
         + P["off_w"] * max(0.0, abs(c["offset_yd"]) - P["off_free_yd"]) + (P["borrow_cost"] if c["borrowed"] else 0.0)
     return p, t - p, err, cost
 

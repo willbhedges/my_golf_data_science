@@ -75,3 +75,13 @@ def test_localize_course_shape():
     assert res["schema"] == "tees/positions" and {"lat", "lon", "method", "sigma_yd", "p_assign"} <= set(t)
     assert t["tee_id"] == "b" and t["localizer"] == LZ.VERSION
     assert ll(0, 0)  # frame helper sanity
+
+
+def test_osm_box_within_card_tolerance_beats_exact_lidar_pad():
+    """Library QA: a set's own OSM box within card_tol_yd of the card wins over an unmapped pad that fits exactly."""
+    line = straight_hole(400)
+    pads = LZ.merge_candidates([cand(0, 12, "osm", tid="box", w=10, h=6), cand(25, 0, "lidar", tid="pad", w=4, h=4)])
+    out = LZ.localize_hole(line, None, pads, (), {"Back": 400})
+    assert out["Back"]["tee_id"] == "box" and out["Back"]["error_yd"] <= 10
+    out = LZ.localize_hole(line, None, pads, (), {"Back": 400}, params=dict(osm_tol_w=1.0))
+    assert out["Back"]["tee_id"] == "pad"
