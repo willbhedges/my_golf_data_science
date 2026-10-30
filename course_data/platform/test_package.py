@@ -418,3 +418,26 @@ def test_run_requests_scorecards_only(tmp_path, monkeypatch):
     plan = dict((os.path.basename(p), a) for p, a in run_requests.plan([rel], [str(req / "package_b.json")]))
     assert plan == {"package_b.json": "scorecards"}
     assert "course_data/tees/lidar_pads.py" in run_requests.DEPS
+
+
+def test_review_overrides(tmp_path, black):
+    """Course-review fixes (library/review_fixes.py -> request): a set's tee on a hole (snapped to an OSM box
+    within 15 yds), card yardage ('*' / page-only set names = the chosen set) and par overrides."""
+    p0, _ = black
+    white3 = p0["holes"]["3"]["tees"]["White"]["tee_ll"]                 # [lon, lat] of a real box
+    far = p0["holes"]["5"]["tees"]["Black"]["tee_ll"]
+    far = [far[0], far[1] + 40 * 0.9144 / 111320]                       # 40 yds north of hole 5's Black tee
+    pkg = seed(tmp_path)
+    req = dict(course="Spirit Hollow", state="IA", tee_set="Black", scorecard=CARD,
+               tee_overrides={"3": {"Black": [white3[1] + 3e-5, white3[0]]}, "5": {"Web": [far[1], far[0]]}},
+               yardage_overrides={"2": {"*": 499}, "4": {"black": 530}}, par_overrides={"1": 5})
+    p = pk.build_package(req, pkg, gapfill=False)
+    h3 = p["holes"]["3"]["tees"]["Black"]
+    assert h3["tee_ll"] == pytest.approx(white3, abs=1.5e-4) and "Black review (snapped" in h3["tee_choice"]
+    h5 = p["holes"]["5"]["tees"]["Black"]
+    assert h5["tee_ll"] == pytest.approx(far, abs=1e-6) and h5["tee_choice"] == "tee stage: Black review"
+    assert p["holes"]["5"]["tees"]["Gold"]["tee_ll"] == p0["holes"]["5"]["tees"]["Gold"]["tee_ll"]
+    assert p["holes"]["2"]["yards"]["Black"] == 499 and p["holes"]["4"]["yards"]["Black"] == 530
+    assert p["holes"]["1"]["par"] == 5 and p["tee_sets"]["Black"]["total"] == sum(BLACK) - 507 + 499 - 532 + 530
+    assert "review" in p["stages"]["card_overrides"] and "Black" in p["stages"]["tee_overrides"]
+    assert pk.override_set("osm_back (= Championship)", {"Champ": dict(aliases=["championship"])}, "X") == "Champ"

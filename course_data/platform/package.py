@@ -10,6 +10,8 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           best fit to the map); the others are kept as a per-hole cross-check;
           > a golfer-typed card (request "typed_card": {"yards": "391 175 ...", "pars": "..."}, typed_card.py);
           no card -> the OSM tee nearest each hole-line start (usually the back tee) + a warning
+          request "yardage_overrides" {ref: {set | "*": yds}} / "par_overrides" {ref: par} patch the chosen card
+          (course reviews, library/review_fixes.py); "*" or a set not on the card = the chosen set
   S2a holes  stage selector (stage_select.py, PIPELINE.md) for holes OSM has no golf=hole way for: data tier
           (OSM greens / tees mapped?, card?) -> routing v2 + structure-solver prior (structure on OSM, or on the
           perception scene when OSM lacks greens / tees) > routing v2 > structure > geometry fallback, on any
@@ -22,6 +24,8 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           to the OSM green centroid along the hole line; lidar flat-pad candidates (tees/lidar_pads.py, the
           3DEP DEM) where a set has no OSM box; walk-back if nothing fits. An OSM tee box tagged with the
           set's colour wins ("tagged")
+  S2r     request "tee_overrides" {ref: {set: [lat, lon]}} (course reviews): that set's tee on that hole, snapped
+          to an OSM tee box within OVERRIDE_SNAP_YD (else the point as given); wins over S2 (method "review")
   S3     geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
   S4c     course_data/ob/infer.py:apply_ob(package) when the course's OB evidence is fetched (call_ob)
@@ -209,6 +213,97 @@ def pick_scorecard(req, raw_dir):
     info.update(tried=tried, consistency=chk, cross_check=_cross(card, web_cards, info["kind"]),
                 attribution=card.get("attribution"))
     return card, info
+
+
+# ----------------------------------------------------------------------------- review overrides
+OVERRIDE_SNAP_YD = 15.0
+
+
+def override_set(name, card_sets, chosen):
+    """The card's set a review names: exact, case-insensitive, colour or alias ('osm_back (= Championship)' is
+    looked up as 'osm_back' and 'Championship'); '*' and page-only names (Web, osm_back) -> the chosen set."""
+    if name in (card_sets or {}):
+        return name
+    keys = {str(name).split("(")[0].strip().lower()}
+    if "=" in str(name):
+        keys.add(str(name).split("=", 1)[1].strip(" )").lower())
+    for s, v in (card_sets or {}).items():
+        if keys & ({s.lower(), str(v.get("colour") or "").lower()} | {str(a).lower() for a in v.get("aliases") or []}):
+            return s
+    return chosen
+
+
+def apply_card_overrides(card, req, chosen):
+    """Request yardage_overrides / par_overrides into the card (copy). -> (card, [notes])."""
+    yo, po = req.get("yardage_overrides") or {}, req.get("par_overrides") or {}
+    if not card or not (yo or po):
+        return card, []
+    card = copy.deepcopy(card)
+    sets, notes = card.get("tee_sets") or {}, []
+    for ref, by in yo.items():
+        if not str(ref).isdigit():
+            continue
+        i = int(ref) - 1
+        for name, y in (by if isinstance(by, dict) else {"*": by}).items():
+            s = override_set(name, sets, chosen)
+            if s not in sets or not y or i >= len(sets[s].get("yards") or []):
+                continue
+            if sets[s]["yards"][i] != int(y):
+                notes.append(f"hole {ref} {s}: card {sets[s]['yards'][i]} -> {int(y)} yds (review)")
+                sets[s]["yards"][i] = int(y)
+                sets[s]["total"] = sum(v for v in sets[s]["yards"] if v)
+    for ref, par in po.items():
+        if not str(ref).isdigit() or not par:
+            continue
+        i = int(ref) - 1
+        for lst in [card.get("par")] + [v.get("par") for v in sets.values()]:
+            if isinstance(lst, list) and i < len(lst) and lst[i] != int(par):
+                if lst is card.get("par"):
+                    notes.append(f"hole {ref}: par {lst[i]} -> {int(par)} (review)")
+                lst[i] = int(par)
+    return card, notes
+
+
+def tee_overrides_for(req, set_key, card_sets, chosen, fc):
+    """{ref: (lon, lat, how)} for one built set from request tee_overrides {ref: {set: [lat, lon]}}; each point is
+    snapped to the centroid of an OSM tee box within OVERRIDE_SNAP_YD (the reviews give approximate points)."""
+    out = {}
+    tees = None
+    for ref, by in (req.get("tee_overrides") or {}).items():
+        for name, ll in (by or {}).items():
+            if override_set(name, card_sets, chosen) != set_key or not ll or len(ll) < 2:
+                continue
+            lat, lon = float(ll[0]), float(ll[1])
+            if tees is None:
+                tees = osm_tee_inputs(fc)[1]
+            kx, ky = math.cos(math.radians(lat)) * 111320 / 0.9144, 111320 / 0.9144
+            best = None
+            for t in tees:
+                cs = np.array(t["coords"], float)
+                c = cs[:-1].mean(0) if len(cs) > 2 and np.allclose(cs[0], cs[-1]) else cs.mean(0)
+                d = math.hypot((c[1] - lon) * kx, (c[0] - lat) * ky)
+                if d <= OVERRIDE_SNAP_YD and (best is None or d < best[0]):
+                    best = (d, c, t["id"])
+            if best:
+                out[str(ref)] = (float(best[1][1]), float(best[1][0]), f"review (snapped {best[0]:.0f} yds to OSM tee {best[2]})")
+            else:
+                out[str(ref)] = (lon, lat, "review")
+    return out
+
+
+def with_tee_overrides(tp, set_key, ov):
+    """tee_positions-shaped dict with the review points for set_key (a copy; tp may be shared by every set)."""
+    if not ov:
+        return tp
+    tp = copy.deepcopy(tp) if tp else dict(schema="tees/positions", method="review overrides", holes={})
+    for ref, (lon, lat, how) in ov.items():
+        e = tp["holes"].setdefault(ref, {})
+        if set_key is None:                                   # no card: build_holes reads entry tee_ll
+            e["tee_ll"], e["how"] = [lon, lat], how
+        else:
+            e.setdefault("tees", {})[set_key] = dict(lat=lat, lon=lon, method=how, source="review",
+                                                     confidence="high", error_yd=0.0)
+    return tp
 
 
 # ----------------------------------------------------------------------------- tees (S2)
@@ -797,6 +892,9 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                        f"(allow_substitute). Sets on the card: {', '.join((card.get('tee_sets') or {}))}")
         warnings.append(substituted)
         how = f"substitute: longest set ({how})"
+    card, card_fixes = apply_card_overrides(card, req, chosen)
+    if card_fixes:
+        stages["card_overrides"] = f"ok: {len(card_fixes)} review fix(es): " + "; ".join(card_fixes)[:400]
     pipe = dict(schema="pipeline/1", doc="platform/PIPELINE.md: which method ran at each stage, and why",
                 card=dict(kind=cinfo["kind"], source=cinfo["source"]) if card else dict(kind=None))
     fc, routed = route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, pipeline=pipe)
@@ -852,6 +950,11 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     for s in (card_sets or {None: None}):
         hc = per_hole_card.get(s, {})
         tp = joint if (s and hc and joint) else (place_tees(fc, hc, s, card_sets[s].get("colour")) if (s and hc) else None)
+        ov = tee_overrides_for(req, s, card_sets, chosen, fc) if req.get("tee_overrides") else {}
+        if ov:
+            tp = with_tee_overrides(tp, s, ov)
+            stages["tee_overrides"] = (stages.get("tee_overrides") or "ok:") + f" {s or 'osm_back'} " + ", ".join(
+                f"{r} {v[2]}" for r, v in sorted(ov.items(), key=lambda kv: kv[0].zfill(3))) + ";"
         lengths = {r: float(c["yards"]) for r, c in hc.items() if c.get("yards")}
         built[s], _ = bh.build(fc, s, lengths or None, world=world, tees=tp, frame="yard")
         tee_pos[s] = tp

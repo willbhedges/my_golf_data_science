@@ -10,6 +10,9 @@ Request (course_data/requests/course_page_<slug>.json, schema course_page/1):
    "tee_hour": 9.0, "slug": "...", "group": "library" | "gate", "compute": {"draws": 48, "swings": 2500},
    "rev": 1}
 Batch: course_data/requests/course_batch_<name>.json {"requests": [paths], "rev": n} rebuilds the listed requests.
+Review fixes: the output folder's review files (review.json, card_*.json, osm_supplement.geojson; review_fixes.py)
+are read into the request (scorecard, tees, osm_supplement, tee / yardage / par overrides) unless the request has
+its own value for a key or says "library_fixes": false.
 
 Stages (each a subcommand, run by the workflow; README.md in this folder has the whole picture):
   plan REQ...          -> job matrices (skips any target whose config says "hand_checked": true, and every
@@ -82,7 +85,10 @@ def request(path):
     q["slug"] = ("gate_" + base if q["group"] == "gate" and not base.startswith("gate_") else base)
     q["out"] = os.path.join("course_data", "library", *(["gate"] if q["group"] == "gate" else []), q["slug"])
     q["path"] = os.path.relpath(os.path.abspath(path), ROOT)
-    return q
+    if HERE not in sys.path:
+        sys.path.insert(0, HERE)
+    import review_fixes
+    return review_fixes.merge(q, out_dir(q), ROOT)
 
 
 def out_dir(q, *p):
@@ -147,9 +153,11 @@ def pkgreq(q):
     # course OSM maps badly is fixed in its course-page request, never by hand-editing package_request.json
     for k in ("near", "osm", "typed_card", "yardages", "pars", "scorecard", "website", "opengolfapi_id",
               "osm_supplement", "boundary_ll", "no_osm_ok", "no_osm_course", "near_radius_m", "ignore_osm_holes",
-              "hole_method", "routing", "naip_year"):
+              "hole_method", "routing", "naip_year", "tee_overrides", "yardage_overrides", "par_overrides"):
         if q.get(k) not in (None, "", [], {}):            # "routing": false passes too
             r[k] = q[k]
+    if q.get("library_fixes"):
+        r["note"] += "; review fixes from " + ", ".join(f"{q['out']}/{f}" for f in q["library_fixes"])
     wj(out_dir(q, "package_request.json"), r)
     print(q["slug"])
 
