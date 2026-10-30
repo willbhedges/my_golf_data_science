@@ -5,6 +5,7 @@
 Writes course_data/packages/<slug>/raw/:
   course.json        resolve.py output (status, OSM id, boundary, bbox, town, candidates)
   osm_raw.json       Overpass response for the boundary bbox + buffer
+  osm_source.json    which mirror / cached snapshot the OSM came from and why (osm_guard.py; also summary.json)
   osm.geojson        WGS84 features with raw tags + inside_course (fetch_course.to_geojson / summarise)
   summary.json       fetch_course-style summary (tag counts, holes, tees)
   scorecard_web.json scorecards found on the web (club site, golfify, OpenGolfAPI) + what was tried
@@ -50,10 +51,16 @@ def pad(bbox, m):
 
 def fetch_osm(course, raw, drop_holes=False, supplement=None):
     import fetch_course as fcm
+    import osm_guard as og
     snwe = pad(course["bbox"], BUFFER_M)
-    data = fcm.fetch_features(snwe)
-    pc.write_json(os.path.join(raw, "osm_raw.json"), data, indent=None)
-    fc = fcm.to_geojson(data["elements"])
+    # mirror by mirror, rejecting partial (Overpass remark) / stale / thin answers; falls back to the newest cached
+    # snapshot of this course (merged in) rather than silently building from fewer features (osm_guard.py)
+    data, fc, src = og.fetch_guarded(snwe, course, slug=os.path.basename(os.path.dirname(os.path.abspath(raw))))
+    if data is not None:
+        pc.write_json(os.path.join(raw, "osm_raw.json"), data, indent=None)
+    pc.write_json(os.path.join(raw, "osm_source.json"), src)
+    if src["source"] != "overpass" or src.get("thin"):
+        pc.log("osm_guard:", src["source"], "-", src["reason"])
     if drop_holes:     # request "ignore_osm_holes": the OSM golf=hole ways belong to another course of the club
         fc["features"] = [f for f in fc["features"] if (f.get("properties") or {}).get("golf") != "hole"]
     if supplement:
@@ -74,6 +81,8 @@ def fetch_osm(course, raw, drop_holes=False, supplement=None):
     summ["bbox_wgs84_snwe"] = [round(v, 6) for v in snwe]
     summ["fetched_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     summ["osm_attribution"] = "(c) OpenStreetMap contributors, ODbL 1.0"
+    summ["osm_source"] = {k: src[k] for k in ("source", "reason", "mirror", "osm_base", "snapshot", "snapshot_date",
+                                              "merged_features", "counts", "thin", "note", "mirrors_tried") if k in src}
     pc.write_json(os.path.join(raw, "osm.geojson"), fc, indent=None)
     pc.write_json(os.path.join(raw, "summary.json"), summ)
     return fc, summ

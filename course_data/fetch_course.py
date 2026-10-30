@@ -109,6 +109,11 @@ def bounds_of(el):
 
 
 def fetch_features(bbox):
+    return overpass(features_query(bbox))
+
+
+def features_query(bbox):
+    """Overpass query for every feature fetch_features keeps (platform/osm_guard.py sends it mirror by mirror)."""
     s, w, n, e = bbox
     b = f"{s},{w},{n},{e}"
     q = f"""[out:json][timeout:180];
@@ -125,7 +130,7 @@ def fetch_features(bbox):
       way["railway"]({b});
     );
     out body geom;"""
-    return overpass(q)
+    return q
 
 
 # ----------------------------------------------------------------------------- GeoJSON
