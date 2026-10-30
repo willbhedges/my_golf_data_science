@@ -1,0 +1,5 @@
+# Longview Lake Golf Course: no page
+
+**Status: failed** at package: resolve: ambiguous None None [('Mozingo Lake Golf Course', 'Maryville', 18), ('Lake Valley Golf Club', 'Camdenton', 18), ('Meadow Lake Acres Country Club', 'New Bloomfield', 18)] longview_lake: ambiguous; see packages/longview_lake/raw/course.json for the candidates 
+
+Resolve: {"status": "ambiguous", "candidates": [{"name": "Mozingo Lake Golf Course", "town": "Maryville", "holes": 18, "osm": {"type": "way", "id": 385067034}}, {"name": "Lake Valley Golf Club", "town": "Camdenton", "holes": 18, "osm": {"type": "way", "id": 393080132}}, {"name": "Meadow Lake Acres Country Club", "town": "New Bloomfield", "holes": 18, "osm": {"type": "way", "id": 389825787}}]}
