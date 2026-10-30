@@ -217,6 +217,26 @@ def test_tee_line_math():
     assert how == "green_dir"
 
 
+def test_tee_line_dogleg_tee_behind_the_line():
+    """A back tee 80 yds behind the hole-line start (Colbert Hills 18): the line is extended back to the tee on a
+    dog-leg ('landing_ext', aim along the first leg); a straight hole keeps the green direction exactly."""
+    import tee_line as tl
+    lat = 40.0
+    yd = 0.9144 / 111320
+    k = 1 / np.cos(np.radians(lat))
+    tee = [-91.0, lat]
+    # line starts 80 yds north of the tee: north 220, then 180 west (dog-leg left at 300 from the tee)
+    line = [[-91.0, lat + 80 * yd], [-91.0, lat + 300 * yd], [-91.0 - 180 * yd * k, lat + 300 * yd]]
+    aim, how = tl.aim_point(tee, line, line[-1], 480, 4)
+    assert how == "landing_ext"
+    assert (aim[1] - lat) / yd == pytest.approx(250, abs=0.5) and abs(aim[0] + 91.0) < 1e-9
+    straight = [[-91.0, lat + 80 * yd], [-91.0 + 3 * yd * k, lat + 420 * yd]]
+    old_rule = tl.aim_point(tee, None, straight[-1], 420, 4)
+    assert tl.aim_point(tee, straight, straight[-1], 420, 4) == old_rule and old_rule[1] == "green_dir"
+    side = [[-91.0 + 90 * yd * k, lat], [-91.0 + 90 * yd * k, lat + 300 * yd]]   # beside the tee, not behind
+    assert tl.aim_point(tee, side, [-91.0, lat + 400 * yd], 420, 4)[1] == "green_dir"
+
+
 def test_boundary_keeps_every_ring(black):
     """QA P1: Spirit Hollow relation 13353211 has 3 outer rings; holes 5-9 are not in the largest."""
     from shapely.geometry import Point, shape
