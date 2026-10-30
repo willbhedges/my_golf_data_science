@@ -217,6 +217,7 @@ def guard_tees(tp, fc, max_forward=MAX_FORWARD_YD):
                if isinstance(r, dict) and r.get("lat") is not None}
         alongs = {s: (pr.fwd(*ll)[0] - S[0]) * u[0] + (pr.fwd(*ll)[1] - S[1]) * u[1] for s, ll in pos.items()}
         back = min(alongs, key=alongs.get) if alongs else None
+        hard = [o for o in obs if o[0] != "residential"]
         for s, r in (hp.get("tees") or {}).items():
             if not isinstance(r, dict) or r.get("lat") is None or str(r.get("method", "")).startswith(BOX_METHODS) \
                     or r.get("check"):
@@ -243,11 +244,11 @@ def guard_tees(tp, fc, max_forward=MAX_FORWARD_YD):
                         why = (f"walk-back ran onto a {h[0]} (OSM {h[1]}) {d:.0f} yds behind the line start: "
                                f"capped there ({-along - back:.0f} yds short of the card)")
                         break
-            elif _hit(Point(T), obs, own):
-                h = _hit(Point(T), obs, own)
+            elif _hit(Point(T), hard, own):            # a box-based point: residential land is not proof
+                h = _hit(Point(T), hard, own)
                 for i in range(1, int(SHIFT_MAX_YD // 2) + 1):
                     q = (T[0] + u[0] * i * 2.0, T[1] + u[1] * i * 2.0)
-                    if not _hit(Point(q), obs, own):
+                    if not _hit(Point(q), hard, own):
                         q = (q[0] + u[0] * OBSTACLE_MARGIN_YD, q[1] + u[1] * OBSTACLE_MARGIN_YD)
                         new = q
                         why = f"tee was on a {h[0]} (OSM {h[1]}): moved {i * 2 + OBSTACLE_MARGIN_YD:.0f} yds forward off it"
@@ -311,6 +312,7 @@ def guard_routed(res, fc, missing, greens=()):
         t = xy(h.get("back_tee_ll") or h["tee_ll"])
         return _fit_card(dist(t, xy(h["green_ll"])), h.get("card_yards") or [], h.get("par"))
 
+    conceded = set()
     for r in sorted(routed, key=lambda k: -fit_of(k)):
         h = holes[r]
         if not h.get("green_ll"):
@@ -318,8 +320,8 @@ def guard_routed(res, fc, missing, greens=()):
         g = xy(h["green_ll"])
         others = used_except(r)
         share = [k for k, v in others.items() if dist(v, g) <= SAME_GREEN_YD]
-        if not share:
-            continue
+        if not share or all(k in conceded for k in share):
+            continue                                     # the worse-fitting partner already took the flag
         t = xy(h.get("back_tee_ll") or h["tee_ll"])
         best = None
         for c in greens or ():
@@ -339,6 +341,7 @@ def guard_routed(res, fc, missing, greens=()):
                     f"fits the card ({best[2]:.0f} yds)")
             notes.append(f"hole {r}: green shared with hole {', '.join(share)} -> unused green {best[1].get('id')}")
         else:
+            conceded.add(r)
             flag(h, f"shares hole {', '.join(share)}'s green and no unused green fits")
             notes.append(f"hole {r}: CHECK, shares hole {', '.join(share)}'s green")
     for r in routed:
