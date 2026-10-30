@@ -1,0 +1,197 @@
+{
+ "course_review/1": {
+  "slug": "creekmoor",
+  "reviewer": "agent",
+  "card_source": "golfify https://www.golfify.io/courses/creekmoor-golf-club (OpenGolfAPI agrees except Black 6 430, Black 9 619, Green 9 572, Green 12 212; the golfify values fit the OSM tees)",
+  "card": {
+   "Black": [
+    404,
+    371,
+    440,
+    195,
+    537,
+    451,
+    170,
+    441,
+    663,
+    482,
+    374,
+    240,
+    548,
+    420,
+    460,
+    455,
+    214,
+    541
+   ],
+   "Green": [
+    377,
+    345,
+    412,
+    174,
+    500,
+    404,
+    160,
+    409,
+    619,
+    448,
+    350,
+    187,
+    509,
+    387,
+    435,
+    398,
+    184,
+    508
+   ],
+   "par": [
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    3,
+    4,
+    5,
+    4,
+    4,
+    3,
+    5,
+    4,
+    4,
+    4,
+    3,
+    5
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong routing",
+    "notes": "Missing from the page: no tee was found. The green is OSM way/1489923972 (next to the hole-2 tees), but its tee (404 yds back on the card) is not identified; no OSM tee row fits."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "OSM tee row to OSM green; yardage matches (374/344 vs 371/345). The aim check fails only because OSM maps no fairways on this course."
+   },
+   {
+    "n": 3,
+    "verdict": "bad pick",
+    "notes": "Tees (OSM row running N-S along the cart path) and the green are plausible, but the straight line from tee to green crosses a subdivision: the hole must dogleg left (north, then west). The calm pick (Driver -40) lands among the houses, in OB. Needs a bend point in the hole line."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Par 3: four OSM tees in a row toward the OSM green; all yardages exact."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Tee shot plays down a clear fairway. Black measures 526 vs card 537 (-11) from the back OSM box; probably a slight dogleg, not a wrong tee. Green and routing look right."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Routing and tees look right on the picture (clear fairway ahead). The aim/oval CHECK comes from no fairway being mapped, not from a bad line."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Par 3, OSM tees to OSM green, yardage exact."
+   },
+   {
+    "n": 8,
+    "verdict": "wrong routing",
+    "notes": "The Black tee is a lidar pad 74 yds from any OSM tee, and the line runs from beside the hole-7 tees to green way/1489923993 across a street and houses. An E-W OSM tee row at lat 38.8333 (lon -94.4769 to -94.4748) gives 413/357/301 yds to green way/1490350625 (the green the page uses for 16), vs card 409/365/305, so hole 8 probably plays east to that green. Not confirmed: that would change 9 and 16 as well."
+   },
+   {
+    "n": 9,
+    "verdict": "wrong routing",
+    "notes": "The line runs from a tee in the 8 tee row across a subdivision to green way/1489923973; the Green/White/Red tees are lidar pads 40+ yds from any OSM box. The real tee and green are uncertain."
+   },
+   {
+    "n": 10,
+    "verdict": "wrong routing",
+    "notes": "The Black tee is a lidar pad 191 yds from any OSM tee and the Green tee is a 202-yd walk-back; the line crosses a cul-de-sac of houses. The tee is wrong, and the green (way/1490357740) is unconfirmed."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "OSM tees to the OSM green with a clear fairway ahead; yardage matches. Red is on a lidar pad, which is not a solved set."
+   },
+   {
+    "n": 12,
+    "verdict": "wrong routing",
+    "notes": "Missing from the page. Fix: OSM tee row way/1490361208..1212 (bearing 57) to green way/1490361213 gives 239/185/161/107 yds vs card 240/187/159/108, an exact fit.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       38.830722,
+       -94.4595875
+      ],
+      "Green": [
+       38.8309627,
+       -94.4591099
+      ]
+     },
+     "green_ll": [
+      38.831805,
+      -94.457477
+     ],
+     "par": 3,
+     "yards": 240
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "wrong tee position",
+    "notes": "Black is on OSM box way/1490361214 (549 vs 548), but Green/White/Red are lidar pads inside dense woods and the OSM row 1214-1217 runs N-S away from the green. That row instead fits green way/1490361220 to the north (537/500/455/415 vs card 548/509/466/423), which no hole uses. The routing of 13 (and so 14) is uncertain."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "OSM back tees play onto a clear fairway toward the OSM green; yardage matches. White/Red are lidar pads, which are not solved sets."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "The tees along the path play up a clear fairway to the OSM green. Black measures 451 vs card 460 (-9)."
+   },
+   {
+    "n": 16,
+    "verdict": "wrong routing",
+    "notes": "The tees are lidar pads among houses and the line crosses a whole subdivision to green way/1490350625. The OSM tee row at lon -94.4688 belongs to hole 17 (exact yardage fit). The tee is unknown, and the green may belong to hole 8."
+   },
+   {
+    "n": 17,
+    "verdict": "wrong routing",
+    "notes": "Missing from the page. Fix: OSM tee row way/1490357722/23/24/26 (lon -94.4688, playing SSE) to green way/1490357729 gives 215/184/157/97 yds vs card 214/184/156/97, an exact fit.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       38.8341837,
+       -94.4688187
+      ],
+      "Green": [
+       38.8338655,
+       -94.4689806
+      ]
+     },
+     "green_ll": [
+      38.832484,
+      -94.468158
+     ],
+     "par": 3,
+     "yards": 214
+    }
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "OSM tee row (way/1490357733..36) to the OSM green; Green/White/Red match the card exactly. Black is a 29-yd walk-back behind the Green box at card length (541), which is plausible."
+   }
+  ]
+ }
+}
