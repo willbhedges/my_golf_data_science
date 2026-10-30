@@ -1,0 +1,241 @@
+{
+ "course_review/1": {
+  "slug": "prairie_highlands",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/prairie-highlands-golf-course), the build's own card; OpenGolfAPI has identical Black/Blue/White yardages on all 18 holes (Red differs on hole 7). Black 7,066 / Blue 6,481 / White 5,770 / Red 5,122, par 72. Club/AllSquare fetch: see course_data/research/web/rv_ph_tg if it arrived.",
+  "card": {
+   "Black": [
+    425,
+    417,
+    409,
+    585,
+    227,
+    377,
+    457,
+    165,
+    570,
+    392,
+    400,
+    553,
+    395,
+    201,
+    537,
+    181,
+    340,
+    435
+   ],
+   "Blue": [
+    392,
+    375,
+    376,
+    547,
+    196,
+    350,
+    432,
+    134,
+    529,
+    357,
+    367,
+    520,
+    360,
+    167,
+    503,
+    166,
+    307,
+    403
+   ],
+   "White": [
+    357,
+    340,
+    334,
+    500,
+    164,
+    307,
+    393,
+    118,
+    487,
+    317,
+    325,
+    477,
+    322,
+    140,
+    440,
+    129,
+    273,
+    347
+   ],
+   "Red": [
+    320,
+    302,
+    297,
+    457,
+    139,
+    270,
+    350,
+    93,
+    454,
+    278,
+    290,
+    433,
+    287,
+    111,
+    393,
+    105,
+    233,
+    310
+   ],
+   "par": [
+    4,
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    3,
+    5,
+    4,
+    4,
+    5,
+    4,
+    3,
+    5,
+    3,
+    4,
+    4
+   ]
+  },
+  "page_set": "Black, Blue",
+  "page_set_should_be": "Black, Blue",
+  "summary": {
+   "ok": 16,
+   "fixed": 0,
+   "needs_fix": [
+    11
+   ],
+   "uncertain": [
+    11,
+    17
+   ],
+   "routing_errors": 0,
+   "par_errors": 0,
+   "publish": "safe with one caveat: 17/18 holes right on both sets (pars, routing, greens, tees within 3 yds of the card except Black 11 at -12). Blue hole 11 plays from a lidar pad in the trees ~30 yds right of the real tee; its aim is therefore slightly off. Black 17 driver pick lands in a greenside bunker (aggressive, not a data error).",
+   "rebuild_hint": {
+    "scorecard": "course_data/library/prairie_highlands/card_review.json",
+    "tees": [
+     "Black",
+     "Blue"
+    ],
+    "osm_supplement": "course_data/library/prairie_highlands/osm_supplement.geojson"
+   }
+  },
+  "course_notes": [
+   "qa_page.js re-run 2026-10-30 on Black and Blue: 18 holes, 0 problems on each (only console error is a blocked external cert in the sandbox).",
+   "All 18 holes drawn on the page photo with OSM greens, hole lines, all four tee sets and the calm landing spot; every tee except Blue 11 sits on a tee box at the hole start."
+  ],
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and card. Black: 424 vs card 425 (-1), calm pick Driver -7.5 lands 293 in fairway. Blue: 392 vs card 392 (+0), calm pick Driver -3.5 lands 294 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and card. Black: 418 vs card 417 (+1), calm pick Driver +7 lands 286 in fairway. Blue: 376 vs card 375 (+1), calm pick Driver +19 lands 287 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and card. Black: 410 vs card 409 (+1), calm pick Driver +12 lands 300 in fairway. Blue: 377 vs card 376 (+1), calm pick Driver -4.5 lands 304 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Routing, green and par 5 match the imagery and card. Black: 584 vs card 585 (-1), calm pick Driver +9 lands 294 in fairway. Blue: 546 vs card 547 (-1), calm pick Driver +4 lands 298 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Routing, green and par 3 match the imagery and card. Black: 227 vs card 227 (+0). Blue: 196 vs card 196 (+0). Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and card. Black: 377 vs card 377 (+0), calm pick Driver +7 lands 325 in rough. Blue: 350 vs card 350 (+0), calm pick 4-wood -0.5 lands 288 in fairway. Both tees on the OSM tee boxes at the hole-line start. Black landing is in rough at 325 just past the fairway end (13% trees); acceptable for a 377-yd hole."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and card. Black: 456 vs card 457 (-1), calm pick Driver +11.5 lands 294 in fairway. Blue: 431 vs card 432 (-1), calm pick Driver +13.5 lands 298 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Routing, green and par 3 match the imagery and card. Black: 165 vs card 165 (+0). Blue: 134 vs card 134 (+0). Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "Routing, green and par 5 match the imagery and card. Black: 567 vs card 570 (-3), calm pick Driver +9 lands 305 in fairway. Blue: 528 vs card 529 (-1), calm pick Driver +11 lands 303 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and card. Black: 392 vs card 392 (+0), calm pick 4-wood +4 lands 276 in fairway. Blue: 357 vs card 357 (+0), calm pick Long iron +5 lands 226 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 11,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK. Black: tee on the back OSM box (behind the cart path) at the hole-line start, measured 388 vs card 400 (-12); no OSM box farther back and the imagery shows none, so the card is likely measured differently; Black is acceptable (uncertain). Blue: the page tee is a lidar pad in the trees ~30 yds right of the tee complex (18 yds from the nearest OSM box), so the Blue tee line runs down the right tree line. The real Blue tee is the long tee strip just past the cart path, ~21 yds ahead of the Black tee on the hole line (366 yds there vs card 367). The Blue calm pick (Driver +8 at 283, fairway) was solved from the wrong spot; rebuild with the supplement tee.",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.8580397,
+       -94.8884813
+      ]
+     },
+     "par": 4,
+     "yards": 367
+    },
+    "uncertain": true
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Routing, green and par 5 match the imagery and card. Black: 550 vs card 553 (-3), calm pick Driver +3 lands 307 in fairway. Blue: 519 vs card 520 (-1), calm pick Driver -0 lands 299 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and card. Black: 394 vs card 395 (-1), calm pick Driver +6.5 lands 297 in fairway. Blue: 359 vs card 360 (-1), calm pick Driver +12 lands 297 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Routing, green and par 3 match the imagery and card. Black: 201 vs card 201 (+0). Blue: 167 vs card 167 (+0). Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Routing, green and par 5 match the imagery and card. Black: 537 vs card 537 (+0), calm pick Driver +5.5 lands 312 in fairway. Blue: 503 vs card 503 (+0), calm pick Driver +6.5 lands 304 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Routing, green and par 3 match the imagery and card. Black: 181 vs card 181 (+0). Blue: 166 vs card 166 (+0). Both tees on the OSM tee boxes at the hole-line start."
+   },
+   {
+    "n": 17,
+    "verdict": "questionable aim pick",
+    "notes": "Routing, green, par 4 and both tees OK (Black 340 = card, Blue 307 = card). Black calm pick Driver -6 has its mean landing 308 yds out in the greenside bunker short-right of the green (9 yds off the fairway); the page QA flagged it. On a 340-yd hole the driver brings the green into play, so the pick is a legitimate aggressive choice, but the shown landing spot is in sand; a golfer may prefer the Blue-style lay-up. Not a data error; no fix, re-check after rebuild.",
+    "uncertain": true
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Routing, green and par 4 match the imagery and card. Black: 434 vs card 435 (-1), calm pick Driver -10 lands 301 in fairway. Blue: 403 vs card 403 (+0), calm pick Driver -2.5 lands 305 in fairway. Both tees on the OSM tee boxes at the hole-line start."
+   }
+  ]
+ }
+}
