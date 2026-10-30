@@ -84,7 +84,10 @@ def fetch_scorecards(req, course, summ, raw):
     rawdir = os.path.join(raw, "scorecard")
     lengths = {str(h["ref"]): h["length_yd"] for h in summ.get("holes", []) if h.get("length_yd")}
     n = len(lengths) or None
-    for label, fn in (("golfify", lambda: scm.fetch_golfify(course["name"], course["state"], course.get("town"), rawdir)),
+    for label, fn in (("golfify", lambda: scm.fetch_golfify(course["name"], course["state"], course.get("town"), rawdir,
+                                                            course.get("center"))),
+                      ("allsquare", lambda: scm.fetch_allsquare(course["name"], course["state"], course.get("town"), rawdir,
+                                                                course.get("center"))),
                       ("club_site", lambda: scm.fetch_club_site(req.get("website") or course.get("website"), rawdir,
                                                                 n, lengths)),
                       ("opengolfapi", lambda: scm.fetch_opengolfapi(course["name"], course["state"], course.get("center"),
@@ -115,6 +118,13 @@ def fetch_scorecards(req, course, summ, raw):
                 out["cards"].append(dict(source=label, url=info, card=card))
                 if scm.consistency(scm.normalise(card))["ok"]:
                     break
+    try:                                                      # advisory: cards settled on the OSM hole lines
+        import card_consensus as ccs
+        r = ccs.consensus([(c["source"], c["card"], c["url"]) for c in out["cards"]], ccs.ground_from_summary(summ))
+        if r:
+            out["consensus"] = {k: r[k] for k in ("base", "base_url", "changes", "flags", "scores")}
+    except Exception as e:                                    # noqa: BLE001
+        out["consensus"] = dict(error=repr(e)[:200])
     pc.write_json(os.path.join(raw, "scorecard_web.json"), out)
     return out
 
