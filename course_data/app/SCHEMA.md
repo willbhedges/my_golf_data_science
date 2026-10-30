@@ -363,3 +363,20 @@ A request is one document per golfer per course in the shared db collection `req
 course. Without the db (file://, signed out, view-only) the request is kept in localStorage (`aimcaddie_requests1`)
 and the card says it is saved on this device only. Read back, every field is untrusted: the converter re-checks it.
 `test_course_index.js` covers unpack, search, slug and a shared write.
+
+
+## Library play records (`golf_lib_play/1`, `out/lib/<slug>.json`)
+
+`build_library_play.py` (run by `build_app.py`) turns each built library page into one compact JSON file that the page
+fetches **by relative URL** (`lib/<slug>.json`) when a golfer opens the course (36 files, 21 MB; the page stays ~13.7 MB).
+Library entries carry `lib`, `checks` (CHECK holes) and a "Play this course" button. Record: `{id, name, town, state,
+status, check_holes, days, hourly[[day, hour, mph, dir, temp]], tee_hour, temps, sets[{name, colour, total}], clubs[],
+speeds [0,10,20], dirs [0,45..315], images {id: 300-px JPEG q42}, holes[{no, ref, par, green_ll, sets: {set: V}}]}`.
+V: `yds, img, w, h, bearing, kind, note, tee_ll, qa [PASS|CHECK, reasons]`; tee shots `tee, f, r, ppy, green_al,
+calm {pick, aim, win, tie}, wind[17]` = `[club idx, aim, total, drift]` at 0 mph, then 10 and 20 mph x 8 directions
+relative to the tee line (page grids at the middle temperature, elevation applied, the page's calm-pick rule); par 3s
+`green, boxes, center, plays[17]`. Client: bilinear interpolation, pick = heaviest-weighted club.
+Confirm: "Is this hole N as drawn?" saves a canonical locate (yes) / reject (no) of the hole's tee_ll + green_ll in
+`maps/<slug>` (shared like the app courses); the card turns Auto-OK once every CHECK hole has a yes. Reports: `reports`.
+Publishing: every record goes in `files` as `lib/<slug>.json` -> `course_data/app/out/lib/<slug>.json`; without them a
+library course shows "Could not load this course's data" with a retry. Test: `test_lib_play.js` (serves out/ over http).
