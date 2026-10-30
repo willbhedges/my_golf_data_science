@@ -14,7 +14,6 @@ Course-level reasons:
 * scorecard not matched (source None, flags [])
 * 18 holes built vs the card's 0
 * pars sum to 72, card None
-* qa_page.js did not run for osm_back (rc 1)
 * 18 hole(s) with a CHECK
 
 Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
