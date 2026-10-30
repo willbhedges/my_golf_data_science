@@ -1,0 +1,158 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "st_andrews_op",
+ "course": "St Andrews Golf Club",
+ "bbox_snwe": [
+  38.87274,
+  -94.719014,
+  38.884846,
+  -94.704592
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1518,
+  "height": 1610,
+  "bounds": [
+   350756,
+   4303914,
+   352274,
+   4305524
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   350756.0,
+   0.0,
+   -1.0,
+   4305524.0
+  ],
+  "ll_bbox_wsen": [
+   -94.72072070072632,
+   38.871415800199884,
+   -94.70287978521475,
+   38.88617438743214
+  ]
+ },
+ "fetched_utc": "2026-10-30T03:22:53Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "KS_JohnsonCo_2006-hag-2m-3-2",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 2440432,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9985482696257744,
+   "file": "hag.tif",
+   "mb": 1.02,
+   "frac_gt_2_5m": 0.4032790775701929
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "KS_JohnsonCo_2006-dtm-2m-3-2",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 609936,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9982667615937937,
+   "mb": 1.43
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "KS_JohnsonCo_2006-classification-2m-3-2",
+     "when": "2006-04-11T00:00:00.000000Z",
+     "cells": 2394240,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JohnsonCo_2006",
+      "end_datetime": "2006-04-11T00:00:00.000000Z",
+      "start_datetime": "2006-04-10T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.18,
+   "counts": {
+    "0": 49740,
+    "1": 415612,
+    "2": 1978628
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111023"
+  ],
+  "mb": 0.38,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 610995,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 11.35,
+    "items": [
+     "ks_m_3809411_nw_15_030_20230816_20240209",
+     "ks_m_3809403_sw_15_030_20230816_20240209"
+    ],
+    "acquired": [
+     "2023-08-16"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 7.8,
+    "items": [
+     "ks_m_3809411_nw_15_060_20210613",
+     "ks_m_3809403_sw_15_060_20210613"
+    ],
+    "acquired": [
+     "2021-06-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
