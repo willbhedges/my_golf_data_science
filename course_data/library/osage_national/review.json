@@ -1,0 +1,197 @@
+{
+ "course_review/1": {
+  "slug": "osage_national",
+  "reviewer": "agent",
+  "card_source": "opengolfapi (api.opengolfapi.org course 1de48d90-4571-40e6-8542-364e1d7e7d42). No second card source was reachable: golfify 404, GolfPass 403, BlueGolf 405, club site has no card. The club site (osagenational.com/course-details) confirms 27 holes (Mountain, River, Links nines).",
+  "card": {
+   "set": [
+    377,
+    455,
+    370,
+    158,
+    441,
+    428,
+    612,
+    206,
+    512,
+    398,
+    445,
+    433,
+    215,
+    525,
+    314,
+    163,
+    442,
+    626
+   ],
+   "par": [
+    4,
+    4,
+    4,
+    3,
+    4,
+    4,
+    5,
+    3,
+    5,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    3,
+    4,
+    5
+   ],
+   "sets": {
+    "Palmer": [
+     377,
+     455,
+     370,
+     158,
+     441,
+     428,
+     612,
+     206,
+     512,
+     398,
+     445,
+     433,
+     215,
+     525,
+     314,
+     163,
+     442,
+     626
+    ],
+    "Tournament": [
+     352,
+     425,
+     335,
+     137,
+     434,
+     397,
+     597,
+     190,
+     483,
+     383,
+     421,
+     400,
+     187,
+     511,
+     291,
+     151,
+     404,
+     583
+    ]
+   }
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong tee position",
+    "notes": "Palmer marker is on a lidar pad 19 yds behind OSM back box 793605682, at the parking-lot edge. On the yardage ladder (OSM boxes 364/340/296/273 yds to green centre vs card 377/352/306/283) that back box is the Palmer box. Move Palmer to its back edge (369 yds, within 8 of the card). Tournament is OK (box 793605683).",
+    "fix": {
+     "tee_ll": {
+      "Palmer": [
+       38.2094845,
+       -92.6017282
+      ]
+     }
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Palmer is a walkback 22 yds behind the back OSM box 793640956. That box measures 423 yds to green centre and holds Tournament (card 425), so the Palmer tips (card 455) are an unmapped box behind it. The marker distance matches the card. Lateral position unverified."
+   },
+   {
+    "n": 3,
+    "verdict": "uncertain",
+    "notes": "Palmer marker (lidar pad, 377 yds) sits in the parking lot behind the pond. No OSM box is near the card's 370: the two back boxes, 793642994 and 793642993, are both about 330 yds and fit Tournament (card 335). Either the Palmer tee is unmapped and off-line, or the card is stale after the 2025-26 River/Mountain renovation. The 4-wood pick and 105 yds in assume the 370 tee. Tournament is OK."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Par 3. Both tees are on OSM boxes, the box is on the green and the yardage matches the card."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Both tees are on OSM boxes and the yardage matches the card. Driver lands on fairway."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Palmer is on a lidar pad 18 yds behind the back OSM box 793659913. That box measures 388 to green centre and holds Tournament (card 397), so Palmer (card 428) needs an unmapped box behind it, which fits. The previous green sits beside the tee. Tournament is OK."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Palmer is on a lidar pad 27 yds from back box 793663004, which holds Tournament (card 597), and Palmer is only 15 yds longer. The pad is in the trees behind the box: plausible unmapped tips. Yardage matches the card."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Par 3. On an OSM box, the box is on the green and the yardage matches the card."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "On OSM boxes (793694354/355) and the yardage matches the card."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card. Driver lands near where the fairway bends; the checks pass."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Par 3, on OSM boxes, and the box is on the green."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "On OSM boxes. Long iron to a narrowing fairway on a 314-yd par 4 is reasonable."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Par 3, on OSM boxes, and the box is on the green."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "On OSM boxes. 626-yd par 5 and the yardage matches the card."
+   }
+  ],
+  "course_notes": [
+   "Osage National has 27 holes (Mountain, River, Links). The OSM-numbered 18 (Palmer tees, 7120 yds) are the original Palmer 18 (Mountain + River). The club site says the Links nine is closed for renovation until April 2027, and the River and Mountain nines were renovated in 2025-2026.",
+   "The page imagery is 2016 NAIP: it predates the 2025-26 bunker/tree renovation, so the bunker and tree zones may be stale.",
+   "Only 1 of the 5 CHECK holes needs a geometry fix (hole 1 Palmer). Holes 2, 6 and 7 are unmapped tips behind the back OSM box, at card distance. Hole 3 is uncertain."
+  ],
+  "publish": "safe to publish with the hole-1 Palmer tee fix; hole 3 Palmer flagged uncertain (Tournament set is clean on every hole)"
+ }
+}

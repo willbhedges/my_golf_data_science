@@ -1,0 +1,190 @@
+{
+ "course_review/1": {
+  "slug": "pevely_farms",
+  "reviewer": "agent",
+  "card_source": "golfify (www.golfify.io/courses/pevely-farms-golf-club, refetched 2026-10-30: Black 7032 / Blue 6704 / White 6170 / Red 5201, par 72). It matches the package card exactly. OpenGolfAPI also has the course. The club site's card is an image only.",
+  "card": {
+   "set": [
+    446,
+    531,
+    277,
+    439,
+    199,
+    398,
+    397,
+    217,
+    527,
+    403,
+    401,
+    572,
+    389,
+    145,
+    358,
+    443,
+    422,
+    468
+   ],
+   "par": [
+    4,
+    5,
+    4,
+    4,
+    3,
+    4,
+    4,
+    3,
+    5,
+    4,
+    4,
+    5,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4
+   ],
+   "sets": {
+    "Black": [
+     446,
+     531,
+     277,
+     439,
+     199,
+     398,
+     397,
+     217,
+     527,
+     403,
+     401,
+     572,
+     389,
+     145,
+     358,
+     443,
+     422,
+     468
+    ],
+    "Blue": [
+     425,
+     524,
+     250,
+     426,
+     163,
+     363,
+     384,
+     201,
+     506,
+     384,
+     381,
+     544,
+     371,
+     138,
+     344,
+     439,
+     408,
+     453
+    ]
+   }
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong routing",
+    "notes": "The page plays OSM hole way 884242539 (ref 1, hcp 9). This is the neighbouring Crescent Farms Golf Club (OSM way 365165194), not Pevely Farms: its OSM handicaps (1:9, 9:1, 10:10, 18:2) do not match the Pevely card (1:16, 9:4, 10:13, 18:3). The real Pevely hole 1 is OSM way 848080943 (par 4, 445 yds; the card says 446), inside the Pevely boundary. Its green is outside the fetch bbox, so the page has no photo for most of the hole, no elevation, and no fairway (fairway 0%, aim in recovery). Re-route to 848080943."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card. Driver lands on the fairway."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "277-yd par 4. Black is on a lidar pad 28 yds behind the OSM box, in trees by the path, at the card distance; plausible unmapped tips. A 4-wood finishing about 20 yds short is reasonable. Blue lands 8 yds into the rough (minor)."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Par 3. On an OSM box and the box is on the green."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Par 3. On an OSM box and the box is on the green."
+   },
+   {
+    "n": 9,
+    "verdict": "wrong routing",
+    "notes": "The page plays OSM way 884242547 (Crescent Farms hole 9, hcp 1). This is the neighbouring Crescent Farms Golf Club (OSM way 365165194), not Pevely Farms. The tee is a walkback 379 yds from any Pevely tee and is mostly off the imagery (black picture). The real Pevely hole 9 (527/506, par 5) is the inside-boundary OSM ref-9 way. Re-route."
+   },
+   {
+    "n": 10,
+    "verdict": "wrong routing",
+    "notes": "The page plays OSM way 884242548 (Crescent Farms hole 10). This is the neighbouring Crescent Farms Golf Club (OSM way 365165194), not Pevely Farms. The green is the hole-line end (no OSM green fetched), the picture is black, and the pick aims +40 yds at the bound with fairway 0%. The real Pevely 10 (403/384, par 4) is the inside-boundary ref-10 way. Re-route."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Black is a walkback 24 yds behind the back OSM box (Blue is on that box), at card distance: unmapped tips. Driver on the fairway's left side, 33% fairway; acceptable."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "On OSM boxes. The landing area is at the end of the fairway before the cross path; 4-wood is sensible."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Par 3. On OSM boxes and the box is on the green."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 16,
+    "verdict": "bad pick",
+    "notes": "The geometry looks right (OSM boxes, card yardage, dogleg right at about 260 yds). The calm pick (2-wood/4-wood tie) aims +40 yds right, at the aim bound, and lands in rough by the trees at the corner with 2% fairway. On the photo the fairway sits left of that line. Likely a zone/vision problem near the corner; treat the pick as unreliable. No geometry fix."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "On OSM boxes and the yardage matches the card."
+   },
+   {
+    "n": 18,
+    "verdict": "wrong routing",
+    "notes": "The page plays OSM way 884242556 (Crescent Farms hole 18, hcp 2). This is the neighbouring Crescent Farms Golf Club (OSM way 365165194), not Pevely Farms. The tee is a walkback 478 yds from any Pevely tee, the picture is black and the fairway is 0%. The real Pevely 18 (468/453, par 4, hcp 3) is the inside-boundary ref-18 way. Re-route."
+   }
+  ],
+  "course_notes": [
+   "ROOT CAUSE: the OSM relation for Pevely Farms (5429230) borders Crescent Farms Golf Club (OSM way 365165194, an 18-hole course with OSM hole ways 884242539..884242556 refs 1-18). The Overpass fetch (bbox + 150 m) returned 23 hole ways: Pevely's 18 inside the boundary plus Crescent Farms' 1, 9, 10 and 18, whose ends reach into the bbox. The router picked the Crescent Farms ways for refs 1, 9, 10 and 18.",
+   "The fetch summary already shows it: golf_tag_counts hole 23 but golf_tag_counts_inside_course hole 18. The routing should prefer hole ways inside the course boundary when refs are duplicated (a platform fix; it affects any course next to another course).",
+   "Holes 1, 9, 10 and 18 on the page are not Pevely holes: black pictures (no imagery outside the bbox), no elevation, 0% fairway, aims at the +/-40 bound.",
+   "osm_supplement.geojson is not written: the geometry of Pevely's own ref-1/9/10/18 ways was not in the committed data. The OSM API request course_data/requests/webfetch_rv15_osmapi_pevely.json (rev 2, queued) will put it in course_data/research/web/rv15_osmapi_pevely/. Way 848080943 is Pevely's hole 1. Simplest rebuild: drop the hole ways outside the Pevely boundary (ids 884242539, 884242547, 884242548, 884242556), or add an 'ignore_osm_holes' + supplement of the 18 inside-boundary ways."
+  ],
+  "publish": "NOT safe to publish: 4 holes (1, 9, 10, 18) play the neighbouring Crescent Farms holes"
+ }
+}
