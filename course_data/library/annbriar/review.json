@@ -1,0 +1,173 @@
+{
+ "course_review/1": {
+  "slug": "annbriar",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/annbriar-golf-course), cross-checked with AllSquare (same card in metres: Yellow 72.8/136 = Hickory, Blue 70.9/129 = Black)",
+  "card": {
+   "Hickory": [
+    361,
+    435,
+    385,
+    193,
+    514,
+    388,
+    165,
+    426,
+    495,
+    408,
+    404,
+    368,
+    383,
+    509,
+    172,
+    466,
+    166,
+    603
+   ],
+   "Black": [
+    337,
+    395,
+    373,
+    190,
+    496,
+    378,
+    155,
+    415,
+    475,
+    382,
+    404,
+    353,
+    356,
+    492,
+    151,
+    446,
+    147,
+    572
+   ],
+   "par": [
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    3,
+    4,
+    5,
+    4,
+    4,
+    4,
+    4,
+    5,
+    3,
+    4,
+    3,
+    5
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Hickory 362/361, Black 338/337 on OSM tee boxes; driver to the fairway; checked on the phone picture."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Hickory 436/435, Black 394/395 on OSM tees; landing between the fairway bunkers; OK."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Hickory 386/385, Black 374/373; straight hole, driver to the fairway; OK."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Par 3, 193/190; box on the OSM green; OK."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Par 5 over the pond on the right; Hickory 515/514, Black 497/496; driver lands right of the water on the fairway; OK."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Hickory 389/388, Black 379/378; driver aim 15-22 left keeps it off the pond / trees right; OK."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Par 3, Hickory measured 159 vs card 165 (6 short, inside the 10-yd tolerance; same OSM box as Black 155); OK."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Hickory 425/426, Black 415/415; OK."
+   },
+   {
+    "n": 9,
+    "verdict": "wrong tee position",
+    "notes": "Black tee (CHECK) sits on a lidar pad in the tree line ~36 yds east of the hole-9 tee complex (31 yds from any OSM tee), so the Black line runs along the right-hand trees and the pick is 2-wood aimed 40 right. Card Black 475 (golfify; AllSquare Blue 434 m = 475 yd). The Black tee belongs on the tee complex used by Hickory (OSM way 1462705954, 489 measured vs card 495): 14 yds in front of it along the line, i.e. the OSM box measuring ~484 (or 461). Hickory tee itself is OK; Hickory driver aim 33 right has only 26% fairway (model judgement, noted).",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       38.34743,
+       -90.20264
+      ]
+     },
+     "yards": {
+      "Black": 475
+     },
+     "tee_note": "estimate: 14 yds in front of the Hickory OSM tee on its line; snap to the OSM tee box on the same complex (alternative 1462705955)"
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "Hickory 407/408, Black 382/382; OK."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Hickory and Black share one OSM tee (card 404 for both on golfify; AllSquare's metric card gives Hickory 364 m = 398 yd). 4-wood lay-up 31 yds left short of the creek crossing is plausible; OK."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Hickory 366/368, Black 353/353; OK."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Hickory tee (CHECK) on a lidar pad at the bottom of the open corridor, 31 yds from the nearest OSM tee; it measures 384 vs card 383, while the back mapped OSM box only measures ~371 (12 short). The picture shows a clear tee corridor there, so a real unmapped back tee is likely. Kept, but UNCERTAIN: confirm on the ground or the club card. Black on OSM 354/356 is OK."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Par 5, Hickory 509/509, Black 492/492. Picks aim 33-38 yds left into the left half of the landing (Hickory fairway only 32%); a judgment call by the model, not a geometry error; OK."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Par 3, 172/151; OK."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Hickory 466/466, Black 444/446; OK."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Par 3, 166/147; OK."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Par 5, Hickory 603/603, Black 572/572 (AllSquare's metric card agrees: 551 m / 523 m). Black driver fairway only 25% at aim 11.5 right; OK on geometry."
+   }
+  ]
+ }
+}

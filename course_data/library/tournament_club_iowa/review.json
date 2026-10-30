@@ -1,0 +1,585 @@
+{
+ "course_review/1": {
+  "slug": "tournament_club_iowa",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/tournament-club-of-iowa); AllSquare gives the same card in metres (King 506 m = 553 yd on hole 1). Club site unreachable.",
+  "card": {
+   "King": [
+    553,
+    420,
+    186,
+    593,
+    185,
+    480,
+    386,
+    234,
+    456,
+    356,
+    376,
+    442,
+    526,
+    325,
+    195,
+    231,
+    638,
+    459
+   ],
+   "Palmer": [
+    527,
+    386,
+    170,
+    578,
+    164,
+    448,
+    359,
+    170,
+    395,
+    347,
+    369,
+    427,
+    504,
+    301,
+    182,
+    188,
+    560,
+    441
+   ],
+   "Deacon": [
+    511,
+    365,
+    156,
+    548,
+    157,
+    423,
+    350,
+    155,
+    378,
+    326,
+    354,
+    386,
+    485,
+    258,
+    168,
+    174,
+    520,
+    399
+   ],
+   "Legend": [
+    441,
+    270,
+    113,
+    478,
+    102,
+    393,
+    253,
+    107,
+    305,
+    273,
+    308,
+    348,
+    445,
+    140,
+    92,
+    117,
+    516,
+    338
+   ],
+   "par": [
+    5,
+    4,
+    3,
+    5,
+    3,
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    5,
+    4,
+    3,
+    3,
+    5,
+    4
+   ],
+   "ratings": {
+    "King": [
+     73.9,
+     145
+    ],
+    "Palmer": [
+     71.5,
+     140
+    ],
+    "Deacon": [
+     69.6,
+     132
+    ],
+    "Legend": [
+     69.2,
+     122
+    ]
+   },
+   "numbering": "card numbering; card hole c = page (OSM) hole c+9 for c<=9, c-9 otherwise"
+  },
+  "renumber": {
+   "page_to_card": {
+    "1": 10,
+    "2": 11,
+    "3": 12,
+    "4": 13,
+    "5": 14,
+    "6": 15,
+    "7": 16,
+    "8": 17,
+    "9": 18,
+    "10": 1,
+    "11": 2,
+    "12": 3,
+    "13": 4,
+    "14": 5,
+    "15": 6,
+    "16": 7,
+    "17": 8,
+    "18": 9
+   }
+  },
+  "rebuild_advice": "Rebuild with the golfify card (King/Palmer solved) and the OSM hole ways replaced by osm_supplement.geojson (request ignore_osm_holes: true): the card was rejected on the first build only because OSM's nines are swapped.",
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 1 is card hole 10 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 270 yds from a mid OSM tee; card King 356, Palmer 347, Deacon 326, Legend 273. OSM tee boxes measure [270, 317]. Calm pick on the page (Long iron -38) is from the wrong tee, so not trusted. OSM's back tee is only 317: the King/Palmer boxes (356/347) look unmapped; supplement adds an estimated box 85 yds behind the hole-line start (uncertain).",
+    "fix": {
+     "card_hole": 10,
+     "tee_ll": {
+      "King": [
+       41.7814814,
+       -93.719411
+      ],
+      "Palmer": [
+       41.7815528,
+       -93.7194389
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 356,
+      "Palmer": 347
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 2 is card hole 11 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 294 yds from a mid OSM tee; card King 376, Palmer 369, Deacon 354, Legend 308. OSM tee boxes measure [294, 337, 372]. Calm pick on the page (4-wood/Driver -40) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 11,
+     "tee_ll": {
+      "King": [
+       41.7831814,
+       -93.7216092
+      ],
+      "Palmer": [
+       41.7832011,
+       -93.7216817
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 376,
+      "Palmer": 369
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 3,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 3 is card hole 12 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 377 yds from a mid OSM tee; card King 442, Palmer 427, Deacon 386, Legend 348. OSM tee boxes measure [343, 377, 432]. Calm pick on the page (Long iron +8) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 12,
+     "tee_ll": {
+      "King": [
+       41.7848407,
+       -93.7252262
+      ],
+      "Palmer": [
+       41.784848,
+       -93.7253912
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 442,
+      "Palmer": 427
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 4,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 4 is card hole 13 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 473 yds from a mid OSM tee; card King 526, Palmer 504, Deacon 485, Legend 445. OSM tee boxes measure [333, 432, 473, 511]. Calm pick on the page (4-wood +0) is from the wrong tee, so not trusted. King is 11-15 yds behind the back mapped box; Palmer is on a mapped box.",
+    "fix": {
+     "card_hole": 13,
+     "tee_ll": {
+      "King": [
+       41.783841,
+       -93.7314556
+      ],
+      "Palmer": [
+       41.7838004,
+       -93.7312194
+      ]
+     },
+     "par": 5,
+     "yards": {
+      "King": 526,
+      "Palmer": 504
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 5,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 5 is card hole 14 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 256 yds from a mid OSM tee; card King 325, Palmer 301, Deacon 258, Legend 140. OSM tee boxes measure [231, 256, 318]. Calm pick on the page (Long iron +12) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 14,
+     "tee_ll": {
+      "King": [
+       41.7832837,
+       -93.7248594
+      ],
+      "Palmer": [
+       41.7831059,
+       -93.7249768
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 325,
+      "Palmer": 301
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 6,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 6 is card hole 15 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 173 yds from a mid OSM tee; card King 195, Palmer 182, Deacon 168, Legend 92. OSM tee boxes measure [145, 173, 192]. Par 3 box on the OSM green; yardage is from the wrong tee. ",
+    "fix": {
+     "card_hole": 15,
+     "tee_ll": {
+      "King": [
+       41.7808789,
+       -93.7236485
+      ],
+      "Palmer": [
+       41.7808006,
+       -93.7235503
+      ]
+     },
+     "par": 3,
+     "yards": {
+      "King": 195,
+      "Palmer": 182
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 7,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 7 is card hole 16 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 154 yds from a mid OSM tee; card King 231, Palmer 188, Deacon 174, Legend 117. OSM tee boxes measure [107, 154, 187, 218]. Par 3 box on the OSM green; yardage is from the wrong tee. King is 11-15 yds behind the back mapped box; Palmer is on a mapped box.",
+    "fix": {
+     "card_hole": 16,
+     "tee_ll": {
+      "King": [
+       41.7791625,
+       -93.7218703
+      ],
+      "Palmer": [
+       41.7789553,
+       -93.7214853
+      ]
+     },
+     "par": 3,
+     "yards": {
+      "King": 231,
+      "Palmer": 188
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 8,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 8 is card hole 17 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 553 yds from a mid OSM tee; card King 638, Palmer 560, Deacon 520, Legend 516. OSM tee boxes measure [510, 553, 595, 637]. Calm pick on the page (Driver -6) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 17,
+     "tee_ll": {
+      "King": [
+       41.7776855,
+       -93.7194519
+      ],
+      "Palmer": [
+       41.7776952,
+       -93.7185928
+      ]
+     },
+     "par": 5,
+     "yards": {
+      "King": 638,
+      "Palmer": 560
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 9,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 9 is card hole 18 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 396 yds from a mid OSM tee; card King 459, Palmer 441, Deacon 399, Legend 338. OSM tee boxes measure [336, 396, 439, 460]. Calm pick on the page (Long iron +2) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 18,
+     "tee_ll": {
+      "King": [
+       41.7785413,
+       -93.7117266
+      ],
+      "Palmer": [
+       41.7785682,
+       -93.7119217
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 459,
+      "Palmer": 441
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "wrong par",
+    "notes": "Page hole 10 is card hole 1 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 485 yds from a mid OSM tee; card King 553, Palmer 527, Deacon 511, Legend 441. OSM tee boxes measure [393, 447, 485, 520, 548]. wrong par: OSM par 4, card par 5. Calm pick on the page (Driver -40 (fairway 10%)) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 1,
+     "tee_ll": {
+      "King": [
+       41.7796849,
+       -93.7188022
+      ],
+      "Palmer": [
+       41.7798564,
+       -93.7186295
+      ]
+     },
+     "par": 5,
+     "yards": {
+      "King": 553,
+      "Palmer": 527
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 11,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 11 is card hole 2 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 322 yds from a mid OSM tee; card King 420, Palmer 386, Deacon 365, Legend 270. OSM tee boxes measure [267, 322, 375, 423]. Calm pick on the page (Driver +26) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 2,
+     "tee_ll": {
+      "King": [
+       41.784137,
+       -93.7170244
+      ],
+      "Palmer": [
+       41.7844075,
+       -93.7171267
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 420,
+      "Palmer": 386
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 12 is card hole 3 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 142 yds from a mid OSM tee; card King 186, Palmer 170, Deacon 156, Legend 113. OSM tee boxes measure [108, 142, 160, 173, 187]. Par 3 box on the OSM green; yardage is from the wrong tee. ",
+    "fix": {
+     "card_hole": 3,
+     "tee_ll": {
+      "King": [
+       41.7886617,
+       -93.7189965
+      ],
+      "Palmer": [
+       41.7886061,
+       -93.7191564
+      ]
+     },
+     "par": 3,
+     "yards": {
+      "King": 186,
+      "Palmer": 170
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 13 is card hole 4 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 547 yds from a mid OSM tee; card King 593, Palmer 578, Deacon 548, Legend 478. OSM tee boxes measure [472, 515, 547, 587, 652, 667]. Calm pick on the page (Driver -40) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 4,
+     "tee_ll": {
+      "King": [
+       41.7887247,
+       -93.7201566
+      ],
+      "Palmer": [
+       41.7888143,
+       -93.7202708
+      ]
+     },
+     "par": 5,
+     "yards": {
+      "King": 593,
+      "Palmer": 578
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 14 is card hole 5 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 162 yds from a mid OSM tee; card King 185, Palmer 164, Deacon 157, Legend 102. OSM tee boxes measure [86, 143, 162, 180]. Par 3 box on the OSM green; yardage is from the wrong tee. ",
+    "fix": {
+     "card_hole": 5,
+     "tee_ll": {
+      "King": [
+       41.7915145,
+       -93.7250328
+      ],
+      "Palmer": [
+       41.7913878,
+       -93.7251911
+      ]
+     },
+     "par": 3,
+     "yards": {
+      "King": 185,
+      "Palmer": 164
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 15,
+    "verdict": "wrong par",
+    "notes": "Page hole 15 is card hole 6 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 416 yds from a mid OSM tee; card King 480, Palmer 448, Deacon 423, Legend 393. OSM tee boxes measure [374, 416, 440, 469]. wrong par: OSM par 5, card par 4. Calm pick on the page (4-wood +2) is from the wrong tee, so not trusted. King is 11-15 yds behind the back mapped box; Palmer is on a mapped box.",
+    "fix": {
+     "card_hole": 6,
+     "tee_ll": {
+      "King": [
+       41.7909766,
+       -93.7286049
+      ],
+      "Palmer": [
+       41.7907302,
+       -93.7284764
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 480,
+      "Palmer": 448
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 16,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 16 is card hole 7 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 357 yds from a mid OSM tee; card King 386, Palmer 359, Deacon 350, Legend 253. OSM tee boxes measure [254, 334, 357, 383]. Calm pick on the page (4-wood -40) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 7,
+     "tee_ll": {
+      "King": [
+       41.7872229,
+       -93.7244194
+      ],
+      "Palmer": [
+       41.7870119,
+       -93.7243221
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 386,
+      "Palmer": 359
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 17,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 17 is card hole 8 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 158 yds from a mid OSM tee; card King 234, Palmer 170, Deacon 155, Legend 107. OSM tee boxes measure [102, 128, 158, 226, 296]. Par 3 box on the OSM green; yardage is from the wrong tee. ",
+    "fix": {
+     "card_hole": 8,
+     "tee_ll": {
+      "King": [
+       41.7838962,
+       -93.7222302
+      ],
+      "Palmer": [
+       41.7842303,
+       -93.7216834
+      ]
+     },
+     "par": 3,
+     "yards": {
+      "King": 234,
+      "Palmer": 170
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   },
+   {
+    "n": 18,
+    "verdict": "wrong tee position",
+    "notes": "Page hole 18 is card hole 9 (OSM numbers the nines swapped; clubhouse sits by OSM 8 tee / 9 green / 10 tee, so card hole 1 = OSM 10 and 18 = OSM 9). Page plays 388 yds from a mid OSM tee; card King 456, Palmer 395, Deacon 378, Legend 305. OSM tee boxes measure [298, 343, 388, 453]. Calm pick on the page (4-wood +1) is from the wrong tee, so not trusted. ",
+    "fix": {
+     "card_hole": 9,
+     "tee_ll": {
+      "King": [
+       41.7863844,
+       -93.719052
+      ],
+      "Palmer": [
+       41.7858875,
+       -93.7189357
+      ]
+     },
+     "par": 4,
+     "yards": {
+      "King": 456,
+      "Palmer": 395
+     },
+     "tee_note": "tee_ll are walk-backs along the OSM hole line to the card yardage; a rebuild with the card should snap to the OSM tee box at that distance"
+    }
+   }
+  ]
+ }
+}
