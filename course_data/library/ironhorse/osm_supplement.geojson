@@ -1,0 +1,64 @@
+{
+ "type": "FeatureCollection",
+ "note": "rv07 hand supplement for Ironhorse: hole 1 Black tee (off the driving range) and hole 18 to its own green. Note the driving-range tee way/837929723 is still tagged golf=tee in OSM, so the localizer may need the review fix (tee_ll) rather than this box alone.",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "golf": "tee",
+    "ref": "1",
+    "tee": "Black",
+    "note": "rv07: hole 1 Black tee, 405 yds out on the line through the back 'Tee 1' box way/793583517 (card 405). The build put Black on OSM way/837929723 'Driving Range Tee Box (Turf)'."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -94.6347205379667,
+       38.848735567553
+      ],
+      [
+       -94.63462826203329,
+       38.848735567553
+      ],
+      [
+       -94.63462826203329,
+       38.848807432446996
+      ],
+      [
+       -94.6347205379667,
+       38.848807432446996
+      ],
+      [
+       -94.6347205379667,
+       38.848735567553
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "golf": "hole",
+    "ref": "18",
+    "par": "4",
+    "note": "rv07: hole 18, Black tee ('Tee 11 & Tee 18' way/889388342) -> OSM green way/497967743 (471 yds, card 475). Duplicates OSM hole way/889405229 on purpose: the build paired hole 18 with hole 4's green."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -94.6410543,
+      38.8506634
+     ],
+     [
+      -94.6362547,
+      38.8496699
+     ]
+    ]
+   }
+  }
+ ]
+}

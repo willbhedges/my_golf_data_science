@@ -1,0 +1,342 @@
+{
+ "course_review/1": {
+  "slug": "heritage_park",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/heritage-park-golf-course); second-source fetch (GolfPass / AllSquare / BlueGolf / JCPRD) requested via web_fetch.yml but the shared queue answered other requests in time, so it is single-source. The card is internally consistent (par 71 = 35/36, 4 sets) and matches the OSM tee boxes hole by hole (e.g. hole 11 tees 224/192/158/98 vs card 227/193/157/98; hole 12 393/344/314 vs 395/346/314).",
+  "card": {
+   "Blue": [
+    368,
+    193,
+    359,
+    184,
+    629,
+    187,
+    433,
+    373,
+    517,
+    396,
+    227,
+    395,
+    409,
+    465,
+    599,
+    215,
+    388,
+    539
+   ],
+   "White": [
+    337,
+    171,
+    317,
+    149,
+    598,
+    154,
+    392,
+    344,
+    494,
+    372,
+    193,
+    380,
+    378,
+    424,
+    571,
+    189,
+    353,
+    511
+   ],
+   "Red": [
+    308,
+    149,
+    274,
+    131,
+    565,
+    129,
+    360,
+    324,
+    462,
+    350,
+    157,
+    346,
+    347,
+    389,
+    537,
+    165,
+    321,
+    483
+   ],
+   "Silver": [
+    282,
+    90,
+    239,
+    121,
+    484,
+    98,
+    330,
+    288,
+    447,
+    324,
+    98,
+    314,
+    317,
+    347,
+    511,
+    132,
+    290,
+    469
+   ],
+   "par": [
+    4,
+    3,
+    4,
+    3,
+    5,
+    3,
+    4,
+    4,
+    5,
+    4,
+    3,
+    4,
+    4,
+    4,
+    5,
+    3,
+    4,
+    5
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong routing",
+    "notes": "MISSING on the page. Hole 1 is the OSM tee boxes way/930838113-115 (centroids 354/310/284 yds; the back box measures 371 along its axis) -> OSM green way/930838116 (card 368/337/308/282). The page used this tee/green pair as its 'hole 10'. Confirmed by the fairway polygon running from those boxes to that green and by the mapper's way-id order (tees 113-115, green 116).",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.8295206,
+       -94.7566815
+      ],
+      "White": [
+       38.829239,
+       -94.7565875
+      ]
+     },
+     "green_ll": [
+      38.8265599,
+      -94.7556933
+     ],
+     "par": 4,
+     "yards": {
+      "Blue": 368,
+      "White": 337
+     }
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "wrong routing",
+    "notes": "The page's hole 2 is really hole 11 (tees way/930838171-172 -> green way/930838176; the four boxes there measure 224/192/158/98 = hole 11's 227/193/157/98 exactly). Hole 2 is the parallel par 3 just west: tees way/930838117-120 -> green way/930838121 (White box 118 = 176 vs 171, Silver box 119 = 91 vs 90). Blue 193 has no box of its own: the hand tee is put 193 yds out on the line through box 117 (226, probably a tips box not on the card).",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.8240857,
+       -94.7549284
+      ],
+      "White": [
+       38.8239425,
+       -94.7547539
+      ]
+     },
+     "green_ll": [
+      38.8225006,
+      -94.754896
+     ],
+     "par": 3,
+     "yards": {
+      "Blue": 193,
+      "White": 171
+     }
+    }
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Blue 360/359, White 318/317 on OSM boxes way/930838122-123; 4-wood/driver lands on the fairway beside the lake; OK on the phone picture."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Par 3, 184/184 and 149/149 on OSM box way/930838130; box on the OSM green; OK."
+   },
+   {
+    "n": 5,
+    "verdict": "wrong tee position",
+    "notes": "CHECK hole. Blue tee is a lidar pad 22 yds from the OSM back box way/930838135, which measures 623 to the green (card 629); the box is the better tee. Yardage barely changes, routing OK, driver to the fairway OK. Small fix: Blue tee onto box 135. White (lidar pad, 599/598) left as is.",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.8185896,
+       -94.7531372
+      ]
+     }
+    }
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Par 3, 187/187 and 154/154 on OSM boxes; green box OK."
+   },
+   {
+    "n": 7,
+    "verdict": "uncertain",
+    "notes": "CHECK hole. Routing OK (OSM tees 147-149 -> green 151). The OSM boxes measure 375/327/297 (card Blue 433, White 392, Red 360, Silver 330), so the Blue 433 tee is not in OSM; the page puts it on a lidar pad 44 yds behind box 147, which is the right distance but unconfirmed on the photo (it sits beside the cart path). Driver aim 40 yds left at the left edge of the wide fairway looks odd on the picture; leave as CHECK until the Blue tee is seen on the ground."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "373/373, 344/344 on OSM box way/930838154; driver to the fairway; OK."
+   },
+   {
+    "n": 9,
+    "verdict": "uncertain",
+    "notes": "CHECK hole. Routing OK (OSM tees 160-161 -> green 164). The OSM boxes measure 461/425 (card Red 462); Blue 517 / White 494 are not mapped. The page Blue tee is a lidar pad 65 yds behind, in trees next to a house with a pool on the photo; it matches the card length but the spot is doubtful."
+   },
+   {
+    "n": 10,
+    "verdict": "wrong routing",
+    "notes": "The page's 'hole 10' is really hole 1 (green way/930838116). Hole 10 is the page's 'hole 12' geometry: tees at the north end (OSM boxes way/930838165-166 measure 340/311 = Red/Silver; the Blue walkback 395 and White lidar pad 380 the build found) -> green way/930838168. Card 396/372.",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.8301294,
+       -94.7563638
+      ],
+      "White": [
+       38.8301096,
+       -94.7554424
+      ]
+     },
+     "green_ll": [
+      38.8269864,
+      -94.7553113
+     ],
+     "par": 4,
+     "yards": {
+      "Blue": 396,
+      "White": 372
+     }
+    }
+   },
+   {
+    "n": 11,
+    "verdict": "wrong routing",
+    "notes": "MISSING on the page. Par 3: OSM tees way/930838170-173 (224/192/158/98) -> green way/930838176 (card 227/193/157/98). The page showed this hole as 'hole 2'.",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.8241626,
+       -94.7545185
+      ],
+      "White": [
+       38.8239756,
+       -94.7541675
+      ]
+     },
+     "green_ll": [
+      38.8224566,
+      -94.7536283
+     ],
+     "par": 3,
+     "yards": {
+      "Blue": 227,
+      "White": 193
+     }
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "wrong routing",
+    "notes": "The page's 'hole 12' is really hole 10. Hole 12 is OSM tees way/930838177-179 (393/344/314 = card Blue 395 / Red 346 / Silver 314) -> green way/930838182 (the green the build left unassigned). White 380 is put on the line between boxes 177 and 178.",
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       38.8220642,
+       -94.7526828
+      ],
+      "White": [
+       38.8221614,
+       -94.7527322
+      ]
+     },
+     "green_ll": [
+      38.8250642,
+      -94.7542052
+     ],
+     "par": 4,
+     "yards": {
+      "Blue": 395,
+      "White": 380
+     }
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "409/409, 378/378 on OSM box way/930838183 -> green 188; driver to the fairway; OK."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "465/465, 424/423 on OSM boxes; driver 22 yds left lands on the fairway, the left edge of the pattern reaches the tree clump left (page counts 8% trees) - acceptable."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "599/595, 571/570 on OSM boxes; split fairway, driver to the left fairway; the big tree clump between the fairways is just outside the pattern. OK."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Par 3, 215/215 and 186/189 on OSM boxes; water short is drawn; OK."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "388/387, 353/352 on OSM boxes; driver to the fairway; OK."
+   },
+   {
+    "n": 18,
+    "verdict": "uncertain",
+    "notes": "CHECK hole. Routing OK (OSM tees 528-531 -> green 535). OSM boxes measure 494/467/439/421 vs card 539/511/483/469: the card is ~45 yds longer than every box. The page's Blue tee is a walkback 38 yds behind the boxes into rough (photo shows no tee there); White on box 528 measures 500 vs 511. Either the back tees are unmapped or the card measures a longer path; not fixable from here."
+   }
+  ],
+  "summary": {
+   "ok": [
+    3,
+    4,
+    6,
+    8,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "fixed": [
+    1,
+    2,
+    5,
+    10,
+    11,
+    12
+   ],
+   "uncertain": [
+    7,
+    9,
+    18
+   ],
+   "publish_as_is": false,
+   "why": "holes 1 and 11 missing; the page's holes 2, 10 and 12 show holes 11, 1 and 10; par total 64 vs 71"
+  }
+ }
+}

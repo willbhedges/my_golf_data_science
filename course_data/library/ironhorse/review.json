@@ -1,0 +1,267 @@
+{
+ "course_review/1": {
+  "slug": "ironhorse",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/ironhorse-golf-club); par 72 (36/36), 5 sets. Cross-check against OSM: OSM hole ways carry the same pars (18 = par 4, 469 yds) and every OSM 'Tee n' box lands within 10 yds of a card set. Second web source requested (club site / GolfPass / BlueGolf) but not answered in time.",
+  "card": {
+   "Black": [
+    405,
+    211,
+    425,
+    518,
+    212,
+    405,
+    340,
+    408,
+    555,
+    555,
+    371,
+    190,
+    387,
+    481,
+    372,
+    380,
+    199,
+    475
+   ],
+   "Blue": [
+    377,
+    202,
+    391,
+    486,
+    179,
+    376,
+    306,
+    389,
+    530,
+    537,
+    315,
+    162,
+    342,
+    451,
+    344,
+    372,
+    182,
+    434
+   ],
+   "White": [
+    358,
+    177,
+    364,
+    458,
+    148,
+    328,
+    303,
+    347,
+    501,
+    510,
+    271,
+    140,
+    335,
+    423,
+    301,
+    297,
+    162,
+    396
+   ],
+   "Gold": [
+    314,
+    155,
+    331,
+    422,
+    123,
+    296,
+    272,
+    314,
+    465,
+    493,
+    235,
+    120,
+    312,
+    393,
+    273,
+    270,
+    143,
+    394
+   ],
+   "Red": [
+    305,
+    131,
+    297,
+    404,
+    110,
+    260,
+    218,
+    290,
+    434,
+    419,
+    204,
+    80,
+    295,
+    365,
+    226,
+    270,
+    116,
+    321
+   ],
+   "par": [
+    4,
+    3,
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    5,
+    5,
+    4,
+    3,
+    4,
+    5,
+    4,
+    4,
+    3,
+    4
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong tee position",
+    "notes": "Black tee is on OSM way/837929723, ref 'Driving Range Tee Box (Turf)' (the photo shows the striped range tee), 89 yds off the hole-1 boxes and 11 deg off line. The hole-1 boxes ('Tee 1' way/793583517-520) measure 364/347/319/295 (card Blue 377 / White 358 / Gold 314 / Red 305); Black 405 has no box, so the hand tee is 405 yds out on the line through the back box 517 (28 yds behind it). Blue (back box 517, 377) is OK.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       38.8487715,
+       -94.6346744
+      ]
+     }
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Par 3, 211/211 and 202/202 on OSM 'Tee 2'; OK."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "425/425, 391/391 on 'Tee 3' boxes; driver lands on the fairway past the creek; OK."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "518/518, 486/486 on 'Tee 4'; driver to the fairway with houses right (OB drawn); OK."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Par 3, 212/212 and 179/179 on 'Tee 5'; OK."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "405/405, 376/376 on 'Tee 6'; over the pond; 2-wood/driver tie to the fairway; OK."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "CHECK on Blue only: 306-yd par 4, driver 32 left finishes 295 out in rough 6 yds off the fairway, i.e. near the green - a short-hole artefact, not a mapping error. Black 340/340, Blue 306/306 on 'Tee 7'. OK."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "408/408, 389/389 on 'Tee 8'; 4-wood to the fairway; OK."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "555/555, 530/530 on 'Tee 9'; driver to the fairway; OK."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "555/555, Blue 537 measured 542 (+5) on 'Tee 10'; OK."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "CHECK on Black: the Black tee is a walkback 20 yds behind the shared box 'Tee 11 & Tee 18' (way/889388342, 337 centroid) to reach card 371; Blue on 'Tee 11' 312/315. The back of the shared tee complex is plausible; length matches the card. OK (minor)."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Par 3, 190/190 and 162/161 on OSM '12' boxes; OK."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "Black 387 measured 380 (-7), Blue 342/341 on 'Tee 13'; 4-wood to the fairway; OK."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "CHECK on Blue: Blue tee is a lidar pad 15 yds from the 'Tee 14' boxes (431 / 464); measures 452 vs card 451, between those boxes - fine. Black (482/481) sits on a box OSM tags 'Tee 16' but it is in the hole-14 complex (ref typo). OK."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "372/372, 344/344 on 'Tee 15'; 4-wood to the fairway; OK."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "380/379, 372/371 on 'Tee 16'; driver to the fairway; OK."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Par 3, 199/199 and 182/182; OK."
+   },
+   {
+    "n": 18,
+    "verdict": "wrong routing",
+    "notes": "Built to hole 4's green (way/497967756), 1607 yds as a par 5. OSM has hole 18 as a par 4 (way/889405229, 469 yds). The 18th green is OSM way/497967743 by the clubhouse (the green the build left unused): Black tee ('Tee 11 & Tee 18') -> 471 yds (card 475), Blue ('Tee 18') -> 434 (card 434). Par 4 per the card and OSM.",
+    "fix": {
+     "green_ll": [
+      38.8496699,
+      -94.6362547
+     ],
+     "par": 4,
+     "yards": {
+      "Black": 475,
+      "Blue": 434
+     }
+    }
+   }
+  ],
+  "summary": {
+   "ok": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "fixed": [
+    1,
+    18
+   ],
+   "uncertain": [],
+   "publish_as_is": false,
+   "why": "hole 18 is 1607 yds / par 5 to the wrong green; hole 1 Black tee on the driving range"
+  }
+ }
+}
