@@ -1,0 +1,140 @@
+name: national-index
+
+# National course index (course_data/library/national_index.py, README "National course index"):
+# every named leisure=golf_course in the US from OpenStreetMap (Overpass, one query per state, with retries), plus
+# OpenGolfAPI state listings where they help. Trigger: push course_data/requests/national_index_<name>.json
+#   {"states": ["IA", ...] (optional, default all 50 + DC), "oga": true, "rev": n}
+# Output (committed): course_data/library/us_courses.json.gz, course_data/library/us_readiness.json.
+# States not fetched by a run keep their rows from the committed index, so a re-run of failed states is cheap.
+on:
+  push:
+    paths:
+      - "course_data/requests/national_index_*.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: national-index-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      chunks: ${{ steps.p.outputs.chunks }}
+      oga: ${{ steps.p.outputs.oga }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            course_data/requests
+            course_data/library/national_index.py
+      - id: p
+        run: |
+          R=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/national_index_*.json' | tail -1)
+          [ -n "$R" ] || R=$(ls -t course_data/requests/national_index_*.json | head -1)
+          python3 - "$R" <<'EOF'
+          import json, os, sys
+          sys.path.insert(0, "course_data/library")
+          import national_index as ni
+          q = json.load(open(sys.argv[1]))
+          states = [s.upper() for s in (q.get("states") or ni.STATES)]
+          n = min(8, len(states))
+          chunks = [" ".join(states[i::n]) for i in range(n)]
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write("chunks=" + json.dumps(chunks) + "\n")
+              fh.write("oga=" + ("1" if q.get("oga", True) else "0") + "\n")
+          print(chunks)
+          EOF
+
+  fetch:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        chunk: ${{ fromJSON(needs.plan.outputs.chunks) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            course_data/library/national_index.py
+      - run: |
+          python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx
+          # second pass for any state that failed (the script skips states already fetched)
+          python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx
+          ls -la /tmp/natidx
+      - uses: actions/upload-artifact@v4
+        with:
+          name: natidx-${{ strategy.job-index }}
+          path: /tmp/natidx
+          if-no-files-found: ignore
+
+  oga:
+    needs: plan
+    if: needs.plan.outputs.oga == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            course_data/library/national_index.py
+      - run: python3 -u course_data/library/national_index.py oga ${{ join(fromJSON(needs.plan.outputs.chunks), ' ') }} --out /tmp/oga || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: natoga
+          path: /tmp/oga
+          if-no-files-found: ignore
+
+  merge:
+    needs: [fetch, oga]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            course_data/library/national_index.py
+            course_data/library/index.json
+            course_data/library/us_courses.json.gz
+            course_data/library/us_readiness.json
+            course_data/library/README.md
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: natidx-*
+          merge-multiple: true
+          path: /tmp/natidx
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: natoga
+          path: /tmp/oga
+      - run: |
+          mkdir -p /tmp/natidx /tmp/oga
+          python3 -u course_data/library/national_index.py merge /tmp/natidx --oga /tmp/oga
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/library/us_courses.json.gz course_data/library/us_readiness.json
+          git diff --cached --quiet && exit 0
+          printf '%s\n' "library: national course index (Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6 7 8; do
+            git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed"; sleep $((i * 10))
+          done
+          exit 1
