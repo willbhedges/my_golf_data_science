@@ -1,0 +1,135 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "painted_hills",
+ "course": "Painted Hills Golf Club",
+ "bbox_snwe": [
+  39.11877,
+  -94.747277,
+  39.129766,
+  -94.736166
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1226,
+  "height": 1482,
+  "bounds": [
+   348828,
+   4331270,
+   350054,
+   4332752
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   348828.0,
+   0.0,
+   -1.0,
+   4332752.0
+  ],
+  "ll_bbox_wsen": [
+   -94.7489711236607,
+   39.11748659090123,
+   -94.73446564044787,
+   39.13104683319056
+  ]
+ },
+ "fetched_utc": "2026-10-30T00:18:27Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "KS_Statewide_B16_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KS_Statewide_B16_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 27840677365
+   },
+   {
+    "name": "KS_Area3-NortheastA_2012",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KS_Area3-NortheastA_2012/ept.json",
+    "cov": 1.0,
+    "year": 2012,
+    "count": 17669455965
+   }
+  ],
+  "used": [
+   {
+    "name": "KS_Statewide_B16_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KS_Statewide_B16_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 27840677365,
+    "cells": 1805006
+   }
+  ],
+  "valid": 0.9934361880356557,
+  "hag_mb": 0.87,
+  "frac_gt_2_5m": 0.3614152868681932,
+  "class_mb": 0.02
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111023"
+  ],
+  "mb": 0.32,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 454233,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 8.43,
+    "items": [
+     "ks_m_3909459_nw_15_030_20230816_20240304",
+     "ks_m_3909458_ne_15_030_20230816_20240304",
+     "ks_m_3909451_sw_15_030_20230816_20240304",
+     "ks_m_3909450_se_15_030_20230816_20240304"
+    ],
+    "acquired": [
+     "2023-08-16"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 5.81,
+    "items": [
+     "ks_m_3909459_nw_15_060_20210613",
+     "ks_m_3909451_sw_15_060_20210613",
+     "ks_m_3909458_ne_15_060_20210612",
+     "ks_m_3909450_se_15_060_20210612"
+    ],
+    "acquired": [
+     "2021-06-12",
+     "2021-06-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
