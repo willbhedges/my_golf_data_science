@@ -187,3 +187,12 @@ def test_partial_name_in_another_town_is_not_a_candidate():
     arb = rs.candidate(el("way", 9, "Fred Arbanas Golf Course", 38.91, -94.47), holes=18, town="Kansas City")
     status, best, _ = rs.choose([arb], "Fred Arbanas Golf Course", town="Lee's Summit")
     assert status == "ok" and best["osm"]["id"] == 9
+
+
+def test_address_geocodes_to_near(monkeypatch):
+    """Kokopelli GC (Marion IL) is not in OSM by name: a request "address" becomes resolve's `near` point."""
+    import fetch_package as fp
+    monkeypatch.setattr(pc, "nominatim", lambda path, **k: [dict(lat="37.7531", lon="-88.9702", display_name="x")])
+    assert fp.geocode_address("1401 Champions Dr, Marion, IL 62959") == "37.753100,-88.970200"
+    monkeypatch.setattr(pc, "nominatim", lambda path, **k: None)
+    assert fp.geocode_address("nowhere") is None

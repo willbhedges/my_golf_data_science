@@ -2,7 +2,7 @@
 
 Request (course_data/requests/course_page_<slug>.json, schema course_page/1):
   {"name": "Swope Memorial Golf Course", "city": "Kansas City", "state": "MO",
-   "near": "lat,lon" | "osm": "way/123"      (optional disambiguation),
+   "near": "lat,lon" | "address": "street, town, ST zip" | "osm": "way/123"   (optional disambiguation),
    "osm_supplement" / "no_osm_ok" / "website" / "scorecard" / "hole_method" ... (optional package-request data
                                               fixes, passed through by pkgreq),
    "tees": ["Blue", "White"]                 (optional tee sets of interest; default: the two longest sets),
@@ -151,7 +151,7 @@ def pkgreq(q):
         r["town"] = q["city"]
     # the package request's data fixes pass straight through (platform/package.py + fetch_package.py read them): a
     # course OSM maps badly is fixed in its course-page request, never by hand-editing package_request.json
-    for k in ("near", "osm", "typed_card", "yardages", "pars", "scorecard", "website", "opengolfapi_id",
+    for k in ("near", "address", "osm", "typed_card", "yardages", "pars", "scorecard", "website", "opengolfapi_id",
               "osm_supplement", "boundary_ll", "no_osm_ok", "no_osm_course", "near_radius_m", "ignore_osm_holes",
               "hole_method", "routing", "naip_year", "tee_overrides", "yardage_overrides", "par_overrides",
               "green_overrides", "hole_renumber"):

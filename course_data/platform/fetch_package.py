@@ -157,12 +157,26 @@ def fetch_imagery(course, pkg, year="auto"):
     return r.returncode == 0
 
 
+def geocode_address(address):
+    """Request "address" (the club's street address, what a golfer can always find) -> "lat,lon" for resolve's
+    `near` fallbacks (a course OSM maps unnamed or under another name: Kokopelli GC, Marion IL), or None."""
+    hits = pc.nominatim("search", q=address, countrycodes="us", limit=1) or []
+    if not hits:
+        pc.log("address: no geocode for", address)
+        return None
+    near = f"{float(hits[0]['lat']):.6f},{float(hits[0]['lon']):.6f}"
+    pc.log("address:", address, "->", near, hits[0].get("display_name", "")[:120])
+    return near
+
+
 def fetch(req_path):
     req = pc.read_json(req_path)
     slug = request_slug(req, req_path)
     pkg = os.path.join(pc.PACKAGES, slug)
     raw = os.path.join(pkg, "raw")
     os.makedirs(raw, exist_ok=True)
+    if not req.get("near") and req.get("address"):
+        req["near"] = geocode_address(req["address"])
     course = rs.resolve(req["course"], req["state"], req.get("town"), req.get("osm"), near=req.get("near"))
     if req.get("boundary_ll") or (req.get("near") and req.get("no_osm_course")) or \
             (course["status"] != "ok" and req.get("near") and req.get("no_osm_ok")):
