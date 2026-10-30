@@ -1,0 +1,262 @@
+{
+ "course_review/1": {
+  "slug": "hodge_park",
+  "reviewer": "agent",
+  "card_source": "golfify (https://www.golfify.io/courses/hodge-park-golf-course); same card on AllSquare (shown in metres there)",
+  "card": {
+   "Blue": [
+    425,
+    347,
+    168,
+    452,
+    446,
+    304,
+    174,
+    409,
+    401,
+    405,
+    459,
+    193,
+    388,
+    260,
+    338,
+    192,
+    518,
+    302
+   ],
+   "White": [
+    380,
+    310,
+    148,
+    400,
+    432,
+    269,
+    157,
+    388,
+    371,
+    371,
+    445,
+    172,
+    376,
+    248,
+    310,
+    168,
+    485,
+    277
+   ],
+   "par": [
+    4,
+    4,
+    3,
+    5,
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4
+   ]
+  },
+  "card_note": "schema card.set per tee set; par total 71, Blue 6181, White 5707",
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong tee position",
+    "notes": "Blue OK (414 vs 425, normal back-of-box gap). White tee is on the 340 box; OSM has a box at 373 on the line, which matches the White card (380). Move White there.",
+    "measured": {
+     "Blue": 414,
+     "White": 340
+    },
+    "fix": {
+     "tee_ll": {
+      "White": [
+       39.2502504,
+       -94.496787
+      ]
+     }
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Blue 332 vs 347 (-15) is box-centre vs card; White exact. Routing, par fine; Driver +21 lands on fairway in the screenshot.",
+    "measured": {
+     "Blue": 332,
+     "White": 309
+    }
+   },
+   {
+    "n": 3,
+    "verdict": "wrong tee position",
+    "notes": "Par 3. OSM tags put Blue on the 156 box and White on the 124 box, but the hole has boxes at 113/124/135/144/156/167. Card 168/148 fits the 167 box (Blue) and 144 box (White): the colour tags are one box short. Page par-3 numbers use the card yardage so play-it-like is roughly right, but the tee marker is wrong.",
+    "measured": {
+     "Blue": 156,
+     "White": 124
+    },
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       39.2505438,
+       -94.4950675
+      ],
+      "White": [
+       39.2504091,
+       -94.4948952
+      ]
+     }
+    }
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Par 5, 438 vs 452 (-14); the back box is the longest mapped (3 boxes, 363/399/438). Fairway pick fine.",
+    "measured": {
+     "Blue": 438,
+     "White": 399
+    }
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "Blue 436 vs 446 OK; White 418 vs 432 (-14) on the middle of 3 boxes, acceptable.",
+    "measured": {
+     "Blue": 436,
+     "White": 418
+    }
+   },
+   {
+    "n": 6,
+    "verdict": "uncertain",
+    "notes": "Blue card 304 but the longest mapped box is 278 (boxes 253/272/278). Either a Blue box behind is unmapped in OSM or the card is long. White (272 vs 269) OK. Short par 4 with a 4-wood +13 pick toward a tree-lined green: hazard read looks plausible but could not be checked against fresh imagery.",
+    "measured": {
+     "Blue": 278,
+     "White": 272
+    }
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Par 3, 163 vs 174 (-11); White 157 = card. Green box on the OSM green.",
+    "measured": {
+     "Blue": 163,
+     "White": 157
+    }
+   },
+   {
+    "n": 8,
+    "verdict": "uncertain",
+    "notes": "Dogleg; boxes at 267/359/393 vs card 409/388/369. The tagged Blue box (393) is closer to the White card number, so the real Blue box may be unmapped (16 yds back). White on the 359 box is 29 short of card 388. Calm pick Driver -38 is at the edge of the aim grid (cuts the corner over trees); treat with caution.",
+    "measured": {
+     "Blue": 393,
+     "White": 359
+    }
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "394 vs 401 Blue, 373 vs 371 White. Driver +40 tie is at the aim-grid edge but the fairway is wide right; no change.",
+    "measured": {
+     "Blue": 394,
+     "White": 373
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "uncertain",
+    "notes": "Boxes at 205/331/375 vs card 405/371/329: the tagged Blue box (375) matches the White card and the tagged White box (331) the Red card. Likely Blue box unmapped ~30 yds back. Picks 2-wood -40 (Blue) and 4-wood -40 (White) sit on the aim-grid limit and land in rough/trees left of a dogleg: bad-pick risk.",
+    "measured": {
+     "Blue": 375,
+     "White": 331
+    }
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Par 5, 455 vs 459 Blue; White 431 vs 445 (-14) acceptable.",
+    "measured": {
+     "Blue": 455,
+     "White": 431
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "uncertain",
+    "notes": "Par 3. Boxes 110/147/164 vs card 193/172/149: tagged Blue (164) fits White card, White (147) fits Red. Blue box probably unmapped ~29 yds back; the page uses the card 193 for play-it-like while the marker sits at 164.",
+    "measured": {
+     "Blue": 164,
+     "White": 147
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "uncertain",
+    "notes": "Boxes 347/369 only, card 388/376/356. Blue box likely unmapped ~19 yds back; tagged White box 347 is 29 short of card 376.",
+    "measured": {
+     "Blue": 369,
+     "White": 347
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "Short par 4 (255 vs 260). White 4-wood -4 lands 13 yds into rough per QA - minor, pick still reasonable.",
+    "measured": {
+     "Blue": 255,
+     "White": 243
+    }
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "325 vs 338 (-13); Driver +40 at the aim-grid edge, fairway bends right. Minor.",
+    "measured": {
+     "Blue": 325,
+     "White": 301
+    }
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "Par 3 177 vs 192 (-15) Blue, White 161 vs 168. Green box on green.",
+    "measured": {
+     "Blue": 177,
+     "White": 161
+    }
+   },
+   {
+    "n": 17,
+    "verdict": "wrong tee position",
+    "notes": "Blue 516 vs 518 OK. White is tagged on a box 598 yds out (behind Blue, near the 7th green/6th green complex) vs card 485. OSM has a box at 489 on the line in front of Blue: move White there (27 yds in front of Blue).",
+    "measured": {
+     "Blue": 516,
+     "White": 598
+    },
+    "fix": {
+     "tee_ll": {
+      "White": [
+       39.2557597,
+       -94.4907872
+      ]
+     }
+    }
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "Short par 4 311 vs 302 (+9). 4-wood +40 lands ~13-19 yds into right rough per QA; edge-of-grid aim, minor.",
+    "measured": {
+     "Blue": 311,
+     "White": 289
+    }
+   }
+  ]
+ }
+}

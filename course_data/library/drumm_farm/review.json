@@ -1,0 +1,334 @@
+{
+ "course_review/1": {
+  "slug": "drumm_farm",
+  "reviewer": "agent",
+  "card_source": "AllSquare (https://www.allsquaregolf.com/golf-courses/missouri/drumm-farm-golf-club) - shown in METRES there, converted to yards (/0.9144); handicaps match the OSM hole tags. Rating/slope Tour 75.1/141, Championship 72.5/137, Preferred 70.5/128, Forward 70.2/122.",
+  "card": {
+   "Tour": [
+    379,
+    444,
+    202,
+    402,
+    460,
+    246,
+    598,
+    390,
+    516,
+    444,
+    377,
+    459,
+    414,
+    188,
+    534,
+    342,
+    198,
+    528
+   ],
+   "Championship": [
+    357,
+    414,
+    174,
+    357,
+    408,
+    220,
+    548,
+    364,
+    492,
+    414,
+    348,
+    428,
+    388,
+    168,
+    497,
+    320,
+    172,
+    497
+   ],
+   "Preferred": [
+    338,
+    390,
+    152,
+    334,
+    385,
+    198,
+    533,
+    342,
+    462,
+    379,
+    297,
+    412,
+    359,
+    155,
+    471,
+    289,
+    147,
+    470
+   ],
+   "Forward": [
+    238,
+    292,
+    104,
+    274,
+    358,
+    152,
+    469,
+    282,
+    396,
+    318,
+    266,
+    369,
+    288,
+    144,
+    411,
+    237,
+    118,
+    394
+   ],
+   "par": [
+    4,
+    4,
+    3,
+    4,
+    4,
+    3,
+    5,
+    4,
+    5,
+    4,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4,
+    3,
+    5
+   ]
+  },
+  "card_note": "par 72; Tour 7121, Championship 6566, Preferred 6113, Forward 5110 yds (converted, +/-1 yd per hole). Set colours unknown. The page solved 'osm_back' with no card; a rebuild should use a typed card (Tour + Championship).",
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (4) and handicap match the card. osm_back tee 372 vs Tour 379 (-7): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 372
+    },
+    "fix": {
+     "yards": 379,
+     "par": 4
+    }
+   },
+   {
+    "n": 2,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (4) and handicap match the card. osm_back tee 435 vs Tour 444 (-9): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 435
+    },
+    "fix": {
+     "yards": 444,
+     "par": 4
+    }
+   },
+   {
+    "n": 3,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (3) and handicap match the card. osm_back tee 197 vs Tour 202 (-5): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 197
+    },
+    "fix": {
+     "yards": 202,
+     "par": 3
+    }
+   },
+   {
+    "n": 4,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (4) and handicap match the card. osm_back tee 395 vs Tour 402 (-7): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 395
+    },
+    "fix": {
+     "yards": 402,
+     "par": 4
+    }
+   },
+   {
+    "n": 5,
+    "verdict": "wrong par or yardage",
+    "notes": "Back box 441 vs Tour 460 (-19): longest box on this hole's line; a further box at 572-581 belongs to the 7th tee complex. Attach card; tee probably right (box-centre gap a little large).",
+    "measured": {
+     "osm_back": 441
+    },
+    "fix": {
+     "yards": 460,
+     "par": 4
+    }
+   },
+   {
+    "n": 6,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (3) and handicap match the card. osm_back tee 242 vs Tour 246 (-4): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 242
+    },
+    "fix": {
+     "yards": 246,
+     "par": 3
+    }
+   },
+   {
+    "n": 7,
+    "verdict": "uncertain",
+    "notes": "Par 5, osm_back tee on a 538 box (= Championship 548) but Tour is 598. OSM has boxes 576/591 out on this line, close to the 5th tee complex: the Tour box is probably there. Suggested tee ~53 yds behind the current one (approximate, along the line). Driver -13 calm pick lands 18 yds in rough per QA.",
+    "measured": {
+     "osm_back": 538
+    },
+    "fix": {
+     "yards": 598,
+     "par": 5,
+     "tee_ll": {
+      "Tour": [
+       39.0632948,
+       -94.3985147
+      ]
+     }
+    }
+   },
+   {
+    "n": 8,
+    "verdict": "uncertain",
+    "notes": "osm_back 356 = Championship (364); Tour 390 has no mapped box (the 468 box is another hole's). Tour tee missing in OSM ~34 yds back; 4-wood -40 pick at the aim-grid limit near the houses/OB on the left: bad-pick risk.",
+    "measured": {
+     "osm_back": 356
+    },
+    "fix": {
+     "yards": 390,
+     "par": 4
+    }
+   },
+   {
+    "n": 9,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (5) and handicap match the card. osm_back tee 507 vs Tour 516 (-9): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 507
+    },
+    "fix": {
+     "yards": 516,
+     "par": 5
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (4) and handicap match the card. osm_back tee 435 vs Tour 444 (-9): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 435
+    },
+    "fix": {
+     "yards": 444,
+     "par": 4
+    }
+   },
+   {
+    "n": 11,
+    "verdict": "wrong par or yardage",
+    "notes": "369 vs Tour 377. Driver +32 aims well right; looks deliberate for the dogleg. Attach card.",
+    "measured": {
+     "osm_back": 369
+    },
+    "fix": {
+     "yards": 377,
+     "par": 4
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (4) and handicap match the card. osm_back tee 451 vs Tour 459 (-8): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 451
+    },
+    "fix": {
+     "yards": 459,
+     "par": 4
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "uncertain",
+    "notes": "osm_back 380 = Championship (388); Tour 414 has no mapped box. Tour tee missing in OSM (~34 yds back).",
+    "measured": {
+     "osm_back": 380
+    },
+    "fix": {
+     "yards": 414,
+     "par": 4
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (3) and handicap match the card. osm_back tee 182 vs Tour 188 (-6): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 182
+    },
+    "fix": {
+     "yards": 188,
+     "par": 3
+    }
+   },
+   {
+    "n": 15,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (5) and handicap match the card. osm_back tee 520 vs Tour 534 (-14): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 520
+    },
+    "fix": {
+     "yards": 534,
+     "par": 5
+    }
+   },
+   {
+    "n": 16,
+    "verdict": "wrong par or yardage",
+    "notes": "332 vs Tour 342. Driver +4 tie lands 18 yds into rough per QA - minor. Attach card.",
+    "measured": {
+     "osm_back": 332
+    },
+    "fix": {
+     "yards": 342,
+     "par": 4
+    }
+   },
+   {
+    "n": 17,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (3) and handicap match the card. osm_back tee 192 vs Tour 198 (-6): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 192
+    },
+    "fix": {
+     "yards": 198,
+     "par": 3
+    }
+   },
+   {
+    "n": 18,
+    "verdict": "wrong par or yardage",
+    "notes": "Routing, par (5) and handicap match the card. osm_back tee 522 vs Tour 528 (-6): tee is the back box; the page just has no card. Fix = attach the card.",
+    "measured": {
+     "osm_back": 522
+    },
+    "fix": {
+     "yards": 528,
+     "par": 5
+    }
+   }
+  ]
+ }
+}
