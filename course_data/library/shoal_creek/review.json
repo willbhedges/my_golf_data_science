@@ -1,0 +1,260 @@
+{
+ "course_review/1": {
+  "slug": "shoal_creek",
+  "reviewer": "agent",
+  "reviewed": "2026-10-30",
+  "card_source": "golfify (page card, re-fetched 2026-10-30) = AllSquare Golf (metres x1.0936) on every hole; OpenGolfAPI agrees except 16 Gold 380 (golfify/AllSquare 352). Club site (shoalcreekgolf.com) lists 6,952 yds par 71 (6 tee sets) but no hole card. OSM hole 'dist' tags match Gold.",
+  "card": {
+   "set": {
+    "Gold": [
+     426,
+     427,
+     195,
+     418,
+     234,
+     364,
+     579,
+     447,
+     536,
+     388,
+     214,
+     360,
+     527,
+     420,
+     434,
+     352,
+     198,
+     464
+    ],
+    "Blue": [
+     398,
+     403,
+     168,
+     384,
+     179,
+     333,
+     545,
+     407,
+     490,
+     363,
+     201,
+     321,
+     492,
+     387,
+     387,
+     319,
+     157,
+     429
+    ],
+    "White": [
+     330,
+     319,
+     139,
+     353,
+     147,
+     306,
+     508,
+     377,
+     403,
+     333,
+     158,
+     268,
+     466,
+     358,
+     343,
+     287,
+     122,
+     354
+    ],
+    "Black": [
+     313,
+     292,
+     112,
+     299,
+     130,
+     281,
+     448,
+     355,
+     378,
+     235,
+     126,
+     166,
+     367,
+     292,
+     312,
+     246,
+     104,
+     303
+    ]
+   },
+   "par": [
+    4,
+    4,
+    3,
+    4,
+    3,
+    4,
+    5,
+    4,
+    5,
+    4,
+    3,
+    4,
+    5,
+    4,
+    4,
+    4,
+    3,
+    4
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "OSM boxes, 426/398 = card. Driver; picture matches."
+   },
+   {
+    "n": 2,
+    "verdict": "OK (tee estimated)",
+    "notes": "Gold CHECK: no OSM box at 427, the Gold marker is walked back 32 yds behind the back OSM box on the hole line (428 measured). Blue on an OSM box at 396 vs 403. Yardage right, tee lateral position estimated; the hand truth set (zero_tap/truth_sets/shoal_creek) also estimates it. Picture, routing and pick OK. Left as uncertain-minor, no fix."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Par 3, 195/168 = card, target box on the green."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "418/384 = card; Gold walked back 17 yds behind the OSM box (passes the check). 4-wood short of the bunker/water, sensible."
+   },
+   {
+    "n": 5,
+    "verdict": "wrong routing",
+    "notes": "WRONG ROUTING. The page's hole 5 is Hodge Park Golf Course's hole 5 (the next-door course, OSM way 1565676851, par 4, 436 yds, added 2026-10-07), not Shoal Creek's: its line is identical to library/hodge_park hole 5 and lies outside the Shoal Creek boundary (min lon -94.4871), which is why the picture is black (no imagery) and there is no elevation. All four tees are walk-backs on that wrong line. Shoal Creek's real 5 is OSM way 897738877 (par 3, dist 234): tee (-94.47284, 39.24749) -> green (-94.47447, 39.24895), next to the 4th green.",
+    "fix": {
+     "green_ll": [
+      39.2489498,
+      -94.4744725
+     ],
+     "tee_ll": {
+      "Gold": [
+       39.2474919,
+       -94.4728405
+      ],
+      "Blue": [
+       39.2478345,
+       -94.4732241
+      ],
+      "White": [
+       39.2480339,
+       -94.4734472
+      ],
+      "Black": [
+       39.2481398,
+       -94.4735658
+      ]
+     }
+    }
+   },
+   {
+    "n": 6,
+    "verdict": "wrong routing",
+    "notes": "WRONG ROUTING. Same cause: the page's hole 6 is Hodge Park's 6 (OSM way 1565676852, 297 yds), outside the course, black picture, no elevation; Blue used a Hodge Park box (278 vs card 333). Shoal Creek's real 6 is OSM way 897746434 (par 4, dist 364): tee (-94.47522, 39.24970) -> bend -> green (-94.47842, 39.25096), next to the 7th tee.",
+    "fix": {
+     "green_ll": [
+      39.2509574,
+      -94.4784235
+     ],
+     "tee_ll": {
+      "Gold": [
+       39.2496786,
+       -94.4751858
+      ],
+      "Blue": [
+       39.2498411,
+       -94.4754401
+      ],
+      "White": [
+       39.2499826,
+       -94.4756617
+      ],
+      "Black": [
+       39.2501136,
+       -94.4758668
+      ]
+     }
+    }
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "579/545 = card. Driver; picture matches."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "447/407 = card."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "536/490 = card."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "388/363 = card (Black is a lidar pad but Black is not a page set)."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "Par 3, 214/201 = card, box on the green."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "360/321 = card. 4-wood lay-up short of the creek/trees; sensible."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "527/492 = card."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "420/387 = card. 4-wood, sensible."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "434/387 = card. Pond left of the tee is carry-only."
+   },
+   {
+    "n": 16,
+    "verdict": "OK",
+    "notes": "352/319 = card. Driver to ~34 yds short of the green past the pond; sand around the green is mapped. OK."
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Par 3, 198/157 = card, water right mapped."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "464/429 vs 461/428 measured. OK."
+   }
+  ],
+  "rebuild_hint": {
+   "ignore_osm_holes": true
+  },
+  "course_notes": [
+   "Holes 5 and 6 on the page are Hodge Park's holes 5/6 (duplicate ref 5/6 golf=hole ways added to OSM 2026-10-07 for the neighbouring course). Rebuild with ignore_osm_holes: true and the osm_supplement.geojson in this folder (all 18 Shoal Creek golf=hole ways copied from OSM; 5/6 are the original Shoal Creek ways 897738877 / 897746434). Tee boxes for 5/6 are already in OSM inside the course; the tee_ll fixes are card-length points on the real lines for snapping."
+  ],
+  "summary": "Not publishable as-is: holes 5 and 6 are the neighbouring course's holes (black pictures, no elevation, wrong yardage on 6 Blue). 15 holes OK, 1 OK with an estimated Gold tee (2). Fix supplied: supplement + ignore_osm_holes.",
+  "publish": false
+ }
+}

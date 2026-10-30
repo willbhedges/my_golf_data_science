@@ -1,0 +1,217 @@
+{
+ "course_review/1": {
+  "slug": "rivercut",
+  "reviewer": "agent",
+  "reviewed": "2026-10-30",
+  "card_source": "golfify (page card, re-fetched 2026-10-30) cross-checked with AllSquare Golf (metres, x1.0936) and OpenGolfAPI: all agree on every hole of every set except 16 Black (golfify 345, AllSquare/OpenGolfAPI 316) and Red 3/8 (OpenGolfAPI only). Card below uses 316 on 16 Black.",
+  "card": {
+   "set": {
+    "Black": [
+     375,
+     204,
+     415,
+     346,
+     511,
+     176,
+     569,
+     443,
+     473,
+     611,
+     385,
+     409,
+     465,
+     435,
+     146,
+     316,
+     243,
+     544
+    ],
+    "Blue": [
+     352,
+     172,
+     391,
+     323,
+     490,
+     149,
+     537,
+     412,
+     435,
+     576,
+     354,
+     375,
+     424,
+     401,
+     125,
+     295,
+     219,
+     506
+    ],
+    "White": [
+     331,
+     152,
+     367,
+     307,
+     464,
+     126,
+     466,
+     380,
+     398,
+     533,
+     329,
+     349,
+     391,
+     382,
+     105,
+     274,
+     196,
+     469
+    ],
+    "Red": [
+     302,
+     131,
+     339,
+     251,
+     441,
+     117,
+     442,
+     354,
+     368,
+     476,
+     307,
+     320,
+     358,
+     324,
+     85,
+     257,
+     173,
+     438
+    ]
+   },
+   "par": [
+    4,
+    3,
+    4,
+    4,
+    5,
+    3,
+    5,
+    4,
+    4,
+    5,
+    4,
+    4,
+    4,
+    4,
+    3,
+    4,
+    3,
+    5
+   ]
+  },
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Black and Blue on their own OSM boxes, 374/351 vs card 375/352. Driver up the fairway, bunkers right; picture matches."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Par 3, OSM boxes, 204/172 = card. Target box on the green."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "OSM boxes, 415/391 = card. Driver, landing in fairway."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "OSM boxes, 346/323 = card. Short dogleg par 4. Blue CHECK (aim): Driver -7 (a tie with 4-wood) finishes 305 out, about 18 yds short of the green in the unmapped apron/rough beside it, not a fairway miss off the tee; the Black page shows 4-wood with Driver as good. Acceptable go-for-the-green play; no fix."
+   },
+   {
+    "n": 5,
+    "verdict": "OK",
+    "notes": "OSM boxes, 511/490 = card. Driver, bunker right of landing visible and mapped."
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Par 3, 176/149 = card, box on the green."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "569/537 vs card 569/537. Driver between the bunker left and the trees right."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "443/412 = card. Driver; creek/long grass right is mapped."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "473/435 = card. Pond left and bunker right of the landing visible and mapped."
+   },
+   {
+    "n": 10,
+    "verdict": "OK",
+    "notes": "611/576 = card. Houses right (OB inferred)."
+   },
+   {
+    "n": 11,
+    "verdict": "OK",
+    "notes": "385/354 = card. Driver, fairway bunkers right of the line visible."
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "409/375 = card."
+   },
+   {
+    "n": 13,
+    "verdict": "OK",
+    "notes": "465/424 = card."
+   },
+   {
+    "n": 14,
+    "verdict": "OK",
+    "notes": "435/401 = card. Calm pick 4-wood (Black) for the uphill dogleg; sensible."
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Par 3, 146/125 = card (AllSquare 134 m = 147 yds). Black CHECK: Black and Blue share one long OSM box; the Black marker sits at the card length about 6 yds behind that box's back edge. Within the slack of a real back tee; yardage and target box are right. No fix."
+   },
+   {
+    "n": 16,
+    "verdict": "wrong par or yardage",
+    "notes": "Card conflict on Black: golfify 345 (the page card) vs AllSquare 289 m = 316 yds and OpenGolfAPI 316. The OSM hole way (mapper's back tee) is 309-312 yds. The page's Black tee is a lidar pad 52 yds behind the Blue box (337 yds), 33 yds from any OSM tee, sitting in a hollow 9 ft below the ground 50 yds ahead. Two cards + OSM say 316: fix Black to 316 with the tee on the hole line ~23 yds behind the Blue box. Medium confidence (no photo of a separate back box). Blue (295, on the OSM box) is OK.",
+    "fix": {
+     "yards": {
+      "Black": 316
+     },
+     "tee_ll": {
+      "Black": [
+       37.1037882,
+       -93.3468996
+      ]
+     }
+    }
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Par 3, 243/219 = card, box on the green, 46 ft drop."
+   },
+   {
+    "n": 18,
+    "verdict": "OK",
+    "notes": "544/506 = card. Driver, bunkers right of landing visible."
+   }
+  ],
+  "summary": "16 of 18 holes OK as built (OSM maps a box per set on nearly every hole; measured = card within 1 yd). One fix: 16 Black yardage/tee (card conflict, medium confidence). CHECKs 4 (Blue aim) and 15 (Black tee) reviewed and accepted.",
+  "publish": true
+ }
+}
