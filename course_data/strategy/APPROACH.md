@@ -159,7 +159,7 @@ engine's own swings. Scoring them by the approach value instead of the distance/
   approach. The pages are not changed.
 
 An earlier run scored tree finishes with a geometric solve from the trees (reach 140, wider pattern) and
-did not include the Broadie blocked-line gap. That made trees cheap and pushed 12 of 28 picks toward the
+did not include the Broadie blocked-line gap. That made trees cheap and changed 12 of the 25 picks it finished, mostly toward the
 Driver, with regrets up to 0.11. The released ValueGrid keeps the tee model's recovery gap (see above).
 That sensitivity is the biggest open question for a whole-hole objective.
 
