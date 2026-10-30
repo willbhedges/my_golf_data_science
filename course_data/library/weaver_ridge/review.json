@@ -1,0 +1,257 @@
+{
+ "course_review/1": {
+  "slug": "weaver_ridge",
+  "reviewer": "agent",
+  "card_source": "golfify (golfify.io/courses/weaver-ridge-golf-club), fetched 2026-10-30; totals 7030/6543 agree with GolfLink and GolfScoreKeeper; AllSquare (6427 back) and OpenGolfAPI are older/mixed versions",
+  "card": {
+   "set": {
+    "Black": [
+     540,
+     391,
+     519,
+     182,
+     387,
+     388,
+     435,
+     194,
+     381,
+     418,
+     489,
+     228,
+     432,
+     406,
+     458,
+     439,
+     187,
+     556
+    ],
+    "Gold": [
+     518,
+     365,
+     494,
+     163,
+     362,
+     357,
+     401,
+     171,
+     357,
+     387,
+     482,
+     195,
+     401,
+     362,
+     424,
+     401,
+     168,
+     535
+    ],
+    "Green": [
+     500,
+     351,
+     475,
+     146,
+     297,
+     331,
+     385,
+     152,
+     340,
+     367,
+     447,
+     180,
+     349,
+     313,
+     390,
+     375,
+     148,
+     465
+    ],
+    "White": [
+     454,
+     254,
+     449,
+     124,
+     260,
+     306,
+     372,
+     131,
+     329,
+     341,
+     406,
+     153,
+     323,
+     288,
+     361,
+     353,
+     148,
+     435
+    ],
+    "Red": [
+     426,
+     241,
+     419,
+     101,
+     232,
+     268,
+     357,
+     116,
+     307,
+     313,
+     384,
+     119,
+     308,
+     276,
+     332,
+     321,
+     102,
+     424
+    ]
+   },
+   "par": [
+    5,
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    3,
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    4,
+    3,
+    5
+   ]
+  },
+  "course_notes": [
+   "Tee-set labels are swapped on the page: the set shown as 'Gold' (6,876 card yds) is the Black tips (golfify 7,030; rating 73.1/136), and the set shown as 'Black' (6,280) is roughly the Gold tees (6,543) with forward tees on 5, 11, 13, 14, 16, 18. OpenGolfAPI's per-hole lists are mixed card versions.",
+   "Pars (36-36 = 72) match the card on every hole. Routing and greens match the imagery on all 18 holes.",
+   "Fix: rebuild with request \"scorecard\": \"course_data/library/weaver_ridge/card_review.json\" (scorecard/1, golfify, all 5 sets) and tees [\"Black\", \"Gold\"]. Hole 5's Black/Gold tees are unmapped in OSM and not visible on NAIP, so no osm_supplement was written; expect hole 5 to stay a CHECK."
+  ],
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "Routing, green, par 5 OK. Page 'Gold' tee 529 yds vs Black (tips) card 540; page 'Black' tee 509 vs Gold card 518 (within ~11)."
+   },
+   {
+    "n": 2,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Page 'Gold' tee 385 yds vs Black (tips) card 391; page 'Black' tee 365 vs Gold card 365 (within ~11)."
+   },
+   {
+    "n": 3,
+    "verdict": "OK",
+    "notes": "Routing, green, par 5 OK. Page 'Gold' tee 515 yds vs Black (tips) card 519; page 'Black' tee 495 vs Gold card 494 (within ~11)."
+   },
+   {
+    "n": 4,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Page 'Gold' tee 181 yds vs Black (tips) card 182; page 'Black' tee 163 vs Gold card 163 (within ~11)."
+   },
+   {
+    "n": 5,
+    "verdict": "wrong tee position",
+    "notes": "Page 'Gold' (really the Black tips, card 387) tee is a walk-back 67 yds behind the back OSM tee and sits in dense forest on the 2023 NAIP: no tee there. Page 'Black' (really Gold, card 362) is on the back mapped tee at 291 yds (card Green 297). OSM maps only the forward tees (230-288 yds); the Black/Gold tees (362-387) are not mapped and not visible in the photo. Fairway/lake/green geometry OK.",
+    "fix": {
+     "yards": 387,
+     "par": 4
+    },
+    "uncertain": true
+   },
+   {
+    "n": 6,
+    "verdict": "OK",
+    "notes": "Tees OK (tips 382 vs card 388; page 'Black' 357 = Gold card 357). Black-base CHECK (4-wood -4 lands in rough 12 yds from fairway) is a minor aim flag, not a map error."
+   },
+   {
+    "n": 7,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Page 'Gold' tee 429 yds vs Black (tips) card 435; page 'Black' tee 402 vs Gold card 401 (within ~11)."
+   },
+   {
+    "n": 8,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Page 'Gold' tee 194 yds vs Black (tips) card 194; page 'Black' tee 171 vs Gold card 171 (within ~11)."
+   },
+   {
+    "n": 9,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Page 'Gold' tee 376 yds vs Black (tips) card 381; page 'Black' tee 357 vs Gold card 357 (within ~11)."
+   },
+   {
+    "n": 10,
+    "verdict": "bad pick",
+    "notes": "Tees OK (413 vs 418; 390 vs 387). The hole falls 64 ft to a creek and tree band across the fairway; the calm pick (2-wood/4-wood aimed 40 yds right) lands in or at the tree line by the creek (Black-base CHECK: 48% trees/water). A lay-up short of the creek band looks the sensible play; the creek/tree band may also be mis-scored. Recheck after rebuild.",
+    "uncertain": true
+   },
+   {
+    "n": 11,
+    "verdict": "wrong tee position",
+    "notes": "Page 'Gold' (=Black tips) 482 vs card 489: OK. Page 'Black' (=Gold) tee at 447 yds vs Gold card 482: forward tee; the OSM tee at ~476 yds fits.",
+    "fix": {
+     "yards": 482,
+     "par": 5
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Page 'Gold' tee 224 yds vs Black (tips) card 228; page 'Black' tee 196 vs Gold card 195 (within ~11)."
+   },
+   {
+    "n": 13,
+    "verdict": "wrong tee position",
+    "notes": "Page 'Gold' (=Black tips) is on a lidar pad 14 yds behind the back OSM tee, 427 vs card 432: plausible unmapped tips box, acceptable. Page 'Black' (=Gold) tee at 354 yds vs Gold card 401: forward tee; the OSM tee at ~413 yds fits.",
+    "fix": {
+     "yards": 401,
+     "par": 4
+    },
+    "uncertain": true
+   },
+   {
+    "n": 14,
+    "verdict": "wrong tee position",
+    "notes": "Page 'Gold' (=Black tips) tee at 360 yds vs card 406: an OSM tee at ~402 yds fits. Page 'Black' (=Gold) 313 vs Gold card 362: the OSM tee at ~354 fits. (AllSquare 371/331 and OpenGolfAPI 362/313 differ: card versions disagree on this hole.)",
+    "fix": {
+     "yards": 406,
+     "par": 4
+    },
+    "uncertain": true
+   },
+   {
+    "n": 15,
+    "verdict": "OK",
+    "notes": "Routing, green, par 4 OK. Page 'Gold' tee 450 yds vs Black (tips) card 458; page 'Black' tee 425 vs Gold card 424 (within ~11)."
+   },
+   {
+    "n": 16,
+    "verdict": "wrong tee position",
+    "notes": "Page 'Gold' (=Black tips) 402 vs golfify Black 439 (AllSquare and OpenGolfAPI both say 401 from the back; the longest OSM tee is ~396): probably OK at the tips, golfify 439 doubtful. Page 'Black' (=Gold) 375 vs Gold card 401: the OSM tee at ~396 fits.",
+    "fix": {
+     "yards": 401,
+     "par": 4
+    },
+    "uncertain": true
+   },
+   {
+    "n": 17,
+    "verdict": "OK",
+    "notes": "Routing, green, par 3 OK. Page 'Gold' tee 178 yds vs Black (tips) card 187; page 'Black' tee 168 vs Gold card 168 (within ~11)."
+   },
+   {
+    "n": 18,
+    "verdict": "wrong tee position",
+    "notes": "Page 'Gold' (=Black tips) 554 vs 556 OK. Page 'Black' (=Gold) 506 vs Gold card 535: the OSM tee at ~533 yds fits.",
+    "fix": {
+     "yards": 535,
+     "par": 5
+    }
+   }
+  ]
+ }
+}

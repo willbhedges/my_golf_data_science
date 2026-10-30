@@ -1,0 +1,407 @@
+{
+ "course_review/1": {
+  "slug": "tpc_deere_run",
+  "reviewer": "agent",
+  "card_source": "AllSquare Golf (allsquaregolf.com/golf-courses/illinois/tpc-deere-run), fetched 2026-10-30; golfify 404, GolfPass 403, BlueGolf 405",
+  "card": {
+   "set": {
+    "Gold": [
+     361,
+     513,
+     170,
+     415,
+     396,
+     336,
+     207,
+     391,
+     460,
+     545,
+     395,
+     197,
+     388,
+     330,
+     443,
+     144,
+     520,
+     435
+    ],
+    "Black": [
+     353,
+     499,
+     166,
+     405,
+     388,
+     326,
+     202,
+     345,
+     439,
+     527,
+     389,
+     186,
+     376,
+     323,
+     411,
+     135,
+     498,
+     419
+    ],
+    "Blue": [
+     328,
+     458,
+     144,
+     381,
+     376,
+     304,
+     169,
+     335,
+     411,
+     468,
+     358,
+     163,
+     348,
+     294,
+     383,
+     116,
+     448,
+     391
+    ],
+    "White": [
+     314,
+     435,
+     127,
+     325,
+     366,
+     283,
+     146,
+     318,
+     374,
+     444,
+     353,
+     144,
+     321,
+     274,
+     363,
+     103,
+     439,
+     348
+    ],
+    "Red": [
+     286,
+     372,
+     112,
+     279,
+     260,
+     227,
+     118,
+     286,
+     318,
+     426,
+     291,
+     120,
+     297,
+     250,
+     335,
+     69,
+     393,
+     296
+    ]
+   },
+   "par": [
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    3,
+    4,
+    4,
+    5,
+    4,
+    3,
+    4,
+    4,
+    4,
+    3,
+    5,
+    4
+   ]
+  },
+  "page_set": "osm_back",
+  "page_set_should_be": "Gold",
+  "course_notes": [
+   "No web card in the build: the page solved 'osm_back' = OSM tee nearest the hole-line start, which is a mix: holes 2, 4, 5, 6 play from behind the Gold tee, holes 7-18 from forward (Blue/White) tees, 60-111 yds short on 8-15, 17, 18. Page total 6,437 'back' yds is not any real set.",
+   "Pars on the page (35-36 = 71) match the card on all 18 holes. Routing and greens match the imagery on all 18 holes (18: lake left of the green with the grandstands; 16: short par 3).",
+   "Fix: rebuild with request \"scorecard\": \"course_data/library/tpc_deere_run/card_review.json\" (scorecard/1, all 5 sets), tees [\"Gold\", \"Black\"]. No osm_supplement needed: OSM maps 65 tees, the build just had no yardages to pick them."
+  ],
+  "holes": [
+   {
+    "n": 1,
+    "verdict": "OK",
+    "notes": "routing, green and par 4 OK; page tee 356 yds vs Gold card 361 (within 10)."
+   },
+   {
+    "n": 2,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 5 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a tee behind the Gold tee (tournament tips) at 549 yds; Gold card 513 (Black 499). Nearest OSM tee to the Gold yardage measures 504 yds. fix.tee_ll is an approximate point 36 yds forward along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4741881,
+       -90.3934112
+      ]
+     },
+     "par": 5,
+     "yards": 513
+    }
+   },
+   {
+    "n": 3,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 3 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 158 yds; Gold card 170 (Black 166). Nearest OSM tee to the Gold yardage measures 181 yds. fix.tee_ll is an approximate point 12 yds back along the tee line; a rebuild with the card snaps to the real OSM tee. No OSM tee within 10 yds of the Gold card (181); the Gold tee may be unmapped.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4727103,
+       -90.3980045
+      ]
+     },
+     "par": 3,
+     "yards": 170
+    },
+    "uncertain": true
+   },
+   {
+    "n": 4,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a tee behind the Gold tee (tournament tips) at 440 yds; Gold card 415 (Black 405). Nearest OSM tee to the Gold yardage measures 415 yds. fix.tee_ll is an approximate point 25 yds forward along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4757961,
+       -90.3991957
+      ]
+     },
+     "par": 4,
+     "yards": 415
+    }
+   },
+   {
+    "n": 5,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a tee behind the Gold tee (tournament tips) at 415 yds; Gold card 396 (Black 388). Nearest OSM tee to the Gold yardage measures 415 yds. fix.tee_ll is an approximate point 19 yds forward along the tee line; a rebuild with the card snaps to the real OSM tee. No OSM tee within 10 yds of the Gold card (415); the Gold tee may be unmapped.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4736981,
+       -90.3954552
+      ]
+     },
+     "par": 4,
+     "yards": 396
+    },
+    "uncertain": true
+   },
+   {
+    "n": 6,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a tee behind the Gold tee (tournament tips) at 361 yds; Gold card 336 (Black 326). Nearest OSM tee to the Gold yardage measures 336 yds. fix.tee_ll is an approximate point 25 yds forward along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4778071,
+       -90.3939521
+      ]
+     },
+     "par": 4,
+     "yards": 336
+    }
+   },
+   {
+    "n": 7,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 3 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 177 yds; Gold card 207 (Black 202). Nearest OSM tee to the Gold yardage measures 195 yds. fix.tee_ll is an approximate point 30 yds back along the tee line; a rebuild with the card snaps to the real OSM tee. No OSM tee within 10 yds of the Gold card (195); the Gold tee may be unmapped.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4803815,
+       -90.3971759
+      ]
+     },
+     "par": 3,
+     "yards": 207
+    },
+    "uncertain": true
+   },
+   {
+    "n": 8,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 317 yds; Gold card 391 (Black 345). Nearest OSM tee to the Gold yardage measures 376 yds. fix.tee_ll is an approximate point 74 yds back along the tee line; a rebuild with the card snaps to the real OSM tee. No OSM tee within 10 yds of the Gold card (376); the Gold tee may be unmapped.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4782872,
+       -90.3982648
+      ]
+     },
+     "par": 4,
+     "yards": 391
+    },
+    "uncertain": true
+   },
+   {
+    "n": 9,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 350 yds; Gold card 460 (Black 439). Nearest OSM tee to the Gold yardage measures 450 yds. fix.tee_ll is an approximate point 110 yds back along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4812728,
+       -90.3969695
+      ]
+     },
+     "par": 4,
+     "yards": 460
+    }
+   },
+   {
+    "n": 10,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 5 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 465 yds; Gold card 545 (Black 527). Nearest OSM tee to the Gold yardage measures 512 yds. fix.tee_ll is an approximate point 80 yds back along the tee line; a rebuild with the card snaps to the real OSM tee. No OSM tee within 10 yds of the Gold card (512); the Gold tee may be unmapped.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4794083,
+       -90.3930197
+      ]
+     },
+     "par": 5,
+     "yards": 545
+    },
+    "uncertain": true
+   },
+   {
+    "n": 11,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 317 yds; Gold card 395 (Black 389). Nearest OSM tee to the Gold yardage measures 386 yds. fix.tee_ll is an approximate point 78 yds back along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4834686,
+       -90.3971498
+      ]
+     },
+     "par": 4,
+     "yards": 395
+    }
+   },
+   {
+    "n": 12,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 3 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 131 yds; Gold card 197 (Black 186). Nearest OSM tee to the Gold yardage measures 203 yds. fix.tee_ll is an approximate point 66 yds back along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.482328,
+       -90.3920267
+      ]
+     },
+     "par": 3,
+     "yards": 197
+    }
+   },
+   {
+    "n": 13,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 326 yds; Gold card 388 (Black 376). Nearest OSM tee to the Gold yardage measures 382 yds. fix.tee_ll is an approximate point 62 yds back along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4817235,
+       -90.3897506
+      ]
+     },
+     "par": 4,
+     "yards": 388
+    }
+   },
+   {
+    "n": 14,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 273 yds; Gold card 330 (Black 323). Nearest OSM tee to the Gold yardage measures 323 yds. fix.tee_ll is an approximate point 57 yds back along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.483566,
+       -90.3908591
+      ]
+     },
+     "par": 4,
+     "yards": 330
+    }
+   },
+   {
+    "n": 15,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 370 yds; Gold card 443 (Black 411). Nearest OSM tee to the Gold yardage measures 461 yds. fix.tee_ll is an approximate point 73 yds back along the tee line; a rebuild with the card snaps to the real OSM tee. No OSM tee within 10 yds of the Gold card (461); the Gold tee may be unmapped.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4809241,
+       -90.3881312
+      ]
+     },
+     "par": 4,
+     "yards": 443
+    },
+    "uncertain": true
+   },
+   {
+    "n": 16,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 3 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 121 yds; Gold card 144 (Black 135). Nearest OSM tee to the Gold yardage measures 149 yds. fix.tee_ll is an approximate point 23 yds back along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4762337,
+       -90.3890933
+      ]
+     },
+     "par": 3,
+     "yards": 144
+    }
+   },
+   {
+    "n": 17,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 5 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 427 yds; Gold card 520 (Black 498). Nearest OSM tee to the Gold yardage measures 547 yds. fix.tee_ll is an approximate point 93 yds back along the tee line; a rebuild with the card snaps to the real OSM tee. No OSM tee within 10 yds of the Gold card (547); the Gold tee may be unmapped.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4749939,
+       -90.391043
+      ]
+     },
+     "par": 5,
+     "yards": 520
+    },
+    "uncertain": true
+   },
+   {
+    "n": 18,
+    "verdict": "wrong tee position",
+    "notes": "Routing, green and par 4 OK (par matches the card). Tee wrong: the page's 'osm_back' tee is a forward tee at 324 yds; Gold card 435 (Black 419). Nearest OSM tee to the Gold yardage measures 427 yds. fix.tee_ll is an approximate point 111 yds back along the tee line; a rebuild with the card snaps to the real OSM tee.",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       41.4795561,
+       -90.3902274
+      ]
+     },
+     "par": 4,
+     "yards": 435
+    }
+   }
+  ]
+ }
+}
