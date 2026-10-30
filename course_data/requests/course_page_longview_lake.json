@@ -1,10 +1,11 @@
 {
  "schema": "course_page/1",
  "name": "Fred Arbanas Golf Course",
- "city": "Lee's Summit",
+ "city": "Kansas City",
  "state": "MO",
  "slug": "longview_lake",
  "group": "library",
- "rev": 2,
- "note": "starter library (public / well-known MO KS IA IL courses); default tee sets (two longest) and dates; rev 2: the 18-hole course at Longview Lake is now named Fred Arbanas Golf Course (rev 1 resolve: ambiguous / wrong candidates)"
+ "rev": 3,
+ "address": "11100 View High Dr, Kansas City, MO 64134",
+ "note": "starter library; rev 3: the course's postal town is Kansas City (11100 View High Dr), not Lee's Summit; address added for the near fallback. rev 2 package hit the 150-min job timeout in an Overpass outage (attempts now capped at 40 min); rev 1 'Longview Lake' resolved ambiguous between 3 wrong 'lake' courses (fixed in resolve)"
 }
