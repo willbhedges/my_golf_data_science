@@ -19,12 +19,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 2
+          ref: ${{ github.sha }}
+          fetch-depth: 0
       - name: Fetch
         run: |
-          R=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/webfetch_*.json' | tail -1)
-          [ -n "$R" ] || R=$(ls -t course_data/requests/webfetch_*.json | head -1)
+          # every request changed by THIS push (not the branch tip: parallel pushes used to steal each other's run)
+          B="${{ github.event.before }}"
+          if git cat-file -e "$B^{commit}" 2>/dev/null; then
+            RS=$(git diff --name-only "$B" "${{ github.sha }}" -- 'course_data/requests/webfetch_*.json')
+          else
+            RS=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/webfetch_*.json')
+          fi
+          [ -n "$RS" ] || RS=$(ls -t course_data/requests/webfetch_*.json | head -1)
+          for R in $RS; do
+          [ -f "$R" ] || continue
+          echo "== $R"
           python3 - "$R" <<'EOF'
           import json, os, re, sys, html, urllib.request
           q = json.load(open(sys.argv[1]))
@@ -52,6 +61,7 @@ jobs:
               idx.append(rec)
           json.dump(idx, open(os.path.join(out, "index.json"), "w"), indent=1)
           EOF
+          done
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
