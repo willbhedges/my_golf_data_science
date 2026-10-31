@@ -1,0 +1,236 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "pasatiempo",
+ "course": "Pasatiempo Golf Course",
+ "bbox_snwe": [
+  36.991856,
+  -122.03526,
+  37.01314,
+  -122.020244
+ ],
+ "grid": {
+  "crs": "EPSG:32610",
+  "res_m": 1.0,
+  "width": 1602,
+  "height": 2618,
+  "bounds": [
+   585704,
+   4094282,
+   587306,
+   4096900
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   585704.0,
+   0.0,
+   -1.0,
+   4096900.0
+  ],
+  "ll_bbox_wsen": [
+   -122.03690371387174,
+   36.990623666464096,
+   -122.01860039100369,
+   37.0143675025498
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:49:23Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "CA_SantaCruzCounty_2020-hag-2m-3-1",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 1361700,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_SantaCruzCounty_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_FEMA_Z4_B1_2018-hag-2m-2-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1371968,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_FEMA_Z4_B1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_FEMA_Z4_B1_2018-hag-2m-1-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1460368,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_FEMA_Z4_B1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "file": "hag.tif",
+   "mb": 2.65,
+   "frac_gt_2_5m": 0.7747899636531493
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "CA_SantaCruzCounty_2020-dtm-2m-3-1",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 340418,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_SantaCruzCounty_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_FEMA_Z4_B1_2018-dtm-2m-2-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 342960,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_FEMA_Z4_B1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_FEMA_Z4_B1_2018-dtm-2m-1-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 365022,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_FEMA_Z4_B1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9998960428570475,
+   "mb": 3.15
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "CA_SantaCruzCounty_2020-classification-2m-3-2",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 2834236,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_SantaCruzCounty_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_SantaCruzCounty_2020-classification-2m-3-1",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 1357192,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_SantaCruzCounty_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_FEMA_Z4_B1_2018-classification-2m-2-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 120,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_FEMA_Z4_B1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_FEMA_Z4_B1_2018-classification-2m-1-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1408,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_FEMA_Z4_B1_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.38,
+   "counts": {
+    "0": 1080,
+    "1": 2901012,
+    "2": 1290496,
+    "17": 1448
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023010232"
+  ],
+  "mb": 1.03,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W123",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1048509,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 15.81,
+    "items": [
+     "ca_m_3712264_se_10_060_20220519",
+     "ca_m_3612208_ne_10_060_20220519"
+    ],
+    "acquired": [
+     "2022-05-19"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 16.06,
+    "items": [
+     "ca_m_3712264_se_10_060_20200527",
+     "ca_m_3612208_ne_10_060_20200527"
+    ],
+    "acquired": [
+     "2020-05-27"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
