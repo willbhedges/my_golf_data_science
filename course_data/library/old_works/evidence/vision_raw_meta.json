@@ -1,0 +1,104 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "old_works",
+ "course": "Old Works Golf Club",
+ "bbox_snwe": [
+  46.129225,
+  -112.947274,
+  46.138423,
+  -112.919701
+ ],
+ "grid": {
+  "crs": "EPSG:32612",
+  "res_m": 1.0,
+  "width": 2396,
+  "height": 1316,
+  "bounds": [
+   349450,
+   5110076,
+   351846,
+   5111392
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   349450.0,
+   0.0,
+   -1.0,
+   5111392.0
+  ],
+  "ll_bbox_wsen": [
+   -112.94919680065722,
+   46.127645721603066,
+   -112.91778205694033,
+   46.14000768859351
+  ]
+ },
+ "fetched_utc": "2026-10-31T01:46:11Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [],
+  "used": []
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021231313"
+  ],
+  "mb": 0.03,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N45W114",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 788284,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 11.49,
+    "items": [
+     "mt_m_4611257_nw_12_060_20231109_20240103",
+     "mt_m_4611249_sw_12_060_20231109_20240103",
+     "mt_m_4611249_se_12_060_20231109_20240103"
+    ],
+    "acquired": [
+     "2023-11-09"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 10.16,
+    "items": [
+     "mt_m_4611257_nw_12_060_20210628",
+     "mt_m_4611249_sw_12_060_20210628",
+     "mt_m_4611249_se_12_060_20210628"
+    ],
+    "acquired": [
+     "2021-06-28"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
