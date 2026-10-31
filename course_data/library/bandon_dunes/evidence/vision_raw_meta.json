@@ -1,0 +1,211 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "bandon_dunes",
+ "course": "Bandon Dunes Golf Resort",
+ "bbox_snwe": [
+  43.1807119,
+  -124.402617,
+  43.216939,
+  -124.3775603
+ ],
+ "grid": {
+  "crs": "EPSG:32610",
+  "res_m": 1.0,
+  "width": 2346,
+  "height": 4300,
+  "bounds": [
+   385888,
+   4781682,
+   388234,
+   4785982
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   385888.0,
+   0.0,
+   -1.0,
+   4785982.0
+  ],
+  "ll_bbox_wsen": [
+   -124.40497203552346,
+   43.17929154034549,
+   -124.37522603018434,
+   43.21835147297751
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:45:27Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-hag-2m-2-118",
+     "when": "2016-05-28T00:00:00.000000Z",
+     "cells": 207436,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+      "end_datetime": "2016-05-28T00:00:00.000000Z",
+      "start_datetime": "2016-04-28T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-hag-2m-1-118",
+     "when": "2016-05-28T00:00:00.000000Z",
+     "cells": 3100476,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+      "end_datetime": "2016-05-28T00:00:00.000000Z",
+      "start_datetime": "2016-04-28T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.3279121314855568
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-dtm-2m-2-118",
+     "when": "2016-05-28T00:00:00.000000Z",
+     "cells": 51857,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+      "end_datetime": "2016-05-28T00:00:00.000000Z",
+      "start_datetime": "2016-04-28T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-dtm-2m-1-118",
+     "when": "2016-05-28T00:00:00.000000Z",
+     "cells": 774275,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+      "end_datetime": "2016-05-28T00:00:00.000000Z",
+      "start_datetime": "2016-04-28T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.32757667677789015
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-dsm-2m-2-118",
+     "when": "2016-05-28T00:00:00.000000Z",
+     "cells": 207436,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+      "end_datetime": "2016-05-28T00:00:00.000000Z",
+      "start_datetime": "2016-04-28T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-dsm-2m-1-118",
+     "when": "2016-05-28T00:00:00.000000Z",
+     "cells": 3264580,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+      "end_datetime": "2016-05-28T00:00:00.000000Z",
+      "start_datetime": "2016-04-28T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 33% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017/ept.json",
+    "cov": 0.757,
+    "year": 2017,
+    "count": 34390196929
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017/ept.json",
+    "cov": 0.757,
+    "year": 2017,
+    "count": 34390196929,
+    "cells": 3075261
+   }
+  ],
+  "valid": 0.30484952120383035,
+  "hag_mb": 0.74,
+  "frac_gt_2_5m": 0.014414936854418208,
+  "class_mb": 0.15
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021223133"
+  ],
+  "mb": 1.15,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W126",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 2521950,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.05
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 37.89,
+    "items": [
+     "or_m_4312454_sw_10_030_20220623",
+     "or_m_4312454_nw_10_030_20220623",
+     "or_m_4312453_se_10_030_20220623",
+     "or_m_4312453_ne_10_030_20220623"
+    ],
+    "acquired": [
+     "2022-06-23"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 30.79,
+    "items": [
+     "or_m_4312454_sw_10_060_20200622",
+     "or_m_4312454_nw_10_060_20200622",
+     "or_m_4312453_se_10_060_20200622",
+     "or_m_4312453_ne_10_060_20200622"
+    ],
+    "acquired": [
+     "2020-06-22"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
