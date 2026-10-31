@@ -1,0 +1,196 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "university_ridge",
+ "course": "University Ridge Golf Course",
+ "bbox_snwe": [
+  43.014912,
+  -89.554917,
+  43.0350452,
+  -89.53172
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 2200,
+  "height": 2536,
+  "bounds": [
+   291678,
+   4765460,
+   293878,
+   4767996
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   291678.0,
+   0.0,
+   -1.0,
+   4767996.0
+  ],
+  "ll_bbox_wsen": [
+   -89.55727380891217,
+   43.013272441803814,
+   -89.529355996204,
+   43.03668654573094
+  ]
+ },
+ "fetched_utc": "2026-10-31T05:11:39Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "WI_DaneCo_2017-hag-2m-3-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 3210416,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_DaneCo_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WI_DaneCo_2017-hag-2m-2-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 2360676,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_DaneCo_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9985467450530542,
+   "file": "hag.tif",
+   "mb": 1.85,
+   "frac_gt_2_5m": 0.3816292658445655
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "WI_DaneCo_2017-dtm-2m-3-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 802348,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_DaneCo_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WI_DaneCo_2017-dtm-2m-2-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 590122,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_DaneCo_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9983295096071121,
+   "mb": 3.17
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "WI_DaneCo_2017-classification-2m-3-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 3191716,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_DaneCo_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WI_DaneCo_2017-classification-2m-2-2",
+     "when": "2017-12-31T00:00:00.000000Z",
+     "cells": 2355524,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_DaneCo_2017",
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.45,
+   "counts": {
+    "0": 31960,
+    "1": 344344,
+    "2": 4532304,
+    "5": 452124,
+    "6": 179800,
+    "9": 37352,
+    "10": 1288,
+    "17": 28
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "030222200"
+  ],
+  "mb": 0.57,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W090",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1394800,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.05
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 16.79,
+    "items": [
+     "wi_m_4308960_sw_16_060_20220626",
+     "wi_m_4308960_se_16_060_20220626"
+    ],
+    "acquired": [
+     "2022-06-26"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 21.11,
+    "items": [
+     "wi_m_4308960_sw_16_060_20200829",
+     "wi_m_4308960_se_16_060_20200829"
+    ],
+    "acquired": [
+     "2020-08-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
