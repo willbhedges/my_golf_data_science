@@ -1,0 +1,208 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "erin_hills",
+ "course": "Erin Hills",
+ "bbox_snwe": [
+  43.236182,
+  -88.416899,
+  43.253713,
+  -88.386986
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 2704,
+  "height": 2230,
+  "bounds": [
+   384832,
+   4787856,
+   387536,
+   4790086
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   384832.0,
+   0.0,
+   -1.0,
+   4790086.0
+  ],
+  "ll_bbox_wsen": [
+   -88.41882689976904,
+   43.23470972234239,
+   -88.3850693256785,
+   43.25519232676209
+  ]
+ },
+ "fetched_utc": "2026-10-31T05:09:39Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dsm-2m-4-4",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 1482112,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dsm-2m-4-3",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 538164,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dsm-2m-3-4",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 2941036,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dsm-2m-3-3",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 1068012,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WI_WashingtonCo_2006-dsm-2m-0-4",
+     "when": "2006-12-19T00:00:00.000000Z",
+     "cells": 588,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WI_WashingtonCo_2006",
+      "end_datetime": "2006-12-19T00:00:00.000000Z",
+      "start_datetime": "2006-12-18T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_SEWRPC_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 30532476151
+   },
+   {
+    "name": "WI_WashingtonCo_2006",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WI_WashingtonCo_2006/ept.json",
+    "cov": 1.0,
+    "year": 2006,
+    "count": 2512445291
+   },
+   {
+    "name": "USGS_LPC_WI_DodgeCo_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_DodgeCo_2017_LAS_2019/ept.json",
+    "cov": 0.462,
+    "year": 2019,
+    "count": 13085658555
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_SEWRPC_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 30532476151,
+    "cells": 6003149
+   }
+  ],
+  "valid": 0.9955603059410407,
+  "hag_mb": 1.85,
+  "frac_gt_2_5m": 0.24431484994825803,
+  "class_mb": 0.06
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "030222032"
+  ],
+  "mb": 0.63,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W090",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1507480,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 15.6,
+    "items": [
+     "wi_m_4308853_ne_16_060_20220624",
+     "wi_m_4308845_se_16_060_20220624"
+    ],
+    "acquired": [
+     "2022-06-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 18.89,
+    "items": [
+     "wi_m_4308853_ne_16_060_20200830",
+     "wi_m_4308845_se_16_060_20200830"
+    ],
+    "acquired": [
+     "2020-08-30"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
