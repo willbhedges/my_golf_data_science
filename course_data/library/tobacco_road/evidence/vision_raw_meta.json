@@ -1,0 +1,100 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "tobacco_road",
+ "course": "Tobacco Road Golf Club",
+ "bbox_snwe": [
+  35.390438,
+  -79.221636,
+  35.406735,
+  -79.206074
+ ],
+ "grid": {
+  "crs": "EPSG:32617",
+  "res_m": 1.0,
+  "width": 1688,
+  "height": 2074,
+  "bounds": [
+   661360,
+   3917674,
+   663048,
+   3919748
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   661360.0,
+   0.0,
+   -1.0,
+   3919748.0
+  ],
+  "ll_bbox_wsen": [
+   -79.22334009127827,
+   35.389102223722254,
+   -79.20434789094165,
+   35.40806885795125
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:44:41Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [],
+  "used": []
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032003131"
+  ],
+  "mb": 0.7,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N33W081",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 875228,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 11.92,
+    "items": [
+     "nc_m_3507939_sw_17_060_20220902"
+    ],
+    "acquired": [
+     "2022-09-02"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 12.69,
+    "items": [
+     "nc_m_3507939_sw_17_060_20200930"
+    ],
+    "acquired": [
+     "2020-09-30"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
