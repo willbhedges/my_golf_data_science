@@ -1,0 +1,194 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "owl_s_nest",
+ "course": "Owl's Nest Resort Golf Course",
+ "bbox_snwe": [
+  43.859023,
+  -71.665577,
+  43.876931,
+  -71.639896
+ ],
+ "grid": {
+  "crs": "EPSG:32619",
+  "res_m": 1.0,
+  "width": 2370,
+  "height": 2298,
+  "bounds": [
+   285660,
+   4859482,
+   288030,
+   4861780
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   285660.0,
+   0.0,
+   -1.0,
+   4861780.0
+  ],
+  "ll_bbox_wsen": [
+   -71.66793039313215,
+   43.85730593064002,
+   -71.63754942829574,
+   43.87865867904063
+  ]
+ },
+ "fetched_utc": "2026-10-31T02:01:48Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017-hag-2m-8-16",
+     "when": "2015-11-23T00:00:00.000000Z",
+     "cells": 2434843,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017",
+      "end_datetime": "2015-11-23T00:00:00.000000Z",
+      "start_datetime": "2015-10-24T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017-hag-2m-8-15",
+     "when": "2015-11-23T00:00:00.000000Z",
+     "cells": 2955981,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017",
+      "end_datetime": "2015-11-23T00:00:00.000000Z",
+      "start_datetime": "2015-10-24T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9898212718452662,
+   "file": "hag.tif",
+   "mb": 2.97,
+   "frac_gt_2_5m": 0.6289315970959888
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017-dtm-2m-8-16",
+     "when": "2015-11-23T00:00:00.000000Z",
+     "cells": 608380,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017",
+      "end_datetime": "2015-11-23T00:00:00.000000Z",
+      "start_datetime": "2015-10-24T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017-dtm-2m-8-15",
+     "when": "2015-11-23T00:00:00.000000Z",
+     "cells": 738131,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017",
+      "end_datetime": "2015-11-23T00:00:00.000000Z",
+      "start_datetime": "2015-10-24T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9889436053365062,
+   "mb": 3.95
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017-classification-2m-8-16",
+     "when": "2015-11-23T00:00:00.000000Z",
+     "cells": 2404631,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017",
+      "end_datetime": "2015-11-23T00:00:00.000000Z",
+      "start_datetime": "2015-10-24T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017-classification-2m-8-15",
+     "when": "2015-11-23T00:00:00.000000Z",
+     "cells": 2901574,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_River_Lot6_Winnipesaulee_2015_LAS_2017",
+      "end_datetime": "2015-11-23T00:00:00.000000Z",
+      "start_datetime": "2015-10-24T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.62,
+   "counts": {
+    "0": 140055,
+    "1": 1786498,
+    "2": 3444680,
+    "9": 67544,
+    "10": 5181,
+    "17": 2302
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "030233030"
+  ],
+  "mb": 1.03,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W072",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1361565,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.05
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 29.5,
+    "items": [
+     "nh_m_4307111_ne_19_030_20230823_20231113",
+     "nh_m_4307103_se_19_030_20230823_20231113"
+    ],
+    "acquired": [
+     "2023-08-23"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 22.29,
+    "items": [
+     "nh_m_4307111_ne_19_060_20210920",
+     "nh_m_4307103_se_19_060_20210920"
+    ],
+    "acquired": [
+     "2021-09-20"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
