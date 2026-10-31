@@ -1,0 +1,156 @@
+{
+ "fetched_utc": "2026-10-31T01:39:03Z",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: kearney-hill-golf-links: HTTP 404; the-kearney-hill-golf-links: HTTP 404; kearney-hill-golf-course: HTTP 404; kearney-hill-golf-club: HTTP 404"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/2e003868-c662-4392-ac72-1214dbc9e118"
+  },
+  {
+   "source": "bluegolf",
+   "ok": false,
+   "info": "bluegolf: no course page found by search"
+  },
+  {
+   "source": "golfpass",
+   "ok": false,
+   "info": "golfpass: no course page found by search"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: no course page found by search"
+  }
+ ],
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/2e003868-c662-4392-ac72-1214dbc9e118",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/2e003868-c662-4392-ac72-1214dbc9e118",
+    "par": [
+     4,
+     3,
+     5,
+     4,
+     4,
+     4,
+     5,
+     3,
+     4,
+     4,
+     4,
+     3,
+     4,
+     5,
+     3,
+     4,
+     4,
+     5
+    ],
+    "handicap": [
+     9,
+     17,
+     3,
+     7,
+     11,
+     15,
+     1,
+     13,
+     5,
+     14,
+     12,
+     16,
+     6,
+     2,
+     18,
+     10,
+     8,
+     4
+    ],
+    "tee_sets": {
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       435,
+       195,
+       470,
+       450,
+       385,
+       350,
+       575,
+       210,
+       470,
+       385,
+       390,
+       210,
+       465,
+       540,
+       190,
+       415,
+       430,
+       535
+      ],
+      "total": 7100,
+      "total_stated": 7079,
+      "rating": 73.5,
+      "slope": 131,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "2e003868-c662-4392-ac72-1214dbc9e118",
+     "course_name": "Kearney Hill Golf Links",
+     "club_name": "Kearney Hill Golf Links",
+     "city": "Lexington",
+     "state": "KY",
+     "lat": 38.1237905,
+     "lng": -84.536771,
+     "holes": 18,
+     "yardage": 7079,
+     "website": "https://www.lexingtonky.gov/kearney-hill-golf-links"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/2e003868-c662-4392-ac72-1214dbc9e118",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/2e003868-c662-4392-ac72-1214dbc9e118": {
+    "holes": 18,
+    "fit": 8,
+    "share": 0.444,
+    "mean_err": 17.9,
+    "all_sets": 0.444,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
+}
