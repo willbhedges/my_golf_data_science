@@ -1,0 +1,41 @@
+{
+ "slug": "gamble_sands",
+ "name": "Gamble Sands",
+ "request_name": "Gamble Sands",
+ "city": "Brewster",
+ "state": "WA",
+ "group": "library",
+ "status": "failed",
+ "reasons": [
+  "package:     gp = np.array(green_geom.exterior.coords) if green_geom is not None else np.atleast_2d(green_pt)                   ^^^^^^^^^^^^^^^^^^^ AttributeError: 'MultiPolygon' object has no attribute 'exterior' "
+ ],
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_gamble_sands.json",
+ "resolve": {
+  "status": "ok",
+  "candidates": [
+   {
+    "name": "Quicksands at Gamble Sands",
+    "town": "Brewster",
+    "holes": 14,
+    "osm": {
+     "type": "way",
+     "id": 1551387386
+    }
+   },
+   {
+    "name": "Gamble Sands Golf Course",
+    "town": "Okanogan County",
+    "holes": 18,
+    "osm": {
+     "type": "way",
+     "id": 876550790
+    }
+   }
+  ]
+ },
+ "built": "2026-10-31T05:23Z"
+}
