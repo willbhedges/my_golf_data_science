@@ -1,0 +1,166 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "green_mountain_national",
+ "course": "Green Mountain National Golf Course",
+ "bbox_snwe": [
+  43.692746,
+  -72.837917,
+  43.703491,
+  -72.811961
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 2366,
+  "height": 1490,
+  "bounds": [
+   674084,
+   4839898,
+   676450,
+   4841388
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   674084.0,
+   0.0,
+   -1.0,
+   4841388.0
+  ],
+  "ll_bbox_wsen": [
+   -72.83985435830061,
+   43.69113260564126,
+   -72.81002841029536,
+   43.705097439812356
+  ]
+ },
+ "fetched_utc": "2026-10-31T04:24:21Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_VT_Rutland_Lot8_2013_LAS_2016-hag-2m-6-5",
+     "when": "2015-11-30T00:00:00.000000Z",
+     "cells": 3487172,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_VT_Rutland_Lot8_2013_LAS_2016",
+      "end_datetime": "2015-11-30T00:00:00.000000Z",
+      "start_datetime": "2013-11-04T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.989173242864518,
+   "file": "hag.tif",
+   "mb": 1.96,
+   "frac_gt_2_5m": 0.8461008016248078
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_VT_Rutland_Lot8_2013_LAS_2016-dtm-2m-6-5",
+     "when": "2015-11-30T00:00:00.000000Z",
+     "cells": 871719,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_VT_Rutland_Lot8_2013_LAS_2016",
+      "end_datetime": "2015-11-30T00:00:00.000000Z",
+      "start_datetime": "2013-11-04T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9890892793319226,
+   "mb": 2.39
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_VT_Rutland_Lot8_2013_LAS_2016-classification-2m-6-5",
+     "when": "2015-11-30T00:00:00.000000Z",
+     "cells": 3464798,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_VT_Rutland_Lot8_2013_LAS_2016",
+      "end_datetime": "2015-11-30T00:00:00.000000Z",
+      "start_datetime": "2013-11-04T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.37,
+   "counts": {
+    "0": 60542,
+    "1": 700672,
+    "2": 768647,
+    "9": 39384,
+    "10": 208,
+    "11": 8,
+    "17": 1955879
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "030233020"
+  ],
+  "mb": 0.89,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W075",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 881335,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 22.37,
+    "items": [
+     "vt_m_4307218_se_18_030_20230622_20230927",
+     "vt_m_4307218_nw_18_030_20230622_20230927",
+     "vt_m_4307218_ne_18_030_20230622_20230927"
+    ],
+    "acquired": [
+     "2023-06-22"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 15.82,
+    "items": [
+     "vt_m_4307218_se_18_060_20211106",
+     "vt_m_4307218_sw_18_060_20210920",
+     "vt_m_4307218_nw_18_060_20210920",
+     "vt_m_4307218_ne_18_060_20210920"
+    ],
+    "acquired": [
+     "2021-09-20",
+     "2021-11-06"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
