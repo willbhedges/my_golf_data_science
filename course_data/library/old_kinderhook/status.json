@@ -1,45 +1,41 @@
 {
  "slug": "old_kinderhook",
- "name": "Old Kinderhook Resort, Golf, Club & Spa",
+ "name": "Old Kinderhook Golf Club",
  "request_name": "Old Kinderhook Golf Club",
  "city": "Camdenton",
  "state": "MO",
  "group": "library",
- "status": "needs confirm",
+ "status": "failed",
  "reasons": [
-  "1 hole(s) with a CHECK"
+  "package:     tees = [dict(osm_id=f[\"properties\"][\"osm_id\"], geometry=f[\"geometry\"][\"type\"],                         ~~~~~~~~~~~~~~~^^^^^^^^^^ KeyError: 'osm_id' "
  ],
- "check_holes": [
-  9
- ],
- "tee_sets": [
-  {
-   "name": "Web",
-   "yards": 6726,
-   "par": 71,
-   "rating": null,
-   "slope": null,
-   "colour": "web",
-   "on_page": "solved"
-  }
- ],
- "solved_sets": [
-  "Web"
- ],
- "page": "course_data/library/old_kinderhook/page.html",
- "page_bytes": 1340660,
- "qa_report": "course_data/library/old_kinderhook/qa_report.md",
- "center": [
-  38.0014934,
-  -92.80425685
- ],
- "osm": "way/393079215",
- "holes": 18,
- "days": [
-  "2026-10-31",
-  "2026-11-01"
- ],
- "weather": "forecast",
- "built": "2026-10-30T04:13Z",
- "request": "course_data/requests/course_page_old_kinderhook.json"
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_old_kinderhook.json",
+ "resolve": {
+  "status": "ok",
+  "candidates": [
+   {
+    "name": "Old Kinderhook Resort, Golf, Club & Spa",
+    "town": "Camdenton",
+    "holes": 18,
+    "osm": {
+     "type": "way",
+     "id": 393079215
+    }
+   },
+   {
+    "name": "Old Kinderhook Resort, Golf, Club & Spa",
+    "town": "Camden County",
+    "holes": 18,
+    "osm": {
+     "type": "relation",
+     "id": 11275143
+    }
+   }
+  ]
+ },
+ "built": "2026-10-30T23:11Z"
 }
