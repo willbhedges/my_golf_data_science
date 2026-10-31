@@ -1,0 +1,128 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "triggs_memorial",
+ "course": "Triggs Memorial Golf Course",
+ "bbox_snwe": [
+  41.83086,
+  -71.466432,
+  41.842919,
+  -71.452165
+ ],
+ "grid": {
+  "crs": "EPSG:32619",
+  "res_m": 1.0,
+  "width": 1464,
+  "height": 1614,
+  "bounds": [
+   295068,
+   4633784,
+   296532,
+   4635398
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   295068.0,
+   0.0,
+   -1.0,
+   4635398.0
+  ],
+  "ll_bbox_wsen": [
+   -71.4683909554973,
+   41.8294422097934,
+   -71.45021841577743,
+   41.84434337422535
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:51:39Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "ARRA-LFTNE_RhodeIsland_2011",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ARRA-LFTNE_RhodeIsland_2011/ept.json",
+    "cov": 1.0,
+    "year": 2011,
+    "count": 9901691046
+   },
+   {
+    "name": "RI_Statewide_1_D22",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/RI_Statewide_1_D22/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 61102927496
+   }
+  ],
+  "used": [
+   {
+    "name": "ARRA-LFTNE_RhodeIsland_2011",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ARRA-LFTNE_RhodeIsland_2011/ept.json",
+    "cov": 1.0,
+    "year": 2011,
+    "count": 9901691046,
+    "cells": 2359905
+   }
+  ],
+  "valid": 0.9987341804294392,
+  "hag_mb": 1.26,
+  "frac_gt_2_5m": 0.4949092131012114,
+  "class_mb": 0.02
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "030233230"
+  ],
+  "mb": 0.42,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W072",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 590724,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 12.23,
+    "items": [
+     "ri_m_4107113_nw_19_030_20230901_20231113"
+    ],
+    "acquired": [
+     "2023-09-01"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 10.4,
+    "items": [
+     "ri_m_4107113_nw_19_060_20210826"
+    ],
+    "acquired": [
+     "2021-08-26"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
