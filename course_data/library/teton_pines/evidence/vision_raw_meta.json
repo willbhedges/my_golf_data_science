@@ -1,0 +1,121 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "teton_pines",
+ "course": "Teton Pines Country Club",
+ "bbox_snwe": [
+  43.515457,
+  -110.855704,
+  43.531894,
+  -110.840448
+ ],
+ "grid": {
+  "crs": "EPSG:32612",
+  "res_m": 1.0,
+  "width": 1478,
+  "height": 2068,
+  "bounds": [
+   511538,
+   4817948,
+   513016,
+   4820016
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   511538.0,
+   0.0,
+   -1.0,
+   4820016.0
+  ],
+  "ll_bbox_wsen": [
+   -110.85724739772304,
+   43.51435305606514,
+   -110.83891153774793,
+   43.53299810681813
+  ]
+ },
+ "fetched_utc": "2026-10-31T05:13:06Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "WY_NConverse_5_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WY_NConverse_5_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 28483563529
+   }
+  ],
+  "used": [
+   {
+    "name": "WY_NConverse_5_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WY_NConverse_5_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 28483563529,
+    "cells": 2886180
+   }
+  ],
+  "valid": 0.9442748970719489,
+  "hag_mb": 1.41,
+  "frac_gt_2_5m": 0.375926221591727,
+  "class_mb": 0.05
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021322032"
+  ],
+  "mb": 0.47,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W111",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 764126,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 10.16,
+    "items": [
+     "wy_m_4311026_sw_12_060_20220719"
+    ],
+    "acquired": [
+     "2022-07-19"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 10.22,
+    "items": [
+     "wy_m_4311026_sw_12_060_20190826_20191030"
+    ],
+    "acquired": [
+     "2019-08-26"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}

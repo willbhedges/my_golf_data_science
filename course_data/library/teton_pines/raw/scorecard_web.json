@@ -1,0 +1,343 @@
+{
+ "fetched_utc": "2026-10-31T05:11:19Z",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: teton-pines-country-club: HTTP 404; the-teton-pines-country-club: HTTP 404; teton-pines-golf-course: HTTP 404; teton-pines-golf-club: HTTP 404"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 21 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/40274d04-24b3-4314-99da-842a94a4c85d"
+  },
+  {
+   "source": "bluegolf",
+   "ok": false,
+   "info": "bluegolf: no course page found by search"
+  },
+  {
+   "source": "golfpass",
+   "ok": false,
+   "info": "golfpass: no course page found by search"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: no course page found by search"
+  }
+ ],
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/40274d04-24b3-4314-99da-842a94a4c85d",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/40274d04-24b3-4314-99da-842a94a4c85d",
+    "par": [
+     4,
+     5,
+     3,
+     4,
+     4,
+     4,
+     5,
+     3,
+     4,
+     5,
+     4,
+     3,
+     4,
+     5,
+     4,
+     3,
+     4,
+     4
+    ],
+    "handicap": [
+     9,
+     3,
+     15,
+     7,
+     11,
+     5,
+     1,
+     17,
+     13,
+     10,
+     12,
+     6,
+     8,
+     18,
+     2,
+     14,
+     16,
+     4
+    ],
+    "tee_sets": {
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       444,
+       609,
+       204,
+       408,
+       423,
+       426,
+       634,
+       181,
+       437,
+       572,
+       412,
+       221,
+       463,
+       518,
+       443,
+       202,
+       333,
+       472
+      ],
+      "total": 7402,
+      "total_stated": 7412,
+      "rating": 73.9,
+      "slope": 144,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       411,
+       579,
+       178,
+       381,
+       389,
+       396,
+       601,
+       160,
+       406,
+       560,
+       389,
+       193,
+       415,
+       518,
+       412,
+       164,
+       333,
+       421
+      ],
+      "total": 6906,
+      "total_stated": 6888,
+      "rating": 71.4,
+      "slope": 136,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Palmer": {
+      "colour": "palmer",
+      "aliases": [
+       "palmer"
+      ],
+      "yards": [
+       411,
+       537,
+       178,
+       381,
+       389,
+       375,
+       559,
+       160,
+       383,
+       522,
+       389,
+       170,
+       390,
+       518,
+       366,
+       164,
+       333,
+       379
+      ],
+      "total": 6604,
+      "total_stated": 6585,
+      "rating": 70.5,
+      "slope": 127,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       379,
+       537,
+       164,
+       364,
+       351,
+       375,
+       559,
+       144,
+       383,
+       522,
+       344,
+       170,
+       390,
+       472,
+       366,
+       141,
+       291,
+       379
+      ],
+      "total": 6331,
+      "total_stated": 6331,
+      "rating": 69.4,
+      "slope": 122,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 76.1,
+        "slope": 143,
+        "total": 6331,
+        "par": 72
+       }
+      ]
+     },
+     "Green": {
+      "colour": "green",
+      "aliases": [
+       "green"
+      ],
+      "yards": [
+       366,
+       517,
+       151,
+       344,
+       345,
+       331,
+       529,
+       130,
+       360,
+       480,
+       332,
+       150,
+       347,
+       465,
+       351,
+       125,
+       271,
+       338
+      ],
+      "total": 5932,
+      "total_stated": 5932,
+      "rating": 67.4,
+      "slope": 120,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Green (Female)",
+        "rating": 73.9,
+        "slope": 138,
+        "total": 5932,
+        "par": 72
+       }
+      ]
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       314,
+       472,
+       138,
+       339,
+       318,
+       328,
+       524,
+       99,
+       324,
+       476,
+       304,
+       120,
+       307,
+       430,
+       281,
+       109,
+       253,
+       338
+      ],
+      "total": 5474,
+      "total_stated": 5474,
+      "rating": 63.4,
+      "slope": 100,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Red (Female)",
+        "rating": 71.2,
+        "slope": 129,
+        "total": 5474,
+        "par": 72
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "40274d04-24b3-4314-99da-842a94a4c85d",
+     "course_name": "Teton Pines",
+     "club_name": "Teton Pines",
+     "city": "Wilson",
+     "state": "WY",
+     "lat": 43.5236755,
+     "lng": -110.8480763,
+     "holes": 18,
+     "yardage": 7412,
+     "website": "http://www.tetonpines.com/"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/40274d04-24b3-4314-99da-842a94a4c85d",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/40274d04-24b3-4314-99da-842a94a4c85d": {
+    "holes": 18,
+    "fit": 9,
+    "share": 0.5,
+    "mean_err": 19.4,
+    "all_sets": 0.241,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
+}
