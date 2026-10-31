@@ -1,0 +1,132 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "anchorage",
+ "course": "Anchorage Golf Course",
+ "bbox_snwe": [
+  61.12188,
+  -149.830857,
+  61.131511,
+  -149.801544
+ ],
+ "grid": {
+  "crs": "EPSG:32606",
+  "res_m": 1.0,
+  "width": 1866,
+  "height": 1382,
+  "bounds": [
+   347390,
+   6779474,
+   349256,
+   6780856
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   347390.0,
+   0.0,
+   -1.0,
+   6780856.0
+  ],
+  "ll_bbox_wsen": [
+   -149.8340558641408,
+   61.12014155261775,
+   -149.79835518300436,
+   61.13325456233936
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:49:53Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_AK_Anchorage_2015_LAS_2017-dsm-2m-3-4",
+     "when": "2015-05-31T00:00:00.000000Z",
+     "cells": 2309210,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_AK_Anchorage_2015_LAS_2017",
+      "end_datetime": "2015-05-31T00:00:00.000000Z",
+      "start_datetime": "2015-05-10T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_AK_Anchorage_2015_LAS_2017-dsm-2m-2-4",
+     "when": "2015-05-31T00:00:00.000000Z",
+     "cells": 269490,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_AK_Anchorage_2015_LAS_2017",
+      "end_datetime": "2015-05-31T00:00:00.000000Z",
+      "start_datetime": "2015-05-10T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_AK_Anchorage_2015_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_AK_Anchorage_2015_LAS_2017/ept.json",
+    "cov": 1.0,
+    "year": 2017,
+    "count": 12327181636
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_AK_Anchorage_2015_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_AK_Anchorage_2015_LAS_2017/ept.json",
+    "cov": 1.0,
+    "year": 2017,
+    "count": 12327181636,
+    "cells": 2573920
+   }
+  ],
+  "valid": 0.998103002467803,
+  "hag_mb": 1.74,
+  "frac_gt_2_5m": 0.6082544985830685,
+  "class_mb": 0.02
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "020121012"
+  ],
+  "mb": 0.64,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N60W150",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 644703,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": []
+ }
+}
