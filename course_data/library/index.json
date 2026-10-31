@@ -1,12 +1,12 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-10-31T01:27Z",
+ "updated": "2026-10-31T01:30Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 0,
-  "needs confirm": 43,
-  "failed": 7
+  "needs confirm": 49,
+  "failed": 9
  },
  "courses": [
   {
@@ -573,6 +573,69 @@
    "group": "library"
   },
   {
+   "slug": "oxmoor_valley",
+   "name": "RTJ Oxmoor Valley Golf",
+   "city": "Birmingham",
+   "state": "AL",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source None, flags [])",
+    "18 holes built vs the card's 0",
+    "pars sum to 72, card None",
+    "18 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "osm_back",
+     "yards": null,
+     "par": null,
+     "rating": null,
+     "slope": null,
+     "colour": null,
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "osm_back"
+   ],
+   "page": "course_data/library/oxmoor_valley/page.html",
+   "page_bytes": 1397023,
+   "qa_report": "course_data/library/oxmoor_valley/qa_report.md",
+   "center": [
+    33.4168447,
+    -86.88034435
+   ],
+   "osm": "way/424825094",
+   "holes": 18,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T22:16Z",
+   "group": "library"
+  },
+  {
    "slug": "ross_bridge",
    "name": "RTJ Ross Bridge Golf",
    "city": "Hoover",
@@ -719,6 +782,239 @@
    "group": "library"
   },
   {
+   "slug": "pasatiempo",
+   "name": "Pasatiempo Golf Course",
+   "city": "Santa Cruz",
+   "state": "CA",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    10,
+    14
+   ],
+   "reasons": [
+    "scorecard not matched (source golfify, flags ['9 hole(s) where a longer set is shorter than the next set: 1 Middle 440 < Forward 457, 2 Forward 376 < White/Green Combo 384, 4 Forward 343 < White/Green Combo 359, 5 Forward 156 < White/Green Combo 170'])",
+    "pars sum to 70, card 72",
+    "3 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Middle",
+     "yards": 6125,
+     "par": 70,
+     "rating": 70.8,
+     "slope": 135,
+     "colour": "white",
+     "on_page": "solved"
+    },
+    {
+     "name": "Forward",
+     "yards": 5685,
+     "par": 72,
+     "rating": 68.9,
+     "slope": 130,
+     "colour": "green",
+     "on_page": "solved"
+    },
+    {
+     "name": "White/Green Combo",
+     "yards": 5333,
+     "par": 71,
+     "rating": 69.5,
+     "slope": 133,
+     "colour": "white",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Middle",
+    "Forward"
+   ],
+   "page": "course_data/library/pasatiempo/page.html",
+   "page_bytes": 2725695,
+   "qa_report": "course_data/library/pasatiempo/qa_report.md",
+   "center": [
+    37.0024983,
+    -122.02775220000001
+   ],
+   "osm": "relation/13921737",
+   "holes": 18,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T22:08Z",
+   "group": "library"
+  },
+  {
+   "slug": "torrey_pines",
+   "name": "Torrey Pines South Course",
+   "city": "San Diego",
+   "state": "CA",
+   "status": "needs confirm",
+   "check_holes": [
+    10
+   ],
+   "reasons": [
+    "1 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Black",
+     "yards": 7802,
+     "par": 72,
+     "rating": 78.8,
+     "slope": 148,
+     "colour": "black",
+     "on_page": "solved"
+    },
+    {
+     "name": "Web",
+     "yards": 7802,
+     "par": 72,
+     "rating": null,
+     "slope": null,
+     "colour": "web",
+     "on_page": null
+    },
+    {
+     "name": "Brown",
+     "yards": 7015,
+     "par": 72,
+     "rating": 75,
+     "slope": 139,
+     "colour": "brown",
+     "on_page": "solved"
+    },
+    {
+     "name": "Green",
+     "yards": 6625,
+     "par": 72,
+     "rating": 73.3,
+     "slope": 134,
+     "colour": "green",
+     "on_page": null
+    },
+    {
+     "name": "White",
+     "yards": 6145,
+     "par": 72,
+     "rating": 70.9,
+     "slope": 128,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Silver",
+     "yards": 5373,
+     "par": 72,
+     "rating": 73.3,
+     "slope": 131,
+     "colour": "silver",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Black",
+    "Brown"
+   ],
+   "page": "course_data/library/torrey_pines/page.html",
+   "page_bytes": 2326250,
+   "qa_report": "course_data/library/torrey_pines/qa_report.md",
+   "center": [
+    32.89713635,
+    -117.247647
+   ],
+   "osm": "way/35679036",
+   "holes": 18,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T21:54Z",
+   "group": "library"
+  },
+  {
+   "slug": "arrowhead",
+   "name": "Arrowhead Golf Club",
+   "city": "Littleton",
+   "state": "CO",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    3,
+    4,
+    5,
+    12,
+    14,
+    16,
+    18
+   ],
+   "reasons": [
+    "8 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Black Bear",
+     "yards": 6636,
+     "par": 70,
+     "rating": 71.5,
+     "slope": 138,
+     "colour": "black",
+     "on_page": "solved"
+    },
+    {
+     "name": "Arrowhead",
+     "yards": 6302,
+     "par": 70,
+     "rating": 69.9,
+     "slope": 135,
+     "colour": "white",
+     "on_page": "solved"
+    },
+    {
+     "name": "Silver Fox",
+     "yards": 5902,
+     "par": 70,
+     "rating": 67.6,
+     "slope": 126,
+     "colour": "red",
+     "on_page": null
+    },
+    {
+     "name": "Columbine",
+     "yards": 5338,
+     "par": 72,
+     "rating": 65.7,
+     "slope": 119,
+     "colour": "purple",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Black Bear",
+    "Arrowhead"
+   ],
+   "page": "course_data/library/arrowhead/page.html",
+   "page_bytes": 5399264,
+   "qa_report": "course_data/library/arrowhead/qa_report.md",
+   "center": [
+    39.45338035,
+    -105.08229829999999
+   ],
+   "osm": "way/296786618",
+   "holes": 18,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T21:55Z",
+   "group": "library"
+  },
+  {
    "slug": "commonground",
    "name": "CommonGround Golf Course",
    "city": "Aurora",
@@ -818,6 +1114,99 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T21:34Z",
+   "group": "library"
+  },
+  {
+   "slug": "richter_park",
+   "name": "Richter Park Golf Course",
+   "city": "Danbury",
+   "state": "CT",
+   "status": "needs confirm",
+   "check_holes": [
+    3,
+    4,
+    9,
+    10
+   ],
+   "reasons": [
+    "scorecard not matched (source golfify, flags ['1 hole(s) where a longer set is shorter than the next set: 10 White (L) 160 < Gold 338'])",
+    "4 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Blue",
+     "yards": 6744,
+     "par": 72,
+     "rating": 73.2,
+     "slope": 137,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 6119,
+     "par": 72,
+     "rating": 70.8,
+     "slope": 134,
+     "colour": "white",
+     "on_page": "solved"
+    },
+    {
+     "name": "White (L)",
+     "yards": 6119,
+     "par": 72,
+     "rating": 77.2,
+     "slope": 138,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Gold",
+     "yards": 5531,
+     "par": 72,
+     "rating": 67.9,
+     "slope": 114,
+     "colour": "gold",
+     "on_page": null
+    },
+    {
+     "name": "Gold (L)",
+     "yards": 5531,
+     "par": 72,
+     "rating": 72.9,
+     "slope": 129,
+     "colour": "gold",
+     "on_page": null
+    },
+    {
+     "name": "Red (L)",
+     "yards": 4922,
+     "par": 72,
+     "rating": 70.7,
+     "slope": 124,
+     "colour": "red",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Blue",
+    "White"
+   ],
+   "page": "course_data/library/richter_park/page.html",
+   "page_bytes": 5350729,
+   "qa_report": "course_data/library/richter_park/qa_report.md",
+   "center": [
+    41.412392499999996,
+    -73.5191124
+   ],
+   "osm": "way/43434973",
+   "holes": 18,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T22:05Z",
    "group": "library"
   },
   {
@@ -1006,6 +1395,121 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T21:35Z",
+   "group": "library"
+  },
+  {
+   "slug": "bobby_jones",
+   "name": "Bobby Jones Golf Club",
+   "city": "Atlanta",
+   "state": "GA",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "reasons": [
+    "9 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "8",
+     "yards": 3649,
+     "par": 36,
+     "rating": null,
+     "slope": null,
+     "colour": "black",
+     "on_page": "solved"
+    },
+    {
+     "name": "7",
+     "yards": 3401,
+     "par": 36,
+     "rating": null,
+     "slope": null,
+     "colour": "black",
+     "on_page": "solved"
+    },
+    {
+     "name": "6",
+     "yards": 3140,
+     "par": 36,
+     "rating": null,
+     "slope": null,
+     "colour": "black",
+     "on_page": null
+    },
+    {
+     "name": "5",
+     "yards": 2837,
+     "par": 36,
+     "rating": null,
+     "slope": null,
+     "colour": "black",
+     "on_page": null
+    },
+    {
+     "name": "4",
+     "yards": 2524,
+     "par": 36,
+     "rating": null,
+     "slope": null,
+     "colour": "black",
+     "on_page": null
+    },
+    {
+     "name": "3",
+     "yards": 2232,
+     "par": 36,
+     "rating": null,
+     "slope": null,
+     "colour": "black",
+     "on_page": null
+    },
+    {
+     "name": "2",
+     "yards": 1891,
+     "par": 36,
+     "rating": null,
+     "slope": null,
+     "colour": "black",
+     "on_page": null
+    },
+    {
+     "name": "1",
+     "yards": 1582,
+     "par": 36,
+     "rating": null,
+     "slope": null,
+     "colour": "black",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "8",
+    "7"
+   ],
+   "page": "course_data/library/bobby_jones/page.html",
+   "page_bytes": 1196842,
+   "qa_report": "course_data/library/bobby_jones/qa_report.md",
+   "center": [
+    33.81659035,
+    -84.40262095
+   ],
+   "osm": "way/29354026",
+   "holes": 9,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T22:17Z",
    "group": "library"
   },
   {
@@ -1401,6 +1905,94 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T12:33Z",
+   "group": "library"
+  },
+  {
+   "slug": "circling_raven",
+   "name": "Circling Raven Golf Course",
+   "city": "Worley",
+   "state": "ID",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    4,
+    5,
+    8,
+    9,
+    10,
+    12,
+    16
+   ],
+   "reasons": [
+    "9 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Gold",
+     "yards": 7189,
+     "par": 72,
+     "rating": 74.1,
+     "slope": 144,
+     "colour": "gold",
+     "on_page": "solved"
+    },
+    {
+     "name": "Blue",
+     "yards": 6579,
+     "par": 72,
+     "rating": 71.3,
+     "slope": 138,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 6108,
+     "par": 72,
+     "rating": 69.6,
+     "slope": 131,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Red",
+     "yards": 5389,
+     "par": 72,
+     "rating": 70.4,
+     "slope": 137,
+     "colour": "red",
+     "on_page": null
+    },
+    {
+     "name": "Green",
+     "yards": 4708,
+     "par": 72,
+     "rating": 66.7,
+     "slope": 121,
+     "colour": "green",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Gold",
+    "Blue"
+   ],
+   "page": "course_data/library/circling_raven/page.html",
+   "page_bytes": 3089371,
+   "qa_report": "course_data/library/circling_raven/qa_report.md",
+   "center": [
+    47.4240266,
+    -116.9582566
+   ],
+   "osm": "relation/13691362",
+   "holes": 18,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T21:58Z",
    "group": "library"
   },
   {
@@ -2031,91 +2623,6 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T03:44Z",
-   "group": "library"
-  },
-  {
-   "slug": "ironhorse",
-   "name": "Ironhorse Golf Club",
-   "city": "Leawood",
-   "state": "KS",
-   "status": "needs confirm",
-   "check_holes": [
-    7,
-    11,
-    14,
-    18
-   ],
-   "reasons": [
-    "holes not all mapped in OSM (hole method: v2+structure)",
-    "pars sum to 73, card 72",
-    "4 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "Black",
-     "yards": 6889,
-     "par": 72,
-     "rating": 74,
-     "slope": 143,
-     "colour": "black",
-     "on_page": "solved"
-    },
-    {
-     "name": "Blue",
-     "yards": 6375,
-     "par": 72,
-     "rating": 71.5,
-     "slope": 133,
-     "colour": "blue",
-     "on_page": "solved"
-    },
-    {
-     "name": "White",
-     "yards": 5819,
-     "par": 72,
-     "rating": 68.8,
-     "slope": 126,
-     "colour": "white",
-     "on_page": null
-    },
-    {
-     "name": "Gold",
-     "yards": 5325,
-     "par": 72,
-     "rating": 66.8,
-     "slope": 117,
-     "colour": "gold",
-     "on_page": null
-    },
-    {
-     "name": "Red",
-     "yards": 4745,
-     "par": 72,
-     "rating": 67.5,
-     "slope": 118,
-     "colour": "red",
-     "on_page": null
-    }
-   ],
-   "solved_sets": [
-    "Black",
-    "Blue"
-   ],
-   "page": "course_data/library/ironhorse/page.html",
-   "page_bytes": 5997728,
-   "qa_report": "course_data/library/ironhorse/qa_report.md",
-   "center": [
-    38.850952500000005,
-    -94.6350275
-   ],
-   "osm": "way/237531758",
-   "holes": 18,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T03:31Z",
    "group": "library"
   },
   {
@@ -3921,6 +4428,29 @@
    "group": "library"
   },
   {
+   "slug": "world_woods",
+   "name": "World Woods Pine Barrens",
+   "city": "Brooksville",
+   "state": "FL",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package: Retry your request using exponential backoff: wait a resolve: not_found None None [] world_woods: not_found; see packages/world_woods/raw/course.json for the candidates "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T22:38Z",
+   "group": "library"
+  },
+  {
    "slug": "kapalua_plantation",
    "name": "Kapalua Plantation Course",
    "city": "Lahaina",
@@ -4010,6 +4540,29 @@
    "days": null,
    "weather": null,
    "built": "2026-10-30T03:46Z",
+   "group": "library"
+  },
+  {
+   "slug": "ironhorse",
+   "name": "Ironhorse Golf Club",
+   "city": "Leawood",
+   "state": "KS",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T22:45Z",
    "group": "library"
   },
   {
