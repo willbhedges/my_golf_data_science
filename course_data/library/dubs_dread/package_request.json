@@ -7,7 +7,65 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T00:04Z",
- "note": "course-page workflow, from course_data/requests/course_page_dubs_dread.json (only what a golfer types: name, town, state, tees)",
- "town": "Kansas City"
+ "requested": "2026-10-30T22:22Z",
+ "note": "course-page workflow, from course_data/requests/course_page_dubs_dread.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/dubs_dread/card_golfify.json, course_data/library/dubs_dread/osm_supplement.geojson, course_data/library/dubs_dread/review.json",
+ "town": "Kansas City",
+ "scorecard": "course_data/library/dubs_dread/card_golfify.json",
+ "osm_supplement": "course_data/library/dubs_dread/osm_supplement.geojson",
+ "tee_overrides": {
+  "4": {
+   "osm_back": [
+    39.1657274,
+    -94.8808435
+   ]
+  },
+  "5": {
+   "osm_back": [
+    39.1678401,
+    -94.880564
+   ]
+  },
+  "9": {
+   "osm_back": [
+    39.168163,
+    -94.8766445
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "3": {
+   "*": 446
+  },
+  "4": {
+   "*": 216
+  },
+  "5": {
+   "*": 382
+  },
+  "6": {
+   "*": 467
+  },
+  "7": {
+   "*": 550
+  },
+  "9": {
+   "*": 418
+  },
+  "12": {
+   "*": 547
+  },
+  "13": {
+   "*": 420
+  }
+ },
+ "par_overrides": {
+  "4": 3,
+  "12": 5
+ },
+ "green_overrides": {
+  "4": [
+   39.1675037,
+   -94.8811725
+  ]
+ }
 }
