@@ -1,0 +1,149 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "leatherstocking",
+ "course": "Leatherstocking Golf Course",
+ "bbox_snwe": [
+  42.703808,
+  -74.932627,
+  42.7221948,
+  -74.921983
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 1114,
+  "height": 2284,
+  "bounds": [
+   505396,
+   4727806,
+   506510,
+   4730090
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   505396.0,
+   0.0,
+   -1.0,
+   4730090.0
+  ],
+  "ll_bbox_wsen": [
+   -74.93411492743382,
+   42.70271747321371,
+   -74.92048676490067,
+   42.72329475280205
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:30:52Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_NY_MadisonOtsegoCo_2015_LAS_2017-dsm-2m-10-6",
+     "when": "2017-01-01T00:00:00.000000Z",
+     "cells": 2537070,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_NY_MadisonOtsegoCo_2015_LAS_2017",
+      "end_datetime": "2017-01-01T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_NY_MadisonOtsegoCo_2015_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_NY_MadisonOtsegoCo_2015_LAS_2017/ept.json",
+    "cov": 1.0,
+    "year": 2017,
+    "count": 30668740647
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_NY_MadisonOtsegoCo_2015_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_NY_MadisonOtsegoCo_2015_LAS_2017/ept.json",
+    "cov": 1.0,
+    "year": 2017,
+    "count": 30668740647,
+    "cells": 2500826
+   }
+  ],
+  "valid": 0.9828838190581896,
+  "hag_mb": 1.12,
+  "frac_gt_2_5m": 0.40658574047232016,
+  "class_mb": 0.04
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "030232301"
+  ],
+  "mb": 0.31,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W075",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 636094,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.01
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 6.19,
+    "items": [
+     "ny_m_4207417_nw_18_060_20220429",
+     "ny_m_4207417_ne_18_060_20220429"
+    ],
+    "acquired": [
+     "2022-04-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 8.24,
+    "items": [
+     "ny_m_4207417_ne_18_060_20190826_20191209"
+    ],
+    "acquired": [
+     "2019-08-26"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
