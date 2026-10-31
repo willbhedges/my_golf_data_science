@@ -1,0 +1,284 @@
+{
+ "fetched_utc": "2026-10-30T22:10:41Z",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: rebsamen-golf-course: HTTP 404; the-rebsamen-golf-course: HTTP 404; rebsamen-golf-club: HTTP 404; rebsamen-country-club: HTTP 404"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 11 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/4466b312-c360-465c-aa06-02145c0f54d1"
+  },
+  {
+   "source": "bluegolf",
+   "ok": false,
+   "info": "bluegolf: no course page found by search"
+  },
+  {
+   "source": "golfpass",
+   "ok": false,
+   "info": "golfpass: no course page found by search"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: no course page found by search"
+  }
+ ],
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/4466b312-c360-465c-aa06-02145c0f54d1",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/4466b312-c360-465c-aa06-02145c0f54d1",
+    "par": [
+     4,
+     5,
+     3,
+     4,
+     4,
+     4,
+     3,
+     5,
+     4,
+     4,
+     4,
+     5,
+     4,
+     3,
+     5,
+     3,
+     4,
+     4
+    ],
+    "handicap": [
+     10,
+     12,
+     11,
+     2,
+     5,
+     16,
+     17,
+     15,
+     7,
+     3,
+     4,
+     8,
+     13,
+     6,
+     9,
+     14,
+     18,
+     1
+    ],
+    "tee_sets": {
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       381,
+       549,
+       201,
+       472,
+       441,
+       313,
+       138,
+       568,
+       411,
+       430,
+       464,
+       501,
+       376,
+       201,
+       598,
+       177,
+       316,
+       458
+      ],
+      "total": 6995,
+      "total_stated": 7033,
+      "rating": 72.1,
+      "slope": 129,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       364,
+       511,
+       173,
+       441,
+       388,
+       298,
+       125,
+       532,
+       369,
+       401,
+       433,
+       485,
+       315,
+       170,
+       569,
+       155,
+       285,
+       404
+      ],
+      "total": 6418,
+      "total_stated": 6426,
+      "rating": 69.2,
+      "slope": 122,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       337,
+       476,
+       149,
+       407,
+       339,
+       285,
+       115,
+       506,
+       336,
+       358,
+       408,
+       469,
+       288,
+       146,
+       519,
+       140,
+       261,
+       372
+      ],
+      "total": 5911,
+      "total_stated": 5889,
+      "rating": 67.8,
+      "slope": 118,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       337,
+       419,
+       129,
+       362,
+       332,
+       285,
+       100,
+       452,
+       330,
+       350,
+       318,
+       367,
+       285,
+       144,
+       450,
+       118,
+       258,
+       364
+      ],
+      "total": 5400,
+      "total_stated": 5400,
+      "rating": 71,
+      "slope": 120,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       265,
+       411,
+       99,
+       357,
+       261,
+       255,
+       88,
+       446,
+       272,
+       288,
+       315,
+       363,
+       228,
+       96,
+       444,
+       85,
+       198,
+       305
+      ],
+      "total": 4776,
+      "total_stated": 4776,
+      "rating": 65.8,
+      "slope": 105,
+      "gender": "Female",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "4466b312-c360-465c-aa06-02145c0f54d1",
+     "course_name": "Rebsamen Golf Course",
+     "club_name": "Rebsamen Golf Course",
+     "city": "Little Rock",
+     "state": "AR",
+     "lat": 34.7806003,
+     "lng": -92.3197144,
+     "holes": 18,
+     "yardage": 7033,
+     "website": "http://rebsamengolf.com/"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/4466b312-c360-465c-aa06-02145c0f54d1",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/4466b312-c360-465c-aa06-02145c0f54d1": {
+    "holes": 18,
+    "fit": 4,
+    "share": 0.222,
+    "mean_err": 86.3,
+    "all_sets": 0.111,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
+}
