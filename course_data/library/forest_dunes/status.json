@@ -1,0 +1,50 @@
+{
+ "slug": "forest_dunes",
+ "name": "Forest Dunes Golf Club",
+ "request_name": "Forest Dunes Golf Club",
+ "city": "Roscommon",
+ "state": "MI",
+ "group": "library",
+ "status": "failed",
+ "reasons": [
+  "package: resolve: ambiguous None None [('Forest Dunes Course', 'South Branch Township', 18), ('Forest Dunes - The Loop Course', 'South Branch Township', 18), ('Forest Dunes Golf Resort', 'South Branch Township', 46)] forest_dunes: ambiguous; see packages/forest_dunes/raw/course.json for the candidates "
+ ],
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_forest_dunes.json",
+ "resolve": {
+  "status": "ambiguous",
+  "candidates": [
+   {
+    "name": "Forest Dunes Course",
+    "town": "South Branch Township",
+    "holes": 18,
+    "osm": {
+     "type": "way",
+     "id": 1536953640
+    }
+   },
+   {
+    "name": "Forest Dunes - The Loop Course",
+    "town": "South Branch Township",
+    "holes": 18,
+    "osm": {
+     "type": "way",
+     "id": 1536953639
+    }
+   },
+   {
+    "name": "Forest Dunes Golf Resort",
+    "town": "South Branch Township",
+    "holes": 46,
+    "osm": {
+     "type": "way",
+     "id": 623889475
+    }
+   }
+  ]
+ },
+ "built": "2026-10-31T01:41Z"
+}
