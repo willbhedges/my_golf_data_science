@@ -1,0 +1,124 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "chambers_bay",
+ "course": "Chambers Bay Golf Course",
+ "bbox_snwe": [
+  47.1975536,
+  -122.583422,
+  47.213789,
+  -122.567289
+ ],
+ "grid": {
+  "crs": "EPSG:32610",
+  "res_m": 1.0,
+  "width": 1472,
+  "height": 2052,
+  "bounds": [
+   531424,
+   5227082,
+   532896,
+   5229134
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   531424.0,
+   0.0,
+   -1.0,
+   5229134.0
+  ],
+  "ll_bbox_wsen": [
+   -122.58514186293309,
+   47.19640740202353,
+   -122.565558421557,
+   47.21494372798581
+  ]
+ },
+ "fetched_utc": "2026-10-31T05:11:04Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "WA_PierceCounty_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WA_PierceCounty_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 59348004619
+   }
+  ],
+  "used": [
+   {
+    "name": "WA_PierceCounty_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WA_PierceCounty_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 59348004619,
+    "cells": 3019566
+   }
+  ],
+  "valid": 0.9996762172641749,
+  "hag_mb": 2.23,
+  "frac_gt_2_5m": 0.7384246016611578,
+  "class_mb": 0.03
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021230023"
+  ],
+  "mb": 0.19,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N45W123",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 755136,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 8.74,
+    "items": [
+     "wa_m_4712252_nw_10_060_20230802_20240209",
+     "wa_m_4712252_ne_10_060_20230802_20240209"
+    ],
+    "acquired": [
+     "2023-08-02"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 8.83,
+    "items": [
+     "wa_m_4712252_ne_10_060_20191011_20191218",
+     "wa_m_4712252_nw_10_060_20191010_20191218"
+    ],
+    "acquired": [
+     "2019-10-10",
+     "2019-10-11"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
