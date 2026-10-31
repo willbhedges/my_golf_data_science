@@ -1,0 +1,180 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "ed_oliver",
+ "course": "Ed Oliver Golf Club",
+ "bbox_snwe": [
+  39.752872,
+  -75.589193,
+  39.764908,
+  -75.57444
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 1516,
+  "height": 1586,
+  "bounds": [
+   449404,
+   4400366,
+   450920,
+   4401952
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   449404.0,
+   0.0,
+   -1.0,
+   4401952.0
+  ],
+  "ll_bbox_wsen": [
+   -75.59072527885698,
+   39.75170274224957,
+   -75.57290790005227,
+   39.766080856002844
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:28:11Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_DE_Snds_2013_LAS_2015-hag-2m-8-22",
+     "when": "2014-04-06T00:00:00.000000Z",
+     "cells": 964176,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_Snds_2013_LAS_2015",
+      "end_datetime": "2014-04-06T00:00:00.000000Z",
+      "start_datetime": "2013-12-17T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.4010088272383354
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_DE_Snds_2013_LAS_2015-dtm-2m-8-22",
+     "when": "2014-04-06T00:00:00.000000Z",
+     "cells": 240818,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_Snds_2013_LAS_2015",
+      "end_datetime": "2014-04-06T00:00:00.000000Z",
+      "start_datetime": "2013-12-17T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.4006328461105917
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_DE_Snds_2013_LAS_2015-dsm-2m-8-22",
+     "when": "2014-04-06T00:00:00.000000Z",
+     "cells": 964176,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_Snds_2013_LAS_2015",
+      "end_datetime": "2014-04-06T00:00:00.000000Z",
+      "start_datetime": "2013-12-17T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 40% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_DE_Snds_2013_LAS_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_DE_Snds_2013_LAS_2015/ept.json",
+    "cov": 1.0,
+    "year": 2015,
+    "count": 38730330437
+   },
+   {
+    "name": "DE_Statewide_1_B23",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/DE_Statewide_1_B23/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 211151154347
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_DE_Snds_2013_LAS_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_DE_Snds_2013_LAS_2015/ept.json",
+    "cov": 1.0,
+    "year": 2015,
+    "count": 38730330437,
+    "cells": 2398757
+   }
+  ],
+  "valid": 0.9976630111097432,
+  "hag_mb": 1.33,
+  "frac_gt_2_5m": 0.4726511161315867,
+  "class_mb": 0.02
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032010120"
+  ],
+  "mb": 0.45,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W078",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 601094,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 8.99,
+    "items": [
+     "de_m_3907512_sw_18_030_20230711_20230919"
+    ],
+    "acquired": [
+     "2023-07-11"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 10.22,
+    "items": [
+     "de_m_3907520_nw_18_060_20211019",
+     "de_m_3907512_sw_18_060_20211019"
+    ],
+    "acquired": [
+     "2021-10-19"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
