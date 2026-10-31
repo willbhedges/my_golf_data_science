@@ -1,0 +1,137 @@
+{
+ "fetched_utc": "2026-10-30T21:20:07Z",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: rtj-ross-bridge-golf: HTTP 404; the-rtj-ross-bridge-golf: HTTP 404; rtj-ross-bridge-golf-course: HTTP 404; rtj-ross-bridge-golf-club: HTTP 404"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "no website tag in OSM"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/77c60af9-5ea7-4a61-baae-492873f98389"
+  }
+ ],
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/77c60af9-5ea7-4a61-baae-492873f98389",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/77c60af9-5ea7-4a61-baae-492873f98389",
+    "par": [
+     5,
+     4,
+     4,
+     3,
+     4,
+     3,
+     5,
+     4,
+     4,
+     4,
+     3,
+     4,
+     5,
+     3,
+     4,
+     5,
+     4,
+     4
+    ],
+    "handicap": [
+     3,
+     13,
+     7,
+     15,
+     5,
+     17,
+     1,
+     11,
+     9,
+     10,
+     18,
+     12,
+     2,
+     16,
+     14,
+     4,
+     6,
+     8
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       620,
+       467,
+       470,
+       226,
+       469,
+       207,
+       619,
+       502,
+       518,
+       477,
+       208,
+       454,
+       698,
+       239,
+       458,
+       571,
+       501,
+       487
+      ],
+      "total": 8191,
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "77c60af9-5ea7-4a61-baae-492873f98389",
+     "course_name": "RTJ Ross Bridge Golf",
+     "club_name": "RTJ Ross Bridge Golf",
+     "city": "Hoover",
+     "state": "AL",
+     "lat": 33.3903849,
+     "lng": -86.8778666,
+     "holes": 18,
+     "yardage": 8191,
+     "website": "http://www.rtjgolf.com/"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/77c60af9-5ea7-4a61-baae-492873f98389",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/77c60af9-5ea7-4a61-baae-492873f98389": {
+    "holes": 18,
+    "fit": 15,
+    "share": 0.833,
+    "mean_err": 9.9,
+    "all_sets": 0.833,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
+}

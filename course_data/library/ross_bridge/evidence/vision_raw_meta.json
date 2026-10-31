@@ -1,0 +1,157 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "ross_bridge",
+ "course": "RTJ Ross Bridge Golf",
+ "bbox_snwe": [
+  33.382754,
+  -86.888397,
+  33.398016,
+  -86.867336
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 2202,
+  "height": 1938,
+  "bounds": [
+   510258,
+   3693604,
+   512460,
+   3695542
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   510258.0,
+   0.0,
+   -1.0,
+   3695542.0
+  ],
+  "ll_bbox_wsen": [
+   -86.88971267274152,
+   33.381631855071156,
+   -86.8660114399942,
+   33.39913551067942
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:21:21Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_AL_JeffersonCo_2013_LAS_2015-dsm-2m-5-6",
+     "when": "2013-05-07T00:00:00.000000Z",
+     "cells": 4261648,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_AL_JeffersonCo_2013_LAS_2015",
+      "end_datetime": "2013-05-07T00:00:00.000000Z",
+      "start_datetime": "2013-04-13T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_AL_JeffersonCo_2013_LAS_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_AL_JeffersonCo_2013_LAS_2015/ept.json",
+    "cov": 1.0,
+    "year": 2015,
+    "count": 20010592526
+   },
+   {
+    "name": "AL_11County_2_B23",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/AL_11County_2_B23/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 189861050872
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_AL_JeffersonCo_2013_LAS_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_AL_JeffersonCo_2013_LAS_2015/ept.json",
+    "cov": 1.0,
+    "year": 2015,
+    "count": 20010592526,
+    "cells": 4233326
+   }
+  ],
+  "valid": 0.9919976117030301,
+  "hag_mb": 2.55,
+  "frac_gt_2_5m": 0.5360519895132392,
+  "class_mb": 0.05
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032002302"
+  ],
+  "mb": 0.68,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N33W087",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1066869,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 17.09,
+    "items": [
+     "al_m_3308634_sw_16_060_20230603_20231127",
+     "al_m_3308633_se_16_060_20230603_20231127"
+    ],
+    "acquired": [
+     "2023-06-03"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 21.15,
+    "items": [
+     "al_m_3308634_sw_16_030_20211124",
+     "al_m_3308633_se_16_030_20211124"
+    ],
+    "acquired": [
+     "2021-11-24"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
