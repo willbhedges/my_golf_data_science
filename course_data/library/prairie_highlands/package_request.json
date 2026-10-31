@@ -7,7 +7,25 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T03:13Z",
- "note": "course-page workflow, from course_data/requests/course_page_prairie_highlands.json (only what a golfer types: name, town, state, tees)",
- "town": "Olathe"
+ "requested": "2026-10-30T22:23Z",
+ "note": "course-page workflow, from course_data/requests/course_page_prairie_highlands.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/prairie_highlands/card_review.json, course_data/library/prairie_highlands/osm_supplement.geojson, course_data/library/prairie_highlands/review.json",
+ "town": "Olathe",
+ "scorecard": "course_data/library/prairie_highlands/card_review.json",
+ "osm_supplement": "course_data/library/prairie_highlands/osm_supplement.geojson",
+ "tee_overrides": {
+  "11": {
+   "Blue": [
+    38.8580397,
+    -94.8884813
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "11": {
+   "*": 367
+  }
+ },
+ "par_overrides": {
+  "11": 4
+ }
 }
