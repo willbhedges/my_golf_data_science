@@ -1,0 +1,136 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "wolf_creek",
+ "course": "Wolf Creek Golf Club",
+ "bbox_snwe": [
+  36.8261261,
+  -114.065192,
+  36.84543,
+  -114.049825
+ ],
+ "grid": {
+  "crs": "EPSG:32611",
+  "res_m": 1.0,
+  "width": 1680,
+  "height": 2426,
+  "bounds": [
+   761566,
+   4079484,
+   763246,
+   4081910
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   761566.0,
+   0.0,
+   -1.0,
+   4081910.0
+  ],
+  "ll_bbox_wsen": [
+   -114.0673337925914,
+   36.824627688811916,
+   -114.04768033205211,
+   36.84693447690773
+  ]
+ },
+ "fetched_utc": "2026-10-31T01:49:07Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "NV_ClarkCounty_B1_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/NV_ClarkCounty_B1_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 5369142498
+   },
+   {
+    "name": "AZ_CenCoconino_3_B22",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/AZ_CenCoconino_3_B22/ept.json",
+    "cov": 0.15,
+    "year": 0,
+    "count": 158120134087
+   },
+   {
+    "name": "NV_EastCentral_4_D21",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/NV_EastCentral_4_D21/ept.json",
+    "cov": 0.627,
+    "year": 0,
+    "count": 148773531195
+   }
+  ],
+  "used": [
+   {
+    "name": "NV_ClarkCounty_B1_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/NV_ClarkCounty_B1_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 5369142498,
+    "cells": 4054496
+   }
+  ],
+  "valid": 0.9948023397322655,
+  "hag_mb": 0.85,
+  "frac_gt_2_5m": 0.11306653122914459,
+  "class_mb": 0.04
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023011323"
+  ],
+  "mb": 0.09,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W117",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1018920,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 14.82,
+    "items": [
+     "az_m_3611416_ne_11_030_20230708_20240304"
+    ],
+    "acquired": [
+     "2023-07-08"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 11.8,
+    "items": [
+     "nv_m_3611416_nw_11_060_20220612",
+     "nv_m_3611416_ne_11_060_20220612"
+    ],
+    "acquired": [
+     "2022-06-12"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
