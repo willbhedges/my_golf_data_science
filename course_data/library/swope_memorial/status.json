@@ -5,65 +5,28 @@
  "city": "Kansas City",
  "state": "MO",
  "group": "library",
- "status": "needs confirm",
+ "status": "failed",
  "reasons": [
-  "6 hole(s) with a CHECK"
+  "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
  ],
- "check_holes": [
-  2,
-  3,
-  4,
-  6,
-  7,
-  9
- ],
- "tee_sets": [
-  {
-   "name": "Blue",
-   "yards": 6274,
-   "par": 72,
-   "rating": 70.9,
-   "slope": 128,
-   "colour": "blue",
-   "on_page": "solved"
-  },
-  {
-   "name": "White",
-   "yards": 5770,
-   "par": 72,
-   "rating": 68.3,
-   "slope": 124,
-   "colour": "white",
-   "on_page": "solved"
-  },
-  {
-   "name": "Red",
-   "yards": 4517,
-   "par": 72,
-   "rating": 67.6,
-   "slope": 117,
-   "colour": "red",
-   "on_page": null
-  }
- ],
- "solved_sets": [
-  "Blue",
-  "White"
- ],
- "page": "course_data/library/swope_memorial/page.html",
- "page_bytes": 2778643,
- "qa_report": "course_data/library/swope_memorial/qa_report.md",
- "center": [
-  38.998807150000005,
-  -94.51312655
- ],
- "osm": "way/68196001",
- "holes": 18,
- "days": [
-  "2026-10-31",
-  "2026-11-01"
- ],
- "weather": "forecast",
- "built": "2026-10-30T00:46Z",
- "request": "course_data/requests/course_page_swope_memorial.json"
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_swope_memorial.json",
+ "resolve": {
+  "status": "ok",
+  "candidates": [
+   {
+    "name": "Swope Memorial Golf Course",
+    "town": "Kansas City",
+    "holes": 18,
+    "osm": {
+     "type": "way",
+     "id": 68196001
+    }
+   }
+  ]
+ },
+ "built": "2026-10-31T02:10Z"
 }
