@@ -1,0 +1,100 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "hawktree",
+ "course": "Hawktree Golf Club",
+ "bbox_snwe": [
+  46.889829,
+  -100.856151,
+  46.906811,
+  -100.835262
+ ],
+ "grid": {
+  "crs": "EPSG:32614",
+  "res_m": 1.0,
+  "width": 1878,
+  "height": 2166,
+  "bounds": [
+   358476,
+   5194436,
+   360354,
+   5196602
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   358476.0,
+   0.0,
+   -1.0,
+   5196602.0
+  ],
+  "ll_bbox_wsen": [
+   -100.85836059409255,
+   46.888384640862434,
+   -100.83304919772482,
+   46.90826361111499
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:40:57Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [],
+  "used": []
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021330200"
+  ],
+  "mb": 0.09,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N45W102",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1016937,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 13.25,
+    "items": [
+     "nd_m_4610002_sw_14_060_20230620_20231116"
+    ],
+    "acquired": [
+     "2023-06-20"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 10.29,
+    "items": [
+     "nd_m_4610002_sw_14_060_20220809"
+    ],
+    "acquired": [
+     "2022-08-09"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
