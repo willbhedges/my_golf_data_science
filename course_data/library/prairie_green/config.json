@@ -1,0 +1,64 @@
+{
+ "name": "Prairie Green Golf Course",
+ "title": "Prairie Green Golf Course Caddie",
+ "auto": true,
+ "hand_checked": false,
+ "main_which": "auto",
+ "slug": "prairie_green",
+ "sub": "Sioux Falls, SD \u00b7 automatic page \u00b7 Professional 7,179 / Championship 6,667 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
+ "event": "",
+ "package": "course_data/library/prairie_green/package.json",
+ "truth_package": "course_data/library/prairie_green/package.json",
+ "tees": "Professional",
+ "alt_bases": {
+  "Championship": "auto_b"
+ },
+ "sets": [
+  "Professional",
+  "Championship"
+ ],
+ "colors": {
+  "Professional": "#111",
+  "Championship": "#2a5bd7"
+ },
+ "days": [
+  "2026-11-07",
+  "2026-11-08"
+ ],
+ "day_labels": [
+  "Sat 11/7",
+  "Sun 11/8"
+ ],
+ "tee_hour": 9.0,
+ "temps": [
+  40,
+  50,
+  60
+ ],
+ "draws": 48,
+ "swings": 2500,
+ "forecast": "course_data/library/prairie_green/weather.json",
+ "weather_kind": "forecast",
+ "climate": {
+  "temp_lo": 43.9,
+  "temp_hi": 59.9,
+  "wind_mph": 9.1,
+  "wind_from": 320,
+  "source": "Open-Meteo hourly forecast"
+ },
+ "grid_prune": true,
+ "bases_why": "the two longest sets on the card (combination sets skipped)",
+ "request": "course_data/requests/course_page_prairie_green.json",
+ "rev": 1,
+ "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from golfify, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Professional, Championship. See qa_report.md for the hole-by-hole checks.",
+ "built": "2026-10-31T03:57Z",
+ "offsets": {
+  "auto": [
+   0
+  ],
+  "auto_b": [
+   0
+  ]
+ },
+ "imagery_display": "2020-09-05"
+}

@@ -1,0 +1,165 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "prairie_green",
+ "course": "Prairie Green Golf Course",
+ "bbox_snwe": [
+  43.480981,
+  -96.738839,
+  43.498178,
+  -96.710221
+ ],
+ "grid": {
+  "crs": "EPSG:32614",
+  "res_m": 1.0,
+  "width": 2608,
+  "height": 2214,
+  "bounds": [
+   682690,
+   4816592,
+   685298,
+   4818806
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   682690.0,
+   0.0,
+   -1.0,
+   4818806.0
+  ],
+  "ll_bbox_wsen": [
+   -96.74100477229473,
+   43.479295073855745,
+   -96.70802806742212,
+   43.49985657068627
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:47:21Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "SD_LincolnCo_2008-dsm-2m-2-0",
+     "when": "2008-05-23T00:00:00.000000Z",
+     "cells": 5773104,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "SD_LincolnCo_2008",
+      "end_datetime": "2008-05-23T00:00:00.000000Z",
+      "start_datetime": "2008-05-13T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "SD_EasternSD_3_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/SD_EasternSD_3_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 42653365611
+   },
+   {
+    "name": "SD_LincolnCo_2008",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/SD_LincolnCo_2008/ept.json",
+    "cov": 1.0,
+    "year": 2008,
+    "count": 1930326643
+   },
+   {
+    "name": "SD_MinnehahaCo_2008",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/SD_MinnehahaCo_2008/ept.json",
+    "cov": 0.394,
+    "year": 2008,
+    "count": 2392424702
+   }
+  ],
+  "used": [
+   {
+    "name": "SD_EasternSD_3_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/SD_EasternSD_3_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 42653365611,
+    "cells": 5756271
+   }
+  ],
+  "valid": 0.9969101742397792,
+  "hag_mb": 2.51,
+  "frac_gt_2_5m": 0.3962730546272743,
+  "class_mb": 0.05
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021332132"
+  ],
+  "mb": 0.65,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W099",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1443528,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.07
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 20.44,
+    "items": [
+     "sd_m_4309635_nw_14_060_20220830",
+     "sd_m_4309627_sw_14_060_20220830"
+    ],
+    "acquired": [
+     "2022-08-30"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 20.14,
+    "items": [
+     "sd_m_4309635_nw_14_060_20210829",
+     "sd_m_4309627_sw_14_060_20210821"
+    ],
+    "acquired": [
+     "2021-08-21",
+     "2021-08-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
