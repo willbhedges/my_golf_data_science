@@ -2,21 +2,90 @@
  "slug": "longview_lake",
  "name": "Fred Arbanas Golf Course",
  "request_name": "Fred Arbanas Golf Course",
- "city": "Lee's Summit",
+ "city": "Kansas City",
  "state": "MO",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "package: rev 2 (Fred Arbanas Golf Course): the package job hit the 150-minute Actions timeout (run 40995505206); rev 1: resolve ambiguous under the old name"
+  "scorecard not matched (source opengolfapi, flags ['Blue: holes sum to 6906 but the source says 6879 (+27): mixed card versions', 'White: holes sum to 6354 but the source says 6299 (+55): mixed card versions'])",
+  "9 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
- "request": "course_data/requests/course_page_longview_lake.json",
- "resolve": {
-  "status": null,
-  "candidates": []
- },
- "built": "2026-10-30T15:16Z"
+ "check_holes": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "tee_sets": [
+  {
+   "name": "Blue",
+   "yards": 6906,
+   "par": 72,
+   "rating": 73.2,
+   "slope": 131,
+   "colour": "blue",
+   "on_page": "solved"
+  },
+  {
+   "name": "Web",
+   "yards": 6851,
+   "par": 72,
+   "rating": null,
+   "slope": null,
+   "colour": "web",
+   "on_page": "solved"
+  },
+  {
+   "name": "White",
+   "yards": 6354,
+   "par": 72,
+   "rating": 70.7,
+   "slope": 126,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Gold",
+   "yards": 5822,
+   "par": 72,
+   "rating": 68.5,
+   "slope": 121,
+   "colour": "gold",
+   "on_page": null
+  },
+  {
+   "name": "Red",
+   "yards": 5505,
+   "par": 72,
+   "rating": 72.1,
+   "slope": 125,
+   "colour": "red",
+   "on_page": null
+  }
+ ],
+ "solved_sets": [
+  "Blue",
+  "Web"
+ ],
+ "page": "course_data/library/longview_lake/page.html",
+ "page_bytes": 2467261,
+ "qa_report": "course_data/library/longview_lake/qa_report.md",
+ "center": [
+  38.91865155,
+  -94.456896
+ ],
+ "osm": "way/913710102",
+ "holes": 18,
+ "days": [
+  "2026-10-31",
+  "2026-11-01"
+ ],
+ "weather": "forecast",
+ "built": "2026-10-30T20:56Z",
+ "request": "course_data/requests/course_page_longview_lake.json"
 }

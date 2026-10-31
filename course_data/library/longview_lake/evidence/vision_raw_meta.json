@@ -1,0 +1,157 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "longview_lake",
+ "course": "Fred Arbanas Golf Course",
+ "bbox_snwe": [
+  38.911948,
+  -94.465139,
+  38.925355,
+  -94.448653
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1696,
+  "height": 1752,
+  "bounds": [
+   372850,
+   4307882,
+   374546,
+   4309634
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   372850.0,
+   0.0,
+   -1.0,
+   4309634.0
+  ],
+  "ll_bbox_wsen": [
+   -94.4668324571516,
+   38.91063565944076,
+   -94.44695222251669,
+   38.92666277364705
+  ]
+ },
+ "fetched_utc": "2026-10-30T20:50:47Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "KS_JacksonCo_2006-hag-2m-1-1",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 2964344,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9976280477298182,
+   "file": "hag.tif",
+   "mb": 0.72,
+   "frac_gt_2_5m": 0.2094099331222538
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "KS_JacksonCo_2006-dtm-2m-1-1",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 740781,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9972174657534246,
+   "mb": 1.85
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "KS_JacksonCo_2006-classification-2m-1-1",
+     "when": "2006-04-19T00:00:00.000000Z",
+     "cells": 2829400,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_JacksonCo_2006",
+      "end_datetime": "2006-04-19T00:00:00.000000Z",
+      "start_datetime": "2006-04-15T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.27,
+   "counts": {
+    "0": 141992,
+    "1": 558700,
+    "2": 2123944,
+    "10": 146756
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111023"
+  ],
+  "mb": 0.3,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 742848,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 7.05,
+    "items": [
+     "mo_m_3809405_sw_15_060_20220629"
+    ],
+    "acquired": [
+     "2022-06-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 8.95,
+    "items": [
+     "mo_m_3809405_sw_15_060_20200607"
+    ],
+    "acquired": [
+     "2020-06-07"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
