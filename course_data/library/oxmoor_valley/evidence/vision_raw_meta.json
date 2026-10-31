@@ -1,0 +1,157 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "oxmoor_valley",
+ "course": "RTJ Oxmoor Valley Golf",
+ "bbox_snwe": [
+  33.407492,
+  -86.903373,
+  33.426197,
+  -86.857315
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 4526,
+  "height": 2320,
+  "bounds": [
+   508862,
+   3696346,
+   513388,
+   3698666
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   508862.0,
+   0.0,
+   -1.0,
+   3698666.0
+  ],
+  "ll_bbox_wsen": [
+   -86.9046945452282,
+   33.4063529170809,
+   -86.85598572391231,
+   33.427325695920345
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:52:00Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_AL_JeffersonCo_2013_LAS_2015-dsm-2m-5-5",
+     "when": "2013-05-07T00:00:00.000000Z",
+     "cells": 10474492,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_AL_JeffersonCo_2013_LAS_2015",
+      "end_datetime": "2013-05-07T00:00:00.000000Z",
+      "start_datetime": "2013-04-13T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_AL_JeffersonCo_2013_LAS_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_AL_JeffersonCo_2013_LAS_2015/ept.json",
+    "cov": 1.0,
+    "year": 2015,
+    "count": 20010592526
+   },
+   {
+    "name": "AL_11County_2_B23",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/AL_11County_2_B23/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 189861050872
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_AL_JeffersonCo_2013_LAS_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_AL_JeffersonCo_2013_LAS_2015/ept.json",
+    "cov": 1.0,
+    "year": 2015,
+    "count": 20010592526,
+    "cells": 10416720
+   }
+  ],
+  "valid": 0.9920383378792266,
+  "hag_mb": 7.45,
+  "frac_gt_2_5m": 0.7062374289545461,
+  "class_mb": 0.1
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032002302"
+  ],
+  "mb": 2.28,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N33W087",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 2625080,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.05
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 38.43,
+    "items": [
+     "al_m_3308634_sw_16_060_20230603_20231127",
+     "al_m_3308633_se_16_060_20230603_20231127"
+    ],
+    "acquired": [
+     "2023-06-03"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 48.94,
+    "items": [
+     "al_m_3308634_sw_16_030_20211124",
+     "al_m_3308633_se_16_030_20211124"
+    ],
+    "acquired": [
+     "2021-11-24"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
