@@ -1,0 +1,121 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "papago",
+ "course": "Papago Golf Club",
+ "bbox_snwe": [
+  33.450495,
+  -111.966693,
+  33.465156,
+  -111.953839
+ ],
+ "grid": {
+  "crs": "EPSG:32612",
+  "res_m": 1.0,
+  "width": 1452,
+  "height": 1880,
+  "bounds": [
+   410034,
+   3701516,
+   411486,
+   3703396
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   410034.0,
+   0.0,
+   -1.0,
+   3703396.0
+  ],
+  "ll_bbox_wsen": [
+   -111.96817632110421,
+   33.44929006072237,
+   -111.95236700354491,
+   33.46636574129463
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:32:13Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "AZ_MaricopaPinal_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/AZ_MaricopaPinal_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 249923645502
+   }
+  ],
+  "used": [
+   {
+    "name": "AZ_MaricopaPinal_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/AZ_MaricopaPinal_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 249923645502,
+    "cells": 2722920
+   }
+  ],
+  "valid": 0.9974942852118868,
+  "hag_mb": 1.07,
+  "frac_gt_2_5m": 0.17339876033057852,
+  "class_mb": 0.02
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023102202"
+  ],
+  "mb": 0.12,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N33W114",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 682440,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 12.07,
+    "items": [
+     "az_m_3311133_nw_12_030_20230915_20240304"
+    ],
+    "acquired": [
+     "2023-09-15"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 8.83,
+    "items": [
+     "az_m_3311133_nw_12_060_20211014"
+    ],
+    "acquired": [
+     "2021-10-14"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
