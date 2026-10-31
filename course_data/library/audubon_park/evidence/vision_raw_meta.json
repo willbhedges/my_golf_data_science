@@ -1,0 +1,166 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "audubon_park",
+ "course": "Audubon Park Golf Course",
+ "bbox_snwe": [
+  29.924556,
+  -90.132713,
+  29.935063,
+  -90.121726
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1332,
+  "height": 1434,
+  "bounds": [
+   776660,
+   3313762,
+   777992,
+   3315196
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   776660.0,
+   0.0,
+   -1.0,
+   3315196.0
+  ],
+  "ll_bbox_wsen": [
+   -90.13430236122159,
+   29.92320176664984,
+   -90.12014734217773,
+   29.936427467357152
+  ]
+ },
+ "fetched_utc": "2026-10-31T01:41:31Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018-hag-2m-16-6",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 1906676,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9982136948664145,
+   "file": "hag.tif",
+   "mb": 1.04,
+   "frac_gt_2_5m": 0.7227112049287782
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018-dtm-2m-16-6",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 476143,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9971121749364427,
+   "mb": 1.81
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018-classification-2m-16-6",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 1872712,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.21,
+   "counts": {
+    "0": 37376,
+    "1": 814840,
+    "2": 895302,
+    "3": 130998,
+    "9": 29944,
+    "10": 1628
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023131133"
+  ],
+  "mb": 0.32,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N27W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 477522,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 9.25,
+    "items": [
+     "la_m_2909008_nw_15_030_20230504_20240209",
+     "la_m_2909007_ne_15_030_20230504_20240209",
+     "la_m_2909008_sw_15_030_20230503_20240209",
+     "la_m_2909007_se_15_030_20230503_20240209"
+    ],
+    "acquired": [
+     "2023-05-03",
+     "2023-05-04"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 9.63,
+    "items": [
+     "la_m_2909008_sw_15_030_20220130",
+     "la_m_2909008_nw_15_030_20220130",
+     "la_m_2909007_se_15_030_20220130",
+     "la_m_2909007_ne_15_030_20220130"
+    ],
+    "acquired": [
+     "2022-01-30"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
