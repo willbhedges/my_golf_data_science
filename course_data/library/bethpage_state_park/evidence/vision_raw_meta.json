@@ -1,0 +1,162 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "bethpage_state_park",
+ "course": "Bethpage Black",
+ "bbox_snwe": [
+  40.7449885,
+  -73.4476311,
+  40.7524216,
+  -73.443
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 646,
+  "height": 1076,
+  "bounds": [
+   630926,
+   4511486,
+   631572,
+   4512562
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   630926.0,
+   0.0,
+   -1.0,
+   4512562.0
+  ],
+  "ll_bbox_wsen": [
+   -73.44925391549864,
+   40.74380836280029,
+   -73.44137881371331,
+   40.75360113792288
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:29:18Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_NY_LongIsland_Z18_2014_LAS_2015-hag-2m-3-7",
+     "when": "2014-04-21T00:00:00.000000Z",
+     "cells": 690402,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_NY_LongIsland_Z18_2014_LAS_2015",
+      "end_datetime": "2014-04-21T00:00:00.000000Z",
+      "start_datetime": "2014-04-03T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9932469759572778,
+   "file": "hag.tif",
+   "mb": 0.29,
+   "frac_gt_2_5m": 0.4329948668960834
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_NY_LongIsland_Z18_2014_LAS_2015-dtm-2m-3-7",
+     "when": "2014-04-21T00:00:00.000000Z",
+     "cells": 172507,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_NY_LongIsland_Z18_2014_LAS_2015",
+      "end_datetime": "2014-04-21T00:00:00.000000Z",
+      "start_datetime": "2014-04-03T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9927089207821653,
+   "mb": 0.5
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_NY_LongIsland_Z18_2014_LAS_2015-classification-2m-3-2",
+     "when": "2014-04-21T00:00:00.000000Z",
+     "cells": 685568,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_NY_LongIsland_Z18_2014_LAS_2015",
+      "end_datetime": "2014-04-21T00:00:00.000000Z",
+      "start_datetime": "2014-04-03T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.09,
+   "counts": {
+    "0": 9528,
+    "1": 225376,
+    "2": 366284,
+    "9": 192,
+    "10": 244,
+    "17": 93472
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032010111"
+  ],
+  "mb": 0.12,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W075",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 173774,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.01
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 2.67,
+    "items": [
+     "ny_m_4007321_nw_18_060_20220803",
+     "ny_m_4007313_sw_18_060_20220803"
+    ],
+    "acquired": [
+     "2022-08-03"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 2.64,
+    "items": [
+     "ny_m_4007321_nw_18_060_20211103",
+     "ny_m_4007313_sw_18_060_20211103",
+     "ny_m_4007313_se_18_060_20211103"
+    ],
+    "acquired": [
+     "2021-11-03"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
