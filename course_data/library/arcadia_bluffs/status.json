@@ -1,0 +1,41 @@
+{
+ "slug": "arcadia_bluffs",
+ "name": "Arcadia Bluffs Golf Club",
+ "request_name": "Arcadia Bluffs Golf Club",
+ "city": "Arcadia",
+ "state": "MI",
+ "group": "library",
+ "status": "failed",
+ "reasons": [
+  "package: resolve: ambiguous None None [('Arcadia Bluffs Golf Club', 'Arcadia', 18), ('Arcadia Bluffs - South Course', 'Arcadia', 18)] arcadia_bluffs: ambiguous; see packages/arcadia_bluffs/raw/course.json for the candidates "
+ ],
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_arcadia_bluffs.json",
+ "resolve": {
+  "status": "ambiguous",
+  "candidates": [
+   {
+    "name": "Arcadia Bluffs Golf Club",
+    "town": "Arcadia",
+    "holes": 18,
+    "osm": {
+     "type": "way",
+     "id": 293247442
+    }
+   },
+   {
+    "name": "Arcadia Bluffs - South Course",
+    "town": "Arcadia",
+    "holes": 18,
+    "osm": {
+     "type": "way",
+     "id": 693998226
+    }
+   }
+  ]
+ },
+ "built": "2026-10-31T01:41Z"
+}
