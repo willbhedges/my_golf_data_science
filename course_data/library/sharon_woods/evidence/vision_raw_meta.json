@@ -1,0 +1,123 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "sharon_woods",
+ "course": "Sharon Woods Golf Course",
+ "bbox_snwe": [
+  39.273533,
+  -84.395521,
+  39.284037,
+  -84.378066
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1782,
+  "height": 1452,
+  "bounds": [
+   724516,
+   4350244,
+   726298,
+   4351696
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   724516.0,
+   0.0,
+   -1.0,
+   4351696.0
+  ],
+  "ll_bbox_wsen": [
+   -84.39735669777086,
+   39.27201827957079,
+   -84.37623165714301,
+   39.2855520003797
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:41:32Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "OH_StatewideP3_6_B21",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/OH_StatewideP3_6_B21/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 229029481299
+   }
+  ],
+  "used": [
+   {
+    "name": "OH_StatewideP3_6_B21",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/OH_StatewideP3_6_B21/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 229029481299,
+    "cells": 2517095
+   }
+  ],
+  "valid": 0.9728038728268297,
+  "hag_mb": 1.56,
+  "frac_gt_2_5m": 0.6496987011220253,
+  "class_mb": 0.03
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032000133"
+  ],
+  "mb": 0.51,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W087",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 646866,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 7.16,
+    "items": [
+     "oh_m_3908446_sw_17_030_20230522_20231018",
+     "oh_m_3908445_se_17_030_20230522_20231018"
+    ],
+    "acquired": [
+     "2023-05-22"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 9.01,
+    "items": [
+     "oh_m_3908446_sw_16_060_20210910",
+     "oh_m_3908445_se_16_060_20210910"
+    ],
+    "acquired": [
+     "2021-09-10"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
