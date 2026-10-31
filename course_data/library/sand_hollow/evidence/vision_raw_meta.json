@@ -1,0 +1,192 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "sand_hollow",
+ "course": "Sand Hollow Resort",
+ "bbox_snwe": [
+  37.1074,
+  -113.426883,
+  37.128362,
+  -113.397418
+ ],
+ "grid": {
+  "crs": "EPSG:32612",
+  "res_m": 1.0,
+  "width": 2920,
+  "height": 2634,
+  "bounds": [
+   284230,
+   4109356,
+   287150,
+   4111990
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   284230.0,
+   0.0,
+   -1.0,
+   4111990.0
+  ],
+  "ll_bbox_wsen": [
+   -113.42895783688577,
+   37.10568737598036,
+   -113.39536537663645,
+   37.13007833464365
+  ]
+ },
+ "fetched_utc": "2026-10-31T04:23:09Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017-hag-2m-5-7",
+     "when": "2017-07-14T00:00:00.000000Z",
+     "cells": 881840,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017",
+      "end_datetime": "2017-07-14T00:00:00.000000Z",
+      "start_datetime": "2017-01-08T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.11465451784358391
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017-dtm-2m-5-7",
+     "when": "2017-07-14T00:00:00.000000Z",
+     "cells": 220460,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017",
+      "end_datetime": "2017-07-14T00:00:00.000000Z",
+      "start_datetime": "2017-01-08T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.11465451784358391
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017-dsm-2m-5-7",
+     "when": "2017-07-14T00:00:00.000000Z",
+     "cells": 881840,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017",
+      "end_datetime": "2017-07-14T00:00:00.000000Z",
+      "start_datetime": "2017-01-08T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017-dsm-2m-5-6",
+     "when": "2017-07-14T00:00:00.000000Z",
+     "cells": 6809436,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017",
+      "end_datetime": "2017-07-14T00:00:00.000000Z",
+      "start_datetime": "2017-01-08T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 11% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_UT_WashingtonCo_2016_LAS_2017/ept.json",
+    "cov": 1.0,
+    "year": 2017,
+    "count": 7945717936
+   },
+   {
+    "name": "UT_FlamingGorge_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/UT_FlamingGorge_1_2020/ept.json",
+    "cov": 0.472,
+    "year": 2020,
+    "count": 49267458612
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_UT_WashingtonCo_2016_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_UT_WashingtonCo_2016_LAS_2017/ept.json",
+    "cov": 1.0,
+    "year": 2017,
+    "count": 7945717936,
+    "cells": 7690502
+   }
+  ],
+  "valid": 0.9998988464858906,
+  "hag_mb": 2.08,
+  "frac_gt_2_5m": 0.035834087434081195,
+  "class_mb": 0.05
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023011332"
+  ],
+  "mb": 0.04,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W114",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1922820,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.08
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 27.27,
+    "items": [
+     "ut_m_3711361_ne_12_060_20210916",
+     "ut_m_3711353_se_12_060_20210916"
+    ],
+    "acquired": [
+     "2021-09-16"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 20.42,
+    "items": [
+     "ut_m_3711361_ne_12_060_20180811_20181208",
+     "ut_m_3711353_se_12_060_20180811_20181209"
+    ],
+    "acquired": [
+     "2018-08-11"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
