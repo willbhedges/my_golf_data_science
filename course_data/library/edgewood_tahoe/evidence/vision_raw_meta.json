@@ -1,0 +1,142 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "edgewood_tahoe",
+ "course": "Edgewood Tahoe Golf Course",
+ "bbox_snwe": [
+  38.960345,
+  -119.952642,
+  38.975527,
+  -119.9340719
+ ],
+ "grid": {
+  "crs": "EPSG:32611",
+  "res_m": 1.0,
+  "width": 1906,
+  "height": 1980,
+  "bounds": [
+   244038,
+   4316350,
+   245944,
+   4318330
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   244038.0,
+   0.0,
+   -1.0,
+   4318330.0
+  ],
+  "ll_bbox_wsen": [
+   -119.95471233630312,
+   38.95875167314183,
+   -119.93200195828784,
+   38.97712531048922
+  ]
+ },
+ "fetched_utc": "2026-10-31T01:53:37Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": []
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "CA_SierraNevada_8_2022",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/CA_SierraNevada_8_2022/ept.json",
+    "cov": 1.0,
+    "year": 2022,
+    "count": 157251870834
+   }
+  ],
+  "used": [
+   {
+    "name": "CA_SierraNevada_8_2022",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/CA_SierraNevada_8_2022/ept.json",
+    "cov": 1.0,
+    "year": 2022,
+    "count": 157251870834,
+    "cells": 3741090
+   }
+  ],
+  "valid": 0.9913113294540367,
+  "hag_mb": 1.77,
+  "frac_gt_2_5m": 0.3568425599118149,
+  "class_mb": 0.05
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023010123"
+  ],
+  "mb": 0.49,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W120",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 943470,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 14.52,
+    "items": [
+     "ca_m_3811901_nw_11_060_20220813",
+     "ca_m_3811901_ne_11_060_20220813",
+     "nv_m_3811901_ne_11_060_20220614",
+     "nv_m_3811901_nw_11_060_20220610"
+    ],
+    "acquired": [
+     "2022-06-10",
+     "2022-06-14",
+     "2022-08-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 14.28,
+    "items": [
+     "ca_m_3811901_nw_11_060_20200731",
+     "ca_m_3811901_ne_11_060_20200731"
+    ],
+    "acquired": [
+     "2020-07-31"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
