@@ -1,0 +1,137 @@
+{
+ "fetched_utc": "2026-10-31T03:46:46Z",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: cowboys-golf-club-and-grapevine-golf-course: HTTP 404; the-cowboys-golf-club-and-grapevine-golf-course: HTTP 404; cowboys-grapevine-golf-course: HTTP 404; cowboys-grapevine-golf-club: HTTP 404"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 21 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/d9dc59cc-d1ff-475d-88ac-10e9ba3995f3"
+  }
+ ],
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/d9dc59cc-d1ff-475d-88ac-10e9ba3995f3",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/d9dc59cc-d1ff-475d-88ac-10e9ba3995f3",
+    "par": [
+     5,
+     4,
+     3,
+     4,
+     4,
+     3,
+     4,
+     5,
+     4,
+     4,
+     4,
+     4,
+     5,
+     4,
+     3,
+     4,
+     3,
+     5
+    ],
+    "handicap": [
+     11,
+     5,
+     17,
+     9,
+     1,
+     15,
+     3,
+     13,
+     7,
+     14,
+     8,
+     6,
+     2,
+     12,
+     18,
+     4,
+     10,
+     16
+    ],
+    "tee_sets": {
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       533,
+       376,
+       152,
+       366,
+       479,
+       165,
+       468,
+       520,
+       441,
+       361,
+       439,
+       441,
+       600,
+       333,
+       158,
+       455,
+       194,
+       519
+      ],
+      "total": 7000,
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "d9dc59cc-d1ff-475d-88ac-10e9ba3995f3",
+     "course_name": "Cowboys Golf Club and Grapevine Golf Course",
+     "club_name": "Cowboys Golf Club and Grapevine Golf Course",
+     "city": "Grapevine",
+     "state": "TX",
+     "lat": 32.9680265,
+     "lng": -97.0486356,
+     "holes": 18,
+     "yardage": 7000,
+     "website": "http://www.amctheatres.com/movie-theatres/amc-grapevine-mills-30-with-dine-in-theatres"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/d9dc59cc-d1ff-475d-88ac-10e9ba3995f3",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/d9dc59cc-d1ff-475d-88ac-10e9ba3995f3": {
+    "holes": 18,
+    "fit": 8,
+    "share": 0.444,
+    "mean_err": 14.2,
+    "all_sets": 0.444,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
+}

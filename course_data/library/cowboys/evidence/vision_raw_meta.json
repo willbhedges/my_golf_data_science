@@ -1,0 +1,260 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "cowboys",
+ "course": "Cowboys Golf Club and Grapevine Golf Course",
+ "bbox_snwe": [
+  32.950001,
+  -97.058338,
+  32.986052,
+  -97.038934
+ ],
+ "grid": {
+  "crs": "EPSG:32614",
+  "res_m": 1.0,
+  "width": 2130,
+  "height": 4274,
+  "bounds": [
+   681304,
+   3647296,
+   683434,
+   3651570
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   681304.0,
+   0.0,
+   -1.0,
+   3651570.0
+  ],
+  "ll_bbox_wsen": [
+   -97.06044166137494,
+   32.94858522989725,
+   -97.03681438997425,
+   32.98747211270637
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:48:35Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-hag-2m-6-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 247520,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-hag-2m-6-8",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 949200,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-hag-2m-5-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1603876,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-hag-2m-5-8",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 5719140,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9358624371403903,
+   "file": "hag.tif",
+   "mb": 3.39,
+   "frac_gt_2_5m": 0.47419114593974704
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-dtm-2m-6-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 61817,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-dtm-2m-6-8",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 236493,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-dtm-2m-5-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 400920,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-dtm-2m-5-8",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1428743,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9350008018788131,
+   "mb": 5.02
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-classification-2m-6-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 246584,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-classification-2m-6-8",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 947780,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-classification-2m-5-9",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1579764,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "TX_Pecos_Dallas_B3_2018-classification-2m-5-8",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 5573612,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "TX_Pecos_Dallas_B3_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.86,
+   "counts": {
+    "0": 755880,
+    "1": 3599648,
+    "2": 4531036,
+    "9": 190480,
+    "17": 26576
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023112321"
+  ],
+  "mb": 1.12,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N30W099",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 2275905,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.08
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 26.67,
+    "items": [
+     "tx_m_3209708_nw_14_060_20220713",
+     "tx_m_3209708_ne_14_060_20220704"
+    ],
+    "acquired": [
+     "2022-07-04",
+     "2022-07-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 30.36,
+    "items": [
+     "tx_m_3209708_nw_14_060_20201011",
+     "tx_m_3209708_ne_14_060_20201011"
+    ],
+    "acquired": [
+     "2020-10-11"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
