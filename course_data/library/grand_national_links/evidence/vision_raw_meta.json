@@ -1,0 +1,169 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "grand_national_links",
+ "course": "RTJ Grand National Golf",
+ "bbox_snwe": [
+  32.664445,
+  -85.437189,
+  32.696516,
+  -85.407134
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 3112,
+  "height": 3840,
+  "bounds": [
+   646376,
+   3615046,
+   649488,
+   3618886
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   646376.0,
+   0.0,
+   -1.0,
+   3618886.0
+  ],
+  "ll_bbox_wsen": [
+   -85.43905286707944,
+   32.662958347146784,
+   -85.40526224055544,
+   32.69800256825582
+  ]
+ },
+ "fetched_utc": "2026-10-30T23:13:47Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "GA_Central_2_2018-hag-2m-3-10",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 10806910,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "GA_Central_2_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9043378789095973,
+   "file": "hag.tif",
+   "mb": 6.15,
+   "frac_gt_2_5m": 0.5894632504552271
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "GA_Central_2_2018-dtm-2m-3-10",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 2700092,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "GA_Central_2_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9037904348757498,
+   "mb": 7.38
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "GA_Central_2_2018-classification-2m-3-10",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 10579590,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "GA_Central_2_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 1.51,
+   "counts": {
+    "0": 1370490,
+    "1": 767712,
+    "2": 6020449,
+    "3": 86430,
+    "4": 406210,
+    "5": 2992799,
+    "6": 123398,
+    "9": 182100,
+    "17": 492
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032002330"
+  ],
+  "mb": 2.74,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N30W087",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 2987520,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.08
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 43.9,
+    "items": [
+     "al_m_3208521_sw_16_060_20231008_20231127",
+     "al_m_3208521_se_16_060_20231008_20231127",
+     "al_m_3208521_nw_16_060_20231008_20231127",
+     "al_m_3208521_ne_16_060_20231008_20231127"
+    ],
+    "acquired": [
+     "2023-10-08"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 53.24,
+    "items": [
+     "al_m_3208521_se_16_030_20211108",
+     "al_m_3208521_ne_16_030_20211108",
+     "al_m_3208521_sw_16_030_20211102",
+     "al_m_3208521_nw_16_030_20211102"
+    ],
+    "acquired": [
+     "2021-11-02",
+     "2021-11-08"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
