@@ -1,0 +1,159 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "arrowhead",
+ "course": "Arrowhead Golf Club",
+ "bbox_snwe": [
+  39.443645,
+  -105.09019,
+  39.463116,
+  -105.074406
+ ],
+ "grid": {
+  "crs": "EPSG:32613",
+  "res_m": 1.0,
+  "width": 1602,
+  "height": 2404,
+  "bounds": [
+   492118,
+   4365892,
+   493720,
+   4368296
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   492118.0,
+   0.0,
+   -1.0,
+   4368296.0
+  ],
+  "ll_bbox_wsen": [
+   -105.09162654551756,
+   39.44254364718595,
+   -105.07298103815445,
+   39.464218412558175
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:43:57Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_CO_SoPlatteRiver_Lot5_2013_LAS_2015-hag-2m-5-3",
+     "when": "2014-05-31T00:00:00.000000Z",
+     "cells": 3850472,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CO_SoPlatteRiver_Lot5_2013_LAS_2015",
+      "end_datetime": "2014-05-31T00:00:00.000000Z",
+      "start_datetime": "2013-10-25T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9998088911323408,
+   "file": "hag.tif",
+   "mb": 1.69,
+   "frac_gt_2_5m": 0.4465269079208394
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_CO_SoPlatteRiver_Lot5_2013_LAS_2015-dtm-2m-5-3",
+     "when": "2014-05-31T00:00:00.000000Z",
+     "cells": 962433,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CO_SoPlatteRiver_Lot5_2013_LAS_2015",
+      "end_datetime": "2014-05-31T00:00:00.000000Z",
+      "start_datetime": "2013-10-25T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9996167436295313,
+   "mb": 2.32
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_CO_SoPlatteRiver_Lot5_2013_LAS_2015-classification-2m-5-3",
+     "when": "2014-05-31T00:00:00.000000Z",
+     "cells": 3844180,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CO_SoPlatteRiver_Lot5_2013_LAS_2015",
+      "end_datetime": "2014-05-31T00:00:00.000000Z",
+      "start_datetime": "2013-10-25T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.58,
+   "counts": {
+    "0": 7028,
+    "1": 1174656,
+    "2": 1545518,
+    "9": 4616,
+    "10": 160,
+    "17": 1119230
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023101030"
+  ],
+  "mb": 0.16,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W108",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 962802,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 18.81,
+    "items": [
+     "co_m_3910540_nw_13_030_20230925_20240104"
+    ],
+    "acquired": [
+     "2023-09-25"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 13.85,
+    "items": [
+     "co_m_3910540_nw_13_060_20210813"
+    ],
+    "acquired": [
+     "2021-08-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
