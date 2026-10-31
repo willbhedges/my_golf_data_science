@@ -7,7 +7,31 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T03:12Z",
- "note": "course-page workflow, from course_data/requests/course_page_ironhorse.json (only what a golfer types: name, town, state, tees)",
- "town": "Leawood"
+ "requested": "2026-10-30T22:19Z",
+ "note": "course-page workflow, from course_data/requests/course_page_ironhorse.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/ironhorse/osm_supplement.geojson, course_data/library/ironhorse/review.json",
+ "town": "Leawood",
+ "osm_supplement": "course_data/library/ironhorse/osm_supplement.geojson",
+ "tee_overrides": {
+  "1": {
+   "Black": [
+    38.8487715,
+    -94.6346744
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "18": {
+   "Black": 475,
+   "Blue": 434
+  }
+ },
+ "par_overrides": {
+  "18": 4
+ },
+ "green_overrides": {
+  "18": [
+   38.8496699,
+   -94.6362547
+  ]
+ }
 }
