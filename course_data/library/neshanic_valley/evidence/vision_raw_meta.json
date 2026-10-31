@@ -1,0 +1,121 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "neshanic_valley",
+ "course": "Neshanic Valley Golf Course",
+ "bbox_snwe": [
+  40.518526,
+  -74.727697,
+  40.537396,
+  -74.706804
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 2018,
+  "height": 2342,
+  "bounds": [
+   522940,
+   4485226,
+   524958,
+   4487568
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   522940.0,
+   0.0,
+   -1.0,
+   4487568.0
+  ],
+  "ll_bbox_wsen": [
+   -74.7291999766259,
+   40.51738359440868,
+   -74.70528595271603,
+   40.538540664732956
+  ]
+ },
+ "fetched_utc": "2026-10-31T01:52:27Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "NJ_NW6Co_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/NJ_NW6Co_2017/ept.json",
+    "cov": 1.0,
+    "year": 2017,
+    "count": 30097024116
+   }
+  ],
+  "used": [
+   {
+    "name": "NJ_NW6Co_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/NJ_NW6Co_2017/ept.json",
+    "cov": 1.0,
+    "year": 2017,
+    "count": 30097024116,
+    "cells": 4564396
+   }
+  ],
+  "valid": 0.9657734530980358,
+  "hag_mb": 1.55,
+  "frac_gt_2_5m": 0.24393375927497948,
+  "class_mb": 0.06
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032010101"
+  ],
+  "mb": 0.51,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W075",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1181539,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 11.65,
+    "items": [
+     "nj_m_4007427_sw_18_030_20230820_20231019"
+    ],
+    "acquired": [
+     "2023-08-20"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 13.67,
+    "items": [
+     "nj_m_4007427_sw_18_060_20220703"
+    ],
+    "acquired": [
+     "2022-07-03"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
