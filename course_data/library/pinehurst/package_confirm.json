@@ -1,0 +1,122 @@
+{
+ "schema": "golf_confirm/1",
+ "course": {
+  "name": "Pinehurst No. 2",
+  "osm": {
+   "type": "way",
+   "id": 1358696570
+  },
+  "state": "NC"
+ },
+ "method": "routing/2",
+ "n_holes": 0,
+ "card": false,
+ "holes": [],
+ "summary": {
+  "confirmed": 0,
+  "to_check": 0,
+  "taps_so_far": 0,
+  "done": true,
+  "p_stop": 0.95,
+  "expected_correct_holes": 0
+ },
+ "questions": [],
+ "history": [],
+ "candidates": {
+  "greens": [],
+  "tees": [
+   {
+    "id": "lidar:0",
+    "ll": [
+     -79.45408660815502,
+     35.19859519134148
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:15",
+    "ll": [
+     -79.45896585033742,
+     35.192946475951935
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:17",
+    "ll": [
+     -79.46274664135973,
+     35.19050249096219
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:18",
+    "ll": [
+     -79.46757024772768,
+     35.19051957896452
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:19",
+    "ll": [
+     -79.46757493238299,
+     35.18943652450184
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:22",
+    "ll": [
+     -79.46799593531102,
+     35.188977921242824
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:24",
+    "ll": [
+     -79.46857929274955,
+     35.18877603216585
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:28",
+    "ll": [
+     -79.46602070367805,
+     35.18820684529856
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:32",
+    "ll": [
+     -79.4651252556494,
+     35.187727671613786
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:35",
+    "ll": [
+     -79.4591109907179,
+     35.18647728300291
+    ],
+    "src": "lidar"
+   },
+   {
+    "id": "lidar:41",
+    "ll": [
+     -79.4598118543897,
+     35.18518317335932
+    ],
+    "src": "lidar"
+   }
+  ]
+ },
+ "answer_format": {
+  "question": "<questions[].id>",
+  "answer": "'yes' | 'no' (confirm) or {'tee_ll': [lon, lat], 'green_ll': [lon, lat]} (locate)"
+ }
+}
