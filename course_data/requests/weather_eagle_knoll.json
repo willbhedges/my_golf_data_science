@@ -2,11 +2,17 @@
  "slug": "eagle_knoll",
  "name": "Eagle Knoll Golf Club, Hartsburg, Missouri",
  "lat": 38.6961,
- "lon": -92.2630,
+ "lon": -92.263,
  "coord_source": "course_data/packages/eagle_knoll/package.json course centre (OSM way/389825776)",
- "days": ["2026-11-07", "2026-11-08"],
- "hours": [6, 19],
- "not_before": "2026-11-01",
- "rev": 1,
+ "days": [
+  "2026-11-07",
+  "2026-11-08"
+ ],
+ "hours": [
+  6,
+  19
+ ],
+ "not_before": "2026-10-31",
+ "rev": 2,
  "note": "NCCGA Central Regional Tournament 2, Sat-Sun Nov 7-8 2026 (9:00 am both days). Before Nov 1 the fetch is skipped (not_before) and the page uses the config climate normals; to refresh, bump rev (weather_course.yml writes course_data/weather/forecast_eagle_knoll.json, config 'forecast' points at it), then rebuild the page and, if the temperatures moved, re-run the decisions (nccga_v2_eagle_knoll*.json, offsets [])."
 }

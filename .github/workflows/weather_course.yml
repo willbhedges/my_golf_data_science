@@ -18,14 +18,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 2
+          ref: ${{ github.sha }}
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Fetch
         run: |
-          git diff --name-only HEAD~1 HEAD -- 'course_data/requests/weather_*.json' > /tmp/reqs.txt || true
+          # requests changed by THIS push (the branch tip may already hold other agents' commits)
+          B="${{ github.event.before }}"
+          if git cat-file -e "$B^{commit}" 2>/dev/null; then
+            git diff --name-only "$B" "${{ github.sha }}" -- 'course_data/requests/weather_*.json' > /tmp/reqs.txt || true
+          else
+            git diff --name-only HEAD~1 HEAD -- 'course_data/requests/weather_*.json' > /tmp/reqs.txt || true
+          fi
           [ -s /tmp/reqs.txt ] || ls -t course_data/requests/weather_*.json | head -1 > /tmp/reqs.txt
           for r in $(cat /tmp/reqs.txt); do python course_data/weather/fetch_course_forecast.py "$r" || echo "failed $r"; done
       - name: Commit
