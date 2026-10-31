@@ -7,7 +7,36 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T11:32Z",
- "note": "course-page workflow, from course_data/requests/course_page_harvester.json (only what a golfer types: name, town, state, tees)",
- "town": "Rhodes"
+ "requested": "2026-10-30T22:13Z",
+ "note": "course-page workflow, from course_data/requests/course_page_harvester.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/harvester/osm_supplement.geojson, course_data/library/harvester/review.json",
+ "town": "Rhodes",
+ "osm_supplement": "course_data/library/harvester/osm_supplement.geojson",
+ "tee_overrides": {
+  "9": {
+   "Black": [
+    41.8669588,
+    -93.2115003
+   ]
+  },
+  "14": {
+   "Black": [
+    41.8670889,
+    -93.2174521
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "9": {
+   "*": 437
+  },
+  "13": {
+   "*": 414
+  },
+  "14": {
+   "*": 180
+  },
+  "16": {
+   "*": 500
+  }
+ }
 }
