@@ -1,0 +1,127 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "stonewall",
+ "course": "The Arnold Palmer Signature Golf Course at Stonewall Resort",
+ "bbox_snwe": [
+  38.939758,
+  -80.512985,
+  38.953104,
+  -80.489608
+ ],
+ "grid": {
+  "crs": "EPSG:32617",
+  "res_m": 1.0,
+  "width": 2276,
+  "height": 1734,
+  "bounds": [
+   542078,
+   4310084,
+   544354,
+   4311818
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   542078.0,
+   0.0,
+   -1.0,
+   4311818.0
+  ],
+  "ll_bbox_wsen": [
+   -80.51448460292121,
+   38.938568520841585,
+   -80.48811165423434,
+   38.954305978645266
+  ]
+ },
+ "fetched_utc": "2026-10-31T05:13:20Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "WV_FEMAR3_Southcentral_B2_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WV_FEMAR3_Southcentral_B2_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 183985958653
+   }
+  ],
+  "used": [
+   {
+    "name": "WV_FEMAR3_Southcentral_B2_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WV_FEMAR3_Southcentral_B2_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 183985958653,
+    "cells": 3777952
+   }
+  ],
+  "valid": 0.9572714023063996,
+  "hag_mb": 2.32,
+  "frac_gt_2_5m": 0.6366467811150098,
+  "class_mb": 0.06
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032001123"
+  ],
+  "mb": 0.57,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W081",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 986646,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 14.39,
+    "items": [
+     "wv_m_3808005_sw_17_060_20221010",
+     "wv_m_3808005_nw_17_060_20221010",
+     "wv_m_3808004_se_17_060_20221010",
+     "wv_m_3808004_ne_17_060_20221010"
+    ],
+    "acquired": [
+     "2022-10-10"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 15.79,
+    "items": [
+     "wv_m_3808005_sw_17_060_20200704",
+     "wv_m_3808005_nw_17_060_20200704",
+     "wv_m_3808004_se_17_060_20200704",
+     "wv_m_3808004_ne_17_060_20200704"
+    ],
+    "acquired": [
+     "2020-07-04"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
