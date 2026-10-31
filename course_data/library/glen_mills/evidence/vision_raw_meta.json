@@ -1,0 +1,170 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "glen_mills",
+ "course": "The Golf Course at Glen Mills",
+ "bbox_snwe": [
+  39.913283,
+  -75.514696,
+  39.927228,
+  -75.492629
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 2136,
+  "height": 1800,
+  "bounds": [
+   455890,
+   4418128,
+   458026,
+   4419928
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   455890.0,
+   0.0,
+   -1.0,
+   4419928.0
+  ],
+  "ll_bbox_wsen": [
+   -75.51621372144542,
+   39.91209353564791,
+   -75.49110140709585,
+   39.92841933747764
+  ]
+ },
+ "fetched_utc": "2026-10-31T03:44:06Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_DE_DelawareValleyHD_5A_2015_LAS_2017-hag-2m-1-1",
+     "when": "2015-11-25T00:00:00.000000Z",
+     "cells": 3708172,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_DelawareValleyHD_5A_2015_LAS_2017",
+      "end_datetime": "2015-11-25T00:00:00.000000Z",
+      "start_datetime": "2015-04-12T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9644642114024137,
+   "file": "hag.tif",
+   "mb": 1.87,
+   "frac_gt_2_5m": 0.55410164377861
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_DE_DelawareValleyHD_5A_2015_LAS_2017-dtm-2m-1-1",
+     "when": "2015-11-25T00:00:00.000000Z",
+     "cells": 926419,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_DelawareValleyHD_5A_2015_LAS_2017",
+      "end_datetime": "2015-11-25T00:00:00.000000Z",
+      "start_datetime": "2015-04-12T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9638150228880566,
+   "mb": 2.59
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_DE_DelawareValleyHD_5A_2015_LAS_2017-classification-2m-1-1",
+     "when": "2015-11-25T00:00:00.000000Z",
+     "cells": 3701216,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_DelawareValleyHD_5A_2015_LAS_2017",
+      "end_datetime": "2015-11-25T00:00:00.000000Z",
+      "start_datetime": "2015-04-12T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_DE_DelawareValleyHD_5A_2015_LAS_2017-classification-2m-1-0",
+     "when": "2015-11-25T00:00:00.000000Z",
+     "cells": 134488,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_DelawareValleyHD_5A_2015_LAS_2017",
+      "end_datetime": "2015-11-25T00:00:00.000000Z",
+      "start_datetime": "2015-04-12T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.3,
+   "counts": {
+    "0": 9096,
+    "1": 1147798,
+    "2": 2687906
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032010102"
+  ],
+  "mb": 0.77,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W078",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 961200,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 14.15,
+    "items": [
+     "pa_m_3907505_sw_18_060_20220517",
+     "pa_m_3907504_se_18_060_20220510"
+    ],
+    "acquired": [
+     "2022-05-10",
+     "2022-05-17"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 13.01,
+    "items": [
+     "pa_m_3907505_sw_18_060_20191019_20191203",
+     "pa_m_3907504_se_18_060_20191019_20191203"
+    ],
+    "acquired": [
+     "2019-10-19"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
