@@ -7,7 +7,7 @@
  "group": "library",
  "status": "failed",
  "reasons": [
-  "package: resolve: not_found None None [] kokopelli: not_found; see packages/kokopelli/raw/course.json for the candidates "
+  "package: overpass failed: https://overpass-api.de/api/interpreter: ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\\'overpass-api.de\\', port=443): Max retries exceeded with url: /api/interpreter (Caused by NewConnectionError(\"HTTPSConnection(host=\\'overpass-api.de\\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable\"))')) overpass failed: https://overpass.kumi.syst"
  ],
  "check_holes": [],
  "tee_sets": [],
@@ -15,8 +15,8 @@
  "page_bytes": null,
  "request": "course_data/requests/course_page_kokopelli.json",
  "resolve": {
-  "status": "not_found",
+  "status": null,
   "candidates": []
  },
- "built": "2026-10-30T12:30Z"
+ "built": "2026-10-30T22:07Z"
 }
