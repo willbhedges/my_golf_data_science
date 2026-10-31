@@ -7,7 +7,285 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T11:57Z",
- "note": "course-page workflow, from course_data/requests/course_page_tournament_club_iowa.json (only what a golfer types: name, town, state, tees)",
- "town": "Polk City"
+ "requested": "2026-10-31T01:52Z",
+ "note": "course-page workflow, from course_data/requests/course_page_tournament_club_iowa.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/tournament_club_iowa/osm_supplement.geojson, course_data/library/tournament_club_iowa/review.json",
+ "town": "Polk City",
+ "osm_supplement": "course_data/library/tournament_club_iowa/osm_supplement.geojson",
+ "ignore_osm_holes": true,
+ "tee_overrides": {
+  "10": {
+   "King": [
+    41.7814814,
+    -93.719411
+   ],
+   "Palmer": [
+    41.7815528,
+    -93.7194389
+   ]
+  },
+  "11": {
+   "King": [
+    41.7831814,
+    -93.7216092
+   ],
+   "Palmer": [
+    41.7832011,
+    -93.7216817
+   ]
+  },
+  "12": {
+   "King": [
+    41.7848407,
+    -93.7252262
+   ],
+   "Palmer": [
+    41.784848,
+    -93.7253912
+   ]
+  },
+  "13": {
+   "King": [
+    41.783841,
+    -93.7314556
+   ],
+   "Palmer": [
+    41.7838004,
+    -93.7312194
+   ]
+  },
+  "14": {
+   "King": [
+    41.7832837,
+    -93.7248594
+   ],
+   "Palmer": [
+    41.7831059,
+    -93.7249768
+   ]
+  },
+  "15": {
+   "King": [
+    41.7808789,
+    -93.7236485
+   ],
+   "Palmer": [
+    41.7808006,
+    -93.7235503
+   ]
+  },
+  "16": {
+   "King": [
+    41.7791625,
+    -93.7218703
+   ],
+   "Palmer": [
+    41.7789553,
+    -93.7214853
+   ]
+  },
+  "17": {
+   "King": [
+    41.7776855,
+    -93.7194519
+   ],
+   "Palmer": [
+    41.7776952,
+    -93.7185928
+   ]
+  },
+  "18": {
+   "King": [
+    41.7785413,
+    -93.7117266
+   ],
+   "Palmer": [
+    41.7785682,
+    -93.7119217
+   ]
+  },
+  "1": {
+   "King": [
+    41.7796849,
+    -93.7188022
+   ],
+   "Palmer": [
+    41.7798564,
+    -93.7186295
+   ]
+  },
+  "2": {
+   "King": [
+    41.784137,
+    -93.7170244
+   ],
+   "Palmer": [
+    41.7844075,
+    -93.7171267
+   ]
+  },
+  "3": {
+   "King": [
+    41.7886617,
+    -93.7189965
+   ],
+   "Palmer": [
+    41.7886061,
+    -93.7191564
+   ]
+  },
+  "4": {
+   "King": [
+    41.7887247,
+    -93.7201566
+   ],
+   "Palmer": [
+    41.7888143,
+    -93.7202708
+   ]
+  },
+  "5": {
+   "King": [
+    41.7915145,
+    -93.7250328
+   ],
+   "Palmer": [
+    41.7913878,
+    -93.7251911
+   ]
+  },
+  "6": {
+   "King": [
+    41.7909766,
+    -93.7286049
+   ],
+   "Palmer": [
+    41.7907302,
+    -93.7284764
+   ]
+  },
+  "7": {
+   "King": [
+    41.7872229,
+    -93.7244194
+   ],
+   "Palmer": [
+    41.7870119,
+    -93.7243221
+   ]
+  },
+  "8": {
+   "King": [
+    41.7838962,
+    -93.7222302
+   ],
+   "Palmer": [
+    41.7842303,
+    -93.7216834
+   ]
+  },
+  "9": {
+   "King": [
+    41.7863844,
+    -93.719052
+   ],
+   "Palmer": [
+    41.7858875,
+    -93.7189357
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "10": {
+   "King": 356,
+   "Palmer": 347
+  },
+  "11": {
+   "King": 376,
+   "Palmer": 369
+  },
+  "12": {
+   "King": 442,
+   "Palmer": 427
+  },
+  "13": {
+   "King": 526,
+   "Palmer": 504
+  },
+  "14": {
+   "King": 325,
+   "Palmer": 301
+  },
+  "15": {
+   "King": 195,
+   "Palmer": 182
+  },
+  "16": {
+   "King": 231,
+   "Palmer": 188
+  },
+  "17": {
+   "King": 638,
+   "Palmer": 560
+  },
+  "18": {
+   "King": 459,
+   "Palmer": 441
+  },
+  "1": {
+   "King": 553,
+   "Palmer": 527
+  },
+  "2": {
+   "King": 420,
+   "Palmer": 386
+  },
+  "3": {
+   "King": 186,
+   "Palmer": 170
+  },
+  "4": {
+   "King": 593,
+   "Palmer": 578
+  },
+  "5": {
+   "King": 185,
+   "Palmer": 164
+  },
+  "6": {
+   "King": 480,
+   "Palmer": 448
+  },
+  "7": {
+   "King": 386,
+   "Palmer": 359
+  },
+  "8": {
+   "King": 234,
+   "Palmer": 170
+  },
+  "9": {
+   "King": 456,
+   "Palmer": 395
+  }
+ },
+ "par_overrides": {
+  "10": 4,
+  "11": 4,
+  "12": 4,
+  "13": 5,
+  "14": 4,
+  "15": 3,
+  "16": 3,
+  "17": 5,
+  "18": 4,
+  "1": 5,
+  "2": 4,
+  "3": 3,
+  "4": 5,
+  "5": 3,
+  "6": 4,
+  "7": 4,
+  "8": 3,
+  "9": 4
+ }
 }
