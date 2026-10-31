@@ -1,12 +1,12 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-10-31T01:30Z",
+ "updated": "2026-10-31T02:08Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 0,
-  "needs confirm": 49,
-  "failed": 9
+  "needs confirm": 44,
+  "failed": 17
  },
  "courses": [
   {
@@ -573,6 +573,78 @@
    "group": "library"
   },
   {
+   "slug": "grand_national_links",
+   "name": "RTJ Grand National Golf",
+   "city": "Opelika",
+   "state": "AL",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+   ],
+   "reasons": [
+    "scorecard not matched (source None, flags [])",
+    "27 holes built vs the card's 0",
+    "pars sum to 95, card None",
+    "27 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "osm_back",
+     "yards": null,
+     "par": null,
+     "rating": null,
+     "slope": null,
+     "colour": null,
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "osm_back"
+   ],
+   "page": "course_data/library/grand_national_links/page.html",
+   "page_bytes": 1325148,
+   "qa_report": "course_data/library/grand_national_links/qa_report.md",
+   "center": [
+    32.680480349999996,
+    -85.4221614
+   ],
+   "osm": "way/328838760",
+   "holes": 27,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T23:30Z",
+   "group": "library"
+  },
+  {
    "slug": "oxmoor_valley",
    "name": "RTJ Oxmoor Valley Golf",
    "city": "Birmingham",
@@ -679,6 +751,95 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T21:31Z",
+   "group": "library"
+  },
+  {
+   "slug": "rebsamen",
+   "name": "Rebsamen Golf Course",
+   "city": "Little Rock",
+   "state": "AR",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    9,
+    12,
+    13,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source opengolfapi, flags ['Black: holes sum to 6995 but the source says 7033 (-38): mixed card versions', 'White: holes sum to 5911 but the source says 5889 (+22): mixed card versions'])",
+    "9 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Black",
+     "yards": 6995,
+     "par": 72,
+     "rating": 72.1,
+     "slope": 129,
+     "colour": "black",
+     "on_page": "solved"
+    },
+    {
+     "name": "Blue",
+     "yards": 6418,
+     "par": 72,
+     "rating": 69.2,
+     "slope": 122,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 5911,
+     "par": 72,
+     "rating": 67.8,
+     "slope": 118,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Gold",
+     "yards": 5400,
+     "par": 72,
+     "rating": 71,
+     "slope": 120,
+     "colour": "gold",
+     "on_page": null
+    },
+    {
+     "name": "Red",
+     "yards": 4776,
+     "par": 72,
+     "rating": 65.8,
+     "slope": 105,
+     "colour": "red",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Black",
+    "Blue"
+   ],
+   "page": "course_data/library/rebsamen/page.html",
+   "page_bytes": 2239077,
+   "qa_report": "course_data/library/rebsamen/qa_report.md",
+   "center": [
+    34.7806003,
+    -92.31971444999999
+   ],
+   "osm": "way/77018704",
+   "holes": 18,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T22:20Z",
    "group": "library"
   },
   {
@@ -1398,6 +1559,108 @@
    "group": "library"
   },
   {
+   "slug": "tpc_sawgrass",
+   "name": "TPC Sawgrass",
+   "city": "Ponte Vedra Beach",
+   "state": "FL",
+   "status": "needs confirm",
+   "check_holes": [
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "reasons": [
+    "5 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Tpc",
+     "yards": 6847,
+     "par": 72,
+     "rating": 74,
+     "slope": 134,
+     "colour": "tpc",
+     "on_page": "solved"
+    },
+    {
+     "name": "Web",
+     "yards": 6847,
+     "par": 72,
+     "rating": null,
+     "slope": null,
+     "colour": "web",
+     "on_page": null
+    },
+    {
+     "name": "Blue",
+     "yards": 6502,
+     "par": 72,
+     "rating": 72.1,
+     "slope": 131,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "B-W Blended",
+     "yards": 6272,
+     "par": 72,
+     "rating": 71,
+     "slope": 128,
+     "colour": "b-w blended",
+     "on_page": null
+    },
+    {
+     "name": "White",
+     "yards": 6079,
+     "par": 72,
+     "rating": 70.1,
+     "slope": 127,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "W-G Blended",
+     "yards": 5526,
+     "par": 72,
+     "rating": 67.8,
+     "slope": 117,
+     "colour": "w-g blended",
+     "on_page": null
+    },
+    {
+     "name": "Green",
+     "yards": 5126,
+     "par": 72,
+     "rating": 65.9,
+     "slope": 113,
+     "colour": "green",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Tpc",
+    "Blue"
+   ],
+   "page": "course_data/library/tpc_sawgrass/page.html",
+   "page_bytes": 2762125,
+   "qa_report": "course_data/library/tpc_sawgrass/qa_report.md",
+   "center": [
+    30.202551,
+    -81.39585245
+   ],
+   "osm": "relation/1783123",
+   "holes": 18,
+   "days": [
+    "2026-10-31",
+    "2026-11-01"
+   ],
+   "weather": "forecast",
+   "built": "2026-10-30T22:28Z",
+   "group": "library"
+  },
+  {
    "slug": "bobby_jones",
    "name": "Bobby Jones Golf Club",
    "city": "Atlanta",
@@ -1757,94 +2020,6 @@
    "group": "library"
   },
   {
-   "slug": "harvester",
-   "name": "The Harvester Golf Club",
-   "city": "Rhodes",
-   "state": "IA",
-   "status": "needs confirm",
-   "check_holes": [
-    3,
-    6,
-    7,
-    8,
-    12,
-    13,
-    14,
-    16,
-    18
-   ],
-   "reasons": [
-    "9 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "Black",
-     "yards": 7340,
-     "par": 72,
-     "rating": 76,
-     "slope": 140,
-     "colour": "black",
-     "on_page": "solved"
-    },
-    {
-     "name": "Blue",
-     "yards": 6810,
-     "par": 72,
-     "rating": 73.1,
-     "slope": 132,
-     "colour": "blue",
-     "on_page": "solved"
-    },
-    {
-     "name": "White",
-     "yards": 6395,
-     "par": 72,
-     "rating": 70.8,
-     "slope": 128,
-     "colour": "white",
-     "on_page": null
-    },
-    {
-     "name": "Yellow",
-     "yards": 5790,
-     "par": 72,
-     "rating": 68.3,
-     "slope": 117,
-     "colour": "yellow",
-     "on_page": null
-    },
-    {
-     "name": "Red",
-     "yards": 5115,
-     "par": 72,
-     "rating": 68.9,
-     "slope": 120,
-     "colour": "red",
-     "on_page": null
-    }
-   ],
-   "solved_sets": [
-    "Black",
-    "Blue"
-   ],
-   "page": "course_data/library/harvester/page.html",
-   "page_bytes": 4771116,
-   "qa_report": "course_data/library/harvester/qa_report.md",
-   "center": [
-    41.87053135,
-    -93.21361755
-   ],
-   "osm": "way/325314320",
-   "holes": 18,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T11:51Z",
-   "group": "library"
-  },
-  {
    "slug": "tournament_club_iowa",
    "name": "Tournament Club of Iowa",
    "city": "Polk City",
@@ -1993,87 +2168,6 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T21:58Z",
-   "group": "library"
-  },
-  {
-   "slug": "annbriar",
-   "name": "Annbriar Golf Course",
-   "city": "Waterloo",
-   "state": "IL",
-   "status": "needs confirm",
-   "check_holes": [
-    9,
-    13
-   ],
-   "reasons": [
-    "2 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "Hickory",
-     "yards": 6841,
-     "par": 72,
-     "rating": 72.8,
-     "slope": 136,
-     "colour": "hickory",
-     "on_page": "solved"
-    },
-    {
-     "name": "Black",
-     "yards": 6517,
-     "par": 72,
-     "rating": 69.1,
-     "slope": 135,
-     "colour": "black",
-     "on_page": "solved"
-    },
-    {
-     "name": "Maple",
-     "yards": 5946,
-     "par": 72,
-     "rating": 67,
-     "slope": 130,
-     "colour": "brown",
-     "on_page": null
-    },
-    {
-     "name": "Pine",
-     "yards": 5446,
-     "par": 72,
-     "rating": 70.6,
-     "slope": 118,
-     "colour": "green",
-     "on_page": null
-    },
-    {
-     "name": "Oak",
-     "yards": 4783,
-     "par": 72,
-     "rating": 66.4,
-     "slope": 110,
-     "colour": "brown",
-     "on_page": null
-    }
-   ],
-   "solved_sets": [
-    "Hickory",
-    "Black"
-   ],
-   "page": "course_data/library/annbriar/page.html",
-   "page_bytes": 5125701,
-   "qa_report": "course_data/library/annbriar/qa_report.md",
-   "center": [
-    38.351022549999996,
-    -90.1997016
-   ],
-   "osm": "way/1466372251",
-   "holes": 18,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T11:57Z",
    "group": "library"
   },
   {
@@ -2321,70 +2415,6 @@
    "group": "library"
   },
   {
-   "slug": "dubs_dread",
-   "name": "Dub's Dread Golf Club",
-   "city": "Kansas City",
-   "state": "KS",
-   "status": "needs confirm",
-   "check_holes": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18
-   ],
-   "reasons": [
-    "holes not all mapped in OSM (hole method: structure)",
-    "scorecard not matched (source None, flags [])",
-    "18 holes built vs the card's 0",
-    "pars sum to 72, card None",
-    "18 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "osm_back",
-     "yards": null,
-     "par": null,
-     "rating": null,
-     "slope": null,
-     "colour": null,
-     "on_page": "solved"
-    }
-   ],
-   "solved_sets": [
-    "osm_back"
-   ],
-   "page": "course_data/library/dubs_dread/page.html",
-   "page_bytes": 2592662,
-   "qa_report": "course_data/library/dubs_dread/qa_report.md",
-   "center": [
-    39.1685497,
-    -94.87528995
-   ],
-   "osm": "way/505160823",
-   "holes": 18,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T00:15Z",
-   "group": "library"
-  },
-  {
    "slug": "eagle_bend",
    "name": "Eagle Bend Golf Course",
    "city": "Lawrence",
@@ -2467,165 +2497,6 @@
    "group": "library"
   },
   {
-   "slug": "falcon_ridge",
-   "name": "Falcon Ridge Golf Course",
-   "city": "Lenexa",
-   "state": "KS",
-   "status": "needs confirm",
-   "check_holes": [
-    6,
-    7,
-    8,
-    9,
-    11,
-    12,
-    13,
-    14,
-    15,
-    18
-   ],
-   "reasons": [
-    "OSM greens 11 of 18 holes",
-    "10 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "Black",
-     "yards": 6820,
-     "par": 72,
-     "rating": 72.8,
-     "slope": 130,
-     "colour": "black",
-     "on_page": "solved"
-    },
-    {
-     "name": "Blue",
-     "yards": 6329,
-     "par": 72,
-     "rating": 70.6,
-     "slope": 126,
-     "colour": "blue",
-     "on_page": "solved"
-    },
-    {
-     "name": "White",
-     "yards": 6030,
-     "par": 72,
-     "rating": 69.2,
-     "slope": 123,
-     "colour": "white",
-     "on_page": null
-    },
-    {
-     "name": "Red",
-     "yards": 5160,
-     "par": 72,
-     "rating": 69.6,
-     "slope": 119,
-     "colour": "red",
-     "on_page": null
-    }
-   ],
-   "solved_sets": [
-    "Black",
-    "Blue"
-   ],
-   "page": "course_data/library/falcon_ridge/page.html",
-   "page_bytes": 4992553,
-   "qa_report": "course_data/library/falcon_ridge/qa_report.md",
-   "center": [
-    38.954299199999994,
-    -94.8245417
-   ],
-   "osm": "relation/3961566",
-   "holes": 18,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T03:27Z",
-   "group": "library"
-  },
-  {
-   "slug": "heritage_park",
-   "name": "Heritage Park Golf Course",
-   "city": "Olathe",
-   "state": "KS",
-   "status": "needs confirm",
-   "check_holes": [
-    5,
-    7,
-    9,
-    12,
-    18
-   ],
-   "reasons": [
-    "holes not all mapped in OSM (hole method: v2+structure)",
-    "16 holes built vs the card's 18",
-    "pars sum to 64, card 71",
-    "5 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "Blue",
-     "yards": 6876,
-     "par": 71,
-     "rating": 73.6,
-     "slope": 131,
-     "colour": "blue",
-     "on_page": "solved"
-    },
-    {
-     "name": "White",
-     "yards": 6327,
-     "par": 71,
-     "rating": 70.8,
-     "slope": 129,
-     "colour": "white",
-     "on_page": "solved"
-    },
-    {
-     "name": "Red",
-     "yards": 5797,
-     "par": 71,
-     "rating": 73.9,
-     "slope": 128,
-     "colour": "red",
-     "on_page": null
-    },
-    {
-     "name": "Silver",
-     "yards": 5181,
-     "par": 71,
-     "rating": 64.9,
-     "slope": 109,
-     "colour": "silver",
-     "on_page": null
-    }
-   ],
-   "solved_sets": [
-    "Blue",
-    "White"
-   ],
-   "page": "course_data/library/heritage_park/page.html",
-   "page_bytes": 4552166,
-   "qa_report": "course_data/library/heritage_park/qa_report.md",
-   "center": [
-    38.827369250000004,
-    -94.75508335
-   ],
-   "osm": "way/254360563",
-   "holes": 16,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T03:44Z",
-   "group": "library"
-  },
-  {
    "slug": "lake_shawnee",
    "name": "Lake Shawnee Golf Course",
    "city": "Topeka",
@@ -2700,168 +2571,6 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T03:59Z",
-   "group": "library"
-  },
-  {
-   "slug": "painted_hills",
-   "name": "Painted Hills Golf Club",
-   "city": "Kansas City",
-   "state": "KS",
-   "status": "needs confirm",
-   "check_holes": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18
-   ],
-   "reasons": [
-    "holes not all mapped in OSM (hole method: geometry)",
-    "pars sum to 84, card 70",
-    "18 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "Blue",
-     "yards": 5831,
-     "par": 70,
-     "rating": 67.7,
-     "slope": 119,
-     "colour": "blue",
-     "on_page": "solved"
-    },
-    {
-     "name": "White",
-     "yards": 5398,
-     "par": 70,
-     "rating": 65.7,
-     "slope": 117,
-     "colour": "white",
-     "on_page": "solved"
-    },
-    {
-     "name": "Gold",
-     "yards": 4829,
-     "par": 70,
-     "rating": 65.9,
-     "slope": 102,
-     "colour": "gold",
-     "on_page": null
-    },
-    {
-     "name": "Red",
-     "yards": 4264,
-     "par": 70,
-     "rating": 63.4,
-     "slope": 102,
-     "colour": "red",
-     "on_page": null
-    }
-   ],
-   "solved_sets": [
-    "Blue",
-    "White"
-   ],
-   "page": "course_data/library/painted_hills/page.html",
-   "page_bytes": 2605760,
-   "qa_report": "course_data/library/painted_hills/qa_report.md",
-   "center": [
-    39.1242683,
-    -94.7417212
-   ],
-   "osm": "relation/8086481",
-   "holes": 18,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T00:22Z",
-   "group": "library"
-  },
-  {
-   "slug": "prairie_highlands",
-   "name": "Prairie Highlands Golf Course",
-   "city": "Olathe",
-   "state": "KS",
-   "status": "needs confirm",
-   "check_holes": [
-    11,
-    17
-   ],
-   "reasons": [
-    "2 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "Black",
-     "yards": 7066,
-     "par": 72,
-     "rating": 74.5,
-     "slope": 129,
-     "colour": "black",
-     "on_page": "solved"
-    },
-    {
-     "name": "Blue",
-     "yards": 6481,
-     "par": 72,
-     "rating": 71.6,
-     "slope": 126,
-     "colour": "blue",
-     "on_page": "solved"
-    },
-    {
-     "name": "White",
-     "yards": 5770,
-     "par": 72,
-     "rating": 67.6,
-     "slope": 116,
-     "colour": "white",
-     "on_page": null
-    },
-    {
-     "name": "Red",
-     "yards": 5122,
-     "par": 72,
-     "rating": 69.6,
-     "slope": 114,
-     "colour": "red",
-     "on_page": null
-    }
-   ],
-   "solved_sets": [
-    "Black",
-    "Blue"
-   ],
-   "page": "course_data/library/prairie_highlands/page.html",
-   "page_bytes": 4681638,
-   "qa_report": "course_data/library/prairie_highlands/qa_report.md",
-   "center": [
-    38.8617819,
-    -94.8832094
-   ],
-   "osm": "relation/11701165",
-   "holes": 18,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T03:25Z",
    "group": "library"
   },
   {
@@ -3804,49 +3513,6 @@
    "group": "library"
   },
   {
-   "slug": "old_kinderhook",
-   "name": "Old Kinderhook Resort, Golf, Club & Spa",
-   "city": "Camdenton",
-   "state": "MO",
-   "status": "needs confirm",
-   "check_holes": [
-    9
-   ],
-   "reasons": [
-    "1 hole(s) with a CHECK"
-   ],
-   "tee_sets": [
-    {
-     "name": "Web",
-     "yards": 6726,
-     "par": 71,
-     "rating": null,
-     "slope": null,
-     "colour": "web",
-     "on_page": "solved"
-    }
-   ],
-   "solved_sets": [
-    "Web"
-   ],
-   "page": "course_data/library/old_kinderhook/page.html",
-   "page_bytes": 1340660,
-   "qa_report": "course_data/library/old_kinderhook/qa_report.md",
-   "center": [
-    38.0014934,
-    -92.80425685
-   ],
-   "osm": "way/393079215",
-   "holes": 18,
-   "days": [
-    "2026-10-31",
-    "2026-11-01"
-   ],
-   "weather": "forecast",
-   "built": "2026-10-30T04:13Z",
-   "group": "library"
-  },
-  {
    "slug": "osage_national",
    "name": "Osage National Golf Club",
    "city": "Lake Ozark",
@@ -4474,6 +4140,52 @@
    "group": "library"
   },
   {
+   "slug": "harvester",
+   "name": "Harvester Golf Club",
+   "city": "Rhodes",
+   "state": "IA",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     tees = [dict(osm_id=f[\"properties\"][\"osm_id\"], geometry=f[\"geometry\"][\"type\"],                         ~~~~~~~~~~~~~~~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T22:47Z",
+   "group": "library"
+  },
+  {
+   "slug": "annbriar",
+   "name": "Annbriar Golf Course",
+   "city": "Waterloo",
+   "state": "IL",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     tees = [dict(osm_id=f[\"properties\"][\"osm_id\"], geometry=f[\"geometry\"][\"type\"],                         ~~~~~~~~~~~~~~~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T23:12Z",
+   "group": "library"
+  },
+  {
    "slug": "kokopelli",
    "name": "Kokopelli Golf Club",
    "city": "Marion",
@@ -4543,6 +4255,75 @@
    "group": "library"
   },
   {
+   "slug": "dubs_dread",
+   "name": "Dub's Dread Golf Club",
+   "city": "Kansas City",
+   "state": "KS",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T22:50Z",
+   "group": "library"
+  },
+  {
+   "slug": "falcon_ridge",
+   "name": "Falcon Ridge Golf Club",
+   "city": "Lenexa",
+   "state": "KS",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     tees = [dict(osm_id=f[\"properties\"][\"osm_id\"], geometry=f[\"geometry\"][\"type\"],                         ~~~~~~~~~~~~~~~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T23:12Z",
+   "group": "library"
+  },
+  {
+   "slug": "heritage_park",
+   "name": "Heritage Park Golf Course",
+   "city": "Olathe",
+   "state": "KS",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T23:27Z",
+   "group": "library"
+  },
+  {
    "slug": "ironhorse",
    "name": "Ironhorse Golf Club",
    "city": "Leawood",
@@ -4566,6 +4347,52 @@
    "group": "library"
   },
   {
+   "slug": "painted_hills",
+   "name": "Painted Hills Golf Course",
+   "city": "Kansas City",
+   "state": "KS",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T23:03Z",
+   "group": "library"
+  },
+  {
+   "slug": "prairie_highlands",
+   "name": "Prairie Highlands Golf Course",
+   "city": "Olathe",
+   "state": "KS",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     tees = [dict(osm_id=f[\"properties\"][\"osm_id\"], geometry=f[\"geometry\"][\"type\"],                         ~~~~~~~~~~~~~~~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T22:49Z",
+   "group": "library"
+  },
+  {
    "slug": "lake_of_the_woods_como",
    "name": "Lake of the Woods Golf Course",
    "city": "Columbia",
@@ -4586,6 +4413,29 @@
    "days": null,
    "weather": null,
    "built": "2026-10-30T04:23Z",
+   "group": "library"
+  },
+  {
+   "slug": "old_kinderhook",
+   "name": "Old Kinderhook Golf Club",
+   "city": "Camdenton",
+   "state": "MO",
+   "status": "failed",
+   "check_holes": [],
+   "reasons": [
+    "package:     tees = [dict(osm_id=f[\"properties\"][\"osm_id\"], geometry=f[\"geometry\"][\"type\"],                         ~~~~~~~~~~~~~~~^^^^^^^^^^ KeyError: 'osm_id' "
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-10-30T23:11Z",
    "group": "library"
   }
  ]
