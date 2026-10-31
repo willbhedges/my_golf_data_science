@@ -1,0 +1,203 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "richter_park",
+ "course": "Richter Park Golf Course",
+ "bbox_snwe": [
+  41.405979,
+  -73.5370074,
+  41.4194815,
+  -73.50773
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 2714,
+  "height": 1782,
+  "bounds": [
+   622138,
+   4584738,
+   624852,
+   4586520
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   622138.0,
+   0.0,
+   -1.0,
+   4586520.0
+  ],
+  "ll_bbox_wsen": [
+   -73.53877254876916,
+   41.404495982264926,
+   -73.50594573422048,
+   41.42095915660713
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:50:17Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "CT_Statewide_B3_2016-hag-2m-0-0",
+     "when": "2016-12-31T00:00:00.000000Z",
+     "cells": 4367896,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CT_Statewide_B3_2016",
+      "end_datetime": "2016-12-31T00:00:00.000000Z",
+      "start_datetime": "2016-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CT_Sandy_2014_LAS_2015-hag-2m-0-8",
+     "when": "2014-05-29T00:00:00.000000Z",
+     "cells": 134228,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_Sandy_2014_LAS_2015",
+      "end_datetime": "2014-05-29T00:00:00.000000Z",
+      "start_datetime": "2014-04-27T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9308933104069435,
+   "file": "hag.tif",
+   "mb": 2.54,
+   "frac_gt_2_5m": 0.7548253351495798
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "CT_Statewide_B3_2016-dtm-2m-0-0",
+     "when": "2016-12-31T00:00:00.000000Z",
+     "cells": 1090085,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CT_Statewide_B3_2016",
+      "end_datetime": "2016-12-31T00:00:00.000000Z",
+      "start_datetime": "2016-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CT_Sandy_2014_LAS_2015-dtm-2m-0-8",
+     "when": "2014-05-29T00:00:00.000000Z",
+     "cells": 48586,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_Sandy_2014_LAS_2015",
+      "end_datetime": "2014-05-29T00:00:00.000000Z",
+      "start_datetime": "2014-04-27T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9417610147160627,
+   "mb": 2.87
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "CT_Statewide_B3_2016-classification-2m-0-0",
+     "when": "2016-12-31T00:00:00.000000Z",
+     "cells": 4399356,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CT_Statewide_B3_2016",
+      "end_datetime": "2016-12-31T00:00:00.000000Z",
+      "start_datetime": "2016-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CT_Sandy_2014_LAS_2015-classification-2m-0-3",
+     "when": "2014-05-29T00:00:00.000000Z",
+     "cells": 8,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_Sandy_2014_LAS_2015",
+      "end_datetime": "2014-05-29T00:00:00.000000Z",
+      "start_datetime": "2014-04-27T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_CT_Sandy_2014_LAS_2015-classification-2m-0-2",
+     "when": "2014-05-29T00:00:00.000000Z",
+     "cells": 179632,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CT_Sandy_2014_LAS_2015",
+      "end_datetime": "2014-05-29T00:00:00.000000Z",
+      "start_datetime": "2014-04-27T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.44,
+   "counts": {
+    "0": 257352,
+    "1": 1881284,
+    "2": 2307280,
+    "9": 387828,
+    "10": 2560,
+    "17": 44
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "030232333"
+  ],
+  "mb": 0.97,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N39W075",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1209087,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 23.16,
+    "items": [
+     "ct_m_4107336_se_18_030_20230705_20231113"
+    ],
+    "acquired": [
+     "2023-07-05"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 18.99,
+    "items": [
+     "ny_m_4107336_se_18_060_20221021"
+    ],
+    "acquired": [
+     "2022-10-21"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
