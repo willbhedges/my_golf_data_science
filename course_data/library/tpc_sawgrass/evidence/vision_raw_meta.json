@@ -1,0 +1,165 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "tpc_sawgrass",
+ "course": "TPC Sawgrass",
+ "bbox_snwe": [
+  30.186147,
+  -81.40774,
+  30.218955,
+  -81.383965
+ ],
+ "grid": {
+  "crs": "EPSG:32617",
+  "res_m": 1.0,
+  "width": 2544,
+  "height": 3886,
+  "bounds": [
+   460626,
+   3339354,
+   463170,
+   3343240
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   460626.0,
+   0.0,
+   -1.0,
+   3343240.0
+  ],
+  "ll_bbox_wsen": [
+   -81.4091460019641,
+   30.184983753328144,
+   -81.38257547468609,
+   30.220131260960517
+  ]
+ },
+ "fetched_utc": "2026-10-30T21:40:50Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "FL_StJohnsCo_2008-dsm-2m-3-0",
+     "when": "2008-02-25T00:00:00.000000Z",
+     "cells": 9775942,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "FL_StJohnsCo_2008",
+      "end_datetime": "2008-02-25T00:00:00.000000Z",
+      "start_datetime": "2008-02-14T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "FL_Peninsular_FDEM_StJohns_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/FL_Peninsular_FDEM_StJohns_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 39203656916
+   },
+   {
+    "name": "FL_StJohnsCo_2008",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/FL_StJohnsCo_2008/ept.json",
+    "cov": 1.0,
+    "year": 2008,
+    "count": 11810146442
+   }
+  ],
+  "used": [
+   {
+    "name": "FL_Peninsular_FDEM_StJohns_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/FL_Peninsular_FDEM_StJohns_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 39203656916,
+    "cells": 9057325
+   },
+   {
+    "name": "FL_StJohnsCo_2008",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/FL_StJohnsCo_2008/ept.json",
+    "cov": 1.0,
+    "year": 2008,
+    "count": 11810146442,
+    "cells": 599503
+   }
+  ],
+  "valid": 0.9768201121911587,
+  "hag_mb": 5.66,
+  "frac_gt_2_5m": 0.5796340556488864,
+  "class_mb": 0.13
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032021120"
+  ],
+  "mb": 1.87,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N30W084",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 2471496,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.08
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 42.42,
+    "items": [
+     "fl_m_3008153_se_17_030_20230127_20230530",
+     "fl_m_3008153_ne_17_030_20230127_20230530"
+    ],
+    "acquired": [
+     "2023-01-27"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 34.89,
+    "items": [
+     "fl_m_3008153_se_17_060_20211130",
+     "fl_m_3008153_ne_17_060_20211130"
+    ],
+    "acquired": [
+     "2021-11-30"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
