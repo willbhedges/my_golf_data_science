@@ -7,7 +7,57 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T00:17Z",
- "note": "course-page workflow, from course_data/requests/course_page_shoal_creek.json (only what a golfer types: name, town, state, tees)",
- "town": "Kansas City"
+ "requested": "2026-10-31T01:43Z",
+ "note": "course-page workflow, from course_data/requests/course_page_shoal_creek.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/shoal_creek/osm_supplement.geojson, course_data/library/shoal_creek/review.json",
+ "town": "Kansas City",
+ "osm_supplement": "course_data/library/shoal_creek/osm_supplement.geojson",
+ "ignore_osm_holes": true,
+ "tee_overrides": {
+  "5": {
+   "Gold": [
+    39.2474919,
+    -94.4728405
+   ],
+   "Blue": [
+    39.2478345,
+    -94.4732241
+   ],
+   "White": [
+    39.2480339,
+    -94.4734472
+   ],
+   "Black": [
+    39.2481398,
+    -94.4735658
+   ]
+  },
+  "6": {
+   "Gold": [
+    39.2496786,
+    -94.4751858
+   ],
+   "Blue": [
+    39.2498411,
+    -94.4754401
+   ],
+   "White": [
+    39.2499826,
+    -94.4756617
+   ],
+   "Black": [
+    39.2501136,
+    -94.4758668
+   ]
+  }
+ },
+ "green_overrides": {
+  "5": [
+   39.2489498,
+   -94.4744725
+  ],
+  "6": [
+   39.2509574,
+   -94.4784235
+  ]
+ }
 }
