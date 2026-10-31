@@ -7,7 +7,22 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T03:12Z",
- "note": "course-page workflow, from course_data/requests/course_page_falcon_ridge.json (only what a golfer types: name, town, state, tees)",
- "town": "Lenexa"
+ "requested": "2026-10-30T22:40Z",
+ "note": "course-page workflow, from course_data/requests/course_page_falcon_ridge.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/falcon_ridge/osm_supplement.geojson, course_data/library/falcon_ridge/review.json",
+ "town": "Lenexa",
+ "osm_supplement": "course_data/library/falcon_ridge/osm_supplement.geojson",
+ "tee_overrides": {
+  "11": {
+   "Blue": [
+    38.9494415,
+    -94.8259402
+   ]
+  },
+  "18": {
+   "Blue": [
+    38.946047,
+    -94.819982
+   ]
+  }
+ }
 }
