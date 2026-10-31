@@ -1,0 +1,123 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "bobby_jones",
+ "course": "Bobby Jones Golf Club",
+ "bbox_snwe": [
+  33.811658,
+  -84.409244,
+  33.821522,
+  -84.395998
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1496,
+  "height": 1368,
+  "bounds": [
+   739660,
+   3744170,
+   741156,
+   3745538
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   739660.0,
+   0.0,
+   -1.0,
+   3745538.0
+  ],
+  "ll_bbox_wsen": [
+   -84.41088302614428,
+   33.81025632178194,
+   -84.39436191327815,
+   33.82292215274828
+  ]
+ },
+ "fetched_utc": "2026-10-30T22:12:15Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "GA_Statewide_B2_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/GA_Statewide_B2_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 42678530660
+   }
+  ],
+  "used": [
+   {
+    "name": "GA_Statewide_B2_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/GA_Statewide_B2_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 42678530660,
+    "cells": 2027128
+   }
+  ],
+  "valid": 0.9905205303812115,
+  "hag_mb": 1.29,
+  "frac_gt_2_5m": 0.648066383650749,
+  "class_mb": 0.03
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032002311"
+  ],
+  "mb": 0.42,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N33W087",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 511632,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 7.38,
+    "items": [
+     "ga_m_3308413_se_16_060_20231008_20240103",
+     "ga_m_3308413_ne_16_060_20231007_20240103"
+    ],
+    "acquired": [
+     "2023-10-07",
+     "2023-10-08"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 7.8,
+    "items": [
+     "ga_m_3308413_ne_16_060_20220110"
+    ],
+    "acquired": [
+     "2022-01-10"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
