@@ -1,0 +1,185 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "royal_new_kent",
+ "course": "Royal New Kent Golf Club",
+ "bbox_snwe": [
+  37.465182,
+  -77.031778,
+  37.484309,
+  -76.9968923
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 3374,
+  "height": 2430,
+  "bounds": [
+   320196,
+   4148230,
+   323570,
+   4150660
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   320196.0,
+   0.0,
+   -1.0,
+   4150660.0
+  ],
+  "ll_bbox_wsen": [
+   -77.03370159465773,
+   37.463474570810114,
+   -76.99497865154754,
+   37.4860146820136
+  ]
+ },
+ "fetched_utc": "2026-10-31T04:43:46Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "VA_FEMA_MiddleCounties_2011-hag-2m-4-1",
+     "when": "2012-04-02T00:00:00.000000Z",
+     "cells": 1156662,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "VA_FEMA_MiddleCounties_2011",
+      "end_datetime": "2012-04-02T00:00:00.000000Z",
+      "start_datetime": "2011-05-06T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.14107664273639378
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "VA_FEMA_MiddleCounties_2011-dtm-2m-4-1",
+     "when": "2012-04-02T00:00:00.000000Z",
+     "cells": 288171,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "VA_FEMA_MiddleCounties_2011",
+      "end_datetime": "2012-04-02T00:00:00.000000Z",
+      "start_datetime": "2011-05-06T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.14059145096489495
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "VA_FEMA_MiddleCounties_2011-dsm-2m-4-2",
+     "when": "2012-04-02T00:00:00.000000Z",
+     "cells": 7023954,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "VA_FEMA_MiddleCounties_2011",
+      "end_datetime": "2012-04-02T00:00:00.000000Z",
+      "start_datetime": "2011-05-06T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "VA_FEMA_MiddleCounties_2011-dsm-2m-4-1",
+     "when": "2012-04-02T00:00:00.000000Z",
+     "cells": 1149914,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "VA_FEMA_MiddleCounties_2011",
+      "end_datetime": "2012-04-02T00:00:00.000000Z",
+      "start_datetime": "2011-05-06T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 14% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "VA_FEMA_MiddleCounties_2011",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/VA_FEMA_MiddleCounties_2011/ept.json",
+    "cov": 1.0,
+    "year": 2011,
+    "count": 11643221461
+   }
+  ],
+  "used": [
+   {
+    "name": "VA_FEMA_MiddleCounties_2011",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/VA_FEMA_MiddleCounties_2011/ept.json",
+    "cov": 1.0,
+    "year": 2011,
+    "count": 11643221461,
+    "cells": 8142854
+   }
+  ],
+  "valid": 0.9931738957557307,
+  "hag_mb": 5.25,
+  "frac_gt_2_5m": 0.6869749549325391,
+  "class_mb": 0.07
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032010230"
+  ],
+  "mb": 1.59,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W078",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 2049705,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.05
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 28.64,
+    "items": [
+     "va_m_3707740_ne_18_060_20231013_20240103",
+     "va_m_3707633_nw_18_060_20231013_20240103"
+    ],
+    "acquired": [
+     "2023-10-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 30.04,
+    "items": [
+     "va_m_3707740_ne_18_060_20210827",
+     "va_m_3707633_nw_18_060_20210827"
+    ],
+    "acquired": [
+     "2021-08-27"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
