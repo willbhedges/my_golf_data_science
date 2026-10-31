@@ -5,76 +5,28 @@
  "city": "Olathe",
  "state": "KS",
  "group": "library",
- "status": "needs confirm",
+ "status": "failed",
  "reasons": [
-  "holes not all mapped in OSM (hole method: v2+structure)",
-  "16 holes built vs the card's 18",
-  "pars sum to 64, card 71",
-  "5 hole(s) with a CHECK"
+  "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
  ],
- "check_holes": [
-  5,
-  7,
-  9,
-  12,
-  18
- ],
- "tee_sets": [
-  {
-   "name": "Blue",
-   "yards": 6876,
-   "par": 71,
-   "rating": 73.6,
-   "slope": 131,
-   "colour": "blue",
-   "on_page": "solved"
-  },
-  {
-   "name": "White",
-   "yards": 6327,
-   "par": 71,
-   "rating": 70.8,
-   "slope": 129,
-   "colour": "white",
-   "on_page": "solved"
-  },
-  {
-   "name": "Red",
-   "yards": 5797,
-   "par": 71,
-   "rating": 73.9,
-   "slope": 128,
-   "colour": "red",
-   "on_page": null
-  },
-  {
-   "name": "Silver",
-   "yards": 5181,
-   "par": 71,
-   "rating": 64.9,
-   "slope": 109,
-   "colour": "silver",
-   "on_page": null
-  }
- ],
- "solved_sets": [
-  "Blue",
-  "White"
- ],
- "page": "course_data/library/heritage_park/page.html",
- "page_bytes": 4552166,
- "qa_report": "course_data/library/heritage_park/qa_report.md",
- "center": [
-  38.827369250000004,
-  -94.75508335
- ],
- "osm": "way/254360563",
- "holes": 16,
- "days": [
-  "2026-10-31",
-  "2026-11-01"
- ],
- "weather": "forecast",
- "built": "2026-10-30T03:44Z",
- "request": "course_data/requests/course_page_heritage_park.json"
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_heritage_park.json",
+ "resolve": {
+  "status": "ok",
+  "candidates": [
+   {
+    "name": "Heritage Park Golf Course",
+    "town": "Johnson County",
+    "holes": 0,
+    "osm": {
+     "type": "way",
+     "id": 254360563
+    }
+   }
+  ]
+ },
+ "built": "2026-10-30T23:27Z"
 }

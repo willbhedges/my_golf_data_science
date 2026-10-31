@@ -7,7 +7,117 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T03:29Z",
- "note": "course-page workflow, from course_data/requests/course_page_heritage_park.json (only what a golfer types: name, town, state, tees)",
- "town": "Olathe"
+ "requested": "2026-10-30T22:38Z",
+ "note": "course-page workflow, from course_data/requests/course_page_heritage_park.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/heritage_park/osm_supplement.geojson, course_data/library/heritage_park/review.json",
+ "town": "Olathe",
+ "osm_supplement": "course_data/library/heritage_park/osm_supplement.geojson",
+ "tee_overrides": {
+  "1": {
+   "Blue": [
+    38.8295206,
+    -94.7566815
+   ],
+   "White": [
+    38.829239,
+    -94.7565875
+   ]
+  },
+  "2": {
+   "Blue": [
+    38.8240857,
+    -94.7549284
+   ],
+   "White": [
+    38.8239425,
+    -94.7547539
+   ]
+  },
+  "5": {
+   "Blue": [
+    38.8185896,
+    -94.7531372
+   ]
+  },
+  "10": {
+   "Blue": [
+    38.8301294,
+    -94.7563638
+   ],
+   "White": [
+    38.8301096,
+    -94.7554424
+   ]
+  },
+  "11": {
+   "Blue": [
+    38.8241626,
+    -94.7545185
+   ],
+   "White": [
+    38.8239756,
+    -94.7541675
+   ]
+  },
+  "12": {
+   "Blue": [
+    38.8220642,
+    -94.7526828
+   ],
+   "White": [
+    38.8221614,
+    -94.7527322
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "1": {
+   "Blue": 368,
+   "White": 337
+  },
+  "2": {
+   "Blue": 193,
+   "White": 171
+  },
+  "10": {
+   "Blue": 396,
+   "White": 372
+  },
+  "11": {
+   "Blue": 227,
+   "White": 193
+  },
+  "12": {
+   "Blue": 395,
+   "White": 380
+  }
+ },
+ "par_overrides": {
+  "1": 4,
+  "2": 3,
+  "10": 4,
+  "11": 3,
+  "12": 4
+ },
+ "green_overrides": {
+  "1": [
+   38.8265599,
+   -94.7556933
+  ],
+  "2": [
+   38.8225006,
+   -94.754896
+  ],
+  "10": [
+   38.8269864,
+   -94.7553113
+  ],
+  "11": [
+   38.8224566,
+   -94.7536283
+  ],
+  "12": [
+   38.8250642,
+   -94.7542052
+  ]
+ }
 }
