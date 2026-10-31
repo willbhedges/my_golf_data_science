@@ -1,0 +1,195 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "sugarloaf",
+ "course": "Sugarloaf Golf Club",
+ "bbox_snwe": [
+  45.060072,
+  -70.343029,
+  45.077399,
+  -70.316493
+ ],
+ "grid": {
+  "crs": "EPSG:32619",
+  "res_m": 1.0,
+  "width": 2364,
+  "height": 2200,
+  "bounds": [
+   394138,
+   4990346,
+   396502,
+   4992546
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   394138.0,
+   0.0,
+   -1.0,
+   4992546.0
+  ],
+  "ll_bbox_wsen": [
+   -70.34500266163388,
+   45.05865908402543,
+   -70.31452151399586,
+   45.07880736007939
+  ]
+ },
+ "fetched_utc": "2026-10-31T01:42:18Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_ME_Western_2016_LAS_2017-hag-2m-7-14",
+     "when": "2016-05-21T00:00:00.000000Z",
+     "cells": 3524400,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_ME_Western_2016_LAS_2017",
+      "end_datetime": "2016-05-21T00:00:00.000000Z",
+      "start_datetime": "2016-04-05T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_ME_Western_2016_LAS_2017-hag-2m-6-14",
+     "when": "2016-05-21T00:00:00.000000Z",
+     "cells": 1676400,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_ME_Western_2016_LAS_2017",
+      "end_datetime": "2016-05-21T00:00:00.000000Z",
+      "start_datetime": "2016-04-05T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "file": "hag.tif",
+   "mb": 3.07,
+   "frac_gt_2_5m": 0.8900340332256576
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_ME_Western_2016_LAS_2017-dtm-2m-7-14",
+     "when": "2016-05-21T00:00:00.000000Z",
+     "cells": 881100,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_ME_Western_2016_LAS_2017",
+      "end_datetime": "2016-05-21T00:00:00.000000Z",
+      "start_datetime": "2016-04-05T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_ME_Western_2016_LAS_2017-dtm-2m-6-14",
+     "when": "2016-05-21T00:00:00.000000Z",
+     "cells": 419100,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_ME_Western_2016_LAS_2017",
+      "end_datetime": "2016-05-21T00:00:00.000000Z",
+      "start_datetime": "2016-04-05T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "mb": 3.21
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_ME_Western_2016_LAS_2017-classification-2m-7-14",
+     "when": "2016-05-21T00:00:00.000000Z",
+     "cells": 3522988,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_ME_Western_2016_LAS_2017",
+      "end_datetime": "2016-05-21T00:00:00.000000Z",
+      "start_datetime": "2016-04-05T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_ME_Western_2016_LAS_2017-classification-2m-6-14",
+     "when": "2016-05-21T00:00:00.000000Z",
+     "cells": 1676304,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_ME_Western_2016_LAS_2017",
+      "end_datetime": "2016-05-21T00:00:00.000000Z",
+      "start_datetime": "2016-04-05T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.49,
+   "counts": {
+    "0": 1508,
+    "1": 2740028,
+    "2": 2459264
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "030233011"
+  ],
+  "mb": 1.2,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N45W072",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1300200,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 28.4,
+    "items": [
+     "me_m_4507062_sw_19_030_20231002_20240103",
+     "me_m_4507062_se_19_030_20231002_20240103",
+     "me_m_4507062_nw_19_030_20231002_20240103",
+     "me_m_4507062_ne_19_030_20231002_20240103"
+    ],
+    "acquired": [
+     "2023-10-02"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 32.21,
+    "items": [
+     "me_m_4507062_sw_19_060_20210904",
+     "me_m_4507062_se_19_060_20210904",
+     "me_m_4507062_nw_19_060_20210904",
+     "me_m_4507062_ne_19_060_20210904"
+    ],
+    "acquired": [
+     "2021-09-04"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
