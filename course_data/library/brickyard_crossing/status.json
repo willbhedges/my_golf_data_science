@@ -1,0 +1,32 @@
+{
+ "slug": "brickyard_crossing",
+ "name": "Brickyard Crossing",
+ "request_name": "Brickyard Crossing",
+ "city": "Indianapolis",
+ "state": "IN",
+ "group": "library",
+ "status": "failed",
+ "reasons": [
+  "package:     ring = np.array(t[\"geom\"].exterior.coords)                     ^^^^^^^^^^^^^^^^^^ AttributeError: 'MultiPolygon' object has no attribute 'exterior' "
+ ],
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_brickyard_crossing.json",
+ "resolve": {
+  "status": "ok",
+  "candidates": [
+   {
+    "name": "Brickyard Crossing Golf Course",
+    "town": "Indianapolis",
+    "holes": 18,
+    "osm": {
+     "type": "relation",
+     "id": 569616
+    }
+   }
+  ]
+ },
+ "built": "2026-10-30T22:20Z"
+}
