@@ -10,7 +10,8 @@ Search order
   2. Overpass: nwr[leisure=golf_course][name~<core name>, case-insensitive] inside the state's
      ISO3166-2 area (US-IA). The core name drops generic words (golf, course, club, country, ...), so
      "Mozingo Lake" finds "Mozingo Lake Golf Course".
-  3. Nothing: retry with each distinctive word of the name (longest first).
+  3. Nothing: every word of the name in any order ("The Plantation Course at Kapalua"), then each distinctive
+     word of the name (longest first).
   4. Nothing: Nominatim "<name>, <state>, USA"; golf_course hits are taken directly, other hits
      (a town, a park) are searched for the nearest leisure=golf_course within 4 km.
   5. Nothing and the request gives "near" (lat,lon): every leisure=golf_course within 4 km of it; an unnamed
@@ -21,6 +22,10 @@ golf=hole ways inside it (Overpass map_to_area + out count).
 Disambiguation (`choose`): candidates are scored on name similarity, town match, area vs node, and
 mapped holes. One clear winner -> status "ok"; several near-equal ones -> status "ambiguous" with the
 candidate list (name, town, holes, OSM id) so the golfer can pick (`town` or `osm` in the request).
+A name matching the request exactly beats rivals whose names only add words (a resort's other courses:
+"Arcadia Bluffs" vs "Arcadia Bluffs - South Course"). A winner mapped only as a node inside a bigger golf area
+(Bethpage Black in Bethpage State Park) takes that area's boundary; the package then keeps the named course's
+holes by their refs (sanity.normalize_hole_refs).
 A winner OSM marks as closed ("Former ..." name, disused / end_date lifecycle tags) -> status "closed" (`closed_reason`).
 """
 import argparse
@@ -161,6 +166,16 @@ def choose(cands, want, town=None, osm=None, near=None):
     if not ranked:
         return "not_found", None, ranked
     best = ranked[0]
+    exact = [c for c in ranked if c.get("name") and pc.core_name(c["name"]) == pc.core_name(want)]
+    if len(ranked) > 1 and not osm and len(exact) == 1:
+        # a multi-course resort: "Arcadia Bluffs Golf Club" is the course named exactly that, not "Arcadia Bluffs -
+        # South Course"; "Forest Dunes Golf Club" is "Forest Dunes Course", not "... - The Loop Course" or the
+        # 46-hole "Forest Dunes Golf Resort" (rivals whose names only ADD words the golfer did not type)
+        w = set(pc.core_name(want).split())
+        e = exact[0]
+        rivals = [c for c in ranked if c is not e and c["score"] > e["score"] - AMBIGUOUS_MARGIN]
+        if all(set(pc.core_name(c.get("name") or "").split()) > w for c in rivals):
+            return "ok", e, [e] + [c for c in ranked if c is not e]
     if len(ranked) > 1 and not osm:
         second = ranked[1]
         # two different places with near-equal claims (e.g. "Country Club" in two towns)
@@ -179,6 +194,34 @@ def _search_overpass(rx, iso):
     nwr["leisure"="golf_course"]["name"~"{rx}",i](area.st);
     out tags center bb;"""
     return pc.overpass(q).get("elements", [])
+
+
+def _search_overpass_all(words, iso):
+    """Courses whose name contains every word (any order)."""
+    flt = "".join(f'["name"~"{re.escape(w)}",i]' for w in words)
+    q = f"""[out:json][timeout:120];
+    area["ISO3166-2"="{iso}"]["admin_level"="4"]->.st;
+    nwr["leisure"="golf_course"]{flt}(area.st);
+    out tags center bb;"""
+    return pc.overpass(q).get("elements", [])
+
+
+def enclosing_area(lat, lon):
+    """The smallest leisure=golf_course AREA (way / relation) that contains the point, or None: a course OSM maps
+    only as a node inside a multi-course site's polygon (Bethpage Black inside Bethpage State Park) gets the site's
+    boundary, so its holes are fetched (an 800 m box around the node held 3 of Black's 18)."""
+    q = f"""[out:json][timeout:60];
+    is_in({lat},{lon})->.a;
+    (way(pivot.a)["leisure"="golf_course"];relation(pivot.a)["leisure"="golf_course"];);
+    out tags center bb;"""
+    els = [e for e in pc.overpass(q).get("elements", []) if e.get("bounds")]
+    if not els:
+        return None
+
+    def area(e):
+        b = e["bounds"]
+        return (b["maxlat"] - b["minlat"]) * (b["maxlon"] - b["minlon"])
+    return min(els, key=area)
 
 
 def _around(lat, lon, radius=4000):
@@ -228,6 +271,12 @@ def search(name, state, osm=None, near=None):
     els = _search_overpass(pc.name_regex(name), iso)
     if els:
         return els
+    words = [w for w in pc.core_name(name).split() if len(w) >= 3]
+    if len(words) >= 2:
+        # every word, in any order: OSM "The Plantation Course at Kapalua" for "Kapalua Plantation Course"
+        els = _search_overpass_all(words, iso)
+        if els:
+            return els
     for w in sorted(pc.core_name(name).split(), key=len, reverse=True):
         if len(w) >= 4:
             els = _search_overpass(pc.name_regex(w), iso)
@@ -300,6 +349,14 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
     if out["status"] != "ok":
         return out
     geom, b = boundary(best["osm"]["type"], best["osm"]["id"])
+    site = None
+    if geom is None and best["osm"]["type"] == "node" and best.get("center"):
+        try:
+            site = enclosing_area(best["center"][1], best["center"][0])
+        except RuntimeError as ex:                       # Overpass down: keep the 800 m box
+            pc.log("resolve: enclosing area lookup failed:", ex)
+        if site:
+            geom, b = boundary(site["type"], site["id"])
     if b is None and best.get("center"):
         lon, lat = best["center"]
         d = 800 / 111320.0
@@ -313,7 +370,12 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
                center=best["center"], bbox=[b["minlon"], b["minlat"], b["maxlon"], b["maxlat"]],
                address=", ".join(x for x in (best.get("town"), sc) if x), town=best.get("town"), state=sc,
                holes_mapped=best.get("holes"), website=best.get("website"), tags=best.get("tags"),
-               boundary=geom, boundary_note=None if geom else "course mapped as a point: bbox is 800 m around it")
+               boundary=geom, boundary_note=(f"course mapped as a point inside {site['type']}/{site['id']} "
+                                             f"{(site.get('tags') or {}).get('name')!r}: that site's boundary"
+                                             if site and geom else None if geom else
+                                             "course mapped as a point: bbox is 800 m around it"),
+               site=dict(type=site["type"], id=site["id"], name=(site.get("tags") or {}).get("name"))
+               if site and geom else None)
     return out
 
 

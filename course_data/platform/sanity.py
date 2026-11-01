@@ -1,6 +1,9 @@
 """Build-time sanity guards for recurring pipeline errors found by the course reviews (library/*/review.md).
 
-  clean_osm(fc)            OSM input cleanup before anything is built:
+  clean_osm(fc, names)     OSM input cleanup before anything is built:
+                           * hole refs: a multi-course site's qualified refs ("Black - 13", "1 - #2", "L4",
+                             "Practice 1") are reduced to the named course's holes, renumbered 1..18 (Bethpage,
+                             Pinehurst, Neshanic Valley, Old Works: v2 hole_number crashed on int("Black - 13"))
                            * practice tees: a golf=tee whose name / description mentions range, practice or
                              driving, or that lies inside a golf=driving_range area, is dropped (Ironhorse 1: the
                              Black tee sat on "Driving Range Tee Box (Turf)")
@@ -134,9 +137,86 @@ def select_hole_ways(fc, max_holes=18):
     return (dict(fc, features=[f for f in feats if id(f) not in drop]) if drop else fc), dropped
 
 
-def clean_osm(fc):
-    """-> (fc, [notes]): drop_practice_tees + select_hole_ways."""
+# ----------------------------------------------------------------------------- hole refs
+REF_STOP = {"no", "course", "the", "nine", "golf", "hole", "holes", "club", "links", "at", "of"}
+REF_PRACTICE = {"practice", "academy", "range", "warmup", "warm", "pitch", "putt", "learning"}
+
+
+def _ref_tokens(text):
+    return tuple(t for t in re.findall(r"[a-z]+|\d+", str(text).lower()) if t not in REF_STOP)
+
+
+def parse_hole_ref(ref):
+    """OSM golf=hole ref -> (qualifier tokens, hole number) | None. "7" -> ((), 7); "Black - 13" -> (("black",), 13);
+    "1 - #2" -> (("2",), 1); "L4" -> (("l",), 4); "Practice 1" -> (("practice",), 1); "Hole 5" -> ((), 5);
+    "tee_boxes" -> None."""
+    r = str(ref).strip()
+    m = re.fullmatch(r"(\d{1,2})", r)
+    if m:
+        return (), int(m.group(1))
+    m = (re.fullmatch(r"(\d{1,2})\s*[-\u2013\u2014:/|,]\s*(.*\D.*|\d+)", r))
+    if m:
+        return _ref_tokens(m.group(2)), int(m.group(1))
+    m = re.fullmatch(r"(.*?\D)\s*[-\u2013\u2014:/|,#]?\s*(\d{1,2})", r)
+    if m:
+        return _ref_tokens(m.group(1)), int(m.group(2))
+    return None
+
+
+def normalize_hole_refs(fc, names=()):
+    """-> (fc copy, [notes]). OSM hole refs the model cannot number (v2 hole_number: int(ref)) are made plain numbers:
+    a multi-course site maps its holes "Black - 13" (Bethpage), "1 - #2" (Pinehurst), "L4" / "M4" / "R4" (Neshanic
+    Valley's nines), "Practice 1" (Old Works) or "tee_boxes". The ref group whose qualifier is named in `names` (the
+    request / OSM course name: "Bethpage Black", "Pinehurst No. 2") is kept, else the plain-number group, else the
+    largest group; practice / academy groups and unparseable refs go. Plain refs only: unchanged."""
+    feats = fc.get("features", [])
+    holes = [f for f in feats if f["properties"].get("golf") == "hole" and f["properties"].get("ref") not in (None, "")]
+    parsed = {id(f): parse_hole_ref(f["properties"]["ref"]) for f in holes}
+    if all(re.fullmatch(r"\d+", str(f["properties"]["ref"]).strip()) for f in holes):
+        return fc, []
+    groups = {}
+    for f in holes:
+        p = parsed[id(f)]
+        if p is not None and not (set(p[0]) & REF_PRACTICE):
+            groups.setdefault(p[0], []).append(f)
+    want = set()
+    for n in names or ():
+        want |= set(_ref_tokens(n))
+    named = [k for k in groups if k and set(k) <= want]
+    if named:
+        keep = max(named, key=lambda k: len(groups[k]))
+        why = f"the '{' '.join(keep)}' holes (named in the request)"
+    elif () in groups:
+        keep, why = (), "the plain-numbered holes"
+    elif groups:
+        keep = max(groups, key=lambda k: len(groups[k]))
+        why = f"the largest ref group '{' '.join(keep)}'"
+    else:
+        return fc, []
+    kept = {id(f) for f in groups[keep]}
+    drop = {id(f) for f in holes if id(f) not in kept}
+    out = []
+    for f in feats:
+        if id(f) in drop:
+            continue
+        if id(f) in kept and str(f["properties"]["ref"]) != str(parsed[id(f)][1]):
+            p = dict(f["properties"], ref=str(parsed[id(f)][1]), ref_osm=f["properties"]["ref"])
+            f = dict(f, properties=p)
+        out.append(f)
+    notes = [f"hole refs: kept {why} ({len(kept)} ways, refs as plain numbers)"]
+    if drop:
+        gone = sorted({str(f["properties"]["ref"]) for f in holes if id(f) in drop})
+        notes.append(f"ignored {len(drop)} golf=hole way(s) of another course / practice area by ref: "
+                     + ", ".join(gone[:12]) + (" ..." if len(gone) > 12 else ""))
+    return dict(fc, features=out), notes
+
+
+def clean_osm(fc, names=()):
+    """-> (fc, [notes]): drop_practice_tees + normalize_hole_refs + select_hole_ways. names = the request's and OSM's
+    course names (pick the right course's holes on a multi-course site)."""
     notes = []
+    fc, rn = normalize_hole_refs(fc, names)
+    notes += rn
     fc, t = drop_practice_tees(fc)
     if t:
         notes.append(f"ignored {len(t)} practice / driving-range tee box(es): OSM {', '.join(map(str, t[:6]))}")

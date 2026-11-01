@@ -1,0 +1,23 @@
+{
+ "requests": [
+  "course_data/requests/course_page_harbour_town.json",
+  "course_data/requests/course_page_memorial_park.json",
+  "course_data/requests/course_page_seneca.json",
+  "course_data/requests/course_page_theodore_wirth.json",
+  "course_data/requests/course_page_tpc_harding_park.json",
+  "course_data/requests/course_page_bethpage_state_park.json",
+  "course_data/requests/course_page_neshanic_valley.json",
+  "course_data/requests/course_page_old_works.json",
+  "course_data/requests/course_page_pinehurst.json",
+  "course_data/requests/course_page_kapalua_plantation.json",
+  "course_data/requests/course_page_keller.json",
+  "course_data/requests/course_page_queenstown_harbor.json",
+  "course_data/requests/course_page_tpc_louisiana.json",
+  "course_data/requests/course_page_world_woods.json",
+  "course_data/requests/course_page_arcadia_bluffs.json",
+  "course_data/requests/course_page_forest_dunes.json",
+  "course_data/requests/course_page_troon_north.json"
+ ],
+ "rev": 1,
+ "note": "Retry of the 17 us60 courses that failed in run 41114849392. KeyError on a float (Harbour Town, Memorial Park, Seneca, Theodore Wirth, TPC Harding Park): the batch ran at 909bf6cf, before the walk-back cap fix 1aa903d9. finish failures (Bethpage, Neshanic Valley, Old Works, Pinehurst): v2 hole_number crashed on qualified OSM hole refs ('Black - 13', '1 - #2', 'L4', 'Practice 1'); sanity.normalize_hole_refs keeps the named course's holes. not_found (Kapalua, Keller, Queenstown Harbor, TPC Louisiana, World Woods): Overpass 200 answers with a runtime remark (empty) are now retried on the next mirror; any-order name search; near hints. ambiguous (Arcadia Bluffs, Forest Dunes): exact name beats resort sub-courses + osm ids. Bethpage: a node course takes its enclosing site's boundary. Troon North: PDAL EPT read of a 10 km2 box ran the runner out of memory; EPT density capped for big boxes."
+}

@@ -76,6 +76,16 @@ def log(*a):
 
 
 # ----------------------------------------------------------------------------- network (Actions only)
+OVERPASS_REMARK_BAD = re.compile(r"runtime error|timed out|timeout|out of memory|maxsize|dispatcher|too busy|"
+                                 r"rate_limited", re.I)
+
+
+def overpass_remark_problem(js):
+    """The Overpass `remark` of a 200 answer when it means the body is partial (timeout, memory), else None."""
+    rm = str((js or {}).get("remark") or "") if isinstance(js, dict) else ""
+    return rm[:240] if rm and OVERPASS_REMARK_BAD.search(rm) else None
+
+
 def overpass(query, tries=5, timeout=200):
     import requests
     last = None
@@ -84,8 +94,16 @@ def overpass(query, tries=5, timeout=200):
             try:
                 r = requests.post(url, data={"data": query}, headers=UA, timeout=timeout)
                 if r.status_code == 200:
-                    return r.json()
-                last = f"{url}: HTTP {r.status_code} {r.text[:200]}"
+                    js = r.json()
+                    bad = overpass_remark_problem(js)
+                    if not bad:
+                        return js
+                    # HTTP 200 with a runtime remark is a PARTIAL (often empty) answer: a state-wide name search that
+                    # timed out came back as 0 elements and resolve reported "not_found" (us60: Keller, TPC
+                    # Louisiana, Kapalua, Queenstown Harbor, World Woods) -> try the next mirror instead
+                    last = f"{url}: Overpass remark: {bad}"
+                else:
+                    last = f"{url}: HTTP {r.status_code} {r.text[:200]}"
             except Exception as e:                          # noqa: BLE001
                 last = f"{url}: {e!r}"
             log("overpass failed:", last)

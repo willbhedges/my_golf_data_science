@@ -142,3 +142,10 @@ def test_choose_trees_prefers_matching_buffer():
         holes.append(dict(key=str(i), ref=str(i), cls=cls, corr=corr, cands=cands))
     sel, best, _ = VM.choose_trees(holes, {h["key"]: h["cands"] for h in holes})
     assert best == (2.5, -2, 30) and all(v == best for v in sel.values())
+
+
+def test_ept_density_capped_for_big_boxes():
+    """Troon North: a 10 km2 EPT read at full density ran the runner out of memory (exit 143)."""
+    import fetch_any as FA
+    assert FA.ept_resolution(1.5e6) is None
+    assert FA.ept_resolution(9.9e6) == 0.5 and FA.ept_resolution(3e7) == 1.0

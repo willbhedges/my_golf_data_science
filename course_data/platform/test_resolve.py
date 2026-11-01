@@ -196,3 +196,67 @@ def test_address_geocodes_to_near(monkeypatch):
     assert fp.geocode_address("1401 Champions Dr, Marion, IL 62959") == "37.753100,-88.970200"
     monkeypatch.setattr(pc, "nominatim", lambda path, **k: None)
     assert fp.geocode_address("nowhere") is None
+
+
+def test_exact_name_beats_resort_sub_courses():
+    """us60: Arcadia Bluffs / Forest Dunes came back "ambiguous" between the course and its resort siblings."""
+    cands = [rs.candidate(el("way", 293247442, "Arcadia Bluffs Golf Club", 44.50, -86.23), holes=18, town="Arcadia"),
+             rs.candidate(el("way", 693998226, "Arcadia Bluffs - South Course", 44.47, -86.21), holes=18,
+                          town="Arcadia")]
+    status, best, _ = rs.choose(cands, "Arcadia Bluffs Golf Club", town="Arcadia")
+    assert status == "ok" and best["osm"]["id"] == 293247442
+    cands = [rs.candidate(el("way", 1536953640, "Forest Dunes Course", 44.50, -84.53), holes=18),
+             rs.candidate(el("way", 1536953639, "Forest Dunes - The Loop Course", 44.51, -84.50), holes=18),
+             rs.candidate(el("way", 623889475, "Forest Dunes Golf Resort", 44.52, -84.52), holes=46)]
+    status, best, _ = rs.choose(cands, "Forest Dunes Golf Club")
+    assert status == "ok" and best["osm"]["id"] == 1536953640
+    # a golfer who names the sub-course gets it; two different exact-name places stay ambiguous
+    status, best, _ = rs.choose([dict(c) for c in cands], "Forest Dunes The Loop")
+    assert status == "ok" and best["osm"]["id"] == 1536953639
+    two = [rs.candidate(el("way", 1, "Country Club of Lincoln", 40.8, -96.7), holes=18),
+           rs.candidate(el("way", 2, "Country Club of Lincoln", 41.6, -93.6), holes=18)]
+    assert rs.choose(two, "Country Club of Lincoln")[0] == "ambiguous"
+
+
+def test_words_in_any_order_then_node_takes_enclosing_site(monkeypatch):
+    """"Kapalua Plantation" is OSM "The Plantation Course at Kapalua"; a course mapped as a node inside a
+    multi-course site's polygon (Bethpage Black) gets the site's boundary."""
+    ring = [[-73.47, 40.73], [-73.43, 40.73], [-73.43, 40.76], [-73.47, 40.76], [-73.47, 40.73]]
+    seen = []
+
+    def fake_overpass(q, **kw):
+        seen.append(q)
+        if "is_in(" in q:
+            return dict(elements=[el("relation", 555, "Bethpage State Park", 40.745, -73.45)])
+        if "out count" in q:
+            return dict(elements=[dict(type="count", tags=dict(ways="90"))])
+        if "out body geom" in q and "relation(555)" in q:
+            return dict(elements=[dict(type="way", id=555, tags=dict(leisure="golf_course"),
+                                       geometry=[dict(lon=x, lat=y) for x, y in ring])])
+        if '["name"~"bethpage",i]["name"~"black",i]' in q:
+            return dict(elements=[dict(type="node", id=2854158382, lat=40.744, lon=-73.454,
+                                       tags=dict(leisure="golf_course", name="Black Course at Bethpage"))])
+        return dict(elements=[])
+    monkeypatch.setattr(pc, "overpass", fake_overpass)
+    monkeypatch.setattr(pc, "nominatim", lambda path, **p: dict(address=dict(city="Farmingdale")))
+    res = rs.resolve("Bethpage Black Course", "NY")
+    assert res["status"] == "ok" and res["osm"] == dict(type="node", id=2854158382)
+    assert res["site"]["id"] == 555 and res["boundary"]["type"] == "Polygon"
+    assert res["bbox"] == [-73.47, 40.73, -73.43, 40.76]
+
+
+def test_overpass_partial_remark_is_a_failure(monkeypatch):
+    """A 200 answer with a runtime remark (0 elements) made resolve say "not_found": the next mirror is asked."""
+    import types
+    answers = [dict(elements=[], remark="runtime error: Query timed out in \"query\" at line 3 after 120 seconds."),
+               dict(elements=[dict(type="way", id=1)])]
+    calls = []
+
+    def post(url, **kw):
+        calls.append(url)
+        js = answers[min(len(calls) - 1, 1)]
+        return types.SimpleNamespace(status_code=200, json=lambda: js, text="")
+    monkeypatch.setitem(sys.modules, "requests", types.SimpleNamespace(post=post))
+    assert pc.overpass("q", tries=1)["elements"] == [dict(type="way", id=1)]
+    assert len(calls) == 2
+    assert pc.overpass_remark_problem(dict(remark="note: nothing")) is None

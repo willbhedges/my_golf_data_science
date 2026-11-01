@@ -110,6 +110,20 @@ def test_walkback_capped_before_green_road_building():
         assert -30 < y <= 0, (obstacle["properties"], y)
 
 
+def test_capped_walkback_then_another_walkback_set_no_keyerror():
+    """us60 batch (Harbour Town, Memorial Park, Seneca, Theodore Wirth, Harding Park): the obstacle cap
+    overwrote the back-tee key `back` with a distance, so the next walk-back set hit alongs[17.0] -> KeyError."""
+    fc = _hole_fc([poly(0, -40, r=10, building="yes", osm_id=17)])
+    tp = dict(holes={})
+    tee_at(tp, "1", "Black", 0, -60)                                   # capped by the building
+    tee_at(tp, "1", "Blue", 0, -10)                                    # a second walk-back set after it
+    tee_at(tp, "1", "White", 0, 40)
+    sanity.guard_tees(tp, fc)
+    tees = tp["holes"]["1"]["tees"]
+    assert tees["Black"]["method"] == "walkback_capped"
+    assert "check" not in tees["White"] and tees["White"]["method"] == "walkback"
+
+
 def test_cart_path_does_not_cap():
     fc = _hole_fc([line([(-200, -20), (200, -20)], highway="service", golf="cartpath", osm_id=19)])
     tp = dict(holes={})
@@ -186,3 +200,50 @@ def test_consensus_converts_metres(tmp_path):
     card, info = pk.consensus_card(web, _ground(true))
     assert abs(card["tee_sets"]["Blue"]["yards"][0] - 400) <= 1
     assert any("metres" in f for f in info["consensus"]["flags"])
+
+
+# ----------------------------------------------------------------------------- hole refs (us60 finish failures)
+def _ways(refs, x0=0):
+    return [line([(x0 + i * 50, 0), (x0 + i * 50, 300)], golf="hole", ref=r, osm_id=1000 + x0 + i)
+            for i, r in enumerate(refs)]
+
+
+def _refs(fc):
+    return sorted((f["properties"]["ref"] for f in fc["features"] if f["properties"].get("golf") == "hole"),
+                  key=lambda r: (len(r), r))
+
+
+def test_hole_refs_named_course_group_kept_and_renumbered():
+    """Bethpage ("Black - 13", v2 hole_number crashed on int()), Pinehurst ("1 - #2" beside plain 1..27 + tee_boxes)."""
+    fc = dict(features=_ways([f"Black - {i}" for i in range(1, 19)]) + _ways([f"Red - {i}" for i in range(1, 19)], 5000))
+    out, notes = sanity.clean_osm(fc, names=["Bethpage Black Course", "Bethpage State Park"])
+    assert _refs(out) == [str(i) for i in range(1, 19)]
+    assert all(f["properties"]["ref_osm"].startswith("Black") for f in out["features"])
+    assert any("black" in n for n in notes) and any("Red - 1" in n for n in notes)
+    fc = dict(features=_ways([str(i) for i in range(1, 28)]) + _ways([f"{i} - #2" for i in range(1, 19)], 5000)
+              + _ways(["tee_boxes"], 9000))
+    out, _ = sanity.clean_osm(fc, names=["Pinehurst No. 2"])
+    assert _refs(out) == [str(i) for i in range(1, 19)]
+    assert {f["properties"]["ref_osm"] for f in out["features"]} == {f"{i} - #2" for i in range(1, 19)}
+
+
+def test_hole_refs_practice_and_lettered_nines_dropped_plain_kept():
+    """Old Works ("Practice 1..3" beside 1..18), Neshanic Valley (1..18 + A1 / L1 / M1 / R1 / P1 nines)."""
+    fc = dict(features=_ways([str(i) for i in range(1, 19)] + ["Practice 1", "Practice 2", "Practice 3"]))
+    out, notes = sanity.clean_osm(fc, names=["Old Works Golf Course"])
+    assert _refs(out) == [str(i) for i in range(1, 19)] and notes
+    fc = dict(features=_ways([str(i) for i in range(1, 19)]) + _ways([f"{c}{i}" for c in "ALMR" for i in range(1, 10)],
+                                                                      5000))
+    out, _ = sanity.clean_osm(fc, names=["Neshanic Valley Golf Course"])
+    assert _refs(out) == [str(i) for i in range(1, 19)]
+
+
+def test_hole_refs_only_qualified_largest_group_and_plain_untouched():
+    fc = dict(features=_ways([f"Hole {i}" for i in range(1, 19)]))
+    out, _ = sanity.clean_osm(fc, names=["Somewhere"])
+    assert _refs(out) == [str(i) for i in range(1, 19)]
+    plain = dict(features=_ways([str(i) for i in range(1, 19)]))
+    same, notes = sanity.normalize_hole_refs(plain, ["X"])
+    assert same is plain and notes == []
+    assert sanity.parse_hole_ref("tee_boxes") is None
+    assert sanity.parse_hole_ref("Monument 3") == (("monument",), 3)

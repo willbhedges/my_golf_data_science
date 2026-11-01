@@ -273,6 +273,18 @@ def fetch_lidar(cat, g1, g2, out, meta):
 EPT_INDEX = "https://raw.githubusercontent.com/hobuinc/usgs-lidar/master/boundaries/resources.geojson"
 
 
+EPT_FULL_AREA_M2 = 4.0e6       # above this bbox area the point cloud is read at a capped density
+
+
+def ept_resolution(area_m2):
+    """readers.ept `resolution` (m) for a bbox of this area, or None (full density). PDAL's standard pipeline holds
+    every point in memory: Troon North's 10 km2 box of AZ_MaricopaPinal_1_2020 killed the runner (exit 143, the
+    package job never finished: "no prepared course"). 0.5 m still leaves >= 4 points per 1 m HAG cell."""
+    if area_m2 <= EPT_FULL_AREA_M2:
+        return None
+    return 0.5 if area_m2 <= 4 * EPT_FULL_AREA_M2 else 1.0
+
+
 def fetch_ept(g1, g2, out, meta, max_projects=3):
     """USGS 3DEP point clouds (Entwine/EPT on AWS, s3 usgs-lidar-public) -> PDAL: drop noise, height above
     ground (filters.hag_nn), max per 1 m cell; ground Z per 2 m cell; building (class 6) return count.
@@ -322,9 +334,14 @@ def fetch_ept(g1, g2, out, meta, max_projects=3):
         tmp = os.path.join(out, "_ept")
         os.makedirs(tmp, exist_ok=True)
         common = dict(origin_x=g1.x0, origin_y=g1.y0, width=g1.W, height=g1.H, resolution=1.0, nodata=-9999)
+        rd = dict(type="readers.ept", filename=url, bounds=f"([{b3857[0]},{b3857[2]}],[{b3857[1]},{b3857[3]}])",
+                  threads=8)
+        res = ept_resolution(g1.W * g1.H)
+        if res:
+            rd["resolution"] = res
+            info["ept_resolution_m"] = res
         pipe = [
-            dict(type="readers.ept", filename=url, bounds=f"([{b3857[0]},{b3857[2]}],[{b3857[1]},{b3857[3]}])",
-                 threads=8),
+            rd,
             dict(type="filters.range", limits="Classification![7:7],Classification![18:18]"),
             dict(type="filters.reprojection", out_srs=g1.crs, tag="pts"),
             dict(type="filters.hag_nn", inputs=["pts"], tag="hag"),

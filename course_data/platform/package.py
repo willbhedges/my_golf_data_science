@@ -1249,7 +1249,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         local = find_local_card(course)
         if local:
             req["scorecard"] = local
-    fc, osm_notes = sanity.clean_osm(fc)
+    fc, osm_notes = sanity.clean_osm(fc, names=[n for n in (req.get("course"), course.get("name")) if n])
     warnings += osm_notes
     card, cinfo = cardless_card(fc, course, raw, req) if blind else pick_scorecard(req, raw, fc)
     if cinfo.get("units"):
