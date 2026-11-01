@@ -48,11 +48,69 @@ def end_xy(d):
 XY = dict(hole=hole_xy, trans=trans_xy, start=start_xy, end=end_xy)
 
 
+def _gbm():
+    return HistGradientBoostingClassifier(max_iter=250, learning_rate=0.08, max_leaf_nodes=31,
+                                          min_samples_leaf=30, l2_regularization=1.0, random_state=0)
+
+
+def stage2(d, ph, pt):
+    """Second-stage features: each candidate's first-stage score relative to its competitors (same tee / same
+    green), and cross-evidence between the two models (a tee that starts a strong hole; a 'next tee' that is in
+    fact the green's own tee; the walk direction vs the green's approach direction)."""
+    nt, ng = len(d["tees"]), len(d["greens"])
+    Ph = np.zeros((nt, ng))
+    for (t, g), p in zip(d["hp"], ph):
+        Ph[t, g] = p
+    Pt = np.zeros((ng, nt))
+    for (g, t), p in zip(d["tp"], pt):
+        Pt[g, t] = p
+    tc, gc = np.asarray(d["tc"]), np.asarray(d["gc"])
+    rowh, colh = Ph.max(1), Ph.max(0)
+    rowt, colt = Pt.max(1), Pt.max(0)
+    best_tee = Ph.argmax(0)
+    app = gc - tc[best_tee]
+    app /= np.maximum(np.hypot(*app.T), 1.0)[:, None]
+    tee_pred = Pt.max(0)                      # some green walks to this tee
+    Xh = []
+    for (t, g), p in zip(d["hp"], ph):
+        Ph_row = Ph[t].copy(); Ph_row[g] = 0
+        Ph_col = Ph[:, g].copy(); Ph_col[t] = 0
+        Xh.append([p, p / max(rowh[t], 1e-6), p / max(colh[g], 1e-6), Ph_row.max(), Ph_col.max(),
+                   tee_pred[t], Pt[g].max()])
+    Xt = []
+    for (g, t), p in zip(d["tp"], pt):
+        r = Pt[g].copy(); r[t] = 0
+        c = Pt[:, t].copy(); c[g] = 0
+        v = tc[t] - gc[g]
+        cosang = float(v @ app[g] / max(np.hypot(*v), 1.0))
+        Xt.append([p, p / max(rowt[g], 1e-6), p / max(colt[t], 1e-6), r.max(), c.max(), Ph[t, g], Ph[t].max(),
+                   cosang])
+    return (np.c_[d["hX"], np.array(Xh).reshape(-1, 7)], np.c_[d["tX"], np.array(Xt).reshape(-1, 8)])
+
+
 class Models:
-    def __init__(self, feats=("hole", "trans")):
+    def __init__(self, stack=True):
         self.m = {}
+        self.stack = stack
 
     def fit(self, ds):
+        self._fit1(ds)
+        if not self.stack:
+            return self
+        # out-of-fold first-stage scores on the training courses -> fit the second stage
+        k = 3
+        sub = [Models(stack=False)._fit1([d for i, d in enumerate(ds) if i % k != f]) for f in range(k)]
+        H2, T2, yh, yt = [], [], [], []
+        for i, d in enumerate(ds):
+            p = sub[i % k].predict(d)
+            a, b = stage2(d, p["hole"], p["trans"])
+            H2.append(a); T2.append(b)
+            yh.append(hole_xy(d)[1]); yt.append(trans_xy(d)[1])
+        self.m["hole2"] = _gbm().fit(np.vstack(H2), np.concatenate(yh))
+        self.m["trans2"] = _gbm().fit(np.vstack(T2), np.concatenate(yt))
+        return self
+
+    def _fit1(self, ds):
         for k, f in XY.items():
             X, y = zip(*[f(d) for d in ds])
             X, y = np.vstack(X), np.concatenate(y)
@@ -76,6 +134,10 @@ class Models:
         for k, key in (("hole", "hX"), ("trans", "tX")):
             X = d[key]
             out[k] = self.m[k].predict_proba(X)[:, 1] if len(X) else np.zeros(0)
+        if self.stack and "hole2" in self.m and len(d["hX"]) and len(d["tX"]):
+            a, b = stage2(d, out["hole"], out["trans"])
+            out["hole"] = self.m["hole2"].predict_proba(a)[:, 1]
+            out["trans"] = self.m["trans2"].predict_proba(b)[:, 1]
         out["start"] = self.m["start"].predict_proba(self._club(d["cT"]))[:, 1]
         out["end"] = self.m["end"].predict_proba(self._club(d["cG"]))[:, 1]
         return out

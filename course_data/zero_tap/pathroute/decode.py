@@ -42,8 +42,15 @@ def step_mat(H, T, add_t=None, add_g=None):
     return W, arg
 
 
-def beam_loop(H, T, S, E, n, avail_g, avail_t, beam=20000, mid=None):
-    """Best loop of n holes over the available greens / tees. -> (greens, tees, cost, conf)."""
+def card_cost(D, y, lam):
+    """Position cost of a tee -> green straight-line length D against the card's (back-tee) yardage y."""
+    r = np.log(np.maximum(D, 30.0) / max(float(y), 50.0)) + 0.04
+    return lam * np.minimum((r / 0.12) ** 2, 9.0)
+
+
+def beam_loop(H, T, S, E, n, avail_g, avail_t, beam=20000, mid=None, D=None, card_y=None, lam=0.0):
+    """Best loop of n holes over the available greens / tees. -> (greens, tees, cost, conf).
+    With a card (card_y: yards per position, D: tee x green lengths) each position k adds card_cost."""
     ng = H.shape[1]
     Hm = H.copy()
     Hm[~avail_t, :] = np.inf
@@ -51,7 +58,10 @@ def beam_loop(H, T, S, E, n, avail_g, avail_t, beam=20000, mid=None):
     W, A = step_mat(Hm, T)
     if mid:
         Wm, Am = step_mat(Hm, T, add_t=S, add_g=E)
-    s0 = S[:, None] + Hm                                     # start: clubhouse -> tee t -> green g
+    Hk = None
+    if card_y is not None and D is not None and lam > 0:
+        Hk = [Hm + card_cost(D, card_y[k], lam) for k in range(n)]
+    s0 = S[:, None] + (Hm if Hk is None else Hk[0])                                    # start: clubhouse -> tee t -> green g
     a0 = np.argmin(s0, axis=0)
     c = s0[a0, np.arange(ng)]
     ok = np.isfinite(c)
@@ -61,7 +71,10 @@ def beam_loop(H, T, S, E, n, avail_g, avail_t, beam=20000, mid=None):
     hist = []                                               # per step: (parent idx, last, tee)
     hist.append((np.full(len(last), -1), last.copy(), a0[last]))
     for k in range(2, n + 1):
-        Wk, Ak = (Wm, Am) if (mid and k == mid + 1) else (W, A)
+        if Hk is not None:
+            Wk, Ak = step_mat(Hk[k - 1], T, add_t=S, add_g=E) if (mid and k == mid + 1) else step_mat(Hk[k - 1], T)
+        else:
+            Wk, Ak = (Wm, Am) if (mid and k == mid + 1) else (W, A)
         cand = cost[:, None] + Wk[last, :]
         used = ((mask[:, None] >> np.arange(ng, dtype=np.int64)[None, :]) & 1).astype(bool)
         cand[used] = np.inf
@@ -95,7 +108,7 @@ def beam_loop(H, T, S, E, n, avail_g, avail_t, beam=20000, mid=None):
     return greens[::-1], tees[::-1], float(fin[best]), conf
 
 
-def decode(d, pr, w, beam=20000):
+def decode(d, pr, w, beam=4000, card_y=None):
     kind = d["kind"]
     n = 9 if kind in (9, 27) else 18
     loops = {9: 1, 18: 1, 27: 3, 36: 2}.get(kind, max(1, round(kind / n)))
@@ -103,10 +116,15 @@ def decode(d, pr, w, beam=20000):
     ng, nt = H.shape[1], H.shape[0]
     avail_g, avail_t = np.ones(ng, bool), np.ones(nt, bool)
     tc = np.array(d["tc"])
+    gcs = np.array(d["gc"])
+    D = np.hypot(tc[:, None, 0] - gcs[None, :, 0], tc[:, None, 1] - gcs[None, :, 1])
     out = []
     confs = []
     for li in range(loops):
-        r = beam_loop(H, T, S, E, n, avail_g, avail_t, beam=beam, mid=9 if n == 18 else None)
+        cy = card_y[li * n:(li + 1) * n] if card_y is not None and len(card_y) >= (li + 1) * n else \
+            (card_y[:n] if card_y is not None and len(card_y) >= n else None)
+        r = beam_loop(H, T, S, E, n, avail_g, avail_t, beam=beam, mid=9 if n == 18 else None, D=D, card_y=cy,
+                      lam=w.get("card", 0.0))
         if r is None:
             break
         gs, ts, c, conf = r
@@ -129,5 +147,5 @@ def decode(d, pr, w, beam=20000):
     return out, float(np.prod(confs)) if confs else 0.0
 
 
-def par_from_len(L, cut3=245.0, cut4=470.0):
+def par_from_len(L, cut3=225.0, cut4=450.0):          # cuts fitted on dev (PATHROUTE.md)
     return 3 if L <= cut3 else (4 if L <= cut4 else 5)

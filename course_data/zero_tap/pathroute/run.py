@@ -25,7 +25,7 @@ import decode as DC  # noqa: E402
 from model import Models  # noqa: E402
 
 METHOD = "pathroute"
-W = dict(trans=1.0, club=1.0)
+W = dict(trans=0.5, club=1.0)
 
 
 def load(cache, split):
@@ -43,18 +43,21 @@ def _version():
         return "dev"
 
 
-def result(d, M, tier, w=W, card=None, cuts=(245.0, 470.0)):
+def result(d, M, tier, w=W, card=None, cuts=(225.0, 450.0)):
     base = dict(schema="zero_tap_result/1", method=METHOD, version=_version(), tier=tier, slug=d["slug"],
                 card_kind="none" if tier == "nocard" else "card")
     if d.get("error"):
         return dict(base, certain=False, confidence=0.0, holes=[], error=d["error"])
     pr = M.predict(d)
-    holes, conf = DC.decode(d, pr, w)
+    cy, cpar = card_arrays(card)
+    holes, conf = DC.decode(d, pr, dict(w, card=w.get("card", 1.0)) if cy else w, card_y=cy)
     hs = []
     names = "ABCD"
     multi = d["kind"] in (27, 36)
     for h in holes:
-        hs.append(dict(number=h["number"], par=DC.par_from_len(h["L"], *cuts),
+        pos = h["loop"] * (9 if d["kind"] in (9, 27) else 18) + h["number"] - 1
+        par = (cpar[pos] if pos < len(cpar) else cpar[h["number"] - 1]) if cpar else None
+        hs.append(dict(number=h["number"], par=par or DC.par_from_len(h["L"], *cuts),
                        green_ll=d["greens"][h["g"]]["ll"], tee_ll=d["tees"][h["t"]]["ll"],
                        tee_boxes_ll=[d["tees"][b]["ll"] for b in h["boxes"]],
                        green_id=d["greens"][h["g"]]["id"], tee_id=d["tees"][h["t"]]["id"], confidence=conf,
@@ -63,14 +66,32 @@ def result(d, M, tier, w=W, card=None, cuts=(245.0, 470.0)):
                 extra=dict(club_src=d.get("club_src")))
 
 
+def card_arrays(card):
+    """(back-tee yards per hole, pars) of a scorecard/1, or (None, None)."""
+    if not card:
+        return None, None
+    ys = [ts.get("yards") for ts in (card.get("tee_sets") or {}).values() if ts.get("yards")]
+    n = max((len(y) for y in ys), default=0)
+    ys = [y for y in ys if len(y) == n]
+    cy = [max((y[i] or 0) for y in ys) for i in range(n)] if ys else None
+    if cy and min(cy) <= 0:
+        cy = None
+    return cy, card.get("par")
+
+
 def folds(ds, k=5):
     good = [d for d in ds if not d.get("error")]
     idx = {d["slug"]: i % k for i, d in enumerate(sorted(good, key=lambda d: d["slug"]))}
     return idx
 
 
+def _cards(split):
+    return {r["slug"]: B.card_for(r) for r in B.courses(split)}
+
+
 def run_dev(cache, tier="nocard", w=W, k=5, out=None, models=None):
     ds = load(cache, "dev")
+    cards = _cards("dev") if tier == "osm_card" else {}
     fi = folds(ds, k)
     res = []
     ms = models or {}
@@ -79,7 +100,8 @@ def run_dev(cache, tier="nocard", w=W, k=5, out=None, models=None):
             ms[f] = Models().fit([d for d in ds if fi.get(d["slug"], -1) not in (-1, f)])
         for d in ds:
             if fi.get(d["slug"], 0) == f:
-                res.append(result(d, ms[f], tier, w))
+                c = cards.get(d["slug"])
+                res.append(result(d, ms[f], tier, w, card=c[0] if c else None))
     if out:
         for r in res:
             B.write_result(r, os.path.join(out, tier))
@@ -107,7 +129,8 @@ def main():
             res, _ = run_dev(a.cache, tier, out=a.out)
         else:
             M = Models().fit([d for d in load(a.cache, "dev") if not d.get("error")])
-            res = [result(d, M, tier) for d in load(a.cache, "test")]
+            cards = _cards("test") if tier == "osm_card" else {}
+            res = [result(d, M, tier, card=(cards.get(d["slug"]) or (None,))[0]) for d in load(a.cache, "test")]
             if a.out:
                 for r in res:
                     B.write_result(r, os.path.join(a.out, tier))
