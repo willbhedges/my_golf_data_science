@@ -153,21 +153,29 @@ or re-score a page without a refetch.
 
 ## National course index
 
-`us_courses.json.gz` (schema `us_courses/1`) lists every named `leisure=golf_course` in the 50 states + DC on
+`us_courses.json.gz` (schema `us_courses/2`) lists every named `leisure=golf_course` in the 50 states + DC on
 OpenStreetMap, with how completely OSM maps it. `national_index.py` builds it on Actions
 (`.github/workflows/national_index.yml`; push `course_data/requests/national_index_<name>.json`
-`{"states": [] (all) or ["IA", ...], "oga": true, "rev": n}`). The sandbox cannot reach Overpass. Each state is one
-Overpass query (course outlines + `golf=hole|green|tee` + place names for the city), with retries over three
-endpoints. A second pass retries failed states, and a state a run does not fetch keeps its rows from the committed
-file. OpenGolfAPI's state listings (about 200 calls in all) mark courses it knows, matched by name + state, or by a
-shared name stem within 1.5 km.
+`{"states": [] (all) or ["IA", ...], "reuse_run": <run id>, "oga_run": <run id>, "oga_states": [...], "rev": n}`).
+The sandbox cannot reach Overpass. Each state's bbox is cut into tiles of about 1 x 1 degree (0.5-1.5; 4 in
+Alaska), about 2,200 tiles in all. One Overpass query per tile (course outlines filtered to the state's area, every
+`golf=hole|green|tee|fairway|pin` in the tile, place names for the city), with a 150 s server timeout; each tile is
+tried once on each mirror of `platform/osm_guard.py` (a mirror whose answer lacks the state's area counts as a
+failure, not as an empty tile), and a tile no mirror answers is split in four and retried. Every tile is written
+the moment it lands, so a time-out loses one tile, not a state; `reuse_run` seeds a re-run with an earlier run's
+tiles, so only the missing ones are fetched. The states are split over at most 6 jobs (other builds share the 20
+runners). `partial_states` in both files names states with tiles still missing. OpenGolfAPI's state listings
+(about 16,000 courses; fetched once and reused from a run's `natoga` artifact via `oga_run`, or fresh for
+`oga_states`) mark courses it knows, matched by name + state, or by a shared name stem within 1.5 km.
 
 Columnar: `{"fields": [...], "rows": [[...]]}`. Fields: `name, city, state, lat, lon, osm, holes, osm_holes,
-greens, tees, card, tier, closed`. `city` is `addr:city`, else the nearest city / town / village node. `holes` is
-the outline's `holes` tag, else 18 or 9 from the mapped holes. `osm_holes` counts the distinct `ref`s of the golf=hole
-ways inside the outline's bbox (a feature in two bboxes goes to the smaller course). `card` is `library` (a library
-build found a web card), `oga` (OpenGolfAPI lists it with a par; its detail call usually gives the card), `oga?`
-(listed without a par) or empty.
+greens, tees, fairways, pins, outline, card, tier, closed`. `city` is `addr:city`, else the nearest city / town /
+village node. `holes` is the outline's `holes` tag, else 18 or 9 from the mapped holes / greens. `osm_holes` counts
+the distinct `ref`s of the golf=hole ways inside the outline's bbox (`7`, `Hole 7`; qualified refs like `Red 3`
+count apart) plus hole ways without a ref; greens, tees, fairways and pins count the features whose centre is in
+the bbox (a feature in two bboxes goes to the smaller course). `outline` is 1 for a way / relation, 0 for a bare
+node. `card` is `library` (a library build found a web card), `oga` (OpenGolfAPI lists it with a par; its detail
+call usually gives the card), `oga?` (listed without a par) or empty.
 
 | tier | meaning | what the course_page pipeline does |
 |---|---|---|

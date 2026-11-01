@@ -1,11 +1,16 @@
 name: national-index
 
 # National course index (course_data/library/national_index.py, README "National course index"):
-# every named leisure=golf_course in the US from OpenStreetMap (Overpass, one query per state, with retries), plus
-# OpenGolfAPI state listings where they help. Trigger: push course_data/requests/national_index_<name>.json
-#   {"states": ["IA", ...] (optional, default all 50 + DC), "oga": true, "rev": n}
-# Output (committed): course_data/library/us_courses.json.gz, course_data/library/us_readiness.json.
-# States not fetched by a run keep their rows from the committed index, so a re-run of failed states is cheap.
+# every named leisure=golf_course in the US from OpenStreetMap, fetched per state in ~1-degree tiles (one Overpass
+# query per tile, each tile tried on every mirror, split in four when none answers), written tile by tile so a
+# time-out loses one tile, not a state. Trigger: push course_data/requests/national_index_<name>.json
+#   {"states": [] (all 50 + DC) or ["IA", ...], "shards": 6, "budget_min": 95,
+#    "reuse_run": <run id> (seed the tiles from that run's artifacts: only missing tiles are fetched),
+#    "oga_run": <run id> (OpenGolfAPI listings from that run's natoga artifact),
+#    "oga_states": ["KY", ...] (fetch these listings fresh; 1,000 anonymous calls / day), "rev": n}
+# At most `shards` (default 6) fetch jobs run at once: other builds share the 20 runners.
+# Output (committed by the merge job): course_data/library/us_courses.json.gz, us_readiness.json and the
+# README counts block. States with no tiles keep their rows from the committed index.
 on:
   push:
     paths:
@@ -13,9 +18,10 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
-  group: national-index-${{ github.ref }}-${{ github.sha }}
+  group: national-index-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -23,7 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       chunks: ${{ steps.p.outputs.chunks }}
-      oga: ${{ steps.p.outputs.oga }}
+      reuse_run: ${{ steps.p.outputs.reuse_run }}
+      oga_run: ${{ steps.p.outputs.oga_run }}
+      oga_states: ${{ steps.p.outputs.oga_states }}
+      budget: ${{ steps.p.outputs.budget }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,27 +46,30 @@ jobs:
         run: |
           R=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/national_index_*.json' | tail -1)
           [ -n "$R" ] || R=$(ls -t course_data/requests/national_index_*.json | head -1)
+          echo "request: $R"; cat "$R"
           python3 - "$R" <<'EOF'
           import json, os, sys
           sys.path.insert(0, "course_data/library")
           import national_index as ni
           q = json.load(open(sys.argv[1]))
           states = [s.upper() for s in (q.get("states") or ni.STATES)]
-          n = min(12, len(states))
-          chunks = [" ".join(states[i::n]) for i in range(n)]
+          chunks = ni.shards(states, min(6, int(q.get("shards") or 6)))
           with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
               fh.write("chunks=" + json.dumps(chunks) + "\n")
-              fh.write("oga=" + ("1" if q.get("oga", True) else "0") + "\n")
+              fh.write("reuse_run=" + str(q.get("reuse_run") or "") + "\n")
+              fh.write("oga_run=" + str(q.get("oga_run") or "") + "\n")
+              fh.write("oga_states=" + " ".join(q.get("oga_states") or []) + "\n")
+              fh.write("budget=" + str(int(q.get("budget_min") or 95)) + "\n")
           print(chunks)
           EOF
 
   fetch:
     needs: plan
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 140
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 6
       matrix:
         chunk: ${{ fromJSON(needs.plan.outputs.chunks) }}
     steps:
@@ -67,11 +79,31 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             course_data/library/national_index.py
-      - run: |
-          NATIDX_BUDGET_MIN=95 python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx || true
-          # second pass for any state that failed (the script skips states already fetched)
-          NATIDX_BUDGET_MIN=25 python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx || true
-          ls -la /tmp/natidx
+            course_data/platform/osm_guard.py
+            course_data/platform/platform_common.py
+      - name: Seed tiles from an earlier run
+        if: needs.plan.outputs.reuse_run != ''
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: natidx-*
+          merge-multiple: true
+          path: /tmp/natidx
+          run-id: ${{ needs.plan.outputs.reuse_run }}
+          github-token: ${{ github.token }}
+      - name: Fetch tiles
+        run: |
+          mkdir -p /tmp/natidx
+          # keep only this job's states (the seed holds every state)
+          for d in /tmp/natidx/*/; do
+            s=$(basename "$d"); case " ${{ matrix.chunk }} " in *" $s "*) ;; *) rm -rf "$d";; esac
+          done
+          echo "seeded tiles: $(find /tmp/natidx -name 't_*.json' | wc -l)"
+          NATIDX_BUDGET_MIN=${{ needs.plan.outputs.budget }} NATIDX_MIRROR_OFFSET=${{ strategy.job-index }} \
+            python3 -u course_data/library/national_index.py fetch ${{ matrix.chunk }} --out /tmp/natidx || true
+          cat /tmp/natidx/*/_status.json | python3 -c "import json,sys
+          for l in sys.stdin.read().replace('}{','}\n{').splitlines():
+              s=json.loads(l); print(s['state'], s['have'], '/', s['tiles'], 'complete' if s['complete'] else 'PARTIAL')"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -79,29 +111,11 @@ jobs:
           path: /tmp/natidx
           if-no-files-found: ignore
 
-  oga:
-    needs: plan
-    if: needs.plan.outputs.oga == '1'
+  merge:
+    needs: [plan, fetch]
+    if: always() && needs.plan.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.sha }}
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            course_data/library/national_index.py
-      - run: python3 -u course_data/library/national_index.py oga ${{ join(fromJSON(needs.plan.outputs.chunks), ' ') }} --out /tmp/oga || true
-      - uses: actions/upload-artifact@v4
-        with:
-          name: natoga
-          path: /tmp/oga
-          if-no-files-found: ignore
-
-  merge:
-    needs: [fetch, oga]
-    if: always()
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -113,22 +127,51 @@ jobs:
             course_data/library/us_courses.json.gz
             course_data/library/us_readiness.json
             course_data/library/README.md
-      - uses: actions/download-artifact@v4
+            course_data/platform/osm_guard.py
+            course_data/platform/platform_common.py
+      - name: Tiles of the reused run (this run's tiles overwrite them)
+        if: needs.plan.outputs.reuse_run != ''
+        continue-on-error: true
+        uses: actions/download-artifact@v4
         with:
           pattern: natidx-*
           merge-multiple: true
           path: /tmp/natidx
+          run-id: ${{ needs.plan.outputs.reuse_run }}
+          github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         continue-on-error: true
         with:
+          pattern: natidx-*
+          merge-multiple: true
+          path: /tmp/natidx
+      - name: OpenGolfAPI listings of an earlier run
+        if: needs.plan.outputs.oga_run != ''
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
           name: natoga
-          path: /tmp/oga
-      - run: |
-          mkdir -p /tmp/natidx /tmp/oga
-          python3 -u course_data/library/national_index.py merge /tmp/natidx --oga /tmp/oga
+          path: /tmp/oga_all
+          run-id: ${{ needs.plan.outputs.oga_run }}
+          github-token: ${{ github.token }}
+      - name: Fresh OpenGolfAPI listings
+        if: needs.plan.outputs.oga_states != ''
+        run: |
+          python3 -u course_data/library/national_index.py oga ${{ needs.plan.outputs.oga_states }} --out /tmp/oga_new || true
+          mkdir -p /tmp/oga_all /tmp/oga_new && cp -f /tmp/oga_new/*.json /tmp/oga_all/ 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: natoga
+          path: /tmp/oga_all
+          if-no-files-found: ignore
+      - name: Merge, commit
+        run: |
+          mkdir -p /tmp/natidx /tmp/oga_all
+          echo "tiles: $(find /tmp/natidx -name 't_*.json' | wc -l); oga listings: $(ls /tmp/oga_all | wc -l)"
+          python3 -u course_data/library/national_index.py merge /tmp/natidx --oga /tmp/oga_all
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add course_data/library/us_courses.json.gz course_data/library/us_readiness.json
+          git add course_data/library/us_courses.json.gz course_data/library/us_readiness.json course_data/library/README.md
           git diff --cached --quiet && exit 0
           printf '%s\n' "library: national course index (Actions run ${{ github.run_id }})" "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
@@ -136,6 +179,7 @@ jobs:
           git commit -q -F /tmp/msg.txt
           for i in 1 2 3 4 5 6 7 8; do
             git pull --rebase origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            git rebase --abort 2>/dev/null || true
             echo "push attempt $i failed"; sleep $((i * 10))
           done
           exit 1
