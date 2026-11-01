@@ -20,3 +20,9 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
       212 courses). When pass 2 lands: rebuild zero_tap/bench_set.py, re-run formation hole_pairs on the new scenes
       (zt_formation), re-run the UNMAPPED.md commands; then launch: tee-candidate re-scorer (cut false tees),
       fairway-between-tee-and-green pairing term, threshold calibration that holds 98 % on new states.
+- [ ] National index full run 41355553763 (1-degree cells, 6 jobs): when it lands, read us_readiness.json
+      partial_states; if any, push course_data/requests/national_index_us_cells2.json with
+      {"states": [], "reuse_run": 41355553763, "oga_run": <that run id>, "rev": n} until empty. Check Spirit Hollow KS,
+      Blue Hills MO, Eagle Knoll MO come out tier A/B. Then fill ROADMAP "national OSM coverage".
+- [ ] Error budget follow-ups running: long-grass threshold fix agent, tee box + tree edge agent. When both land,
+      re-run course_data/platform/error_budget.py and update ROADMAP "Where we are".
