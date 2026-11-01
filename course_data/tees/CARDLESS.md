@@ -37,6 +37,42 @@ card = CL.infer_card(holes, osm_tees, pads=lidar_pads)   # scorecard/1 shape: pa
    4 par 3s and 4 par 5s; 9 holes 34 to 36).
 5. Sets are named `Back`, `2nd`, `3rd`, ... and each carries its total and its ratio.
 
+## v2 (2026-11-01): box reassignment, hybrid anchoring, learned 2nd set
+
+Three changes, all fitted on dev only (test run once with the final settings):
+
+1. **Box -> hole assignment** (`reassign_far_boxes`). `place_tee.assign_tees_to_holes` scores a box by
+   |offset| + 0.1 x behind, so a box far behind a hole's start could still be claimed by it. Now a box more than
+   30 yds behind its hole's line start that lies **nearer another hole's line start** goes to that hole (if it
+   fits there: |offset| <= 45, at most 150 behind) or is dropped. On dev such boxes matched the card back on 4
+   holes and the line start on 20. A "another hole's line passes within 30 yds" rule (`corridor_yd`) was tried
+   and left off (no gain on dev).
+2. **Hybrid** (`infer_card(..., anchored=)`). On a hole whose line is an OSM golf=hole way, OSM boxes whose back
+   edge is more than 45 yds behind the way's start, and lidar pads more than 10 yds behind it, are not tee
+   positions; the rest of cardless (other boxes, sets, par) runs as before. Holes the router placed (no hole way)
+   use cardless fully. On dev, lidar pads behind the line start matched the card back on 2 of 18 holes. The
+   45-yd limit costs a little on the bench, where boxes 30-60 yds behind the way's start are often the real tips
+   (anchoring at the line start alone: back within-10 56.5 % on dev; 15 yds: 62.1 %; 45 yds: 67.8 %; none:
+   68.3 %), and it removes the overshoots seen in the card-blind eval (`platform/CARDBLIND.md`).
+3. **2nd set** (`second_mode="gap"`). Back minus a learned gap by par and 50-yd back-length bin (dev-card
+   medians, `cardless_model.json` `gap2`: par 4 from 12 yds at 250-299 to 30 at 450-499; par 5 17 -> 31), snapped
+   to the nearest box position within 4-45 yds in front of Back when one is within 15 yds of that target. On
+   dev this beat the joint DP's 2nd set (46.0 %) and a 0.94 x back ratio (41.4 %): 49.6 %. A ratio by par
+   (0.905 / 0.947 / 0.955) was worse than the gap (43.6 % vs 44.4 % before snapping).
+
+Per-hole |predicted - card| within 10 yds (median yds), zero_tap bench, all lines are OSM hole ways:
+
+| | dev back | dev 2nd | dev par | **test back** | **test 2nd** | **test par** |
+|---|---|---|---|---|---|---|
+| fallback (back = line, 2nd = 0.94 x line, par from length) | 54.9 % (8.6) | 34.5 % (15.3) | 93.5 % | 57.2 % (7.9) | 35.7 % (14.4) | 94.5 % |
+| cardless v1 | 67.1 % (6) | 44.7 % (12) | 94.6 % | 70.1 % (5) | 47.0 % (11) | 96.4 % |
+| cardless v2, no anchoring (router lines) | 68.1 % (6) | 49.9 % (11) | 95.2 % | 70.6 % (5) | 51.9 % (10) | 96.5 % |
+| **hybrid** (v2 anchored on hole ways) | 67.8 % (6) | **50.6 % (10)** | 95.3 % | 69.6 % (5) | **52.0 % (10)** | 96.4 % |
+
+(v1 rows are scored with the refitted par model; v1's own par model gave 94.8 / 96.8 %.) On the bench the
+hybrid's anchoring costs 0.3-1.0 points of back-set accuracy against unanchored v2; the 2nd set gains 5-6 points
+over v1. `python3 course_data/tees/eval_cardless.py [--fit] [--test]` prints all four rows.
+
 ## Evaluation (zero_tap benchmark, courses with a fitting web card)
 
 The truth is the web card, cleaned. Sets with missing holes are dropped. So are duplicates and combo sets (every
@@ -98,7 +134,7 @@ all, and those are always too short.
   line-start slot then means the router's chosen tee.
 
 Files: `cardless.py`, `cardless_model.json` (fitted on dev), `eval_cardless.py`, `eval_cardless.json` (per-course
-rows included), `test_cardless.py`.
+rows included), `test_cardless.py`, `fixtures_cardless_backbox.json` (the five card-blind back-box holes).
 
 ## Unmapped tips: candidate search (tip_candidates.py, eval_tips.py)
 

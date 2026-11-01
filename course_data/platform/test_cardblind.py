@@ -55,6 +55,8 @@ def test_cardless_inputs_green_centre():
 
 def test_cardless_infer_shape():
     card, info = P.cardless_infer(fc_two_holes(), {}, "/nonexistent", "x")
+    assert card is None and info.startswith("OSM maps every hole")      # default: the hole-line card stays
+    card, info = P.cardless_infer(fc_two_holes(), {"cardless": "hybrid"}, "/nonexistent", "x")
     if card is None:                                     # tees/cardless.py absent: the reason is a string
         assert isinstance(info, str)
         return

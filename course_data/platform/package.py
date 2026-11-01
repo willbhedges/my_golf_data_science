@@ -394,12 +394,17 @@ def cardless_inputs(fc, pads=()):
 def cardless_infer(fc, req, pkg_dir, slug, routed=None):
     """card:none after routing: tees/cardless.infer_card on every routed hole line (+ OSM tee boxes, + lidar pads
     from the package DEM) -> (card on hole numbers 1..n with None for unrouted holes, info) or (None, reason).
-    Hybrid (default): holes whose line is an OSM golf=hole way (not in `routed`, the refs the router placed) are
-    anchored (infer_card anchored=: no Back on a box far behind the way's start); request "cardless": "unanchored"
-    treats every line as a router line (no anchoring)."""
+    Hybrid: holes whose line is an OSM golf=hole way (not in `routed`, the refs the router placed) are anchored
+    (infer_card anchored=: no Back on a box far behind the way's start); request "cardless": "unanchored" treats
+    every line as a router line. Default: only when the router placed some holes (else the hole-line card stays;
+    "cardless": "hybrid" forces infer_card)."""
     mode = str(req.get("cardless") or "").lower()
     if mode == "fallback":
         return None, "request cardless: fallback"
+    if not routed and mode not in ("hybrid", "unanchored", "v2"):
+        # default: where OSM maps every hole the hole-line card stays (CARDBLIND.md: the hybrid did not beat it on
+        # the 13 mapped courses); request "cardless": "hybrid" runs infer_card there too
+        return None, "OSM maps every hole: hole-line card kept (request cardless: hybrid to infer the card)"
     mod = load(os.path.join(CD, "tees", "cardless.py"), "cdp_cardless")
     if mod is None or not callable(getattr(mod, "infer_card", None)):
         return None, "tees/cardless.py infer_card not available"
@@ -1291,7 +1296,8 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
             pipe["card"] = dict(kind=cinfo["kind"], source=cinfo["source"])
         else:
             cinfo.setdefault("tried", []).append(dict(source="tees/cardless.infer_card", ok=False, info=i2))
-            warnings.append(f"cardless: {i2}; using the OSM hole-line card"[:240])
+            if not str(i2).startswith("OSM maps every hole"):
+                warnings.append(f"cardless: {i2}; using the OSM hole-line card"[:240])
     refs =sorted(osm_lines(fc), key=lambda r: r.zfill(3))
     stages["scorecard"] = f"ok: {cinfo['kind']} ({cinfo['source']})" if card else "missing"
     if not card:

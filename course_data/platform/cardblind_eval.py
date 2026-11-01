@@ -114,6 +114,8 @@ def build(slug, variant, out_root):
         req["card"] = "none"
         if variant == "blind_fallback":            # the "before": OSM hole-line card only, no tees/cardless.py
             req["cardless"] = "fallback"
+        elif variant == "blind_hybrid":            # tees/cardless infer_card on every course (anchored hole ways)
+            req["cardless"] = "hybrid"
         req.update(json.loads(os.environ.get("CARDBLIND_REQ") or "{}"))   # e.g. '{"pathroute": false}' (old routing)
     with contextlib.redirect_stdout(io.StringIO()):
         pkg = P.build_package(req, dst)
@@ -300,8 +302,9 @@ def main():
     ap.add_argument("--n", type=int, default=4000)
     ap.add_argument("--from-builds", action="store_true", help="reuse packages already in --out-dir")
     ap.add_argument("--build", nargs=2, metavar=("SLUG", "VARIANT"))
-    ap.add_argument("--cardless", choices=("auto", "fallback"), default="auto",
-                    help="auto: tees/cardless.infer_card after routing (default); fallback: the OSM hole-line card")
+    ap.add_argument("--cardless", choices=("auto", "fallback", "hybrid"), default="auto",
+                    help="auto: package.py's card:none default; fallback: the OSM hole-line card; hybrid: "
+                         "tees/cardless.infer_card (anchored on OSM hole ways) on every course")
     ap.add_argument("--compare", nargs=2, metavar=("BEFORE_JSON", "AFTER_JSON"),
                     help="print / write (--md) the before / after table of two runs")
     ap.add_argument("--md", action="store_true", help="also rewrite CARDBLIND.md's generated table")
@@ -344,7 +347,7 @@ def main():
         rec = dict(group=cfg["group"], ref="hand truth package" if cfg.get("truth") else "normal build (true card)")
         paths = {}
         try:
-            bv = "blind" if a.cardless == "auto" else "blind_fallback"
+            bv = {"auto": "blind", "fallback": "blind_fallback", "hybrid": "blind_hybrid"}[a.cardless]
             for v in ("ref", bv):
                 if v == "ref" and cfg.get("truth"):
                     paths[v] = os.path.join(ROOT, cfg["truth"])

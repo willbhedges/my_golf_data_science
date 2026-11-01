@@ -58,6 +58,63 @@ the request's review overrides), and **blind** (`card: none`, minus `tee_overrid
 
 Re-run it after improving `tees/cardless.py` or the routing. Nothing in the harness needs editing.
 
+## Three-way: fallback / cardless v1 / hybrid (`tees/cardless.py` v2), n = 1000, same 17 courses, 2026-11-01
+
+**Hybrid** = `tees/cardless.py` v2 run on every course (`--cardless hybrid`): (1) a box more than 30 yds behind its
+hole's line start that sits nearer another hole's line start is that hole's box (or dropped); (2) on holes with
+an OSM hole way, boxes more than 45 yds (lidar pads 10 yds) behind the way's start are not tee positions; (3) the
+2nd set is Back minus a gap learned on the zero_tap dev cards by par and back length, snapped to a box in front
+of Back (`tees/CARDLESS.md`, v2). Rows: `cardblind_eval_fallback.json` (fallback), `cardblind_eval_cardless_v1.json`
+(v1), `cardblind_eval.json` (hybrid). Regret in strokes per tee shot.
+
+| courses | set | arm | same club + aim <=10 | tee <=10 yds | tee err med | par right | regret / tee shot |
+|---|---|---|---|---|---|---|---|
+| OSM maps every hole (13) | back | fallback | 142/168 (85 %) | 177/219 | 3.1 | 217/219 | 0.013 |
+| OSM maps every hole (13) | back | cardless v1 | 136/168 (81 %) | 167/219 | 4.0 | 214/219 | 0.02 |
+| OSM maps every hole (13) | back | hybrid | 140/168 (83 %) | 174/219 | 3.0 | 214/219 | 0.014 |
+| OSM maps every hole (13) | second | fallback | 117/154 (76 %) | 102/201 | 10.0 | 199/201 | 0.021 |
+| OSM maps every hole (13) | second | cardless v1 | 111/154 (72 %) | 97/201 | 11.6 | 198/201 | 0.026 |
+| OSM maps every hole (13) | second | hybrid | 114/154 (74 %) | 104/201 | 10.0 | 198/201 | 0.019 |
+| OSM hole ways missing (4) | back | fallback | 8/32 (25 %) | 7/43 | 265.9 | 17/57 | 0.584 |
+| OSM hole ways missing (4) | back | cardless v1 | 10/32 (31 %) | 11/43 | 241.1 | 20/57 | 0.366 |
+| OSM hole ways missing (4) | back | hybrid | 10/32 (31 %) | 11/43 | 242.4 | 21/57 | 0.541 |
+| OSM hole ways missing (4) | second | fallback | 7/32 (22 %) | 6/43 | 267.8 | 17/57 | 0.84 |
+| OSM hole ways missing (4) | second | cardless v1 | 9/32 (28 %) | 11/43 | 252.1 | 20/57 | 0.501 |
+| OSM hole ways missing (4) | second | hybrid | 9/32 (28 %) | 12/43 | 252.1 | 21/57 | 0.896 |
+| all (17) | back | fallback | 150/200 (75 %) | 184/262 | 4.0 | 234/276 | 0.095 |
+| all (17) | back | cardless v1 | 146/200 (73 %) | 178/262 | 4.8 | 234/276 | 0.072 |
+| all (17) | back | hybrid | 150/200 (75 %) | 185/262 | 4.0 | 235/276 | 0.094 |
+| all (17) | second | fallback | 124/186 (67 %) | 108/244 | 14.1 | 216/258 | 0.148 |
+| all (17) | second | cardless v1 | 120/186 (65 %) | 108/244 | 14.0 | 218/258 | 0.103 |
+| all (17) | second | hybrid | 123/186 (66 %) | 116/244 | 11.0 | 219/258 | 0.162 |
+
+* **The five back-box overshoots are gone.** hot_springs_arlington 5 / 10, veenker 18 (lidar pads 65-112 yds
+  behind the way's start; veenker's and one of hole 10's sit nearer another hole's start) and pine_dunes 18,
+  spirit_hollow 4 (OSM boxes 48 / 105 behind) now get the way's length. Mapped back set: 136 -> 140 / 168,
+  tee within 10 yds 167 -> 174 / 219, regret 0.020 -> 0.014. Test: `tees/test_cardless.py`
+  (`fixtures_cardless_backbox.json`).
+* **2nd set**: 111 -> 114 / 154 on mapped courses (fallback 117), tee within 10 yds 97 -> 104 / 201 (fallback 102),
+  regret 0.026 -> 0.019 (fallback 0.021). hot_springs_arlington 2nd 6 -> 10 / 14, blue_hills 9 -> 11.
+* **Still not a clean win over the fallback on mapped courses**: back 140 vs 142, 2nd 114 vs 117 same club + aim
+  (2 and 3 tee shots; pine_dunes 12 vs 14 back, 10 vs 12 2nd), regret back 0.014 vs 0.013, 2nd 0.019 vs 0.021.
+* **Unmapped courses** (old routing, before pathroute_v2 above): same club + aim equal to v1 (10/32, 9/32); par 21 vs 20 / 57. Mean regret is higher
+  (0.54 vs 0.37 back) only through national_kc 7, a wrong-green hole ("another hole's plan": 2.3 -> 7.4 strokes
+  after a reassigned box shortened it 695 -> 583 yds); these regrets are indicative only.
+* On the zero_tap bench (2,000+ holes, every line an OSM way) the hybrid beats the fallback by a wide margin
+  (test back within 10 yds 69.6 % vs 57.2 %, 2nd 52.0 % vs 35.7 %): the 13 card-blind courses have unusually
+  good hole ways that start on the back tee.
+
+**Default now (`package.py` card:none, `cardless_infer`).** The gate was "hybrid only if it beats the fallback on
+mapped courses and is no worse on unmapped": it does not beat the fallback on mapped courses. So: where OSM maps
+every hole (the router placed none), the **hole-line fallback card stays** (back = way length, 2nd = 0.94 x back);
+where the router placed holes, **the hybrid** runs (router lines unanchored, the course's OSM ways anchored). By
+construction that default scores as the fallback rows on the 13 mapped courses and the hybrid rows on the 4
+unmapped ones (back 142/168 + 10/32, 2nd 117/154 + 9/32). Request `"cardless": "hybrid"` forces infer_card on a
+fully mapped course, `"unanchored"` turns anchoring off, `"fallback"` keeps the hole-line card everywhere.
+cardblind_eval `--cardless hybrid` reproduces the hybrid arm (the run above was made before the default changed,
+so its `blind` builds are hybrid builds).
+
+
 ## Routing: pathroute_v2 for card:none (2026-11-01, n = 1000)
 
 `"card": "none"` now routes the holes OSM has no way for with **zero_tap/pathroute_v2** (`stage_select` method
@@ -95,7 +152,7 @@ greens, so the hole count guess is 9 of the true 18, and the ref is itself route
 "routing right" there is against a routed ref. Remaining misses are mostly wrong greens (9 of 16 back-set misses).
 The 13 fully mapped courses are not affected: routing is not needed there.
 
-## Headline: before (fallback card) -> after (`tees/cardless.py`), n = 1000 quick decisions per plan, 2026-11-01
+## History: before (fallback card) -> after (`tees/cardless.py` v1), n = 1000 quick decisions per plan, 2026-11-01
 
 Tee shots where the card-blind plan has **the same club and an aim within 10 yds** of the true-card plan. The same
 17 courses are scored in both arms, now including tomahawk_hills (its crash is fixed: see below).
@@ -124,56 +181,56 @@ Suggested next step, for the owner of `tees/cardless.py`: on a hole with an OSM 
 more than about 25 yds behind the way's start unless a box is assigned to that hole alone. Or simply prefer the
 line length as B there. That would keep the fallback's back set and use infer_card for the other sets and par.
 
-## Results (after: `tees/cardless.py`; the before rows are in `cardblind_eval_fallback.json`)
+## Results (hybrid: `tees/cardless.py` v2 on every course; fallback rows in `cardblind_eval_fallback.json`, v1 in `cardblind_eval_cardless_v1.json`)
 
 <!-- cardblind_eval:begin -->
 | course | set (ref / blind) | ref | routing right | par right | back-tee err med (<=10 yds) | |len err| med | same club | same or ref tie | same club + aim <=10 | no plan | aim diff med (same club) | regret / tee shot |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | blue_hills | back: Black / Back | hand | 18/18 | 18/18 | 1.1 (16/18) | 3.0 | 10/14 | 13/14 | **10/14** | 0 | 1.2 | 0.007 |
-| blue_hills | second: Blue / 2nd | hand | 18/18 | 18/18 | 9.8 (9/18) | 11.5 | 10/14 | 10/14 | **9/14** | 0 | 2.2 | 0.038 |
+| blue_hills | second: Blue / 2nd | hand | 17/18 | 18/18 | 9.9 (10/18) | 10.0 | 12/14 | 12/14 | **11/14** | 0 | 0.3 | 0.028 |
 | coldwater | back: Black / Back | card | 17/18 | 17/18 | 2.0 (15/18) | 2.0 | 13/14 | 13/14 | **13/14** | 0 | 0.0 | 0.002 |
-| coldwater | second: Blue / 2nd | card | 18/18 | 17/18 | 4.5 (13/18) | 5.5 | 13/14 | 13/14 | **13/14** | 0 | 2.2 | 0.003 |
+| coldwater | second: Blue / 2nd | card | 18/18 | 17/18 | 6.5 (12/18) | 5.5 | 12/14 | 13/14 | **12/14** | 0 | 2.5 | 0.002 |
 | eagle_knoll | back: Eagle / Back | hand | 18/18 | 18/18 | 1.9 (15/18) | 4.0 | 12/14 | 13/14 | **12/14** | 0 | 1.9 | 0.007 |
-| eagle_knoll | second: Back / 2nd | hand | 18/18 | 18/18 | 14.2 (7/18) | 12.5 | 11/14 | 12/14 | **10/14** | 0 | 2.5 | 0.034 |
+| eagle_knoll | second: Back / 2nd | hand | 18/18 | 18/18 | 10.1 (9/18) | 8.5 | 11/14 | 12/14 | **10/14** | 0 | 2.1 | 0.02 |
 | ellis | back: Blue / Back | card | 18/18 | 18/18 | 4.0 (14/18) | 4.0 | 14/14 | 14/14 | **14/14** | 0 | 0.6 | 0.003 |
-| ellis | second: White / 2nd | card | 18/18 | 18/18 | 4.0 (15/18) | 4.0 | 12/14 | 13/14 | **11/14** | 0 | 0.2 | 0.007 |
-| gateway_national | back: The Tips / Back | card | 16/18 | 17/18 | 1.7 (15/18) | 2.0 | 12/13 | 12/13 | **12/13** | 0 | 0.1 | 0.054 |
-| gateway_national | second: Champions / 2nd | card | 17/18 | 17/18 | 23.4 (5/18) | 21.5 | 10/13 | 12/13 | **7/13** | 0 | 7.2 | 0.063 |
-| creekmoor (review-OK holes) | back: Black / Back | card | 9/9 | 9/9 | 2.0 (9/9) | 4.0 | 7/7 | 7/7 | **7/7** | 0 | 0.1 | 0.0 |
-| creekmoor (review-OK holes) | second: Green / 2nd | card | 9/9 | 9/9 | 7.8 (7/9) | 8.0 | 7/7 | 7/7 | **7/7** | 0 | 0.6 | 0.0 |
-| hot_springs_arlington | back: Gold / Back | card | 14/18 | 18/18 | 3.0 (13/18) | 3.5 | 12/14 | 12/14 | **10/14** | 0 | 0.4 | 0.025 |
-| hot_springs_arlington | second: Blue / 2nd | card | 13/18 | 18/18 | 25.9 (3/18) | 26.0 | 8/14 | 9/14 | **6/14** | 0 | 5.3 | 0.04 |
+| ellis | second: White / 2nd | card | 17/18 | 18/18 | 4.5 (14/18) | 4.5 | 12/14 | 13/14 | **11/14** | 0 | 2.2 | 0.008 |
+| jayhawk_club | back: Black / Back | card | 1/10 | 4/10 | 349.8 (0/7) | 55.0 | 4/6 | 4/6 | **1/6** | 1 | 83.7 | 0.902 |
+| jayhawk_club | second: Green / 2nd | card | 1/10 | 4/10 | 326.9 (0/7) | 48.0 | 2/6 | 2/6 | **1/6** | 1 | 7.8 | 0.535 |
+| gateway_national | back: The Tips / Back | card | 17/18 | 17/18 | 1.6 (16/18) | 2.0 | 12/13 | 12/13 | **12/13** | 0 | 0.1 | 0.054 |
+| gateway_national | second: Champions / 2nd | card | 16/18 | 17/18 | 23.9 (1/18) | 20.5 | 10/13 | 12/13 | **7/13** | 0 | 7.2 | 0.062 |
+| hot_springs_arlington | back: Gold / Back | card | 18/18 | 18/18 | 2.5 (16/18) | 3.0 | 12/14 | 13/14 | **11/14** | 0 | 0.3 | 0.014 |
+| hot_springs_arlington | second: Blue / 2nd | card | 18/18 | 18/18 | 11.5 (8/18) | 10.0 | 12/14 | 13/14 | **10/14** | 0 | 3.1 | 0.011 |
 | hot_springs_park | back: Gold / Back | card | 0/11 | 4/11 | 400.7 (0/9) | 77.0 | 5/7 | 5/7 | **0/7** | 0 | 180.4 | 0.402 |
-| hot_springs_park | second: Blue / 2nd | card | 0/11 | 4/11 | 423.0 (0/9) | 82.0 | 5/7 | 5/7 | **0/7** | 0 | 194.0 | 0.45 |
-| jayhawk_club | back: Black / Back | card | 1/10 | 3/10 | 349.8 (0/7) | 55.0 | 4/6 | 4/6 | **1/6** | 1 | 83.7 | 0.902 |
-| jayhawk_club | second: Green / 2nd | card | 2/10 | 3/10 | 317.8 (0/7) | 52.0 | 3/6 | 3/6 | **2/6** | 1 | 3.2 | 0.456 |
-| mozingo_lake | back: App / Back | card | 11/18 | 16/18 | 30.7 (5/18) | 27.5 | 10/14 | 10/14 | **6/14** | 0 | 6.3 | 0.072 |
-| national_kc | back: Black / Back | card | 1/18 | 3/18 | 223.4 (2/9) | 167.0 | 3/7 | 3/7 | **1/7** | 0 | 10.4 | 0.464 |
-| national_kc | second: Blue / 2nd | card | 1/18 | 3/18 | 255.6 (1/9) | 165.0 | 2/7 | 2/7 | **1/7** | 0 | 854.4 | 1.049 |
-| finkbine (review-OK holes) | back: Black / Back | card | 12/12 | 12/12 | 3.5 (11/12) | 3.5 | 9/9 | 9/9 | **9/9** | 0 | 0.6 | 0.0 |
-| finkbine (review-OK holes) | second: Gold / 2nd | card | 12/12 | 12/12 | 5.0 (9/12) | 5.0 | 9/9 | 9/9 | **9/9** | 0 | 0.3 | 0.001 |
+| hot_springs_park | second: Blue / 2nd | card | 0/11 | 4/11 | 423.0 (0/9) | 77.0 | 5/7 | 5/7 | **0/7** | 0 | 194.0 | 0.448 |
 | oaks_margaritaville | build failed: RuntimeError: ref build failed: ['no holes built (no golf=hole ways and no tee/green pairs | | | | | | | | | | | |
-| pine_dunes | back: Gold / Back | card | 17/18 | 18/18 | 6.0 (17/18) | 2.0 | 12/14 | 12/14 | **11/14** | 0 | 2.6 | 0.038 |
-| pine_dunes | second: Blue / 2nd | card | 18/18 | 18/18 | 9.2 (9/18) | 10.0 | 12/14 | 13/14 | **11/14** | 0 | 1.4 | 0.035 |
-| spirit_hollow | back: Gold / Back | card | 13/18 | 18/18 | 4.0 (12/18) | 8.0 | 10/14 | 12/14 | **8/14** | 0 | 1.0 | 0.017 |
-| spirit_hollow | second: Black / 2nd | card | 14/18 | 18/18 | 19.1 (5/18) | 14.0 | 10/14 | 11/14 | **9/14** | 0 | 3.4 | 0.023 |
+| creekmoor (review-OK holes) | back: Black / Back | card | 9/9 | 9/9 | 2.0 (9/9) | 4.0 | 7/7 | 7/7 | **7/7** | 0 | 0.1 | 0.0 |
+| creekmoor (review-OK holes) | second: Green / 2nd | card | 9/9 | 9/9 | 7.0 (8/9) | 7.0 | 7/7 | 7/7 | **7/7** | 0 | 1.4 | 0.0 |
+| mozingo_lake | back: App / Back | card | 11/18 | 16/18 | 30.7 (5/18) | 27.5 | 10/14 | 10/14 | **6/14** | 0 | 5.3 | 0.051 |
+| pine_dunes | back: Gold / Back | card | 18/18 | 18/18 | 5.8 (18/18) | 2.0 | 13/14 | 13/14 | **12/14** | 0 | 2.6 | 0.005 |
+| pine_dunes | second: Blue / 2nd | card | 18/18 | 18/18 | 13.3 (8/18) | 11.0 | 11/14 | 13/14 | **10/14** | 0 | 0.2 | 0.017 |
 | tomahawk_hills | back: Blue / Back | card | 9/18 | 10/18 | 17.6 (9/18) | 27.5 | 10/12 | 11/12 | **8/12** | 1 | 2.5 | 0.037 |
-| tomahawk_hills | second: White / 2nd | card | 9/18 | 10/18 | 8.0 (10/18) | 29.0 | 8/12 | 8/12 | **6/12** | 1 | 2.5 | 0.206 |
-| veenker | back: Blue / Back | card | 16/18 | 17/18 | 4.4 (12/18) | 6.5 | 13/13 | 13/13 | **11/13** | 0 | 3.7 | 0.011 |
-| veenker | second: Gold / 2nd | card | 15/18 | 17/18 | 11.5 (9/18) | 11.5 | 8/13 | 8/13 | **7/13** | 0 | 2.1 | 0.04 |
-| wakonda | back: Black / Back | card | 16/18 | 18/18 | 4.0 (13/18) | 4.0 | 13/14 | 13/14 | **13/14** | 0 | 0.2 | 0.005 |
-| wakonda | second: Blue / 2nd | card | 15/18 | 18/18 | 14.5 (6/18) | 14.0 | 14/14 | 14/14 | **12/14** | 0 | 1.9 | 0.011 |
+| tomahawk_hills | second: White / 2nd | card | 9/18 | 10/18 | 8.0 (11/18) | 34.5 | 9/12 | 9/12 | **7/12** | 1 | 1.9 | 0.2 |
+| veenker | back: Blue / Back | card | 17/18 | 17/18 | 4.4 (12/18) | 6.5 | 13/13 | 13/13 | **12/13** | 0 | 3.5 | 0.009 |
+| veenker | second: Gold / 2nd | card | 15/18 | 17/18 | 11.0 (9/18) | 11.0 | 8/13 | 8/13 | **7/13** | 0 | 2.3 | 0.03 |
+| national_kc | back: Black / Back | card | 2/18 | 3/18 | 302.9 (2/9) | 162.0 | 2/7 | 2/7 | **1/7** | 0 | 83.9 | 1.215 |
+| national_kc | second: Blue / 2nd | card | 2/18 | 3/18 | 316.5 (1/9) | 150.0 | 3/7 | 3/7 | **1/7** | 0 | 35.3 | 2.697 |
+| wakonda | back: Black / Back | card | 17/18 | 18/18 | 4.0 (14/18) | 4.0 | 13/14 | 13/14 | **13/14** | 0 | 0.2 | 0.005 |
+| wakonda | second: Blue / 2nd | card | 16/18 | 18/18 | 10.0 (10/18) | 10.0 | 12/14 | 12/14 | **12/14** | 0 | 2.6 | 0.016 |
+| spirit_hollow | back: Gold / Back | card | 14/18 | 18/18 | 2.6 (13/18) | 8.0 | 10/14 | 12/14 | **9/14** | 0 | 0.1 | 0.013 |
+| spirit_hollow | second: Black / 2nd | card | 15/18 | 18/18 | 21.0 (5/18) | 16.0 | 9/14 | 10/14 | **8/14** | 0 | 2.2 | 0.025 |
+| finkbine (review-OK holes) | back: Black / Back | card | 12/12 | 12/12 | 3.5 (11/12) | 3.5 | 9/9 | 9/9 | **9/9** | 0 | 0.6 | 0.0 |
+| finkbine (review-OK holes) | second: Gold / 2nd | card | 12/12 | 12/12 | 4.5 (10/12) | 4.5 | 9/9 | 9/9 | **9/9** | 0 | 0.1 | 0.001 |
 | sycamore_ridge | build failed: RuntimeError: excluded: the ref build has no card either, so there is no card truth | | | | | | | | | | | |
-| **all** | **back** | | 206/276 (75 %) | 234/276 (85 %) | 4.8 (178/262 (68 %)) | 5.0 | 169/200 (84 %) | 176/200 (88 %) | **146/200 (73 %)** | 2 | 2.0 | 0.072 |
-| **all** | **second** | | 197/258 (76 %) | 218/258 (84 %) | 14.0 (108/244 (44 %)) | 13.0 | 142/186 (76 %) | 149/186 (80 %) | **120/186 (65 %)** | 2 | 2.3 | 0.103 |
+| **all** | **back** | | 216/276 (78 %) | 235/276 (85 %) | 4.0 (185/262 (71 %)) | 5.0 | 169/200 (84 %) | 177/200 (88 %) | **150/200 (75 %)** | 2 | 1.0 | 0.094 |
+| **all** | **second** | | 201/258 (78 %) | 219/258 (85 %) | 11.0 (116/244 (48 %)) | 10.0 | 144/186 (77 %) | 153/186 (82 %) | **123/186 (66 %)** | 2 | 2.3 | 0.162 |
 
-Failure causes, back set (54 tee shots not same club + aim <= 10 yds): routing / tee >40 yds off 19; routing (wrong green) 19; club flip on a ref tie 6; club flip (geometry ~same) 4; tee position >15 yds 3; aim >10 yds (same club) 2; par wrong 1
+Failure causes, back set (50 tee shots not same club + aim <= 10 yds): routing (wrong green) 19; routing / tee >40 yds off 13; club flip on a ref tie 6; tee position >15 yds 5; club flip (geometry ~same) 4; aim >10 yds (same club) 2; par wrong 1
 
-Failure causes, second set (66 tee shots not same club + aim <= 10 yds): tee position >15 yds 23; routing (wrong green) 19; routing / tee >40 yds off 14; club flip (geometry ~same) 5; club flip on a ref tie 2; aim >10 yds (same club) 2; length >15 yds (same tee area) 1
+Failure causes, second set (63 tee shots not same club + aim <= 10 yds): tee position >15 yds 22; routing (wrong green) 19; routing / tee >40 yds off 10; club flip on a ref tie 5; club flip (geometry ~same) 4; aim >10 yds (same club) 3
 
 <!-- cardblind_eval:end -->
 
-### Top failure causes (after; tee shots not same club + aim <= 10)
+### Top failure causes (v1 run; tee shots not same club + aim <= 10)
 
 1. **Routing on courses whose OSM hole ways are missing: 19 + 19 of the 54 back-set misses.** hot_springs_park
    (its OSM hole ways belong to the other course), jayhawk_club (OSM maps 8 of 18), national_kc and tomahawk_hills
@@ -210,7 +267,7 @@ Failure causes, second set (66 tee shots not same club + aim <= 10 yds): tee pos
 * Rows and per-hole details: `platform/cardblind_eval.json` (each row carries routed, par, tee_err, len_err, clubs,
   aims, aim_d, regret and the failure cause).
 
-### Per course: before (fallback card) -> after (`tees/cardless.py`)
+### Per course: before (fallback card) -> after (hybrid, `tees/cardless.py` v2)
 
 Regenerate with `cardblind_eval.py --compare cardblind_eval_fallback.json cardblind_eval.json --md`. A before run is
 `--cardless fallback`.
@@ -219,49 +276,49 @@ Regenerate with `cardblind_eval.py --compare cardblind_eval_fallback.json cardbl
 | course | set | same club + aim <=10 (before -> after) | tee err med yds | tee <=10 yds | par right | regret / tee shot |
 |---|---|---|---|---|---|---|
 | blue_hills | back | 11/14 -> **10/14** | 2.4 -> 1.1 | 18 -> 16 / 18 | 17 -> 18 / 18 | 0.003 -> 0.007 |
-| blue_hills | second | 9/14 -> **9/14** | 10.9 -> 9.8 | 9 -> 9 / 18 | 17 -> 18 / 18 | 0.039 -> 0.038 |
+| blue_hills | second | 9/14 -> **11/14** | 10.9 -> 9.9 | 9 -> 10 / 18 | 17 -> 18 / 18 | 0.039 -> 0.028 |
 | coldwater | back | 13/14 -> **13/14** | 2.5 -> 2.0 | 14 -> 15 / 18 | 17 -> 17 / 18 | 0.001 -> 0.002 |
-| coldwater | second | 12/14 -> **13/14** | 6.0 -> 4.5 | 12 -> 13 / 18 | 17 -> 17 / 18 | 0.002 -> 0.003 |
+| coldwater | second | 12/14 -> **12/14** | 6.0 -> 6.5 | 12 -> 12 / 18 | 17 -> 17 / 18 | 0.002 -> 0.002 |
 | eagle_knoll | back | 12/14 -> **12/14** | 3.2 -> 1.9 | 15 -> 15 / 18 | 18 -> 18 / 18 | 0.007 -> 0.007 |
-| eagle_knoll | second | 10/14 -> **10/14** | 16.6 -> 14.2 | 8 -> 7 / 18 | 18 -> 18 / 18 | 0.023 -> 0.034 |
+| eagle_knoll | second | 10/14 -> **10/14** | 16.6 -> 10.1 | 8 -> 9 / 18 | 18 -> 18 / 18 | 0.023 -> 0.02 |
 | ellis | back | 13/14 -> **14/14** | 3.0 -> 4.0 | 15 -> 14 / 18 | 18 -> 18 / 18 | 0.003 -> 0.003 |
-| ellis | second | 12/14 -> **11/14** | 4.7 -> 4.0 | 15 -> 15 / 18 | 18 -> 18 / 18 | 0.006 -> 0.007 |
-| gateway_national | back | 12/13 -> **12/13** | 1.9 -> 1.7 | 16 -> 15 / 18 | 18 -> 17 / 18 | 0.053 -> 0.054 |
-| gateway_national | second | 6/13 -> **7/13** | 27.1 -> 23.4 | 5 -> 5 / 18 | 18 -> 17 / 18 | 0.062 -> 0.063 |
+| ellis | second | 12/14 -> **11/14** | 4.7 -> 4.5 | 15 -> 14 / 18 | 18 -> 18 / 18 | 0.006 -> 0.008 |
+| gateway_national | back | 12/13 -> **12/13** | 1.9 -> 1.6 | 16 -> 16 / 18 | 18 -> 17 / 18 | 0.053 -> 0.054 |
+| gateway_national | second | 6/13 -> **7/13** | 27.1 -> 23.9 | 5 -> 1 / 18 | 18 -> 17 / 18 | 0.062 -> 0.062 |
 | creekmoor | back | 7/7 -> **7/7** | 4.0 -> 2.0 | 9 -> 9 / 9 | 9 -> 9 / 9 | 0.0 -> 0.0 |
-| creekmoor | second | 7/7 -> **7/7** | 6.0 -> 7.8 | 8 -> 7 / 9 | 9 -> 9 / 9 | 0.001 -> 0.0 |
-| hot_springs_arlington | back | 10/14 -> **10/14** | 2.4 -> 3.0 | 16 -> 13 / 18 | 18 -> 18 / 18 | 0.015 -> 0.025 |
-| hot_springs_arlington | second | 11/14 -> **6/14** | 16.1 -> 25.9 | 6 -> 3 / 18 | 18 -> 18 / 18 | 0.01 -> 0.04 |
+| creekmoor | second | 7/7 -> **7/7** | 6.0 -> 7.0 | 8 -> 8 / 9 | 9 -> 9 / 9 | 0.001 -> 0.0 |
+| hot_springs_arlington | back | 10/14 -> **11/14** | 2.4 -> 2.5 | 16 -> 16 / 18 | 18 -> 18 / 18 | 0.015 -> 0.014 |
+| hot_springs_arlington | second | 11/14 -> **10/14** | 16.1 -> 11.5 | 6 -> 8 / 18 | 18 -> 18 / 18 | 0.01 -> 0.011 |
 | hot_springs_park | back | 0/7 -> **0/7** | 399.1 -> 400.7 | 0 -> 0 / 9 | 4 -> 4 / 11 | 0.414 -> 0.402 |
-| hot_springs_park | second | 0/7 -> **0/7** | 427.9 -> 423.0 | 0 -> 0 / 9 | 4 -> 4 / 11 | 0.457 -> 0.45 |
-| jayhawk_club | back | 1/6 -> **1/6** | 347.1 -> 349.8 | 0 -> 0 / 7 | 2 -> 3 / 10 | 0.85 -> 0.902 |
-| jayhawk_club | second | 1/6 -> **2/6** | 344.3 -> 317.8 | 0 -> 0 / 7 | 2 -> 3 / 10 | 0.419 -> 0.456 |
-| mozingo_lake | back | 7/14 -> **6/14** | 29.8 -> 30.7 | 7 -> 5 / 18 | 18 -> 16 / 18 | 0.044 -> 0.072 |
-| national_kc | back | 1/7 -> **1/7** | 305.4 -> 223.4 | 2 -> 2 / 9 | 2 -> 3 / 18 | 1.426 -> 0.464 |
-| national_kc | second | 1/7 -> **1/7** | 293.2 -> 255.6 | 2 -> 1 / 9 | 2 -> 3 / 18 | 2.676 -> 1.049 |
+| hot_springs_park | second | 0/7 -> **0/7** | 427.9 -> 423.0 | 0 -> 0 / 9 | 4 -> 4 / 11 | 0.457 -> 0.448 |
+| jayhawk_club | back | 1/6 -> **1/6** | 347.1 -> 349.8 | 0 -> 0 / 7 | 2 -> 4 / 10 | 0.85 -> 0.902 |
+| jayhawk_club | second | 1/6 -> **1/6** | 344.3 -> 326.9 | 0 -> 0 / 7 | 2 -> 4 / 10 | 0.419 -> 0.535 |
+| mozingo_lake | back | 7/14 -> **6/14** | 29.8 -> 30.7 | 7 -> 5 / 18 | 18 -> 16 / 18 | 0.044 -> 0.051 |
+| national_kc | back | 1/7 -> **1/7** | 305.4 -> 302.9 | 2 -> 2 / 9 | 2 -> 3 / 18 | 1.426 -> 1.215 |
+| national_kc | second | 1/7 -> **1/7** | 293.2 -> 316.5 | 2 -> 1 / 9 | 2 -> 3 / 18 | 2.676 -> 2.697 |
 | finkbine | back | 9/9 -> **9/9** | 6.0 -> 3.5 | 8 -> 11 / 12 | 12 -> 12 / 12 | 0.002 -> 0.0 |
-| finkbine | second | 8/9 -> **9/9** | 9.5 -> 5.0 | 7 -> 9 / 12 | 12 -> 12 / 12 | 0.006 -> 0.001 |
+| finkbine | second | 8/9 -> **9/9** | 9.5 -> 4.5 | 7 -> 10 / 12 | 12 -> 12 / 12 | 0.006 -> 0.001 |
 | oaks_margaritaville | - | not scored: RuntimeError: ref build failed: ['no holes built (no golf=hole ways and no tee/green pairs: OSM maps | | | | |
-| pine_dunes | back | 14/14 -> **11/14** | 1.8 -> 6.0 | 18 -> 17 / 18 | 18 -> 18 / 18 | 0.001 -> 0.038 |
-| pine_dunes | second | 12/14 -> **11/14** | 6.3 -> 9.2 | 12 -> 9 / 18 | 18 -> 18 / 18 | 0.007 -> 0.035 |
-| spirit_hollow | back | 10/14 -> **8/14** | 5.7 -> 4.0 | 12 -> 12 / 18 | 18 -> 18 / 18 | 0.02 -> 0.017 |
-| spirit_hollow | second | 10/14 -> **9/14** | 19.1 -> 19.1 | 4 -> 5 / 18 | 18 -> 18 / 18 | 0.019 -> 0.023 |
+| pine_dunes | back | 14/14 -> **12/14** | 1.8 -> 5.8 | 18 -> 18 / 18 | 18 -> 18 / 18 | 0.001 -> 0.005 |
+| pine_dunes | second | 12/14 -> **10/14** | 6.3 -> 13.3 | 12 -> 8 / 18 | 18 -> 18 / 18 | 0.007 -> 0.017 |
+| spirit_hollow | back | 10/14 -> **9/14** | 5.7 -> 2.6 | 12 -> 13 / 18 | 18 -> 18 / 18 | 0.02 -> 0.013 |
+| spirit_hollow | second | 10/14 -> **8/14** | 19.1 -> 21.0 | 4 -> 5 / 18 | 18 -> 18 / 18 | 0.019 -> 0.025 |
 | tomahawk_hills | back | 6/12 -> **8/12** | 79.8 -> 17.6 | 5 -> 9 / 18 | 9 -> 10 / 18 | 0.063 -> 0.037 |
-| tomahawk_hills | second | 5/12 -> **6/12** | 42.9 -> 8.0 | 4 -> 10 / 18 | 9 -> 10 / 18 | 0.216 -> 0.206 |
-| veenker | back | 11/13 -> **11/13** | 4.6 -> 4.4 | 14 -> 12 / 18 | 18 -> 17 / 18 | 0.011 -> 0.011 |
-| veenker | second | 9/13 -> **7/13** | 11.5 -> 11.5 | 9 -> 9 / 18 | 18 -> 17 / 18 | 0.046 -> 0.04 |
-| wakonda | back | 13/14 -> **13/14** | 3.5 -> 4.0 | 15 -> 13 / 18 | 18 -> 18 / 18 | 0.004 -> 0.005 |
-| wakonda | second | 11/14 -> **12/14** | 11.5 -> 14.5 | 7 -> 6 / 18 | 18 -> 18 / 18 | 0.015 -> 0.011 |
+| tomahawk_hills | second | 5/12 -> **7/12** | 42.9 -> 8.0 | 4 -> 11 / 18 | 9 -> 10 / 18 | 0.216 -> 0.2 |
+| veenker | back | 11/13 -> **12/13** | 4.6 -> 4.4 | 14 -> 12 / 18 | 18 -> 17 / 18 | 0.011 -> 0.009 |
+| veenker | second | 9/13 -> **7/13** | 11.5 -> 11.0 | 9 -> 9 / 18 | 18 -> 17 / 18 | 0.046 -> 0.03 |
+| wakonda | back | 13/14 -> **13/14** | 3.5 -> 4.0 | 15 -> 14 / 18 | 18 -> 18 / 18 | 0.004 -> 0.005 |
+| wakonda | second | 11/14 -> **12/14** | 11.5 -> 10.0 | 7 -> 10 / 18 | 18 -> 18 / 18 | 0.015 -> 0.016 |
 | sycamore_ridge | - | not scored: RuntimeError: excluded: the ref build has no card either, so there is no card truth | | | | |
-| **OSM maps every hole** (13 courses, both scored) | **back** | 142/168 -> **136/168** | 3.1 -> 4.0 | 177 -> 167 / 219 | 217 -> 214 / 219 | 0.013 -> 0.02 |
-| **OSM maps every hole** (13 courses, both scored) | **second** | 117/154 -> **111/154** | 10.0 -> 11.6 | 102 -> 97 / 201 | 199 -> 198 / 201 | 0.021 -> 0.026 |
-| **OSM maps few / no holes** (4 courses, both scored) | **back** | 8/32 -> **10/32** | 265.9 -> 241.1 | 7 -> 11 / 43 | 17 -> 20 / 57 | 0.584 -> 0.366 |
-| **OSM maps few / no holes** (4 courses, both scored) | **second** | 7/32 -> **9/32** | 267.8 -> 252.1 | 6 -> 11 / 43 | 17 -> 20 / 57 | 0.84 -> 0.501 |
-| **all** (17 courses, both scored) | **back** | 150/200 -> **146/200** | 4.0 -> 4.8 | 184 -> 178 / 262 | 234 -> 234 / 276 | 0.095 -> 0.072 |
-| **all** (17 courses, both scored) | **second** | 124/186 -> **120/186** | 14.1 -> 14.0 | 108 -> 108 / 244 | 216 -> 218 / 258 | 0.148 -> 0.103 |
+| **OSM maps every hole** (13 courses, both scored) | **back** | 142/168 -> **140/168** | 3.1 -> 3.0 | 177 -> 174 / 219 | 217 -> 214 / 219 | 0.013 -> 0.014 |
+| **OSM maps every hole** (13 courses, both scored) | **second** | 117/154 -> **114/154** | 10.0 -> 10.0 | 102 -> 104 / 201 | 199 -> 198 / 201 | 0.021 -> 0.019 |
+| **OSM maps few / no holes** (4 courses, both scored) | **back** | 8/32 -> **10/32** | 265.9 -> 242.4 | 7 -> 11 / 43 | 17 -> 21 / 57 | 0.584 -> 0.541 |
+| **OSM maps few / no holes** (4 courses, both scored) | **second** | 7/32 -> **9/32** | 267.8 -> 252.1 | 6 -> 12 / 43 | 17 -> 21 / 57 | 0.84 -> 0.896 |
+| **all** (17 courses, both scored) | **back** | 150/200 -> **150/200** | 4.0 -> 4.0 | 184 -> 185 / 262 | 234 -> 235 / 276 | 0.095 -> 0.094 |
+| **all** (17 courses, both scored) | **second** | 124/186 -> **123/186** | 14.1 -> 11.0 | 108 -> 116 / 244 | 216 -> 219 / 258 | 0.148 -> 0.162 |
 
-After, failure causes, back set: routing / tee >40 yds off 19; routing (wrong green) 19; club flip on a ref tie 6; club flip (geometry ~same) 4; tee position >15 yds 3; aim >10 yds (same club) 2; par wrong 1
+After, failure causes, back set: routing (wrong green) 19; routing / tee >40 yds off 13; club flip on a ref tie 6; tee position >15 yds 5; club flip (geometry ~same) 4; aim >10 yds (same club) 2; par wrong 1
 
-After, failure causes, second set: tee position >15 yds 23; routing (wrong green) 19; routing / tee >40 yds off 14; club flip (geometry ~same) 5; club flip on a ref tie 2; aim >10 yds (same club) 2; length >15 yds (same tee area) 1
+After, failure causes, second set: tee position >15 yds 22; routing (wrong green) 19; routing / tee >40 yds off 10; club flip on a ref tie 5; club flip (geometry ~same) 4; aim >10 yds (same club) 3
 
 <!-- cardblind_compare:end -->
