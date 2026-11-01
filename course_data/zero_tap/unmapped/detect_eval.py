@@ -21,11 +21,48 @@ ROOT = os.path.dirname(os.path.dirname(ZT))
 sys.path.insert(0, ZT)
 import bench as B  # noqa: E402
 
-PERC_TEST_STATES = {"GA", "KY", "MN", "UT", "ME", "WY"}
+_PROV = None
 
 
-def perc_split(row):
-    return "held_out" if str(row.get("state") or "").upper() in PERC_TEST_STATES else "in_sample"
+def provenance():
+    """model id -> dict(train_states, train_courses) for every perception model version that made a committed scene:
+    perc_provenance.json (older versions) + perception/models/models.json (current final + fold<k>/ models)."""
+    global _PROV
+    if _PROV is None:
+        _PROV = dict(json.load(open(os.path.join(HERE, "perc_provenance.json")))["models"])
+        mp = os.path.join(ROOT, "course_data", "perception", "models", "models.json")
+        if os.path.exists(mp):
+            m = json.load(open(mp))
+            pool = m["courses"]["train"]
+            _PROV.setdefault(m["id"], dict(train_states=m.get("train_states") or sorted({c.rsplit("_", 1)[1].upper() for c in pool}),
+                                           train_courses=pool))
+            for k, f in enumerate(m.get("folds") or []):
+                _PROV.setdefault(f"{m['id']}-fold{k}", dict(
+                    train_states=sorted({c.rsplit("_", 1)[1].upper() for c in f["train_courses"]}),
+                    train_courses=f["train_courses"]))
+    return _PROV
+
+
+def scene_models(row):
+    try:
+        return (load_scene(row).get("sources") or {}).get("models", {}).get("perception")
+    except Exception:                                            # noqa: BLE001
+        return None
+
+
+def perc_split(row, mid=None):
+    """'held_out' = the perception models that made this course's scene never trained on its state;
+    'in_sample' = they trained on its state (and maybe on the course itself: see perc_course_seen)."""
+    mid = mid or row.get("_perc_models") or scene_models(row)
+    pv = provenance().get(mid)
+    if pv is None:
+        return "unknown"
+    return "in_sample" if str(row.get("state") or "").upper() in pv["train_states"] else "held_out"
+
+
+def perc_course_seen(row, mid=None):
+    pv = provenance().get(mid or row.get("_perc_models") or scene_models(row))
+    return bool(pv and row["slug"] in pv["train_courses"])
 
 
 def load_scene(row):
@@ -115,9 +152,13 @@ def run(split, result_dirs, extra_scene=None):
     for r in rows:
         t = B.truth(r["slug"])
         sc = extra_scene(r) if extra_scene else load_scene(r)
+        r["_perc_models"] = (sc.get("sources") or {}).get("models", {}).get("perception")
         G, T = green_cands(sc), tee_cands(sc)
         d = {name: detect_course(t, G, T, *sel) for name, sel in SELECTORS.items()}
         per.append(dict(row=r, t=t, det=d))
+    out["courses"] = [dict(slug=x["row"]["slug"], state=x["row"]["state"], scene=x["row"]["files"]["scene"],
+                           perception_models=x["row"]["_perc_models"], perc=perc_split(x["row"]),
+                           course_trained_on=perc_course_seen(x["row"])) for x in per]
     for sub in ("all", "held_out", "in_sample"):
         P = [x for x in per if sub == "all" or perc_split(x["row"]) == sub]
         out["detection"][sub] = {}

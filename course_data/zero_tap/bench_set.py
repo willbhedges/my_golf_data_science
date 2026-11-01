@@ -6,7 +6,8 @@ Sources, reused as they are (no copies): generalize/validation_set.json courses 
 osm_golf.geojson, scorecard.json, segment.geojson, pads.json, course.json), structure/sets.json courses
 (structure/data/<slug>/: osm.geojson.gz, course.json), and this benchmark's own selection.json
 (zero_tap/data/<slug>/). Cards / segment / pads fetched later for structure courses live in zero_tap/data/<slug>/.
-Perception scenes: perception/scenes/<slug>/scene.json.gz when present.
+Perception scenes: perception/scenes/<slug>/scene.json.gz when present, else the blind scene formation
+fetch_inputs.py made with the same perceive.py (zero_tap/formation/inputs/<slug>/scene.json.gz).
 
 Split: by state (state_split.json), except the 31 generalize validation-set *test* courses (dev states) which stay
 test. A course is in the benchmark (`in_bench`) when its truth is complete (truth.py).
@@ -105,7 +106,8 @@ def build():
                 t["complete"] = False
                 t["problems"].append("hand check: OSM truth wrong")
         json.dump(t, open(old, "w"), separators=(",", ":"))
-        scene = first(os.path.join(CD, "perception", "scenes", e["slug"], "scene.json.gz"))
+        scene = (first(os.path.join(CD, "perception", "scenes", e["slug"], "scene.json.gz"))
+                 or first(os.path.join(HERE, "formation", "inputs", e["slug"], "scene.json.gz")))   # blind, same perceive.py
         ncard = len(card.get("par") or []) if card else 0
         card_fits = bool(card) and (ncard == t["kind"] or (t["kind"] in (27, 36) and ncard in (9, 18)))
         rows.append(dict(

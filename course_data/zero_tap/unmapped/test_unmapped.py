@@ -52,3 +52,14 @@ def test_detection_oracle():
     T = [dict(ll=h["tee_ll"], pts=[h["tee_ll"]], p=1.0) for h in t["holes"]]
     d = DE.detect_course(t, G, T, lambda g: True, lambda x: True)
     assert d["g_rec"] == d["N"] == d["g_true"] == d["t_rec"] == d["t_true"]
+
+
+def test_perception_provenance():
+    """held-out = the scene's perception models never trained on the course's state (perc_provenance.json)."""
+    old = "perception-20261017-1247"
+    pv = DE.provenance()[old]
+    assert set(pv["train_states"]) == {"CA", "IL", "MA", "MS", "NH", "WI"}
+    assert DE.perc_split(dict(slug="x_ar", state="AR"), mid=old) == "held_out"
+    assert DE.perc_split(dict(slug="x_ca", state="CA"), mid=old) == "in_sample"
+    assert DE.perc_split(dict(slug="x_ca", state="CA"), mid="no-such-model") == "unknown"
+    assert DE.perc_course_seen(dict(slug=pv["train_courses"][0], state="CA"), mid=old)
