@@ -46,11 +46,14 @@ def test_dogleg_measured_along_line():
 def test_hole_dp_shares_and_orders():
     r = [1.0, 0.93, 0.86, 0.78]
     P = dict(CL.PARAMS, off_cost=1000.0)
-    _, ys = CL._hole_dp([400.0, 340.0], r, 400.0, P)
+    _, ys = CL._hole_dp([(400.0, 400.0), (340.0, 340.0)], r, 400.0, P)
     assert ys == sorted(ys, reverse=True) and ys[0] == 400.0 and set(ys) <= {400.0, 340.0}
     P = dict(CL.PARAMS, off_cost=0.0)
-    _, ys = CL._hole_dp([400.0], r, 400.0, P)
+    _, ys = CL._hole_dp([(400.0, 400.0)], r, 400.0, P)
     assert abs(ys[3] - 312) < 1                  # forward set off the box, at r * back
+    P = dict(CL.PARAMS, off_cost=1000.0)
+    _, ys = CL._hole_dp([(380.0, 400.0), (300.0, 330.0)], r, 400.0, P)
+    assert ys[0] == 400.0 and abs(ys[1] - 380.0) < 1e-6 and 300 <= ys[2] <= 330 and ys[3] <= ys[2]
 
 
 def test_par_dp_respects_course_prior():

@@ -167,14 +167,13 @@ def fit(courses, params=None):
     by = defaultdict(Counter)
     for c in courses:
         boxes = CL.tee_complexes(c["holes"], c["tees"], c["pads"])
-        sl = [CL.slots(b, params) for b in boxes]
-        if CL.PARAMS["line_start"]:
-            geo = [CL.hole_geometry(h)[2] for h in c["holes"]]
-            sl = [CL.with_line_start(s, g["line_yd"], params) for s, g in zip(sl, geo)]
+        geo = [CL.hole_geometry(h)[2] for h in c["holes"]]
+        ho = [CL.hole_options(bx, g["line_yd"], params) for bx, g in zip(boxes, geo)]
+        sl = [[0] * o[0] for o in ho]
         cs = sorted(len(s) for s in sl)
         qv = cs[int(round(CL.PARAMS["s_quantile"] * (len(cs) - 1)))]
         by[min(qv, 7)][min(max(len(c["sets"]), 2), 6)] += 1
-        c["_sl"] = sl
+        c["_opts"] = [(o[1], o[2]) for o in ho]
     tab = {}
     allS = sum(by.values(), Counter())
     for k in range(0, 8):
@@ -187,7 +186,7 @@ def fit(courses, params=None):
     for c in courses:
         geo = [CL.hole_geometry(h)[2] for h in c["holes"]]
         S = len(c["sets"])
-        Y, _ = CL.assign_sets(c["_sl"], max(S, 2), model, [g["line_yd"] for g in geo], params)
+        Y, _ = CL.assign_sets(c["_opts"], max(S, 2), model, params)
         for y, h, g, par in zip(Y, c["holes"], geo, c["par"]):
             if par in (3, 4, 5):
                 X.append(CL.par_features(y[0], y[1], h.get("green_r_yd"), g["dogleg_deg"], g["line_yd"]))
@@ -298,7 +297,11 @@ def evaluate(courses, model, params=None, S_override=None):
                hole_yd_err={k: dict(n=len(v), median=q(v, .5), p90=q(v, .9), within10=round(sum(x <= 10 for x in v) / max(1, len(v)), 3))
                             for k, v in R["err"].items()},
                total_yd_err={k: dict(median=q(v, .5), p90=q(v, .9)) for k, v in R["tot_err"].items()},
-               baselines={k: dict(n=len(v), median=q(v, .5), p90=q(v, .9)) for k, v in R["base"].items()},
+               baselines={k: dict(n=len(v), median=q(v, .5), p90=q(v, .9), within10=round(sum(x <= 10 for x in v) / max(1, len(v)), 3))
+                          for k, v in R["base"].items()},
+               S_confusion={f"{a}->{b}": n for (a, b), n in sorted(Counter((p["S_true"], p["S"]) for p in R["per_course"]).items())},
+               par_course_all_right_18=round(sum(p["par_right"] == 18 for p in R["per_course"] if p["n"] == 18)
+                                             / max(1, sum(p["n"] == 18 for p in R["per_course"])), 3),
                tagged_hole_coverage=round(R["tagged_cov"] / nH, 3))
     return out, R["per_course"]
 

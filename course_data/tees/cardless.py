@@ -45,10 +45,13 @@ MODEL_PATH = os.path.join(HERE, "cardless_model.json")
 PARAMS = dict(
     merge_yd=5.0,       # boxes whose centroid yardages differ by less are one marker position
     long_yd=30.0,       # a box at least this long (along the line) hosts two markers
-    slot_f=0.2,         # long-box markers stand this fraction of the box length in from each end
-    short_a=0.5,        # a short box's marker: this fraction of its length from the front (0.5 = centroid)
-    line_start=True,    # the routed line's start is a tee position too (when behind every box)
-    off_cost=12.0,      # cost of placing a set off any box (unmapped forward tee) at r_s * back
+    slot_f=0.1,         # long-box markers stand this fraction of the box length in from each end
+    short_a=0.9,        # a short box's marker: this fraction of its length from the front (0.5 = centroid)
+    line_start=True,
+    mode="interval",    # "interval": a set stands anywhere inside a box (clamped to its target); "point": on slots
+    same_gap=4.0,       # two sets inside one box stand at least this far apart
+    ratio_upd=0.5,    # the routed line's start is a tee position too (when behind every box)
+    off_cost=25.0,      # cost of placing a set off any box (unmapped forward tee) at r_s * back
     min_gap=8.0, gap_w=0.5,
     iters=4,
     s_quantile=0.75,
@@ -174,21 +177,26 @@ def estimate_S(slot_counts, model=None, P=None):
 
 
 # ----------------------------------------------------------------------------- 3. joint assignment
-def _hole_dp(sl, r, B, P):
-    """Exact DP: sets 0..S-1 back -> front onto slots sl (descending) or off-box. Returns (cost, [yards])."""
+def _hole_dp(iv, r, B, P):
+    """Exact (beam-pruned) DP: sets 0..S-1 back -> front onto marker options iv = [(lo, hi)] (descending; a point
+    slot has lo == hi, a box interval its extent) or off any box. A set on option k stands at its target r_s * B
+    clamped into [lo, hi], never longer than the previous set (non-increasing). Returns (cost, [yards])."""
     S = len(r)
-    opts_base = list(sl)
     INF = float("inf")
-    # state: index of the last slot used (or -1 none yet) and last yardage; off-box choices do not consume slots
-    # but must still be non-increasing. Small sizes -> brute DP over (set, last slot idx, last-was-off) with yardage.
-    best = {(-1, None): (0.0, [])}          # (last slot idx, last yardage) -> (cost, path)
+    best = {(-1, None): (0.0, [])}          # (last option idx, last yardage) -> (cost, path)
     for s in range(S):
         tgt = r[s] * B
         nb = {}
         for (j, ly), (c, path) in best.items():
             cands = []
-            for k in range(max(j, 0), len(opts_base)):
-                y = opts_base[k]
+            for k in range(max(j, 0), len(iv)):
+                lo, hi = iv[k]
+                cap = hi if ly is None else min(hi, ly - (P["same_gap"] if k == j and hi > lo else 0.0))
+                if cap < lo - 1e-6:
+                    if ly is not None and lo > ly + 1e-6 or k != j:
+                        continue
+                    cap = lo
+                y = min(max(tgt, lo), cap)
                 if ly is not None and y > ly + 1e-6:
                     continue
                 cost = abs(y - tgt)
@@ -202,13 +210,34 @@ def _hole_dp(sl, r, B, P):
                 v = (c + cost, path + [y])
                 if key not in nb or v[0] < nb[key][0]:
                     nb[key] = v
-        # prune
         best = dict(sorted(nb.items(), key=lambda kv: kv[1][0])[:60])
     return min(best.values(), key=lambda v: v[0]) if best else (INF, [])
 
 
-def assign_sets(hole_slots, S, model=None, line_yd=None, P=None):
-    """hole_slots: per hole a descending list of slot yardages. Returns (yards[h][s], ratios)."""
+def hole_options(boxes, line_yd, P=None):
+    """(slot count used for S, DP options [(lo, hi)] descending, back yardage B) for one hole."""
+    P = dict(PARAMS, **(P or {}))
+    sl = slots(boxes, P)
+    if P["line_start"]:
+        sl = with_line_start(sl, line_yd, P)
+    if P["mode"] == "interval":
+        iv = [(b["d_front"], b["d_back"]) for b in boxes]
+        if P["line_start"] and (not boxes or line_yd > boxes[0]["d_back"] + P["merge_yd"]):
+            iv = [(line_yd, line_yd)] + iv
+        if iv:
+            lo, hi = iv[0]
+            B = lo + P["short_a"] * (hi - lo)
+            iv[0] = (lo, B)                  # the back set stands at B: nothing behind it
+        else:
+            B = line_yd
+    else:
+        iv = [(y, y) for y in sl]
+        B = sl[0] if sl else line_yd
+    return len(sl), iv, B
+
+
+def assign_sets(opts, S, model=None, P=None):
+    """opts: per hole (options [(lo, hi)], back yardage B) from hole_options. Returns (yards[h][s], ratios)."""
     P = dict(PARAMS, **(P or {}))
     model = model or load_model()
     rs = model["ratios"].get(str(S)) or [1.0 - 0.07 * i for i in range(S)]
@@ -216,21 +245,16 @@ def assign_sets(hole_slots, S, model=None, line_yd=None, P=None):
     Y = []
     for _ in range(P["iters"]):
         Y = []
-        for h, sl in enumerate(hole_slots):
-            if sl:
-                B = sl[0]
-            else:
-                B = (line_yd[h] if line_yd else 350.0)
-            if not sl:
+        for iv, B in opts:
+            if not iv:
                 Y.append([r[s] * B for s in range(S)])
                 continue
-            _, ys = _hole_dp(sl, r, B, P)
-            Y.append(ys)
+            Y.append(_hole_dp(iv, r, B, P)[1])
         new = [1.0]
         for s in range(1, S):
             vals = sorted(y[s] / y[0] for y in Y if y and y[0] > 0)
             m = vals[len(vals) // 2] if vals else r[s]
-            new.append(min(new[-1], 0.5 * m + 0.5 * rs[s]))   # shrink to the prior: keeps sets apart
+            new.append(min(new[-1], P["ratio_upd"] * m + (1 - P["ratio_upd"]) * rs[s]))   # shrink to the prior
         r = new
     return Y, r
 
@@ -304,11 +328,9 @@ def infer_card(holes, tees, pads=(), model=None, params=None, S=None):
     model = model or load_model()
     geo = [hole_geometry(h)[2] for h in holes]
     boxes = tee_complexes(holes, tees, pads)
-    sl = [slots(b, P) for b in boxes]
-    if P["line_start"]:
-        sl = [with_line_start(s, g["line_yd"], P) for s, g in zip(sl, geo)]
-    S_est = S or estimate_S([len(s) for s in sl], model, P)
-    Y, r = assign_sets(sl, S_est, model, [g["line_yd"] for g in geo], P)
+    ho = [hole_options(b, g["line_yd"], P) for b, g in zip(boxes, geo)]
+    S_est = S or estimate_S([o[0] for o in ho], model, P)
+    Y, r = assign_sets([(o[1], o[2]) for o in ho], S_est, model, P)
     probs = [par_probs(par_features(y[0], y[1] if len(y) > 1 else None, h.get("green_r_yd"), g["dogleg_deg"],
                                     g["line_yd"]), model.get("par")) for y, h, g in zip(Y, holes, geo)]
     pars = infer_pars(probs, model)
@@ -319,7 +341,7 @@ def infer_card(holes, tees, pads=(), model=None, params=None, S=None):
         tee_sets[nm] = dict(yards=ys, total=sum(ys), ratio=round(r[s], 3), inferred=True)
     return {"schema": "scorecard/1", "source": VERSION, "inferred": True, "par": pars,
             "tee_sets": tee_sets,
-            "diagnostics": dict(S=S_est, slots_per_hole=[len(s) for s in sl],
+            "diagnostics": dict(S=S_est, slots_per_hole=[o[0] for o in ho],
                                 boxes_per_hole=[len(b) for b in boxes],
                                 box_sources=[sorted({x["source"] for x in b}) for b in boxes],
                                 par_probs=[[round(v, 3) for v in p] for p in probs])}
