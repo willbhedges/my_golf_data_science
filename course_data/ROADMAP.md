@@ -70,8 +70,8 @@ can't be produced fast enough (each truth course needs imagery renders on Action
 - Every agent gets a written brief: goal, files it owns, files it must not touch, the metric it must move, a
   budget, and "report honestly what was not verified". Shared rules: scratchpad `agents/RULES.md` (rewritten
   after container restarts wipe it).
-- At most ~6 agents at once (20 is the hard limit), so builds and the coordinator keep headroom; two agents
-  never own the same file.
+- Up to ~10 agents at once (20 is the hard limit; usage is not the constraint, GitHub runners and file ownership
+  are), so builds and the coordinator keep headroom; two agents never own the same file.
 - No result is accepted on an agent's word: numbers are on held-out data (tuned on dev, test run once), tests
   pass before every push, and the coordinator re-runs the key check before anything reaches a published page.
 - Negative results are kept and written down (e.g. tip candidates, sequence_v3) so work isn't repeated.
@@ -91,5 +91,5 @@ can't be produced fast enough (each truth course needs imagery renders on Action
 - Work runs only when a scheduled task, an agent report or the user wakes the session; if the session is
   archived or the scheduled tasks are disabled, work stops until the next message.
 - Container restarts stop running agents; the next check-in resumes them from their transcripts.
-- All of this uses the account's Claude usage; heavy weeks can hit the weekly limit, which pauses work until
-  it resets.
+- Usage: the user monitors their own plan usage (not visible to the session) and says "pause until <time>" if
+  needed; otherwise capacity is used fully.
