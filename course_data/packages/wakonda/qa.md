@@ -1,6 +1,6 @@
 # Wakonda Club (Des Moines, IA) - Blue tees
 
-Built 2026-11-01T19:03:27Z. OSM way/102681377. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-01T19:20:56Z. OSM way/102681377. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
