@@ -63,16 +63,17 @@ class Models2:
         return pr
 
 
-def decode_course(d, pr, cfg=CFG, conf_feats=True, fix=None, comp=None):
-    """-> (holes, route conf, conf feature rows). fix: golfer-confirmed facts (decode2.apply_fix); holes whose
-    (tee, green) is a confirmed pair get min-marginal 30 (they are not re-asked)."""
+def decode_course(d, pr, cfg=CFG, conf_feats=True, fix=None, comp=None, free=None):
+    """-> (holes, route conf, conf feature rows (confidence.CONF_F2)). fix: golfer-confirmed facts
+    (decode2.apply_fix); holes whose (tee, green) is a confirmed pair get min-marginal 30 (they are not re-asked).
+    free: the (tee, green) pairs of the no-fact decode (for the `changed` feature; decoded here when needed)."""
     if comp is None:
         comp = CX.cluster(len(d["tees"]), d["tpp"], pr["tpair"], thr=cfg["comp_thr"])
     kw = dict(K=cfg["K"], cross=cfg["cross"], reuse=cfg["reuse"], box_mode=cfg["box_mode"], fix=fix)
     holes, conf, cost = D2.decode2(d, pr, W, comp, beam=cfg["beam"], return_cost=True, **kw)
     H, T, S, E = DC.cost_mats(d, pr, W)
     if not conf_feats or not holes:
-        return holes, conf, np.zeros((len(holes), len(CF.CONF_F)))
+        return holes, conf, np.zeros((len(holes), len(CF.CONF_F2)))
     fixed = {(int(t), int(g)) for _, t, g in (fix or {}).get("pairs") or ()}
     mm = []
     for h in holes:
@@ -84,7 +85,15 @@ def decode_course(d, pr, cfg=CFG, conf_feats=True, fix=None, comp=None):
         H2[h["t"], h["g"]] = np.inf
         _, _, c2 = D2.decode2(d, pr, W, comp, beam=cfg["mm_beam"], H=H2, return_cost=True, **kw)
         mm.append(c2 - cost if np.isfinite(c2) else 30.0)
-    return holes, conf, CF.hole_conf_feats(d, H, T, holes, conf, mm)
+    has_fix = bool(fix and (fix.get("pairs") or fix.get("not_green") or fix.get("reject")
+                           or fix.get("first_tee") is not None))
+    if has_fix and free is None:
+        fh, _ = D2.decode2(d, pr, W, comp, beam=cfg["beam"], K=cfg["K"], cross=cfg["cross"], reuse=cfg["reuse"],
+                           box_mode=cfg["box_mode"])
+        free = {(h["t"], h["g"]) for h in fh}
+    Hf = D2.apply_fix(H, np.asarray(comp), fix) if has_fix else H
+    X = CF.hole_conf_feats(d, H, T, holes, conf, mm)
+    return holes, conf, np.c_[X, CF.fix_feats(H, Hf, holes, fix, free if has_fix else None)]
 
 
 def to_result(d, holes, conf, hconf, cuts=(225.0, 450.0)):

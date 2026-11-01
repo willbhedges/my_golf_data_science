@@ -120,3 +120,24 @@ def test_live_route_bench_course():
         f = dict(pairs=[[int(ask[0]), h["tee_id"], h["green_id"]]], not_green=[], first_tee=None)
         again = live2.route(x["fc"], x["course"], n_holes=18, fix=f)
         assert again["holes"][ask[0]]["green_id"] == h["green_id"] and again["holes"][ask[0]]["confidence"] == 1.0
+
+
+def test_reject_pair_forbids_complex():
+    H = D2.apply_fix(np.zeros((3, 2)), np.array([0, 0, 1]), dict(reject=[(0, 1)]))
+    assert np.isinf(H[0, 1]) and np.isinf(H[1, 1]) and H[2, 1] == 0 and H[0, 0] == 0
+    # a reject of a pair the golfer also confirmed is ignored
+    H = D2.apply_fix(np.zeros((3, 2)), np.arange(3), dict(pairs=[(1, 0, 1)], reject=[(0, 1)]))
+    assert H[0, 1] < 0
+
+
+def test_calib2_export_matches_predict():
+    rng = np.random.default_rng(0)
+    X = np.c_[rng.uniform(0, 1, (400, 6)), rng.uniform(0, 30, 400), rng.integers(0, 2, 400), rng.uniform(100, 500, 400),
+              np.zeros(400), rng.uniform(0, 1, 400), rng.integers(0, 3, 400), rng.integers(0, 2, 400),
+              rng.uniform(0, 14, (400, 2))]
+    y = (X[:, 0] + 0.1 * rng.normal(size=400) > 0.5).astype(int)
+    cal = CF.Calib2().fit(X, y)
+    e = cal.export()
+    z = CF.Calib2.transform(X) @ np.array(e["coef"]) + e["intercept"]
+    assert np.allclose(1 / (1 + np.exp(-z)), cal.predict(X)) and len(e["coef"]) == 16
+    assert np.allclose(cal.predict(X), cal.m.predict_proba((CF.Calib2.transform(X) - cal.mu) / cal.sd)[:, 1])

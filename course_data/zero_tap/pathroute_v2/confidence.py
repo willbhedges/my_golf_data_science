@@ -11,6 +11,11 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 
 CONF_F = ["p_hole", "m_tee", "m_green", "p_in", "p_out", "route", "minmarg", "minmarg_c", "L", "n_greens_x"]
+# fix-aware extras (Calib2, fitted on constrained re-solves: calib_resolve.py): share of decoded holes the golfer has
+# confirmed, confirmed route neighbours (0-2), hole not in the free (no-fact) decode, tee / green margins in the
+# fixed hole-cost matrix (decode2.apply_fix: confirmed tees / greens no longer compete)
+FIX_F = ["frac_fixed", "nb_fixed", "changed", "m_tee_c", "m_green_c"]
+CONF_F2 = CONF_F + FIX_F
 
 
 def hole_conf_feats(d, H, T, holes, route_conf, minmarg):
@@ -30,6 +35,59 @@ def hole_conf_feats(d, H, T, holes, route_conf, minmarg):
                   np.exp(-pin) if np.isfinite(pin) else 0.5, np.exp(-pout) if np.isfinite(pout) else 0.5,
                   route_conf, min(mm, 30.0), float(np.clip(mm, 0, 30) > 3), h["L"], 0.0])
     return np.array(X, float).reshape(-1, len(CONF_F))
+
+
+def fix_feats(H, Hf, holes, fix, free_pairs=None):
+    """[n, len(FIX_F)] fix-aware features of decoded holes (H: free hole costs, Hf: apply_fix(H) or H)."""
+    fixed = {(int(t), int(g)) for _, t, g in (fix or {}).get("pairs") or ()}
+    n = max(len(holes), 1)
+    nf = sum((h["t"], h["g"]) in fixed for h in holes)
+    X = []
+    for i, h in enumerate(holes):
+        t, g = h["t"], h["g"]
+        nb = 0
+        for j in (i - 1, i + 1):
+            if 0 <= j < len(holes) and holes[j]["loop"] == h["loop"] and (holes[j]["t"], holes[j]["g"]) in fixed:
+                nb += 1
+        ch = 0.0 if free_pairs is None else float((t, g) not in free_pairs)
+        own = [t] + list(h["boxes"])
+        col = Hf[:, g].copy()
+        col[own] = np.inf
+        row = Hf[t].copy()
+        row[g] = np.inf
+        base = Hf[t, g] if np.isfinite(Hf[t, g]) else H[t, g]
+        X.append([nf / n, nb, ch, min(col.min() - base, 14), min(row.min() - base, 14)])
+    return np.array(X, float).reshape(-1, len(FIX_F))
+
+
+class Calib2:
+    """Logistic calibration on constrained re-solves (calib_resolve.py). Plain coefficients so the browser can run
+    it: p = sigmoid(coef . transform(x) + intercept), transform documented in `transform` (same in lib JS)."""
+    def fit(self, X, y, C=1.0):
+        Z = self.transform(X)
+        self.mu, self.sd = Z.mean(0), Z.std(0) + 1e-9
+        self.m = LogisticRegression(C=C, max_iter=4000).fit((Z - self.mu) / self.sd, y)
+        self.coef = (self.m.coef_[0] / self.sd)
+        self.intercept = float(self.m.intercept_[0] - np.sum(self.m.coef_[0] * self.mu / self.sd))
+        return self
+
+    @staticmethod
+    def transform(X):
+        X = np.asarray(X, float)
+        mm = np.log1p(np.maximum(X[:, 6:7], 0))
+        ff = X[:, 10:11]
+        return np.c_[X[:, :6], mm, X[:, 7:8], X[:, 8:9] / 300.0, ff, X[:, 11:12], X[:, 12:13],
+                     np.minimum(X[:, 13:15], 14), mm * ff, X[:, 5:6] * ff]
+
+    def predict(self, X):
+        z = self.transform(X) @ self.coef + self.intercept
+        return 1.0 / (1.0 + np.exp(-z))
+
+    def export(self):
+        return dict(schema="pathroute_calib/2", features=CONF_F2, coef=[float(c) for c in self.coef],
+                    intercept=self.intercept,
+                    transform="[x0..x5, log1p(max(minmarg,0)), minmarg_c, L/300, frac_fixed, nb_fixed, changed, "
+                              "min(m_tee_c,14), min(m_green_c,14), log1p(minmarg)*frac_fixed, route*frac_fixed]")
 
 
 class Calib:

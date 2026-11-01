@@ -48,6 +48,7 @@ POOLS = os.path.join(HERE, "pools")
 LIBPLAY_JS = os.path.join(HERE, "lib_play.js")
 ENGINE_JS = [os.path.join(HERE, "typed_card.js"), os.path.join(HERE, "confirm_engine.js"), os.path.join(HERE, "shared_store.js")]
 ENGINE_JS.append(os.path.join(HERE, "course_index.js"))   # national index + "Request this course" (course_index.py)
+ENGINE_JS.append(os.path.join(HERE, "pathroute_engine.js"))   # card-blind routing confirm + re-solve (library records)
 COURSES_DIR = os.path.join(CD, "courses")
 LIBRARY_INDEX = os.path.join(CD, "library", "index.json")
 # Hand-checked courses with their own published wind page (linked, not embedded: each page is ~10 MB).
@@ -913,11 +914,39 @@ def artifact_format(html):
     return head + sep + tail
 
 
+def page_html(blob):
+    engine = "\n".join(open(p).read() for p in ENGINE_JS).replace("</", "<\\/")
+    import course_index                                   # national index (course_index.py, SCHEMA.md)
+    engine, natidx = course_index.inject(engine)
+    libplay = open(LIBPLAY_JS).read().replace("</", "<\\/")
+    html = open(TEMPLATE).read().replace("/*__ENGINE__*/", engine).replace("/*__LIBPLAY__*/", libplay).replace("/*__DATA__*/null", blob)
+    return html, natidx
+
+
+def relink(out):
+    """Re-insert the template and JS around the data of an already built page (a JS / template change only)."""
+    old = open(out).read()
+    m = re.search(r"\nconst D = (\{.*?\});\n", old, re.S)
+    if not m:
+        raise SystemExit(f"relink: no data blob in {out}")
+    html, _ = page_html(m.group(1))
+    with open(out, "w") as fh:
+        fh.write(html)
+    art = os.path.join(os.path.dirname(out), "aim_caddie.html")
+    with open(art, "w") as fh:
+        fh.write(artifact_format(html))
+    log(f"relinked {os.path.relpath(out, ROOT)} {os.path.getsize(out) / 1e6:.2f} MB + aim_caddie.html")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--json", help="also write one golf_app/1 course document per course into this dir")
+    ap.add_argument("--relink", action="store_true",
+                    help="keep the data of the existing --out page, re-insert the template + JS only (no rebuild)")
     a = ap.parse_args()
+    if a.relink:
+        return relink(a.out)
     courses = []
     log("Spirit Hollow (verified: live page data)")
     courses.append(build_spirit_hollow())
@@ -952,12 +981,8 @@ def main():
             with open(os.path.join(a.json, f"{c['id']}.json"), "w") as fh:
                 json.dump(dict(schema="golf_app/1#course", wind_axes=bundle["wind_axes"], player=PLAYER, course=c), fh)
     blob = json.dumps(bundle, separators=(",", ":")).replace("</", "<\\/")
-    engine = "\n".join(open(p).read() for p in ENGINE_JS).replace("</", "<\\/")
-    import course_index                                   # national index (course_index.py, SCHEMA.md)
-    engine, natidx = course_index.inject(engine)
+    html, natidx = page_html(blob)
     log(f"  national index: {natidx['n']} courses, {len(natidx['b64']) / 1e6:.2f} MB" if natidx else "  national index: none yet")
-    libplay = open(LIBPLAY_JS).read().replace("</", "<\\/")
-    html = open(TEMPLATE).read().replace("/*__ENGINE__*/", engine).replace("/*__LIBPLAY__*/", libplay).replace("/*__DATA__*/null", blob)
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w") as fh:
         fh.write(html)

@@ -25,7 +25,7 @@ ZT = os.path.dirname(HERE)
 # perception/features.py, zero_tap/sequence/bench.py, ...): import them with our dirs first on sys.path and our own
 # sys.modules entries, then put the caller's entries back.
 _NAMES = ("truth", "bench", "scene", "features", "decode", "model", "run", "prep", "features2", "prep2",
-          "complexes", "confidence", "decode2", "run2", "resolve2")
+          "complexes", "confidence", "decode2", "run2", "resolve2", "export_js")
 _MODS = {}
 
 MODEL = os.path.join(HERE, "model_v2.pkl.gz")
@@ -137,7 +137,7 @@ def route(fc, course=None, n_holes=18, fix=None, model=None, use_osm_holes=True)
     m = model or load_model()
     d, sc = features(fc, course, kind)
     pr = m["models"].predict(d)
-    s = RS.Session(d, pr, m["calib"], cfg=m.get("cfg"))
+    s = RS.Session(d, pr, m["calib"], cfg=m.get("cfg"), calib_fix=m.get("calib_fix"))
     osm_pairs = osm_fix(fc, d, sc, kind) if use_osm_holes else []
     for num, t, g in osm_pairs:
         s.confirm_pair(num, t, g)
@@ -147,6 +147,8 @@ def route(fc, course=None, n_holes=18, fix=None, model=None, use_osm_holes=True)
             s.confirm_pair(num, t, g)
         for g in f["not_green"]:
             s.not_a_hole(g)
+        for t, g in f.get("reject") or ():
+            s.reject_pair(t, g)
         if f.get("first_tee") is not None:
             s.hole_one(f["first_tee"])
     holes, conf = s.solve()
@@ -180,3 +182,26 @@ def route(fc, course=None, n_holes=18, fix=None, model=None, use_osm_holes=True)
                              facts=s.to_ids(), osm_fixed=len(osm_pairs),
                              doc="zero_tap/PATHROUTE.md confirm-and-resolve: ask the lowest-confidence hole, add the "
                                  "answer to facts, call live2.route(..., fix=facts) again"))
+
+
+def decoder_record(fc, course=None, n_holes=18, use_osm_holes=True, model=None):
+    """What the app needs to re-solve this course's routing in the browser (pathroute_decoder/1, export_js.record;
+    course_data/app/pathroute_engine.js) + `facts`: the OSM golf=hole ways as confirmed pairs (by OSM id), as route()
+    fixes them. use_osm_holes=False: card-blind (hole ways ignored), e.g. to exercise the confirm flow."""
+    M = _mods()
+    kind = int(n_holes or 18)
+    if kind not in (9, 18, 27, 36):
+        kind = 18 if kind > 9 else 9
+    m = model or load_model()
+    d, sc = features(fc, course, kind)
+    pr = m["models"].predict(d)
+    cfg = m.get("cfg") or M["run2"].CFG
+    comp = M["complexes"].cluster(len(d["tees"]), d["tpp"], pr["tpair"], thr=cfg["comp_thr"])
+    R = M["export_js"].record(d, pr, m, comp, cfg=cfg, conf_ok=CONF_OK)
+    pairs = osm_fix(fc, d, sc, kind) if use_osm_holes else []
+    T, G = d["tees"], d["greens"]
+    R["facts"] = dict(pairs=[[n, T[t]["id"], G[g]["id"]] for n, t, g in pairs], not_green=[], first_tee=None)
+    R["osm_fixed"] = len(pairs)
+    R["source"] = "pathroute_v2 " + ("with the OSM hole ways as confirmed pairs" if use_osm_holes else
+                                     "card-blind (OSM hole ways ignored)")
+    return R

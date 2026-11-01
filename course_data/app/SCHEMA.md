@@ -386,3 +386,45 @@ The verdict is read, in order, from: a closed course, `publish` / `publish_as_is
 hole, or 3+ wrong tees or picks = not safe).
 Publishing: every record goes in `files` as `lib/<slug>.json` -> `course_data/app/out/lib/<slug>.json`; without them a
 library course shows "Could not load this course's data" with a retry. Test: `test_lib_play.js` (serves out/ over http).
+
+## Card-blind routing in the browser (`route`, `pathroute_decoder/1`, `pathroute_engine.js`)
+
+A library play record may carry `route`: the inputs of the pathroute v2 decoder (course_data/zero_tap/PATHROUTE.md)
+so the page re-solves the tee ↔ green pairing and order after every golfer answer, without a server.
+`build_library_play.py` adds it when the course package has its OSM file and OSM's golf=hole ways do not already
+fix every hole (`route_of`; `--route-cardblind SLUG --route-out F` writes a card-blind route that ignores the hole
+ways, used by the tests). Built by `zero_tap/pathroute_v2/live2.decoder_record` → `export_js.record`:
+
+```jsonc
+"route": {"schema": "pathroute_decoder/1", "kind": 18,
+  "tees": [{"id": "way/1", "ll": [lon, lat]}], "greens": [...],      // candidates (OSM ids)
+  "tc": [[x, y]], "gc": [[x, y]],                                   // scene yds (local projection)
+  "H": [[tee, green, nats]], "H_default": 14,                        // -log P(hole) (sparse; others H_default)
+  "T": [[green, tee, nats]], "T_default": 7,                         // walk costs, weight 0.5 applied
+  "S": [nats per tee], "E": [nats per green],                        // start / end (club weight 1)
+  "comp": [complex per tee], "BIG": 14,
+  "cfg": {"K": 6, "beam": 4000, "mm_beam": 800, "cross": 1.5, "reuse": 2.0},
+  "calib": {"schema": "pathroute_calib/1", ...},           // free decode (confidence.Calib)
+  "calib_fix": {"schema": "pathroute_calib/2", "coef": [...16], "intercept": x},  // once any fact is set (Calib2)
+  "par_cuts": [225, 450], "conf_ok": 0.95,
+  "facts": {"pairs": [[number, tee_id, green_id]], "not_green": [], "first_tee": null},  // OSM hole ways (fixed)
+  "osm_fixed": 4, "source": "pathroute_v2 ..."}
+```
+
+Floats are exact (Python repr), so the JS decode is the Python one: `test_pathroute.js` checks it on 24 zero_tap test
+courses (9 / 18 / 27 / 36 holes) with no facts, two confirmed pairs, a reject + practice green, and a hole-1 tee
+(holes identical; confidences and features within 1e-9).
+
+**Client** (`lib_play.js`, "card-blind routing"): the session = `route.facts` + every golfer's actions of
+`maps/<slug>` (replayed as for the other library courses, snapped to the nearest tee / green within 25 yds):
+`locate` = "hole N is this tee + green" (`confirmPair`, pinned to N on 9 / 18 holes), `reject` with tee and green =
+"no" (that tee's complex never plays to that green), `reject` with the green only = a practice green, `first`
+(`{tee_ll}`, ref "1") = "this tee is hole 1". The hole list is the decoded route; each decoded hole shows the
+precomputed plan whose green is within 25 yds and one of whose set tees is within 40 yds of the hole's tees, else
+**plan pending** (a sketch of the routing, par from the length, no club) and one `requests/replan_<slug>__<golfer>`
+doc (`golf_replan/1`: `{course, holes: [{no, tee_ll, green_ll, yds}], facts, at, by}`) for a server rebuild.
+Questions: every unconfirmed hole under `conf_ok` shows "Is this hole N? Yes / No / Pick the right green" (the
+6 cheapest greens for its tee as letters on the sketch, plus "practice green"), and once per course "Which tee is
+hole 1?" (the 5 likeliest start complexes). Re-solve: the pairing shows at once (one beam decode); the per-hole
+confidences (one 800-state re-decode per hole) fill in over the next frames (~1–2 s on a laptop for 18 holes).
+`test_route_ui.js` walks the flow at 400 and 1280 px with two golfers on a shared mock db.

@@ -711,14 +711,16 @@ textarea.rtext{font:15px/1.4 var(--body);min-height:72px}
   const ref = r => { const s = String(r == null ? "" : r); return /^\d{1,2}$/.test(s) ? s : null; };
   const iso = s => typeof s === "string" && s.length <= 40 && !isNaN(Date.parse(s)) ? s : null;
 
-  /* one canonical action: {question, kind: "locate"|"reject", ref, answer: {tee_ll, green_ll}, taps} */
+  /* one canonical action: {question, kind: "locate"|"reject"|"first", ref, answer: {tee_ll, green_ll}, taps}.
+     "first" (library courses with card-blind routing, lib_play.js): "this tee is hole 1" (tee_ll only, ref "1") */
   function cleanAction(a) {
     if (!a || typeof a !== "object") return null;
     const r = ref(a.ref);
-    if (!r || (a.kind !== "locate" && a.kind !== "reject")) return null;
+    if (!r || (a.kind !== "locate" && a.kind !== "reject" && a.kind !== "first")) return null;
     const ans = a.answer || {}, t = ans.tee_ll == null ? null : ll(ans.tee_ll), g = ans.green_ll == null ? null : ll(ans.green_ll);
     if (!g && !t) return null;
     if ((ans.tee_ll != null && !t) || (ans.green_ll != null && !g)) return null;
+    if (a.kind === "first") return t && r === "1" ? {question: "f1", kind: "first", ref: "1", answer: {tee_ll: t, green_ll: null}, taps: 1} : null;
     const taps = a.taps === 1 || a.taps === 2 ? a.taps : (a.kind === "locate" ? 2 : 1);
     return {question: (a.kind === "locate" ? "l" : "r") + r, kind: a.kind, ref: r, answer: {tee_ll: t, green_ll: g}, taps};
   }
@@ -786,7 +788,7 @@ textarea.rtext{font:15px/1.4 var(--body);min-height:72px}
 
   /* ------------------------------------------------------------------ the store */
   function readLocal(ls) {
-    try { const s = JSON.parse(ls.getItem(LKEY) || "null"); if (s && typeof s === "object") return {maps: s.maps || {}, reports: Array.isArray(s.reports) ? s.reports : []}; } catch (e) {}
+    try { const s = JSON.parse(ls.getItem(LKEY) || "null"); if (s && typeof s === "object") return {maps: s.maps || {}, reports: Array.isArray(s.reports) ? s.reports : [], replan: s.replan && typeof s.replan === "object" ? s.replan : {}}; } catch (e) {}
     return {maps: {}, reports: []};
   }
   function writeLocal(ls, s) { try { ls.setItem(LKEY, JSON.stringify(s)); return true; } catch (e) { return false; } }
@@ -868,6 +870,21 @@ textarea.rtext{font:15px/1.4 var(--body);min-height:72px}
       chain = p;
       return p.then(r => { emit("maps"); return r; });
     };
+    /* "plan pending" (library courses with card-blind routing): the holes golfers' answers re-paired that have no
+       precomputed plan -> requests/replan_<course>__<golfer> (golf_replan/1, one doc per golfer per course,
+       overwritten). requests_to_batch.py skips it (no name / state): a server rebuild reads it with the map doc. */
+    S.addReplan = (course, holes, facts) => {
+      const body = {schema: "golf_replan/1", course: String(course).slice(0, 64), at: new Date().toISOString(), by: S.gid,
+                    holes: (holes || []).slice(0, 36).map(h => ({no: +h.no || 0, tee_ll: ll(h.tee_ll), green_ll: ll(h.green_ll), yds: num(h.yds) ? Math.round(h.yds) : null})),
+                    facts: facts && typeof facts === "object" ? JSON.parse(JSON.stringify(facts)) : null};
+      local.replan = local.replan || {};
+      local.replan[body.course] = body;
+      writeLocal(ls, local);
+      if (S.mode !== "shared" || !db) return Promise.resolve("local");
+      const id = ("replan_" + body.course + "__" + String(S.gid).replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40)).slice(0, 120);
+      return db.collection("requests").doc(id).set(body).then(() => "shared", e => { S.lastError = (e && e.code) || String(e); return "local"; });
+    };
+    S.replan = course => (local.replan || {})[course] || null;
     S.addReport = r => {
       const body = {schema: "golf_report/1", course: r.course, hole: +r.hole, kind: r.kind, text: String(r.text || "").slice(0, MAX_TEXT),
                     tee: r.tee || null, at: new Date().toISOString(), by: S.gid};
@@ -937,7 +954,7 @@ textarea.rtext{font:15px/1.4 var(--body);min-height:72px}
  */
 (function (root) {
   "use strict";
-  const DATA = null;   /* {n, built, b64}: gzip of "name|city|ST|lat|lon|osm|holes|tier" lines */
+  const DATA = {"schema":"course_index/1","n":151,"built":"2026-10-31T00:22Z","b64":"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"};   /* {n, built, b64}: gzip of "name|city|ST|lat|lon|osm|holes|tier" lines */
   const LKEY = "aimcaddie_requests1", MAX_SHOW = 30;
   const TIER = {A: "OSM maps every hole · scorecard known", B: "OSM maps every hole", C: "OSM maps some holes",
                 D: "outline only on OSM"};
@@ -1129,6 +1146,494 @@ textarea.rtext{font:15px/1.4 var(--body);min-height:72px}
   const api = {load, search, slugOf, norm, parse, request, section, state: R, get rows() { return rows; }};
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CourseIndex = api;
+})(typeof window !== "undefined" ? window : this);
+
+/* pathroute v2 confirm-and-resolve in the browser: a line-for-line port of course_data/zero_tap/pathroute_v2
+   decode2.decode2 (constrained tour beam: tee complexes, crossing / reuse penalties, pins, hole-1 tee), run2.decode_course
+   (min-marginals), confidence.hole_conf_feats + fix_feats and the logistic calibrator (pathroute_calib/1 or /2), and
+   resolve2.Session, over the per-course decoder inputs build_library_play.py exports (pathroute_decoder/1, SCHEMA.md
+   "Card-blind routing in the browser").
+
+     const S = new PathRoute.Session(R)        // R = record.route (pathroute_decoder/1)
+     S.confirmPair(number, tee, green)         // "hole N is this tee + green" (number null = pair only)
+     S.rejectPair(tee, green)                  // "no": that tee's complex never plays to this green
+     S.notAHole(green)                         // a practice green
+     S.holeOne(tee)                            // "this tee is hole 1"
+     const {holes, conf} = S.solve()           // holes [{number, g, t, boxes, L, loop}] + calibrated pair confidence
+     S.ask(thr)                                // index of the lowest-confidence unconfirmed hole below thr, or null
+
+   Parity: course_data/app/test_pathroute.js decodes the exported benchmark fixtures with and without facts and
+   compares with the Python decode written next to them (fixtures/pathroute/<slug>.json). Floating point follows
+   numpy's operation order (costs are sums of exported doubles; penalties are multiples of 0.5, exact in float32). */
+(function (root) {
+  "use strict";
+  const INF = Infinity;
+
+  /* ---------------------------------------------------------------- inputs -> dense matrices (decode.cost_mats) */
+  function mats(R) {
+    const nt = R.tees.length, ng = R.greens.length;
+    const H = new Float64Array(nt * ng).fill(R.H_default);           // H[t*ng + g]
+    for (const [t, g, c] of R.H) H[t * ng + g] = c;
+    const T = new Float64Array(ng * nt).fill(R.T_default);           // T[g*nt + t] (walk weight applied)
+    for (const [g, t, c] of R.T) T[g * nt + t] = c;
+    return {nt, ng, H, T, S: Float64Array.from(R.S), E: Float64Array.from(R.E)};
+  }
+
+  function segCross(A, B, C, D) {                                     /* proper intersection of AB and CD */
+    const orient = (P, Q, Rr) => (Q[0] - P[0]) * (Rr[1] - P[1]) - (Q[1] - P[1]) * (Rr[0] - P[0]);
+    const o1 = orient(A, B, C), o2 = orient(A, B, D), o3 = orient(C, D, A), o4 = orient(C, D, B);
+    return (o1 * o2 < 0) && (o3 * o4 < 0);
+  }
+
+  /* stable argsort of a numeric array (ties: lower index first; inf last) */
+  function argsortStable(v, idx) {
+    const o = idx ? idx.slice() : Array.from(v, (_, i) => i);
+    o.sort((a, b) => (v[a] < v[b] ? -1 : v[a] > v[b] ? 1 : a - b));
+    return o;
+  }
+
+  /* candidates: per green the K best tees by hole cost (unavailable -> inf); force_t replaces the K-th slot */
+  function candidates(M, H, K, availT, availG, forceT) {
+    const {nt, ng} = M;
+    K = Math.min(K, nt);
+    const top = [], hc = [];
+    for (let g = 0; g < ng; g++) {
+      const col = new Float64Array(nt);
+      for (let t = 0; t < nt; t++) col[t] = (!availT[t] || !availG[g]) ? INF : H[t * ng + g];
+      const o = argsortStable(col).slice(0, K);
+      if (forceT != null && K >= 2 && !o.includes(forceT)) o[K - 1] = forceT;
+      top.push(o);
+      hc.push(o.map(t => col[t]));
+    }
+    return {top, hc, K};
+  }
+
+  function pairMats(top, K, tc, gc, comp, boxesOf, cross, reuse, shrink) {
+    shrink = shrink == null ? 0.12 : shrink;
+    const ng = top.length, P = ng * K, pt = new Int32Array(P), pg = new Int32Array(P);
+    const A2 = [], B2 = [];
+    for (let g = 0; g < ng; g++) for (let k = 0; k < K; k++) {
+      const p = g * K + k, t = top[g][k];
+      pt[p] = t; pg[p] = g;
+      const A = tc[t], B = gc[g], v = [B[0] - A[0], B[1] - A[1]];
+      A2.push([A[0] + shrink * v[0], A[1] + shrink * v[1]]);
+      B2.push([B[0] - shrink * v[0], B[1] - shrink * v[1]]);
+    }
+    const PEN = new Float64Array(P * P);
+    for (let a = 0; a < P; a++) for (let b = 0; b < P; b++) {
+      if (pg[a] === pg[b]) continue;                                  // X[same_g] = 0, R[same_g] = 0
+      const X = segCross(A2[a], B2[a], A2[b], B2[b]) ? 1 : 0;
+      let Rr = comp[pt[a]] === comp[pt[b]] ? 1 : 0;
+      if (boxesOf) Rr = Math.max(Rr, boxesOf[pt[a]][pt[b]] ? 1 : 0, boxesOf[pt[b]][pt[a]] ? 1 : 0);
+      let pen = Math.fround(Math.fround(cross * X) + Math.fround(reuse * Rr));
+      if (pt[a] === pt[b]) pen = Math.fround(pen + 50.0);              // one tee box never serves two holes
+      PEN[a * P + b] = pen;
+    }
+    return {PEN, pt, pg, P};
+  }
+
+  /* beam_loop2: one loop of n holes. -> [greens, tees, cost, conf] or null */
+  function beamLoop2(M, H, n, availG, availT, tc, gc, comp, boxesOf, o) {
+    const {nt, ng, T, S, E} = M;
+    const K0 = o.K == null ? 6 : o.K, beam = o.beam == null ? 4000 : o.beam, mid = o.mid;
+    const cross = o.cross == null ? 1.5 : o.cross, reuse = o.reuse == null ? 4.0 : o.reuse;
+    const pins = {};
+    for (const [k, v] of Object.entries(o.pins || {})) if (+k >= 1 && +k <= n) pins[+k] = v;
+    const first = o.first || null;
+    const cd = candidates(M, H, K0, availT, availG, first ? o.firstForce : null), K = cd.K;
+    const {PEN, pt, pg, P} = pairMats(cd.top, K, tc, gc, comp, boxesOf, cross, reuse);
+    const hcf = new Float64Array(P);
+    for (let g = 0; g < ng; g++) for (let k = 0; k < K; k++) hcf[g * K + k] = cd.hc[g][k];
+    const Tstep = new Float64Array(ng * P), Tmid = new Float64Array(ng * P);
+    for (let g = 0; g < ng; g++) for (let p = 0; p < P; p++) {
+      const w = T[g * nt + pt[p]];
+      Tstep[g * P + p] = w + hcf[p];
+      Tmid[g * P + p] = ((w + S[pt[p]]) + hcf[p]) + E[g];
+    }
+    const s0 = new Float64Array(P);
+    for (let p = 0; p < P; p++) s0[p] = S[pt[p]] + hcf[p];
+    const stepOk = {};
+    const pinKeys = Object.keys(pins).map(Number);
+    if (pinKeys.length || first) {
+      const pinP = {};
+      for (const k of pinKeys) {
+        const [t, g] = pins[k];
+        let hit = -1;
+        for (let p = 0; p < P; p++) if (pt[p] === t && pg[p] === g) { hit = p; break; }
+        if (hit < 0) return null;
+        pinP[k] = hit;
+      }
+      const pinnedG = new Map();
+      for (const k of pinKeys) pinnedG.set(pins[k][1], k);
+      for (let k = 1; k <= n; k++) {
+        const ok = new Uint8Array(P).fill(1);
+        if (k in pinP) { ok.fill(0); ok[pinP[k]] = 1; }
+        for (const [g, kk] of pinnedG) if (kk !== k) for (let p = 0; p < P; p++) if (pg[p] === g) ok[p] = 0;
+        if (k === 1 && first) for (let p = 0; p < P; p++) if (!first.has(pt[p])) ok[p] = 0;
+        stepOk[k] = ok;
+      }
+      if (stepOk[1]) for (let p = 0; p < P; p++) if (!stepOk[1][p]) s0[p] = INF;
+    }
+    let pLast = [], cost = [];
+    for (let p = 0; p < P; p++) if (isFinite(s0[p])) { pLast.push(p); cost.push(s0[p]); }
+    let nb = pLast.length;
+    let gl = pLast.map(p => pg[p]);
+    let used = new Uint8Array(nb * ng);                               // greens used per state (the bitmask)
+    for (let b = 0; b < nb; b++) used[b * ng + gl[b]] = 1;
+    const numeric = ng <= 46;                                        /* numeric keys while 2^ng * 64 stays exact */
+    const pow2 = Array.from({length: ng}, (_, x) => Math.pow(2, x));
+    let mask = new Float64Array(nb);
+    for (let b = 0; b < nb; b++) mask[b] = pow2[gl[b]];
+    let pen = new Float64Array(nb * P);
+    for (let b = 0; b < nb; b++) for (let q = 0; q < P; q++) pen[b * P + q] = PEN[pLast[b] * P + q];
+    const hist = [[new Int32Array(nb).fill(-1), Int32Array.from(pLast)]];
+    for (let k = 2; k <= n; k++) {
+      const Ts = (mid && k === mid + 1) ? Tmid : Tstep, ok = stepOk[k];
+      const flat = new Float64Array(nb * ng), kbA = new Int32Array(nb * ng);
+      for (let b = 0; b < nb; b++) {
+        const cb = cost[b], row = gl[b] * P, pr = b * P;
+        for (let g = 0; g < ng; g++) {
+          let best = INF, kb = 0;
+          if (!used[b * ng + g]) {
+            for (let kk = 0; kk < K; kk++) {
+              const p = g * K + kk;
+              if (ok && !ok[p]) continue;
+              const c = (cb + Ts[row + p]) + pen[pr + p];
+              if (c < best) { best = c; kb = kk; }                   // first minimum (np.argmin)
+            }
+          }
+          flat[b * ng + g] = best; kbA[b * ng + g] = kb;
+        }
+      }
+      let nk = 0;
+      for (let i = 0; i < flat.length; i++) if (flat[i] !== INF) nk++;
+      const keep = new Int32Array(nk);
+      nk = 0;
+      for (let i = 0; i < flat.length; i++) if (flat[i] !== INF) keep[nk++] = i;
+      if (!keep.length) return null;
+      /* the stable cost order of `keep`, but only as deep as needed: sort the entries at or under the m-th smallest
+         cost (native numeric sort finds it), dedup, and go deeper only if fewer than `beam` keys came out */
+      let order, firstIdx, m = Math.min(keep.length, 2 * beam);
+      const vals = new Float64Array(keep.length);
+      for (let i = 0; i < keep.length; i++) vals[i] = flat[keep[i]];
+      for (;;) {
+        const thr = m >= keep.length ? INF : kth(vals, m - 1);
+        const sub = m >= keep.length ? Array.from(keep) : Array.from(keep.filter(i => flat[i] <= thr));
+        order = argsortStable(flat, sub);
+        const seen = new Set();
+        firstIdx = [];
+        for (let i = 0; i < order.length; i++) {
+          const b = Math.floor(order[i] / ng), g = order[i] % ng;
+          const key = numeric ? (mask[b] + pow2[g]) * 64 + g : stateKey(used, b, ng, g);   // (greens used, last green)
+          if (!seen.has(key)) { seen.add(key); firstIdx.push(i); if (firstIdx.length >= beam) break; }
+        }
+        if (firstIdx.length >= beam || sub.length >= keep.length) break;
+        m = Math.min(keep.length, m * 4);
+      }
+      /* np.unique(return_index) gives first occurrences; sorted and cut to the beam = the first `beam` distinct keys
+         in cost order, which is what the early break above keeps */
+      const nb2 = firstIdx.length, par = new Int32Array(nb2), gN = new Int32Array(nb2), pN = new Int32Array(nb2);
+      const cost2 = new Float64Array(nb2), used2 = new Uint8Array(nb2 * ng), pen2 = new Float64Array(nb2 * P), mask2 = new Float64Array(nb2);
+      for (let j = 0; j < nb2; j++) {
+        const oi = order[firstIdx[j]], b = Math.floor(oi / ng), g = oi % ng;
+        par[j] = b; gN[j] = g; pN[j] = g * K + kbA[b * ng + g]; cost2[j] = flat[oi];
+        for (let x = 0; x < ng; x++) used2[j * ng + x] = used[b * ng + x];
+        used2[j * ng + g] = 1;
+        mask2[j] = mask[b] + pow2[g];
+        const pb = b * P, pp = pN[j] * P, pj = j * P;
+        for (let q = 0; q < P; q++) pen2[pj + q] = pen[pb + q] + PEN[pp + q];   // multiples of 0.5: exact as float32
+      }
+      nb = nb2; cost = cost2; used = used2; pen = pen2; mask = mask2; gl = gN;
+      hist.push([par, pN]);
+    }
+    const fin = Array.from(cost, (c, b) => c + E[gl[b]]);
+    const o2 = argsortStable(fin), best = o2[0];
+    let z = 0;
+    for (const i of o2.slice(0, 500)) z += Math.exp(-(fin[i] - fin[best]));
+    const conf = 1.0 / z;
+    const seq = [];
+    let i = best;
+    for (let h = hist.length - 1; h >= 0; h--) { seq.push(hist[h][1][i]); i = hist[h][0][i]; }
+    seq.reverse();
+    return [seq.map(p => pg[p]), seq.map(p => pt[p]), fin[best], conf];
+  }
+
+  /* k-th smallest (0-based) of a Float64Array, in place (Hoare quickselect) */
+  function kth(a, k) {
+    let lo = 0, hi = a.length - 1;
+    while (lo < hi) {
+      const piv = a[(lo + hi) >> 1];
+      let i = lo, j = hi;
+      while (i <= j) {
+        while (a[i] < piv) i++;
+        while (a[j] > piv) j--;
+        if (i <= j) { const t = a[i]; a[i] = a[j]; a[j] = t; i++; j--; }
+      }
+      if (k <= j) hi = j; else if (k >= i) lo = i; else return a[k];
+    }
+    return a[k];
+  }
+
+  function stateKey(used, b, ng, g) {
+    let key = "";
+    for (let x = 0; x < ng; x++) key += (used[b * ng + x] || x === g) ? "1" : "0";
+    return key + ":" + g;
+  }
+
+  function boxSets(tc) {
+    return tc.map(a => tc.map(b => Math.hypot(a[0] - b[0], a[1] - b[1]) < 45));
+  }
+
+  const FIX_BONUS = 30.0;
+  /* decode2.apply_fix: golfer facts -> hole-cost matrix */
+  function applyFix(M, H0, comp, fix) {
+    const {nt, ng} = M, H = Float64Array.from(H0);
+    const pairs = (fix && fix.pairs) || [], fixedT = new Set(pairs.map(p => p[1]));
+    for (const [, t, g] of pairs) {
+      for (let c = 0; c < nt; c++) if (comp[c] === comp[t] && (!fixedT.has(c) || c === t)) for (let x = 0; x < ng; x++) H[c * ng + x] = INF;
+      for (let x = 0; x < nt; x++) H[x * ng + g] = INF;
+    }
+    for (const [, t, g] of pairs) {
+      for (let x = 0; x < ng; x++) H[t * ng + x] = INF;
+      H[t * ng + g] = Math.min(H0[t * ng + g], M.BIG) - FIX_BONUS;
+    }
+    for (const g of (fix && fix.not_green) || []) for (let x = 0; x < nt; x++) H[x * ng + g] = INF;
+    const fp = new Set(pairs.map(p => p[1] + "," + p[2]));
+    for (const [t, g] of (fix && fix.reject) || []) {
+      if (fp.has(t + "," + g)) continue;
+      for (let c = 0; c < nt; c++) if (comp[c] === comp[t]) H[c * ng + g] = INF;
+      H[t * ng + g] = INF;
+    }
+    return H;
+  }
+
+  /* decode2.decode2 -> {holes, conf, cost} */
+  function decode2(M, R, comp, o) {
+    const kind = R.kind, n = (kind === 9 || kind === 27) ? 9 : 18;
+    const loops = ({9: 1, 18: 1, 27: 3, 36: 2})[kind] || Math.max(1, Math.round(kind / n));
+    const fix = o.fix || null;
+    let H = o.H || M.H;
+    if (fix) H = applyFix(M, H, comp, fix);
+    const pins = {};
+    if (loops === 1) for (const [k, t, g] of (fix && fix.pairs) || []) if (k != null) pins[k] = [t, g];
+    let first = null;
+    if (fix && fix.first_tee != null) {
+      const ft = fix.first_tee;
+      first = new Set();
+      for (let c = 0; c < M.nt; c++) if (comp[c] === comp[ft]) first.add(c);
+      first.add(ft);
+      if (pins[1]) first.add(pins[1][0]);
+    }
+    const availG = new Uint8Array(M.ng).fill(1), availT = new Uint8Array(M.nt).fill(1);
+    const tc = R.tc, gc = R.gc, bo = M.boxesOf;
+    const out = [], confs = [], costs = [];
+    for (let li = 0; li < loops; li++) {
+      const r = beamLoop2(M, H, n, availG, availT, tc, gc, comp, bo, {
+        K: o.K, beam: o.beam, mid: n === 18 ? 9 : null, cross: o.cross, reuse: o.reuse,
+        pins: li === 0 ? pins : null, first: li === 0 ? first : null, firstForce: (first && li === 0) ? fix.first_tee : null});
+      if (!r) break;
+      const [gs, ts, c, conf] = r;
+      confs.push(conf); costs.push(c);
+      for (let k = 0; k < gs.length; k++) {
+        const g = gs[k], t = ts[k], gp = gc[g], tp = tc[t];
+        const dd = Math.max(Math.hypot(gp[0] - tp[0], gp[1] - tp[1]), 1.0), u = [(gp[0] - tp[0]) / dd, (gp[1] - tp[1]) / dd];
+        const box = new Set();
+        for (let b = 0; b < M.nt; b++) {
+          const rel = [tc[b][0] - tp[0], tc[b][1] - tp[1]];
+          const lat = Math.abs(rel[0] * u[1] - rel[1] * u[0]);
+          if (Math.hypot(rel[0], rel[1]) < 80 && lat < 22 && availT[b]) box.add(b);
+          if (comp[b] === comp[t] && availT[b]) box.add(b);
+        }
+        box.delete(t);
+        const boxes = Array.from(box).sort((a, b) => a - b);
+        let L = -INF;
+        for (const b of boxes.concat([t])) L = Math.max(L, Math.hypot(gp[0] - tc[b][0], gp[1] - tc[b][1]));
+        out.push({number: k + 1, g, t, boxes, L, loop: li});
+        availG[g] = 0; availT[t] = 0;
+        for (const b of boxes) availT[b] = 0;
+        for (let c2 = 0; c2 < M.nt; c2++) if (comp[c2] === comp[t]) availT[c2] = 0;
+      }
+    }
+    let conf = 0, cost = INF;
+    if (confs.length) { conf = confs.reduce((a, b) => a * b, 1); cost = costs.reduce((a, b) => a + b, 0); }
+    return {holes: out, conf, cost};
+  }
+
+  /* confidence.hole_conf_feats + fix_feats (CONF_F2 order) */
+  function confFeats(M, holes, routeConf, mm, fix, Hf, freePairs) {
+    const {nt, ng, H, T} = M;
+    const pairs = (fix && fix.pairs) || [], fixed = new Set(pairs.map(p => p[1] + "," + p[2]));
+    const nf = holes.filter(h => fixed.has(h.t + "," + h.g)).length, nn = Math.max(holes.length, 1);
+    return holes.map((h, i) => {
+      const {t, g} = h, own = new Set([t].concat(h.boxes));
+      const colMin = (HH) => { let m = INF; for (let x = 0; x < nt; x++) if (!own.has(x)) m = Math.min(m, HH[x * ng + g]); return m; };
+      const rowMin = (HH) => { let m = INF; for (let x = 0; x < ng; x++) if (x !== g) m = Math.min(m, HH[t * ng + x]); return m; };
+      const htg = H[t * ng + g];
+      const prev = i > 0 && holes[i - 1].loop === h.loop ? T[holes[i - 1].g * nt + t] : NaN;
+      const next = i + 1 < holes.length && holes[i + 1].loop === h.loop ? T[g * nt + holes[i + 1].t] : NaN;
+      const m = mm[i];
+      let nb = 0;
+      for (const j of [i - 1, i + 1]) if (j >= 0 && j < holes.length && holes[j].loop === h.loop && fixed.has(holes[j].t + "," + holes[j].g)) nb++;
+      const base = isFinite(Hf[t * ng + g]) ? Hf[t * ng + g] : htg;
+      return [Math.exp(-htg), Math.min(colMin(H) - htg, 14), Math.min(rowMin(H) - htg, 14),
+        isFinite(prev) ? Math.exp(-prev) : 0.5, isFinite(next) ? Math.exp(-next) : 0.5,
+        routeConf, Math.min(m, 30.0), Math.min(Math.max(m, 0), 30) > 3 ? 1 : 0, h.L, 0,
+        nf / nn, nb, freePairs ? (freePairs.has(t + "," + g) ? 0 : 1) : 0,
+        Math.min(colMin(Hf) - base, 14), Math.min(rowMin(Hf) - base, 14)];
+    });
+  }
+
+  /* calibrator: pathroute_calib/2 (confidence.Calib2) or /1 (confidence.Calib, 9 transformed columns) */
+  function calibrate(C, X) {
+    return X.map(x => {
+      const mm = Math.log1p(Math.max(x[6], 0));
+      let z;
+      if (C.schema === "pathroute_calib/2") {
+        const ff = x[10];
+        const v = [x[0], x[1], x[2], x[3], x[4], x[5], mm, x[7], x[8] / 300.0, ff, x[11], x[12],
+          Math.min(x[13], 14), Math.min(x[14], 14), mm * ff, x[5] * ff];
+        z = C.intercept; for (let i = 0; i < v.length; i++) z += C.coef[i] * v[i];
+      } else {
+        const v = [x[0], x[1], x[2], x[3], x[4], x[5], mm, x[7], x[8] / 300.0];
+        z = C.intercept; for (let i = 0; i < v.length; i++) z += C.coef[i] * v[i];
+      }
+      return 1.0 / (1.0 + Math.exp(-z));
+    });
+  }
+
+  function hasFix(fix) {
+    return !!(fix && ((fix.pairs && fix.pairs.length) || (fix.not_green && fix.not_green.length) ||
+      (fix.reject && fix.reject.length) || fix.first_tee != null));
+  }
+
+  /* run2.decode_course: decode + per-hole min-marginals + confidence features. As a job: courseJob() decodes the route,
+     each jobStep() adds one hole's min-marginal (one smaller-beam re-decode), jobFinish() builds the features, so a
+     page can show the re-solved pairing at once and fill the confidences in over the next frames. */
+  function courseJob(M, R, comp, fix, freePairs) {
+    const cfg = R.cfg, kw = {K: cfg.K, cross: cfg.cross, reuse: cfg.reuse, fix};
+    const d = decode2(M, R, comp, Object.assign({beam: cfg.beam}, kw));
+    return {M, R, comp, fix, freePairs, kw, d, mm: [], fixed: new Set(((fix && fix.pairs) || []).map(p => p[1] + "," + p[2]))};
+  }
+  function jobStep(J) {
+    const {M, R, comp, d} = J, h = d.holes[J.mm.length];
+    if (!h) return true;
+    if (J.fixed.has(h.t + "," + h.g)) J.mm.push(30.0);
+    else {
+      const H2 = Float64Array.from(M.H);
+      for (let c = 0; c < M.nt; c++) if (comp[c] === comp[h.t]) H2[c * M.ng + h.g] = INF;
+      H2[h.t * M.ng + h.g] = INF;
+      const c2 = decode2(M, R, comp, Object.assign({beam: R.cfg.mm_beam, H: H2}, J.kw)).cost;
+      J.mm.push(isFinite(c2) ? c2 - d.cost : 30.0);
+    }
+    return J.mm.length >= d.holes.length;
+  }
+  function jobFinish(J) {
+    const {M, R, comp, fix, d} = J;
+    if (!d.holes.length) return {holes: [], conf: d.conf, X: []};
+    const hf = hasFix(fix);
+    let freePairs = J.freePairs;
+    if (hf && !freePairs) freePairs = new Set(decode2(M, R, comp, {beam: R.cfg.beam, K: R.cfg.K, cross: R.cfg.cross, reuse: R.cfg.reuse}).holes.map(h => h.t + "," + h.g));
+    const Hf = hf ? applyFix(M, M.H, comp, fix) : M.H;
+    return {holes: d.holes, conf: d.conf, X: confFeats(M, d.holes, d.conf, J.mm, fix, Hf, hf ? freePairs : null)};
+  }
+  function decodeCourse(M, R, comp, fix, freePairs) {
+    const J = courseJob(M, R, comp, fix, freePairs);
+    while (!jobStep(J)) { /* every hole's min-marginal */ }
+    return jobFinish(J);
+  }
+
+  const parFromLen = (L, c3, c4) => L <= (c3 || 225) ? 3 : (L <= (c4 || 450) ? 4 : 5);
+
+  /* resolve2.Session */
+  class Session {
+    constructor(R, fix) {
+      if (!R || R.schema !== "pathroute_decoder/1") throw new Error("not a pathroute_decoder/1 record");
+      this.R = R;
+      this.M = mats(R);
+      this.M.BIG = R.BIG;
+      this.M.boxesOf = boxSets(R.tc);
+      this.comp = R.comp;
+      this.fix = {pairs: [], not_green: [], first_tee: null, reject: []};
+      if (fix) for (const k of Object.keys(this.fix)) if (fix[k] != null) this.fix[k] = Array.isArray(fix[k]) ? fix[k].map(x => Array.isArray(x) ? x.slice() : x) : fix[k];
+      this.holes = []; this.conf = []; this.routeConf = 0; this.free = null;
+    }
+    confirmPair(number, tee, green) {
+      this.fix.pairs = this.fix.pairs.filter(p => p[2] !== green && p[1] !== tee && (number == null || p[0] !== number));
+      this.fix.pairs.push([number == null ? null : number, tee, green]);
+      this.fix.reject = this.fix.reject.filter(r => !(r[0] === tee && r[1] === green));
+    }
+    rejectPair(tee, green) {
+      if (!this.fix.reject.some(r => r[0] === tee && r[1] === green)) this.fix.reject.push([tee, green]);
+      this.fix.pairs = this.fix.pairs.filter(p => !(p[1] === tee && p[2] === green));
+    }
+    notAHole(green) { if (!this.fix.not_green.includes(green)) this.fix.not_green.push(green); this.fix.pairs = this.fix.pairs.filter(p => p[2] !== green); }
+    holeOne(tee) { this.fix.first_tee = tee; }
+    fixedPairs() { return new Set(this.fix.pairs.map(p => p[1] + "," + p[2])); }
+    freePairs() {
+      if (!this.free) this.free = new Set(decode2(this.M, this.R, this.comp, {beam: this.R.cfg.beam, K: this.R.cfg.K, cross: this.R.cfg.cross, reuse: this.R.cfg.reuse}).holes.map(h => h.t + "," + h.g));
+      return this.free;
+    }
+    pyFix() {                                                        /* the Python fix dict (decode2.apply_fix) */
+      const f = {pairs: this.fix.pairs, not_green: this.fix.not_green, first_tee: this.fix.first_tee};
+      if (this.fix.reject.length) f.reject = this.fix.reject;
+      return f;
+    }
+    /* begin(): decode with every fact (holes available at once, conf null); step(): one more min-marginal, true when
+       the confidences are in; solve() = begin + steps */
+    begin() {
+      const fr = this.freePairs();
+      let J = courseJob(this.M, this.R, this.comp, this.pyFix(), fr);
+      if (!J.d.holes.length && this.fix.first_tee != null) { this.fix.first_tee = null; J = courseJob(this.M, this.R, this.comp, this.pyFix(), fr); }
+      this.job = J; this.holes = J.d.holes; this.routeConf = J.d.conf; this.conf = null; this.X = null;
+      return this.holes;
+    }
+    step() {
+      const J = this.job;
+      if (!J) return true;
+      if (!jobStep(J)) return false;
+      const cal = hasFix(J.fix) && this.R.calib_fix ? this.R.calib_fix : this.R.calib;
+      const r = jobFinish(J), c = r.holes.length ? calibrate(cal, r.X) : [], fp = this.fixedPairs();
+      this.X = r.X; this.job = null;
+      this.conf = r.holes.map((h, i) => fp.has(h.t + "," + h.g) ? 1.0 : c[i]);
+      return true;
+    }
+    solve() {
+      this.begin();
+      while (!this.step()) { /* min-marginals */ }
+      return {holes: this.holes, conf: this.conf};
+    }
+    ask(thr) {
+      thr = thr == null ? 1.0 : thr;
+      if (!this.conf) return null;
+      const fp = this.fixedPairs();
+      let best = null;
+      this.holes.forEach((h, i) => { if (!fp.has(h.t + "," + h.g) && this.conf[i] < thr && (best === null || this.conf[i] < this.conf[best])) best = i; });
+      return best;
+    }
+    holeRef(h) { const n = (this.R.kind === 9 || this.R.kind === 27) ? 9 : 18; return h.loop * n + h.number; }
+    par(h) { return parFromLen(h.L, this.R.par_cuts && this.R.par_cuts[0], this.R.par_cuts && this.R.par_cuts[1]); }
+    /* facts by OSM id (resolve2.Session.to_ids) */
+    toIds() {
+      const T = this.R.tees, G = this.R.greens;
+      const f = {pairs: this.fix.pairs.map(([n, t, g]) => [n, T[t].id, G[g].id]), not_green: this.fix.not_green.map(g => G[g].id),
+                 first_tee: this.fix.first_tee == null ? null : T[this.fix.first_tee].id};
+      if (this.fix.reject.length) f.reject = this.fix.reject.map(([t, g]) => [T[t].id, G[g].id]);
+      return f;
+    }
+    /* nearest tee / green (index) to a [lon, lat] within maxYd yds (equirectangular), or null */
+    nearest(kind, ll, maxYd) {
+      if (!Array.isArray(ll)) return null;
+      const arr = kind === "tee" ? this.R.tees : this.R.greens;
+      const kx = 111320.0 * Math.cos(ll[1] * Math.PI / 180) / 0.9144, ky = 110950.0 / 0.9144;
+      let best = null, bd = maxYd == null ? 30 : maxYd;
+      arr.forEach((x, i) => { const dd = Math.hypot((x.ll[0] - ll[0]) * kx, (x.ll[1] - ll[1]) * ky); if (dd <= bd) { bd = dd; best = i; } });
+      return best;
+    }
+  }
+
+  const api = {Session, decode2, decodeCourse, courseJob, jobStep, jobFinish, applyFix, calibrate, mats, boxSets, parFromLen, hasFix};
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.PathRoute = api;
 })(typeof window !== "undefined" ? window : this);
 </script>
 <script>
@@ -2298,13 +2803,13 @@ function libLoad(slug){
   return null;
 }
 function LP(){ if (!st.lp || typeof st.lp !== "object") st.lp = {slug: null};
-  for (const k of ["set", "idx", "src", "hour", "mine"]) if (!st.lp[k] || typeof st.lp[k] !== "object") st.lp[k] = {};
+  for (const k of ["set", "idx", "src", "hour", "mine", "replan", "h1skip"]) if (!st.lp[k] || typeof st.lp[k] !== "object") st.lp[k] = {};
   if (!st.lp.custom) st.lp.custom = {from: 180, mph: 10, temp: 65};
   return st.lp; }
 function lpSet(L){ const s = LP().set[L.id]; return L.sets.some(x => x.name === s) ? s : L.sets[0].name; }
-function lpIdx(L){ const lp = LP();
-  if (lp.want && lp.want.slug === L.id) { const k = L.holes.findIndex(H => H.no === lp.want.h); if (k >= 0) lp.idx[L.id] = k; delete lp.want; }
-  const i = lp.idx[L.id] || 0; return i < L.holes.length ? i : 0; }
+function lpIdx(L){ const lp = LP(), LS = lpList(L);
+  if (lp.want && lp.want.slug === L.id) { const k = LS.findIndex(H => H.no === lp.want.h); if (k >= 0) lp.idx[L.id] = k; delete lp.want; }
+  const i = lp.idx[L.id] || 0; return i < LS.length ? i : 0; }
 /* the hole's set record: the chosen set, else the first solved set that has this hole */
 function lpV(L, H){ const s = lpSet(L); return H.sets[s] ? [s, H.sets[s]] : Object.entries(H.sets)[0]; }
 function lpSrc(L){ const s = LP().src[L.id]; return s === "custom" || !L.days.length ? "custom" : (L.days.some(d => d.key === s) ? s : L.days[0].key); }
@@ -2347,7 +2852,7 @@ function lpMine(slug){ const m = LP().mine[slug]; if (Array.isArray(m)) return m
   const doc = STORE.map(slug), e = doc && doc.logs[STORE.gid]; return (LP().mine[slug] = e ? e.log.slice() : []); }
 function lpAnswers(slug){
   const doc = STORE.map(slug), log = SharedStore.replayLog(doc, STORE.gid, lpMine(slug)), out = {};
-  for (const a of log) out[a.ref] = a.kind === "locate" ? "yes" : "no";
+  for (const a of log) if (a.kind !== "first") out[a.ref] = a.kind === "locate" ? "yes" : "no";
   return {by: out, golfers: SharedStore.golferCount(doc, STORE.gid, lpMine(slug).length), n: log.length};
 }
 function lpAnswer(L, H, yes){
@@ -2361,6 +2866,8 @@ function lpAnswer(L, H, yes){
 }
 /* the library card's live status for a course with a play record: confirm until every CHECK hole has a "yes" */
 function lpStatus(e){
+  const L = LIBD[e.id], RT = L && L.route ? lpRoute(L) : null;
+  if (RT) return {k: RT.low.length ? "confirm" : "auto", fixed: RT.view.filter(v => v.fixed).length, golfers: lpAnswers(e.id).golfers, n: RT.view.length, lib: true};
   const ans = lpAnswers(e.id), chk = e.checks || [], yes = chk.filter(h => ans.by[String(h)] === "yes").length;
   const k = e.status === "auto" ? "auto" : chk.length && yes >= chk.length ? "auto" : e.status === "none" ? "none" : "confirm";
   return {k, fixed: Object.values(ans.by).filter(v => v === "yes").length, golfers: ans.golfers, n: e.holes || 18, lib: true};
@@ -2392,19 +2899,23 @@ function renderLib(){
   if (!L) return top() + (LIBERR[slug] && LIBERR[slug] !== "loading"
     ? `<section class="panel stack" id="libErr"><b>Could not load this course's data<\/b><p class="sub">${esc(LIBERR[slug])}: the page fetches ${esc(e.lib)} from where it is published.<\/p><div class="row"><button class="btn" data-lpretry="1">Try again<\/button><\/div><\/section>`
     : `<section class="panel" id="libLoading"><p class="sub">Loading ${esc(e.name)}…<\/p><\/section>`);
-  const i = lpIdx(L), H = L.holes[i], W = lpWind(L, H), r = lpSolve(L, H, W), V = r.V, src = lpSrc(L), ans = lpAnswers(slug), a = ans.by[String(H.no)];
-  const qa = V.qa || ["", []], chk = (L.check_holes || []).includes(H.no) || qa[0] === "CHECK";
+  const RT = lpRoute(L), LS = lpList(L), i = lpIdx(L), lv = LS[i];
+  if (RT && !lv.plan) return lpPending(L, RT, i, lv);
+  const H = lv.plan.no === lv.no ? lv.plan : Object.assign({}, lv.plan, {no: lv.no}), PN = lv.plan.no;   /* PN: the plan's own number */
+  const W = lpWind(L, H), r = lpSolve(L, H, W), V = r.V, src = lpSrc(L), ans = lpAnswers(slug), a = ans.by[String(H.no)];
+  const qa = V.qa || ["", []], chk = (L.check_holes || []).includes(PN) || qa[0] === "CHECK";
   const play = r.kind === "tee"
     ? `<div class="spread"><span class="label">Tee shot<\/span><span class="sub">${r.split ? "close call in this wind" : ""}<\/span><\/div><div class="playrow" id="lpPlay"><span class="play ${cls(r.club)}">${esc(r.club)}<\/span><span class="sub" style="padding-bottom:5px">aim ${yds(r.aim)}<\/span><\/div><div class="sub">Finishes about ${Math.round(r.total)} yds out${Math.abs(r.drift) > 2 ? `, the wind moves it ${Math.abs(r.drift).toFixed(0)} yds ${r.drift < 0 ? "left" : "right"}` : ""}${V.green_al ? ` · ${Math.round(Math.hypot(V.green_al[0] - r.total, V.green_al[1] - r.aim - r.drift))} yds left to the green` : ""}. Calm day: ${esc(V.calm.pick || "")}${V.calm.aim != null ? `, aim ${yds(V.calm.aim)}` : ""}.<\/div>`
     : `<div class="spread"><span class="label">Par 3<\/span><\/div><div class="playrow" id="lpPlay"><span class="play">${Math.round(r.play)} yds<\/span><span class="sub" style="padding-bottom:5px">plays like<\/span><\/div><div class="sub">Card ${V.yds} yds to the centre (${V.center}); target box ${r.box.lo}–${r.box.hi} yds. ${esc(V.short || "")}<\/div>`;
-  const conf = `<section class="conf ${chk ? "check" : "auto"}" id="lpQa"><div class="row">${chk ? badge("check") : `<span class="badge auto">PASS<\/span>`}<b>${chk ? "Auto-map CHECK: look before you trust this hole" : "Passed the picture checks"}<\/b><\/div>
+  const conf = RT ? `<section class="conf ${chk ? "check" : "auto"}" id="lpQa"><div class="row">${chk ? badge("check") : `<span class="badge auto">PASS<\/span>`}<b>${chk ? "Auto-map CHECK: look before you trust this hole" : "Passed the picture checks"}<\/b><\/div>${qa[1].length ? qa[1].map(x => `<div class="sub">${esc(x)}<\/div>`).join("") : ""}<\/section>${lpRouteBox(L, RT, lv)}`
+    : `<section class="conf ${chk ? "check" : "auto"}" id="lpQa"><div class="row">${chk ? badge("check") : `<span class="badge auto">PASS<\/span>`}<b>${chk ? "Auto-map CHECK: look before you trust this hole" : "Passed the picture checks"}<\/b><\/div>
       ${qa[1].length ? qa[1].map(x => `<div class="sub">${esc(x)}<\/div>`).join("") : ""}
       <div class="row" id="lpConfirm"><span>Is this hole ${H.no} as drawn (tee and green)?<\/span><button class="btn${a === "yes" ? " primary" : ""}" data-lpyes="1" aria-pressed="${a === "yes"}">Yes, that's it<\/button><button class="btn${a === "no" ? " primary" : ""}" data-lpno="1" aria-pressed="${a === "no"}">No, it's wrong<\/button><\/div>
       <div class="sub" id="lpAns">${a === "yes" ? "✓ Golfers confirmed this hole." : a === "no" ? "Golfers say this hole is drawn wrong: treat the aim with care." : "Not confirmed yet."} ${ans.n ? `${ans.n} answer${ans.n === 1 ? "" : "s"} from ${ans.golfers} golfer${ans.golfers === 1 ? "" : "s"} on this course.` : ""}<\/div>
       ${syncLine({id: slug}, null)}<\/section>`;
   const relTxt = relWords(r.rel, W.mph);
   const cond = W.custom ? `Your wind: <b>${Math.round(W.mph)} mph<\/b> from the ${compass(W.from)}` : `At about <b>${clock(W.t)}<\/b> · <b>${Math.round(W.mph)} mph<\/b> from the ${compass(W.from)} · ${Math.round(W.temp)}°F`;
-  const strip = L.holes.map((Hh, k) => { const rr = lpSolve(L, Hh, lpWind(L, Hh)), c = (L.check_holes || []).includes(Hh.no) || (rr.V.qa || [])[0] === "CHECK";
+  const strip = RT ? lpStripRoute(L, RT, i) : L.holes.map((Hh, k) => { const rr = lpSolve(L, Hh, lpWind(L, Hh)), c = (L.check_holes || []).includes(Hh.no) || (rr.V.qa || [])[0] === "CHECK";
     return `<button class="chip" data-lpi="${k}" aria-current="${k === i}" aria-label="Hole ${Hh.no}">${c ? "<i>⚠<\/i>" : ""}<b>${Hh.no}<\/b><span class="${rr.kind === "tee" ? cls(rr.club) : ""}">${rr.kind === "tee" ? esc(lpShort(rr.club)) : Math.round(rr.play)}<\/span><\/button>`; }).join("");
   const FC = {id: slug, confirm: null};
   return `<div class="hhead" id="hhead">${top(`<span class="sub">${esc(r.setName)} tees · library course<\/span>`)}
@@ -2413,7 +2924,7 @@ function renderLib(){
       <div class="row" style="justify-content:center;margin-top:4px">${chk ? badge("check") : `<span class="badge auto">PASS<\/span>`}${STORE.reports(slug).some(x => x.hole === H.no) ? `<span class="badge check">reported<\/span>` : ""}<\/div><\/div>
       <button class="navbtn" id="lnext" data-lpnav="1" aria-label="Next hole">›<\/button><\/div><\/div>
     <div class="seg" id="lpSets" role="group" aria-label="Tee set">${L.sets.map(s => `<button data-lpset="${esc(s.name)}" aria-pressed="${s.name === r.setName}">${esc(s.name)}${s.total ? " " + Number(s.total).toLocaleString() : ""}<\/button>`).join("")}<\/div>
-    ${reviewBanner(L.review)}${L.review && L.review.holes && L.review.holes[String(H.no)] ? `<div class="review bad" id="lpHoleReview">Reviewer, hole ${H.no}: ${esc(L.review.holes[String(H.no)][0])}${L.review.holes[String(H.no)][1] ? ` — ${esc(L.review.holes[String(H.no)][1])}` : ""}<\/div>` : ""}
+    ${reviewBanner(L.review)}${L.review && L.review.holes && L.review.holes[String(PN)] ? `<div class="review bad" id="lpHoleReview">Reviewer, hole ${PN}: ${esc(L.review.holes[String(PN)][0])}${L.review.holes[String(PN)][1] ? ` — ${esc(L.review.holes[String(PN)][1])}` : ""}<\/div>` : ""}
     ${lpDraw(L, H, r, W)}
     <section class="panel stack">${play}<div class="cond"><span>${cond}<\/span><span class="windico">${windIcon(r.rel, W.mph)}${esc(relTxt)}<\/span><\/div>
       ${W.mph > 20 ? `<p class="sub">Picks use the 20 mph table: stronger wind plays even more so.<\/p>` : ""}<\/section>
@@ -2433,8 +2944,9 @@ function lpClick(b){
   const d = b.dataset, slug = LP().slug, L = LIBD[slug];
   if (d.lpretry) { delete LIBERR[slug]; return true; }
   if (!L) return false;
-  const lp = LP(), H = L.holes[lpIdx(L)];
-  if (d.lpnav) { lp.idx[slug] = (lpIdx(L) + (+d.lpnav) + L.holes.length) % L.holes.length; st.report = null; return true; }
+  if (L.route && lpRouteClick(L, d)) return true;
+  const lp = LP(), LS = lpList(L), H = Object.assign({}, LS[lpIdx(L)].plan || {}, {no: LS[lpIdx(L)].no});
+  if (d.lpnav) { lp.idx[slug] = (lpIdx(L) + (+d.lpnav) + LS.length) % LS.length; st.report = null; lp.rpick = null; lp.rask = null; return true; }
   if (d.lpi !== undefined) { lp.idx[slug] = +d.lpi; st.report = null; return true; }
   if (d.lpset) { lp.set[slug] = d.lpset; return true; }
   if (d.lpsrc) { if (d.lpsrc === "custom") { const W = lpWind(L, H); lp.custom = {from: Math.round(W.from / 5) * 5 % 360, mph: Math.round(W.mph), temp: Math.round(W.temp || 65)}; } lp.src[slug] = d.lpsrc; return true; }
@@ -2456,6 +2968,195 @@ function lpInput(t){
   if (t.id === "lpHour") { lp.hour[slug] = +t.value; return true; }
   if (t.id === "lpFrom") { lp.custom.from = +t.value; return true; }
   if (t.id === "lpMph") { lp.custom.mph = +t.value; return true; }
+  return false;
+}
+
+/* ------------------------------------------------------------------ card-blind routing: confirm taps + re-solve
+   A record with `route` (pathroute_decoder/1, pathroute_engine.js) was routed without hole ways: tee <-> green
+   pairing and order come from pathroute v2 with a calibrated confidence per hole. The hole list is the decoded
+   route; each decoded hole shows the precomputed plan whose tee and green it matches (green within 25 yds, a tee
+   within 40 yds), else "plan pending" (geometry only; a golf_replan/1 request is recorded). Golfers' answers are the
+   same geo-anchored actions as above (maps/<slug>): locate = "hole N is this tee + green", reject = "no" (or a
+   practice green when only the green is set), first = "this tee is hole 1"; every answer re-solves the whole route
+   in the browser (pathroute_engine.js, the same decode as zero_tap/pathroute_v2). */
+const LPR = {}, RT_SNAP = 25;
+const llYd = (a, b) => { const kx = 111320 * Math.cos(a[1] * Math.PI / 180) / 0.9144; return Math.hypot((a[0] - b[0]) * kx, (a[1] - b[1]) * 110950 / 0.9144); };
+function lpFactsFromIds(R, f){
+  if (!f) return null;
+  const ti = {}, gi = {}; R.tees.forEach((t, i) => { ti[t.id] = i; }); R.greens.forEach((g, i) => { gi[g.id] = i; });
+  return {pairs: (f.pairs || []).filter(p => p[1] in ti && p[2] in gi).map(p => [p[0], ti[p[1]], gi[p[2]]]),
+          not_green: (f.not_green || []).filter(g => g in gi).map(g => gi[g]), first_tee: f.first_tee in ti ? ti[f.first_tee] : null,
+          reject: (f.reject || []).filter(p => p[0] in ti && p[1] in gi).map(p => [ti[p[0]], gi[p[1]]])};
+}
+function lpRoute(L){
+  if (!L.route || typeof PathRoute === "undefined") return null;
+  const log = SharedStore.replayLog(STORE.map(L.id), STORE.gid, lpMine(L.id)), key = JSON.stringify(log);
+  const c = LPR[L.id]; if (c && c.key === key) return c;
+  let S;
+  try { S = new PathRoute.Session(L.route, lpFactsFromIds(L.route, L.route.facts)); } catch (e) { return null; }
+  const single = L.route.kind === 9 || L.route.kind === 18;
+  for (const a of log) {
+    const t = a.answer.tee_ll ? S.nearest("tee", a.answer.tee_ll, RT_SNAP) : null, g = a.answer.green_ll ? S.nearest("green", a.answer.green_ll, RT_SNAP) : null;
+    if (a.kind === "first") { if (t != null) S.holeOne(t); }
+    else if (a.kind === "locate") { if (t != null && g != null) S.confirmPair(single ? +a.ref : null, t, g); }
+    else if (g != null) { if (t != null) S.rejectPair(t, g); else S.notAHole(g); }
+  }
+  const t0 = Date.now(), prev = c && !c.pending ? c : null;
+  try { S.begin(); } catch (e) { if (typeof console !== "undefined") console.warn(e); return null; }
+  const out = (LPR[L.id] = {key, S, pending: true, ms: 0, thr: L.route.conf_ok || 0.95, n: log.length});
+  lpRouteFill(L, out, prev);
+  /* the pairing shows at once; the confidences (one re-decode per hole) fill in over the next frames */
+  const tick = () => {
+    if (LPR[L.id] !== out) return;
+    const t1 = Date.now();
+    let done = false;
+    try { while (!done && Date.now() - t1 < 40) done = S.step(); } catch (e) { done = true; if (typeof console !== "undefined") console.warn(e); }
+    if (!done) return void setTimeout(tick, 0);
+    out.pending = false; out.ms = Date.now() - t0;
+    lpRouteFill(L, out, null);
+    if (out.n && out.pend.length) {                /* golfers' answers re-paired holes the server never planned */
+      const sig = JSON.stringify(out.pend.map(v => [v.no, v.h.t, v.h.g]));
+      if (sig !== (LP().replan[L.id] || "")) { LP().replan[L.id] = sig; save();
+        STORE.addReplan(L.id, out.pend.map(v => ({no: v.no, tee_ll: L.route.tees[v.h.t].ll, green_ll: L.route.greens[v.h.g].ll, yds: v.h.L})), S.toIds()); }
+    }
+    LSTAT = null; softRender();
+  };
+  setTimeout(tick, 0);
+  return out;
+}
+/* the view of a (partly) solved session; while the confidences are pending, a hole keeps its previous confidence when
+   its pair is unchanged, else it reads 0 ("checking") and is not asked yet */
+function lpRouteFill(L, out, prev){
+  const S = out.S, conf = S.conf, fp = S.fixedPairs(), pc = {};
+  if (prev) prev.view.forEach(v => { pc[v.h.t + "," + v.h.g] = v.conf; });
+  S.conf = conf || S.holes.map(h => fp.has(h.t + "," + h.g) ? 1 : (pc[h.t + "," + h.g] ?? 0));
+  out.view = lpRouteView(L, S);
+  if (!conf) { S.conf = null; out.view.forEach(v => { v.checking = !v.fixed && !((v.h.t + "," + v.h.g) in pc); }); }
+  out.pend = out.view.filter(v => !v.plan);
+  out.low = out.view.filter(v => !v.fixed && !v.checking && v.conf < out.thr);
+}
+function lpRouteView(L, S){
+  const R = L.route, fp = S.fixedPairs();
+  const out = S.holes.map((h, i) => ({no: S.holeRef(h), h, conf: S.conf[i], fixed: fp.has(h.t + "," + h.g), plan: null, par: S.par(h)}));
+  const cand = [];
+  out.forEach((v, vi) => {
+    const G = R.greens[v.h.g].ll, Ts = [v.h.t].concat(v.h.boxes).map(t => R.tees[t].ll);
+    L.holes.forEach((H, hi) => {
+      if (!H.green_ll) return;
+      const dg = llYd(G, H.green_ll); if (dg > 25) return;
+      const tl = Object.values(H.sets).map(V => V.tee_ll).filter(Boolean);
+      let dt = Infinity; for (const a of tl) for (const b of Ts) dt = Math.min(dt, llYd(a, b));
+      if (dt <= 40) cand.push([dg + dt / 4, vi, hi]);
+    });
+  });
+  cand.sort((a, b) => a[0] - b[0]);
+  const uv = new Set(), uh = new Set();
+  for (const [, vi, hi] of cand) if (!uv.has(vi) && !uh.has(hi)) { uv.add(vi); uh.add(hi); out[vi].plan = L.holes[hi]; }
+  return out.sort((a, b) => a.no - b.no);
+}
+/* the hole list the screen walks: the decoded route (route records) or the record's holes */
+function lpList(L){ const RT = lpRoute(L); return RT ? RT.view : L.holes.map(H => ({no: H.no, plan: H, fixed: false, conf: 1})); }
+/* a sketch of the whole course in route yds: every decoded hole's line, greens, and the labelled choices */
+function lpSchem(L, RT, v, pick){
+  const R = L.route, xs = R.tc.concat(R.gc).map(p => p[0]), ys = R.tc.concat(R.gc).map(p => p[1]);
+  const x0 = Math.min(...xs) - 30, x1 = Math.max(...xs) + 30, y0 = Math.min(...ys) - 30, y1 = Math.max(...ys) + 30;
+  const W = x1 - x0, Hh = y1 - y0, P = p => [(p[0] - x0).toFixed(1), (y1 - p[1]).toFixed(1)], sw = Math.max(W, Hh) / 300;
+  let g = "";
+  for (const u of RT.view) { const a = P(R.tc[u.h.t]), b = P(R.gc[u.h.g]), cur = v && u.no === v.no;
+    g += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${cur ? "#ffc928" : u.fixed ? "#5cc48d" : "rgba(255,255,255,.45)"}" stroke-width="${(cur ? 3.2 : 1.4) * sw}"${!u.fixed && u.conf < RT.thr && !cur ? ` stroke-dasharray="${4 * sw} ${3 * sw}"` : ""}/>`
+      + `<text x="${a[0]}" y="${a[1]}" dy="${-4 * sw}" font-size="${11 * sw}" fill="#fff" text-anchor="middle" font-weight="700">${u.no}<\/text>`; }
+  R.gc.forEach((p, i) => { const q = P(p); g += `<circle cx="${q[0]}" cy="${q[1]}" r="${5 * sw}" fill="#3fae5a" stroke="#0b130e" stroke-width="${sw}"/>`; void i; });
+  R.tc.forEach(p => { const q = P(p); g += `<rect x="${(+q[0] - 2 * sw).toFixed(1)}" y="${(+q[1] - 2 * sw).toFixed(1)}" width="${4 * sw}" height="${4 * sw}" fill="#d8e6dc"/>`; });
+  for (const [lab, kind, i] of pick || []) { const q = P(kind === "g" ? R.gc[i] : R.tc[i]);
+    g += `<circle cx="${q[0]}" cy="${q[1]}" r="${9 * sw}" fill="#ff3b30" stroke="#fff" stroke-width="${1.4 * sw}"/><text x="${q[0]}" y="${q[1]}" dy="${4 * sw}" font-size="${11 * sw}" fill="#fff" text-anchor="middle" font-weight="700">${lab}<\/text>`; }
+  return `<div class="mapbox" id="rtMap"><svg viewBox="0 0 ${W.toFixed(0)} ${Hh.toFixed(0)}" style="max-height:60vh;width:100%;background:#26352c" role="img" aria-label="Sketch of the course routing${v ? ", hole " + v.no + " highlighted" : ""}">${g}<\/svg><\/div>`;
+}
+const LETTERS = "ABCDEFGH";
+/* greens the golfer may mean for this hole's tee: the 6 cheapest by hole cost (not this one) */
+function lpGreenChoices(L, RT, v){
+  const S = RT.S, M = S.M, t = v.h.t, gs = [];
+  for (let g = 0; g < M.ng; g++) if (g !== v.h.g) gs.push([M.H[t * M.ng + g], g]);
+  gs.sort((a, b) => a[0] - b[0]);
+  return gs.slice(0, 6).map(([, g], k) => [LETTERS[k], "g", g]);
+}
+/* tee complexes the round may start from: the 5 likeliest starts, one tee per complex */
+function lpStartChoices(L, RT){
+  const R = L.route, seen = new Set(), out = [], o = R.S.map((s, i) => [s, i]).sort((a, b) => a[0] - b[0]);
+  const h1 = RT.view.find(u => u.no === 1);
+  if (h1) { out.push(h1.h.t); seen.add(R.comp[h1.h.t]); }
+  for (const [, t] of o) { if (out.length >= 5) break; if (!seen.has(R.comp[t])) { seen.add(R.comp[t]); out.push(t); } }
+  return out.map((t, k) => [LETTERS[k], "t", t]);
+}
+function lpRouteAct(L, kind, ref, tee, green){
+  const R = L.route;
+  const a = SharedStore.cleanAction({kind, ref: String(ref), answer: {tee_ll: tee == null ? null : R.tees[tee].ll, green_ll: green == null ? null : R.greens[green].ll}, taps: 1});
+  if (!a) return;
+  const m = lpMine(L.id); m.push(a); if (m.length > 100) m.splice(0, m.length - 100);
+  SYNC[L.id] = "saving"; LSTAT = null; LP().rpick = null; save();
+  STORE.saveLog(L.id, m, {taps: m.length}).then(r => { SYNC[L.id] = r; softRender(); });
+}
+const pctTxt = c => (c >= 0.995 ? ">99" : Math.round(c * 100)) + " %";
+function lpRouteBox(L, RT, v){
+  const S = RT.S, lp = LP(), pick = lp.rpick && lp.rpick.slug === L.id && lp.rpick.no === v.no ? lp.rpick.kind : null;
+  let h1 = "";
+  if (RT.low.length && S.fix.first_tee == null && !lp.h1skip[L.id]) {
+    const ch = lpStartChoices(L, RT);
+    h1 = `<section class="conf check stack" id="rtHole1"><b>Which tee is hole 1?<\/b><span class="sub">One tap fixes the numbering of every hole. The red letters on the sketch are the likeliest first tees (A = the one shown as hole 1 now).<\/span>
+      ${lp.rpick && lp.rpick.slug === L.id && lp.rpick.kind === "h1" ? lpSchem(L, RT, null, ch) : ""}
+      <div class="row">${ch.map(([lab, , t]) => `<button class="btn" data-rth1="${t}">${lab}${lab === "A" && RT.view.some(u => u.no === 1 && u.h.t === t) ? " (shown as 1)" : ""}<\/button>`).join("")}
+      <button class="btn ghost" data-rth1map="1">${lp.rpick && lp.rpick.kind === "h1" ? "Hide the sketch" : "Show on the sketch"}<\/button><button class="btn ghost" data-rth1skip="1">Not now<\/button><\/div><\/section>`;
+  }
+  const lowTxt = RT.pending ? `<div class="sub" id="rtLow">Re-solving…<\/div>` : RT.low.length ? `<div class="sub" id="rtLow">${RT.low.length} hole${RT.low.length === 1 ? "" : "s"} still need a look: ${RT.low.map(u => `<button class="chip" data-rtgo="${u.no}" aria-label="Go to hole ${u.no}"><b>${u.no}<\/b><\/button>`).join(" ")}<\/div>`
+    : `<div class="sub" id="rtLow">Every hole is confirmed or at least ${pctTxt(RT.thr)} sure.<\/div>`;
+  let q;
+  if (v.fixed) q = `<div class="row"><span class="badge auto">✓<\/span><b>Golfers confirmed hole ${v.no} (tee → green).<\/b><\/div>`;
+  else if (RT.pending && v.checking) q = `<div class="row" id="rtWait"><b>Re-solving the routing…<\/b><span class="sub">re-checking how sure each hole is<\/span><\/div>`;
+  else if (v.conf >= RT.thr && !pick && !(lp.rask && lp.rask === L.id + "|" + v.no))
+    q = `<div class="row"><span class="badge auto">${pctTxt(v.conf)}<\/span><b>Routing is ${pctTxt(v.conf)} sure this is hole ${v.no}.<\/b><button class="btn ghost" data-rtask="1">Not right?<\/button><\/div>`;
+  else {
+    const ch = pick === "green" ? lpGreenChoices(L, RT, v) : null;
+    q = `<div class="stack" id="rtAsk"><div><b>Is this hole ${v.no}?<\/b> <span class="sub">(tee → green on the ${v.plan ? "photo" : "sketch"}; routing is ${pctTxt(v.conf)} sure)<\/span><\/div>
+      <div class="row"><button class="btn" data-rtyes="1">Yes<\/button><button class="btn" data-rtno="1">No<\/button><button class="btn${pick ? " primary" : ""}" data-rtpick="1" aria-pressed="${!!pick}">Pick the right green<\/button><\/div>
+      ${ch ? `<span class="sub">Tap the letter of hole ${v.no}'s green on the sketch (red); the yellow line is what the routing has now.<\/span>${lpSchem(L, RT, v, ch)}
+        <div class="row">${ch.map(([lab, , g]) => `<button class="btn" data-rtg="${g}">${lab}<\/button>`).join("")}<button class="btn ghost" data-rtnot="1">This green is a practice green<\/button><\/div>` : ""}<\/div>`;
+  }
+  return `${h1}<section class="conf ${v.fixed || v.conf >= RT.thr ? "auto" : "check"} stack" id="rtBox">${q}${lowTxt}
+    <div class="sub" id="rtNote">Hole pairing from the course map, no scorecard (card-blind routing). Each answer re-solves every hole${RT.ms ? ` (${RT.ms} ms)` : ""} and is shared with the next golfer.<\/div>${syncLine({id: L.id}, null)}<\/section>`;
+}
+/* a decoded hole with no precomputed plan: geometry only */
+function lpPending(L, RT, i, v){
+  const e = libEntry(L.id), R = L.route;
+  const top = `<div class="topbar"><button class="btn ghost" data-go="pick" aria-label="All courses">‹ Courses<\/button><div class="ttl"><b>${esc(e ? e.name : L.id)}<\/b><span class="sub">library course · card-blind routing<\/span><\/div><span><\/span><\/div>`;
+  const strip = lpStripRoute(L, RT, i);
+  return `<div class="hhead" id="hhead">${top}<div class="holehead"><button class="navbtn" id="lprev" data-lpnav="-1" aria-label="Previous hole">‹<\/button>
+    <div style="text-align:center;min-width:0"><div class="holeno">Hole ${v.no}<\/div><div class="sub">Par ${v.par} (from the length) · ${Math.round(v.h.L)} yds tee to green<\/div>
+    <div class="row" style="justify-content:center;margin-top:4px"><span class="badge check">plan pending<\/span><\/div><\/div>
+    <button class="navbtn" id="lnext" data-lpnav="1" aria-label="Next hole">›<\/button><\/div><\/div>
+    ${lpSchem(L, RT, v, null)}
+    <section class="panel stack" id="rtPending"><b>Plan pending for this hole<\/b><p class="sub">The routing now pairs this tee with this green (${Math.round(v.h.L)} yds, yellow line), but no club and aim were precomputed for that pair: they need a server rebuild of the course. ${RT.key !== "[]" ? "A rebuild request was recorded with golfers' answers." : ""} Play it from what you see.<\/p><\/section>
+    ${lpRouteBox(L, RT, v)}
+    <section class="panel stack"><div class="label">All holes<\/div><div class="strip" id="lpStrip">${strip}<\/div><\/section>`;
+}
+function lpStripRoute(L, RT, i){
+  return RT.view.map((u, k) => { let txt = "…";
+    if (u.plan) { const H = Object.assign({}, u.plan, {no: u.no}), rr = lpSolve(L, H, lpWind(L, H)); txt = rr.kind === "tee" ? `<span class="${cls(rr.club)}">${esc(lpShort(rr.club))}<\/span>` : `<span>${Math.round(rr.play)}<\/span>`; }
+    else txt = `<span>plan?<\/span>`;
+    return `<button class="chip" data-lpi="${k}" aria-current="${k === i}" aria-label="Hole ${u.no}">${!u.fixed && u.conf < RT.thr ? "<i>?<\/i>" : ""}<b>${u.no}<\/b>${txt}<\/button>`; }).join("");
+}
+function lpRouteClick(L, d){
+  const RT = lpRoute(L); if (!RT) return false;
+  const lp = LP(), LS = RT.view, v = LS[lpIdx(L)];
+  if (d.rtgo) { const k = LS.findIndex(u => u.no === +d.rtgo); if (k >= 0) lp.idx[L.id] = k; lp.rpick = null; return true; }
+  if (d.rth1skip) { lp.h1skip[L.id] = 1; return true; }
+  if (d.rth1map) { lp.rpick = lp.rpick && lp.rpick.kind === "h1" ? null : {slug: L.id, kind: "h1"}; return true; }
+  if (d.rth1 !== undefined) { lpRouteAct(L, "first", 1, +d.rth1, null); return true; }
+  if (!v) return false;
+  if (d.rtask) { lp.rask = L.id + "|" + v.no; return true; }
+  if (d.rtyes) { lp.rask = null; lpRouteAct(L, "locate", v.no, v.h.t, v.h.g); return true; }
+  if (d.rtno) { lp.rask = null; lpRouteAct(L, "reject", v.no, v.h.t, v.h.g); return true; }
+  if (d.rtpick) { lp.rpick = lp.rpick && lp.rpick.no === v.no ? null : {slug: L.id, no: v.no, kind: "green"}; return true; }
+  if (d.rtg !== undefined) { lp.rask = null; lpRouteAct(L, "locate", v.no, v.h.t, +d.rtg); return true; }
+  if (d.rtnot) { lp.rask = null; lpRouteAct(L, "reject", v.no, null, v.h.g); return true; }
   return false;
 }
 

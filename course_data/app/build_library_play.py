@@ -349,6 +349,45 @@ def build_one(slug, idx_row, out_dir):
                 sets=[s["name"] for s in rec["sets"]], review=_card_review(rec["review"]))
 
 
+def _live2():
+    import importlib.util
+    p = os.path.join(CD, "zero_tap", "pathroute_v2", "live2.py")
+    spec = importlib.util.spec_from_file_location("pathroute_live2", p)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def route_of(slug, n_holes, cardblind=False):
+    """Card-blind routing data for the in-browser confirm (pathroute_decoder/1, SCHEMA.md "Card-blind routing"),
+    from the course package's OSM file. None when there is no OSM file or when OSM's golf=hole ways already fix every
+    hole (nothing to confirm); cardblind=True ignores the hole ways (tests / demos)."""
+    osm = os.path.join(CD, "packages", slug, "raw", "osm.geojson")
+    if not os.path.exists(osm):
+        return None
+    fc = json.load(open(osm))
+    cj = os.path.join(CD, "packages", slug, "raw", "course.json")
+    course = json.load(open(cj)) if os.path.exists(cj) else {}
+    course = dict(course, slug=slug)
+    R = _live2().decoder_record(fc, course, n_holes=n_holes, use_osm_holes=not cardblind)
+    if not cardblind and R["osm_fixed"] >= R["kind"]:
+        return None
+    return R
+
+
+def add_route(fn, cardblind=False, out=None, log=print):
+    """Attach `route` to a built record (out: write a copy there instead, e.g. a test fixture)."""
+    rec = json.load(open(fn))
+    R = route_of(rec["id"], len(rec["holes"]) if len(rec["holes"]) in (9, 18, 27, 36) else 18, cardblind=cardblind)
+    if R is None and not cardblind:
+        return None
+    rec["route"] = R
+    with open(out or fn, "w") as fh:            # out: the route alone ({slug, route}), merged onto the record by tests
+        json.dump(dict(schema="golf_lib_route/1", slug=rec["id"], route=R) if out else rec, fh, separators=(",", ":"))
+    log(f"  lib {rec['id']}: route {R and R['source']}, {R and len(R['greens'])} greens, {R and len(R['tees'])} tees")
+    return R
+
+
 def build(out_dir=OUT, only=None, log=print):
     idx = json.load(open(os.path.join(LIBDIR, "index.json")))
     res = {}
@@ -378,6 +417,14 @@ def build(out_dir=OUT, only=None, log=print):
         if x:
             res[slug] = x
             log(f"  lib {slug:24s} {x['bytes'] / 1e3:6.0f} kB  {x['holes']} holes  sets {x['sets']}")
+    for slug in res:                       # card-blind routing for courses whose OSM lacks some hole ways
+        fn = os.path.join(out_dir, f"{slug}.json")
+        if os.path.exists(os.path.join(CD, "packages", slug, "raw", "osm.geojson")) and '"route":' not in open(fn).read():
+            try:
+                if add_route(fn, log=log):
+                    res[slug]["bytes"] = os.path.getsize(fn)
+            except Exception as e:                      # noqa: BLE001
+                log(f"  lib {slug}: route FAILED {e!r}")
     return res
 
 
@@ -385,7 +432,12 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--only")
+    ap.add_argument("--route-cardblind", help="slug: write a copy of its record with card-blind routing to --route-out")
+    ap.add_argument("--route-out")
     a = ap.parse_args()
+    if a.route_cardblind:
+        add_route(os.path.join(a.out, a.route_cardblind + ".json"), cardblind=True, out=a.route_out)
+        sys.exit(0)
     r = build(a.out, set(a.only.split(",")) if a.only else None)
     print(f"{len(r)} courses, {sum(x['bytes'] for x in r.values()) / 1e6:.2f} MB")
     sys.exit(0 if r else 1)

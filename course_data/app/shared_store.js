@@ -29,14 +29,16 @@
   const ref = r => { const s = String(r == null ? "" : r); return /^\d{1,2}$/.test(s) ? s : null; };
   const iso = s => typeof s === "string" && s.length <= 40 && !isNaN(Date.parse(s)) ? s : null;
 
-  /* one canonical action: {question, kind: "locate"|"reject", ref, answer: {tee_ll, green_ll}, taps} */
+  /* one canonical action: {question, kind: "locate"|"reject"|"first", ref, answer: {tee_ll, green_ll}, taps}.
+     "first" (library courses with card-blind routing, lib_play.js): "this tee is hole 1" (tee_ll only, ref "1") */
   function cleanAction(a) {
     if (!a || typeof a !== "object") return null;
     const r = ref(a.ref);
-    if (!r || (a.kind !== "locate" && a.kind !== "reject")) return null;
+    if (!r || (a.kind !== "locate" && a.kind !== "reject" && a.kind !== "first")) return null;
     const ans = a.answer || {}, t = ans.tee_ll == null ? null : ll(ans.tee_ll), g = ans.green_ll == null ? null : ll(ans.green_ll);
     if (!g && !t) return null;
     if ((ans.tee_ll != null && !t) || (ans.green_ll != null && !g)) return null;
+    if (a.kind === "first") return t && r === "1" ? {question: "f1", kind: "first", ref: "1", answer: {tee_ll: t, green_ll: null}, taps: 1} : null;
     const taps = a.taps === 1 || a.taps === 2 ? a.taps : (a.kind === "locate" ? 2 : 1);
     return {question: (a.kind === "locate" ? "l" : "r") + r, kind: a.kind, ref: r, answer: {tee_ll: t, green_ll: g}, taps};
   }
@@ -104,7 +106,7 @@
 
   /* ------------------------------------------------------------------ the store */
   function readLocal(ls) {
-    try { const s = JSON.parse(ls.getItem(LKEY) || "null"); if (s && typeof s === "object") return {maps: s.maps || {}, reports: Array.isArray(s.reports) ? s.reports : []}; } catch (e) {}
+    try { const s = JSON.parse(ls.getItem(LKEY) || "null"); if (s && typeof s === "object") return {maps: s.maps || {}, reports: Array.isArray(s.reports) ? s.reports : [], replan: s.replan && typeof s.replan === "object" ? s.replan : {}}; } catch (e) {}
     return {maps: {}, reports: []};
   }
   function writeLocal(ls, s) { try { ls.setItem(LKEY, JSON.stringify(s)); return true; } catch (e) { return false; } }
@@ -186,6 +188,21 @@
       chain = p;
       return p.then(r => { emit("maps"); return r; });
     };
+    /* "plan pending" (library courses with card-blind routing): the holes golfers' answers re-paired that have no
+       precomputed plan -> requests/replan_<course>__<golfer> (golf_replan/1, one doc per golfer per course,
+       overwritten). requests_to_batch.py skips it (no name / state): a server rebuild reads it with the map doc. */
+    S.addReplan = (course, holes, facts) => {
+      const body = {schema: "golf_replan/1", course: String(course).slice(0, 64), at: new Date().toISOString(), by: S.gid,
+                    holes: (holes || []).slice(0, 36).map(h => ({no: +h.no || 0, tee_ll: ll(h.tee_ll), green_ll: ll(h.green_ll), yds: num(h.yds) ? Math.round(h.yds) : null})),
+                    facts: facts && typeof facts === "object" ? JSON.parse(JSON.stringify(facts)) : null};
+      local.replan = local.replan || {};
+      local.replan[body.course] = body;
+      writeLocal(ls, local);
+      if (S.mode !== "shared" || !db) return Promise.resolve("local");
+      const id = ("replan_" + body.course + "__" + String(S.gid).replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40)).slice(0, 120);
+      return db.collection("requests").doc(id).set(body).then(() => "shared", e => { S.lastError = (e && e.code) || String(e); return "local"; });
+    };
+    S.replan = course => (local.replan || {})[course] || null;
     S.addReport = r => {
       const body = {schema: "golf_report/1", course: r.course, hole: +r.hole, kind: r.kind, text: String(r.text || "").slice(0, MAX_TEXT),
                     tee: r.tee || null, at: new Date().toISOString(), by: S.gid};

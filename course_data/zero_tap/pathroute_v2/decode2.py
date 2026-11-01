@@ -141,7 +141,7 @@ def beam_loop2(H, T, S, E, n, avail_g, avail_t, tc, gc, comp, boxes_of=None, K=6
         gl = g
         hist.append((par, p.copy()))
     fin = cost + E[gl]
-    o = np.argsort(fin)
+    o = np.argsort(fin, kind="stable")                           # stable: ties -> first state (the JS port agrees)
     best = o[0]
     rel = fin[o[:500]] - fin[best]
     conf = float(1.0 / np.sum(np.exp(-rel)))
@@ -165,7 +165,8 @@ FIX_BONUS = 30.0          # nats: a golfer-confirmed pair is always worth includ
 
 def apply_fix(H, comp, fix):
     """Golfer-confirmed facts -> hole-cost matrix. fix = {"pairs": [(number | None, tee, green)], "not_green": [g],
-    "first_tee": t | None}. A confirmed pair's tee complex serves only that green, the green only that tee, and the
+    "first_tee": t | None, "reject": [(tee, green)]}; a rejected pair (the golfer said "no" to it) is forbidden for
+    that tee's whole complex. A confirmed pair's tee complex serves only that green, the green only that tee, and the
     pair gets FIX_BONUS so the tour always includes it; a "not a hole" green is removed."""
     H0, H = H, H.copy()
     comp = np.asarray(comp)
@@ -180,6 +181,12 @@ def apply_fix(H, comp, fix):
         H[t, g] = min(H0[t, g], DC.BIG) - FIX_BONUS
     for g in (fix or {}).get("not_green") or ():
         H[:, g] = np.inf
+    for t, g in (fix or {}).get("reject") or ():        # "no, that tee is not this green's hole"
+        t, g = int(t), int(g)
+        if (t, g) in {(int(a), int(b)) for _, a, b in pairs}:
+            continue
+        H[comp == comp[t], g] = np.inf
+        H[t, g] = np.inf
     return H
 
 
