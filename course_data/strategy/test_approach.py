@@ -172,6 +172,16 @@ def test_out_of_reach_lays_up_to_full_wedge():
     assert h.lie_name(b["target"]) == "fairway"
 
 
+def test_limit_of_reach_goes_at_nearest_reachable_box_point():
+    bunker = ("sand", rect(-40, 40, -392, -380))           # bunker short pushes the box long
+    h = synth([bunker])
+    start = np.array([0.0, -400.0 + 222.0])                 # 222 from the centre, rough: 4-iron (max 223)
+    r = A.solve(h, start, "rough", n=200)
+    assert r["best"]["kind"] == "decade" and r["best"]["club"] == "4-iron"
+    assert r["best"]["plays_like"] <= A.BAG["4-iron"][0][1] + A.CLUB_HIGH + 0.5
+    assert r["go"].get("limit_of_reach")
+
+
 def test_rough_worse_than_fairway():
     h = synth()
     f = A.solve(h, START, "fairway", n=400)["best"]["ev"]

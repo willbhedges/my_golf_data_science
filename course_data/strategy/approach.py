@@ -1,10 +1,18 @@
-"""Approach-shot layer for the tee-shot engine: club + aim point into any green, by expected strokes.
+"""Approach-shot layer for the tee-shot engine: club + aim point into any green, by the DECADE edge rule.
 
     from course_data.strategy import approach as A
     hole = A.Hole.from_package("blue_hills", "4")                 # read-only package.json
     r = A.solve(hole, start=(-20, -280), lie="fairway")           # yard frame of the package
-    r["best"]   -> {"club": "8-iron", "target": [x, y], "ev": 3.02, "plays_like": 161, ...}
-    r["centre"] -> the same model, aim fixed at the green centroid (best club for it)
+    r["best"]   -> {"kind": "decade", "club": "8-iron", "target": [x, y], "ev": 3.02, "plays_like": 161, ...}
+    r["decade"] -> the box: card number, per-edge hazard / cushion, region extent, aim (lat, depth)
+    r["centre"] -> the same club logic aimed at the green centroid; r["ev_check"] = EV(centre) - EV(best)
+
+Aim (APPROACH.md): the DECADE target, as spirit_hollow/approach/plan.py decade_box: every point of the green at
+least card-number(distance) x lie multiplier + edge modifier (+3 water/OB, +2 trees/native, +1 bunker) + wind
+modifier (-1 under 5 mph .. +3 over 30) yds inside each edge; aim at its centroid (a known pin: the pin if in
+the box, else the nearest box point). No box -> the lesser trouble gives up room, ending in the middle. Club =
+plays-like total nearest the distance to that aim. Lay-ups (out of reach; par 5s when it scores better than
+going) go to a full-wedge number (101-141 yds in) on the widest fairway. Expected strokes are a check only.
 
 Frame: the package's yard frame (x = yds right of the tee line, y = -yds along it; tee at (0, 0)), so tee-shot
 finishing spots from mozingo/tee_strategy.simulate map in with (px - tee_px) / ppy.
@@ -31,8 +39,8 @@ Model (APPROACH.md has the evidence and the numbers):
     tee_strategy.expected_strokes; trees = recovery row; water = 1 + rough near where it finished;
     OB = stroke and distance (1 + expected strokes from where the shot was played).
   * Unknown pin: averaged over 12 pins spread on the green (>= 4 yds from the edge); or pass pin=(x, y).
-  * Lay-ups: when the green is out of reach (or close to it) fairway spots within reach are candidate aims too,
-    scored by the same after-shot table.
+  * The expected-strokes model above scores the DECADE pick, the centre aim and (opt=True) the old EV-optimal
+    aim for reporting; it chooses only go vs DECADE lay-up on a reachable par 5.
 
 Common random numbers across all aims and clubs; n swings per evaluation (default 400).
 """
@@ -588,7 +596,7 @@ def decade_box(hole, start, lie="fairway", wind=0, dist=None, pin=None, step=0.5
                 dep=(round(float(d0), 1), round(float(d1), 1)), how_lat=how("left", "right"),
                 how_dep=how("short", "long"), n_cells=int(len(region)),
                 aim_ld=(round(float(aim_ld[0]), 1), round(float(aim_ld[1]), 1)),
-                aim_xy=_from_ld(hole, aim_ld, fwd, right)[0])
+                aim_xy=_from_ld(hole, aim_ld, fwd, right)[0], region_xy=_from_ld(hole, region, fwd, right))
 
 
 # ------------------------------------------------------------------ lay-ups (out of reach, par 5s)
@@ -682,8 +690,13 @@ def solve(hole, start, lie=None, pin=None, cond=CALM, n=400, seed=0, hcp=False, 
         return out
 
     go = run(box["aim_xy"], "decade")
+    if go is None:                       # box centre just past the longest club: nearest reachable box point
+        a = _reachable_box_point(hole, start, lie, cond, box)
+        if a is not None:
+            go = run(a, "decade")
+            go["limit_of_reach"] = True
     res = dict(lie=lie, start=[round(float(x), 1) for x in start], n_aims=1, go=go,
-               decade={k: v for k, v in box.items() if k != "aim_xy"})
+               decade={k: v for k, v in box.items() if k not in ("aim_xy", "region_xy")})
     lay = None
     if go is None or hole.par >= 5:
         lp, how = layup_target(hole, start, lie, cond)
@@ -714,6 +727,23 @@ def solve(hole, start, lie=None, pin=None, cond=CALM, n=400, seed=0, hcp=False, 
             o.update(_offset(hole, start, aims[i]))
             res["ev_opt"] = o
     return res
+
+
+def _reachable_box_point(hole, start, lie, cond, box, k=200):
+    """When the box centre is out of every club's range (from the rough the 4-iron, 223, is the longest club):
+    the box point nearest the box centre that a club still covers; failing that the green point nearest it
+    (the "long shot" case); none -> None = lay up."""
+    gm = hole.lie == CODE["green"]
+    green = np.c_[hole.XX[gm], hole.YY[gm]]
+    for reg in (box["region_xy"], green):
+        if len(reg) > k:
+            reg = reg[np.linspace(0, len(reg) - 1, k).astype(int)]
+        reg = reg[np.argsort(np.hypot(*(reg - box["aim_xy"]).T))]
+        for a in reg:
+            _, d_eff = plays_like(hole, start, a, cond)
+            if club_for(d_eff, lie, cond, hole.bearing(start, a)) is not None:
+                return a
+    return None
 
 
 def _offset(hole, start, a):

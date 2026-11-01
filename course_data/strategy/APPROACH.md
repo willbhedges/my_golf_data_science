@@ -1,12 +1,17 @@
 # Approach-shot layer (`course_data/strategy/approach.py`)
 
 The tee engine (`mozingo/tee_strategy.py`, run per course by `course_data/product/decide.py` / `wind_page.py`)
-picks a tee club and aim. Its objective scores where the tee ball finishes with a Broadie table:
-`1 + expected_strokes(lie, yds to the green centre)`. That table doesn't know where the green is, what is
-around it, or where the pin is. This module adds the next shot. From any lie position it picks the club and
-the **aim point on (or near) the green** that minimise the expected strokes to hole out. It can also value
-every tee-ball finishing spot that way, so a tee pick can be scored on the whole hole. That second use is
-offline only: no page output changes.
+picks a tee club and aim. This module adds the next shot: from any lie it gives the **club and aim point
+into the green by the DECADE edge rule**, the same rule as the par-3 blue box on the wind pages
+(`mozingo/yardage_book.py` `par3_plan`) and Spirit Hollow's approach boxes (`spirit_hollow/approach/plan.py`
+`decade_box`). It also scores those picks with an expected-strokes model, but **only as a check** (DECADE
+pick vs aiming at the green centre); expected strokes never move the aim. Offline only: no page changes.
+
+**Why (Nov 2026).** The first version (commit d00a2d3) chose the aim that minimised expected strokes over a
+grid on and around the green. On most greens that was 4–7 yds *short* of the centre (the front was open,
+the trouble long) with one club less, and the golfer found it consistently left him short. His rule:
+"middle is probably ideal, then just use the DECADE logic: the percent of the distance in from the edge,
+with the modifiers." That is what this version does.
 
 ```python
 from course_data.strategy import approach as A
@@ -14,13 +19,52 @@ hole = A.Hole.from_package("eagle_knoll", "5")          # package.json, read-onl
 r = A.solve(hole, start=(x, y), lie="fairway")           # unknown pin (12-pin average)
 r = A.solve(hole, start, "rough", pin=(px, py),          # a known pin, wind 12 mph from 200 deg true, 45 F
             cond=A.Conditions(12, 200, temp_f=45))
-r["best"], r["centre"], r.get("flag"), r["top"]
+r["best"], r["decade"], r["centre"], r["ev_check"], r.get("flag"), r.get("layup")
+A.solve(hole, start, "fairway", opt=True)["ev_opt"]      # the old EV-optimal aim, for comparison only
 A.tee_compare("blue_hills", "3")                         # tee-only vs whole-hole tee pick (offline)
 ```
 
-`best`, `centre` and `flag` each hold the following: club, aim target (yard frame), EV, plays-like yds, the
-aim relative to the green centre (+long / +right in the shot's frame), the wind aim-off, and P(green / sand /
-water / OB).
+`best` (kind `decade` or `layup`), `go`, `layup`, `centre` and `flag` each hold: club, aim target (yard frame),
+EV, plays-like yds, the aim relative to the green centre (+long / +right in the shot's frame), the wind
+aim-off, and P(green / sand / water / OB). `decade` holds the box: card number, hazard per edge, cushion per
+edge, what was given up, the region's lateral / depth extent and the aim (lateral, depth) from the centre.
+
+## The aim: DECADE box
+
+Ported line for line from `spirit_hollow/approach/plan.py` (`decade_base`, `side_hazards`, `decade_box`), with
+the card and modifiers read from `mozingo/yardage_book.py` so the numbers cannot drift apart:
+
+1. **Card number** for the distance to the green centre: yds in from an edge, `yardage_book.TARGET`
+   (60 → 3, 100 → 5, 150 → 8, 200 → 10, 250 → 13, roughly 5% of the distance); 3 inside 60; distance/20
+   past 250.
+2. **Lie multiplier** (the pattern widens): first cut ×1.08 sideways / ×1.12 in depth, rough ×1.2 / ×1.35,
+   sand ×1.4 / ×1.5 (`approach/shots.py` `LIE_MULT`).
+3. **Edge modifier** for what is off each edge (left, right, short, long, seen from the ball): water/OB +3,
+   trees/native +2, bunker +1, rough 0 (`yardage_book.ADD`). A category counts for an edge when 2+ of 11
+   rays across the green hit it within 12 yds of that edge (20 for water/OB); the worst one wins.
+4. **Wind modifier** on every edge, as on the wind pages (`windMod`): under 5 mph −1, 5–10 0, 10–20 +1,
+   20–30 +2, 30+ +3. `Conditions(wind_mph=…)` sets it; calm is −1.
+5. **Box** = every point of the green at least those cushions inside each edge (sideways for left/right,
+   along the line of play for short/long; checked at the cushion and half of it, so a kidney's waist
+   counts). **Aim at its centroid.** With no trouble anywhere that is the middle of the green, so there is
+   no built-in short (or long) bias; it moves only away from a worse edge.
+6. **No box** (small green / long shot): the lesser trouble gives up room 0.5 yd at a time while the worst
+   side keeps its full cushion; equal trouble on both sides gives up equally and ends in the middle
+   (yardage_book's "lesser of evils").
+7. **Known pin** (`pin=`): the pin if it is inside the box, else the box point nearest it.
+
+**Club.** The club is the one whose plays-like total (elevation + wind + temperature, below) is nearest the
+distance to the aim point: `club_for` takes the smallest |total − plays-like| over the bag. Nothing is
+shaded short; the old one-club-less pattern came only from the short aim.
+
+**Lay-ups.** When the DECADE aim is out of reach (no club for its plays-like distance from this lie), or on a
+par 5 when laying up scores better than going (the one place the EV model decides, as before):
+- target a **full-wedge number**: short grass 101–141 yds from the green centre (the bag's full LW..PW
+  totals), at least 20 yds closer and within the lie's reach;
+- on the **widest fairway** there: most short grass around the spot (half-width, capped at 15 yds), ties
+  to the shorter wedge in;
+- none in that window → 60–160 yds, then any short grass 20+ yds closer, then straight at the green as far as
+  the lie allows.
 
 ## Model
 
@@ -84,15 +128,13 @@ family the tee engine uses. `hcp=True` adds the ~5-handicap offsets from `resear
 - **Pin:** unknown pins use 12 positions spread over the green, at least 4 yds from the edge
   (farthest-point sampling, fixed seed). You can also pass `pin=`.
 
-**Search.**
-- The candidate aims are a 2-yd grid over the green plus an 8-yd ring around it, for bail-out aims short or
-  to the fat side. Water, OB, trees and native are excluded as aims.
-- When the green is out of reach or nearly so, and on every par 5, lay-up spots are added: fairway cells on a
-  6-yd grid within reach and at least 20 yds closer.
-- Every aim and club uses the same swings: common random numbers, default n = 400.
+**EV check.** Every pick is scored with the swings below (common random numbers, n = 400 by default): the
+DECADE aim, the green centre with the same club logic (`ev_check` = EV(centre) − EV(DECADE), + means the box
+beats the middle), the flag if given, and with `opt=True` the old search over a 2-yd grid on the green plus
+an 8-yd ring (`ev_opt`), so the cost of following DECADE instead of the optimiser can be reported.
 
 **Whole-hole tee value** (`ValueGrid`, `tee_compare`).
-- V(x, y, lie) is the optimal approach EV on a 10-yd grid over the tee-ball landing area, for fairway, rough,
+- V(x, y, lie) is the EV of the DECADE approach (or lay-up) on a 10-yd grid over the tee-ball landing area, for fairway, rough,
   sand, with bilinear interpolation between grid points. Trees = V_rough + the Broadie recovery-minus-rough gap (x
   `TREE_SEVERITY`), because a geometric solve from the trees cannot see a blocked line to the green.
 - Penalty lies map exactly as in the tee model: water = 1 + V_rough, OB = 2 + V_rough, first cut = the
@@ -116,57 +158,70 @@ family the tee engine uses. `hcp=True` adds the ~5-handicap offsets from `resear
 
 ## Evaluation (Blue Hills, Eagle Knoll; `eval_approach.py` → `output/approach_eval.json`)
 
-Run: `python3 course_data/strategy/eval_approach.py`, about 13 min on 4 cores. The run covers all 28 par 4s and
-par 5s on Blue Hills (Black tees) and Eagle Knoll. Approach starts are 40 finishing spots of each hole's
-tee-only pick, from the fairway, first cut, rough or sand. The pin is unknown (12-pin average). Calm, 70 °F.
+Run: `python3 course_data/strategy/eval_approach.py`, about 6 min on 4 cores. All 28 par 4s and par 5s on
+Blue Hills (Black tees) and Eagle Knoll (Back tees, the package's set). Approach starts are 40 finishing spots
+of each hole's tee-only pick, from the fairway, first cut, rough or sand. Unknown pin (12-pin average for the
+EVs), calm (wind modifier −1), 70 °F. The old numbers are the d00a2d3 run of the EV-optimiser.
 
-**Approach picks vs "aim at the green centre"** (same swings and same club logic; only the aim differs):
-- Mean EV gain is **0.037 strokes per approach**. Per hole it runs from 0.002 (EK 14, a 265-yd par 4 with a
-  short wedge in) to 0.19 (BH 1, where you lay up short of a green guarded by OB and trees). On a typical
-  par 4 the gain is 0.01–0.05.
-- The aim is 3–10 yds from the centre (mean |offset| per hole). Most often it is **short of the centre**
-  (−4 to −7 yds long) where the green front is open fairway and the trouble is long, and away from
-  water/OB/sand.
-- In 30–90% of spots the club changes, usually one club less, because the shorter aim plays shorter.
-- An aim off the green itself is chosen when the green is out of reach or nearly so: par-5 second shots and
-  long approaches from the rough, e.g. EK 13 69% and EK 17 88% (lay-ups).
+**Depth bias is gone.**
+- Mean aim depth vs the green centre over all 1,011 DECADE go-shots: **−0.4 yds** (par 4s alone: **+0.15**),
+  vs **−5.5** before (par 4s −5.7). The −0.4 is par-5 / long shots that hit the limit of reach (front of the
+  box) and hazard-driven holes.
+- Club: on the same spots the new pick is **one club more than the old one half the time and never less**
+  (same 50%, more 50%, less 0.1%). It is the club for the middle, not for 5 yds short.
+- Offsets are hazard-driven only: BH 1 −6 (OB long, bunker short), EK 7 −3.3 (trees long), EK 13 +2.6 and
+  EK 9 +1.8 (bunkers short), EK 17 +3.6 right (water left and short).
 
-| hole | start (yd frame) | best: club, plays-like, aim vs centre (long/right) | EV best | EV centre | why |
-|---|---|---|---|---|---|
-| BH 17 (P4) | fairway, 163 out | 8-iron 163, −6.7 / +0.3 | 3.328 | 3.395 | centre aim needs a 7-iron; long side has OB/water (P 1.8% → 0.7%) |
-| BH 1 (P5, 2nd) | fairway, ~235 out | 4-iron 220 lay-up, −13.7 / −4.1 (rough short) | 3.649 | 3.743 | going at the centre with a 4-wood: 6.8% penalty, P(green) only 10% either way |
-| EK 15 (P4) | fairway, 170 out | 8-iron 159, −5.8 / +0.7 | 3.310 | 3.360 | trouble long; short is fairway |
-| EK 7 (P5, 2nd) | fairway, 174 out | 8-iron 168, −6.5 / −3.0 | 3.474 | 3.515 | |
-| EK 4 (P4) | fairway, 118 out | SW 114, −4.0 / −1.0 | 3.257 | 3.279 | |
+**EV check (DECADE vs aiming at the centre, same club logic).** Mean **+0.002** strokes per approach (DECADE
+slightly better); per spot −0.055 to +0.08; DECADE ≥ centre on 46% of spots. Biggest wins where the box
+moves away from OB/water/trees (BH 1 +0.08, EK 7 +0.036, EK 1 +0.023); biggest cost EK 13 (−0.029: the box
+sits 2.6 long of a bunkered front where the EV model likes a run-up). Against the old EV-optimal aim the DECADE
+pick gives up 0.033 strokes per approach on average in this model, the price of not aiming short; the model
+has no green slope or firmness and is the thing the golfer's experience contradicts.
 
-**Tucked pin vs "aim at the flag"** (the pin farthest from the centre):
-- EK 7: the flag is 9 yds right of the centre. Best is an 8-iron aimed 14.5 short and 2 left of the centre,
-  EV 3.484 vs 3.612 at the flag (−0.13).
-- BH 1: going at a back-left pin costs 14% penalty; laying up is worth 0.24.
-- EK 4: SW aimed ~2 yds inside the flag (+3.9 right vs +5.7), worth 0.015.
-- On open greens (EK 15, BH 17) the flag aim and the best aim differ by <0.01.
+**Picks, median fairway finish of each hole's tee pick** (club, plays-like, aim vs centre long/right yds;
+edges L/R/S/Lg as DECADE sees them):
 
-**Whole-hole tee choice.** Every tee club (Driver to Mid iron) × aim (−30..+30 every 5 yds) uses the tee
-engine's own swings. Scoring them by the approach value instead of the distance/lie table:
-- **The tee club changes on 5 of 28 holes, and the club or aim on 8 of 28.** The club changes are BH 1, BH 7,
-  BH 10, EK 11 and EK 17. The aim-only changes are EK 3, EK 9 and EK 15, by 5 yds.
-- The cost of keeping the tee-only pick, under the whole-hole objective, is **0.002 strokes on average**.
-  It is ≤ 0.008 everywhere except **EK 17**: on that 489-yd par 5 the tee-only pick (4-wood +15) costs 0.043
-  vs a Long iron −5 that sets up a better lay-up / go angle.
-- BH 10 and EK 11 move up to the Driver (4-wood → Driver, +0.007 / +0.008), and BH 1 drops to the 2-wood.
-- Conclusion: the tee-shot table is a good proxy for this golfer on these courses. Whole-hole optimisation
-  matters mainly on reachable or near-reachable par 5s and where the green complex punishes one side of the
-  approach. The pages are not changed.
+| hole | old (EV-optimal) | new (DECADE) | edges L / R / S / Lg, card |
+|---|---|---|---|
+| EK 1 (P4) | GW 127, −4.4 / −1.5 | PW 136, −1.3 / −1.7 | rough / trees / rough / bunker, 7 |
+| EK 3 (P4) | LW 100, −2.9 / +1.2 | LW 103, +0.3 / −0.1 | open, 5 |
+| EK 4 (P4) | SW 114, −4.0 / −1.0 | GW 117, −0.7 / +0.1 | trees long, 6 |
+| EK 5 (P4) | 9-iron 155, −4.8 / +1.0 | 8-iron 164, +0.4 / −0.5 | bunker right, 9 |
+| EK 7 (P5, 2nd) | 8-iron 168, −6.5 / −3.0 | 7-iron 171, −3.3 / −0.2 | trees L / R / long, 9 |
+| EK 8 (P4) | SW 111, −1.6 / +0.5 | SW 114, +1.3 / −0.2 | bunkers L / R / short, 6 |
+| EK 9 (P5, 2nd) | 5-iron 199, −16.4 / −3.0 | 4-iron 218, +1.8 / +1.6 | bunkers left / short, 11 |
+| EK 10 (P4) | PW 133, −2.8 / −0.2 | PW 137, +0.4 / +0.7 | bunker left, 7 |
+| EK 11 (P4) | 8-iron 169, −3.5 / −0.3 | 7-iron 173, −0.5 / +0.5 | bunkers left / short, 9 |
+| EK 13 (P5, 2nd) | 4-wood 232, −9.4 / +2.3 | 4-wood 244, +2.6 / −2.4 | bunkers right / short, 13 |
+| EK 14 (P4) | LW 70, −1.0 / −0.2 | LW 72, +0.4 / −0.4 | trees / water / water / trees, 4 |
+| EK 15 (P4) | 8-iron 159, −5.8 / +0.7 | 8-iron 169, −0.6 / +1.2 | trees left, 9 |
+| EK 17 (P5, 2nd) | lay-up LW 102 | 4-wood 234, +0.8 / +3.6 | water L / short, trees R, 12 |
+| EK 18 (P4) | PW 138, −3.4 / 0.0 | PW 142, +1.3 / −0.5 | open, 7 |
+| BH 1 (P5, 2nd) | 4-iron 220 lay-up, −13.7 / −4.1 | 4-wood 228, −6.0 / −3.2 | bunker short, OB long, 12 |
+| BH 4 (P4) | 9-iron 156, −4.9 / +0.3 | 8-iron 161, −0.8 / +0.1 | open, 8 |
+| BH 17 (P4) | 8-iron 163, −6.7 / +0.3 | 8-iron 170, −0.8 / −0.8 | trees / water / bunker / trees, 9 |
+| BH 18 (P5, 2nd) | 2-wood 264 to 79 short of centre | lay-up 4-iron 211 to a full wedge | out of reach |
 
-An earlier run scored tree finishes with a geometric solve from the trees (reach 140, wider pattern) and
-did not include the Broadie blocked-line gap. That made trees cheap and changed 12 of the 25 picks it finished, mostly toward the
-Driver, with regrets up to 0.11. The released ValueGrid keeps the tee model's recovery gap (see above).
-That sensitivity is the biggest open question for a whole-hole objective.
+**Lay-ups.** 109 of 1,120 starts lay up (BH 18 always: out of reach; BH 6 / BH 13 / EK 13 / EK 17 / BH 1 from
+the longer or rough finishes), each to 101–141 yds on the widest short grass. EK 17's median finish now goes
+(4-wood at a box 3.6 right of centre, away from the water) where the old search laid up; from 7 of its 40
+spots it lays up.
 
-Tests: `python3 -m pytest course_data/strategy/test_approach.py` (14 pass, ~7 s). They cover:
+**Whole-hole tee choice** (tee clubs × aims scored by 1 + V, V now the DECADE approach value): the tee club
+changes on 2 of 28 holes (BH 10 and EK 11, 4-wood → Driver) and the club or aim on 6; mean regret of keeping
+the tee-only pick 0.001, max 0.010 (EK 11). The tee-shot table is still a good proxy; the pages are not
+changed.
+
+Tests: `python3 -m pytest course_data/strategy/test_approach.py` (19 pass, ~3 s). They cover:
 - table monotonicity, and bag gapping / consistency with the tee clubs;
-- an open green aims at the centre; water right moves the aim left; OB long moves it short;
-- a tucked pin over a bunker aims inside the flag, and short-side cost;
+- the card numbers and wind modifier match `yardage_book.TARGET` and `windMod`; edge cushions for water,
+  rough lie and wind;
+- an open green aims at the centre (within 0.5 yd) with the club whose total is nearest the plays-like yds;
+  water right moves the aim left; OB long moves it 1–3 yds short; a small green splits to the middle; water
+  on one side of a small green keeps its full cushion;
+- a tucked pin over a bunker aims inside the flag; a pin inside the box is aimed at; short-side cost;
 - uphill plays longer; head wind, cold, and the cross-wind aim-off sign;
-- out-of-reach lay-up; rough worse than fairway;
+- out of reach lays up to a full-wedge number in the middle of the fairway; at the limit of reach the aim
+  moves to the nearest reachable box point; rough worse than fairway;
 - the proximity calibration; ValueGrid penalty mapping; a Blue Hills package hole solves.
