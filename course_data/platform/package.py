@@ -1131,6 +1131,8 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, 
                                                                                "sequence_v3", "pathroute_v2") else None
         if force is None and card_blind(req) and req.get("pathroute", True):
             force = dict(method="pathroute_v2")      # card:none: the synthetic card carries no routing truth
+        if force is None and req.get("pathroute", True) is False:
+            force = dict(ss.SELECT_PRE_PATHROUTE.get(ss.tier(prof), {})) or None     # the routing before pathroute_v2
         res, info = ss.infer_holes(fc, card, course, seg=seg, pads=pads, scene=scene, force=force)
         info.pop("profile", None)
         pipeline["holes"] = info

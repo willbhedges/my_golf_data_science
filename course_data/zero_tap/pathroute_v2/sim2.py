@@ -71,10 +71,11 @@ def _scene_pos(M, ll):
     return M.pj.fwd(*ll[:2])
 
 
-def answer(d, M, g):
-    """-> (true hole index j or None, scene tees that are j's tee)."""
+def answer(d, M, g, done=()):
+    """-> (true hole index j or None, scene tees that are j's tee). done: true holes already confirmed elsewhere
+    (a green inside two true holes' tolerance, e.g. a double green, is the other one or not a hole)."""
     p = _scene_pos(M, d["greens"][g]["ll"])
-    js = [j for j in range(len(M.holes)) if M.green_ok(j, p)]
+    js = [j for j in range(len(M.holes)) if M.green_ok(j, p) and j not in done]
     if not js:
         return None, []
     j = min(js, key=lambda j: np.hypot(p[0] - M.holes[j]["g"][0], p[1] - M.holes[j]["g"][1]))
@@ -124,13 +125,16 @@ def simulate(slug):
                          fix=json.loads(json.dumps(s.fix))))
     snap(0)
     taps = 0
+    done = set()
     while taps < 40:
         i = s.ask(CAP)
         if i is None:
             break
         h = s.holes[i]
-        j, tees = answer(d, Mt, h["g"])
+        j, tees = answer(d, Mt, h["g"], done)
         taps += 1
+        if j is not None:
+            done.add(j)
         if j is None:
             s.not_a_hole(h["g"])
         else:

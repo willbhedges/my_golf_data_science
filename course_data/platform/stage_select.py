@@ -74,6 +74,8 @@ SELECT = {
     # 86.9 % of holes paired right vs routing_v2 60.3 % (PATHROUTE.md); card-blind packages: CARDBLIND.md
     "unmapped_nocard": dict(method="structure", confirm=dict(method="v2")),
 }
+# the per-tier choice before pathroute_v2 (package request "pathroute": false restores it)
+SELECT_PRE_PATHROUTE = {"mapped_nocard": dict(method="structure", confirm=dict(method="v2+structure", lam=1.0))}
 # sequence_v3 (formation-v2 pairs + sequence solver v3) for the card tiers: PIPELINE.md section 8. It becomes the
 # default only if the held-out test (pipeline_eval.py v3) and the gate courses improve or tie; otherwise SELECT
 # stays as above and SELECT_V3 is opt-in (request "hole_method": "sequence_v3").

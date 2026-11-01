@@ -58,6 +58,43 @@ the request's review overrides), and **blind** (`card: none`, minus `tee_overrid
 
 Re-run it after improving `tees/cardless.py` or the routing. Nothing in the harness needs editing.
 
+## Routing: pathroute_v2 for card:none (2026-11-01, n = 1000)
+
+`"card": "none"` now routes the holes OSM has no way for with **zero_tap/pathroute_v2** (`stage_select` method
+`pathroute_v2`, `zero_tap/pathroute_v2/live2.py`; PATHROUTE.md). OSM golf=hole ways are fixed as confirmed pairs,
+so pathroute fills only the missing holes and numbers them around the mapped ones. It is also the default for the
+`mapped_nocard` tier (no card at all). Fallbacks: structure > routing v2 > geometry. Per-hole pair confidence is
+in each routed hole (`package.holes[].routing.confidence`, status `check` below 0.95) and the ask order + golfer
+facts are in `routing.json["confirm"]` (`pathroute_confirm/1`; re-solve with `live2.route(..., fix=facts)`).
+Request `"pathroute": false` restores the old routing. Re-run for the four courses where routing failed, same code
+and same `tees/cardless.py` (v2, hybrid) in both arms. Before = `CARDBLIND_REQ='{"pathroute": false}'`:
+`cardblind_eval_pathroute_before.json`, after: `cardblind_eval_pathroute_after.json`:
+
+| course | set | same club + aim <=10 (before -> after) | tee err med yds | tee <=10 yds | par right | regret / tee shot |
+|---|---|---|---|---|---|---|
+| hot_springs_park | back | 0/7 -> **1/7** | 478.7 -> 367.6 | 0 -> 0 / 9 | 1 -> 5 / 11 | 0.5 -> 0.231 |
+| hot_springs_park | second | 0/7 -> **1/7** | 463.1 -> 340.5 | 0 -> 0 / 9 | 1 -> 5 / 11 | 1.143 -> 0.294 |
+| jayhawk_club | back | 1/6 -> **2/7** | 457.0 -> 143.1 | 0 -> 0 / 9 | 4 -> 3 / 10 | 0.269 -> 0.823 |
+| jayhawk_club | second | 1/6 -> **2/7** | 452.9 -> 138.4 | 0 -> 0 / 9 | 4 -> 3 / 10 | 0.156 -> 0.46 |
+| national_kc | back | 1/7 -> **4/7** | 798.7 -> 3.0 | 1 -> 5 / 9 | 3 -> 9 / 18 | 0.91 -> 0.337 |
+| national_kc | second | 1/7 -> **4/7** | 762.1 -> 5.0 | 1 -> 6 / 9 | 3 -> 9 / 18 | 1.004 -> 0.034 |
+| tomahawk_hills | back | 0/12 -> **10/12** | 906.4 -> 5.0 | 0 -> 13 / 18 | 7 -> 18 / 18 | 2.356 -> 0.024 |
+| tomahawk_hills | second | 1/12 -> **10/12** | 905.2 -> 5.5 | 0 -> 13 / 18 | 7 -> 18 / 18 | 1.64 -> 0.01 |
+| **OSM maps few / no holes** (4 courses, both scored) | **back** | 2/32 -> **17/33** | 603.4 -> 28.8 | 1 -> 18 / 45 | 15 -> 35 / 57 | 1.264 -> 0.289 |
+| **OSM maps few / no holes** (4 courses, both scored) | **second** | 3/32 -> **17/33** | 602.4 -> 22.1 | 1 -> 19 / 45 | 15 -> 35 / 57 | 1.112 -> 0.158 |
+
+After, failure causes, back set: routing (wrong green) 9; routing / tee >40 yds off 4; tee position >15 yds 2; club flip on a ref tie 1
+
+After, failure causes, second set: routing (wrong green) 9; routing / tee >40 yds off 4; aim >10 yds (same club) 1; tee position >15 yds 1; club flip (geometry ~same) 1
+
+Headline on these four courses: same club + aim within 10 yds goes from **2/32 to 17/33 (back)** and **3/32 to 17/33
+(2nd)**. Regret per tee shot drops from 1.26 to 0.29 (back) and from 1.11 to 0.16 (2nd). The previous published
+"after" for these courses (cardless v1, old routing) was 10/32 back and 9/32 2nd. tomahawk_hills (0 -> 10/12) and
+national_kc (1 -> 4/7, back tee median 799 -> 3 yds) gain most. hot_springs_park stays bounded: OSM has fewer than 13
+greens, so the hole count guess is 9 of the true 18, and the ref is itself routed (structure with the card), so
+"routing right" there is against a routed ref. Remaining misses are mostly wrong greens (9 of 16 back-set misses).
+The 13 fully mapped courses are not affected: routing is not needed there.
+
 ## Headline: before (fallback card) -> after (`tees/cardless.py`), n = 1000 quick decisions per plan, 2026-11-01
 
 Tee shots where the card-blind plan has **the same club and an aim within 10 yds** of the true-card plan. The same
