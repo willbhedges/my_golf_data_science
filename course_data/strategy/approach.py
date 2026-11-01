@@ -426,9 +426,219 @@ def _right_of(u):
     return np.array([-u[1], u[0]])
 
 
-def candidate_aims(hole, start, lie, step_green=2.0, ring=8.0, layup_step=6.0):
-    """Aim points: a grid on the green and a ring around it (bail-outs), plus lay-up spots on fairway / first
-    cut within reach when the green is far."""
+# ------------------------------------------------------------------ DECADE target (the aim chooser)
+# Port of spirit_hollow/approach/plan.py (decade_base / side_hazards / decade_box) to the package yard frame,
+# with the card numbers, edge modifiers and "lesser of evils" severities taken from mozingo/yardage_book.py
+# (the par-3 blue box, yardage_book.par3_plan), and the wind modifier of the wind pages
+# (wind_page_template.html windMod: under 5 mph -1, 5-10 0, 10-20 +1, 20-30 +2, 30+ +3 yds on every edge).
+DECADE_CAT = {"water": "water", "ob": "ob", "recovery": "trees", "native": "native", "sand": "bunker"}
+DECADE_BAND, DECADE_BAND_PENAL = 12.0, 20.0      # yds beyond each edge searched (water / OB further)
+DECADE_ROWS, DECADE_ROW_HITS = 11, 2             # rays per side; rays that must hit for a category to count
+# Cushion multipliers by lie (lateral, depth) = approach/shots.py LIE_MULT (plan.py: no entry for trees -> 1).
+DECADE_LIE_MULT = {k: v for k, v in LIE_MULT.items() if k != "recovery"}
+
+
+def _yb():
+    import yardage_book as yb                    # mozingo/yardage_book.py (DECADE card + modifiers)
+    return yb
+
+
+def decade_base(dist):
+    """DECADE baseline yds in from an edge: the card table 60-250 (yardage_book.TARGET), 3 inside 60,
+    distance / 20 beyond 250 (plan.py decade_base)."""
+    if dist > 250:
+        return float(round(dist / 20.0))
+    return _yb().baseline_target(max(dist, 60))
+
+
+def wind_mod(mph):
+    """DECADE wind modifier (yds added to every edge), as the wind pages: windMod(mph)."""
+    mph = float(mph or 0.0)
+    return -1 if mph < 5 else 0 if mph < 10 else 1 if mph < 20 else 2 if mph < 30 else 3
+
+
+def _ld_frame(hole, start):
+    fwd = hole.green_c - np.asarray(start, float)
+    fwd = fwd / max(np.hypot(*fwd), 1e-9)
+    return fwd, _right_of(fwd)
+
+
+def _to_ld(hole, xy, fwd, right):
+    rel = np.atleast_2d(np.asarray(xy, float)) - hole.green_c
+    return np.c_[rel @ right, rel @ fwd]
+
+
+def _from_ld(hole, ld, fwd, right):
+    ld = np.atleast_2d(np.asarray(ld, float))
+    return hole.green_c + ld[:, :1] * right + ld[:, 1:2] * fwd
+
+
+def side_hazards(hole, fwd, right, band=DECADE_BAND_PENAL, band_near=DECADE_BAND):
+    """What sits off each edge of the green seen from this direction: left/right/short/long -> DECADE category
+    (water, ob, trees, native, bunker, rough). Rays leave the edge from DECADE_ROWS lines across the green; a
+    category counts for a side when hit within 12 yds of the edge (20 for water/OB) on >= 2 rays; the worst
+    counting category wins (plan.py side_hazards). Also the share of rays hitting each category."""
+    yb = _yb()
+    g = _to_ld(hole, hole.green, fwd, right)
+    path = Path(g)
+    lo, hi = g.min(axis=0), g.max(axis=0)
+    span = np.arange(-60, 60.01, 0.5)
+    ks = np.arange(1.0, band + 0.01, 1.0)
+    out = {}
+    for side in ("left", "right", "short", "long"):
+        ax = 0 if side in ("left", "right") else 1
+        other = 1 - ax
+        w = hi[other] - lo[other]
+        rows = np.linspace(lo[other] + 0.1 * w, hi[other] - 0.1 * w, DECADE_ROWS)
+        hits = []
+        for r in rows:
+            pts = np.zeros((len(span), 2))
+            pts[:, ax], pts[:, other] = span, r
+            ins = span[path.contains_points(pts)]
+            if not len(ins):
+                continue
+            edge = ins.min() if side in ("left", "short") else ins.max()
+            sgn = -1 if side in ("left", "short") else 1
+            q = np.zeros((len(ks), 2))
+            q[:, ax], q[:, other] = edge + sgn * ks, r
+            names = [DECADE_CAT.get(LIES[int(i)], "rough") for i in hole.lie_at(_from_ld(hole, q, fwd, right))]
+            hits.append({c for c, k in zip(names, ks) if c in ("water", "ob") or (k <= band_near and c != "rough")})
+        share = {c: round(sum(c in h for h in hits) / len(hits), 2)
+                 for c in ("water", "ob", "trees", "native", "bunker")} if hits else {}
+        cats = [c for c in share if share[c] * len(hits) >= DECADE_ROW_HITS]
+        worst = max(cats, key=lambda c: yb.SEVERITY[c]) if cats else "rough"
+        out[side] = (worst, {c: v for c, v in share.items() if v})
+    return out
+
+
+def decade_box(hole, start, lie="fairway", wind=0, dist=None, pin=None, step=0.5):
+    """The DECADE edge rule (yardage_book.par3_plan) generalised to any approach and green shape (plan.py
+    decade_box, unchanged apart from the frame).
+
+    Cushion per side = card number for the distance x the lie's dispersion multiplier, + 3 water/OB,
+    + 2 trees/native, + 1 bunker, + the wind modifier (`wind`, yds). The target region is every point of the
+    green at least the left/right cushion from the edge sideways and the short/long cushion along the line of
+    play (checked at the cushion and half of it, so a kidney's waist counts). If nothing qualifies the lesser
+    trouble gives up room 0.5 yd at a time (the worst side keeps its full cushion; equal trouble gives up
+    equally, ending in the middle). Aim = the region's centroid; with a known `pin`, the pin if it is inside
+    the region, else the region point nearest it."""
+    yb = _yb()
+    start = np.asarray(start, float)
+    fwd, right = _ld_frame(hole, start)
+    dist = float(np.hypot(*(hole.green_c - start))) if dist is None else float(dist)
+    g = _to_ld(hole, hole.green, fwd, right)
+    path = Path(g)
+    haz = side_hazards(hole, fwd, right)
+    base = decade_base(dist)
+    ml, md = DECADE_LIE_MULT.get(lie, (1.0, 1.0))
+    mult = {"left": ml, "right": ml, "short": md, "long": md}
+    off = {k: max(base * mult[k] + yb.ADD[v[0]] + wind, 0.0) for k, v in haz.items()}
+    sev = {k: yb.SEVERITY[v[0]] for k, v in haz.items()}
+    lo, hi = g.min(axis=0), g.max(axis=0)
+    gx, gy = np.meshgrid(np.arange(lo[0], hi[0] + step, step), np.arange(lo[1], hi[1] + step, step))
+    cand = np.c_[gx.ravel(), gy.ravel()]
+    cand = cand[path.contains_points(cand)]
+    vec = {"left": (-1, 0), "right": (1, 0), "short": (0, -1), "long": (0, 1)}
+    ok_side = {}
+
+    def side_ok(side, c):
+        if c not in ok_side.setdefault(side, {}):
+            v = np.array(vec[side], float)
+            ok = np.ones(len(cand), bool)
+            for f in (0.5, 1.0):
+                ok &= path.contains_points(cand + v * c * f)
+            ok_side[side][c] = ok
+        return ok_side[side][c]
+
+    cush = {k: round(v / step) * step for k, v in off.items()}
+    given = {k: 0.0 for k in cush}
+    for _ in range(400):
+        m = np.ones(len(cand), bool)
+        for side, c in cush.items():
+            m &= side_ok(side, c)
+        if m.any():
+            break
+        live = [k for k in cush if cush[k] > 0]
+        if not live:
+            m = np.ones(len(cand), bool)
+            break
+        low = min(sev[k] for k in live)
+        for k in live:
+            if sev[k] == low:
+                cush[k] = max(cush[k] - step, 0.0)
+                given[k] += step
+    region = cand[m]
+    lat_c, dep_c = region.mean(axis=0)
+    aim_ld = np.array([lat_c, dep_c])
+    if pin is not None:
+        p = _to_ld(hole, pin, fwd, right)[0]
+        aim_ld = region[int(np.argmin(np.hypot(*(region - p).T)))]
+    l0, d0 = region.min(axis=0)
+    l1, d1 = region.max(axis=0)
+
+    def how(a, b):
+        if not given[a] and not given[b]:
+            return "fits"
+        if given[a] and given[b]:
+            return "split"
+        return f"{b} keeps" if given[a] else f"{a} keeps"
+    return dict(dist=round(dist, 1), lie=lie, wind=wind, base=float(base), haz={k: v[0] for k, v in haz.items()},
+                haz_share={k: v[1] for k, v in haz.items()}, off={k: round(v, 1) for k, v in off.items()},
+                used=cush, given=given, lat=(round(float(l0), 1), round(float(l1), 1)),
+                dep=(round(float(d0), 1), round(float(d1), 1)), how_lat=how("left", "right"),
+                how_dep=how("short", "long"), n_cells=int(len(region)),
+                aim_ld=(round(float(aim_ld[0]), 1), round(float(aim_ld[1]), 1)),
+                aim_xy=_from_ld(hole, aim_ld, fwd, right)[0])
+
+
+# ------------------------------------------------------------------ lay-ups (out of reach, par 5s)
+# DECADE lay-up: to a full-wedge number, on the widest fairway. The full-wedge window is the bag's full
+# wedge totals, LW 101 .. PW 141 yds from the green centre. Inside it the spot with the most short grass
+# around it (half-width capped at LAYUP_WIDE: past ~15 yds each side the fairway is "wide enough") wins,
+# ties going to the shorter wedge in. No fairway in the window -> 60-160 yds, then any short grass >= 20 yds
+# closer, then straight at the green as far as the lie allows.
+LAYUP_WINDOWS = ((BAG["LW"][0][1] - 1.0, BAG["PW"][0][1]), (60.0, 160.0), (0.0, np.inf))
+LAYUP_WIDE = 15.0
+
+
+def _short_grass_width(hole):
+    if "_sg_width" not in hole.__dict__:
+        from scipy.ndimage import distance_transform_edt
+        sg = np.isin(hole.lie, [CODE["fairway"], CODE["first_cut"]])
+        hole._sg_width = distance_transform_edt(sg) * RES
+    return hole._sg_width
+
+
+def layup_target(hole, start, lie, cond=CALM):
+    """DECADE lay-up spot from `start` -> (xy, how) or (None, why)."""
+    start = np.asarray(start, float)
+    dg = float(np.hypot(*(start - hole.green_c)))
+    width = _short_grass_width(hole)
+    dgc = np.hypot(hole.XX - hole.green_c[0], hole.YY - hole.green_c[1])
+    dst = np.hypot(hole.XX - start[0], hole.YY - start[1])
+    base = (width > 0) & (dst <= REACH.get(lie, 0.0)) & (dgc <= dg - 20) & (dst >= 30)
+    for lo, hi in LAYUP_WINDOWS:
+        sel = base & (dgc >= lo) & (dgc <= hi)
+        if not sel.any():
+            continue
+        idx = np.flatnonzero(sel)
+        score = np.minimum(width.ravel()[idx], LAYUP_WIDE)
+        order = np.lexsort((dgc.ravel()[idx], -np.round(score)))
+        for j in order[:200]:
+            p = np.array([hole.XX.ravel()[idx[j]], hole.YY.ravel()[idx[j]]])
+            _, d_eff = plays_like(hole, start, p, cond)
+            if club_for(d_eff, lie, cond, hole.bearing(start, p)) is not None:
+                return p, dict(window=[lo, hi], half_width=round(float(width.ravel()[idx[j]]), 1),
+                               leaves=round(float(dgc.ravel()[idx[j]]), 1))
+    u = (hole.green_c - start) / max(dg, 1e-9)
+    d = min(REACH.get(lie, 0.0) - 5, dg - 20)
+    if d < MIN_SHOT:
+        return None, "no lay-up"
+    return start + u * d, dict(window=None, half_width=0.0, leaves=round(dg - d, 1))
+
+
+def candidate_aims(hole, start, lie, step_green=2.0, ring=8.0):
+    """Diagnostic only (solve(opt=True)): the old expected-strokes search grid, green + an 8-yd ring."""
     gx = np.arange(hole.green[:, 0].min() - ring, hole.green[:, 0].max() + ring + 0.1, step_green)
     gy = np.arange(hole.green[:, 1].min() - ring, hole.green[:, 1].max() + ring + 0.1, step_green)
     GX, GY = np.meshgrid(gx, gy, indexing="ij")
@@ -437,59 +647,72 @@ def candidate_aims(hole, start, lie, step_green=2.0, ring=8.0, layup_step=6.0):
     near = _edge_dist(pts, hole.green) <= ring
     lies = hole.lie_at(pts)
     ok = (inside | near) & ~np.isin(lies, [CODE["water"], CODE["ob"], CODE["recovery"], CODE["native"]])
-    aims = [pts[ok]]
-    dg = float(np.hypot(*(np.asarray(start, float) - hole.green_c)))
-    if dg > min(REACH.get(lie, 0) - 15, 200) or hole.par >= 5:
-        lx = hole.x[::int(layup_step / RES)]
-        ly = hole.y[::int(layup_step / RES)]
-        LX, LY = np.meshgrid(lx, ly, indexing="ij")
-        lp = np.c_[LX.ravel(), LY.ravel()]
-        ll = hole.lie_at(lp)
-        dist = np.hypot(*(lp - np.asarray(start, float)).T)
-        closer = np.hypot(*(lp - hole.green_c).T) < dg - 20
-        sel = np.isin(ll, [CODE["fairway"], CODE["first_cut"]]) & (dist <= REACH.get(lie, 0) + CLUB_HIGH) & closer
-        aims.append(lp[sel])
-    return np.vstack(aims)
+    return pts[ok]
 
 
-def solve(hole, start, lie=None, pin=None, cond=CALM, n=400, seed=0, hcp=False, start_ev=None, top=5):
-    """Best club + aim from `start` (yard frame). pin=None -> pin-averaged over hole.pins().
-    Returns dict(best, centre, flag (if pin given), top, n_aims)."""
+def solve(hole, start, lie=None, pin=None, cond=CALM, n=400, seed=0, hcp=False, start_ev=None, opt=False, top=None):
+    """DECADE club + aim from `start` (yard frame). pin=None -> the box centre (pin-independent; EVs averaged
+    over hole.pins()); a known pin -> the pin if inside the box, else the box point nearest it.
+
+    The aim is never chosen by expected strokes. The club is the one whose plays-like total (elevation,
+    wind, temperature) is nearest the distance to the aim. EVs are a check: best (the DECADE pick) vs centre
+    (same logic aimed at the green centroid) and, with a pin, flag. Lay-ups: when the green is out of reach,
+    or on a par 5 when the DECADE lay-up (full wedge, widest fairway) scores better than going.
+    opt=True also reports the old EV-optimal aim (green + ring search) as `ev_opt`, for comparison."""
     start = np.asarray(start, float)
     lie = lie or hole.lie_name(start)
     if lie == "green":
         pins = np.atleast_2d(pin) if pin is not None else hole.pins()
         ev = float(np.mean(putts(np.hypot(*(pins - start).T) * 3.0, hcp)))
-        return dict(best=dict(club="putter", target=[round(float(x), 1) for x in start], ev=ev), centre=None,
-                    top=[], n_aims=0, lie=lie)
+        return dict(best=dict(club="putter", target=[round(float(x), 1) for x in start], ev=ev, kind="putt"),
+                    centre=None, n_aims=0, lie=lie)
     pins = np.atleast_2d(np.asarray(pin, float)) if pin is not None else hole.pins()
     S = value_map(hole, pins, hcp)
     z = z_draws(n, seed)
-    aims = candidate_aims(hole, start, lie)
-    ev, info = evaluate(hole, start, lie, aims, S, z, cond, start_ev, hcp)
-    order = np.argsort(ev)
+    box = decade_box(hole, start, lie, wind_mod(cond.wind_mph), pin=pin)
 
-    def pack(i, a=None, e=None, inf=None):
-        a = aims[i] if a is None else a
-        e = ev[i] if e is None else e
-        inf = info[i] if inf is None else inf
-        if not np.isfinite(e):
+    def run(a, kind):
+        a = np.asarray(a, float)
+        e, inf = evaluate(hole, start, lie, a[None, :], S, z, cond, start_ev, hcp)
+        if not np.isfinite(e[0]):
             return None
-        out = dict(target=[round(float(a[0]), 1), round(float(a[1]), 1)], ev=round(float(e), 4),
-                   lie_at_target=hole.lie_name(a), **(inf or {}))
+        out = dict(kind=kind, target=[round(float(a[0]), 1), round(float(a[1]), 1)], ev=round(float(e[0]), 4),
+                   lie_at_target=hole.lie_name(a), **inf[0])
         out.update(_offset(hole, start, a))
         return out
 
-    res = dict(lie=lie, start=[round(float(x), 1) for x in start], n_aims=int(len(aims)),
-               best=pack(order[0]) if np.isfinite(ev[order[0]]) else None,
-               top=[pack(i) for i in order[:top] if np.isfinite(ev[i])])
-    # reference aims: the green centroid (and the flag), same swings
-    refs = {"centre": hole.green_c}
+    go = run(box["aim_xy"], "decade")
+    res = dict(lie=lie, start=[round(float(x), 1) for x in start], n_aims=1, go=go,
+               decade={k: v for k, v in box.items() if k != "aim_xy"})
+    lay = None
+    if go is None or hole.par >= 5:
+        lp, how = layup_target(hole, start, lie, cond)
+        if lp is not None:
+            lay = run(lp, "layup")
+            if lay is not None:
+                lay["layup"] = how
+    res["layup"] = lay
+    if go is None:
+        res["best"] = lay
+    elif lay is not None and lay["ev"] < go["ev"]:
+        res["best"] = lay
+    else:
+        res["best"] = go
+    res["centre"] = run(hole.green_c, "centre")
     if pin is not None:
-        refs["flag"] = np.asarray(pin, float)
-    for k, a in refs.items():
-        e, inf = evaluate(hole, start, lie, a[None, :], S, z, cond, start_ev, hcp)
-        res[k] = pack(0, a, e[0], inf[0])
+        res["flag"] = run(pin, "flag")
+    if res["best"] and res["centre"]:
+        res["ev_check"] = round(res["centre"]["ev"] - res["best"]["ev"], 4)   # + = DECADE beats the centre
+    res["top"] = [res["best"]] if res["best"] else []
+    if opt:
+        aims = candidate_aims(hole, start, lie)
+        ev, info = evaluate(hole, start, lie, aims, S, z, cond, start_ev, hcp)
+        i = int(np.argmin(ev))
+        if np.isfinite(ev[i]):
+            o = dict(kind="ev_opt", target=[round(float(aims[i][0]), 1), round(float(aims[i][1]), 1)],
+                     ev=round(float(ev[i]), 4), lie_at_target=hole.lie_name(aims[i]), **info[i])
+            o.update(_offset(hole, start, aims[i]))
+            res["ev_opt"] = o
     return res
 
 

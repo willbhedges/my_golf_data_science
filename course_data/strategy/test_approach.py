@@ -51,20 +51,44 @@ def test_bag_gapping_and_tee_consistency():
     assert A.club_for(250.0, "rough", A.CALM, 0.0) is None
 
 
-def test_open_green_aims_near_centre():
+def test_open_green_aims_at_centre_no_short_bias():
     h = synth()
     r = A.solve(h, START, "fairway", n=600)
-    assert r["best"]["club"] in ("9-iron", "8-iron")
-    assert abs(r["best"]["vs_centre_right"]) <= 4.0
-    assert r["best"]["ev"] <= r["centre"]["ev"] + 1e-9
+    b = r["best"]
+    assert b["kind"] == "decade"
+    assert abs(b["vs_centre_right"]) <= 0.5 and abs(b["vs_centre_long"]) <= 0.5
+    assert b["club"] == r["centre"]["club"] in ("9-iron", "8-iron")
+    # club = plays-like total nearest the distance to the aim (no systematic short bias)
+    tots = {c: A.CALM.club(c, 0.0)[1] for c in A.BAG}
+    assert b["club"] == min(tots, key=lambda c: abs(tots[c] - b["plays_like"]))
+    assert "ev_check" in r and abs(r["ev_check"]) < 0.05
 
 
-def test_water_right_moves_aim_left_and_costs_less_than_centre():
+def test_decade_base_matches_card_and_plan():
+    yb = A._yb()
+    for d in range(60, 251, 10):
+        assert A.decade_base(d) == yb.TARGET[d]
+    assert A.decade_base(40) == 3 and A.decade_base(300) == 15
+    assert [A.wind_mod(m) for m in (0, 4.9, 5, 12, 25, 35)] == [-1, -1, 0, 1, 2, 3]
+
+
+def test_decade_cushions_and_modifiers():
+    water = ("water", rect(14, 60, -440, -360))
+    b = A.decade_box(synth([water]), START, "fairway", wind=0)
+    assert b["haz"]["right"] == "water" and b["haz"]["left"] == "rough"
+    assert b["off"]["right"] == pytest.approx(8 + 3) and b["off"]["left"] == pytest.approx(8)
+    rough = A.decade_box(synth(), START, "rough", wind=0)
+    assert rough["off"]["short"] == pytest.approx(8 * 1.35) and rough["off"]["left"] == pytest.approx(8 * 1.2)
+    windy = A.decade_box(synth(), START, "fairway", wind=2)
+    assert windy["off"]["left"] == pytest.approx(10)
+
+
+def test_water_right_moves_aim_left():
     water = ("water", rect(14, 60, -440, -360))
     h = synth([water])
     r = A.solve(h, START, "fairway", n=600)
-    assert r["best"]["vs_centre_right"] <= -2.0
-    assert r["best"]["ev"] < r["centre"]["ev"]
+    assert r["best"]["vs_centre_right"] <= -1.0
+    assert abs(r["best"]["vs_centre_long"]) <= 0.5
     assert r["best"]["p_water"] < r["centre"]["p_water"]
 
 
@@ -72,8 +96,23 @@ def test_ob_long_moves_aim_short():
     ob = ("ob", rect(-80, 80, -480, -412))
     h = synth([ob])
     r = A.solve(h, START, "fairway", n=600)
-    assert r["best"]["vs_centre_long"] < -1.0
+    assert -3.0 < r["best"]["vs_centre_long"] < -1.0
     assert r["best"]["p_ob"] <= r["centre"]["p_ob"]
+
+
+def test_small_green_aims_middle():
+    h = synth(r=6.0)                                   # 12-yd green from 150: no box fits -> the middle
+    b = A.decade_box(h, START, "fairway", wind=0)
+    assert b["how_lat"] == "split" and b["how_dep"] == "split"
+    assert abs(b["aim_ld"][0]) <= 0.5 and abs(b["aim_ld"][1]) <= 0.5
+
+
+def test_small_green_water_left_keeps_its_cushion():
+    water = ("water", rect(-60, -6, -440, -360))
+    h = synth([water], r=6.0)
+    b = A.decade_box(h, START, "fairway", wind=0)
+    assert b["haz"]["left"] == "water" and b["how_lat"] == "left keeps"
+    assert b["aim_ld"][0] > 2.0
 
 
 def test_tucked_pin_behind_bunker_aims_inside_flag():
@@ -83,6 +122,10 @@ def test_tucked_pin_behind_bunker_aims_inside_flag():
     r = A.solve(h, START, "fairway", pin=pin, n=800)
     assert r["best"]["target"][0] > pin[0] + 1.0       # aim right of (inside) the flag
     assert r["best"]["ev"] <= r["flag"]["ev"]
+    # a pin inside the box is aimed at directly
+    pin2 = GREEN_C + np.array([2.0, 1.0])
+    r2 = A.solve(h, START, "fairway", pin=pin2, n=200)
+    assert r2["best"]["target"] == pytest.approx(list(pin2), abs=0.6)
 
 
 def test_short_side_costs_more():
@@ -118,12 +161,15 @@ def test_wind_and_temperature_change_the_club():
     assert cross["aim_off_drift"] > 2.0
 
 
-def test_out_of_reach_lays_up_or_goes_short():
+def test_out_of_reach_lays_up_to_full_wedge():
     h = synth(par=5)
     r = A.solve(h, np.array([0.0, -110.0]), "fairway", n=300)    # 290 yds: green out of reach
-    assert r["best"] is not None and np.isfinite(r["best"]["ev"])
-    assert r["centre"] is None
-    assert r["best"]["dist"] <= A.REACH["fairway"] + A.CLUB_HIGH
+    assert r["go"] is None and r["centre"] is None
+    b = r["best"]
+    assert b["kind"] == "layup" and np.isfinite(b["ev"])
+    assert 100 <= b["layup"]["leaves"] <= 141                     # a full-wedge number
+    assert abs(b["target"][0]) <= 3.0                              # middle of the (straight) fairway
+    assert h.lie_name(b["target"]) == "fairway"
 
 
 def test_rough_worse_than_fairway():
@@ -163,5 +209,6 @@ def test_package_hole_solves():
     assert (h.lie == A.CODE["green"]).sum() > 200
     start = h.green_c + np.array([0.0, 140.0])
     r = A.solve(h, start, "fairway", n=300)
-    assert r["best"]["ev"] <= r["centre"]["ev"] + 1e-9
+    assert r["best"]["kind"] == "decade"
+    assert abs(r["ev_check"]) < 0.15
     assert 2.5 < r["best"]["ev"] < 4.5
