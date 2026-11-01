@@ -1,6 +1,6 @@
 # Coldwater Golf Links (Ames, IA) - Blue tees
 
-Built 2026-10-30T20:42:44Z. OSM way/44807109. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-01T18:11:17Z. OSM way/44807109. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 

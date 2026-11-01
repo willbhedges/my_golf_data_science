@@ -1,5 +1,5 @@
 """Course module for Tomahawk Hills Golf Course (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-10-30T20:57:59Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-01T18:12:32Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_tomahawk_hills.json
 
