@@ -44,6 +44,9 @@ the dev threshold, `agree.py` two-router agreement confidence, `seq_extend.py`, 
   are queued on Actions (runs 41353156906, 41357754039; runners were saturated). After pass 2: re-point
   `benchmark.json` at `perception/scenes` (`bench_set.py` prefers it), re-run formation hole_pairs on the new scenes
   (zt_formation `inputs`/`eval`), then the commands below.
+  *Reproducibility:* the tables below were computed on the scenes as of commit c990a22a. Pass 1 re-commits
+  `perception/scenes/` for its 145 courses with the old perception-20261017-1247 models (same 63 training courses
+  as -1050, so the provenance split is unchanged); pass 2 then replaces them with the new-model scenes.
 
 ## 1. Detection (bench tolerances; "every candidate" = the pairing ceiling)
 
