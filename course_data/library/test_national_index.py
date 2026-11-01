@@ -42,17 +42,22 @@ def test_slim_joins_bbox_and_drops_tagless():
     assert "bb" not in [r for r in c if r["id"] == 11][0]
 
 
+def ia(lat, lon, addr=None):
+    return "IA" if 40 <= lat <= 43.5 and -96.7 <= lon <= -90 else None
+
+
 def test_build_state_counts_and_tier():
-    rows = ni.build_state("IA", ni.slim_elements(course_json()))
+    rows = ni.build_rows(ni.slim_elements(course_json()), ia)
     by = {r["name"]: r for r in rows}
     t = by["Test Hollow Golf Course"]
     assert (t["osm_holes"], t["greens"], t["tees"], t["fairways"], t["pins"], t["outline"]) == (18, 18, 18, 18, 18, 1)
-    assert t["holes"] == 18 and t["city"] == "Testville"
+    assert t["holes"] == 18 and t["city"] == "Testville" and t["state"] == "IA"
     assert ni.tier(t) == "B"
     assert ni.tier(dict(t, card="oga")) == "A"
     n = by["Node Only Golf Club"]
     assert n["outline"] == 0 and ni.tier(n) == "D"
     assert ni.tier(dict(t, osm_holes=12)) == "C"
+    assert ni.build_rows(ni.slim_elements(course_json()), lambda *a: None) == []      # outside the US: dropped
 
 
 def test_hole_refs():
@@ -61,75 +66,82 @@ def test_hole_refs():
     assert ni.hole_ref("x-y") is None
 
 
-def test_tiles_cover_bbox():
+def test_cells_cover_states_once():
+    allc = ni.cells_for(ni.STATES)
+    assert len(allc) == len(set(allc)) and 1000 < len(allc) < 1600
     for st in ("MO", "AK", "DC", "TX"):
-        ts = ni.tiles(st)
         s, w, n, e = ni.STATE_BBOX[st]
-        area = sum((t[2] - t[0]) * (t[3] - t[1]) for t in ts)
-        assert abs(area - (n - s) * (e - w)) < 1e-6
-        assert len(ts) <= 90
+        cs = ni.state_cells(st)
+        assert min(c[0] for c in cs) <= s and max(c[2] for c in cs) >= n
+        assert min(c[1] for c in cs) <= w and max(c[3] for c in cs) >= e
+    shards = [ni.shard_cells(ni.STATES, i, 6) for i in range(6)]
+    assert sorted(c for sh in shards for c in sh) == allc
 
 
 class FakeMirrors(ni.Mirrors):
     def __init__(self, answer):
-        super().__init__(0, post=answer)
+        super().__init__(0, post=answer, sleep=lambda s: None)
 
 
 def test_fetch_is_incremental_and_splits(tmp_path, monkeypatch):
-    monkeypatch.setattr(ni.time, "sleep", lambda s: None)
-    monkeypatch.setitem(ni.STATE_BBOX, "IA", (40.0, -91.5, 41.0, -90.5))     # one 1-degree tile
-    monkeypatch.setattr(ni, "tile_deg", lambda st: 1.0)
+    monkeypatch.setitem(ni.STATE_BBOX, "IA", (40.2, -91.8, 40.8, -91.2))     # one 1-degree cell
     calls = []
 
     def post(url, q, timeout):
         calls.append(q)
-        big = "(40.0000,-91.5000,41.0000,-90.5000)" in q
-        if big:
-            raise TimeoutError("too slow")               # the whole tile fails on every mirror -> split in four
+        if "(40.0000,-92.0000,41.0000,-91.0000)" in q:
+            raise TimeoutError("too slow")               # the whole cell fails on every mirror -> split in four
         if "(40.0000,-91.5000,40.5000,-91.0000)" in q:
             return course_json()
-        return {"elements": [{"type": "area", "id": 1}]}
-    res = ni.fetch(["IA"], str(tmp_path), budget_min=5, mirrors=FakeMirrors(post))
-    assert res == {"IA": []}
-    d = tmp_path / "IA"
-    assert len(list(d.glob("t_*.json"))) == 5                  # four quarters + the parent's split marker
-    st = json.load(open(d / "_status.json"))
-    assert st["complete"]
+        return {"elements": []}
+    left = ni.fetch(["IA"], str(tmp_path), budget_min=5, mirrors=FakeMirrors(post), sleep=lambda s: None)
+    assert left == []
+    d = tmp_path / "cells"
+    assert len(list(d.glob("c_*.json"))) == 5                  # four quarters + the parent's split marker
     n_calls = len(calls)
-    ni.fetch(["IA"], str(tmp_path), budget_min=5, mirrors=FakeMirrors(post))
+    ni.fetch(["IA"], str(tmp_path), budget_min=5, mirrors=FakeMirrors(post), sleep=lambda s: None)
     assert len(calls) == n_calls                               # nothing fetched twice
-    els, status = ni.load_state_tiles(str(d))
-    assert status["complete"]
+    els, have = ni.load_cells(str(tmp_path))
+    assert (40.0, -92.0, 41.0, -91.0) in have
     assert any(e["g"].get("name") == "Test Hollow Golf Course" for e in els)
 
 
-def test_mirror_without_area_is_not_an_answer(tmp_path, monkeypatch):
-    monkeypatch.setattr(ni.time, "sleep", lambda s: None)
+def test_tired_mirror_rests():
+    t = [0.0]
     seen = []
 
     def post(url, q, timeout):
         seen.append(url)
         if url == ni.OVERPASS[0]:
-            return {"elements": []}                           # no area element: this mirror has no areas
-        return course_json()
-    js, url = FakeMirrors(post).ask("q", 10)
-    assert url == ni.OVERPASS[1] and len(seen) == 2
+            raise TimeoutError("x")
+        return {"elements": []}
+    m = ni.Mirrors(0, post=post, now=lambda: t[0], sleep=lambda s: None)
+    for _ in range(3):
+        m.ask("q", 1)
+    seen.clear()
+    m.ask("q", 1)
+    assert ni.OVERPASS[0] not in seen                          # resting after 3 failures in a row
+    t[0] += ni.MIRROR_REST_S + 1
+    m.order = list(ni.OVERPASS)
+    seen.clear()
+    m.ask("q", 1)
+    assert seen[0] == ni.OVERPASS[0]
 
 
-def test_failed_tile_leaves_state_partial_and_merge_says_so(tmp_path, monkeypatch):
-    monkeypatch.setattr(ni.time, "sleep", lambda s: None)
-    monkeypatch.setitem(ni.STATE_BBOX, "IA", (40.0, -91.5, 40.4, -90.7))
-    monkeypatch.setattr(ni, "tile_deg", lambda st: 0.4)
+def test_partial_state_and_merge(tmp_path, monkeypatch):
+    monkeypatch.setitem(ni.STATE_BBOX, "IA", (40.2, -91.8, 40.8, -90.2))     # two cells
+    monkeypatch.setattr(ni, "STATES", ["IA", "MO"])
 
     def post(url, q, timeout):
-        if "-91.5000" in q:
+        if "-92.0000" in q:
             return course_json()
         raise TimeoutError("down")
-    res = ni.fetch(["IA"], str(tmp_path / "raw"), budget_min=5, mirrors=FakeMirrors(post))
-    assert res["IA"]                                            # the east tile (and its quarters) failed
+    left = ni.fetch(["IA"], str(tmp_path / "raw"), budget_min=5, mirrors=FakeMirrors(post), sleep=lambda s: None)
+    assert left                                                # the east cell (and its quarters) failed
     for f in ("OUT_GZ", "OUT_READY", "LIB_INDEX"):
         monkeypatch.setattr(ni, f, str(tmp_path / f))
-    rows = ni.merge(str(tmp_path / "raw"), [])
+    monkeypatch.setattr(ni, "state_locator", lambda shapes: ia)
+    rows = ni.merge(str(tmp_path / "raw"), [], shapes={})
     assert any(r["name"] == "Test Hollow Golf Course" for r in rows)
     ready = json.load(open(tmp_path / "OUT_READY"))
     assert "IA" in ready["partial_states"] and "MO" in ready["missing_states"]
@@ -137,8 +149,22 @@ def test_failed_tile_leaves_state_partial_and_merge_says_so(tmp_path, monkeypatc
     assert doc["schema"] == "us_courses/2" and "fairways" in doc["fields"]
 
 
+def test_state_locator_geojson(tmp_path):
+    gj = {"type": "FeatureCollection", "features": [
+        {"type": "Feature", "properties": {"name": n},
+         "geometry": {"type": "Polygon", "coordinates": [[[w, s], [e, s], [e, n_], [w, n_], [w, s]]]}}
+        for n, (s, w, n_, e) in [(ni._STATE_NAMES[k], ni.STATE_BBOX[k]) for k in ni.STATE_BBOX]]}
+    p = tmp_path / "s.json"
+    p.write_text(json.dumps(gj))
+    loc = ni.state_locator(ni.load_state_shapes(str(p)))
+    assert loc(38.9, -77.03) in ("DC", "MD", "VA")
+    assert loc(38.9, -77.03, "DC") == "DC"
+    assert loc(41.6, -93.6) == "IA"
+    assert loc(52.0, -100.0) is None                           # Canada
+
+
 def test_oga_card_and_readme_block(tmp_path, monkeypatch):
-    rows = ni.build_state("IA", ni.slim_elements(course_json()))
+    rows = ni.build_rows(ni.slim_elements(course_json()), ia)
     d = tmp_path / "oga"
     d.mkdir()
     json.dump({"state": "IA", "courses": [{"name": "Test Hollow Golf Course", "state": "IA", "par": 72,

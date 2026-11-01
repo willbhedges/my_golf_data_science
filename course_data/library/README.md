@@ -157,15 +157,16 @@ or re-score a page without a refetch.
 OpenStreetMap, with how completely OSM maps it. `national_index.py` builds it on Actions
 (`.github/workflows/national_index.yml`; push `course_data/requests/national_index_<name>.json`
 `{"states": [] (all) or ["IA", ...], "reuse_run": <run id>, "oga_run": <run id>, "oga_states": [...], "rev": n}`).
-The sandbox cannot reach Overpass. Each state's bbox is cut into tiles of about 1 x 1 degree (0.5-1.5; 4 in
-Alaska), about 2,200 tiles in all. One Overpass query per tile (course outlines filtered to the state's area, every
-`golf=hole|green|tee|fairway|pin` in the tile, place names for the city), with a 150 s server timeout; each tile is
-tried once on each mirror of `platform/osm_guard.py` (a mirror whose answer lacks the state's area counts as a
-failure, not as an empty tile), and a tile no mirror answers is split in four and retried. Every tile is written
-the moment it lands, so a time-out loses one tile, not a state; `reuse_run` seeds a re-run with an earlier run's
-tiles, so only the missing ones are fetched. The states are split over at most 6 jobs (other builds share the 20
-runners). `partial_states` in both files names states with tiles still missing. OpenGolfAPI's state listings
-(about 16,000 courses; fetched once and reused from a run's `natoga` artifact via `oga_run`, or fresh for
+The sandbox cannot reach Overpass. The US is cut into 1 x 1 degree grid cells (2 x 2 in Alaska), about 1,400.
+One bbox-only Overpass query per cell (course outlines, every `golf=hole|green|tee|fairway|pin`, place names for
+the city; 90 s server timeout). A first version filtered every tile by the state's area, which cost 30-60 s per
+tile on overpass-api.de even for empty tiles, so the merge now assigns courses to states by the Census 1:500k
+state outlines instead (courses outside every outline, in Canada or Mexico, are dropped). Each cell is tried once
+on each mirror of `platform/osm_guard.py` (a mirror failing three times in a row rests 15 min), and a cell no
+mirror answers is split in four and retried. Every cell is written the moment it lands, so a time-out loses one
+cell, not a state; `reuse_run` seeds a re-run with an earlier run's cells, so only the missing ones are fetched.
+The cells are dealt over at most 6 jobs (every 6th cell; other builds share the 20 runners). A state with at
+least half its cells is used and listed in `partial_states` until all are in. OpenGolfAPI's state listings (about 16,000 courses; fetched once and reused from a run's `natoga` artifact via `oga_run`, or fresh for
 `oga_states`) mark courses it knows, matched by name + state, or by a shared name stem within 1.5 km.
 
 Columnar: `{"fields": [...], "rows": [[...]]}`. Fields: `name, city, state, lat, lon, osm, holes, osm_holes,

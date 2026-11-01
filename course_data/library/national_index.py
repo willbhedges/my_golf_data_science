@@ -2,19 +2,21 @@
 
 Runs on GitHub Actions (.github/workflows/national_index.yml; the sandbox cannot reach Overpass):
 
-  python course_data/library/national_index.py fetch IA MO ... --out DIR   Overpass, per state in tiles -> DIR/<ST>/
+  python course_data/library/national_index.py fetch [ST ...] --shard i/n --out DIR   Overpass cells -> DIR/cells/
   python course_data/library/national_index.py oga IA MO ... --out DIR     OpenGolfAPI state listings (best effort)
   python course_data/library/national_index.py merge DIR --oga D1,D2       -> us_courses.json.gz + us_readiness.json
   python course_data/library/national_index.py readme                      us_readiness.json -> README counts block
 
-Fetch: each state's bbox (STATE_BBOX, padded) is cut into tiles of about 1 x 1 degree (larger for the big western
-states and Alaska). One Overpass query per tile, filtered to the state's area, with a server timeout of
-TILE_TIMEOUT_S and a client cap a little above it; each tile is tried once on each mirror (osm_guard.MIRRORS: the
-three platform_common mirrors + one more), and a tile no mirror answers is split in four and retried, down to
-MIN_TILE_DEG. Every tile is written as soon as it lands (DIR/<ST>/<tile>.json) and a tile already on disk is not
-fetched again, so a time-out or a cancelled job loses at most the tile in flight, and a re-run (the workflow can
-seed DIR from an earlier run's artifacts) only fetches what is missing. DIR/<ST>/_status.json says whether the state
-is complete (every tile answered) or which tiles failed.
+Fetch: the US is cut into a grid of 1 x 1 degree cells (2 x 2 in Alaska) touching some state's bbox (STATE_BBOX),
+about 1,400 cells. One bbox-only Overpass query per cell (course outlines, golf=hole / green / tee / fairway / pin,
+place names), CELL_TIMEOUT_S server timeout and a client cap 30 s above it; each cell is tried once on each mirror
+(osm_guard.MIRRORS: the three platform_common mirrors + one more; a mirror failing 3 times in a row rests 15 min),
+and a cell no mirror answers is split in four and retried, down to MIN_CELL_DEG. Every cell is written the moment
+it lands (DIR/cells/c_<s>_<w>_<n>_<e>.json) and a cell already on disk is not fetched again, so a time-out or a
+cancelled job loses at most the cell in flight, and a re-run seeded with an earlier run's cells only fetches what
+is missing. `--shard i/n` takes every n-th cell. Merge assigns each course to a state by the Census 1:500k state
+outlines (point in polygon; the nearest outline within 3 km for coastal points; courses outside every outline, in
+Canada or Mexico, are dropped).
 
 Per course (schema us_courses/2, columnar: "fields" + "rows"):
   name, city, state, lat, lon, osm ("way/123"), holes (the course's `holes` tag, else inferred),
@@ -88,12 +90,17 @@ STATE_BBOX = {
     "TN": (34.95, -90.35, 36.7, -81.6), "TX": (25.8, -106.7, 36.55, -93.5), "UT": (36.95, -114.1, 42.05, -109.0),
     "VT": (42.7, -73.45, 45.05, -71.45), "VA": (36.5, -83.7, 39.5, -75.2), "WA": (45.5, -124.85, 49.05, -116.9),
     "WV": (37.2, -82.7, 40.65, -77.7), "WI": (42.45, -92.9, 47.35, -86.2), "WY": (40.95, -111.1, 45.05, -104.0)}
-TILE_TIMEOUT_S = 150          # Overpass [timeout:] per tile; the client gives up TILE_TIMEOUT_S + 30 s later
-MIN_TILE_DEG = 0.2            # a tile no mirror answers is split in four until this size
+CELL_TIMEOUT_S = 90           # Overpass [timeout:] per cell; the client gives up 30 s later
+MIN_CELL_DEG = 0.25           # a cell no mirror answers is split in four until this size
+MIRROR_REST_S = 900           # a mirror that failed 3 times in a row is skipped this long
 OSM_TYPE = {"w": "way", "r": "relation", "n": "node"}
 GOLF_KINDS = ("hole", "green", "tee", "fairway", "pin")
 FIELDS = ["name", "city", "state", "lat", "lon", "osm", "holes", "osm_holes", "greens", "tees", "fairways", "pins",
           "outline", "card", "tier", "closed"]
+# state outlines for assigning a course to a state (Census 1:500k cartographic boundaries; a coarse GeoJSON as a
+# fallback). Downloaded by the merge job, not committed.
+STATE_SHAPES = ["https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_state_500k.zip",
+                "https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"]
 
 
 def log(*a):
@@ -101,45 +108,51 @@ def log(*a):
 
 
 # ------------------------------------------------------------------------------------------------ fetch (Actions)
-def tile_deg(st):
-    s, w, n, e = STATE_BBOX[st]
-    area = (n - s) * (e - w)
-    top = 4.0 if st == "AK" else 1.5     # dense metros in a 2-degree tile are slow; Alaska is mostly empty
-    return min(top, max(0.5, round(math.sqrt(area / 40.0) * 4) / 4))      # ~40 tiles a state
+def cell_deg(st):
+    return 2.0 if st == "AK" else 1.0
 
 
-def tiles(st):
+def state_cells(st):
+    """Grid cells (s, w, n, e), aligned to whole multiples of the cell size, that touch the state's bbox."""
     s, w, n, e = STATE_BBOX[st]
-    d = tile_deg(st)
+    d = cell_deg(st)
     out = []
-    la = s
-    while la < n - 1e-9:
-        lo = w
-        while lo < e - 1e-9:
-            out.append((round(la, 4), round(lo, 4), round(min(la + d, n), 4), round(min(lo + d, e), 4)))
+    la = math.floor(s / d) * d
+    while la < n:
+        lo = math.floor(w / d) * d
+        while lo < e:
+            out.append((round(la, 4), round(lo, 4), round(la + d, 4), round(lo + d, 4)))
             lo += d
         la += d
     return out
 
 
-def tile_name(t):
-    return "t_%.4f_%.4f_%.4f_%.4f.json" % t
+def cells_for(states):
+    seen, out = set(), []
+    for st in states:
+        for c in state_cells(st):
+            if c not in seen:
+                seen.add(c)
+                out.append(c)
+    return sorted(out)
 
 
-def tile_query(st, t, timeout=TILE_TIMEOUT_S):
+def cell_name(t):
+    return "c_%.4f_%.4f_%.4f_%.4f.json" % t
+
+
+def cell_query(t, timeout=CELL_TIMEOUT_S):
+    """Bbox-only (no area filter: the state-area test cost 30-60 s a tile on overpass-api.de in the pilot run)."""
     b = "(%.4f,%.4f,%.4f,%.4f)" % t
     return f"""[out:json][timeout:{timeout}][maxsize:536870912];
-area["ISO3166-2"="US-{st}"]["admin_level"="4"]->.st;
-.st out ids;
-(way["leisure"="golf_course"]{b}(area.st); relation["leisure"="golf_course"]{b}(area.st);
- node["leisure"="golf_course"]["name"]{b}(area.st);)->.c;
+(way["leisure"="golf_course"]{b}; relation["leisure"="golf_course"]{b}; node["leisure"="golf_course"]["name"]{b};)->.c;
 .c out tags center;
 .c out ids bb;
 way["golf"~"^(hole|green|tee|fairway)$"]{b};
 out tags center;
-node["golf"~"^(green|tee|pin|hole)$"]{b};
+node["golf"~"^(green|tee|pin)$"]{b};
 out body;
-node["place"~"^(city|town|village)$"]{b}(area.st);
+node["place"~"^(city|town|village)$"]{b};
 out body;"""
 
 
@@ -150,34 +163,39 @@ def _post(url, q, timeout):
 
 
 class Mirrors:
-    """Mirror order for one job: start at a job-specific offset, move a mirror that fails to the back."""
+    """Mirror order for one job: start at a job-specific offset; a mirror that fails goes to the back, and one that
+    failed 3 times in a row rests MIRROR_REST_S (the pilot: two of four mirrors timed out on nearly every tile)."""
 
-    def __init__(self, offset=0, post=_post, need_area=True):
-        self.need_area = need_area
+    def __init__(self, offset=0, post=_post, now=time.time, sleep=time.sleep):
         self.order = OVERPASS[offset % len(OVERPASS):] + OVERPASS[:offset % len(OVERPASS)]
-        self.post = post
+        self.post, self.now, self.sleep = post, now, sleep
         self.stats = {u: {"ok": 0, "fail": 0} for u in OVERPASS}
+        self.streak = {u: 0 for u in OVERPASS}
+        self.rest_until = {u: 0.0 for u in OVERPASS}
 
     def ask(self, q, timeout):
-        """One try on each mirror -> (json, mirror) or raises with the errors."""
+        """One try on each mirror not resting -> (json, mirror) or raises with the errors."""
         errs = []
-        for url in list(self.order):
+        live = [u for u in self.order if self.rest_until[u] <= self.now()] or list(self.order)
+        for url in live:
             try:
                 js = self.post(url, q, timeout)
                 bad = overpass_remark_problem(js)
                 if bad:
                     raise RuntimeError("remark: " + bad)
-                if self.need_area and not any(e.get("type") == "area" for e in js.get("elements", [])):
-                    # a mirror without the state's area answers every tile with nothing: not an answer
-                    raise RuntimeError("no state area on this mirror")
                 self.stats[url]["ok"] += 1
+                self.streak[url] = 0
                 return js, url
             except Exception as e:                                  # noqa: BLE001
                 self.stats[url]["fail"] += 1
+                self.streak[url] += 1
+                if self.streak[url] >= 3:
+                    self.rest_until[url] = self.now() + MIRROR_REST_S
+                    self.streak[url] = 0
                 errs.append(f"{url.split('/')[2]}: {e!r}"[:200])
                 self.order.remove(url)
                 self.order.append(url)
-                time.sleep(3)
+                self.sleep(2)
         raise RuntimeError("; ".join(errs))
 
 
@@ -196,8 +214,7 @@ def slim_elements(js):
         if not c:
             continue
         keep = {k: t[k] for k in ("name", "leisure", "golf", "ref", "holes", "addr:city", "addr:state", "place",
-                                  "disused", "abandoned", "disused:leisure", "abandoned:leisure", "operator",
-                                  "website", "access", "golf:course", "golf:course:name") if k in t}
+                                  "disused", "abandoned", "disused:leisure", "abandoned:leisure") if k in t}
         row = {"t": e["type"][0], "id": e["id"], "lat": round(c["lat"], 6), "lon": round(c["lon"], 6), "g": keep}
         if (e["type"][0], e["id"]) in bbs:
             row["bb"] = bbs[(e["type"][0], e["id"])]
@@ -211,99 +228,168 @@ def split4(t):
     return [(s, w, ms, mw), (s, mw, ms, e), (ms, w, n, mw), (ms, mw, n, e)]
 
 
-def fetch_tile(st, t, d, mirrors, deadline, now=time.time):
-    """Fetch one tile (splitting it when no mirror answers) -> list of tiles that still failed."""
-    path = os.path.join(d, tile_name(t))
+def fetch_cell(t, d, mirrors, deadline, now=time.time):
+    """Fetch one cell (splitting it when no mirror answers) -> list of (sub)cells that still failed."""
+    path = os.path.join(d, cell_name(t))
     if os.path.exists(path):
         return []
     if now() > deadline:
         return [t]
     t0 = now()
     try:
-        js, url = mirrors.ask(tile_query(st, t), TILE_TIMEOUT_S + 30)
+        js, url = mirrors.ask(cell_query(t), CELL_TIMEOUT_S + 30)
     except Exception as e:                                          # noqa: BLE001
-        size = t[2] - t[0]
-        log(f"  {st} tile {t} failed on every mirror ({e})"[:600])
-        if size / 2 < MIN_TILE_DEG:
+        log(f"  cell {t} failed on every mirror ({e})"[:500])
+        if (t[2] - t[0]) / 2 < MIN_CELL_DEG:
             return [t]
-        log(f"  {st} tile {t}: splitting in four")
         bad = []
         for sub in split4(t):
-            bad += fetch_tile(st, sub, d, mirrors, deadline, now)
+            bad += fetch_cell(sub, d, mirrors, deadline, now)
         if not bad:                     # the parent is covered by its four quarters: record that
-            json.dump({"state": st, "tile": t, "split": [list(x) for x in split4(t)], "elements": []},
-                      open(path, "w"))
+            with open(path, "w") as fh:
+                json.dump({"cell": list(t), "split": [list(x) for x in split4(t)], "elements": []}, fh)
         return bad
     rows = slim_elements(js)
     tmp = path + ".tmp"
     with open(tmp, "w") as fh:
-        json.dump({"state": st, "tile": list(t), "fetched": time.strftime("%Y-%m-%dT%H:%MZ", time.gmtime()),
-                   "mirror": url, "osm_base": (js.get("osm3s") or {}).get("timestamp_osm_base"), "elements": rows},
+        json.dump({"cell": list(t), "fetched": time.strftime("%Y-%m-%dT%H:%MZ", time.gmtime()), "mirror": url,
+                   "osm_base": (js.get("osm3s") or {}).get("timestamp_osm_base"), "elements": rows},
                   fh, separators=(",", ":"))
-    os.replace(tmp, path)               # a half-written tile never looks fetched
-    log(f"  {st} {tile_name(t)} {len(rows)} el {now() - t0:.0f}s {url.split('/')[2]}")
+    os.replace(tmp, path)               # a half-written cell never looks fetched
+    log(f"  {cell_name(t)} {len(rows)} el {now() - t0:.0f}s {url.split('/')[2]}")
     return []
 
 
-def fetch(states, out, budget_min=None, offset=None, now=time.time, mirrors=None):
-    """Fetch every tile of every state not already on disk; returns {state: [failed tiles]}."""
+def shard_cells(states, shard=0, n_shards=1):
+    """This job's cells: every n-th cell of the sorted list (neighbouring dense cells land on different jobs)."""
+    return cells_for(states)[shard::n_shards]
+
+
+def fetch(states, out, shard=0, n_shards=1, budget_min=None, offset=None, now=time.time, mirrors=None,
+          sleep=time.sleep):
+    """Fetch every cell of this shard not already on disk (out/cells/); returns the cells still missing."""
     budget = float(budget_min if budget_min is not None else os.environ.get("NATIDX_BUDGET_MIN", "100")) * 60
     deadline = now() + budget
-    mirrors = mirrors or Mirrors(int(offset if offset is not None else os.environ.get("NATIDX_MIRROR_OFFSET", "0")))
-    result = {}
-    for pass_ in (1, 2):
-        for st in states:
-            d = os.path.join(out, st)
-            os.makedirs(d, exist_ok=True)
-            ts = tiles(st)
-            todo = [t for t in ts if not os.path.exists(os.path.join(d, tile_name(t)))]
-            if not todo:
-                result[st] = []
-                write_status(d, st, ts, [])
-                continue
-            log(f"{st} pass {pass_}: {len(todo)} of {len(ts)} tiles to fetch ({tile_deg(st)} deg)")
-            bad = []
-            for t in todo:
-                bad += fetch_tile(st, t, d, mirrors, deadline, now)
-                time.sleep(1)
-            result[st] = bad
-            write_status(d, st, ts, bad)
-            log(f"{st}: {'complete' if not bad else f'{len(bad)} tiles missing'}")
-        if not any(result.values()) or now() > deadline:
+    mirrors = mirrors or Mirrors(int(offset if offset is not None else shard))
+    d = os.path.join(out, "cells")
+    os.makedirs(d, exist_ok=True)
+    mine = shard_cells(states, shard, n_shards)
+    bad = []
+    for pass_ in (1, 2, 3):
+        todo = [t for t in mine if not os.path.exists(os.path.join(d, cell_name(t)))]
+        log(f"pass {pass_}: {len(todo)} of {len(mine)} cells to fetch")
+        bad = []
+        for i, t in enumerate(todo):
+            bad += fetch_cell(t, d, mirrors, deadline, now)
+            if i % 50 == 49:
+                log(f"  {i + 1}/{len(todo)} done, {len(bad)} failed, {(deadline - now()) / 60:.0f} min left")
+            sleep(0.5)
+        if not bad or now() > deadline:
             break
-        log("pass 2 for", [s for s, b in result.items() if b], "after 60 s")
-        time.sleep(60)
+        log(f"{len(bad)} cells failed; pass {pass_ + 1} after 60 s")
+        sleep(60)
     log("mirrors:", json.dumps(mirrors.stats))
-    return result
+    left = [t for t in mine if not os.path.exists(os.path.join(d, cell_name(t)))]
+    log(f"shard {shard}/{n_shards}: {len(mine) - len(left)} of {len(mine)} cells fetched; missing {len(left)}")
+    return left
 
 
-def write_status(d, st, ts, bad):
-    have = [t for t in ts if os.path.exists(os.path.join(d, tile_name(t)))]
-    json.dump({"state": st, "complete": len(have) == len(ts), "tiles": len(ts), "have": len(have),
-               "missing": [list(t) for t in ts if t not in have], "failed_subtiles": [list(t) for t in bad]},
-              open(os.path.join(d, "_status.json"), "w"))
-
-
-def load_state_tiles(d):
-    """-> (elements deduplicated by OSM id, status dict). Sub-tiles (from a split) are read like any tile."""
-    seen, els = set(), []
-    for p in sorted(glob.glob(os.path.join(d, "t_*.json"))):
+def load_cells(raw):
+    """-> (elements deduplicated by OSM id over every cell on disk, set of cells present)."""
+    seen, els, have = set(), [], set()
+    for p in sorted(glob.glob(os.path.join(raw, "**", "c_*.json"), recursive=True)):
         try:
             js = json.load(open(p))
         except Exception:                                           # noqa: BLE001
             continue
+        have.add(tuple(js["cell"]))
         for e in js.get("elements", []):
             k = (e["t"], e["id"])
             if k in seen:
                 continue
             seen.add(k)
             els.append(e)
-    st = os.path.basename(d.rstrip("/"))
-    ts = tiles(st) if st in STATE_BBOX else []
-    have = [t for t in ts if os.path.exists(os.path.join(d, tile_name(t)))]
-    return els, {"tiles": len(ts), "have": len(have), "complete": bool(ts) and len(have) == len(ts)}
+    return els, have
 
 
+# ------------------------------------------------------------------------------------------------ state outlines
+def load_state_shapes(path=None):
+    """{state: prepared shapely geometry}. path: a Census cb_*_state_*.zip (pyshp) or a GeoJSON FeatureCollection;
+    none given -> download STATE_SHAPES in order."""
+    from shapely.geometry import shape
+    from shapely.prepared import prep
+    names = {v.lower(): k for k, v in _STATE_NAMES.items()}
+    paths = [path] if path else []
+    if not paths:
+        import tempfile
+        for url in STATE_SHAPES:
+            try:
+                p = os.path.join(tempfile.gettempdir(), os.path.basename(url))
+                req = urllib.request.Request(url, headers={"User-Agent": UA})
+                with urllib.request.urlopen(req, timeout=120) as r, open(p, "wb") as fh:
+                    fh.write(r.read())
+                paths.append(p)
+                break
+            except Exception as e:                                  # noqa: BLE001
+                log("state shapes:", url, repr(e)[:200])
+    for p in paths:
+        out = {}
+        try:
+            if p.endswith(".zip"):
+                import shapefile                                    # pyshp
+                with shapefile.Reader(p) as rd:
+                    for sr in rd.iterShapeRecords():
+                        st = sr.record.as_dict().get("STUSPS")
+                        if st in STATE_BBOX:
+                            out[st] = shape(sr.shape.__geo_interface__)
+            else:
+                for f in json.load(open(p))["features"]:
+                    st = names.get(str(f["properties"].get("name", "")).lower())
+                    if st:
+                        out[st] = shape(f["geometry"])
+        except Exception as e:                                      # noqa: BLE001
+            log("state shapes unreadable:", p, repr(e)[:200])
+            continue
+        if len(out) >= 51:
+            log("state shapes:", p, len(out))
+            res = {k: (prep(g), g) for k, g in out.items()}
+            res["_tol_km"] = 3.0 if p.endswith(".zip") else 12.0   # the GeoJSON fallback is ~10 km coarse at coasts
+            return res
+    raise RuntimeError("no state outlines")
+
+
+_STATE_NAMES = {
+    "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California", "CO": "Colorado",
+    "CT": "Connecticut", "DE": "Delaware", "DC": "District of Columbia", "FL": "Florida", "GA": "Georgia",
+    "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas",
+    "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland", "MA": "Massachusetts", "MI": "Michigan",
+    "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada",
+    "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina",
+    "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island",
+    "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont",
+    "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming"}
+
+
+def state_locator(shapes):
+    """(lat, lon, addr_state) -> state or None (outside the US). Inside one outline -> that state; else (coast,
+    generalised border) the nearest outline within 3 km, preferring the course's addr:state."""
+    from shapely.geometry import Point
+
+    def find(lat, lon, addr=None):
+        pt = Point(lon, lat)
+        cands = [st for st, (s, w, n, e) in STATE_BBOX.items() if s - 0.1 <= lat <= n + 0.1 and w - 0.1 <= lon <= e + 0.1]
+        inside = [st for st in cands if st in shapes and shapes[st][0].contains(pt)]
+        if len(inside) == 1:
+            return inside[0]
+        if addr and addr.upper() in (inside or cands):
+            return addr.upper()
+        if inside:
+            return inside[0]
+        near = sorted((shapes[st][1].distance(pt), st) for st in cands if st in shapes)
+        if near and near[0][0] * 111.0 <= shapes.get("_tol_km", 3.0):
+            return near[0][1]
+        return None
+    return find
 # ------------------------------------------------------------------------------------------------ OpenGolfAPI
 def oga(states, out, max_calls=700):
     """OpenGolfAPI listing per state (1,000 anonymous calls / day): paged search; whatever comes back is kept."""
@@ -368,7 +454,8 @@ def hole_ref(ref):
     return None
 
 
-def build_state(st, els):
+def build_rows(els, locate):
+    """Course rows from deduplicated elements; locate(lat, lon, addr_state) -> state or None (dropped)."""
     courses = [e for e in els if e["g"].get("leisure") == "golf_course" and e["g"].get("name")]
     feats = [e for e in els if e["g"].get("golf") in GOLF_KINDS]
     places = [e for e in els if e["g"].get("place") and e["g"].get("name")]
@@ -422,6 +509,9 @@ def build_state(st, els):
     rows = {}
     for c in courses:
         g = c["g"]
+        st = locate(c["lat"], c["lon"], g.get("addr:state"))
+        if not st:
+            continue
         a = acc.get(idx.get(id(c)), {"hole": 0, "refs": set(), "noref": 0, "green": 0, "tee": 0, "fairway": 0,
                                      "pin": 0})
         osm_holes = min(a["hole"], len(a["refs"]) + a["noref"])
@@ -531,37 +621,43 @@ def attach_cards(rows, oga_dirs):
     return n_listed, n_oga
 
 
-def merge(raw, oga_dirs=None):
+def merge(raw, oga_dirs=None, shapes=None):
+    """Cells on disk -> rows per state. A state is used when all its cells are on disk (complete) or at least half
+    (partial_states); otherwise it keeps its rows from the committed index if those were complete, else missing."""
     rows, missing, partial, coverage = [], [], [], {}
-    old = {}
+    old, old_cov = {}, {}
     try:                                    # a state this run did not fetch keeps its rows from the committed index
         with gzip.open(OUT_GZ, "rt") as fh:
             o = json.load(fh)
         for row in o["rows"]:
             r = dict(zip(o["fields"], row))
             old.setdefault(r["state"], []).append(r)
-        old_cov = {}
         with open(OUT_READY) as fh:
             old_cov = json.load(fh).get("coverage") or {}
     except Exception:                                               # noqa: BLE001
-        old_cov = {}
+        pass
+    els, have = load_cells(raw)
+    log(f"{len(have)} cells, {len(els)} elements")
+    locate = state_locator(shapes if shapes is not None else load_state_shapes())
+    new = {}
+    for r in build_rows(els, locate):
+        new.setdefault(r["state"], []).append(r)
     for st in STATES:
-        d = os.path.join(raw, st)
-        els, status = load_state_tiles(d) if os.path.isdir(d) else ([], {"have": 0})
-        if not status["have"]:
-            if old.get(st) and old_cov.get(st, {}).get("have"):
-                rows += [dict({f: 0 for f in FIELDS}, **dict(r, card="" if r.get("card") == "library"
-                                                              else r.get("card", ""))) for r in old[st]]
-                coverage[st] = dict(old_cov[st], source="committed index")
-                if not old_cov[st].get("complete"):
-                    partial.append(st)
-            else:
-                missing.append(st)
-            continue
-        coverage[st] = dict(status, source="this run")
-        if not status["complete"]:
-            partial.append(st)
-        rows += build_state(st, els)
+        cs = state_cells(st)
+        n_have = sum(1 for c in cs if c in have)
+        cov = {"cells": len(cs), "have": n_have, "complete": n_have == len(cs)}
+        if cov["complete"] or n_have * 2 >= len(cs):
+            rows += new.get(st, [])
+            coverage[st] = dict(cov, source="this run")
+            if not cov["complete"]:
+                partial.append(st)
+        elif old.get(st) and old_cov.get(st, {}).get("complete"):
+            rows += [dict({f: 0 for f in FIELDS}, **dict(r, card="" if r.get("card") == "library"
+                                                          else r.get("card", ""))) for r in old[st]]
+            coverage[st] = dict(old_cov[st], source="committed index")
+        else:
+            missing.append(st)
+            coverage[st] = dict(cov, source="none")
     n_listed, n_oga = attach_cards(rows, oga_dirs or [])
     for r in rows:
         r["tier"] = tier(r)
@@ -668,41 +764,30 @@ def write_readme(path=README, ready=OUT_READY):
     open(path, "w").write(txt)
 
 
-def shards(states, n=6):
-    """Greedy split of states over n jobs by tile count (dense states count a bit more)."""
-    dense = {"CA": 1.8, "FL": 1.8, "TX": 1.3, "NY": 1.5, "MI": 1.3, "OH": 1.4, "PA": 1.4, "IL": 1.4, "NJ": 2.0,
-             "MA": 2.0, "NC": 1.4, "GA": 1.3, "WI": 1.3, "MN": 1.3, "CT": 2.0, "MD": 1.6, "VA": 1.3, "SC": 1.3}
-    w = {s: len(tiles(s)) * dense.get(s, 1.0) for s in states}
-    out = [[] for _ in range(min(n, len(states)) or 1)]
-    load = [0.0] * len(out)
-    for s in sorted(states, key=lambda s: -w[s]):
-        i = load.index(min(load))
-        out[i].append(s)
-        load[i] += w[s]
-    return [" ".join(x) for x in out if x]
-
-
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["fetch", "oga", "merge", "readme", "shards"])
+    ap.add_argument("cmd", choices=["fetch", "oga", "merge", "readme", "cells"])
     ap.add_argument("args", nargs="*")
     ap.add_argument("--out", default="/tmp/natidx")
     ap.add_argument("--oga", default="", help="comma-separated OpenGolfAPI listing dirs, first wins per state")
-    ap.add_argument("--n", type=int, default=6)
+    ap.add_argument("--shard", default="0/1", help="i/n: this job fetches every n-th cell from the i-th")
+    ap.add_argument("--shapes", default=None, help="state outlines (Census zip or GeoJSON); default: download")
     a = ap.parse_args()
     sts = [s.upper() for s in a.args] or STATES
+    i, n = (int(x) for x in a.shard.split("/"))
     if a.cmd == "fetch":
-        res = fetch(sts, a.out)
-        log("failed tiles:", {s: len(b) for s, b in res.items() if b})
+        left = fetch(sts, a.out, i, n)
+        log("cells missing:", len(left))
     if a.cmd == "oga":
         oga(sts, a.out)
     if a.cmd == "merge":
-        merge(a.args[0] if a.args else a.out, [d for d in a.oga.split(",") if d])
+        merge(a.args[0] if a.args else a.out, [d for d in a.oga.split(",") if d],
+              load_state_shapes(a.shapes) if a.shapes else None)
         write_readme()
     if a.cmd == "readme":
         write_readme()
-    if a.cmd == "shards":
-        print(json.dumps(shards(sts, a.n)))
+    if a.cmd == "cells":
+        print(len(cells_for(sts)))
 
 
 if __name__ == "__main__":
