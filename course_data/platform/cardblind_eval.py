@@ -292,20 +292,35 @@ def causes(rows):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out-dir", required=True)
+    ap.add_argument("--out-dir", help="scratch dir for the builds (required unless --merge)")
     ap.add_argument("--courses")
     ap.add_argument("--n", type=int, default=4000)
     ap.add_argument("--from-builds", action="store_true", help="reuse packages already in --out-dir")
     ap.add_argument("--build", nargs=2, metavar=("SLUG", "VARIANT"))
     ap.add_argument("--md", action="store_true", help="also rewrite CARDBLIND.md's generated table")
+    ap.add_argument("--json", default=OUT_JSON, help="output JSON (parallel shards: one per process, then --merge)")
+    ap.add_argument("--merge", nargs="+", help="merge shard JSONs into --json and print / write the table")
     a = ap.parse_args()
+    if a.merge:
+        out = None
+        for f in a.merge:
+            d = json.load(open(f))
+            out = out or dict(d, courses={})
+            out["courses"].update(d["courses"])
+        out["totals"] = totals(out["courses"])
+        json.dump(out, open(a.json, "w"), indent=1, default=str)
+        md = table_md(out)
+        print(md)
+        if a.md:
+            write_md(md)
+        return
     if a.build:
         print(build(a.build[0], a.build[1], a.out_dir))
         return
     for p in (os.path.join(CD, "product"), os.path.join(CD, "imagery"), os.path.join(ROOT, "mozingo")):
         sys.path.insert(0, p)
     want = set(a.courses.split(",")) if a.courses else None
-    prev = json.load(open(OUT_JSON)) if os.path.exists(OUT_JSON) else {}
+    prev = json.load(open(a.json)) if os.path.exists(a.json) else {}
     out = dict(schema="cardblind_eval/1", made_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n=a.n,
                doc="platform/CARDBLIND.md", courses=dict(prev.get("courses") or {}) if want else {})
     for cfg in course_list():
@@ -348,9 +363,9 @@ def main():
             print(s, "ERROR", rec["error"], flush=True)
         rec["seconds"] = round(time.time() - t0, 1)
         out["courses"][s] = rec
-        json.dump(out, open(OUT_JSON, "w"), indent=1, default=str)
+        json.dump(out, open(a.json, "w"), indent=1, default=str)
     out["totals"] = totals(out["courses"])
-    json.dump(out, open(OUT_JSON, "w"), indent=1, default=str)
+    json.dump(out, open(a.json, "w"), indent=1, default=str)
     md = table_md(out)
     print(md)
     if a.md:
@@ -378,11 +393,11 @@ def _pct(a, b):
 
 def table_md(out):
     L = ["| course | set (ref / blind) | ref | routing right | par right | back-tee err med (<=10 yds) | |len err| med | "
-         "same club | same club + aim <=10 | no plan | aim diff med (same club) | regret / tee shot |",
-         "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+         "same club | same or ref tie | same club + aim <=10 | no plan | aim diff med (same club) | regret / tee shot |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for s, c in out["courses"].items():
         if c.get("error"):
-            L.append(f"| {s} | build failed: {c['error'][:90]} | | | | | | | | | | |")
+            L.append(f"| {s} | build failed: {c['error'][:90]} | | | | | | | | | | | |")
             continue
         for name in ("back", "second"):
             r = c.get(name)
@@ -391,11 +406,11 @@ def table_md(out):
             m = r["summary"]
             L.append(f"| {s}{' (review-OK holes)' if c.get('scored_holes') != 'all' else ''} | {name}: {r['ref_set']} / {r['blind_set']} | "
                      f"{'hand' if c['ref'].startswith('hand') else 'card'} | {m['routed']}/{m['holes']} | {m['par_ok']}/{m['holes']} | "
-                     f"{m['tee_med']} ({m['tee_10']}/{m['tee_n']}) | {m['len_med']} | {m['same_club']}/{m['shots']} | "
+                     f"{m['tee_med']} ({m['tee_10']}/{m['tee_n']}) | {m['len_med']} | {m['same_club']}/{m['shots']} | {m['tie_ok']}/{m['shots']} | "
                      f"**{m['hit10']}/{m['shots']}** | {m['no_plan']} | {m['aim_med']} | {m['regret_mean']} |")
     for name, m in (out.get("totals") or {}).items():
         L.append(f"| **all** | **{name}** | | {_pct(m['routed'], m['holes'])} | {_pct(m['par_ok'], m['holes'])} | "
-                 f"{m['tee_med']} ({_pct(m['tee_10'], m['tee_n'])}) | {m['len_med']} | {_pct(m['same_club'], m['shots'])} | "
+                 f"{m['tee_med']} ({_pct(m['tee_10'], m['tee_n'])}) | {m['len_med']} | {_pct(m['same_club'], m['shots'])} | {_pct(m['tie_ok'], m['shots'])} | "
                  f"**{_pct(m['hit10'], m['shots'])}** | {m['no_plan']} | {m['aim_med']} | {m['regret_mean']} |")
     L.append("")
     for name, m in (out.get("totals") or {}).items():
