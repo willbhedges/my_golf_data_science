@@ -1,0 +1,353 @@
+{
+ "split": "dev",
+ "n": 38,
+ "detection": {
+  "all": {
+   "hole_kind": {
+    "courses": 38,
+    "holes": 684,
+    "green_recall": 0.9853801169590644,
+    "green_precision": 0.9519774011299436,
+    "tee_recall": 0.9576023391812866,
+    "tee_precision": 0.8956228956228957,
+    "both_recall": 0.9429824561403509,
+    "courses_all_greens": 32,
+    "courses_all_both": 18
+   },
+   "p>=0.5": {
+    "courses": 38,
+    "holes": 684,
+    "green_recall": 0.9883040935672515,
+    "green_precision": 0.9037433155080213,
+    "tee_recall": 0.9576023391812866,
+    "tee_precision": 0.8956228956228957,
+    "both_recall": 0.945906432748538,
+    "courses_all_greens": 33,
+    "courses_all_both": 19
+   },
+   "any": {
+    "courses": 38,
+    "holes": 684,
+    "green_recall": 0.9956140350877193,
+    "green_precision": 0.8254545454545454,
+    "tee_recall": 0.9736842105263158,
+    "tee_precision": 0.7824909747292419,
+    "both_recall": 0.9692982456140351,
+    "courses_all_greens": 35,
+    "courses_all_both": 25
+   }
+  },
+  "held_out": {
+   "hole_kind": {
+    "courses": 11,
+    "holes": 198,
+    "green_recall": 0.9797979797979798,
+    "green_precision": 0.9463414634146341,
+    "tee_recall": 0.9141414141414141,
+    "tee_precision": 0.8536585365853658,
+    "both_recall": 0.8939393939393939,
+    "courses_all_greens": 9,
+    "courses_all_both": 3
+   },
+   "p>=0.5": {
+    "courses": 11,
+    "holes": 198,
+    "green_recall": 0.98989898989899,
+    "green_precision": 0.9289099526066351,
+    "tee_recall": 0.9141414141414141,
+    "tee_precision": 0.8536585365853658,
+    "both_recall": 0.9040404040404041,
+    "courses_all_greens": 10,
+    "courses_all_both": 4
+   },
+   "any": {
+    "courses": 11,
+    "holes": 198,
+    "green_recall": 1.0,
+    "green_precision": 0.9041095890410958,
+    "tee_recall": 0.9393939393939394,
+    "tee_precision": 0.7704918032786885,
+    "both_recall": 0.9393939393939394,
+    "courses_all_greens": 11,
+    "courses_all_both": 7
+   }
+  },
+  "in_sample": {
+   "hole_kind": {
+    "courses": 27,
+    "holes": 486,
+    "green_recall": 0.9876543209876543,
+    "green_precision": 0.9542743538767395,
+    "tee_recall": 0.9753086419753086,
+    "tee_precision": 0.9116279069767442,
+    "both_recall": 0.9629629629629629,
+    "courses_all_greens": 23,
+    "courses_all_both": 15
+   },
+   "p>=0.5": {
+    "courses": 27,
+    "holes": 486,
+    "green_recall": 0.9876543209876543,
+    "green_precision": 0.8938547486033519,
+    "tee_recall": 0.9753086419753086,
+    "tee_precision": 0.9116279069767442,
+    "both_recall": 0.9629629629629629,
+    "courses_all_greens": 23,
+    "courses_all_both": 15
+   },
+   "any": {
+    "courses": 27,
+    "holes": 486,
+    "green_recall": 0.9938271604938271,
+    "green_precision": 0.7970297029702971,
+    "tee_recall": 0.9876543209876543,
+    "tee_precision": 0.7870485678704857,
+    "both_recall": 0.9814814814814815,
+    "courses_all_greens": 24,
+    "courses_all_both": 18
+   }
+  }
+ },
+ "pairing": {
+  "sequence_v3/unmapped_card": {
+   "all": {
+    "courses": 38,
+    "holes": 684,
+    "paired": 0.8903508771929824,
+    "all_pairs_right": 0.4473684210526316,
+    "numbered": 0.8011695906432749,
+    "holes_right": 0.3684210526315789,
+    "unformed": {
+     "no_tee_cand": 12,
+     "mispaired": 60,
+     "no_green_cand": 3
+    }
+   },
+   "held_out": {
+    "courses": 11,
+    "holes": 198,
+    "paired": 0.8787878787878788,
+    "all_pairs_right": 0.36363636363636365,
+    "numbered": 0.7727272727272727,
+    "holes_right": 0.18181818181818182,
+    "unformed": {
+     "mispaired": 15,
+     "no_tee_cand": 9
+    }
+   },
+   "in_sample": {
+    "courses": 27,
+    "holes": 486,
+    "paired": 0.8950617283950617,
+    "all_pairs_right": 0.48148148148148145,
+    "numbered": 0.8127572016460906,
+    "holes_right": 0.4444444444444444,
+    "unformed": {
+     "no_tee_cand": 3,
+     "mispaired": 45,
+     "no_green_cand": 3
+    }
+   }
+  },
+  "sequence_v3/unmapped_nocard": {
+   "all": {
+    "courses": 38,
+    "holes": 684,
+    "paired": 0.9049707602339181,
+    "all_pairs_right": 0.3157894736842105,
+    "numbered": 0.25877192982456143,
+    "holes_right": 0.10526315789473684,
+    "unformed": {
+     "no_tee_cand": 11,
+     "mispaired": 51,
+     "no_green_cand": 3
+    }
+   },
+   "held_out": {
+    "courses": 11,
+    "holes": 198,
+    "paired": 0.8787878787878788,
+    "all_pairs_right": 0.18181818181818182,
+    "numbered": 0.15656565656565657,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 15,
+     "no_tee_cand": 9
+    }
+   },
+   "in_sample": {
+    "courses": 27,
+    "holes": 486,
+    "paired": 0.9156378600823045,
+    "all_pairs_right": 0.37037037037037035,
+    "numbered": 0.3004115226337449,
+    "holes_right": 0.14814814814814814,
+    "unformed": {
+     "no_tee_cand": 2,
+     "mispaired": 36,
+     "no_green_cand": 3
+    }
+   }
+  },
+  "routing_v2/unmapped_card": {
+   "all": {
+    "courses": 38,
+    "holes": 684,
+    "paired": 0.7368421052631579,
+    "all_pairs_right": 0.05263157894736842,
+    "numbered": 0.6929824561403509,
+    "holes_right": 0.05263157894736842,
+    "unformed": {
+     "mispaired": 165,
+     "no_tee_cand": 12,
+     "no_green_cand": 3
+    }
+   },
+   "held_out": {
+    "courses": 11,
+    "holes": 198,
+    "paired": 0.7171717171717171,
+    "all_pairs_right": 0.0,
+    "numbered": 0.6717171717171717,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 46,
+     "no_tee_cand": 10
+    }
+   },
+   "in_sample": {
+    "courses": 27,
+    "holes": 486,
+    "paired": 0.7448559670781894,
+    "all_pairs_right": 0.07407407407407407,
+    "numbered": 0.7016460905349794,
+    "holes_right": 0.07407407407407407,
+    "unformed": {
+     "mispaired": 119,
+     "no_tee_cand": 2,
+     "no_green_cand": 3
+    }
+   }
+  },
+  "structure/unmapped_card": {
+   "all": {
+    "courses": 38,
+    "holes": 684,
+    "paired": 0.6769005847953217,
+    "all_pairs_right": 0.02631578947368421,
+    "numbered": 0.49415204678362573,
+    "holes_right": 0.02631578947368421,
+    "unformed": {
+     "mispaired": 200,
+     "no_tee_cand": 18,
+     "no_green_cand": 3
+    }
+   },
+   "held_out": {
+    "courses": 11,
+    "holes": 198,
+    "paired": 0.6212121212121212,
+    "all_pairs_right": 0.0,
+    "numbered": 0.4797979797979798,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 63,
+     "no_tee_cand": 12
+    }
+   },
+   "in_sample": {
+    "courses": 27,
+    "holes": 486,
+    "paired": 0.6995884773662552,
+    "all_pairs_right": 0.037037037037037035,
+    "numbered": 0.5,
+    "holes_right": 0.037037037037037035,
+    "unformed": {
+     "mispaired": 137,
+     "no_tee_cand": 6,
+     "no_green_cand": 3
+    }
+   }
+  },
+  "routing_v2/unmapped_nocard": {
+   "all": {
+    "courses": 38,
+    "holes": 684,
+    "paired": 0.5599415204678363,
+    "all_pairs_right": 0.0,
+    "numbered": 0.07602339181286549,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 285,
+     "no_tee_cand": 13,
+     "no_green_cand": 3
+    }
+   },
+   "held_out": {
+    "courses": 11,
+    "holes": 198,
+    "paired": 0.5959595959595959,
+    "all_pairs_right": 0.0,
+    "numbered": 0.05555555555555555,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 70,
+     "no_tee_cand": 10
+    }
+   },
+   "in_sample": {
+    "courses": 27,
+    "holes": 486,
+    "paired": 0.5452674897119342,
+    "all_pairs_right": 0.0,
+    "numbered": 0.08436213991769548,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 215,
+     "no_tee_cand": 3,
+     "no_green_cand": 3
+    }
+   }
+  },
+  "structure/unmapped_nocard": {
+   "all": {
+    "courses": 38,
+    "holes": 684,
+    "paired": 0.7032163742690059,
+    "all_pairs_right": 0.0,
+    "numbered": 0.17543859649122806,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 182,
+     "no_tee_cand": 18,
+     "no_green_cand": 3
+    }
+   },
+   "held_out": {
+    "courses": 11,
+    "holes": 198,
+    "paired": 0.6464646464646465,
+    "all_pairs_right": 0.0,
+    "numbered": 0.18181818181818182,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 58,
+     "no_tee_cand": 12
+    }
+   },
+   "in_sample": {
+    "courses": 27,
+    "holes": 486,
+    "paired": 0.7263374485596708,
+    "all_pairs_right": 0.0,
+    "numbered": 0.1728395061728395,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 124,
+     "no_tee_cand": 6,
+     "no_green_cand": 3
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,153 @@
+{
+ "split": "dev",
+ "n": 38,
+ "detection": {
+  "all": {
+   "hole_kind": {
+    "courses": 38,
+    "holes": 684,
+    "green_recall": 0.9853801169590644,
+    "green_precision": 0.9519774011299436,
+    "tee_recall": 0.9576023391812866,
+    "tee_precision": 0.8956228956228957,
+    "both_recall": 0.9429824561403509,
+    "courses_all_greens": 32,
+    "courses_all_both": 18
+   },
+   "p>=0.5": {
+    "courses": 38,
+    "holes": 684,
+    "green_recall": 0.9883040935672515,
+    "green_precision": 0.9037433155080213,
+    "tee_recall": 0.9576023391812866,
+    "tee_precision": 0.8956228956228957,
+    "both_recall": 0.945906432748538,
+    "courses_all_greens": 33,
+    "courses_all_both": 19
+   },
+   "any": {
+    "courses": 38,
+    "holes": 684,
+    "green_recall": 0.9956140350877193,
+    "green_precision": 0.8254545454545454,
+    "tee_recall": 0.9736842105263158,
+    "tee_precision": 0.7824909747292419,
+    "both_recall": 0.9692982456140351,
+    "courses_all_greens": 35,
+    "courses_all_both": 25
+   }
+  },
+  "held_out": {
+   "hole_kind": {
+    "courses": 11,
+    "holes": 198,
+    "green_recall": 0.9797979797979798,
+    "green_precision": 0.9463414634146341,
+    "tee_recall": 0.9141414141414141,
+    "tee_precision": 0.8536585365853658,
+    "both_recall": 0.8939393939393939,
+    "courses_all_greens": 9,
+    "courses_all_both": 3
+   },
+   "p>=0.5": {
+    "courses": 11,
+    "holes": 198,
+    "green_recall": 0.98989898989899,
+    "green_precision": 0.9289099526066351,
+    "tee_recall": 0.9141414141414141,
+    "tee_precision": 0.8536585365853658,
+    "both_recall": 0.9040404040404041,
+    "courses_all_greens": 10,
+    "courses_all_both": 4
+   },
+   "any": {
+    "courses": 11,
+    "holes": 198,
+    "green_recall": 1.0,
+    "green_precision": 0.9041095890410958,
+    "tee_recall": 0.9393939393939394,
+    "tee_precision": 0.7704918032786885,
+    "both_recall": 0.9393939393939394,
+    "courses_all_greens": 11,
+    "courses_all_both": 7
+   }
+  },
+  "in_sample": {
+   "hole_kind": {
+    "courses": 27,
+    "holes": 486,
+    "green_recall": 0.9876543209876543,
+    "green_precision": 0.9542743538767395,
+    "tee_recall": 0.9753086419753086,
+    "tee_precision": 0.9116279069767442,
+    "both_recall": 0.9629629629629629,
+    "courses_all_greens": 23,
+    "courses_all_both": 15
+   },
+   "p>=0.5": {
+    "courses": 27,
+    "holes": 486,
+    "green_recall": 0.9876543209876543,
+    "green_precision": 0.8938547486033519,
+    "tee_recall": 0.9753086419753086,
+    "tee_precision": 0.9116279069767442,
+    "both_recall": 0.9629629629629629,
+    "courses_all_greens": 23,
+    "courses_all_both": 15
+   },
+   "any": {
+    "courses": 27,
+    "holes": 486,
+    "green_recall": 0.9938271604938271,
+    "green_precision": 0.7970297029702971,
+    "tee_recall": 0.9876543209876543,
+    "tee_precision": 0.7870485678704857,
+    "both_recall": 0.9814814814814815,
+    "courses_all_greens": 24,
+    "courses_all_both": 18
+   }
+  }
+ },
+ "pairing": {
+  "../../../../r_final/unmapped_card": {
+   "all": {
+    "courses": 38,
+    "holes": 684,
+    "paired": 0.9108187134502924,
+    "all_pairs_right": 0.39473684210526316,
+    "numbered": 0.3304093567251462,
+    "holes_right": 0.13157894736842105,
+    "unformed": {
+     "no_tee_cand": 18,
+     "mispaired": 40,
+     "no_green_cand": 3
+    }
+   },
+   "held_out": {
+    "courses": 11,
+    "holes": 198,
+    "paired": 0.8484848484848485,
+    "all_pairs_right": 0.36363636363636365,
+    "numbered": 0.07575757575757576,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 18,
+     "no_tee_cand": 12
+    }
+   },
+   "in_sample": {
+    "courses": 27,
+    "holes": 486,
+    "paired": 0.9362139917695473,
+    "all_pairs_right": 0.4074074074074074,
+    "numbered": 0.43415637860082307,
+    "holes_right": 0.18518518518518517,
+    "unformed": {
+     "no_tee_cand": 6,
+     "mispaired": 22,
+     "no_green_cand": 3
+    }
+   }
+  }
+ }
+}

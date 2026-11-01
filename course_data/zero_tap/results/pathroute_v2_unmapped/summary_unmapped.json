@@ -1,0 +1,106 @@
+{
+ "train": "mix",
+ "perc": "all",
+ "cu": "cu_base",
+ "dev": {
+  "unmapped_nocard": {
+   "formed": 0.911,
+   "number": 0.33,
+   "holes_right": 0.132,
+   "fully": 0.079,
+   "fails": {
+    "pairing": 15,
+    "missed_tee": 8,
+    "nine_swap": 4,
+    "order": 4,
+    "par": 2,
+    "start_hole": 2
+   },
+   "pairs": {
+    "paired": 0.9108,
+    "paired_primary_tee": 0.8874,
+    "all_pairs_right": 0.3947,
+    "taps98": {
+     "threshold": 0.9288,
+     "taps_per_course": 5.11,
+     "precision": 0.981,
+     "courses_no_tap": 0.0
+    }
+   }
+  },
+  "unmapped_card": {
+   "formed": 0.911,
+   "number": 0.33,
+   "holes_right": 0.132,
+   "fully": 0.132,
+   "fails": {
+    "pairing": 15,
+    "missed_tee": 8,
+    "nine_swap": 4,
+    "order": 4,
+    "start_hole": 2
+   },
+   "pairs": {
+    "paired": 0.9108,
+    "paired_primary_tee": 0.8874,
+    "all_pairs_right": 0.3947,
+    "taps98": {
+     "threshold": 0.9288,
+     "taps_per_course": 5.11,
+     "precision": 0.981,
+     "courses_no_tap": 0.0
+    }
+   }
+  }
+ },
+ "test": {
+  "unmapped_nocard": {
+   "formed": 0.833,
+   "number": 0.448,
+   "holes_right": 0.118,
+   "fully": 0.118,
+   "fails": {
+    "pairing": 7,
+    "missed_tee": 5,
+    "nine_swap": 1,
+    "no_result": 1,
+    "order": 1
+   },
+   "pairs": {
+    "paired": 0.8333,
+    "paired_primary_tee": 0.817,
+    "all_pairs_right": 0.2353,
+    "taps98": {
+     "threshold": 0.9174,
+     "taps_per_course": 6.35,
+     "precision": 0.9804,
+     "courses_no_tap": 0.0588
+    }
+   }
+  },
+  "unmapped_card": {
+   "formed": 0.833,
+   "number": 0.448,
+   "holes_right": 0.118,
+   "fully": 0.118,
+   "fails": {
+    "pairing": 7,
+    "missed_tee": 5,
+    "nine_swap": 1,
+    "no_result": 1,
+    "order": 1
+   },
+   "pairs": {
+    "paired": 0.8333,
+    "paired_primary_tee": 0.817,
+    "all_pairs_right": 0.2353,
+    "taps98": {
+     "threshold": 0.9174,
+     "taps_per_course": 6.35,
+     "precision": 0.9804,
+     "courses_no_tap": 0.0588
+    }
+   }
+  }
+ }
+}
