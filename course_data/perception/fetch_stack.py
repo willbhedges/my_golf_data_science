@@ -368,7 +368,10 @@ def main():
     ap.add_argument("--no-segment", action="store_true")
     ap.add_argument("--dev-crop", type=float, default=0)
     a = ap.parse_args()
-    cpath = a.course or os.path.join(CD, "generalize", "courses", a.slug, "course.json")
+    cpath = a.course or next((p for p in (os.path.join(CD, "generalize", "courses", a.slug, "course.json"),
+                                          os.path.join(CD, "structure", "data", a.slug, "course.json"),
+                                          os.path.join(CD, "zero_tap", "data", a.slug, "course.json"))
+                              if os.path.exists(p)), "")
     if os.path.exists(cpath):
         course = json.load(open(cpath))
     else:

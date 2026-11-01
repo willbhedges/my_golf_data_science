@@ -187,11 +187,17 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--tables")
     ap.add_argument("--no-eval", action="store_true")
-    ap.add_argument("--models", default=MODELS)
+    ap.add_argument("--models", default=None, help="model dir (default: models/, or the state fold of split.py "
+                    "that held this course's state out: models/fold<k>/)")
     ap.add_argument("--mode", default="blind")
     a = ap.parse_args()
     st = S.load(a.stack)
-    models, mid = load_models(a.models)
+    mdir = a.models
+    if mdir is None:
+        import split as SP
+        state = (st.meta.get("course") or {}).get("state") or st.meta.get("state")
+        mdir = SP.models_dir_for(state, MODELS)
+    models, mid = load_models(mdir)
     print("models:", sorted(models), mid)
     L, D = run(st, models)
     out = a.out or os.path.join(HERE, "scenes", st.meta.get("slug", "course"))

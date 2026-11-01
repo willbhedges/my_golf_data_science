@@ -160,7 +160,7 @@ def main():
         if r:
             ev = rd(os.path.join(a.scenes, s, "eval.json"), {}) or {}
             r["state"] = ev.get("state")
-            r["split"] = split_of(r["state"])
+            r["split"] = split_of(r["state"], s)
             rows.append(r)
             print(s, r["split"], {k: (v.get("hole_number_acc"), v.get("physical_holes_found")) for k, v in r.items()
                                   if isinstance(v, dict)}, flush=True)

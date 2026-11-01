@@ -9,8 +9,12 @@ Models (sklearn HistGradientBoosting, pinned scikit-learn==1.9.1 in perception.y
   tee_complex  per complex: within 25 m of an OSM tee box or hole start
   parking      per paved blob: overlaps an OSM car park
   clubhouse    per building: is the OSM clubhouse (ranked; the arg-max is the clubhouse)
-Training uses only TRAIN states; TEST_STATES are never seen (their numbers in models.json are the held-out
-check of the object models on the candidates the CURRENT detectors produced).
+Leakage control (split.py): the models train only on the **pool** = courses in zero-tap bench DEV states that are
+not bench test courses. models/*.pkl (final) = whole pool, used for courses in bench test states. models/fold<k>/
+= the pool minus fold k's states (K state folds), used by perceive.py for every course in those states, so every
+dev-state scene (dev tuning, and the validation-set test courses that sit in dev states) is out-of-state.
+models.json lists exactly which courses / states each model saw (`courses`, `folds`); held-out metrics are the
+bench test courses (final) and the out-of-fold courses (folds).
 """
 from __future__ import annotations
 
@@ -21,15 +25,25 @@ import os
 import pickle
 import time
 
+import sys
+
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TEST_STATES = ("GA", "KY", "MN", "UT", "ME", "WY")       # geographic hold-out (never used for training)
+sys.path.insert(0, HERE)
+import split as SP  # noqa: E402
+
+TEST_STATES = tuple(sorted(s for s, v in SP._ST.items() if v == "test"))   # bench test states (never trained on)
 OBJ_MODELS = ("green", "tee_box", "tee_complex", "parking", "clubhouse", "edge")
 
 
-def split_of(state):
-    return "test" if str(state or "").upper() in TEST_STATES else "train"
+def split_of(state, slug=None):
+    """'train' = in the training pool (bench dev state, not a bench test course), else 'test' (held out)."""
+    return "train" if SP.role(slug, state) == "pool" else "test"
+
+
+def _sp(t):
+    return split_of(t["meta"].get("state"), t["meta"].get("slug"))
 
 
 def load_tables(d):
@@ -106,11 +120,11 @@ def oof_threshold(train_tabs, name, feats, k=3, beta=1.0):
     return round(bt, 3)
 
 
-def train_objects(tabs, out_dir, log=print):
+def train_objects(tabs, out_dir, log=print, assign=_sp):
     res = {}
     for name in OBJ_MODELS:
-        tr = [r for t in tabs if split_of(t["meta"].get("state")) == "train" for r in t.get(name, [])]
-        te = [r for t in tabs if split_of(t["meta"].get("state")) == "test" for r in t.get(name, [])]
+        tr = [r for t in tabs if assign(t) == "train" for r in t.get(name, [])]
+        te = [r for t in tabs if assign(t) == "test" for r in t.get(name, [])]
         if len(tr) < 40 or len({r["y"] for r in tr}) < 2:
             log(name, "too few rows", len(tr))
             res[name] = dict(skipped=f"{len(tr)} train rows")
@@ -121,7 +135,7 @@ def train_objects(tabs, out_dir, log=print):
         thr = None
         if name in ("parking", "tee_box", "tee_complex"):
             # tees: recall matters more than precision for hole recognition (the sequence model sees p anyway)
-            thr = oof_threshold([t for t in tabs if split_of(t["meta"].get("state")) == "train"], name, feats,
+            thr = oof_threshold([t for t in tabs if assign(t) == "train"], name, feats,
                                 beta=1.5 if name.startswith("tee") else 1.0)
         Xte, yte = _xy(te, feats) if te else (np.zeros((0, len(feats))), np.zeros(0, int))
         res[name] = dict(features=feats, n_train=len(tr), n_test=len(te),
@@ -130,7 +144,7 @@ def train_objects(tabs, out_dir, log=print):
         if name == "edge" and te:                               # ranking: top-1 next tee per green
             hit = n = 0
             for t in tabs:
-                if split_of(t["meta"].get("state")) != "test" or not t.get(name):
+                if assign(t) != "test" or not t.get(name):
                     continue
                 by = {}
                 for r in t[name]:
@@ -147,7 +161,7 @@ def train_objects(tabs, out_dir, log=print):
         if name == "clubhouse" and te:                          # ranking: top-1 per course
             hit = n = 0
             for t in tabs:
-                if split_of(t["meta"].get("state")) != "test" or not t.get(name):
+                if assign(t) != "test" or not t.get(name):
                     continue
                 X, y = _xy(t[name], feats)
                 pr = clf.predict_proba(X)[:, list(clf.classes_).index(1)]
@@ -160,7 +174,7 @@ def train_objects(tabs, out_dir, log=print):
     return res
 
 
-def train_paths(tabs, out_dir, max_rows=1_500_000, log=print):
+def train_paths(tabs, out_dir, max_rows=1_500_000, log=print, assign=_sp):
     """Pixel model on the features every table has (tables from different code versions may differ)."""
     import features as F
     zs = []
@@ -175,7 +189,10 @@ def train_paths(tabs, out_dir, max_rows=1_500_000, log=print):
     Xs, ys, te_X, te_y = [], [], [], []
     for t, names, X, y in zs:
         X = X[:, [names.index(f) for f in common]]
-        test = split_of(t["meta"].get("state")) == "test"
+        r = assign(t)
+        if r is None:
+            continue
+        test = r == "test"
         (te_X if test else Xs).append(X)
         (te_y if test else ys).append(y)
     if not Xs:
@@ -202,7 +219,7 @@ def choose_path_threshold(scenes=os.path.join(HERE, "scenes"), default=0.5):
     acc = {}
     for p in glob.glob(os.path.join(scenes, "*", "eval.json")):
         e = json.load(open(p))
-        if split_of(e.get("state")) != "train":
+        if split_of(e.get("state"), e.get("slug")) != "train":
             continue
         for thr, v in (e.get("path_sweep") or {}).items():
             if not v.get("eligible") or v.get("length_precision") is None or v.get("length_recall") is None:
@@ -215,23 +232,66 @@ def choose_path_threshold(scenes=os.path.join(HERE, "scenes"), default=0.5):
     return float(max(acc, key=lambda k: np.mean(acc[k])))
 
 
+def fingerprint(tabs):
+    import hashlib
+    keys = sorted(f"{t['meta'].get('slug')}:{t['meta'].get('state')}" for t in tabs if _sp(t) == "train")
+    return hashlib.sha1("|".join(keys).encode()).hexdigest()[:16]
+
+
 def main():
-    import sys
-    sys.path.insert(0, HERE)
     ap = argparse.ArgumentParser()
     ap.add_argument("--tables", required=True)
     ap.add_argument("--out", default=os.path.join(HERE, "models"))
+    ap.add_argument("--folds", type=int, default=SP.K_FOLDS)
+    ap.add_argument("--fold-path-rows", type=int, default=600_000)
+    ap.add_argument("--force", action="store_true", help="retrain even when the pool equals the committed models'")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     tabs = load_tables(a.tables)
-    print(len(tabs), "course tables;", sum(split_of(t["meta"].get("state")) == "test" for t in tabs), "in test states")
+    fp = fingerprint(tabs)
+    mj = os.path.join(a.out, "models.json")
+    frozen = os.path.join(a.out, "frozen.json")                # committed sentinel: scenes were made with these models
+    if not a.force and os.path.exists(frozen):
+        print("models frozen (", frozen, "):", open(frozen).read()[:300])
+        return
+    if not a.force and os.environ.get("PERC_RETRAIN") != "1" and os.path.exists(mj):
+        old = json.load(open(mj))
+        if old.get("pool_fingerprint") == fp:
+            print("training pool unchanged (", fp, "): keeping the committed models", old.get("id"))
+            return
+    pool = sorted((t["meta"]["slug"], str(t["meta"].get("state")).upper()) for t in tabs if _sp(t) == "train")
+    held = sorted(t["meta"]["slug"] for t in tabs if _sp(t) == "test")
+    print(len(tabs), "course tables;", len(pool), "in the pool;", len(held), "held out")
     import sklearn
     res = dict(id="perception-" + time.strftime("%Y%m%d-%H%M", time.gmtime()), sklearn=sklearn.__version__,
-               test_states=list(TEST_STATES),
-               courses=dict(train=sorted(t["meta"]["slug"] for t in tabs if split_of(t["meta"].get("state")) == "train"),
-                            test=sorted(t["meta"]["slug"] for t in tabs if split_of(t["meta"].get("state")) == "test")),
+               split="bench_dev_pool_v1", pool_fingerprint=fp, test_states=list(TEST_STATES),
+               doc="final models (this dir) = every pool course; fold<k>/ = pool minus fold k's states, used by "
+                   "perceive.py for all courses in those states. Pool = bench dev-state courses that are not bench "
+                   "test courses (split.py).",
+               courses=dict(train=[s for s, _ in pool], test=held),
+               train_states=sorted({s for _, s in pool}),
                objects=train_objects(tabs, a.out), path_px=train_paths(tabs, a.out))
-    json.dump(res, open(os.path.join(a.out, "models.json"), "w"), indent=1)
+    folds = SP.fold_plan(pool, a.folds) if a.folds > 1 else []
+    res["folds"] = []
+    for k, fs in enumerate(folds):
+        d = os.path.join(a.out, f"fold{k}")
+        os.makedirs(d, exist_ok=True)
+
+        def assign(t, fs=fs):
+            if _sp(t) != "train":
+                return None
+            return "test" if str(t["meta"].get("state")).upper() in fs else "train"
+        print("fold", k, "held-out states", fs, flush=True)
+        f = dict(dir=f"fold{k}", held_out_states=fs,
+                 train_courses=[s for s, st in pool if st not in fs], eval_courses=[s for s, st in pool if st in fs])
+        f["objects"] = train_objects(tabs, d, assign=assign)
+        f["path_px"] = train_paths(tabs, d, max_rows=a.fold_path_rows, assign=assign)
+        json.dump(dict(id=res["id"] + f"-fold{k}", fold=k, held_out_states=fs, train_courses=f["train_courses"]),
+                  open(os.path.join(d, "models.json"), "w"), indent=1)
+        res["folds"].append(f)
+    json.dump(dict(id=res["id"], folds=[dict(dir=f["dir"], held_out_states=f["held_out_states"]) for f in res["folds"]]),
+              open(os.path.join(a.out, "folds.json"), "w"), indent=1)
+    json.dump(res, open(mj, "w"), indent=1)
 
 
 if __name__ == "__main__":
