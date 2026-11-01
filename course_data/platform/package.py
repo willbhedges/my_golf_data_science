@@ -13,6 +13,8 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           request "card": "none" (CARD-BLIND, cardless_card): every web / local / request / typed card and the
           card-based review overrides are ignored; the card is synthetic: tees/cardless.py if present, else the
           OSM hole lines (back = line length, 2nd set = back x CARDLESS_SET2_RATIO, par = OSM tag > length).
+          That fallback card drives routing; after routing, tees/cardless.infer_card (cardless_infer) on every
+          routed hole line + OSM tee boxes + lidar pads replaces it (request "cardless": "fallback" keeps it).
           Default behaviour (no "card" key) is unchanged. platform/CARDBLIND.md scores it (cardblind_eval.py)
           request "yardage_overrides" {ref: {set | "*": yds}} / "par_overrides" {ref: par} patch the chosen card
           (course reviews, library/review_fixes.py); "*" or a set not on the card = the chosen set
@@ -347,6 +349,91 @@ def cardless_card(fc, course, raw_dir, req):
         return None, dict(kind=None, source=None, url=None, tried=tried, consistency=None, cross_check={})
     return scm.normalise(card), dict(kind="cardless", source="osm hole lines (platform/package.cardless_fallback)",
                                      url=None, tried=tried, consistency=None, cross_check={})
+
+
+def _ring_yd(ring, o):
+    """[(lat, lon)] -> [(x, y)] yds about o (lat, lon)."""
+    kx = math.cos(math.radians(o[0])) * 111320 / 0.9144
+    return [((q[1] - o[1]) * kx, (q[0] - o[0]) * 111320 / 0.9144) for q in ring]
+
+
+def _green_at(end, greens, max_yd=40.0):
+    """(centre (lat, lon), equal-area radius yds) of the OSM green nearest a hole line's end, else (end, None)."""
+    best = None
+    for g in greens:
+        xy = _ring_yd(g["coords"], end)
+        a = cx = cy = 0.0
+        for (x0, y0), (x1, y1) in zip(xy, xy[1:] + xy[:1]):
+            c = x0 * y1 - x1 * y0
+            a, cx, cy = a + c, cx + (x0 + x1) * c, cy + (y0 + y1) * c
+        if abs(a) < 1e-6:
+            continue
+        cx, cy = cx / (3 * a), cy / (3 * a)
+        d = math.hypot(cx, cy)
+        if d <= max_yd and (best is None or d < best[0]):
+            kx = math.cos(math.radians(end[0])) * 111320 / 0.9144
+            best = (d, (end[0] + cy * 0.9144 / 111320, end[1] + cx / kx), math.sqrt(abs(a) / 2 / math.pi))
+    return (best[1], best[2]) if best else (tuple(end), None)
+
+
+def cardless_inputs(fc, pads=()):
+    """tees/cardless.infer_card inputs from the (routed) package OSM, as tees/eval_cardless.course_inputs builds
+    them: holes [{ref, line [(lat, lon)] tee -> green, green (lat, lon), green_r_yd}], OSM tee boxes [{id, coords}]
+    (osm_tee_inputs), pads [{id, coords, source}]."""
+    lines, tees, greens = osm_tee_inputs(fc)
+    holes = []
+    for r in sorted((r for r in lines if str(r).isdigit()), key=int):
+        g, gr = _green_at(lines[r][-1], greens)
+        holes.append(dict(ref=int(r), line=lines[r], green=g, green_r_yd=gr))
+    boxes = [dict(id=f"osm/{t['id']}", coords=t["coords"]) for t in tees]
+    pads = [dict(id=q.get("id"), coords=[tuple(c) for c in q["coords"]], source=q.get("source", "lidar"))
+            for q in pads or () if q.get("coords")]
+    return holes, boxes, pads
+
+
+def cardless_infer(fc, req, pkg_dir, slug):
+    """card:none after routing: tees/cardless.infer_card on every routed hole line (+ OSM tee boxes, + lidar pads
+    from the package DEM) -> (card on hole numbers 1..n with None for unrouted holes, info) or (None, reason)."""
+    if str(req.get("cardless") or "").lower() == "fallback":
+        return None, "request cardless: fallback"
+    mod = load(os.path.join(CD, "tees", "cardless.py"), "cdp_cardless")
+    if mod is None or not callable(getattr(mod, "infer_card", None)):
+        return None, "tees/cardless.py infer_card not available"
+    try:
+        img_dir = find_imagery(req, pkg_dir, slug)
+        _, elevation = imagery_ref(img_dir)
+        pads, _ = lidar_pads(fc, os.path.join(pc.ROOT, elevation["file"]) if elevation else None) \
+            if req.get("lidar_tees", True) else ([], "not run")
+        holes, boxes, pads = cardless_inputs(fc, pads)
+        if not holes:
+            return None, "no numbered hole lines"
+        c = mod.infer_card(holes, boxes, pads=pads)
+        n = max(h["ref"] for h in holes)
+        n = 18 if 9 < n <= 18 else 9 if n <= 9 else n
+        idx = [h["ref"] - 1 for h in holes]
+
+        def spread(vals):
+            out = [None] * n
+            for i, v in zip(idx, vals):
+                if i < n:
+                    out[i] = v
+            return out
+        sets = {}
+        for nm, ts in (c.get("tee_sets") or {}).items():
+            ys = spread([int(round(y)) if y else None for y in ts["yards"]])
+            sets[nm] = dict(colour=nm.lower(), aliases=[nm.lower()], yards=ys, total=sum(y for y in ys if y),
+                            source=c.get("source"), ratio=ts.get("ratio"), inferred=True)
+        if not sets:
+            return None, "infer_card returned no tee sets"
+        card = dict(schema="scorecard/1", source=c.get("source"), par=spread(c.get("par") or []), handicap=None,
+                    tee_sets=sets, inferred=True)
+        diag = c.get("diagnostics") or {}
+        return scm.normalise(card), dict(kind="cardless", source=f"{c.get('source')} (tees/cardless.infer_card)",
+                                         url=None, consistency=None, cross_check={},
+                                         cardless=dict(S=diag.get("S"), n_pads=len(pads), n_boxes=len(boxes),
+                                                       holes=len(holes)))
+    except Exception as e:                                       # noqa: BLE001  keep the pre-routing fallback card
+        return None, f"infer_card failed: {type(e).__name__}: {e}"[:300]
 
 
 # ----------------------------------------------------------------------------- review overrides
@@ -1176,6 +1263,16 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     fc, green_notes = apply_green_overrides(fc, req)
     if green_notes:
         stages["green_overrides"] = "ok: " + "; ".join(green_notes)[:400]
+    if blind:          # card:none: the synthetic card from tees/cardless.py on the routed holes (else keep the fallback)
+        c2, i2 = cardless_infer(fc, req, pkg_dir, slug)
+        if c2 is not None:
+            i2["tried"] = (cinfo.get("tried") or []) + [dict(source="pre-routing", ok=True, info=cinfo.get("source"))]
+            card, cinfo = c2, i2
+            chosen, how = scm.choose_tee_set(card, None)
+            pipe["card"] = dict(kind=cinfo["kind"], source=cinfo["source"])
+        else:
+            cinfo.setdefault("tried", []).append(dict(source="tees/cardless.infer_card", ok=False, info=i2))
+            warnings.append(f"cardless: {i2}; using the OSM hole-line card"[:240])
     refs =sorted(osm_lines(fc), key=lambda r: r.zfill(3))
     stages["scorecard"] = f"ok: {cinfo['kind']} ({cinfo['source']})" if card else "missing"
     if not card:

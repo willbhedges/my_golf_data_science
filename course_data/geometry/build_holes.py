@@ -127,6 +127,8 @@ class World:
             if not g.is_valid:
                 g = g.buffer(0)
             golf = p.get("golf")
+            if golf in ("tee", "green"):
+                g = largest_polygon(g)
             if golf == "tee":
                 self.tees.append(dict(geom=g, pt=g.centroid if g.area > 0 else g, props=p))
             if golf == "green" and g.area > 0:
@@ -269,6 +271,18 @@ def infer_holes(world):
             holes.append(dict(line=np.vstack([best[2], gp]), props=dict(ref=str(len(holes) + 1), par=str(par)),
                               inferred=True))
     return holes
+
+
+def largest_polygon(g):
+    """A tee / green as one Polygon: a MultiPolygon / GeometryCollection (a multipolygon relation, or buffer(0)
+    of a self-intersecting ring splitting it in two) -> its largest polygon; points and polygons unchanged.
+    Downstream code reads .exterior (frame_for, tee_options, par3_entry)."""
+    gt = getattr(g, "geom_type", "")
+    if gt in ("MultiPolygon", "GeometryCollection"):
+        polys = [q for q in getattr(g, "geoms", []) if q.geom_type == "Polygon" and q.area > 0]
+        if polys:
+            return max(polys, key=lambda q: q.area)
+    return g
 
 
 def frame_for(tee, aim, green_geom, green_pt, par, length, frame="fit"):

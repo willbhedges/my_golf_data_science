@@ -109,9 +109,11 @@ def build(slug, variant, out_root):
     import package as P
     req = json.load(open(cfg["req"]))
     req.setdefault("allow_substitute", True)
-    if variant == "blind":
+    if variant.startswith("blind"):
         req = {k: v for k, v in req.items() if k not in STRIP_REVIEW}
         req["card"] = "none"
+        if variant == "blind_fallback":            # the "before": OSM hole-line card only, no tees/cardless.py
+            req["cardless"] = "fallback"
     with contextlib.redirect_stdout(io.StringIO()):
         pkg = P.build_package(req, dst)
         P.write(pkg, dst)
@@ -297,10 +299,20 @@ def main():
     ap.add_argument("--n", type=int, default=4000)
     ap.add_argument("--from-builds", action="store_true", help="reuse packages already in --out-dir")
     ap.add_argument("--build", nargs=2, metavar=("SLUG", "VARIANT"))
+    ap.add_argument("--cardless", choices=("auto", "fallback"), default="auto",
+                    help="auto: tees/cardless.infer_card after routing (default); fallback: the OSM hole-line card")
+    ap.add_argument("--compare", nargs=2, metavar=("BEFORE_JSON", "AFTER_JSON"),
+                    help="print / write (--md) the before / after table of two runs")
     ap.add_argument("--md", action="store_true", help="also rewrite CARDBLIND.md's generated table")
     ap.add_argument("--json", default=OUT_JSON, help="output JSON (parallel shards: one per process, then --merge)")
     ap.add_argument("--merge", nargs="+", help="merge shard JSONs into --json and print / write the table")
     a = ap.parse_args()
+    if a.compare:
+        md = compare_md(json.load(open(a.compare[0])), json.load(open(a.compare[1])))
+        print(md)
+        if a.md:
+            write_md(md, CMP_BEGIN, CMP_END)
+        return
     if a.merge:
         out = None
         for f in a.merge:
@@ -331,7 +343,8 @@ def main():
         rec = dict(group=cfg["group"], ref="hand truth package" if cfg.get("truth") else "normal build (true card)")
         paths = {}
         try:
-            for v in ("ref", "blind"):
+            bv = "blind" if a.cardless == "auto" else "blind_fallback"
+            for v in ("ref", bv):
                 if v == "ref" and cfg.get("truth"):
                     paths[v] = os.path.join(ROOT, cfg["truth"])
                     continue
@@ -341,8 +354,10 @@ def main():
                                        capture_output=True, text=True)
                     if r.returncode:
                         raise RuntimeError(f"{v} build failed: {(r.stderr or r.stdout).strip().splitlines()[-1:]}")
-                paths[v] = p
+                paths["blind" if v.startswith("blind") else v] = p
             ref_pkg, blind_pkg = json.load(open(paths["ref"])), json.load(open(paths["blind"]))
+            if not cfg.get("truth") and not ((ref_pkg.get("scorecard") or {}).get("kind")):
+                raise RuntimeError("excluded: the ref build has no card either, so there is no card truth")
             rec["blind_card"] = (blind_pkg.get("scorecard") or {}).get("source")
             rec["blind_holes_method"] = ((blind_pkg.get("pipeline") or {}).get("holes") or {}).get("method")
             okh = ok_holes_of(cfg)
@@ -424,12 +439,60 @@ def table_md(out):
 BEGIN, END = "<!-- cardblind_eval:begin -->", "<!-- cardblind_eval:end -->"
 
 
-def write_md(md):
-    txt = open(OUT_MD).read() if os.path.exists(OUT_MD) else f"# Card-blind scoreboard\n\n{BEGIN}\n{END}\n"
-    if BEGIN in txt and END in txt:
-        a, rest = txt.split(BEGIN, 1)
-        _, b = rest.split(END, 1)
-        txt = f"{a}{BEGIN}\n{md}\n{END}{b}"
+CMP_BEGIN, CMP_END = "<!-- cardblind_compare:begin -->", "<!-- cardblind_compare:end -->"
+UNMAPPED = ("hot_springs_park", "jayhawk_club", "national_kc")
+
+
+def compare_md(before, after):
+    """Per course and set: before (fallback card) -> after (tees/cardless.py), and totals (mapped / unmapped / all)."""
+    def cell(m, k):
+        return "-" if not m else m[k]
+
+    def fmt(mb, ma):
+        def pct(m):
+            return f"{m['hit10']}/{m['shots']}" if m else "-"
+        return (f"{pct(mb)} -> **{pct(ma)}** | {cell(mb, 'tee_med')} -> {cell(ma, 'tee_med')} | "
+                f"{cell(mb, 'tee_10')} -> {cell(ma, 'tee_10')} / {cell(ma, 'tee_n')} | "
+                f"{cell(mb, 'par_ok')} -> {cell(ma, 'par_ok')} / {cell(ma, 'holes')} | "
+                f"{cell(mb, 'regret_mean')} -> {cell(ma, 'regret_mean')}")
+    L = ["| course | set | same club + aim <=10 (before -> after) | tee err med yds | tee <=10 yds | par right | "
+         "regret / tee shot |", "|---|---|---|---|---|---|---|"]
+    names = list(dict.fromkeys(list(before["courses"]) + list(after["courses"])))
+    for s in names:
+        cb, ca = before["courses"].get(s) or {}, after["courses"].get(s) or {}
+        if ca.get("error") and cb.get("error"):
+            L.append(f"| {s} | - | not scored: {ca['error'][:100]} | | | | |")
+            continue
+        for nm in ("back", "second"):
+            mb, ma = (cb.get(nm) or {}).get("summary"), (ca.get(nm) or {}).get("summary")
+            if mb or ma:
+                L.append(f"| {s} | {nm} | {fmt(mb, ma)} |")
+    for grp, sel in (("OSM maps every hole", lambda k: k not in UNMAPPED), ("OSM maps few / no holes", lambda k: k in UNMAPPED),
+                     ("all", lambda k: True)):
+        common = [k for k in names if sel(k) and not (before["courses"].get(k) or {}).get("error")
+                  and not (after["courses"].get(k) or {}).get("error")]
+        tb = totals({k: before["courses"][k] for k in common})
+        ta = totals({k: after["courses"][k] for k in common})
+        for nm in ("back", "second"):
+            if nm in tb and nm in ta:
+                L.append(f"| **{grp}** ({len(common)} courses, both scored) | **{nm}** | {fmt(tb[nm], ta[nm])} |")
+    L.append("")
+    for nm in ("back", "second"):
+        ta = totals({k: v for k, v in after["courses"].items() if not v.get("error")}).get(nm)
+        if ta:
+            L.append(f"After, failure causes, {nm} set: " + "; ".join(f"{k} {v}" for k, v in ta["causes"].items()))
+            L.append("")
+    return "\n".join(L)
+
+
+def write_md(md, begin=BEGIN, end=END):
+    txt = open(OUT_MD).read() if os.path.exists(OUT_MD) else f"# Card-blind scoreboard\n\n{begin}\n{end}\n"
+    if begin not in txt:
+        txt += f"\n{begin}\n{end}\n"
+    if begin in txt and end in txt:
+        a, rest = txt.split(begin, 1)
+        _, b = rest.split(end, 1)
+        txt = f"{a}{begin}\n{md}\n{end}{b}"
     open(OUT_MD, "w").write(txt)
 
 
