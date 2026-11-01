@@ -192,7 +192,22 @@ def fit(courses, params=None):
                 X.append(CL.par_features(y[0], y[1], h.get("green_r_yd"), g["dogleg_deg"], g["line_yd"]))
                 Yp.append(par - 3)
     model["par"] = softmax_fit(X, Yp)
+    model["gap2"] = fit_gap2(courses)
     return model
+
+
+def fit_gap2(courses, bw=50, min_n=15):
+    """back - 2nd yds per (par, back // bw) from the dev cards (median; bins with >= min_n holes), + per par."""
+    d, dp = defaultdict(list), defaultdict(list)
+    for c in courses:
+        if len(c["sets"]) < 2:
+            continue
+        for b, s2, par in zip(c["sets"][0][1], c["sets"][1][1], c["par"]):
+            d[f"{par}:{int(b // bw)}"].append(b - s2)
+            dp[str(par)].append(b - s2)
+    med = lambda v: sorted(v)[len(v) // 2]  # noqa: E731
+    return dict(bw=bw, par={k: med(v) for k, v in dp.items() if len(v) >= min_n},
+                bins={k: med(v) for k, v in sorted(d.items()) if len(v) >= min_n})
 
 
 def softmax_fit(X, Y, l2=1e-3, iters=3000, lr=0.5):
@@ -247,14 +262,18 @@ def match_sets(pred, truth):
     return pairs[::-1]
 
 
-def evaluate(courses, model, params=None, S_override=None):
+V1_PARAMS = dict(reassign_behind_yd=None, second_mode="dp")      # tees/cardless v1, for the three-way table
+
+
+def evaluate(courses, model, params=None, S_override=None, anchored=None):
     R = dict(n_courses=len(courses), holes=0, par_right=0, courses_all_par=0, S_right=0, S_pm1=0,
              err=defaultdict(list), tot_err=defaultdict(list), base=defaultdict(list), par_base_right=0,
              tagged_cov=0, per_course=[])
     for c in courses:
         S_true = len(c["sets"])
         card = CL.infer_card(c["holes"], c["tees"], c["pads"], model=model, params=params,
-                             S=(S_true if S_override == "true" else None), extra_boxes=c.get("extra"))
+                             S=(S_true if S_override == "true" else None), extra_boxes=c.get("extra"),
+                             anchored=anchored)
         S = card["diagnostics"]["S"]
         pred = [v["yards"] for v in card["tee_sets"].values()]
         truth = [s[1] for s in c["sets"]]
@@ -277,6 +296,7 @@ def evaluate(courses, model, params=None, S_override=None):
         R["base"]["line_back"] += [abs(g["line_yd"] - b) for g, b in zip(geo, truth[0])]
         if len(truth) > 1:
             R["base"]["line_2nd"] += [abs(g["line_yd"] - b) for g, b in zip(geo, truth[1])]
+            R["base"]["line94_2nd"] += [abs(0.94 * g["line_yd"] - b) for g, b in zip(geo, truth[1])]
         for i, b in enumerate(truth[0]):
             tg = c["tagged"].get(str(i + 1))
             if tg:
@@ -310,6 +330,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--fit", action="store_true")
     ap.add_argument("--out", default=os.path.join(HERE, "eval_cardless.json"))
+    ap.add_argument("--test", action="store_true", help="also score the test split (run once, final settings)")
     a = ap.parse_args()
     dev = load("dev")
     if a.fit:
@@ -320,12 +341,23 @@ def main():
     test = load("test")
     res = {}
     for name, cs in (("dev", dev), ("test", test)):
-        o, pc = evaluate(cs, model)
-        ot, _ = evaluate(cs, model, S_override="true")
-        res[name] = dict(estimated_S=o, oracle_S=ot)
+        if name == "test" and not a.test:
+            continue
+        o, pc = evaluate(cs, model, anchored=True)            # hybrid: every bench line is an OSM hole way
+        ot, _ = evaluate(cs, model, S_override="true", anchored=True)
+        o2, _ = evaluate(cs, model)                           # cardless v2, no anchoring (router lines)
+        o1, _ = evaluate(cs, model, params=V1_PARAMS)         # cardless v1
+        res[name] = dict(estimated_S=o, oracle_S=ot, cardless_v2_unanchored=o2, cardless_v1=o1)
         res[name + "_per_course"] = pc
         print(name, json.dumps(o, indent=1))
         print(name, "oracle S", json.dumps({k: ot[k] for k in ("hole_yd_err", "total_yd_err", "par_hole_acc")}))
+        for nm, x in (("fallback (line, 0.94 x line)", None), ("cardless v1", o1), ("cardless v2 unanchored", o2),
+                      ("hybrid (v2 anchored)", o)):
+            if x is None:
+                b = o["baselines"]
+                print(f"{name} {nm:30s} back {b['line_back']}  2nd {b['line94_2nd']}  par {o['par_baseline_line_thresholds']}")
+            else:
+                print(f"{name} {nm:30s} back {x['hole_yd_err']['back']}  2nd {x['hole_yd_err']['2nd']}  par {x['par_hole_acc']}")
     res["version"] = CL.VERSION
     json.dump(res, open(a.out, "w"), indent=1)
 

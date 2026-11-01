@@ -75,12 +75,12 @@ def test_infer_card_end_to_end():
         for k, f in enumerate((1.0, 0.93, 0.85)):          # three boxes per hole
             y = L * f
             tees.append(dict(id=f"t{i}_{k}", coords=box(x0, y - 4, y + 4)))
-    card = CL.infer_card(holes, tees, params=dict(line_start=False), S=3)
+    card = CL.infer_card(holes, tees, params=dict(line_start=False, second_mode="dp"), S=3)
     sets = list(card["tee_sets"].values())
     assert list(card["tee_sets"]) == ["Back", "2nd", "3rd"]
     # each set stands 0.9 of the way back in its 8-yd box (cards measure from near the back edge): +3.2 yds
     assert all(abs(a - (b + 3.2)) <= 1.5 for a, b in zip(sets[0]["yards"], lengths))
-    assert all(abs(a - (0.93 * b + 3.2)) <= 1.5 for a, b in zip(sets[1]["yards"], lengths))
+    assert all(abs(a - (0.93 * b + 3.2)) <= 1.5 for a, b in zip(sets[1]["yards"], lengths))   # v1: the DP's 2nd set
     assert card["par"][:3] == [4, 3, 5]
     assert sets[0]["total"] > sets[1]["total"] > sets[2]["total"]
 
@@ -96,3 +96,52 @@ def test_clean_sets_drops_duplicates_and_combos():
 def test_match_sets():
     pairs = E.match_sets([[400] * 18, [300] * 18], [[410] * 18, [370] * 18, [300] * 18])
     assert pairs == [(0, 0), (1, 2)]
+
+
+# ----------------------------------------------------------------------------- v2: box assignment, hybrid, 2nd set
+FIX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures_cardless_backbox.json")
+
+
+def test_far_box_nearer_another_start_is_reassigned():
+    # hole 1 north -> south from y=400 at x=0; hole 2 starts at (60, 520). A box at (20, 500) is 100 behind hole 1's
+    # start but nearer hole 2's start: it is hole 2's box.
+    h1 = straight_hole(1, 0, 400)
+    h2 = dict(ref=2, line=[ll(60, 520), ll(60, 900)], green=ll(60, 900), green_r_yd=15)
+    lines = {"1#0": [tuple(p) for p in h1["line"]], "2#1": [tuple(p) for p in h2["line"]]}
+    t = dict(id="far", coords=box(20, 496, 504, w=4), source="osm")
+    near = dict(id="near", coords=box(0, 396, 404, w=4), source="osm")
+    out = CL.reassign_far_boxes(lines, {"1#0": [t, near], "2#1": []})
+    assert [b["id"] for b in out["1#0"]] == ["near"]
+    assert [b["id"] for b in out["2#1"]] == ["far"]
+    out = CL.reassign_far_boxes(lines, {"1#0": [dict(t, coords=box(0, 446, 454, w=4))], "2#1": []})
+    assert len(out["1#0"]) == 1                              # far behind but nearest its own start: stays
+
+
+def test_anchor_boxes_and_second_set():
+    bx = [dict(d_front=440, d_back=450, source="osm"), dict(d_front=400, d_back=410, source="osm"),
+          dict(d_front=405, d_back=415, source="lidar"), dict(d_front=360, d_back=372, source="osm")]
+    kept = CL.anchor_boxes(bx, 400.0, dict(anchor_behind_yd=45.0, anchor_pad_behind_yd=10.0))
+    assert [b["d_back"] for b in kept] == [410, 372]          # 50 behind (box) and 15 behind (pad) dropped
+    model = dict(gap2=dict(bw=50, par={"4": 20}, bins={"4:8": 22}))
+    assert CL.gap2(4, 410, model) == 22 and CL.gap2(4, 300, model) == 20
+    # target 410 - 22 = 388: a box at 405-410 is 17 off (> second_snap 15): stays at the target
+    assert CL.second_set(410.0, 4, [dict(d_front=405, d_back=410)], model) == 388
+    # a box at 372-380 is 8 off: snapped to its back edge
+    assert CL.second_set(410.0, 4, [dict(d_front=405, d_back=410), dict(d_front=372, d_back=380)], model) == 380
+
+
+def test_cardblind_backbox_cases_fixed():
+    """The five card-blind holes where v1 put Back 47-112 yds behind the OSM way's start (platform/CARDBLIND.md):
+    hot_springs_arlington 5 / 10, pine_dunes 18, spirit_hollow 4, veenker 18."""
+    import json
+    with open(FIX) as fh:
+        cases = json.load(fh)["cases"]
+    assert len(cases) == 5
+    for c in cases:
+        holes = [dict(h, line=[tuple(p) for p in h["line"]], green=tuple(h["green"])) for h in c["holes"]]
+        i = [h["ref"] for h in holes].index(c["hole"])
+        v1 = CL.infer_card(holes, c["tees"], c["pads"], params=E.V1_PARAMS)
+        hy = CL.infer_card(holes, c["tees"], c["pads"], anchored=True)
+        assert v1["tee_sets"]["Back"]["yards"][i] > c["ref_back_yd"] + 30, c["slug"]
+        assert abs(hy["tee_sets"]["Back"]["yards"][i] - c["ref_back_yd"]) <= 12, (c["slug"], c["hole"])
+        assert hy["tee_sets"]["2nd"]["yards"][i] < hy["tee_sets"]["Back"]["yards"][i]

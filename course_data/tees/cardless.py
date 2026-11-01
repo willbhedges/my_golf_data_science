@@ -39,7 +39,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [HERE] if HERE not in sys.path else []
 import place_tee as pt  # noqa: E402
 
-VERSION = "tees/cardless v1"
+VERSION = "tees/cardless v2"
 MODEL_PATH = os.path.join(HERE, "cardless_model.json")
 
 PARAMS = dict(
@@ -55,6 +55,21 @@ PARAMS = dict(
     min_gap=8.0, gap_w=0.5,
     iters=4,
     s_quantile=0.75,
+    # box -> hole assignment fix (v2): a box more than reassign_behind_yd behind its hole's line start that sits
+    # nearer another hole's line start goes to that hole (if it fits there) or is dropped; corridor_yd (None = off)
+    # also drops such a box when another hole's line passes within corridor_yd of it
+    reassign_behind_yd=30.0,
+    corridor_yd=None,
+    # hybrid (v2): on holes whose line is an OSM hole way (infer_card anchored=...), boxes whose back edge is more
+    # than anchor_behind_yd behind the way's start are not tee positions (lidar / texture pads: anchor_pad_behind_yd)
+    anchor_behind_yd=45.0,
+    anchor_pad_behind_yd=10.0,
+    # 2nd set (v2): "gap" = back - learned gap(par, back length) (MODEL["gap2"]), snapped to the nearest box
+    # position within second_win yds in front of Back when one is within second_snap of that target;
+    # "dp" = the joint DP's 2nd set (v1)
+    second_mode="gap",
+    second_win=(4.0, 45.0),
+    second_snap=15.0,
 )
 
 # defaults; eval_cardless.py --fit rewrites cardless_model.json from the dev split
@@ -64,6 +79,8 @@ DEFAULT_MODEL = {
                "5": [1.0, 0.95, 0.89, 0.82, 0.72], "6": [1.0, 0.96, 0.91, 0.85, 0.78, 0.69]},
     "par": None,
     "par_prior": None,
+    # back - 2nd yds by par and 50-yd back-length bin (eval_cardless.fit_gap2 on the dev cards)
+    "gap2": {"bw": 50, "par": {"3": 18, "4": 20, "5": 25}, "bins": {}},
 }
 
 
@@ -139,14 +156,75 @@ def slots(boxes, P=None):
     return sorted(out, reverse=True)
 
 
-def tee_complexes(holes, tees, pads=(), extra_boxes=None):
+def reassign_far_boxes(lines, by, P=None):
+    """Fix place_tee.assign_tees_to_holes for boxes far behind their hole's line start: such a box (more than
+    reassign_behind_yd behind the start, along the first leg) that lies nearer another hole's line start than its
+    own is that hole's box: it moves there when it fits that hole (|offset| <= 45 yds, at most 150 behind and
+    short of half-way), else it is dropped. With corridor_yd set, it is also dropped when another hole's line
+    passes within corridor_yd of it. lines / by as assign_tees_to_holes. Returns a new {key: [box]}."""
+    P = dict(PARAMS, **(P or {}))
+    lim = P.get("reassign_behind_yd")
+    if lim is None or not lines:
+        return by
+    pts_all = [p for ln in lines.values() for p in ln]
+    fr = pt.Frame(sum(p[0] for p in pts_all) / len(pts_all), sum(p[1] for p in pts_all) / len(pts_all))
+    xy = {k: [fr.fwd(*p) for p in ln] for k, ln in lines.items()}
+    lops = {k: pt.LineOfPlay(v) for k, v in xy.items()}
+    out = {k: [] for k in lines}
+    for k, bl in by.items():
+        for t in bl:
+            ring = _ring(fr, t["coords"])
+            c = pt.polygon_centroid(ring) if len(ring) >= 3 else ring[0]
+            along, _ = lops[k].first_leg_coords(c)
+            if -along <= lim:
+                out[k].append(t)
+                continue
+            d_own = math.hypot(c[0] - xy[k][0][0], c[1] - xy[k][0][1])
+            others = sorted((math.hypot(c[0] - v[0][0], c[1] - v[0][1]), j) for j, v in xy.items() if j != k)
+            if others and others[0][0] < d_own:
+                j = others[0][1]
+                a2, o2 = lops[j].first_leg_coords(c)
+                if abs(o2) <= 45.0 and -150.0 <= a2 <= 0.5 * lops[j].length:
+                    out[j].append(t)
+                continue
+            cy = P.get("corridor_yd")
+            if cy and any(_seg_dist(c, v) < cy for j, v in xy.items() if j != k):
+                continue
+            out[k].append(t)
+    return out
+
+
+def _seg_dist(p, pl):
+    best = float("inf")
+    for a, b in zip(pl, pl[1:]):
+        ab = (b[0] - a[0], b[1] - a[1])
+        t = max(0.0, min(1.0, ((p[0] - a[0]) * ab[0] + (p[1] - a[1]) * ab[1]) / max(1e-9, ab[0] ** 2 + ab[1] ** 2)))
+        best = min(best, math.hypot(p[0] - a[0] - t * ab[0], p[1] - a[1] - t * ab[1]))
+    return best
+
+
+def anchor_boxes(boxes, line_yd, P=None):
+    """Hybrid: the boxes of a hole whose line is an OSM hole way, minus those whose back edge is more than
+    anchor_behind_yd (pads: anchor_pad_behind_yd) behind the way's start. None = no limit."""
+    P = dict(PARAMS, **(P or {}))
+    out = []
+    for b in boxes:
+        lim = P["anchor_behind_yd"] if b.get("source", "osm") == "osm" else P["anchor_pad_behind_yd"]
+        if lim is None or b["d_back"] <= line_yd + lim:
+            out.append(b)
+    return out
+
+
+def tee_complexes(holes, tees, pads=(), extra_boxes=None, P=None):
     """ref -> merged boxes. OSM boxes first; pads only for holes with no OSM box. extra_boxes: per hole a list of
-    accepted candidate boxes (tip_candidates.select_tips, source 'tip:<src>') measured together with the OSM ones."""
+    accepted candidate boxes (tip_candidates.select_tips, source 'tip:<src>') measured together with the OSM ones.
+    Boxes far behind their line start are re-checked against the other holes (reassign_far_boxes)."""
     lines = {str(h["ref"]) + "#" + str(i): [tuple(p) for p in h["line"][:-1]] + [tuple(h.get("green") or h["line"][-1])]
              for i, h in enumerate(holes)}
     keys = list(lines)
-    by = pt.assign_tees_to_holes(lines, [dict(t, source=t.get("source", "osm")) for t in tees])
-    byp = pt.assign_tees_to_holes(lines, [dict(p, source=p.get("source", "lidar")) for p in pads]) if pads else {}
+    by = reassign_far_boxes(lines, pt.assign_tees_to_holes(lines, [dict(t, source=t.get("source", "osm")) for t in tees]), P)
+    byp = reassign_far_boxes(lines, pt.assign_tees_to_holes(lines, [dict(p, source=p.get("source", "lidar")) for p in pads]), P) \
+        if pads else {}
     out = []
     for k, h in zip(keys, holes):
         ex = list(extra_boxes[len(out)]) if extra_boxes and len(out) < len(extra_boxes) else []
@@ -319,23 +397,57 @@ def infer_pars(probs, model=None, prior_w=1.0):
     return out[1]
 
 
+# ----------------------------------------------------------------------------- 3b. the 2nd set (v2)
+def gap2(par, back, model=None):
+    """Learned back - 2nd yardage gap for a hole of this par and back length."""
+    g = (model or load_model()).get("gap2") or DEFAULT_MODEL["gap2"]
+    k = f"{par}:{int(back // g.get('bw', 50))}"
+    return float(g.get("bins", {}).get(k, g.get("par", {}).get(str(par), 20)))
+
+
+def second_set(back, par, boxes, model=None, P=None):
+    """2nd-set yardage: target back - gap2(par, back), snapped to the nearest box position (a box interval,
+    clamped) within second_win in front of Back when that is within second_snap of the target."""
+    P = dict(PARAMS, **(P or {}))
+    t = back - gap2(par, back, model)
+    lo, hi = P["second_win"]
+    best = None
+    for b in boxes:
+        y = min(max(t, b["d_front"]), b["d_back"], back - lo)
+        if y < b["d_front"] - 1e-6 or not back - hi <= y <= back - lo:
+            continue
+        if best is None or abs(y - t) < abs(best - t):
+            best = y
+    return best if best is not None and abs(best - t) <= P["second_snap"] else t
+
+
 # ----------------------------------------------------------------------------- top level
 def set_names(S):
     return ["Back", "2nd", "3rd", "4th", "5th", "6th", "7th"][:S]
 
 
-def infer_card(holes, tees, pads=(), model=None, params=None, S=None, extra_boxes=None):
-    """Synthetic scorecard (scorecard/1 shape + diagnostics). holes: see module docstring."""
+def infer_card(holes, tees, pads=(), model=None, params=None, S=None, extra_boxes=None, anchored=None):
+    """Synthetic scorecard (scorecard/1 shape + diagnostics). holes: see module docstring. anchored: True (every
+    hole) or a per-hole list of bools: the hole's line is an OSM hole way (hybrid: anchor_boxes); None = none."""
     P = dict(PARAMS, **(params or {}))
     model = model or load_model()
     geo = [hole_geometry(h)[2] for h in holes]
-    boxes = tee_complexes(holes, tees, pads, extra_boxes)
+    boxes = tee_complexes(holes, tees, pads, extra_boxes, P)
+    if anchored:
+        anc = [True] * len(holes) if anchored is True else list(anchored)
+        boxes = [anchor_boxes(b, g["line_yd"], P) if a else b for b, g, a in zip(boxes, geo, anc)]
     ho = [hole_options(b, g["line_yd"], P) for b, g in zip(boxes, geo)]
     S_est = S or estimate_S([o[0] for o in ho], model, P)
     Y, r = assign_sets([(o[1], o[2]) for o in ho], S_est, model, P)
     probs = [par_probs(par_features(y[0], y[1] if len(y) > 1 else None, h.get("green_r_yd"), g["dogleg_deg"],
                                     g["line_yd"]), model.get("par")) for y, h, g in zip(Y, holes, geo)]
     pars = infer_pars(probs, model)
+    if P["second_mode"] == "gap" and S_est >= 2:
+        for y, b, par in zip(Y, boxes, pars):
+            if y and y[0]:
+                y[1] = second_set(y[0], par, b, model, P)
+                for s_ in range(2, len(y)):
+                    y[s_] = min(y[s_], y[s_ - 1])
     names = set_names(S_est)
     tee_sets = {}
     for s, nm in enumerate(names):

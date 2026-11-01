@@ -391,10 +391,14 @@ def cardless_inputs(fc, pads=()):
     return holes, boxes, pads
 
 
-def cardless_infer(fc, req, pkg_dir, slug):
+def cardless_infer(fc, req, pkg_dir, slug, routed=None):
     """card:none after routing: tees/cardless.infer_card on every routed hole line (+ OSM tee boxes, + lidar pads
-    from the package DEM) -> (card on hole numbers 1..n with None for unrouted holes, info) or (None, reason)."""
-    if str(req.get("cardless") or "").lower() == "fallback":
+    from the package DEM) -> (card on hole numbers 1..n with None for unrouted holes, info) or (None, reason).
+    Hybrid (default): holes whose line is an OSM golf=hole way (not in `routed`, the refs the router placed) are
+    anchored (infer_card anchored=: no Back on a box far behind the way's start); request "cardless": "unanchored"
+    treats every line as a router line (no anchoring)."""
+    mode = str(req.get("cardless") or "").lower()
+    if mode == "fallback":
         return None, "request cardless: fallback"
     mod = load(os.path.join(CD, "tees", "cardless.py"), "cdp_cardless")
     if mod is None or not callable(getattr(mod, "infer_card", None)):
@@ -407,7 +411,13 @@ def cardless_infer(fc, req, pkg_dir, slug):
         holes, boxes, pads = cardless_inputs(fc, pads)
         if not holes:
             return None, "no numbered hole lines"
-        c = mod.infer_card(holes, boxes, pads=pads)
+        routed = {str(r) for r in (routed or {})}
+        anchored = None if mode == "unanchored" else [str(h["ref"]) not in routed for h in holes]
+        import inspect
+        if "anchored" in inspect.signature(mod.infer_card).parameters:
+            c = mod.infer_card(holes, boxes, pads=pads, anchored=anchored)
+        else:                                                # a cardless.py without the hybrid (v1)
+            c = mod.infer_card(holes, boxes, pads=pads)
         n = max(h["ref"] for h in holes)
         n = 18 if 9 < n <= 18 else 9 if n <= 9 else n
         idx = [h["ref"] - 1 for h in holes]
@@ -431,7 +441,8 @@ def cardless_infer(fc, req, pkg_dir, slug):
         return scm.normalise(card), dict(kind="cardless", source=f"{c.get('source')} (tees/cardless.infer_card)",
                                          url=None, consistency=None, cross_check={},
                                          cardless=dict(S=diag.get("S"), n_pads=len(pads), n_boxes=len(boxes),
-                                                       holes=len(holes)))
+                                                       holes=len(holes),
+                                                       anchored=sum(anchored) if anchored else 0))
     except Exception as e:                                       # noqa: BLE001  keep the pre-routing fallback card
         return None, f"infer_card failed: {type(e).__name__}: {e}"[:300]
 
@@ -1264,7 +1275,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     if green_notes:
         stages["green_overrides"] = "ok: " + "; ".join(green_notes)[:400]
     if blind:          # card:none: the synthetic card from tees/cardless.py on the routed holes (else keep the fallback)
-        c2, i2 = cardless_infer(fc, req, pkg_dir, slug)
+        c2, i2 = cardless_infer(fc, req, pkg_dir, slug, routed)
         if c2 is not None:
             i2["tried"] = (cinfo.get("tried") or []) + [dict(source="pre-routing", ok=True, info=cinfo.get("source"))]
             card, cinfo = c2, i2
