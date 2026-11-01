@@ -256,8 +256,10 @@ def main():
         return
     if not a.force and os.environ.get("PERC_RETRAIN") != "1" and os.path.exists(mj):
         old = json.load(open(mj))
-        if old.get("pool_fingerprint") == fp:
-            print("training pool unchanged (", fp, "): keeping the committed models", old.get("id"))
+        pool_now = {t["meta"]["slug"] for t in tabs if _sp(t) == "train"}
+        if old.get("pool_fingerprint") and pool_now <= set(old["courses"]["train"]):
+            # a re-perceive pass (scenes made with the committed models): retrain only when the pool grows
+            print("no new pool course (", fp, "): keeping the committed models", old.get("id"))
             return
     pool = sorted((t["meta"]["slug"], str(t["meta"].get("state")).upper()) for t in tabs if _sp(t) == "train")
     held = sorted(t["meta"]["slug"] for t in tabs if _sp(t) == "test")
