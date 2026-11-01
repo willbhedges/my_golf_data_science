@@ -139,6 +139,7 @@ def simulate(slug):
             s.not_a_hole(h["g"])
         else:
             num = Mt.holes[j]["ref"] if single else None
+            tees = [t for t in tees if t not in {p[1] for p in s.fix["pairs"]}]    # a tee serves one hole
             if tees:
                 t2 = min(tees, key=lambda t: (t not in [h["t"]] + list(h["boxes"]), t))
             else:

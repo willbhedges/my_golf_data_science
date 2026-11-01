@@ -167,14 +167,17 @@ def apply_fix(H, comp, fix):
     """Golfer-confirmed facts -> hole-cost matrix. fix = {"pairs": [(number | None, tee, green)], "not_green": [g],
     "first_tee": t | None}. A confirmed pair's tee complex serves only that green, the green only that tee, and the
     pair gets FIX_BONUS so the tour always includes it; a "not a hole" green is removed."""
-    H = H.copy()
+    H0, H = H, H.copy()
     comp = np.asarray(comp)
-    for _, t, g in (fix or {}).get("pairs") or ():
-        cm = np.nonzero(comp == comp[t])[0]
-        keep = H[t, g]
+    pairs = list((fix or {}).get("pairs") or ())
+    fixed_t = {int(t) for _, t, _ in pairs}
+    for _, t, g in pairs:                     # two true holes can share a complex: never blank a confirmed tee
+        cm = [c for c in np.nonzero(comp == comp[t])[0] if c not in fixed_t or c == t]
         H[cm, :] = np.inf
         H[:, g] = np.inf
-        H[t, g] = min(keep, DC.BIG) - FIX_BONUS
+    for _, t, g in pairs:
+        H[t, :] = np.inf
+        H[t, g] = min(H0[t, g], DC.BIG) - FIX_BONUS
     for g in (fix or {}).get("not_green") or ():
         H[:, g] = np.inf
     return H
