@@ -1,0 +1,949 @@
+{
+ "split": "test",
+ "n": 84,
+ "detection": {
+  "all": {
+   "hole_kind": {
+    "courses": 84,
+    "holes": 1512,
+    "green_recall": 0.9543650793650794,
+    "green_precision": 0.9086326402016384,
+    "tee_recall": 0.8974867724867724,
+    "tee_precision": 0.8236180904522613,
+    "both_recall": 0.8670634920634921,
+    "courses_all_greens": 53,
+    "courses_all_both": 23
+   },
+   "p>=0.5": {
+    "courses": 84,
+    "holes": 1512,
+    "green_recall": 0.955026455026455,
+    "green_precision": 0.8798780487804878,
+    "tee_recall": 0.8974867724867724,
+    "tee_precision": 0.8236180904522613,
+    "both_recall": 0.8677248677248677,
+    "courses_all_greens": 54,
+    "courses_all_both": 23
+   },
+   "any": {
+    "courses": 84,
+    "holes": 1512,
+    "green_recall": 0.9887566137566137,
+    "green_precision": 0.8195282501371366,
+    "tee_recall": 0.9583333333333334,
+    "tee_precision": 0.7250859106529209,
+    "both_recall": 0.9490740740740741,
+    "courses_all_greens": 74,
+    "courses_all_both": 56
+   }
+  },
+  "held_out": {
+   "hole_kind": {
+    "courses": 74,
+    "holes": 1332,
+    "green_recall": 0.948948948948949,
+    "green_precision": 0.8970170454545454,
+    "tee_recall": 0.8873873873873874,
+    "tee_precision": 0.8102766798418972,
+    "both_recall": 0.8536036036036037,
+    "courses_all_greens": 44,
+    "courses_all_both": 16
+   },
+   "p>=0.5": {
+    "courses": 74,
+    "holes": 1332,
+    "green_recall": 0.9496996996996997,
+    "green_precision": 0.8729281767955801,
+    "tee_recall": 0.8873873873873874,
+    "tee_precision": 0.8102766798418972,
+    "both_recall": 0.8543543543543544,
+    "courses_all_greens": 45,
+    "courses_all_both": 16
+   },
+   "any": {
+    "courses": 74,
+    "holes": 1332,
+    "green_recall": 0.987987987987988,
+    "green_precision": 0.81727781230578,
+    "tee_recall": 0.954954954954955,
+    "tee_precision": 0.7153191489361702,
+    "both_recall": 0.9451951951951952,
+    "courses_all_greens": 65,
+    "courses_all_both": 48
+   }
+  },
+  "in_sample": {
+   "hole_kind": {
+    "courses": 10,
+    "holes": 180,
+    "green_recall": 0.9944444444444445,
+    "green_precision": 1.0,
+    "tee_recall": 0.9722222222222222,
+    "tee_precision": 0.9315068493150684,
+    "both_recall": 0.9666666666666667,
+    "courses_all_greens": 9,
+    "courses_all_both": 7
+   },
+   "p>=0.5": {
+    "courses": 10,
+    "holes": 180,
+    "green_recall": 0.9944444444444445,
+    "green_precision": 0.9322916666666666,
+    "tee_recall": 0.9722222222222222,
+    "tee_precision": 0.9315068493150684,
+    "both_recall": 0.9666666666666667,
+    "courses_all_greens": 9,
+    "courses_all_both": 7
+   },
+   "any": {
+    "courses": 10,
+    "holes": 180,
+    "green_recall": 0.9944444444444445,
+    "green_precision": 0.8364485981308412,
+    "tee_recall": 0.9833333333333333,
+    "tee_precision": 0.8104089219330854,
+    "both_recall": 0.9777777777777777,
+    "courses_all_greens": 9,
+    "courses_all_both": 8
+   }
+  }
+ },
+ "pairing": {
+  "sequence_v3/unmapped_card": {
+   "all": {
+    "courses": 84,
+    "holes": 1512,
+    "paired": 0.8187830687830688,
+    "all_pairs_right": 0.27380952380952384,
+    "numbered": 0.6865079365079365,
+    "holes_right": 0.2619047619047619,
+    "unformed": {
+     "mispaired": 214,
+     "no_green_cand": 17,
+     "no_tee_cand": 43
+    }
+   },
+   "held_out": {
+    "courses": 74,
+    "holes": 1332,
+    "paired": 0.8033033033033034,
+    "all_pairs_right": 0.25675675675675674,
+    "numbered": 0.6599099099099099,
+    "holes_right": 0.24324324324324326,
+    "unformed": {
+     "mispaired": 203,
+     "no_green_cand": 16,
+     "no_tee_cand": 43
+    }
+   },
+   "in_sample": {
+    "courses": 10,
+    "holes": 180,
+    "paired": 0.9333333333333333,
+    "all_pairs_right": 0.4,
+    "numbered": 0.8833333333333333,
+    "holes_right": 0.4,
+    "unformed": {
+     "mispaired": 11,
+     "no_green_cand": 1
+    }
+   }
+  },
+  "sequence_v3/unmapped_nocard": {
+   "all": {
+    "courses": 84,
+    "holes": 1512,
+    "paired": 0.8148148148148148,
+    "all_pairs_right": 0.16666666666666666,
+    "numbered": 0.3353174603174603,
+    "holes_right": 0.07142857142857142,
+    "unformed": {
+     "mispaired": 221,
+     "no_green_cand": 17,
+     "no_tee_cand": 42
+    }
+   },
+   "held_out": {
+    "courses": 74,
+    "holes": 1332,
+    "paired": 0.8003003003003003,
+    "all_pairs_right": 0.13513513513513514,
+    "numbered": 0.29654654654654655,
+    "holes_right": 0.06756756756756757,
+    "unformed": {
+     "mispaired": 208,
+     "no_green_cand": 16,
+     "no_tee_cand": 42
+    }
+   },
+   "in_sample": {
+    "courses": 10,
+    "holes": 180,
+    "paired": 0.9222222222222223,
+    "all_pairs_right": 0.4,
+    "numbered": 0.6222222222222222,
+    "holes_right": 0.1,
+    "unformed": {
+     "mispaired": 13,
+     "no_green_cand": 1
+    }
+   }
+  },
+  "pathroute_v2_unmapped/unmapped_nocard": {
+   "all": {
+    "courses": 84,
+    "holes": 1512,
+    "paired": 0.8167989417989417,
+    "all_pairs_right": 0.21428571428571427,
+    "numbered": 0.29365079365079366,
+    "holes_right": 0.09523809523809523,
+    "unformed": {
+     "mispaired": 200,
+     "no_tee_cand": 60,
+     "no_green_cand": 17
+    }
+   },
+   "held_out": {
+    "courses": 74,
+    "holes": 1332,
+    "paired": 0.8048048048048048,
+    "all_pairs_right": 0.1891891891891892,
+    "numbered": 0.243993993993994,
+    "holes_right": 0.06756756756756757,
+    "unformed": {
+     "mispaired": 187,
+     "no_tee_cand": 57,
+     "no_green_cand": 16
+    }
+   },
+   "in_sample": {
+    "courses": 10,
+    "holes": 180,
+    "paired": 0.9055555555555556,
+    "all_pairs_right": 0.4,
+    "numbered": 0.6611111111111111,
+    "holes_right": 0.3,
+    "unformed": {
+     "mispaired": 13,
+     "no_tee_cand": 3,
+     "no_green_cand": 1
+    }
+   }
+  },
+  "formation_v2/unmapped_nocard": {
+   "all": {
+    "courses": 84,
+    "holes": 1512,
+    "paired": 0.8247354497354498,
+    "all_pairs_right": 0.11904761904761904,
+    "numbered": 0.052248677248677246,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 205,
+     "no_green_cand": 17,
+     "no_tee_cand": 43
+    }
+   },
+   "held_out": {
+    "courses": 74,
+    "holes": 1332,
+    "paired": 0.8108108108108109,
+    "all_pairs_right": 0.06756756756756757,
+    "numbered": 0.0518018018018018,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 194,
+     "no_green_cand": 16,
+     "no_tee_cand": 42
+    }
+   },
+   "in_sample": {
+    "courses": 10,
+    "holes": 180,
+    "paired": 0.9277777777777778,
+    "all_pairs_right": 0.5,
+    "numbered": 0.05555555555555555,
+    "holes_right": 0.0,
+    "unformed": {
+     "mispaired": 11,
+     "no_green_cand": 1,
+     "no_tee_cand": 1
+    }
+   }
+  }
+ },
+ "courses": [
+  {
+   "slug": "big_sugar_ar",
+   "state": "AR",
+   "scene": "course_data/zero_tap/formation/inputs/big_sugar_ar/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "brush_creek_ar",
+   "state": "AR",
+   "scene": "course_data/zero_tap/formation/inputs/brush_creek_ar/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "coronado_ar",
+   "state": "AR",
+   "scene": "course_data/zero_tap/formation/inputs/coronado_ar/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "fayetteville_ar",
+   "state": "AR",
+   "scene": "course_data/zero_tap/formation/inputs/fayetteville_ar/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "course_ca",
+   "state": "CA",
+   "scene": "course_data/perception/scenes/course_ca/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "lake_tahoe_ca",
+   "state": "CA",
+   "scene": "course_data/perception/scenes/lake_tahoe_ca/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "los_amigos_ca",
+   "state": "CA",
+   "scene": "course_data/perception/scenes/los_amigos_ca/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "south_hills_ca",
+   "state": "CA",
+   "scene": "course_data/perception/scenes/south_hills_ca/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "airways_ct",
+   "state": "CT",
+   "scene": "course_data/zero_tap/formation/inputs/airways_ct/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "hunter_memorial_ct",
+   "state": "CT",
+   "scene": "course_data/zero_tap/formation/inputs/hunter_memorial_ct/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "keney_ct",
+   "state": "CT",
+   "scene": "course_data/zero_tap/formation/inputs/keney_ct/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "richter_park_ct",
+   "state": "CT",
+   "scene": "course_data/zero_tap/formation/inputs/richter_park_ct/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "shorehaven_ct",
+   "state": "CT",
+   "scene": "course_data/zero_tap/formation/inputs/shorehaven_ct/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "heritage_shores_de",
+   "state": "DE",
+   "scene": "course_data/zero_tap/formation/inputs/heritage_shores_de/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "jonathan_s_landing_de",
+   "state": "DE",
+   "scene": "course_data/zero_tap/formation/inputs/jonathan_s_landing_de/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "midway_par_3_de",
+   "state": "DE",
+   "scene": "course_data/zero_tap/formation/inputs/midway_par_3_de/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "wild_quail_de",
+   "state": "DE",
+   "scene": "course_data/zero_tap/formation/inputs/wild_quail_de/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "smoke_rise_ga",
+   "state": "GA",
+   "scene": "course_data/perception/scenes/smoke_rise_ga/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "towne_lake_hills_ga",
+   "state": "GA",
+   "scene": "course_data/perception/scenes/towne_lake_hills_ga/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "beaver_creek_ia",
+   "state": "IA",
+   "scene": "course_data/zero_tap/formation/inputs/beaver_creek_ia/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "copper_creek_ia",
+   "state": "IA",
+   "scene": "course_data/zero_tap/formation/inputs/copper_creek_ia/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "finkbine_ia",
+   "state": "IA",
+   "scene": "course_data/zero_tap/formation/inputs/finkbine_ia/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "geneva_ia",
+   "state": "IA",
+   "scene": "course_data/zero_tap/formation/inputs/geneva_ia/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "majestic_hills_ia",
+   "state": "IA",
+   "scene": "course_data/zero_tap/formation/inputs/majestic_hills_ia/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "ottumwa_ia",
+   "state": "IA",
+   "scene": "course_data/zero_tap/formation/inputs/ottumwa_ia/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "urbandale_ia",
+   "state": "IA",
+   "scene": "course_data/zero_tap/formation/inputs/urbandale_ia/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "jefferson_hills_id",
+   "state": "ID",
+   "scene": "course_data/zero_tap/formation/inputs/jefferson_hills_id/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "pinehurst_id",
+   "state": "ID",
+   "scene": "course_data/zero_tap/formation/inputs/pinehurst_id/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "rupert_id",
+   "state": "ID",
+   "scene": "course_data/zero_tap/formation/inputs/rupert_id/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "spurwing_id",
+   "state": "ID",
+   "scene": "course_data/zero_tap/formation/inputs/spurwing_id/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "twin_falls_id",
+   "state": "ID",
+   "scene": "course_data/zero_tap/formation/inputs/twin_falls_id/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "skokie_il",
+   "state": "IL",
+   "scene": "course_data/perception/scenes/skokie_il/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "crossings_ky",
+   "state": "KY",
+   "scene": "course_data/perception/scenes/crossings_ky/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "wildwood_ky",
+   "state": "KY",
+   "scene": "course_data/perception/scenes/wildwood_ky/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "elmcrest_ma",
+   "state": "MA",
+   "scene": "course_data/perception/scenes/elmcrest_ma/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "ocean_edge_resort_ma",
+   "state": "MA",
+   "scene": "course_data/perception/scenes/ocean_edge_resort_ma/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "william_j_devine_ma",
+   "state": "MA",
+   "scene": "course_data/perception/scenes/william_j_devine_ma/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "woods_hole_ma",
+   "state": "MA",
+   "scene": "course_data/perception/scenes/woods_hole_ma/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  },
+  {
+   "slug": "falmouth_me",
+   "state": "ME",
+   "scene": "course_data/perception/scenes/falmouth_me/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "jato_highlands_me",
+   "state": "ME",
+   "scene": "course_data/perception/scenes/jato_highlands_me/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "algonquin_mo",
+   "state": "MO",
+   "scene": "course_data/zero_tap/formation/inputs/algonquin_mo/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "creekmoor_mo",
+   "state": "MO",
+   "scene": "course_data/zero_tap/formation/inputs/creekmoor_mo/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "crown_pointe_mo",
+   "state": "MO",
+   "scene": "course_data/zero_tap/formation/inputs/crown_pointe_mo/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "ridge_mo",
+   "state": "MO",
+   "scene": "course_data/zero_tap/formation/inputs/ridge_mo/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "schifferdecker_mo",
+   "state": "MO",
+   "scene": "course_data/zero_tap/formation/inputs/schifferdecker_mo/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "tarkio_mo",
+   "state": "MO",
+   "scene": "course_data/zero_tap/formation/inputs/tarkio_mo/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "hope_valley_nc",
+   "state": "NC",
+   "scene": "course_data/zero_tap/formation/inputs/hope_valley_nc/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "jefferson_landing_nc",
+   "state": "NC",
+   "scene": "course_data/zero_tap/formation/inputs/jefferson_landing_nc/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "pinehurst_nc",
+   "state": "NC",
+   "scene": "course_data/zero_tap/formation/inputs/pinehurst_nc/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "pinehurst_no_7_nc",
+   "state": "NC",
+   "scene": "course_data/zero_tap/formation/inputs/pinehurst_no_7_nc/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "reedy_creek_nc",
+   "state": "NC",
+   "scene": "course_data/zero_tap/formation/inputs/reedy_creek_nc/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "riverbend_ymca_nc",
+   "state": "NC",
+   "scene": "course_data/zero_tap/formation/inputs/riverbend_ymca_nc/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "dismal_river_ne",
+   "state": "NE",
+   "scene": "course_data/zero_tap/formation/inputs/dismal_river_ne/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "fair_play_ne",
+   "state": "NE",
+   "scene": "course_data/zero_tap/formation/inputs/fair_play_ne/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "highlands_ne",
+   "state": "NE",
+   "scene": "course_data/zero_tap/formation/inputs/highlands_ne/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "jackrabbit_run_ne",
+   "state": "NE",
+   "scene": "course_data/zero_tap/formation/inputs/jackrabbit_run_ne/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "seward_community_ne",
+   "state": "NE",
+   "scene": "course_data/zero_tap/formation/inputs/seward_community_ne/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "tatanka_ne",
+   "state": "NE",
+   "scene": "course_data/zero_tap/formation/inputs/tatanka_ne/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "woodland_hills_ne",
+   "state": "NE",
+   "scene": "course_data/zero_tap/formation/inputs/woodland_hills_ne/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "blair_nj",
+   "state": "NJ",
+   "scene": "course_data/zero_tap/formation/inputs/blair_nj/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "brigantine_nj",
+   "state": "NJ",
+   "scene": "course_data/zero_tap/formation/inputs/brigantine_nj/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "colts_neck_nj",
+   "state": "NJ",
+   "scene": "course_data/zero_tap/formation/inputs/colts_neck_nj/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "spooky_brook_nj",
+   "state": "NJ",
+   "scene": "course_data/zero_tap/formation/inputs/spooky_brook_nj/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "suneagles_nj",
+   "state": "NJ",
+   "scene": "course_data/zero_tap/formation/inputs/suneagles_nj/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "canyon_gate_nv",
+   "state": "NV",
+   "scene": "course_data/zero_tap/formation/inputs/canyon_gate_nv/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "lake_ridge_nv",
+   "state": "NV",
+   "scene": "course_data/zero_tap/formation/inputs/lake_ridge_nv/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "silver_oak_nv",
+   "state": "NV",
+   "scene": "course_data/zero_tap/formation/inputs/silver_oak_nv/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "sunrise_vista_nellis_air_force_base_nv",
+   "state": "NV",
+   "scene": "course_data/zero_tap/formation/inputs/sunrise_vista_nellis_air_force_base_nv/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "cedarbrook_pa",
+   "state": "PA",
+   "scene": "course_data/zero_tap/formation/inputs/cedarbrook_pa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "glenhardie_pa",
+   "state": "PA",
+   "scene": "course_data/zero_tap/formation/inputs/glenhardie_pa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "kennett_square_pa",
+   "state": "PA",
+   "scene": "course_data/zero_tap/formation/inputs/kennett_square_pa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "lakevue_north_pa",
+   "state": "PA",
+   "scene": "course_data/zero_tap/formation/inputs/lakevue_north_pa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "punxsutawney_pa",
+   "state": "PA",
+   "scene": "course_data/zero_tap/formation/inputs/punxsutawney_pa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "scenic_valley_pa",
+   "state": "PA",
+   "scene": "course_data/zero_tap/formation/inputs/scenic_valley_pa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "skytop_pa",
+   "state": "PA",
+   "scene": "course_data/zero_tap/formation/inputs/skytop_pa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "bonneville_ut",
+   "state": "UT",
+   "scene": "course_data/perception/scenes/bonneville_ut/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "apple_tree_resort_wa",
+   "state": "WA",
+   "scene": "course_data/zero_tap/formation/inputs/apple_tree_resort_wa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "desert_aire_wa",
+   "state": "WA",
+   "scene": "course_data/zero_tap/formation/inputs/desert_aire_wa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "kalispel_wa",
+   "state": "WA",
+   "scene": "course_data/zero_tap/formation/inputs/kalispel_wa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "newcastle_wa",
+   "state": "WA",
+   "scene": "course_data/zero_tap/formation/inputs/newcastle_wa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "palouse_ridge_wa",
+   "state": "WA",
+   "scene": "course_data/zero_tap/formation/inputs/palouse_ridge_wa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "royal_city_wa",
+   "state": "WA",
+   "scene": "course_data/zero_tap/formation/inputs/royal_city_wa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "three_rivers_wa",
+   "state": "WA",
+   "scene": "course_data/zero_tap/formation/inputs/three_rivers_wa/scene.json.gz",
+   "perception_models": "perception-20261017-1247",
+   "perc": "held_out",
+   "course_trained_on": false
+  },
+  {
+   "slug": "ozaukee_wi",
+   "state": "WI",
+   "scene": "course_data/perception/scenes/ozaukee_wi/scene.json.gz",
+   "perception_models": "perception-20261017-1050",
+   "perc": "in_sample",
+   "course_trained_on": true
+  }
+ ]
+}
