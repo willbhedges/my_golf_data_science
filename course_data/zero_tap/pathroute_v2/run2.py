@@ -63,16 +63,22 @@ class Models2:
         return pr
 
 
-def decode_course(d, pr, cfg=CFG, conf_feats=True):
-    """-> (holes, route conf, conf feature rows)."""
-    comp = CX.cluster(len(d["tees"]), d["tpp"], pr["tpair"], thr=cfg["comp_thr"])
-    kw = dict(K=cfg["K"], cross=cfg["cross"], reuse=cfg["reuse"], box_mode=cfg["box_mode"])
+def decode_course(d, pr, cfg=CFG, conf_feats=True, fix=None, comp=None):
+    """-> (holes, route conf, conf feature rows). fix: golfer-confirmed facts (decode2.apply_fix); holes whose
+    (tee, green) is a confirmed pair get min-marginal 30 (they are not re-asked)."""
+    if comp is None:
+        comp = CX.cluster(len(d["tees"]), d["tpp"], pr["tpair"], thr=cfg["comp_thr"])
+    kw = dict(K=cfg["K"], cross=cfg["cross"], reuse=cfg["reuse"], box_mode=cfg["box_mode"], fix=fix)
     holes, conf, cost = D2.decode2(d, pr, W, comp, beam=cfg["beam"], return_cost=True, **kw)
     H, T, S, E = DC.cost_mats(d, pr, W)
     if not conf_feats or not holes:
         return holes, conf, np.zeros((len(holes), len(CF.CONF_F)))
+    fixed = {(int(t), int(g)) for _, t, g in (fix or {}).get("pairs") or ()}
     mm = []
     for h in holes:
+        if (h["t"], h["g"]) in fixed:
+            mm.append(30.0)
+            continue
         H2 = H.copy()
         H2[comp == comp[h["t"]], h["g"]] = np.inf
         H2[h["t"], h["g"]] = np.inf

@@ -57,3 +57,66 @@ def test_taps():
     courses = [(np.array([0.99, 0.99, 0.4]), np.array([1, 1, 0])), (np.array([0.99, 0.6]), np.array([1, 1]))]
     thr, taps, prec, zero = CF.taps_to_precision(courses, 0.98)
     assert prec >= 0.98 and taps == 0.5 and zero == 0.5
+
+
+def _course(swap_bias):
+    d, pr = _two_holes(swap_bias)
+    d = dict(d, tees=[dict(id="t0"), dict(id="t1")], greens=[dict(id="g0"), dict(id="g1")])
+    return d, pr
+
+
+def _args(d, pr, H=None):
+    H0, T, S, E = DC.cost_mats(d, pr, dict(trans=1.0, club=1.0))
+    return (H0 if H is None else H, T, S, E, 2, np.ones(2, bool), np.ones(2, bool), d["tc"], d["gc"], np.arange(2))
+
+
+def test_fix_pair_resolves():
+    d, pr = _course(0.3)                                       # the model prefers the crossed pairing
+    gs, ts, _, _ = D2.beam_loop2(*_args(d, pr), cross=0.0, reuse=0.0)
+    assert sorted(zip(ts, gs)) == [(0, 1), (1, 0)]
+    # golfer: "hole 2 is tee 0 -> green 0" -> the other pair follows, and the pinned pair is hole 2
+    H = D2.apply_fix(DC.cost_mats(d, pr, dict(trans=1.0, club=1.0))[0], np.arange(2), dict(pairs=[(2, 0, 0)]))
+    gs, ts, _, _ = D2.beam_loop2(*_args(d, pr, H), cross=0.0, reuse=0.0, pins={2: (0, 0)})
+    assert list(zip(ts, gs)) == [(1, 1), (0, 0)]
+
+
+def test_hole_one_fixes_start():
+    d, pr = _course(-0.3)
+    for first in (0, 1):
+        gs, ts, _, _ = D2.beam_loop2(*_args(d, pr), first={first}, first_force=first)
+        assert ts[0] == first and gs[0] == first
+
+
+def test_not_a_hole_and_session_ids():
+    import resolve2 as RS
+    d, pr = _course(-0.3)
+    H = D2.apply_fix(np.zeros((2, 2)), np.arange(2), dict(not_green=[1], pairs=[(None, 0, 0)]))
+    assert np.isinf(H[:, 1]).all() and H[0, 0] < 0 and np.isinf(H[1, 0])
+    f = dict(pairs=[(1, 0, 0)], not_green=[1], first_tee=0)
+    s = RS.Session.__new__(RS.Session)
+    s.d, s.fix = d, f
+    assert RS.Session.from_ids(d, s.to_ids()) == dict(pairs=[(1, 0, 0)], not_green=[1], first_tee=0)
+
+
+def test_live_route_bench_course():
+    """live2.route (the stage_select "pathroute_v2" method) on a benchmark course: OSM hole ways become fixed
+    pairs, the hidden-holes route has per-hole confidence and an ask order. Skips without the data / model."""
+    import pytest
+    import live2
+    import bench as B
+    rows = [r for r in B.courses("test") if r["kind"] == 18]
+    if not rows or not os.path.exists(live2.MODEL) or B._rd(rows[0]["files"]["osm"]) is None:
+        pytest.skip("benchmark data or model_v2.pkl.gz not checked out")
+    r = rows[0]
+    x = B.inputs(r, "nocard")
+    res = live2.route(B._rd(r["files"]["osm"]), x["course"], n_holes=18)
+    assert res["n_holes"] == 18 and res["confirm"]["osm_fixed"] >= 9
+    assert all(h["confidence"] == 1.0 for h in res["holes"].values() if h["fixed"])
+    hid = live2.route(x["fc"], x["course"], n_holes=18)
+    assert hid["confirm"]["osm_fixed"] == 0 and all(0 <= h["confidence"] <= 1 for h in hid["holes"].values())
+    ask = hid["confirm"]["ask_order"]
+    if ask:                                        # confirm the first asked hole -> it comes back fixed
+        h = hid["holes"][ask[0]]
+        f = dict(pairs=[[int(ask[0]), h["tee_id"], h["green_id"]]], not_green=[], first_tee=None)
+        again = live2.route(x["fc"], x["course"], n_holes=18, fix=f)
+        assert again["holes"][ask[0]]["green_id"] == h["green_id"] and again["holes"][ask[0]]["confidence"] == 1.0

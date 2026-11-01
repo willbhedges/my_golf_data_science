@@ -14,6 +14,11 @@ Methods (each falls back to the next on any error or an empty result):
   v2            routing v2 alone (the previous default with a card)
   structure     the structure solver's MAP route alone (course_data/structure/structure.py)
   geometry      no routing: geometry/build_holes.infer_holes (the previous default without a card)
+  pathroute_v2  card-blind tiers: zero_tap/pathroute_v2 (live2.route): joint pairing + order decode of the OSM greens /
+                tees with tee complexes, corridor-crossing / complex-reuse penalties and a calibrated per-hole pair
+                confidence (zero_tap/PATHROUTE.md). OSM golf=hole ways are fixed as confirmed pairs, so it fills
+                only the holes OSM lacks. Its golfer confirm is its own (result "confirm": ask order + facts,
+                re-solve with live2.route(fix=...)). Models: zero_tap/pathroute_v2/model_v2.pkl.gz.
   sequence_v3   card tiers only: formation-v2 pair probabilities (zero_tap/formation/hole_pairs.py, hole_pairs/1)
                 as the formation, then the zero-tap sequence solver v3 (zero_tap/sequence/solve.py: route CRF +
                 card geometry, PAIRS_FORM_W 3, CARD_W 2, nesting on: zero_tap/sequence/results/v3/bench_d.md).
@@ -64,7 +69,9 @@ SCENE_MIN_GREEN, SCENE_MIN_COMPLEX = 0.5, 0.4
 SELECT = {
     "mapped_card": dict(method="v2+structure", lam=0.5, perception=False),
     "unmapped_card": dict(method="v2+structure", lam=0.25, perception=False),
-    "mapped_nocard": dict(method="structure", confirm=dict(method="v2+structure", lam=1.0)),
+    "mapped_nocard": dict(method="pathroute_v2"),
+    # was: structure (+ v2+structure lam 1.0 confirm session). pathroute_v2 on the zero-tap nocard test split:
+    # 86.9 % of holes paired right vs routing_v2 60.3 % (PATHROUTE.md); card-blind packages: CARDBLIND.md
     "unmapped_nocard": dict(method="structure", confirm=dict(method="v2")),
 }
 # sequence_v3 (formation-v2 pairs + sequence solver v3) for the card tiers: PIPELINE.md section 8. It becomes the
@@ -76,7 +83,7 @@ SELECT_V3 = {
 }
 V3 = dict(form_w=3.0, card_w=2.0, nest=True)       # zero_tap_seqv3.yml variant c2 (chosen on dev)
 USE_V3 = False                                      # True: SELECT_V3 overrides SELECT for the card tiers
-FALLBACK = {"sequence_v3": ["v2+structure", "v2", "structure", "geometry"],
+FALLBACK = {"pathroute_v2": ["structure", "v2", "geometry"], "sequence_v3": ["v2+structure", "v2", "structure", "geometry"],
             "v2+structure": ["v2", "structure", "geometry"], "v2": ["structure", "geometry"],
             "structure": ["v2", "geometry"], "geometry": []}
 
@@ -311,6 +318,14 @@ def _zero_tap_mods():
     return SQ, HP
 
 
+def _pathroute_mod():
+    d = os.path.join(ZT, "pathroute_v2")
+    if d not in sys.path:
+        sys.path.append(d)
+    import live2                                         # zero_tap/pathroute_v2/live2.py
+    return live2
+
+
 def sequence_v3(fc, course, card, scene=None, mapped=True, slug=None):
     """formation-v2 hole_pairs/1 + sequence solver v3 -> (routing-compatible result, details). Raises on failure."""
     import scene as S
@@ -358,6 +373,12 @@ def run_method(method, fc, card, course, seg=None, pads=None, scene=None, prof=N
     mapped = prof["osm_mapped"]
     if method == "geometry":
         return geometry_holes(fc), {}
+    if method == "pathroute_v2":
+        if not mapped and prof["osm_greens"] < 3:
+            raise RuntimeError("pathroute_v2 needs OSM greens / tees")
+        live = _pathroute_mod()
+        res = live.route(fc, course, n_holes=prof["n_holes"])
+        return res, dict(router_inputs="osm", greens=sum(1 for _ in res["holes"]), osm_fixed=res["confirm"]["osm_fixed"])
     if method == "sequence_v3":
         return sequence_v3(fc, course, card, scene=scene, mapped=mapped, slug=(course or {}).get("slug"))
     if method == "structure":

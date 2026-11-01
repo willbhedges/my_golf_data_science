@@ -114,6 +114,7 @@ def build(slug, variant, out_root):
         req["card"] = "none"
         if variant == "blind_fallback":            # the "before": OSM hole-line card only, no tees/cardless.py
             req["cardless"] = "fallback"
+        req.update(json.loads(os.environ.get("CARDBLIND_REQ") or "{}"))   # e.g. '{"pathroute": false}' (old routing)
     with contextlib.redirect_stdout(io.StringIO()):
         pkg = P.build_package(req, dst)
         P.write(pkg, dst)

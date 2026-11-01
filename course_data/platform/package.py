@@ -1128,7 +1128,9 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, 
             if lp is not None:
                 pads = lp.detect_pads(dem, greens=osm_tee_inputs(fc)[2], lines=None)
         force = dict(method=req["hole_method"]) if req.get("hole_method") in ("v2", "structure", "v2+structure",
-                                                                               "sequence_v3") else None
+                                                                               "sequence_v3", "pathroute_v2") else None
+        if force is None and card_blind(req) and req.get("pathroute", True):
+            force = dict(method="pathroute_v2")      # card:none: the synthetic card carries no routing truth
         res, info = ss.infer_holes(fc, card, course, seg=seg, pads=pads, scene=scene, force=force)
         info.pop("profile", None)
         pipeline["holes"] = info
@@ -1141,7 +1143,8 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, 
         for n_ in sanity.guard_routed(res, fc, missing, (inp or {}).get("greens") or ()):
             warnings.append(n_[:240])
         fc2 = rt.to_hole_features(res, fc, inp)
-        routed = {r: {k: res["holes"][r].get(k) for k in ("status", "flags", "p_green", "p_hole", "margin", "green_src", "tee_src")}
+        routed = {r: {k: res["holes"][r].get(k) for k in ("status", "flags", "p_green", "p_hole", "margin", "green_src", "tee_src",
+                                                          "confidence")}
                   for r in missing if res["holes"].get(r, {}).get("green_ll") and res["holes"][r].get("tee_ll")}
         for r, h in routed.items():
             h["method"] = info["method"]
@@ -1156,6 +1159,9 @@ def route_missing_holes(fc, card, course, req, pkg_dir, slug, warnings, stages, 
                              + f") placed {len(routed)}/{len(missing)} holes OSM has no way for "
                              f"({sum(h['status'] != 'ok' for h in routed.values())} to check; segment "
                              f"{'yes' if seg else 'no'}, lidar pads {len(pads)}, perception scene {'yes' if scene else 'no'})")
+        if res.get("confirm") and res.get("method") == "pathroute_v2":     # its own confirm: ask order + facts
+            pipeline["confirm"] = dict(file="routing.json#confirm", schema=res["confirm"].get("schema"),
+                                       questions=len(res["confirm"].get("ask_order") or []))
         if inp is not None and req.get("confirm", True):
             try:                                 # golf_confirm/1 for the app (CONFIRM_UX.md)
                 import confirm as cf
