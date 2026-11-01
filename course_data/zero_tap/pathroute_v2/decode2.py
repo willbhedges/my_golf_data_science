@@ -66,6 +66,8 @@ def beam_loop2(H, T, S, E, n, avail_g, avail_t, tc, gc, comp, boxes_of=None, K=6
     K = top.shape[1]
     X, R, pt, pg = pair_mats(top, tc, gc, comp, boxes_of)
     PEN = cross * X + reuse * R                                  # [P, P]
+    same_t = (pt[:, None] == pt[None, :]) & (pg[:, None] != pg[None, :])
+    PEN[same_t] += 50.0                                          # one tee box never serves two holes
     Pn = ng * K
     # step cost from green g (last) to pair p (tee pt[p], green pg[p]): T[g, pt] + hc[p]
     hcf = hc.ravel()
@@ -126,7 +128,7 @@ def box_sets(tc, avail_t=None):
     return D < 45
 
 
-def decode2(d, pr, w, comp, beam=4000, K=6, cross=1.5, reuse=4.0, box_mode="v1+comp", H=None):
+def decode2(d, pr, w, comp, beam=4000, K=6, cross=1.5, reuse=4.0, box_mode="v1+comp", H=None, return_cost=False):
     kind = d["kind"]
     n = 9 if kind in (9, 27) else 18
     loops = {9: 1, 18: 1, 27: 3, 36: 2}.get(kind, max(1, round(kind / n)))
@@ -138,7 +140,7 @@ def decode2(d, pr, w, comp, beam=4000, K=6, cross=1.5, reuse=4.0, box_mode="v1+c
     gcs = np.asarray(d["gc"], float)
     comp = np.asarray(comp)
     bo = box_sets(tc)
-    out, confs = [], []
+    out, confs, costs = [], [], []
     for li in range(loops):
         r = beam_loop2(H, T, S, E, n, avail_g, avail_t, tc, gcs, comp, bo, K=K, beam=beam,
                        mid=9 if n == 18 else None, cross=cross, reuse=reuse)
@@ -146,6 +148,7 @@ def decode2(d, pr, w, comp, beam=4000, K=6, cross=1.5, reuse=4.0, box_mode="v1+c
             break
         gs, ts, c, conf = r
         confs.append(conf)
+        costs.append(c)
         for k, (g, t) in enumerate(zip(gs, ts)):
             gp, tp = gcs[g], tc[t]
             u = (gp - tp) / max(np.hypot(*(gp - tp)), 1.0)
@@ -164,4 +167,6 @@ def decode2(d, pr, w, comp, beam=4000, K=6, cross=1.5, reuse=4.0, box_mode="v1+c
             for b in box:
                 avail_t[b] = False
             avail_t[comp == comp[t]] = False
+    if return_cost:
+        return out, float(np.prod(confs)) if confs else 0.0, float(np.sum(costs)) if costs else np.inf
     return out, float(np.prod(confs)) if confs else 0.0

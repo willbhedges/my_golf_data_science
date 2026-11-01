@@ -1,0 +1,59 @@
+"""pathroute v2 self-checks on synthetic data (no benchmark data needed)."""
+import os
+import sys
+
+import numpy as np
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path[:0] = [HERE, os.path.join(os.path.dirname(HERE), "pathroute"), os.path.dirname(HERE)]
+import decode as DC  # noqa: E402
+import decode2 as D2  # noqa: E402
+import complexes as CX  # noqa: E402
+import confidence as CF  # noqa: E402
+
+
+def test_seg_cross():
+    A = np.array([[0.0, 0.0], [0.0, 10.0]])
+    B = np.array([[10.0, 10.0], [10.0, 20.0]])
+    X = D2._seg_cross(A, B, np.array([[0.0, 10.0]]), np.array([[10.0, 0.0]]))
+    assert X[0, 0] and not X[1, 0]
+
+
+def _two_holes(swap_bias):
+    # two parallel holes: tees at x=0 / x=100 (y=0), greens straight ahead (y=400). The local model slightly
+    # prefers the crossed pairing (t0 -> g1, t1 -> g0) by swap_bias nats.
+    tc = np.array([[0.0, 0.0], [100.0, 0.0]])
+    gc = np.array([[0.0, 400.0], [100.0, 400.0]])
+    hp, ph = [], []
+    for t in range(2):
+        for g in range(2):
+            hp.append((t, g))
+            ph.append(0.5 if t == g else 0.5 * np.exp(swap_bias))
+    tp = [(g, t) for g in range(2) for t in range(2)]
+    pt = [0.5] * 4
+    d = dict(kind=9, hp=hp, tp=tp, tees=[{}] * 2, greens=[{}] * 2, tc=tc, gc=gc)
+    pr = dict(hole=np.clip(ph, 0, 1), trans=np.array(pt), start=np.full(2, 0.5), end=np.full(2, 0.5))
+    return d, pr
+
+
+def test_crossing_penalty_uncrosses():
+    d, pr = _two_holes(0.3)
+    H, T, S, E = DC.cost_mats(d, pr, dict(trans=1.0, club=1.0))
+    args = (H, T, S, E, 2, np.ones(2, bool), np.ones(2, bool), d["tc"], d["gc"], np.arange(2))
+    gs, ts, _, _ = D2.beam_loop2(*args, cross=0.0, reuse=0.0)
+    assert sorted(zip(ts, gs)) == [(0, 1), (1, 0)]            # crossed without the penalty
+    gs, ts, _, _ = D2.beam_loop2(*args, cross=2.0, reuse=2.0)
+    assert sorted(zip(ts, gs)) == [(0, 0), (1, 1)]
+
+
+def test_cluster_average_linkage():
+    pairs = [(0, 1), (1, 2), (0, 2), (2, 3)]
+    p = [0.9, 0.9, 0.8, 0.6]
+    c = CX.cluster(4, pairs, p, thr=0.5)
+    assert c[0] == c[1] == c[2] and c[3] != c[0]            # 3 joins only if mean link to {0,1,2} > thr
+
+
+def test_taps():
+    courses = [(np.array([0.99, 0.99, 0.4]), np.array([1, 1, 0])), (np.array([0.99, 0.6]), np.array([1, 1]))]
+    thr, taps, prec, zero = CF.taps_to_precision(courses, 0.98)
+    assert prec >= 0.98 and taps == 0.5 and zero == 0.5

@@ -1,0 +1,192 @@
+{
+ "config": {
+  "cross": 1.5,
+  "reuse": 2.0,
+  "comp_thr": 0.5,
+  "K": 6,
+  "beam": 4000,
+  "box_mode": "v1+comp",
+  "mm_beam": 800
+ },
+ "dev": {
+  "bench": {
+   "formed": 0.884,
+   "number": 0.289,
+   "holes_right": 0.131,
+   "fully": 0.081,
+   "fails": {
+    "pairing": 75,
+    "start_hole": 22,
+    "missed_tee": 18,
+    "nine_swap": 16,
+    "par": 8,
+    "no_result": 4,
+    "order": 4
+   },
+   "by_kind": {
+    "9": [
+     0.915,
+     0.392
+    ],
+    "18": [
+     0.884,
+     0.293
+    ],
+    "27": [
+     0.837,
+     0.211
+    ],
+    "36": [
+     0.917,
+     0.229
+    ]
+   }
+  },
+  "pairs": {
+   "paired": 0.8836,
+   "paired_primary_tee": 0.863,
+   "all_pairs_right": 0.3937,
+   "taps98": {
+    "threshold": 0.9123,
+    "taps_per_course": 4.81,
+    "precision": 0.98,
+    "courses_no_tap": 0.1187
+   }
+  },
+  "reliability": [
+   {
+    "bin": "0.00-0.50",
+    "n": 116,
+    "mean_conf": 0.26,
+    "acc": 0.31
+   },
+   {
+    "bin": "0.50-0.70",
+    "n": 108,
+    "mean_conf": 0.613,
+    "acc": 0.565
+   },
+   {
+    "bin": "0.70-0.80",
+    "n": 103,
+    "mean_conf": 0.757,
+    "acc": 0.786
+   },
+   {
+    "bin": "0.80-0.90",
+    "n": 296,
+    "mean_conf": 0.858,
+    "acc": 0.855
+   },
+   {
+    "bin": "0.90-0.95",
+    "n": 365,
+    "mean_conf": 0.928,
+    "acc": 0.901
+   },
+   {
+    "bin": "0.95-0.98",
+    "n": 610,
+    "mean_conf": 0.968,
+    "acc": 0.961
+   },
+   {
+    "bin": "0.98-1.00",
+    "n": 1183,
+    "mean_conf": 0.99,
+    "acc": 0.993
+   }
+  ]
+ },
+ "test": {
+  "bench": {
+   "formed": 0.869,
+   "number": 0.263,
+   "holes_right": 0.092,
+   "fully": 0.026,
+   "fails": {
+    "pairing": 68,
+    "nine_swap": 26,
+    "missed_tee": 25,
+    "start_hole": 13,
+    "par": 10,
+    "no_result": 5,
+    "count": 1,
+    "order": 1
+   },
+   "by_kind": {
+    "9": [
+     0.852,
+     0.37
+    ],
+    "18": [
+     0.883,
+     0.239
+    ],
+    "27": [
+     0.858,
+     0.383
+    ],
+    "36": [
+     0.778,
+     0.337
+    ]
+   }
+  },
+  "pairs": {
+   "paired": 0.869,
+   "paired_primary_tee": 0.8452,
+   "all_pairs_right": 0.3529,
+   "taps98": {
+    "threshold": 0.8989,
+    "taps_per_course": 4.78,
+    "precision": 0.9801,
+    "courses_no_tap": 0.1634
+   }
+  },
+  "reliability": [
+   {
+    "bin": "0.00-0.50",
+    "n": 134,
+    "mean_conf": 0.301,
+    "acc": 0.239
+   },
+   {
+    "bin": "0.50-0.70",
+    "n": 87,
+    "mean_conf": 0.617,
+    "acc": 0.609
+   },
+   {
+    "bin": "0.70-0.80",
+    "n": 116,
+    "mean_conf": 0.754,
+    "acc": 0.724
+   },
+   {
+    "bin": "0.80-0.90",
+    "n": 311,
+    "mean_conf": 0.86,
+    "acc": 0.823
+   },
+   {
+    "bin": "0.90-0.95",
+    "n": 423,
+    "mean_conf": 0.928,
+    "acc": 0.931
+   },
+   {
+    "bin": "0.95-0.98",
+    "n": 564,
+    "mean_conf": 0.968,
+    "acc": 0.968
+   },
+   {
+    "bin": "0.98-1.00",
+    "n": 1092,
+    "mean_conf": 0.989,
+    "acc": 0.992
+   }
+  ]
+ }
+}

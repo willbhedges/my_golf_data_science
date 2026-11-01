@@ -79,3 +79,52 @@ python course_data/zero_tap/pathroute/run.py test --cache C --tiers nocard,osm_c
 python -m pytest course_data/zero_tap/pathroute/test_pathroute.py -q
 ```
 OMP_NUM_THREADS=1 is forced in model.py: on a shared box OpenMP oversubscription made the tree fits ~50x slower.
+
+## v2 (`pathroute_v2/`, results `results/pathroute_v2/nocard/` + `summary.json`) — pairing first
+
+Product target: a tee-shot plan needs the right **pairing** (tee complex <-> green) + tee boxes; numbering can come
+from one "this is hole 1" tap or a card. v2 optimises pairing and adds a calibrated per-hole pair confidence.
+
+1. **Pair features** (`features2.py`, 24 added to the v1 hole model; same 2-stage GBM): fairway *components*
+   (touching fairways unioned) linking tee and green, how many greens / tees that component touches (shared
+   fairways), fraction of the component inside the tee-green ellipse, dogleg-aware tee-axis alignment to the
+   landing zone (fairway 140-290 yd out), approach direction (fairway 30-140 yd short of the green vs the hole
+   line), other greens / tees inside the corridor ellipse, practice cues (driving-range distance, clubhouse
+   distance, fairway reach, tees around a green, `inside_course` tag).
+2. **Tee complexes** (`complexes.py`): GBM P(two boxes are one hole) on box-pair geometry (dev AUC 0.85), average
+   linkage at 0.5. The hole's box set = complex members (+ v1 geometric box rule).
+3. **Global constraints in the beam** (`decode2.py`): each green keeps its K=6 best tees; every state carries, per
+   candidate pair, the count of already-chosen corridors it **crosses** (1.5 nats each) and whether it **reuses** a
+   complex / box set (2 nats; the same box twice is forbidden). Practice greens still drop out of the tour.
+4. **Per-hole confidence** (`confidence.py`): logistic calibration (out-of-fold on dev) of hole probability, tee /
+   green margins, walk in / out, route confidence and the **min-marginal** (route cost increase when the pair is
+   forbidden, beam 800 re-decode). Written as each hole's `confidence`.
+
+Dev ablation (local truth labels, OOF; pairing / courses with all pairs right):
+v1 81.9 / 21.0 -> + features 87.9 / 30.6 -> + crossing 88.6 / 32.5 -> + complexes & reuse 90.1 / 41.4.
+(Box-set honesty check: complex-only boxes 89.8 vs v1+complex boxes 89.9; primary tee alone in the table below.)
+Not helpful: hard crossing (3 nats = 1.5), reuse 4 nats, K=10. Not tried: par-count / total-length priors.
+
+| split | method | paired | paired (primary tee only) | all pairs right | numbered | holes right | fully right | taps to 98 % pair precision |
+|---|---|---|---|---|---|---|---|---|
+| dev (OOF) | pathroute v1 | 80.4 % | 79.4 % | 20.6 % | 32.2 % | 9.4 % | 5.6 % | 15.3 / course |
+| dev (OOF) | **pathroute v2** | **88.4 %** | 86.3 % | **39.4 %** | 28.9 % | 13.1 % | 8.1 % | **4.8 / course** |
+| test | pathroute v1 | 78.8 % | 77.8 % | 12.4 % | 25.9 % | 6.5 % | 2.0 % | 14.6 / course |
+| test | **pathroute v2** | **86.9 %** | 84.5 % | **35.3 %** | 26.3 % | 9.2 % | 2.6 % | **5.3 / course** (dev threshold 0.912 -> 98.2 %) |
+
+Taps: the app asks the golfer to confirm every hole with confidence < threshold (a confirmed hole is right); true
+holes with no predicted hole cost one tap each; v1's only confidence is the route posterior. Test, dev threshold:
+98.2 % pair precision at 5.3 taps / 18-ish holes; 16 % of test courses need no tap. Reliability (test): conf
+0.98-1.0 -> 99.2 % right (1 092 holes), 0.95-0.98 -> 96.8 %, 0.90-0.95 -> 93.1 %, < 0.5 -> 24 %.
+
+Honest notes: numbering did not improve (dev 32.2 -> 28.9 %; more start_hole / nine_swap failures) — v2 only fixed
+pairing; one "hole 1" tap is the intended fix. cross / reuse / complex threshold were picked on dev OOF predictions
+(in-sample for those 3 numbers); test was run once. Taps assume no re-decode after a confirmation (re-decoding
+with the confirmed pair fixed would likely repair neighbours too — not measured).
+
+```bash
+python course_data/zero_tap/pathroute/prep.py --cache C1 --split all
+python course_data/zero_tap/pathroute_v2/prep2.py --cache C1 --out C2              # ~40 s
+python course_data/zero_tap/pathroute_v2/run2.py --c1 C1 --c2 C2 --out course_data/zero_tap/results/pathroute_v2 --test   # ~13 min
+python -m pytest course_data/zero_tap/pathroute_v2/test_pathroute_v2.py -q
+```
