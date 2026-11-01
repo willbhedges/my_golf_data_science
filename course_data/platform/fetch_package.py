@@ -68,8 +68,12 @@ def fetch_osm(course, raw, drop_holes=False, supplement=None):
         # OSM barely maps (The Oaks MO: 0 greens); they enter the build exactly like OSM features, tagged src=hand
         sp = supplement if os.path.isabs(supplement) else os.path.join(pc.ROOT, supplement)
         extra = pc.read_json(sp)["features"]
-        for f in extra:
-            f.setdefault("properties", {})["src"] = "hand"
+        for i, f in enumerate(extra):
+            p = f.setdefault("properties", {})
+            p["src"] = "hand"
+            # hand features carry no OSM id, but summarise / the tee stage key features by it
+            p.setdefault("osm_id", -(i + 1))
+            p.setdefault("osm_type", "hand")
         fc["features"] += extra
     rings = fcm.outer_rings(course["boundary"]) if course.get("boundary") else []
     w, s, e, n = course["bbox"]
