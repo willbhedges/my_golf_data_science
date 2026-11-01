@@ -39,3 +39,57 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 - M2: well-mapped course, ≤ 5 taps → ≥ 95 % of holes right, measured on ≥ 15 truth courses.
 - M3: well-mapped course, no taps → ≥ 90 %; barely-mapped → ≥ 75 %.
 - M4: unmapped course → usable with taps.
+
+## Target dates (estimates, revised every Sunday)
+
+| milestone | target | confidence |
+|---|---|---|
+| M1 error budget + real national coverage | 2026-11-08 | high |
+| M2 well-mapped, ≤ 5 taps → ≥ 95 % of holes right (≥ 15 truth courses) | 2026-12-06 | medium |
+| M3 well-mapped no taps ≥ 90 %; barely-mapped ≥ 75 % | 2027-02-28 | low–medium |
+| M4 unmapped courses usable with taps | 2027-04-30 | low |
+
+Dates slip if the error budget shows the hazard layers need a new model rather than fixes, or if hand truth
+can't be produced fast enough (each truth course needs imagery renders on Actions + a careful trace).
+
+## How this is managed
+
+**Cadence (scheduled tasks bound to this session):**
+- *Manager check-in, every 2 h* ("Golf pipeline manager check-in"): every finished build gets a cause and a
+  re-queue; stalled agents (container restarts) are resumed; agent reports are integrated; rebuilt courses are
+  checked hole by hole and only passing pages are published; idle capacity gets the next workstream task.
+  Messages the user only when something changed. Disables itself after 3 idle check-ins.
+- *Daily digest, 6:47 pm Central* ("Golf pipeline daily digest"): one short message — headline numbers vs
+  milestones, what finished/failed/fixed, what runs next, decisions needed (usually none). Re-enables the
+  check-in if work is pending.
+- *Weekly review, Sundays (inside the digest):* re-rank workstreams by measured payoff, update "Where we are"
+  and the target dates above, say plainly when a date slips and why.
+- Tournament pages keep their own scheduled refreshes (Eagle Knoll: Nov 5, Nov 6 evening).
+
+**Agents:**
+- Every agent gets a written brief: goal, files it owns, files it must not touch, the metric it must move, a
+  budget, and "report honestly what was not verified". Shared rules: scratchpad `agents/RULES.md` (rewritten
+  after container restarts wipe it).
+- At most ~6 agents at once (20 is the hard limit), so builds and the coordinator keep headroom; two agents
+  never own the same file.
+- No result is accepted on an agent's word: numbers are on held-out data (tuned on dev, test run once), tests
+  pass before every push, and the coordinator re-runs the key check before anything reaches a published page.
+- Negative results are kept and written down (e.g. tip candidates, sequence_v3) so work isn't repeated.
+
+**Servers and compute (GitHub Actions, 20 shared runners):**
+- Long builds go out as one batch at a time; small jobs (forecasts, web fetches) are never starved for hours.
+- Every workflow reads the request files from its own triggering push (no "latest file" guessing).
+- Commit loops use `--autostash` and retry; failed jobs are read from the logs at the next check-in.
+- Disk in the session container is watched; finished worktrees are removed once their work is pushed.
+
+**Quality gates (never skipped):**
+- A page is published only after a hole-by-hole check of its screenshots.
+- The live Spirit Hollow page is never modified; tournament pages change only through their own refreshes.
+- Every accuracy number in this file names its test set and size.
+
+**Limits to know:**
+- Work runs only when a scheduled task, an agent report or the user wakes the session; if the session is
+  archived or the scheduled tasks are disabled, work stops until the next message.
+- Container restarts stop running agents; the next check-in resumes them from their transcripts.
+- All of this uses the account's Claude usage; heavy weeks can hit the weekly limit, which pauses work until
+  it resets.
