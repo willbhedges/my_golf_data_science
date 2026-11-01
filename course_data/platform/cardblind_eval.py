@@ -440,7 +440,7 @@ BEGIN, END = "<!-- cardblind_eval:begin -->", "<!-- cardblind_eval:end -->"
 
 
 CMP_BEGIN, CMP_END = "<!-- cardblind_compare:begin -->", "<!-- cardblind_compare:end -->"
-UNMAPPED = ("hot_springs_park", "jayhawk_club", "national_kc")
+UNMAPPED = ("hot_springs_park", "jayhawk_club", "national_kc", "tomahawk_hills")   # OSM hole ways missing or not this course's
 
 
 def compare_md(before, after):
