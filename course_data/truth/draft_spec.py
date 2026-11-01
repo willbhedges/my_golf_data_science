@@ -19,6 +19,8 @@ CD = os.path.dirname(HERE)
 ROOT = os.path.dirname(CD)
 sys.path.insert(0, os.path.join(CD, "imagery"))
 import render as R  # noqa: E402
+sys.path.insert(0, HERE)
+import corridor as C  # noqa: E402
 
 
 def main():
@@ -64,7 +66,7 @@ def main():
                                   line=[[round(float(x), 7), round(float(y), 7)] for x, y in line[:-1]],
                                   pads=pads, osm_par=par, note="")
         print(ref, par, "green", gk, f"{gd:.0f}yd", "pads", pads, f"len {seg[-1]:.0f}")
-    out = os.path.join(HERE, a.slug, "holes_spec.json")
+    out = C.tdir(a.slug, "holes_spec.json")
     json.dump(spec, open(out, "w"), indent=1)
     print("wrote", out)
 

@@ -28,6 +28,8 @@ CD = os.path.dirname(HERE)
 ROOT = os.path.dirname(CD)
 sys.path.insert(0, os.path.join(CD, "imagery"))
 import render as R  # noqa: E402
+sys.path.insert(0, HERE)
+import corridor as C  # noqa: E402
 
 TOL = 8.0
 
@@ -42,7 +44,7 @@ def length(fr, pts):
 
 
 def build(slug):
-    spec = json.load(open(os.path.join(HERE, slug, "holes_spec.json")))
+    spec = json.load(open(C.tdir(slug, "holes_spec.json")))
     F = json.load(open(os.path.join(ROOT, spec["features"])))["features"] if spec.get("features") else {}
 
     def ll(v):
@@ -97,7 +99,7 @@ def build(slug):
                         measured=meas, green_ll=g, green_poly_ll=gpoly, hole_line_ll=line, note=hs.get("note", ""),
                         extra_zones=hs.get("extra_zones", []))
     res = dict(slug=slug, source=spec.get("source", ""), card_source=card.get("source"), holes=out)
-    json.dump(res, open(os.path.join(HERE, slug, "holes_truth.json"), "w"), indent=1)
+    json.dump(res, open(C.tdir(slug, "holes_truth.json"), "w"), indent=1)
     for ref, h in out.items():
         print(ref, h["par"], "  ".join(f"{s} {h['card'][s]}/{h['measured'].get(s, '-')}{'*' if 'estimated' in h['tee_method'].get(s, '') else ''}"
                                       for s in card["sets"]))

@@ -54,7 +54,16 @@ def log(*a):
     print(*a, flush=True)
 
 
+V2 = os.path.join(CD, "truth_sets_v2")
+WORK = ("render", "map", "sheets", "review", "recheck", "_zoom.png")    # renders: always course_data/truth/<slug>/
+
+
 def tdir(slug, *p):
+    """course_data/truth/<slug>/... ; the truth files themselves (holes_spec / holes_truth / trace.py /
+    hand_zones_ll.json / NOTES) live in course_data/truth_sets_v2/<slug>/ when that folder exists (truth set v2);
+    renders and maps stay in course_data/truth/<slug>/ (where tourn_truth.yml commits them)."""
+    if p and p[0] not in WORK and os.path.isdir(os.path.join(V2, slug)):
+        return os.path.join(V2, slug, *p)
     return os.path.join(HERE, slug, *p)
 
 
@@ -601,7 +610,7 @@ def stage_build(slug):
                    "card set from the package; yard frame x right, y = -along) on NAIP 2023 0.3 m with NAIP other years "
                    "and 3DEP lidar canopy; never from a vision layer. Built by course_data/truth/corridor.py build from "
                    "trace.py." % (FOOT["a0"], FOOT["a1"], FOOT["lat"]),
-               source=f"course_data/truth/{slug}/trace.py (hand trace; see NOTES.md)",
+               source=os.path.relpath(tdir(slug, "trace.py"), os.path.dirname(CD)) + " (hand trace; see NOTES.md / CHECK.md)",
                course=pkg["course"]["name"], slug=slug, tee_set=tee_set(slug, pkg),
                registration="none needed: traced directly on georeferenced NAIP (the corridor frame is exact)",
                holes=holes, missing=T.get("missing", []))

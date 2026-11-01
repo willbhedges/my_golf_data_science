@@ -168,8 +168,8 @@ def main():
     a = ap.parse_args()
     S = a.slug
     TL = tee_line()
-    T = json.load(open(os.path.join(HERE, S, "holes_truth.json")))
-    hzp = os.path.join(HERE, S, "hand_zones_ll.json")
+    T = json.load(open(CO.tdir(S, "holes_truth.json")))
+    hzp = CO.tdir(S, "hand_zones_ll.json")
     HZ = json.load(open(hzp))["holes"] if os.path.exists(hzp) else {}
     FJ = json.load(open(os.path.join(HERE, S, "render", "frames.json")))
     sets = [s for s in a.sets.split(",") if s] or list(T.get("sets") or [])
