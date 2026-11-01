@@ -171,3 +171,38 @@ Model: `pathroute_v2/model_v2.pkl.gz` (1.9 MB, sklearn 1.9.1 pickle; refit: prep
 python course_data/zero_tap/pathroute_v2/sim2.py --c1 C1 --c2 C2 --fit-out M.pkl --json sim.json --jobs 4   # ~5 + 20 min
 python course_data/zero_tap/pathroute_v2/sim2_report.py sim.json --out summary_resolve.json
 ```
+
+## Confirm taps: fix-aware calibrator + re-solve in the browser (2026-11-01)
+
+**Calibrator on constrained re-solves** (`pathroute_v2/calib_resolve.py`): dev, 5-fold OOF models; each dev course is
+played by the sim2 golfer (old calibrator picks the question, up to 18 taps) and every state's unconfirmed holes give a
+row: the old features of the constrained decode + `frac_fixed`, `nb_fixed` (confirmed route neighbours), `changed`
+(pair not in the free decode), tee / green margins in the fixed cost matrix (`confidence.Calib2`, logistic). 160 dev
+courses, 27 192 rows. Dev OOF log-loss after a fix 0.138 (old) -> **0.130**; on free decodes it is worse (0.230 vs
+0.195, the old one in-sample), so production keeps `calib` for the free decode and uses `calib_fix` once any fact is
+set (`model_v2.pkl.gz`, `resolve2.Session(calib_fix=...)`). Note: the old calibrator was already roughly calibrated
+after fixes (0.95-0.98 bin: 96.6 % right), so calibration was not the main cause.
+
+**Test, one run (sim2, 149 courses, Calib2 for every re-solve)** — `results/pathroute_v2/summary_resolve_calib2.json`:
+
+| policy (test) | taps to 98 % pair precision, mean (median, p90) | courses all pairs right at that stop | taps to all pairs right (oracle stop) |
+|---|---|---|---|
+| no resolve (confirm every hole < thr) | 4.72 (3, 12) | - | 4.46 |
+| resolve, old calibrator (sim_v3) | 7.72 (5, 18) | 69.9 % | 5.44 |
+| **resolve, Calib2** | **7.08** (5, 17) | **76.5 %** | 5.27 |
+
+Numbering (9 / 18 holes) at the 98 % stop + hole-1 tap: 94.1 % of holes, **80 % of courses** all numbered (74 % before).
+The target (resolve needs fewer taps than no resolve) is **not met**. Diagnosis: re-solving after a fix makes a
+previously right hole wrong in 170 of 2 630 sim steps (sim_v3; 58 of them on 27 / 36 courses with pair-only facts, so
+it is not only the number pins), and even with an oracle stop resolve needs more taps (5.3 vs 4.5). Trying the
+complex blanking of `apply_fix` softer halved those breakages on 27 dev courses but did not lower taps (3.15 vs 2.96,
+noise level); not adopted. Next: a sticky re-solve (bonus for the previous decode's confident pairs) so an answer only
+moves the holes it implicates. Resolve still pays for numbering and for "all pairs right".
+
+**In the browser**: `course_data/app/pathroute_engine.js` ports decode2 (beam, pins, hole-1 tee, crossings / reuse,
+reject facts), the min-marginals, the features and both calibrators; `export_js.py` writes the per-course inputs
+(pathroute_decoder/1, app SCHEMA.md). Parity (`course_data/app/test_pathroute.js`): 24 test courses (3 x 27 / 36,
+5 x 9, 16 x 18) x 4 fact sets (none; two confirmed pairs incl. a correction; reject + practice green; hole-1 tee) =
+93 decodes, holes identical, confidences within 1e-13. ~0.9 s per full solve in node (one 4000 beam + one 800 beam
+per hole); the page shows the new pairing after the first decode and fills the confidences in over the next frames.
+The final route argsort is now stable (ties -> first state) so both sides agree.
