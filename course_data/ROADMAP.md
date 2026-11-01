@@ -68,8 +68,8 @@ can't be produced fast enough (each truth course needs imagery renders on Action
 
 **Agents:**
 - Every agent gets a written brief: goal, files it owns, files it must not touch, the metric it must move, a
-  budget, and "report honestly what was not verified". Shared rules: scratchpad `agents/RULES.md` (rewritten
-  after container restarts wipe it).
+  budget, and "report honestly what was not verified". Shared rules: `course_data/AGENT_RULES.md` (survives
+  container restarts; the scratchpad copy is refreshed from it). Coordinator to-dos: `course_data/MANAGER_TODO.md`.
 - Up to ~10 agents at once (20 is the hard limit; usage is not the constraint, GitHub runners and file ownership
   are), so builds and the coordinator keep headroom; two agents never own the same file.
 - No result is accepted on an agent's word: numbers are on held-out data (tuned on dev, test run once), tests
