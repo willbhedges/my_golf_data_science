@@ -197,5 +197,23 @@
    "Mozingo: CV 11 / chosen-on-all 11 vs product 11"
   ],
   "report": "course_data/vision_any/v2_trees_cv.md"
+ },
+ "treeline_handcal": {
+  "previous": {
+   "hag": 2.5,
+   "k_m": -1,
+   "min_area_m2": 100
+  },
+  "edge_best": {
+   "hag": 2.5,
+   "k_m": 1
+  },
+  "adopted": false,
+  "why": [
+   "edge vs the hand tree lines (10 hand-truth courses, leave-one-course-out on pooled IoU): every fold chose k +1; held-out IoU 0.561 -> 0.581, median per corridor 1515 / 285 -> 716 / 786 sq yds missing / extra",
+   "but the plans get worse: error budget (138 card tee shots) auto match k -1 / 0 / +1 = 102 / 102 / 100, same club 123 / 122 / 120, regret 2.654 / 2.591 / 2.603; 4 of the 5 holes k +1 fixes are reference ties, 6 of the 7 it breaks are not; decision-level leave-one-course-out over k in {-1, 0, +1}: 86 matches vs 89 for k -1",
+   "the +1 tree layer alone in the truth breaks 4 holes (k -1: 10): the short edge offsets other auto errors; re-measure after the long-grass / fairway fixes (platform/rebuild_tees_trees.py --k 1, error_budget.py --auto-dir)"
+  ],
+  "report": "course_data/vision_any/v2_treeline_handcal.md"
  }
 }
