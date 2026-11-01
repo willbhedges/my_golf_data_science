@@ -1,0 +1,807 @@
+{
+ "model_thr": 0.4,
+ "weights": {
+  "bias": -1.40052,
+  "gap": 0.73,
+  "gap2": -0.33961,
+  "absoff": -0.05099,
+  "is_lidar": 0.12415,
+  "is_segment": -0.25401,
+  "is_scene": 0.11564,
+  "p": -0.32486,
+  "logarea": 0.01987,
+  "n_src": 0.68434,
+  "green_yd": -0.77397,
+  "line_on": -0.24174,
+  "n_osm": 0.16473,
+  "rank": 0.20089,
+  "len": 0.58116,
+  "overlaps_osm": -0.73628,
+  "overlaps_osm_lidar": 0.16178
+ },
+ "dev_candidate_auc": 0.814,
+ "dev": {
+  "subset_before": {
+   "courses": 33,
+   "holes": 576,
+   "back": {
+    "n": 576,
+    "median": 5.0,
+    "p90": 34.0,
+    "within10": 0.717
+   },
+   "second": {
+    "n": 558,
+    "median": 11.0,
+    "p90": 41.0,
+    "within10": 0.487
+   },
+   "back_total": {
+    "median": 102.0,
+    "p90": 341.0
+   },
+   "second_total": {
+    "median": 134.0,
+    "p90": 282.0
+   },
+   "S_exact": 0.455,
+   "S_within1": 0.788,
+   "par_hole_acc": 0.969
+  },
+  "tips": {
+   "accepted": 0,
+   "true": 0,
+   "too_long": 0,
+   "holes_uncovered": 98,
+   "uncovered_fixed": 0,
+   "precision": 0.0,
+   "false_positive_rate": null,
+   "recall_of_unmapped": 0.0
+  },
+  "subset_after": {
+   "courses": 33,
+   "holes": 576,
+   "back": {
+    "n": 576,
+    "median": 5.0,
+    "p90": 34.0,
+    "within10": 0.717
+   },
+   "second": {
+    "n": 558,
+    "median": 11.0,
+    "p90": 41.0,
+    "within10": 0.487
+   },
+   "back_total": {
+    "median": 102.0,
+    "p90": 341.0
+   },
+   "second_total": {
+    "median": 134.0,
+    "p90": 282.0
+   },
+   "S_exact": 0.455,
+   "S_within1": 0.788,
+   "par_hole_acc": 0.969
+  },
+  "full_before": {
+   "courses": 124,
+   "holes": 2106,
+   "back": {
+    "n": 2106,
+    "median": 6.0,
+    "p90": 40.0,
+    "within10": 0.671
+   },
+   "second": {
+    "n": 1944,
+    "median": 12.0,
+    "p90": 47.0,
+    "within10": 0.447
+   },
+   "back_total": {
+    "median": 86.0,
+    "p90": 352.0
+   },
+   "second_total": {
+    "median": 120.0,
+    "p90": 374.0
+   },
+   "S_exact": 0.435,
+   "S_within1": 0.815,
+   "par_hole_acc": 0.948
+  },
+  "full_after": {
+   "courses": 124,
+   "holes": 2106,
+   "back": {
+    "n": 2106,
+    "median": 6.0,
+    "p90": 40.0,
+    "within10": 0.671
+   },
+   "second": {
+    "n": 1944,
+    "median": 12.0,
+    "p90": 47.0,
+    "within10": 0.447
+   },
+   "back_total": {
+    "median": 86.0,
+    "p90": 352.0
+   },
+   "second_total": {
+    "median": 120.0,
+    "p90": 374.0
+   },
+   "S_exact": 0.435,
+   "S_within1": 0.815,
+   "par_hole_acc": 0.948
+  },
+  "per_course": [
+   {
+    "slug": "el_dorado_park_ca",
+    "true_back_tot": 6461.0,
+    "before": 6802,
+    "after": 6802,
+    "before_med": 18.0,
+    "after_med": 18.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "rancho_del_sol_ca",
+    "true_back_tot": 6562.0,
+    "before": 6430,
+    "after": 6430,
+    "before_med": 9.0,
+    "after_med": 9.0,
+    "S_true": 4,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "ridge_ca",
+    "true_back_tot": 6749.0,
+    "before": 6973,
+    "after": 6973,
+    "before_med": 4.0,
+    "after_med": 4.0,
+    "S_true": 5,
+    "S_before": 5,
+    "S_after": 5
+   },
+   {
+    "slug": "upland_hills_ca",
+    "true_back_tot": 5902.0,
+    "before": 5354,
+    "after": 5354,
+    "before_med": 6.0,
+    "after_med": 6.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "westchester_ca",
+    "true_back_tot": 4339.0,
+    "before": 4449,
+    "after": 4449,
+    "before_med": 5.0,
+    "after_med": 5.0,
+    "S_true": 2,
+    "S_before": 2,
+    "S_after": 2
+   },
+   {
+    "slug": "browns_mill_ga",
+    "true_back_tot": 6539.0,
+    "before": 6581,
+    "after": 6581,
+    "before_med": 6.0,
+    "after_med": 6.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "billy_caldwell_il",
+    "true_back_tot": 3108.0,
+    "before": 3039,
+    "after": 3039,
+    "before_med": 5.0,
+    "after_med": 5.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "bloomington_il",
+    "true_back_tot": 6561.0,
+    "before": 6680,
+    "after": 6680,
+    "before_med": 5.0,
+    "after_med": 5.0,
+    "S_true": 5,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "edgewood_park_il",
+    "true_back_tot": 6660.0,
+    "before": 6698,
+    "after": 6698,
+    "before_med": 5.0,
+    "after_med": 5.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "metamora_fields_il",
+    "true_back_tot": 7100.0,
+    "before": 7248,
+    "after": 7248,
+    "before_med": 6.0,
+    "after_med": 6.0,
+    "S_true": 5,
+    "S_before": 5,
+    "S_after": 5
+   },
+   {
+    "slug": "urbana_il",
+    "true_back_tot": 6545.0,
+    "before": 6593,
+    "after": 6593,
+    "before_med": 4.0,
+    "after_med": 4.0,
+    "S_true": 1,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "willowhill_il",
+    "true_back_tot": 2840.0,
+    "before": 2972,
+    "after": 2972,
+    "before_med": 15.0,
+    "after_med": 15.0,
+    "S_true": 3,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "wynstone_il",
+    "true_back_tot": 7003.0,
+    "before": 7238,
+    "after": 7238,
+    "before_med": 7.0,
+    "after_med": 7.0,
+    "S_true": 4,
+    "S_before": 5,
+    "S_after": 5
+   },
+   {
+    "slug": "lakeside_ky",
+    "true_back_tot": 7048.0,
+    "before": 6867,
+    "after": 6867,
+    "before_med": 4.0,
+    "after_med": 4.0,
+    "S_true": 4,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "paintsville_ky",
+    "true_back_tot": 6201.0,
+    "before": 5740,
+    "after": 5740,
+    "before_med": 38.0,
+    "after_med": 38.0,
+    "S_true": 4,
+    "S_before": 2,
+    "S_after": 2
+   },
+   {
+    "slug": "sun_valley_ky",
+    "true_back_tot": 6414.0,
+    "before": 6489,
+    "after": 6489,
+    "before_med": 5.0,
+    "after_med": 5.0,
+    "S_true": 5,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "crestwood_ma",
+    "true_back_tot": 6599.0,
+    "before": 6762,
+    "after": 6762,
+    "before_med": 6.0,
+    "after_med": 6.0,
+    "S_true": 4,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "falmouth_ma",
+    "true_back_tot": 6665.0,
+    "before": 6328,
+    "after": 6328,
+    "before_med": 16.0,
+    "after_med": 16.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "hatherly_ma",
+    "true_back_tot": 6185.0,
+    "before": 6227,
+    "after": 6227,
+    "before_med": 2.0,
+    "after_med": 2.0,
+    "S_true": 3,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "kernwood_ma",
+    "true_back_tot": 6402.0,
+    "before": 6378,
+    "after": 6378,
+    "before_med": 3.0,
+    "after_med": 3.0,
+    "S_true": 5,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "turner_hill_ma",
+    "true_back_tot": 7036.0,
+    "before": 7012,
+    "after": 7012,
+    "before_med": 2.0,
+    "after_med": 2.0,
+    "S_true": 6,
+    "S_before": 5,
+    "S_after": 5
+   },
+   {
+    "slug": "walpole_ma",
+    "true_back_tot": 6628.0,
+    "before": 6752,
+    "after": 6752,
+    "before_med": 2.0,
+    "after_med": 2.0,
+    "S_true": 6,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "wellesley_ma",
+    "true_back_tot": 6903.0,
+    "before": 7028,
+    "after": 7028,
+    "before_med": 7.0,
+    "after_med": 7.0,
+    "S_true": 4,
+    "S_before": 5,
+    "S_after": 5
+   },
+   {
+    "slug": "whaling_city_ma",
+    "true_back_tot": 6780.0,
+    "before": 6882,
+    "after": 6882,
+    "before_med": 3.0,
+    "after_med": 3.0,
+    "S_true": 4,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "dwan_mn",
+    "true_back_tot": 5485.0,
+    "before": 5437,
+    "after": 5437,
+    "before_med": 4.0,
+    "after_med": 4.0,
+    "S_true": 3,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "elk_river_mn",
+    "true_back_tot": 6560.0,
+    "before": 6501,
+    "after": 6501,
+    "before_med": 3.0,
+    "after_med": 3.0,
+    "S_true": 4,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "village_green_mn",
+    "true_back_tot": 6728.0,
+    "before": 6665,
+    "after": 6665,
+    "before_med": 4.0,
+    "after_med": 4.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "derryfield_nh",
+    "true_back_tot": 6143.0,
+    "before": 6158,
+    "after": 6158,
+    "before_med": 10.0,
+    "after_med": 10.0,
+    "S_true": 5,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "sky_mountain_ut",
+    "true_back_tot": 6388.0,
+    "before": 6417,
+    "after": 6417,
+    "before_med": 6.0,
+    "after_med": 6.0,
+    "S_true": 3,
+    "S_before": 5,
+    "S_after": 5
+   },
+   {
+    "slug": "sun_hills_ut",
+    "true_back_tot": 6550.0,
+    "before": 7338,
+    "after": 7338,
+    "before_med": 32.0,
+    "after_med": 32.0,
+    "S_true": 3,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "big_foot_wi",
+    "true_back_tot": 6669.0,
+    "before": 6729,
+    "after": 6729,
+    "before_med": 5.0,
+    "after_med": 5.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "fairways_woodside_wi",
+    "true_back_tot": 6552.0,
+    "before": 6524,
+    "after": 6524,
+    "before_med": 3.0,
+    "after_med": 3.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "hidden_greens_north_wi",
+    "true_back_tot": 6155.0,
+    "before": 6202,
+    "after": 6202,
+    "before_med": 4.0,
+    "after_med": 4.0,
+    "S_true": 2,
+    "S_before": 2,
+    "S_after": 2
+   }
+  ]
+ },
+ "test_candidate_auc": 0.704,
+ "test": {
+  "subset_before": {
+   "courses": 16,
+   "holes": 288,
+   "back": {
+    "n": 288,
+    "median": 5.0,
+    "p90": 32.0,
+    "within10": 0.701
+   },
+   "second": {
+    "n": 288,
+    "median": 12.0,
+    "p90": 36.0,
+    "within10": 0.458
+   },
+   "back_total": {
+    "median": 56.0,
+    "p90": 203.0
+   },
+   "second_total": {
+    "median": 109.0,
+    "p90": 405.0
+   },
+   "S_exact": 0.562,
+   "S_within1": 0.875,
+   "par_hole_acc": 0.969
+  },
+  "tips": {
+   "accepted": 1,
+   "true": 0,
+   "too_long": 0,
+   "holes_uncovered": 74,
+   "uncovered_fixed": 0,
+   "precision": 0.0,
+   "false_positive_rate": 1.0,
+   "recall_of_unmapped": 0.0
+  },
+  "subset_after": {
+   "courses": 16,
+   "holes": 288,
+   "back": {
+    "n": 288,
+    "median": 5.0,
+    "p90": 31.0,
+    "within10": 0.701
+   },
+   "second": {
+    "n": 288,
+    "median": 12.0,
+    "p90": 36.0,
+    "within10": 0.462
+   },
+   "back_total": {
+    "median": 56.0,
+    "p90": 203.0
+   },
+   "second_total": {
+    "median": 109.0,
+    "p90": 405.0
+   },
+   "S_exact": 0.562,
+   "S_within1": 0.875,
+   "par_hole_acc": 0.969
+  },
+  "full_before": {
+   "courses": 118,
+   "holes": 2016,
+   "back": {
+    "n": 2016,
+    "median": 5.0,
+    "p90": 34.0,
+    "within10": 0.701
+   },
+   "second": {
+    "n": 1863,
+    "median": 11.0,
+    "p90": 39.0,
+    "within10": 0.47
+   },
+   "back_total": {
+    "median": 81.0,
+    "p90": 268.0
+   },
+   "second_total": {
+    "median": 127.0,
+    "p90": 358.0
+   },
+   "S_exact": 0.466,
+   "S_within1": 0.831,
+   "par_hole_acc": 0.968
+  },
+  "full_after": {
+   "courses": 118,
+   "holes": 2016,
+   "back": {
+    "n": 2016,
+    "median": 5.0,
+    "p90": 34.0,
+    "within10": 0.701
+   },
+   "second": {
+    "n": 1863,
+    "median": 11.0,
+    "p90": 39.0,
+    "within10": 0.47
+   },
+   "back_total": {
+    "median": 81.0,
+    "p90": 268.0
+   },
+   "second_total": {
+    "median": 127.0,
+    "p90": 358.0
+   },
+   "S_exact": 0.466,
+   "S_within1": 0.831,
+   "par_hole_acc": 0.968
+  },
+  "per_course": [
+   {
+    "slug": "lake_tahoe_ca",
+    "true_back_tot": 6741.0,
+    "before": 6538,
+    "after": 6538,
+    "before_med": 12.0,
+    "after_med": 12.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "los_amigos_ca",
+    "true_back_tot": 6212.0,
+    "before": 6044,
+    "after": 6044,
+    "before_med": 8.0,
+    "after_med": 8.0,
+    "S_true": 4,
+    "S_before": 2,
+    "S_after": 2
+   },
+   {
+    "slug": "south_hills_ca",
+    "true_back_tot": 6342.0,
+    "before": 6389,
+    "after": 6389,
+    "before_med": 7.0,
+    "after_med": 7.0,
+    "S_true": 2,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "smoke_rise_ga",
+    "true_back_tot": 6792.0,
+    "before": 6828,
+    "after": 6828,
+    "before_med": 5.0,
+    "after_med": 5.0,
+    "S_true": 4,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "towne_lake_hills_ga",
+    "true_back_tot": 6721.0,
+    "before": 6688,
+    "after": 6688,
+    "before_med": 8.0,
+    "after_med": 8.0,
+    "S_true": 4,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "skokie_il",
+    "true_back_tot": 6913.0,
+    "before": 7049,
+    "after": 7049,
+    "before_med": 7.0,
+    "after_med": 7.0,
+    "S_true": 2,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "crossings_ky",
+    "true_back_tot": 6263.0,
+    "before": 6250,
+    "after": 6250,
+    "before_med": 3.0,
+    "after_med": 3.0,
+    "S_true": 4,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "wildwood_ky",
+    "true_back_tot": 6500.0,
+    "before": 6499,
+    "after": 6499,
+    "before_med": 3.0,
+    "after_med": 3.0,
+    "S_true": 4,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "elmcrest_ma",
+    "true_back_tot": 6347.0,
+    "before": 6189,
+    "after": 6189,
+    "before_med": 6.0,
+    "after_med": 6.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "ocean_edge_resort_ma",
+    "true_back_tot": 7011.0,
+    "before": 6818,
+    "after": 6818,
+    "before_med": 5.0,
+    "after_med": 5.0,
+    "S_true": 6,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "william_j_devine_ma",
+    "true_back_tot": 6013.0,
+    "before": 6069,
+    "after": 6069,
+    "before_med": 3.0,
+    "after_med": 3.0,
+    "S_true": 4,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "woods_hole_ma",
+    "true_back_tot": 6230.0,
+    "before": 6701,
+    "after": 6740,
+    "before_med": 27.0,
+    "after_med": 13.0,
+    "S_true": 3,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "falmouth_me",
+    "true_back_tot": 7080.0,
+    "before": 7136,
+    "after": 7136,
+    "before_med": 2.0,
+    "after_med": 2.0,
+    "S_true": 4,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "jato_highlands_me",
+    "true_back_tot": 5952.0,
+    "before": 5787,
+    "after": 5787,
+    "before_med": 9.0,
+    "after_med": 9.0,
+    "S_true": 4,
+    "S_before": 3,
+    "S_after": 3
+   },
+   {
+    "slug": "bonneville_ut",
+    "true_back_tot": 6872.0,
+    "before": 6839,
+    "after": 6839,
+    "before_med": 10.0,
+    "after_med": 10.0,
+    "S_true": 4,
+    "S_before": 4,
+    "S_after": 4
+   },
+   {
+    "slug": "ozaukee_wi",
+    "true_back_tot": 6721.0,
+    "before": 6716,
+    "after": 6716,
+    "before_med": 16.0,
+    "after_med": 16.0,
+    "S_true": 4,
+    "S_before": 3,
+    "S_after": 3
+   }
+  ]
+ }
+}

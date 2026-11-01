@@ -139,8 +139,9 @@ def slots(boxes, P=None):
     return sorted(out, reverse=True)
 
 
-def tee_complexes(holes, tees, pads=()):
-    """ref -> merged boxes. OSM boxes first; pads only for holes with no OSM box."""
+def tee_complexes(holes, tees, pads=(), extra_boxes=None):
+    """ref -> merged boxes. OSM boxes first; pads only for holes with no OSM box. extra_boxes: per hole a list of
+    accepted candidate boxes (tip_candidates.select_tips, source 'tip:<src>') measured together with the OSM ones."""
     lines = {str(h["ref"]) + "#" + str(i): [tuple(p) for p in h["line"][:-1]] + [tuple(h.get("green") or h["line"][-1])]
              for i, h in enumerate(holes)}
     keys = list(lines)
@@ -148,7 +149,8 @@ def tee_complexes(holes, tees, pads=()):
     byp = pt.assign_tees_to_holes(lines, [dict(p, source=p.get("source", "lidar")) for p in pads]) if pads else {}
     out = []
     for k, h in zip(keys, holes):
-        bx = measure_boxes(h, by.get(k, []))
+        ex = list(extra_boxes[len(out)]) if extra_boxes and len(out) < len(extra_boxes) else []
+        bx = measure_boxes(h, by.get(k, []) + ex)
         if not bx and byp.get(k):
             bx = measure_boxes(h, byp[k], source="lidar")
         out.append(bx)
@@ -322,12 +324,12 @@ def set_names(S):
     return ["Back", "2nd", "3rd", "4th", "5th", "6th", "7th"][:S]
 
 
-def infer_card(holes, tees, pads=(), model=None, params=None, S=None):
+def infer_card(holes, tees, pads=(), model=None, params=None, S=None, extra_boxes=None):
     """Synthetic scorecard (scorecard/1 shape + diagnostics). holes: see module docstring."""
     P = dict(PARAMS, **(params or {}))
     model = model or load_model()
     geo = [hole_geometry(h)[2] for h in holes]
-    boxes = tee_complexes(holes, tees, pads)
+    boxes = tee_complexes(holes, tees, pads, extra_boxes)
     ho = [hole_options(b, g["line_yd"], P) for b, g in zip(boxes, geo)]
     S_est = S or estimate_S([o[0] for o in ho], model, P)
     Y, r = assign_sets([(o[1], o[2]) for o in ho], S_est, model, P)

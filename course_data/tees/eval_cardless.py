@@ -121,7 +121,7 @@ def course_inputs(row):
     pp = rd(row["files"].get("pads")) if row["files"].get("pads") else None
     for q in pp or []:
         pads.append(dict(id=q.get("id"), coords=[tuple(c) for c in q["coords"]], source="lidar"))
-    return dict(slug=row["slug"], split=row["split"], n=n, holes=H, tees=tees, pads=pads,
+    return dict(slug=row["slug"], split=row["split"], n=n, files=row["files"], holes=H, tees=tees, pads=pads,
                 par=par, sets=sets, tagged=tagged, swapped=swapped,
                 card_fit_yd=card_fit)
 
@@ -254,7 +254,7 @@ def evaluate(courses, model, params=None, S_override=None):
     for c in courses:
         S_true = len(c["sets"])
         card = CL.infer_card(c["holes"], c["tees"], c["pads"], model=model, params=params,
-                             S=(S_true if S_override == "true" else None))
+                             S=(S_true if S_override == "true" else None), extra_boxes=c.get("extra"))
         S = card["diagnostics"]["S"]
         pred = [v["yards"] for v in card["tee_sets"].values()]
         truth = [s[1] for s in c["sets"]]

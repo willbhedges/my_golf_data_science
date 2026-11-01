@@ -99,3 +99,43 @@ all, and those are always too short.
 
 Files: `cardless.py`, `cardless_model.json` (fitted on dev), `eval_cardless.py`, `eval_cardless.json` (per-course
 rows included), `test_cardless.py`.
+
+## Unmapped tips: candidate search (tip_candidates.py, eval_tips.py)
+
+Tried feeding back-tee candidates that OSM does not map into `infer_card` (`extra_boxes=`, per hole, source
+`tip:<src>`). Sources with local data: lidar flat pads (`pads.json`), NAIP segment-model tees (`segment.geojson`)
+and blind perception scene tee boxes (`scene.json.gz`). Only **50 of the 262 bench courses** have these files
+(dev 33 with OSM boxes / test 16), so everything below is on that imagery subset; texture pads need the DEM + NAIP
+rasters, which are not local. The hole-line start is already a cardless slot.
+
+Every candidate whose back edge reaches 4 to 80 yds behind the farthest OSM box (it may overlap the box: a lidar pad
+often covers the whole levelled complex) is scored by a logistic model fitted on dev (label: the card back yardage
+is inside it +-5 and beyond the back box +5). Features: reach behind, offset, source, detector p, area, sources
+agreeing, distance to the nearest green, line start on it, OSM boxes on the hole, length. Per hole the best one is
+added when p >= thr; thr was chosen on dev by the cardless back-set within-10 share.
+
+| imagery subset | back within-10 / p90 | back total err med / p90 | S exact | tips accepted (precision) |
+|---|---|---|---|---|
+| dev before | 71.7 % / 34 | 102 / 341 | 45.5 % | - |
+| dev after (thr 0.4, chosen) | 71.7 % / 34 | 102 / 341 | 45.5 % | 0 |
+| dev, thr 0.2 | 69.4 % / 41 | 141 / 390 | 42.4 % | 39 (31 %; 17 too long by > 10 yds) |
+| **test before** | 70.1 % / 32 | 56 / 203 | 56.2 % | - |
+| **test after** (thr 0.4) | 70.1 % / 31 | 56 / 203 | 56.2 % | 1 (0 %) |
+| test, thr 0.2 (diagnostic only) | 69.4 % / 35 | 113 / 259 | 50.0 % | 20 (40 %; 7 too long) |
+
+Full dev / test (124 / 118 courses) are unchanged: 67.1 % / 70.1 % within 10.
+
+Why it does not pay:
+- About 17 % of holes (dev subset 98 / 556) have the card back > 5 yds beyond every OSM box; half of those gaps are
+  5 to 17 yds (measuring convention, not a missing box). 59 of the 98 have no candidate at all behind the box.
+- Candidates are informative but not enough: on unmapped holes a candidate covers the card yardage 70 % (scene
+  boxes 38 %), vs 45 % (19 %) for a fake tip yardage drawn from the same gap distribution on mapped holes. But most
+  holes with a candidate behind the back box are *correctly* mapped (245 of 280 on dev), so the posterior that a
+  candidate is the real tips stays around 15 to 35 %; leave-one-course-out AUC 0.70, top-20 precision 10 %.
+  Break-even is about 50 %, because a fake tip moves an otherwise-right back yardage 10 to 40 yds long.
+- Nothing in the OSM geometry alone predicts which holes have unmapped tips (box count, back-box length and
+  separation, line start, course length: 5-fold CV AUC 0.53 on 1,995 dev holes), and the course-level share of
+  holes with strong candidates does not correlate with the course's unmapped share (r = -0.11 dev, 0.06 test).
+
+Next: a per-hole elevation / mown-texture check on the candidate (needs the rasters), or the tee-sign / plaque
+positions from street-level imagery; a better source than these three is needed before tips can be added safely.
