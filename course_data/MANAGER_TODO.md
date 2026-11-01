@@ -10,9 +10,13 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - [ ] Course-page retry runs 41346643978 (12 supplement courses), 41346747941 (16 commit-failed courses),
       41347851530 (17 national failures): when each finishes, read results, fix, re-queue; if they failed only on
       Overpass, re-queue after Overpass recovers. Then hole-by-hole check of reviewed courses and publish passes.
-- [ ] Error-budget agent (workstream 1) and national-index agent (workstream 5) running; unmapped retrain agent
-      (workstream 4) running; sticky re-solve agent (workstream 6) running.
+- [ ] Error-budget agent (workstream 1) and national-index agent (workstream 5) running; unmapped workstream 4: agent done (honest
+      set 74 test courses, ~80 % paired); sticky re-solve agent (workstream 6) running.
 - [ ] Aim Caddie: republish after the rebuilt library lands (fix review-label looseness first: St Andrews,
       Tiffany Greens shown as "OK").
 - [ ] Tiffany Greens: club scorecard to settle tee names (course_data/research/web/rv_ph_tg/).
 - [ ] Jayhawk Club: hand trace once its package is committed.
+- [ ] Perception leakage-free re-train: runs 41353156906 (pass 1, train) then 41357754039 (pass 2, re-perceive
+      212 courses). When pass 2 lands: rebuild zero_tap/bench_set.py, re-run formation hole_pairs on the new scenes
+      (zt_formation), re-run the UNMAPPED.md commands; then launch: tee-candidate re-scorer (cut false tees),
+      fairway-between-tee-and-green pairing term, threshold calibration that holds 98 % on new states.
