@@ -1,5 +1,5 @@
 """Course module for Mozingo Lake Golf Course (App tees), generated from package.json by
-course_data/platform/package.py on 2026-11-01T20:29:46Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-01T20:48:28Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_mozingo_lake.json
 

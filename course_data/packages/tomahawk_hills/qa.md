@@ -1,6 +1,6 @@
 # Tomahawk Hills Golf Course (Shawnee, KS) - Blue tees
 
-Built 2026-11-01T20:30:40Z. OSM way/117417596. Scorecard: club_site (club_site). Tee set: name.
+Built 2026-11-01T20:49:08Z. OSM way/117417596. Scorecard: club_site (club_site). Tee set: name.
 
 ## Coverage
 
