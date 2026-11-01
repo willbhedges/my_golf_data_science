@@ -128,3 +128,46 @@ python course_data/zero_tap/pathroute_v2/prep2.py --cache C1 --out C2           
 python course_data/zero_tap/pathroute_v2/run2.py --c1 C1 --c2 C2 --out course_data/zero_tap/results/pathroute_v2 --test   # ~13 min
 python -m pytest course_data/zero_tap/pathroute_v2/test_pathroute_v2.py -q
 ```
+
+## v2 confirm-and-resolve + production routing (2026-11-01)
+
+**API** (`pathroute_v2/decode2.py` `decode2(fix=...)` / `apply_fix`, session wrapper `resolve2.Session`): golfer facts
+are fixed and the whole route is re-solved: (a) `confirm_pair(N, tee, green)` - "hole N is this tee complex + green"
+(pinned to position N on 9 / 18-hole courses, pair-only on 27 / 36; the complex serves only that green, +30 nats so the
+tour includes it); `not_a_hole(green)` (practice green); (b) `hole_one(tee)` - step 1 must start at that tee's complex
+(fixes start + direction). Facts are JSON-able by OSM id (`to_ids` / `from_ids`).
+
+**Simulated golfer** (`sim2.py`, test split, 153 courses, one run; models fit on all dev, calibration dev OOF): ask
+about the lowest-confidence unconfirmed hole, answer from truth, re-solve, repeat; a global stop threshold on the
+remaining confidence. No-result courses (no OSM tees) cost one tap per hole. `summary_resolve.json`, `sim2_report.py`.
+
+| policy (test) | pair precision | taps / course mean (median, p90) | no tap | courses with all pairs right |
+|---|---|---|---|---|
+| no resolve: confirm every hole < 0.899 (v2 estimate) | 98.0 % | **4.8** (3, 11) | 16 % | - |
+| resolve, stop at remaining conf >= 0.954 | 98.0 % | 7.7 (5, 18) | 6 % | **69.9 %** |
+| resolve, stop at 0.98 | 98.5 % | 10.2 (7, 22) | 2 % | 76.5 % |
+| taps until all pairs right (oracle stop): resolve / no resolve | 100 % | 5.4 (2, 13) / 4.6 (2, 13) | 37 / 35 % | 100 % |
+
+Numbering (9 / 18-hole test courses, 2 304 holes): no tap 25.3 % -> **one "hole 1" tap 63.9 %** (31 % of courses
+all numbered); at the 98 % resolve stop (confirmations carry their hole number) 88.5 % -> **+ hole-1 tap 94.1 %**
+(74 % of courses all numbered).
+
+Honest: re-solving does **not** save pair taps - it costs more (7.7 vs 4.8 at 98 %). The calibrator was fit on free
+decodes. After a fix, the route confidence / min-marginal features shift, so the remaining holes stay below threshold
+and keep being asked. Fixing it needs a calibrator fit on constrained re-solves (simulate on dev OOF). Resolve does
+pay for **numbering**: 25 % -> 94 % with the confirmations plus one hole-1 tap. Two sim bugs were fixed before this run
+(double-green answers ping-ponging; two confirmed holes sharing a tee complex blanking each other in `apply_fix`).
+
+**Production** (`pathroute_v2/live2.py`, `platform/stage_select.py` method `pathroute_v2`): features from the live OSM
+(holes hidden), OSM golf=hole ways fixed as confirmed pairs (so only the missing holes are routed), calibrated
+per-hole `confidence` (status `check` < 0.95), `confirm` = ask order + facts (`pathroute_confirm/1`, re-solve with
+`live2.route(fc, course, n, fix=facts)`). Used by `package.py` for `"card": "none"` and as the `mapped_nocard`
+default; fallbacks structure > routing v2 > geometry; request `"pathroute": false` restores the old choice. With a
+real card the card tiers keep v2+structure (pathroute ignores the card; `"hole_method": "pathroute_v2"` forces it).
+Model: `pathroute_v2/model_v2.pkl.gz` (1.9 MB, sklearn 1.9.1 pickle; refit: prep.py + prep2.py caches, then
+`sim2.py --fit-out`, which also writes the calibration). Card-blind effect: CARDBLIND.md "Routing: pathroute_v2".
+
+```bash
+python course_data/zero_tap/pathroute_v2/sim2.py --c1 C1 --c2 C2 --fit-out M.pkl --json sim.json --jobs 4   # ~5 + 20 min
+python course_data/zero_tap/pathroute_v2/sim2_report.py sim.json --out summary_resolve.json
+```
