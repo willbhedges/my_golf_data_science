@@ -10,6 +10,10 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           best fit to the map); the others are kept as a per-hole cross-check;
           > a golfer-typed card (request "typed_card": {"yards": "391 175 ...", "pars": "..."}, typed_card.py);
           no card -> the OSM tee nearest each hole-line start (usually the back tee) + a warning
+          request "card": "none" (CARD-BLIND, cardless_card): every web / local / request / typed card and the
+          card-based review overrides are ignored; the card is synthetic: tees/cardless.py if present, else the
+          OSM hole lines (back = line length, 2nd set = back x CARDLESS_SET2_RATIO, par = OSM tag > length).
+          Default behaviour (no "card" key) is unchanged. platform/CARDBLIND.md scores it (cardblind_eval.py)
           request "yardage_overrides" {ref: {set | "*": yds}} / "par_overrides" {ref: par} patch the chosen card
           (course reviews, library/review_fixes.py); "*" or a set not on the card = the chosen set
   S2a holes  stage selector (stage_select.py, PIPELINE.md) for holes OSM has no golf=hole way for: data tier
@@ -262,6 +266,87 @@ def pick_scorecard(req, raw_dir, fc=None):
     info.update(tried=tried, consistency=chk, cross_check=_cross(card, web_cards, info["kind"]),
                 attribution=card.get("attribution"))
     return card, info
+
+
+# ----------------------------------------------------------------------------- card-blind ("card": "none")
+CARD_INPUT_KEYS = ("yardages", "pars", "scorecard", "typed_card", "yardage_overrides", "par_overrides",
+                   "tee_set", "tees", "local_scorecard")
+CARDLESS_SET2_RATIO = 0.94       # 2nd set / back set, per hole (fallback only: no tees/cardless.py)
+CARDLESS_FUNCS = ("synthetic_card", "cardless_card", "build_card", "make_card", "card")
+
+
+def card_blind(req):
+    return str(req.get("card") or "").strip().lower() in ("none", "blind", "cardless")
+
+
+def strip_card_inputs(req):
+    """The request without anything that encodes a card (card:none never sees a card)."""
+    out = {k: v for k, v in req.items() if k not in CARD_INPUT_KEYS}
+    out["local_scorecard"] = False
+    return out
+
+
+def par_from_length(yds):
+    return 3 if yds < 250 else 4 if yds < 480 else 5
+
+
+def cardless_fallback(fc):
+    """Synthetic card from the OSM hole lines alone: back = line length, 2nd = back x CARDLESS_SET2_RATIO, par =
+    OSM par tag (if 3-6) else from length. None when OSM has no numbered hole lines."""
+    lines = osm_lines(fc)
+    tags = {str(f["properties"]["ref"]): f["properties"] for f in fc["features"]
+            if f["properties"].get("golf") == "hole" and f["properties"].get("ref")}
+    refs = [r for r in lines if str(r).isdigit()]
+    if not refs:
+        return None
+    n = max(int(r) for r in refs)
+    n = 18 if 9 < n <= 18 else 9 if n <= 9 else n
+    back, pars = [None] * n, [None] * n
+    for r in refs:
+        i = int(r) - 1
+        if i >= n:
+            continue
+        L = lines[r]
+        y = sum(_yd(L[j], L[j + 1]) for j in range(len(L) - 1))
+        back[i] = int(round(y))
+        tp = str(tags.get(r, {}).get("par", ""))
+        pars[i] = int(tp) if tp.isdigit() and 3 <= int(tp) <= 6 else par_from_length(y)
+    card = scm.card_from_yardages(back, pars, name="Back", source="cardless: OSM hole-line lengths")
+    card["tee_sets"]["Second"] = dict(colour="second", aliases=["second"], source=card["source"],
+                                      yards=[int(round(y * CARDLESS_SET2_RATIO)) if y else None for y in back])
+    card["tee_sets"]["Second"]["total"] = sum(y for y in card["tee_sets"]["Second"]["yards"] if y)
+    return card
+
+
+def cardless_card(fc, course, raw_dir, req):
+    """card:none -> (card | None, info). tees/cardless.py (first function of CARDLESS_FUNCS it defines, called
+    with whichever of fc, course, raw_dir, req it accepts; returns a scorecard/1 card or (card, info)), else
+    cardless_fallback. Never reads raw/scorecard_web.json."""
+    import inspect
+    mod = load(os.path.join(CD, "tees", "cardless.py"), "cdp_cardless")
+    tried = []
+    fn = next((getattr(mod, f) for f in CARDLESS_FUNCS if mod and callable(getattr(mod, f, None))), None)
+    if fn is not None:
+        try:
+            have = dict(fc=fc, course=course, raw_dir=raw_dir, req=req)
+            sig = inspect.signature(fn).parameters
+            kw = {k: v for k, v in have.items() if k in sig}
+            res = fn(**kw) if kw else fn(fc)
+            card, extra = res if isinstance(res, tuple) else (res, {})
+            if card and card.get("tee_sets"):
+                info = dict(kind="cardless", source=f"tees/cardless.py:{fn.__name__}", url=None)
+                info.update({k: v for k, v in (extra or {}).items() if k not in info})
+                return scm.normalise(card), dict(info, tried=tried, consistency=None, cross_check={})
+            tried.append(dict(source="tees/cardless.py", ok=False, info="no tee sets returned"))
+        except Exception as e:                                   # noqa: BLE001  fall back to the OSM lines
+            tried.append(dict(source="tees/cardless.py", ok=False, info=f"{type(e).__name__}: {e}"[:300]))
+    else:
+        tried.append(dict(source="tees/cardless.py", ok=False, info="absent" if mod is None else "no card function"))
+    card = cardless_fallback(fc)
+    if card is None:
+        return None, dict(kind=None, source=None, url=None, tried=tried, consistency=None, cross_check={})
+    return scm.normalise(card), dict(kind="cardless", source="osm hole lines (platform/package.cardless_fallback)",
+                                     url=None, tried=tried, consistency=None, cross_check={})
 
 
 # ----------------------------------------------------------------------------- review overrides
@@ -1046,13 +1131,16 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
 
     # S1 scorecard + tee set
     req = dict(req)
+    blind = card_blind(req)
+    if blind:                                            # card:none: no card of any kind reaches the build
+        req = strip_card_inputs(req)
     if not req.get("scorecard") and not req.get("yardages") and req.get("local_scorecard", True):
         local = find_local_card(course)
         if local:
             req["scorecard"] = local
     fc, osm_notes = sanity.clean_osm(fc)
     warnings += osm_notes
-    card, cinfo = pick_scorecard(req, raw, fc)
+    card, cinfo = cardless_card(fc, course, raw, req) if blind else pick_scorecard(req, raw, fc)
     if cinfo.get("units"):
         warnings.append(f"scorecard units: {cinfo['units']}")
     for f_ in ((cinfo.get("consensus") or {}).get("flags") or [])[:6]:
