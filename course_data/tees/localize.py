@@ -20,7 +20,10 @@ whenever this module raises.
    at a cost, other holes' pads (shared complexes) within BORROW_ERR_YD of the card yardage.
 
 2. Where on a pad: the point on the axis through the pad centroid parallel to the first leg at the
-   card yardage, clamped to the pad's inner extent (markers stand inside the box, not on its edge).
+   card yardage, clamped to the pad's inner extent (markers stand inside the box, not on its edge);
+   a card more than beyond_free_yd outside the extent moves the point off the pad along that axis by the
+   excess, at most beyond_max_yd (OSM boxes are often drawn short of the back tee: Pine Dunes, Veenker 12,
+   Coldwater 17). A box tagged with the set's colour (platform/package.py) uses the same rule (tagged_point).
    Yardage is measured the USGA way (place_tee.LineOfPlay: to the green centre along the line of
    play, through the dog-leg turning points; the green centre is the OSM green centroid).
 
@@ -78,6 +81,12 @@ PARAMS = dict(
     osm_tol_w=0.15,        # its yardage error costs osm_tol_w per yd (not 1), so it beats an unmapped lidar /
                            # texture pad or a walk-back that only matches the card more exactly (library QA);
                            # only the hole's own boxes within off_free_yd of its first leg (not borrowed ones)
+    beyond_free_yd=5.0,    # card yardage outside the chosen pad's extent: the point leaves the pad along its axis
+    beyond_max_yd=20.0,    # by (gap - beyond_free_yd), at most beyond_max_yd (mapped boxes are drawn short of the
+                           # real tee complex; within beyond_free_yd the gap is measuring noise and the point is
+                           # clamped to the pad). beyond_max_yd 0 = clamp (v2 as first shipped). Cost unchanged.
+                           # ERROR_BUDGET.md "Tees and trees": hand-truth tees > 10 yds off 20 -> 15 of 124,
+                           # generalize train (OSM hidden) <= 10 yds 707 -> 711 of 778.
 )
 
 
@@ -280,9 +289,19 @@ def _hole_cands(fr, lop, cands, P, borrowed=False):
     return out
 
 
+def _beyond(t, lo, hi, P):
+    """Target yardage on a pad of extent [lo, hi] for card yardage t (PARAMS beyond_free_yd / beyond_max_yd)."""
+    p = min(max(t, lo), hi)
+    g = abs(t - p) - P.get("beyond_free_yd", 0.0)
+    if g > 0 and P.get("beyond_max_yd", 0.0) > 0:
+        p += math.copysign(min(g, P["beyond_max_yd"]), t - p)
+    return p
+
+
 def _unary(c, t, P):
-    p = min(max(t, c["lo"]), c["hi"])
-    err = abs(t - p)
+    clamp = min(max(t, c["lo"]), c["hi"])
+    err = abs(t - clamp)
+    p = _beyond(t, c["lo"], c["hi"], P)
     own = not c["borrowed"] and abs(c["offset_yd"]) <= P["off_free_yd"]       # this hole's box, on its line
     w = P["osm_tol_w"] if own and "osm" in c["sources"] and err <= P["card_tol_yd"] else 1.0
     cost = w * err + P["centre_w"] * abs(c["d_centroid"] - t) + P["prior_yd"] * -math.log(max(c["p"], 1e-3)) \
@@ -456,7 +475,32 @@ def _point(fr, lop, cands, o, y):
     if i == -1:
         return lop.point_at_distance(y)
     c = cands[i]
-    return pt._point_on_axis(lop, c["centroid_xy"], p, c["d_front"], c["d_back"])
+    return pt._point_on_axis(lop, c["centroid_xy"], p, min(c["d_front"], p), max(c["d_back"], p))
+
+
+def tagged_point(line, green, boxes, yards, params=None):
+    """An OSM box tagged with the set's colour wins, but WHERE on it: the point on its axis at the card yardage
+    (clamped / extended exactly as a localizer pad, PARAMS beyond_*), not its centroid; with several tagged boxes the
+    one whose extent is nearest the card. boxes [{id, coords [(lat, lon)]}], green (lat, lon) or None.
+    -> (lat, lon, tee_id, dist_yd) or None (no yardage / no box)."""
+    if not boxes or not yards or not line or len(line) < 2:
+        return None
+    P = dict(PARAMS, **(params or {}))
+    fr, lop = pt._hole_frame(line, green)
+    best = None
+    for b in boxes:
+        ring = _ring_xy(fr, b["coords"])
+        c = pt.polygon_centroid(ring) if len(ring) >= 3 else ring[0]
+        m = pt._tee_metrics(lop, ring, c)
+        y = float(yards)
+        err = abs(y - min(max(y, m["d_front"]), m["d_back"]))
+        if best is None or err < best[0]:
+            best = (err, b, c, m)
+    _, b, c, m = best
+    p = _beyond(float(yards), m["d_front"], m["d_back"], P)
+    q = pt._point_on_axis(lop, c, p, min(m["d_front"], p), max(m["d_back"], p))
+    lat, lon = fr.inv(*q)
+    return lat, lon, b.get("id"), round(lop.dist_to_green(q), 1)
 
 
 # ----------------------------------------------------------------------------- course

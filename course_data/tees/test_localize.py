@@ -85,3 +85,27 @@ def test_osm_box_within_card_tolerance_beats_exact_lidar_pad():
     assert out["Back"]["tee_id"] == "box" and out["Back"]["error_yd"] <= 10
     out = LZ.localize_hole(line, None, pads, (), {"Back": 400}, params=dict(osm_tol_w=1.0))
     assert out["Back"]["tee_id"] == "pad"
+
+
+def test_card_beyond_the_box_leaves_it_along_the_axis():
+    """ERROR_BUDGET.md tees: an OSM box drawn short of the back tee. Card 15 yds behind the box's back edge -> the
+    point leaves the box by 15 - beyond_free_yd; a gap within beyond_free_yd stays clamped to the box."""
+    line = straight_hole(400)
+    pads = LZ.merge_candidates([cand(0, 0, "osm", tid="box", w=10, h=10)])     # box spans 395..405 yds
+    far = LZ.localize_hole(line, None, pads, (), {"Back": 420})["Back"]
+    assert far["tee_id"] == "box"
+    assert abs(d_green(far) - (420 - LZ.PARAMS["beyond_free_yd"])) < 1.0
+    near = LZ.localize_hole(line, None, pads, (), {"Back": 408})["Back"]
+    assert abs(d_green(near) - 405) < 1.0
+    old = LZ.localize_hole(line, None, pads, (), {"Back": 420}, params=dict(beyond_max_yd=0.0))["Back"]
+    assert abs(d_green(old) - 405) < 1.0
+
+
+def test_tagged_box_point_at_card_yardage_not_centroid():
+    line = straight_hole(400)
+    boxes = [box(0, 0, w=10, h=20, tid="t1"), box(0, -60, w=10, h=10, tid="t2")]      # 390..410 and 455..465
+    lat, lon, tid, dist = LZ.tagged_point(line, None, boxes, 407)
+    assert tid == "t1" and abs(d_green(dict(lat=lat, lon=lon)) - 407) < 1.0 and abs(dist - 407) < 1.0
+    lat, lon, tid, dist = LZ.tagged_point(line, None, boxes, 475)           # nearest-to-card box, 10 beyond its back
+    assert tid == "t2" and abs(dist - (475 - LZ.PARAMS["beyond_free_yd"])) < 1.0
+    assert LZ.tagged_point(line, None, boxes, None) is None

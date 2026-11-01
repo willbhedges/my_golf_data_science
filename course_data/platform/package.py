@@ -779,9 +779,18 @@ def place_tees_v2(fc, per_hole_card, card_sets, pads=(), img_dir=None, slug=None
             want = {str(s).lower(), str((card_sets.get(s) or {}).get("colour") or "").lower()} - {""}
             tagged = [t for t in by_hole.get(ref, []) if want & set(_tee_tags(t["tags"]))]
             if tagged:
-                c = pt.centroid_ll(tagged[0]["coords"])
-                hp["tees"][s] = dict(lat=c[0], lon=c[1], method="tagged", tee_id=tagged[0]["id"], confidence="high",
-                                     error_yd=0.0, source="osm_tagged", sigma_yd=3.0, p_assign=1.0)
+                # the tagged box wins; the point is on its axis at the card yardage (as a localizer pad), not
+                # its centroid (ERROR_BUDGET.md tees: tagged boxes are drawn short of the real back tee)
+                g = hp.get("green")
+                y = (yards.get(ref) or {}).get(s)
+                tp = lz.tagged_point(lines[ref], (g["lat"], g["lon"]) if g else None, tagged, y) \
+                    if hasattr(lz, "tagged_point") else None
+                if tp is not None:
+                    lat, lon, tid, dist = tp
+                else:
+                    (lat, lon), tid, dist = pt.centroid_ll(tagged[0]["coords"]), tagged[0]["id"], None
+                hp["tees"][s] = dict(lat=lat, lon=lon, method="tagged", tee_id=tid, confidence="high",
+                                     error_yd=0.0, source="osm_tagged", sigma_yd=3.0, p_assign=1.0, dist_yd=dist)
     return dict(schema="tees/positions", method=f"{lz.VERSION} ({'+'.join(used)} pads, joint chain assignment)",
                 sources=used, holes=res)
 
