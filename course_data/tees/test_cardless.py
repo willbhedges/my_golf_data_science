@@ -78,8 +78,9 @@ def test_infer_card_end_to_end():
     card = CL.infer_card(holes, tees, params=dict(line_start=False), S=3)
     sets = list(card["tee_sets"].values())
     assert list(card["tee_sets"]) == ["Back", "2nd", "3rd"]
-    assert all(abs(a - b) <= 3 for a, b in zip(sets[0]["yards"], lengths))
-    assert all(abs(a - 0.93 * b) <= 4 for a, b in zip(sets[1]["yards"], lengths))
+    # each set stands 0.9 of the way back in its 8-yd box (cards measure from near the back edge): +3.2 yds
+    assert all(abs(a - (b + 3.2)) <= 1.5 for a, b in zip(sets[0]["yards"], lengths))
+    assert all(abs(a - (0.93 * b + 3.2)) <= 1.5 for a, b in zip(sets[1]["yards"], lengths))
     assert card["par"][:3] == [4, 3, 5]
     assert sets[0]["total"] > sets[1]["total"] > sets[2]["total"]
 
