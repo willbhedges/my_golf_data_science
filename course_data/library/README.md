@@ -188,22 +188,22 @@ call usually gives the card), `oga?` (listed without a par) or empty.
 `us_readiness.json` has the per-state and national counts (`national`, `states.<ST>`, `best_states`).
 
 <!-- NATIONAL_COUNTS -->
-Counts from `us_readiness.json` (built 2026-11-02T08:30Z, 20 states + DC with rows). Missing states: AK, CO, CT, DE, DC, ID, IL, IN, IA, KS, ME, MA, MI, MN, MT, NE, NH, NJ, NY, ND, OH, OR, PA, RI, SD, UT, VT, WA, WV, WI, WY. Partly fetched (some tiles failed): AZ, AR, CA, KY, MD, MO, NV, NM, NC, OK, TN, TX, VA.
+Counts from `us_readiness.json` (built 2026-11-02T10:13Z, 26 states + DC with rows). Missing states: AK, CT, ID, IL, IN, IA, ME, MA, MI, MN, MT, NE, NH, NJ, NY, ND, OH, OR, PA, RI, SD, VT, WA, WI, WY. Partly fetched (some tiles failed): CA, CO, DE, DC, KS, KY, MD, MO, NV, NM, OK, UT, VA, WV.
 
 | | courses | share |
 |---|---|---|
-| open named courses | 5,020 | 100 % |
-| tier A (complete OSM holes + card known) | 2,012 | 40.1 % |
-| tier B (complete OSM holes, no card) | 111 | 2.2 % |
-| tier C (partial OSM golf mapping) | 1,484 | 29.6 % |
-| tier D (outline / name only) | 1,413 | 28.1 % |
-| any golf=hole way | 3,076 | 61.3 % |
-| any green | 3,493 | 69.6 % |
-| any fairway | 2,846 | 56.7 % |
-| any pin | 2,039 | 40.6 % |
-| card known (library card or OpenGolfAPI par) | 4,521 | 90.1 % |
+| open named courses | 5,817 | 100 % |
+| tier A (complete OSM holes + card known) | 2,392 | 41.1 % |
+| tier B (complete OSM holes, no card) | 125 | 2.1 % |
+| tier C (partial OSM golf mapping) | 1,697 | 29.2 % |
+| tier D (outline / name only) | 1,603 | 27.6 % |
+| any golf=hole way | 3,593 | 61.8 % |
+| any green | 4,085 | 70.2 % |
+| any fairway | 3,371 | 58.0 % |
+| any pin | 2,358 | 40.5 % |
+| card known (library card or OpenGolfAPI par) | 5,246 | 90.2 % |
 
-Complete OSM holes (A + B), states with at least 20 courses: best OK 67.3 % (70 / 104), MD 65.2 % (30 / 46), MO 57.4 % (85 / 148), CA 51.4 % (380 / 739), NV 50.6 % (41 / 81); worst MS 27.2 % (22 / 81), NM 28.0 % (26 / 93), AL 29.4 % (47 / 160), AZ 29.8 % (108 / 362), LA 34.0 % (34 / 100).
+Complete OSM holes (A + B), states with at least 20 courses: best MD 71.2 % (37 / 52), OK 66.9 % (85 / 127), UT 64.7 % (75 / 116), CO 57.5 % (84 / 146), MO 53.3 % (96 / 180); worst KS 20.7 % (23 / 111), MS 27.2 % (22 / 81), NM 27.6 % (27 / 98), WV 27.7 % (13 / 47), AL 29.4 % (47 / 160).
 <!-- /NATIONAL_COUNTS -->
 
 ## Requests
