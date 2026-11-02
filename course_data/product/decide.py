@@ -53,8 +53,8 @@ GUARD_LINE = 40.0
 # there is printable (lie + line-of-play checks, so another hole's fairway still fails) and gains > GUARD_GAIN
 # strokes. Only for holes with a line of play (the check that stops an aim at another hole). DECIDE_ADAPTIVE_AIM=0
 # turns it off (the fixed +/-40 bound).
-GUARD_STEPS = tuple(float(x) for x in os.environ.get("DECIDE_GUARD_STEPS", "60,80").split(",") if x)
-GUARD_GAIN = float(os.environ.get("DECIDE_GUARD_GAIN", "0.002"))
+GUARD_STEPS = tuple(float(x) for x in os.environ.get("DECIDE_GUARD_STEPS", "60").split(",") if x)
+GUARD_GAIN = float(os.environ.get("DECIDE_GUARD_GAIN", "0.01"))
 ADAPTIVE_AIM = os.environ.get("DECIDE_ADAPTIVE_AIM", "1") != "0"
 OK_LIES = ("fairway", "first_cut", "rough")
 LIE_WORDS = {"recovery": "trees", "native": "long grass", "water": "water", "ob": "OB", "sand": "sand"}

@@ -33,8 +33,8 @@ VC_PY = os.path.join(CD, "courses", "v2_course.py")
 
 AIMS = np.arange(-80, 80.001, 0.5)
 STEP = 20.0             # each widening, yds
-MAX_EXTRA = 40.0        # at most 40 yds past the v2 bound (+/-40 -> +/-80)
-GAIN = 0.002            # strokes (smoothed curve) a widening must win
+MAX_EXTRA = 20.0        # at most 20 yds past the v2 bound (+/-40 -> +/-60); 80 lost a v1 match
+GAIN = 0.01             # strokes (smoothed curve) a widening must win
 GUARD_CARRY = 260.0     # yds out: the aim point checked (between the 4-wood and Driver carries)
 GUARD_LINE = 40.0       # yds: the aim point's distance from the line of play
 OK_LIES = ("fairway", "first_cut", "rough")
