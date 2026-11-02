@@ -88,12 +88,13 @@
    ]
   },
   "page_set": "Blue",
-  "page_set_should_be": "Blue",
+  "page_set_should_be": "Green, Bronze",
   "course_notes": [
    "Front-nine numbering mismatch: OSM's golf=hole refs 3-9 follow a different order than every card source (OSM pars 4 4 4 3 5 5 3 4 4 vs card 4 4 4 4 5 3 4 3 5). Both orders chain green-to-tee, but the card's (OSM 1,2,8,9,6,7,3,4,5) is the one golfify, AllSquare and OpenGolfAPI publish. The build put card holes 3-9 on the wrong OSM ways: par 4s on a par-3 line (4), a par 3 on a par-5 line (6), tees walked back into the woods (4, 6).",
    "Holes 1, 2 and 10-18 are right: routing, green, par and Blue/White tees on OSM boxes within 1-7 yds of the card.",
    "Fix: rebuild with \"scorecard\": \"course_data/library/swope_memorial/card_review.json\", \"osm_supplement\": \"course_data/library/swope_memorial/osm_supplement.geojson\", \"ignore_osm_holes\": true, tees [\"Blue\", \"White\"].",
-   "Renovation: the course was closed Jan 2025 - Jul 2026 (new tees, greens, bunkers, a new pond; kcparks.org). The card and NAIP 2020 imagery predate it, so yardages and hazards may have changed; check the 2026 club card (swopememorialgolfcourse.com/docs/Scorecard-2026.pdf) before publishing."
+   "Renovation: the course was closed Jan 2025 - Jul 2026 (new tees, greens, bunkers, a new pond; kcparks.org). The card and NAIP 2020 imagery predate it, so yardages and hazards may have changed; check the 2026 club card (swopememorialgolfcourse.com/docs/Scorecard-2026.pdf) before publishing.",
+   "qa_rebuild 2026-11-02: the 2026 club card (Scorecard-2026.pdf, fetched as binary; course_data/research/web/swope_card2026/) is card_review.json: Green 6,324 / Bronze 6,079 / Silver 5,449 / Black (ladies) 4,385, par 71 (35-36). Its front nine follows OSM's own refs 3-9 (pars 4 3 5 4 3 4 4; OSM tags 6 as par 5, now a 406-yd par 4); osm_supplement.geojson is renumbered back to those refs, every hole within 25 yds of the Green card. Rebuild tees Green + Bronze. NAIP 2020 imagery predates the restoration."
   ],
   "holes": [
    {
@@ -110,8 +111,8 @@
    {
     "n": 3,
     "verdict": "wrong hole geometry",
-    "notes": "Card hole 3 (par 4, Blue 267) was solved on OSM hole 3's way, which is a different hole (OSM par 4, 334 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_centroid, 86 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649935 (OSM ref 8, 277 yds, OSM par 4).",
-    "fix": {
+    "notes": "Card hole 3 (par 4, Blue 267) was solved on OSM hole 3's way, which is a different hole (OSM par 4, 334 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_centroid, 86 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649935 (OSM ref 8, 277 yds, OSM par 4). | qa_rebuild 2026-11-02: superseded by the 2026 club card (card_review.json): hole 3 is now OSM ref 3 again, so this old-card fix is kept as fix_pre2026 and not applied.",
+    "fix_pre2026": {
      "osm_hole_way": 692649935,
      "osm_ref": "8",
      "par": 4,
@@ -121,8 +122,8 @@
    {
     "n": 4,
     "verdict": "wrong hole geometry",
-    "notes": "Card hole 4 (par 4, Blue 368) was solved on OSM hole 4's way, which is a different hole (OSM par 3, 169 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: hole_line/walkback, 200 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649958 (OSM ref 9, 370 yds, OSM par 4).",
-    "fix": {
+    "notes": "Card hole 4 (par 4, Blue 368) was solved on OSM hole 4's way, which is a different hole (OSM par 3, 169 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: hole_line/walkback, 200 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649958 (OSM ref 9, 370 yds, OSM par 4). | qa_rebuild 2026-11-02: superseded by the 2026 club card (card_review.json): hole 4 is now OSM ref 4 again, so this old-card fix is kept as fix_pre2026 and not applied.",
+    "fix_pre2026": {
      "osm_hole_way": 692649958,
      "osm_ref": "9",
      "par": 4,
@@ -132,20 +133,20 @@
    {
     "n": 5,
     "verdict": "wrong hole geometry",
-    "notes": "Card hole 5 (par 5, Blue 451) was solved on OSM hole 5's way, which is a different hole (OSM par 5, 457 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 5 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649955 (OSM ref 6, 407 yds, OSM par 5). Uncertain yardage: the OSM way is 407 yds vs Blue 451 / White 429; the back box may be unmapped or the card measures the dogleg; expect a CHECK.",
-    "fix": {
+    "notes": "Card hole 5 (par 5, Blue 451) was solved on OSM hole 5's way, which is a different hole (OSM par 5, 457 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 5 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649955 (OSM ref 6, 407 yds, OSM par 5). Uncertain yardage: the OSM way is 407 yds vs Blue 451 / White 429; the back box may be unmapped or the card measures the dogleg; expect a CHECK. | qa_rebuild 2026-11-02: superseded by the 2026 club card (card_review.json): hole 5 is now OSM ref 5 again, so this old-card fix is kept as fix_pre2026 and not applied.",
+    "uncertain": true,
+    "fix_pre2026": {
      "osm_hole_way": 692649955,
      "osm_ref": "6",
      "par": 5,
      "yards": 451
-    },
-    "uncertain": true
+    }
    },
    {
     "n": 6,
     "verdict": "wrong hole geometry",
-    "notes": "Card hole 6 (par 3, Blue 172) was solved on OSM hole 6's way, which is a different hole (OSM par 5, 407 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: hole_line/walkback, 232 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649965 (OSM ref 7, 172 yds, OSM par 3).",
-    "fix": {
+    "notes": "Card hole 6 (par 3, Blue 172) was solved on OSM hole 6's way, which is a different hole (OSM par 5, 407 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: hole_line/walkback, 232 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649965 (OSM ref 7, 172 yds, OSM par 3). | qa_rebuild 2026-11-02: superseded by the 2026 club card (card_review.json): hole 6 is now OSM ref 6 again, so this old-card fix is kept as fix_pre2026 and not applied.",
+    "fix_pre2026": {
      "osm_hole_way": 692649965,
      "osm_ref": "7",
      "par": 3,
@@ -155,8 +156,8 @@
    {
     "n": 7,
     "verdict": "wrong hole geometry",
-    "notes": "Card hole 7 (par 4, Blue 330) was solved on OSM hole 7's way, which is a different hole (OSM par 3, 172 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 158 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649973 (OSM ref 3, 334 yds, OSM par 4).",
-    "fix": {
+    "notes": "Card hole 7 (par 4, Blue 330) was solved on OSM hole 7's way, which is a different hole (OSM par 3, 172 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 158 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692649973 (OSM ref 3, 334 yds, OSM par 4). | qa_rebuild 2026-11-02: superseded by the 2026 club card (card_review.json): hole 7 is now OSM ref 7 again, so this old-card fix is kept as fix_pre2026 and not applied.",
+    "fix_pre2026": {
      "osm_hole_way": 692649973,
      "osm_ref": "3",
      "par": 4,
@@ -166,8 +167,8 @@
    {
     "n": 8,
     "verdict": "wrong hole geometry",
-    "notes": "Card hole 8 (par 3, Blue 167) was solved on OSM hole 8's way, which is a different hole (OSM par 4, 277 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 133 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692651032 (OSM ref 4, 169 yds, OSM par 3).",
-    "fix": {
+    "notes": "Card hole 8 (par 3, Blue 167) was solved on OSM hole 8's way, which is a different hole (OSM par 4, 277 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_axis, 133 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692651032 (OSM ref 4, 169 yds, OSM par 3). | qa_rebuild 2026-11-02: superseded by the 2026 club card (card_review.json): hole 8 is now OSM ref 8 again, so this old-card fix is kept as fix_pre2026 and not applied.",
+    "fix_pre2026": {
      "osm_hole_way": 692651032,
      "osm_ref": "4",
      "par": 3,
@@ -177,8 +178,8 @@
    {
     "n": 9,
     "verdict": "wrong hole geometry",
-    "notes": "Card hole 9 (par 5, Blue 477) was solved on OSM hole 9's way, which is a different hole (OSM par 4, 370 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_centroid, 108 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692651031 (OSM ref 5, 457 yds, OSM par 5). OSM way 457 yds vs Blue 477 (White 465): back tee ~20 yds behind the mapped start.",
-    "fix": {
+    "notes": "Card hole 9 (par 5, Blue 477) was solved on OSM hole 9's way, which is a different hole (OSM par 4, 370 yds): OSM numbers the front nine in another order. The build kept the card par and walked/snapped tees to the card yardage on the wrong line (Blue tee: osm/tee_centroid, 108 yds off the line start), so the picture, tee, aim and green are another hole's. The card hole is OSM way/692651031 (OSM ref 5, 457 yds, OSM par 5). OSM way 457 yds vs Blue 477 (White 465): back tee ~20 yds behind the mapped start. | qa_rebuild 2026-11-02: superseded by the 2026 club card (card_review.json): hole 9 is now OSM ref 9 again, so this old-card fix is kept as fix_pre2026 and not applied.",
+    "fix_pre2026": {
      "osm_hole_way": 692651031,
      "osm_ref": "5",
      "par": 5,
@@ -230,6 +231,12 @@
     "verdict": "OK",
     "notes": "Routing, green, par 4 OK. Blue 405 vs card 404, White 366 vs 365, both on OSM tee boxes."
    }
-  ]
+  ],
+  "rebuild_hint": {
+   "tees": [
+    "Green",
+    "Bronze"
+   ]
+  }
  }
 }

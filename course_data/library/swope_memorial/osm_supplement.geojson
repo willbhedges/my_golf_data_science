@@ -1,6 +1,6 @@
 {
  "type": "FeatureCollection",
- "note": "rv_swope_falls hand supplement for Swope Memorial: all 18 golf=hole ways numbered as on the card (golfify / AllSquare / OpenGolfAPI). OSM numbers the front nine in another order (OSM 3..9 = card 7, 8, 9, 5, 6, 3, 4), so use it with request \"ignore_osm_holes\": true. Greens and tees stay from OSM.",
+ "note": "Swope Memorial hand supplement: all 18 golf=hole ways numbered as on the 2026 club card (card_review.json), which follows OSM's own refs (the pre-2026 cards numbered the front nine 1,2,8,9,6,7,3,4,5 of OSM). Use with \"ignore_osm_holes\": true. Greens and tees stay from OSM.",
  "features": [
   {
    "type": "Feature",
@@ -60,22 +60,22 @@
     "golf": "hole",
     "ref": "3",
     "par": "4",
-    "note": "rv_swope_falls: OSM way/692649935 (OSM ref 8, OSM par 4) renumbered to card hole 3"
+    "note": "rv_swope_falls: OSM way/692649973 (OSM ref 3, OSM par 4) renumbered to card hole 7; qa_rebuild 2026-11-02: back to OSM ref 3, which is hole 3 on the 2026 club card (the restoration restored OSM's order)"
    },
    "geometry": {
     "type": "LineString",
     "coordinates": [
      [
-      -94.512301,
-      38.9976633
+      -94.512616,
+      38.9975336
      ],
      [
-      -94.5122723,
-      38.9992895
+      -94.5148142,
+      38.9967391
      ],
      [
-      -94.5123616,
-      38.9999315
+      -94.5158876,
+      38.996549
      ]
     ]
    }
@@ -85,23 +85,19 @@
    "properties": {
     "golf": "hole",
     "ref": "4",
-    "par": "4",
-    "note": "rv_swope_falls: OSM way/692649958 (OSM ref 9, OSM par 4) renumbered to card hole 4"
+    "par": "3",
+    "note": "rv_swope_falls: OSM way/692651032 (OSM ref 4, OSM par 3) renumbered to card hole 8; qa_rebuild 2026-11-02: back to OSM ref 4, which is hole 4 on the 2026 club card (the restoration restored OSM's order)"
    },
    "geometry": {
     "type": "LineString",
     "coordinates": [
      [
-      -94.5127892,
-      38.9997974
+      -94.5155807,
+      38.9969819
      ],
      [
-      -94.515258,
-      39.0003428
-     ],
-     [
-      -94.5163553,
-      39.0009501
+      -94.5139275,
+      38.9975027
      ]
     ]
    }
@@ -112,7 +108,37 @@
     "golf": "hole",
     "ref": "5",
     "par": "5",
-    "note": "rv_swope_falls: OSM way/692649955 (OSM ref 6, OSM par 5) renumbered to card hole 5"
+    "note": "rv_swope_falls: OSM way/692651031 (OSM ref 5, OSM par 5) renumbered to card hole 9; qa_rebuild 2026-11-02: back to OSM ref 5, which is hole 5 on the 2026 club card (the restoration restored OSM's order)"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -94.5135017,
+      38.997621
+     ],
+     [
+      -94.5150483,
+      38.9989044
+     ],
+     [
+      -94.5161991,
+      38.9997661
+     ],
+     [
+      -94.5168072,
+      39.0003528
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "golf": "hole",
+    "ref": "6",
+    "par": "4",
+    "note": "rv_swope_falls: OSM way/692649955 (OSM ref 6, OSM par 5) renumbered to card hole 5; qa_rebuild 2026-11-02: back to OSM ref 6, which is hole 6 on the 2026 club card (the restoration restored OSM's order)"
    },
    "geometry": {
     "type": "LineString",
@@ -140,9 +166,9 @@
    "type": "Feature",
    "properties": {
     "golf": "hole",
-    "ref": "6",
+    "ref": "7",
     "par": "3",
-    "note": "rv_swope_falls: OSM way/692649965 (OSM ref 7, OSM par 3) renumbered to card hole 6"
+    "note": "rv_swope_falls: OSM way/692649965 (OSM ref 7, OSM par 3) renumbered to card hole 6; qa_rebuild 2026-11-02: back to OSM ref 7, which is hole 7 on the 2026 club card (the restoration restored OSM's order)"
    },
    "geometry": {
     "type": "LineString",
@@ -162,46 +188,24 @@
    "type": "Feature",
    "properties": {
     "golf": "hole",
-    "ref": "7",
-    "par": "4",
-    "note": "rv_swope_falls: OSM way/692649973 (OSM ref 3, OSM par 4) renumbered to card hole 7"
-   },
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -94.512616,
-      38.9975336
-     ],
-     [
-      -94.5148142,
-      38.9967391
-     ],
-     [
-      -94.5158876,
-      38.996549
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "golf": "hole",
     "ref": "8",
-    "par": "3",
-    "note": "rv_swope_falls: OSM way/692651032 (OSM ref 4, OSM par 3) renumbered to card hole 8"
+    "par": "4",
+    "note": "rv_swope_falls: OSM way/692649935 (OSM ref 8, OSM par 4) renumbered to card hole 3; qa_rebuild 2026-11-02: back to OSM ref 8, which is hole 8 on the 2026 club card (the restoration restored OSM's order)"
    },
    "geometry": {
     "type": "LineString",
     "coordinates": [
      [
-      -94.5155807,
-      38.9969819
+      -94.512301,
+      38.9976633
      ],
      [
-      -94.5139275,
-      38.9975027
+      -94.5122723,
+      38.9992895
+     ],
+     [
+      -94.5123616,
+      38.9999315
      ]
     ]
    }
@@ -211,27 +215,23 @@
    "properties": {
     "golf": "hole",
     "ref": "9",
-    "par": "5",
-    "note": "rv_swope_falls: OSM way/692651031 (OSM ref 5, OSM par 5) renumbered to card hole 9"
+    "par": "4",
+    "note": "rv_swope_falls: OSM way/692649958 (OSM ref 9, OSM par 4) renumbered to card hole 4; qa_rebuild 2026-11-02: back to OSM ref 9, which is hole 9 on the 2026 club card (the restoration restored OSM's order)"
    },
    "geometry": {
     "type": "LineString",
     "coordinates": [
      [
-      -94.5135017,
-      38.997621
+      -94.5127892,
+      38.9997974
      ],
      [
-      -94.5150483,
-      38.9989044
+      -94.515258,
+      39.0003428
      ],
      [
-      -94.5161991,
-      38.9997661
-     ],
-     [
-      -94.5168072,
-      39.0003528
+      -94.5163553,
+      39.0009501
      ]
     ]
    }
