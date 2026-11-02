@@ -2,11 +2,7 @@
 
 Pending actions the coordinator owes; remove an item when done, with the commit or run that closed it.
 
-- [ ] Overpass was down/timing out on 2026-11-01 ~22:00Z. When it answers again (check a small web_fetch or
-      a course-package run): re-push course_data/requests/package_{la_nickell,buffalo_ridge,rivercut,gustin}.json
-      (run 41349576884 timed out) and, if run 41350092898 failed, package_{amana_colonies,osage_national,annbriar}.json.
-      Then for each: tourn_truth request with "ob", and the 5 steps in course_data/truth_sets_v2/README.md
-      (hand truth, workstream 3). adams_pointe needs its AllSquare card typed into the request first.
+- [x] Overpass recovered; all 7 truth packages committed (runs 41349576884 / 41350092898); truth agent resumed on them 2026-11-02 00:30Z.
 - [ ] Course-page retry runs 41346643978 (12 supplement courses), 41346747941 (16 commit-failed courses),
       41347851530 (17 national failures): when each finishes, read results, fix, re-queue; if they failed only on
       Overpass, re-queue after Overpass recovers. Then hole-by-hole check of reviewed courses and publish passes.
@@ -26,3 +22,5 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
       Blue Hills MO, Eagle Knoll MO come out tier A/B. Then fill ROADMAP "national OSM coverage".
 - [ ] Error budget follow-ups running: long-grass threshold fix agent, tee box + tree edge agent. When both land,
       re-run course_data/platform/error_budget.py and update ROADMAP "Where we are".
+- [ ] QA checker agent writes course_data/library/<slug>/qa_rebuild.md per rebuilt reviewed course; publish the PUBLISH ones (hole-by-hole check of screenshots first) and tell the user. Gustin landed first.
+- [ ] Native-grass classifier agent running (long grass stays off until it beats 'none' in LOCO error budget).
