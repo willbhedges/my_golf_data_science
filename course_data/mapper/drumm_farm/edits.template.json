@@ -1,0 +1,974 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "drumm_farm",
+ "corridor_set": "Tour",
+ "mapper": "",
+ "started": "",
+ "minutes": null,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py drumm_farm. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-2-L1",
+      "area_yd2": 472,
+      "p": 0.61,
+      "along": [
+       266,
+       301
+      ],
+      "gap_yd": 12.5,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -52,
+         301
+        ],
+        [
+         -46,
+         294
+        ],
+        [
+         -54,
+         287
+        ],
+        [
+         -50,
+         276
+        ],
+        [
+         -68,
+         266
+        ],
+        [
+         -70,
+         290
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-2-L2",
+      "area_yd2": 348,
+      "p": 0.52,
+      "along": [
+       302,
+       331
+      ],
+      "gap_yd": 17.9,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -45,
+         331
+        ],
+        [
+         -39,
+         321
+        ],
+        [
+         -47,
+         317
+        ],
+        [
+         -42,
+         306
+        ],
+        [
+         -52,
+         302
+        ],
+        [
+         -62,
+         321
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-2-L3",
+      "area_yd2": 714,
+      "p": 0.56,
+      "along": [
+       343,
+       378
+      ],
+      "gap_yd": 11.9,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -10,
+         378
+        ],
+        [
+         -3,
+         369
+        ],
+        [
+         -12,
+         364
+        ],
+        [
+         -7,
+         353
+        ],
+        [
+         -24,
+         343
+        ],
+        [
+         -31,
+         352
+        ],
+        [
+         -42,
+         348
+        ],
+        [
+         -46,
+         356
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-2-R1",
+      "area_yd2": 186,
+      "p": 0.59,
+      "along": [
+       131,
+       152
+      ],
+      "gap_yd": 75.3,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         56,
+         149
+        ],
+        [
+         66,
+         152
+        ],
+        [
+         70,
+         145
+        ],
+        [
+         70,
+         131
+        ],
+        [
+         64,
+         132
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-2-R2",
+      "area_yd2": 212,
+      "p": 0.56,
+      "along": [
+       137,
+       157
+      ],
+      "gap_yd": 64.1,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         55,
+         149
+        ],
+        [
+         37,
+         137
+        ],
+        [
+         31,
+         144
+        ],
+        [
+         48,
+         157
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "4": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-4-R1",
+      "area_yd2": 231,
+      "p": 0.71,
+      "along": [
+       149,
+       171
+      ],
+      "gap_yd": 30.4,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         24,
+         170
+        ],
+        [
+         27,
+         150
+        ],
+        [
+         16,
+         149
+        ],
+        [
+         13,
+         171
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "5": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "8": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-8-L1",
+      "area_yd2": 706,
+      "p": 0.57,
+      "along": [
+       151,
+       195
+      ],
+      "gap_yd": 12.8,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -18,
+         194
+        ],
+        [
+         -22,
+         151
+        ],
+        [
+         -33,
+         152
+        ],
+        [
+         -32,
+         163
+        ],
+        [
+         -43,
+         164
+        ],
+        [
+         -41,
+         185
+        ],
+        [
+         -29,
+         185
+        ],
+        [
+         -28,
+         195
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-8-L2",
+      "area_yd2": 305,
+      "p": 0.53,
+      "along": [
+       208,
+       230
+      ],
+      "gap_yd": 19.1,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -38,
+         229
+        ],
+        [
+         -38,
+         208
+        ],
+        [
+         -48,
+         208
+        ],
+        [
+         -48,
+         220
+        ],
+        [
+         -57,
+         220
+        ],
+        [
+         -58,
+         230
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-8-L3",
+      "area_yd2": 438,
+      "p": 0.63,
+      "along": [
+       232,
+       266
+      ],
+      "gap_yd": 11.8,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         266
+        ],
+        [
+         -54,
+         264
+        ],
+        [
+         -57,
+         232
+        ],
+        [
+         -66,
+         232
+        ],
+        [
+         -67,
+         244
+        ],
+        [
+         -70,
+         244
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "16": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "2": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "3": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "4": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "5": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "6": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "7": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "8": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "9": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "10": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "11": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "12": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "13": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "14": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "15": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "16": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "17": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "18": {
+   "Tour": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Championship": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Preferred": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  }
+ }
+}
