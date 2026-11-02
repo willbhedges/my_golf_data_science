@@ -1,6 +1,6 @@
-# Swope Memorial Golf Course (Kansas City, MO) - Blue tees
+# Swope Memorial Golf Course (Kansas City, MO) - Green tees
 
-Built 2026-11-02T03:11:41Z. OSM way/68196001. Scorecard: file (course_data/library/swope_memorial/card_review.json). Tee set: name.
+Built 2026-11-02T06:23:16Z. OSM way/68196001. Scorecard: file (course_data/library/swope_memorial/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -13,9 +13,9 @@ Built 2026-11-02T03:11:41Z. OSM way/68196001. Scorecard: file (course_data/libra
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.352 |
-| mean_confidence | 0.83 |
-| osm_score | 0.87 |
+| mean_landing_osm_share | 0.357 |
+| mean_confidence | 0.82 |
+| osm_score | 0.871 |
 
 OSM features inside the course: buildings 1, golf=bunker 42, golf=cartpath 8, golf=clubhouse 1, golf=fairway 21, golf=green 19, golf=hole 18, golf=pin 18, golf=tee 53, holes_with_par 18, tees_with_ref 50, trees_polygons 1
 
@@ -23,34 +23,34 @@ OSM features inside the course: buildings 1, golf=bunker 42, golf=cartpath 8, go
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 372 / 373 | 113 | 0.76 | check the flags | 30% | 11% | 58% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 2 | 4 | 317 / 316 | 172 | 0.75 | check the flags | 24% | 18% | 57% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 3 | 4 | 267 / 267 | 1 | 0.71 | check the flags | 18% | 2% | 79% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 4 | 4 | 368 / 369 | 286 | 0.81 | auto | 30% | 23% | 48% | tee stage: Blue tee_centroid |  |
-| 5 | 5 | 451 / 447 | 125 | 0.70 | check the flags | 30% | 20% | 50% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 451 yds) |
-| 6 | 3 | 172 / 172 | 191 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
-| 7 | 4 | 330 / 331 | 245 | 0.79 | check the flags | 28% | 15% | 57% | tee stage: Blue tee_centroid |  |
-| 8 | 3 | 167 / 167 | 68 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 9 | 5 | 477 / 472 | 317 | 0.80 | auto | 36% | 26% | 38% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 10 | 4 | 384 / 385 | 106 | 0.81 | auto | 34% | 35% | 31% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 11 | 4 | 361 / 361 | 154 | 0.81 | auto | 31% | 19% | 50% | tee stage: Blue tee_centroid |  |
-| 12 | 5 | 504 / 503 | 192 | 0.86 | auto | 60% | 6% | 34% | tee stage: Blue tee_centroid |  |
-| 13 | 3 | 235 / 235 | 1 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
-| 14 | 4 | 416 / 416 | 228 | 0.87 | auto | 70% | 11% | 18% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 15 | 4 | 349 / 350 | 81 | 0.83 | auto | 33% | 28% | 40% | tee stage: Blue tee_centroid |  |
-| 16 | 3 | 134 / 134 | 81 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
-| 17 | 5 | 566 / 565 | 2 | 0.82 | auto | 41% | 12% | 47% | tee stage: Blue tee_centroid |  |
-| 18 | 4 | 404 / 405 | 276 | 0.77 | check the flags | 27% | 21% | 52% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 1 | 4 | 390 / 391 | 98 | 0.77 | check the flags | 37% | 7% | 56% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 2 | 4 | 321 / 320 | 172 | 0.75 | check the flags | 26% | 15% | 59% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 3 | 4 | 339 / 338 | 245 | 0.77 | check the flags | 30% | 16% | 54% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 4 | 3 | 176 / 175 | 68 | 0.93 | auto | 100% | 0% | 0% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 5 | 5 | 475 / 470 | 317 | 0.80 | auto | 36% | 25% | 39% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 6 | 4 | 406 / 406 | 131 | 0.82 | auto | 30% | 23% | 47% | tee stage: Green tee_centroid |  |
+| 7 | 3 | 177 / 177 | 191 | 0.93 | auto | 100% | 0% | 0% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 8 | 4 | 273 / 273 | 1 | 0.74 | check the flags | 18% | 4% | 78% | tee stage: Green tee_centroid |  |
+| 9 | 4 | 371 / 372 | 286 | 0.79 | check the flags | 31% | 25% | 45% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 10 | 4 | 384 / 385 | 106 | 0.81 | auto | 34% | 35% | 31% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 11 | 4 | 375 / 370 | 154 | 0.79 | check the flags | 34% | 19% | 46% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 12 | 5 | 533 / 527 | 197 | 0.74 | check the flags | 55% | 6% | 40% | tee stage: Green lidar_pad | tee: tee stage: Green lidar_pad; Green tee on a lidar pad (no OSM box at 533 yds) |
+| 13 | 3 | 229 / 229 | 1 | 0.93 | auto | 100% | 0% | 0% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 14 | 4 | 426 / 421 | 228 | 0.87 | auto | 69% | 13% | 18% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 15 | 4 | 347 / 348 | 81 | 0.83 | auto | 32% | 29% | 39% | tee stage: Green tee_centroid |  |
+| 16 | 3 | 127 / 129 | 81 | 0.93 | auto | 100% | 0% | 0% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 17 | 5 | 562 / 562 | 2 | 0.79 | check the flags | 41% | 12% | 48% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 18 | 4 | 413 / 409 | 276 | 0.77 | check the flags | 28% | 22% | 51% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
 
 ## Stages
 
 - **resolve**: ok: way/68196001 Swope Memorial Golf Course (Kansas City, MO)
-- **osm**: ok: 253 features
+- **osm**: ok: 251 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: file (course_data/library/swope_memorial/card_review.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 46 candidate pads near hole starts
-- **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 46 candidate pads near hole starts
+- **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/swope_memorial/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020
 - **elevation**: ok: course_data/packages/swope_memorial/imagery/dem.tif (18/18 holes)
