@@ -1,0 +1,51 @@
+{
+ "schema": "request/1",
+ "kind": "package",
+ "course": "Weaver Ridge Golf Club",
+ "state": "IL",
+ "slug": "weaver_ridge",
+ "tees": "Black",
+ "allow_substitute": true,
+ "requested": "2026-11-02T12:50Z",
+ "note": "Package with committed imagery (NAIP + DEM + raw OSM) so the mapper agent can render its inputs. Same data fixes as the library build (library/weaver_ridge/package_request.json). Not a page rebuild.",
+ "town": "Peoria",
+ "scorecard": "course_data/library/weaver_ridge/card_review.json",
+ "tee_overrides": {
+  "5": {
+   "Black": [
+    40.7493811,
+    -89.6649398
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "5": {
+   "Black": 387
+  },
+  "11": {
+   "Gold": 482
+  },
+  "13": {
+   "Gold": 401
+  },
+  "14": {
+   "Black": 406
+  },
+  "16": {
+   "Black": 401,
+   "Gold": 401
+  },
+  "18": {
+   "Gold": 535
+  }
+ },
+ "par_overrides": {
+  "5": 4,
+  "11": 5,
+  "13": 4,
+  "14": 4,
+  "16": 4,
+  "18": 5
+ },
+ "by": "coordinator: mapper rollout"
+}

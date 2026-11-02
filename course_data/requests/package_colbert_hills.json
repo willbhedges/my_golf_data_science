@@ -1,0 +1,26 @@
+{
+ "schema": "request/1",
+ "kind": "package",
+ "course": "Colbert Hills Golf Course",
+ "state": "KS",
+ "slug": "colbert_hills",
+ "tees": "Black/Blue",
+ "allow_substitute": true,
+ "requested": "2026-11-02T12:50Z",
+ "note": "Package with committed imagery (NAIP + DEM + raw OSM) so the mapper agent can render its inputs. Same data fixes as the library build (library/colbert_hills/package_request.json). Not a page rebuild.",
+ "town": "Manhattan",
+ "tee_overrides": {
+  "1": {
+   "Black/Blue": [
+    39.2125916,
+    -96.6401564
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "1": {
+   "Black/Blue": 590
+  }
+ },
+ "by": "coordinator: mapper rollout"
+}

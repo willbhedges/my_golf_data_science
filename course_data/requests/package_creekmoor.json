@@ -1,0 +1,60 @@
+{
+ "schema": "request/1",
+ "kind": "package",
+ "course": "The Golf Club at Creekmoor",
+ "state": "MO",
+ "slug": "creekmoor",
+ "tees": "Black",
+ "allow_substitute": true,
+ "requested": "2026-11-02T12:50Z",
+ "note": "Package with committed imagery (NAIP + DEM + raw OSM) so the mapper agent can render its inputs. Same data fixes as the library build (library/creekmoor/package_request.json). Not a page rebuild.",
+ "town": "Raymore",
+ "osm_supplement": "course_data/library/creekmoor/osm_supplement.geojson",
+ "tee_overrides": {
+  "12": {
+   "Black": [
+    38.830722,
+    -94.4595875
+   ],
+   "Green": [
+    38.8309627,
+    -94.4591099
+   ]
+  },
+  "17": {
+   "Black": [
+    38.8341837,
+    -94.4688187
+   ],
+   "Green": [
+    38.8338655,
+    -94.4689806
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "12": {
+   "Black": 240,
+   "Green": 187
+  },
+  "17": {
+   "Black": 214,
+   "Green": 184
+  }
+ },
+ "par_overrides": {
+  "12": 3,
+  "17": 3
+ },
+ "green_overrides": {
+  "12": [
+   38.831805,
+   -94.457477
+  ],
+  "17": [
+   38.832484,
+   -94.468158
+  ]
+ },
+ "by": "coordinator: mapper rollout"
+}

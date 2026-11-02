@@ -1,0 +1,37 @@
+{
+ "schema": "request/1",
+ "kind": "package",
+ "course": "Hodge Park Golf Course",
+ "state": "MO",
+ "slug": "hodge_park",
+ "tees": "Black",
+ "allow_substitute": true,
+ "requested": "2026-11-02T12:50Z",
+ "note": "Package with committed imagery (NAIP + DEM + raw OSM) so the mapper agent can render its inputs. Same data fixes as the library build (library/hodge_park/package_request.json). Not a page rebuild.",
+ "town": "Kansas City",
+ "tee_overrides": {
+  "1": {
+   "White": [
+    39.2502504,
+    -94.496787
+   ]
+  },
+  "3": {
+   "Blue": [
+    39.2505438,
+    -94.4950675
+   ],
+   "White": [
+    39.2504091,
+    -94.4948952
+   ]
+  },
+  "17": {
+   "White": [
+    39.2557597,
+    -94.4907872
+   ]
+  }
+ },
+ "by": "coordinator: mapper rollout"
+}

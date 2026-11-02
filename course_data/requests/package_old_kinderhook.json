@@ -1,0 +1,73 @@
+{
+ "schema": "request/1",
+ "kind": "package",
+ "course": "Old Kinderhook Golf Club",
+ "state": "MO",
+ "slug": "old_kinderhook",
+ "tees": "Championship",
+ "allow_substitute": true,
+ "requested": "2026-11-02T12:50Z",
+ "note": "Package with committed imagery (NAIP + DEM + raw OSM) so the mapper agent can render its inputs. Same data fixes as the library build (library/old_kinderhook/package_request.json). Not a page rebuild.",
+ "town": "Camdenton",
+ "yardages": [
+  430,
+  386,
+  206,
+  432,
+  446,
+  344,
+  152,
+  416,
+  514,
+  423,
+  202,
+  408,
+  437,
+  559,
+  402,
+  206,
+  376,
+  516
+ ],
+ "pars": [
+  4,
+  4,
+  3,
+  4,
+  4,
+  4,
+  3,
+  4,
+  5,
+  4,
+  3,
+  4,
+  4,
+  5,
+  4,
+  3,
+  4,
+  5
+ ],
+ "osm_supplement": "course_data/library/old_kinderhook/osm_supplement.geojson",
+ "tee_overrides": {
+  "9": {
+   "Web": [
+    38.0073507,
+    -92.808971
+   ]
+  },
+  "15": {
+   "Web": [
+    38.0031769,
+    -92.8056077
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "15": {
+   "*": 402
+  }
+ },
+ "by": "coordinator: mapper rollout"
+}
