@@ -5651,6 +5651,41 @@
    "test_zones_valid_simple 18: AssertionError: 1/35 bad zones: #28 recovery: Self-intersection[-114.059407531078 36.8338828070822]"
   ]
  },
+ "mapper/jayhawk_club/base": {
+  "passed": 148,
+  "failed": 17,
+  "skipped": 0,
+  "holes": 10,
+  "fail_summary": [
+   "hole_count (1: pkg)",
+   "package_header (1: pkg)",
+   "zones_match_zones_ll (1: 7)",
+   "every_tee_set (6: 4-Black,4-Rust,5-Combo,5-Rust,6-Black,7-Black)",
+   "length_vs_card (2: 4,6)",
+   "tee_inside_course (1: 7)",
+   "tee_not_in_hazard (1: 7)",
+   "zones_valid_simple (4: 2,6,7,9)"
+  ],
+  "messages": [
+   "test_hole_count : AssertionError: 10 holes: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']",
+   "test_package_header : AssertionError: location mapper/jayhawk_club/base/package.json (ARCHITECTURE 9.2: packages/<slug>/package.json)",
+   "test_zones_match_zones_ll 7: AssertionError: zones vs zones_ll agree on only 98% of the 100-400 yd grid ([('ob->rough', 9)]); polygon counts zones_ll {'ob': 5, 'recovery': 5, 'fairway': 5, 'water': 1, 'sand': 3} vs zones {'ob': 5, 'recovery': 5, 'fa",
+   "test_every_tee_set 4-Black: AssertionError: length 539 vs card 208 (+159%)",
+   "test_every_tee_set 4-Rust: AssertionError: tee in 'ob'",
+   "test_every_tee_set 5-Combo: AssertionError: tee in 'water'",
+   "test_every_tee_set 5-Rust: AssertionError: tee in 'water'",
+   "test_every_tee_set 6-Black: AssertionError: length 371 vs card 444 (-17%)",
+   "test_every_tee_set 7-Black: AssertionError: tee in 'ob'",
+   "test_length_vs_card 4: AssertionError: tee->green 539 yds (along the hole line) vs card 208 (+159%)",
+   "test_length_vs_card 6: AssertionError: tee->green 371 yds (along the hole line) vs card 444 (-17%)",
+   "test_tee_inside_course 7: AssertionError: tee [-95.2984727, 38.956738] is 26 yds outside the course boundary",
+   "test_tee_not_in_hazard 7: AssertionError: tee [-95.2984727, 38.956738] sits in 'ob'",
+   "test_zones_valid_simple 2: AssertionError: 2/12 bad zones: #3 ob: Self-intersection[-95.2895951437986 38.9523222608269]; #4 ob: Self-intersection[-95.2893991798261 38.9525183905547]",
+   "test_zones_valid_simple 6: AssertionError: 1/31 bad zones: #25 water: Self-intersection[-95.2977839 38.9550315]",
+   "test_zones_valid_simple 7: AssertionError: 1/19 bad zones: #15 water: Ring Self-intersection[-95.2998639 38.9561105]",
+   "test_zones_valid_simple 9: AssertionError: 1/10 bad zones: #2 ob: Self-intersection[-95.2895700577814 38.9523627818498]"
+  ]
+ },
  "packages/amana_colonies": {
   "passed": 267,
   "failed": 26,
