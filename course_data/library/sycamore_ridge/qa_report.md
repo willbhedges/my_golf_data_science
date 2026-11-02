@@ -1,8 +1,8 @@
 # Sycamore Ridge Golf Club: automatic page QA
 
-**Status: needs confirm** — confirm holes 1, 9, 13, 18
+**Status: needs confirm** — confirm holes 9, 13, 18
 
-* page: `course_data/library/sycamore_ridge/page.html` (5.0 MB); request `course_data/requests/course_page_sycamore_ridge.json`; built 2026-11-02T06:05Z
+* page: `course_data/library/sycamore_ridge/page.html` (5.0 MB); request `course_data/requests/course_page_sycamore_ridge.json`; built 2026-11-02T11:04Z
 * course: Sycamore Ridge Golf Club (Spring Hill, KS), OSM way/151985223; holes: osm (tier mapped_card); card: course_data/library/sycamore_ridge/card_review.json (file)
 * solved tee sets: Black, Blue (tee sets of interest); page sets: Black, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [40, 50, 65] F; calm-day picks with 48 prior draws
@@ -11,7 +11,7 @@
 
 Course-level reasons:
 
-* 4 hole(s) with a CHECK
+* 3 hole(s) with a CHECK
 
 Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
@@ -19,7 +19,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | CHECK | 2-wood +20 (tie) | tee: tee marker not on an OSM tee box (tagged; 21 yds from the nearest OSM tee box); yardage: measured 425 vs card 467 (-42) |
+| 1 | 4 | PASS | Driver +8 |  |
 | 2 | 5 | PASS | Driver -28 |  |
 | 3 | 4 | PASS | 4-wood +0 |  |
 | 4 | 3 | PASS |  |  |
@@ -27,7 +27,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 6 | 4 | PASS | Driver -0 |  |
 | 7 | 5 | PASS | Driver -1 |  |
 | 8 | 3 | PASS |  |  |
-| 9 | 4 | CHECK | Driver +7 | tee: tee marker not on an OSM tee box (tagged; 5 yds from the nearest OSM tee box); yardage: measured 452 vs card 466 (-14) |
+| 9 | 4 | PASS | Driver +8 |  |
 | 10 | 4 | PASS | Driver +0 |  |
 | 11 | 5 | PASS | Driver +0 |  |
 | 12 | 3 | PASS |  |  |
@@ -36,13 +36,13 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 15 | 5 | PASS | Driver +12 |  |
 | 16 | 4 | PASS | Driver -12 |  |
 | 17 | 3 | PASS |  |  |
-| 18 | 5 | CHECK | Driver +40 (tie) | tee: tee marker not on an OSM tee box (tagged; 4 yds from the nearest OSM tee box) |
+| 18 | 5 | CHECK | Driver +58 | tee: tee marker not on an OSM tee box (tagged; 4 yds from the nearest OSM tee box) |
 
 ## Blue tees
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | CHECK | 4-wood +23 | yardage: measured 395 vs card 445 (-50) |
+| 1 | 4 | PASS | Driver +12 |  |
 | 2 | 5 | PASS | Driver -40 |  |
 | 3 | 4 | PASS | Driver -6 |  |
 | 4 | 3 | PASS |  |  |
@@ -59,5 +59,5 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 15 | 5 | PASS | Driver +8 |  |
 | 16 | 4 | PASS | Driver -12 (tie) |  |
 | 17 | 3 | PASS |  |  |
-| 18 | 5 | PASS | 4-wood +40 (tie) |  |
+| 18 | 5 | PASS | Driver +58 |  |
 
