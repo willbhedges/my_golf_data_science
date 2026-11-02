@@ -1,6 +1,6 @@
 # A. L. Gustin Golf Course (Columbia, MO) - Black tees
 
-Built 2026-10-30T04:07:28Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-01T20:38:15Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -13,9 +13,9 @@ Built 2026-10-30T04:07:28Z. OSM way/449108205. Scorecard: golfify (golfify). Tee
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.365 |
-| mean_confidence | 0.798 |
-| osm_score | 0.873 |
+| mean_landing_osm_share | 0.39 |
+| mean_confidence | 0.799 |
+| osm_score | 0.878 |
 
 OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, golf=clubhouse 1, golf=fairway 22, golf=green 19, golf=hole 18, golf=tee 52, golf=water_hazard 1, holes_with_par 18, trees_polygons 3, water_lines 5, water_polygons 1
 
@@ -33,11 +33,11 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 | 8 | 4 | 376 / 372 | 95 | 0.82 | auto | 50% | 17% | 33% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 9 | 4 | 338 / 338 | 44 | 0.74 | check the flags | 19% | 18% | 63% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 10 | 3 | 205 / 205 | 80 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 11 | 4 | 424 / 423 | 206 | 0.69 | check the flags | 34% | 10% | 56% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 424 yds) |
+| 11 | 4 | 424 / 416 | 206 | 0.70 | check the flags | 34% | 11% | 55% | tee stage: Black lidar_pad_capped | tee: tee stage: Black lidar_pad_capped; Black tee on a lidar pad (no OSM box at 424 yds) |
 | 12 | 5 | 518 / 515 | 180 | 0.81 | auto | 53% | 6% | 41% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 13 | 3 | 205 / 205 | 200 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 14 | 4 | 378 / 380 | 352 | 0.74 | check the flags | 47% | 16% | 36% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 378 yds) |
-| 15 | 4 | 467 / 467 | 47 | 0.65 | check the flags | 9% | 41% | 50% | tee stage: Black walkback | tee: tee stage: Black walkback; Black tee walked back along the hole line (no box at 467 yds) |
+| 15 | 4 | 399 / 396 | 62 | 0.66 | check the flags | 44% | 11% | 45% | tee stage: Black review (snapped 4 yds to OSM tee 591649550) | tee: tee stage: Black review (snapped 4 yds to OSM tee 591649550) |
 | 16 | 4 | 332 / 329 | 224 | 0.76 | check the flags | 30% | 16% | 55% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 17 | 4 | 405 / 405 | 39 | 0.82 | auto | 42% | 9% | 50% | tee stage: Black tee_centroid |  |
 | 18 | 4 | 378 / 377 | 4 | 0.74 | check the flags | 23% | 13% | 64% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
@@ -46,9 +46,11 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 
 - **resolve**: ok: way/449108205 A. L. Gustin Golf Course (Columbia, MO)
 - **osm**: ok: 444 features
+- **card_overrides**: ok: 1 review fix(es): hole 15 Black: card 467 -> 399 yds (review)
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tee_overrides**: ok: Black 15 review (snapped 4 yds to OSM tee 591649550);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 47 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/gustin/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
@@ -57,3 +59,7 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 8 polygons (outside 8); mode replace
+
+## Warnings
+
+- hole 11 Black: CHECK, tee was on a road (OSM 278117436): moved 7 yds forward off it

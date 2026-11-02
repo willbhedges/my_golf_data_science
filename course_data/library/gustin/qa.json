@@ -26,12 +26,12 @@
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 6% trees / water / OB (recovery 6%)"
+       "why": "landing pattern 7% trees / water / OB (recovery 7%)"
       }
      },
      "pick": {
       "club": "Driver",
-      "aim": 4.0,
+      "aim": 3.5,
       "along": 293.9,
       "lie": "fairway",
       "tie": false
@@ -89,16 +89,16 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver +17 lands 306 yds out in fairway"
+       "why": "Driver +16 lands 306 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 5% trees / water / OB (recovery 5%)"
+       "why": "landing pattern 6% trees / water / OB (recovery 6%)"
       }
      },
      "pick": {
       "club": "Driver",
-      "aim": 17.0,
+      "aim": 16.5,
       "along": 305.5,
       "lie": "fairway",
       "tie": false
@@ -296,7 +296,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -6 lands 305 yds out in fairway"
+       "why": "Driver -4 lands 305 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -305,7 +305,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -5.5,
+      "aim": -4.5,
       "along": 304.7,
       "lie": "fairway",
       "tie": false
@@ -351,11 +351,11 @@
      "checks": {
       "tee": {
        "ok": false,
-       "why": "tee marker not on an OSM tee box (lidar_pad; 13 yds from the nearest OSM tee box)"
+       "why": "tee marker not on an OSM tee box (lidar_pad_capped; 11 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 423 vs card 424 (-1)"
+       "why": "measured 416 vs card 424 (-8)"
       },
       "par": {
        "ok": true,
@@ -363,7 +363,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "4-wood +4 lands 261 yds out in fairway"
+       "why": "4-wood +4 lands 262 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -372,14 +372,14 @@
      },
      "pick": {
       "club": "4-wood",
-      "aim": 4.0,
-      "along": 261.3,
+      "aim": 3.5,
+      "along": 262.3,
       "lie": "fairway",
       "tie": true
      },
      "status": "CHECK",
      "reasons": [
-      "tee: tee marker not on an OSM tee box (lidar_pad; 13 yds from the nearest OSM tee box)"
+      "tee: tee marker not on an OSM tee box (lidar_pad_capped; 11 yds from the nearest OSM tee box)"
      ]
     },
     "12": {
@@ -489,12 +489,12 @@
      "par": 4,
      "checks": {
       "tee": {
-       "ok": false,
-       "why": "tee marker not on an OSM tee box (walkback; 41 yds from the nearest OSM tee box)"
+       "ok": true,
+       "why": "on an OSM tee box"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 467 vs card 467 (+0)"
+       "why": "measured 396 vs card 399 (-3)"
       },
       "par": {
        "ok": true,
@@ -502,24 +502,22 @@
       },
       "aim": {
        "ok": true,
-       "why": "Long iron -27 lands 233 yds out in rough (5 yds from fairway)"
+       "why": "2-wood -30 lands 273 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 0% trees / water / OB (none)"
+       "why": "landing pattern 7% trees / water / OB (recovery 7%)"
       }
      },
      "pick": {
-      "club": "Long iron",
-      "aim": -27.0,
-      "along": 232.8,
-      "lie": "rough",
+      "club": "2-wood",
+      "aim": -30.5,
+      "along": 272.7,
+      "lie": "fairway",
       "tie": true
      },
-     "status": "CHECK",
-     "reasons": [
-      "tee: tee marker not on an OSM tee box (walkback; 41 yds from the nearest OSM tee box)"
-     ]
+     "status": "PASS",
+     "reasons": []
     },
     "16": {
      "par": 4,
@@ -572,7 +570,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver +20 lands 292 yds out in fairway"
+       "why": "Driver +19 lands 292 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -581,7 +579,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": 19.5,
+      "aim": 19.0,
       "along": 291.5,
       "lie": "fairway",
       "tie": false
@@ -757,7 +755,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver +3 lands 294 yds out in fairway"
+       "why": "Driver +2 lands 294 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -766,7 +764,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": 3.0,
+      "aim": 2.5,
       "along": 294.3,
       "lie": "fairway",
       "tie": false
@@ -823,23 +821,25 @@
        "why": "par 4 vs card 4"
       },
       "aim": {
-       "ok": true,
-       "why": "Long iron -3 lands 247 yds out in fairway"
+       "ok": false,
+       "why": "4-wood -40 lands 303 yds out in recovery (10 yds from fairway)"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 0% trees / water / OB (none)"
+       "why": "landing pattern 32% trees / water / OB (recovery 32%)"
       }
      },
      "pick": {
-      "club": "Long iron",
-      "aim": -3.0,
-      "along": 246.7,
-      "lie": "fairway",
-      "tie": true
+      "club": "4-wood",
+      "aim": -40.0,
+      "along": 302.7,
+      "lie": "recovery",
+      "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "aim: 4-wood -40 lands 303 yds out in recovery (10 yds from fairway)"
+     ]
     },
     "7": {
      "par": 4,
@@ -858,7 +858,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "2-wood -40 lands 262 yds out in rough (1 yds from fairway)"
+       "why": "2-wood -40 lands 262 yds out in rough (2 yds from fairway)"
       },
       "oval": {
        "ok": true,
@@ -867,7 +867,7 @@
      },
      "pick": {
       "club": "2-wood",
-      "aim": -40.0,
+      "aim": -39.5,
       "along": 262.2,
       "lie": "rough",
       "tie": false
@@ -901,7 +901,7 @@
      },
      "pick": {
       "club": "4-wood",
-      "aim": 8.0,
+      "aim": 7.5,
       "along": 245.6,
       "lie": "fairway",
       "tie": true
@@ -925,8 +925,8 @@
        "why": "par 4 vs card 4"
       },
       "aim": {
-       "ok": true,
-       "why": "Driver -15 lands 304 yds out in rough (4 yds from fairway)"
+       "ok": false,
+       "why": "Driver -14 lands 304 yds out in sand (4 yds from fairway)"
       },
       "oval": {
        "ok": true,
@@ -935,13 +935,15 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -15.0,
+      "aim": -14.5,
       "along": 303.5,
-      "lie": "rough",
+      "lie": "sand",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "aim: Driver -14 lands 304 yds out in sand (4 yds from fairway)"
+     ]
     },
     "10": {
      "par": 3,
@@ -1027,7 +1029,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver +13 lands 320 yds out in fairway"
+       "why": "Driver +12 lands 320 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -1036,7 +1038,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": 13.0,
+      "aim": 12.5,
       "along": 319.6,
       "lie": "fairway",
       "tie": false
@@ -1094,7 +1096,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -16 lands 291 yds out in fairway"
+       "why": "Driver -16 lands 291 yds out in rough (0 yds from fairway)"
       },
       "oval": {
        "ok": true,
@@ -1103,9 +1105,9 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -16.5,
+      "aim": -16.0,
       "along": 290.6,
-      "lie": "fairway",
+      "lie": "rough",
       "tie": false
      },
      "status": "CHECK",
@@ -1118,11 +1120,11 @@
      "checks": {
       "tee": {
        "ok": true,
-       "why": "1 yds from the nearest OSM tee box"
+       "why": "on an OSM tee box"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 345 vs card 350 (-5)"
+       "why": "measured 401 vs card 401 (+0)"
       },
       "par": {
        "ok": true,
@@ -1130,19 +1132,19 @@
       },
       "aim": {
        "ok": true,
-       "why": "4-wood +22 lands 244 yds out in fairway"
+       "why": "2-wood -26 lands 273 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 2% trees / water / OB (recovery 2%)"
+       "why": "landing pattern 6% trees / water / OB (recovery 6%)"
       }
      },
      "pick": {
-      "club": "4-wood",
-      "aim": 22.5,
-      "along": 244.4,
+      "club": "2-wood",
+      "aim": -25.5,
+      "along": 273.3,
       "lie": "fairway",
-      "tie": false
+      "tie": true
      },
      "status": "PASS",
      "reasons": []
@@ -1164,7 +1166,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Long iron +17 lands 233 yds out in fairway"
+       "why": "Long iron +16 lands 233 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -1173,7 +1175,7 @@
      },
      "pick": {
       "club": "Long iron",
-      "aim": 17.0,
+      "aim": 16.5,
       "along": 233.3,
       "lie": "fairway",
       "tie": false
@@ -1207,7 +1209,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": 24.0,
+      "aim": 23.5,
       "along": 287.9,
       "lie": "fairway",
       "tie": false
