@@ -105,6 +105,19 @@ COURSES = [
          package="course_data/library/colbert_hills/package.json",
          truth="course_data/zero_tap/truth_sets/colbert_hills/holes_truth.json"),
 ]
+TRUTH_V2 = os.path.join(CD, "truth_sets_v2")
+
+
+def courses_v2():
+    """Held-out set (--set v2): every course_data/truth_sets_v2 course with holes_truth.json + hand_zones_ll.json,
+    scored on its corridor set (the set whose par-4/5 tee shots are traced). Never used to tune the build."""
+    idx = rj(os.path.join(TRUTH_V2, "index.json"), {}).get("courses", {})
+    return [dict(slug=s, tees=m["corridor_set"], kind="truth_v2") for s, m in idx.items()
+            if os.path.exists(os.path.join(TRUTH_V2, s, "holes_truth.json"))
+            and os.path.exists(os.path.join(TRUTH_V2, s, "hand_zones_ll.json"))]
+
+
+SETS = {"v1": lambda: COURSES, "v2": courses_v2}
 NOT_SCORED = {"mozingo_lake": "hand map in screenshot pixels (mozingo/tee_strategy.HOLES), no WGS84 registration"}
 
 
@@ -292,16 +305,23 @@ def truth_holes(cfg):
     hand (corridor map: footprint + zones in traced order), extra (zones on top), known_full ({lie: [rings]})."""
     S = cfg["tees"]
     out = {}
-    if cfg["kind"] == "holes_truth":
-        T = rj(os.path.join(CD, "truth", cfg["slug"], "holes_truth.json"))
-        HZ = (rj(os.path.join(CD, "truth", cfg["slug"], "hand_zones_ll.json")) or {}).get("holes", {})
+    if cfg["kind"] in ("holes_truth", "truth_v2"):
+        if cfg["kind"] == "truth_v2":            # truth_sets_v2: the same files / rule as truth_sets.truth_package
+            if TRUTH_V2 not in sys.path:
+                sys.path.insert(0, TRUTH_V2)
+            import truth_sets as TS
+            T, HZ = TS.load(cfg["slug"])
+        else:
+            T = rj(os.path.join(CD, "truth", cfg["slug"], "holes_truth.json"))
+            HZ = (rj(os.path.join(CD, "truth", cfg["slug"], "hand_zones_ll.json")) or {}).get("holes", {})
         for ref, th in T["holes"].items():
             m = HZ.get(ref)
             out[ref] = dict(par=int(th["par"]), yards={k: v for k, v in (th.get("card") or {}).items()},
                             line=th.get("hole_line_ll"), green_ll=th["green_ll"], green_poly=th.get("green_poly_ll"),
                             tee_ll=(th.get("tees") or {}).get(S),
                             hand=dict(footprint=m["footprint_ll"], zones=m["zones"]) if m else None,
-                            extra=th.get("extra_zones") or [])
+                            extra=th.get("extra_zones") or [],
+                            tee_method=(th.get("tee_method") or {}).get(S))
     elif cfg["kind"] == "corridor":
         HZ = rj(os.path.join(CD, "truth", cfg["slug"], "hand_zones_ll.json"))["holes"]
         for ref, m in HZ.items():
@@ -665,6 +685,8 @@ def score_course(cfg, n, workers, cache):
         row = dict(hole=ref, truth=dict(pick=tr["pick"], aim=round(tr["aim"], 1), ev=round(tr["ev"], 4),
                                         runner=tr["runner"], margin=round(tr["margin"], 4), tie=tr["margin"] < TIE),
                    configs={})
+        if truth[ref].get("tee_method"):
+            row["tee_method"] = truth[ref]["tee_method"]
         for name, (C, holes, layers) in built.items():
             if k not in holes:
                 row["configs"][name] = dict(pick=None, aim=0.0, match=False, club=False, same_or_tie=False,
@@ -868,6 +890,51 @@ def report(res):
     return "\n".join(L) + "\n"
 
 
+def tee_err_summary(courses):
+    """Auto tee error (yds) on the scored set, only where the truth tee is a measured box (tee_method not
+    'estimated': those were moved along the line to the card length, so they are partly the build's own rule)."""
+    out = {}
+    for c in courses:
+        if "rows" not in c:
+            continue
+        e = [r["geo"]["tee_err"] for r in c["rows"] if r["geo"].get("tee_err") is not None
+             and not str(r.get("tee_method") or "").startswith("estimated")]
+        n_est = sum(str(r.get("tee_method") or "").startswith("estimated") for r in c["rows"])
+        out[c["slug"]] = dict(n=len(e), estimated_skipped=n_est, median=round(float(np.median(e)), 1) if e else None,
+                              within_10=sum(x <= 10 for x in e), errs=e)
+    allv = [x for v in out.values() for x in v["errs"]]
+    out["_pooled"] = dict(n=len(allv), estimated_skipped=sum(v["estimated_skipped"] for v in out.values()),
+                          median=round(float(np.median(allv)), 1) if allv else None, within_10=sum(x <= 10 for x in allv))
+    return out
+
+
+def heldout_report(res):
+    """Markdown tables of a held-out run (per course, pooled, per layer; reference ties flagged)."""
+    courses = [c for c in res["courses"] if "rows" in c]
+    S = res.get("summary") or summarise(courses)
+    TE = res.get("tee_err") or tee_err_summary(courses)
+    pc = lambda a, b: f"{100 * a / max(b, 1):.0f}%"
+    L = ["| course | set | tee shots | match | same club | same club or tie | regret | ref ties | "
+         "tee err median (measured tees, n) | misses fixed by (layer: n) |", "|---|---|---|---|---|---|---|---|---|---|"]
+    for c in res["courses"]:
+        if "rows" not in c:
+            L.append(f"| {c['slug']} | | | | | | | | | {c.get('error')} |")
+            continue
+        s = summarise([c])
+        fx = {Ly: s["layers"][f"+{Ly}"]["fixed"] for Ly in LAYERS if s["layers"][f"+{Ly}"]["fixed"]}
+        te = TE.get(c["slug"], {})
+        L.append(f"| {c['slug']} | {c['tees']} | {s['holes']} | {s['auto_match']} ({pc(s['auto_match'], s['holes'])}) | "
+                 f"{s['auto_club']} | {s['auto_same_or_tie']} | {s['auto_regret']} | {s['ref_ties']} | "
+                 f"{te.get('median')} ({te.get('n')}) | "
+                 f"{', '.join(f'{k}: {v}' for k, v in sorted(fx.items(), key=lambda kv: -kv[1])) or '-'} |")
+    te = TE["_pooled"]
+    L.append(f"| **pooled** | | {S['holes']} | **{S['auto_match']} ({pc(S['auto_match'], S['holes'])})** | "
+             f"{S['auto_club']} ({pc(S['auto_club'], S['holes'])}) | {S['auto_same_or_tie']} | {S['auto_regret']} | "
+             f"{S['ref_ties']} | {te['median']} ({te['n']}; {te['within_10']} within 10) | |")
+    L += [""] + table(S, "Layer table (held-out, pooled)")
+    return "\n".join(L)
+
+
 KEEP_MARK = "<!-- hand-written follow-ups below: kept by --report / re-runs -->"
 
 
@@ -893,9 +960,16 @@ def main():
     ap.add_argument("--auto-dir", help="auto packages from <dir>/<slug>/package.json (platform/rebuild_tees_trees.py)")
     ap.add_argument("--out", help="result json (default error_budget.json; the .md is written next to it)")
     ap.add_argument("--cache", help="decision cache json (default error_budget_cache.json)")
+    ap.add_argument("--set", default="v1", choices=sorted(SETS),
+                    help="v1 = the original COURSES (default); v2 = held-out truth_sets_v2 (json only, no .md)")
     ap.add_argument("--configs", help="only these configurations, e.g. +tees,+trees (writes the json, no tables)")
     a = ap.parse_args()
     global AUTO_DIR, OUT_JSON, OUT_MD, CACHE_JSON, ONLY
+    course_list = SETS[a.set]()
+    if a.set != "v1" and not a.out:
+        OUT_JSON = os.path.join(HERE, f"error_budget_{a.set}.json")
+        if not a.cache:
+            CACHE_JSON = os.path.join(HERE, f"error_budget_{a.set}_cache.json")
     if a.configs:
         ONLY = set(a.configs.split(","))
     if a.cache:
@@ -905,6 +979,9 @@ def main():
     if a.out:
         OUT_JSON = os.path.abspath(a.out)
         OUT_MD = os.path.splitext(OUT_JSON)[0] + ".md"
+    if a.report and a.set != "v1":
+        print(heldout_report(rj(OUT_JSON)))
+        return
     if a.report:
         res = rj(OUT_JSON)
         res["summary"] = summarise(res["courses"], NO_CARD)
@@ -916,7 +993,7 @@ def main():
     cache = rj(CACHE_JSON, {}) or {}
     old = rj(OUT_JSON) or {}
     prev = {c["slug"]: c for c in old.get("courses", []) if old.get("n") == a.n}
-    for cfg in COURSES:
+    for cfg in course_list:
         if want and cfg["slug"] not in want:
             continue
         t0 = time.time()
@@ -932,12 +1009,20 @@ def main():
         if "rows" in c:
             print(f"  {cfg['slug']}: auto match {sum(r['configs']['auto']['match'] for r in c['rows'])}/{len(c['rows'])} "
                   f"({time.time() - t0:.0f} s)", flush=True)
-    order = [c["slug"] for c in COURSES]
+    order = [c["slug"] for c in course_list]
     courses = [prev[s] for s in order if s in prev]
     res = dict(schema="error_budget/1", made_utc=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%MZ"), n=a.n,
                aim_tol=AIM_TOL, tie=TIE, layers=LAYERS, groups=GROUPS, not_scored=NOT_SCORED, courses=courses)
+    res["set"] = a.set
     if ONLY:
         json.dump(res, open(OUT_JSON, "w"), indent=1, default=float)
+        return
+    if a.set != "v1":                            # held-out set: summaries in the json, tables printed (no .md)
+        res["summary"] = summarise(courses)
+        res["per_course"] = {c["slug"]: summarise([c]) for c in courses if "rows" in c}
+        res["tee_err"] = tee_err_summary(courses)
+        json.dump(res, open(OUT_JSON, "w"), indent=1, default=float)
+        print(heldout_report(res))
         return
     res["summary"] = summarise(courses, NO_CARD)
     res["summary_all"] = summarise(courses)

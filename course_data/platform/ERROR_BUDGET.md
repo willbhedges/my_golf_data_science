@@ -269,3 +269,113 @@ Leave-one-course-out on the 4 independent courses (corridor IoU at the band the 
 **Not adopted.** The band brings the layer closer to the hand map on the two narrow-OSM courses but moves none of the plans the hand fairway fixes: Spirit Hollow 1 (regret 0.46 -> 0.42, hand 0.14), 6 (0.13 -> 0.13, hand 0.004), Ellis 13, 18, Coldwater 9, 10 keep their picks. Those gains come from the fairway's shape on one side (Spirit Hollow 1 / 6 / 13: 2,000-4,900 sq yds missing on the left; Ellis 13: 15 yds right; Coldwater 10: 2,700 sq yds extra on the right), not a uniform width. The band instead nudges aims across the 10-yd line on holes that were right (Ellis 6 aim +2.5 -> +5, Spirit Hollow 9, Coldwater 7) and on Spirit Hollow 14 turns 2-wood into the truth's 4-wood but at an aim 40 yds left (regret 0.03 -> 0.11). As first cut it is worse (Pine Dunes 10, 11, 17 break at 2.4 yds). With the new tees the band breaks 6 and fixes 2 (Pine Dunes 5, Spirit Hollow 13); with tees + trees +1 m it breaks 6 and fixes 0, so no error cancellation in favour of the band: the narrow OSM fairway and the short tree edge are not offsetting each other in the corridors the band touches. The packages keep the OSM fairway as mapped (`--fw-*` is off by default; nothing in the build calls `fairway_band`).
 
 What would move it (not done here): a per-side fairway outline (the score map along each side of the hole line, with lidar smoothness / mowing-pattern texture at 0.3-0.6 m rather than the 1 m stack); a "fairway too wide" test for Coldwater-like courses (the band only widens); a vision fairway where OSM has none (National KC 3, 9, 11; Hot Springs, whose hand map has no fairway to score against); and more independent fairway truth: today 4 courses / 55 corridors, so any calibration is thin. Fixed on the way: `platform/package.par3_haz` crashed on a `first_cut` zone (KeyError).
+
+## Held-out truth set v2 (2026-11-02)
+
+The 9 `course_data/truth_sets_v2` courses (Tomahawk Hills, L.A. Nickell, Buffalo Ridge, Rivercut, Gustin, Amana
+Colonies, Osage National, Annbriar, Wakonda) were never used to choose anything (the tee rule, tree buffer and
+long-grass decision were all set on the original 10-11 courses), so this is a held-out check of the whole automatic
+build. Same harness, same scoring: `python3 course_data/platform/error_budget.py --set v2 --n 4000` (truth = the
+`truth_sets_v2` files through `truth_sets.load`, the same layers `truth_sets.truth_package` puts in; the test
+`test_heldout_set_v2_matches_truth_sets_package` checks tee, green, par and hand zones agree), n = 4000, seed 31 for
+every configuration (common random numbers), corridor tee set per course, all 26 configurations.
+`--set v1` (the default) is unchanged. Results: `error_budget_v2.json` (committed packages, full table),
+`error_budget_v2_tees.json` and `error_budget_v2_tees_trees.json` (layers rebuilt offline, configs auto / truth /
++-tees / +-trees), cache `error_budget_v2_cache.json`.
+
+**Auto builds.** The committed packages (Actions run 41369057286) mostly predate 3f1a201d: re-teeing them with
+`rebuild_tees_trees.py --set v2 --layers tees` moves 8 corridor-set tees by 1-23 yds (Tomahawk Hills has no OSM
+golf=hole ways, so its tees cannot be rebuilt offline and stay as built). **7 of the 9 packages have no tree layer
+at all**: stage `vision` reads "missing: no vision_any layers ... raw (not fetched)" (only Wakonda has vision_any/2,
+Tomahawk Hills the old vision_any/1). The lidar stacks arrived later (the truth runs, ebcd6e61), so the third
+variant re-makes the vision_any/2 trees from them exactly as the build would (`--layers tees,trees`, buffer -1 m;
+on Wakonda it reproduces the committed 356 tree zones and rows).
+
+| auto build (123 par-4/5 tee shots, 9 courses) | match | same club | same club or tie | regret (strokes) |
+|---|---|---|---|---|
+| committed packages | 81 (66%) | 91 (74%) | 100 | 3.021 |
+| + tees re-built with the 3f1a201d rule | 85 (69%) | 92 (75%) | 101 | 2.930 |
+| **+ tees and vision_any/2 trees (what a build with the lidar stack gives)** | **94 (76%)** | **98 (80%)** | 106 | **2.010** |
+| original set for comparison: 138 shots, 10 card courses, before / after the tee rule | 102 (74%) / 105 (76%) | 123 (89%) / 122 | 129 / 128 | 2.654 / 2.672 |
+
+**The 74-76 % is confirmed on new courses, but only when the build has its tree layer.** Committed-as-is the
+held-out rate is 66 %; with the tees and trees the build makes when its inputs are present it is 76 % (13 holes
+fixed, 0 broken), regret 0.016 strokes per shot (original 0.019). Same club is lower than the original set (80 % vs
+89 %): 25 of the 29 remaining misses are a different club, 17 of them Driver vs 4-wood. On the tees whose truth is a measured box
+(pad / hand, 69 shots) the best build matches 52 (75 %); on the 54 "estimated" tees 42 (78 %).
+
+Per course (committed / + tees / + tees and trees; regret is the committed and the best build):
+
+| course | set | tee shots | match | same club | regret | ref ties | auto tee err, median yds (measured truth tees, n) | committed misses fixed by (+layer: n) |
+|---|---|---|---|---|---|---|---|---|
+| tomahawk_hills | Blue | 12 | 9 / 9 / 9 | 10 / 10 / 9 | 0.088 / 0.073 | 1 | 6.8 (6) | tees 2 |
+| la_nickell | Blue | 14 | 6 / 8 / 10 | 9 / 9 / 10 | 0.453 / 0.138 | 0 | 4.0 (4) | trees 4, tees 3 |
+| buffalo_ridge | Buffalo | 13 | 10 / 11 / 11 | 11 / 11 / 11 | 0.077 / 0.050 | 3 | 2.3 (7) | trees 2, tees 1 |
+| rivercut | Black | 14 | 11 / 11 / 12 | 11 / 11 / 12 | 0.200 / 0.124 | 0 | 6.0 (10) | trees 2, ob 1 |
+| gustin | Black | 14 | 6 / 6 / 8 | 8 / 8 / 10 | 0.919 / 0.642 | 1 | **34.8** (6) | trees 5, routing 1, tees 1, ob 1 |
+| amana_colonies | Black | 14 | 7 / 8 / 12 | 8 / 9 / 12 | 0.340 / 0.044 | 3 | 3.8 (7) | trees 6, tees 1 |
+| osage_national | Palmer | 14 | 11 / 11 / 11 | 12 / 12 / 12 | 0.302 / 0.211 | 3 | 5.2 (8) | tees 2, trees 1 |
+| annbriar | Black | 14 | 10 / 10 / 10 | 11 / 11 / 11 | 0.330 / 0.417 | 2 | 2.7 (11) | long_grass 4 |
+| wakonda | Blue | 14 | 11 / 11 / 11 | 11 / 11 / 11 | 0.312 / 0.312 | 1 | 5.1 (10) | water 2, trees 1, elevation 1 |
+| **pooled** | | **123** | **81 / 85 / 94** | **91 / 92 / 98** | **3.021 / 2.010** | 14 | 4.8 (69; 57 within 10 yds) | |
+
+Tee error skips the 54 tees whose truth `tee_method` is "estimated" (moved along the line to the card length; that is
+close to what the 3f1a201d rule does, so they cannot judge it: all of the re-tee gains, La Nickell 5 and 7, Buffalo
+Ridge 1, Amana 14, are on estimated tees). Gustin: 15 (72 yds; CHECK.md: card 467 not on the ground), 18 (43) and
+6 (28) are a wrong box. Osage National: low currency (2025-26 renovation of Mountain + River after the 2016 photo /
+2017 lidar; truth and auto use the same old imagery, so the renovation is not in either); 3 (52 yds: card 370 not
+on the ground, 41 yds back is the parking lot) and 5 (71) are its tee misses.
+
+**Layer table, committed packages** (pooled, 123 shots, 42 misses, 14 reference ties among all holes):
+
+| layer | misses fixed (+layer) | of them not a reference tie | share of misses | new misses it causes | regret with +layer | holes wrong with -layer | regret with -layer |
+|---|---|---|---|---|---|---|---|
+| *none (auto)* | | | | | 3.021 | 42 | |
+| card | 0 | 0 | 0% | 0 | 3.021 | 0 | 0.0 |
+| routing | 1 | 1 | 2% | 0 | 3.107 | 0 | 0.05 |
+| tees | 10 | 9 | 24% | 3 | 2.776 | 11 | 0.964 |
+| greens | 0 | 0 | 0% | 0 | 3.064 | 1 | 0.0 |
+| fairway | 0 | 0 | 0% | 0 | 3.073 | 0 | 0.0 |
+| **trees** | **21** | **17** | **50%** | 0 | **1.421** | 29 | 1.817 |
+| water | 2 | 2 | 5% | 0 | 2.829 | 1 | 0.114 |
+| ob | 2 | 2 | 5% | 1 | 2.862 | 3 | 0.128 |
+| long_grass | 4 | 3 | 10% | 0 | 2.703 | 3 | 0.313 |
+| bunkers | 0 | 0 | 0% | 0 | 3.014 | 0 | 0.004 |
+| elevation | 1 | 1 | 2% | 0 | 3.076 | 5 | 0.106 |
+| *group frame* | 9 | 8 | 21% | 3 | 2.751 | | |
+| *group hazards* | 29 | 24 | 69% | 1 | 0.897 | | |
+
+Residual: 5 of 42 misses no single layer fixes (Tomahawk Hills 12, La Nickell 2 and 16, Gustin 11 and 15); the groups
+fix La Nickell 16 and Gustin 11. Reference ties among the misses: Tomahawk Hills 4, Buffalo Ridge 10, Amana 9 and
+12, Osage 6, Annbriar 2.
+
+With tees and trees rebuilt (29 misses left, 5 of them reference ties): +trees (hand) 94 -> 106 (regret 2.01 ->
+1.42), +tees 94 -> 97 (1.65); truth with only the auto trees is wrong on 16 holes (with only the rebuilt auto tees: 7, in the
+tees-only run). The remaining tree gap is the -1 m edge: median tree area the hand map has and the auto lacks
+per corridor 883 sq yds (committed: 2198, i.e. no trees; original set: 677).
+
+**Layer ranking vs the original set (tees 42 %, long grass 25 %, trees 14 %, fairway 11 %).**
+1. **Trees first here (50 % of misses, 53 % of regret), because the build had none.** After the build's own tree
+   layer is put back, hand trees still fix the most (12 of 29), ahead of tees (3): same direction as the original
+   set's tree-edge finding (the -1 m edge is short; `v2_treeline_handcal.md`), stronger here.
+2. **Tees second** (24 %, regret only 0.25 of 3.02), as in the original set: a tee error moves the aim, rarely the
+   club. Most of the gain from the 3f1a201d rule is on estimated truth tees (see above), so it is not independent.
+3. **Long grass is small (10 %)** because only Annbriar has traced native prairie (all 4 fixes are Annbriar 2, 3, 8,
+   9); Buffalo Ridge's long grass was not traced (index.json) and the other courses are parkland. Not a contradiction
+   of the original 64 % of regret, which came from links / prairie courses (Gateway, Spirit Hollow, Coldwater).
+4. **Fairway 0 % is by construction**: the v2 traces start from the OSM fairway (`trace.py auto(..., fairway=True)`,
+   corrected only where visibly wrong; the fairway section above measures IoU 0.999), so this set cannot test the
+   fairway layer. Water (Wakonda 5, 7) and OB (Rivercut 11, Gustin 12) 2 each.
+
+**Pipeline finding (not fixed here; for the coordinator).** A course built by `course_package.yml` from a name gets no
+tree layer unless `vision_any/<slug>/raw` is already in the repo (the stage tells you to add the course to
+`vision_any/courses.txt` for `vision_any.yml`). On this held-out set that alone costs 9 matches and 0.9 strokes of
+regret over 123 shots: the largest single item. "Name any course" needs the lidar / NAIP stack fetch (and the
+vision_any/2 trees) inside the package build, or a build that waits for it.
+
+Honesty notes: the tree truth on these courses also starts from the 3DEP canopy > 2.5 m (`trace.py`, checked and
+corrected on NAIP), the same lidar the auto trees use with a -1 m buffer, so the tree comparison is not fully
+independent (the edge convention, not the detection, is what's measured once the trees are in). The auto + trees
+variant also changes the truth's lies outside the traced footprint (auto zones kept there), so its truth plans can
+differ slightly from the committed run's. The full 26-configuration table was run only on the committed packages.
+Tomahawk Hills' tees were not rebuilt (no OSM hole ways offline). Not checked against newer imagery for Osage.

@@ -75,7 +75,10 @@ def tee_positions(pkg, pkg_dir, slug):
 
 
 def retee(pkg, pkg_dir, slug):
-    pos = tee_positions(pkg, pkg_dir, slug)
+    try:
+        pos = tee_positions(pkg, pkg_dir, slug)
+    except RuntimeError as e:                 # e.g. "no hole lines": OSM has no golf=hole ways (routed build)
+        return pkg, f"tees kept ({e})"
     if pos is None:
         return pkg, "tees kept (no raw/osm.geojson)"
     sys.path.insert(0, os.path.join(CD, "tees"))
@@ -95,7 +98,8 @@ def tree_fc(vslug, k):
     import v2_model as VM
     from shapely.geometry import mapping
     from shapely.ops import transform
-    cur = json.load(open(os.path.join(vd, vslug, "vision_any.geojson")))
+    cp = os.path.join(vd, vslug, "vision_any.geojson")      # absent when the build had no raw stack (no vision layer)
+    cur = json.load(open(cp)) if os.path.exists(cp) else dict(type="FeatureCollection", features=[], properties={})
     tb = json.load(open(os.path.join(vd, "model_v2", "model.json")))["settings"]["trees"]
     cdir = RA.course_dir_for(vslug)
     S = L.Stack.load(vslug, cdir)
@@ -165,6 +169,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--layers", default="tees,trees")
     ap.add_argument("--courses")
+    ap.add_argument("--set", default="v1", choices=sorted(E.SETS), help="course list (error_budget.py --set)")
     ap.add_argument("--k", type=int, default=None, help="tree buffer m (default model_v2/model.json trees.k_m)")
     ap.add_argument("--fw-band", type=float, help="fairway band yds (every course)")
     ap.add_argument("--fw-edge", help="fairway_edge.json: band per course from the NAIP edge profile")
@@ -177,7 +182,7 @@ def main():
     layers = set(a.layers.split(","))
     k = a.k if a.k is not None else json.load(open(os.path.join(CD, "vision_any", "model_v2", "model.json")))["settings"]["trees"]["k_m"]
     want = set(a.courses.split(",")) if a.courses else None
-    for cfg in E.COURSES:
+    for cfg in E.SETS[a.set]():
         slug = cfg["slug"]
         if want and slug not in want:
             continue

@@ -192,3 +192,31 @@ def test_configs_subset_keeps_the_references(monkeypatch):
     monkeypatch.setattr(E, "ONLY", None)
     assert len(E.configs()) == 2 + 2 * len(E.LAYERS) + len(E.GROUPS)
 
+
+
+def test_heldout_set_v2_matches_truth_sets_package():
+    """--set v2: every truth_sets_v2 course, and the harness truth (tees, greens, par, hand lies) is the same as
+    truth_sets.truth_package applied to the committed auto package."""
+    cfgs = E.courses_v2()
+    if not cfgs:
+        pytest.skip("no truth_sets_v2 courses checked out")
+    assert E.SETS["v1"]() is E.COURSES and all(c["kind"] == "truth_v2" for c in cfgs)
+    sys.path.insert(0, E.TRUTH_V2)
+    import truth_sets as TS
+    for cfg in cfgs[:2]:
+        p = os.path.join(E.CD, "packages", cfg["slug"], "package.json")
+        if not os.path.exists(p):
+            continue
+        auto = json.load(open(p))
+        S = cfg["tees"]
+        tp = TS.truth_package(cfg["slug"], auto, S)
+        tr = E.truth_holes(cfg)
+        for ref, td in tr.items():
+            h = tp["holes"][ref]
+            assert td["par"] == h["par"] and td["green_ll"] == h["green_ll"]
+            assert td["tee_ll"] == h["tees"][S]["tee_ll"]
+            if td["hand"]:                       # the hand zones TS appends == the hand part of the harness stack
+                hand = [(E.model_lie(z["lie"]), E._ring(z["poly"])) for z in h["zones_ll"]
+                        if str(z.get("src", "")).startswith("hand")]
+                st = E.truth_stack([], dict(td, extra=[]))
+                assert [(l, r) for l, r in st] == [(l, r) for l, r in hand if l]
