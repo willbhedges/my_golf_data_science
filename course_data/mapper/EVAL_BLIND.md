@@ -404,3 +404,81 @@ alone. Spirit Hollow 4 / 6 keep their round-3 fixes in this variant.
 On the photos the Ellis false hints (2 / 9) are tan rough in 2023 with an irrigation edge and one smooth green sheet
 in 2021, with no mowing line in either year: rule 1 rejects them explicitly. Not verified: an agent working under
 the new brief (only a blind re-run tests that).
+
+
+## Round 4 results (mowing-line brief 47fd3e0e; eagle_bend, mariah_hills, ellis) — coordinator, 2026-11-02
+
+Scored with DECIDE_ADAPTIVE_AIM=0 V2_ADAPTIVE_AIM=0 so it compares with round 3.
+
+| course | round 3 match / regret | round 4 match / regret | broken r3 -> r4 |
+|---|---|---|---|
+| eagle_bend | 8 / 0.565 | 8 / 0.586 | 0 -> 0 |
+| mariah_hills | 7 / -0.520 | 8 / -0.323 | 2 -> 1 (13) |
+| ellis (control) | 11 / 0.293 | 11 / 0.334 | 0 -> 0 |
+
+Native corridor missing 66.0k -> 41.0k sq yds (extra 11.3k) over the three.
+
+Takeaways:
+- The brief change did not unlock Eagle Bend: the mapper found native only on hole 2 LEFT (owner: 2 L+R, 3 L, 5 L, 6 L).
+  One-sided native is worse than none on a hole that has both sides: hole 2 aim moved further right (0.097 -> 0.200).
+- Mariah: hugging fixed on 6; 13 now breaks (4-wood -2 vs Driver +15); hole 7 / 9 remain reference artefacts.
+- Ellis: still no breaks; slight regret rise (h17 high-confidence strips 0-9 yds off the fairway).
+- Decision: keep the round-4 brief (no parkland breaks, fewer Mariah breaks). Photo-only native recall on mixed
+  courses is the ceiling -> product path is a per-side native confirm tap for low-confidence / one-sided holes
+  (and golfer local knowledge), not more brief tuning.
+
+### Full table (generated)
+
+## Pooled
+
+| | tee shots | match | same club | same club or tie | regret (strokes) |
+|---|---|---|---|---|---|
+| AUTO | 42 | 23/42 (55%) | 31 | 33 | 1.742 |
+| AUTO + AGENT | 42 | 27/42 (64%) | 30 | 34 | 0.597 |
+
+Holes fixed by the agent: 5; broken: 1. Reference ties among all holes: 6.
+
+Landing-corridor area vs truth (sq yds, 180-320 yds along the truth tee line, +/-50; summed over holes):
+
+| layer | truth | AUTO missing / extra | AUTO + AGENT missing / extra |
+|---|---|---|---|
+| bunkers | 2228 | 345 / 1009 | 345 / 1009 |
+| fairway | 192104 | 26902 / 4386 | 26902 / 4386 |
+| long_grass | 66002 | 66002 / 0 | 41037 / 11262 |
+| ob | 3024 | 1376 / 6345 | 1376 / 6198 |
+| trees | 57933 | 26596 / 8073 | 19184 / 11849 |
+| water | 6769 | 3 / 421 | 813 / 421 |
+
+## Per course
+
+| course | set | mapper | tee shots | match AUTO -> AGENT | same club | regret | fixed | broken | tee err median (measured truth tees) |
+|---|---|---|---|---|---|---|---|---|---|
+| ellis | Blue | map4_ellis | 14 | 11 -> 11 | 12 -> 12 | 0.375 -> 0.334 | - | - | 0.8 (14, 0 > 10) -> 0.8 (14, 0 > 10) |
+| eagle_bend | Gold | mapper-eagle_bend-4 | 14 | 7 -> 8 | 9 -> 9 | 0.515 -> 0.586 | 7 | - | 4.1 (7, 1 > 10) -> 4.1 (7, 1 > 10) |
+| mariah_hills | Blue | mapper-mariah_hills-blue | 14 | 5 -> 8 | 10 -> 9 | 0.852 -> -0.323 | 1, 3, 17, 18 | 13 | 2.3 (9, 0 > 10) -> 2.3 (9, 0 > 10) |
+
+## Holes whose plan the agent changed
+
+| course | hole | truth | AUTO | AUTO + AGENT | match | regret |
+|---|---|---|---|---|---|---|
+| ellis | 5 | Driver -2 | Driver +5 | Driver +0 | True -> True | 0.018 -> 0.003 |
+| ellis | 9 | Driver -2 | Driver +5 | Driver +0 | True -> True | 0.029 -> 0.0066 |
+| ellis | 10 | Driver +2 | Driver +2 | Driver +5 | True -> True | 0.0 -> 0.0009 |
+| ellis | 12 | Driver -5 | Driver -8 | Driver -5 | True -> True | 0.0044 -> -0.0 |
+| eagle_bend | 2 | 4-wood +0 | Driver +5 | Driver +12 | False -> False | 0.0973 -> 0.2 |
+| eagle_bend | 7 | Driver +5 | Driver -40 | Driver +5 | False -> True | 0.0072 -> 0.0 |
+| eagle_bend | 9 | 4-wood +0 (tie) | Driver +0 | 2-wood +0 | False -> False | 0.0245 -> 0.0054 |
+| eagle_bend | 13 | Driver -2 | Driver +2 | Driver -2 | True -> True | 0.0142 -> -0.0008 |
+| eagle_bend | 14 | Driver -2 | Driver -2 | Driver +2 | True -> True | -0.0003 -> 0.0096 |
+| mariah_hills | 1 | Driver +20 | Driver +8 | Driver +18 | False -> True | 0.0197 -> -0.0008 |
+| mariah_hills | 2 | 4-wood +18 (tie) | Driver +12 | Driver +20 | False -> False | 0.0183 -> 0.0889 |
+| mariah_hills | 3 | Driver +0 | Driver +10 | Driver +8 | False -> True | 0.0297 -> 0.0171 |
+| mariah_hills | 4 | 4-wood +2 | Driver +2 | Driver +0 | False -> False | 0.0313 -> 0.0385 |
+| mariah_hills | 7 | Driver +40 (tie) | Driver +0 | 4-wood +80 | False -> False | 0.6083 -> -0.7362 |
+| mariah_hills | 9 | Driver -38 | Driver +28 | Driver -40 | False -> False | None -> 0.1671 |
+| mariah_hills | 12 | Driver +0 | Driver +0 | Driver +5 | True -> True | 0.0005 -> 0.0094 |
+| mariah_hills | 13 | Driver +15 | Driver +0 | 4-wood -2 | True -> False | 0.0257 -> 0.0253 |
+| mariah_hills | 14 | 4-wood -5 | Driver -10 | Driver +5 | False -> False | 0.0301 -> 0.0274 |
+| mariah_hills | 15 | 4-wood +20 | 4-wood +15 | 4-wood +18 | True -> True | 0.0046 -> -0.0002 |
+| mariah_hills | 17 | 4-wood -40 (tie) | Driver -35 | 4-wood -40 | False -> True | 0.0033 -> 0.0024 |
+| mariah_hills | 18 | Driver +15 | Driver +8 | Driver +15 | False -> True | 0.0435 -> 0.001 |
