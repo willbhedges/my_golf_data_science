@@ -1,6 +1,6 @@
 # Creekmoor Golf Club (Raymore, MO) - Black tees
 
-Built 2026-11-02T19:23:08Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T21:38:42Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
