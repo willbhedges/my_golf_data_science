@@ -1,0 +1,1280 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "osage_national",
+ "corridor_set": "Palmer",
+ "mapper": "",
+ "started": "",
+ "minutes": null,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py osage_national. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "3": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-3-L1",
+      "area_yd2": 332,
+      "p": 0.59,
+      "along": [
+       133,
+       155
+      ],
+      "gap_yd": 29.8,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         0,
+         133
+        ],
+        [
+         -20,
+         134
+        ],
+        [
+         -19,
+         155
+        ],
+        [
+         -8,
+         155
+        ],
+        [
+         -8,
+         144
+        ],
+        [
+         0,
+         144
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-5-R1",
+      "area_yd2": 1543,
+      "p": 0.71,
+      "along": [
+       139,
+       231
+      ],
+      "gap_yd": 9.4,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         39,
+         231
+        ],
+        [
+         51,
+         216
+        ],
+        [
+         59,
+         223
+        ],
+        [
+         66,
+         216
+        ],
+        [
+         59,
+         208
+        ],
+        [
+         49,
+         215
+        ],
+        [
+         35,
+         203
+        ],
+        [
+         48,
+         186
+        ],
+        [
+         40,
+         177
+        ],
+        [
+         46,
+         170
+        ],
+        [
+         56,
+         176
+        ],
+        [
+         62,
+         169
+        ],
+        [
+         45,
+         155
+        ],
+        [
+         52,
+         145
+        ],
+        [
+         44,
+         139
+        ],
+        [
+         23,
+         163
+        ],
+        [
+         31,
+         171
+        ],
+        [
+         24,
+         180
+        ],
+        [
+         33,
+         186
+        ],
+        [
+         26,
+         194
+        ],
+        [
+         34,
+         201
+        ],
+        [
+         27,
+         211
+        ],
+        [
+         36,
+         217
+        ],
+        [
+         29,
+         226
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-5-R2",
+      "area_yd2": 242,
+      "p": 0.63,
+      "along": [
+       241,
+       263
+      ],
+      "gap_yd": 5.0,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         39,
+         263
+        ],
+        [
+         47,
+         255
+        ],
+        [
+         30,
+         241
+        ],
+        [
+         23,
+         250
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-5-R3",
+      "area_yd2": 222,
+      "p": 0.57,
+      "along": [
+       247,
+       273
+      ],
+      "gap_yd": 29.0,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         68,
+         258
+        ],
+        [
+         55,
+         247
+        ],
+        [
+         48,
+         253
+        ],
+        [
+         70,
+         273
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "6": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-6-L1",
+      "area_yd2": 512,
+      "p": 0.66,
+      "along": [
+       345,
+       367
+      ],
+      "gap_yd": 26.3,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         367
+        ],
+        [
+         -39,
+         364
+        ],
+        [
+         -40,
+         353
+        ],
+        [
+         -20,
+         351
+        ],
+        [
+         -17,
+         362
+        ],
+        [
+         -6,
+         361
+        ],
+        [
+         -7,
+         350
+        ],
+        [
+         0,
+         350
+        ],
+        [
+         0,
+         345
+        ],
+        [
+         -27,
+         348
+        ],
+        [
+         -70,
+         362
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-6-L2",
+      "area_yd2": 380,
+      "p": 0.59,
+      "along": [
+       376,
+       400
+      ],
+      "gap_yd": 79.8,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -58,
+         390
+        ],
+        [
+         -48,
+         387
+        ],
+        [
+         -49,
+         376
+        ],
+        [
+         -70,
+         378
+        ],
+        [
+         -70,
+         400
+        ],
+        [
+         -58,
+         399
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-14-R1",
+      "area_yd2": 505,
+      "p": 0.62,
+      "along": [
+       120,
+       191
+      ],
+      "gap_yd": 41.1,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         59,
+         120
+        ],
+        [
+         57,
+         130
+        ],
+        [
+         67,
+         135
+        ],
+        [
+         55,
+         175
+        ],
+        [
+         66,
+         178
+        ],
+        [
+         63,
+         189
+        ],
+        [
+         70,
+         191
+        ],
+        [
+         67,
+         120
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "15": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "17": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-17-R1",
+      "area_yd2": 490,
+      "p": 0.58,
+      "along": [
+       147,
+       195
+      ],
+      "gap_yd": 27.0,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         60,
+         193
+        ],
+        [
+         59,
+         147
+        ],
+        [
+         57,
+         147
+        ],
+        [
+         47,
+         151
+        ],
+        [
+         54,
+         172
+        ],
+        [
+         44,
+         177
+        ],
+        [
+         51,
+         195
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-17-R2",
+      "area_yd2": 219,
+      "p": 0.54,
+      "along": [
+       252,
+       286
+      ],
+      "gap_yd": 30.8,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         66,
+         285
+        ],
+        [
+         62,
+         252
+        ],
+        [
+         52,
+         255
+        ],
+        [
+         63,
+         286
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-17-R3",
+      "area_yd2": 312,
+      "p": 0.56,
+      "along": [
+       366,
+       400
+      ],
+      "gap_yd": 17.0,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         69,
+         366
+        ],
+        [
+         61,
+         369
+        ],
+        [
+         65,
+         380
+        ],
+        [
+         55,
+         385
+        ],
+        [
+         61,
+         400
+        ],
+        [
+         70,
+         400
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "18": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "2": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "3": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "4": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "5": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "6": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "7": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "8": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "9": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "10": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "11": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "12": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "13": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "14": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "15": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "16": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "17": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "18": {
+   "Palmer": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Tournament": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Middle": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Members": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Forward": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Green": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  }
+ }
+}

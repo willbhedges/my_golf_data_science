@@ -1,0 +1,1963 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "osage_national",
+ "corridor_set": "Palmer",
+ "mapper": "mapper-osage_national",
+ "started": "2026-11-02T10:25Z",
+ "minutes": 55,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py osage_national. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto trees match lidar and crowns; 2020 tan patch left is drought rough (green and smooth 2016/2022)",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto trees match lidar; 2020 tan rough patch left of the path is green and smooth in 2016/2022",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right treeline matches auto; OB right in woods kept (road behind, not verified)",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-3-L1",
+      "area_yd2": 332,
+      "p": 0.59,
+      "along": [
+       133,
+       155
+      ],
+      "gap_yd": 29.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "along 133-155 left of line between the cross road and the pond: smooth mown grass in 2016 and 2022, no mowing line",
+      "shape": {
+       "poly": [
+        [
+         0,
+         133
+        ],
+        [
+         -20,
+         134
+        ],
+        [
+         -19,
+         155
+        ],
+        [
+         -8,
+         155
+        ],
+        [
+         -8,
+         144
+        ],
+        [
+         0,
+         144
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "unmown scrub strip between the mown rough and the house lots on the right",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "native: edit 0 (mowing line ~x+30, same place 2016 / 2022, coarse scrub with young trees outside, lidar 0.5-2.5 m speckle)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        30,
+        145
+       ],
+       [
+        29,
+        180
+       ],
+       [
+        30,
+        220
+       ],
+       [
+        31,
+        260
+       ],
+       [
+        33,
+        285
+       ],
+       [
+        70,
+        285
+       ],
+       [
+        70,
+        145
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "mowing line at x+28..+31 in both 2016 and 2022 (and 2020); outside: coarse mottled scrub with shrubs and young trees, lidar yellow speckle; ~12 yds off the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-5-R1",
+      "area_yd2": 1543,
+      "p": 0.71,
+      "along": [
+       139,
+       231
+      ],
+      "gap_yd": 9.4,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "scrub strip real (both years), S2 shape comes in over the mown rough at x+23; traced at the x+30 mowing line as edit 0",
+      "shape": {
+       "poly": [
+        [
+         39,
+         231
+        ],
+        [
+         51,
+         216
+        ],
+        [
+         59,
+         223
+        ],
+        [
+         66,
+         216
+        ],
+        [
+         59,
+         208
+        ],
+        [
+         49,
+         215
+        ],
+        [
+         35,
+         203
+        ],
+        [
+         48,
+         186
+        ],
+        [
+         40,
+         177
+        ],
+        [
+         46,
+         170
+        ],
+        [
+         56,
+         176
+        ],
+        [
+         62,
+         169
+        ],
+        [
+         45,
+         155
+        ],
+        [
+         52,
+         145
+        ],
+        [
+         44,
+         139
+        ],
+        [
+         23,
+         163
+        ],
+        [
+         31,
+         171
+        ],
+        [
+         24,
+         180
+        ],
+        [
+         33,
+         186
+        ],
+        [
+         26,
+         194
+        ],
+        [
+         34,
+         201
+        ],
+        [
+         27,
+         211
+        ],
+        [
+         36,
+         217
+        ],
+        [
+         29,
+         226
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-5-R2",
+      "area_yd2": 242,
+      "p": 0.63,
+      "along": [
+       241,
+       263
+      ],
+      "gap_yd": 5.0,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "inside the same scrub strip at x+30..+45, along 241-263; covered by edit 0 (edge at the mowing line)",
+      "shape": {
+       "poly": [
+        [
+         39,
+         263
+        ],
+        [
+         47,
+         255
+        ],
+        [
+         30,
+         241
+        ],
+        [
+         23,
+         250
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-5-R3",
+      "area_yd2": 222,
+      "p": 0.57,
+      "along": [
+       247,
+       273
+      ],
+      "gap_yd": 29.0,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "scrub / young trees at x+50..+70 along 245-265 behind the house-lot strip; covered by edit 0 where outside OB",
+      "shape": {
+       "poly": [
+        [
+         68,
+         258
+        ],
+        [
+         55,
+         247
+        ],
+        [
+         48,
+         253
+        ],
+        [
+         70,
+         273
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right-side crowns along the cart path (x+15..+45, 195-265) missing from the auto trees (lidar has them)",
+   "long_grass": {
+    "L": "none: smooth mown rough to the lake edge in 2016 and 2022",
+    "R": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       18,
+       198,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown + crown in 2016/2022 right of the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       23,
+       224,
+       9,
+       8
+      ]
+     },
+     "confidence": "high",
+     "evidence": "two touching crowns, lidar 2.5-8 m and >8 m, both photo years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29,
+       241,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, crown visible 2016/2022"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       40,
+       253,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       39,
+       264,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown (2.5-8 m), both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-6-L1",
+      "area_yd2": 512,
+      "p": 0.66,
+      "along": [
+       345,
+       367
+      ],
+      "gap_yd": 26.3,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "on the lake (dark water 2016/2022, lidar water) and the bank beyond it; auto water already covers the lake",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         367
+        ],
+        [
+         -39,
+         364
+        ],
+        [
+         -40,
+         353
+        ],
+        [
+         -20,
+         351
+        ],
+        [
+         -17,
+         362
+        ],
+        [
+         -6,
+         361
+        ],
+        [
+         -7,
+         350
+        ],
+        [
+         0,
+         350
+        ],
+        [
+         0,
+         345
+        ],
+        [
+         -27,
+         348
+        ],
+        [
+         -70,
+         362
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-6-L2",
+      "area_yd2": 380,
+      "p": 0.59,
+      "along": [
+       376,
+       400
+      ],
+      "gap_yd": 79.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough beside the cart path beyond the lake, smooth in 2016 and 2022",
+      "shape": {
+       "poly": [
+        [
+         -58,
+         390
+        ],
+        [
+         -48,
+         387
+        ],
+        [
+         -49,
+         376
+        ],
+        [
+         -70,
+         378
+        ],
+        [
+         -70,
+         400
+        ],
+        [
+         -58,
+         399
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "second mowing line on both sides: left at the cart path, right ~x+30; coarse grass outside in 2016/2020/2022",
+   "long_grass": {
+    "L": "native: edit 0 (beyond the cart path left, brown streaky 2022, coarse dark 2016)",
+    "R": "native: edit 1 (mowing line x+22..+35, same place 2016 / 2022, coarse mottled outside, CIR bright mottled)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        275
+       ],
+       [
+        -42,
+        275
+       ],
+       [
+        -42,
+        300
+       ],
+       [
+        -33,
+        318
+       ],
+       [
+        -36,
+        340
+       ],
+       [
+        -51,
+        360
+       ],
+       [
+        -62,
+        380
+       ],
+       [
+        -70,
+        385
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "outside the cart path: coarse dark mottled 2016, brown streaky seed heads 2022; mown smooth inside the path in both years; ~20 yds off the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        22,
+        140
+       ],
+       [
+        24,
+        180
+       ],
+       [
+        27,
+        200
+       ],
+       [
+        30,
+        240
+       ],
+       [
+        33,
+        280
+       ],
+       [
+        35,
+        330
+       ],
+       [
+        70,
+        330
+       ],
+       [
+        70,
+        140
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "mowing line x+22..+35 in the same place 2016 and 2022 (and 2020): light smooth mown inside, darker coarse mottled outside with scattered crowns; ~15-20 yds off the auto fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "crowns along the right cart path missing from auto trees",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       45,
+       294,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown + 2016/2022 crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       41,
+       264,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown + 2016/2022 crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       37,
+       239,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown + 2016/2022 crown"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "water edge within ~3 yds; two crowns by the left path missing",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "none: smooth striped mown rough to the pond edge in 2016 and 2022"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -19,
+       273,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown (2.5-8 m) and crown in 2016/2020/2022 beside the cart path"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28,
+       259,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "scattered crowns both sides missing from auto trees (lidar has them)",
+   "long_grass": {
+    "L": "none: smooth mown rough to the lake edge in 2016 and 2022",
+    "R": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -33,
+       238,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, crown+shadow 2016/2020/2022 at fairway edge"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -31,
+       218,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43,
+       209,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown beside the right cart path, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       40,
+       184,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       48,
+       240,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "unmown strip with shrubs / young trees along a drainage ditch on the left between holes",
+   "long_grass": {
+    "L": "native: edit 0 (ditch strip, mown on both sides, coarse with shrubs 2016/2020/2022, lidar 0.5-2.5 m speckle)",
+    "R": "none: smooth mown rough to the cart path; small coarse patch beyond the path near the pond (280-320) left unmarked"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -30,
+        170
+       ],
+       [
+        -31,
+        200
+       ],
+       [
+        -34,
+        240
+       ],
+       [
+        -40,
+        265
+       ],
+       [
+        -44,
+        300
+       ],
+       [
+        -52,
+        300
+       ],
+       [
+        -49,
+        265
+       ],
+       [
+        -48,
+        240
+       ],
+       [
+        -49,
+        200
+       ],
+       [
+        -46,
+        170
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "band ~15 yds wide along a ditch: darker coarse grass with shrubs, mowing lines on both sides in the same place 2016/2020/2022; lidar yellow 0.5-2.5 m speckle; ~10 yds off the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "crowns on the left creek bank (x-50..-38) missing from auto trees, added per crown",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "none: mown rough to the river treeline in 2016 and 2022"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -44,
+       225,
+       6,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown on the creek bank between the creek and the fairway, visible 2016/2020/2022 (lidar partial)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -44,
+       250,
+       5,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown on the creek bank between the creek and the fairway, visible 2016/2020/2022 (lidar partial)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -45,
+       290,
+       5,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown on the creek bank between the creek and the fairway, visible 2016/2020/2022 (lidar partial)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -47,
+       320,
+       5,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown on the creek bank between the creek and the fairway, visible 2016/2020/2022 (lidar partial)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-14-R1",
+      "area_yd2": 505,
+      "p": 0.62,
+      "along": [
+       120,
+       191
+      ],
+      "gap_yd": 41.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "x+50..+70 along 130-190 is the Osage River bank / sandbar beyond the treeline (water 2016/2022, sand 2020), not grass",
+      "shape": {
+       "poly": [
+        [
+         59,
+         120
+        ],
+        [
+         57,
+         130
+        ],
+        [
+         67,
+         135
+        ],
+        [
+         55,
+         175
+        ],
+        [
+         66,
+         178
+        ],
+        [
+         63,
+         189
+        ],
+        [
+         70,
+         191
+        ],
+        [
+         67,
+         120
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "short par 4; creek crowns mostly over water (water wins); no change",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "none: mown rough to the creek in 2016 and 2022"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "Osage River right beyond the treeline is not mapped inside x+65; right crown edge 5 yds beyond auto at 285-335",
+   "long_grass": {
+    "L": "none: waste sand and mown rough to the lake in 2016 and 2022",
+    "R": "none: mown rough to the river treeline in 2016 and 2022"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "water",
+     "shape": {
+      "poly": [
+       [
+        52,
+        120
+       ],
+       [
+        52,
+        400
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        70,
+        120
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "Osage River water edge at x+51..+53 in 2016 and 2022 (dark), CIR teal; auto water starts ~x+65"
+    },
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 5,
+     "shape": {
+      "rect": [
+       10,
+       40,
+       285,
+       335
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy from x+20, auto outline at x+27 (fairway-facing edge)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-17-R1",
+      "area_yd2": 490,
+      "p": 0.58,
+      "along": [
+       147,
+       195
+      ],
+      "gap_yd": 27.0,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "on the Osage River (water in 2016 and 2022), added as water edit 0",
+      "shape": {
+       "poly": [
+        [
+         60,
+         193
+        ],
+        [
+         59,
+         147
+        ],
+        [
+         57,
+         147
+        ],
+        [
+         47,
+         151
+        ],
+        [
+         54,
+         172
+        ],
+        [
+         44,
+         177
+        ],
+        [
+         51,
+         195
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-17-R2",
+      "area_yd2": 219,
+      "p": 0.54,
+      "along": [
+       252,
+       286
+      ],
+      "gap_yd": 30.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "on the Osage River (water 2016/2022), added as water edit 0",
+      "shape": {
+       "poly": [
+        [
+         66,
+         285
+        ],
+        [
+         62,
+         252
+        ],
+        [
+         52,
+         255
+        ],
+        [
+         63,
+         286
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-17-R3",
+      "area_yd2": 312,
+      "p": 0.56,
+      "along": [
+       366,
+       400
+      ],
+      "gap_yd": 17.0,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "river water / far bank beyond x+55, along 370-395, both years",
+      "shape": {
+       "poly": [
+        [
+         69,
+         366
+        ],
+        [
+         61,
+         369
+        ],
+        [
+         65,
+         380
+        ],
+        [
+         55,
+         385
+        ],
+        [
+         61,
+         400
+        ],
+        [
+         70,
+         400
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right pond edge at 165-240 is 5-10 yds closer to the fairway than the auto water",
+   "long_grass": {
+    "L": "none: smooth mown rough (stripes in 2016) to the trees / path in 2016, 2020 and 2022, no second mowing line",
+    "R": "none: striped mown rough to the pond in 2016 and 2022"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "water",
+     "shape": {
+      "poly": [
+       [
+        37,
+        270
+       ],
+       [
+        42,
+        255
+       ],
+       [
+        50,
+        245
+       ],
+       [
+        53,
+        230
+       ],
+       [
+        53,
+        205
+       ],
+       [
+        45,
+        192
+       ],
+       [
+        36,
+        182
+       ],
+       [
+        32,
+        165
+       ],
+       [
+        32,
+        150
+       ],
+       [
+        62,
+        150
+       ],
+       [
+        62,
+        270
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "pond edge (dark 2022, brown shallow 2016, CIR teal) at x+53 (230), +36 (180); auto edge at +60 / +45"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "2": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot in the woods 30 yds behind the Tournament box; no box visible (trees) - kept"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "3": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "lidar_pad at the edge of a parking lot (2022); no clear box - kept"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "4": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "5": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "6": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "lidar_pad under a crown 31 yds behind Tournament; no box visible - kept"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "7": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "lidar_pad at the woods edge 15 yds behind Tournament; possible pad in 2022 but unclear - kept"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "8": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "9": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "lidar_pad 45 yds right of the line by a pond; OSM boxes nearby do not fit the card - kept"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "lidar_pad 50 yds right of the line - kept"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "10": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   }
+  },
+  "11": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   }
+  },
+  "12": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "13": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   }
+  },
+  "14": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "15": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   }
+  },
+  "16": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "not inspected box by box; auto measured yards within ~5 of the card (tee_axis/centroid on OSM box)"
+   }
+  },
+  "17": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  },
+  "18": {
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Tournament": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Members": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   },
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on or beside a visible / OSM box, measured within ~6 yds of the card"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "2",
+   "what": "Palmer tee: walkback dot in the woods 30 yds behind the Tournament box; no box visible (trees) - kept"
+  },
+  {
+   "hole": "3",
+   "what": "Palmer tee: lidar_pad at the edge of a parking lot (2022); no clear box - kept"
+  },
+  {
+   "hole": "6",
+   "what": "Palmer tee: lidar_pad under a crown 31 yds behind Tournament; no box visible - kept"
+  },
+  {
+   "hole": "7",
+   "what": "Palmer tee: lidar_pad at the woods edge 15 yds behind Tournament; possible pad in 2022 but unclear - kept"
+  },
+  {
+   "hole": "9",
+   "what": "Members tee: lidar_pad 45 yds right of the line by a pond; OSM boxes nearby do not fit the card - kept"
+  },
+  {
+   "hole": "9",
+   "what": "Forward tee: lidar_pad 50 yds right of the line - kept"
+  },
+  {
+   "hole": "3",
+   "what": "auto OB right 140-225 is woods; road behind not seen in the window, kept"
+  },
+  {
+   "hole": "7",
+   "what": "right native edge (+/-6 yds); could be a darker second cut of rough rather than unmown native"
+  },
+  {
+   "hole": "12",
+   "what": "ditch native strip width +/-5 yds"
+  },
+  {
+   "hole": "10,11,13,15,16",
+   "what": "tees not inspected box by box (auto measured yards match the card)"
+  }
+ ]
+}
