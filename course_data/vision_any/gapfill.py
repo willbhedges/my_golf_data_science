@@ -245,6 +245,28 @@ def _sort_zones(zones, src):
     return [zones[i] for i in idx], [src[i] for i in idx]
 
 
+# --------------------------------------------------------------------------- false water
+def water_filter(pkg, slug, imagery_dir=None):
+    """water_filter.filter_package on the package (in place): piped OSM streams and false vision water (paths /
+    roads / bare ground) out of the water zones. -> a short note for stages.vision ('' if nothing to say).
+    Never fatal: a failure keeps the zones as they are and says so."""
+    try:
+        if HERE not in sys.path:
+            sys.path.insert(0, HERE)
+        import water_filter as WF
+        pslug = (pkg.get("course") or {}).get("slug") or pkg.get("slug") or slug
+        rep = WF.filter_package(pkg, slug=pslug, img_dir=imagery_dir)
+    except Exception as e:                                     # noqa: BLE001
+        return f"water filter failed ({type(e).__name__}: {str(e)[:100]})"
+    pp, v = rep.get("piped") or {}, rep.get("vision")
+    bits = []
+    if pp.get("zones_cut"):
+        bits.append(f"{pp['zones_cut']} water zones cut by piped streams")
+    if isinstance(v, dict) and v.get("removed_m2"):
+        bits.append(f"false vision water -{v['removed_m2']:.0f} m2 {v.get('reasons')}")
+    return "water filter: " + "; ".join(bits) if bits else ""
+
+
 # --------------------------------------------------------------------------- package/1
 def gapfill(package, imagery_dir=None, slug=None, use_reframe=True):
     """course_package/1 dict -> new dict with vision zones (ARCHITECTURE.md 9.3)."""
@@ -281,6 +303,7 @@ def gapfill(package, imagery_dir=None, slug=None, use_reframe=True):
                     pz[lie] = "vision:" + ("lidar_hag" if lie == "recovery" and "lidar" in meta.get("trees_how", "").lower()
                                            else "naip")
         prov["zones"] = pz if pz else prov.get("zones")
+    wf_note = water_filter(out, slug, imagery_dir)
     reframe = _reframe() if use_reframe else None
     done = False
     if reframe is not None:
@@ -306,7 +329,7 @@ def gapfill(package, imagery_dir=None, slug=None, use_reframe=True):
                     src.append(z["src"])
             h["zones"], h["zone_src"] = _sort_zones(zones, src)
     model_id = meta.get("model_id") or MODEL_ID
-    out.setdefault("stages", {})["vision"] = f"ok: {model_id}"
+    out.setdefault("stages", {})["vision"] = f"ok: {model_id}" + (f"; {wf_note}" if wf_note else "")
     out.setdefault("sources", {})["vision"] = dict(
         model=model_id, trained_on=meta.get("trained_on") or "OSM labels of this course only (no hand-traced maps)",
         trees=meta.get("trees_how"), native=meta.get("native_how"), water=meta.get("water_how"),

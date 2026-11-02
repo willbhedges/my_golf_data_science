@@ -1,6 +1,6 @@
 """Rebuild only the tee layer and/or the tree layer of committed packages, offline (for the error budget).
 
-    python3 course_data/platform/rebuild_tees_trees.py --out DIR [--layers tees,trees,fairway] [--courses a,b] [--k 1]
+    python3 course_data/platform/rebuild_tees_trees.py --out DIR [--layers tees,trees,fairway,water] [--courses a,b] [--k 1]
         [--fw-band YDS | --fw-edge fairway_edge.json --fw-theta 0.5] [--fw-lie fairway|first_cut]
     -> DIR/<slug>/package.json   (python3 course_data/platform/error_budget.py --auto-dir DIR --tag NAME)
 
@@ -16,6 +16,10 @@ trees  the vision_any/2 tree polygons re-made from the lidar canopy with buffer 
 fairway  platform/fairway_band.widen_package after the tees / trees: the OSM fairway widened by a band that only
        turns rough into fairway (or first_cut). --fw-band: one width for every course (yds); --fw-edge: per course
        from the NAIP edge profile (platform/fairway_edge.py; band = extension(profile, theta) m, capped at --fw-max).
+water  vision_any/water_filter.filter_package (as gapfill now runs it): piped OSM stream pieces (tunnel tags, fairway
+       crossings with no DTM channel) and false vision water (OSM roads / paths, thin paved strips, raised bare
+       ground) removed from the committed water zones, then the yard frame refreshed. Run it on its own
+       (--layers water) to score the water rule alone.
 Everything else in the package (OSM zones, OB, card, greens, routing) is the committed build.
 """
 from __future__ import annotations
@@ -161,6 +165,27 @@ def refairway(pkg, slug, a):
     return out, f"fairway band {b:g} yd {a.fw_lie} ({n} zones)"
 
 
+# ----------------------------------------------------------------------------- water
+def rewater(pkg, slug):
+    vd = os.path.join(CD, "vision_any")
+    if vd not in sys.path:
+        sys.path.insert(0, vd)
+    import water_filter as WF
+    vslug = "mozingo" if slug == "mozingo_lake" else slug
+    with contextlib.redirect_stdout(io.StringIO()):
+        rep = WF.filter_package(pkg, slug=slug)
+    G = _load("rtt_gapfill_water", os.path.join(CD, "vision_any", "gapfill.py"))
+    rf = G._reframe()
+    if rf is not None:
+        r = rf(pkg)
+        pkg = r if isinstance(r, dict) else pkg
+    pp = rep.get("piped") or {}
+    v = rep.get("vision")
+    vs = (f"vision -{v['removed_m2']:.0f} of {v['water_m2']:.0f} m2 {v['reasons']}" if isinstance(v, dict) else str(v))
+    return pkg, (f"water filtered ({vslug}): piped {pp.get('tagged', 0)} tagged + {pp.get('crossing_m', 0)} m crossing, "
+                 f"{pp.get('zones_cut', 0)} zones cut; {vs}")
+
+
 # ----------------------------------------------------------------------------- main
 def main():
     sys.path.insert(0, HERE)
@@ -198,6 +223,9 @@ def main():
             notes.append(n)
         if "fairway" in layers:
             pkg, n = refairway(pkg, slug, a)
+            notes.append(n)
+        if "water" in layers:
+            pkg, n = rewater(pkg, slug)
             notes.append(n)
         pkg.setdefault("stages", {})["rebuild_tees_trees"] = "; ".join(notes)
         d = os.path.join(a.out, slug)

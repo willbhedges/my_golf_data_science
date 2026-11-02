@@ -221,7 +221,8 @@ def osm_layers(fc):
                        or lu in ("reservoir", "basin") or p.get("water")):
             out["water"].append(s)
         elif p.get("waterway") in ("stream", "ditch", "drain", "canal") and not poly:
-            out["stream"].append(s)
+            if not _piped(p):                                # tunnel / culvert / covered: no surface water
+                out["stream"].append(s)
         elif p.get("waterway") == "river" and not poly:
             out["river"].append(s)
         elif p.get("building") and poly:
@@ -240,12 +241,25 @@ def osm_layers(fc):
             out["native"].append(s)
         elif nat == "tree" and s.geom_type == "Point":
             out["trees_pt"].append(s)
+    out["_roads"] = _WF().road_lines(fc)                      # (line, paved half width m): water_filter
     return out
+
+
+def _WF():
+    if HERE not in sys.path:
+        sys.path.insert(0, HERE)
+    import water_filter
+    return water_filter
+
+
+def _piped(p):
+    return _WF().is_piped(p)
 
 
 def osm_masks(S, fc):
     L = osm_layers(fc)
-    M = {k: S.rasterize(v) if v and k not in ("trees_pt",) else np.zeros((S.H, S.W), bool) for k, v in L.items()}
+    M = {k: S.rasterize(v) if v and k not in ("trees_pt",) else np.zeros((S.H, S.W), bool) for k, v in L.items()
+         if not k.startswith("_")}
     M["mown"] = M["fairway"] | M["green"] | M["tee"]
     return M, L
 
@@ -492,7 +506,13 @@ def water_mask(S, fc_or_layers, osm_m, mown_p=None, trees=None):
         parts["streams"] = corr
         w |= corr
     w &= ~(osm_m["fairway"] | osm_m["green"] | osm_m["tee"] | osm_m["bunker"])
-    return w, parts
+    # false water: OSM roads / paths (paved), thin paved strips with no DTM channel, raised bare ground
+    WF = _WF()
+    roads = L.get("_roads") or []
+    w2, _ = WF.false_water(w, WF.paved_mask(S), WF.road_distance(S, roads) if roads else None, WF.dtm_grid(S),
+                           keep=osm_m["water"], res=S.res)
+    parts["false_water"] = w & ~w2
+    return w2, parts
 
 
 # =========================================================================== polygons
