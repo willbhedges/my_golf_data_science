@@ -1,0 +1,1603 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "slug": "buffalo_ridge",
+  "mapper": "mapper-buffalo_ridge",
+  "made": "2026-11-02T06:51:42Z",
+  "corridor_set": "Buffalo",
+  "base_package": "course_data/mapper/buffalo_ridge/base/package.json",
+  "base_built": "2026-11-02T02:34:05Z",
+  "minutes": 50,
+  "edits_sha": "7a876e603ab44ea6",
+  "schema": "agent_zones/1",
+  "reviewed": {
+   "1": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "auto water strip left of the cart path is tan grass, no water; native beyond the path"
+   },
+   "2": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "rock outcrop left was mapped as water: now sand/waste; small tree row right 150-215 added"
+   },
+   "3": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "no changes; rock ledge strip left (-60..-40) left as rough"
+   },
+   "5": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "native beyond the cart path on the left"
+   },
+   "6": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "wooded; auto trees match the crowns"
+   },
+   "8": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "creek left under trees correct; trees ok"
+   },
+   "10": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "OB extended over the highway / parking beyond the tree strip"
+   },
+   "12": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "no changes; OB right kept (development north)"
+   },
+   "13": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "no changes"
+   },
+   "14": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "scattered crowns left between fairway and path added"
+   },
+   "15": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "false water over the cart path / woods right removed; outline OB in woods removed; auto native on the mown pond bank erased"
+   },
+   "16": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "no changes"
+   },
+   "18": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "low",
+    "note": "trees right of 280-400 cleared between 2020 and 2022; left as auto"
+   }
+  },
+  "uncertain": [
+   {
+    "hole": "1",
+    "what": "right side +35..+70 between hole 1 and the parallel fairway: mottled texture, could be native or rough; left unmarked"
+   },
+   {
+    "hole": "13",
+    "what": "auto water +25..+55 along 125-150 under trees (lidar dropout); kept"
+   },
+   {
+    "hole": "16",
+    "what": "Gold (walkback, along 33) and Blue (lidar pad, along 47) are 13-18 yds ahead of card spacing; no box visible to move to"
+   },
+   {
+    "hole": "18",
+    "what": "woods right along 280-400 cleared in 2022 (present 2020 and lidar); auto trees and OB wedge kept"
+   },
+   {
+    "hole": "2",
+    "what": "Red (L) walkback on open mown ground; no box seen"
+   }
+  ],
+  "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "1",
+    "op": "erase",
+    "lie": "water",
+    "edit": "1.0",
+    "area_yd2": 3640,
+    "lies": [
+     "water"
+    ],
+    "confidence": "high",
+    "evidence": "no water in 2020 or 2022; strip left of the cart path (x~-60) is tan grass; CIR not dark"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.194883,
+       36.5771227
+      ],
+      [
+       -93.1935777,
+       36.5791767
+      ],
+      [
+       -93.1934594,
+       36.5791279
+      ],
+      [
+       -93.1947648,
+       36.5770738
+      ],
+      [
+       -93.194883,
+       36.5771227
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "1",
+    "op": "add",
+    "lie": "native",
+    "edit": "1.1",
+    "area_yd2": 1666,
+    "keepout_clipped_yd2": 14,
+    "confidence": "medium",
+    "evidence": "tan unmown grass beyond the cart path in 2020 and 2022, mown rough inside the path"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1935777,
+       36.5791767
+      ],
+      [
+       -93.1935231,
+       36.5791542
+      ],
+      [
+       -93.1941521,
+       36.5781644
+      ],
+      [
+       -93.1941538,
+       36.5781636
+      ],
+      [
+       -93.1941621,
+       36.5781586
+      ],
+      [
+       -93.1941696,
+       36.578153
+      ],
+      [
+       -93.1941765,
+       36.5781467
+      ],
+      [
+       -93.1941825,
+       36.57814
+      ],
+      [
+       -93.1941876,
+       36.5781328
+      ],
+      [
+       -93.1941918,
+       36.5781252
+      ],
+      [
+       -93.1942386,
+       36.5780284
+      ],
+      [
+       -93.1948282,
+       36.5771006
+      ],
+      [
+       -93.1948293,
+       36.5771005
+      ],
+      [
+       -93.194883,
+       36.5771227
+      ],
+      [
+       -93.1935777,
+       36.5791767
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "erase",
+    "lie": "water",
+    "edit": "2.0",
+    "area_yd2": 12025,
+    "lies": [
+     "water"
+    ],
+    "confidence": "high",
+    "evidence": "white bare rock / tan grass both years, white-cyan in CIR, no water"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1939602,
+       36.5810008
+      ],
+      [
+       -93.194259,
+       36.5825066
+      ],
+      [
+       -93.193603,
+       36.5825913
+      ],
+      [
+       -93.1933042,
+       36.5810855
+      ],
+      [
+       -93.1939602,
+       36.5810008
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "erase",
+    "lie": "water",
+    "edit": "2.1",
+    "area_yd2": 1680,
+    "lies": [
+     "water"
+    ],
+    "confidence": "high",
+    "evidence": "cart path and grass, no water either year"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1931326,
+       36.5811076
+      ],
+      [
+       -93.1932295,
+       36.581596
+      ],
+      [
+       -93.1929469,
+       36.5816325
+      ],
+      [
+       -93.19285,
+       36.5811441
+      ],
+      [
+       -93.1931326,
+       36.5811076
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "sand",
+    "edit": "2.2",
+    "area_yd2": 4752,
+    "confidence": "medium",
+    "evidence": "bare limestone/waste area white in 2020 and 2022, white-cyan in CIR, outside canopy"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.193938,
+       36.5816715
+      ],
+      [
+       -93.194041,
+       36.5818252
+      ],
+      [
+       -93.194154,
+       36.5819776
+      ],
+      [
+       -93.1943963,
+       36.5831985
+      ],
+      [
+       -93.1942591,
+       36.5831328
+      ],
+      [
+       -93.1941743,
+       36.5830185
+      ],
+      [
+       -93.1940814,
+       36.5828635
+      ],
+      [
+       -93.1940007,
+       36.5826652
+      ],
+      [
+       -93.193932,
+       36.5824236
+      ],
+      [
+       -93.1938533,
+       36.5821833
+      ],
+      [
+       -93.1938311,
+       36.5820192
+      ],
+      [
+       -93.1938028,
+       36.5817724
+      ],
+      [
+       -93.193829,
+       36.5816438
+      ],
+      [
+       -93.193938,
+       36.5816715
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "native",
+    "edit": "2.3",
+    "area_yd2": 980,
+    "confidence": "medium",
+    "evidence": "tan unmown grass beyond the cart path both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1939602,
+       36.5810008
+      ],
+      [
+       -93.1940733,
+       36.5815706
+      ],
+      [
+       -93.193932,
+       36.5815888
+      ],
+      [
+       -93.1938189,
+       36.581019
+      ],
+      [
+       -93.1939602,
+       36.5810008
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "2.4",
+    "area_yd2": 140,
+    "confidence": "medium",
+    "evidence": "crown in photo both years and lidar 2.5-8 m, not in auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1929974,
+       36.5817735
+      ],
+      [
+       -93.1929989,
+       36.5817552
+      ],
+      [
+       -93.1930039,
+       36.5817389
+      ],
+      [
+       -93.1930121,
+       36.581726
+      ],
+      [
+       -93.1930228,
+       36.5817171
+      ],
+      [
+       -93.1930353,
+       36.5817129
+      ],
+      [
+       -93.1930489,
+       36.5817137
+      ],
+      [
+       -93.1930625,
+       36.5817194
+      ],
+      [
+       -93.1930753,
+       36.5817297
+      ],
+      [
+       -93.1930863,
+       36.5817439
+      ],
+      [
+       -93.1930949,
+       36.5817609
+      ],
+      [
+       -93.1931003,
+       36.5817796
+      ],
+      [
+       -93.1931024,
+       36.5817988
+      ],
+      [
+       -93.1931008,
+       36.5818171
+      ],
+      [
+       -93.1930958,
+       36.5818333
+      ],
+      [
+       -93.1930877,
+       36.5818463
+      ],
+      [
+       -93.193077,
+       36.5818552
+      ],
+      [
+       -93.1930644,
+       36.5818594
+      ],
+      [
+       -93.1930509,
+       36.5818586
+      ],
+      [
+       -93.1930372,
+       36.5818528
+      ],
+      [
+       -93.1930245,
+       36.5818425
+      ],
+      [
+       -93.1930134,
+       36.5818284
+      ],
+      [
+       -93.1930049,
+       36.5818114
+      ],
+      [
+       -93.1929994,
+       36.5817927
+      ],
+      [
+       -93.1929974,
+       36.5817735
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "2.5",
+    "area_yd2": 109,
+    "confidence": "medium",
+    "evidence": "crown in photo both years and lidar 2.5-8 m"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1929562,
+       36.5815661
+      ],
+      [
+       -93.1929585,
+       36.5815517
+      ],
+      [
+       -93.1929642,
+       36.5815388
+      ],
+      [
+       -93.1929729,
+       36.5815284
+      ],
+      [
+       -93.1929839,
+       36.5815212
+      ],
+      [
+       -93.1929966,
+       36.5815175
+      ],
+      [
+       -93.19301,
+       36.5815178
+      ],
+      [
+       -93.1930233,
+       36.5815219
+      ],
+      [
+       -93.1930356,
+       36.5815296
+      ],
+      [
+       -93.1930459,
+       36.5815404
+      ],
+      [
+       -93.1930537,
+       36.5815535
+      ],
+      [
+       -93.1930583,
+       36.581568
+      ],
+      [
+       -93.1930595,
+       36.581583
+      ],
+      [
+       -93.1930572,
+       36.5815974
+      ],
+      [
+       -93.1930516,
+       36.5816102
+      ],
+      [
+       -93.1930429,
+       36.5816206
+      ],
+      [
+       -93.1930319,
+       36.5816279
+      ],
+      [
+       -93.1930192,
+       36.5816315
+      ],
+      [
+       -93.1930057,
+       36.5816312
+      ],
+      [
+       -93.1929924,
+       36.5816271
+      ],
+      [
+       -93.1929802,
+       36.5816194
+      ],
+      [
+       -93.1929698,
+       36.5816086
+      ],
+      [
+       -93.1929621,
+       36.5815955
+      ],
+      [
+       -93.1929574,
+       36.581581
+      ],
+      [
+       -93.1929562,
+       36.5815661
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "2.6",
+    "area_yd2": 62,
+    "confidence": "low",
+    "evidence": "small crown, lidar 2.5-8 m"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.192926,
+       36.5814157
+      ],
+      [
+       -93.1929281,
+       36.5814053
+      ],
+      [
+       -93.1929328,
+       36.5813961
+      ],
+      [
+       -93.1929399,
+       36.5813885
+      ],
+      [
+       -93.1929488,
+       36.5813832
+      ],
+      [
+       -93.192959,
+       36.5813805
+      ],
+      [
+       -93.1929697,
+       36.5813805
+      ],
+      [
+       -93.1929803,
+       36.5813833
+      ],
+      [
+       -93.1929899,
+       36.5813887
+      ],
+      [
+       -93.192998,
+       36.5813963
+      ],
+      [
+       -93.193004,
+       36.5814056
+      ],
+      [
+       -93.1930075,
+       36.5814159
+      ],
+      [
+       -93.1930082,
+       36.5814267
+      ],
+      [
+       -93.1930061,
+       36.581437
+      ],
+      [
+       -93.1930014,
+       36.5814462
+      ],
+      [
+       -93.1929943,
+       36.5814538
+      ],
+      [
+       -93.1929853,
+       36.5814591
+      ],
+      [
+       -93.1929752,
+       36.5814619
+      ],
+      [
+       -93.1929644,
+       36.5814618
+      ],
+      [
+       -93.1929539,
+       36.581459
+      ],
+      [
+       -93.1929443,
+       36.5814536
+      ],
+      [
+       -93.1929362,
+       36.581446
+      ],
+      [
+       -93.1929302,
+       36.5814367
+      ],
+      [
+       -93.1929267,
+       36.5814264
+      ],
+      [
+       -93.192926,
+       36.5814157
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "5",
+    "op": "add",
+    "lie": "native",
+    "edit": "5.0",
+    "area_yd2": 5186,
+    "keepout_clipped_yd2": 199,
+    "confidence": "medium",
+    "evidence": "tan tufted grass with shrubs left of the cart path in 2020 and 2022; mown rough between path and fairway"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1887936,
+       36.582493
+      ],
+      [
+       -93.1888554,
+       36.5822013
+      ],
+      [
+       -93.1888976,
+       36.5819476
+      ],
+      [
+       -93.1889398,
+       36.5816939
+      ],
+      [
+       -93.188982,
+       36.5814402
+      ],
+      [
+       -93.1893425,
+       36.5815611
+      ],
+      [
+       -93.189343,
+       36.5815623
+      ],
+      [
+       -93.1893471,
+       36.5815699
+      ],
+      [
+       -93.1893522,
+       36.5815772
+      ],
+      [
+       -93.1894041,
+       36.5816438
+      ],
+      [
+       -93.1894243,
+       36.5817743
+      ],
+      [
+       -93.1894258,
+       36.5817816
+      ],
+      [
+       -93.1894281,
+       36.5817887
+      ],
+      [
+       -93.1894313,
+       36.5817956
+      ],
+      [
+       -93.189436,
+       36.5818049
+      ],
+      [
+       -93.1889802,
+       36.5826894
+      ],
+      [
+       -93.1887936,
+       36.582493
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "ob",
+    "edit": "10.0",
+    "area_yd2": 9520,
+    "confidence": "medium",
+    "evidence": "paved road, parking and building visible both years beyond the auto OB strip"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.2000782,
+       36.5742975
+      ],
+      [
+       -93.1996477,
+       36.5753981
+      ],
+      [
+       -93.1985951,
+       36.5751302
+      ],
+      [
+       -93.1998053,
+       36.5742281
+      ],
+      [
+       -93.2000782,
+       36.5742975
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.0",
+    "area_yd2": 130,
+    "confidence": "high",
+    "evidence": "crown in both years and lidar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1986694,
+       36.5707181
+      ],
+      [
+       -93.1986845,
+       36.5707265
+      ],
+      [
+       -93.1986963,
+       36.5707371
+      ],
+      [
+       -93.198704,
+       36.5707494
+      ],
+      [
+       -93.1987071,
+       36.5707624
+      ],
+      [
+       -93.1987054,
+       36.5707753
+      ],
+      [
+       -93.1986989,
+       36.5707871
+      ],
+      [
+       -93.1986882,
+       36.5707972
+      ],
+      [
+       -93.198674,
+       36.5708047
+      ],
+      [
+       -93.1986571,
+       36.5708092
+      ],
+      [
+       -93.1986389,
+       36.5708104
+      ],
+      [
+       -93.1986204,
+       36.5708082
+      ],
+      [
+       -93.1986031,
+       36.5708027
+      ],
+      [
+       -93.198588,
+       36.5707944
+      ],
+      [
+       -93.1985762,
+       36.5707837
+      ],
+      [
+       -93.1985685,
+       36.5707714
+      ],
+      [
+       -93.1985654,
+       36.5707584
+      ],
+      [
+       -93.1985671,
+       36.5707455
+      ],
+      [
+       -93.1985736,
+       36.5707337
+      ],
+      [
+       -93.1985843,
+       36.5707236
+      ],
+      [
+       -93.1985985,
+       36.5707161
+      ],
+      [
+       -93.1986154,
+       36.5707116
+      ],
+      [
+       -93.1986336,
+       36.5707104
+      ],
+      [
+       -93.1986521,
+       36.5707126
+      ],
+      [
+       -93.1986694,
+       36.5707181
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.1",
+    "area_yd2": 93,
+    "confidence": "high",
+    "evidence": "crown in both years and lidar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1995109,
+       36.5709159
+      ],
+      [
+       -93.1995239,
+       36.570923
+      ],
+      [
+       -93.199534,
+       36.5709319
+      ],
+      [
+       -93.1995407,
+       36.5709422
+      ],
+      [
+       -93.1995435,
+       36.5709531
+      ],
+      [
+       -93.1995421,
+       36.5709638
+      ],
+      [
+       -93.1995366,
+       36.5709737
+      ],
+      [
+       -93.1995276,
+       36.570982
+      ],
+      [
+       -93.1995154,
+       36.5709882
+      ],
+      [
+       -93.199501,
+       36.5709919
+      ],
+      [
+       -93.1994854,
+       36.5709928
+      ],
+      [
+       -93.1994697,
+       36.5709909
+      ],
+      [
+       -93.1994548,
+       36.5709862
+      ],
+      [
+       -93.1994418,
+       36.5709792
+      ],
+      [
+       -93.1994316,
+       36.5709702
+      ],
+      [
+       -93.1994249,
+       36.5709599
+      ],
+      [
+       -93.1994222,
+       36.5709491
+      ],
+      [
+       -93.1994236,
+       36.5709383
+      ],
+      [
+       -93.199429,
+       36.5709284
+      ],
+      [
+       -93.1994381,
+       36.5709201
+      ],
+      [
+       -93.1994502,
+       36.5709139
+      ],
+      [
+       -93.1994646,
+       36.5709102
+      ],
+      [
+       -93.1994802,
+       36.5709093
+      ],
+      [
+       -93.199496,
+       36.5709112
+      ],
+      [
+       -93.1995109,
+       36.5709159
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.2",
+    "area_yd2": 28,
+    "confidence": "medium",
+    "evidence": "small crown, lidar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1993217,
+       36.5709514
+      ],
+      [
+       -93.1993281,
+       36.5709553
+      ],
+      [
+       -93.1993329,
+       36.5709604
+      ],
+      [
+       -93.199336,
+       36.5709664
+      ],
+      [
+       -93.1993371,
+       36.5709728
+      ],
+      [
+       -93.199336,
+       36.5709792
+      ],
+      [
+       -93.199333,
+       36.5709852
+      ],
+      [
+       -93.1993281,
+       36.5709903
+      ],
+      [
+       -93.1993218,
+       36.5709942
+      ],
+      [
+       -93.1993144,
+       36.5709967
+      ],
+      [
+       -93.1993064,
+       36.5709976
+      ],
+      [
+       -93.1992985,
+       36.5709967
+      ],
+      [
+       -93.1992911,
+       36.5709943
+      ],
+      [
+       -93.1992847,
+       36.5709903
+      ],
+      [
+       -93.1992799,
+       36.5709852
+      ],
+      [
+       -93.1992768,
+       36.5709793
+      ],
+      [
+       -93.1992757,
+       36.5709729
+      ],
+      [
+       -93.1992768,
+       36.5709665
+      ],
+      [
+       -93.1992798,
+       36.5709605
+      ],
+      [
+       -93.1992847,
+       36.5709554
+      ],
+      [
+       -93.199291,
+       36.5709514
+      ],
+      [
+       -93.1992984,
+       36.570949
+      ],
+      [
+       -93.1993064,
+       36.5709481
+      ],
+      [
+       -93.1993143,
+       36.5709489
+      ],
+      [
+       -93.1993217,
+       36.5709514
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.3",
+    "area_yd2": 28,
+    "confidence": "medium",
+    "evidence": "small crown, lidar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1990794,
+       36.5709163
+      ],
+      [
+       -93.1990858,
+       36.5709203
+      ],
+      [
+       -93.1990907,
+       36.5709254
+      ],
+      [
+       -93.1990937,
+       36.5709313
+      ],
+      [
+       -93.1990948,
+       36.5709377
+      ],
+      [
+       -93.1990938,
+       36.5709441
+      ],
+      [
+       -93.1990907,
+       36.5709501
+      ],
+      [
+       -93.1990858,
+       36.5709552
+      ],
+      [
+       -93.1990795,
+       36.5709592
+      ],
+      [
+       -93.1990721,
+       36.5709617
+      ],
+      [
+       -93.1990642,
+       36.5709625
+      ],
+      [
+       -93.1990562,
+       36.5709617
+      ],
+      [
+       -93.1990488,
+       36.5709592
+      ],
+      [
+       -93.1990425,
+       36.5709553
+      ],
+      [
+       -93.1990376,
+       36.5709502
+      ],
+      [
+       -93.1990345,
+       36.5709442
+      ],
+      [
+       -93.1990335,
+       36.5709378
+      ],
+      [
+       -93.1990345,
+       36.5709314
+      ],
+      [
+       -93.1990376,
+       36.5709254
+      ],
+      [
+       -93.1990424,
+       36.5709203
+      ],
+      [
+       -93.1990488,
+       36.5709164
+      ],
+      [
+       -93.1990562,
+       36.5709139
+      ],
+      [
+       -93.1990641,
+       36.570913
+      ],
+      [
+       -93.199072,
+       36.5709139
+      ],
+      [
+       -93.1990794,
+       36.5709163
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "erase",
+    "lie": "water",
+    "edit": "15.0",
+    "area_yd2": 3276,
+    "lies": [
+     "water"
+    ],
+    "confidence": "medium",
+    "evidence": "cart path and trees, no water in 2020 or 2022; creek is at x<+10"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1952845,
+       36.5703046
+      ],
+      [
+       -93.1952203,
+       36.5708214
+      ],
+      [
+       -93.1946915,
+       36.5707786
+      ],
+      [
+       -93.1947558,
+       36.5702618
+      ],
+      [
+       -93.1952845,
+       36.5703046
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "erase",
+    "lie": "native",
+    "edit": "15.1",
+    "area_yd2": 1600,
+    "lies": [
+     "native"
+    ],
+    "confidence": "medium",
+    "evidence": "pond bank between the water and the fairway is green, smooth mown rough in 2020; no tufted texture"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.1957362,
+       36.5699767
+      ],
+      [
+       -93.1956852,
+       36.5703868
+      ],
+      [
+       -93.1953598,
+       36.5703604
+      ],
+      [
+       -93.1954108,
+       36.5699503
+      ],
+      [
+       -93.1957362,
+       36.5699767
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "15.2",
+    "area_yd2": 2500,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "medium",
+    "evidence": "woods only, nothing built visible"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -93.194961,
+       36.5706761
+      ],
+      [
+       -93.194859,
+       36.5714963
+      ],
+      [
+       -93.1946047,
+       36.5714758
+      ],
+      [
+       -93.1947068,
+       36.5706555
+      ],
+      [
+       -93.194961,
+       36.5706761
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

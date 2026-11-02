@@ -1,0 +1,1215 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "buffalo_ridge",
+ "corridor_set": "Buffalo",
+ "mapper": "mapper-buffalo_ridge",
+ "started": "2026-11-02T06:38Z",
+ "minutes": 50,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto water strip left of the cart path is tan grass, no water; native beyond the path",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       -57,
+       120,
+       400
+      ]
+     },
+     "confidence": "high",
+     "evidence": "no water in 2020 or 2022; strip left of the cart path (x~-60) is tan grass; CIR not dark"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -70,
+       -64,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan unmown grass beyond the cart path in 2020 and 2022, mown rough inside the path"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "rock outcrop left was mapped as water: now sand/waste; small tree row right 150-215 added",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       -5,
+       120,
+       305
+      ]
+     },
+     "confidence": "high",
+     "evidence": "white bare rock / tan grass both years, white-cyan in CIR, no water"
+    },
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       12,
+       40,
+       120,
+       180
+      ]
+     },
+     "confidence": "high",
+     "evidence": "cart path and grass, no water either year"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -45,
+        195
+       ],
+       [
+        -40,
+        210
+       ],
+       [
+        -38,
+        240
+       ],
+       [
+        -37,
+        260
+       ],
+       [
+        -40,
+        290
+       ],
+       [
+        -42,
+        320
+       ],
+       [
+        -46,
+        345
+       ],
+       [
+        -52,
+        365
+       ],
+       [
+        -58,
+        380
+       ],
+       [
+        -70,
+        390
+       ],
+       [
+        -70,
+        240
+       ],
+       [
+        -62,
+        220
+       ],
+       [
+        -55,
+        200
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "bare limestone/waste area white in 2020 and 2022, white-cyan in CIR, outside canopy"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -70,
+       -56,
+       120,
+       190
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan unmown grass beyond the cart path both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       33,
+       200,
+       5,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown in photo both years and lidar 2.5-8 m, not in auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       33,
+       174,
+       5,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown in photo both years and lidar 2.5-8 m"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       34,
+       155,
+       4,
+       5
+      ]
+     },
+     "confidence": "low",
+     "evidence": "small crown, lidar 2.5-8 m"
+    }
+   ]
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "no changes; rock ledge strip left (-60..-40) left as rough",
+   "edits": []
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native beyond the cart path on the left",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        190
+       ],
+       [
+        -12,
+        190
+       ],
+       [
+        -20,
+        220
+       ],
+       [
+        -28,
+        250
+       ],
+       [
+        -36,
+        280
+       ],
+       [
+        -44,
+        315
+       ],
+       [
+        -70,
+        330
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan tufted grass with shrubs left of the cart path in 2020 and 2022; mown rough between path and fairway"
+    }
+   ]
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "wooded; auto trees match the crowns",
+   "edits": []
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "creek left under trees correct; trees ok",
+   "edits": []
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "OB extended over the highway / parking beyond the tree strip",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        372
+       ],
+       [
+        70,
+        292
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        -70,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "paved road, parking and building visible both years beyond the auto OB strip"
+    }
+   ]
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "no changes; OB right kept (development north)",
+   "edits": []
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "no changes",
+   "edits": []
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "scattered crowns left between fairway and path added",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -37,
+       350,
+       6,
+       7
+      ]
+     },
+     "confidence": "high",
+     "evidence": "crown in both years and lidar"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -38,
+       264,
+       5,
+       6
+      ]
+     },
+     "confidence": "high",
+     "evidence": "crown in both years and lidar"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -45,
+       280,
+       3,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown, lidar"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -47,
+       304,
+       3,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown, lidar"
+    }
+   ]
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "false water over the cart path / woods right removed; outline OB in woods removed; auto native on the mown pond bank erased",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       18,
+       70,
+       212,
+       275
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "cart path and trees, no water in 2020 or 2022; creek is at x<+10"
+    },
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -22,
+       10,
+       168,
+       218
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "pond bank between the water and the fairway is green, smooth mown rough in 2020; no tufted texture"
+    },
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       45,
+       70,
+       260,
+       360
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "woods only, nothing built visible"
+    }
+   ]
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "no changes",
+   "edits": []
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "low",
+   "note": "trees right of 280-400 cleared between 2020 and 2022; left as auto",
+   "edits": []
+  }
+ },
+ "tees": {
+  "1": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "2": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "3": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "move",
+    "to": [
+     4,
+     24
+    ],
+    "confidence": "medium",
+    "evidence": "auto dot on grass 16 yds left of the line; card 20 yds ahead of Buffalo puts it at the back of the long OSM/visible box at +2..+12, along 20-95"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "4": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "5": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "6": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "7": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "8": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "9": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "10": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "11": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "12": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "13": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "14": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "15": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "16": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "17": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  },
+  "18": {
+   "Buffalo": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Silver (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   },
+   "Red (L)": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on/at a box; spacing matches card"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "1",
+   "what": "right side +35..+70 between hole 1 and the parallel fairway: mottled texture, could be native or rough; left unmarked"
+  },
+  {
+   "hole": "13",
+   "what": "auto water +25..+55 along 125-150 under trees (lidar dropout); kept"
+  },
+  {
+   "hole": "16",
+   "what": "Gold (walkback, along 33) and Blue (lidar pad, along 47) are 13-18 yds ahead of card spacing; no box visible to move to"
+  },
+  {
+   "hole": "18",
+   "what": "woods right along 280-400 cleared in 2022 (present 2020 and lidar); auto trees and OB wedge kept"
+  },
+  {
+   "hole": "2",
+   "what": "Red (L) walkback on open mown ground; no box seen"
+  }
+ ]
+}
