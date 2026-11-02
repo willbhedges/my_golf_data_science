@@ -182,3 +182,13 @@ def test_renumber_moves_geometry_keeps_card():
     assert out["holes"]["1"]["tees"]["Black"]["card_yards"] == 400
     same, moved2 = E.renumber(base, {"1": dict(green_ll=[LON0 + 0.003, LAT0 + 0.003])}, "Black")
     assert moved2 == {} and same["holes"] == base["holes"]
+
+
+def test_configs_subset_keeps_the_references(monkeypatch):
+    """--configs: only the named configurations, plus auto / truth / +routing (the elevation donors)."""
+    monkeypatch.setattr(E, "ONLY", {"+tees", "-trees"})
+    names = [n for n, _, _ in E.configs()]
+    assert sorted(names) == sorted(["auto", "truth", "+routing", "+tees", "-trees"])
+    monkeypatch.setattr(E, "ONLY", None)
+    assert len(E.configs()) == 2 + 2 * len(E.LAYERS) + len(E.GROUPS)
+

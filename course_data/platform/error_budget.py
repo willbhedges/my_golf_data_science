@@ -75,6 +75,8 @@ CACHE_JSON = os.path.join(HERE, "error_budget_cache.json")
 OUT_MD = os.path.join(HERE, "ERROR_BUDGET.md")
 
 AIM_TOL = 10.0
+ONLY = None             # --configs: run only these configurations (+ auto, truth, +routing)
+AUTO_DIR = None         # --auto-dir: rebuilt auto packages (<dir>/<slug>/package.json), e.g. platform/rebuild_tees_trees.py
 TIE = 0.01
 SEED = 31
 CHUNK = 24
@@ -465,6 +467,8 @@ def configs():
     cf += [(f"+{L}", "forward", {L}) for L in LAYERS]
     cf += [(f"-{L}", "reverse", set(LAYERS) - {L}) for L in LAYERS]
     cf += [(f"+{g}", "group", set(ls)) for g, ls in GROUPS.items()]
+    if ONLY:                                    # --configs: a subset (quick before / after runs; no report tables)
+        cf = [c for c in cf if c[0] in ONLY or c[0] in ("auto", "truth", "+routing")]
     return cf
 
 
@@ -601,6 +605,8 @@ def layer_diagnostics(auto_st, truth_st, tee_ll, aim_ll):
 def score_course(cfg, n, workers, cache):
     S = cfg["tees"]
     pkg_path = os.path.join(ROOT, cfg.get("package") or f"course_data/packages/{cfg['slug']}/package.json")
+    if AUTO_DIR and os.path.exists(os.path.join(AUTO_DIR, cfg["slug"], "package.json")):
+        pkg_path = os.path.join(AUTO_DIR, cfg["slug"], "package.json")      # --auto-dir: a rebuilt auto package
     auto_raw = rj(pkg_path)
     if auto_raw is None:
         return dict(slug=cfg["slug"], error=f"no package {os.path.relpath(pkg_path, ROOT)}")
@@ -705,7 +711,8 @@ def score_course(cfg, n, workers, cache):
             g["auto_src"] = sorted({str(z.get("src", ""))[:30] for z in (ha.get("zones_ll") or []) if isinstance(z, dict)})
         row["geo"] = g
         rows.append(row)
-    return dict(slug=cfg["slug"], tees=S, kind=cfg["kind"], package=os.path.relpath(pkg_path, ROOT), renumbered=moved,
+    return dict(slug=cfg["slug"], tees=S, kind=cfg["kind"], package=os.path.relpath(pkg_path, ROOT) if pkg_path.startswith(ROOT)
+                else pkg_path, renumbered=moved,
                 truth_holes=len(truth), scored=len(rows), rows=rows)
 
 
@@ -883,7 +890,21 @@ def main():
     ap.add_argument("--n", type=int, default=4000)
     ap.add_argument("--workers", type=int, default=None)
     ap.add_argument("--report", action="store_true")
+    ap.add_argument("--auto-dir", help="auto packages from <dir>/<slug>/package.json (platform/rebuild_tees_trees.py)")
+    ap.add_argument("--out", help="result json (default error_budget.json; the .md is written next to it)")
+    ap.add_argument("--cache", help="decision cache json (default error_budget_cache.json)")
+    ap.add_argument("--configs", help="only these configurations, e.g. +tees,+trees (writes the json, no tables)")
     a = ap.parse_args()
+    global AUTO_DIR, OUT_JSON, OUT_MD, CACHE_JSON, ONLY
+    if a.configs:
+        ONLY = set(a.configs.split(","))
+    if a.cache:
+        CACHE_JSON = os.path.abspath(a.cache)
+    if a.auto_dir:
+        AUTO_DIR = os.path.abspath(a.auto_dir)
+    if a.out:
+        OUT_JSON = os.path.abspath(a.out)
+        OUT_MD = os.path.splitext(OUT_JSON)[0] + ".md"
     if a.report:
         res = rj(OUT_JSON)
         res["summary"] = summarise(res["courses"], NO_CARD)
@@ -915,6 +936,9 @@ def main():
     courses = [prev[s] for s in order if s in prev]
     res = dict(schema="error_budget/1", made_utc=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%MZ"), n=a.n,
                aim_tol=AIM_TOL, tie=TIE, layers=LAYERS, groups=GROUPS, not_scored=NOT_SCORED, courses=courses)
+    if ONLY:
+        json.dump(res, open(OUT_JSON, "w"), indent=1, default=float)
+        return
     res["summary"] = summarise(courses, NO_CARD)
     res["summary_all"] = summarise(courses)
     res["recommendation"] = old.get("recommendation")       # hand-written from the numbers (kept across runs)
