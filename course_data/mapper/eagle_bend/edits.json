@@ -1,0 +1,1672 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "eagle_bend",
+ "corridor_set": "Gold",
+ "mapper": "mapper-eagle_bend",
+ "started": "2026-11-02T06:10Z",
+ "minutes": 55,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "checked: auto layers match the photo; no native seen (parkland mown rough); S2 candidates rejected",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "one lidar crown group left at 260-290 added",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -38,
+       275,
+       7,
+       14
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-2-R1",
+      "area_yd2": 350,
+      "p": 0.52,
+      "along": [
+       138,
+       172
+      ],
+      "gap_yd": 23.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "green mown rough beside the tree line in both years, no tufted texture",
+      "shape": {
+       "poly": [
+        [
+         57,
+         171
+        ],
+        [
+         54,
+         138
+        ],
+        [
+         43,
+         139
+        ],
+        [
+         47,
+         172
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "OB in woods erased",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "right side is woods, no development visible"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "OB in woods erased",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "right side is woods, no development visible"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "OB in woods erased",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "right side is woods / creek, no development visible"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "lidar crowns left of the fairway 195-320 (not in auto trees) added; tall trees lean ~10 yds between photo years, ells follow the lidar",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -25,
+       314,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -11,
+       256,
+       8,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -13,
+       199,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -26,
+       264,
+       8,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -27,
+       228,
+       11,
+       15
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -32,
+       253,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -33,
+       243,
+       6,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-7-R1",
+      "area_yd2": 212,
+      "p": 0.65,
+      "along": [
+       176,
+       200
+      ],
+      "gap_yd": 26.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         54,
+         200
+        ],
+        [
+         65,
+         182
+        ],
+        [
+         57,
+         176
+        ],
+        [
+         46,
+         193
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-7-R2",
+      "area_yd2": 354,
+      "p": 0.57,
+      "along": [
+       225,
+       254
+      ],
+      "gap_yd": 18.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         64,
+         254
+        ],
+        [
+         70,
+         244
+        ],
+        [
+         60,
+         239
+        ],
+        [
+         65,
+         229
+        ],
+        [
+         55,
+         225
+        ],
+        [
+         46,
+         245
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "lidar crowns right of the fairway 190-310 added; no native",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       33,
+       300,
+       8,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy (hag 2.5-8 m) crowns right of the fairway, touching crowns in the 2021 photo; not in the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       37,
+       279,
+       8,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy (hag 2.5-8 m) crowns right of the fairway, crowns in 2021 and 2023; not in the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       32,
+       193,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       41,
+       261,
+       7,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-9-L1",
+      "area_yd2": 340,
+      "p": 0.56,
+      "along": [
+       342,
+       364
+      ],
+      "gap_yd": 17.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         -14,
+         363
+        ],
+        [
+         -15,
+         342
+        ],
+        [
+         -26,
+         342
+        ],
+        [
+         -25,
+         353
+        ],
+        [
+         -36,
+         354
+        ],
+        [
+         -36,
+         364
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-9-R1",
+      "area_yd2": 243,
+      "p": 0.51,
+      "along": [
+       139,
+       162
+      ],
+      "gap_yd": 40.2,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         60,
+         161
+        ],
+        [
+         59,
+         139
+        ],
+        [
+         48,
+         140
+        ],
+        [
+         49,
+         162
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "lidar crown right at 225-245 (6 yds from fairway) + one at 249 added",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       15,
+       236,
+       10,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       38,
+       249,
+       6,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "two small lidar crowns left added",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -19,
+       177,
+       3,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -26,
+       208,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >2.5 m crown (hag) not in the auto tree layer; crown visible in the 2021 photo / CIR"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-11-L1",
+      "area_yd2": 349,
+      "p": 0.52,
+      "along": [
+       154,
+       188
+      ],
+      "gap_yd": 23.3,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         -34,
+         188
+        ],
+        [
+         -32,
+         155
+        ],
+        [
+         -42,
+         154
+        ],
+        [
+         -45,
+         187
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "OB on open field left erased; S2 candidates rejected",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "left boundary is a farm track and open field, no houses / fence / road visible in either year"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-13-L1",
+      "area_yd2": 454,
+      "p": 0.58,
+      "along": [
+       122,
+       180
+      ],
+      "gap_yd": 85.5,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         180
+        ],
+        [
+         -53,
+         126
+        ],
+        [
+         -63,
+         122
+        ],
+        [
+         -67,
+         133
+        ],
+        [
+         -70,
+         132
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-13-L2",
+      "area_yd2": 1544,
+      "p": 0.58,
+      "along": [
+       206,
+       285
+      ],
+      "gap_yd": 22.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "darker green rough with scattered small crowns between the two cart paths in 2021; same green rough in 2023, no tufted texture",
+      "shape": {
+       "poly": [
+        [
+         -55,
+         206
+        ],
+        [
+         -67,
+         246
+        ],
+        [
+         -56,
+         250
+        ],
+        [
+         -58,
+         258
+        ],
+        [
+         -59,
+         261
+        ],
+        [
+         -70,
+         258
+        ],
+        [
+         -70,
+         269
+        ],
+        [
+         -63,
+         271
+        ],
+        [
+         -66,
+         282
+        ],
+        [
+         -56,
+         285
+        ],
+        [
+         -49,
+         264
+        ],
+        [
+         -38,
+         267
+        ],
+        [
+         -36,
+         261
+        ],
+        [
+         -35,
+         256
+        ],
+        [
+         -46,
+         253
+        ],
+        [
+         -43,
+         243
+        ],
+        [
+         -32,
+         246
+        ],
+        [
+         -29,
+         237
+        ],
+        [
+         -39,
+         233
+        ],
+        [
+         -37,
+         221
+        ],
+        [
+         -47,
+         219
+        ],
+        [
+         -44,
+         208
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-13-L3",
+      "area_yd2": 204,
+      "p": 0.57,
+      "along": [
+       327,
+       351
+      ],
+      "gap_yd": 44.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         -63,
+         351
+        ],
+        [
+         -57,
+         330
+        ],
+        [
+         -68,
+         327
+        ],
+        [
+         -70,
+         349
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "2 young crowns left of the fairway (photo only) added",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -37,
+       268,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -47,
+       212,
+       5,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "row of young crowns right of the fairway 165-300 (photo only; lidar predates them) added",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       20,
+       298,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29,
+       286,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       28,
+       270,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       33,
+       258,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       37,
+       245,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       40,
+       232,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       41,
+       219,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       38,
+       205,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       39,
+       192,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       42,
+       178,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43,
+       165,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "young crown visible in 2021 and 2023 photos and dark in CIR; lidar shows only 0.5-2.5 m speckle (trees grew after the lidar)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-15-R1",
+      "area_yd2": 213,
+      "p": 0.57,
+      "along": [
+       339,
+       361
+      ],
+      "gap_yd": 24.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         18,
+         361
+        ],
+        [
+         27,
+         360
+        ],
+        [
+         25,
+         339
+        ],
+        [
+         14,
+         340
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-15-R2",
+      "area_yd2": 261,
+      "p": 0.73,
+      "along": [
+       390,
+       400
+      ],
+      "gap_yd": 49.9,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown parkland rough / rough under scattered crowns in both 2021 and 2023: green, smooth or mowing stripes, no tufted native texture; S2 fires on drought-browned rough and tree shade",
+      "shape": {
+       "poly": [
+        [
+         53,
+         390
+        ],
+        [
+         21,
+         394
+        ],
+        [
+         21,
+         400
+        ],
+        [
+         54,
+         400
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "checked: auto layers match the photo; no native seen (parkland mown rough); S2 candidates rejected",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "checked: auto layers match the photo; no native seen (parkland mown rough); S2 candidates rejected",
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-18-L1",
+      "area_yd2": 230,
+      "p": 0.57,
+      "along": [
+       284,
+       307
+      ],
+      "gap_yd": 23.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "rough under the scattered crowns left of the fairway, green in both years; S2 is firing on tree shade",
+      "shape": {
+       "poly": [
+        [
+         -51,
+         307
+        ],
+        [
+         -41,
+         300
+        ],
+        [
+         -56,
+         284
+        ],
+        [
+         -63,
+         291
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-18-L2",
+      "area_yd2": 559,
+      "p": 0.6,
+      "along": [
+       332,
+       370
+      ],
+      "gap_yd": 18.3,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "rough under the scattered crowns left of the fairway, green in both years; S2 is firing on tree shade",
+      "shape": {
+       "poly": [
+        [
+         -44,
+         370
+        ],
+        [
+         -26,
+         356
+        ],
+        [
+         -47,
+         332
+        ],
+        [
+         -54,
+         338
+        ],
+        [
+         -48,
+         348
+        ],
+        [
+         -56,
+         354
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "2": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "3": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "4": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "5": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "6": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "7": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "8": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "9": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "10": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "11": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "12": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "13": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "14": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "15": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "16": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "17": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "18": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "14",
+   "what": "Gold tee (walkback, card 429): no box visible at the auto spot in photo or DEM; no better box seen either, kept"
+  },
+  {
+   "hole": "7",
+   "what": "Gold tee (walkback, card 560): auto spot 25 yds behind the Blue OSM box, in a clearing; no clear pad in the DEM, kept"
+  },
+  {
+   "hole": "18",
+   "what": "Gold tee (walkback): small raised pad in the DEM near the dot, kept"
+  },
+  {
+   "hole": "13",
+   "what": "right side 120-260 (x +30..+70) looks tan / textured in 2023 but green, mown in 2021: maybe unmown, not added"
+  },
+  {
+   "hole": "10",
+   "what": "tan band left 290-380 between the fairway and trees in 2021 (pale in CIR); green in 2023: dormant rough or native, not added"
+  },
+  {
+   "hole": "all",
+   "what": "tees for the other sets kept without a box-by-box check on every hole (time)"
+  },
+  {
+   "hole": "15",
+   "what": "photo-only crown positions right of the fairway read from CIR at +/-3 yds"
+  }
+ ]
+}

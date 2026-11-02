@@ -1,0 +1,1086 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "eagle_bend",
+ "corridor_set": "Gold",
+ "mapper": "",
+ "started": "",
+ "minutes": null,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py eagle_bend. See course_data/mapper/BRIEF.md for ops, shapes and rules. s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-2-R1",
+      "area_yd2": 350,
+      "p": 0.52,
+      "along": [
+       138,
+       172
+      ],
+      "gap_yd": 23.6,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         57,
+         171
+        ],
+        [
+         54,
+         138
+        ],
+        [
+         43,
+         139
+        ],
+        [
+         47,
+         172
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "3": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-7-R1",
+      "area_yd2": 212,
+      "p": 0.65,
+      "along": [
+       176,
+       200
+      ],
+      "gap_yd": 26.6,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         54,
+         200
+        ],
+        [
+         65,
+         182
+        ],
+        [
+         57,
+         176
+        ],
+        [
+         46,
+         193
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-7-R2",
+      "area_yd2": 354,
+      "p": 0.57,
+      "along": [
+       225,
+       254
+      ],
+      "gap_yd": 18.8,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         64,
+         254
+        ],
+        [
+         70,
+         244
+        ],
+        [
+         60,
+         239
+        ],
+        [
+         65,
+         229
+        ],
+        [
+         55,
+         225
+        ],
+        [
+         46,
+         245
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "9": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-9-L1",
+      "area_yd2": 340,
+      "p": 0.56,
+      "along": [
+       342,
+       364
+      ],
+      "gap_yd": 17.6,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -14,
+         363
+        ],
+        [
+         -15,
+         342
+        ],
+        [
+         -26,
+         342
+        ],
+        [
+         -25,
+         353
+        ],
+        [
+         -36,
+         354
+        ],
+        [
+         -36,
+         364
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-9-R1",
+      "area_yd2": 243,
+      "p": 0.51,
+      "along": [
+       139,
+       162
+      ],
+      "gap_yd": 40.2,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         60,
+         161
+        ],
+        [
+         59,
+         139
+        ],
+        [
+         48,
+         140
+        ],
+        [
+         49,
+         162
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "10": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-11-L1",
+      "area_yd2": 349,
+      "p": 0.52,
+      "along": [
+       154,
+       188
+      ],
+      "gap_yd": 23.3,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -34,
+         188
+        ],
+        [
+         -32,
+         155
+        ],
+        [
+         -42,
+         154
+        ],
+        [
+         -45,
+         187
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-13-L1",
+      "area_yd2": 454,
+      "p": 0.58,
+      "along": [
+       122,
+       180
+      ],
+      "gap_yd": 85.5,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         180
+        ],
+        [
+         -53,
+         126
+        ],
+        [
+         -63,
+         122
+        ],
+        [
+         -67,
+         133
+        ],
+        [
+         -70,
+         132
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-13-L2",
+      "area_yd2": 1544,
+      "p": 0.58,
+      "along": [
+       206,
+       285
+      ],
+      "gap_yd": 22.6,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -55,
+         206
+        ],
+        [
+         -67,
+         246
+        ],
+        [
+         -56,
+         250
+        ],
+        [
+         -58,
+         258
+        ],
+        [
+         -59,
+         261
+        ],
+        [
+         -70,
+         258
+        ],
+        [
+         -70,
+         269
+        ],
+        [
+         -63,
+         271
+        ],
+        [
+         -66,
+         282
+        ],
+        [
+         -56,
+         285
+        ],
+        [
+         -49,
+         264
+        ],
+        [
+         -38,
+         267
+        ],
+        [
+         -36,
+         261
+        ],
+        [
+         -35,
+         256
+        ],
+        [
+         -46,
+         253
+        ],
+        [
+         -43,
+         243
+        ],
+        [
+         -32,
+         246
+        ],
+        [
+         -29,
+         237
+        ],
+        [
+         -39,
+         233
+        ],
+        [
+         -37,
+         221
+        ],
+        [
+         -47,
+         219
+        ],
+        [
+         -44,
+         208
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-13-L3",
+      "area_yd2": 204,
+      "p": 0.57,
+      "along": [
+       327,
+       351
+      ],
+      "gap_yd": 44.1,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -63,
+         351
+        ],
+        [
+         -57,
+         330
+        ],
+        [
+         -68,
+         327
+        ],
+        [
+         -70,
+         349
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-15-R1",
+      "area_yd2": 213,
+      "p": 0.57,
+      "along": [
+       339,
+       361
+      ],
+      "gap_yd": 24.1,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         18,
+         361
+        ],
+        [
+         27,
+         360
+        ],
+        [
+         25,
+         339
+        ],
+        [
+         14,
+         340
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-15-R2",
+      "area_yd2": 261,
+      "p": 0.73,
+      "along": [
+       390,
+       400
+      ],
+      "gap_yd": 49.9,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         53,
+         390
+        ],
+        [
+         21,
+         394
+        ],
+        [
+         21,
+         400
+        ],
+        [
+         54,
+         400
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "16": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-18-L1",
+      "area_yd2": 230,
+      "p": 0.57,
+      "along": [
+       284,
+       307
+      ],
+      "gap_yd": 23.6,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -51,
+         307
+        ],
+        [
+         -41,
+         300
+        ],
+        [
+         -56,
+         284
+        ],
+        [
+         -63,
+         291
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-18-L2",
+      "area_yd2": 559,
+      "p": 0.6,
+      "along": [
+       332,
+       370
+      ],
+      "gap_yd": 18.3,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -44,
+         370
+        ],
+        [
+         -26,
+         356
+        ],
+        [
+         -47,
+         332
+        ],
+        [
+         -54,
+         338
+        ],
+        [
+         -48,
+         348
+        ],
+        [
+         -56,
+         354
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "2": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "3": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "4": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "5": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "6": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "7": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "8": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "9": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "10": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "11": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "12": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "13": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "14": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "15": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "16": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "17": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "18": {
+   "Gold": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  }
+ }
+}
