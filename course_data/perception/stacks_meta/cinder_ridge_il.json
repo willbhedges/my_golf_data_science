@@ -35,13 +35,13 @@
    41.3130977558473
   ]
  },
- "built_utc": "2026-10-17T06:07:43Z",
+ "built_utc": "2026-11-02T00:40:21Z",
  "seconds": {
-  "lidar": 9.4,
-  "naip": 25.9,
-  "segment": 77.4,
-  "labels": 25.9,
-  "total": 142.2
+  "lidar": 8.0,
+  "naip": 41.4,
+  "segment": 83.4,
+  "labels": 394.9,
+  "total": 531.4
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_5County_WillCo_2014_LAS_2016-hag-2m-0-1",
-     "when": "2014-04-19T00:00:00Z",
+     "when": "2014-04-19T00:00:00.000000Z",
      "cells": 2645904,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_5County_WillCo_2014_LAS_2016",
-      "end_datetime": "2014-04-19T00:00:00Z",
-      "start_datetime": "2014-04-05T00:00:00Z"
+      "end_datetime": "2014-04-19T00:00:00.000000Z",
+      "start_datetime": "2014-04-05T00:00:00.000000Z"
      }
     }
    ],
@@ -70,13 +70,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_5County_WillCo_2014_LAS_2016-dtm-2m-0-1",
-     "when": "2014-04-19T00:00:00Z",
+     "when": "2014-04-19T00:00:00.000000Z",
      "cells": 660381,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_5County_WillCo_2014_LAS_2016",
-      "end_datetime": "2014-04-19T00:00:00Z",
-      "start_datetime": "2014-04-05T00:00:00Z"
+      "end_datetime": "2014-04-19T00:00:00.000000Z",
+      "start_datetime": "2014-04-05T00:00:00.000000Z"
      }
     }
    ],
@@ -88,13 +88,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_5County_WillCo_2014_LAS_2016-classification-2m-0-1",
-     "when": "2014-04-19T00:00:00Z",
+     "when": "2014-04-19T00:00:00.000000Z",
      "cells": 2494116,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_5County_WillCo_2014_LAS_2016",
-      "end_datetime": "2014-04-19T00:00:00Z",
-      "start_datetime": "2014-04-05T00:00:00Z"
+      "end_datetime": "2014-04-19T00:00:00.000000Z",
+      "start_datetime": "2014-04-05T00:00:00.000000Z"
      }
     }
    ],
@@ -132,6 +132,36 @@
      "2023-07-27"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 9.91,
+    "items": [
+     "il_m_4108847_sw_16_060_20210928",
+     "il_m_4108847_nw_16_060_20210928"
+    ],
+    "acquired": [
+     "2021-09-28"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 8.73,
+    "items": [
+     "il_m_4108847_nw_16_060_20190914_20200108",
+     "il_m_4108847_sw_16_060_20190809_20200108"
+    ],
+    "acquired": [
+     "2019-08-09",
+     "2019-09-14"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -163,8 +193,8 @@
    "id": 295949952
   },
   "center": [
-   -88.217858,
-   41.305886
+   -88.21785755,
+   41.3058859
   ],
   "bbox": [
    -88.2264334,
@@ -173,7 +203,7 @@
    41.311538
   ],
   "state": "IL",
-  "town": null
+  "town": "Wilmington"
  },
  "boundary": {
   "type": "Polygon",

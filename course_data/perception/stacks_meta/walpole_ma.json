@@ -35,15 +35,17 @@
    42.14106074157444
   ]
  },
- "built_utc": "2026-10-17T04:49:11Z",
+ "built_utc": "2026-11-02T06:00:22Z",
  "seconds": {
-  "lidar": 176.6,
-  "naip": 15.2,
-  "segment": 57.5,
-  "labels": 5.2,
-  "total": 257.1
+  "lidar": 162.7,
+  "naip": 39.6,
+  "segment": 63.7,
+  "labels": 47.0,
+  "total": 315.7
  },
- "errors": {},
+ "errors": {
+  "tnm_dem": "RuntimeError('RuntimeError(\"HTTP 504 \\'<html>\\\\\\\\r\\\\\\\\n<head><title>504 Gateway Time-out</title></head>\\\\\\\\r\\\\\\\\n<body>\\\\\\\\r\\\\\\\\n<center><h1>504 Gateway Time-out</h1></center>\\\\\\\\r\\\\\\\\n</body>\\\\\\\\r\\\\\\\\n</html>\\\\\\\\r\\\\\\\\n\\'\")')"
+ },
  "lidar": {},
  "ept": {
   "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
@@ -85,6 +87,35 @@
      "2023-07-07"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 8.91,
+    "items": [
+     "ma_m_4207163_nw_19_060_20210826",
+     "ma_m_4207155_sw_19_060_20210826"
+    ],
+    "acquired": [
+     "2021-08-26"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 9.57,
+    "items": [
+     "ma_m_4207163_nw_19_060_20180827_20190207",
+     "ma_m_4207155_sw_19_060_20180827_20190206"
+    ],
+    "acquired": [
+     "2018-08-27"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -93,12 +124,13 @@
   "model": "ariadgolf/golf-course-segmentation",
   "sha": "43ee294441db"
  },
- "dtm_base_m": 48.0,
+ "dtm_base_m": null,
+ "dtm_source": null,
  "coverage": {
   "naip": 1.0,
   "hag": 0.9807437704505412,
   "cls": 0.9807437704505412,
-  "dtm": 1.0,
+  "dtm": 0.0,
   "intensity": 0.0
  },
  "labels": {
@@ -789,6 +821,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

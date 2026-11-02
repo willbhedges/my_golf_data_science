@@ -1,0 +1,334 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "pine_burr_ms",
+ "name": "Pine Burr",
+ "state": "MS",
+ "bbox_wsen": [
+  -89.1650318,
+  30.864248,
+  -89.1504521,
+  30.8731431
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1716,
+  "height": 1316,
+  "bounds": [
+   292846,
+   3416386,
+   294562,
+   3417702
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   292846.0,
+   0.0,
+   -1.0,
+   3417702.0
+  ],
+  "ll_bbox_wsen": [
+   -89.16684330089319,
+   30.862613616625072,
+   -89.1486397190569,
+   30.874779089316842
+  ]
+ },
+ "built_utc": "2026-11-02T03:41:41Z",
+ "seconds": {
+  "lidar": 33.8,
+  "naip": 26.4,
+  "segment": 31.7,
+  "labels": 38.7,
+  "total": 132.5
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "MS_CampShelby_2006-dsm-2m-5-7",
+     "when": "2006-04-12T00:00:00.000000Z",
+     "cells": 2237840,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MS_CampShelby_2006",
+      "end_datetime": "2006-04-12T00:00:00.000000Z",
+      "start_datetime": "2006-03-26T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_MS_Coastal_3DEPExt_Coastal_AOI_2015_LAS_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MS_Coastal_3DEPExt_Coastal_AOI_2015_LAS_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 48117106281
+   },
+   {
+    "name": "MS_CampShelby_2006",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MS_CampShelby_2006/ept.json",
+    "cov": 1.0,
+    "year": 2006,
+    "count": 1865505107
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_MS_Coastal_3DEPExt_Coastal_AOI_2015_LAS_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_MS_Coastal_3DEPExt_Coastal_AOI_2015_LAS_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 48117106281,
+    "cells": 2228721
+   }
+  ],
+  "valid": 0.9869213233574936,
+  "hag_mb": 1.25,
+  "frac_gt_2_5m": 0.4815654203952076,
+  "class_mb": 0.03
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 8.57,
+    "items": [
+     "ms_m_3008915_ne_16_060_20230701_20240103",
+     "ms_m_3008907_se_16_060_20230701_20240103"
+    ],
+    "acquired": [
+     "2023-07-01"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 12.12,
+    "items": [
+     "ms_m_3008915_ne_16_030_20211112",
+     "ms_m_3008907_se_16_030_20211112"
+    ],
+    "acquired": [
+     "2021-11-12"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 9.04,
+    "items": [
+     "ms_m_3008915_ne_16_060_20200615",
+     "ms_m_3008907_se_16_060_20200615"
+    ],
+    "acquired": [
+     "2020-06-15"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 63.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9869213233574936,
+  "cls": 0.9869213233574936,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 286
+ },
+ "course": {
+  "name": "Pine Burr",
+  "osm": {
+   "type": "way",
+   "id": 1544188047
+  },
+  "center": [
+   -89.15774195,
+   30.868695549999998
+  ],
+  "bbox": [
+   -89.1650318,
+   30.864248,
+   -89.1504521,
+   30.8731431
+  ],
+  "state": "MS",
+  "town": "Wiggins"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -89.1648061,
+     30.8712992
+    ],
+    [
+     -89.164186,
+     30.8722881
+    ],
+    [
+     -89.1634747,
+     30.8725884
+    ],
+    [
+     -89.1602071,
+     30.8728708
+    ],
+    [
+     -89.1588853,
+     30.8728594
+    ],
+    [
+     -89.1571934,
+     30.8731431
+    ],
+    [
+     -89.1565457,
+     30.8720766
+    ],
+    [
+     -89.1558054,
+     30.8710215
+    ],
+    [
+     -89.1545894,
+     30.8701706
+    ],
+    [
+     -89.1538359,
+     30.8695919
+    ],
+    [
+     -89.152144,
+     30.8693991
+    ],
+    [
+     -89.1513737,
+     30.8696477
+    ],
+    [
+     -89.1511554,
+     30.8697596
+    ],
+    [
+     -89.1505975,
+     30.8697848
+    ],
+    [
+     -89.1505181,
+     30.8685141
+    ],
+    [
+     -89.1504521,
+     30.8672547
+    ],
+    [
+     -89.150506,
+     30.8662693
+    ],
+    [
+     -89.1516552,
+     30.8662583
+    ],
+    [
+     -89.1530825,
+     30.8664605
+    ],
+    [
+     -89.1546422,
+     30.8666533
+    ],
+    [
+     -89.1549595,
+     30.8655414
+    ],
+    [
+     -89.1564928,
+     30.8655187
+    ],
+    [
+     -89.1577353,
+     30.8655528
+    ],
+    [
+     -89.1588853,
+     30.8658705
+    ],
+    [
+     -89.1598106,
+     30.8651557
+    ],
+    [
+     -89.1607887,
+     30.8643841
+    ],
+    [
+     -89.1619519,
+     30.864248
+    ],
+    [
+     -89.1636967,
+     30.8646791
+    ],
+    [
+     -89.164741,
+     30.8668235
+    ],
+    [
+     -89.1650318,
+     30.8685254
+    ],
+    [
+     -89.1649816,
+     30.8693789
+    ],
+    [
+     -89.1649315,
+     30.8702324
+    ],
+    [
+     -89.1648061,
+     30.8712992
+    ]
+   ]
+  ]
+ }
+}

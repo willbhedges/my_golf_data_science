@@ -35,13 +35,13 @@
    41.11763738450802
   ]
  },
- "built_utc": "2026-10-17T07:17:46Z",
+ "built_utc": "2026-11-02T04:43:32Z",
  "seconds": {
-  "lidar": 14.4,
-  "naip": 11.0,
-  "segment": 43.4,
-  "labels": 39.4,
-  "total": 110.7
+  "lidar": 8.3,
+  "naip": 12.9,
+  "segment": 45.8,
+  "labels": 33.1,
+  "total": 102.2
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019-hag-2m-3-12",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 985748,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -70,13 +70,13 @@
    "items": [
     {
      "id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019-dtm-2m-3-12",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 246486,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -88,13 +88,13 @@
    "items": [
     {
      "id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019-classification-2m-3-3",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 1479624,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_UT_Northern_QL1_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -127,6 +127,36 @@
      "2021-08-13"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 4.51,
+    "items": [
+     "ut_m_4111157_ne_12_060_20180916_20181209",
+     "ut_m_4111157_nw_12_060_20180829_20181209"
+    ],
+    "acquired": [
+     "2018-08-29",
+     "2018-09-16"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2016,
+    "file": "naip_2016.tif",
+    "mb": 4.35,
+    "items": [
+     "ut_m_4111157_nw_12_1_20160713_20161017",
+     "ut_m_4111157_ne_12_1_20160713_20161017"
+    ],
+    "acquired": [
+     "2016-07-13"
+    ],
+    "gsd_m": 1.0,
     "res_m": 0.6
    }
   ]

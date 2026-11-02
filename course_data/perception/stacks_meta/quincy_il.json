@@ -35,13 +35,13 @@
    39.92769951715668
   ]
  },
- "built_utc": "2026-10-17T04:35:07Z",
+ "built_utc": "2026-11-02T04:06:09Z",
  "seconds": {
-  "lidar": 1.6,
-  "naip": 16.9,
-  "segment": 45.0,
-  "labels": 23.8,
-  "total": 89.2
+  "lidar": 1.2,
+  "naip": 21.3,
+  "segment": 46.1,
+  "labels": 375.1,
+  "total": 445.3
  },
  "errors": {},
  "lidar": {},
@@ -65,6 +65,35 @@
      "2023-07-10"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 5.13,
+    "items": [
+     "il_m_3909106_sw_15_060_20210727",
+     "il_m_3909105_se_15_060_20210727"
+    ],
+    "acquired": [
+     "2021-07-27"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 4.61,
+    "items": [
+     "il_m_3909106_sw_15_060_20190728_20191220",
+     "il_m_3909105_se_15_060_20190728_20191220"
+    ],
+    "acquired": [
+     "2019-07-28"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -74,6 +103,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 175.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "coverage": {
   "naip": 1.0,
   "hag": 1.0,
@@ -342,7 +372,6 @@
    ]
   ]
  },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "meta_chm": {
   "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
   "tiles": [

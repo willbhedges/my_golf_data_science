@@ -35,30 +35,28 @@
    33.96117747808707
   ]
  },
- "built_utc": "2026-10-17T07:01:11Z",
+ "built_utc": "2026-11-02T06:11:54Z",
  "seconds": {
-  "lidar": 5.9,
-  "naip": 4.4,
-  "segment": 14.9,
-  "labels": 185.9,
-  "total": 212.5
+  "lidar": 5.7,
+  "naip": 10.6,
+  "segment": 33.0,
+  "labels": 39.4,
+  "total": 90.6
  },
- "errors": {
-  "labels": "Traceback (most recent call last):\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 218, in build\n    fc = overpass_labels(g1.ll_bbox)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 86, in overpass_labels\n    data = pc.overpass(q, tries=3)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/platform/platform_common.py\", line 93, in overpass\n    raise RuntimeError(f\"all Overpass endpoints failed: {last}\")\nRuntimeError: all Overpass endpoints failed: https://overpass.private.coffee/api/interpreter: HTTP 500 <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html><head>\n<title>500 Internal Server Error</title>\n</head><body>\n<h1>Internal Server Error</h1>\n<p>The ser\n"
- },
+ "errors": {},
  "lidar": {
   "hag": {
    "source": "planetary-computer 3dep-lidar-hag",
    "items": [
     {
      "id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018-hag-2m-6-8",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 1077820,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -72,13 +70,13 @@
    "items": [
     {
      "id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018-dtm-2m-6-8",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 269324,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -90,13 +88,13 @@
    "items": [
     {
      "id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018-classification-2m-6-8",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 1075064,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_LosAngeles_2016_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -128,6 +126,33 @@
      "2022-05-11"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 4.08,
+    "items": [
+     "ca_m_3311805_ne_11_060_20200515"
+    ],
+    "acquired": [
+     "2020-05-15"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 4.14,
+    "items": [
+     "ca_m_3311805_ne_11_060_20180723_20190208"
+    ],
+    "acquired": [
+     "2018-07-23"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -148,6 +173,9 @@
   "cls": 0.9974281801684115,
   "dtm": 0.9994989961367036,
   "intensity": 0.9999851554410875
+ },
+ "labels": {
+  "features": 1798
  },
  "course": {
   "name": "Westchester Golf Course",

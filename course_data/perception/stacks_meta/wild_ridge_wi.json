@@ -35,13 +35,13 @@
    44.83804489395053
   ]
  },
- "built_utc": "2026-10-17T04:55:56Z",
+ "built_utc": "2026-11-02T06:20:13Z",
  "seconds": {
-  "lidar": 38.9,
-  "naip": 9.8,
-  "segment": 62.9,
-  "labels": 5.1,
-  "total": 119.2
+  "lidar": 39.9,
+  "naip": 25.0,
+  "segment": 68.4,
+  "labels": 38.8,
+  "total": 174.7
  },
  "errors": {},
  "lidar": {},
@@ -92,6 +92,36 @@
      "2022-08-22"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 9.15,
+    "items": [
+     "wi_m_4409112_nw_15_060_20200811",
+     "wi_m_4409112_ne_15_060_20200811"
+    ],
+    "acquired": [
+     "2020-08-11"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 8.09,
+    "items": [
+     "wi_m_4409112_ne_15_060_20180908_20190204",
+     "wi_m_4409112_nw_15_060_20180822_20190204"
+    ],
+    "acquired": [
+     "2018-08-22",
+     "2018-09-08"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -101,6 +131,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 266.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "coverage": {
   "naip": 1.0,
   "hag": 0.9943067059573113,
@@ -109,7 +140,7 @@
   "intensity": 0.0
  },
  "labels": {
-  "features": 549
+  "features": 604
  },
  "course": {
   "name": "Wild Ridge Golf Course",
@@ -324,6 +355,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

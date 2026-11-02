@@ -35,13 +35,13 @@
    38.11036432775713
   ]
  },
- "built_utc": "2026-10-17T06:52:27Z",
+ "built_utc": "2026-11-02T04:47:49Z",
  "seconds": {
-  "lidar": 40.5,
-  "naip": 10.8,
-  "segment": 66.0,
-  "labels": 63.2,
-  "total": 183.1
+  "lidar": 37.3,
+  "naip": 35.1,
+  "segment": 71.7,
+  "labels": 386.3,
+  "total": 533.2
  },
  "errors": {},
  "lidar": {
@@ -50,24 +50,24 @@
    "items": [
     {
      "id": "IN_Statewide_Opt1_B5_2017-hag-2m-5-2",
-     "when": "2017-12-31T00:00:00Z",
+     "when": "2017-12-31T00:00:00.000000Z",
      "cells": 627686,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IN_Statewide_Opt1_B5_2017",
-      "end_datetime": "2017-12-31T00:00:00Z",
-      "start_datetime": "2017-01-01T00:00:00Z"
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "IN_Statewide_Opt1_B5_2017-hag-2m-4-2",
-     "when": "2017-12-31T00:00:00Z",
+     "when": "2017-12-31T00:00:00.000000Z",
      "cells": 345812,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IN_Statewide_Opt1_B5_2017",
-      "end_datetime": "2017-12-31T00:00:00Z",
-      "start_datetime": "2017-01-01T00:00:00Z"
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -78,24 +78,24 @@
    "items": [
     {
      "id": "IN_Statewide_Opt1_B5_2017-dtm-2m-5-2",
-     "when": "2017-12-31T00:00:00Z",
+     "when": "2017-12-31T00:00:00.000000Z",
      "cells": 156906,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IN_Statewide_Opt1_B5_2017",
-      "end_datetime": "2017-12-31T00:00:00Z",
-      "start_datetime": "2017-01-01T00:00:00Z"
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "IN_Statewide_Opt1_B5_2017-dtm-2m-4-2",
-     "when": "2017-12-31T00:00:00Z",
+     "when": "2017-12-31T00:00:00.000000Z",
      "cells": 86453,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IN_Statewide_Opt1_B5_2017",
-      "end_datetime": "2017-12-31T00:00:00Z",
-      "start_datetime": "2017-01-01T00:00:00Z"
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -105,24 +105,24 @@
    "items": [
     {
      "id": "IN_Statewide_Opt1_B5_2017-dsm-2m-5-2",
-     "when": "2017-12-31T00:00:00Z",
+     "when": "2017-12-31T00:00:00.000000Z",
      "cells": 630466,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IN_Statewide_Opt1_B5_2017",
-      "end_datetime": "2017-12-31T00:00:00Z",
-      "start_datetime": "2017-01-01T00:00:00Z"
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "IN_Statewide_Opt1_B5_2017-dsm-2m-4-2",
-     "when": "2017-12-31T00:00:00Z",
+     "when": "2017-12-31T00:00:00.000000Z",
      "cells": 345812,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IN_Statewide_Opt1_B5_2017",
-      "end_datetime": "2017-12-31T00:00:00Z",
-      "start_datetime": "2017-01-01T00:00:00Z"
+      "end_datetime": "2017-12-31T00:00:00.000000Z",
+      "start_datetime": "2017-01-01T00:00:00.000000Z"
      }
     }
    ]
@@ -197,6 +197,37 @@
     "acquired": [
      "2022-06-03",
      "2022-06-20"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 8.41,
+    "items": [
+     "ky_m_3808558_nw_16_060_20200612",
+     "ky_m_3808557_ne_16_060_20200612",
+     "in_m_3808557_ne_16_060_20200612"
+    ],
+    "acquired": [
+     "2020-06-12"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 9.86,
+    "items": [
+     "ky_m_3808558_nw_16_060_20180727_20190201",
+     "ky_m_3808557_ne_16_060_20180727_20190201",
+     "in_m_3808557_ne_16_060_20180727_20190201"
+    ],
+    "acquired": [
+     "2018-07-27"
     ],
     "gsd_m": 0.6,
     "res_m": 0.6

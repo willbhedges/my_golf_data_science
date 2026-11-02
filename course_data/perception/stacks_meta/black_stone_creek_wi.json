@@ -35,13 +35,13 @@
    43.23387261688631
   ]
  },
- "built_utc": "2026-10-17T04:15:38Z",
+ "built_utc": "2026-11-01T23:56:23Z",
  "seconds": {
-  "lidar": 57.2,
-  "naip": 9.5,
-  "segment": 48.5,
-  "labels": 39.3,
-  "total": 157.0
+  "lidar": 63.0,
+  "naip": 23.5,
+  "segment": 62.8,
+  "labels": 28.6,
+  "total": 180.3
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-hag-2m-6-10",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 118260,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -67,13 +67,13 @@
    "items": [
     {
      "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dtm-2m-6-10",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 29565,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -83,35 +83,35 @@
    "items": [
     {
      "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dsm-2m-6-4",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 2071320,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "WI_WashingtonCo_2006-dsm-2m-3-4",
-     "when": "2006-12-19T00:00:00Z",
+     "when": "2006-12-19T00:00:00.000000Z",
      "cells": 7717,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "WI_WashingtonCo_2006",
-      "end_datetime": "2006-12-19T00:00:00Z",
-      "start_datetime": "2006-12-18T00:00:00Z"
+      "end_datetime": "2006-12-19T00:00:00.000000Z",
+      "start_datetime": "2006-12-18T00:00:00.000000Z"
      }
     },
     {
      "id": "WI_WashingtonCo_2006-dsm-2m-2-4",
-     "when": "2006-12-19T00:00:00Z",
+     "when": "2006-12-19T00:00:00.000000Z",
      "cells": 1908,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "WI_WashingtonCo_2006",
-      "end_datetime": "2006-12-19T00:00:00Z",
-      "start_datetime": "2006-12-18T00:00:00Z"
+      "end_datetime": "2006-12-19T00:00:00.000000Z",
+      "start_datetime": "2006-12-18T00:00:00.000000Z"
      }
     }
    ]
@@ -171,6 +171,35 @@
      "2022-06-23"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 7.93,
+    "items": [
+     "wi_m_4308856_nw_16_060_20200724",
+     "wi_m_4308855_ne_16_060_20200724"
+    ],
+    "acquired": [
+     "2020-07-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 7.3,
+    "items": [
+     "wi_m_4308856_nw_16_060_20180915_20190204",
+     "wi_m_4308855_ne_16_060_20180915_20190204"
+    ],
+    "acquired": [
+     "2018-09-15"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -180,6 +209,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 256.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "intensity_stretch": [
   21.187397003173828,
   197.12444946289062
@@ -411,6 +441,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

@@ -35,13 +35,13 @@
    41.77009481402704
   ]
  },
- "built_utc": "2026-10-17T06:20:09Z",
+ "built_utc": "2026-11-02T02:53:25Z",
  "seconds": {
-  "lidar": 16.7,
-  "naip": 47.9,
-  "segment": 109.8,
-  "labels": 23.9,
-  "total": 204.0
+  "lidar": 14.2,
+  "naip": 65.2,
+  "segment": 92.0,
+  "labels": 61.0,
+  "total": 237.3
  },
  "errors": {},
  "lidar": {
@@ -50,24 +50,24 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-hag-2m-19-8",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 2303632,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-hag-2m-19-7",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 1065100,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -81,24 +81,24 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dtm-2m-19-8",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 575339,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dtm-2m-19-7",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 266183,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -110,24 +110,24 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-classification-2m-19-8",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 2263528,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-classification-2m-19-7",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 1043140,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -166,6 +166,39 @@
      "2023-08-22"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 21.0,
+    "items": [
+     "ma_m_4107024_nw_19_060_20210826",
+     "ma_m_4107024_ne_19_060_20210826",
+     "ma_m_4107016_sw_19_060_20210826",
+     "ma_m_4107016_se_19_060_20210826"
+    ],
+    "acquired": [
+     "2021-08-26"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 19.32,
+    "items": [
+     "ma_m_4107024_nw_19_060_20180817_20190206",
+     "ma_m_4107024_ne_19_060_20180817_20190206",
+     "ma_m_4107016_sw_19_060_20180817_20190206",
+     "ma_m_4107016_se_19_060_20180817_20190206"
+    ],
+    "acquired": [
+     "2018-08-17"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -197,8 +230,8 @@
    "id": 29800972
   },
   "center": [
-   -70.053685,
-   41.759246
+   -70.0536852,
+   41.7592456
   ],
   "bbox": [
    -70.0648247,
@@ -207,7 +240,7 @@
    41.7685179
   ],
   "state": "MA",
-  "town": null
+  "town": "Brewster"
  },
  "boundary": {
   "type": "Polygon",

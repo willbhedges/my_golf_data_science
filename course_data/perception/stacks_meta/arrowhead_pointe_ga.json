@@ -35,13 +35,13 @@
    34.167170920328104
   ]
  },
- "built_utc": "2026-10-17T06:57:40Z",
+ "built_utc": "2026-11-01T22:58:11Z",
  "seconds": {
-  "lidar": 159.4,
-  "naip": 25.5,
-  "segment": 135.2,
-  "labels": 37.1,
-  "total": 361.9
+  "lidar": 154.1,
+  "naip": 72.3,
+  "segment": 144.8,
+  "labels": 31.2,
+  "total": 407.2
  },
  "errors": {},
  "lidar": {
@@ -50,24 +50,24 @@
    "items": [
     {
      "id": "SC_SavannahPeeDee_3_2019-hag-2m-3-4",
-     "when": "2019-12-31T00:00:00Z",
+     "when": "2019-12-31T00:00:00.000000Z",
      "cells": 1144114,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "SC_SavannahPeeDee_3_2019",
-      "end_datetime": "2019-12-31T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_SC_6County_Abbeville_2012_LAS_2017-hag-2m-0-4",
-     "when": "2012-03-15T00:00:00Z",
+     "when": "2012-03-15T00:00:00.000000Z",
      "cells": 214242,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_SC_6County_Abbeville_2012_LAS_2017",
-      "end_datetime": "2012-03-15T00:00:00Z",
-      "start_datetime": "2012-03-13T00:00:00Z"
+      "end_datetime": "2012-03-15T00:00:00.000000Z",
+      "start_datetime": "2012-03-13T00:00:00.000000Z"
      }
     }
    ],
@@ -78,24 +78,24 @@
    "items": [
     {
      "id": "SC_SavannahPeeDee_3_2019-dtm-2m-3-4",
-     "when": "2019-12-31T00:00:00Z",
+     "when": "2019-12-31T00:00:00.000000Z",
      "cells": 285154,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "SC_SavannahPeeDee_3_2019",
-      "end_datetime": "2019-12-31T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_SC_6County_Abbeville_2012_LAS_2017-dtm-2m-0-4",
-     "when": "2012-03-15T00:00:00Z",
+     "when": "2012-03-15T00:00:00.000000Z",
      "cells": 167350,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_SC_6County_Abbeville_2012_LAS_2017",
-      "end_datetime": "2012-03-15T00:00:00Z",
-      "start_datetime": "2012-03-13T00:00:00Z"
+      "end_datetime": "2012-03-15T00:00:00.000000Z",
+      "start_datetime": "2012-03-13T00:00:00.000000Z"
      }
     }
    ],
@@ -105,24 +105,24 @@
    "items": [
     {
      "id": "SC_SavannahPeeDee_3_2019-dsm-2m-3-4",
-     "when": "2019-12-31T00:00:00Z",
+     "when": "2019-12-31T00:00:00.000000Z",
      "cells": 1195206,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "SC_SavannahPeeDee_3_2019",
-      "end_datetime": "2019-12-31T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_SC_6County_Abbeville_2012_LAS_2017-dsm-2m-0-4",
-     "when": "2012-03-15T00:00:00Z",
+     "when": "2012-03-15T00:00:00.000000Z",
      "cells": 646192,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_SC_6County_Abbeville_2012_LAS_2017",
-      "end_datetime": "2012-03-15T00:00:00Z",
-      "start_datetime": "2012-03-13T00:00:00Z"
+      "end_datetime": "2012-03-15T00:00:00.000000Z",
+      "start_datetime": "2012-03-13T00:00:00.000000Z"
      }
     }
    ]
@@ -154,6 +154,7 @@
     "count": 4550113192
    }
   ],
+  "ept_resolution_m": 0.5,
   "used": [
    {
     "name": "GA_Statewide_B7_2018",
@@ -205,6 +206,36 @@
     "acquired": [
      "2023-04-11",
      "2023-10-07"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 13.11,
+    "items": [
+     "sc_m_3408251_sw_17_060_20211017",
+     "ga_m_3408251_sw_17_060_20211017"
+    ],
+    "acquired": [
+     "2021-10-17"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 13.9,
+    "items": [
+     "ga_m_3408251_sw_17_060_20191109_20200103",
+     "sc_m_3408251_sw_17_060_20190906_20191021"
+    ],
+    "acquired": [
+     "2019-09-06",
+     "2019-11-09"
     ],
     "gsd_m": 0.6,
     "res_m": 0.6

@@ -35,13 +35,13 @@
    36.745501934147654
   ]
  },
- "built_utc": "2026-10-17T04:51:02Z",
+ "built_utc": "2026-11-02T06:02:51Z",
  "seconds": {
-  "lidar": 69.1,
-  "naip": 11.9,
-  "segment": 66.2,
-  "labels": 39.3,
-  "total": 189.5
+  "lidar": 84.0,
+  "naip": 30.6,
+  "segment": 81.2,
+  "labels": 39.9,
+  "total": 238.9
  },
  "errors": {},
  "lidar": {},
@@ -92,6 +92,35 @@
      "2022-06-19"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 11.65,
+    "items": [
+     "ky_m_3608319_nw_17_060_20200601",
+     "ky_m_3608319_ne_17_060_20200601"
+    ],
+    "acquired": [
+     "2020-06-01"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 13.78,
+    "items": [
+     "ky_m_3608319_nw_17_060_20181023_20190201",
+     "ky_m_3608319_ne_17_060_20181023_20190305"
+    ],
+    "acquired": [
+     "2018-10-23"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -101,6 +130,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 301.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "coverage": {
   "naip": 1.0,
   "hag": 0.9700519578730996,
@@ -109,7 +139,7 @@
   "intensity": 0.0
  },
  "labels": {
-  "features": 215
+  "features": 351
  },
  "course": {
   "name": "Wasioto Winds Golf Course",
@@ -188,6 +218,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

@@ -35,13 +35,13 @@
    40.44354131562448
   ]
  },
- "built_utc": "2026-10-17T04:24:38Z",
+ "built_utc": "2026-11-02T01:55:31Z",
  "seconds": {
-  "lidar": 8.1,
-  "naip": 14.6,
-  "segment": 49.6,
-  "labels": 30.5,
-  "total": 105.8
+  "lidar": 7.1,
+  "naip": 28.6,
+  "segment": 53.7,
+  "labels": 57.7,
+  "total": 149.7
  },
  "errors": {},
  "lidar": {
@@ -50,24 +50,24 @@
    "items": [
     {
      "id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018-hag-2m-2-2",
-     "when": "2018-01-25T00:00:00Z",
+     "when": "2018-01-25T00:00:00.000000Z",
      "cells": 898804,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018",
-      "end_datetime": "2018-01-25T00:00:00Z",
-      "start_datetime": "2018-01-25T00:00:00Z"
+      "end_datetime": "2018-01-25T00:00:00.000000Z",
+      "start_datetime": "2018-01-25T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018-hag-2m-1-2",
-     "when": "2018-01-25T00:00:00Z",
+     "when": "2018-01-25T00:00:00.000000Z",
      "cells": 890312,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018",
-      "end_datetime": "2018-01-25T00:00:00Z",
-      "start_datetime": "2018-01-25T00:00:00Z"
+      "end_datetime": "2018-01-25T00:00:00.000000Z",
+      "start_datetime": "2018-01-25T00:00:00.000000Z"
      }
     }
    ],
@@ -81,24 +81,24 @@
    "items": [
     {
      "id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018-dtm-2m-2-2",
-     "when": "2018-01-25T00:00:00Z",
+     "when": "2018-01-25T00:00:00.000000Z",
      "cells": 224690,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018",
-      "end_datetime": "2018-01-25T00:00:00Z",
-      "start_datetime": "2018-01-25T00:00:00Z"
+      "end_datetime": "2018-01-25T00:00:00.000000Z",
+      "start_datetime": "2018-01-25T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018-dtm-2m-1-2",
-     "when": "2018-01-25T00:00:00Z",
+     "when": "2018-01-25T00:00:00.000000Z",
      "cells": 222496,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018",
-      "end_datetime": "2018-01-25T00:00:00Z",
-      "start_datetime": "2018-01-25T00:00:00Z"
+      "end_datetime": "2018-01-25T00:00:00.000000Z",
+      "start_datetime": "2018-01-25T00:00:00.000000Z"
      }
     }
    ],
@@ -110,24 +110,24 @@
    "items": [
     {
      "id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018-classification-2m-2-2",
-     "when": "2018-01-25T00:00:00Z",
+     "when": "2018-01-25T00:00:00.000000Z",
      "cells": 894620,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018",
-      "end_datetime": "2018-01-25T00:00:00Z",
-      "start_datetime": "2018-01-25T00:00:00Z"
+      "end_datetime": "2018-01-25T00:00:00.000000Z",
+      "start_datetime": "2018-01-25T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018-classification-2m-1-2",
-     "when": "2018-01-25T00:00:00Z",
+     "when": "2018-01-25T00:00:00.000000Z",
      "cells": 870996,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_District4_McDonough_2014_LAS_2018",
-      "end_datetime": "2018-01-25T00:00:00Z",
-      "start_datetime": "2018-01-25T00:00:00Z"
+      "end_datetime": "2018-01-25T00:00:00.000000Z",
+      "start_datetime": "2018-01-25T00:00:00.000000Z"
      }
     }
    ],
@@ -162,6 +162,36 @@
      "2023-07-10"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 6.24,
+    "items": [
+     "il_m_4009035_sw_15_060_20210828",
+     "il_m_4009035_nw_15_060_20210828"
+    ],
+    "acquired": [
+     "2021-08-28"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 4.89,
+    "items": [
+     "il_m_4009035_nw_15_060_20190801_20200108",
+     "il_m_4009035_sw_15_060_20190728_20191220"
+    ],
+    "acquired": [
+     "2019-07-28",
+     "2019-08-01"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -171,6 +201,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 188.0,
+ "dtm_source": "3DEP lidar DTM",
  "intensity_stretch": [
   3.0,
   76.12496948242188

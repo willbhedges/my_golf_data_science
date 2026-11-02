@@ -35,13 +35,13 @@
    43.17704460647004
   ]
  },
- "built_utc": "2026-10-17T04:23:39Z",
+ "built_utc": "2026-11-02T01:32:07Z",
  "seconds": {
-  "lidar": 51.5,
-  "naip": 8.9,
-  "segment": 35.6,
-  "labels": 35.7,
-  "total": 133.9
+  "lidar": 58.1,
+  "naip": 23.2,
+  "segment": 71.9,
+  "labels": 39.8,
+  "total": 196.0
  },
  "errors": {},
  "lidar": {
@@ -59,13 +59,13 @@
    "items": [
     {
      "id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019-dsm-2m-5-5",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 2752040,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_SEWRPC_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ]
@@ -95,7 +95,7 @@
   ],
   "valid": 0.9964809196684916,
   "hag_mb": 1.24,
-  "frac_gt_2_5m": 0.40164482860829237,
+  "frac_gt_2_5m": 0.4016422859201916,
   "class_mb": 0.03
  },
  "intensity": {
@@ -115,6 +115,33 @@
      "2022-06-23"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 10.02,
+    "items": [
+     "wi_m_4308855_sw_16_060_20200724"
+    ],
+    "acquired": [
+     "2020-07-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 8.66,
+    "items": [
+     "wi_m_4308855_sw_16_060_20180917_20190204"
+    ],
+    "acquired": [
+     "2018-09-17"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -124,6 +151,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 289.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "intensity_stretch": null,
  "coverage": {
   "naip": 1.0,
@@ -490,6 +518,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

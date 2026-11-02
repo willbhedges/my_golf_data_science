@@ -35,13 +35,13 @@
    44.27476172023814
   ]
  },
- "built_utc": "2026-10-17T06:06:47Z",
+ "built_utc": "2026-11-02T00:35:04Z",
  "seconds": {
-  "lidar": 11.9,
-  "naip": 6.8,
-  "segment": 49.8,
-  "labels": 31.4,
-  "total": 102.3
+  "lidar": 9.9,
+  "naip": 14.4,
+  "segment": 32.0,
+  "labels": 30.7,
+  "total": 89.2
  },
  "errors": {},
  "lidar": {
@@ -50,24 +50,24 @@
    "items": [
     {
      "id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019-hag-2m-10-8",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 1763196,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019-hag-2m-10-15",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 80,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -81,24 +81,24 @@
    "items": [
     {
      "id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019-dtm-2m-10-8",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 440798,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019-dtm-2m-10-15",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 25,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -110,13 +110,13 @@
    "items": [
     {
      "id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019-classification-2m-10-8",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 1755616,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_WI_FEMAHQ_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -150,6 +150,33 @@
      "2022-06-23"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 5.84,
+    "items": [
+     "wi_m_4408844_se_16_060_20200729"
+    ],
+    "acquired": [
+     "2020-07-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 4.76,
+    "items": [
+     "wi_m_4408844_se_16_060_20180922_20190204"
+    ],
+    "acquired": [
+     "2018-09-22"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -172,7 +199,7 @@
   "intensity": 0.9999024571718932
  },
  "labels": {
-  "features": 279
+  "features": 435
  },
  "course": {
   "name": "Chaska Golf Course",
@@ -181,8 +208,8 @@
    "id": 262311914
   },
   "center": [
-   -88.529396,
-   44.269466
+   -88.52939574999999,
+   44.26946595
   ],
   "bbox": [
    -88.5370227,
@@ -191,7 +218,7 @@
    44.2731718
   ],
   "state": "WI",
-  "town": null
+  "town": "Greenville"
  },
  "boundary": {
   "type": "Polygon",

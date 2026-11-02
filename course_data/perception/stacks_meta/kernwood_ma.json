@@ -35,13 +35,13 @@
    42.54758834677466
   ]
  },
- "built_utc": "2026-10-17T06:23:44Z",
+ "built_utc": "2026-11-02T02:16:11Z",
  "seconds": {
-  "lidar": 9.5,
-  "naip": 12.6,
-  "segment": 29.1,
-  "labels": 33.4,
-  "total": 86.6
+  "lidar": 7.8,
+  "naip": 23.9,
+  "segment": 73.7,
+  "labels": 39.9,
+  "total": 148.2
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-hag-2m-11-18",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 2017132,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -70,13 +70,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dtm-2m-11-18",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 504075,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -88,13 +88,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-classification-2m-11-18",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 1963920,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -128,6 +128,33 @@
      "2023-06-30"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 7.84,
+    "items": [
+     "ma_m_4207025_se_19_060_20211024"
+    ],
+    "acquired": [
+     "2021-10-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 6.4,
+    "items": [
+     "ma_m_4207025_se_19_060_20181016_20190207"
+    ],
+    "acquired": [
+     "2018-10-16"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -150,7 +177,7 @@
   "intensity": 0.9389274791401148
  },
  "labels": {
-  "features": 831
+  "features": 832
  },
  "course": {
   "name": "Kernwood Country Club",
@@ -159,8 +186,8 @@
    "id": 29695520
   },
   "center": [
-   -70.903871,
-   42.539726
+   -70.90387055,
+   42.53972575
   ],
   "bbox": [
    -70.9095561,
@@ -169,7 +196,7 @@
    42.5460017
   ],
   "state": "MA",
-  "town": null
+  "town": "Salem"
  },
  "boundary": {
   "type": "Polygon",

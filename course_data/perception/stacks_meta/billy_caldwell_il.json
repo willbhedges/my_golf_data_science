@@ -35,13 +35,13 @@
    41.994408154032016
   ]
  },
- "built_utc": "2026-10-17T04:16:49Z",
+ "built_utc": "2026-11-01T23:53:49Z",
  "seconds": {
-  "lidar": 8.4,
-  "naip": 14.3,
-  "segment": 36.1,
-  "labels": 36.7,
-  "total": 97.3
+  "lidar": 4.6,
+  "naip": 18.6,
+  "segment": 45.9,
+  "labels": 30.4,
+  "total": 101.7
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019-hag-2m-5-7",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 1446676,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -70,13 +70,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019-dtm-2m-5-7",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 361540,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -88,13 +88,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019-classification-2m-5-7",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 1440398,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -131,6 +131,35 @@
      "2023-07-10"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 6.88,
+    "items": [
+     "il_m_4108703_nw_16_060_20210908",
+     "il_m_4108702_ne_16_060_20210908"
+    ],
+    "acquired": [
+     "2021-09-08"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 5.71,
+    "items": [
+     "il_m_4108703_nw_16_060_20190807_20191221",
+     "il_m_4108702_ne_16_060_20190807_20191221"
+    ],
+    "acquired": [
+     "2019-08-07"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -140,6 +169,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 180.0,
+ "dtm_source": "3DEP lidar DTM",
  "intensity_stretch": [
   3857.5786987304687,
   52870.735937499994

@@ -35,13 +35,13 @@
    44.80606400239163
   ]
  },
- "built_utc": "2026-10-17T04:16:14Z",
+ "built_utc": "2026-11-02T00:56:55Z",
  "seconds": {
-  "lidar": 17.8,
-  "naip": 7.2,
-  "segment": 29.9,
-  "labels": 34.5,
-  "total": 90.8
+  "lidar": 14.6,
+  "naip": 12.8,
+  "segment": 16.3,
+  "labels": 37.8,
+  "total": 82.4
  },
  "errors": {},
  "lidar": {
@@ -59,13 +59,13 @@
    "items": [
     {
      "id": "USGS_LPC_MN_Phase4_Metro_Dakota_2011_LAS_2016-dsm-2m-0-0",
-     "when": "2011-11-15T00:00:00Z",
+     "when": "2011-11-15T00:00:00.000000Z",
      "cells": 968240,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MN_Phase4_Metro_Dakota_2011_LAS_2016",
-      "end_datetime": "2011-11-15T00:00:00Z",
-      "start_datetime": "2011-11-12T00:00:00Z"
+      "end_datetime": "2011-11-15T00:00:00.000000Z",
+      "start_datetime": "2011-11-12T00:00:00.000000Z"
      }
     }
    ]
@@ -136,6 +136,33 @@
      "2023-08-03"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 3.52,
+    "items": [
+     "mn_m_4409314_sw_15_060_20210618"
+    ],
+    "acquired": [
+     "2021-06-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 3.35,
+    "items": [
+     "mn_m_4409314_sw_15_060_20190727_20191126"
+    ],
+    "acquired": [
+     "2019-07-27"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -145,6 +172,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 213.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "intensity_stretch": null,
  "coverage": {
   "naip": 1.0,
@@ -305,6 +333,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

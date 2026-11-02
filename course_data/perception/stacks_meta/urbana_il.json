@@ -35,13 +35,13 @@
    40.13638815101427
   ]
  },
- "built_utc": "2026-10-17T04:47:17Z",
+ "built_utc": "2026-11-02T05:13:28Z",
  "seconds": {
-  "lidar": 11.9,
-  "naip": 13.2,
-  "segment": 43.6,
-  "labels": 33.6,
-  "total": 104.7
+  "lidar": 9.2,
+  "naip": 24.7,
+  "segment": 22.2,
+  "labels": 46.0,
+  "total": 103.9
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "IL_8County_PlusChampaign_B1_2019-hag-2m-2-3",
-     "when": "2019-12-31T00:00:00Z",
+     "when": "2019-12-31T00:00:00.000000Z",
      "cells": 1627320,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IL_8County_PlusChampaign_B1_2019",
-      "end_datetime": "2019-12-31T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -70,24 +70,24 @@
    "items": [
     {
      "id": "IL_8County_PlusChampaign_B1_2019-dtm-2m-2-3",
-     "when": "2019-12-31T00:00:00Z",
+     "when": "2019-12-31T00:00:00.000000Z",
      "cells": 406120,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IL_8County_PlusChampaign_B1_2019",
-      "end_datetime": "2019-12-31T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_IL_12_County_ChampaignCo_2008_LAS_2016-dtm-2m-0-3",
-     "when": "2008-04-16T00:00:00Z",
+     "when": "2008-04-16T00:00:00.000000Z",
      "cells": 589,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_12_County_ChampaignCo_2008_LAS_2016",
-      "end_datetime": "2008-04-16T00:00:00Z",
-      "start_datetime": "2008-04-16T00:00:00Z"
+      "end_datetime": "2008-04-16T00:00:00.000000Z",
+      "start_datetime": "2008-04-16T00:00:00.000000Z"
      }
     }
    ],
@@ -99,24 +99,24 @@
    "items": [
     {
      "id": "IL_8County_PlusChampaign_B1_2019-classification-2m-2-3",
-     "when": "2019-12-31T00:00:00Z",
+     "when": "2019-12-31T00:00:00.000000Z",
      "cells": 1622666,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "IL_8County_PlusChampaign_B1_2019",
-      "end_datetime": "2019-12-31T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_IL_12_County_ChampaignCo_2008_LAS_2016-classification-2m-0-3",
-     "when": "2008-04-16T00:00:00Z",
+     "when": "2008-04-16T00:00:00.000000Z",
      "cells": 807,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_12_County_ChampaignCo_2008_LAS_2016",
-      "end_datetime": "2008-04-16T00:00:00Z",
-      "start_datetime": "2008-04-16T00:00:00Z"
+      "end_datetime": "2008-04-16T00:00:00.000000Z",
+      "start_datetime": "2008-04-16T00:00:00.000000Z"
      }
     }
    ],
@@ -154,6 +154,36 @@
      "2023-08-11"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 6.25,
+    "items": [
+     "il_m_4008863_nw_16_060_20210924",
+     "il_m_4008855_sw_16_060_20210924"
+    ],
+    "acquired": [
+     "2021-09-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 5.35,
+    "items": [
+     "il_m_4008863_nw_16_060_20190919_20191221",
+     "il_m_4008855_sw_16_060_20190914_20191221"
+    ],
+    "acquired": [
+     "2019-09-14",
+     "2019-09-19"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -163,6 +193,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 212.0,
+ "dtm_source": "3DEP lidar DTM",
  "intensity_stretch": [
   5961.170610351563,
   55412.7027734375
@@ -175,7 +206,7 @@
   "intensity": 1.0
  },
  "labels": {
-  "features": 1094
+  "features": 1208
  },
  "course": {
   "name": "Urbana Country Club",

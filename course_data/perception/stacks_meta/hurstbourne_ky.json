@@ -35,15 +35,17 @@
    38.248254939398066
   ]
  },
- "built_utc": "2026-10-17T06:42:51Z",
+ "built_utc": "2026-11-02T02:12:00Z",
  "seconds": {
-  "lidar": 26.5,
-  "naip": 11.7,
-  "segment": 95.8,
-  "labels": 129.3,
-  "total": 266.8
+  "lidar": 22.1,
+  "naip": 31.5,
+  "segment": 87.5,
+  "labels": 33.2,
+  "total": 177.4
  },
- "errors": {},
+ "errors": {
+  "tnm_dem": "RuntimeError('RuntimeError(\"HTTP 502 \\'<html>\\\\\\\\r\\\\\\\\n<head><title>502 Bad Gateway</title></head>\\\\\\\\r\\\\\\\\n<body>\\\\\\\\r\\\\\\\\n<center><h1>502 Bad Gateway</h1></center>\\\\\\\\r\\\\\\\\n</body>\\\\\\\\r\\\\\\\\n</html>\\\\\\\\r\\\\\\\\n\\'\")')"
+ },
  "lidar": {},
  "ept": {
   "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
@@ -85,6 +87,35 @@
      "2022-06-18"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 13.96,
+    "items": [
+     "ky_m_3808552_nw_16_060_20200611",
+     "ky_m_3808544_sw_16_060_20200611"
+    ],
+    "acquired": [
+     "2020-06-11"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 16.48,
+    "items": [
+     "ky_m_3808552_nw_16_060_20180904_20190201",
+     "ky_m_3808544_sw_16_060_20180904_20181214"
+    ],
+    "acquired": [
+     "2018-09-04"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -93,13 +124,13 @@
   "model": "ariadgolf/golf-course-segmentation",
   "sha": "43ee294441db"
  },
- "dtm_base_m": 166.0,
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "dtm_base_m": null,
+ "dtm_source": null,
  "coverage": {
   "naip": 1.0,
   "hag": 0.9926612021857923,
   "cls": 0.9926612021857923,
-  "dtm": 1.0,
+  "dtm": 0.0,
   "intensity": 0.0
  },
  "labels": {
@@ -112,8 +143,8 @@
    "id": 220489681
   },
   "center": [
-   -85.592248,
-   38.239875
+   -85.5922481,
+   38.23987475
   ],
   "bbox": [
    -85.6018154,
@@ -122,7 +153,7 @@
    38.2466509
   ],
   "state": "KY",
-  "town": null
+  "town": "Hurstbourne"
  },
  "boundary": {
   "type": "Polygon",

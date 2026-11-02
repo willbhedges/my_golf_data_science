@@ -35,13 +35,13 @@
    41.60281637128712
   ]
  },
- "built_utc": "2026-10-17T06:31:33Z",
+ "built_utc": "2026-11-02T01:32:15Z",
  "seconds": {
-  "lidar": 120.7,
-  "naip": 27.9,
-  "segment": 53.0,
-  "labels": 32.8,
-  "total": 237.3
+  "lidar": 124.4,
+  "naip": 34.4,
+  "segment": 69.7,
+  "labels": 43.3,
+  "total": 274.9
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-hag-2m-14-5",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 351456,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -67,13 +67,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dtm-2m-14-5",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 88117,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -83,13 +83,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dsm-2m-14-5",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 351672,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ]
@@ -157,6 +157,36 @@
      "2023-08-22"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 12.12,
+    "items": [
+     "ma_m_4107028_nw_19_060_20210904",
+     "ma_m_4107028_ne_19_060_20210904"
+    ],
+    "acquired": [
+     "2021-09-04"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 11.77,
+    "items": [
+     "ma_m_4107028_ne_19_060_20180929_20190206",
+     "ma_m_4107028_nw_19_060_20180827_20190206"
+    ],
+    "acquired": [
+     "2018-08-27",
+     "2018-09-29"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -188,8 +218,8 @@
    "id": 29843255
   },
   "center": [
-   -70.552211,
-   41.594498
+   -70.55221085,
+   41.594498349999995
   ],
   "bbox": [
    -70.5600665,
@@ -198,7 +228,7 @@
    41.6012195
   ],
   "state": "MA",
-  "town": null
+  "town": "East Falmouth"
  },
  "boundary": {
   "type": "Polygon",

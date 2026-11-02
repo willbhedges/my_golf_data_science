@@ -1,0 +1,285 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "exmoor_il",
+ "name": "Exmoor Country Club",
+ "state": "IL",
+ "bbox_wsen": [
+  -87.8180077,
+  42.1889636,
+  -87.8083908,
+  42.1972598
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 1104,
+  "height": 1230,
+  "bounds": [
+   432304,
+   4670922,
+   433408,
+   4672152
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   432304.0,
+   0.0,
+   -1.0,
+   4672152.0
+  ],
+  "ll_bbox_wsen": [
+   -87.81996232574883,
+   42.18752040310716,
+   -87.80645067441979,
+   42.19869189138814
+  ]
+ },
+ "built_utc": "2026-11-02T01:30:53Z",
+ "seconds": {
+  "lidar": 158.9,
+  "naip": 27.7,
+  "segment": 22.0,
+  "labels": 42.2,
+  "total": 252.3
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_IL_4County_Lake_2016_LAS_2019-dsm-2m-3-4",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 1355464,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_IL_4County_Lake_2016_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_IL_4County_Lake_2016_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_IL_4County_Lake_2016_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 41085204664
+   },
+   {
+    "name": "ARRA-IL_LakeCo_2007",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ARRA-IL_LakeCo_2007/ept.json",
+    "cov": 1.0,
+    "year": 2007,
+    "count": 1591643151
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_IL_4County_Lake_2016_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_IL_4County_Lake_2016_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 41085204664,
+    "cells": 1345342
+   }
+  ],
+  "valid": 0.9907373041121715,
+  "hag_mb": 0.66,
+  "frac_gt_2_5m": 0.4889544303051726,
+  "class_mb": 0.02
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 6.44,
+    "items": [
+     "il_m_4208750_sw_16_030_20230710_20240209",
+     "il_m_4208750_se_16_030_20230710_20240209",
+     "il_m_4208750_nw_16_030_20230710_20240209",
+     "il_m_4208750_ne_16_030_20230710_20240209"
+    ],
+    "acquired": [
+     "2023-07-10"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 6.17,
+    "items": [
+     "il_m_4208750_sw_16_060_20210905",
+     "il_m_4208750_se_16_060_20210905",
+     "il_m_4208750_nw_16_060_20210905",
+     "il_m_4208750_ne_16_060_20210905"
+    ],
+    "acquired": [
+     "2021-09-05"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 5.03,
+    "items": [
+     "il_m_4208750_sw_16_060_20190809_20191221",
+     "il_m_4208750_nw_16_060_20190809_20200108",
+     "il_m_4208750_se_16_060_20190807_20191221",
+     "il_m_4208750_ne_16_060_20190807_20191221"
+    ],
+    "acquired": [
+     "2019-08-07",
+     "2019-08-09"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 193.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9907373041121715,
+  "cls": 0.9907373041121715,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 1099
+ },
+ "course": {
+  "name": "Exmoor Country Club",
+  "osm": {
+   "type": "way",
+   "id": 31824000
+  },
+  "center": [
+   -87.81319925,
+   42.1931117
+  ],
+  "bbox": [
+   -87.8180077,
+   42.1889636,
+   -87.8083908,
+   42.1972598
+  ],
+  "state": "IL",
+  "town": "Highland Park"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -87.8180077,
+     42.1890081
+    ],
+    [
+     -87.8117912,
+     42.1889762
+    ],
+    [
+     -87.8093388,
+     42.1889636
+    ],
+    [
+     -87.809313,
+     42.1915074
+    ],
+    [
+     -87.8100512,
+     42.1915837
+    ],
+    [
+     -87.8101713,
+     42.1921878
+    ],
+    [
+     -87.8085234,
+     42.1925693
+    ],
+    [
+     -87.8084376,
+     42.1960858
+    ],
+    [
+     -87.8083908,
+     42.1970217
+    ],
+    [
+     -87.8089952,
+     42.1970948
+    ],
+    [
+     -87.8106804,
+     42.1972598
+    ],
+    [
+     -87.8107078,
+     42.1960518
+    ],
+    [
+     -87.8139601,
+     42.1960767
+    ],
+    [
+     -87.8179563,
+     42.1961126
+    ],
+    [
+     -87.8179572,
+     42.1959898
+    ],
+    [
+     -87.8179574,
+     42.1959596
+    ],
+    [
+     -87.8179844,
+     42.1922307
+    ],
+    [
+     -87.8179945,
+     42.190832
+    ],
+    [
+     -87.8180077,
+     42.1890081
+    ]
+   ]
+  ]
+ }
+}

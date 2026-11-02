@@ -35,13 +35,13 @@
    33.700686072327684
   ]
  },
- "built_utc": "2026-10-17T04:35:05Z",
+ "built_utc": "2026-11-02T04:09:06Z",
  "seconds": {
-  "lidar": 385.4,
-  "naip": 17.3,
-  "segment": 133.4,
-  "labels": 9.7,
-  "total": 550.4
+  "lidar": 408.5,
+  "naip": 41.3,
+  "segment": 147.6,
+  "labels": 32.7,
+  "total": 634.9
  },
  "errors": {},
  "lidar": {},
@@ -58,11 +58,12 @@
    {
     "name": "CA_CaliforniaGaps_4_B23",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/CA_CaliforniaGaps_4_B23/ept.json",
-    "cov": 0.319,
+    "cov": 0.428,
     "year": 0,
     "count": 149288494854
    }
   ],
+  "ept_resolution_m": 0.5,
   "used": [
    {
     "name": "CA_SaltonSea_EarthMRI_3_D21",
@@ -94,6 +95,40 @@
      "2022-04-15"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 18.89,
+    "items": [
+     "ca_m_3311622_sw_11_060_20200416",
+     "ca_m_3311622_nw_11_060_20200416",
+     "ca_m_3311621_se_11_060_20200416",
+     "ca_m_3311621_ne_11_060_20200416"
+    ],
+    "acquired": [
+     "2020-04-16"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 18.87,
+    "items": [
+     "ca_m_3311622_nw_11_060_20180907_20190208",
+     "ca_m_3311621_ne_11_060_20180907_20190208",
+     "ca_m_3311622_sw_11_060_20180804_20190209",
+     "ca_m_3311621_se_11_060_20180804_20190208"
+    ],
+    "acquired": [
+     "2018-08-04",
+     "2018-09-07"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -103,6 +138,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 95.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "coverage": {
   "naip": 1.0,
   "hag": 0.9814742614479146,
@@ -1236,6 +1272,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

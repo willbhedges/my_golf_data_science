@@ -35,13 +35,13 @@
    36.97528597411542
   ]
  },
- "built_utc": "2026-10-17T04:40:17Z",
+ "built_utc": "2026-11-02T04:32:45Z",
  "seconds": {
-  "lidar": 37.3,
-  "naip": 5.7,
-  "segment": 22.9,
-  "labels": 38.2,
-  "total": 105.8
+  "lidar": 39.4,
+  "naip": 12.9,
+  "segment": 32.1,
+  "labels": 29.0,
+  "total": 115.3
  },
  "errors": {},
  "lidar": {
@@ -117,6 +117,33 @@
      "2022-06-21"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 4.82,
+    "items": [
+     "ky_m_3608201_nw_17_060_20200601"
+    ],
+    "acquired": [
+     "2020-06-01"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 5.46,
+    "items": [
+     "ky_m_3608201_nw_17_060_20181030_20190201"
+    ],
+    "acquired": [
+     "2018-10-30"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -126,6 +153,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 439.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "intensity_stretch": null,
  "coverage": {
   "naip": 1.0,
@@ -330,6 +358,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

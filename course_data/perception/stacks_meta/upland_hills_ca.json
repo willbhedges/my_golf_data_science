@@ -35,39 +35,41 @@
    34.12685134061748
   ]
  },
- "built_utc": "2026-10-17T07:09:25Z",
+ "built_utc": "2026-11-02T05:12:35Z",
  "seconds": {
-  "lidar": 11.1,
-  "naip": 12.5,
-  "segment": 64.4,
-  "labels": 38.3,
-  "total": 129.2
+  "lidar": 7.4,
+  "naip": 19.4,
+  "segment": 28.3,
+  "labels": 1043.7,
+  "total": 1100.8
  },
- "errors": {},
+ "errors": {
+  "labels": "Traceback (most recent call last):\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 227, in build\n    fc = overpass_labels(g1.ll_bbox)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 86, in overpass_labels\n    data = pc.overpass(q, tries=3)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/platform/platform_common.py\", line 111, in overpass\n    raise RuntimeError(f\"all Overpass endpoints failed: {last}\")\nRuntimeError: all Overpass endpoints failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\"))\n"
+ },
  "lidar": {
   "hag": {
    "source": "planetary-computer 3dep-lidar-hag",
    "items": [
     {
      "id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018-hag-2m-2-3",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 895700,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018-hag-2m-1-3",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 1141500,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -81,24 +83,24 @@
    "items": [
     {
      "id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018-dtm-2m-2-3",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 223643,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018-dtm-2m-1-3",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 285540,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -110,24 +112,24 @@
    "items": [
     {
      "id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018-classification-2m-2-3",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 894746,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     },
     {
      "id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018-classification-2m-1-3",
-     "when": "2018-01-01T00:00:00Z",
+     "when": "2018-01-01T00:00:00.000000Z",
      "cells": 1134338,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SanBernardinoCo_AreaA_2013_LAS_2018",
-      "end_datetime": "2018-01-01T00:00:00Z",
-      "start_datetime": "2018-01-01T00:00:00Z"
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -167,6 +169,40 @@
      "2022-05-30"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 7.89,
+    "items": [
+     "ca_m_3411759_ne_11_060_20200424",
+     "ca_m_3411751_se_11_060_20200424",
+     "ca_m_3411760_nw_11_060_20200423",
+     "ca_m_3411752_sw_11_060_20200423"
+    ],
+    "acquired": [
+     "2020-04-23",
+     "2020-04-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 7.64,
+    "items": [
+     "ca_m_3411760_nw_11_060_20180822_20190209",
+     "ca_m_3411759_ne_11_060_20180822_20190208",
+     "ca_m_3411752_sw_11_060_20180822_20190208",
+     "ca_m_3411751_se_11_060_20180822_20190208"
+    ],
+    "acquired": [
+     "2018-08-22"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -187,9 +223,6 @@
   "cls": 0.9959574342764024,
   "dtm": 0.9997113855457169,
   "intensity": 0.9999352090000589
- },
- "labels": {
-  "features": 1731
  },
  "course": {
   "name": "Upland Hills Country Club",

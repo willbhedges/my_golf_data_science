@@ -35,13 +35,13 @@
    42.135107428779946
   ]
  },
- "built_utc": "2026-10-17T06:03:05Z",
+ "built_utc": "2026-11-02T04:29:08Z",
  "seconds": {
-  "lidar": 8.3,
-  "naip": 20.5,
-  "segment": 50.1,
-  "labels": 24.6,
-  "total": 105.9
+  "lidar": 7.6,
+  "naip": 33.7,
+  "segment": 52.9,
+  "labels": 50.1,
+  "total": 147.1
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019-hag-2m-5-9",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 1900064,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -70,13 +70,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019-dtm-2m-5-9",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 474654,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -88,13 +88,13 @@
    "items": [
     {
      "id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019-classification-2m-5-9",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 1874234,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IL_4County_Cook_2017_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -133,6 +133,36 @@
      "2023-07-10"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 7.9,
+    "items": [
+     "il_m_4208758_ne_16_060_20210905",
+     "il_m_4208750_se_16_060_20210905"
+    ],
+    "acquired": [
+     "2021-09-05"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 6.85,
+    "items": [
+     "il_m_4208758_ne_16_060_20190914_20191221",
+     "il_m_4208750_se_16_060_20190807_20191221"
+    ],
+    "acquired": [
+     "2019-08-07",
+     "2019-09-14"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -155,7 +185,7 @@
   "intensity": 0.9890447103797889
  },
  "labels": {
-  "features": 610
+  "features": 598
  },
  "course": {
   "name": "Skokie Country Club",
@@ -164,8 +194,8 @@
    "id": 31823863
   },
   "center": [
-   -87.765898,
-   42.127502
+   -87.76589835,
+   42.12750185
   ],
   "bbox": [
    -87.7709286,
@@ -174,7 +204,7 @@
    42.1336737
   ],
   "state": "IL",
-  "town": null
+  "town": "Glencoe"
  },
  "boundary": {
   "type": "Polygon",

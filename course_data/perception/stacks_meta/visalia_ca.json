@@ -35,15 +35,17 @@
    36.34033279947989
   ]
  },
- "built_utc": "2026-10-17T07:13:30Z",
+ "built_utc": "2026-11-02T05:34:27Z",
  "seconds": {
-  "lidar": 110.4,
-  "naip": 9.3,
-  "segment": 26.0,
-  "labels": 49.0,
-  "total": 196.8
+  "lidar": 140.8,
+  "naip": 20.2,
+  "segment": 48.5,
+  "labels": 438.8,
+  "total": 650.7
  },
- "errors": {},
+ "errors": {
+  "tnm_dem": "RuntimeError('RuntimeError(\"HTTP 504 \\'<html>\\\\\\\\r\\\\\\\\n<head><title>504 Gateway Time-out</title></head>\\\\\\\\r\\\\\\\\n<body>\\\\\\\\r\\\\\\\\n<center><h1>504 Gateway Time-out</h1></center>\\\\\\\\r\\\\\\\\n</body>\\\\\\\\r\\\\\\\\n</html>\\\\\\\\r\\\\\\\\n\\'\")')"
+ },
  "lidar": {},
  "ept": {
   "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
@@ -85,6 +87,35 @@
      "2022-06-24"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 7.73,
+    "items": [
+     "ca_m_3611946_nw_11_060_20200705",
+     "ca_m_3611946_ne_11_060_20200705"
+    ],
+    "acquired": [
+     "2020-07-05"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 8.39,
+    "items": [
+     "ca_m_3611946_nw_11_060_20180907_20190210",
+     "ca_m_3611946_ne_11_060_20180907_20190209"
+    ],
+    "acquired": [
+     "2018-09-07"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -93,17 +124,17 @@
   "model": "ariadgolf/golf-course-segmentation",
   "sha": "43ee294441db"
  },
- "dtm_base_m": 94.0,
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "dtm_base_m": null,
+ "dtm_source": null,
  "coverage": {
   "naip": 1.0,
   "hag": 0.9889887922382068,
   "cls": 0.9889887922382068,
-  "dtm": 1.0,
+  "dtm": 0.0,
   "intensity": 0.0
  },
  "labels": {
-  "features": 2004
+  "features": 1837
  },
  "course": {
   "name": "Visalia Country Club",

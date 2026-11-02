@@ -1,0 +1,260 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "watertown_coutry_wi",
+ "name": "Watertown Coutry Club",
+ "state": "WI",
+ "bbox_wsen": [
+  -88.7338691,
+  43.2208064,
+  -88.7267129,
+  43.232564
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 910,
+  "height": 1620,
+  "bounds": [
+   359030,
+   4786632,
+   359940,
+   4788252
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   359030.0,
+   0.0,
+   -1.0,
+   4788252.0
+  ],
+  "ll_bbox_wsen": [
+   -88.73609890324924,
+   43.219312788648075,
+   -88.724485699724,
+   43.23406324916546
+  ]
+ },
+ "built_utc": "2026-11-02T06:00:16Z",
+ "seconds": {
+  "lidar": 34.4,
+  "naip": 15.1,
+  "segment": 43.5,
+  "labels": 50.4,
+  "total": 145.6
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_WI_DodgeCo_2017_LAS_2019-dsm-2m-2-5",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 1467056,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_WI_DodgeCo_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_WI_DodgeCo_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_DodgeCo_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 13085658555
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_WI_DodgeCo_2017_LAS_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_WI_DodgeCo_2017_LAS_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 13085658555,
+    "cells": 1452193
+   }
+  ],
+  "valid": 0.9850719034052368,
+  "hag_mb": 0.56,
+  "frac_gt_2_5m": 0.3002842219508886,
+  "class_mb": 0.02
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 3.91,
+    "items": [
+     "wi_m_4308851_nw_16_060_20220624"
+    ],
+    "acquired": [
+     "2022-06-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 5.07,
+    "items": [
+     "wi_m_4308851_nw_16_060_20200904"
+    ],
+    "acquired": [
+     "2020-09-04"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 5.0,
+    "items": [
+     "wi_m_4308851_nw_16_060_20180924_20190204"
+    ],
+    "acquired": [
+     "2018-09-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 247.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9850719034052368,
+  "cls": 0.9850719034052368,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 248
+ },
+ "course": {
+  "name": "Watertown Coutry Club",
+  "osm": {
+   "type": "way",
+   "id": 117538994
+  },
+  "center": [
+   -88.730291,
+   43.226685200000006
+  ],
+  "bbox": [
+   -88.7338691,
+   43.2208064,
+   -88.7267129,
+   43.232564
+  ],
+  "state": "WI",
+  "town": "Watertown"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -88.7268867,
+     43.232446
+    ],
+    [
+     -88.7319593,
+     43.232564
+    ],
+    [
+     -88.7325494,
+     43.2289838
+    ],
+    [
+     -88.73197,
+     43.2289135
+    ],
+    [
+     -88.7318306,
+     43.2287024
+    ],
+    [
+     -88.7317877,
+     43.2276783
+    ],
+    [
+     -88.7318306,
+     43.2272249
+    ],
+    [
+     -88.732131,
+     43.2264432
+    ],
+    [
+     -88.7323241,
+     43.2263181
+    ],
+    [
+     -88.7329786,
+     43.2262946
+    ],
+    [
+     -88.7338691,
+     43.2208377
+    ],
+    [
+     -88.7287299,
+     43.2208064
+    ],
+    [
+     -88.7288265,
+     43.2263259
+    ],
+    [
+     -88.728848,
+     43.2265135
+    ],
+    [
+     -88.7267129,
+     43.2264666
+    ],
+    [
+     -88.7270026,
+     43.2305785
+    ],
+    [
+     -88.7268867,
+     43.232446
+    ]
+   ]
+  ]
+ }
+}

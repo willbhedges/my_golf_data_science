@@ -35,13 +35,13 @@
    41.66394621807413
   ]
  },
- "built_utc": "2026-10-17T06:20:23Z",
+ "built_utc": "2026-11-02T06:13:02Z",
  "seconds": {
-  "lidar": 166.3,
-  "naip": 12.4,
-  "segment": 65.2,
-  "labels": 34.5,
-  "total": 281.0
+  "lidar": 160.2,
+  "naip": 27.4,
+  "segment": 71.2,
+  "labels": 39.7,
+  "total": 301.2
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-hag-2m-10-6",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 1802,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -67,13 +67,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dtm-2m-10-6",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 454,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ],
@@ -83,13 +83,13 @@
    "items": [
     {
      "id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015-dsm-2m-10-6",
-     "when": "2014-12-31T00:00:00Z",
+     "when": "2014-12-31T00:00:00.000000Z",
      "cells": 1802,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_MA_Sndy_CMPG_2013_LAS_2015",
-      "end_datetime": "2014-12-31T00:00:00Z",
-      "start_datetime": "2013-11-16T00:00:00Z"
+      "end_datetime": "2014-12-31T00:00:00.000000Z",
+      "start_datetime": "2013-11-16T00:00:00.000000Z"
      }
     }
    ]
@@ -155,6 +155,33 @@
      "2023-08-22"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 9.1,
+    "items": [
+     "ma_m_4107017_sw_19_060_20210826"
+    ],
+    "acquired": [
+     "2021-08-26"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 9.32,
+    "items": [
+     "ma_m_4107017_sw_19_060_20180827_20190206"
+    ],
+    "acquired": [
+     "2018-08-27"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -186,8 +213,8 @@
    "id": 29693537
   },
   "center": [
-   -70.959691,
-   41.658047
+   -70.9596908,
+   41.6580469
   ],
   "bbox": [
    -70.9689475,
@@ -196,7 +223,7 @@
    41.6622429
   ],
   "state": "MA",
-  "town": null
+  "town": "New Bedford"
  },
  "boundary": {
   "type": "Polygon",

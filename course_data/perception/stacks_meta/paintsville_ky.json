@@ -35,13 +35,13 @@
    37.81141949073057
   ]
  },
- "built_utc": "2026-10-17T06:40:09Z",
+ "built_utc": "2026-11-02T03:16:57Z",
  "seconds": {
-  "lidar": 43.3,
-  "naip": 8.7,
-  "segment": 48.4,
-  "labels": 29.8,
-  "total": 132.0
+  "lidar": 50.8,
+  "naip": 23.5,
+  "segment": 63.1,
+  "labels": 39.8,
+  "total": 179.8
  },
  "errors": {},
  "lidar": {},
@@ -99,6 +99,35 @@
      "2022-06-22"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 8.79,
+    "items": [
+     "ky_m_3708210_se_17_060_20200601",
+     "ky_m_3708210_ne_17_060_20200601"
+    ],
+    "acquired": [
+     "2020-06-01"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 10.06,
+    "items": [
+     "ky_m_3708210_se_17_060_20181023_20190201",
+     "ky_m_3708210_ne_17_060_20181023_20190201"
+    ],
+    "acquired": [
+     "2018-10-23"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -107,7 +136,7 @@
   "model": "ariadgolf/golf-course-segmentation",
   "sha": "43ee294441db"
  },
- "dtm_base_m": 173.0,
+ "dtm_base_m": 178.0,
  "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "coverage": {
   "naip": 1.0,
@@ -126,8 +155,8 @@
    "id": 297625161
   },
   "center": [
-   -82.775128,
-   37.80569
+   -82.77512815,
+   37.80569045
   ],
   "bbox": [
    -82.781951,
@@ -136,7 +165,7 @@
    37.8098364
   ],
   "state": "KY",
-  "town": null
+  "town": "Paintsville"
  },
  "boundary": {
   "type": "Polygon",

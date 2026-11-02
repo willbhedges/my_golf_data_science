@@ -35,13 +35,13 @@
    33.67971748178543
   ]
  },
- "built_utc": "2026-10-17T07:00:05Z",
+ "built_utc": "2026-11-02T00:31:42Z",
  "seconds": {
-  "lidar": 8.8,
-  "naip": 8.2,
-  "segment": 41.4,
-  "labels": 47.4,
-  "total": 108.4
+  "lidar": 8.2,
+  "naip": 24.1,
+  "segment": 66.7,
+  "labels": 35.3,
+  "total": 137.4
  },
  "errors": {},
  "lidar": {
@@ -50,13 +50,13 @@
    "items": [
     {
      "id": "USGS_LPC_CA_SoCal_Wildfires_B1_2018_LAS_2019-hag-2m-2-1",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 2294960,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SoCal_Wildfires_B1_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -70,13 +70,13 @@
    "items": [
     {
      "id": "USGS_LPC_CA_SoCal_Wildfires_B1_2018_LAS_2019-dtm-2m-2-1",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 572671,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SoCal_Wildfires_B1_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -88,13 +88,13 @@
    "items": [
     {
      "id": "USGS_LPC_CA_SoCal_Wildfires_B1_2018_LAS_2019-classification-2m-2-1",
-     "when": "2019-01-01T00:00:00Z",
+     "when": "2019-01-01T00:00:00.000000Z",
      "cells": 2279420,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_SoCal_Wildfires_B1_2018_LAS_2019",
-      "end_datetime": "2019-01-01T00:00:00Z",
-      "start_datetime": "2019-01-01T00:00:00Z"
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
      }
     }
    ],
@@ -125,6 +125,35 @@
     ],
     "acquired": [
      "2022-05-30"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 10.6,
+    "items": [
+     "ca_m_3311723_sw_11_060_20200423",
+     "ca_m_3311722_se_11_060_20200423"
+    ],
+    "acquired": [
+     "2020-04-23"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 8.79,
+    "items": [
+     "ca_m_3311723_sw_11_060_20180803_20190208",
+     "ca_m_3311722_se_11_060_20180803_20190208"
+    ],
+    "acquired": [
+     "2018-08-03"
     ],
     "gsd_m": 0.6,
     "res_m": 0.6

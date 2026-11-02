@@ -35,13 +35,13 @@
    42.67367686254794
   ]
  },
- "built_utc": "2026-10-17T04:47:28Z",
+ "built_utc": "2026-11-02T04:59:25Z",
  "seconds": {
-  "lidar": 171.1,
-  "naip": 25.3,
-  "segment": 55.8,
-  "labels": 29.1,
-  "total": 284.4
+  "lidar": 240.6,
+  "naip": 38.6,
+  "segment": 103.6,
+  "labels": 37.1,
+  "total": 423.2
  },
  "errors": {},
  "lidar": {
@@ -111,6 +111,36 @@
      "2023-07-05"
     ],
     "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 14.74,
+    "items": [
+     "ma_m_4207018_sw_19_060_20211024",
+     "ma_m_4207017_se_19_060_20211024"
+    ],
+    "acquired": [
+     "2021-10-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 14.58,
+    "items": [
+     "ma_m_4207017_se_19_060_20181016_20190206",
+     "ma_m_4207018_sw_19_060_20180806_20190206"
+    ],
+    "acquired": [
+     "2018-08-06",
+     "2018-10-16"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -120,6 +150,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 5.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "intensity_stretch": null,
  "coverage": {
   "naip": 1.0,
@@ -820,6 +851,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

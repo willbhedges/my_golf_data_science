@@ -35,13 +35,13 @@
    34.0208279664497
   ]
  },
- "built_utc": "2026-10-17T04:14:41Z",
+ "built_utc": "2026-11-02T00:55:47Z",
  "seconds": {
-  "lidar": 82.0,
-  "naip": 16.0,
-  "segment": 109.2,
-  "labels": 40.6,
-  "total": 251.5
+  "lidar": 72.7,
+  "naip": 46.1,
+  "segment": 116.2,
+  "labels": 40.0,
+  "total": 278.9
  },
  "errors": {},
  "lidar": {},
@@ -63,6 +63,7 @@
     "count": 216929315374
    }
   ],
+  "ept_resolution_m": 0.5,
   "used": [
    {
     "name": "USGS_LPC_CA_LosAngeles_2016_LAS_2018",
@@ -94,6 +95,40 @@
      "2022-04-25"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 14.31,
+    "items": [
+     "ca_m_3411758_sw_11_060_20200424",
+     "ca_m_3411758_se_11_060_20200424",
+     "ca_m_3311702_nw_11_060_20200424",
+     "ca_m_3311702_ne_11_060_20200424"
+    ],
+    "acquired": [
+     "2020-04-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 14.32,
+    "items": [
+     "ca_m_3411758_sw_11_060_20180822_20190208",
+     "ca_m_3311702_nw_11_060_20180822_20190209",
+     "ca_m_3411758_se_11_060_20180821_20190208",
+     "ca_m_3311702_ne_11_060_20180821_20190209"
+    ],
+    "acquired": [
+     "2018-08-21",
+     "2018-08-22"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -103,6 +138,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 176.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "coverage": {
   "naip": 1.0,
   "hag": 0.9962230346167557,
@@ -558,6 +594,5 @@
     ]
    ]
   ]
- },
- "dtm_source": "USGS 3DEP TNM ImageServer (best available)"
+ }
 }

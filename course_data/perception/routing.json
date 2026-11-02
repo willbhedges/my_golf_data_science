@@ -1,82 +1,82 @@
 {
- "built_utc": "2026-10-17T13:37:23Z",
+ "built_utc": "2026-11-02T08:01:10Z",
  "pooled": {
   "test": {
    "perception_card": {
-    "courses": 26,
-    "holes": 463,
-    "hole_number_acc": 0.503,
-    "green_assign_acc": 0.583,
-    "physical_holes_found": 0.613,
-    "all_correct": 0.038
+    "courses": 31,
+    "holes": 527,
+    "hole_number_acc": 0.588,
+    "green_assign_acc": 0.662,
+    "physical_holes_found": 0.668,
+    "all_correct": 0.065
    },
    "perceptionseg_card": {
-    "courses": 26,
-    "holes": 463,
-    "hole_number_acc": 0.54,
-    "green_assign_acc": 0.628,
-    "physical_holes_found": 0.633,
-    "all_correct": 0.038
+    "courses": 31,
+    "holes": 527,
+    "hole_number_acc": 0.577,
+    "green_assign_acc": 0.67,
+    "physical_holes_found": 0.653,
+    "all_correct": 0.032
    },
    "baseline_card": {
-    "courses": 26,
-    "holes": 463,
-    "hole_number_acc": 0.609,
-    "green_assign_acc": 0.715,
-    "physical_holes_found": 0.665,
-    "all_correct": 0.038
+    "courses": 31,
+    "holes": 527,
+    "hole_number_acc": 0.639,
+    "green_assign_acc": 0.746,
+    "physical_holes_found": 0.681,
+    "all_correct": 0.065
    }
   },
   "train": {
    "perception_card": {
-    "courses": 55,
-    "holes": 927,
-    "hole_number_acc": 0.702,
-    "green_assign_acc": 0.805,
-    "physical_holes_found": 0.752,
-    "all_correct": 0.036
+    "courses": 51,
+    "holes": 881,
+    "hole_number_acc": 0.615,
+    "green_assign_acc": 0.715,
+    "physical_holes_found": 0.706,
+    "all_correct": 0.02
    },
    "perceptionseg_card": {
-    "courses": 55,
-    "holes": 927,
-    "hole_number_acc": 0.693,
-    "green_assign_acc": 0.799,
-    "physical_holes_found": 0.759,
-    "all_correct": 0.055
+    "courses": 51,
+    "holes": 881,
+    "hole_number_acc": 0.644,
+    "green_assign_acc": 0.748,
+    "physical_holes_found": 0.733,
+    "all_correct": 0.039
    },
    "baseline_card": {
-    "courses": 55,
-    "holes": 927,
-    "hole_number_acc": 0.611,
-    "green_assign_acc": 0.736,
-    "physical_holes_found": 0.68,
-    "all_correct": 0.073
+    "courses": 51,
+    "holes": 881,
+    "hole_number_acc": 0.592,
+    "green_assign_acc": 0.716,
+    "physical_holes_found": 0.672,
+    "all_correct": 0.059
    }
   },
   "all": {
    "perception_card": {
-    "courses": 81,
-    "holes": 1390,
-    "hole_number_acc": 0.636,
-    "green_assign_acc": 0.731,
-    "physical_holes_found": 0.706,
+    "courses": 82,
+    "holes": 1408,
+    "hole_number_acc": 0.605,
+    "green_assign_acc": 0.695,
+    "physical_holes_found": 0.692,
     "all_correct": 0.037
    },
    "perceptionseg_card": {
-    "courses": 81,
-    "holes": 1390,
-    "hole_number_acc": 0.642,
-    "green_assign_acc": 0.742,
-    "physical_holes_found": 0.717,
-    "all_correct": 0.049
+    "courses": 82,
+    "holes": 1408,
+    "hole_number_acc": 0.619,
+    "green_assign_acc": 0.719,
+    "physical_holes_found": 0.703,
+    "all_correct": 0.037
    },
    "baseline_card": {
-    "courses": 81,
-    "holes": 1390,
+    "courses": 82,
+    "holes": 1408,
     "hole_number_acc": 0.61,
-    "green_assign_acc": 0.729,
+    "green_assign_acc": 0.727,
     "physical_holes_found": 0.675,
-    "all_correct": 0.062
+    "all_correct": 0.061
    }
   }
  },
@@ -97,7 +97,7 @@
     "wrong": 17,
     "wrong_unflagged": 0,
     "flag_precision": 0.944,
-    "seconds": 10.1
+    "seconds": 11.0
    },
    "baseline_card": {
     "n_true": 17,
@@ -111,21 +111,21 @@
     "wrong": 0,
     "wrong_unflagged": 0,
     "flag_precision": 0.0,
-    "seconds": 13.4
+    "seconds": 14.4
    },
    "perceptionseg_card": {
     "n_true": 17,
-    "hole_number_acc": 0.235,
+    "hole_number_acc": 0.294,
     "green_assign_acc": 0.353,
-    "physical_holes_found": 0.412,
-    "median_length_err_yd": 7.2,
-    "p90_length_err_yd": 37.6,
+    "physical_holes_found": 0.471,
+    "median_length_err_yd": 6.2,
+    "p90_length_err_yd": 33.4,
     "all_correct": false,
     "flagged": 18,
-    "wrong": 13,
+    "wrong": 12,
     "wrong_unflagged": 0,
-    "flag_precision": 0.722,
-    "seconds": 9.6
+    "flag_precision": 0.667,
+    "seconds": 10.4
    },
    "state": "GA",
    "split": "test"
@@ -146,7 +146,7 @@
     "wrong": 0,
     "wrong_unflagged": 0,
     "flag_precision": 0.0,
-    "seconds": 11.5
+    "seconds": 11.6
    },
    "baseline_card": {
     "n_true": 17,
@@ -160,7 +160,7 @@
     "wrong": 2,
     "wrong_unflagged": 1,
     "flag_precision": 0.2,
-    "seconds": 17.4
+    "seconds": 18.3
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -195,7 +195,7 @@
     "wrong": 3,
     "wrong_unflagged": 1,
     "flag_precision": 1.0,
-    "seconds": 11.2
+    "seconds": 11.3
    },
    "baseline_card": {
     "n_true": 18,
@@ -209,7 +209,7 @@
     "wrong": 3,
     "wrong_unflagged": 1,
     "flag_precision": 0.222,
-    "seconds": 16.7
+    "seconds": 18.7
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -223,7 +223,7 @@
     "wrong": 9,
     "wrong_unflagged": 0,
     "flag_precision": 0.643,
-    "seconds": 11.2
+    "seconds": 11.3
    },
    "state": "WI",
    "split": "train"
@@ -289,11 +289,11 @@
     "median_length_err_yd": 5.8,
     "p90_length_err_yd": 24.3,
     "all_correct": false,
-    "flagged": 5,
+    "flagged": 4,
     "wrong": 3,
     "wrong_unflagged": 0,
-    "flag_precision": 0.6,
-    "seconds": 10.4
+    "flag_precision": 0.75,
+    "seconds": 10.5
    },
    "baseline_card": {
     "n_true": 17,
@@ -307,7 +307,7 @@
     "wrong": 5,
     "wrong_unflagged": 0,
     "flag_precision": 0.455,
-    "seconds": 14.1
+    "seconds": 13.5
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -321,7 +321,7 @@
     "wrong": 4,
     "wrong_unflagged": 0,
     "flag_precision": 0.5,
-    "seconds": 10.9
+    "seconds": 11.0
    },
    "state": "WI",
    "split": "train"
@@ -342,7 +342,7 @@
     "wrong": 5,
     "wrong_unflagged": 3,
     "flag_precision": 0.5,
-    "seconds": 11.5
+    "seconds": 11.6
    },
    "baseline_card": {
     "n_true": 18,
@@ -356,7 +356,7 @@
     "wrong": 4,
     "wrong_unflagged": 2,
     "flag_precision": 0.333,
-    "seconds": 12.2
+    "seconds": 12.6
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -370,7 +370,7 @@
     "wrong": 4,
     "wrong_unflagged": 4,
     "flag_precision": 0.0,
-    "seconds": 11.4
+    "seconds": 11.5
    },
    "state": "IL",
    "split": "train"
@@ -381,17 +381,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.667,
-    "green_assign_acc": 0.667,
-    "physical_holes_found": 0.778,
-    "median_length_err_yd": 1.6,
-    "p90_length_err_yd": 2.4,
+    "hole_number_acc": 0.333,
+    "green_assign_acc": 0.333,
+    "physical_holes_found": 0.5,
+    "median_length_err_yd": 1.7,
+    "p90_length_err_yd": 1.9,
     "all_correct": false,
-    "flagged": 3,
-    "wrong": 6,
+    "flagged": 9,
+    "wrong": 12,
     "wrong_unflagged": 3,
     "flag_precision": 1.0,
-    "seconds": 10.1
+    "seconds": 10.0
    },
    "baseline_card": {
     "n_true": 18,
@@ -405,21 +405,21 @@
     "wrong": 5,
     "wrong_unflagged": 1,
     "flag_precision": 0.571,
-    "seconds": 13.6
+    "seconds": 14.0
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.667,
+    "hole_number_acc": 0.611,
     "green_assign_acc": 0.667,
-    "physical_holes_found": 0.778,
-    "median_length_err_yd": 1.7,
+    "physical_holes_found": 0.667,
+    "median_length_err_yd": 1.8,
     "p90_length_err_yd": 2.7,
     "all_correct": false,
-    "flagged": 7,
-    "wrong": 6,
+    "flagged": 9,
+    "wrong": 7,
     "wrong_unflagged": 0,
-    "flag_precision": 0.857,
-    "seconds": 10.2
+    "flag_precision": 0.778,
+    "seconds": 10.0
    },
    "state": "UT",
    "split": "test"
@@ -454,7 +454,7 @@
     "wrong": 4,
     "wrong_unflagged": 0,
     "flag_precision": 0.4,
-    "seconds": 12.0
+    "seconds": 12.5
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -468,10 +468,10 @@
     "wrong": 8,
     "wrong_unflagged": 0,
     "flag_precision": 0.5,
-    "seconds": 9.6
+    "seconds": 9.8
    },
    "state": "KY",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "brae_loch_il",
@@ -489,7 +489,7 @@
     "wrong": 3,
     "wrong_unflagged": 0,
     "flag_precision": 0.333,
-    "seconds": 9.6
+    "seconds": 9.8
    },
    "baseline_card": {
     "n_true": 17,
@@ -503,7 +503,7 @@
     "wrong": 0,
     "wrong_unflagged": 0,
     "flag_precision": null,
-    "seconds": 10.1
+    "seconds": 10.6
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -517,7 +517,7 @@
     "wrong": 0,
     "wrong_unflagged": 0,
     "flag_precision": 0.0,
-    "seconds": 10.1
+    "seconds": 10.4
    },
    "state": "IL",
    "split": "train"
@@ -538,7 +538,7 @@
     "wrong": 13,
     "wrong_unflagged": 7,
     "flag_precision": 1.0,
-    "seconds": 9.6
+    "seconds": 10.2
    },
    "baseline_card": {
     "n_true": 18,
@@ -552,7 +552,7 @@
     "wrong": 18,
     "wrong_unflagged": 0,
     "flag_precision": 1.0,
-    "seconds": 11.2
+    "seconds": 11.6
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -566,10 +566,10 @@
     "wrong": 13,
     "wrong_unflagged": 3,
     "flag_precision": 0.909,
-    "seconds": 9.3
+    "seconds": 10.0
    },
    "state": "GA",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "canyon_lake_ca",
@@ -587,7 +587,7 @@
     "wrong": 17,
     "wrong_unflagged": 13,
     "flag_precision": 1.0,
-    "seconds": 10.2
+    "seconds": 10.5
    },
    "baseline_card": {
     "n_true": 17,
@@ -601,7 +601,7 @@
     "wrong": 17,
     "wrong_unflagged": 6,
     "flag_precision": 0.917,
-    "seconds": 21.5
+    "seconds": 22.2
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -615,7 +615,7 @@
     "wrong": 17,
     "wrong_unflagged": 17,
     "flag_precision": null,
-    "seconds": 10.2
+    "seconds": 10.4
    },
    "state": "CA",
    "split": "train"
@@ -650,7 +650,7 @@
     "wrong": 7,
     "wrong_unflagged": 0,
     "flag_precision": 0.778,
-    "seconds": 5.9
+    "seconds": 6.1
    },
    "perceptionseg_card": {
     "n_true": 9,
@@ -667,7 +667,7 @@
     "seconds": 2.5
    },
    "state": "IL",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "chaska_wi",
@@ -675,17 +675,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.667,
-    "green_assign_acc": 0.833,
-    "physical_holes_found": 0.667,
-    "median_length_err_yd": 9.3,
-    "p90_length_err_yd": 25.9,
+    "hole_number_acc": 0.722,
+    "green_assign_acc": 0.889,
+    "physical_holes_found": 0.722,
+    "median_length_err_yd": 8.6,
+    "p90_length_err_yd": 25.5,
     "all_correct": false,
-    "flagged": 7,
-    "wrong": 6,
-    "wrong_unflagged": 2,
-    "flag_precision": 0.571,
-    "seconds": 9.9
+    "flagged": 8,
+    "wrong": 5,
+    "wrong_unflagged": 1,
+    "flag_precision": 0.5,
+    "seconds": 10.0
    },
    "baseline_card": {
     "n_true": 18,
@@ -699,24 +699,24 @@
     "wrong": 6,
     "wrong_unflagged": 2,
     "flag_precision": 0.4,
-    "seconds": 11.1
+    "seconds": 11.5
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.722,
-    "green_assign_acc": 0.833,
-    "physical_holes_found": 0.722,
-    "median_length_err_yd": 8.6,
-    "p90_length_err_yd": 34.6,
+    "hole_number_acc": 0.778,
+    "green_assign_acc": 0.889,
+    "physical_holes_found": 0.778,
+    "median_length_err_yd": 7.4,
+    "p90_length_err_yd": 33.1,
     "all_correct": false,
     "flagged": 5,
-    "wrong": 5,
-    "wrong_unflagged": 3,
+    "wrong": 4,
+    "wrong_unflagged": 2,
     "flag_precision": 0.4,
-    "seconds": 10.2
+    "seconds": 10.1
    },
    "state": "WI",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "cinder_ridge_il",
@@ -734,7 +734,7 @@
     "wrong": 5,
     "wrong_unflagged": 0,
     "flag_precision": 0.294,
-    "seconds": 10.5
+    "seconds": 10.6
    },
    "baseline_card": {
     "n_true": 15,
@@ -748,7 +748,7 @@
     "wrong": 6,
     "wrong_unflagged": 1,
     "flag_precision": 0.556,
-    "seconds": 13.8
+    "seconds": 14.0
    },
    "perceptionseg_card": {
     "n_true": 15,
@@ -762,10 +762,10 @@
     "wrong": 5,
     "wrong_unflagged": 0,
     "flag_precision": 0.5,
-    "seconds": 10.2
+    "seconds": 10.4
    },
    "state": "IL",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "concord_ma",
@@ -783,7 +783,7 @@
     "wrong": 1,
     "wrong_unflagged": 1,
     "flag_precision": 0.0,
-    "seconds": 11.9
+    "seconds": 12.1
    },
    "baseline_card": {
     "n_true": 17,
@@ -797,7 +797,7 @@
     "wrong": 9,
     "wrong_unflagged": 0,
     "flag_precision": 0.529,
-    "seconds": 16.5
+    "seconds": 17.1
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -846,7 +846,7 @@
     "wrong": 10,
     "wrong_unflagged": 0,
     "flag_precision": 0.909,
-    "seconds": 14.4
+    "seconds": 14.3
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -860,10 +860,10 @@
     "wrong": 9,
     "wrong_unflagged": 2,
     "flag_precision": 1.0,
-    "seconds": 12.3
+    "seconds": 12.1
    },
    "state": "CA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "crestwood_ma",
@@ -881,7 +881,7 @@
     "wrong": 2,
     "wrong_unflagged": 1,
     "flag_precision": 0.333,
-    "seconds": 10.8
+    "seconds": 10.6
    },
    "baseline_card": {
     "n_true": 18,
@@ -895,7 +895,7 @@
     "wrong": 2,
     "wrong_unflagged": 0,
     "flag_precision": 0.133,
-    "seconds": 11.3
+    "seconds": 11.2
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -944,7 +944,7 @@
     "wrong": 9,
     "wrong_unflagged": 0,
     "flag_precision": 0.692,
-    "seconds": 11.0
+    "seconds": 11.1
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -958,7 +958,7 @@
     "wrong": 11,
     "wrong_unflagged": 0,
     "flag_precision": 0.917,
-    "seconds": 8.7
+    "seconds": 8.8
    },
    "state": "KY",
    "split": "test"
@@ -1007,7 +1007,7 @@
     "wrong": 3,
     "wrong_unflagged": 0,
     "flag_precision": 0.375,
-    "seconds": 2.9
+    "seconds": 3.0
    },
    "state": "CA",
    "split": "train"
@@ -1018,17 +1018,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.556,
-    "green_assign_acc": 0.667,
-    "physical_holes_found": 0.722,
-    "median_length_err_yd": 2.4,
-    "p90_length_err_yd": 5.1,
+    "hole_number_acc": 0.0,
+    "green_assign_acc": 0.0,
+    "physical_holes_found": 0.556,
+    "median_length_err_yd": null,
+    "p90_length_err_yd": null,
     "all_correct": false,
-    "flagged": 7,
-    "wrong": 8,
-    "wrong_unflagged": 3,
-    "flag_precision": 0.714,
-    "seconds": 10.9
+    "flagged": 18,
+    "wrong": 18,
+    "wrong_unflagged": 0,
+    "flag_precision": 1.0,
+    "seconds": 11.4
    },
    "baseline_card": {
     "n_true": 18,
@@ -1042,21 +1042,21 @@
     "wrong": 8,
     "wrong_unflagged": 0,
     "flag_precision": 0.444,
-    "seconds": 13.4
+    "seconds": 14.0
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.556,
-    "green_assign_acc": 0.667,
-    "physical_holes_found": 0.722,
-    "median_length_err_yd": 2.4,
-    "p90_length_err_yd": 5.1,
+    "hole_number_acc": 0.0,
+    "green_assign_acc": 0.0,
+    "physical_holes_found": 0.556,
+    "median_length_err_yd": null,
+    "p90_length_err_yd": null,
     "all_correct": false,
-    "flagged": 7,
-    "wrong": 8,
-    "wrong_unflagged": 3,
-    "flag_precision": 0.714,
-    "seconds": 10.8
+    "flagged": 18,
+    "wrong": 18,
+    "wrong_unflagged": 0,
+    "flag_precision": 1.0,
+    "seconds": 11.7
    },
    "state": "NH",
    "split": "train"
@@ -1077,7 +1077,7 @@
     "wrong": 1,
     "wrong_unflagged": 1,
     "flag_precision": 0.0,
-    "seconds": 10.5
+    "seconds": 10.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -1091,7 +1091,7 @@
     "wrong": 5,
     "wrong_unflagged": 5,
     "flag_precision": 0.0,
-    "seconds": 12.3
+    "seconds": 12.5
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1105,10 +1105,10 @@
     "wrong": 1,
     "wrong_unflagged": 1,
     "flag_precision": 0.0,
-    "seconds": 10.4
+    "seconds": 10.6
    },
    "state": "MN",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "edgewood_park_il",
@@ -1126,7 +1126,7 @@
     "wrong": 10,
     "wrong_unflagged": 0,
     "flag_precision": 0.588,
-    "seconds": 10.7
+    "seconds": 10.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -1140,7 +1140,7 @@
     "wrong": 9,
     "wrong_unflagged": 1,
     "flag_precision": 0.533,
-    "seconds": 12.5
+    "seconds": 12.7
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1154,7 +1154,7 @@
     "wrong": 9,
     "wrong_unflagged": 0,
     "flag_precision": 0.5,
-    "seconds": 10.6
+    "seconds": 10.9
    },
    "state": "IL",
    "split": "train"
@@ -1175,7 +1175,7 @@
     "wrong": 2,
     "wrong_unflagged": 1,
     "flag_precision": 0.333,
-    "seconds": 10.8
+    "seconds": 10.9
    },
    "baseline_card": {
     "n_true": 18,
@@ -1189,7 +1189,7 @@
     "wrong": 10,
     "wrong_unflagged": 0,
     "flag_precision": 0.556,
-    "seconds": 10.4
+    "seconds": 10.7
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1203,7 +1203,7 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.333,
-    "seconds": 10.8
+    "seconds": 10.9
    },
    "state": "CA",
    "split": "train"
@@ -1217,14 +1217,14 @@
     "hole_number_acc": 0.722,
     "green_assign_acc": 0.889,
     "physical_holes_found": 0.722,
-    "median_length_err_yd": 2.0,
+    "median_length_err_yd": 1.7,
     "p90_length_err_yd": 10.3,
     "all_correct": false,
-    "flagged": 6,
+    "flagged": 3,
     "wrong": 5,
-    "wrong_unflagged": 1,
-    "flag_precision": 0.667,
-    "seconds": 11.5
+    "wrong_unflagged": 4,
+    "flag_precision": 0.333,
+    "seconds": 12.1
    },
    "baseline_card": {
     "n_true": 18,
@@ -1238,24 +1238,24 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.143,
-    "seconds": 13.9
+    "seconds": 14.4
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.722,
-    "green_assign_acc": 0.778,
-    "physical_holes_found": 0.722,
-    "median_length_err_yd": 2.0,
-    "p90_length_err_yd": 10.3,
+    "hole_number_acc": 0.778,
+    "green_assign_acc": 0.889,
+    "physical_holes_found": 0.778,
+    "median_length_err_yd": 1.9,
+    "p90_length_err_yd": 11.1,
     "all_correct": false,
-    "flagged": 7,
-    "wrong": 5,
-    "wrong_unflagged": 0,
-    "flag_precision": 0.714,
-    "seconds": 11.4
+    "flagged": 6,
+    "wrong": 4,
+    "wrong_unflagged": 1,
+    "flag_precision": 0.5,
+    "seconds": 12.1
    },
    "state": "MN",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "elmcrest_ma",
@@ -1273,7 +1273,7 @@
     "wrong": 4,
     "wrong_unflagged": 1,
     "flag_precision": 0.333,
-    "seconds": 9.6
+    "seconds": 9.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -1287,7 +1287,7 @@
     "wrong": 4,
     "wrong_unflagged": 0,
     "flag_precision": 0.4,
-    "seconds": 11.8
+    "seconds": 12.1
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1301,10 +1301,10 @@
     "wrong": 3,
     "wrong_unflagged": 2,
     "flag_precision": 0.2,
-    "seconds": 10.0
+    "seconds": 10.2
    },
    "state": "MA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "empire_ranch_ca",
@@ -1322,7 +1322,7 @@
     "wrong": 4,
     "wrong_unflagged": 1,
     "flag_precision": 0.5,
-    "seconds": 12.7
+    "seconds": 12.9
    },
    "baseline_card": {
     "n_true": 17,
@@ -1336,7 +1336,7 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.111,
-    "seconds": 19.2
+    "seconds": 19.6
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -1350,10 +1350,10 @@
     "wrong": 1,
     "wrong_unflagged": 1,
     "flag_precision": 0.0,
-    "seconds": 12.6
+    "seconds": 12.8
    },
    "state": "CA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "fairways_woodside_wi",
@@ -1371,7 +1371,7 @@
     "wrong": 4,
     "wrong_unflagged": 0,
     "flag_precision": 0.333,
-    "seconds": 11.6
+    "seconds": 11.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -1385,7 +1385,7 @@
     "wrong": 8,
     "wrong_unflagged": 0,
     "flag_precision": 0.5,
-    "seconds": 14.6
+    "seconds": 14.8
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1410,17 +1410,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.556,
-    "green_assign_acc": 0.611,
-    "physical_holes_found": 0.611,
-    "median_length_err_yd": 2.0,
-    "p90_length_err_yd": 4.2,
+    "hole_number_acc": 0.444,
+    "green_assign_acc": 0.5,
+    "physical_holes_found": 0.5,
+    "median_length_err_yd": 1.8,
+    "p90_length_err_yd": 11.8,
     "all_correct": false,
-    "flagged": 16,
-    "wrong": 8,
+    "flagged": 18,
+    "wrong": 10,
     "wrong_unflagged": 0,
-    "flag_precision": 0.5,
-    "seconds": 9.9
+    "flag_precision": 0.556,
+    "seconds": 10.0
    },
    "baseline_card": {
     "n_true": 18,
@@ -1434,21 +1434,21 @@
     "wrong": 6,
     "wrong_unflagged": 2,
     "flag_precision": 0.4,
-    "seconds": 11.0
+    "seconds": 11.1
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.778,
-    "green_assign_acc": 0.833,
-    "physical_holes_found": 0.778,
-    "median_length_err_yd": 2.1,
-    "p90_length_err_yd": 8.6,
+    "hole_number_acc": 0.667,
+    "green_assign_acc": 0.722,
+    "physical_holes_found": 0.667,
+    "median_length_err_yd": 1.8,
+    "p90_length_err_yd": 7.6,
     "all_correct": false,
-    "flagged": 12,
-    "wrong": 4,
+    "flagged": 13,
+    "wrong": 6,
     "wrong_unflagged": 0,
-    "flag_precision": 0.333,
-    "seconds": 9.8
+    "flag_precision": 0.462,
+    "seconds": 10.0
    },
    "state": "MA",
    "split": "train"
@@ -1459,17 +1459,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.778,
-    "green_assign_acc": 0.944,
-    "physical_holes_found": 0.778,
-    "median_length_err_yd": 3.2,
-    "p90_length_err_yd": 14.6,
+    "hole_number_acc": 0.833,
+    "green_assign_acc": 1.0,
+    "physical_holes_found": 0.833,
+    "median_length_err_yd": 3.5,
+    "p90_length_err_yd": 19.9,
     "all_correct": false,
-    "flagged": 2,
-    "wrong": 4,
+    "flagged": 1,
+    "wrong": 3,
     "wrong_unflagged": 2,
     "flag_precision": 1.0,
-    "seconds": 12.2
+    "seconds": 12.5
    },
    "baseline_card": {
     "n_true": 18,
@@ -1483,7 +1483,7 @@
     "wrong": 4,
     "wrong_unflagged": 1,
     "flag_precision": 0.231,
-    "seconds": 18.0
+    "seconds": 18.4
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1493,11 +1493,11 @@
     "median_length_err_yd": 3.0,
     "p90_length_err_yd": 14.8,
     "all_correct": false,
-    "flagged": 12,
+    "flagged": 10,
     "wrong": 5,
     "wrong_unflagged": 2,
-    "flag_precision": 0.25,
-    "seconds": 12.6
+    "flag_precision": 0.3,
+    "seconds": 12.9
    },
    "state": "ME",
    "split": "test"
@@ -1546,7 +1546,7 @@
     "wrong": 17,
     "wrong_unflagged": 0,
     "flag_precision": 0.944,
-    "seconds": 3.9
+    "seconds": 4.0
    },
    "state": "MS",
    "split": "train"
@@ -1598,7 +1598,7 @@
     "seconds": 10.3
    },
    "state": "MA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "hatherly_ma",
@@ -1616,7 +1616,7 @@
     "wrong": 5,
     "wrong_unflagged": 4,
     "flag_precision": 1.0,
-    "seconds": 10.9
+    "seconds": 10.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -1630,7 +1630,7 @@
     "wrong": 10,
     "wrong_unflagged": 0,
     "flag_precision": 0.556,
-    "seconds": 13.4
+    "seconds": 13.6
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1644,7 +1644,7 @@
     "wrong": 6,
     "wrong_unflagged": 3,
     "flag_precision": 0.3,
-    "seconds": 10.4
+    "seconds": 10.5
    },
    "state": "MA",
    "split": "train"
@@ -1693,7 +1693,7 @@
     "wrong": 3,
     "wrong_unflagged": 3,
     "flag_precision": 0.0,
-    "seconds": 9.5
+    "seconds": 9.7
    },
    "state": "WI",
    "split": "train"
@@ -1704,17 +1704,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 17,
-    "hole_number_acc": 0.824,
-    "green_assign_acc": 0.882,
-    "physical_holes_found": 0.824,
-    "median_length_err_yd": 5.0,
-    "p90_length_err_yd": 14.0,
+    "hole_number_acc": 0.235,
+    "green_assign_acc": 0.353,
+    "physical_holes_found": 0.353,
+    "median_length_err_yd": 0.8,
+    "p90_length_err_yd": 2.1,
     "all_correct": false,
-    "flagged": 11,
-    "wrong": 3,
-    "wrong_unflagged": 2,
-    "flag_precision": 0.091,
-    "seconds": 10.6
+    "flagged": 12,
+    "wrong": 13,
+    "wrong_unflagged": 3,
+    "flag_precision": 0.833,
+    "seconds": 10.5
    },
    "baseline_card": {
     "n_true": 17,
@@ -1728,7 +1728,7 @@
     "wrong": 1,
     "wrong_unflagged": 1,
     "flag_precision": 0.0,
-    "seconds": 14.6
+    "seconds": 14.8
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -1745,7 +1745,7 @@
     "seconds": 10.6
    },
    "state": "UT",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "huntington_ca",
@@ -1753,17 +1753,17 @@
    "card_kind": "osm-derived",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.944,
-    "green_assign_acc": 1.0,
-    "physical_holes_found": 0.944,
-    "median_length_err_yd": 3.0,
-    "p90_length_err_yd": 15.3,
+    "hole_number_acc": 0.333,
+    "green_assign_acc": 0.444,
+    "physical_holes_found": 0.556,
+    "median_length_err_yd": 4.7,
+    "p90_length_err_yd": 12.7,
     "all_correct": false,
-    "flagged": 4,
-    "wrong": 1,
-    "wrong_unflagged": 1,
-    "flag_precision": 0.0,
-    "seconds": 10.4
+    "flagged": 18,
+    "wrong": 12,
+    "wrong_unflagged": 0,
+    "flag_precision": 0.667,
+    "seconds": 10.0
    },
    "baseline_card": {
     "n_true": 18,
@@ -1777,21 +1777,21 @@
     "wrong": 2,
     "wrong_unflagged": 0,
     "flag_precision": 0.667,
-    "seconds": 13.4
+    "seconds": 14.0
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.889,
-    "green_assign_acc": 1.0,
-    "physical_holes_found": 0.889,
-    "median_length_err_yd": 2.9,
-    "p90_length_err_yd": 16.4,
+    "hole_number_acc": 0.611,
+    "green_assign_acc": 0.778,
+    "physical_holes_found": 0.778,
+    "median_length_err_yd": 2.8,
+    "p90_length_err_yd": 20.9,
     "all_correct": false,
     "flagged": 9,
-    "wrong": 2,
-    "wrong_unflagged": 0,
-    "flag_precision": 0.222,
-    "seconds": 10.3
+    "wrong": 7,
+    "wrong_unflagged": 2,
+    "flag_precision": 0.556,
+    "seconds": 10.2
    },
    "state": "CA",
    "split": "train"
@@ -1812,7 +1812,7 @@
     "wrong": 16,
     "wrong_unflagged": 0,
     "flag_precision": 0.889,
-    "seconds": 9.1
+    "seconds": 9.3
    },
    "baseline_card": {
     "n_true": 18,
@@ -1840,7 +1840,7 @@
     "wrong": 18,
     "wrong_unflagged": 0,
     "flag_precision": 1.0,
-    "seconds": 8.9
+    "seconds": 9.0
    },
    "state": "ME",
    "split": "test"
@@ -1861,7 +1861,7 @@
     "wrong": 3,
     "wrong_unflagged": 2,
     "flag_precision": 0.2,
-    "seconds": 9.6
+    "seconds": 9.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -1875,7 +1875,7 @@
     "wrong": 7,
     "wrong_unflagged": 1,
     "flag_precision": 0.667,
-    "seconds": 15.2
+    "seconds": 15.9
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1889,7 +1889,7 @@
     "wrong": 4,
     "wrong_unflagged": 1,
     "flag_precision": 0.333,
-    "seconds": 10.7
+    "seconds": 10.9
    },
    "state": "MA",
    "split": "train"
@@ -1900,17 +1900,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 17,
-    "hole_number_acc": 0.0,
-    "green_assign_acc": 0.0,
-    "physical_holes_found": 0.176,
-    "median_length_err_yd": null,
-    "p90_length_err_yd": null,
+    "hole_number_acc": 0.235,
+    "green_assign_acc": 0.294,
+    "physical_holes_found": 0.412,
+    "median_length_err_yd": 2.8,
+    "p90_length_err_yd": 15.7,
     "all_correct": false,
     "flagged": 18,
-    "wrong": 17,
+    "wrong": 13,
     "wrong_unflagged": 0,
-    "flag_precision": 0.944,
-    "seconds": 9.7
+    "flag_precision": 0.722,
+    "seconds": 10.0
    },
    "baseline_card": {
     "n_true": 17,
@@ -1924,21 +1924,21 @@
     "wrong": 13,
     "wrong_unflagged": 0,
     "flag_precision": 0.722,
-    "seconds": 13.3
+    "seconds": 13.6
    },
    "perceptionseg_card": {
     "n_true": 17,
-    "hole_number_acc": 0.0,
-    "green_assign_acc": 0.0,
-    "physical_holes_found": 0.176,
-    "median_length_err_yd": null,
-    "p90_length_err_yd": null,
+    "hole_number_acc": 0.235,
+    "green_assign_acc": 0.294,
+    "physical_holes_found": 0.412,
+    "median_length_err_yd": 2.8,
+    "p90_length_err_yd": 15.7,
     "all_correct": false,
     "flagged": 18,
-    "wrong": 17,
+    "wrong": 13,
     "wrong_unflagged": 0,
-    "flag_precision": 0.944,
-    "seconds": 9.8
+    "flag_precision": 0.722,
+    "seconds": 10.0
    },
    "state": "GA",
    "split": "test"
@@ -1959,7 +1959,7 @@
     "wrong": 2,
     "wrong_unflagged": 1,
     "flag_precision": 0.5,
-    "seconds": 11.3
+    "seconds": 11.5
    },
    "baseline_card": {
     "n_true": 18,
@@ -1973,7 +1973,7 @@
     "wrong": 5,
     "wrong_unflagged": 2,
     "flag_precision": 0.429,
-    "seconds": 14.9
+    "seconds": 15.0
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -1987,10 +1987,10 @@
     "wrong": 2,
     "wrong_unflagged": 1,
     "flag_precision": 0.5,
-    "seconds": 11.6
+    "seconds": 11.7
    },
    "state": "CA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "lakeside_ca",
@@ -1998,17 +1998,17 @@
    "card_kind": "osm-derived",
    "perception_card": {
     "n_true": 17,
-    "hole_number_acc": 0.588,
-    "green_assign_acc": 0.882,
-    "physical_holes_found": 0.588,
-    "median_length_err_yd": 6.7,
-    "p90_length_err_yd": 30.9,
+    "hole_number_acc": 0.118,
+    "green_assign_acc": 0.176,
+    "physical_holes_found": 0.353,
+    "median_length_err_yd": 6.2,
+    "p90_length_err_yd": 6.7,
     "all_correct": false,
-    "flagged": 12,
-    "wrong": 7,
-    "wrong_unflagged": 0,
-    "flag_precision": 0.583,
-    "seconds": 10.2
+    "flagged": 14,
+    "wrong": 15,
+    "wrong_unflagged": 2,
+    "flag_precision": 0.929,
+    "seconds": 10.1
    },
    "baseline_card": {
     "n_true": 17,
@@ -2022,24 +2022,24 @@
     "wrong": 15,
     "wrong_unflagged": 0,
     "flag_precision": 0.833,
-    "seconds": 27.3
+    "seconds": 27.7
    },
    "perceptionseg_card": {
     "n_true": 17,
-    "hole_number_acc": 0.529,
-    "green_assign_acc": 0.882,
-    "physical_holes_found": 0.529,
-    "median_length_err_yd": 6.6,
-    "p90_length_err_yd": 27.9,
+    "hole_number_acc": 0.176,
+    "green_assign_acc": 0.294,
+    "physical_holes_found": 0.353,
+    "median_length_err_yd": 6.8,
+    "p90_length_err_yd": 16.6,
     "all_correct": false,
-    "flagged": 13,
-    "wrong": 8,
+    "flagged": 17,
+    "wrong": 14,
     "wrong_unflagged": 0,
-    "flag_precision": 0.615,
+    "flag_precision": 0.824,
     "seconds": 10.3
    },
    "state": "CA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "lakeside_ky",
@@ -2057,7 +2057,7 @@
     "wrong": 2,
     "wrong_unflagged": 2,
     "flag_precision": 0.0,
-    "seconds": 10.8
+    "seconds": 10.4
    },
    "baseline_card": {
     "n_true": 18,
@@ -2075,20 +2075,20 @@
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.889,
-    "green_assign_acc": 1.0,
-    "physical_holes_found": 0.889,
+    "hole_number_acc": 0.778,
+    "green_assign_acc": 0.889,
+    "physical_holes_found": 0.778,
     "median_length_err_yd": 2.0,
-    "p90_length_err_yd": 13.8,
+    "p90_length_err_yd": 11.9,
     "all_correct": false,
     "flagged": 6,
-    "wrong": 2,
+    "wrong": 4,
     "wrong_unflagged": 2,
-    "flag_precision": 0.0,
-    "seconds": 10.9
+    "flag_precision": 0.333,
+    "seconds": 11.0
    },
    "state": "KY",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "landing_ga",
@@ -2120,7 +2120,7 @@
     "wrong": 11,
     "wrong_unflagged": 8,
     "flag_precision": 0.5,
-    "seconds": 15.9
+    "seconds": 15.8
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2134,10 +2134,10 @@
     "wrong": 7,
     "wrong_unflagged": 5,
     "flag_precision": 0.286,
-    "seconds": 10.1
+    "seconds": 10.0
    },
    "state": "GA",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "los_amigos_ca",
@@ -2151,11 +2151,11 @@
     "median_length_err_yd": 4.7,
     "p90_length_err_yd": 36.7,
     "all_correct": false,
-    "flagged": 7,
+    "flagged": 2,
     "wrong": 3,
-    "wrong_unflagged": 0,
-    "flag_precision": 0.429,
-    "seconds": 10.5
+    "wrong_unflagged": 2,
+    "flag_precision": 0.5,
+    "seconds": 10.4
    },
    "baseline_card": {
     "n_true": 18,
@@ -2176,17 +2176,17 @@
     "hole_number_acc": 0.778,
     "green_assign_acc": 0.889,
     "physical_holes_found": 0.778,
-    "median_length_err_yd": 3.9,
+    "median_length_err_yd": 4.0,
     "p90_length_err_yd": 28.1,
     "all_correct": false,
-    "flagged": 7,
+    "flagged": 5,
     "wrong": 4,
     "wrong_unflagged": 1,
-    "flag_precision": 0.429,
+    "flag_precision": 0.6,
     "seconds": 10.6
    },
    "state": "CA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "metamora_fields_il",
@@ -2218,7 +2218,7 @@
     "wrong": 3,
     "wrong_unflagged": 1,
     "flag_precision": 1.0,
-    "seconds": 15.9
+    "seconds": 16.0
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2251,9 +2251,9 @@
     "all_correct": false,
     "flagged": 3,
     "wrong": 2,
-    "wrong_unflagged": 1,
-    "flag_precision": 0.333,
-    "seconds": 11.7
+    "wrong_unflagged": 0,
+    "flag_precision": 0.667,
+    "seconds": 11.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -2267,24 +2267,24 @@
     "wrong": 8,
     "wrong_unflagged": 4,
     "flag_precision": 1.0,
-    "seconds": 27.5
+    "seconds": 27.7
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.0,
-    "green_assign_acc": 0.0,
-    "physical_holes_found": 0.611,
-    "median_length_err_yd": null,
-    "p90_length_err_yd": null,
+    "hole_number_acc": 0.222,
+    "green_assign_acc": 0.222,
+    "physical_holes_found": 0.556,
+    "median_length_err_yd": 4.8,
+    "p90_length_err_yd": 12.6,
     "all_correct": false,
     "flagged": 18,
-    "wrong": 18,
+    "wrong": 14,
     "wrong_unflagged": 0,
-    "flag_precision": 1.0,
+    "flag_precision": 0.778,
     "seconds": 11.8
    },
    "state": "MA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "oneka_ridge_mn",
@@ -2292,16 +2292,16 @@
    "card_kind": "osm-derived",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.389,
-    "green_assign_acc": 0.389,
-    "physical_holes_found": 0.611,
-    "median_length_err_yd": 4.6,
-    "p90_length_err_yd": 12.8,
+    "hole_number_acc": 0.556,
+    "green_assign_acc": 0.667,
+    "physical_holes_found": 0.722,
+    "median_length_err_yd": 5.9,
+    "p90_length_err_yd": 19.6,
     "all_correct": false,
-    "flagged": 12,
-    "wrong": 11,
-    "wrong_unflagged": 2,
-    "flag_precision": 0.75,
+    "flagged": 9,
+    "wrong": 8,
+    "wrong_unflagged": 3,
+    "flag_precision": 0.556,
     "seconds": 11.4
    },
    "baseline_card": {
@@ -2316,24 +2316,24 @@
     "wrong": 9,
     "wrong_unflagged": 1,
     "flag_precision": 0.471,
-    "seconds": 12.1
+    "seconds": 11.9
    },
    "perceptionseg_card": {
     "n_true": 18,
     "hole_number_acc": 0.389,
-    "green_assign_acc": 0.389,
-    "physical_holes_found": 0.611,
+    "green_assign_acc": 0.556,
+    "physical_holes_found": 0.556,
     "median_length_err_yd": 4.6,
-    "p90_length_err_yd": 12.8,
+    "p90_length_err_yd": 18.9,
     "all_correct": false,
-    "flagged": 14,
+    "flagged": 13,
     "wrong": 11,
-    "wrong_unflagged": 0,
-    "flag_precision": 0.786,
+    "wrong_unflagged": 1,
+    "flag_precision": 0.769,
     "seconds": 11.4
    },
    "state": "MN",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "ozaukee_wi",
@@ -2351,7 +2351,7 @@
     "wrong": 4,
     "wrong_unflagged": 3,
     "flag_precision": 0.167,
-    "seconds": 11.7
+    "seconds": 11.5
    },
    "baseline_card": {
     "n_true": 18,
@@ -2365,7 +2365,7 @@
     "wrong": 11,
     "wrong_unflagged": 0,
     "flag_precision": 0.647,
-    "seconds": 12.9
+    "seconds": 12.5
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2379,10 +2379,10 @@
     "wrong": 3,
     "wrong_unflagged": 1,
     "flag_precision": 0.286,
-    "seconds": 11.8
+    "seconds": 11.5
    },
    "state": "WI",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "paintsville_ky",
@@ -2391,16 +2391,16 @@
    "perception_card": {
     "n_true": 18,
     "hole_number_acc": 0.056,
-    "green_assign_acc": 0.111,
+    "green_assign_acc": 0.056,
     "physical_holes_found": 0.111,
-    "median_length_err_yd": 1.4,
-    "p90_length_err_yd": 1.4,
+    "median_length_err_yd": 1.3,
+    "p90_length_err_yd": 1.3,
     "all_correct": false,
-    "flagged": 17,
+    "flagged": 18,
     "wrong": 17,
     "wrong_unflagged": 0,
-    "flag_precision": 1.0,
-    "seconds": 8.7
+    "flag_precision": 0.944,
+    "seconds": 8.0
    },
    "baseline_card": {
     "n_true": 18,
@@ -2414,24 +2414,24 @@
     "wrong": 18,
     "wrong_unflagged": 0,
     "flag_precision": 1.0,
-    "seconds": 10.1
+    "seconds": 9.9
    },
    "perceptionseg_card": {
     "n_true": 18,
     "hole_number_acc": 0.056,
     "green_assign_acc": 0.111,
-    "physical_holes_found": 0.111,
-    "median_length_err_yd": 1.4,
-    "p90_length_err_yd": 1.4,
+    "physical_holes_found": 0.056,
+    "median_length_err_yd": 1.3,
+    "p90_length_err_yd": 1.3,
     "all_correct": false,
     "flagged": 18,
     "wrong": 17,
     "wrong_unflagged": 0,
     "flag_precision": 0.944,
-    "seconds": 9.0
+    "seconds": 8.1
    },
    "state": "KY",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "rancho_del_sol_ca",
@@ -2449,7 +2449,7 @@
     "wrong": 2,
     "wrong_unflagged": 2,
     "flag_precision": null,
-    "seconds": 12.0
+    "seconds": 11.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -2463,7 +2463,7 @@
     "wrong": 1,
     "wrong_unflagged": 1,
     "flag_precision": 0.0,
-    "seconds": 21.4
+    "seconds": 21.3
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2477,7 +2477,7 @@
     "wrong": 2,
     "wrong_unflagged": 2,
     "flag_precision": null,
-    "seconds": 12.2
+    "seconds": 12.0
    },
    "state": "CA",
    "split": "train"
@@ -2498,7 +2498,7 @@
     "wrong": 4,
     "wrong_unflagged": 2,
     "flag_precision": 0.4,
-    "seconds": 13.9
+    "seconds": 13.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -2512,7 +2512,7 @@
     "wrong": 10,
     "wrong_unflagged": 0,
     "flag_precision": 0.769,
-    "seconds": 16.0
+    "seconds": 16.6
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2537,16 +2537,16 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 17,
-    "hole_number_acc": 0.647,
-    "green_assign_acc": 0.647,
-    "physical_holes_found": 0.765,
-    "median_length_err_yd": 1.8,
-    "p90_length_err_yd": 20.2,
+    "hole_number_acc": 0.235,
+    "green_assign_acc": 0.294,
+    "physical_holes_found": 0.353,
+    "median_length_err_yd": 16.8,
+    "p90_length_err_yd": 40.2,
     "all_correct": false,
-    "flagged": 14,
-    "wrong": 6,
+    "flagged": 18,
+    "wrong": 13,
     "wrong_unflagged": 0,
-    "flag_precision": 0.429,
+    "flag_precision": 0.722,
     "seconds": 11.3
    },
    "baseline_card": {
@@ -2561,20 +2561,20 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.333,
-    "seconds": 16.5
+    "seconds": 17.0
    },
    "perceptionseg_card": {
     "n_true": 17,
-    "hole_number_acc": 1.0,
-    "green_assign_acc": 1.0,
-    "physical_holes_found": 1.0,
-    "median_length_err_yd": 2.5,
-    "p90_length_err_yd": 26.2,
-    "all_correct": true,
-    "flagged": 0,
-    "wrong": 0,
+    "hole_number_acc": 0.176,
+    "green_assign_acc": 0.235,
+    "physical_holes_found": 0.412,
+    "median_length_err_yd": 1.8,
+    "p90_length_err_yd": 3.5,
+    "all_correct": false,
+    "flagged": 18,
+    "wrong": 14,
     "wrong_unflagged": 0,
-    "flag_precision": null,
+    "flag_precision": 0.778,
     "seconds": 11.3
    },
    "state": "MN",
@@ -2596,7 +2596,7 @@
     "wrong": 3,
     "wrong_unflagged": 1,
     "flag_precision": 0.286,
-    "seconds": 11.5
+    "seconds": 11.6
    },
    "baseline_card": {
     "n_true": 17,
@@ -2610,7 +2610,7 @@
     "wrong": 9,
     "wrong_unflagged": 0,
     "flag_precision": 0.75,
-    "seconds": 11.7
+    "seconds": 11.9
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -2624,7 +2624,7 @@
     "wrong": 3,
     "wrong_unflagged": 1,
     "flag_precision": 0.286,
-    "seconds": 11.1
+    "seconds": 11.4
    },
    "state": "WI",
    "split": "train"
@@ -2645,7 +2645,7 @@
     "wrong": 5,
     "wrong_unflagged": 0,
     "flag_precision": 0.625,
-    "seconds": 11.3
+    "seconds": 11.5
    },
    "baseline_card": {
     "n_true": 18,
@@ -2659,7 +2659,7 @@
     "wrong": 4,
     "wrong_unflagged": 0,
     "flag_precision": 0.4,
-    "seconds": 12.4
+    "seconds": 12.6
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2673,10 +2673,10 @@
     "wrong": 3,
     "wrong_unflagged": 0,
     "flag_precision": 0.375,
-    "seconds": 11.7
+    "seconds": 11.8
    },
    "state": "IL",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "sky_mountain_ut",
@@ -2694,7 +2694,7 @@
     "wrong": 3,
     "wrong_unflagged": 0,
     "flag_precision": 0.231,
-    "seconds": 11.3
+    "seconds": 11.4
    },
    "baseline_card": {
     "n_true": 18,
@@ -2708,7 +2708,7 @@
     "wrong": 2,
     "wrong_unflagged": 0,
     "flag_precision": 1.0,
-    "seconds": 15.1
+    "seconds": 15.2
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2722,10 +2722,10 @@
     "wrong": 12,
     "wrong_unflagged": 0,
     "flag_precision": 0.706,
-    "seconds": 11.6
+    "seconds": 11.7
    },
    "state": "UT",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "smoke_rise_ga",
@@ -2733,17 +2733,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.056,
-    "green_assign_acc": 0.111,
+    "hole_number_acc": 0.0,
+    "green_assign_acc": 0.0,
     "physical_holes_found": 0.278,
-    "median_length_err_yd": 7.7,
-    "p90_length_err_yd": 7.7,
+    "median_length_err_yd": null,
+    "p90_length_err_yd": null,
     "all_correct": false,
-    "flagged": 18,
-    "wrong": 17,
-    "wrong_unflagged": 0,
-    "flag_precision": 0.944,
-    "seconds": 11.0
+    "flagged": 10,
+    "wrong": 18,
+    "wrong_unflagged": 8,
+    "flag_precision": 1.0,
+    "seconds": 11.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -2757,21 +2757,21 @@
     "wrong": 14,
     "wrong_unflagged": 0,
     "flag_precision": 0.778,
-    "seconds": 16.3
+    "seconds": 16.6
    },
    "perceptionseg_card": {
     "n_true": 18,
-    "hole_number_acc": 0.056,
+    "hole_number_acc": 0.0,
     "green_assign_acc": 0.111,
     "physical_holes_found": 0.333,
-    "median_length_err_yd": 7.7,
-    "p90_length_err_yd": 7.7,
+    "median_length_err_yd": null,
+    "p90_length_err_yd": null,
     "all_correct": false,
     "flagged": 18,
-    "wrong": 17,
+    "wrong": 18,
     "wrong_unflagged": 0,
-    "flag_precision": 0.944,
-    "seconds": 10.8
+    "flag_precision": 1.0,
+    "seconds": 10.7
    },
    "state": "GA",
    "split": "test"
@@ -2792,7 +2792,7 @@
     "wrong": 2,
     "wrong_unflagged": 2,
     "flag_precision": 0.0,
-    "seconds": 12.8
+    "seconds": 12.9
    },
    "baseline_card": {
     "n_true": 18,
@@ -2806,7 +2806,7 @@
     "wrong": 2,
     "wrong_unflagged": 2,
     "flag_precision": 0.0,
-    "seconds": 21.2
+    "seconds": 21.5
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2855,7 +2855,7 @@
     "wrong": 0,
     "wrong_unflagged": 0,
     "flag_precision": 0.0,
-    "seconds": 14.5
+    "seconds": 14.6
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2869,10 +2869,10 @@
     "wrong": 0,
     "wrong_unflagged": 0,
     "flag_precision": null,
-    "seconds": 11.2
+    "seconds": 11.3
    },
    "state": "CA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "sun_hills_ut",
@@ -2890,7 +2890,7 @@
     "wrong": 3,
     "wrong_unflagged": 3,
     "flag_precision": 0.0,
-    "seconds": 13.3
+    "seconds": 13.4
    },
    "baseline_card": {
     "n_true": 18,
@@ -2918,10 +2918,10 @@
     "wrong": 3,
     "wrong_unflagged": 3,
     "flag_precision": 0.0,
-    "seconds": 12.8
+    "seconds": 12.9
    },
    "state": "UT",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "sun_valley_ky",
@@ -2939,7 +2939,7 @@
     "wrong": 15,
     "wrong_unflagged": 0,
     "flag_precision": 0.833,
-    "seconds": 12.1
+    "seconds": 12.4
    },
    "baseline_card": {
     "n_true": 18,
@@ -2953,7 +2953,7 @@
     "wrong": 3,
     "wrong_unflagged": 0,
     "flag_precision": 0.214,
-    "seconds": 17.0
+    "seconds": 17.2
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -2967,10 +2967,10 @@
     "wrong": 3,
     "wrong_unflagged": 1,
     "flag_precision": 0.25,
-    "seconds": 12.7
+    "seconds": 13.0
    },
    "state": "KY",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "toscana_ca",
@@ -2988,7 +2988,7 @@
     "wrong": 14,
     "wrong_unflagged": 0,
     "flag_precision": 0.933,
-    "seconds": 17.4
+    "seconds": 18.1
    },
    "baseline_card": {
     "n_true": 18,
@@ -3016,7 +3016,7 @@
     "wrong": 10,
     "wrong_unflagged": 1,
     "flag_precision": 0.818,
-    "seconds": 16.0
+    "seconds": 16.5
    },
    "state": "CA",
    "split": "train"
@@ -3037,7 +3037,7 @@
     "wrong": 18,
     "wrong_unflagged": 0,
     "flag_precision": 1.0,
-    "seconds": 9.3
+    "seconds": 9.2
    },
    "baseline_card": {
     "n_true": 18,
@@ -3051,7 +3051,7 @@
     "wrong": 13,
     "wrong_unflagged": 0,
     "flag_precision": 0.722,
-    "seconds": 24.2
+    "seconds": 24.7
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3100,7 +3100,7 @@
     "wrong": 11,
     "wrong_unflagged": 1,
     "flag_precision": 0.833,
-    "seconds": 25.0
+    "seconds": 25.3
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3114,7 +3114,7 @@
     "wrong": 6,
     "wrong_unflagged": 1,
     "flag_precision": 0.833,
-    "seconds": 13.5
+    "seconds": 13.6
    },
    "state": "MA",
    "split": "train"
@@ -3184,7 +3184,7 @@
     "wrong": 4,
     "wrong_unflagged": 1,
     "flag_precision": 0.375,
-    "seconds": 10.0
+    "seconds": 10.2
    },
    "baseline_card": {
     "n_true": 18,
@@ -3212,7 +3212,7 @@
     "wrong": 6,
     "wrong_unflagged": 1,
     "flag_precision": 0.625,
-    "seconds": 10.1
+    "seconds": 10.2
    },
    "state": "IL",
    "split": "train"
@@ -3223,17 +3223,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.889,
+    "hole_number_acc": 0.944,
     "green_assign_acc": 1.0,
-    "physical_holes_found": 0.889,
-    "median_length_err_yd": 4.0,
-    "p90_length_err_yd": 15.4,
+    "physical_holes_found": 0.944,
+    "median_length_err_yd": 4.1,
+    "p90_length_err_yd": 18.9,
     "all_correct": false,
-    "flagged": 6,
-    "wrong": 2,
+    "flagged": 2,
+    "wrong": 1,
     "wrong_unflagged": 0,
-    "flag_precision": 0.333,
-    "seconds": 9.4
+    "flag_precision": 0.5,
+    "seconds": 9.5
    },
    "baseline_card": {
     "n_true": 18,
@@ -3247,7 +3247,7 @@
     "wrong": 5,
     "wrong_unflagged": 0,
     "flag_precision": 0.455,
-    "seconds": 10.4
+    "seconds": 10.6
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3261,10 +3261,10 @@
     "wrong": 2,
     "wrong_unflagged": 1,
     "flag_precision": 0.5,
-    "seconds": 9.8
+    "seconds": 10.0
    },
    "state": "MN",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "visalia_ca",
@@ -3275,14 +3275,14 @@
     "hole_number_acc": 0.812,
     "green_assign_acc": 1.0,
     "physical_holes_found": 0.812,
-    "median_length_err_yd": 2.2,
-    "p90_length_err_yd": 10.4,
+    "median_length_err_yd": 2.0,
+    "p90_length_err_yd": 18.4,
     "all_correct": false,
     "flagged": 7,
     "wrong": 3,
     "wrong_unflagged": 1,
     "flag_precision": 0.286,
-    "seconds": 10.4
+    "seconds": 11.1
    },
    "baseline_card": {
     "n_true": 16,
@@ -3296,24 +3296,24 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.1,
-    "seconds": 12.2
+    "seconds": 12.3
    },
    "perceptionseg_card": {
     "n_true": 16,
     "hole_number_acc": 0.812,
     "green_assign_acc": 1.0,
     "physical_holes_found": 0.812,
-    "median_length_err_yd": 2.2,
-    "p90_length_err_yd": 10.4,
+    "median_length_err_yd": 2.0,
+    "p90_length_err_yd": 18.4,
     "all_correct": false,
-    "flagged": 7,
+    "flagged": 9,
     "wrong": 3,
     "wrong_unflagged": 0,
-    "flag_precision": 0.429,
-    "seconds": 10.6
+    "flag_precision": 0.333,
+    "seconds": 11.1
    },
    "state": "CA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "walpole_ma",
@@ -3324,14 +3324,14 @@
     "hole_number_acc": 0.778,
     "green_assign_acc": 0.889,
     "physical_holes_found": 0.889,
-    "median_length_err_yd": 2.3,
-    "p90_length_err_yd": 31.4,
+    "median_length_err_yd": 2.4,
+    "p90_length_err_yd": 31.3,
     "all_correct": false,
     "flagged": 2,
     "wrong": 4,
     "wrong_unflagged": 2,
     "flag_precision": 1.0,
-    "seconds": 11.6
+    "seconds": 11.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -3345,21 +3345,21 @@
     "wrong": 17,
     "wrong_unflagged": 0,
     "flag_precision": 0.944,
-    "seconds": 15.4
+    "seconds": 15.7
    },
    "perceptionseg_card": {
     "n_true": 18,
     "hole_number_acc": 0.833,
     "green_assign_acc": 0.889,
     "physical_holes_found": 0.944,
-    "median_length_err_yd": 2.4,
-    "p90_length_err_yd": 47.0,
+    "median_length_err_yd": 2.5,
+    "p90_length_err_yd": 38.5,
     "all_correct": false,
-    "flagged": 9,
+    "flagged": 5,
     "wrong": 3,
-    "wrong_unflagged": 0,
-    "flag_precision": 0.333,
-    "seconds": 11.6
+    "wrong_unflagged": 1,
+    "flag_precision": 0.4,
+    "seconds": 11.5
    },
    "state": "MA",
    "split": "train"
@@ -3394,7 +3394,7 @@
     "wrong": 11,
     "wrong_unflagged": 2,
     "flag_precision": 0.6,
-    "seconds": 11.3
+    "seconds": 11.4
    },
    "perceptionseg_card": {
     "n_true": 17,
@@ -3408,7 +3408,7 @@
     "wrong": 16,
     "wrong_unflagged": 0,
     "flag_precision": 0.889,
-    "seconds": 8.3
+    "seconds": 8.4
    },
    "state": "NH",
    "split": "train"
@@ -3419,17 +3419,17 @@
    "card_kind": "osm-derived",
    "perception_card": {
     "n_true": 18,
-    "hole_number_acc": 0.056,
-    "green_assign_acc": 0.222,
-    "physical_holes_found": 0.111,
-    "median_length_err_yd": 3.0,
-    "p90_length_err_yd": 3.0,
+    "hole_number_acc": 0.0,
+    "green_assign_acc": 0.056,
+    "physical_holes_found": 0.333,
+    "median_length_err_yd": null,
+    "p90_length_err_yd": null,
     "all_correct": false,
-    "flagged": 17,
-    "wrong": 17,
-    "wrong_unflagged": 1,
-    "flag_precision": 0.941,
-    "seconds": 10.5
+    "flagged": 18,
+    "wrong": 18,
+    "wrong_unflagged": 0,
+    "flag_precision": 1.0,
+    "seconds": 10.6
    },
    "baseline_card": {
     "n_true": 18,
@@ -3443,7 +3443,7 @@
     "wrong": 16,
     "wrong_unflagged": 0,
     "flag_precision": 0.889,
-    "seconds": 13.6
+    "seconds": 13.8
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3457,7 +3457,7 @@
     "wrong": 11,
     "wrong_unflagged": 0,
     "flag_precision": 0.611,
-    "seconds": 10.7
+    "seconds": 10.8
    },
    "state": "MS",
    "split": "train"
@@ -3478,7 +3478,7 @@
     "wrong": 2,
     "wrong_unflagged": 1,
     "flag_precision": 1.0,
-    "seconds": 10.5
+    "seconds": 10.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -3492,7 +3492,7 @@
     "wrong": 5,
     "wrong_unflagged": 2,
     "flag_precision": 0.6,
-    "seconds": 16.2
+    "seconds": 16.8
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3506,7 +3506,7 @@
     "wrong": 3,
     "wrong_unflagged": 2,
     "flag_precision": 1.0,
-    "seconds": 10.6
+    "seconds": 10.9
    },
    "state": "MA",
    "split": "train"
@@ -3527,7 +3527,7 @@
     "wrong": 8,
     "wrong_unflagged": 0,
     "flag_precision": 0.727,
-    "seconds": 10.4
+    "seconds": 10.6
    },
    "baseline_card": {
     "n_true": 16,
@@ -3541,7 +3541,7 @@
     "wrong": 10,
     "wrong_unflagged": 0,
     "flag_precision": 0.769,
-    "seconds": 12.4
+    "seconds": 12.5
    },
    "perceptionseg_card": {
     "n_true": 16,
@@ -3555,9 +3555,58 @@
     "wrong": 9,
     "wrong_unflagged": 0,
     "flag_precision": 0.643,
-    "seconds": 10.4
+    "seconds": 10.6
    },
    "state": "NH",
+   "split": "train"
+  },
+  {
+   "slug": "westchester_ca",
+   "n_true": 18,
+   "card_kind": "web",
+   "perception_card": {
+    "n_true": 18,
+    "hole_number_acc": 0.556,
+    "green_assign_acc": 0.611,
+    "physical_holes_found": 0.722,
+    "median_length_err_yd": 4.4,
+    "p90_length_err_yd": 12.4,
+    "all_correct": false,
+    "flagged": 17,
+    "wrong": 8,
+    "wrong_unflagged": 0,
+    "flag_precision": 0.471,
+    "seconds": 10.3
+   },
+   "baseline_card": {
+    "n_true": 18,
+    "hole_number_acc": 0.611,
+    "green_assign_acc": 0.611,
+    "physical_holes_found": 0.722,
+    "median_length_err_yd": 2.5,
+    "p90_length_err_yd": 11.8,
+    "all_correct": false,
+    "flagged": 11,
+    "wrong": 7,
+    "wrong_unflagged": 0,
+    "flag_precision": 0.636,
+    "seconds": 11.8
+   },
+   "perceptionseg_card": {
+    "n_true": 18,
+    "hole_number_acc": 0.722,
+    "green_assign_acc": 0.722,
+    "physical_holes_found": 0.833,
+    "median_length_err_yd": 4.0,
+    "p90_length_err_yd": 11.3,
+    "all_correct": false,
+    "flagged": 5,
+    "wrong": 5,
+    "wrong_unflagged": 2,
+    "flag_precision": 0.6,
+    "seconds": 10.3
+   },
+   "state": "CA",
    "split": "train"
   },
   {
@@ -3566,17 +3615,17 @@
    "card_kind": "web",
    "perception_card": {
     "n_true": 17,
-    "hole_number_acc": 0.647,
-    "green_assign_acc": 0.824,
-    "physical_holes_found": 0.706,
-    "median_length_err_yd": 3.6,
-    "p90_length_err_yd": 10.3,
+    "hole_number_acc": 0.882,
+    "green_assign_acc": 1.0,
+    "physical_holes_found": 0.882,
+    "median_length_err_yd": 3.7,
+    "p90_length_err_yd": 17.6,
     "all_correct": false,
-    "flagged": 8,
-    "wrong": 6,
+    "flagged": 15,
+    "wrong": 2,
     "wrong_unflagged": 0,
-    "flag_precision": 0.75,
-    "seconds": 11.9
+    "flag_precision": 0.133,
+    "seconds": 10.9
    },
    "baseline_card": {
     "n_true": 17,
@@ -3590,24 +3639,24 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.5,
-    "seconds": 12.9
+    "seconds": 13.1
    },
    "perceptionseg_card": {
     "n_true": 17,
-    "hole_number_acc": 0.824,
-    "green_assign_acc": 1.0,
-    "physical_holes_found": 0.824,
-    "median_length_err_yd": 2.9,
-    "p90_length_err_yd": 7.3,
+    "hole_number_acc": 0.588,
+    "green_assign_acc": 0.706,
+    "physical_holes_found": 0.706,
+    "median_length_err_yd": 3.2,
+    "p90_length_err_yd": 5.5,
     "all_correct": false,
     "flagged": 15,
-    "wrong": 3,
+    "wrong": 7,
     "wrong_unflagged": 0,
-    "flag_precision": 0.2,
-    "seconds": 11.7
+    "flag_precision": 0.467,
+    "seconds": 11.4
    },
    "state": "WI",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "whaling_city_ma",
@@ -3625,7 +3674,7 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.2,
-    "seconds": 10.8
+    "seconds": 10.9
    },
    "baseline_card": {
     "n_true": 18,
@@ -3653,7 +3702,7 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.143,
-    "seconds": 10.6
+    "seconds": 10.7
    },
    "state": "MA",
    "split": "train"
@@ -3674,7 +3723,7 @@
     "wrong": 17,
     "wrong_unflagged": 5,
     "flag_precision": 0.923,
-    "seconds": 9.7
+    "seconds": 9.8
    },
    "baseline_card": {
     "n_true": 18,
@@ -3688,7 +3737,7 @@
     "wrong": 12,
     "wrong_unflagged": 0,
     "flag_precision": 0.667,
-    "seconds": 11.5
+    "seconds": 11.7
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3702,10 +3751,10 @@
     "wrong": 16,
     "wrong_unflagged": 4,
     "flag_precision": 0.857,
-    "seconds": 9.7
+    "seconds": 9.9
    },
    "state": "WY",
-   "split": "test"
+   "split": "train"
   },
   {
    "slug": "wild_ridge_wi",
@@ -3723,7 +3772,7 @@
     "wrong": 6,
     "wrong_unflagged": 1,
     "flag_precision": 0.714,
-    "seconds": 11.3
+    "seconds": 11.6
    },
    "baseline_card": {
     "n_true": 18,
@@ -3737,7 +3786,7 @@
     "wrong": 6,
     "wrong_unflagged": 0,
     "flag_precision": 0.429,
-    "seconds": 12.8
+    "seconds": 13.1
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3751,7 +3800,7 @@
     "wrong": 1,
     "wrong_unflagged": 0,
     "flag_precision": 0.111,
-    "seconds": 11.7
+    "seconds": 11.9
    },
    "state": "WI",
    "split": "train"
@@ -3772,7 +3821,7 @@
     "wrong": 7,
     "wrong_unflagged": 3,
     "flag_precision": 0.444,
-    "seconds": 10.4
+    "seconds": 10.7
    },
    "baseline_card": {
     "n_true": 18,
@@ -3786,7 +3835,7 @@
     "wrong": 6,
     "wrong_unflagged": 0,
     "flag_precision": 0.462,
-    "seconds": 11.7
+    "seconds": 12.0
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3800,7 +3849,7 @@
     "wrong": 5,
     "wrong_unflagged": 1,
     "flag_precision": 0.667,
-    "seconds": 10.8
+    "seconds": 11.1
    },
    "state": "KY",
    "split": "test"
@@ -3821,7 +3870,7 @@
     "wrong": 2,
     "wrong_unflagged": 0,
     "flag_precision": 1.0,
-    "seconds": 11.3
+    "seconds": 11.7
    },
    "baseline_card": {
     "n_true": 18,
@@ -3835,7 +3884,7 @@
     "wrong": 1,
     "wrong_unflagged": 1,
     "flag_precision": 0.0,
-    "seconds": 12.4
+    "seconds": 12.8
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3849,10 +3898,10 @@
     "wrong": 4,
     "wrong_unflagged": 0,
     "flag_precision": 0.333,
-    "seconds": 11.3
+    "seconds": 11.6
    },
    "state": "MA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "willowbend_ma",
@@ -3870,7 +3919,7 @@
     "wrong": 9,
     "wrong_unflagged": 1,
     "flag_precision": 0.471,
-    "seconds": 12.5
+    "seconds": 12.9
    },
    "baseline_card": {
     "n_true": 9,
@@ -3884,7 +3933,7 @@
     "wrong": 9,
     "wrong_unflagged": 0,
     "flag_precision": 0.5,
-    "seconds": 71.5
+    "seconds": 76.1
    },
    "perceptionseg_card": {
     "n_true": 9,
@@ -3898,10 +3947,10 @@
     "wrong": 9,
     "wrong_unflagged": 0,
     "flag_precision": 0.5,
-    "seconds": 13.0
+    "seconds": 13.6
    },
    "state": "MA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "willowhill_il",
@@ -3933,7 +3982,7 @@
     "wrong": 0,
     "wrong_unflagged": 0,
     "flag_precision": 0.0,
-    "seconds": 3.2
+    "seconds": 3.3
    },
    "perceptionseg_card": {
     "n_true": 9,
@@ -3968,7 +4017,7 @@
     "wrong": 5,
     "wrong_unflagged": 1,
     "flag_precision": 0.571,
-    "seconds": 9.7
+    "seconds": 10.0
    },
    "baseline_card": {
     "n_true": 18,
@@ -3982,7 +4031,7 @@
     "wrong": 5,
     "wrong_unflagged": 0,
     "flag_precision": 0.294,
-    "seconds": 14.4
+    "seconds": 14.9
    },
    "perceptionseg_card": {
     "n_true": 18,
@@ -3996,10 +4045,10 @@
     "wrong": 4,
     "wrong_unflagged": 1,
     "flag_precision": 1.0,
-    "seconds": 9.5
+    "seconds": 9.8
    },
    "state": "MA",
-   "split": "train"
+   "split": "test"
   },
   {
    "slug": "wynstone_il",
@@ -4017,7 +4066,7 @@
     "wrong": 3,
     "wrong_unflagged": 3,
     "flag_precision": 0.0,
-    "seconds": 12.8
+    "seconds": 13.2
    },
    "baseline_card": {
     "n_true": 18,
@@ -4031,21 +4080,21 @@
     "wrong": 7,
     "wrong_unflagged": 5,
     "flag_precision": 0.5,
-    "seconds": 15.2
+    "seconds": 16.0
    },
    "perceptionseg_card": {
     "n_true": 18,
     "hole_number_acc": 0.722,
     "green_assign_acc": 0.944,
     "physical_holes_found": 0.722,
-    "median_length_err_yd": 3.1,
-    "p90_length_err_yd": 38.1,
+    "median_length_err_yd": 3.0,
+    "p90_length_err_yd": 30.8,
     "all_correct": false,
-    "flagged": 0,
+    "flagged": 2,
     "wrong": 5,
-    "wrong_unflagged": 5,
-    "flag_precision": null,
-    "seconds": 12.6
+    "wrong_unflagged": 4,
+    "flag_precision": 0.5,
+    "seconds": 12.9
    },
    "state": "IL",
    "split": "train"

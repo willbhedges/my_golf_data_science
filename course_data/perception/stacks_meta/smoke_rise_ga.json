@@ -35,13 +35,13 @@
    33.84289632958932
   ]
  },
- "built_utc": "2026-10-17T06:42:23Z",
+ "built_utc": "2026-11-02T04:34:35Z",
  "seconds": {
-  "lidar": 52.4,
-  "naip": 13.9,
-  "segment": 76.6,
-  "labels": 38.5,
-  "total": 184.3
+  "lidar": 53.2,
+  "naip": 28.8,
+  "segment": 81.9,
+  "labels": 42.6,
+  "total": 209.5
  },
  "errors": {},
  "lidar": {},
@@ -92,6 +92,36 @@
      "2023-10-08"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 11.36,
+    "items": [
+     "ga_m_3308415_nw_16_060_20211114",
+     "ga_m_3308415_ne_16_060_20211113"
+    ],
+    "acquired": [
+     "2021-11-13",
+     "2021-11-14"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 9.92,
+    "items": [
+     "ga_m_3308415_nw_16_060_20190910_20200102",
+     "ga_m_3308415_ne_16_060_20190910_20200102"
+    ],
+    "acquired": [
+     "2019-09-10"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -100,7 +130,7 @@
   "model": "ariadgolf/golf-course-segmentation",
   "sha": "43ee294441db"
  },
- "dtm_base_m": 271.0,
+ "dtm_base_m": 272.0,
  "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
  "coverage": {
   "naip": 1.0,
@@ -119,8 +149,8 @@
    "id": 34772903
   },
   "center": [
-   -84.185222,
-   33.835839
+   -84.1852221,
+   33.835838550000005
   ],
   "bbox": [
    -84.1937551,
@@ -129,7 +159,7 @@
    33.8411145
   ],
   "state": "GA",
-  "town": null
+  "town": "Tucker"
  },
  "boundary": {
   "type": "Polygon",

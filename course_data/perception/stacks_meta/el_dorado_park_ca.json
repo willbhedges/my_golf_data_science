@@ -35,28 +35,30 @@
    33.811488714887375
   ]
  },
- "built_utc": "2026-10-17T04:19:02Z",
+ "built_utc": "2026-11-02T01:04:31Z",
  "seconds": {
-  "lidar": 8.2,
-  "naip": 10.6,
-  "segment": 48.8,
-  "labels": 27.0,
-  "total": 97.3
+  "lidar": 5.1,
+  "naip": 17.1,
+  "segment": 57.3,
+  "labels": 2107.4,
+  "total": 2189.6
  },
- "errors": {},
+ "errors": {
+  "labels": "Traceback (most recent call last):\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 227, in build\n    fc = overpass_labels(g1.ll_bbox)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 86, in overpass_labels\n    data = pc.overpass(q, tries=3)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/platform/platform_common.py\", line 111, in overpass\n    raise RuntimeError(f\"all Overpass endpoints failed: {last}\")\nRuntimeError: all Overpass endpoints failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\"))\n"
+ },
  "lidar": {
   "hag": {
    "source": "planetary-computer 3dep-lidar-hag",
    "items": [
     {
      "id": "CA_OrangeCo_2011-hag-2m-0-5",
-     "when": "2012-02-09T00:00:00Z",
+     "when": "2012-02-09T00:00:00.000000Z",
      "cells": 1958020,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "CA_OrangeCo_2011",
-      "end_datetime": "2012-02-09T00:00:00Z",
-      "start_datetime": "2011-12-17T00:00:00Z"
+      "end_datetime": "2012-02-09T00:00:00.000000Z",
+      "start_datetime": "2011-12-17T00:00:00.000000Z"
      }
     }
    ],
@@ -70,13 +72,13 @@
    "items": [
     {
      "id": "CA_OrangeCo_2011-dtm-2m-0-5",
-     "when": "2012-02-09T00:00:00Z",
+     "when": "2012-02-09T00:00:00.000000Z",
      "cells": 489384,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "CA_OrangeCo_2011",
-      "end_datetime": "2012-02-09T00:00:00Z",
-      "start_datetime": "2011-12-17T00:00:00Z"
+      "end_datetime": "2012-02-09T00:00:00.000000Z",
+      "start_datetime": "2011-12-17T00:00:00.000000Z"
      }
     }
    ],
@@ -88,13 +90,13 @@
    "items": [
     {
      "id": "CA_OrangeCo_2011-classification-2m-0-5",
-     "when": "2012-02-09T00:00:00Z",
+     "when": "2012-02-09T00:00:00.000000Z",
      "cells": 1940104,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "CA_OrangeCo_2011",
-      "end_datetime": "2012-02-09T00:00:00Z",
-      "start_datetime": "2011-12-17T00:00:00Z"
+      "end_datetime": "2012-02-09T00:00:00.000000Z",
+      "start_datetime": "2011-12-17T00:00:00.000000Z"
      }
     }
    ],
@@ -129,6 +131,35 @@
      "2022-05-12"
     ],
     "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 6.45,
+    "items": [
+     "ca_m_3311816_sw_11_060_20200505",
+     "ca_m_3311816_nw_11_060_20200505"
+    ],
+    "acquired": [
+     "2020-05-05"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 7.27,
+    "items": [
+     "ca_m_3311816_sw_11_060_20180723_20190209",
+     "ca_m_3311816_nw_11_060_20180723_20190209"
+    ],
+    "acquired": [
+     "2018-07-23"
+    ],
+    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
@@ -138,6 +169,7 @@
   "sha": "43ee294441db"
  },
  "dtm_base_m": 1.0,
+ "dtm_source": "3DEP lidar DTM",
  "intensity_stretch": [
   26.87497329711914,
   203.87518310546875
@@ -148,9 +180,6 @@
   "cls": 0.9897459652158653,
   "dtm": 0.9986389171739268,
   "intensity": 0.9997510463196688
- },
- "labels": {
-  "features": 1412
  },
  "course": {
   "name": "El Dorado Park Golf Course",
