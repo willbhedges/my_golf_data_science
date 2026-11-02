@@ -1,6 +1,7 @@
 """Workflow driver (.github/workflows/course_package.yml): process the request files a push touched.
 
-  python course_data/platform/run_requests.py <changed paths...>
+  python course_data/platform/run_requests.py [--vision] [--phase all|requests|rebuild] [--only <request>]...
+         [--shard K/N] [--commit-every N] [--plan-json out.json] <changed paths...>
 
   course_data/requests/package_<slug>.json changed (or no raw/ yet) -> fetch (network) + build
   ... changed, raw/ exists and the request says "refetch": "scorecards" -> web scorecards only + build
@@ -14,12 +15,34 @@
   $VISION_GATE (default /tmp/vision_gate.txt): "error" lines for fetched courses (the workflow fails the run),
   "warning" lines for offline rebuilds.
 Writes a markdown summary (coverage per course) to $GITHUB_STEP_SUMMARY and packages/_index.json.
+
+Phases (the workflow runs them as separate jobs so new requests never wait behind the offline rebuild):
+  --phase requests   only fetch / scorecards / survey actions (--only <request path> narrows it to one request:
+                     the workflow builds each new request in its own matrix job and commits it on its own)
+  --phase rebuild    the offline rebuild: every fetched package whose BUILD HASH is stale, whatever the push
+                     touched (requests in <changed> are left to the requests phase). --shard K/N keeps the
+                     packages with crc32(slug) % N == K, so shards are stable whatever else is stale.
+  --phase all        the old single-step behaviour (default)
+  --plan-json out    write {"requests": [request paths the requests phase would build], "rebuild": n stale} and exit
+  --commit-every N   with $COMMIT_CMD set: after every N built packages write _index.json and run
+                     `$COMMIT_CMD <slug>...` (course_data/platform/commit_run.sh), so a job cap keeps the work done
+
+Build hash (packages/<slug>/build_inputs.json, written after every successful build): sha256 over the request
+file and the code the build ran - every non-test course_data/platform/*.py, DEPS + DATA, and every course_data
+module the build process imported (recorded as "files"). A package is stale when that hash no longer matches
+(any of those files changed, a new platform module appeared) or it has no build_inputs.json. Data-only
+changes elsewhere (a re-committed vision layer, OB evidence) do not make a package stale - as before, when only
+a code change ever triggered an offline rebuild.
 """
 import glob
+import hashlib
 import json
 import os
+import shlex
+import subprocess
 import sys
 import traceback
+import zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [HERE]
@@ -30,10 +53,80 @@ import platform_common as pc  # noqa: E402
 DEPS = ["course_data/vision_any/gapfill.py", "course_data/geometry/build_holes.py", "course_data/tees/place_tee.py",
         "course_data/tees/lidar_pads.py", "course_data/pipeline.py", "course_data/elevation/adjust.py",
         "course_data/ob/infer.py", "course_data/ob/params.json"]
+# data the build reads that is not a module (part of the build hash)
+DATA = ["course_data/platform/routing_v2_weights.json"]
+BUILD_INPUTS = "build_inputs.json"
 
 
-def plan(changed, requests=None):
-    """-> list of (request path, action) with action in fetch | build | survey | skip."""
+def _rel(p):
+    return os.path.relpath(os.path.abspath(p), pc.ROOT).replace(os.sep, "/")
+
+
+def base_code_files():
+    """Code every build depends on: non-test course_data/platform/*.py + DEPS + DATA (repo-relative)."""
+    plat = [_rel(f) for f in glob.glob(os.path.join(pc.ROOT, "course_data", "platform", "*.py"))
+            if not os.path.basename(f).startswith("test_")]
+    return sorted(set(plat) | set(DEPS) | set(DATA))
+
+
+def loaded_code_files():
+    """course_data modules this process has imported (path-loaded team modules included), repo-relative."""
+    cd = os.path.join(os.path.abspath(pc.ROOT), "course_data") + os.sep
+    out = set()
+    for m in list(sys.modules.values()):
+        f = getattr(m, "__file__", None)
+        if not f or not f.endswith(".py"):
+            continue
+        f = os.path.abspath(f)
+        if f.startswith(cd) and not os.path.basename(f).startswith(("test_", "conftest")):
+            out.add(_rel(f))
+    return sorted(out)
+
+
+def build_hash(request_path, files):
+    h = hashlib.sha256()
+    h.update(b"request\0")
+    try:
+        h.update(open(request_path, "rb").read())
+    except OSError:
+        h.update(b"missing")
+    for f in sorted(set(files)):
+        h.update(b"\0" + f.encode() + b"\0")
+        try:
+            h.update(open(os.path.join(pc.ROOT, f), "rb").read())
+        except OSError:
+            h.update(b"missing")
+    return h.hexdigest()
+
+
+def inputs_path(slug):
+    return os.path.join(pc.PACKAGES, slug, BUILD_INPUTS)
+
+
+def record_build(slug, request_path, files=None):
+    files = sorted(set(base_code_files()) | set(loaded_code_files() if files is None else files))
+    rec = dict(schema="build_inputs/1", hash=build_hash(request_path, files), request=_rel(request_path), files=files)
+    pc.write_json(inputs_path(slug), rec)
+    return rec
+
+
+def is_stale(slug, request_path):
+    """The package was built from other code / another request than what is on disk now (or has no record)."""
+    rec = pc.read_json(inputs_path(slug), None)
+    if not isinstance(rec, dict) or not rec.get("hash"):
+        return True
+    files = set(base_code_files()) | set(rec.get("files") or [])
+    return build_hash(request_path, files) != rec["hash"]
+
+
+def shard_of(slug, n):
+    return zlib.crc32(slug.encode()) % n
+
+
+def plan(changed, requests=None, phase="all", shard=None):
+    """-> list of (request path, action) with action in fetch | scorecards | build | survey | skip.
+    phase "requests": only fetch / scorecards / survey; "rebuild": build for every fetched package whose build
+    hash is stale (requests in `changed` are the requests phase's), shard (k, n) keeps crc32(slug) % n == k."""
     changed = {os.path.normpath(c) for c in changed}
     rel = lambda p: os.path.normpath(os.path.relpath(p, pc.ROOT))    # noqa: E731
     deps = [os.path.normpath(d) for d in DEPS]
@@ -49,7 +142,7 @@ def plan(changed, requests=None):
         r = rel(p)
         name = os.path.basename(p)
         if name.startswith("survey_"):
-            out.append((p, "survey" if r in changed else "skip"))
+            out.append((p, "survey" if r in changed and phase != "rebuild" else "skip"))
             continue
         req = pc.read_json(p, {}) or {}
         if req.get("builder") and req["builder"] != "course-package":
@@ -59,11 +152,15 @@ def plan(changed, requests=None):
             continue
         slug = fp.request_slug(req, p)
         fetched = os.path.exists(os.path.join(pc.PACKAGES, slug, "raw", "osm.geojson"))
+        if phase == "rebuild":
+            ok = fetched and r not in changed and (shard is None or shard_of(slug, shard[1]) == shard[0])
+            out.append((p, "build" if ok and is_stale(slug, p) else "skip"))
+            continue
         if r in changed and fetched and str(req.get("refetch", "")).lower() == "scorecards":
             out.append((p, "scorecards"))
         elif r in changed or not fetched:
             out.append((p, "fetch"))
-        elif code:
+        elif code and phase == "all":
             out.append((p, "build"))
         else:
             out.append((p, "skip"))
@@ -99,7 +196,19 @@ def with_vision(p, package, build, ensure=None):
     return build(p), "built this run"
 
 
-def main(changed, vision=False):
+def commit_chunk(slugs, index):
+    """Publish the packages built so far ($COMMIT_CMD <slug>...); a failure is reported, not fatal."""
+    cmd = os.environ.get("COMMIT_CMD")
+    if not cmd or not slugs:
+        return
+    pc.write_json(os.path.join(pc.PACKAGES, "_index.json"), index)
+    print(f"== commit {len(slugs)} package(s): {' '.join(slugs)}", flush=True)
+    r = subprocess.run(shlex.split(cmd) + list(slugs), cwd=pc.ROOT)
+    if r.returncode:
+        print(f"! commit command exited {r.returncode}; the packages stay for the next commit", flush=True)
+
+
+def main(changed, vision=False, phase="all", only=None, shard=None, commit_every=0):
     import fetch_package as fp
     import package as pk
     import survey
@@ -108,7 +217,12 @@ def main(changed, vision=False):
     gate = []
     index = pc.read_json(os.path.join(pc.PACKAGES, "_index.json"), {}) or {}
     bad = 0
-    for p, action in plan(changed):
+    pending = []
+    steps = plan(changed, phase=phase, shard=shard)
+    if only:
+        keep = {os.path.normpath(o if os.path.isabs(o) else os.path.join(pc.ROOT, o)) for o in only}
+        steps = [(p, a) for p, a in steps if os.path.normpath(os.path.abspath(p)) in keep]
+    for p, action in steps:
         name = os.path.basename(p)
         print(f"== {name}: {action}", flush=True)
         if action == "skip":
@@ -149,10 +263,20 @@ def main(changed, vision=False):
                                           tee_set=package["tee_set"], built=package["built"],
                                           request=os.path.relpath(p, pc.ROOT), summary=s, vision=vst[:160],
                                           package=f"course_data/packages/{package['slug']}/package.json")
+            try:
+                record_build(package["slug"], p)
+            except Exception as e:                              # noqa: BLE001 - only costs a rebuild next time
+                print(f"! build hash not recorded for {package['slug']}: {e}", flush=True)
+            pending.append(package["slug"])
+            if commit_every and len(pending) >= commit_every:
+                commit_chunk(pending, index)
+                pending = []
         except BaseException as e:                              # noqa: BLE001 - keep going, report
             traceback.print_exc()
             lines.append(f"| {name} | {action} | **failed**: {type(e).__name__}: {str(e)[:200]} | | | | | | | | | |")
             bad += 1
+    if commit_every:
+        commit_chunk(pending, index)
     pc.write_json(os.path.join(pc.PACKAGES, "_index.json"), index)
     with open(os.environ.get("VISION_GATE") or "/tmp/vision_gate.txt", "w") as fh:
         fh.write("".join(g + "\n" for g in gate))
@@ -167,7 +291,39 @@ def main(changed, vision=False):
     return bad
 
 
+def write_plan(changed, out):
+    """The plan job: which requests get their own build job, how many packages the rebuild has to do."""
+    reqs = [_rel(p) for p, a in plan(changed, phase="requests") if a != "skip"]
+    stale = sum(a == "build" for _, a in plan(changed, phase="rebuild"))
+    obj = dict(requests=reqs, rebuild=stale)
+    pc.write_json(out, obj)
+    print(json.dumps(obj))
+    return obj
+
+
+def parse_args(argv):
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--vision", action="store_true")
+    ap.add_argument("--phase", choices=("all", "requests", "rebuild"), default="all")
+    ap.add_argument("--only", action="append", default=[])
+    ap.add_argument("--shard", default=None, help="K/N")
+    ap.add_argument("--commit-every", type=int, default=0)
+    ap.add_argument("--plan-json", default=None)
+    ap.add_argument("changed", nargs="*")
+    a = ap.parse_args(argv)
+    if a.shard:
+        k, n = (int(x) for x in a.shard.split("/"))
+        if not 0 <= k < n:
+            ap.error(f"bad --shard {a.shard}")
+        a.shard = (k, n)
+    return a
+
+
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    v = "--vision" in args
-    sys.exit(1 if main([a for a in args if a != "--vision"], vision=v) else 0)
+    a = parse_args(sys.argv[1:])
+    if a.plan_json:
+        write_plan(a.changed, a.plan_json)
+        sys.exit(0)
+    sys.exit(1 if main(a.changed, vision=a.vision, phase=a.phase, only=a.only, shard=a.shard,
+                       commit_every=a.commit_every) else 0)

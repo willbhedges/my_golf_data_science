@@ -12,6 +12,16 @@ name: course-package
 # and course_data/ob/<slug> are committed with the package. A fetched package that still has no vision_any/2
 # layer FAILS the run (after the commit); offline rebuilds without one get a warning and a CHECK vision stage.
 # Changing only platform code rebuilds every fetched package offline.
+#
+# Jobs (so new requests never starve behind the offline rebuild and a job cap never loses all the work):
+#   plan     unit tests; which requests to build (changed by this push, or since the last committed run's
+#            "Built from: <sha>", or never fetched) and how many packages have a stale build hash
+#            (run_requests.py --plan-json; packages/<slug>/build_inputs.json)
+#   request  one matrix job per request (max 4 at a time): fetch + vision layer + build, its own commit
+#            ("Built from: <plan sha>"), its own Spirit Hollow golden and vision layer gate
+#   rebuild  after the requests: 2 shards (crc32(slug) % 2) rebuild the STALE fetched packages offline and
+#            commit every 4 packages (commit_run.sh -> commit_packages.sh; _index.json is merged), so a cancelled
+#            run's finished packages are kept and the next run only does the rest
 
 on:
   push:
@@ -39,9 +49,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  package:
+  plan:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 45
+    outputs:
+      sha: ${{ steps.plan.outputs.sha }}
+      requests: ${{ steps.plan.outputs.requests }}
+      rebuild: ${{ steps.plan.outputs.rebuild }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,14 +73,13 @@ jobs:
           pip install requests numpy scipy shapely pyproj matplotlib pillow pytest opencv-python-headless scikit-learn scikit-image \
                       pystac-client planetary-computer rasterio
 
-      # lightgbm + PDAL for the vision layer (slugs empty: tools only; run_requests.py --vision runs the layer)
+      # lightgbm + PDAL (tools only), as the build jobs have them, for the tests that use them
       - uses: ./.github/actions/vision-layers
 
       - name: Unit tests (offline)
         run: python -m pytest -q course_data/platform
 
       - name: Changed files
-        id: changed
         run: |
           BEFORE="${{ github.event.before }}"
           if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || \
@@ -78,6 +91,7 @@ jobs:
           # A newer push cancels a PENDING run of this group (GitHub keeps one pending run), so a request pushed
           # just before would be lost. Also take every request changed since the commit the last committed run
           # checked out ("Built from: <sha>" in its message; else the parent of the last package commit).
+          # Only request-job commits carry "Built from:"; rebuild commits say "Rebuilt at:".
           M=$(git log -n 1 --grep='^Built from: ' --format=%B | sed -n 's/^Built from: //p' | head -1)
           [ -n "$M" ] || M=$(git log -n 1 --grep='^Course packages from request files' --format=%H)^
           if git cat-file -e "$M^{commit}" 2>/dev/null; then
@@ -86,17 +100,64 @@ jobs:
           fi
           cat /tmp/changed.txt
 
+      - name: Plan
+        id: plan
+        run: |
+          python course_data/platform/run_requests.py --plan-json /tmp/plan.json $(cat /tmp/changed.txt)
+          {
+            echo "sha=$(git rev-parse HEAD)"
+            echo "requests=$(python -c 'import json; print(json.dumps(json.load(open("/tmp/plan.json"))["requests"]))')"
+            echo "rebuild=$(python -c 'import json; print(json.load(open("/tmp/plan.json"))["rebuild"])')"
+          } >> "$GITHUB_OUTPUT"
+          python - >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import json
+          p = json.load(open("/tmp/plan.json"))
+          print("## Plan\n\nRequests (one job each): " + (", ".join(p["requests"]) or "none")
+                + f"\n\nStale packages for the offline rebuild: {p['rebuild']}\n")
+          PY
+
+  # New / changed requests FIRST, one job (and one commit) each.
+  request:
+    needs: plan
+    if: needs.plan.outputs.requests != '[]' && needs.plan.outputs.requests != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        request: ${{ fromJSON(needs.plan.outputs.requests) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.sha }}
+          fetch-depth: 300
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y -q poppler-utils >/dev/null || true
+          python -m pip install --upgrade pip
+          pip install requests numpy scipy shapely pyproj matplotlib pillow pytest opencv-python-headless scikit-learn scikit-image \
+                      pystac-client planetary-computer rasterio
+
+      # lightgbm + PDAL for the vision layer (slugs empty: tools only; run_requests.py --vision runs the layer)
+      - uses: ./.github/actions/vision-layers
+
       - name: Keep the Spirit Hollow package as built before this run (golden before/after)
         run: |
           mkdir -p /tmp/before_spirit_hollow
           cp course_data/packages/spirit_hollow/package.json /tmp/before_spirit_hollow/package.json || true
 
-      - name: Build requested packages
+      - name: Build the request
         continue-on-error: true
         env:
           PYTHONWARNINGS: ignore
           VISION_GATE: /tmp/vision_gate.txt
-        run: python course_data/platform/run_requests.py --vision $(cat /tmp/changed.txt)
+        run: python course_data/platform/run_requests.py --vision --phase requests --only "${{ matrix.request }}" "${{ matrix.request }}"
 
       # Spirit Hollow golden for the tee stage (qa/golden_spirit_hollow.py, Q1 per-screenshot tee sets), before
       # vs after this build, each scored with the package's own set and with the screenshot's set per hole.
@@ -113,40 +174,28 @@ jobs:
             echo "Spirit Hollow package unchanged: no golden run"
           fi
 
-      - name: Commit packages
+      - name: Commit the package
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          [ -d course_data/packages ] || { echo "nothing built"; exit 0; }
-          du -sh course_data/packages/* || true
           printf '%s\n' \
-            "Course packages from request files (GitHub Actions run ${{ github.run_id }})" \
+            "Course packages from request files (GitHub Actions run ${{ github.run_id }}: $(basename '${{ matrix.request }}' .json))" \
             "" \
-            "Built from: $(git rev-parse HEAD)" \
+            "Built from: ${{ needs.plan.outputs.sha }}" \
             "" \
             "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
             "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
-          # never clobber newer work: a package directory (or _index.json / golden file) that changed on origin
-          # since this run's checkout (HEAD; the build does not commit) is skipped, not overwritten; the commit
-          # is built on the current origin tip (commit_packages.sh), re-checked on every rejected push
-          P="course_data/packages"
-          for f in course_data/qa/golden_tees.json course_data/qa/golden_tees.md; do [ -e "$f" ] && P="$P $f"; done
-          # the vision layers + OB evidence built this run (build_layers.committed_paths; never raw2/)
-          for d in course_data/vision_any/*/; do
-            s=$(basename "$d")
-            for f in raw vision_any.geojson vision_any_v2.geojson vision_any_v1.geojson layers_v2.tif classes_v2.jpg; do
-              [ -e "$d$f" ] && P="$P $d$f"
-            done
-            [ -d "course_data/ob/$s" ] && P="$P course_data/ob/$s"
-          done
-          bash course_data/platform/commit_packages.sh "${{ github.ref_name }}" "$(git rev-parse HEAD)" /tmp/msg.txt $P
+          # never clobber newer work: a package directory (or golden file) that changed on origin since this
+          # job's checkout is skipped, not overwritten; _index.json is merged; the commit is built on the
+          # current origin tip (commit_packages.sh), re-checked on every rejected push
+          bash course_data/platform/commit_run.sh "${{ github.ref_name }}" "${{ needs.plan.outputs.sha }}" /tmp/msg.txt
 
-      # loud, after the commit: a fetched package without the product tree layer fails the run
+      # loud, after the commit: a fetched package without the product tree layer fails the job
       - name: Vision layer gate
         if: always()
         run: |
-          [ -s /tmp/vision_gate.txt ] || { echo "every package built this run has the vision_any/2 layer"; exit 0; }
+          [ -s /tmp/vision_gate.txt ] || { echo "every package built this job has the vision_any/2 layer"; exit 0; }
           bad=0
           while IFS=$'\t' read -r level slug why; do
             echo "::$level title=vision layer missing ($slug)::$why"
@@ -158,6 +207,102 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: packages-${{ github.run_id }}
+          name: packages-${{ github.run_id }}-request-${{ strategy.job-index }}
+          path: course_data/packages/
+          retention-days: 5
+
+  # Then the offline rebuild of the fetched packages whose build hash is stale, sharded, committed per chunk.
+  rebuild:
+    needs: [plan, request]
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.rebuild != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1]
+    env:
+      SHARDS: 2
+      COMMIT_EVERY: 4
+    steps:
+      # the branch tip: it has the packages the request jobs just committed (current build hash: skipped)
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 300
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y -q poppler-utils >/dev/null || true
+          python -m pip install --upgrade pip
+          pip install requests numpy scipy shapely pyproj matplotlib pillow pytest opencv-python-headless scikit-learn scikit-image \
+                      pystac-client planetary-computer rasterio
+
+      - uses: ./.github/actions/vision-layers
+
+      - name: Keep the Spirit Hollow package as built before this run (golden before/after)
+        run: |
+          mkdir -p /tmp/before_spirit_hollow
+          cp course_data/packages/spirit_hollow/package.json /tmp/before_spirit_hollow/package.json || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          printf '%s\n' \
+            "Offline package rebuild (GitHub Actions run ${{ github.run_id }}, shard ${{ matrix.shard }}/$SHARDS)" \
+            "" \
+            "Rebuilt at: $(git rev-parse HEAD)" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          echo "BASE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      # every COMMIT_EVERY packages: commit_run.sh <slugs> (packages + merged _index.json)
+      - name: Rebuild stale packages (offline)
+        continue-on-error: true
+        env:
+          PYTHONWARNINGS: ignore
+          VISION_GATE: /tmp/vision_gate.txt
+          REQS: ${{ needs.plan.outputs.requests }}
+        run: |
+          export COMMIT_CMD="bash course_data/platform/commit_run.sh ${{ github.ref_name }} $BASE_SHA /tmp/msg.txt"
+          python course_data/platform/run_requests.py --phase rebuild --shard "${{ matrix.shard }}/$SHARDS" \
+            --commit-every "$COMMIT_EVERY" $(python -c 'import json, os; print(" ".join(json.loads(os.environ["REQS"] or "[]")))')
+
+      - name: Spirit Hollow golden (tee stage, before / after)
+        continue-on-error: true
+        timeout-minutes: 40
+        run: |
+          if [ -f /tmp/before_spirit_hollow/package.json ] && \
+             ! cmp -s /tmp/before_spirit_hollow/package.json course_data/packages/spirit_hollow/package.json; then
+            python course_data/qa/golden_spirit_hollow.py --no-oracle --tee-set both --out golden_tees \
+              --package /tmp/before_spirit_hollow/package.json --package course_data/packages/spirit_hollow/package.json
+          else
+            echo "Spirit Hollow package unchanged: no golden run"
+          fi
+
+      # whatever the per-chunk commits left (the golden files, a chunk whose commit failed)
+      - name: Commit the rest
+        if: always()
+        run: bash course_data/platform/commit_run.sh "${{ github.ref_name }}" "$BASE_SHA" /tmp/msg.txt
+
+      - name: Vision layer gate
+        if: always()
+        run: |
+          [ -s /tmp/vision_gate.txt ] || { echo "every package rebuilt this job has the vision_any/2 layer"; exit 0; }
+          bad=0
+          while IFS=$'\t' read -r level slug why; do
+            echo "::$level title=vision layer missing ($slug)::$why"
+            [ "$level" = error ] && bad=1
+          done < /tmp/vision_gate.txt
+          exit $bad
+
+      - name: Keep the built packages if the commit failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ github.run_id }}-rebuild-${{ matrix.shard }}
           path: course_data/packages/
           retention-days: 5

@@ -7,7 +7,9 @@
 #   * a package directory (course_data/packages/<slug>/; likewise course_data/vision_any/<slug>/, course_data/ob/<slug>/)
 #     where anything changed on origin since base
 #     (another run / workflow rebuilt that package meanwhile): the whole directory is skipped
-#   * any other file (packages/_index.json, qa/golden_tees.*) changed on origin since base
+#   * any other file (qa/golden_tees.*) changed on origin since base
+#   * packages/_index.json changed on origin since base is MERGED instead (merge_index.py: the tip's index plus
+#     this run's own entry edits), so parallel jobs / per-chunk commits of one run do not drop each other's entries
 # The commit is built on top of the current origin tip in a private index (git read-tree + update-index +
 # commit-tree), so no rebase, no -X theirs, and nothing outside the run's own changed paths is touched.
 # A rejected push (the branch moved again) re-fetches and re-checks, up to 8 times.
@@ -40,6 +42,11 @@ for i in 1 2 3 4 5 6 7 8; do
     case "$st" in R*|C*) old="$p"; p="$p2" ;; *) old="" ;; esac
     u=$(unit "$p")
     if printf '%s\n' "$MOVED" | grep -qxF "$u"; then
+      if [ "$p" = course_data/packages/_index.json ] && [ "$st" != D ] && \
+         M=$(python3 "$(dirname "$0")/merge_index.py" "$BASE" "$TIP" "$p" < /dev/null) && \
+         B=$(printf '%s\n' "$M" | git hash-object -w --stdin); then
+        git update-index --add --cacheinfo "100644,$B,$p"; n=$((n + 1)); continue
+      fi
       skipped="$skipped $u"; continue
     fi
     if [ -n "$old" ] && [ "$st" != "${st#R}" ]; then git update-index --force-remove -- "$old"; fi
