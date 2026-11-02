@@ -45,6 +45,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CD = os.path.dirname(HERE)
 ROOT = os.path.dirname(CD)
 VC_PY = os.path.join(CD, "courses", "v2_course.py")
+# decide / wind run through library/v2_adaptive.py: v2_course.py unchanged, with the adaptive aim bound (+/-40 widened
+# to 60 / 80 yds where the best aim sits on it, guarded by lie and line of play; library QA: picks pinned at +/-40)
+VC_ADAPT_PY = os.path.join(HERE, "v2_adaptive.py")
 TOURNAMENT = os.path.join(CD, "courses")
 WHICH = ["auto", "auto_b"]
 DEFAULT_DRAWS = 48
@@ -383,7 +386,7 @@ def compute(q, slot, kind, parts):
             for i, g in enumerate(groups):
                 e = dict(env, WIND_ONLY=",".join(g))
                 lf = open(os.path.join(parts, f"log_wind_{b}_{i}.txt"), "w")
-                procs.append(subprocess.Popen([sys.executable, VC_PY, "wind", "--slug", q["slug"], "--which", w,
+                procs.append(subprocess.Popen([sys.executable, VC_ADAPT_PY, "wind", "--slug", q["slug"], "--which", w,
                                                "--back", str(b), "--temps", temps, "--swings", str(cfg.get("swings", DEFAULT_SWINGS)),
                                                "--out", os.path.join(parts, f"v2wind_{b}_{i}.json")],
                                               env=e, stdout=lf, stderr=subprocess.STDOUT))
@@ -397,7 +400,7 @@ def compute(q, slot, kind, parts):
             while pending and len(running) < np_:
                 h = pending.pop(0)
                 lf = open(os.path.join(parts, f"log_dec_{h}.txt"), "w")
-                running.append(subprocess.Popen([sys.executable, VC_PY, "decide", "--slug", q["slug"], "--which", w,
+                running.append(subprocess.Popen([sys.executable, VC_ADAPT_PY, "decide", "--slug", q["slug"], "--which", w,
                                                  "--holes", h, "--draws", str(cfg.get("draws", DEFAULT_DRAWS)),
                                                  "--out", os.path.join(parts, f"v2dec_{h}.json")],
                                                 env=env, stdout=lf, stderr=subprocess.STDOUT))

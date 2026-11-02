@@ -179,3 +179,40 @@ def test_real_packages_line_of_play_near_tee_line(slug, tees):
         if x is not None and abs(x) > 30:
             bad.append((k, round(float(x))))
     assert not bad, bad
+
+
+def _dogleg(adaptive):
+    """Dog-leg right: the tee line points straight, the fairway at the corner is 45-75 yds right of it (trees
+    left of 25, rough between), the line of play bends through it."""
+    zones = [("recovery", rect(-60, 25, 180, 330)), ("fairway", rect(45, 75, 180, 330)),
+             ("recovery", rect(75, 120, 180, 330)), ("fairway", rect(60, 110, 330, 430))]
+    hd = dict(hole(zones), green=px(90, 420), play_line=[px(0, 0), px(60, 260), px(90, 420)])
+    old = decide.ADAPTIVE_AIM
+    decide.ADAPTIVE_AIM = adaptive
+    try:
+        return run_quick({1: hd}, 1)
+    finally:
+        decide.ADAPTIVE_AIM = old
+
+
+def test_adaptive_aim_bound_on_a_dogleg():
+    """The best aim is past +40 (the corner fairway): the fixed bound pins it to +40 (rough short of the corner), the
+    adaptive bound widens to 60 / 80 on that side only and prints the corner aim, with no CHECK from the bound."""
+    fixed, wide = _dogleg(False), _dogleg(True)
+    assert fixed["aim"] <= decide.GUARD_AIM + 1e-6
+    assert wide["aim"] > decide.GUARD_AIM and wide["ev"] < fixed["ev"]
+    b = wide["clubs"][wide["pick"]]["aim_bound"]
+    assert b[0] == -decide.GUARD_AIM and b[1] in decide.GUARD_STEPS and wide["aim"] <= b[1]
+    assert not decide.aim_problems(1, wide["pick"], wide["aim"], tuple(b))
+    assert not any("off the tee line" in c for c in wide["check"])
+
+
+def test_adaptive_bound_never_reaches_another_hole():
+    """The other hole's fairway (75-130 right) still fails the line-of-play check: no widening there."""
+    zones = [("fairway", rect(-25, 25, 120, 200)), ("fairway", rect(75, 130, 150, 420)),
+             ("water", rect(-60, 25, 230, 330)), ("fairway", rect(-15, 15, 340, 420))]
+    r = run_quick({1: hole(zones)}, 1)
+    assert abs(r["aim"]) <= 80 and not decide.aim_problems(1, r["pick"], r["aim"],
+                                                           tuple(r["clubs"][r["pick"]]["aim_bound"]))
+    pt, ppy = decide._aim_point(t.HOLES[1], r["pick"], r["aim"])
+    assert decide._dist_to_line(pt, t.HOLES[1]["play_line"]) / ppy <= decide.GUARD_LINE

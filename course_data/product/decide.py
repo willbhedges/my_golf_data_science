@@ -48,6 +48,14 @@ BASE = {}
 # of play and the best printable aim is used; with none, the page says CHECK instead of an aim.
 GUARD_AIM = 40.0
 GUARD_LINE = 40.0
+# Adaptive aim bound (library QA: picks sat exactly on +/-40 on dog-legs, the curve still falling past it): when the
+# best printable aim is on the bound, that side's bound steps out to 60, then 80 yds, kept only if the best aim
+# there is printable (lie + line-of-play checks, so another hole's fairway still fails) and gains > GUARD_GAIN
+# strokes. Only for holes with a line of play (the check that stops an aim at another hole). DECIDE_ADAPTIVE_AIM=0
+# turns it off (the fixed +/-40 bound).
+GUARD_STEPS = tuple(float(x) for x in os.environ.get("DECIDE_GUARD_STEPS", "60,80").split(",") if x)
+GUARD_GAIN = float(os.environ.get("DECIDE_GUARD_GAIN", "0.002"))
+ADAPTIVE_AIM = os.environ.get("DECIDE_ADAPTIVE_AIM", "1") != "0"
 OK_LIES = ("fairway", "first_cut", "rough")
 LIE_WORDS = {"recovery": "trees", "native": "long grass", "water": "water", "ob": "OB", "sand": "sand"}
 
@@ -69,12 +77,14 @@ def _dist_to_line(pt, line):
     return float(np.min(np.linalg.norm(a + u[:, None] * d - pt, axis=1)))
 
 
-def aim_problems(h, club, aim):
-    """[reason, ...] why this aim must not be printed silently (empty = fine)."""
+def aim_problems(h, club, aim, bound=None):
+    """[reason, ...] why this aim must not be printed silently (empty = fine). bound (lo, hi): the aim bound off
+    the tee line (default +/-GUARD_AIM; guarded_best widens it where the best aim sits on it, adaptive_bound)."""
     hd = t.HOLES[h]
     out = []
-    if abs(aim) > GUARD_AIM + 1e-6:
-        out.append(f"aim {aim:+.0f} yds is more than {GUARD_AIM:.0f} yds off the tee line")
+    lo, hi = bound or (-GUARD_AIM, GUARD_AIM)
+    if aim < lo - 1e-6 or aim > hi + 1e-6:
+        out.append(f"aim {aim:+.0f} yds is more than {hi if aim > 0 else -lo:.0f} yds off the tee line")
     pt, ppy = _aim_point(hd, club, aim)
     lie = t.lie_at(hd, pt[None, :])[0]
     if lie not in OK_LIES:
@@ -150,9 +160,10 @@ def _club_result(h, c, aim, z):
 
 
 # ----------------------------------------------------------------------------- quick
-def guarded_best(h, c, aims, ev, evaluate=None):
+def guarded_best(h, c, aims, ev, evaluate=None, bound_out=None):
     """(aims, ev, i_best_printable | None, problems of the unconstrained best). evaluate(a) -> EV lets it
-    re-centre the search on the line of play when no aim on the grid is printable."""
+    re-centre the search on the line of play when no aim on the grid is printable, and fill the grid when the
+    aim bound widens (adaptive_bound). bound_out (a list) receives the (lo, hi) aim bound used."""
     aims, ev = np.asarray(aims, float), np.asarray(ev, float)
     i = int(ev.argmin())
     raw = aim_problems(h, c, aims[i])
@@ -164,17 +175,63 @@ def guarded_best(h, c, aims, ev, evaluate=None):
         more = np.array([a for a in ctr + np.arange(-30, 30.01, AIM_STEP)
                          if abs(a) <= GUARD_AIM + 1e-6 and not np.isclose(aims, a).any()])
         if len(more):
-            aims = np.r_[aims, more]
-            ev = np.r_[ev, [evaluate(a) for a in more]]
-            o = np.argsort(aims)
-            aims, ev = aims[o], ev[o]
+            aims, ev = _merge(aims, ev, more, evaluate)
             ok = np.array([not aim_problems(h, c, a) for a in aims])
-    if not raw:
-        return aims, ev, int(ev.argmin()), raw
+    bound = (-GUARD_AIM, GUARD_AIM)
+    if ok.any():
+        aims, ev, ok, bound = adaptive_bound(h, c, aims, ev, ok, evaluate)
+    if bound_out is not None:
+        bound_out[:] = list(bound)
+    if bound != (-GUARD_AIM, GUARD_AIM):                  # widened: the unconstrained best may be printable now
+        i = int(ev.argmin())
+        raw = aim_problems(h, c, aims[i], bound)
+        if i in (0, len(aims) - 1):
+            raw = [f"best aim {aims[i]:+.0f} is on the edge of the search"] + raw
+    if not raw:                                           # the unconstrained best is printable
+        return aims, ev, int(np.flatnonzero(ok)[ev[ok].argmin()]), raw
     if not ok.any():
         return aims, ev, None, raw
     j = int(np.flatnonzero(ok)[ev[ok].argmin()])
     return aims, ev, j, raw
+
+
+def _merge(aims, ev, more, evaluate):
+    aims, ev = np.r_[aims, more], np.r_[ev, [evaluate(a) for a in more]]
+    o = np.argsort(aims)
+    return aims[o], ev[o]
+
+
+def adaptive_bound(h, c, aims, ev, ok, evaluate=None):
+    """Widen the aim bound on the side where the best printable aim sits on it: out to GUARD_STEPS (60, then 80
+    yds) while the best printable aim inside the wider bound beats the current one by > GUARD_GAIN strokes
+    (printable = lie + line-of-play checks, so another hole's fairway still fails). evaluate fills the grid out to
+    the new bound. Holes without a line of play keep +/-GUARD_AIM. -> (aims, ev, ok, (lo, hi))."""
+    lo, hi = -GUARD_AIM, GUARD_AIM
+    line = t.HOLES[h].get("play_line")
+    if not ADAPTIVE_AIM or not line or len(line) < 2:
+        return aims, ev, ok, (lo, hi)
+
+    def mask(b):
+        return np.array([not aim_problems(h, c, a, b) for a in aims])
+    for step in GUARD_STEPS:
+        j = int(np.flatnonzero(ok)[ev[ok].argmin()])
+        side = 1 if aims[j] >= hi - AIM_STEP / 2 else -1 if aims[j] <= lo + AIM_STEP / 2 else 0
+        if not side:
+            break
+        new = (lo, step) if side > 0 else (-step, hi)
+        if evaluate is not None:
+            grid = np.arange(-step, step + 0.01, AIM_STEP)
+            more = np.array([a for a in grid if new[0] - 1e-6 <= a <= new[1] + 1e-6 and not np.isclose(aims, a).any()])
+            if len(more):
+                aims, ev = _merge(aims, ev, more, evaluate)
+                ok = mask((lo, hi))
+        nok = mask(new)
+        if ev[nok].min() < ev[ok].min() - GUARD_GAIN:
+            lo, hi = new
+            ok = nok
+        else:
+            break
+    return aims, ev, ok, (lo, hi)
 
 
 def quick_hole(h, n=8000, seed=31):
@@ -192,18 +249,23 @@ def quick_hole(h, n=8000, seed=31):
             aims, ev = (np.r_[more[::-1], aims], np.r_[mev[::-1], ev]) if i == 0 else (np.r_[aims, more], np.r_[ev, mev])
             i = int(ev.argmin())
         raw_ev[c] = (float(aims[i]), float(ev[i]))
-        aims, ev, j, raw = guarded_best(h, c, aims, ev, lambda a, c=c: t.simulate(h, c, a, z=z)[3].mean())
+        bnd = []
+        aims, ev, j, raw = guarded_best(h, c, aims, ev, lambda a, c=c: t.simulate(h, c, a, z=z)[3].mean(), bnd)
+        if tuple(bnd) != (-GUARD_AIM, GUARD_AIM):         # the grid may have grown past the old edge
+            i = int(ev.argmin())
+            raw_ev[c] = (float(aims[i]), float(ev[i]))
         res[c] = _club_result(h, c, raw_ev[c][0] if j is None else aims[j], z)
-        res[c].update(raw_aim=raw_ev[c][0], raw_ev=raw_ev[c][1], problems=raw, printable=j is not None)
-        curves[c] = (aims, ev, j)
+        res[c].update(raw_aim=raw_ev[c][0], raw_ev=raw_ev[c][1], problems=raw, printable=j is not None,
+                      aim_bound=[float(b) for b in bnd])
+        curves[c] = (aims, ev, j, tuple(bnd))
     printable = [c for c in res if res[c]["printable"]] or list(res)
     best = min(printable, key=lambda c: res[c]["ev"])
     runner = min((c for c in res if c != best), key=lambda c: res[c]["ev"])
-    aims, ev, j = curves[best]
+    aims, ev, j, bnd = curves[best]
     if j is None:
         ok = aims[ev <= ev.min() + ZONE_TOL]
     else:
-        good = np.array([not aim_problems(h, best, a) for a in aims])
+        good = np.array([not aim_problems(h, best, a, bnd) for a in aims])
         ok = aims[good & (ev <= ev[j] + ZONE_TOL)]
     out = dict(pick=best, aim=res[best]["aim"], ev=res[best]["ev"], runner=runner,
                margin=res[runner]["ev"] - res[best]["ev"], zone=[float(ok.min()), float(ok.max())],
@@ -370,7 +432,8 @@ def full_hole(h, S=64, N=3000, seed=2027, sweep=True):
     ok = aims[r["pick"]][curve <= curve.min() + ZONE_TOL]
     r["zone"] = [float(ok.min()), float(ok.max())]
     # absurd-aim guard on the pick (no re-search here: the Bayesian grid is fixed)
-    pa, _, j, raw = guarded_best(h, r["pick"], aims[r["pick"]], curve)
+    bnd = []
+    pa, _, j, raw = guarded_best(h, r["pick"], aims[r["pick"]], curve, None, bnd)
     r["check"] = []
     if raw:
         if j is None:
@@ -379,7 +442,7 @@ def full_hole(h, S=64, N=3000, seed=2027, sweep=True):
             r["check"].append(f"{r['pick']} best aim {r['aim']:+.0f} rejected ({'; '.join(raw)})")
             r["aim"] = float(pa[j])
             r["clubs"][r["pick"]]["aim"] = r["aim"]
-            good = np.array([not aim_problems(h, r["pick"], a) for a in pa])
+            good = np.array([not aim_problems(h, r["pick"], a, tuple(bnd)) for a in pa])
             ok = pa[good & (curve <= curve[j] + ZONE_TOL)]
             r["zone"] = [float(ok.min()), float(ok.max())]
     set_prior_means()
