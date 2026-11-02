@@ -213,13 +213,21 @@ def slim_elements(js):
         c = e.get("center") or ({"lat": e["lat"], "lon": e["lon"]} if "lat" in e else None)
         if not c:
             continue
-        keep = {k: t[k] for k in ("name", "leisure", "golf", "ref", "holes", "addr:city", "addr:state", "place",
-                                  "disused", "abandoned", "disused:leisure", "abandoned:leisure") if k in t}
-        row = {"t": e["type"][0], "id": e["id"], "lat": round(c["lat"], 6), "lon": round(c["lon"], 6), "g": keep}
-        if (e["type"][0], e["id"]) in bbs:
-            row["bb"] = bbs[(e["type"][0], e["id"])]
-        rows.append(row)
+        rows.append(slim_row(e["type"][0], e["id"], c["lat"], c["lon"], t, bbs.get((e["type"][0], e["id"]))))
     return rows
+
+
+KEEP_TAGS = ("name", "leisure", "golf", "ref", "holes", "addr:city", "addr:state", "place", "disused", "abandoned",
+             "disused:leisure", "abandoned:leisure")
+
+
+def slim_row(t, oid, lat, lon, tags, bb=None):
+    """One compact element row (the cell-file format both the Overpass and the Geofabrik paths write)."""
+    row = {"t": t, "id": oid, "lat": round(lat, 6), "lon": round(lon, 6),
+           "g": {k: tags[k] for k in KEEP_TAGS if k in tags}}
+    if bb:
+        row["bb"] = bb
+    return row
 
 
 def split4(t):
@@ -237,6 +245,8 @@ def fetch_cell(t, d, mirrors, deadline, now=time.time):
         return [t]
     t0 = now()
     try:
+        if has_parts(t, d):             # split on an earlier pass: asking for the whole cell again only times out
+            raise RuntimeError("split earlier, parts on disk")
         js, url = mirrors.ask(cell_query(t), CELL_TIMEOUT_S + 30)
     except Exception as e:                                          # noqa: BLE001
         log(f"  cell {t} failed on every mirror ({e})"[:500])
@@ -258,6 +268,20 @@ def fetch_cell(t, d, mirrors, deadline, now=time.time):
     os.replace(tmp, path)               # a half-written cell never looks fetched
     log(f"  {cell_name(t)} {len(rows)} el {now() - t0:.0f}s {url.split('/')[2]}")
     return []
+
+
+def has_parts(t, d):
+    """True when some smaller cell inside t is on disk (t failed and was split on an earlier pass)."""
+    for f in os.listdir(d):
+        if not (f.startswith("c_") and f.endswith(".json")):
+            continue
+        try:
+            s, w, n, e = (float(x) for x in f[2:-5].split("_"))
+        except ValueError:
+            continue
+        if (s, w, n, e) != tuple(t) and t[0] <= s and n <= t[2] and t[1] <= w and e <= t[3]:
+            return True
+    return False
 
 
 def shard_cells(states, shard=0, n_shards=1):
@@ -294,15 +318,23 @@ def fetch(states, out, shard=0, n_shards=1, budget_min=None, offset=None, now=ti
     return left
 
 
-def load_cells(raw):
-    """-> (elements deduplicated by OSM id over every cell on disk, set of cells present)."""
+def load_cells(raw, states=None):
+    """-> (elements deduplicated by OSM id over every cell and state file on disk, set of cells present). A
+    Geofabrik state file (s_<ST>.json) adds its state to `states` (a set, when given), not cells: its border cells
+    hold only that state's side."""
     seen, els, have = set(), [], set()
-    for p in sorted(glob.glob(os.path.join(raw, "**", "c_*.json"), recursive=True)):
+    paths = sorted(glob.glob(os.path.join(raw, "**", "s_*.json"), recursive=True)) + \
+        sorted(glob.glob(os.path.join(raw, "**", "c_*.json"), recursive=True))
+    for p in paths:
         try:
             js = json.load(open(p))
         except Exception:                                           # noqa: BLE001
             continue
-        have.add(tuple(js["cell"]))
+        if "state" in js:
+            if states is not None:
+                states.add(js["state"])
+        else:
+            have.add(tuple(js["cell"]))
         for e in js.get("elements", []):
             k = (e["t"], e["id"])
             if k in seen:
@@ -310,6 +342,157 @@ def load_cells(raw):
             seen.add(k)
             els.append(e)
     return els, have
+
+
+# ------------------------------------------------------------------------------------------------ Geofabrik
+# The same elements from Geofabrik's daily per-state OSM extracts instead of Overpass: one download per state
+# (about 10 GB for the whole US), `osmium tags-filter` keeps the golf / place objects plus the nodes and member
+# ways they reference, and osm_xml_rows turns that into cell-file rows. No public Overpass mirror in the loop.
+GEOFABRIK = "https://download.geofabrik.de/north-america/us/{}-latest.osm.pbf"
+TAGS_FILTER = ["nwr/leisure=golf_course", "w/golf=hole,green,tee,fairway", "n/golf=green,tee,pin",
+               "n/place=city,town,village"]
+# approximate extract sizes (MB, late 2025) to deal states over jobs by download size
+GEOFABRIK_MB = {
+    "AL": 110, "AK": 80, "AZ": 230, "AR": 90, "CA": 1200, "CO": 260, "CT": 60, "DE": 20, "DC": 20, "FL": 560,
+    "GA": 280, "HI": 30, "ID": 110, "IL": 300, "IN": 160, "IA": 120, "KS": 100, "KY": 110, "LA": 130, "ME": 80,
+    "MD": 150, "MA": 180, "MI": 270, "MN": 220, "MS": 80, "MO": 160, "MT": 120, "NE": 70, "NV": 100, "NH": 50,
+    "NJ": 180, "NM": 120, "NY": 450, "NC": 290, "ND": 60, "OH": 260, "OK": 140, "OR": 220, "PA": 330, "RI": 20,
+    "SC": 140, "SD": 50, "TN": 140, "TX": 700, "UT": 130, "VT": 30, "VA": 220, "WA": 280, "WV": 60, "WI": 210,
+    "WY": 50}
+
+
+def geofabrik_url(st):
+    return GEOFABRIK.format(_STATE_NAMES[st].lower().replace(" ", "-"))
+
+
+def shard_states(states, shard=0, n_shards=1):
+    """This job's states: largest extract first onto the job with the least so far (balanced by download size)."""
+    load, out = [0.0] * n_shards, [[] for _ in range(n_shards)]
+    for st in sorted(states, key=lambda s: (-GEOFABRIK_MB.get(s, 100), s)):
+        i = min(range(n_shards), key=lambda k: (load[k], k))
+        load[i] += GEOFABRIK_MB.get(st, 100)
+        out[i].append(st)
+    return out[shard]
+
+
+def _download(url, path):
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=120) as r, open(path + ".part", "wb") as fh:
+        while True:
+            b = r.read(1 << 20)
+            if not b:
+                break
+            fh.write(b)
+    os.replace(path + ".part", path)
+
+
+def _tags_filter(pbf, osm):
+    import subprocess
+    subprocess.run(["osmium", "tags-filter", pbf, *TAGS_FILTER, "-o", osm, "-f", "osm", "--overwrite"],
+                   check=True)
+
+
+def osm_xml_rows(path):
+    """An OSM XML file (osmium tags-filter output: tagged objects plus referenced nodes / member ways) -> the rows
+    the Overpass cell query returns: courses (ways / relations with bb; nodes only when named), golf=hole / green /
+    tee / fairway ways, golf=green / tee / pin nodes, city / town / village nodes; centre = bbox centre."""
+    import xml.etree.ElementTree as ET
+    loc, wbb, rows = {}, {}, []
+
+    def tags_of(el):
+        return {t.get("k"): t.get("v") for t in el.findall("tag")}
+
+    def union(bbs):
+        bbs = [b for b in bbs if b]
+        if not bbs:
+            return None
+        return [min(b[0] for b in bbs), min(b[1] for b in bbs), max(b[2] for b in bbs), max(b[3] for b in bbs)]
+
+    def add(t, oid, tags, bb=None, lat=None, lon=None):
+        if lat is None:
+            lat, lon = (bb[0] + bb[2]) / 2, (bb[1] + bb[3]) / 2
+        rows.append(slim_row(t, oid, lat, lon, tags, bb))
+    for _, el in ET.iterparse(path, events=("end",)):
+        if el.tag == "node":
+            oid, lat, lon = int(el.get("id")), float(el.get("lat")), float(el.get("lon"))
+            loc[oid] = (lat, lon)
+            tg = tags_of(el)
+            if (tg.get("leisure") == "golf_course" and tg.get("name")) or tg.get("golf") in ("green", "tee", "pin") \
+                    or tg.get("place") in ("city", "town", "village"):
+                add("n", oid, tg, lat=lat, lon=lon)
+            el.clear()
+        elif el.tag == "way":
+            oid = int(el.get("id"))
+            pts = [loc[int(n.get("ref"))] for n in el.findall("nd") if int(n.get("ref")) in loc]
+            bb = union([[p[0], p[1], p[0], p[1]] for p in pts])
+            wbb[oid] = bb
+            tg = tags_of(el)
+            if bb and tg.get("leisure") == "golf_course":
+                add("w", oid, tg, bb)
+            elif bb and tg.get("golf") in ("hole", "green", "tee", "fairway"):
+                c = [(bb[0] + bb[2]) / 2, (bb[1] + bb[3]) / 2]
+                add("w", oid, tg, lat=c[0], lon=c[1])
+            el.clear()
+        elif el.tag == "relation":
+            tg = tags_of(el)
+            if tg.get("leisure") == "golf_course":
+                bb = union([wbb.get(int(m.get("ref"))) if m.get("type") == "way" else
+                            ([*loc[int(m.get("ref"))], *loc[int(m.get("ref"))]] if int(m.get("ref")) in loc else None)
+                            for m in el.findall("member") if m.get("type") in ("way", "node")])
+                if bb:
+                    add("r", int(el.get("id")), tg, bb)
+            el.clear()
+    return rows
+
+
+def geofabrik(states, out, shard=0, n_shards=1, download=_download, tags_filter=_tags_filter, sleep=time.sleep,
+              work=None):
+    """Write out/cells/s_<ST>.json for each of this job's states not on disk yet -> states that failed."""
+    d = os.path.join(out, "cells")
+    os.makedirs(d, exist_ok=True)
+    work = work or os.path.join(out, "_gf")
+    os.makedirs(work, exist_ok=True)
+    mine = shard_states(states, shard, n_shards)
+    log(f"geofabrik shard {shard}/{n_shards}: {' '.join(mine)}")
+    failed = []
+    for st in mine:
+        path = os.path.join(d, f"s_{st}.json")
+        if os.path.exists(path):
+            continue
+        pbf, osm = os.path.join(work, st + ".osm.pbf"), os.path.join(work, st + ".osm")
+        t0 = time.time()
+        try:
+            for k in range(3):
+                try:
+                    download(geofabrik_url(st), pbf)
+                    break
+                except Exception as e:                              # noqa: BLE001
+                    log(f"  {st}: download try {k + 1} failed: {e!r}"[:300])
+                    if k == 2:
+                        raise
+                    sleep(30 * (k + 1))
+            mb = os.path.getsize(pbf) / 1e6
+            tags_filter(pbf, osm)
+            rows = osm_xml_rows(osm)
+            with open(path + ".tmp", "w") as fh:
+                json.dump({"state": st, "source": "geofabrik", "url": geofabrik_url(st), "cells": state_cells(st),
+                           "fetched": time.strftime("%Y-%m-%dT%H:%MZ", time.gmtime()), "elements": rows},
+                          fh, separators=(",", ":"))
+            os.replace(path + ".tmp", path)
+            log(f"  {st}: {mb:.0f} MB, {len(rows)} el, {time.time() - t0:.0f}s")
+        except Exception as e:                                      # noqa: BLE001
+            log(f"  {st}: failed: {e!r}"[:300])
+            failed.append(st)
+        finally:
+            for f in (pbf, pbf + ".part", osm):
+                if os.path.exists(f):
+                    os.remove(f)
+    try:
+        os.rmdir(work)
+    except OSError:
+        pass
+    log(f"geofabrik shard {shard}/{n_shards}: {len(mine) - len(failed)} of {len(mine)} states; failed {failed}")
+    return failed
 
 
 # ------------------------------------------------------------------------------------------------ state outlines
@@ -636,8 +819,9 @@ def merge(raw, oga_dirs=None, shapes=None):
             old_cov = json.load(fh).get("coverage") or {}
     except Exception:                                               # noqa: BLE001
         pass
-    els, have = load_cells(raw)
-    log(f"{len(have)} cells, {len(els)} elements")
+    gf = set()
+    els, have = load_cells(raw, gf)
+    log(f"{len(have)} cells, {len(gf)} Geofabrik states, {len(els)} elements")
     locate = state_locator(shapes if shapes is not None else load_state_shapes())
     new = {}
     for r in build_rows(els, locate):
@@ -646,7 +830,10 @@ def merge(raw, oga_dirs=None, shapes=None):
         cs = state_cells(st)
         n_have = sum(1 for c in cs if c in have)
         cov = {"cells": len(cs), "have": n_have, "complete": n_have == len(cs)}
-        if cov["complete"] or n_have * 2 >= len(cs):
+        if st in gf:
+            rows += new.get(st, [])
+            coverage[st] = dict(cov, have=len(cs), complete=True, source="geofabrik")
+        elif cov["complete"] or n_have * 2 >= len(cs):
             rows += new.get(st, [])
             coverage[st] = dict(cov, source="this run")
             if not cov["complete"]:
@@ -766,7 +953,7 @@ def write_readme(path=README, ready=OUT_READY):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["fetch", "oga", "merge", "readme", "cells"])
+    ap.add_argument("cmd", choices=["fetch", "geofabrik", "oga", "merge", "readme", "cells"])
     ap.add_argument("args", nargs="*")
     ap.add_argument("--out", default="/tmp/natidx")
     ap.add_argument("--oga", default="", help="comma-separated OpenGolfAPI listing dirs, first wins per state")
@@ -778,6 +965,9 @@ def main():
     if a.cmd == "fetch":
         left = fetch(sts, a.out, i, n)
         log("cells missing:", len(left))
+    if a.cmd == "geofabrik":
+        failed = geofabrik(sts, a.out, i, n)
+        log("states failed:", " ".join(failed) or "none")
     if a.cmd == "oga":
         oga(sts, a.out)
     if a.cmd == "merge":

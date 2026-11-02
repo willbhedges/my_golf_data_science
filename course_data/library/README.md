@@ -175,6 +175,15 @@ The cells are dealt over at most 6 jobs (every 6th cell; other builds share the 
 least half its cells is used and listed in `partial_states` until all are in. OpenGolfAPI's state listings (about 16,000 courses; fetched once and reused from a run's `natoga` artifact via `oga_run`, or fresh for
 `oga_states`) mark courses it knows, matched by name + state, or by a shared name stem within 1.5 km.
 
+`"source": "geofabrik"` in the request skips Overpass: each job downloads Geofabrik's daily per-state extracts
+(`download.geofabrik.de/north-america/us/<state>-latest.osm.pbf`, about 10 GB for the US, states dealt over the
+jobs by size), keeps the same objects with `osmium tags-filter` and writes one `s_<ST>.json` per state (same row
+format; bbox centre as Overpass `out center`), which makes the state complete in the merge. Why: Overpass passes 5-7
+slowed to a few hundred courses each because the public mirrors answered 502 / 504 / time-out on most queries even
+for empty quarter-degree tiles, and every failing cell cost up to 4 x 120 s before splitting into four more queries
+(pass 7, job 0: about 30 queries in 95 min). An Overpass pass also no longer re-asks a cell whose quarters are on
+disk from an earlier pass; it goes straight to the missing quarters.
+
 Columnar: `{"fields": [...], "rows": [[...]]}`. Fields: `name, city, state, lat, lon, osm, holes, osm_holes,
 greens, tees, fairways, pins, outline, card, tier, closed`. `city` is `addr:city`, else the nearest city / town /
 village node. `holes` is the outline's `holes` tag, else 18 or 9 from the mapped holes / greens. `osm_holes` counts

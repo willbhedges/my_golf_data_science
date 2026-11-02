@@ -7,7 +7,9 @@ name: national-index
 #   {"states": [] (all 50 + DC) or ["IA", ...], "shards": 6, "budget_min": 95,
 #    "reuse_run": <run id> (seed the cells from that run's artifacts: only missing cells are fetched),
 #    "oga_run": <run id> (OpenGolfAPI listings from that run's natoga artifact),
-#    "oga_states": ["KY", ...] (fetch these listings fresh; 1,000 anonymous calls / day), "rev": n}
+#    "oga_states": ["KY", ...] (fetch these listings fresh; 1,000 anonymous calls / day), "rev": n,
+#    "source": "geofabrik" (the same elements from Geofabrik's per-state extracts + osmium instead of Overpass:
+#                one download per state, states dealt over the jobs by size; default "overpass" = the cells)}
 # At most `shards` (default 6) fetch jobs run at once: other builds share the 20 runners.
 # Output (committed by the merge job): course_data/library/us_courses.json.gz, us_readiness.json and the
 # README counts block. States without enough cells keep their rows from the committed index.
@@ -35,6 +37,7 @@ jobs:
       oga_run: ${{ steps.p.outputs.oga_run }}
       oga_states: ${{ steps.p.outputs.oga_states }}
       budget: ${{ steps.p.outputs.budget }}
+      source: ${{ steps.p.outputs.source }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,7 +58,9 @@ jobs:
           import national_index as ni
           q = json.load(open(sys.argv[1]))
           states = [s.upper() for s in (q.get("states") or ni.STATES)]
-          n = max(1, min(6, int(q.get("shards") or 6), len(ni.cells_for(states))))
+          source = str(q.get("source") or "overpass").lower()
+          units = len(states) if source == "geofabrik" else len(ni.cells_for(states))
+          n = max(1, min(6, int(q.get("shards") or 6), units))
           with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
               fh.write("shards=" + json.dumps(list(range(n))) + "\n")
               fh.write("n=" + str(n) + "\n")
@@ -64,11 +69,13 @@ jobs:
               fh.write("oga_run=" + str(q.get("oga_run") or "") + "\n")
               fh.write("oga_states=" + " ".join(q.get("oga_states") or []) + "\n")
               fh.write("budget=" + str(int(q.get("budget_min") or 95)) + "\n")
-          print(n, "shards,", len(ni.cells_for(states)), "cells")
+              fh.write("source=" + source + "\n")
+          print(source, n, "shards,", len(states), "states,", len(ni.cells_for(states)), "cells")
           EOF
 
   fetch:
     needs: plan
+    if: needs.plan.outputs.source != 'geofabrik'
     runs-on: ubuntu-latest
     timeout-minutes: 140
     strategy:
@@ -121,8 +128,40 @@ jobs:
           path: /tmp/natidx
           if-no-files-found: ignore
 
+  geofabrik:
+    needs: plan
+    if: needs.plan.outputs.source == 'geofabrik'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.shards) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            course_data/library/national_index.py
+            course_data/platform/osm_guard.py
+            course_data/platform/platform_common.py
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq osmium-tool && osmium --version | head -1
+      - name: Geofabrik state extracts
+        run: |
+          python3 -u course_data/library/national_index.py geofabrik ${{ needs.plan.outputs.states }} \
+            --shard ${{ matrix.shard }}/${{ needs.plan.outputs.n }} --out /tmp/natidx || true
+          ls -la /tmp/natidx/cells | head -40
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: natidx-g${{ matrix.shard }}
+          path: /tmp/natidx/cells
+          if-no-files-found: ignore
+
   merge:
-    needs: [plan, fetch]
+    needs: [plan, fetch, geofabrik]
     if: always() && needs.plan.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 60

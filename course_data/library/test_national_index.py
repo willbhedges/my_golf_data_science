@@ -184,3 +184,122 @@ def test_oga_card_and_readme_block(tmp_path, monkeypatch):
     ni.write_readme(str(rd), str(ready))                       # idempotent: the block is replaced, not repeated
     txt = rd.read_text()
     assert txt.count("<!-- NATIONAL_COUNTS -->") == 1 and "tier A" in txt and txt.endswith("y\n")
+
+
+# ------------------------------------------------------------------------------------- Geofabrik state extracts
+def osm_xml(holes=18):
+    """A tiny `osmium tags-filter -f osm` output: a way course with 18 holes / greens / tees / pins, a relation
+    course of two member ways, an unnamed course node (dropped, as the Overpass query drops it), a town."""
+    nodes, ways = [], []
+    nid = [100]
+
+    def node(lat, lon, tags=None):
+        nid[0] += 1
+        t = "".join(f'<tag k="{k}" v="{v}"/>' for k, v in (tags or {}).items())
+        nodes.append(f'<node id="{nid[0]}" version="1" lat="{lat}" lon="{lon}">{t}</node>')
+        return nid[0]
+
+    def way(wid, pts, tags=None):
+        refs = [node(a, b) for a, b in pts]
+        t = "".join(f'<tag k="{k}" v="{v}"/>' for k, v in (tags or {}).items())
+        ways.append(f'<way id="{wid}" version="1">' + "".join(f'<nd ref="{r}"/>' for r in refs) + t + "</way>")
+    way(10, [(40.0, -91.1), (40.1, -91.1), (40.1, -91.0), (40.0, -91.0), (40.0, -91.1)],
+        {"leisure": "golf_course", "name": "Test Hollow Golf Course", "addr:city": "Testville"})
+    for h in range(1, holes + 1):
+        lat, lon = 40.0 + h * 0.005, -91.05
+        way(1000 + h, [(lat - 0.001, lon), (lat + 0.001, lon)], {"golf": "hole", "ref": str(h)})
+        way(2000 + h, [(lat, lon + 0.0009), (lat, lon + 0.0011), (lat + 0.0002, lon + 0.001)], {"golf": "green"})
+        node(lat, lon - 0.001, {"golf": "tee"})
+        node(lat, lon + 0.001, {"golf": "pin"})
+    way(50, [(41.0, -92.0), (41.1, -92.0)])                              # relation members (untagged)
+    way(51, [(41.1, -91.8), (41.2, -91.9)])
+    node(40.3, -91.3, {"leisure": "golf_course"})                         # unnamed node course: dropped
+    node(40.31, -91.31, {"leisure": "golf_course", "name": "Node Only Golf Club"})
+    node(40.06, -91.2, {"place": "town", "name": "Testville"})
+    node(40.07, -91.2, {"place": "hamlet", "name": "Tiny"})                # not a city / town / village
+    rel = ('<relation id="70" version="1"><member type="way" ref="50" role="outer"/>'
+           '<member type="way" ref="51" role="outer"/><member type="way" ref="999" role="outer"/>'
+           '<tag k="leisure" v="golf_course"/><tag k="name" v="Relation Links"/><tag k="type" v="multipolygon"/>'
+           '</relation>')
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n<osm version="0.6" generator="osmium">'
+            + "".join(nodes) + "".join(ways) + rel + "</osm>")
+
+
+def test_osm_xml_rows_match_overpass_rows(tmp_path):
+    p = tmp_path / "f.osm"
+    p.write_text(osm_xml())
+    rows = ni.osm_xml_rows(str(p))
+    by = {(r["t"], r["id"]): r for r in rows}
+    assert by[("w", 10)]["bb"] == [40.0, -91.1, 40.1, -91.0]
+    assert (by[("w", 10)]["lat"], by[("w", 10)]["lon"]) == (40.05, -91.05)       # bbox centre, as `out center`
+    assert by[("r", 70)]["bb"] == [41.0, -92.0, 41.2, -91.8]                     # union of the member ways found
+    assert "bb" not in by[("w", 1001)] and by[("w", 1001)]["g"] == {"golf": "hole", "ref": "1"}
+    names = {r["g"].get("name") for r in rows if r["g"].get("leisure")}
+    assert names == {"Test Hollow Golf Course", "Node Only Golf Club", "Relation Links"}
+    assert not any(r["g"].get("place") == "hamlet" for r in rows)
+    assert not any(r["t"] == "w" and r["id"] in (50, 51) for r in rows)        # untagged members are not rows
+    out = ni.build_rows(rows, ia)
+    t = {r["name"]: r for r in out}["Test Hollow Golf Course"]
+    assert (t["osm_holes"], t["greens"], t["tees"], t["pins"], t["outline"]) == (18, 18, 18, 18, 1)
+    assert ni.tier(t) == "B"
+
+
+def test_geofabrik_state_file_completes_the_state(tmp_path, monkeypatch):
+    monkeypatch.setattr(ni, "STATES", ["IA", "MO"])
+    got = []
+
+    def download(url, path):
+        got.append(url)
+        if "missouri" in url:
+            raise OSError("404")
+        open(path, "w").write("pbf")
+
+    def tags_filter(pbf, osm):
+        open(osm, "w").write(osm_xml())
+    left = ni.geofabrik(["IA", "MO"], str(tmp_path / "raw"), download=download, tags_filter=tags_filter,
+                        sleep=lambda s: None)
+    assert left == ["MO"]
+    assert "https://download.geofabrik.de/north-america/us/iowa-latest.osm.pbf" in got
+    assert (tmp_path / "raw" / "cells" / "s_IA.json").exists()
+    assert not list((tmp_path / "raw").rglob("*.pbf")) and not list((tmp_path / "raw").rglob("*.osm"))
+    n = len(got)
+    ni.geofabrik(["IA"], str(tmp_path / "raw"), download=download, tags_filter=tags_filter, sleep=lambda s: None)
+    assert len(got) == n                                       # a state already on disk is not downloaded again
+    sts = set()
+    els, have = ni.load_cells(str(tmp_path / "raw"), sts)
+    assert sts == {"IA"} and not have
+    for f in ("OUT_GZ", "OUT_READY", "LIB_INDEX"):
+        monkeypatch.setattr(ni, f, str(tmp_path / f))
+    monkeypatch.setattr(ni, "state_locator", lambda shapes: ia)
+    rows = ni.merge(str(tmp_path / "raw"), [], shapes={})
+    assert any(r["name"] == "Test Hollow Golf Course" for r in rows)
+    ready = json.load(open(tmp_path / "OUT_READY"))
+    assert ready["coverage"]["IA"]["complete"] and ready["coverage"]["IA"]["source"] == "geofabrik"
+    assert "IA" not in ready["partial_states"] and "MO" in ready["missing_states"]
+
+
+def test_geofabrik_names_and_shards():
+    assert ni.geofabrik_url("DC").endswith("/us/district-of-columbia-latest.osm.pbf")
+    assert ni.geofabrik_url("NY").endswith("/us/new-york-latest.osm.pbf")
+    shards = [ni.shard_states(ni.STATES, i, 6) for i in range(6)]
+    assert sorted(s for sh in shards for s in sh) == sorted(ni.STATES)
+    load = [sum(ni.GEOFABRIK_MB.get(s, 100) for s in sh) for sh in shards]
+    assert max(load) < 1.6 * min(load)                         # balanced by download size, not state count
+    assert "CA" in shards[0]                                   # biggest first
+
+
+def test_fetch_goes_straight_to_quarters_when_some_are_on_disk(tmp_path, monkeypatch):
+    monkeypatch.setitem(ni.STATE_BBOX, "IA", (40.2, -91.8, 40.8, -91.2))     # one 1-degree cell
+    d = tmp_path / "cells"
+    d.mkdir()
+    q0 = ni.split4((40.0, -92.0, 41.0, -91.0))[0]
+    (d / ni.cell_name(q0)).write_text(json.dumps({"cell": list(q0), "elements": []}))
+    calls = []
+
+    def post(url, q, timeout):
+        calls.append(q)
+        return {"elements": []}
+    left = ni.fetch(["IA"], str(tmp_path), budget_min=5, mirrors=FakeMirrors(post), sleep=lambda s: None)
+    assert left == [] and len(calls) == 3                      # the three missing quarters, not the parent again
+    assert not any("(40.0000,-92.0000,41.0000,-91.0000)" in q for q in calls)
+    assert (d / ni.cell_name((40.0, -92.0, 41.0, -91.0))).exists()
