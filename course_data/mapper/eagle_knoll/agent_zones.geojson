@@ -1,0 +1,241 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "slug": "eagle_knoll",
+  "mapper": "mapper-eagle_knoll-2",
+  "made": "2026-11-02T06:49:26Z",
+  "corridor_set": "Back",
+  "base_package": "course_data/mapper/eagle_knoll/base/package.json",
+  "base_built": "2026-11-02T02:35:28Z",
+  "minutes": 45,
+  "edits_sha": "d441b4120a3b187c",
+  "schema": "agent_zones/1",
+  "reviewed": {
+   "1": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "dogleg left; no native (no lidar 0.5-2.5 m speckle, smooth mown rough both years); auto trees match lidar and crowns"
+   },
+   "3": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "tree edges match lidar/photo; water short of landing (120-160) left as auto; no native"
+   },
+   "4": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "left tan band near trees in 2020 is green/smooth in 2022: dormant rough, not native; trees match lidar"
+   },
+   "5": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "tree corridor both sides matches lidar and crowns within ~2-3 yds"
+   },
+   "7": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "right tree edge at +18..+22 matches auto; OSM fairway right edge may be ~5 yds wide (2020 mowing line ~+10), not changed"
+   },
+   "8": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "tan striped field left (x<-40, 250-380) in 2020 is green in 2022 and beyond cart path: mown/hay, not native"
+   },
+   "9": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "tan/bare areas far right (2020) and far left are green in 2022; trees match lidar"
+   },
+   "10": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "tree lines both sides match lidar canopy"
+   },
+   "11": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "trees match lidar; fairway beyond 280 ambiguous (dog-leg right), left auto"
+   },
+   "13": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "single crown at (-27,145) in auto; tan right side in 2020 green in 2022 (dormant rough)"
+   },
+   "14": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "pond edge in CIR matches auto water within ~2 yds (near edge ~208 on line, far ~245); trees match"
+   },
+   "15": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "fairway right edge ~+27 vs auto +30 (<5 yds); tree edge ~+40 vs auto +37; no change"
+   },
+   "17": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "creek band crossing 240-290 kept: darker vegetated channel visible in 2022 photo and CIR, DEM slope break; trees match lidar"
+   },
+   "18": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "auto OB band reaches x -25 at 200-240 over open course rough; houses only at x < -70 (roofs at left edge both years), no fence visible: erased OB inside x > -55"
+   }
+  },
+  "uncertain": [
+   {
+    "hole": "9",
+    "what": "Eagle tee (walkback) not on any visible box"
+   },
+   {
+    "hole": "18",
+    "what": "Eagle tee (no box) and the exact OB lot line on the left (kept OB only x < -55; true lot line may be -60..-50)"
+   },
+   {
+    "hole": "7",
+    "what": "Forward tee walkback position; OSM fairway right edge possibly ~5 yds wide at 180-300"
+   },
+   {
+    "hole": "17",
+    "what": "creek crossing 240-290: water visible only as a dark vegetated channel; width of the auto band (~6-8 yds) may be generous"
+   },
+   {
+    "hole": "11",
+    "what": "fairway shape beyond 280 (dog-leg right) unclear on the photo"
+   },
+   {
+    "hole": "all",
+    "what": "no native/long grass marked anywhere: none passed the two-year texture test (tan areas in 2020 are green and smooth in 2022)"
+   }
+  ],
+  "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "18",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "18.0",
+    "area_yd2": 15400,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "medium",
+    "evidence": "NAIP 2022 and 2020: continuous mown rough from the fairway to x~-68; house roofs only at x<-70 (overview: houses at -90..-70); no fence or structure inside -55; OB line kept at the back-yard zone x<-55"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -92.2605455,
+       38.6974881
+      ],
+      [
+       -92.2587722,
+       38.6956464
+      ],
+      [
+       -92.2592339,
+       38.6953734
+      ],
+      [
+       -92.2610072,
+       38.6972151
+      ],
+      [
+       -92.2605455,
+       38.6974881
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
