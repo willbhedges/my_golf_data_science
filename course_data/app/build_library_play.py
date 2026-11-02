@@ -7,7 +7,9 @@ small JSON file, out/lib/<slug>.json, that the app fetches by relative URL when 
   a per-hole wind table (pick, aim, landing distance and drift at 0 / 10 / 20 mph from 8 directions relative to
   the tee line, from the page's own grids at the middle grid temperature, with the page's calm-pick rule), the
   qa.json PASS / CHECK result per hole, the tee / green coordinates (for the shared confirm), and small hole
-  images (JPEG, 300 px wide, quality 45).
+  images (JPEG, 300 px wide, quality 45), and the golfer native-grass check cards (`checks`, from
+  course_data/library/<slug>/native.json: course_page.py native, product/native_confirm.py) with each answer's
+  plan precomputed as the hole's wind table.
 
   python3 course_data/app/build_library_play.py [--out course_data/app/out/lib] [--only slug,...]
 Returns (from build()) {slug: {"file": "lib/<slug>.json", "bytes": n, "check_holes": [...], "holes": n}}.
@@ -70,12 +72,13 @@ def cell_vals(g, sp, d):
     return {c: tuple((1 - w) * A[c][i] + w * B[c][i] for i in (0, 1, 5, 4, 7)) for c in A}
 
 
-def tee_table(h, temps, clubs):
+def tee_table(h, temps, clubs, calm=None):
+    """calm: {pick, aim} in place of the page's calm-day plan (a golfer answer's re-plan, native_cards)"""
     G = h["grids"]["0"]
     T = str(int(temps[1])) if str(int(temps[1])) in G else str(temps[1]) if str(temps[1]) in G else list(G)[len(G) // 2]
     g = G[T]
     elev = (h.get("elev") or {}).get("clubs") or {}
-    calm = h.get("calm") or {}
+    calm = calm or h.get("calm") or {}
     q0 = cell_vals(g, 0, 0)
     quick0 = min((c for c in q0 if not HYPO.search(c)), key=lambda c: q0[c][1])
 
@@ -219,12 +222,121 @@ def review_of(slug):
     return dict(safe=bool(verdict), why=why or "", holes=bad)
 
 
+# ----------------------------------------------------------------------------- native-grass check cards
+NATIVE_Q = "Native grass along this hole's landing area?"
+NATIVE_LABELS = {"L": "Left", "R": "Right", "both": "Both", "none": "None"}
+NATIVE_AIM_TOL = 10.0                   # yds: native_confirm.AIM_TOL (an aim move beyond this is a plan change)
+
+
+def _aim_words(a):
+    a = float(a)
+    return "on the line" if abs(a) < 1.5 else f"{abs(a):.0f} yds {'right' if a > 0 else 'left'}"
+
+
+def _NC():
+    p = os.path.join(CD, "product")
+    if p not in sys.path:
+        sys.path.insert(0, p)
+    import native_confirm
+    return native_confirm
+
+
+def native_band(item, tee_ll, bearing):
+    """The "yes" band of each side (native_confirm.band_rects of "both": the plain 10-yd band the plan assumed) as
+    polygons in the page hole's tee-line yards [[along, lateral], ...] (lateral + = right), from the mapper's corridor
+    frame through lon / lat onto the page's tee and bearing. {L: [poly, ...], R: [...]}"""
+    NC = _NC()
+    rects = NC.band_rects(item["geom"], "both")
+    fj = {"frame": item["frame"]}
+    lat0 = math.radians(tee_ll[1])
+    b = math.radians(bearing)
+    fx, fy, rx, ry = math.sin(b), math.cos(b), math.cos(b), -math.sin(b)
+    out = {}
+    for side in ("L", "R"):
+        rs = sorted(rects.get(side) or [])
+        runs, cur = [], []
+        for r in rs:                                    # contiguous slices -> one outline (inner edge, outer back)
+            if cur and abs(cur[-1][1] - r[0]) > 1e-6:
+                runs.append(cur)
+                cur = []
+            cur.append(r)
+        if cur:
+            runs.append(cur)
+        polys = []
+        for run in runs:
+            pts = [(r[2], r[0]) for r in run] + [(run[-1][2], run[-1][1])] + [(run[-1][3], run[-1][1])] + \
+                  [(r[3], r[0]) for r in reversed(run)]
+            ll = NC.M.xy_to_ll(fj, pts)
+            poly = []
+            for lon, lat in ll:
+                e = (lon - tee_ll[0]) * 111320.0 * math.cos(lat0) / 0.9144
+                n = (lat - tee_ll[1]) * 110574.0 / 0.9144
+                poly.append([round(e * fx + n * fy, 1), round(e * rx + n * ry, 1)])
+            polys.append(poly)
+        out[side] = polys
+    return out
+
+
+def native_cards(slug, by_set, V_of, temps, clubs):
+    """course_data/library/<slug>/native.json -> check cards (the app's check-card shape, type "native"): question,
+    the four answers with their outcome on this page (the page's calm-day plan when the native planner keeps its plan;
+    else the re-plan, with its own wind table from the page's grids), the band drawn per side."""
+    r = rj(os.path.join(LIBDIR, slug, "native.json"))
+    if not r or not r.get("items") or r.get("tee_set") not in by_set:
+        return []
+    S = r["tee_set"]
+    cards = []
+    for it in r["items"][:_NC().CAP]:
+        h = next((x for x in by_set[S] if str(x["key"]) == str(it["hole"]) and x.get("kind") == "tee"), None)
+        V = V_of.get((S, str(it["hole"])))
+        if not h or not V:
+            continue
+        calm = h.get("calm") or {}
+        cp, ca = calm.get("pick"), calm.get("aim")
+        opts = []
+        for o in it.get("options") or []:
+            oc = o.get("outcome") or {}
+            pick, aim = oc.get("pick"), oc.get("aim")
+            moved = (oc.get("club_changed") or abs(float(oc.get("aim_shift") or 0)) > NATIVE_AIM_TOL)
+            out = None
+            if moved and pick in clubs and cp is not None and ca is not None:
+                a = float(ca) + float(oc.get("aim_shift") or 0) if pick == cp else float(aim)
+                if pick != cp or abs(a - float(ca)) > NATIVE_AIM_TOL:
+                    out = dict(pick=pick, aim=r1(a), club_changed=pick != cp, aim_shift=r1(a - float(ca)),
+                               wind=tee_table(h, temps, clubs, calm=dict(pick=pick, aim=a)))
+            txt = (f"Re-planned: {pick}, aim {_aim_words(out['aim'])} on a calm day (now {cp}, aim {_aim_words(ca)})."
+                   if out else "No change to the plan.")
+            opts.append(dict(answer=o["answer"], label=NATIVE_LABELS.get(o["answer"], o.get("label")), text=txt,
+                             outcome=out))
+        card = dict(id=it["id"], hole=int(it["hole"]) if str(it["hole"]).isdigit() else it["hole"], severity="red",
+                    type="native", question=NATIVE_Q,
+                    detail="Tall, unmown grass you would hack out of, beside the fairway where tee shots land. "
+                           "Your answer re-plans this hole's tee shot.",
+                    options=opts, tee_set=S, prior=it.get("prior"))
+        if V.get("tee_ll") and it.get("geom") and it.get("frame"):
+            try:
+                card["band"] = native_band(it, V["tee_ll"], V["bearing"])
+            except Exception:                           # noqa: BLE001
+                pass
+        cards.append(card)
+    return cards
+
+
+def rj(p, d=None):
+    try:
+        with open(p) as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return d
+
+
 def inputs_sig(slug, page):
     """what a record is built from (the page, review.json, qa.json, config.json, this builder), by content: git checkouts
     reset mtimes, so a cached record is reused only when this matches its `inputs`"""
     h = hashlib.md5()
     for f in (page, os.path.join(LIBDIR, slug, "review.json"), os.path.join(LIBDIR, slug, "qa.json"),
-              os.path.join(LIBDIR, slug, "config.json"), os.path.abspath(__file__)):
+              os.path.join(LIBDIR, slug, "config.json"), os.path.join(LIBDIR, slug, "native.json"),
+              os.path.abspath(__file__)):
         h.update(f.encode())
         if os.path.exists(f):
             h.update(open(f, "rb").read())
@@ -275,6 +387,7 @@ def build_one(slug, idx_row, out_dir):
     for s, w in (cfg.get("alt_bases") or {}).items():
         which_of[w] = s
     qa = qa_holes(slug, which_of)
+    V_of = {}
     for key in keys:
         rec = None
         for s in sets:
@@ -323,6 +436,7 @@ def build_one(slug, idx_row, out_dir):
             if q:
                 V["qa"] = q
             rec["sets"][s] = V
+            V_of[(s, str(key))] = V
         if rec:
             holes.append(rec)
     holes.sort(key=lambda r: r["no"])
@@ -341,6 +455,13 @@ def build_one(slug, idx_row, out_dir):
                card_sets=[[t.get("name"), t.get("yards"), t.get("on_page")] for t in (idx_row.get("tee_sets") or [])],
                clubs=clubs, speeds=SPEEDS, dirs=DIRS8, imagery=D.get("imagery"),
                foot=D.get("foot_extra", ""), review=review_of(slug), inputs=inputs_sig(slug, page), images=images, holes=holes)
+    try:
+        checks = native_cards(slug, by_set, V_of, D["temps"], clubs)
+    except Exception as e:                              # noqa: BLE001  (a page without its questions, never no page)
+        print(f"  lib {slug}: native cards FAILED {e!r}", file=sys.stderr)
+        checks = []
+    if checks:
+        rec["checks"] = checks
     os.makedirs(out_dir, exist_ok=True)
     fn = os.path.join(out_dir, f"{slug}.json")
     with open(fn, "w") as fh:

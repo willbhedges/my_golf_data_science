@@ -102,6 +102,14 @@ jobs:
           python3 course_data/library/course_page.py prepare "${{ inputs.req }}" $IM || \
             python3 course_data/library/course_page.py prepare "${{ inputs.req }}"
           du -sh "$OUT" "$OUT"/* || true
+      # golfer native-grass taps for the library page (request "agent_layers" + the mapper's frames / edits / zones):
+      # the error-budget planner on every answer state, here because the DEM and lidar canopy it reads are on disk;
+      # eagle_bend: 14 framed holes, 59 decisions, about 1 min on 4 cores. Never fails the build (native.json notes why)
+      - name: Native-grass questions (library check cards)
+        if: steps.pkg.outputs.ok == '1'
+        continue-on-error: true
+        timeout-minutes: 20
+        run: python3 course_data/library/course_page.py native "${{ inputs.req }}"
       - name: Keep the vision layer + OB evidence (small) with the course data
         if: steps.pkg.outputs.ok == '1'
         run: |
@@ -213,7 +221,8 @@ jobs:
           # never the course modules, hole pictures, wind grids or rasters
           for f in config.json package_request.json package.json package_qa.md package_confirm.json \
                    weather.json sharp.json page.html qa_report.md qa.json status.json raw/course.json raw/summary.json \
-                   raw/scorecard_web.json evidence/vision_any.geojson evidence/ob_sources.json evidence/vision_raw_meta.json; do
+                   raw/scorecard_web.json evidence/vision_any.geojson evidence/ob_sources.json evidence/vision_raw_meta.json \
+                   native.json; do
             [ -f "$OUT/$f" ] && git add -f "$OUT/$f"
           done
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi

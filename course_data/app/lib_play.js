@@ -50,15 +50,28 @@ function lpCorners(L, W, V){
   const ix = (s, d) => s === 0 ? 0 : 1 + (s - 1) * 8 + d;
   return {rel, mph, cs: [[ix(si, d0), (1 - ws) * (1 - wd)], [ix(si, d1), (1 - ws) * wd], [ix(si + 1, d0), ws * (1 - wd)], [ix(si + 1, d1), ws * wd]]};
 }
+/* golfer check cards of a library course (native grass along the landing area: build_library_play.native_cards);
+   answers live in st.answers["lib:<slug>"] on this device, like an app course's pre-round check */
+const lpAK = L => "lib:" + L.id;
+function lpCards(L, H){ return (L.checks || []).filter(c => String(c.hole) === String(H.ref)); }
+/* the answered card whose outcome re-plans this hole on this set: {card, o} or null */
+function lpNat(L, H, setName){
+  const A = st.answers[lpAK(L)] || {};
+  for (const card of lpCards(L, H)) { const a = A[card.id]; if (!a || card.tee_set !== setName) continue;
+    const o = card.options.find(x => x.answer === a); if (o) return {card, o}; }
+  return null;
+}
 function lpSolve(L, H, W){
   const [setName, V] = lpV(L, H), k = lpCorners(L, W, V);
   if (V.kind === "tee") {
-    const wt = {}; for (const [i, w] of k.cs) { const c = V.wind[i][0]; wt[c] = (wt[c] || 0) + w; }
+    const nat = lpNat(L, H, setName), tab = nat && nat.o.outcome && nat.o.outcome.wind || V.wind;
+    const wt = {}; for (const [i, w] of k.cs) { const c = tab[i][0]; wt[c] = (wt[c] || 0) + w; }
     const pc = +Object.keys(wt).sort((a, b) => wt[b] - wt[a])[0];
     let aim = 0, tot = 0, dr = 0, ww = 0;
-    for (const [i, w] of k.cs) { const e = V.wind[i]; if (e[0] !== pc || w <= 0) continue; aim += w * e[1]; tot += w * e[2]; dr += w * e[3]; ww += w; }
-    if (!ww) { const e = V.wind[k.cs[0][0]]; aim = e[1]; tot = e[2]; dr = e[3]; ww = 1; }
-    return {setName, V, rel: k.rel, kind: "tee", club: L.clubs[pc], aim: aim / ww, total: tot / ww, drift: dr / ww, split: wt[pc] < 0.75};
+    for (const [i, w] of k.cs) { const e = tab[i]; if (e[0] !== pc || w <= 0) continue; aim += w * e[1]; tot += w * e[2]; dr += w * e[3]; ww += w; }
+    if (!ww) { const e = tab[k.cs[0][0]]; aim = e[1]; tot = e[2]; dr = e[3]; ww = 1; }
+    return {setName, V, rel: k.rel, kind: "tee", club: L.clubs[pc], aim: aim / ww, total: tot / ww, drift: dr / ww, split: wt[pc] < 0.75,
+            nat, replanned: !!(nat && nat.o.outcome && nat.o.outcome.wind)};
   }
   let plays = 0; for (const [i, w] of k.cs) plays += w * V.plays[i];
   const box = V.boxes[String(windMod(W.mph))] || V.boxes["0"];
@@ -94,6 +107,11 @@ function lpDraw(L, H, r, W){
   const V = r.V, img = L.images[V.img], P = (a, l) => [V.tee[0] + (a * V.f[0] + l * V.r[0]) * V.ppy, V.tee[1] + (a * V.f[1] + l * V.r[1]) * V.ppy];
   const f1 = p => p[0].toFixed(1) + "," + p[1].toFixed(1);
   let g = `<image href="${img}" x="0" y="0" width="${V.w}" height="${V.h}"/>`, vb = [0, 0, V.w, V.h];
+  if (r.kind === "tee" && r.nat && r.nat.card.band) {         /* the native the answer says is there, as the plan assumed it */
+    const a = r.nat.o.answer, sides = a === "both" ? ["L", "R"] : a === "L" || a === "R" ? [a] : [];
+    for (const sd of sides) for (const poly of r.nat.card.band[sd] || [])
+      g += `<polygon data-native="${sd}" points="${poly.map(([al, l]) => f1(P(al, l))).join(" ")}" fill="rgba(255,210,63,.24)" stroke="rgba(255,210,63,.8)" stroke-width="${V.w / 300}"/>`;
+  }
   if (r.kind === "tee") {
     const tee = P(0, 0), aim = P(r.total, r.aim), land = P(r.total, r.aim + r.drift), sw = V.w / 300;
     const ell = []; for (let k = 0; k < 36; k++) { const a = k / 36 * 2 * Math.PI; ell.push(f1(P(r.total + Math.sin(a) * 14, r.aim + r.drift + Math.cos(a) * 30))); }
@@ -123,7 +141,7 @@ function renderLib(){
   const W = lpWind(L, H), r = lpSolve(L, H, W), V = r.V, src = lpSrc(L), ans = lpAnswers(slug), a = ans.by[String(H.no)];
   const qa = V.qa || ["", []], chk = (L.check_holes || []).includes(PN) || qa[0] === "CHECK";
   const play = r.kind === "tee"
-    ? `<div class="spread"><span class="label">Tee shot</span><span class="sub">${r.split ? "close call in this wind" : ""}</span></div><div class="playrow" id="lpPlay"><span class="play ${cls(r.club)}">${esc(r.club)}</span><span class="sub" style="padding-bottom:5px">aim ${yds(r.aim)}</span></div><div class="sub">Finishes about ${Math.round(r.total)} yds out${Math.abs(r.drift) > 2 ? `, the wind moves it ${Math.abs(r.drift).toFixed(0)} yds ${r.drift < 0 ? "left" : "right"}` : ""}${V.green_al ? ` · ${Math.round(Math.hypot(V.green_al[0] - r.total, V.green_al[1] - r.aim - r.drift))} yds left to the green` : ""}. Calm day: ${esc(V.calm.pick || "")}${V.calm.aim != null ? `, aim ${yds(V.calm.aim)}` : ""}.</div>`
+    ? `<div class="spread"><span class="label">Tee shot</span><span class="sub">${r.split ? "close call in this wind" : ""}</span></div><div class="playrow" id="lpPlay"><span class="play ${cls(r.club)}">${esc(r.club)}</span><span class="sub" style="padding-bottom:5px">aim ${yds(r.aim)}</span></div><div class="sub">Finishes about ${Math.round(r.total)} yds out${Math.abs(r.drift) > 2 ? `, the wind moves it ${Math.abs(r.drift).toFixed(0)} yds ${r.drift < 0 ? "left" : "right"}` : ""}${V.green_al ? ` · ${Math.round(Math.hypot(V.green_al[0] - r.total, V.green_al[1] - r.aim - r.drift))} yds left to the green` : ""}. Calm day: ${esc(V.calm.pick || "")}${V.calm.aim != null ? `, aim ${yds(V.calm.aim)}` : ""}.</div>${r.replanned ? `<div class="sub" id="lpReplan"><b>Re-planned from your answer</b> (native grass: ${esc(r.nat.o.label)}): calm day ${esc(r.nat.o.outcome.pick)}, aim ${yds(r.nat.o.outcome.aim)}.</div>` : ""}`
     : `<div class="spread"><span class="label">Par 3</span></div><div class="playrow" id="lpPlay"><span class="play">${Math.round(r.play)} yds</span><span class="sub" style="padding-bottom:5px">plays like</span></div><div class="sub">Card ${V.yds} yds to the centre (${V.center}); target box ${r.box.lo}–${r.box.hi} yds. ${esc(V.short || "")}</div>`;
   const conf = RT ? `<section class="conf ${chk ? "check" : "auto"}" id="lpQa"><div class="row">${chk ? badge("check") : `<span class="badge auto">PASS</span>`}<b>${chk ? "Auto-map CHECK: look before you trust this hole" : "Passed the picture checks"}</b></div>${qa[1].length ? qa[1].map(x => `<div class="sub">${esc(x)}</div>`).join("") : ""}</section>${lpRouteBox(L, RT, lv)}`
     : `<section class="conf ${chk ? "check" : "auto"}" id="lpQa"><div class="row">${chk ? badge("check") : `<span class="badge auto">PASS</span>`}<b>${chk ? "Auto-map CHECK: look before you trust this hole" : "Passed the picture checks"}</b></div>
@@ -146,6 +164,7 @@ function renderLib(){
     ${lpDraw(L, H, r, W)}
     <section class="panel stack">${play}<div class="cond"><span>${cond}</span><span class="windico">${windIcon(r.rel, W.mph)}${esc(relTxt)}</span></div>
       ${W.mph > 20 ? `<p class="sub">Picks use the 20 mph table: stronger wind plays even more so.</p>` : ""}</section>
+    ${lpCards(L, lv.plan).length ? `<section class="stack" id="lpChecks">${lpCards(L, lv.plan).map(c => checkCard({id: lpAK(L)}, c, {img: false, set: r.setName})).join("")}</section>` : ""}
     ${conf}
     ${reportBox(FC, {no: H.no}, null)}
     <section class="panel stack"><div class="label">Wind &amp; tee time</div>
@@ -169,6 +188,8 @@ function lpClick(b){
   if (d.lpset) { lp.set[slug] = d.lpset; return true; }
   if (d.lpsrc) { if (d.lpsrc === "custom") { const W = lpWind(L, H); lp.custom = {from: Math.round(W.from / 5) * 5 % 360, mph: Math.round(W.mph), temp: Math.round(W.temp || 65)}; } lp.src[slug] = d.lpsrc; return true; }
   if (d.lpyes || d.lpno) { lpAnswer(L, H, !!d.lpyes); return true; }
+  if (d.card && d.ans) { const A = st.answers[lpAK(L)] = st.answers[lpAK(L)] || {};
+    if (A[d.card] === d.ans) delete A[d.card]; else A[d.card] = d.ans; save(); return true; }
   const FC = {id: slug}, k = slug + "|" + H.no;
   if (d.rkind) { st.rdraft = ($("rText") || {}).value || st.rdraft || ""; st.rkind = d.rkind; return true; }
   if (d.report === "open") { st.report = k; st.rmsg = null; return true; }

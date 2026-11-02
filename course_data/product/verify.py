@@ -922,17 +922,18 @@ def native_review_items(pkg, frames, pri, decider, cap=None):
     return items
 
 
-def native_for(pkg, slug, tee_set, n=4000, workers=1, cap=None):
+def native_for(pkg, slug, tee_set, n=4000, workers=1, cap=None, mapper_dir=None, cache_path=None):
     """The native questions for a package from its mapper layers (course_data/mapper/<slug>/frames.json, edits.json,
-    agent_zones.geojson). -> (items, note). No mapper frames -> ([], why)."""
-    mdir = os.path.join(CD, "mapper", slug)
+    agent_zones.geojson; mapper_dir: another folder). -> (items, note). No mapper frames -> ([], why).
+    cache_path: the planner's decision cache file (default platform/error_budget_cache.json)."""
+    mdir = mapper_dir or os.path.join(CD, "mapper", slug)
     if not os.path.exists(os.path.join(mdir, "frames.json")):
         return [], f"no course_data/mapper/{slug}/frames.json"
     import native_confirm as NC
     M = NC.M
-    frames = M.frames(slug)
+    frames = M.rj(os.path.join(mdir, "frames.json"))["holes"]
     pri = NC.priors(M.rj(os.path.join(mdir, "edits.json")), M.rj(os.path.join(mdir, "agent_zones.geojson")), frames, pkg)
-    D = NC.EBDecider(tee_set, n=n, workers=workers)
+    D = NC.EBDecider(tee_set, n=n, workers=workers, cache_path=cache_path)
     items = native_review_items(pkg, frames, pri, D, cap=cap)
     return items, f"{len(items)} asked of {len(frames)} framed holes"
 

@@ -395,6 +395,17 @@ show "Reviewed: not safe yet — <why>" or "Reviewed OK — <why>", and a hole t
 The verdict is read, in order, from: a closed course, `publish` / `publish_as_is` / `summary.publish` (or the summary's
 "safe to publish" sentence), swapped nines (`renumber`), then the per-hole verdicts (any wrong routing / par / missing
 hole, or 3+ wrong tees or picks = not safe).
+Native-grass check cards (`checks`, only when `course_data/library/<slug>/native.json` has questions: the course-page
+request has `"agent_layers"` and the mapper's frames.json + edits.json + agent_zones.geojson, `course_page.py native`
+in the package job, product/native_confirm.py via `verify.native_for`, at most 4 holes per course): the app's check-card
+shape `{id: "native_<ref>", hole, severity: "red", type: "native", question: "Native grass along this hole's landing
+area?", detail, tee_set, prior {L, R}, options: [{answer: L|R|both|none, label: Left|Right|Both|None, text, outcome}],
+band {L: [[[along, lateral], ...]], R: [...]}}`. `outcome` is null when the answer keeps the page's plan ("No change to
+the plan."), else `{pick, aim, club_changed, aim_shift, wind[17]}`: the re-plan (the native planner's club; its aim
+shift on the page's calm aim when the club is the same) with its own wind table from the page's grids and calm-pick
+rule. `band`: the plain 10-yd native band the plan assumes on a "yes" side, in the `tee_set` hole's tee-line yards.
+The hole screen shows the card (checkCard) under the plan; an answer (this device: `st.answers["lib:<slug>"]`) on the
+card's `tee_set` swaps in that answer's wind table (club, aim, strip) and draws the band on the picture.
 Publishing: every record goes in `files` as `lib/<slug>.json` -> `course_data/app/out/lib/<slug>.json`; without them a
 library course shows "Could not load this course's data" with a retry. Test: `test_lib_play.js` (serves out/ over http).
 

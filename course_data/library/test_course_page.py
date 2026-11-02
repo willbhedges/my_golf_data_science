@@ -89,3 +89,36 @@ def test_requested_set_matches_one_part_of_a_slash_name():
     assert bases == ["Black/Blue", "Silver"]
     assert cp.choose_bases(pkg, ["Black/Blue", "Silver"])[0] == ["Black/Blue", "Silver"]
     assert cp.choose_bases(pkg, ["Silver"])[0] == ["Silver", "Web"]        # unchanged without a slash match
+
+
+def test_native_source_needs_agent_layers_and_the_three_mapper_files(tmp_path):
+    q = _q(tmp_path)
+    assert cp.native_source(q) == (None, "no agent_layers in the request")
+    m = tmp_path / "mapper_zz"
+    m.mkdir()
+    q["agent_layers"] = str(m)
+    path, why = cp.native_source(q)
+    assert path is None and "frames.json" in why and "agent_zones.geojson" in why
+    for f in cp.NATIVE_FILES:
+        (m / f).write_text("{}")
+    assert cp.native_source(q) == (str(m), None)
+    q["native"] = False
+    assert cp.native_source(q)[0] is None
+    # the committed mapper outputs of eagle_bend (round 4) qualify, by repo-relative path
+    assert cp.native_source(dict(agent_layers="course_data/mapper/eagle_bend/"))[0]
+
+
+def test_native_stage_never_fails_the_build(tmp_path):
+    q = _q(tmp_path)
+    os.makedirs(q["out"])
+    r = cp.native(q)                                    # no agent_layers: noted, no items
+    assert r["items"] == [] and r["note"].startswith("not asked")
+    m = tmp_path / "mapper_zz"
+    m.mkdir()
+    for f in cp.NATIVE_FILES:
+        (m / f).write_text("{}")
+    q["agent_layers"] = str(m)
+    r = cp.native(q)                                    # no package / config yet: skipped, recorded
+    assert r["items"] == [] and r["note"].startswith("skipped")
+    assert json.load(open(tmp_path / "zz_test" / "native.json"))["schema"] == "lib_native/1"
+    assert cp.native_summary(q)["holes"] == []

@@ -24,6 +24,12 @@ Stages (each a subcommand, run by the workflow; README.md in this folder has the
                           sharpest leaf-on NAIP year for display -> <out>/sharp.json
   prepare REQ [--imagery DIR]  -> v2_course prepare for each base, the hole images rendered from DIR
   compute REQ SLOT KIND PARTS  -> wind grids (base SLOT, its offsets) or the calm-day Bayesian decide
+  native REQ           -> <out>/native.json: the golfer native-grass taps ("Native grass along this hole's landing
+                          area?" Left / Right / Both / None, product/native_confirm.py via verify.native_for) when the
+                          request has "agent_layers" and that folder has the mapper's frames.json + edits.json +
+                          agent_zones.geojson ("native": false turns it off); at most native_confirm.CAP (4) holes,
+                          the four answers' plans precomputed. Run in the package job (the DEM and lidar canopy the
+                          planner reads are on disk there); app/build_library_play.py turns it into check cards
   finish REQ PARTS     -> merge, page (data gzip-inlined), picture checks, qa_page.js, qa_report.md, status.json
   index                -> course_data/library/index.json
 Output folder: course_data/library/<slug>/ (group "library"), course_data/library/gate/<slug>/ (group "gate").
@@ -410,6 +416,68 @@ def compute(q, slot, kind, parts):
     wj(os.path.join(parts, "which.json"), dict(which=w, kind=kind))
 
 
+# ------------------------------------------------------------------------------------------------ native
+NATIVE_FILES = ("frames.json", "edits.json", "agent_zones.geojson")
+
+
+def native_source(q):
+    """-> (mapper folder, None) when the course gets native questions, else (None, why)."""
+    d = q.get("agent_layers")
+    if not d:
+        return None, "no agent_layers in the request"
+    if q.get("native") is False:
+        return None, "request says \"native\": false"
+    path = d if os.path.isabs(d) else os.path.join(ROOT, d)
+    miss = [f for f in NATIVE_FILES if not os.path.exists(os.path.join(path, f))]
+    if miss:
+        return None, f"{d}: no {', '.join(miss)}"
+    return path, None
+
+
+def native(q):
+    """<out>/native.json (lib_native/1): the native questions for the page's main solved set. Never fails the build:
+    an error is recorded as the note with no items."""
+    import hashlib
+    import time
+    t0 = time.time()
+    cfg = rj(out_dir(q, "config.json")) or {}
+    path, why = native_source(q)
+    rec = dict(schema="lib_native/1", slug=q["slug"], tee_set=cfg.get("tees"), mapper=q.get("agent_layers"), items=[])
+    if path is None:
+        rec["note"] = f"not asked: {why}"
+    else:
+        h = hashlib.sha1()
+        for f in NATIVE_FILES:
+            h.update(open(os.path.join(path, f), "rb").read())
+        rec["mapper_sig"] = h.hexdigest()[:16]
+        try:
+            pkg = rj(out_dir(q, "package.json"))
+            if not pkg or not cfg.get("tees"):
+                raise RuntimeError("no package.json / config.json (configure first)")
+            sys.path[:0] = [p for p in (os.path.join(CD, "product"),) if p not in sys.path]
+            import verify
+            workers = os.cpu_count() if os.environ.get("GITHUB_ACTIONS") else int(os.environ.get("NATIVE_WORKERS", "1"))
+            n = int(q.get("native_n") or 4000)
+            items, note = verify.native_for(pkg, os.path.basename(os.path.normpath(path)), cfg["tees"], n=n,
+                                            workers=workers, mapper_dir=path,
+                                            cache_path=os.environ.get("NATIVE_CACHE") or f"/tmp/native_cache_{q['slug']}.json")
+            rec.update(items=items, note=note, n=n)
+        except Exception as e:                                  # noqa: BLE001
+            rec["note"] = f"skipped ({type(e).__name__}: {e})"[:400]
+    rec["runtime_s"] = round(time.time() - t0, 1)
+    wj(out_dir(q, "native.json"), rec)
+    log(f"{q['slug']}: native questions: {rec['note']} -> holes {[it['hole'] for it in rec['items']]} "
+        f"({rec['runtime_s']} s)")
+    return rec
+
+
+def native_summary(q):
+    r = rj(out_dir(q, "native.json"))
+    if not r:
+        return None
+    return dict(holes=[it["hole"] for it in r.get("items") or []], tee_set=r.get("tee_set"), note=r.get("note"))
+
+
 # ------------------------------------------------------------------------------------------------ page
 BOOT = """<script id="pg-boot">
 (async () => {
@@ -546,6 +614,10 @@ def report_md(q, cfg, pkg, checks, qa, status, reasons, check_holes, page_bad, p
          f"* imagery on the page: {cfg.get('imagery_display')}; package imagery {(pkg.get('imagery') or {}).get('year')}",
          f"* stages: vision `{(pkg.get('stages') or {}).get('vision', '')[:90]}`; OB `{(pkg.get('stages') or {}).get('ob', '')[:90]}`",
          ""]
+    nat = native_summary(q)
+    if nat:
+        L += [f"* native-grass questions ({nat['tee_set']} tees, library check cards): "
+              f"{'holes ' + ', '.join(nat['holes']) if nat['holes'] else 'none'} ({nat['note']})", ""]
     if reasons:
         L += ["Course-level reasons:", ""] + [f"* {r}" for r in reasons] + [""]
     L += ["Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick "
@@ -629,7 +701,7 @@ def status_record(q, cfg, pkg, status, reasons, check_holes, page_rel, size):
                 page_bytes=size, qa_report=os.path.relpath(out_dir(q, "qa_report.md"), ROOT),
                 center=[lat, lon], osm=f"{(c.get('osm') or {}).get('type')}/{(c.get('osm') or {}).get('id')}",
                 holes=len(pkg.get("holes") or {}), days=cfg["days"], weather=cfg.get("weather_kind"),
-                built=cfg["built"], request=q["path"])
+                built=cfg["built"], request=q["path"], **({"native": native_summary(q)} if native_summary(q) else {}))
 
 
 ERR_LINE = re.compile(r"^(?:[A-Za-z_][\w.]*\.)?[A-Z]\w*(?:Error|Exception|Exit|Interrupt)\b(?::.*)?$")
@@ -735,7 +807,7 @@ def index():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["plan", "pkgreq", "configure", "prepare", "compute", "finish", "failed", "index", "slug"])
+    ap.add_argument("cmd", choices=["plan", "pkgreq", "configure", "prepare", "native", "compute", "finish", "failed", "index", "slug"])
     ap.add_argument("args", nargs="*")
     ap.add_argument("--imagery")
     ap.add_argument("--log", help="failed: the stage's captured output; its last exception lines go in the reasons")
@@ -755,6 +827,8 @@ def main():
             configure(q)
         elif a.cmd == "prepare":
             prepare(q, a.imagery)
+        elif a.cmd == "native":
+            native(q)
         elif a.cmd == "compute":
             compute(q, int(a.args[1]), a.args[2], a.args[3])
         elif a.cmd == "finish":

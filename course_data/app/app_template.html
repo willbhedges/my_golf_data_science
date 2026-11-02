@@ -727,7 +727,7 @@ function renderPick(){
 function checkCard(C, card, opts){
   const A = st.answers[C.id] || {}, a = A[card.id], o = a ? card.options.find(x => x.answer === a) : null;
   const img = opts.img && card.crop ? cropFig(card) : "";
-  const out = o ? `<div class="out${o.outcome ? " chg" : ""}"><b>Your answer: ${esc(o.label)}.</b> ${esc(o.text || "")}${o.outcome ? (card.tee_set === curSet(C) ? " The hole now shows this plan." : ` (Computed for the ${esc(card.tee_set)} tees.)`) : (o.answer === "moved" ? " Noted: a full re-plan applies a moved edge or tee (on the backend)." : "")}</div>`
+  const out = o ? `<div class="out${o.outcome ? " chg" : ""}"><b>Your answer: ${esc(o.label)}.</b> ${esc(o.text || "")}${o.outcome ? (card.tee_set === (opts.set != null ? opts.set : curSet(C)) ? " The hole now shows this plan." : ` (Computed for the ${esc(card.tee_set)} tees.)`) : (o.answer === "moved" ? " Noted: a full re-plan applies a moved edge or tee (on the backend)." : "")}</div>`
     : `<div class="out">${card.options.filter(x => x.text).map(x => `<div><b>${esc(x.label)}:</b> ${esc(x.text)}</div>`).join("")}</div>`;
   return `<article class="chk ${card.severity}" id="chk-${esc(card.id)}">
     <div class="row"><span class="badge ${card.severity}">${card.severity === "red" ? "Matters" : "Minor"}</span><span class="label">Hole ${card.hole} · ${esc(card.type)}</span></div>
