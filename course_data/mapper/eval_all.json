@@ -1,0 +1,1457 @@
+{
+ "schema": "mapper_eval/1",
+ "set": "all",
+ "n": 4000,
+ "made_utc": "2026-11-02 09:54Z",
+ "configs": [
+  "auto",
+  "truth"
+ ],
+ "courses": [
+  {
+   "slug": "ellis",
+   "holes": 14,
+   "ref_ties": 1,
+   "auto": {
+    "match": 11,
+    "club": 12,
+    "same_or_tie": 12,
+    "regret": 0.375
+   },
+   "agent": {
+    "match": 11,
+    "club": 12,
+    "same_or_tie": 12,
+    "regret": 0.293
+   },
+   "fixed": [],
+   "broke": [],
+   "layers": {
+    "auto": {
+     "fairway": {
+      "missing": 26839,
+      "extra": 4338,
+      "truth": 77169
+     },
+     "trees": {
+      "missing": 12188,
+      "extra": 6949,
+      "truth": 21517
+     },
+     "water": {
+      "missing": 0,
+      "extra": 418,
+      "truth": 0
+     },
+     "ob": {
+      "missing": 1376,
+      "extra": 3942,
+      "truth": 3024
+     },
+     "long_grass": {
+      "missing": 3497,
+      "extra": 0,
+      "truth": 3497
+     },
+     "bunkers": {
+      "missing": 340,
+      "extra": 1006,
+      "truth": 1329
+     }
+    },
+    "agent": {
+     "fairway": {
+      "missing": 26839,
+      "extra": 4338,
+      "truth": 77169
+     },
+     "trees": {
+      "missing": 10936,
+      "extra": 6157,
+      "truth": 21517
+     },
+     "water": {
+      "missing": 0,
+      "extra": 418,
+      "truth": 0
+     },
+     "ob": {
+      "missing": 1376,
+      "extra": 3375,
+      "truth": 3024
+     },
+     "long_grass": {
+      "missing": 2208,
+      "extra": 258,
+      "truth": 3497
+     },
+     "bunkers": {
+      "missing": 340,
+      "extra": 1006,
+      "truth": 1329
+     }
+    }
+   },
+   "tee_err": {
+    "auto": {
+     "n": 14,
+     "median": 0.8,
+     "over10": 0
+    },
+    "agent": {
+     "n": 14,
+     "median": 0.8,
+     "over10": 0
+    },
+    "auto_measured": {
+     "n": 14,
+     "median": 0.8,
+     "over10": 0
+    },
+    "agent_measured": {
+     "n": 14,
+     "median": 0.8,
+     "over10": 0
+    }
+   },
+   "extra_configs": {},
+   "holes_detail": [
+    {
+     "hole": "5",
+     "truth": "Driver -2",
+     "auto": "Driver +5",
+     "agent": "Driver +2",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.018,
+     "agent_regret": 0.0086
+    },
+    {
+     "hole": "9",
+     "truth": "Driver -2",
+     "auto": "Driver +5",
+     "agent": "Driver +0",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.029,
+     "agent_regret": 0.0066
+    },
+    {
+     "hole": "10",
+     "truth": "Driver +2",
+     "auto": "Driver +2",
+     "agent": "Driver +5",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0,
+     "agent_regret": 0.0009
+    },
+    {
+     "hole": "12",
+     "truth": "Driver -5",
+     "auto": "Driver -8",
+     "agent": "Driver -5",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0044,
+     "agent_regret": -0.0
+    },
+    {
+     "hole": "15",
+     "truth": "4-wood +12",
+     "auto": "Driver +2",
+     "agent": "Driver +10",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.1044,
+     "agent_regret": 0.0575
+    }
+   ],
+   "tees": "Blue",
+   "set": "v1",
+   "base": "course_data/mapper/ellis/base/package.json",
+   "mapper": "mapper-ellis (blind)",
+   "agent_layers": {
+    "ops": 70,
+    "tees_moved": 0,
+    "tees_checked": 72
+   }
+  },
+  {
+   "slug": "spirit_hollow",
+   "holes": 14,
+   "ref_ties": 3,
+   "auto": {
+    "match": 7,
+    "club": 10,
+    "same_or_tie": 11,
+    "regret": 0.892
+   },
+   "agent": {
+    "match": 8,
+    "club": 11,
+    "same_or_tie": 12,
+    "regret": 0.729
+   },
+   "fixed": [
+    "6"
+   ],
+   "broke": [],
+   "layers": {
+    "auto": {
+     "fairway": {
+      "missing": 45357,
+      "extra": 4082,
+      "truth": 100484
+     },
+     "trees": {
+      "missing": 16315,
+      "extra": 2815,
+      "truth": 25989
+     },
+     "water": {
+      "missing": 2127,
+      "extra": 10062,
+      "truth": 8595
+     },
+     "ob": {
+      "missing": 1021,
+      "extra": 2374,
+      "truth": 2356
+     },
+     "long_grass": {
+      "missing": 20178,
+      "extra": 0,
+      "truth": 20178
+     },
+     "bunkers": {
+      "missing": 1369,
+      "extra": 391,
+      "truth": 3680
+     }
+    },
+    "agent": {
+     "fairway": {
+      "missing": 45357,
+      "extra": 4082,
+      "truth": 100484
+     },
+     "trees": {
+      "missing": 16315,
+      "extra": 2815,
+      "truth": 25989
+     },
+     "water": {
+      "missing": 2553,
+      "extra": 8001,
+      "truth": 8595
+     },
+     "ob": {
+      "missing": 1021,
+      "extra": 2374,
+      "truth": 2356
+     },
+     "long_grass": {
+      "missing": 14490,
+      "extra": 5417,
+      "truth": 20178
+     },
+     "bunkers": {
+      "missing": 1369,
+      "extra": 391,
+      "truth": 3680
+     }
+    }
+   },
+   "tee_err": {
+    "auto": {
+     "n": 14,
+     "median": 10.5,
+     "over10": 7
+    },
+    "agent": {
+     "n": 14,
+     "median": 10.5,
+     "over10": 7
+    },
+    "auto_measured": {
+     "n": 14,
+     "median": 10.5,
+     "over10": 7
+    },
+    "agent_measured": {
+     "n": 14,
+     "median": 10.5,
+     "over10": 7
+    }
+   },
+   "extra_configs": {},
+   "holes_detail": [
+    {
+     "hole": "4",
+     "truth": "Driver -12",
+     "auto": "Driver -5",
+     "agent": "Driver -18",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.0579,
+     "agent_regret": 0.0183
+    },
+    {
+     "hole": "5",
+     "truth": "4-wood -8",
+     "auto": "4-wood -5",
+     "agent": "4-wood -2",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0001,
+     "agent_regret": 0.0013
+    },
+    {
+     "hole": "6",
+     "truth": "4-wood -22 (tie)",
+     "auto": "Driver -40",
+     "agent": "4-wood -20",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.1289,
+     "agent_regret": -0.0002
+    },
+    {
+     "hole": "17",
+     "truth": "Driver +12 (tie)",
+     "auto": "Driver +0",
+     "agent": "Driver +2",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0007,
+     "agent_regret": 0.0051
+    }
+   ],
+   "tees": "Black",
+   "set": "v1",
+   "base": "course_data/mapper/spirit_hollow/base/package.json",
+   "mapper": "mapper-spirit_hollow-3",
+   "agent_layers": {
+    "ops": 17,
+    "tees_moved": 1,
+    "tees_checked": 72
+   }
+  },
+  {
+   "slug": "sand_creek_station",
+   "holes": 14,
+   "ref_ties": 0,
+   "auto": {
+    "match": 12,
+    "club": 13,
+    "same_or_tie": 13,
+    "regret": 0.259
+   },
+   "agent": {
+    "match": 12,
+    "club": 13,
+    "same_or_tie": 13,
+    "regret": 0.258
+   },
+   "fixed": [],
+   "broke": [],
+   "layers": {
+    "auto": {
+     "fairway": {
+      "missing": 34,
+      "extra": 39,
+      "truth": 62491
+     },
+     "trees": {
+      "missing": 1873,
+      "extra": 1573,
+      "truth": 14147
+     },
+     "water": {
+      "missing": 6,
+      "extra": 9,
+      "truth": 10290
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 1353,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 21974,
+      "extra": 13084,
+      "truth": 31296
+     },
+     "bunkers": {
+      "missing": 10,
+      "extra": 11,
+      "truth": 3091
+     }
+    },
+    "agent": {
+     "fairway": {
+      "missing": 34,
+      "extra": 39,
+      "truth": 62491
+     },
+     "trees": {
+      "missing": 1873,
+      "extra": 1666,
+      "truth": 14147
+     },
+     "water": {
+      "missing": 6,
+      "extra": 9,
+      "truth": 10290
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 1062,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 18280,
+      "extra": 12245,
+      "truth": 31296
+     },
+     "bunkers": {
+      "missing": 10,
+      "extra": 11,
+      "truth": 3091
+     }
+    }
+   },
+   "tee_err": {
+    "auto": {
+     "n": 14,
+     "median": 10.8,
+     "over10": 7
+    },
+    "agent": {
+     "n": 14,
+     "median": 10.9,
+     "over10": 8
+    },
+    "auto_measured": {
+     "n": 3,
+     "median": 2.7,
+     "over10": 0
+    },
+    "agent_measured": {
+     "n": 3,
+     "median": 2.7,
+     "over10": 0
+    }
+   },
+   "extra_configs": {},
+   "holes_detail": [
+    {
+     "hole": "1",
+     "truth": "Driver -2",
+     "auto": "Driver +10",
+     "agent": "Driver -5",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0004,
+     "agent_regret": -0.0016
+    },
+    {
+     "hole": "5",
+     "truth": "Driver -8",
+     "auto": "Driver -5",
+     "agent": "Driver -8",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": -0.0002,
+     "agent_regret": -0.0
+    },
+    {
+     "hole": "12",
+     "truth": "Driver -2",
+     "auto": "Driver -5",
+     "agent": "Driver +0",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0018,
+     "agent_regret": 0.011
+    },
+    {
+     "hole": "18",
+     "truth": "4-wood -2",
+     "auto": "4-wood -22",
+     "agent": "4-wood -20",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0257,
+     "agent_regret": 0.0135
+    }
+   ],
+   "tees": "Championship",
+   "set": "v2",
+   "base": "course_data/mapper/sand_creek_station/base/package.json",
+   "mapper": "mapper-agent sand_creek_station (map3)",
+   "agent_layers": {
+    "ops": 11,
+    "tees_moved": 1,
+    "tees_checked": 72
+   }
+  },
+  {
+   "slug": "eagle_bend",
+   "holes": 14,
+   "ref_ties": 1,
+   "auto": {
+    "match": 7,
+    "club": 9,
+    "same_or_tie": 10,
+    "regret": 0.515
+   },
+   "agent": {
+    "match": 8,
+    "club": 9,
+    "same_or_tie": 10,
+    "regret": 0.565
+   },
+   "fixed": [
+    "7"
+   ],
+   "broke": [],
+   "layers": {
+    "auto": {
+     "fairway": {
+      "missing": 39,
+      "extra": 32,
+      "truth": 59258
+     },
+     "trees": {
+      "missing": 5601,
+      "extra": 84,
+      "truth": 21013
+     },
+     "water": {
+      "missing": 2,
+      "extra": 2,
+      "truth": 5428
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 725,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 30445,
+      "extra": 0,
+      "truth": 30445
+     },
+     "bunkers": {
+      "missing": 2,
+      "extra": 1,
+      "truth": 378
+     }
+    },
+    "agent": {
+     "fairway": {
+      "missing": 39,
+      "extra": 32,
+      "truth": 59258
+     },
+     "trees": {
+      "missing": 4483,
+      "extra": 2307,
+      "truth": 21013
+     },
+     "water": {
+      "missing": 2,
+      "extra": 2,
+      "truth": 5428
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 0,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 30445,
+      "extra": 0,
+      "truth": 30445
+     },
+     "bunkers": {
+      "missing": 2,
+      "extra": 1,
+      "truth": 378
+     }
+    }
+   },
+   "tee_err": {
+    "auto": {
+     "n": 14,
+     "median": 4.1,
+     "over10": 2
+    },
+    "agent": {
+     "n": 14,
+     "median": 4.1,
+     "over10": 2
+    },
+    "auto_measured": {
+     "n": 7,
+     "median": 4.1,
+     "over10": 1
+    },
+    "agent_measured": {
+     "n": 7,
+     "median": 4.1,
+     "over10": 1
+    }
+   },
+   "extra_configs": {},
+   "holes_detail": [
+    {
+     "hole": "2",
+     "truth": "4-wood +0",
+     "auto": "Driver +5",
+     "agent": "Driver +10",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.0973,
+     "agent_regret": 0.1549
+    },
+    {
+     "hole": "7",
+     "truth": "Driver +5",
+     "auto": "Driver -40",
+     "agent": "Driver +5",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.0072,
+     "agent_regret": 0.0
+    },
+    {
+     "hole": "9",
+     "truth": "4-wood +0 (tie)",
+     "auto": "Driver +0",
+     "agent": "Driver -2",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.0245,
+     "agent_regret": 0.0233
+    }
+   ],
+   "tees": "Gold",
+   "set": "v2",
+   "base": "course_data/mapper/eagle_bend/base/package.json",
+   "mapper": "mapper-eagle_bend",
+   "agent_layers": {
+    "ops": 33,
+    "tees_moved": 0,
+    "tees_checked": 72
+   }
+  },
+  {
+   "slug": "prairie_dunes",
+   "holes": 14,
+   "ref_ties": 1,
+   "auto": {
+    "match": 1,
+    "club": 2,
+    "same_or_tie": 3,
+    "regret": 1.649
+   },
+   "agent": {
+    "match": 7,
+    "club": 7,
+    "same_or_tie": 11,
+    "regret": 0.72
+   },
+   "fixed": [
+    "7",
+    "8",
+    "12",
+    "13",
+    "16",
+    "18"
+   ],
+   "broke": [],
+   "layers": {
+    "auto": {
+     "fairway": {
+      "missing": 37,
+      "extra": 35,
+      "truth": 67501
+     },
+     "trees": {
+      "missing": 1386,
+      "extra": 111,
+      "truth": 4021
+     },
+     "water": {
+      "missing": 0,
+      "extra": 0,
+      "truth": 0
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 94,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 105631,
+      "extra": 0,
+      "truth": 105631
+     },
+     "bunkers": {
+      "missing": 10,
+      "extra": 9,
+      "truth": 2807
+     }
+    },
+    "agent": {
+     "fairway": {
+      "missing": 37,
+      "extra": 35,
+      "truth": 67501
+     },
+     "trees": {
+      "missing": 1209,
+      "extra": 267,
+      "truth": 4021
+     },
+     "water": {
+      "missing": 0,
+      "extra": 0,
+      "truth": 0
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 94,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 43474,
+      "extra": 1421,
+      "truth": 105631
+     },
+     "bunkers": {
+      "missing": 10,
+      "extra": 9,
+      "truth": 2807
+     }
+    }
+   },
+   "tee_err": {
+    "auto": {
+     "n": 14,
+     "median": 5.7,
+     "over10": 2
+    },
+    "agent": {
+     "n": 14,
+     "median": 5.7,
+     "over10": 2
+    },
+    "auto_measured": {
+     "n": 4,
+     "median": 5.8,
+     "over10": 0
+    },
+    "agent_measured": {
+     "n": 4,
+     "median": 5.8,
+     "over10": 0
+    }
+   },
+   "extra_configs": {},
+   "holes_detail": [
+    {
+     "hole": "1",
+     "truth": "4-wood +32",
+     "auto": "Driver +22",
+     "agent": "Driver +20",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.1643,
+     "agent_regret": 0.2064
+    },
+    {
+     "hole": "3",
+     "truth": "Driver -2",
+     "auto": "Driver -12",
+     "agent": "4-wood +8",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": -0.0064,
+     "agent_regret": 0.0591
+    },
+    {
+     "hole": "6",
+     "truth": "4-wood +15",
+     "auto": "Driver +15",
+     "agent": "Driver +10",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.1183,
+     "agent_regret": 0.1333
+    },
+    {
+     "hole": "7",
+     "truth": "4-wood -2",
+     "auto": "Driver +5",
+     "agent": "4-wood -2",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.0989,
+     "agent_regret": 0.0037
+    },
+    {
+     "hole": "8",
+     "truth": "4-wood -32",
+     "auto": "Driver -22",
+     "agent": "4-wood -32",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.2014,
+     "agent_regret": 0.0035
+    },
+    {
+     "hole": "11",
+     "truth": "Driver +32",
+     "auto": "Driver +28",
+     "agent": "Driver +32",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0433,
+     "agent_regret": 0.0045
+    },
+    {
+     "hole": "12",
+     "truth": "4-wood -2",
+     "auto": "Driver +0",
+     "agent": "4-wood +0",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.2271,
+     "agent_regret": 0.0162
+    },
+    {
+     "hole": "13",
+     "truth": "4-wood +22",
+     "auto": "Driver +2",
+     "agent": "4-wood +20",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.1891,
+     "agent_regret": 0.013
+    },
+    {
+     "hole": "14",
+     "truth": "4-wood +22",
+     "auto": "Driver +0",
+     "agent": "2-wood +12",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.1034,
+     "agent_regret": 0.0423
+    },
+    {
+     "hole": "16",
+     "truth": "4-wood -28",
+     "auto": "Driver -20",
+     "agent": "4-wood -28",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.0934,
+     "agent_regret": -0.0005
+    },
+    {
+     "hole": "17",
+     "truth": "4-wood +12 (tie)",
+     "auto": "Driver +10",
+     "agent": "Driver +8",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.004,
+     "agent_regret": 0.0171
+    },
+    {
+     "hole": "18",
+     "truth": "4-wood -8",
+     "auto": "Driver +2",
+     "agent": "4-wood -10",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.2403,
+     "agent_regret": 0.0476
+    }
+   ],
+   "tees": "Blue",
+   "set": "v2",
+   "base": "course_data/mapper/prairie_dunes/base/package.json",
+   "mapper": "mapper-prairie_dunes-3",
+   "agent_layers": {
+    "ops": 29,
+    "tees_moved": 0,
+    "tees_checked": 90
+   }
+  },
+  {
+   "slug": "buffalo_dunes",
+   "holes": 14,
+   "ref_ties": 2,
+   "auto": {
+    "match": 7,
+    "club": 7,
+    "same_or_tie": 8,
+    "regret": 1.623
+   },
+   "agent": {
+    "match": 13,
+    "club": 13,
+    "same_or_tie": 13,
+    "regret": 0.208
+   },
+   "fixed": [
+    "7",
+    "10",
+    "13",
+    "14",
+    "15",
+    "16"
+   ],
+   "broke": [],
+   "layers": {
+    "auto": {
+     "fairway": {
+      "missing": 38,
+      "extra": 40,
+      "truth": 53047
+     },
+     "trees": {
+      "missing": 9945,
+      "extra": 1070,
+      "truth": 27204
+     },
+     "water": {
+      "missing": 3,
+      "extra": 2,
+      "truth": 2523
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 117,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 82692,
+      "extra": 0,
+      "truth": 82692
+     },
+     "bunkers": {
+      "missing": 5,
+      "extra": 4,
+      "truth": 1400
+     }
+    },
+    "agent": {
+     "fairway": {
+      "missing": 38,
+      "extra": 40,
+      "truth": 53047
+     },
+     "trees": {
+      "missing": 9945,
+      "extra": 1070,
+      "truth": 27204
+     },
+     "water": {
+      "missing": 3,
+      "extra": 2,
+      "truth": 2523
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 117,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 26742,
+      "extra": 3634,
+      "truth": 82938
+     },
+     "bunkers": {
+      "missing": 5,
+      "extra": 229,
+      "truth": 1400
+     }
+    }
+   },
+   "tee_err": {
+    "auto": {
+     "n": 14,
+     "median": 2.5,
+     "over10": 4
+    },
+    "agent": {
+     "n": 14,
+     "median": 2.5,
+     "over10": 4
+    },
+    "auto_measured": {
+     "n": 2,
+     "median": 12.1,
+     "over10": 1
+    },
+    "agent_measured": {
+     "n": 2,
+     "median": 12.1,
+     "over10": 1
+    }
+   },
+   "extra_configs": {},
+   "holes_detail": [
+    {
+     "hole": "1",
+     "truth": "Driver -2 (tie)",
+     "auto": "Driver -5",
+     "agent": "Driver -8",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0026,
+     "agent_regret": 0.0176
+    },
+    {
+     "hole": "2",
+     "truth": "4-wood +10",
+     "auto": "4-wood +10",
+     "agent": "4-wood +12",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": -0.0022,
+     "agent_regret": 0.0194
+    },
+    {
+     "hole": "3",
+     "truth": "4-wood +5",
+     "auto": "4-wood +5",
+     "agent": "4-wood +8",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": -0.005,
+     "agent_regret": 0.0024
+    },
+    {
+     "hole": "7",
+     "truth": "4-wood +18 (tie)",
+     "auto": "2-wood +10",
+     "agent": "4-wood +18",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.005,
+     "agent_regret": 0.0013
+    },
+    {
+     "hole": "10",
+     "truth": "4-wood -20",
+     "auto": "Driver +8",
+     "agent": "4-wood -15",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.5084,
+     "agent_regret": 0.0252
+    },
+    {
+     "hole": "13",
+     "truth": "4-wood -10",
+     "auto": "Driver -5",
+     "agent": "4-wood -10",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.1404,
+     "agent_regret": 0.0025
+    },
+    {
+     "hole": "14",
+     "truth": "4-wood -10",
+     "auto": "Driver +12",
+     "agent": "4-wood -8",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.4031,
+     "agent_regret": -0.0003
+    },
+    {
+     "hole": "15",
+     "truth": "4-wood +0",
+     "auto": "Driver -8",
+     "agent": "4-wood +0",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.2428,
+     "agent_regret": 0.0012
+    },
+    {
+     "hole": "16",
+     "truth": "4-wood -10",
+     "auto": "Driver +5",
+     "agent": "4-wood -10",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.1882,
+     "agent_regret": -0.001
+    }
+   ],
+   "tees": "Blue",
+   "set": "v2",
+   "base": "course_data/mapper/buffalo_dunes/base/package.json",
+   "mapper": "mapper-buffalo_dunes-blue",
+   "agent_layers": {
+    "ops": 60,
+    "tees_moved": 0,
+    "tees_checked": 72
+   }
+  },
+  {
+   "slug": "mariah_hills",
+   "holes": 14,
+   "ref_ties": 4,
+   "auto": {
+    "match": 5,
+    "club": 10,
+    "same_or_tie": 11,
+    "regret": 0.852
+   },
+   "agent": {
+    "match": 7,
+    "club": 8,
+    "same_or_tie": 11,
+    "regret": -0.52
+   },
+   "fixed": [
+    "1",
+    "3",
+    "14",
+    "18"
+   ],
+   "broke": [
+    "6",
+    "10"
+   ],
+   "layers": {
+    "auto": {
+     "fairway": {
+      "missing": 24,
+      "extra": 16,
+      "truth": 55677
+     },
+     "trees": {
+      "missing": 8807,
+      "extra": 1040,
+      "truth": 15403
+     },
+     "water": {
+      "missing": 1,
+      "extra": 1,
+      "truth": 1341
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 1678,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 32060,
+      "extra": 0,
+      "truth": 32060
+     },
+     "bunkers": {
+      "missing": 3,
+      "extra": 2,
+      "truth": 521
+     }
+    },
+    "agent": {
+     "fairway": {
+      "missing": 24,
+      "extra": 16,
+      "truth": 55677
+     },
+     "trees": {
+      "missing": 4237,
+      "extra": 3062,
+      "truth": 15403
+     },
+     "water": {
+      "missing": 1,
+      "extra": 1,
+      "truth": 1341
+     },
+     "ob": {
+      "missing": 0,
+      "extra": 1635,
+      "truth": 0
+     },
+     "long_grass": {
+      "missing": 15287,
+      "extra": 10255,
+      "truth": 32060
+     },
+     "bunkers": {
+      "missing": 3,
+      "extra": 2,
+      "truth": 521
+     }
+    }
+   },
+   "tee_err": {
+    "auto": {
+     "n": 14,
+     "median": 2.2,
+     "over10": 0
+    },
+    "agent": {
+     "n": 14,
+     "median": 2.2,
+     "over10": 0
+    },
+    "auto_measured": {
+     "n": 9,
+     "median": 2.3,
+     "over10": 0
+    },
+    "agent_measured": {
+     "n": 9,
+     "median": 2.3,
+     "over10": 0
+    }
+   },
+   "extra_configs": {},
+   "holes_detail": [
+    {
+     "hole": "1",
+     "truth": "Driver +20",
+     "auto": "Driver +8",
+     "agent": "Driver +12",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.0197,
+     "agent_regret": 0.002
+    },
+    {
+     "hole": "2",
+     "truth": "4-wood +18 (tie)",
+     "auto": "Driver +12",
+     "agent": "Driver +20",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.0183,
+     "agent_regret": 0.0889
+    },
+    {
+     "hole": "3",
+     "truth": "Driver +0",
+     "auto": "Driver +10",
+     "agent": "Driver +2",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.0297,
+     "agent_regret": 0.0
+    },
+    {
+     "hole": "4",
+     "truth": "4-wood +2",
+     "auto": "Driver +2",
+     "agent": "Driver -2",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.0313,
+     "agent_regret": 0.054
+    },
+    {
+     "hole": "6",
+     "truth": "Driver -18",
+     "auto": "Driver -18",
+     "agent": "Driver -28",
+     "auto_match": true,
+     "agent_match": false,
+     "auto_regret": -0.0008,
+     "agent_regret": 0.0287
+    },
+    {
+     "hole": "7",
+     "truth": "Driver +40 (tie)",
+     "auto": "Driver +0",
+     "agent": "4-wood +80",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": 0.6083,
+     "agent_regret": -0.7362
+    },
+    {
+     "hole": "9",
+     "truth": "Driver -38",
+     "auto": "Driver +28",
+     "agent": "4-wood +30",
+     "auto_match": false,
+     "agent_match": false,
+     "auto_regret": null,
+     "agent_regret": null
+    },
+    {
+     "hole": "10",
+     "truth": "Driver -2 (tie)",
+     "auto": "Driver +5",
+     "agent": "4-wood +0",
+     "auto_match": true,
+     "agent_match": false,
+     "auto_regret": 0.0382,
+     "agent_regret": 0.0041
+    },
+    {
+     "hole": "12",
+     "truth": "Driver +0",
+     "auto": "Driver +0",
+     "agent": "Driver +5",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0005,
+     "agent_regret": 0.0094
+    },
+    {
+     "hole": "13",
+     "truth": "Driver +15",
+     "auto": "Driver +0",
+     "agent": "Driver -5",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0257,
+     "agent_regret": 0.0
+    },
+    {
+     "hole": "14",
+     "truth": "4-wood -5",
+     "auto": "Driver -10",
+     "agent": "4-wood -5",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.0301,
+     "agent_regret": 0.0032
+    },
+    {
+     "hole": "15",
+     "truth": "4-wood +20",
+     "auto": "4-wood +15",
+     "agent": "4-wood +18",
+     "auto_match": true,
+     "agent_match": true,
+     "auto_regret": 0.0046,
+     "agent_regret": -0.0002
+    },
+    {
+     "hole": "18",
+     "truth": "Driver +15",
+     "auto": "Driver +8",
+     "agent": "Driver +10",
+     "auto_match": false,
+     "agent_match": true,
+     "auto_regret": 0.0435,
+     "agent_regret": 0.0224
+    }
+   ],
+   "tees": "Blue",
+   "set": "v2",
+   "base": "course_data/mapper/mariah_hills/base/package.json",
+   "mapper": "mapper-mariah_hills-blue",
+   "agent_layers": {
+    "ops": 132,
+    "tees_moved": 0,
+    "tees_checked": 72
+   }
+  }
+ ],
+ "pooled": {
+  "courses": 7,
+  "holes": 98,
+  "ref_ties": 12,
+  "auto": {
+   "match": 50,
+   "club": 63,
+   "same_or_tie": 68,
+   "regret": 6.165
+  },
+  "agent": {
+   "match": 66,
+   "club": 73,
+   "same_or_tie": 82,
+   "regret": 2.253
+  },
+  "fixed": 18,
+  "broke": 2,
+  "layers": {
+   "auto": {
+    "fairway": {
+     "missing": 72368,
+     "extra": 8582,
+     "truth": 475627
+    },
+    "trees": {
+     "missing": 56115,
+     "extra": 13642,
+     "truth": 129294
+    },
+    "water": {
+     "missing": 2139,
+     "extra": 10494,
+     "truth": 28177
+    },
+    "ob": {
+     "missing": 2397,
+     "extra": 10283,
+     "truth": 5380
+    },
+    "long_grass": {
+     "missing": 296477,
+     "extra": 13084,
+     "truth": 305799
+    },
+    "bunkers": {
+     "missing": 1739,
+     "extra": 1424,
+     "truth": 13206
+    }
+   },
+   "agent": {
+    "fairway": {
+     "missing": 72368,
+     "extra": 8582,
+     "truth": 475627
+    },
+    "trees": {
+     "missing": 48998,
+     "extra": 17344,
+     "truth": 129294
+    },
+    "water": {
+     "missing": 2565,
+     "extra": 8433,
+     "truth": 28177
+    },
+    "ob": {
+     "missing": 2397,
+     "extra": 8657,
+     "truth": 5380
+    },
+    "long_grass": {
+     "missing": 150926,
+     "extra": 33230,
+     "truth": 306045
+    },
+    "bunkers": {
+     "missing": 1739,
+     "extra": 1649,
+     "truth": 13206
+    }
+   }
+  }
+ },
+ "errors": {}
+}
