@@ -25,3 +25,6 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - [ ] QA checker agent writes course_data/library/<slug>/qa_rebuild.md per rebuilt reviewed course; publish the PUBLISH ones (hole-by-hole check of screenshots first) and tell the user. Gustin landed first.
 - [ ] Native-grass classifier agent running (long grass stays off until it beats 'none' in LOCO error budget).
 - [ ] Gustin NEEDS FIX was the consensus set-order bug (fixed, card_consensus.py); re-queue gustin with the next batch of NEEDS FIX courses from the QA checker.
+- [x] St Andrews published 2026-11-02: https://claude.ai/artifact/K4HKE8bS5usJqTPdYdarkz (QA PUBLISH + coordinator montage check).
+- [ ] ~25 reviewed courses still queued in runs 41346643978 / 41346747941: when they land, launch a QA checker agent again (same brief as qa_rebuild.md) and publish PUBLISH verdicts.
+- [ ] Aim grid ±40 yd edge: several calm picks sit exactly on the edge (Gustin 6 Gold, St Andrews 5, 15). Check whether the aim range caps picks in decide; widen or make it dogleg-aware if so (agent).
