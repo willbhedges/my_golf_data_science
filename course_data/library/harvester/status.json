@@ -7,23 +7,21 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "9 hole(s) with a CHECK"
+  "scorecard not matched (source golfify, flags ['1 hole(s) where a longer set is shorter than the next set: 14 Blue 155 < White 195'])",
+  "6 hole(s) with a CHECK"
  ],
  "check_holes": [
-  3,
   6,
   7,
   8,
   12,
   13,
-  14,
-  16,
   18
  ],
  "tee_sets": [
   {
    "name": "Black",
-   "yards": 7340,
+   "yards": 7306,
    "par": 72,
    "rating": 76,
    "slope": 140,
@@ -32,7 +30,7 @@
   },
   {
    "name": "Blue",
-   "yards": 6810,
+   "yards": 6760,
    "par": 72,
    "rating": 73.1,
    "slope": 132,
@@ -72,7 +70,7 @@
   "Blue"
  ],
  "page": "course_data/library/harvester/page.html",
- "page_bytes": 4771116,
+ "page_bytes": 4755648,
  "qa_report": "course_data/library/harvester/qa_report.md",
  "center": [
   41.87053135,
@@ -81,32 +79,15 @@
  "osm": "way/325314320",
  "holes": 18,
  "days": [
-  "2026-10-31",
-  "2026-11-01"
+  "2026-11-07",
+  "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-10-30T11:51Z",
+ "built": "2026-11-02T17:00Z",
  "request": "course_data/requests/course_page_harvester.json",
- "last_attempt": {
-  "status": "failed",
-  "stage": "package",
-  "error": [
-   "package:     tees = [dict(osm_id=f[\"properties\"][\"osm_id\"], geometry=f[\"geometry\"][\"type\"],                         ~~~~~~~~~~~~~~~^^^^^^^^^^ KeyError: 'osm_id' "
-  ],
-  "when": "2026-10-30T22:47Z",
-  "resolve": {
-   "status": "ok",
-   "candidates": [
-    {
-     "name": "The Harvester Golf Club",
-     "town": "Marshall County",
-     "holes": 18,
-     "osm": {
-      "type": "way",
-      "id": 325314320
-     }
-    }
-   ]
-  }
+ "native": {
+  "holes": [],
+  "tee_set": "Black",
+  "note": "not asked: no agent_layers in the request"
  }
 }
