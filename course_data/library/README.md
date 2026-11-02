@@ -203,22 +203,22 @@ call usually gives the card), `oga?` (listed without a par) or empty.
 `us_readiness.json` has the per-state and national counts (`national`, `states.<ST>`, `best_states`).
 
 <!-- NATIONAL_COUNTS -->
-Counts from `us_readiness.json` (built 2026-11-02T17:26Z, 33 states + DC with rows). Missing states: AK, CT, ID, IA, ME, MI, MN, MT, NH, NY, ND, OR, SD, VT, WA, WI, WY. Partly fetched (some tiles failed): CA, CO, IL, IN, KS, MA, MO, NE, NV, NJ, OH, PA, RI, UT, WV.
+Counts from `us_readiness.json` (built 2026-11-02T18:23Z, 51 states + DC with rows).
 
 | | courses | share |
 |---|---|---|
-| open named courses | 8,416 | 100 % |
-| tier A (complete OSM holes + card known) | 3,632 | 43.2 % |
-| tier B (complete OSM holes, no card) | 214 | 2.5 % |
-| tier C (partial OSM golf mapping) | 2,370 | 28.2 % |
-| tier D (outline / name only) | 2,200 | 26.1 % |
-| any golf=hole way | 5,331 | 63.3 % |
-| any green | 6,050 | 71.9 % |
-| any fairway | 5,123 | 60.9 % |
-| any pin | 3,068 | 36.5 % |
-| card known (library card or OpenGolfAPI par) | 7,580 | 90.1 % |
+| open named courses | 13,090 | 100 % |
+| tier A (complete OSM holes + card known) | 5,858 | 44.8 % |
+| tier B (complete OSM holes, no card) | 413 | 3.2 % |
+| tier C (partial OSM golf mapping) | 3,498 | 26.7 % |
+| tier D (outline / name only) | 3,321 | 25.4 % |
+| any golf=hole way | 8,429 | 64.4 % |
+| any green | 9,524 | 72.8 % |
+| any fairway | 8,181 | 62.5 % |
+| any pin | 4,440 | 33.9 % |
+| card known (library card or OpenGolfAPI par) | 11,740 | 89.7 % |
 
-Complete OSM holes (A + B), states with at least 20 courses: best MA 81.4 % (214 / 263), OK 66.9 % (85 / 127), UT 64.5 % (78 / 121), CO 63.1 % (142 / 225), OH 53.8 % (210 / 390); worst MS 27.2 % (22 / 81), NM 27.6 % (27 / 98), AL 29.4 % (47 / 160), AZ 29.9 % (109 / 364), KS 30.1 % (53 / 176).
+Complete OSM holes (A + B), states with at least 20 courses: best RI 87.0 % (47 / 54), ME 83.5 % (101 / 121), CT 82.4 % (145 / 176), MA 82.2 % (290 / 353), VT 79.7 % (47 / 59); worst AK 26.1 % (6 / 23), MS 27.2 % (22 / 81), NM 27.6 % (27 / 98), AL 29.4 % (47 / 160), AZ 29.9 % (109 / 364).
 <!-- /NATIONAL_COUNTS -->
 
 ## Requests
