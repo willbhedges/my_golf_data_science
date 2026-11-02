@@ -4,6 +4,8 @@ The idea: native / fescue is not irrigated, so its greenness follows the season 
 fairway stay green. Sentinel-2 L2A gives a 10 m NDVI / red-edge time series. Each feature is taken relative to the
 course's own OSM fairway pixels.
 
+**Update (second pass, see 'Enlarged native set' at the end):** with 23 courses (5 Kansas native courses traced, 5 extra negatives) the layer cuts regret over 22 scored courses from 9.12 to 5.88. But it still breaks 4 holes on parkland / partly native courses, and no drought gate separates Amana. It is still not adopted.
+
 **Decision: not integrated into the product. It passes the error-budget bar narrowly on the 7 card courses, and the
 bar should be confirmed before integration.** `model_v2` `native_thr: null` is unchanged, and no package or vision
 layer was written. Results:
@@ -185,3 +187,159 @@ budget per course and hole for the control and each variant.
   Springs. Its builds for the other courses ran out of memory.
 * **Not scored in the error budget.** Mozingo and National KC; their pixel LOCO is above.
 * **Other S2 options.** Winter (Dec-Feb) scenes, other cloud thresholds, and S2 years before 2023.
+
+## Enlarged native set (23 courses), drought gate, error budget (2026-11-02, second pass)
+
+**Decision: still not adopted (`native_thr: null` unchanged).** With 5 Kansas native courses added, the S2 layer
+makes far better plans where native is everywhere: Prairie Dunes goes from 1 to 12 matches of 14, and Buffalo Dunes
+from 7 to 12. It also beats "none" on regret on every course group. But it breaks 4 holes on courses with little or
+no native: Ellis 2 and 9, Spirit Hollow 17, Rivercut 9. That fails the bar of no hard-case failure. P >= 0.6:
+the same 4 holes break. Recommendation: offer it as an opt-in layer on courses the golfer says have native, or gate it with a golfer tap. Do not ship it as a default.
+
+### New truth (`truth_sets_v2/<slug>/`, each with CHECK.md)
+
+The courses were named by the golfer. They were traced by eye on NAIP, never from S2 (S2 is what the model is scored
+on). Trees come from 3DEP lidar; fairway, water and sand from OSM. Routing is the `draft_spec` OSM draft, checked on
+the routing map only. OB is not traced.
+
+| course | set | how the native lies | hand native in the scored landing corridors (m2) |
+|---|---|---|---|
+| Sand Creek Station (Newton) | Championship | both sides of most holes, beyond ~12 yds of mown rough | 25,633 |
+| Eagle Bend (Lawrence) | Gold | golfer's truth (see below) + 5 holes from imagery | 25,435 |
+| Prairie Dunes (Hutchinson) | Blue | both sides of every hole, 6 yds off the fairway | 88,674 |
+| Mariah Hills (Dodge City) | Blue | discrete islands between holes (+/-10 yds) | 27,872 |
+| Buffalo Dunes (Garden City) | Blue | sandhill prairie between all fairways, beyond ~10 yds | 67,338 |
+| Southwind CC (Garden City) | - | **not in OSM** (package request: "not_found: no candidates"); not traced | - |
+
+* **Eagle Bend numbering.** The golfer's notes fit the OSM / OpenGolfAPI numbering, not the scrambled golfify
+  card. His "3: native left before the pond" is OSM hole 3, the par 5 that ends beside the pond. On the golfify
+  card, hole 3 is the real 12, a par 3 with no pond.
+* **Golfer vs imagery: all four of his holes agree.** 2 has native left and right, 3 left, 5 left and 6 left. On 3,
+  the 2021 photo alone was ambiguous; NAIP 2017, 2019 and 2023 show tan, textured grass left of the fairway.
+* **Extra negatives.** S2 stacks were added for 5 truth_sets_v2 courses with no long grass in the landing zones:
+  Tomahawk Hills, L.A. Nickell, Gustin, Rivercut and Osage National. Blue Hills is confirmed by the golfer as
+  having no native anywhere; it was already a negative.
+* **Fetch change.** `fetch_s2_stack.py` can read `s2/<slug>/grid.json`, the same `fetch_any.Grid` that
+  raw/meta.json gets, so the S2 fetch can run alongside the raw/ fetch. It was checked identical on 4 courses.
+  `tourn_truth.yml`'s commit retry now uses `--autostash`: run 41397494956 lost all of its output without it.
+
+### LOCO, pixel level (landing corridors 180-320 yds +/-50; `s2_eval.py`)
+
+"Before" is the 13-course model: LOCO on its own 13 courses, and on the 10 added courses trained on all 13. "After"
+is the same model and features, LOCO over 23 courses.
+
+| model, P >= 0.5 | original 13: prec / rec / IoU | KS native 5 | all 23 | FP m2 on no-native courses | sides truth / pred / TP / FP / FN | start err med / p75 (yd) |
+|---|---|---|---|---|---|---|
+| before (13 courses) | 0.54 / 0.29 / 0.23 | 0.68 / 0.25 / 0.23 | 0.61 / 0.27 / 0.23 | 12,639 | 193 / 135 / 101 / 34 / 92 | 4.6 / 8.6 |
+| **after (23 courses)** | **0.51 / 0.38 / 0.28** | **0.81 / 0.62 / 0.54** | **0.72 / 0.55 / 0.45** | 6,208 | 193 / 177 / 139 / 38 / 54 | 3.5 / 6.8 |
+| after, P >= 0.6 | 0.55 / 0.31 / 0.25 | 0.86 / 0.55 / 0.51 | 0.77 / 0.47 / 0.42 | 3,987 | 193 / 150 / 123 / 27 / 70 | 3.8 / 7.0 |
+| after, per-season P, min over years (0.5) | 0.53 / 0.35 / 0.27 | 0.91 / 0.52 / 0.50 | 0.77 / 0.47 / 0.41 | 6,764 | 193 / 144 / 116 / 28 / 77 | 4.2 / 7.4 |
+| v3 1 m alone (`norm`, 23 folds, 0.5) | 0.29 / 0.18 / 0.13 | 0.70 / 0.37 / 0.32 | 0.55 / 0.31 / 0.25 | 39,627 | 193 / 144 / 92 / 52 / 101 | 4.3 / 7.7 |
+| late fusion mean(v3, S2), 0.4 | 0.55 / 0.39 / **0.30** | 0.76 / 0.61 / 0.51 | 0.70 / 0.54 / 0.44 | 5,140 | 193 / 187 / 150 / 37 / 43 | 4.5 / 7.7 |
+| late fusion mean(v3, S2), 0.5 | 0.63 / 0.27 / 0.23 | 0.79 / 0.41 / 0.37 | 0.74 / 0.37 / 0.33 | 1,917 | 193 / 126 / 108 / 18 / 85 | 6.2 / 8.8 |
+
+The late fusion at 0.4 is the best pixel layer on the original 13 courses. It was not put through the error budget: v3's P exists only on the labelled corridor cells, not on the full grid that the variant build needs.
+
+**Per course, at P >= 0.5, before -> after (IoU).**
+
+* Big gains: Prairie Dunes 0.36 -> 0.78, Buffalo Dunes 0.05 -> 0.67, Mariah Hills 0.25 -> 0.34, Spirit Hollow
+  0.13 -> 0.23, Coldwater 0.25 -> 0.30, Gateway 0.44 -> 0.47.
+* Still failing:
+  * Eagle Bend 0.08 -> 0.03. Its native is mottled tall grass that is green in summer and close to the rough.
+  * Annbriar 0.00 -> 0.01, still missed.
+  * Ellis gets worse: 9,838 m2 predicted against 3,064 m2 of hand native, precision 0.19.
+* **Blue Hills (the golfer's confirmed no-native course).** The new model predicts 0 m2 in every landing
+  corridor and 0 m2 course-wide; the 13-course model predicted 154 m2. Gustin, L.A. Nickell, Rivercut and
+  Tomahawk Hills are also 0. Osage National has 794 m2 in its corridors (2 and 5), Pine Dunes 115 and National KC
+  117.
+
+### Drought gate (Amana): tried, does not work
+
+* **Per-season gate** (`s2year.py`, `s2y_loco.py`). Features are computed for each season separately and P is
+  aggregated over the seasons, so native must look native every year. A season counts as a drought season when the
+  course's own rough band browns >= 0.05 NDVI more, against its fairway, than in its best season. Drought seasons
+  are left out ("gated"). The idea: drought rough browns only in the drought year.
+* **Result on Amana's corridor false positive**, all at P >= 0.5:
+
+  | model (P >= 0.5) | Amana false native (m2) |
+  |---|---|
+  | 23-course, multi-year features | 5,095 |
+  | per-season, mean | 6,917 |
+  | per-season, gated | 6,835 |
+  | per-season, min over seasons | 4,472 |
+  | 13-course model, for reference | 6,147 |
+
+  The "drought" index flags 2023 at Amana, but also on Ellis, Pine Dunes, Prairie Dunes, Annbriar and others. 2023
+  was a regional drought.
+* **Why it fails.** Amana's false-native cells look like true native on every S2 feature, in every season (March
+  dormancy, NDVI std, fall NDVI): `fpdiag.py` medians match Gateway, Coldwater and Mozingo native.
+* **Other gates, also no separation.**
+  * A course-level gate on "share of far rough called native": Amana 48 % vs Mozingo 67 % (real native).
+  * Dropping the worst-year features: Amana 4,051 -> 3,813 m2.
+* **What it needs.** At 10 m this is a signal limit. A gate needs information S2 does not have, such as a
+  maintenance record, lidar height or the golfer.
+* **Amana in the error budget.** Unlike the 13-course model, the 23-course layer does not break Amana 14 (12 / 14,
+  regret 0.032). Its false native is still there: 14,593 m2 in the corridors at 1 m and 21.6 ha course-wide.
+
+### Error budget (n = 4000, seed 31; `ng_variant.py` + `ng_eb.py`; configs auto / truth)
+
+* **Base, for both sides.** The committed package, re-teed with the 3f1a201d rule and with vision_any/2 trees
+  re-made from the lidar (`platform/rebuild_tees_trees.py`, "what a build with the lidar stack gives").
+* **The variant** adds the held-out course's LOCO S2 native (`v2_model.native_mask`, strict eligibility, lidar
+  trees excluded) through the same gapfill.
+* **Truth.** The `error_budget.py` v1 harness for the original courses and the v2 harness for the
+  truth_sets_v2 courses (the 5 new ones included).
+* **Reproduction check.** The 13-course model through this harness reproduces the earlier table: Gateway 9 -> 10,
+  regret 0.424 -> 0.224; Spirit Hollow 17 and Amana 14 broken.
+
+| auto long grass | 7 card courses | Ellis / Spirit Hollow / National KC | 7 truth_sets_v2 held-out | 5 KS native | all 22: match / regret |
+|---|---|---|---|---|---|
+| none (control, this base) | 75 / 1.400 | 19 / 1.268 | 74 / 1.556 | 32 / 4.899 | 200 / 304, 9.122 |
+| 13-course S2, P >= 0.5 (old 12 only) | 76 / 1.125 | 18 / 1.244 | Amana 11 / 0.071, Annbriar same | - | - |
+| **23-course S2, P >= 0.5** | **76 / 1.164** | **16** / 1.265 | **73** / 1.583 | **48 / 1.867** | **213, 5.879** |
+| 23-course S2, P >= 0.6 | 76 / 1.157 | 16 / 1.273 | 73 / 1.581 | 48 / 1.787 | 213, 5.799 |
+
+At P >= 0.5, holes fixed (+) and broken (-) against the control:
+
+| course | holes (+ fixed / - broken) | matches | regret |
+|---|---|---|---|
+| Prairie Dunes | 1+ 5+ 6+ 7+ 8+ 9+ 12+ 13+ 16+ 17+ 18+ | 1 -> 12 | 1.649 -> 0.164 |
+| Buffalo Dunes | 7+ 10+ 11- 13+ 14+ 15+ 16+ | 7 -> 12 | 1.623 -> 0.256 |
+| Mariah Hills | 6- 13- 17+ 18+ | | 0.852 -> 0.703 |
+| Sand Creek Station | (same picks) | | 0.259 -> 0.228 |
+| Gateway | 1- 11+ 13+ | | 0.424 -> 0.274 |
+| Coldwater | (same picks) | | 0.472 -> 0.386 |
+| **Ellis** | **2- 9-** | | 0.375 -> 0.390 |
+| **Spirit Hollow** | **17-** | | |
+| **Rivercut** | **9-** | | 0.045 -> 0.071 |
+| Eagle Bend | (same picks: 7 / 14, 0.515) | | |
+| Amana | (not broken) | 12 | 0.031 -> 0.032 |
+
+Annbriar, Osage National, Gustin, L.A. Nickell, Tomahawk Hills, Blue Hills, Eagle Knoll, Hot Springs, Pine Dunes,
+Veenker and National KC are unchanged.
+
+* **Regret.** It beats "none" in every group: all 22 courses, 5.88 vs 9.12 strokes; the 7 card courses, 1.164 vs
+  1.400.
+* **Matches.** It does not match across the full held-out set. Away from the 5 new courses it loses 4 holes
+  (Ellis 2 and 9, Spirit Hollow 17, Rivercut 9) and gains 2 (Gateway), so the original 10 + 7 v2 courses go
+  168 -> 165. The breaks are false native on parkland or partly native courses.
+* **Not adopted.** That is exactly the hard-case failure the bar excludes.
+
+### Files
+
+* Scripts in `vision_any/s2/`:
+  * `s2year.py`, `s2y_loco.py`: per-season model and drought gate;
+  * `s2_apply.py`: the "before" model on new courses;
+  * `ng_variant.py`, `ng_eb.py`, `run_var.sh`, `ng_final.sh`, `ng_before.sh`: error budget;
+  * `fp_report.py`: false-native area per corridor and course-wide;
+  * `drought_diag.py`, `gate_diag.py`, `s2_loco_drop.py`: diagnostics.
+* Results: `s2/s2_results_ng.json`.
+* S2 stacks for the 10 new courses: `s2/<slug>/`.
+
+**Not verified.**
+
+* Routing and tees of the 5 new courses were checked on the routing map only; there are no per-hole tee sheets.
+* The new courses have no OB.
+* Mariah Hills' native islands are +/-10 yds; Eagle Bend's native beyond the golfer's 4 holes is from imagery
+  only.
+* The fused v3 + S2 model was scored at pixel level only (late fusion), not in the error budget.

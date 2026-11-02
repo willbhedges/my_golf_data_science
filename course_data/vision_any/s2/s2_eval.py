@@ -8,8 +8,9 @@ import s2lib as S2, common
 YD = 0.9144
 P = np.load(sys.argv[1]); thrs = [float(t) for t in sys.argv[2].split(",")]
 jout = sys.argv[sys.argv.index("--json") + 1] if "--json" in sys.argv else None
-COURSES = [c for c in S2.COURSES if c + "_p" in P.files]
-NAT = {"gateway_national", "spirit_hollow", "coldwater", "ellis", "mozingo", "annbriar"}
+COURSES = sorted({f[:-2] for f in P.files if f.endswith("_p")})
+import os
+NAT = set(os.environ.get("NAT", "gateway_national,spirit_hollow,coldwater,ellis,mozingo,annbriar").split(","))
 MIN_AREA = 250
 
 

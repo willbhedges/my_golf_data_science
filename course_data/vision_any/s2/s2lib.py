@@ -3,7 +3,10 @@ import os, warnings, numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 S2DIR = os.environ.get("S2DIR", os.path.join(HERE, "s2"))
 COURSES = ["gateway_national", "spirit_hollow", "coldwater", "ellis", "mozingo", "eagle_knoll", "veenker",
-           "pine_dunes", "hot_springs_arlington", "blue_hills", "national_kc", "annbriar", "amana_colonies"]
+           "pine_dunes", "hot_springs_arlington", "blue_hills", "national_kc", "annbriar", "amana_colonies",
+           # 2026-11-02 enlarged set (s2_longgrass.md 'Enlarged native set'): 5 no-native truth_sets_v2 courses + 5 KS native
+           "tomahawk_hills", "la_nickell", "gustin", "rivercut", "osage_national",
+           "sand_creek_station", "eagle_bend", "prairie_dunes", "mariah_hills", "buffalo_dunes"]
 NATIVE, ROUGH, FC = 4, 0, 1
 CTX = ["c_fairway", "c_mown", "c_canopy", "c_elig", "c_dfw_min", "c_dfw_mean", "c_canopy_nb"]
 
