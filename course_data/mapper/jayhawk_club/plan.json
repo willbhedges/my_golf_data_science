@@ -1,0 +1,443 @@
+{
+ "schema": "mapper_plan/1",
+ "slug": "jayhawk_club",
+ "set": "Black",
+ "n": 4000,
+ "base": "course_data/mapper/jayhawk_club/base/package.json",
+ "agent_layers": {
+  "dir": "course_data/mapper/jayhawk_club",
+  "files": {
+   "agent_zones.geojson": "56bfcae9506a0ab0",
+   "agent_tees.json": "e4a8de638833a2a9"
+  },
+  "mapper": "tool-builder demo (end-to-end test of course_data/mapper; not a blind evaluation mapper)",
+  "edits_made": "2026-11-02T05:49:44Z",
+  "base_package": "course_data/mapper/jayhawk_club/base/package.json",
+  "corridor_set": "Black",
+  "applied": "2026-11-02T05:49:45Z",
+  "ops": 22,
+  "tees_moved": 0,
+  "tees_checked": 2,
+  "holes": {
+   "1": {
+    "ops": [
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 4057
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 7161
+     }
+    ],
+    "tees": [
+     {
+      "set": "Black",
+      "action": "keep"
+     }
+    ],
+    "summary": "add recovery 4057 yd2; add recovery 7161 yd2"
+   },
+   "10": {
+    "ops": [
+     {
+      "op": "add",
+      "lie": "native",
+      "zones": 1,
+      "yd2": 5569
+     }
+    ],
+    "tees": [],
+    "summary": "add native 5569 yd2"
+   },
+   "2": {
+    "ops": [
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 198
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 130
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 195
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 130
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 111
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 287
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 812
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 151
+     }
+    ],
+    "tees": [],
+    "summary": "add recovery 198 yd2; add recovery 130 yd2; add recovery 195 yd2; add recovery 130 yd2; add recovery 111 yd2; add recovery 287 yd2; add recovery 812 yd2; add recovery 151 yd2"
+   },
+   "6": {
+    "ops": [
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 1512
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 195
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 93
+     }
+    ],
+    "tees": [],
+    "summary": "add recovery 1512 yd2; add recovery 195 yd2; add recovery 93 yd2"
+   },
+   "8": {
+    "ops": [
+     {
+      "op": "erase",
+      "lie": "ob",
+      "yd2": 22069
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 17753
+     }
+    ],
+    "tees": [],
+    "summary": "erase ob 22069 yd2; add recovery 17753 yd2"
+   },
+   "9": {
+    "ops": [
+     {
+      "op": "erase",
+      "lie": "fairway",
+      "yd2": 194
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 278
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 222
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 173
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 173
+     },
+     {
+      "op": "add",
+      "lie": "recovery",
+      "zones": 1,
+      "yd2": 309
+     }
+    ],
+    "tees": [
+     {
+      "set": "Black",
+      "action": "keep"
+     }
+    ],
+    "summary": "erase fairway 194 yd2; add recovery 278 yd2; add recovery 222 yd2; add recovery 173 yd2; add recovery 173 yd2; add recovery 309 yd2"
+   }
+  },
+  "skipped": []
+ },
+ "rows": [
+  {
+   "hole": "1",
+   "auto": {
+    "pick": "Driver",
+    "aim": -7.5,
+    "ev": 3.999,
+    "margin": 0.0389,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2890212,
+     38.9483102
+    ]
+   },
+   "agent": {
+    "pick": "Driver",
+    "aim": -7.5,
+    "ev": 4.092,
+    "margin": 0.0003,
+    "tie": true,
+    "runner": "4-wood",
+    "aim_ll": [
+     -95.2890212,
+     38.9483102
+    ]
+   },
+   "aim_apart": 0.0,
+   "changed": false,
+   "agent_edits": "add recovery 4057 yd2; add recovery 7161 yd2"
+  },
+  {
+   "hole": "2",
+   "auto": {
+    "pick": "Driver",
+    "aim": 20.0,
+    "ev": 4.6609,
+    "margin": 0.0632,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2868837,
+     38.9510321
+    ]
+   },
+   "agent": {
+    "pick": "Driver",
+    "aim": 17.5,
+    "ev": 4.6855,
+    "margin": 0.0555,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2868995,
+     38.9510156
+    ]
+   },
+   "aim_apart": 2.5,
+   "changed": false,
+   "agent_edits": "add recovery 198 yd2; add recovery 130 yd2; add recovery 195 yd2; add recovery 130 yd2; add recovery 111 yd2; add recovery 287 yd2; add recovery 812 yd2; add recovery 151 yd2"
+  },
+  {
+   "hole": "3",
+   "auto": {
+    "pick": "Driver",
+    "aim": 0.0,
+    "ev": 4.0665,
+    "margin": 0.062,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2921766,
+     38.950422
+    ]
+   },
+   "agent": {
+    "pick": "Driver",
+    "aim": 0.0,
+    "ev": 4.0665,
+    "margin": 0.062,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2921766,
+     38.950422
+    ]
+   },
+   "aim_apart": 0.0,
+   "changed": false,
+   "agent_edits": ""
+  },
+  {
+   "hole": "5",
+   "auto": {
+    "pick": "Driver",
+    "aim": -12.5,
+    "ev": 4.2106,
+    "margin": 0.1414,
+    "tie": false,
+    "runner": "Long iron",
+    "aim_ll": [
+     -95.2929059,
+     38.9553253
+    ]
+   },
+   "agent": {
+    "pick": "Driver",
+    "aim": -12.5,
+    "ev": 4.2106,
+    "margin": 0.1414,
+    "tie": false,
+    "runner": "Long iron",
+    "aim_ll": [
+     -95.2929059,
+     38.9553253
+    ]
+   },
+   "aim_apart": 0.0,
+   "changed": false,
+   "agent_edits": ""
+  },
+  {
+   "hole": "6",
+   "auto": {
+    "pick": "Driver",
+    "aim": -12.5,
+    "ev": 3.9138,
+    "margin": 0.0047,
+    "tie": true,
+    "runner": "4-wood",
+    "aim_ll": [
+     -95.2966653,
+     38.9556709
+    ]
+   },
+   "agent": {
+    "pick": "Driver",
+    "aim": -17.5,
+    "ev": 3.9392,
+    "margin": 0.0006,
+    "tie": true,
+    "runner": "4-wood",
+    "aim_ll": [
+     -95.2966663,
+     38.9556297
+    ]
+   },
+   "aim_apart": 5.0,
+   "changed": false,
+   "agent_edits": "add recovery 1512 yd2; add recovery 195 yd2; add recovery 93 yd2"
+  },
+  {
+   "hole": "8",
+   "auto": {
+    "pick": "Driver",
+    "aim": -22.5,
+    "ev": 4.1204,
+    "margin": 0.1163,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2975873,
+     38.9552709
+    ]
+   },
+   "agent": {
+    "pick": "Driver",
+    "aim": -27.5,
+    "ev": 4.1368,
+    "margin": 0.102,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2975716,
+     38.9553102
+    ]
+   },
+   "aim_apart": 5.0,
+   "changed": false,
+   "agent_edits": "erase ob 22069 yd2; add recovery 17753 yd2"
+  },
+  {
+   "hole": "9",
+   "auto": {
+    "pick": "Driver",
+    "aim": -12.5,
+    "ev": 3.9896,
+    "margin": 0.0342,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2879125,
+     38.9515481
+    ]
+   },
+   "agent": {
+    "pick": "Driver",
+    "aim": -5.0,
+    "ev": 4.0242,
+    "margin": 0.0105,
+    "tie": false,
+    "runner": "2-wood",
+    "aim_ll": [
+     -95.2878596,
+     38.9515941
+    ]
+   },
+   "aim_apart": 7.5,
+   "changed": false,
+   "agent_edits": "erase fairway 194 yd2; add recovery 278 yd2; add recovery 222 yd2; add recovery 173 yd2; add recovery 173 yd2; add recovery 309 yd2"
+  },
+  {
+   "hole": "10",
+   "auto": {
+    "pick": "4-wood",
+    "aim": 5.0,
+    "ev": 3.9922,
+    "margin": 0.002,
+    "tie": true,
+    "runner": "Driver",
+    "aim_ll": [
+     -95.2939912,
+     38.9515449
+    ]
+   },
+   "agent": {
+    "pick": "4-wood",
+    "aim": 5.0,
+    "ev": 3.9946,
+    "margin": 0.0047,
+    "tie": true,
+    "runner": "Driver",
+    "aim_ll": [
+     -95.2939912,
+     38.9515449
+    ]
+   },
+   "aim_apart": 0.0,
+   "changed": false,
+   "agent_edits": "add native 5569 yd2"
+  }
+ ]
+}

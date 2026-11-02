@@ -147,7 +147,7 @@ def corridor_sheets(slug, ref, fj, h, S, out):
          C.title(gridw(photo, fr, a0, a1, lat), f"bare photo NAIP {py} (0.3-0.6 m)", 0.4)]
     if ys:
         P.append(C.title(gridw(C._u8(S[ys[0]].warp(fr)[..., :3]), fr, a0, a1, lat), f"2nd year: {S[ys[0]].label}", 0.4))
-    C.save(os.path.join(out, f"h{int(ref):02d}_corridor_a.png"), C.stack(P, 3))
+    C.save(os.path.join(out, f"h{int(ref):02d}_corridor_a.png"), C.stack(P, len(P)))
     Q = []
     tz = [z for z in zones if z["lie"] == "recovery"]
     if "hag" in S:
@@ -161,7 +161,7 @@ def corridor_sheets(slug, ref, fj, h, S, out):
     elif "dem" in S:
         Q.append(C.title(gridw(hillshade(S["dem"], fr), fr, a0, a1, lat), "DEM hillshade (sun NW)", 0.4))
     if Q:
-        C.save(os.path.join(out, f"h{int(ref):02d}_corridor_b.png"), C.stack(Q, 3))
+        C.save(os.path.join(out, f"h{int(ref):02d}_corridor_b.png"), C.stack(Q, len(Q)))
     return len(P) + len(Q)
 
 
@@ -213,7 +213,7 @@ def tee_sheet(slug, ref, fj, h, S, boxes, out):
     ys, _ = other_years(S)
     if ys:
         P.append(C.title(gridw(C._u8(S[ys[0]].warp(fr)[..., :3]), fr, a0, a1, lat), f"{S[ys[0]].label}", 0.4))
-    C.save(os.path.join(out, f"h{int(ref):02d}_tees.png"), C.stack(P, 3))
+    C.save(os.path.join(out, f"h{int(ref):02d}_tees.png"), C.stack(P, len(P)))
     return len(P)
 
 

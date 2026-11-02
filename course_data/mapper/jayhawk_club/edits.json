@@ -1,0 +1,470 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "jayhawk_club",
+ "corridor_set": "Black",
+ "mapper": "tool-builder demo (end-to-end test of course_data/mapper; not a blind evaluation mapper)",
+ "started": "2026-11-02T06:35Z",
+ "minutes": 30,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "trees",
+    "ob",
+    "long_grass",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "no lidar: trees from the photo only. Tree strip right between fairway and the house lots; scattered crowns left of the path. OB right kept (houses at +40..+60).",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       14,
+       31,
+       130,
+       370
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "continuous crowns between the fairway edge and the lot line, NAIP 2021"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       -70,
+       -34,
+       135,
+       335
+      ]
+     },
+     "confidence": "low",
+     "evidence": "scattered crowns left of the cart path; drawn as a stand"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "trees",
+    "long_grass",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland, single crowns both sides",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -10,
+       341,
+       8,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown, NAIP 2021"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -30,
+       316,
+       6,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28,
+       303,
+       7,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -18,
+       259,
+       6,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -37,
+       253,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       20,
+       32,
+       226,
+       250
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crowns right of the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       46,
+       70,
+       248,
+       282
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "stand right of the path"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       12,
+       173,
+       7,
+       7
+      ]
+     },
+     "confidence": "low",
+     "evidence": "crown short of the landing zone"
+    }
+   ]
+  },
+  "3": {
+   "reviewed": [],
+   "confidence": "low",
+   "note": "NOT MAPPED: the package routing is wrong here (tee walked back through a parking lot, corridor over buildings); a mapper cannot fix routing",
+   "edits": []
+  },
+  "5": {
+   "reviewed": [],
+   "confidence": "low",
+   "note": "NOT MAPPED: routing wrong (line across a road and house lots, tee across the pond)",
+   "edits": []
+  },
+  "6": {
+   "reviewed": [
+    "trees",
+    "ob",
+    "fairway",
+    "long_grass"
+   ],
+   "confidence": "medium",
+   "note": "tree line right of the fairway in front of the OB lots",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       14,
+       30,
+       250,
+       345
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "dark crowns between fairway and path / lots"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -38,
+       305,
+       7,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -36,
+       243,
+       5,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    }
+   ]
+  },
+  "8": {
+   "reviewed": [
+    "trees",
+    "ob",
+    "water"
+   ],
+   "confidence": "medium",
+   "note": "right of the path is woods with no houses visible inside the window: outline-OB erased, woods added",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       0,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "only canopy to +70 in NAIP 2021; no roofs, road or fence"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "band": {
+       "left": [
+        [
+         120,
+         8
+        ],
+        [
+         200,
+         8
+        ],
+        [
+         260,
+         12
+        ],
+        [
+         280,
+         3
+        ],
+        [
+         400,
+         3
+        ]
+       ],
+       "right": [
+        [
+         120,
+         70
+        ],
+        [
+         400,
+         70
+        ]
+       ]
+      }
+     },
+     "confidence": "medium",
+     "evidence": "continuous woods right of the path"
+    }
+   ]
+  },
+  "9": {
+   "reviewed": [
+    "trees",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "a crown overhangs the fairway at 330-355",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "fairway",
+     "shape": {
+      "ell": [
+       -8,
+       343,
+       9,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tree crown over the left half of the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -8,
+       343,
+       9,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "same crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -38,
+       274,
+       8,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -27,
+       217,
+       7,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -48,
+       219,
+       7,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       48,
+       249,
+       10,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "large crown right"
+    }
+   ]
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "water",
+    "trees"
+   ],
+   "confidence": "low",
+   "note": "unmown buffer along the creek on the left",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -53,
+       -33,
+       120,
+       400
+      ]
+     },
+     "confidence": "low",
+     "evidence": "textured unmown strip both banks of the creek; only one NAIP year, so not second-year checked"
+    }
+   ]
+  }
+ },
+ "tees": {
+  "6": {
+   "Black": {
+    "action": "",
+    "confidence": "low",
+    "evidence": "first pass moved it to the OSM box 41 yds ahead; review.md showed measured 329 vs card 444, so that box is a forward set: reverted. Auto point is on a road; no Black box visible on this line."
+   }
+  },
+  "1": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "tee_centroid on an OSM box"
+   }
+  },
+  "9": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "tee_centroid on an OSM box"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "3",
+   "what": "routing wrong: not mapped"
+  },
+  {
+   "hole": "5",
+   "what": "routing wrong: not mapped"
+  },
+  {
+   "hole": "all",
+   "what": "no lidar / no second NAIP year in the repo for this course: trees from one photo, long grass not second-year checked"
+  },
+  {
+   "hole": "2, 8",
+   "what": "Black tees are walkbacks; no box visible on the line (not moved)"
+  },
+  {
+   "hole": "6",
+   "what": "Black tee: auto point on a road (walkback_capped); no box at the card length visible; not moved"
+  }
+ ]
+}
