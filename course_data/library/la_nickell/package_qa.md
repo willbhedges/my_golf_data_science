@@ -1,6 +1,6 @@
 # L.A. Nickell Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-11-02T16:47:38Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-02T19:33:39Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
@@ -9,7 +9,7 @@ Built 2026-11-02T16:47:38Z. OSM way/387047950. Scorecard: golfify (golfify). Tee
 | | |
 |---|---|
 | holes_built | 18 |
-| holes_mapped | 17 |
+| holes_mapped | 18 |
 | greens_found | 18 |
 | tee_boxes | 40 |
 | tees_with_colour | 0 |
@@ -17,9 +17,9 @@ Built 2026-11-02T16:47:38Z. OSM way/387047950. Scorecard: golfify (golfify). Tee
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.284 |
 | mean_confidence | 0.772 |
-| osm_score | 0.843 |
+| osm_score | 0.857 |
 
-OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1, golf=fairway 22, golf=green 20, golf=hole 17, golf=tee 40, golf=water_hazard 3, holes_with_par 17, water_lines 1, water_polygons 4
+OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1, golf=fairway 22, golf=green 20, golf=hole 18, golf=tee 40, golf=water_hazard 3, holes_with_par 18, water_lines 1, water_polygons 4
 
 ## Holes
 
@@ -47,7 +47,7 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 ## Stages
 
 - **resolve**: ok: way/387047950 L.A. Nickell Golf Course (Columbia, MO)
-- **osm**: ok: 422 features
+- **osm**: ok: 423 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
