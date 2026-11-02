@@ -1,10 +1,15 @@
 {
- "fetched_utc": "2026-10-30T04:06:05Z",
+ "fetched_utc": "2026-11-01T20:59:03Z",
  "tried": [
   {
    "source": "golfify",
    "ok": true,
    "info": "https://www.golfify.io/courses/pevely-farms-golf-club"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: pevely-farms-golf-course: HTTP 404; the-pevely-farms-golf-course: HTTP 404; pevely-farms-golf-club: no scorecard on the page; pevely-farms-country-club: HTTP 404"
   },
   {
    "source": "club_site",
@@ -591,5 +596,33 @@
     }
    }
   }
- ]
+ ],
+ "consensus": {
+  "base": "golfify",
+  "base_url": "https://www.golfify.io/courses/pevely-farms-golf-club",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "golfify https://www.golfify.io/courses/pevely-farms-golf-club": {
+    "holes": 18,
+    "fit": 12,
+    "share": 0.667,
+    "mean_err": 19.7,
+    "all_sets": 0.347,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 1
+   },
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/d8042f2c-ef07-44c7-bea0-c86aa6c919e1": {
+    "holes": 18,
+    "fit": 12,
+    "share": 0.667,
+    "mean_err": 19.7,
+    "all_sets": 0.156,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 1
+   }
+  }
+ }
 }
