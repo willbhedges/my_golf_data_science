@@ -1,6 +1,6 @@
 # A. L. Gustin Golf Course (Columbia, MO) - Black tees
 
-Built 2026-11-02T01:29:26Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T02:36:05Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
