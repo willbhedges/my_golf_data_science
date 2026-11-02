@@ -1,0 +1,539 @@
+{
+ "slug": "veenker",
+ "mapper": "mapper-veenker-2",
+ "made": "2026-11-02T06:53:46Z",
+ "corridor_set": "Blue",
+ "base_package": "course_data/mapper/veenker/base/package.json",
+ "base_built": "2026-11-02T02:40:58Z",
+ "minutes": 50,
+ "edits_sha": "ea8650f5db34ef7b",
+ "schema": "agent_tees/1",
+ "holes": {
+  "1": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6514799,
+     42.0414217
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.651469,
+     42.0412904
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6514595,
+     42.0411754
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "2": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6517233,
+     42.0370914
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6522354,
+     42.0369103
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.652453,
+     42.0368493
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "3": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6556087,
+     42.0358374
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6553769,
+     42.0368463
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "4": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6532764,
+     42.0377722
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6533535,
+     42.0378023
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6534515,
+     42.0378405
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "5": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6566328,
+     42.0390594
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6563615,
+     42.0386618
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6562863,
+     42.038412
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "6": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6565187,
+     42.0355442
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6562547,
+     42.0355531
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6556449,
+     42.0358128
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "7": {
+   "Blue": {
+    "action": "move",
+    "auto_ll": [
+     -93.6524647,
+     42.0351391
+    ],
+    "auto_method": "lidar_pad_capped",
+    "confidence": "medium",
+    "evidence": "auto Blue sits on the 4-lane highway (no box); the only box behind the Red box is the Gold box on the hole line ~9 yds ahead: Blue placed at its back. Card 590 cannot be reached without a box in the road",
+    "tee_ll": [
+     -93.6524048,
+     42.0352217
+    ],
+    "moved_yd": 11.4
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.652406,
+     42.0352267
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6518873,
+     42.0352684
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "8": {
+   "Blue": {
+    "action": "move",
+    "auto_ll": [
+     -93.646157,
+     42.0364287
+    ],
+    "auto_method": "lidar_pad",
+    "confidence": "medium",
+    "evidence": "auto Blue (lidar pad) is in the creek / trees; no box behind the Gold box in either year: moved to the back of the Gold box (card 181 vs ~170 measured)",
+    "tee_ll": [
+     -93.6462592,
+     42.0365601
+    ],
+    "moved_yd": 18.4
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6462198,
+     42.0366599
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6456718,
+     42.036831
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "9": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6450537,
+     42.0382059
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6455012,
+     42.0383098
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6461815,
+     42.0384592
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "10": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6504789,
+     42.0412202
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.650106,
+     42.0409345
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6500238,
+     42.0408377
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "11": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6485052,
+     42.0371036
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6487151,
+     42.0370289
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "12": {
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6504956,
+     42.0364181
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6506564,
+     42.0363628
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "13": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6529549,
+     42.0361506
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6528096,
+     42.0362259
+    ],
+    "auto_method": "tee_centroid",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.652637,
+     42.0363153
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "14": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6515588,
+     42.0379277
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6516433,
+     42.0380707
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "15": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6522921,
+     42.0415108
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6525211,
+     42.0412948
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6527618,
+     42.0409468
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "16": {
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6556093,
+     42.0402435
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6546664,
+     42.0395771
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "17": {
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6514994,
+     42.0377033
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6510084,
+     42.0375484
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  },
+  "18": {
+   "Blue": {
+    "action": "keep",
+    "auto_ll": [
+     -93.648606,
+     42.0369998
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Gold": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6486719,
+     42.037095
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   },
+   "Red": {
+    "action": "keep",
+    "auto_ll": [
+     -93.6498071,
+     42.0378329
+    ],
+    "auto_method": "tee_axis",
+    "confidence": null,
+    "evidence": null
+   }
+  }
+ }
+}

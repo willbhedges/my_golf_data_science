@@ -1,0 +1,932 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "veenker",
+ "corridor_set": "Blue",
+ "mapper": "mapper-veenker-2",
+ "started": "2026-11-02T06:38Z",
+ "minutes": 50,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "parkland, no native; two crowns missing from the auto trees; lidar crowns at (-50,346),(-20,142),(37,280) were removed (grass in 2021 and 2023)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -30,
+       254,
+       6,
+       7
+      ]
+     },
+     "confidence": "high",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (single tree left of the fairway beside the cart path)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       23,
+       308,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (single tree right, only partly in the auto outline)"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "tree corridors match lidar and photo; dark band inside the left canopy edge is shadow (no lidar return)",
+   "edits": []
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "small trees by the cart path left of the fairway at 260-275",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -11,
+       268,
+       4,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "two small crowns at the cart path, 2023 and 2021, lidar 2020"
+    }
+   ]
+  },
+  "4": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "auto layers match; lidar crown at (-40,246) is gone in 2021 and 2023",
+   "edits": []
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "lidar crowns at (-44,219),(-40,247) are gone in both photo years; right pond at (+40,295) looks algae-covered/very shallow (pale in 2021, whitish in CIR): left as water",
+   "edits": []
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "no fairway 120-250: photo shows rough there in both years (OSM fairway starts ~252), left as is; Blue tee moved off the highway",
+   "edits": []
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto trees miss most of the scattered crowns right of the fairway 160-280 and two left. Check '0% on lidar canopy' = 0% on the AUTO tree layer: the 2020 lidar shows >2.5 m canopy across edit 0 (touching crowns in both photo years)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       26,
+       261,
+       13,
+       16
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (large crown cluster right of the landing zone)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       14,
+       238,
+       8,
+       11
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       42,
+       236,
+       7,
+       11
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       16,
+       199,
+       11,
+       11
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       39,
+       193,
+       11,
+       13
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43,
+       170,
+       7,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -51,
+       245,
+       9,
+       15
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (left)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -30,
+       315,
+       8,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (left, second fairway bend)"
+    }
+   ]
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left crowns face the fairway at 260-300 beyond the auto outline; auto tree polygon right at 185-246 is open grass in 2023 (trees present in 2021: removed)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -21,
+       278,
+       10,
+       17
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (left crowns reach x -12, auto stops at ~-30)"
+    },
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       20,
+       44,
+       182,
+       250
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto trees (lidar 2020) on open mown grass in NAIP 2023; crowns were still in 2021, so removed between 2021 and 2023"
+    }
+   ]
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto water left is the highway/rail corridor (grey road in CIR, cars visible): erased, road edge marked OB; auto OB wedge on grass erased; lidar tree at 260-300 right of the cart path is gone in both years",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       -12,
+       235,
+       400
+      ]
+     },
+     "confidence": "high",
+     "evidence": "no water: four-lane road and rail line in NAIP 2023 and 2021, grey in CIR"
+    },
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       -12,
+       230,
+       310
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto OB wedge lies on mown rough between the cart path and the road; nothing built there"
+    },
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        -14,
+        400
+       ],
+       [
+        -19,
+        380
+       ],
+       [
+        -29,
+        340
+       ],
+       [
+        -40,
+        300
+       ],
+       [
+        -57,
+        260
+       ],
+       [
+        -70,
+        232
+       ],
+       [
+        -70,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "highway pavement edge visible 2023 and 2021 (line at the road shoulder)"
+    },
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       -6,
+       22,
+       272,
+       305
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto trees from 2020 lidar on open grass in both NAIP 2021 and 2023"
+    }
+   ]
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "crowns at the dog-leg corner left and right of the landing zone missing from the auto trees",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -2,
+       320,
+       13,
+       12
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (crowns inside the dog-leg, left of the fairway)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       51,
+       270,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (right edge of the fairway)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       60,
+       287,
+       7,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       12,
+       196,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       14,
+       178,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer"
+    }
+   ]
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "unmown tufted grass on the slope beyond the dog-leg toward the creek (300-330 left)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        300
+       ],
+       [
+        -45,
+        297
+       ],
+       [
+        -25,
+        302
+       ],
+       [
+        -18,
+        312
+       ],
+       [
+        -20,
+        328
+       ],
+       [
+        -40,
+        332
+       ],
+       [
+        -70,
+        330
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan coarse tufted grass, no mowing, in 2023 and 2021; mown rough below ~297; >30 yds from the fairway"
+    }
+   ]
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "carry area in front of the tee is unmown native grass (crisp mown edge at ~172)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -30,
+        120
+       ],
+       [
+        -28,
+        140
+       ],
+       [
+        -20,
+        155
+       ],
+       [
+        -18,
+        170
+       ],
+       [
+        -5,
+        173
+       ],
+       [
+        10,
+        173
+       ],
+       [
+        20,
+        170
+       ],
+       [
+        22,
+        150
+       ],
+       [
+        20,
+        120
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "tufted tan grass with seed heads 125-172 in 2023 and 2021, crisp mown edge at ~172; 50 yds short of the fairway"
+    }
+   ]
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right tree band 180-317 nearly touches the fairway and is mostly missing from the auto trees; auto polygon right at 290-350 is open grass in 2023. Check on edit 1 (1% on the auto canopy) is expected: the band is lidar >2.5 m canopy the auto tree layer left out; crowns touch in 2023 and 2021",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       43,
+       70,
+       288,
+       352
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "open mown grass with one dead snag in NAIP 2023 where the auto (2020 lidar) trees are"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        8,
+        222
+       ],
+       [
+        8,
+        268
+       ],
+       [
+        12,
+        282
+       ],
+       [
+        14,
+        305
+       ],
+       [
+        22,
+        318
+       ],
+       [
+        35,
+        318
+       ],
+       [
+        42,
+        300
+       ],
+       [
+        42,
+        275
+       ],
+       [
+        35,
+        262
+       ],
+       [
+        30,
+        240
+       ],
+       [
+        30,
+        222
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "touching crowns right of the fairway 222-318 in NAIP 2023 and 2021 and the 2020 lidar"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       16,
+       200,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (right)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -17,
+       342,
+       8,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible on NAIP 2023 and 2021 and in the 2020 lidar; missing from the auto tree layer (left)"
+    }
+   ]
+  }
+ },
+ "tees": {
+  "1": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "2": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "3": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "4": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "5": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "6": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "7": {
+   "Blue": {
+    "action": "move",
+    "to": [
+     -7,
+     9
+    ],
+    "confidence": "medium",
+    "evidence": "auto Blue sits on the 4-lane highway (no box); the only box behind the Red box is the Gold box on the hole line ~9 yds ahead: Blue placed at its back. Card 590 cannot be reached without a box in the road"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "8": {
+   "Blue": {
+    "action": "move",
+    "to": [
+     -14,
+     12
+    ],
+    "confidence": "medium",
+    "evidence": "auto Blue (lidar pad) is in the creek / trees; no box behind the Gold box in either year: moved to the back of the Gold box (card 181 vs ~170 measured)"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "9": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "10": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "11": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "12": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "13": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "14": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "15": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "16": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "17": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "18": {
+   "Blue": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "3",
+   "what": "Gold tee (walkback, on a cart path 44 yds ahead of Blue): no box on the line at that length; left auto"
+  },
+  {
+   "hole": "11",
+   "what": "Red tee (texture_pad, 57 yds ahead of Blue on grass): no box seen; left auto"
+  },
+  {
+   "hole": "12",
+   "what": "Blue tee 9 yds behind the mapped box on rough; no separate box visible; left auto"
+  },
+  {
+   "hole": "14",
+   "what": "Red tee (walkback, 70 yds ahead of Blue): no box visible; left auto"
+  },
+  {
+   "hole": "16",
+   "what": "Blue tee (lidar pad) on a faint lighter patch by the cart path; box not clear in either year; left auto"
+  },
+  {
+   "hole": "17",
+   "what": "Blue tee just in front of the footbridge, ~5 yds behind the Gold box; left auto"
+  },
+  {
+   "hole": "5",
+   "what": "pond right at 282-316: algae-covered or drained? left as water"
+  },
+  {
+   "hole": "7",
+   "what": "whether there is fairway 150-250 (looks like rough both years); and Blue tee length (card 590 vs ~580 from the Gold box)"
+  },
+  {
+   "hole": "all",
+   "what": "Ash-era removals: several 2020-lidar trees are gone by 2023; I erased only those clearly gone near play (h10, h12, h18); others far from play left as auto"
+  }
+ ]
+}
