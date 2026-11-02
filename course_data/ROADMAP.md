@@ -3,35 +3,35 @@
 Owner: the coordinating Claude session (2-hourly manager check-in, scheduled task "Golf pipeline manager check-in").
 Success = per hole, the plan's club matches and the aim is within 10 yds of the plan built on a hand-checked map.
 
-## Where we are (2026-11-01)
+## Where we are (weekly review 2026-11-01)
 
-| link | today | source |
+| link | now | source |
 |---|---|---|
-| find the course | ~89 % first try (66-course national batch); resorts with several courses weakest | library/status.json |
-| build without crashing | 37/66 first pass; all causes engineering, fixes queued | course-page runs |
-| pair tee ↔ green, no card | 86.9 % of holes; 35 % of courses all 18 | zero_tap/PATHROUTE.md v2 |
-| tee yardage, no card | back within 10 yds 70 %; par 96 % | tees/CARDLESS.md |
-| hazards (trees / water / OB / fairway edge) | not measured on its own | — |
-| plan, well-mapped course, no card | 80–85 % of holes same club + aim ≤ 10 yds | platform/CARDBLIND.md |
-| plan, barely-mapped course | ~50 % | platform/CARDBLIND.md |
-| plan with the TRUE card vs hand truth | ~77 % of clubs | platform/PIPELINE.md §5 |
-| national OSM coverage | unknown (index run broken: every course tier D) | library/us_readiness.json |
+| find the course | ~89 % first try (66-course national batch); resort/multi-course fixes queued | library/status.json |
+| build without crashing | 37/66 first pass; every failure cause fixed, 45 courses re-queued | course-page runs 13–15 |
+| pair tee ↔ green, no card (OSM-mapped) | 86.9 % of holes; 35 % of courses all right (153 test courses) | zero_tap/PATHROUTE.md v2 |
+| pair tee ↔ green, unmapped (honest, 74 courses) | ~80 % of holes; 14–26 % all right | zero_tap/UNMAPPED.md |
+| numbering | 25 % no taps → 94 % after confirms + one "hole 1" tap | PATHROUTE.md resolve |
+| confirm taps to 98 % pairs | 4.7 / course (no re-solve); re-solve 7.1 (fix running) | summary_resolve_calib2.json |
+| tee yardage, no card | back within 10 yds 70 %; 2nd set 52 %; par 96 % | tees/CARDLESS.md |
+| plan, auto build with true card vs hand truth | **74 % same club + aim ≤ 10 yds** (138 tee shots, 10 courses) | platform/ERROR_BUDGET.md |
+| what causes the misses | tees 42 %, long grass 25 % (64 % of regret; layer off: detector can't tell native from mown rough), trees 14 %, fairway 11 % | ERROR_BUDGET.md |
+| plan, no card, well-mapped | 80–85 % (vs card plan) | platform/CARDBLIND.md |
+| plan, barely-mapped | 17/33 holes (was 2/32) | CARDBLIND.md pathroute |
+| hand-truth courses | 13 (5 + 2 new truth_sets_v2 + error-budget set); 7 more being traced | truth_sets_v2 |
+| national OSM coverage | not yet (index rebuilt, full run queued) | library/us_readiness.json |
 
-## Workstreams (in order of payoff)
+## Workstreams (re-ranked 2026-11-01 by measured payoff)
 
-1. **Error budget (first).** On every hand-truth course, swap one truth layer at a time (routing, tees, greens,
-   fairway, trees, water, OB, elevation) into the auto build and measure how many wrong clubs/aims each layer
-   fixes. Decides where the next weeks go. → `course_data/platform/ERROR_BUDGET.md`
-2. **Hazard layers.** Fix the layers the error budget ranks worst (expected: trees/OB lines and fairway edges),
-   measured against hand zones.
-3. **More truth.** Grow the hand-truth set from 5 to 15–20 courses (reviewed library courses first) so every
-   number above has a real denominator.
-4. **Unmapped courses.** Greens / tees / fairways from NAIP + lidar where OSM has nothing; score on the
-   zero_tap `unmapped_*` tiers.
-5. **National coverage.** Fix the national index so we know what share of US courses is tier A/B/C/D.
-6. **Confirm taps.** App asks only about low-confidence holes, re-solves after each answer (pathroute_v2
-   confidence + confirm-and-resolve), "this is hole 1" fixes numbering.
-7. **Build reliability.** Every failed build gets a cause and a re-queue within one check-in.
+1. **Tee positions** (42 % of wrong plans): back-set box choice on long / split tee complexes. Agent running.
+2. **Long grass** (64 % of regret): new native-vs-mown classifier (lidar height, fall colour, texture); stays off
+   until it beats "none" leave-one-course-out. Fallback: a golfer tap "native grass along this hole?". Agent running.
+3. **Tree edge** (~5 yds short) and **fairway outline**: with the tee fix (they interact).
+4. **Build reliability + QA of rebuilt courses** → publish passes. QA agent running; consensus set-order bug fixed.
+5. **Confirm taps**: sticky re-solve so taps drop below 4.7. Agent running.
+6. **More hand truth**: 7 courses being traced (packages landed after the Overpass outage).
+7. **Unmapped courses**: leakage-free perception retrain on Actions, then false-tee re-scorer and pairing evidence.
+8. **National coverage**: full cell run queued.
 
 ## Milestones
 
@@ -44,7 +44,7 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 
 | milestone | target | confidence |
 |---|---|---|
-| M1 error budget + real national coverage | 2026-11-08 | high |
+| M1 error budget (**done 11-01**) + real national coverage | 2026-11-08 | high (coverage waits on runners) |
 | M2 well-mapped, ≤ 5 taps → ≥ 95 % of holes right (≥ 15 truth courses) | 2026-12-06 | medium |
 | M3 well-mapped no taps ≥ 90 %; barely-mapped ≥ 75 % | 2027-02-28 | low–medium |
 | M4 unmapped courses usable with taps | 2027-04-30 | low |
