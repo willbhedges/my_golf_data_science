@@ -1,5 +1,5 @@
 """Course module for Hodge Park Golf Course (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T21:42:55Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T23:39:03Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_hodge_park.json
 
