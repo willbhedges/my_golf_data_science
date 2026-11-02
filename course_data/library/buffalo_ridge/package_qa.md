@@ -1,6 +1,6 @@
 # Buffalo Ridge Springs Golf Course (Branson, MO) - Buffalo tees
 
-Built 2026-11-02T13:32:12Z. OSM way/399501608. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-11-02T16:58:31Z. OSM way/399501608. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-02T13:32:12Z. OSM way/399501608. Scorecard: golfify (golfify). Tee
 | holes_with_trees_or_long_grass_in_landing_zone | 11 |
 | of_par4_5 | 13 |
 | mean_landing_osm_share | 0.516 |
-| mean_confidence | 0.865 |
+| mean_confidence | 0.864 |
 | osm_score | 0.872 |
 
 OSM features inside the course: buildings 2, golf=bunker 88, golf=cartpath 36, golf=fairway 52, golf=green 20, golf=hole 18, golf=lateral_water_hazard 20, golf=rough 5, golf=tee 83, holes_with_par 18, water_lines 9, water_polygons 20
@@ -30,7 +30,7 @@ OSM features inside the course: buildings 2, golf=bunker 88, golf=cartpath 36, g
 | 5 | 4 | 449 / 448 | 23 | 0.85 | auto | 48% | 13% | 38% | tee stage: Buffalo tee_centroid |  |
 | 6 | 4 | 353 / 352 | 162 | 0.78 | check the flags | 33% | 21% | 46% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
 | 7 | 3 | 245 / 245 | 339 | 0.93 | auto | 100% | 0% | 0% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
-| 8 | 5 | 524 / 519 | 195 | 0.84 | auto | 62% | 7% | 31% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
+| 8 | 5 | 524 / 519 | 195 | 0.83 | auto | 62% | 4% | 34% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
 | 9 | 3 | 198 / 198 | 252 | 0.96 | auto | 100% | 0% | 0% | tee stage: Buffalo tee_centroid |  |
 | 10 | 4 | 377 / 377 | 288 | 0.89 | auto | 45% | 41% | 14% | tee stage: Buffalo tee_centroid |  |
 | 11 | 3 | 158 / 158 | 291 | 0.93 | auto | 100% | 0% | 0% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
@@ -55,7 +55,7 @@ OSM features inside the course: buildings 2, golf=bunker 88, golf=cartpath 36, g
 - **imagery**: ok: course_data/packages/buffalo_ridge/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020
 - **elevation**: ok: course_data/packages/buffalo_ridge/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -98833 m2 {'raised': 87495, 'strip': 10745, 'road': 167, 'cells': 373}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 13 polygons (outside 13); mode replace
 - **agent_layers**: ok: course_data/mapper/buffalo_ridge (18 zone edits on 6 holes, 1 tee(s) moved, 126 checked)

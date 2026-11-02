@@ -2,12 +2,14 @@
 
 **Status: needs confirm** — confirm holes 1, 15, 16
 
-* page: `course_data/library/buffalo_ridge/page.html` (2.7 MB); request `course_data/requests/course_page_buffalo_ridge.json`; built 2026-11-02T13:32Z
+* page: `course_data/library/buffalo_ridge/page.html` (2.7 MB); request `course_data/requests/course_page_buffalo_ridge.json`; built 2026-11-02T16:58Z
 * course: Buffalo Ridge Springs Golf Course (Branson, MO), OSM way/399501608; holes: v2+structure (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Buffalo, Gold (the two longest sets on the card (combination sets skipped)); page sets: Buffalo, Gold
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 60, 70] F; calm-day picks with 48 prior draws
 * imagery on the page: 2020-07-08,2020-07-26; package imagery 2020
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
+
+* native-grass questions (Buffalo tees, library check cards): holes 18, 13 (2 asked of 13 framed holes)
 
 Course-level reasons:
 
@@ -51,7 +53,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 5 | 4 | PASS | 4-wood +4 (tie) |  |
 | 6 | 4 | PASS | Driver -9 |  |
 | 7 | 3 | PASS |  |  |
-| 8 | 5 | PASS | Driver +0 |  |
+| 8 | 5 | PASS | Driver -0 |  |
 | 9 | 3 | PASS |  |  |
 | 10 | 4 | PASS | 2-wood -55 (tie) |  |
 | 11 | 3 | PASS |  |  |
@@ -59,7 +61,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 13 | 4 | PASS | Driver -28 |  |
 | 14 | 5 | PASS | Driver -5 |  |
 | 15 | 4 | PASS | 4-wood -38 |  |
-| 16 | 4 | CHECK | Driver +14 | tee: tee marker not on an OSM tee box (walkback; 31 yds from the nearest OSM tee box) |
+| 16 | 4 | CHECK | Driver +13 | tee: tee marker not on an OSM tee box (walkback; 31 yds from the nearest OSM tee box) |
 | 17 | 3 | PASS |  |  |
 | 18 | 5 | PASS | Driver -20 |  |
 
