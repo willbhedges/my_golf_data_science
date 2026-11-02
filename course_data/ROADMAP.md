@@ -19,7 +19,7 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 | plan, no card, well-mapped | 80–85 % (vs card plan) | platform/CARDBLIND.md |
 | plan, barely-mapped | 17/33 holes (was 2/32) | CARDBLIND.md pathroute |
 | hand-truth courses | 13 (5 + 2 new truth_sets_v2 + error-budget set); 7 more being traced | truth_sets_v2 |
-| national OSM coverage | not yet (index rebuilt, full run queued) | library/us_readiness.json |
+| national OSM coverage | 13,090 US courses indexed, all states (2026-11-02, Geofabrik): tier A 5,858 (45 %: complete OSM holes + greens + tees + card), B 413, C 3,498 (partial OSM), D 3,321 (outline only); 74.6 % have some OSM golf mapping | library/us_readiness.json |
 
 ## Agent mapper (adopted 2026-11-02)
 
