@@ -1,0 +1,332 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "fair_play_ne",
+ "name": "Fair Play Golf Course",
+ "state": "NE",
+ "bbox_wsen": [
+  -97.4458917,
+  41.9601312,
+  -97.4313084,
+  41.9674256
+ ],
+ "grid": {
+  "crs": "EPSG:32614",
+  "res_m": 1.0,
+  "width": 1526,
+  "height": 1134,
+  "bounds": [
+   628624,
+   4646366,
+   630150,
+   4647500
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   628624.0,
+   0.0,
+   -1.0,
+   4647500.0
+  ],
+  "ll_bbox_wsen": [
+   -97.4479220226987,
+   41.958542501713275,
+   -97.42926394704098,
+   41.969002746162836
+  ]
+ },
+ "built_utc": "2026-11-02T09:18:41Z",
+ "seconds": {
+  "lidar": 15.6,
+  "naip": 19.3,
+  "segment": 50.9,
+  "labels": 34.1,
+  "total": 122.4
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "NE_Northeast_3_2020-hag-2m-0-3",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 1409124,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_Northeast_3_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "NE_Northeast_3_2020-hag-2m-0-2",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 320460,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_Northeast_3_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "NE_PostSpringFlood_OrthoLidar_B2_2019-hag-2m-9-11",
+     "when": "2019-12-31T00:00:00.000000Z",
+     "cells": 900,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_PostSpringFlood_OrthoLidar_B2_2019",
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "file": "hag.tif",
+   "mb": 0.42,
+   "frac_gt_2_5m": 0.21518950767530934
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "NE_Northeast_3_2020-dtm-2m-0-3",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 352276,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_Northeast_3_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "NE_Northeast_3_2020-dtm-2m-0-2",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 80098,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_Northeast_3_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "NE_PostSpringFlood_OrthoLidar_B2_2019-dtm-2m-9-11",
+     "when": "2019-12-31T00:00:00.000000Z",
+     "cells": 234,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_PostSpringFlood_OrthoLidar_B2_2019",
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.999969950603415,
+   "mb": 0.81
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "NE_Northeast_3_2020-classification-2m-0-3",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 1403232,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_Northeast_3_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "NE_Northeast_3_2020-classification-2m-0-2",
+     "when": "2020-12-31T00:00:00.000000Z",
+     "cells": 320456,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_Northeast_3_2020",
+      "end_datetime": "2020-12-31T00:00:00.000000Z",
+      "start_datetime": "2020-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "NE_PostSpringFlood_OrthoLidar_B2_2019-classification-2m-9-11",
+     "when": "2019-12-31T00:00:00.000000Z",
+     "cells": 5216,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_PostSpringFlood_OrthoLidar_B2_2019",
+      "end_datetime": "2019-12-31T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.1,
+   "counts": {
+    "0": 1580,
+    "1": 221088,
+    "2": 1507816
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "NE_Northeast_3_2020-intensity-2m-0-3",
+   "NE_Northeast_3_2020-intensity-2m-0-2",
+   "NE_PostSpringFlood_OrthoLidar_B2_2019-intensity-2m-9-11"
+  ],
+  "valid": 1.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 5.1,
+    "items": [
+     "ne_m_4109705_nw_14_060_20220830",
+     "ne_m_4109705_ne_14_060_20220830"
+    ],
+    "acquired": [
+     "2022-08-30"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 4.48,
+    "items": [
+     "ne_m_4109705_nw_14_060_20200817",
+     "ne_m_4109705_ne_14_060_20200817"
+    ],
+    "acquired": [
+     "2020-08-17"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 4.86,
+    "items": [
+     "ne_m_4109705_nw_14_060_20180709_20181210",
+     "ne_m_4109705_ne_14_060_20180709_20181210"
+    ],
+    "acquired": [
+     "2018-07-09"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 485.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  4661.9474267578125,
+  34423.3522265625
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 1.0,
+  "cls": 0.9990869606422249,
+  "dtm": 0.999969950603415,
+  "intensity": 1.0
+ },
+ "labels": {
+  "features": 167
+ },
+ "course": {
+  "name": "Fair Play Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 526540112
+  },
+  "center": [
+   -97.43860005,
+   41.963778399999995
+  ],
+  "bbox": [
+   -97.4458917,
+   41.9601312,
+   -97.4313084,
+   41.9674256
+  ],
+  "state": "NE",
+  "town": "Norfolk"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -97.4313084,
+     41.9601581
+    ],
+    [
+     -97.4313566,
+     41.9674256
+    ],
+    [
+     -97.4362313,
+     41.9674077
+    ],
+    [
+     -97.4410985,
+     41.9673899
+    ],
+    [
+     -97.441092,
+     41.9664113
+    ],
+    [
+     -97.4435503,
+     41.9664023
+    ],
+    [
+     -97.4435323,
+     41.9636676
+    ],
+    [
+     -97.4458917,
+     41.963659
+    ],
+    [
+     -97.4458731,
+     41.960826
+    ],
+    [
+     -97.4411222,
+     41.9608434
+    ],
+    [
+     -97.441141,
+     41.963692
+    ],
+    [
+     -97.4386772,
+     41.963701
+    ],
+    [
+     -97.4386536,
+     41.9601312
+    ],
+    [
+     -97.4313084,
+     41.9601581
+    ]
+   ]
+  ]
+ }
+}

@@ -1,0 +1,248 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "brush_creek_ar",
+ "name": "Brush Creek Golf Course",
+ "state": "AR",
+ "bbox_wsen": [
+  -94.2041411,
+  36.1864764,
+  -94.1975407,
+  36.1901315
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 900,
+  "height": 714,
+  "bounds": [
+   391576,
+   4005146,
+   392476,
+   4005860
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   391576.0,
+   0.0,
+   -1.0,
+   4005860.0
+  ],
+  "ll_bbox_wsen": [
+   -94.20589991655868,
+   36.185039528013384,
+   -94.19579416844205,
+   36.19157569537385
+  ]
+ },
+ "built_utc": "2026-11-02T08:35:07Z",
+ "seconds": {
+  "lidar": 16.5,
+  "naip": 17.7,
+  "segment": 20.2,
+  "labels": 298.2,
+  "total": 354.0
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_LPC_AR_R6_WashingtonCO_2015_LAS_2016-dsm-2m-3-0",
+     "when": "2015-01-24T00:00:00.000000Z",
+     "cells": 641568,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_AR_R6_WashingtonCO_2015_LAS_2016",
+      "end_datetime": "2015-01-24T00:00:00.000000Z",
+      "start_datetime": "2015-01-05T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_LPC_AR_R6_WashingtonCO_2015_LAS_2016",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_AR_R6_WashingtonCO_2015_LAS_2016/ept.json",
+    "cov": 1.0,
+    "year": 2016,
+    "count": 12494961107
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_LPC_AR_R6_WashingtonCO_2015_LAS_2016",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_AR_R6_WashingtonCO_2015_LAS_2016/ept.json",
+    "cov": 1.0,
+    "year": 2016,
+    "count": 12494961107,
+    "cells": 630027
+   }
+  ],
+  "valid": 0.9804341736694678,
+  "hag_mb": 0.19,
+  "frac_gt_2_5m": 0.21295051353874883,
+  "class_mb": 0.01
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 2.67,
+    "items": [
+     "ar_m_3609455_sw_15_030_20230930_20240104",
+     "ar_m_3609455_nw_15_030_20230930_20240104"
+    ],
+    "acquired": [
+     "2023-09-30"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 2.26,
+    "items": [
+     "ar_m_3609455_sw_15_060_20210810",
+     "ar_m_3609455_nw_15_060_20210810"
+    ],
+    "acquired": [
+     "2021-08-10"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 1.82,
+    "items": [
+     "ar_m_3609455_nw_15_060_20190819_20191126",
+     "ar_m_3609455_sw_15_060_20190719_20191126"
+    ],
+    "acquired": [
+     "2019-07-19",
+     "2019-08-19"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 377.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9804341736694678,
+  "cls": 0.9804341736694678,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 194
+ },
+ "course": {
+  "name": "Brush Creek Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 1346911937
+  },
+  "center": [
+   -94.2008409,
+   36.18830395
+  ],
+  "bbox": [
+   -94.2041411,
+   36.1864764,
+   -94.1975407,
+   36.1901315
+  ],
+  "state": "AR",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -94.1975407,
+     36.1899994
+    ],
+    [
+     -94.1989764,
+     36.1900281
+    ],
+    [
+     -94.2012019,
+     36.1900727
+    ],
+    [
+     -94.2041411,
+     36.1901315
+    ],
+    [
+     -94.2028373,
+     36.1878731
+    ],
+    [
+     -94.2019757,
+     36.1875612
+    ],
+    [
+     -94.2011205,
+     36.1874246
+    ],
+    [
+     -94.1998545,
+     36.1868488
+    ],
+    [
+     -94.1998813,
+     36.1865154
+    ],
+    [
+     -94.1976336,
+     36.1864764
+    ],
+    [
+     -94.1976226,
+     36.1868934
+    ],
+    [
+     -94.1975843,
+     36.1883456
+    ],
+    [
+     -94.1975407,
+     36.1899994
+    ]
+   ]
+  ]
+ }
+}

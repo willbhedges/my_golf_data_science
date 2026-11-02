@@ -1,0 +1,216 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "urbandale_ia",
+ "name": "Urbandale Golf & Country Club",
+ "state": "IA",
+ "bbox_wsen": [
+  -93.7462181,
+  41.6329234,
+  -93.7366204,
+  41.6366304
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1106,
+  "height": 720,
+  "bounds": [
+   437694,
+   4609132,
+   438800,
+   4609852
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   437694.0,
+   0.0,
+   -1.0,
+   4609852.0
+  ],
+  "ll_bbox_wsen": [
+   -93.74809992099807,
+   41.63148545134237,
+   -93.7347477333918,
+   41.638055765375114
+  ]
+ },
+ "built_utc": "2026-11-02T12:43:49Z",
+ "seconds": {
+  "lidar": 10.9,
+  "naip": 16.3,
+  "segment": 11.3,
+  "labels": 39.4,
+  "total": 79.1
+ },
+ "errors": {},
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "IA_NorthCentral_2_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_NorthCentral_2_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 60040043143
+   },
+   {
+    "name": "IA_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 167692896718
+   }
+  ],
+  "used": [
+   {
+    "name": "IA_NorthCentral_2_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/IA_NorthCentral_2_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 60040043143,
+    "cells": 793678
+   }
+  ],
+  "valid": 0.9966822382961623,
+  "hag_mb": 0.41,
+  "frac_gt_2_5m": 0.4761402451275869,
+  "class_mb": 0.01
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 4.02,
+    "items": [
+     "ia_m_4109319_sw_15_030_20230902_20240104",
+     "ia_m_4109318_se_15_030_20230902_20240104"
+    ],
+    "acquired": [
+     "2023-09-02"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 3.31,
+    "items": [
+     "ia_m_4109318_se_15_060_20210908",
+     "ia_m_4109319_sw_15_060_20210822"
+    ],
+    "acquired": [
+     "2021-08-22",
+     "2021-09-08"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 2.94,
+    "items": [
+     "ia_m_4109318_se_15_060_20190822_20191105",
+     "ia_m_4109319_sw_15_060_20190730_20191105"
+    ],
+    "acquired": [
+     "2019-07-30",
+     "2019-08-22"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 262.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9966822382961623,
+  "cls": 0.9966822382961623,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 296
+ },
+ "course": {
+  "name": "Urbandale Golf & Country Club",
+  "osm": {
+   "type": "way",
+   "id": 66983440
+  },
+  "center": [
+   -93.74141925,
+   41.634776900000006
+  ],
+  "bbox": [
+   -93.7462181,
+   41.6329234,
+   -93.7366204,
+   41.6366304
+  ],
+  "state": "IA",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -93.7366327,
+     41.6329234
+    ],
+    [
+     -93.7429998,
+     41.6329246
+    ],
+    [
+     -93.7447861,
+     41.6329246
+    ],
+    [
+     -93.7462181,
+     41.6329246
+    ],
+    [
+     -93.7461993,
+     41.6366304
+    ],
+    [
+     -93.7459593,
+     41.6366296
+    ],
+    [
+     -93.7457386,
+     41.6366294
+    ],
+    [
+     -93.7448757,
+     41.6366287
+    ],
+    [
+     -93.7439782,
+     41.6366279
+    ],
+    [
+     -93.7366204,
+     41.6365984
+    ],
+    [
+     -93.7366327,
+     41.6329234
+    ]
+   ]
+  ]
+ }
+}

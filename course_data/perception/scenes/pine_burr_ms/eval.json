@@ -28,9 +28,9 @@
   "hole_uncertain": 5
  },
  "tee_complexes": {
-  "precision": 0.0,
+  "precision": null,
   "recall": 0.0,
-  "n_pred": 1,
+  "n_pred": 0,
   "n_true": 18,
   "tp_pred": 0,
   "tp_true": 0,
@@ -40,12 +40,12 @@
   "tp_true_any_p": 1,
   "starts_with_osm_tee": 18,
   "recall_starts_with_osm_tee": 0.0,
-  "n_complex_per_hole": 0.06
+  "n_complex_per_hole": 0.0
  },
  "tee_boxes": {
-  "precision": 0.0,
+  "precision": null,
   "recall": 0.0,
-  "n_pred": 1,
+  "n_pred": 0,
   "n_true": 53,
   "tp_pred": 0,
   "tp_true": 0,
@@ -90,7 +90,7 @@
  "parking": {
   "precision": 0.0,
   "recall": null,
-  "n_pred": 2,
+  "n_pred": 1,
   "n_true": 0,
   "tp_pred": 0,
   "tp_true": 0,
@@ -107,7 +107,7 @@
   "stripe_strong_within_20deg": 0.25
  },
  "cart_paths": {
-  "pred_km": 0.575,
+  "pred_km": 0.847,
   "true_km": 0.0,
   "length_precision": 0.0,
   "length_recall": null,
@@ -115,7 +115,7 @@
   "transitions_osm_connected": 0,
   "connectivity_acc": null,
   "connected_route_ratio_median": null,
-  "components": 2
+  "components": 5
  },
  "relations": {
   "n": 0,
@@ -124,7 +124,7 @@
   "top1_acc_when_path": null
  },
  "clubhouse": {
-  "error_m": 477.9,
+  "error_m": 383.5,
   "truth": "tagged",
   "eligible": true
  },
@@ -135,36 +135,36 @@
   "eligible": true
  },
  "seconds": {
-  "greens": 0.5,
-  "tees": 2.2,
-  "fairways": 0.2,
-  "bunkers_water_trees": 0.7,
-  "cart_paths": 22.4,
-  "buildings_parking_clubhouse_range": 0.7,
-  "total": 26.7
+  "greens": 1.1,
+  "tees": 2.8,
+  "fairways": 0.3,
+  "bunkers_water_trees": 0.9,
+  "cart_paths": 31.8,
+  "buildings_parking_clubhouse_range": 0.9,
+  "total": 37.9
  },
- "models": "perception-20261017-1247",
+ "models": "perception-20261102-0702-fold0",
  "lidar": true,
  "summary": {
   "greens_hole": 0,
   "greens_practice": 0,
   "greens_uncertain": 5,
-  "tee_complexes": 1,
+  "tee_complexes": 0,
   "fairways": 5,
   "bunkers": 4,
   "water": 7,
   "tree_stands": 150,
   "trees": 756,
-  "cart_path_km": 0.575,
-  "cart_path_components": 2,
+  "cart_path_km": 0.853,
+  "cart_path_components": 5,
   "buildings": 139,
-  "parking": 6,
+  "parking": 4,
   "clubhouse": true,
   "driving_range": false
  },
  "path_sweep": {
   "0.3": {
-   "pred_km": 12.196,
+   "pred_km": 9.648,
    "true_km": 0.0,
    "length_precision": 0.0,
    "length_recall": null,
@@ -173,7 +173,7 @@
    "eligible": false
   },
   "0.5": {
-   "pred_km": 2.821,
+   "pred_km": 3.575,
    "true_km": 0.0,
    "length_precision": 0.0,
    "length_recall": null,
@@ -182,7 +182,7 @@
    "eligible": false
   },
   "0.7": {
-   "pred_km": 0.575,
+   "pred_km": 0.847,
    "true_km": 0.0,
    "length_precision": 0.0,
    "length_recall": null,

@@ -1,0 +1,256 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "suneagles_nj",
+ "name": "Suneagles Golf Club",
+ "state": "NJ",
+ "bbox_wsen": [
+  -74.0794157,
+  40.2938859,
+  -74.0685802,
+  40.3048648
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 1236,
+  "height": 1530,
+  "bounds": [
+   578080,
+   4460632,
+   579316,
+   4462162
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   578080.0,
+   0.0,
+   -1.0,
+   4462162.0
+  ],
+  "ll_bbox_wsen": [
+   -74.08135690308659,
+   40.29242426770916,
+   -74.06662701239878,
+   40.30632314388278
+  ]
+ },
+ "built_utc": "2026-11-02T12:20:34Z",
+ "seconds": {
+  "lidar": 33.3,
+  "naip": 21.8,
+  "segment": 45.8,
+  "labels": 36.5,
+  "total": 139.6
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [],
+   "valid": 0.0
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [],
+   "valid": 0.0
+  },
+  "hag_dsm_dtm": {
+   "items": [
+    {
+     "id": "USGS_Lidar_Point_Cloud_NJ_SdL5_2014_LAS_2015-dsm-2m-5-11",
+     "when": "2015-01-01T00:00:00.000000Z",
+     "cells": 1890640,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_Lidar_Point_Cloud_NJ_SdL5_2014_LAS_2015",
+      "end_datetime": "2015-01-01T00:00:00.000000Z",
+      "start_datetime": "2015-01-01T00:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
+ },
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "USGS_Lidar_Point_Cloud_NJ_SdL5_2014_LAS_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_Lidar_Point_Cloud_NJ_SdL5_2014_LAS_2015/ept.json",
+    "cov": 1.0,
+    "year": 2015,
+    "count": 15730195131
+   }
+  ],
+  "used": [
+   {
+    "name": "USGS_Lidar_Point_Cloud_NJ_SdL5_2014_LAS_2015",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_Lidar_Point_Cloud_NJ_SdL5_2014_LAS_2015/ept.json",
+    "cov": 1.0,
+    "year": 2015,
+    "count": 15730195131,
+    "cells": 1883326
+   }
+  ],
+  "valid": 0.9958996975273389,
+  "hag_mb": 1.03,
+  "frac_gt_2_5m": 0.44180997102184993,
+  "class_mb": 0.02
+ },
+ "intensity": {
+  "items": [],
+  "valid": 0.0
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 7.58,
+    "items": [
+     "nj_m_4007448_sw_18_030_20230901_20231019"
+    ],
+    "acquired": [
+     "2023-09-01"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 6.79,
+    "items": [
+     "nj_m_4007448_sw_18_060_20220720"
+    ],
+    "acquired": [
+     "2022-07-20"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 6.1,
+    "items": [
+     "nj_m_4007448_sw_18_060_20190809_20191209"
+    ],
+    "acquired": [
+     "2019-08-09"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 4.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "intensity_stretch": null,
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9958996975273389,
+  "cls": 0.9958996975273389,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 682
+ },
+ "course": {
+  "name": "Suneagles Golf Club",
+  "osm": {
+   "type": "way",
+   "id": 190678941
+  },
+  "center": [
+   -74.07399795,
+   40.29937535
+  ],
+  "bbox": [
+   -74.0794157,
+   40.2938859,
+   -74.0685802,
+   40.3048648
+  ],
+  "state": "NJ",
+  "town": "Eatontown"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -74.0706003,
+     40.3041874
+    ],
+    [
+     -74.071266,
+     40.3048648
+    ],
+    [
+     -74.0794157,
+     40.3028984
+    ],
+    [
+     -74.0791508,
+     40.3021816
+    ],
+    [
+     -74.0786333,
+     40.2956901
+    ],
+    [
+     -74.0784862,
+     40.2938859
+    ],
+    [
+     -74.0743077,
+     40.2958012
+    ],
+    [
+     -74.0727267,
+     40.296616
+    ],
+    [
+     -74.0717036,
+     40.2973962
+    ],
+    [
+     -74.070552,
+     40.2984698
+    ],
+    [
+     -74.0698419,
+     40.2995952
+    ],
+    [
+     -74.0691061,
+     40.3008252
+    ],
+    [
+     -74.0688657,
+     40.3012891
+    ],
+    [
+     -74.0685802,
+     40.3020296
+    ],
+    [
+     -74.0698851,
+     40.3041702
+    ],
+    [
+     -74.0706003,
+     40.3041874
+    ]
+   ]
+  ]
+ }
+}

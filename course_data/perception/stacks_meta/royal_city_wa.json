@@ -1,0 +1,184 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "royal_city_wa",
+ "name": "Royal City Golf Course",
+ "state": "WA",
+ "bbox_wsen": [
+  -119.565313,
+  46.8811643,
+  -119.5598414,
+  46.8885817
+ ],
+ "grid": {
+  "crs": "EPSG:32611",
+  "res_m": 1.0,
+  "width": 746,
+  "height": 1140,
+  "bounds": [
+   304392,
+   5194988,
+   305138,
+   5196128
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   304392.0,
+   0.0,
+   -1.0,
+   5196128.0
+  ],
+  "ll_bbox_wsen": [
+   -119.56770861208472,
+   46.87963271262462,
+   -119.557438589258,
+   46.89010034159249
+  ]
+ },
+ "built_utc": "2026-11-02T11:53:06Z",
+ "seconds": {
+  "lidar": 44.4,
+  "naip": 20.5,
+  "segment": 17.9,
+  "labels": 36.3,
+  "total": 120.9
+ },
+ "errors": {},
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "WA_Pasco_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WA_Pasco_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 29676609277
+   }
+  ],
+  "used": [
+   {
+    "name": "WA_Pasco_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WA_Pasco_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 29676609277,
+    "cells": 812689
+   }
+  ],
+  "valid": 0.9556100371572362,
+  "hag_mb": 0.27,
+  "frac_gt_2_5m": 0.07542213442453319,
+  "class_mb": 0.01
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 3.08,
+    "items": [
+     "wa_m_4611904_sw_11_060_20230629_20230912",
+     "wa_m_4611904_se_11_060_20230629_20230912"
+    ],
+    "acquired": [
+     "2023-06-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 2.88,
+    "items": [
+     "wa_m_4611904_sw_11_060_20210629",
+     "wa_m_4611904_se_11_060_20210629"
+    ],
+    "acquired": [
+     "2021-06-29"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 3.08,
+    "items": [
+     "wa_m_4611904_sw_11_060_20190731_20191217",
+     "wa_m_4611904_se_11_060_20190730_20191217"
+    ],
+    "acquired": [
+     "2019-07-30",
+     "2019-07-31"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 261.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9556100371572362,
+  "cls": 0.9556100371572362,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 102
+ },
+ "course": {
+  "name": "Royal City Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 1030783338
+  },
+  "center": [
+   -119.56257719999999,
+   46.884873
+  ],
+  "bbox": [
+   -119.565313,
+   46.8811643,
+   -119.5598414,
+   46.8885817
+  ],
+  "state": "WA",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -119.5598414,
+     46.8811643
+    ],
+    [
+     -119.565313,
+     46.8823739
+    ],
+    [
+     -119.5652761,
+     46.8885817
+    ],
+    [
+     -119.5598449,
+     46.8885713
+    ],
+    [
+     -119.5598414,
+     46.8811643
+    ]
+   ]
+  ]
+ }
+}

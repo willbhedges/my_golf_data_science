@@ -1,0 +1,257 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "midway_par_3_de",
+ "name": "Midway Par 3",
+ "state": "DE",
+ "bbox_wsen": [
+  -75.1483873,
+  38.7432589,
+  -75.143481,
+  38.747582
+ ],
+ "grid": {
+  "crs": "EPSG:32618",
+  "res_m": 1.0,
+  "width": 728,
+  "height": 782,
+  "bounds": [
+   486954,
+   4288146,
+   487682,
+   4288928
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   486954.0,
+   0.0,
+   -1.0,
+   4288928.0
+  ],
+  "ll_bbox_wsen": [
+   -75.15013186086976,
+   38.74189748436715,
+   -75.14174021231996,
+   38.748955109070195
+  ]
+ },
+ "built_utc": "2026-11-02T10:27:06Z",
+ "seconds": {
+  "lidar": 5.0,
+  "naip": 9.5,
+  "segment": 20.3,
+  "labels": 41.1,
+  "total": 77.6
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_DE_Snds_2013_LAS_2015-hag-2m-13-8",
+     "when": "2014-04-06T00:00:00.000000Z",
+     "cells": 566696,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_Snds_2013_LAS_2015",
+      "end_datetime": "2014-04-06T00:00:00.000000Z",
+      "start_datetime": "2013-12-17T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9954329557910121,
+   "file": "hag.tif",
+   "mb": 0.27,
+   "frac_gt_2_5m": 0.5566506703015655
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_DE_Snds_2013_LAS_2015-dtm-2m-13-8",
+     "when": "2014-04-06T00:00:00.000000Z",
+     "cells": 141669,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_Snds_2013_LAS_2015",
+      "end_datetime": "2014-04-06T00:00:00.000000Z",
+      "start_datetime": "2013-12-17T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9953978246817121,
+   "mb": 0.48
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_DE_Snds_2013_LAS_2015-classification-2m-13-8",
+     "when": "2014-04-06T00:00:00.000000Z",
+     "cells": 556592,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_DE_Snds_2013_LAS_2015",
+      "end_datetime": "2014-04-06T00:00:00.000000Z",
+      "start_datetime": "2013-12-17T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.07,
+   "counts": {
+    "0": 12704,
+    "1": 237848,
+    "2": 293280,
+    "9": 1004,
+    "17": 24460
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_DE_Snds_2013_LAS_2015-intensity-2m-13-8"
+  ],
+  "valid": 0.9969295410471881
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 2.49,
+    "items": [
+     "de_m_3807523_ne_18_030_20230602_20230919"
+    ],
+    "acquired": [
+     "2023-06-02"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 2.57,
+    "items": [
+     "de_m_3807523_ne_18_060_20210624",
+     "de_m_3807515_se_18_060_20210624"
+    ],
+    "acquired": [
+     "2021-06-24"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 2.68,
+    "items": [
+     "de_m_3807523_ne_18_060_20180815_20181214",
+     "de_m_3807515_se_18_060_20180815_20181214"
+    ],
+    "acquired": [
+     "2018-08-15"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 1.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  2.06240177154541,
+  118.24994659423828
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9954329557910121,
+  "cls": 0.977684719372699,
+  "dtm": 0.9953978246817121,
+  "intensity": 0.9969295410471881
+ },
+ "labels": {
+  "features": 269
+ },
+ "course": {
+  "name": "Midway Par 3",
+  "osm": {
+   "type": "way",
+   "id": 469228746
+  },
+  "center": [
+   -75.14593414999999,
+   38.74542045
+  ],
+  "bbox": [
+   -75.1483873,
+   38.7432589,
+   -75.143481,
+   38.747582
+  ],
+  "state": "DE",
+  "town": "Lewes"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -75.147196,
+     38.7432589
+    ],
+    [
+     -75.1437449,
+     38.7464875
+    ],
+    [
+     -75.143481,
+     38.7467343
+    ],
+    [
+     -75.1441133,
+     38.7473896
+    ],
+    [
+     -75.1443279,
+     38.7474649
+    ],
+    [
+     -75.1449931,
+     38.747582
+    ],
+    [
+     -75.1457334,
+     38.7469335
+    ],
+    [
+     -75.1465702,
+     38.7460591
+    ],
+    [
+     -75.1469903,
+     38.7456275
+    ],
+    [
+     -75.1483873,
+     38.7441196
+    ],
+    [
+     -75.1481963,
+     38.7438755
+    ],
+    [
+     -75.147196,
+     38.7432589
+    ]
+   ]
+  ]
+ }
+}

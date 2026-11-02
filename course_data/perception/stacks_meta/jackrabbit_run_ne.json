@@ -1,0 +1,240 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "jackrabbit_run_ne",
+ "name": "Jackrabbit Run Golf Course",
+ "state": "NE",
+ "bbox_wsen": [
+  -98.3126211,
+  40.9506027,
+  -98.3016198,
+  40.9611677
+ ],
+ "grid": {
+  "crs": "EPSG:32614",
+  "res_m": 1.0,
+  "width": 1238,
+  "height": 1482,
+  "bounds": [
+   557692,
+   4533350,
+   558930,
+   4534832
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   557692.0,
+   0.0,
+   -1.0,
+   4534832.0
+  ],
+  "ll_bbox_wsen": [
+   -98.31454741344093,
+   40.94916582009692,
+   -98.29969840836539,
+   40.96260355299884
+  ]
+ },
+ "built_utc": "2026-11-02T09:56:30Z",
+ "seconds": {
+  "lidar": 6.7,
+  "naip": 21.0,
+  "segment": 64.9,
+  "labels": 194.0,
+  "total": 289.5
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "NE_SouthernNE_B4A_2018-hag-2m-4-3",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1834716,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_SouthernNE_B4A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "file": "hag.tif",
+   "mb": 0.22,
+   "frac_gt_2_5m": 0.09636532302547098
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "NE_SouthernNE_B4A_2018-dtm-2m-4-3",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 458679,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_SouthernNE_B4A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "mb": 0.78
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "NE_SouthernNE_B4A_2018-classification-2m-4-3",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 1834608,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "NE_SouthernNE_B4A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.08,
+   "counts": {
+    "0": 108,
+    "1": 106084,
+    "2": 1728524
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "NE_SouthernNE_B4A_2018-intensity-2m-4-3"
+  ],
+  "valid": 0.9999781982606573
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 4.54,
+    "items": [
+     "ne_m_4009806_nw_14_060_20220718",
+     "ne_m_4009806_ne_14_060_20220718"
+    ],
+    "acquired": [
+     "2022-07-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 4.36,
+    "items": [
+     "ne_m_4009806_nw_14_060_20200718",
+     "ne_m_4009806_ne_14_060_20200718"
+    ],
+    "acquired": [
+     "2020-07-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 5.36,
+    "items": [
+     "ne_m_4009806_nw_14_060_20180710_20181210",
+     "ne_m_4009806_ne_14_060_20180710_20181211"
+    ],
+    "acquired": [
+     "2018-07-10"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 556.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  4263.5555419921875,
+  22942.3544921875
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 1.0,
+  "cls": 0.9999411353037745,
+  "dtm": 1.0,
+  "intensity": 0.9999781982606573
+ },
+ "labels": {
+  "features": 106
+ },
+ "course": {
+  "name": "Jackrabbit Run Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 236352698
+  },
+  "center": [
+   -98.30712045,
+   40.9558852
+  ],
+  "bbox": [
+   -98.3126211,
+   40.9506027,
+   -98.3016198,
+   40.9611677
+  ],
+  "state": "NE",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -98.3126211,
+     40.9546787
+    ],
+    [
+     -98.3118045,
+     40.9507629
+    ],
+    [
+     -98.3016198,
+     40.9506027
+    ],
+    [
+     -98.3017212,
+     40.9597332
+    ],
+    [
+     -98.3017368,
+     40.9611345
+    ],
+    [
+     -98.3022709,
+     40.9611677
+    ],
+    [
+     -98.3109558,
+     40.9546476
+    ],
+    [
+     -98.3126211,
+     40.9546787
+    ]
+   ]
+  ]
+ }
+}

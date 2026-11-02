@@ -1,0 +1,453 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "three_rivers_wa",
+ "name": "Three Rivers Golf Course",
+ "state": "WA",
+ "bbox_wsen": [
+  -122.9172334,
+  46.1161267,
+  -122.898977,
+  46.124833
+ ],
+ "grid": {
+  "crs": "EPSG:32610",
+  "res_m": 1.0,
+  "width": 1714,
+  "height": 1272,
+  "bounds": [
+   506244,
+   5106802,
+   507958,
+   5108074
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   506244.0,
+   0.0,
+   -1.0,
+   5108074.0
+  ],
+  "ll_bbox_wsen": [
+   -122.91919460369438,
+   46.1147474140766,
+   -122.89699193835365,
+   46.12621343078309
+  ]
+ },
+ "built_utc": "2026-11-02T12:32:25Z",
+ "seconds": {
+  "lidar": 12.3,
+  "naip": 21.5,
+  "segment": 72.1,
+  "labels": 2169.0,
+  "total": 2278.2
+ },
+ "errors": {
+  "labels": "Traceback (most recent call last):\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 227, in build\n    fc = overpass_labels(g1.ll_bbox)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/perception/fetch_stack.py\", line 86, in overpass_labels\n    data = pc.overpass(q, tries=3)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/my_golf_data_science/my_golf_data_science/course_data/platform/platform_common.py\", line 111, in overpass\n    raise RuntimeError(f\"all Overpass endpoints failed: {last}\")\nRuntimeError: all Overpass endpoints failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\"))\n"
+ },
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "WA_FEMAHQ_B2A_2018-hag-2m-3-6",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 306350,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-hag-2m-3-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 580716,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-hag-2m-2-6",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 377434,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-hag-2m-2-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 618548,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.8637010780622766,
+   "file": "hag.tif",
+   "mb": 0.63,
+   "frac_gt_2_5m": 0.23215124428494896
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "WA_FEMAHQ_B2A_2018-dtm-2m-3-6",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 76621,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-dtm-2m-3-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 145193,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-dtm-2m-2-6",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 94270,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-dtm-2m-2-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 154137,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.8627085122153483,
+   "mb": 1.55
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "WA_FEMAHQ_B2A_2018-classification-2m-3-6",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 304530,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-classification-2m-3-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 582108,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-classification-2m-2-6",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 377884,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "WA_FEMAHQ_B2A_2018-classification-2m-2-5",
+     "when": "2018-12-31T00:00:00.000000Z",
+     "cells": 741184,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "WA_FEMAHQ_B2A_2018",
+      "end_datetime": "2018-12-31T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.21,
+   "counts": {
+    "0": 174502,
+    "1": 1102636,
+    "2": 725388,
+    "9": 177350,
+    "17": 332
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "WA_FEMAHQ_B2A_2018-intensity-2m-3-6",
+   "WA_FEMAHQ_B2A_2018-intensity-2m-3-5",
+   "WA_FEMAHQ_B2A_2018-intensity-2m-2-6",
+   "WA_FEMAHQ_B2A_2018-intensity-2m-2-5"
+  ],
+  "valid": 0.9851289418257341
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 7.62,
+    "items": [
+     "wa_m_4612257_ne_10_060_20230801_20240209",
+     "wa_m_4612249_se_10_060_20230801_20240209"
+    ],
+    "acquired": [
+     "2023-08-01"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 7.35,
+    "items": [
+     "or_m_4612257_ne_10_030_20220626"
+    ],
+    "acquired": [
+     "2022-06-26"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 7.37,
+    "items": [
+     "or_m_4612257_ne_10_060_20200719"
+    ],
+    "acquired": [
+     "2020-07-19"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 0.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  3437.69189453125,
+  53056.008984375
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.8637010780622766,
+  "cls": 0.9199608477723227,
+  "dtm": 0.8627085122153483,
+  "intensity": 0.9851289418257341
+ },
+ "course": {
+  "name": "Three Rivers Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 305645798
+  },
+  "center": [
+   -122.9081052,
+   46.12047985
+  ],
+  "bbox": [
+   -122.9172334,
+   46.1161267,
+   -122.898977,
+   46.124833
+  ],
+  "state": "WA",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -122.9172334,
+     46.1232213
+    ],
+    [
+     -122.9145444,
+     46.1232451
+    ],
+    [
+     -122.9145713,
+     46.1240835
+    ],
+    [
+     -122.9131458,
+     46.1241447
+    ],
+    [
+     -122.9116637,
+     46.1241045
+    ],
+    [
+     -122.9116192,
+     46.124833
+    ],
+    [
+     -122.9101852,
+     46.1247709
+    ],
+    [
+     -122.908823,
+     46.1237555
+    ],
+    [
+     -122.9088021,
+     46.1235526
+    ],
+    [
+     -122.9041616,
+     46.1200865
+    ],
+    [
+     -122.9071858,
+     46.120124
+    ],
+    [
+     -122.9073306,
+     46.1200311
+    ],
+    [
+     -122.9073682,
+     46.1199046
+    ],
+    [
+     -122.9072931,
+     46.1197336
+    ],
+    [
+     -122.9061397,
+     46.1197187
+    ],
+    [
+     -122.9061183,
+     46.119451
+    ],
+    [
+     -122.9033677,
+     46.119432
+    ],
+    [
+     -122.898977,
+     46.1163232
+    ],
+    [
+     -122.8998526,
+     46.1161267
+    ],
+    [
+     -122.9033663,
+     46.1166361
+    ],
+    [
+     -122.9056784,
+     46.117008
+    ],
+    [
+     -122.9064192,
+     46.1172044
+    ],
+    [
+     -122.9070249,
+     46.1173649
+    ],
+    [
+     -122.9093564,
+     46.1180384
+    ],
+    [
+     -122.9093852,
+     46.1182313
+    ],
+    [
+     -122.9116866,
+     46.1191275
+    ],
+    [
+     -122.9134783,
+     46.1198377
+    ],
+    [
+     -122.9142078,
+     46.1201798
+    ],
+    [
+     -122.9145337,
+     46.120526
+    ],
+    [
+     -122.91505,
+     46.1207487
+    ],
+    [
+     -122.9158601,
+     46.1213399
+    ],
+    [
+     -122.9165857,
+     46.1220592
+    ],
+    [
+     -122.9167077,
+     46.1221802
+    ],
+    [
+     -122.9169289,
+     46.1224067
+    ],
+    [
+     -122.9171703,
+     46.12289
+    ],
+    [
+     -122.9172334,
+     46.1232213
+    ]
+   ]
+  ]
+ }
+}

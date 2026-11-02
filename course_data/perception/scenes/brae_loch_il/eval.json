@@ -5,9 +5,9 @@
  "n_osm_greens": 18,
  "n_osm_tees": 22,
  "greens_any": {
-  "precision": 1.0,
+  "precision": 0.9474,
   "recall": 1.0,
-  "n_pred": 18,
+  "n_pred": 19,
   "n_true": 18,
   "tp_pred": 18,
   "tp_true": 18,
@@ -28,19 +28,19 @@
   "hole_uncertain": 0
  },
  "tee_complexes": {
-  "precision": 0.8,
-  "recall": 0.8889,
-  "n_pred": 20,
+  "precision": 0.8636,
+  "recall": 1.0,
+  "n_pred": 22,
   "n_true": 18,
-  "tp_pred": 16,
-  "tp_true": 16,
+  "tp_pred": 19,
+  "tp_true": 18,
   "eligible": true,
   "precision_eligible": false,
   "recall_any_p": 1.0,
   "tp_true_any_p": 18,
   "starts_with_osm_tee": 18,
-  "recall_starts_with_osm_tee": 0.8889,
-  "n_complex_per_hole": 1.18
+  "recall_starts_with_osm_tee": 1.0,
+  "n_complex_per_hole": 1.29
  },
  "tee_boxes": {
   "precision": 0.8148,
@@ -107,21 +107,21 @@
   "stripe_strong_within_20deg": 0.929
  },
  "cart_paths": {
-  "pred_km": 2.444,
+  "pred_km": 0.44,
   "true_km": 4.079,
-  "length_precision": 0.7534,
-  "length_recall": 0.4235,
+  "length_precision": 0.7937,
+  "length_recall": 0.0872,
   "eligible": true,
   "transitions_osm_connected": 13,
-  "connectivity_acc": 0.7692,
-  "connected_route_ratio_median": 1.045,
-  "components": 20
+  "connectivity_acc": 0.3077,
+  "connected_route_ratio_median": 1.017,
+  "components": 7
  },
  "relations": {
   "n": 16,
-  "top1_next_tee_acc": 0.8125,
-  "n_with_path": 11,
-  "top1_acc_when_path": 0.9091
+  "top1_next_tee_acc": 0.625,
+  "n_with_path": 5,
+  "top1_acc_when_path": 0.8
  },
  "clubhouse": {
   "error_m": null,
@@ -135,76 +135,76 @@
   "eligible": false
  },
  "seconds": {
-  "greens": 0.4,
-  "tees": 1.8,
+  "greens": 0.3,
+  "tees": 1.0,
   "fairways": 0.2,
   "bunkers_water_trees": 0.4,
-  "cart_paths": 13.9,
-  "buildings_parking_clubhouse_range": 0.5,
-  "total": 17.1
+  "cart_paths": 10.9,
+  "buildings_parking_clubhouse_range": 0.3,
+  "total": 13.0
  },
- "models": "perception-20261017-1247",
+ "models": "perception-20261102-0702-fold1",
  "lidar": true,
  "summary": {
   "greens_hole": 18,
-  "greens_practice": 0,
-  "greens_uncertain": 2,
-  "tee_complexes": 20,
+  "greens_practice": 1,
+  "greens_uncertain": 1,
+  "tee_complexes": 22,
   "fairways": 17,
   "bunkers": 32,
   "water": 15,
   "tree_stands": 69,
   "trees": 198,
-  "cart_path_km": 2.895,
-  "cart_path_components": 20,
+  "cart_path_km": 0.443,
+  "cart_path_components": 7,
   "buildings": 166,
-  "parking": 4,
+  "parking": 5,
   "clubhouse": true,
   "driving_range": false
  },
  "path_sweep": {
   "0.3": {
-   "pred_km": 4.622,
+   "pred_km": 4.362,
    "true_km": 4.079,
-   "length_precision": 0.351,
-   "length_recall": 0.3539,
-   "connectivity_acc": 0.8462,
+   "length_precision": 0.4851,
+   "length_recall": 0.4597,
+   "connectivity_acc": 0.7692,
    "transitions_osm_connected": 13,
    "eligible": true
   },
   "0.5": {
-   "pred_km": 3.255,
+   "pred_km": 1.752,
    "true_km": 4.079,
-   "length_precision": 0.5393,
-   "length_recall": 0.4,
+   "length_precision": 0.7172,
+   "length_recall": 0.2828,
    "connectivity_acc": 0.7692,
    "transitions_osm_connected": 13,
    "eligible": true
   },
   "0.7": {
-   "pred_km": 2.444,
+   "pred_km": 0.44,
    "true_km": 4.079,
-   "length_precision": 0.7534,
-   "length_recall": 0.4235,
-   "connectivity_acc": 0.7692,
+   "length_precision": 0.7937,
+   "length_recall": 0.0872,
+   "connectivity_acc": 0.3077,
    "transitions_osm_connected": 13,
    "eligible": true
   },
   "0.85": {
-   "pred_km": 1.212,
+   "pred_km": 0.064,
    "true_km": 4.079,
-   "length_precision": 0.891,
-   "length_recall": 0.2628,
-   "connectivity_acc": 0.6154,
+   "length_precision": 1.0,
+   "length_recall": 0.0192,
+   "connectivity_acc": 0.0769,
    "transitions_osm_connected": 13,
    "eligible": true
   },
   "0.95": {
-   "pred_km": 0.162,
+   "pred_km": 0.0,
    "true_km": 4.079,
-   "length_precision": 1.0,
-   "length_recall": 0.0412,
-   "connectivity_acc": 0.1538,
+   "length_precision": null,
+   "length_recall": 0.0,
+   "connectivity_acc": 0.0,
    "transitions_osm_connected": 13,
    "eligible": true
   }

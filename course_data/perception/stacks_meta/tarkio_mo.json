@@ -1,0 +1,305 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "tarkio_mo",
+ "name": "Tarkio Golf Club",
+ "state": "MO",
+ "bbox_wsen": [
+  -95.3945462,
+  40.4448311,
+  -95.3878675,
+  40.4520812
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 890,
+  "height": 1122,
+  "bounds": [
+   296774,
+   4479718,
+   297664,
+   4480840
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   296774.0,
+   0.0,
+   -1.0,
+   4480840.0
+  ],
+  "ll_bbox_wsen": [
+   -95.396634002238,
+   40.443293354306014,
+   -95.38578956908204,
+   40.4536097800195
+  ]
+ },
+ "built_utc": "2026-11-02T12:25:55Z",
+ "seconds": {
+  "lidar": 7.5,
+  "naip": 9.0,
+  "segment": 32.6,
+  "labels": 29.3,
+  "total": 80.7
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016-hag-2m-3-2",
+     "when": "2013-12-15T00:00:00.000000Z",
+     "cells": 274120,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016",
+      "end_datetime": "2013-12-15T00:00:00.000000Z",
+      "start_datetime": "2013-11-27T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016-hag-2m-3-1",
+     "when": "2013-12-15T00:00:00.000000Z",
+     "cells": 724444,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016",
+      "end_datetime": "2013-12-15T00:00:00.000000Z",
+      "start_datetime": "2013-11-27T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9999839772476917,
+   "file": "hag.tif",
+   "mb": 0.18,
+   "frac_gt_2_5m": 0.11875663442087765
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016-dtm-2m-3-2",
+     "when": "2013-12-15T00:00:00.000000Z",
+     "cells": 68458,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016",
+      "end_datetime": "2013-12-15T00:00:00.000000Z",
+      "start_datetime": "2013-11-27T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016-dtm-2m-3-1",
+     "when": "2013-12-15T00:00:00.000000Z",
+     "cells": 181097,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016",
+      "end_datetime": "2013-12-15T00:00:00.000000Z",
+      "start_datetime": "2013-11-27T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9996394880730638,
+   "mb": 0.56
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016-classification-2m-3-8",
+     "when": "2013-12-15T00:00:00.000000Z",
+     "cells": 996776,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016",
+      "end_datetime": "2013-12-15T00:00:00.000000Z",
+      "start_datetime": "2013-11-27T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.11,
+   "counts": {
+    "0": 1804,
+    "1": 212600,
+    "2": 639364,
+    "17": 144812
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016-intensity-2m-3-2",
+   "USGS_LPC_MO_AR_Atchison_Holt_Andrew_2013_LAS_2016-intensity-2m-3-1"
+  ],
+  "valid": 0.9999839772476917
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 2.86,
+    "items": [
+     "mo_m_4009537_ne_15_060_20220710"
+    ],
+    "acquired": [
+     "2022-07-10"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 3.4,
+    "items": [
+     "mo_m_4009537_ne_15_060_20200623"
+    ],
+    "acquired": [
+     "2020-06-23"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 2.95,
+    "items": [
+     "mo_m_4009537_ne_15_060_20180818_20190206"
+    ],
+    "acquired": [
+     "2018-08-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 293.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  15.937397956848145,
+  115.62496948242188
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9999839772476917,
+  "cls": 0.9981934346772416,
+  "dtm": 0.9996394880730638,
+  "intensity": 0.9999839772476917
+ },
+ "labels": {
+  "features": 62
+ },
+ "course": {
+  "name": "Tarkio Golf Club",
+  "osm": {
+   "type": "way",
+   "id": 851506116
+  },
+  "center": [
+   -95.39120685,
+   40.44845615
+  ],
+  "bbox": [
+   -95.3945462,
+   40.4448311,
+   -95.3878675,
+   40.4520812
+  ],
+  "state": "MO",
+  "town": null
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -95.3898872,
+     40.4453333
+    ],
+    [
+     -95.3899676,
+     40.4455762
+    ],
+    [
+     -95.3893266,
+     40.4455768
+    ],
+    [
+     -95.3883526,
+     40.4473912
+    ],
+    [
+     -95.3882805,
+     40.4475255
+    ],
+    [
+     -95.3878675,
+     40.4475337
+    ],
+    [
+     -95.3878782,
+     40.4484563
+    ],
+    [
+     -95.3902063,
+     40.44844
+    ],
+    [
+     -95.39026,
+     40.4519914
+    ],
+    [
+     -95.3945462,
+     40.4520812
+    ],
+    [
+     -95.3945453,
+     40.4520241
+    ],
+    [
+     -95.3944603,
+     40.4467009
+    ],
+    [
+     -95.39372,
+     40.4467009
+    ],
+    [
+     -95.3937147,
+     40.4456395
+    ],
+    [
+     -95.3922019,
+     40.4456354
+    ],
+    [
+     -95.3921805,
+     40.4448352
+    ],
+    [
+     -95.3919954,
+     40.4448311
+    ],
+    [
+     -95.3920061,
+     40.4454068
+    ],
+    [
+     -95.3898872,
+     40.4453333
+    ]
+   ]
+  ]
+ }
+}

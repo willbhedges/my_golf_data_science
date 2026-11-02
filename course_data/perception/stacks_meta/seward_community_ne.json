@@ -1,0 +1,258 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "seward_community_ne",
+ "name": "Seward Community Golf Course",
+ "state": "NE",
+ "bbox_wsen": [
+  -97.1064266,
+  40.9177191,
+  -97.101856,
+  40.9269939
+ ],
+ "grid": {
+  "crs": "EPSG:32614",
+  "res_m": 1.0,
+  "width": 708,
+  "height": 1340,
+  "bounds": [
+   659282,
+   4531198,
+   659990,
+   4532538
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   659282.0,
+   0.0,
+   -1.0,
+   4532538.0
+  ],
+  "ll_bbox_wsen": [
+   -97.10851266826711,
+   40.9162522440284,
+   -97.0997638696271,
+   40.928455038458935
+  ]
+ },
+ "built_utc": "2026-11-02T12:03:47Z",
+ "seconds": {
+  "lidar": 7.2,
+  "naip": 11.9,
+  "segment": 29.8,
+  "labels": 419.8,
+  "total": 470.7
+ },
+ "errors": {},
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_NE_NRCS_OrthoLidar_B3_2017_LAS_2019-hag-2m-7-7",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 948720,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_NE_NRCS_OrthoLidar_B3_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "file": "hag.tif",
+   "mb": 0.28,
+   "frac_gt_2_5m": 0.29619592714394133
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_NE_NRCS_OrthoLidar_B3_2017_LAS_2019-dtm-2m-7-7",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 237180,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_NE_NRCS_OrthoLidar_B3_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 1.0,
+   "mb": 0.55
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_NE_NRCS_OrthoLidar_B3_2017_LAS_2019-classification-2m-7-7",
+     "when": "2019-01-01T00:00:00.000000Z",
+     "cells": 948388,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_NE_NRCS_OrthoLidar_B3_2017_LAS_2019",
+      "end_datetime": "2019-01-01T00:00:00.000000Z",
+      "start_datetime": "2019-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.05,
+   "counts": {
+    "0": 332,
+    "1": 126678,
+    "2": 821650,
+    "17": 60
+   }
+  }
+ },
+ "intensity": {
+  "items": [
+   "USGS_LPC_NE_NRCS_OrthoLidar_B3_2017_LAS_2019-intensity-2m-7-7"
+  ],
+  "valid": 0.9999831351715996
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 3.01,
+    "items": [
+     "ne_m_4009708_sw_14_060_20220710"
+    ],
+    "acquired": [
+     "2022-07-10"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 3.27,
+    "items": [
+     "ne_m_4009708_sw_14_060_20200713"
+    ],
+    "acquired": [
+     "2020-07-13"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2018,
+    "file": "naip_2018.tif",
+    "mb": 3.53,
+    "items": [
+     "ne_m_4009708_sw_14_060_20180707_20181210"
+    ],
+    "acquired": [
+     "2018-07-07"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 439.0,
+ "dtm_source": "3DEP lidar DTM",
+ "intensity_stretch": [
+  4397.4720849609375,
+  30407.955683593747
+ ],
+ "coverage": {
+  "naip": 1.0,
+  "hag": 1.0,
+  "cls": 0.9996500548106924,
+  "dtm": 1.0,
+  "intensity": 0.9999831351715996
+ },
+ "labels": {
+  "features": 138
+ },
+ "course": {
+  "name": "Seward Community Golf Course",
+  "osm": {
+   "type": "way",
+   "id": 339403527
+  },
+  "center": [
+   -97.10414130000001,
+   40.9223565
+  ],
+  "bbox": [
+   -97.1064266,
+   40.9177191,
+   -97.101856,
+   40.9269939
+  ],
+  "state": "NE",
+  "town": "Seward"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -97.1064266,
+     40.9269604
+    ],
+    [
+     -97.1055082,
+     40.9269327
+    ],
+    [
+     -97.1032369,
+     40.9269745
+    ],
+    [
+     -97.1029585,
+     40.9269784
+    ],
+    [
+     -97.1028899,
+     40.9269793
+    ],
+    [
+     -97.1028678,
+     40.9269797
+    ],
+    [
+     -97.1028497,
+     40.9269799
+    ],
+    [
+     -97.1028296,
+     40.9269802
+    ],
+    [
+     -97.1027389,
+     40.9269815
+    ],
+    [
+     -97.101856,
+     40.9269939
+    ],
+    [
+     -97.1019063,
+     40.9177191
+    ],
+    [
+     -97.1062301,
+     40.9178032
+    ],
+    [
+     -97.1064266,
+     40.9269604
+    ]
+   ]
+  ]
+ }
+}

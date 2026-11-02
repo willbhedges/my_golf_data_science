@@ -1,0 +1,227 @@
+{
+ "schema": "perception_stack/1",
+ "slug": "rupert_id",
+ "name": "Rupert Country Club",
+ "state": "ID",
+ "bbox_wsen": [
+  -113.7149856,
+  42.6052597,
+  -113.6974681,
+  42.6088067
+ ],
+ "grid": {
+  "crs": "EPSG:32612",
+  "res_m": 1.0,
+  "width": 1752,
+  "height": 742,
+  "bounds": [
+   277136,
+   4720358,
+   278888,
+   4721100
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   277136.0,
+   0.0,
+   -1.0,
+   4721100.0
+  ],
+  "ll_bbox_wsen": [
+   -113.7170448574206,
+   42.60344847081698,
+   -113.69542046760499,
+   42.61062755517077
+  ]
+ },
+ "built_utc": "2026-11-02T11:56:16Z",
+ "seconds": {
+  "lidar": 127.7,
+  "naip": 8.6,
+  "segment": 36.9,
+  "labels": 47.8,
+  "total": 222.7
+ },
+ "errors": {},
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "ID_SouthernID_14_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ID_SouthernID_14_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 119088408144
+   },
+   {
+    "name": "ID_SouthernID_10_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ID_SouthernID_10_2018/ept.json",
+    "cov": 0.001,
+    "year": 2018,
+    "count": 72343214770
+   }
+  ],
+  "used": [
+   {
+    "name": "ID_SouthernID_14_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ID_SouthernID_14_2018/ept.json",
+    "cov": 1.0,
+    "year": 2018,
+    "count": 119088408144,
+    "cells": 1299258
+   }
+  ],
+  "valid": 0.9994415315880811,
+  "hag_mb": 0.32,
+  "frac_gt_2_5m": 0.16859592118056838,
+  "class_mb": 0.01
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 3.77,
+    "items": [
+     "id_m_4211327_nw_12_060_20230725_20231031"
+    ],
+    "acquired": [
+     "2023-07-25"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6,
+    "valid": 1.0
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 3.77,
+    "items": [
+     "id_m_4211327_nw_12_060_20210616"
+    ],
+    "acquired": [
+     "2021-06-16"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 3.97,
+    "items": [
+     "id_m_4211327_nw_12_060_20190718_20191119"
+    ],
+    "acquired": [
+     "2019-07-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ },
+ "segment": {
+  "model": "ariadgolf/golf-course-segmentation",
+  "sha": "43ee294441db"
+ },
+ "dtm_base_m": 1262.0,
+ "dtm_source": "USGS 3DEP TNM ImageServer (best available)",
+ "coverage": {
+  "naip": 1.0,
+  "hag": 0.9994415315880811,
+  "cls": 0.9994415315880811,
+  "dtm": 1.0,
+  "intensity": 0.0
+ },
+ "labels": {
+  "features": 128
+ },
+ "course": {
+  "name": "Rupert Country Club",
+  "osm": {
+   "type": "way",
+   "id": 361494012
+  },
+  "center": [
+   -113.70622685000001,
+   42.607033200000004
+  ],
+  "bbox": [
+   -113.7149856,
+   42.6052597,
+   -113.6974681,
+   42.6088067
+  ],
+  "state": "ID",
+  "town": "Rupert"
+ },
+ "boundary": {
+  "type": "Polygon",
+  "coordinates": [
+   [
+    [
+     -113.7053667,
+     42.6058137
+    ],
+    [
+     -113.7061682,
+     42.6058209
+    ],
+    [
+     -113.7061878,
+     42.6052956
+    ],
+    [
+     -113.7149856,
+     42.6052597
+    ],
+    [
+     -113.7149368,
+     42.6087312
+    ],
+    [
+     -113.6974877,
+     42.6088067
+    ],
+    [
+     -113.6974681,
+     42.60531
+    ],
+    [
+     -113.7011437,
+     42.6052632
+    ],
+    [
+     -113.7011193,
+     42.6058317
+    ],
+    [
+     -113.7024829,
+     42.6057741
+    ],
+    [
+     -113.7025074,
+     42.6052632
+    ],
+    [
+     -113.7038173,
+     42.6052704
+    ],
+    [
+     -113.7038319,
+     42.6059468
+    ],
+    [
+     -113.7051076,
+     42.6059504
+    ],
+    [
+     -113.7053667,
+     42.6058137
+    ]
+   ]
+  ]
+ }
+}
