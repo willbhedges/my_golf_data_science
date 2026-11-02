@@ -1,66 +1,67 @@
-# Hodge Park Golf Course (Kansas City, MO) - osm_back tees
+# Hodge Park Golf Course (Kansas City, MO) - Blue tees
 
-Built 2026-11-02T10:49:11Z. OSM way/195221873. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-11-02T12:02:05Z. OSM way/195221873. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+
+**WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
 ## Coverage
 
 | | |
 |---|---|
 | holes_built | 18 |
-| holes_mapped | 16 |
-| greens_found | 17 |
-| tee_boxes | 35 |
-| tees_with_colour | 0 |
-| holes_with_trees_or_long_grass_in_landing_zone | 12 |
-| of_par4_5 | 12 |
-| mean_landing_osm_share | 0.363 |
-| mean_confidence | 0.653 |
-| osm_score | 0.834 |
+| holes_mapped | 18 |
+| greens_found | 18 |
+| tee_boxes | 56 |
+| tees_with_colour | 54 |
+| holes_with_trees_or_long_grass_in_landing_zone | 13 |
+| of_par4_5 | 14 |
+| mean_landing_osm_share | 0.396 |
+| mean_confidence | 0.874 |
+| osm_score | 0.865 |
 
-OSM features inside the course: buildings 2, golf=bunker 3, golf=cartpath 20, golf=clubhouse 1, golf=fairway 22, golf=green 18, golf=hole 16, golf=tee 35, holes_with_par 16, water_lines 3, water_polygons 4
+OSM features inside the course: buildings 2, golf=bunker 3, golf=cartpath 20, golf=clubhouse 1, golf=fairway 22, golf=green 18, golf=hole 18, golf=tee 56, holes_with_par 18, tees_with_colour 54, water_lines 3, water_polygons 4
 
 ## Holes
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 3 | 811 / 811 | 49 | 0.77 | check the flags | 100% | 0% | 0% | tee stage: review | tee: tee stage: review |
-| 2 | 4 | 364 / 364 | 277 | 0.57 | needs review | 18% | 15% | 67% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 3 | 4 | 115 / 115 | 270 | 0.55 | needs review | 20% | 0% | 80% | tee stage: review (inside OSM tee 279486929) | tee: tee stage: review (inside OSM tee 279486929); no fairway in the landing zone |
-| 4 | 4 | 412 / 412 | 167 | 0.69 | check the flags | 67% | 5% | 28% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 5 | 4 | 332 / 332 | 360 | 0.58 | needs review | 30% | 3% | 67% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 6 | 3 | 141 / 141 | 128 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 7 | 4 | 435 / 435 | 347 | 0.66 | check the flags | 60% | 1% | 39% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 8 | 4 | 435 / 435 | 95 | 0.60 | check the flags | 37% | 4% | 59% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 9 | 4 | 276 / 276 | 13 | 0.62 | check the flags | 14% | 43% | 42% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 10 | 4 | 390 / 390 | 7 | 0.68 | check the flags | 44% | 34% | 22% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 11 | 3 | 215 / 215 | 109 | 0.43 | needs review | 0% | 0% | 100% | tee nearest the hole-line start | tee: tee nearest the hole-line start; green from the hole-line end (no golf=green polygon) |
-| 12 | 3 | 178 / 178 | 307 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 13 | 4 | 446 / 446 | 339 | 0.67 | check the flags | 30% | 46% | 24% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 14 | 3 | 158 / 158 | 336 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 15 | 4 | 350 / 350 | 147 | 0.64 | check the flags | 30% | 31% | 39% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 16 | 4 | 247 / 247 | 354 | 0.63 | check the flags | 46% | 5% | 48% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 17 | 4 | 272 / 272 | 313 | 0.60 | needs review | 38% | 2% | 60% | tee stage: review (inside OSM tee 279487481) | tee: tee stage: review (inside OSM tee 279487481) |
-| 18 | 3 | 169 / 169 | 108 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 1 | 4 | 425 / 424 | 165 | 0.89 | auto | 58% | 4% | 38% | tee stage: Blue tagged |  |
+| 2 | 4 | 347 / 341 | 355 | 0.82 | auto | 34% | 4% | 62% | tee stage: Blue tagged |  |
+| 3 | 3 | 168 / 167 | 129 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Blue review (inside OSM tee 279486929) | tee: tee stage: Blue review (inside OSM tee 279486929) |
+| 4 | 5 | 452 / 451 | 353 | 0.84 | auto | 44% | 0% | 56% | tee stage: Blue tagged | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 5 | 4 | 446 / 447 | 98 | 0.85 | auto | 37% | 14% | 50% | tee stage: Blue tagged |  |
+| 6 | 4 | 304 / 304 | 8 | 0.84 | auto | 25% | 25% | 50% | tee stage: Blue tagged |  |
+| 7 | 3 | 174 / 174 | 190 | 1.00 | auto | 100% | 0% | 0% | tee stage: Blue tagged |  |
+| 8 | 4 | 409 / 407 | 292 | 0.86 | auto | 38% | 15% | 47% | tee stage: Blue tagged |  |
+| 9 | 4 | 401 / 401 | 190 | 0.85 | auto | 34% | 16% | 49% | tee stage: Blue tagged |  |
+| 10 | 4 | 405 / 400 | 42 | 0.81 | auto | 19% | 20% | 61% | tee stage: Blue tagged |  |
+| 11 | 5 | 459 / 458 | 330 | 0.89 | auto | 57% | 6% | 38% | tee stage: Blue tagged |  |
+| 12 | 3 | 193 / 188 | 337 | 1.00 | auto | 100% | 0% | 0% | tee stage: Blue tagged |  |
+| 13 | 4 | 388 / 383 | 136 | 0.83 | auto | 36% | 6% | 57% | tee stage: Blue tagged |  |
+| 14 | 4 | 260 / 260 | 354 | 0.84 | auto | 39% | 8% | 53% | tee stage: Blue tagged |  |
+| 15 | 4 | 338 / 338 | 134 | 0.94 | auto | 68% | 13% | 19% | tee stage: Blue tagged |  |
+| 16 | 3 | 192 / 188 | 108 | 1.00 | auto | 100% | 0% | 0% | tee stage: Blue tagged |  |
+| 17 | 5 | 518 / 519 | 256 | 0.88 | auto | 42% | 21% | 37% | tee stage: Blue tagged |  |
+| 18 | 4 | 302 / 304 | 190 | 0.79 | check the flags | 23% | 2% | 76% | tee stage: Blue tagged |  |
 
 ## Stages
 
 - **resolve**: ok: way/195221873 Hodge Park Golf Course (Kansas City, MO)
-- **osm**: ok: 563 features
-- **routing**: ok: pathroute_v2 (mapped_nocard) placed 16/16 holes OSM has no way for (3 to check; segment no, lidar pads 247, perception scene no)
-- **scorecard**: missing
-- **tee_overrides**: ok: osm_back 1 review, 3 review (inside OSM tee 279486929), 17 review (inside OSM tee 279487481);
-- **tees**: fallback: OSM tee nearest the hole-line start (no yardages)
-- **geometry**: ok: geometry/build_holes.py (18 holes, 1 tee set(s))
+- **osm**: ok: 602 features
+- **routing**: not needed: OSM has a golf=hole way for every hole
+- **scorecard**: ok: golfify (golfify)
+- **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tee_overrides**: ok: Blue 3 review (inside OSM tee 279486929); White 1 review (inside OSM tee 279486921), 3 review (inside OSM tee 279486929), 17 review (inside OSM tee 279487481);
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 34 candidate pads near hole starts
+- **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/hodge_park/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2018)
-- **green_visibility**: ok: 17/17 greens visible as turf on NAIP 2018
-- **elevation**: ok: course_data/packages/hodge_park/imagery/dem.tif (17/18 holes)
+- **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2018
+- **elevation**: ok: course_data/packages/hodge_park/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 6 polygons (outside 6); mode replace
 
 ## Warnings
 
-- hole 1: placed by pathroute_v2 inference, golfer check (pathroute_v2 pair confidence 0.88: ask the golfer)
-- hole 3: placed by pathroute_v2 inference, golfer check (pathroute_v2 pair confidence 0.87: ask the golfer)
-- hole 12: placed by pathroute_v2 inference, golfer check (pathroute_v2 pair confidence 0.35: ask the golfer)
-- no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM tee box nearest each hole-line start (usually the back tee); lengths are measured
+- ignored 2 golf=hole way(s) of a neighbouring course (outside this course's boundary): OSM 898574075, 898587302
+- requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red

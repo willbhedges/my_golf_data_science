@@ -5,17 +5,21 @@
  "hand_checked": false,
  "main_which": "auto",
  "slug": "hodge_park",
- "sub": "Kansas City, MO \u00b7 automatic page \u00b7 osm_back \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
+ "sub": "Kansas City, MO \u00b7 automatic page \u00b7 Blue 6,181 / White 5,707 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
  "event": "",
  "package": "course_data/library/hodge_park/package.json",
  "truth_package": "course_data/library/hodge_park/package.json",
- "tees": "osm_back",
- "alt_bases": {},
+ "tees": "Blue",
+ "alt_bases": {
+  "White": "auto_b"
+ },
  "sets": [
-  "osm_back"
+  "Blue",
+  "White"
  ],
  "colors": {
-  "osm_back": "#111"
+  "Blue": "#2a5bd7",
+  "White": "#f2f2f2"
  },
  "days": [
   "2026-11-07",
@@ -27,8 +31,8 @@
  ],
  "tee_hour": 9.0,
  "temps": [
-  40,
-  50,
+  45,
+  55,
   65
  ],
  "draws": 48,
@@ -38,18 +42,21 @@
  "climate": {
   "temp_lo": 43.8,
   "temp_hi": 62.6,
-  "wind_mph": 14.2,
+  "wind_mph": 13.1,
   "wind_from": 313,
   "source": "Open-Meteo hourly forecast"
  },
  "grid_prune": true,
- "bases_why": "no scorecard: the package's own tee set",
+ "bases_why": "the two longest sets on the card (combination sets skipped)",
  "request": "course_data/requests/course_page_hodge_park.json",
  "rev": 1,
- "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from no card, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: osm_back. See qa_report.md for the hole-by-hole checks.",
- "built": "2026-11-02T10:49Z",
+ "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from golfify, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Blue, White. See qa_report.md for the hole-by-hole checks.",
+ "built": "2026-11-02T12:02Z",
  "offsets": {
   "auto": [
+   0
+  ],
+  "auto_b": [
    0
   ]
  },
