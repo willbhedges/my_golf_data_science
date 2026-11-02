@@ -1,59 +1,48 @@
-# A. L. Gustin GC: rebuild QA (2026-11-02)
+# A. L. Gustin GC: rebuild QA, second pass (2026-11-02)
 
-**Verdict: NEEDS FIX** (one regression on hole 15 Gold; the reviewer's must-fix, hole 15 Black, is fixed)
+**Verdict: NEEDS FIX.** 15 Gold is **still 401 yds on the Black box**. The card-consensus fix (commit 0ceff9dc) did not
+take effect on this course. 15 Black stays fixed, and everything else is as in the first pass.
 
-Page checked: `course_data/library/gustin/page.html`, built 2026-11-01T20:38Z (GitHub Actions run 41346747941). Both
-solved sets (Black, Gold) were run through `qa_page.js`: 18 holes each, phone and desktop, 0 page problems. I looked at
-every phone hole picture and compared the page's per-hole yardage with the card in review.md. Note that the weather is
-new (forecast for 11/7-11/8, wind 9 mph from 60°), so some club and aim picks moved for that reason alone.
+Page checked: `course_data/library/gustin/page.html`, built 2026-11-02T03:15Z (GitHub Actions run 41378614486, the
+retry after the consensus fix). Both solved sets (Black, Gold) were run through `qa_page.js`: 18 holes each, phone and
+desktop, 0 page problems. I looked at every phone hole picture. Gold total is still 5,890; it would be 5,839 with 15 at
+350.
 
-## Review fixes
+## 15 Gold: why the consensus fix missed it
 
-| fix in review.md | applied? |
-|---|---|
-| 15 Black: tee to the OSM back box (38.93061, -92.34709), about 399 yds | **yes.** The tee is snapped 4 yds to OSM tee 591649550, beside green 14. Page 399 / measured 396. The pick is 2-wood, aim 30 left (tie with 4-wood), and it lands in fairway. |
+`raw/scorecard_web.json` (re-fetched by this build) still has `consensus.changes = [{hole 15, set Gold, card 350,
+chosen 401, source opengolfapi, ground_err [50, 1]}]`. The page's 15 Gold tee is `osm/tee_axis` at
+(38.9306022, -92.3471012), 401 measured, 2 yds behind the Black tee (399).
 
-## New problem: hole 15 Gold
+The new guard in `course_data/platform/card_consensus.py` skips a replacement only when it lands within 5 yds of, or
+behind, a **longer set's card yardage on that hole**. It compares with `merged` Black, which is still the card's
+**467**. The review's `yardage_overrides {"15": {"Black": 399}}` is applied later in the build, so the guard sees 401
+< 462 and lets the change through. The guard never sees the 399 that the page actually uses.
 
-The Gold tee on 15 moved from its own box at the foot of the fairway (old build: 345 measured vs card 350, 4-wood,
-fairway) back onto the Black box. The page now says **Gold 401 yds, 2 yds behind Black (399)**, and Gold total is
-5,890 instead of 5,839.
-
-Cause: `raw/scorecard_web.json` `consensus.changes` replaced Gold hole 15 = 350 (golfify **and** AllSquare agree) with
-opengolfapi's 401. opengolfapi is flagged `consistent: false` and is the worst-fitting source. With hole 15 Black now
-at 399, the 401 "fits the ground" and wins. The card consensus should not let one inconsistent source overrule two
-agreeing ones.
+Also note that golfify **and** AllSquare both say Gold 15 = 350; `corroborated_by` is 0 for every source. But the
+"two cards agree" brake does not apply when the base card's ground misfit is large (ground_err 50, the OSM ground fit
+does not find the forward box), so it does not stop the change either.
 
 ## Holes
 
 | hole | Black | Gold | note |
 |---|---|---|---|
-| 1 | OK | OK | 492 / 470; Driver to the fairway on both |
-| 2 | OK | OK | par 3; box on the green |
-| 3 | OK | OK | Black on the shared hole-6 box, 440; Gold lidar pad, 351, 4-wood +40 to the edge of the fairway (plausible) |
-| 4 | OK | OK | Black tee in the chute, 5 yds off the OSM box (review: OK) |
-| 5 | OK | OK | par 3, 201 / 170 |
-| 6 | OK | uncertain | Gold changed from Long iron -3 (fairway) to 4-wood -40 over the dogleg corner. The calm landing centre sits on the tree clump at the corner ("recovery, 10 yds from fairway"). Weather-driven. Plausible as an aggressive line but not a clear improvement; not blocking. |
-| 7 | OK (uncertain, as reviewed) | OK | Black chute tee, 364 vs 369 |
-| 8 | OK | OK | |
-| 9 | OK | OK | Gold Driver -14 runs to the greenside sand/path at 304 on a 323 hole; same as before, plausible |
-| 10 | OK | OK | par 3 |
-| 11 | OK (minor, as reviewed) | OK | Black lidar pad, moved 7 yds off a road, 416 vs 424 |
-| 12 | OK | OK | |
-| 13 | OK | OK | par 3 |
-| 14 | OK | OK | lidar pads (OSM maps no tee boxes on 14) |
-| **15** | **fixed** | **still wrong (new)** | Black: see above. Gold sits on the Black box at 401 instead of its own box at about 345 (card 350). |
-| 16 | OK | OK | |
-| 17 | OK | OK | |
-| 18 | OK | OK | |
+| 1-5, 8, 10-14, 17, 18 | OK | OK | page yardage = card; same as first pass |
+| 6 | OK | OK | Gold now Long iron (calm 4-wood), the first-pass concern is gone |
+| 7 | OK (chute tee, as reviewed) | OK (marginal) | Gold 2-wood aim 39 left over the corner, sand 11%, trees 8%, 31 yds in. Aim-bound pick, model choice |
+| 9 | OK (marginal) | OK | Black Driver to 54 yds short, trees 21%, fairway 7%; long iron is 0.053 behind. Model choice |
+| **15** | **fixed** (399, 2-wood aim 30 left, fairway 73%) | **still wrong** | Gold on the Black box at 401 instead of its own box at about 341-350 |
+| 16 | OK (marginal) | OK | Black 4-wood aim 40.0 right (on the bound), trees 16%. Model choice |
 
 ## Next fix
 
-1. `course_data/library/gustin/review.json`, hole 15 `fix`: add `"tee_ll": {"Gold": [38.9303307, -92.3459911]}`. This
-   is the OSM tee box at the foot of the fairway, 341 yds along the dogleg (332 straight). Also add `"yards": {"Gold":
-   350}` next to the existing Black entries. Then rebuild (coordinator: course_page_gustin request).
-2. (Pipeline, optional but better) the card consensus in `course_data/platform/package.py` (card_consensus) should
-   not replace a yardage on which two consistent sources agree with the value from a source flagged
-   `consistent: false`.
+1. **Quickest:** `course_data/library/gustin/review.json`, hole 15 `fix`: add `"tee_ll": {"Gold": [38.9303307,
+   -92.3459911]}` (the OSM tee box at the foot of the fairway) and `"yards": {"Black": 399, "Gold": 350}`. A per-set
+   yardage override wins over the consensus. Then rebuild (coordinator: course_page_gustin request).
+2. **Pipeline:** `card_consensus.consensus()` should see the request's `yardage_overrides` (apply them to `merged`
+   before the longer-set guard), or the build should re-run the guard after the overrides. As written, the guard cannot
+   catch a case where the review shortened the longer set, and that is exactly the Gustin case.
+3. Optional (pipeline): when two consistent sources agree on a value, a single source flagged `consistent: false`
+   should not replace it, whatever the ground fit says.
 
-After that rebuild: PUBLISH, provided Gold 15 reads about 350 from the forward box.
+After that rebuild: PUBLISH, provided 15 Gold reads about 350 from the forward box and the Gold total is 5,839.
