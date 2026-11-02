@@ -1,0 +1,1728 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "slug": "sand_creek_station",
+  "mapper": "mapper-agent sand_creek_station (map3)",
+  "made": "2026-11-02T09:28:36Z",
+  "corridor_set": "Championship",
+  "base_package": "course_data/mapper/sand_creek_station/base/package.json",
+  "base_built": "2026-11-02T06:30:53Z",
+  "minutes": 50,
+  "edits_sha": "1787fb68134185ac",
+  "schema": "agent_zones/1",
+  "reviewed": {
+   "1": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "parkland: mown rough with scattered trees left, creek corridor right; added two young crowns the lidar misses",
+    "s2": [
+     {
+      "id": "S2-1-L1",
+      "side": "L",
+      "area_yd2": 695,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-1-L2",
+      "side": "L",
+      "area_yd2": 1232,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-1-L3",
+      "side": "L",
+      "area_yd2": 242,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-1-L4",
+      "side": "L",
+      "area_yd2": 866,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "tan patch left beyond path at 355-400 is tan in 2023 only, green/smooth in 2021; past the landing zone; AUTO native left as is"
+     },
+     {
+      "id": "S2-1-R1",
+      "side": "R",
+      "area_yd2": 351,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     }
+    ]
+   },
+   "2": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "parkland; erased AUTO native strip along the right tree line at 120-225 (mown rough); tree line matches lidar",
+    "s2": [
+     {
+      "id": "S2-2-L1",
+      "side": "L",
+      "area_yd2": 219,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-2-L2",
+      "side": "L",
+      "area_yd2": 1262,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-2-L3",
+      "side": "L",
+      "area_yd2": 244,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     }
+    ]
+   },
+   "4": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "AUTO native left beyond ~8-10 yd mown band matches the coarse texture in both years; pond right kept",
+    "s2": [
+     {
+      "id": "S2-4-L1",
+      "side": "L",
+      "area_yd2": 9052,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "native left is real (coarse both years) but AUTO native already starts at the outer edge of the ~8-10 yd mown band; the S2 shape hugs the fairway over that mown rough"
+     },
+     {
+      "id": "S2-4-R1",
+      "side": "R",
+      "area_yd2": 272,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond / trees"
+     },
+     {
+      "id": "S2-4-R2",
+      "side": "R",
+      "area_yd2": 2233,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond and trees (AUTO water / trees)"
+     },
+     {
+      "id": "S2-4-R3",
+      "side": "R",
+      "area_yd2": 1826,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "right of the bunker complex at 340-400, mottled but not clearly unmown in 2023; past the driver zone on a 601 par 5"
+     }
+    ]
+   },
+   "5": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "AUTO native left (beyond mown band) and right (between path and railroad) confirmed; no change",
+    "s2": [
+     {
+      "id": "S2-5-L1",
+      "side": "L",
+      "area_yd2": 5572,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "AUTO native already covers the coarse grass beyond the mown band; S2 shape covers mown rough near the fairway"
+     },
+     {
+      "id": "S2-5-L2",
+      "side": "L",
+      "area_yd2": 2159,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "beyond / beside the green, AUTO native already present"
+     },
+     {
+      "id": "S2-5-R1",
+      "side": "R",
+      "area_yd2": 601,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-5-R2",
+      "side": "R",
+      "area_yd2": 344,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-5-R3",
+      "side": "R",
+      "area_yd2": 1190,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "tall tufted grass between cart path and railroad in both 2023 and 2021 (AUTO native also there)"
+     },
+     {
+      "id": "S2-5-R4",
+      "side": "R",
+      "area_yd2": 697,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     }
+    ]
+   },
+   "6": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "AUTO native left beyond the mown band (hay field farther left) matches both years; right is mown rough to the path, trees beyond",
+    "s2": [
+     {
+      "id": "S2-6-L1",
+      "side": "L",
+      "area_yd2": 8420,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "AUTO native already covers the coarse grass beyond the ~8 yd mown band; S2 shape over the mown rough"
+     },
+     {
+      "id": "S2-6-L2",
+      "side": "L",
+      "area_yd2": 3180,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-6-R1",
+      "side": "R",
+      "area_yd2": 3061,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-6-R2",
+      "side": "R",
+      "area_yd2": 860,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     }
+    ]
+   },
+   "8": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "right side is a wetland/creek corridor (marsh in 2023, dark water 2021) under AUTO water + trees; kept",
+    "s2": [
+     {
+      "id": "S2-8-L1",
+      "side": "L",
+      "area_yd2": 1443,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough / creek bank strip, or inside the AUTO water/wetland and trees on the right"
+     },
+     {
+      "id": "S2-8-L2",
+      "side": "L",
+      "area_yd2": 277,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough / creek bank strip, or inside the AUTO water/wetland and trees on the right"
+     },
+     {
+      "id": "S2-8-R1",
+      "side": "R",
+      "area_yd2": 154,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough / creek bank strip, or inside the AUTO water/wetland and trees on the right"
+     },
+     {
+      "id": "S2-8-R2",
+      "side": "R",
+      "area_yd2": 1127,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough / creek bank strip, or inside the AUTO water/wetland and trees on the right"
+     }
+    ]
+   },
+   "9": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "high",
+    "note": "tree-lined parkland; auto tree edges match the crowns in photo and CIR",
+    "s2": [
+     {
+      "id": "S2-9-L1",
+      "side": "L",
+      "area_yd2": 402,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-9-R1",
+      "side": "R",
+      "area_yd2": 356,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     }
+    ]
+   },
+   "10": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "pond left and railroad right; native strip only along the railroad 25+ yds out under trees (not added)",
+    "s2": [
+     {
+      "id": "S2-10-L1",
+      "side": "L",
+      "area_yd2": 332,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond edge with trees, mown rough, or the railroad strip (trees / ballast, OB) - no unmown native near play"
+     },
+     {
+      "id": "S2-10-L2",
+      "side": "L",
+      "area_yd2": 217,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond edge with trees, mown rough, or the railroad strip (trees / ballast, OB) - no unmown native near play"
+     },
+     {
+      "id": "S2-10-L3",
+      "side": "L",
+      "area_yd2": 1570,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond edge with trees, mown rough, or the railroad strip (trees / ballast, OB) - no unmown native near play"
+     },
+     {
+      "id": "S2-10-L4",
+      "side": "L",
+      "area_yd2": 1609,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond edge with trees, mown rough, or the railroad strip (trees / ballast, OB) - no unmown native near play"
+     },
+     {
+      "id": "S2-10-R1",
+      "side": "R",
+      "area_yd2": 185,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond edge with trees, mown rough, or the railroad strip (trees / ballast, OB) - no unmown native near play"
+     },
+     {
+      "id": "S2-10-R2",
+      "side": "R",
+      "area_yd2": 600,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond edge with trees, mown rough, or the railroad strip (trees / ballast, OB) - no unmown native near play"
+     },
+     {
+      "id": "S2-10-R3",
+      "side": "R",
+      "area_yd2": 1099,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond edge with trees, mown rough, or the railroad strip (trees / ballast, OB) - no unmown native near play"
+     }
+    ]
+   },
+   "11": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "native beyond the mowing line right (~x+35) and beyond the cart path left (~x-45), both years",
+    "s2": [
+     {
+      "id": "S2-11-L1",
+      "side": "L",
+      "area_yd2": 4135,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native left of the cart path is real; traced its edge at x~-45 (edit 1); S2 shape comes in over the path"
+     },
+     {
+      "id": "S2-11-L2",
+      "side": "L",
+      "area_yd2": 4460,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "covered by edit 1 (left of path to 345)"
+     },
+     {
+      "id": "S2-11-R1",
+      "side": "R",
+      "area_yd2": 2124,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native beyond the mowing line at x~+35 (edit 0); S2 shape comes in over the mown rough"
+     },
+     {
+      "id": "S2-11-R2",
+      "side": "R",
+      "area_yd2": 2491,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "part beyond +33 at 290-335 traced in edit 0; part near the green is mown rough"
+     }
+    ]
+   },
+   "12": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "no AUTO native; added left native beyond ~14 yd mown band (coarse, tyre tracks, both years); right is path + railroad OB",
+    "s2": [
+     {
+      "id": "S2-12-L1",
+      "side": "L",
+      "area_yd2": 9210,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native left is real; traced its edge at x~-46 (edit 0); S2 shape spans the mown rough to the fairway"
+     },
+     {
+      "id": "S2-12-R1",
+      "side": "R",
+      "area_yd2": 3782,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "cart path, mown strip and railroad (AUTO OB); not native"
+     },
+     {
+      "id": "S2-12-R2",
+      "side": "R",
+      "area_yd2": 1514,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-12-R3",
+      "side": "R",
+      "area_yd2": 880,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-12-R4",
+      "side": "R",
+      "area_yd2": 322,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     }
+    ]
+   },
+   "14": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "low",
+    "note": "no native near play found; left has a row of young trees (~x-55, lidar empty) 25+ yds out (not added); right hollow +20..+40 at 250-320 unclear",
+    "s2": [
+     {
+      "id": "S2-14-L1",
+      "side": "L",
+      "area_yd2": 11085,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "smooth mown rough with a row of young trees in both years"
+     },
+     {
+      "id": "S2-14-R1",
+      "side": "R",
+      "area_yd2": 1322,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-14-R2",
+      "side": "R",
+      "area_yd2": 862,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-14-R3",
+      "side": "R",
+      "area_yd2": 364,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "hollow right of the fairway: swirled mowing marks in 2023, not clearly unmown in 2021 (listed uncertain)"
+     },
+     {
+      "id": "S2-14-R4",
+      "side": "R",
+      "area_yd2": 1806,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mostly cart path and mown rough; the strip right of the path at 300-390 is coarse but beyond the landing zone next to the lot line (uncertain)"
+     },
+     {
+      "id": "S2-14-R5",
+      "side": "R",
+      "area_yd2": 242,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "same hollow, mowing marks in 2023"
+     }
+    ]
+   },
+   "15": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "AUTO native right of the cart path confirmed; added the diagonal native strip left between 15 and 14 (crisp edge ~8-10 yds off the fairway, both years)",
+    "s2": [
+     {
+      "id": "S2-15-L1",
+      "side": "L",
+      "area_yd2": 3224,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native strip real; traced its edge (edit 0); S2 shape covers the mown rough up to the fairway"
+     },
+     {
+      "id": "S2-15-L2",
+      "side": "L",
+      "area_yd2": 980,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough by the tees/pond, cart path, or lawn edge by the houses"
+     },
+     {
+      "id": "S2-15-R1",
+      "side": "R",
+      "area_yd2": 3805,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "AUTO native already covers the tufted grass right of the cart path; the S2 shape also spills over the mown rough left of the path"
+     },
+     {
+      "id": "S2-15-R2",
+      "side": "R",
+      "area_yd2": 283,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough by the tees/pond, cart path, or lawn edge by the houses"
+     },
+     {
+      "id": "S2-15-R3",
+      "side": "R",
+      "area_yd2": 474,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough by the tees/pond, cart path, or lawn edge by the houses"
+     },
+     {
+      "id": "S2-15-R4",
+      "side": "R",
+      "area_yd2": 462,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough by the tees/pond, cart path, or lawn edge by the houses"
+     },
+     {
+      "id": "S2-15-R5",
+      "side": "R",
+      "area_yd2": 411,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough by the tees/pond, cart path, or lawn edge by the houses"
+     }
+    ]
+   },
+   "16": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "left AUTO native strip and lot-line OB confirmed; right of the cart path is tall grass + trees with an open field behind, no development: erased AUTO OB there and marked native",
+    "s2": [
+     {
+      "id": "S2-16-L1",
+      "side": "L",
+      "area_yd2": 8589,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "AUTO native already marks the coarse strip x~-60..-45; S2 also covers mown back-yard lawns (OB) and mown rough"
+     },
+     {
+      "id": "S2-16-R1",
+      "side": "R",
+      "area_yd2": 4976,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "traced from the cart path edge (edit 1)"
+     },
+     {
+      "id": "S2-16-R2",
+      "side": "R",
+      "area_yd2": 333,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     }
+    ]
+   },
+   "18": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "AUTO native strip right between fairways confirmed but it starts too close: native starts ~x+9 beyond the bunkers / mown band",
+    "s2": [
+     {
+      "id": "S2-18-L1",
+      "side": "L",
+      "area_yd2": 344,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-18-L2",
+      "side": "L",
+      "area_yd2": 230,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-18-L3",
+      "side": "L",
+      "area_yd2": 312,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-18-L4",
+      "side": "L",
+      "area_yd2": 231,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough (smooth green, no tufts) in both 2023 and 2021, or trees / path; not native"
+     },
+     {
+      "id": "S2-18-R1",
+      "side": "R",
+      "area_yd2": 6541,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "AUTO native already covers the strip (+9..+32 after my erase); S2 shape spills onto the mown rough of the adjacent hole and up to the fairway"
+     }
+    ]
+   }
+  },
+  "uncertain": [
+   {
+    "hole": "10",
+    "what": "Championship tee: no tee box visible at the auto dot; card 648 (36 behind Tournament) - kept"
+   },
+   {
+    "hole": "14",
+    "what": "hollow right of fairway (x+20..+40, along 250-320): may be unmown fescue; mowing swirls in 2023 - left as rough"
+   },
+   {
+    "hole": "14",
+    "what": "coarse strip right of the cart path (x+45..+55, 300-390) next to lot lines - not added"
+   },
+   {
+    "hole": "14",
+    "what": "row of young trees left at x~-55 (lidar empty) - not added (25+ yds out)"
+   },
+   {
+    "hole": "1",
+    "what": "AUTO water right at 120-210 is vegetated creek bottom in both photos; kept as water/hazard"
+   },
+   {
+    "hole": "8",
+    "what": "right wetland is marsh in 2023 and dark water in 2021; kept as AUTO water"
+   },
+   {
+    "hole": "16",
+    "what": "right-side OB erased: if a boundary fence exists behind the tree line it is >45 yds out"
+   },
+   {
+    "hole": "11",
+    "what": "right native edge +/-5 yds (mowing line at ~+35)"
+   }
+  ],
+  "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "1",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "1.0",
+    "area_yd2": 78,
+    "confidence": "medium",
+    "evidence": "crown with shadow in 2023 and 2021, CIR crown; lidar only yellow (<2.5 m, younger lidar)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3646655,
+       38.0238891
+      ],
+      [
+       -97.3646752,
+       38.0238816
+      ],
+      [
+       -97.3646871,
+       38.0238763
+      ],
+      [
+       -97.3647002,
+       38.0238737
+      ],
+      [
+       -97.3647138,
+       38.0238738
+      ],
+      [
+       -97.3647269,
+       38.0238767
+      ],
+      [
+       -97.3647386,
+       38.0238822
+      ],
+      [
+       -97.3647481,
+       38.0238899
+      ],
+      [
+       -97.3647548,
+       38.0238992
+      ],
+      [
+       -97.3647582,
+       38.0239096
+      ],
+      [
+       -97.364758,
+       38.0239204
+      ],
+      [
+       -97.3647544,
+       38.0239308
+      ],
+      [
+       -97.3647474,
+       38.02394
+      ],
+      [
+       -97.3647377,
+       38.0239475
+      ],
+      [
+       -97.3647259,
+       38.0239528
+      ],
+      [
+       -97.3647127,
+       38.0239555
+      ],
+      [
+       -97.3646991,
+       38.0239553
+      ],
+      [
+       -97.364686,
+       38.0239524
+      ],
+      [
+       -97.3646743,
+       38.023947
+      ],
+      [
+       -97.3646648,
+       38.0239393
+      ],
+      [
+       -97.3646581,
+       38.0239299
+      ],
+      [
+       -97.3646548,
+       38.0239195
+      ],
+      [
+       -97.3646549,
+       38.0239087
+      ],
+      [
+       -97.3646586,
+       38.0238984
+      ],
+      [
+       -97.3646655,
+       38.0238891
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "1",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "1.1",
+    "area_yd2": 78,
+    "confidence": "medium",
+    "evidence": "crown with shadow in 2023 and 2021, CIR crown; lidar <2.5 m"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3645508,
+       38.0240385
+      ],
+      [
+       -97.3645605,
+       38.024031
+      ],
+      [
+       -97.3645724,
+       38.0240257
+      ],
+      [
+       -97.3645856,
+       38.0240231
+      ],
+      [
+       -97.3645992,
+       38.0240232
+      ],
+      [
+       -97.3646122,
+       38.0240261
+      ],
+      [
+       -97.3646239,
+       38.0240316
+      ],
+      [
+       -97.3646334,
+       38.0240392
+      ],
+      [
+       -97.3646401,
+       38.0240486
+      ],
+      [
+       -97.3646435,
+       38.024059
+      ],
+      [
+       -97.3646433,
+       38.0240698
+      ],
+      [
+       -97.3646397,
+       38.0240801
+      ],
+      [
+       -97.3646327,
+       38.0240894
+      ],
+      [
+       -97.364623,
+       38.0240969
+      ],
+      [
+       -97.3646112,
+       38.0241022
+      ],
+      [
+       -97.364598,
+       38.0241049
+      ],
+      [
+       -97.3645844,
+       38.0241047
+      ],
+      [
+       -97.3645713,
+       38.0241018
+      ],
+      [
+       -97.3645596,
+       38.0240964
+      ],
+      [
+       -97.3645501,
+       38.0240887
+      ],
+      [
+       -97.3645434,
+       38.0240793
+      ],
+      [
+       -97.3645401,
+       38.0240689
+      ],
+      [
+       -97.3645402,
+       38.0240581
+      ],
+      [
+       -97.3645439,
+       38.0240478
+      ],
+      [
+       -97.3645508,
+       38.0240385
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "erase",
+    "lie": "native",
+    "edit": "2.0",
+    "area_yd2": 2625,
+    "lies": [
+     "native"
+    ],
+    "confidence": "medium",
+    "evidence": "strip beside the right tree line is green mown rough in 2023 and 2021, no tufts"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3647023,
+       38.0245441
+      ],
+      [
+       -97.3652759,
+       38.0238075
+      ],
+      [
+       -97.3654976,
+       38.0239156
+      ],
+      [
+       -97.364924,
+       38.0246521
+      ],
+      [
+       -97.3647023,
+       38.0245441
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "5",
+    "op": "add",
+    "lie": "native",
+    "edit": "S2-5-R3",
+    "area_yd2": 1196,
+    "s2": "S2-5-R3",
+    "keepout_clipped_yd2": 10,
+    "confidence": "medium",
+    "evidence": "S2-5-R3 accepted: tall tufted grass between cart path and railroad in both 2023 and 2021 (AUTO native also there)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3764241,
+       38.0205602
+      ],
+      [
+       -97.3762653,
+       38.0205602
+      ],
+      [
+       -97.3762459,
+       38.0205517
+      ],
+      [
+       -97.3762354,
+       38.0205477
+      ],
+      [
+       -97.3762244,
+       38.0205447
+      ],
+      [
+       -97.3761989,
+       38.0205388
+      ],
+      [
+       -97.3761932,
+       38.0204608
+      ],
+      [
+       -97.3759909,
+       38.0204675
+      ],
+      [
+       -97.3759864,
+       38.0204662
+      ],
+      [
+       -97.3759752,
+       38.0204633
+      ],
+      [
+       -97.375974,
+       38.0204631
+      ],
+      [
+       -97.3759671,
+       38.0203687
+      ],
+      [
+       -97.3758647,
+       38.0203741
+      ],
+      [
+       -97.375985,
+       38.0203426
+      ],
+      [
+       -97.3759841,
+       38.0203058
+      ],
+      [
+       -97.3759094,
+       38.0202996
+      ],
+      [
+       -97.3758623,
+       38.020282
+      ],
+      [
+       -97.3759787,
+       38.0202801
+      ],
+      [
+       -97.3759792,
+       38.0201216
+      ],
+      [
+       -97.3763363,
+       38.0204105
+      ],
+      [
+       -97.3765289,
+       38.0206469
+      ],
+      [
+       -97.3764265,
+       38.0206523
+      ],
+      [
+       -97.3764241,
+       38.0205602
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "11",
+    "op": "add",
+    "lie": "native",
+    "edit": "11.0",
+    "area_yd2": 4404,
+    "keepout_clipped_yd2": 189,
+    "confidence": "medium",
+    "evidence": "mowing line at x~+35 in 2023 with coarse tufted grass (tan tufts) beyond to the road fence; 2021 darker coarse band from ~+33; ~15 yds off the fairway"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3640681,
+       38.0141436
+      ],
+      [
+       -97.3637989,
+       38.0141749
+      ],
+      [
+       -97.3637544,
+       38.0141565
+      ],
+      [
+       -97.3637446,
+       38.014153
+      ],
+      [
+       -97.3637344,
+       38.0141503
+      ],
+      [
+       -97.3637239,
+       38.0141484
+      ],
+      [
+       -97.3637132,
+       38.0141474
+      ],
+      [
+       -97.3637024,
+       38.0141473
+      ],
+      [
+       -97.3636482,
+       38.0141489
+      ],
+      [
+       -97.3636385,
+       38.0141495
+      ],
+      [
+       -97.363629,
+       38.0141509
+      ],
+      [
+       -97.3635702,
+       38.0141614
+      ],
+      [
+       -97.3635255,
+       38.0141547
+      ],
+      [
+       -97.3635152,
+       38.0141536
+      ],
+      [
+       -97.3635048,
+       38.0141533
+      ],
+      [
+       -97.3634945,
+       38.0141538
+      ],
+      [
+       -97.3634843,
+       38.0141551
+      ],
+      [
+       -97.3634743,
+       38.0141573
+      ],
+      [
+       -97.3633952,
+       38.0141774
+      ],
+      [
+       -97.363386,
+       38.0141801
+      ],
+      [
+       -97.3633772,
+       38.0141834
+      ],
+      [
+       -97.3633688,
+       38.0141875
+      ],
+      [
+       -97.363361,
+       38.0141921
+      ],
+      [
+       -97.3633537,
+       38.0141973
+      ],
+      [
+       -97.3633384,
+       38.0142093
+      ],
+      [
+       -97.3633322,
+       38.0142147
+      ],
+      [
+       -97.3633132,
+       38.0142161
+      ],
+      [
+       -97.3632889,
+       38.014011
+      ],
+      [
+       -97.3653108,
+       38.013861
+      ],
+      [
+       -97.3653331,
+       38.0140497
+      ],
+      [
+       -97.364711,
+       38.0140959
+      ],
+      [
+       -97.3640681,
+       38.0141436
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "11",
+    "op": "add",
+    "lie": "native",
+    "edit": "11.1",
+    "area_yd2": 5048,
+    "confidence": "medium",
+    "evidence": "coarse tufted grass from just beyond the cart path (x~-44) outward among trees in 2023, darker coarse in 2021; hay-field mowing rows farther left at 300+"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3654352,
+       38.014911
+      ],
+      [
+       -97.3633096,
+       38.0150687
+      ],
+      [
+       -97.3632873,
+       38.0148801
+      ],
+      [
+       -97.3637529,
+       38.0148372
+      ],
+      [
+       -97.3639593,
+       38.0148137
+      ],
+      [
+       -97.3654109,
+       38.014706
+      ],
+      [
+       -97.3654352,
+       38.014911
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "12",
+    "op": "add",
+    "lie": "native",
+    "edit": "12.0",
+    "area_yd2": 4822,
+    "keepout_clipped_yd2": 36,
+    "confidence": "medium",
+    "evidence": "coarse tufted grass with tyre tracks beyond x~-46 in 2023, dark coarse band from ~-48 in 2021; smooth mown band between it and the fairway (~-32)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.360322,
+       38.0159108
+      ],
+      [
+       -97.3602812,
+       38.0159024
+      ],
+      [
+       -97.3602726,
+       38.0159009
+      ],
+      [
+       -97.3602638,
+       38.0159
+      ],
+      [
+       -97.360255,
+       38.0158997
+      ],
+      [
+       -97.3602223,
+       38.0158997
+      ],
+      [
+       -97.3602127,
+       38.0159001
+      ],
+      [
+       -97.3602033,
+       38.0159011
+      ],
+      [
+       -97.360194,
+       38.0159028
+      ],
+      [
+       -97.3601849,
+       38.0159052
+      ],
+      [
+       -97.3601761,
+       38.0159082
+      ],
+      [
+       -97.3601678,
+       38.0159119
+      ],
+      [
+       -97.3601599,
+       38.0159162
+      ],
+      [
+       -97.3601276,
+       38.0159353
+      ],
+      [
+       -97.3588693,
+       38.016094
+      ],
+      [
+       -97.3588447,
+       38.0159719
+      ],
+      [
+       -97.3589875,
+       38.0158955
+      ],
+      [
+       -97.3592928,
+       38.0158403
+      ],
+      [
+       -97.3601155,
+       38.0157366
+      ],
+      [
+       -97.3603147,
+       38.0156781
+      ],
+      [
+       -97.3608256,
+       38.0155969
+      ],
+      [
+       -97.3608748,
+       38.015841
+      ],
+      [
+       -97.360322,
+       38.0159108
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "native",
+    "edit": "15.0",
+    "area_yd2": 1796,
+    "confidence": "high",
+    "evidence": "tan tufted strip with crisp edge in 2023 (x -46..-64 at 200, -39..-54 at 170), the same dark coarse band in 2021; mown strip ~8-10 yds wide between it and the fairway"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.358601,
+       38.022172
+      ],
+      [
+       -97.358539,
+       38.0222499
+      ],
+      [
+       -97.3584324,
+       38.0223492
+      ],
+      [
+       -97.3582758,
+       38.0224628
+      ],
+      [
+       -97.3581085,
+       38.0225623
+      ],
+      [
+       -97.3579519,
+       38.0226759
+      ],
+      [
+       -97.357658,
+       38.0228168
+      ],
+      [
+       -97.3576914,
+       38.0227333
+      ],
+      [
+       -97.3578426,
+       38.0226127
+      ],
+      [
+       -97.3579883,
+       38.022485
+      ],
+      [
+       -97.3581341,
+       38.0223573
+      ],
+      [
+       -97.3582461,
+       38.0222651
+      ],
+      [
+       -97.3583919,
+       38.0221374
+      ],
+      [
+       -97.3585255,
+       38.0220733
+      ],
+      [
+       -97.358601,
+       38.022172
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "16",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "16.0",
+    "area_yd2": 9590,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "medium",
+    "evidence": "right of the cart path: tall grass, trees, then an open field (overview) - no houses, yards, fence or road in 2023 or 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3582362,
+       38.0245512
+      ],
+      [
+       -97.3588629,
+       38.0245326
+      ],
+      [
+       -97.3594933,
+       38.0245386
+      ],
+      [
+       -97.3601238,
+       38.0245445
+      ],
+      [
+       -97.3607467,
+       38.0245014
+      ],
+      [
+       -97.3607742,
+       38.0246813
+      ],
+      [
+       -97.357879,
+       38.0249589
+      ],
+      [
+       -97.3578214,
+       38.0245827
+      ],
+      [
+       -97.3582362,
+       38.0245512
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "16",
+    "op": "add",
+    "lie": "native",
+    "edit": "16.1",
+    "area_yd2": 8124,
+    "keepout_clipped_yd2": 196,
+    "confidence": "medium",
+    "evidence": "coarse tufted grass with scattered trees right of the path in 2023; darker coarse in 2021; ~20 yds off the fairway"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3588642,
+       38.0245408
+      ],
+      [
+       -97.3594958,
+       38.0245549
+      ],
+      [
+       -97.3601263,
+       38.0245609
+      ],
+      [
+       -97.3602221,
+       38.0245542
+      ],
+      [
+       -97.3603381,
+       38.0245607
+      ],
+      [
+       -97.3604401,
+       38.0245694
+      ],
+      [
+       -97.360449,
+       38.0245699
+      ],
+      [
+       -97.3606714,
+       38.0245738
+      ],
+      [
+       -97.3606761,
+       38.0245738
+      ],
+      [
+       -97.3607575,
+       38.0245723
+      ],
+      [
+       -97.3607705,
+       38.0246568
+      ],
+      [
+       -97.3578753,
+       38.0249344
+      ],
+      [
+       -97.3578226,
+       38.0245908
+      ],
+      [
+       -97.3582375,
+       38.0245594
+      ],
+      [
+       -97.3588642,
+       38.0245408
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "18",
+    "op": "erase",
+    "lie": "native",
+    "edit": "18.0",
+    "area_yd2": 6090,
+    "lies": [
+     "native"
+    ],
+    "confidence": "medium",
+    "evidence": "2023: smooth mown band x 0..+9 holding the bunkers, tufted texture starts at ~+10; 2021 dark coarse band from ~+12"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -97.3609035,
+       38.0221776
+      ],
+      [
+       -97.3616774,
+       38.0205593
+      ],
+      [
+       -97.3619599,
+       38.0206438
+      ],
+      [
+       -97.361186,
+       38.0222621
+      ],
+      [
+       -97.3609035,
+       38.0221776
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
