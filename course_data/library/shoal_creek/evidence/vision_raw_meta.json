@@ -4,37 +4,37 @@
  "course": "Shoal Creek Golf Course",
  "bbox_snwe": [
   39.244512,
-  -94.4932098,
+  -94.492237,
   39.261082,
   -94.468885
  ],
  "grid": {
   "crs": "EPSG:32615",
   "res_m": 1.0,
-  "width": 2372,
-  "height": 2116,
+  "width": 2288,
+  "height": 2114,
   "bounds": [
-   371022,
+   371106,
    4344818,
    373394,
-   4346934
+   4346932
   ],
   "transform": [
    1.0,
    0.0,
-   371022.0,
+   371106.0,
    0.0,
    -1.0,
-   4346934.0
+   4346932.0
   ],
   "ll_bbox_wsen": [
-   -94.49499358248606,
-   39.24309507479806,
+   -94.49401985940727,
+   39.24310756005949,
    -94.46711071753703,
-   39.262505444305376
+   39.262487428330154
   ]
  },
- "fetched_utc": "2026-10-30T00:26:26Z",
+ "fetched_utc": "2026-11-02T17:00:57Z",
  "lidar": {
   "hag": {
    "source": "planetary-computer 3dep-lidar-hag",
@@ -42,7 +42,7 @@
     {
      "id": "MO_Clay_County_2008-hag-2m-1-2",
      "when": "2008-04-07T00:00:00.000000Z",
-     "cells": 1060284,
+     "cells": 1018160,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "MO_Clay_County_2008",
@@ -51,7 +51,7 @@
      }
     }
    ],
-   "valid": 0.2112476370510397
+   "valid": 0.21050141911069065
   },
   "dtm": {
    "source": "planetary-computer 3dep-lidar-dtm",
@@ -59,7 +59,7 @@
     {
      "id": "MO_Clay_County_2008-dtm-2m-1-2",
      "when": "2008-04-07T00:00:00.000000Z",
-     "cells": 264478,
+     "cells": 253968,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "MO_Clay_County_2008",
@@ -68,14 +68,14 @@
      }
     }
    ],
-   "valid": 0.2107750472589792
+   "valid": 0.21002838221381268
   },
   "hag_dsm_dtm": {
    "items": [
     {
      "id": "MO_Clay_County_2008-dsm-2m-1-2",
      "when": "2008-04-07T00:00:00.000000Z",
-     "cells": 5012024,
+     "cells": 4832926,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "MO_Clay_County_2008",
@@ -105,6 +105,7 @@
     "count": 597975464
    }
   ],
+  "ept_resolution_m": 0.5,
   "used": [
    {
     "name": "MO_FEMANRCS_1_2020",
@@ -112,20 +113,20 @@
     "cov": 1.0,
     "year": 2020,
     "count": 55630370830,
-    "cells": 4987301
+    "cells": 4820959
    }
   ],
-  "valid": 0.9936541073073698,
-  "hag_mb": 1.93,
-  "frac_gt_2_5m": 0.3296754113045391,
-  "class_mb": 0.05
+  "valid": 0.9967183065279092,
+  "hag_mb": 1.89,
+  "frac_gt_2_5m": 0.33360720405422395,
+  "class_mb": 0.04
  },
  "meta_chm": {
   "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
   "tiles": [
    "023111023"
   ],
-  "mb": 0.59,
+  "mb": 0.57,
   "file": "chm_meta.tif",
   "valid": 1.0
  },
@@ -135,7 +136,7 @@
    {
     "id": "ESA_WorldCover_10m_2021_v200_N39W096",
     "when": "2021-12-31T23:59:59.000000Z",
-    "cells": 1254788,
+    "cells": 1209208,
     "props": {
      "datetime": null,
      "end_datetime": "2021-12-31T23:59:59.000000Z",
@@ -151,7 +152,7 @@
    {
     "year": 2022,
     "file": "naip_2022.tif",
-    "mb": 15.48,
+    "mb": 14.35,
     "items": [
      "mo_m_3909453_nw_15_060_20220629",
      "mo_m_3909445_sw_15_060_20220629"
@@ -165,7 +166,7 @@
    {
     "year": 2020,
     "file": "naip_2020.tif",
-    "mb": 20.86,
+    "mb": 18.78,
     "items": [
      "mo_m_3909453_nw_15_060_20200607",
      "mo_m_3909445_sw_15_060_20200607"

@@ -7,12 +7,11 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "3 hole(s) with a CHECK"
+  "2 hole(s) with a CHECK"
  ],
  "check_holes": [
   2,
-  5,
-  6
+  4
  ],
  "tee_sets": [
   {
@@ -57,7 +56,7 @@
   "Blue"
  ],
  "page": "course_data/library/shoal_creek/page.html",
- "page_bytes": 2314436,
+ "page_bytes": 2365544,
  "qa_report": "course_data/library/shoal_creek/qa_report.md",
  "center": [
   39.252797,
@@ -66,41 +65,15 @@
  "osm": "way/195221881",
  "holes": 18,
  "days": [
-  "2026-10-31",
-  "2026-11-01"
+  "2026-11-07",
+  "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-10-30T00:34Z",
+ "built": "2026-11-02T17:11Z",
  "request": "course_data/requests/course_page_shoal_creek.json",
- "last_attempt": {
-  "status": "failed",
-  "stage": "package",
-  "error": [
-   "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
-  ],
-  "when": "2026-10-31T02:09Z",
-  "resolve": {
-   "status": "ok",
-   "candidates": [
-    {
-     "name": "Shoal Creek Golf Course",
-     "town": "Kansas City",
-     "holes": 18,
-     "osm": {
-      "type": "way",
-      "id": 195221881
-     }
-    },
-    {
-     "name": "Golf Ranch Shoal Creek",
-     "town": "Kansas City",
-     "holes": 0,
-     "osm": {
-      "type": "way",
-      "id": 1537590304
-     }
-    }
-   ]
-  }
+ "native": {
+  "holes": [],
+  "tee_set": "Gold",
+  "note": "not asked: no agent_layers in the request"
  }
 }
