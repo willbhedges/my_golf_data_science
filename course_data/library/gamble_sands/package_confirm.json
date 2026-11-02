@@ -1,0 +1,42 @@
+{
+ "schema": "golf_confirm/1",
+ "course": {
+  "name": "Quicksands at Gamble Sands",
+  "osm": {
+   "type": "way",
+   "id": 1551387386
+  },
+  "state": "WA"
+ },
+ "method": "routing/2",
+ "n_holes": 0,
+ "card": false,
+ "holes": [],
+ "summary": {
+  "confirmed": 0,
+  "to_check": 0,
+  "taps_so_far": 0,
+  "done": true,
+  "p_stop": 0.95,
+  "expected_correct_holes": 0
+ },
+ "questions": [],
+ "history": [],
+ "candidates": {
+  "greens": [],
+  "tees": [
+   {
+    "id": "lidar:0",
+    "ll": [
+     -119.64981263971693,
+     48.07471701009268
+    ],
+    "src": "lidar"
+   }
+  ]
+ },
+ "answer_format": {
+  "question": "<questions[].id>",
+  "answer": "'yes' | 'no' (confirm) or {'tee_ll': [lon, lat], 'green_ll': [lon, lat]} (locate)"
+ }
+}

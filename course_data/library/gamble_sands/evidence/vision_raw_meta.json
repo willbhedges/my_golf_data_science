@@ -1,0 +1,121 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "gamble_sands",
+ "course": "Quicksands at Gamble Sands",
+ "bbox_snwe": [
+  48.0699946,
+  -119.654698,
+  48.078856,
+  -119.641852
+ ],
+ "grid": {
+  "crs": "EPSG:32611",
+  "res_m": 1.0,
+  "width": 1232,
+  "height": 1260,
+  "bounds": [
+   302126,
+   5327336,
+   303358,
+   5328596
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   302126.0,
+   0.0,
+   -1.0,
+   5328596.0
+  ],
+  "ll_bbox_wsen": [
+   -119.65683264053334,
+   48.06857905461783,
+   -119.63972928018062,
+   48.080284287534255
+  ]
+ },
+ "fetched_utc": "2026-11-01T20:52:51Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "WA_NorthCentral_2_2021",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WA_NorthCentral_2_2021/ept.json",
+    "cov": 0.427,
+    "year": 2021,
+    "count": 166158783736
+   }
+  ],
+  "used": [
+   {
+    "name": "WA_NorthCentral_2_2021",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WA_NorthCentral_2_2021/ept.json",
+    "cov": 0.427,
+    "year": 2021,
+    "count": 166158783736,
+    "cells": 0
+   }
+  ],
+  "valid": 0.0,
+  "hag_mb": 0.01,
+  "frac_gt_2_5m": 0.0,
+  "class_mb": 0.01
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021230103"
+  ],
+  "mb": 0.01,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N48W120",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 388080,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.01
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 4.63,
+    "items": [
+     "wa_m_4811959_ne_11_060_20230716_20230912"
+    ],
+    "acquired": [
+     "2023-07-16"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 4.6,
+    "items": [
+     "wa_m_4811959_ne_11_060_20210627"
+    ],
+    "acquired": [
+     "2021-06-27"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
