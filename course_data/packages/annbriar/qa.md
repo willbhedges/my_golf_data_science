@@ -1,6 +1,6 @@
 # Annbriar Golf Course (Waterloo, IL) - Black tees
 
-Built 2026-11-02T06:12:43Z. OSM way/1466372251. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T10:21:40Z. OSM way/1466372251. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -31,7 +31,7 @@ OSM features inside the course: buildings 7, golf=bunker 67, golf=cartpath 48, g
 | 6 | 4 | 378 / 379 | 280 | 0.88 | auto | 65% | 7% | 28% | tee stage: Black tee_centroid |  |
 | 7 | 3 | 155 / 155 | 282 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 8 | 4 | 415 / 415 | 196 | 0.83 | auto | 45% | 10% | 45% | tee stage: Black tee_centroid |  |
-| 9 | 5 | 475 / 475 | 0 | 0.66 | check the flags | 40% | 19% | 42% | tee stage: Black review (snapped 0 yds to OSM tee -1) | tee: tee stage: Black review (snapped 0 yds to OSM tee -1) |
+| 9 | 5 | 475 / 475 | 0 | 0.66 | check the flags | 40% | 19% | 42% | tee stage: Black review (inside OSM tee -1) | tee: tee stage: Black review (inside OSM tee -1) |
 | 10 | 4 | 382 / 382 | 348 | 0.83 | auto | 42% | 11% | 46% | tee stage: Black tee_centroid |  |
 | 11 | 4 | 404 / 405 | 248 | 0.87 | auto | 46% | 46% | 8% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 12 | 4 | 353 / 353 | 212 | 0.80 | auto | 50% | 6% | 44% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 7, golf=bunker 67, golf=cartpath 48, g
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tee_overrides**: ok: Black 9 review (snapped 0 yds to OSM tee -1);
+- **tee_overrides**: ok: Black 9 review (inside OSM tee -1);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 104 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/annbriar/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)

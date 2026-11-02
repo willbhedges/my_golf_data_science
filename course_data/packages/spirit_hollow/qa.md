@@ -1,6 +1,6 @@
 # Spirit Hollow Golf Course (Burlington, IA) - Black tees
 
-Built 2026-11-02T06:34:27Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
+Built 2026-11-02T11:16:05Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
 
 ## Coverage
 
