@@ -1,0 +1,37 @@
+{
+ "slug": "tpc_harding_park",
+ "state": "CA",
+ "bbox": [
+  -122.503214,
+  37.713234,
+  -122.480041,
+  37.730389
+ ],
+ "pad_m": 400.0,
+ "osm": {
+  "status": "failed: RuntimeError: all Overpass endpoints failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=180)\"))",
+  "licence": "(c) OpenStreetMap contributors, ODbL 1.0",
+  "fetched": "2026-11-01T22:23:06Z"
+ },
+ "ms_buildings": {
+  "status": "ok",
+  "licence": "Microsoft Global ML Building Footprints, ODbL 1.0 (https://github.com/microsoft/GlobalMLBuildingFootprints)",
+  "quadkeys": [
+   "023010203",
+   "023010221"
+  ],
+  "files": [
+   "https://minedbuildings.z5.web.core.windows.net/global-buildings/2026-02-03/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=023010203/part-00185-4feead82-d499-422b-94cb-c036c212127a.c000.csv.gz",
+   "https://minedbuildings.z5.web.core.windows.net/global-buildings/2026-02-03/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=023010221/part-00099-4feead82-d499-422b-94cb-c036c212127a.c000.csv.gz"
+  ],
+  "n": 273,
+  "file": "course_data/ob/tpc_harding_park/raw/ms_buildings.geojson",
+  "fetched": "2026-11-01T22:23:11Z"
+ },
+ "parcels": {
+  "status": "no free source",
+  "licence": "n/a",
+  "note": "no statewide source known",
+  "fetched": "2026-11-01T22:23:11Z"
+ }
+}

@@ -5,28 +5,76 @@
  "city": "San Francisco",
  "state": "CA",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "package:     elif r.get(\"method\") == \"walkback\" and back is not None and alongs[back] > max_forward:                                                                 ~~~~~~^^^^^^ KeyError: 39.0 "
+  "holes not all mapped in OSM (hole method: v2+structure)",
+  "7 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
- "request": "course_data/requests/course_page_tpc_harding_park.json",
- "resolve": {
-  "status": "ok",
-  "candidates": [
-   {
-    "name": "TPC Harding Park",
-    "town": "San Francisco",
-    "holes": 27,
-    "osm": {
-     "type": "way",
-     "id": 16753068
-    }
-   }
-  ]
- },
- "built": "2026-10-30T22:09Z"
+ "check_holes": [
+  2,
+  4,
+  5,
+  6,
+  8,
+  9,
+  12
+ ],
+ "tee_sets": [
+  {
+   "name": "Championship",
+   "yards": 7169,
+   "par": 72,
+   "rating": 74.3,
+   "slope": 129,
+   "colour": "black",
+   "on_page": "solved"
+  },
+  {
+   "name": "Blue",
+   "yards": 6845,
+   "par": 72,
+   "rating": 72.9,
+   "slope": 126,
+   "colour": "blue",
+   "on_page": "solved"
+  },
+  {
+   "name": "White",
+   "yards": 6405,
+   "par": 72,
+   "rating": 70.5,
+   "slope": 121,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Red",
+   "yards": 5875,
+   "par": 73,
+   "rating": 73.4,
+   "slope": 106,
+   "colour": "red",
+   "on_page": null
+  }
+ ],
+ "solved_sets": [
+  "Championship",
+  "Blue"
+ ],
+ "page": "course_data/library/tpc_harding_park/page.html",
+ "page_bytes": 2274109,
+ "qa_report": "course_data/library/tpc_harding_park/qa_report.md",
+ "center": [
+  37.7218116,
+  -122.49162770000001
+ ],
+ "osm": "way/16753068",
+ "holes": 18,
+ "days": [
+  "2026-11-07",
+  "2026-11-08"
+ ],
+ "weather": "forecast",
+ "built": "2026-11-01T22:24Z",
+ "request": "course_data/requests/course_page_tpc_harding_park.json"
 }
