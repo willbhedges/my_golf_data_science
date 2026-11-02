@@ -45,7 +45,10 @@ def log(*a):
 
 
 def grid(slug):
-    m = json.load(open(os.path.join(VA, slug, "raw", "meta.json")))
+    p = os.path.join(VA, slug, "raw", "meta.json")
+    if not os.path.exists(p):         # course whose raw/ is still being fetched: the same grid, precomputed from the
+        p = os.path.join(HERE, slug, "grid.json")     # package by fetch_any.Grid (s2/<slug>/grid.json)
+    m = json.load(open(p))
     g = m["grid"]
     x0, y0, x1, y1 = g["bounds"]
     x0 = np.floor(x0 / 10) * 10; y0 = np.floor(y0 / 10) * 10
