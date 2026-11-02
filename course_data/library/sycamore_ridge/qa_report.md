@@ -2,12 +2,14 @@
 
 **Status: needs confirm** — confirm holes 9, 13, 18
 
-* page: `course_data/library/sycamore_ridge/page.html` (5.0 MB); request `course_data/requests/course_page_sycamore_ridge.json`; built 2026-11-02T13:08Z
+* page: `course_data/library/sycamore_ridge/page.html` (5.0 MB); request `course_data/requests/course_page_sycamore_ridge.json`; built 2026-11-02T16:43Z
 * course: Sycamore Ridge Golf Club (Spring Hill, KS), OSM way/151985223; holes: osm (tier mapped_card); card: course_data/library/sycamore_ridge/card_review.json (file)
 * solved tee sets: Black, Blue (tee sets of interest); page sets: Black, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
 * imagery on the page: 2023-08-17; package imagery 2021
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
+
+* native-grass questions (Black tees, library check cards): none (not asked: no agent_layers in the request)
 
 Course-level reasons:
 

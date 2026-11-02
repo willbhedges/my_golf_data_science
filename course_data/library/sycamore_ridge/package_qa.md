@@ -1,6 +1,6 @@
 # Sycamore Ridge Golf Club (Spring Hill, KS) - Black tees
 
-Built 2026-11-02T13:08:15Z. OSM way/151985223. Scorecard: file (course_data/library/sycamore_ridge/card_review.json). Tee set: name.
+Built 2026-11-02T16:43:10Z. OSM way/151985223. Scorecard: file (course_data/library/sycamore_ridge/card_review.json). Tee set: name.
 
 ## Coverage
 
