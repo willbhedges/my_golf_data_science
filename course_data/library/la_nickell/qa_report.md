@@ -2,12 +2,14 @@
 
 **Status: needs confirm** — confirm holes 1, 2, 4, 5, 7, 9, 10, 12, 13, 17, 18
 
-* page: `course_data/library/la_nickell/page.html` (2.5 MB); request `course_data/requests/course_page_la_nickell.json`; built 2026-11-02T13:25Z
+* page: `course_data/library/la_nickell/page.html` (2.5 MB); request `course_data/requests/course_page_la_nickell.json`; built 2026-11-02T16:47Z
 * course: L.A. Nickell Golf Course (Columbia, MO), OSM way/387047950; holes: osm (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Blue, White (the two longest sets on the card (combination sets skipped)); page sets: Blue, White
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
 * imagery on the page: 2022-06-20; package imagery 2022
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
+
+* native-grass questions (Blue tees, library check cards): holes 12, 7, 3 (3 asked of 14 framed holes)
 
 Course-level reasons:
 
