@@ -1,0 +1,5947 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "la_nickell",
+ "corridor_set": "Blue",
+ "mapper": "mapper-la_nickell",
+ "started": "2026-11-02T10:20Z",
+ "minutes": 55,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py la_nickell. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "11 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: smooth mown rough out to the scattered trees and cart path on the left in 2022 and 2020, no second mowing line",
+    "R": "none: mown rough with scattered crowns and the cart path, same smooth turf both years"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        48,
+        353
+       ],
+       [
+        39,
+        348
+       ],
+       [
+        37,
+        335
+       ],
+       [
+        41,
+        330
+       ],
+       [
+        48,
+        327
+       ],
+       [
+        49,
+        328
+       ],
+       [
+        46,
+        330
+       ],
+       [
+        44,
+        343
+       ],
+       [
+        49,
+        352
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 17.5 m at x 37..49, along 327..353 (R, 11 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.56 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       30.5,
+       321.5,
+       7.0,
+       8.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 10.5 m at x 24..37, along 314..329 (R, 7 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.69 of rough brightness) and 2020 (0.74)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -41,
+        280
+       ],
+       [
+        -34,
+        276
+       ],
+       [
+        -33,
+        277
+       ],
+       [
+        -36,
+        280
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.5 m at x -41..-33, along 276..281 (L, 9 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.86 of rough brightness) and 2020 (0.91)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -51,
+        240
+       ],
+       [
+        -52,
+        238
+       ],
+       [
+        -49,
+        233
+       ],
+       [
+        -47,
+        235
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 8.2 m at x -52..-47, along 233..240 (L, 13 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.91 of rough brightness) and 2020 (0.83)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       6.5,
+       221.0,
+       7.0,
+       9.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.8 m at x 0..13, along 212..230 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.82 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        33,
+        225
+       ],
+       [
+        30,
+        225
+       ],
+       [
+        28,
+        223
+       ],
+       [
+        23,
+        224
+       ],
+       [
+        16,
+        218
+       ],
+       [
+        16,
+        215
+       ],
+       [
+        19,
+        211
+       ],
+       [
+        18,
+        209
+       ],
+       [
+        14,
+        209
+       ],
+       [
+        7,
+        203
+       ],
+       [
+        11,
+        195
+       ],
+       [
+        16,
+        194
+       ],
+       [
+        21,
+        199
+       ],
+       [
+        25,
+        194
+       ],
+       [
+        28,
+        194
+       ],
+       [
+        23,
+        204
+       ],
+       [
+        21,
+        217
+       ],
+       [
+        25,
+        221
+       ],
+       [
+        32,
+        222
+       ],
+       [
+        34,
+        224
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.8 m at x 7..34, along 193..225 (R, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.7 of rough brightness) and 2020 (0.89)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        54,
+        197
+       ],
+       [
+        54,
+        192
+       ],
+       [
+        57,
+        190
+       ],
+       [
+        58,
+        191
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.0 m at x 53..58, along 190..197 (R, 22 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.58 of rough brightness) and 2020 (0.88)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        47,
+        192
+       ],
+       [
+        45,
+        190
+       ],
+       [
+        44,
+        184
+       ],
+       [
+        46,
+        182
+       ],
+       [
+        48,
+        187
+       ],
+       [
+        52,
+        190
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 6.2 m at x 44..52, along 182..192 (R, 24 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.64 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -2.0,
+       179.5,
+       4.5,
+       5.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 6.5 m at x -6..2, along 175..184 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.74 of rough brightness) and 2020 (0.79)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        14,
+        182
+       ],
+       [
+        8,
+        180
+       ],
+       [
+        3,
+        173
+       ],
+       [
+        6,
+        166
+       ],
+       [
+        9,
+        164
+       ],
+       [
+        17,
+        167
+       ],
+       [
+        21,
+        171
+       ],
+       [
+        19,
+        173
+       ],
+       [
+        18,
+        178
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 10.5 m at x 3..21, along 164..182 (R, 11 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.7 of rough brightness) and 2020 (0.71)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       49.5,
+       174.0,
+       3.0,
+       4.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 7.2 m at x 47..52, along 170..178 (R, 13 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.62 of rough brightness) and 2020 (0.82)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "14 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: parkland rough between rows of crowns, mown both years, no second mowing line",
+    "R": "none: smooth mown rough to the cart path / tree row, green and smooth in 2020, slightly tan in 2022 only"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        52,
+        369
+       ],
+       [
+        45,
+        363
+       ],
+       [
+        47,
+        361
+       ],
+       [
+        49,
+        349
+       ],
+       [
+        55,
+        342
+       ],
+       [
+        56,
+        343
+       ],
+       [
+        51,
+        351
+       ],
+       [
+        56,
+        354
+       ],
+       [
+        58,
+        363
+       ],
+       [
+        50,
+        363
+       ],
+       [
+        49,
+        364
+       ],
+       [
+        53,
+        368
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 12.5 m at x 45..58, along 342..369 (R, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.65 of rough brightness) and 2020 (0.75)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        52,
+        339
+       ],
+       [
+        47,
+        337
+       ],
+       [
+        44,
+        333
+       ],
+       [
+        45,
+        331
+       ],
+       [
+        41,
+        329
+       ],
+       [
+        36,
+        323
+       ],
+       [
+        36,
+        315
+       ],
+       [
+        39,
+        310
+       ],
+       [
+        42,
+        313
+       ],
+       [
+        47,
+        334
+       ],
+       [
+        52,
+        337
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 12.5 m at x 36..53, along 310..339 (R, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.64 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        35,
+        307
+       ],
+       [
+        33,
+        305
+       ],
+       [
+        35,
+        303
+       ],
+       [
+        34,
+        302
+       ],
+       [
+        43,
+        291
+       ],
+       [
+        44,
+        294
+       ],
+       [
+        37,
+        303
+       ],
+       [
+        37,
+        306
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 11.8 m at x 33..44, along 291..307 (R, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.66 of rough brightness) and 2020 (0.81)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        36,
+        291
+       ],
+       [
+        30,
+        284
+       ],
+       [
+        32,
+        278
+       ],
+       [
+        35,
+        279
+       ],
+       [
+        33,
+        285
+       ],
+       [
+        38,
+        289
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 7.5 m at x 30..38, along 278..291 (R, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.59 of rough brightness) and 2020 (0.76)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -29,
+        287
+       ],
+       [
+        -33,
+        287
+       ],
+       [
+        -36,
+        283
+       ],
+       [
+        -35,
+        282
+       ],
+       [
+        -31,
+        284
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.5 m at x -36..-29, along 282..288 (L, 14 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.48 of rough brightness) and 2020 (0.89)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       35.0,
+       272.5,
+       2.5,
+       4.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 4.8 m at x 33..37, along 269..276 (R, 8 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.83 of rough brightness) and 2020 (0.93)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -14.5,
+       270.5,
+       3.0,
+       4.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 7.8 m at x -17..-12, along 267..274 (L, 14 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.87 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -44,
+        272
+       ],
+       [
+        -46,
+        270
+       ],
+       [
+        -39,
+        262
+       ],
+       [
+        -38,
+        265
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 11.2 m at x -46..-38, along 262..272 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.82 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       32.5,
+       260.5,
+       5.0,
+       7.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 11.8 m at x 28..37, along 254..267 (R, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.64 of rough brightness) and 2020 (0.81)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       41.0,
+       250.5,
+       5.5,
+       5.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.0 m at x 36..46, along 246..255 (R, 14 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.48 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        26,
+        250
+       ],
+       [
+        22,
+        245
+       ],
+       [
+        22,
+        235
+       ],
+       [
+        26,
+        239
+       ],
+       [
+        29,
+        249
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 16.5 m at x 21..29, along 235..250 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.56 of rough brightness) and 2020 (0.79)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -28,
+        241
+       ],
+       [
+        -24,
+        240
+       ],
+       [
+        -20,
+        236
+       ],
+       [
+        -18,
+        237
+       ],
+       [
+        -22,
+        242
+       ],
+       [
+        -23,
+        241
+       ],
+       [
+        -26,
+        243
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 10.2 m at x -28..-18, along 236..243 (L, 8 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.68 of rough brightness) and 2020 (0.77)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       22.5,
+       213.5,
+       7.0,
+       7.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 7.5 m at x 16..29, along 207..220 (R, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.79 of rough brightness) and 2020 (0.89)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -42,
+        213
+       ],
+       [
+        -41,
+        212
+       ],
+       [
+        -38,
+        215
+       ],
+       [
+        -31,
+        215
+       ],
+       [
+        -16,
+        196
+       ],
+       [
+        -15,
+        197
+       ],
+       [
+        -15,
+        202
+       ],
+       [
+        -24,
+        208
+       ],
+       [
+        -26,
+        213
+       ],
+       [
+        -25,
+        214
+       ],
+       [
+        -28,
+        217
+       ],
+       [
+        -37,
+        218
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 14.5 m at x -42..-15, along 196..218 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.7 of rough brightness) and 2020 (0.79)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "10 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: mown rough and a crown row between this fairway and the next, smooth both years",
+    "R": "none: cart path and crown row, mown turf on both sides in 2022 and 2020"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        49,
+        356
+       ],
+       [
+        46,
+        356
+       ],
+       [
+        42,
+        352
+       ],
+       [
+        35,
+        337
+       ],
+       [
+        26,
+        330
+       ],
+       [
+        22,
+        335
+       ],
+       [
+        20,
+        334
+       ],
+       [
+        20,
+        332
+       ],
+       [
+        24,
+        328
+       ],
+       [
+        32,
+        330
+       ],
+       [
+        34,
+        332
+       ],
+       [
+        33,
+        333
+       ],
+       [
+        41,
+        339
+       ],
+       [
+        41,
+        342
+       ],
+       [
+        44,
+        345
+       ],
+       [
+        48,
+        346
+       ],
+       [
+        50,
+        355
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 12.8 m at x 20..50, along 328..356 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.6 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -29.0,
+       345.5,
+       5.5,
+       6.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 11.0 m at x -34..-24, along 340..351 (L, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.83 of rough brightness) and 2020 (0.93)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       36.0,
+       313.5,
+       7.5,
+       8.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.8 m at x 29..43, along 306..321 (R, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.83 of rough brightness) and 2020 (0.91)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        44,
+        288
+       ],
+       [
+        40,
+        293
+       ],
+       [
+        38,
+        290
+       ],
+       [
+        35,
+        292
+       ],
+       [
+        31,
+        285
+       ],
+       [
+        25,
+        288
+       ],
+       [
+        24,
+        286
+       ],
+       [
+        26,
+        284
+       ],
+       [
+        28,
+        285
+       ],
+       [
+        31,
+        283
+       ],
+       [
+        37,
+        290
+       ],
+       [
+        42,
+        286
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.0 m at x 24..44, along 283..293 (R, 6 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.84 of rough brightness) and 2020 (0.99)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -39,
+        280
+       ],
+       [
+        -40,
+        278
+       ],
+       [
+        -36,
+        272
+       ],
+       [
+        -35,
+        276
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 6.0 m at x -40..-35, along 272..280 (L, 14 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.75 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -30,
+        271
+       ],
+       [
+        -31,
+        270
+       ],
+       [
+        -26,
+        265
+       ],
+       [
+        -32,
+        254
+       ],
+       [
+        -31,
+        253
+       ],
+       [
+        -25,
+        259
+       ],
+       [
+        -25,
+        266
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 11.2 m at x -32..-25, along 253..271 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.56 of rough brightness) and 2020 (0.83)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       49.0,
+       235.0,
+       2.5,
+       4.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 7.5 m at x 47..51, along 231..239 (R, 9 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.63 of rough brightness) and 2020 (0.95)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -32,
+        228
+       ],
+       [
+        -33,
+        226
+       ],
+       [
+        -28,
+        221
+       ],
+       [
+        -33,
+        216
+       ],
+       [
+        -32,
+        215
+       ],
+       [
+        -26,
+        221
+       ],
+       [
+        -28,
+        225
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 11.5 m at x -33..-26, along 215..228 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.59 of rough brightness) and 2020 (0.8)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -36.5,
+       196.0,
+       2.0,
+       4.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.0 m at x -38..-35, along 192..200 (L, 14 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.65 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        33,
+        198
+       ],
+       [
+        30,
+        194
+       ],
+       [
+        32,
+        188
+       ],
+       [
+        31,
+        187
+       ],
+       [
+        32,
+        186
+       ],
+       [
+        34,
+        189
+       ],
+       [
+        38,
+        191
+       ],
+       [
+        40,
+        184
+       ],
+       [
+        43,
+        188
+       ],
+       [
+        39,
+        192
+       ],
+       [
+        39,
+        198
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 11.8 m at x 30..43, along 184..199 (R, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.67 of rough brightness) and 2020 (0.87)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "9 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: lake bank and mown rough with scattered crowns, smooth in both years",
+    "R": "none: rough right of the dogleg is tan in 2022 but green and smooth in 2020, no second mowing line; road beyond"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -51,
+        334
+       ],
+       [
+        -51,
+        325
+       ],
+       [
+        -52,
+        324
+       ],
+       [
+        -56,
+        327
+       ],
+       [
+        -57,
+        322
+       ],
+       [
+        -50,
+        316
+       ],
+       [
+        -43,
+        324
+       ],
+       [
+        -42,
+        320
+       ],
+       [
+        -47,
+        314
+       ],
+       [
+        -45,
+        312
+       ],
+       [
+        -46,
+        310
+       ],
+       [
+        -44,
+        309
+       ],
+       [
+        -39,
+        319
+       ],
+       [
+        -40,
+        325
+       ],
+       [
+        -42,
+        327
+       ],
+       [
+        -44,
+        325
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 15.0 m at x -57..-39, along 309..334 (L, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.73 of rough brightness) and 2020 (1.0)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        1,
+        305
+       ],
+       [
+        -5,
+        300
+       ],
+       [
+        -2,
+        295
+       ],
+       [
+        2,
+        298
+       ],
+       [
+        0,
+        301
+       ],
+       [
+        2,
+        304
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 12.0 m at x -5..2, along 295..305 (L, 24 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.48 of rough brightness) and 2020 (0.93)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -4.0,
+       269.5,
+       3.5,
+       9.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.8 m at x -7..-1, along 261..278 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.56 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -52,
+        263
+       ],
+       [
+        -45,
+        260
+       ],
+       [
+        -43,
+        261
+       ],
+       [
+        -50,
+        264
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.0 m at x -52..-43, along 260..264 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.9 of rough brightness) and 2020 (0.96)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        56,
+        239
+       ],
+       [
+        52,
+        237
+       ],
+       [
+        54,
+        235
+       ],
+       [
+        54,
+        232
+       ],
+       [
+        48,
+        228
+       ],
+       [
+        47,
+        229
+       ],
+       [
+        43,
+        224
+       ],
+       [
+        44,
+        222
+       ],
+       [
+        42,
+        217
+       ],
+       [
+        44,
+        213
+       ],
+       [
+        38,
+        204
+       ],
+       [
+        47,
+        196
+       ],
+       [
+        46,
+        192
+       ],
+       [
+        50,
+        190
+       ],
+       [
+        51,
+        192
+       ],
+       [
+        49,
+        194
+       ],
+       [
+        49,
+        225
+       ],
+       [
+        61,
+        231
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 15.8 m at x 38..61, along 190..239 (R, 11 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.62 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -37,
+        213
+       ],
+       [
+        -26,
+        208
+       ],
+       [
+        -24,
+        209
+       ],
+       [
+        -25,
+        211
+       ],
+       [
+        -34,
+        214
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 11.2 m at x -37..-24, along 208..214 (L, 6 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.92 of rough brightness) and 2020 (0.91)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -39,
+        211
+       ],
+       [
+        -41,
+        208
+       ],
+       [
+        -43,
+        208
+       ],
+       [
+        -40,
+        204
+       ],
+       [
+        -41,
+        198
+       ],
+       [
+        -46,
+        192
+       ],
+       [
+        -44,
+        189
+       ],
+       [
+        -45,
+        180
+       ],
+       [
+        -42,
+        176
+       ],
+       [
+        -40,
+        193
+       ],
+       [
+        -32,
+        199
+       ],
+       [
+        -40,
+        207
+       ],
+       [
+        -38,
+        210
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 18.0 m at x -46..-32, along 176..211 (L, 18 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.58 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       35.5,
+       191.5,
+       6.0,
+       7.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 8.8 m at x 30..41, along 185..198 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.84 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -33,
+        179
+       ],
+       [
+        -40,
+        175
+       ],
+       [
+        -36,
+        173
+       ],
+       [
+        -37,
+        160
+       ],
+       [
+        -27,
+        154
+       ],
+       [
+        -22,
+        158
+       ],
+       [
+        -22,
+        160
+       ],
+       [
+        -24,
+        163
+       ],
+       [
+        -33,
+        165
+       ],
+       [
+        -29,
+        174
+       ],
+       [
+        -30,
+        177
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.8 m at x -40..-22, along 154..179 (L, 25 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.81 of rough brightness) and 2020 (0.94)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "9 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: neighbouring fairway and mown rough with crown clumps, both years smooth",
+    "R": "none: mown rough up to the woods, no mowing line between, both years"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        11,
+        351
+       ],
+       [
+        8,
+        348
+       ],
+       [
+        9,
+        343
+       ],
+       [
+        12,
+        341
+       ],
+       [
+        11,
+        334
+       ],
+       [
+        20,
+        325
+       ],
+       [
+        21,
+        326
+       ],
+       [
+        17,
+        329
+       ],
+       [
+        13,
+        349
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 14.2 m at x 8..21, along 325..351 (R, 7 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.57 of rough brightness) and 2020 (0.79)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       19.0,
+       311.5,
+       3.5,
+       11.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.0 m at x 16..22, along 301..322 (R, 7 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.62 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        36,
+        276
+       ],
+       [
+        33,
+        272
+       ],
+       [
+        32,
+        273
+       ],
+       [
+        29,
+        270
+       ],
+       [
+        30,
+        266
+       ],
+       [
+        37,
+        262
+       ],
+       [
+        41,
+        266
+       ],
+       [
+        43,
+        264
+       ],
+       [
+        41,
+        260
+       ],
+       [
+        47,
+        251
+       ],
+       [
+        50,
+        267
+       ],
+       [
+        48,
+        268
+       ],
+       [
+        45,
+        266
+       ],
+       [
+        43,
+        268
+       ],
+       [
+        43,
+        274
+       ],
+       [
+        39,
+        277
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 17.0 m at x 29..50, along 251..277 (R, 17 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.74 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        33,
+        258
+       ],
+       [
+        28,
+        257
+       ],
+       [
+        24,
+        251
+       ],
+       [
+        26,
+        243
+       ],
+       [
+        30,
+        240
+       ],
+       [
+        35,
+        242
+       ],
+       [
+        36,
+        241
+       ],
+       [
+        40,
+        246
+       ],
+       [
+        40,
+        252
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 11.8 m at x 24..40, along 240..258 (R, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.83 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -36,
+        249
+       ],
+       [
+        -37,
+        248
+       ],
+       [
+        -32,
+        242
+       ],
+       [
+        -31,
+        243
+       ],
+       [
+        -33,
+        247
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.2 m at x -37..-31, along 242..249 (L, 18 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.9 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -31,
+        233
+       ],
+       [
+        -32,
+        232
+       ],
+       [
+        -28,
+        230
+       ],
+       [
+        -25,
+        226
+       ],
+       [
+        -25,
+        230
+       ],
+       [
+        -28,
+        233
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.0 m at x -32..-24, along 226..233 (L, 15 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.83 of rough brightness) and 2020 (0.93)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -36,
+        211
+       ],
+       [
+        -36,
+        208
+       ],
+       [
+        -28,
+        206
+       ],
+       [
+        -25,
+        199
+       ],
+       [
+        -23,
+        201
+       ],
+       [
+        -23,
+        203
+       ],
+       [
+        -32,
+        212
+       ],
+       [
+        -34,
+        210
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 11.2 m at x -37..-23, along 199..212 (L, 12 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.7 of rough brightness) and 2020 (0.8)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -21.5,
+       195.5,
+       4.0,
+       3.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 6.5 m at x -25..-18, along 193..198 (L, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.87 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        41,
+        185
+       ],
+       [
+        28,
+        177
+       ],
+       [
+        24,
+        177
+       ],
+       [
+        25,
+        175
+       ],
+       [
+        27,
+        176
+       ],
+       [
+        29,
+        174
+       ],
+       [
+        31,
+        166
+       ],
+       [
+        34,
+        163
+       ],
+       [
+        36,
+        164
+       ],
+       [
+        36,
+        171
+       ],
+       [
+        43,
+        181
+       ],
+       [
+        48,
+        174
+       ],
+       [
+        50,
+        174
+       ],
+       [
+        45,
+        182
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 16.2 m at x 24..50, along 163..185 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.72 of rough brightness) and 2020 (0.96)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "11 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: mown rough with scattered crowns, smooth both years",
+    "R": "none: mown rough and cart path to the wooded strip, both years"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -59.5,
+       347.5,
+       4.0,
+       10.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 19.0 m at x -63..-56, along 338..357 (L, 11 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.6 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        0,
+        357
+       ],
+       [
+        -8,
+        346
+       ],
+       [
+        -7,
+        341
+       ],
+       [
+        -10,
+        338
+       ],
+       [
+        -9,
+        337
+       ],
+       [
+        -5,
+        342
+       ],
+       [
+        -6,
+        347
+       ],
+       [
+        0,
+        354
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.2 m at x -10..1, along 337..357 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.49 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -22,
+        334
+       ],
+       [
+        -18,
+        330
+       ],
+       [
+        -15,
+        330
+       ],
+       [
+        -10,
+        333
+       ],
+       [
+        -12,
+        335
+       ],
+       [
+        -16,
+        331
+       ],
+       [
+        -19,
+        334
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 7.8 m at x -22..-10, along 330..335 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.69 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        25,
+        330
+       ],
+       [
+        29,
+        327
+       ],
+       [
+        35,
+        329
+       ],
+       [
+        38,
+        325
+       ],
+       [
+        39,
+        326
+       ],
+       [
+        39,
+        329
+       ],
+       [
+        37,
+        331
+       ],
+       [
+        26,
+        333
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 15.0 m at x 25..39, along 325..333 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.91 of rough brightness) and 2020 (0.91)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -31,
+        319
+       ],
+       [
+        -31,
+        315
+       ],
+       [
+        -33,
+        312
+       ],
+       [
+        -36,
+        311
+       ],
+       [
+        -35,
+        310
+       ],
+       [
+        -30,
+        312
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 10.8 m at x -36..-30, along 310..319 (L, 22 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.49 of rough brightness) and 2020 (0.83)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        40,
+        319
+       ],
+       [
+        38,
+        317
+       ],
+       [
+        40,
+        312
+       ],
+       [
+        45,
+        307
+       ],
+       [
+        48,
+        308
+       ],
+       [
+        51,
+        306
+       ],
+       [
+        52,
+        308
+       ],
+       [
+        43,
+        313
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 15.0 m at x 38..52, along 306..319 (R, 15 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.86 of rough brightness) and 2020 (0.91)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -19,
+        285
+       ],
+       [
+        -22,
+        287
+       ],
+       [
+        -24,
+        285
+       ],
+       [
+        -25,
+        280
+       ],
+       [
+        -35,
+        276
+       ],
+       [
+        -27,
+        276
+       ],
+       [
+        -21,
+        280
+       ],
+       [
+        -21,
+        283
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 14.0 m at x -35..-19, along 275..287 (L, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.61 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        35,
+        237
+       ],
+       [
+        30,
+        241
+       ],
+       [
+        25,
+        240
+       ],
+       [
+        22,
+        238
+       ],
+       [
+        21,
+        230
+       ],
+       [
+        22,
+        229
+       ],
+       [
+        25,
+        232
+       ],
+       [
+        27,
+        238
+       ],
+       [
+        33,
+        236
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 12.2 m at x 21..35, along 229..241 (R, 13 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.8 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -41,
+        228
+       ],
+       [
+        -41,
+        224
+       ],
+       [
+        -27,
+        210
+       ],
+       [
+        -27,
+        206
+       ],
+       [
+        -27,
+        215
+       ],
+       [
+        -31,
+        218
+       ],
+       [
+        -32,
+        217
+       ],
+       [
+        -35,
+        220
+       ],
+       [
+        -35,
+        223
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.5 m at x -42..-26, along 206..228 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.77 of rough brightness) and 2020 (0.91)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -36,
+        192
+       ],
+       [
+        -37,
+        191
+       ],
+       [
+        -30,
+        185
+       ],
+       [
+        -30,
+        189
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 13.0 m at x -37..-29, along 185..192 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.84 of rough brightness) and 2020 (0.74)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -51,
+        189
+       ],
+       [
+        -53,
+        187
+       ],
+       [
+        -52,
+        182
+       ],
+       [
+        -59,
+        174
+       ],
+       [
+        -56,
+        164
+       ],
+       [
+        -47,
+        169
+       ],
+       [
+        -40,
+        162
+       ],
+       [
+        -46,
+        154
+       ],
+       [
+        -46,
+        152
+       ],
+       [
+        -43,
+        151
+       ],
+       [
+        -41,
+        154
+       ],
+       [
+        -42,
+        155
+       ],
+       [
+        -38,
+        158
+       ],
+       [
+        -39,
+        166
+       ],
+       [
+        -44,
+        171
+       ],
+       [
+        -53,
+        168
+       ],
+       [
+        -55,
+        170
+       ],
+       [
+        -54,
+        175
+       ],
+       [
+        -50,
+        178
+       ],
+       [
+        -51,
+        181
+       ],
+       [
+        -49,
+        184
+       ],
+       [
+        -49,
+        188
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 14.2 m at x -59..-38, along 151..189 (L, 9 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.69 of rough brightness) and 2020 (0.85)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "18 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: mown rough around crown clumps, both years smooth",
+    "R": "none: mown rough and crown clumps; no tall-grass texture either year"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        20,
+        348
+       ],
+       [
+        19,
+        349
+       ],
+       [
+        13,
+        345
+       ],
+       [
+        15,
+        343
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 6.5 m at x 13..20, along 343..349 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.7 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       3.5,
+       343.0,
+       6.0,
+       2.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 9.2 m at x -2..9, along 341..345 (R, 6 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.69 of rough brightness) and 2020 (0.84)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        3,
+        334
+       ],
+       [
+        1,
+        335
+       ],
+       [
+        -5,
+        333
+       ],
+       [
+        -6,
+        331
+       ],
+       [
+        0,
+        331
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 11.0 m at x -6..3, along 330..335 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.54 of rough brightness) and 2020 (0.84)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -45,
+        333
+       ],
+       [
+        -53,
+        326
+       ],
+       [
+        -53,
+        321
+       ],
+       [
+        -50,
+        315
+       ],
+       [
+        -43,
+        314
+       ],
+       [
+        -35,
+        321
+       ],
+       [
+        -38,
+        328
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 12.8 m at x -53..-35, along 314..333 (L, 25 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.79 of rough brightness) and 2020 (0.82)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       40.0,
+       322.0,
+       5.5,
+       5.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 7.0 m at x 35..45, along 317..327 (R, 6 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.81 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -16,
+        316
+       ],
+       [
+        -22,
+        310
+       ],
+       [
+        -21,
+        309
+       ],
+       [
+        -17,
+        310
+       ],
+       [
+        -15,
+        314
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 5.2 m at x -22..-15, along 309..316 (L, 11 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.66 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -13.5,
+       300.5,
+       5.0,
+       5.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 5.8 m at x -18..-9, along 296..305 (L, 2 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.86 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       51.5,
+       294.5,
+       2.0,
+       6.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.2 m at x 50..53, along 289..300 (R, 25 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.54 of rough brightness) and 2020 (0.91)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -17.0,
+       279.5,
+       2.5,
+       6.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 12.5 m at x -19..-15, along 274..285 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.46 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       53.0,
+       276.0,
+       2.5,
+       7.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 10.8 m at x 51..55, along 269..283 (R, 25 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.52 of rough brightness) and 2020 (0.8)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        27,
+        269
+       ],
+       [
+        22,
+        263
+       ],
+       [
+        23,
+        260
+       ],
+       [
+        28,
+        267
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.2 m at x 22..28, along 260..269 (R, 6 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.86 of rough brightness) and 2020 (0.78)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -22,
+        252
+       ],
+       [
+        -24,
+        250
+       ],
+       [
+        -23,
+        246
+       ],
+       [
+        -27,
+        243
+       ],
+       [
+        -24,
+        238
+       ],
+       [
+        -25,
+        237
+       ],
+       [
+        -21,
+        227
+       ],
+       [
+        -20,
+        232
+       ],
+       [
+        -24,
+        238
+       ],
+       [
+        -20,
+        246
+       ],
+       [
+        -20,
+        251
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 14.2 m at x -27..-20, along 227..252 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.63 of rough brightness) and 2020 (0.93)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       21.5,
+       244.0,
+       4.0,
+       3.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.2 m at x 18..25, along 241..247 (R, 13 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.69 of rough brightness) and 2020 (0.97)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        18,
+        232
+       ],
+       [
+        16,
+        229
+       ],
+       [
+        17,
+        226
+       ],
+       [
+        20,
+        223
+       ],
+       [
+        26,
+        221
+       ],
+       [
+        27,
+        222
+       ],
+       [
+        25,
+        224
+       ],
+       [
+        20,
+        225
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 10.2 m at x 16..27, along 221..232 (R, 9 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.74 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -57,
+        209
+       ],
+       [
+        -59,
+        207
+       ],
+       [
+        -51,
+        199
+       ],
+       [
+        -51,
+        205
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.5 m at x -59..-50, along 199..209 (L, 9 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.77 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -20.0,
+       200.0,
+       4.5,
+       4.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 4.8 m at x -24..-16, along 196..204 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.86 of rough brightness) and 2020 (0.95)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -48.5,
+       194.5,
+       3.0,
+       3.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 8.0 m at x -51..-46, along 192..197 (L, 19 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.81 of rough brightness) and 2020 (0.78)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -45,
+        192
+       ],
+       [
+        -40,
+        188
+       ],
+       [
+        -36,
+        182
+       ],
+       [
+        -35,
+        177
+       ],
+       [
+        -33,
+        181
+       ],
+       [
+        -34,
+        184
+       ],
+       [
+        -42,
+        193
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 10.8 m at x -45..-33, along 177..193 (L, 18 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.75 of rough brightness) and 2020 (0.85)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "15 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: mown rough with scattered crowns, smooth in 2020, slightly tan in 2022 only",
+    "R": "none: mown rough with crowns along the cart path, both years"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -51,
+        363
+       ],
+       [
+        -66,
+        341
+       ],
+       [
+        -65,
+        340
+       ],
+       [
+        -60,
+        342
+       ],
+       [
+        -56,
+        346
+       ],
+       [
+        -56,
+        349
+       ],
+       [
+        -53,
+        352
+       ],
+       [
+        -53,
+        356
+       ],
+       [
+        -50,
+        359
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 18.8 m at x -66..-50, along 340..363 (L, 11 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.81 of rough brightness) and 2020 (0.58)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        16,
+        358
+       ],
+       [
+        14,
+        348
+       ],
+       [
+        18,
+        343
+       ],
+       [
+        24,
+        345
+       ],
+       [
+        17,
+        353
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 20.2 m at x 14..24, along 343..358 (R, 25 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.5 of rough brightness) and 2020 (0.93)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -60,
+        321
+       ],
+       [
+        -61,
+        314
+       ],
+       [
+        -59,
+        311
+       ],
+       [
+        -63,
+        304
+       ],
+       [
+        -62,
+        303
+       ],
+       [
+        -58,
+        307
+       ],
+       [
+        -59,
+        312
+       ],
+       [
+        -57,
+        315
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.8 m at x -63..-57, along 303..321 (L, 19 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.88 of rough brightness) and 2020 (0.81)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        33,
+        314
+       ],
+       [
+        28,
+        313
+       ],
+       [
+        23,
+        309
+       ],
+       [
+        24,
+        297
+       ],
+       [
+        26,
+        297
+       ],
+       [
+        30,
+        302
+       ],
+       [
+        25,
+        308
+       ],
+       [
+        33,
+        312
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 14.5 m at x 23..34, along 297..314 (R, 17 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.65 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -46.0,
+       297.5,
+       4.5,
+       5.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 7.5 m at x -50..-42, along 293..302 (L, 12 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.85 of rough brightness) and 2020 (0.94)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -59.5,
+       290.5,
+       7.0,
+       8.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 9.8 m at x -66..-53, along 283..298 (L, 24 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.75 of rough brightness) and 2020 (0.83)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -40.0,
+       288.5,
+       3.5,
+       4.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 4.5 m at x -43..-37, along 285..292 (L, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.89 of rough brightness) and 2020 (0.94)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       11.0,
+       281.0,
+       2.5,
+       3.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 9.2 m at x 9..13, along 278..284 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.51 of rough brightness) and 2020 (0.76)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -27.0,
+       277.0,
+       5.5,
+       6.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 9.8 m at x -32..-22, along 271..283 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.77 of rough brightness) and 2020 (0.84)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       16.0,
+       255.5,
+       2.5,
+       5.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 9.2 m at x 14..18, along 251..260 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.5 of rough brightness) and 2020 (0.76)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        30,
+        254
+       ],
+       [
+        28,
+        252
+       ],
+       [
+        28,
+        248
+       ],
+       [
+        35,
+        242
+       ],
+       [
+        35,
+        248
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 15.2 m at x 28..36, along 242..254 (R, 12 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.5 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        25,
+        236
+       ],
+       [
+        20,
+        235
+       ],
+       [
+        20,
+        232
+       ],
+       [
+        17,
+        230
+       ],
+       [
+        19,
+        226
+       ],
+       [
+        19,
+        228
+       ],
+       [
+        27,
+        234
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 8.2 m at x 17..27, along 226..236 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.71 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        29,
+        225
+       ],
+       [
+        29,
+        219
+       ],
+       [
+        27,
+        217
+       ],
+       [
+        29,
+        209
+       ],
+       [
+        27,
+        206
+       ],
+       [
+        24,
+        206
+       ],
+       [
+        21,
+        203
+       ],
+       [
+        23,
+        194
+       ],
+       [
+        25,
+        192
+       ],
+       [
+        26,
+        195
+       ],
+       [
+        24,
+        200
+       ],
+       [
+        35,
+        210
+       ],
+       [
+        36,
+        220
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 16.0 m at x 21..36, along 192..225 (R, 8 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.65 of rough brightness) and 2020 (0.82)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -22.0,
+       205.5,
+       4.5,
+       3.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 7.0 m at x -26..-18, along 203..208 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.87 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        25,
+        189
+       ],
+       [
+        16,
+        183
+       ],
+       [
+        16,
+        173
+       ],
+       [
+        21,
+        167
+       ],
+       [
+        23,
+        168
+       ],
+       [
+        23,
+        170
+       ],
+       [
+        18,
+        180
+       ],
+       [
+        26,
+        187
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 11.8 m at x 16..26, along 167..189 (R, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.62 of rough brightness) and 2020 (0.84)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "4 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; erased the auto water polygon on the road (left, behind the landing zone)",
+   "long_grass": {
+    "L": "none: mown strip with tree row and trail between the fairway and the road, both years",
+    "R": "none: mown rough to the pond and the crown clumps, both years"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -22,
+        351
+       ],
+       [
+        -23,
+        348
+       ],
+       [
+        -19,
+        343
+       ],
+       [
+        -21,
+        337
+       ],
+       [
+        -18,
+        328
+       ],
+       [
+        -21,
+        325
+       ],
+       [
+        -18,
+        324
+       ],
+       [
+        -18,
+        349
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 11.8 m at x -23..-17, along 324..351 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.56 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29.0,
+       334.5,
+       6.5,
+       6.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 4.5 m at x 23..35, along 329..340 (R, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.8 of rough brightness) and 2020 (0.79)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -22.0,
+       313.0,
+       3.5,
+       6.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.5 m at x -25..-19, along 307..319 (L, 3 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.6 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -23.0,
+       209.5,
+       3.5,
+       11.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 12.5 m at x -26..-20, along 199..220 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.52 of rough brightness) and 2020 (1.0)"
+    },
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       -44,
+       120,
+       172
+      ]
+     },
+     "confidence": "high",
+     "evidence": "auto water polygon lies on the paved road left of the hole (grey asphalt and a car in 2022, same road in 2020); no water"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "11 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: mown rough with crown clumps and cart path, both years smooth",
+    "R": "none: mown rough to the wooded area, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       10.0,
+       347.0,
+       2.5,
+       4.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.2 m at x 8..12, along 343..351 (R, 2 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.61 of rough brightness) and 2020 (0.88)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -27.5,
+       340.5,
+       3.0,
+       3.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 6.5 m at x -30..-25, along 338..343 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.83 of rough brightness) and 2020 (0.97)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        18,
+        322
+       ],
+       [
+        16,
+        317
+       ],
+       [
+        12,
+        314
+       ],
+       [
+        12,
+        305
+       ],
+       [
+        16,
+        301
+       ],
+       [
+        17,
+        302
+       ],
+       [
+        14,
+        306
+       ],
+       [
+        19,
+        320
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 12.2 m at x 12..19, along 301..322 (R, 7 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.66 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -40,
+        283
+       ],
+       [
+        -42,
+        278
+       ],
+       [
+        -38,
+        273
+       ],
+       [
+        -35,
+        273
+       ],
+       [
+        -34,
+        274
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 15.2 m at x -42..-34, along 273..283 (L, 11 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.72 of rough brightness) and 2020 (0.97)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       19.0,
+       274.5,
+       8.5,
+       9.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 11.8 m at x 11..27, along 266..283 (R, 8 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.88 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -51,
+        265
+       ],
+       [
+        -47,
+        264
+       ],
+       [
+        -41,
+        259
+       ],
+       [
+        -40,
+        260
+       ],
+       [
+        -47,
+        267
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.0 m at x -51..-40, along 259..267 (L, 15 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.9 of rough brightness) and 2020 (0.97)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        3,
+        251
+       ],
+       [
+        4,
+        250
+       ],
+       [
+        9,
+        254
+       ],
+       [
+        15,
+        252
+       ],
+       [
+        16,
+        254
+       ],
+       [
+        10,
+        254
+       ],
+       [
+        7,
+        256
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.5 m at x 3..16, along 250..256 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.89 of rough brightness) and 2020 (0.95)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        8,
+        234
+       ],
+       [
+        4,
+        227
+       ],
+       [
+        6,
+        225
+       ],
+       [
+        11,
+        233
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 8.0 m at x 4..11, along 225..234 (R, 2 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.69 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        41,
+        207
+       ],
+       [
+        36,
+        206
+       ],
+       [
+        32,
+        208
+       ],
+       [
+        23,
+        202
+       ],
+       [
+        21,
+        194
+       ],
+       [
+        28,
+        183
+       ],
+       [
+        29,
+        203
+       ],
+       [
+        42,
+        204
+       ],
+       [
+        43,
+        205
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 15.0 m at x 21..43, along 183..208 (R, 18 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.69 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       17.5,
+       173.0,
+       7.0,
+       7.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 14.8 m at x 11..24, along 166..180 (R, 15 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.78 of rough brightness) and 2020 (0.84)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       63.0,
+       170.5,
+       6.5,
+       7.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.5 m at x 57..69, along 164..177 (R, 24 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.82 of rough brightness) and 2020 (0.92)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "15 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass; check on edit 15.12 (0% on AUTO trees) is expected: it is one contiguous lidar canopy (>2.5 m) the auto layer left out, closed crowns in 2020/2022, not scattered trees",
+   "long_grass": {
+    "L": "none: mown rough with a crown row along the cart path, both years",
+    "R": "none: mown rough to the wooded bowl, both years smooth"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -40.0,
+       346.0,
+       6.5,
+       6.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 8.8 m at x -46..-34, along 340..352 (L, 6 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.75 of rough brightness) and 2020 (0.79)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        48,
+        340
+       ],
+       [
+        47,
+        337
+       ],
+       [
+        54,
+        329
+       ],
+       [
+        55,
+        331
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.8 m at x 47..55, along 329..340 (R, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.7 of rough brightness) and 2020 (0.9)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -35.5,
+       332.0,
+       6.0,
+       5.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 5.0 m at x -41..-30, along 327..337 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.75 of rough brightness) and 2020 (0.81)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28.0,
+       319.5,
+       6.5,
+       6.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 8.5 m at x -34..-22, along 314..325 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.76 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -17.0,
+       316.5,
+       3.5,
+       4.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 4.8 m at x -20..-14, along 313..320 (L, 11 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.72 of rough brightness) and 2020 (0.8)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -67.0,
+       312.5,
+       3.5,
+       4.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 7.5 m at x -70..-64, along 309..316 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.55 of rough brightness) and 2020 (0.76)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -22.5,
+       304.0,
+       6.0,
+       6.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 9.8 m at x -28..-17, along 298..310 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.74 of rough brightness) and 2020 (0.82)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        54,
+        308
+       ],
+       [
+        48,
+        297
+       ],
+       [
+        49,
+        296
+       ],
+       [
+        54,
+        301
+       ],
+       [
+        55,
+        296
+       ],
+       [
+        59,
+        292
+       ],
+       [
+        62,
+        292
+       ],
+       [
+        65,
+        295
+       ],
+       [
+        65,
+        301
+       ],
+       [
+        61,
+        305
+       ],
+       [
+        58,
+        302
+       ],
+       [
+        56,
+        303
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 16.0 m at x 48..65, along 292..308 (R, 8 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.67 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -59.5,
+       299.0,
+       6.0,
+       5.5
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 7.8 m at x -65..-54, along 294..304 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.77 of rough brightness) and 2020 (0.83)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -12.0,
+       298.5,
+       5.5,
+       6.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 8.8 m at x -17..-7, along 293..304 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.72 of rough brightness) and 2020 (0.83)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -47,
+        289
+       ],
+       [
+        -52,
+        286
+       ],
+       [
+        -52,
+        283
+       ],
+       [
+        -48,
+        279
+       ],
+       [
+        -46,
+        279
+       ],
+       [
+        -48,
+        271
+       ],
+       [
+        -42,
+        268
+       ],
+       [
+        -37,
+        273
+       ],
+       [
+        -37,
+        276
+       ],
+       [
+        -41,
+        280
+       ],
+       [
+        -44,
+        280
+       ],
+       [
+        -44,
+        286
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 8.8 m at x -52..-37, along 268..289 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.75 of rough brightness) and 2020 (0.83)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28.5,
+       261.5,
+       8.0,
+       11.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.2 m at x -36..-21, along 251..272 (L, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.78 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -12,
+        232
+       ],
+       [
+        -13,
+        231
+       ],
+       [
+        -16,
+        233
+       ],
+       [
+        -20,
+        229
+       ],
+       [
+        -22,
+        230
+       ],
+       [
+        -24,
+        228
+       ],
+       [
+        -19,
+        224
+       ],
+       [
+        -20,
+        214
+       ],
+       [
+        -31,
+        195
+       ],
+       [
+        -33,
+        193
+       ],
+       [
+        -36,
+        196
+       ],
+       [
+        -37,
+        195
+       ],
+       [
+        -34,
+        192
+       ],
+       [
+        -36,
+        190
+       ],
+       [
+        -43,
+        190
+       ],
+       [
+        -48,
+        182
+       ],
+       [
+        -45,
+        178
+       ],
+       [
+        -46,
+        177
+       ],
+       [
+        -39,
+        171
+       ],
+       [
+        -33,
+        174
+       ],
+       [
+        -22,
+        176
+       ],
+       [
+        -20,
+        187
+       ],
+       [
+        -10,
+        190
+       ],
+       [
+        -11,
+        209
+       ],
+       [
+        -10,
+        210
+       ],
+       [
+        -6,
+        206
+       ],
+       [
+        -5,
+        207
+       ],
+       [
+        -9,
+        211
+       ],
+       [
+        -17,
+        211
+       ],
+       [
+        -10,
+        220
+       ],
+       [
+        -10,
+        225
+       ],
+       [
+        -8,
+        227
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 15.8 m at x -48..-5, along 171..233 (L, 2 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.87 of rough brightness) and 2020 (0.91)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        28,
+        194
+       ],
+       [
+        27,
+        193
+       ],
+       [
+        33,
+        187
+       ],
+       [
+        34,
+        188
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.2 m at x 27..34, along 187..194 (R, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.79 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -1,
+        187
+       ],
+       [
+        -1,
+        176
+       ],
+       [
+        -6,
+        172
+       ],
+       [
+        -6,
+        163
+       ],
+       [
+        -2,
+        159
+       ],
+       [
+        -4,
+        157
+       ],
+       [
+        -3,
+        156
+       ],
+       [
+        0,
+        160
+       ],
+       [
+        -1,
+        169
+       ],
+       [
+        2,
+        172
+       ],
+       [
+        1,
+        184
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 18.0 m at x -6..2, along 156..187 (L, 2 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.45 of rough brightness) and 2020 (0.77)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "6 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; auto OB band ran right up to the fairway edge at 250-300; cut it back to the tree strip behind the back yards",
+   "long_grass": {
+    "L": "none: mown rough to the tree line / back yards; no unmown band visible either year",
+    "R": "none: mown rough around the crowns and the wooded pond, both years"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        55,
+        254
+       ],
+       [
+        48,
+        249
+       ],
+       [
+        51,
+        243
+       ],
+       [
+        54,
+        244
+       ],
+       [
+        52,
+        248
+       ],
+       [
+        56,
+        252
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.2 m at x 48..56, along 243..254 (R, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.68 of rough brightness) and 2020 (1.0)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       64.0,
+       241.5,
+       3.5,
+       5.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 13.5 m at x 61..67, along 237..246 (R, 22 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.58 of rough brightness) and 2020 (0.64)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43.0,
+       230.5,
+       4.5,
+       6.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 8.0 m at x 39..47, along 225..236 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.74 of rough brightness) and 2020 (0.84)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        53,
+        235
+       ],
+       [
+        52,
+        231
+       ],
+       [
+        56,
+        226
+       ],
+       [
+        49,
+        217
+       ],
+       [
+        52,
+        213
+       ],
+       [
+        52,
+        217
+       ],
+       [
+        58,
+        224
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 9.5 m at x 49..58, along 213..235 (R, 13 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.73 of rough brightness) and 2020 (0.68)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        39,
+        207
+       ],
+       [
+        33,
+        208
+       ],
+       [
+        29,
+        202
+       ],
+       [
+        33,
+        198
+       ],
+       [
+        33,
+        196
+       ],
+       [
+        29,
+        193
+       ],
+       [
+        23,
+        194
+       ],
+       [
+        5,
+        176
+       ],
+       [
+        6,
+        171
+       ],
+       [
+        3,
+        168
+       ],
+       [
+        5,
+        164
+       ],
+       [
+        11,
+        169
+       ],
+       [
+        17,
+        183
+       ],
+       [
+        27,
+        188
+       ],
+       [
+        47,
+        189
+       ],
+       [
+        41,
+        194
+       ],
+       [
+        37,
+        194
+       ],
+       [
+        35,
+        196
+       ],
+       [
+        40,
+        200
+       ],
+       [
+        41,
+        204
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 17.8 m at x 3..47, along 164..208 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.58 of rough brightness) and 2020 (0.77)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -27,
+        195
+       ],
+       [
+        -31,
+        195
+       ],
+       [
+        -37,
+        178
+       ],
+       [
+        -36,
+        177
+       ],
+       [
+        -32,
+        183
+       ],
+       [
+        -29,
+        183
+       ],
+       [
+        -25,
+        187
+       ],
+       [
+        -25,
+        192
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 14.2 m at x -37..-25, along 177..196 (L, 3 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.88 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        -20,
+        215
+       ],
+       [
+        -16,
+        245
+       ],
+       [
+        -12,
+        270
+       ],
+       [
+        -9,
+        295
+       ],
+       [
+        -5,
+        320
+       ],
+       [
+        0,
+        345
+       ],
+       [
+        8,
+        372
+       ],
+       [
+        70,
+        372
+       ],
+       [
+        70,
+        215
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "houses at x -45..-22 (a 250-340); tree strip between the back yards and the cart path (path at the fairway edge); OB line put in the middle of that strip, ~8-12 yds off the fairway (lot line not visible); auto OB band reached the fairway edge and the woods behind the green with nothing built there"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "6 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass",
+   "long_grass": {
+    "L": "none: woods along the left, mown rough between, both years",
+    "R": "none: tan patches right of the cart path in 2022 are smooth green mown turf in 2020; no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       6.0,
+       274.0,
+       6.5,
+       3.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 10.0 m at x 0..12, along 271..277 (R, 17 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.53 of rough brightness) and 2020 (0.92)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        40,
+        264
+       ],
+       [
+        37,
+        261
+       ],
+       [
+        35,
+        262
+       ],
+       [
+        33,
+        259
+       ],
+       [
+        36,
+        256
+       ],
+       [
+        35,
+        252
+       ],
+       [
+        45,
+        242
+       ],
+       [
+        52,
+        244
+       ],
+       [
+        56,
+        243
+       ],
+       [
+        56,
+        241
+       ],
+       [
+        51,
+        238
+       ],
+       [
+        47,
+        230
+       ],
+       [
+        47,
+        221
+       ],
+       [
+        49,
+        218
+       ],
+       [
+        53,
+        230
+       ],
+       [
+        63,
+        241
+       ],
+       [
+        59,
+        247
+       ],
+       [
+        61,
+        252
+       ],
+       [
+        64,
+        254
+       ],
+       [
+        58,
+        255
+       ],
+       [
+        55,
+        252
+       ],
+       [
+        47,
+        261
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 13.8 m at x 33..64, along 218..264 (R, 5 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.8 of rough brightness) and 2020 (0.88)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        256
+       ],
+       [
+        -70,
+        253
+       ],
+       [
+        -67,
+        251
+       ],
+       [
+        -64,
+        253
+       ],
+       [
+        -58,
+        249
+       ],
+       [
+        -56,
+        250
+       ],
+       [
+        -60,
+        255
+       ],
+       [
+        -64,
+        254
+       ],
+       [
+        -67,
+        257
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 17.2 m at x -70..-56, along 249..257 (L, 2 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.49 of rough brightness) and 2020 (0.99)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -38,
+        233
+       ],
+       [
+        -31,
+        216
+       ],
+       [
+        -26,
+        212
+       ],
+       [
+        -16,
+        209
+       ],
+       [
+        -7,
+        212
+       ],
+       [
+        -1,
+        203
+       ],
+       [
+        14,
+        195
+       ],
+       [
+        15,
+        196
+       ],
+       [
+        12,
+        201
+       ],
+       [
+        1,
+        207
+       ],
+       [
+        -9,
+        216
+       ],
+       [
+        -12,
+        215
+       ],
+       [
+        -17,
+        217
+       ],
+       [
+        -24,
+        217
+       ],
+       [
+        -27,
+        215
+       ],
+       [
+        -29,
+        217
+       ],
+       [
+        -30,
+        225
+       ],
+       [
+        -33,
+        228
+       ],
+       [
+        -33,
+        230
+       ],
+       [
+        -37,
+        234
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 17.8 m at x -38..15, along 195..234 (L, 6 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.63 of rough brightness) and 2020 (0.86)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        54,
+        209
+       ],
+       [
+        52,
+        207
+       ],
+       [
+        48,
+        207
+       ],
+       [
+        44,
+        202
+       ],
+       [
+        46,
+        199
+       ],
+       [
+        45,
+        192
+       ],
+       [
+        40,
+        188
+       ],
+       [
+        41,
+        184
+       ],
+       [
+        48,
+        189
+       ],
+       [
+        56,
+        205
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 15.0 m at x 40..56, along 184..209 (R, 2 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.59 of rough brightness) and 2020 (0.83)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        47,
+        175
+       ],
+       [
+        46,
+        174
+       ],
+       [
+        48,
+        172
+       ],
+       [
+        43,
+        166
+       ],
+       [
+        43,
+        154
+       ],
+       [
+        40,
+        151
+       ],
+       [
+        38,
+        153
+       ],
+       [
+        34,
+        153
+       ],
+       [
+        27,
+        147
+       ],
+       [
+        29,
+        143
+       ],
+       [
+        35,
+        149
+       ],
+       [
+        40,
+        149
+       ],
+       [
+        45,
+        144
+       ],
+       [
+        52,
+        142
+       ],
+       [
+        49,
+        134
+       ],
+       [
+        49,
+        127
+       ],
+       [
+        51,
+        121
+       ],
+       [
+        53,
+        125
+       ],
+       [
+        52,
+        133
+       ],
+       [
+        54,
+        135
+       ],
+       [
+        55,
+        141
+       ],
+       [
+        48,
+        148
+       ],
+       [
+        49,
+        151
+       ],
+       [
+        44,
+        157
+       ],
+       [
+        50,
+        172
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 14.5 m at x 27..55, along 121..175 (R, 21 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.82 of rough brightness) and 2020 (0.94)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "12 lidar crowns (2015 lidar, present in 2020 and 2022) that the auto tree layer left out added near the fairway; no OB / water / fairway change; parkland, no long grass; check on edit 18.8 (0% on AUTO trees) is expected: contiguous lidar canopy of a crown clump right of the fairway, crowns touch in 2022",
+   "long_grass": {
+    "L": "none: mown rough to the wooded strip on the left, both years",
+    "R": "none: mown rough with scattered crowns and the cart path, both years"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -56.0,
+       349.0,
+       5.5,
+       6.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 5.5 m at x -61..-51, along 343..355 (L, 12 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.82 of rough brightness) and 2020 (0.95)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       13.5,
+       341.5,
+       3.0,
+       4.0
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 13.2 m at x 11..16, along 338..345 (R, 18 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.57 of rough brightness) and 2020 (0.85)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       22.0,
+       334.0,
+       5.5,
+       2.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 12.5 m at x 17..27, along 332..336 (R, 21 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.7 of rough brightness) and 2020 (0.87)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        0,
+        324
+       ],
+       [
+        -1,
+        323
+       ],
+       [
+        1,
+        318
+       ],
+       [
+        8,
+        311
+       ],
+       [
+        6,
+        309
+       ],
+       [
+        6,
+        304
+       ],
+       [
+        8,
+        301
+       ],
+       [
+        9,
+        313
+       ],
+       [
+        6,
+        319
+       ],
+       [
+        2,
+        321
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.0 m at x -1..9, along 301..324 (R, 1 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.61 of rough brightness) and 2020 (0.89)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -39,
+        306
+       ],
+       [
+        -42,
+        303
+       ],
+       [
+        -44,
+        298
+       ],
+       [
+        -43,
+        296
+       ],
+       [
+        -40,
+        299
+       ],
+       [
+        -38,
+        305
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 12.8 m at x -44..-38, along 296..306 (L, 13 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.88 of rough brightness) and 2020 (0.59)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -32.5,
+       296.5,
+       2.0,
+       5.0
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.2 m at x -34..-31, along 292..301 (L, 10 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.48 of rough brightness) and 2020 (0.97)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        11,
+        300
+       ],
+       [
+        9,
+        298
+       ],
+       [
+        10,
+        296
+       ],
+       [
+        13,
+        295
+       ],
+       [
+        18,
+        289
+       ],
+       [
+        20,
+        289
+       ],
+       [
+        23,
+        293
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 18.2 m at x 9..23, along 289..300 (R, 2 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.5 of rough brightness) and 2020 (0.94)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -50.5,
+       291.0,
+       5.0,
+       6.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 14.8 m at x -55..-46, along 285..297 (L, 25 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.68 of rough brightness) and 2020 (0.93)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        13,
+        283
+       ],
+       [
+        15,
+        277
+       ],
+       [
+        19,
+        274
+       ],
+       [
+        22,
+        276
+       ],
+       [
+        26,
+        276
+       ],
+       [
+        29,
+        271
+       ],
+       [
+        27,
+        268
+       ],
+       [
+        24,
+        268
+       ],
+       [
+        22,
+        263
+       ],
+       [
+        22,
+        260
+       ],
+       [
+        27,
+        253
+       ],
+       [
+        36,
+        255
+       ],
+       [
+        39,
+        251
+       ],
+       [
+        44,
+        251
+       ],
+       [
+        48,
+        254
+       ],
+       [
+        51,
+        254
+       ],
+       [
+        53,
+        251
+       ],
+       [
+        58,
+        249
+       ],
+       [
+        65,
+        253
+       ],
+       [
+        64,
+        254
+       ],
+       [
+        66,
+        258
+       ],
+       [
+        59,
+        265
+       ],
+       [
+        51,
+        261
+       ],
+       [
+        49,
+        261
+       ],
+       [
+        46,
+        265
+       ],
+       [
+        43,
+        266
+       ],
+       [
+        38,
+        264
+       ],
+       [
+        35,
+        265
+       ],
+       [
+        43,
+        274
+       ],
+       [
+        47,
+        272
+       ],
+       [
+        50,
+        275
+       ],
+       [
+        51,
+        281
+       ],
+       [
+        49,
+        283
+       ],
+       [
+        48,
+        282
+       ],
+       [
+        45,
+        284
+       ],
+       [
+        41,
+        280
+       ],
+       [
+        36,
+        282
+       ],
+       [
+        30,
+        282
+       ],
+       [
+        24,
+        279
+       ],
+       [
+        18,
+        283
+       ],
+       [
+        20,
+        287
+       ],
+       [
+        16,
+        289
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 11.5 m at x 13..66, along 249..289 (R, 3 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.86 of rough brightness) and 2020 (0.94)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -28,
+        271
+       ],
+       [
+        -28,
+        267
+       ],
+       [
+        -23,
+        263
+       ],
+       [
+        -22,
+        264
+       ],
+       [
+        -24,
+        269
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown 9.5 m at x -29..-22, along 263..271 (L, 13 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.56 of rough brightness) and 2020 (0.89)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -32,
+        252
+       ],
+       [
+        -35,
+        243
+       ],
+       [
+        -22,
+        230
+       ],
+       [
+        -20,
+        232
+       ],
+       [
+        -14,
+        233
+       ],
+       [
+        -9,
+        241
+       ],
+       [
+        -13,
+        250
+       ],
+       [
+        -23,
+        252
+       ],
+       [
+        -28,
+        249
+       ],
+       [
+        -28,
+        244
+       ],
+       [
+        -30,
+        242
+       ],
+       [
+        -32,
+        244
+       ],
+       [
+        -30,
+        251
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 16.0 m at x -35..-9, along 230..252 (L, 4 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.85 of rough brightness) and 2020 (0.77)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        34,
+        234
+       ],
+       [
+        29,
+        230
+       ],
+       [
+        27,
+        226
+       ],
+       [
+        29,
+        220
+       ],
+       [
+        34,
+        216
+       ],
+       [
+        35,
+        217
+       ],
+       [
+        30,
+        225
+       ],
+       [
+        35,
+        230
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown 11.5 m at x 27..35, along 216..234 (R, 6 yds off the fairway), missing from the auto trees; dark crown in NAIP 2022 (0.59 of rough brightness) and 2020 (0.81)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "2": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "3": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "4": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "kept: texture pad 37 yds behind White; no distinct box visible under the trees at the dot; no visible box elsewhere on the line to move to"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "5": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "6": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "7": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "8": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "9": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "kept: walkback dot under the tree canopy, no box visible; White dot also under canopy; no visible box elsewhere on the line to move to"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "10": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "kept: walkback dot 20 yds behind the White box near the cart paths; no distinct box visible; no visible box elsewhere on the line to move to"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "11": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "12": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "kept: walkback dot on a grassy area south of the tree line; box outline not clear; no visible box elsewhere on the line to move to"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "13": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "14": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "15": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "16": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "17": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  },
+  "18": {
+   "Blue": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "kept: walkback dot 45 yds behind the White box at a path junction; no distinct box visible; no visible box elsewhere on the line to move to"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on or at the end of a visible tee box (OSM box / mown pad) consistent with the card"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "4",
+   "what": "Blue tee: texture pad 37 yds behind White; no distinct box visible under the trees at the dot"
+  },
+  {
+   "hole": "9",
+   "what": "Blue tee: walkback dot under the tree canopy, no box visible; White dot also under canopy"
+  },
+  {
+   "hole": "10",
+   "what": "Blue tee: walkback dot 20 yds behind the White box near the cart paths; no distinct box visible"
+  },
+  {
+   "hole": "12",
+   "what": "Blue tee: walkback dot on a grassy area south of the tree line; box outline not clear"
+  },
+  {
+   "hole": "18",
+   "what": "Blue tee: walkback dot 45 yds behind the White box at a path junction; no distinct box visible"
+  },
+  {
+   "hole": "15",
+   "what": "auto water (x +5..+50, along 290-345) is a DEM bowl fully under canopy in both years; water not visible, kept"
+  },
+  {
+   "hole": "16",
+   "what": "OB line behind the houses placed mid tree strip, x -16..-9 at 245-295 (+/-8 yds); lot lines not visible"
+  },
+  {
+   "hole": "all",
+   "what": "tree adds come from the 2015 lidar canopy (> 2.5 m) checked against 2020/2022 photo darkness; crowns that look gone in 2022 were not added"
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+# Plan with the mapper's layers: L.A. Nickell Golf Course (Blue tees)
+
+Quick decision (n = 2000, seed 31) on the base package and on base + agent layers (ok: course_data/mapper/la_nickell (153 zone edits on 14 holes, 0 tee(s) moved, 54 checked)). Changed = other club, or aim points > 10 yds apart.
+
+| hole | AUTO | AUTO + AGENT | aim apart (yds) | changed | agent edits on the hole |
+|---|---|---|---|---|---|
+| 1 | 4-wood +5 | 4-wood +5 | 0.0 |  | add recovery 155 yd2; add recovery 173 yd2; add recovery 13 yd2; add recovery 14 yd2; add recovery 206 yd2; add recovery 284 yd2; add recovery 12 yd2; add recovery 35 yd2; add recovery 70 yd2; add recovery 203 yd2; add recovery 42 yd2 |
+| 2 | Driver +10 | 4-wood +5 (tie) | 20.6 | **yes** | add recovery 139 yd2; add recovery 145 yd2; add recovery 48 yd2; add recovery 36 yd2; add recovery 17 yd2; add recovery 31 yd2; add recovery 37 yd2; add recovery 27 yd2; add recovery 108 yd2; add recovery 85 yd2; add recovery 58 yd2; add recovery 22 yd2; add recovery 151 yd2; add recovery 97 yd2 |
+| 3 | Driver +0 | Driver -2 | 2.5 |  | add recovery 168 yd2; add recovery 102 yd2; add recovery 185 yd2; add recovery 54 yd2; add recovery 17 yd2; add recovery 43 yd2; add recovery 35 yd2; add recovery 30 yd2; add recovery 28 yd2; add recovery 87 yd2 |
+| 5 | Driver -40 | Driver -40 | 0.0 |  | add recovery 169 yd2; add recovery 35 yd2; add recovery 97 yd2; add recovery 13 yd2; add recovery 294 yd2; add recovery 30 yd2; add recovery 142 yd2; add recovery 130 yd2; add recovery 189 yd2 |
+| 7 | Driver +2 | Driver +0 | 2.5 |  | add recovery 89 yd2; add recovery 119 yd2; add recovery 221 yd2; add recovery 207 yd2; add recovery 15 yd2; add recovery 18 yd2; add recovery 47 yd2; add recovery 37 yd2; add recovery 179 yd2 |
+| 8 | 4-wood -5 (tie) | 4-wood -5 | 0.0 |  | add recovery 124 yd2; add recovery 33 yd2; add recovery 24 yd2; add recovery 55 yd2; add recovery 11 yd2; add recovery 51 yd2; add recovery 48 yd2; add recovery 62 yd2; add recovery 54 yd2; add recovery 18 yd2; add recovery 171 yd2 |
+| 9 | Driver +2 | Driver +8 | 5.0 |  | add recovery 15 yd2; add recovery 46 yd2; add recovery 21 yd2; add recovery 226 yd2; add recovery 93 yd2; add recovery 21 yd2; add recovery 77 yd2; add recovery 37 yd2; add recovery 46 yd2; add recovery 58 yd2; add recovery 19 yd2; add recovery 65 yd2; add recovery 43 yd2; add recovery 32 yd2; add recovery 34 yd2; add recovery 63 yd2; add recovery 28 yd2; add recovery 40 yd2 |
+| 10 | Driver -18 | Driver -15 | 2.5 |  | add recovery 95 yd2; add recovery 58 yd2; add recovery 35 yd2; add recovery 72 yd2; add recovery 70 yd2; add recovery 173 yd2; add recovery 43 yd2; add recovery 27 yd2; add recovery 111 yd2; add recovery 39 yd2; add recovery 46 yd2; add recovery 36 yd2; add recovery 162 yd2; add recovery 42 yd2; add recovery 84 yd2 |
+| 12 | Driver +10 | Driver +10 | 0.0 |  | add recovery 56 yd2; add recovery 121 yd2; add recovery 70 yd2; add recovery 119 yd2; erase water 1011 yd2 |
+| 13 | Driver -2 | 4-wood -12 | 22.3 | **yes** | add recovery 35 yd2; add recovery 28 yd2; add recovery 55 yd2; add recovery 37 yd2; add recovery 237 yd2; add recovery 22 yd2; add recovery 21 yd2; add recovery 25 yd2; add recovery 150 yd2; add recovery 162 yd2; add recovery 141 yd2 |
+| 15 | Driver -40 | 4-wood -8 | 38.1 | **yes** | add recovery 131 yd2; add recovery 26 yd2; add recovery 102 yd2; add recovery 121 yd2; add recovery 43 yd2; add recovery 43 yd2; add recovery 121 yd2; add recovery 133 yd2; add recovery 102 yd2; add recovery 102 yd2; add recovery 150 yd2; add recovery 272 yd2; add recovery 975 yd2; add recovery 12 yd2; add recovery 113 yd2 |
+| 16 | Driver +60 | Driver +60 | 0.0 |  | add recovery 37 yd2; add recovery 54 yd2; add recovery 83 yd2; add recovery 49 yd2; add recovery 389 yd2; add recovery 99 yd2; erase ob 3413 yd2 |
+| 17 | 2-wood -48 (tie) | 4-wood -38 (tie) | 14.1 | **yes** | add recovery 70 yd2; add recovery 504 yd2; add recovery 47 yd2; add recovery 274 yd2; add recovery 152 yd2; add recovery 260 yd2 |
+| 18 | 2-wood +0 (tie) | 4-wood +5 (tie) | 11.2 | **yes** | add recovery 110 yd2; add recovery 37 yd2; add recovery 43 yd2; add recovery 62 yd2; add recovery 26 yd2; add recovery 31 yd2; add recovery 61 yd2; add recovery 100 yd2; add recovery 877 yd2; add recovery 24 yd2; add recovery 349 yd2; add recovery 63 yd2 |
+
+5 of 14 tee shots change. Page: add `"agent_layers": "course_data/mapper/la_nickell/"` to `course_data/requests/course_page_la_nickell.json` (coordinator).
