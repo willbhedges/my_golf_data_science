@@ -212,7 +212,7 @@ The final route argsort is now stable (ties -> first state) so both sides agree.
 **Goal**: a re-solve after a golfer answer should save pair taps vs no re-solve (test 4.7 at 98 % pair precision).
 **Not met.** The best re-solve policy ("local", below) is close to no re-solve on dev (4.94 vs 4.74 taps) but worse on
 test (6.12 vs 5.22 simulated / 4.78 step-0 estimate). It is better than the old re-solve everywhere (test 7.71 -> 6.12
-taps) and keeps part of the re-solve gains (all pairs right 53 -> 63 %, numbering 86.5 -> 88.7 %). Shipped as the
+taps) and keeps part of the re-solve gains (all pairs right 53 -> 63 %, numbering 86.5 -> 88.7 %). Shipped as the (since superseded: "Every hole right" below)
 re-solve default; for fewest pair taps, no re-solve is still best.
 
 **What changed** (`pathroute_v2/resolve2.py`, `decode2.py`, `run2.py`; JS `course_data/app/pathroute_engine.js`):
@@ -281,4 +281,92 @@ is stateless too. The calibrators were not refit for the sticky flow. Dev number
 python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split dev --folds FOLDS.pkl --no-h1 \
     --policy local:resolve=fix --policy never:resolve=never --json dev.json --jobs 3   # FOLDS = calib_resolve fold models
 python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split test --policy local:resolve=fix --json t.json
+```
+
+## Every hole right: P(all pairs right) stop + re-solve on corrections only (2026-11-02, shipped default)
+
+**Goal** (coordinator): every hole right (all pairs right + numbered) in the fewest taps, not 98 % pair precision.
+**Shipped** (`resolve2.POLICY` = `PathRoute.POLICY`, supersedes the sticky "local" default above):
+- **stop**: P(every decoded pair right) = **product of the unconfirmed holes' calibrated confidences** >= **0.9**
+  (`Session.p_all`). It is calibrated on dev states (plain re-solve: P 0.90-0.95 -> 96.7 % all right, 0.95-0.98 ->
+  97.5 %, 0.98-1 -> 99.6 %). A learned course-level calibrator (`stop4.py` "learn": logistic on sum / min log conf,
+  holes < 0.9 / 0.99, confirmed fraction, missing holes; dev 5-fold OOF) only moved along the same taps-vs-all-right
+  curve (e.g. 8.3 taps / 87.5 % vs product 9.4 / 91.2 %), so the product ships (no fit, nothing to export).
+- **ask**: the lowest-confidence unconfirmed hole (< 0.999) - under the product this is the largest gain in P(all right)
+  per tap ((1 - c) / c); `Session.need()` = the holes still to ask, in order, until P >= target (the app's "N holes
+  still need a look"). The neighbour-weighted order (`ask=voi`) was not better in the sticky runs; not re-run.
+- **answers** (`Session.answer`): a correction (other tee / green, "no") re-solves the whole route **plain** (no sticky
+  bonus); a "yes" confirms without a re-solve (its number pins at the next re-solve); **"not a hole" drops the hole
+  without a re-solve** (the next correction's re-solve refills the route; a still-missing hole = one golfer tap).
+
+**Metric note**: "all pairs right" here counts golfer-added missing holes as right (the golfer places them; one tap
+each, counted in the taps, as in every taps number above). The earlier tables required `miss == 0`, which penalises
+no re-solve (it never refills a dropped hole): under the fair count the no-re-solve oracle is as good as re-solve
+(dev 4.49 vs 4.59 taps, test 5.05 vs 4.67), so the 8.22 "no re-solve oracle" above is that artefact. Re-solving
+after every answer also breaks right routes: once all pairs are right, only 60 % (dev) / 62 % (test) of courses stay
+all right to the end of the trajectory; plain re-solve tops out at 88-90 % courses all right, whatever the stop.
+
+**Dev** (157 courses + 3 no-result, OOF hole / pair models, `sim3.py --no-h1`, `stop4.py`; taps = answers + golfer-added
+holes; "taps at X %" = fewest mean taps of any P threshold with >= X % of courses all pairs right; plain / never from the
+sticky agent's dev1 run (before the box fix), local from dev4):
+
+| policy (dev) | taps at 75 / 80 / 85 / 90 / 95 % all right | P >= 0.9: taps mean (median, p90) / all right | P >= 0.95 | oracle |
+|---|---|---|---|---|
+| no re-solve (confirm in confidence order) | 4.94 / 5.86 / 7.24 / 9.21 / 12.53 | 10.7 (10, 18) / 91.9 % | 13.4 / 95.6 % | 4.49 |
+| re-solve after every answer (plain) | 6.06 / 7.39 / 8.78 / 15.26 / - | 9.41 (8, 18) / 87.5 % | 11.6 / 88.1 % | 4.59 |
+| local sticky (previous default) | 5.12 / 5.76 / 7.59 / 9.56 / 12.84 | 11.0 (10, 19) / 92.5 % | 13.5 / 95.6 % | 4.77 |
+| plain re-solve, yes without re-solve, not-a-hole re-solves | 4.79 / 6.80 / 7.47 / 9.73 / - | 8.99 (8, 18) / 88.1 % | 11.3 / 90.0 % | 4.16 |
+| **plain re-solve on corrections only, not-a-hole dropped (shipped)** | **4.66 / 5.47** / 7.42 / **8.81** / 13.49 | **9.38 (8, 18) / 91.2 %** | 11.6 / 93.1 % | 4.43 |
+
+The shipped policy has the lowest curve from 75 to 90 % all right (no re-solve is a close second and the best above
+93 %); it keeps the re-solve's numbering (confirmations + re-solve) that no re-solve lacks (test below).
+
+**Test, one run** (153 courses = 149 simulated + 4 no-result; shipped policy simulated once with the hole-1 decode,
+`sim3.py --split test --policy plain:resolve=fix`; the other three are the sticky agent's test trajectories re-scored
+with the same stop; `results/pathroute_v2/summary_allright.json`). "fully right" = all pairs right and, on 9 / 18-hole
+courses, every hole numbered right after one more "this tee is hole 1" tap (not counted in taps):
+
+| policy (test), stop P >= 0.9 | taps mean (median, p90) | all pairs right | fully right (+ hole-1 tap) | holes numbered | P >= 0.95: taps / pairs / fully | oracle taps |
+|---|---|---|---|---|---|---|
+| no re-solve | 11.58 (10, 19) | **93.5 %** | 61.4 % | 91.4 % | 14.14 / 96.1 / 70.6 % | 5.05 |
+| re-solve after every answer (plain) | **9.66** (8, 18) | 85.0 % | **84.3 %** | **96.4 %** | 11.84 / 86.9 / **86.3 %** | **4.67** |
+| local sticky (previous default) | 11.85 (10, 20) | 91.5 % | 79.1 % | 94.6 % | 14.17 / 94.1 / 83.0 % | 5.07 |
+| **shipped: re-solve on corrections only** | 9.93 (8, 18) | 89.5 % | 77.1 % | 95.2 % | 12.19 / 90.8 / 79.7 % | 4.70 |
+
+Taps at a given % of courses with all pairs right (test): shipped 6.03 / 6.75 / 8.03 / 10.22 at 75 / 80 / 85 / 90 %,
+no re-solve 6.33 / 7.44 / 8.52 / 10.13, plain 6.73 / 7.75 / 9.66 / - (never reaches 90 %), local 6.24 / 7.55 / 8.92 / 11.85. The
+old 98 %-precision stop of the shipped policy would stop at 5.05 taps.
+
+**Honest assessment**: on pairs the shipped policy holds its dev advantage up to 85 % all right (test) and ties no
+re-solve at 90 %. But on the product metric (pairs **and** numbers after the hole-1 tap) re-solving after every
+answer is better on test (84.3 vs 77.1 % fully right at fewer taps): the hole-1 tap re-solves the route, and a route
+whose "yes" answers were never re-solved breaks or mis-numbers more often then. **Dev numbering was not measured**
+(the dev runs with the hole-1 decode were cut for time on the shared box), so this was not a dev decision; the test
+result is one run and the default was not changed after seeing it. Next: dev run with the hole-1 decode for
+`plain` vs `plain:resolve=fix` (and re-solving after a "yes" only once the hole-1 tee is set); switching is
+`POLICY yes="solve", not_hole="solve"` (Python and JS read the same keys; an exported `policy` overrides). The gap
+between any stop (~10 taps at P 0.9) and the oracle (~4.7) is the confidence: at the first all-right state the median
+P(all right) is only 0.59 (dev), so certifying "every hole right" costs ~5 extra taps whatever the order.
+
+**App** (`course_data/app/lib_play.js`): one `PathRoute.Session` per course is kept across answers (`LPR`); a new
+answer applies only itself (`lpRouteApply` -> `Session.answer`: a "yes" / "not a hole" is instant, a correction /
+"no" / hole-1 tee re-solves, confidences fill in over the next frames); a different log (another golfer's answers
+merged in) replays from scratch (one decode per re-solving answer, confidences for the last only). The holes asked
+are `Session.need()`; "Routing is X % sure every hole is right" shows P(all right). Engine: `POLICY`, `pAll`, `need`,
+`askAll`, `answer`; `step()` maps the confidences onto the holes by pair (answers between `begin` and the last step
+keep their effect). An exported record's `sticky` is ignored (plain re-solve) unless `policy.sticky` is set.
+
+**Tests**: `test_pathroute.js` 24 courses, 233 cases (69 decodes with facts + 140 policy session steps: holes, boxes,
+conf, P(all right), the ask list and whether each answer re-solved), 0 failing, max diff 1.1e-13 (fixtures regenerated
+by `export_js.py`); `test_route_ui.js` OK (asks every hole via `policy.target` 0.99999; B's strip now waits for the
+render after the last step); `test_lib_play.js` OK (10 courses x 2 widths, 684 screens); `pytest pathroute_v2` 11
+passed, 1 skipped. `out/index.html` / `aim_caddie.html` relinked (`build_app.py --relink`). Not done: `live2.route`
+(server) stays stateless (= plain re-solve with all facts); the calibrators were not refit.
+
+```bash
+python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split dev --folds FOLDS.pkl --no-h1 \
+    --policy plain:resolve=fix --policy plain:resolve=no --json dev.json --jobs 3
+python course_data/zero_tap/pathroute_v2/stop4.py eval dev.json --targets 0.9,0.95          # dev: learned stop OOF
+python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split test --policy plain:resolve=fix --json t.json
+python course_data/zero_tap/pathroute_v2/stop4.py eval t.json --split test
 ```
