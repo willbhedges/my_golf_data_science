@@ -5,61 +5,18 @@
  "city": "Silvis",
  "state": "IL",
  "group": "library",
- "status": "needs confirm",
+ "status": "failed",
  "reasons": [
-  "scorecard not matched (source None, flags [])",
-  "18 holes built vs the card's 0",
-  "pars sum to 71, card None",
-  "18 hole(s) with a CHECK"
+  "package: Retry your request using exponential backoff: wait a overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
  ],
- "check_holes": [
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18
- ],
- "tee_sets": [
-  {
-   "name": "osm_back",
-   "yards": null,
-   "par": null,
-   "rating": null,
-   "slope": null,
-   "colour": null,
-   "on_page": "solved"
-  }
- ],
- "solved_sets": [
-  "osm_back"
- ],
- "page": "course_data/library/tpc_deere_run/page.html",
- "page_bytes": 3045690,
- "qa_report": "course_data/library/tpc_deere_run/qa_report.md",
- "center": [
-  41.475825900000004,
-  -90.39541185
- ],
- "osm": "relation/12585470",
- "holes": 18,
- "days": [
-  "2026-10-31",
-  "2026-11-01"
- ],
- "weather": "forecast",
- "built": "2026-10-30T12:23Z",
- "request": "course_data/requests/course_page_tpc_deere_run.json"
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_tpc_deere_run.json",
+ "resolve": {
+  "status": null,
+  "candidates": []
+ },
+ "built": "2026-11-01T21:50Z"
 }
