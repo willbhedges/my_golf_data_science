@@ -1,0 +1,3150 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "slug": "colbert_hills",
+  "mapper": "mapper-colbert_hills",
+  "made": "2026-11-02T18:41:12Z",
+  "corridor_set": "Black/Blue",
+  "base_package": "course_data/mapper/colbert_hills/base/package.json",
+  "base_built": "2026-11-02T13:20:42Z",
+  "minutes": 50,
+  "edits_sha": "f74bd00eb6bb6ccf",
+  "schema": "agent_zones/1",
+  "reviewed": {
+   "1": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "prairie with limestone outcrop line left beyond ~10 yds of mown rough; right is mown to cart path then house lots",
+    "s2": [
+     {
+      "id": "S2-1-L1",
+      "side": "L",
+      "area_yd2": 2334,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "coarse prairie with rock outcrops beyond the mown strip in both years; S2 edge comes in to 4 yds over mown rough; traced as edit 0 (and no native before along 200 near the practice green)"
+     },
+     {
+      "id": "S2-1-L2",
+      "side": "L",
+      "area_yd2": 190,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "inside the prairie left at x -60..-70, covered by edit 0"
+     },
+     {
+      "id": "S2-1-L3",
+      "side": "L",
+      "area_yd2": 2174,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "prairie beyond rock line left at 290-390, both years; covered by edit 0 with measured 10-yd mown width"
+     },
+     {
+      "id": "S2-1-R1",
+      "side": "R",
+      "area_yd2": 1811,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "right of the cart path at 220-300: mixed mown grass running to house lots, smooth green in 2021, no second mowing line"
+     },
+     {
+      "id": "S2-1-R2",
+      "side": "R",
+      "area_yd2": 347,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "330-345 right: cart path edge and mown rough between path and trees"
+     },
+     {
+      "id": "S2-1-R3",
+      "side": "R",
+      "area_yd2": 198,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "on the cart path at 360-380, mown rough either side"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 0 (rock-outcrop line / mowing line ~10 yds off the fairway, same place 2023 and 2021)",
+     "R": "none: mown rough to the cart path at +27; beyond the path a narrow strip to the house lots, smooth green in 2021"
+    }
+   },
+   "2": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "parkland-style: mown rough to trees/cart path, houses right (auto OB kept)",
+    "s2": [
+     {
+      "id": "S2-2-L1",
+      "side": "L",
+      "area_yd2": 1326,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "330-380 left of the line: dark striped mown rough between fairway and cart path in 2023, smooth in 2021; only a small coarse patch beyond the path at 365-380 past the landing zone"
+     }
+    ],
+    "long_grass": {
+     "L": "none: fairway runs left to the trees; mown dark rough between fairway and path at 320-360 in both years",
+     "R": "none: mown rough to the cart path, then house lots (auto OB)"
+    }
+   },
+   "3": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "prairie left beyond ~10 yds of mown rough with rocks around the pond; right mown to path then lots",
+    "s2": [
+     {
+      "id": "S2-3-L1",
+      "side": "L",
+      "area_yd2": 245,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "165-185 far left: inside the prairie beyond the pond; covered by edit 0"
+     },
+     {
+      "id": "S2-3-L2",
+      "side": "L",
+      "area_yd2": 634,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "285-310 left: coarse grass both years, covered by edits 0/1"
+     },
+     {
+      "id": "S2-3-L3",
+      "side": "L",
+      "area_yd2": 304,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "320-340 far left beyond the cross path: covered by edit 1"
+     },
+     {
+      "id": "S2-3-R1",
+      "side": "R",
+      "area_yd2": 2492,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "160-265 right of the cart path: lawn / lot edge with trees under auto OB, smooth green 2021"
+     },
+     {
+      "id": "S2-3-R2",
+      "side": "R",
+      "area_yd2": 227,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "280 right: on the cart path and mown rough beside it"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edits 0, 1 (coarse mottled grass with rocks beyond a dark mown band 8-10 yds wide, both years)",
+     "R": "none: mown rough to the cart path, then house lots under auto OB"
+    }
+   },
+   "4": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "native beyond mown rough left; right of the cart path coarse prairie with rock outcrop at 300",
+    "s2": [
+     {
+      "id": "S2-4-L1",
+      "side": "L",
+      "area_yd2": 2412,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "coarse grass left of fairway, but S2 edge hugs the fairway; traced at 10 yds as edit 0"
+     },
+     {
+      "id": "S2-4-R1",
+      "side": "R",
+      "area_yd2": 574,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "along 150-160 near the line: tee/green surrounds, mown"
+     },
+     {
+      "id": "S2-4-R2",
+      "side": "R",
+      "area_yd2": 1069,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "right of the cart path is native (edit 1); S2 shape covers the path and mown rough left of it"
+     },
+     {
+      "id": "S2-4-R3",
+      "side": "R",
+      "area_yd2": 871,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "320-380 right of the path: covered by edit 1"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 0 (coarse grass beyond dark mown band ~10 yds wide at 160-280, both years)",
+     "R": "native: edit 1 (right of the cart path, tufted/streaky grass both years, rock outcrop at 300)"
+    }
+   },
+   "6": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "open waste/coarse grass area right at 212-278 between mown rough and trees",
+    "s2": [],
+    "long_grass": {
+     "L": "none: mown rough to the cart path, then trees (auto)",
+     "R": "native: edit 0 (streaky tan coarse grass with bare sand patches, lidar open, both years)"
+    }
+   },
+   "7": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "trees left removed since lidar (open in both photo years): erased; native left beyond a ~20 yd mown rough",
+    "s2": [
+     {
+      "id": "S2-7-L1",
+      "side": "L",
+      "area_yd2": 210,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "210-225 left: bright smooth mown rough inside the mowing line"
+     },
+     {
+      "id": "S2-7-L2",
+      "side": "L",
+      "area_yd2": 466,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "far left at 50 yds off the fairway beyond the creek trees, out of play"
+     },
+     {
+      "id": "S2-7-R1",
+      "side": "R",
+      "area_yd2": 1548,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "160-260 right of the cart path at +45: path edge and grass 40+ yds out, no clear second line"
+     },
+     {
+      "id": "S2-7-R2",
+      "side": "R",
+      "area_yd2": 210,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "280-295 at the cart path edge, mown rough"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 1 (mowing line ~20 yds off the fairway, tufted grass beyond, both years)",
+     "R": "none: mown rough with bunker to the cart path at +45; beyond the path out of play"
+    }
+   },
+   "9": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "pond left missed by auto water (dark in NIR, open in lidar): added; mown rough both sides",
+    "s2": [
+     {
+      "id": "S2-9-L1",
+      "side": "L",
+      "area_yd2": 264,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "160-180 far left: under trees/brush by the pond"
+     },
+     {
+      "id": "S2-9-L2",
+      "side": "L",
+      "area_yd2": 155,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "215-225: rock rip-rap pond edge"
+     },
+     {
+      "id": "S2-9-L3",
+      "side": "L",
+      "area_yd2": 217,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "inside the pond (open water, added as water)"
+     },
+     {
+      "id": "S2-9-R1",
+      "side": "R",
+      "area_yd2": 2955,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "right of the cart path 170-330: smooth mown lawn to house lots, stripes in 2023, uniform 2021"
+     },
+     {
+      "id": "S2-9-R2",
+      "side": "R",
+      "area_yd2": 292,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "on the cart path 320-355"
+     },
+     {
+      "id": "S2-9-R3",
+      "side": "R",
+      "area_yd2": 710,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "house lot lawn at 355-380"
+     }
+    ],
+    "long_grass": {
+     "L": "none: striped mown rough to the rock-lined pond edge in both years",
+     "R": "none: mown rough to the cart path, then smooth lawn to house lots"
+    }
+   },
+   "10": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "prairie beyond the left cart path; coarse grass right at 170-260 before the OB line",
+    "s2": [
+     {
+      "id": "S2-10-L1",
+      "side": "L",
+      "area_yd2": 1875,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native beyond the path, S2 shape straddles path and mown rough; traced as edit 0"
+     },
+     {
+      "id": "S2-10-L2",
+      "side": "L",
+      "area_yd2": 450,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "S2 shape lies on the path and dark mown rough; native is beyond the path (edit 0)"
+     },
+     {
+      "id": "S2-10-L3",
+      "side": "L",
+      "area_yd2": 235,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "beyond path at 320-340; covered by edit 0"
+     },
+     {
+      "id": "S2-10-R1",
+      "side": "R",
+      "area_yd2": 364,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "133-170 at x +48..+58: lot edge / bare ground under the auto OB, not native"
+     },
+     {
+      "id": "S2-10-R2",
+      "side": "R",
+      "area_yd2": 354,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "200-240 right: mostly under the auto OB line; coarse grass inside it traced as edit 1"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 0 (beyond the cart path at x ~-37..-49; dark mown rough inside, coarse outside, both years)",
+     "R": "native: edit 1 (coarse tufted grass +26..+40 at 170-260 between a mown band and the OB line, both years)"
+    }
+   },
+   "12": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "scattered trees with coarse grass left beyond a mowing line",
+    "s2": [
+     {
+      "id": "S2-12-L1",
+      "side": "L",
+      "area_yd2": 244,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "280-300 far left: coarse grass among trees, covered by edit 0"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 0 (lighter tan coarse grass between crowns beyond a dark mown band, same line 2023 and 2021)",
+     "R": "none: mown rough to the cart path, trees beyond"
+    }
+   },
+   "13": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "low",
+    "note": "short par 4; mown rough around the fairway; auto OB wedge over open course land erased",
+    "s2": [
+     {
+      "id": "S2-13-L1",
+      "side": "L",
+      "area_yd2": 253,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "340-365: by the house driveway / road, mottled grass, no clear mowing line"
+     },
+     {
+      "id": "S2-13-R1",
+      "side": "R",
+      "area_yd2": 176,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "120-128 right, 75 yds off the fairway beside the tees: mown grass and path, out of play"
+     },
+     {
+      "id": "S2-13-R2",
+      "side": "R",
+      "area_yd2": 1541,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "290-360 right: grass between bunkers and green surround, mown paths through it, no clear second mowing line in 2021"
+     }
+    ],
+    "long_grass": {
+     "L": "none: mown rough and cart path left in the landing zone; mottled grass at 290-340 left not clearly behind a second mowing line",
+     "R": "none: bunkers and mown rough to the next green"
+    }
+   },
+   "14": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "coarse grass left between mown rough and house lots; swale right at 295-365",
+    "s2": [
+     {
+      "id": "S2-14-L1",
+      "side": "L",
+      "area_yd2": 694,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "coarse grass left, traced with 10-yd mown width as edit 0"
+     },
+     {
+      "id": "S2-14-R1",
+      "side": "R",
+      "area_yd2": 356,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "165-185 right: mown rough near the path junction"
+     },
+     {
+      "id": "S2-14-R2",
+      "side": "R",
+      "area_yd2": 234,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "355-380: cart path and green surround"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 0 (coarse streaky grass beyond a narrow mown band, both years; stops at the lots)",
+     "R": "native: edit 1 (tall-grass drainage swale with rocks at 295-365, both years)"
+    }
+   },
+   "15": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "low",
+    "note": "drainage swale right under auto trees; mown rough left to cart path",
+    "s2": [
+     {
+      "id": "S2-15-L1",
+      "side": "L",
+      "area_yd2": 714,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "155-185 near the tee: swale crossing / mown rough before the landing zone"
+     },
+     {
+      "id": "S2-15-L2",
+      "side": "L",
+      "area_yd2": 808,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "225-290: cart path and mown rough left of it; nothing coarser behind a line in 2021"
+     },
+     {
+      "id": "S2-15-L3",
+      "side": "L",
+      "area_yd2": 790,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "360-385 beyond the path behind the green"
+     },
+     {
+      "id": "S2-15-R1",
+      "side": "R",
+      "area_yd2": 868,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "160-215: drainage swale crossing in front of the fairway, brush and trees, short of the landing zone"
+     },
+     {
+      "id": "S2-15-R2",
+      "side": "R",
+      "area_yd2": 781,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "372-400 right behind the green complex: mown surrounds and trees, out of the landing zone"
+     }
+    ],
+    "long_grass": {
+     "L": "none: mown rough to the cart path at -50..-60 in both years",
+     "R": "none: brushy drainage swale right is mostly under the auto trees; mown rough between it and the fairway"
+    }
+   },
+   "16": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "high",
+    "note": "open prairie right behind a crisp mowing line; carry prairie in front; outline-only OB right erased",
+    "s2": [
+     {
+      "id": "S2-16-L1",
+      "side": "L",
+      "area_yd2": 1582,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "120-168 far left beyond the cart path: coarse grass both years, covered by edit 0"
+     },
+     {
+      "id": "S2-16-L2",
+      "side": "L",
+      "area_yd2": 3696,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "S2 covers mown rough and bunkers; only beyond the cart path is native (edit 0)"
+     },
+     {
+      "id": "S2-16-R1",
+      "side": "R",
+      "area_yd2": 8443,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "prairie right, traced at the measured mowing line as edit 1"
+     },
+     {
+      "id": "S2-16-R2",
+      "side": "R",
+      "area_yd2": 232,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "part of prairie right; S2 shape 3 yds off the fairway is over the mown strip; edit 1 used"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edits 0, 2 (beyond the cart path; forward carry prairie 120-175)",
+     "R": "native: edit 1 (prairie beyond a dark mown strip 8-12 yds wide, same line 2021 and 2023)"
+    }
+   },
+   "18": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "pond right (auto ok); native beyond the left cart path",
+    "s2": [
+     {
+      "id": "S2-18-L1",
+      "side": "L",
+      "area_yd2": 1092,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native beyond the path, traced as edit 0"
+     },
+     {
+      "id": "S2-18-L2",
+      "side": "L",
+      "area_yd2": 1656,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "S2 straddles the path and mown rough; native beyond path is edit 0"
+     },
+     {
+      "id": "S2-18-R1",
+      "side": "R",
+      "area_yd2": 322,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "335-355: cart path and dark mown rough beside the bunker"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 0 (coarse grass with shrubs beyond the cart path, both years; dark mown rough inside the path)",
+     "R": "none: mown strip then the pond (auto water matches the wall line)"
+    }
+   }
+  },
+  "uncertain": [
+   {
+    "hole": "1",
+    "what": "back tee: card 590 but no box behind along 31; Black/Blue moved to the rearmost box (hole ~31 yds short of card)"
+   },
+   {
+    "hole": "13",
+    "what": "mottled grass at 290-360 both sides past the fairway end may be native"
+   },
+   {
+    "hole": "14",
+    "what": "auto tree polygon 7rec x -50..-25 at 120-210 looks like open grass with two crowns; not checked against lidar, left as is"
+   },
+   {
+    "hole": "15",
+    "what": "drainage swale right: tall grass vs trees, left to the auto trees"
+   },
+   {
+    "hole": "10",
+    "what": "right native edge +26 and OB line at +40 (+/-5 yds)"
+   },
+   {
+    "hole": "all",
+    "what": "native beyond cart paths assumed where both years show coarser texture; the exact edge is the path +/-4 yds"
+   }
+  ],
+  "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "1",
+    "op": "add",
+    "lie": "native",
+    "edit": "1.0",
+    "area_yd2": 7549,
+    "confidence": "high",
+    "evidence": "dark mown strip 8-11 yds wide then coarse tufted grass with a limestone outcrop line, same edge 2023 and 2021"
+   },
+   "geometry": {
+    "type": "MultiPolygon",
+    "coordinates": [
+     [
+      [
+       [
+        -96.6396122,
+        39.2098596
+       ],
+       [
+        -96.6395664,
+        39.2098132
+       ],
+       [
+        -96.6394969,
+        39.2097309
+       ],
+       [
+        -96.6394638,
+        39.2096773
+       ],
+       [
+        -96.6394425,
+        39.209637
+       ],
+       [
+        -96.6394215,
+        39.2095877
+       ],
+       [
+        -96.6394215,
+        39.2095612
+       ],
+       [
+        -96.6395357,
+        39.2095444
+       ],
+       [
+        -96.6396122,
+        39.2098596
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        -96.6388075,
+        39.2096514
+       ],
+       [
+        -96.6389367,
+        39.2096324
+       ],
+       [
+        -96.6390224,
+        39.2097713
+       ],
+       [
+        -96.6390274,
+        39.2097785
+       ],
+       [
+        -96.6390333,
+        39.2097853
+       ],
+       [
+        -96.63904,
+        39.2097916
+       ],
+       [
+        -96.6390476,
+        39.2097973
+       ],
+       [
+        -96.6390558,
+        39.2098024
+       ],
+       [
+        -96.6391382,
+        39.2098488
+       ],
+       [
+        -96.6391965,
+        39.2098881
+       ],
+       [
+        -96.6392303,
+        39.2099477
+       ],
+       [
+        -96.6392349,
+        39.2099549
+       ],
+       [
+        -96.639316,
+        39.210067
+       ],
+       [
+        -96.6393657,
+        39.2101471
+       ],
+       [
+        -96.6393938,
+        39.2102511
+       ],
+       [
+        -96.6394047,
+        39.2103067
+       ],
+       [
+        -96.6394001,
+        39.2103402
+       ],
+       [
+        -96.6393803,
+        39.210383
+       ],
+       [
+        -96.6393779,
+        39.210389
+       ],
+       [
+        -96.6393761,
+        39.210395
+       ],
+       [
+        -96.6393619,
+        39.2104516
+       ],
+       [
+        -96.6393603,
+        39.2104604
+       ],
+       [
+        -96.63936,
+        39.2104692
+       ],
+       [
+        -96.6393633,
+        39.2105894
+       ],
+       [
+        -96.6393639,
+        39.2105966
+       ],
+       [
+        -96.6393653,
+        39.2106038
+       ],
+       [
+        -96.6393836,
+        39.2106748
+       ],
+       [
+        -96.6393871,
+        39.2106849
+       ],
+       [
+        -96.6394141,
+        39.2107472
+       ],
+       [
+        -96.6394178,
+        39.2107545
+       ],
+       [
+        -96.6394223,
+        39.2107615
+       ],
+       [
+        -96.6394277,
+        39.2107681
+       ],
+       [
+        -96.6394338,
+        39.2107743
+       ],
+       [
+        -96.6395058,
+        39.21084
+       ],
+       [
+        -96.6395128,
+        39.2108458
+       ],
+       [
+        -96.6395958,
+        39.2109082
+       ],
+       [
+        -96.6396047,
+        39.2109142
+       ],
+       [
+        -96.6396143,
+        39.2109193
+       ],
+       [
+        -96.6396916,
+        39.210956
+       ],
+       [
+        -96.639727,
+        39.2109845
+       ],
+       [
+        -96.6397647,
+        39.211056
+       ],
+       [
+        -96.6397851,
+        39.2111156
+       ],
+       [
+        -96.6397876,
+        39.2111218
+       ],
+       [
+        -96.639814,
+        39.2111797
+       ],
+       [
+        -96.6392006,
+        39.2112699
+       ],
+       [
+        -96.6388075,
+        39.2096514
+       ]
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "3",
+    "op": "add",
+    "lie": "native",
+    "edit": "3.0",
+    "area_yd2": 6746,
+    "confidence": "medium",
+    "evidence": "dark mown band 8-10 yds left of the fairway, coarse lighter grass with rock outcrops beyond in 2023 and 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6403736,
+       39.2047767
+      ],
+      [
+       -96.641842,
+       39.2049325
+      ],
+      [
+       -96.6418049,
+       39.2051439
+      ],
+      [
+       -96.6417921,
+       39.2051337
+      ],
+      [
+       -96.641785,
+       39.2051286
+      ],
+      [
+       -96.6417773,
+       39.205124
+      ],
+      [
+       -96.6417692,
+       39.20512
+      ],
+      [
+       -96.6417606,
+       39.2051165
+      ],
+      [
+       -96.6417516,
+       39.2051137
+      ],
+      [
+       -96.6417271,
+       39.205107
+      ],
+      [
+       -96.6417159,
+       39.2051045
+      ],
+      [
+       -96.6417043,
+       39.2051029
+      ],
+      [
+       -96.6416926,
+       39.2051023
+      ],
+      [
+       -96.6416275,
+       39.205102
+      ],
+      [
+       -96.6416169,
+       39.2051024
+      ],
+      [
+       -96.6416064,
+       39.2051036
+      ],
+      [
+       -96.6415713,
+       39.205109
+      ],
+      [
+       -96.6415632,
+       39.2051105
+      ],
+      [
+       -96.6415553,
+       39.2051125
+      ],
+      [
+       -96.6415193,
+       39.2051228
+      ],
+      [
+       -96.6415143,
+       39.2051243
+      ],
+      [
+       -96.641444,
+       39.2051476
+      ],
+      [
+       -96.6414357,
+       39.2051507
+      ],
+      [
+       -96.6414277,
+       39.2051544
+      ],
+      [
+       -96.6411372,
+       39.2053016
+      ],
+      [
+       -96.6410843,
+       39.2053221
+      ],
+      [
+       -96.6410623,
+       39.2053264
+      ],
+      [
+       -96.6410455,
+       39.2053288
+      ],
+      [
+       -96.6410308,
+       39.2053288
+      ],
+      [
+       -96.6409238,
+       39.2053167
+      ],
+      [
+       -96.6409099,
+       39.2053124
+      ],
+      [
+       -96.6409059,
+       39.2053103
+      ],
+      [
+       -96.6408981,
+       39.2053065
+      ],
+      [
+       -96.6408899,
+       39.2053032
+      ],
+      [
+       -96.6408814,
+       39.2053006
+      ],
+      [
+       -96.6408726,
+       39.2052985
+      ],
+      [
+       -96.6408468,
+       39.2052933
+      ],
+      [
+       -96.6408348,
+       39.2052914
+      ],
+      [
+       -96.6408225,
+       39.2052907
+      ],
+      [
+       -96.6406936,
+       39.2052886
+      ],
+      [
+       -96.6406863,
+       39.2052886
+      ],
+      [
+       -96.6405594,
+       39.2052934
+      ],
+      [
+       -96.6405477,
+       39.2052944
+      ],
+      [
+       -96.6405117,
+       39.2052989
+      ],
+      [
+       -96.6405011,
+       39.2053007
+      ],
+      [
+       -96.6404907,
+       39.2053033
+      ],
+      [
+       -96.6404557,
+       39.2053137
+      ],
+      [
+       -96.6404442,
+       39.2053177
+      ],
+      [
+       -96.6403878,
+       39.2053408
+      ],
+      [
+       -96.6403797,
+       39.2053445
+      ],
+      [
+       -96.640372,
+       39.2053488
+      ],
+      [
+       -96.6403649,
+       39.2053535
+      ],
+      [
+       -96.6403604,
+       39.2053571
+      ],
+      [
+       -96.6402735,
+       39.2053479
+      ],
+      [
+       -96.6403736,
+       39.2047767
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "3",
+    "op": "add",
+    "lie": "native",
+    "edit": "3.1",
+    "area_yd2": 1028,
+    "keepout_clipped_yd2": 97,
+    "confidence": "medium",
+    "evidence": "coarse grass left beyond the cross path at 300, past the fairway end, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6419076,
+       39.2049395
+      ],
+      [
+       -96.6419226,
+       39.204953
+      ],
+      [
+       -96.6419291,
+       39.2049584
+      ],
+      [
+       -96.6419362,
+       39.2049633
+      ],
+      [
+       -96.6419438,
+       39.2049677
+      ],
+      [
+       -96.64198,
+       39.2049866
+      ],
+      [
+       -96.6419891,
+       39.2049908
+      ],
+      [
+       -96.6419988,
+       39.2049944
+      ],
+      [
+       -96.6420088,
+       39.2049971
+      ],
+      [
+       -96.6420192,
+       39.2049991
+      ],
+      [
+       -96.6420297,
+       39.2050002
+      ],
+      [
+       -96.642053,
+       39.2050018
+      ],
+      [
+       -96.6420629,
+       39.2050022
+      ],
+      [
+       -96.6420729,
+       39.2050017
+      ],
+      [
+       -96.6420827,
+       39.2050006
+      ],
+      [
+       -96.6420924,
+       39.2049988
+      ],
+      [
+       -96.6421018,
+       39.2049962
+      ],
+      [
+       -96.6421277,
+       39.2049881
+      ],
+      [
+       -96.6421369,
+       39.2049848
+      ],
+      [
+       -96.6421457,
+       39.2049808
+      ],
+      [
+       -96.6421721,
+       39.2049676
+      ],
+      [
+       -96.6423139,
+       39.2049826
+      ],
+      [
+       -96.6422781,
+       39.2051866
+      ],
+      [
+       -96.6418062,
+       39.2051365
+      ],
+      [
+       -96.641842,
+       39.2049325
+      ],
+      [
+       -96.6419076,
+       39.2049395
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "4",
+    "op": "add",
+    "lie": "native",
+    "edit": "4.0",
+    "area_yd2": 4207,
+    "confidence": "medium",
+    "evidence": "dark mown strip ~8-10 yds then lighter coarse grass at x<-55, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6465216,
+       39.2044143
+      ],
+      [
+       -96.647482,
+       39.2051811
+      ],
+      [
+       -96.6474035,
+       39.2052405
+      ],
+      [
+       -96.6473921,
+       39.2052382
+      ],
+      [
+       -96.6473746,
+       39.205231
+      ],
+      [
+       -96.6473198,
+       39.2051982
+      ],
+      [
+       -96.6473039,
+       39.2051804
+      ],
+      [
+       -96.6472985,
+       39.2051748
+      ],
+      [
+       -96.6472924,
+       39.2051696
+      ],
+      [
+       -96.6472859,
+       39.2051649
+      ],
+      [
+       -96.6472649,
+       39.2051509
+      ],
+      [
+       -96.6472568,
+       39.205146
+      ],
+      [
+       -96.6472482,
+       39.2051418
+      ],
+      [
+       -96.6472038,
+       39.2051222
+      ],
+      [
+       -96.647195,
+       39.2051187
+      ],
+      [
+       -96.6471858,
+       39.2051158
+      ],
+      [
+       -96.647076,
+       39.2050867
+      ],
+      [
+       -96.6470677,
+       39.2050832
+      ],
+      [
+       -96.6470029,
+       39.2050386
+      ],
+      [
+       -96.6469916,
+       39.2050318
+      ],
+      [
+       -96.6469292,
+       39.2049993
+      ],
+      [
+       -96.6469199,
+       39.2049949
+      ],
+      [
+       -96.6469101,
+       39.2049914
+      ],
+      [
+       -96.6468999,
+       39.2049886
+      ],
+      [
+       -96.6468681,
+       39.2049814
+      ],
+      [
+       -96.6468592,
+       39.2049797
+      ],
+      [
+       -96.6468501,
+       39.2049786
+      ],
+      [
+       -96.6467613,
+       39.204971
+      ],
+      [
+       -96.646728,
+       39.2049598
+      ],
+      [
+       -96.6466254,
+       39.2049089
+      ],
+      [
+       -96.6466128,
+       39.2049036
+      ],
+      [
+       -96.646535,
+       39.2048757
+      ],
+      [
+       -96.646524,
+       39.2048723
+      ],
+      [
+       -96.6464511,
+       39.2048535
+      ],
+      [
+       -96.6464453,
+       39.2048522
+      ],
+      [
+       -96.6463484,
+       39.2048319
+      ],
+      [
+       -96.6463396,
+       39.2048303
+      ],
+      [
+       -96.6463306,
+       39.2048294
+      ],
+      [
+       -96.6462735,
+       39.2048253
+      ],
+      [
+       -96.6462637,
+       39.2048249
+      ],
+      [
+       -96.6462539,
+       39.2048253
+      ],
+      [
+       -96.6462441,
+       39.2048264
+      ],
+      [
+       -96.6462346,
+       39.2048281
+      ],
+      [
+       -96.6461894,
+       39.2048382
+      ],
+      [
+       -96.6461784,
+       39.2048412
+      ],
+      [
+       -96.6461679,
+       39.2048451
+      ],
+      [
+       -96.646158,
+       39.2048499
+      ],
+      [
+       -96.6460834,
+       39.2048904
+      ],
+      [
+       -96.6459909,
+       39.2048166
+      ],
+      [
+       -96.6465216,
+       39.2044143
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "4",
+    "op": "add",
+    "lie": "native",
+    "edit": "4.1",
+    "area_yd2": 8172,
+    "keepout_clipped_yd2": 11,
+    "confidence": "medium",
+    "evidence": "beyond the cart path (4 yds outside it): streaky tufted grass, seed heads, rock outcrop at 300; same texture 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6464587,
+       39.2054969
+      ],
+      [
+       -96.6467693,
+       39.2057213
+      ],
+      [
+       -96.6469095,
+       39.205845
+      ],
+      [
+       -96.6470117,
+       39.2059975
+      ],
+      [
+       -96.6470486,
+       39.206119
+      ],
+      [
+       -96.6470481,
+       39.206121
+      ],
+      [
+       -96.6470469,
+       39.2061292
+      ],
+      [
+       -96.6470467,
+       39.2061374
+      ],
+      [
+       -96.6470474,
+       39.2061525
+      ],
+      [
+       -96.6470485,
+       39.2061619
+      ],
+      [
+       -96.647051,
+       39.2061711
+      ],
+      [
+       -96.6470549,
+       39.20618
+      ],
+      [
+       -96.6470749,
+       39.206219
+      ],
+      [
+       -96.6470795,
+       39.2062269
+      ],
+      [
+       -96.6470826,
+       39.2062309
+      ],
+      [
+       -96.6470827,
+       39.2062311
+      ],
+      [
+       -96.6471461,
+       39.2064706
+      ],
+      [
+       -96.6471593,
+       39.2065755
+      ],
+      [
+       -96.6454602,
+       39.2052189
+      ],
+      [
+       -96.6457483,
+       39.2050005
+      ],
+      [
+       -96.6462133,
+       39.2053954
+      ],
+      [
+       -96.6464587,
+       39.2054969
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "6",
+    "op": "add",
+    "lie": "native",
+    "edit": "6.0",
+    "area_yd2": 1150,
+    "keepout_clipped_yd2": 142,
+    "confidence": "medium",
+    "evidence": "open coarse grass and waste between a ~9-yd mown band and the tree line, lidar <0.5 m, tan streaky 2023 and lighter textured 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6527326,
+       39.2106103
+      ],
+      [
+       -96.6524704,
+       39.2103694
+      ],
+      [
+       -96.6523545,
+       39.2101532
+      ],
+      [
+       -96.6525058,
+       39.2100774
+      ],
+      [
+       -96.6527148,
+       39.210316
+      ],
+      [
+       -96.6527413,
+       39.2104149
+      ],
+      [
+       -96.6527503,
+       39.2104556
+      ],
+      [
+       -96.6527521,
+       39.2104622
+      ],
+      [
+       -96.6527913,
+       39.2105809
+      ],
+      [
+       -96.6527326,
+       39.2106103
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "erase",
+    "lie": "recovery",
+    "edit": "7.0",
+    "area_yd2": 3450,
+    "lies": [
+     "recovery"
+    ],
+    "confidence": "medium",
+    "evidence": "lidar canopy polygon, but 2023 photo and CIR show open grass (no crowns) and 2021 shows none in this strip either; crowns remain only at x<-55"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6524115,
+       39.2150161
+      ],
+      [
+       -96.6516595,
+       39.215761
+      ],
+      [
+       -96.6514098,
+       39.2156084
+      ],
+      [
+       -96.6521617,
+       39.2148635
+      ],
+      [
+       -96.6524115,
+       39.2150161
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "add",
+    "lie": "native",
+    "edit": "7.1",
+    "area_yd2": 3900,
+    "confidence": "medium",
+    "evidence": "mowing line at x -39 at 240-300 with smooth mown rough inside and coarse tufted grass outside, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6525453,
+       39.2151503
+      ],
+      [
+       -96.6516953,
+       39.2159923
+      ],
+      [
+       -96.6514455,
+       39.2158397
+      ],
+      [
+       -96.6522955,
+       39.2149977
+      ],
+      [
+       -96.6525453,
+       39.2151503
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "water",
+    "edit": "9.0",
+    "area_yd2": 3568,
+    "confidence": "medium",
+    "evidence": "open water dark purple in CIR and black-green in 2023, rock rip-rap edge; lidar ground; auto water only had its far corner"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6415644,
+       39.2161007
+      ],
+      [
+       -96.6417197,
+       39.2161457
+      ],
+      [
+       -96.6418668,
+       39.2162079
+      ],
+      [
+       -96.6420138,
+       39.2162702
+      ],
+      [
+       -96.6421608,
+       39.2163324
+      ],
+      [
+       -96.6422769,
+       39.2164171
+      ],
+      [
+       -96.6423171,
+       39.2165231
+      ],
+      [
+       -96.6422675,
+       39.2166266
+      ],
+      [
+       -96.6421298,
+       39.2166928
+      ],
+      [
+       -96.641992,
+       39.216759
+      ],
+      [
+       -96.6413637,
+       39.2162351
+      ],
+      [
+       -96.6415644,
+       39.2161007
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "water",
+    "edit": "9.1",
+    "area_yd2": 480,
+    "confidence": "medium",
+    "evidence": "second pond lobe 160-190, dark in CIR 2023"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6425132,
+       39.2164934
+      ],
+      [
+       -96.6426535,
+       39.216538
+      ],
+      [
+       -96.6427309,
+       39.2166508
+      ],
+      [
+       -96.6426235,
+       39.2167062
+      ],
+      [
+       -96.6424832,
+       39.2166616
+      ],
+      [
+       -96.6423981,
+       39.2165544
+      ],
+      [
+       -96.6425132,
+       39.2164934
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "native",
+    "edit": "10.0",
+    "area_yd2": 5810,
+    "confidence": "medium",
+    "evidence": "cart path is the mowing line: dark mown rough between fairway and path, lighter streaky coarse grass beyond it, 2023 and 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6370825,
+       39.213475
+      ],
+      [
+       -96.634815,
+       39.2138884
+      ],
+      [
+       -96.6347449,
+       39.2136558
+      ],
+      [
+       -96.6349776,
+       39.2137065
+      ],
+      [
+       -96.6351862,
+       39.2136769
+      ],
+      [
+       -96.6355792,
+       39.2135376
+      ],
+      [
+       -96.6359818,
+       39.2134304
+      ],
+      [
+       -96.6365978,
+       39.2133096
+      ],
+      [
+       -96.636998,
+       39.2131944
+      ],
+      [
+       -96.6370825,
+       39.213475
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "native",
+    "edit": "10.1",
+    "area_yd2": 1198,
+    "keepout_clipped_yd2": 6,
+    "confidence": "medium",
+    "evidence": "coarse light tufted grass with bare patches beyond a ~12-yd mown band, both years; stops at the auto OB"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6357776,
+       39.2128247
+      ],
+      [
+       -96.6358892,
+       39.2127621
+      ],
+      [
+       -96.6367138,
+       39.2126118
+      ],
+      [
+       -96.6367476,
+       39.2127241
+      ],
+      [
+       -96.635999,
+       39.2128605
+      ],
+      [
+       -96.6359927,
+       39.2128606
+      ],
+      [
+       -96.6359157,
+       39.2128646
+      ],
+      [
+       -96.6359087,
+       39.2128652
+      ],
+      [
+       -96.6358991,
+       39.2128662
+      ],
+      [
+       -96.6357776,
+       39.2128247
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "12",
+    "op": "add",
+    "lie": "native",
+    "edit": "12.0",
+    "area_yd2": 5549,
+    "keepout_clipped_yd2": 236,
+    "confidence": "medium",
+    "evidence": "dark mown band 8-15 yds then lighter coarse grass among scattered trees, line in the same place 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6303285,
+       39.2150252
+      ],
+      [
+       -96.6304772,
+       39.2148438
+      ],
+      [
+       -96.6306418,
+       39.2148786
+      ],
+      [
+       -96.630685,
+       39.214891
+      ],
+      [
+       -96.6307212,
+       39.2149042
+      ],
+      [
+       -96.6307406,
+       39.2149162
+      ],
+      [
+       -96.6307713,
+       39.2149395
+      ],
+      [
+       -96.6308381,
+       39.2149972
+      ],
+      [
+       -96.6308449,
+       39.2150025
+      ],
+      [
+       -96.6308522,
+       39.2150074
+      ],
+      [
+       -96.6308601,
+       39.2150117
+      ],
+      [
+       -96.6308685,
+       39.2150154
+      ],
+      [
+       -96.6309697,
+       39.2150558
+      ],
+      [
+       -96.6309801,
+       39.2150594
+      ],
+      [
+       -96.630991,
+       39.2150621
+      ],
+      [
+       -96.6310023,
+       39.2150639
+      ],
+      [
+       -96.6310665,
+       39.2150714
+      ],
+      [
+       -96.6310798,
+       39.2150723
+      ],
+      [
+       -96.6312864,
+       39.2151586
+      ],
+      [
+       -96.6314414,
+       39.2152233
+      ],
+      [
+       -96.6314731,
+       39.2152515
+      ],
+      [
+       -96.6314805,
+       39.2152574
+      ],
+      [
+       -96.6314887,
+       39.2152628
+      ],
+      [
+       -96.6315302,
+       39.2152873
+      ],
+      [
+       -96.6315392,
+       39.2152921
+      ],
+      [
+       -96.6315488,
+       39.2152961
+      ],
+      [
+       -96.6315589,
+       39.2152993
+      ],
+      [
+       -96.6315694,
+       39.2153018
+      ],
+      [
+       -96.6316488,
+       39.2153167
+      ],
+      [
+       -96.631661,
+       39.2153184
+      ],
+      [
+       -96.6316685,
+       39.2153191
+      ],
+      [
+       -96.6318082,
+       39.2153923
+      ],
+      [
+       -96.6318368,
+       39.2154129
+      ],
+      [
+       -96.6318442,
+       39.2154177
+      ],
+      [
+       -96.6318521,
+       39.215422
+      ],
+      [
+       -96.6318932,
+       39.2154423
+      ],
+      [
+       -96.6319024,
+       39.2154464
+      ],
+      [
+       -96.6319121,
+       39.2154497
+      ],
+      [
+       -96.6319222,
+       39.2154523
+      ],
+      [
+       -96.6319231,
+       39.2154525
+      ],
+      [
+       -96.6320119,
+       39.215499
+      ],
+      [
+       -96.6318012,
+       39.2157559
+      ],
+      [
+       -96.6303285,
+       39.2150252
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "13",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "13.0",
+    "area_yd2": 7350,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "medium",
+    "evidence": "open course grass, bunkers and the 13 green surrounds, no buildings or fences; houses only at x<-40 above along 320 and the road beyond 355"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6291639,
+       39.215674
+      ],
+      [
+       -96.6291492,
+       39.2162503
+      ],
+      [
+       -96.6280379,
+       39.2162332
+      ],
+      [
+       -96.6280525,
+       39.2156568
+      ],
+      [
+       -96.6291639,
+       39.215674
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "native",
+    "edit": "14.0",
+    "area_yd2": 3960,
+    "confidence": "medium",
+    "evidence": "mown band 6-10 yds then lighter coarse streaky grass to the landscaped lot edges, 2023 and 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6293031,
+       39.2172633
+      ],
+      [
+       -96.6305172,
+       39.2171929
+      ],
+      [
+       -96.6305375,
+       39.2174045
+      ],
+      [
+       -96.6304431,
+       39.2174326
+      ],
+      [
+       -96.6303998,
+       39.2174378
+      ],
+      [
+       -96.630386,
+       39.2174402
+      ],
+      [
+       -96.6303345,
+       39.217452
+      ],
+      [
+       -96.6300654,
+       39.2174844
+      ],
+      [
+       -96.630059,
+       39.2174853
+      ],
+      [
+       -96.6300077,
+       39.2174941
+      ],
+      [
+       -96.6299557,
+       39.2174964
+      ],
+      [
+       -96.6299464,
+       39.2174971
+      ],
+      [
+       -96.6297133,
+       39.2175238
+      ],
+      [
+       -96.629707,
+       39.2175247
+      ],
+      [
+       -96.6296443,
+       39.2175349
+      ],
+      [
+       -96.6296356,
+       39.2175366
+      ],
+      [
+       -96.6296271,
+       39.2175389
+      ],
+      [
+       -96.6295838,
+       39.2175522
+      ],
+      [
+       -96.6295698,
+       39.2175575
+      ],
+      [
+       -96.6294873,
+       39.2175945
+      ],
+      [
+       -96.629477,
+       39.2175997
+      ],
+      [
+       -96.6294675,
+       39.2176059
+      ],
+      [
+       -96.6294358,
+       39.2176292
+      ],
+      [
+       -96.6294276,
+       39.217636
+      ],
+      [
+       -96.6293759,
+       39.2176836
+      ],
+      [
+       -96.6293691,
+       39.2176905
+      ],
+      [
+       -96.6293634,
+       39.217698
+      ],
+      [
+       -96.6293586,
+       39.2177059
+      ],
+      [
+       -96.629355,
+       39.2177142
+      ],
+      [
+       -96.6293548,
+       39.2177145
+      ],
+      [
+       -96.6293464,
+       39.217715
+      ],
+      [
+       -96.6293031,
+       39.2172633
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "native",
+    "edit": "14.1",
+    "area_yd2": 1428,
+    "keepout_clipped_yd2": 439,
+    "confidence": "medium",
+    "evidence": "drainage swale with tall grass and rocks right of the fairway, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6314225,
+       39.2177763
+      ],
+      [
+       -96.6314249,
+       39.2178014
+      ],
+      [
+       -96.6314144,
+       39.2178109
+      ],
+      [
+       -96.631408,
+       39.2178172
+      ],
+      [
+       -96.6314025,
+       39.2178239
+      ],
+      [
+       -96.6313979,
+       39.2178311
+      ],
+      [
+       -96.6313942,
+       39.2178386
+      ],
+      [
+       -96.6313786,
+       39.217875
+      ],
+      [
+       -96.631376,
+       39.2178821
+      ],
+      [
+       -96.6313742,
+       39.2178893
+      ],
+      [
+       -96.6313733,
+       39.2178967
+      ],
+      [
+       -96.6313732,
+       39.2179041
+      ],
+      [
+       -96.631374,
+       39.2179115
+      ],
+      [
+       -96.631379,
+       39.2179418
+      ],
+      [
+       -96.6313803,
+       39.217948
+      ],
+      [
+       -96.6313823,
+       39.2179542
+      ],
+      [
+       -96.6313891,
+       39.2179725
+      ],
+      [
+       -96.6307598,
+       39.2180625
+      ],
+      [
+       -96.6307167,
+       39.2179252
+      ],
+      [
+       -96.6307473,
+       39.2179153
+      ],
+      [
+       -96.6307577,
+       39.2179114
+      ],
+      [
+       -96.6308732,
+       39.2178619
+      ],
+      [
+       -96.6308878,
+       39.2178577
+      ],
+      [
+       -96.6309098,
+       39.2178564
+      ],
+      [
+       -96.6309245,
+       39.2178548
+      ],
+      [
+       -96.631007,
+       39.2178409
+      ],
+      [
+       -96.6310116,
+       39.21784
+      ],
+      [
+       -96.6311012,
+       39.2178216
+      ],
+      [
+       -96.6311158,
+       39.2178177
+      ],
+      [
+       -96.6311579,
+       39.2178037
+      ],
+      [
+       -96.6311662,
+       39.2178006
+      ],
+      [
+       -96.631174,
+       39.217797
+      ],
+      [
+       -96.6311815,
+       39.2177929
+      ],
+      [
+       -96.631204,
+       39.2177792
+      ],
+      [
+       -96.6314225,
+       39.2177763
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "16",
+    "op": "add",
+    "lie": "native",
+    "edit": "16.0",
+    "area_yd2": 1820,
+    "confidence": "medium",
+    "evidence": "beyond the cart path at x -60: coarse grass both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.636874,
+       39.2192395
+      ],
+      [
+       -96.639495,
+       39.2198937
+      ],
+      [
+       -96.6394724,
+       39.2199486
+      ],
+      [
+       -96.6368513,
+       39.2192944
+      ],
+      [
+       -96.636874,
+       39.2192395
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "16",
+    "op": "add",
+    "lie": "native",
+    "edit": "16.1",
+    "area_yd2": 12612,
+    "confidence": "high",
+    "evidence": "crisp mowing line 8-12 yds right of the fairway in both years, tufted prairie with rocks and seed heads beyond"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6370259,
+       39.2204883
+      ],
+      [
+       -96.6372493,
+       39.2199469
+      ],
+      [
+       -96.6372671,
+       39.2199871
+      ],
+      [
+       -96.6372705,
+       39.2199939
+      ],
+      [
+       -96.6372747,
+       39.2200004
+      ],
+      [
+       -96.6373297,
+       39.2200772
+      ],
+      [
+       -96.6373345,
+       39.2200832
+      ],
+      [
+       -96.6373399,
+       39.2200889
+      ],
+      [
+       -96.637346,
+       39.2200943
+      ],
+      [
+       -96.6373677,
+       39.2201118
+      ],
+      [
+       -96.6373745,
+       39.2201168
+      ],
+      [
+       -96.6373818,
+       39.2201213
+      ],
+      [
+       -96.6373895,
+       39.2201253
+      ],
+      [
+       -96.6374417,
+       39.2201496
+      ],
+      [
+       -96.6374493,
+       39.2201528
+      ],
+      [
+       -96.6374572,
+       39.2201555
+      ],
+      [
+       -96.6374878,
+       39.2201649
+      ],
+      [
+       -96.637499,
+       39.2201678
+      ],
+      [
+       -96.6375105,
+       39.2201697
+      ],
+      [
+       -96.6375222,
+       39.2201706
+      ],
+      [
+       -96.637537,
+       39.2201711
+      ],
+      [
+       -96.6375717,
+       39.220177
+      ],
+      [
+       -96.6375798,
+       39.2201782
+      ],
+      [
+       -96.637588,
+       39.2201788
+      ],
+      [
+       -96.6376504,
+       39.2201818
+      ],
+      [
+       -96.6377662,
+       39.2202059
+      ],
+      [
+       -96.6377775,
+       39.2202077
+      ],
+      [
+       -96.637789,
+       39.2202086
+      ],
+      [
+       -96.6378231,
+       39.2202097
+      ],
+      [
+       -96.6378712,
+       39.2202152
+      ],
+      [
+       -96.6379846,
+       39.2202347
+      ],
+      [
+       -96.6380104,
+       39.2202418
+      ],
+      [
+       -96.6380187,
+       39.2202438
+      ],
+      [
+       -96.6380272,
+       39.2202453
+      ],
+      [
+       -96.6380836,
+       39.2202531
+      ],
+      [
+       -96.6381573,
+       39.2202699
+      ],
+      [
+       -96.6381668,
+       39.2202717
+      ],
+      [
+       -96.6382318,
+       39.2202816
+      ],
+      [
+       -96.6382476,
+       39.2202856
+      ],
+      [
+       -96.6382999,
+       39.2203088
+      ],
+      [
+       -96.6383341,
+       39.220328
+      ],
+      [
+       -96.6383422,
+       39.2203321
+      ],
+      [
+       -96.6383507,
+       39.2203356
+      ],
+      [
+       -96.6383596,
+       39.2203385
+      ],
+      [
+       -96.6383834,
+       39.2203453
+      ],
+      [
+       -96.6383932,
+       39.2203477
+      ],
+      [
+       -96.6384292,
+       39.220355
+      ],
+      [
+       -96.6384383,
+       39.2203565
+      ],
+      [
+       -96.6384476,
+       39.2203574
+      ],
+      [
+       -96.638599,
+       39.2203666
+      ],
+      [
+       -96.6386117,
+       39.2203683
+      ],
+      [
+       -96.6386335,
+       39.2203755
+      ],
+      [
+       -96.6386458,
+       39.2203789
+      ],
+      [
+       -96.6387395,
+       39.2203997
+      ],
+      [
+       -96.6387487,
+       39.2204014
+      ],
+      [
+       -96.6388103,
+       39.2204106
+      ],
+      [
+       -96.6388472,
+       39.2204205
+      ],
+      [
+       -96.6388578,
+       39.2204228
+      ],
+      [
+       -96.6389097,
+       39.2204322
+      ],
+      [
+       -96.6389517,
+       39.2204469
+      ],
+      [
+       -96.6389591,
+       39.2204493
+      ],
+      [
+       -96.6389666,
+       39.2204512
+      ],
+      [
+       -96.6390897,
+       39.2204781
+      ],
+      [
+       -96.6390973,
+       39.2204823
+      ],
+      [
+       -96.6391048,
+       39.2204861
+      ],
+      [
+       -96.6391126,
+       39.2204893
+      ],
+      [
+       -96.6391207,
+       39.2204921
+      ],
+      [
+       -96.6391879,
+       39.2205121
+      ],
+      [
+       -96.6393073,
+       39.2205547
+      ],
+      [
+       -96.6393549,
+       39.2205782
+      ],
+      [
+       -96.6393679,
+       39.2205836
+      ],
+      [
+       -96.6394246,
+       39.2206036
+      ],
+      [
+       -96.6392437,
+       39.2210419
+      ],
+      [
+       -96.6370259,
+       39.2204883
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "16",
+    "op": "add",
+    "lie": "native",
+    "edit": "16.2",
+    "area_yd2": 2892,
+    "keepout_clipped_yd2": 170,
+    "confidence": "medium",
+    "evidence": "forward carry area: coarse tan prairie with rock between tee and fairway start, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6372322,
+       39.2199343
+      ],
+      [
+       -96.6371211,
+       39.2201228
+      ],
+      [
+       -96.6365666,
+       39.2199844
+      ],
+      [
+       -96.6367446,
+       39.2195531
+      ],
+      [
+       -96.6371702,
+       39.2196594
+      ],
+      [
+       -96.6371691,
+       39.2196654
+      ],
+      [
+       -96.6371687,
+       39.2196734
+      ],
+      [
+       -96.6371691,
+       39.219702
+      ],
+      [
+       -96.6371699,
+       39.2197108
+      ],
+      [
+       -96.6371777,
+       39.2197621
+      ],
+      [
+       -96.63718,
+       39.2197721
+      ],
+      [
+       -96.6371993,
+       39.2198331
+      ],
+      [
+       -96.637202,
+       39.2198402
+      ],
+      [
+       -96.6372351,
+       39.2199148
+      ],
+      [
+       -96.6372322,
+       39.2199343
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "16",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "16.3",
+    "area_yd2": 11200,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "medium",
+    "evidence": "thin auto OB sliver in open prairie; no houses, fence or road visible in either year"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6365504,
+       39.2200236
+      ],
+      [
+       -96.6393731,
+       39.2207282
+      ],
+      [
+       -96.6392437,
+       39.2210419
+      ],
+      [
+       -96.636421,
+       39.2203373
+      ],
+      [
+       -96.6365504,
+       39.2200236
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "18",
+    "op": "add",
+    "lie": "native",
+    "edit": "18.0",
+    "area_yd2": 8689,
+    "keepout_clipped_yd2": 73,
+    "confidence": "medium",
+    "evidence": "cart path is the mowing line; beyond it lighter coarse grass with shrubs in 2023 and 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -96.6381684,
+       39.2161286
+      ],
+      [
+       -96.6386888,
+       39.2155374
+      ],
+      [
+       -96.6387168,
+       39.2156222
+      ],
+      [
+       -96.6387838,
+       39.2158376
+      ],
+      [
+       -96.6388564,
+       39.2160758
+      ],
+      [
+       -96.6389354,
+       39.2162776
+      ],
+      [
+       -96.6390623,
+       39.216425
+      ],
+      [
+       -96.6393244,
+       39.2165646
+      ],
+      [
+       -96.6393484,
+       39.2165715
+      ],
+      [
+       -96.6393773,
+       39.216588
+      ],
+      [
+       -96.6393853,
+       39.2165922
+      ],
+      [
+       -96.6393938,
+       39.2165957
+      ],
+      [
+       -96.6394027,
+       39.2165987
+      ],
+      [
+       -96.6395632,
+       39.2166456
+      ],
+      [
+       -96.6395717,
+       39.2166478
+      ],
+      [
+       -96.6398144,
+       39.216701
+      ],
+      [
+       -96.6398179,
+       39.2167017
+      ],
+      [
+       -96.6398609,
+       39.2167099
+      ],
+      [
+       -96.6398715,
+       39.2167115
+      ],
+      [
+       -96.6398823,
+       39.2167122
+      ],
+      [
+       -96.6399611,
+       39.2167144
+      ],
+      [
+       -96.6399622,
+       39.2167146
+      ],
+      [
+       -96.6401728,
+       39.2167669
+      ],
+      [
+       -96.640296,
+       39.2167726
+      ],
+      [
+       -96.6404946,
+       39.2168385
+      ],
+      [
+       -96.6401777,
+       39.2171987
+      ],
+      [
+       -96.6381684,
+       39.2161286
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
