@@ -306,3 +306,101 @@ Landing-corridor area vs truth (sq yds, 180-320 yds along the truth tee line, +/
 | mariah_hills | 14 | 4-wood -5 | Driver -10 | 4-wood -5 | False -> True | 0.0301 -> 0.0032 |
 | mariah_hills | 15 | 4-wood +20 | 4-wood +15 | 4-wood +18 | True -> True | 0.0046 -> -0.0002 |
 | mariah_hills | 18 | Driver +15 | Driver +8 | Driver +10 | False -> True | 0.0435 -> 0.0224 |
+
+## Round 3 follow-up: Eagle Bend native, Mariah Hills breaks (evaluator, 2026-11-02)
+
+Method: truth native / trees overlaid on the mapper's own panels (NAIP 2021 / 2023, corridor frame), and the agent
+layers modified mechanically and re-scored with `eval_mapper.py` (n=4000, seed 31; one change per variant).
+
+### Eagle Bend (Gold): why no native
+
+* **S2 did not point at the golfer's areas.** On 3, 5, 6 there was no candidate at all (P < 0.5 everywhere left);
+  on 2 the only one was a 350 sq yd strip right at 138-172 yds, outside the landing zone. All 13 hints were on other
+  holes (7, 9, 11, 13, 15, 18). So the mapper's only path to this native was the photos, and it took none.
+* **The brief's texture rules read this native as mown rough.** Here native is green and mottled in NAIP 2021 and
+  tan / streaky in 2023 (dry year), with a mowing line (often the cart path) in the same place in both years and
+  smooth, striped turf inside it. The round-2 rules said native is "tan / textured / tufted", "if it is green and
+  smooth in the other year it is mown rough" and "a dark, mottled band along a tree line is shade": the green year
+  became the reason to reject. The S2 section added a course-level prior ("on a parkland course expect to reject
+  most"), and the mapper pasted one rejection text ("mown parkland rough ... green, smooth or mowing stripes") on
+  11 of 13 candidates and wrote "no native seen (parkland mown rough)" on holes it never marked per side.
+* **Hole 2 got worse because of a correct tree.** The one hole-2 edit is a lidar crown at x -38, 260-290; the truth
+  has the same crown. With native missing on both sides, the crown pushes the aim right (Driver +5 -> +10).
+  Dropping it: 0.097 (as AUTO). The fix is the native, not the tree.
+* Truth convention: native = everything beyond 10 yds of the OSM fairway on the golfer's sides (`native_beyond`,
+  w 10 +/-5). The photos show the mowing line 12-20 yds out on these holes; the score does not care:
+
+| variant (eagle_bend, 14 tee shots) | match | regret |
+|---|---|---|
+| AUTO | 7 | 0.515 |
+| AGENT as run | 8 | 0.565 |
+| AGENT without the hole-2 crown | 8 | 0.507 |
+| AGENT + native drawn at the photo mowing line (2 L w20 / R w15, 3 L w15, 5 L w12, 6 L w12; 150-345) | **10** | **0.306** |
+| same, with truth's w 10 | 10 | 0.302 |
+
+  (fixes 2 and 5; 3 and 6 stay matched with lower regret.) A mapper that marks these four sides at its own measured
+  edge gets the whole gain; the edge position is not the issue, the yes / no per side is.
+
+### Mariah Hills (Blue): 6 and 10
+
+| variant | hole 6 | hole 10 | course match / regret |
+|---|---|---|---|
+| AGENT as run | Driver -28, broken (0.029) | 4-wood +0, broken (0.004) | 7 / -0.520 |
+| without hole 6 native edit 0 | fixed | broken | 8 / -0.550 |
+| without hole 10 crown (edit 1) | broken | Driver -2, match (0.005) | 8 / -0.520 |
+| without hole 10 native oval (edit 0) | broken | Driver +8 (0.058) | 7 / -0.466 |
+
+* **Hole 6 = agent edit (mostly agent error).** Edit 0 is one native polygon on the right from 262 to 400 yds whose
+  fairway-side edge runs at x 3-5 (7 yds off the fairway after the keep-out clip, `review.md` gap 7 / 7). At 262-330
+  the photo shows smooth mown rough between the fairway and the native island (the island starts ~25-30 yds out,
+  where the truth box starts); the polygon was drawn as one block instead of following the island. Above ~330 the
+  2023 photo does show native nearer the fairway that the truth's coarse boxes (+/-10 yds, "islands only") leave
+  out: that part is a truth-convention difference, but the club change comes from the 262-330 part.
+* **Hole 10 = a lidar crown at the fairway edge (x -24, 283), not in the truth; reference tie.** The truth plan is a
+  tie (Driver -2 vs 4-wood), the agent picks 4-wood with lower regret than AUTO (0.038 -> 0.004). Not a real break.
+  The agent's native oval matches the truth island and helps (removing it costs 0.054).
+* **Hole 7 negative regret (-0.74)**: regret = EV on the truth map of the agent's (club, aim point) minus EV of the
+  truth map's own plan. Negative means the truth plan is not the optimum of its own map: the truth pick, Driver
+  +40, sits exactly on the planner's +/-40 aim bound of the round-3 scoring, and the agent plan (4-wood aimed +80,
+  round the dog-leg past the large native island) is evaluated on the truth map at an aim point that search never
+  reached. A reference artefact (search bound on a dog-leg; the truth pick is also a tie), not an agent gain to
+  bank. The adaptive aim bound now on the branch (d8b4b41e / d7447e68: widen to 60 where the best aim sits on the
+  bound) should shrink it; re-score Mariah Hills after it. **Hole 9 None**: truth aims Driver -38 (left of the island), AUTO and AGENT aim +28 / +30
+  (right of it); the aim points are > 80 yds apart (`SAME_PLACE`), so regret is undefined for both. Not agent-related.
+
+### Changes (BRIEF.md brief, write_layers.py, render_inputs.py)
+
+* Long-grass rule 1 rewritten: **the mowing line first, then texture** — native sits behind a second mowing line
+  in the same place in both years with coarser grass outside, *whatever its colour* (green-mottled in a wet year,
+  tan in a dry one); mown rough has no such line (smooth to the trees, or tan one year / smooth green the other); an
+  irrigation edge seen in one year only is not a mowing line; "shade" limited to ~10 yds of the canopy; courses mix
+  parkland and native holes, decide each side on its own (no "parkland course" verdict). Step 2 item 1 and the
+  second-year check say the same; "leaving unsure unmarked" is the safe default *near the fairway*, and a whole
+  missed side in the landing zone is named as the other common miss.
+* S2 section: the course-level prior removed; rejections from each candidate's own panel; **S2 is often silent on
+  green-in-summer native and narrow bands**, so a side with no candidate still needs a verdict.
+* Per-side verdicts (tooling): `edits.template.json` holes get `long_grass: {"L": "", "R": ""}`
+  (`"native: <edits>"` / `"none: <what both years show>"`); `write_layers.py` lists under Checks an empty /
+  missing verdict, a "native" verdict with no native edit on that side, a "none" verdict with one, and the same S2
+  rejection text on > 3 candidates; `review.md` gets a "Long grass per side" table and `agent_zones.geojson`
+  `reviewed.<n>.long_grass`. Layers are unchanged (no new auto-native). Test
+  `test_long_grass_verdicts_and_same_evidence`.
+
+### Parkland controls
+
+The new tooling does not change any layer, so re-scoring Ellis / Spirit Hollow with it is identical by construction.
+The risk is behavioural: a mapper that now accepts what it used to reject. Bound (mechanical): accept every S2
+candidate the round-3 mapper rejected (Ellis 56, Spirit Hollow 36; medium confidence, so the keep-out applies):
+
+| course | AUTO | AGENT as run | AGENT + every rejected S2 hint accepted |
+|---|---|---|---|
+| ellis (56 accepted) | 11 / 0.375 | 11 / 0.293 | 10 / 0.398 (breaks 2: Driver +40 -> 4-wood +10, +0.096) |
+| spirit_hollow (36 accepted) | 7 / 0.892 | 8 / 0.729 | 7 / 0.733 (breaks 17, the S2 hint known from round 3: +0.026) |
+
+Even the worst case (every hint accepted) costs ~0.1 stroke per parkland course, because the 10-yd keep-out
+removes the near-fairway part of unsure native; the KS gain from marking the right sides is ~0.26 on Eagle Bend
+alone. Spirit Hollow 4 / 6 keep their round-3 fixes in this variant.
+
+On the photos the Ellis false hints (2 / 9) are tan rough in 2023 with an irrigation edge and one smooth green sheet
+in 2021, with no mowing line in either year: rule 1 rejects them explicitly. Not verified: an agent working under
+the new brief (only a blind re-run tests that).

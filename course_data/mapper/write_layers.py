@@ -20,6 +20,9 @@ mapper gets them:
   * warnings (review.md "Checks", not fatal): sand drawn over tree canopy (sand wins over trees in the lie
     precedence), a large tree polygon over mostly open ground (scattered crowns drawn as a stand), native
     strips with w < NATIVE_KEEPOUT.
+  * long-grass verdicts (evaluation round 3: a mixed parkland / native course got no native at all): every corridor
+    hole carries `long_grass` {"L": "native: ...", "R": "none: ..."}; empty verdicts, a verdict that contradicts the
+    native edits on that side, and the same S2 rejection evidence pasted on many candidates are listed under Checks.
 """
 import argparse
 import datetime as dt
@@ -69,6 +72,40 @@ def _geo(g, fj):
     return dict(type="Polygon", coordinates=rings[0]) if len(rings) == 1 else dict(type="MultiPolygon", coordinates=rings)
 
 
+LG_SIDES = ("L", "R")
+SAME_EVIDENCE_MAX = 3      # the same S2 rejection text on more candidates than this is flagged (decide each one)
+
+
+def long_grass_checks(ref, lg, sides):
+    """Per-side long-grass verdict ({"L": "native: ..." | "none: ...", "R": ...}) vs the sides ("L" / "R", by the
+    centroid's x) of this hole's add-native edits."""
+    if not isinstance(lg, dict):
+        return [f"hole {ref}: no long_grass verdict per side (\"L\" / \"R\": \"native: ...\" or \"none: <what both "
+                f"years show>\"); S2 silence is not a verdict"]
+    out = []
+    for side in LG_SIDES:
+        v = str(lg.get(side) or "").strip().lower()
+        if not v:
+            out.append(f"hole {ref}: long_grass {side} verdict empty (\"native: ...\" or \"none: <what both years show>\")")
+        elif v.startswith("native") and side not in sides:
+            out.append(f"hole {ref}: long_grass {side} says native but no native edit lies on that side")
+        elif v.startswith("none") and side in sides:
+            out.append(f"hole {ref}: long_grass {side} says none but a native edit lies on that side")
+    return out
+
+
+def same_evidence_checks(reviewed):
+    from collections import defaultdict
+    by = defaultdict(list)
+    for ref, v in reviewed.items():
+        for r in v.get("s2") or []:
+            if r["decision"] == "reject" and r["evidence"]:
+                by[r["evidence"].strip().lower()].append(r["id"])
+    return [f"{len(ids)} S2 candidates rejected with the same evidence ({', '.join(ids[:6])}{' ...' if len(ids) > 6 else ''}): "
+            f"decide each from its own panel (where it is, what both years show there)"
+            for ev, ids in by.items() if len(ids) > SAME_EVIDENCE_MAX]
+
+
 def build(slug, ed, pkg, FJ, TF):
     feats, tees, problems = [], {}, []
     reviewed = {}
@@ -83,6 +120,7 @@ def build(slug, ed, pkg, FJ, TF):
             raise EditError(f"hole {ref}: reviewed {bad} not in {M.LAYERS}")
         reviewed[ref] = dict(layers=he.get("reviewed") or [], confidence=he.get("confidence"), note=he.get("note"))
         items = [(f"{ref}.{i}", e) for i, e in enumerate(he.get("edits") or [])]
+        nat_sides = set()
         if he.get("s2_suggested"):
             import s2_suggest as S2S
             s2e, s2p, s2r = S2S.decisions_to_edits(ref, he["s2_suggested"], EditError)
@@ -147,6 +185,11 @@ def build(slug, ed, pkg, FJ, TF):
             if geo is None:
                 continue
             props = dict(hole=ref, op=op, lie=lies[0], edit=tag, area_yd2=round(inside.area))
+            if op == "add" and lies[0] == "native":
+                from shapely.geometry import box as _box
+                for sd, bx in (("L", _box(-1e3, -1e3, 0, 1e4)), ("R", _box(0, -1e3, 1e3, 1e4))):
+                    if inside.intersection(bx).area > 0.2 * inside.area:
+                        nat_sides.add(sd)
             if e.get("s2"):
                 props["s2"] = e["s2"]
             if clipped:
@@ -159,6 +202,10 @@ def build(slug, ed, pkg, FJ, TF):
                 if e.get(k):
                     props[k] = e[k]
             feats.append(dict(type="Feature", properties=props, geometry=geo))
+        if "long_grass" in he or he.get("s2_suggested") is not None:
+            reviewed[ref]["long_grass"] = he.get("long_grass")
+            problems += long_grass_checks(ref, he.get("long_grass"), nat_sides)
+    problems += same_evidence_checks(reviewed)
     for ref, by_set in sorted((ed.get("tees") or {}).items(), key=lambda kv: M.hole_key(kv[0])):
         h = pkg["holes"].get(ref)
         if h is None:
@@ -257,6 +304,12 @@ def review_md(slug, pkg, out, FJ, rep, tees, problems, reviewed=None):
               "| hole | left | right |", "|---|---|---|"]
         for ref, g in gaps.items():
             L.append(f"| {ref} | {g['L']} | {g['R']} |")
+    lg = [(ref, v.get("long_grass")) for ref, v in (reviewed or {}).items() if "long_grass" in v]
+    if lg:
+        L += ["", "## Long grass per side (the mapper's verdicts)", "", "| hole | left | right |", "|---|---|---|"]
+        for ref, v in lg:
+            v = v if isinstance(v, dict) else {}
+            L.append(f"| {ref} | {str(v.get('L') or '-')[:90]} | {str(v.get('R') or '-')[:90]} |")
     s2 = [(ref, r) for ref, v in (reviewed or {}).items() for r in v.get("s2") or []]
     if s2:
         n = {d: sum(1 for _, r in s2 if r["decision"] == d) for d in ("accept", "reject", "replace", "undecided")}

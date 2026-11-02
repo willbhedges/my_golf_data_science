@@ -108,10 +108,13 @@ of value:
 
 1. **Long grass (native / fescue / prairie)** - the auto build has almost none (detection is off by decision). Start
    from `hNN_corridor_s2.png` when it exists (S2 suggested native: decide every candidate, "S2 suggestions" below). Per
-   side (L / R), where does unmown grass start and how far along does it run? Native = tan / textured / tufted, no
-   mowing stripes, often with mown paths cut through it, **and the same in both photo years**. *Second-year check:*
-   mown rough in a drought or dormant season can look tan in one year; if it is green and smooth in the other year
-   it is mown rough, not native. Lidar 0.5-2.5 m (yellow) speckle and a mottled CIR support native. **Mown rough is
+   side (L / R), where does unmown grass start and how far along does it run? Native = coarse / mottled / tufted, no
+   mowing stripes, often with mown paths cut through it, **behind a mowing line that is in the same place in both
+   photo years** (rule 1 below). Its colour is not the test: native can be green and mottled in a wet summer and tan
+   in a dry one. *Second-year check:* drought or dormant mown rough is tan in one year and green and *smooth* in the
+   other, with no second mowing line between the fairway and the trees / boundary. Lidar 0.5-2.5 m (yellow) speckle
+   and a mottled CIR support native. Write a verdict for **both sides of every corridor hole** in `long_grass`
+   (`"L"` / `"R"`: `"native: edit 0, 2"` or `"none: <what both years show>"`); S2 silence is not a verdict. **Mown rough is
    the default beside a fairway**: measure its width per side at 3+ places on the 0.3 m photo (crop and zoom) and
    start the native where the coarse, tufted texture starts, not where the colour changes. Shapes: a `poly` that
    follows the visible tall-grass edge (best), or `beyond_fairway` with `w` = the measured mown-rough width and
@@ -145,13 +148,25 @@ native exactly, not generously. "Rough" is not a lie: to make an area mown rough
 * Trees cost less (a share of the balls is blocked), sand less again (played like a fairway bunker). A tree edge off
   by 2 yds or an extra crown 15+ yds from the fairway is noise for the plan; spend the time on edges that face the
   landing zone (about 200-320 yds from the tee on par 4/5 tee shots).
-* Mown rough is what an unmarked area is: leaving an unsure area unmarked is the safe default.
+* Mown rough is what an unmarked area is: leaving an unsure area unmarked is the safe default **near the
+  fairway** (inside ~10 yds). A whole side of real native left out beyond the mown rough in the landing zone is the
+  other common miss: it also keeps the driver in the bag when it should not.
 
 ### Long-grass rules
 
-1. **Two-year test, texture first.** Native = coarse tufted texture (single tufts / seed heads visible at 0.3 m), no
-   mowing stripes, in both photo years. Tan alone is not native: dry or dormant mown rough is tan and smooth. A dark,
-   mottled band along a tree line is shade / leaf litter on rough, not native.
+1. **Two-year test: the mowing line first, then texture.** Native sits behind a *second mowing line*: a boundary
+   beyond the fairway edge (often 8-30 yds out, often along a cart path or a smooth curve parallel to the fairway)
+   with smooth, uniform or striped mown turf inside and coarser grass outside (mottled, streaky, tufted, seed heads,
+   no stripes). It is native when that line is **in the same place in both photo years** and the outer side is
+   coarser in both, **whatever its colour**: on many courses native is green and mottled in a wet summer and tan /
+   streaky in a dry one, so "green in one year" is not a reason to reject. It is mown rough when there is no such
+   line: the rough runs smooth from the fairway to the trees / boundary, or it is tan in one year and green and
+   smooth (stripes, no second edge) in the other. An irrigation edge (green inside, tan outside, in a dry year only)
+   is not a mowing line: in the other year the same ground is one smooth green sheet. Tan alone is not native. A
+   dark band under or just beside crowns (within ~10 yds of the canopy, on the shadow side) is shade / leaf litter
+   on rough, not native; a mottled area that runs on into open ground, away from the crowns, is not shade.
+   Courses mix: parkland holes (no second line) and native holes (a line on one or both sides) on the same course.
+   Decide each side of each hole on its own; never carry a verdict over from other holes ("parkland course").
 2. **Mown-rough width.** Next to a fairway there is mown rough on nearly every course, typically 8-20 yds wide. A
    strip narrower than ~8 yds between the fairway and a tree line, cart path, ditch or pond bank is mown rough (or
    the trees / water) unless the tall grass is unmistakable in both years.
@@ -176,19 +191,22 @@ it also fires on parkland rough that browns in a drought summer, on dry tan roug
 scattered trees. **S2 never decides alone: it tells you where to look.** Every candidate is in
 `edits.template.json` -> `holes.<n>.s2_suggested.L / R` with an empty `decision`; decide each one from the photos:
 
-* **accept** only where the photo shows unmown native texture (coarse, tufted, no mowing stripes) **in both photo
-  years** over the candidate. Set `confidence` and `evidence` (what you saw, both years). The candidate's shape
+* **accept** only where the photo shows unmown native (behind a mowing line in the same place in both years, coarser
+  texture outside it; long-grass rule 1) over the candidate. Set `confidence` and `evidence` (what you saw, both years). The candidate's shape
   becomes `add native`, and the 10-yd keep-out applies as to any native you draw (non-high native within 10 yds of
   the fairway is removed).
 * **replace** when there is native but the shape is wrong: S2's edges are +/-10 yds and its fairway-side edge
   usually comes in over the mown rough. Trace the real edge yourself as a native edit in `edits` (`poly`, measured
   mown-rough width) and give the candidate `decision: "replace"` with evidence. This is the normal case on a prairie
   course: S2 says which side has native and roughly how far it runs; you place the edge.
-* **reject** (with evidence) where either year shows mown rough: green and smooth in the other year (drought or
-  dormant rough is tan in one year only), mowing stripes, parkland rough between scattered trees, lawns / lots, cart
-  paths, bare ground. On a parkland course expect to reject most candidates; on a prairie course most are real.
-* Native that S2 missed (no candidate) is still yours to add from the photos as before; a missing candidate is not
-  evidence of mown rough.
+* **reject** (with evidence) where the photos show mown rough: no second mowing line and smooth / striped turf in
+  one of the years (drought or dormant rough is tan in one year only), parkland rough between scattered trees,
+  lawns / lots, cart paths, bare ground. Many candidates on tree-lined holes are false; most on open prairie holes
+  are real. Write each rejection from that candidate's own panel (where it is, what both years show there):
+  `write_layers.py` flags the same evidence text pasted on many candidates.
+* **S2 is often silent on real native**: it misses native that stays green in summer and narrow bands (< ~20 yds,
+  two 10 m cells) beside the mown rough. A side with no candidate still needs your own verdict from the photos
+  (`long_grass` L / R); add the native you see as edits as before.
 
 `write_layers.py` lists every undecided candidate under "Checks" and an "S2 suggestions" table in `review.md`
 (accepted / rejected / replaced); decide them all before you commit. A course with no S2 stack has no candidates.
@@ -223,7 +241,9 @@ Copy `edits.template.json` to `edits.json` and fill it in:
  "started": "2026-11-02T06:00Z", "minutes": 42,
  "holes": {
   "4": {"reviewed": ["long_grass", "trees", "ob", "water", "fairway"], "confidence": "medium",
-        "note": "fescue both sides beyond ~10 yds of rough; trees right short by ~5",
+        "note": "fescue left beyond ~10 yds of rough; trees right short by ~5",
+        "long_grass": {"L": "native: edit 0 (mowing line ~10 yds off the fairway, same place 2021 / 2023)",
+                       "R": "none: smooth mown rough to the tree line in both years, no second mowing line"},
         "edits": [
    {"op": "add", "lie": "native", "shape": {"beyond_fairway": {"w": 10, "side": "L", "a0": 170, "a1": 330}},
     "confidence": "high", "evidence": "tan tufted grass both 2021 and 2023, lidar yellow speckle"},
@@ -237,6 +257,9 @@ Copy `edits.template.json` to `edits.json` and fill it in:
  "uncertain": [{"hole": "7", "what": "left edge of the fescue at 250-300 (+/-8 yds)"}]}
 ```
 
+* `long_grass` (per hole, from the template): one verdict per side, `"native: ..."` (which edits) or
+  `"none: ..."` (what both years show). `write_layers.py` lists empty ones under "Checks" and shows them in
+  `review.md` ("Long grass per side").
 * `s2_suggested` (per hole, from the template; keep the `id` and `shape` as written): fill in each candidate's
   `decision` (`accept` | `reject` | `replace`), `evidence` (always) and `confidence` (accept). Example:
   `{"id": "S2-4-L1", ..., "decision": "replace", "evidence": "tufted fescue both years, edge 14 yds off the fairway (traced as edit 0); S2 shape hugs the fairway"}`.

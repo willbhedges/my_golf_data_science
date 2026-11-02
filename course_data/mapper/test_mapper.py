@@ -200,6 +200,25 @@ def test_write_layers_native_keepout_and_checks(pkg, fj):
     assert feats and any("canopy" in p for p in probs)
 
 
+def test_long_grass_verdicts_and_same_evidence(pkg, fj):
+    """Per-side long_grass verdicts: empty / contradicting ones and pasted S2 rejections are listed (not fatal)."""
+    import write_layers as WL
+    left = {"rect": [-60, -40, 200, 300]}
+    nat = dict(op="add", lie="native", shape=left, confidence="medium", evidence="x")
+    ok = dict(holes={"2": dict(edits=[nat], long_grass={"L": "native: edit 0", "R": "none: smooth mown rough both years"})})
+    feats, _, rev, probs = WL.build("t", ok, pkg, fj, fj)
+    assert feats and not any("long_grass" in p for p in probs) and rev["2"]["long_grass"]["L"].startswith("native")
+    bad = dict(holes={"2": dict(edits=[nat], long_grass={"L": "none: mown", "R": ""})})
+    probs = WL.build("t", bad, pkg, fj, fj)[3]
+    assert any("long_grass L says none" in p for p in probs) and any("long_grass R verdict empty" in p for p in probs)
+    probs = WL.build("t", dict(holes={"2": dict(edits=[], long_grass={"L": "native: x", "R": "none: y"})}), pkg, fj, fj)[3]
+    assert any("long_grass L says native but no native edit" in p for p in probs)
+    probs = WL.build("t", dict(holes={"2": dict(edits=[], s2_suggested={"L": [], "R": []})}), pkg, fj, fj)[3]
+    assert any("no long_grass verdict" in p for p in probs)
+    rv = {str(i): dict(s2=[dict(id=f"S2-{i}-L1", decision="reject", evidence="Mown parkland rough")]) for i in range(5)}
+    assert WL.same_evidence_checks(rv) and not WL.same_evidence_checks(dict(list(rv.items())[:3]))
+
+
 def test_package_build_hook(pkg, fj, tmp_path):
     PKm = AP.platform_package()
     d = tmp_path / "agent"

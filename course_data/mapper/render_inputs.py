@@ -358,14 +358,15 @@ def template(slug, pkg, FJ, CANDS=None):
     holes, tees = {}, {}
     for ref, h in sorted(pkg["holes"].items(), key=lambda kv: M.hole_key(kv[0])):
         if ref in FJ:
-            holes[ref] = dict(reviewed=[], confidence="", note="", edits=[])
+            holes[ref] = dict(reviewed=[], confidence="", note="", long_grass={"L": "", "R": ""}, edits=[])
             if CANDS is not None:
                 holes[ref]["s2_suggested"] = S2S.template_entry(CANDS.get(ref) or [])
         tees[ref] = {s: dict(action="", confidence="", evidence="") for s in (h.get("tees") or {})}
     st = next(iter(FJ.values()))["set"] if FJ else pkg.get("tee_set")
     d = dict(schema="mapper_edits/1", slug=slug, corridor_set=st, mapper="", started="", minutes=None,
              doc="Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py " + slug +
-                 ". See course_data/mapper/BRIEF.md for ops, shapes and rules." +
+                 ". See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on "
+                 "every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict)." +
                  (" s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every "
                   "candidate's decision to accept (its shape becomes add native with your confidence + evidence; the "
                   "10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in "
