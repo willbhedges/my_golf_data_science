@@ -1,0 +1,58 @@
+name: vision-layers
+description: >
+  The product vision layer (vision_any/2 trees + water; long grass per model_v2/model.json) and OB evidence for a
+  course package, shared by every package build path (course_page_one.yml, course_package.yml) so they cannot drift.
+  Installs lightgbm + PDAL ($PDAL_BIN for v2_fetch.py), restores the raw2 Actions cache for a single slug, and runs
+  course_data/vision_any/build_layers.py. With `slugs` empty it only sets up the tools (course_package.yml: its
+  driver, run_requests.py --vision, calls build_layers.ensure between the first build and the rebuild).
+inputs:
+  slugs:
+    description: "space-separated course slugs (empty: set up only)"
+    required: false
+    default: ""
+  course-dir:
+    description: "course raw dir for fetch_any.py (default course_data/packages/<slug>/raw)"
+    required: false
+    default: ""
+  refresh:
+    description: "re-run the v2 inference even when a vision_any/2 layer exists"
+    required: false
+    default: "false"
+  require:
+    description: "fail the step when a slug ends without a vision_any/2 layer"
+    required: false
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - name: lightgbm (v2 model)
+      shell: bash
+      run: python -m pip install -q lightgbm
+    - uses: mamba-org/setup-micromamba@v2
+      with:
+        environment-name: pdal
+        create-args: pdal
+        init-shell: none
+        cache-environment: true
+    - name: Locate PDAL
+      shell: bash
+      run: |
+        P="$MAMBA_ROOT_PREFIX/envs/pdal/bin/pdal"
+        ls -la "$P" && "$P" --version && echo "PDAL_BIN=$P" >> "$GITHUB_ENV" || echo "no pdal"
+    - name: raw2 cache (single course)
+      if: inputs.slugs != '' && !contains(inputs.slugs, ' ')
+      uses: actions/cache@v4
+      with:
+        path: course_data/vision_any/${{ inputs.slugs }}/raw2
+        key: v2raw-${{ inputs.slugs }}-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
+    - name: Vision layer (raw, raw2, v2 inference) + OB evidence
+      if: inputs.slugs != ''
+      shell: bash
+      env:
+        PYTHONWARNINGS: ignore
+      run: |
+        A=""
+        [ -n "${{ inputs.course-dir }}" ] && A="$A --course-dir ${{ inputs.course-dir }}"
+        [ "${{ inputs.refresh }}" = "true" ] && A="$A --refresh"
+        [ "${{ inputs.require }}" = "true" ] && A="$A --require"
+        python -u course_data/vision_any/build_layers.py ${{ inputs.slugs }} $A

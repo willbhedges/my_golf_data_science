@@ -39,16 +39,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests numpy scipy shapely pyproj matplotlib pillow opencv-python-headless scikit-learn scikit-image \
                       pystac-client planetary-computer rasterio lightgbm
-      - uses: mamba-org/setup-micromamba@v2
-        with:
-          environment-name: pdal
-          create-args: pdal
-          init-shell: none
-          cache-environment: true
-      - name: Locate PDAL
-        run: |
-          P="$MAMBA_ROOT_PREFIX/envs/pdal/bin/pdal"
-          ls -la "$P" && "$P" --version && echo "PDAL_BIN=$P" >> "$GITHUB_ENV" || echo "no pdal"
       - name: Resolve, package, scorecard
         id: pkg
         run: |
@@ -77,27 +67,17 @@ jobs:
           fi
           cp course_data/packages/$S/package.json "$O/package_v0_no_vision.json"
           echo "ok=1" >> "$GITHUB_OUTPUT"
-      - name: Vision layer raw (3DEP lidar HAG + NAIP years)
+      # the same vision layer + OB evidence step as course_package.yml (one composite action, one script:
+      # course_data/vision_any/build_layers.py): raw (3DEP lidar HAG + NAIP years), raw2 (multi-year NAIP +
+      # lidar point statistics, Actions cache), v2 inference (trees, water; long grass per model_v2/model.json),
+      # OB evidence
+      - name: Vision layer + OB evidence
         if: steps.pkg.outputs.ok == '1'
         continue-on-error: true
-        run: python -u course_data/vision_any/fetch_any.py --course-dir course_data/packages/$S/raw --slug $S
-      - id: cache
-        if: steps.pkg.outputs.ok == '1'
-        uses: actions/cache@v4
+        uses: ./.github/actions/vision-layers
         with:
-          path: course_data/vision_any/${{ inputs.slug }}/raw2
-          key: v2raw-${{ inputs.slug }}-${{ hashFiles('course_data/vision_any/v2_fetch.py') }}
-      - name: Vision v2 rasters (multi-year NAIP + lidar points)
-        if: steps.pkg.outputs.ok == '1' && steps.cache.outputs.cache-hit != 'true'
-        continue-on-error: true
-        run: python -u course_data/vision_any/v2_fetch.py --slug $S
-      - name: Vision v2 inference (trees, long grass, water) + OB evidence
-        if: steps.pkg.outputs.ok == '1'
-        continue-on-error: true
-        run: |
-          python -u course_data/vision_any/v2_model.py --infer $S --integrate yes || echo "v2 infer failed"
-          python -u course_data/ob/fetch.py $S || echo "ob fetch failed"
-          rm -rf course_data/ob/_work
+          slugs: ${{ inputs.slug }}
+          refresh: "true"
       - name: Rebuild the package with vision + OB
         if: steps.pkg.outputs.ok == '1'
         run: |

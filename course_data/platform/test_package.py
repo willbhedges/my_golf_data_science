@@ -263,6 +263,7 @@ def test_gapfill_hook_adds_zones_and_imagery_share(tmp_path, monkeypatch):
             h["zones_ll"].append(dict(lie="recovery", poly=ring, src="vision:test", p=0.9))
             # vision may also try to override a fairway: reframe's lie order keeps fairway on top
             h["zones_ll"].append(dict(lie="native", poly=ring, src="vision:test", p=0.8))
+        out["stages"]["vision"] = "ok: vision_any/2 (test)"
         return out
     monkeypatch.setitem(pk._MODS, "cdp_vision_gapfill", types.SimpleNamespace(gapfill=gapfill))
     img = tmp_path / "img"
@@ -300,7 +301,7 @@ def test_gapfill_without_layers_is_not_ok(tmp_path, monkeypatch):
     monkeypatch.setitem(pk._MODS, "cdp_vision_gapfill", types.SimpleNamespace(gapfill=no_layers))
     p = pk.build_package(req, pkg)
     assert p["stages"]["vision"].startswith("missing: no vision_any layers")
-    assert any(w.startswith("vision:") for w in p["warnings"])
+    assert any(w.startswith("CHECK vision:") for w in p["warnings"]) and "CHECK: build it" in p["stages"]["vision"]
 
     def silent(package, imagery_dir):                              # says nothing, adds nothing
         return json.loads(json.dumps(package))
@@ -351,6 +352,82 @@ def test_qa_md(black):
     _, pkg = black
     md = open(os.path.join(pkg, "qa.md")).read()
     assert "| 18 | 5 | 521 /" in md and "## Coverage" in md
+
+
+def test_gapfill_v1_fallback_is_a_check_without_long_grass(tmp_path, monkeypatch):
+    """Not the product layer (gapfill built vision_any/1 from raw/ on the fly): trees kept, long grass dropped
+    (model_v2/model.json keeps it off), the stage is 'missing' + CHECK so plan.py / course_gate flag it."""
+    pkg = seed(tmp_path)
+    img = tmp_path / "img"
+    img.mkdir()
+    (img / "georef.json").write_text(json.dumps({"imagery": {"source": "test", "year": 2023, "files": {}}}))
+
+    def v1(package, imagery_dir):
+        out = json.loads(json.dumps(package))
+        for h in out["holes"].values():
+            fr = pk._frame(h["tee_ll"], h["aim_ll"])
+            ring = fr.yds_to_ll(np.array([[15, -230], [60, -230], [60, -330], [15, -330]], float)).tolist()
+            h["zones_ll"].append(dict(lie="recovery", poly=ring, src="vision:lidar_hag", p=0.9))
+            h["zones_ll"].append(dict(lie="native", poly=ring, src="vision:naip", p=0.8))
+        out["stages"]["vision"] = "ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)"
+        return out
+    monkeypatch.setitem(pk._MODS, "cdp_vision_gapfill", types.SimpleNamespace(gapfill=v1))
+    p = pk.build_package(dict(course="Spirit Hollow", state="IA", tee_set="Black", scorecard=CARD,
+                              imagery_dir=str(img)), pkg)
+    v = p["stages"]["vision"]
+    assert v.startswith("missing: product layer vision_any/2") and "long-grass zones dropped" in v and "CHECK" in v
+    zl = [z for h in p["holes"].values() for z in h["zones_ll"]]
+    assert any(z["src"] == "vision:lidar_hag" for z in zl)
+    assert not any(str(z["src"]).startswith("vision") and z["lie"] == "native" for z in zl)
+    assert any(w.startswith("CHECK vision:") for w in p["warnings"])
+    assert not run_requests.vision_ok(p)
+
+
+def test_run_requests_builds_the_vision_layer_then_rebuilds():
+    """A fetched package without vision_any/2 gets build_layers.ensure + a rebuild; a failed layer is reported."""
+    calls = []
+    ok_pkg = dict(slug="x", stages=dict(vision="ok: vision_any/2 (multi-year NAIP + lidar)"))
+    bad_pkg = dict(slug="x", stages=dict(vision="missing: no vision_any layers for 'x' (raw (not fetched))"))
+    build = lambda p: calls.append(("build", p)) or ok_pkg                      # noqa: E731
+    out, note = run_requests.with_vision("req.json", ok_pkg, build, ensure=lambda s: calls.append(("ensure", s)))
+    assert out is ok_pkg and note == "ok" and not calls
+    out, note = run_requests.with_vision("req.json", bad_pkg, build,
+                                         ensure=lambda s: calls.append(("ensure", s)) or dict(ok=True, status="ok"))
+    assert out is ok_pkg and calls == [("ensure", "x"), ("build", "req.json")] and note == "built this run"
+    calls.clear()
+    out, note = run_requests.with_vision("req.json", bad_pkg, build,
+                                         ensure=lambda s: dict(ok=False, status="no layer", steps={"raw": "failed"}))
+    assert out is bad_pkg and "layer not built" in note and not calls
+
+
+def test_build_layers_status_and_steps(tmp_path, monkeypatch):
+    """vision_any/build_layers.py: the one vision step every package path runs."""
+    bl = run_requests.build_layers_module()
+    monkeypatch.setattr(bl, "HERE", str(tmp_path / "vision_any"))
+    monkeypatch.setattr(bl, "CD", str(tmp_path))
+    ok, why = bl.layer_status("c")
+    assert not ok and "raw (not fetched)" in why
+    ran = []
+
+    def run(cmd, timeout):
+        ran.append(os.path.basename(cmd[2]))
+        d = tmp_path / "vision_any" / "c"
+        if ran[-1] == "fetch_any.py":
+            (d / "raw").mkdir(parents=True)
+            (d / "raw" / "meta.json").write_text("{}")
+        if ran[-1] == "v2_model.py":
+            fc = dict(type="FeatureCollection", properties=dict(schema="vision_any/2"),
+                      features=[dict(type="Feature", properties=dict(lie="recovery"), geometry=None)])
+            (d / "vision_any.geojson").write_text(json.dumps(fc))
+        return "ok"
+    r = bl.ensure("c", run=run)
+    assert ran == ["fetch_any.py", "v2_fetch.py", "v2_model.py"] and r["ok"] and r["status"].startswith("vision_any/2")
+    assert r["steps"]["ob"].startswith("skipped")                    # no package.json yet
+    ran.clear()
+    assert bl.ensure("c", run=run, ob=False)["steps"]["infer"].startswith("kept") and not ran
+    (tmp_path / "vision_any" / "c" / "vision_any.geojson").write_text(json.dumps(dict(properties=dict(schema="vision_any/1"))))
+    assert not bl.layer_status("c")[0]
+    assert "course_data/vision_any/c/raw" in bl.committed_paths("c")
 
 
 def test_missing_raw_is_a_clear_error(tmp_path):

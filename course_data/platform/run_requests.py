@@ -6,6 +6,13 @@
   ... changed, raw/ exists and the request says "refetch": "scorecards" -> web scorecards only + build
   only platform code changed                                      -> offline rebuild of every fetched package
   course_data/requests/survey_*.json changed                      -> survey.py for its states
+
+  --vision (the workflow passes it): a fetched course without the product vision layer (vision_any/2 trees +
+  water, course_data/vision_any/<slug>/vision_any.geojson) gets it built - vision_any/build_layers.py, the same
+  step course_page_one.yml runs - between the first build and a rebuild, so no fetch path packages a course
+  without trees. Every built package whose vision stage is not "ok: vision_any/2" is listed in
+  $VISION_GATE (default /tmp/vision_gate.txt): "error" lines for fetched courses (the workflow fails the run),
+  "warning" lines for offline rebuilds.
 Writes a markdown summary (coverage per course) to $GITHUB_STEP_SUMMARY and packages/_index.json.
 """
 import glob
@@ -63,12 +70,42 @@ def plan(changed, requests=None):
     return out
 
 
-def main(changed):
+def vision_ok(package):
+    """The package's vision stage is the product layer (vision_any/2) with zones."""
+    return str((package.get("stages") or {}).get("vision", "")).startswith("ok: vision_any/2")
+
+
+def build_layers_module():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("cdp_build_layers", os.path.join(pc.ROOT, "course_data", "vision_any",
+                                                                                   "build_layers.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def with_vision(p, package, build, ensure=None):
+    """A fetched package without the product vision layer: build the layer (+ OB evidence), then rebuild.
+    -> (package, note). `build(p)` rebuilds; `ensure(slug)` is build_layers.ensure (injectable for tests)."""
+    if vision_ok(package):
+        return package, "ok"
+    slug = package["slug"]
+    ensure = ensure or build_layers_module().ensure
+    print(f"== {slug}: vision stage '{(package.get('stages') or {}).get('vision', '')[:100]}': building the layer",
+          flush=True)
+    r = ensure(slug)
+    if not r.get("ok"):
+        return package, f"layer not built: {r.get('status')} (steps {r.get('steps')})"
+    return build(p), "built this run"
+
+
+def main(changed, vision=False):
     import fetch_package as fp
     import package as pk
     import survey
-    lines = ["| request | action | result | course | holes | greens | tee boxes | tree/grass holes | OSM landing share | mean conf | OSM score |",
-             "|---|---|---|---|---|---|---|---|---|---|---|"]
+    lines = ["| request | action | result | course | holes | greens | tee boxes | tree/grass holes | OSM landing share | mean conf | OSM score | vision |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    gate = []
     index = pc.read_json(os.path.join(pc.PACKAGES, "_index.json"), {}) or {}
     bad = 0
     for p, action in plan(changed):
@@ -90,26 +127,39 @@ def main(changed):
                     cj = pc.read_json(os.path.join(pc.PACKAGES, slug, "raw", "course.json"), {})
                     cands = "; ".join(f"{c['name']} ({c['town']}, {c['holes']} holes, {c['osm']['type']}/{c['osm']['id']})"
                                       for c in cj.get("candidates", [])[:6])
-                    lines.append(f"| {name} | {action} | **{status}**: {cands or 'no candidates'} | | | | | | | | |")
+                    lines.append(f"| {name} | {action} | **{status}**: {cands or 'no candidates'} | | | | | | | | | |")
                     index[slug] = dict(status=status, request=os.path.relpath(p, pc.ROOT))
                     bad += 1
                     continue
             package = pk.build_request(p, render=bool(req.get("render")))
+            vnote = ""
+            if vision and action in ("fetch", "scorecards"):
+                package, vnote = with_vision(p, package, lambda q: pk.build_request(q, render=bool(req.get("render"))))
+            vst = str((package.get("stages") or {}).get("vision", ""))
+            if not vision_ok(package):
+                level = "error" if action in ("fetch", "scorecards") else "warning"
+                gate.append(f"{level}\t{package['slug']}\t{vst[:200]}" + (f" [{vnote}]" if vnote else ""))
             s = package["coverage"]["summary"]
             c = package["course"]
             lines.append(f"| {name} | {action} | ok | {c['name']} ({c.get('town')}, {c.get('state')}) | {s['holes_built']}/{s['holes_mapped']} | "
                          f"{s['greens_found']} | {s['tee_boxes']} | {s['holes_with_trees_or_long_grass_in_landing_zone']}/{s['of_par4_5']} | "
-                         f"{s['mean_landing_osm_share']:.0%} | {s['mean_confidence']:.2f} | {s['osm_score']:.2f} |")
+                         f"{s['mean_landing_osm_share']:.0%} | {s['mean_confidence']:.2f} | {s['osm_score']:.2f} | "
+                         f"{'ok' if vision_ok(package) else '**CHECK**'}: {vst[:70]} |")
             index[package["slug"]] = dict(status="ok", name=c["name"], town=c.get("town"), state=c.get("state"),
                                           tee_set=package["tee_set"], built=package["built"],
-                                          request=os.path.relpath(p, pc.ROOT), summary=s,
+                                          request=os.path.relpath(p, pc.ROOT), summary=s, vision=vst[:160],
                                           package=f"course_data/packages/{package['slug']}/package.json")
         except BaseException as e:                              # noqa: BLE001 - keep going, report
             traceback.print_exc()
-            lines.append(f"| {name} | {action} | **failed**: {type(e).__name__}: {str(e)[:200]} | | | | | | | | |")
+            lines.append(f"| {name} | {action} | **failed**: {type(e).__name__}: {str(e)[:200]} | | | | | | | | | |")
             bad += 1
     pc.write_json(os.path.join(pc.PACKAGES, "_index.json"), index)
+    with open(os.environ.get("VISION_GATE") or "/tmp/vision_gate.txt", "w") as fh:
+        fh.write("".join(g + "\n" for g in gate))
     md = "## Course packages\n\n" + "\n".join(lines) + "\n"
+    if gate:
+        md += ("\n**Vision layer CHECK** (no vision_any/2 trees: trees / water come from OSM only):\n\n"
+               + "\n".join("* " + g.replace("\t", " ") for g in gate) + "\n")
     print(md)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as fh:
@@ -118,4 +168,6 @@ def main(changed):
 
 
 if __name__ == "__main__":
-    sys.exit(1 if main(sys.argv[1:]) else 0)
+    args = sys.argv[1:]
+    v = "--vision" in args
+    sys.exit(1 if main([a for a in args if a != "--vision"], vision=v) else 0)

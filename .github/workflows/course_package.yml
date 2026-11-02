@@ -6,6 +6,11 @@ name: course-package
 #    "scorecard": "<repo path>", "imagery_dir": "<repo path>", "render": false (all optional)}
 # and this workflow resolves the course in OSM, fetches OSM + scorecards + NAIP + 3DEP, builds
 # course_data/packages/<slug>/ (package.json, course_auto.py, qa.md) and commits it back.
+# A fetched course without the product vision layer (vision_any/2 trees + water, OB evidence) gets it built by
+# course_data/vision_any/build_layers.py - the same step and tools (.github/actions/vision-layers) as the library
+# build, course_page_one.yml - and is rebuilt with it; the layer (vision_any/<slug>/raw, vision_any.geojson, ...)
+# and course_data/ob/<slug> are committed with the package. A fetched package that still has no vision_any/2
+# layer FAILS the run (after the commit); offline rebuilds without one get a warning and a CHECK vision stage.
 # Changing only platform code rebuilds every fetched package offline.
 
 on:
@@ -36,7 +41,7 @@ concurrency:
 jobs:
   package:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,6 +58,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests numpy scipy shapely pyproj matplotlib pillow pytest opencv-python-headless scikit-learn scikit-image \
                       pystac-client planetary-computer rasterio
+
+      # lightgbm + PDAL for the vision layer (slugs empty: tools only; run_requests.py --vision runs the layer)
+      - uses: ./.github/actions/vision-layers
 
       - name: Unit tests (offline)
         run: python -m pytest -q course_data/platform
@@ -76,7 +84,10 @@ jobs:
 
       - name: Build requested packages
         continue-on-error: true
-        run: python course_data/platform/run_requests.py $(cat /tmp/changed.txt)
+        env:
+          PYTHONWARNINGS: ignore
+          VISION_GATE: /tmp/vision_gate.txt
+        run: python course_data/platform/run_requests.py --vision $(cat /tmp/changed.txt)
 
       # Spirit Hollow golden for the tee stage (qa/golden_spirit_hollow.py, Q1 per-screenshot tee sets), before
       # vs after this build, each scored with the package's own set and with the screenshot's set per hole.
@@ -110,7 +121,27 @@ jobs:
           # is built on the current origin tip (commit_packages.sh), re-checked on every rejected push
           P="course_data/packages"
           for f in course_data/qa/golden_tees.json course_data/qa/golden_tees.md; do [ -e "$f" ] && P="$P $f"; done
+          # the vision layers + OB evidence built this run (build_layers.committed_paths; never raw2/)
+          for d in course_data/vision_any/*/; do
+            s=$(basename "$d")
+            for f in raw vision_any.geojson vision_any_v2.geojson vision_any_v1.geojson layers_v2.tif classes_v2.jpg; do
+              [ -e "$d$f" ] && P="$P $d$f"
+            done
+            [ -d "course_data/ob/$s" ] && P="$P course_data/ob/$s"
+          done
           bash course_data/platform/commit_packages.sh "${{ github.ref_name }}" "$(git rev-parse HEAD)" /tmp/msg.txt $P
+
+      # loud, after the commit: a fetched package without the product tree layer fails the run
+      - name: Vision layer gate
+        if: always()
+        run: |
+          [ -s /tmp/vision_gate.txt ] || { echo "every package built this run has the vision_any/2 layer"; exit 0; }
+          bad=0
+          while IFS=$'\t' read -r level slug why; do
+            echo "::$level title=vision layer missing ($slug)::$why"
+            [ "$level" = error ] && bad=1
+          done < /tmp/vision_gate.txt
+          exit $bad
 
       - name: Keep the built packages if the commit failed
         if: failure()

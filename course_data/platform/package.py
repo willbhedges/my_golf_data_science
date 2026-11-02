@@ -1069,6 +1069,9 @@ def call_segment_fill(package, warnings):
         return package
 
 
+VISION_PRODUCT = "vision_any/2"     # the product vision layer (course_data/vision_any/build_layers.py)
+
+
 def call_gapfill(package, img_dir, warnings):
     mod = load(os.path.join(CD, "vision_any", "gapfill.py"), "cdp_vision_gapfill")
     st = package["stages"]
@@ -1094,10 +1097,24 @@ def call_gapfill(package, img_dir, warnings):
                  "missing: vision_any/gapfill.py added no zones (no layers for this course?)")
         elif v.startswith("ok") and not added:
             v = f"missing: {v[3:].strip()} ran but added no zones"
+        slug = package.get("slug") or (package.get("course") or {}).get("slug")
+        if v.startswith("ok") and not v.startswith("ok: " + VISION_PRODUCT):
+            # an on-the-fly vision_any/1 build from raw/ (gapfill's fallback): keep its trees / water, drop its long
+            # grass (the product keeps long grass off: model_v2/model.json native_thr null), and say so
+            dropped = 0
+            for h in out.get("holes", {}).values():
+                zl = h.get("zones_ll") or []
+                keep = [z for z in zl if not (str(z.get("src", "")).startswith("vision") and z.get("lie") == "native")]
+                dropped += len(zl) - len(keep)
+                h["zones_ll"] = keep
+            v = (f"missing: product layer {VISION_PRODUCT} not built for '{slug}' (fell back to {v[3:].strip()[:60]} "
+                 f"from raw/ on the fly: trees / water kept, {dropped} long-grass zones dropped)")
+        if not v.startswith("ok"):
+            v += f"; CHECK: build it with course_data/vision_any/build_layers.py {slug} (course_package.yml does on a fetch)"
         out.setdefault("stages", {})["vision"] = v
         if not v.startswith("ok"):
             w = out["warnings"] if isinstance(out.get("warnings"), list) else warnings
-            w.append(f"vision: {v[:160]}; trees / long grass come from OSM only")
+            w.append(f"CHECK vision: {v[:200]}; trees / water come from OSM (or the fallback) only")
         return out
     except Exception as e:                                       # noqa: BLE001
         st["vision"] = f"failed: {type(e).__name__}: {e}"[:300]

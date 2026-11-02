@@ -4,7 +4,8 @@
 #   course_data/platform/commit_packages.sh <branch> <base sha> <message file> [paths...]
 #
 # <base sha> is the commit the run checked out. Every path the run changed (vs base) is published, EXCEPT:
-#   * a package directory (course_data/packages/<slug>/) where anything changed on origin since base
+#   * a package directory (course_data/packages/<slug>/; likewise course_data/vision_any/<slug>/, course_data/ob/<slug>/)
+#     where anything changed on origin since base
 #     (another run / workflow rebuilt that package meanwhile): the whole directory is skipped
 #   * any other file (packages/_index.json, qa/golden_tees.*) changed on origin since base
 # The commit is built on top of the current origin tip in a private index (git read-tree + update-index +
@@ -23,6 +24,7 @@ unit() {  # the unit a path is skipped with: its package directory, else the fil
   case "$1" in
     course_data/packages/_*) echo "$1" ;;
     course_data/packages/*/*) echo "$1" | cut -d/ -f1-3 ;;
+    course_data/vision_any/*/*|course_data/ob/*/*) echo "$1" | cut -d/ -f1-3 ;;   # a course's vision layer / OB evidence
     *) echo "$1" ;;
   esac
 }

@@ -489,6 +489,9 @@ def course_gate(pkg, checks, qa, cfg):
     ti = pkg.get("tee_set_info") or {}
     if n not in (9, 18) or (cfg.get("tees") and len((pkg.get("tee_sets") or {}).get(cfg["tees"], {}).get("yards") or []) != n):
         reasons.append(f"{n} holes built vs the card's {len((pkg.get('tee_sets') or {}).get(cfg['tees'], {}).get('yards') or [])}")
+    vis = str((pkg.get("stages") or {}).get("vision", "") or "")
+    if not vis.startswith("ok: vision_any/2"):        # no product tree layer: trees / water from OSM only
+        reasons.append(f"vision layer (trees / water) missing: {vis[:160] or 'no vision stage'}")
     check_holes = set()
     for w, c in checks.items():
         if not c:
