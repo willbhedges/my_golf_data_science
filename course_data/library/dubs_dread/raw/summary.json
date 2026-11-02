@@ -24,23 +24,23 @@
   },
   "other_candidates": []
  },
- "n_features": 277,
+ "n_features": 280,
  "golf_tag_counts": {
-  "tee": 67,
+  "tee": 69,
   "fairway": 20,
   "green": 19,
+  "hole": 19,
   "pin": 18,
-  "hole": 18,
   "path": 13,
   "bunker": 12,
   "water_hazard": 8
  },
  "golf_tag_counts_inside_course": {
-  "tee": 67,
+  "tee": 69,
   "fairway": 20,
   "green": 19,
+  "hole": 19,
   "pin": 18,
-  "hole": 18,
   "path": 13,
   "bunker": 12,
   "water_hazard": 8
@@ -89,6 +89,18 @@
    "length_yd": 440,
    "extra_tags": {},
    "osm_id": 1029130674
+  },
+  {
+   "ref": "4",
+   "par": "3",
+   "handicap": null,
+   "dist": null,
+   "name": null,
+   "geometry": "LineString",
+   "nodes": 2,
+   "length_yd": 218,
+   "extra_tags": {},
+   "osm_id": -1
   },
   {
    "ref": "5",
@@ -275,6 +287,7 @@
   "1",
   "2",
   "3",
+  "4",
   "5",
   "6",
   "7",
@@ -291,14 +304,12 @@
   "18",
   null
  ],
- "missing_hole_refs": [
-  "4"
- ],
- "holes_with_par": 18,
+ "missing_hole_refs": [],
+ "holes_with_par": 19,
  "holes_with_handicap": 0,
- "hole_centrelines": 18,
+ "hole_centrelines": 19,
  "tees": {
-  "count": 67,
+  "count": 69,
   "with_colour_or_ref": 0,
   "items": [
    {
@@ -568,6 +579,14 @@
    {
     "osm_id": 1029153926,
     "geometry": "Polygon"
+   },
+   {
+    "osm_id": -2,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": -3,
+    "geometry": "Polygon"
    }
   ]
  },
@@ -579,6 +598,23 @@
   39.173587,
   -94.866307
  ],
- "fetched_utc": "2026-10-30T00:07:30Z",
- "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0"
+ "fetched_utc": "2026-11-02T03:18:39Z",
+ "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
+ "osm_source": {
+  "source": "overpass",
+  "reason": "complete",
+  "mirror": "https://overpass-api.de/api/interpreter",
+  "osm_base": "2026-11-02T03:17:50Z",
+  "counts": {
+   "hole": 18,
+   "green": 19,
+   "tee": 67,
+   "pin": 18,
+   "bunker": 12,
+   "fairway": 20
+  },
+  "mirrors_tried": [
+   "https://overpass-api.de/api/interpreter"
+  ]
+ }
 }

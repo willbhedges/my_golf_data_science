@@ -5,28 +5,80 @@
  "city": "Kansas City",
  "state": "KS",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
+  "3 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
- "request": "course_data/requests/course_page_dubs_dread.json",
- "resolve": {
-  "status": "ok",
-  "candidates": [
-   {
-    "name": "Dub's Dread Golf Club",
-    "town": "Kansas City",
-    "holes": 18,
-    "osm": {
-     "type": "way",
-     "id": 505160823
-    }
-   }
-  ]
- },
- "built": "2026-10-30T22:50Z"
+ "check_holes": [
+  7,
+  9,
+  13
+ ],
+ "tee_sets": [
+  {
+   "name": "Championship",
+   "yards": 7230,
+   "par": 72,
+   "rating": 75.3,
+   "slope": 134,
+   "colour": "black",
+   "on_page": "solved"
+  },
+  {
+   "name": "Back",
+   "yards": 6687,
+   "par": 72,
+   "rating": 72.9,
+   "slope": 129,
+   "colour": "blue",
+   "on_page": "solved"
+  },
+  {
+   "name": "Middle",
+   "yards": 6277,
+   "par": 72,
+   "rating": 70.3,
+   "slope": 124,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Middle/Forward",
+   "yards": 5897,
+   "par": 72,
+   "rating": 68.6,
+   "slope": 120,
+   "colour": "gold",
+   "on_page": null
+  },
+  {
+   "name": "Forward",
+   "yards": 5350,
+   "par": 72,
+   "rating": 71.2,
+   "slope": 117,
+   "colour": "red",
+   "on_page": null
+  }
+ ],
+ "solved_sets": [
+  "Championship",
+  "Back"
+ ],
+ "page": "course_data/library/dubs_dread/page.html",
+ "page_bytes": 4856434,
+ "qa_report": "course_data/library/dubs_dread/qa_report.md",
+ "center": [
+  39.1685497,
+  -94.87528995
+ ],
+ "osm": "way/505160823",
+ "holes": 18,
+ "days": [
+  "2026-11-07",
+  "2026-11-08"
+ ],
+ "weather": "forecast",
+ "built": "2026-11-02T03:27Z",
+ "request": "course_data/requests/course_page_dubs_dread.json"
 }
