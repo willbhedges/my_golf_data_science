@@ -18,7 +18,8 @@ where the stream is piped. The rules here are general (no course is named or tun
   creek-bank vegetation have NDVI well above 0.15).
 
   OSM streams (waterway=stream/ditch/drain/canal lines) are not surface water where
-    tagged    tunnel=* (yes, culvert, ...), covered=yes or location=underground
+    tagged    tunnel=* (yes, culvert, ...), covered=yes or location=underground: with a DEM only the 5 m pieces
+              with no channel (an open ditch at the culvert mouth stays water), without one the whole line
     crossing  they cross an OSM fairway / green / tee and the DTM shows no channel there (cross-section depth:
               median ground 7-12 m either side minus the lowest ground within 3 m < 0.3 m) - a culvert /
               pipe under the turf
@@ -312,7 +313,7 @@ def piped_streams(osm_fc, dem_path=None):
     feats = [f for f in osm_fc.get("features", []) if f.get("geometry")]
     streams = [f for f in feats if (f.get("properties") or {}).get("waterway") in STREAMS
                and f["geometry"]["type"] in ("LineString", "MultiLineString")]
-    rep = dict(tagged=0, crossing_m=0.0, dem=bool(dem_path and os.path.exists(dem_path)))
+    rep = dict(tagged=0, tagged_m=0.0, crossing_m=0.0, dem=bool(dem_path and os.path.exists(dem_path)))
     if not streams:
         return [], rep
     D = _DEM(dem_path) if rep["dem"] else None
@@ -340,11 +341,13 @@ def piped_streams(osm_fc, dem_path=None):
         except (ValueError, IndexError):
             pass
         gm = to_m(shape(f["geometry"]))
-        if is_piped(p):
-            pieces.append(gm.buffer(half + 1.0, cap_style=2))
+        tagged = is_piped(p)
+        if tagged:
             rep["tagged"] += 1
-            continue
-        if T is None or D is None or not gm.intersects(T):
+            if D is None:                                 # tags only: the whole line
+                pieces.append(gm.buffer(half + 1.0, cap_style=2))
+                continue
+        elif T is None or D is None or not gm.intersects(T):
             continue
         for ln in getattr(gm, "geoms", [gm]):
             k = max(int(ln.length // STEP_M), 1)
@@ -352,13 +355,13 @@ def piped_streams(osm_fc, dem_path=None):
                 pa = np.array(ln.interpolate(j * ln.length / k).coords[0])
                 pb = np.array(ln.interpolate((j + 1) * ln.length / k).coords[0])
                 mid, t = (pa + pb) / 2, pb - pa
-                if not np.linalg.norm(t) or not T.contains(Point(mid)):
+                if not np.linalg.norm(t) or not (tagged or T.contains(Point(mid))):
                     continue
                 d = channel_depth(D.at, mid, t / np.linalg.norm(t))
-                if d is not None and d < PIPE_DEPTH_M:
+                if (d is None and tagged) or (d is not None and d < PIPE_DEPTH_M):
                     pieces.append(LineString([pa, pb]).buffer(half + 1.0, cap_style=2))
-                    rep["crossing_m"] += float(np.linalg.norm(t))
-    rep["crossing_m"] = round(rep["crossing_m"], 1)
+                    rep["tagged_m" if tagged else "crossing_m"] += float(np.linalg.norm(t))
+    rep["crossing_m"], rep["tagged_m"] = round(rep["crossing_m"], 1), round(rep["tagged_m"], 1)
     if not pieces:
         return [], rep
     out = to_ll(unary_union(pieces))

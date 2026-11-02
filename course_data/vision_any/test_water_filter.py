@@ -222,6 +222,17 @@ def test_tunnel_tag_is_piped_without_dem_and_pond_kept():
     assert not g.contains(Point(100, 120)), "the OSM pond the culvert feeds stays water"
 
 
+def test_tunnel_tag_with_dem_keeps_open_channel_at_the_mouth(tmp_path):
+    z = np.zeros((200, 200))
+    z[:60, 97:104] = -1.0                                # open ditch north of the culvert: stays water
+    geoms, rep = WF.piped_streams(_fc(dict(tunnel="culvert")), _dem(tmp_path, z))
+    g = _poly_m(geoms)
+    from shapely.geometry import Point
+    assert rep["tagged"] == 1 and rep["tagged_m"] >= 100
+    assert g.contains(Point(100, 100)) and g.contains(Point(100, 150))
+    assert not g.contains(Point(100, 30))
+
+
 def test_subtract_from_hole_splits_zone():
     from shapely.geometry import box
     h = dict(zones_ll=[dict(lie="water", src="osm", poly=[[0, 0], [10, 0], [10, 1], [0, 1]]),
