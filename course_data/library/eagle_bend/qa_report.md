@@ -2,12 +2,14 @@
 
 **Status: needs confirm** — confirm holes 6, 7, 10, 14, 18
 
-* page: `course_data/library/eagle_bend/page.html` (2.4 MB); request `course_data/requests/course_page_eagle_bend.json`; built 2026-11-02T13:12Z
+* page: `course_data/library/eagle_bend/page.html` (2.4 MB); request `course_data/requests/course_page_eagle_bend.json`; built 2026-11-02T16:38Z
 * course: Eagle Bend Golf Course (Lawrence, KS), OSM way/151983193; holes: osm (tier mapped_card); card: course_data/library/eagle_bend/card_fix.json (file)
 * solved tee sets: Gold, Blue (the two longest sets on the card (combination sets skipped)); page sets: Gold, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
 * imagery on the page: 2021-07-29; package imagery 2021
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
+
+* native-grass questions (Gold tees, library check cards): holes 2, 13, 15, 11 (4 asked of 14 framed holes)
 
 Course-level reasons:
 
