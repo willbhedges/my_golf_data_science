@@ -28,3 +28,5 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - [x] St Andrews published 2026-11-02: https://claude.ai/artifact/K4HKE8bS5usJqTPdYdarkz (QA PUBLISH + coordinator montage check).
 - [ ] ~25 reviewed courses still queued in runs 41346643978 / 41346747941: when they land, launch a QA checker agent again (same brief as qa_rebuild.md) and publish PUBLISH verdicts.
 - [ ] Aim grid ±40 yd edge: several calm picks sit exactly on the edge (Gustin 6 Gold, St Andrews 5, 15). Check whether the aim range caps picks in decide; widen or make it dogleg-aware if so (agent).
+- [ ] National index pass 1 landed (run 41355553763): only AL FL GA HI LA MS TX reached half their cells (1,486 courses: 35 % tier A, 37.5 % complete OSM holes, 67 % any OSM golf). Pass 2 queued (national_index_us_cells2.json, reuse_run). Repeat until partial/missing states are empty; then fill ROADMAP coverage.
+- [ ] Finish-error agent: Gamble Sands opaque finish failure + record real errors in status.json; re-queues gamble_sands + gustin.
