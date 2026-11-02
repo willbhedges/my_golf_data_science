@@ -1,0 +1,1409 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "st_andrews_op",
+ "corridor_set": "Black",
+ "mapper": "mapper-st_andrews_op",
+ "started": "2026-11-02T22:00Z",
+ "minutes": 50,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto trees right of the fairway 195-330 are stale lidar crowns: both photo years show mown rough, bunkers and a cart path there",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       5,
+       70,
+       195,
+       330
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar shows crowns at x 0..+60, 200-320 but 2021 and 2023 NAIP show open mown rough, two bunkers and the cart path (trees removed after the lidar flight)"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "stale lidar crowns at 290-345 on both sides erased (fairway/green and open rough in both years)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       5,
+       70,
+       285,
+       345
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto trees 14rec/15rec over open rough and cart path right of the fairway in 2021 and 2023; lidar crowns there are gone"
+    },
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       -70,
+       0,
+       290,
+       335
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy band across the left at 300-330 lies over fairway/green surrounds that are open turf in both years"
+    }
+   ]
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "lidar canopy covers the whole hole (stale); erased auto trees over the open fairway/rough corridor traced from both photo years",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -45,
+        130
+       ],
+       [
+        25,
+        130
+       ],
+       [
+        30,
+        170
+       ],
+       [
+        38,
+        200
+       ],
+       [
+        35,
+        240
+       ],
+       [
+        25,
+        265
+       ],
+       [
+        8,
+        282
+       ],
+       [
+        -10,
+        300
+       ],
+       [
+        -20,
+        330
+       ],
+       [
+        -30,
+        355
+       ],
+       [
+        -60,
+        355
+       ],
+       [
+        -58,
+        290
+       ],
+       [
+        -45,
+        270
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "open mown rough and fairway between the tree lines in 2021 and 2023 (tree edge ~x+35..+40 right at 200-260, ~x-45 left); lidar shows canopy over it all"
+    }
+   ]
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "trees match lidar and photo; pond through the dogleg slightly larger than auto",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "water",
+     "shape": {
+      "ell": [
+       21,
+       352,
+       20,
+       19
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "pond water line x 0..+42, 333-372 in 2021 and 2023 (black in CIR); auto water polygon smaller"
+    }
+   ]
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "auto trees match crowns in both years and lidar; no changes",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": []
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "lidar crowns left at 255-290 (x -30..-20) are not in either photo year (grass in CIR); auto correctly omits them; no changes",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": []
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "added the crown at the right edge of the fairway at ~325 and one at 342",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -4,
+       328,
+       7,
+       7.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible 2021 and 2023 right of the fairway, red in CIR, lidar > 2.5 m; not in auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       7.6,
+       342,
+       5,
+       5.8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown visible both years and CIR, lidar > 2.5 m"
+    }
+   ]
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left tree group edge ~3 yds beyond the auto outline at 170-270",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 3,
+     "shape": {
+      "rect": [
+       -45,
+       -10,
+       170,
+       270
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar 2.5-8 m ring and CIR crown edge at x -18..-20 vs auto outline at x -24 along 180-260"
+    }
+   ]
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "creek crossing in front of the green redrawn narrow and further out; added crown groups right of the fairway",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -40,
+       14,
+       338,
+       385
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto creek band at the top is ~20-30 yds wide and its near edge at ~345; the creek (stone-walled arc) is ~4-5 yds wide at 345-368 in 2021 and 2023, black in CIR, DEM channel"
+    },
+    {
+     "op": "add",
+     "lie": "water",
+     "shape": {
+      "poly": [
+       [
+        -37,
+        346
+       ],
+       [
+        -27,
+        360
+       ],
+       [
+        -12,
+        369
+       ],
+       [
+        2,
+        367
+       ],
+       [
+        10,
+        356
+       ],
+       [
+        13,
+        342
+       ],
+       [
+        8,
+        340
+       ],
+       [
+        5,
+        352
+       ],
+       [
+        -1,
+        360
+       ],
+       [
+        -12,
+        363
+       ],
+       [
+        -23,
+        355
+       ],
+       [
+        -32,
+        343
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "creek arc traced on 2021 photo (centre line -34,349 / -15,366 / +6,355 / +8,344), same place 2023"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       26,
+       246,
+       13,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown group right of the cart path visible both years, red in CIR, lidar > 2.5 m; missing in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       26,
+       203,
+       6,
+       13
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crowns at the cart path both years, red in CIR, lidar > 2.5 m; missing in auto"
+    }
+   ]
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "lidar canopy covers the whole corridor except a 15-yd strip (stale); erased auto trees over the open fairway, rough and green complex seen in both years",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -15,
+        125
+       ],
+       [
+        -15,
+        160
+       ],
+       [
+        -20,
+        200
+       ],
+       [
+        -35,
+        215
+       ],
+       [
+        -70,
+        222
+       ],
+       [
+        -70,
+        300
+       ],
+       [
+        -62,
+        300
+       ],
+       [
+        -62,
+        345
+       ],
+       [
+        -25,
+        350
+       ],
+       [
+        -15,
+        335
+       ],
+       [
+        -5,
+        312
+       ],
+       [
+        5,
+        292
+       ],
+       [
+        15,
+        268
+       ],
+       [
+        20,
+        240
+       ],
+       [
+        20,
+        200
+       ],
+       [
+        18,
+        160
+       ],
+       [
+        15,
+        125
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "open fairway/rough and green surrounds in 2021 and 2023 (right tree line x+20 at 200-240, cart path along it to -20,345; left woods only below 215); auto rectangles from stale lidar cover it"
+    }
+   ]
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "lidar canopy over the dogleg fairway is stale; erased auto trees over the open rough around the fairway",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -10,
+        125
+       ],
+       [
+        52,
+        125
+       ],
+       [
+        52,
+        230
+       ],
+       [
+        45,
+        262
+       ],
+       [
+        33,
+        282
+       ],
+       [
+        18,
+        295
+       ],
+       [
+        -30,
+        295
+       ],
+       [
+        -70,
+        292
+       ],
+       [
+        -70,
+        240
+       ],
+       [
+        -42,
+        226
+       ],
+       [
+        -22,
+        212
+       ],
+       [
+        -16,
+        180
+       ],
+       [
+        -12,
+        150
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "fairway + mown rough and cart path open in 2021 and 2023, woods begin ~292 at the top and x+50 right; lidar shows canopy over the fairway"
+    }
+   ]
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "scattered crowns between the fairways missing from auto; added one ell per crown within ~25 yds (lidar crown matched to a crown in both photo years / CIR)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -20.3,
+       320.7,
+       8.2,
+       13.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -38.8,
+       269.8,
+       5.5,
+       7.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -20.1,
+       272.3,
+       5,
+       4.2
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       49.6,
+       271.6,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       38.0,
+       265.4,
+       4.8,
+       5.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -26.7,
+       260.2,
+       4.5,
+       5.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -19.3,
+       248.9,
+       5.8,
+       6.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -33.7,
+       243.8,
+       4.2,
+       4.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -48.6,
+       240.7,
+       8,
+       7.2
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       31.6,
+       234.5,
+       6.8,
+       6.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43.0,
+       228.5,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -41.0,
+       203.0,
+       7,
+       6.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    }
+   ]
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "scattered crowns near the fairway missing from auto; added per crown",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line / next hole in both 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       19.8,
+       236.3,
+       4.2,
+       4.2
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       23.8,
+       218.4,
+       5.2,
+       6.2
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -35.3,
+       200.8,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -49.1,
+       193.6,
+       5.2,
+       5.5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -31.4,
+       187.1,
+       5.5,
+       6.2
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -38.8,
+       176.8,
+       4.8,
+       4.2
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown both 2021 and 2023, red in CIR, lidar > 2.5 m; not in auto"
+    }
+   ]
+  }
+ },
+ "tees": {
+  "1": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "2": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "3": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "4": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "5": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "6": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "7": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "8": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "9": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback in the fairway, no box visible; no candidate box"
+   }
+  },
+  "10": {
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "lidar pad 36 yds behind Blue; no clear box in either year but no better box visible; card 577 = measured"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "11": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "12": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "13": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "14": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "15": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "16": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback past the pond, no box visible; no candidate box to move to"
+   }
+  },
+  "17": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  },
+  "18": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on a visible tee box / pad; card vs measured within 5 yds"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "all",
+   "what": "lidar is stale on holes 1, 2, 3, 13, 15 (canopy where both photo years show turf); the tree erasures there follow the photo edge (+/-5 yds)"
+  },
+  {
+   "hole": "11",
+   "what": "creek arc in front of the green: width/near edge +/-3 yds; legs under the trees left as auto"
+  },
+  {
+   "hole": "1",
+   "what": "left side 280-380 x -70..-50: auto trees from lidar, photos ambiguous (thin trees or rough); left as auto"
+  },
+  {
+   "hole": "3",
+   "what": "auto OB sliver in the woods right of the green (x +5..+35, 280-370) left as auto; houses start ~x+40"
+  },
+  {
+   "hole": "10",
+   "what": "Black tee (lidar pad) position not confirmed by a visible box"
+  },
+  {
+   "hole": "tees",
+   "what": "walkback / texture-pad forward tees (Red/Gold on 1, 5, 6, 7, 8, 9, 16) kept without a visible box"
+  }
+ ]
+}
