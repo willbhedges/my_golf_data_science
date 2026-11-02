@@ -1,49 +1,57 @@
-# Sycamore Ridge Golf Club (Spring Hill KS): rebuild QA (2026-11-02)
+# Sycamore Ridge Golf Club (Spring Hill KS): rebuild QA, second pass (2026-11-02)
 
-**Verdict: NEEDS FIX.** The review's only fix (hole 14 par 4) was **not applied**: the page still shows hole 14 as a
-"Par 3 · 364 yds" with a green box and "play it like 384". The page also still has no card: the set is named
-"osm_back" and every hole reads "no card yardage / no card par". A matching card has since been fetched (see below).
+**Verdict: NEEDS FIX** (hole 1 tee, and hole 9 more mildly). The card, the renumbering and the par fix all worked. But on
+card hole 1 the Black and Blue tees sit on OSM colour-tagged boxes 42 and 50 yds short of the card, and the page shows
+the card yardage from there.
 
-Page checked: `course_data/library/sycamore_ridge/page.html`, built 2026-11-01T21:18Z. One solved set (`osm_back`).
-This is a single-set page, so `qa_page.js` was run without the set argument (with it, the run times out on the hidden
-picker). 18 holes, phone and desktop, 0 page problems. I looked at every phone hole picture. Routing and greens look as
-reviewed.
+Page checked: `course_data/library/sycamore_ridge/page.html`, built 2026-11-02T06:05Z (GitHub Actions run 41392580512).
+Both solved sets (Black, Blue) were run through `qa_page.js`: 18 holes each, phone and desktop, 0 page problems. I
+looked at every phone hole picture.
 
-## Review fixes
+## First-pass fixes
 
-| fix in review.md | applied? |
+| fix | applied? |
 |---|---|
-| 14: par 4, not par 3 (OSM-tagged par 3 at 399 yds) | **no.** The request carried `par_overrides {"14": 4}`, but `package.py apply_card_overrides()` returns at once when there is no card (`if not card or not (yo or po): return card`). So par overrides are dropped on card-less builds. The package keeps `par: 3`, provenance `par: osm`. |
-| Get the club card (`webfetch_rv09_cards2.json`) | **fetched, not used.** See below. |
+| Card: golfify typed into `card_review.json` (Black 7,081 / Blue 6,465, par 72) | **yes.** Sets Black + Blue, totals 7,081 / 6,465. |
+| Renumber the nines to the card (OSM 1-9 = card 10-18, OSM 10-18 = card 1-9) | **yes.** Pars 4 5 4 3 4 4 5 3 4 / 4 5 3 4 3 5 4 3 5 = 72, equal to the card on every hole. |
+| Old hole 14 (OSM-tagged par 3 at 399) as a par 4 | **yes.** It is now card hole 5, a 413-yd par 4 (`par_overrides {"5": 4}`), with a Driver pick. Page hole 14 is card 14, the 176-yd par 3. |
 
-## The card now in the repo
+## Tee vs card
 
-`course_data/research/web/rv09_cards2/00.txt` is golfify `sycamore-ridge-golf-course`, Spring Hill KS (Jim Colbert /
-Baxter Spann, 2000). Black 7,081 / Blue 6,465 / White 5,907 / Green 5,262 / Yellow 4,539, par 72. The club site
-(`01.txt`) and OpenGolfAPI (`02.txt`) confirm 7,081, par 72, and OpenGolfAPI has the same tee ratings.
+The page yardage equals the card on all 36 hole-sets. The measured length is within 6 yds of the card on every hole
+except these:
 
-- Black: 467 544 351 226 413 390 600 195 466 / 457 566 230 331 176 548 381 215 525
-- Par: 4 5 4 3 4 4 5 3 4 / 4 5 3 4 3 5 4 3 5; SI 4 6 14 12 10 16 2 18 8 / 9 5 15 7 17 1 11 13 3
+| card hole (OSM ref) | set | card / page | measured | tee | OSM boxes on the hole (yds) |
+|---|---|---|---|---|---|
+| **1** (OSM 10) | Black | 467 | **425** | OSM box 1042462315, colour-tagged black | 308 332 341 357 364 392 **447 463** |
+| **1** (OSM 10) | Blue | 445 | **395** | OSM box 930492856, tagged blue | same |
+| 9 (OSM 18) | Black | 466 | 452 | OSM box 930502257, tagged | 292 324 352 376 382 **416 462** |
+| 9 (OSM 18) | Blue | 416 | 408 | OSM box 930502258, tagged | same |
 
-The OSM hole order does **not** follow this card hole for hole. OSM 3 is a 228-yd par 3 (card 3 is a 351-yd par 4),
-OSM 4 is 316 / par 4 (card 4 is a 226-yd par 3), and OSM 14 is about 399 (the card has no par 3 near 400). Holes 1, 2,
-10 and 11 agree. The review already noted that the OSM `dist` tags are shuffled, so the OSM refs may be too. The card
-cannot simply be attached by number. Someone has to match card holes to OSM ways (by length, par and SI) and renumber
-them with `hole_renumber`.
+On hole 1 the White, Green and Yellow tags fit the card to 1 yd (354 / 328 / 307), but the black and blue tags sit two
+boxes forward. The 463 and 447 boxes match Black and Blue to 2-4 yds. The OSM hole line starts at the 463 box (465 yds
+to the green centre). The page shows "467" and plays the hole from 425 (the note reads "about 111 yds in" for Blue
+4-wood on a 445 hole). The tagged tee wins because the localizer takes a colour-tagged OSM box before it checks the
+card yardage.
 
 ## Holes
 
-| hole | osm_back | note |
-|---|---|---|
-| 1-13, 15-18 | OK geometry, no card | routing and greens as reviewed; yardages measured, unverified |
-| 14 | **wrong par** | par 3 box view on a 399-yd hole |
+| hole | Black | Blue | note |
+|---|---|---|---|
+| **1** | **wrong tee** (42 short) | **wrong tee** (50 short) | see above |
+| 2-8, 10-18 | OK | OK | routing and greens as reviewed; yardage = card ±6 |
+| 9 | minor (14 short) | minor (8 short) | tagged boxes; untagged 462 / 416 boxes fit the card |
+| 13 | OK | OK (marginal) | 310-331 yd par 4 over the pond; Blue Driver aim 21 right into the greenside bunkers (sand 20%). Model choice |
+| 18 | OK (marginal) | OK (marginal) | aim 40 right on the bound around the dogleg; fairway 51-70%. Model choice |
 
 ## Next fix
 
-1. **Pipeline** (`course_data/platform/package.py` `apply_card_overrides`): apply `par_overrides` (and per-hole
-   yardages) even when there is no card, for example by patching the OSM hole par/ref before geometry. Otherwise no
-   card-less course can take a par fix.
-2. **Course:** turn the golfify card above into `course_data/library/sycamore_ridge/card_review.json`, match it to
-   the 18 OSM hole ways (length, par, SI), and add the renumbering to `review.json`. Then rebuild with
-   `tees ["Black", "Blue"]`.
-3. Rebuild and recheck. 14 must come out as a par 4 (or as whatever card hole that way turns out to be).
+1. **Course** (`course_data/library/sycamore_ridge/review.json`; per-hole fixes there use the OSM numbers, which the
+   renumber re-keys): OSM hole 10 `fix`: `"tee_ll": {"Black": [38.7582778, -94.8430081]}, "yards": {"Black": 467,
+   "Blue": 445}`. Blue also needs a `tee_ll` on the 447 box (not in the repo's data: read it from the OSM tee ways at
+   the top of the hole line, about 16 yds in front of the Black point). Optional, OSM hole 18: Black on the 462 box,
+   Blue on the 416 box. Then rebuild.
+2. **Pipeline** (tee localizer): a colour-tagged OSM box that is more than about 15 yds off the card should lose to an
+   untagged box within 5 yds of the card. Hodge Park shows the same tag-first behaviour.
+
+After that rebuild: PUBLISH, provided hole 1 measures about 465 / 447 from the back boxes.
