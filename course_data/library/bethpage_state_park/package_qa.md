@@ -1,6 +1,6 @@
 # Bethpage Black (Old Bethpage, NY) - osm_back tees
 
-Built 2026-10-31T03:31:41Z. OSM node/2854158382. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-11-01T21:43:07Z. OSM node/2854158382. Scorecard: None (None). Tee set: no scorecard.
 
 ## Coverage
 
@@ -23,9 +23,9 @@ OSM features inside the course: buildings 3, golf=bunker 7, golf=cartpath 4, gol
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Black - 13 | 5 | 604 / 604 | 204 | 0.60 | check the flags | 49% | 4% | 46% | hole-line start (no golf=tee near it) | tee: hole-line start (no golf=tee near it) |
-| Black - 4 | 5 | 518 / 518 | 46 | 0.43 | needs review | 0% | 20% | 80% | hole-line start (no golf=tee near it) | tee: hole-line start (no golf=tee near it); green from the hole-line end (no golf=green polygon); no fairway in the landing zone |
-| Black - 5 | 4 | 478 / 478 | 14 | 0.55 | needs review | 28% | 20% | 52% | tee nearest the hole-line start | tee: tee nearest the hole-line start; green from the hole-line end (no golf=green polygon) |
+| 4 | 5 | 518 / 518 | 46 | 0.43 | needs review | 0% | 20% | 80% | hole-line start (no golf=tee near it) | tee: hole-line start (no golf=tee near it); green from the hole-line end (no golf=green polygon); no fairway in the landing zone |
+| 5 | 4 | 478 / 478 | 14 | 0.55 | needs review | 28% | 20% | 52% | tee nearest the hole-line start | tee: tee nearest the hole-line start; green from the hole-line end (no golf=green polygon) |
+| 13 | 5 | 604 / 604 | 204 | 0.60 | check the flags | 49% | 4% | 46% | hole-line start (no golf=tee near it) | tee: hole-line start (no golf=tee near it) |
 
 ## Stages
 
@@ -44,6 +44,7 @@ OSM features inside the course: buildings 3, golf=bunker 7, golf=cartpath 4, gol
 
 ## Warnings
 
+- hole refs: kept the 'black' holes (named in the request) (3 ways, refs as plain numbers)
 - hole inference fallback: structure: RuntimeError: no OSM greens and no perception scene
 - hole inference fallback: v2: RuntimeError: routing v2: no greens
 - no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM tee box nearest each hole-line start (usually the back tee); lengths are measured

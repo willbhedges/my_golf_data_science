@@ -1,0 +1,139 @@
+{
+ "checks": {
+  "auto": {
+   "slug": "bethpage_state_park",
+   "which": "auto",
+   "set": "osm_back",
+   "holes": {
+    "4": {
+     "par": 5,
+     "checks": {
+      "tee": {
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (hole-line start (no golf=tee near it); 421 yds from the nearest OSM tee box)"
+      },
+      "yardage": {
+       "ok": false,
+       "why": "no card yardage for osm_back"
+      },
+      "par": {
+       "ok": false,
+       "why": "no card par"
+      },
+      "aim": {
+       "ok": false,
+       "why": "Driver -28 lands 300 yds out in rough (93 yds from fairway)"
+      },
+      "oval": {
+       "ok": true,
+       "why": "landing pattern 0% trees / water / OB (none)"
+      }
+     },
+     "pick": {
+      "club": "Driver",
+      "aim": -28.0,
+      "along": 300.0,
+      "lie": "rough",
+      "tie": false
+     },
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (hole-line start (no golf=tee near it); 421 yds from the nearest OSM tee box)",
+      "yardage: no card yardage for osm_back",
+      "par: no card par",
+      "aim: Driver -28 lands 300 yds out in rough (93 yds from fairway)"
+     ]
+    },
+    "5": {
+     "par": 4,
+     "checks": {
+      "tee": {
+       "ok": true,
+       "why": "on an OSM tee box"
+      },
+      "yardage": {
+       "ok": false,
+       "why": "no card yardage for osm_back"
+      },
+      "par": {
+       "ok": false,
+       "why": "no card par"
+      },
+      "aim": {
+       "ok": true,
+       "why": "Driver -16 lands 300 yds out in fairway"
+      },
+      "oval": {
+       "ok": true,
+       "why": "landing pattern 0% trees / water / OB (none)"
+      }
+     },
+     "pick": {
+      "club": "Driver",
+      "aim": -15.5,
+      "along": 300.0,
+      "lie": "fairway",
+      "tie": false
+     },
+     "status": "CHECK",
+     "reasons": [
+      "yardage: no card yardage for osm_back",
+      "par: no card par"
+     ]
+    },
+    "13": {
+     "par": 5,
+     "checks": {
+      "tee": {
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (hole-line start (no golf=tee near it); 461 yds from the nearest OSM tee box)"
+      },
+      "yardage": {
+       "ok": false,
+       "why": "no card yardage for osm_back"
+      },
+      "par": {
+       "ok": false,
+       "why": "no card par"
+      },
+      "aim": {
+       "ok": true,
+       "why": "Driver -12 lands 300 yds out in fairway"
+      },
+      "oval": {
+       "ok": true,
+       "why": "landing pattern 4% trees / water / OB (recovery 4%)"
+      }
+     },
+     "pick": {
+      "club": "Driver",
+      "aim": -12.0,
+      "along": 300.0,
+      "lie": "fairway",
+      "tie": false
+     },
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (hole-line start (no golf=tee near it); 461 yds from the nearest OSM tee box)",
+      "yardage: no card yardage for osm_back",
+      "par: no card par"
+     ]
+    }
+   },
+   "course": {
+    "par_total": 14,
+    "card_par_total": null,
+    "pars_ok": false,
+    "holes": 3,
+    "card_holes": 0
+   }
+  }
+ },
+ "page": {
+  "osm_back": {
+   "rc": 0,
+   "problems": 0,
+   "errors": 0
+  }
+ }
+}
