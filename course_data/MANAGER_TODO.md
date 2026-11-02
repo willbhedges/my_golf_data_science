@@ -24,3 +24,4 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
       re-run course_data/platform/error_budget.py and update ROADMAP "Where we are".
 - [ ] QA checker agent writes course_data/library/<slug>/qa_rebuild.md per rebuilt reviewed course; publish the PUBLISH ones (hole-by-hole check of screenshots first) and tell the user. Gustin landed first.
 - [ ] Native-grass classifier agent running (long grass stays off until it beats 'none' in LOCO error budget).
+- [ ] Gustin NEEDS FIX was the consensus set-order bug (fixed, card_consensus.py); re-queue gustin with the next batch of NEEDS FIX courses from the QA checker.
