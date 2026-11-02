@@ -7,16 +7,12 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "holes not all mapped in OSM (hole method: v2+structure)",
-  "16 holes built vs the card's 18",
-  "pars sum to 64, card 71",
-  "5 hole(s) with a CHECK"
+  "4 hole(s) with a CHECK"
  ],
  "check_holes": [
   5,
   7,
   9,
-  12,
   18
  ],
  "tee_sets": [
@@ -62,41 +58,24 @@
   "White"
  ],
  "page": "course_data/library/heritage_park/page.html",
- "page_bytes": 4552166,
+ "page_bytes": 4976566,
  "qa_report": "course_data/library/heritage_park/qa_report.md",
  "center": [
   38.827369250000004,
   -94.75508335
  ],
  "osm": "way/254360563",
- "holes": 16,
+ "holes": 18,
  "days": [
-  "2026-10-31",
-  "2026-11-01"
+  "2026-11-07",
+  "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-10-30T03:44Z",
+ "built": "2026-11-02T16:45Z",
  "request": "course_data/requests/course_page_heritage_park.json",
- "last_attempt": {
-  "status": "failed",
-  "stage": "package",
-  "error": [
-   "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
-  ],
-  "when": "2026-10-30T23:27Z",
-  "resolve": {
-   "status": "ok",
-   "candidates": [
-    {
-     "name": "Heritage Park Golf Course",
-     "town": "Johnson County",
-     "holes": 0,
-     "osm": {
-      "type": "way",
-      "id": 254360563
-     }
-    }
-   ]
-  }
+ "native": {
+  "holes": [],
+  "tee_set": "Blue",
+  "note": "not asked: no agent_layers in the request"
  }
 }
