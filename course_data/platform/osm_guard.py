@@ -14,6 +14,9 @@ fetch_guarded(snwe, course, raw):
      course that it lacks (structure/data/<slug>/osm.geojson.gz, the package's previous raw/osm.geojson, the
      library's raw/osm.geojson), or, when nothing answered at all, use the snapshot alone;
   4. record what was used and why: raw/osm_source.json, plus summary.json["osm_source"] (fetch_package).
+Geofabrik (osm_extract.py): with OSM_SOURCE=geofabrik the state extract is the only "mirror"; in auto mode (Actions:
+OSM_PBF_DIR set) it is asked after the Overpass loop when no mirror gave a complete answer (or at once, when Overpass
+already failed in this run) and judged exactly like a mirror answer; source "geofabrik" when it is the one used.
 A thin fetch with no snapshot to fall back on is still used (it may be the truth: many courses map greens but no
 hole ways) but is recorded as thin, so the package says so instead of looking like a normal build.
 "Newer" is not always "better" either (Shoal Creek: a neighbour's holes were added in the bbox): a fresh fetch with
@@ -32,6 +35,7 @@ from collections import Counter
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [HERE, os.path.dirname(HERE)]
 import platform_common as pc  # noqa: E402
+import osm_extract as ox  # noqa: E402
 
 # platform_common.OVERPASS (the three already used by every run) + one more independent world mirror
 MIRRORS = list(pc.OVERPASS) + ["https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
@@ -228,18 +232,41 @@ def _post(url, query, timeout):
 
 
 def fetch_guarded(snwe, course=None, slug=None, query=None, post=None, snapshots=None, mirrors=None,
-                  deadline_s=DEADLINE_S, timeout=200, sleep=time.sleep, now=time.time):
+                  deadline_s=DEADLINE_S, timeout=200, sleep=time.sleep, now=time.time, extract=None):
     """-> (overpass data or None, FeatureCollection, provenance dict). Raises only when no mirror answered and
-    there is no snapshot."""
+    there is no snapshot. extract(state, snwe) -> Overpass-shaped data: the Geofabrik answer (default
+    osm_extract.features_data when osm_extract.allowed(); False = never)."""
     import fetch_course as fcm
     query = query or fcm.features_query(snwe)
     post = post or _post
     mirrors = list(mirrors or MIRRORS)
+    state = (course or {}).get("state")
+    if extract is None:
+        extract = ox.features_data if (ox.allowed() and state) else False
+    if extract and ox.forced():
+        mirrors = []                      # OSM_SOURCE=geofabrik, or Overpass already failed in this run
     snaps = load_snapshots(course, slug) if snapshots is None else snapshots
     ref = reference(snaps)
     ref_label = f"{ref['kind']} snapshot of {(ref['date'] or '?')[:10]}" if ref else "snapshot"
     t0, attempts, good = now(), [], None
-    for p in range(3):
+
+    def judge(a, data):
+        fc = fcm.to_geojson(data.get("elements", []))
+        c = golf_counts(fc)
+        why = thin_reasons(c, ref and ref["counts"], ref_label)
+        rm = remark_problem(data)
+        if rm:
+            why.insert(0, f"Overpass remark: {rm}")
+        base = osm_base(data)
+        if base and ref and ref.get("date") and _iso_utc(base) and _iso_utc(base) < ref["date"] and \
+                richness(c) < richness(ref["counts"]):
+            why.append(f"mirror data as of {base} is older than the {ref_label}")
+        a.update(ok=True, counts=c, osm_base=base, thin=why, n_elements=len(data.get("elements", [])))
+        a["_data"], a["_fc"] = data, fc
+        attempts.append(a)
+        pc.log("osm_guard:", a["mirror"], c, "thin: " + "; ".join(why) if why else "ok")
+        return not why
+    for p in range(3 if mirrors else 0):
         for url in mirrors:
             if now() - t0 > deadline_s:
                 break
@@ -251,21 +278,7 @@ def fetch_guarded(snwe, course=None, slug=None, query=None, post=None, snapshots
                 attempts.append(a)
                 pc.log("osm_guard:", url, a["error"])
                 continue
-            fc = fcm.to_geojson(data.get("elements", []))
-            c = golf_counts(fc)
-            why = thin_reasons(c, ref and ref["counts"], ref_label)
-            rm = remark_problem(data)
-            if rm:
-                why.insert(0, f"Overpass remark: {rm}")
-            base = osm_base(data)
-            if base and ref and ref.get("date") and _iso_utc(base) and _iso_utc(base) < ref["date"] and \
-                    richness(c) < richness(ref["counts"]):
-                why.append(f"mirror data as of {base} is older than the {ref_label}")
-            a.update(ok=True, counts=c, osm_base=base, thin=why, n_elements=len(data.get("elements", [])))
-            a["_data"], a["_fc"] = data, fc
-            attempts.append(a)
-            pc.log("osm_guard:", url, c, "thin: " + "; ".join(why) if why else "ok")
-            if not why:
+            if judge(a, data):
                 good = a
                 break
             if ref is None and _agree(answered_(attempts)):
@@ -273,6 +286,19 @@ def fetch_guarded(snwe, course=None, slug=None, query=None, post=None, snapshots
         if good or now() - t0 > deadline_s or answered_(attempts):
             break                         # a thin answer from every mirror is an answer: don't loop again
         sleep(PASS_SLEEP_S * (p + 1))     # nothing answered: public servers are often at capacity
+    if not good and extract:
+        if mirrors and not answered_(attempts):
+            ox.overpass_failed("no Overpass mirror answered the features query")
+        a = dict(mirror=f"geofabrik:{pc.state_code(state)}", pass_=0)
+        try:
+            data = extract(state, snwe)
+        except Exception as e:                                  # noqa: BLE001
+            a.update(ok=False, error=repr(e)[:240])
+            attempts.append(a)
+            pc.log("osm_guard: geofabrik extract failed:", a["error"])
+        else:
+            if judge(a, data):
+                good = a
     answered = answered_(attempts)
     prov = dict(schema="osm_source/1", fetched_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 mirrors_tried=[a["mirror"] for a in attempts],
@@ -280,7 +306,7 @@ def fetch_guarded(snwe, course=None, slug=None, query=None, post=None, snapshots
                 reference=ref and {k: ref[k] for k in ("kind", "path", "date", "counts")},
                 snapshots=[{k: s[k] for k in ("kind", "path", "date", "counts")} for s in snaps])
     if good:
-        prov.update(source="overpass", mirror=good["mirror"], osm_base=good["osm_base"], counts=good["counts"],
+        prov.update(source="geofabrik" if good["mirror"].startswith("geofabrik:") else "overpass", mirror=good["mirror"], osm_base=good["osm_base"], counts=good["counts"],
                     reason="complete")
         if ref and good["counts"]["hole"] > ref["counts"]["hole"]:
             prov["note"] = (f"fresh fetch has more holes ({good['counts']['hole']}) than the {ref_label} "
@@ -290,7 +316,8 @@ def fetch_guarded(snwe, course=None, slug=None, query=None, post=None, snapshots
     if ref:
         if best:
             fc, n = merge(best["_fc"], ref["fc"])
-            prov.update(source="overpass+snapshot", mirror=best["mirror"], osm_base=best["osm_base"],
+            gf = best["mirror"].startswith("geofabrik:")
+            prov.update(source="geofabrik+snapshot" if gf else "overpass+snapshot", mirror=best["mirror"], osm_base=best["osm_base"],
                         snapshot=ref["path"], snapshot_date=ref["date"], merged_features=n, counts=golf_counts(fc),
                         reason="thin fetch on every mirror: " + "; ".join(best["thin"]))
             return best["_data"], fc, prov
@@ -301,8 +328,8 @@ def fetch_guarded(snwe, course=None, slug=None, query=None, post=None, snapshots
                     reason="no Overpass mirror answered: " + "; ".join(a.get("error", "") for a in attempts)[:600])
         return None, fc, prov
     if best:
-        prov.update(source="overpass", mirror=best["mirror"], osm_base=best["osm_base"], counts=best["counts"],
-                    thin=best["thin"], reason="thin fetch on every mirror and no cached snapshot: used as is")
+        prov.update(source="geofabrik" if best["mirror"].startswith("geofabrik:") else "overpass",
+                    mirror=best["mirror"], osm_base=best["osm_base"], counts=best["counts"], thin=best["thin"], reason="thin fetch on every mirror and no cached snapshot: used as is")
         return best["_data"], best["_fc"], prov
     raise RuntimeError("all Overpass mirrors failed and no cached snapshot: " +
                        "; ".join(f"{a['mirror']}: {a.get('error')}" for a in attempts)[:800])

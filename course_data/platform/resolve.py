@@ -16,6 +16,8 @@ Search order
      (a town, a park) are searched for the nearest leisure=golf_course within 4 km.
   5. Nothing and the request gives "near" (lat,lon): every leisure=golf_course within 4 km of it; an unnamed
      one within 3 km scores as a match.
+Each Overpass query has a Geofabrik-extract twin (osm_extract.StateIndex: the state's .osm.pbf + osmium) used
+when OSM_SOURCE=geofabrik, or in the default "auto" mode once Overpass has failed (one pass over the mirrors).
 Every candidate gets its town (addr:city, else a Nominatim reverse lookup) and the number of
 golf=hole ways inside it (Overpass map_to_area + out count).
 
@@ -39,6 +41,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [HERE, os.path.dirname(HERE)]
 import platform_common as pc  # noqa: E402
+import osm_extract as ox  # noqa: E402
 
 AMBIGUOUS_MARGIN = 0.12        # second-best score this close to the best -> ask the golfer
 PARTIAL_OTHER_TOWN = 0.75      # below this name similarity, a candidate in another town than the request's is dropped
@@ -188,12 +191,31 @@ def choose(cands, want, town=None, osm=None, near=None):
 
 
 # ----------------------------------------------------------------------------- network
+_STATE = [None]          # the state being resolved: the Geofabrik extract to fall back on (osm_extract.py)
+
+
+def _osm(query, from_extract, state=None):
+    """Overpass `query` -> its elements, or the same answer from the state's Geofabrik extract:
+    from_extract(osm_extract.StateIndex) when the mode says so or Overpass failed (osm_extract.mode)."""
+    st = state or _STATE[0]
+    if ox.forced() and st:
+        return from_extract(ox.StateIndex.for_state(st))
+    try:
+        # one pass over the mirrors when the extract is there to fall back on (pc.overpass default: 5)
+        return pc.overpass(query, **({"tries": 1} if ox.allowed() else {})).get("elements", [])
+    except RuntimeError as e:
+        if not (ox.allowed() and st):
+            raise
+        ox.overpass_failed(e)
+        return from_extract(ox.StateIndex.for_state(st))
+
+
 def _search_overpass(rx, iso):
     q = f"""[out:json][timeout:120];
     area["ISO3166-2"="{iso}"]["admin_level"="4"]->.st;
     nwr["leisure"="golf_course"]["name"~"{rx}",i](area.st);
     out tags center bb;"""
-    return pc.overpass(q).get("elements", [])
+    return _osm(q, lambda ix: ix.by_name(rx), iso[3:])
 
 
 def _search_overpass_all(words, iso):
@@ -203,7 +225,7 @@ def _search_overpass_all(words, iso):
     area["ISO3166-2"="{iso}"]["admin_level"="4"]->.st;
     nwr["leisure"="golf_course"]{flt}(area.st);
     out tags center bb;"""
-    return pc.overpass(q).get("elements", [])
+    return _osm(q, lambda ix: ix.by_name(*[re.escape(w) for w in words]), iso[3:])
 
 
 def enclosing_area(lat, lon):
@@ -214,7 +236,7 @@ def enclosing_area(lat, lon):
     is_in({lat},{lon})->.a;
     (way(pivot.a)["leisure"="golf_course"];relation(pivot.a)["leisure"="golf_course"];);
     out tags center bb;"""
-    els = [e for e in pc.overpass(q).get("elements", []) if e.get("bounds")]
+    els = [e for e in _osm(q, lambda ix: ix.enclosing(lat, lon)) if e.get("bounds")]
     if not els:
         return None
 
@@ -228,7 +250,7 @@ def _around(lat, lon, radius=4000):
     q = f"""[out:json][timeout:90];
     nwr["leisure"="golf_course"](around:{radius},{lat},{lon});
     out tags center bb;"""
-    return pc.overpass(q).get("elements", [])
+    return _osm(q, lambda ix: ix.around(lat, lon, radius))
 
 
 def hole_counts(els):
@@ -242,7 +264,8 @@ def hole_counts(els):
         keys.append((e["type"], e["id"]))
     if not parts:
         return {}
-    res = pc.overpass("[out:json][timeout:120];\n" + "\n".join(parts)).get("elements", [])
+    q = "[out:json][timeout:120];\n" + "\n".join(parts)
+    res = _osm(q, lambda ix: [dict(type="count", tags=dict(ways=ix.hole_count(*k))) for k in keys])
     out = {}
     for k, r in zip(keys, [r for r in res if r.get("type") == "count"]):
         out[k] = int(r.get("tags", {}).get("ways", 0))
@@ -265,9 +288,10 @@ def search(name, state, osm=None, near=None):
     (lat,lon of the course, e.g. from its street address) every leisure=golf_course within 4 km of it is a
     candidate too, named or not (step 5: the course is in OSM under another name, or unnamed)."""
     iso = "US-" + pc.state_code(state)
+    _STATE[0] = pc.state_code(state)
     if osm:
         typ, oid = osm.split("/")
-        return pc.overpass(f"[out:json][timeout:60];{typ}({oid});out tags center bb;").get("elements", [])
+        return _osm(f"[out:json][timeout:60];{typ}({oid});out tags center bb;", lambda ix: ix.by_id(typ, int(oid)))
     els = _search_overpass(pc.name_regex(name), iso)
     if els:
         return els
@@ -288,7 +312,8 @@ def search(name, state, osm=None, near=None):
     for h in hits:
         if h.get("category") == "leisure" and h.get("type") == "golf_course":
             typ = h["osm_type"]
-            out += pc.overpass(f"[out:json][timeout:60];{typ}({h['osm_id']});out tags center bb;").get("elements", [])
+            out += _osm(f"[out:json][timeout:60];{typ}({h['osm_id']});out tags center bb;",
+                        lambda ix, typ=typ, i=int(h["osm_id"]): ix.by_id(typ, i))
     if not out and hits:
         out = _around(float(hits[0]["lat"]), float(hits[0]["lon"]))
     if not out and _near(near):
@@ -299,8 +324,8 @@ def search(name, state, osm=None, near=None):
 def boundary(el_type, el_id):
     """GeoJSON geometry of the course area (Polygon / MultiPolygon), or None for a node."""
     import fetch_course as fc
-    raw = pc.overpass(f"[out:json][timeout:90];{el_type}({el_id});out body geom;")
-    els = raw.get("elements", [])
+    els = _osm(f"[out:json][timeout:90];{el_type}({el_id});out body geom;",
+               lambda ix: [ix.body_geom(el_type, int(el_id))] if ix.has(el_type, int(el_id)) else [])
     if not els:
         return None, None
     feats = fc.to_geojson(els)["features"]
@@ -315,6 +340,7 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
     """-> course dict (ARCHITECTURE 3.1 course.json + state, town, holes, boundary, candidates).
     status: ok | ambiguous | not_found. Only 'ok' carries boundary/bbox."""
     sc = pc.state_code(state)
+    _STATE[0] = sc
     els = search(name, sc, osm, near)
     els = [e for e in els if e.get("tags", {}).get("leisure") == "golf_course" or osm]
     counts = hole_counts(els[:12]) if els else {}

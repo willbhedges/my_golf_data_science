@@ -98,9 +98,13 @@ def _get(url, **kw):
     raise RuntimeError(f"{url}: {last}")
 
 
-def fetch_osm(bbox):
-    sys.path.insert(0, CD)
+def fetch_osm(bbox, state=None):
+    """OSM OB evidence for the bbox -> (FeatureCollection, info): Overpass, or the state's Geofabrik extract
+    (platform/osm_extract.py) when OSM_SOURCE=geofabrik (the workflow sets it when the package step used the
+    extract) or Overpass fails (auto mode on Actions)."""
+    sys.path[:0] = [CD, os.path.join(CD, "platform")]
     import fetch_course as fcm
+    import osm_extract as ox
     w, s, e, n = bbox
     b = f"{s},{w},{n},{e}"
     q = f"""[out:json][timeout:180];
@@ -115,8 +119,16 @@ def fetch_osm(bbox):
       nwr["boundary"="protected_area"]({b});
     );
     out body geom;"""
-    data = fcm.overpass(q)
-    return fcm.to_geojson(data["elements"])
+    use_x = bool(state) and ox.allowed()
+    if use_x and ox.forced():
+        return fcm.to_geojson(ox.features_data(state, (s, w, n, e), query=q)["elements"]), {"source": "geofabrik"}
+    try:
+        data = fcm.overpass(q, tries=1 if use_x else 3)
+    except RuntimeError:
+        if not use_x:
+            raise
+        return fcm.to_geojson(ox.features_data(state, (s, w, n, e), query=q)["elements"]), {"source": "geofabrik"}
+    return fcm.to_geojson(data["elements"]), {"source": "overpass"}
 
 
 def _inside(coords, bbox):
@@ -227,7 +239,7 @@ def fetch(slug, pad_m=400.0, refetch=False):
         srcs[key]["fetched"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         log(f"  {key}: {srcs[key].get('status')} n={srcs[key].get('n')}")
 
-    step("osm", lambda: (fetch_osm(bbox), {}), "osm.geojson", OSM_LICENCE)
+    step("osm", lambda: fetch_osm(bbox, state), "osm.geojson", OSM_LICENCE)
     step("ms_buildings", lambda: fetch_ms_buildings(bbox), "ms_buildings.geojson", MS_LICENCE)
     step("parcels", lambda: fetch_parcels(state, bbox), "parcels.geojson",
          (PARCEL_SOURCES.get(state) or {}).get("licence", "n/a"))
