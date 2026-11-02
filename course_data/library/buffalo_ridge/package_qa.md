@@ -1,6 +1,6 @@
 # Buffalo Ridge Springs Golf Course (Branson, MO) - Buffalo tees
 
-Built 2026-11-02T16:58:31Z. OSM way/399501608. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-11-02T19:34:46Z. OSM way/399501608. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
@@ -9,15 +9,15 @@ Built 2026-11-02T16:58:31Z. OSM way/399501608. Scorecard: golfify (golfify). Tee
 | holes_built | 18 |
 | holes_mapped | 18 |
 | greens_found | 18 |
-| tee_boxes | 83 |
+| tee_boxes | 82 |
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 11 |
 | of_par4_5 | 13 |
-| mean_landing_osm_share | 0.516 |
-| mean_confidence | 0.864 |
-| osm_score | 0.872 |
+| mean_landing_osm_share | 0.521 |
+| mean_confidence | 0.868 |
+| osm_score | 0.873 |
 
-OSM features inside the course: buildings 2, golf=bunker 88, golf=cartpath 36, golf=fairway 52, golf=green 20, golf=hole 18, golf=lateral_water_hazard 20, golf=rough 5, golf=tee 83, holes_with_par 18, water_lines 9, water_polygons 20
+OSM features inside the course: buildings 2, golf=bunker 88, golf=cartpath 36, golf=fairway 52, golf=green 20, golf=hole 18, golf=lateral_water_hazard 20, golf=rough 5, golf=tee 82, holes_with_par 18, water_lines 9, water_polygons 20
 
 ## Holes
 
@@ -37,7 +37,7 @@ OSM features inside the course: buildings 2, golf=bunker 88, golf=cartpath 36, g
 | 12 | 4 | 477 / 478 | 281 | 0.90 | auto | 68% | 10% | 22% | tee stage: Buffalo tee_centroid |  |
 | 13 | 4 | 462 / 462 | 135 | 0.83 | auto | 60% | 6% | 34% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
 | 14 | 5 | 615 / 611 | 105 | 0.81 | auto | 42% | 21% | 38% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
-| 15 | 4 | 366 / 360 | 6 | 0.79 | check the flags | 38% | 18% | 44% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
+| 15 | 4 | 366 / 365 | 354 | 0.85 | auto | 44% | 22% | 35% | tee stage: Buffalo tee_centroid |  |
 | 16 | 4 | 425 / 423 | 55 | 0.80 | check the flags | 51% | 2% | 47% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
 | 17 | 3 | 165 / 165 | 54 | 0.93 | auto | 100% | 0% | 0% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
 | 18 | 5 | 573 / 569 | 285 | 0.82 | auto | 49% | 18% | 33% | tee stage: Buffalo tee_axis | tee: tee stage: Buffalo tee_axis |
@@ -46,21 +46,21 @@ OSM features inside the course: buildings 2, golf=bunker 88, golf=cartpath 36, g
 
 - **resolve**: ok: way/399501608 Buffalo Ridge Springs Golf Course (Branson, MO)
 - **osm**: ok: 484 features
-- **routing**: ok: v2+structure (mapped_card, lam 0.5, structure on osm) placed 1/1 holes OSM has no way for (0 to check; segment no, lidar pads 302, perception scene no)
+- **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tee_overrides**: ok: Gold 3 review (snapped 3 yds along OSM tee 878034036);
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 7 sets; lidar pads: 69 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 7 sets; lidar pads: 70 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 7 tee set(s))
 - **imagery**: ok: course_data/packages/buffalo_ridge/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020
 - **elevation**: ok: course_data/packages/buffalo_ridge/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -98833 m2 {'raised': 87495, 'strip': 10745, 'road': 167, 'cells': 373}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 13 polygons (outside 13); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 12 polygons (outside 12); mode replace
 - **agent_layers**: ok: course_data/mapper/buffalo_ridge (18 zone edits on 6 holes, 1 tee(s) moved, 126 checked)
 
 ## Warnings
 
-- ignored 10 golf=hole way(s) of a neighbouring course (outside this course's boundary): OSM 852506837, 852506838, 852506840, 852506841, 852506842, 852506843, 852506844, 852506845
+- ignored 9 golf=hole way(s) of a neighbouring course (outside this course's boundary): OSM 852506837, 852506838, 852506840, 852506841, 852506842, 852506843, 852506844, 852506845
 - scorecard (golfify): 1 hole(s) where a longer set is shorter than the next set: 3 Silver (L) 315 < Silver 333
