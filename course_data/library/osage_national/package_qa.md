@@ -1,6 +1,6 @@
 # Osage National Golf Club (Osage Beach, MO) - Palmer tees
 
-Built 2026-11-02T13:46:42Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
+Built 2026-11-02T17:08:57Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Palmer' instead (allow_substitute). Sets on the card: Palmer, Tournament, Middle, Members, Forward, Green**
 
@@ -16,7 +16,7 @@ Built 2026-11-02T13:46:42Z. OSM relation/5897058. Scorecard: opengolfapi (opengo
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.489 |
-| mean_confidence | 0.825 |
+| mean_confidence | 0.822 |
 | osm_score | 0.898 |
 
 OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57, golf=cartpath 40, golf=fairway 34, golf=green 31, golf=hole 18, golf=lateral_water_hazard 25, golf=rough 44, golf=tee 124, holes_with_par 18, tees_with_colour 1, trees_polygons 9, water_polygons 25
@@ -30,19 +30,19 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 | 3 | 4 | 370 / 376 | 88 | 0.72 | check the flags | 45% | 9% | 46% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 370 yds) |
 | 4 | 3 | 158 / 158 | 102 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
 | 5 | 4 | 441 / 438 | 220 | 0.82 | auto | 40% | 27% | 33% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
-| 6 | 4 | 428 / 427 | 175 | 0.80 | check the flags | 76% | 4% | 21% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 428 yds) |
-| 7 | 5 | 612 / 609 | 346 | 0.77 | check the flags | 54% | 21% | 25% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 612 yds) |
+| 6 | 4 | 428 / 427 | 175 | 0.80 | check the flags | 76% | 3% | 21% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 428 yds) |
+| 7 | 5 | 612 / 609 | 346 | 0.76 | check the flags | 54% | 14% | 32% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 612 yds) |
 | 8 | 3 | 206 / 206 | 287 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
-| 9 | 5 | 512 / 511 | 321 | 0.81 | auto | 50% | 8% | 42% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
-| 10 | 4 | 398 / 399 | 89 | 0.82 | auto | 50% | 14% | 37% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 9 | 5 | 512 / 511 | 321 | 0.80 | check the flags | 50% | 4% | 45% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 10 | 4 | 398 / 399 | 89 | 0.81 | auto | 50% | 9% | 42% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 | 11 | 4 | 445 / 445 | 141 | 0.84 | auto | 51% | 6% | 44% | tee stage: Palmer tee_centroid |  |
-| 12 | 4 | 433 / 432 | 195 | 0.83 | auto | 56% | 9% | 34% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 12 | 4 | 433 / 432 | 195 | 0.82 | auto | 56% | 6% | 38% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 | 13 | 3 | 215 / 215 | 179 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
 | 14 | 5 | 525 / 524 | 16 | 0.81 | auto | 48% | 13% | 39% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
-| 15 | 4 | 314 / 314 | 4 | 0.78 | check the flags | 36% | 13% | 52% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 15 | 4 | 314 / 314 | 4 | 0.77 | check the flags | 36% | 9% | 55% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 | 16 | 3 | 163 / 163 | 337 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
 | 17 | 4 | 442 / 441 | 339 | 0.88 | auto | 60% | 12% | 28% | tee stage: Palmer tee_centroid |  |
-| 18 | 5 | 626 / 627 | 277 | 0.82 | auto | 55% | 6% | 38% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 18 | 5 | 626 / 627 | 277 | 0.81 | auto | 55% | 3% | 41% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 
 ## Stages
 
@@ -57,9 +57,9 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 - **imagery**: ok: course_data/packages/osage_national/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2016)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2016
 - **elevation**: ok: course_data/packages/osage_national/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -3895 m2 {'road': 3485, 'strip': 202, 'cells': 140}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 9 polygons (outside 9); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 8 polygons (outside 8); mode replace
 - **agent_layers**: ok: course_data/mapper/osage_national (26 zone edits on 10 holes, 0 tee(s) moved, 108 checked)
 
 ## Warnings
