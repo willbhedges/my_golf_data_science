@@ -1,0 +1,1023 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "old_kinderhook",
+ "corridor_set": "Championship",
+ "mapper": "mapper-old_kinderhook",
+ "started": "2026-11-02T21:40Z",
+ "minutes": 45,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py old_kinderhook. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland; isolated lidar crowns left of the fairway were not in the auto trees",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -33,
+       192,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown (dark green) + crown/shadow on 2016, 2020, 2022; not in auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -52,
+       243,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, visible all three years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -49,
+       283,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, visible all three years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -51,
+       338,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, visible all three years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "crowns at the left fairway edge added; right canopy a few yds beyond the auto outline (OB covers beyond +28)",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -32,
+       323,
+       8,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown on the left fairway edge, CIR crown both years; not in auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -50,
+       265,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, visible 2016/2022"
+    },
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 4,
+     "shape": {
+      "rect": [
+       12,
+       40,
+       190,
+       350
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy edge at +22..+24 vs auto outline +26..+30 along 200-340"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "4": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "open hole; row of single crowns along the right cart path and a few left crowns not in auto trees",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43,
+       185,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown in the row along the right cart path, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       46,
+       210,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       40,
+       237,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       45,
+       262,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       47,
+       282,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       47,
+       308,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       47,
+       323,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -35,
+       335,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown near the left fairway edge, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -48,
+       358,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -26,
+       375,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -56,
+       300,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "auto trees match lidar; two small right crowns added; left OB line under trees in front of the condos left as is",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       42,
+       222,
+       4,
+       4
+      ]
+     },
+     "confidence": "low",
+     "evidence": "small lidar crown right of the fairway, visible 2016/2022"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       40,
+       205,
+       4,
+       4
+      ]
+     },
+     "confidence": "low",
+     "evidence": "small lidar crown right of the fairway, visible 2016/2022"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "tree-lined; auto canopy matches the lidar and photo on both sides; no change",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "auto 'water' strip right of the fairway (along 230-370) is not open water in any year",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       0,
+       45,
+       225,
+       372
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "no open water on NAIP 2016/2020/2022 and no NIR-dark band in CIR between the fairway and the tree island; mown rough (maybe a grassed swale / buried drain)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "creek right with shrubs (auto water + trees ok); one crown right added",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29,
+       345,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown right of the fairway, both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "left tree / shrub edge beyond the auto outline",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 4,
+     "shape": {
+      "rect": [
+       -45,
+       -15,
+       150,
+       290
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy edge at -27..-23 vs auto outline -33..-28 along 150-280, crowns in 2016/2022"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "new houses left (built after 2016) behind the cart path; crowns left of the fairway added; fairway tree larger than auto",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       -52,
+       135,
+       310
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of 6 houses at -73..-53 along 140-305 on NAIP 2022 (graded lots in 2016); lot line put ~2 yds in front of the houses, beyond the cart path"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -29,
+       283,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown left of the fairway, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -38,
+       303,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -46,
+       268,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       17,
+       238,
+       6,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown inside the right fairway, bigger on 2022 than the small auto/lidar circle"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "open hole; auto trees match; no change",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "auto OB at the top right sits inside the cart path",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        20,
+        318
+       ],
+       [
+        48,
+        318
+       ],
+       [
+        38,
+        400
+       ],
+       [
+        20,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "OB edge at +33..+45 along 320-390 lies on mown rough inside the cart path (path at +41..+51); no fence or lot visible there 2016/2022"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "houses right beyond the cart path had no OB; one crown right added",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       45,
+       70,
+       290,
+       395
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "houses at +46..+67 along 290-380 on 2016 and 2022, cart path at +31..+38; line put between path and houses"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       37,
+       278,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown right of the fairway, both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "crowns left of the fairway and one right not in auto trees; S2 L1 rejected; right OB line near the cart path left as is",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -47,
+       222,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown (dark green) left of the fairway, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -47,
+       197,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -62,
+       215,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43,
+       268,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown right, both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-17-L1",
+      "area_yd2": 228,
+      "p": 0.53,
+      "along": [
+       374,
+       395
+      ],
+      "gap_yd": 20.0,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at -40,385 on the shaded edge of the tree stand left of the green approach: dark shade/crowns on 2016, mown rough and canopy on 2022, no mowing line or tufted grass",
+      "shape": {
+       "poly": [
+        [
+         -34,
+         395
+        ],
+        [
+         -19,
+         382
+        ],
+        [
+         -26,
+         374
+        ],
+        [
+         -43,
+         388
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "auto OB right came in over woods and the cart path to +10; trimmed to x>=+30; one crown left",
+   "long_grass": {
+    "L": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line",
+    "R": "none: smooth mown rough (striped in places) from the fairway to the trees / cart path / houses on NAIP 2016 and 2022, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       0,
+       30,
+       120,
+       310
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto OB starts at +10..+25 on woods / cart path / rough; houses only at +48..+65 (2016, 2022); lot line kept from +30"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -57,
+       300,
+       6,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown left of the fairway, both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "2": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "3": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "4": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "5": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "6": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "7": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "8": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "9": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "10": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "11": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "12": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "13": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "14": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "15": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "16": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "17": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  },
+  "18": {
+   "Championship": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot at the back of the rearmost OSM/visible box; no separate box behind on the line (photo 2016/2022, hillshade)"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "5",
+   "what": "left OB line (auto at -27..-30, under trees) vs condos at -45: lot line not visible"
+  },
+  {
+   "hole": "10",
+   "what": "right OB at the cart path (+25..+37) with houses at +58: lot line not visible"
+  },
+  {
+   "hole": "17",
+   "what": "right OB at the cart path (+30..+40), houses at +55"
+  },
+  {
+   "hole": "6",
+   "what": "left OB in woods, no houses inside the window (condos beyond); kept"
+  },
+  {
+   "hole": "4",
+   "what": "auto water band at +55..+65 along 220-360 follows the road on the right; far from play, kept"
+  },
+  {
+   "hole": "2",
+   "what": "right OB from +28 (cart path +25) in woods in front of houses at +55"
+  }
+ ]
+}
