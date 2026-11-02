@@ -19,6 +19,13 @@ was an artifact of the clamp. This wrapper runs v2_course.py unchanged after ins
 
 The guard needs the hole: M.ev_curve is wrapped to remember the raster / hole of the latest call (robust_aim is
 always called on the curves of the hole just computed). V2_ADAPTIVE_AIM=0 turns it off.
+
+The page stage (python3 v2_adaptive.py page ..., course_page.py finish) runs through here too: the hole picture of a
+tee shot (spirit_hollow/build_wind_page.tee_hole) is cropped +/-75 yds off the tee line, so a widened aim's landing
+oval fell off the picture (library QA 2026-11-02: Gustin Gold 6 4-wood -60, Sycamore Ridge 18 Driver +58.5). When
+the page prints a wide aim on a hole (wide_aims.wide: the calm book aim, or a forecast pick on a widened line, past
++/-40), that side of the crop widens to the landing ovals (wide_aims.landing_extent). Other holes keep the crop.
+The alt-base subprocesses of the page stage run through here as well (v2_course re-runs its own __file__).
 """
 import importlib.util
 import os
@@ -122,18 +129,103 @@ def install(D, M):
     D._adaptive_aim = True
 
 
+CROP_LAT = 75.0          # yds: build_wind_page.tee_hole's crop each side of the tee line
+CROP_ALONG = (-14.0, 400.0)
+
+
+def page_hole(grids, calm, bearing):
+    """A page-like tee hole (wide_aims input) from the v2 run's wind grids {back: grid json} and calm decision."""
+    import build_page_v2 as BP
+    h = dict(kind="tee", bearing=bearing,
+             grids={f"{b:g}" if isinstance(b, float) else str(b): {T: BP.compact(gT) for T, gT in g.items()}
+                    for b, g in grids.items()})
+    if calm:
+        h["calm"] = calm
+    return h
+
+
+def crop_lateral(ext):
+    """(left, right) crop yds off the tee line for a wide_aims.landing_extent (None: the usual +/-CROP_LAT)."""
+    if not ext:
+        return CROP_LAT, CROP_LAT
+    return max(CROP_LAT, float(ext[0])), max(CROP_LAT, float(ext[1]))
+
+
+def install_page_crop(vc, slug, which, M):
+    """Patch build_wind_page.tee_hole: widen the hole picture's crop to the landing of a wide printed aim."""
+    import glob
+    import json
+    import re
+    import build_wind_page as BW
+    if getattr(BW, "_wide_crop", False):
+        return
+    if HERE not in sys.path:
+        sys.path.insert(0, HERE)
+    import wide_aims as W
+    cfg = vc.config(slug)
+    v2dir = vc.cdir(slug, which, "v2")
+    gp = os.path.join(v2dir, "wind_grid.json")
+    if not os.path.exists(gp):
+        return
+    grid = json.load(open(gp))
+    grids = {0: grid}
+    for path in glob.glob(os.path.join(v2dir, "wind_grid_back*.json")):
+        grids[int(float(re.search(r"back([+-]?[0-9.]+)", path).group(1)))] = json.load(open(path))
+    dp = os.path.join(v2dir, "v2_decisions.json")
+    dec = json.load(open(dp)) if os.path.exists(dp) else {}
+    fc = vc.forecast(slug)
+    Dl = dict(temps=grid["temps"], speeds=grid["speeds"], days=cfg["days"],
+              forecast=[dict(date=r["date"], hour=r["hour"], mph=r["wind_mph"], gust=r["gust_mph"],
+                             dir=r["wind_from_deg"], temp=r["temp_f"]) for r in fc["hourly"]])
+    orig = BW.tee_hole
+
+    def tee_hole(h):
+        d = orig(h)
+        try:
+            r = dec.get(str(h)) or {}
+            calm = dict(pick=r["pick"], aim=r["aim"], tie=bool(r.get("tie")),
+                        temp=r.get("temp_f", M.hole_temp(h))) if "pick" in r else None
+            gh = {b: {T: g["holes"][str(h)][T] for T in g["holes"][str(h)]} for b, g in grids.items()
+                  if str(h) in g.get("holes", {})}
+            left, right = crop_lateral(W.landing_extent(page_hole(gh, calm, BW.course.BEARINGS.get(h)), Dl))
+        except Exception as e:                          # noqa: BLE001 (never fail the page over the crop)
+            print(f"wide crop: hole {h}: {type(e).__name__}: {e}", file=sys.stderr)
+            return d
+        if (left, right) == (CROP_LAT, CROP_LAT):
+            return d
+        hd = BW.yb.display_hole(BW.course.HOLES[h])
+        tee, f, rr, ppy = BW.frame(hd["tee"], hd["dot270"], 270)
+        pts = [tee + (a * f + l * rr) * ppy for a in CROP_ALONG for l in (-left, right)]
+        xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+        uri, s, (x0, y0), size = BW.crop_jpeg(hd["image"], (min(xs), min(ys), max(xs), max(ys)), y_max=10000)
+        d.update(img=uri, w=size[0], h=size[1], s=s, x0=x0, y0=y0, crop_lat=[round(-left, 1), round(right, 1)])
+        print(f"wide crop: hole {h}: {left:.0f} left / {right:.0f} right of the tee line", file=sys.stderr)
+        return d
+    BW.tee_hole = tee_hole
+    BW._wide_crop = True
+
+
 def load_v2_course():
     spec = importlib.util.spec_from_file_location("v2_course", VC_PY)
     vc = importlib.util.module_from_spec(spec)
     sys.modules["v2_course"] = vc
     spec.loader.exec_module(vc)
     act = vc.activate
+    page = vc.build_page
 
     def activate(slug, which):
         course, meta, M, D = act(slug, which)
         install(D, M)
+        if CTX.get("page"):
+            install_page_crop(vc, slug, which, M)
         return course, meta, M, D
     vc.activate = activate
+
+    def build_page(*a, **kw):
+        CTX["page"] = True
+        return page(*a, **kw)
+    vc.build_page = build_page
+    vc.__file__ = os.path.abspath(__file__)        # its page / prepare subprocesses run through this wrapper
     return vc
 
 

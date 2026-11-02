@@ -27,10 +27,15 @@ Stages (each a subcommand, run by the workflow; README.md in this folder has the
   native REQ           -> <out>/native.json: the golfer native-grass taps ("Native grass along this hole's landing
                           area?" Left / Right / Both / None, product/native_confirm.py via verify.native_for) when the
                           request has "agent_layers" and that folder has the mapper's frames.json + edits.json +
-                          agent_zones.geojson ("native": false turns it off); at most native_confirm.CAP (4) holes,
-                          the four answers' plans precomputed. Run in the package job (the DEM and lidar canopy the
-                          planner reads are on disk there); app/build_library_play.py turns it into check cards
-  finish REQ PARTS     -> merge, page (data gzip-inlined), picture checks, qa_page.js, qa_report.md, status.json
+                          agent_zones.geojson ("native": false turns it off); up to NATIVE_SPARE x native_confirm.CAP
+                          candidates by value, the four answers' plans precomputed. Run in the package job (the DEM and
+                          lidar canopy the planner reads are on disk there); finish keeps at most CAP whose planner
+                          plan is the page's own calm-day pick (native_reconcile); app/build_library_play.py turns
+                          them into check cards
+  finish REQ PARTS     -> merge, page (data gzip-inlined; the page stage runs through v2_adaptive.py, which widens a
+                          hole picture's crop to a wide aim's landing), picture checks + the wide-aim CHECK
+                          (wide_aims.py: any printed tee-shot aim past +/-40 yds), native_reconcile, qa_page.js,
+                          qa_report.md, status.json
   index                -> course_data/library/index.json
 A failed re-run of a course that already has a page keeps that page's status.json (status, page, reasons, the good
 qa_report.md) and records the failure beside it as "last_attempt": {status, stage, error, when}; the index lists the
@@ -423,6 +428,10 @@ def compute(q, slot, kind, parts):
 
 # ------------------------------------------------------------------------------------------------ native
 NATIVE_FILES = ("frames.json", "edits.json", "agent_zones.geojson")
+NATIVE_SPARE = 2            # the native stage keeps CAP x this candidates: finish drops the ones the page contradicts
+NATIVE_AIM_TOL = 10.0       # yds: native_confirm.AIM_TOL (a plan change)
+PAGE_AIM_MAX = 60.0         # yds: the widest aim a page can print (v2_adaptive: the +/-40 bound + MAX_EXTRA)
+NATIVE_LABELS = {"L": "Left", "R": "Right", "both": "Both", "none": "None"}
 
 
 def native_source(q):
@@ -463,8 +472,9 @@ def native(q):
             import verify
             workers = os.cpu_count() if os.environ.get("GITHUB_ACTIONS") else int(os.environ.get("NATIVE_WORKERS", "1"))
             n = int(q.get("native_n") or 4000)
+            import native_confirm
             items, note = verify.native_for(pkg, os.path.basename(os.path.normpath(path)), cfg["tees"], n=n,
-                                            workers=workers, mapper_dir=path,
+                                            workers=workers, mapper_dir=path, cap=NATIVE_SPARE * native_confirm.CAP,
                                             cache_path=os.environ.get("NATIVE_CACHE") or f"/tmp/native_cache_{q['slug']}.json")
             rec.update(items=items, note=note, n=n)
         except Exception as e:                                  # noqa: BLE001
@@ -473,6 +483,96 @@ def native(q):
     wj(out_dir(q, "native.json"), rec)
     log(f"{q['slug']}: native questions: {rec['note']} -> holes {[it['hole'] for it in rec['items']]} "
         f"({rec['runtime_s']} s)")
+    return rec
+
+
+def _aim_words(a):
+    """= product/verify.aim_words"""
+    a = float(a)
+    return "on the line" if abs(a) < 2.5 else f"{abs(a):.0f} yds {'right' if a > 0 else 'left'}"
+
+
+def _plan_of(txt):
+    club, aim = str(txt).rsplit(" ", 1)
+    return club, float(aim)
+
+
+def native_reconcile(rec, holes, cap=4, regret_red=0.02):
+    """native.json (lib_native/1) against the page's own calm-day picks (holes: the page holes of rec's tee set).
+
+    The native stage plans with the error-budget planner (product/decide.quick_hole, its own aim bound), the page
+    with the v2 engine: Osage National 15 (2026-11-02) had a card saying "now Driver, 60 yds right ... would cost
+    0.27 strokes" while the page plays Long iron 1 left. So each card's "no answer" plan must be the page's pick:
+      * the planner's current plan is not the page's calm-day pick (another club, or > NATIVE_AIM_TOL yds off),
+        or the hole has no calm-day pick on the page -> the card is dropped (its regrets were measured against a
+        plan the page does not show);
+      * an answer's re-plan aims past PAGE_AIM_MAX (outside any aim the page can print) -> dropped;
+      * else the card is re-based on the page's pick: plans.current, each answer's change / aim shift / text
+        relative to it; a card no answer changes is dropped.
+    The first `cap` kept cards stay (items arrive sorted by value). -> rec (changed in place): items, dropped
+    [{hole, why}], baseline."""
+    by = {str(h.get("key")): h for h in holes or [] if h.get("kind") == "tee"}
+    keep, dropped = [], []
+    for it in rec.get("items") or []:
+        ref = str(it.get("hole"))
+        calm = (by.get(ref) or {}).get("calm") or {}
+        if calm.get("pick") is None or calm.get("aim") is None:
+            dropped.append(dict(hole=ref, why="no calm-day pick on the page"))
+            continue
+        pc, pa = calm["pick"], float(calm["aim"])
+        plans = it.get("plans") or {}
+        cur = _plan_of(plans["current"]) if plans.get("current") else None
+        if cur is None or cur[0] != pc or abs(cur[1] - pa) > NATIVE_AIM_TOL:
+            dropped.append(dict(hole=ref, why=f"planner's no-answer plan {plans.get('current')} is not the page's "
+                                              f"{pc} {pa:+.1f}"))
+            continue
+        wide = [a for a, t in plans.items() if a != "current" and abs(_plan_of(t)[1]) > PAGE_AIM_MAX + 1e-6]
+        if wide:
+            dropped.append(dict(hole=ref, why=f"re-plan past {PAGE_AIM_MAX:.0f} yds ({', '.join(f'{a}: {plans[a]}' for a in wide)})"))
+            continue
+        opts, moved = [], False
+        for o in it.get("options") or []:
+            oc = dict(o.get("outcome") or {})
+            club, aim = oc.get("pick", pc), float(oc.get("aim", pa))
+            changed = club != pc or abs(aim - pa) > NATIVE_AIM_TOL
+            reg = float(oc.get("regret") or 0.0)
+            moved |= changed
+            oc.update(club_changed=club != pc, aim_shift=round(aim - pa, 1),
+                      severity="red" if changed and reg >= regret_red else ("amber" if changed else "green"))
+            if not changed:
+                oc.update(pick=pc, aim=pa, aim_shift=0.0, regret=0.0)
+            txt = (f"Re-planned: {club}, {_aim_words(aim)} (now {pc}, {_aim_words(pa)})."
+                   + (f" Playing today's plan would cost {reg:.2f} strokes." if reg >= 0.005 else "")
+                   if changed else "No change to the plan.")
+            opts.append(dict(o, text=txt, outcome=oc))
+        if not moved:
+            dropped.append(dict(hole=ref, why=f"no answer changes the page's {pc} {pa:+.1f}"))
+            continue
+        it.update(options=opts, plans=dict(plans, current=f"{pc} {pa:+.0f}", planner=plans.get("current")))
+        keep.append(it)
+    rec["items"] = keep[:cap]
+    dropped += [dict(hole=str(it["hole"]), why=f"over the {cap}-card cap") for it in keep[cap:]]
+    rec["dropped"] = dropped
+    rec["baseline"] = "page calm-day pick"
+    return rec
+
+
+def native_finish(q, data, cfg):
+    """finish: native.json reconciled with the page just built (native_reconcile), rewritten in place."""
+    p = out_dir(q, "native.json")
+    rec = rj(p)
+    if not rec or not rec.get("items"):
+        return rec
+    S = rec.get("tee_set") or cfg.get("tees")
+    holes = data["holes"] if S == data.get("base_set") else (data.get("alt") or {}).get(S)
+    sys.path[:0] = [x for x in (os.path.join(CD, "product"),) if x not in sys.path]
+    import native_confirm
+    native_reconcile(rec, holes or [], cap=native_confirm.CAP)
+    rec["note"] = (rec.get("note") or "") + f"; {len(rec['items'])} kept on the page's own picks" + \
+        (f" ({len(rec['dropped'])} dropped)" if rec["dropped"] else "")
+    wj(p, rec)
+    for d in rec["dropped"]:
+        log(f"{q['slug']}: native card {d['hole']} dropped: {d['why']}")
     return rec
 
 
@@ -540,6 +640,27 @@ def run_checks(q, cfg):
         log(r.stdout[-2000:], r.stderr[-3000:])
         res[w] = rj(o)
     return res
+
+
+def wide_aim_checks(checks, data):
+    """Add the wide-aim check (wide_aims.py: a printed tee-shot aim past +/-40 yds, product/decide.wide_aim_flags
+    words) to the picture checks of each solved set: such a hole is a CHECK whatever its other checks say."""
+    if HERE not in sys.path:
+        sys.path.insert(0, HERE)
+    import wide_aims
+    flags = wide_aims.page_flags(data)
+    for w, c in checks.items():
+        if not c:
+            continue
+        for ref, (why, where) in (flags.get(c.get("set")) or {}).items():
+            h = c["holes"].get(ref)
+            if h is None:
+                continue
+            h.setdefault("checks", {})["wide_aim"] = dict(ok=False, why="; ".join(why), where=where)
+            h["status"] = "CHECK"
+            h["reasons"] = [r for r in h.get("reasons", []) if not r.startswith("wide_aim:")] + \
+                [f"wide_aim: {r}" for r in why]
+    return flags
 
 
 def run_qa_page(q, page, sets, cfg_set="page"):
@@ -626,7 +747,8 @@ def report_md(q, cfg, pkg, checks, qa, status, reasons, check_holes, page_bad, p
     if reasons:
         L += ["Course-level reasons:", ""] + [f"* {r}" for r in reasons] + [""]
     L += ["Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick "
-          "lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the "
+          "lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm "
+          "book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the "
           "OSM green; the page renders in a phone and a desktop browser).", ""]
     for w, c in checks.items():
         if not c:
@@ -655,7 +777,10 @@ def finish(q, parts):
             shutil.copytree(d, os.path.join(tmp, os.path.basename(d)))
         vc(q, "merge", tmp, "--which", w)
     raw = f"/tmp/page_{q['slug']}.html"
-    vc(q, "page", "--which", "auto", "--out", raw)
+    # through v2_adaptive.py: a hole whose printed aim is wide gets a hole picture wide enough for its landing
+    cmd = [sys.executable, VC_ADAPT_PY, "page", "--slug", q["slug"], "--which", "auto", "--out", raw]
+    log("$", " ".join(cmd))
+    subprocess.run(cmd, env=v2env(q), check=True)
     head, data, code, tail = split_page(open(raw).read())
     # the new page is built and checked as page.new.html and replaces page.html only once everything passed, so a
     # finish that crashes half way leaves the last good page (and its status.json, failed() below) in place
@@ -664,6 +789,8 @@ def finish(q, parts):
     open(page, "w").write(pack_page(head, data, code, tail))
     pkg = rj(out_dir(q, "package.json"))
     checks = run_checks(q, cfg)
+    wide_aim_checks(checks, data)
+    native_finish(q, data, cfg)
     solved = [cfg["tees"]] + list(cfg.get("alt_bases") or {})
     # the tee picker exists only with more than one set on the page; a single-set page is checked as it opens
     qa = run_qa_page(q, page, solved if len(solved) > 1 else [None], cfg_set=solved[0])

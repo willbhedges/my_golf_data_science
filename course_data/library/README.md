@@ -39,7 +39,7 @@ result `course_data/library/osm_check/<name>.json`). Requests built from it carr
 | plan | the request files the push changed -> a course matrix and a compute matrix (2 bases x wind / decide). Skips any target whose `config.json` says `"hand_checked": true`, and every slug that has a tournament folder in `course_data/courses/` (Blue Hills, Eagle Knoll, ...) or is Spirit Hollow / Mozingo. | `course_page.py plan` |
 | package | resolve (OSM) + OSM features + web scorecard + NAIP + 3DEP: `platform/package.py run`. Then the vision layer (`vision_any/fetch_any.py`, `v2_fetch.py`, `v2_model.py --infer --integrate yes`), OB evidence (`ob/fetch.py`) and a package rebuild, so vision zones and inferred OB are in the first plan (Eagle Knoll F1 / Blue Hills B1). Then bases + weather, and the sharpest leaf-on NAIP year (finest gsd among the scored leaf-on candidates, newest on ties) fetched at 0.3 m for the hole pictures only. `imagery.dir` and `sources.imagery.dir` both point at it (the bh_sharp lesson). Then `v2_course.py prepare` for each base. | `course_page.py pkgreq / configure / prepare` |
 | compute | per solved base: the v2 wind grids (base tee, plus offsets for any other set of interest) and the calm-day Bayesian decide (`draws` prior draws). Holes are split over the runner's cores. | `course_page.py compute` |
-| finish | merge, then the v2 page (`v2_course.py page`, main base `auto`, second base `auto_b` folded in through `alt_bases`). Then the picture checks (`picture_checks.py`) and `courses/qa_page.js` (phone + desktop, from each solved set), then `qa_report.md`, `qa.json` and `status.json`, and a commit. | `course_page.py finish` |
+| finish | merge, then the v2 page (`v2_adaptive.py page` = `v2_course.py page` with a wide hole picture where a wide aim lands; main base `auto`, second base `auto_b` folded in through `alt_bases`). Then the picture checks (`picture_checks.py`) plus the wide-aim check (`wide_aims.py`), the native cards reconciled with the page's picks (`native_reconcile`), and `courses/qa_page.js` (phone + desktop, from each solved set), then `qa_report.md`, `qa.json` and `status.json`, and a commit. | `course_page.py finish` |
 | index | `course_data/library/index.json` | `course_page.py index` |
 
 Weather (`weather.py`): if the first event day is within 14 days, the Open-Meteo hourly forecast. Otherwise,
@@ -59,6 +59,7 @@ Each check is run on each solved base, hole by hole (`picture_checks.py`):
 | par | the hole's par equals the card's par. At course level, the pars must also sum to the card's total. |
 | aim (par 4/5) | the calm-day pick's landing point (club total along the tee line, at its aim) is on fairway, on first cut, or on rough within 6 yds of fairway |
 | oval (par 4/5) | the pick's landing ellipse (the club's 95 % width x carry window + 6 yds of roll spread) is at most 40 % trees / water / OB. Unverified ground beyond the mapped corridor counts half, as in the model. |
+| wide aim (par 4/5) | no tee-shot aim the page prints is more than 40 yds off the tee line: the calm-day book aim (the note), or a forecast pick on an event day whose line (aim + wind drift) is past 40 too (the widened dog-leg bound of `v2_adaptive.py`, not an aim into a crosswind). Same rule and words as `product/decide.py wide_aim_flags` ("... confirm the line on the map"); `wide_aims.py`. The hole picture is widened to that aim's landing oval. |
 | par-3 box | the calm target box the page draws has its centre on the OSM green polygon, with at least 60 % of its area on it. A green with no OSM outline fails. |
 | page | `qa_page.js` finds no problems: console errors, NaN / undefined text, an empty play, a missing image, an empty table, horizontal scroll, or a hole that does not advance |
 
@@ -254,6 +255,8 @@ the US) and drops anything else.
 | `requests_to_batch.py` | app request docs -> course_page request files + a course_batch (above) |
 | `course_page.py` | every stage (plan, pkgreq, configure, prepare, compute, finish, index) |
 | `picture_checks.py` | the per-hole picture checks for one solved base |
+| `wide_aims.py` | the wide-aim check (any printed tee-shot aim past +/-40 yds) and the landing extent for the hole picture's crop |
+| `v2_adaptive.py` | the adaptive aim bound for the decide / wind / page stages, and the wide hole-picture crop |
 | `weather.py` | forecast or climate normals |
 | `gate_eval.py`, `gate/GATE.md` | blind gate builds of the hand-checked courses scored against their truth |
 | `index.json` | the library index (above) |

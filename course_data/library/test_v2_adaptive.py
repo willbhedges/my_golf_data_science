@@ -67,3 +67,21 @@ def test_off_switch(ra, monkeypatch):
     monkeypatch.setenv("V2_ADAPTIVE_AIM", "0")
     curve = 4.0 + 0.0005 * (A.AIMS - 52.0) ** 2
     assert f(A.AIMS, curve)["aim"] == 40.0
+
+
+def test_crop_widens_only_the_wide_side():
+    # build_wind_page.tee_hole crops +/-75 off the tee line; a wide aim's landing oval (Gustin Gold 6 4-wood -60,
+    # half width 27 + pad) needs more on its own side only
+    assert A.crop_lateral(None) == (A.CROP_LAT, A.CROP_LAT)
+    assert A.crop_lateral((97.0, 10.0)) == (97.0, A.CROP_LAT)
+    assert A.crop_lateral((40.0, 103.5)) == (A.CROP_LAT, 103.5)
+
+
+def test_page_stage_runs_through_the_wrapper():
+    # course_page.py finish builds the page through v2_adaptive.py, and v2_course's alt-base page subprocesses
+    # (os.path.abspath(__file__)) come back through it, so every solved set gets the wide crop
+    import course_page as cp
+    src = open(cp.__file__).read()
+    assert '[sys.executable, VC_ADAPT_PY, "page"' in src and 'vc(q, "page"' not in src
+    vc = A.load_v2_course()
+    assert os.path.abspath(vc.__file__) == os.path.abspath(A.__file__)

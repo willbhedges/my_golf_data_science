@@ -209,3 +209,87 @@ def test_unsupported_imagery_stops_the_build_and_delists_the_page(tmp_path):
     row = cp.index_row(st)
     assert row["status"] == "unsupported" and row["page"] is None
     cp.check_imagery(q, NAIP_PKG)             # NAIP: nothing happens
+
+
+# ---- wide-aim CHECK on the page (library QA 2026-11-02: Gustin Gold 6 4-wood -60 printed with no CHECK)
+def _tee(key, pick, aim, temps=(45.0, 55.0)):
+    cell = {pick: [aim, 4.0, aim - 1, aim + 1, 250, 270, 60, 0.0], "Mid iron": [0.0, 4.5, -1, 1, 180, 190, 36, 0.0]}
+    return dict(kind="tee", key=key, bearing=0.0, calm=dict(pick=pick, aim=aim, temp=50.0),
+                grids={"0": {f"{T:g}": {"0_0": cell, **{f"5_{d}": cell for d in range(0, 360, 30)}} for T in temps}})
+
+
+def _data():
+    return dict(base_set="Black", temps=[45.0, 55.0], speeds=[0, 5], days=["2026-11-07"], forecast=[],
+                holes=[_tee("6", "4-wood", -40.0), _tee("7", "Driver", 5.0)],
+                alt={"Gold": [_tee("6", "4-wood", -60.0), _tee("7", "Driver", 5.0)]})
+
+
+def test_wide_aim_is_a_check_on_its_own_set():
+    checks = {"auto": dict(set="Black", course=dict(pars_ok=True), holes={"6": dict(status="PASS", reasons=[], checks={}),
+                                               "7": dict(status="PASS", reasons=[], checks={})}),
+              "auto_b": dict(set="Gold", course=dict(pars_ok=True), holes={"6": dict(status="PASS", reasons=[], checks={}),
+                                                "7": dict(status="PASS", reasons=[], checks={})})}
+    cp.wide_aim_checks(checks, _data())
+    assert [r["status"] for r in checks["auto"]["holes"].values()] == ["PASS", "PASS"]      # -40 is on the bound
+    g6 = checks["auto_b"]["holes"]["6"]
+    assert g6["status"] == "CHECK" and g6["reasons"] == [
+        "wide_aim: 4-wood aim -60 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): "
+        "confirm the line on the map"]
+    assert checks["auto_b"]["holes"]["7"]["status"] == "PASS"
+    pkg = dict(pipeline=dict(holes=dict(method="osm"), profile=dict(osm_greens=18, card=True)),
+               holes={str(k): {} for k in range(1, 19)},
+               scorecard=dict(kind="web"), stages=dict(vision="ok: vision_any/2"))
+    status, reasons, check_holes, _ = cp.course_gate(pkg, checks, {}, {})
+    assert status == "needs confirm" and check_holes == [6]
+
+
+# ---- native cards on the page's own pick (Osage National 15, 2026-11-02: card "now Driver, 60 yds right")
+def _item(hole, plans, regret=None):
+    regret = regret or {}
+    opts = []
+    for a in ("L", "R", "both", "none"):
+        c, x = plans[a].rsplit(" ", 1)
+        opts.append(dict(answer=a, label=a, text="planner text", outcome=dict(pick=c, aim=float(x), regret=regret.get(a, 0.0))))
+    return dict(id=f"native_{hole}", hole=hole, plans=plans, options=opts)
+
+
+def test_native_card_whose_plan_the_page_does_not_play_is_dropped():
+    holes = [_tee("15", "Long iron", -1.0), _tee("5", "Driver", -18.5), _tee("11", "Driver", -7.0)]
+    rec = dict(items=[
+        _item("5", {"current": "Driver -18", "L": "4-wood -5", "R": "Driver -18", "both": "4-wood -5", "none": "Driver -18"},
+              {"L": 0.168, "both": 0.168}),
+        _item("15", {"current": "Driver +60", "L": "Driver +60", "R": "4-wood +2", "both": "4-wood +5", "none": "Driver +60"},
+              {"R": 0.265, "both": 0.245}),
+        _item("11", {"current": "Driver -8", "L": "Driver +2", "R": "Driver -8", "both": "4-wood -2", "none": "Driver -8"},
+              {"L": 0.047, "both": 0.048})])
+    cp.native_reconcile(rec, holes, cap=4)
+    assert [it["hole"] for it in rec["items"]] == ["5", "11"]
+    assert rec["dropped"][0]["hole"] == "15" and "Long iron -1.0" in rec["dropped"][0]["why"]
+    c5 = rec["items"][0]
+    assert c5["plans"]["current"] == "Driver -18" and c5["plans"]["planner"] == "Driver -18"
+    t = {o["answer"]: o["text"] for o in c5["options"]}
+    assert t["L"].startswith("Re-planned: 4-wood, 5 yds left (now Driver, 18 yds left).") and t["R"] == "No change to the plan."
+    # every card's "no answer" plan is the page's pick
+    for it in rec["items"]:
+        h = next(h for h in holes if h["key"] == it["hole"])
+        none = next(o for o in it["options"] if o["answer"] == "none")["outcome"]
+        assert (none["pick"], none["aim"]) == (h["calm"]["pick"], h["calm"]["aim"])
+    c11 = rec["items"][1]                                   # L: Driver +2 is 9 yds from the page's -7: no change
+    assert next(o for o in c11["options"] if o["answer"] == "L")["text"] == "No change to the plan."
+
+
+def test_native_card_with_a_replan_past_the_page_bound_or_no_change_is_dropped():
+    holes = [_tee("6", "Driver", -5.5), _tee("2", "Driver", 0.0)]
+    rec = dict(items=[
+        _item("6", {"current": "Driver -8", "L": "4-wood +20", "R": "Driver -32", "both": "Driver -110", "none": "Driver -18"}),
+        _item("2", {"current": "Driver +2", "L": "Driver +4", "R": "Driver -3", "both": "Driver +1", "none": "Driver +2"})])
+    cp.native_reconcile(rec, holes, cap=4)
+    assert rec["items"] == [] and [d["hole"] for d in rec["dropped"]] == ["6", "2"]
+
+
+def test_native_cards_capped_after_reconcile():
+    holes = [_tee(str(k), "Driver", 0.0) for k in range(1, 7)]
+    plans = {"current": "Driver +0", "L": "4-wood +0", "R": "Driver +0", "both": "4-wood +0", "none": "Driver +0"}
+    rec = dict(items=[_item(str(k), dict(plans)) for k in range(1, 7)])
+    cp.native_reconcile(rec, holes, cap=4)
+    assert [it["hole"] for it in rec["items"]] == ["1", "2", "3", "4"] and len(rec["dropped"]) == 2

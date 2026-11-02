@@ -126,8 +126,19 @@
    },
    {
     "n": 4,
-    "verdict": "OK",
-    "notes": "418/384 = card; Gold walked back 17 yds behind the OSM box (passes the check). 4-wood short of the bunker/water, sensible."
+    "verdict": "wrong tee (Gold)",
+    "notes": "418/384 = card. rv16 rebuild (2026-11-02 QA): the Gold tee moved to lidar pad lidar:409 (39.2490648, -94.4742379), 76 yds from the Blue box and 66 yds off the hole line beside the hole-3 green, so the tee line crossed the tree belt and the pick became 4-wood 58.5 left on a straight hole. Fix: Gold on the OSM hole-line start (-94.4738726, 39.249541), 38 yds behind the Blue box (897736289) and 5 yds off its line, on the light tee pad below Blue in the page picture; 410 yds straight / 421 along the hole line to the green point, card 418. Earlier build: walked back 17 yds behind the OSM box (418, passed).",
+    "fix": {
+     "tee_ll": {
+      "Gold": [
+       39.249541,
+       -94.4738726
+      ]
+     },
+     "yards": {
+      "Gold": 418
+     }
+    }
    },
    {
     "n": 5,
