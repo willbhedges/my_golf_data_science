@@ -1,12 +1,12 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-02T02:49Z",
+ "updated": "2026-11-02T03:10Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 0,
-  "needs confirm": 78,
-  "failed": 29
+  "needs confirm": 82,
+  "failed": 25
  },
  "courses": [
   {
@@ -1006,6 +1006,84 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T22:08Z",
+   "group": "library"
+  },
+  {
+   "slug": "tpc_harding_park",
+   "name": "TPC Harding Park",
+   "city": "San Francisco",
+   "state": "CA",
+   "status": "needs confirm",
+   "check_holes": [
+    2,
+    4,
+    5,
+    6,
+    8,
+    9,
+    12
+   ],
+   "reasons": [
+    "holes not all mapped in OSM (hole method: v2+structure)",
+    "7 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Championship",
+     "yards": 7169,
+     "par": 72,
+     "rating": 74.3,
+     "slope": 129,
+     "colour": "black",
+     "on_page": "solved"
+    },
+    {
+     "name": "Blue",
+     "yards": 6845,
+     "par": 72,
+     "rating": 72.9,
+     "slope": 126,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 6405,
+     "par": 72,
+     "rating": 70.5,
+     "slope": 121,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Red",
+     "yards": 5875,
+     "par": 73,
+     "rating": 73.4,
+     "slope": 106,
+     "colour": "red",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Championship",
+    "Blue"
+   ],
+   "page": "course_data/library/tpc_harding_park/page.html",
+   "page_bytes": 2274109,
+   "qa_report": "course_data/library/tpc_harding_park/qa_report.md",
+   "center": [
+    37.7218116,
+    -122.49162770000001
+   ],
+   "osm": "way/16753068",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-01T22:24Z",
    "group": "library"
   },
   {
@@ -3404,6 +3482,69 @@
    ],
    "weather": "forecast",
    "built": "2026-11-01T22:05Z",
+   "group": "library"
+  },
+  {
+   "slug": "forest_dunes",
+   "name": "Forest Dunes Course",
+   "city": "Roscommon",
+   "state": "MI",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source None, flags [])",
+    "18 holes built vs the card's 0",
+    "pars sum to 72, card None",
+    "18 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "osm_back",
+     "yards": null,
+     "par": null,
+     "rating": null,
+     "slope": null,
+     "colour": null,
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "osm_back"
+   ],
+   "page": "course_data/library/forest_dunes/page.html",
+   "page_bytes": 1294328,
+   "qa_report": "course_data/library/forest_dunes/qa_report.md",
+   "center": [
+    44.59032455,
+    -84.5210287
+   ],
+   "osm": "way/1536953640",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-01T22:17Z",
    "group": "library"
   },
   {
@@ -6168,6 +6309,94 @@
    "group": "library"
   },
   {
+   "slug": "harbour_town",
+   "name": "Harbour Town Golf Links",
+   "city": "Hilton Head Island",
+   "state": "SC",
+   "status": "needs confirm",
+   "check_holes": [
+    2,
+    3,
+    5,
+    7,
+    8,
+    16,
+    18
+   ],
+   "reasons": [
+    "holes not all mapped in OSM (hole method: v2+structure)",
+    "scorecard not matched (source opengolfapi, flags ['Heritage: holes sum to 7131 but the source says 7099 (+32): mixed card versions', 'Blue: holes sum to 6642 but the source says 6681 (-39): mixed card versions', 'White: holes sum to 6103 but the source says 6253 (-150): mixed card versions', 'Gold: holes sum to 5478 but the source says 5867 (-389): mixed card versions', 'Green: holes sum to 4760 but the source says 5084 (-324): mixed card versions'])",
+    "7 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Heritage",
+     "yards": 7131,
+     "par": 71,
+     "rating": 75.6,
+     "slope": 148,
+     "colour": "heritage",
+     "on_page": "solved"
+    },
+    {
+     "name": "Blue",
+     "yards": 6642,
+     "par": 71,
+     "rating": 73.3,
+     "slope": 144,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 6103,
+     "par": 71,
+     "rating": 71.4,
+     "slope": 136,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Gold",
+     "yards": 5478,
+     "par": 71,
+     "rating": 69.6,
+     "slope": 131,
+     "colour": "gold",
+     "on_page": null
+    },
+    {
+     "name": "Green",
+     "yards": 4760,
+     "par": 71,
+     "rating": 66.7,
+     "slope": 118,
+     "colour": "green",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Heritage",
+    "Blue"
+   ],
+   "page": "course_data/library/harbour_town/page.html",
+   "page_bytes": 3010152,
+   "qa_report": "course_data/library/harbour_town/qa_report.md",
+   "center": [
+    32.13072015,
+    -80.80925865
+   ],
+   "osm": "relation/4813858",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-01T22:44Z",
+   "group": "library"
+  },
+  {
    "slug": "prairie_green",
    "name": "Prairie Green Golf Course",
    "city": "Sioux Falls",
@@ -6369,6 +6598,84 @@
    ],
    "weather": "forecast",
    "built": "2026-10-31T04:00Z",
+   "group": "library"
+  },
+  {
+   "slug": "memorial_park",
+   "name": "Memorial Park Golf Course",
+   "city": "Houston",
+   "state": "TX",
+   "status": "needs confirm",
+   "check_holes": [
+    2,
+    3,
+    4,
+    9,
+    13,
+    16,
+    17
+   ],
+   "reasons": [
+    "scorecard not matched (source golfify, flags ['5 hole(s) where a longer set is shorter than the next set: 8 Blue 510 < White 554, 9 Blue 202 < White 378, 13 Blue 406 < White 480, 18 Blue 393 < White 410'])",
+    "7 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Blue",
+     "yards": 7217,
+     "par": 72,
+     "rating": 75,
+     "slope": 130,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 6675,
+     "par": 72,
+     "rating": 71.5,
+     "slope": 123,
+     "colour": "white",
+     "on_page": "solved"
+    },
+    {
+     "name": "Gold",
+     "yards": 6111,
+     "par": 72,
+     "rating": 69.2,
+     "slope": 119,
+     "colour": "gold",
+     "on_page": null
+    },
+    {
+     "name": "Red",
+     "yards": 5459,
+     "par": 72,
+     "rating": 71.3,
+     "slope": 121,
+     "colour": "red",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Blue",
+    "White"
+   ],
+   "page": "course_data/library/memorial_park/page.html",
+   "page_bytes": 2517750,
+   "qa_report": "course_data/library/memorial_park/qa_report.md",
+   "center": [
+    29.77135525,
+    -95.43716355
+   ],
+   "osm": "relation/13729803",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-01T22:33Z",
    "group": "library"
   },
   {
@@ -7086,7 +7393,7 @@
    "status": "failed",
    "check_holes": [],
    "reasons": [
-    "package: no prepared course (see the Actions log)"
+    "package: overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package at"
    ],
    "tee_sets": [],
    "solved_sets": null,
@@ -7098,30 +7405,7 @@
    "holes": null,
    "days": null,
    "weather": null,
-   "built": "2026-10-31T01:21Z",
-   "group": "library"
-  },
-  {
-   "slug": "tpc_harding_park",
-   "name": "TPC Harding Park",
-   "city": "San Francisco",
-   "state": "CA",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package:     elif r.get(\"method\") == \"walkback\" and back is not None and alongs[back] > max_forward:                                                                 ~~~~~~^^^^^^ KeyError: 39.0 "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-10-30T22:09Z",
+   "built": "2026-11-01T22:56Z",
    "group": "library"
   },
   {
@@ -7132,7 +7416,7 @@
    "status": "failed",
    "check_holes": [],
    "reasons": [
-    "package: Retry your request using exponential backoff: wait a resolve: not_found None None [] world_woods: not_found; see packages/world_woods/raw/course.json for the candidates "
+    "package: overpass failed: https://overpass-api.de/api/interpreter: Overpass remark: runtime error: Query timed out in \"query\" at line 3 after 140 seconds. overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints"
    ],
    "tee_sets": [],
    "solved_sets": null,
@@ -7144,7 +7428,7 @@
    "holes": null,
    "days": null,
    "weather": null,
-   "built": "2026-10-30T22:38Z",
+   "built": "2026-11-01T23:01Z",
    "group": "library"
   },
   {
@@ -7155,7 +7439,7 @@
    "status": "failed",
    "check_holes": [],
    "reasons": [
-    "package: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) resolve: not_found None None [] kapalua_plantation: not_found; see packages/kapalua_plantation/raw/course.json for the candidates "
+    "package: <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: overpass failed: https://overpass-api.de/api/interpreter: ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\\'overpass-api.de\\', port=443): Max retries exceeded with url: /api/interpreter (Caused by NewConnectionError(\"HTTPSConnection(host=\\'overpass-api.de\\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable\")"
    ],
    "tee_sets": [],
    "solved_sets": null,
@@ -7167,7 +7451,7 @@
    "holes": null,
    "days": null,
    "weather": null,
-   "built": "2026-10-30T22:10Z",
+   "built": "2026-11-01T22:49Z",
    "group": "library"
   },
   {
@@ -7454,7 +7738,7 @@
    "status": "failed",
    "check_holes": [],
    "reasons": [
-    "package: resolve: not_found None None [] tpc_louisiana: not_found; see packages/tpc_louisiana/raw/course.json for the candidates "
+    "package: overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package at"
    ],
    "tee_sets": [],
    "solved_sets": null,
@@ -7466,7 +7750,7 @@
    "holes": null,
    "days": null,
    "weather": null,
-   "built": "2026-10-31T02:09Z",
+   "built": "2026-11-01T23:00Z",
    "group": "library"
   },
   {
@@ -7477,7 +7761,7 @@
    "status": "failed",
    "check_holes": [],
    "reasons": [
-    "package: <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: resolve: not_found None None [] queenstown_harbor: not_found; see packages/queenstown_harbor/raw/course.json for the candidates "
+    "package: <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
    ],
    "tee_sets": [],
    "solved_sets": null,
@@ -7489,30 +7773,7 @@
    "holes": null,
    "days": null,
    "weather": null,
-   "built": "2026-10-31T02:29Z",
-   "group": "library"
-  },
-  {
-   "slug": "forest_dunes",
-   "name": "Forest Dunes Golf Club",
-   "city": "Roscommon",
-   "state": "MI",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package: resolve: ambiguous None None [('Forest Dunes Course', 'South Branch Township', 18), ('Forest Dunes - The Loop Course', 'South Branch Township', 18), ('Forest Dunes Golf Resort', 'South Branch Township', 46)] forest_dunes: ambiguous; see packages/forest_dunes/raw/course.json for the candidates "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-10-31T01:41Z",
+   "built": "2026-11-01T23:07Z",
    "group": "library"
   },
   {
@@ -7674,52 +7935,6 @@
    "days": null,
    "weather": null,
    "built": "2026-10-31T02:10Z",
-   "group": "library"
-  },
-  {
-   "slug": "harbour_town",
-   "name": "Harbour Town Golf Links",
-   "city": "Hilton Head Island",
-   "state": "SC",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package:     elif r.get(\"method\") == \"walkback\" and back is not None and alongs[back] > max_forward:                                                                 ~~~~~~^^^^^^ KeyError: 17.0 "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-10-31T04:05Z",
-   "group": "library"
-  },
-  {
-   "slug": "memorial_park",
-   "name": "Memorial Park Golf Course",
-   "city": "Houston",
-   "state": "TX",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package:     elif r.get(\"method\") == \"walkback\" and back is not None and alongs[back] > max_forward:                                                                 ~~~~~~^^^^^^ KeyError: 31.0 "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-10-31T04:12Z",
    "group": "library"
   },
   {
