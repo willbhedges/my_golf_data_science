@@ -5,14 +5,9 @@
  "city": "Waterloo",
  "state": "IL",
  "group": "library",
- "status": "needs confirm",
- "reasons": [
-  "2 hole(s) with a CHECK"
- ],
- "check_holes": [
-  9,
-  13
- ],
+ "status": "auto-OK",
+ "reasons": [],
+ "check_holes": [],
  "tee_sets": [
   {
    "name": "Hickory",
@@ -65,7 +60,7 @@
   "Black"
  ],
  "page": "course_data/library/annbriar/page.html",
- "page_bytes": 5125701,
+ "page_bytes": 5115013,
  "qa_report": "course_data/library/annbriar/qa_report.md",
  "center": [
   38.351022549999996,
@@ -74,32 +69,15 @@
  "osm": "way/1466372251",
  "holes": 18,
  "days": [
-  "2026-10-31",
-  "2026-11-01"
+  "2026-11-07",
+  "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-10-30T11:57Z",
+ "built": "2026-11-02T17:12Z",
  "request": "course_data/requests/course_page_annbriar.json",
- "last_attempt": {
-  "status": "failed",
-  "stage": "package",
-  "error": [
-   "package:     tees = [dict(osm_id=f[\"properties\"][\"osm_id\"], geometry=f[\"geometry\"][\"type\"],                         ~~~~~~~~~~~~~~~^^^^^^^^^^ KeyError: 'osm_id' "
-  ],
-  "when": "2026-10-30T23:12Z",
-  "resolve": {
-   "status": "ok",
-   "candidates": [
-    {
-     "name": "Annbriar Golf Course",
-     "town": "Waterloo",
-     "holes": 18,
-     "osm": {
-      "type": "way",
-      "id": 1466372251
-     }
-    }
-   ]
-  }
+ "native": {
+  "holes": [],
+  "tee_set": "Hickory",
+  "note": "not asked: no agent_layers in the request"
  }
 }

@@ -24,9 +24,9 @@
   },
   "other_candidates": []
  },
- "n_features": 444,
+ "n_features": 445,
  "golf_tag_counts": {
-  "tee": 98,
+  "tee": 99,
   "rough": 72,
   "bunker": 67,
   "cartpath": 48,
@@ -41,7 +41,7 @@
   "clubhouse": 1
  },
  "golf_tag_counts_inside_course": {
-  "tee": 98,
+  "tee": 99,
   "rough": 72,
   "bunker": 67,
   "cartpath": 48,
@@ -305,8 +305,8 @@
  "holes_with_handicap": 18,
  "hole_centrelines": 18,
  "tees": {
-  "count": 98,
-  "with_colour_or_ref": 0,
+  "count": 99,
+  "with_colour_or_ref": 1,
   "items": [
    {
     "osm_id": 735020830,
@@ -699,6 +699,12 @@
    {
     "osm_id": 1463200190,
     "geometry": "Polygon"
+   },
+   {
+    "osm_id": -1,
+    "geometry": "Polygon",
+    "ref": "9",
+    "tee": "Black"
    }
   ]
  },
@@ -710,6 +716,23 @@
   38.358922,
   -90.190039
  ],
- "fetched_utc": "2026-10-30T11:37:19Z",
- "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0"
+ "fetched_utc": "2026-11-02T17:05:11Z",
+ "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
+ "osm_source": {
+  "source": "overpass",
+  "reason": "complete",
+  "mirror": "https://overpass-api.de/api/interpreter",
+  "osm_base": "2026-11-02T17:03:36Z",
+  "counts": {
+   "hole": 18,
+   "green": 20,
+   "tee": 98,
+   "pin": 18,
+   "bunker": 67,
+   "fairway": 21
+  },
+  "mirrors_tried": [
+   "https://overpass-api.de/api/interpreter"
+  ]
+ }
 }

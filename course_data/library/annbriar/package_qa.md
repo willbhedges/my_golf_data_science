@@ -1,6 +1,6 @@
 # Annbriar Golf Course (Waterloo, IL) - Black tees
 
-Built 2026-10-30T11:57:30Z. OSM way/1466372251. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T17:12:33Z. OSM way/1466372251. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -9,15 +9,15 @@ Built 2026-10-30T11:57:30Z. OSM way/1466372251. Scorecard: golfify (golfify). Te
 | holes_built | 18 |
 | holes_mapped | 18 |
 | greens_found | 18 |
-| tee_boxes | 98 |
-| tees_with_colour | 0 |
+| tee_boxes | 99 |
+| tees_with_colour | 1 |
 | holes_with_trees_or_long_grass_in_landing_zone | 12 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.465 |
-| mean_confidence | 0.848 |
-| osm_score | 0.864 |
+| mean_landing_osm_share | 0.469 |
+| mean_confidence | 0.844 |
+| osm_score | 0.865 |
 
-OSM features inside the course: buildings 7, golf=bunker 67, golf=cartpath 48, golf=clubhouse 1, golf=driving_range 1, golf=fairway 21, golf=green 20, golf=hole 18, golf=lateral_water_hazard 3, golf=path 26, golf=pin 18, golf=rough 72, golf=tee 98, golf=water_hazard 3, holes_with_handicap 18, holes_with_par 18, trees_polygons 1, water_lines 2, water_polygons 6
+OSM features inside the course: buildings 7, golf=bunker 67, golf=cartpath 48, golf=clubhouse 1, golf=driving_range 1, golf=fairway 21, golf=green 20, golf=hole 18, golf=lateral_water_hazard 3, golf=path 26, golf=pin 18, golf=rough 72, golf=tee 99, golf=water_hazard 3, holes_with_handicap 18, holes_with_par 18, tees_with_colour 1, tees_with_ref 1, trees_polygons 1, water_lines 2, water_polygons 6
 
 ## Holes
 
@@ -31,7 +31,7 @@ OSM features inside the course: buildings 7, golf=bunker 67, golf=cartpath 48, g
 | 6 | 4 | 378 / 379 | 280 | 0.88 | auto | 65% | 6% | 29% | tee stage: Black tee_centroid |  |
 | 7 | 3 | 155 / 155 | 282 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 8 | 4 | 415 / 415 | 196 | 0.83 | auto | 45% | 8% | 47% | tee stage: Black tee_centroid |  |
-| 9 | 5 | 475 / 475 | 348 | 0.71 | check the flags | 33% | 19% | 48% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 475 yds) |
+| 9 | 5 | 475 / 475 | 0 | 0.65 | check the flags | 40% | 14% | 47% | tee stage: Black review (inside OSM tee -1) | tee: tee stage: Black review (inside OSM tee -1) |
 | 10 | 4 | 382 / 382 | 348 | 0.82 | auto | 42% | 10% | 47% | tee stage: Black tee_centroid |  |
 | 11 | 4 | 404 / 405 | 248 | 0.87 | auto | 46% | 44% | 10% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 12 | 4 | 353 / 353 | 212 | 0.80 | check the flags | 50% | 5% | 45% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
@@ -45,10 +45,11 @@ OSM features inside the course: buildings 7, golf=bunker 67, golf=cartpath 48, g
 ## Stages
 
 - **resolve**: ok: way/1466372251 Annbriar Golf Course (Waterloo, IL)
-- **osm**: ok: 444 features
+- **osm**: ok: 445 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tee_overrides**: ok: Black 9 review (inside OSM tee -1);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 104 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/annbriar/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
