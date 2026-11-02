@@ -66,12 +66,6 @@ def lie_of(p, gtype):
     if p.get("waterway") and line:
         if p["waterway"] in ("dam", "weir"):
             return None
-        # piped (tunnel=yes / culvert, covered=yes, location=underground): no surface water to play from
-        # (vision_any/water_filter.is_piped; e.g. a stream drawn across a fairway through a culvert)
-        if (str(p.get("tunnel", "no")).strip().lower() not in ("", "no")
-                or str(p.get("covered", "no")).strip().lower() == "yes"
-                or str(p.get("location", "")).strip().lower() == "underground"):
-            return None
         try:
             half = float(str(p.get("width", "")).split()[0]) / YD / 2
         except (ValueError, IndexError):

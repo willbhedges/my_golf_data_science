@@ -218,8 +218,8 @@ def test_tunnel_tag_is_piped_without_dem_and_pond_kept():
     assert rep["tagged"] == 1
     g = _poly_m(geoms)
     from shapely.geometry import Point
-    assert g.contains(Point(100, 40)) and g.contains(Point(100, 95))
-    assert not g.contains(Point(100, 120)), "the OSM pond the culvert feeds stays water"
+    assert g.contains(Point(100, 95)) and not g.contains(Point(100, 40)), "only the fairway crossing"
+    assert not g.contains(Point(100, 110)), "the OSM pond the culvert feeds stays water"
 
 
 def test_tunnel_tag_with_dem_keeps_open_channel_at_the_mouth(tmp_path):
@@ -228,9 +228,9 @@ def test_tunnel_tag_with_dem_keeps_open_channel_at_the_mouth(tmp_path):
     geoms, rep = WF.piped_streams(_fc(dict(tunnel="culvert")), _dem(tmp_path, z))
     g = _poly_m(geoms)
     from shapely.geometry import Point
-    assert rep["tagged"] == 1 and rep["tagged_m"] >= 100
-    assert g.contains(Point(100, 100)) and g.contains(Point(100, 150))
-    assert not g.contains(Point(100, 30))
+    assert rep["tagged"] == 1 and rep["tagged_m"] >= 30
+    assert g.contains(Point(100, 100))
+    assert not g.contains(Point(100, 30)) and not g.contains(Point(100, 160)), "outside the turf: kept"
 
 
 def test_subtract_from_hole_splits_zone():
@@ -326,17 +326,7 @@ def test_rivercut_hole14_tunnel_stream_piped():
 
 
 # --------------------------------------------------------------------------- the build paths use it
-def test_build_holes_skips_piped_waterways():
-    pytest.importorskip("shapely")
-    sys.path.insert(0, os.path.join(ROOT, "course_data", "geometry"))
-    import build_holes as bh
-    assert bh.lie_of(dict(waterway="stream"), "LineString")[0] == "water"
-    assert bh.lie_of(dict(waterway="stream", tunnel="yes", layer="-1"), "LineString") is None
-    assert bh.lie_of(dict(waterway="ditch", tunnel="culvert"), "LineString") is None
-    assert bh.lie_of(dict(natural="water"), "Polygon") == ("water", 0)
-
-
-def test_osm_layers_drop_piped_streams_and_keep_roads():
+def test_osm_layers_keep_roads_for_the_filter():
     import layers as L
     ln = dict(type="LineString", coordinates=[[-92.3, 38.9], [-92.299, 38.9]])
     fc = dict(type="FeatureCollection", features=[
@@ -345,7 +335,6 @@ def test_osm_layers_drop_piped_streams_and_keep_roads():
         dict(type="Feature", properties=dict(highway="path", golf="cartpath"), geometry=ln),
         dict(type="Feature", properties=dict(highway="secondary"), geometry=ln)])
     Ly = L.osm_layers(fc)
-    assert len(Ly["stream"]) == 1
     assert sorted(h for _, h in Ly["_roads"]) == [WF.CARTPATH_HALF, 7.5]
 
 

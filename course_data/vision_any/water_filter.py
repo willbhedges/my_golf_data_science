@@ -18,16 +18,17 @@ where the stream is piped. The rules here are general (no course is named or tun
   creek-bank vegetation have NDVI well above 0.15).
 
   OSM streams (waterway=stream/ditch/drain/canal lines) are not surface water where
-    tagged    tunnel=* (yes, culvert, ...), covered=yes or location=underground: with a DEM only the 5 m pieces
-              with no channel (an open ditch at the culvert mouth stays water), without one the whole line
-    crossing  they cross an OSM fairway / green / tee and the DTM shows no channel there (cross-section depth:
+  and they cross an OSM fairway / green / tee (only the 5 m pieces over that turf; the ditch at a culvert mouth
+  in the rough stays water) and
+    tagged    tunnel=* (yes, culvert, ...), covered=yes or location=underground, or
+    no channel the DTM shows no channel there (cross-section depth:
               median ground 7-12 m either side minus the lowest ground within 3 m < 0.3 m) - a culvert /
               pipe under the turf
   The piped pieces (buffered by the stream's half width + 1 m), minus every OSM water polygon (ponds stay), are
   removed from the hole's water zones.
 
-Used by layers.water_mask (new vision layers), gapfill.gapfill (every package build: the committed vision layer
-and the OSM stream zones are filtered there, so re-packaging is enough) and platform/rebuild_tees_trees.py
+Used by layers.water_mask (new vision layers: the vision rules only), gapfill.gapfill (every package build: the
+committed vision layer and the OSM stream zones are filtered there, so re-packaging is enough) and platform/rebuild_tees_trees.py
 --layers water (error budget). Tests: test_water_filter.py.
 """
 from __future__ import annotations
@@ -304,9 +305,9 @@ def _is_water_poly(p):
 
 
 def piped_streams(osm_fc, dem_path=None):
-    """OSM stream pieces that are not surface water -> (list of WGS84 polygons, report). Tagged tunnels always;
-    with a DEM, the 5 m pieces over an OSM fairway / green / tee whose cross-section shows no channel
-    (depth < PIPE_DEPTH_M). Buffered by the stream's half width + 1 m; OSM water polygons are cut out (kept)."""
+    """OSM stream pieces that are not surface water -> (list of WGS84 polygons, report): the 5 m pieces over an
+    OSM fairway / green / tee that are tagged piped (tunnel / covered / underground) or, with a DEM, whose
+    cross-section shows no channel (depth < PIPE_DEPTH_M). Buffered by the stream's half width + 1 m; OSM water polygons are cut out (kept)."""
     from pyproj import CRS, Transformer
     from shapely.geometry import LineString, Point, shape
     from shapely.ops import transform, unary_union
@@ -342,12 +343,8 @@ def piped_streams(osm_fc, dem_path=None):
             pass
         gm = to_m(shape(f["geometry"]))
         tagged = is_piped(p)
-        if tagged:
-            rep["tagged"] += 1
-            if D is None:                                 # tags only: the whole line
-                pieces.append(gm.buffer(half + 1.0, cap_style=2))
-                continue
-        elif T is None or D is None or not gm.intersects(T):
+        rep["tagged"] += int(tagged)
+        if T is None or not gm.intersects(T) or (D is None and not tagged):
             continue
         for ln in getattr(gm, "geoms", [gm]):
             k = max(int(ln.length // STEP_M), 1)
@@ -355,10 +352,10 @@ def piped_streams(osm_fc, dem_path=None):
                 pa = np.array(ln.interpolate(j * ln.length / k).coords[0])
                 pb = np.array(ln.interpolate((j + 1) * ln.length / k).coords[0])
                 mid, t = (pa + pb) / 2, pb - pa
-                if not np.linalg.norm(t) or not (tagged or T.contains(Point(mid))):
+                if not np.linalg.norm(t) or not T.contains(Point(mid)):
                     continue
-                d = channel_depth(D.at, mid, t / np.linalg.norm(t))
-                if (d is None and tagged) or (d is not None and d < PIPE_DEPTH_M):
+                d = None if tagged else channel_depth(D.at, mid, t / np.linalg.norm(t))
+                if tagged or (d is not None and d < PIPE_DEPTH_M):
                     pieces.append(LineString([pa, pb]).buffer(half + 1.0, cap_style=2))
                     rep["tagged_m" if tagged else "crossing_m"] += float(np.linalg.norm(t))
     rep["crossing_m"], rep["tagged_m"] = round(rep["crossing_m"], 1), round(rep["tagged_m"], 1)

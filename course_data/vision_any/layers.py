@@ -221,8 +221,7 @@ def osm_layers(fc):
                        or lu in ("reservoir", "basin") or p.get("water")):
             out["water"].append(s)
         elif p.get("waterway") in ("stream", "ditch", "drain", "canal") and not poly:
-            if not _piped(p):                                # tunnel / culvert / covered: no surface water
-                out["stream"].append(s)
+            out["stream"].append(s)
         elif p.get("waterway") == "river" and not poly:
             out["river"].append(s)
         elif p.get("building") and poly:
@@ -250,10 +249,6 @@ def _WF():
         sys.path.insert(0, HERE)
     import water_filter
     return water_filter
-
-
-def _piped(p):
-    return _WF().is_piped(p)
 
 
 def osm_masks(S, fc):
