@@ -1,6 +1,6 @@
 # WeaverRidge Golf Club (Peoria, IL) - Black tees
 
-Built 2026-11-02T20:55:08Z. OSM way/749257217. Scorecard: file (course_data/library/weaver_ridge/card_review.json). Tee set: name.
+Built 2026-11-02T21:47:10Z. OSM way/749257217. Scorecard: file (course_data/library/weaver_ridge/card_review.json). Tee set: name.
 
 ## Coverage
 
