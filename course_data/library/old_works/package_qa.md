@@ -1,23 +1,23 @@
 # Old Works Golf Club (Anaconda, MT) - Slag tees
 
-Built 2026-10-31T01:48:17Z. OSM way/296526499. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-11-01T22:00:26Z. OSM way/296526499. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
 | | |
 |---|---|
-| holes_built | 21 |
-| holes_mapped | 21 |
+| holes_built | 18 |
+| holes_mapped | 18 |
 | greens_found | 0 |
 | tee_boxes | 0 |
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 1 |
-| of_par4_5 | 16 |
-| mean_landing_osm_share | 0.019 |
-| mean_confidence | 0.475 |
-| osm_score | 0.266 |
+| of_par4_5 | 14 |
+| mean_landing_osm_share | 0.022 |
+| mean_confidence | 0.491 |
+| osm_score | 0.269 |
 
-OSM features inside the course: buildings 4, golf=bunker 23, golf=cartpath 28, golf=clubhouse 1, golf=hole 21, golf=pin 21, holes_with_handicap 18, holes_with_par 18, single_trees 12, trees_polygons 4, water_polygons 2
+OSM features inside the course: buildings 4, golf=bunker 23, golf=cartpath 28, golf=clubhouse 1, golf=hole 18, golf=pin 21, holes_with_handicap 18, holes_with_par 18, single_trees 12, trees_polygons 4, water_polygons 2
 
 ## Holes
 
@@ -41,9 +41,6 @@ OSM features inside the course: buildings 4, golf=bunker 23, golf=cartpath 28, g
 | 16 | 4 | 471 / 471 | 26 | 0.49 | needs review | 0% | 1% | 99% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 471 yds) |
 | 17 | 3 | 202 / 203 | 279 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); Slag tee walked back along the hole line (no box at 202 yds) |
 | 18 | 4 | 440 / 440 | 195 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 440 yds) |
-| Practice 1 | 4 | 317 / 317 | 2 | 0.38 | needs review | 0% | 0% | 100% | hole-line start (no golf=tee near it) | tee: hole-line start (no golf=tee near it); green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
-| Practice 2 | 3 | 102 / 102 | 308 | 0.38 | needs review | 0% | 0% | 100% | hole-line start (no golf=tee near it) | tee: hole-line start (no golf=tee near it); green from the hole-line end (no golf=green polygon) |
-| Practice 3 | 4 | 335 / 335 | 173 | 0.38 | needs review | 0% | 0% | 100% | hole-line start (no golf=tee near it) | tee: hole-line start (no golf=tee near it); green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
 
 ## Stages
 
@@ -53,10 +50,15 @@ OSM features inside the course: buildings 4, golf=bunker 23, golf=cartpath 28, g
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 7 sets; lidar pads: 0 candidate pads near hole starts
-- **geometry**: ok: geometry/build_holes.py (21 holes, 7 tee set(s))
+- **geometry**: ok: geometry/build_holes.py (18 holes, 7 tee set(s))
 - **imagery**: ok: course_data/packages/old_works/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: not run (no NIR band)
-- **elevation**: ok: course_data/packages/old_works/imagery/dem.tif (21/21 holes)
+- **elevation**: ok: course_data/packages/old_works/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 4 polygons (outside 4); mode replace
+
+## Warnings
+
+- hole refs: kept the plain-numbered holes (18 ways, refs as plain numbers)
+- ignored 3 golf=hole way(s) of another course / practice area by ref: Practice 1, Practice 2, Practice 3

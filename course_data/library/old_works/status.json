@@ -1,22 +1,118 @@
 {
  "slug": "old_works",
- "name": "Old Works Golf Course",
+ "name": "Old Works Golf Club",
  "request_name": "Old Works Golf Course",
  "city": "Anaconda",
  "state": "MT",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "finish: merge / page / checks failed (see the Actions log)"
+  "OSM greens 0 of 18 holes",
+  "18 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
- "request": "course_data/requests/course_page_old_works.json",
- "resolve": {
-  "status": null,
-  "candidates": []
- },
- "built": "2026-10-31T03:13Z"
+ "check_holes": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18
+ ],
+ "tee_sets": [
+  {
+   "name": "Slag",
+   "yards": 7705,
+   "par": 72,
+   "rating": 76.1,
+   "slope": 136,
+   "colour": "black",
+   "on_page": "solved"
+  },
+  {
+   "name": "Gold",
+   "yards": 7211,
+   "par": 72,
+   "rating": 73.8,
+   "slope": 129,
+   "colour": "gold",
+   "on_page": "solved"
+  },
+  {
+   "name": "Copper",
+   "yards": 6776,
+   "par": 72,
+   "rating": 71.9,
+   "slope": 125,
+   "colour": "blue",
+   "on_page": null
+  },
+  {
+   "name": "Limestone",
+   "yards": 6144,
+   "par": 72,
+   "rating": 68.2,
+   "slope": 120,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Limestone (L)",
+   "yards": 6144,
+   "par": 72,
+   "rating": 74.6,
+   "slope": 135,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Brick",
+   "yards": 5348,
+   "par": 72,
+   "rating": 65.1,
+   "slope": 105,
+   "colour": "red",
+   "on_page": null
+  },
+  {
+   "name": "Brick (L)",
+   "yards": 5348,
+   "par": 72,
+   "rating": 70.4,
+   "slope": 124,
+   "colour": "red",
+   "on_page": null
+  }
+ ],
+ "solved_sets": [
+  "Slag",
+  "Gold"
+ ],
+ "page": "course_data/library/old_works/page.html",
+ "page_bytes": 2503244,
+ "qa_report": "course_data/library/old_works/qa_report.md",
+ "center": [
+  46.133824000000004,
+  -112.9334872
+ ],
+ "osm": "way/296526499",
+ "holes": 18,
+ "days": [
+  "2026-11-07",
+  "2026-11-08"
+ ],
+ "weather": "forecast",
+ "built": "2026-11-01T22:00Z",
+ "request": "course_data/requests/course_page_old_works.json"
 }
