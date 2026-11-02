@@ -1,0 +1,194 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "sand_creek_station",
+ "course": "Sand Creek Station",
+ "bbox_snwe": [
+  38.012493,
+  -97.379493,
+  38.027093,
+  -97.354598
+ ],
+ "grid": {
+  "crs": "EPSG:32614",
+  "res_m": 1.0,
+  "width": 2456,
+  "height": 1900,
+  "bounds": [
+   642108,
+   4208320,
+   644564,
+   4210220
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   642108.0,
+   0.0,
+   -1.0,
+   4210220.0
+  ],
+  "ll_bbox_wsen": [
+   -97.38120979724201,
+   38.011044765057804,
+   -97.35286020610066,
+   38.02855077122885
+  ]
+ },
+ "fetched_utc": "2026-11-02T07:24:23Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "KS_HarveyCo2_2010-hag-2m-4-1",
+     "when": "2011-02-22T00:00:00.000000Z",
+     "cells": 3393140,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_HarveyCo2_2010",
+      "end_datetime": "2011-02-22T00:00:00.000000Z",
+      "start_datetime": "2010-12-13T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_HarveyCo2_2010-hag-2m-3-1",
+     "when": "2011-02-22T00:00:00.000000Z",
+     "cells": 1254000,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_HarveyCo2_2010",
+      "end_datetime": "2011-02-22T00:00:00.000000Z",
+      "start_datetime": "2010-12-13T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9958726212926453,
+   "file": "hag.tif",
+   "mb": 0.62,
+   "frac_gt_2_5m": 0.11021022629864563
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "KS_HarveyCo2_2010-dtm-2m-4-1",
+     "when": "2011-02-22T00:00:00.000000Z",
+     "cells": 848233,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_HarveyCo2_2010",
+      "end_datetime": "2011-02-22T00:00:00.000000Z",
+      "start_datetime": "2010-12-13T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_HarveyCo2_2010-dtm-2m-3-1",
+     "when": "2011-02-22T00:00:00.000000Z",
+     "cells": 313477,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_HarveyCo2_2010",
+      "end_datetime": "2011-02-22T00:00:00.000000Z",
+      "start_datetime": "2010-12-13T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9958083319046803,
+   "mb": 2.42
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "KS_HarveyCo2_2010-classification-2m-4-1",
+     "when": "2011-02-22T00:00:00.000000Z",
+     "cells": 3337288,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_HarveyCo2_2010",
+      "end_datetime": "2011-02-22T00:00:00.000000Z",
+      "start_datetime": "2010-12-13T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "KS_HarveyCo2_2010-classification-2m-3-1",
+     "when": "2011-02-22T00:00:00.000000Z",
+     "cells": 1250824,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "KS_HarveyCo2_2010",
+      "end_datetime": "2011-02-22T00:00:00.000000Z",
+      "start_datetime": "2010-12-13T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.36,
+   "counts": {
+    "0": 78288,
+    "1": 393460,
+    "2": 3752828,
+    "9": 9552,
+    "10": 2856,
+    "17": 429416
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023110303"
+  ],
+  "mb": 0.23,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W099",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1166600,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 17.85,
+    "items": [
+     "ks_m_3809762_sw_14_030_20230626_20231113",
+     "ks_m_3809761_se_14_030_20230626_20231113"
+    ],
+    "acquired": [
+     "2023-06-26"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 12.39,
+    "items": [
+     "ks_m_3809762_sw_14_060_20210703",
+     "ks_m_3809761_se_14_060_20210703"
+    ],
+    "acquired": [
+     "2021-07-03"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
