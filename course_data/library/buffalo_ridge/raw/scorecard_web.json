@@ -1,10 +1,15 @@
 {
- "fetched_utc": "2026-10-30T11:55:51Z",
+ "fetched_utc": "2026-11-01T20:54:06Z",
  "tried": [
   {
    "source": "golfify",
    "ok": true,
    "info": "https://www.golfify.io/courses/buffalo-ridge-springs-golf-club"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: buffalo-ridge-springs-golf-course: HTTP 404; the-buffalo-ridge-springs-golf-course: HTTP 404; buffalo-ridge-springs-golf-club: HTTP 404; buffalo-ridge-springs-country-club: HTTP 404"
   },
   {
    "source": "club_site",
@@ -15,6 +20,21 @@
    "source": "opengolfapi",
    "ok": true,
    "info": "https://api.opengolfapi.org/api/v1/courses/52e2b84c-50c6-4924-887e-b56bd6691a17"
+  },
+  {
+   "source": "bluegolf",
+   "ok": false,
+   "info": "bluegolf: no course page found by search"
+  },
+  {
+   "source": "golfpass",
+   "ok": false,
+   "info": "golfpass: no course page found by search"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: no course page found by search"
   }
  ],
  "cards": [
@@ -817,5 +837,33 @@
     }
    }
   }
- ]
+ ],
+ "consensus": {
+  "base": "golfify",
+  "base_url": "https://www.golfify.io/courses/buffalo-ridge-springs-golf-club",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "golfify https://www.golfify.io/courses/buffalo-ridge-springs-golf-club": {
+    "holes": 18,
+    "fit": 16,
+    "share": 0.889,
+    "mean_err": 5.8,
+    "all_sets": 0.159,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 1
+   },
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/52e2b84c-50c6-4924-887e-b56bd6691a17": {
+    "holes": 18,
+    "fit": 16,
+    "share": 0.889,
+    "mean_err": 5.8,
+    "all_sets": 0.244,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 1
+   }
+  }
+ }
 }
