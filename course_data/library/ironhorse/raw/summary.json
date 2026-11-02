@@ -24,14 +24,14 @@
   },
   "other_candidates": []
  },
- "n_features": 1521,
+ "n_features": 1523,
  "golf_tag_counts": {
-  "tee": 93,
+  "tee": 94,
   "cartpath": 62,
   "bunker": 48,
   "fairway": 26,
   "green": 23,
-  "hole": 19,
+  "hole": 20,
   "pin": 18,
   "driving_range": 7,
   "rough": 2,
@@ -40,12 +40,12 @@
   "water_hazard": 1
  },
  "golf_tag_counts_inside_course": {
-  "tee": 93,
+  "tee": 94,
   "cartpath": 61,
   "bunker": 48,
   "fairway": 26,
   "green": 23,
-  "hole": 19,
+  "hole": 20,
   "pin": 18,
   "driving_range": 7,
   "rough": 2,
@@ -268,6 +268,18 @@
    "osm_id": 889405229
   },
   {
+   "ref": "18",
+   "par": "4",
+   "handicap": null,
+   "dist": null,
+   "name": null,
+   "geometry": "LineString",
+   "nodes": 2,
+   "length_yd": 471,
+   "extra_tags": {},
+   "osm_id": -2
+  },
+  {
    "ref": null,
    "par": null,
    "handicap": null,
@@ -310,18 +322,19 @@
   "16",
   "17",
   "18",
+  "18",
   null,
   null
  ],
  "missing_hole_refs": [
   "2"
  ],
- "holes_with_par": 17,
+ "holes_with_par": 18,
  "holes_with_handicap": 0,
- "hole_centrelines": 19,
+ "hole_centrelines": 20,
  "tees": {
-  "count": 93,
-  "with_colour_or_ref": 91,
+  "count": 94,
+  "with_colour_or_ref": 92,
   "items": [
    {
     "osm_id": 793583517,
@@ -785,6 +798,12 @@
     "osm_id": 923597848,
     "geometry": "Polygon",
     "ref": "Tee 8"
+   },
+   {
+    "osm_id": -1,
+    "geometry": "Polygon",
+    "ref": "1",
+    "tee": "Black"
    }
   ]
  },
@@ -796,6 +815,23 @@
   38.855864,
   -94.619343
  ],
- "fetched_utc": "2026-10-30T03:20:32Z",
- "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0"
+ "fetched_utc": "2026-11-02T03:11:34Z",
+ "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
+ "osm_source": {
+  "source": "overpass",
+  "reason": "complete",
+  "mirror": "https://overpass-api.de/api/interpreter",
+  "osm_base": "2026-11-02T03:10:28Z",
+  "counts": {
+   "hole": 19,
+   "green": 23,
+   "tee": 93,
+   "pin": 18,
+   "bunker": 48,
+   "fairway": 26
+  },
+  "mirrors_tried": [
+   "https://overpass-api.de/api/interpreter"
+  ]
+ }
 }
