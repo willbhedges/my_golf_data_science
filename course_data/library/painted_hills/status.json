@@ -7,9 +7,7 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "holes not all mapped in OSM (hole method: geometry)",
-  "pars sum to 84, card 70",
-  "18 hole(s) with a CHECK"
+  "17 hole(s) with a CHECK"
  ],
  "check_holes": [
   1,
@@ -28,7 +26,6 @@
   14,
   15,
   16,
-  17,
   18
  ],
  "tee_sets": [
@@ -74,7 +71,7 @@
   "White"
  ],
  "page": "course_data/library/painted_hills/page.html",
- "page_bytes": 2605760,
+ "page_bytes": 2448360,
  "qa_report": "course_data/library/painted_hills/qa_report.md",
  "center": [
   39.1242683,
@@ -83,32 +80,15 @@
  "osm": "relation/8086481",
  "holes": 18,
  "days": [
-  "2026-10-31",
-  "2026-11-01"
+  "2026-11-07",
+  "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-10-30T00:22Z",
+ "built": "2026-11-02T17:00Z",
  "request": "course_data/requests/course_page_painted_hills.json",
- "last_attempt": {
-  "status": "failed",
-  "stage": "package",
-  "error": [
-   "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
-  ],
-  "when": "2026-10-30T23:03Z",
-  "resolve": {
-   "status": "ok",
-   "candidates": [
-    {
-     "name": "Painted Hills Golf Club",
-     "town": "Kansas City",
-     "holes": 18,
-     "osm": {
-      "type": "relation",
-      "id": 8086481
-     }
-    }
-   ]
-  }
+ "native": {
+  "holes": [],
+  "tee_set": "Blue",
+  "note": "not asked: no agent_layers in the request"
  }
 }
