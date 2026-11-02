@@ -1,40 +1,40 @@
 {
  "schema": "vision_any_raw/1",
  "slug": "gamble_sands",
- "course": "Quicksands at Gamble Sands",
+ "course": "Gamble Sands Golf Course",
  "bbox_snwe": [
-  48.0699946,
-  -119.654698,
-  48.078856,
-  -119.641852
+  48.055427,
+  -119.662076,
+  48.07748,
+  -119.641242
  ],
  "grid": {
   "crs": "EPSG:32611",
   "res_m": 1.0,
-  "width": 1232,
-  "height": 1260,
+  "width": 1878,
+  "height": 2748,
   "bounds": [
-   302126,
-   5327336,
-   303358,
-   5328596
+   301520,
+   5325714,
+   303398,
+   5328462
   ],
   "transform": [
    1.0,
    0.0,
-   302126.0,
+   301520.0,
    0.0,
    -1.0,
-   5328596.0
+   5328462.0
   ],
   "ll_bbox_wsen": [
-   -119.65683264053334,
-   48.06857905461783,
-   -119.63972928018062,
-   48.080284287534255
+   -119.66489798619104,
+   48.05381330050193,
+   -119.63844734561395,
+   48.07909229661793
   ]
  },
- "fetched_utc": "2026-11-01T20:52:51Z",
+ "fetched_utc": "2026-11-02T03:00:15Z",
  "lidar": {},
  "ept": {
   "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
@@ -42,32 +42,33 @@
    {
     "name": "WA_NorthCentral_2_2021",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WA_NorthCentral_2_2021/ept.json",
-    "cov": 0.427,
+    "cov": 0.581,
     "year": 2021,
     "count": 166158783736
    }
   ],
+  "ept_resolution_m": 0.5,
   "used": [
    {
     "name": "WA_NorthCentral_2_2021",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/WA_NorthCentral_2_2021/ept.json",
-    "cov": 0.427,
+    "cov": 0.581,
     "year": 2021,
     "count": 166158783736,
-    "cells": 0
+    "cells": 1161009
    }
   ],
-  "valid": 0.0,
-  "hag_mb": 0.01,
-  "frac_gt_2_5m": 0.0,
-  "class_mb": 0.01
+  "valid": 0.22496930675111962,
+  "hag_mb": 0.57,
+  "frac_gt_2_5m": 0.05068009573813388,
+  "class_mb": 0.02
  },
  "meta_chm": {
   "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
   "tiles": [
    "021230103"
   ],
-  "mb": 0.01,
+  "mb": 0.09,
   "file": "chm_meta.tif",
   "valid": 1.0
  },
@@ -77,7 +78,7 @@
    {
     "id": "ESA_WorldCover_10m_2021_v200_N48W120",
     "when": "2021-12-31T23:59:59.000000Z",
-    "cells": 388080,
+    "cells": 1290186,
     "props": {
      "datetime": null,
      "end_datetime": "2021-12-31T23:59:59.000000Z",
@@ -86,15 +87,16 @@
    }
   ],
   "file": "worldcover.tif",
-  "mb": 0.01
+  "mb": 0.04
  },
  "naip": {
   "years": [
    {
     "year": 2023,
     "file": "naip_2023.tif",
-    "mb": 4.63,
+    "mb": 17.39,
     "items": [
+     "wa_m_4811959_se_11_060_20230716_20230912",
      "wa_m_4811959_ne_11_060_20230716_20230912"
     ],
     "acquired": [
@@ -106,8 +108,9 @@
    {
     "year": 2021,
     "file": "naip_2021.tif",
-    "mb": 4.6,
+    "mb": 16.51,
     "items": [
+     "wa_m_4811959_se_11_060_20210627",
      "wa_m_4811959_ne_11_060_20210627"
     ],
     "acquired": [
