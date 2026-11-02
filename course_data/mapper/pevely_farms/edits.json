@@ -1,0 +1,1458 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "pevely_farms",
+ "corridor_set": "Black",
+ "mapper": "mapper-pevely_farms",
+ "started": "2026-11-02T22:10Z",
+ "minutes": 55,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py pevely_farms. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "high",
+   "note": "auto layers match the photo: fairway, left tree line at ~-30, open mown rough right to hole 9",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "right: second mowing line ~12-15 yds off the fairway in both years, coarse mottled grass with tan patches beyond; two isolated crowns right not in auto",
+   "long_grass": {
+    "L": "none: smooth mown rough to the cart path at -40..-50 in both years; coarser ground only beyond the path, > 35 yds out",
+    "R": "native: edit 0 (mowing line at x +20..+30, 230-400, same place 2022/2020, tufted with tan patches outside)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        30,
+        230
+       ],
+       [
+        27,
+        280
+       ],
+       [
+        23,
+        320
+       ],
+       [
+        20,
+        360
+       ],
+       [
+        20,
+        400
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        70,
+        230
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "2022 and 2020: smooth mown band to x +20..+30 then darker mottled grass with tan bare/tufted patches (340-370 strongest); the edge is in the same place both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       49,
+       264,
+       6,
+       6
+      ]
+     },
+     "confidence": "high",
+     "evidence": "single crown at +49, along 264, both years + lidar, not in auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       51,
+       200,
+       7,
+       7
+      ]
+     },
+     "confidence": "high",
+     "evidence": "single crown at +51, along 200, both years + lidar, not in auto trees"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-2-L1",
+      "area_yd2": 564,
+      "p": 0.61,
+      "along": [
+       120,
+       152
+      ],
+      "gap_yd": 25.0,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "bottom-left at 120-150, between the cart path and the tree: mown rough in 2022 and 2020, no mowing line; short of any landing",
+      "shape": {
+       "poly": [
+        [
+         -30,
+         152
+        ],
+        [
+         -19,
+         149
+        ],
+        [
+         -23,
+         138
+        ],
+        [
+         -14,
+         133
+        ],
+        [
+         -21,
+         120
+        ],
+        [
+         -36,
+         120
+        ],
+        [
+         -43,
+         127
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-2-R1",
+      "area_yd2": 216,
+      "p": 0.53,
+      "along": [
+       294,
+       312
+      ],
+      "gap_yd": 26.5,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "inside the native traced as edit 0 (mowing line +20..+30, tufted patches both years); S2 cell is a fragment of it",
+      "shape": {
+       "poly": [
+        [
+         41,
+         312
+        ],
+        [
+         62,
+         304
+        ],
+        [
+         57,
+         294
+        ],
+        [
+         38,
+         304
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "right: dark mowing line (curving) at +22..+35 from 140-290 in both years, coarse grass with eroded sand streaks beyond; left OB = road behind the tree line",
+   "long_grass": {
+    "L": "none: narrow mown rough between fairway and the tree line / creek",
+    "R": "native: edit 0 (mowing line +22 at 140 to +35 at 270, same place 2022/2020)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        22,
+        140
+       ],
+       [
+        22,
+        160
+       ],
+       [
+        27,
+        200
+       ],
+       [
+        33,
+        240
+       ],
+       [
+        35,
+        270
+       ],
+       [
+        40,
+        290
+       ],
+       [
+        70,
+        290
+       ],
+       [
+        70,
+        140
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "zoomed crop: smooth light mown turf inside a dark curving line at +22 (along 160), +27 (200), +33 (240) in both 2022 and 2020; outside coarse tufted darker grass with tan sand streaks at +40..+50"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-3-R1",
+      "area_yd2": 1657,
+      "p": 0.58,
+      "along": [
+       137,
+       203
+      ],
+      "gap_yd": 13.3,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native is real right but S2 comes in to +16 over mown rough; traced the mowing line (+22..+27 at 140-200) as edit 0",
+      "shape": {
+       "poly": [
+        [
+         41,
+         202
+        ],
+        [
+         40,
+         191
+        ],
+        [
+         51,
+         190
+        ],
+        [
+         50,
+         179
+        ],
+        [
+         61,
+         178
+        ],
+        [
+         59,
+         156
+        ],
+        [
+         48,
+         157
+        ],
+        [
+         47,
+         147
+        ],
+        [
+         36,
+         148
+        ],
+        [
+         35,
+         137
+        ],
+        [
+         26,
+         137
+        ],
+        [
+         27,
+         170
+        ],
+        [
+         16,
+         171
+        ],
+        [
+         18,
+         193
+        ],
+        [
+         29,
+         192
+        ],
+        [
+         30,
+         203
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-3-R2",
+      "area_yd2": 1644,
+      "p": 0.59,
+      "along": [
+       200,
+       277
+      ],
+      "gap_yd": 16.2,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native beyond the curving mowing line at +27..+35 (200-270) both years; traced as edit 0",
+      "shape": {
+       "poly": [
+        [
+         70,
+         276
+        ],
+        [
+         70,
+         210
+        ],
+        [
+         64,
+         211
+        ],
+        [
+         63,
+         200
+        ],
+        [
+         52,
+         201
+        ],
+        [
+         55,
+         234
+        ],
+        [
+         44,
+         235
+        ],
+        [
+         43,
+         224
+        ],
+        [
+         32,
+         225
+        ],
+        [
+         32,
+         228
+        ],
+        [
+         34,
+         247
+        ],
+        [
+         56,
+         245
+        ],
+        [
+         57,
+         256
+        ],
+        [
+         35,
+         257
+        ],
+        [
+         36,
+         268
+        ],
+        [
+         58,
+         266
+        ],
+        [
+         59,
+         277
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "4": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "right: two isolated crowns not in auto; left tree edge ~3 yds beyond auto outline at 200-300",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       42,
+       312,
+       6,
+       6
+      ]
+     },
+     "confidence": "high",
+     "evidence": "single crown beside cart path at +42, along 312, both years + lidar"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       60,
+       258,
+       6,
+       6
+      ]
+     },
+     "confidence": "high",
+     "evidence": "single crown at +60, along 258, both years + lidar"
+    },
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 3,
+     "shape": {
+      "rect": [
+       -70,
+       -20,
+       200,
+       300
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy and photo crowns reach -35..-37, auto outline at ~-40 (corridor_b)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "high",
+   "note": "auto layers match: ponds left, railroad tree strip + OB right",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "auto layers match photo; thin water/OB strips inside the right woods follow a DEM ditch, not verifiable under canopy (left as is)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "left auto OB reaches ~-38, inside the cart path (-48) and ~10 yds from the fairway; the road (development) is at -60..-70: OB trimmed to beyond -55",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -55,
+       -10,
+       150,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "2022/2020: cart path at -45..-50 and grass strip to the subdivision road at -60..-70; nothing built inside -55"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-9-R1",
+      "area_yd2": 208,
+      "p": 0.64,
+      "along": [
+       120,
+       136
+      ],
+      "gap_yd": 36.0,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at +40..+55, along 120-136, rough under/among the tree group short of the fairway; smooth in 2020",
+      "shape": {
+       "poly": [
+        [
+         55,
+         122
+        ],
+        [
+         34,
+         120
+        ],
+        [
+         33,
+         125
+        ],
+        [
+         44,
+         125
+        ],
+        [
+         44,
+         136
+        ],
+        [
+         55,
+         136
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "auto layers match: tree edges both sides on lidar, OB left inside the woods (houses beyond)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "tight wooded hole; auto tree edges match lidar/photo; OB right behind green near houses, left OB in woods toward the subdivision",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "auto creek strips in the right woods follow a DEM channel; at 120-165 the water strip sits on open mown rough left of the tree edge: erased there",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "poly": [
+       [
+        -20,
+        120
+       ],
+       [
+        5,
+        120
+       ],
+       [
+        7,
+        165
+       ],
+       [
+        -20,
+        165
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "2022/2020: smooth mown rough x -10..+7 at 120-165, tree edge at +7; the DEM channel is under the trees at +20..+30"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "right crown edge ~5 yds inside of the auto outline (photo crowns at +32, auto at ~+38) at 150-280",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 5,
+     "shape": {
+      "rect": [
+       20,
+       70,
+       150,
+       280
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "corridor_a/b: crowns and lidar canopy start at +32..+35, auto outline at +38..+40"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "left: lidar canopy edge at ~-30 at 190-290, auto tree polygons stop at -42..-33 with gaps; dark band to -20 is shadow (black in CIR)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -42,
+        190
+       ],
+       [
+        -30,
+        190
+       ],
+       [
+        -29,
+        220
+       ],
+       [
+        -30,
+        250
+       ],
+       [
+        -31,
+        290
+       ],
+       [
+        -42,
+        290
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "CIR red crowns + lidar cyan edge at -30 along 190-290 both years; auto polygons leave gaps between -42 and -30"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "dogleg left; auto trees match lidar crowns",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough in the landing zone; beyond the tree cluster at 300-330 uneven darker turf with shrubs (S2 R1/R2) but no clear mowing line, > 40 yds right of the line of play"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-16-R1",
+      "area_yd2": 756,
+      "p": 0.61,
+      "along": [
+       333,
+       381
+      ],
+      "gap_yd": 15.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "behind the tree cluster at 330-380 right of the dogleg: uneven darker turf with shrubs both years, no clear mowing line; out of play (> 40 yds from line of play)",
+      "shape": {
+       "poly": [
+        [
+         21,
+         381
+        ],
+        [
+         28,
+         361
+        ],
+        [
+         18,
+         356
+        ],
+        [
+         26,
+         336
+        ],
+        [
+         16,
+         333
+        ],
+        [
+         12,
+         343
+        ],
+        [
+         1,
+         340
+        ],
+        [
+         0,
+         362
+        ],
+        [
+         14,
+         367
+        ],
+        [
+         11,
+         378
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-16-R2",
+      "area_yd2": 232,
+      "p": 0.67,
+      "along": [
+       341,
+       367
+      ],
+      "gap_yd": 32.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at +35..+50, 341-367 among scattered shrubs/trees, no mowing line visible either year; out of play",
+      "shape": {
+       "poly": [
+        [
+         50,
+         367
+        ],
+        [
+         53,
+         359
+        ],
+        [
+         43,
+         355
+        ],
+        [
+         47,
+         344
+        ],
+        [
+         36,
+         341
+        ],
+        [
+         33,
+         351
+        ],
+        [
+         42,
+         354
+        ],
+        [
+         39,
+         365
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "high",
+   "note": "auto layers match photo; right rough smooth to the cart path in both years",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-17-L1",
+      "area_yd2": 235,
+      "p": 0.64,
+      "along": [
+       120,
+       141
+      ],
+      "gap_yd": 20.5,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "120-140 between tree crowns short of the fairway: shaded rough between trees, smooth in 2020",
+      "shape": {
+       "poly": [
+        [
+         -1,
+         141
+        ],
+        [
+         0,
+         120
+        ],
+        [
+         -20,
+         125
+        ],
+        [
+         -17,
+         135
+        ],
+        [
+         -6,
+         132
+        ],
+        [
+         -4,
+         141
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-17-R1",
+      "area_yd2": 266,
+      "p": 0.62,
+      "along": [
+       120,
+       141
+      ],
+      "gap_yd": 9.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "120-140 just short of the fairway start beside crowns: mown rough smooth in 2020, shade in 2022",
+      "shape": {
+       "poly": [
+        [
+         2,
+         141
+        ],
+        [
+         17,
+         136
+        ],
+        [
+         13,
+         120
+        ],
+        [
+         0,
+         120
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "auto fairway starts at ~225 (rough before it in CIR); trees and bunkers match",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "2": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "3": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "4": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "5": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "6": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "7": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "8": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "9": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "10": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "11": {
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot 20 yds behind the Blue/White box under canopy; no separate box visible to move to"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "12": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "13": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "14": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "15": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "16": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "17": {
+   "Black": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "18": {
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot 20 yds behind the small Blue box; no box clearly visible, kept"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "",
+    "evidence": ""
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "2",
+   "what": "right native edge +/-5 yds; could be lightly mown secondary rough (no lidar support for grass)"
+  },
+  {
+   "hole": "3",
+   "what": "right native: eroded tan streaks at +40..+50 may be sand/waste (not drawn)"
+  },
+  {
+   "hole": "7",
+   "what": "thin water + OB strips inside right woods (DEM ditch, railroad) not verifiable"
+  },
+  {
+   "hole": "9",
+   "what": "left OB line placed at -55 between cart path and road; real stake line unknown"
+  },
+  {
+   "hole": "11",
+   "what": "Black tee (walkback) under canopy; no box visible"
+  },
+  {
+   "hole": "18",
+   "what": "Black tee (walkback) 20 yds behind Blue box; no box visible; bunker at +33,295 clear in 2020 only"
+  },
+  {
+   "hole": "tees",
+   "what": "tee sheets inspected for holes 11 and 18 only; other sets kept because the committed tees measure within 5 yds of the card"
+  }
+ ]
+}

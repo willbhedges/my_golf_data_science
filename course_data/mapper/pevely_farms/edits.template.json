@@ -1,0 +1,1091 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "pevely_farms",
+ "corridor_set": "Black",
+ "mapper": "",
+ "started": "",
+ "minutes": null,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py pevely_farms. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-2-L1",
+      "area_yd2": 564,
+      "p": 0.61,
+      "along": [
+       120,
+       152
+      ],
+      "gap_yd": 25.0,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -30,
+         152
+        ],
+        [
+         -19,
+         149
+        ],
+        [
+         -23,
+         138
+        ],
+        [
+         -14,
+         133
+        ],
+        [
+         -21,
+         120
+        ],
+        [
+         -36,
+         120
+        ],
+        [
+         -43,
+         127
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-2-R1",
+      "area_yd2": 216,
+      "p": 0.53,
+      "along": [
+       294,
+       312
+      ],
+      "gap_yd": 26.5,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         41,
+         312
+        ],
+        [
+         62,
+         304
+        ],
+        [
+         57,
+         294
+        ],
+        [
+         38,
+         304
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "3": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-3-R1",
+      "area_yd2": 1657,
+      "p": 0.58,
+      "along": [
+       137,
+       203
+      ],
+      "gap_yd": 13.3,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         41,
+         202
+        ],
+        [
+         40,
+         191
+        ],
+        [
+         51,
+         190
+        ],
+        [
+         50,
+         179
+        ],
+        [
+         61,
+         178
+        ],
+        [
+         59,
+         156
+        ],
+        [
+         48,
+         157
+        ],
+        [
+         47,
+         147
+        ],
+        [
+         36,
+         148
+        ],
+        [
+         35,
+         137
+        ],
+        [
+         26,
+         137
+        ],
+        [
+         27,
+         170
+        ],
+        [
+         16,
+         171
+        ],
+        [
+         18,
+         193
+        ],
+        [
+         29,
+         192
+        ],
+        [
+         30,
+         203
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-3-R2",
+      "area_yd2": 1644,
+      "p": 0.59,
+      "along": [
+       200,
+       277
+      ],
+      "gap_yd": 16.2,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         70,
+         276
+        ],
+        [
+         70,
+         210
+        ],
+        [
+         64,
+         211
+        ],
+        [
+         63,
+         200
+        ],
+        [
+         52,
+         201
+        ],
+        [
+         55,
+         234
+        ],
+        [
+         44,
+         235
+        ],
+        [
+         43,
+         224
+        ],
+        [
+         32,
+         225
+        ],
+        [
+         32,
+         228
+        ],
+        [
+         34,
+         247
+        ],
+        [
+         56,
+         245
+        ],
+        [
+         57,
+         256
+        ],
+        [
+         35,
+         257
+        ],
+        [
+         36,
+         268
+        ],
+        [
+         58,
+         266
+        ],
+        [
+         59,
+         277
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "4": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-9-R1",
+      "area_yd2": 208,
+      "p": 0.64,
+      "along": [
+       120,
+       136
+      ],
+      "gap_yd": 36.0,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         55,
+         122
+        ],
+        [
+         34,
+         120
+        ],
+        [
+         33,
+         125
+        ],
+        [
+         44,
+         125
+        ],
+        [
+         44,
+         136
+        ],
+        [
+         55,
+         136
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "10": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "16": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-16-R1",
+      "area_yd2": 756,
+      "p": 0.61,
+      "along": [
+       333,
+       381
+      ],
+      "gap_yd": 15.8,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         21,
+         381
+        ],
+        [
+         28,
+         361
+        ],
+        [
+         18,
+         356
+        ],
+        [
+         26,
+         336
+        ],
+        [
+         16,
+         333
+        ],
+        [
+         12,
+         343
+        ],
+        [
+         1,
+         340
+        ],
+        [
+         0,
+         362
+        ],
+        [
+         14,
+         367
+        ],
+        [
+         11,
+         378
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-16-R2",
+      "area_yd2": 232,
+      "p": 0.67,
+      "along": [
+       341,
+       367
+      ],
+      "gap_yd": 32.6,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         50,
+         367
+        ],
+        [
+         53,
+         359
+        ],
+        [
+         43,
+         355
+        ],
+        [
+         47,
+         344
+        ],
+        [
+         36,
+         341
+        ],
+        [
+         33,
+         351
+        ],
+        [
+         42,
+         354
+        ],
+        [
+         39,
+         365
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "17": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-17-L1",
+      "area_yd2": 235,
+      "p": 0.64,
+      "along": [
+       120,
+       141
+      ],
+      "gap_yd": 20.5,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         -1,
+         141
+        ],
+        [
+         0,
+         120
+        ],
+        [
+         -20,
+         125
+        ],
+        [
+         -17,
+         135
+        ],
+        [
+         -6,
+         132
+        ],
+        [
+         -4,
+         141
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-17-R1",
+      "area_yd2": 266,
+      "p": 0.62,
+      "along": [
+       120,
+       141
+      ],
+      "gap_yd": 9.6,
+      "decision": "",
+      "confidence": "",
+      "evidence": "",
+      "shape": {
+       "poly": [
+        [
+         2,
+         141
+        ],
+        [
+         17,
+         136
+        ],
+        [
+         13,
+         120
+        ],
+        [
+         0,
+         120
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "18": {
+   "reviewed": [],
+   "confidence": "",
+   "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "2": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "3": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "4": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "5": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "6": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "7": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "8": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "9": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "10": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "11": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "12": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "13": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "14": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "15": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "16": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "17": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  },
+  "18": {
+   "Black": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Blue": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "White": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   },
+   "Red": {
+    "action": "",
+    "confidence": "",
+    "evidence": ""
+   }
+  }
+ }
+}

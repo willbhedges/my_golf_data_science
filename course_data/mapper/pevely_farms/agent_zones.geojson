@@ -1,0 +1,1329 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "slug": "pevely_farms",
+  "mapper": "mapper-pevely_farms",
+  "made": "2026-11-02T22:44:30Z",
+  "corridor_set": "Black",
+  "base_package": "course_data/mapper/pevely_farms/base/package.json",
+  "base_built": "2026-11-02T21:44:10Z",
+  "minutes": 55,
+  "edits_sha": "1942e04a83e9abed",
+  "schema": "agent_zones/1",
+  "reviewed": {
+   "1": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "high",
+    "note": "auto layers match the photo: fairway, left tree line at ~-30, open mown rough right to hole 9",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "2": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "right: second mowing line ~12-15 yds off the fairway in both years, coarse mottled grass with tan patches beyond; two isolated crowns right not in auto",
+    "s2": [
+     {
+      "id": "S2-2-L1",
+      "side": "L",
+      "area_yd2": 564,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "bottom-left at 120-150, between the cart path and the tree: mown rough in 2022 and 2020, no mowing line; short of any landing"
+     },
+     {
+      "id": "S2-2-R1",
+      "side": "R",
+      "area_yd2": 216,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "inside the native traced as edit 0 (mowing line +20..+30, tufted patches both years); S2 cell is a fragment of it"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough to the cart path at -40..-50 in both years; coarser ground only beyond the path, > 35 yds out",
+     "R": "native: edit 0 (mowing line at x +20..+30, 230-400, same place 2022/2020, tufted with tan patches outside)"
+    }
+   },
+   "3": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "right: dark mowing line (curving) at +22..+35 from 140-290 in both years, coarse grass with eroded sand streaks beyond; left OB = road behind the tree line",
+    "s2": [
+     {
+      "id": "S2-3-R1",
+      "side": "R",
+      "area_yd2": 1657,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native is real right but S2 comes in to +16 over mown rough; traced the mowing line (+22..+27 at 140-200) as edit 0"
+     },
+     {
+      "id": "S2-3-R2",
+      "side": "R",
+      "area_yd2": 1644,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native beyond the curving mowing line at +27..+35 (200-270) both years; traced as edit 0"
+     }
+    ],
+    "long_grass": {
+     "L": "none: narrow mown rough between fairway and the tree line / creek",
+     "R": "native: edit 0 (mowing line +22 at 140 to +35 at 270, same place 2022/2020)"
+    }
+   },
+   "4": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "right: two isolated crowns not in auto; left tree edge ~3 yds beyond auto outline at 200-300",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "6": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "high",
+    "note": "auto layers match: ponds left, railroad tree strip + OB right",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "7": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "auto layers match photo; thin water/OB strips inside the right woods follow a DEM ditch, not verifiable under canopy (left as is)",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "9": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "left auto OB reaches ~-38, inside the cart path (-48) and ~10 yds from the fairway; the road (development) is at -60..-70: OB trimmed to beyond -55",
+    "s2": [
+     {
+      "id": "S2-9-R1",
+      "side": "R",
+      "area_yd2": 208,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at +40..+55, along 120-136, rough under/among the tree group short of the fairway; smooth in 2020"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "10": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "auto layers match: tree edges both sides on lidar, OB left inside the woods (houses beyond)",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "11": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "tight wooded hole; auto tree edges match lidar/photo; OB right behind green near houses, left OB in woods toward the subdivision",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "12": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "auto creek strips in the right woods follow a DEM channel; at 120-165 the water strip sits on open mown rough left of the tree edge: erased there",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "13": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "right crown edge ~5 yds inside of the auto outline (photo crowns at +32, auto at ~+38) at 150-280",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "15": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "left: lidar canopy edge at ~-30 at 190-290, auto tree polygons stop at -42..-33 with gaps; dark band to -20 is shadow (black in CIR)",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "16": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "dogleg left; auto trees match lidar crowns",
+    "s2": [
+     {
+      "id": "S2-16-R1",
+      "side": "R",
+      "area_yd2": 756,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "behind the tree cluster at 330-380 right of the dogleg: uneven darker turf with shrubs both years, no clear mowing line; out of play (> 40 yds from line of play)"
+     },
+     {
+      "id": "S2-16-R2",
+      "side": "R",
+      "area_yd2": 232,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at +35..+50, 341-367 among scattered shrubs/trees, no mowing line visible either year; out of play"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough in the landing zone; beyond the tree cluster at 300-330 uneven darker turf with shrubs (S2 R1/R2) but no clear mowing line, > 40 yds right of the line of play"
+    }
+   },
+   "17": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "high",
+    "note": "auto layers match photo; right rough smooth to the cart path in both years",
+    "s2": [
+     {
+      "id": "S2-17-L1",
+      "side": "L",
+      "area_yd2": 235,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "120-140 between tree crowns short of the fairway: shaded rough between trees, smooth in 2020"
+     },
+     {
+      "id": "S2-17-R1",
+      "side": "R",
+      "area_yd2": 266,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "120-140 just short of the fairway start beside crowns: mown rough smooth in 2020, shade in 2022"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   },
+   "18": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway"
+    ],
+    "confidence": "medium",
+    "note": "auto fairway starts at ~225 (rough before it in CIR); trees and bunkers match",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the trees / cart path in 2022 and 2020, no second mowing line"
+    }
+   }
+  },
+  "uncertain": [
+   {
+    "hole": "2",
+    "what": "right native edge +/-5 yds; could be lightly mown secondary rough (no lidar support for grass)"
+   },
+   {
+    "hole": "3",
+    "what": "right native: eroded tan streaks at +40..+50 may be sand/waste (not drawn)"
+   },
+   {
+    "hole": "7",
+    "what": "thin water + OB strips inside right woods (DEM ditch, railroad) not verifiable"
+   },
+   {
+    "hole": "9",
+    "what": "left OB line placed at -55 between cart path and road; real stake line unknown"
+   },
+   {
+    "hole": "11",
+    "what": "Black tee (walkback) under canopy; no box visible"
+   },
+   {
+    "hole": "18",
+    "what": "Black tee (walkback) 20 yds behind Blue box; no box visible; bunker at +33,295 clear in 2020 only"
+   },
+   {
+    "hole": "tees",
+    "what": "tee sheets inspected for holes 11 and 18 only; other sets kept because the committed tees measure within 5 yds of the card"
+   }
+  ],
+  "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "native",
+    "edit": "2.0",
+    "area_yd2": 7796,
+    "keepout_clipped_yd2": 19,
+    "confidence": "medium",
+    "evidence": "2022 and 2020: smooth mown band to x +20..+30 then darker mottled grass with tan bare/tufted patches (340-370 strongest); the edge is in the same place both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.6025672,
+       38.5281504
+      ],
+      [
+       -90.6029303,
+       38.5279837
+      ],
+      [
+       -90.6033071,
+       38.5278391
+      ],
+      [
+       -90.6035372,
+       38.5282092
+      ],
+      [
+       -90.6019355,
+       38.5288235
+      ],
+      [
+       -90.6017515,
+       38.5285275
+      ],
+      [
+       -90.6018744,
+       38.528473
+      ],
+      [
+       -90.6019505,
+       38.5284458
+      ],
+      [
+       -90.6019567,
+       38.5284434
+      ],
+      [
+       -90.6020566,
+       38.5284014
+      ],
+      [
+       -90.6020665,
+       38.5283967
+      ],
+      [
+       -90.6021591,
+       38.5283466
+      ],
+      [
+       -90.6022087,
+       38.5283246
+      ],
+      [
+       -90.6025672,
+       38.5281504
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "2.1",
+    "area_yd2": 112,
+    "confidence": "high",
+    "evidence": "single crown at +49, along 264, both years + lidar, not in auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.6021712,
+       38.5285937
+      ],
+      [
+       -90.6021548,
+       38.5285945
+      ],
+      [
+       -90.6021387,
+       38.528592
+      ],
+      [
+       -90.602124,
+       38.5285862
+      ],
+      [
+       -90.6021117,
+       38.5285777
+      ],
+      [
+       -90.6021027,
+       38.5285669
+      ],
+      [
+       -90.6020975,
+       38.5285547
+      ],
+      [
+       -90.6020964,
+       38.5285418
+      ],
+      [
+       -90.6020997,
+       38.5285292
+      ],
+      [
+       -90.602107,
+       38.5285176
+      ],
+      [
+       -90.6021179,
+       38.528508
+      ],
+      [
+       -90.6021316,
+       38.5285008
+      ],
+      [
+       -90.6021472,
+       38.5284967
+      ],
+      [
+       -90.6021636,
+       38.5284959
+      ],
+      [
+       -90.6021797,
+       38.5284985
+      ],
+      [
+       -90.6021944,
+       38.5285043
+      ],
+      [
+       -90.6022067,
+       38.5285128
+      ],
+      [
+       -90.6022157,
+       38.5285236
+      ],
+      [
+       -90.602221,
+       38.5285358
+      ],
+      [
+       -90.602222,
+       38.5285487
+      ],
+      [
+       -90.6022187,
+       38.5285613
+      ],
+      [
+       -90.6022114,
+       38.5285729
+      ],
+      [
+       -90.6022005,
+       38.5285825
+      ],
+      [
+       -90.6021868,
+       38.5285896
+      ],
+      [
+       -90.6021712,
+       38.5285937
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "2.2",
+    "area_yd2": 152,
+    "confidence": "high",
+    "evidence": "single crown at +51, along 200, both years + lidar, not in auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.6015794,
+       38.5288479
+      ],
+      [
+       -90.6015603,
+       38.5288488
+      ],
+      [
+       -90.6015415,
+       38.5288458
+      ],
+      [
+       -90.6015244,
+       38.5288391
+      ],
+      [
+       -90.60151,
+       38.5288292
+      ],
+      [
+       -90.6014995,
+       38.5288166
+      ],
+      [
+       -90.6014934,
+       38.5288023
+      ],
+      [
+       -90.6014922,
+       38.5287873
+      ],
+      [
+       -90.601496,
+       38.5287726
+      ],
+      [
+       -90.6015045,
+       38.5287591
+      ],
+      [
+       -90.6015172,
+       38.5287478
+      ],
+      [
+       -90.6015332,
+       38.5287395
+      ],
+      [
+       -90.6015514,
+       38.5287347
+      ],
+      [
+       -90.6015705,
+       38.5287338
+      ],
+      [
+       -90.6015893,
+       38.5287368
+      ],
+      [
+       -90.6016064,
+       38.5287435
+      ],
+      [
+       -90.6016208,
+       38.5287535
+      ],
+      [
+       -90.6016314,
+       38.528766
+      ],
+      [
+       -90.6016374,
+       38.5287803
+      ],
+      [
+       -90.6016386,
+       38.5287953
+      ],
+      [
+       -90.6016348,
+       38.5288101
+      ],
+      [
+       -90.6016263,
+       38.5288235
+      ],
+      [
+       -90.6016136,
+       38.5288348
+      ],
+      [
+       -90.6015976,
+       38.5288431
+      ],
+      [
+       -90.6015794,
+       38.5288479
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "3",
+    "op": "add",
+    "lie": "native",
+    "edit": "3.0",
+    "area_yd2": 5834,
+    "keepout_clipped_yd2": 276,
+    "confidence": "medium",
+    "evidence": "zoomed crop: smooth light mown turf inside a dark curving line at +22 (along 160), +27 (200), +33 (240) in both 2022 and 2020; outside coarse tufted darker grass with tan sand streaks at +40..+50"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.6042768,
+       38.5271545
+      ],
+      [
+       -90.6042413,
+       38.5274865
+      ],
+      [
+       -90.6042408,
+       38.5277341
+      ],
+      [
+       -90.6042021,
+       38.5279012
+      ],
+      [
+       -90.6038882,
+       38.5279172
+      ],
+      [
+       -90.603824,
+       38.5271428
+      ],
+      [
+       -90.6038272,
+       38.5271385
+      ],
+      [
+       -90.6038315,
+       38.5271312
+      ],
+      [
+       -90.6038348,
+       38.5271237
+      ],
+      [
+       -90.6038479,
+       38.5270886
+      ],
+      [
+       -90.6038501,
+       38.5270814
+      ],
+      [
+       -90.6038516,
+       38.5270741
+      ],
+      [
+       -90.6038521,
+       38.5270668
+      ],
+      [
+       -90.6038519,
+       38.5270594
+      ],
+      [
+       -90.6038508,
+       38.5270521
+      ],
+      [
+       -90.6038447,
+       38.5270228
+      ],
+      [
+       -90.603842,
+       38.5270134
+      ],
+      [
+       -90.6038379,
+       38.5270043
+      ],
+      [
+       -90.603821,
+       38.5269726
+      ],
+      [
+       -90.6038172,
+       38.5269663
+      ],
+      [
+       -90.6038128,
+       38.5269602
+      ],
+      [
+       -90.6038085,
+       38.5269554
+      ],
+      [
+       -90.6037939,
+       38.5267801
+      ],
+      [
+       -90.6037955,
+       38.5267805
+      ],
+      [
+       -90.6038182,
+       38.5267844
+      ],
+      [
+       -90.6038292,
+       38.5267858
+      ],
+      [
+       -90.6038404,
+       38.5267863
+      ],
+      [
+       -90.6038516,
+       38.5267858
+      ],
+      [
+       -90.6038745,
+       38.5267839
+      ],
+      [
+       -90.6038841,
+       38.5267828
+      ],
+      [
+       -90.6038935,
+       38.5267809
+      ],
+      [
+       -90.6039026,
+       38.5267784
+      ],
+      [
+       -90.6039238,
+       38.5267717
+      ],
+      [
+       -90.6039341,
+       38.5267679
+      ],
+      [
+       -90.6039438,
+       38.5267633
+      ],
+      [
+       -90.6039528,
+       38.5267579
+      ],
+      [
+       -90.6039683,
+       38.5267475
+      ],
+      [
+       -90.6039763,
+       38.5267416
+      ],
+      [
+       -90.6039835,
+       38.526735
+      ],
+      [
+       -90.6039897,
+       38.5267278
+      ],
+      [
+       -90.6039949,
+       38.5267202
+      ],
+      [
+       -90.6040239,
+       38.5266722
+      ],
+      [
+       -90.6042882,
+       38.5266587
+      ],
+      [
+       -90.6043018,
+       38.5268231
+      ],
+      [
+       -90.6042768,
+       38.5271545
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "4",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "4.0",
+    "area_yd2": 112,
+    "confidence": "high",
+    "evidence": "single crown beside cart path at +42, along 312, both years + lidar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.6010166,
+       38.5290444
+      ],
+      [
+       -90.6010324,
+       38.5290479
+      ],
+      [
+       -90.6010465,
+       38.5290545
+      ],
+      [
+       -90.601058,
+       38.5290638
+      ],
+      [
+       -90.601066,
+       38.529075
+      ],
+      [
+       -90.60107,
+       38.5290875
+      ],
+      [
+       -90.6010698,
+       38.5291004
+      ],
+      [
+       -90.6010653,
+       38.5291128
+      ],
+      [
+       -90.6010569,
+       38.5291239
+      ],
+      [
+       -90.6010451,
+       38.5291329
+      ],
+      [
+       -90.6010308,
+       38.5291392
+      ],
+      [
+       -90.6010149,
+       38.5291424
+      ],
+      [
+       -90.6009984,
+       38.5291422
+      ],
+      [
+       -90.6009826,
+       38.5291387
+      ],
+      [
+       -90.6009685,
+       38.5291321
+      ],
+      [
+       -90.6009571,
+       38.5291228
+      ],
+      [
+       -90.6009491,
+       38.5291115
+      ],
+      [
+       -90.600945,
+       38.529099
+      ],
+      [
+       -90.6009453,
+       38.5290861
+      ],
+      [
+       -90.6009498,
+       38.5290737
+      ],
+      [
+       -90.6009582,
+       38.5290626
+      ],
+      [
+       -90.6009699,
+       38.5290537
+      ],
+      [
+       -90.6009843,
+       38.5290474
+      ],
+      [
+       -90.6010002,
+       38.5290442
+      ],
+      [
+       -90.6010166,
+       38.5290444
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "4",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "4.1",
+    "area_yd2": 112,
+    "confidence": "high",
+    "evidence": "single crown at +60, along 258, both years + lidar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.601557,
+       38.5288453
+      ],
+      [
+       -90.6015728,
+       38.5288489
+      ],
+      [
+       -90.6015869,
+       38.5288555
+      ],
+      [
+       -90.6015983,
+       38.5288647
+      ],
+      [
+       -90.6016063,
+       38.528876
+      ],
+      [
+       -90.6016104,
+       38.5288885
+      ],
+      [
+       -90.6016101,
+       38.5289014
+      ],
+      [
+       -90.6016057,
+       38.5289138
+      ],
+      [
+       -90.6015972,
+       38.5289249
+      ],
+      [
+       -90.6015855,
+       38.5289339
+      ],
+      [
+       -90.6015711,
+       38.5289402
+      ],
+      [
+       -90.6015552,
+       38.5289433
+      ],
+      [
+       -90.6015388,
+       38.5289431
+      ],
+      [
+       -90.601523,
+       38.5289396
+      ],
+      [
+       -90.6015089,
+       38.528933
+      ],
+      [
+       -90.6014974,
+       38.5289238
+      ],
+      [
+       -90.6014894,
+       38.5289125
+      ],
+      [
+       -90.6014854,
+       38.5289
+      ],
+      [
+       -90.6014856,
+       38.5288871
+      ],
+      [
+       -90.6014901,
+       38.5288747
+      ],
+      [
+       -90.6014985,
+       38.5288636
+      ],
+      [
+       -90.6015103,
+       38.5288546
+      ],
+      [
+       -90.6015246,
+       38.5288483
+      ],
+      [
+       -90.6015406,
+       38.5288452
+      ],
+      [
+       -90.601557,
+       38.5288453
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "4",
+    "op": "grow",
+    "lie": "recovery",
+    "edit": "4.2",
+    "area_yd2": 5000,
+    "by": 3.0,
+    "confidence": "medium",
+    "evidence": "lidar canopy and photo crowns reach -35..-37, auto outline at ~-40 (corridor_b)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.6023107,
+       38.529902
+      ],
+      [
+       -90.6012693,
+       38.5299979
+      ],
+      [
+       -90.6012082,
+       38.5295889
+      ],
+      [
+       -90.6022496,
+       38.529493
+      ],
+      [
+       -90.6023107,
+       38.529902
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "9.0",
+    "area_yd2": 11250,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "medium",
+    "evidence": "2022/2020: cart path at -45..-50 and grass strip to the subdivision road at -60..-70; nothing built inside -55"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.5985503,
+       38.5260132
+      ],
+      [
+       -90.5987311,
+       38.523959
+      ],
+      [
+       -90.5992017,
+       38.5239846
+      ],
+      [
+       -90.599021,
+       38.5260387
+      ],
+      [
+       -90.5985503,
+       38.5260132
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "12",
+    "op": "erase",
+    "lie": "water",
+    "edit": "12.0",
+    "area_yd2": 1170,
+    "lies": [
+     "water"
+    ],
+    "confidence": "medium",
+    "evidence": "2022/2020: smooth mown rough x -10..+7 at 120-165, tree edge at +7; the DEM channel is under the trees at +20..+30"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.5932918,
+       38.5243329
+      ],
+      [
+       -90.5932782,
+       38.524555
+      ],
+      [
+       -90.5928079,
+       38.5245206
+      ],
+      [
+       -90.5928206,
+       38.524315
+      ],
+      [
+       -90.5932918,
+       38.5243329
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "13",
+    "op": "grow",
+    "lie": "recovery",
+    "edit": "13.0",
+    "area_yd2": 6500,
+    "by": 5.0,
+    "confidence": "medium",
+    "evidence": "corridor_a/b: crowns and lidar canopy start at +32..+35, auto outline at +38..+40"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.5969514,
+       38.5263387
+      ],
+      [
+       -90.5965246,
+       38.5273556
+      ],
+      [
+       -90.5960267,
+       38.5272266
+      ],
+      [
+       -90.5964535,
+       38.5262098
+      ],
+      [
+       -90.5969514,
+       38.5263387
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.0",
+    "area_yd2": 1210,
+    "confidence": "medium",
+    "evidence": "CIR red crowns + lidar cyan edge at -30 along 190-290 both years; auto polygons leave gaps between -42 and -30"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.6009125,
+       38.5240188
+      ],
+      [
+       -90.6010268,
+       38.5240313
+      ],
+      [
+       -90.6009794,
+       38.5243587
+      ],
+      [
+       -90.6009465,
+       38.5246046
+      ],
+      [
+       -90.6008928,
+       38.5248482
+      ],
+      [
+       -90.6007682,
+       38.5248346
+      ],
+      [
+       -90.6009125,
+       38.5240188
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
