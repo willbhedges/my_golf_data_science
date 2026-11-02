@@ -1,0 +1,1126 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "annbriar",
+ "corridor_set": "Black",
+ "mapper": "mapper-annbriar (map2)",
+ "started": "2026-11-02T06:40Z",
+ "minutes": 20,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left native beyond a ~12 yd mown band kept (mottled tufts both years); auto native around the right cart-path trees is mown rough; two lidar crowns right missing from the auto trees",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       15,
+       50,
+       180,
+       236
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "patch around the cart path / trees at +25..+45, 190-230: smooth mown rough both 2021 and 2023, no lidar shrub speckle"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       48,
+       237,
+       7,
+       7
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown >2.5 m at +48/237, dark crown in 2021 and 2023, not in auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       48,
+       200,
+       7,
+       7
+      ]
+     },
+     "confidence": "high",
+     "evidence": "lidar crown >2.5 m at +48/200, crown in both photo years, not in auto trees"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native both sides beyond ~14-20 yds of rough matches the whitish tufted patches (both years, grey in CIR); no change",
+   "edits": []
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left tree line ok; small auto native slivers between trees/cart path on the left are mown rough; right native beyond ~+45 kept",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -70,
+       -30,
+       180,
+       262
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "slivers 19/20/21nat between crowns and the cart path on the left: mown rough, shade, both years"
+    }
+   ]
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "pond edge ok; crowns along the left between cart path and fairway missing from auto trees; native slivers among those trees are mown rough",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -70,
+       -28,
+       228,
+       270
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "44nat between the tree line and fairway: smooth mown rough both years"
+    },
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -50,
+       -8,
+       288,
+       330
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "43nat between crowns: mown rough / shade both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -22,
+       296,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown at the fairway's left edge, visible both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -24,
+       289,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown at the fairway's left edge, visible both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -36,
+       310,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown left of the fairway, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -14,
+       324,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown short-left of the dog-leg, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -43,
+       243,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown left, both years"
+    }
+   ]
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "auto trees and water match lidar and photo; no change",
+   "edits": []
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "left tree line matches lidar; small native patch left is mown rough",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -65,
+       -35,
+       220,
+       250
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "20nat at -60..-40, 225-245: mown rough both years"
+    }
+   ]
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto native on the right between crowns and at the bunker is mown rough; left 29nat is a cart path; three lidar crowns missing",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       15,
+       50,
+       150,
+       260
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "25nat/26nat between crowns and at the right bunker: mown rough, dark green smooth both years"
+    },
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -40,
+       -15,
+       300,
+       365
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "29nat is a light cart path through trees, not tall grass"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       27,
+       252,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown at +27/252 next to the auto trees, crown in both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -58,
+       178,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown left, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -48,
+       155,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown left near the fairway, both years"
+    }
+   ]
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "pond and left woods ok; left native beyond -50 kept (tan mottled + lidar shrub speckle 2021, greener 2023); two small crowns left added",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -26,
+       215,
+       3,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small lidar crown at the fairway's left edge, dark crown both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -43,
+       193,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown left, both years"
+    }
+   ]
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right woods edge matches lidar; native patch left near the creek trees is mown rough; creek band through the left kept (faint channel visible)",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -70,
+       -35,
+       150,
+       205
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "17nat at -70..-40, 160-200: mown rough next to the trees both years"
+    }
+   ]
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native slivers along the left cart path / tree line are mown rough; crown right added",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -70,
+       -35,
+       120,
+       320
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "slivers along the left cart path and tree line: mown rough / path edge both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       50,
+       230,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown at +50/230 not in auto trees, crown both years"
+    }
+   ]
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native patches around the clubhouse path behind the fairway are mown grass with trees; crowns behind/left of the fairway added",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "native",
+     "shape": {
+      "rect": [
+       -70,
+       50,
+       305,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "18/19/20/17nat near the cart path and clubhouse: mown grass both years, no tufts"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -51,
+       289,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown left of the fairway, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -41,
+       330,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown past the fairway end, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -18,
+       338,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown past the fairway end, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       13,
+       344,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown past the fairway end, both years"
+    }
+   ]
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "tree chute matches lidar both sides; no change",
+   "edits": []
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right woods edge matches lidar; the left side (-70..-35, 120-300) is mottled in both years but no lidar shrub signal: left as auto",
+   "edits": []
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "pond and left woods ok; two crowns right of the cart path missing from auto",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       55,
+       230,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown right of the cart path, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       55,
+       197,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar crown right of the cart path, both years"
+    }
+   ]
+  }
+ },
+ "tees": {
+  "1": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "2": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "3": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "4": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "5": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "6": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "7": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot on open grass, no box at card distance; nearest box at (-25,95) is ~10 yds short of the card: not moved"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "8": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "9": {
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "small square OSM box at the dot, Hickory box just behind; dot fits card 475"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "10": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "11": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "lidar pad on open grass, no OSM box; no other box at card distance"
+   }
+  },
+  "12": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "13": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "14": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "15": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "16": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "17": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  },
+  "18": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Hickory": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Maple": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Oak": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   },
+   "Pine": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto dot on/at the edge of a visible OSM tee box; spacing to the other sets fits the card"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "11",
+   "what": "auto creek (water) band crossing the left/landing area at 140-250: a faint channel is visible in CIR and both years but may be a dry swale; kept"
+  },
+  {
+   "hole": "16",
+   "what": "left side -70..-35 at 120-300: mottled texture both years, could be native; left unmarked"
+  },
+  {
+   "hole": "10",
+   "what": "left native extent (-70..-50, 180-280): tan/speckled 2021, greener 2023"
+  },
+  {
+   "hole": "1",
+   "what": "right native beyond the cart path at 260-330: tufted in 2021, smoother in 2023; kept as auto"
+  },
+  {
+   "hole": "7",
+   "what": "Oak tee (walkback) has no visible box"
+  },
+  {
+   "hole": "9",
+   "what": "Black tee (review, 0.4) on a tiny square OSM box"
+  },
+  {
+   "hole": "3",
+   "what": "Black/Hickory on one box (front/back edge) or Black on the separate box 15 yds left"
+  }
+ ]
+}
