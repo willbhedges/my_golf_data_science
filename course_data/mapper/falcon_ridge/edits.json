@@ -1,0 +1,1536 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "falcon_ridge",
+ "corridor_set": "Black",
+ "mapper": "mapper-falcon_ridge",
+ "started": "2026-11-02T10:20Z",
+ "minutes": 50,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py falcon_ridge. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict).",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "trees: added one isolated crown right at 300 missing from auto; rest matches lidar",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: wide rough right is mottled tan in 2023 but smooth green with no second mowing line in 2021; treated as mown rough"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       35,
+       300,
+       9,
+       8
+      ]
+     },
+     "confidence": "high",
+     "evidence": "single crown right of fairway at 290-310, both 2021 and 2023, lidar 2.5-8 m blob, not in auto trees"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto layers match the photo; right-side crowns at 250-290 lie inside the auto OB band",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": []
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto layers match; crowns left inside the OB band",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": []
+  },
+  "4": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto layers match the photo and lidar",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": []
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "package has no fairway on this hole: traced the fairway (both years) 198-400; right tree edge 3 yds short of the lidar canopy at 140-300",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: narrow (<8 yds) strip between the fairway rough and the right tree line, tan in 2023 but smooth green in 2021; mown rough"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "fairway",
+     "shape": {
+      "band": {
+       "left": [
+        [
+         198,
+         -14
+        ],
+        [
+         220,
+         -17
+        ],
+        [
+         240,
+         -17
+        ],
+        [
+         260,
+         -15
+        ],
+        [
+         280,
+         -14
+        ],
+        [
+         300,
+         -19
+        ],
+        [
+         320,
+         -10
+        ],
+        [
+         340,
+         -3
+        ],
+        [
+         360,
+         -4
+        ],
+        [
+         385,
+         -7
+        ],
+        [
+         400,
+         -9
+        ]
+       ],
+       "right": [
+        [
+         198,
+         12
+        ],
+        [
+         220,
+         15
+        ],
+        [
+         240,
+         16
+        ],
+        [
+         260,
+         12
+        ],
+        [
+         280,
+         22
+        ],
+        [
+         300,
+         23
+        ],
+        [
+         320,
+         21
+        ],
+        [
+         340,
+         18
+        ],
+        [
+         360,
+         17
+        ],
+        [
+         385,
+         20
+        ],
+        [
+         400,
+         21
+        ]
+       ]
+      }
+     },
+     "confidence": "medium",
+     "evidence": "fairway mowing outline clear in 2023 and 2021 (and lighter in CIR); package has no fairway polygon on this hole"
+    },
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 3,
+     "shape": {
+      "rect": [
+       20,
+       45,
+       140,
+       300
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy and 2023 crown edge 2-4 yds inside (fairway side of) the auto tree outline on the right"
+    }
+   ]
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "package has no fairway: traced it 155-400 from 2023 / 2021 mowing lines",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "fairway",
+     "shape": {
+      "band": {
+       "left": [
+        [
+         155,
+         -12
+        ],
+        [
+         160,
+         -15
+        ],
+        [
+         180,
+         -17
+        ],
+        [
+         200,
+         -20
+        ],
+        [
+         220,
+         -21
+        ],
+        [
+         240,
+         -22
+        ],
+        [
+         260,
+         -21
+        ],
+        [
+         280,
+         -20
+        ],
+        [
+         300,
+         -20
+        ],
+        [
+         320,
+         -17
+        ],
+        [
+         340,
+         -15
+        ],
+        [
+         360,
+         -15
+        ],
+        [
+         380,
+         -15
+        ],
+        [
+         400,
+         -15
+        ]
+       ],
+       "right": [
+        [
+         155,
+         10
+        ],
+        [
+         160,
+         13
+        ],
+        [
+         180,
+         16
+        ],
+        [
+         200,
+         17
+        ],
+        [
+         220,
+         18
+        ],
+        [
+         240,
+         19
+        ],
+        [
+         260,
+         16
+        ],
+        [
+         280,
+         13
+        ],
+        [
+         300,
+         12
+        ],
+        [
+         320,
+         10
+        ],
+        [
+         340,
+         12
+        ],
+        [
+         360,
+         14
+        ],
+        [
+         380,
+         15
+        ],
+        [
+         400,
+         15
+        ]
+       ]
+      }
+     },
+     "confidence": "medium",
+     "evidence": "fairway outline visible in both years (lighter, smoother turf; CIR lighter pink); package has no fairway polygon"
+    }
+   ]
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "package has no fairway: traced it 143-400 (wide landing area 150-245, narrows past the left bunker)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "fairway",
+     "shape": {
+      "band": {
+       "left": [
+        [
+         143,
+         -8
+        ],
+        [
+         150,
+         -15
+        ],
+        [
+         160,
+         -20
+        ],
+        [
+         180,
+         -22
+        ],
+        [
+         200,
+         -24
+        ],
+        [
+         220,
+         -26
+        ],
+        [
+         240,
+         -25
+        ],
+        [
+         250,
+         -18
+        ],
+        [
+         260,
+         -11
+        ],
+        [
+         280,
+         -10
+        ],
+        [
+         300,
+         -8
+        ],
+        [
+         320,
+         -6
+        ],
+        [
+         340,
+         -5
+        ],
+        [
+         360,
+         -5
+        ],
+        [
+         380,
+         -7
+        ],
+        [
+         400,
+         -8
+        ]
+       ],
+       "right": [
+        [
+         143,
+         8
+        ],
+        [
+         150,
+         16
+        ],
+        [
+         160,
+         20
+        ],
+        [
+         180,
+         22
+        ],
+        [
+         200,
+         24
+        ],
+        [
+         220,
+         25
+        ],
+        [
+         240,
+         24
+        ],
+        [
+         250,
+         21
+        ],
+        [
+         260,
+         18
+        ],
+        [
+         280,
+         17
+        ],
+        [
+         300,
+         13
+        ],
+        [
+         320,
+         11
+        ],
+        [
+         340,
+         14
+        ],
+        [
+         360,
+         15
+        ],
+        [
+         380,
+         16
+        ],
+        [
+         400,
+         16
+        ]
+       ]
+      }
+     },
+     "confidence": "medium",
+     "evidence": "fairway outline crisp in 2021 and visible in 2023 / CIR; package has no fairway polygon"
+    }
+   ]
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "added the rock-lined creek crossing at ~335-345 (dark in NIR both years, channel in DEM); auto had no water",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "water",
+     "shape": {
+      "poly": [
+       [
+        -47,
+        382.0
+       ],
+       [
+        -42,
+        362.0
+       ],
+       [
+        -38,
+        347.0
+       ],
+       [
+        -30,
+        340.0
+       ],
+       [
+        -20,
+        339.0
+       ],
+       [
+        -10,
+        338.0
+       ],
+       [
+        0,
+        337.0
+       ],
+       [
+        10,
+        334.0
+       ],
+       [
+        16,
+        332.0
+       ],
+       [
+        16,
+        328.0
+       ],
+       [
+        10,
+        330.0
+       ],
+       [
+        0,
+        333.0
+       ],
+       [
+        -10,
+        334.0
+       ],
+       [
+        -20,
+        335.0
+       ],
+       [
+        -30,
+        336.0
+       ],
+       [
+        -38,
+        343.0
+       ],
+       [
+        -42,
+        358.0
+       ],
+       [
+        -47,
+        378.0
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "creek channel visible 2021 and 2023, dark in CIR (NIR), incised line in the DEM hillshade; crosses the hole at 330-345"
+    }
+   ]
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "added the creek that crosses diagonally at 282-338 (landing zone of the Black tee); added one crown left at 298",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "water",
+     "shape": {
+      "poly": [
+       [
+        -60,
+        346.0
+       ],
+       [
+        -53,
+        344.0
+       ],
+       [
+        -48,
+        340.0
+       ],
+       [
+        -37,
+        331.0
+       ],
+       [
+        -27,
+        329.0
+       ],
+       [
+        -13,
+        326.0
+       ],
+       [
+        0,
+        322.0
+       ],
+       [
+        8,
+        317.0
+       ],
+       [
+        17,
+        309.0
+       ],
+       [
+        22,
+        302.0
+       ],
+       [
+        25,
+        294.0
+       ],
+       [
+        30,
+        287.0
+       ],
+       [
+        37,
+        284.0
+       ],
+       [
+        44,
+        283.0
+       ],
+       [
+        44,
+        279.0
+       ],
+       [
+        37,
+        280.0
+       ],
+       [
+        30,
+        283.0
+       ],
+       [
+        25,
+        290.0
+       ],
+       [
+        22,
+        298.0
+       ],
+       [
+        17,
+        305.0
+       ],
+       [
+        8,
+        313.0
+       ],
+       [
+        0,
+        318.0
+       ],
+       [
+        -13,
+        322.0
+       ],
+       [
+        -27,
+        325.0
+       ],
+       [
+        -37,
+        327.0
+       ],
+       [
+        -48,
+        336.0
+       ],
+       [
+        -53,
+        340.0
+       ],
+       [
+        -60,
+        342.0
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "creek visible both years, dark (water) in CIR, channel in the DEM hillshade; crosses the fairway gap at 300-325"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -38,
+       298,
+       7,
+       7
+      ]
+     },
+     "confidence": "high",
+     "evidence": "isolated crown left of fairway at 290-305, both years, lidar 2.5-8 m blob, not in auto trees"
+    }
+   ]
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "package has no fairway: traced it 185-400 from the 2021 photo (crisper) checked on 2023",
+   "long_grass": {
+    "L": "none: mown rough to the left tree line in the landing zone; wetland vegetation around the pond behind 200 (along 140-200, x<-30) left as auto",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "fairway",
+     "shape": {
+      "band": {
+       "left": [
+        [
+         185,
+         -25
+        ],
+        [
+         200,
+         -28
+        ],
+        [
+         220,
+         -27
+        ],
+        [
+         240,
+         -25
+        ],
+        [
+         260,
+         -24
+        ],
+        [
+         280,
+         -21
+        ],
+        [
+         300,
+         -22
+        ],
+        [
+         320,
+         -20
+        ],
+        [
+         340,
+         -19
+        ],
+        [
+         360,
+         -15
+        ],
+        [
+         380,
+         -10
+        ],
+        [
+         400,
+         -5
+        ]
+       ],
+       "right": [
+        [
+         185,
+         2
+        ],
+        [
+         200,
+         4
+        ],
+        [
+         220,
+         5
+        ],
+        [
+         240,
+         6
+        ],
+        [
+         260,
+         8
+        ],
+        [
+         280,
+         8
+        ],
+        [
+         300,
+         6
+        ],
+        [
+         320,
+         8
+        ],
+        [
+         340,
+         11
+        ],
+        [
+         360,
+         16
+        ],
+        [
+         380,
+         22
+        ],
+        [
+         400,
+         26
+        ]
+       ]
+      }
+     },
+     "confidence": "medium",
+     "evidence": "fairway lighter strip visible in 2021 and mowing pattern in 2023; package has no fairway polygon"
+    }
+   ]
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "package has no fairway: traced it 160-400 (wavy edges, both years)",
+   "long_grass": {
+    "L": "none: left rough is striped (mown) in 2023 out to the lot fence at ~-50; 2021 shows the lots under construction, rough smooth",
+    "R": "none: beyond the cart path mown rough with scattered small trees, smooth green in 2021, mottled in 2023 without a second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "fairway",
+     "shape": {
+      "band": {
+       "left": [
+        [
+         160,
+         0
+        ],
+        [
+         170,
+         -13
+        ],
+        [
+         180,
+         -20
+        ],
+        [
+         200,
+         -27
+        ],
+        [
+         220,
+         -22
+        ],
+        [
+         240,
+         -17
+        ],
+        [
+         260,
+         -22
+        ],
+        [
+         280,
+         -25
+        ],
+        [
+         300,
+         -24
+        ],
+        [
+         320,
+         -19
+        ],
+        [
+         340,
+         -16
+        ],
+        [
+         360,
+         -14
+        ],
+        [
+         380,
+         -12
+        ],
+        [
+         400,
+         -10
+        ]
+       ],
+       "right": [
+        [
+         160,
+         15
+        ],
+        [
+         170,
+         22
+        ],
+        [
+         180,
+         21
+        ],
+        [
+         200,
+         17
+        ],
+        [
+         220,
+         18
+        ],
+        [
+         240,
+         15
+        ],
+        [
+         260,
+         10
+        ],
+        [
+         280,
+         10
+        ],
+        [
+         300,
+         8
+        ],
+        [
+         320,
+         11
+        ],
+        [
+         340,
+         14
+        ],
+        [
+         360,
+         18
+        ],
+        [
+         380,
+         21
+        ],
+        [
+         400,
+         22
+        ]
+       ]
+      }
+     },
+     "confidence": "medium",
+     "evidence": "fairway outline crisp in 2023 and 2021 (wavy mowing edge, lighter in CIR); package has no fairway polygon"
+    }
+   ]
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto layers match (fairway, right tree row, pond in front)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": []
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "erased the auto crown at (-30,205): tree present in 2021 / lidar but gone in 2023 (stump patch)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture",
+    "R": "none: smooth mown rough from the fairway to the tree line / lot line in both 2021 and 2023, no second mowing line, no tufted texture"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28,
+       207,
+       11,
+       11
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at 200-215 left of fairway in 2021 and lidar; 2023 photo and CIR show open turf with a brown stump patch (removed)"
+    }
+   ]
+  }
+ },
+ "tees": {
+  "1": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "2": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "3": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "4": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "5": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "6": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "7": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "8": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "back of the shared Black/Blue box visible in 2023; nothing behind it on the line; measured 507 vs card 513"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "9": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "10": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "11": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "12": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "13": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "14": {
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "texture pad beside the cart path, no crisp box visible in either year; measured 182 vs card 187 (Blue also 5 short, so likely the green reference)"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "15": {
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "dot under tree canopy; DEM shows a raised pad at 0-15 on the line; measured 525 vs card 529, no visible box elsewhere to move to"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "16": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "17": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  },
+  "18": {
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on a visible box, spacing fits the card"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "10",
+   "what": "creek at 330-345 is a rock-lined channel: dark in NIR both years but may be dry in summer (hazard either way)"
+  },
+  {
+   "hole": "18",
+   "what": "auto crown erased at (-28,207): present in 2021 and lidar, gone in 2023 only"
+  },
+  {
+   "hole": "9",
+   "what": "auto OB spikes on the left (-60..-40, 120-240 and 300-380) look like outline artefacts over open rough; left as auto (lot lines not visible)"
+  },
+  {
+   "hole": "13",
+   "what": "fairway left edge traced from 2021; 2023 mowing puts it ~5 yds further right at 300-380"
+  },
+  {
+   "hole": "14",
+   "what": "Black tee: no crisp box visible (low confidence keep)"
+  },
+  {
+   "hole": "15",
+   "what": "Black tee under canopy (low confidence keep)"
+  },
+  {
+   "hole": "1",
+   "what": "right rough 140-280 (x +25..+60) tan / mottled in 2023 with a faint line; judged mown rough (no second mowing line in 2021)"
+  }
+ ]
+}
