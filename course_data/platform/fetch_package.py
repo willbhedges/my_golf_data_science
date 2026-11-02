@@ -75,6 +75,10 @@ def fetch_osm(course, raw, drop_holes=False, supplement=None):
             p.setdefault("osm_id", -(i + 1))
             p.setdefault("osm_type", "hand")
         fc["features"] += extra
+        import sanity
+        fc, replaced = sanity.supplement_hole_ways(fc)       # supplement hole ways win over OSM's by ref
+        if replaced:
+            pc.log(f"osm_supplement: replaced {len(replaced)} OSM golf=hole way(s) with the same ref")
     rings = fcm.outer_rings(course["boundary"]) if course.get("boundary") else []
     w, s, e, n = course["bbox"]
     el = dict(type=course["osm"]["type"], id=course["osm"]["id"], tags=dict(course.get("tags") or {},

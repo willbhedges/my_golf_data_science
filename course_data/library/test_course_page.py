@@ -77,3 +77,15 @@ def test_wind_groups_all_par3_card_still_runs_once():
     assert cp.wind_groups([], 4) == [[]]
     assert cp.wind_groups(["1", "2", "3"], 2) == [["1", "3"], ["2"]]
     assert cp.wind_groups(["1"], 4) == [["1"]]
+
+
+def test_requested_set_matches_one_part_of_a_slash_name():
+    """colbert_hills (qa_rebuild.md): request "Black", OpenGolfAPI card "Black/Blue" (7525) + "Web" (7505): the
+    page must solve Black/Blue, not substitute the longest non-combination set."""
+    pkg = {"tee_set": "Black/Blue", "tee_sets": {
+        "Black/Blue": {"total": 7525, "yards": [434] * 18}, "Web": {"total": 7505, "yards": [414] * 18},
+        "Silver": {"total": 7049, "yards": [390] * 18}, "White": {"total": 5883, "yards": [330] * 18}}}
+    bases, _, _ = cp.choose_bases(pkg, ["Black", "Silver"])
+    assert bases == ["Black/Blue", "Silver"]
+    assert cp.choose_bases(pkg, ["Black/Blue", "Silver"])[0] == ["Black/Blue", "Silver"]
+    assert cp.choose_bases(pkg, ["Silver"])[0] == ["Silver", "Web"]        # unchanged without a slash match

@@ -30,7 +30,7 @@ def test_variants(tmp_path):
     assert r["scorecard"] == "x/card_review.json" and r["osm_supplement"] == "x/osm_supplement.geojson"
     assert r["tees"] == ["Gold", "Black"]
     assert r["tee_overrides"] == {"2": {"Web": [38.1, -94.2]}, "18": {"Blue": [1, 2]}}   # hole 5 -> card 18
-    assert r["yardage_overrides"] == {"2": {"*": 590}, "3": {"Black": 399}, "4": {"Gold": 362, "Blue": 344}}
+    assert r["yardage_overrides"] == {"2": {"Web": 590}, "3": {"Black": 399}, "4": {"Gold": 362, "Blue": 344}}
     assert r["par_overrides"] == {"3": 3, "4": 4}
     assert r["green_overrides"] == {"3": [38.0, -94.0]}
     assert r["hole_renumber"] == {"5": {"to": 18, "near_ll": [1, 2]}}
@@ -57,7 +57,7 @@ def test_renumber_rekeys_fixes(tmp_path):
     supplement with ignore_osm_holes sends no hole_renumber (its ways are already renumbered)."""
     f = tmp_path / "r"
     f.mkdir()
-    body = {"renumber": {"page_to_card": {"1": 10, "10": 1, "2": 2}},
+    body = {"renumber": {"page_to_card": {"1": 10, "10": 1, "2": 2}}, "card": {"King": [400] * 18},
             "holes": [{"n": 1, "fix": {"tee_ll": {"King": [41.0, -93.0]}, "par": 4}},
                       {"n": 10, "fix": {"card_hole": 1, "par": 5, "yards": {"King": 553}}},
                       {"n": 3, "fix": {"renumber_as": 4, "yards": 300}},
@@ -74,3 +74,25 @@ def test_renumber_rekeys_fixes(tmp_path):
     (f / "osm_supplement.geojson").write_text('{"type": "FeatureCollection", "features": []}')
     r = rf.library_request(str(f), str(tmp_path))
     assert r["ignore_osm_holes"] is True and "hole_renumber" not in r and r["par_overrides"] == {"10": 4, "1": 5}
+
+
+def test_bare_yards_keyed_to_the_named_set(tmp_path):
+    """The Falls / Weaver Ridge (qa_rebuild.md): a bare fix "yards" never goes to "*" on a multi-set rebuild (it
+    landed on the solved set, Blue / Black). It goes to the set tee_ll names; with several named sets, to those
+    whose review card value it is; with none named, "*" only when the rebuild has one set; else dropped + noted."""
+    f = tmp_path / "f"
+    f.mkdir()
+    card = {"set": {"Gold": [390] * 18, "Blue": [379] * 18}}
+    _w(f / "review.json", {"course_review/1": {"card": card, "page_set_should_be": "Blue, White", "holes": [
+        {"n": 2, "fix": {"tee_ll": {"Gold": [38.79, -90.72]}, "yards": 390}},
+        {"n": 12, "fix": {"tee_ll": {"Gold": [1, 2], "Blue": [1, 3]}, "yards": 379}},
+        {"n": 13, "fix": {"tee_ll": {"Gold": [1, 2], "Blue": [1, 3]}, "yards": 240}},
+        {"n": 5, "fix": {"yards": 387, "par": 4}},
+        {"n": 6, "notes": "Blue on the back box; the card is short", "fix": {"yards": 401}}]}})
+    r = rf.library_request(str(f), str(tmp_path))
+    assert r["yardage_overrides"] == {"2": {"Gold": 390}, "12": {"Blue": 379}, "6": {"Blue": 401}}
+    assert r["par_overrides"] == {"5": 4}
+    assert sum("bare yards" in s for s in r["review_not_applied"]) == 2       # 13 (which set?) and 5 (no set)
+    _w(f / "review.json", {"course_review/1": {"holes": [{"n": 5, "fix": {"yards": 387}}]}})
+    _w(f / "package.json", {"tee_sets": {"osm_back": {"yards": None}}})       # the last build had no card: one set
+    assert rf.library_request(str(f), str(tmp_path))["yardage_overrides"] == {"5": {"*": 387}}

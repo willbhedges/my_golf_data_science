@@ -177,6 +177,9 @@ def choose_bases(pkg, want):
         for s, v in sets.items():
             if s.lower() == w0 or (v.get("colour") or "").lower() == w0 or w0 in [a.lower() for a in v.get("aliases") or []]:
                 return s
+        part = [s for s in sets if "/" in s and w0 in [x.strip() for x in s.lower().split("/")]]
+        if part:                                # "Black" -> "Black/Blue" (colbert_hills: else "Web" was substituted)
+            return max(part, key=lambda s: sets[s]["total"])
         return None
     pool = sorted([s for s in sets if not is_combo(s) and sets[s]["total"] >= MIN_SET_TOTAL],
                   key=lambda s: -sets[s]["total"]) or sorted(sets, key=lambda s: -sets[s]["total"])

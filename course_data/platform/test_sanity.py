@@ -64,6 +64,23 @@ def test_neighbour_course_hole_ways_dropped():
     assert d2 == [] and len(same["features"]) == 18
 
 
+def test_supplement_hole_ways_replace_osm_by_ref_and_are_never_dropped():
+    # Creekmoor 10 (qa_rebuild.md): live OSM and the supplement both carry refs 1-18; the ref-10 way's midpoint is
+    # outside the course boundary (inside_course False) and the duplicate refs dropped both copies
+    osm = [line([(i * 100, 0), (i * 100, 400)], golf="hole", ref=str(i + 1), osm_id=100 + i,
+                inside_course=(i != 9)) for i in range(18)]
+    hand = [line([(i * 100, 0), (i * 100, 410)], golf="hole", ref=str(i + 1), osm_id=100 + i, src="hand",
+                 inside_course=(i != 9)) for i in range(18)]
+    out, notes = sanity.clean_osm(dict(features=osm + hand))
+    holes = [f for f in out["features"] if f["properties"]["golf"] == "hole"]
+    assert len(holes) == 18 and all(f["properties"].get("src") == "hand" for f in holes)
+    assert any("osm_supplement" in n for n in notes) and not any("neighbouring" in n for n in notes)
+    # a hand way outside the boundary survives even when the neighbour filter runs
+    extra = [line([(0, 2000), (0, 2400)], golf="hole", ref="1", osm_id=900, inside_course=False)]
+    out, dropped = sanity.select_hole_ways(dict(features=hand + extra))
+    assert dropped == [900] and any(f["properties"]["ref"] == "10" for f in out["features"])
+
+
 # ----------------------------------------------------------------------------- tee guards
 def _hole_fc(extra=()):
     # hole 1: line start (0, 0) -> green at (0, 340); a road behind it at y = -30, another green at y = -60

@@ -3,6 +3,8 @@
 A review agent leaves, in course_data/library/<slug>/:
   review.json            {"course_review/1": {...}} (or the body bare): holes [{n, verdict, notes, fix}] where
                          fix = {"tee_ll": {set: [lat, lon]}, "yards": 399 | {set: 399}, "yards_by_set": {set: y},
+                         (a bare "yards" goes to the set tee_ll names, else "*" only on a single-set rebuild,
+                         else it is dropped into review_not_applied: _bare_yards)
                          "par": 4, "green_ll", "renumber_as"}; course_notes / summary text ("tees ['Gold', 'Black']");
                          "rebuild_hint" (top level or in summary) {yardages, pars, tees, osm_supplement, scorecard};
                          "page_set_should_be" ("Black, Blue"); "ignore_osm_holes: true" in the notes
@@ -64,7 +66,11 @@ def load_review(folder):
         if isinstance(y, dict):
             e["yards"] = {s: int(v) for s, v in y.items() if v}
         elif y:
-            e["yards"] = {"*": int(y)}
+            by, why = _bare_yards(int(y), list(e.get("tee_ll") or {}), str(ref), d, folder, h.get("notes"))
+            if by:
+                e["yards"] = by
+            else:
+                skipped.append(f"hole {ref}: bare yards {int(y)} dropped ({why}); give per-set yards")
         if f.get("par"):
             e["par"] = int(f["par"])
         g = f.get("green_ll")
@@ -77,9 +83,7 @@ def load_review(folder):
         if len(e) > 1 or ref not in holes:
             holes[ref] = e
     summ = d.get("summary") if isinstance(d.get("summary"), dict) else {}
-    texts = [x for k in ("course_notes", "summary", "course_level", "rebuild_advice", "publish") for x in
-             (d.get(k) if isinstance(d.get(k), list) else [d.get(k)]) if isinstance(x, str)]
-    texts += [x for x in summ.values() if isinstance(x, str)]
+    texts = _texts(d)
     hint = {k: v for k, v in (d.get("rebuild_hint") or summ.get("rebuild_hint") or {}).items() if k in HINT_KEYS and v}
     if any(re.search(r"ignore_osm_holes\W+true", t) for t in texts):
         hint["ignore_osm_holes"] = True
@@ -97,6 +101,73 @@ def load_review(folder):
         renumber = {}            # the supplement's hole ways replace OSM's and are already in card numbering
     return dict(holes=holes, tees=tees, hint=hint, skipped=skipped, renumber=renumber,
                 publish=d.get("publish", d.get("publish_as_is")))
+
+
+def _texts(d):
+    summ = d.get("summary") if isinstance(d.get("summary"), dict) else {}
+    texts = [x for k in ("course_notes", "summary", "course_level", "rebuild_advice", "publish") for x in
+             (d.get(k) if isinstance(d.get(k), list) else [d.get(k)]) if isinstance(x, str)]
+    return texts + [x for x in summ.values() if isinstance(x, str)]
+
+
+NOT_SETS = ("par", "pars", "si", "hcp", "handicap", "stroke_index")
+
+
+def _review_card(d):
+    """The review's own card {set: [yards]}: card.set = {set: [...]} or the card bare {set: [...], par: [...]}."""
+    c = d.get("card") if isinstance(d.get("card"), dict) else {}
+    c = c.get("set") if isinstance(c.get("set"), dict) else c
+    return {s: v for s, v in c.items() if isinstance(v, list) and str(s).lower() not in NOT_SETS}
+
+
+def _card_sets(d, folder):
+    """{set: [yards]}: the folder card (card_review.json ...) > the review's card > the last build's package.json."""
+    pkg = _read(os.path.join(folder, "package.json")) or {}
+    out = {s: v["yards"] for s, v in (pkg.get("tee_sets") or {}).items()
+           if isinstance(v, dict) and isinstance(v.get("yards"), list)}
+    out.update(_review_card(d))
+    cf = card_file(folder)
+    for s, v in (((_read(cf) or {}).get("tee_sets") or {}) if cf else {}).items():
+        if isinstance(v, dict) and isinstance(v.get("yards"), list):
+            out[s] = v["yards"]
+    return out
+
+
+def _n_sets(d, folder):
+    """How many tee sets the rebuild's card has (the build solves every set on the card, whatever "tees" says):
+    the folder card's, else the review card's, else the last build's (a card-less page has one, osm_back);
+    0 when unknown."""
+    cf = card_file(folder)
+    if cf:
+        return len((_read(cf) or {}).get("tee_sets") or {})
+    rc = _review_card(d)
+    if rc:
+        return len(rc)
+    return len((_read(os.path.join(folder, "package.json")) or {}).get("tee_sets") or {})
+
+
+def _bare_yards(y, named, ref, d, folder, notes=None):
+    """A fix's bare "yards" -> ({set: y}, None) or (None, why). The set the fix's tee_ll names gets it; when it
+    names several, or none, the sets whose card value on that hole is y; else the one card set the hole's notes
+    name; else "*" (the solved set) only when the rebuild has a single set. Never "*" on a multi-set page: it lands on
+    whichever set is solved (The Falls, Weaver Ridge: the Gold-box yardage on Blue / Black)."""
+    if len(named) == 1:
+        return {named[0]: y}, None
+    i = int(ref) - 1 if str(ref).isdigit() else -1
+    sets = _card_sets(d, folder)
+    if len(sets) == 1 and not named:
+        return {"*": y}, None
+    hit = [s for s, v in sets.items() if (not named or s in named) and 0 <= i < len(v) and v[i] == y]
+    if hit:
+        return {s: y for s in hit}, None
+    if named:
+        return None, f"tee_ll names {', '.join(named)}: which set?"
+    said = [s for s in sets if isinstance(notes, str) and re.search(rf"\b{re.escape(s)}\b", notes)]
+    if len(said) == 1:
+        return {said[0]: y}, None
+    if _n_sets(d, folder) == 1:
+        return {"*": y}, None
+    return None, "no set named and the rebuild has several sets"
 
 
 def _renumber_map(d, items):

@@ -26,7 +26,12 @@ const path = require("path");
     await page.waitForTimeout(400);
     // library pages inline their data gzip-compressed and start once it is unpacked
     await page.waitForFunction(() => typeof D !== "undefined" && D && D.holes, null, { timeout: 15000 });
-    if (set0) { await page.click(`#set button[data-v="${set0}"]`); await page.waitForTimeout(150); }
+    // a single-set page hides the set picker (#setRow): checking "that set" is then the page as it opens
+    if (set0) {
+      const sel = `#set button[data-v="${set0}"]`;
+      if (await page.isVisible(sel)) { await page.click(sel); await page.waitForTimeout(150); }
+      else report.set_note = `set picker hidden or no "${set0}" button: checked the page's own set`;
+    }
     const D = await page.evaluate(() => ({ n: D.holes.length, sets: D.sets, days: D.days, keys: D.holes.map(h => h.key) }));
     const holes = [];
     for (let i = 0; i < D.n; i++) {

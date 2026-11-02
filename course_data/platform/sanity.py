@@ -10,7 +10,8 @@
                            * hole ways of a neighbouring course: when refs are duplicated or there are more than
                              18 golf=hole ways, ways outside this course's boundary (inside_course False) or inside
                              another leisure=golf_course area are dropped (Pevely Farms took Crescent Farms' 1, 9,
-                             10 and 18)
+                             10 and 18); osm_supplement (src=hand) hole ways first replace the OSM ways with the
+                             same ref and are never dropped (Creekmoor 10)
   guard_tees(tp, fc)       tee positions (tees/positions dict, in place):
                            * a walk-back more than MAX_FORWARD_YD forward of the hole-line start, made to force a
                              short card length onto a longer hole, is put back at the line start and marked CHECK
@@ -104,10 +105,31 @@ def drop_practice_tees(fc):
     return (dict(fc, features=keep) if dropped else fc), dropped
 
 
+def _hand(f):
+    return (f.get("properties") or {}).get("src") == "hand"
+
+
+def supplement_hole_ways(fc):
+    """-> (fc copy, [dropped OSM ids]). A hand-mapped (osm_supplement, src=hand) golf=hole way replaces every OSM
+    golf=hole way with the same ref, so a supplement that re-maps the course's holes does not duplicate the refs
+    (Creekmoor: live OSM and the supplement both carried 1-18, and the duplicate refs set off select_hole_ways)."""
+    feats = fc.get("features", [])
+    is_hole = lambda f: (f.get("properties") or {}).get("golf") == "hole"           # noqa: E731
+    hand = {str(f["properties"].get("ref")) for f in feats if is_hole(f) and _hand(f) and f["properties"].get("ref")}
+    if not hand:
+        return fc, []
+    drop = [f for f in feats if is_hole(f) and not _hand(f) and str(f["properties"].get("ref")) in hand]
+    if not drop:
+        return fc, []
+    ids = {id(f) for f in drop}
+    return dict(fc, features=[f for f in feats if id(f) not in ids]), [f["properties"].get("osm_id") for f in drop]
+
+
 def select_hole_ways(fc, max_holes=18):
     """-> (fc copy, [dropped osm ids]). When golf=hole refs repeat or there are more than max_holes ways, the
     ways of a neighbouring course go: outside this course (inside_course False) or inside another
-    leisure=golf_course polygon (one that does not hold most of this course's ways)."""
+    leisure=golf_course polygon (one that does not hold most of this course's ways). Hand-mapped (src=hand,
+    osm_supplement) ways are never dropped: a reviewer put them there on purpose."""
     feats = fc.get("features", [])
     holes = [f for f in feats if f["properties"].get("golf") == "hole" and f.get("geometry")
              and f["geometry"]["type"] == "LineString"]
@@ -128,6 +150,8 @@ def select_hole_ways(fc, max_holes=18):
     drop = set()
     for f in holes:
         mid = shape(f["geometry"]).interpolate(0.5, normalized=True)
+        if _hand(f):
+            continue
         if f["properties"].get("inside_course") is False or any(g.contains(mid) for g in others):
             drop.add(id(f))
     kept_refs = [str(f["properties"].get("ref")) for f in holes if id(f) not in drop and f["properties"].get("ref")]
@@ -220,6 +244,10 @@ def clean_osm(fc, names=()):
     fc, t = drop_practice_tees(fc)
     if t:
         notes.append(f"ignored {len(t)} practice / driving-range tee box(es): OSM {', '.join(map(str, t[:6]))}")
+    fc, sup = supplement_hole_ways(fc)
+    if sup:
+        notes.append(f"osm_supplement hole ways replace {len(sup)} OSM golf=hole way(s) with the same ref: "
+                     f"OSM {', '.join(map(str, sup[:8]))}")
     fc, h = select_hole_ways(fc)
     if h:
         notes.append(f"ignored {len(h)} golf=hole way(s) of a neighbouring course (outside this course's boundary): "

@@ -158,10 +158,19 @@
     "verdict": "wrong tee position",
     "notes": "Page 'Gold' (really the Black tips, card 387) tee is a walk-back 67 yds behind the back OSM tee and sits in dense forest on the 2023 NAIP: no tee there. Page 'Black' (really Gold, card 362) is on the back mapped tee at 291 yds (card Green 297). OSM maps only the forward tees (230-288 yds); the Black/Gold tees (362-387) are not mapped and not visible in the photo. Fairway/lake/green geometry OK.",
     "fix": {
-     "yards": 387,
-     "par": 4
+     "yards": {
+      "Black": 387
+     },
+     "par": 4,
+     "tee_ll": {
+      "Black": [
+       40.7493811,
+       -89.6649398
+      ]
+     }
     },
-    "uncertain": true
+    "uncertain": true,
+    "fix_note": "qa_rebuild 2026-11-02: Black pinned to the Gold box (363 measured) until the tips are mapped; the capped walk-back put Black in front of Gold"
    },
    {
     "n": 6,
@@ -194,7 +203,9 @@
     "verdict": "wrong tee position",
     "notes": "Page 'Gold' (=Black tips) 482 vs card 489: OK. Page 'Black' (=Gold) tee at 447 yds vs Gold card 482: forward tee; the OSM tee at ~476 yds fits.",
     "fix": {
-     "yards": 482,
+     "yards": {
+      "Gold": 482
+     },
      "par": 5
     }
    },
@@ -208,7 +219,9 @@
     "verdict": "wrong tee position",
     "notes": "Page 'Gold' (=Black tips) is on a lidar pad 14 yds behind the back OSM tee, 427 vs card 432: plausible unmapped tips box, acceptable. Page 'Black' (=Gold) tee at 354 yds vs Gold card 401: forward tee; the OSM tee at ~413 yds fits.",
     "fix": {
-     "yards": 401,
+     "yards": {
+      "Gold": 401
+     },
      "par": 4
     },
     "uncertain": true
@@ -218,7 +231,9 @@
     "verdict": "wrong tee position",
     "notes": "Page 'Gold' (=Black tips) tee at 360 yds vs card 406: an OSM tee at ~402 yds fits. Page 'Black' (=Gold) 313 vs Gold card 362: the OSM tee at ~354 fits. (AllSquare 371/331 and OpenGolfAPI 362/313 differ: card versions disagree on this hole.)",
     "fix": {
-     "yards": 406,
+     "yards": {
+      "Black": 406
+     },
      "par": 4
     },
     "uncertain": true
@@ -233,7 +248,10 @@
     "verdict": "wrong tee position",
     "notes": "Page 'Gold' (=Black tips) 402 vs golfify Black 439 (AllSquare and OpenGolfAPI both say 401 from the back; the longest OSM tee is ~396): probably OK at the tips, golfify 439 doubtful. Page 'Black' (=Gold) 375 vs Gold card 401: the OSM tee at ~396 fits.",
     "fix": {
-     "yards": 401,
+     "yards": {
+      "Black": 401,
+      "Gold": 401
+     },
      "par": 4
     },
     "uncertain": true
@@ -248,7 +266,9 @@
     "verdict": "wrong tee position",
     "notes": "Page 'Gold' (=Black tips) 554 vs 556 OK. Page 'Black' (=Gold) 506 vs Gold card 535: the OSM tee at ~533 yds fits.",
     "fix": {
-     "yards": 535,
+     "yards": {
+      "Gold": 535
+     },
      "par": 5
     }
    }

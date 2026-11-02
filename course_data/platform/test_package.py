@@ -155,6 +155,19 @@ def test_no_scorecard_falls_back_to_back_tee(tmp_path):
     assert all(h["length"] == h["measured_length"] for h in p["holes"].values())
 
 
+def test_par_override_on_a_cardless_build(tmp_path):
+    """Sycamore Ridge 14 (qa_rebuild.md): a review par override must reach a build with no card (osm_back)."""
+    pkg = seed(tmp_path)
+    p0 = pk.build_package(dict(course="Spirit Hollow", state="IA", local_scorecard=False), pkg, gapfill=False)
+    old = p0["holes"]["3"]["par"]
+    p = pk.build_package(dict(course="Spirit Hollow", state="IA", local_scorecard=False,
+                              par_overrides={"3": old + 1}, yardage_overrides={"4": {"*": 999}}), pkg, gapfill=False)
+    assert p["tee_set"] == "osm_back" and p["holes"]["3"]["par"] == old + 1
+    assert p["holes"]["3"]["provenance"]["par"] == "review"
+    assert "review, no card" in p["stages"]["card_overrides"]
+    assert any("not applied: no card" in w for w in p["warnings"])
+
+
 def test_request_yardages_and_unknown_set(tmp_path):
     pkg = seed(tmp_path)
     white = [376, 452, 134, 501, 361, 365, 136, 365, 323, 457, 305, 163, 389, 370, 132, 331, 397, 483]

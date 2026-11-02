@@ -72,12 +72,14 @@
     "notes": "Web (= Black/Blue) tee was walked back 27 yds along the hole line onto the clubhouse / parking area (desktop shot shows the marker off the turf). Put it on the back OSM tee box (the box Silver uses). Card 590 vs ~564 measured from that box: the card distance follows the dogleg; keep 590 on the card. The calm pick Driver +40 sits on the aim bound and lands in native rock/rough left of the right-side fairway; it should be re-solved from the real tee. Silver CHECK (564 vs 578) is the same measuring-path issue, not a wrong tee.",
     "fix": {
      "tee_ll": {
-      "Web": [
+      "Black/Blue": [
        39.2125916,
        -96.6401564
       ]
      },
-     "yards": 590
+     "yards": {
+      "Black/Blue": 590
+     }
     }
    },
    {
@@ -170,6 +172,12 @@
    "Solved set 'Web' should be Black/Blue (7525, the club's stated length); only hole 12 differs (434 vs 414). Request tees ['Black','Silver'] on rebuild.",
    "OSM has no green polygon for hole 18 (green from hole-line end).",
    "Page renders cleanly (qa_page.js: 18 holes, 0 problems)."
-  ]
+  ],
+  "rebuild_hint": {
+   "tees": [
+    "Black/Blue",
+    "Silver"
+   ]
+  }
  }
 }

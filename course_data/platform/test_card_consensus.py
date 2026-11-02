@@ -129,3 +129,27 @@ def test_shorter_set_never_moved_onto_a_longer_sets_tee():
     assert not scm.consistency(scm.normalise(cards[2][1]))["ok"]
     r = cc.consensus(cards, ground)
     assert r["card"]["tee_sets"]["Gold"]["yards"][14] == 350
+
+
+def test_set_order_guard_sees_the_review_overrides():
+    # Gustin 15 (qa_rebuild.md, second pass): the card says Black 467 but the review pins Black at 399 (the box on
+    # the ground). The guard must compare the 401 Gold candidate with 399, not 467; a pinned set is never changed.
+    yards_g = [380, 160, 400, 390, 170, 360, 340, 380, 370, 150, 400, 500, 160, 380, 350, 370, 360, 400]
+    yards_b = [y + 30 for y in yards_g]
+    yards_b[14] = 467
+
+    def card(g, b, extra=0):
+        return dict(par=[4] * 18, tee_sets={"Black": dict(yards=b, total=sum(b)),
+                                             "Gold": dict(yards=g, total=sum(g) + extra)})
+    ogapi_g = list(yards_g); ogapi_g[14] = 401
+    cards = [("golfify", card(yards_g, yards_b), "g"), ("allsquare", card(yards_g, yards_b), "a"),
+             ("opengolfapi", card(ogapi_g, yards_b, extra=300), "o")]
+    ground = {str(i + 1): dict(tees=[yards_b[i], yards_g[i]] if i != 14 else [399], line=yards_b[i])
+              for i in range(18)}
+    ground["15"]["line"] = 399
+    raw = cc.consensus(cards, ground)
+    assert raw["card"]["tee_sets"]["Gold"]["yards"][14] == 401            # the bug: the guard sees Black 467
+    r = cc.consensus(cards, ground, {"15": {"black": 399}})
+    assert r["card"]["tee_sets"]["Gold"]["yards"][14] == 350
+    r = cc.consensus(cards, ground, {"15": {"Gold": 350}})                  # a pinned set is left alone
+    assert (15, "Gold") not in {(c["hole"], c["set"]) for c in r["changes"]}

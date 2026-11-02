@@ -272,8 +272,26 @@ def _rank(kind):
     return scm.RELIABILITY.index(kind) if kind in scm.RELIABILITY else len(scm.RELIABILITY)
 
 
-def consensus(cards, ground):
+def _pinned(overrides, set_names):
+    """Request yardage_overrides {ref: {set: yds}} -> {(card set name, hole index): yds}. Set names match the card's
+    case-insensitively; '*' and names the card does not have are skipped (the solved set is not known yet)."""
+    low = {str(n).lower(): n for n in set_names}
+    out = {}
+    for ref, by in (overrides or {}).items():
+        if not str(ref).isdigit() or not isinstance(by, dict):
+            continue
+        for name, y in by.items():
+            n = low.get(str(name).split("(")[0].strip().lower())
+            if n is not None and y:
+                out[(n, int(ref) - 1)] = int(y)
+    return out
+
+
+def consensus(cards, ground, overrides=None):
     """cards = [(kind, card, url)] (scorecard/1, any shape `scorecard.normalise` accepts); ground as above.
+    overrides: the request's (review's) yardage_overrides {ref: {set: yds}}. The build applies them after the
+    consensus, so the consensus never changes a pinned hole/set and its set-order guard compares with the pinned
+    (review) yardage of a longer set, not the raw card's (Gustin 15: Black 467 on the card, 399 on the ground).
     -> {card, base, base_url, changes, flags, scores} or None when there are no cards."""
     prepared, flags = [], []
     normed = [(k, scm.normalise(c), u) for k, c, u in cards if c and c.get("tee_sets")]
@@ -308,9 +326,12 @@ def consensus(cards, ground):
             flags.append(f"{k}: fits the OSM ground on only {s_:.0%} of hole/set values (best card {best:.0%}): "
                          "stale or scrambled card")
     merged = {k: dict(v, yards=list(v["yards"])) for k, v in base["tee_sets"].items()}
+    pinned = _pinned(overrides, merged)
     changes = []
     for name, s in merged.items():
         for i, y in enumerate(s["yards"]):
+            if (name, i) in pinned:
+                continue                                         # the review's value wins after the consensus
             g = ground.get(str(i + 1))
             fy = fit(y, g)
             if fy is None or fy <= FIT_YD:
@@ -330,7 +351,7 @@ def consensus(cards, ground):
                 if i >= len(ys) or not ys[i] or abs(ys[i] - (y or 0)) <= DISAGREE_YD:
                     continue
                 fa = fit(ys[i], g)
-                longer = [m["yards"][i] for m in merged.values()
+                longer = [pinned.get((mn, i), m["yards"][i]) for mn, m in merged.items()
                           if m is not s and (m.get("total") or 0) > (s.get("total") or 0)
                           and i < len(m["yards"]) and m["yards"][i]]
                 if longer and ys[i] >= min(longer) - 5:

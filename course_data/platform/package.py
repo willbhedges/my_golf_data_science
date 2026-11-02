@@ -191,7 +191,7 @@ def card_ground(fc, raw_dir):
     return g
 
 
-def consensus_card(web_cards, ground):
+def consensus_card(web_cards, ground, overrides=None):
     """-> (card, info) from card_consensus.consensus over the web cards (metres -> yards, swapped set names moved
     back, a stale / scrambled card never the base, per-hole fixes on the OSM ground), or None when the ground is
     too thin (fewer than CONSENSUS_MIN_HOLES hole lines) or no card is usable."""
@@ -199,7 +199,7 @@ def consensus_card(web_cards, ground):
     if sum(1 for g in ground.values() if g.get("line")) < CONSENSUS_MIN_HOLES or not web_cards:
         return None
     try:
-        res = cc.consensus([(c["source"], c["card"], c.get("url")) for c in web_cards], ground)
+        res = cc.consensus([(c["source"], c["card"], c.get("url")) for c in web_cards], ground, overrides)
     except Exception:                                            # noqa: BLE001  (advisory: fall back to choose_card)
         return None
     if not res or not res.get("card"):
@@ -243,7 +243,7 @@ def pick_scorecard(req, raw_dir, fc=None):
             card = card2
             info["units"] = unit_flag
     if card is None:
-        cons = consensus_card(web_cards, ground)
+        cons = consensus_card(web_cards, ground, req.get("yardage_overrides"))
         if cons:
             card, info = cons
     if card is None:
@@ -499,6 +499,33 @@ def apply_card_overrides(card, req, chosen):
                     notes.append(f"hole {ref}: par {lst[i]} -> {int(par)} (review)")
                 lst[i] = int(par)
     return card, notes
+
+
+def apply_cardless_overrides(fc, req):
+    """No card (osm_back page): request par_overrides into the OSM hole lines' par tags (copy), so geometry and the
+    page take the review's par (apply_card_overrides has no card to patch: Sycamore Ridge 14 stayed par 3).
+    Single-set yardage_overrides have no card number to replace (the length is measured) and are noted.
+    -> (fc, [notes])."""
+    po, yo = req.get("par_overrides") or {}, req.get("yardage_overrides") or {}
+    notes = []
+    if not (po or yo):
+        return fc, notes
+    fc = copy.deepcopy(fc)
+    holes = {str(f["properties"].get("ref")): f for f in fc["features"]
+             if f["properties"].get("golf") == "hole" and f["properties"].get("ref")}
+    for ref, par in po.items():
+        f = holes.get(str(ref))
+        if f is None or not str(par).isdigit():
+            notes.append(f"hole {ref}: par {par} not applied (no hole line, no card)")
+            continue
+        old = f["properties"].get("par")
+        if str(old) != str(int(par)):
+            f["properties"]["par"] = str(int(par))
+            notes.append(f"hole {ref}: par {old or '?'} -> {int(par)} (review, no card)")
+        f["properties"]["review_par"] = True
+    if yo:
+        notes.append(f"yardage_overrides on {len(yo)} hole(s) not applied: no card (lengths are measured)")
+    return fc, notes
 
 
 def tee_overrides_for(req, set_key, card_sets, chosen, fc):
@@ -1314,6 +1341,11 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     fc, green_notes = apply_green_overrides(fc, req)
     if green_notes:
         stages["green_overrides"] = "ok: " + "; ".join(green_notes)[:400]
+    if not card:
+        fc, cl_notes = apply_cardless_overrides(fc, req)
+        if cl_notes:
+            stages["card_overrides"] = "ok: " + "; ".join(cl_notes)[:400]
+            warnings += [f"review override: {n}" for n in cl_notes if "not applied" in n]
     if blind:          # card:none: the synthetic card from tees/cardless.py on the routed holes (else keep the fallback)
         c2, i2 = cardless_infer(fc, req, pkg_dir, slug, routed)
         if c2 is not None:
@@ -1346,7 +1378,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
                 par_src[r] = "card" if str(p.get("par", "")) in ("", str(ch["par"])) else f"card (OSM says {p['par']})"
                 p["par"] = str(ch["par"])
             elif str(p.get("par", "")).isdigit():
-                par_src[r] = "osm"
+                par_src[r] = "review" if p.get("review_par") else "osm"
 
     # S2 (all sets jointly) + S3 for every tee set on the card (zones come from the longest set's window)
     img_dir = find_imagery(req, pkg_dir, slug)
