@@ -141,3 +141,28 @@ regret falls, with native extra area per hole well below the first runs (coldwat
   fescue at the fairway edge); high confidence is the escape hatch.
 * Tree findings rest on two lidar courses; the photo check of crowns was by eye on a few holes (blue_hills 10, 17;
   ellis 9; pine_dunes 2, 11).
+
+## Round 2 (revised brief: 10-yd native keep-out, two-year texture rule) — coordinator, 2026-11-02
+
+Fresh blind mappers, error budget n=4000 seed 31. AUTO → AUTO + AGENT.
+
+| course | set | match | regret | fixed / broken |
+|---|---|---|---|---|
+| coldwater (redo) | Blue | 10 → 10 /14 | 0.472 → 0.420 | 3 / 4 (round 1: 10 → 7, 0.472 → 0.483) |
+| veenker | Blue | 9 → 9 /13 | 0.193 → 0.119 | 12 / 14 |
+| eagle_knoll | Back | 14 → 14 /14 | 0.026 → 0.054 | – |
+| buffalo_ridge | Buffalo | 12 → 12 /13 | 0.076 → 0.110 | – |
+| annbriar | Black | 8 → 8 /14 | 0.293 → 0.293 | – |
+| **round 2 pooled** | | **53 → 53** | **1.060 → 0.996 (−6 %)** | |
+
+Coldwater native in the landing corridors: round 1 extra 27,600 sq yds / precision ~0.40; round 2 extra 4,372 /
+precision ~0.70, recall ~0.36. Round-2 native recall stays low on Annbriar (agent erased auto native; missing area
+grew 23.8k → 25.2k) — conservative, no plan effect.
+
+Both rounds, 9 courses (round 1 Coldwater replaced by round 2): matches 98 → 99, regret 2.009 → 1.640 (−18 %).
+Gains concentrate on native/prairie courses (Gateway −0.28, Coldwater −0.05, Veenker −0.07 via a highway-mislabelled
+water fix); well-mapped parkland courses move ±0.03 (aim nudges, within seed noise at n=4000).
+
+Decision: the mapper becomes a standard build step (cheap, never broke a course in round 2), with highest priority
+on courses with prairie/links character; long-grass recall is the open item (big tufted blocks found, thin native
+bands mostly left out by design).

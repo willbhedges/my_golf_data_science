@@ -21,6 +21,12 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 | hand-truth courses | 13 (5 + 2 new truth_sets_v2 + error-budget set); 7 more being traced | truth_sets_v2 |
 | national OSM coverage | not yet (index rebuilt, full run queued) | library/us_readiness.json |
 
+## Agent mapper (adopted 2026-11-02)
+
+Blind evaluation on 9 hand-truth courses (course_data/mapper/EVAL_BLIND.md): strokes lost −18 % pooled, matches
+98 → 99, no course broken in round 2. One mapper agent (~15–60 min) now reviews every course's hazard layers
+(native/long grass, tree edges, OB, water, fairway sides) and tees before its page is built.
+
 ## Workstreams (re-ranked 2026-11-01 by measured payoff)
 
 1. **Tee positions** (42 % of wrong plans): back-set box choice on long / split tee complexes. Agent running.
