@@ -350,6 +350,14 @@ def tee_shot_holes(q, w):
     return [str(k) for k in m.ORDER if k in m.HOLES]
 
 
+def wind_groups(holes, n):
+    """Tee-shot holes split over n wind processes. A card with NO tee-shot holes (an all-par-3 course: Quicksands at
+    Gamble Sands, 14 par 3s) still gets one process: the wind grid also carries every par 3's plays-like table, and
+    without it the page step died on a missing wind_grid.json (course-page run 41346643978). An empty group means
+    "every hole" to wind_grid_v2 (WIND_HOLES unset), which on such a card is just the par 3s."""
+    return [holes[i::n] for i in range(n) if holes[i::n]] or [[]]
+
+
 def compute(q, slot, kind, parts):
     cfg = rj(out_dir(q, "config.json"))
     ws = whiches(cfg)
@@ -365,7 +373,7 @@ def compute(q, slot, kind, parts):
     if kind == "wind":
         temps = ",".join(f"{t:g}" for t in cfg["temps"])
         for b in cfg.get("offsets", {}).get(w, [0]):
-            groups = [holes[i::np_] for i in range(np_) if holes[i::np_]]
+            groups = wind_groups(holes, np_)
             procs = []
             for i, g in enumerate(groups):
                 e = dict(env, WIND_ONLY=",".join(g))
@@ -613,19 +621,50 @@ def status_record(q, cfg, pkg, status, reasons, check_holes, page_rel, size):
                 built=cfg["built"], request=q["path"])
 
 
-def failed(q, stage, msg):
-    """A course that did not reach a page: status.json says where it stopped (the index lists it as failed)."""
+ERR_LINE = re.compile(r"^(?:[A-Za-z_][\w.]*\.)?[A-Z]\w*(?:Error|Exception|Exit|Interrupt)\b(?::.*)?$")
+TS_PREFIX = re.compile(r"^\d{4}-\d\d-\d\dT[\d:.]+Z\s?")         # an Actions log line's timestamp
+
+
+def error_lines(text, k=3, width=300):
+    """The last k distinct exception lines of a run's output ("FileNotFoundError: ... wind_grid.json"), runner paths
+    made repo-relative; with no exception line, the last non-empty lines. status.json "reasons" carries them so a
+    failed finish is diagnosable from the repo: "merge / page / checks failed" alone hid real bugs (Bethpage /
+    Pinehurst hole refs, Gamble Sands' all-par-3 card)."""
+    lines = [TS_PREFIX.sub("", ln).rstrip() for ln in (text or "").splitlines()]
+    lines = [ln for ln in lines if ln.strip()]
+    hits = [ln.strip() for ln in lines if ERR_LINE.match(ln.strip())]
+    pick = hits or [ln.strip() for ln in lines[-k:]]
+    out = []
+    for ln in reversed(pick):
+        ln = re.sub(r"(/[\w.\-]+)*/(course_data|spirit_hollow)/", r"\2/", ln)
+        ln = re.sub(r"(/[\w.\-]+)*/bin/python3(\.\d+)?", "python3", ln)
+        ln = ln if len(ln) <= width else ln[:width - 3] + "..."
+        if ln not in out:
+            out.append(ln)
+        if len(out) == k:
+            break
+    return list(reversed(out))
+
+
+def failed(q, stage, msg, log=None):
+    """A course that did not reach a page: status.json says where it stopped (the index lists it as failed).
+    log: that stage's captured output; its last exception lines become extra reasons ("finish error: ...")."""
     os.makedirs(out_dir(q), exist_ok=True)
+    detail = []
+    if log and os.path.exists(log):
+        detail = error_lines(open(log, errors="replace").read())
     rc = rj(os.path.join(CD, "packages", q["slug"], "raw", "course.json")) or {}
     st = dict(slug=q["slug"], name=q["name"], request_name=q["name"], city=q.get("city"), state=q["state"],
-              group=q["group"], status="failed", reasons=[f"{stage}: {msg}"], check_holes=[], tee_sets=[],
+              group=q["group"], status="failed", reasons=[f"{stage}: {msg}"] + [f"{stage} error: {d}" for d in detail],
+              check_holes=[], tee_sets=[],
               page=None, page_bytes=None, request=q["path"],
               resolve=dict(status=rc.get("status"), candidates=[{k: x.get(k) for k in ("name", "town", "holes", "osm")}
                                                                for x in (rc.get("candidates") or [])[:5]]),
               built=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"))
     wj(out_dir(q, "status.json"), st)
     open(out_dir(q, "qa_report.md"), "w").write(f"# {q['name']}: no page\n\n**Status: failed** at {stage}: {msg}\n\n"
-                                                 f"Resolve: {json.dumps(st['resolve'])}\n")
+                                                 + "".join(f"    {d}\n" for d in detail) + ("\n" if detail else "")
+                                                 + f"Resolve: {json.dumps(st['resolve'])}\n")
 
 
 # ------------------------------------------------------------------------------------------------ index
@@ -688,7 +727,8 @@ def main():
     ap.add_argument("cmd", choices=["plan", "pkgreq", "configure", "prepare", "compute", "finish", "failed", "index", "slug"])
     ap.add_argument("args", nargs="*")
     ap.add_argument("--imagery")
-    a = ap.parse_args()
+    ap.add_argument("--log", help="failed: the stage's captured output; its last exception lines go in the reasons")
+    a = ap.parse_intermixed_args()
     if a.cmd == "plan":
         print(json.dumps(plan(a.args)))
     elif a.cmd == "index":
@@ -709,7 +749,7 @@ def main():
         elif a.cmd == "finish":
             finish(q, a.args[1])
         elif a.cmd == "failed":
-            failed(q, a.args[1], " ".join(a.args[2:]))
+            failed(q, a.args[1], " ".join(a.args[2:]), log=a.log)
 
 
 if __name__ == "__main__":

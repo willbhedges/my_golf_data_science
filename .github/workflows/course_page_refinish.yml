@@ -90,8 +90,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Merge, page, checks, report
         run: |
-          python3 course_data/library/course_page.py finish "${{ matrix.req }}" /tmp/parts || \
-            python3 course_data/library/course_page.py failed "${{ matrix.req }}" finish "merge / page / checks failed (see the Actions log)"
+          set -o pipefail
+          python3 course_data/library/course_page.py finish "${{ matrix.req }}" /tmp/parts 2>&1 | tee /tmp/finish.log || \
+            python3 course_data/library/course_page.py failed --log /tmp/finish.log "${{ matrix.req }}" finish "merge / page / checks failed"
           head -40 "$OUT/qa_report.md" || true
       - name: Commit
         run: |
