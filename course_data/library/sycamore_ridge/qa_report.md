@@ -1,43 +1,63 @@
 # Sycamore Ridge Golf Club: automatic page QA
 
-**Status: needs confirm** — confirm holes 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
+**Status: needs confirm** — confirm holes 1, 9, 13, 18
 
-* page: `course_data/library/sycamore_ridge/page.html` (2.3 MB); request `course_data/requests/course_page_sycamore_ridge.json`; built 2026-11-01T21:18Z
-* course: Sycamore Ridge Golf Club (Spring Hill, KS), OSM way/151985223; holes: osm (tier mapped_nocard); card: None (None)
-* solved tee sets: osm_back (no scorecard: the package's own tee set); page sets: osm_back
-* weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 60, 70] F; calm-day picks with 48 prior draws
+* page: `course_data/library/sycamore_ridge/page.html` (5.0 MB); request `course_data/requests/course_page_sycamore_ridge.json`; built 2026-11-02T06:05Z
+* course: Sycamore Ridge Golf Club (Spring Hill, KS), OSM way/151985223; holes: osm (tier mapped_card); card: course_data/library/sycamore_ridge/card_review.json (file)
+* solved tee sets: Black, Blue (tee sets of interest); page sets: Black, Blue
+* weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [40, 50, 65] F; calm-day picks with 48 prior draws
 * imagery on the page: 2023-08-17; package imagery 2021
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
 
 Course-level reasons:
 
-* scorecard not matched (source None, flags [])
-* 18 holes built vs the card's 0
-* pars sum to 71, card None
-* 18 hole(s) with a CHECK
+* 4 hole(s) with a CHECK
 
 Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
-## osm_back tees
+## Black tees
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | CHECK | Driver +2 | yardage: no card yardage for osm_back; par: no card par |
-| 2 | 5 | CHECK | Driver -0 | yardage: no card yardage for osm_back; par: no card par |
-| 3 | 3 | CHECK |  | yardage: no card yardage for osm_back; par: no card par |
-| 4 | 4 | CHECK | Driver +16 | yardage: no card yardage for osm_back; par: no card par |
-| 5 | 3 | CHECK |  | yardage: no card yardage for osm_back; par: no card par |
-| 6 | 5 | CHECK | Driver +12 | yardage: no card yardage for osm_back; par: no card par |
-| 7 | 4 | CHECK | Driver -13 | yardage: no card yardage for osm_back; par: no card par |
-| 8 | 3 | CHECK |  | yardage: no card yardage for osm_back; par: no card par |
-| 9 | 5 | CHECK | Driver +40 | yardage: no card yardage for osm_back; par: no card par |
-| 10 | 4 | CHECK | Driver +8 | yardage: no card yardage for osm_back; par: no card par |
-| 11 | 5 | CHECK | Driver -32 | yardage: no card yardage for osm_back; par: no card par |
-| 12 | 4 | CHECK | 4-wood -0 | yardage: no card yardage for osm_back; par: no card par |
-| 13 | 3 | CHECK |  | yardage: no card yardage for osm_back; par: no card par |
-| 14 | 3 | CHECK |  | yardage: no card yardage for osm_back; par: no card par |
-| 15 | 4 | CHECK | Driver +2 | yardage: no card yardage for osm_back; par: no card par |
-| 16 | 5 | CHECK | Driver -0 | yardage: no card yardage for osm_back; par: no card par |
-| 17 | 3 | CHECK |  | yardage: no card yardage for osm_back; par: no card par |
-| 18 | 4 | CHECK | Driver +2 | yardage: no card yardage for osm_back; par: no card par |
+| 1 | 4 | CHECK | 2-wood +20 (tie) | tee: tee marker not on an OSM tee box (tagged; 21 yds from the nearest OSM tee box); yardage: measured 425 vs card 467 (-42) |
+| 2 | 5 | PASS | Driver -28 |  |
+| 3 | 4 | PASS | 4-wood +0 |  |
+| 4 | 3 | PASS |  |  |
+| 5 | 4 | PASS | Driver -10 |  |
+| 6 | 4 | PASS | Driver -0 |  |
+| 7 | 5 | PASS | Driver -1 |  |
+| 8 | 3 | PASS |  |  |
+| 9 | 4 | CHECK | Driver +7 | tee: tee marker not on an OSM tee box (tagged; 5 yds from the nearest OSM tee box); yardage: measured 452 vs card 466 (-14) |
+| 10 | 4 | PASS | Driver +0 |  |
+| 11 | 5 | PASS | Driver +0 |  |
+| 12 | 3 | PASS |  |  |
+| 13 | 4 | CHECK | 4-wood +0 | tee: tee marker not on an OSM tee box (tee_axis; 7 yds from the nearest OSM tee box) |
+| 14 | 3 | PASS |  |  |
+| 15 | 5 | PASS | Driver +12 |  |
+| 16 | 4 | PASS | Driver -12 |  |
+| 17 | 3 | PASS |  |  |
+| 18 | 5 | CHECK | Driver +40 (tie) | tee: tee marker not on an OSM tee box (tagged; 4 yds from the nearest OSM tee box) |
+
+## Blue tees
+
+| hole | par | result | pick | reasons |
+|---|---|---|---|---|
+| 1 | 4 | CHECK | 4-wood +23 | yardage: measured 395 vs card 445 (-50) |
+| 2 | 5 | PASS | Driver -40 |  |
+| 3 | 4 | PASS | Driver -6 |  |
+| 4 | 3 | PASS |  |  |
+| 5 | 4 | PASS | Driver -33 |  |
+| 6 | 4 | PASS | Driver +6 |  |
+| 7 | 5 | PASS | 4-wood -1 |  |
+| 8 | 3 | PASS |  |  |
+| 9 | 4 | CHECK | Driver +2 (tie) | tee: tee marker not on an OSM tee box (tagged; 3 yds from the nearest OSM tee box) |
+| 10 | 4 | PASS | Driver +8 |  |
+| 11 | 5 | PASS | Driver -13 |  |
+| 12 | 3 | PASS |  |  |
+| 13 | 4 | PASS | Driver +21 |  |
+| 14 | 3 | PASS |  |  |
+| 15 | 5 | PASS | Driver +8 |  |
+| 16 | 4 | PASS | Driver -12 (tie) |  |
+| 17 | 3 | PASS |  |  |
+| 18 | 5 | PASS | 4-wood +40 (tie) |  |
 

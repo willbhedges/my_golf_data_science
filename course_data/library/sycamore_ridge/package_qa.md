@@ -1,6 +1,6 @@
-# Sycamore Ridge Golf Club (Spring Hill, KS) - osm_back tees
+# Sycamore Ridge Golf Club (Spring Hill, KS) - Black tees
 
-Built 2026-11-01T21:18:48Z. OSM way/151985223. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-11-02T06:05:46Z. OSM way/151985223. Scorecard: file (course_data/library/sycamore_ridge/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -11,11 +11,11 @@ Built 2026-11-01T21:18:48Z. OSM way/151985223. Scorecard: None (None). Tee set: 
 | greens_found | 18 |
 | tee_boxes | 99 |
 | tees_with_colour | 89 |
-| holes_with_trees_or_long_grass_in_landing_zone | 9 |
-| of_par4_5 | 12 |
-| mean_landing_osm_share | 0.408 |
-| mean_confidence | 0.676 |
-| osm_score | 0.818 |
+| holes_with_trees_or_long_grass_in_landing_zone | 11 |
+| of_par4_5 | 13 |
+| mean_landing_osm_share | 0.416 |
+| mean_confidence | 0.895 |
+| osm_score | 0.838 |
 
 OSM features inside the course: buildings 4, golf=bunker 45, golf=cartpath 47, golf=driving_range 1, golf=fairway 30, golf=green 25, golf=hole 17, golf=pin 18, golf=rough 1, golf=tee 99, golf=water_hazard 5, holes_with_handicap 17, holes_with_par 17, tees_with_colour 89, trees_polygons 3, water_lines 5, water_polygons 5
 
@@ -23,40 +23,42 @@ OSM features inside the course: buildings 4, golf=bunker 45, golf=cartpath 47, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 450 / 450 | 41 | 0.62 | check the flags | 46% | 0% | 54% | tee nearest the hole-line start | tee: tee nearest the hole-line start; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 2 | 5 | 558 / 558 | 11 | 0.62 | check the flags | 44% | 4% | 52% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 3 | 3 | 228 / 228 | 73 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 4 | 4 | 316 / 316 | 178 | 0.58 | needs review | 31% | 3% | 66% | tee nearest the hole-line start | tee: tee nearest the hole-line start; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 5 | 3 | 171 / 171 | 323 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 6 | 5 | 545 / 545 | 179 | 0.65 | check the flags | 56% | 0% | 44% | tee nearest the hole-line start | tee: tee nearest the hole-line start; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 7 | 4 | 377 / 377 | 244 | 0.62 | check the flags | 47% | 1% | 52% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 8 | 3 | 209 / 209 | 335 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 9 | 5 | 538 / 538 | 144 | 0.59 | needs review | 30% | 10% | 60% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 10 | 4 | 463 / 463 | 178 | 0.64 | check the flags | 46% | 13% | 41% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 11 | 5 | 541 / 541 | 256 | 0.66 | check the flags | 42% | 27% | 31% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 12 | 4 | 344 / 344 | 266 | 0.66 | check the flags | 33% | 37% | 30% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 13 | 3 | 222 / 222 | 171 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 14 | 3 | 399 / 399 | 147 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 15 | 4 | 375 / 375 | 7 | 0.64 | check the flags | 46% | 13% | 41% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 16 | 5 | 581 / 581 | 50 | 0.64 | check the flags | 34% | 26% | 40% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 17 | 3 | 188 / 188 | 355 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 18 | 4 | 416 / 416 | 49 | 0.62 | check the flags | 34% | 17% | 49% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 1 | 4 | 467 / 425 | 170 | 0.88 | auto | 40% | 23% | 37% | tee stage: Black tagged |  |
+| 2 | 5 | 544 / 544 | 256 | 0.89 | auto | 43% | 26% | 31% | tee stage: Black tagged |  |
+| 3 | 4 | 351 / 349 | 266 | 0.89 | auto | 34% | 37% | 29% | tee stage: Black tagged |  |
+| 4 | 3 | 226 / 226 | 171 | 1.00 | auto | 100% | 0% | 0% | tee stage: Black tagged |  |
+| 5 | 4 | 413 / 408 | 164 | 0.89 | auto | 42% | 28% | 30% | tee stage: Black tagged |  |
+| 6 | 4 | 390 / 384 | 7 | 0.80 | auto | 46% | 11% | 43% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 7 | 5 | 600 / 596 | 50 | 0.88 | auto | 38% | 26% | 35% | tee stage: Black tagged |  |
+| 8 | 3 | 195 / 193 | 355 | 1.00 | auto | 100% | 0% | 0% | tee stage: Black tagged |  |
+| 9 | 4 | 466 / 452 | 49 | 0.86 | auto | 36% | 18% | 46% | tee stage: Black tagged |  |
+| 10 | 4 | 457 / 456 | 41 | 0.85 | auto | 46% | 0% | 54% | tee stage: Black tagged |  |
+| 11 | 5 | 566 / 564 | 11 | 0.85 | auto | 44% | 5% | 50% | tee stage: Black tagged |  |
+| 12 | 3 | 230 / 230 | 73 | 1.00 | auto | 100% | 0% | 0% | tee stage: Black tagged |  |
+| 13 | 4 | 331 / 329 | 179 | 0.75 | check the flags | 36% | 2% | 62% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 14 | 3 | 176 / 176 | 323 | 1.00 | auto | 100% | 0% | 0% | tee stage: Black tagged |  |
+| 15 | 5 | 548 / 547 | 179 | 0.88 | auto | 55% | 0% | 45% | tee stage: Black tagged | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 16 | 4 | 381 / 381 | 244 | 0.86 | auto | 49% | 1% | 50% | tee stage: Black tagged |  |
+| 17 | 3 | 215 / 215 | 335 | 1.00 | auto | 100% | 0% | 0% | tee stage: Black tagged |  |
+| 18 | 5 | 525 / 530 | 144 | 0.82 | auto | 30% | 10% | 60% | tee stage: Black tagged |  |
 
 ## Stages
 
 - **resolve**: ok: way/151985223 Sycamore Ridge Golf Club (Spring Hill, KS)
 - **osm**: ok: 495 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **scorecard**: missing
-- **tees**: fallback: OSM tee nearest the hole-line start (no yardages)
-- **geometry**: ok: geometry/build_holes.py (18 holes, 1 tee set(s))
+- **hole_renumber**: ok: hole 1 -> 10; hole 2 -> 11; hole 3 -> 12; hole 4 -> 13; hole 5 -> 14; hole 6 -> 15; hole 7 -> 16; hole 8 -> 17; hole 9 -> 18; hole 10 -> 1; hole 11 -> 2; hole 12 -> 3; hole 13 -> 4; hole 14 -> 5; hole 15 -> 6; hole 16 -> 7; hole 17 -> 8; hole 18 -> 9
+- **scorecard**: ok: file (course_data/library/sycamore_ridge/card_review.json)
+- **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 102 candidate pads near hole starts
+- **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/sycamore_ridge/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
 - **elevation**: ok: course_data/packages/sycamore_ridge/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 12 polygons (outside 12); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 13 polygons (outside 13); mode replace
 
 ## Warnings
 
-- no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM tee box nearest each hole-line start (usually the back tee); lengths are measured
+- hole 1: measured 425 vs card 467 yds for Black (no OSM tee box at that yardage?)
