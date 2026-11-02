@@ -1,0 +1,118 @@
+{
+ "schema": "osm_source/1",
+ "fetched_utc": "2026-11-02T13:40:43Z",
+ "mirrors_tried": [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.private.coffee/api/interpreter",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.private.coffee/api/interpreter",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter"
+ ],
+ "attempts": [
+  {
+   "mirror": "https://overpass-api.de/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "RuntimeError('HTTP 502 # 502 Gateway Timeout\\n\\nThis Overpass API server is currently at capacity. All query workers are busy\\nand the request queue is full.\\n\\n## What to do\\n\\nRetry your r')"
+  },
+  {
+   "mirror": "https://overpass.kumi.systems/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\"))"
+  },
+  {
+   "mirror": "https://overpass.private.coffee/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "RuntimeError('HTTP 504 <?xml version=\"1.0\" encoding=\"UTF-8\"?>\\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\\n    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\\n<html x')"
+  },
+  {
+   "mirror": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "RuntimeError('HTTP 504 <html>\\r\\n<head><title>504 Gateway Time-out</title></head>\\r\\n<body>\\r\\n<center><h1>504 Gateway Time-out</h1></center>\\r\\n<hr><center>nginx</center>\\r\\n</body>\\r\\n</html>\\r\\n')"
+  },
+  {
+   "mirror": "https://overpass-api.de/api/interpreter",
+   "pass_": 2,
+   "ok": false,
+   "error": "RuntimeError('HTTP 502 # 502 Gateway Timeout\\n\\nThis Overpass API server is currently at capacity. All query workers are busy\\nand the request queue is full.\\n\\n## What to do\\n\\nRetry your r')"
+  },
+  {
+   "mirror": "https://overpass.kumi.systems/api/interpreter",
+   "pass_": 2,
+   "ok": false,
+   "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\"))"
+  },
+  {
+   "mirror": "https://overpass.private.coffee/api/interpreter",
+   "pass_": 2,
+   "ok": false,
+   "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\"))"
+  },
+  {
+   "mirror": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+   "pass_": 2,
+   "ok": false,
+   "error": "RuntimeError('HTTP 504 <html>\\r\\n<head><title>504 Gateway Time-out</title></head>\\r\\n<body>\\r\\n<center><h1>504 Gateway Time-out</h1></center>\\r\\n<hr><center>nginx</center>\\r\\n</body>\\r\\n</html>\\r\\n')"
+  },
+  {
+   "mirror": "https://overpass-api.de/api/interpreter",
+   "pass_": 3,
+   "ok": false,
+   "error": "RuntimeError('HTTP 502 # 502 Gateway Timeout\\n\\nThis Overpass API server is currently at capacity. All query workers are busy\\nand the request queue is full.\\n\\n## What to do\\n\\nRetry your r')"
+  },
+  {
+   "mirror": "https://overpass.kumi.systems/api/interpreter",
+   "pass_": 3,
+   "ok": false,
+   "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\"))"
+  }
+ ],
+ "reference": {
+  "kind": "structure",
+  "path": "course_data/structure/data/creekmoor_mo/osm.geojson.gz",
+  "date": "2026-10-31T06:11:24Z",
+  "counts": {
+   "hole": 18,
+   "green": 19,
+   "tee": 77,
+   "pin": 18,
+   "bunker": 68,
+   "fairway": 0
+  }
+ },
+ "snapshots": [
+  {
+   "kind": "structure",
+   "path": "course_data/structure/data/creekmoor_mo/osm.geojson.gz",
+   "date": "2026-10-31T06:11:24Z",
+   "counts": {
+    "hole": 18,
+    "green": 19,
+    "tee": 77,
+    "pin": 18,
+    "bunker": 68,
+    "fairway": 0
+   }
+  }
+ ],
+ "source": "snapshot",
+ "snapshot": "course_data/structure/data/creekmoor_mo/osm.geojson.gz",
+ "snapshot_date": "2026-10-31T06:11:24Z",
+ "counts": {
+  "hole": 18,
+  "green": 19,
+  "tee": 77,
+  "pin": 18,
+  "bunker": 68,
+  "fairway": 0
+ },
+ "reason": "no Overpass mirror answered: RuntimeError('HTTP 502 # 502 Gateway Timeout\\n\\nThis Overpass API server is currently at capacity. All query workers are busy\\nand the request queue is full.\\n\\n## What to do\\n\\nRetry your r'); ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")); RuntimeError('HTTP 504 <?xml version=\"1.0\" encoding=\"UTF-8\"?>\\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\\n    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\\n<html x'); RuntimeError('HTTP 504 <html>\\r\\n<head><title>504 Gateway Time-out</title></head>\\r\\n<"
+}

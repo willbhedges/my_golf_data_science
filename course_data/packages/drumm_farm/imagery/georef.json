@@ -1,0 +1,284 @@
+{
+ "course": "Drumm Farm Golf Club",
+ "bbox_wgs84_snwe": [
+  39.0565137,
+  -94.4052969,
+  39.0676521,
+  -94.3910958
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  39.055615388825004,
+  -94.40645382631263,
+  39.06855041117499,
+  -94.38993887368737
+ ],
+ "fetched_utc": "2026-11-02T14:19:23Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2018,
+  "years_available": [
+   2012,
+   2014,
+   2016,
+   2018,
+   2020,
+   2022
+  ],
+  "acquired": [
+   "2018-09-22"
+  ],
+  "items": [
+   "mo_m_3909461_se_15_060_20180922_20190206",
+   "mo_m_3909461_ne_15_060_20180922_20190206"
+  ],
+  "selection": {
+   "schema": "naip_years/1",
+   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
+   "chosen": 2018,
+   "reason": "2018 (2018-09-22): greenest leaf-on year on the course's turf (NDVI 0.32 vs 0.13, 0% vs 60% brown) over the newest year 2022 (60% of the turf brown / bare)",
+   "candidates": [
+    {
+     "year": 2022,
+     "dates": [
+      "2022-06-29"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.1331,
+     "turf_exg": 76.0,
+     "green_ndvi": 0.2638,
+     "bare_turf": 0.5999,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 53.0,
+     "turf_rgb": [
+      139.0,
+      163.0,
+      111.0
+     ],
+     "score": -0.1958,
+     "notes": [
+      "60% of the turf brown / bare"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2020,
+     "dates": [
+      "2020-06-07"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2171,
+     "turf_exg": 70.0,
+     "green_ndvi": 0.236,
+     "bare_turf": 0.111,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 47.0,
+     "turf_rgb": [
+      116.0,
+      143.0,
+      97.0
+     ],
+     "score": 0.1605,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2018,
+     "dates": [
+      "2018-09-22"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.3221,
+     "turf_exg": 85.0,
+     "green_ndvi": 0.3296,
+     "bare_turf": 0.0023,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 78.0,
+     "turf_rgb": [
+      119.0,
+      159.0,
+      112.0
+     ],
+     "score": 0.2382,
+     "notes": [
+      "hazy (blue floor 78)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2016,
+     "dates": [
+      "2016-06-22"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.0759,
+     "turf_exg": 58.0,
+     "green_ndvi": 0.2593,
+     "bare_turf": 0.8086,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 64.0,
+     "turf_rgb": [
+      152.0,
+      164.0,
+      117.0
+     ],
+     "score": -0.5138,
+     "notes": [
+      "hazy (blue floor 64)",
+      "81% of the turf brown / bare"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2014,
+     "dates": [
+      "2014-07-04"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.2219,
+     "turf_exg": 67.0,
+     "green_ndvi": 0.2312,
+     "bare_turf": 0.056,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 37.0,
+     "turf_rgb": [
+      125.0,
+      146.0,
+      98.0
+     ],
+     "notes": [
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2012,
+     "dates": [
+      "2012-06-08"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.0861,
+     "turf_exg": 38.0,
+     "green_ndvi": 0.1818,
+     "bare_turf": 0.8535,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0001,
+     "haze": 76.0,
+     "turf_rgb": [
+      155.0,
+      162.0,
+      130.0
+     ],
+     "notes": [
+      "hazy (blue floor 76)",
+      "85% of the turf brown / bare",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    }
+   ]
+  },
+  "gsd_m": 0.6,
+  "resolution_m": 0.6,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26915",
+  "epsg": 26915,
+  "width": 2419,
+  "height": 2431,
+  "transform": [
+   0.6,
+   0.0,
+   378305.39999999997,
+   0.0,
+   -0.6,
+   4325325.6
+  ],
+  "bounds_crs": [
+   378305.39999999997,
+   4323867.0,
+   379756.8,
+   4325325.6
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 2419,
+   "height": 2431,
+   "transform": [
+    0.6,
+    0.0,
+    378305.39999999997,
+    0.0,
+    -0.6,
+    4325325.6
+   ],
+   "resolution_m": 0.6
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 2.64,
+   "naip_nir.tif": 2.83,
+   "naip_rgb_lo.jpg": 1.63,
+   "naip_nir_lo.jpg": 1.62
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 2,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26915",
+  "width": 1452,
+  "height": 1459,
+  "transform": [
+   1.0,
+   0.0,
+   378305.0,
+   0.0,
+   -1.0,
+   4325326.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 4.31,
+  "format": "COG",
+  "elev_m": [
+   254.0859375,
+   302.8652648925781
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 13.4
+}

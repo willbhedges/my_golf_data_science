@@ -1,0 +1,67 @@
+{
+ "schema": "osm_source/1",
+ "fetched_utc": "2026-11-02T13:01:54Z",
+ "mirrors_tried": [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.private.coffee/api/interpreter",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+  "https://overpass-api.de/api/interpreter"
+ ],
+ "attempts": [
+  {
+   "mirror": "https://overpass-api.de/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "RuntimeError('HTTP 502 # 502 Gateway Timeout\\n\\nThis Overpass API server is currently at capacity. All query workers are busy\\nand the request queue is full.\\n\\n## What to do\\n\\nRetry your r')"
+  },
+  {
+   "mirror": "https://overpass.kumi.systems/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\"))"
+  },
+  {
+   "mirror": "https://overpass.private.coffee/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\"))"
+  },
+  {
+   "mirror": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "RuntimeError('HTTP 504 <html>\\r\\n<head><title>504 Gateway Time-out</title></head>\\r\\n<body>\\r\\n<center><h1>504 Gateway Time-out</h1></center>\\r\\n<hr><center>nginx</center>\\r\\n</body>\\r\\n</html>\\r\\n')"
+  },
+  {
+   "mirror": "https://overpass-api.de/api/interpreter",
+   "pass_": 2,
+   "ok": true,
+   "counts": {
+    "hole": 18,
+    "green": 17,
+    "tee": 97,
+    "pin": 3,
+    "bunker": 90,
+    "fairway": 29
+   },
+   "osm_base": "2026-11-02T13:00:02Z",
+   "thin": [],
+   "n_elements": 1372
+  }
+ ],
+ "reference": null,
+ "snapshots": [],
+ "source": "overpass",
+ "mirror": "https://overpass-api.de/api/interpreter",
+ "osm_base": "2026-11-02T13:00:02Z",
+ "counts": {
+  "hole": 18,
+  "green": 17,
+  "tee": 97,
+  "pin": 3,
+  "bunker": 90,
+  "fairway": 29
+ },
+ "reason": "complete"
+}
