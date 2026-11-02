@@ -27,6 +27,12 @@ Blind evaluation on 9 hand-truth courses (course_data/mapper/EVAL_BLIND.md): str
 98 → 99, no course broken in round 2. One mapper agent (~15–60 min) now reviews every course's hazard layers
 (native/long grass, tree edges, OB, water, fairway sides) and tees before its page is built.
 
+**Round 3 (2026-11-02, S2 native hints + 5 Kansas native courses + 2 parkland controls, 98 tee shots):**
+match 50 → 66 (51 % → 67 %), strokes lost 6.17 → 2.25 (−63 %), 18 holes fixed, 2 broken (Mariah Hills 6, 10).
+Prairie Dunes 1 → 7 matches, Buffalo Dunes 7 → 13; parkland controls not broken (Ellis 11 → 11, Spirit Hollow 7 → 8).
+Native corridor area missing 296k → 151k sq yds. Gap: Eagle Bend mapper added no native (Will's holes 2/3/5/6) → brief fix for
+mixed parkland/native courses, then re-run.
+
 ## Workstreams (re-ranked 2026-11-01 by measured payoff)
 
 1. **Tee positions** (42 % of wrong plans): back-set box choice on long / split tee complexes. Agent running.
