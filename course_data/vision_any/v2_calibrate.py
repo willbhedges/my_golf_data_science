@@ -554,6 +554,10 @@ def stage_integrate(res_json, slugs=("spirit_hollow", "mozingo", "veenker")):
     meta = json.load(open(mp))
     old = dict(meta["settings"])
     meta["settings"].update(native_thr=st["thr"], native_mode=st["mode"], native_dmin_yd=st["dmin"])
+    if st["thr"] is None:          # v2_model.check_native_settings: an off layer must say why
+        meta["settings"]["native_off"] = f"decision calibration chose {sid(st)} (v2_decision_calibration.md)"
+    else:
+        meta["settings"].pop("native_off", None)
     meta["settings"]["trees"] = dict(meta["settings"]["trees"], k_m=st["k"])
     meta["decision_calibration"] = dict(previous=old, chosen=sid(st), gate=R["gate"],
                                         report="course_data/vision_any/v2_decision_calibration.md")

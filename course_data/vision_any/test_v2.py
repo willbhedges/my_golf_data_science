@@ -149,3 +149,27 @@ def test_ept_density_capped_for_big_boxes():
     import fetch_any as FA
     assert FA.ept_resolution(1.5e6) is None
     assert FA.ept_resolution(9.9e6) == 0.5 and FA.ept_resolution(3e7) == 1.0
+
+
+def test_native_threshold_none_must_be_explained():
+    import json
+    import pytest
+    # a bare None threshold (the "LightGBM P(native) >= None" packages) is refused
+    with pytest.raises(ValueError):
+        VM.check_native_settings(dict(native_thr=None))
+    with pytest.raises(ValueError):
+        VM.check_native_settings(dict(native_thr=None, native_off="  "))
+    for bad in (0, 1.0, 1.5, -0.1, "0.3", True):
+        with pytest.raises(ValueError):
+            VM.check_native_settings(dict(native_thr=bad))
+    assert VM.check_native_settings(dict(native_thr=0.3)) is True
+    assert VM.check_native_settings(dict(native_thr=None, native_off="not adopted")) is False
+    # the committed product settings pass, and the package note never reads "None"
+    meta = json.load(open(os.path.join(HERE, "model_v2", "model.json")))
+    VM.check_native_settings(meta["settings"])
+    how = VM.native_how(meta, [2023, 2022])
+    assert "None" not in how
+    if meta["settings"]["native_thr"] is None:
+        assert how.startswith("no long grass")
+    on = dict(meta, settings=dict(meta["settings"], native_thr=0.5))
+    assert "P(native) >= 0.5" in VM.native_how(on, [2023])

@@ -774,6 +774,7 @@ def infer(slug, integrate=False):
     if missing:
         raise RuntimeError(f"features missing for {slug}: {missing}")
     st = meta["settings"]
+    check_native_settings(st)
     relaxed = st.get("native_mode") == "relaxed"
     E = D["elig_rel"] if relaxed else D["elig"]
     region = E & D["course"]
@@ -849,6 +850,31 @@ def polygons_v2(R, meta):
     return out
 
 
+def check_native_settings(st):
+    """model.json settings: a P(native) threshold in (0, 1), or None (long grass off) ONLY with a native_off reason.
+
+    A bare None used to print as "LightGBM P(native) >= None" in every package and read like a lost setting; it is a
+    decision (no threshold passed the held-out selections), so it must say so."""
+    thr = st.get("native_thr")
+    if thr is None:
+        if not str(st.get("native_off") or "").strip():
+            raise ValueError("model.json settings.native_thr is None without settings.native_off: long grass would "
+                             "be dropped silently. Set a threshold, or record why long grass is off.")
+        return False
+    if isinstance(thr, bool) or not isinstance(thr, (int, float)) or not 0.0 < float(thr) < 1.0:
+        raise ValueError(f"model.json settings.native_thr must be in (0, 1) or None, got {thr!r}")
+    return True
+
+
+def native_how(meta, yrs):
+    st = meta["settings"]
+    if not check_native_settings(st):
+        return f"no long grass (native) layer: {st['native_off']}"
+    return (f"LightGBM P(native) >= {st['native_thr']} on multi-year NAIP {yrs} + lidar point statistics + texture "
+            f"+ terrain + OSM distances (course-relative), trained on the "
+            f"{', '.join(meta.get('native_trained_on') or ['Spirit Hollow', 'Mozingo'])} hand maps ({meta.get('built')})")
+
+
 def meta_v2(R, D, meta):
     S = R["S"]
     yrs = [y for y, _ in S.naip]
@@ -857,9 +883,7 @@ def meta_v2(R, D, meta):
                 built=time.strftime("%Y-%m-%dT%H:%MZ", time.gmtime()),
                 trees_how=f"{R['trees_how']}; golfer trees line = canopy (HAG > {tb['hag']} m, clumps >= "
                           f"{tb['min_area_m2']} m2) buffered {tb['k_m']:+d} m (learned on the hand maps)",
-                native_how=f"LightGBM P(native) >= {meta['settings']['native_thr']} on multi-year NAIP {yrs} + lidar "
-                           "point statistics + texture + terrain + OSM distances (course-relative), trained on the "
-                           f"Spirit Hollow + Mozingo hand maps ({meta.get('built')})",
+                native_how=native_how(meta, yrs),
                 water_how="OSM water + NDWI open water near OSM water/streams + DTM channel of OSM streams + unmown banks",
                 trained_on="hand maps of Spirit Hollow (hand_zones_ll.json) and Mozingo Lake (tee_strategy.HOLES)",
                 eval=meta.get("eval"), lidar=S.src.get("lidar_v2") or S.src.get("hag"), naip_years=yrs,

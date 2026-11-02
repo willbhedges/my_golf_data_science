@@ -146,3 +146,60 @@ Ranked by what fixing the layer buys (card courses, 138 tee shots, 36 misses, 2.
 
 Not worth work now: card, routing, greens (0 misses on the card courses), water, OB, bunkers (1 each, OB breaks as many as it fixes), elevation (fixes 0, breaks 1). The one routing failure is National KC: no web card, so the build numbered the holes itself and 13 of 14 holes are wrong. That is a card problem (typed card / card search), not a map layer. Residual: 5 misses no single layer fixes. Ellis 15 and 18 need the hazard layers together; Veenker 3 and 12 and Spirit Hollow 14 need tee + trees + fairway at once.
 
+<!-- hand-written follow-ups below: kept by --report / re-runs -->
+## Follow-up 2026-11-02: is the missing long grass a configuration bug? No.
+
+**Root cause.** `model_v2/model.json` has `native_thr: null` on purpose. Four held-out selections each chose
+"no long grass" over every threshold: decision calibration (`vision_any/v2_decision_calibration.md`), the 3-course
+holdout (`v2_holdout_calibration.md`), and leave-one-course-out rev 1 and rev 2 (`v2_longgrass_cv.md`,
+`v2_longgrass_cv_rev2.md`; rev 2 out of fold: 129/151 with long grass vs 130/151 without). `v2_model.infer` reads
+None as "off". So no model file is missing and no fit failed to save. The bug is only in the package note: it
+printed `LightGBM P(native) >= None`, which looks like a lost setting. Fixed: `v2_model.check_native_settings`
+refuses a None threshold unless `settings.native_off` says why, and the note now reads "no long grass (native)
+layer: <reason>". Test: `vision_any/test_v2.py::test_native_threshold_none_must_be_explained`. The packages pick up
+the new note on their next vision build. Their zones are unchanged.
+
+**What a threshold would do (measured).** `vision_any/v2_longgrass_eb_build.py` thresholds the committed product
+P(native) (band 2 of `layers_v2.tif`; model trained on Spirit Hollow + Mozingo only, so out of sample on every
+course below). It applies `v2_model.native_mask`, strict mode, and rebuilds each package with
+`v2_calibrate.rebuild_package`. `platform/error_budget_variant.py` then runs this budget's configs (n = 4000,
+seed 31). The threshold the existing pixel method picks on the training courses (mean of the Spirit Hollow and
+Mozingo leave-one-hole-out IoU bests) is 0.04. The others are a sensitivity sweep, not chosen on these courses.
+The control (the same rebuild with no long grass) reproduces the committed rows exactly on the 7 courses below.
+
+The 7 card courses every variant finished: Blue Hills, Eagle Knoll, Gateway, Hot Springs, Pine Dunes, Veenker,
+Coldwater, 96 tee shots. Ellis and Spirit Hollow were not finished for every threshold and are left out.
+
+| auto long grass | auto match | same club | regret (strokes) | Hot Springs / Pine Dunes / Veenker match |
+|---|---|---|---|---|
+| none (committed = control) | **71/96** | 86 | **1.36** | 8 / 10 / 9 |
+| P >= 0.04 (training-course pick) | 47/96 | 66 | 4.84 | 0 / 6 / 5 |
+| P >= 0.3 | 63/96 | 79 | 3.18 | 4 / 8 / 8 |
+| P >= 0.5 | 61/96 | 78 | 2.58 | 2 / 10 / 8 |
+| hand long grass (+long_grass) | 77/96 | - | 0.51 | |
+
+**Precision vs hand truth, per landing corridor** (180-320 yds, +/-50 yds, these 7 courses + National KC, all held
+out):
+
+| threshold | corridors with hand native > 300 yd2: IoU / precision / recall (pooled), median corridor IoU | corridors with no hand native: auto long grass, corridors with > 300 yd2 of it |
+|---|---|---|
+| 0.04 | 0.41 / 0.50 / 0.69, median 0.39 (n = 29) | 247,000 yd2; 73 of 78 |
+| 0.3 | 0.25 / 0.57 / 0.30, median 0.17 (n = 28) | 101,000 yd2; 47 of 79 |
+| 0.5 | 0.18 / 0.61 / 0.21, median 0.14 (n = 28) | 59,000 yd2; 26 of 79 |
+
+Pooled over all corridors, precision is 0.14-0.17 at every threshold: 83-86 % of the auto long grass sits where the
+hand map has mown rough or nothing. The model's P(native) is high on mown rough of parkland courses. At P >= 0.5 it
+calls 85 % of Pine Dunes' and 42 % of Hot Springs' eligible area native, and the hand maps have none on either
+course. That costs more than the missing fescue: regret 1.36 -> 2.58 at the best threshold, against 0.51 with the
+true layer.
+
+**Decision: long grass stays off.** No package was regenerated and no vision workflow was run: the cached rasters
+were enough, and every candidate layer makes the plans worse. The error budget's 64 % stays as a target for a
+better classifier, not a quick fix. That classifier needs to separate native from mown rough per course: e.g. a
+per-course "mown turf" reference, leaf-off / peak-season NAIP contrast, or a links / prairie gate with a better
+signal than share of outline. Score it with `error_budget_variant.py` (precision on the no-native corridors is the
+number to watch).
+
+Not verified: Ellis and Spirit Hollow at every threshold (runs stopped at the time budget; partial rows in the
+scratch run only); the relaxed mode, dmin and gate settings (covered by `v2_longgrass_cv_rev2.md` with the
+corridor-focused model); Colbert Hills (no vision layers; its truth has no long grass).

@@ -671,6 +671,7 @@ def stage_integrate(d, model_dir, res_json):
     old = {k: meta["settings"].get(k) for k in ("native_thr", "native_mode", "native_dmin_yd", "native_gate_share")}
     meta["settings"].update(native_thr=s["thr"], native_mode=s["mode"], native_dmin_yd=s["dmin"],
                             native_gate_share=s["gate"])
+    meta["settings"].pop("native_off", None)                  # a threshold is adopted (v2_model.check_native_settings)
     meta["native_model_file"] = "native_lgbm_7c.txt"
     tro = json.load(open(os.path.join(model_dir, "model_info.json")))["trained_on"]
     meta["native_trained_on"] = tro

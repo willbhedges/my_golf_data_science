@@ -861,6 +861,22 @@ def report(res):
     return "\n".join(L) + "\n"
 
 
+KEEP_MARK = "<!-- hand-written follow-ups below: kept by --report / re-runs -->"
+
+
+def write_md(res):
+    """ERROR_BUDGET.md from the json, keeping the hand-written follow-up sections after KEEP_MARK."""
+    kept = ""
+    try:
+        old = open(OUT_MD).read()
+        if KEEP_MARK in old:
+            kept = old[old.index(KEEP_MARK):]
+    except OSError:
+        pass
+    md = report(res)
+    open(OUT_MD, "w").write(md.rstrip("\n") + "\n\n" + kept if kept else md)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--courses")
@@ -873,7 +889,7 @@ def main():
         res["summary"] = summarise(res["courses"], NO_CARD)
         res["summary_all"] = summarise(res["courses"])
         json.dump(res, open(OUT_JSON, "w"), indent=1, default=float)
-        open(OUT_MD, "w").write(report(res))
+        write_md(res)
         return
     want = set(a.courses.split(",")) if a.courses else None
     cache = rj(CACHE_JSON, {}) or {}
@@ -903,7 +919,7 @@ def main():
     res["summary_all"] = summarise(courses)
     res["recommendation"] = old.get("recommendation")       # hand-written from the numbers (kept across runs)
     json.dump(res, open(OUT_JSON, "w"), indent=1, default=float)
-    open(OUT_MD, "w").write(report(res))
+    write_md(res)
     print(json.dumps({k: v for k, v in res["summary"].items() if k != "layers"}, default=str))
 
 
