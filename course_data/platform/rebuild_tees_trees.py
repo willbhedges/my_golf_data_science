@@ -1,6 +1,7 @@
 """Rebuild only the tee layer and/or the tree layer of committed packages, offline (for the error budget).
 
-    python3 course_data/platform/rebuild_tees_trees.py --out DIR [--layers tees,trees] [--courses a,b] [--k 1]
+    python3 course_data/platform/rebuild_tees_trees.py --out DIR [--layers tees,trees,fairway] [--courses a,b] [--k 1]
+        [--fw-band YDS | --fw-edge fairway_edge.json --fw-theta 0.5] [--fw-lie fairway|first_cut]
     -> DIR/<slug>/package.json   (python3 course_data/platform/error_budget.py --auto-dir DIR --tag NAME)
 
 tees   the S2 stage as platform/package.build_package runs it (place_tees_v2: tees/localize.py + the tagged-box
@@ -12,6 +13,9 @@ trees  the vision_any/2 tree polygons re-made from the lidar canopy with buffer 
        committed), put in with vision_any/gapfill.gapfill (every vision zone re-clipped to each hole's window).
        OB is NOT re-inferred (ob_infer does not read the tree layer). Courses without a vision_any/<slug>/raw stack
        keep their trees.
+fairway  platform/fairway_band.widen_package after the tees / trees: the OSM fairway widened by a band that only
+       turns rough into fairway (or first_cut). --fw-band: one width for every course (yds); --fw-edge: per course
+       from the NAIP edge profile (platform/fairway_edge.py; band = extension(profile, theta) m, capped at --fw-max).
 Everything else in the package (OSM zones, OB, card, greens, routing) is the committed build.
 """
 from __future__ import annotations
@@ -125,6 +129,34 @@ def retree(pkg, slug, k):
     return out, f"trees rebuilt: buffer {int(k):+d} m, {n} tree zones"
 
 
+# ----------------------------------------------------------------------------- fairway
+def fairway_band_yd(slug, a):
+    """The band (yds) for a course from the CLI options (fixed, or the NAIP edge extension)."""
+    if a.fw_edge:
+        import fairway_edge as FE
+        prof = (json.load(open(a.fw_edge)).get(slug) or {}).get("course")
+        if not prof:
+            return 0.0
+        e = FE.extension(prof, a.fw_theta) or 0.0
+        b = round(min(max(e - a.fw_offset, 0.0), a.fw_max) / 0.9144, 1)
+        return b if b >= a.fw_min else 0.0
+    return float(a.fw_band or 0.0)
+
+
+def refairway(pkg, slug, a):
+    if HERE not in sys.path:
+        sys.path.insert(0, HERE)
+    import fairway_band as FB
+    b = fairway_band_yd(slug, a)
+    if b <= 0:
+        return pkg, "fairway kept (band 0)"
+    G = _load("rtt_gapfill_fw", os.path.join(CD, "vision_any", "gapfill.py"))
+    rf = G._reframe()
+    with contextlib.redirect_stdout(io.StringIO()):
+        out, n = FB.widen_package(pkg, b, a.fw_lie, reframe=rf)
+    return out, f"fairway band {b:g} yd {a.fw_lie} ({n} zones)"
+
+
 # ----------------------------------------------------------------------------- main
 def main():
     sys.path.insert(0, HERE)
@@ -134,6 +166,13 @@ def main():
     ap.add_argument("--layers", default="tees,trees")
     ap.add_argument("--courses")
     ap.add_argument("--k", type=int, default=None, help="tree buffer m (default model_v2/model.json trees.k_m)")
+    ap.add_argument("--fw-band", type=float, help="fairway band yds (every course)")
+    ap.add_argument("--fw-edge", help="fairway_edge.json: band per course from the NAIP edge profile")
+    ap.add_argument("--fw-theta", type=float, default=0.5)
+    ap.add_argument("--fw-offset", type=float, default=0.0, help="m subtracted from the edge extension")
+    ap.add_argument("--fw-max", type=float, default=15.0, help="m cap on the band")
+    ap.add_argument("--fw-min", type=float, default=2.0, help="yds: a smaller edge band is grid noise (1 m), none")
+    ap.add_argument("--fw-lie", default="fairway", choices=("fairway", "first_cut"))
     a = ap.parse_args()
     layers = set(a.layers.split(","))
     k = a.k if a.k is not None else json.load(open(os.path.join(CD, "vision_any", "model_v2", "model.json")))["settings"]["trees"]["k_m"]
@@ -151,6 +190,9 @@ def main():
             notes.append(n)
         if "trees" in layers:
             pkg, n = retree(pkg, slug, k)
+            notes.append(n)
+        if "fairway" in layers:
+            pkg, n = refairway(pkg, slug, a)
             notes.append(n)
         pkg.setdefault("stages", {})["rebuild_tees_trees"] = "; ".join(notes)
         d = os.path.join(a.out, slug)

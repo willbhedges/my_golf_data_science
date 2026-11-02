@@ -942,8 +942,9 @@ def par3_haz(h):
     fwd = v / np.linalg.norm(v)
     right = np.array([-fwd[1], fwd[0]])
     gl = np.array(p3["green"], float)
-    sev = dict(water=4, ob=4, recovery=3, native=3, sand=2, fairway=0, rough=0)
-    nm = dict(water="water", ob="ob", recovery="trees", native="native", sand="bunker", fairway="rough", rough="rough")
+    sev = dict(water=4, ob=4, recovery=3, native=3, sand=2, fairway=0, first_cut=0, rough=0)
+    nm = dict(water="water", ob="ob", recovery="trees", native="native", sand="bunker", fairway="rough", first_cut="rough",
+              rough="rough")
     paths = [(n, Path(np.array(p, float))) for n, p in h["zones"]]
     haz = {}
     for side, (ax, sign) in dict(left=(0, -1), right=(0, 1), short=(1, -1), long=(1, 1)).items():

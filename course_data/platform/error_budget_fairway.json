@@ -1,0 +1,4437 @@
+{
+"schema": "error_budget_fairway/1",
+"n": 4000,
+"note": "auto config per tee shot on the 10 card courses (138); only Pine Dunes, Coldwater, Ellis, Spirit Hollow get a band (the others' packages are unchanged, their rows are the baseline's: committed error_budget.json or error_budget_tees_trees.json). platform/rebuild_tees_trees.py --layers [tees,trees,]fairway --fw-edge fairway_edge.json --fw-theta 0.5; ERROR_BUDGET.md 'Fairway'",
+"bands_yd": {
+"pine_dunes": 2.4,
+"coldwater": 4.8,
+"ellis": 5.9,
+"spirit_hollow": 8.2
+},
+"variants": {
+"fairway band (NAIP edge, theta 0.5, fairway lie)": {
+"blue_hills:1": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0038,
+"truth": "Driver"
+},
+"blue_hills:2": {
+"pick": "4-wood",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": -0.0022,
+"truth": "4-wood"
+},
+"blue_hills:3": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "4-wood"
+},
+"blue_hills:4": {
+"pick": "2-wood",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0156,
+"truth": "2-wood"
+},
+"blue_hills:6": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Driver"
+},
+"blue_hills:7": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "4-wood"
+},
+"blue_hills:9": {
+"pick": "4-wood",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0002,
+"truth": "4-wood"
+},
+"blue_hills:10": {
+"pick": "2-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "2-wood"
+},
+"blue_hills:11": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0062,
+"truth": "4-wood"
+},
+"blue_hills:13": {
+"pick": "Driver",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0021,
+"truth": "Driver"
+},
+"blue_hills:15": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "Driver"
+},
+"blue_hills:16": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0006,
+"truth": "Driver"
+},
+"blue_hills:17": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0034,
+"truth": "4-wood"
+},
+"blue_hills:18": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0144,
+"truth": "Driver"
+},
+"eagle_knoll:1": {
+"pick": "Driver",
+"aim": -30.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:3": {
+"pick": "Driver",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:4": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": true,
+"regret": 0.009,
+"truth": "Driver"
+},
+"eagle_knoll:5": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:7": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "Driver"
+},
+"eagle_knoll:8": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:9": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0026,
+"truth": "Driver"
+},
+"eagle_knoll:10": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:11": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:13": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:14": {
+"pick": "Mid iron",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0021,
+"truth": "Mid iron"
+},
+"eagle_knoll:15": {
+"pick": "4-wood",
+"aim": -15.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:17": {
+"pick": "Driver",
+"aim": -25.0,
+"match": false,
+"club": false,
+"regret": 0.0032,
+"truth": "4-wood"
+},
+"eagle_knoll:18": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"gateway_national:1": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.002,
+"truth": "Driver"
+},
+"gateway_national:2": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0028,
+"truth": "Driver"
+},
+"gateway_national:3": {
+"pick": "Driver",
+"aim": -10.0,
+"match": true,
+"club": true,
+"regret": 0.0044,
+"truth": "Driver"
+},
+"gateway_national:5": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Driver"
+},
+"gateway_national:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"gateway_national:8": {
+"pick": "2-wood",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "2-wood"
+},
+"gateway_national:9": {
+"pick": "2-wood",
+"aim": 10.0,
+"match": false,
+"club": false,
+"regret": 0.0987,
+"truth": "4-wood"
+},
+"gateway_national:10": {
+"pick": "4-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0598,
+"truth": "4-wood"
+},
+"gateway_national:11": {
+"pick": "Driver",
+"aim": 22.5,
+"match": false,
+"club": false,
+"regret": 0.1961,
+"truth": "4-wood"
+},
+"gateway_national:13": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": true,
+"regret": 0.045,
+"truth": "Driver"
+},
+"gateway_national:15": {
+"pick": "Driver",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0062,
+"truth": "Driver"
+},
+"gateway_national:16": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "4-wood"
+},
+"gateway_national:18": {
+"pick": "Driver",
+"aim": 15.0,
+"match": false,
+"club": true,
+"regret": 0.0053,
+"truth": "Driver"
+},
+"hot_springs_arlington:1": {
+"pick": "Driver",
+"aim": -25.0,
+"match": false,
+"club": false,
+"regret": 0.0063,
+"truth": "4-wood"
+},
+"hot_springs_arlington:3": {
+"pick": "2-wood",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "2-wood"
+},
+"hot_springs_arlington:4": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0338,
+"truth": "4-wood"
+},
+"hot_springs_arlington:5": {
+"pick": "4-wood",
+"aim": 15.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "4-wood"
+},
+"hot_springs_arlington:6": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0013,
+"truth": "Driver"
+},
+"hot_springs_arlington:7": {
+"pick": "2-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0006,
+"truth": "2-wood"
+},
+"hot_springs_arlington:9": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": true,
+"regret": 0.0231,
+"truth": "Driver"
+},
+"hot_springs_arlington:10": {
+"pick": "Driver",
+"aim": 15.0,
+"match": false,
+"club": true,
+"regret": 0.0359,
+"truth": "Driver"
+},
+"hot_springs_arlington:12": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0052,
+"truth": "Driver"
+},
+"hot_springs_arlington:13": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0131,
+"truth": "Driver"
+},
+"hot_springs_arlington:14": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0082,
+"truth": "Driver"
+},
+"hot_springs_arlington:15": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0023,
+"truth": "Driver"
+},
+"hot_springs_arlington:16": {
+"pick": "Driver",
+"aim": -22.5,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "Driver"
+},
+"hot_springs_arlington:18": {
+"pick": "Driver",
+"aim": 37.5,
+"match": false,
+"club": true,
+"regret": 0.0093,
+"truth": "Driver"
+},
+"pine_dunes:1": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"pine_dunes:2": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0023,
+"truth": "Driver"
+},
+"pine_dunes:4": {
+"pick": "Driver",
+"aim": -10.0,
+"match": false,
+"club": true,
+"regret": 0.0428,
+"truth": "Driver"
+},
+"pine_dunes:5": {
+"pick": "Driver",
+"aim": -32.5,
+"match": true,
+"club": true,
+"regret": 0.0008,
+"truth": "Driver"
+},
+"pine_dunes:7": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"pine_dunes:8": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0052,
+"truth": "4-wood"
+},
+"pine_dunes:9": {
+"pick": "Driver",
+"aim": -10.0,
+"match": true,
+"club": true,
+"regret": 0.0014,
+"truth": "Driver"
+},
+"pine_dunes:10": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "4-wood"
+},
+"pine_dunes:11": {
+"pick": "2-wood",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0007,
+"truth": "2-wood"
+},
+"pine_dunes:13": {
+"pick": "2-wood",
+"aim": -5.0,
+"match": false,
+"club": false,
+"regret": 0.0051,
+"truth": "4-wood"
+},
+"pine_dunes:14": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0002,
+"truth": "Driver"
+},
+"pine_dunes:15": {
+"pick": "Driver",
+"aim": -22.5,
+"match": false,
+"club": false,
+"regret": 0.0626,
+"truth": "Long iron"
+},
+"pine_dunes:17": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0022,
+"truth": "Driver"
+},
+"pine_dunes:18": {
+"pick": "4-wood",
+"aim": 27.5,
+"match": false,
+"club": true,
+"regret": 0.0274,
+"truth": "4-wood"
+},
+"veenker:1": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0014,
+"truth": "Driver"
+},
+"veenker:2": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0065,
+"truth": "4-wood"
+},
+"veenker:3": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0448,
+"truth": "4-wood"
+},
+"veenker:4": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0025,
+"truth": "4-wood"
+},
+"veenker:5": {
+"pick": "4-wood",
+"aim": 20.0,
+"match": true,
+"club": true,
+"regret": 0.0087,
+"truth": "4-wood"
+},
+"veenker:7": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": true,
+"regret": -0.0004,
+"truth": "Driver"
+},
+"veenker:9": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.009,
+"truth": "Driver"
+},
+"veenker:10": {
+"pick": "Driver",
+"aim": 0.0,
+"match": false,
+"club": true,
+"regret": -0.0123,
+"truth": "Driver"
+},
+"veenker:12": {
+"pick": "Driver",
+"aim": 40.0,
+"match": false,
+"club": true,
+"regret": 0.0134,
+"truth": "Driver"
+},
+"veenker:14": {
+"pick": "Driver",
+"aim": 37.5,
+"match": true,
+"club": true,
+"regret": 0.0183,
+"truth": "Driver"
+},
+"veenker:15": {
+"pick": "Long iron",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Long iron"
+},
+"veenker:16": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.0008,
+"truth": "Driver"
+},
+"veenker:18": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0108,
+"truth": "Driver"
+},
+"coldwater:1": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0254,
+"truth": "Driver"
+},
+"coldwater:2": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0471,
+"truth": "4-wood"
+},
+"coldwater:3": {
+"pick": "Driver",
+"aim": -7.5,
+"match": false,
+"club": true,
+"regret": 0.1105,
+"truth": "Driver"
+},
+"coldwater:4": {
+"pick": "Driver",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0019,
+"truth": "Driver"
+},
+"coldwater:6": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": -0.0011,
+"truth": "Driver"
+},
+"coldwater:7": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0622,
+"truth": "Driver"
+},
+"coldwater:9": {
+"pick": "4-wood",
+"aim": -40.0,
+"match": false,
+"club": true,
+"regret": 0.0217,
+"truth": "4-wood"
+},
+"coldwater:10": {
+"pick": "Driver",
+"aim": -10.0,
+"match": false,
+"club": false,
+"regret": 0.2003,
+"truth": "4-wood"
+},
+"coldwater:12": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"coldwater:13": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "Driver"
+},
+"coldwater:14": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0128,
+"truth": "Driver"
+},
+"coldwater:15": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0004,
+"truth": "Driver"
+},
+"coldwater:17": {
+"pick": "4-wood",
+"aim": 12.5,
+"match": false,
+"club": true,
+"regret": 0.0174,
+"truth": "4-wood"
+},
+"coldwater:18": {
+"pick": "Driver",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "Driver"
+},
+"ellis:1": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0198,
+"truth": "Driver"
+},
+"ellis:2": {
+"pick": "Driver",
+"aim": 40.0,
+"match": true,
+"club": true,
+"regret": 0.0011,
+"truth": "Driver"
+},
+"ellis:3": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0015,
+"truth": "Driver"
+},
+"ellis:5": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0183,
+"truth": "Driver"
+},
+"ellis:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0296,
+"truth": "Driver"
+},
+"ellis:7": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"ellis:9": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0148,
+"truth": "Driver"
+},
+"ellis:10": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0007,
+"truth": "Driver"
+},
+"ellis:12": {
+"pick": "Driver",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0044,
+"truth": "Driver"
+},
+"ellis:13": {
+"pick": "Long iron",
+"aim": 0.0,
+"match": false,
+"club": false,
+"regret": 0.0586,
+"truth": "4-wood"
+},
+"ellis:15": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": false,
+"regret": 0.1044,
+"truth": "4-wood"
+},
+"ellis:16": {
+"pick": "4-wood",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"ellis:17": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0037,
+"truth": "Driver"
+},
+"ellis:18": {
+"pick": "Driver",
+"aim": 7.5,
+"match": false,
+"club": true,
+"regret": 0.1248,
+"truth": "Driver"
+},
+"spirit_hollow:1": {
+"pick": "Driver",
+"aim": -40.0,
+"match": false,
+"club": false,
+"regret": 0.4223,
+"truth": "4-wood"
+},
+"spirit_hollow:2": {
+"pick": "Driver",
+"aim": -37.5,
+"match": true,
+"club": true,
+"regret": 0.0019,
+"truth": "Driver"
+},
+"spirit_hollow:4": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": true,
+"regret": 0.0571,
+"truth": "Driver"
+},
+"spirit_hollow:5": {
+"pick": "4-wood",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "4-wood"
+},
+"spirit_hollow:6": {
+"pick": "Driver",
+"aim": -40.0,
+"match": false,
+"club": false,
+"regret": 0.1272,
+"truth": "4-wood"
+},
+"spirit_hollow:8": {
+"pick": "4-wood",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0033,
+"truth": "4-wood"
+},
+"spirit_hollow:9": {
+"pick": "4-wood",
+"aim": 7.5,
+"match": false,
+"club": true,
+"regret": 0.0154,
+"truth": "4-wood"
+},
+"spirit_hollow:10": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0106,
+"truth": "4-wood"
+},
+"spirit_hollow:11": {
+"pick": "Long iron",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0271,
+"truth": "Long iron"
+},
+"spirit_hollow:13": {
+"pick": "2-wood",
+"aim": 7.5,
+"match": false,
+"club": false,
+"regret": 0.0233,
+"truth": "4-wood"
+},
+"spirit_hollow:14": {
+"pick": "4-wood",
+"aim": -40.0,
+"match": false,
+"club": true,
+"regret": 0.1146,
+"truth": "4-wood"
+},
+"spirit_hollow:16": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": false,
+"club": true,
+"regret": 0.0051,
+"truth": "4-wood"
+},
+"spirit_hollow:17": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "Driver"
+},
+"spirit_hollow:18": {
+"pick": "Driver",
+"aim": -12.5,
+"match": false,
+"club": false,
+"regret": 0.1503,
+"truth": "4-wood"
+},
+"colbert_hills:1": {
+"pick": "Driver",
+"aim": -10.0,
+"match": false,
+"club": true,
+"regret": 0.0287,
+"truth": "Driver"
+},
+"colbert_hills:2": {
+"pick": "2-wood",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "2-wood"
+},
+"colbert_hills:3": {
+"pick": "Driver",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:4": {
+"pick": "2-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "2-wood"
+},
+"colbert_hills:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:7": {
+"pick": "2-wood",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "2-wood"
+},
+"colbert_hills:9": {
+"pick": "Driver",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:10": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:12": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:13": {
+"pick": "Driver",
+"aim": 40.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:14": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "Driver"
+},
+"colbert_hills:15": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"colbert_hills:16": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": -0.0011,
+"truth": "Driver"
+},
+"colbert_hills:18": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+}
+},
+"fairway band as first_cut": {
+"blue_hills:1": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0038,
+"truth": "Driver"
+},
+"blue_hills:2": {
+"pick": "4-wood",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": -0.0022,
+"truth": "4-wood"
+},
+"blue_hills:3": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "4-wood"
+},
+"blue_hills:4": {
+"pick": "2-wood",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0156,
+"truth": "2-wood"
+},
+"blue_hills:6": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Driver"
+},
+"blue_hills:7": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "4-wood"
+},
+"blue_hills:9": {
+"pick": "4-wood",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0002,
+"truth": "4-wood"
+},
+"blue_hills:10": {
+"pick": "2-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "2-wood"
+},
+"blue_hills:11": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0062,
+"truth": "4-wood"
+},
+"blue_hills:13": {
+"pick": "Driver",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0021,
+"truth": "Driver"
+},
+"blue_hills:15": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "Driver"
+},
+"blue_hills:16": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0006,
+"truth": "Driver"
+},
+"blue_hills:17": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0034,
+"truth": "4-wood"
+},
+"blue_hills:18": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0144,
+"truth": "Driver"
+},
+"eagle_knoll:1": {
+"pick": "Driver",
+"aim": -30.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:3": {
+"pick": "Driver",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:4": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": true,
+"regret": 0.009,
+"truth": "Driver"
+},
+"eagle_knoll:5": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:7": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "Driver"
+},
+"eagle_knoll:8": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:9": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0026,
+"truth": "Driver"
+},
+"eagle_knoll:10": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:11": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:13": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:14": {
+"pick": "Mid iron",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0021,
+"truth": "Mid iron"
+},
+"eagle_knoll:15": {
+"pick": "4-wood",
+"aim": -15.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:17": {
+"pick": "Driver",
+"aim": -25.0,
+"match": false,
+"club": false,
+"regret": 0.0032,
+"truth": "4-wood"
+},
+"eagle_knoll:18": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"gateway_national:1": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.002,
+"truth": "Driver"
+},
+"gateway_national:2": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0028,
+"truth": "Driver"
+},
+"gateway_national:3": {
+"pick": "Driver",
+"aim": -10.0,
+"match": true,
+"club": true,
+"regret": 0.0044,
+"truth": "Driver"
+},
+"gateway_national:5": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Driver"
+},
+"gateway_national:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"gateway_national:8": {
+"pick": "2-wood",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "2-wood"
+},
+"gateway_national:9": {
+"pick": "2-wood",
+"aim": 10.0,
+"match": false,
+"club": false,
+"regret": 0.0987,
+"truth": "4-wood"
+},
+"gateway_national:10": {
+"pick": "4-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0598,
+"truth": "4-wood"
+},
+"gateway_national:11": {
+"pick": "Driver",
+"aim": 22.5,
+"match": false,
+"club": false,
+"regret": 0.1961,
+"truth": "4-wood"
+},
+"gateway_national:13": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": true,
+"regret": 0.045,
+"truth": "Driver"
+},
+"gateway_national:15": {
+"pick": "Driver",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0062,
+"truth": "Driver"
+},
+"gateway_national:16": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "4-wood"
+},
+"gateway_national:18": {
+"pick": "Driver",
+"aim": 15.0,
+"match": false,
+"club": true,
+"regret": 0.0053,
+"truth": "Driver"
+},
+"hot_springs_arlington:1": {
+"pick": "Driver",
+"aim": -25.0,
+"match": false,
+"club": false,
+"regret": 0.0063,
+"truth": "4-wood"
+},
+"hot_springs_arlington:3": {
+"pick": "2-wood",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "2-wood"
+},
+"hot_springs_arlington:4": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0338,
+"truth": "4-wood"
+},
+"hot_springs_arlington:5": {
+"pick": "4-wood",
+"aim": 15.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "4-wood"
+},
+"hot_springs_arlington:6": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0013,
+"truth": "Driver"
+},
+"hot_springs_arlington:7": {
+"pick": "2-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0006,
+"truth": "2-wood"
+},
+"hot_springs_arlington:9": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": true,
+"regret": 0.0231,
+"truth": "Driver"
+},
+"hot_springs_arlington:10": {
+"pick": "Driver",
+"aim": 15.0,
+"match": false,
+"club": true,
+"regret": 0.0359,
+"truth": "Driver"
+},
+"hot_springs_arlington:12": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0052,
+"truth": "Driver"
+},
+"hot_springs_arlington:13": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0131,
+"truth": "Driver"
+},
+"hot_springs_arlington:14": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0082,
+"truth": "Driver"
+},
+"hot_springs_arlington:15": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0023,
+"truth": "Driver"
+},
+"hot_springs_arlington:16": {
+"pick": "Driver",
+"aim": -22.5,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "Driver"
+},
+"hot_springs_arlington:18": {
+"pick": "Driver",
+"aim": 37.5,
+"match": false,
+"club": true,
+"regret": 0.0093,
+"truth": "Driver"
+},
+"pine_dunes:1": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"pine_dunes:2": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0023,
+"truth": "Driver"
+},
+"pine_dunes:4": {
+"pick": "2-wood",
+"aim": -5.0,
+"match": false,
+"club": false,
+"regret": 0.1283,
+"truth": "Driver"
+},
+"pine_dunes:5": {
+"pick": "Driver",
+"aim": -32.5,
+"match": true,
+"club": true,
+"regret": 0.0008,
+"truth": "Driver"
+},
+"pine_dunes:7": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0014,
+"truth": "Driver"
+},
+"pine_dunes:8": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"pine_dunes:9": {
+"pick": "Driver",
+"aim": -10.0,
+"match": true,
+"club": true,
+"regret": 0.0014,
+"truth": "Driver"
+},
+"pine_dunes:10": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0296,
+"truth": "4-wood"
+},
+"pine_dunes:11": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0041,
+"truth": "2-wood"
+},
+"pine_dunes:13": {
+"pick": "2-wood",
+"aim": -5.0,
+"match": false,
+"club": false,
+"regret": 0.0051,
+"truth": "4-wood"
+},
+"pine_dunes:14": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0002,
+"truth": "Driver"
+},
+"pine_dunes:15": {
+"pick": "Driver",
+"aim": -22.5,
+"match": false,
+"club": false,
+"regret": 0.0626,
+"truth": "Long iron"
+},
+"pine_dunes:17": {
+"pick": "2-wood",
+"aim": 2.5,
+"match": false,
+"club": false,
+"regret": 0.0054,
+"truth": "Driver"
+},
+"pine_dunes:18": {
+"pick": "4-wood",
+"aim": 27.5,
+"match": false,
+"club": true,
+"regret": 0.0274,
+"truth": "4-wood"
+},
+"veenker:1": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0014,
+"truth": "Driver"
+},
+"veenker:2": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0065,
+"truth": "4-wood"
+},
+"veenker:3": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0448,
+"truth": "4-wood"
+},
+"veenker:4": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0025,
+"truth": "4-wood"
+},
+"veenker:5": {
+"pick": "4-wood",
+"aim": 20.0,
+"match": true,
+"club": true,
+"regret": 0.0087,
+"truth": "4-wood"
+},
+"veenker:7": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": true,
+"regret": -0.0004,
+"truth": "Driver"
+},
+"veenker:9": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.009,
+"truth": "Driver"
+},
+"veenker:10": {
+"pick": "Driver",
+"aim": 0.0,
+"match": false,
+"club": true,
+"regret": -0.0123,
+"truth": "Driver"
+},
+"veenker:12": {
+"pick": "Driver",
+"aim": 40.0,
+"match": false,
+"club": true,
+"regret": 0.0134,
+"truth": "Driver"
+},
+"veenker:14": {
+"pick": "Driver",
+"aim": 37.5,
+"match": true,
+"club": true,
+"regret": 0.0183,
+"truth": "Driver"
+},
+"veenker:15": {
+"pick": "Long iron",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Long iron"
+},
+"veenker:16": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.0008,
+"truth": "Driver"
+},
+"veenker:18": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0108,
+"truth": "Driver"
+},
+"coldwater:1": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0254,
+"truth": "Driver"
+},
+"coldwater:2": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0471,
+"truth": "4-wood"
+},
+"coldwater:3": {
+"pick": "Driver",
+"aim": -7.5,
+"match": false,
+"club": true,
+"regret": 0.1097,
+"truth": "Driver"
+},
+"coldwater:4": {
+"pick": "Driver",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0019,
+"truth": "Driver"
+},
+"coldwater:6": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": -0.0011,
+"truth": "Driver"
+},
+"coldwater:7": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0622,
+"truth": "Driver"
+},
+"coldwater:9": {
+"pick": "4-wood",
+"aim": -40.0,
+"match": false,
+"club": true,
+"regret": 0.022,
+"truth": "4-wood"
+},
+"coldwater:10": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": false,
+"regret": 0.2902,
+"truth": "4-wood"
+},
+"coldwater:12": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"coldwater:13": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "Driver"
+},
+"coldwater:14": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0128,
+"truth": "Driver"
+},
+"coldwater:15": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0004,
+"truth": "Driver"
+},
+"coldwater:17": {
+"pick": "4-wood",
+"aim": 12.5,
+"match": false,
+"club": true,
+"regret": 0.0174,
+"truth": "4-wood"
+},
+"coldwater:18": {
+"pick": "Driver",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "Driver"
+},
+"ellis:1": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0108,
+"truth": "Driver"
+},
+"ellis:2": {
+"pick": "Driver",
+"aim": 40.0,
+"match": true,
+"club": true,
+"regret": 0.0011,
+"truth": "Driver"
+},
+"ellis:3": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0015,
+"truth": "Driver"
+},
+"ellis:5": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0183,
+"truth": "Driver"
+},
+"ellis:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0295,
+"truth": "Driver"
+},
+"ellis:7": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"ellis:9": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0148,
+"truth": "Driver"
+},
+"ellis:10": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0007,
+"truth": "Driver"
+},
+"ellis:12": {
+"pick": "Driver",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0044,
+"truth": "Driver"
+},
+"ellis:13": {
+"pick": "Long iron",
+"aim": 0.0,
+"match": false,
+"club": false,
+"regret": 0.0586,
+"truth": "4-wood"
+},
+"ellis:15": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": false,
+"regret": 0.1044,
+"truth": "4-wood"
+},
+"ellis:16": {
+"pick": "4-wood",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"ellis:17": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0036,
+"truth": "Driver"
+},
+"ellis:18": {
+"pick": "Driver",
+"aim": 7.5,
+"match": false,
+"club": true,
+"regret": 0.1246,
+"truth": "Driver"
+},
+"spirit_hollow:1": {
+"pick": "Driver",
+"aim": -40.0,
+"match": false,
+"club": false,
+"regret": 0.4223,
+"truth": "4-wood"
+},
+"spirit_hollow:2": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": 0.0141,
+"truth": "Driver"
+},
+"spirit_hollow:4": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": true,
+"regret": 0.0571,
+"truth": "Driver"
+},
+"spirit_hollow:5": {
+"pick": "4-wood",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "4-wood"
+},
+"spirit_hollow:6": {
+"pick": "Driver",
+"aim": -40.0,
+"match": false,
+"club": false,
+"regret": 0.1272,
+"truth": "4-wood"
+},
+"spirit_hollow:8": {
+"pick": "4-wood",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0033,
+"truth": "4-wood"
+},
+"spirit_hollow:9": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0079,
+"truth": "4-wood"
+},
+"spirit_hollow:10": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": false,
+"regret": 0.0478,
+"truth": "4-wood"
+},
+"spirit_hollow:11": {
+"pick": "Long iron",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0134,
+"truth": "Long iron"
+},
+"spirit_hollow:13": {
+"pick": "2-wood",
+"aim": 7.5,
+"match": false,
+"club": false,
+"regret": 0.0233,
+"truth": "4-wood"
+},
+"spirit_hollow:14": {
+"pick": "4-wood",
+"aim": -40.0,
+"match": false,
+"club": true,
+"regret": 0.1146,
+"truth": "4-wood"
+},
+"spirit_hollow:16": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": false,
+"club": true,
+"regret": 0.0051,
+"truth": "4-wood"
+},
+"spirit_hollow:17": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "Driver"
+},
+"spirit_hollow:18": {
+"pick": "Driver",
+"aim": -12.5,
+"match": false,
+"club": false,
+"regret": 0.1503,
+"truth": "4-wood"
+},
+"colbert_hills:1": {
+"pick": "Driver",
+"aim": -10.0,
+"match": false,
+"club": true,
+"regret": 0.0287,
+"truth": "Driver"
+},
+"colbert_hills:2": {
+"pick": "2-wood",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "2-wood"
+},
+"colbert_hills:3": {
+"pick": "Driver",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:4": {
+"pick": "2-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "2-wood"
+},
+"colbert_hills:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:7": {
+"pick": "2-wood",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "2-wood"
+},
+"colbert_hills:9": {
+"pick": "Driver",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:10": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:12": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:13": {
+"pick": "Driver",
+"aim": 40.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:14": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "Driver"
+},
+"colbert_hills:15": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"colbert_hills:16": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": -0.0011,
+"truth": "Driver"
+},
+"colbert_hills:18": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+}
+},
+"tees + fairway band": {
+"blue_hills:1": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0038,
+"truth": "Driver"
+},
+"blue_hills:2": {
+"pick": "4-wood",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0007,
+"truth": "4-wood"
+},
+"blue_hills:3": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "4-wood"
+},
+"blue_hills:4": {
+"pick": "2-wood",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0156,
+"truth": "2-wood"
+},
+"blue_hills:6": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Driver"
+},
+"blue_hills:7": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "4-wood"
+},
+"blue_hills:9": {
+"pick": "4-wood",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0002,
+"truth": "4-wood"
+},
+"blue_hills:10": {
+"pick": "2-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "2-wood"
+},
+"blue_hills:11": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0062,
+"truth": "4-wood"
+},
+"blue_hills:13": {
+"pick": "Driver",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0021,
+"truth": "Driver"
+},
+"blue_hills:15": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "Driver"
+},
+"blue_hills:16": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0006,
+"truth": "Driver"
+},
+"blue_hills:17": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0034,
+"truth": "4-wood"
+},
+"blue_hills:18": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0144,
+"truth": "Driver"
+},
+"eagle_knoll:1": {
+"pick": "Driver",
+"aim": -30.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:3": {
+"pick": "Driver",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:4": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.009,
+"truth": "Driver"
+},
+"eagle_knoll:5": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:7": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "Driver"
+},
+"eagle_knoll:8": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:9": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0026,
+"truth": "Driver"
+},
+"eagle_knoll:10": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:11": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:13": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:14": {
+"pick": "Mid iron",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0021,
+"truth": "Mid iron"
+},
+"eagle_knoll:15": {
+"pick": "4-wood",
+"aim": -15.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:17": {
+"pick": "Driver",
+"aim": -25.0,
+"match": false,
+"club": false,
+"regret": 0.0032,
+"truth": "4-wood"
+},
+"eagle_knoll:18": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"gateway_national:1": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.002,
+"truth": "Driver"
+},
+"gateway_national:2": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0028,
+"truth": "Driver"
+},
+"gateway_national:3": {
+"pick": "Driver",
+"aim": -10.0,
+"match": true,
+"club": true,
+"regret": 0.0044,
+"truth": "Driver"
+},
+"gateway_national:5": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Driver"
+},
+"gateway_national:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"gateway_national:8": {
+"pick": "2-wood",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "2-wood"
+},
+"gateway_national:9": {
+"pick": "2-wood",
+"aim": 10.0,
+"match": false,
+"club": false,
+"regret": 0.0987,
+"truth": "4-wood"
+},
+"gateway_national:10": {
+"pick": "4-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0598,
+"truth": "4-wood"
+},
+"gateway_national:11": {
+"pick": "Driver",
+"aim": 22.5,
+"match": false,
+"club": false,
+"regret": 0.1961,
+"truth": "4-wood"
+},
+"gateway_national:13": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": true,
+"regret": 0.045,
+"truth": "Driver"
+},
+"gateway_national:15": {
+"pick": "Driver",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0062,
+"truth": "Driver"
+},
+"gateway_national:16": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "4-wood"
+},
+"gateway_national:18": {
+"pick": "Driver",
+"aim": 15.0,
+"match": false,
+"club": true,
+"regret": 0.0044,
+"truth": "Driver"
+},
+"hot_springs_arlington:1": {
+"pick": "Driver",
+"aim": -25.0,
+"match": false,
+"club": false,
+"regret": 0.0063,
+"truth": "4-wood"
+},
+"hot_springs_arlington:3": {
+"pick": "2-wood",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "2-wood"
+},
+"hot_springs_arlington:4": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0338,
+"truth": "4-wood"
+},
+"hot_springs_arlington:5": {
+"pick": "4-wood",
+"aim": 15.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "4-wood"
+},
+"hot_springs_arlington:6": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0013,
+"truth": "Driver"
+},
+"hot_springs_arlington:7": {
+"pick": "2-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0006,
+"truth": "2-wood"
+},
+"hot_springs_arlington:9": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": true,
+"regret": 0.0231,
+"truth": "Driver"
+},
+"hot_springs_arlington:10": {
+"pick": "Driver",
+"aim": 12.5,
+"match": false,
+"club": true,
+"regret": 0.0264,
+"truth": "Driver"
+},
+"hot_springs_arlington:12": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0052,
+"truth": "Driver"
+},
+"hot_springs_arlington:13": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0131,
+"truth": "Driver"
+},
+"hot_springs_arlington:14": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0082,
+"truth": "Driver"
+},
+"hot_springs_arlington:15": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0026,
+"truth": "Driver"
+},
+"hot_springs_arlington:16": {
+"pick": "Driver",
+"aim": -22.5,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "Driver"
+},
+"hot_springs_arlington:18": {
+"pick": "Driver",
+"aim": 37.5,
+"match": false,
+"club": true,
+"regret": 0.0093,
+"truth": "Driver"
+},
+"pine_dunes:1": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"pine_dunes:2": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0026,
+"truth": "Driver"
+},
+"pine_dunes:4": {
+"pick": "Driver",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.01,
+"truth": "Driver"
+},
+"pine_dunes:5": {
+"pick": "Driver",
+"aim": -35.0,
+"match": true,
+"club": true,
+"regret": 0.0007,
+"truth": "Driver"
+},
+"pine_dunes:7": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0009,
+"truth": "Driver"
+},
+"pine_dunes:8": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0035,
+"truth": "4-wood"
+},
+"pine_dunes:9": {
+"pick": "Driver",
+"aim": -10.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "Driver"
+},
+"pine_dunes:10": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0007,
+"truth": "4-wood"
+},
+"pine_dunes:11": {
+"pick": "2-wood",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.001,
+"truth": "2-wood"
+},
+"pine_dunes:13": {
+"pick": "Driver",
+"aim": -7.5,
+"match": false,
+"club": false,
+"regret": 0.017,
+"truth": "4-wood"
+},
+"pine_dunes:14": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0002,
+"truth": "Driver"
+},
+"pine_dunes:15": {
+"pick": "Driver",
+"aim": -20.0,
+"match": false,
+"club": false,
+"regret": 0.1153,
+"truth": "Long iron"
+},
+"pine_dunes:17": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"pine_dunes:18": {
+"pick": "4-wood",
+"aim": 22.5,
+"match": false,
+"club": false,
+"regret": 0.0133,
+"truth": "2-wood"
+},
+"veenker:1": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0014,
+"truth": "Driver"
+},
+"veenker:2": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0065,
+"truth": "4-wood"
+},
+"veenker:3": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0448,
+"truth": "4-wood"
+},
+"veenker:4": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0025,
+"truth": "4-wood"
+},
+"veenker:5": {
+"pick": "4-wood",
+"aim": 20.0,
+"match": true,
+"club": true,
+"regret": 0.0087,
+"truth": "4-wood"
+},
+"veenker:7": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": true,
+"regret": -0.0004,
+"truth": "Driver"
+},
+"veenker:9": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.009,
+"truth": "Driver"
+},
+"veenker:10": {
+"pick": "Driver",
+"aim": 0.0,
+"match": false,
+"club": true,
+"regret": -0.0123,
+"truth": "Driver"
+},
+"veenker:12": {
+"pick": "4-wood",
+"aim": 25.0,
+"match": false,
+"club": false,
+"regret": 0.1035,
+"truth": "Driver"
+},
+"veenker:14": {
+"pick": "Driver",
+"aim": 37.5,
+"match": true,
+"club": true,
+"regret": 0.0183,
+"truth": "Driver"
+},
+"veenker:15": {
+"pick": "Long iron",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Long iron"
+},
+"veenker:16": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.001,
+"truth": "Driver"
+},
+"veenker:18": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0108,
+"truth": "Driver"
+},
+"coldwater:1": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0235,
+"truth": "Driver"
+},
+"coldwater:2": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0394,
+"truth": "4-wood"
+},
+"coldwater:3": {
+"pick": "Driver",
+"aim": -7.5,
+"match": false,
+"club": true,
+"regret": 0.1711,
+"truth": "Driver"
+},
+"coldwater:4": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.0013,
+"truth": "Driver"
+},
+"coldwater:6": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": -0.0004,
+"truth": "Driver"
+},
+"coldwater:7": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0623,
+"truth": "Driver"
+},
+"coldwater:9": {
+"pick": "4-wood",
+"aim": -40.0,
+"match": false,
+"club": true,
+"regret": 0.0302,
+"truth": "4-wood"
+},
+"coldwater:10": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": false,
+"regret": 0.2855,
+"truth": "4-wood"
+},
+"coldwater:12": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"coldwater:13": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0004,
+"truth": "Driver"
+},
+"coldwater:14": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0286,
+"truth": "Driver"
+},
+"coldwater:15": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0004,
+"truth": "Driver"
+},
+"coldwater:17": {
+"pick": "4-wood",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0174,
+"truth": "4-wood"
+},
+"coldwater:18": {
+"pick": "Driver",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0004,
+"truth": "Driver"
+},
+"ellis:1": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0186,
+"truth": "Driver"
+},
+"ellis:2": {
+"pick": "Driver",
+"aim": 40.0,
+"match": true,
+"club": true,
+"regret": 0.0005,
+"truth": "Driver"
+},
+"ellis:3": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"ellis:5": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0113,
+"truth": "Driver"
+},
+"ellis:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0279,
+"truth": "Driver"
+},
+"ellis:7": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"ellis:9": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0263,
+"truth": "Driver"
+},
+"ellis:10": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "Driver"
+},
+"ellis:12": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "Driver"
+},
+"ellis:13": {
+"pick": "Long iron",
+"aim": 0.0,
+"match": false,
+"club": false,
+"regret": 0.0723,
+"truth": "4-wood"
+},
+"ellis:15": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0861,
+"truth": "4-wood"
+},
+"ellis:16": {
+"pick": "Driver",
+"aim": -20.0,
+"match": false,
+"club": false,
+"regret": 0.0723,
+"truth": "4-wood"
+},
+"ellis:17": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0022,
+"truth": "Driver"
+},
+"ellis:18": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": false,
+"regret": 0.1336,
+"truth": "2-wood"
+},
+"spirit_hollow:1": {
+"pick": "Driver",
+"aim": -32.5,
+"match": false,
+"club": false,
+"regret": 0.4754,
+"truth": "4-wood"
+},
+"spirit_hollow:2": {
+"pick": "Driver",
+"aim": -32.5,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "Driver"
+},
+"spirit_hollow:4": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": true,
+"regret": 0.0605,
+"truth": "Driver"
+},
+"spirit_hollow:5": {
+"pick": "4-wood",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "4-wood"
+},
+"spirit_hollow:6": {
+"pick": "Driver",
+"aim": -37.5,
+"match": false,
+"club": false,
+"regret": 0.0961,
+"truth": "4-wood"
+},
+"spirit_hollow:8": {
+"pick": "Driver",
+"aim": -30.0,
+"match": false,
+"club": false,
+"regret": 0.1869,
+"truth": "4-wood"
+},
+"spirit_hollow:9": {
+"pick": "4-wood",
+"aim": 7.5,
+"match": false,
+"club": true,
+"regret": 0.0306,
+"truth": "4-wood"
+},
+"spirit_hollow:10": {
+"pick": "4-wood",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0031,
+"truth": "4-wood"
+},
+"spirit_hollow:11": {
+"pick": "Long iron",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0134,
+"truth": "Long iron"
+},
+"spirit_hollow:13": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0053,
+"truth": "4-wood"
+},
+"spirit_hollow:14": {
+"pick": "Driver",
+"aim": -40.0,
+"match": false,
+"club": false,
+"regret": 0.0475,
+"truth": "4-wood"
+},
+"spirit_hollow:16": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": false,
+"club": true,
+"regret": 0.0158,
+"truth": "4-wood"
+},
+"spirit_hollow:17": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0012,
+"truth": "Driver"
+},
+"spirit_hollow:18": {
+"pick": "Driver",
+"aim": -22.5,
+"match": false,
+"club": false,
+"regret": 0.1229,
+"truth": "4-wood"
+},
+"colbert_hills:1": {
+"pick": "Driver",
+"aim": -10.0,
+"match": false,
+"club": true,
+"regret": 0.0287,
+"truth": "Driver"
+},
+"colbert_hills:2": {
+"pick": "2-wood",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "2-wood"
+},
+"colbert_hills:3": {
+"pick": "Driver",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:4": {
+"pick": "2-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "2-wood"
+},
+"colbert_hills:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:7": {
+"pick": "2-wood",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "2-wood"
+},
+"colbert_hills:9": {
+"pick": "Driver",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:10": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:12": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:13": {
+"pick": "Driver",
+"aim": 40.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:14": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "Driver"
+},
+"colbert_hills:15": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"colbert_hills:16": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": -0.0011,
+"truth": "Driver"
+},
+"colbert_hills:18": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+}
+},
+"tees + trees +1 m + fairway band": {
+"blue_hills:1": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0066,
+"truth": "Driver"
+},
+"blue_hills:2": {
+"pick": "4-wood",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0007,
+"truth": "4-wood"
+},
+"blue_hills:3": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "4-wood"
+},
+"blue_hills:4": {
+"pick": "2-wood",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0156,
+"truth": "2-wood"
+},
+"blue_hills:6": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Driver"
+},
+"blue_hills:7": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": -0.001,
+"truth": "4-wood"
+},
+"blue_hills:9": {
+"pick": "4-wood",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0002,
+"truth": "4-wood"
+},
+"blue_hills:10": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0067,
+"truth": "2-wood"
+},
+"blue_hills:11": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0062,
+"truth": "4-wood"
+},
+"blue_hills:13": {
+"pick": "Driver",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0021,
+"truth": "Driver"
+},
+"blue_hills:15": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "Driver"
+},
+"blue_hills:16": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": -0.0006,
+"truth": "Driver"
+},
+"blue_hills:17": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0034,
+"truth": "4-wood"
+},
+"blue_hills:18": {
+"pick": "4-wood",
+"aim": 15.0,
+"match": false,
+"club": false,
+"regret": 0.0169,
+"truth": "Driver"
+},
+"eagle_knoll:1": {
+"pick": "Driver",
+"aim": -32.5,
+"match": true,
+"club": true,
+"regret": 0.0063,
+"truth": "Driver"
+},
+"eagle_knoll:3": {
+"pick": "Driver",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:4": {
+"pick": "Driver",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0026,
+"truth": "Driver"
+},
+"eagle_knoll:5": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:7": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "Driver"
+},
+"eagle_knoll:8": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:9": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0027,
+"truth": "Driver"
+},
+"eagle_knoll:10": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:11": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:13": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"eagle_knoll:14": {
+"pick": "Mid iron",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0021,
+"truth": "Mid iron"
+},
+"eagle_knoll:15": {
+"pick": "4-wood",
+"aim": -15.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"eagle_knoll:17": {
+"pick": "Driver",
+"aim": -25.0,
+"match": false,
+"club": false,
+"regret": 0.0032,
+"truth": "4-wood"
+},
+"eagle_knoll:18": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"gateway_national:1": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.002,
+"truth": "Driver"
+},
+"gateway_national:2": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0028,
+"truth": "Driver"
+},
+"gateway_national:3": {
+"pick": "Driver",
+"aim": -10.0,
+"match": true,
+"club": true,
+"regret": 0.0044,
+"truth": "Driver"
+},
+"gateway_national:5": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Driver"
+},
+"gateway_national:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"gateway_national:8": {
+"pick": "2-wood",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "2-wood"
+},
+"gateway_national:9": {
+"pick": "2-wood",
+"aim": 10.0,
+"match": false,
+"club": false,
+"regret": 0.0987,
+"truth": "4-wood"
+},
+"gateway_national:10": {
+"pick": "4-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0598,
+"truth": "4-wood"
+},
+"gateway_national:11": {
+"pick": "Driver",
+"aim": 22.5,
+"match": false,
+"club": false,
+"regret": 0.1961,
+"truth": "4-wood"
+},
+"gateway_national:13": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": true,
+"regret": 0.045,
+"truth": "Driver"
+},
+"gateway_national:15": {
+"pick": "Driver",
+"aim": 10.0,
+"match": true,
+"club": true,
+"regret": 0.0062,
+"truth": "Driver"
+},
+"gateway_national:16": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0024,
+"truth": "4-wood"
+},
+"gateway_national:18": {
+"pick": "Driver",
+"aim": 15.0,
+"match": false,
+"club": true,
+"regret": 0.0044,
+"truth": "Driver"
+},
+"hot_springs_arlington:1": {
+"pick": "4-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0013,
+"truth": "4-wood"
+},
+"hot_springs_arlington:3": {
+"pick": "2-wood",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "2-wood"
+},
+"hot_springs_arlington:4": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0338,
+"truth": "4-wood"
+},
+"hot_springs_arlington:5": {
+"pick": "4-wood",
+"aim": 15.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "4-wood"
+},
+"hot_springs_arlington:6": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": true,
+"regret": 0.02,
+"truth": "Driver"
+},
+"hot_springs_arlington:7": {
+"pick": "2-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0006,
+"truth": "2-wood"
+},
+"hot_springs_arlington:9": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": true,
+"regret": 0.0217,
+"truth": "Driver"
+},
+"hot_springs_arlington:10": {
+"pick": "Driver",
+"aim": 10.0,
+"match": false,
+"club": true,
+"regret": 0.0175,
+"truth": "Driver"
+},
+"hot_springs_arlington:12": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0052,
+"truth": "Driver"
+},
+"hot_springs_arlington:13": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.0022,
+"truth": "Driver"
+},
+"hot_springs_arlington:14": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0146,
+"truth": "Driver"
+},
+"hot_springs_arlington:15": {
+"pick": "Driver",
+"aim": -37.5,
+"match": true,
+"club": true,
+"regret": -0.0004,
+"truth": "Driver"
+},
+"hot_springs_arlington:16": {
+"pick": "Driver",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0003,
+"truth": "Driver"
+},
+"hot_springs_arlington:18": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.001,
+"truth": "Driver"
+},
+"pine_dunes:1": {
+"pick": "4-wood",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0035,
+"truth": "4-wood"
+},
+"pine_dunes:2": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0001,
+"truth": "Driver"
+},
+"pine_dunes:4": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0022,
+"truth": "Driver"
+},
+"pine_dunes:5": {
+"pick": "Driver",
+"aim": -35.0,
+"match": true,
+"club": true,
+"regret": 0.0007,
+"truth": "Driver"
+},
+"pine_dunes:7": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0009,
+"truth": "Driver"
+},
+"pine_dunes:8": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0035,
+"truth": "4-wood"
+},
+"pine_dunes:9": {
+"pick": "Driver",
+"aim": -10.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "Driver"
+},
+"pine_dunes:10": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "4-wood"
+},
+"pine_dunes:11": {
+"pick": "2-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "2-wood"
+},
+"pine_dunes:13": {
+"pick": "2-wood",
+"aim": -5.0,
+"match": false,
+"club": false,
+"regret": 0.0051,
+"truth": "4-wood"
+},
+"pine_dunes:14": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0002,
+"truth": "Driver"
+},
+"pine_dunes:15": {
+"pick": "Driver",
+"aim": -20.0,
+"match": false,
+"club": false,
+"regret": 0.1153,
+"truth": "Long iron"
+},
+"pine_dunes:17": {
+"pick": "Driver",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0042,
+"truth": "Driver"
+},
+"pine_dunes:18": {
+"pick": "4-wood",
+"aim": 22.5,
+"match": false,
+"club": false,
+"regret": 0.0133,
+"truth": "2-wood"
+},
+"veenker:1": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0014,
+"truth": "Driver"
+},
+"veenker:2": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0065,
+"truth": "4-wood"
+},
+"veenker:3": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0448,
+"truth": "4-wood"
+},
+"veenker:4": {
+"pick": "4-wood",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0025,
+"truth": "4-wood"
+},
+"veenker:5": {
+"pick": "4-wood",
+"aim": 22.5,
+"match": true,
+"club": true,
+"regret": 0.0134,
+"truth": "4-wood"
+},
+"veenker:7": {
+"pick": "Driver",
+"aim": 0.0,
+"match": false,
+"club": true,
+"regret": 0.0017,
+"truth": "Driver"
+},
+"veenker:9": {
+"pick": "Driver",
+"aim": 17.5,
+"match": true,
+"club": true,
+"regret": 0.009,
+"truth": "Driver"
+},
+"veenker:10": {
+"pick": "Driver",
+"aim": -2.5,
+"match": false,
+"club": true,
+"regret": -0.0133,
+"truth": "Driver"
+},
+"veenker:12": {
+"pick": "4-wood",
+"aim": 27.5,
+"match": false,
+"club": false,
+"regret": 0.1092,
+"truth": "Driver"
+},
+"veenker:14": {
+"pick": "2-wood",
+"aim": 25.0,
+"match": false,
+"club": false,
+"regret": 0.05,
+"truth": "Driver"
+},
+"veenker:15": {
+"pick": "Long iron",
+"aim": -20.0,
+"match": true,
+"club": true,
+"regret": 0.0029,
+"truth": "Long iron"
+},
+"veenker:16": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.001,
+"truth": "Driver"
+},
+"veenker:18": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0049,
+"truth": "Driver"
+},
+"coldwater:1": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0235,
+"truth": "Driver"
+},
+"coldwater:2": {
+"pick": "Driver",
+"aim": 2.5,
+"match": false,
+"club": false,
+"regret": 0.069,
+"truth": "4-wood"
+},
+"coldwater:3": {
+"pick": "Driver",
+"aim": -7.5,
+"match": false,
+"club": true,
+"regret": 0.1711,
+"truth": "Driver"
+},
+"coldwater:4": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.0013,
+"truth": "Driver"
+},
+"coldwater:6": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": -0.0004,
+"truth": "Driver"
+},
+"coldwater:7": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0623,
+"truth": "Driver"
+},
+"coldwater:9": {
+"pick": "4-wood",
+"aim": -40.0,
+"match": false,
+"club": true,
+"regret": 0.0302,
+"truth": "4-wood"
+},
+"coldwater:10": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": false,
+"regret": 0.2855,
+"truth": "4-wood"
+},
+"coldwater:12": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"coldwater:13": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0004,
+"truth": "Driver"
+},
+"coldwater:14": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0128,
+"truth": "Driver"
+},
+"coldwater:15": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"coldwater:17": {
+"pick": "4-wood",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0174,
+"truth": "4-wood"
+},
+"coldwater:18": {
+"pick": "Driver",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": 0.0004,
+"truth": "Driver"
+},
+"ellis:1": {
+"pick": "Driver",
+"aim": 7.5,
+"match": false,
+"club": true,
+"regret": 0.0309,
+"truth": "Driver"
+},
+"ellis:2": {
+"pick": "Driver",
+"aim": 40.0,
+"match": true,
+"club": true,
+"regret": 0.0005,
+"truth": "Driver"
+},
+"ellis:3": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"ellis:5": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0113,
+"truth": "Driver"
+},
+"ellis:6": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0163,
+"truth": "Driver"
+},
+"ellis:7": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"ellis:9": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0263,
+"truth": "Driver"
+},
+"ellis:10": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": false,
+"club": false,
+"regret": 0.0306,
+"truth": "Driver"
+},
+"ellis:12": {
+"pick": "Driver",
+"aim": -5.0,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "Driver"
+},
+"ellis:13": {
+"pick": "Long iron",
+"aim": 0.0,
+"match": false,
+"club": false,
+"regret": 0.0673,
+"truth": "4-wood"
+},
+"ellis:15": {
+"pick": "Driver",
+"aim": 5.0,
+"match": false,
+"club": false,
+"regret": 0.0861,
+"truth": "4-wood"
+},
+"ellis:16": {
+"pick": "Driver",
+"aim": -17.5,
+"match": false,
+"club": false,
+"regret": 0.0527,
+"truth": "4-wood"
+},
+"ellis:17": {
+"pick": "Driver",
+"aim": -40.0,
+"match": true,
+"club": true,
+"regret": -0.0022,
+"truth": "Driver"
+},
+"ellis:18": {
+"pick": "4-wood",
+"aim": -12.5,
+"match": false,
+"club": false,
+"regret": 0.0116,
+"truth": "2-wood"
+},
+"spirit_hollow:1": {
+"pick": "Driver",
+"aim": -30.0,
+"match": false,
+"club": false,
+"regret": 0.407,
+"truth": "4-wood"
+},
+"spirit_hollow:2": {
+"pick": "Driver",
+"aim": -32.5,
+"match": true,
+"club": true,
+"regret": -0.0,
+"truth": "Driver"
+},
+"spirit_hollow:4": {
+"pick": "Driver",
+"aim": -5.0,
+"match": false,
+"club": true,
+"regret": 0.0605,
+"truth": "Driver"
+},
+"spirit_hollow:5": {
+"pick": "4-wood",
+"aim": -7.5,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "4-wood"
+},
+"spirit_hollow:6": {
+"pick": "Driver",
+"aim": -35.0,
+"match": false,
+"club": false,
+"regret": 0.0744,
+"truth": "4-wood"
+},
+"spirit_hollow:8": {
+"pick": "Driver",
+"aim": -30.0,
+"match": false,
+"club": false,
+"regret": 0.1869,
+"truth": "4-wood"
+},
+"spirit_hollow:9": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": false,
+"club": true,
+"regret": 0.0163,
+"truth": "4-wood"
+},
+"spirit_hollow:10": {
+"pick": "4-wood",
+"aim": 7.5,
+"match": true,
+"club": true,
+"regret": 0.0031,
+"truth": "4-wood"
+},
+"spirit_hollow:11": {
+"pick": "Long iron",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0134,
+"truth": "Long iron"
+},
+"spirit_hollow:13": {
+"pick": "4-wood",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0053,
+"truth": "4-wood"
+},
+"spirit_hollow:14": {
+"pick": "Driver",
+"aim": -40.0,
+"match": false,
+"club": false,
+"regret": 0.0475,
+"truth": "4-wood"
+},
+"spirit_hollow:16": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": false,
+"club": true,
+"regret": 0.0041,
+"truth": "4-wood"
+},
+"spirit_hollow:17": {
+"pick": "Driver",
+"aim": 0.0,
+"match": true,
+"club": true,
+"regret": 0.0012,
+"truth": "Driver"
+},
+"spirit_hollow:18": {
+"pick": "Driver",
+"aim": -22.5,
+"match": false,
+"club": false,
+"regret": 0.1229,
+"truth": "4-wood"
+},
+"colbert_hills:1": {
+"pick": "Driver",
+"aim": -10.0,
+"match": false,
+"club": true,
+"regret": 0.0287,
+"truth": "Driver"
+},
+"colbert_hills:2": {
+"pick": "2-wood",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "2-wood"
+},
+"colbert_hills:3": {
+"pick": "Driver",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:4": {
+"pick": "2-wood",
+"aim": -25.0,
+"match": true,
+"club": true,
+"regret": -0.0001,
+"truth": "2-wood"
+},
+"colbert_hills:6": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:7": {
+"pick": "2-wood",
+"aim": 12.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "2-wood"
+},
+"colbert_hills:9": {
+"pick": "Driver",
+"aim": -17.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:10": {
+"pick": "Driver",
+"aim": 2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:12": {
+"pick": "Driver",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:13": {
+"pick": "Driver",
+"aim": 40.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "Driver"
+},
+"colbert_hills:14": {
+"pick": "Driver",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": -0.0002,
+"truth": "Driver"
+},
+"colbert_hills:15": {
+"pick": "4-wood",
+"aim": 5.0,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+},
+"colbert_hills:16": {
+"pick": "Driver",
+"aim": -12.5,
+"match": true,
+"club": true,
+"regret": -0.0011,
+"truth": "Driver"
+},
+"colbert_hills:18": {
+"pick": "4-wood",
+"aim": -2.5,
+"match": true,
+"club": true,
+"regret": 0.0,
+"truth": "4-wood"
+}
+}
+}
+}
