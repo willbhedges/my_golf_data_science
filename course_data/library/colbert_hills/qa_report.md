@@ -2,7 +2,7 @@
 
 **Status: needs confirm** — confirm holes 1, 3, 4, 7, 13, 14, 17
 
-* page: `course_data/library/colbert_hills/page.html` (5.5 MB); request `course_data/requests/course_page_colbert_hills.json`; built 2026-11-02T06:23Z
+* page: `course_data/library/colbert_hills/page.html` (5.5 MB); request `course_data/requests/course_page_colbert_hills.json`; built 2026-11-02T10:49Z
 * course: Colbert Hills Golf Course (Manhattan, KS), OSM relation/13772939; holes: osm (tier mapped_card); card: opengolfapi (opengolfapi)
 * solved tee sets: Black/Blue, Silver (tee sets of interest); page sets: Black/Blue, Silver
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [40, 55, 70] F; calm-day picks with 48 prior draws
@@ -21,7 +21,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 5 | CHECK | Driver -24 | yardage: measured 559 vs card 590 (-31) |
+| 1 | 5 | CHECK | Driver -23 | yardage: measured 561 vs card 590 (-29) |
 | 2 | 4 | PASS | Driver -16 |  |
 | 3 | 4 | PASS | Driver -25 |  |
 | 4 | 4 | PASS | 4-wood -14 |  |
@@ -33,7 +33,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 10 | 5 | PASS | Driver -0 |  |
 | 11 | 3 | PASS |  |  |
 | 12 | 4 | PASS | Driver -2 |  |
-| 13 | 4 | CHECK | Driver +40 | aim: Driver +40 lands 304 yds out in sand (14 yds from fairway) |
+| 13 | 4 | PASS | Driver +52 |  |
 | 14 | 4 | PASS | Driver +8 |  |
 | 15 | 4 | PASS | Driver +8 |  |
 | 16 | 5 | PASS | Driver -14 |  |
@@ -46,7 +46,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 |---|---|---|---|---|
 | 1 | 5 | CHECK | Driver -20 | tee: tee marker not on an OSM tee box (tee_axis; 8 yds from the nearest OSM tee box) |
 | 2 | 4 | PASS | Driver -32 (tie) |  |
-| 3 | 4 | CHECK | Driver -40 | aim: Driver -40 lands 284 yds out in rough (20 yds from fairway) |
+| 3 | 4 | CHECK | Driver -46 | aim: Driver -46 lands 284 yds out in rough (15 yds from fairway) |
 | 4 | 4 | CHECK | Driver +16 | aim: Driver +16 lands 315 yds out in rough (19 yds from fairway) |
 | 5 | 3 | PASS |  |  |
 | 6 | 4 | PASS | Driver +8 |  |
@@ -56,7 +56,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 10 | 5 | PASS | Driver +2 |  |
 | 11 | 3 | PASS |  |  |
 | 12 | 4 | PASS | Driver +2 |  |
-| 13 | 4 | CHECK | Driver +40 | aim: Driver +40 lands 302 yds out in rough (16 yds from fairway) |
+| 13 | 4 | CHECK | Driver +50 | aim: Driver +50 lands 302 yds out in sand (6 yds from fairway) |
 | 14 | 4 | CHECK | Driver +16 (tie) | aim: Driver +16 lands 335 yds out in rough (14 yds from fairway) |
 | 15 | 4 | PASS | Driver +12 |  |
 | 16 | 5 | PASS | Driver -17 |  |

@@ -1,6 +1,6 @@
 # Colbert Hills Golf Course (Manhattan, KS) - Black/Blue tees
 
-Built 2026-11-02T06:23:22Z. OSM relation/13772939. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-02T10:49:09Z. OSM relation/13772939. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -13,7 +13,7 @@ Built 2026-11-02T06:23:22Z. OSM relation/13772939. Scorecard: opengolfapi (openg
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 9 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.414 |
+| mean_landing_osm_share | 0.413 |
 | mean_confidence | 0.811 |
 | osm_score | 0.803 |
 
@@ -23,7 +23,7 @@ OSM features inside the course: buildings 47, built_up_landuse 3, golf=bunker 90
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 5 | 590 / 559 | 172 | 0.61 | check the flags | 35% | 3% | 62% | tee stage: Black/Blue review (snapped 6 yds to OSM tee 780368833) | tee: tee stage: Black/Blue review (snapped 6 yds to OSM tee 780368833); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 1 | 5 | 590 / 561 | 171 | 0.61 | check the flags | 35% | 3% | 62% | tee stage: Black/Blue review (snapped 0 yds along OSM tee 780368833) | tee: tee stage: Black/Blue review (snapped 0 yds along OSM tee 780368833); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 2 | 4 | 412 / 412 | 225 | 0.83 | auto | 44% | 10% | 46% | tee stage: Black/Blue tee_centroid |  |
 | 3 | 4 | 416 / 417 | 278 | 0.74 | check the flags | 24% | 12% | 64% | tee stage: Black/Blue tee_axis | tee: tee stage: Black/Blue tee_axis |
 | 4 | 4 | 494 / 489 | 316 | 0.75 | check the flags | 36% | 1% | 63% | tee stage: Black/Blue tee_axis | tee: tee stage: Black/Blue tee_axis |
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 47, built_up_landuse 3, golf=bunker 90
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: opengolfapi (opengolfapi)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tee_overrides**: ok: Black/Blue 1 review (snapped 6 yds to OSM tee 780368833);
+- **tee_overrides**: ok: Black/Blue 1 review (snapped 0 yds along OSM tee 780368833);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 6 sets; lidar pads: 101 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 6 tee set(s))
 - **imagery**: ok: course_data/packages/colbert_hills/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
@@ -61,5 +61,5 @@ OSM features inside the course: buildings 47, built_up_landuse 3, golf=bunker 90
 
 ## Warnings
 
-- hole 1: measured 559 vs card 590 yds for Black/Blue (no OSM tee box at that yardage?)
+- hole 1: measured 561 vs card 590 yds for Black/Blue (no OSM tee box at that yardage?)
 - scorecard (opengolfapi): Purple: holes sum to 6432 but the source says 6452 (-20): mixed card versions
