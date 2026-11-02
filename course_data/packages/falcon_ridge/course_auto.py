@@ -1,5 +1,5 @@
 """Course module for Falcon Ridge Golf Course (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T21:40:27Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T23:42:35Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_falcon_ridge.json
 
