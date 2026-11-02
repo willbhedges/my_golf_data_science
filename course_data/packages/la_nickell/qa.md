@@ -1,6 +1,6 @@
 # L.A. Nickell Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-11-02T10:27:38Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-02T17:02:48Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
@@ -56,9 +56,9 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 - **imagery**: ok: course_data/packages/la_nickell/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2022
 - **elevation**: ok: course_data/packages/la_nickell/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -16294 m2 {'road': 16294}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 11 polygons (outside 11); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 8 polygons (outside 8); mode replace
 
 ## Warnings
 

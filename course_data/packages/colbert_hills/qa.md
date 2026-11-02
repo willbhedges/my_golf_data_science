@@ -1,6 +1,6 @@
 # Colbert Hills Golf Course (Manhattan, KS) - Black/Blue tees
 
-Built 2026-11-02T13:20:42Z. OSM relation/13772939. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-02T15:52:40Z. OSM relation/13772939. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -55,7 +55,7 @@ OSM features inside the course: buildings 47, built_up_landuse 3, golf=bunker 90
 - **imagery**: ok: course_data/packages/colbert_hills/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 17/17 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/colbert_hills/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -73 m2 {'cells': 62}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 37 polygons (outside 37); mode replace
 

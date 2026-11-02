@@ -1,6 +1,6 @@
 # Spirit Hollow Golf Course (Burlington, IA) - Black tees
 
-Built 2026-11-02T11:16:05Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
+Built 2026-11-02T18:25:41Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
 
 ## Coverage
 
@@ -33,7 +33,7 @@ OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, go
 | 8 | 4 | 383 / 384 | 264 | 0.78 | check the flags | 34% | 15% | 50% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 9 | 4 | 365 / 368 | 78 | 0.78 | check the flags | 22% | 32% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 10 | 5 | 502 / 501 | 30 | 0.81 | auto | 53% | 6% | 41% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 11 | 4 | 338 / 341 | 65 | 0.78 | check the flags | 28% | 25% | 47% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 11 | 4 | 338 / 341 | 65 | 0.78 | check the flags | 28% | 24% | 48% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 12 | 3 | 186 / 186 | 223 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 13 | 4 | 409 / 409 | 180 | 0.75 | check the flags | 35% | 2% | 62% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 14 | 4 | 393 / 393 | 208 | 0.78 | check the flags | 36% | 12% | 52% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
@@ -54,9 +54,9 @@ OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, go
 - **imagery**: ok: course_data/imagery/spirit_hollow (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/imagery/spirit_hollow/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -1956 m2 {'road': 1266, 'cells': 667}
 - **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 36 tee candidates)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 20 polygons (property_line 20); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 19 polygons (property_line 19); mode replace
 
 ## Warnings
 

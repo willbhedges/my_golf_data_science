@@ -1,6 +1,6 @@
 # Sand Creek Station (Newton, KS) - Championship tees
 
-Built 2026-11-02T10:31:24Z. OSM relation/6702217. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Championship, Tournament, Medal, Ladies (L))).
+Built 2026-11-02T18:07:28Z. OSM relation/6702217. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Championship, Tournament, Medal, Ladies (L))).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Championship' instead (allow_substitute). Sets on the card: Championship, Tournament, Medal, Ladies (L)**
 
@@ -58,7 +58,7 @@ OSM features inside the course: buildings 34, built_up_landuse 1, golf=bunker 62
 - **elevation**: ok: course_data/packages/sand_creek_station/imagery/dem.tif (18/18 holes)
 - **vision**: missing: product layer vision_any/2 not built for 'sand_creek_station' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 197 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py sand_creek_station (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 24 polygons (outside 24); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 25 polygons (outside 25); mode replace
 
 ## Warnings
 

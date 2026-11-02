@@ -1,6 +1,6 @@
 # Mozingo Lake Golf Course (Maryville, MO) - App tees
 
-Built 2026-11-02T10:28:44Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
+Built 2026-11-02T17:04:05Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
 
 ## Coverage
 
@@ -29,12 +29,12 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 | 4 | 4 | 361 / 362 | 79 | 0.76 | check the flags | 44% | 0% | 56% | tee stage: App tee_axis | tee: tee stage: App tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 5 | 3 | 182 / 182 | 210 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
 | 6 | 5 | 491 / 492 | 266 | 0.78 | check the flags | 50% | 0% | 50% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
-| 7 | 4 | 428 / 428 | 36 | 0.80 | auto | 56% | 2% | 41% | tee stage: App tee_axis | tee: tee stage: App tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 7 | 4 | 428 / 428 | 36 | 0.80 | check the flags | 56% | 1% | 42% | tee stage: App tee_axis | tee: tee stage: App tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 8 | 3 | 187 / 187 | 26 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
 | 9 | 4 | 348 / 348 | 18 | 0.79 | check the flags | 41% | 0% | 59% | tee stage: App tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 10 | 4 | 392 / 391 | 10 | 0.77 | check the flags | 47% | 0% | 53% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
 | 11 | 3 | 219 / 219 | 343 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
-| 12 | 5 | 517 / 518 | 265 | 0.77 | check the flags | 45% | 1% | 54% | tee stage: App tee_axis | tee: tee stage: App tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 12 | 5 | 517 / 518 | 265 | 0.77 | check the flags | 45% | 0% | 55% | tee stage: App tee_axis | tee: tee stage: App tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 13 | 4 | 394 / 394 | 177 | 0.77 | check the flags | 42% | 5% | 53% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
 | 14 | 5 | 464 / 463 | 187 | 0.81 | auto | 50% | 0% | 50% | tee stage: App tee_centroid |  |
 | 15 | 3 | 174 / 174 | 80 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
@@ -54,6 +54,6 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 - **imagery**: ok: course_data/packages/mozingo_lake/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2022
 - **elevation**: ok: course_data/packages/mozingo_lake/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -10042 m2 {'road': 9232, 'strip': 810}
 - **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 33 tee candidates)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 4 polygons (outside 4); mode replace
