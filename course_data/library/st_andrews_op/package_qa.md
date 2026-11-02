@@ -1,6 +1,6 @@
 # St Andrews Golf Club (Overland Park, KS) - Black tees
 
-Built 2026-10-30T03:26:24Z. OSM way/68744841. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-01T20:43:12Z. OSM way/68744841. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-10-30T03:26:24Z. OSM way/68744841. Scorecard: golfify (golfify). Tee 
 | holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 13 |
 | mean_landing_osm_share | 0.318 |
-| mean_confidence | 0.828 |
+| mean_confidence | 0.826 |
 | osm_score | 0.864 |
 
 OSM features inside the course: buildings 4, golf=bunker 18, golf=cartpath 20, golf=driving_range 2, golf=fairway 16, golf=green 32, golf=hole 18, golf=pin 18, golf=tee 55, golf=water_hazard 2, holes_with_handicap 18, holes_with_par 18, single_trees 5, water_lines 4, water_polygons 5
@@ -38,7 +38,7 @@ OSM features inside the course: buildings 4, golf=bunker 18, golf=cartpath 20, g
 | 13 | 4 | 328 / 328 | 178 | 0.83 | auto | 26% | 53% | 20% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 14 | 3 | 178 / 178 | 342 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 15 | 5 | 498 / 498 | 71 | 0.83 | auto | 37% | 40% | 24% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 16 | 4 | 419 / 419 | 330 | 0.64 | check the flags | 32% | 3% | 65% | tee stage: Black walkback | tee: tee stage: Black walkback; Black tee walked back along the hole line (no box at 419 yds) |
+| 16 | 4 | 393 / 386 | 332 | 0.61 | check the flags | 31% | 5% | 64% | tee stage: Black review (snapped 7 yds to OSM tee 277760440) | tee: tee stage: Black review (snapped 7 yds to OSM tee 277760440) |
 | 17 | 3 | 193 / 193 | 117 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 18 | 4 | 397 / 398 | 279 | 0.78 | check the flags | 30% | 25% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 
@@ -46,11 +46,13 @@ OSM features inside the course: buildings 4, golf=bunker 18, golf=cartpath 20, g
 
 - **resolve**: ok: way/68744841 St Andrews Golf Club (Overland Park, KS)
 - **osm**: ok: 767 features
+- **card_overrides**: ok: 1 review fix(es): hole 16 Black: card 419 -> 393 yds (review)
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **scorecard**: ok: golfify (golfify)
+- **scorecard**: ok: opengolfapi (opengolfapi)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 7 sets; lidar pads: 74 candidate pads near hole starts
-- **geometry**: ok: geometry/build_holes.py (18 holes, 7 tee set(s))
+- **tee_overrides**: ok: Black 16 review (snapped 7 yds to OSM tee 277760440);
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 74 candidate pads near hole starts
+- **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/st_andrews_op/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
 - **elevation**: ok: course_data/packages/st_andrews_op/imagery/dem.tif (18/18 holes)
