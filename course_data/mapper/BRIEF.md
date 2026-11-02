@@ -92,20 +92,25 @@ frame. The tee sheet uses the same frame (along < 0 = behind the corridor tee).
 ## 2. Per corridor: what to check and mark (~2 min per hole)
 
 Go hole by hole (all par 4s and 5s). Look at `corridor_a` (auto layers vs photo vs 2nd year) and `corridor_b`
-(lidar / CIR). Mark, in this order of value:
+(lidar / CIR). Read "How the planner uses your map" below first: it decides where care pays. Mark, in this order
+of value:
 
 1. **Long grass (native / fescue / prairie)** - the auto build has almost none (detection is off by decision). Per
    side (L / R), where does unmown grass start and how far along does it run? Native = tan / textured / tufted, no
    mowing stripes, often with mown paths cut through it, **and the same in both photo years**. *Second-year check:*
    mown rough in a drought or dormant season can look tan in one year; if it is green and smooth in the other year
-   it is mown rough, not native. Lidar 0.5-2.5 m (yellow) speckle and a mottled CIR support native. Usual shape:
-   `beyond_fairway` with `w` = the mown-rough width you measure on the photo (typically 6-15 yds), limited to a side
-   and an along range; or a `poly` for a patch. Erase auto `native` that sits on mown rough.
+   it is mown rough, not native. Lidar 0.5-2.5 m (yellow) speckle and a mottled CIR support native. **Mown rough is
+   the default beside a fairway**: measure its width per side at 3+ places on the 0.3 m photo (crop and zoom) and
+   start the native where the coarse, tufted texture starts, not where the colour changes. Shapes: a `poly` that
+   follows the visible tall-grass edge (best), or `beyond_fairway` with `w` = the measured mown-rough width and
+   `a0` / `a1` limited to where you saw it. Erase auto `native` that sits on mown rough. See the long-grass rules
+   below: unsure native within 10 yds of the fairway is removed by `write_layers.py`.
 2. **Tree edges** - the auto trees are the lidar canopy (> 2.5 m) and usually stop a few yards short of where a ball
    is "in the trees" on the fairway side. Compare the auto outline (corridor_a, dark green) with the crowns in the
    photo and lidar: where the crown edge is consistently beyond it, `grow` the trees by that many yards inside a
    region on that side (only the fairway-facing edge matters). Add crowns the lidar missed (trees newer than the
-   lidar, or no lidar: `ell` per crown or `poly` for a stand); erase trees that are gone in both photo years.
+   lidar, or no lidar: `ell` per crown; a `poly` only for a closed stand whose crowns touch); erase trees that are
+   gone in both photo years. Do not grow every edge by a fixed amount: grow only where you measured the gap.
 3. **OB** - only where houses, back yards, a road or a fence line are visible. The line is the lot / fence line, not
    the house. Erase auto OB that is woods or course land with no development visible (outline-only OB). A course
    boundary with nothing built behind it is not OB.
@@ -113,11 +118,52 @@ Go hole by hole (all par 4s and 5s). Look at `corridor_a` (auto layers vs photo 
    check both years and CIR, water is black in NIR); erase water that is dry / filled in both years.
 5. **Fairway sides** - only when OSM is visibly wrong: no fairway, a fairway shifted or > 5 yds too narrow / wide on
    a side (the mowing line is visible in both years). `add` fairway (`band` or `poly`) or `erase` fairway.
-   Bunkers only if a big landing-zone bunker is missing.
+   Bunkers only if a big landing-zone bunker is missing. Sandy waste areas: see the sand rule below.
 
-Precedence is automatic (later wins): native < trees < OB < first cut < fairway < green < water < sand. So long
-grass may be drawn generously: it never covers a fairway, trees or water. "Rough" is not a lie: to make an area
-mown rough, `erase` the lie that is there.
+Precedence is automatic (later wins): native < trees < OB < first cut < fairway < green < water < sand. Native never
+covers a fairway, trees or water, **but it does cover mown rough**: precedence does not protect the rough, so draw
+native exactly, not generously. "Rough" is not a lie: to make an area mown rough, `erase` the lie that is there.
+
+### How the planner uses your map (where care pays)
+
+* **Long grass is priced almost like OB**: half the balls in it are lost (stroke and distance), the rest are hacked
+  out. A native edge drawn 5 yds too close to the fairway in the driver landing zone changes the club (driver ->
+  3-wood) on that hole; native 25+ yds out or past the green-side end of the landing zone rarely changes anything.
+  So near the fairway, a wrong native edge costs more than a missing one.
+* Trees cost less (a share of the balls is blocked), sand less again (played like a fairway bunker). A tree edge off
+  by 2 yds or an extra crown 15+ yds from the fairway is noise for the plan; spend the time on edges that face the
+  landing zone (about 200-320 yds from the tee on par 4/5 tee shots).
+* Mown rough is what an unmarked area is: leaving an unsure area unmarked is the safe default.
+
+### Long-grass rules
+
+1. **Two-year test, texture first.** Native = coarse tufted texture (single tufts / seed heads visible at 0.3 m), no
+   mowing stripes, in both photo years. Tan alone is not native: dry or dormant mown rough is tan and smooth. A dark,
+   mottled band along a tree line is shade / leaf litter on rough, not native.
+2. **Mown-rough width.** Next to a fairway there is mown rough on nearly every course, typically 8-20 yds wide. A
+   strip narrower than ~8 yds between the fairway and a tree line, cart path, ditch or pond bank is mown rough (or
+   the trees / water) unless the tall grass is unmistakable in both years.
+3. **Keep-out (enforced).** `write_layers.py` removes any `add native` that is not `confidence: "high"` from within
+   10 yds of the package fairway / first cut / green, and lists it under "Checks" in `review.md`. Use `high` only
+   when the area is unmistakable in both years and its edge is crisp; then say in `evidence` where the edge is
+   (e.g. "tufted edge 6 yds off the fairway on 2021 and 2023, mown strip visible between"). Islands and big blocks
+   of prairie that come right to the fairway are the typical high-confidence case.
+4. **No template strips.** Do not lay one `beyond_fairway` strip over the whole window (120-400, both sides) on
+   every hole. Limit each to the along range where you saw tall grass; where a fairway ends (dog-leg, lay-up,
+   cross-hazard) `beyond_fairway` covers the full width, so stop `a1` at the tall grass's real edge.
+5. **Check the result**: `review.md` lists per hole the gap from the fairway to your native (min / median per side).
+   A median gap under ~8 yds on a hole should be one you can defend from the photo.
+
+### Trees, sand, OB rules
+
+* **Scattered trees** (crowns with grass between): one `ell` per crown that is within ~25 yds of the fairway. Never
+  a polygon around a group of separate crowns (`write_layers.py` warns on a big tree polygon over open ground).
+* **Isolated crowns far from play** (> ~25 yds from the fairway, or outside 180-330 along) are not worth adding.
+* **Sand / waste areas**: open bare sand that is white / tan in both years (white-cyan in CIR) is `sand`, waste
+  areas included. Not pine straw, bare soil, cart paths or sand under crowns: sand wins over trees in the precedence,
+  so draw sand only outside the canopy (`write_layers.py` warns when a sand edit lies on the auto canopy). Sand has
+  little effect on the plan: do it last.
+* **OB**: draw from what is built (lots, fences, roads); a `low` confidence OB guess is not worth adding.
 
 ## 3. Tees, every set on every hole (~7 min)
 
@@ -174,7 +220,9 @@ python3 course_data/mapper/build_plan.py $S --n 2000 --workers 4   # optional: w
 
 Open `render/hNN_review.png` (AUTO | AUTO + AGENT | your edits on the other year) for every hole you edited:
 does the result match the photo? Fix `edits.json` and re-run until it does. `write_layers.py` refuses bad edits
-(unknown lie / op, a shape outside the window or with x / along swapped, a move without evidence).
+(unknown lie / op, a shape outside the window or with x / along swapped, a move without evidence), clips unsure
+native within 10 yds of the fairway, and lists checks in `review.md` ("Native gap to the fairway", "Checks and
+problems"): read both and fix or justify every check before you commit.
 
 ## 6. Commit and report
 
@@ -196,5 +244,6 @@ judge and why (missing year / lidar, shadows, renovation); your confidence per l
 | `apply.py` | apply the agent layers to any package, layer by layer (erase / add / grow per lie, tee moves with aim / length / elevation re-derived, `reframe`), recorded in `package.agent_layers`, `stages.agent_layers`, `holes[].provenance.agent` |
 | `build_plan.py` | quick decision on AUTO and AUTO + AGENT -> `plan.json`, `PLAN.md` |
 | `eval_mapper.py` | error budget AUTO vs AUTO + AGENT vs truth (per course, pooled, per layer area, tee error) -> `eval_<set>.json`, `EVAL_<set>.md` (never shown to a mapper) |
+| `EVAL_BLIND.md` | evaluator's analysis of the first blind runs (why the agent layers helped / hurt; where the brief's rules come from). Truth-bearing: never shown to a mapper |
 | `test_mapper.py` | `python3 -m pytest -q course_data/mapper/test_mapper.py` |
 | `platform/package.py` `apply_agent_layers` | package request `"agent_layers": "course_data/mapper/<slug>/"`: applied after vision + OB in every build (course_package.yml, course_page_one.yml); `library/course_page.py pkgreq` passes the key from a course-page request |

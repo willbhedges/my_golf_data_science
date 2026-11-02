@@ -11,6 +11,15 @@ edit, converts shapes to WGS84 polygons with the hole's corridor frame, and writ
   render/hNN_review.png [AUTO] [AUTO + AGENT] [the edits on the 2nd NAIP year: add = lie colour, erase = magenta,
                         grow region = cyan] (not committed)
 Fails loudly on a bad edit (unknown lie / op / shape, a shape outside the window, a move without evidence).
+
+Guards from the blind evaluation (course_data/mapper/BRIEF.md "Rules from the evaluation"), applied here so every
+mapper gets them:
+  * native keep-out: an `add native` that is not confidence "high" loses the part within NATIVE_KEEPOUT yds of the
+    package fairway / first cut / green (mown rough is the default next to a fairway; a thin strip of "native"
+    hugging the fairway was the main cause of wrong clubs). High-confidence native is kept but listed.
+  * warnings (review.md "Checks", not fatal): sand drawn over tree canopy (sand wins over trees in the lie
+    precedence), a large tree polygon over mostly open ground (scattered crowns drawn as a stand), native
+    strips with w < NATIVE_KEEPOUT.
 """
 import argparse
 import datetime as dt
@@ -27,6 +36,24 @@ import common as M  # noqa: E402
 
 class EditError(ValueError):
     pass
+
+
+NATIVE_KEEPOUT = 10.0       # yds from the package fairway: unsure native never comes closer
+STAND_MIN_YD2 = 600.0       # a tree polygon this big ...
+STAND_MIN_CANOPY = 0.35     # ... with less than this share on the auto (lidar) canopy: warn
+SAND_ON_CANOPY = 0.3        # sand add with more than this share on the auto canopy: warn
+
+
+def _mown(fj, h):
+    from shapely.ops import unary_union
+    fw = [M._poly(z["xy"]) for z in M.auto_zones_xy(fj, h, ("fairway", "first_cut", "green"))]
+    return unary_union(fw).buffer(0) if fw else None
+
+
+def _canopy(fj, h):
+    from shapely.ops import unary_union
+    tr = [M._poly(z["xy"]) for z in M.auto_zones_xy(fj, h, ("recovery",))]
+    return unary_union(tr).buffer(0) if tr else None
 
 
 def _geo(g, fj):
@@ -78,12 +105,43 @@ def build(slug, ed, pkg, FJ, TF):
             if inside.area < 0.5 * g.area:
                 raise EditError(f"{where}: shape mostly outside the window (x +/-{M.WIN['lat']:g}, along "
                                 f"{M.WIN['a0']:g}-{M.WIN['a1']:g}); check x / along order ([x, along])")
+            clipped = 0.0
+            if op == "add" and lies[0] == "native":
+                mown = _mown(fj, h)
+                near = inside.intersection(mown.buffer(NATIVE_KEEPOUT)).area if mown is not None else 0.0
+                if near >= 1 and e.get("confidence") != "high":
+                    inside = inside.difference(mown.buffer(NATIVE_KEEPOUT))
+                    clipped = near
+                    problems.append(f"{where}: native within {NATIVE_KEEPOUT:g} yds of the fairway removed ({near:.0f} sq yds; "
+                                    f"confidence is not high): keep it only with a crisp tall-grass edge in both years")
+                    if inside.area < 1:
+                        continue
+                elif near >= 25:
+                    problems.append(f"{where}: high-confidence native within {NATIVE_KEEPOUT:g} yds of the fairway "
+                                    f"({near:.0f} sq yds): check the edge on both years (it changes clubs)")
+                sh = (e.get("shape") or {}).get("beyond_fairway")
+                if sh and not clipped and float(sh.get("w", 10.0)) < NATIVE_KEEPOUT:
+                    problems.append(f"{where}: beyond_fairway w={sh.get('w')} (< {NATIVE_KEEPOUT:g}): mown rough is "
+                                    f"usually wider; measure it")
+            if op == "add" and lies[0] == "sand":
+                can = _canopy(fj, h)
+                if can is not None and inside.area > 0 and inside.intersection(can).area > SAND_ON_CANOPY * inside.area:
+                    problems.append(f"{where}: {100 * inside.intersection(can).area / inside.area:.0f}% of the sand lies on "
+                                    f"the tree canopy (sand wins over trees): draw only open sand, outside the crowns")
+            if op == "add" and lies[0] == "recovery" and inside.area >= STAND_MIN_YD2:
+                can = _canopy(fj, h)
+                share = inside.intersection(can).area / inside.area if can is not None else 0.0
+                if share < STAND_MIN_CANOPY:
+                    problems.append(f"{where}: tree polygon of {inside.area:.0f} sq yds with only {100 * share:.0f}% on the "
+                                    f"lidar canopy: if the crowns stand apart with grass between, draw each crown (ell)")
             if op == "grow" and not e.get("by"):
                 raise EditError(f"{where}: grow needs 'by' (yds, negative shrinks)")
             geo = _geo(inside, fj)
             if geo is None:
                 continue
             props = dict(hole=ref, op=op, lie=lies[0], edit=f"{ref}.{i}", area_yd2=round(inside.area))
+            if clipped:
+                props["keepout_clipped_yd2"] = round(clipped)
             if op == "erase":
                 props["lies"] = lies
             if op == "grow":
@@ -126,6 +184,46 @@ def build(slug, ed, pkg, FJ, TF):
     return feats, tees, reviewed, problems
 
 
+def native_gaps(pkg, out, FJ, a0=180, a1=330, step=5, reach=45):
+    """{ref: {"L": "min / median", "R": ...}}: lateral gap from the base fairway edge to the visible native
+    (after precedence) on each side, sampled every `step` yds along."""
+    from shapely.geometry import LineString
+    from shapely.ops import unary_union
+    res = {}
+    for ref, fj in FJ.items():
+        h0, h1 = pkg["holes"][ref], out["holes"][ref]
+        nat = [M._poly(z["xy"]) for z in M.auto_zones_xy(fj, h1, ("native",))]
+        if not nat:
+            continue
+        above = [M._poly(z["xy"]) for z in M.auto_zones_xy(fj, h1, ("recovery", "ob", "first_cut", "fairway", "green",
+                                                                    "water", "sand"))]
+        g = unary_union(nat).buffer(0)
+        if above:
+            g = g.difference(unary_union(above).buffer(0))
+        mown = _mown(fj, h0)
+        row = {}
+        for side, sgn in (("L", -1), ("R", 1)):
+            d = []
+            for a in range(a0, a1 + 1, step):
+                ln = LineString([(0, a), (sgn * reach, a)])
+                it = g.intersection(ln)
+                if it.is_empty:
+                    continue
+                xs = [abs(c[0]) for p in getattr(it, "geoms", [it]) for c in p.coords]
+                fw = mown.intersection(ln) if mown is not None else None
+                fx = 0.0                     # outer edge of the fairway piece(s) that start near the line
+                if fw is not None and not fw.is_empty:
+                    for p in getattr(fw, "geoms", [fw]):
+                        cx = [abs(c[0]) for c in p.coords]
+                        if cx and min(cx) < 15:
+                            fx = max(fx, max(cx))
+                d.append(max(0.0, min(xs) - fx))
+            row[side] = f"{min(d):.0f} / {float(np.median(d)):.0f}" if d else "-"
+        if row["L"] != "-" or row["R"] != "-":
+            res[ref] = row
+    return res
+
+
 def review_md(slug, pkg, out, FJ, rep, tees, problems):
     import render_inputs as RI
     L = [f"# Mapper review: {pkg['course']['name']}", "",
@@ -144,8 +242,14 @@ def review_md(slug, pkg, out, FJ, rep, tees, problems):
             t = out["holes"][ref]["tees"][s]
             L.append(f"| {ref} | {s} | {r['action']} | {r.get('moved_yd', '')} | {t.get('card_yards')} | "
                      f"{t.get('measured_yards')} | {(r.get('evidence') or '')[:80]} |")
+    gaps = native_gaps(pkg, out, FJ)
+    if gaps:
+        L += ["", "## Native gap to the fairway (180-330 yds along; min / median yds per side, '-' = none)", "",
+              "| hole | left | right |", "|---|---|---|"]
+        for ref, g in gaps.items():
+            L.append(f"| {ref} | {g['L']} | {g['R']} |")
     if problems:
-        L += ["", "## Problems", ""] + [f"- {p}" for p in problems]
+        L += ["", "## Checks and problems", ""] + [f"- {p}" for p in problems]
     open(M.mdir(slug, "review.md"), "w").write("\n".join(L) + "\n")
 
 

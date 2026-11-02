@@ -173,6 +173,33 @@ def test_write_layers_validation(pkg, fj):
         WL.build("t", dict(tees={"2": {pkg["tee_set"]: dict(action="move", to=[0, -6])}}), pkg, fj, fj)  # no evidence
 
 
+def test_write_layers_native_keepout_and_checks(pkg, fj):
+    """Unsure native never comes within NATIVE_KEEPOUT yds of the fairway; high-confidence native is kept (listed)."""
+    import write_layers as WL
+    from shapely.geometry import shape
+    from shapely.ops import unary_union
+    strip = {"beyond_fairway": {"w": 2, "side": "both", "a0": 180, "a1": 330}}
+    out = {}
+    for conf in ("medium", "high"):
+        ed = dict(holes={"2": dict(edits=[dict(op="add", lie="native", shape=strip, confidence=conf, evidence="x")])})
+        feats, _, _, probs = WL.build("t", ed, pkg, fj, fj)
+        g = unary_union([shape(dict(type="Polygon", coordinates=[M.ll_to_xy(fj["2"], r[0] if isinstance(r[0][0], list) else r).tolist()]))
+                         for r in ([feats[0]["geometry"]["coordinates"]] if feats[0]["geometry"]["type"] == "Polygon"
+                                   else feats[0]["geometry"]["coordinates"])]).buffer(0)
+        mown = WL._mown(fj["2"], pkg["holes"]["2"])
+        out[conf] = (g.intersection(mown.buffer(WL.NATIVE_KEEPOUT - 0.5)).area, probs)
+    assert out["medium"][0] < 2 and any("removed" in p for p in out["medium"][1])
+    assert out["high"][0] > 100 and any("high-confidence" in p for p in out["high"][1])
+    # sand over the canopy is flagged, not refused
+    can = WL._canopy(fj["3"], pkg["holes"]["3"])
+    can = can.intersection(M.window(-10)) if can is not None else None
+    assert can is not None and can.area > 50
+    c = can.representative_point()
+    ed = dict(holes={"3": dict(edits=[dict(op="add", lie="sand", shape={"ell": [c.x, c.y, 2, 2]}, evidence="x")])})
+    feats, _, _, probs = WL.build("t", ed, pkg, fj, fj)
+    assert feats and any("canopy" in p for p in probs)
+
+
 def test_package_build_hook(pkg, fj, tmp_path):
     PKm = AP.platform_package()
     d = tmp_path / "agent"
