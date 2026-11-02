@@ -1,6 +1,6 @@
 # WeaverRidge Golf Club (Peoria, IL) - Black tees
 
-Built 2026-11-01T21:18:19Z. OSM way/749257217. Scorecard: file (course_data/library/weaver_ridge/card_review.json). Tee set: name.
+Built 2026-11-02T06:24:05Z. OSM way/749257217. Scorecard: file (course_data/library/weaver_ridge/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -11,11 +11,11 @@ Built 2026-11-01T21:18:19Z. OSM way/749257217. Scorecard: file (course_data/libr
 | greens_found | 18 |
 | tee_boxes | 82 |
 | tees_with_colour | 0 |
-| holes_with_trees_or_long_grass_in_landing_zone | 11 |
+| holes_with_trees_or_long_grass_in_landing_zone | 12 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.448 |
-| mean_confidence | 0.833 |
-| osm_score | 0.847 |
+| mean_landing_osm_share | 0.466 |
+| mean_confidence | 0.834 |
+| osm_score | 0.865 |
 
 OSM features inside the course: buildings 183, golf=bunker 78, golf=cartpath 46, golf=clubhouse 1, golf=driving_range 1, golf=fairway 24, golf=green 19, golf=hole 18, golf=rough 1, golf=tee 82, golf=water_hazard 8, holes_with_par 18, water_lines 3, water_polygons 8
 
@@ -23,33 +23,34 @@ OSM features inside the course: buildings 183, golf=bunker 78, golf=cartpath 46,
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 5 | 540 / 529 | 274 | 0.80 | auto | 51% | 4% | 45% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 1 | 5 | 540 / 536 | 274 | 0.80 | check the flags | 52% | 2% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 2 | 4 | 391 / 391 | 157 | 0.79 | check the flags | 37% | 2% | 62% | tee stage: Black tee_centroid |  |
 | 3 | 5 | 519 / 520 | 276 | 0.78 | check the flags | 45% | 0% | 55% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 4 | 3 | 182 / 181 | 23 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 5 | 4 | 387 / 326 | 93 | 0.67 | check the flags | 44% | 1% | 55% | tee stage: Black walkback_capped | tee: tee stage: Black walkback_capped; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Black tee walked back along the hole line (no box at 387 yds) |
+| 5 | 4 | 387 / 365 | 101 | 0.71 | check the flags | 69% | 3% | 28% | tee stage: Black review (snapped 2 yds to OSM tee 749315882) | tee: tee stage: Black review (snapped 2 yds to OSM tee 749315882) |
 | 6 | 4 | 388 / 388 | 10 | 0.81 | auto | 38% | 7% | 54% | tee stage: Black tee_centroid |  |
 | 7 | 4 | 435 / 436 | 84 | 0.83 | auto | 43% | 13% | 44% | tee stage: Black tee_centroid |  |
 | 8 | 3 | 194 / 194 | 173 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 9 | 4 | 381 / 381 | 189 | 0.79 | check the flags | 33% | 7% | 60% | tee stage: Black tee_centroid |  |
 | 10 | 4 | 418 / 418 | 180 | 0.85 | auto | 36% | 32% | 32% | tee stage: Black tee_centroid |  |
-| 11 | 5 | 482 / 482 | 221 | 0.84 | auto | 51% | 22% | 27% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 11 | 5 | 489 / 484 | 221 | 0.84 | auto | 52% | 22% | 26% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 12 | 3 | 228 / 229 | 275 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 13 | 4 | 401 / 403 | 38 | 0.80 | auto | 49% | 7% | 44% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 13 | 4 | 432 / 427 | 38 | 0.80 | check the flags | 47% | 9% | 44% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 14 | 4 | 406 / 406 | 210 | 0.82 | auto | 38% | 31% | 31% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 15 | 4 | 458 / 459 | 294 | 0.82 | auto | 59% | 4% | 36% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 16 | 4 | 401 / 402 | 83 | 0.80 | auto | 55% | 0% | 45% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 17 | 3 | 187 / 183 | 84 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 18 | 5 | 535 / 535 | 57 | 0.87 | auto | 48% | 27% | 25% | tee stage: Black tee_centroid |  |
+| 18 | 5 | 556 / 554 | 58 | 0.85 | auto | 49% | 29% | 22% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 
 ## Stages
 
 - **resolve**: ok: way/749257217 WeaverRidge Golf Club (Peoria, IL)
-- **osm**: ok: 822 features
-- **card_overrides**: ok: 4 review fix(es): hole 11 Black: card 489 -> 482 yds (review); hole 13 Black: card 432 -> 401 yds (review); hole 16 Black: card 439 -> 401 yds (review); hole 18 Black: card 556 -> 535 yds (review)
+- **osm**: ok: 813 features
+- **card_overrides**: ok: 1 review fix(es): hole 16 Black: card 439 -> 401 yds (review)
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: file (course_data/library/weaver_ridge/card_review.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tee_overrides**: ok: Black 5 review (snapped 2 yds to OSM tee 749315882);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 80 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/weaver_ridge/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2019)
@@ -62,4 +63,4 @@ OSM features inside the course: buildings 183, golf=bunker 78, golf=cartpath 46,
 ## Warnings
 
 - hole 5 Black: CHECK, walk-back ran onto a building (OSM 749315857) 40 yds behind the line start: capped there (62 yds short of the card)
-- hole 5: measured 326 vs card 387 yds for Black (no OSM tee box at that yardage?)
+- hole 5: measured 365 vs card 387 yds for Black (no OSM tee box at that yardage?)
