@@ -32,6 +32,10 @@ Stages (each a subcommand, run by the workflow; README.md in this folder has the
                           planner reads are on disk there); app/build_library_play.py turns it into check cards
   finish REQ PARTS     -> merge, page (data gzip-inlined), picture checks, qa_page.js, qa_report.md, status.json
   index                -> course_data/library/index.json
+A failed re-run of a course that already has a page keeps that page's status.json (status, page, reasons, the good
+qa_report.md) and records the failure beside it as "last_attempt": {status, stage, error, when}; the index lists the
+page with that last_attempt. A package whose imagery is not USDA NAIP (Alaska, Hawaii, outside the US: the package
+falls back to 10 m Sentinel-2 and the hole pictures come out gray) stops at configure with status "unsupported".
 Output folder: course_data/library/<slug>/ (group "library"), course_data/library/gate/<slug>/ (group "gate").
 """
 import argparse
@@ -272,6 +276,7 @@ def configure(q):
     for f in ("course.json", "summary.json", "scorecard_web.json", "osm.geojson"):
         if os.path.exists(os.path.join(raw, f)):
             shutil.copy(os.path.join(raw, f), out_dir(q, "raw", f))
+    check_imagery(q, pkg)
     bases, extra, why = choose_bases(pkg, q.get("tees"))
     days = q.get("days") or next_weekend(dt.date.today())
     c = pkg["course"]
@@ -652,7 +657,10 @@ def finish(q, parts):
     raw = f"/tmp/page_{q['slug']}.html"
     vc(q, "page", "--which", "auto", "--out", raw)
     head, data, code, tail = split_page(open(raw).read())
-    page = out_dir(q, "page.html")
+    # the new page is built and checked as page.new.html and replaces page.html only once everything passed, so a
+    # finish that crashes half way leaves the last good page (and its status.json, failed() below) in place
+    final = out_dir(q, "page.html")
+    page = out_dir(q, "page.new.html")
     open(page, "w").write(pack_page(head, data, code, tail))
     pkg = rj(out_dir(q, "package.json"))
     checks = run_checks(q, cfg)
@@ -672,6 +680,8 @@ def finish(q, parts):
             if h and h["status"] != "PASS":
                 hd["note"] = ((hd.get("note") or "") + " Auto-map CHECK: " + "; ".join(h["reasons"])).strip()
     open(page, "w").write(pack_page(head, data, code, tail))
+    os.replace(page, final)
+    page = final
     size = os.path.getsize(page)
     page_rel = os.path.relpath(page, ROOT)
     open(out_dir(q, "qa_report.md"), "w").write(
@@ -744,21 +754,79 @@ def failed(q, stage, msg, log=None):
               resolve=dict(status=rc.get("status"), candidates=[{k: x.get(k) for k in ("name", "town", "holes", "osm")}
                                                                for x in (rc.get("candidates") or [])[:5]]),
               built=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"))
+    try:
+        os.remove(out_dir(q, "page.new.html"))             # a finish that crashed half way: never shipped
+    except OSError:
+        pass
+    prev = rj(out_dir(q, "status.json"))
+    if has_good_page(prev):
+        # a re-run failed (an Overpass timeout, a crash): the last good page stays listed, its status.json and
+        # qa_report.md unchanged; the failure is recorded beside it
+        keep = {k: v for k, v in prev.items() if k != "last_attempt"}
+        keep["last_attempt"] = dict(status="failed", stage=stage, error=st["reasons"], when=st["built"],
+                                    resolve=st["resolve"])
+        wj(out_dir(q, "status.json"), keep)
+        print(f"{q['slug']}: {stage} failed; keeping the last good page ({prev.get('status')}, built {prev.get('built')})", file=sys.stderr)
+        return
     wj(out_dir(q, "status.json"), st)
     open(out_dir(q, "qa_report.md"), "w").write(f"# {q['name']}: no page\n\n**Status: failed** at {stage}: {msg}\n\n"
                                                  + "".join(f"    {d}\n" for d in detail) + ("\n" if detail else "")
                                                  + f"Resolve: {json.dumps(st['resolve'])}\n")
 
 
+def has_good_page(st):
+    """A status.json record of a built page whose page file is still on disk (failed / unsupported records have none)."""
+    return bool(st and st.get("status") not in ("failed", "unsupported") and st.get("page")
+                and os.path.exists(os.path.join(ROOT, st["page"])))
+
+
+def imagery_problem(pkg):
+    """Why the package's imagery cannot make a library page (None when it is USDA NAIP). NAIP covers the lower 48
+    only: elsewhere (Anchorage, AK) the package falls back to 10 m Sentinel-2 and the hole pictures come out gray."""
+    im = (pkg or {}).get("imagery") or {}
+    src = str(im.get("source") or "")
+    if not im or im.get("present") is False:
+        return "no imagery in the package"
+    if "NAIP" not in src:
+        return (f"imagery is {src or 'unknown'} at {im.get('resolution_m')} m, not USDA NAIP (NAIP covers the lower 48 "
+                "states only): hole pictures would be gray / unreadable")
+    return None
+
+
+def check_imagery(q, pkg):
+    """configure: a course outside NAIP coverage is marked "unsupported" (no page, delisted, even if an earlier build
+    shipped one) and the build stops here, loudly, instead of shipping gray pictures."""
+    why = imagery_problem(pkg)
+    if not why:
+        return
+    os.makedirs(out_dir(q), exist_ok=True)
+    st = dict(slug=q["slug"], name=q["name"], request_name=q["name"], city=q.get("city"), state=q["state"],
+              group=q["group"], status="unsupported", reasons=[f"imagery: {why}"], check_holes=[], tee_sets=[],
+              page=None, page_bytes=None, request=q["path"],
+              built=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"))
+    wj(out_dir(q, "status.json"), st)
+    open(out_dir(q, "qa_report.md"), "w").write(f"# {q['name']}: no page\n\n**Status: unsupported**: {why}\n")
+    raise SystemExit(f"{q['slug']}: unsupported: {why}")
+
+
 # ------------------------------------------------------------------------------------------------ index
+INDEX_KEYS = ("slug", "name", "city", "state", "status", "check_holes", "reasons", "tee_sets", "solved_sets", "page",
+              "page_bytes", "qa_report", "center", "osm", "holes", "days", "weather", "built")
+INDEX_ORDER = {"hand-checked": 0, "auto-OK": 1, "needs confirm": 2, "failed": 3, "unsupported": 4}
+
+
+def index_row(s):
+    """A library status.json -> its index.json row (with "last_attempt" when a re-run failed after a good build)."""
+    return ({k: s.get(k) for k in INDEX_KEYS} | {"group": "library"}
+            | ({"last_attempt": s["last_attempt"]} if s.get("last_attempt") else {}))
+
+
 def index():
     rows = []
     for p in sorted(glob.glob(os.path.join(HERE, "*", "status.json"))):
         s = rj(p)
         if s:
-            rows.append({k: s.get(k) for k in ("slug", "name", "city", "state", "status", "check_holes", "reasons",
-                                               "tee_sets", "solved_sets", "page", "page_bytes", "qa_report", "center",
-                                               "osm", "holes", "days", "weather", "built")} | {"group": "library"})
+            rows.append(index_row(s))
     for d in sorted(glob.glob(os.path.join(TOURNAMENT, "*", "config.json"))):
         slug = os.path.basename(os.path.dirname(d))
         cfg = rj(d) or {}
@@ -796,7 +864,7 @@ def index():
                          qa_report=None, center=list(reversed(c.get("center") or [None, None])),
                          osm=f"{(c.get('osm') or {}).get('type')}/{(c.get('osm') or {}).get('id')}",
                          holes=len(pk.get("holes") or {}) or None, days=None, weather="forecast", built=None))
-    order = {"hand-checked": 0, "auto-OK": 1, "needs confirm": 2, "failed": 3}
+    order = INDEX_ORDER
     rows.sort(key=lambda r: (order.get(r["status"], 9), r["state"] or "", r["name"] or ""))
     idx = dict(schema="course_library/1", doc="course_data/library/README.md",
                updated=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),

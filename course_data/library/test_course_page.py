@@ -122,3 +122,90 @@ def test_native_stage_never_fails_the_build(tmp_path):
     assert r["items"] == [] and r["note"].startswith("skipped")
     assert json.load(open(tmp_path / "zz_test" / "native.json"))["schema"] == "lib_native/1"
     assert cp.native_summary(q)["holes"] == []
+
+
+# ---- a failed re-run must not overwrite a good page's entry (tournament_club_iowa, 2026-11-02: an Overpass timeout
+# on a later rebuild turned a published "needs confirm" page into "failed", page null, while page.html was still there)
+def _good(q, page_bytes=1234):
+    os.makedirs(q["out"], exist_ok=True)
+    page = os.path.join(q["out"], "page.html")
+    open(page, "w").write("x" * page_bytes)
+    st = dict(slug=q["slug"], name=q["name"], city=q["city"], state=q["state"], group="library",
+              status="needs confirm", reasons=["OSM greens 17 of 18 holes"], check_holes=[7], tee_sets=[{"name": "Blue"}],
+              solved_sets=["Blue"], page=os.path.relpath(page, cp.ROOT), page_bytes=page_bytes,
+              qa_report=os.path.relpath(os.path.join(q["out"], "qa_report.md"), cp.ROOT), built="2026-10-30T12:33Z")
+    cp.wj(os.path.join(q["out"], "status.json"), st)
+    open(os.path.join(q["out"], "qa_report.md"), "w").write("# good report\n")
+    return st
+
+
+def test_failed_rerun_keeps_the_last_good_entry(tmp_path):
+    q = _q(tmp_path)
+    good = _good(q)
+    cp.failed(q, "package", "overpass failed: ReadTimeout")
+    st = json.load(open(tmp_path / "zz_test" / "status.json"))
+    for k in ("status", "page", "page_bytes", "reasons", "check_holes", "tee_sets", "solved_sets", "built", "qa_report"):
+        assert st[k] == good[k], k
+    la = st["last_attempt"]
+    assert la["status"] == "failed" and la["stage"] == "package"
+    assert la["error"] == ["package: overpass failed: ReadTimeout"] and la["when"]
+    # the good report stays; the failure is in status.json last_attempt
+    assert (tmp_path / "zz_test" / "qa_report.md").read_text() == "# good report\n"
+    # a second failure replaces last_attempt, never the good record
+    cp.failed(q, "finish", "merge / page / checks failed")
+    st2 = json.load(open(tmp_path / "zz_test" / "status.json"))
+    assert st2["status"] == "needs confirm" and st2["page"] == good["page"]
+    assert st2["last_attempt"]["stage"] == "finish"
+    # the index lists the page, with the failure beside it
+    row = cp.index_row(st2)
+    assert row["status"] == "needs confirm" and row["page"] == good["page"] and row["group"] == "library"
+    assert row["last_attempt"]["stage"] == "finish"
+
+
+def test_failed_without_a_page_on_disk_is_a_failure(tmp_path):
+    q = _q(tmp_path)
+    _good(q)
+    os.remove(tmp_path / "zz_test" / "page.html")       # the record says page.html, but it is gone: nothing to keep
+    cp.failed(q, "package", "overpass failed")
+    st = json.load(open(tmp_path / "zz_test" / "status.json"))
+    assert st["status"] == "failed" and st["page"] is None and "last_attempt" not in st
+    assert "last_attempt" not in cp.index_row(st)
+
+
+def test_failed_after_a_failure_stays_failed(tmp_path):
+    q = _q(tmp_path)
+    cp.failed(q, "package", "a")
+    cp.failed(q, "package", "b")
+    st = json.load(open(tmp_path / "zz_test" / "status.json"))
+    assert st["status"] == "failed" and st["reasons"] == ["package: b"]
+
+
+# ---- imagery outside NAIP (Anchorage, AK: the package fell back to 10 m Sentinel-2 and the page shipped gray holes)
+NAIP_PKG = {"imagery": {"source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')", "year": 2023,
+                        "resolution_m": 0.6}}
+S2_PKG = {"imagery": {"source": "Sentinel-2 L2A via Planetary Computer", "year": None, "resolution_m": 10,
+                      "acquired": "2026-08-26"}}
+
+
+def test_imagery_problem_names_non_naip_sources():
+    assert cp.imagery_problem(NAIP_PKG) is None
+    assert "Sentinel-2" in cp.imagery_problem(S2_PKG) and "NAIP" in cp.imagery_problem(S2_PKG)
+    assert cp.imagery_problem({}) is not None
+    assert cp.imagery_problem({"imagery": {"source": "USDA NAIP", "resolution_m": 0.6, "present": False}}) is not None
+
+
+def test_unsupported_imagery_stops_the_build_and_delists_the_page(tmp_path):
+    q = _q(tmp_path)
+    _good(q)                                  # an earlier build shipped gray pictures: it must not stay listed
+    try:
+        cp.check_imagery(q, S2_PKG)
+        raise AssertionError("check_imagery should stop the build")
+    except SystemExit as e:
+        assert "Sentinel-2" in str(e.code)
+    st = json.load(open(tmp_path / "zz_test" / "status.json"))
+    assert st["status"] == "unsupported" and st["page"] is None
+    assert any("NAIP" in r for r in st["reasons"])
+    assert "unsupported" in (tmp_path / "zz_test" / "qa_report.md").read_text()
+    row = cp.index_row(st)
+    assert row["status"] == "unsupported" and row["page"] is None
+    cp.check_imagery(q, NAIP_PKG)             # NAIP: nothing happens

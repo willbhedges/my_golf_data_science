@@ -5,18 +5,73 @@
  "city": "Polk City",
  "state": "IA",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "package: <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
+  "scorecard not matched (source None, flags [])",
+  "18 holes built vs the card's 0",
+  "pars sum to 71, card None",
+  "18 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
+ "check_holes": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18
+ ],
+ "tee_sets": [
+  {
+   "name": "osm_back",
+   "yards": null,
+   "par": null,
+   "rating": null,
+   "slope": null,
+   "colour": null,
+   "on_page": "solved"
+  }
+ ],
+ "solved_sets": [
+  "osm_back"
+ ],
+ "page": "course_data/library/tournament_club_iowa/page.html",
+ "page_bytes": 2593264,
+ "qa_report": "course_data/library/tournament_club_iowa/qa_report.md",
+ "center": [
+  41.78618085,
+  -93.72078095
+ ],
+ "osm": "relation/1507320",
+ "holes": 18,
+ "days": [
+  "2026-10-31",
+  "2026-11-01"
+ ],
+ "weather": "forecast",
+ "built": "2026-10-30T12:33Z",
  "request": "course_data/requests/course_page_tournament_club_iowa.json",
- "resolve": {
-  "status": null,
-  "candidates": []
- },
- "built": "2026-11-02T05:55Z"
+ "last_attempt": {
+  "status": "failed",
+  "stage": "package",
+  "error": [
+   "package: <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
+  ],
+  "when": "2026-11-02T05:55Z",
+  "resolve": {
+   "status": null,
+   "candidates": []
+  }
+ }
 }

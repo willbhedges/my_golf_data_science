@@ -71,6 +71,11 @@ Course status (`status.json`, `index.json`):
   course-level causes. Each CHECK hole's note on the page starts "Auto-map CHECK:" with its reasons.
 * **failed**: no page (resolve ambiguous / not found, package or compute failure). `reasons` says where it
   stopped. `qa_report.md` lists the OSM candidates for an ambiguous name, so the request can add `osm` or `near`.
+  A re-run that fails for a course that already has a page does not make it failed: the last good page, its
+  status and its `qa_report.md` stay, and the failure goes in `last_attempt` ({status, stage, error, when}).
+* **unsupported**: no page, because the package imagery is not USDA NAIP (NAIP covers the lower 48 only; in
+  Alaska / Hawaii the package falls back to 10 m Sentinel-2 and the hole pictures come out gray). The build stops
+  at `configure`. Anchorage (AK) is marked so; its earlier page is no longer listed.
 
 How the gate scores against the hand-checked courses is in `gate/GATE.md`. In short, no blind build passes the
 strict gate: every course with a card still has 1-17 CHECK holes, mostly tees on lidar pads or walk-backs,
@@ -111,7 +116,8 @@ The app reads this file. The fields are stable. New fields may be added, but non
 ```
 
 * `status`: `hand-checked` (tournament pages in `course_data/courses/<slug>/wind_page/index.html`, `group: "tournament"`),
-  `auto-OK`, `needs confirm` or `failed`. Rows are sorted in that order, then by state and name.
+  `auto-OK`, `needs confirm`, `failed` or `unsupported`. Rows are sorted in that order, then by state and name.
+* `last_attempt` (library rows, optional): the latest re-run's failure when the page shown is an earlier good build.
 * `tee_sets`: every set on the card, longest first. `on_page` is `solved` (its own tees, aims and calm-day picks),
   `offset` (the main base's tee moved along the line) or `null` (on the card but not on the page).
 * `page`: a self-contained HTML file (no network needed), repo-relative. It is `null` for a failed course.
