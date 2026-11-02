@@ -40,6 +40,15 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 - M3: well-mapped course, no taps → ≥ 90 %; barely-mapped → ≥ 75 %.
 - M4: unmapped course → usable with taps.
 
+
+### Second yardstick: strokes, not just matching picks (added 2026-11-02)
+
+"Same club + aim within 10 yds" is strict: many misses are near-ties where both plans score the same. The
+error budget also measures **regret** — strokes the auto plan costs when played on the true map. On the
+10-course set the auto build (true card) loses 2.65 strokes over 138 tee shots ≈ **0.019 strokes per tee shot,
+~0.27 per 18-hole round** (the hand long-grass layer alone would cut that by ~60 %). Milestones are judged on
+both: match % AND regret per round (target ≤ 0.15 strokes/round for M2, measured on held-out truth courses).
+
 ## Target dates (estimates, revised every Sunday)
 
 | milestone | target | confidence |
