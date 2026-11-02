@@ -2,12 +2,14 @@
 
 **Status: needs confirm** — confirm holes 6, 7, 8, 9, 12, 13, 14, 15
 
-* page: `course_data/library/falcon_ridge/page.html` (5.0 MB); request `course_data/requests/course_page_falcon_ridge.json`; built 2026-11-02T13:29Z
+* page: `course_data/library/falcon_ridge/page.html` (5.0 MB); request `course_data/requests/course_page_falcon_ridge.json`; built 2026-11-02T17:06Z
 * course: Falcon Ridge Golf Course (Lenexa, KS), OSM relation/3961566; holes: osm (tier unmapped_card); card: golfify (golfify)
 * solved tee sets: Black, Blue (the two longest sets on the card (combination sets skipped)); page sets: Black, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
 * imagery on the page: 2023-08-16,2023-08-17; package imagery 2023
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
+
+* native-grass questions (Black tees, library check cards): holes 9, 8, 13, 4 (4 asked of 13 framed holes)
 
 Course-level reasons:
 

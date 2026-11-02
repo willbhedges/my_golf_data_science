@@ -1,0 +1,1032 @@
+{
+ "schema": "lib_native/1",
+ "slug": "falcon_ridge",
+ "tee_set": "Black",
+ "mapper": "course_data/mapper/falcon_ridge/",
+ "items": [
+  {
+   "id": "native_9",
+   "type": "native",
+   "hole": "9",
+   "question": "Hole 9: is there native (long, unmown) grass along the landing area?",
+   "answers": [
+    "L",
+    "R",
+    "both",
+    "none"
+   ],
+   "prior": {
+    "L": 0.25,
+    "R": 0.25
+   },
+   "widths": {
+    "L": 10.0,
+    "R": 10.0
+   },
+   "frame": {
+    "tee_ll": [
+     -94.82273,
+     38.9559164
+    ],
+    "aim_ll": [
+     -94.8218677,
+     38.9539875
+    ],
+    "ppy": 1.0,
+    "tee_px": [
+     70.0,
+     400.0
+    ],
+    "proj": "utm",
+    "size": [
+     140,
+     280
+    ],
+    "dot270_px": [
+     70.0,
+     130.0
+    ]
+   },
+   "value": 0.0566,
+   "plans": {
+    "current": "Driver +2",
+    "L": "4-wood +8",
+    "R": "4-wood +0",
+    "both": "4-wood +2",
+    "none": "Driver +2"
+   },
+   "geom": {
+    "a0": 130.0,
+    "step": 10.0,
+    "n": 27,
+    "reach": 65.0,
+    "fw": {
+     "L": [
+      0.0,
+      10.0,
+      17.5,
+      20.5,
+      21.5,
+      22.5,
+      23.5,
+      24.5,
+      25.5,
+      25.8,
+      25.2,
+      21.5,
+      14.5,
+      10.7,
+      10.2,
+      9.5,
+      8.5,
+      7.5,
+      6.5,
+      5.7,
+      5.2,
+      5.0,
+      5.0,
+      5.5,
+      6.5,
+      7.3,
+      7.8
+     ],
+     "R": [
+      0.0,
+      10.3,
+      18.0,
+      20.5,
+      21.5,
+      22.5,
+      23.5,
+      24.3,
+      24.7,
+      24.7,
+      24.2,
+      22.5,
+      19.5,
+      17.7,
+      17.2,
+      16.0,
+      14.0,
+      12.5,
+      11.5,
+      11.7,
+      13.2,
+      14.2,
+      14.8,
+      15.3,
+      15.8,
+      16.0,
+      16.0
+     ]
+    },
+    "near": {
+     "L": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "R": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "w": {
+     "L": 10.0,
+     "R": 10.0
+    }
+   },
+   "severity": "red",
+   "options": [
+    {
+     "answer": "L",
+     "label": "Left",
+     "text": "Re-planned: 4-wood, 8 yds right (now Driver, on the line). Playing today's plan would cost 0.13 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": 8.0,
+      "club_changed": true,
+      "aim_shift": 6.0,
+      "d_ev": 0.0,
+      "regret": 0.1268,
+      "severity": "red"
+     }
+    },
+    {
+     "answer": "R",
+     "label": "Right",
+     "text": "Re-planned: 4-wood, on the line (now Driver, on the line). Playing today's plan would cost 0.10 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": 0.0,
+      "club_changed": true,
+      "aim_shift": -2.0,
+      "d_ev": 0.0,
+      "regret": 0.1027,
+      "severity": "red"
+     }
+    },
+    {
+     "answer": "both",
+     "label": "Both",
+     "text": "Re-planned: 4-wood, on the line (now Driver, on the line). Playing today's plan would cost 0.22 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": 2.0,
+      "club_changed": true,
+      "aim_shift": 0.0,
+      "d_ev": 0.0,
+      "regret": 0.2177,
+      "severity": "red"
+     }
+    },
+    {
+     "answer": "none",
+     "label": "None",
+     "text": "No change to the plan.",
+     "outcome": {
+      "pick": "Driver",
+      "aim": 2.0,
+      "club_changed": false,
+      "aim_shift": 0.0,
+      "d_ev": 0.0,
+      "regret": 0.0,
+      "severity": "green"
+     }
+    }
+   ],
+   "tested": false,
+   "strict": "red",
+   "prelim": "red",
+   "exp_regret": 0.0566,
+   "worst_regret": 0.2177,
+   "p_wrong": null,
+   "lie": "native",
+   "state_p": {
+    "L": 0.188,
+    "R": 0.188,
+    "both": 0.062,
+    "none": 0.562
+   },
+   "detail": "Tall, unmown grass you would hack out of, from the landing area out. Our map's guess: left 25%, right 25%. Your answer re-plans hole 9."
+  },
+  {
+   "id": "native_8",
+   "type": "native",
+   "hole": "8",
+   "question": "Hole 8: is there native (long, unmown) grass along the landing area?",
+   "answers": [
+    "L",
+    "R",
+    "both",
+    "none"
+   ],
+   "prior": {
+    "L": 0.25,
+    "R": 0.25
+   },
+   "widths": {
+    "L": 10.0,
+    "R": 10.0
+   },
+   "frame": {
+    "tee_ll": [
+     -94.8254135,
+     38.961282
+    ],
+    "aim_ll": [
+     -94.8245959,
+     38.9593297
+    ],
+    "ppy": 1.0,
+    "tee_px": [
+     70.0,
+     400.0
+    ],
+    "proj": "utm",
+    "size": [
+     140,
+     280
+    ],
+    "dot270_px": [
+     70.0,
+     130.0
+    ]
+   },
+   "value": 0.0273,
+   "plans": {
+    "current": "Driver +8",
+    "L": "Driver +8",
+    "R": "4-wood -2",
+    "both": "4-wood +0",
+    "none": "Driver +8"
+   },
+   "geom": {
+    "a0": 130.0,
+    "step": 10.0,
+    "n": 27,
+    "reach": 65.0,
+    "fw": {
+     "L": [
+      0.0,
+      0.0,
+      0.0,
+      15.5,
+      16.5,
+      17.8,
+      19.3,
+      20.3,
+      20.8,
+      21.3,
+      21.8,
+      21.8,
+      21.3,
+      20.8,
+      20.3,
+      20.0,
+      20.0,
+      19.2,
+      17.7,
+      16.5,
+      15.5,
+      15.0,
+      15.0,
+      15.0,
+      15.0,
+      15.0,
+      15.0
+     ],
+     "R": [
+      0.0,
+      0.0,
+      0.0,
+      13.7,
+      15.2,
+      16.2,
+      16.7,
+      17.2,
+      17.7,
+      18.2,
+      18.7,
+      18.2,
+      16.7,
+      15.3,
+      13.8,
+      12.8,
+      12.3,
+      11.5,
+      10.5,
+      10.5,
+      11.5,
+      12.5,
+      13.5,
+      14.3,
+      14.7,
+      15.0,
+      15.0
+     ]
+    },
+    "near": {
+     "L": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "R": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "w": {
+     "L": 10.0,
+     "R": 10.0
+    }
+   },
+   "severity": "red",
+   "options": [
+    {
+     "answer": "L",
+     "label": "Left",
+     "text": "No change to the plan.",
+     "outcome": {
+      "pick": "Driver",
+      "aim": 8.0,
+      "club_changed": false,
+      "aim_shift": 0.0,
+      "d_ev": 0.0,
+      "regret": 0.0,
+      "severity": "green"
+     }
+    },
+    {
+     "answer": "R",
+     "label": "Right",
+     "text": "Re-planned: 4-wood, on the line (now Driver, 8 yds right). Playing today's plan would cost 0.11 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": -2.0,
+      "club_changed": true,
+      "aim_shift": -10.0,
+      "d_ev": 0.0,
+      "regret": 0.1093,
+      "severity": "red"
+     }
+    },
+    {
+     "answer": "both",
+     "label": "Both",
+     "text": "Re-planned: 4-wood, on the line (now Driver, 8 yds right). Playing today's plan would cost 0.11 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": 0.0,
+      "club_changed": true,
+      "aim_shift": -8.0,
+      "d_ev": 0.0,
+      "regret": 0.1097,
+      "severity": "red"
+     }
+    },
+    {
+     "answer": "none",
+     "label": "None",
+     "text": "No change to the plan.",
+     "outcome": {
+      "pick": "Driver",
+      "aim": 8.0,
+      "club_changed": false,
+      "aim_shift": 0.0,
+      "d_ev": 0.0,
+      "regret": 0.0,
+      "severity": "green"
+     }
+    }
+   ],
+   "tested": false,
+   "strict": "red",
+   "prelim": "red",
+   "exp_regret": 0.0273,
+   "worst_regret": 0.1097,
+   "p_wrong": null,
+   "lie": "native",
+   "state_p": {
+    "L": 0.188,
+    "R": 0.188,
+    "both": 0.062,
+    "none": 0.562
+   },
+   "detail": "Tall, unmown grass you would hack out of, from the landing area out. Our map's guess: left 25%, right 25%. Your answer re-plans hole 8."
+  },
+  {
+   "id": "native_13",
+   "type": "native",
+   "hole": "13",
+   "question": "Hole 13: is there native (long, unmown) grass along the landing area?",
+   "answers": [
+    "L",
+    "R",
+    "both",
+    "none"
+   ],
+   "prior": {
+    "L": 0.25,
+    "R": 0.25
+   },
+   "widths": {
+    "L": 10.0,
+    "R": 10.0
+   },
+   "frame": {
+    "tee_ll": [
+     -94.82791,
+     38.9554464
+    ],
+    "aim_ll": [
+     -94.8304826,
+     38.9549831
+    ],
+    "ppy": 1.0,
+    "tee_px": [
+     70.0,
+     400.0
+    ],
+    "proj": "utm",
+    "size": [
+     140,
+     280
+    ],
+    "dot270_px": [
+     70.0,
+     130.0
+    ]
+   },
+   "value": 0.0236,
+   "plans": {
+    "current": "Driver -10",
+    "L": "4-wood -8",
+    "R": "4-wood -10",
+    "both": "4-wood -8",
+    "none": "Driver -10"
+   },
+   "geom": {
+    "a0": 130.0,
+    "step": 10.0,
+    "n": 27,
+    "reach": 65.0,
+    "fw": {
+     "L": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      25.0,
+      27.0,
+      27.7,
+      27.2,
+      26.5,
+      25.5,
+      24.8,
+      24.3,
+      23.2,
+      21.7,
+      21.2,
+      21.7,
+      21.5,
+      20.5,
+      19.8,
+      19.3,
+      18.0,
+      16.0,
+      13.7,
+      11.3,
+      8.8,
+      6.3
+     ],
+     "R": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.3,
+      4.2,
+      4.7,
+      5.2,
+      5.7,
+      6.5,
+      7.5,
+      8.0,
+      8.0,
+      7.5,
+      6.5,
+      6.5,
+      7.5,
+      8.8,
+      10.2,
+      12.2,
+      14.7,
+      17.5,
+      20.5,
+      23.0,
+      25.0
+     ]
+    },
+    "near": {
+     "L": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "R": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "w": {
+     "L": 10.0,
+     "R": 10.0
+    }
+   },
+   "severity": "red",
+   "options": [
+    {
+     "answer": "L",
+     "label": "Left",
+     "text": "Re-planned: 4-wood, 8 yds left (now Driver, 10 yds left). Playing today's plan would cost 0.08 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": -8.0,
+      "club_changed": true,
+      "aim_shift": 2.0,
+      "d_ev": 0.0,
+      "regret": 0.0787,
+      "severity": "red"
+     }
+    },
+    {
+     "answer": "R",
+     "label": "Right",
+     "text": "Re-planned: 4-wood, 10 yds left (now Driver, 10 yds left). Playing today's plan would cost 0.01 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": -10.0,
+      "club_changed": true,
+      "aim_shift": 0.0,
+      "d_ev": 0.0,
+      "regret": 0.0099,
+      "severity": "amber"
+     }
+    },
+    {
+     "answer": "both",
+     "label": "Both",
+     "text": "Re-planned: 4-wood, 8 yds left (now Driver, 10 yds left). Playing today's plan would cost 0.11 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": -8.0,
+      "club_changed": true,
+      "aim_shift": 2.0,
+      "d_ev": 0.0,
+      "regret": 0.1112,
+      "severity": "red"
+     }
+    },
+    {
+     "answer": "none",
+     "label": "None",
+     "text": "No change to the plan.",
+     "outcome": {
+      "pick": "Driver",
+      "aim": -10.0,
+      "club_changed": false,
+      "aim_shift": 0.0,
+      "d_ev": 0.0,
+      "regret": 0.0,
+      "severity": "green"
+     }
+    }
+   ],
+   "tested": false,
+   "strict": "red",
+   "prelim": "red",
+   "exp_regret": 0.0236,
+   "worst_regret": 0.1112,
+   "p_wrong": null,
+   "lie": "native",
+   "state_p": {
+    "L": 0.188,
+    "R": 0.188,
+    "both": 0.062,
+    "none": 0.562
+   },
+   "detail": "Tall, unmown grass you would hack out of, from the landing area out. Our map's guess: left 25%, right 25%. Your answer re-plans hole 13."
+  },
+  {
+   "id": "native_4",
+   "type": "native",
+   "hole": "4",
+   "question": "Hole 4: is there native (long, unmown) grass along the landing area?",
+   "answers": [
+    "L",
+    "R",
+    "both",
+    "none"
+   ],
+   "prior": {
+    "L": 0.25,
+    "R": 0.25
+   },
+   "widths": {
+    "L": 10.0,
+    "R": 10.0
+   },
+   "frame": {
+    "tee_ll": [
+     -94.822401,
+     38.9606487
+    ],
+    "aim_ll": [
+     -94.8197733,
+     38.960854
+    ],
+    "ppy": 1.0,
+    "tee_px": [
+     70.0,
+     400.0
+    ],
+    "proj": "utm",
+    "size": [
+     140,
+     280
+    ],
+    "dot270_px": [
+     70.0,
+     130.0
+    ]
+   },
+   "value": 0.0206,
+   "plans": {
+    "current": "Driver +0",
+    "L": "Driver +8",
+    "R": "Driver -10",
+    "both": "4-wood +0",
+    "none": "Driver +0"
+   },
+   "geom": {
+    "a0": 130.0,
+    "step": 10.0,
+    "n": 27,
+    "reach": 65.0,
+    "fw": {
+     "L": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      8.6,
+      11.8,
+      20.2,
+      23.5,
+      19.9,
+      18.0,
+      17.8,
+      13.0,
+      9.6,
+      11.2,
+      13.9,
+      14.2,
+      12.6,
+      12.2,
+      13.7,
+      16.3,
+      14.9,
+      11.6,
+      7.7,
+      3.9
+     ],
+     "R": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      13.3,
+      14.5,
+      12.2,
+      15.0,
+      21.2,
+      22.0,
+      14.7,
+      11.6,
+      10.9,
+      12.1,
+      13.0,
+      8.5,
+      4.3,
+      2.5,
+      2.7,
+      6.3,
+      12.1,
+      16.7,
+      19.9,
+      20.8
+     ]
+    },
+    "near": {
+     "L": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "R": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    "w": {
+     "L": 10.0,
+     "R": 10.0
+    }
+   },
+   "severity": "red",
+   "options": [
+    {
+     "answer": "L",
+     "label": "Left",
+     "text": "No change to the plan.",
+     "outcome": {
+      "pick": "Driver",
+      "aim": 8.0,
+      "club_changed": false,
+      "aim_shift": 8.0,
+      "d_ev": 0.0,
+      "regret": 0.0339,
+      "severity": "green"
+     }
+    },
+    {
+     "answer": "R",
+     "label": "Right",
+     "text": "No change to the plan.",
+     "outcome": {
+      "pick": "Driver",
+      "aim": -10.0,
+      "club_changed": false,
+      "aim_shift": -10.0,
+      "d_ev": 0.0,
+      "regret": 0.0518,
+      "severity": "green"
+     }
+    },
+    {
+     "answer": "both",
+     "label": "Both",
+     "text": "Re-planned: 4-wood, on the line (now Driver, on the line). Playing today's plan would cost 0.07 strokes.",
+     "outcome": {
+      "pick": "4-wood",
+      "aim": 0.0,
+      "club_changed": true,
+      "aim_shift": 0.0,
+      "d_ev": 0.0,
+      "regret": 0.0727,
+      "severity": "red"
+     }
+    },
+    {
+     "answer": "none",
+     "label": "None",
+     "text": "No change to the plan.",
+     "outcome": {
+      "pick": "Driver",
+      "aim": 0.0,
+      "club_changed": false,
+      "aim_shift": 0.0,
+      "d_ev": 0.0,
+      "regret": 0.0,
+      "severity": "green"
+     }
+    }
+   ],
+   "tested": false,
+   "strict": "red",
+   "prelim": "red",
+   "exp_regret": 0.0206,
+   "worst_regret": 0.0727,
+   "p_wrong": null,
+   "lie": "native",
+   "state_p": {
+    "L": 0.188,
+    "R": 0.188,
+    "both": 0.062,
+    "none": 0.562
+   },
+   "detail": "Tall, unmown grass you would hack out of, from the landing area out. Our map's guess: left 25%, right 25%. Your answer re-plans hole 4."
+  }
+ ],
+ "mapper_sig": "3d7327210ad6b8b8",
+ "note": "4 asked of 13 framed holes",
+ "n": 4000,
+ "runtime_s": 46.6
+}
