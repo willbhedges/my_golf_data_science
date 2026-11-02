@@ -5,8 +5,8 @@
  "counts": {
   "hand-checked": 7,
   "auto-OK": 0,
-  "needs confirm": 76,
-  "failed": 31
+  "needs confirm": 78,
+  "failed": 29
  },
  "courses": [
   {
@@ -3327,6 +3327,86 @@
    "group": "library"
   },
   {
+   "slug": "arcadia_bluffs",
+   "name": "Arcadia Bluffs Golf Club",
+   "city": "Arcadia",
+   "state": "MI",
+   "status": "needs confirm",
+   "check_holes": [
+    5
+   ],
+   "reasons": [
+    "1 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Champion",
+     "yards": 7300,
+     "par": 72,
+     "rating": 75.7,
+     "slope": 146,
+     "colour": "black",
+     "on_page": "solved"
+    },
+    {
+     "name": "Blue",
+     "yards": 6913,
+     "par": 72,
+     "rating": 72.7,
+     "slope": 140,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 6389,
+     "par": 72,
+     "rating": 70.5,
+     "slope": 134,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Gold",
+     "yards": 5661,
+     "par": 72,
+     "rating": null,
+     "slope": null,
+     "colour": "gold",
+     "on_page": null
+    },
+    {
+     "name": "Red",
+     "yards": 5024,
+     "par": 72,
+     "rating": 64.7,
+     "slope": 120,
+     "colour": "red",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Champion",
+    "Blue"
+   ],
+   "page": "course_data/library/arcadia_bluffs/page.html",
+   "page_bytes": 2149161,
+   "qa_report": "course_data/library/arcadia_bluffs/qa_report.md",
+   "center": [
+    44.45663395,
+    -86.24196004999999
+   ],
+   "osm": "way/293247442",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-01T22:05Z",
+   "group": "library"
+  },
+  {
    "slug": "gustin",
    "name": "A. L. Gustin Golf Course",
    "city": "Columbia",
@@ -4456,6 +4536,69 @@
    ],
    "weather": "forecast",
    "built": "2026-11-01T22:00Z",
+   "group": "library"
+  },
+  {
+   "slug": "pinehurst",
+   "name": "Pinehurst No. 2",
+   "city": "Pinehurst",
+   "state": "NC",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source None, flags [])",
+    "18 holes built vs the card's 0",
+    "pars sum to 72, card None",
+    "18 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "osm_back",
+     "yards": null,
+     "par": null,
+     "rating": null,
+     "slope": null,
+     "colour": null,
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "osm_back"
+   ],
+   "page": "course_data/library/pinehurst/page.html",
+   "page_bytes": 1545536,
+   "qa_report": "course_data/library/pinehurst/qa_report.md",
+   "center": [
+    35.191707199999996,
+    -79.4607309
+   ],
+   "osm": "way/1358696570",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-01T22:22Z",
    "group": "library"
   },
   {
@@ -7350,29 +7493,6 @@
    "group": "library"
   },
   {
-   "slug": "arcadia_bluffs",
-   "name": "Arcadia Bluffs Golf Club",
-   "city": "Arcadia",
-   "state": "MI",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package: resolve: ambiguous None None [('Arcadia Bluffs Golf Club', 'Arcadia', 18), ('Arcadia Bluffs - South Course', 'Arcadia', 18)] arcadia_bluffs: ambiguous; see packages/arcadia_bluffs/raw/course.json for the candidates "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-10-31T01:41Z",
-   "group": "library"
-  },
-  {
    "slug": "forest_dunes",
    "name": "Forest Dunes Golf Club",
    "city": "Roscommon",
@@ -7554,29 +7674,6 @@
    "days": null,
    "weather": null,
    "built": "2026-10-31T02:10Z",
-   "group": "library"
-  },
-  {
-   "slug": "pinehurst",
-   "name": "Pinehurst No. 2",
-   "city": "Pinehurst",
-   "state": "NC",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "finish: merge / page / checks failed (see the Actions log)"
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-10-31T04:52Z",
    "group": "library"
   },
   {
