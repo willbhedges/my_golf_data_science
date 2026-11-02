@@ -71,7 +71,9 @@ def courses():
 
 # ----------------------------------------------------------------------------------------------- inputs
 def perception_scene_obj(slug):
-    for p in (os.path.join(INPUTS, slug, "scene.json.gz"), os.path.join(CD, "perception", "scenes", slug, "scene.json.gz")):
+    """The committed blind perception scene: perception/scenes first (re-perceived 2026-11-02 with leakage-free
+    state-fold models, perception run 41357754039), else the older one fetch_inputs.py built for this study."""
+    for p in (os.path.join(CD, "perception", "scenes", slug, "scene.json.gz"), os.path.join(INPUTS, slug, "scene.json.gz")):
         if os.path.exists(p):
             with gzip.open(p, "rt") as fh:
                 return json.load(fh)
