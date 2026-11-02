@@ -1,6 +1,6 @@
 # A. L. Gustin Golf Course (Columbia, MO) - Black tees
 
-Built 2026-11-02T13:25:07Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T16:46:15Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -36,7 +36,7 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 | 11 | 4 | 424 / 416 | 206 | 0.71 | check the flags | 34% | 20% | 46% | tee stage: Black lidar_pad_capped | tee: tee stage: Black lidar_pad_capped; Black tee on a lidar pad (no OSM box at 424 yds) |
 | 12 | 5 | 518 / 515 | 180 | 0.81 | auto | 58% | 1% | 41% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 13 | 3 | 205 / 205 | 200 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
-| 14 | 4 | 378 / 380 | 352 | 0.76 | check the flags | 47% | 22% | 31% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 378 yds) |
+| 14 | 4 | 378 / 380 | 352 | 0.75 | check the flags | 47% | 21% | 32% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 378 yds) |
 | 15 | 4 | 399 / 400 | 62 | 0.66 | check the flags | 45% | 14% | 41% | tee stage: Black review (inside OSM tee 591649550) | tee: tee stage: Black review (inside OSM tee 591649550) |
 | 16 | 4 | 332 / 329 | 224 | 0.77 | check the flags | 30% | 20% | 50% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 17 | 4 | 405 / 405 | 39 | 0.85 | auto | 42% | 26% | 32% | tee stage: Black tee_centroid |  |
@@ -56,7 +56,7 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 - **imagery**: ok: course_data/packages/gustin/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020
 - **elevation**: ok: course_data/packages/gustin/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -853 m2 {'cells': 808}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 8 polygons (outside 8); mode replace
 - **agent_layers**: ok: course_data/mapper/gustin (103 zone edits on 14 holes, 0 tee(s) moved, 54 checked)

@@ -2,12 +2,14 @@
 
 **Status: needs confirm** — confirm holes 3, 4, 7, 11, 14, 16
 
-* page: `course_data/library/gustin/page.html` (2.6 MB); request `course_data/requests/course_page_gustin.json`; built 2026-11-02T13:25Z
+* page: `course_data/library/gustin/page.html` (2.6 MB); request `course_data/requests/course_page_gustin.json`; built 2026-11-02T16:46Z
 * course: A. L. Gustin Golf Course (Columbia, MO), OSM way/449108205; holes: osm (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Black, Gold (the two longest sets on the card (combination sets skipped)); page sets: Black, Gold
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
 * imagery on the page: 2020-07-08; package imagery 2020
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
+
+* native-grass questions (Black tees, library check cards): holes 9, 1, 3, 12 (4 asked of 14 framed holes)
 
 Course-level reasons:
 
