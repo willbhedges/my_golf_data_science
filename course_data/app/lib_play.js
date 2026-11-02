@@ -250,17 +250,20 @@ function lpRouteApply(S, a, single){
 function lpRoute(L){
   if (!L.route || typeof PathRoute === "undefined") return null;
   const log = SharedStore.replayLog(STORE.map(L.id), STORE.gid, lpMine(L.id)), key = JSON.stringify(log);
-  const c = LPR[L.id]; if (c && c.key === key) return c;
-  const single = L.route.kind === 9 || L.route.kind === 18, t0 = Date.now(), prev = c && !c.pending ? c : null;
+  const c = LPR[L.id]; if (c && c.key === key) return c.none ? null : c;
+  const single = L.route.kind === 9 || L.route.kind === 18, t0 = Date.now(), prev = c && !c.pending && !c.none ? c : null;
   /* the cached session when the log only grew (the usual case: this golfer's new answer), else a replay from scratch;
      a re-solving answer decodes the route at once (begin), the confidences are computed for the last decode only */
-  const grow = c && c.log.length <= log.length && JSON.stringify(log.slice(0, c.log.length)) === JSON.stringify(c.log);
+  const grow = c && !c.none && c.log.length <= log.length && JSON.stringify(log.slice(0, c.log.length)) === JSON.stringify(c.log);
   let S, todo;
   try {
     if (grow) { S = c.S; todo = log.slice(c.log.length); }
     else { S = new PathRoute.Session(L.route, lpFactsFromIds(L.route, L.route.facts)); S.begin(); todo = log; }
     for (const a of todo) if (lpRouteApply(S, a, single)) S.begin();
   } catch (e) { if (typeof console !== "undefined") console.warn(e); return null; }
+  /* no round decodes from this map (e.g. OSM has fewer greens than holes): the course plays as the record's own holes
+     with the plain "Is this hole N as drawn?" confirm instead of an empty routing view */
+  if (!S.holes.length) { LPR[L.id] = {key, log, none: true}; return null; }
   const out = (LPR[L.id] = {key, log, S, pending: !!S.job, ms: 0, thr: L.route.conf_ok || 0.95, target: S.policy.target, n: log.length});
   lpRouteFill(L, out, prev);
   if (!out.pending) return out;

@@ -482,7 +482,8 @@ def _live2():
 def route_of(slug, n_holes, cardblind=False):
     """Card-blind routing data for the in-browser confirm (pathroute_decoder/1, SCHEMA.md "Card-blind routing"),
     from the course package's OSM file. None when there is no OSM file or when OSM's golf=hole ways already fix every
-    hole (nothing to confirm); cardblind=True ignores the hole ways (tests / demos)."""
+    hole (nothing to confirm), and None when no round decodes from the map (e.g. OSM has fewer greens than holes: the
+    browser would get an empty routing); cardblind=True ignores the hole ways (tests / demos)."""
     osm = os.path.join(CD, "packages", slug, "raw", "osm.geojson")
     if not os.path.exists(osm):
         return None
@@ -490,9 +491,16 @@ def route_of(slug, n_holes, cardblind=False):
     cj = os.path.join(CD, "packages", slug, "raw", "course.json")
     course = json.load(open(cj)) if os.path.exists(cj) else {}
     course = dict(course, slug=slug)
-    R = _live2().decoder_record(fc, course, n_holes=n_holes, use_osm_holes=not cardblind)
+    live2 = _live2()
+    R = live2.decoder_record(fc, course, n_holes=n_holes, use_osm_holes=not cardblind)
     if not cardblind and R["osm_fixed"] >= R["kind"]:
         return None
+    try:                                   # the same decode the browser runs (pathroute_engine.js, parity-tested)
+        live2.route(fc, course, n_holes=n_holes, use_osm_holes=not cardblind)
+    except RuntimeError as e:
+        if "decode failed" in str(e):
+            return None
+        raise
     return R
 
 

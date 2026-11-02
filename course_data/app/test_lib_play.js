@@ -10,6 +10,10 @@
 //  3. shared confirmations: golfer A answers "Yes" on hole 1 and "No" on hole 2 of a course, golfer B (fresh device,
 //     same mock database) sees both, and the library card counts the confirmed hole; local mode keeps it over a reload;
 //  4. a missing record shows "Could not load" with a retry, not a broken page.
+// Courses whose record carries card-blind routing (`route`, build_library_play.add_route: OSM lacks some hole ways)
+// ask the routing question instead ("Is this hole N?" Yes / No / Pick the right green, #rtBox) and may show a hole as
+// "plan pending" (sketch, no club); the walk accepts those, and 2. / 3. use the first picked course without routing
+// (the routing confirm flow and its sharing are test_route_ui.js's).
 const path = require("path");
 const fs = require("fs");
 const http = require("http");
@@ -72,7 +76,8 @@ async function holeState(page) {
     const img = document.querySelector("#ov image"), href = img ? img.getAttribute("href") || "" : "";
     return { no: (document.querySelector(".holeno") || {}).textContent, play: (document.getElementById("lpPlay") || {}).innerText || "",
       img: href.startsWith("data:image/jpeg") && href.length > 2000, aim: !!document.querySelector("#ov circle, #ov polygon"),
-      qa: !!document.getElementById("lpQa"), confirm: !!document.querySelector("[data-lpyes]"),
+      qa: !!document.getElementById("lpQa"), confirm: !!document.querySelector("[data-lpyes], #rtBox [data-rtyes], #rtBox .badge.auto"),
+      route: !!document.getElementById("rtBox"), pending: !!document.getElementById("rtPending"), sketch: !!document.getElementById("rtMap"),
       strip: (document.getElementById("lpStrip") || {}).innerText || "" };
   });
 }
@@ -93,6 +98,9 @@ async function holeState(page) {
   const pick = [], pool = libs.slice();
   while (pick.length < Math.min(N, pool.length)) pick.push(pool.splice(Math.floor(rnd() * pool.length), 1)[0]);
   console.log("courses: " + pick.map(e => e.id).join(", "));
+  const routed = e => /"route":\{/.test(fs.readFileSync(path.join(outDir, e.lib), "utf8"));
+  const plain = pick.find(e => !routed(e)) || libs.find(e => !routed(e));
+  console.log(`with card-blind routing: ${pick.filter(routed).map(e => e.id).join(", ") || "none"}; wind / shared confirm on ${plain.id}`);
 
   // ------------------------------------------------------------------ 1. walk every hole, both widths
   let walked = 0;
@@ -109,12 +117,15 @@ async function holeState(page) {
         let par3shot = false;
         for (let k = 0; k < n; k++) {
           const h = await holeState(page), tag = `${W}px ${e.id} ${s} ${h.no}`;
-          expect(h.img, `${tag}: no hole picture`); expect(h.aim, `${tag}: no aim drawn`);
-          expect(/\d+ yds|Driver|wood|iron|Hybrid|aim/i.test(h.play), `${tag}: no play (${h.play})`);
-          expect(h.qa && h.confirm, `${tag}: no PASS/CHECK or confirm`);
+          if (h.pending) { expect(h.sketch && h.route, `${tag}: plan pending without the routing sketch / question`); }
+          else {
+            expect(h.img, `${tag}: no hole picture`); expect(h.aim, `${tag}: no aim drawn`);
+            expect(/\d+ yds|Driver|wood|iron|Hybrid|aim/i.test(h.play), `${tag}: no play (${h.play})`);
+            expect(h.qa && h.confirm, `${tag}: no PASS/CHECK or confirm`);
+          }
           const no = parseInt((h.no || "").replace(/\D/g, ""), 10);
-          const want = e.checks.includes(no);
-          const isChk = await page.$eval("#lpQa", el => el.classList.contains("check"));
+          const want = e.checks.includes(no) && !h.route;      /* routed holes are numbered by the routing, not the plan */
+          const isChk = await page.$eval("#lpQa", el => el.classList.contains("check")).catch(() => false);
           if (want) expect(isChk, `${tag}: CHECK hole not marked`);
           await check(page, tag);
           if (s === sets[0] && (k === 0 || (!par3shot && /plays like/.test(h.play)))) {
@@ -137,7 +148,7 @@ async function holeState(page) {
   // ------------------------------------------------------------------ 2. custom wind changes the plan
   {
     const ctx = await browser.newContext({ viewport: { width: 400, height: 900 } }); const page = await ctx.newPage(); watch(page, "wind");
-    const e = pick[0]; await openFromLibrary(page, base, e);
+    const e = plain; await openFromLibrary(page, base, e);
     await page.click('[data-lpsrc="custom"]');
     const strip = async () => page.$eval("#lpStrip", el => el.innerText);
     await page.fill("#lpMph", "0"); await page.dispatchEvent("#lpMph", "input");
@@ -156,7 +167,7 @@ async function holeState(page) {
 
   // ------------------------------------------------------------------ 3. shared confirmations (two golfers)
   {
-    const server = new M.MockServer(), e = pick[0];
+    const server = new M.MockServer(), e = plain;
     const ca = await sharedContext(browser, server, "golfer-a", { width: 400, height: 900 }), pa = await ca.newPage(); watch(pa, "A");
     await openFromLibrary(pa, base, e);
     await pa.waitForFunction(() => /Shared/.test((document.getElementById("syncLine") || {}).textContent || ""), null, { timeout: 8000 }).catch(() => problems.push("A: not in shared mode"));
@@ -205,7 +216,10 @@ async function holeState(page) {
     const rv = await page.evaluate(() => D.library.entries.filter(e => e.lib && e.review).map(e => ({ id: e.id, name: e.name, safe: e.review.safe, why: e.review.why })));
     console.log(`reviews: ${rv.length} courses, ${rv.filter(r => !r.safe).length} not safe yet: ${rv.filter(r => !r.safe).map(r => r.id).join(", ")}`);
     expect(rv.length >= 20, `only ${rv.length} reviewed courses carry a review`);
-    for (const id of ["finkbine", "eagle_bend", "tournament_club_iowa", "creekmoor"]) expect(rv.some(r => r.id === id && !r.safe && r.why), `${id}: not flagged unsafe`);
+    for (const id of ["finkbine", "eagle_bend", "tournament_club_iowa", "creekmoor"]) {
+      if (!libs.some(l => l.id === id)) { console.log(`reviews: ${id} is not playable in this build (no library page in library/index.json), not checked`); continue; }
+      expect(rv.some(r => r.id === id && !r.safe && r.why), `${id}: not flagged unsafe`);
+    }
     for (const r of [rv.find(x => !x.safe && x.id === "finkbine"), rv.find(x => x.safe)].filter(Boolean)) {
       await page.fill("#q", r.name); await page.$eval("#q", el => el.blur());
       const card = await page.$eval(`[data-libplay="${r.id}"]`, b => { const a = b.closest("article"), v = a.querySelector("[data-review]"); return v ? v.dataset.review + "|" + v.innerText : ""; });
