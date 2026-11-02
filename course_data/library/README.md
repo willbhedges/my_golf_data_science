@@ -188,6 +188,23 @@ call usually gives the card), `oga?` (listed without a par) or empty.
 `us_readiness.json` has the per-state and national counts (`national`, `states.<ST>`, `best_states`).
 
 <!-- NATIONAL_COUNTS -->
+Counts from `us_readiness.json` (built 2026-11-02T01:56Z, 7 states + DC with rows). Missing states: AK, AZ, AR, CA, CO, CT, DE, DC, ID, IL, IN, IA, KS, KY, ME, MD, MA, MI, MN, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, UT, VT, VA, WA, WV, WI, WY. Partly fetched (some tiles failed): AL, FL, GA, HI, LA, MS, TX.
+
+| | courses | share |
+|---|---|---|
+| open named courses | 1,486 | 100 % |
+| tier A (complete OSM holes + card known) | 527 | 35.5 % |
+| tier B (complete OSM holes, no card) | 30 | 2.0 % |
+| tier C (partial OSM golf mapping) | 434 | 29.2 % |
+| tier D (outline / name only) | 495 | 33.3 % |
+| any golf=hole way | 854 | 57.5 % |
+| any green | 958 | 64.5 % |
+| any fairway | 767 | 51.6 % |
+| any pin | 698 | 47.0 % |
+| card known (library card or OpenGolfAPI par) | 1,323 | 89.0 % |
+
+Complete OSM holes (A + B), states with at least 20 courses: best GA 44.5 % (61 / 137), TX 41.3 % (163 / 395), HI 39.8 % (33 / 83), FL 36.2 % (229 / 632), LA 31.8 % (27 / 85); worst AL 26.8 % (26 / 97), MS 31.6 % (18 / 57), LA 31.8 % (27 / 85), FL 36.2 % (229 / 632), HI 39.8 % (33 / 83).
+<!-- /NATIONAL_COUNTS -->
 
 ## Requests
 

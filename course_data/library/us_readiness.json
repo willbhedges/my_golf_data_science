@@ -1,35 +1,60 @@
 {
- "schema": "us_readiness/1",
- "built": "2026-10-31T00:22Z",
+ "schema": "us_readiness/2",
+ "built": "2026-11-02T01:56Z",
  "missing_states": [
-  "AL",
   "AK",
   "AZ",
   "AR",
+  "CA",
+  "CO",
+  "CT",
+  "DE",
   "DC",
-  "FL",
-  "GA",
-  "HI",
+  "ID",
+  "IL",
+  "IN",
+  "IA",
   "KS",
   "KY",
-  "LA",
   "ME",
-  "MS",
+  "MD",
+  "MA",
+  "MI",
+  "MN",
   "MO",
   "MT",
   "NE",
+  "NV",
+  "NH",
+  "NJ",
+  "NM",
   "NY",
   "NC",
   "ND",
   "OH",
+  "OK",
+  "OR",
+  "PA",
+  "RI",
   "SC",
   "SD",
   "TN",
-  "TX",
+  "UT",
   "VT",
+  "VA",
+  "WA",
   "WV",
   "WI",
   "WY"
+ ],
+ "partial_states": [
+  "AL",
+  "FL",
+  "GA",
+  "HI",
+  "LA",
+  "MS",
+  "TX"
  ],
  "tiers": {
   "A": "complete OSM holes + greens + tees, card known (pipeline's best case)",
@@ -38,369 +63,519 @@
   "D": "outline only on OSM"
  },
  "national": {
-  "n": 151,
-  "closed": 1,
+  "n": 1486,
+  "closed": 3,
   "tiers": {
-   "A": 0,
-   "B": 0,
-   "C": 0,
-   "D": 151
+   "A": 527,
+   "B": 30,
+   "C": 434,
+   "D": 495
   },
-  "complete_osm_holes": 0,
-  "pct_complete": 0.0,
-  "any_osm_golf": 0,
-  "pct_any": 0.0,
-  "card_known": 79,
-  "osm_holes_total": 0
+  "complete_osm_holes": 557,
+  "pct_complete": 37.5,
+  "any_osm_golf": 991,
+  "pct_any": 66.7,
+  "card_known": 1323,
+  "oga_listed": 1353,
+  "with_outline": 1441,
+  "with_holes": 854,
+  "with_greens": 958,
+  "with_tees": 881,
+  "with_fairways": 767,
+  "with_pins": 698,
+  "osm_holes_total": 13071
+ },
+ "opengolfapi": {
+  "listed": 16799,
+  "matched": 1621
  },
  "states": {
-  "CA": {
-   "n": 24,
+  "AL": {
+   "n": 97,
    "closed": 0,
    "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 24
+    "A": 25,
+    "B": 1,
+    "C": 22,
+    "D": 49
    },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 14,
-   "osm_holes_total": 0
+   "complete_osm_holes": 26,
+   "pct_complete": 26.8,
+   "any_osm_golf": 48,
+   "pct_any": 49.5,
+   "card_known": 91,
+   "oga_listed": 91,
+   "with_outline": 94,
+   "with_holes": 36,
+   "with_greens": 44,
+   "with_tees": 43,
+   "with_fairways": 38,
+   "with_pins": 13,
+   "osm_holes_total": 543
   },
-  "CO": {
-   "n": 6,
+  "FL": {
+   "n": 632,
+   "closed": 2,
+   "tiers": {
+    "A": 215,
+    "B": 14,
+    "C": 221,
+    "D": 182
+   },
+   "complete_osm_holes": 229,
+   "pct_complete": 36.2,
+   "any_osm_golf": 450,
+   "pct_any": 71.2,
+   "card_known": 563,
+   "oga_listed": 569,
+   "with_outline": 616,
+   "with_holes": 381,
+   "with_greens": 431,
+   "with_tees": 396,
+   "with_fairways": 313,
+   "with_pins": 377,
+   "osm_holes_total": 5672
+  },
+  "GA": {
+   "n": 137,
    "closed": 0,
    "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 6
+    "A": 59,
+    "B": 2,
+    "C": 34,
+    "D": 42
    },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 3,
-   "osm_holes_total": 0
+   "complete_osm_holes": 61,
+   "pct_complete": 44.5,
+   "any_osm_golf": 95,
+   "pct_any": 69.3,
+   "card_known": 122,
+   "oga_listed": 125,
+   "with_outline": 134,
+   "with_holes": 85,
+   "with_greens": 94,
+   "with_tees": 83,
+   "with_fairways": 82,
+   "with_pins": 20,
+   "osm_holes_total": 1412
   },
-  "CT": {
-   "n": 1,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 1
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 0,
-   "osm_holes_total": 0
-  },
-  "DE": {
-   "n": 1,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 1
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 1,
-   "osm_holes_total": 0
-  },
-  "ID": {
-   "n": 1,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 1
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 1,
-   "osm_holes_total": 0
-  },
-  "IL": {
-   "n": 14,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 14
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 7,
-   "osm_holes_total": 0
-  },
-  "IN": {
-   "n": 8,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 8
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 1,
-   "osm_holes_total": 0
-  },
-  "MA": {
-   "n": 2,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 2
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 1,
-   "osm_holes_total": 0
-  },
-  "MD": {
-   "n": 2,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 2
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 0,
-   "osm_holes_total": 0
-  },
-  "MI": {
-   "n": 11,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 11
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 6,
-   "osm_holes_total": 0
-  },
-  "MN": {
-   "n": 10,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 10
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 6,
-   "osm_holes_total": 0
-  },
-  "NH": {
-   "n": 8,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 8
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 1,
-   "osm_holes_total": 0
-  },
-  "NJ": {
-   "n": 8,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 8
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 4,
-   "osm_holes_total": 0
-  },
-  "NM": {
-   "n": 1,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 1
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 1,
-   "osm_holes_total": 0
-  },
-  "NV": {
-   "n": 2,
+  "HI": {
+   "n": 83,
    "closed": 1,
    "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 2
+    "A": 29,
+    "B": 4,
+    "C": 23,
+    "D": 27
    },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 0,
-   "osm_holes_total": 0
+   "complete_osm_holes": 33,
+   "pct_complete": 39.8,
+   "any_osm_golf": 56,
+   "pct_any": 67.5,
+   "card_known": 73,
+   "oga_listed": 75,
+   "with_outline": 78,
+   "with_holes": 50,
+   "with_greens": 56,
+   "with_tees": 51,
+   "with_fairways": 43,
+   "with_pins": 44,
+   "osm_holes_total": 759
   },
-  "OK": {
-   "n": 4,
+  "LA": {
+   "n": 85,
    "closed": 0,
    "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 4
+    "A": 24,
+    "B": 3,
+    "C": 16,
+    "D": 42
    },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 4,
-   "osm_holes_total": 0
+   "complete_osm_holes": 27,
+   "pct_complete": 31.8,
+   "any_osm_golf": 43,
+   "pct_any": 50.6,
+   "card_known": 71,
+   "oga_listed": 74,
+   "with_outline": 80,
+   "with_holes": 35,
+   "with_greens": 43,
+   "with_tees": 40,
+   "with_fairways": 37,
+   "with_pins": 25,
+   "osm_holes_total": 597
   },
-  "OR": {
-   "n": 5,
+  "MS": {
+   "n": 57,
    "closed": 0,
    "tiers": {
-    "A": 0,
+    "A": 18,
     "B": 0,
-    "C": 0,
-    "D": 5
+    "C": 17,
+    "D": 22
    },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 2,
-   "osm_holes_total": 0
+   "complete_osm_holes": 18,
+   "pct_complete": 31.6,
+   "any_osm_golf": 35,
+   "pct_any": 61.4,
+   "card_known": 52,
+   "oga_listed": 53,
+   "with_outline": 55,
+   "with_holes": 34,
+   "with_greens": 30,
+   "with_tees": 28,
+   "with_fairways": 24,
+   "with_pins": 11,
+   "osm_holes_total": 511
   },
-  "PA": {
-   "n": 31,
+  "TX": {
+   "n": 395,
    "closed": 0,
    "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 31
+    "A": 157,
+    "B": 6,
+    "C": 101,
+    "D": 131
    },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 20,
-   "osm_holes_total": 0
-  },
-  "UT": {
-   "n": 2,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 2
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 2,
-   "osm_holes_total": 0
-  },
-  "VA": {
-   "n": 6,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 6
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 3,
-   "osm_holes_total": 0
-  },
-  "WA": {
-   "n": 4,
-   "closed": 0,
-   "tiers": {
-    "A": 0,
-    "B": 0,
-    "C": 0,
-    "D": 4
-   },
-   "complete_osm_holes": 0,
-   "pct_complete": 0.0,
-   "any_osm_golf": 0,
-   "pct_any": 0.0,
-   "card_known": 2,
-   "osm_holes_total": 0
+   "complete_osm_holes": 163,
+   "pct_complete": 41.3,
+   "any_osm_golf": 264,
+   "pct_any": 66.8,
+   "card_known": 351,
+   "oga_listed": 366,
+   "with_outline": 384,
+   "with_holes": 233,
+   "with_greens": 260,
+   "with_tees": 240,
+   "with_fairways": 230,
+   "with_pins": 208,
+   "osm_holes_total": 3577
   }
  },
  "best_states": [
-  "CA",
-  "CO",
-  "CT",
-  "DE",
-  "ID",
-  "IL",
-  "IN",
-  "MA",
-  "MD",
-  "MI"
- ]
+  "GA",
+  "TX",
+  "HI",
+  "FL",
+  "LA",
+  "MS",
+  "AL"
+ ],
+ "worst_states": [
+  "AL",
+  "MS",
+  "LA",
+  "FL",
+  "HI",
+  "TX",
+  "GA"
+ ],
+ "coverage": {
+  "AL": {
+   "cells": 30,
+   "have": 15,
+   "complete": false,
+   "source": "this run"
+  },
+  "AK": {
+   "cells": 286,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "AZ": {
+   "cells": 42,
+   "have": 15,
+   "complete": false,
+   "source": "none"
+  },
+  "AR": {
+   "cells": 24,
+   "have": 6,
+   "complete": false,
+   "source": "none"
+  },
+  "CA": {
+   "cells": 121,
+   "have": 22,
+   "complete": false,
+   "source": "none"
+  },
+  "CO": {
+   "cells": 48,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "CT": {
+   "cells": 9,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "DE": {
+   "cells": 2,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "DC": {
+   "cells": 2,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "FL": {
+   "cells": 72,
+   "have": 57,
+   "complete": false,
+   "source": "this run"
+  },
+  "GA": {
+   "cells": 36,
+   "have": 18,
+   "complete": false,
+   "source": "this run"
+  },
+  "HI": {
+   "cells": 35,
+   "have": 33,
+   "complete": false,
+   "source": "this run"
+  },
+  "ID": {
+   "cells": 63,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "IL": {
+   "cells": 35,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "IN": {
+   "cells": 25,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "IA": {
+   "cells": 28,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "KS": {
+   "cells": 45,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "KY": {
+   "cells": 36,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "LA": {
+   "cells": 42,
+   "have": 30,
+   "complete": false,
+   "source": "this run"
+  },
+  "ME": {
+   "cells": 36,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "MD": {
+   "cells": 15,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "MA": {
+   "cells": 10,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "MI": {
+   "cells": 72,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "MN": {
+   "cells": 63,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "MS": {
+   "cells": 24,
+   "have": 13,
+   "complete": false,
+   "source": "this run"
+  },
+  "MO": {
+   "cells": 42,
+   "have": 1,
+   "complete": false,
+   "source": "none"
+  },
+  "MT": {
+   "cells": 78,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "NE": {
+   "cells": 50,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "NV": {
+   "cells": 63,
+   "have": 5,
+   "complete": false,
+   "source": "none"
+  },
+  "NH": {
+   "cells": 12,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "NJ": {
+   "cells": 12,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "NM": {
+   "cells": 49,
+   "have": 18,
+   "complete": false,
+   "source": "none"
+  },
+  "NY": {
+   "cells": 54,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "NC": {
+   "cells": 40,
+   "have": 9,
+   "complete": false,
+   "source": "none"
+  },
+  "ND": {
+   "cells": 45,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "OH": {
+   "cells": 20,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "OK": {
+   "cells": 50,
+   "have": 10,
+   "complete": false,
+   "source": "none"
+  },
+  "OR": {
+   "cells": 54,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "PA": {
+   "cells": 28,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "RI": {
+   "cells": 2,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "SC": {
+   "cells": 24,
+   "have": 9,
+   "complete": false,
+   "source": "none"
+  },
+  "SD": {
+   "cells": 36,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "TN": {
+   "cells": 30,
+   "have": 5,
+   "complete": false,
+   "source": "none"
+  },
+  "TX": {
+   "cells": 168,
+   "have": 104,
+   "complete": false,
+   "source": "this run"
+  },
+  "UT": {
+   "cells": 42,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "VT": {
+   "cells": 12,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "VA": {
+   "cells": 36,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "WA": {
+   "cells": 45,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "WV": {
+   "cells": 24,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "WI": {
+   "cells": 42,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  },
+  "WY": {
+   "cells": 48,
+   "have": 0,
+   "complete": false,
+   "source": "none"
+  }
+ }
 }
