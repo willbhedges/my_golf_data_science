@@ -1,10 +1,15 @@
 {
- "fetched_utc": "2026-10-30T03:58:25Z",
+ "fetched_utc": "2026-11-02T03:07:22Z",
  "tried": [
   {
    "source": "golfify",
    "ok": false,
-   "info": "golfify: no matching page (11 URLs tried)"
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: old-kinderhook-resort-golf-club-and-spa: HTTP 404; the-old-kinderhook-resort-golf-club-and-spa: HTTP 404; old-kinderhook-resort-spa-golf-course: HTTP 404; old-kinderhook-resort-spa-golf-club: HTTP 404"
   },
   {
    "source": "club_site",
@@ -110,5 +115,23 @@
     }
    }
   }
- ]
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/c51c8fb4-4815-4ed6-8aad-d319c10c866b",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/c51c8fb4-4815-4ed6-8aad-d319c10c866b": {
+    "holes": 18,
+    "fit": 16,
+    "share": 0.889,
+    "mean_err": 8.3,
+    "all_sets": 0.889,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
 }
