@@ -5,18 +5,80 @@
  "city": "Silvis",
  "state": "IL",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "package: Retry your request using exponential backoff: wait a overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
+  "3 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
- "request": "course_data/requests/course_page_tpc_deere_run.json",
- "resolve": {
-  "status": null,
-  "candidates": []
- },
- "built": "2026-11-01T21:50Z"
+ "check_holes": [
+  6,
+  7,
+  9
+ ],
+ "tee_sets": [
+  {
+   "name": "Gold",
+   "yards": 7267,
+   "par": 71,
+   "rating": 75.6,
+   "slope": 145,
+   "colour": "gold",
+   "on_page": "solved"
+  },
+  {
+   "name": "Black",
+   "yards": 6984,
+   "par": 71,
+   "rating": 74.4,
+   "slope": 143,
+   "colour": "black",
+   "on_page": "solved"
+  },
+  {
+   "name": "Blue",
+   "yards": 6426,
+   "par": 71,
+   "rating": 71.9,
+   "slope": 137,
+   "colour": "blue",
+   "on_page": null
+  },
+  {
+   "name": "White",
+   "yards": 5990,
+   "par": 71,
+   "rating": 69.9,
+   "slope": 133,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Red",
+   "yards": 5177,
+   "par": 71,
+   "rating": 70.3,
+   "slope": 127,
+   "colour": "red",
+   "on_page": null
+  }
+ ],
+ "solved_sets": [
+  "Gold",
+  "Black"
+ ],
+ "page": "course_data/library/tpc_deere_run/page.html",
+ "page_bytes": 6023162,
+ "qa_report": "course_data/library/tpc_deere_run/qa_report.md",
+ "center": [
+  41.475825900000004,
+  -90.39541185
+ ],
+ "osm": "relation/12585470",
+ "holes": 18,
+ "days": [
+  "2026-11-07",
+  "2026-11-08"
+ ],
+ "weather": "forecast",
+ "built": "2026-11-02T05:06Z",
+ "request": "course_data/requests/course_page_tpc_deere_run.json"
 }

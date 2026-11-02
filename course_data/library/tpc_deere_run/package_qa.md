@@ -1,6 +1,6 @@
-# TPC Deere Run (Silvis, IL) - osm_back tees
+# TPC Deere Run (Silvis, IL) - Gold tees
 
-Built 2026-10-30T12:23:41Z. OSM relation/12585470. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-11-02T05:06:26Z. OSM relation/12585470. Scorecard: file (course_data/library/tpc_deere_run/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -11,11 +11,11 @@ Built 2026-10-30T12:23:41Z. OSM relation/12585470. Scorecard: None (None). Tee s
 | greens_found | 18 |
 | tee_boxes | 65 |
 | tees_with_colour | 0 |
-| holes_with_trees_or_long_grass_in_landing_zone | 14 |
+| holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.518 |
-| mean_confidence | 0.678 |
-| osm_score | 0.904 |
+| mean_landing_osm_share | 0.547 |
+| mean_confidence | 0.844 |
+| osm_score | 0.895 |
 
 OSM features inside the course: buildings 14, built_up_landuse 1, golf=bunker 79, golf=cartpath 25, golf=clubhouse 1, golf=driving_range 2, golf=fairway 25, golf=green 29, golf=hole 18, golf=rough 4, golf=tee 65, golf=water_hazard 3, holes_with_par 18, single_trees 765, trees_polygons 12, water_lines 4, water_polygons 6
 
@@ -23,40 +23,37 @@ OSM features inside the course: buildings 14, built_up_landuse 1, golf=bunker 79
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 356 / 356 | 213 | 0.63 | check the flags | 42% | 11% | 47% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 2 | 5 | 549 / 549 | 214 | 0.64 | check the flags | 54% | 2% | 45% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 3 | 3 | 158 / 158 | 339 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 4 | 4 | 440 / 440 | 130 | 0.70 | check the flags | 71% | 8% | 21% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 5 | 4 | 415 / 415 | 353 | 0.60 | check the flags | 35% | 7% | 58% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 6 | 4 | 361 / 361 | 309 | 0.69 | check the flags | 63% | 12% | 25% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 7 | 3 | 177 / 177 | 178 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 8 | 4 | 317 / 317 | 8 | 0.59 | needs review | 37% | 0% | 63% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 9 | 4 | 350 / 350 | 137 | 0.68 | check the flags | 58% | 14% | 27% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 10 | 5 | 465 / 465 | 325 | 0.69 | check the flags | 65% | 6% | 28% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 11 | 4 | 317 / 317 | 102 | 0.66 | check the flags | 56% | 5% | 39% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 12 | 3 | 131 / 131 | 132 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 13 | 4 | 326 / 326 | 309 | 0.62 | check the flags | 36% | 15% | 49% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 14 | 4 | 273 / 273 | 136 | 0.62 | check the flags | 46% | 2% | 52% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 15 | 4 | 370 / 370 | 186 | 0.67 | check the flags | 56% | 11% | 33% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 16 | 3 | 121 / 121 | 219 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 17 | 5 | 427 / 427 | 19 | 0.66 | check the flags | 55% | 10% | 35% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 18 | 4 | 324 / 324 | 194 | 0.66 | check the flags | 50% | 13% | 36% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 1 | 4 | 395 / 395 | 211 | 0.82 | auto | 55% | 8% | 37% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 2 | 5 | 561 / 561 | 214 | 0.80 | check the flags | 52% | 2% | 46% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 3 | 3 | 186 / 186 | 339 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 4 | 4 | 454 / 453 | 129 | 0.86 | auto | 70% | 8% | 22% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 5 | 4 | 433 / 433 | 353 | 0.78 | check the flags | 40% | 7% | 54% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 6 | 4 | 367 / 367 | 309 | 0.85 | auto | 64% | 13% | 24% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 7 | 3 | 226 / 226 | 182 | 0.86 | auto | 100% | 0% | 0% | tee stage: Gold lidar_pad | tee: tee stage: Gold lidar_pad; Gold tee on a lidar pad (no OSM box at 226 yds) |
+| 8 | 4 | 428 / 428 | 359 | 0.87 | auto | 42% | 32% | 26% | tee stage: Gold tee_centroid |  |
+| 9 | 4 | 503 / 503 | 142 | 0.78 | check the flags | 42% | 3% | 54% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 10 | 5 | 596 / 596 | 319 | 0.78 | check the flags | 47% | 0% | 53% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 11 | 4 | 432 / 433 | 103 | 0.85 | auto | 68% | 6% | 26% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 12 | 3 | 215 / 215 | 129 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 13 | 4 | 424 / 424 | 318 | 0.82 | auto | 59% | 0% | 41% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 14 | 4 | 361 / 361 | 135 | 0.80 | check the flags | 48% | 6% | 46% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 15 | 4 | 484 / 484 | 182 | 0.82 | auto | 55% | 6% | 39% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 16 | 3 | 157 / 157 | 214 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 17 | 5 | 569 / 566 | 30 | 0.83 | auto | 54% | 17% | 29% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 18 | 4 | 476 / 475 | 199 | 0.89 | auto | 70% | 23% | 7% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 
 ## Stages
 
 - **resolve**: ok: relation/12585470 TPC Deere Run (Silvis, IL)
 - **osm**: ok: 1320 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **scorecard**: missing
-- **tees**: fallback: OSM tee nearest the hole-line start (no yardages)
-- **geometry**: ok: geometry/build_holes.py (18 holes, 1 tee set(s))
+- **scorecard**: ok: file (course_data/library/tpc_deere_run/card_review.json)
+- **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 78 candidate pads near hole starts
+- **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/tpc_deere_run/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/tpc_deere_run/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 4 polygons (outside 4); mode replace
-
-## Warnings
-
-- no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM tee box nearest each hole-line start (usually the back tee); lengths are measured
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 7 polygons (outside 7); mode replace
