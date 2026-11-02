@@ -94,7 +94,19 @@
    {
     "n": 10,
     "verdict": "OK",
-    "notes": "Par 4. Several tee pads visible; the solved tee is the rearmost, at the hole-line start. No scorecard, so the yardage is the OSM back tee (unverified)."
+    "notes": "Par 4. Several tee pads visible; the solved tee is the rearmost, at the hole-line start. No scorecard, so the yardage is the OSM back tee (unverified). qa_rebuild 2026-11-02: Black/Blue colour tags sit two boxes forward (425 / 395 measured vs card 467 / 445); Black moved to the 463 box at the hole-line start. Blue: the tee localizer now prefers the untagged 447 box over the blue tag 50 yds off the card.",
+    "fix": {
+     "tee_ll": {
+      "Black": [
+       38.7582778,
+       -94.8430081
+      ]
+     },
+     "yards": {
+      "Black": 467,
+      "Blue": 445
+     }
+    }
    },
    {
     "n": 11,

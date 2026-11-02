@@ -23,7 +23,8 @@ whenever this module raises.
    card yardage, clamped to the pad's inner extent (markers stand inside the box, not on its edge);
    a card more than beyond_free_yd outside the extent moves the point off the pad along that axis by the
    excess, at most beyond_max_yd (OSM boxes are often drawn short of the back tee: Pine Dunes, Veenker 12,
-   Coldwater 17). A box tagged with the set's colour (platform/package.py) uses the same rule (tagged_point).
+   Coldwater 17). A box tagged with the set's colour (platform/package.py) uses the same rule (tagged_point), unless it is
+   more than tag_off_card_yd off the card and an untagged box is within untagged_card_yd (card_checked_point).
    Yardage is measured the USGA way (place_tee.LineOfPlay: to the green centre along the line of
    play, through the dog-leg turning points; the green centre is the OSM green centroid).
 
@@ -87,6 +88,10 @@ PARAMS = dict(
                            # clamped to the pad). beyond_max_yd 0 = clamp (v2 as first shipped). Cost unchanged.
                            # ERROR_BUDGET.md "Tees and trees": hand-truth tees > 10 yds off 20 -> 15 of 124,
                            # generalize train (OSM hidden) <= 10 yds 707 -> 711 of 778.
+    tag_off_card_yd=15.0,  # a colour-tagged box whose extent is further than this from the set's card yardage
+    untagged_card_yd=5.0,  # loses to an untagged OSM box of the hole within this of the card (card_checked_point;
+                           # sycamore_ridge 1: black / blue tags two boxes forward, 42 / 50 yds short of the card,
+                           # untagged boxes at 463 / 447 for a 467 / 445 card)
 )
 
 
@@ -478,29 +483,50 @@ def _point(fr, lop, cands, o, y):
     return pt._point_on_axis(lop, c["centroid_xy"], p, min(c["d_front"], p), max(c["d_back"], p))
 
 
-def tagged_point(line, green, boxes, yards, params=None):
-    """An OSM box tagged with the set's colour wins, but WHERE on it: the point on its axis at the card yardage
-    (clamped / extended exactly as a localizer pad, PARAMS beyond_*), not its centroid; with several tagged boxes the
-    one whose extent is nearest the card. boxes [{id, coords [(lat, lon)]}], green (lat, lon) or None.
-    -> (lat, lon, tee_id, dist_yd) or None (no yardage / no box)."""
-    if not boxes or not yards or not line or len(line) < 2:
-        return None
-    P = dict(PARAMS, **(params or {}))
-    fr, lop = pt._hole_frame(line, green)
+def _card_box(fr, lop, boxes, y):
+    """(extent error yds, box, centroid, metrics) of the box whose extent is nearest card yardage y."""
     best = None
     for b in boxes:
         ring = _ring_xy(fr, b["coords"])
         c = pt.polygon_centroid(ring) if len(ring) >= 3 else ring[0]
         m = pt._tee_metrics(lop, ring, c)
-        y = float(yards)
         err = abs(y - min(max(y, m["d_front"]), m["d_back"]))
         if best is None or err < best[0]:
             best = (err, b, c, m)
-    _, b, c, m = best
+    return best
+
+
+def tagged_point(line, green, boxes, yards, params=None, with_err=False):
+    """An OSM box tagged with the set's colour wins, but WHERE on it: the point on its axis at the card yardage
+    (clamped / extended exactly as a localizer pad, PARAMS beyond_*), not its centroid; with several tagged boxes the
+    one whose extent is nearest the card. boxes [{id, coords [(lat, lon)]}], green (lat, lon) or None.
+    -> (lat, lon, tee_id, dist_yd) (+ the box extent's yds off the card with with_err) or None (no yardage / no box)."""
+    if not boxes or not yards or not line or len(line) < 2:
+        return None
+    P = dict(PARAMS, **(params or {}))
+    fr, lop = pt._hole_frame(line, green)
+    err, b, c, m = _card_box(fr, lop, boxes, float(yards))
     p = _beyond(float(yards), m["d_front"], m["d_back"], P)
     q = pt._point_on_axis(lop, c, p, min(m["d_front"], p), max(m["d_back"], p))
     lat, lon = fr.inv(*q)
-    return lat, lon, b.get("id"), round(lop.dist_to_green(q), 1)
+    out = (lat, lon, b.get("id"), round(lop.dist_to_green(q), 1))
+    return out + (round(float(err), 1),) if with_err else out
+
+
+def card_checked_point(line, green, tagged, untagged, yards, params=None):
+    """tagged_point, checked against the card: when the best tagged box's extent is more than tag_off_card_yd
+    from the card yardage and an untagged OSM box of the hole is within untagged_card_yd of it, the untagged box
+    wins (OSM colour tags are sometimes one or two boxes forward). -> (lat, lon, tee_id, dist_yd, method) with
+    method "tagged" / "card_box", or None."""
+    P = dict(PARAMS, **(params or {}))
+    tp = tagged_point(line, green, tagged, yards, P, with_err=True)
+    if tp is None:
+        return None
+    if tp[4] > P["tag_off_card_yd"] and untagged:
+        up = tagged_point(line, green, untagged, yards, P, with_err=True)
+        if up is not None and up[4] <= P["untagged_card_yd"]:
+            return up[:4] + ("card_box",)
+    return tp[:4] + ("tagged",)
 
 
 # ----------------------------------------------------------------------------- course

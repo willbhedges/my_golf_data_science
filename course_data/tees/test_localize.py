@@ -109,3 +109,19 @@ def test_tagged_box_point_at_card_yardage_not_centroid():
     lat, lon, tid, dist = LZ.tagged_point(line, None, boxes, 475)           # nearest-to-card box, 10 beyond its back
     assert tid == "t2" and abs(dist - (475 - LZ.PARAMS["beyond_free_yd"])) < 1.0
     assert LZ.tagged_point(line, None, boxes, None) is None
+
+
+def test_tag_far_off_card_loses_to_untagged_box_on_card():
+    """sycamore_ridge 1: the black tag sits two boxes forward (42 yds short); an untagged box fits the card."""
+    line = straight_hole(400)
+    tagged = [box(0, 30, w=10, h=10, tid="tag")]                     # 365..375 from the green
+    on_card = [box(0, 0, w=10, h=10, tid="u1"), box(0, 60, w=10, h=10, tid="u2")]   # 395..405, 335..345
+    lat, lon, tid, dist, how = LZ.card_checked_point(line, None, tagged, on_card, 407)
+    assert (tid, how) == ("u1", "card_box") and abs(dist - 405) < 1.0      # 2 yds beyond the box: clamped to its back
+    # the untagged box must itself fit the card (within untagged_card_yd), else the tag stays
+    lat, lon, tid, dist, how = LZ.card_checked_point(line, None, tagged, [box(0, 0, w=10, h=10, tid="u")], 413)
+    assert (tid, how) == ("tag", "tagged")
+    # a tag within tag_off_card_yd of the card keeps its box even with a perfect untagged box
+    lat, lon, tid, dist, how = LZ.card_checked_point(line, None, [box(0, 15, w=10, h=10, tid="tag")], on_card, 400)
+    assert (tid, how) == ("tag", "tagged")
+    assert LZ.card_checked_point(line, None, tagged, [], 407)[2:] == LZ.tagged_point(line, None, tagged, 407)[2:] + ("tagged",)
