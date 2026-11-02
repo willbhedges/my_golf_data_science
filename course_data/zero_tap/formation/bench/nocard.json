@@ -1,12 +1,242 @@
 {
  "method": "formation_v2",
  "tier": "nocard",
- "version": "formation-v2@d12f8ee3",
+ "version": "formation-v2@ea6ed3d3",
  "dev": {
+  "n": 160,
+  "holes": 2853,
+  "hole_number_acc": 0.051,
+  "formed_acc": 0.858,
+  "par_acc": 0.0,
+  "courses_holes_right": 0.0,
+  "courses_fully_right": 0.0,
+  "certain_n": 0,
+  "zero_tap_coverage": 0.0,
+  "zero_tap_precision": null,
+  "curve": [
+   {
+    "coverage": 0.05,
+    "precision": 0.0,
+    "min_conf": 0.3753
+   },
+   {
+    "coverage": 0.1,
+    "precision": 0.0,
+    "min_conf": 0.2654
+   },
+   {
+    "coverage": 0.2,
+    "precision": 0.0,
+    "min_conf": 0.0982
+   },
+   {
+    "coverage": 0.3,
+    "precision": 0.0,
+    "min_conf": 0.0607
+   },
+   {
+    "coverage": 0.5,
+    "precision": 0.0,
+    "min_conf": 0.021
+   },
+   {
+    "coverage": 0.7,
+    "precision": 0.0,
+    "min_conf": 0.0043
+   },
+   {
+    "coverage": 1.0,
+    "precision": 0.0,
+    "min_conf": 0.0
+   }
+  ],
+  "coverage_at_p99": 0.0,
+  "coverage_at_p95": 0.0,
+  "coverage_at_p90": 0.0,
+  "hole_ece": 0.743,
+  "course_failures": {
+   "pairing": 105,
+   "count": 17,
+   "start_hole": 14,
+   "order": 13,
+   "missed_tee": 9,
+   "no_result": 1,
+   "nine_swap": 1
+  },
+  "hole_failures": {
+   "par": 2365,
+   "start_hole": 1173,
+   "order": 1066,
+   "missing": 404,
+   "pairing": 304,
+   "missed_tee": 102,
+   "nine_swap": 65
+  },
+  "no_result": 1,
+  "by_kind": {
+   "9": {
+    "n": 21,
+    "holes": 189,
+    "hole_number_acc": 0.079,
+    "formed_acc": 0.794,
+    "par_acc": 0.0,
+    "courses_holes_right": 0.0,
+    "courses_fully_right": 0.0,
+    "certain_n": 0,
+    "zero_tap_coverage": 0.0,
+    "zero_tap_precision": null,
+    "coverage_at_p99": 0.0,
+    "coverage_at_p95": 0.0,
+    "coverage_at_p90": 0.0,
+    "hole_ece": 0.725,
+    "course_failures": {
+     "pairing": 14,
+     "start_hole": 3,
+     "order": 2,
+     "missed_tee": 2
+    },
+    "hole_failures": {
+     "par": 143,
+     "start_hole": 101,
+     "missing": 39,
+     "order": 34,
+     "pairing": 32,
+     "missed_tee": 7
+    },
+    "no_result": 0
+   },
+   "18": {
+    "n": 125,
+    "holes": 2250,
+    "hole_number_acc": 0.05,
+    "formed_acc": 0.876,
+    "par_acc": 0.0,
+    "courses_holes_right": 0.0,
+    "courses_fully_right": 0.0,
+    "certain_n": 0,
+    "zero_tap_coverage": 0.0,
+    "zero_tap_precision": null,
+    "coverage_at_p99": 0.0,
+    "coverage_at_p95": 0.0,
+    "coverage_at_p90": 0.0,
+    "hole_ece": 0.765,
+    "course_failures": {
+     "pairing": 90,
+     "order": 11,
+     "start_hole": 11,
+     "missed_tee": 7,
+     "count": 4,
+     "no_result": 1,
+     "nine_swap": 1
+    },
+    "hole_failures": {
+     "par": 1918,
+     "start_hole": 1072,
+     "order": 720,
+     "missing": 280,
+     "pairing": 185,
+     "nine_swap": 65,
+     "missed_tee": 54
+    },
+    "no_result": 1
+   },
+   "27": {
+    "n": 10,
+    "holes": 270,
+    "hole_number_acc": 0.056,
+    "formed_acc": 0.785,
+    "par_acc": 0.0,
+    "courses_holes_right": 0.0,
+    "courses_fully_right": 0.0,
+    "certain_n": 0,
+    "zero_tap_coverage": 0.0,
+    "zero_tap_precision": null,
+    "coverage_at_p99": 0.0,
+    "coverage_at_p95": 0.0,
+    "coverage_at_p90": 0.0,
+    "hole_ece": 0.607,
+    "course_failures": {
+     "count": 9,
+     "pairing": 1
+    },
+    "hole_failures": {
+     "order": 197,
+     "par": 187,
+     "pairing": 70,
+     "missing": 58,
+     "missed_tee": 22
+    },
+    "no_result": 0
+   },
+   "36": {
+    "n": 4,
+    "holes": 144,
+    "hole_number_acc": 0.014,
+    "formed_acc": 0.812,
+    "par_acc": 0.0,
+    "courses_holes_right": 0.0,
+    "courses_fully_right": 0.0,
+    "certain_n": 0,
+    "zero_tap_coverage": 0.0,
+    "zero_tap_precision": null,
+    "coverage_at_p99": 0.0,
+    "coverage_at_p95": 0.0,
+    "coverage_at_p90": 0.0,
+    "hole_ece": 0.722,
+    "course_failures": {
+     "count": 4
+    },
+    "hole_failures": {
+     "par": 117,
+     "order": 115,
+     "missing": 27,
+     "missed_tee": 19,
+     "pairing": 17
+    },
+    "no_result": 0
+   }
+  }
+ },
+ "dev_v0": {
   "n": 77,
   "holes": 1386,
-  "hole_number_acc": 0.043,
+  "hole_number_acc": 0.054,
   "formed_acc": 0.919,
+  "par_acc": 0.0,
+  "courses_holes_right": 0.0,
+  "courses_fully_right": 0.0,
+  "certain_n": 0,
+  "zero_tap_coverage": 0.0,
+  "zero_tap_precision": null,
+  "coverage_at_p99": 0.0,
+  "coverage_at_p95": 0.0,
+  "coverage_at_p90": 0.0,
+  "hole_ece": 0.8,
+  "course_failures": {
+   "pairing": 47,
+   "start_hole": 12,
+   "order": 10,
+   "count": 3,
+   "missed_tee": 3,
+   "no_result": 1,
+   "nine_swap": 1
+  },
+  "hole_failures": {
+   "par": 1222,
+   "start_hole": 693,
+   "order": 474,
+   "missing": 112,
+   "pairing": 80,
+   "nine_swap": 32,
+   "missed_tee": 14
+  },
+  "no_result": 1
+ },
+ "test": {
+  "n": 153,
+  "holes": 2817,
+  "hole_number_acc": 0.041,
+  "formed_acc": 0.814,
   "par_acc": 0.0,
   "courses_holes_right": 0.0,
   "courses_fully_right": 0.0,
@@ -17,32 +247,32 @@
    {
     "coverage": 0.052,
     "precision": 0.0,
-    "min_conf": 0.372
+    "min_conf": 0.2426
    },
    {
-    "coverage": 0.104,
+    "coverage": 0.098,
     "precision": 0.0,
-    "min_conf": 0.2108
+    "min_conf": 0.1438
    },
    {
-    "coverage": 0.195,
+    "coverage": 0.203,
     "precision": 0.0,
-    "min_conf": 0.1479
+    "min_conf": 0.0617
    },
    {
-    "coverage": 0.299,
+    "coverage": 0.301,
     "precision": 0.0,
-    "min_conf": 0.0801
+    "min_conf": 0.0379
    },
    {
-    "coverage": 0.494,
+    "coverage": 0.497,
     "precision": 0.0,
-    "min_conf": 0.0536
+    "min_conf": 0.0134
    },
    {
-    "coverage": 0.701,
+    "coverage": 0.699,
     "precision": 0.0,
-    "min_conf": 0.0251
+    "min_conf": 0.0031
    },
    {
     "coverage": 1.0,
@@ -53,32 +283,31 @@
   "coverage_at_p99": 0.0,
   "coverage_at_p95": 0.0,
   "coverage_at_p90": 0.0,
-  "hole_ece": 0.811,
+  "hole_ece": 0.731,
   "course_failures": {
-   "pairing": 49,
-   "start_hole": 12,
-   "order": 9,
-   "count": 3,
-   "missed_tee": 2,
-   "no_result": 1,
-   "nine_swap": 1
+   "pairing": 112,
+   "count": 14,
+   "missed_tee": 13,
+   "start_hole": 6,
+   "order": 5,
+   "no_result": 3
   },
   "hole_failures": {
-   "par": 1156,
-   "start_hole": 726,
-   "order": 397,
-   "missing": 112,
-   "nine_swap": 91,
-   "pairing": 78,
-   "missed_tee": 16
+   "par": 2255,
+   "start_hole": 1162,
+   "order": 919,
+   "missing": 523,
+   "pairing": 378,
+   "missed_tee": 175,
+   "nine_swap": 98
   },
-  "no_result": 1,
+  "no_result": 3,
   "by_kind": {
    "9": {
-    "n": 2,
-    "holes": 18,
-    "hole_number_acc": 0.111,
-    "formed_acc": 0.944,
+    "n": 15,
+    "holes": 135,
+    "hole_number_acc": 0.067,
+    "formed_acc": 0.8,
     "par_acc": 0.0,
     "courses_holes_right": 0.0,
     "courses_fully_right": 0.0,
@@ -88,58 +317,62 @@
     "coverage_at_p99": 0.0,
     "coverage_at_p95": 0.0,
     "coverage_at_p90": 0.0,
-    "hole_ece": 0.753,
+    "hole_ece": 0.756,
     "course_failures": {
-     "pairing": 1,
-     "start_hole": 1
-    },
-    "hole_failures": {
-     "par": 17,
-     "start_hole": 15,
-     "pairing": 1,
-     "missing": 1
-    },
-    "no_result": 0
-   },
-   "18": {
-    "n": 74,
-    "holes": 1332,
-    "hole_number_acc": 0.044,
-    "formed_acc": 0.92,
-    "par_acc": 0.0,
-    "courses_holes_right": 0.0,
-    "courses_fully_right": 0.0,
-    "certain_n": 0,
-    "zero_tap_coverage": 0.0,
-    "zero_tap_precision": null,
-    "coverage_at_p99": 0.0,
-    "coverage_at_p95": 0.0,
-    "coverage_at_p90": 0.0,
-    "hole_ece": 0.813,
-    "course_failures": {
-     "pairing": 48,
-     "start_hole": 11,
-     "order": 9,
-     "count": 2,
+     "pairing": 8,
+     "start_hole": 3,
      "missed_tee": 2,
      "no_result": 1,
-     "nine_swap": 1
+     "order": 1
     },
     "hole_failures": {
-     "par": 1107,
-     "start_hole": 711,
-     "order": 365,
-     "missing": 107,
-     "nine_swap": 91,
-     "pairing": 72,
-     "missed_tee": 12
+     "par": 108,
+     "start_hole": 68,
+     "order": 31,
+     "missing": 27,
+     "pairing": 9,
+     "missed_tee": 9
     },
     "no_result": 1
    },
-   "36": {
-    "n": 1,
-    "holes": 36,
-    "hole_number_acc": 0.0,
+   "18": {
+    "n": 124,
+    "holes": 2232,
+    "hole_number_acc": 0.043,
+    "formed_acc": 0.816,
+    "par_acc": 0.0,
+    "courses_holes_right": 0.0,
+    "courses_fully_right": 0.0,
+    "certain_n": 0,
+    "zero_tap_coverage": 0.0,
+    "zero_tap_precision": null,
+    "coverage_at_p99": 0.0,
+    "coverage_at_p95": 0.0,
+    "coverage_at_p90": 0.0,
+    "hole_ece": 0.752,
+    "course_failures": {
+     "pairing": 102,
+     "missed_tee": 11,
+     "order": 4,
+     "start_hole": 3,
+     "no_result": 2,
+     "count": 2
+    },
+    "hole_failures": {
+     "par": 1821,
+     "start_hole": 1094,
+     "order": 534,
+     "missing": 411,
+     "pairing": 251,
+     "missed_tee": 119,
+     "nine_swap": 98
+    },
+    "no_result": 2
+   },
+   "27": {
+    "n": 6,
+    "holes": 162,
+    "hole_number_acc": 0.019,
     "formed_acc": 0.889,
     "par_acc": 0.0,
     "courses_holes_right": 0.0,
@@ -150,25 +383,53 @@
     "coverage_at_p99": 0.0,
     "coverage_at_p95": 0.0,
     "coverage_at_p90": 0.0,
-    "hole_ece": 0.758,
+    "hole_ece": 0.708,
     "course_failures": {
-     "count": 1
+     "count": 4,
+     "pairing": 2
     },
     "hole_failures": {
-     "order": 32,
-     "par": 32,
-     "pairing": 5,
-     "missed_tee": 4,
-     "missing": 4
+     "order": 141,
+     "par": 120,
+     "pairing": 26,
+     "missing": 18,
+     "missed_tee": 5
+    },
+    "no_result": 0
+   },
+   "36": {
+    "n": 8,
+    "holes": 288,
+    "hole_number_acc": 0.028,
+    "formed_acc": 0.767,
+    "par_acc": 0.0,
+    "courses_holes_right": 0.0,
+    "courses_fully_right": 0.0,
+    "certain_n": 0,
+    "zero_tap_coverage": 0.0,
+    "zero_tap_precision": null,
+    "coverage_at_p99": 0.0,
+    "coverage_at_p95": 0.0,
+    "coverage_at_p90": 0.0,
+    "hole_ece": 0.603,
+    "course_failures": {
+     "count": 8
+    },
+    "hole_failures": {
+     "order": 213,
+     "par": 206,
+     "pairing": 92,
+     "missing": 67,
+     "missed_tee": 42
     },
     "no_result": 0
    }
   }
  },
- "test": {
+ "test_v0": {
   "n": 84,
   "holes": 1512,
-  "hole_number_acc": 0.05,
+  "hole_number_acc": 0.044,
   "formed_acc": 0.832,
   "par_acc": 0.0,
   "courses_holes_right": 0.0,
@@ -176,185 +437,27 @@
   "certain_n": 0,
   "zero_tap_coverage": 0.0,
   "zero_tap_precision": null,
-  "curve": [
-   {
-    "coverage": 0.048,
-    "precision": 0.0,
-    "min_conf": 0.4851
-   },
-   {
-    "coverage": 0.095,
-    "precision": 0.0,
-    "min_conf": 0.1874
-   },
-   {
-    "coverage": 0.202,
-    "precision": 0.0,
-    "min_conf": 0.088
-   },
-   {
-    "coverage": 0.298,
-    "precision": 0.0,
-    "min_conf": 0.0441
-   },
-   {
-    "coverage": 0.5,
-    "precision": 0.0,
-    "min_conf": 0.0249
-   },
-   {
-    "coverage": 0.702,
-    "precision": 0.0,
-    "min_conf": 0.009
-   },
-   {
-    "coverage": 1.0,
-    "precision": 0.0,
-    "min_conf": 0.0
-   }
-  ],
   "coverage_at_p99": 0.0,
   "coverage_at_p95": 0.0,
   "coverage_at_p90": 0.0,
-  "hole_ece": 0.752,
+  "hole_ece": 0.76,
   "course_failures": {
-   "pairing": 60,
-   "missed_tee": 10,
+   "pairing": 58,
+   "missed_tee": 8,
    "count": 7,
-   "start_hole": 3,
-   "no_result": 2,
-   "order": 2
+   "start_hole": 5,
+   "order": 4,
+   "no_result": 2
   },
   "hole_failures": {
-   "par": 1184,
-   "order": 654,
-   "start_hole": 495,
+   "par": 1234,
+   "start_hole": 715,
+   "order": 429,
    "missing": 254,
-   "pairing": 180,
-   "missed_tee": 82,
-   "nine_swap": 33
+   "pairing": 179,
+   "missed_tee": 83,
+   "nine_swap": 48
   },
-  "no_result": 2,
-  "by_kind": {
-   "9": {
-    "n": 8,
-    "holes": 72,
-    "hole_number_acc": 0.097,
-    "formed_acc": 0.778,
-    "par_acc": 0.0,
-    "courses_holes_right": 0.0,
-    "courses_fully_right": 0.0,
-    "certain_n": 0,
-    "zero_tap_coverage": 0.0,
-    "zero_tap_precision": null,
-    "coverage_at_p99": 0.0,
-    "coverage_at_p95": 0.0,
-    "coverage_at_p90": 0.0,
-    "hole_ece": 0.727,
-    "course_failures": {
-     "pairing": 4,
-     "start_hole": 2,
-     "no_result": 1,
-     "order": 1
-    },
-    "hole_failures": {
-     "par": 55,
-     "order": 27,
-     "start_hole": 22,
-     "missing": 16,
-     "pairing": 5,
-     "missed_tee": 2
-    },
-    "no_result": 1
-   },
-   "18": {
-    "n": 71,
-    "holes": 1278,
-    "hole_number_acc": 0.051,
-    "formed_acc": 0.842,
-    "par_acc": 0.0,
-    "courses_holes_right": 0.0,
-    "courses_fully_right": 0.0,
-    "certain_n": 0,
-    "zero_tap_coverage": 0.0,
-    "zero_tap_precision": null,
-    "coverage_at_p99": 0.0,
-    "coverage_at_p95": 0.0,
-    "coverage_at_p90": 0.0,
-    "hole_ece": 0.774,
-    "course_failures": {
-     "pairing": 56,
-     "missed_tee": 10,
-     "count": 2,
-     "start_hole": 1,
-     "no_result": 1,
-     "order": 1
-    },
-    "hole_failures": {
-     "par": 1028,
-     "order": 505,
-     "start_hole": 473,
-     "missing": 202,
-     "pairing": 120,
-     "missed_tee": 59,
-     "nine_swap": 33
-    },
-    "no_result": 1
-   },
-   "27": {
-    "n": 2,
-    "holes": 54,
-    "hole_number_acc": 0.0,
-    "formed_acc": 0.889,
-    "par_acc": 0.0,
-    "courses_holes_right": 0.0,
-    "courses_fully_right": 0.0,
-    "certain_n": 0,
-    "zero_tap_coverage": 0.0,
-    "zero_tap_precision": null,
-    "coverage_at_p99": 0.0,
-    "coverage_at_p95": 0.0,
-    "coverage_at_p90": 0.0,
-    "hole_ece": 0.762,
-    "course_failures": {
-     "count": 2
-    },
-    "hole_failures": {
-     "order": 48,
-     "par": 23,
-     "missing": 6,
-     "pairing": 4,
-     "missed_tee": 3
-    },
-    "no_result": 0
-   },
-   "36": {
-    "n": 3,
-    "holes": 108,
-    "hole_number_acc": 0.037,
-    "formed_acc": 0.722,
-    "par_acc": 0.0,
-    "courses_holes_right": 0.0,
-    "courses_fully_right": 0.0,
-    "certain_n": 0,
-    "zero_tap_coverage": 0.0,
-    "zero_tap_precision": null,
-    "coverage_at_p99": 0.0,
-    "coverage_at_p95": 0.0,
-    "coverage_at_p90": 0.0,
-    "hole_ece": 0.573,
-    "course_failures": {
-     "count": 3
-    },
-    "hole_failures": {
-     "par": 78,
-     "order": 74,
-     "pairing": 51,
-     "missing": 30,
-     "missed_tee": 18
-    },
-    "no_result": 0
-   }
-  }
+  "no_result": 2
  }
 }
