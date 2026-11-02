@@ -1,6 +1,6 @@
 # Sand Creek Station (Newton, KS) - Championship tees
 
-Built 2026-11-02T05:49:31Z. OSM relation/6702217. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Championship, Tournament, Medal, Ladies (L))).
+Built 2026-11-02T06:30:53Z. OSM relation/6702217. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Championship, Tournament, Medal, Ladies (L))).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Championship' instead (allow_substitute). Sets on the card: Championship, Tournament, Medal, Ladies (L)**
 
@@ -56,11 +56,11 @@ OSM features inside the course: buildings 34, built_up_landuse 1, golf=bunker 62
 - **imagery**: ok: course_data/packages/sand_creek_station/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/sand_creek_station/imagery/dem.tif (18/18 holes)
-- **vision**: missing: no vision_any layers for 'sand_creek_station' (FileNotFoundError: course_data/vision_any/sand_creek_station/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them
+- **vision**: missing: no vision_any layers for 'sand_creek_station' (FileNotFoundError: course_data/vision_any/sand_creek_station/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them; CHECK: build it with course_data/vision_any/build_layers.py sand_creek_station (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json
 
 ## Warnings
 
 - requested tee set 'Black' is not on the card; using 'Championship' instead (allow_substitute). Sets on the card: Championship, Tournament, Medal, Ladies (L)
-- vision: missing: no vision_any layers for 'sand_creek_station' (FileNotFoundError: course_data/vision_any/sand_creek_station/raw (not fetched)); add the course to cours; trees / long grass come from OSM only
+- CHECK vision: missing: no vision_any layers for 'sand_creek_station' (FileNotFoundError: course_data/vision_any/sand_creek_station/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github; trees / water come from OSM (or the fallback) only

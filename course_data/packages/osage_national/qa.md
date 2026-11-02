@@ -1,6 +1,6 @@
 # Osage National Golf Club (Osage Beach, MO) - Palmer tees
 
-Built 2026-11-02T02:37:32Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
+Built 2026-11-02T06:29:15Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Palmer' instead (allow_substitute). Sets on the card: Palmer, Tournament, Middle, Members, Forward, Green**
 
@@ -38,10 +38,10 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 | 11 | 4 | 445 / 445 | 141 | 0.84 | auto | 51% | 6% | 43% | tee stage: Palmer tee_centroid |  |
 | 12 | 4 | 433 / 432 | 195 | 0.81 | auto | 56% | 3% | 41% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 13 | 3 | 215 / 215 | 179 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
-| 14 | 5 | 525 / 524 | 16 | 0.82 | auto | 48% | 19% | 33% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 14 | 5 | 525 / 524 | 16 | 0.82 | auto | 48% | 18% | 34% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 | 15 | 4 | 314 / 314 | 4 | 0.78 | check the flags | 36% | 16% | 48% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 | 16 | 3 | 163 / 163 | 337 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
-| 17 | 4 | 442 / 441 | 339 | 0.88 | auto | 60% | 14% | 26% | tee stage: Palmer tee_centroid |  |
+| 17 | 4 | 442 / 441 | 339 | 0.88 | auto | 60% | 12% | 28% | tee stage: Palmer tee_centroid |  |
 | 18 | 5 | 626 / 627 | 277 | 0.82 | auto | 55% | 6% | 38% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 
 ## Stages
@@ -56,7 +56,7 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 - **imagery**: ok: course_data/packages/osage_national/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2016)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2016
 - **elevation**: ok: course_data/packages/osage_national/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)
+- **vision**: missing: product layer vision_any/2 not built for 'osage_national' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 100 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py osage_national (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 9 polygons (outside 9); mode replace
 
@@ -64,3 +64,4 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 
 - requested tee set 'Black' is not on the card; using 'Palmer' instead (allow_substitute). Sets on the card: Palmer, Tournament, Middle, Members, Forward, Green
 - hole 10 Green: CHECK, tee was on a building (OSM 793957852): moved 5 yds forward off it
+- CHECK vision: missing: product layer vision_any/2 not built for 'osage_national' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 100 long-grass z; trees / water come from OSM (or the fallback) only

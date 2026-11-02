@@ -1,6 +1,6 @@
 # Buffalo Dunes (Garden City, KS) - Blue tees
 
-Built 2026-11-02T04:50:18Z. OSM way/783368916. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T06:13:13Z. OSM way/783368916. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -54,11 +54,11 @@ OSM features inside the course: buildings 9, golf=bunker 27, golf=fairway 22, go
 - **imagery**: ok: course_data/packages/buffalo_dunes/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 17/18 greens visible as turf on NAIP 2023; NOT visible: holes 17
 - **elevation**: ok: course_data/packages/buffalo_dunes/imagery/dem.tif (18/18 holes)
-- **vision**: missing: no vision_any layers for 'buffalo_dunes' (FileNotFoundError: course_data/vision_any/buffalo_dunes/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them
+- **vision**: missing: no vision_any layers for 'buffalo_dunes' (FileNotFoundError: course_data/vision_any/buffalo_dunes/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them; CHECK: build it with course_data/vision_any/build_layers.py buffalo_dunes (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json
 
 ## Warnings
 
 - greens of holes 17 are not visible as turf on the NAIP 2023 imagery (bare soil / construction / dead turf): pick another NAIP year (imagery/naip_years.py)
-- vision: missing: no vision_any layers for 'buffalo_dunes' (FileNotFoundError: course_data/vision_any/buffalo_dunes/raw (not fetched)); add the course to course_data/vis; trees / long grass come from OSM only
+- CHECK vision: missing: no vision_any layers for 'buffalo_dunes' (FileNotFoundError: course_data/vision_any/buffalo_dunes/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows; trees / water come from OSM (or the fallback) only

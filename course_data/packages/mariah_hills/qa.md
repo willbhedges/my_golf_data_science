@@ -1,6 +1,6 @@
 # Mariah Hills Golf Course (Dodge City, KS) - Blue tees
 
-Built 2026-11-02T05:23:58Z. OSM way/329961222. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T06:29:04Z. OSM way/329961222. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -54,7 +54,7 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 23, g
 - **imagery**: ok: course_data/packages/mariah_hills/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/mariah_hills/imagery/dem.tif (18/18 holes)
-- **vision**: missing: no vision_any layers for 'mariah_hills' (FileNotFoundError: course_data/vision_any/mariah_hills/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them
+- **vision**: missing: no vision_any layers for 'mariah_hills' (FileNotFoundError: course_data/vision_any/mariah_hills/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them; CHECK: build it with course_data/vision_any/build_layers.py mariah_hills (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json
 
@@ -62,4 +62,4 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 23, g
 
 - hole 9: placed by v2+structure inference, golfer check (ambiguous (62% of the posterior))
 - hole 18: placed by v2+structure inference, golfer check (ambiguous (77% of the posterior))
-- vision: missing: no vision_any layers for 'mariah_hills' (FileNotFoundError: course_data/vision_any/mariah_hills/raw (not fetched)); add the course to course_data/visio; trees / long grass come from OSM only
+- CHECK vision: missing: no vision_any layers for 'mariah_hills' (FileNotFoundError: course_data/vision_any/mariah_hills/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/v; trees / water come from OSM (or the fallback) only

@@ -1,6 +1,6 @@
 # A. L. Gustin Golf Course (Columbia, MO) - Black tees
 
-Built 2026-11-02T02:36:05Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T06:28:00Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-02T02:36:05Z. OSM way/449108205. Scorecard: golfify (golfify). Tee
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.385 |
-| mean_confidence | 0.808 |
+| mean_confidence | 0.807 |
 | osm_score | 0.877 |
 
 OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, golf=clubhouse 1, golf=fairway 22, golf=green 19, golf=hole 18, golf=tee 52, golf=water_hazard 1, holes_with_par 18, trees_polygons 3, water_lines 5, water_polygons 1
@@ -23,23 +23,23 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 5 | 492 / 487 | 201 | 0.78 | check the flags | 35% | 18% | 47% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 1 | 5 | 492 / 487 | 201 | 0.78 | check the flags | 35% | 14% | 51% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 2 | 3 | 162 / 158 | 171 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 3 | 4 | 440 / 440 | 221 | 0.80 | auto | 45% | 12% | 43% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 4 | 4 | 384 / 385 | 94 | 0.83 | auto | 56% | 12% | 32% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 5 | 3 | 201 / 201 | 356 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 6 | 4 | 418 / 419 | 292 | 0.75 | check the flags | 31% | 8% | 62% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 6 | 4 | 418 / 419 | 292 | 0.75 | check the flags | 31% | 7% | 62% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 7 | 4 | 369 / 364 | 56 | 0.71 | check the flags | 36% | 15% | 49% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 369 yds) |
 | 8 | 4 | 376 / 372 | 95 | 0.83 | auto | 50% | 21% | 29% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 9 | 4 | 338 / 338 | 44 | 0.75 | check the flags | 19% | 25% | 56% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 10 | 3 | 205 / 205 | 80 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 11 | 4 | 424 / 416 | 206 | 0.71 | check the flags | 34% | 17% | 49% | tee stage: Black lidar_pad_capped | tee: tee stage: Black lidar_pad_capped; Black tee on a lidar pad (no OSM box at 424 yds) |
+| 11 | 4 | 424 / 416 | 206 | 0.71 | check the flags | 34% | 16% | 50% | tee stage: Black lidar_pad_capped | tee: tee stage: Black lidar_pad_capped; Black tee on a lidar pad (no OSM box at 424 yds) |
 | 12 | 5 | 518 / 515 | 180 | 0.81 | auto | 53% | 6% | 41% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 13 | 3 | 205 / 205 | 200 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 14 | 4 | 378 / 380 | 352 | 0.75 | check the flags | 47% | 18% | 35% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 378 yds) |
 | 15 | 4 | 467 / 467 | 62 | 0.70 | check the flags | 38% | 24% | 38% | tee stage: Black walkback | tee: tee stage: Black walkback; Black tee walked back along the hole line (no box at 467 yds) |
 | 16 | 4 | 332 / 329 | 224 | 0.77 | check the flags | 30% | 19% | 51% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 17 | 4 | 405 / 405 | 39 | 0.83 | auto | 42% | 12% | 46% | tee stage: Black tee_centroid |  |
+| 17 | 4 | 405 / 405 | 39 | 0.82 | auto | 42% | 10% | 48% | tee stage: Black tee_centroid |  |
 | 18 | 4 | 378 / 377 | 4 | 0.76 | check the flags | 23% | 20% | 57% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 
 ## Stages
@@ -54,10 +54,11 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 - **imagery**: ok: course_data/packages/gustin/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020
 - **elevation**: ok: course_data/packages/gustin/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)
+- **vision**: missing: product layer vision_any/2 not built for 'gustin' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 117 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py gustin (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 8 polygons (outside 8); mode replace
 
 ## Warnings
 
 - hole 11 Black: CHECK, tee was on a road (OSM 278117436): moved 7 yds forward off it
+- CHECK vision: missing: product layer vision_any/2 not built for 'gustin' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 117 long-grass zones dro; trees / water come from OSM (or the fallback) only

@@ -1,6 +1,6 @@
 # Tomahawk Hills Golf Course (Shawnee, KS) - Blue tees
 
-Built 2026-11-02T02:40:23Z. OSM way/117417596. Scorecard: club_site (club_site). Tee set: name.
+Built 2026-11-02T06:34:50Z. OSM way/117417596. Scorecard: club_site (club_site). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-02T02:40:23Z. OSM way/117417596. Scorecard: club_site (club_site).
 | holes_with_trees_or_long_grass_in_landing_zone | 12 |
 | of_par4_5 | 12 |
 | mean_landing_osm_share | 0.409 |
-| mean_confidence | 0.844 |
+| mean_confidence | 0.842 |
 | osm_score | 0.882 |
 
 OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 26, golf=fairway 19, golf=green 20, golf=hole 18, golf=tee 45, golf=water_hazard 1, holes_with_par 18, single_trees 103, trees_polygons 15, water_lines 10, water_polygons 1
@@ -23,14 +23,14 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 26, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 5 | 544 / 545 | 79 | 0.83 | auto | 37% | 23% | 40% | tee stage: Blue tee_centroid |  |
+| 1 | 5 | 544 / 545 | 79 | 0.83 | auto | 37% | 22% | 41% | tee stage: Blue tee_centroid |  |
 | 2 | 3 | 183 / 183 | 185 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
 | 3 | 4 | 393 / 394 | 280 | 0.83 | auto | 55% | 12% | 32% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 4 | 4 | 427 / 427 | 150 | 0.65 | check the flags | 29% | 11% | 60% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 427 yds) |
-| 5 | 4 | 269 / 269 | 3 | 0.75 | check the flags | 28% | 10% | 62% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 4 | 4 | 427 / 427 | 150 | 0.64 | check the flags | 29% | 8% | 64% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 427 yds) |
+| 5 | 4 | 269 / 269 | 3 | 0.74 | check the flags | 28% | 9% | 63% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 6 | 3 | 173 / 173 | 192 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 7 | 5 | 472 / 473 | 276 | 0.79 | check the flags | 47% | 6% | 47% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 8 | 4 | 305 / 305 | 327 | 0.79 | check the flags | 40% | 14% | 45% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 8 | 4 | 305 / 305 | 327 | 0.78 | check the flags | 40% | 9% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 9 | 3 | 196 / 196 | 355 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 10 | 4 | 361 / 362 | 247 | 0.82 | auto | 49% | 15% | 36% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 11 | 3 | 155 / 155 | 116 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
@@ -54,10 +54,11 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 26, g
 - **imagery**: ok: course_data/packages/tomahawk_hills/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
 - **elevation**: ok: course_data/packages/tomahawk_hills/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)
+- **vision**: missing: product layer vision_any/2 not built for 'tomahawk_hills' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 117 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py tomahawk_hills (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 9 polygons (outside 9); mode replace
 
 ## Warnings
 
 - hole 1: placed by v2+structure inference, golfer check (ambiguous (57% of the posterior))
+- CHECK vision: missing: product layer vision_any/2 not built for 'tomahawk_hills' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 117 long-grass z; trees / water come from OSM (or the fallback) only

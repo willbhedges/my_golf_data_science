@@ -1,5 +1,5 @@
 """Course module for Gateway National Golf Links (Back tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T02:35:57Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T06:27:55Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_gateway_national.json
 

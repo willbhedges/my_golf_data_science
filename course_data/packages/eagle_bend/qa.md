@@ -1,6 +1,6 @@
 # Eagle Bend Golf Course (Lawrence, KS) - Gold tees
 
-Built 2026-11-02T05:07:29Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
+Built 2026-11-02T06:14:42Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
 
 ## Coverage
 
@@ -54,10 +54,10 @@ OSM features inside the course: buildings 9, golf=bunker 23, golf=cartpath 24, g
 - **imagery**: ok: course_data/packages/eagle_bend/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
 - **elevation**: ok: course_data/packages/eagle_bend/imagery/dem.tif (18/18 holes)
-- **vision**: missing: no vision_any layers for 'eagle_bend' (FileNotFoundError: course_data/vision_any/eagle_bend/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them
+- **vision**: missing: no vision_any layers for 'eagle_bend' (FileNotFoundError: course_data/vision_any/eagle_bend/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them; CHECK: build it with course_data/vision_any/build_layers.py eagle_bend (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json
 
 ## Warnings
 
-- vision: missing: no vision_any layers for 'eagle_bend' (FileNotFoundError: course_data/vision_any/eagle_bend/raw (not fetched)); add the course to course_data/vision_an; trees / long grass come from OSM only
+- CHECK vision: missing: no vision_any layers for 'eagle_bend' (FileNotFoundError: course_data/vision_any/eagle_bend/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/visio; trees / water come from OSM (or the fallback) only

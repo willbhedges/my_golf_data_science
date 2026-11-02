@@ -1,6 +1,6 @@
 # The Jayhawk Club (Lawrence, KS) - Black tees
 
-Built 2026-11-02T02:36:48Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-02T06:28:29Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -46,7 +46,7 @@ OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18
 - **imagery**: ok: course_data/packages/jayhawk_club/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 10/10 greens visible as turf on NAIP 2021
 - **elevation**: ok: course_data/packages/jayhawk_club/imagery/dem.tif (10/10 holes)
-- **vision**: missing: no vision_any layers for 'jayhawk_club' (FileNotFoundError: course_data/vision_any/jayhawk_club/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them
+- **vision**: missing: no vision_any layers for 'jayhawk_club' (FileNotFoundError: course_data/vision_any/jayhawk_club/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them; CHECK: build it with course_data/vision_any/build_layers.py jayhawk_club (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json
 
@@ -76,4 +76,4 @@ OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18
 - hole 4: measured 538 vs card 208 yds for Black (no OSM tee box at that yardage?)
 - hole 6: measured 371 vs card 444 yds for Black (no OSM tee box at that yardage?)
 - hole 8: measured 443 vs card 512 yds for Black (no OSM tee box at that yardage?)
-- vision: missing: no vision_any layers for 'jayhawk_club' (FileNotFoundError: course_data/vision_any/jayhawk_club/raw (not fetched)); add the course to course_data/visio; trees / long grass come from OSM only
+- CHECK vision: missing: no vision_any layers for 'jayhawk_club' (FileNotFoundError: course_data/vision_any/jayhawk_club/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/v; trees / water come from OSM (or the fallback) only
