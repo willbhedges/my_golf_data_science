@@ -698,6 +698,8 @@ def build_package(slug, entry):
             card = dict(id=it["id"], hole=int(it["hole"]), severity=it["severity"], type=it["type"],
                         question=it["question"], detail=it.get("detail", ""), p_wrong=it.get("p_wrong"),
                         worst_regret=it.get("worst_regret"), options=opts, tee_set=review.get("tee_set"))
+            if it["type"] == "native" and it.get("geom"):
+                card["geom"] = it["geom"]               # native_confirm.band_spec: ConfirmEngine.nativeBand draws the answer
             cr = it.get("crop")
             if cr and it["severity"] == "red":
                 ov = cr.get("overlay") or {}

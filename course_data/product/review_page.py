@@ -17,6 +17,8 @@ TEMPLATE = os.path.join(HERE, "review_page_template.html")
 
 KEEP = ("id", "hole", "type", "severity", "par", "lie", "side", "question", "detail", "options", "crop", "toward",
         "along", "edge", "confidence", "p_wrong", "worst_regret", "exp_regret", "over_budget")
+# native items (type "native", verify.native_review_items): four options L / R / both / none with labels Left /
+# Right / Both / None; "Copy answers" sends {"id": "native_<n>", "hole": "<n>", "answer": "L"|"R"|"both"|"none"}
 
 
 def _slim_outcome(o):

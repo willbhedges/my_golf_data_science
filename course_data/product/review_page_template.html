@@ -198,7 +198,8 @@ function card(it) {
     el('span', {class: 'pill ' + it.severity, text: sev}), done,
     hb ? el('span', {class: 'now', text: 'Plan now: ' + hb.pick + ', ' + aimWords(hb.aim)}) : null]));
   const why = (it.p_wrong != null && it.worst_regret) ? 'Why we ask: about a ' + Math.round(100 * it.p_wrong) + '% chance this is off; if it is, the plan can cost up to ' +
-    it.worst_regret.toFixed(2) + ' strokes on this hole.' + (it.over_budget ? ' (Over today\u2019s red budget, so it is listed here.)' : '') : '';
+    it.worst_regret.toFixed(2) + ' strokes on this hole.' + (it.over_budget ? ' (Over today\u2019s red budget, so it is listed here.)' : '')
+    : it.type === 'native' && it.exp_regret ? 'Why we ask: the four answers give different plans here; on average your answer is worth about ' + it.exp_regret.toFixed(2) + ' strokes on this hole.' : '';
   const text = el('div', {class: 'text'}, [el('h2', {class: 'q', text: it.question}), el('p', {class: 'detail', text: it.detail || ''}),
     why ? el('p', {class: 'why', text: why}) : null]);
   const fig = it.crop ? mapFor(it) : null;
@@ -363,7 +364,8 @@ greens.forEach(it => document.getElementById('greenlist').appendChild(el('li', {
 document.getElementById('greens').hidden = !greens.length;
 document.getElementById('foot').textContent = 'Each answer was tested before you see it: the strategy model re-ran the tee shot (' + D.settings.n +
   ' swings, same random swings every time) with the item removed, its edge moved 10 yds either way, or the tee moved along and across the line (further when we are less sure of it). ' +
-  'Red means a likely-enough mistake here changes the club or the aim (by more than 5 yds) and playing the printed plan would cost at least 0.02 strokes; at most four red checks per course, all tees together count as one. Built ' + D.built + '.';
+  'Red means a likely-enough mistake here changes the club or the aim (by more than 5 yds) and playing the printed plan would cost at least 0.02 strokes; at most four red checks per course, all tees together count as one' +
+  (D.items.some(i => i.type === 'native') ? ', plus up to four \u201cnative grass along this hole?\u201d taps (Left / Right / Both / None), each answer re-planned in advance' : '') + '. Built ' + D.built + '.';
 progress();
 
 const outBox = document.getElementById('out'), status = document.getElementById('status');

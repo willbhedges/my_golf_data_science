@@ -541,6 +541,20 @@ function answered(C, H, T){
   return res;
 }
 
+/* a "native grass along this hole?" answer (check card type "native") drawn with the engine's geometry rule
+   (ConfirmEngine.nativeBand over the card's geom, tee-line yards); the plan itself comes from answered() above */
+function nativeLayer(C, H, T, V, B){
+  if (typeof ConfirmEngine === "undefined") return "";
+  const A = st.answers[C.id] || {}; let out = "";
+  for (const card of C.checks) {
+    if (card.hole !== H.no || card.type !== "native" || !card.geom || !A[card.id]) continue;
+    let band; try { band = ConfirmEngine.nativeBand(card.geom, A[card.id]); } catch (e) { continue; }
+    for (const side of ["L", "R"]) for (const [a0, a1, x0, x1] of band[side] || [])
+      out += `<polygon data-native="${side}" points="${[[a0, x0], [a1, x0], [a1, x1], [a0, x1]].map(([al, l]) => fmt(pt(V, al - B, l))).join(" ")}" fill="rgba(255,210,63,.22)" stroke="none"/>`;
+  }
+  return out;
+}
+
 function solveTee(C, H, T, W){
   const V = T.V, rel = ((W.from - V.bearing) % 360 + 360) % 360, K = corners(W.mph, rel), sol = V.offsets[String(T.back)];
   const tk = tempK(W), out = {};
@@ -880,7 +894,7 @@ function renderHole(){
     if (tp[1] > bottom) { below = Math.round((tp[1] - bottom) / Math.hypot(V.axes.f[0], V.axes.f[1]));
       const k = (bottom - star[1]) / (tp[1] - star[1]); tp = [star[0] + (tp[0] - star[0]) * k, bottom]; }
     const sw = vb[2] / 400;
-    map = IMG + `
+    map = IMG + nativeLayer(C, H, T, V, B) + `
       <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#1a1a1a" stroke-width="${4*sw}" opacity=".55"/>
       <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#ffc928" stroke-width="${2*sw}"/>
       ${pattern}

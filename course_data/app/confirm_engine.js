@@ -5,6 +5,15 @@
      S.payload()                                  // golf_confirm/1: holes, summary, questions (best first)
      S.answer({question: "c7", answer: "yes"})    // "no", or {tee_ll: [lon, lat], green_ll: [lon, lat]} for a locate
      S.notHole(7)                                 // "this isn't hole 7" during the round = a confirm answered "no"
+     S.answer({question: "native_7", kind: "native", answer: "L", out: "L"})   // "native grass along hole 7?" L / R /
+                                                  // both / none; out (optional): the "yes" sides where it starts well out
+     nativeBand(geom, "L", "L")                   // that answer's long grass, in the hole's tee-line yards
+
+   Native (product/native_confirm.py, a review/1 item of type "native" carried as a check card with `geom` =
+   native_confirm.band_spec): on a "yes" side long grass is added beyond the fairway edge + the rough width, out to
+   `reach`, on every 10-yd along slice (on a side the golfer says starts "well out": only on the slices with
+   nothing native already drawn within 40 yds of the fairway, the mapped islands stand); a "no" side clears it. An answer re-solves that hole only: the routing is unchanged, the
+   hole carries `native` and the page re-plans it from the card's precomputed outcome for that answer.
 
    Re-solve: every answer is a constraint on the pool (a pin on hole n's key = green + tee complex, or an
    exclusion of a green with any box within 45 yds of the shown tee). The routing is the cheapest pooled routing
@@ -70,6 +79,31 @@
     return out;
   }
 
+  /* native_confirm.band_rects: {L|R: [[a0, a1, x_in, x_out], ...] (added) | null (cleared)}; wellOut = the "yes"
+     sides where the golfer says the native starts well out from the fairway (the island rule there) */
+  const NATIVE_ANSWERS = ["L", "R", "both", "none"];
+  function nativeSides(answer) {
+    const a = String(answer).trim().toLowerCase();
+    if (!["l", "r", "both", "none"].includes(a)) throw new Error("native answer " + JSON.stringify(answer) + " not in L / R / both / none");
+    return {L: a === "l" || a === "both", R: a === "r" || a === "both"};
+  }
+  function nativeBand(spec, answer, wellOut) {
+    const want = nativeSides(answer), isl = wellOut ? nativeSides(wellOut) : {L: false, R: false}, out = {};
+    for (const side of ["L", "R"]) {
+      if (!want[side]) { out[side] = null; continue; }
+      const sg = side === "L" ? -1 : 1, rs = [];
+      for (let i = 0; i < spec.n; i++) {
+        const xin = spec.fw[side][i] + spec.w[side];
+        if (isl[side] && spec.near[side][i]) continue;           /* "well out": the mapped islands stand as drawn */
+        if (xin >= spec.reach) continue;
+        const a = spec.a0 + i * spec.step;
+        rs.push([a, a + spec.step, Math.round(sg * xin * 10) / 10, Math.round(sg * spec.reach * 10) / 10]);
+      }
+      out[side] = rs;
+    }
+    return out;
+  }
+
   class ConfirmSession {
     constructor(pool, opt) {
       opt = opt || {};
@@ -86,7 +120,7 @@
       this.pkey = pool.pairs.map(tab => tab.map(([t, g]) => this.keyOf(t, g)));
       this.R = pool.routings.length;
       this.setCard(opt.card || null);
-      this.pins = {}; this.excl = []; this.rejected = new Set();
+      this.pins = {}; this.excl = []; this.rejected = new Set(); this.native = {};
       this.taps = 0; this.history = [];
       this.solve();
     }
@@ -183,6 +217,7 @@
         H.flags = flags;
         H.status = fixed ? "confirmed" : (flags.length ? "check" : "ok");
         H.key = key;
+        if (this.native && this.native[ref]) { H.native = this.native[ref]; H.native_out = (this.nativeOut || {})[ref] || null; }
         holes[ref] = H;
       }
       this.holes = holes;
@@ -227,8 +262,23 @@
       return bd <= tol ? bi : -1;
     }
     answer(a) {
-      const q = (this._qs && this._qs[a.question]) || {kind: a.kind || "confirm", ref: String(a.ref), id: a.question};
+      const nat = a.kind === "native" || /^native_/.test(String(a.question || ""));
+      const q = nat ? {kind: "native", ref: String(a.ref != null ? a.ref : String(a.question).slice(7)), id: a.question}
+        : (this._qs && this._qs[a.question]) || {kind: a.kind || "confirm", ref: String(a.ref), id: a.question};
       const ref = String(q.ref), h = +ref - 1, H = this.holes[ref], ans = a.answer;
+      if (q.kind === "native") {
+        /* a map answer, not a routing one: the pool's constraints are unchanged, only this hole re-plans */
+        const sides = nativeSides(ans);
+        this.taps += 1;
+        this.native[ref] = sides.L && sides.R ? "both" : sides.L ? "L" : sides.R ? "R" : "none";
+        const wo = a.out ? nativeSides(a.out) : null;            /* "well out" sides (only "yes" sides count) */
+        this.nativeOut = this.nativeOut || {};
+        if (wo && ((wo.L && sides.L) || (wo.R && sides.R))) this.nativeOut[ref] = wo.L && sides.L && wo.R && sides.R ? "both" : wo.L && sides.L ? "L" : "R";
+        else delete this.nativeOut[ref];
+        this.history.push({question: q.id || "native_" + ref, kind: "native", ref, answer: this.native[ref], out: this.nativeOut[ref] || null});
+        if (H) { H.native = this.native[ref]; H.native_out = this.nativeOut[ref] || null; }
+        return this.holes;
+      }
       if (q.kind === "confirm") {
         this.taps += 1;
         if (ans === "yes" || ans === true) {
@@ -287,7 +337,7 @@
         tee: H.tee_ll ? {ll: H.tee_ll, src: H.t_idx >= 0 ? this.pool.tees[H.t_idx].src : "golfer"} : null,
         green: H.green_ll ? {ll: H.green_ll, src: H.g_idx >= 0 ? this.pool.greens[H.g_idx].src : "golfer"} : null,
         line: H.back_tee_ll && H.green_ll ? [H.back_tee_ll, H.green_ll] : null, straight_yd: H.straight_yd,
-        p_hole: H.p_hole, confirmed: H.fixed, status: H.status, flags: H.flags}));
+        p_hole: H.p_hole, confirmed: H.fixed, status: H.status, flags: H.flags, native: H.native || null}));
       const qs = this.done() ? [] : this.questions(k == null ? 3 : k);
       return {schema: "golf_confirm/1", course: course || {name: this.pool.name}, method: "routing/2 (pool)", n_holes: this.n,
               card: !!(this.card || this.pool.card), holes,
@@ -300,9 +350,9 @@
     }
     /* state for localStorage: the answers replay onto the pool */
     save() { return {log: this.log || [], card: this.card}; }
-    act(a) { this.log = (this.log || []).concat([a]); return a.not ? this.notHole(a.not) : (this.questions(), this.answer(a)); }
+    act(a) { this.log = (this.log || []).concat([a]); return a.not ? this.notHole(a.not) : a.kind === "native" ? this.answer(a) : (this.questions(), this.answer(a)); }
     restore(s) {
-      this.pins = {}; this.excl = []; this.rejected = new Set(); this.taps = 0; this.history = []; this.log = [];
+      this.pins = {}; this.excl = []; this.rejected = new Set(); this.native = {}; this.nativeOut = {}; this.taps = 0; this.history = []; this.log = [];
       if (s && s.card !== undefined && s.card !== this.card) this.setCard(s.card);
       this.solve();
       for (const a of (s && s.log) || []) { try { this.act(a); } catch (e) { break; } }
@@ -367,7 +417,8 @@
   }
   function poolFor(base, typed, card) { return (card && (typed || []).find(p => cardMatches(p, card))) || base; }
 
-  const api = {ConfirmSession, Proj, holeOk, simulate, lengthCost, fingerprint, cardHoles, cardMatches, poolFor};
+  const api = {ConfirmSession, Proj, holeOk, simulate, lengthCost, fingerprint, cardHoles, cardMatches, poolFor,
+               nativeBand, nativeSides, NATIVE_ANSWERS};
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.ConfirmEngine = api;
 })(typeof window !== "undefined" ? window : this);

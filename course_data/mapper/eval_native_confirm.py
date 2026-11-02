@@ -14,6 +14,9 @@ error_budget.truth_stack) covers >= MIN_YD2 sq yds of that side of the tee line,
 yds of the line, and (--answer near, default) within NEAR yds of the package fairway (the native that can catch a
 tee shot; --answer any drops this test). Scored by error_budget.score_course (configs auto + truth, n, seed 31,
 common random numbers), the same as eval_mapper.py.
+Island rule (--islands; default never = what the product does: the plain band on every "yes"). out: the simulated
+golfer's second tap, a "yes" side "starts well out" when it has < MIN_YD2 of truth native within NEAR_IN yds of the
+fairway, and there the island rule applies (native_confirm.set_side islands=True); always: on every "yes".
 Caveat (as eval_mapper.py): the truth of a corridor hole is the hand map inside its traced footprint and the scored
 map outside it, so golfer native outside the footprint is not penalised.
 """
@@ -36,11 +39,12 @@ import native_confirm as NC  # noqa: E402
 
 COURSES = "eagle_bend,mariah_hills,ellis,prairie_dunes,buffalo_dunes,sand_creek_station,spirit_hollow"
 MIN_YD2, NEAR, REACH = 300.0, 30.0, 65.0
+NEAR_IN = 15.0                 # a "yes" side with < MIN_YD2 of truth native within this of the fairway "starts well out"
 CACHE = os.path.join(HERE, "eval_cache.json")
 
 
 def truth_answers(E, cfg, base, frames, near=True):
-    """{ref: answer} from the truth native (see the module doc) + {ref: {side: sq yds}}."""
+    """{ref: answer} from the truth native (see the module doc) + {ref: {side: sq yds}} + {ref: out sides}."""
     import shapely
     from shapely.geometry import box
     S = cfg["tees"]
@@ -49,7 +53,7 @@ def truth_answers(E, cfg, base, frames, near=True):
     _, moved = E.renumber(prep, truth, S)
     inv = {j: r for r, j in moved.items()}
     P = E.PK()
-    out, areas = {}, {}
+    out, areas, outs = {}, {}, {}
     for ref, fj in frames.items():
         tref = inv.get(ref, None if ref in moved else ref)
         td = truth.get(tref) if tref else None
@@ -60,18 +64,23 @@ def truth_answers(E, cfg, base, frames, near=True):
         ref_ll = P._ll(ent.get("tee_ll")) or P._ll(h.get("tee_ll")) or td.get("tee_ll")
         eff = E.effective(E.truth_stack(E.auto_stack(prep, h, ref_ll), td))
         nat = eff.get("native")
-        a = {"L": 0.0, "R": 0.0}
+        a, a_in = {"L": 0.0, "R": 0.0}, {"L": 0.0, "R": 0.0}
         if nat is not None and not nat.is_empty:
             g = shapely.transform(nat, lambda xy: M.ll_to_xy(fj, xy)).buffer(0)
             mown = NC.mown_xy(fj, base["holes"][ref])
             for s, bx in (("L", box(-REACH, 150, 0, 345)), ("R", box(0, 150, REACH, 345))):
                 q = g.intersection(bx)
+                if mown is not None:
+                    a_in[s] = round(q.intersection(mown.buffer(NEAR_IN)).area)
                 if near and mown is not None:
                     q = q.intersection(mown.buffer(NEAR))
                 a[s] = round(q.area)
-        areas[ref] = a
+        areas[ref] = dict(a, L_in=a_in["L"], R_in=a_in["R"])
         out[ref] = NC.answer_of({s: a[s] >= MIN_YD2 for s in NC.SIDES})
-    return out, areas
+        o = NC.answer_of({s: a[s] >= MIN_YD2 and a_in[s] < MIN_YD2 for s in NC.SIDES})
+        if o != "none":
+            outs[ref] = o
+    return out, areas, outs
 
 
 def capped(qs, cap):
@@ -99,10 +108,13 @@ def main():
     ap.add_argument("--caps", default="2,4,6")
     ap.add_argument("--answer", default="near", choices=["near", "any"])
     ap.add_argument("--workers", type=int, default=1)
+    ap.add_argument("--islands", default="never", choices=["out", "always", "never"],
+                    help="island rule: on the golfer's 'well out' sides (second tap), on every 'yes', or never")
     ap.add_argument("--out")
     ap.add_argument("--cache", help="decision cache to load / keep (default: a temp file, dropped)")
     a = ap.parse_args()
     import apply as AP
+    NC.ISLAND_MODE = a.islands               # "out": the simulated golfer's second tap; "always": on every yes
     E = EM.eb()
     E.ONLY = {"auto", "truth"}
     cache = {}
@@ -123,7 +135,7 @@ def main():
                 out.append(dict(slug=cfg["slug"], tees=cfg["tees"], error=f"{type(e).__name__}: {e}"))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
-    res = dict(schema="native_confirm_eval/1", n=a.n, answer=a.answer, caps=caps, min_yd2=MIN_YD2, near=NEAR,
+    res = dict(schema="native_confirm_eval/1", n=a.n, answer=a.answer, islands=a.islands, near_in=NEAR_IN, caps=caps, min_yd2=MIN_YD2, near=NEAR,
                made_utc=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%MZ"), courses=out)
     path = a.out or os.path.join(HERE, "eval_native_confirm.json")
     M.wj(path, res)
@@ -141,7 +153,7 @@ def run_course(E, AP, cfg, a, caps, cache, tmp):
     edits = M.rj(M.mdir(slug, "edits.json"))
     zones = M.rj(M.mdir(slug, "agent_zones.geojson"))
     pri = NC.priors(edits, zones, frames, agent)
-    ans, areas = truth_answers(E, cfg, base, frames, near=a.answer == "near")
+    ans, areas, outs = truth_answers(E, cfg, base, frames, near=a.answer == "near")
     D = NC.EBDecider(S, n=a.n, workers=a.workers, cache=cache)
     print(f"== {slug} ({S}): selecting", flush=True)
     qs = NC.select(agent, frames, pri, D, cap=99)
@@ -152,7 +164,8 @@ def run_course(E, AP, cfg, a, caps, cache, tmp):
     asked["ASK all"] = [r for r in frames if r in ans]
     for k, hs in asked.items():
         variants[k] = NC.apply_answers(agent, {r: ans[r] for r in hs if r in ans}, frames,
-                                       {r: {s: pri[r][s]["w"] for s in NC.SIDES} for r in hs})
+                                       {r: {s: pri[r][s]["w"] for s in NC.SIDES} for r in hs},
+                                       {r: outs[r] for r in hs if r in outs})
     scores = {}
     for k, pk in variants.items():
         d = os.path.join(tmp, k.replace(" ", "_"))
@@ -163,7 +176,7 @@ def run_course(E, AP, cfg, a, caps, cache, tmp):
         print(f"  scoring {k}", flush=True)
         r = E.score_course(dict(cfg), a.n, a.workers, cache)
         scores[k] = tot(r) if "rows" in r else dict(error=r.get("error"))
-    c = dict(slug=slug, tees=S, answers=ans, areas=areas,
+    c = dict(slug=slug, tees=S, answers=ans, areas=areas, outs=outs,
              priors={r: {s: v[s]["p"] for s in NC.SIDES} for r, v in pri.items()},
              questions=[{k: q[k] for k in ("hole", "value", "changes", "prior", "plans", "regret", "state_p")} for q in qs],
              asked=asked, scores=scores, secs=round(time.time() - t0))
@@ -174,7 +187,7 @@ def run_course(E, AP, cfg, a, caps, cache, tmp):
 
 def report(res):
     ks = ["AUTO", "AGENT"] + [f"ASK {c}" for c in res["caps"]] + ["ASK all"]
-    L = [f"# Native-side confirm tap: offline value (answers simulated from the truth, '{res['answer']}')", "",
+    L = [f"# Native-side confirm tap: offline value (answers simulated from the truth, '{res['answer']}', islands '{res.get('islands', 'never')}')", "",
          f"Made {res['made_utc']} by `course_data/mapper/eval_native_confirm.py` (n = {res['n']}, seed 31; "
          "DECIDE_ADAPTIVE_AIM=0 V2_ADAPTIVE_AIM=0 for comparison with EVAL_BLIND rounds 3-4). **Truth-bearing: never "
          "show to a mapper.**", "", "match / regret (strokes) over the corridor tee shots; questions asked in brackets.", "",
@@ -210,7 +223,8 @@ def report(res):
         for r in c["asked"][big]:
             q = next(x for x in c["questions"] if x["hole"] == r)
             ag, af = c["scores"]["AGENT"]["holes"].get(r, {}), c["scores"][big]["holes"].get(r, {})
-            rows.append(f"{r} [{c['answers'].get(r)}; p L {q['prior']['L']:.2f} R {q['prior']['R']:.2f}; value {q['value']:.3f}]: "
+            ot = (c.get("outs") or {}).get(r)
+            rows.append(f"{r} [{c['answers'].get(r)}{'; out ' + ot if ot else ''}; p L {q['prior']['L']:.2f} R {q['prior']['R']:.2f}; value {q['value']:.3f}]: "
                         f"{ag.get('plan')} -> {af.get('plan')} (truth {ag.get('truth')}; regret {ag.get('regret')} -> {af.get('regret')})")
         L.append(f"- **{c['slug']}** ({big}): " + ("; ".join(rows) if rows else "none"))
     L += ["", "## Simulated answers vs mapper (every corridor hole)", "", "| course | hole | truth answer | sq yds L / R | prior L / R |",

@@ -19,8 +19,12 @@ What each answer does (items and frames come from review.json, so the page never
   cut     present  the tested first-cut polygons are added (src golfer:cut); confirm: verification.no_cut = true
   gap     present  a "recovery" polygon over the tested strip is added (src golfer:gap)
           confirm  hole.verification.open_<side> = true (verify.py stops asking)
-  native  L / R / both / none (product/native_confirm.py): long grass added beyond max(10 yds, the mapped rough
-          width) of the fairway on each "yes" side over the landing window; native removed on each "no" side
+  native  L / R / both / none (product/native_confirm.py): on each "yes" side the mapped native stays and long grass
+          is added beyond max(10 yds, the mapped rough width) of the fairway over the landing window;
+          native removed on each "no" side. reapply()
+          redoes it on a rebuilt package (kind "native": the stored frame, widths and answer). Optional "out":
+          "L" / "R" / "both", the "yes" sides where the native starts well out (island rule: the mapped native
+          stays as drawn, the band only where nothing is mapped within 40 yds of the fairway)
   check   playable / not_playable is recorded in hole.verification (the plan's guard still prints the CHECK)
 Every answer is also recorded under hole["verification"][item id] and package["verification"]. Zone indices
 are checked against review.json's fingerprints (first vertex); a mismatch (package rebuilt since the review)
@@ -173,13 +177,13 @@ def apply(pkg, review, answers, log=print, corrections_out=None):
         elif it["type"] == "native":
             import native_confirm as NC          # golfer "native grass along this hole?" (L / R / both / none)
             try:
-                d = NC.apply_answer(h, it, ans)
+                d = NC.apply_answer(h, it, ans, a.get("out"))
             except ValueError as e:
                 warn.append(f"{a['id']}: {e}")
                 continue
             changed.setdefault(ref, []).append(it["id"])
-            corr.append(dict(kind="native", hole=ref, answer=ans, widths=it.get("widths"), frame=it.get("frame"),
-                             delta_yd2=d, id=it["id"]))
+            corr.append(dict(kind="native", hole=ref, answer=ans, out=a.get("out"), widths=it.get("widths"),
+                             frame=it.get("frame"), delta_yd2=d, id=it["id"]))
         # check: recorded only
     for ref, idx in removals.items():
         zl = pkg["holes"][ref]["zones_ll"]
@@ -279,6 +283,16 @@ def reapply(pkg, corrections, reframe=None, log=print):
                     zl.append(dict(lie=c["lie"], poly=p, src="golfer:added", p=1.0, verified="golfer"))
         elif c["kind"] == "flag":
             h["verification"][c["flag"]] = True
+        elif c["kind"] == "native":
+            import native_confirm as NC          # the same rule on the rebuilt map (its own islands / fairway)
+            if not c.get("frame"):
+                skipped.append(c["id"])
+                continue
+            try:
+                NC.apply_answer(h, dict(frame=c["frame"], widths=c.get("widths") or {}), c["answer"], c.get("out"))
+            except ValueError:
+                skipped.append(c["id"])
+                continue
         done += 1
     if reframe is not None and done:
         try:

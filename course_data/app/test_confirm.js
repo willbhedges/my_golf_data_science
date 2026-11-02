@@ -101,6 +101,41 @@ for (const p of pools) {
   ok(S.rejected.has("3") && S.taps === 1, `${p.slug}: this isn't hole 3`);
 }
 
+/* ------------------------------------------------------------------ 2b. native-grass question (native_confirm.py) */
+{
+  // geometry: the same answers as native_confirm.band_rects on its fixtures (product/test_native_confirm.py writes them)
+  const NF = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "native_band.json"), "utf8"));
+  ok(NF.cases.length >= 4, "native band fixtures");
+  for (const c of NF.cases) for (const a of E.NATIVE_ANSWERS) {
+    ok(JSON.stringify(E.nativeBand(c.spec, a)) === JSON.stringify(c.rects[a]), `native band ${c.name} ${a} = Python`);
+    for (const o of ["L", "R", "both"])
+      ok(JSON.stringify(E.nativeBand(c.spec, a, o)) === JSON.stringify(c.out[o][a]), `native band ${c.name} ${a} out ${o} = Python`);
+  }
+  const isl = NF.cases.find(c => c.name === "island_left"), L = E.nativeBand(isl.spec, "both", "L").L;
+  ok(E.nativeBand(isl.spec, "both").L.some(r => r[0] === 200), "native: a plain yes bands beside the island");
+  ok(L.length && L.every(r => r[0] < 200 || r[0] >= 280), "native: no band beside the mapped island");
+  let threw = false; try { E.nativeBand(isl.spec, "left-ish"); } catch (e) { threw = true; }
+  ok(threw, "native: a bad answer throws");
+  // session: a native answer re-plans that hole only (routing unchanged), survives replay and undo
+  const P = JSON.parse(fs.readFileSync(pools[0].file, "utf8"));
+  const S = new E.ConfirmSession(P), keys = JSON.stringify(Object.values(S.holes).map(h => h.key));
+  S.act({question: "native_2", kind: "native", ref: "2", answer: "both"});
+  ok(S.holes["2"].native === "both" && S.taps === 1 && !S.holes["1"].native, "native: answer on hole 2 only");
+  ok(JSON.stringify(Object.values(S.holes).map(h => h.key)) === keys, "native: the routing is unchanged");
+  ok(S.payload().holes[1].native === "both" && S.history[0].kind === "native", "native: in the payload and history");
+  S.act({question: "native_3", kind: "native", ref: "3", answer: "L", out: "both"});
+  ok(S.holes["3"].native === "L" && S.holes["3"].native_out === "L", "native: well out only on a yes side");
+  S.undoLast();
+  S.act({question: "native_2", kind: "native", ref: "2", answer: "none"});
+  ok(S.holes["2"].native === "none", "native: a later answer wins");
+  const S2 = new E.ConfirmSession(P); S2.restore(S.save());
+  ok(S2.holes["2"].native === "none" && S2.taps === 2, "native: replay");
+  S.undoLast();
+  ok(S.holes["2"].native === "both", "native: undo");
+  S.act({question: "c1", kind: "confirm", ref: "1", answer: "yes"});
+  ok(S.holes["2"].native === "both", "native: kept across a routing re-solve");
+}
+
 /* ------------------------------------------------------------------ 3. oracle golfer vs confirm.Session */
 let ref = {};
 try { const ev = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "generalize", "eval_v2.json"), "utf8"));

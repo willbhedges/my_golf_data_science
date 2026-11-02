@@ -81,6 +81,68 @@ def test_width_from_the_mappers_native_edge():
     assert NC.beyond_width(40) == NC.MAX_BEYOND and NC.beyond_width(3) == NC.MIN_BEYOND
 
 
+def _along_cover(polys, side):
+    """Along slices (10 yds) where the golfer band has any area on that side."""
+    from shapely.geometry import box
+    from shapely.ops import unary_union
+    g = unary_union([M._poly(p) for p in polys]).buffer(0)
+    out = set()
+    for a in range(int(NC.A0), int(NC.A1), 10):
+        bx = box(-NC.REACH, a, 0, a + 10) if side == "L" else box(0, a, NC.REACH, a + 10)
+        if g.intersection(bx).area > 5:
+            out.add(a)
+    return out
+
+
+def test_yes_well_out_keeps_mapper_islands_and_fills_only_bare_stretches():
+    """Mariah Hills: native as islands 25+ yds out. "Yes, well out" keeps them and adds the band only where
+    nothing is drawn within ISLAND_NEAR yds of the fairway on that side; a plain "yes" bands the whole side."""
+    fj = _fj()
+    h = _hole(fj)
+    h["zones_ll"].append(dict(lie="native", poly=_ring(fj, _box(-60, -42, 200, 280)), src="agent:mapper"))   # 27 yds out
+    h0 = copy.deepcopy(h)
+    NC.apply_answer(h, {"frame": fj, "widths": {}}, "L", out="L")
+    gol = _native_xy(fj, h, NC.SRC)
+    cov = _along_cover(gol, "L")
+    assert not cov & set(range(200, 280, 10))                  # no 10-yd band beside the island
+    assert {130, 150, 290, 380} <= cov                         # bare stretches still get the band
+    assert any(z.get("src") == "agent:mapper" for z in h["zones_ll"] if z["lie"] == "native")   # island kept
+    assert h["verification"]["native_sides"]["out"] == "L"
+    NC.apply_answer(h0, {"frame": fj, "widths": {}}, "L")      # plain yes: the band beside the island too
+    assert set(range(200, 280, 10)) <= _along_cover(_native_xy(fj, h0, NC.SRC), "L")
+    assert NC.island_sides("R") == {"L": False, "R": True} and NC.island_sides(None) == {"L": False, "R": False}
+    assert NC.island_sides(None, mode="always") == {"L": True, "R": True}
+
+
+def test_far_native_does_not_block_the_band():
+    fj = _fj()
+    h = _hole(fj)
+    h["zones_ll"].append(dict(lie="native", poly=_ring(fj, _box(-65, -58, 150, 350)), src="agent:mapper"))   # 43+ yds out
+    NC.apply_answer(h, {"frame": fj, "widths": {}}, "L", out="L")
+    cov = _along_cover(_native_xy(fj, h, NC.SRC), "L")
+    assert set(range(150, 350, 10)) <= cov
+
+
+def test_right_island_does_not_block_left():
+    fj = _fj()
+    h = _hole(fj)
+    h["zones_ll"].append(dict(lie="native", poly=_ring(fj, _box(42, 60, 150, 350)), src="agent:mapper"))
+    NC.apply_answer(h, {"frame": fj, "widths": {}}, "both", out="both")
+    gol = _native_xy(fj, h, NC.SRC)
+    assert set(range(150, 350, 10)) <= _along_cover(gol, "L")
+    assert not _along_cover(gol, "R") & set(range(150, 350, 10))
+
+
+def test_bare_stretches_helper():
+    fj = _fj()
+    h = _hole(fj)
+    h["zones_ll"].append(dict(lie="native", poly=_ring(fj, _box(-60, -42, 200, 280)), src="agent:mapper"))
+    cov = NC.covered_along(fj, h, "L")
+    assert [c[0] for c in cov] == list(range(200, 280, 10))
+    assert all(c[2] == pytest.approx(42, abs=0.5) for c in cov)          # the island's inner edge
+    assert NC.covered_along(fj, h, "R") == []
+
+
 def test_none_removes_native_on_that_side_only():
     fj = _fj()
     h = _hole(fj, native=[(-60, -30), (25, 60)])
@@ -169,3 +231,90 @@ def test_apply_answers_hook():
     xs = [p[:, 0].mean() for p in _native_xy(fj, h)]
     assert xs and all(x < 0 for x in xs)
     assert pkg["holes"]["1"]["zones_ll"][-1]["src"] == "agent:mapper"     # input untouched
+
+
+def test_reapply_redoes_native_after_rebuild():
+    import apply_answers as AA
+    fj = _fj()
+    pkg = dict(tee_set="Blue", holes={"1": _hole(fj, native=[(25, 60)])})
+    item = dict(id="native_1", type="native", hole="1", frame=fj["frame"], widths={"L": 10.0, "R": 10.0})
+    review = dict(tee_set="Blue", items=[item], holes={"1": {}})
+    corr = []
+    AA.apply(pkg, review, {"answers": [{"id": "native_1", "answer": "L"}]}, log=lambda *a: None, corrections_out=corr)
+    assert corr and corr[0]["kind"] == "native" and corr[0]["answer"] == "L"
+    rebuilt = dict(tee_set="Blue", holes={"1": _hole(fj, native=[(25, 60)])})      # a fresh package build
+    r = AA.reapply(rebuilt, {"items": corr}, log=lambda *a: None)
+    assert r["applied"] == 1 and not r["skipped"]
+    xs = [p[:, 0].mean() for p in _native_xy(fj, rebuilt["holes"]["1"])]
+    assert xs and all(x < 0 for x in xs)                                           # right native gone, left added
+    assert rebuilt["holes"]["1"]["verification"]["native_sides"]["answer"] == "L"
+
+
+def test_verify_native_review_items_have_four_answers():
+    import verify as V
+    frames = {r: dict(_fj(), ref=r) for r in ("1", "2")}
+    fj = frames["1"]
+    pk = dict(holes={r: dict(_hole(fj), ref=r) for r in frames})
+    lg = {"1": {"L": "none: smooth mown rough (uncertain)", "R": "none: woods"},
+          "2": {"L": "none: woods", "R": "none: woods"}}
+    pri = NC.priors({"holes": {r: {"long_grass": v} for r, v in lg.items()}}, None, frames, pk)
+    items = V.native_review_items(pk, frames, pri, FakeDecider(frames), cap=4)
+    assert [it["id"] for it in items] == ["native_1"]                  # woods-only hole 2: below MIN_VOI
+    it = items[0]
+    assert it["type"] == "native" and it["severity"] == "red"
+    assert [o["answer"] for o in it["options"]] == ["L", "R", "both", "none"]
+    assert [o["label"] for o in it["options"]] == ["Left", "Right", "Both", "None"]
+    L = next(o for o in it["options"] if o["answer"] == "L")
+    assert "3-wood" in L["text"] and L["outcome"]["club_changed"]
+    N = next(o for o in it["options"] if o["answer"] == "none")
+    assert N["text"].startswith("No change")
+    import review_page
+    d = review_page.page_data(dict(course="X", slug="x", tee_set="Blue", built="t", counts={}, holes={},
+                                   items=items, settings={"n": 10}))
+    assert d["items"][0]["options"][0]["answer"] == "L" and "frame" not in d["items"][0]
+
+
+def _band_area(rects):
+    return sum((a1 - a0) * abs(x1 - x0) for a0, a1, x0, x1 in rects or [])
+
+
+def test_band_rects_follow_the_shapely_rule():
+    fj = _fj()
+    h = _hole(fj)
+    h["zones_ll"].append(dict(lie="native", poly=_ring(fj, _box(-60, -42, 200, 280)), src="agent:mapper"))
+    spec = NC.band_spec(fj, h, {})
+    assert spec["near"]["L"][(200 - 130) // 10] == pytest.approx(42, abs=0.5) and not any(spec["near"]["R"])
+    assert spec["fw"]["L"][5] == pytest.approx(15, abs=0.5) and spec["w"]["R"] == NC.MIN_BEYOND
+    for out in (None, "L"):
+        r = NC.band_rects(spec, "L", out)
+        assert r["R"] is None and (out is None or all(not (200 <= a0 < 280) for a0, *_ in r["L"]))
+        h2 = copy.deepcopy(h)
+        NC.apply_answer(h2, {"frame": fj, "widths": {}}, "L", out)
+        shp = sum(M._poly(p).area for p in _native_xy(fj, h2, NC.SRC))
+        assert _band_area(r["L"]) == pytest.approx(shp, rel=0.1)
+    assert NC.band_rects(spec, "none") == {"L": None, "R": None}
+
+
+def native_band_fixture():
+    """Specs + the Python answers for confirm_engine.js nativeBand (app/test_confirm.js parity)."""
+    fj = _fj()
+    cases = []
+    for name, nat in (("bare", []), ("island_left", [(-60, -42, 200, 280)]), ("far_right", [(58, 65, 150, 350)]),
+                      ("near_both", [(-40, -30, 150, 240), (28, 50, 300, 400)])):
+        h = _hole(fj)
+        for x0, x1, a0, a1 in nat:
+            h["zones_ll"].append(dict(lie="native", poly=_ring(fj, _box(x0, x1, a0, a1)), src="agent:mapper"))
+        spec = NC.band_spec(fj, h, {"L": 18.0} if name == "near_both" else {})
+        cases.append(dict(name=name, spec=spec, rects={a: NC.band_rects(spec, a) for a in NC.ANSWERS},
+                          out={o: {a: NC.band_rects(spec, a, o) for a in NC.ANSWERS} for o in ("L", "R", "both")}))
+    return dict(schema="native_band_fixture/1", cases=cases)
+
+
+def test_app_native_band_fixture_is_current():
+    import json
+    p = os.path.join(os.path.dirname(HERE), "app", "fixtures", "native_band.json")
+    want = json.loads(json.dumps(native_band_fixture()))
+    if os.environ.get("WRITE_FIXTURES"):
+        with open(p, "w") as fh:
+            json.dump(want, fh, indent=0)
+    assert json.load(open(p)) == want, "regenerate: WRITE_FIXTURES=1 pytest -k native_band_fixture"

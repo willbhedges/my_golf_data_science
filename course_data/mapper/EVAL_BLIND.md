@@ -499,3 +499,38 @@ Eagle Bend 8 / 0.588 -> 9 / 0.299 (4 q) -> 10 / 0.196 (6 q). Mariah Hills loses 
 islands 25+ yds out; "yes" inserts at 10 yds and the 30-yd "near" answer rule says "no" on sides whose islands the
 mapper drew. Next: on "yes", keep the mapper's own native edge on that side when it has one (insert only where
 it drew none); a second tap for "starts near / far" on island courses.
+
+### Island fix (2026-11-02, follow-up)
+
+Tried on a "yes" side: keep the mapper / auto native as drawn and add the band only on 10-yd along slices with
+nothing native within 40 yds of the fairway (`native_confirm.covered_along`, `set_side(islands=True)`). Same
+eval (DECIDE_ADAPTIVE_AIM=0 V2_ADAPTIVE_AIM=0, n = 4000, seed 31), match / regret at ASK <= 4 and <= 6:
+
+| course | plain band (committed) <= 4 / <= 6 | island rule on every yes <= 4 / <= 6 | env B plain <= 4 / <= 6 | env B plain + "well out" 2nd tap <= 4 / <= 6 |
+|---|---|---|---|---|
+| ellis | 11 / 0.335 · 11 / 0.335 | 11 / 0.335 · 11 / 0.335 | 11 / 0.334 · 11 / 0.334 | same |
+| spirit_hollow | 8 / 0.617 · 8 / 0.305 | (not run: checkout lacked spirit_hollow/) | 9 / 0.670 · 10 / 0.343 | same |
+| sand_creek_station | 13 / 0.233 · 13 / 0.233 | 13 / 0.228 · 13 / 0.228 | 13 / 0.257 · 13 / 0.257 | same |
+| eagle_bend | 9 / 0.299 · 10 / 0.196 | 9 / 0.299 · 10 / 0.196 | 9 / 0.297 · 10 / 0.194 | same |
+| prairie_dunes | 9 / 0.514 · 9 / 0.510 | **7 / 0.847 · 7 / 0.847** | 9 / 0.438 · 9 / 0.435 | same |
+| buffalo_dunes | 13 / 0.152 · 13 / 0.138 | 13 / 0.175 · 13 / 0.175 | 13 / 0.148 · 13 / 0.133 | same |
+| mariah_hills (AGENT 8 / -0.317; env B 8 / -0.323) | 7 / -0.505 · 5 / -0.420 | **8 / -0.516** · 6 / -0.431 | 8 / -0.509 · 6 / -0.426 | same |
+| pooled, 6 courses without Spirit Hollow | 62 / 1.028 · 61 / 0.992 | 61 / 1.368 · 60 / 1.350 | 63 / 0.965 · 62 / 0.927 | same |
+| pooled, 7 courses (AGENT: 66 / 2.51 committed, 67 / 2.51 env B) | 70 / 1.645 · 69 / 1.297 | - | 72 / 1.635 · 72 / 1.270 | same (ASK all 74 / 1.015 -> 74 / 0.989) |
+
+- The island rule on every "yes" fixes Mariah Hills (7 -> 8 at <= 4, back to AGENT) but breaks Prairie Dunes
+  (9 -> 7): its mapped native is near the fairway but patchy, so the slices it touches keep their mown gaps and
+  the "yes" no longer changes holes 1 and 5 (they drop out of the selection). Pooled <= 4 is worse (62 / 1.03 ->
+  61 / 1.37 on the six comparable courses): **gate failed, not shipped as the default.** A "fill outward from the
+  island's inner edge" variant was worse on the first three courses (ellis 11 -> 10, sand creek 13 -> 12) and was
+  stopped.
+- "Near the fairway / well out" second tap (simulated: a "yes" side with < 300 sq yds of truth native within 15
+  yds of the fairway is "well out", island rule there only): identical to the plain band at <= 2 / 4 / 6 (the
+  asked holes' plans do not move), a hair better only when every hole is asked (regret 1.015 -> 0.989). Not
+  asked on the pages; `apply_answers.py` and `native_confirm.apply_answer` take an optional `out`.
+- Env B = the full scorer: the first sparse checkout (the committed numbers' environment, which its AGENT row
+  reproduced exactly) lacked `course_data/elevation/*.py`, `library/*.py`, `vision_any/s2/*.py` and the top-level
+  `spirit_hollow/`; with them AUTO / AGENT move (Spirit Hollow AUTO 6 -> 7, Prairie Dunes AGENT 0.789 -> 0.720), so
+  before / after is compared within one environment. In env B the plain band no longer costs Mariah Hills a match
+  at <= 4 (8 / -0.509 vs AGENT 8 / -0.323); it still does at <= 6 (holes 18, 12: 4-wood / aim shifts the truth does
+  not make). `EVAL_native_confirm.md` / `.json` are the env B plain-band run.

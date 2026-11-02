@@ -13,10 +13,17 @@ So the product asks the golfer, per hole, on the few holes where the answer chan
     # or item by item: NC.apply_answer(h, item, "both") (product/apply_answers.py does this for type "native")
 
 Answer -> map (per side, in the hole's corridor frame: x = yds right of the corridor-set tee line):
-  native on side S  long grass (lie "native", src "golfer:native") everywhere on that side of the tee line, along
-                    A0..A1 and out to REACH yds, beyond max(MIN_BEYOND, the mapper's mown-rough width on that side,
-                    capped at MAX_BEYOND) of the package fairway / first cut / green (the truth's "native_beyond"
-                    convention: box minus the fairway grown by the rough width). Existing native stays (union).
+  native on side S  long grass (lie "native", src "golfer:native") on that side of the tee line, along A0..A1 and
+                    out to REACH yds, beyond max(MIN_BEYOND, the mapper's mown-rough width on that side, capped at
+                    MAX_BEYOND) of the package fairway / first cut / green (the truth's "native_beyond" convention:
+                    box minus the fairway grown by the rough width). Existing native stays (union).
+    ... "well out"  (optional `out` = the "yes" sides where it starts well out): the island rule. The native
+                    already drawn on that side stays as drawn and the band is added only along the stretches
+                    (ISLAND_STEP-yd along slices) with nothing native within ISLAND_NEAR yds of the fairway (Mariah
+                    Hills: native as islands 25+ yds out). Measured (mapper/EVAL_BLIND.md, 2026-11-02 island fix):
+                    on every "yes" (ISLAND_MODE "always") it costs Prairie Dunes, whose mapped native is near but
+                    gappy (pooled <= 4 questions worse); as a golfer's second tap it changes nothing at <= 4 / <= 6
+                    questions, so the pages do not ask it. apply_answers.py takes it if a golfer says so.
   no native on S    every native zone (auto / vision / agent) on that side of the tee line is cut away.
 Precedence is the package's (native lowest): trees, water, sand, OB and the fairway stay on top.
 
@@ -57,6 +64,12 @@ CAP = 4                        # questions per course (the review page's red-car
 AIM_TOL = 10.0                 # yds: an aim change beyond this is a plan change (error_budget.AIM_TOL)
 MIN_VOI = 0.01                 # strokes: below the plan's tie band a tap is not worth asking
 MIN_STATE_P = 0.05
+ISLAND_NEAR = 40.0             # yds off the fairway edge: native already drawn this close on a side keeps that stretch
+ISLAND_STEP = 10.0             # along slices of the island test
+ISLAND_MIN_YD2 = 20.0          # native in a slice smaller than this does not count (slivers)
+# where the island rule applies: "out" = on the sides the golfer says the native starts well out from the fairway
+# (the second tap); "always" = on every "yes" side (measured worse pooled: EVAL_native_confirm.md); "never"
+ISLAND_MODE = os.environ.get("NATIVE_ISLAND_MODE", "out")
 
 
 def sides_of(answer):
@@ -132,17 +145,117 @@ def insert_geom(fj, h, side, w):
     return M.shape_geom({"beyond_fairway": dict(w=w, side=side, a0=A0, a1=A1, x0=x0, x1=x1)}, fj, h)
 
 
+def covered_along(fj, h, side, near=ISLAND_NEAR, step=ISLAND_STEP, min_yd2=ISLAND_MIN_YD2):
+    """[(a0, a1, x_inner)] along slices of A0..A1 where native is already drawn on that side within `near` yds of
+    the package fairway / first cut / green (of the tee line when the hole has none); x_inner = yds off the tee
+    line of that native's inner edge in the slice."""
+    from shapely.geometry import box
+    nat = native_xy(fj, h)
+    if nat is None or nat.is_empty:
+        return []
+    mown = mown_xy(fj, h)
+    s = _sgn(side)
+    half = box(-REACH - near, A0, 0.0, A1) if side == "L" else box(0.0, A0, REACH + near, A1)
+    zone = (mown.buffer(near) if mown is not None and not mown.is_empty else box(-near, A0, near, A1)).intersection(half)
+    near_nat = nat.intersection(zone)
+    if near_nat.is_empty:
+        return []
+    out, a = [], A0
+    while a < A1 - 1e-6:
+        b = min(A1, a + step)
+        sl = box(min(0.0, s * (REACH + near)), a, max(0.0, s * (REACH + near)), b)
+        q = near_nat.intersection(sl)
+        if q.area >= min_yd2:
+            xin = min(abs(c[0]) for p in M.polys_of(q, 0.0) for c in p.exterior.coords) if M.polys_of(q, 0.0) else 0.0
+            out.append((int(a) if float(a).is_integer() else a, int(b) if float(b).is_integer() else b, round(xin, 1)))
+        a = b
+    return out
+
+
+def band_spec(fj, h, widths=None, step=ISLAND_STEP):
+    """The answer geometry in a compact, frame-relative form the app applies itself (confirm_engine.js nativeBand):
+    per ISLAND_STEP-yd along slice of A0..A1 and side, the fairway / first cut / green edge (yds off the tee line,
+    0 = none), the inner edge of native already drawn within ISLAND_NEAR yds of it (0 = none: the island rule),
+    and the rough width
+    (widths {side: w or None} as apply_answer takes them; None = the map's own rough width)."""
+    from shapely.geometry import LineString
+    mown = mown_xy(fj, h)
+    n = int(round((A1 - A0) / step))
+    out = dict(a0=A0, step=step, n=n, reach=REACH, fw={}, near={}, w={})
+    for side in SIDES:
+        sg = _sgn(side)
+        cov = {a: x for a, _, x in covered_along(fj, h, side, step=step)}
+        fw, near = [], []
+        for i in range(n):
+            a = A0 + i * step
+            mid = a + step / 2
+            e = 0.0
+            if mown is not None and not mown.is_empty:
+                it = mown.intersection(LineString([(0, mid), (sg * REACH, mid)]))
+                for p in getattr(it, "geoms", [it]) if not it.is_empty else []:
+                    cx = [abs(c[0]) for c in p.coords]
+                    if cx and min(cx) < 15:
+                        e = max(e, max(cx))
+            fw.append(round(e, 1))
+            k = int(a) if float(a).is_integer() else a
+            near.append(max(cov[k], 0.1) if k in cov else 0)
+        out["fw"][side], out["near"][side] = fw, near
+        ww = rough_width(fj, h, side) if widths is None else widths.get(side)      # as apply_answer(s) does
+        out["w"][side] = round(beyond_width(ww), 1)
+    return out
+
+
+def band_rects(spec, answer, out=None, mode=None):
+    """band_spec + an answer (+ the sides where it starts well out) -> {side: [[a0, a1, x_in, x_out], ...] (native
+    added) or None (native removed)}. The rule of set_side on slices: a "yes" side gets a rectangle beyond
+    max(MIN_BEYOND, w) of the fairway edge out to REACH on every slice (on an island side: every slice without
+    native already near); a "no" side clears that side."""
+    want, isl = sides_of(answer), island_sides(out, mode)
+    out = {}
+    for side in SIDES:
+        if not want[side]:
+            out[side] = None
+            continue
+        sg, rs = _sgn(side), []
+        for i in range(spec["n"]):
+            x_in = spec["fw"][side][i] + spec["w"][side]
+            if isl[side] and spec["near"][side][i]:
+                continue
+            if x_in >= spec["reach"]:
+                continue
+            a = spec["a0"] + i * spec["step"]
+            rs.append([a, a + spec["step"], round(sg * x_in, 1), round(sg * spec["reach"], 1)])
+        out[side] = rs
+    return out
+
+
 def erase_box(side):
     from shapely.geometry import box
     a0, a1 = ERASE_ALONG
     return box(-ERASE_REACH, a0, 0.0, a1) if side == "L" else box(0.0, a0, ERASE_REACH, a1)
 
 
-def set_side(h, fj, side, native, w=None, tag=None):
-    """Apply one side's answer to the package hole h (in place). -> sq yds added (native) or removed (none)."""
+def island_sides(out=None, mode=None):
+    """{side: island rule applies} for the golfer's "starts well out" sides `out` ("L" / "R" / "both" / None)."""
+    mode = mode or ISLAND_MODE
+    if mode == "always":
+        return {"L": True, "R": True}
+    if mode == "never" or not out:
+        return {"L": False, "R": False}
+    return sides_of(out)
+
+
+def set_side(h, fj, side, native, w=None, tag=None, islands=False):
+    """Apply one side's answer to the package hole h (in place). -> sq yds added (native) or removed (none).
+    islands: the native starts well out on this side; keep the mapped native as drawn and add the band only
+    along the stretches with nothing native within ISLAND_NEAR yds of the fairway."""
     zones = list(h.get("zones_ll") or [])
     if native:
         g = insert_geom(fj, h, side, beyond_width(w))
+        if islands:
+            from shapely.geometry import box
+            for a0, a1, _ in covered_along(fj, h, side):         # keep the mapper's islands: no band beside them
+                g = g.difference(box(-ERASE_REACH, a0, ERASE_REACH, a1))
         n = 0.0
         for p in M.polys_of(g, 4.0):
             ring = M.xy_to_ll(fj, np.asarray(p.exterior.coords)[:-1])
@@ -171,27 +284,31 @@ def set_side(h, fj, side, native, w=None, tag=None):
     return -cut
 
 
-def apply_answer(h, item, answer):
-    """One hole, one answer ("L" / "R" / "both" / "none"). item: a select() question (needs "frame" and
-    "widths") or {"frame": fj, "widths": {...}}. -> {side: sq yds added (+) / removed (-)}."""
+def apply_answer(h, item, answer, out=None):
+    """One hole, one answer ("L" / "R" / "both" / "none"; out: the "yes" sides where it starts well out from the
+    fairway, "L" / "R" / "both" / None). item: a select() question (needs "frame" and "widths") or
+    {"frame": fj, "widths": {...}}. -> {side: sq yds added (+) / removed (-)}."""
     fj = item["frame"] if "frame" in (item.get("frame") or {}) else {"frame": item["frame"]}
-    want = sides_of(answer)
-    out = {}
+    want, isl = sides_of(answer), island_sides(out)
+    res = {}
     for s in SIDES:
-        out[s] = round(set_side(h, fj, s, want[s], (item.get("widths") or {}).get(s), tag=answer), 1)
-    h.setdefault("verification", {})["native_sides"] = dict(answer=answer_of(want), src="golfer")
-    return out
+        res[s] = round(set_side(h, fj, s, want[s], (item.get("widths") or {}).get(s), tag=answer,
+                                islands=isl[s] and want[s]), 1)
+    h.setdefault("verification", {})["native_sides"] = dict(answer=answer_of(want), src="golfer",
+                                                             out=answer_of({k: isl[k] and want[k] for k in SIDES}))
+    return res
 
 
-def apply_answers(pkg, answers, frames, widths=None):
-    """{ref: answer} -> new package (input untouched). widths {ref: {side: w}} (default: the map's own)."""
+def apply_answers(pkg, answers, frames, widths=None, outs=None):
+    """{ref: answer} -> new package (input untouched). widths {ref: {side: w}} (default: the map's own); outs
+    {ref: "L" / "R" / "both"} the sides where the golfer says the native starts well out."""
     p = copy.deepcopy(pkg)
     for ref, ans in answers.items():
         if ref not in p["holes"] or ref not in frames:
             continue
         h = p["holes"][ref]
         w = (widths or {}).get(ref) or {s: rough_width(frames[ref], pkg["holes"][ref], s) for s in SIDES}
-        apply_answer(h, {"frame": frames[ref], "widths": w}, ans)
+        apply_answer(h, {"frame": frames[ref], "widths": w}, ans, (outs or {}).get(ref))
     return p
 
 
@@ -297,6 +414,7 @@ def select(pkg, frames, pri, decider, cap=CAP, min_voi=MIN_VOI, holes=None):
                        answers=list(ANSWERS), prior={s: pri[r][s]["p"] for s in SIDES},
                        verdict={s: pri[r][s].get("verdict") for s in SIDES},
                        widths={s: beyond_width(widths[r][s]) for s in SIDES}, frame=frames[r]["frame"],
+                       geom=band_spec(frames[r], pkg["holes"][r], widths[r]),
                        value=round(voi, 4), changes=changes, state_p={a: round(v, 3) for a, v in ps.items()},
                        plans={a: f"{plans[a][r]['pick']} {plans[a][r]['aim']:+.0f}" for a in ["current", *ANSWERS] if r in plans[a]},
                        regret={a: round(v, 4) for a, v in reg.items()}, asked=False))
@@ -352,5 +470,5 @@ class EBDecider:
 
 def items_for_review(qs):
     """The asked questions as review/1 items (product/verify.py schema; apply_answers.py type "native")."""
-    keep = ("id", "type", "hole", "question", "answers", "prior", "widths", "frame", "value", "plans")
+    keep = ("id", "type", "hole", "question", "answers", "prior", "widths", "frame", "value", "plans", "geom")
     return [dict({k: q[k] for k in keep}, severity="red") for q in qs if q.get("asked")]

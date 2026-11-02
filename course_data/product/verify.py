@@ -25,6 +25,10 @@ What is an item (research/auto_course_lookup.md section 8, "show the golfer only
   cut      no first cut mapped beside the fairway (OSM rarely has one); tested by adding a 6-yd first cut
   gap      a side of the 200-330 band with nothing penal mapped 25-65 yds off the aim; tested by adding trees
   check    a hole the absurd-aim guard flags (decide.aim_problems): unconstrained best vs best printable aim
+  native   (--native / request "native": true) "native (long, unmown) grass along hole n?" Left / Right / Both /
+           None, from product/native_confirm.py over the mapper's layers (course_data/mapper/<slug>/frames.json,
+           edits.json, agent_zones.geojson): the error-budget planner re-decides every answer state, the top
+           native_confirm.CAP holes by value of the tap are asked (red, their own cap: not in RED_CARDS)
 Par 3s carry only a tee item (the plan plays them by the card yardage), green unless card vs measured > 15 yds.
 
 Sensitivity: the strategy model at the quick plan's central settings (decide.set_prior_means), N = 1500 swings
@@ -874,6 +878,65 @@ def _crop_for(it, h, fr, base, img):
     return c
 
 
+# ----------------------------------------------------------------------------- native-grass confirm (L / R / both / none)
+NATIVE_LABELS = {"L": "Left", "R": "Right", "both": "Both", "none": "None"}
+NATIVE_WORDS = {"L": "native on the left only", "R": "native on the right only", "both": "native on both sides",
+                "none": "no native on either side"}
+
+
+def _plan_of(txt):
+    club, aim = str(txt).rsplit(" ", 1)
+    return club, float(aim)
+
+
+def native_review_items(pkg, frames, pri, decider, cap=None):
+    """native_confirm.select + items_for_review, as review/1 items with the four answers precomputed (options:
+    answer, label, text, outcome {pick, aim, club_changed, aim_shift, severity}), like every other item."""
+    import native_confirm as NC
+    qs = NC.select(pkg, frames, pri, decider, cap=NC.CAP if cap is None else cap)
+    items = NC.items_for_review(qs)
+    by = {q["id"]: q for q in qs}
+    for it in items:
+        q = by[it["id"]]
+        cur = _plan_of(q["plans"]["current"])
+        opts = []
+        for a in NC.ANSWERS:
+            if a not in q["plans"]:
+                continue
+            club, aim = _plan_of(q["plans"][a])
+            changed = club != cur[0] or abs(aim - cur[1]) > NC.AIM_TOL
+            reg = float(q["regret"].get(a) or 0.0)
+            sev = outcome_severity(changed, reg, 0.0)
+            txt = (f"Re-planned: {club}, {aim_words(aim)} (now {cur[0]}, {aim_words(cur[1])})."
+                   + (f" Playing today's plan would cost {reg:.2f} strokes." if reg >= 0.005 else "")
+                   if changed else "No change to the plan.")
+            opts.append(dict(answer=a, label=NATIVE_LABELS[a], text=txt,
+                             outcome=dict(pick=club, aim=aim, club_changed=club != cur[0], aim_shift=round(aim - cur[1], 1),
+                                          d_ev=0.0, regret=round(reg, 4), severity=sev)))
+        pr = q["prior"]
+        it.update(options=opts, tested=False, strict="red", prelim="red", exp_regret=q["value"],
+                  worst_regret=round(max([float(v or 0) for v in q["regret"].values()] or [0.0]), 4),
+                  p_wrong=None, lie="native", state_p=q.get("state_p"),
+                  detail=(f"Tall, unmown grass you would hack out of, from the landing area out. Our map's guess: "
+                          f"left {round(100 * pr['L'])}%, right {round(100 * pr['R'])}%. Your answer re-plans hole {q['hole']}."))
+    return items
+
+
+def native_for(pkg, slug, tee_set, n=4000, workers=1, cap=None):
+    """The native questions for a package from its mapper layers (course_data/mapper/<slug>/frames.json, edits.json,
+    agent_zones.geojson). -> (items, note). No mapper frames -> ([], why)."""
+    mdir = os.path.join(CD, "mapper", slug)
+    if not os.path.exists(os.path.join(mdir, "frames.json")):
+        return [], f"no course_data/mapper/{slug}/frames.json"
+    import native_confirm as NC
+    M = NC.M
+    frames = M.frames(slug)
+    pri = NC.priors(M.rj(os.path.join(mdir, "edits.json")), M.rj(os.path.join(mdir, "agent_zones.geojson")), frames, pkg)
+    D = NC.EBDecider(tee_set, n=n, workers=workers)
+    items = native_review_items(pkg, frames, pri, D, cap=cap)
+    return items, f"{len(items)} asked of {len(frames)} framed holes"
+
+
 # ----------------------------------------------------------------------------- book badges
 BADGE = {"auto": "\u2713", "checked": "\u25d0", "unverified": "\u26a0"}
 
@@ -897,7 +960,7 @@ def badges(pkg, review):
     out = {}
     for ref, h in (pkg.get("holes") or {}).items():
         ver = h.get("verification") or {}
-        answered = {k for k in ver if "-" in k}
+        answered = {k for k in ver if "-" in k or k.startswith("native_")}
         reds = [it for it in review.get("items", []) if it["hole"] == str(ref) and it["severity"] == "red"
                 and it["id"] not in answered]
         if reds:
@@ -912,7 +975,8 @@ def badges(pkg, review):
 
 
 # ----------------------------------------------------------------------------- course
-def run(pkg_path, tees=None, holes=None, n=N_SWINGS, seed=SEED, workers=1, crops=True, out=None):
+def run(pkg_path, tees=None, holes=None, n=N_SWINGS, seed=SEED, workers=1, crops=True, out=None, native=False,
+        native_cap=None, native_n=4000):
     T0 = time.time()
     pkg = json.load(open(pkg_path))
     tee_set = PK._resolve_set(pkg, tees)
@@ -939,6 +1003,17 @@ def run(pkg_path, tees=None, holes=None, n=N_SWINGS, seed=SEED, workers=1, crops
     res.sort(key=lambda r: (r["ref"].rstrip("BFabf").zfill(3), r["ref"]))
     items = [it for r in res for it in r["items"]]
     budget = assign_severity(items)
+    native_note = None
+    if native:                                   # golfer native-grass taps: their own cap (native_confirm.CAP)
+        try:
+            nat, native_note = native_for(pkg, slug, tee_set, n=native_n, workers=workers, cap=native_cap)
+        except Exception as e:                   # noqa: BLE001
+            nat, native_note = [], f"skipped ({type(e).__name__}: {e})"
+        if holes is not None:
+            nat = [it for it in nat if it["hole"] in holes]
+        items = nat + items
+        budget["native"] = len(nat)
+        log(f"native confirm: {native_note}")
     plan_picks = _plan_picks(pkg_path, slug)
     counts = {s: sum(1 for it in items if it["severity"] == s) for s in ("red", "amber", "green")}
     counts_strict = {s: sum(1 for it in items if it["strict"] == s) for s in ("red", "amber", "green")}
@@ -958,7 +1033,7 @@ def run(pkg_path, tees=None, holes=None, n=N_SWINGS, seed=SEED, workers=1, crops
                   counts=counts, counts_strict=counts_strict, by_type=by_type, budget=budget,
                   holes={r["ref"]: dict(par=r["par"], base=r.get("base"), frame=r.get("frame"),
                                         plan=plan_picks.get(r["ref"]), seconds=r["seconds"]) for r in res},
-                  items=items, runtime_s=round(time.time() - T0, 1))
+                  native=native_note, items=items, runtime_s=round(time.time() - T0, 1))
     out = out or os.path.join(CD, "packages", slug, "out", "review")
     os.makedirs(out, exist_ok=True)
     with open(os.path.join(out, "review.json"), "w") as fh:
@@ -1024,6 +1099,9 @@ def main(argv=None):
     ap.add_argument("--n", type=int, default=N_SWINGS)
     ap.add_argument("--workers", type=int, default=None)
     ap.add_argument("--no-crops", action="store_true")
+    ap.add_argument("--native", action="store_true", help="add the native-grass L / R / both / none taps "
+                    "(needs course_data/mapper/<slug>/frames.json; request key \"native\": true)")
+    ap.add_argument("--native-cap", type=int, default=None, help="native questions per course (default 4)")
     ap.add_argument("--out")
     a = ap.parse_args(argv)
     req = json.load(open(a.request)) if a.request else {}
@@ -1033,7 +1111,8 @@ def main(argv=None):
     workers = a.workers or req.get("workers") or (os.cpu_count() if os.environ.get("GITHUB_ACTIONS") else 1)
     holes = set((a.holes or req.get("holes") or "").split(",")) - {""} or None
     rv, out = run(pkg, a.tees or req.get("tees"), holes=holes, n=a.n if a.n != N_SWINGS else req.get("n", a.n),
-                  workers=int(workers), crops=not a.no_crops, out=a.out or req.get("out"))
+                  workers=int(workers), crops=not a.no_crops, out=a.out or req.get("out"),
+                  native=a.native or bool(req.get("native")), native_cap=a.native_cap or req.get("native_cap"))
     if req.get("experiment") == "hand_truth":
         import verify_hand_truth
         verify_hand_truth.run(pkg, rv, out, workers=int(workers))

@@ -312,6 +312,17 @@ From the product's 2-minute pre-round check (`out/review/review.json`, red and a
  "crop": {"img": "data:...", "w": 300, "h": 480, "overlay": {"polys": [...], "line": [...], "tee": [x,y], "target": [x,y], "ellipse": [rx,ry]}}}  // red only
 ```
 
+`type: "native"` (product/native_confirm.py, `verify.py --native`): "native (long, unmown) grass along the landing
+area?" with answers `L` / `R` / `both` / `none` (labels Left / Right / Both / None), each with its precomputed outcome,
+plus `geom` (native_confirm.band_spec: `{a0, step, n, reach, fw: {L, R}, near: {L, R}, w: {L, R}}`, per 10-yd along
+slice the fairway edge, whether native is already mapped within 40 yds of it, and the rough width).
+`ConfirmEngine.nativeBand(geom, answer, out)` turns an answer into the long grass the plan assumed (rectangles
+`[a0, a1, x_in, x_out]` in tee-line yards on each "yes" side; on the `out` sides, where the golfer says it starts
+well out, none beside the mapped islands; `null` = that side cleared) and the hole view draws it;
+`ConfirmSession.answer({question: "native_<n>", kind: "native", answer, out})` records it on hole n without
+touching the routing. The check card offers the four answers; `out` is not asked (measured: no plan change at
+<= 4 / <= 6 questions, `course_data/mapper/EVAL_BLIND.md`).
+
 When the golfer picks an answer whose `outcome` is set, and they play the check's `tee_set` from the card
 spot, that hole's plan becomes the outcome (its aim shifted by the wind). "Moved" answers need a re-plan
 on the backend (`course_data/product/apply_answers.py`).

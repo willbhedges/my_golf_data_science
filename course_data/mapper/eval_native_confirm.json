@@ -2,6 +2,8 @@
  "schema": "native_confirm_eval/1",
  "n": 4000,
  "answer": "near",
+ "islands": "never",
+ "near_in": 15.0,
  "caps": [
   2,
   4,
@@ -9,7 +11,7 @@
  ],
  "min_yd2": 300.0,
  "near": 30.0,
- "made_utc": "2026-11-02 11:41Z",
+ "made_utc": "2026-11-02 12:36Z",
  "courses": [
   {
    "slug": "ellis",
@@ -33,60 +35,93 @@
    "areas": {
     "1": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "2": {
      "L": 1466,
-     "R": 0
+     "R": 0,
+     "L_in": 288,
+     "R_in": 0
     },
     "3": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "5": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "6": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "7": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "9": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "10": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "12": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "13": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "15": {
      "L": 1233,
-     "R": 640
+     "R": 640,
+     "L_in": 292,
+     "R_in": 346
     },
     "16": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "17": {
      "L": 716,
-     "R": 315
+     "R": 315,
+     "L_in": 232,
+     "R_in": 109
     },
     "18": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     }
+   },
+   "outs": {
+    "2": "L",
+    "15": "L",
+    "17": "both"
    },
    "priors": {
     "1": {
@@ -604,18 +639,18 @@
    "scores": {
     "AUTO": {
      "match": 11,
-     "regret": 0.377,
+     "regret": 0.375,
      "holes": {
       "1": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0107,
+       "regret": 0.0105,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver +40",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.0006,
        "truth": "Driver +40"
       },
       "3": {
@@ -627,13 +662,13 @@
       "5": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0183,
+       "regret": 0.018,
        "truth": "Driver -2"
       },
       "6": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0177,
+       "regret": 0.0175,
        "truth": "Driver -5"
       },
       "7": {
@@ -645,7 +680,7 @@
       "9": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0295,
+       "regret": 0.029,
        "truth": "Driver -2"
       },
       "10": {
@@ -681,7 +716,7 @@
       "17": {
        "plan": "Driver -40",
        "match": true,
-       "regret": -0.0034,
+       "regret": -0.0039,
        "truth": "Driver -40"
       },
       "18": {
@@ -694,18 +729,18 @@
     },
     "AGENT": {
      "match": 11,
-     "regret": 0.335,
+     "regret": 0.334,
      "holes": {
       "1": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0107,
+       "regret": 0.0105,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver +40",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.0006,
        "truth": "Driver +40"
       },
       "3": {
@@ -717,13 +752,13 @@
       "5": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.003,
        "truth": "Driver -2"
       },
       "6": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0177,
+       "regret": 0.0175,
        "truth": "Driver -5"
       },
       "7": {
@@ -735,19 +770,19 @@
       "9": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0069,
+       "regret": 0.0066,
        "truth": "Driver -2"
       },
       "10": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0007,
+       "regret": 0.0009,
        "truth": "Driver +2"
       },
       "12": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0,
        "truth": "Driver -5"
       },
       "13": {
@@ -771,7 +806,7 @@
       "17": {
        "plan": "Driver -40",
        "match": true,
-       "regret": -0.0034,
+       "regret": -0.0039,
        "truth": "Driver -40"
       },
       "18": {
@@ -784,18 +819,18 @@
     },
     "ASK 2": {
      "match": 11,
-     "regret": 0.335,
+     "regret": 0.334,
      "holes": {
       "1": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0107,
+       "regret": 0.0105,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver +40",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.0006,
        "truth": "Driver +40"
       },
       "3": {
@@ -807,13 +842,13 @@
       "5": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.003,
        "truth": "Driver -2"
       },
       "6": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0177,
+       "regret": 0.0175,
        "truth": "Driver -5"
       },
       "7": {
@@ -825,19 +860,19 @@
       "9": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0069,
+       "regret": 0.0066,
        "truth": "Driver -2"
       },
       "10": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0007,
+       "regret": 0.0009,
        "truth": "Driver +2"
       },
       "12": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0,
        "truth": "Driver -5"
       },
       "13": {
@@ -861,7 +896,7 @@
       "17": {
        "plan": "Driver -40",
        "match": true,
-       "regret": -0.0034,
+       "regret": -0.0039,
        "truth": "Driver -40"
       },
       "18": {
@@ -874,18 +909,18 @@
     },
     "ASK 4": {
      "match": 11,
-     "regret": 0.335,
+     "regret": 0.334,
      "holes": {
       "1": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0107,
+       "regret": 0.0105,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver +40",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.0006,
        "truth": "Driver +40"
       },
       "3": {
@@ -897,13 +932,13 @@
       "5": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.003,
        "truth": "Driver -2"
       },
       "6": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0177,
+       "regret": 0.0175,
        "truth": "Driver -5"
       },
       "7": {
@@ -915,19 +950,19 @@
       "9": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0069,
+       "regret": 0.0066,
        "truth": "Driver -2"
       },
       "10": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0007,
+       "regret": 0.0009,
        "truth": "Driver +2"
       },
       "12": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0,
        "truth": "Driver -5"
       },
       "13": {
@@ -951,7 +986,7 @@
       "17": {
        "plan": "Driver -40",
        "match": true,
-       "regret": -0.0034,
+       "regret": -0.0039,
        "truth": "Driver -40"
       },
       "18": {
@@ -964,18 +999,18 @@
     },
     "ASK 6": {
      "match": 11,
-     "regret": 0.335,
+     "regret": 0.334,
      "holes": {
       "1": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0107,
+       "regret": 0.0105,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver +40",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.0006,
        "truth": "Driver +40"
       },
       "3": {
@@ -987,13 +1022,13 @@
       "5": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.003,
        "truth": "Driver -2"
       },
       "6": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0177,
+       "regret": 0.0175,
        "truth": "Driver -5"
       },
       "7": {
@@ -1005,19 +1040,19 @@
       "9": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0069,
+       "regret": 0.0066,
        "truth": "Driver -2"
       },
       "10": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0007,
+       "regret": 0.0009,
        "truth": "Driver +2"
       },
       "12": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0,
        "truth": "Driver -5"
       },
       "13": {
@@ -1041,7 +1076,7 @@
       "17": {
        "plan": "Driver -40",
        "match": true,
-       "regret": -0.0034,
+       "regret": -0.0039,
        "truth": "Driver -40"
       },
       "18": {
@@ -1054,18 +1089,18 @@
     },
     "ASK all": {
      "match": 11,
-     "regret": 0.335,
+     "regret": 0.334,
      "holes": {
       "1": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0107,
+       "regret": 0.0105,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver +40",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.0006,
        "truth": "Driver +40"
       },
       "3": {
@@ -1077,13 +1112,13 @@
       "5": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.003,
        "truth": "Driver -2"
       },
       "6": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0177,
+       "regret": 0.0175,
        "truth": "Driver -5"
       },
       "7": {
@@ -1095,19 +1130,19 @@
       "9": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0069,
+       "regret": 0.0066,
        "truth": "Driver -2"
       },
       "10": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0007,
+       "regret": 0.0009,
        "truth": "Driver +2"
       },
       "12": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0,
        "truth": "Driver -5"
       },
       "13": {
@@ -1131,7 +1166,7 @@
       "17": {
        "plan": "Driver -40",
        "match": true,
-       "regret": -0.0034,
+       "regret": -0.0039,
        "truth": "Driver -40"
       },
       "18": {
@@ -1143,7 +1178,7 @@
      }
     }
    },
-   "secs": 20
+   "secs": 41
   },
   {
    "slug": "spirit_hollow",
@@ -1167,60 +1202,97 @@
    "areas": {
     "1": {
      "L": 1844,
-     "R": 0
+     "R": 0,
+     "L_in": 847,
+     "R_in": 0
     },
     "2": {
      "L": 336,
-     "R": 1997
+     "R": 1997,
+     "L_in": 307,
+     "R_in": 179
     },
     "4": {
      "L": 1612,
-     "R": 3292
+     "R": 3292,
+     "L_in": 0,
+     "R_in": 523
     },
     "5": {
      "L": 2250,
-     "R": 0
+     "R": 0,
+     "L_in": 351,
+     "R_in": 0
     },
     "6": {
      "L": 1038,
-     "R": 523
+     "R": 523,
+     "L_in": 16,
+     "R_in": 0
     },
     "8": {
      "L": 1432,
-     "R": 327
+     "R": 327,
+     "L_in": 127,
+     "R_in": 0
     },
     "9": {
      "L": 118,
-     "R": 14
+     "R": 14,
+     "L_in": 0,
+     "R_in": 0
     },
     "10": {
      "L": 730,
-     "R": 0
+     "R": 0,
+     "L_in": 572,
+     "R_in": 0
     },
     "11": {
      "L": 819,
-     "R": 22
+     "R": 22,
+     "L_in": 539,
+     "R_in": 22
     },
     "13": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "14": {
      "L": 551,
-     "R": 3121
+     "R": 3121,
+     "L_in": 0,
+     "R_in": 1508
     },
     "16": {
      "L": 907,
-     "R": 0
+     "R": 0,
+     "L_in": 2,
+     "R_in": 0
     },
     "17": {
      "L": 559,
-     "R": 0
+     "R": 0,
+     "L_in": 0,
+     "R_in": 0
     },
     "18": {
      "L": 2612,
-     "R": 2222
+     "R": 2222,
+     "L_in": 760,
+     "R_in": 1335
     }
+   },
+   "outs": {
+    "2": "R",
+    "4": "L",
+    "6": "both",
+    "8": "both",
+    "14": "L",
+    "16": "L",
+    "17": "L"
    },
    "priors": {
     "1": {
@@ -1735,14 +1807,14 @@
    },
    "scores": {
     "AUTO": {
-     "match": 6,
-     "regret": 0.841,
+     "match": 7,
+     "regret": 0.892,
      "holes": {
       "1": {
        "plan": "Driver -40",
        "match": false,
-       "regret": 0.4223,
-       "truth": "4-wood -12"
+       "regret": 0.4591,
+       "truth": "4-wood -15"
       },
       "2": {
        "plan": "Driver -38",
@@ -1753,7 +1825,7 @@
       "4": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.0571,
+       "regret": 0.0579,
        "truth": "Driver -12"
       },
       "5": {
@@ -1765,25 +1837,25 @@
       "6": {
        "plan": "Driver -40",
        "match": false,
-       "regret": 0.1272,
+       "regret": 0.1289,
        "truth": "4-wood -22"
       },
       "8": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0033,
+       "regret": 0.0031,
        "truth": "4-wood -10"
       },
       "9": {
        "plan": "4-wood +5",
-       "match": false,
-       "regret": 0.0079,
-       "truth": "4-wood -2"
+       "match": true,
+       "regret": 0.0089,
+       "truth": "4-wood +0"
       },
       "10": {
        "plan": "4-wood +5",
        "match": true,
-       "regret": 0.0106,
+       "regret": 0.0097,
        "truth": "4-wood +8"
       },
       "11": {
@@ -1795,44 +1867,44 @@
       "13": {
        "plan": "Driver +15",
        "match": false,
-       "regret": 0.0278,
-       "truth": "4-wood +2"
+       "regret": 0.0256,
+       "truth": "Driver +5"
       },
       "14": {
        "plan": "2-wood -40",
        "match": false,
-       "regret": 0.0144,
-       "truth": "4-wood -15"
+       "regret": 0.0285,
+       "truth": "4-wood -12"
       },
       "16": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0051,
+       "regret": 0.0064,
        "truth": "4-wood -2"
       },
       "17": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0001,
+       "regret": 0.0007,
        "truth": "Driver +12"
       },
       "18": {
        "plan": "Driver -12",
        "match": false,
-       "regret": 0.1503,
+       "regret": 0.1484,
        "truth": "4-wood -15"
       }
      }
     },
     "AGENT": {
-     "match": 7,
-     "regret": 0.682,
+     "match": 8,
+     "regret": 0.729,
      "holes": {
       "1": {
        "plan": "Driver -40",
        "match": false,
-       "regret": 0.4223,
-       "truth": "4-wood -12"
+       "regret": 0.4591,
+       "truth": "4-wood -15"
       },
       "2": {
        "plan": "Driver -38",
@@ -1843,37 +1915,37 @@
       "4": {
        "plan": "Driver -18",
        "match": false,
-       "regret": 0.0177,
+       "regret": 0.0183,
        "truth": "Driver -12"
       },
       "5": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0023,
+       "regret": 0.0013,
        "truth": "4-wood -8"
       },
       "6": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": -0.0,
+       "regret": -0.0002,
        "truth": "4-wood -22"
       },
       "8": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0033,
+       "regret": 0.0031,
        "truth": "4-wood -10"
       },
       "9": {
        "plan": "4-wood +5",
-       "match": false,
-       "regret": 0.0079,
-       "truth": "4-wood -2"
+       "match": true,
+       "regret": 0.0089,
+       "truth": "4-wood +0"
       },
       "10": {
        "plan": "4-wood +5",
        "match": true,
-       "regret": 0.0106,
+       "regret": 0.0097,
        "truth": "4-wood +8"
       },
       "11": {
@@ -1885,44 +1957,44 @@
       "13": {
        "plan": "Driver +15",
        "match": false,
-       "regret": 0.0278,
-       "truth": "4-wood +2"
+       "regret": 0.0256,
+       "truth": "Driver +5"
       },
       "14": {
        "plan": "2-wood -40",
        "match": false,
-       "regret": 0.0144,
-       "truth": "4-wood -15"
+       "regret": 0.0285,
+       "truth": "4-wood -12"
       },
       "16": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0051,
+       "regret": 0.0064,
        "truth": "4-wood -2"
       },
       "17": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0053,
+       "regret": 0.0051,
        "truth": "Driver +12"
       },
       "18": {
        "plan": "Driver -12",
        "match": false,
-       "regret": 0.1503,
+       "regret": 0.1484,
        "truth": "4-wood -15"
       }
      }
     },
     "ASK 2": {
-     "match": 8,
-     "regret": 0.617,
+     "match": 9,
+     "regret": 0.67,
      "holes": {
       "1": {
        "plan": "Driver -40",
        "match": false,
-       "regret": 0.4223,
-       "truth": "4-wood -12"
+       "regret": 0.4591,
+       "truth": "4-wood -15"
       },
       "2": {
        "plan": "Driver -38",
@@ -1933,37 +2005,37 @@
       "4": {
        "plan": "4-wood -5",
        "match": false,
-       "regret": 0.0942,
+       "regret": 0.0982,
        "truth": "Driver -12"
       },
       "5": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0023,
+       "regret": 0.0013,
        "truth": "4-wood -8"
       },
       "6": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": -0.0,
+       "regret": -0.0002,
        "truth": "4-wood -22"
       },
       "8": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0033,
+       "regret": 0.0031,
        "truth": "4-wood -10"
       },
       "9": {
        "plan": "4-wood +5",
-       "match": false,
-       "regret": 0.0079,
-       "truth": "4-wood -2"
+       "match": true,
+       "regret": 0.0089,
+       "truth": "4-wood +0"
       },
       "10": {
        "plan": "4-wood +5",
        "match": true,
-       "regret": 0.0106,
+       "regret": 0.0097,
        "truth": "4-wood +8"
       },
       "11": {
@@ -1975,44 +2047,44 @@
       "13": {
        "plan": "Driver +15",
        "match": false,
-       "regret": 0.0278,
-       "truth": "4-wood +2"
+       "regret": 0.0256,
+       "truth": "Driver +5"
       },
       "14": {
        "plan": "2-wood -40",
        "match": false,
-       "regret": 0.0144,
-       "truth": "4-wood -15"
+       "regret": 0.0285,
+       "truth": "4-wood -12"
       },
       "16": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0051,
+       "regret": 0.0064,
        "truth": "4-wood -2"
       },
       "17": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0053,
+       "regret": 0.0051,
        "truth": "Driver +12"
       },
       "18": {
        "plan": "4-wood -12",
        "match": true,
-       "regret": 0.009,
+       "regret": 0.0094,
        "truth": "4-wood -15"
       }
      }
     },
     "ASK 4": {
-     "match": 8,
-     "regret": 0.617,
+     "match": 9,
+     "regret": 0.67,
      "holes": {
       "1": {
        "plan": "Driver -40",
        "match": false,
-       "regret": 0.4223,
-       "truth": "4-wood -12"
+       "regret": 0.4591,
+       "truth": "4-wood -15"
       },
       "2": {
        "plan": "Driver -38",
@@ -2023,37 +2095,37 @@
       "4": {
        "plan": "4-wood -5",
        "match": false,
-       "regret": 0.0942,
+       "regret": 0.0982,
        "truth": "Driver -12"
       },
       "5": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0023,
+       "regret": 0.0013,
        "truth": "4-wood -8"
       },
       "6": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": -0.0,
+       "regret": -0.0002,
        "truth": "4-wood -22"
       },
       "8": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0033,
+       "regret": 0.0031,
        "truth": "4-wood -10"
       },
       "9": {
        "plan": "4-wood +5",
-       "match": false,
-       "regret": 0.0079,
-       "truth": "4-wood -2"
+       "match": true,
+       "regret": 0.0089,
+       "truth": "4-wood +0"
       },
       "10": {
        "plan": "4-wood +5",
        "match": true,
-       "regret": 0.0106,
+       "regret": 0.0097,
        "truth": "4-wood +8"
       },
       "11": {
@@ -2065,44 +2137,44 @@
       "13": {
        "plan": "Driver +15",
        "match": false,
-       "regret": 0.0278,
-       "truth": "4-wood +2"
+       "regret": 0.0256,
+       "truth": "Driver +5"
       },
       "14": {
        "plan": "2-wood -40",
        "match": false,
-       "regret": 0.0144,
-       "truth": "4-wood -15"
+       "regret": 0.0285,
+       "truth": "4-wood -12"
       },
       "16": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0051,
+       "regret": 0.0064,
        "truth": "4-wood -2"
       },
       "17": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0053,
+       "regret": 0.0051,
        "truth": "Driver +12"
       },
       "18": {
        "plan": "4-wood -12",
        "match": true,
-       "regret": 0.009,
+       "regret": 0.0094,
        "truth": "4-wood -15"
       }
      }
     },
     "ASK 6": {
-     "match": 8,
-     "regret": 0.305,
+     "match": 10,
+     "regret": 0.343,
      "holes": {
       "1": {
        "plan": "4-wood -15",
-       "match": false,
-       "regret": 0.0101,
-       "truth": "4-wood -12"
+       "match": true,
+       "regret": 0.0119,
+       "truth": "4-wood -15"
       },
       "2": {
        "plan": "Driver -38",
@@ -2113,37 +2185,37 @@
       "4": {
        "plan": "4-wood -5",
        "match": false,
-       "regret": 0.0942,
+       "regret": 0.0982,
        "truth": "Driver -12"
       },
       "5": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0023,
+       "regret": 0.0013,
        "truth": "4-wood -8"
       },
       "6": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": -0.0,
+       "regret": -0.0002,
        "truth": "4-wood -22"
       },
       "8": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0033,
+       "regret": 0.0031,
        "truth": "4-wood -10"
       },
       "9": {
        "plan": "4-wood +5",
-       "match": false,
-       "regret": 0.0079,
-       "truth": "4-wood -2"
+       "match": true,
+       "regret": 0.0089,
+       "truth": "4-wood +0"
       },
       "10": {
        "plan": "4-wood +5",
        "match": true,
-       "regret": 0.0106,
+       "regret": 0.0097,
        "truth": "4-wood +8"
       },
       "11": {
@@ -2155,44 +2227,44 @@
       "13": {
        "plan": "Driver +15",
        "match": false,
-       "regret": 0.0278,
-       "truth": "4-wood +2"
+       "regret": 0.0256,
+       "truth": "Driver +5"
       },
       "14": {
        "plan": "4-wood -40",
        "match": false,
-       "regret": 0.1146,
-       "truth": "4-wood -15"
+       "regret": 0.1486,
+       "truth": "4-wood -12"
       },
       "16": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0051,
+       "regret": 0.0064,
        "truth": "4-wood -2"
       },
       "17": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0053,
+       "regret": 0.0051,
        "truth": "Driver +12"
       },
       "18": {
        "plan": "4-wood -12",
        "match": true,
-       "regret": 0.009,
+       "regret": 0.0094,
        "truth": "4-wood -15"
       }
      }
     },
     "ASK all": {
-     "match": 8,
-     "regret": 0.299,
+     "match": 10,
+     "regret": 0.337,
      "holes": {
       "1": {
        "plan": "4-wood -15",
-       "match": false,
-       "regret": 0.0101,
-       "truth": "4-wood -12"
+       "match": true,
+       "regret": 0.0119,
+       "truth": "4-wood -15"
       },
       "2": {
        "plan": "Driver -38",
@@ -2203,79 +2275,79 @@
       "4": {
        "plan": "4-wood -5",
        "match": false,
-       "regret": 0.0942,
+       "regret": 0.0982,
        "truth": "Driver -12"
       },
       "5": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0023,
+       "regret": 0.0013,
        "truth": "4-wood -8"
       },
       "6": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": -0.0,
+       "regret": -0.0002,
        "truth": "4-wood -22"
       },
       "8": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": 0.007,
+       "regret": 0.0065,
        "truth": "4-wood -10"
       },
       "9": {
        "plan": "4-wood +5",
-       "match": false,
-       "regret": 0.0079,
-       "truth": "4-wood -2"
+       "match": true,
+       "regret": 0.0089,
+       "truth": "4-wood +0"
       },
       "10": {
        "plan": "4-wood +5",
        "match": true,
-       "regret": 0.0106,
+       "regret": 0.0097,
        "truth": "4-wood +8"
       },
       "11": {
        "plan": "Long iron +0",
        "match": true,
-       "regret": 0.0035,
+       "regret": 0.0036,
        "truth": "Long iron +2"
       },
       "13": {
        "plan": "Driver +15",
        "match": false,
-       "regret": 0.0278,
-       "truth": "4-wood +2"
+       "regret": 0.0256,
+       "truth": "Driver +5"
       },
       "14": {
        "plan": "4-wood -40",
        "match": false,
-       "regret": 0.1146,
-       "truth": "4-wood -15"
+       "regret": 0.1486,
+       "truth": "4-wood -12"
       },
       "16": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0051,
+       "regret": 0.0064,
        "truth": "4-wood -2"
       },
       "17": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0053,
+       "regret": 0.0051,
        "truth": "Driver +12"
       },
       "18": {
        "plan": "4-wood -12",
        "match": true,
-       "regret": 0.009,
+       "regret": 0.0094,
        "truth": "4-wood -15"
       }
      }
     }
    },
-   "secs": 310
+   "secs": 42
   },
   {
    "slug": "sand_creek_station",
@@ -2299,60 +2371,98 @@
    "areas": {
     "1": {
      "L": 0,
-     "R": 1549
+     "R": 1549,
+     "L_in": 0,
+     "R_in": 372
     },
     "2": {
      "L": 0,
-     "R": 0
+     "R": 0,
+     "L_in": 0,
+     "R_in": 0
     },
     "4": {
      "L": 2751,
-     "R": 1595
+     "R": 1595,
+     "L_in": 418,
+     "R_in": 572
     },
     "5": {
      "L": 3545,
-     "R": 1607
+     "R": 1607,
+     "L_in": 640,
+     "R_in": 132
     },
     "6": {
      "L": 0,
-     "R": 0
+     "R": 0,
+     "L_in": 0,
+     "R_in": 0
     },
     "8": {
      "L": 0,
-     "R": 144
+     "R": 144,
+     "L_in": 0,
+     "R_in": 144
     },
     "9": {
      "L": 0,
-     "R": 0
+     "R": 0,
+     "L_in": 0,
+     "R_in": 0
     },
     "10": {
      "L": 161,
-     "R": 1487
+     "R": 1487,
+     "L_in": 142,
+     "R_in": 26
     },
     "11": {
      "L": 1456,
-     "R": 3272
+     "R": 3272,
+     "L_in": 0,
+     "R_in": 537
     },
     "12": {
      "L": 3310,
-     "R": 2387
+     "R": 2387,
+     "L_in": 220,
+     "R_in": 186
     },
     "14": {
      "L": 2393,
-     "R": 3164
+     "R": 3164,
+     "L_in": 258,
+     "R_in": 374
     },
     "15": {
      "L": 1419,
-     "R": 1271
+     "R": 1271,
+     "L_in": 317,
+     "R_in": 13
     },
     "16": {
      "L": 2813,
-     "R": 1994
+     "R": 1994,
+     "L_in": 295,
+     "R_in": 266
     },
     "18": {
      "L": 2410,
-     "R": 1093
+     "R": 1093,
+     "L_in": 387,
+     "R_in": 0
     }
+   },
+   "outs": {
+    "5": "R",
+    "10": "R",
+    "11": "L",
+    "12": "both",
+    "14": "L",
+    "15": "R",
+    "16": "both",
+    "18": "R"
    },
    "priors": {
     "1": {
@@ -2477,7 +2587,7 @@
     },
     {
      "hole": "1",
-     "value": 0.0165,
+     "value": 0.0184,
      "changes": [],
      "prior": {
       "L": 0.3,
@@ -2491,10 +2601,10 @@
       "none": "Driver +2"
      },
      "regret": {
-      "L": 0.0339,
+      "L": 0.0365,
       "R": 0.0,
-      "both": 0.006,
-      "none": 0.0181
+      "both": 0.0043,
+      "none": 0.021
      },
      "state_p": {
       "L": 0.21,
@@ -2847,66 +2957,66 @@
    "scores": {
     "AUTO": {
      "match": 12,
-     "regret": 0.237,
+     "regret": 0.259,
      "holes": {
       "1": {
        "plan": "Driver +10",
        "match": true,
-       "regret": -0.0003,
+       "regret": 0.0004,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0019,
        "truth": "Driver -10"
       },
       "4": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.1137,
+       "regret": 0.1324,
        "truth": "Driver +0"
       },
       "5": {
        "plan": "Driver -5",
        "match": true,
        "regret": -0.0002,
-       "truth": "Driver -5"
+       "truth": "Driver -8"
       },
       "6": {
        "plan": "Driver +10",
        "match": true,
-       "regret": 0.0024,
+       "regret": 0.0027,
        "truth": "Driver +2"
       },
       "8": {
        "plan": "Driver -32",
        "match": true,
-       "regret": 0.001,
-       "truth": "Driver -2"
+       "regret": 0.0003,
+       "truth": "Driver -5"
       },
       "9": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": -0.0005,
+       "regret": -0.0011,
        "truth": "4-wood +2"
       },
       "10": {
        "plan": "Driver +12",
        "match": false,
-       "regret": 0.0357,
+       "regret": 0.0392,
        "truth": "4-wood +5"
       },
       "11": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0029,
+       "regret": 0.0036,
        "truth": "4-wood -5"
       },
       "12": {
        "plan": "Driver -5",
        "match": true,
-       "regret": 0.0024,
+       "regret": 0.0018,
        "truth": "Driver -2"
       },
       "14": {
@@ -2918,79 +3028,79 @@
       "15": {
        "plan": "Driver -35",
        "match": true,
-       "regret": 0.0394,
+       "regret": 0.0396,
        "truth": "Driver -28"
       },
       "16": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0116,
        "truth": "Driver +0"
       },
       "18": {
        "plan": "4-wood -22",
        "match": true,
-       "regret": 0.0265,
+       "regret": 0.0257,
        "truth": "4-wood -2"
       }
      }
     },
     "AGENT": {
      "match": 12,
-     "regret": 0.232,
+     "regret": 0.258,
      "holes": {
       "1": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.002,
+       "regret": -0.0016,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0019,
        "truth": "Driver -10"
       },
       "4": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.1137,
+       "regret": 0.1324,
        "truth": "Driver +0"
       },
       "5": {
        "plan": "Driver -8",
        "match": true,
-       "regret": -0.0003,
-       "truth": "Driver -5"
+       "regret": -0.0,
+       "truth": "Driver -8"
       },
       "6": {
        "plan": "Driver +10",
        "match": true,
-       "regret": 0.0024,
+       "regret": 0.0027,
        "truth": "Driver +2"
       },
       "8": {
        "plan": "Driver -32",
        "match": true,
-       "regret": 0.001,
-       "truth": "Driver -2"
+       "regret": 0.0003,
+       "truth": "Driver -5"
       },
       "9": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": -0.0005,
+       "regret": -0.0011,
        "truth": "4-wood +2"
       },
       "10": {
        "plan": "Driver +12",
        "match": false,
-       "regret": 0.0357,
+       "regret": 0.0392,
        "truth": "4-wood +5"
       },
       "11": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0029,
+       "regret": 0.0036,
        "truth": "4-wood -5"
       },
       "12": {
@@ -3008,79 +3118,79 @@
       "15": {
        "plan": "Driver -35",
        "match": true,
-       "regret": 0.0429,
+       "regret": 0.0434,
        "truth": "Driver -28"
       },
       "16": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0116,
        "truth": "Driver +0"
       },
       "18": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0135,
        "truth": "4-wood -2"
       }
      }
     },
     "ASK 2": {
      "match": 13,
-     "regret": 0.233,
+     "regret": 0.257,
      "holes": {
       "1": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.002,
+       "regret": -0.0016,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0019,
        "truth": "Driver -10"
       },
       "4": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.1137,
+       "regret": 0.1324,
        "truth": "Driver +0"
       },
       "5": {
        "plan": "Driver -8",
        "match": true,
-       "regret": -0.0003,
-       "truth": "Driver -5"
+       "regret": -0.0,
+       "truth": "Driver -8"
       },
       "6": {
        "plan": "Driver +10",
        "match": true,
-       "regret": 0.0024,
+       "regret": 0.0027,
        "truth": "Driver +2"
       },
       "8": {
        "plan": "Driver -30",
        "match": true,
-       "regret": 0.0074,
+       "regret": 0.008,
        "truth": "Driver -8"
       },
       "9": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": -0.0005,
+       "regret": -0.0011,
        "truth": "4-wood +2"
       },
       "10": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0299,
+       "regret": 0.0303,
        "truth": "4-wood +5"
       },
       "11": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0029,
+       "regret": 0.0036,
        "truth": "4-wood -5"
       },
       "12": {
@@ -3098,79 +3208,79 @@
       "15": {
        "plan": "Driver -35",
        "match": true,
-       "regret": 0.0429,
+       "regret": 0.0434,
        "truth": "Driver -28"
       },
       "16": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0116,
        "truth": "Driver +0"
       },
       "18": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0135,
        "truth": "4-wood -2"
       }
      }
     },
     "ASK 4": {
      "match": 13,
-     "regret": 0.233,
+     "regret": 0.257,
      "holes": {
       "1": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.002,
+       "regret": -0.0016,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0019,
        "truth": "Driver -10"
       },
       "4": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.1137,
+       "regret": 0.1324,
        "truth": "Driver +0"
       },
       "5": {
        "plan": "Driver -8",
        "match": true,
-       "regret": -0.0003,
-       "truth": "Driver -5"
+       "regret": -0.0,
+       "truth": "Driver -8"
       },
       "6": {
        "plan": "Driver +10",
        "match": true,
-       "regret": 0.0024,
+       "regret": 0.0027,
        "truth": "Driver +2"
       },
       "8": {
        "plan": "Driver -30",
        "match": true,
-       "regret": 0.0074,
+       "regret": 0.008,
        "truth": "Driver -8"
       },
       "9": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": -0.0005,
+       "regret": -0.0011,
        "truth": "4-wood +2"
       },
       "10": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0299,
+       "regret": 0.0303,
        "truth": "4-wood +5"
       },
       "11": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0029,
+       "regret": 0.0036,
        "truth": "4-wood -5"
       },
       "12": {
@@ -3188,79 +3298,79 @@
       "15": {
        "plan": "Driver -35",
        "match": true,
-       "regret": 0.0429,
+       "regret": 0.0434,
        "truth": "Driver -28"
       },
       "16": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0116,
        "truth": "Driver +0"
       },
       "18": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0135,
        "truth": "4-wood -2"
       }
      }
     },
     "ASK 6": {
      "match": 13,
-     "regret": 0.233,
+     "regret": 0.257,
      "holes": {
       "1": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.002,
+       "regret": -0.0016,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0019,
        "truth": "Driver -10"
       },
       "4": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.1137,
+       "regret": 0.1324,
        "truth": "Driver +0"
       },
       "5": {
        "plan": "Driver -8",
        "match": true,
-       "regret": -0.0003,
-       "truth": "Driver -5"
+       "regret": -0.0,
+       "truth": "Driver -8"
       },
       "6": {
        "plan": "Driver +10",
        "match": true,
-       "regret": 0.0024,
+       "regret": 0.0027,
        "truth": "Driver +2"
       },
       "8": {
        "plan": "Driver -30",
        "match": true,
-       "regret": 0.0074,
+       "regret": 0.008,
        "truth": "Driver -8"
       },
       "9": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": -0.0005,
+       "regret": -0.0011,
        "truth": "4-wood +2"
       },
       "10": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0299,
+       "regret": 0.0303,
        "truth": "4-wood +5"
       },
       "11": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0029,
+       "regret": 0.0036,
        "truth": "4-wood -5"
       },
       "12": {
@@ -3278,85 +3388,85 @@
       "15": {
        "plan": "Driver -35",
        "match": true,
-       "regret": 0.0429,
+       "regret": 0.0434,
        "truth": "Driver -28"
       },
       "16": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0116,
        "truth": "Driver +0"
       },
       "18": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0135,
        "truth": "4-wood -2"
       }
      }
     },
     "ASK all": {
      "match": 14,
-     "regret": 0.136,
+     "regret": 0.146,
      "holes": {
       "1": {
        "plan": "Driver -5",
        "match": true,
-       "regret": -0.002,
+       "regret": -0.0016,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0019,
        "truth": "Driver -10"
       },
       "4": {
        "plan": "Driver +10",
        "match": true,
-       "regret": 0.0227,
+       "regret": 0.0265,
        "truth": "Driver +0"
       },
       "5": {
        "plan": "Driver -5",
        "match": true,
        "regret": -0.0002,
-       "truth": "Driver -5"
+       "truth": "Driver -8"
       },
       "6": {
        "plan": "Driver +10",
        "match": true,
-       "regret": 0.0018,
-       "truth": "Driver +2"
+       "regret": 0.0023,
+       "truth": "Driver +5"
       },
       "8": {
        "plan": "Driver -30",
        "match": true,
-       "regret": 0.0074,
+       "regret": 0.008,
        "truth": "Driver -8"
       },
       "9": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": -0.0005,
+       "regret": -0.0011,
        "truth": "4-wood +2"
       },
       "10": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0299,
+       "regret": 0.0303,
        "truth": "4-wood +5"
       },
       "11": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": -0.0004,
+       "regret": -0.0002,
        "truth": "4-wood -5"
       },
       "12": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0096,
+       "regret": 0.0105,
        "truth": "Driver -2"
       },
       "14": {
@@ -3368,25 +3478,25 @@
       "15": {
        "plan": "Driver -35",
        "match": true,
-       "regret": 0.0429,
+       "regret": 0.0434,
        "truth": "Driver -28"
       },
       "16": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0116,
        "truth": "Driver +0"
       },
       "18": {
        "plan": "4-wood -20",
        "match": true,
-       "regret": 0.0112,
+       "regret": 0.0135,
        "truth": "4-wood -2"
       }
      }
     }
    },
-   "secs": 528
+   "secs": 90
   },
   {
    "slug": "eagle_bend",
@@ -3410,60 +3520,91 @@
    "areas": {
     "1": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "2": {
      "L": 3846,
-     "R": 4920
+     "R": 4920,
+     "L_in": 981,
+     "R_in": 1042
     },
     "3": {
      "L": 3725,
-     "R": 0
+     "R": 0,
+     "L_in": 975,
+     "R_in": 0
     },
     "5": {
      "L": 4050,
-     "R": 0
+     "R": 0,
+     "L_in": 1032,
+     "R_in": 0
     },
     "6": {
      "L": 4033,
-     "R": 0
+     "R": 0,
+     "L_in": 1054,
+     "R_in": 0
     },
     "7": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "9": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "10": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "11": {
      "L": 3357,
-     "R": 5462
+     "R": 5462,
+     "L_in": 406,
+     "R_in": 1418
     },
     "13": {
      "L": 595,
-     "R": 3727
+     "R": 3727,
+     "L_in": 0,
+     "R_in": 871
     },
     "14": {
      "L": 0.0,
-     "R": 0.0
+     "R": 0.0,
+     "L_in": 0.0,
+     "R_in": 0.0
     },
     "15": {
      "L": 5074,
-     "R": 0
+     "R": 0,
+     "L_in": 769,
+     "R_in": 0
     },
     "16": {
      "L": 5029,
-     "R": 0
+     "R": 0,
+     "L_in": 860,
+     "R_in": 0
     },
     "18": {
      "L": 2246,
-     "R": 0
+     "R": 0,
+     "L_in": 330,
+     "R_in": 0
     }
+   },
+   "outs": {
+    "13": "L"
    },
    "priors": {
     "1": {
@@ -3986,7 +4127,7 @@
    "scores": {
     "AUTO": {
      "match": 7,
-     "regret": 0.517,
+     "regret": 0.515,
      "holes": {
       "1": {
        "plan": "Driver -2",
@@ -3997,25 +4138,25 @@
       "2": {
        "plan": "Driver +5",
        "match": false,
-       "regret": 0.1005,
+       "regret": 0.0973,
        "truth": "4-wood +0"
       },
       "3": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0163,
        "truth": "Driver -8"
       },
       "5": {
        "plan": "Driver +0",
        "match": false,
-       "regret": 0.1034,
+       "regret": 0.1025,
        "truth": "4-wood +2"
       },
       "6": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0002,
+       "regret": 0.0008,
        "truth": "Driver -12"
       },
       "7": {
@@ -4027,25 +4168,25 @@
       "9": {
        "plan": "Driver +0",
        "match": false,
-       "regret": 0.0221,
+       "regret": 0.0245,
        "truth": "4-wood +0"
       },
       "10": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0008,
-       "truth": "Driver +10"
+       "regret": 0.0007,
+       "truth": "Driver +12"
       },
       "11": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.0644,
+       "regret": 0.0646,
        "truth": "4-wood -2"
       },
       "13": {
        "plan": "Driver +2",
        "match": true,
-       "regret": 0.0145,
+       "regret": 0.0142,
        "truth": "Driver -2"
       },
       "14": {
@@ -4057,26 +4198,26 @@
       "15": {
        "plan": "Driver -20",
        "match": false,
-       "regret": 0.1569,
-       "truth": "Driver -8"
+       "regret": 0.1571,
+       "truth": "Driver -5"
       },
       "16": {
        "plan": "Driver -2",
        "match": false,
-       "regret": 0.0268,
+       "regret": 0.027,
        "truth": "4-wood -2"
       },
       "18": {
        "plan": "Driver -2",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.0025,
        "truth": "Driver +2"
       }
      }
     },
     "AGENT": {
      "match": 8,
-     "regret": 0.588,
+     "regret": 0.586,
      "holes": {
       "1": {
        "plan": "Driver -2",
@@ -4087,25 +4228,25 @@
       "2": {
        "plan": "Driver +12",
        "match": false,
-       "regret": 0.2015,
+       "regret": 0.2,
        "truth": "4-wood +0"
       },
       "3": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0163,
        "truth": "Driver -8"
       },
       "5": {
        "plan": "Driver +0",
        "match": false,
-       "regret": 0.1034,
+       "regret": 0.1025,
        "truth": "4-wood +2"
       },
       "6": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0002,
+       "regret": 0.0008,
        "truth": "Driver -12"
       },
       "7": {
@@ -4117,19 +4258,19 @@
       "9": {
        "plan": "2-wood +0",
        "match": false,
-       "regret": 0.0048,
+       "regret": 0.0054,
        "truth": "4-wood +0"
       },
       "10": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0008,
-       "truth": "Driver +10"
+       "regret": 0.0007,
+       "truth": "Driver +12"
       },
       "11": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.0644,
+       "regret": 0.0646,
        "truth": "4-wood -2"
       },
       "13": {
@@ -4147,19 +4288,19 @@
       "15": {
        "plan": "Driver -20",
        "match": false,
-       "regret": 0.1569,
-       "truth": "Driver -8"
+       "regret": 0.1571,
+       "truth": "Driver -5"
       },
       "16": {
        "plan": "Driver -2",
        "match": false,
-       "regret": 0.0268,
+       "regret": 0.027,
        "truth": "4-wood -2"
       },
       "18": {
        "plan": "Driver -2",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.0025,
        "truth": "Driver +2"
       }
      }
@@ -4177,25 +4318,25 @@
       "2": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": 0.0337,
+       "regret": 0.0333,
        "truth": "4-wood +0"
       },
       "3": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0163,
        "truth": "Driver -8"
       },
       "5": {
        "plan": "Driver +0",
        "match": false,
-       "regret": 0.1034,
+       "regret": 0.1025,
        "truth": "4-wood +2"
       },
       "6": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0002,
+       "regret": 0.0008,
        "truth": "Driver -12"
       },
       "7": {
@@ -4207,19 +4348,19 @@
       "9": {
        "plan": "2-wood +0",
        "match": false,
-       "regret": 0.0048,
+       "regret": 0.0054,
        "truth": "4-wood +0"
       },
       "10": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0008,
-       "truth": "Driver +10"
+       "regret": 0.0007,
+       "truth": "Driver +12"
       },
       "11": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.0644,
+       "regret": 0.0646,
        "truth": "4-wood -2"
       },
       "13": {
@@ -4237,26 +4378,26 @@
       "15": {
        "plan": "4-wood -5",
        "match": false,
-       "regret": 0.0163,
-       "truth": "Driver -8"
+       "regret": 0.0168,
+       "truth": "Driver -5"
       },
       "16": {
        "plan": "Driver -2",
        "match": false,
-       "regret": 0.0268,
+       "regret": 0.027,
        "truth": "4-wood -2"
       },
       "18": {
        "plan": "Driver -2",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.0025,
        "truth": "Driver +2"
       }
      }
     },
     "ASK 4": {
      "match": 9,
-     "regret": 0.299,
+     "regret": 0.297,
      "holes": {
       "1": {
        "plan": "Driver -2",
@@ -4267,25 +4408,25 @@
       "2": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": 0.0337,
+       "regret": 0.0333,
        "truth": "4-wood +0"
       },
       "3": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0163,
        "truth": "Driver -8"
       },
       "5": {
        "plan": "Driver +0",
        "match": false,
-       "regret": 0.1034,
+       "regret": 0.1025,
        "truth": "4-wood +2"
       },
       "6": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0002,
+       "regret": 0.0008,
        "truth": "Driver -12"
       },
       "7": {
@@ -4297,14 +4438,14 @@
       "9": {
        "plan": "2-wood +0",
        "match": false,
-       "regret": 0.0048,
+       "regret": 0.0054,
        "truth": "4-wood +0"
       },
       "10": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0008,
-       "truth": "Driver +10"
+       "regret": 0.0007,
+       "truth": "Driver +12"
       },
       "11": {
        "plan": "4-wood +0",
@@ -4315,7 +4456,7 @@
       "13": {
        "plan": "4-wood +8",
        "match": false,
-       "regret": 0.0752,
+       "regret": 0.0729,
        "truth": "Driver -2"
       },
       "14": {
@@ -4327,26 +4468,26 @@
       "15": {
        "plan": "4-wood -5",
        "match": false,
-       "regret": 0.0163,
-       "truth": "Driver -8"
+       "regret": 0.0168,
+       "truth": "Driver -5"
       },
       "16": {
        "plan": "Driver -2",
        "match": false,
-       "regret": 0.0268,
+       "regret": 0.027,
        "truth": "4-wood -2"
       },
       "18": {
        "plan": "Driver -2",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.0025,
        "truth": "Driver +2"
       }
      }
     },
     "ASK 6": {
      "match": 10,
-     "regret": 0.196,
+     "regret": 0.194,
      "holes": {
       "1": {
        "plan": "Driver -2",
@@ -4357,25 +4498,25 @@
       "2": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": 0.0337,
+       "regret": 0.0333,
        "truth": "4-wood +0"
       },
       "3": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0163,
        "truth": "Driver -8"
       },
       "5": {
        "plan": "4-wood +2",
        "match": true,
-       "regret": 0.0003,
+       "regret": -0.0008,
        "truth": "4-wood +2"
       },
       "6": {
        "plan": "Driver -10",
        "match": true,
-       "regret": 0.0002,
+       "regret": 0.0008,
        "truth": "Driver -12"
       },
       "7": {
@@ -4387,14 +4528,14 @@
       "9": {
        "plan": "2-wood +0",
        "match": false,
-       "regret": 0.0048,
+       "regret": 0.0054,
        "truth": "4-wood +0"
       },
       "10": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0008,
-       "truth": "Driver +10"
+       "regret": 0.0007,
+       "truth": "Driver +12"
       },
       "11": {
        "plan": "4-wood +0",
@@ -4405,7 +4546,7 @@
       "13": {
        "plan": "4-wood +8",
        "match": false,
-       "regret": 0.0752,
+       "regret": 0.0729,
        "truth": "Driver -2"
       },
       "14": {
@@ -4417,19 +4558,19 @@
       "15": {
        "plan": "4-wood -5",
        "match": false,
-       "regret": 0.0163,
-       "truth": "Driver -8"
+       "regret": 0.0168,
+       "truth": "Driver -5"
       },
       "16": {
        "plan": "Driver -2",
        "match": false,
-       "regret": 0.0268,
+       "regret": 0.027,
        "truth": "4-wood -2"
       },
       "18": {
        "plan": "Driver -2",
        "match": true,
-       "regret": 0.0031,
+       "regret": 0.0025,
        "truth": "Driver +2"
       }
      }
@@ -4447,25 +4588,25 @@
       "2": {
        "plan": "4-wood -5",
        "match": true,
-       "regret": 0.0337,
+       "regret": 0.0333,
        "truth": "4-wood +0"
       },
       "3": {
        "plan": "Driver -2",
        "match": true,
-       "regret": 0.0011,
+       "regret": 0.0026,
        "truth": "Driver -8"
       },
       "5": {
        "plan": "4-wood +2",
        "match": true,
-       "regret": 0.0003,
+       "regret": -0.0008,
        "truth": "4-wood +2"
       },
       "6": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0028,
+       "regret": 0.0032,
        "truth": "Driver -12"
       },
       "7": {
@@ -4477,14 +4618,14 @@
       "9": {
        "plan": "2-wood +0",
        "match": false,
-       "regret": 0.0048,
+       "regret": 0.0054,
        "truth": "4-wood +0"
       },
       "10": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0008,
-       "truth": "Driver +10"
+       "regret": 0.0007,
+       "truth": "Driver +12"
       },
       "11": {
        "plan": "4-wood +0",
@@ -4495,7 +4636,7 @@
       "13": {
        "plan": "4-wood +8",
        "match": false,
-       "regret": 0.0752,
+       "regret": 0.0729,
        "truth": "Driver -2"
       },
       "14": {
@@ -4507,25 +4648,25 @@
       "15": {
        "plan": "4-wood -5",
        "match": false,
-       "regret": 0.0163,
-       "truth": "Driver -8"
+       "regret": 0.0168,
+       "truth": "Driver -5"
       },
       "16": {
        "plan": "Driver +0",
        "match": false,
-       "regret": 0.0304,
+       "regret": 0.0311,
        "truth": "4-wood -2"
       },
       "18": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.006,
+       "regret": 0.0059,
        "truth": "Driver +2"
       }
      }
     }
    },
-   "secs": 16
+   "secs": 29
   },
   {
    "slug": "prairie_dunes",
@@ -4549,61 +4690,90 @@
    "areas": {
     "1": {
      "L": 2312,
-     "R": 3596
+     "R": 3596,
+     "L_in": 559,
+     "R_in": 1877
     },
     "3": {
      "L": 5799,
-     "R": 6551
+     "R": 6551,
+     "L_in": 2544,
+     "R_in": 4096
     },
     "5": {
      "L": 4510,
-     "R": 4692
+     "R": 4692,
+     "L_in": 1564,
+     "R_in": 1758
     },
     "6": {
      "L": 4542,
-     "R": 4354
+     "R": 4354,
+     "L_in": 1833,
+     "R_in": 1602
     },
     "7": {
      "L": 6334,
-     "R": 4790
+     "R": 4790,
+     "L_in": 2098,
+     "R_in": 1813
     },
     "8": {
      "L": 4073,
-     "R": 5655
+     "R": 5655,
+     "L_in": 2702,
+     "R_in": 1314
     },
     "9": {
      "L": 4761,
-     "R": 4805
+     "R": 4805,
+     "L_in": 1682,
+     "R_in": 1837
     },
     "11": {
      "L": 3383,
-     "R": 2964
+     "R": 2964,
+     "L_in": 775,
+     "R_in": 2554
     },
     "12": {
      "L": 4216,
-     "R": 7213
+     "R": 7213,
+     "L_in": 2245,
+     "R_in": 3399
     },
     "13": {
      "L": 3536,
-     "R": 5080
+     "R": 5080,
+     "L_in": 1026,
+     "R_in": 2515
     },
     "14": {
      "L": 3660,
-     "R": 5052
+     "R": 5052,
+     "L_in": 1302,
+     "R_in": 2037
     },
     "16": {
      "L": 3391,
-     "R": 4621
+     "R": 4621,
+     "L_in": 2471,
+     "R_in": 849
     },
     "17": {
      "L": 4684,
-     "R": 4458
+     "R": 4458,
+     "L_in": 1756,
+     "R_in": 1758
     },
     "18": {
      "L": 6328,
-     "R": 6236
+     "R": 6236,
+     "L_in": 3643,
+     "R_in": 2532
     }
    },
+   "outs": {},
    "priors": {
     "1": {
      "L": 0.75,
@@ -5122,24 +5292,24 @@
    "scores": {
     "AUTO": {
      "match": 1,
-     "regret": 1.614,
+     "regret": 1.649,
      "holes": {
       "1": {
        "plan": "Driver +22",
        "match": false,
-       "regret": 0.1602,
+       "regret": 0.1643,
        "truth": "4-wood +32"
       },
       "3": {
        "plan": "Driver -12",
        "match": false,
-       "regret": -0.0111,
+       "regret": -0.0064,
        "truth": "Driver -2"
       },
       "5": {
        "plan": "Driver -10",
        "match": false,
-       "regret": 0.0739,
+       "regret": 0.0796,
        "truth": "4-wood -12"
       },
       "6": {
@@ -5151,248 +5321,248 @@
       "7": {
        "plan": "Driver +5",
        "match": false,
-       "regret": 0.097,
+       "regret": 0.0989,
        "truth": "4-wood -2"
       },
       "8": {
        "plan": "Driver -22",
        "match": false,
-       "regret": 0.1996,
+       "regret": 0.2014,
        "truth": "4-wood -32"
       },
       "9": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.0941,
+       "regret": 0.0922,
        "truth": "4-wood -8"
       },
       "11": {
        "plan": "Driver +28",
        "match": true,
-       "regret": 0.0395,
+       "regret": 0.0433,
        "truth": "Driver +32"
       },
       "12": {
        "plan": "Driver +0",
        "match": false,
-       "regret": 0.227,
+       "regret": 0.2271,
        "truth": "4-wood -2"
       },
       "13": {
        "plan": "Driver +2",
        "match": false,
-       "regret": 0.1884,
+       "regret": 0.1891,
        "truth": "4-wood +22"
       },
       "14": {
        "plan": "Driver +0",
        "match": false,
-       "regret": 0.1046,
+       "regret": 0.1034,
        "truth": "4-wood +22"
       },
       "16": {
        "plan": "Driver -20",
        "match": false,
-       "regret": 0.0933,
+       "regret": 0.0934,
        "truth": "4-wood -28"
       },
       "17": {
        "plan": "Driver +10",
        "match": false,
-       "regret": 0.0061,
+       "regret": 0.004,
        "truth": "4-wood +12"
       },
       "18": {
        "plan": "Driver +2",
        "match": false,
-       "regret": 0.2228,
-       "truth": "4-wood -5"
+       "regret": 0.2403,
+       "truth": "4-wood -8"
       }
      }
     },
     "AGENT": {
      "match": 7,
-     "regret": 0.789,
+     "regret": 0.72,
      "holes": {
       "1": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.2038,
+       "regret": 0.2064,
        "truth": "4-wood +30"
       },
       "3": {
        "plan": "4-wood +8",
        "match": false,
-       "regret": 0.1173,
+       "regret": 0.0591,
        "truth": "Driver -2"
       },
       "5": {
        "plan": "Driver -10",
        "match": false,
-       "regret": 0.0752,
+       "regret": 0.0809,
        "truth": "4-wood -12"
       },
       "6": {
        "plan": "Driver +10",
        "match": false,
-       "regret": 0.1341,
+       "regret": 0.1333,
        "truth": "4-wood +15"
       },
       "7": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0039,
-       "truth": "4-wood -2"
+       "regret": 0.0037,
+       "truth": "4-wood -5"
       },
       "8": {
        "plan": "4-wood -32",
        "match": true,
-       "regret": 0.0037,
+       "regret": 0.0035,
        "truth": "4-wood -32"
       },
       "9": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.095,
+       "regret": 0.0932,
        "truth": "4-wood -8"
       },
       "11": {
        "plan": "Driver +32",
        "match": true,
-       "regret": 0.0042,
+       "regret": 0.0045,
        "truth": "Driver +32"
       },
       "12": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0162,
        "truth": "4-wood -2"
       },
       "13": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0094,
+       "regret": 0.013,
        "truth": "4-wood +22"
       },
       "14": {
        "plan": "2-wood +12",
        "match": false,
-       "regret": 0.0531,
+       "regret": 0.0423,
        "truth": "4-wood +22"
       },
       "16": {
        "plan": "4-wood -28",
        "match": true,
-       "regret": -0.0009,
+       "regret": -0.0005,
        "truth": "4-wood -28"
       },
       "17": {
        "plan": "Driver +8",
        "match": false,
-       "regret": 0.0189,
+       "regret": 0.0171,
        "truth": "4-wood +12"
       },
       "18": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.0544,
-       "truth": "4-wood -5"
+       "regret": 0.0476,
+       "truth": "4-wood -8"
       }
      }
     },
     "ASK 2": {
      "match": 8,
-     "regret": 0.714,
+     "regret": 0.641,
      "holes": {
       "1": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.2038,
+       "regret": 0.2064,
        "truth": "4-wood +30"
       },
       "3": {
        "plan": "4-wood +8",
        "match": false,
-       "regret": 0.1173,
+       "regret": 0.0591,
        "truth": "Driver -2"
       },
       "5": {
        "plan": "4-wood -12",
        "match": true,
-       "regret": 0.001,
+       "regret": 0.0014,
        "truth": "4-wood -12"
       },
       "6": {
        "plan": "Driver +10",
        "match": false,
-       "regret": 0.1341,
+       "regret": 0.1333,
        "truth": "4-wood +15"
       },
       "7": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0039,
-       "truth": "4-wood -2"
+       "regret": 0.0037,
+       "truth": "4-wood -5"
       },
       "8": {
        "plan": "4-wood -32",
        "match": true,
-       "regret": 0.0037,
+       "regret": 0.0035,
        "truth": "4-wood -32"
       },
       "9": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.095,
+       "regret": 0.0932,
        "truth": "4-wood -8"
       },
       "11": {
        "plan": "Driver +32",
        "match": true,
-       "regret": 0.0042,
+       "regret": 0.0045,
        "truth": "Driver +32"
       },
       "12": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0162,
        "truth": "4-wood -2"
       },
       "13": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0094,
+       "regret": 0.013,
        "truth": "4-wood +22"
       },
       "14": {
        "plan": "2-wood +12",
        "match": false,
-       "regret": 0.0531,
+       "regret": 0.0423,
        "truth": "4-wood +22"
       },
       "16": {
        "plan": "4-wood -28",
        "match": true,
-       "regret": -0.0009,
+       "regret": -0.0005,
        "truth": "4-wood -28"
       },
       "17": {
        "plan": "Driver +8",
        "match": false,
-       "regret": 0.0189,
+       "regret": 0.0171,
        "truth": "4-wood +12"
       },
       "18": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.0544,
-       "truth": "4-wood -5"
+       "regret": 0.0476,
+       "truth": "4-wood -8"
       }
      }
     },
     "ASK 4": {
      "match": 9,
-     "regret": 0.514,
+     "regret": 0.438,
      "holes": {
       "1": {
        "plan": "4-wood +38",
@@ -5403,86 +5573,86 @@
       "3": {
        "plan": "4-wood +8",
        "match": false,
-       "regret": 0.1173,
+       "regret": 0.0591,
        "truth": "Driver -2"
       },
       "5": {
        "plan": "4-wood -12",
        "match": true,
-       "regret": 0.001,
+       "regret": 0.0014,
        "truth": "4-wood -12"
       },
       "6": {
        "plan": "Driver +10",
        "match": false,
-       "regret": 0.1341,
+       "regret": 0.1333,
        "truth": "4-wood +15"
       },
       "7": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0039,
-       "truth": "4-wood -2"
+       "regret": 0.0037,
+       "truth": "4-wood -5"
       },
       "8": {
        "plan": "4-wood -32",
        "match": true,
-       "regret": 0.0037,
+       "regret": 0.0035,
        "truth": "4-wood -32"
       },
       "9": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.095,
+       "regret": 0.0932,
        "truth": "4-wood -8"
       },
       "11": {
        "plan": "Driver +32",
        "match": true,
-       "regret": 0.0042,
+       "regret": 0.0045,
        "truth": "Driver +32"
       },
       "12": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0162,
        "truth": "4-wood -2"
       },
       "13": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0094,
+       "regret": 0.013,
        "truth": "4-wood +22"
       },
       "14": {
        "plan": "2-wood +12",
        "match": false,
-       "regret": 0.0531,
+       "regret": 0.0423,
        "truth": "4-wood +22"
       },
       "16": {
        "plan": "4-wood -28",
        "match": true,
-       "regret": -0.0009,
+       "regret": -0.0005,
        "truth": "4-wood -28"
       },
       "17": {
        "plan": "Driver +8",
        "match": false,
-       "regret": 0.0189,
+       "regret": 0.0171,
        "truth": "4-wood +12"
       },
       "18": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.0544,
-       "truth": "4-wood -5"
+       "regret": 0.0476,
+       "truth": "4-wood -8"
       }
      }
     },
     "ASK 6": {
      "match": 9,
-     "regret": 0.51,
+     "regret": 0.435,
      "holes": {
       "1": {
        "plan": "4-wood +38",
@@ -5493,86 +5663,86 @@
       "3": {
        "plan": "4-wood +8",
        "match": false,
-       "regret": 0.1173,
+       "regret": 0.0591,
        "truth": "Driver -2"
       },
       "5": {
        "plan": "4-wood -12",
        "match": true,
-       "regret": 0.001,
+       "regret": 0.0014,
        "truth": "4-wood -12"
       },
       "6": {
        "plan": "Driver +10",
        "match": false,
-       "regret": 0.1341,
+       "regret": 0.1333,
        "truth": "4-wood +15"
       },
       "7": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0039,
-       "truth": "4-wood -2"
+       "regret": 0.0037,
+       "truth": "4-wood -5"
       },
       "8": {
        "plan": "4-wood -35",
        "match": true,
-       "regret": -0.0001,
+       "regret": 0.0009,
        "truth": "4-wood -32"
       },
       "9": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.095,
+       "regret": 0.0932,
        "truth": "4-wood -8"
       },
       "11": {
        "plan": "Driver +32",
        "match": true,
-       "regret": 0.0042,
+       "regret": 0.0045,
        "truth": "Driver +32"
       },
       "12": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0166,
+       "regret": 0.0162,
        "truth": "4-wood -2"
       },
       "13": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0094,
+       "regret": 0.013,
        "truth": "4-wood +22"
       },
       "14": {
        "plan": "2-wood +12",
        "match": false,
-       "regret": 0.0531,
+       "regret": 0.0423,
        "truth": "4-wood +22"
       },
       "16": {
        "plan": "4-wood -28",
        "match": true,
-       "regret": -0.0009,
+       "regret": -0.0005,
        "truth": "4-wood -28"
       },
       "17": {
        "plan": "Driver +8",
        "match": false,
-       "regret": 0.0189,
+       "regret": 0.0171,
        "truth": "4-wood +12"
       },
       "18": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.0544,
-       "truth": "4-wood -5"
+       "regret": 0.0476,
+       "truth": "4-wood -8"
       }
      }
     },
     "ASK all": {
      "match": 10,
-     "regret": 0.44,
+     "regret": 0.361,
      "holes": {
       "1": {
        "plan": "4-wood +38",
@@ -5583,85 +5753,85 @@
       "3": {
        "plan": "4-wood +8",
        "match": false,
-       "regret": 0.1173,
+       "regret": 0.0591,
        "truth": "Driver -2"
       },
       "5": {
        "plan": "4-wood -12",
        "match": true,
-       "regret": 0.001,
+       "regret": 0.0014,
        "truth": "4-wood -12"
       },
       "6": {
        "plan": "Driver +10",
        "match": false,
-       "regret": 0.1341,
+       "regret": 0.1333,
        "truth": "4-wood +15"
       },
       "7": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": 0.0039,
-       "truth": "4-wood -2"
+       "regret": 0.0037,
+       "truth": "4-wood -5"
       },
       "8": {
        "plan": "4-wood -35",
        "match": true,
-       "regret": -0.0001,
+       "regret": 0.0009,
        "truth": "4-wood -32"
       },
       "9": {
        "plan": "Driver -8",
        "match": false,
-       "regret": 0.0843,
+       "regret": 0.0823,
        "truth": "4-wood -8"
       },
       "11": {
        "plan": "Driver +32",
        "match": true,
-       "regret": 0.0042,
+       "regret": 0.0045,
        "truth": "Driver +32"
       },
       "12": {
        "plan": "4-wood -2",
        "match": true,
-       "regret": -0.0045,
+       "regret": -0.0054,
        "truth": "4-wood -2"
       },
       "13": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0094,
+       "regret": 0.013,
        "truth": "4-wood +22"
       },
       "14": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0151,
+       "regret": 0.0008,
        "truth": "4-wood +22"
       },
       "16": {
        "plan": "4-wood -28",
        "match": true,
-       "regret": -0.0009,
+       "regret": -0.0005,
        "truth": "4-wood -28"
       },
       "17": {
        "plan": "Driver +8",
        "match": false,
-       "regret": 0.0189,
+       "regret": 0.0171,
        "truth": "4-wood +12"
       },
       "18": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.0544,
-       "truth": "4-wood -5"
+       "regret": 0.0476,
+       "truth": "4-wood -8"
       }
      }
     }
    },
-   "secs": 492
+   "secs": 32
   },
   {
    "slug": "buffalo_dunes",
@@ -5685,61 +5855,90 @@
    "areas": {
     "1": {
      "L": 3668,
-     "R": 3477
+     "R": 3477,
+     "L_in": 1084,
+     "R_in": 669
     },
     "2": {
      "L": 7437,
-     "R": 6892
+     "R": 6892,
+     "L_in": 3082,
+     "R_in": 3353
     },
     "3": {
      "L": 4624,
-     "R": 3812
+     "R": 3812,
+     "L_in": 2156,
+     "R_in": 2896
     },
     "5": {
      "L": 2861,
-     "R": 4777
+     "R": 4777,
+     "L_in": 1284,
+     "R_in": 1103
     },
     "6": {
      "L": 4576,
-     "R": 5156
+     "R": 5156,
+     "L_in": 1299,
+     "R_in": 830
     },
     "7": {
      "L": 3871,
-     "R": 3876
+     "R": 3876,
+     "L_in": 650,
+     "R_in": 1435
     },
     "9": {
      "L": 4654,
-     "R": 3620
+     "R": 3620,
+     "L_in": 903,
+     "R_in": 700
     },
     "10": {
      "L": 3975,
-     "R": 1949
+     "R": 1949,
+     "L_in": 860,
+     "R_in": 373
     },
     "11": {
      "L": 5089,
-     "R": 4726
+     "R": 4726,
+     "L_in": 837,
+     "R_in": 1296
     },
     "13": {
      "L": 3914,
-     "R": 6262
+     "R": 6262,
+     "L_in": 961,
+     "R_in": 1177
     },
     "14": {
      "L": 4170,
-     "R": 1843
+     "R": 1843,
+     "L_in": 920,
+     "R_in": 304
     },
     "15": {
      "L": 3539,
-     "R": 5161
+     "R": 5161,
+     "L_in": 686,
+     "R_in": 781
     },
     "16": {
      "L": 3994,
-     "R": 6340
+     "R": 6340,
+     "L_in": 855,
+     "R_in": 1265
     },
     "18": {
      "L": 5311,
-     "R": 4900
+     "R": 4900,
+     "L_in": 1595,
+     "R_in": 2522
     }
    },
+   "outs": {},
    "priors": {
     "1": {
      "L": 0.75,
@@ -6257,18 +6456,18 @@
    "scores": {
     "AUTO": {
      "match": 7,
-     "regret": 1.622,
+     "regret": 1.623,
      "holes": {
       "1": {
        "plan": "Driver -5",
        "match": true,
-       "regret": 0.0029,
+       "regret": 0.0026,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "4-wood +10",
        "match": true,
-       "regret": -0.0014,
+       "regret": -0.0022,
        "truth": "4-wood +10"
       },
       "3": {
@@ -6280,85 +6479,85 @@
       "5": {
        "plan": "Driver +38",
        "match": false,
-       "regret": 0.0419,
+       "regret": 0.0477,
        "truth": "4-wood +40"
       },
       "6": {
        "plan": "4-wood -25",
        "match": true,
-       "regret": 0.073,
+       "regret": 0.0747,
        "truth": "4-wood -18"
       },
       "7": {
        "plan": "2-wood +10",
        "match": false,
-       "regret": 0.019,
+       "regret": 0.005,
        "truth": "4-wood +18"
       },
       "9": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0022,
+       "regret": 0.0024,
        "truth": "4-wood +10"
       },
       "10": {
        "plan": "Driver +8",
        "match": false,
-       "regret": 0.5112,
+       "regret": 0.5084,
        "truth": "4-wood -20"
       },
       "11": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0072,
+       "regret": 0.0008,
        "truth": "4-wood +25"
       },
       "13": {
        "plan": "Driver -5",
        "match": false,
-       "regret": 0.1403,
+       "regret": 0.1404,
        "truth": "4-wood -10"
       },
       "14": {
        "plan": "Driver +12",
        "match": false,
-       "regret": 0.3861,
+       "regret": 0.4031,
        "truth": "4-wood -10"
       },
       "15": {
        "plan": "Driver -8",
        "match": false,
-       "regret": 0.2425,
+       "regret": 0.2428,
        "truth": "4-wood +0"
       },
       "16": {
        "plan": "Driver +5",
        "match": false,
-       "regret": 0.1876,
+       "regret": 0.1882,
        "truth": "4-wood -10"
       },
       "18": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0144,
+       "regret": 0.0145,
        "truth": "4-wood +8"
       }
      }
     },
     "AGENT": {
      "match": 13,
-     "regret": 0.205,
+     "regret": 0.208,
      "holes": {
       "1": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0179,
+       "regret": 0.0176,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0172,
+       "regret": 0.0194,
        "truth": "4-wood +10"
       },
       "3": {
@@ -6370,55 +6569,55 @@
       "5": {
        "plan": "Driver +38",
        "match": false,
-       "regret": 0.0419,
+       "regret": 0.0477,
        "truth": "4-wood +40"
       },
       "6": {
        "plan": "4-wood -25",
        "match": true,
-       "regret": 0.0728,
+       "regret": 0.0742,
        "truth": "4-wood -18"
       },
       "7": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0013,
        "truth": "4-wood +18"
       },
       "9": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0022,
+       "regret": 0.0024,
        "truth": "4-wood +10"
       },
       "10": {
        "plan": "4-wood -15",
        "match": true,
-       "regret": 0.0243,
+       "regret": 0.0252,
        "truth": "4-wood -20"
       },
       "11": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0068,
+       "regret": 0.0005,
        "truth": "4-wood +25"
       },
       "13": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.002,
+       "regret": 0.0025,
        "truth": "4-wood -10"
       },
       "14": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0012,
+       "regret": -0.0003,
        "truth": "4-wood -10"
       },
       "15": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0008,
+       "regret": 0.0012,
        "truth": "4-wood +0"
       },
       "16": {
@@ -6430,25 +6629,25 @@
       "18": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0144,
+       "regret": 0.0145,
        "truth": "4-wood +8"
       }
      }
     },
     "ASK 2": {
      "match": 13,
-     "regret": 0.182,
+     "regret": 0.185,
      "holes": {
       "1": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0179,
+       "regret": 0.0176,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0172,
+       "regret": 0.0194,
        "truth": "4-wood +10"
       },
       "3": {
@@ -6460,55 +6659,55 @@
       "5": {
        "plan": "Driver +38",
        "match": false,
-       "regret": 0.0419,
+       "regret": 0.0477,
        "truth": "4-wood +40"
       },
       "6": {
        "plan": "4-wood -25",
        "match": true,
-       "regret": 0.0728,
+       "regret": 0.0742,
        "truth": "4-wood -18"
       },
       "7": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0013,
        "truth": "4-wood +18"
       },
       "9": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0022,
+       "regret": 0.0024,
        "truth": "4-wood +10"
       },
       "10": {
        "plan": "4-wood -18",
        "match": true,
-       "regret": 0.0021,
+       "regret": 0.0022,
        "truth": "4-wood -20"
       },
       "11": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0068,
+       "regret": 0.0005,
        "truth": "4-wood +25"
       },
       "13": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.002,
+       "regret": 0.0025,
        "truth": "4-wood -10"
       },
       "14": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0012,
+       "regret": -0.0003,
        "truth": "4-wood -10"
       },
       "15": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0008,
+       "regret": 0.0012,
        "truth": "4-wood +0"
       },
       "16": {
@@ -6520,25 +6719,25 @@
       "18": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0144,
+       "regret": 0.0145,
        "truth": "4-wood +8"
       }
      }
     },
     "ASK 4": {
      "match": 13,
-     "regret": 0.152,
+     "regret": 0.148,
      "holes": {
       "1": {
        "plan": "Driver -8",
        "match": true,
-       "regret": 0.0179,
+       "regret": 0.0176,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0172,
+       "regret": 0.0194,
        "truth": "4-wood +10"
       },
       "3": {
@@ -6550,55 +6749,55 @@
       "5": {
        "plan": "4-wood +38",
        "match": false,
-       "regret": 0.012,
+       "regret": 0.0113,
        "truth": "4-wood +40"
       },
       "6": {
        "plan": "4-wood -25",
        "match": true,
-       "regret": 0.0728,
+       "regret": 0.0742,
        "truth": "4-wood -18"
       },
       "7": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0013,
        "truth": "4-wood +18"
       },
       "9": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0022,
+       "regret": 0.0024,
        "truth": "4-wood +10"
       },
       "10": {
        "plan": "4-wood -18",
        "match": true,
-       "regret": 0.0021,
+       "regret": 0.0022,
        "truth": "4-wood -20"
       },
       "11": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0068,
+       "regret": 0.0005,
        "truth": "4-wood +25"
       },
       "13": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.002,
+       "regret": 0.0025,
        "truth": "4-wood -10"
       },
       "14": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0012,
+       "regret": -0.0003,
        "truth": "4-wood -10"
       },
       "15": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0008,
+       "regret": 0.0012,
        "truth": "4-wood +0"
       },
       "16": {
@@ -6610,25 +6809,25 @@
       "18": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0144,
+       "regret": 0.0145,
        "truth": "4-wood +8"
       }
      }
     },
     "ASK 6": {
      "match": 13,
-     "regret": 0.138,
+     "regret": 0.133,
      "holes": {
       "1": {
        "plan": "Driver -5",
        "match": true,
-       "regret": 0.0029,
+       "regret": 0.0026,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0172,
+       "regret": 0.0194,
        "truth": "4-wood +10"
       },
       "3": {
@@ -6640,55 +6839,55 @@
       "5": {
        "plan": "4-wood +38",
        "match": false,
-       "regret": 0.012,
+       "regret": 0.0113,
        "truth": "4-wood +40"
       },
       "6": {
        "plan": "4-wood -25",
        "match": true,
-       "regret": 0.0728,
+       "regret": 0.0742,
        "truth": "4-wood -18"
       },
       "7": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": 0.0017,
+       "regret": 0.0013,
        "truth": "4-wood +18"
       },
       "9": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0022,
+       "regret": 0.0024,
        "truth": "4-wood +10"
       },
       "10": {
        "plan": "4-wood -18",
        "match": true,
-       "regret": 0.0021,
+       "regret": 0.0022,
        "truth": "4-wood -20"
       },
       "11": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0068,
+       "regret": 0.0005,
        "truth": "4-wood +25"
       },
       "13": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.002,
+       "regret": 0.0025,
        "truth": "4-wood -10"
       },
       "14": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0012,
+       "regret": -0.0003,
        "truth": "4-wood -10"
       },
       "15": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0008,
+       "regret": 0.0012,
        "truth": "4-wood +0"
       },
       "16": {
@@ -6700,25 +6899,25 @@
       "18": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0144,
+       "regret": 0.0145,
        "truth": "4-wood +8"
       }
      }
     },
     "ASK all": {
      "match": 13,
-     "regret": 0.113,
+     "regret": 0.105,
      "holes": {
       "1": {
        "plan": "Driver -5",
        "match": true,
-       "regret": 0.0029,
+       "regret": 0.0026,
        "truth": "Driver -2"
       },
       "2": {
        "plan": "4-wood +10",
        "match": true,
-       "regret": -0.0014,
+       "regret": -0.0022,
        "truth": "4-wood +10"
       },
       "3": {
@@ -6730,55 +6929,55 @@
       "5": {
        "plan": "4-wood +38",
        "match": false,
-       "regret": 0.012,
+       "regret": 0.0113,
        "truth": "4-wood +40"
       },
       "6": {
        "plan": "4-wood -28",
        "match": true,
-       "regret": 0.0359,
+       "regret": 0.0395,
        "truth": "4-wood -18"
       },
       "7": {
        "plan": "4-wood +15",
        "match": true,
-       "regret": 0.0138,
+       "regret": 0.0127,
        "truth": "4-wood +18"
       },
       "9": {
        "plan": "4-wood +12",
        "match": true,
-       "regret": 0.0022,
+       "regret": 0.0024,
        "truth": "4-wood +10"
       },
       "10": {
        "plan": "4-wood -18",
        "match": true,
-       "regret": 0.0021,
+       "regret": 0.0022,
        "truth": "4-wood -20"
       },
       "11": {
        "plan": "4-wood +20",
        "match": true,
-       "regret": 0.0068,
+       "regret": 0.0005,
        "truth": "4-wood +25"
       },
       "13": {
        "plan": "4-wood -10",
        "match": true,
-       "regret": 0.002,
+       "regret": 0.0025,
        "truth": "4-wood -10"
       },
       "14": {
        "plan": "4-wood -8",
        "match": true,
-       "regret": 0.0012,
+       "regret": -0.0003,
        "truth": "4-wood -10"
       },
       "15": {
        "plan": "4-wood +0",
        "match": true,
-       "regret": 0.0008,
+       "regret": 0.0012,
        "truth": "4-wood +0"
       },
       "16": {
@@ -6790,13 +6989,13 @@
       "18": {
        "plan": "4-wood +15",
        "match": true,
-       "regret": 0.0335,
+       "regret": 0.0313,
        "truth": "4-wood +8"
       }
      }
     }
    },
-   "secs": 566
+   "secs": 41
   },
   {
    "slug": "mariah_hills",
@@ -6820,60 +7019,100 @@
    "areas": {
     "1": {
      "L": 2154,
-     "R": 0
+     "R": 0,
+     "L_in": 977,
+     "R_in": 0
     },
     "2": {
      "L": 625,
-     "R": 3635
+     "R": 3635,
+     "L_in": 0,
+     "R_in": 1371
     },
     "3": {
      "L": 930,
-     "R": 2489
+     "R": 2489,
+     "L_in": 435,
+     "R_in": 655
     },
     "4": {
      "L": 988,
-     "R": 1527
+     "R": 1527,
+     "L_in": 625,
+     "R_in": 450
     },
     "6": {
      "L": 0,
-     "R": 935
+     "R": 935,
+     "L_in": 0,
+     "R_in": 0
     },
     "7": {
      "L": 1726,
-     "R": 781
+     "R": 781,
+     "L_in": 852,
+     "R_in": 0
     },
     "9": {
      "L": 2212,
-     "R": 1841
+     "R": 1841,
+     "L_in": 507,
+     "R_in": 4
     },
     "10": {
      "L": 0,
-     "R": 620
+     "R": 620,
+     "L_in": 0,
+     "R_in": 6
     },
     "12": {
      "L": 586,
-     "R": 0
+     "R": 0,
+     "L_in": 88,
+     "R_in": 0
     },
     "13": {
      "L": 903,
-     "R": 2105
+     "R": 2105,
+     "L_in": 240,
+     "R_in": 529
     },
     "14": {
      "L": 2837,
-     "R": 1505
+     "R": 1505,
+     "L_in": 153,
+     "R_in": 142
     },
     "15": {
      "L": 1351,
-     "R": 0
+     "R": 0,
+     "L_in": 5,
+     "R_in": 0
     },
     "17": {
      "L": 466,
-     "R": 504
+     "R": 504,
+     "L_in": 166,
+     "R_in": 5
     },
     "18": {
      "L": 2177,
-     "R": 1035
+     "R": 1035,
+     "L_in": 546,
+     "R_in": 446
     }
+   },
+   "outs": {
+    "2": "L",
+    "6": "R",
+    "7": "R",
+    "9": "R",
+    "10": "R",
+    "12": "L",
+    "13": "L",
+    "14": "both",
+    "15": "L",
+    "17": "both"
    },
    "priors": {
     "1": {
@@ -7392,25 +7631,25 @@
    },
    "scores": {
     "AUTO": {
-     "match": 6,
-     "regret": 0.85,
+     "match": 5,
+     "regret": 0.852,
      "holes": {
       "1": {
        "plan": "Driver +8",
-       "match": true,
-       "regret": 0.0196,
-       "truth": "Driver +18"
+       "match": false,
+       "regret": 0.0197,
+       "truth": "Driver +20"
       },
       "2": {
        "plan": "Driver +12",
        "match": false,
        "regret": 0.0183,
-       "truth": "2-wood +15"
+       "truth": "4-wood +18"
       },
       "3": {
        "plan": "Driver +10",
        "match": false,
-       "regret": 0.0299,
+       "regret": 0.0297,
        "truth": "Driver +0"
       },
       "4": {
@@ -7422,7 +7661,7 @@
       "6": {
        "plan": "Driver -18",
        "match": true,
-       "regret": -0.0003,
+       "regret": -0.0008,
        "truth": "Driver -18"
       },
       "7": {
@@ -7440,67 +7679,67 @@
       "10": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0381,
+       "regret": 0.0382,
        "truth": "Driver -2"
       },
       "12": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0004,
+       "regret": 0.0005,
        "truth": "Driver +0"
       },
       "13": {
        "plan": "Driver +0",
        "match": true,
-       "regret": 0.0239,
-       "truth": "Driver +18"
+       "regret": 0.0257,
+       "truth": "Driver +15"
       },
       "14": {
        "plan": "Driver -10",
        "match": false,
-       "regret": 0.0303,
+       "regret": 0.0301,
        "truth": "4-wood -5"
       },
       "15": {
        "plan": "4-wood +15",
        "match": true,
-       "regret": 0.0038,
+       "regret": 0.0046,
        "truth": "4-wood +20"
       },
       "17": {
        "plan": "Driver -35",
        "match": false,
-       "regret": 0.003,
+       "regret": 0.0033,
        "truth": "4-wood -40"
       },
       "18": {
        "plan": "Driver +8",
        "match": false,
-       "regret": 0.0431,
+       "regret": 0.0435,
        "truth": "Driver +15"
       }
      }
     },
     "AGENT": {
      "match": 8,
-     "regret": -0.317,
+     "regret": -0.323,
      "holes": {
       "1": {
        "plan": "Driver +18",
        "match": true,
        "regret": -0.0008,
-       "truth": "Driver +18"
+       "truth": "Driver +20"
       },
       "2": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.0906,
-       "truth": "2-wood +15"
+       "regret": 0.0889,
+       "truth": "4-wood +18"
       },
       "3": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0172,
+       "regret": 0.0171,
        "truth": "Driver +0"
       },
       "4": {
@@ -7512,7 +7751,7 @@
       "6": {
        "plan": "Driver -18",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0007,
        "truth": "Driver -18"
       },
       "7": {
@@ -7524,73 +7763,73 @@
       "9": {
        "plan": "Driver -40",
        "match": false,
-       "regret": 0.1675,
+       "regret": 0.1671,
        "truth": "Driver -38"
       },
       "10": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0381,
+       "regret": 0.0382,
        "truth": "Driver -2"
       },
       "12": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0091,
+       "regret": 0.0094,
        "truth": "Driver +0"
       },
       "13": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0283,
-       "truth": "Driver +18"
+       "regret": 0.0253,
+       "truth": "Driver +15"
       },
       "14": {
        "plan": "Driver +5",
        "match": false,
-       "regret": 0.0277,
+       "regret": 0.0274,
        "truth": "4-wood -5"
       },
       "15": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": -0.0007,
+       "regret": -0.0002,
        "truth": "4-wood +20"
       },
       "17": {
        "plan": "4-wood -40",
        "match": true,
-       "regret": 0.0025,
+       "regret": 0.0024,
        "truth": "4-wood -40"
       },
       "18": {
        "plan": "Driver +15",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.001,
        "truth": "Driver +15"
       }
      }
     },
     "ASK 2": {
-     "match": 7,
-     "regret": -0.454,
+     "match": 8,
+     "regret": -0.459,
      "holes": {
       "1": {
        "plan": "Driver +28",
-       "match": false,
-       "regret": 0.0304,
-       "truth": "Driver +18"
+       "match": true,
+       "regret": 0.0301,
+       "truth": "Driver +20"
       },
       "2": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.0906,
-       "truth": "2-wood +15"
+       "regret": 0.0889,
+       "truth": "4-wood +18"
       },
       "3": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0172,
+       "regret": 0.0171,
        "truth": "Driver +0"
       },
       "4": {
@@ -7602,7 +7841,7 @@
       "6": {
        "plan": "Driver -18",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0007,
        "truth": "Driver -18"
       },
       "7": {
@@ -7620,67 +7859,67 @@
       "10": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0381,
+       "regret": 0.0382,
        "truth": "Driver -2"
       },
       "12": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0091,
+       "regret": 0.0094,
        "truth": "Driver +0"
       },
       "13": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0283,
-       "truth": "Driver +18"
+       "regret": 0.0253,
+       "truth": "Driver +15"
       },
       "14": {
        "plan": "Driver +5",
        "match": false,
-       "regret": 0.0277,
+       "regret": 0.0274,
        "truth": "4-wood -5"
       },
       "15": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": -0.0007,
+       "regret": -0.0002,
        "truth": "4-wood +20"
       },
       "17": {
        "plan": "4-wood -40",
        "match": true,
-       "regret": 0.0025,
+       "regret": 0.0024,
        "truth": "4-wood -40"
       },
       "18": {
        "plan": "Driver +15",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.001,
        "truth": "Driver +15"
       }
      }
     },
     "ASK 4": {
-     "match": 7,
-     "regret": -0.505,
+     "match": 8,
+     "regret": -0.509,
      "holes": {
       "1": {
        "plan": "Driver +28",
-       "match": false,
-       "regret": 0.0304,
-       "truth": "Driver +18"
+       "match": true,
+       "regret": 0.0301,
+       "truth": "Driver +20"
       },
       "2": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.0906,
-       "truth": "2-wood +15"
+       "regret": 0.0889,
+       "truth": "4-wood +18"
       },
       "3": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0172,
+       "regret": 0.0171,
        "truth": "Driver +0"
       },
       "4": {
@@ -7692,7 +7931,7 @@
       "6": {
        "plan": "Driver -18",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0007,
        "truth": "Driver -18"
       },
       "7": {
@@ -7716,14 +7955,14 @@
       "12": {
        "plan": "Driver +5",
        "match": true,
-       "regret": 0.0091,
+       "regret": 0.0094,
        "truth": "Driver +0"
       },
       "13": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0283,
-       "truth": "Driver +18"
+       "regret": 0.0253,
+       "truth": "Driver +15"
       },
       "14": {
        "plan": "4-wood -5",
@@ -7734,43 +7973,43 @@
       "15": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": -0.0007,
+       "regret": -0.0002,
        "truth": "4-wood +20"
       },
       "17": {
        "plan": "4-wood -40",
        "match": true,
-       "regret": 0.0025,
+       "regret": 0.0024,
        "truth": "4-wood -40"
       },
       "18": {
        "plan": "Driver +15",
        "match": true,
-       "regret": 0.0009,
+       "regret": 0.001,
        "truth": "Driver +15"
       }
      }
     },
     "ASK 6": {
-     "match": 5,
-     "regret": -0.42,
+     "match": 6,
+     "regret": -0.426,
      "holes": {
       "1": {
        "plan": "Driver +28",
-       "match": false,
-       "regret": 0.0304,
-       "truth": "Driver +18"
+       "match": true,
+       "regret": 0.0301,
+       "truth": "Driver +20"
       },
       "2": {
        "plan": "Driver +20",
        "match": false,
-       "regret": 0.0906,
-       "truth": "2-wood +15"
+       "regret": 0.0889,
+       "truth": "4-wood +18"
       },
       "3": {
        "plan": "Driver +8",
        "match": true,
-       "regret": 0.0172,
+       "regret": 0.0171,
        "truth": "Driver +0"
       },
       "4": {
@@ -7782,7 +8021,7 @@
       "6": {
        "plan": "Driver -18",
        "match": true,
-       "regret": -0.0002,
+       "regret": -0.0007,
        "truth": "Driver -18"
       },
       "7": {
@@ -7812,8 +8051,8 @@
       "13": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0283,
-       "truth": "Driver +18"
+       "regret": 0.0253,
+       "truth": "Driver +15"
       },
       "14": {
        "plan": "4-wood -5",
@@ -7824,43 +8063,43 @@
       "15": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": -0.0007,
+       "regret": -0.0002,
        "truth": "4-wood +20"
       },
       "17": {
        "plan": "4-wood -40",
        "match": true,
-       "regret": 0.0025,
+       "regret": 0.0024,
        "truth": "4-wood -40"
       },
       "18": {
        "plan": "4-wood +10",
        "match": false,
-       "regret": 0.0616,
+       "regret": 0.061,
        "truth": "Driver +15"
       }
      }
     },
     "ASK all": {
-     "match": 5,
-     "regret": -0.454,
+     "match": 6,
+     "regret": -0.458,
      "holes": {
       "1": {
        "plan": "Driver +28",
-       "match": false,
-       "regret": 0.0304,
-       "truth": "Driver +18"
+       "match": true,
+       "regret": 0.0301,
+       "truth": "Driver +20"
       },
       "2": {
        "plan": "Driver +18",
        "match": false,
-       "regret": 0.0569,
-       "truth": "2-wood +15"
+       "regret": 0.0571,
+       "truth": "4-wood +18"
       },
       "3": {
        "plan": "Driver +12",
        "match": false,
-       "regret": 0.0484,
+       "regret": 0.0483,
        "truth": "Driver +0"
       },
       "4": {
@@ -7872,7 +8111,7 @@
       "6": {
        "plan": "Driver -20",
        "match": true,
-       "regret": 0.0012,
+       "regret": 0.0015,
        "truth": "Driver -18"
       },
       "7": {
@@ -7902,8 +8141,8 @@
       "13": {
        "plan": "4-wood -2",
        "match": false,
-       "regret": 0.0283,
-       "truth": "Driver +18"
+       "regret": 0.0253,
+       "truth": "Driver +15"
       },
       "14": {
        "plan": "4-wood -5",
@@ -7914,25 +8153,25 @@
       "15": {
        "plan": "4-wood +18",
        "match": true,
-       "regret": -0.0007,
+       "regret": -0.0002,
        "truth": "4-wood +20"
       },
       "17": {
        "plan": "4-wood -40",
        "match": true,
-       "regret": 0.0025,
+       "regret": 0.0024,
        "truth": "4-wood -40"
       },
       "18": {
        "plan": "4-wood +10",
        "match": false,
-       "regret": 0.0616,
+       "regret": 0.061,
        "truth": "Driver +15"
       }
      }
     }
    },
-   "secs": 589
+   "secs": 82
   }
  ]
 }
