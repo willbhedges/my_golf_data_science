@@ -1,5 +1,59 @@
 # Unmapped courses (ROADMAP workstream 4): honest detection vs pairing
 
+## 2026-11-02: re-scored on the leakage-free scenes (perception pass 2, run 41357754039)
+
+Every bench scene except 16 test courses (still `formation/inputs`, old models, states those never trained on) now
+comes from `perception/scenes`, re-perceived with the bench-dev-state models: state-fold models for dev states,
+the final model for test states. So **all 77 dev and all 84 test courses are out-of-state** (dev tuning is honest
+now too). `bench_set.py` re-run (`benchmark.json`); formation re-trained and its hole_pairs re-made on the new
+scenes (zt_formation eval, run 41473853942; `formation/data.perception_scene_obj` now prefers `perception/scenes`);
+pathroute_v2_unmapped re-fitted (same configuration: mix + all perception columns, 5-fold dev OOF, test once);
+sequence_v3 re-solved for all 161 courses with the committed gate (`seq_extend.py`); agreement re-run.
+"Same 74" = the old honest test set, for a like-for-like before -> after; "84" = every test course.
+
+| test, same 74 courses | before (old scenes) | after (new scenes) |
+|---|---|---|
+| detection, scene `kind=hole` green R / P | 94.9 / 89.7 | **95.7 / 89.0** |
+| detection, tee complex p>=0.5 R / P | 88.7 / 81.0 | **91.9 / 79.2** |
+| detection, both found | 85.4 | **88.9** |
+| every candidate: green R / P, tee R / P, both | 98.8 / 81.7, 95.5 / 71.5, 94.5 | 98.8 / 81.7, 95.5 / 71.7, 94.4 |
+| pathroute_v2_unmapped: paired / all pairs right / numbered | 80.5 / 18.9 / 24.4 | 80.6 / 18.9 / 16.4 |
+| pathroute_v2_unmapped: taps @ dev threshold (precision reached) | 7.92 (96.9 %) | **10.01 (98.3 %)** |
+| sequence_v3 card: paired / all pairs / numbered / holes right | 80.3 / 25.7 / 66.0 / 24.3 | 79.3 / 20.3 / 65.0 / 20.3 |
+| sequence_v3 card: taps @ dev threshold | 7.99 (96.4 %) | 8.09 (96.9 %) |
+| sequence_v3 nocard: paired / all pairs / numbered | 80.0 / 13.5 / 29.6 | 79.1 / 13.5 / 20.6 |
+| sequence_v3 + agreement (`agree.py`): taps @ dev threshold | 6.45 (97.0 %) | 7.36 (97.7 %) |
+
+All 84 test courses (after): detection kind=hole green 96.1 / 89.5, tee 92.3 / 79.7, both 89.5; pathroute paired 81.1,
+all pairs 19.1, taps 9.86 (98.2 %); sequence_v3 card 80.9 / 21.4 / 68.0 / 21.4, taps 7.88 (97.2 %); agreement
+7.24 (97.9 %). Dev (77, now out-of-state): pathroute OOF paired 85.1, all pairs 22.1, taps 9.69 (98.0 %);
+sequence_v3 card 90.3 / 35.1 / 78.0 (still optimistic: dev hole_pairs come from the formation model trained on
+those courses). Formation's own table (RESULTS.md): held-out perception, no card 84.4 -> 83.6 %, but its OSM rows
+also moved by ~1 point (88.8 -> 87.9) on re-training, so that change is within re-fit noise.
+
+**Reading.** Detection improved where it matters (tee recall +3.2, both-found +3.5 on the same courses; precision
+-0.7 / -1.8), but pairing did not follow: paired is flat, and sequence_v3 lost 4 courses of "all pairs right".
+The one clear gain is calibration: with out-of-state dev scenes, pathroute's dev threshold now **holds 98 % on new
+states** (98.3 %, was 96.9 %); the price is honest taps (10.0 per course, not 7.9). sequence_v3's threshold still
+misses (96.9 %) because its dev hole_pairs are in-sample for formation; an out-of-fold hole_pairs set for dev
+(oof_pairs.py on Actions) is the fix. The numbering drop for pathroute (24 -> 16 %) comes with the re-fit on
+out-of-state dev caches and was not investigated.
+
+**Tee-candidate re-scorer (`tee_rescore.py`, tried, not adopted).** A per-complex "real tee?" GBM with hole
+context (nearest greens, greens at a playable length, fairway ends, clubhouse, crowding, green->tee relations,
+box count / area, rank in course), labels from bench `tee_ok`, 5 state folds OOF on dev, test from the all-dev fit.
+Ranking: dev OOF AUC 0.786 -> 0.810 (AP 0.894 -> 0.910), test 0.792 -> 0.817. But false tees are not separable
+enough to cut: at a cut of 0.1 it drops 4.7 % of complexes and 0.9 % of real tees. Plugged into pathroute
+(`prep_u.py --tee-scores`, re-scored p replaces perception's p), dev OOF picked "re-scored p + cut 0.1" (paired
+85.1 -> 85.4, all pairs 22.1 -> 24.7, taps 9.69 -> 9.66; "re-scored p, no cut" 85.0 / 24.7 / 9.78); on test (same
+74, once) it was flat-to-worse: paired 80.6 -> 80.5, all pairs 18.9 -> 17.6, taps 10.01 -> 10.09. So the default
+pipeline does not use it; the code and tests stay for the next attempt (needs features that separate a hole's tee
+from another hole's real tee, i.e. the pairing problem, not a better detector).
+
+The barely-mapped plan number (CARDBLIND.md, 17/33 holes) uses pathroute_v2's OSM model (`live2.py`,
+`model_v2.pkl.gz`, fitted on OSM dev caches) and no perception scene, so the re-train does not change it (not re-run).
+
+
 *2026-11-01, second pass.* Tiers `unmapped_card` / `unmapped_nocard` of the zero-tap benchmark (BENCH.md): no OSM
 golf feature, only the blind perception scene (NAIP + 3DEP lidar -> `course_scene/1`), the NAIP segment model and
 lidar pads. Code: `unmapped/` (`detect_eval.py` detection + pairing decomposition, `honest_eval.py` pairing + taps at
@@ -34,7 +88,7 @@ the dev threshold, `agree.py` two-router agreement confidence, `seq_extend.py`, 
   on dev-state courses only, so test is honest for it too; for dev, the 39 added courses use the committed
   (in-sample) hole_pairs, not out-of-fold ones (the OOF artifact is not downloadable here), so dev numbers of
   sequence_v3 / formation_v2 are optimistic.
-* **Re-train on bench-dev states only (in flight, not yet in these numbers).** `perception/split.py` +
+* **Re-train on bench-dev states only (landed 2026-11-02: numbers in the section above; the tables below are the old scenes).** `perception/split.py` +
   `train.py`: the pool = courses in bench dev states that are not bench test courses; final models (used for bench
   test states) + 5 state-fold models `models/fold<k>/` (pool minus fold k's states), and `perceive.py` uses the
   fold that held a course's state out, so every dev-state scene becomes out-of-state (all 77 dev and the 17
