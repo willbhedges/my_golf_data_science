@@ -52,7 +52,8 @@ GUARD_LINE = 40.0
 # best printable aim is on the bound, that side's bound steps out to 60, then 80 yds, kept only if the best aim
 # there is printable (lie + line-of-play checks, so another hole's fairway still fails) and gains > GUARD_GAIN
 # strokes. Only for holes with a line of play (the check that stops an aim at another hole). DECIDE_ADAPTIVE_AIM=0
-# turns it off (the fixed +/-40 bound).
+# turns it off (the fixed +/-40 bound). A printed aim past +/-40 is always a CHECK (wide_aim_flags: confirm the
+# dog-leg line), as the scoreboard guard requires.
 GUARD_STEPS = tuple(float(x) for x in os.environ.get("DECIDE_GUARD_STEPS", "60").split(",") if x)
 GUARD_GAIN = float(os.environ.get("DECIDE_GUARD_GAIN", "0.01"))
 ADAPTIVE_AIM = os.environ.get("DECIDE_ADAPTIVE_AIM", "1") != "0"
@@ -271,6 +272,8 @@ def quick_hole(h, n=8000, seed=31):
                margin=res[runner]["ev"] - res[best]["ev"], zone=[float(ok.min()), float(ok.max())],
                clubs=res, tie=bool(res[runner]["ev"] - res[best]["ev"] < 0.01), mode="quick", n=n)
     out["check"] = check_reasons(res, best) + canopy_flags(h, best, out["aim"], z)
+    if res[best]["printable"]:                            # (an unprintable pick already says why)
+        out["check"] += wide_aim_flags(best, out["aim"])
     return out
 
 
@@ -320,6 +323,17 @@ def canopy_flags(h, club, aim, z):
         why.append(f"{unmarked.mean():.0%} of the {club} pattern finishes on tree canopy (lidar) the map does not "
                    "mark as trees")
     return why
+
+
+def wide_aim_flags(club, aim):
+    """The adaptive bound (adaptive_bound) may print an aim past +/-GUARD_AIM on a dog-leg. Such an aim is never
+    printed silently: it is a CHECK the golfer confirms on the map (the corner line is right only if the mapped
+    corner is; e.g. Spirit Hollow 14 2-wood -50, Mozingo Lake 3 Driver +47.5). [] = within the fixed bound."""
+    if abs(float(aim)) <= GUARD_AIM + 1e-6:
+        return []
+    side = "right" if aim > 0 else "left"
+    return [f"{club} aim {aim:+.0f} yds is more than {GUARD_AIM:.0f} yds {side} of the tee line (dog-leg corner, "
+            "wider aim bound): confirm the line on the map"]
 
 
 def check_reasons(res, best):
@@ -448,6 +462,8 @@ def full_hole(h, S=64, N=3000, seed=2027, sweep=True):
     set_prior_means()
     t.HOLES = BASE["holes"]
     r["check"] += canopy_flags(h, r["pick"], r["aim"], _z(2000, 31))
+    if not (raw and j is None):                           # (an unprintable pick already says why)
+        r["check"] += wide_aim_flags(r["pick"], r["aim"])
     PP.reset()
     if sweep:
         picks, flips, _ = DS.width_sweep(h, mode="common")

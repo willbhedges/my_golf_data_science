@@ -197,14 +197,28 @@ def _dogleg(adaptive):
 
 def test_adaptive_aim_bound_on_a_dogleg():
     """The best aim is past +40 (the corner fairway): the fixed bound pins it to +40 (rough short of the corner), the
-    adaptive bound widens to 60 / 80 on that side only and prints the corner aim, with no CHECK from the bound."""
+    adaptive bound widens to 60 / 80 on that side only and prints the corner aim. An aim past +/-40 is never printed
+    silently (scoreboard guard): it carries a CHECK asking the golfer to confirm the dog-leg line, not a rejection."""
     fixed, wide = _dogleg(False), _dogleg(True)
     assert fixed["aim"] <= decide.GUARD_AIM + 1e-6
     assert wide["aim"] > decide.GUARD_AIM and wide["ev"] < fixed["ev"]
     b = wide["clubs"][wide["pick"]]["aim_bound"]
     assert b[0] == -decide.GUARD_AIM and b[1] in decide.GUARD_STEPS and wide["aim"] <= b[1]
     assert not decide.aim_problems(1, wide["pick"], wide["aim"], tuple(b))
-    assert not any("off the tee line" in c for c in wide["check"])
+    assert decide.wide_aim_flags(wide["pick"], wide["aim"]) and \
+        all(c in wide["check"] for c in decide.wide_aim_flags(wide["pick"], wide["aim"]))
+    assert not any("rejected" in c or "no printable" in c for c in wide["check"])
+    assert not any("confirm" in c for c in fixed["check"])
+
+
+def test_wide_aim_flags():
+    """Only an aim strictly past +/-GUARD_AIM gets the confirm-the-line CHECK."""
+    assert decide.wide_aim_flags("Driver", decide.GUARD_AIM) == []
+    assert decide.wide_aim_flags("Driver", -decide.GUARD_AIM) == []
+    assert decide.wide_aim_flags("Driver", 12.5) == []
+    for a in (47.5, -50.0):
+        f = decide.wide_aim_flags("2-wood", a)
+        assert len(f) == 1 and f"{a:+.0f}" in f[0] and "confirm" in f[0]
 
 
 def test_adaptive_bound_never_reaches_another_hole():
