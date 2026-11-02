@@ -166,3 +166,40 @@ water fix); well-mapped parkland courses move ±0.03 (aim nudges, within seed no
 Decision: the mapper becomes a standard build step (cheap, never broke a course in round 2), with highest priority
 on courses with prairie/links character; long-grass recall is the open item (big tufted blocks found, thin native
 bands mostly left out by design).
+
+## Round 3 plan: S2 native suggestions as a mapper input (evaluator, 2026-11-02)
+
+Coordinator decision: the Sentinel-2 native P (s2_longgrass.md, 23-course model) is not an automatic layer; the
+mapper sees it as a suggestion and confirms / rejects it on the photos. The mapper's native recall was ~0.36 (round
+2), S2's LOCO recall on the KS native courses 0.62 but with parkland false native (Ellis 2 / 9, Spirit Hollow 17).
+
+Tooling (commit "Mapper: S2 native suggestions"):
+* `vision_any/s2/native_model.py` + `native_model/`: `loco/<slug>.npz` = the LOCO grids of the 23-course run (fold
+  model without that course; copied from `pred_s2_23.npz`, uint8 P x 200), `full_model.txt` = the same LightGBM on
+  all 23 courses for new courses (features from the stack + `g10_blind`, the package masks at 10 m; checked identical
+  to `prep_grid10.py` on Sand Creek Station).
+* `render_inputs.py`: `hNN_corridor_s2.png` [P heat over the photo | candidates on the photo | candidates on the 2nd
+  year], an S2 column in `inputs.md`, `edits.template.json` `holes.<n>.s2_suggested.{L,R}` (P >= 0.5 clusters minus
+  the package fairway / first cut / green / water / sand / trees, >= 150 sq yds, empty `decision`).
+* `write_layers.py`: `accept` -> `add native` (agent confidence + evidence, keep-out applies), `reject` / `replace`
+  -> nothing (evidence required); undecided candidates listed under Checks; "S2 suggestions" table in review.md;
+  decisions recorded in `agent_zones.geojson` `properties.reviewed.<n>.s2` (for the accept-rate analysis).
+* Imagery fallback `course_data/imagery/<slug>/` (Spirit Hollow's package predates package imagery); the brief's
+  sparse checkout adds the S2 stack, the native model and those 4 imagery files, and excludes
+  `course_data/spirit_hollow/**` (its hand map).
+
+Round-3 courses (no mapper folder exists; the round-1 Ellis run was removed, git history keeps it):
+
+| slug | set | why |
+|---|---|---|
+| prairie_dunes | Blue | native both sides of every hole; S2 LOCO IoU 0.78, auto 1 / 14 matches |
+| buffalo_dunes | Blue | sandhill prairie between fairways; S2 IoU 0.67 |
+| sand_creek_station | Championship | native beyond ~12 yds of mown rough |
+| mariah_hills | Blue | native islands; S2 broke 6 / 13 as a layer |
+| eagle_bend | Gold | S2 misses its green mottled native (IoU 0.03): tests the photo-only path |
+| ellis | Blue | parkland control: S2 false native on 2 / 9 (drought tan rough 2023, green 2021) |
+| spirit_hollow | Black | parkland control: S2 broke 17 |
+
+Score: `python3 course_data/mapper/eval_mapper.py --set all --courses <slugs>` (the 5 KS courses are truth_sets_v2,
+Ellis / Spirit Hollow v1). Success = the KS courses gain most of S2's error-budget gain (Prairie Dunes 1 -> 12,
+Buffalo Dunes 7 -> 12 as a layer) while Ellis 2 / 9 and Spirit Hollow 17 do not break.
