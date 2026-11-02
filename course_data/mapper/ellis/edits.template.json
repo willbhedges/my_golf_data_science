@@ -5,12 +5,16 @@
  "mapper": "",
  "started": "",
  "minutes": null,
- "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py ellis. See course_data/mapper/BRIEF.md for ops, shapes and rules. s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py ellis. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
  "holes": {
   "1": {
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -183,6 +187,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -560,6 +568,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -735,6 +747,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -921,6 +937,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -1083,6 +1103,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -1364,6 +1388,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -1750,6 +1778,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -1836,6 +1868,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -1938,6 +1974,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -2478,6 +2518,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -2755,6 +2799,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -3076,6 +3124,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
@@ -3393,6 +3445,10 @@
    "reviewed": [],
    "confidence": "",
    "note": "",
+   "long_grass": {
+    "L": "",
+    "R": ""
+   },
    "edits": [],
    "s2_suggested": {
     "L": [
