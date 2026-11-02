@@ -1,0 +1,1411 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "pine_dunes",
+ "corridor_set": "Gold",
+ "mapper": "mapper-pine_dunes",
+ "started": "2026-11-02T05:51Z",
+ "minutes": 45,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "pines both sides, no native grass; open sandy waste strip right at 190-250 not mapped; two right crowns at 130-165 missing",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        29,
+        192
+       ],
+       [
+        38,
+        192
+       ],
+       [
+        40,
+        215
+       ],
+       [
+        39,
+        248
+       ],
+       [
+        32,
+        250
+       ],
+       [
+        29,
+        225
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "bare tan sand strip right of fairway, both 2020 and 2022, white in CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       38,
+       139,
+       9,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown in lidar >8 m and both photo years, no auto outline"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       24,
+       157,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown in lidar and both photo years"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "sand waste strip along the right tree line 145-340 (bright in 2022, tan 2020); left tree-edge strip ambiguous, left auto",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        5,
+        145
+       ],
+       [
+        11,
+        145
+       ],
+       [
+        13,
+        200
+       ],
+       [
+        23,
+        240
+       ],
+       [
+        37,
+        280
+       ],
+       [
+        51,
+        320
+       ],
+       [
+        56,
+        340
+       ],
+       [
+        46,
+        340
+       ],
+       [
+        34,
+        300
+       ],
+       [
+        21,
+        262
+       ],
+       [
+        13,
+        230
+       ],
+       [
+        6,
+        190
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "continuous tan/white sand strip on the right tree edge, both years"
+    }
+   ]
+  },
+  "4": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto layers match the photo; strip on left at 210-300 is a cart path",
+   "edits": []
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "big left waste mapped; right sand strip 120-190 missing",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        25,
+        122
+       ],
+       [
+        40,
+        122
+       ],
+       [
+        42,
+        150
+       ],
+       [
+        36,
+        188
+       ],
+       [
+        28,
+        188
+       ],
+       [
+        24,
+        150
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan sand strip right, 2020 and 2022"
+    }
+   ]
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto waste sand on the left covers lidar canopy at 305-400: changed to trees",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "sand",
+     "shape": {
+      "rect": [
+       -70,
+       -33,
+       305,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar canopy >8 m and dark crowns both years inside the auto sand polygon"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       -70,
+       -33,
+       305,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "continuous lidar canopy, CIR red crowns"
+    }
+   ]
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "sand patches right 195-230 between pines",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        30,
+        195
+       ],
+       [
+        55,
+        195
+       ],
+       [
+        60,
+        215
+       ],
+       [
+        45,
+        230
+       ],
+       [
+        32,
+        222
+       ]
+      ]
+     },
+     "confidence": "low",
+     "evidence": "tan sand patches right of fairway between crowns, both years"
+    }
+   ]
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "small sand waste patches along both tree edges missing",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -30,
+        215
+       ],
+       [
+        -20,
+        215
+       ],
+       [
+        -16,
+        240
+       ],
+       [
+        -25,
+        246
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "white sand patch left in 2022, tan 2020"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -48,
+        266
+       ],
+       [
+        -35,
+        266
+       ],
+       [
+        -31,
+        286
+       ],
+       [
+        -44,
+        289
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "sand patch left, both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        24,
+        122
+       ],
+       [
+        34,
+        122
+       ],
+       [
+        36,
+        158
+       ],
+       [
+        28,
+        160
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "sand strip right, both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       40,
+       238,
+       5,
+       6
+      ]
+     },
+     "confidence": "low",
+     "evidence": "small tan patch right, both years"
+    }
+   ]
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "big sandy waste area left 130-230 and right strip 120-230 not mapped (white in CIR)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        230
+       ],
+       [
+        -45,
+        232
+       ],
+       [
+        -38,
+        215
+       ],
+       [
+        -40,
+        195
+       ],
+       [
+        -35,
+        175
+       ],
+       [
+        -25,
+        160
+       ],
+       [
+        -15,
+        140
+       ],
+       [
+        -25,
+        128
+       ],
+       [
+        -55,
+        133
+       ],
+       [
+        -70,
+        150
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan sand waste with scattered pines, both years, white/cyan in CIR"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        18,
+        230
+       ],
+       [
+        27,
+        232
+       ],
+       [
+        30,
+        200
+       ],
+       [
+        32,
+        160
+       ],
+       [
+        40,
+        135
+       ],
+       [
+        35,
+        122
+       ],
+       [
+        22,
+        125
+       ],
+       [
+        17,
+        160
+       ],
+       [
+        17,
+        200
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "sand strip on the right tree edge, white in CIR, both years"
+    }
+   ]
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right waste areas 120-245 missing; left strip 225-290",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        15,
+        200
+       ],
+       [
+        35,
+        195
+       ],
+       [
+        50,
+        215
+       ],
+       [
+        50,
+        240
+       ],
+       [
+        38,
+        245
+       ],
+       [
+        20,
+        232
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan sand waste with tree islands right, both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        3,
+        120
+       ],
+       [
+        15,
+        120
+       ],
+       [
+        18,
+        160
+       ],
+       [
+        25,
+        200
+       ],
+       [
+        13,
+        200
+       ],
+       [
+        5,
+        160
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "sand strip right of the line, bright in 2022, tan 2020"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -36,
+        225
+       ],
+       [
+        -27,
+        225
+       ],
+       [
+        -26,
+        290
+       ],
+       [
+        -34,
+        290
+       ]
+      ]
+     },
+     "confidence": "low",
+     "evidence": "tan strip at the left tree edge, clearer in 2022"
+    }
+   ]
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right side waste sand around tree islands; left tan strip 290-380 lies inside the OSM fairway, not drawn; auto water left at 175-220 kept (lidar void) but not visible in photos",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        16,
+        300
+       ],
+       [
+        26,
+        305
+       ],
+       [
+        30,
+        275
+       ],
+       [
+        34,
+        250
+       ],
+       [
+        28,
+        248
+       ],
+       [
+        20,
+        275
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "sand around the right tree island, white in CIR"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        3,
+        375
+       ],
+       [
+        15,
+        378
+       ],
+       [
+        30,
+        345
+       ],
+       [
+        25,
+        325
+       ],
+       [
+        12,
+        330
+       ],
+       [
+        5,
+        350
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "sand waste between bunkers and trees right, both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        28,
+        200
+       ],
+       [
+        34,
+        203
+       ],
+       [
+        40,
+        160
+       ],
+       [
+        35,
+        158
+       ]
+      ]
+     },
+     "confidence": "low",
+     "evidence": "narrow sand strip right, white in CIR"
+    }
+   ]
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "small sand patches at the left tree edge; pond right kept (dark water 2020, pale green 2022)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       -27,
+       240,
+       5,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan patch at left tree edge both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       -26,
+       283,
+       4,
+       6
+      ]
+     },
+     "confidence": "low",
+     "evidence": "tan patch left, both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       -19,
+       192,
+       4,
+       8
+      ]
+     },
+     "confidence": "low",
+     "evidence": "tan patch left, 2022 clearer"
+    }
+   ]
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left sand waste patches missing; pond kept (water 2020, pale green 2022)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -68,
+        240
+       ],
+       [
+        -52,
+        240
+       ],
+       [
+        -50,
+        262
+       ],
+       [
+        -66,
+        265
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan sand waste left, both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -48,
+        185
+       ],
+       [
+        -36,
+        185
+       ],
+       [
+        -34,
+        205
+       ],
+       [
+        -46,
+        205
+       ]
+      ]
+     },
+     "confidence": "low",
+     "evidence": "tan patch left both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -36,
+        130
+       ],
+       [
+        -24,
+        130
+       ],
+       [
+        -24,
+        155
+       ],
+       [
+        -34,
+        155
+       ]
+      ]
+     },
+     "confidence": "low",
+     "evidence": "tan patch left both years"
+    }
+   ]
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left sand waste 228-290 missing",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -46,
+        228
+       ],
+       [
+        -30,
+        228
+       ],
+       [
+        -26,
+        290
+       ],
+       [
+        -38,
+        292
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan sand area left of fairway, both years"
+    }
+   ]
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto water 13wat at 120-190 right is grass/sandy rough (lidar ground returns, CIR vegetated); left sand waste 240-280",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       18,
+       58,
+       118,
+       192
+      ]
+     },
+     "confidence": "high",
+     "evidence": "no water in 2020 or 2022, lidar ground returns (not void), CIR pink; real pond starts beyond x+60 (overview)"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -48,
+        240
+       ],
+       [
+        -36,
+        240
+       ],
+       [
+        -34,
+        275
+       ],
+       [
+        -46,
+        280
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan sand left of fairway both years, whitish in CIR"
+    }
+   ]
+  }
+ },
+ "tees": {
+  "1": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "2": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "3": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "4": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "5": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "6": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "7": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "8": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "9": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "10": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "11": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "12": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "13": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "14": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "15": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "16": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "17": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  },
+  "18": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "auto tee on/near the OSM box or on the line at card walkback; no separate box visible at this resolution"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "13",
+   "what": "auto water left at 175-220: lidar void (no returns) but dark crowns in both NAIP years; kept"
+  },
+  {
+   "hole": "14",
+   "what": "pond right 220-285 (shared with 15): dark water 2020, uniform pale green 2022 (duckweed or drained); kept as water"
+  },
+  {
+   "hole": "15",
+   "what": "same pond 155-210: kept as water"
+  },
+  {
+   "hole": "all",
+   "what": "sand waste edges +/-5 yds; pine-straw vs sand ambiguous on narrow strips (holes 2 left not drawn; 13 left not drawn; 11 left, 14 drawn low)"
+  },
+  {
+   "hole": "17",
+   "what": "unused OSM tee box at along ~107 (card would be ~368); Red 295 walkback at 180 has no visible box"
+  },
+  {
+   "hole": "18",
+   "what": "unused OSM tee box ~40 yds behind Gold (would be ~552, no set)"
+  },
+  {
+   "hole": "11",
+   "what": "unused OSM tee box at along ~115 (~490); Red 450 walkback at 155 has no visible box"
+  },
+  {
+   "hole": "all",
+   "what": "forward-set walkback tees (White/Red) not verifiable: no boxes visible at NAIP resolution, DEM too coarse"
+  }
+ ]
+}

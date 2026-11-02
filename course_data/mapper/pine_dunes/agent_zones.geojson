@@ -1,0 +1,1966 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "slug": "pine_dunes",
+  "mapper": "mapper-pine_dunes",
+  "made": "2026-11-02T06:03:50Z",
+  "corridor_set": "Gold",
+  "base_package": "course_data/mapper/pine_dunes/base/package.json",
+  "base_built": "2026-10-17T19:14:29Z",
+  "minutes": 45,
+  "edits_sha": "4753301211384669",
+  "schema": "agent_zones/1",
+  "reviewed": {
+   "1": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "pines both sides, no native grass; open sandy waste strip right at 190-250 not mapped; two right crowns at 130-165 missing"
+   },
+   "2": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "sand waste strip along the right tree line 145-340 (bright in 2022, tan 2020); left tree-edge strip ambiguous, left auto"
+   },
+   "4": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "auto layers match the photo; strip on left at 210-300 is a cart path"
+   },
+   "5": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "big left waste mapped; right sand strip 120-190 missing"
+   },
+   "7": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "auto waste sand on the left covers lidar canopy at 305-400: changed to trees"
+   },
+   "8": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "sand patches right 195-230 between pines"
+   },
+   "9": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "small sand waste patches along both tree edges missing"
+   },
+   "10": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "big sandy waste area left 130-230 and right strip 120-230 not mapped (white in CIR)"
+   },
+   "11": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "right waste areas 120-245 missing; left strip 225-290"
+   },
+   "13": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "right side waste sand around tree islands; left tan strip 290-380 lies inside the OSM fairway, not drawn; auto water left at 175-220 kept (lidar void) but not visible in photos"
+   },
+   "14": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "small sand patches at the left tree edge; pond right kept (dark water 2020, pale green 2022)"
+   },
+   "15": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "left sand waste patches missing; pond kept (water 2020, pale green 2022)"
+   },
+   "17": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "left sand waste 228-290 missing"
+   },
+   "18": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "auto water 13wat at 120-190 right is grass/sandy rough (lidar ground returns, CIR vegetated); left sand waste 240-280"
+   }
+  },
+  "uncertain": [
+   {
+    "hole": "13",
+    "what": "auto water left at 175-220: lidar void (no returns) but dark crowns in both NAIP years; kept"
+   },
+   {
+    "hole": "14",
+    "what": "pond right 220-285 (shared with 15): dark water 2020, uniform pale green 2022 (duckweed or drained); kept as water"
+   },
+   {
+    "hole": "15",
+    "what": "same pond 155-210: kept as water"
+   },
+   {
+    "hole": "all",
+    "what": "sand waste edges +/-5 yds; pine-straw vs sand ambiguous on narrow strips (holes 2 left not drawn; 13 left not drawn; 11 left, 14 drawn low)"
+   },
+   {
+    "hole": "17",
+    "what": "unused OSM tee box at along ~107 (card would be ~368); Red 295 walkback at 180 has no visible box"
+   },
+   {
+    "hole": "18",
+    "what": "unused OSM tee box ~40 yds behind Gold (would be ~552, no set)"
+   },
+   {
+    "hole": "11",
+    "what": "unused OSM tee box at along ~115 (~490); Red 450 walkback at 155 has no visible box"
+   },
+   {
+    "hole": "all",
+    "what": "forward-set walkback tees (White/Red) not verifiable: no boxes visible at NAIP resolution, DEM too coarse"
+   }
+  ],
+  "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "1",
+    "op": "add",
+    "lie": "sand",
+    "edit": "1.0",
+    "area_yd2": 552,
+    "confidence": "medium",
+    "evidence": "bare tan sand strip right of fairway, both 2020 and 2022, white in CIR"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5419687,
+       31.9780465
+      ],
+      [
+       -95.5422063,
+       31.9780009
+      ],
+      [
+       -95.5422107,
+       31.9780608
+      ],
+      [
+       -95.5419132,
+       31.9781595
+      ],
+      [
+       -95.5416971,
+       31.9782074
+      ],
+      [
+       -95.5416679,
+       31.9781375
+      ],
+      [
+       -95.5419687,
+       31.9780465
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "1",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "1.1",
+    "area_yd2": 224,
+    "confidence": "medium",
+    "evidence": "crown in lidar >8 m and both photo years, no auto outline"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5412232,
+       31.9784267
+      ],
+      [
+       -95.5412027,
+       31.9784251
+      ],
+      [
+       -95.541183,
+       31.9784185
+      ],
+      [
+       -95.5411654,
+       31.9784075
+      ],
+      [
+       -95.5411511,
+       31.9783929
+      ],
+      [
+       -95.541141,
+       31.9783755
+      ],
+      [
+       -95.541136,
+       31.9783567
+      ],
+      [
+       -95.5411363,
+       31.9783376
+      ],
+      [
+       -95.5411418,
+       31.9783196
+      ],
+      [
+       -95.5411523,
+       31.978304
+      ],
+      [
+       -95.541167,
+       31.9782917
+      ],
+      [
+       -95.5411849,
+       31.9782836
+      ],
+      [
+       -95.5412047,
+       31.9782802
+      ],
+      [
+       -95.5412252,
+       31.9782819
+      ],
+      [
+       -95.5412449,
+       31.9782884
+      ],
+      [
+       -95.5412626,
+       31.9782994
+      ],
+      [
+       -95.5412769,
+       31.9783141
+      ],
+      [
+       -95.5412869,
+       31.9783314
+      ],
+      [
+       -95.5412919,
+       31.9783503
+      ],
+      [
+       -95.5412917,
+       31.9783693
+      ],
+      [
+       -95.5412861,
+       31.9783873
+      ],
+      [
+       -95.5412756,
+       31.978403
+      ],
+      [
+       -95.541261,
+       31.9784153
+      ],
+      [
+       -95.5412431,
+       31.9784234
+      ],
+      [
+       -95.5412232,
+       31.9784267
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "1",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "1.2",
+    "area_yd2": 78,
+    "confidence": "medium",
+    "evidence": "small crown in lidar and both photo years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5413366,
+       31.9782362
+      ],
+      [
+       -95.541324,
+       31.9782356
+      ],
+      [
+       -95.541312,
+       31.9782323
+      ],
+      [
+       -95.5413014,
+       31.9782265
+      ],
+      [
+       -95.5412929,
+       31.9782185
+      ],
+      [
+       -95.5412872,
+       31.9782089
+      ],
+      [
+       -95.5412846,
+       31.9781984
+      ],
+      [
+       -95.5412852,
+       31.9781876
+      ],
+      [
+       -95.5412891,
+       31.9781774
+      ],
+      [
+       -95.541296,
+       31.9781683
+      ],
+      [
+       -95.5413053,
+       31.9781611
+      ],
+      [
+       -95.5413166,
+       31.9781563
+      ],
+      [
+       -95.5413289,
+       31.978154
+      ],
+      [
+       -95.5413415,
+       31.9781546
+      ],
+      [
+       -95.5413535,
+       31.9781579
+      ],
+      [
+       -95.5413641,
+       31.9781637
+      ],
+      [
+       -95.5413726,
+       31.9781717
+      ],
+      [
+       -95.5413783,
+       31.9781813
+      ],
+      [
+       -95.541381,
+       31.9781918
+      ],
+      [
+       -95.5413803,
+       31.9782026
+      ],
+      [
+       -95.5413764,
+       31.9782128
+      ],
+      [
+       -95.5413695,
+       31.9782218
+      ],
+      [
+       -95.5413602,
+       31.9782291
+      ],
+      [
+       -95.5413489,
+       31.9782339
+      ],
+      [
+       -95.5413366,
+       31.9782362
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "sand",
+    "edit": "2.0",
+    "area_yd2": 1594,
+    "confidence": "medium",
+    "evidence": "continuous tan/white sand strip on the right tree edge, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5443918,
+       31.9786089
+      ],
+      [
+       -95.5445624,
+       31.9789104
+      ],
+      [
+       -95.54468,
+       31.9791632
+      ],
+      [
+       -95.5447922,
+       31.9794801
+      ],
+      [
+       -95.5449236,
+       31.9798057
+      ],
+      [
+       -95.544845,
+       31.9798538
+      ],
+      [
+       -95.5447715,
+       31.9796958
+      ],
+      [
+       -95.5446559,
+       31.9793606
+      ],
+      [
+       -95.5445402,
+       31.9790255
+      ],
+      [
+       -95.5443932,
+       31.9787095
+      ],
+      [
+       -95.5440987,
+       31.9783316
+      ],
+      [
+       -95.5441458,
+       31.9783027
+      ],
+      [
+       -95.5443918,
+       31.9786089
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "5",
+    "op": "add",
+    "lie": "sand",
+    "edit": "5.0",
+    "area_yd2": 956,
+    "confidence": "medium",
+    "evidence": "tan sand strip right, 2020 and 2022"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5398262,
+       31.9804317
+      ],
+      [
+       -95.5397186,
+       31.980733
+      ],
+      [
+       -95.5396426,
+       31.9807206
+      ],
+      [
+       -95.5396553,
+       31.9804036
+      ],
+      [
+       -95.5397255,
+       31.9801801
+      ],
+      [
+       -95.539868,
+       31.9802035
+      ],
+      [
+       -95.5398262,
+       31.9804317
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "erase",
+    "lie": "sand",
+    "edit": "7.0",
+    "area_yd2": 3515,
+    "lies": [
+     "sand"
+    ],
+    "confidence": "medium",
+    "evidence": "lidar canopy >8 m and dark crowns both years inside the auto sand polygon"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5357726,
+       31.9865486
+      ],
+      [
+       -95.534861,
+       31.9864502
+      ],
+      [
+       -95.534906,
+       31.9861476
+      ],
+      [
+       -95.5358176,
+       31.986246
+      ],
+      [
+       -95.5357726,
+       31.9865486
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "7.1",
+    "area_yd2": 3515,
+    "confidence": "medium",
+    "evidence": "continuous lidar canopy, CIR red crowns"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5357726,
+       31.9865486
+      ],
+      [
+       -95.534861,
+       31.9864502
+      ],
+      [
+       -95.534906,
+       31.9861476
+      ],
+      [
+       -95.5358176,
+       31.986246
+      ],
+      [
+       -95.5357726,
+       31.9865486
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "8",
+    "op": "add",
+    "lie": "sand",
+    "edit": "8.0",
+    "area_yd2": 792,
+    "confidence": "low",
+    "evidence": "tan sand patches right of fairway between crowns, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5362783,
+       31.985369
+      ],
+      [
+       -95.5363904,
+       31.985451
+      ],
+      [
+       -95.5362964,
+       31.9856064
+      ],
+      [
+       -95.5360974,
+       31.9856174
+      ],
+      [
+       -95.5360237,
+       31.9854211
+      ],
+      [
+       -95.5362783,
+       31.985369
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "sand",
+    "edit": "9.0",
+    "area_yd2": 280,
+    "confidence": "medium",
+    "evidence": "white sand patch left in 2022, tan 2020"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5386928,
+       31.9827166
+      ],
+      [
+       -95.538748,
+       31.9827923
+      ],
+      [
+       -95.5386127,
+       31.9829663
+      ],
+      [
+       -95.5385247,
+       31.9829322
+      ],
+      [
+       -95.5386928,
+       31.9827166
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "sand",
+    "edit": "9.1",
+    "area_yd2": 286,
+    "confidence": "medium",
+    "evidence": "sand patch left, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5386976,
+       31.9823291
+      ],
+      [
+       -95.5388001,
+       31.9823959
+      ],
+      [
+       -95.5386848,
+       31.9825324
+      ],
+      [
+       -95.5385703,
+       31.982488
+      ],
+      [
+       -95.5386976,
+       31.9823291
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "sand",
+    "edit": "9.2",
+    "area_yd2": 336,
+    "confidence": "medium",
+    "evidence": "sand strip right, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5388152,
+       31.9835428
+      ],
+      [
+       -95.5388776,
+       31.9835851
+      ],
+      [
+       -95.5387159,
+       31.9838484
+      ],
+      [
+       -95.5386279,
+       31.9838143
+      ],
+      [
+       -95.5388152,
+       31.9835428
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "sand",
+    "edit": "9.3",
+    "area_yd2": 93,
+    "confidence": "low",
+    "evidence": "small tan patch right, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5392694,
+       31.9830265
+      ],
+      [
+       -95.5392592,
+       31.9830357
+      ],
+      [
+       -95.5392472,
+       31.9830423
+      ],
+      [
+       -95.5392343,
+       31.9830459
+      ],
+      [
+       -95.5392213,
+       31.9830463
+      ],
+      [
+       -95.5392091,
+       31.9830434
+      ],
+      [
+       -95.5391985,
+       31.9830374
+      ],
+      [
+       -95.5391903,
+       31.9830288
+      ],
+      [
+       -95.539185,
+       31.9830181
+      ],
+      [
+       -95.5391829,
+       31.9830061
+      ],
+      [
+       -95.5391843,
+       31.9829935
+      ],
+      [
+       -95.5391891,
+       31.9829813
+      ],
+      [
+       -95.5391968,
+       31.9829702
+      ],
+      [
+       -95.539207,
+       31.9829611
+      ],
+      [
+       -95.5392189,
+       31.9829545
+      ],
+      [
+       -95.5392319,
+       31.9829508
+      ],
+      [
+       -95.5392449,
+       31.9829505
+      ],
+      [
+       -95.5392571,
+       31.9829533
+      ],
+      [
+       -95.5392677,
+       31.9829593
+      ],
+      [
+       -95.5392759,
+       31.9829679
+      ],
+      [
+       -95.5392812,
+       31.9829786
+      ],
+      [
+       -95.5392832,
+       31.9829906
+      ],
+      [
+       -95.5392818,
+       31.9830032
+      ],
+      [
+       -95.5392771,
+       31.9830154
+      ],
+      [
+       -95.5392694,
+       31.9830265
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "sand",
+    "edit": "10.0",
+    "area_yd2": 3652,
+    "confidence": "medium",
+    "evidence": "tan sand waste with scattered pines, both years, white/cyan in CIR"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5384033,
+       31.982081
+      ],
+      [
+       -95.5383669,
+       31.9819327
+      ],
+      [
+       -95.5384213,
+       31.9817736
+      ],
+      [
+       -95.5384092,
+       31.981604
+      ],
+      [
+       -95.5383406,
+       31.9814673
+      ],
+      [
+       -95.538281,
+       31.9812902
+      ],
+      [
+       -95.5383973,
+       31.981208
+      ],
+      [
+       -95.5386737,
+       31.9812938
+      ],
+      [
+       -95.5387862,
+       31.9814542
+      ],
+      [
+       -95.5386446,
+       31.9821026
+      ],
+      [
+       -95.5384033,
+       31.982081
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "sand",
+    "edit": "10.1",
+    "area_yd2": 1522,
+    "confidence": "medium",
+    "evidence": "sand strip on the right tree edge, white in CIR, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5377187,
+       31.9819724
+      ],
+      [
+       -95.5377468,
+       31.9817085
+      ],
+      [
+       -95.5377986,
+       31.9813813
+      ],
+      [
+       -95.5377668,
+       31.9811666
+      ],
+      [
+       -95.5378374,
+       31.9810688
+      ],
+      [
+       -95.5379557,
+       31.9811128
+      ],
+      [
+       -95.5379413,
+       31.981404
+      ],
+      [
+       -95.5378704,
+       31.9817281
+      ],
+      [
+       -95.5378078,
+       31.9819698
+      ],
+      [
+       -95.5377187,
+       31.9819724
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "11",
+    "op": "add",
+    "lie": "sand",
+    "edit": "11.0",
+    "area_yd2": 1258,
+    "confidence": "medium",
+    "evidence": "tan sand waste with tree islands right, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5345107,
+       31.984785
+      ],
+      [
+       -95.5343224,
+       31.984697
+      ],
+      [
+       -95.5343163,
+       31.9845899
+      ],
+      [
+       -95.5345347,
+       31.9845015
+      ],
+      [
+       -95.5347717,
+       31.9845424
+      ],
+      [
+       -95.534811,
+       31.984709
+      ],
+      [
+       -95.5345107,
+       31.984785
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "11",
+    "op": "add",
+    "lie": "sand",
+    "edit": "11.1",
+    "area_yd2": 1000,
+    "confidence": "medium",
+    "evidence": "sand strip right of the line, bright in 2022, tan 2020"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.535202,
+       31.9846419
+      ],
+      [
+       -95.5348193,
+       31.9847239
+      ],
+      [
+       -95.5347695,
+       31.9846346
+      ],
+      [
+       -95.535148,
+       31.9845451
+      ],
+      [
+       -95.5355099,
+       31.9844259
+      ],
+      [
+       -95.5355597,
+       31.9845153
+      ],
+      [
+       -95.535202,
+       31.9846419
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "11",
+    "op": "add",
+    "lie": "sand",
+    "edit": "11.2",
+    "area_yd2": 552,
+    "confidence": "low",
+    "evidence": "tan strip at the left tree edge, clearer in 2022"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5342282,
+       31.9853923
+      ],
+      [
+       -95.534195,
+       31.9853327
+      ],
+      [
+       -95.534767,
+       31.9851102
+      ],
+      [
+       -95.5348044,
+       31.9851772
+      ],
+      [
+       -95.5342282,
+       31.9853923
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "13",
+    "op": "add",
+    "lie": "sand",
+    "edit": "13.0",
+    "area_yd2": 499,
+    "confidence": "medium",
+    "evidence": "sand around the right tree island, white in CIR"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5321721,
+       31.9852973
+      ],
+      [
+       -95.5318812,
+       31.9853249
+      ],
+      [
+       -95.5316386,
+       31.9853534
+      ],
+      [
+       -95.5316205,
+       31.9853036
+      ],
+      [
+       -95.5318833,
+       31.9852425
+      ],
+      [
+       -95.5321259,
+       31.985214
+      ],
+      [
+       -95.5321721,
+       31.9852973
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "13",
+    "op": "add",
+    "lie": "sand",
+    "edit": "13.1",
+    "area_yd2": 903,
+    "confidence": "medium",
+    "evidence": "sand waste between bunkers and trees right, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5328803,
+       31.9852197
+      ],
+      [
+       -95.5325581,
+       31.9853374
+      ],
+      [
+       -95.5323657,
+       31.9852927
+      ],
+      [
+       -95.5324168,
+       31.9851864
+      ],
+      [
+       -95.5326117,
+       31.9851323
+      ],
+      [
+       -95.5328539,
+       31.9851203
+      ],
+      [
+       -95.5328803,
+       31.9852197
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "13",
+    "op": "add",
+    "lie": "sand",
+    "edit": "13.2",
+    "area_yd2": 250,
+    "confidence": "low",
+    "evidence": "narrow sand strip right, white in CIR"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5311841,
+       31.985345
+      ],
+      [
+       -95.530767,
+       31.9853867
+      ],
+      [
+       -95.5307487,
+       31.9853452
+      ],
+      [
+       -95.5311563,
+       31.985295
+      ],
+      [
+       -95.5311841,
+       31.985345
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "sand",
+    "edit": "14.0",
+    "area_yd2": 109,
+    "confidence": "medium",
+    "evidence": "tan patch at left tree edge both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5311476,
+       31.9842525
+      ],
+      [
+       -95.5311636,
+       31.9842575
+      ],
+      [
+       -95.5311771,
+       31.9842647
+      ],
+      [
+       -95.5311873,
+       31.9842738
+      ],
+      [
+       -95.5311933,
+       31.9842841
+      ],
+      [
+       -95.5311948,
+       31.9842949
+      ],
+      [
+       -95.5311917,
+       31.9843054
+      ],
+      [
+       -95.5311843,
+       31.984315
+      ],
+      [
+       -95.5311729,
+       31.9843229
+      ],
+      [
+       -95.5311584,
+       31.9843287
+      ],
+      [
+       -95.5311418,
+       31.984332
+      ],
+      [
+       -95.5311242,
+       31.9843325
+      ],
+      [
+       -95.5311069,
+       31.9843301
+      ],
+      [
+       -95.5310909,
+       31.9843252
+      ],
+      [
+       -95.5310773,
+       31.9843179
+      ],
+      [
+       -95.5310672,
+       31.9843088
+      ],
+      [
+       -95.5310612,
+       31.9842985
+      ],
+      [
+       -95.5310597,
+       31.9842877
+      ],
+      [
+       -95.5310627,
+       31.9842772
+      ],
+      [
+       -95.5310702,
+       31.9842677
+      ],
+      [
+       -95.5310816,
+       31.9842597
+      ],
+      [
+       -95.531096,
+       31.9842539
+      ],
+      [
+       -95.5311126,
+       31.9842507
+      ],
+      [
+       -95.5311302,
+       31.9842502
+      ],
+      [
+       -95.5311476,
+       31.9842525
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "sand",
+    "edit": "14.1",
+    "area_yd2": 75,
+    "confidence": "low",
+    "evidence": "tan patch left, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.53073,
+       31.9842301
+      ],
+      [
+       -95.5307438,
+       31.9842342
+      ],
+      [
+       -95.5307554,
+       31.98424
+      ],
+      [
+       -95.5307641,
+       31.9842473
+      ],
+      [
+       -95.5307693,
+       31.9842556
+      ],
+      [
+       -95.5307707,
+       31.9842642
+      ],
+      [
+       -95.5307681,
+       31.9842726
+      ],
+      [
+       -95.5307617,
+       31.9842803
+      ],
+      [
+       -95.530752,
+       31.9842866
+      ],
+      [
+       -95.5307396,
+       31.9842912
+      ],
+      [
+       -95.5307254,
+       31.9842937
+      ],
+      [
+       -95.5307103,
+       31.9842941
+      ],
+      [
+       -95.5306954,
+       31.9842921
+      ],
+      [
+       -95.5306817,
+       31.9842881
+      ],
+      [
+       -95.5306701,
+       31.9842823
+      ],
+      [
+       -95.5306614,
+       31.9842749
+      ],
+      [
+       -95.5306562,
+       31.9842667
+      ],
+      [
+       -95.5306548,
+       31.9842581
+      ],
+      [
+       -95.5306574,
+       31.9842497
+      ],
+      [
+       -95.5306638,
+       31.984242
+      ],
+      [
+       -95.5306735,
+       31.9842357
+      ],
+      [
+       -95.5306858,
+       31.9842311
+      ],
+      [
+       -95.5307001,
+       31.9842286
+      ],
+      [
+       -95.5307151,
+       31.9842282
+      ],
+      [
+       -95.53073,
+       31.9842301
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "sand",
+    "edit": "14.2",
+    "area_yd2": 99,
+    "confidence": "low",
+    "evidence": "tan patch left, 2022 clearer"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5316177,
+       31.9842192
+      ],
+      [
+       -95.5316361,
+       31.9842235
+      ],
+      [
+       -95.5316517,
+       31.9842296
+      ],
+      [
+       -95.5316635,
+       31.9842371
+      ],
+      [
+       -95.5316706,
+       31.9842454
+      ],
+      [
+       -95.5316726,
+       31.9842541
+      ],
+      [
+       -95.5316694,
+       31.9842624
+      ],
+      [
+       -95.5316611,
+       31.98427
+      ],
+      [
+       -95.5316483,
+       31.9842761
+      ],
+      [
+       -95.531632,
+       31.9842805
+      ],
+      [
+       -95.5316131,
+       31.9842828
+      ],
+      [
+       -95.531593,
+       31.9842829
+      ],
+      [
+       -95.5315731,
+       31.9842807
+      ],
+      [
+       -95.5315547,
+       31.9842764
+      ],
+      [
+       -95.5315391,
+       31.9842704
+      ],
+      [
+       -95.5315273,
+       31.9842629
+      ],
+      [
+       -95.5315202,
+       31.9842546
+      ],
+      [
+       -95.5315182,
+       31.9842459
+      ],
+      [
+       -95.5315214,
+       31.9842375
+      ],
+      [
+       -95.5315297,
+       31.98423
+      ],
+      [
+       -95.5315425,
+       31.9842238
+      ],
+      [
+       -95.5315589,
+       31.9842194
+      ],
+      [
+       -95.5315777,
+       31.9842171
+      ],
+      [
+       -95.5315978,
+       31.9842171
+      ],
+      [
+       -95.5316177,
+       31.9842192
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "sand",
+    "edit": "15.0",
+    "area_yd2": 379,
+    "confidence": "medium",
+    "evidence": "tan sand waste left, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5319379,
+       31.9830929
+      ],
+      [
+       -95.5318955,
+       31.9832221
+      ],
+      [
+       -95.5316852,
+       31.9831898
+      ],
+      [
+       -95.5316987,
+       31.9830584
+      ],
+      [
+       -95.5319379,
+       31.9830929
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "sand",
+    "edit": "15.1",
+    "area_yd2": 240,
+    "confidence": "low",
+    "evidence": "tan patch left both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5313429,
+       31.9832138
+      ],
+      [
+       -95.5313327,
+       31.9833123
+      ],
+      [
+       -95.5311417,
+       31.9832815
+      ],
+      [
+       -95.5311519,
+       31.9831829
+      ],
+      [
+       -95.5313429,
+       31.9832138
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "sand",
+    "edit": "15.2",
+    "area_yd2": 275,
+    "confidence": "low",
+    "evidence": "tan patch left both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5308509,
+       31.9832762
+      ],
+      [
+       -95.5308425,
+       31.9833583
+      ],
+      [
+       -95.5306016,
+       31.9833403
+      ],
+      [
+       -95.5306118,
+       31.9832417
+      ],
+      [
+       -95.5308509,
+       31.9832762
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "17",
+    "op": "add",
+    "lie": "sand",
+    "edit": "17.0",
+    "area_yd2": 888,
+    "confidence": "medium",
+    "evidence": "tan sand area left of fairway, both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5337749,
+       31.9814737
+      ],
+      [
+       -95.5338863,
+       31.9814414
+      ],
+      [
+       -95.534136,
+       31.9819072
+      ],
+      [
+       -95.5339997,
+       31.9819696
+      ],
+      [
+       -95.5337749,
+       31.9814737
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "18",
+    "op": "erase",
+    "lie": "water",
+    "edit": "18.0",
+    "area_yd2": 2960,
+    "lies": [
+     "water"
+    ],
+    "confidence": "high",
+    "evidence": "no water in 2020 or 2022, lidar ground returns (not void), CIR pink; real pond starts beyond x+60 (overview)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5349877,
+       31.9785081
+      ],
+      [
+       -95.5353119,
+       31.9779642
+      ],
+      [
+       -95.5356568,
+       31.9781136
+      ],
+      [
+       -95.5353326,
+       31.9786574
+      ],
+      [
+       -95.5349877,
+       31.9785081
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "18",
+    "op": "add",
+    "lie": "sand",
+    "edit": "18.1",
+    "area_yd2": 455,
+    "confidence": "medium",
+    "evidence": "tan sand left of fairway both years, whitish in CIR"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.5351455,
+       31.9770785
+      ],
+      [
+       -95.5352271,
+       31.97716
+      ],
+      [
+       -95.5350565,
+       31.9774098
+      ],
+      [
+       -95.5349531,
+       31.977365
+      ],
+      [
+       -95.5351455,
+       31.9770785
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
