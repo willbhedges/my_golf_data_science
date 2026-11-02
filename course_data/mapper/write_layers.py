@@ -82,8 +82,15 @@ def build(slug, ed, pkg, FJ, TF):
         if bad:
             raise EditError(f"hole {ref}: reviewed {bad} not in {M.LAYERS}")
         reviewed[ref] = dict(layers=he.get("reviewed") or [], confidence=he.get("confidence"), note=he.get("note"))
-        for i, e in enumerate(he.get("edits") or []):
-            where = f"hole {ref} edit {i}"
+        items = [(f"{ref}.{i}", e) for i, e in enumerate(he.get("edits") or [])]
+        if he.get("s2_suggested"):
+            import s2_suggest as S2S
+            s2e, s2p, s2r = S2S.decisions_to_edits(ref, he["s2_suggested"], EditError)
+            items += [(e["s2"], e) for e in s2e]
+            problems += s2p
+            reviewed[ref]["s2"] = s2r
+        for tag, e in items:
+            where = f"hole {ref} edit {tag}"
             op = e.get("op")
             if op not in M.OPS:
                 raise EditError(f"{where}: op {op!r} not in {M.OPS}")
@@ -139,7 +146,9 @@ def build(slug, ed, pkg, FJ, TF):
             geo = _geo(inside, fj)
             if geo is None:
                 continue
-            props = dict(hole=ref, op=op, lie=lies[0], edit=f"{ref}.{i}", area_yd2=round(inside.area))
+            props = dict(hole=ref, op=op, lie=lies[0], edit=tag, area_yd2=round(inside.area))
+            if e.get("s2"):
+                props["s2"] = e["s2"]
             if clipped:
                 props["keepout_clipped_yd2"] = round(clipped)
             if op == "erase":
@@ -224,7 +233,7 @@ def native_gaps(pkg, out, FJ, a0=180, a1=330, step=5, reach=45):
     return res
 
 
-def review_md(slug, pkg, out, FJ, rep, tees, problems):
+def review_md(slug, pkg, out, FJ, rep, tees, problems, reviewed=None):
     import render_inputs as RI
     L = [f"# Mapper review: {pkg['course']['name']}", "",
          f"Applied with apply.py: {out['stages']['agent_layers']}", "",
@@ -248,6 +257,15 @@ def review_md(slug, pkg, out, FJ, rep, tees, problems):
               "| hole | left | right |", "|---|---|---|"]
         for ref, g in gaps.items():
             L.append(f"| {ref} | {g['L']} | {g['R']} |")
+    s2 = [(ref, r) for ref, v in (reviewed or {}).items() for r in v.get("s2") or []]
+    if s2:
+        n = {d: sum(1 for _, r in s2 if r["decision"] == d) for d in ("accept", "reject", "replace", "undecided")}
+        L += ["", f"## S2 suggestions ({len(s2)}: accepted {n['accept']}, rejected {n['reject']}, replaced "
+                  f"{n['replace']}, undecided {n['undecided']})", "",
+              "| hole | id | side | sq yds | decision | conf | evidence |", "|---|---|---|---|---|---|---|"]
+        for ref, r in s2:
+            L.append(f"| {ref} | {r['id']} | {r['side']} | {r['area_yd2']} | {r['decision']} | {r['confidence']} | "
+                     f"{r['evidence'][:90]} |")
     if problems:
         L += ["", "## Checks and problems", ""] + [f"- {p}" for p in problems]
     open(M.mdir(slug, "review.md"), "w").write("\n".join(L) + "\n")
@@ -257,7 +275,7 @@ def render_review(slug, pkg, out, FJ, feats, holes=None):
     import corridor as C
     import cv2
     import render_inputs as RI
-    S = C.sources(slug)
+    S = M.sources(slug)
     a0, a1, lat = M.WIN["a0"], M.WIN["a1"], M.WIN["lat"]
     ys, py = RI.other_years(S)
     edited = sorted({f["properties"]["hole"] for f in feats}, key=M.hole_key)
@@ -316,7 +334,7 @@ def run(slug, render=True, holes=None):
         features=feats))
     M.wj(M.mdir(slug, AP.TEE_FILE), dict(common, schema="agent_tees/1", holes=tees))
     out, rep = AP.apply(pkg, M.mdir(slug))
-    review_md(slug, pkg, out, FJ, rep, tees, problems)
+    review_md(slug, pkg, out, FJ, rep, tees, problems, reviewed)
     M.log(out["stages"]["agent_layers"])
     for p in problems:
         M.log("  ! " + p)

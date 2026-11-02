@@ -62,6 +62,29 @@ def sha1_file(p):
     return h.hexdigest()[:16]
 
 
+def imagery_dir(slug):
+    """The package's imagery (course_data/packages/<slug>/imagery), else the older builder's
+    course_data/imagery/<slug>/ (e.g. spirit_hollow: package stage imagery 'ok: course_data/imagery/<slug>')."""
+    for d in (os.path.join(CD, "packages", slug, "imagery"), os.path.join(CD, "imagery", slug)):
+        if os.path.exists(os.path.join(d, "naip_rgb.tif")):
+            return d
+    return os.path.join(CD, "packages", slug, "imagery")
+
+
+def sources(slug):
+    """corridor.sources (package NAIP / NIR, vision_any NAIP years, lidar) + the DEM, with the imagery_dir fallback."""
+    import corridor as C
+    S = C.sources(slug)
+    d = imagery_dir(slug)
+    if "photo" not in S and os.path.exists(os.path.join(d, "naip_rgb.tif")):
+        S["photo"] = C.Raster(os.path.join(d, "naip_rgb.tif"), label="NAIP %s 0.3 m" % C._year(d))
+        if os.path.exists(os.path.join(d, "naip_nir.tif")):
+            S["nir"] = C.Raster(os.path.join(d, "naip_nir.tif"))
+    if os.path.exists(os.path.join(d, "dem.tif")):
+        S["dem"] = C.Raster(os.path.join(d, "dem.tif"), label="3DEP DEM")
+    return S
+
+
 def committed_package_path(slug):
     return os.path.join(CD, "packages", slug, "package.json")
 

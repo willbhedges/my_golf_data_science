@@ -91,14 +91,14 @@ def test_add_then_erase_layer_by_layer(pkg, fj, tmp_path):
     assert not any(z.get("src") == AP.SRC for z in pkg["holes"]["2"]["zones_ll"])
     # erase only that lie: every native zone loses the box, the fairway is untouched
     write_agent(str(tmp_path), [feat(fj, "2", "erase", "native", [[-70, 120], [70, 120], [70, 400], [-70, 400]])])
-    out2, _ = AP.apply(out, str(tmp_path))
+    out2, rep2 = AP.apply(out, str(tmp_path))
     h2 = out2["holes"]["2"]
     pts = M.xy_to_ll(fj["2"], [[x, a] for x in range(-65, 66, 10) for a in range(130, 400, 15)])
     assert "native" not in lie_at(h2, pts)
     fw = lambda hh: sum(1 for z in hh["zones_ll"] if z["lie"] == "fairway")              # noqa: E731
     assert fw(h2) == fw(out["holes"]["2"])
-    assert any(z.get("agent_clipped") for z in h2["zones_ll"]) or not any(
-        z["lie"] == "native" for z in out["holes"]["2"]["zones_ll"])
+    # native zones wholly inside the box are dropped, those crossing it are clipped (agent_clipped)
+    assert rep2["holes"]["2"]["ops"][0]["op"] == "erase" and rep2["holes"]["2"]["ops"][0]["yd2"] > 0
 
 
 def test_grow_only_inside_region(pkg, fj, tmp_path):
@@ -223,3 +223,79 @@ def test_course_page_passes_agent_layers(tmp_path, monkeypatch):
              agent_layers="course_data/mapper/x/")
     CP.pkgreq(q)
     assert captured["agent_layers"] == "course_data/mapper/x/"
+
+
+# ----------------------------------------------------------------------------- S2 native suggestions (s2_suggest.py)
+def fake_pg(fj, box_xy=(-60, -20, 200, 300), p_in=0.9):
+    """A synthetic 10 m S2 P grid around the hole: p_in inside box_xy (x0, x1, a0, a1 in the corridor frame), else 0.1."""
+    from pyproj import Transformer
+    tee = fj["frame"]["tee_ll"]
+    epsg = 32600 + int((tee[0] + 180) // 6) + 1
+    fw = Transformer.from_crs("EPSG:4326", f"EPSG:{epsg}", always_xy=True)
+    bw = Transformer.from_crs(f"EPSG:{epsg}", "EPSG:4326", always_xy=True)
+    X0, Y0 = fw.transform(*tee)
+    X0, Y1 = np.floor(X0 / 10) * 10 - 600, np.ceil(Y0 / 10) * 10 + 600
+    H = W = 120
+    cx, cy = np.meshgrid(X0 + 5 + 10 * np.arange(W), Y1 - 5 - 10 * np.arange(H))
+    lon, lat = bw.transform(cx.ravel(), cy.ravel())
+    xy = M.ll_to_xy(fj, np.c_[lon, lat])
+    x0, x1, a0, a1 = box_xy
+    inside = (xy[:, 0] > x0) & (xy[:, 0] < x1) & (xy[:, 1] > a0) & (xy[:, 1] < a1)
+    p = np.where(inside, p_in, 0.1).astype(np.float32).reshape(H, W)
+    return dict(p=p, transform=(10.0, 0.0, X0, 0.0, -10.0, Y1), crs=f"EPSG:{epsg}", source="loco", note="test",
+                tr=fw)
+
+
+def test_s2_candidates_template_and_decisions(pkg, fj):
+    import s2_suggest as S2S
+    import write_layers as WL
+    h = pkg["holes"]["2"]
+    pg = fake_pg(fj["2"])
+    P = S2S.p_frame(pg, fj["2"], 120, 400, 70, 1.0)
+    assert P.shape == (280, 140) and np.nanmax(P) == pytest.approx(0.9) and np.nanmin(P) == pytest.approx(0.1)
+    cands = S2S.candidates(pg, fj["2"], h, "2")
+    assert cands and all(c["side"] == "L" for c in cands)          # the box is left of the tee line only
+    c = max(cands, key=lambda c: c["area_yd2"])
+    assert c["id"].startswith("S2-2-L") and 1500 < c["area_yd2"] < 4600 and c["p"] == pytest.approx(0.9)
+    assert 190 <= c["along"][0] <= 215 and 285 <= c["along"][1] <= 310
+    # nothing of the candidate lies on the package fairway / trees / water
+    blk = S2S._not_native(fj["2"], h)
+    if blk is not None:
+        assert M._poly(c["shape"]["poly"]).intersection(blk).area < 0.05 * c["area_yd2"]
+    t = S2S.template_entry(cands)
+    assert set(t) == {"L", "R"} and not t["R"] and t["L"][0]["decision"] == "" and "poly" in t["L"][0]["shape"]
+    # decisions in edits.json -> write_layers: accept adds native (keep-out applies), reject / replace add nothing
+    blk_ = {"L": [dict(t["L"][0], decision="accept", confidence="medium", evidence="tufted both years")]}
+    feats, _, rev, probs = WL.build("t", dict(holes={"2": dict(edits=[], s2_suggested=blk_)}), pkg, fj, fj)
+    assert len(feats) == 1 and feats[0]["properties"]["s2"] == c["id"] and feats[0]["properties"]["lie"] == "native"
+    assert rev["2"]["s2"][0]["decision"] == "accept"
+    for d in ("reject", "replace"):
+        b = {"L": [dict(t["L"][0], decision=d, evidence="green smooth mown rough in 2021")]}
+        feats, _, rev, _ = WL.build("t", dict(holes={"2": dict(s2_suggested=b)}), pkg, fj, fj)
+        assert not feats and rev["2"]["s2"][0]["decision"] == d
+    feats, _, rev, probs = WL.build("t", dict(holes={"2": dict(s2_suggested=t)}), pkg, fj, fj)
+    assert not feats and any("undecided" in p for p in probs)
+    for bad in (dict(decision="maybe", evidence="x"), dict(decision="reject"),
+                dict(decision="accept", evidence="x")):                      # accept without confidence
+        with pytest.raises(WL.EditError):
+            WL.build("t", dict(holes={"2": dict(s2_suggested={"L": [dict(t["L"][0], **bad)]})}), pkg, fj, fj)
+
+
+def test_s2_native_model_is_loco_safe():
+    """Training courses get their leave-one-course-out grid, never the full model; no stack -> None."""
+    import s2_suggest as S2S
+    NM = S2S._nm()
+    md = NM.meta()
+    if not md:
+        pytest.skip("native_model not checked out")
+    assert len(md["courses"]) >= 20 and md["thr"] == S2S.THR
+    have = [c for c in md["courses"] if os.path.exists(os.path.join(NM.HERE, c, "s2_stack.npz"))]
+    for c in md["courses"]:
+        assert os.path.exists(NM.loco_path(c)), c                     # every training course has its fold grid
+    if not have:
+        pytest.skip("no S2 stack checked out")
+    r = NM.p_grid(have[0], allow_full=False)
+    assert r["source"] == "loco" and r["p"].shape == NM._stack_meta(have[0])["shape"]
+    assert np.nanmax(r["p"]) <= 1.0 and np.nanmin(r["p"]) >= 0.0
+    assert NM.p_grid("no_such_course_xyz") is None
+    assert NM._decode(NM._encode(np.array([0.0, 0.5, 1.0, np.nan]))).tolist()[:3] == [0.0, 0.5, 1.0]

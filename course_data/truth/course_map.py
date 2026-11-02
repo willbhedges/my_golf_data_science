@@ -35,7 +35,10 @@ def main():
     pk = os.path.join(CD, "packages", a.slug)
     out = a.out or os.path.join(HERE, a.slug, "map")
     os.makedirs(out, exist_ok=True)
-    src = rasterio.open(os.path.join(pk, "imagery", "naip_rgb.tif"))
+    img = os.path.join(pk, "imagery", "naip_rgb.tif")
+    if not os.path.exists(img):                      # older builder: imagery in course_data/imagery/<slug>/
+        img = os.path.join(CD, "imagery", a.slug, "naip_rgb.tif")
+    src = rasterio.open(img)
     to_ll = Transformer.from_crs(src.crs, "EPSG:4326", always_xy=True)
     b = src.bounds
     if a.bbox:

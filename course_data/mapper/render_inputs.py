@@ -17,6 +17,12 @@ Writes course_data/mapper/<slug>/:
     hNN_corridor_a.png          [photo + AUTO layers (filled, numbered)] [bare photo] [second NAIP year]
     hNN_corridor_b.png          [lidar canopy + AUTO tree outlines] [CIR + lidar edge] [third NAIP year | DEM hillshade]
     hNN_tees.png                tee complex: [photo + every set's auto tee + OSM tee boxes] [DEM hillshade] [2nd year]
+    hNN_corridor_s2.png         Sentinel-2 native suggestion: [S2 native P (10 m) over the photo, 0.5 contour, AUTO
+                                fairway outline] [photo + "S2 suggested native" candidates, ids] [same on 2nd year]
+S2 (course_data/mapper/s2_suggest.py, vision_any/s2/native_model.py): LOCO-safe native P (a course in the S2
+training set gets the fold model trained without it, a new course the full model); its P >= 0.5 clusters outside
+the package fairway / first cut / green / water / sand / trees are written per hole and side into
+edits.template.json `s2_suggested` with an empty `decision` the agent fills in (accept / reject / replace).
 Grids: 10-yd lines, labels every 20 yds; x = yds right of the tee line (magenta 0 line), along = yds from the tee
 (yellow every 50). Zone colours: fairway green, first cut light green, trees dark green, long grass gold, water blue,
 sand cream, OB red.
@@ -34,6 +40,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import common as M  # noqa: E402
+import s2_suggest as S2S  # noqa: E402
 import corridor as C  # noqa: E402  (course_data/truth/corridor.py: rasters, grid, drawing; nothing of a truth set)
 
 PPY = 3.0
@@ -165,6 +172,80 @@ def corridor_sheets(slug, ref, fj, h, S, out):
     return len(P) + len(Q)
 
 
+S2_COL = (255, 120, 0)
+
+
+def p_heat(photo, P, thr=S2S.THR):
+    """Blend the S2 native P over the photo: < 0.3 clear, 0.3-thr blue -> cyan, >= thr yellow -> red; nan grey."""
+    import cv2
+    out = photo.astype(np.float32).copy()
+    p = np.nan_to_num(P, nan=-1.0)
+    col = np.zeros_like(out)
+    lo = (p >= 0.3) & (p < thr)
+    hi = p >= thr
+    t = np.clip((p - thr) / (1 - thr), 0, 1)
+    col[lo] = (40, 140, 255)
+    col[hi] = np.c_[np.full(hi.sum(), 255.0), 230 * (1 - t[hi]), np.zeros(hi.sum())]
+    a = np.where(hi, 0.45, np.where(lo, 0.3, 0.0))[..., None]
+    out = out * (1 - a) + col * a
+    out[p < -0.5] = out[p < -0.5] * 0.5 + 60
+    out = out.astype(np.uint8)
+    m = (p >= thr).astype(np.uint8)
+    cs, _ = cv2.findContours(m, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    cv2.drawContours(out, cs, -1, (0, 0, 0), 3)
+    cv2.drawContours(out, cs, -1, (255, 40, 40), 1)
+    return out
+
+
+def draw_cands(img, fr, cands, a1, lat):
+    import cv2
+    out = img.copy()
+    for c in cands:
+        q = C.yd_to_px(fr, c["shape"]["poly"], a1, lat)
+        pi = np.round(q * 8).astype(np.int32)
+        cv2.polylines(out, [pi], True, (0, 0, 0), 4, shift=3)
+        cv2.polylines(out, [pi], True, S2_COL, 2, shift=3)
+        m = q.mean(0).astype(int)
+        t = c["id"].split("-")[-1]
+        cv2.putText(out, t, (int(m[0]) - 8, int(m[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 3)
+        cv2.putText(out, t, (int(m[0]) - 8, int(m[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, S2_COL, 1)
+    return out
+
+
+def s2_sheet(slug, ref, fj, h, S, pg, cands, out):
+    a0, a1, lat = M.WIN["a0"], M.WIN["a1"], M.WIN["lat"]
+    fr = frame(fj, PPY, a0, a1, lat)
+    photo = C._u8(S["photo"].warp(fr))
+    P = S2S.p_frame(pg, fj, a0, a1, lat, PPY)
+    fw = [z for z in zones_for_draw(fj, h) if z["lie"] in ("fairway", "first_cut", "green")]
+    ys, py = other_years(S)
+    src = "LOCO fold" if pg["source"] == "loco" else "full model"
+    P1 = [C.title(gridw(draw(p_heat(photo, P), fr, fw, a1, lat, fill=False), fr, a0, a1, lat),
+                  f"{ref}: S2 native P ({src}) blue .3-.5, yel-red >.5", 0.4),
+          C.title(gridw(draw_cands(photo, fr, cands, a1, lat), fr, a0, a1, lat),
+                  f"S2 suggested native (orange, ids L1/R1..) on NAIP {py}", 0.4)]
+    if ys:
+        P1.append(C.title(gridw(draw_cands(C._u8(S[ys[0]].warp(fr)[..., :3]), fr, cands, a1, lat), fr, a0, a1, lat),
+                          f"same on {S[ys[0]].label}: accept only if unmown in both years", 0.4))
+    C.save(os.path.join(out, f"h{int(ref):02d}_corridor_s2.png"), C.stack(P1, len(P1)))
+    return len(P1)
+
+
+def s2_load(slug):
+    """The course's S2 native P grid (LOCO-safe) or None, never fatal: the mapper works without it."""
+    try:
+        pg = S2S.load(slug)
+    except Exception as e:                                         # noqa: BLE001
+        M.log(f"  ! S2 native P not available ({type(e).__name__}: {str(e)[:160]})")
+        return None
+    if pg is None:
+        M.log(f"  ! no S2 stack (course_data/vision_any/s2/{slug}/s2_stack.npz): no S2 suggestions; coordinator: "
+              f"push course_data/requests/s2_stack_<name>.json")
+    else:
+        M.log(f"  S2 native P: {pg['source']} ({pg['note']})")
+    return pg
+
+
 def osm_tees(slug):
     p = os.path.join(M.CD, "packages", slug, "raw", "osm.geojson")
     fc = M.rj(p) or {}
@@ -237,7 +318,7 @@ def landing_areas(fj, h):
     return {k: int(round(v)) for k, v in out.items() if v >= 1}
 
 
-def write_summary(slug, pkg, FJ, S):
+def write_summary(slug, pkg, FJ, S, pg=None, CANDS=None):
     st = next(iter(FJ.values()))["set"] if FJ else pkg.get("tee_set")
     ys, py = other_years(S)
     L = [f"# Mapper inputs: {pkg['course']['name']} ({pkg['course'].get('town')}, {pkg['course'].get('state')})", "",
@@ -247,8 +328,12 @@ def write_summary(slug, pkg, FJ, S):
          f"{'yes' if 'hag' in S else 'NO (trees can only be checked on the photo)'}; CIR: {'yes' if 'nir' in S else 'no'}.", "",
          "Auto layer sources: " + "; ".join(f"{k}: {str(v)[:110]}" for k, v in (pkg.get("stages") or {}).items()
                                            if k in ("vision", "ob", "segment", "tees")), "",
-         "| hole | par | card yds | auto tee (corridor set): method, conf | sets on the hole | AUTO landing zone 180-330 x +/-50 (sq yds) |",
-         "|---|---|---|---|---|---|"]
+         (f"S2 native suggestion: **{pg['source']}** ({pg['note']}); P >= {S2S.THR:g} clusters outside the package "
+          f"fairway / first cut / green / water / sand / trees, per side (`render/hNN_corridor_s2.png`, edits.template.json "
+          f"`s2_suggested`). A hint where to look: decide every candidate from the photos (BRIEF 'S2 suggestions')."
+          if pg is not None else "S2 native suggestion: **none** (no S2 stack for this course): long grass from the photos only."), "",
+         "| hole | par | card yds | auto tee (corridor set): method, conf | sets on the hole | AUTO landing zone 180-330 x +/-50 (sq yds) | S2 suggested native (id: sq yds, gap to fairway yds) |",
+         "|---|---|---|---|---|---|---|"]
     for ref, fj in FJ.items():
         h = pkg["holes"][ref]
         t = (h.get("tees") or {}).get(st) or {}
@@ -256,21 +341,35 @@ def write_summary(slug, pkg, FJ, S):
         sets = ", ".join(f"{s} {tt.get('card_yards')}" for s, tt in (h.get("tees") or {}).items())
         L.append(f"| {ref} | {fj['par']} | {fj.get('yards')} | {t.get('method')}, {t.get('confidence')} | "
                  f"{sets} | "
-                 f"{', '.join(f'{k} {v}' for k, v in sorted(ar.items())) or 'all rough'} |")
+                 f"{', '.join(f'{k} {v}' for k, v in sorted(ar.items())) or 'all rough'} | "
+                 f"{s2_cell(CANDS, ref, pg)} |")
     L += ["", "Par 3s are not corridors (their tees are still checked in edits.json `tees`)."]
     open(M.mdir(slug, "inputs.md"), "w").write("\n".join(L) + "\n")
 
 
-def template(slug, pkg, FJ):
+def s2_cell(CANDS, ref, pg):
+    if pg is None:
+        return "no S2"
+    cs = (CANDS or {}).get(ref) or []
+    return ", ".join(f"{c['id'].split('-')[-1]}: {c['area_yd2']}, {c['gap_yd']}" for c in cs) or "none"
+
+
+def template(slug, pkg, FJ, CANDS=None):
     holes, tees = {}, {}
     for ref, h in sorted(pkg["holes"].items(), key=lambda kv: M.hole_key(kv[0])):
         if ref in FJ:
             holes[ref] = dict(reviewed=[], confidence="", note="", edits=[])
+            if CANDS is not None:
+                holes[ref]["s2_suggested"] = S2S.template_entry(CANDS.get(ref) or [])
         tees[ref] = {s: dict(action="", confidence="", evidence="") for s in (h.get("tees") or {})}
     st = next(iter(FJ.values()))["set"] if FJ else pkg.get("tee_set")
     d = dict(schema="mapper_edits/1", slug=slug, corridor_set=st, mapper="", started="", minutes=None,
              doc="Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py " + slug +
-                 ". See course_data/mapper/BRIEF.md for ops, shapes and rules.",
+                 ". See course_data/mapper/BRIEF.md for ops, shapes and rules." +
+                 (" s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every "
+                  "candidate's decision to accept (its shape becomes add native with your confidence + evidence; the "
+                  "10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in "
+                  "`edits`, e.g. the traced edge); undecided ones are listed in review.md." if CANDS is not None else ""),
              holes=holes, tees=tees)
     M.wj(M.mdir(slug, "edits.template.json"), d)
 
@@ -290,7 +389,7 @@ def tee_frames(pkg, st, FJ):
     return out
 
 
-def run(slug, st=None, holes=None, rebuild="auto", course_map=True, fresh=False):
+def run(slug, st=None, holes=None, rebuild="auto", course_map=True, fresh=False, s2=True):
     pkg = prepare(slug, rebuild, fresh)
     st = M.tee_set_of(pkg, st)
     FJ = M.make_frames(pkg, st)
@@ -301,10 +400,7 @@ def run(slug, st=None, holes=None, rebuild="auto", course_map=True, fresh=False)
                                          "towards the package aim point (render.Frame UTM, 1 px = 1 yd); tee_frames: "
                                          "the frame of every hole's tee sheet (par 3s: tee -> green)", holes=FJ,
         tee_frames=TF))
-    S = C.sources(slug)
-    dem = os.path.join(M.CD, "packages", slug, "imagery", "dem.tif")
-    if os.path.exists(dem):
-        S["dem"] = C.Raster(dem, label="3DEP DEM")
+    S = M.sources(slug)
     if "photo" not in S:
         raise SystemExit(f"{slug}: no course_data/packages/{slug}/imagery/naip_rgb.tif (the package request must "
                          f"commit imagery)")
@@ -316,6 +412,8 @@ def run(slug, st=None, holes=None, rebuild="auto", course_map=True, fresh=False)
                             "--out", os.path.join(out, "map")], capture_output=True, text=True)
         M.log("  course map: " + (r.stdout.strip()[-200:] or r.stderr.strip()[-300:]))
     boxes = osm_tees(slug)
+    pg = s2_load(slug) if s2 else None
+    CANDS = {ref: S2S.candidates(pg, fj, pkg["holes"][ref], ref) for ref, fj in FJ.items()} if pg is not None else None
     for ref, h in sorted(pkg["holes"].items(), key=lambda kv: M.hole_key(kv[0])):
         if holes and ref not in holes:
             continue
@@ -326,11 +424,13 @@ def run(slug, st=None, holes=None, rebuild="auto", course_map=True, fresh=False)
         if ref in FJ:
             C.save(os.path.join(out, f"h{int(ref):02d}_overview.png"), C.overview(S, fj, h))
             n += corridor_sheets(slug, ref, fj, h, S, out)
+            if pg is not None:
+                n += s2_sheet(slug, ref, fj, h, S, pg, CANDS[ref], out)
         n += tee_sheet(slug, ref, fj, h, S, boxes, out)
         M.log(f"  {ref}: {n} panels")
-    write_summary(slug, pkg, FJ, S)
+    write_summary(slug, pkg, FJ, S, pg, CANDS)
     if not os.path.exists(M.mdir(slug, "edits.json")):
-        template(slug, pkg, FJ)
+        template(slug, pkg, FJ, CANDS)
     M.log(f"-> {os.path.relpath(M.mdir(slug), M.ROOT)}/ (inputs.md, frames.json, edits.template.json, render/)")
 
 
@@ -342,8 +442,9 @@ def main():
     ap.add_argument("--rebuild", default="auto", help="auto | none | tees,trees (base package layers re-made offline)")
     ap.add_argument("--no-map", action="store_true")
     ap.add_argument("--fresh", action="store_true", help="re-make base/package.json even if it exists")
+    ap.add_argument("--no-s2", action="store_true", help="no Sentinel-2 native suggestions")
     a = ap.parse_args()
-    run(a.slug, a.set, set(a.holes.split(",")) if a.holes else None, a.rebuild, not a.no_map, a.fresh)
+    run(a.slug, a.set, set(a.holes.split(",")) if a.holes else None, a.rebuild, not a.no_map, a.fresh, not a.no_s2)
 
 
 if __name__ == "__main__":

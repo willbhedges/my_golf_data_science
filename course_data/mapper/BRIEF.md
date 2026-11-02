@@ -16,8 +16,13 @@ The mapper needs, committed in the repo:
 |---|---|---|
 | package with imagery (NAIP 0.3-0.6 m + NIR + 3DEP DEM + raw OSM) | `course_data/packages/<slug>/` (`imagery/naip_rgb.tif`) | push `course_data/requests/package_<slug>.json` (copy a library course's `package_request.json`, drop `"builder"`) |
 | lidar canopy + a second NAIP year (+ OB evidence, product vision layer) | `course_data/vision_any/<slug>/raw/` (`hag.tif`, `naip_YYYY.tif`), `course_data/ob/<slug>/` | push `course_data/requests/tourn_truth_<name>.json` `{"slugs": [slug], "infer": [slug], "ob": [slug], "rev": 1}` after the package exists (it also commits evidence renders to `course_data/truth/<slug>/render/`: the mapper never opens them) |
+| Sentinel-2 stack (the S2 native suggestion) | `course_data/vision_any/s2/<slug>/s2_stack.npz` | after `raw/` exists (the S2 grid is the raw grid at 10 m): edit `course_data/requests/s2_stack.json` (`slugs` = the courses without a stack, `rev` + 1) and push (`.github/workflows/s2_stack.yml`, ~1 min per course + queue). Counts toward the 4 builds in flight |
 
-Without the lidar stack the mapper can still work (trees from the photo only); say so in the brief. The mapper's
+Without the lidar stack the mapper can still work (trees from the photo only); say so in the brief. Without the S2
+stack it works without S2 suggestions (`inputs.md` says "none"). The S2 native P is LOCO-safe
+(`vision_any/s2/native_model.py`): a course in the S2 training set (`native_model/model.json` `courses`, every S2
+truth course) gets the fold model trained without it, any other course the full model (computed at render time from
+the stack + package masks, ~1 min). The mapper's
 `render_inputs.py --rebuild auto` re-makes the vision_any/2 lidar trees and the current tee rule offline when the
 committed package predates them, so the agent reviews what a build with the lidar stack gives (`base/package.json`).
 
@@ -64,8 +69,12 @@ git -C $R worktree add --no-checkout $SC/wt-map-$S origin/claude/mozingo-lake-te
 cd $SC/wt-map-$S && git sparse-checkout set --no-cone '/*.py' '/mozingo/' '/course_data/**/*.py' \
   '/course_data/vision_any/model_v2/' '/course_data/platform/routing_v2_weights.json' \
   "/course_data/packages/$S/" "/course_data/vision_any/$S/" "/course_data/ob/$S/" '/course_data/mapper/' \
+  "/course_data/vision_any/s2/$S/" '/course_data/vision_any/s2/native_model/' \
+  "/course_data/imagery/$S/naip_rgb.tif" "/course_data/imagery/$S/naip_nir.tif" "/course_data/imagery/$S/dem.tif" \
+  "/course_data/imagery/$S/georef.json" \
   '!/course_data/truth/*/**' '!/course_data/truth_sets*/**' '!/course_data/zero_tap/truth_sets/**' \
-  '!/course_data/courses/*/truth/**' '!/course_data/mapper/eval_*' '!/course_data/mapper/EVAL_*' && git checkout -q
+  '!/course_data/courses/*/truth/**' '!/course_data/spirit_hollow/**' '!/course_data/mapper/eval_*' \
+  '!/course_data/mapper/EVAL_*' && git checkout -q
 ls course_data/truth          # only the *.py tools: no course folder may appear here (else stop and report)
 export OMP_NUM_THREADS=1
 ```
@@ -81,7 +90,9 @@ Writes `course_data/mapper/$S/`: `inputs.md` (per hole: card, auto tee method, t
 `map/map.jpg` (whole course: OSM greens G, tees T, hole lines, package holes P<n>), and per hole
 `hNN_overview.png` (tee -> green), `hNN_corridor_a.png` (photo + AUTO layers | bare photo | 2nd NAIP year),
 `hNN_corridor_b.png` (lidar canopy + auto tree outlines | CIR + lidar edge | 3rd year or DEM hillshade),
-`hNN_tees.png` (every set's auto tee, OSM tee boxes, DEM hillshade, other year). Look at images with the Read tool.
+`hNN_tees.png` (every set's auto tee, OSM tee boxes, DEM hillshade, other year), and when the course has a Sentinel-2
+stack `hNN_corridor_s2.png` (S2 native probability over the photo | "S2 suggested native" candidates on the photo |
+the same on the 2nd year; see "S2 suggestions" below). Look at images with the Read tool.
 For a closer look at an edge, crop: `python3 -c "from PIL import Image; im=Image.open('...'); im.crop((x0,y0,x1,y1)).resize(...).save('/tmp/...')"`.
 
 **Coordinates.** Each corridor panel has a 10-yd grid: `x` = yards right (+) / left (-) of the tee line (magenta 0
@@ -95,7 +106,8 @@ Go hole by hole (all par 4s and 5s). Look at `corridor_a` (auto layers vs photo 
 (lidar / CIR). Read "How the planner uses your map" below first: it decides where care pays. Mark, in this order
 of value:
 
-1. **Long grass (native / fescue / prairie)** - the auto build has almost none (detection is off by decision). Per
+1. **Long grass (native / fescue / prairie)** - the auto build has almost none (detection is off by decision). Start
+   from `hNN_corridor_s2.png` when it exists (S2 suggested native: decide every candidate, "S2 suggestions" below). Per
    side (L / R), where does unmown grass start and how far along does it run? Native = tan / textured / tufted, no
    mowing stripes, often with mown paths cut through it, **and the same in both photo years**. *Second-year check:*
    mown rough in a drought or dormant season can look tan in one year; if it is green and smooth in the other year
@@ -154,6 +166,33 @@ native exactly, not generously. "Rough" is not a lie: to make an area mown rough
 5. **Check the result**: `review.md` lists per hole the gap from the fairway to your native (min / median per side).
    A median gap under ~8 yds on a hole should be one you can defend from the photo.
 
+### S2 suggestions (Sentinel-2 native probability)
+
+`inputs.md` and `hNN_corridor_s2.png` show a Sentinel-2 model's native probability (10 m cells = 11 yds; blue
+0.3-0.5, yellow -> red above 0.5) and its **suggested native**: the P >= 0.5 clusters outside the package fairway,
+first cut, green, water, sand and trees, numbered per side (`L1`, `R1`, ...). The model reads the season (native is
+dormant in March and browns and greens with the weather; irrigated turf stays green). It finds most real prairie, but
+it also fires on parkland rough that browns in a drought summer, on dry tan rough beside houses and on rough under
+scattered trees. **S2 never decides alone: it tells you where to look.** Every candidate is in
+`edits.template.json` -> `holes.<n>.s2_suggested.L / R` with an empty `decision`; decide each one from the photos:
+
+* **accept** only where the photo shows unmown native texture (coarse, tufted, no mowing stripes) **in both photo
+  years** over the candidate. Set `confidence` and `evidence` (what you saw, both years). The candidate's shape
+  becomes `add native`, and the 10-yd keep-out applies as to any native you draw (non-high native within 10 yds of
+  the fairway is removed).
+* **replace** when there is native but the shape is wrong: S2's edges are +/-10 yds and its fairway-side edge
+  usually comes in over the mown rough. Trace the real edge yourself as a native edit in `edits` (`poly`, measured
+  mown-rough width) and give the candidate `decision: "replace"` with evidence. This is the normal case on a prairie
+  course: S2 says which side has native and roughly how far it runs; you place the edge.
+* **reject** (with evidence) where either year shows mown rough: green and smooth in the other year (drought or
+  dormant rough is tan in one year only), mowing stripes, parkland rough between scattered trees, lawns / lots, cart
+  paths, bare ground. On a parkland course expect to reject most candidates; on a prairie course most are real.
+* Native that S2 missed (no candidate) is still yours to add from the photos as before; a missing candidate is not
+  evidence of mown rough.
+
+`write_layers.py` lists every undecided candidate under "Checks" and an "S2 suggestions" table in `review.md`
+(accepted / rejected / replaced); decide them all before you commit. A course with no S2 stack has no candidates.
+
 ### Trees, sand, OB rules
 
 * **Scattered trees** (crowns with grass between): one `ell` per crown that is within ~25 yds of the fairway. Never
@@ -198,6 +237,9 @@ Copy `edits.template.json` to `edits.json` and fill it in:
  "uncertain": [{"hole": "7", "what": "left edge of the fescue at 250-300 (+/-8 yds)"}]}
 ```
 
+* `s2_suggested` (per hole, from the template; keep the `id` and `shape` as written): fill in each candidate's
+  `decision` (`accept` | `reject` | `replace`), `evidence` (always) and `confidence` (accept). Example:
+  `{"id": "S2-4-L1", ..., "decision": "replace", "evidence": "tufted fescue both years, edge 14 yds off the fairway (traced as edit 0); S2 shape hugs the fairway"}`.
 * ops: `add` (new zone of `lie`), `erase` (remove `lie` / `lies` inside the shape), `grow` (`by` yds; negative
   shrinks; only inside the shape). lies: `fairway`, `first_cut`, `recovery` (trees), `native` (long grass),
   `water`, `sand`, `ob`. `reviewed` layers: `fairway`, `trees`, `long_grass`, `water`, `ob`, `bunkers` (list a
@@ -239,7 +281,9 @@ judge and why (missing year / lidar, shadows, renovation); your confidence per l
 
 | file | what |
 |---|---|
-| `render_inputs.py` | base package (+ offline lidar trees / tee rule when stale), frames, course map, corridor / tee sheets, `inputs.md`, template |
+| `render_inputs.py` | base package (+ offline lidar trees / tee rule when stale), frames, course map, corridor / tee / S2 sheets, `inputs.md`, template (with `s2_suggested`) |
+| `s2_suggest.py` | S2 native P in a corridor frame, candidate shapes per side, template block, `decision` -> `add native` (used by render_inputs / write_layers) |
+| `vision_any/s2/native_model.py`, `native_model/` | the 23-course S2 native model: `loco/<slug>.npz` fold grids (P of the model trained without that course), `full_model.txt` for new courses; `export` (evaluator) re-makes them from the s2_loco datasets |
 | `write_layers.py` | `edits.json` (yard frame) -> `agent_zones.geojson` + `agent_tees.json` (WGS84), `review.md`, review renders |
 | `apply.py` | apply the agent layers to any package, layer by layer (erase / add / grow per lie, tee moves with aim / length / elevation re-derived, `reframe`), recorded in `package.agent_layers`, `stages.agent_layers`, `holes[].provenance.agent` |
 | `build_plan.py` | quick decision on AUTO and AUTO + AGENT -> `plan.json`, `PLAN.md` |
