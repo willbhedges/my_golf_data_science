@@ -1,6 +1,7 @@
 """pathroute (v1 + v2) feature caches for the unmapped tiers: the perception scene's golf layer as an OSM-style fc.
 
     python course_data/zero_tap/unmapped/prep_u.py --out CU [--split all] [--g-min 0] [--t-min 0] [--extra-tees]
+        [--tee-scores tee_scores.json]   (tee_rescore.py: re-scored tee complex p replaces perception's p)
 
 Writes CU/<slug>.pkl in the merged format run2.load() produces (v1 dict + hX2/tpp/tpX, hX widened); dev rows
 carry truth labels (training only), test rows none.
@@ -30,13 +31,16 @@ import features2 as F2  # noqa: E402
 import prep as P1  # noqa: E402
 import prep2 as P2  # noqa: E402
 import scene_fc as SF  # noqa: E402
+import tee_rescore as TS  # noqa: E402
 
 
 def build(row, kw):
     x = B.inputs(row, "unmapped_nocard")
     seg = x.get("segment") if kw.get("extra_tees") else None
     pads = x.get("pads") if kw.get("extra_tees") else None
-    fc = SF.unmapped_fc(x["fc"], x["scene"], pads=pads, seg=seg, **kw)
+    kw = dict(kw)
+    scene = TS.apply(x["scene"], (kw.pop("tee_scores", None) or {}).get(row["slug"]))
+    fc = SF.unmapped_fc(x["fc"], scene, pads=pads, seg=seg, **kw)
     sc = S.Scene(fc, x["course"])
     hp, hX = F.hole_feats(sc)
     tp, tX = F.trans_feats(sc)
@@ -87,10 +91,13 @@ def main():
     ap.add_argument("--f-min", type=float, default=0.0)
     ap.add_argument("--extra-tees", action="store_true")
     ap.add_argument("--tee-mode", default="boxes", choices=("boxes", "complex"))
+    ap.add_argument("--tee-scores", help="tee_rescore.py output: re-scored tee complex p per course")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     kw = dict(g_min=a.g_min, t_min=a.t_min, f_min=a.f_min, extra_tees=a.extra_tees, tee_mode=a.tee_mode)
-    json.dump(kw, open(os.path.join(a.out, "_config.json"), "w"))
+    json.dump(dict(kw, tee_scores=a.tee_scores), open(os.path.join(a.out, "_config.json"), "w"))
+    if a.tee_scores:
+        kw["tee_scores"] = json.load(open(a.tee_scores))["scores"]
     rows = B.courses(None if a.split == "all" else a.split, tier="unmapped_card")
     with Pool(a.jobs) as p:
         for slug, st in p.imap_unordered(one, [(r, a.out, kw) for r in rows]):

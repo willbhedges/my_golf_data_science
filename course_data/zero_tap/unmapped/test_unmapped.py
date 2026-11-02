@@ -63,3 +63,61 @@ def test_perception_provenance():
     assert DE.perc_split(dict(slug="x_ca", state="CA"), mid=old) == "in_sample"
     assert DE.perc_split(dict(slug="x_ca", state="CA"), mid="no-such-model") == "unknown"
     assert DE.perc_course_seen(dict(slug=pv["train_courses"][0], state="CA"), mid=old)
+
+
+# ------------------------------------------------------------------ tee-candidate re-scorer (tee_rescore.py)
+def _toy_scene():
+    sq = lambda x, y, d=0.0001: [[x, y], [x + d, y], [x + d, y + d], [x, y + d], [x, y]]   # noqa: E731
+    return dict(
+        greens=[dict(id="g1", p=0.9, p_hole=0.9, kind="hole", centroid=[-95.0, 39.0], polygon=sq(-95.0, 39.0)),
+                dict(id="g2", p=0.8, p_hole=0.8, kind="hole", centroid=[-95.0, 39.004], polygon=sq(-95.0, 39.004))],
+        tee_complexes=[dict(id="t1", p=0.6, p_range_tee=0.0, centroid=[-95.0, 39.0035], src=["segment"], virtual=False,
+                            boxes=[dict(id="t1.1", p=0.7, centroid=[-95.0, 39.0035], area_m2=200.0,
+                                        polygon=sq(-95.0, 39.0035))]),
+                       dict(id="t2", p=0.4, p_range_tee=0.5, centroid=[-95.003, 39.0], src=["lidar_pad"], virtual=False,
+                            boxes=[])],
+        fairways=[dict(id="f1", p=0.9, ends=[[-95.0, 39.0005], [-95.0, 39.003]], axis_deg=0.0)],
+        clubhouse=dict(ll=[-95.004, 39.0], p=0.9), relations=dict(green_to_tee=[
+            dict(green="g1", tee="t1", p_next=0.2, p_edge=0.1, aims_at_green=False)]))
+
+
+def test_tee_rescore_features_shape_and_finite():
+    import tee_rescore as TS
+    ids, X = TS.features(_toy_scene())
+    assert ids == ["t1", "t2"] and X.shape == (2, len(TS.FEATS))
+    j = TS.FEATS.index("d_green1")
+    assert 50 < X[0, j] < 62 and np.isfinite(X[:, j]).all()            # t1 -> g2: 0.0005 deg lat = ~56 m
+    assert X[0, TS.FEATS.index("n_green_range")] == 1                  # g1 at ~389 m is in hole range, g2 is not
+    assert X[1, TS.FEATS.index("lidar_only")] == 1 and X[0, TS.FEATS.index("lidar_only")] == 0
+
+
+def test_tee_rescore_apply_overrides_p_and_filters():
+    import tee_rescore as TS
+    sc = TS.apply(_toy_scene(), {"t1": 0.05, "t2": 0.9})
+    pc = {t["id"]: float(t["p"]) * (1 - float(t.get("p_range_tee") or 0)) for t in sc["tee_complexes"]}
+    assert pc == {"t1": 0.05, "t2": 0.9}
+    feats = SF.golf_features(sc, t_min=0.1)
+    assert {f["properties"]["complex"] for f in feats if f["properties"]["golf"] == "tee"} == {"t2"}
+    assert TS.apply(_toy_scene(), None)["tee_complexes"][0]["p"] == 0.6         # no scores -> scene unchanged
+
+
+def test_tee_rescore_folds_hold_out_states():
+    import tee_rescore as TS
+    rows = [dict(slug=f"c{i}_{s.lower()}", state=s) for i, s in enumerate("GA GA KY ME MN UT WY KY ME".split())]
+    folds = TS.state_folds(rows, k=5)
+    assert set(folds.values()) <= set(range(5))
+    for a in rows:
+        for b in rows:
+            if a["state"] == b["state"]:
+                assert folds[a["slug"]] == folds[b["slug"]]
+
+
+def test_prep_u_uses_tee_scores():
+    row = _row()
+    sc = DE.load_scene(row)
+    keep = sc["tee_complexes"][0]["id"]
+    scores = {row["slug"]: {t["id"]: (0.99 if t["id"] == keep else 0.01) for t in sc["tee_complexes"]}}
+    kw = dict(g_min=0.0, t_min=0.5, f_min=0.0, extra_tees=False, tee_mode="boxes")
+    d = PU.build(row, dict(kw, tee_scores=scores))
+    n_box = max(1, len([b for b in sc["tee_complexes"][0].get("boxes", []) if b.get("polygon") and len(b["polygon"]) >= 3]))
+    assert len(d["tees"]) <= n_box < len(PU.build(row, kw)["tees"])
