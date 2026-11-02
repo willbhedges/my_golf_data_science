@@ -11,6 +11,7 @@ name: tourn-truth
 #   2. raw2/ multi-year NAIP 1 m + lidar point statistics (v2_fetch.py; Actions cache v2raw-<slug>-<hash>, the
 #      same key vision_any_v2*.yml use; not committed)
 #   3. corridor evidence renders (photo / CIR / other years / lidar canopy / low vegetation) -> truth/<slug>/render/
+#   0. a slug with no package but a course_data/requests/package_<slug>.json: fetched + built here first
 #   5. slugs in "ob": OB evidence (course_data/ob/fetch.py) so the package build infers OB as for Veenker
 #   4. slugs in "infer": the product's v2 layer (v2_model.py --infer, integrated as vision_any.geojson) so the
 #      product package of a new course gets its vision zones on the next package build
@@ -78,6 +79,12 @@ jobs:
         run: |
           P="$MAMBA_ROOT_PREFIX/envs/pdal/bin/pdal"
           ls -la "$P" && "$P" --version && echo "PDAL_BIN=$P" >> "$GITHUB_ENV" || echo "no pdal"
+      - name: Package if missing (request course_data/requests/package_<slug>.json; fetch + build as course_package.yml)
+        run: |
+          S=${{ matrix.slug }}
+          if [ ! -f course_data/packages/$S/package.json ] && [ -f course_data/requests/package_$S.json ]; then
+            timeout 40m python -u course_data/platform/package.py run course_data/requests/package_$S.json || true
+          fi
       - name: vision_any raw (lidar HAG + 2 NAIP years) if missing
         run: |
           S=${{ matrix.slug }}
@@ -115,7 +122,7 @@ jobs:
         run: |
           S=${{ matrix.slug }}
           mkdir -p /tmp/out
-          tar czf /tmp/out/$S.tgz course_data/truth/$S/render $(ls -d course_data/vision_any/$S/raw course_data/vision_any/$S/vision_any*.geojson \
+          tar czf /tmp/out/$S.tgz course_data/truth/$S/render $(ls -d course_data/packages/$S course_data/vision_any/$S/raw course_data/vision_any/$S/vision_any*.geojson \
               course_data/vision_any/$S/classes_v2.jpg course_data/vision_any/$S/layers_v2.tif course_data/ob/$S 2>/dev/null)
       - uses: actions/upload-artifact@v4
         with:
@@ -143,6 +150,10 @@ jobs:
           for f in /tmp/in/*/*.tgz; do
             S=$(basename "$f" .tgz)
             git add course_data/truth/$S/render
+            # the package only when this run built it (a newer committed one is never overwritten)
+            if [ -d course_data/packages/$S ] && ! git cat-file -e "HEAD:course_data/packages/$S/package.json" 2>/dev/null; then
+              git add course_data/packages/$S
+            fi
             for p in course_data/vision_any/$S/raw course_data/vision_any/$S/vision_any.geojson course_data/vision_any/$S/vision_any_v2.geojson \
                      course_data/vision_any/$S/classes_v2.jpg course_data/vision_any/$S/layers_v2.tif course_data/ob/$S; do
               [ -e "$p" ] && git add "$p"
