@@ -1,0 +1,1036 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "creekmoor",
+ "corridor_set": "Black",
+ "mapper": "mapP_creekmoor",
+ "started": "2026-11-02T14:00Z",
+ "minutes": 50,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py creekmoor. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; thin auto water strip on the left cart path removed",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the cart path and trees in 2018 and 2022, no second mowing line",
+    "R": "none: mown rough to the right edge; tan in 2022 (drought) but smooth and green in 2018/2020, no second line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       -50,
+       120,
+       310
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto water is a 3-yd strip on the cart path at x -62; CIR shows pink turf / path, no black water"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "no changes; trees right match lidar, OB left at the house lots",
+   "long_grass": {
+    "L": "none: smooth mown rough to the cart path, house lots beyond, both years",
+    "R": "none: mown rough into the tree line, no second mowing line in 2018 or 2022"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left: unirrigated strip between cart path and lots lies under the auto OB; no change",
+   "long_grass": {
+    "L": "none: strip x -55..-38 is pale in CIR and tan in 2022 but lies under the auto OB (lots); mown rough to the path",
+    "R": "none: mown rough into the woods both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "false creek strip left removed",
+   "long_grass": {
+    "L": "none: smooth mown rough to the cart path, narrow tan swale by the lots in 2022 only",
+    "R": "none: mown rough to the house lots both years"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       -28,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "no water in any year: CIR is pink/pale along the left (x -60..-35), photo shows rough and the cart path; pond is right of the green beyond 400"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left: native buffer strip between rough and lots; OB pulled back to the lot line",
+   "long_grass": {
+    "L": "native: edit 1 (tan tufted strip x -59..-41 behind a mowing line at ~x -40, same place 2018 and 2022)",
+    "R": "none: mown rough to the cart path, lots beyond"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -58,
+       -20,
+       120,
+       300
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto OB inner edge at x -40 while houses / yards (pool at x -65) start at ~x -60 in 2018 and 2022; strip between is unmown course buffer"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -59,
+        135
+       ],
+       [
+        -41,
+        135
+       ],
+       [
+        -40,
+        270
+       ],
+       [
+        -59,
+        270
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "coarse tan strip x -59..-41, along 135-270, mowing line at x ~-40 in 2018 and 2022 (tan both years), pale in CIR"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right: OB moved from the cart path to the lot line; unmown strip between path and lots marked native; false water at 345-400 removed",
+   "long_grass": {
+    "L": "none: mown rough left; pale strip by the lots lies under auto OB",
+    "R": "native: edit 1 (tufted tan strip beyond the cart path, edge at the path in 2018 and 2022)"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        -8,
+        345
+       ],
+       [
+        8,
+        338
+       ],
+       [
+        30,
+        308
+       ],
+       [
+        47,
+        282
+       ],
+       [
+        47,
+        125
+       ],
+       [
+        20,
+        125
+       ],
+       [
+        20,
+        250
+       ],
+       [
+        0,
+        295
+       ],
+       [
+        -8,
+        320
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto OB starts at the cart path (x +15..+33); house yards start ~x +47 (along 180-280) and ~along 315 at x +10..+30 in 2018/2022"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        35,
+        175
+       ],
+       [
+        46,
+        175
+       ],
+       [
+        46,
+        282
+       ],
+       [
+        30,
+        308
+       ],
+       [
+        12,
+        332
+       ],
+       [
+        4,
+        328
+       ],
+       [
+        12,
+        312
+       ],
+       [
+        18,
+        300
+       ],
+       [
+        30,
+        278
+       ],
+       [
+        37,
+        245
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "coarse tan unmown strip between cart path and lots, tan and tufted in 2018 and 2022, pale in CIR, edge at the path both years"
+    },
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -50,
+       70,
+       345,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "CIR shows pink turf and grass at along 345-400, no black water; photo shows rough and a road in both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "false left creek strip and right drainage strip removed; right OB pulled to the lot line",
+   "long_grass": {
+    "L": "none: tan strip between cart path and lots (x -70..-40) is tan in 2022 but no clear second mowing line in 2018; left as rough",
+    "R": "none: right side 120-250 tan in 2018 but green and mown in 2022; pond 250-330"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       -28,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "no water: CIR pink/pale, photo shows cart path and rough; no ditch visible either year"
+    },
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       15,
+       45,
+       120,
+       200
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "narrow auto water strip on open grass; no black in CIR, green turf 2022"
+    },
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -10,
+       42,
+       120,
+       255
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "houses at x +55..+70 (lots from ~+45) in both years; auto OB comes in to x 0..+15 over course grass"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right: brush/tree corridor x +15..+40 is course; OB pulled to the 2022 lots; false water under houses removed",
+   "long_grass": {
+    "L": "none: smooth mown rough to the cart path and lots both years",
+    "R": "none: tree / brush corridor then house lots (2022); no unmown grass band"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       30,
+       70,
+       120,
+       300
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "bare construction ground in 2018 (CIR grey), houses in 2022; no water"
+    },
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       10,
+       38,
+       120,
+       330
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto OB inner edge x +15; tree / brush corridor x +15..+40 (lidar canopy) and houses only from x +45 in 2022"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "OB sliver inside the woods removed; false water near the green removed",
+   "long_grass": {
+    "L": "none: mown rough to the tree line both years",
+    "R": "none: mown rough to the cart path and woods both years"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -10,
+       50,
+       260,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "thin OB wedge inside woods, no houses / fence / road visible in 2018, 2020 or 2022"
+    },
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       0,
+       330,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "CIR pink turf and bunkers, photo rough and cart path; no water in any year"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native both sides beyond the mown rough",
+   "long_grass": {
+    "L": "native: edit 0 (mowing line at x ~-35 in 2018 and 2022, tufted/shrubby outside, tan in 2022)",
+    "R": "native: edit 1 (coarse grass beyond the cart path at x ~+45, both years)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        160
+       ],
+       [
+        -36,
+        160
+       ],
+       [
+        -36,
+        400
+       ],
+       [
+        -70,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "second mowing line ~x -35 (2018 -37, 2022 -32): smooth rough inside, mottled tufted grass with shrubs outside; tan in 2022"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        50,
+        130
+       ],
+       [
+        70,
+        130
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        52,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "beyond the cart path: coarse mottled grass with shrubs in 2018, tan unmown in 2022; path is the mowing line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native right beyond the mown rough",
+   "long_grass": {
+    "L": "none: mown rough to the cart path (x -45..-60); beyond is outside play",
+    "R": "native: edit 0 (mowing line ~x +35 both years, coarse with shrubs outside)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        38,
+        200
+       ],
+       [
+        70,
+        200
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        38,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "second mowing line at x ~+33..+38 in 2018 and 2022; coarse grass with shrubs (2018), tan (2022) outside"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "no change; possible native strip left along the cart path (uncertain)",
+   "long_grass": {
+    "L": "none: possible unmown strip along the cart path (tan 2022, darker 2018) but edge not consistent; left as rough",
+    "R": "none: mown rough to the woods (under auto OB) both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "false lake polygon over rough/road removed; OB on the new street",
+   "long_grass": {
+    "L": "none: smooth mown rough to the cart path and lots both years",
+    "R": "none: strip x +25..+45 coarse in 2018 but green in 2020; road and development beyond"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       0,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "CIR shows pink rough, a ditch line and grey bare ground / road; no water in 2018, 2020 or 2022"
+    },
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        45,
+        260
+       ],
+       [
+        70,
+        260
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        38,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "subdivision street at x +45..+60 (2018) and houses at x +40..+70 along 280-320 in 2022"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "false water both sides removed; OB on the new house lots left",
+   "long_grass": {
+    "L": "none: open rough in 2018, house lots in 2022; no second mowing line",
+    "R": "none: mown rough to the cart paths; median between paths is bare / sparse, not water"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -70,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "no water in the window: CIR mottled purple / pink grass, 2018 grass, 2020 construction, 2022 houses; right strip is the cart-path median"
+    },
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        170
+       ],
+       [
+        -42,
+        170
+       ],
+       [
+        -42,
+        330
+       ],
+       [
+        -70,
+        330
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "houses (pool at x -45, along 225) at x -70..-45 along 180-320 in 2022"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "2": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "3": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "4": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "5": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "6": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "7": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "8": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "9": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "10": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "11": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "12": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "13": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "14": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "15": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "16": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "17": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "move",
+    "to": [
+     44,
+     118
+    ],
+    "confidence": "low",
+    "evidence": "auto walkback point is in rough with no box; a separate pad (OSM box, visible in 2018 and 2022) at x +44, along ~118 on the right; ~105 yds vs card 97"
+   }
+  },
+  "18": {
+   "Black": {
+    "action": "keep"
+   },
+   "Green": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "3",
+   "what": "Black tee: auto lidar_pad dot sits in the creek below the Green box, no box visible there; kept (card length right)"
+  },
+  {
+   "hole": "15",
+   "what": "left: possible unmown strip along the cart path (x -60..-45), not marked"
+  },
+  {
+   "hole": "16",
+   "what": "right: strip x +25..+45 between rough and road, coarse in 2018, green in 2020; not marked"
+  },
+  {
+   "hole": "9",
+   "what": "left: tan strip between cart path and lots, tan 2022 / not clear 2018; not marked"
+  },
+  {
+   "hole": "6,8,9,10",
+   "what": "OB inner edges moved to estimated lot lines (+/-5 yds); no fences visible"
+  },
+  {
+   "hole": "15",
+   "what": "water under the right OB in the woods not checked in CIR closely; left as auto"
+  }
+ ]
+}
