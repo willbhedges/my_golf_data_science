@@ -1,7 +1,7 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-11-02 13:02 UTC",
- "commit": "98dc9bd7",
+ "generated": "2026-11-02 14:35 UTC",
+ "commit": "f8fc7d33",
  "courses": [
   {
    "course": "Spirit Hollow",
@@ -10,7 +10,7 @@
    "package": "course_data/packages/spirit_hollow/package.json",
    "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
-   "decision_s": 59.1,
+   "decision_s": 79.5,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -20,7 +20,7 @@
    "truth": "spirit_hollow/output/final_decision.json (hand map course.py; Black boxes; 2B/9B Gold)",
    "truth_fp": "bd4a5e2a1d",
    "truth_commit": "d5e1e91a 2026-10-17T02:33:47Z",
-   "decision_full_s": 1444.3,
+   "decision_full_s": 1937.4,
    "full_mode": {
     "S": 64,
     "N": 3000
@@ -679,7 +679,7 @@
     "Spirit Hollow 14: 2-wood aim -50.0 yds without CHECK",
     "Spirit Hollow (full, Black) 14: 2-wood aim -50.0 yds without CHECK"
    ],
-   "seconds": 1523.2
+   "seconds": 2020.8
   },
   {
    "course": "Mozingo Lake",
@@ -688,7 +688,7 @@
    "package": "course_data/packages/mozingo_lake/package.json",
    "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 43.7,
+   "decision_s": 59.8,
    "last_plan": {
     "built": "2026-10-17T17:38Z",
     "runtime_s": 372.8,
@@ -949,7 +949,7 @@
    "aim_violations": [
     "Mozingo Lake 3: Driver aim +47.5 yds without CHECK"
    ],
-   "seconds": 57.4
+   "seconds": 60.5
   },
   {
    "course": "Veenker",
@@ -958,7 +958,7 @@
    "package": "course_data/packages/veenker/package.json",
    "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 51.2,
+   "decision_s": 70.1,
    "last_plan": {
     "built": "2026-10-17T17:35Z",
     "runtime_s": 485.5,
@@ -1332,7 +1332,7 @@
     }
    },
    "aim_violations": [],
-   "seconds": 70.0
+   "seconds": 71.5
   },
   {
    "course": "Coldwater Golf Links",
@@ -1341,7 +1341,7 @@
    "package": "course_data/packages/coldwater/package.json",
    "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 62.5,
+   "decision_s": 86.6,
    "last_plan": {
     "built": "2026-10-17T10:21Z",
     "runtime_s": 556.6,
@@ -1741,7 +1741,7 @@
     }
    },
    "aim_violations": [],
-   "seconds": 76.7
+   "seconds": 88.0
   },
   {
    "course": "Ellis",
@@ -1750,7 +1750,7 @@
    "package": "course_data/packages/ellis/package.json",
    "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 46.8,
+   "decision_s": 65.1,
    "truth": "hand-checked corridor map course_data/truth/ellis/hand_zones_ll.json in the package, through the product's quick decision",
    "truth_label": "hand map, quick",
    "truth_fp": "987b0a5ac2",
@@ -2148,10 +2148,7 @@
    "Mozingo Lake 3: Driver aim +47.5 yds without CHECK"
   ],
   "notes": [
-   "Mozingo Lake: truth changed since 2026-11-02 06:58 (baseline reset)",
-   "Veenker: truth changed since 2026-11-02 06:58 (baseline reset)",
-   "Coldwater Golf Links: truth changed since 2026-11-02 06:58 (baseline reset)",
-   "Ellis: truth changed since 2026-11-02 06:58 (baseline reset)"
+   "Mozingo Lake: truth changed since 2026-11-02 06:58 (baseline reset)"
   ]
  },
  "truth_cache": {
@@ -7897,6 +7894,146 @@
    "same_hand_quick": null,
    "ceiling_quick": null,
    "decision_s": 46.8,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-11-02 14:35",
+   "commit": "f8fc7d33",
+   "course": "spirit_hollow",
+   "truth_fp": "bd4a5e2a1d",
+   "n": 16,
+   "headline": "full",
+   "same": 11,
+   "same_or_tie": 13,
+   "same_quick": 12,
+   "same_full": 11,
+   "mean_regret": 0.0197,
+   "max_regret": 0.101,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.271,
+    "long grass": 0.0,
+    "water": 0.315,
+    "ob": 0.391
+   },
+   "checks": 2,
+   "same_hand_quick": 12,
+   "ceiling_quick": 12,
+   "decision_s": 79.5,
+   "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
+   "regression": true
+  },
+  {
+   "date": "2026-11-02 14:35",
+   "commit": "f8fc7d33",
+   "course": "mozingo_lake",
+   "truth_fp": "059a6aa22f",
+   "n": 14,
+   "headline": "quick",
+   "same": 11,
+   "same_or_tie": 12,
+   "same_quick": 11,
+   "same_full": null,
+   "mean_regret": 0.0094,
+   "max_regret": 0.088,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 1,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 59.8,
+   "source": "product/decide.run quick n=8000",
+   "regression": true
+  },
+  {
+   "date": "2026-11-02 14:35",
+   "commit": "f8fc7d33",
+   "course": "veenker",
+   "truth_fp": "3ed6810b49",
+   "n": 13,
+   "headline": "quick",
+   "same": 11,
+   "same_or_tie": 12,
+   "same_quick": 11,
+   "same_full": null,
+   "mean_regret": 0.0092,
+   "max_regret": 0.1097,
+   "tee10": 10,
+   "green10": 13,
+   "n_geo": 13,
+   "iou": {
+    "trees": 0.442,
+    "long grass": 0.0,
+    "water": 0.245,
+    "ob": 0.0
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 70.1,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-11-02 14:35",
+   "commit": "f8fc7d33",
+   "course": "coldwater",
+   "truth_fp": "fc9da93047",
+   "n": 14,
+   "headline": "quick",
+   "same": 11,
+   "same_or_tie": 12,
+   "same_quick": 11,
+   "same_full": null,
+   "mean_regret": 0.014,
+   "max_regret": 0.133,
+   "tee10": 13,
+   "green10": 14,
+   "n_geo": 14,
+   "iou": {
+    "trees": 0.223,
+    "long grass": 0.0,
+    "water": 0.279,
+    "ob": 0.071
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 86.6,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-11-02 14:35",
+   "commit": "f8fc7d33",
+   "course": "ellis",
+   "truth_fp": "987b0a5ac2",
+   "n": 14,
+   "headline": "quick",
+   "same": 12,
+   "same_or_tie": 12,
+   "same_quick": 12,
+   "same_full": null,
+   "mean_regret": 0.0142,
+   "max_regret": 0.1416,
+   "tee10": 14,
+   "green10": 14,
+   "n_geo": 14,
+   "iou": {
+    "trees": 0.2,
+    "long grass": 0.0,
+    "water": 0.0,
+    "ob": 0.077
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 65.1,
    "source": "product/decide.run quick n=8000",
    "regression": false
   }
