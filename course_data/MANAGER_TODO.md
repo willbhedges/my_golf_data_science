@@ -12,10 +12,7 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
       Tiffany Greens shown as "OK").
 - [ ] Tiffany Greens: club scorecard to settle tee names (course_data/research/web/rv_ph_tg/).
 - [ ] Jayhawk Club: hand trace once its package is committed.
-- [ ] Perception leakage-free re-train: runs 41353156906 (pass 1, train) then 41357754039 (pass 2, re-perceive
-      212 courses). When pass 2 lands: rebuild zero_tap/bench_set.py, re-run formation hole_pairs on the new scenes
-      (zt_formation), re-run the UNMAPPED.md commands; then launch: tee-candidate re-scorer (cut false tees),
-      fairway-between-tee-and-green pairing term, threshold calibration that holds 98 % on new states.
+- [x] Perception pass 2 integrated (be4eb5058, UNMAPPED.md): honest test detection both-found 85.4->88.9 %, paired ~80 % (flat), pathroute calibrated 98.3 % at ~10 taps; sequence_v3 slightly worse (needs out-of-fold dev hole_pairs, oof_pairs.py); tee re-scorer built but not default (flat on test). Next: oof_pairs for sequence_v3; why pathroute numbering 24->16 %.
 - [ ] National index full run 41355553763 (1-degree cells, 6 jobs): when it lands, read us_readiness.json
       partial_states; if any, push course_data/requests/national_index_us_cells2.json with
       {"states": [], "reuse_run": 41355553763, "oga_run": <that run id>, "rev": n} until empty. Check Spirit Hollow KS,
