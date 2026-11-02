@@ -1,10 +1,15 @@
 {
- "fetched_utc": "2026-10-30T04:20:07Z",
+ "fetched_utc": "2026-11-01T20:57:26Z",
  "tried": [
   {
    "source": "golfify",
    "ok": false,
    "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: card at https://www.allsquaregolf.com/golf-courses/missouri/osage-national-golf-club rejected (hole count / lengths don't fit OSM)"
   },
   {
    "source": "club_site",
@@ -283,5 +288,23 @@
     }
    }
   }
- ]
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/1de48d90-4571-40e6-8542-364e1d7e7d42",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/1de48d90-4571-40e6-8542-364e1d7e7d42": {
+    "holes": 18,
+    "fit": 10,
+    "share": 0.556,
+    "mean_err": 16.4,
+    "all_sets": 0.176,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
 }
