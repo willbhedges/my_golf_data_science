@@ -1,6 +1,6 @@
 # Spirit Hollow Golf Course (Burlington, IA) - Black tees
 
-Built 2026-11-02T01:06:10Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
+Built 2026-11-02T01:33:05Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
 
 ## Coverage
 
@@ -13,7 +13,7 @@ Built 2026-11-02T01:06:10Z. OSM relation/13353211. Scorecard: file (course_data/
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 10 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.342 |
+| mean_landing_osm_share | 0.341 |
 | mean_confidence | 0.809 |
 | osm_score | 0.811 |
 
@@ -55,7 +55,7 @@ OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, go
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/imagery/spirit_hollow/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
-- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 35 tee candidates)
+- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 36 tee candidates)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 20 polygons (property_line 20); mode replace
 
 ## Warnings

@@ -1,6 +1,6 @@
 # Osage National Golf Club (Osage Beach, MO) - Palmer tees
 
-Built 2026-11-02T01:05:49Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
+Built 2026-11-02T01:30:52Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Palmer' instead (allow_substitute). Sets on the card: Palmer, Tournament, Middle, Members, Forward, Green**
 
@@ -13,11 +13,11 @@ Built 2026-11-02T01:05:49Z. OSM relation/5897058. Scorecard: opengolfapi (opengo
 | greens_found | 18 |
 | tee_boxes | 124 |
 | tees_with_colour | 1 |
-| holes_with_trees_or_long_grass_in_landing_zone | 2 |
+| holes_with_trees_or_long_grass_in_landing_zone | 11 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.49 |
-| mean_confidence | 0.809 |
-| osm_score | 0.727 |
+| mean_landing_osm_share | 0.488 |
+| mean_confidence | 0.832 |
+| osm_score | 0.855 |
 
 OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57, golf=cartpath 40, golf=fairway 34, golf=green 31, golf=hole 18, golf=lateral_water_hazard 25, golf=rough 44, golf=tee 124, holes_with_par 18, tees_with_colour 1, trees_polygons 9, water_polygons 25
 
@@ -25,24 +25,24 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 377 / 378 | 279 | 0.67 | check the flags | 30% | 0% | 70% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 377 yds) |
-| 2 | 4 | 455 / 456 | 96 | 0.64 | check the flags | 33% | 0% | 67% | tee stage: Palmer walkback | tee: tee stage: Palmer walkback; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Palmer tee walked back along the hole line (no box at 455 yds) |
-| 3 | 4 | 370 / 377 | 88 | 0.70 | check the flags | 44% | 0% | 56% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 370 yds) |
+| 1 | 4 | 377 / 373 | 274 | 0.79 | check the flags | 28% | 28% | 44% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 2 | 4 | 455 / 456 | 96 | 0.67 | check the flags | 33% | 15% | 51% | tee stage: Palmer walkback | tee: tee stage: Palmer walkback; Palmer tee walked back along the hole line (no box at 455 yds) |
+| 3 | 4 | 370 / 376 | 88 | 0.73 | check the flags | 45% | 12% | 43% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 370 yds) |
 | 4 | 3 | 158 / 158 | 102 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
-| 5 | 4 | 441 / 438 | 220 | 0.77 | check the flags | 42% | 0% | 58% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); OB from the course boundary on 18% of the landing zone |
-| 6 | 4 | 428 / 427 | 175 | 0.79 | check the flags | 76% | 0% | 24% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Palmer tee on a lidar pad (no OSM box at 428 yds) |
-| 7 | 5 | 612 / 609 | 346 | 0.73 | check the flags | 54% | 0% | 46% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Palmer tee on a lidar pad (no OSM box at 612 yds) |
+| 5 | 4 | 441 / 438 | 220 | 0.81 | auto | 40% | 27% | 33% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 6 | 4 | 428 / 427 | 175 | 0.79 | check the flags | 76% | 1% | 24% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; Palmer tee on a lidar pad (no OSM box at 428 yds) |
+| 7 | 5 | 612 / 609 | 346 | 0.75 | check the flags | 54% | 8% | 38% | tee stage: Palmer lidar_pad | tee: tee stage: Palmer lidar_pad; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Palmer tee on a lidar pad (no OSM box at 612 yds) |
 | 8 | 3 | 206 / 206 | 287 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
-| 9 | 5 | 512 / 511 | 321 | 0.79 | check the flags | 50% | 0% | 50% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 10 | 4 | 398 / 399 | 89 | 0.79 | check the flags | 50% | 0% | 50% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 11 | 4 | 445 / 445 | 141 | 0.83 | auto | 51% | 0% | 49% | tee stage: Palmer tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 12 | 4 | 433 / 432 | 195 | 0.81 | auto | 56% | 0% | 44% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 9 | 5 | 512 / 511 | 321 | 0.80 | auto | 50% | 6% | 43% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 10 | 4 | 398 / 399 | 89 | 0.81 | auto | 50% | 13% | 37% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 11 | 4 | 445 / 445 | 141 | 0.84 | auto | 51% | 6% | 43% | tee stage: Palmer tee_centroid |  |
+| 12 | 4 | 433 / 432 | 195 | 0.81 | auto | 56% | 3% | 41% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 13 | 3 | 215 / 215 | 179 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
-| 14 | 5 | 525 / 524 | 16 | 0.78 | check the flags | 48% | 0% | 52% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); OB from the course boundary on 1% of the landing zone |
-| 15 | 4 | 314 / 314 | 4 | 0.75 | check the flags | 36% | 0% | 64% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 14 | 5 | 525 / 524 | 16 | 0.82 | auto | 48% | 19% | 33% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
+| 15 | 4 | 314 / 314 | 4 | 0.78 | check the flags | 36% | 16% | 48% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 | 16 | 3 | 163 / 163 | 337 | 0.96 | auto | 100% | 0% | 0% | tee stage: Palmer tee_centroid |  |
-| 17 | 4 | 442 / 441 | 339 | 0.85 | auto | 60% | 0% | 40% | tee stage: Palmer tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 18 | 5 | 626 / 627 | 277 | 0.81 | auto | 55% | 0% | 45% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 17 | 4 | 442 / 441 | 339 | 0.88 | auto | 60% | 14% | 26% | tee stage: Palmer tee_centroid |  |
+| 18 | 5 | 626 / 627 | 277 | 0.82 | auto | 55% | 6% | 38% | tee stage: Palmer tee_axis | tee: tee stage: Palmer tee_axis |
 
 ## Stages
 
@@ -56,12 +56,11 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 - **imagery**: ok: course_data/packages/osage_national/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2016)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2016
 - **elevation**: ok: course_data/packages/osage_national/imagery/dem.tif (18/18 holes)
-- **vision**: missing: no vision_any layers for 'osage_national' (FileNotFoundError: course_data/vision_any/osage_national/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them
+- **vision**: ok: vision_any/1 (lidar canopy + NAIP native, OSM-self-supervised)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 9 polygons (outside 9); mode replace
 
 ## Warnings
 
 - requested tee set 'Black' is not on the card; using 'Palmer' instead (allow_substitute). Sets on the card: Palmer, Tournament, Middle, Members, Forward, Green
 - hole 10 Green: CHECK, tee was on a building (OSM 793957852): moved 5 yds forward off it
-- vision: missing: no vision_any layers for 'osage_national' (FileNotFoundError: course_data/vision_any/osage_national/raw (not fetched)); add the course to course_data/v; trees / long grass come from OSM only

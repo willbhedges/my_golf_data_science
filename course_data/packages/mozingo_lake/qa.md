@@ -1,6 +1,6 @@
 # Mozingo Lake Golf Course (Maryville, MO) - App tees
 
-Built 2026-11-02T01:05:38Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
+Built 2026-11-02T01:30:41Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
 
 ## Coverage
 
@@ -13,7 +13,7 @@ Built 2026-11-02T01:05:38Z. OSM way/385067034. Scorecard: request (request file 
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 8 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.458 |
+| mean_landing_osm_share | 0.457 |
 | mean_confidence | 0.822 |
 | osm_score | 0.806 |
 
@@ -39,7 +39,7 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 | 14 | 5 | 464 / 463 | 187 | 0.81 | auto | 50% | 0% | 50% | tee stage: App tee_centroid |  |
 | 15 | 3 | 174 / 174 | 80 | 0.95 | auto | 100% | 0% | 0% | tee stage: App tee_centroid |  |
 | 16 | 4 | 433 / 432 | 13 | 0.78 | check the flags | 50% | 0% | 50% | tee stage: App tee_axis | tee: tee stage: App tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 17 | 4 | 344 / 355 | 49 | 0.74 | check the flags | 31% | 4% | 64% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
+| 17 | 4 | 344 / 349 | 49 | 0.73 | check the flags | 30% | 5% | 65% | tee stage: App tee_axis | tee: tee stage: App tee_axis |
 | 18 | 4 | 407 / 407 | 203 | 0.79 | check the flags | 54% | 0% | 46% | tee stage: App tee_axis | tee: tee stage: App tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 
 ## Stages
@@ -55,5 +55,5 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2022
 - **elevation**: ok: course_data/packages/mozingo_lake/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
-- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 32 tee candidates)
+- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 33 tee candidates)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 4 polygons (outside 4); mode replace

@@ -1,6 +1,6 @@
 # The Jayhawk Club (Lawrence, KS) - Black tees
 
-Built 2026-11-02T01:05:28Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-02T01:30:08Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -13,9 +13,9 @@ Built 2026-11-02T01:05:28Z. OSM relation/2053560. Scorecard: opengolfapi (opengo
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 2 |
 | of_par4_5 | 8 |
-| mean_landing_osm_share | 0.351 |
-| mean_confidence | 0.718 |
-| osm_score | 0.609 |
+| mean_landing_osm_share | 0.346 |
+| mean_confidence | 0.717 |
+| osm_score | 0.608 |
 
 OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18, golf=cartpath 15, golf=driving_range 1, golf=fairway 8, golf=green 10, golf=hole 10, golf=pin 2, golf=rough 1, golf=tee 32, golf=water_hazard 2, holes_with_par 10, single_trees 67, water_lines 39, water_polygons 3
 
@@ -27,7 +27,7 @@ OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18
 | 2 | 5 | 534 / 523 | 307 | 0.62 | check the flags | 26% | 0% | 74% | tee stage: Black walkback_capped | tee: tee stage: Black walkback_capped; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Black tee walked back along the hole line (no box at 534 yds) |
 | 3 | 4 | 408 / 409 | 264 | 0.56 | needs review | 7% | 0% | 93% | tee stage: Black walkback | tee: tee stage: Black walkback; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Black tee walked back along the hole line (no box at 408 yds) |
 | 4 | 3 | 208 / 538 | 337 | 0.82 | auto | 100% | 0% | 0% | tee stage: Black walkback_capped | tee: tee stage: Black walkback_capped; Black tee walked back along the hole line (no box at 208 yds) |
-| 5 | 4 | 396 / 385 | 65 | 0.71 | check the flags | 46% | 0% | 54% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Black tee on a lidar pad (no OSM box at 396 yds) |
+| 5 | 4 | 396 / 392 | 65 | 0.70 | check the flags | 41% | 0% | 59% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Black tee on a lidar pad (no OSM box at 396 yds) |
 | 6 | 4 | 444 / 371 | 271 | 0.68 | check the flags | 47% | 0% | 53% | tee stage: Black walkback_capped | tee: tee stage: Black walkback_capped; Black tee walked back along the hole line (no box at 444 yds) |
 | 7 | 3 | 236 / 236 | 239 | 0.86 | auto | 100% | 0% | 0% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 236 yds) |
 | 8 | 5 | 512 / 443 | 107 | 0.67 | check the flags | 44% | 0% | 56% | tee stage: Black walkback_capped | tee: tee stage: Black walkback_capped; Black tee walked back along the hole line (no box at 512 yds) |

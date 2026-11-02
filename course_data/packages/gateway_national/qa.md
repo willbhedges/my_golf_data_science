@@ -1,6 +1,6 @@
 # Gateway National Golf Links (Madison, IL) - Back tees
 
-Built 2026-11-02T01:05:06Z. OSM way/782435512. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Blue' not on the card (sets: Back, Champions, Forward, Middle, The Tips)).
+Built 2026-11-02T01:29:18Z. OSM way/782435512. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Blue' not on the card (sets: Back, Champions, Forward, Middle, The Tips)).
 
 **WARNING: requested tee set 'Blue' is not on the card; using 'Back' instead (allow_substitute). Sets on the card: Back, Champions, Forward, Middle, The Tips**
 
@@ -15,7 +15,7 @@ Built 2026-11-02T01:05:06Z. OSM way/782435512. Scorecard: golfify (golfify). Tee
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 3 |
 | of_par4_5 | 13 |
-| mean_landing_osm_share | 0.474 |
+| mean_landing_osm_share | 0.473 |
 | mean_confidence | 0.842 |
 | osm_score | 0.741 |
 
@@ -39,10 +39,10 @@ OSM features inside the course: buildings 4, golf=bunker 73, golf=cartpath 23, g
 | 12 | 3 | 131 / 131 | 269 | 0.96 | auto | 100% | 0% | 0% | tee stage: Back tee_centroid |  |
 | 13 | 5 | 533 / 534 | 65 | 0.81 | auto | 57% | 0% | 43% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 14 | 3 | 200 / 200 | 74 | 0.93 | auto | 100% | 0% | 0% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
-| 15 | 4 | 428 / 427 | 250 | 0.79 | check the flags | 51% | 0% | 49% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 15 | 4 | 428 / 427 | 250 | 0.79 | check the flags | 50% | 0% | 50% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 16 | 4 | 354 / 354 | 44 | 0.82 | auto | 50% | 0% | 50% | tee stage: Back tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 17 | 3 | 195 / 195 | 39 | 0.96 | auto | 100% | 0% | 0% | tee stage: Back tee_centroid |  |
-| 18 | 5 | 527 / 519 | 155 | 0.82 | auto | 60% | 0% | 40% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 18 | 5 | 527 / 522 | 155 | 0.81 | auto | 58% | 0% | 42% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 
 ## Stages
 
