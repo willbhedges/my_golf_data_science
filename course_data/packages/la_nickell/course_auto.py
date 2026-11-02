@@ -1,5 +1,5 @@
 """Course module for L.A. Nickell Golf Course (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T00:31:53Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T00:46:51Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_la_nickell.json
 

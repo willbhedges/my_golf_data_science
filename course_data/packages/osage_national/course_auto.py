@@ -1,5 +1,5 @@
 """Course module for Osage National Golf Club (Palmer tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T00:32:04Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T00:47:07Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_osage_national.json
 
