@@ -1,5 +1,5 @@
 """Course module for Prairie Dunes (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T18:06:11Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T19:30:10Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_prairie_dunes.json
 

@@ -1,5 +1,5 @@
 """Course module for Colbert Hills Golf Course (Black/Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T15:52:40Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T19:22:32Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_colbert_hills.json
 

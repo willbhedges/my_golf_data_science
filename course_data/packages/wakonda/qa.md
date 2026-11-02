@@ -1,6 +1,6 @@
 # Wakonda Club (Des Moines, IA) - Blue tees
 
-Built 2026-11-02T11:17:29Z. OSM way/102681377. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T20:44:03Z. OSM way/102681377. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-02T11:17:29Z. OSM way/102681377. Scorecard: golfify (golfify). Tee
 | holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.359 |
-| mean_confidence | 0.831 |
+| mean_confidence | 0.83 |
 | osm_score | 0.858 |
 
 OSM features inside the course: buildings 9, golf=bunker 48, golf=cartpath 39, golf=fairway 25, golf=green 26, golf=hole 18, golf=lateral_water_hazard 3, golf=tee 55, holes_with_par 18, water_lines 3, water_polygons 3
@@ -23,13 +23,13 @@ OSM features inside the course: buildings 9, golf=bunker 48, golf=cartpath 39, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 410 / 410 | 8 | 0.80 | auto | 33% | 13% | 55% | tee stage: Blue tee_centroid |  |
+| 1 | 4 | 410 / 410 | 8 | 0.80 | check the flags | 33% | 10% | 57% | tee stage: Blue tee_centroid |  |
 | 2 | 3 | 114 / 114 | 293 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
 | 3 | 4 | 382 / 382 | 182 | 0.82 | auto | 24% | 35% | 42% | tee stage: Blue tee_centroid |  |
 | 4 | 4 | 410 / 409 | 348 | 0.78 | check the flags | 30% | 6% | 64% | tee stage: Blue tee_centroid |  |
 | 5 | 5 | 505 / 506 | 101 | 0.76 | check the flags | 30% | 14% | 56% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 6 | 4 | 399 / 398 | 175 | 0.79 | check the flags | 30% | 27% | 43% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 7 | 4 | 348 / 347 | 189 | 0.80 | auto | 37% | 24% | 39% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 7 | 4 | 348 / 347 | 189 | 0.80 | check the flags | 37% | 23% | 40% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 8 | 5 | 509 / 510 | 278 | 0.82 | auto | 53% | 8% | 38% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 9 | 3 | 169 / 169 | 68 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
 | 10 | 4 | 429 / 430 | 118 | 0.85 | auto | 57% | 2% | 41% | tee stage: Blue tee_centroid |  |
@@ -54,6 +54,6 @@ OSM features inside the course: buildings 9, golf=bunker 48, golf=cartpath 39, g
 - **imagery**: ok: course_data/packages/wakonda/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2019)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2019
 - **elevation**: ok: course_data/packages/wakonda/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -4364 m2 {'strip': 1667, 'road': 1842, 'cells': 818}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 9 polygons (property_line 9); mode replace

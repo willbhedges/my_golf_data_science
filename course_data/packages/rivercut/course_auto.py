@@ -1,5 +1,5 @@
 """Course module for Rivercut Golf Course (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T18:07:04Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T19:30:57Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_rivercut.json
 
