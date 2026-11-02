@@ -1,0 +1,4766 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "slug": "eagle_bend",
+  "mapper": "mapper-eagle_bend-4",
+  "made": "2026-11-02T10:34:34Z",
+  "corridor_set": "Gold",
+  "base_package": "course_data/mapper/eagle_bend/base/package.json",
+  "base_built": "2026-11-02T06:14:42Z",
+  "minutes": 58,
+  "edits_sha": "da6592b36777b54a",
+  "schema": "agent_zones/1",
+  "reviewed": {
+   "1": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "high",
+    "note": "parkland; lidar tree edge on the right matches the 2021 crowns",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the cart path / next hole in both years, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the tree line in both years, no second mowing line"
+    }
+   },
+   "2": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "left: coarse streaky unmown grass behind a straight mowing line ~20 yds off the fairway (strong in 2023, darker mottled in 2021); right mown to cart path",
+    "s2": [
+     {
+      "id": "S2-2-R1",
+      "side": "R",
+      "area_yd2": 350,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "under/among the crowns right of the cart path at 140-170; mown rough in both years"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 0 (straight mowing line ~20 yds off the fairway; outside coarse/streaky with a ditch in 2023, darker mottled in 2021 and CIR)",
+     "R": "none: smooth mown rough from the fairway to the cart path and scattered trees in both years, no second mowing line"
+    }
+   },
+   "3": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "auto OB in the woods right (no houses, river woods): erased; left drainage swale with scrub 15-25 yds out left as rough (uncertain)",
+    "s2": [],
+    "long_grass": {
+     "L": "none: mown rough; a drainage swale with scrub at x -70..-45 (2023) is uncertain, not drawn",
+     "R": "none: woods right of the cart path"
+    }
+   },
+   "5": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "auto OB through the woods right erased; trees right fine (+/-3 yds)",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the cart path; swale 45+ yds out in both years, no second mowing line",
+     "R": "none: woods"
+    }
+   },
+   "6": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "auto OB in the woods right erased; water blobs under trees kept (creek)",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the swale 50+ yds out in both years, no second mowing line",
+     "R": "none: woods beyond the cart path"
+    }
+   },
+   "7": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "added the left tree row (lidar crowns) that the auto trees dropped",
+    "s2": [
+     {
+      "id": "S2-7-R1",
+      "side": "R",
+      "area_yd2": 212,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at the right tree line (crowns + shade) at 176-200; mown rough in 2021"
+     },
+     {
+      "id": "S2-7-R2",
+      "side": "R",
+      "area_yd2": 354,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mixed crowns and rough under the right tree line at 225-254; no mowing line in 2021"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the tree row in both years, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the tree line in both years, no second mowing line"
+    }
+   },
+   "9": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "added 3 crowns right of the fairway; left lidar edge kept (photo crowns+shadows sit further left)",
+    "s2": [
+     {
+      "id": "S2-9-L1",
+      "side": "L",
+      "area_yd2": 340,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "under the woods left of the green approach (342-364); crowns and shade"
+     },
+     {
+      "id": "S2-9-R1",
+      "side": "R",
+      "area_yd2": 243,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "beyond the right cart path at 140-160; smooth mown rough 2021, tan smooth rough 2023"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the woods in both years, no second mowing line",
+     "R": "none: smooth mown rough from the fairway to the cart path and trees in both years, no second mowing line"
+    }
+   },
+   "10": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "added the crown at the right edge of the fairway ~230 and one right of the path",
+    "s2": [],
+    "long_grass": {
+     "L": "none: mown rough to the woods; tan dormant area x -70..-30 at 300-380 past the landing zone is uncertain (not drawn)",
+     "R": "none: smooth mown rough from the fairway to the cart paths in both years, no second mowing line"
+    }
+   },
+   "11": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "right side slightly coarser beyond ~+30 in 2023 but no crisp mowing line in 2021: left as rough (uncertain)",
+    "s2": [
+     {
+      "id": "S2-11-L1",
+      "side": "L",
+      "area_yd2": 349,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "between the two cart paths among scattered trees at 154-188; mown rough both years"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the cart paths and scattered trees in both years, no second mowing line",
+     "R": "none: no crisp second mowing line in 2021; 2023 only slightly coarser beyond ~+35 (uncertain)"
+    }
+   },
+   "13": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "right: darker mottled island with shrubs behind a curving edge ~14 yds off the fairway (2021), coarse/tufted in 2023; auto OB along the road left kept",
+    "s2": [
+     {
+      "id": "S2-13-L1",
+      "side": "L",
+      "area_yd2": 454,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "by the road at 122-180; mown rough in 2021, smooth in 2023"
+     },
+     {
+      "id": "S2-13-L2",
+      "side": "L",
+      "area_yd2": 1544,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "left of the cart path at 206-285: mottled green rough with scattered trees in 2021, smooth in 2023; no second mowing line"
+     },
+     {
+      "id": "S2-13-L3",
+      "side": "L",
+      "area_yd2": 204,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "small cell by the road at 327-351; rough with trees"
+     }
+    ],
+    "long_grass": {
+     "L": "none: mown rough with scattered trees between the cart path and the road; 2023 smooth (S2 L1-L3 rejected)",
+     "R": "native: edit 0 (curving edge ~+35, darker mottled 2021 / coarse tufted 2023)"
+    }
+   },
+   "14": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "ditch right is dry grass in both years and CIR (no black NIR): water erased; young tree row added; left native beyond ~20 yds from 300",
+    "s2": [],
+    "long_grass": {
+     "L": "native: edit 1 (tan coarse tufted 2023 / darker mottled 2021 behind a line ~20 yds off the fairway, 300-400)",
+     "R": "none: smooth mown rough from the fairway to the ditch / tree row in both years, no second mowing line"
+    }
+   },
+   "15": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "added the right tree row; left coarse in 2023 only (uncertain, not drawn)",
+    "s2": [
+     {
+      "id": "S2-15-R1",
+      "side": "R",
+      "area_yd2": 213,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "right of the cart path near the green at 340-360; smooth mown rough both years"
+     },
+     {
+      "id": "S2-15-R2",
+      "side": "R",
+      "area_yd2": 261,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at the far end (390-400) by the cart path; mown rough"
+     }
+    ],
+    "long_grass": {
+     "L": "none: 2021 smooth mown rough with crowns; 2023 coarser/tan beyond ~-40 only in one year (uncertain)",
+     "R": "none: smooth mown rough from the fairway to the tree row / cart path in both years, no second mowing line"
+    }
+   },
+   "16": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "high",
+    "note": "tree edge right matches lidar and photo; left mown",
+    "s2": [],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the bunkers / cart path in both years, no second mowing line",
+     "R": "none: woods"
+    }
+   },
+   "18": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "high",
+    "note": "pond edge matches both years; left scattered trees in mown rough",
+    "s2": [
+     {
+      "id": "S2-18-L1",
+      "side": "L",
+      "area_yd2": 230,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "a tree crown and its shadow at 284-307 (both years)"
+     },
+     {
+      "id": "S2-18-L2",
+      "side": "L",
+      "area_yd2": 559,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "a tree crown and its shadow at 332-370 (both years)"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough from the fairway to the scattered trees in both years, no second mowing line",
+     "R": "none: pond, then woods"
+    }
+   }
+  },
+  "uncertain": [
+   {
+    "hole": "2",
+    "what": "left native: is it unmown native or a less-often-mown rough (2023 streaky, 2021 only darker); edge +/-6 yds"
+   },
+   {
+    "hole": "13",
+    "what": "right native island 200-330: could be rough under shrubs; edge +/-6"
+   },
+   {
+    "hole": "14",
+    "what": "left native 300-400 edge +/-6; Gold tee position (walkback, no box seen)"
+   },
+   {
+    "hole": "7",
+    "what": "Gold tee (walkback under canopy); left tree row placed on lidar, photos disagree by ~8 yds"
+   },
+   {
+    "hole": "3",
+    "what": "left drainage swale with scrub at x -70..-45 (not drawn)"
+   },
+   {
+    "hole": "10",
+    "what": "tan dormant area left of the green approach 300-380 (not drawn)"
+   },
+   {
+    "hole": "11",
+    "what": "right side beyond ~+35 slightly coarser in 2023 (not drawn)"
+   },
+   {
+    "hole": "15",
+    "what": "left beyond ~-40 coarse in 2023 only (not drawn)"
+   },
+   {
+    "hole": "all",
+    "what": "NAIP 2023 and lidar are misregistered vs NAIP 2021 by ~5-20 yds on some holes; trees placed on lidar"
+   }
+  ],
+  "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "2",
+    "op": "add",
+    "lie": "native",
+    "edit": "2.0",
+    "area_yd2": 6055,
+    "confidence": "medium",
+    "evidence": "2023: crisp straight mowing line with coarse, streaky, tufted grass outside and a ditch through it; 2021: same line softer, darker mottled outside; ~20 yds off the package fairway; no lidar 0.5-2.5 m speckle (lidar likely leaf-off/dormant)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3146907,
+       38.923134
+      ],
+      [
+       -95.3127581,
+       38.9233399
+      ],
+      [
+       -95.3127111,
+       38.9230706
+      ],
+      [
+       -95.313599,
+       38.922976
+      ],
+      [
+       -95.3146451,
+       38.9228728
+      ],
+      [
+       -95.3146907,
+       38.923134
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "3",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "3.0",
+    "area_yd2": 15400,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "high",
+    "evidence": "OB line runs through continuous woods (river bottom) in both years; no houses, fence or road"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3115001,
+       38.9231435
+      ],
+      [
+       -95.3116172,
+       38.9254478
+      ],
+      [
+       -95.3110378,
+       38.9254658
+      ],
+      [
+       -95.3109207,
+       38.9231615
+      ],
+      [
+       -95.3115001,
+       38.9231435
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "5",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "5.0",
+    "area_yd2": 11200,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "high",
+    "evidence": "OB line inside continuous woods along the creek, no development visible in either year"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3132025,
+       38.9261718
+      ],
+      [
+       -95.3134835,
+       38.9238762
+      ],
+      [
+       -95.3139033,
+       38.9239075
+      ],
+      [
+       -95.3136223,
+       38.9262031
+      ],
+      [
+       -95.3132025,
+       38.9261718
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "6",
+    "op": "erase",
+    "lie": "ob",
+    "edit": "6.0",
+    "area_yd2": 15400,
+    "lies": [
+     "ob"
+    ],
+    "confidence": "high",
+    "evidence": "OB line runs through woods / creek bottom; no houses, fence or road in either year"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3137792,
+       38.9237457
+      ],
+      [
+       -95.31672,
+       38.9239474
+      ],
+      [
+       -95.3166693,
+       38.9243987
+      ],
+      [
+       -95.3137285,
+       38.9241969
+      ],
+      [
+       -95.3137792,
+       38.9237457
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "7.0",
+    "area_yd2": 252,
+    "confidence": "medium",
+    "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3192904,
+       38.925493
+      ],
+      [
+       -95.3192738,
+       38.9254787
+      ],
+      [
+       -95.3192625,
+       38.9254614
+      ],
+      [
+       -95.3192572,
+       38.9254425
+      ],
+      [
+       -95.3192585,
+       38.9254232
+      ],
+      [
+       -95.3192661,
+       38.9254048
+      ],
+      [
+       -95.3192795,
+       38.9253885
+      ],
+      [
+       -95.3192979,
+       38.9253755
+      ],
+      [
+       -95.3193199,
+       38.9253667
+      ],
+      [
+       -95.3193441,
+       38.9253626
+      ],
+      [
+       -95.3193689,
+       38.9253636
+      ],
+      [
+       -95.3193924,
+       38.9253695
+      ],
+      [
+       -95.3194132,
+       38.92538
+      ],
+      [
+       -95.3194299,
+       38.9253944
+      ],
+      [
+       -95.3194412,
+       38.9254116
+      ],
+      [
+       -95.3194464,
+       38.9254305
+      ],
+      [
+       -95.3194452,
+       38.9254498
+      ],
+      [
+       -95.3194376,
+       38.9254682
+      ],
+      [
+       -95.3194241,
+       38.9254845
+      ],
+      [
+       -95.3194058,
+       38.9254975
+      ],
+      [
+       -95.3193837,
+       38.9255063
+      ],
+      [
+       -95.3193595,
+       38.9255104
+      ],
+      [
+       -95.3193348,
+       38.9255094
+      ],
+      [
+       -95.3193112,
+       38.9255035
+      ],
+      [
+       -95.3192904,
+       38.925493
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "7.1",
+    "area_yd2": 196,
+    "confidence": "medium",
+    "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3190757,
+       38.9253953
+      ],
+      [
+       -95.3190636,
+       38.9253827
+      ],
+      [
+       -95.3190563,
+       38.9253669
+      ],
+      [
+       -95.3190541,
+       38.9253491
+      ],
+      [
+       -95.3190572,
+       38.9253305
+      ],
+      [
+       -95.3190655,
+       38.9253123
+      ],
+      [
+       -95.3190782,
+       38.9252958
+      ],
+      [
+       -95.3190947,
+       38.9252821
+      ],
+      [
+       -95.3191137,
+       38.9252722
+      ],
+      [
+       -95.319134,
+       38.9252666
+      ],
+      [
+       -95.3191541,
+       38.9252659
+      ],
+      [
+       -95.3191728,
+       38.92527
+      ],
+      [
+       -95.3191887,
+       38.9252787
+      ],
+      [
+       -95.3192007,
+       38.9252913
+      ],
+      [
+       -95.319208,
+       38.9253071
+      ],
+      [
+       -95.3192102,
+       38.9253249
+      ],
+      [
+       -95.3192071,
+       38.9253435
+      ],
+      [
+       -95.3191989,
+       38.9253617
+      ],
+      [
+       -95.3191861,
+       38.9253782
+      ],
+      [
+       -95.3191696,
+       38.9253919
+      ],
+      [
+       -95.3191506,
+       38.9254018
+      ],
+      [
+       -95.3191303,
+       38.9254074
+      ],
+      [
+       -95.3191102,
+       38.9254081
+      ],
+      [
+       -95.3190915,
+       38.925404
+      ],
+      [
+       -95.3190757,
+       38.9253953
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "7.2",
+    "area_yd2": 152,
+    "confidence": "medium",
+    "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3187759,
+       38.9253124
+      ],
+      [
+       -95.318763,
+       38.9253012
+      ],
+      [
+       -95.3187542,
+       38.9252878
+      ],
+      [
+       -95.3187502,
+       38.9252731
+      ],
+      [
+       -95.3187511,
+       38.9252581
+      ],
+      [
+       -95.318757,
+       38.9252438
+      ],
+      [
+       -95.3187675,
+       38.9252311
+      ],
+      [
+       -95.3187818,
+       38.925221
+      ],
+      [
+       -95.3187989,
+       38.9252142
+      ],
+      [
+       -95.3188177,
+       38.925211
+      ],
+      [
+       -95.318837,
+       38.9252117
+      ],
+      [
+       -95.3188553,
+       38.9252163
+      ],
+      [
+       -95.3188715,
+       38.9252245
+      ],
+      [
+       -95.3188844,
+       38.9252357
+      ],
+      [
+       -95.3188932,
+       38.9252491
+      ],
+      [
+       -95.3188973,
+       38.9252638
+      ],
+      [
+       -95.3188963,
+       38.9252788
+      ],
+      [
+       -95.3188904,
+       38.9252931
+      ],
+      [
+       -95.31888,
+       38.9253058
+      ],
+      [
+       -95.3188657,
+       38.9253159
+      ],
+      [
+       -95.3188486,
+       38.9253227
+      ],
+      [
+       -95.3188297,
+       38.9253259
+      ],
+      [
+       -95.3188105,
+       38.9253252
+      ],
+      [
+       -95.3187921,
+       38.9253206
+      ],
+      [
+       -95.3187759,
+       38.9253124
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "7.3",
+    "area_yd2": 152,
+    "confidence": "medium",
+    "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3185799,
+       38.9252125
+      ],
+      [
+       -95.3185669,
+       38.9252013
+      ],
+      [
+       -95.3185581,
+       38.925188
+      ],
+      [
+       -95.3185541,
+       38.9251732
+      ],
+      [
+       -95.318555,
+       38.9251582
+      ],
+      [
+       -95.3185609,
+       38.9251439
+      ],
+      [
+       -95.3185714,
+       38.9251312
+      ],
+      [
+       -95.3185857,
+       38.9251211
+      ],
+      [
+       -95.3186028,
+       38.9251143
+      ],
+      [
+       -95.3186216,
+       38.9251111
+      ],
+      [
+       -95.3186409,
+       38.9251118
+      ],
+      [
+       -95.3186592,
+       38.9251165
+      ],
+      [
+       -95.3186754,
+       38.9251246
+      ],
+      [
+       -95.3186883,
+       38.9251358
+      ],
+      [
+       -95.3186971,
+       38.9251492
+      ],
+      [
+       -95.3187012,
+       38.9251639
+      ],
+      [
+       -95.3187002,
+       38.9251789
+      ],
+      [
+       -95.3186943,
+       38.9251932
+      ],
+      [
+       -95.3186839,
+       38.9252059
+      ],
+      [
+       -95.3186696,
+       38.925216
+      ],
+      [
+       -95.3186525,
+       38.9252229
+      ],
+      [
+       -95.3186336,
+       38.925226
+      ],
+      [
+       -95.3186144,
+       38.9252253
+      ],
+      [
+       -95.318596,
+       38.9252207
+      ],
+      [
+       -95.3185799,
+       38.9252125
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "7.4",
+    "area_yd2": 152,
+    "confidence": "medium",
+    "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3184038,
+       38.9251565
+      ],
+      [
+       -95.3183909,
+       38.9251453
+      ],
+      [
+       -95.3183821,
+       38.9251319
+      ],
+      [
+       -95.318378,
+       38.9251172
+      ],
+      [
+       -95.318379,
+       38.9251022
+      ],
+      [
+       -95.3183849,
+       38.9250879
+      ],
+      [
+       -95.3183954,
+       38.9250752
+      ],
+      [
+       -95.3184096,
+       38.9250651
+      ],
+      [
+       -95.3184268,
+       38.9250582
+      ],
+      [
+       -95.3184456,
+       38.9250551
+      ],
+      [
+       -95.3184649,
+       38.9250558
+      ],
+      [
+       -95.3184832,
+       38.9250604
+      ],
+      [
+       -95.3184994,
+       38.9250686
+      ],
+      [
+       -95.3185123,
+       38.9250798
+      ],
+      [
+       -95.3185211,
+       38.9250932
+      ],
+      [
+       -95.3185252,
+       38.9251079
+      ],
+      [
+       -95.3185242,
+       38.9251229
+      ],
+      [
+       -95.3185183,
+       38.9251372
+      ],
+      [
+       -95.3185079,
+       38.9251499
+      ],
+      [
+       -95.3184936,
+       38.92516
+      ],
+      [
+       -95.3184764,
+       38.9251668
+      ],
+      [
+       -95.3184576,
+       38.92517
+      ],
+      [
+       -95.3184384,
+       38.9251693
+      ],
+      [
+       -95.31842,
+       38.9251646
+      ],
+      [
+       -95.3184038,
+       38.9251565
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "7",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "7.5",
+    "area_yd2": 78,
+    "confidence": "medium",
+    "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3181627,
+       38.9251408
+      ],
+      [
+       -95.3181535,
+       38.9251328
+      ],
+      [
+       -95.3181472,
+       38.9251233
+      ],
+      [
+       -95.3181443,
+       38.9251128
+      ],
+      [
+       -95.318145,
+       38.925102
+      ],
+      [
+       -95.3181492,
+       38.9250918
+      ],
+      [
+       -95.3181567,
+       38.9250828
+      ],
+      [
+       -95.3181669,
+       38.9250755
+      ],
+      [
+       -95.3181791,
+       38.9250706
+      ],
+      [
+       -95.3181926,
+       38.9250684
+      ],
+      [
+       -95.3182063,
+       38.9250689
+      ],
+      [
+       -95.3182194,
+       38.9250722
+      ],
+      [
+       -95.318231,
+       38.925078
+      ],
+      [
+       -95.3182402,
+       38.925086
+      ],
+      [
+       -95.3182465,
+       38.9250956
+      ],
+      [
+       -95.3182494,
+       38.9251061
+      ],
+      [
+       -95.3182487,
+       38.9251168
+      ],
+      [
+       -95.3182445,
+       38.925127
+      ],
+      [
+       -95.318237,
+       38.9251361
+      ],
+      [
+       -95.3182268,
+       38.9251433
+      ],
+      [
+       -95.3182146,
+       38.9251482
+      ],
+      [
+       -95.3182011,
+       38.9251505
+      ],
+      [
+       -95.3181874,
+       38.9251499
+      ],
+      [
+       -95.3181743,
+       38.9251466
+      ],
+      [
+       -95.3181627,
+       38.9251408
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "9.0",
+    "area_yd2": 335,
+    "confidence": "medium",
+    "evidence": "lidar HAG crowns right of the fairway (visible red in CIR, both photo years) not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3250398,
+       38.9243172
+      ],
+      [
+       -95.3250332,
+       38.9243416
+      ],
+      [
+       -95.3250206,
+       38.924363
+      ],
+      [
+       -95.3250029,
+       38.9243801
+      ],
+      [
+       -95.3249813,
+       38.9243916
+      ],
+      [
+       -95.3249572,
+       38.9243967
+      ],
+      [
+       -95.3249324,
+       38.9243952
+      ],
+      [
+       -95.3249084,
+       38.924387
+      ],
+      [
+       -95.324887,
+       38.9243728
+      ],
+      [
+       -95.3248695,
+       38.9243535
+      ],
+      [
+       -95.3248572,
+       38.9243305
+      ],
+      [
+       -95.324851,
+       38.9243052
+      ],
+      [
+       -95.3248511,
+       38.9242795
+      ],
+      [
+       -95.3248577,
+       38.9242551
+      ],
+      [
+       -95.3248703,
+       38.9242336
+      ],
+      [
+       -95.324888,
+       38.9242166
+      ],
+      [
+       -95.3249096,
+       38.9242051
+      ],
+      [
+       -95.3249337,
+       38.9241999
+      ],
+      [
+       -95.3249585,
+       38.9242015
+      ],
+      [
+       -95.3249825,
+       38.9242097
+      ],
+      [
+       -95.3250039,
+       38.9242239
+      ],
+      [
+       -95.3250214,
+       38.9242432
+      ],
+      [
+       -95.3250337,
+       38.9242662
+      ],
+      [
+       -95.3250399,
+       38.9242914
+      ],
+      [
+       -95.3250398,
+       38.9243172
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "9.1",
+    "area_yd2": 93,
+    "confidence": "medium",
+    "evidence": "lidar HAG crowns right of the fairway (visible red in CIR, both photo years) not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3250836,
+       38.9244975
+      ],
+      [
+       -95.3250785,
+       38.9245078
+      ],
+      [
+       -95.3250695,
+       38.9245171
+      ],
+      [
+       -95.3250572,
+       38.9245245
+      ],
+      [
+       -95.3250425,
+       38.9245297
+      ],
+      [
+       -95.3250264,
+       38.9245323
+      ],
+      [
+       -95.3250099,
+       38.9245321
+      ],
+      [
+       -95.3249942,
+       38.9245291
+      ],
+      [
+       -95.3249804,
+       38.9245236
+      ],
+      [
+       -95.3249694,
+       38.9245158
+      ],
+      [
+       -95.3249619,
+       38.9245064
+      ],
+      [
+       -95.3249585,
+       38.9244959
+      ],
+      [
+       -95.3249594,
+       38.9244851
+      ],
+      [
+       -95.3249645,
+       38.9244748
+      ],
+      [
+       -95.3249735,
+       38.9244656
+      ],
+      [
+       -95.3249857,
+       38.9244581
+      ],
+      [
+       -95.3250004,
+       38.9244529
+      ],
+      [
+       -95.3250166,
+       38.9244503
+      ],
+      [
+       -95.325033,
+       38.9244505
+      ],
+      [
+       -95.3250487,
+       38.9244535
+      ],
+      [
+       -95.3250625,
+       38.9244591
+      ],
+      [
+       -95.3250736,
+       38.9244668
+      ],
+      [
+       -95.325081,
+       38.9244763
+      ],
+      [
+       -95.3250845,
+       38.9244867
+      ],
+      [
+       -95.3250836,
+       38.9244975
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "9.2",
+    "area_yd2": 78,
+    "confidence": "medium",
+    "evidence": "lidar HAG crowns right of the fairway (visible red in CIR, both photo years) not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3250276,
+       38.9250889
+      ],
+      [
+       -95.3250236,
+       38.9250991
+      ],
+      [
+       -95.3250162,
+       38.9251082
+      ],
+      [
+       -95.3250061,
+       38.9251156
+      ],
+      [
+       -95.324994,
+       38.9251206
+      ],
+      [
+       -95.3249805,
+       38.925123
+      ],
+      [
+       -95.3249668,
+       38.9251226
+      ],
+      [
+       -95.3249536,
+       38.9251194
+      ],
+      [
+       -95.324942,
+       38.9251137
+      ],
+      [
+       -95.3249326,
+       38.9251058
+      ],
+      [
+       -95.3249262,
+       38.9250963
+      ],
+      [
+       -95.3249232,
+       38.9250858
+      ],
+      [
+       -95.3249237,
+       38.9250751
+      ],
+      [
+       -95.3249277,
+       38.9250648
+      ],
+      [
+       -95.3249351,
+       38.9250557
+      ],
+      [
+       -95.3249452,
+       38.9250484
+      ],
+      [
+       -95.3249573,
+       38.9250434
+      ],
+      [
+       -95.3249707,
+       38.925041
+      ],
+      [
+       -95.3249845,
+       38.9250414
+      ],
+      [
+       -95.3249976,
+       38.9250445
+      ],
+      [
+       -95.3250093,
+       38.9250503
+      ],
+      [
+       -95.3250186,
+       38.9250581
+      ],
+      [
+       -95.3250251,
+       38.9250677
+      ],
+      [
+       -95.3250281,
+       38.9250781
+      ],
+      [
+       -95.3250276,
+       38.9250889
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "10.0",
+    "area_yd2": 307,
+    "confidence": "medium",
+    "evidence": "single crowns in/next to the landing zone (both years, lidar HAG 220-250) not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3208066,
+       38.9233218
+      ],
+      [
+       -95.3208352,
+       38.9233275
+      ],
+      [
+       -95.3208603,
+       38.9233379
+      ],
+      [
+       -95.3208802,
+       38.9233521
+      ],
+      [
+       -95.3208935,
+       38.9233692
+      ],
+      [
+       -95.3208993,
+       38.9233881
+      ],
+      [
+       -95.3208973,
+       38.9234074
+      ],
+      [
+       -95.3208875,
+       38.923426
+      ],
+      [
+       -95.3208706,
+       38.9234424
+      ],
+      [
+       -95.3208478,
+       38.9234556
+      ],
+      [
+       -95.3208206,
+       38.9234646
+      ],
+      [
+       -95.320791,
+       38.9234689
+      ],
+      [
+       -95.3207608,
+       38.9234682
+      ],
+      [
+       -95.3207322,
+       38.9234625
+      ],
+      [
+       -95.3207071,
+       38.9234522
+      ],
+      [
+       -95.3206872,
+       38.923438
+      ],
+      [
+       -95.3206739,
+       38.9234209
+      ],
+      [
+       -95.320668,
+       38.923402
+      ],
+      [
+       -95.3206701,
+       38.9233826
+      ],
+      [
+       -95.3206799,
+       38.9233641
+      ],
+      [
+       -95.3206968,
+       38.9233477
+      ],
+      [
+       -95.3207196,
+       38.9233345
+      ],
+      [
+       -95.3207467,
+       38.9233254
+      ],
+      [
+       -95.3207764,
+       38.9233211
+      ],
+      [
+       -95.3208066,
+       38.9233218
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "10.1",
+    "area_yd2": 149,
+    "confidence": "medium",
+    "evidence": "single crowns in/next to the landing zone (both years, lidar HAG 220-250) not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3206471,
+       38.9231819
+      ],
+      [
+       -95.3206679,
+       38.9231856
+      ],
+      [
+       -95.3206861,
+       38.9231924
+      ],
+      [
+       -95.3207005,
+       38.9232018
+      ],
+      [
+       -95.32071,
+       38.9232132
+      ],
+      [
+       -95.3207141,
+       38.9232257
+      ],
+      [
+       -95.3207125,
+       38.9232387
+      ],
+      [
+       -95.3207053,
+       38.923251
+      ],
+      [
+       -95.3206929,
+       38.9232621
+      ],
+      [
+       -95.3206763,
+       38.9232709
+      ],
+      [
+       -95.3206565,
+       38.9232771
+      ],
+      [
+       -95.3206349,
+       38.9232801
+      ],
+      [
+       -95.320613,
+       38.9232797
+      ],
+      [
+       -95.3205922,
+       38.923276
+      ],
+      [
+       -95.320574,
+       38.9232692
+      ],
+      [
+       -95.3205596,
+       38.9232598
+      ],
+      [
+       -95.3205501,
+       38.9232484
+      ],
+      [
+       -95.3205459,
+       38.9232358
+      ],
+      [
+       -95.3205476,
+       38.9232229
+      ],
+      [
+       -95.3205548,
+       38.9232105
+      ],
+      [
+       -95.3205671,
+       38.9231995
+      ],
+      [
+       -95.3205838,
+       38.9231906
+      ],
+      [
+       -95.3206036,
+       38.9231845
+      ],
+      [
+       -95.3206252,
+       38.9231815
+      ],
+      [
+       -95.3206471,
+       38.9231819
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "13",
+    "op": "add",
+    "lie": "native",
+    "edit": "13.0",
+    "area_yd2": 4251,
+    "keepout_clipped_yd2": 64,
+    "confidence": "medium",
+    "evidence": "2021: curving edge of a darker mottled area with shrubs from (+35,200) to (+40,330); 2023 the same area coarse, tufted, with the same shrubs; mown strip ~15 yds wide between it and the fairway"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3135959,
+       38.9212223
+      ],
+      [
+       -95.3140965,
+       38.9213535
+      ],
+      [
+       -95.3140324,
+       38.921539
+      ],
+      [
+       -95.3139098,
+       38.9215452
+      ],
+      [
+       -95.3139058,
+       38.9215455
+      ],
+      [
+       -95.3138244,
+       38.921552
+      ],
+      [
+       -95.3126909,
+       38.9213129
+      ],
+      [
+       -95.3127843,
+       38.9210426
+      ],
+      [
+       -95.3131942,
+       38.9211205
+      ],
+      [
+       -95.3135959,
+       38.9212223
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "erase",
+    "lie": "water",
+    "edit": "14.0",
+    "area_yd2": 19600,
+    "lies": [
+     "water"
+    ],
+    "confidence": "high",
+    "evidence": "the auto 'water' strip is a grassed ditch: green/pink grass in 2021, 2023 and CIR, no open water in either year"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3180946,
+       38.919763
+      ],
+      [
+       -95.3208725,
+       38.9189828
+      ],
+      [
+       -95.3211222,
+       38.9195253
+      ],
+      [
+       -95.3183443,
+       38.9203055
+      ],
+      [
+       -95.3180946,
+       38.919763
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "native",
+    "edit": "14.1",
+    "area_yd2": 3350,
+    "confidence": "medium",
+    "evidence": "2023 tan, coarse, tufted beyond a line ~x -35; 2021 darker mottled from ~-38; mown rough ~18 yds between it and the fairway"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3196307,
+       38.9187189
+      ],
+      [
+       -95.3206228,
+       38.9184402
+      ],
+      [
+       -95.320744,
+       38.9187037
+      ],
+      [
+       -95.320248,
+       38.9188431
+      ],
+      [
+       -95.3197448,
+       38.9189669
+      ],
+      [
+       -95.3196307,
+       38.9187189
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.2",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3195183,
+       38.9196683
+      ],
+      [
+       -95.3195073,
+       38.9196679
+      ],
+      [
+       -95.3194968,
+       38.9196652
+      ],
+      [
+       -95.3194875,
+       38.9196606
+      ],
+      [
+       -95.3194801,
+       38.9196542
+      ],
+      [
+       -95.3194751,
+       38.9196466
+      ],
+      [
+       -95.3194727,
+       38.9196382
+      ],
+      [
+       -95.3194733,
+       38.9196296
+      ],
+      [
+       -95.3194766,
+       38.9196214
+      ],
+      [
+       -95.3194826,
+       38.9196142
+      ],
+      [
+       -95.3194907,
+       38.9196084
+      ],
+      [
+       -95.3195005,
+       38.9196044
+      ],
+      [
+       -95.3195113,
+       38.9196026
+      ],
+      [
+       -95.3195223,
+       38.919603
+      ],
+      [
+       -95.3195327,
+       38.9196056
+      ],
+      [
+       -95.319542,
+       38.9196103
+      ],
+      [
+       -95.3195494,
+       38.9196167
+      ],
+      [
+       -95.3195545,
+       38.9196243
+      ],
+      [
+       -95.3195568,
+       38.9196327
+      ],
+      [
+       -95.3195563,
+       38.9196413
+      ],
+      [
+       -95.3195529,
+       38.9196495
+      ],
+      [
+       -95.319547,
+       38.9196567
+      ],
+      [
+       -95.3195388,
+       38.9196625
+      ],
+      [
+       -95.319529,
+       38.9196664
+      ],
+      [
+       -95.3195183,
+       38.9196683
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.3",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3193433,
+       38.9197262
+      ],
+      [
+       -95.3193323,
+       38.9197258
+      ],
+      [
+       -95.3193218,
+       38.9197232
+      ],
+      [
+       -95.3193125,
+       38.9197185
+      ],
+      [
+       -95.3193051,
+       38.9197121
+      ],
+      [
+       -95.3193001,
+       38.9197045
+      ],
+      [
+       -95.3192977,
+       38.9196961
+      ],
+      [
+       -95.3192983,
+       38.9196875
+      ],
+      [
+       -95.3193016,
+       38.9196793
+      ],
+      [
+       -95.3193076,
+       38.9196721
+      ],
+      [
+       -95.3193157,
+       38.9196663
+      ],
+      [
+       -95.3193255,
+       38.9196624
+      ],
+      [
+       -95.3193362,
+       38.9196605
+      ],
+      [
+       -95.3193472,
+       38.9196609
+      ],
+      [
+       -95.3193577,
+       38.9196636
+      ],
+      [
+       -95.319367,
+       38.9196682
+      ],
+      [
+       -95.3193744,
+       38.9196746
+      ],
+      [
+       -95.3193794,
+       38.9196822
+      ],
+      [
+       -95.3193818,
+       38.9196906
+      ],
+      [
+       -95.3193813,
+       38.9196992
+      ],
+      [
+       -95.3193779,
+       38.9197074
+      ],
+      [
+       -95.319372,
+       38.9197146
+      ],
+      [
+       -95.3193638,
+       38.9197204
+      ],
+      [
+       -95.319354,
+       38.9197244
+      ],
+      [
+       -95.3193433,
+       38.9197262
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.4",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3192532,
+       38.9197252
+      ],
+      [
+       -95.3192422,
+       38.9197248
+      ],
+      [
+       -95.3192317,
+       38.9197222
+      ],
+      [
+       -95.3192225,
+       38.9197176
+      ],
+      [
+       -95.3192151,
+       38.9197112
+      ],
+      [
+       -95.31921,
+       38.9197035
+      ],
+      [
+       -95.3192077,
+       38.9196951
+      ],
+      [
+       -95.3192082,
+       38.9196866
+      ],
+      [
+       -95.3192115,
+       38.9196784
+      ],
+      [
+       -95.3192175,
+       38.9196711
+      ],
+      [
+       -95.3192256,
+       38.9196653
+      ],
+      [
+       -95.3192354,
+       38.9196614
+      ],
+      [
+       -95.3192462,
+       38.9196596
+      ],
+      [
+       -95.3192572,
+       38.91966
+      ],
+      [
+       -95.3192677,
+       38.9196626
+      ],
+      [
+       -95.3192769,
+       38.9196672
+      ],
+      [
+       -95.3192843,
+       38.9196736
+      ],
+      [
+       -95.3192894,
+       38.9196813
+      ],
+      [
+       -95.3192917,
+       38.9196897
+      ],
+      [
+       -95.3192912,
+       38.9196982
+      ],
+      [
+       -95.3192878,
+       38.9197064
+      ],
+      [
+       -95.3192819,
+       38.9197137
+      ],
+      [
+       -95.3192737,
+       38.9197195
+      ],
+      [
+       -95.319264,
+       38.9197234
+      ],
+      [
+       -95.3192532,
+       38.9197252
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.5",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3190647,
+       38.9197782
+      ],
+      [
+       -95.3190537,
+       38.9197778
+      ],
+      [
+       -95.3190432,
+       38.9197751
+      ],
+      [
+       -95.319034,
+       38.9197705
+      ],
+      [
+       -95.3190266,
+       38.9197641
+      ],
+      [
+       -95.3190215,
+       38.9197565
+      ],
+      [
+       -95.3190192,
+       38.9197481
+      ],
+      [
+       -95.3190197,
+       38.9197395
+      ],
+      [
+       -95.319023,
+       38.9197313
+      ],
+      [
+       -95.319029,
+       38.9197241
+      ],
+      [
+       -95.3190371,
+       38.9197183
+      ],
+      [
+       -95.3190469,
+       38.9197143
+      ],
+      [
+       -95.3190577,
+       38.9197125
+      ],
+      [
+       -95.3190687,
+       38.9197129
+      ],
+      [
+       -95.3190792,
+       38.9197155
+      ],
+      [
+       -95.3190884,
+       38.9197202
+      ],
+      [
+       -95.3190958,
+       38.9197266
+      ],
+      [
+       -95.3191009,
+       38.9197342
+      ],
+      [
+       -95.3191032,
+       38.9197426
+      ],
+      [
+       -95.3191027,
+       38.9197512
+      ],
+      [
+       -95.3190993,
+       38.9197594
+      ],
+      [
+       -95.3190934,
+       38.9197666
+      ],
+      [
+       -95.3190852,
+       38.9197724
+      ],
+      [
+       -95.3190755,
+       38.9197763
+      ],
+      [
+       -95.3190647,
+       38.9197782
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.6",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3189306,
+       38.9197546
+      ],
+      [
+       -95.3189196,
+       38.9197542
+      ],
+      [
+       -95.3189091,
+       38.9197515
+      ],
+      [
+       -95.3188999,
+       38.9197469
+      ],
+      [
+       -95.3188925,
+       38.9197405
+      ],
+      [
+       -95.3188874,
+       38.9197329
+      ],
+      [
+       -95.3188851,
+       38.9197245
+      ],
+      [
+       -95.3188856,
+       38.9197159
+      ],
+      [
+       -95.3188889,
+       38.9197077
+      ],
+      [
+       -95.3188949,
+       38.9197005
+      ],
+      [
+       -95.318903,
+       38.9196947
+      ],
+      [
+       -95.3189128,
+       38.9196907
+      ],
+      [
+       -95.3189236,
+       38.9196889
+      ],
+      [
+       -95.3189346,
+       38.9196893
+      ],
+      [
+       -95.3189451,
+       38.9196919
+      ],
+      [
+       -95.3189543,
+       38.9196966
+      ],
+      [
+       -95.3189617,
+       38.919703
+      ],
+      [
+       -95.3189668,
+       38.9197106
+      ],
+      [
+       -95.3189691,
+       38.919719
+      ],
+      [
+       -95.3189686,
+       38.9197276
+      ],
+      [
+       -95.3189652,
+       38.9197358
+      ],
+      [
+       -95.3189593,
+       38.919743
+      ],
+      [
+       -95.3189511,
+       38.9197488
+      ],
+      [
+       -95.3189414,
+       38.9197527
+      ],
+      [
+       -95.3189306,
+       38.9197546
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.7",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3187854,
+       38.9198041
+      ],
+      [
+       -95.3187744,
+       38.9198037
+      ],
+      [
+       -95.3187639,
+       38.9198011
+      ],
+      [
+       -95.3187546,
+       38.9197964
+      ],
+      [
+       -95.3187472,
+       38.9197901
+      ],
+      [
+       -95.3187422,
+       38.9197824
+      ],
+      [
+       -95.3187398,
+       38.919774
+      ],
+      [
+       -95.3187403,
+       38.9197654
+      ],
+      [
+       -95.3187437,
+       38.9197573
+      ],
+      [
+       -95.3187496,
+       38.91975
+      ],
+      [
+       -95.3187578,
+       38.9197442
+      ],
+      [
+       -95.3187676,
+       38.9197403
+      ],
+      [
+       -95.3187783,
+       38.9197385
+      ],
+      [
+       -95.3187893,
+       38.9197389
+      ],
+      [
+       -95.3187998,
+       38.9197415
+      ],
+      [
+       -95.3188091,
+       38.9197461
+      ],
+      [
+       -95.3188165,
+       38.9197525
+      ],
+      [
+       -95.3188215,
+       38.9197601
+      ],
+      [
+       -95.3188239,
+       38.9197686
+      ],
+      [
+       -95.3188233,
+       38.9197771
+      ],
+      [
+       -95.31882,
+       38.9197853
+      ],
+      [
+       -95.318814,
+       38.9197926
+      ],
+      [
+       -95.3188059,
+       38.9197984
+      ],
+      [
+       -95.3187961,
+       38.9198023
+      ],
+      [
+       -95.3187854,
+       38.9198041
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.8",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3186742,
+       38.9198791
+      ],
+      [
+       -95.3186632,
+       38.9198787
+      ],
+      [
+       -95.3186527,
+       38.9198761
+      ],
+      [
+       -95.3186435,
+       38.9198714
+      ],
+      [
+       -95.3186361,
+       38.9198651
+      ],
+      [
+       -95.318631,
+       38.9198574
+      ],
+      [
+       -95.3186287,
+       38.919849
+      ],
+      [
+       -95.3186292,
+       38.9198404
+      ],
+      [
+       -95.3186326,
+       38.9198322
+      ],
+      [
+       -95.3186385,
+       38.919825
+      ],
+      [
+       -95.3186467,
+       38.9198192
+      ],
+      [
+       -95.3186564,
+       38.9198153
+      ],
+      [
+       -95.3186672,
+       38.9198134
+      ],
+      [
+       -95.3186782,
+       38.9198139
+      ],
+      [
+       -95.3186887,
+       38.9198165
+      ],
+      [
+       -95.3186979,
+       38.9198211
+      ],
+      [
+       -95.3187053,
+       38.9198275
+      ],
+      [
+       -95.3187104,
+       38.9198351
+      ],
+      [
+       -95.3187127,
+       38.9198435
+      ],
+      [
+       -95.3187122,
+       38.9198521
+      ],
+      [
+       -95.3187089,
+       38.9198603
+      ],
+      [
+       -95.3187029,
+       38.9198675
+      ],
+      [
+       -95.3186948,
+       38.9198733
+      ],
+      [
+       -95.318685,
+       38.9198773
+      ],
+      [
+       -95.3186742,
+       38.9198791
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.9",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3186127,
+       38.9199401
+      ],
+      [
+       -95.3186017,
+       38.9199397
+      ],
+      [
+       -95.3185912,
+       38.9199371
+      ],
+      [
+       -95.3185819,
+       38.9199325
+      ],
+      [
+       -95.3185745,
+       38.9199261
+      ],
+      [
+       -95.3185695,
+       38.9199185
+      ],
+      [
+       -95.3185672,
+       38.9199101
+      ],
+      [
+       -95.3185677,
+       38.9199015
+      ],
+      [
+       -95.318571,
+       38.9198933
+      ],
+      [
+       -95.318577,
+       38.919886
+      ],
+      [
+       -95.3185851,
+       38.9198803
+      ],
+      [
+       -95.3185949,
+       38.9198763
+      ],
+      [
+       -95.3186057,
+       38.9198745
+      ],
+      [
+       -95.3186167,
+       38.9198749
+      ],
+      [
+       -95.3186271,
+       38.9198775
+      ],
+      [
+       -95.3186364,
+       38.9198822
+      ],
+      [
+       -95.3186438,
+       38.9198885
+      ],
+      [
+       -95.3186489,
+       38.9198962
+      ],
+      [
+       -95.3186512,
+       38.9199046
+      ],
+      [
+       -95.3186507,
+       38.9199132
+      ],
+      [
+       -95.3186473,
+       38.9199214
+      ],
+      [
+       -95.3186414,
+       38.9199286
+      ],
+      [
+       -95.3186332,
+       38.9199344
+      ],
+      [
+       -95.3186234,
+       38.9199383
+      ],
+      [
+       -95.3186127,
+       38.9199401
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.10",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3184694,
+       38.9199454
+      ],
+      [
+       -95.3184584,
+       38.919945
+      ],
+      [
+       -95.318448,
+       38.9199423
+      ],
+      [
+       -95.3184387,
+       38.9199377
+      ],
+      [
+       -95.3184313,
+       38.9199313
+      ],
+      [
+       -95.3184263,
+       38.9199237
+      ],
+      [
+       -95.3184239,
+       38.9199153
+      ],
+      [
+       -95.3184244,
+       38.9199067
+      ],
+      [
+       -95.3184278,
+       38.9198985
+      ],
+      [
+       -95.3184337,
+       38.9198913
+      ],
+      [
+       -95.3184419,
+       38.9198855
+      ],
+      [
+       -95.3184517,
+       38.9198815
+      ],
+      [
+       -95.3184624,
+       38.9198797
+      ],
+      [
+       -95.3184734,
+       38.9198801
+      ],
+      [
+       -95.3184839,
+       38.9198827
+      ],
+      [
+       -95.3184932,
+       38.9198874
+      ],
+      [
+       -95.3185006,
+       38.9198938
+      ],
+      [
+       -95.3185056,
+       38.9199014
+      ],
+      [
+       -95.318508,
+       38.9199098
+      ],
+      [
+       -95.3185074,
+       38.9199184
+      ],
+      [
+       -95.3185041,
+       38.9199266
+      ],
+      [
+       -95.3184981,
+       38.9199338
+      ],
+      [
+       -95.31849,
+       38.9199396
+      ],
+      [
+       -95.3184802,
+       38.9199435
+      ],
+      [
+       -95.3184694,
+       38.9199454
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.11",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3183341,
+       38.9199921
+      ],
+      [
+       -95.3183231,
+       38.9199917
+      ],
+      [
+       -95.3183126,
+       38.9199891
+      ],
+      [
+       -95.3183034,
+       38.9199845
+      ],
+      [
+       -95.318296,
+       38.9199781
+      ],
+      [
+       -95.3182909,
+       38.9199704
+      ],
+      [
+       -95.3182886,
+       38.919962
+      ],
+      [
+       -95.3182891,
+       38.9199535
+      ],
+      [
+       -95.3182925,
+       38.9199453
+      ],
+      [
+       -95.3182984,
+       38.919938
+      ],
+      [
+       -95.3183066,
+       38.9199322
+      ],
+      [
+       -95.3183163,
+       38.9199283
+      ],
+      [
+       -95.3183271,
+       38.9199265
+      ],
+      [
+       -95.3183381,
+       38.9199269
+      ],
+      [
+       -95.3183486,
+       38.9199295
+      ],
+      [
+       -95.3183578,
+       38.9199341
+      ],
+      [
+       -95.3183652,
+       38.9199405
+      ],
+      [
+       -95.3183703,
+       38.9199482
+      ],
+      [
+       -95.3183726,
+       38.9199566
+      ],
+      [
+       -95.3183721,
+       38.9199652
+      ],
+      [
+       -95.3183688,
+       38.9199733
+      ],
+      [
+       -95.3183628,
+       38.9199806
+      ],
+      [
+       -95.3183547,
+       38.9199864
+      ],
+      [
+       -95.3183449,
+       38.9199903
+      ],
+      [
+       -95.3183341,
+       38.9199921
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "14",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "14.12",
+    "area_yd2": 112,
+    "confidence": "medium",
+    "evidence": "large crown by the lagoon corner, both years and CIR"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3193601,
+       38.9190207
+      ],
+      [
+       -95.3193436,
+       38.9190201
+      ],
+      [
+       -95.3193278,
+       38.9190162
+      ],
+      [
+       -95.319314,
+       38.9190092
+      ],
+      [
+       -95.3193028,
+       38.9189996
+      ],
+      [
+       -95.3192953,
+       38.9189882
+      ],
+      [
+       -95.3192918,
+       38.9189756
+      ],
+      [
+       -95.3192926,
+       38.9189627
+      ],
+      [
+       -95.3192976,
+       38.9189504
+      ],
+      [
+       -95.3193065,
+       38.9189395
+      ],
+      [
+       -95.3193187,
+       38.9189309
+      ],
+      [
+       -95.3193334,
+       38.9189249
+      ],
+      [
+       -95.3193495,
+       38.9189222
+      ],
+      [
+       -95.319366,
+       38.9189228
+      ],
+      [
+       -95.3193818,
+       38.9189267
+      ],
+      [
+       -95.3193957,
+       38.9189337
+      ],
+      [
+       -95.3194068,
+       38.9189433
+      ],
+      [
+       -95.3194143,
+       38.9189547
+      ],
+      [
+       -95.3194178,
+       38.9189673
+      ],
+      [
+       -95.3194171,
+       38.9189802
+      ],
+      [
+       -95.319412,
+       38.9189925
+      ],
+      [
+       -95.3194031,
+       38.9190034
+      ],
+      [
+       -95.3193909,
+       38.919012
+      ],
+      [
+       -95.3193762,
+       38.919018
+      ],
+      [
+       -95.3193601,
+       38.9190207
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.0",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.318302,
+       38.9200692
+      ],
+      [
+       -95.3183127,
+       38.9200712
+      ],
+      [
+       -95.3183224,
+       38.9200754
+      ],
+      [
+       -95.3183303,
+       38.9200814
+      ],
+      [
+       -95.318336,
+       38.9200887
+      ],
+      [
+       -95.318339,
+       38.920097
+      ],
+      [
+       -95.3183392,
+       38.9201056
+      ],
+      [
+       -95.3183366,
+       38.9201139
+      ],
+      [
+       -95.3183312,
+       38.9201215
+      ],
+      [
+       -95.3183236,
+       38.9201277
+      ],
+      [
+       -95.3183142,
+       38.9201321
+      ],
+      [
+       -95.3183036,
+       38.9201345
+      ],
+      [
+       -95.3182926,
+       38.9201346
+      ],
+      [
+       -95.3182819,
+       38.9201326
+      ],
+      [
+       -95.3182723,
+       38.9201284
+      ],
+      [
+       -95.3182643,
+       38.9201224
+      ],
+      [
+       -95.3182587,
+       38.9201151
+      ],
+      [
+       -95.3182556,
+       38.9201068
+      ],
+      [
+       -95.3182554,
+       38.9200982
+      ],
+      [
+       -95.3182581,
+       38.9200899
+      ],
+      [
+       -95.3182634,
+       38.9200823
+      ],
+      [
+       -95.318271,
+       38.9200761
+      ],
+      [
+       -95.3182805,
+       38.9200717
+      ],
+      [
+       -95.318291,
+       38.9200693
+      ],
+      [
+       -95.318302,
+       38.9200692
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.1",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3183697,
+       38.9199779
+      ],
+      [
+       -95.3183804,
+       38.91998
+      ],
+      [
+       -95.3183901,
+       38.9199841
+      ],
+      [
+       -95.318398,
+       38.9199901
+      ],
+      [
+       -95.3184037,
+       38.9199975
+      ],
+      [
+       -95.3184067,
+       38.9200057
+      ],
+      [
+       -95.3184069,
+       38.9200143
+      ],
+      [
+       -95.3184043,
+       38.9200227
+      ],
+      [
+       -95.3183989,
+       38.9200302
+      ],
+      [
+       -95.3183913,
+       38.9200364
+      ],
+      [
+       -95.3183819,
+       38.9200408
+      ],
+      [
+       -95.3183713,
+       38.9200432
+      ],
+      [
+       -95.3183603,
+       38.9200434
+      ],
+      [
+       -95.3183496,
+       38.9200413
+      ],
+      [
+       -95.31834,
+       38.9200371
+      ],
+      [
+       -95.318332,
+       38.9200312
+      ],
+      [
+       -95.3183264,
+       38.9200238
+      ],
+      [
+       -95.3183233,
+       38.9200156
+      ],
+      [
+       -95.3183231,
+       38.920007
+      ],
+      [
+       -95.3183258,
+       38.9199986
+      ],
+      [
+       -95.3183311,
+       38.9199911
+      ],
+      [
+       -95.3183387,
+       38.9199849
+      ],
+      [
+       -95.3183482,
+       38.9199804
+      ],
+      [
+       -95.3183587,
+       38.9199781
+      ],
+      [
+       -95.3183697,
+       38.9199779
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.2",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3184734,
+       38.9199074
+      ],
+      [
+       -95.3184841,
+       38.9199095
+      ],
+      [
+       -95.3184937,
+       38.9199136
+      ],
+      [
+       -95.3185017,
+       38.9199196
+      ],
+      [
+       -95.3185074,
+       38.919927
+      ],
+      [
+       -95.3185104,
+       38.9199352
+      ],
+      [
+       -95.3185106,
+       38.9199438
+      ],
+      [
+       -95.318508,
+       38.9199522
+      ],
+      [
+       -95.3185026,
+       38.9199597
+      ],
+      [
+       -95.318495,
+       38.9199659
+      ],
+      [
+       -95.3184856,
+       38.9199703
+      ],
+      [
+       -95.318475,
+       38.9199727
+      ],
+      [
+       -95.318464,
+       38.9199729
+      ],
+      [
+       -95.3184533,
+       38.9199708
+      ],
+      [
+       -95.3184437,
+       38.9199666
+      ],
+      [
+       -95.3184357,
+       38.9199607
+      ],
+      [
+       -95.31843,
+       38.9199533
+      ],
+      [
+       -95.318427,
+       38.919945
+      ],
+      [
+       -95.3184268,
+       38.9199365
+      ],
+      [
+       -95.3184294,
+       38.9199281
+      ],
+      [
+       -95.3184348,
+       38.9199206
+      ],
+      [
+       -95.3184424,
+       38.9199144
+      ],
+      [
+       -95.3184518,
+       38.9199099
+      ],
+      [
+       -95.3184624,
+       38.9199076
+      ],
+      [
+       -95.3184734,
+       38.9199074
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.3",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3186392,
+       38.9199379
+      ],
+      [
+       -95.3186499,
+       38.9199399
+      ],
+      [
+       -95.3186595,
+       38.9199441
+      ],
+      [
+       -95.3186675,
+       38.9199501
+      ],
+      [
+       -95.3186732,
+       38.9199574
+      ],
+      [
+       -95.3186762,
+       38.9199657
+      ],
+      [
+       -95.3186764,
+       38.9199743
+      ],
+      [
+       -95.3186738,
+       38.9199826
+      ],
+      [
+       -95.3186684,
+       38.9199902
+      ],
+      [
+       -95.3186608,
+       38.9199964
+      ],
+      [
+       -95.3186514,
+       38.9200008
+      ],
+      [
+       -95.3186408,
+       38.9200032
+      ],
+      [
+       -95.3186298,
+       38.9200033
+      ],
+      [
+       -95.3186191,
+       38.9200013
+      ],
+      [
+       -95.3186095,
+       38.9199971
+      ],
+      [
+       -95.3186015,
+       38.9199911
+      ],
+      [
+       -95.3185958,
+       38.9199838
+      ],
+      [
+       -95.3185928,
+       38.9199755
+      ],
+      [
+       -95.3185926,
+       38.9199669
+      ],
+      [
+       -95.3185952,
+       38.9199586
+      ],
+      [
+       -95.3186006,
+       38.919951
+      ],
+      [
+       -95.3186082,
+       38.9199448
+      ],
+      [
+       -95.3186176,
+       38.9199404
+      ],
+      [
+       -95.3186282,
+       38.919938
+      ],
+      [
+       -95.3186392,
+       38.9199379
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.4",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3187341,
+       38.9198767
+      ],
+      [
+       -95.3187447,
+       38.9198788
+      ],
+      [
+       -95.3187544,
+       38.919883
+      ],
+      [
+       -95.3187623,
+       38.9198889
+      ],
+      [
+       -95.318768,
+       38.9198963
+      ],
+      [
+       -95.318771,
+       38.9199046
+      ],
+      [
+       -95.3187712,
+       38.9199132
+      ],
+      [
+       -95.3187686,
+       38.9199215
+      ],
+      [
+       -95.3187633,
+       38.919929
+      ],
+      [
+       -95.3187556,
+       38.9199352
+      ],
+      [
+       -95.3187462,
+       38.9199397
+      ],
+      [
+       -95.3187356,
+       38.919942
+      ],
+      [
+       -95.3187246,
+       38.9199422
+      ],
+      [
+       -95.3187139,
+       38.9199401
+      ],
+      [
+       -95.3187043,
+       38.919936
+      ],
+      [
+       -95.3186964,
+       38.91993
+      ],
+      [
+       -95.3186907,
+       38.9199226
+      ],
+      [
+       -95.3186876,
+       38.9199144
+      ],
+      [
+       -95.3186874,
+       38.9199058
+      ],
+      [
+       -95.3186901,
+       38.9198974
+      ],
+      [
+       -95.3186954,
+       38.9198899
+      ],
+      [
+       -95.318703,
+       38.9198837
+      ],
+      [
+       -95.3187125,
+       38.9198793
+      ],
+      [
+       -95.318723,
+       38.9198769
+      ],
+      [
+       -95.3187341,
+       38.9198767
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.5",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3188586,
+       38.9198038
+      ],
+      [
+       -95.3188693,
+       38.9198059
+      ],
+      [
+       -95.3188789,
+       38.91981
+      ],
+      [
+       -95.3188868,
+       38.919816
+      ],
+      [
+       -95.3188925,
+       38.9198233
+      ],
+      [
+       -95.3188956,
+       38.9198316
+      ],
+      [
+       -95.3188958,
+       38.9198402
+      ],
+      [
+       -95.3188931,
+       38.9198486
+      ],
+      [
+       -95.3188878,
+       38.9198561
+      ],
+      [
+       -95.3188802,
+       38.9198623
+      ],
+      [
+       -95.3188707,
+       38.9198667
+      ],
+      [
+       -95.3188601,
+       38.9198691
+      ],
+      [
+       -95.3188491,
+       38.9198693
+      ],
+      [
+       -95.3188385,
+       38.9198672
+      ],
+      [
+       -95.3188288,
+       38.919863
+      ],
+      [
+       -95.3188209,
+       38.9198571
+      ],
+      [
+       -95.3188152,
+       38.9198497
+      ],
+      [
+       -95.3188122,
+       38.9198414
+      ],
+      [
+       -95.318812,
+       38.9198328
+      ],
+      [
+       -95.3188146,
+       38.9198245
+      ],
+      [
+       -95.3188199,
+       38.919817
+      ],
+      [
+       -95.3188276,
+       38.9198108
+      ],
+      [
+       -95.318837,
+       38.9198063
+      ],
+      [
+       -95.3188476,
+       38.9198039
+      ],
+      [
+       -95.3188586,
+       38.9198038
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.6",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3189638,
+       38.9197414
+      ],
+      [
+       -95.3189745,
+       38.9197435
+      ],
+      [
+       -95.3189842,
+       38.9197477
+      ],
+      [
+       -95.3189921,
+       38.9197536
+      ],
+      [
+       -95.3189978,
+       38.919761
+      ],
+      [
+       -95.3190008,
+       38.9197692
+      ],
+      [
+       -95.319001,
+       38.9197778
+      ],
+      [
+       -95.3189984,
+       38.9197862
+      ],
+      [
+       -95.318993,
+       38.9197937
+      ],
+      [
+       -95.3189854,
+       38.9197999
+      ],
+      [
+       -95.318976,
+       38.9198044
+      ],
+      [
+       -95.3189654,
+       38.9198067
+      ],
+      [
+       -95.3189544,
+       38.9198069
+      ],
+      [
+       -95.3189437,
+       38.9198048
+      ],
+      [
+       -95.3189341,
+       38.9198007
+      ],
+      [
+       -95.3189261,
+       38.9197947
+      ],
+      [
+       -95.3189205,
+       38.9197873
+      ],
+      [
+       -95.3189174,
+       38.9197791
+      ],
+      [
+       -95.3189172,
+       38.9197705
+      ],
+      [
+       -95.3189199,
+       38.9197621
+      ],
+      [
+       -95.3189252,
+       38.9197546
+      ],
+      [
+       -95.3189328,
+       38.9197484
+      ],
+      [
+       -95.3189423,
+       38.919744
+      ],
+      [
+       -95.3189528,
+       38.9197416
+      ],
+      [
+       -95.3189638,
+       38.9197414
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.7",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3191208,
+       38.9197813
+      ],
+      [
+       -95.3191315,
+       38.9197833
+      ],
+      [
+       -95.3191411,
+       38.9197875
+      ],
+      [
+       -95.319149,
+       38.9197935
+      ],
+      [
+       -95.3191547,
+       38.9198008
+      ],
+      [
+       -95.3191578,
+       38.9198091
+      ],
+      [
+       -95.319158,
+       38.9198177
+      ],
+      [
+       -95.3191553,
+       38.919826
+      ],
+      [
+       -95.31915,
+       38.9198336
+      ],
+      [
+       -95.3191424,
+       38.9198397
+      ],
+      [
+       -95.3191329,
+       38.9198442
+      ],
+      [
+       -95.3191223,
+       38.9198466
+      ],
+      [
+       -95.3191113,
+       38.9198467
+      ],
+      [
+       -95.3191007,
+       38.9198447
+      ],
+      [
+       -95.319091,
+       38.9198405
+      ],
+      [
+       -95.3190831,
+       38.9198345
+      ],
+      [
+       -95.3190774,
+       38.9198272
+      ],
+      [
+       -95.3190744,
+       38.9198189
+      ],
+      [
+       -95.3190742,
+       38.9198103
+      ],
+      [
+       -95.3190768,
+       38.919802
+      ],
+      [
+       -95.3190821,
+       38.9197944
+      ],
+      [
+       -95.3190898,
+       38.9197882
+      ],
+      [
+       -95.3190992,
+       38.9197838
+      ],
+      [
+       -95.3191098,
+       38.9197814
+      ],
+      [
+       -95.3191208,
+       38.9197813
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.8",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3192532,
+       38.919749
+      ],
+      [
+       -95.3192639,
+       38.9197511
+      ],
+      [
+       -95.3192735,
+       38.9197552
+      ],
+      [
+       -95.3192814,
+       38.9197612
+      ],
+      [
+       -95.3192871,
+       38.9197686
+      ],
+      [
+       -95.3192901,
+       38.9197768
+      ],
+      [
+       -95.3192904,
+       38.9197854
+      ],
+      [
+       -95.3192877,
+       38.9197938
+      ],
+      [
+       -95.3192824,
+       38.9198013
+      ],
+      [
+       -95.3192747,
+       38.9198075
+      ],
+      [
+       -95.3192653,
+       38.9198119
+      ],
+      [
+       -95.3192547,
+       38.9198143
+      ],
+      [
+       -95.3192437,
+       38.9198145
+      ],
+      [
+       -95.319233,
+       38.9198124
+      ],
+      [
+       -95.3192234,
+       38.9198083
+      ],
+      [
+       -95.3192155,
+       38.9198023
+      ],
+      [
+       -95.3192098,
+       38.9197949
+      ],
+      [
+       -95.3192067,
+       38.9197867
+      ],
+      [
+       -95.3192065,
+       38.9197781
+      ],
+      [
+       -95.3192092,
+       38.9197697
+      ],
+      [
+       -95.3192145,
+       38.9197622
+      ],
+      [
+       -95.3192222,
+       38.919756
+      ],
+      [
+       -95.3192316,
+       38.9197516
+      ],
+      [
+       -95.3192422,
+       38.9197492
+      ],
+      [
+       -95.3192532,
+       38.919749
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.9",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3193856,
+       38.9197168
+      ],
+      [
+       -95.3193962,
+       38.9197189
+      ],
+      [
+       -95.3194059,
+       38.919723
+      ],
+      [
+       -95.3194138,
+       38.919729
+      ],
+      [
+       -95.3194195,
+       38.9197363
+      ],
+      [
+       -95.3194225,
+       38.9197446
+      ],
+      [
+       -95.3194227,
+       38.9197532
+      ],
+      [
+       -95.3194201,
+       38.9197616
+      ],
+      [
+       -95.3194148,
+       38.9197691
+      ],
+      [
+       -95.3194071,
+       38.9197753
+      ],
+      [
+       -95.3193977,
+       38.9197797
+      ],
+      [
+       -95.3193871,
+       38.9197821
+      ],
+      [
+       -95.3193761,
+       38.9197823
+      ],
+      [
+       -95.3193654,
+       38.9197802
+      ],
+      [
+       -95.3193558,
+       38.919776
+      ],
+      [
+       -95.3193479,
+       38.9197701
+      ],
+      [
+       -95.3193422,
+       38.9197627
+      ],
+      [
+       -95.3193391,
+       38.9197544
+      ],
+      [
+       -95.3193389,
+       38.9197458
+      ],
+      [
+       -95.3193416,
+       38.9197375
+      ],
+      [
+       -95.3193469,
+       38.91973
+      ],
+      [
+       -95.3193545,
+       38.9197238
+      ],
+      [
+       -95.319364,
+       38.9197193
+      ],
+      [
+       -95.3193746,
+       38.9197169
+      ],
+      [
+       -95.3193856,
+       38.9197168
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.10",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3195476,
+       38.9196727
+      ],
+      [
+       -95.3195583,
+       38.9196748
+      ],
+      [
+       -95.319568,
+       38.9196789
+      ],
+      [
+       -95.3195759,
+       38.9196849
+      ],
+      [
+       -95.3195816,
+       38.9196923
+      ],
+      [
+       -95.3195846,
+       38.9197005
+      ],
+      [
+       -95.3195848,
+       38.9197091
+      ],
+      [
+       -95.3195822,
+       38.9197175
+      ],
+      [
+       -95.3195769,
+       38.919725
+      ],
+      [
+       -95.3195692,
+       38.9197312
+      ],
+      [
+       -95.3195598,
+       38.9197357
+      ],
+      [
+       -95.3195492,
+       38.919738
+      ],
+      [
+       -95.3195382,
+       38.9197382
+      ],
+      [
+       -95.3195275,
+       38.9197361
+      ],
+      [
+       -95.3195179,
+       38.919732
+      ],
+      [
+       -95.31951,
+       38.919726
+      ],
+      [
+       -95.3195043,
+       38.9197186
+      ],
+      [
+       -95.3195012,
+       38.9197104
+      ],
+      [
+       -95.319501,
+       38.9197018
+      ],
+      [
+       -95.3195037,
+       38.9196934
+      ],
+      [
+       -95.319509,
+       38.9196859
+      ],
+      [
+       -95.3195166,
+       38.9196797
+      ],
+      [
+       -95.3195261,
+       38.9196753
+      ],
+      [
+       -95.3195366,
+       38.9196729
+      ],
+      [
+       -95.3195476,
+       38.9196727
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "15",
+    "op": "add",
+    "lie": "recovery",
+    "edit": "15.11",
+    "area_yd2": 50,
+    "confidence": "medium",
+    "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.3198244,
+       38.9196152
+      ],
+      [
+       -95.3198351,
+       38.9196172
+      ],
+      [
+       -95.3198447,
+       38.9196214
+      ],
+      [
+       -95.3198527,
+       38.9196274
+      ],
+      [
+       -95.3198583,
+       38.9196347
+      ],
+      [
+       -95.3198614,
+       38.919643
+      ],
+      [
+       -95.3198616,
+       38.9196516
+      ],
+      [
+       -95.3198589,
+       38.9196599
+      ],
+      [
+       -95.3198536,
+       38.9196675
+      ],
+      [
+       -95.319846,
+       38.9196737
+      ],
+      [
+       -95.3198366,
+       38.9196781
+      ],
+      [
+       -95.319826,
+       38.9196805
+      ],
+      [
+       -95.319815,
+       38.9196806
+      ],
+      [
+       -95.3198043,
+       38.9196786
+      ],
+      [
+       -95.3197946,
+       38.9196744
+      ],
+      [
+       -95.3197867,
+       38.9196684
+      ],
+      [
+       -95.319781,
+       38.9196611
+      ],
+      [
+       -95.319778,
+       38.9196528
+      ],
+      [
+       -95.3197778,
+       38.9196442
+      ],
+      [
+       -95.3197804,
+       38.9196359
+      ],
+      [
+       -95.3197858,
+       38.9196283
+      ],
+      [
+       -95.3197934,
+       38.9196221
+      ],
+      [
+       -95.3198028,
+       38.9196177
+      ],
+      [
+       -95.3198134,
+       38.9196153
+      ],
+      [
+       -95.3198244,
+       38.9196152
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,1913 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "eagle_bend",
+ "corridor_set": "Gold",
+ "mapper": "mapper-eagle_bend-4",
+ "started": "2026-11-02T06:10Z",
+ "minutes": 58,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "parkland; lidar tree edge on the right matches the 2021 crowns",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the cart path / next hole in both years, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line in both years, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left: coarse streaky unmown grass behind a straight mowing line ~20 yds off the fairway (strong in 2023, darker mottled in 2021); right mown to cart path",
+   "long_grass": {
+    "L": "native: edit 0 (straight mowing line ~20 yds off the fairway; outside coarse/streaky with a ditch in 2023, darker mottled in 2021 and CIR)",
+    "R": "none: smooth mown rough from the fairway to the cart path and scattered trees in both years, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -38,
+        150
+       ],
+       [
+        -37,
+        250
+       ],
+       [
+        -37,
+        335
+       ],
+       [
+        -70,
+        335
+       ],
+       [
+        -70,
+        150
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "2023: crisp straight mowing line with coarse, streaky, tufted grass outside and a ditch through it; 2021: same line softer, darker mottled outside; ~20 yds off the package fairway; no lidar 0.5-2.5 m speckle (lidar likely leaf-off/dormant)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-2-R1",
+      "area_yd2": 350,
+      "p": 0.52,
+      "along": [
+       138,
+       172
+      ],
+      "gap_yd": 23.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "under/among the crowns right of the cart path at 140-170; mown rough in both years",
+      "shape": {
+       "poly": [
+        [
+         57,
+         171
+        ],
+        [
+         54,
+         138
+        ],
+        [
+         43,
+         139
+        ],
+        [
+         47,
+         172
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto OB in the woods right (no houses, river woods): erased; left drainage swale with scrub 15-25 yds out left as rough (uncertain)",
+   "long_grass": {
+    "L": "none: mown rough; a drainage swale with scrub at x -70..-45 (2023) is uncertain, not drawn",
+    "R": "none: woods right of the cart path"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       15,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "high",
+     "evidence": "OB line runs through continuous woods (river bottom) in both years; no houses, fence or road"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto OB through the woods right erased; trees right fine (+/-3 yds)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the cart path; swale 45+ yds out in both years, no second mowing line",
+    "R": "none: woods"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       30,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "high",
+     "evidence": "OB line inside continuous woods along the creek, no development visible in either year"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "auto OB in the woods right erased; water blobs under trees kept (creek)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the swale 50+ yds out in both years, no second mowing line",
+    "R": "none: woods beyond the cart path"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       15,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "high",
+     "evidence": "OB line runs through woods / creek bottom; no houses, fence or road in either year"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "added the left tree row (lidar crowns) that the auto trees dropped",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the tree row in both years, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the tree line in both years, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28,
+       316,
+       9,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -30,
+       292,
+       9,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -25,
+       262,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28,
+       240,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -27,
+       222,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -17,
+       200,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tree row along the left cart path missing from auto (only 2 small lidar crowns kept); placed on the lidar HAG crowns (2021 photo crowns ~8 yds further left, 2023 shadows further right)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-7-R1",
+      "area_yd2": 212,
+      "p": 0.65,
+      "along": [
+       176,
+       200
+      ],
+      "gap_yd": 26.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at the right tree line (crowns + shade) at 176-200; mown rough in 2021",
+      "shape": {
+       "poly": [
+        [
+         54,
+         200
+        ],
+        [
+         65,
+         182
+        ],
+        [
+         57,
+         176
+        ],
+        [
+         46,
+         193
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-7-R2",
+      "area_yd2": 354,
+      "p": 0.57,
+      "along": [
+       225,
+       254
+      ],
+      "gap_yd": 18.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mixed crowns and rough under the right tree line at 225-254; no mowing line in 2021",
+      "shape": {
+       "poly": [
+        [
+         64,
+         254
+        ],
+        [
+         70,
+         244
+        ],
+        [
+         60,
+         239
+        ],
+        [
+         65,
+         229
+        ],
+        [
+         55,
+         225
+        ],
+        [
+         46,
+         245
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "added 3 crowns right of the fairway; left lidar edge kept (photo crowns+shadows sit further left)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the woods in both years, no second mowing line",
+    "R": "none: smooth mown rough from the fairway to the cart path and trees in both years, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       33,
+       288,
+       9,
+       12
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar HAG crowns right of the fairway (visible red in CIR, both photo years) not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       38,
+       264,
+       6,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar HAG crowns right of the fairway (visible red in CIR, both photo years) not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       27,
+       193,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "lidar HAG crowns right of the fairway (visible red in CIR, both photo years) not in the auto trees"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-9-L1",
+      "area_yd2": 340,
+      "p": 0.56,
+      "along": [
+       342,
+       364
+      ],
+      "gap_yd": 17.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "under the woods left of the green approach (342-364); crowns and shade",
+      "shape": {
+       "poly": [
+        [
+         -14,
+         363
+        ],
+        [
+         -15,
+         342
+        ],
+        [
+         -26,
+         342
+        ],
+        [
+         -25,
+         353
+        ],
+        [
+         -36,
+         354
+        ],
+        [
+         -36,
+         364
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-9-R1",
+      "area_yd2": 243,
+      "p": 0.51,
+      "along": [
+       139,
+       162
+      ],
+      "gap_yd": 40.2,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "beyond the right cart path at 140-160; smooth mown rough 2021, tan smooth rough 2023",
+      "shape": {
+       "poly": [
+        [
+         60,
+         161
+        ],
+        [
+         59,
+         139
+        ],
+        [
+         48,
+         140
+        ],
+        [
+         49,
+         162
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "added the crown at the right edge of the fairway ~230 and one right of the path",
+   "long_grass": {
+    "L": "none: mown rough to the woods; tan dormant area x -70..-30 at 300-380 past the landing zone is uncertain (not drawn)",
+    "R": "none: smooth mown rough from the fairway to the cart paths in both years, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       10,
+       232,
+       9,
+       11
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crowns in/next to the landing zone (both years, lidar HAG 220-250) not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       31,
+       245,
+       6,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crowns in/next to the landing zone (both years, lidar HAG 220-250) not in the auto trees"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right side slightly coarser beyond ~+30 in 2023 but no crisp mowing line in 2021: left as rough (uncertain)",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the cart paths and scattered trees in both years, no second mowing line",
+    "R": "none: no crisp second mowing line in 2021; 2023 only slightly coarser beyond ~+35 (uncertain)"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-11-L1",
+      "area_yd2": 349,
+      "p": 0.52,
+      "along": [
+       154,
+       188
+      ],
+      "gap_yd": 23.3,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "between the two cart paths among scattered trees at 154-188; mown rough both years",
+      "shape": {
+       "poly": [
+        [
+         -34,
+         188
+        ],
+        [
+         -32,
+         155
+        ],
+        [
+         -42,
+         154
+        ],
+        [
+         -45,
+         187
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right: darker mottled island with shrubs behind a curving edge ~14 yds off the fairway (2021), coarse/tufted in 2023; auto OB along the road left kept",
+   "long_grass": {
+    "L": "none: mown rough with scattered trees between the cart path and the road; 2023 smooth (S2 L1-L3 rejected)",
+    "R": "native: edit 0 (curving edge ~+35, darker mottled 2021 / coarse tufted 2023)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        36,
+        200
+       ],
+       [
+        35,
+        240
+       ],
+       [
+        37,
+        280
+       ],
+       [
+        40,
+        330
+       ],
+       [
+        70,
+        330
+       ],
+       [
+        70,
+        200
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "2021: curving edge of a darker mottled area with shrubs from (+35,200) to (+40,330); 2023 the same area coarse, tufted, with the same shrubs; mown strip ~15 yds wide between it and the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-13-L1",
+      "area_yd2": 454,
+      "p": 0.58,
+      "along": [
+       122,
+       180
+      ],
+      "gap_yd": 85.5,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "by the road at 122-180; mown rough in 2021, smooth in 2023",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         180
+        ],
+        [
+         -53,
+         126
+        ],
+        [
+         -63,
+         122
+        ],
+        [
+         -67,
+         133
+        ],
+        [
+         -70,
+         132
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-13-L2",
+      "area_yd2": 1544,
+      "p": 0.58,
+      "along": [
+       206,
+       285
+      ],
+      "gap_yd": 22.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "left of the cart path at 206-285: mottled green rough with scattered trees in 2021, smooth in 2023; no second mowing line",
+      "shape": {
+       "poly": [
+        [
+         -55,
+         206
+        ],
+        [
+         -67,
+         246
+        ],
+        [
+         -56,
+         250
+        ],
+        [
+         -58,
+         258
+        ],
+        [
+         -59,
+         261
+        ],
+        [
+         -70,
+         258
+        ],
+        [
+         -70,
+         269
+        ],
+        [
+         -63,
+         271
+        ],
+        [
+         -66,
+         282
+        ],
+        [
+         -56,
+         285
+        ],
+        [
+         -49,
+         264
+        ],
+        [
+         -38,
+         267
+        ],
+        [
+         -36,
+         261
+        ],
+        [
+         -35,
+         256
+        ],
+        [
+         -46,
+         253
+        ],
+        [
+         -43,
+         243
+        ],
+        [
+         -32,
+         246
+        ],
+        [
+         -29,
+         237
+        ],
+        [
+         -39,
+         233
+        ],
+        [
+         -37,
+         221
+        ],
+        [
+         -47,
+         219
+        ],
+        [
+         -44,
+         208
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-13-L3",
+      "area_yd2": 204,
+      "p": 0.57,
+      "along": [
+       327,
+       351
+      ],
+      "gap_yd": 44.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "small cell by the road at 327-351; rough with trees",
+      "shape": {
+       "poly": [
+        [
+         -63,
+         351
+        ],
+        [
+         -57,
+         330
+        ],
+        [
+         -68,
+         327
+        ],
+        [
+         -70,
+         349
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "ditch right is dry grass in both years and CIR (no black NIR): water erased; young tree row added; left native beyond ~20 yds from 300",
+   "long_grass": {
+    "L": "native: edit 1 (tan coarse tufted 2023 / darker mottled 2021 behind a line ~20 yds off the fairway, 300-400)",
+    "R": "none: smooth mown rough from the fairway to the ditch / tree row in both years, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       0,
+       70,
+       120,
+       400
+      ]
+     },
+     "confidence": "high",
+     "evidence": "the auto 'water' strip is a grassed ditch: green/pink grass in 2021, 2023 and CIR, no open water in either year"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -38,
+        300
+       ],
+       [
+        -36,
+        350
+       ],
+       [
+        -36,
+        400
+       ],
+       [
+        -70,
+        400
+       ],
+       [
+        -70,
+        300
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "2023 tan, coarse, tufted beyond a line ~x -35; 2021 darker mottled from ~-38; mown rough ~18 yds between it and the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       31,
+       252,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       32,
+       234,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29,
+       226,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29,
+       207,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       22,
+       196,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       23,
+       181,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       28,
+       168,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       33,
+       160,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29,
+       147,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       30,
+       133,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the dry ditch right of the fairway: crowns red with shadows in CIR and both photo years; lidar predates them (only small yellow returns)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -50,
+       265,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "large crown by the lagoon corner, both years and CIR"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "added the right tree row; left coarse in 2023 only (uncertain, not drawn)",
+   "long_grass": {
+    "L": "none: 2021 smooth mown rough with crowns; 2023 coarser/tan beyond ~-40 only in one year (uncertain)",
+    "R": "none: smooth mown rough from the fairway to the tree row / cart path in both years, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       13,
+       293,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       23,
+       285,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       30,
+       274,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       24,
+       259,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       30,
+       249,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       37,
+       236,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43,
+       225,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       36,
+       211,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       38,
+       198,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       40,
+       185,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       43,
+       169,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       46,
+       142,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "row of young trees along the right cart path: crowns in both years and CIR, lidar predates them (tiny yellow returns only); not in the auto trees"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-15-R1",
+      "area_yd2": 213,
+      "p": 0.57,
+      "along": [
+       339,
+       361
+      ],
+      "gap_yd": 24.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "right of the cart path near the green at 340-360; smooth mown rough both years",
+      "shape": {
+       "poly": [
+        [
+         18,
+         361
+        ],
+        [
+         27,
+         360
+        ],
+        [
+         25,
+         339
+        ],
+        [
+         14,
+         340
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-15-R2",
+      "area_yd2": 261,
+      "p": 0.73,
+      "along": [
+       390,
+       400
+      ],
+      "gap_yd": 49.9,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "at the far end (390-400) by the cart path; mown rough",
+      "shape": {
+       "poly": [
+        [
+         53,
+         390
+        ],
+        [
+         21,
+         394
+        ],
+        [
+         21,
+         400
+        ],
+        [
+         54,
+         400
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "tree edge right matches lidar and photo; left mown",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the bunkers / cart path in both years, no second mowing line",
+    "R": "none: woods"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "pond edge matches both years; left scattered trees in mown rough",
+   "long_grass": {
+    "L": "none: smooth mown rough from the fairway to the scattered trees in both years, no second mowing line",
+    "R": "none: pond, then woods"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-18-L1",
+      "area_yd2": 230,
+      "p": 0.57,
+      "along": [
+       284,
+       307
+      ],
+      "gap_yd": 23.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "a tree crown and its shadow at 284-307 (both years)",
+      "shape": {
+       "poly": [
+        [
+         -51,
+         307
+        ],
+        [
+         -41,
+         300
+        ],
+        [
+         -56,
+         284
+        ],
+        [
+         -63,
+         291
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-18-L2",
+      "area_yd2": 559,
+      "p": 0.6,
+      "along": [
+       332,
+       370
+      ],
+      "gap_yd": 18.3,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "a tree crown and its shadow at 332-370 (both years)",
+      "shape": {
+       "poly": [
+        [
+         -44,
+         370
+        ],
+        [
+         -26,
+         356
+        ],
+        [
+         -47,
+         332
+        ],
+        [
+         -54,
+         338
+        ],
+        [
+         -48,
+         348
+        ],
+        [
+         -56,
+         354
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "2": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "3": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "4": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "5": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "6": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "7": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot 20 yds behind the Blue box under canopy; no box visible, nothing better to move to"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "8": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "9": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "10": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "11": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "12": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "13": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "14": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot 60 yds behind Blue at the creek/tree line; no box visible in photo or hillshade, nothing to move to"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "15": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "16": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "17": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  },
+  "18": {
+   "Gold": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "walkback dot on a small raised strip visible in the hillshade, lighter mown in the photo"
+   },
+   "Blue": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "White": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   },
+   "Red": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at a visible box whose order fits the card"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "2",
+   "what": "left native: is it unmown native or a less-often-mown rough (2023 streaky, 2021 only darker); edge +/-6 yds"
+  },
+  {
+   "hole": "13",
+   "what": "right native island 200-330: could be rough under shrubs; edge +/-6"
+  },
+  {
+   "hole": "14",
+   "what": "left native 300-400 edge +/-6; Gold tee position (walkback, no box seen)"
+  },
+  {
+   "hole": "7",
+   "what": "Gold tee (walkback under canopy); left tree row placed on lidar, photos disagree by ~8 yds"
+  },
+  {
+   "hole": "3",
+   "what": "left drainage swale with scrub at x -70..-45 (not drawn)"
+  },
+  {
+   "hole": "10",
+   "what": "tan dormant area left of the green approach 300-380 (not drawn)"
+  },
+  {
+   "hole": "11",
+   "what": "right side beyond ~+35 slightly coarser in 2023 (not drawn)"
+  },
+  {
+   "hole": "15",
+   "what": "left beyond ~-40 coarse in 2023 only (not drawn)"
+  },
+  {
+   "hole": "all",
+   "what": "NAIP 2023 and lidar are misregistered vs NAIP 2021 by ~5-20 yds on some holes; trees placed on lidar"
+  }
+ ]
+}
