@@ -1,0 +1,303 @@
+{
+ "course": "Mariah Hills Golf Course",
+ "bbox_wgs84_snwe": [
+  37.7656711,
+  -100.0510415,
+  37.7728951,
+  -100.0420888
+ ],
+ "bbox_source": "--bbox",
+ "margin_m": 100.0,
+ "request": null,
+ "padded_bbox_wgs84_snwe": [
+  37.764772788825006,
+  -100.05217790726465,
+  37.77379341117499,
+  -100.04095239273535
+ ],
+ "fetched_utc": "2026-11-02T05:22:53Z",
+ "transform_convention": "GDAL/affine: x = c + a*col + b*row, y = f + d*col + e*row (col,row of the pixel's top-left corner; +0.5 for centres)",
+ "imagery": {
+  "source": "USDA NAIP via Microsoft Planetary Computer (collection 'naip')",
+  "year": 2023,
+  "years_available": [
+   2012,
+   2014,
+   2015,
+   2017,
+   2019,
+   2021,
+   2023
+  ],
+  "acquired": [
+   "2023-08-15"
+  ],
+  "items": [
+   "ks_m_3710016_se_14_030_20230815_20231113"
+  ],
+  "selection": {
+   "schema": "naip_years/1",
+   "method": "best-scoring leaf-on NAIP year on the OSM turf (course_data/imagery/naip_years.py)",
+   "chosen": 2023,
+   "reason": "2023 (2023-08-15) is the newest NAIP year covering the course and also scores best (turf NDVI 0.50)",
+   "candidates": [
+    {
+     "year": 2023,
+     "dates": [
+      "2023-08-15"
+     ],
+     "gsd_m": 0.3,
+     "coverage": 1.0,
+     "turf_ndvi": 0.5044,
+     "turf_exg": 92.0,
+     "green_ndvi": 0.3498,
+     "bare_turf": 0.0044,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0001,
+     "haze": 41.0,
+     "turf_rgb": [
+      58.0,
+      109.0,
+      63.0
+     ],
+     "score": 0.6087,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2021,
+     "dates": [
+      "2021-06-18"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.5431,
+     "turf_exg": 45.0,
+     "green_ndvi": 0.4608,
+     "bare_turf": 0.0014,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 50.0,
+     "turf_rgb": [
+      61.0,
+      83.0,
+      60.0
+     ],
+     "score": 0.5198,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2019,
+     "dates": [
+      "2019-07-04"
+     ],
+     "gsd_m": 0.6,
+     "coverage": 1.0,
+     "turf_ndvi": 0.4647,
+     "turf_exg": 57.0,
+     "green_ndvi": 0.4118,
+     "bare_turf": 0.0114,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 53.0,
+     "turf_rgb": [
+      73.0,
+      102.0,
+      72.0
+     ],
+     "score": 0.4099,
+     "notes": [],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2017,
+     "dates": [
+      "2017-07-12"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.5,
+     "turf_exg": 59.0,
+     "green_ndvi": 0.4172,
+     "bare_turf": 0.0433,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 58.0,
+     "turf_rgb": [
+      67.0,
+      100.0,
+      74.0
+     ],
+     "notes": [
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2015,
+     "dates": [
+      "2015-06-22"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.5486,
+     "turf_exg": 68.0,
+     "green_ndvi": 0.4043,
+     "bare_turf": 0.0134,
+     "greens_bare": 0.0,
+     "greens_bare_n": 0,
+     "cloud": 0.0,
+     "haze": 41.0,
+     "turf_rgb": [
+      58.0,
+      93.0,
+      60.0
+     ],
+     "notes": [
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2014,
+     "dates": [
+      "2014-06-15"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.5225,
+     "turf_exg": 85.0,
+     "green_ndvi": 0.4855,
+     "bare_turf": 0.0124,
+     "greens_bare": 0.05,
+     "greens_bare_n": 1,
+     "cloud": 0.0,
+     "haze": 56.0,
+     "turf_rgb": [
+      70.0,
+      121.0,
+      86.0
+     ],
+     "notes": [
+      "1 of 20 greens not visible as turf",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    },
+    {
+     "year": 2012,
+     "dates": [
+      "2012-06-09"
+     ],
+     "gsd_m": 1.0,
+     "coverage": 1.0,
+     "turf_ndvi": 0.6308,
+     "turf_exg": 84.0,
+     "green_ndvi": 0.6162,
+     "bare_turf": 0.051,
+     "greens_bare": 0.05,
+     "greens_bare_n": 1,
+     "cloud": 0.0,
+     "haze": 49.0,
+     "turf_rgb": [
+      48.0,
+      103.0,
+      72.0
+     ],
+     "notes": [
+      "1 of 20 greens not visible as turf",
+      "1.0 m: too coarse for the page (a 0.6 m year covers the course)"
+     ],
+     "turf_source": "osm"
+    }
+   ]
+  },
+  "gsd_m": 0.3,
+  "resolution_m": 0.3,
+  "bands": [
+   "red",
+   "green",
+   "blue",
+   "nir"
+  ],
+  "crs": "EPSG:26914",
+  "epsg": 26914,
+  "width": 3334,
+  "height": 3375,
+  "transform": [
+   0.3,
+   0.0,
+   407325.89999999997,
+   0.0,
+   -0.3,
+   4181238.9
+  ],
+  "bounds_crs": [
+   407325.89999999997,
+   4180226.4,
+   408326.1,
+   4181238.9
+  ],
+  "files": {
+   "rgb": "naip_rgb.tif",
+   "nir": "naip_nir.tif"
+  },
+  "format": "COG",
+  "lo": {
+   "files": {
+    "rgb": "naip_rgb_lo.jpg",
+    "nir": "naip_nir_lo.jpg"
+   },
+   "width": 1667,
+   "height": 1688,
+   "transform": [
+    0.6,
+    0.0,
+    407325.89999999997,
+    0.0,
+    -0.5998222748815165,
+    4181238.9
+   ],
+   "resolution_m": 0.6
+  },
+  "sizes_mb": {
+   "naip_rgb.tif": 5.34,
+   "naip_nir.tif": 3.5,
+   "naip_rgb_lo.jpg": 1.01,
+   "naip_nir_lo.jpg": 0.64
+  },
+  "preview": "preview.jpg",
+  "preview_scale": 3,
+  "license": "Public domain (USDA FSA)"
+ },
+ "dem": {
+  "source": "USGS 3DEP (The National Map 3DEPElevation ImageServer, best available)",
+  "resolution_m": 1.0,
+  "crs": "EPSG:26914",
+  "width": 1001,
+  "height": 1013,
+  "transform": [
+   1.0,
+   0.0,
+   407325.0,
+   0.0,
+   -1.0,
+   4181239.0
+  ],
+  "file": "dem.tif",
+  "size_mb": 1.8,
+  "format": "COG",
+  "elev_m": [
+   770.5164184570312,
+   799.1908569335938
+  ],
+  "nan_frac": 0.0,
+  "license": "Public domain (USGS)"
+ },
+ "total_mb": 12.7
+}

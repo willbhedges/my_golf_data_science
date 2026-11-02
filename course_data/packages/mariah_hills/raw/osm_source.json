@@ -1,0 +1,70 @@
+{
+ "schema": "osm_source/1",
+ "fetched_utc": "2026-11-02T05:22:40Z",
+ "mirrors_tried": [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.private.coffee/api/interpreter"
+ ],
+ "attempts": [
+  {
+   "mirror": "https://overpass-api.de/api/interpreter",
+   "pass_": 1,
+   "ok": true,
+   "counts": {
+    "hole": 0,
+    "green": 20,
+    "tee": 41,
+    "pin": 0,
+    "bunker": 16,
+    "fairway": 19
+   },
+   "osm_base": "2026-11-02T05:18:59Z",
+   "thin": [
+    "0 golf=hole ways but 20 greens / 41 tees (no snapshot to compare)"
+   ],
+   "n_elements": 272
+  },
+  {
+   "mirror": "https://overpass.kumi.systems/api/interpreter",
+   "pass_": 1,
+   "ok": false,
+   "error": "RuntimeError('HTTP 504 <?xml version=\"1.0\" encoding=\"UTF-8\"?>\\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\\n    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\\n<html x')"
+  },
+  {
+   "mirror": "https://overpass.private.coffee/api/interpreter",
+   "pass_": 1,
+   "ok": true,
+   "counts": {
+    "hole": 0,
+    "green": 20,
+    "tee": 41,
+    "pin": 0,
+    "bunker": 16,
+    "fairway": 19
+   },
+   "osm_base": "2026-07-28T02:16:18Z",
+   "thin": [
+    "0 golf=hole ways but 20 greens / 41 tees (no snapshot to compare)"
+   ],
+   "n_elements": 272
+  }
+ ],
+ "reference": null,
+ "snapshots": [],
+ "source": "overpass",
+ "mirror": "https://overpass-api.de/api/interpreter",
+ "osm_base": "2026-11-02T05:18:59Z",
+ "counts": {
+  "hole": 0,
+  "green": 20,
+  "tee": 41,
+  "pin": 0,
+  "bunker": 16,
+  "fairway": 19
+ },
+ "thin": [
+  "0 golf=hole ways but 20 greens / 41 tees (no snapshot to compare)"
+ ],
+ "reason": "thin fetch on every mirror and no cached snapshot: used as is"
+}
