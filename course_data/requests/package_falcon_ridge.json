@@ -1,0 +1,16 @@
+{
+ "schema": "request/1",
+ "kind": "package",
+ "course": "Falcon Ridge Golf Club",
+ "state": "KS",
+ "slug": "falcon_ridge",
+ "tees": "Black",
+ "allow_substitute": true,
+ "town": "Lenexa",
+ "osm": "relation/3961566",
+ "osm_supplement": "course_data/library/falcon_ridge/osm_supplement.geojson",
+ "tee_overrides": {"11": {"Blue": [38.9494415, -94.8259402]}, "18": {"Blue": [38.946047, -94.819982]}},
+ "requested": "2026-11-02T06:00Z",
+ "by": "agent mapper (course_data/mapper): end-to-end demo course (no hand truth)",
+ "note": "Package with committed imagery (NAIP + DEM + raw OSM) so the mapper agent can render its inputs (course_data/mapper/render_inputs.py). Same data fixes as the library build (library/falcon_ridge/package_request.json). Not a page rebuild."
+}
