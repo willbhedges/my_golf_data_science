@@ -143,7 +143,7 @@ jobs:
           path: /tmp/in
       - name: Commit
         run: |
-          git pull --rebase origin "${{ github.ref_name }}" || true
+          git pull --rebase --autostash origin "${{ github.ref_name }}" || true
           for f in /tmp/in/*/*.tgz; do tar xzf "$f"; done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
