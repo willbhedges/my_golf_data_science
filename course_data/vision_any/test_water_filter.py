@@ -349,7 +349,7 @@ def test_filter_package_on_rivercut():
     from shapely.ops import unary_union
     pkg = json.load(open(pp))
     new = copy.deepcopy(pkg)
-    rep = WF.filter_package(new, slug="rivercut")
+    rep = WF.filter_package(new, slug="rivercut", piped=True)
     assert rep["piped"]["zones_cut"] >= 1 and rep["vision"]["removed_m2"] > 5000
     az = json.load(open(os.path.join(ROOT, "course_data", "mapper", "rivercut", "agent_zones.geojson")))
 
@@ -376,3 +376,5 @@ def test_filter_package_on_rivercut():
         assert len([z for z in new["holes"][k]["zones_ll"] if z["lie"] == "water" and z.get("src") == "osm"]) >= \
             len(osm_ponds_a) - 2
     assert "water_filter" in new["sources"]
+    off = copy.deepcopy(pkg)
+    assert WF.filter_package(off, slug="rivercut")["piped"] is None      # default: no piped cut in packages

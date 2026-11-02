@@ -16,9 +16,9 @@ trees  the vision_any/2 tree polygons re-made from the lidar canopy with buffer 
 fairway  platform/fairway_band.widen_package after the tees / trees: the OSM fairway widened by a band that only
        turns rough into fairway (or first_cut). --fw-band: one width for every course (yds); --fw-edge: per course
        from the NAIP edge profile (platform/fairway_edge.py; band = extension(profile, theta) m, capped at --fw-max).
-water  vision_any/water_filter.filter_package (as gapfill now runs it): piped OSM stream pieces (tunnel tags, fairway
-       crossings with no DTM channel) and false vision water (OSM roads / paths, thin paved strips, raised bare
-       ground) removed from the committed water zones, then the yard frame refreshed. Run it on its own
+water  vision_any/water_filter.filter_package (as gapfill now runs it): false vision water (OSM roads / paths, thin paved strips, raised bare
+       ground) removed from the committed water zones (+ --piped: OSM stream pieces over turf tagged tunnel or with no
+       DTM channel), then the yard frame refreshed. Run it on its own
        (--layers water) to score the water rule alone.
 Everything else in the package (OSM zones, OB, card, greens, routing) is the committed build.
 """
@@ -166,14 +166,14 @@ def refairway(pkg, slug, a):
 
 
 # ----------------------------------------------------------------------------- water
-def rewater(pkg, slug):
+def rewater(pkg, slug, piped=False):
     vd = os.path.join(CD, "vision_any")
     if vd not in sys.path:
         sys.path.insert(0, vd)
     import water_filter as WF
     vslug = "mozingo" if slug == "mozingo_lake" else slug
     with contextlib.redirect_stdout(io.StringIO()):
-        rep = WF.filter_package(pkg, slug=slug)
+        rep = WF.filter_package(pkg, slug=slug, piped=piped)
     G = _load("rtt_gapfill_water", os.path.join(CD, "vision_any", "gapfill.py"))
     rf = G._reframe()
     if rf is not None:
@@ -202,6 +202,7 @@ def main():
     ap.add_argument("--fw-offset", type=float, default=0.0, help="m subtracted from the edge extension")
     ap.add_argument("--fw-max", type=float, default=15.0, help="m cap on the band")
     ap.add_argument("--fw-min", type=float, default=2.0, help="yds: a smaller edge band is grid noise (1 m), none")
+    ap.add_argument("--piped", action="store_true", help="water: also cut piped OSM stream crossings")
     ap.add_argument("--fw-lie", default="fairway", choices=("fairway", "first_cut"))
     a = ap.parse_args()
     layers = set(a.layers.split(","))
@@ -225,7 +226,7 @@ def main():
             pkg, n = refairway(pkg, slug, a)
             notes.append(n)
         if "water" in layers:
-            pkg, n = rewater(pkg, slug)
+            pkg, n = rewater(pkg, slug, piped=a.piped)
             notes.append(n)
         pkg.setdefault("stages", {})["rebuild_tees_trees"] = "; ".join(notes)
         d = os.path.join(a.out, slug)

@@ -25,7 +25,7 @@ where the stream is piped. The rules here are general (no course is named or tun
               median ground 7-12 m either side minus the lowest ground within 3 m < 0.3 m) - a culvert /
               pipe under the turf
   The piped pieces (buffered by the stream's half width + 1 m), minus every OSM water polygon (ponds stay), are
-  removed from the hole's water zones.
+  removed from the hole's water zones - only when asked (PIPED_IN_PACKAGE is False: see the note there).
 
 Used by layers.water_mask (new vision layers: the vision rules only), gapfill.gapfill (every package build: the
 committed vision layer and the OSM stream zones are filtered there, so re-packaging is enough) and platform/rebuild_tees_trees.py
@@ -408,9 +408,17 @@ def _vision_slug(pkg, slug):
     return G.resolve_slug(slug or c.get("slug") or pkg.get("slug"), c.get("center"))
 
 
-def filter_package(pkg, slug=None, img_dir=None, min_yd2=150.0):
+# The piped-stream cut is OFF in packages: on rivercut 14 (the only turf crossing it cuts among the 25 scored
+# courses) the mapper saw no channel across the fairway, but the held-out hand truth (truth_sets_v2) keeps the
+# OSM stream there as water, and cutting it moved the plan (4-wood -> 2-wood, +0.15 strokes regret). Until the
+# labels agree, piped_streams() is a tested tool (rebuild_tees_trees.py --layers water --piped to score it).
+PIPED_IN_PACKAGE = False
+
+
+def filter_package(pkg, slug=None, img_dir=None, min_yd2=150.0, piped=None):
     """Package (course_package/1 dict, edited in place) -> report. Removes from the holes' water zones_ll:
-    the piped OSM stream pieces (every water src; OSM water polygons are cut out of the pieces first) and the
+    (only with piped=True / PIPED_IN_PACKAGE) the piped OSM stream pieces (every water src; OSM water polygons
+    are cut out of the pieces first) and the
     false vision water (water_filter rules on the vision water zones, judged course-wide on the vision stack
     grid). Zone pieces < min_yd2 left by a cut are dropped. The yard-frame `zones` are NOT refreshed here
     (gapfill / the caller reframes)."""
@@ -428,10 +436,11 @@ def filter_package(pkg, slug=None, img_dir=None, min_yd2=150.0):
         return rep
     with open(osm_p) as fh:
         osm = json.load(fh)
-    dem = os.path.join(img_dir or os.path.join(pdir, "imagery"), "dem.tif")
-    piped, prep = piped_streams(osm, dem if os.path.exists(dem) else None)
-    n = sum(subtract_from_hole(h, piped) for h in pkg["holes"].values()) if piped else 0
-    rep["piped"] = dict(prep, zones_cut=n)
+    if PIPED_IN_PACKAGE if piped is None else piped:
+        dem = os.path.join(img_dir or os.path.join(pdir, "imagery"), "dem.tif")
+        pg, prep = piped_streams(osm, dem if os.path.exists(dem) else None)
+        n = sum(subtract_from_hole(h, pg) for h in pkg["holes"].values()) if pg else 0
+        rep["piped"] = dict(prep, zones_cut=n)
     # vision water, course-wide on the stack grid
     vz = [(h, z) for h in pkg["holes"].values() for z in h.get("zones_ll") or []
           if z.get("lie") == "water" and str(z.get("src", "")).startswith("vision")]
