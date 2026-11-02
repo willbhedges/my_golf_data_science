@@ -1,0 +1,66 @@
+name: s2-stack
+
+# Sentinel-2 L2A seasonal stacks (10 m, cloud-masked, monthly index composites + per-scene NDVI) for the
+# unirrigated-grass long-grass test (course_data/vision_any/s2/fetch_s2_stack.py, s2_longgrass.md).
+# Trigger: push course_data/requests/s2_stack.json {"slugs": [...], "start": "2023-03-01", "end": "2025-11-30", "rev": n}
+# One job for every course (the queue is shared). Commits course_data/vision_any/s2/<slug>/s2_stack.npz + s2_meta.json.
+on:
+  push:
+    paths:
+      - "course_data/requests/s2_stack.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: s2-stack-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHONWARNINGS: ignore
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/vision_any/*/raw/meta.json
+            /course_data/vision_any/s2/
+            /course_data/requests/s2_stack.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy pystac-client planetary-computer rasterio
+      - name: Fetch
+        run: |
+          R=course_data/requests/s2_stack.json; cat $R
+          SL=$(python3 -c "import json;print(','.join(json.load(open('$R'))['slugs']))")
+          ST=$(python3 -c "import json;print(json.load(open('$R')).get('start','2023-03-01'))")
+          EN=$(python3 -c "import json;print(json.load(open('$R')).get('end','2025-11-30'))")
+          python -u course_data/vision_any/s2/fetch_s2_stack.py --slugs "$SL" --start "$ST" --end "$EN" --workers 12 2>&1 | tee /tmp/s2.log | grep -v "^  " || true
+          grep -E "clear scenes|FAILED|Error" /tmp/s2.log >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/vision_any/s2/*/s2_stack.npz course_data/vision_any/s2/*/s2_meta.json || true
+          git diff --cached --stat
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "s2-stack: Sentinel-2 seasonal stacks for the long-grass test (GitHub Actions run ${{ github.run_id }})" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
