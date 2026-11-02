@@ -1,0 +1,1684 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "coldwater",
+ "corridor_set": "Blue",
+ "mapper": "mapper-coldwater-1",
+ "started": "2026-11-02T06:00Z",
+ "minutes": 58,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "apartment lot left: auto OB reaches the cart path / rough; trimmed to the lot. Phantom water sliver left removed. Native strip beside the left cart path",
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -42,
+       0,
+       120,
+       330
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "apartment buildings / parking end at x~-45..-57 (2023, 2021); the cart path and rough at x -40..-25 are course land"
+    },
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -38,
+       -22,
+       180,
+       235
+      ]
+     },
+     "confidence": "high",
+     "evidence": "no water at x -35..-28 along 190-230 in RGB 2023/2021 or CIR; building shade and shrubs"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -60,
+        240
+       ],
+       [
+        -48,
+        240
+       ],
+       [
+        -50,
+        280
+       ],
+       [
+        -49,
+        300
+       ],
+       [
+        -40,
+        318
+       ],
+       [
+        -30,
+        330
+       ],
+       [
+        -30,
+        345
+       ],
+       [
+        -60,
+        345
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan tufted grass left of the cart path both years, shrubs toward the apartment lot"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -46,
+        215
+       ],
+       [
+        -38,
+        215
+       ],
+       [
+        -36,
+        240
+       ],
+       [
+        -36,
+        270
+       ],
+       [
+        -38,
+        295
+       ],
+       [
+        -46,
+        300
+       ],
+       [
+        -48,
+        270
+       ],
+       [
+        -45,
+        240
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tufted tan strip between fairway lobe and cart path along 215-300 (2023), lighter in 2021; keep-out may clip it"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "high",
+   "note": "trees right match the photo crown edge; no changes",
+   "edits": []
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "high",
+   "note": "big prairie right of the tee-shot fairway (crisp tufted edge, both years); two native islands in the rough band between the split fairways",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        9,
+        120
+       ],
+       [
+        11,
+        140
+       ],
+       [
+        14,
+        150
+       ],
+       [
+        17,
+        160
+       ],
+       [
+        20,
+        180
+       ],
+       [
+        26,
+        200
+       ],
+       [
+        31,
+        220
+       ],
+       [
+        32,
+        240
+       ],
+       [
+        34,
+        255
+       ],
+       [
+        40,
+        261
+       ],
+       [
+        52,
+        256
+       ],
+       [
+        62,
+        248
+       ],
+       [
+        70,
+        244
+       ],
+       [
+        70,
+        120
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dense tufted prairie, crisp edge 3-6 yds off the fairway (mown strip visible) in 2023 and 2021"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -9,
+        333
+       ],
+       [
+        -3,
+        334
+       ],
+       [
+        6,
+        318
+       ],
+       [
+        15,
+        298
+       ],
+       [
+        19,
+        288
+       ],
+       [
+        15,
+        283
+       ],
+       [
+        6,
+        295
+       ],
+       [
+        -4,
+        312
+       ],
+       [
+        -10,
+        326
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dark tufted native island in the rough band between the two fairways, both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "ell": [
+       -20,
+       370,
+       9,
+       22
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dark tufted native island between fairways along 345-395, both years"
+    }
+   ]
+  },
+  "4": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "RV / mobile-home park left behind a fence: OB added; native wedge right at the dog-leg",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        120
+       ],
+       [
+        -30,
+        120
+       ],
+       [
+        -31,
+        160
+       ],
+       [
+        -34,
+        200
+       ],
+       [
+        -40,
+        240
+       ],
+       [
+        -47,
+        260
+       ],
+       [
+        -54,
+        280
+       ],
+       [
+        -63,
+        300
+       ],
+       [
+        -70,
+        312
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "park road + homes/RVs with a fence/hedge at the road edge x -30..-54, visible 2023 (and lot in 2021)"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        1,
+        400
+       ],
+       [
+        0,
+        360
+       ],
+       [
+        1,
+        340
+       ],
+       [
+        5,
+        320
+       ],
+       [
+        13,
+        300
+       ],
+       [
+        22,
+        290
+       ],
+       [
+        32,
+        284
+       ],
+       [
+        38,
+        290
+       ],
+       [
+        43,
+        300
+       ],
+       [
+        57,
+        320
+       ],
+       [
+        66,
+        340
+       ],
+       [
+        70,
+        350
+       ],
+       [
+        70,
+        400
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "tufted prairie wedge in the dog-leg, crisp edge, both 2023 and 2021; ditch/shrub line on its fairway edge"
+    }
+   ]
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "prairie island right of the carry; native strip right beside cart path; RV park OB left behind the fence",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        2,
+        120
+       ],
+       [
+        1,
+        140
+       ],
+       [
+        6,
+        155
+       ],
+       [
+        9,
+        170
+       ],
+       [
+        11,
+        186
+       ],
+       [
+        25,
+        190
+       ],
+       [
+        42,
+        188
+       ],
+       [
+        47,
+        170
+       ],
+       [
+        47,
+        140
+       ],
+       [
+        44,
+        120
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dense tufted prairie island along 120-188, crisp edge, both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        39,
+        285
+       ],
+       [
+        40,
+        330
+       ],
+       [
+        42,
+        370
+       ],
+       [
+        50,
+        370
+       ],
+       [
+        50,
+        285
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "dark tufted strip between rough and right cart path along 285-370 (2023), darker band in 2021"
+    },
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        255
+       ],
+       [
+        -50,
+        255
+       ],
+       [
+        -49,
+        270
+       ],
+       [
+        -45,
+        300
+       ],
+       [
+        -40,
+        340
+       ],
+       [
+        -35,
+        400
+       ],
+       [
+        -70,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "fence line along the RV/home park road (lots and homes visible 2023)"
+    }
+   ]
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "native block right of the cart path 265-330 and island at 145-185; RV lot behind the left tree line",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        27,
+        265
+       ],
+       [
+        27,
+        290
+       ],
+       [
+        28,
+        316
+       ],
+       [
+        40,
+        322
+       ],
+       [
+        60,
+        318
+       ],
+       [
+        62,
+        290
+       ],
+       [
+        55,
+        265
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dense tufted native right of the cart path along 265-320, both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        14,
+        145
+       ],
+       [
+        13,
+        165
+       ],
+       [
+        16,
+        184
+       ],
+       [
+        29,
+        184
+       ],
+       [
+        29,
+        150
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tufted native island right along 145-185 (2023), darker patch in 2021"
+    },
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       -61,
+       120,
+       238
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "RVs / campers and lot behind the left tree line, x <-60, 2023"
+    }
+   ]
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "water edges match; bank grass along the pond is a narrow strip (left as rough); no change",
+   "edits": []
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "prairie both sides; tan hay-cut area right 200-260 left unmarked; highway left as OB",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        8,
+        340
+       ],
+       [
+        10,
+        320
+       ],
+       [
+        12,
+        300
+       ],
+       [
+        20,
+        285
+       ],
+       [
+        27,
+        275
+       ],
+       [
+        28,
+        262
+       ],
+       [
+        40,
+        262
+       ],
+       [
+        50,
+        270
+       ],
+       [
+        50,
+        300
+       ],
+       [
+        48,
+        340
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dense tufted prairie with tree clumps right along 262-340, crisp edge, both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        17,
+        140
+       ],
+       [
+        19,
+        160
+       ],
+       [
+        27,
+        180
+       ],
+       [
+        31,
+        193
+       ],
+       [
+        40,
+        196
+       ],
+       [
+        46,
+        180
+       ],
+       [
+        46,
+        140
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dense tufted prairie right along 140-195, both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -62,
+        140
+       ],
+       [
+        -40,
+        140
+       ],
+       [
+        -40,
+        180
+       ],
+       [
+        -42,
+        200
+       ],
+       [
+        -44,
+        220
+       ],
+       [
+        -47,
+        240
+       ],
+       [
+        -49,
+        270
+       ],
+       [
+        -51,
+        300
+       ],
+       [
+        -49,
+        320
+       ],
+       [
+        -45,
+        340
+       ],
+       [
+        -62,
+        340
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tufted tall grass between the highway ROW and the left cart path (2023); 2021 blurred"
+    },
+    {
+     "op": "add",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       -64,
+       120,
+       210
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "highway pavement x <-64, both years"
+    }
+   ]
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "shrub/tree line on the right bank missed by the lidar trees; native left of the cart path. Right 'water' is a vegetated basin (no open water in either year) - left as is",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        23,
+        150
+       ],
+       [
+        21,
+        170
+       ],
+       [
+        23,
+        200
+       ],
+       [
+        26,
+        230
+       ],
+       [
+        29,
+        260
+       ],
+       [
+        32,
+        292
+       ],
+       [
+        38,
+        292
+       ],
+       [
+        36,
+        260
+       ],
+       [
+        33,
+        230
+       ],
+       [
+        31,
+        200
+       ],
+       [
+        30,
+        170
+       ],
+       [
+        30,
+        150
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "line of shrubs/young trees along the right bank, both years, lidar 2.5-8 m and cyan canopy edge"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -62,
+        150
+       ],
+       [
+        -50,
+        150
+       ],
+       [
+        -49,
+        200
+       ],
+       [
+        -48,
+        240
+       ],
+       [
+        -46,
+        270
+       ],
+       [
+        -47,
+        290
+       ],
+       [
+        -60,
+        295
+       ],
+       [
+        -63,
+        260
+       ],
+       [
+        -62,
+        200
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tufted native with small trees left of the cart path, both years"
+    }
+   ]
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "high",
+   "note": "tufted native band left between the fairways; native between the two cart paths right",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -37,
+        140
+       ],
+       [
+        -20,
+        140
+       ],
+       [
+        -21,
+        160
+       ],
+       [
+        -23,
+        180
+       ],
+       [
+        -25,
+        200
+       ],
+       [
+        -29,
+        225
+       ],
+       [
+        -32,
+        250
+       ],
+       [
+        -35,
+        270
+       ],
+       [
+        -36,
+        280
+       ],
+       [
+        -60,
+        286
+       ],
+       [
+        -60,
+        270
+       ],
+       [
+        -52,
+        250
+       ],
+       [
+        -43,
+        200
+       ],
+       [
+        -38,
+        160
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dense dark tufted band left, crisp edge with a tan mown strip between it and the fairway, both 2023 and 2021"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        44,
+        330
+       ],
+       [
+        42,
+        300
+       ],
+       [
+        42,
+        270
+       ],
+       [
+        44,
+        240
+       ],
+       [
+        42,
+        210
+       ],
+       [
+        36,
+        190
+       ],
+       [
+        32,
+        175
+       ],
+       [
+        32,
+        150
+       ],
+       [
+        34,
+        140
+       ],
+       [
+        50,
+        140
+       ],
+       [
+        50,
+        330
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tufted native islands between the two cart paths on the right, both years"
+    }
+   ]
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "hay-cut tan native left 285-400 (medium, keep-out clips the fairway side); native beyond the right cart path; trees match",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -40,
+        285
+       ],
+       [
+        -28,
+        285
+       ],
+       [
+        -22,
+        300
+       ],
+       [
+        -21,
+        330
+       ],
+       [
+        -22,
+        360
+       ],
+       [
+        -24,
+        400
+       ],
+       [
+        -40,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan unmown-looking grass with hay windrows, no fairway mowing stripes, tan in 2021 too"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        33,
+        335
+       ],
+       [
+        36,
+        380
+       ],
+       [
+        60,
+        380
+       ],
+       [
+        60,
+        342
+       ],
+       [
+        50,
+        336
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dense tufted native right of the right cart path along 335-380, both years"
+    }
+   ]
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "left crowns extend past the lidar outline at 185-235; tufted carry area and tan strip right",
+   "edits": [
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 5,
+     "shape": {
+      "rect": [
+       -40,
+       -10,
+       185,
+       235
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown edge (CIR dark red, RGB) 5-10 yds beyond the auto/lidar outline along 185-230"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -2,
+        120
+       ],
+       [
+        -2,
+        172
+       ],
+       [
+        10,
+        176
+       ],
+       [
+        28,
+        172
+       ],
+       [
+        30,
+        120
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tufted patchy grass in the carry area before the fairway starts at ~180 (2023), mottled in 2021"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        21,
+        180
+       ],
+       [
+        21,
+        300
+       ],
+       [
+        34,
+        300
+       ],
+       [
+        34,
+        180
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan textured strip between fairway and the darker mown rough along the cart path, both years; keep-out clips it near the fairway"
+    }
+   ]
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "high",
+   "note": "native band left that wraps across the end of the fairway at ~305-345; native strip right of the cart path. Left pond is algae-covered water (fountain), kept",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -62,
+        215
+       ],
+       [
+        -40,
+        215
+       ],
+       [
+        -40,
+        245
+       ],
+       [
+        -36,
+        260
+       ],
+       [
+        -32,
+        280
+       ],
+       [
+        -26,
+        295
+       ],
+       [
+        -15,
+        303
+       ],
+       [
+        0,
+        307
+       ],
+       [
+        15,
+        306
+       ],
+       [
+        20,
+        304
+       ],
+       [
+        28,
+        312
+       ],
+       [
+        28,
+        322
+       ],
+       [
+        10,
+        330
+       ],
+       [
+        0,
+        340
+       ],
+       [
+        -5,
+        355
+       ],
+       [
+        -40,
+        355
+       ],
+       [
+        -62,
+        345
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "dense dark tufted band, crisp edge with a mown strip, 2023 and 2021"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        41,
+        300
+       ],
+       [
+        42,
+        330
+       ],
+       [
+        48,
+        340
+       ],
+       [
+        70,
+        340
+       ],
+       [
+        70,
+        215
+       ],
+       [
+        60,
+        222
+       ],
+       [
+        52,
+        240
+       ],
+       [
+        49,
+        260
+       ],
+       [
+        45,
+        280
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tufted native right of the cart path beyond a tan mown strip (strip 5-15 yds wide at 220-280), both years"
+    }
+   ]
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "reed ditches both sides match the auto water roughly; no change",
+   "edits": []
+  }
+ },
+ "tees": {
+  "1": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "2": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "move",
+    "to": [
+     29,
+     5
+    ],
+    "confidence": "medium",
+    "evidence": "auto lidar_pad dot sits on a grass strip with no box; OSM box 29 yds right on the Black(-33)/White(+28) chain, flat shaded pad visible 2023; card 425 fits"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "3": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "4": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "5": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "6": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "7": {
+   "Black": {
+    "action": "move",
+    "to": [
+     -1,
+     -12
+    ],
+    "confidence": "medium",
+    "evidence": "auto walkback dot is on the gravel road with no pad; the only box behind Blue is the OSM box 5-18 yds behind on the line (card 528 vs 505 wants 23)"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "8": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "9": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "10": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "11": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "12": {
+   "Black": {
+    "action": "move",
+    "to": [
+     -1,
+     -4
+    ],
+    "confidence": "low",
+    "evidence": "auto lidar_pad dot (-15,-22) is in native/shrubs, no pad either year; nearest box is the long Blue box, Black put at its back end (card 350 says 22 behind)"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "13": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "14": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "15": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "16": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "17": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "18": {
+   "Black": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "8",
+   "what": "Blue 139 tee (lidar_pad) is on native grass with no box; card Blue 139 > Black 121 looks wrong; left as auto"
+  },
+  {
+   "hole": "12",
+   "what": "right 'water' x+35..+70 along 140-290 is a vegetated basin (CIR red, no open water 2021/2023); left as water (likely penalty area)"
+  },
+  {
+   "hole": "18",
+   "what": "right water x+52..+70 along 120-245 is meadow beyond a reed ditch; left as auto"
+  },
+  {
+   "hole": "10",
+   "what": "tan hay-cut area right x+15..+45 along 200-260 (tan both years, mowing tracks): native or rough unclear, left unmarked"
+  },
+  {
+   "hole": "7",
+   "what": "tan strip left x -42..-30 along 140-260 between trees and fairway: tan both years with tire tracks, left as rough"
+  },
+  {
+   "hole": "14",
+   "what": "native between the two right cart paths x+21..+40 along 210-330 is mottled, left unmarked; left hay-cut area marked medium"
+  },
+  {
+   "hole": "4,6,7",
+   "what": "OB on the RV/home park side: drawn at the fence/road edge; whether the course stakes it OB is not visible"
+  },
+  {
+   "hole": "15",
+   "what": "left tree grow +5 along 185-235: part of the dark edge in 2023 may be shadow"
+  }
+ ]
+}
