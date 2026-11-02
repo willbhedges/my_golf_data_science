@@ -26,7 +26,10 @@ import sys
 import time
 from collections import Counter
 
-import requests
+try:
+    import requests
+except ImportError:          # the geometry helpers (summarise, line_inside) are used offline / in tests
+    requests = None
 
 OVERPASS = ["https://overpass-api.de/api/interpreter",
             "https://overpass.kumi.systems/api/interpreter",
@@ -248,10 +251,60 @@ def length_yd(coords):
     return tot / YD
 
 
+LINE_INSIDE_FRAC = 0.6        # a hole line is inside the course when this share of its length is inside ...
+LINE_END_FRAC = 0.15          # ... or when both end stretches (tee end, green end: this share of the length,
+LINE_END_MIN_YD = 20.0        #     at least this many yds) are mostly inside
+LINE_STEP_YD = 4.0
+
+
+def line_inside(coords, rings):
+    """-> (inside, inside_frac, tee_end_frac, green_end_frac) for a LineString against the course's outer rings.
+    The share of the line's length inside the boundary (pieces of <= LINE_STEP_YD, judged at their midpoints), and
+    the same share over the first / last LINE_END_FRAC of the length. Inside when >= LINE_INSIDE_FRAC of the length
+    is in, or both end stretches are more than half in. The vertex mean (rep_point) is wrong for a line: a dogleg
+    wrapping a notch of the boundary has its mean in the notch (Hodge Park 10, way/1565676856: all three vertices
+    inside, mean outside, so the hole was dropped as a neighbour's)."""
+    if not rings:
+        return None, None, None, None
+    if len(coords) < 2:
+        ins = bool(coords) and any(point_in_ring(coords[0], r) for r in rings)
+        return ins, float(ins), float(ins), float(ins)
+    lat0 = sum(c[1] for c in coords) / len(coords)
+    k = math.cos(math.radians(lat0)) * 111320.0 / YD
+    ky = 111320.0 / YD
+    pieces = []                                              # (start along, length, inside)
+    along = 0.0
+    for (lo1, la1), (lo2, la2) in zip(coords, coords[1:]):
+        seg = math.hypot((lo2 - lo1) * k, (la2 - la1) * ky)
+        n = max(1, int(math.ceil(seg / LINE_STEP_YD)))
+        for i in range(n):
+            t = (i + 0.5) / n
+            pt = (lo1 + (lo2 - lo1) * t, la1 + (la2 - la1) * t)
+            pieces.append((along + seg * i / n, seg / n, any(point_in_ring(pt, r) for r in rings)))
+        along += seg
+    total = along
+    if total <= 0:
+        ins = any(point_in_ring(coords[0], r) for r in rings)
+        return ins, float(ins), float(ins), float(ins)
+
+    def share(a, b):
+        w = sum(max(0.0, min(s + L, b) - max(s, a)) for s, L, _ in pieces)
+        wi = sum(max(0.0, min(s + L, b) - max(s, a)) for s, L, i in pieces if i)
+        return wi / w if w > 0 else 0.0
+    end = min(total, max(LINE_END_MIN_YD, LINE_END_FRAC * total))
+    frac, tee, green = share(0.0, total), share(0.0, end), share(total - end, total)
+    return (frac >= LINE_INSIDE_FRAC or (tee > 0.5 and green > 0.5)), frac, tee, green
+
+
 # ----------------------------------------------------------------------------- summary
 def summarise(fc, course_el, all_courses, course_rings):
     def inside(f):
-        p = rep_point(f["geometry"])
+        g = f["geometry"]
+        if f["properties"].get("golf") == "hole" and g["type"] == "LineString" and course_rings:
+            ins, frac, _, _ = line_inside(g["coordinates"], course_rings)
+            f["properties"]["inside_frac"] = round(frac, 3)      # sanity.select_hole_ways breaks ref ties on it
+            return ins
+        p = rep_point(g)
         return any(point_in_ring(p, r) for r in course_rings) if course_rings else None
 
     for f in fc["features"]:

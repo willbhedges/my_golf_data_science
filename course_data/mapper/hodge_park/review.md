@@ -1,6 +1,6 @@
 # Mapper review: Hodge Park Golf Course
 
-Applied with apply.py: ok: course_data/mapper/hodge_park (63 zone edits on 14 holes, 1 tee(s) moved, 54 checked)
+Applied with apply.py: ok: course_data/mapper/hodge_park (62 zone edits on 13 holes, 1 tee(s) moved, 51 checked)
 
 | hole | edits | landing zone AUTO (sq yds) | AUTO + AGENT |
 |---|---|---|---|
@@ -11,7 +11,6 @@ Applied with apply.py: ok: course_data/mapper/hodge_park (63 zone edits on 14 ho
 | 6 | erase ob 2915 yd2; grow recovery +5 yd (+298 yd2) | fairway 2582, ob 2182, recovery 1703, water 731 | fairway 2582, ob 193, recovery 3097, water 731 |
 | 8 | add recovery 185 yd2; add recovery 210 yd2; add recovery 151 yd2; add recovery 210 yd2; add recovery 139 yd2; add recovery 308 yd2; tee Red moved 71 yd | fairway 6144, recovery 1778 | fairway 6144, recovery 2491 |
 | 9 | add recovery 236 yd2; add recovery 85 yd2; add recovery 223 yd2 | fairway 5357, recovery 2254 | fairway 5357, recovery 2716 |
-| 10 | add recovery 102 yd2 | fairway 1390, ob 1100, recovery 7052, water 536 | fairway 1390, ob 1100, recovery 7052, water 536 |
 | 11 | add recovery 49 yd2; add recovery 62 yd2 | fairway 5780, recovery 3313, water 116 | fairway 5780, recovery 3425, water 116 |
 | 13 | add recovery 77 yd2; add recovery 70 yd2; add recovery 210 yd2; add recovery 162 yd2; add recovery 102 yd2; add recovery 210 yd2 | fairway 5458, recovery 2329 | fairway 5458, recovery 3008 |
 | 14 | add recovery 130 yd2; add recovery 391 yd2; add recovery 63 yd2; add recovery 85 yd2; add recovery 102 yd2 | fairway 2408, recovery 5415, sand 150 | fairway 2408, recovery 6008, sand 150 |
@@ -50,9 +49,6 @@ Applied with apply.py: ok: course_data/mapper/hodge_park (63 zone edits on 14 ho
 | 9 | Blue | keep |  | 401 | 401 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
 | 9 | White | keep |  | 371 | 371 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
 | 9 | Red | keep |  | 352 | 352 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
-| 10 | Blue | keep |  | 405 | 336 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
-| 10 | White | keep |  | 371 | 305 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
-| 10 | Red | keep |  | 329 | 223 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
 | 11 | Blue | keep |  | 459 | 458 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
 | 11 | White | keep |  | 445 | 443 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
 | 11 | Red | keep |  | 429 | 389 | auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card |
@@ -89,7 +85,6 @@ Applied with apply.py: ok: course_data/mapper/hodge_park (63 zone edits on 14 ho
 | 6 | none: mown rough and tree clumps; left area smooth green in 2022 | none: woods to the road, no open grass |
 | 8 | none: mown rough, tree clumps, no second mowing line | none: mown rough to the cart path and trees |
 | 9 | none: mown rough under / between crowns, smooth both years | none: mown rough to the cart path and trees |
-| 10 | none: woods (corridor runs through trees) | none: woods |
 | 11 | none: mown rough to the tree line both years | none: mown rough to the pond/trees |
 | 13 | none: mown rough with scattered crowns | none: mown rough to the tree line |
 | 14 | none: mown rough and woods in the landing zone; S2 cells are past the green / at the windo | none: mown rough and woods; mottled meadow only past the green (330+) |
@@ -114,3 +109,15 @@ Applied with apply.py: ok: course_data/mapper/hodge_park (63 zone edits on 14 ho
 | 14 | S2-14-R1 | R | 1470 | reject |  | past the green (330-400): woods and mixed rough, not in play for the tee shot |
 | 15 | S2-15-R1 | R | 194 | reject |  | corner by the tee walk at 120-135 right: mown rough by the cart path |
 | 17 | S2-17-L1 | L | 712 | reject |  | left of the tee area 120-160: rough among the tree rows, smooth green 2022 |
+
+## Hole 10 removed from the agent layers (2026-11-02)
+
+Hole 10 was mapped on the wrong corridor: the base build had lost OSM way/1565676856 (its vertex mean fell in a notch
+of the course boundary, so it was flagged `inside_course: false`, and a neighbour's ref-10 way made
+`sanity.select_hole_ways` drop both), and the router drew 10 from a pad by the 1st tee north through the woods
+(see course_data/library/hodge_park/review.md rv14). Its edit (one lidar crown at along 338), its three tee checks
+(Blue/White/Red keep, measured 66-106 yds short) and its uncertain notes were taken out of edits.json and the layers
+rewritten with write_layers.py, so a rebuild with agent_layers applies no stale hole-10 zone or tee. All other holes
+are unchanged. Hole 10 needs re-mapping on the OSM line / osm_supplement after the rebuild. (write_layers ran in a
+sparse worktree; the hole-8 Red "measured after" cell was put back to the full-checkout value 361.)
+

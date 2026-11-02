@@ -3,12 +3,12 @@
  "properties": {
   "slug": "hodge_park",
   "mapper": "mapper-hodge_park",
-  "made": "2026-11-02T18:40:45Z",
+  "made": "2026-11-02T18:57:15Z",
   "corridor_set": "Blue",
   "base_package": "course_data/mapper/hodge_park/base/package.json",
   "base_built": "2026-11-02T15:34:05Z",
   "minutes": 55,
-  "edits_sha": "8cef777a286a057c",
+  "edits_sha": "21fc0af9205023d1",
   "schema": "agent_zones/1",
   "reviewed": {
    "1": {
@@ -192,22 +192,6 @@
      "R": "none: mown rough to the cart path and trees"
     }
    },
-   "10": {
-    "layers": [
-     "long_grass",
-     "trees",
-     "ob",
-     "water",
-     "fairway"
-    ],
-    "confidence": "low",
-    "note": "1 isolated crowns added from lidar; no native; corridor runs through woods and past a building: routing doubtful",
-    "s2": [],
-    "long_grass": {
-     "L": "none: woods (corridor runs through trees)",
-     "R": "none: woods"
-    }
-   },
    "11": {
     "layers": [
      "long_grass",
@@ -350,10 +334,6 @@
   },
   "uncertain": [
    {
-    "hole": "10",
-    "what": "corridor (Blue tee -> aim) runs through woods and past a building with fairway only at 280-345; the Blue tee dot is on a cart path in the woods with an OSM box ~20 yds ahead. Routing / tee of hole 10 needs a check; tee kept"
-   },
-   {
     "hole": "15",
     "what": "auto water at 215-260 looks like grass with a dark wet strip in 2018 and like a pond/wetland in 2022; kept"
    },
@@ -370,8 +350,8 @@
     "what": "Red tees measure 14-40 yds short of the card (h11 389 vs 429, h1 311 vs 330, h16 144 vs 161, h3 109 vs 123, h12 136 vs 149); not reviewed in time, kept"
    },
    {
-    "hole": "10 (all sets)",
-    "what": "all hole-10 tees measure 66-106 yds short of the card; routing issue, tees kept"
+    "hole": "10",
+    "what": "hole 10 removed from the agent layers (2026-11-02): it was mapped on the wrong corridor (a router line through the woods after sanity.select_hole_ways dropped OSM way/1565676856); re-map 10 on the OSM / osm_supplement line after the rebuild"
    }
   ],
   "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
@@ -3945,125 +3925,6 @@
       [
        -94.4948417,
        39.251384
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "hole": "10",
-    "op": "add",
-    "lie": "recovery",
-    "edit": "10.0",
-    "area_yd2": 102,
-    "confidence": "low",
-    "evidence": "lidar crown 10.0 m (2008) missing from the auto trees, crown in the photos not checked one by one; +1.5 yd growth since 2008"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -94.4966482,
-       39.2539856
-      ],
-      [
-       -94.4966586,
-       39.2539768
-      ],
-      [
-       -94.496672,
-       39.2539703
-      ],
-      [
-       -94.4966875,
-       39.2539668
-      ],
-      [
-       -94.4967038,
-       39.2539662
-      ],
-      [
-       -94.4967201,
-       39.2539688
-      ],
-      [
-       -94.4967351,
-       39.2539743
-      ],
-      [
-       -94.4967478,
-       39.2539824
-      ],
-      [
-       -94.4967573,
-       39.2539925
-      ],
-      [
-       -94.4967631,
-       39.2540039
-      ],
-      [
-       -94.4967647,
-       39.2540158
-      ],
-      [
-       -94.4967619,
-       39.2540275
-      ],
-      [
-       -94.4967551,
-       39.254038
-      ],
-      [
-       -94.4967446,
-       39.2540468
-      ],
-      [
-       -94.4967312,
-       39.2540533
-      ],
-      [
-       -94.4967158,
-       39.2540568
-      ],
-      [
-       -94.4966994,
-       39.2540574
-      ],
-      [
-       -94.4966832,
-       39.2540548
-      ],
-      [
-       -94.4966682,
-       39.2540493
-      ],
-      [
-       -94.4966555,
-       39.2540412
-      ],
-      [
-       -94.4966459,
-       39.2540311
-      ],
-      [
-       -94.4966402,
-       39.2540197
-      ],
-      [
-       -94.4966386,
-       39.2540078
-      ],
-      [
-       -94.4966413,
-       39.2539962
-      ],
-      [
-       -94.4966482,
-       39.2539856
       ]
      ]
     ]

@@ -81,6 +81,117 @@ def test_supplement_hole_ways_replace_osm_by_ref_and_are_never_dropped():
     assert dropped == [900] and any(f["properties"]["ref"] == "10" for f in out["features"])
 
 
+# ----------------------------------------------------------------------------- hole lines inside the boundary (Hodge 10)
+NOTCH = [(0, 0), (1000, 0), (1000, 1000), (600, 1000), (600, 600), (400, 600), (400, 1000), (0, 1000), (0, 0)]
+
+
+def _fcm():
+    sys.path.insert(0, os.path.dirname(HERE))
+    import fetch_course
+    return fetch_course
+
+
+def _summarised(feats, ring=NOTCH):
+    fcm = _fcm()
+    fc = dict(type="FeatureCollection", features=feats)
+    fcm.summarise(fc, None, [], [[ll(*p) for p in ring]])
+    return fc
+
+
+def test_dogleg_round_a_boundary_notch_is_inside():
+    """Hodge Park 10: every vertex inside, the vertex mean in a notch of the boundary (maintenance yard)."""
+    fcm = _fcm()
+    wrap = [(370, 950), (370, 570), (630, 570), (630, 950)]                 # mean (500, 760): in the notch
+    assert not fcm.point_in_ring(fcm.rep_point(line(wrap)["geometry"]), [ll(*p) for p in NOTCH])
+    cut = [(380, 950), (500, 560), (620, 950)]                              # cuts through the notch, ends inside
+    out = [(1200, 100), (1200, 500)]                                       # a neighbour's hole
+    stray = [(950, 100), (1300, 100), (1300, 700)]                         # only the tee end inside
+    fc = _summarised([line(wrap, golf="hole", ref="10", osm_id=1), line(cut, golf="hole", ref="11", osm_id=2),
+                      line(out, golf="hole", ref="12", osm_id=3), line(stray, golf="hole", ref="13", osm_id=4),
+                      poly(500, 800, golf="green", osm_id=5)])
+    p = {f["properties"]["osm_id"]: f["properties"] for f in fc["features"]}
+    assert p[1]["inside_course"] is True and p[1]["inside_frac"] == 1.0
+    assert p[2]["inside_course"] is True and p[2]["inside_frac"] < 0.6    # in by both end stretches
+    assert p[3]["inside_course"] is False and p[3]["inside_frac"] == 0.0
+    assert p[4]["inside_course"] is False
+    assert p[5]["inside_course"] is False                                  # polygons: unchanged (vertex mean)
+
+
+def _course18(ten_inside=True, ten_frac=None):
+    """18 holes of this course (tee box at the start, green at the end), hole 10 a dogleg."""
+    feats = []
+    for i in range(18):
+        x = i * 100
+        pts = [(x, 0), (x, 200), (x + 40, 400)] if i == 9 else [(x, 0), (x, 400)]
+        pr = dict(golf="hole", ref=str(i + 1), osm_id=100 + i, inside_course=(ten_inside if i == 9 else True))
+        if i == 9 and ten_frac is not None:
+            pr["inside_frac"] = ten_frac
+        feats.append(line(pts, **pr))
+        feats.append(poly(pts[-1][0], pts[-1][1] + 5, r=12, golf="green", osm_id=300 + i))
+        feats.append(poly(x, -5, r=5, golf="tee", osm_id=400 + i))
+    return feats
+
+
+def test_duplicate_ref_keeps_this_courses_way_not_neither():
+    """Hodge Park 10: this course's 10 flagged outside (old vertex-mean rule) + a neighbour's 10 -> both used to go."""
+    nb = [line([(5000, 0), (5000, 380)], golf="hole", ref="10", osm_id=898574075, inside_course=False),
+          poly(5000, 385, r=12, golf="green", osm_id=999, inside_course=False)]
+    out, dropped = sanity.select_hole_ways(dict(features=_course18(ten_inside=False) + nb))
+    ten = [f for f in out["features"] if f["properties"].get("golf") == "hole" and f["properties"]["ref"] == "10"]
+    assert dropped == [898574075]
+    assert [f["properties"]["osm_id"] for f in ten] == [109] and ten[0]["properties"]["inside_course"] is True
+    # both copies inside: the one with more of its length inside wins (and is connected)
+    feats = _course18(ten_frac=0.95) + [line([(900, 2000), (900, 2400)], golf="hole", ref="10", osm_id=777,
+                                             inside_course=True, inside_frac=0.62)]
+    out, dropped = sanity.select_hole_ways(dict(features=feats))
+    assert dropped == [777]
+    # a neighbour's duplicate with no tie to this course's greens / tees still goes when ours is flagged outside
+    # and unconnected too: both are dropped (nothing says either is ours)
+    lone = [line([(0, 3000), (0, 3400)], golf="hole", ref="1", osm_id=801, inside_course=False),
+            line([(0, 5000), (0, 5400)], golf="hole", ref="1", osm_id=802, inside_course=False)]
+    out, dropped = sanity.select_hole_ways(dict(features=_course18()[3:] + lone))
+    assert sorted(dropped) == [801, 802]
+
+
+HODGE = os.path.join(os.path.dirname(HERE), "packages", "hodge_park", "raw")
+HODGE_SUP = os.path.join(os.path.dirname(HERE), "library", "hodge_park", "osm_supplement.geojson")
+
+
+def test_hodge_park_hole_10_survives_summarise_and_clean_osm():
+    import json
+    import pytest
+    if not (os.path.exists(os.path.join(HODGE, "osm.geojson")) and os.path.exists(os.path.join(HODGE, "course.json"))):
+        pytest.skip("hodge_park raw OSM not in this checkout")
+    fcm = _fcm()
+    fc = json.load(open(os.path.join(HODGE, "osm.geojson")))
+    course = json.load(open(os.path.join(HODGE, "course.json")))
+    for f in fc["features"]:
+        f["properties"].pop("inside_course", None)
+    fcm.summarise(fc, None, [], fcm.outer_rings(course["boundary"]))
+    by = {f["properties"].get("osm_id"): f["properties"] for f in fc["features"]}
+    assert by[1565676856]["inside_course"] is True and by[898574075]["inside_course"] is False
+    out, notes = sanity.clean_osm(fc, names=["Hodge Park Golf Course"])
+    holes = {f["properties"]["osm_id"]: f["properties"]["ref"] for f in out["features"]
+             if f["properties"].get("golf") == "hole"}
+    assert holes.get(1565676856) == "10" and 898574075 not in holes
+    assert sorted(int(r) for r in holes.values()) == list(range(1, 19))
+    # the hand supplement (rv14) still wins by ref
+    if os.path.exists(HODGE_SUP):
+        sup = json.load(open(HODGE_SUP))["features"]
+        for i, f in enumerate(sup):
+            f["properties"].update(src="hand", osm_id=-(i + 1), osm_type="hand")
+        fc2 = json.load(open(os.path.join(HODGE, "osm.geojson")))
+        fc2["features"] += sup
+        for f in fc2["features"]:
+            f["properties"].pop("inside_course", None)
+        fc2, _ = sanity.supplement_hole_ways(fc2)
+        fcm.summarise(fc2, None, [], fcm.outer_rings(course["boundary"]))
+        out2, _ = sanity.clean_osm(fc2, names=["Hodge Park Golf Course"])
+        ten = [f["properties"] for f in out2["features"] if f["properties"].get("golf") == "hole"
+               and f["properties"]["ref"] == "10"]
+        assert len(ten) == 1 and ten[0]["src"] == "hand" and ten[0]["inside_course"] is True
+
+
 # ----------------------------------------------------------------------------- tee guards
 def _hole_fc(extra=()):
     # hole 1: line start (0, 0) -> green at (0, 340); a road behind it at y = -30, another green at y = -60

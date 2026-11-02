@@ -10,8 +10,10 @@
                            * hole ways of a neighbouring course: when refs are duplicated or there are more than
                              18 golf=hole ways, ways outside this course's boundary (inside_course False) or inside
                              another leisure=golf_course area are dropped (Pevely Farms took Crescent Farms' 1, 9,
-                             10 and 18); osm_supplement (src=hand) hole ways first replace the OSM ways with the
-                             same ref and are never dropped (Creekmoor 10)
+                             10 and 18), but a repeated ref keeps its best way (inside-length share, connected to
+                             this course's green / tee) instead of losing both (Hodge Park 10); osm_supplement
+                             (src=hand) hole ways first replace the OSM ways with the same ref and are never
+                             dropped (Creekmoor 10)
   guard_tees(tp, fc)       tee positions (tees/positions dict, in place):
                            * a walk-back more than MAX_FORWARD_YD forward of the hole-line start, made to force a
                              short card length onto a longer hole, is put back at the line start and marked CHECK
@@ -125,11 +127,34 @@ def supplement_hole_ways(fc):
     return dict(fc, features=[f for f in feats if id(f) not in ids]), [f["properties"].get("osm_id") for f in drop]
 
 
+CONNECT_GREEN_YD = 25.0       # a hole line's last point this close to one of this course's greens ...
+CONNECT_TEE_YD = 35.0         # ... and its first point this close to one of its tees: "connected"
+
+
+def _inside_frac(f):
+    """Share of a hole line's length inside the course boundary (fetch_course.line_inside, stored by summarise);
+    older osm.geojson files carry only the flag."""
+    p = f["properties"]
+    v = p.get("inside_frac")
+    if isinstance(v, (int, float)):
+        return float(v)
+    return 0.0 if p.get("inside_course") is False else 1.0
+
+
 def select_hole_ways(fc, max_holes=18):
     """-> (fc copy, [dropped osm ids]). When golf=hole refs repeat or there are more than max_holes ways, the
-    ways of a neighbouring course go: outside this course (inside_course False) or inside another
-    leisure=golf_course polygon (one that does not hold most of this course's ways). Hand-mapped (src=hand,
-    osm_supplement) ways are never dropped: a reviewer put them there on purpose."""
+    ways of a neighbouring course go. A way is "foreign" when it is outside this course (inside_course False) or
+    its midpoint is inside another leisure=golf_course polygon (one that does not hold most of this course's ways).
+    Per ref:
+      * a hand-mapped (src=hand, osm_supplement) way wins and is never dropped (a reviewer put it there on purpose);
+      * else, when the ref repeats, ONE way is kept: the best by (not foreign, connected to this course's greens /
+        tees, share of length inside the boundary, has a par tag); a foreign best is kept (and re-flagged
+        inside_course True) only when it is connected to this course's green or tee, so a ref never vanishes just
+        because both copies looked doubtful (Hodge Park 10: this course's dogleg and a neighbour's 10 were both
+        dropped, and the router redrew 10 through the woods);
+      * a lone foreign way is dropped unless both ends connect to this course's tee and green.
+    "Connected": last point within CONNECT_GREEN_YD of a golf=green, first point within CONNECT_TEE_YD of a
+    golf=tee, both inside this course and not inside the other course."""
     feats = fc.get("features", [])
     holes = [f for f in feats if f["properties"].get("golf") == "hole" and f.get("geometry")
              and f["geometry"]["type"] == "LineString"]
@@ -147,18 +172,71 @@ def select_hole_ways(fc, max_holes=18):
         n_in = sum(g.contains(shape(f["geometry"]).interpolate(0.5, normalized=True)) for f in holes)
         if n_in and n_in < len(holes):
             others.append(g)
-    drop = set()
+
+    P = _proj_for(fc)
+
+    def own_features(kind):
+        out = []
+        for f in feats:
+            if f["properties"].get("golf") != kind or f["properties"].get("inside_course") is False:
+                continue
+            g = _shp(f)
+            if g is None or g.is_empty or any(o.contains(g.representative_point()) for o in others):
+                continue
+            out.append(P.geom(g))
+        return unary_union(out) if out else None
+    greens, tees = own_features("green"), own_features("tee")
+
+    def connected(f):
+        c = f["geometry"]["coordinates"]
+        t = tees is not None and Point(P.fwd(*c[0][:2])).distance(tees) <= CONNECT_TEE_YD
+        g = greens is not None and Point(P.fwd(*c[-1][:2])).distance(greens) <= CONNECT_GREEN_YD
+        return int(t) + int(g)
+
+    info = {}
     for f in holes:
         mid = shape(f["geometry"]).interpolate(0.5, normalized=True)
-        if _hand(f):
+        foreign = f["properties"].get("inside_course") is False or any(g.contains(mid) for g in others)
+        info[id(f)] = dict(foreign=foreign, conn=connected(f), frac=_inside_frac(f),
+                           par=str(f["properties"].get("par", "")).isdigit())
+    groups = {}
+    for f in holes:
+        groups.setdefault(str(f["properties"].get("ref")) if f["properties"].get("ref") else None, []).append(f)
+    drop, rescue = set(), set()
+    for ref, fs in groups.items():
+        hand = [f for f in fs if _hand(f)]
+        if hand:
+            drop |= {id(f) for f in fs if not _hand(f)}
             continue
-        if f["properties"].get("inside_course") is False or any(g.contains(mid) for g in others):
-            drop.add(id(f))
+        if ref is None or len(fs) == 1:
+            for f in fs:
+                i = info[id(f)]
+                if i["foreign"]:
+                    (drop if i["conn"] < 2 else rescue).add(id(f))
+            continue
+        best = max(fs, key=lambda f: (not info[id(f)]["foreign"], info[id(f)]["conn"], info[id(f)]["frac"],
+                                      info[id(f)]["par"]))
+        drop |= {id(f) for f in fs if f is not best}
+        bi = info[id(best)]
+        if bi["foreign"]:
+            if bi["conn"] >= 1:
+                rescue.add(id(best))
+            else:
+                drop.add(id(best))                           # every copy is a neighbour's
     kept_refs = [str(f["properties"].get("ref")) for f in holes if id(f) not in drop and f["properties"].get("ref")]
     if not kept_refs:                                        # never drop every hole
         return fc, []
     dropped = [f["properties"].get("osm_id") for f in holes if id(f) in drop]
-    return (dict(fc, features=[f for f in feats if id(f) not in drop]) if drop else fc), dropped
+    if not drop and not rescue:
+        return fc, []
+    out = []
+    for f in feats:
+        if id(f) in drop:
+            continue
+        if id(f) in rescue:
+            f = dict(f, properties=dict(f["properties"], inside_course=True, inside_course_rescued=True))
+        out.append(f)
+    return dict(fc, features=out), dropped
 
 
 # ----------------------------------------------------------------------------- hole refs

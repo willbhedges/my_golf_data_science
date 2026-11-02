@@ -961,41 +961,6 @@
     "R": []
    }
   },
-  "10": {
-   "reviewed": [
-    "long_grass",
-    "trees",
-    "ob",
-    "water",
-    "fairway"
-   ],
-   "confidence": "low",
-   "note": "1 isolated crowns added from lidar; no native; corridor runs through woods and past a building: routing doubtful",
-   "long_grass": {
-    "L": "none: woods (corridor runs through trees)",
-    "R": "none: woods"
-   },
-   "edits": [
-    {
-     "op": "add",
-     "lie": "recovery",
-     "shape": {
-      "ell": [
-       36.5,
-       337.8,
-       6.0,
-       5.5
-      ]
-     },
-     "confidence": "low",
-     "evidence": "lidar crown 10.0 m (2008) missing from the auto trees, crown in the photos not checked one by one; +1.5 yd growth since 2008"
-    }
-   ],
-   "s2_suggested": {
-    "L": [],
-    "R": []
-   }
-  },
   "11": {
    "reviewed": [
     "long_grass",
@@ -1974,23 +1939,6 @@
     "evidence": "auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card"
    }
   },
-  "10": {
-   "Blue": {
-    "action": "keep",
-    "confidence": "medium",
-    "evidence": "auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card"
-   },
-   "White": {
-    "action": "keep",
-    "confidence": "medium",
-    "evidence": "auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card"
-   },
-   "Red": {
-    "action": "keep",
-    "confidence": "medium",
-    "evidence": "auto tee (tees/localize v2, rebuilt) kept; see review.md measured vs card"
-   }
-  },
   "11": {
    "Blue": {
     "action": "keep",
@@ -2130,10 +2078,6 @@
  },
  "uncertain": [
   {
-   "hole": "10",
-   "what": "corridor (Blue tee -> aim) runs through woods and past a building with fairway only at 280-345; the Blue tee dot is on a cart path in the woods with an OSM box ~20 yds ahead. Routing / tee of hole 10 needs a check; tee kept"
-  },
-  {
    "hole": "15",
    "what": "auto water at 215-260 looks like grass with a dark wet strip in 2018 and like a pond/wetland in 2022; kept"
   },
@@ -2150,8 +2094,8 @@
    "what": "Red tees measure 14-40 yds short of the card (h11 389 vs 429, h1 311 vs 330, h16 144 vs 161, h3 109 vs 123, h12 136 vs 149); not reviewed in time, kept"
   },
   {
-   "hole": "10 (all sets)",
-   "what": "all hole-10 tees measure 66-106 yds short of the card; routing issue, tees kept"
+   "hole": "10",
+   "what": "hole 10 removed from the agent layers (2026-11-02): it was mapped on the wrong corridor (a router line through the woods after sanity.select_hole_ways dropped OSM way/1565676856); re-map 10 on the OSM / osm_supplement line after the rebuild"
   }
  ]
 }
