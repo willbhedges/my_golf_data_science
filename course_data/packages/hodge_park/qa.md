@@ -1,6 +1,6 @@
 # Hodge Park Golf Course (Kansas City, MO) - Blue tees
 
-Built 2026-11-02T19:26:19Z. OSM way/195221873. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-02T21:42:55Z. OSM way/195221873. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 

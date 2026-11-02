@@ -1,6 +1,6 @@
 # Drumm Farm Golf Club (Independence, MO) - Tour tees
 
-Built 2026-11-02T19:23:24Z. OSM way/316101757. Scorecard: allsquare (allsquare). Tee set: colour.
+Built 2026-11-02T21:41:31Z. OSM way/316101757. Scorecard: allsquare (allsquare). Tee set: colour.
 
 ## Coverage
 
