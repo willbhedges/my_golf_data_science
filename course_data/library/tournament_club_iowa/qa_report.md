@@ -1,5 +1,5 @@
 # Tournament Club of Iowa: no page
 
-**Status: failed** at package:     osm_id=p["osm_id"]))            ~^^^^^^^^^^ KeyError: 'osm_id' 
+**Status: failed** at package: overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError("HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)")) overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError("HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)")) package at
 
-Resolve: {"status": "ok", "candidates": [{"name": "Tournament Club of Iowa", "town": "Polk City", "holes": 18, "osm": {"type": "relation", "id": 1507320}}]}
+Resolve: {"status": null, "candidates": []}

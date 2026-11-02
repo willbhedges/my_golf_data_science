@@ -7,7 +7,7 @@
  "group": "library",
  "status": "failed",
  "reasons": [
-  "package:     osm_id=p[\"osm_id\"]))            ~^^^^^^^^^^ KeyError: 'osm_id' "
+  "package: overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package at"
  ],
  "check_holes": [],
  "tee_sets": [],
@@ -15,18 +15,8 @@
  "page_bytes": null,
  "request": "course_data/requests/course_page_tournament_club_iowa.json",
  "resolve": {
-  "status": "ok",
-  "candidates": [
-   {
-    "name": "Tournament Club of Iowa",
-    "town": "Polk City",
-    "holes": 18,
-    "osm": {
-     "type": "relation",
-     "id": 1507320
-    }
-   }
-  ]
+  "status": null,
+  "candidates": []
  },
- "built": "2026-10-31T02:39Z"
+ "built": "2026-11-01T21:48Z"
 }
