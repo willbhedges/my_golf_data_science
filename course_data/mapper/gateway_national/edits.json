@@ -1,0 +1,1280 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "gateway_national",
+ "corridor_set": "Back",
+ "mapper": "mapper-gateway_national",
+ "started": "2026-11-02T06:00Z",
+ "minutes": 50,
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native prairie both sides: left beyond the cart path, right from ~15 yds off the fairway to the service road",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        120
+       ],
+       [
+        -43,
+        120
+       ],
+       [
+        -44,
+        150
+       ],
+       [
+        -60,
+        200
+       ],
+       [
+        -60,
+        250
+       ],
+       [
+        -50,
+        300
+       ],
+       [
+        -40,
+        340
+       ],
+       [
+        -33,
+        380
+       ],
+       [
+        -31,
+        400
+       ],
+       [
+        -70,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; mown rough runs to the path"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 15,
+       "side": "R",
+       "a0": 120,
+       "a1": 400,
+       "x0": 0,
+       "x1": 57
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; smooth mown rough ~15 yds right of the fairway"
+    }
+   ]
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "right between fairway and path is mown rough (green mowing stripes in 2022, only drought-tan in 2023); native beyond the path and left above the pond",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "side": {
+       "side": "R",
+       "from": 45,
+       "to": 58,
+       "a0": 120,
+       "a1": 280
+      }
+     },
+     "confidence": "low",
+     "evidence": "textured unmown strip between path and tree line, both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        272
+       ],
+       [
+        -45,
+        272
+       ],
+       [
+        -42,
+        330
+       ],
+       [
+        -42,
+        400
+       ],
+       [
+        -70,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; left of fairway above the pond"
+    }
+   ]
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native left from the cart path out; narrow native strip right in front of the tree line/OB; auto trees and OB along the industrial yard look right",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 14,
+       "side": "L",
+       "a0": 120,
+       "a1": 400,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; rough runs from fairway to the path ~14 yds"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 8,
+       "side": "R",
+       "a0": 120,
+       "a1": 400,
+       "x0": 0,
+       "x1": 40
+      }
+     },
+     "confidence": "low",
+     "evidence": "tan textured strip in front of the tree line in 2023, CIR mottled; 2022 less clear"
+    }
+   ]
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "classic native bands: left band ~-55..-36 full length, right from ~6 yds off the fairway across the path",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "side": {
+       "side": "L",
+       "from": 36,
+       "to": 56,
+       "a0": 120,
+       "a1": 400
+      }
+     },
+     "confidence": "high",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; distinct band in both years and CIR"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 6,
+       "side": "R",
+       "a0": 120,
+       "a1": 400,
+       "x0": 0,
+       "x1": 58
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; mottled strip inside and beyond the path"
+    }
+   ]
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native right (inside and past the path, incl. hayed native at +45..+70 along 280-380); left in front of the trees near the tee",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 6,
+       "side": "R",
+       "a0": 120,
+       "a1": 400,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; windrows (hayed native) at +45..+70 along 280-380 in 2023"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "L",
+       "a0": 120,
+       "a1": 235,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "low",
+     "evidence": "tan textured in 2023 and CIR mottled; 2022 greener"
+    }
+   ]
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "dogleg left: native band right between fairway and woods, and across the end of the fairway in front of the woods (lidar 0.5-2.5 m speckle)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 7,
+       "side": "R",
+       "a0": 160,
+       "a1": 330,
+       "x0": 0,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; lidar yellow speckle 260-320"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 6,
+       "side": "both",
+       "a0": 290,
+       "a1": 400,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; tan textured between fairway end and the woods, lidar low-veg speckle"
+    }
+   ]
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native mounds left (to the pond/creek), across the gap between the two fairways at ~300-330, and right in front of the trees; pond left a bit bigger than auto",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 6,
+       "side": "both",
+       "a0": 140,
+       "a1": 400,
+       "x0": -70,
+       "x1": 45
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; mounding in DEM left"
+    },
+    {
+     "op": "add",
+     "lie": "water",
+     "shape": {
+      "poly": [
+       [
+        -60,
+        266
+       ],
+       [
+        -52,
+        270
+       ],
+       [
+        -38,
+        278
+       ],
+       [
+        -35,
+        288
+       ],
+       [
+        -40,
+        296
+       ],
+       [
+        -48,
+        300
+       ],
+       [
+        -54,
+        292
+       ],
+       [
+        -58,
+        280
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "upper pond lobe (water line) reaches x -35 at along 280-290 in 2023 photo, CIR teal and 2022; auto has only a narrow creek there"
+    }
+   ]
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native beyond the right path, left of the green beyond the path crossing, and a patch far left by the pond; creek / pond auto ok",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "side": {
+       "side": "R",
+       "from": 44,
+       "to": 58,
+       "a0": 120,
+       "a1": 300
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; between the two paths on the right"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -48,
+        318
+       ],
+       [
+        -8,
+        318
+       ],
+       [
+        -8,
+        382
+       ],
+       [
+        -48,
+        382
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; lidar low-veg speckle"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        228
+       ],
+       [
+        -58,
+        228
+       ],
+       [
+        -58,
+        300
+       ],
+       [
+        -70,
+        300
+       ]
+      ]
+     },
+     "confidence": "low",
+     "evidence": "mottled CIR next to the pond"
+    }
+   ]
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "native ridge left between 11 and the next fairway (5 yds of rough); right native from ~15 yds (near tee) / ~7 yds (further) off the fairway out past the path",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 5,
+       "side": "L",
+       "a0": 120,
+       "a1": 400,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "high",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; ridge in DEM"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 15,
+       "side": "R",
+       "a0": 120,
+       "a1": 230,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; smooth rough with stripes to ~15 yds in 2022"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 7,
+       "side": "R",
+       "a0": 230,
+       "a1": 400,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022"
+    }
+   ]
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native right between fairway and path and beyond; left between fairway and the path/ditch; auto 'water' band follows the cart path + ditch (left unchanged, see uncertain)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 8,
+       "side": "R",
+       "a0": 120,
+       "a1": 330,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 8,
+       "side": "L",
+       "a0": 120,
+       "a1": 300,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; lidar 0.5-2.5 m speckle left of the path"
+    }
+   ]
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "wide native band left (~12 yds of rough then native to ~-57); right native past the path",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 12,
+       "side": "L",
+       "a0": 120,
+       "a1": 400,
+       "x0": -57,
+       "x1": 0
+      }
+     },
+     "confidence": "high",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 8,
+       "side": "R",
+       "a0": 230,
+       "a1": 400,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; between the two paths"
+    }
+   ]
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native both sides ~5-6 yds off the fairway, incl. the island in the right fairway notch at 270-300; right-side tree near the green bigger than auto",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 6,
+       "side": "L",
+       "a0": 120,
+       "a1": 300,
+       "x0": -62,
+       "x1": 0
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 5,
+       "side": "R",
+       "a0": 120,
+       "a1": 340,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; island in the notch is red/grey mottled"
+    },
+    {
+     "op": "grow",
+     "lie": "recovery",
+     "by": 5,
+     "shape": {
+      "rect": [
+       28,
+       60,
+       340,
+       390
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown (photo 2023 + lidar canopy) spans +35..+52, auto ellipse only the core"
+    }
+   ]
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native left band between path and fairway near the tee (x -30..-13), thin left strip further on; right strip between fairway and woods (brown in 2022 too)",
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 6,
+       "side": "L",
+       "a0": 120,
+       "a1": 260,
+       "x0": -33,
+       "x1": 0
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 5,
+       "side": "L",
+       "a0": 260,
+       "a1": 400,
+       "x0": -50,
+       "x1": 0
+      }
+     },
+     "confidence": "low",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 8,
+       "side": "R",
+       "a0": 120,
+       "a1": 400,
+       "x0": -70,
+       "x1": 70
+      }
+     },
+     "confidence": "medium",
+     "evidence": "CIR mottled grey-green (unmown), tan tufted in NAIP 2023, darker textured green (no mowing stripes) in NAIP 2022; brown strip in 2022"
+    }
+   ]
+  }
+ },
+ "tees": {
+  "1": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "2": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "3": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "4": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on/at edge of a visible box; within ~5-8 yds of the card spacing"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "5": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "6": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "7": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "move",
+    "to": [
+     7,
+     34
+    ],
+    "confidence": "medium",
+    "evidence": "walkback dot sits ~10 yds left of the long OSM/visible tee box; card 145 vs Back 180 puts it 35 ahead, on the box centre line"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "8": {
+   "Back": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on/at edge of a visible box; within ~5-8 yds of the card spacing"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "9": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "10": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback: no box visible behind the Back box (shelter, gravel road); left in place"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback: no box visible behind the Back box (shelter, gravel road); left in place"
+   }
+  },
+  "11": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "12": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on/at edge of a visible box; within ~5-8 yds of the card spacing"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "13": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "14": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "15": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "16": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "17": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  },
+  "18": {
+   "Back": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Champions": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Forward": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   },
+   "Middle": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "on/at edge of a visible box; within ~5-8 yds of the card spacing"
+   },
+   "The Tips": {
+    "action": "keep",
+    "confidence": "high",
+    "evidence": "dot on a visible box, spacing matches the card"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "13",
+   "what": "auto water band along the left cart path and the diagonal path (along 120-400) is mostly path + a narrow ditch (DEM channel); real water width likely 2-4 yds; left unchanged"
+  },
+  {
+   "hole": "10",
+   "what": "Champions/Tips tee (walkback 44 yds behind Back): no box visible; true location unknown"
+  },
+  {
+   "hole": "2",
+   "what": "right side between fairway and path: drought-tan in 2023 but striped green in 2022 -> treated as mown rough"
+  },
+  {
+   "hole": "3",
+   "what": "right native strip in front of the trees (2022 ambiguous)"
+  },
+  {
+   "hole": "6",
+   "what": "left native near the tee (2022 greener)"
+  },
+  {
+   "hole": "all",
+   "what": "lidar shows almost no 0.5-2.5 m return in the prairie; native edges are from CIR texture +/- 5 yds"
+  }
+ ]
+}
