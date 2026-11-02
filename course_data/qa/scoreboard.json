@@ -1,16 +1,16 @@
 {
  "schema": "scoreboard/1",
- "generated": "2026-11-02 06:58 UTC",
- "commit": "0d14843e",
+ "generated": "2026-11-02 13:02 UTC",
+ "commit": "98dc9bd7",
  "courses": [
   {
    "course": "Spirit Hollow",
    "slug": "spirit_hollow",
    "tees": "Black",
    "package": "course_data/packages/spirit_hollow/package.json",
-   "package_commit": "35f650b9 2026-11-02T02:51:55Z",
+   "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
-   "decision_s": 62.2,
+   "decision_s": 59.1,
    "last_plan": {
     "built": "2026-10-17T01:10Z",
     "runtime_s": 407.8,
@@ -20,7 +20,7 @@
    "truth": "spirit_hollow/output/final_decision.json (hand map course.py; Black boxes; 2B/9B Gold)",
    "truth_fp": "bd4a5e2a1d",
    "truth_commit": "d5e1e91a 2026-10-17T02:33:47Z",
-   "decision_full_s": 1399.8,
+   "decision_full_s": 1444.3,
    "full_mode": {
     "S": 64,
     "N": 3000
@@ -476,14 +476,11 @@
      "hole": "14",
      "tee_set": "Black",
      "pick": "2-wood",
-     "aim": -40.0,
+     "aim": -50.0,
      "tie": true,
-     "runner": "4-wood",
-     "margin": 0.0064,
-     "check": [
-      "Driver best aim -55 rejected (aim -55 yds is more than 40 yds off the tee line)",
-      "2-wood best aim -50 rejected (aim -50 yds is more than 40 yds off the tee line)"
-     ],
+     "runner": "Driver",
+     "margin": 0.0092,
+     "check": [],
      "truth": "2-wood",
      "truth_tie": true,
      "truth_runner": "4-wood",
@@ -504,12 +501,10 @@
      },
      "corridor_pts": 475,
      "full_pick": "2-wood",
-     "full_aim": -40.0,
+     "full_aim": -50.0,
      "full_tie": true,
      "full_runner": "Driver",
-     "full_check": [
-      "2-wood best aim -50 rejected (aim -50 yds is more than 40 yds off the tee line)"
-     ],
+     "full_check": [],
      "same_full": true,
      "same_or_tie_full": true,
      "regret_full": 0.0
@@ -627,7 +622,7 @@
    ],
    "summary": {
     "n": 16,
-    "checks": 3,
+    "checks": 2,
     "n_truth": 16,
     "same": 12,
     "same_or_tie": 14,
@@ -644,7 +639,7 @@
     "same_or_tie_full": 13,
     "mean_regret_full": 0.0197,
     "max_regret_full": 0.101,
-    "checks_full": 3,
+    "checks_full": 2,
     "headline": "full",
     "same_quick": 12,
     "same_head": 11,
@@ -680,17 +675,20 @@
      }
     }
    },
-   "aim_violations": [],
-   "seconds": 1464.9
+   "aim_violations": [
+    "Spirit Hollow 14: 2-wood aim -50.0 yds without CHECK",
+    "Spirit Hollow (full, Black) 14: 2-wood aim -50.0 yds without CHECK"
+   ],
+   "seconds": 1523.2
   },
   {
    "course": "Mozingo Lake",
    "slug": "mozingo_lake",
    "tees": "App",
    "package": "course_data/packages/mozingo_lake/package.json",
-   "package_commit": "35f650b9 2026-11-02T02:51:55Z",
+   "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 42.5,
+   "decision_s": 43.7,
    "last_plan": {
     "built": "2026-10-17T17:38Z",
     "runtime_s": 372.8,
@@ -698,7 +696,7 @@
     "decision_s": 69.4
    },
    "truth": "hand map mozingo/tee_strategy.HOLES through the product's quick decision",
-   "truth_fp": "2ab50d3367",
+   "truth_fp": "059a6aa22f",
    "truth_commit": "3d37942e 2026-10-16T18:42:17Z",
    "holes": [
     {
@@ -737,13 +735,11 @@
      "hole": "3",
      "tee_set": null,
      "pick": "Driver",
-     "aim": 40.0,
+     "aim": 47.5,
      "tie": false,
      "runner": "2-wood",
-     "margin": 0.1036,
-     "check": [
-      "Driver best aim +48 rejected (aim +48 yds is more than 40 yds off the tee line)"
-     ],
+     "margin": 0.1203,
+     "check": [],
      "truth": "Driver",
      "truth_tie": false,
      "truth_runner": "2-wood",
@@ -932,7 +928,7 @@
    ],
    "summary": {
     "n": 14,
-    "checks": 2,
+    "checks": 1,
     "n_truth": 14,
     "same": 11,
     "same_or_tie": 12,
@@ -950,17 +946,19 @@
     "max_regret_quick": 0.088,
     "max_regret_head": 0.088
    },
-   "aim_violations": [],
-   "seconds": 43.0
+   "aim_violations": [
+    "Mozingo Lake 3: Driver aim +47.5 yds without CHECK"
+   ],
+   "seconds": 57.4
   },
   {
    "course": "Veenker",
    "slug": "veenker",
    "tees": "Blue",
    "package": "course_data/packages/veenker/package.json",
-   "package_commit": "35f650b9 2026-11-02T02:51:55Z",
+   "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 50.0,
+   "decision_s": 51.2,
    "last_plan": {
     "built": "2026-10-17T17:35Z",
     "runtime_s": 485.5,
@@ -969,7 +967,7 @@
    },
    "truth": "hand-checked corridor map course_data/truth/veenker/hand_zones_ll.json in the package, through the product's quick decision",
    "truth_label": "hand map, quick",
-   "truth_fp": "a0763d1cf7",
+   "truth_fp": "3ed6810b49",
    "truth_commit": "9e697284 2026-10-17T09:35:55Z",
    "holes": [
     {
@@ -1213,22 +1211,22 @@
     {
      "hole": "15",
      "tee_set": null,
-     "pick": "Long iron",
-     "aim": -17.5,
+     "pick": "Driver",
+     "aim": 60.0,
      "tie": false,
-     "runner": "4-wood",
-     "margin": 0.0535,
+     "runner": "Long iron",
+     "margin": 0.0781,
      "check": [
-      "Driver best aim +120 rejected (best aim +120 is on the edge of the search; aim +120 yds is more than 40 yds off the tee line)",
+      "Driver best aim +120 rejected (best aim +120 is on the edge of the search; aim +120 yds is more than 60 yds off the tee line)",
       "2-wood best aim +98 rejected (aim +98 yds is more than 40 yds off the tee line)",
       "4-wood best aim +85 rejected (aim +85 yds is more than 40 yds off the tee line)"
      ],
-     "truth": "Long iron",
-     "truth_tie": false,
-     "truth_runner": "4-wood",
-     "same": true,
+     "truth": "2-wood",
+     "truth_tie": true,
+     "truth_runner": "Driver",
+     "same": false,
      "same_or_tie": true,
-     "regret": 0.0,
+     "regret": 0.0094,
      "tee_err": 0.0,
      "green_err": 0.0,
      "iou": {
@@ -1291,19 +1289,19 @@
     "n": 13,
     "checks": 2,
     "n_truth": 13,
-    "same": 12,
+    "same": 11,
     "same_or_tie": 12,
-    "same_pct": 0.923,
+    "same_pct": 0.846,
     "same_or_tie_pct": 0.923,
-    "mean_regret": 0.0084,
+    "mean_regret": 0.0092,
     "max_regret": 0.1097,
     "headline": "quick",
-    "same_quick": 12,
-    "same_head": 12,
+    "same_quick": 11,
+    "same_head": 11,
     "same_or_tie_quick": 12,
     "same_or_tie_head": 12,
-    "mean_regret_quick": 0.0084,
-    "mean_regret_head": 0.0084,
+    "mean_regret_quick": 0.0092,
+    "mean_regret_head": 0.0092,
     "max_regret_quick": 0.1097,
     "max_regret_head": 0.1097,
     "tee10": 10,
@@ -1334,16 +1332,16 @@
     }
    },
    "aim_violations": [],
-   "seconds": 51.0
+   "seconds": 70.0
   },
   {
    "course": "Coldwater Golf Links",
    "slug": "coldwater",
    "tees": "Blue",
    "package": "course_data/packages/coldwater/package.json",
-   "package_commit": "35f650b9 2026-11-02T02:51:55Z",
+   "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 64.4,
+   "decision_s": 62.5,
    "last_plan": {
     "built": "2026-10-17T10:21Z",
     "runtime_s": 556.6,
@@ -1352,7 +1350,7 @@
    },
    "truth": "hand-checked corridor map course_data/truth/coldwater/hand_zones_ll.json in the package, through the product's quick decision",
    "truth_label": "hand map, quick",
-   "truth_fp": "b8462e21bc",
+   "truth_fp": "fc9da93047",
    "truth_commit": "899c2225 2026-10-17T10:02:32Z",
    "holes": [
     {
@@ -1504,22 +1502,21 @@
     {
      "hole": "9",
      "tee_set": null,
-     "pick": "4-wood",
-     "aim": -40.0,
+     "pick": "2-wood",
+     "aim": -60.0,
      "tie": false,
-     "runner": "2-wood",
-     "margin": 0.0346,
+     "runner": "4-wood",
+     "margin": 0.0409,
      "check": [
-      "Driver best aim -95 rejected (aim -95 yds is more than 40 yds off the tee line)",
-      "2-wood best aim -72 rejected (aim -72 yds is more than 40 yds off the tee line)",
-      "4-wood best aim -62 rejected (aim -62 yds is more than 40 yds off the tee line)"
+      "Driver best aim -95 rejected (aim -95 yds is more than 60 yds off the tee line)",
+      "2-wood best aim -72 rejected (aim -72 yds is more than 60 yds off the tee line)"
      ],
      "truth": "4-wood",
      "truth_tie": false,
      "truth_runner": "Long iron",
-     "same": true,
-     "same_or_tie": true,
-     "regret": 0.0,
+     "same": false,
+     "same_or_tie": false,
+     "regret": 0.0399,
      "tee_err": 0.0,
      "green_err": 0.0,
      "iou": {
@@ -1701,19 +1698,19 @@
     "n": 14,
     "checks": 2,
     "n_truth": 14,
-    "same": 12,
-    "same_or_tie": 13,
-    "same_pct": 0.857,
-    "same_or_tie_pct": 0.929,
-    "mean_regret": 0.0112,
+    "same": 11,
+    "same_or_tie": 12,
+    "same_pct": 0.786,
+    "same_or_tie_pct": 0.857,
+    "mean_regret": 0.014,
     "max_regret": 0.133,
     "headline": "quick",
-    "same_quick": 12,
-    "same_head": 12,
-    "same_or_tie_quick": 13,
-    "same_or_tie_head": 13,
-    "mean_regret_quick": 0.0112,
-    "mean_regret_head": 0.0112,
+    "same_quick": 11,
+    "same_head": 11,
+    "same_or_tie_quick": 12,
+    "same_or_tie_head": 12,
+    "mean_regret_quick": 0.014,
+    "mean_regret_head": 0.014,
     "max_regret_quick": 0.133,
     "max_regret_head": 0.133,
     "tee10": 13,
@@ -1744,19 +1741,19 @@
     }
    },
    "aim_violations": [],
-   "seconds": 65.4
+   "seconds": 76.7
   },
   {
    "course": "Ellis",
    "slug": "ellis",
    "tees": "Blue",
    "package": "course_data/packages/ellis/package.json",
-   "package_commit": "35f650b9 2026-11-02T02:51:55Z",
+   "package_commit": "bb8275c5 2026-11-02T11:28:15Z",
    "source": "product/decide.run quick n=8000",
-   "decision_s": 48.0,
+   "decision_s": 46.8,
    "truth": "hand-checked corridor map course_data/truth/ellis/hand_zones_ll.json in the package, through the product's quick decision",
    "truth_label": "hand map, quick",
-   "truth_fp": "135c9eedaf",
+   "truth_fp": "987b0a5ac2",
    "truth_commit": "c1691ae5 2026-10-17T10:56:34Z",
    "holes": [
     {
@@ -1980,12 +1977,12 @@
      "runner": "4-wood",
      "margin": 0.0562,
      "check": [],
-     "truth": "2-wood",
+     "truth": "Driver",
      "truth_tie": false,
-     "truth_runner": "4-wood",
+     "truth_runner": "2-wood",
      "same": false,
      "same_or_tie": false,
-     "regret": 0.0667,
+     "regret": 0.1416,
      "tee_err": 0.0,
      "green_err": 0.0,
      "iou": {
@@ -2102,17 +2099,17 @@
     "same_or_tie": 12,
     "same_pct": 0.857,
     "same_or_tie_pct": 0.857,
-    "mean_regret": 0.0088,
-    "max_regret": 0.0667,
+    "mean_regret": 0.0142,
+    "max_regret": 0.1416,
     "headline": "quick",
     "same_quick": 12,
     "same_head": 12,
     "same_or_tie_quick": 12,
     "same_or_tie_head": 12,
-    "mean_regret_quick": 0.0088,
-    "mean_regret_head": 0.0088,
-    "max_regret_quick": 0.0667,
-    "max_regret_head": 0.0667,
+    "mean_regret_quick": 0.0142,
+    "mean_regret_head": 0.0142,
+    "max_regret_quick": 0.1416,
+    "max_regret_head": 0.1416,
     "tee10": 14,
     "green10": 14,
     "iou_fairway": 0.584,
@@ -2141,16 +2138,25 @@
     }
    },
    "aim_violations": [],
-   "seconds": 49.0
+   "seconds": 66.5
   }
  ],
  "guards": {
-  "fails": [],
-  "notes": []
+  "fails": [
+   "Spirit Hollow 14: 2-wood aim -50.0 yds without CHECK",
+   "Spirit Hollow (full, Black) 14: 2-wood aim -50.0 yds without CHECK",
+   "Mozingo Lake 3: Driver aim +47.5 yds without CHECK"
+  ],
+  "notes": [
+   "Mozingo Lake: truth changed since 2026-11-02 06:58 (baseline reset)",
+   "Veenker: truth changed since 2026-11-02 06:58 (baseline reset)",
+   "Coldwater Golf Links: truth changed since 2026-11-02 06:58 (baseline reset)",
+   "Ellis: truth changed since 2026-11-02 06:58 (baseline reset)"
+  ]
  },
  "truth_cache": {
   "spirit_hollow": {
-   "fp": "9c465bf99a",
+   "fp": "deb35a1cea",
    "n": 8000,
    "res": {
     "1": {
@@ -2350,10 +2356,10 @@
      }
     }
    },
-   "built": "2026-10-17 04:48"
+   "built": "2026-11-02 12:33"
   },
   "mozingo": {
-   "fp": "2ab50d3367",
+   "fp": "059a6aa22f",
    "n": 8000,
    "res": {
     "1": {
@@ -2527,10 +2533,10 @@
      }
     }
    },
-   "built": "2026-10-17 04:49"
+   "built": "2026-11-02 12:58"
   },
   "veenker": {
-   "fp": "a0763d1cf7",
+   "fp": "3ed6810b49",
    "n": 8000,
    "res": {
     "1": {
@@ -2654,14 +2660,14 @@
      }
     },
     "15": {
-     "pick": "Long iron",
-     "runner": "4-wood",
-     "margin": 0.05702874455838369,
-     "tie": false,
-     "aim": -17.5,
+     "pick": "2-wood",
+     "runner": "Driver",
+     "margin": 0.009357113721961241,
+     "tie": true,
+     "aim": 60.0,
      "ev": {
-      "Driver": 4.496655937033996,
-      "2-wood": 4.405912317093666,
+      "Driver": 4.173872813060234,
+      "2-wood": 4.164515699338272,
       "4-wood": 4.237671634768369,
       "Long iron": 4.1806428902099855,
       "Mid iron": 4.347463174734437
@@ -2692,10 +2698,10 @@
      }
     }
    },
-   "built": "2026-10-17 11:31"
+   "built": "2026-11-02 12:59"
   },
   "coldwater": {
-   "fp": "b8462e21bc",
+   "fp": "fc9da93047",
    "n": 8000,
    "res": {
     "1": {
@@ -2777,8 +2783,8 @@
      "tie": false,
      "aim": -27.5,
      "ev": {
-      "Driver": 4.2170389498013865,
-      "2-wood": 3.909260460765524,
+      "Driver": 3.8992865660670004,
+      "2-wood": 3.8846365207991096,
       "4-wood": 3.844697203021481,
       "Long iron": 3.876511890844191,
       "Mid iron": 3.941729292493343
@@ -2869,10 +2875,10 @@
      }
     }
    },
-   "built": "2026-10-17 11:32"
+   "built": "2026-11-02 13:00"
   },
   "ellis": {
-   "fp": "135c9eedaf",
+   "fp": "987b0a5ac2",
    "n": 8000,
    "res": {
     "1": {
@@ -2984,14 +2990,14 @@
      }
     },
     "13": {
-     "pick": "2-wood",
-     "runner": "4-wood",
-     "margin": 0.015172655549811953,
+     "pick": "Driver",
+     "runner": "2-wood",
+     "margin": 0.060476455279301344,
      "tie": false,
-     "aim": -40.0,
+     "aim": -57.5,
      "ev": {
-      "Driver": 3.8390447159003234,
-      "2-wood": 3.8157691671102874,
+      "Driver": 3.7409342516819906,
+      "2-wood": 3.801410706961292,
       "4-wood": 3.8309418226600993,
       "Long iron": 3.8825142761527687,
       "Mid iron": 3.958419350414434
@@ -3046,7 +3052,7 @@
      }
     }
    },
-   "built": "2026-10-17 11:33"
+   "built": "2026-11-02 13:02"
   }
  },
  "history": [
@@ -7751,6 +7757,146 @@
    "same_hand_quick": null,
    "ceiling_quick": null,
    "decision_s": 48.0,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-11-02 13:02",
+   "commit": "98dc9bd7",
+   "course": "spirit_hollow",
+   "truth_fp": "bd4a5e2a1d",
+   "n": 16,
+   "headline": "full",
+   "same": 11,
+   "same_or_tie": 13,
+   "same_quick": 12,
+   "same_full": 11,
+   "mean_regret": 0.0197,
+   "max_regret": 0.101,
+   "tee10": 8,
+   "green10": 14,
+   "n_geo": 16,
+   "iou": {
+    "trees": 0.271,
+    "long grass": 0.0,
+    "water": 0.315,
+    "ob": 0.391
+   },
+   "checks": 2,
+   "same_hand_quick": 12,
+   "ceiling_quick": 12,
+   "decision_s": 59.1,
+   "source": "product/decide.run quick n=8000 + full (decide.full_hole S=64 x N=3000)",
+   "regression": true
+  },
+  {
+   "date": "2026-11-02 13:02",
+   "commit": "98dc9bd7",
+   "course": "mozingo_lake",
+   "truth_fp": "059a6aa22f",
+   "n": 14,
+   "headline": "quick",
+   "same": 11,
+   "same_or_tie": 12,
+   "same_quick": 11,
+   "same_full": null,
+   "mean_regret": 0.0094,
+   "max_regret": 0.088,
+   "tee10": null,
+   "green10": null,
+   "n_geo": null,
+   "iou": {},
+   "checks": 1,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 43.7,
+   "source": "product/decide.run quick n=8000",
+   "regression": true
+  },
+  {
+   "date": "2026-11-02 13:02",
+   "commit": "98dc9bd7",
+   "course": "veenker",
+   "truth_fp": "3ed6810b49",
+   "n": 13,
+   "headline": "quick",
+   "same": 11,
+   "same_or_tie": 12,
+   "same_quick": 11,
+   "same_full": null,
+   "mean_regret": 0.0092,
+   "max_regret": 0.1097,
+   "tee10": 10,
+   "green10": 13,
+   "n_geo": 13,
+   "iou": {
+    "trees": 0.442,
+    "long grass": 0.0,
+    "water": 0.245,
+    "ob": 0.0
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 51.2,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-11-02 13:02",
+   "commit": "98dc9bd7",
+   "course": "coldwater",
+   "truth_fp": "fc9da93047",
+   "n": 14,
+   "headline": "quick",
+   "same": 11,
+   "same_or_tie": 12,
+   "same_quick": 11,
+   "same_full": null,
+   "mean_regret": 0.014,
+   "max_regret": 0.133,
+   "tee10": 13,
+   "green10": 14,
+   "n_geo": 14,
+   "iou": {
+    "trees": 0.223,
+    "long grass": 0.0,
+    "water": 0.279,
+    "ob": 0.071
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 62.5,
+   "source": "product/decide.run quick n=8000",
+   "regression": false
+  },
+  {
+   "date": "2026-11-02 13:02",
+   "commit": "98dc9bd7",
+   "course": "ellis",
+   "truth_fp": "987b0a5ac2",
+   "n": 14,
+   "headline": "quick",
+   "same": 12,
+   "same_or_tie": 12,
+   "same_quick": 12,
+   "same_full": null,
+   "mean_regret": 0.0142,
+   "max_regret": 0.1416,
+   "tee10": 14,
+   "green10": 14,
+   "n_geo": 14,
+   "iou": {
+    "trees": 0.2,
+    "long grass": 0.0,
+    "water": 0.0,
+    "ob": 0.077
+   },
+   "checks": 2,
+   "same_hand_quick": null,
+   "ceiling_quick": null,
+   "decision_s": 46.8,
    "source": "product/decide.run quick n=8000",
    "regression": false
   }
