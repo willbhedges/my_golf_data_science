@@ -1,0 +1,125 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "seneca",
+ "course": "Seneca Golf Course",
+ "bbox_snwe": [
+  38.227406,
+  -85.685607,
+  38.243113,
+  -85.662961
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 2248,
+  "height": 2014,
+  "bounds": [
+   614900,
+   4231742,
+   617148,
+   4233756
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   614900.0,
+   0.0,
+   -1.0,
+   4233756.0
+  ],
+  "ll_bbox_wsen": [
+   -85.68728648667836,
+   38.22604159590175,
+   -85.6612771632932,
+   38.244478076539444
+  ]
+ },
+ "fetched_utc": "2026-11-01T21:55:29Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "KY_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KY_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 448685375365
+   }
+  ],
+  "ept_resolution_m": 0.5,
+  "used": [
+   {
+    "name": "KY_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/KY_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 448685375365,
+    "cells": 4508322
+   }
+  ],
+  "valid": 0.9957702664975068,
+  "hag_mb": 2.28,
+  "frac_gt_2_5m": 0.4287927125777918,
+  "class_mb": 0.06
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032000312"
+  ],
+  "mb": 0.85,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W087",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1131868,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 18.14,
+    "items": [
+     "ky_m_3808551_nw_16_060_20220618",
+     "ky_m_3808551_ne_16_060_20220618"
+    ],
+    "acquired": [
+     "2022-06-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 17.64,
+    "items": [
+     "ky_m_3808551_nw_16_060_20200612",
+     "ky_m_3808551_ne_16_060_20200531"
+    ],
+    "acquired": [
+     "2020-05-31",
+     "2020-06-12"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
