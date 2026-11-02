@@ -7,7 +7,36 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T12:00Z",
- "note": "course-page workflow, from course_data/requests/course_page_weaver_ridge.json (only what a golfer types: name, town, state, tees)",
- "town": "Peoria"
+ "requested": "2026-11-01T21:00Z",
+ "note": "course-page workflow, from course_data/requests/course_page_weaver_ridge.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/weaver_ridge/card_review.json, course_data/library/weaver_ridge/review.json",
+ "town": "Peoria",
+ "scorecard": "course_data/library/weaver_ridge/card_review.json",
+ "yardage_overrides": {
+  "5": {
+   "*": 387
+  },
+  "11": {
+   "*": 482
+  },
+  "13": {
+   "*": 401
+  },
+  "14": {
+   "*": 406
+  },
+  "16": {
+   "*": 401
+  },
+  "18": {
+   "*": 535
+  }
+ },
+ "par_overrides": {
+  "5": 4,
+  "11": 5,
+  "13": 4,
+  "14": 4,
+  "16": 4,
+  "18": 5
+ }
 }
