@@ -7,7 +7,20 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T04:09Z",
- "note": "course-page workflow, from course_data/requests/course_page_rivercut.json (only what a golfer types: name, town, state, tees)",
- "town": "Springfield"
+ "requested": "2026-11-01T20:42Z",
+ "note": "course-page workflow, from course_data/requests/course_page_rivercut.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/rivercut/review.json",
+ "town": "Springfield",
+ "tee_overrides": {
+  "16": {
+   "Black": [
+    37.1037882,
+    -93.3468996
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "16": {
+   "Black": 316
+  }
+ }
 }
