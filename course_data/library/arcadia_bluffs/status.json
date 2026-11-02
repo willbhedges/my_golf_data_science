@@ -5,37 +5,78 @@
  "city": "Arcadia",
  "state": "MI",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "package: resolve: ambiguous None None [('Arcadia Bluffs Golf Club', 'Arcadia', 18), ('Arcadia Bluffs - South Course', 'Arcadia', 18)] arcadia_bluffs: ambiguous; see packages/arcadia_bluffs/raw/course.json for the candidates "
+  "1 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
- "request": "course_data/requests/course_page_arcadia_bluffs.json",
- "resolve": {
-  "status": "ambiguous",
-  "candidates": [
-   {
-    "name": "Arcadia Bluffs Golf Club",
-    "town": "Arcadia",
-    "holes": 18,
-    "osm": {
-     "type": "way",
-     "id": 293247442
-    }
-   },
-   {
-    "name": "Arcadia Bluffs - South Course",
-    "town": "Arcadia",
-    "holes": 18,
-    "osm": {
-     "type": "way",
-     "id": 693998226
-    }
-   }
-  ]
- },
- "built": "2026-10-31T01:41Z"
+ "check_holes": [
+  5
+ ],
+ "tee_sets": [
+  {
+   "name": "Champion",
+   "yards": 7300,
+   "par": 72,
+   "rating": 75.7,
+   "slope": 146,
+   "colour": "black",
+   "on_page": "solved"
+  },
+  {
+   "name": "Blue",
+   "yards": 6913,
+   "par": 72,
+   "rating": 72.7,
+   "slope": 140,
+   "colour": "blue",
+   "on_page": "solved"
+  },
+  {
+   "name": "White",
+   "yards": 6389,
+   "par": 72,
+   "rating": 70.5,
+   "slope": 134,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Gold",
+   "yards": 5661,
+   "par": 72,
+   "rating": null,
+   "slope": null,
+   "colour": "gold",
+   "on_page": null
+  },
+  {
+   "name": "Red",
+   "yards": 5024,
+   "par": 72,
+   "rating": 64.7,
+   "slope": 120,
+   "colour": "red",
+   "on_page": null
+  }
+ ],
+ "solved_sets": [
+  "Champion",
+  "Blue"
+ ],
+ "page": "course_data/library/arcadia_bluffs/page.html",
+ "page_bytes": 2149161,
+ "qa_report": "course_data/library/arcadia_bluffs/qa_report.md",
+ "center": [
+  44.45663395,
+  -86.24196004999999
+ ],
+ "osm": "way/293247442",
+ "holes": 18,
+ "days": [
+  "2026-11-07",
+  "2026-11-08"
+ ],
+ "weather": "forecast",
+ "built": "2026-11-01T22:05Z",
+ "request": "course_data/requests/course_page_arcadia_bluffs.json"
 }
