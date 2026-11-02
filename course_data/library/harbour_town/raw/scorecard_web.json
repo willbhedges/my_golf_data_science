@@ -1,0 +1,311 @@
+{
+ "fetched_utc": "2026-11-01T22:07:37Z",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: harbour-town-golf-links: HTTP 404; the-harbour-town-golf-links: HTTP 404; harbour-town-golf-course: HTTP 404; harbour-town-golf-club: HTTP 404"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 23 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/99aca1f1-8ed1-4f70-be24-1669b7e9a75a"
+  },
+  {
+   "source": "bluegolf",
+   "ok": false,
+   "info": "bluegolf: no course page found by search"
+  },
+  {
+   "source": "golfpass",
+   "ok": false,
+   "info": "golfpass: no course page found by search"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: no course page found by search"
+  }
+ ],
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/99aca1f1-8ed1-4f70-be24-1669b7e9a75a",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/99aca1f1-8ed1-4f70-be24-1669b7e9a75a",
+    "par": [
+     4,
+     5,
+     4,
+     3,
+     5,
+     4,
+     3,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     3,
+     5,
+     4,
+     3,
+     4
+    ],
+    "handicap": [
+     11,
+     13,
+     9,
+     15,
+     5,
+     3,
+     17,
+     1,
+     7,
+     12,
+     6,
+     8,
+     10,
+     18,
+     4,
+     14,
+     16,
+     2
+    ],
+    "tee_sets": {
+     "Heritage": {
+      "colour": "heritage",
+      "aliases": [
+       "heritage"
+      ],
+      "yards": [
+       414,
+       544,
+       465,
+       194,
+       561,
+       419,
+       216,
+       467,
+       326,
+       435,
+       432,
+       426,
+       372,
+       188,
+       584,
+       420,
+       198,
+       470
+      ],
+      "total": 7131,
+      "total_stated": 7099,
+      "rating": 75.6,
+      "slope": 148,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       400,
+       497,
+       412,
+       182,
+       535,
+       402,
+       189,
+       425,
+       313,
+       405,
+       411,
+       398,
+       350,
+       162,
+       567,
+       383,
+       180,
+       431
+      ],
+      "total": 6642,
+      "total_stated": 6681,
+      "rating": 73.3,
+      "slope": 144,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       380,
+       468,
+       354,
+       156,
+       502,
+       361,
+       160,
+       395,
+       292,
+       375,
+       378,
+       366,
+       332,
+       143,
+       526,
+       351,
+       152,
+       412
+      ],
+      "total": 6103,
+      "total_stated": 6253,
+      "rating": 71.4,
+      "slope": 136,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "White (Female)",
+        "rating": 76.2,
+        "slope": 144,
+        "total": 6253,
+        "par": 71
+       }
+      ]
+     },
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       333,
+       420,
+       311,
+       133,
+       488,
+       312,
+       133,
+       335,
+       279,
+       336,
+       321,
+       330,
+       309,
+       129,
+       479,
+       324,
+       138,
+       368
+      ],
+      "total": 5478,
+      "total_stated": 5867,
+      "rating": 69.6,
+      "slope": 131,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Gold (Female)",
+        "rating": 74.1,
+        "slope": 137,
+        "total": 5867,
+        "par": 71
+       }
+      ]
+     },
+     "Green": {
+      "colour": "green",
+      "aliases": [
+       "green"
+      ],
+      "yards": [
+       291,
+       383,
+       295,
+       115,
+       421,
+       271,
+       111,
+       305,
+       263,
+       289,
+       286,
+       269,
+       260,
+       91,
+       417,
+       262,
+       124,
+       307
+      ],
+      "total": 4760,
+      "total_stated": 5084,
+      "rating": 66.7,
+      "slope": 118,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Green (Female)",
+        "rating": 69.8,
+        "slope": 126,
+        "total": 5084,
+        "par": 71
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "99aca1f1-8ed1-4f70-be24-1669b7e9a75a",
+     "course_name": "Harbour Town Golf Links",
+     "club_name": "Harbour Town Golf Links",
+     "city": "Hilton Head Island",
+     "state": "SC",
+     "lat": 32.1307201,
+     "lng": -80.8092587,
+     "holes": 18,
+     "yardage": 7099,
+     "website": "https://www.seapines.com/golf/harbour-town-golf-links.aspx"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/99aca1f1-8ed1-4f70-be24-1669b7e9a75a",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/99aca1f1-8ed1-4f70-be24-1669b7e9a75a": {
+    "holes": 18,
+    "fit": 9,
+    "share": 0.5,
+    "mean_err": 21.7,
+    "all_sets": 0.167,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
+}

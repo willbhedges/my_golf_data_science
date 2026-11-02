@@ -1,0 +1,135 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "harbour_town",
+ "course": "Harbour Town Golf Links",
+ "bbox_snwe": [
+  32.1203668,
+  -80.818066,
+  32.1399479,
+  -80.7985655
+ ],
+ "grid": {
+  "crs": "EPSG:32617",
+  "res_m": 1.0,
+  "width": 2084,
+  "height": 2414,
+  "bounds": [
+   517038,
+   3553672,
+   519122,
+   3556086
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   517038.0,
+   0.0,
+   -1.0,
+   3556086.0
+  ],
+  "ll_bbox_wsen": [
+   -80.81938436955566,
+   32.119252118060615,
+   -80.79724434991013,
+   32.14106365893103
+  ]
+ },
+ "fetched_utc": "2026-11-01T22:10:50Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "SC_SavannahPeeDee_7_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/SC_SavannahPeeDee_7_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 34005384316
+   },
+   {
+    "name": "SC_SavannahPeeDee_6_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/SC_SavannahPeeDee_6_2019/ept.json",
+    "cov": 0.628,
+    "year": 2019,
+    "count": 114219016657
+   }
+  ],
+  "ept_resolution_m": 0.5,
+  "used": [
+   {
+    "name": "SC_SavannahPeeDee_7_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/SC_SavannahPeeDee_7_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 34005384316,
+    "cells": 4888292
+   }
+  ],
+  "valid": 0.971677530464485,
+  "hag_mb": 2.76,
+  "frac_gt_2_5m": 0.5842227918714727,
+  "class_mb": 0.1
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032003323"
+  ],
+  "mb": 1.07,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N30W081",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1257694,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 21.06,
+    "items": [
+     "sc_m_3208058_nw_17_060_20230417_20230626",
+     "sc_m_3208058_ne_17_060_20230417_20230626",
+     "sc_m_3208050_sw_17_060_20230417_20230626",
+     "sc_m_3208050_se_17_060_20230417_20230626"
+    ],
+    "acquired": [
+     "2023-04-17"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 21.11,
+    "items": [
+     "sc_m_3208058_nw_17_060_20210507",
+     "sc_m_3208058_ne_17_060_20210507",
+     "sc_m_3208050_sw_17_060_20210507",
+     "sc_m_3208050_se_17_060_20210507"
+    ],
+    "acquired": [
+     "2021-05-07"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
