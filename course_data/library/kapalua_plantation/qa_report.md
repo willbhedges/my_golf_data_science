@@ -1,5 +1,5 @@
 # Kapalua Plantation Course: no page
 
-**Status: failed** at package: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError("HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)")) resolve: not_found None None [] kapalua_plantation: not_found; see packages/kapalua_plantation/raw/course.json for the candidates 
+**Status: failed** at package: <html xmlns="http://www.w3.org/1999/xhtml" xml: overpass failed: https://overpass-api.de/api/interpreter: ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\'overpass-api.de\', port=443): Max retries exceeded with url: /api/interpreter (Caused by NewConnectionError("HTTPSConnection(host=\'overpass-api.de\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable")
 
-Resolve: {"status": "not_found", "candidates": []}
+Resolve: {"status": null, "candidates": []}
