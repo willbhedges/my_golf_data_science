@@ -1,6 +1,6 @@
 # Buffalo Ridge Springs Golf Course (Branson, MO) - Buffalo tees
 
-Built 2026-11-01T23:48:42Z. OSM way/399501608. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-11-02T00:31:08Z. OSM way/399501608. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
