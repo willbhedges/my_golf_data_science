@@ -64,8 +64,9 @@ git -C $R worktree add --no-checkout $SC/wt-map-$S origin/claude/mozingo-lake-te
 cd $SC/wt-map-$S && git sparse-checkout set --no-cone '/*.py' '/mozingo/' '/course_data/**/*.py' \
   '/course_data/vision_any/model_v2/' '/course_data/platform/routing_v2_weights.json' \
   "/course_data/packages/$S/" "/course_data/vision_any/$S/" "/course_data/ob/$S/" '/course_data/mapper/' \
-  '!/course_data/truth/*/' '!/course_data/truth_sets*/' '!/course_data/zero_tap/truth_sets/' \
-  '!/course_data/courses/*/truth/' '!/course_data/mapper/eval_*' '!/course_data/mapper/EVAL_*' && git checkout -q
+  '!/course_data/truth/*/**' '!/course_data/truth_sets*/**' '!/course_data/zero_tap/truth_sets/**' \
+  '!/course_data/courses/*/truth/**' '!/course_data/mapper/eval_*' '!/course_data/mapper/EVAL_*' && git checkout -q
+ls course_data/truth          # only the *.py tools: no course folder may appear here (else stop and report)
 export OMP_NUM_THREADS=1
 ```
 

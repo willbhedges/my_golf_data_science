@@ -41,7 +41,14 @@ DRAW_LIES = ("fairway", "first_cut", "recovery", "native", "water", "sand", "ob"
 
 
 # ----------------------------------------------------------------------------- base package
-def prepare(slug, rebuild="auto", st=None):
+def prepare(slug, rebuild="auto", fresh=False):
+    """The base package: kept as it is once made (frames.json and every edit are relative to its tees), unless
+    fresh=True (then re-check the edits: write_layers.py warns when the base changed after the renders)."""
+    bp = M.mdir(slug, "base", "package.json")
+    if os.path.exists(bp) and not fresh:
+        pkg = M.rj(bp)
+        M.log(f"[{slug}] base package kept: {os.path.relpath(bp, M.ROOT)} ({pkg['stages'].get('mapper_base')}; --fresh remakes it)")
+        return pkg
     pkg = M.rj(M.committed_package_path(slug))
     if pkg is None:
         raise SystemExit(f"{slug}: no course_data/packages/{slug}/package.json; push course_data/requests/package_{slug}.json")
@@ -283,8 +290,8 @@ def tee_frames(pkg, st, FJ):
     return out
 
 
-def run(slug, st=None, holes=None, rebuild="auto", course_map=True):
-    pkg = prepare(slug, rebuild)
+def run(slug, st=None, holes=None, rebuild="auto", course_map=True, fresh=False):
+    pkg = prepare(slug, rebuild, fresh)
     st = M.tee_set_of(pkg, st)
     FJ = M.make_frames(pkg, st)
     TF = tee_frames(pkg, st, FJ)
@@ -334,8 +341,9 @@ def main():
     ap.add_argument("--holes")
     ap.add_argument("--rebuild", default="auto", help="auto | none | tees,trees (base package layers re-made offline)")
     ap.add_argument("--no-map", action="store_true")
+    ap.add_argument("--fresh", action="store_true", help="re-make base/package.json even if it exists")
     a = ap.parse_args()
-    run(a.slug, a.set, set(a.holes.split(",")) if a.holes else None, a.rebuild, not a.no_map)
+    run(a.slug, a.set, set(a.holes.split(",")) if a.holes else None, a.rebuild, not a.no_map, a.fresh)
 
 
 if __name__ == "__main__":
