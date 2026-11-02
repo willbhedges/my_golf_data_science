@@ -4,6 +4,8 @@ name: web-fetch
 # text so a mapper can read them. Trigger: push course_data/requests/webfetch_<name>.json
 #   {"name": "blue_hills", "urls": ["https://...", ...], "rev": n}
 # Output: course_data/research/web/<name>/<nn>.html (raw, capped at 2 MB) + <nn>.txt (tags stripped) + index.json.
+# PDFs / images (by magic bytes or Content-Type; "binary": true forces it) are saved as raw bytes <nn>.pdf / .png /
+# .jpg (capped at 15 MB); a PDF also gets <nn>.txt (pdftotext, OCR for a scan) and <nn>_p<k>.png page images.
 on:
   push:
     paths:
@@ -35,10 +37,53 @@ jobs:
           [ -f "$R" ] || continue
           echo "== $R"
           python3 - "$R" <<'EOF'
-          import json, os, re, sys, html, urllib.request
+          import json, os, re, shutil, subprocess, sys, html, urllib.request
           q = json.load(open(sys.argv[1]))
           out = os.path.join("course_data/research/web", q["name"])
           os.makedirs(out, exist_ok=True)
+          # binary mode: PDFs and images are saved as raw bytes (<nn>.pdf / .png / .jpg ...; decoding them as text corrupted
+          # the Swope 2026 scorecard PDF). A PDF also gets <nn>.txt (pdftotext -layout; OCR with tesseract when the PDF is a
+          # scan) and <nn>_p<k>.png page images (150 dpi, first 4 pages) so a mapper can look at it. "binary": true in the
+          # request forces binary mode for every URL.
+          MAGIC = [(b"%PDF", "pdf"), (b"\x89PNG", "png"), (b"\xff\xd8\xff", "jpg"), (b"GIF8", "gif")]
+          CT = {"application/pdf": "pdf", "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "image/webp": "webp"}
+
+          def kind(b, ct):
+              for m, k in MAGIC:
+                  if b.startswith(m):
+                      return k
+              if b[:4] == b"RIFF" and b[8:12] == b"WEBP":
+                  return "webp"
+              return CT.get((ct or "").split(";")[0].strip().lower())
+
+          def tools():
+              if not shutil.which("pdftotext") or not shutil.which("tesseract"):
+                  subprocess.run("sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils tesseract-ocr",
+                                 shell=True, check=False, stdin=subprocess.DEVNULL)
+
+          def pdf_text(path, stem):
+              tools()
+              txt = stem + ".txt"
+              subprocess.run(["pdftotext", "-layout", path, txt], check=False, stdin=subprocess.DEVNULL)
+              t = open(txt).read() if os.path.exists(txt) else ""
+              subprocess.run(["pdftoppm", "-r", "150", "-l", "4", "-png", path, stem + "_p"], check=False, stdin=subprocess.DEVNULL)
+              pages = sorted(f for f in os.listdir(os.path.dirname(stem)) if f.startswith(os.path.basename(stem) + "_p")
+                             and f.endswith(".png"))
+              how = "pdftotext"
+              if len(t.strip()) < 80:                                  # a scan: OCR the pages at 300 dpi
+                  how = "tesseract OCR"
+                  hi = stem + "_ocr"
+                  subprocess.run(["pdftoppm", "-r", "300", "-l", "4", "-png", path, hi], check=False, stdin=subprocess.DEVNULL)
+                  parts = []
+                  for f in sorted(x for x in os.listdir(os.path.dirname(stem)) if x.startswith(os.path.basename(hi))):
+                      fp = os.path.join(os.path.dirname(stem), f)
+                      r = subprocess.run(["tesseract", fp, "-", "--psm", "6"], capture_output=True, text=True, check=False, stdin=subprocess.DEVNULL)
+                      parts.append(f"--- {f}\n" + r.stdout)
+                      os.remove(fp)
+                  t = "\n".join(parts)
+                  open(txt, "w").write(t)
+              return dict(text=how, text_chars=len(t.strip()), pages=[os.path.basename(x) for x in pages])
+
           idx = []
           for i, u in enumerate(q["urls"]):
               rec = dict(i=i, url=u)
@@ -46,15 +91,27 @@ jobs:
                   req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
                                                            "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
                                                            "Accept": "text/html,application/json;q=0.9,*/*;q=0.8"})
-                  b = urllib.request.urlopen(req, timeout=40).read()[:2_000_000]
-                  t = b.decode("utf-8", "replace")
-                  open(os.path.join(out, f"{i:02d}.html"), "w").write(t)
-                  s = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", t)
-                  s = re.sub(r"(?s)<[^>]+>", " ", s)
-                  s = re.sub(r"[ \t\r\f\v]+", " ", html.unescape(s))
-                  s = re.sub(r"\n\s*\n+", "\n", s)
-                  open(os.path.join(out, f"{i:02d}.txt"), "w").write(s)
-                  rec.update(ok=True, bytes=len(b))
+                  resp = urllib.request.urlopen(req, timeout=40)
+                  ct = resp.headers.get("Content-Type", "")
+                  b = resp.read()[:15_000_000]
+                  k = kind(b, ct) or ("bin" if q.get("binary") else None)
+                  rec.update(content_type=ct)
+                  if k:
+                      fp = os.path.join(out, f"{i:02d}.{k}")
+                      open(fp, "wb").write(b)
+                      rec.update(ok=True, bytes=len(b), binary=k, file=os.path.basename(fp))
+                      if k == "pdf":
+                          rec.update(pdf_text(fp, os.path.join(out, f"{i:02d}")))
+                  else:
+                      b = b[:2_000_000]
+                      t = b.decode("utf-8", "replace")
+                      open(os.path.join(out, f"{i:02d}.html"), "w").write(t)
+                      s = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", t)
+                      s = re.sub(r"(?s)<[^>]+>", " ", s)
+                      s = re.sub(r"[ \t\r\f\v]+", " ", html.unescape(s))
+                      s = re.sub(r"\n\s*\n+", "\n", s)
+                      open(os.path.join(out, f"{i:02d}.txt"), "w").write(s)
+                      rec.update(ok=True, bytes=len(b))
               except Exception as e:
                   rec.update(ok=False, error=str(e)[:300])
               print(rec)
