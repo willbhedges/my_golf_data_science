@@ -70,7 +70,7 @@
    {
     "n": 1,
     "verdict": "wrong tee position",
-    "notes": "Blue OK (414 vs 425, normal back-of-box gap). White tee is on the 340 box; OSM has a box at 373 on the line, which matches the White card (380). Move White there.",
+    "notes": "Blue OK (414 vs 425, normal back-of-box gap). White tee is on the 340 box; OSM has a box at 373 on the line, which matches the White card (380). Move White there. rv14 Red: the OSM red-tagged box is a forward tee; it measured 311 vs card 330. The card Red distance falls on the front of the long OSM White teeing ground way/279486921 (spans 320-382 yds), so Red goes there (point inside the box: kept as given).",
     "measured": {
      "Blue": 414,
      "White": 340
@@ -80,6 +80,10 @@
       "White": [
        39.2502504,
        -94.496787
+      ],
+      "Red": [
+       39.2498856,
+       -94.4966619
       ]
      }
     }
@@ -96,7 +100,7 @@
    {
     "n": 3,
     "verdict": "wrong tee position",
-    "notes": "Par 3. OSM tags put Blue on the 156 box and White on the 124 box, but the hole has boxes at 113/124/135/144/156/167. Card 168/148 fits the 167 box (Blue) and 144 box (White): the colour tags are one box short. Page par-3 numbers use the card yardage so play-it-like is roughly right, but the tee marker is wrong.",
+    "notes": "Par 3. OSM tags put Blue on the 156 box and White on the 124 box, but the hole has boxes at 113/124/135/144/156/167. Card 168/148 fits the 167 box (Blue) and 144 box (White): the colour tags are one box short. Page par-3 numbers use the card yardage so play-it-like is roughly right, but the tee marker is wrong. rv14 Red: the OSM red-tagged box is a forward tee; it measured 109 vs card 123. The card Red distance falls on the OSM White-tagged box way/1566347479 (107-140 yds), so Red goes there (point inside the box: kept as given).",
     "measured": {
      "Blue": 156,
      "White": 124
@@ -110,6 +114,10 @@
       "White": [
        39.2504091,
        -94.4948952
+      ],
+      "Red": [
+       39.2503038,
+       -94.4947263
       ]
      }
     }
@@ -170,29 +178,62 @@
    },
    {
     "n": 10,
-    "verdict": "uncertain",
-    "notes": "Boxes at 205/331/375 vs card 405/371/329: the tagged Blue box (375) matches the White card and the tagged White box (331) the Red card. Likely Blue box unmapped ~30 yds back. Picks 2-wood -40 (Blue) and 4-wood -40 (White) sit on the aim-grid limit and land in rough/trees left of a dogleg: bad-pick risk.",
+    "verdict": "wrong hole line (router) + wrong tee position",
+    "notes": "rv14 (2026-11-02): the published page (build 12:02) was right: OSM way/1565676856 tee -> NE over the cart path -> fairway bend -> N to the green, 373 yds, Blue 400 / White 366 measured. Later builds (packages 15:34 and 17:02, the mapper's base) dropped that way: it is inside_course false and a neighbouring course's hole-10 way duplicates ref 10, so sanity.select_hole_ways removed both and routing/2 re-routed 10 from lidar pad lidar:129 by the 1st tee, straight north through the woods and over the 18th green (mapper: 'corridor through woods, past a building'; 336/305/223 measured from the OSM boxes; the 17:02 build then put the tees on lidar pads / walkback in the woods to hit the card). Fix: osm_supplement.geojson carries the OSM line as a hand hole (wins by ref, never dropped). Tees: along that line the OSM boxes are blue-tag 365-380, white-tag 316-344, red-tag 230; card 405/371/329, so the colour tags are one box short (as on 3, 12, 13): White on the blue-tag box, Red on the white-tag box, Blue 25 yds behind the blue box in the mown strip by the park road (no OSM box; the 12:02 build's Blue point, 400 measured). The red-tag box (230) is a forward tee.",
     "measured": {
-     "Blue": 375,
-     "White": 331
+     "Blue": 400,
+     "White": 371,
+     "Red": 329
+    },
+    "fix": {
+     "tee_ll": {
+      "Blue": [
+       39.2514674,
+       -94.4982017
+      ],
+      "White": [
+       39.251627,
+       -94.4980066
+      ],
+      "Red": [
+       39.2518619,
+       -94.4976802
+      ]
+     }
     }
    },
    {
     "n": 11,
-    "verdict": "OK",
-    "notes": "Par 5, 455 vs 459 Blue; White 431 vs 445 (-14) acceptable.",
+    "verdict": "wrong tee position",
+    "notes": "Par 5, 455 vs 459 Blue; White 431 vs 445 (-14) acceptable. rv14 Red: the OSM red-tagged box is a forward tee; it measured 389 vs card 429. The card Red distance falls on the OSM White-tagged box way/279487456 (421-445 yds), so Red goes there (point inside the box: kept as given).",
     "measured": {
      "Blue": 455,
      "White": 431
+    },
+    "fix": {
+     "tee_ll": {
+      "Red": [
+       39.2545215,
+       -94.4966582
+      ]
+     }
     }
    },
    {
     "n": 12,
     "verdict": "uncertain",
-    "notes": "Par 3. Boxes 110/147/164 vs card 193/172/149: tagged Blue (164) fits White card, White (147) fits Red. Blue box probably unmapped ~29 yds back; the page uses the card 193 for play-it-like while the marker sits at 164.",
+    "notes": "Par 3. Boxes 110/147/164 vs card 193/172/149: tagged Blue (164) fits White card, White (147) fits Red. Blue box probably unmapped ~29 yds back; the page uses the card 193 for play-it-like while the marker sits at 164. rv14 Red: the OSM red-tagged box is a forward tee; it measured 136 vs card 149. The card Red distance falls on the OSM White-tagged box way/1566349137 (140-155 yds), so Red goes there (point inside the box: kept as given).",
     "measured": {
      "Blue": 164,
      "White": 147
+    },
+    "fix": {
+     "tee_ll": {
+      "Red": [
+       39.2583842,
+       -94.4989392
+      ]
+     }
     }
    },
    {
@@ -224,11 +265,19 @@
    },
    {
     "n": 16,
-    "verdict": "OK",
-    "notes": "Par 3 177 vs 192 (-15) Blue, White 161 vs 168. Green box on green.",
+    "verdict": "wrong tee position",
+    "notes": "Par 3 177 vs 192 (-15) Blue, White 161 vs 168. Green box on green. rv14 Red: the OSM red-tagged box is a forward tee; it measured 144 vs card 161. The card Red distance falls on the OSM White-tagged box way/1566350080 (153-168 yds), so Red goes there (point inside the box: kept as given).",
     "measured": {
      "Blue": 177,
      "White": 161
+    },
+    "fix": {
+     "tee_ll": {
+      "Red": [
+       39.2563586,
+       -94.493548
+      ]
+     }
     }
    },
    {

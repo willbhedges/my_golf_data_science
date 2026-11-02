@@ -1,0 +1,45 @@
+{
+ "type": "FeatureCollection",
+ "note": "Hole 10 only (review rv14, 2026-11-02). OSM's own hole-10 way (way/1565676856) is tagged inside_course false (its vertex mean falls in a notch of the course polygon by the maintenance yard), and a neighbouring course's golf=hole ref 10 (way/898574075, 1 mile east) duplicates the ref, so sanity.select_hole_ways drops it and the router re-routes 10 from a lidar pad by the 1st tee straight north through the woods and over the 18th green. This is the same OSM line (tee way/279487450 -> dog-leg left at the fairway -> green way/279487454, 373 yds), with the first leg split into 4 collinear segments so its vertex mean lies inside the course polygon (routing drops inside_course false anchors).",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "golf": "hole",
+    "ref": "10",
+    "par": "4",
+    "osm_id": 1565676856,
+    "note": "OSM way/1565676856 verbatim except 3 collinear vertices added on the first leg; NAIP 2018 shows the tee boxes at the start, the mown corridor NE over the cart path to the fairway bend, then the fairway north to the green"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -94.4980253,
+      39.2516136
+     ],
+     [
+      -94.497633,
+      39.2518959
+     ],
+     [
+      -94.4972406,
+      39.2521782
+     ],
+     [
+      -94.4968483,
+      39.2524605
+     ],
+     [
+      -94.496456,
+      39.2527428
+     ],
+     [
+      -94.497036,
+      39.2540776
+     ]
+    ]
+   }
+  }
+ ]
+}
