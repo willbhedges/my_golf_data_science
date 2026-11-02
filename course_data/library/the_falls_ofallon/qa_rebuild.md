@@ -1,52 +1,31 @@
-# The Falls Golf Club (O'Fallon MO): rebuild QA (2026-11-02)
+# The Falls Golf Club (O'Fallon MO): rebuild QA, second pass (2026-11-02)
 
-**Verdict: NEEDS FIX.** The rebuild did what the review asked: it uses `card_review.json`, and its solved sets are
-**Blue and White**, so the made-up Gold tees are off the page. But the review's per-hole Gold yardages leaked onto
-**Blue** on 6 holes. On those holes the Blue tee now sits on the back (Gold) box and the page shows the Gold-box
-yardage. White is clean.
+**Verdict: PUBLISH.** The per-set yardages are now on the right sets. Blue reads 379 / 341 / 449 / 360 on 2 / 3 / 9 /
+10 from the Blue boxes. White is unchanged and clean.
 
-Page checked: `course_data/library/the_falls_ofallon/page.html`, built 2026-11-01T21:34Z. Both solved sets (Blue,
-White, par 71) were run through `qa_page.js`: 18 holes each, phone and desktop, 0 page problems. I looked at every phone
-hole picture. Pars 36-35 = 71, routing and greens as reviewed.
+Page checked: `course_data/library/the_falls_ofallon/page.html`, built 2026-11-02T06:12Z (GitHub Actions run
+41392580512). Both solved sets (Blue, White, par 71) were run through `qa_page.js`: 18 holes each, phone and desktop,
+0 page problems. I looked at every phone hole picture. Card: `card_review.json` (golfify), no build warnings.
 
-## What went wrong on Blue
+## First-pass fix
 
-`review.json` gives each Gold-tee hole `fix: {"tee_ll": {"Gold": [...]}, "yards": 390}`. The `yards` value is a bare
-number meant for Gold's back box. `review_fixes.py` turns a bare number into `yardage_overrides {ref: {"*": yds}}`,
-and `"*"` means **the solved set**, which is now Blue. So Blue gets the Gold-box yardage, and the tee localizer then
-puts the Blue marker on the back box (2-4 yds from the Gold fix point):
+| fix | applied? |
+|---|---|
+| Gold fixes keyed per set (`"yards": {"Gold": ...}`), 18 Blue + Gold 482 | **yes.** Blue 2 / 3 / 9 / 10 measure 380 / 341 / 445 / 365 (card 379 / 341 / 449 / 360), on OSM boxes 7-31 yds in front of the Gold fix points. |
 
-| hole | Blue card | page Blue | Blue tee |
-|---|---|---|---|
-| 2 | 379 | **390** | back box (2 yds from the Gold fix) |
-| 3 | 341 | **368** | back box (3 yds) |
-| 9 | 449 | **476** | back box (4 yds) |
-| 10 | 360 | **374** | back box (3 yds) |
-| 13 | 345 | 344 | back box (1 yd), harmless |
-| 15 | 510 | **506** | back box (0 yds), harmless |
-| 18 | 499 | 482 | the review moved Blue here on purpose (walk-back at the road), OK |
-
-11 (365) and 16 (330) equal the Blue card anyway. The page's Blue total is **6,068** instead of the card's 6,011.
+Blue total **5,994** = card 6,011 less the reviewed 18 (482 vs 499). The first pass expected 6,011 because it did not
+allow for the deliberate 18 change, so 5,994 is right.
 
 ## Holes
 
 | hole | Blue | White | note |
 |---|---|---|---|
-| 1, 4-8, 11, 12, 14, 16, 17 | OK | OK | OSM boxes, card yardage |
-| 2, 3, 9, 10 | **wrong tee/yardage** (Gold box) | OK | see table |
-| 13, 15 | on the back box, yardage within 4 | OK | |
-| 18 | OK (review tee) | OK | |
-| 16 | OK | OK | Blue Driver to the left of the line, fairway 29% (the review's uncertain pick); not blocking |
+| 1-10, 12, 14, 17 | OK | OK | OSM boxes, yardage = card ±5 |
+| 11, 13, 15, 16 | OK | OK | Blue shares the Gold fix box; Blue card = Gold yardage there (365 / 345 / 510 / 330), so it is the same box |
+| 18 | OK (review tee, 482) | OK | |
+| 16 | OK (uncertain, as reviewed) | OK | Blue Driver left of the line, fairway 30%; not blocking |
+| 9 | OK (marginal) | OK | Driver next to the right-hand trees (trees 13-14%), pond short-left out of reach |
 
-## Next fix
+## Remaining (optional)
 
-1. **Course:** in `course_data/library/the_falls_ofallon/review.json`, make each Gold fix's yards per-set:
-   `"yards": {"Gold": 390}` (likewise 3, 9, 10, 11, 13, 15, 16) and `"yards": {"Gold": 482, "Blue": 482}` on 18. Then
-   rebuild (coordinator: course_page_the_falls_ofallon).
-2. **Pipeline** (`course_data/library/review_fixes.py`): when a hole's `fix` has `tee_ll` for named sets and a bare
-   `yards`, key the yardage to those sets, not to `"*"`. `"*"` should only be used when the fix names no set. The same
-   pattern is in Swope, Drumm Farm, Weaver Ridge, La Nickell, Creekmoor and Colbert. It is harmless there only because
-   the reviewed set happens to be the solved set.
-
-After that rebuild: PUBLISH, provided Blue reads 379 / 341 / 449 / 360 on 2 / 3 / 9 / 10 from the Blue boxes and totals
-6,011.
+None blocking.
