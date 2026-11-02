@@ -404,11 +404,12 @@
      once conf >= pin; a pair that survives keeps its confidence). R.sticky (exported) overrides; null = plain re-solve. */
   const STICKY = {alpha: 0.0, pin: 0.0, pin_w: 30.0, keep: true, cap: 1.0, boxes: false};
   const stickyW = (c, st) => c >= st.pin ? st.pin_w : st.alpha * c;
-  /* resolve2.POLICY: the shipped confirm-tap policy (zero_tap PATHROUTE.md "Every hole right"): plain full re-solve
-     (sticky null; an exported R.sticky is ignored unless R.policy names it), ask the lowest-confidence unconfirmed hole
-     (< cap) until P(every pair right) = product of the unconfirmed confidences >= target; yes / not_hole "keep" /
-     "drop" = no re-solve after a "yes" / "not a hole". R.policy (exported) overrides. */
-  const POLICY = {target: 0.9, cap: 0.999, yes: "keep", not_hole: "drop", sticky: null};
+  /* resolve2.POLICY: the shipped confirm-tap policy (zero_tap PATHROUTE.md "Fully right"): plain full re-solve
+     (sticky null; an exported R.sticky is ignored unless R.policy names it) after every answer (yes / not_hole
+     "solve"; "keep" / "drop" = no re-solve after a "yes" / "not a hole"), ask the lowest-confidence unconfirmed hole
+     (< cap) until P(every pair right) = product of the unconfirmed confidences >= target; h1 "first" = on a 9 / 18-hole
+     course "which tee is hole 1?" before any hole (needHole1). R.policy (exported) overrides. */
+  const POLICY = {target: 0.9, cap: 0.999, yes: "solve", not_hole: "solve", sticky: null, h1: "first"};
 
   /* resolve2.Session */
   class Session {
@@ -542,6 +543,8 @@
       }
       return out;
     }
+    /* resolve2.Session.need_hole1: the hole-1 tee is still to ask (POLICY h1 "first", 9 / 18 holes, none yet) */
+    needHole1() { return this.policy.h1 === "first" && (this.R.kind === 9 || this.R.kind === 18) && this.fix.first_tee == null; }
     askAll(target) { const n = this.need(target); return n.length ? n[0] : null; }
     /* the golfer's answer about hole i: notHole, else "hole `number` is `tee` -> this green" (tee null / the decoded
        tee = "yes"). -> true when the route needs a re-solve (the caller runs solve(), or begin() + step()s) */

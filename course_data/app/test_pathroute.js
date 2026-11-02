@@ -52,7 +52,9 @@ for (const f of files) {
       const t0 = Date.now();
       let solved = true;
       if (a && a[0] === "answer") solved = S2.answer(a[1], a[2], a[3], a[4]);
+      if (a && a[0] === "hole1") S2.holeOne(a[1]);
       if (solved) S2.solve();
+      if (st.need_h1 !== undefined && S2.needHole1() !== st.need_h1) { bad++; console.log(`FAIL ${doc.slug} needHole1 ${S2.needHole1()} vs ${st.need_h1}`); }
       if (st.solved !== undefined && solved !== st.solved) { bad++; console.log(`FAIL ${doc.slug} answer ${JSON.stringify(a)} re-solve ${solved} vs ${st.solved}`); }
       if (st.p_all !== undefined && !close(S2.pAll(), st.p_all, 1e-9)) { bad++; console.log(`FAIL ${doc.slug} p_all ${S2.pAll()} vs ${st.p_all}`); }
       if (st.need !== undefined && JSON.stringify(S2.need()) !== JSON.stringify(st.need)) { bad++; console.log(`FAIL ${doc.slug} need ${S2.need()} vs ${st.need}`); }

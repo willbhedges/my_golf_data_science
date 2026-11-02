@@ -283,10 +283,10 @@ python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split dev --f
 python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split test --policy local:resolve=fix --json t.json
 ```
 
-## Every hole right: P(all pairs right) stop + re-solve on corrections only (2026-11-02, shipped default)
+## Every hole right: P(all pairs right) stop + re-solve on corrections only (2026-11-02; superseded: "Fully right" below)
 
 **Goal** (coordinator): every hole right (all pairs right + numbered) in the fewest taps, not 98 % pair precision.
-**Shipped** (`resolve2.POLICY` = `PathRoute.POLICY`, supersedes the sticky "local" default above):
+**Shipped until "Fully right"** (`resolve2.POLICY` = `PathRoute.POLICY`, superseded the sticky "local" default above; the stop and ask order still ship):
 - **stop**: P(every decoded pair right) = **product of the unconfirmed holes' calibrated confidences** >= **0.9**
   (`Session.p_all`). It is calibrated on dev states (plain re-solve: P 0.90-0.95 -> 96.7 % all right, 0.95-0.98 ->
   97.5 %, 0.98-1 -> 99.6 %). A learned course-level calibrator (`stop4.py` "learn": logistic on sum / min log conf,
@@ -369,4 +369,74 @@ python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split dev --f
 python course_data/zero_tap/pathroute_v2/stop4.py eval dev.json --targets 0.9,0.95          # dev: learned stop OOF
 python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split test --policy plain:resolve=fix --json t.json
 python course_data/zero_tap/pathroute_v2/stop4.py eval t.json --split test
+```
+
+## Fully right: re-solve after every answer + hole-1 tee first (2026-11-02, shipped default)
+
+**Metric** (product): "fully right" = every decoded pair right (golfer-added missing holes count, one tap each) **and**,
+on 9 / 18-hole courses, every hole numbered right after one "this tee is hole 1" tap (not counted in taps, in every
+row). The policy above was chosen on pairs only and dev numbering was never measured; this is the dev decision.
+
+**Dev** (157 courses out-of-fold + 3 no-result, `sim3.py --h1-at 0.8,0.85,0.9,0.95,0.98`: the hole-1 decode at the
+first state reaching each P(all) target and at the last state, which is all `stop4.stop_eval` reads at those
+targets; `results/pathroute_v2/summary_fullyright.json`). `plain` = re-solve after every answer (yes / correction /
+not a hole); `resolve=fix` = the policy above (yes / not a hole without a re-solve); `h1=first` = the true hole-1 tee
+is fixed and the route re-solved before the first hole question, `h1=last` = the hole-1 tap after the stop:
+
+| policy (dev) | stop | taps mean (median, p90) | all pairs right | **fully right** | holes numbered | oracle taps |
+|---|---|---|---|---|---|---|
+| re-solve on corrections only, h1 last (was shipped) | P >= 0.9 | 9.38 (8, 18) | **91.2 %** | 77.5 % | 93.7 % | 4.43 |
+| | P >= 0.95 | 11.64 (11, 18.1) | 93.1 % | 83.8 % | 94.8 % | |
+| re-solve after every answer, h1 last | P >= 0.9 | 8.79 (8, 18) | 86.9 % | 84.4 % | 92.2 % | 4.38 |
+| | P >= 0.95 | 11.13 (10, 19.1) | 88.1 % | 88.1 % | 93.2 % | |
+| **re-solve after every answer, hole-1 tee first (shipped)** | **P >= 0.9** | **8.57 (7, 18)** | 86.9 % | **85.0 %** | 92.5 % | **4.20** |
+| | P >= 0.95 | 10.95 (10, 19.1) | 88.7 % | 88.1 % | 93.0 % | |
+| re-solve on corrections only, hole-1 tee first | P >= 0.9 | 9.17 (8, 18) | 91.2 % | 78.1 % | 92.3 % | 4.34 |
+| | P >= 0.95 | 11.49 (11, 19.1) | 93.1 % | 82.5 % | 93.3 % | |
+
+(Other stops, dev fully right / taps: every answer + h1 first 71.9 % / 6.48 at P 0.8, 78.1 % / 7.29 at 0.85, 89.4 % /
+13.68 at 0.98; corrections only + h1 last 66.9 / 7.07, 72.5 / 8.07, 89.4 / 14.31. No policy passes 89.4 % fully
+right on dev: the re-solve tops out there.)
+
+**Decision (dev only)**: re-solving after every answer is better on fully right at every stop (84.4 vs 77.5 % at
+P 0.9 with 0.6 fewer taps; 88.1 vs 83.8 % at 0.95), as test hinted: a route whose "yes" answers were never re-solved
+breaks or mis-numbers when the hole-1 tap finally re-solves it, while "corrections only" keeps more pairs right
+before that tap (91 vs 87 %). Asking the hole-1 tee **first** is a small further gain (0.2 fewer taps at the same or
++0.6 pt fully right, oracle 4.20 vs 4.38) - one course in 160, within noise, but never worse and free (the app
+already had the question). Stop P >= 0.9 is kept: 0.85 -> 0.9 buys +6.9 pt fully right for 1.3 taps, 0.9 -> 0.95
+only +3.1 pt for 2.4 taps. Shipped: `POLICY = {target: 0.9, cap: 0.999, yes: "solve", not_hole: "solve",
+sticky: None, h1: "first"}` (Python `resolve2.POLICY` = JS `PathRoute.POLICY`; `Session.need_hole1()` /
+`needHole1()` = 9 / 18-hole course with no hole-1 tee yet).
+
+**Test** (153 = 149 simulated + 4 no-result; not used to choose). The shipped policy was simulated once after the dev
+decision (`sim3.py --split test --policy plain:h1=first`); the other rows are the runs of "Every hole right":
+
+| policy (test), stop P >= 0.9 | taps mean (median, p90) | all pairs right | fully right | holes numbered | P >= 0.95: taps / pairs / fully |
+|---|---|---|---|---|---|
+| **re-solve after every answer, hole-1 tee first (shipped)** | **9.41 (8, 18)** | 85.0 % | **84.3 %** | **96.5 %** | 11.64 / 87.6 / **86.9 %** |
+| re-solve after every answer, h1 last | 9.66 (8, 18) | 85.0 % | 84.3 % | 96.4 % | 11.84 / 86.9 / 86.3 % |
+| re-solve on corrections only, h1 last (was shipped) | 9.93 (8, 18) | 89.5 % | 77.1 % | 95.2 % | 12.19 / 90.8 / 79.7 % |
+
+Test agrees with dev: the same fully right as h1 last at 0.25 fewer taps, +7 pt fully right over the previous
+default. Honest limits: the h1-first gain is small on both splits; the simulated golfer always knows the hole-1 tee
+(the app lets the golfer skip it, "Not now"), and on 27 / 36-hole courses fully right = all pairs right (no hole-1
+tap is simulated).
+
+**App** (`lib_play.js`): every answer re-solves (`Session.answer` returns true for a "yes" / "not a hole" too, so the
+log replay runs one decode per answer); "First: which tee is hole 1?" is shown above the hole question on every 9 /
+18-hole course until answered or skipped (`needHole1()`; before, only while some hole still needed a look, so a route
+already at P >= 0.9 never asked it), not blocking the hole question. `out/index.html` / `aim_caddie.html` relinked
+(JS only; the course-index blob kept as committed).
+
+**Tests**: `test_pathroute.js` 24 courses, 246 cases (69 decodes with facts + 153 policy session steps, now ending
+with the hole-1 tee on 9 / 18-hole courses and checking `needHole1`), 0 failing, max diff 1.1e-13 (fixtures
+re-exported by `export_js.py`); `test_route_ui.js` OK (hole-1 tee first, then "Yes"); `test_lib_play.js` OK (10
+courses x 2 widths, 572 screens); `pytest pathroute_v2` 12 passed, 1 skipped.
+
+```bash
+python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split dev --folds FOLDS.pkl \
+    --policy plain:resolve=fix --policy plain --policy plain:h1=first --policy plain:resolve=fix,h1=first \
+    --h1-at 0.8,0.85,0.9,0.95,0.98 --json dev.json --jsonl --jobs 4      # ~17 + 18 min on 4 shared cores
+python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split test --policy plain:h1=first --json t.json
+python course_data/zero_tap/pathroute_v2/stop4.py eval t.json --split test          # pp rows = the table
 ```

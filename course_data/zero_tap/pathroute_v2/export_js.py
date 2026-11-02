@@ -128,9 +128,9 @@ def cases(d, pr, model, comp, rng):
 
 def session_case(d, pr, model, comp):
     """resolve2.Session under the shipped POLICY over a golfer sequence (Session.answer): free solve; "yes" to the
-    lowest-confidence hole (no re-solve); a correction of the next one (its second-best tee -> plain re-solve); "not a
-    hole" (dropped, no re-solve); another correction; another "yes" -> holes, conf, P(all right) and the ask list
-    (Session.need) after each answer."""
+    lowest-confidence hole; a correction of the next one (its second-best tee); "not a hole"; another correction;
+    another "yes" (each re-solves under POLICY yes / not_hole "solve") -> holes, conf, P(all right) and the ask list
+    (Session.need) after each answer, and whether it re-solved."""
     s = RS.Session(d, pr, model["calib"], cfg=model.get("cfg"), calib_fix=model.get("calib_fix"))
     s.comp = comp
     single = d["kind"] in (9, 18)
@@ -140,7 +140,8 @@ def session_case(d, pr, model, comp):
     def rec(act, solved):
         steps.append(dict(act=act, solved=solved,
                           holes=[[h["number"], h["loop"], h["t"], h["g"], h["boxes"]] for h in s.holes],
-                          conf=[float(c) for c in s.conf], p_all=s.p_all(), need=[int(x) for x in s.need()]))
+                          conf=[float(c) for c in s.conf], p_all=s.p_all(), need=[int(x) for x in s.need()],
+                          need_h1=bool(s.need_hole1())))
     s.solve()
     rec(None, True)
     for kind in ("yes", "fix", "not", "fix", "yes"):
@@ -161,6 +162,11 @@ def session_case(d, pr, model, comp):
         rec(act, solved)
         if not s.holes:
             break
+    if single and s.holes and s.need_hole1():           # "which tee is hole 1?": the decoded hole 1's tee
+        h1 = min(s.holes, key=lambda h: h["number"])
+        s.hole_one(h1["t"])
+        s.solve()
+        rec(["hole1", int(h1["t"])], True)
     return steps
 
 

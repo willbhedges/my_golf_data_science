@@ -8,10 +8,11 @@
     s.hole_one(tee)                            # (b) "this tee is hole 1" (fixes the start and the direction)
     s.solve()                                  # re-solve with every fact fixed (decode2.decode2(fix=...))
 
-The shipped confirm-tap policy (POLICY, PATHROUTE.md "Every hole right"): ask the hole `s.ask_all()` names (lowest
+The shipped confirm-tap policy (POLICY, PATHROUTE.md "Fully right"): on a 9 / 18-hole course first "which tee is
+hole 1?" (`s.need_hole1()` -> `s.hole_one(tee)`, `s.solve()`), then ask the hole `s.ask_all()` names (lowest
 confidence first) until the course-level P(every pair right) = product of the unconfirmed holes' confidences reaches
 POLICY["target"]; answer with `s.answer(i, tee=..., number=..., not_hole=...)`, which re-solves the whole route
-(plain, not sticky) after a correction and applies a "yes" / "not a hole" without a re-solve (POLICY yes / not_hole).
+(plain, not sticky) after every answer ("yes", correction, "not a hole"; POLICY yes / not_hole = "solve").
 
 Facts are kept in `s.fix` (decode2.apply_fix format, JSON-able with tee / green indices); `to_ids` / `from_ids`
 convert them to OSM ids so an app can store them and re-solve later.
@@ -38,10 +39,13 @@ import run2 as R2  # noqa: E402
 STICKY = dict(alpha=0.0, pin=0.0, pin_w=30.0, keep=True, cap=1.0, boxes=False)
 
 
-# Confirm-tap policy (PATHROUTE.md "Every hole right"): plain full re-solve (sticky None), stop when
-# P(all pairs right) >= target, ask the lowest-confidence unconfirmed hole (< cap); yes / not_hole: "keep" / "drop" =
-# no re-solve after a "yes" / "not a hole" (the next correction's re-solve includes them), "solve" = re-solve.
-POLICY = dict(target=0.9, cap=0.999, yes="keep", not_hole="drop", sticky=None)
+# Confirm-tap policy (PATHROUTE.md "Every hole right" / "Fully right"): plain full re-solve (sticky None) after EVERY
+# answer, stop when P(all pairs right) >= target, ask the lowest-confidence unconfirmed hole (< cap); yes / not_hole:
+# "solve" = re-solve after a "yes" / "not a hole" (chosen on dev for "fully right" = all pairs right + every hole
+# numbered after the hole-1 tap), "keep" / "drop" = no re-solve (the next correction's re-solve includes them).
+# h1: "first" = on a 9 / 18-hole course ask "which tee is hole 1?" before any hole (Session.need_hole1; dev: same fully
+# right at 0.2 fewer taps than the hole-1 tap after the stop), "last" = after the stop (P(all) does not cover it).
+POLICY = dict(target=0.9, cap=0.999, yes="solve", not_hole="solve", sticky=None, h1="first")
 
 
 def p_all(conf, fixed=None):
@@ -217,6 +221,12 @@ class Session:
                 break
             out.append(i)
         return out
+
+    def need_hole1(self):
+        """True while the hole-1 tee is still to ask (POLICY h1 "first", 9 / 18-hole course, no hole-1 tee yet): the
+        app asks it before the holes of need(); the answer is hole_one(tee) + solve()."""
+        return (self.policy.get("h1") == "first" and int(self.d["kind"]) in (9, 18)
+                and self.fix.get("first_tee") is None)
 
     def ask_all(self, target=None):
         """The next hole to ask (index) under POLICY, or None when P(all right) >= target."""

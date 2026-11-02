@@ -196,10 +196,11 @@ function lpInput(t){
    within 40 yds), else "plan pending" (geometry only; a golf_replan/1 request is recorded). Golfers' answers are the
    same geo-anchored actions as above (maps/<slug>): locate = "hole N is this tee + green", reject = "no" (or a
    practice green when only the green is set), first = "this tee is hole 1". The confirm-tap policy is the engine's
-   (PathRoute.POLICY = resolve2.POLICY, zero_tap PATHROUTE.md "Every hole right"): a correction / "no" / hole-1 tee
-   re-solves the whole route in the browser (the same decode as zero_tap/pathroute_v2), a "yes" / "not a hole" applies
-   without a re-solve; the holes to ask are Session.need(): lowest confidence first until P(every pair right) reaches
-   the policy target. The answer log is replayed answer by answer into one Session (kept across answers: a new answer
+   (PathRoute.POLICY = resolve2.POLICY, zero_tap PATHROUTE.md "Fully right"): on a 9 / 18-hole course "Which tee is
+   hole 1?" comes first (Session.needHole1, shown above the hole question until answered or "Not now"); every answer
+   (yes / correction / "no" / not a hole / hole-1 tee) re-solves the whole route in the browser (the same decode as
+   zero_tap/pathroute_v2; POLICY yes / not_hole "solve"); the holes to ask are Session.need(): lowest confidence first
+   until P(every pair right) reaches the policy target. The answer log is replayed answer by answer into one Session (kept across answers: a new answer
    only applies itself). */
 const LPR = {}, RT_SNAP = 25;
 const llYd = (a, b) => { const kx = 111320 * Math.cos(a[1] * Math.PI / 180) / 0.9144; return Math.hypot((a[0] - b[0]) * kx, (a[1] - b[1]) * 110950 / 0.9144); };
@@ -339,9 +340,9 @@ const pctTxt = c => (c >= 0.995 ? ">99" : Math.round(c * 100)) + " %";
 function lpRouteBox(L, RT, v){
   const S = RT.S, lp = LP(), pick = lp.rpick && lp.rpick.slug === L.id && lp.rpick.no === v.no ? lp.rpick.kind : null;
   let h1 = "";
-  if (RT.low.length && S.fix.first_tee == null && !lp.h1skip[L.id]) {
+  if (S.fix.first_tee == null && !lp.h1skip[L.id] && ((S.needHole1 && S.needHole1()) || RT.low.length)) {
     const ch = lpStartChoices(L, RT);
-    h1 = `<section class="conf check stack" id="rtHole1"><b>Which tee is hole 1?</b><span class="sub">One tap fixes the numbering of every hole. The red letters on the sketch are the likeliest first tees (A = the one shown as hole 1 now).</span>
+    h1 = `<section class="conf check stack" id="rtHole1"><b>First: which tee is hole 1?</b><span class="sub">One tap fixes the numbering of every hole. The red letters on the sketch are the likeliest first tees (A = the one shown as hole 1 now).</span>
       ${lp.rpick && lp.rpick.slug === L.id && lp.rpick.kind === "h1" ? lpSchem(L, RT, null, ch) : ""}
       <div class="row">${ch.map(([lab, , t]) => `<button class="btn" data-rth1="${t}">${lab}${lab === "A" && RT.view.some(u => u.no === 1 && u.h.t === t) ? " (shown as 1)" : ""}</button>`).join("")}
       <button class="btn ghost" data-rth1map="1">${lp.rpick && lp.rpick.kind === "h1" ? "Hide the sketch" : "Show on the sketch"}</button><button class="btn ghost" data-rth1skip="1">Not now</button></div></section>`;
@@ -361,7 +362,7 @@ function lpRouteBox(L, RT, v){
         <div class="row">${ch.map(([lab, , g]) => `<button class="btn" data-rtg="${g}">${lab}</button>`).join("")}<button class="btn ghost" data-rtnot="1">This green is a practice green</button></div>` : ""}</div>`;
   }
   return `${h1}<section class="conf ${v.fixed || !v.ask ? "auto" : "check"} stack" id="rtBox">${q}${lowTxt}
-    <div class="sub" id="rtNote">Hole pairing from the course map, no scorecard (card-blind routing). A correction re-solves every hole${RT.ms ? ` (${RT.ms} ms)` : ""}; every answer is shared with the next golfer.</div>${syncLine({id: L.id}, null)}</section>`;
+    <div class="sub" id="rtNote">Hole pairing from the course map, no scorecard (card-blind routing). Every answer re-solves every hole${RT.ms ? ` (${RT.ms} ms)` : ""}; every answer is shared with the next golfer.</div>${syncLine({id: L.id}, null)}</section>`;
 }
 /* a decoded hole with no precomputed plan: geometry only */
 function lpPending(L, RT, i, v){

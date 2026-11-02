@@ -153,10 +153,21 @@ def test_sticky_bonus_and_weights():
 
 def test_policy_p_all_need_answer():
     """resolve2.POLICY: P(all right) = product of unconfirmed confidences; need() asks lowest first until the target;
-    "yes" / "not a hole" apply without a re-solve."""
+    shipped: every answer re-solves; yes="keep" / not_hole="drop": "yes" / "not a hole" apply without a re-solve."""
     import resolve2 as RS
+    assert RS.POLICY["yes"] == "solve" and RS.POLICY["not_hole"] == "solve" and RS.POLICY["sticky"] is None
     s = RS.Session.__new__(RS.Session)
     s.policy = dict(RS.POLICY, target=0.9)
+    s.holes = [dict(t=i, g=i, boxes=[], loop=0, number=i + 1) for i in range(2)]
+    s.conf = np.array([0.6, 0.8])
+    s.fix = dict(pairs=[], not_green=[], first_tee=None)
+    s.prev, s.sticky = {}, None
+    called = []
+    s.solve = lambda: called.append(1)
+    assert s.answer(0, tee=None, number=1) is True and called == [1] and (1, 0, 0) in s.fix["pairs"]
+    assert s.answer(1, not_hole=True) is True and called == [1, 1] and 1 in s.fix["not_green"]
+    s = RS.Session.__new__(RS.Session)
+    s.policy = dict(RS.POLICY, target=0.9, yes="keep", not_hole="drop")
     s.holes = [dict(t=i, g=i, boxes=[], loop=0, number=i + 1) for i in range(4)]
     s.conf = np.array([0.99, 0.6, 1.0, 0.8])
     s.fix = dict(pairs=[(3, 2, 2)], not_green=[], first_tee=None)
@@ -170,3 +181,19 @@ def test_policy_p_all_need_answer():
     s.solve = lambda: called.append(1)
     assert s.answer(0, tee=7, number=1) is True and called and (1, 7, 0) in s.fix["pairs"]
     assert RS.p_all([0.5, 1.0], [False, True]) == 0.5
+
+
+def test_policy_hole1_first():
+    """POLICY h1 "first": a 9 / 18-hole course asks the hole-1 tee until one is set; other kinds never."""
+    import resolve2 as RS
+    s = RS.Session.__new__(RS.Session)
+    s.policy = dict(RS.POLICY)
+    s.fix = dict(pairs=[], not_green=[], first_tee=None)
+    for kind, want in ((9, True), (18, True), (27, False), (36, False)):
+        s.d = dict(kind=kind)
+        assert s.need_hole1() is want
+    s.d = dict(kind=18)
+    s.hole_one(3)
+    assert s.need_hole1() is False
+    s.fix["first_tee"], s.policy["h1"] = None, "last"
+    assert s.need_hole1() is False

@@ -1,0 +1,452 @@
+{
+ "note": "PATHROUTE.md 'Fully right': dev = 157 courses OOF + 3 no-result, sim3.py --h1-at 0.8,0.85,0.9,0.95,0.98 (hole-1 decode at the first state reaching each P(all) target and the last state); fully_right = all pairs right and (9/18 holes) every hole numbered right after the hole-1 tap (not counted in taps). test = the chosen policy, one run.",
+ "dev": {
+  "plain:resolve=fix": {
+   "n_sim": 157,
+   "errors": 0,
+   "n_missing": 3,
+   "oracle": {
+    "mean": 4.43,
+    "median": 2.0,
+    "p90": 13.2
+   },
+   "stop": [
+    {
+     "target": 0.8,
+     "n": 160,
+     "taps_mean": 7.07,
+     "median": 5.0,
+     "p90": 16.1,
+     "zero": 0.056,
+     "all_right": 0.838,
+     "all_right_strict": 0.762,
+     "precision": 0.9877,
+     "fully_right": 0.669,
+     "numbered_h1": 0.9073,
+     "all_numbered_h1": 0.65
+    },
+    {
+     "target": 0.85,
+     "n": 160,
+     "taps_mean": 8.07,
+     "median": 6.0,
+     "p90": 17.0,
+     "zero": 0.025,
+     "all_right": 0.894,
+     "all_right_strict": 0.819,
+     "precision": 0.9933,
+     "fully_right": 0.725,
+     "numbered_h1": 0.9199,
+     "all_numbered_h1": 0.713
+    },
+    {
+     "target": 0.9,
+     "n": 160,
+     "taps_mean": 9.38,
+     "median": 8.0,
+     "p90": 18.0,
+     "zero": 0.025,
+     "all_right": 0.912,
+     "all_right_strict": 0.838,
+     "precision": 0.9951,
+     "fully_right": 0.775,
+     "numbered_h1": 0.9371,
+     "all_numbered_h1": 0.762
+    },
+    {
+     "target": 0.95,
+     "n": 160,
+     "taps_mean": 11.64,
+     "median": 11.0,
+     "p90": 18.1,
+     "zero": 0.0,
+     "all_right": 0.931,
+     "all_right_strict": 0.863,
+     "precision": 0.9965,
+     "fully_right": 0.838,
+     "numbered_h1": 0.9476,
+     "all_numbered_h1": 0.832
+    },
+    {
+     "target": 0.98,
+     "n": 160,
+     "taps_mean": 14.31,
+     "median": 14.0,
+     "p90": 21.1,
+     "zero": 0.0,
+     "all_right": 0.956,
+     "all_right_strict": 0.9,
+     "precision": 0.9979,
+     "fully_right": 0.894,
+     "numbered_h1": 0.9535,
+     "all_numbered_h1": 0.881
+    }
+   ],
+   "taps_at_fully_right": {
+    "0.75": 9.38,
+    "0.8": 11.64,
+    "0.85": 14.31,
+    "0.9": null
+   },
+   "max_fully_right": 0.894
+  },
+  "plain": {
+   "n_sim": 157,
+   "errors": 0,
+   "n_missing": 3,
+   "oracle": {
+    "mean": 4.38,
+    "median": 1.5,
+    "p90": 14.2
+   },
+   "stop": [
+    {
+     "target": 0.8,
+     "n": 160,
+     "taps_mean": 6.64,
+     "median": 5.0,
+     "p90": 15.1,
+     "zero": 0.075,
+     "all_right": 0.762,
+     "all_right_strict": 0.744,
+     "precision": 0.9716,
+     "fully_right": 0.694,
+     "numbered_h1": 0.8998,
+     "all_numbered_h1": 0.692
+    },
+    {
+     "target": 0.85,
+     "n": 160,
+     "taps_mean": 7.57,
+     "median": 6.0,
+     "p90": 16.0,
+     "zero": 0.044,
+     "all_right": 0.825,
+     "all_right_strict": 0.806,
+     "precision": 0.9762,
+     "fully_right": 0.781,
+     "numbered_h1": 0.9145,
+     "all_numbered_h1": 0.783
+    },
+    {
+     "target": 0.9,
+     "n": 160,
+     "taps_mean": 8.79,
+     "median": 8.0,
+     "p90": 18.0,
+     "zero": 0.044,
+     "all_right": 0.869,
+     "all_right_strict": 0.85,
+     "precision": 0.9786,
+     "fully_right": 0.844,
+     "numbered_h1": 0.922,
+     "all_numbered_h1": 0.832
+    },
+    {
+     "target": 0.95,
+     "n": 160,
+     "taps_mean": 11.13,
+     "median": 10.0,
+     "p90": 19.1,
+     "zero": 0.019,
+     "all_right": 0.881,
+     "all_right_strict": 0.863,
+     "precision": 0.9793,
+     "fully_right": 0.881,
+     "numbered_h1": 0.9321,
+     "all_numbered_h1": 0.867
+    },
+    {
+     "target": 0.98,
+     "n": 160,
+     "taps_mean": 13.8,
+     "median": 14.0,
+     "p90": 20.0,
+     "zero": 0.019,
+     "all_right": 0.894,
+     "all_right_strict": 0.875,
+     "precision": 0.98,
+     "fully_right": 0.894,
+     "numbered_h1": 0.9325,
+     "all_numbered_h1": 0.881
+    }
+   ],
+   "taps_at_fully_right": {
+    "0.75": 7.57,
+    "0.8": 8.79,
+    "0.85": 11.13,
+    "0.9": null
+   },
+   "max_fully_right": 0.894
+  },
+  "plain:h1=first": {
+   "n_sim": 157,
+   "errors": 0,
+   "n_missing": 3,
+   "oracle": {
+    "mean": 4.2,
+    "median": 1.5,
+    "p90": 13.1
+   },
+   "stop": [
+    {
+     "target": 0.8,
+     "n": 160,
+     "taps_mean": 6.48,
+     "median": 5.0,
+     "p90": 15.1,
+     "zero": 0.069,
+     "all_right": 0.781,
+     "all_right_strict": 0.762,
+     "precision": 0.9727,
+     "fully_right": 0.719,
+     "numbered_h1": 0.9015,
+     "all_numbered_h1": 0.72
+    },
+    {
+     "target": 0.85,
+     "n": 160,
+     "taps_mean": 7.29,
+     "median": 6.0,
+     "p90": 16.0,
+     "zero": 0.05,
+     "all_right": 0.812,
+     "all_right_strict": 0.794,
+     "precision": 0.9751,
+     "fully_right": 0.781,
+     "numbered_h1": 0.9166,
+     "all_numbered_h1": 0.783
+    },
+    {
+     "target": 0.9,
+     "n": 160,
+     "taps_mean": 8.57,
+     "median": 7.0,
+     "p90": 18.0,
+     "zero": 0.044,
+     "all_right": 0.869,
+     "all_right_strict": 0.85,
+     "precision": 0.9786,
+     "fully_right": 0.85,
+     "numbered_h1": 0.9245,
+     "all_numbered_h1": 0.839
+    },
+    {
+     "target": 0.95,
+     "n": 160,
+     "taps_mean": 10.95,
+     "median": 10.0,
+     "p90": 19.1,
+     "zero": 0.019,
+     "all_right": 0.887,
+     "all_right_strict": 0.869,
+     "precision": 0.9797,
+     "fully_right": 0.881,
+     "numbered_h1": 0.9296,
+     "all_numbered_h1": 0.867
+    },
+    {
+     "target": 0.98,
+     "n": 160,
+     "taps_mean": 13.68,
+     "median": 14.0,
+     "p90": 20.0,
+     "zero": 0.019,
+     "all_right": 0.894,
+     "all_right_strict": 0.875,
+     "precision": 0.98,
+     "fully_right": 0.894,
+     "numbered_h1": 0.9304,
+     "all_numbered_h1": 0.881
+    }
+   ],
+   "taps_at_fully_right": {
+    "0.75": 7.29,
+    "0.8": 8.57,
+    "0.85": 8.57,
+    "0.9": null
+   },
+   "max_fully_right": 0.894
+  },
+  "plain:resolve=fix,h1=first": {
+   "n_sim": 157,
+   "errors": 0,
+   "n_missing": 3,
+   "oracle": {
+    "mean": 4.34,
+    "median": 2.0,
+    "p90": 13.0
+   },
+   "stop": [
+    {
+     "target": 0.8,
+     "n": 160,
+     "taps_mean": 6.97,
+     "median": 5.5,
+     "p90": 16.0,
+     "zero": 0.05,
+     "all_right": 0.869,
+     "all_right_strict": 0.769,
+     "precision": 0.9895,
+     "fully_right": 0.681,
+     "numbered_h1": 0.8969,
+     "all_numbered_h1": 0.664
+    },
+    {
+     "target": 0.85,
+     "n": 160,
+     "taps_mean": 7.91,
+     "median": 6.0,
+     "p90": 17.0,
+     "zero": 0.031,
+     "all_right": 0.887,
+     "all_right_strict": 0.806,
+     "precision": 0.9923,
+     "fully_right": 0.725,
+     "numbered_h1": 0.9128,
+     "all_numbered_h1": 0.713
+    },
+    {
+     "target": 0.9,
+     "n": 160,
+     "taps_mean": 9.17,
+     "median": 8.0,
+     "p90": 18.0,
+     "zero": 0.025,
+     "all_right": 0.912,
+     "all_right_strict": 0.85,
+     "precision": 0.9944,
+     "fully_right": 0.781,
+     "numbered_h1": 0.9229,
+     "all_numbered_h1": 0.769
+    },
+    {
+     "target": 0.95,
+     "n": 160,
+     "taps_mean": 11.49,
+     "median": 11.0,
+     "p90": 19.1,
+     "zero": 0.0,
+     "all_right": 0.931,
+     "all_right_strict": 0.863,
+     "precision": 0.9965,
+     "fully_right": 0.825,
+     "numbered_h1": 0.9329,
+     "all_numbered_h1": 0.818
+    },
+    {
+     "target": 0.98,
+     "n": 160,
+     "taps_mean": 14.25,
+     "median": 14.0,
+     "p90": 21.2,
+     "zero": 0.0,
+     "all_right": 0.956,
+     "all_right_strict": 0.9,
+     "precision": 0.9979,
+     "fully_right": 0.869,
+     "numbered_h1": 0.9392,
+     "all_numbered_h1": 0.853
+    }
+   ],
+   "taps_at_fully_right": {
+    "0.75": 9.17,
+    "0.8": 11.49,
+    "0.85": 14.25,
+    "0.9": null
+   },
+   "max_fully_right": 0.869
+  }
+ },
+ "test": {
+  "plain:h1=first": {
+   "n_sim": 149,
+   "errors": 0,
+   "n_missing": 4,
+   "oracle": {
+    "mean": 4.56,
+    "median": 2.0,
+    "p90": 13.0
+   },
+   "stop": [
+    {
+     "target": 0.8,
+     "n": 153,
+     "taps_mean": 7.16,
+     "median": 5.0,
+     "p90": 16.6,
+     "zero": 0.052,
+     "all_right": 0.797,
+     "all_right_strict": 0.784,
+     "precision": 0.9798,
+     "fully_right": 0.784,
+     "numbered_h1": 0.9575,
+     "all_numbered_h1": 0.785
+    },
+    {
+     "target": 0.85,
+     "n": 153,
+     "taps_mean": 8.07,
+     "median": 6.0,
+     "p90": 18.0,
+     "zero": 0.026,
+     "all_right": 0.824,
+     "all_right_strict": 0.81,
+     "precision": 0.9812,
+     "fully_right": 0.817,
+     "numbered_h1": 0.9614,
+     "all_numbered_h1": 0.815
+    },
+    {
+     "target": 0.9,
+     "n": 153,
+     "taps_mean": 9.41,
+     "median": 8.0,
+     "p90": 18.0,
+     "zero": 0.013,
+     "all_right": 0.85,
+     "all_right_strict": 0.837,
+     "precision": 0.983,
+     "fully_right": 0.843,
+     "numbered_h1": 0.9648,
+     "all_numbered_h1": 0.844
+    },
+    {
+     "target": 0.95,
+     "n": 153,
+     "taps_mean": 11.64,
+     "median": 11.0,
+     "p90": 19.0,
+     "zero": 0.007,
+     "all_right": 0.876,
+     "all_right_strict": 0.863,
+     "precision": 0.9844,
+     "fully_right": 0.869,
+     "numbered_h1": 0.9666,
+     "all_numbered_h1": 0.874
+    },
+    {
+     "target": 0.98,
+     "n": 153,
+     "taps_mean": 14.32,
+     "median": 14.0,
+     "p90": 21.8,
+     "zero": 0.007,
+     "all_right": 0.882,
+     "all_right_strict": 0.869,
+     "precision": 0.9847,
+     "fully_right": 0.882,
+     "numbered_h1": 0.9679,
+     "all_numbered_h1": 0.889
+    }
+   ],
+   "taps_at_fully_right": {
+    "0.75": 7.16,
+    "0.8": 8.07,
+    "0.85": 11.64,
+    "0.9": null
+   },
+   "max_fully_right": 0.882
+  }
+ }
+}

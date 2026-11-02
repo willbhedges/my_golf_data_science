@@ -7,7 +7,7 @@
 // At 400 px and 1280 px, golfer A (shared mock db):
 //  1. hole 1 shows the plan (club / aim on the photo), "Is this hole 1?" with Yes / No / Pick the right green, and
 //     "Which tee is hole 1?"; no NaN, no horizontal scroll, no console errors;
-//  2. "Yes" -> hole 1 confirmed (no re-solve); the hole-1 tee answer hides that question;
+//  2. the hole-1 tee first (POLICY h1 "first": re-solve) hides that question; then "Yes" (re-solve) -> hole 1 confirmed;
 //  3. "No" on hole 2 -> re-solve -> hole 2's pairing changes; a hole without a precomputed plan shows "plan pending"
 //     (sketch, no club) and a golf_replan/1 request lands in requests/;
 //  4. "Pick the right green" on hole 3 -> letters on the sketch -> picking one confirms hole 3 with that green;
@@ -97,11 +97,12 @@ async function shot(page, name) { await page.evaluate(() => window.scrollTo(0, 0
     await check(pa, `${tag} hole 1`);
     await shot(pa, `${W}_hole1_ask`);
     const s0 = await strip(pa);
-    // 2. yes + hole-1 tee
-    await pa.click("[data-rtyes]"); await settle(pa);
-    expect(/Golfers confirmed hole 1/.test(await pa.$eval("#rtBox", el => el.innerText)), `${tag}: hole 1 not confirmed after Yes`);
+    // 2. hole-1 tee first, then yes
     await pa.click('#rtHole1 [data-rth1]'); await settle(pa);
     expect(!(await pa.$("#rtHole1")), `${tag}: "Which tee is hole 1?" still shown after the answer`);
+    await goHole(pa, 1);
+    await pa.click("[data-rtyes]"); await settle(pa);
+    expect(/Golfers confirmed hole 1/.test(await pa.$eval("#rtBox", el => el.innerText)), `${tag}: hole 1 not confirmed after Yes`);
     solveMs.push(await pa.evaluate(s => LPR[s].ms, SLUG));
     // 3. no on hole 2
     await goHole(pa, 2);
