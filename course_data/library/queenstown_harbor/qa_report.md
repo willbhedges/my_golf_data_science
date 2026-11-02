@@ -1,5 +1,5 @@
 # Queenstown Harbor River Course: no page
 
-**Status: failed** at package: <html xmlns="http://www.w3.org/1999/xhtml" xml: resolve: not_found None None [] queenstown_harbor: not_found; see packages/queenstown_harbor/raw/course.json for the candidates 
+**Status: failed** at package: <html xmlns="http://www.w3.org/1999/xhtml" xml: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError("HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) 
 
-Resolve: {"status": "not_found", "candidates": []}
+Resolve: {"status": null, "candidates": []}
