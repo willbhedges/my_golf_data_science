@@ -1,6 +1,6 @@
 # A. L. Gustin Golf Course (Columbia, MO) - Black tees
 
-Built 2026-11-02T06:26:02Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T10:25:31Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -37,7 +37,7 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 | 12 | 5 | 518 / 515 | 180 | 0.81 | auto | 53% | 6% | 41% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 13 | 3 | 205 / 205 | 200 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 14 | 4 | 378 / 380 | 352 | 0.74 | check the flags | 47% | 16% | 36% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 378 yds) |
-| 15 | 4 | 399 / 396 | 62 | 0.66 | check the flags | 44% | 11% | 45% | tee stage: Black review (snapped 4 yds to OSM tee 591649550) | tee: tee stage: Black review (snapped 4 yds to OSM tee 591649550) |
+| 15 | 4 | 399 / 400 | 62 | 0.66 | check the flags | 45% | 12% | 43% | tee stage: Black review (inside OSM tee 591649550) | tee: tee stage: Black review (inside OSM tee 591649550) |
 | 16 | 4 | 332 / 329 | 224 | 0.76 | check the flags | 30% | 16% | 55% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 17 | 4 | 405 / 405 | 39 | 0.82 | auto | 42% | 9% | 50% | tee stage: Black tee_centroid |  |
 | 18 | 4 | 378 / 377 | 4 | 0.74 | check the flags | 23% | 13% | 64% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
@@ -50,7 +50,7 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tee_overrides**: ok: Black 15 review (snapped 4 yds to OSM tee 591649550); Gold 15 review (snapped 1 yds to OSM tee 591649551);
+- **tee_overrides**: ok: Black 15 review (inside OSM tee 591649550); Gold 15 review (inside OSM tee 591649551);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 47 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/gustin/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)

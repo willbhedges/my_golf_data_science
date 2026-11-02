@@ -494,7 +494,7 @@
       },
       "yardage": {
        "ok": true,
-       "why": "measured 396 vs card 399 (-3)"
+       "why": "measured 400 vs card 399 (+1)"
       },
       "par": {
        "ok": true,
@@ -502,17 +502,17 @@
       },
       "aim": {
        "ok": true,
-       "why": "2-wood -30 lands 273 yds out in fairway"
+       "why": "2-wood -27 lands 273 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 7% trees / water / OB (recovery 7%)"
+       "why": "landing pattern 6% trees / water / OB (recovery 6%)"
       }
      },
      "pick": {
       "club": "2-wood",
-      "aim": -30.5,
-      "along": 272.7,
+      "aim": -27.0,
+      "along": 273.2,
       "lie": "fairway",
       "tie": true
      },
@@ -535,23 +535,25 @@
        "why": "par 4 vs card 4"
       },
       "aim": {
-       "ok": true,
-       "why": "4-wood +40 lands 291 yds out in fairway"
+       "ok": false,
+       "why": "2-wood +54 lands 304 yds out in sand (10 yds from fairway)"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 16% trees / water / OB (recovery 16%)"
+       "why": "landing pattern 22% trees / water / OB (recovery 17%, unverified 9%)"
       }
      },
      "pick": {
-      "club": "4-wood",
-      "aim": 40.0,
-      "along": 291.2,
-      "lie": "fairway",
+      "club": "2-wood",
+      "aim": 54.0,
+      "along": 303.9,
+      "lie": "sand",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "aim: 2-wood +54 lands 304 yds out in sand (10 yds from fairway)"
+     ]
     },
     "17": {
      "par": 4,
@@ -719,19 +721,19 @@
       },
       "aim": {
        "ok": true,
-       "why": "4-wood +40 lands 270 yds out in rough (1 yds from fairway)"
+       "why": "4-wood +42 lands 270 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 23% trees / water / OB (recovery 23%)"
+       "why": "landing pattern 20% trees / water / OB (recovery 20%, unverified 0%)"
       }
      },
      "pick": {
       "club": "4-wood",
-      "aim": 40.0,
+      "aim": 42.5,
       "along": 270.5,
-      "lie": "rough",
-      "tie": false
+      "lie": "fairway",
+      "tie": true
      },
      "status": "CHECK",
      "reasons": [
@@ -821,25 +823,23 @@
        "why": "par 4 vs card 4"
       },
       "aim": {
-       "ok": false,
-       "why": "4-wood -40 lands 303 yds out in recovery (10 yds from fairway)"
+       "ok": true,
+       "why": "4-wood -60 lands 303 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 32% trees / water / OB (recovery 32%)"
+       "why": "landing pattern 31% trees / water / OB (recovery 31%, unverified 0%)"
       }
      },
      "pick": {
       "club": "4-wood",
-      "aim": -40.0,
+      "aim": -60.0,
       "along": 302.7,
-      "lie": "recovery",
+      "lie": "fairway",
       "tie": false
      },
-     "status": "CHECK",
-     "reasons": [
-      "aim: 4-wood -40 lands 303 yds out in recovery (10 yds from fairway)"
-     ]
+     "status": "PASS",
+     "reasons": []
     },
     "7": {
      "par": 4,
@@ -1165,23 +1165,26 @@
        "why": "par 4 vs card 4"
       },
       "aim": {
-       "ok": true,
-       "why": "Long iron +16 lands 233 yds out in fairway"
+       "ok": false,
+       "why": "4-wood +58 lands 290 yds out in rough (14 yds from fairway)"
       },
       "oval": {
-       "ok": true,
-       "why": "landing pattern 0% trees / water / OB (none)"
+       "ok": false,
+       "why": "landing pattern 40% trees / water / OB (recovery 28%, unverified 24%)"
       }
      },
      "pick": {
-      "club": "Long iron",
-      "aim": 16.5,
-      "along": 233.3,
-      "lie": "fairway",
+      "club": "4-wood",
+      "aim": 58.5,
+      "along": 290.4,
+      "lie": "rough",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "aim: 4-wood +58 lands 290 yds out in rough (14 yds from fairway)",
+      "oval: landing pattern 40% trees / water / OB (recovery 28%, unverified 24%)"
+     ]
     },
     "17": {
      "par": 4,
