@@ -7,7 +7,52 @@
  "tees": "Black",
  "allow_substitute": true,
  "builder": "course-page",
- "requested": "2026-10-30T00:03Z",
- "note": "course-page workflow, from course_data/requests/course_page_creekmoor.json (only what a golfer types: name, town, state, tees)",
- "town": "Raymore"
+ "requested": "2026-11-01T20:43Z",
+ "note": "course-page workflow, from course_data/requests/course_page_creekmoor.json (only what a golfer types: name, town, state, tees); review fixes from course_data/library/creekmoor/osm_supplement.geojson, course_data/library/creekmoor/review.json",
+ "town": "Raymore",
+ "osm_supplement": "course_data/library/creekmoor/osm_supplement.geojson",
+ "tee_overrides": {
+  "12": {
+   "Black": [
+    38.830722,
+    -94.4595875
+   ],
+   "Green": [
+    38.8309627,
+    -94.4591099
+   ]
+  },
+  "17": {
+   "Black": [
+    38.8341837,
+    -94.4688187
+   ],
+   "Green": [
+    38.8338655,
+    -94.4689806
+   ]
+  }
+ },
+ "yardage_overrides": {
+  "12": {
+   "*": 240
+  },
+  "17": {
+   "*": 214
+  }
+ },
+ "par_overrides": {
+  "12": 3,
+  "17": 3
+ },
+ "green_overrides": {
+  "12": [
+   38.831805,
+   -94.457477
+  ],
+  "17": [
+   38.832484,
+   -94.468158
+  ]
+ }
 }
