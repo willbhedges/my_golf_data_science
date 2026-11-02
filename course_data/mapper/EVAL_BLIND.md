@@ -482,3 +482,20 @@ Landing-corridor area vs truth (sq yds, 180-320 yds along the truth tee line, +/
 | mariah_hills | 15 | 4-wood +20 | 4-wood +15 | 4-wood +18 | True -> True | 0.0046 -> -0.0002 |
 | mariah_hills | 17 | 4-wood -40 (tie) | Driver -35 | 4-wood -40 | False -> True | 0.0033 -> 0.0024 |
 | mariah_hills | 18 | Driver +15 | Driver +8 | Driver +15 | False -> True | 0.0435 -> 0.001 |
+
+## Native-side confirm tap, offline (2026-11-02)
+
+`product/native_confirm.py` asks "native grass along hole n?" (L / R / both / none) on the holes where an answer
+changes the club or moves the aim > 10 yds (re-decided per answer state), ranked by expected regret avoided under
+priors from the mapper's per-side verdicts; "yes" inserts native beyond max(10, mapped rough width) of the fairway,
+130-400 along; "no" cuts native on that side. Answers simulated from the truth (native >= 300 sq yds within 30 yds
+of the fairway, 150-345 along). Full table: `EVAL_native_confirm.md` (truth-bearing).
+
+| | AUTO | AGENT | ASK <= 2 | ASK <= 4 | ASK <= 6 | ASK all 14 |
+|---|---|---|---|---|---|---|
+| 7 courses, 98 tee shots: match / regret | 50 / 6.06 | 66 / 2.51 | 69 / 1.91 (14 q) | 70 / 1.65 (26 q) | 69 / 1.30 (38 q) | 71 / 1.06 (98 q) |
+
+Eagle Bend 8 / 0.588 -> 9 / 0.299 (4 q) -> 10 / 0.196 (6 q). Mariah Hills loses (8 -> 7 at 4 q): its native is
+islands 25+ yds out; "yes" inserts at 10 yds and the 30-yd "near" answer rule says "no" on sides whose islands the
+mapper drew. Next: on "yes", keep the mapper's own native edge on that side when it has one (insert only where
+it drew none); a second tap for "starts near / far" on island courses.

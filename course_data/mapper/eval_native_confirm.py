@@ -115,43 +115,12 @@ def main():
     out = []
     try:
         for cfg in EM.course_list("all", want):
-            slug, S = cfg["slug"], cfg["tees"]
-            t0 = time.time()
-            base, _ = EM.base_for(cfg)
-            agent, _ = AP.apply(base, M.mdir(slug))
-            frames = M.frames(slug)
-            edits = M.rj(M.mdir(slug, "edits.json"))
-            zones = M.rj(M.mdir(slug, "agent_zones.geojson"))
-            pri = NC.priors(edits, zones, frames, agent)
-            ans, areas = truth_answers(E, cfg, base, frames, near=a.answer == "near")
-            D = NC.EBDecider(S, n=a.n, workers=a.workers, cache=cache)
-            print(f"== {slug} ({S}): selecting", flush=True)
-            qs = NC.select(agent, frames, pri, D, cap=99)
-            variants = {"AUTO": base, "AGENT": agent}
-            asked = {}
-            for c in caps:
-                asked[f"ASK {c}"] = capped(qs, c)
-            asked["ASK all"] = [r for r in frames if r in ans]
-            for k, hs in asked.items():
-                variants[k] = NC.apply_answers(agent, {r: ans[r] for r in hs if r in ans}, frames,
-                                               {r: {s: pri[r][s]["w"] for s in NC.SIDES} for r in hs})
-            scores = {}
-            for k, pk in variants.items():
-                d = os.path.join(tmp, k.replace(" ", "_"))
-                os.makedirs(os.path.join(d, slug), exist_ok=True)
-                with open(os.path.join(d, slug, "package.json"), "w") as fh:
-                    json.dump(pk, fh)
-                E.AUTO_DIR = d
-                print(f"  scoring {k}", flush=True)
-                r = E.score_course(dict(cfg), a.n, a.workers, cache)
-                scores[k] = tot(r) if "rows" in r else dict(error=r.get("error"))
-            c = dict(slug=slug, tees=S, answers=ans, areas=areas,
-                     priors={r: {s: v[s]["p"] for s in NC.SIDES} for r, v in pri.items()},
-                     questions=[{k: q[k] for k in ("hole", "value", "changes", "prior", "plans", "regret", "state_p")} for q in qs],
-                     asked=asked, scores=scores, secs=round(time.time() - t0))
-            out.append(c)
-            print("  " + "; ".join(f"{k} {v.get('match')} / {v.get('regret')}" for k, v in scores.items())
-                  + f"; asked {[(k, len(v)) for k, v in asked.items()]} ({c['secs']} s)", flush=True)
+            try:
+                out.append(run_course(E, AP, cfg, a, caps, cache, tmp))
+            except Exception as e:                       # noqa: BLE001
+                import traceback
+                traceback.print_exc()
+                out.append(dict(slug=cfg["slug"], tees=cfg["tees"], error=f"{type(e).__name__}: {e}"))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     res = dict(schema="native_confirm_eval/1", n=a.n, answer=a.answer, caps=caps, min_yd2=MIN_YD2, near=NEAR,
@@ -163,6 +132,46 @@ def main():
     print(md)
 
 
+def run_course(E, AP, cfg, a, caps, cache, tmp):
+    slug, S = cfg["slug"], cfg["tees"]
+    t0 = time.time()
+    base, _ = EM.base_for(cfg)
+    agent, _ = AP.apply(base, M.mdir(slug))
+    frames = M.frames(slug)
+    edits = M.rj(M.mdir(slug, "edits.json"))
+    zones = M.rj(M.mdir(slug, "agent_zones.geojson"))
+    pri = NC.priors(edits, zones, frames, agent)
+    ans, areas = truth_answers(E, cfg, base, frames, near=a.answer == "near")
+    D = NC.EBDecider(S, n=a.n, workers=a.workers, cache=cache)
+    print(f"== {slug} ({S}): selecting", flush=True)
+    qs = NC.select(agent, frames, pri, D, cap=99)
+    variants = {"AUTO": base, "AGENT": agent}
+    asked = {}
+    for c in caps:
+        asked[f"ASK {c}"] = capped(qs, c)
+    asked["ASK all"] = [r for r in frames if r in ans]
+    for k, hs in asked.items():
+        variants[k] = NC.apply_answers(agent, {r: ans[r] for r in hs if r in ans}, frames,
+                                       {r: {s: pri[r][s]["w"] for s in NC.SIDES} for r in hs})
+    scores = {}
+    for k, pk in variants.items():
+        d = os.path.join(tmp, k.replace(" ", "_"))
+        os.makedirs(os.path.join(d, slug), exist_ok=True)
+        with open(os.path.join(d, slug, "package.json"), "w") as fh:
+            json.dump(pk, fh)
+        E.AUTO_DIR = d
+        print(f"  scoring {k}", flush=True)
+        r = E.score_course(dict(cfg), a.n, a.workers, cache)
+        scores[k] = tot(r) if "rows" in r else dict(error=r.get("error"))
+    c = dict(slug=slug, tees=S, answers=ans, areas=areas,
+             priors={r: {s: v[s]["p"] for s in NC.SIDES} for r, v in pri.items()},
+             questions=[{k: q[k] for k in ("hole", "value", "changes", "prior", "plans", "regret", "state_p")} for q in qs],
+             asked=asked, scores=scores, secs=round(time.time() - t0))
+    print("  " + "; ".join(f"{k} {v.get('match')} / {v.get('regret')}" for k, v in scores.items())
+          + f"; asked {[(k, len(v)) for k, v in asked.items()]} ({c['secs']} s)", flush=True)
+    return c
+
+
 def report(res):
     ks = ["AUTO", "AGENT"] + [f"ASK {c}" for c in res["caps"]] + ["ASK all"]
     L = [f"# Native-side confirm tap: offline value (answers simulated from the truth, '{res['answer']}')", "",
@@ -172,6 +181,9 @@ def report(res):
          "| course | holes | " + " | ".join(ks) + " |", "|---|---|" + "---|" * len(ks)]
     P = {k: [0, 0.0, 0] for k in ks}
     for c in res["courses"]:
+        if c.get("error"):
+            L.append(f"| {c['slug']} | error: {c['error']} |")
+            continue
         cells = []
         for k in ks:
             s = c["scores"].get(k) or {}
@@ -189,6 +201,8 @@ def report(res):
                                          for k in ks) + " |")
     L += ["", "## Asked holes (simulated answer; plan AGENT -> after; truth)", ""]
     for c in res["courses"]:
+        if c.get("error"):
+            continue
         big = max((k for k in c["asked"] if k != "ASK all"), key=lambda k: len(c["asked"][k]), default=None)
         if not big:
             continue
@@ -202,7 +216,7 @@ def report(res):
     L += ["", "## Simulated answers vs mapper (every corridor hole)", "", "| course | hole | truth answer | sq yds L / R | prior L / R |",
           "|---|---|---|---|---|"]
     for c in res["courses"]:
-        for r, ans in c["answers"].items():
+        for r, ans in (c.get("answers") or {}).items():
             ar, pr = c["areas"].get(r, {}), c["priors"].get(r, {})
             if ans != "none" or max(pr.get("L", 0), pr.get("R", 0)) >= 0.5:
                 L.append(f"| {c['slug']} | {r} | {ans} | {ar.get('L')} / {ar.get('R')} | {pr.get('L')} / {pr.get('R')} |")
