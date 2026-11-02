@@ -1,10 +1,15 @@
 {
- "fetched_utc": "2026-10-30T03:47:23Z",
+ "fetched_utc": "2026-11-01T21:11:10Z",
  "tried": [
   {
    "source": "golfify",
    "ok": false,
-   "info": "golfify: no matching page (9 URLs tried)"
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: colbert-hills-golf-course: HTTP 404; the-colbert-hills-golf-course: HTTP 404; colbert-hills-golf-club: HTTP 404; colbert-hills-country-club: HTTP 404"
   },
   {
    "source": "club_site",
@@ -15,6 +20,21 @@
    "source": "opengolfapi",
    "ok": true,
    "info": "https://api.opengolfapi.org/api/v1/courses/c3aba9fd-d2f6-4d4b-97b8-099b8b1004d1"
+  },
+  {
+   "source": "bluegolf",
+   "ok": false,
+   "info": "bluegolf: no course page found by search"
+  },
+  {
+   "source": "golfpass",
+   "ok": false,
+   "info": "golfpass: no course page found by search"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: no course page found by search"
   }
  ],
  "cards": [
@@ -284,5 +304,23 @@
     }
    }
   }
- ]
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/c3aba9fd-d2f6-4d4b-97b8-099b8b1004d1",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/c3aba9fd-d2f6-4d4b-97b8-099b8b1004d1": {
+    "holes": 18,
+    "fit": 0,
+    "share": 0.0,
+    "mean_err": 63.6,
+    "all_sets": 0.176,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
 }
