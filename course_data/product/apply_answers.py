@@ -19,6 +19,8 @@ What each answer does (items and frames come from review.json, so the page never
   cut     present  the tested first-cut polygons are added (src golfer:cut); confirm: verification.no_cut = true
   gap     present  a "recovery" polygon over the tested strip is added (src golfer:gap)
           confirm  hole.verification.open_<side> = true (verify.py stops asking)
+  native  L / R / both / none (product/native_confirm.py): long grass added beyond max(10 yds, the mapped rough
+          width) of the fairway on each "yes" side over the landing window; native removed on each "no" side
   check   playable / not_playable is recorded in hole.verification (the plan's guard still prints the CHECK)
 Every answer is also recorded under hole["verification"][item id] and package["verification"]. Zone indices
 are checked against review.json's fingerprints (first vertex); a mismatch (package rebuilt since the review)
@@ -168,6 +170,16 @@ def apply(pkg, review, answers, log=print, corrections_out=None):
                 flag = f"open_{it['side']}" if it["type"] == "gap" else "no_cut"
                 h["verification"][flag] = True
                 corr.append(dict(kind="flag", hole=ref, flag=flag, id=it["id"]))
+        elif it["type"] == "native":
+            import native_confirm as NC          # golfer "native grass along this hole?" (L / R / both / none)
+            try:
+                d = NC.apply_answer(h, it, ans)
+            except ValueError as e:
+                warn.append(f"{a['id']}: {e}")
+                continue
+            changed.setdefault(ref, []).append(it["id"])
+            corr.append(dict(kind="native", hole=ref, answer=ans, widths=it.get("widths"), frame=it.get("frame"),
+                             delta_yd2=d, id=it["id"]))
         # check: recorded only
     for ref, idx in removals.items():
         zl = pkg["holes"][ref]["zones_ll"]
