@@ -1,13 +1,13 @@
 # Rivercut Golf Course (Springfield, MO) - Black tees
 
-Built 2026-11-02T16:58:36Z. OSM relation/5981089. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T19:39:05Z. OSM relation/5981089. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
 | | |
 |---|---|
 | holes_built | 18 |
-| holes_mapped | 17 |
+| holes_mapped | 18 |
 | greens_found | 18 |
 | tee_boxes | 73 |
 | tees_with_colour | 0 |
@@ -15,9 +15,9 @@ Built 2026-11-02T16:58:36Z. OSM relation/5981089. Scorecard: golfify (golfify). 
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.412 |
 | mean_confidence | 0.814 |
-| osm_score | 0.868 |
+| osm_score | 0.882 |
 
-OSM features inside the course: buildings 8, golf=bunker 59, golf=cartpath 16, golf=clubhouse 1, golf=fairway 20, golf=green 18, golf=hole 17, golf=tee 73, golf=water_hazard 9, holes_with_par 17, water_lines 16, water_polygons 10
+OSM features inside the course: buildings 8, golf=bunker 59, golf=cartpath 16, golf=clubhouse 1, golf=fairway 20, golf=green 18, golf=hole 18, golf=tee 73, golf=water_hazard 9, holes_with_par 18, water_lines 16, water_polygons 10
 
 ## Holes
 

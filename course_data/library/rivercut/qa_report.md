@@ -2,7 +2,7 @@
 
 **Status: needs confirm** — confirm holes 15
 
-* page: `course_data/library/rivercut/page.html` (2.4 MB); request `course_data/requests/course_page_rivercut.json`; built 2026-11-02T16:58Z
+* page: `course_data/library/rivercut/page.html` (2.4 MB); request `course_data/requests/course_page_rivercut.json`; built 2026-11-02T19:39Z
 * course: Rivercut Golf Course (Springfield, MO), OSM relation/5981089; holes: osm (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Black, Blue (the two longest sets on the card (combination sets skipped)); page sets: Black, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
@@ -57,7 +57,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 11 | 4 | PASS | Driver +14 (tie) |  |
 | 12 | 4 | PASS | Driver -1 |  |
 | 13 | 4 | PASS | Driver -9 |  |
-| 14 | 4 | PASS | Driver +9 |  |
+| 14 | 4 | PASS | Driver +8 |  |
 | 15 | 3 | PASS |  |  |
 | 16 | 4 | PASS | 2-wood +22 (tie) |  |
 | 17 | 3 | PASS |  |  |
