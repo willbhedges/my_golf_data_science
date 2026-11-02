@@ -5,6 +5,8 @@ Request (course_data/requests/course_page_<slug>.json, schema course_page/1):
    "near": "lat,lon" | "address": "street, town, ST zip" | "osm": "way/123"   (optional disambiguation),
    "osm_supplement" / "no_osm_ok" / "website" / "scorecard" / "hole_method" ... (optional package-request data
                                               fixes, passed through by pkgreq),
+   "agent_layers": "course_data/mapper/<slug>/" (optional: the mapper agent's layers, course_data/mapper/BRIEF.md;
+                                              applied by platform/package.py after vision + OB),
    "tees": ["Blue", "White"]                 (optional tee sets of interest; default: the two longest sets),
    "days": ["2026-11-07", "2026-11-08"]       (optional event days; default the next Saturday + Sunday),
    "tee_hour": 9.0, "slug": "...", "group": "library" | "gate", "compute": {"draws": 48, "swings": 2500},
@@ -154,7 +156,7 @@ def pkgreq(q):
     for k in ("near", "address", "osm", "typed_card", "yardages", "pars", "scorecard", "website", "opengolfapi_id",
               "osm_supplement", "boundary_ll", "no_osm_ok", "no_osm_course", "near_radius_m", "ignore_osm_holes",
               "hole_method", "routing", "naip_year", "tee_overrides", "yardage_overrides", "par_overrides",
-              "green_overrides", "hole_renumber"):
+              "green_overrides", "hole_renumber", "agent_layers"):
         if q.get(k) not in (None, "", [], {}):            # "routing": false passes too
             r[k] = q[k]
     if q.get("library_fixes"):

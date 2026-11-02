@@ -41,6 +41,10 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
   S4b     course_data/segment/gapfill.py:segment_gapfill(package, segment.geojson) when the segment workflow
           has run for the slug (requests/segment_<slug>.json): NAIP U-Net fairway / bunker / green + NIR water
           ONLY where OSM lacks them (never overrides OSM), src "segment:*", p, flags, stages.segment
+  S5      request "agent_layers": "course_data/mapper/<slug>/" (course_data/mapper/BRIEF.md): the mapper agent's
+          zone edits + tee checks (agent_zones.geojson, agent_tees.json) laid over the built package by
+          course_data/mapper/apply.py after the vision / segment / OB layers; package.agent_layers, stages.agent_layers,
+          holes[].provenance.agent record them. A missing folder or a failure is a warning, never a failed build
   S6      confidence per hole (pipeline.confidence), coverage stats, elevation (3DEP DEM + elevation/adjust.py)
 Outputs in packages/<slug>/:
   package.json    the self-contained course package (schema course_package/1, below)
@@ -1589,6 +1593,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     else:
         stages["vision"] = "not run (gapfill=False)"
     package = call_ob(package, warnings)
+    package = apply_agent_layers(req, package, warnings)
     package["coverage"] = osm_coverage.coverage(fc, package["holes"])
     if render:
         package["stages"]["images"] = render_images(package, pkg_dir, img_dir)
@@ -1845,6 +1850,32 @@ def render_images(package, pkg_dir, img_dir):
         except Exception as e:                                   # noqa: BLE001
             pc.log("render", k, e)
     return f"ok: {n}/{len(package['holes'])} rendered from {os.path.relpath(img_dir, pc.ROOT)}"
+
+
+def apply_agent_layers(req, package, warnings=None):
+    """S5: request "agent_layers" (a folder with agent_zones.geojson / agent_tees.json, course_data/mapper/apply.py)
+    -> the package with the mapper agent's layers. Never fails the build: problems go to stages + warnings."""
+    d = (req or {}).get("agent_layers")
+    if not d:
+        return package
+    warnings = package.setdefault("warnings", []) if warnings is None else warnings
+    stages = package.setdefault("stages", {})
+    path = d if os.path.isabs(d) else os.path.join(pc.ROOT, d)
+    mod = load(os.path.join(CD, "mapper", "apply.py"), "cdp_mapper_apply")
+    if not os.path.isdir(path) or mod is None:
+        stages["agent_layers"] = f"missing: {d}" + (" (no such folder)" if not os.path.isdir(path) else
+                                                    " (course_data/mapper/apply.py not importable)")
+        warnings.append(f"agent_layers not applied: {stages['agent_layers']}")
+        return package
+    try:
+        out, _ = mod.apply(package, path, pk=sys.modules[__name__])
+    except Exception as e:                                       # noqa: BLE001
+        stages["agent_layers"] = f"failed: {type(e).__name__}: {e}"[:300]
+        warnings.append(f"agent_layers not applied: {stages['agent_layers']}")
+        return package
+    if out.get("warnings") is not warnings:
+        out["warnings"] = warnings
+    return out
 
 
 def reapply_corrections(package, pkg_dir):
