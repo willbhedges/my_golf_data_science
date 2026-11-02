@@ -1,6 +1,6 @@
 # L.A. Nickell Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-10-30T03:59:02Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-01T21:00:07Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
@@ -15,9 +15,9 @@ Built 2026-10-30T03:59:02Z. OSM way/387047950. Scorecard: golfify (golfify). Tee
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.283 |
-| mean_confidence | 0.775 |
-| osm_score | 0.843 |
+| mean_landing_osm_share | 0.278 |
+| mean_confidence | 0.766 |
+| osm_score | 0.842 |
 
 OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1, golf=fairway 22, golf=green 20, golf=hole 17, golf=tee 40, golf=water_hazard 3, holes_with_par 17, water_lines 1, water_polygons 4
 
@@ -26,12 +26,12 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 4 | 372 / 365 | 164 | 0.74 | check the flags | 24% | 13% | 63% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 2 | 4 | 369 / 364 | 135 | 0.76 | check the flags | 28% | 18% | 54% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 2 | 4 | 369 / 364 | 131 | 0.75 | check the flags | 24% | 17% | 58% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 3 | 4 | 385 / 385 | 316 | 0.78 | check the flags | 41% | 10% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 4 | 3 | 224 / 227 | 276 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Blue texture_pad | tee: tee stage: Blue texture_pad; Blue tee on an imagery-detected pad (texture; no OSM box at 224 yds) |
-| 5 | 4 | 325 / 313 | 165 | 0.76 | check the flags | 20% | 28% | 52% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 5 | 4 | 325 / 325 | 167 | 0.62 | check the flags | 22% | 26% | 52% | tee stage: Blue review | tee: tee stage: Blue review |
 | 6 | 3 | 196 / 196 | 43 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
-| 7 | 5 | 500 / 507 | 150 | 0.77 | check the flags | 31% | 19% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 7 | 5 | 500 / 490 | 146 | 0.79 | check the flags | 31% | 27% | 42% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 8 | 4 | 392 / 391 | 329 | 0.76 | check the flags | 30% | 15% | 55% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 9 | 4 | 379 / 378 | 336 | 0.68 | check the flags | 30% | 23% | 47% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 379 yds) |
 | 10 | 4 | 384 / 383 | 190 | 0.67 | check the flags | 30% | 21% | 49% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 384 yds) |
@@ -42,15 +42,16 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 | 15 | 4 | 377 / 377 | 315 | 0.78 | check the flags | 32% | 18% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 16 | 4 | 328 / 329 | 73 | 0.81 | auto | 19% | 55% | 26% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 17 | 4 | 407 / 397 | 98 | 0.71 | check the flags | 18% | 8% | 74% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 18 | 4 | 427 / 426 | 199 | 0.70 | check the flags | 35% | 28% | 37% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 427 yds) |
+| 18 | 4 | 427 / 426 | 207 | 0.67 | check the flags | 30% | 21% | 48% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 427 yds) |
 
 ## Stages
 
 - **resolve**: ok: way/387047950 L.A. Nickell Golf Course (Columbia, MO)
-- **osm**: ok: 367 features
+- **osm**: ok: 422 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tee_overrides**: ok: Blue 5 review;
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 28 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/la_nickell/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
@@ -62,4 +63,5 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 
 ## Warnings
 
+- card consensus: opengolfapi: set order: 'Web' is longer than 'White' on 11 of 11 holes with several OSM tees: names may be swapped
 - requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red
