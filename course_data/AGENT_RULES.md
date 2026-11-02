@@ -20,3 +20,5 @@ Repo: /home/user/my_golf_data_science, branch claude/mozingo-lake-tee-strategy-e
 - Sandbox can't reach OSM/Overpass/imagery hosts directly; use cached data in the repo or a web_fetch request.
 - Set OMP_NUM_THREADS=1 for tree-model fits on the shared box.
 - Final report: short, honest numbers (say what was NOT verified), files and commits.
+
+- Scoring (error_budget.py, eval_mapper.py, eval_native_confirm.py, any planner numbers you report) must run in the FULL checkout or a full worktree. A sparse checkout missing course_data/elevation, library, vision_any/s2 or spirit_hollow/ silently changes planner scores (found 2026-11-02). Blind mapper worktrees stay sparse; the coordinator scores them in the full checkout.
