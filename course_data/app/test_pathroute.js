@@ -43,17 +43,19 @@ for (const f of files) {
     }
     if (errs.length) { bad++; console.log(`FAIL ${doc.slug} fix=${JSON.stringify(c.fix)}\n  ` + errs.slice(0, 6).join("\n  ")); }
   }
-  /* resolve2.Session sequence (default sticky re-solve): yes / correction / not a hole, holes + conf after each solve */
+  /* resolve2.Session under the shipped POLICY (Session.answer): yes / correction / not a hole; holes, conf, P(all pairs
+     right) and the ask list after each answer, and whether the answer re-solved */
   if (doc.session) {
     const S2 = new PR.Session(R);
     for (const st of doc.session) {
       const a = st.act;
-      if (a && a[0] === "confirm") S2.confirmPair(a[1], a[2], a[3]);
-      else if (a && a[0] === "not") S2.notAHole(a[1]);
-      else if (a && a[0] === "yes") S2.confirmYes(a[1], a[2]);
-      else if (a && a[0] === "drop") S2.dropHole(a[1]);
       const t0 = Date.now();
-      if (!a || (a[0] !== "yes" && a[0] !== "drop")) S2.solve();
+      let solved = true;
+      if (a && a[0] === "answer") solved = S2.answer(a[1], a[2], a[3], a[4]);
+      if (solved) S2.solve();
+      if (st.solved !== undefined && solved !== st.solved) { bad++; console.log(`FAIL ${doc.slug} answer ${JSON.stringify(a)} re-solve ${solved} vs ${st.solved}`); }
+      if (st.p_all !== undefined && !close(S2.pAll(), st.p_all, 1e-9)) { bad++; console.log(`FAIL ${doc.slug} p_all ${S2.pAll()} vs ${st.p_all}`); }
+      if (st.need !== undefined && JSON.stringify(S2.need()) !== JSON.stringify(st.need)) { bad++; console.log(`FAIL ${doc.slug} need ${S2.need()} vs ${st.need}`); }
       ms += Date.now() - t0; nCase++; nSess++;
       const errs = [];
       if (S2.holes.length !== st.holes.length) errs.push(`n holes ${S2.holes.length} vs ${st.holes.length}`);
@@ -67,5 +69,5 @@ for (const f of files) {
     }
   }
 }
-console.log(`pathroute parity: ${nCourse} courses, ${nCase} cases (${nFix} with facts, ${nSess} sticky session solves), ${bad} failing; max |diff| ${maxd.toExponential(2)}; ${(ms / Math.max(nCase, 1)).toFixed(0)} ms / solve`);
+console.log(`pathroute parity: ${nCourse} courses, ${nCase} cases (${nFix} with facts, ${nSess} policy session steps), ${bad} failing; max |diff| ${maxd.toExponential(2)}; ${(ms / Math.max(nCase, 1)).toFixed(0)} ms / solve`);
 if (nCourse < 1 || bad) process.exit(1);

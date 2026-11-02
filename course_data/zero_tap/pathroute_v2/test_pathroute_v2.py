@@ -149,3 +149,24 @@ def test_sticky_bonus_and_weights():
     assert H[1, 1] == -2.5 and np.isinf(H[2, 0])          # a sticky pair on a blanked column stays forbidden
     st = dict(alpha=4.0, pin=0.9, pin_w=30.0, keep=True)
     assert RS.sticky_w(0.5, st) == 2.0 and RS.sticky_w(0.95, st) == 30.0
+
+
+def test_policy_p_all_need_answer():
+    """resolve2.POLICY: P(all right) = product of unconfirmed confidences; need() asks lowest first until the target;
+    "yes" / "not a hole" apply without a re-solve."""
+    import resolve2 as RS
+    s = RS.Session.__new__(RS.Session)
+    s.policy = dict(RS.POLICY, target=0.9)
+    s.holes = [dict(t=i, g=i, boxes=[], loop=0, number=i + 1) for i in range(4)]
+    s.conf = np.array([0.99, 0.6, 1.0, 0.8])
+    s.fix = dict(pairs=[(3, 2, 2)], not_green=[], first_tee=None)
+    s.prev, s.sticky = {}, None
+    assert abs(s.p_all() - 0.99 * 0.6 * 0.8) < 1e-12
+    assert s.need() == [1, 3] and s.ask_all() == 1 and s.need(0.5) == [1] and s.need(0.4) == []
+    s.solve = lambda: (_ for _ in ()).throw(AssertionError("no re-solve expected"))
+    assert s.answer(1, tee=None, number=2) is False and s.conf[1] == 1.0 and (2, 1, 1) in s.fix["pairs"]
+    assert s.answer(2, not_hole=True) is False and len(s.holes) == 3 and 2 in s.fix["not_green"]
+    called = []
+    s.solve = lambda: called.append(1)
+    assert s.answer(0, tee=7, number=1) is True and called and (1, 7, 0) in s.fix["pairs"]
+    assert RS.p_all([0.5, 1.0], [False, True]) == 0.5

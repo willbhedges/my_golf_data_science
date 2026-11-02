@@ -195,8 +195,12 @@ function lpInput(t){
    route; each decoded hole shows the precomputed plan whose tee and green it matches (green within 25 yds, a tee
    within 40 yds), else "plan pending" (geometry only; a golf_replan/1 request is recorded). Golfers' answers are the
    same geo-anchored actions as above (maps/<slug>): locate = "hole N is this tee + green", reject = "no" (or a
-   practice green when only the green is set), first = "this tee is hole 1"; every answer re-solves the whole route
-   in the browser (pathroute_engine.js, the same decode as zero_tap/pathroute_v2). */
+   practice green when only the green is set), first = "this tee is hole 1". The confirm-tap policy is the engine's
+   (PathRoute.POLICY = resolve2.POLICY, zero_tap PATHROUTE.md "Every hole right"): a correction / "no" / hole-1 tee
+   re-solves the whole route in the browser (the same decode as zero_tap/pathroute_v2), a "yes" / "not a hole" applies
+   without a re-solve; the holes to ask are Session.need(): lowest confidence first until P(every pair right) reaches
+   the policy target. The answer log is replayed answer by answer into one Session (kept across answers: a new answer
+   only applies itself). */
 const LPR = {}, RT_SNAP = 25;
 const llYd = (a, b) => { const kx = 111320 * Math.cos(a[1] * Math.PI / 180) / 0.9144; return Math.hypot((a[0] - b[0]) * kx, (a[1] - b[1]) * 110950 / 0.9144); };
 function lpFactsFromIds(R, f){
@@ -206,23 +210,38 @@ function lpFactsFromIds(R, f){
           not_green: (f.not_green || []).filter(g => g in gi).map(g => gi[g]), first_tee: f.first_tee in ti ? ti[f.first_tee] : null,
           reject: (f.reject || []).filter(p => p[0] in ti && p[1] in gi).map(p => [ti[p[0]], gi[p[1]]])};
 }
+/* one answer into the session (the engine's policy) -> true when the route must be re-solved */
+function lpRouteApply(S, a, single){
+  const t = a.answer.tee_ll ? S.nearest("tee", a.answer.tee_ll, RT_SNAP) : null, g = a.answer.green_ll ? S.nearest("green", a.answer.green_ll, RT_SNAP) : null;
+  const num = single ? +a.ref : null, at = g == null ? -1 : S.holes.findIndex(h => h.g === g);
+  if (a.kind === "first") { if (t == null) return false; S.holeOne(t); return true; }
+  if (a.kind === "locate") {
+    if (t == null || g == null) return false;
+    if (at >= 0) return S.answer(at, t, num, false);
+    S.confirmPair(num, t, g); return true;
+  }
+  if (g == null) return false;
+  if (t != null) { S.rejectPair(t, g); return true; }
+  if (at >= 0) return S.answer(at, null, null, true);
+  S.notAHole(g); return true;
+}
 function lpRoute(L){
   if (!L.route || typeof PathRoute === "undefined") return null;
   const log = SharedStore.replayLog(STORE.map(L.id), STORE.gid, lpMine(L.id)), key = JSON.stringify(log);
   const c = LPR[L.id]; if (c && c.key === key) return c;
-  let S;
-  try { S = new PathRoute.Session(L.route, lpFactsFromIds(L.route, L.route.facts)); } catch (e) { return null; }
-  const single = L.route.kind === 9 || L.route.kind === 18;
-  for (const a of log) {
-    const t = a.answer.tee_ll ? S.nearest("tee", a.answer.tee_ll, RT_SNAP) : null, g = a.answer.green_ll ? S.nearest("green", a.answer.green_ll, RT_SNAP) : null;
-    if (a.kind === "first") { if (t != null) S.holeOne(t); }
-    else if (a.kind === "locate") { if (t != null && g != null) S.confirmPair(single ? +a.ref : null, t, g); }
-    else if (g != null) { if (t != null) S.rejectPair(t, g); else S.notAHole(g); }
-  }
-  const t0 = Date.now(), prev = c && !c.pending ? c : null;
-  try { S.begin(); } catch (e) { if (typeof console !== "undefined") console.warn(e); return null; }
-  const out = (LPR[L.id] = {key, S, pending: true, ms: 0, thr: L.route.conf_ok || 0.95, n: log.length});
+  const single = L.route.kind === 9 || L.route.kind === 18, t0 = Date.now(), prev = c && !c.pending ? c : null;
+  /* the cached session when the log only grew (the usual case: this golfer's new answer), else a replay from scratch;
+     a re-solving answer decodes the route at once (begin), the confidences are computed for the last decode only */
+  const grow = c && c.log.length <= log.length && JSON.stringify(log.slice(0, c.log.length)) === JSON.stringify(c.log);
+  let S, todo;
+  try {
+    if (grow) { S = c.S; todo = log.slice(c.log.length); }
+    else { S = new PathRoute.Session(L.route, lpFactsFromIds(L.route, L.route.facts)); S.begin(); todo = log; }
+    for (const a of todo) if (lpRouteApply(S, a, single)) S.begin();
+  } catch (e) { if (typeof console !== "undefined") console.warn(e); return null; }
+  const out = (LPR[L.id] = {key, log, S, pending: !!S.job, ms: 0, thr: L.route.conf_ok || 0.95, target: S.policy.target, n: log.length});
   lpRouteFill(L, out, prev);
+  if (!out.pending) return out;
   /* the pairing shows at once; the confidences (one re-decode per hole) fill in over the next frames */
   const tick = () => {
     if (LPR[L.id] !== out) return;
@@ -248,14 +267,17 @@ function lpRouteFill(L, out, prev){
   const S = out.S, conf = S.conf, fp = S.fixedPairs(), pc = {};
   if (prev) prev.view.forEach(v => { pc[v.h.t + "," + v.h.g] = v.conf; });
   S.conf = conf || S.holes.map(h => fp.has(h.t + "," + h.g) ? 1 : (pc[h.t + "," + h.g] ?? 0));
+  const need = new Set(S.need(out.target));
+  out.pall = S.pAll();
   out.view = lpRouteView(L, S);
   if (!conf) { S.conf = null; out.view.forEach(v => { v.checking = !v.fixed && !((v.h.t + "," + v.h.g) in pc); }); }
+  out.view.forEach(v => { v.ask = need.has(v.i) && !v.checking; });
   out.pend = out.view.filter(v => !v.plan);
-  out.low = out.view.filter(v => !v.fixed && !v.checking && v.conf < out.thr);
+  out.low = out.view.filter(v => v.ask);
 }
 function lpRouteView(L, S){
   const R = L.route, fp = S.fixedPairs();
-  const out = S.holes.map((h, i) => ({no: S.holeRef(h), h, conf: S.conf[i], fixed: fp.has(h.t + "," + h.g), plan: null, par: S.par(h)}));
+  const out = S.holes.map((h, i) => ({i, no: S.holeRef(h), h, conf: S.conf[i], fixed: fp.has(h.t + "," + h.g), plan: null, par: S.par(h)}));
   const cand = [];
   out.forEach((v, vi) => {
     const G = R.greens[v.h.g].ll, Ts = [v.h.t].concat(v.h.boxes).map(t => R.tees[t].ll);
@@ -281,7 +303,7 @@ function lpSchem(L, RT, v, pick){
   const W = x1 - x0, Hh = y1 - y0, P = p => [(p[0] - x0).toFixed(1), (y1 - p[1]).toFixed(1)], sw = Math.max(W, Hh) / 300;
   let g = "";
   for (const u of RT.view) { const a = P(R.tc[u.h.t]), b = P(R.gc[u.h.g]), cur = v && u.no === v.no;
-    g += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${cur ? "#ffc928" : u.fixed ? "#5cc48d" : "rgba(255,255,255,.45)"}" stroke-width="${(cur ? 3.2 : 1.4) * sw}"${!u.fixed && u.conf < RT.thr && !cur ? ` stroke-dasharray="${4 * sw} ${3 * sw}"` : ""}/>`
+    g += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${cur ? "#ffc928" : u.fixed ? "#5cc48d" : "rgba(255,255,255,.45)"}" stroke-width="${(cur ? 3.2 : 1.4) * sw}"${u.ask && !cur ? ` stroke-dasharray="${4 * sw} ${3 * sw}"` : ""}/>`
       + `<text x="${a[0]}" y="${a[1]}" dy="${-4 * sw}" font-size="${11 * sw}" fill="#fff" text-anchor="middle" font-weight="700">${u.no}</text>`; }
   R.gc.forEach((p, i) => { const q = P(p); g += `<circle cx="${q[0]}" cy="${q[1]}" r="${5 * sw}" fill="#3fae5a" stroke="#0b130e" stroke-width="${sw}"/>`; void i; });
   R.tc.forEach(p => { const q = P(p); g += `<rect x="${(+q[0] - 2 * sw).toFixed(1)}" y="${(+q[1] - 2 * sw).toFixed(1)}" width="${4 * sw}" height="${4 * sw}" fill="#d8e6dc"/>`; });
@@ -325,11 +347,11 @@ function lpRouteBox(L, RT, v){
       <button class="btn ghost" data-rth1map="1">${lp.rpick && lp.rpick.kind === "h1" ? "Hide the sketch" : "Show on the sketch"}</button><button class="btn ghost" data-rth1skip="1">Not now</button></div></section>`;
   }
   const lowTxt = RT.pending ? `<div class="sub" id="rtLow">Re-solving…</div>` : RT.low.length ? `<div class="sub" id="rtLow">${RT.low.length} hole${RT.low.length === 1 ? "" : "s"} still need a look: ${RT.low.map(u => `<button class="chip" data-rtgo="${u.no}" aria-label="Go to hole ${u.no}"><b>${u.no}</b></button>`).join(" ")}</div>`
-    : `<div class="sub" id="rtLow">Every hole is confirmed or at least ${pctTxt(RT.thr)} sure.</div>`;
+    : `<div class="sub" id="rtLow">Routing is ${pctTxt(RT.pall)} sure every hole is right (golfers' answers included).</div>`;
   let q;
   if (v.fixed) q = `<div class="row"><span class="badge auto">✓</span><b>Golfers confirmed hole ${v.no} (tee → green).</b></div>`;
   else if (RT.pending && v.checking) q = `<div class="row" id="rtWait"><b>Re-solving the routing…</b><span class="sub">re-checking how sure each hole is</span></div>`;
-  else if (v.conf >= RT.thr && !pick && !(lp.rask && lp.rask === L.id + "|" + v.no))
+  else if (!v.ask && !pick && !(lp.rask && lp.rask === L.id + "|" + v.no))
     q = `<div class="row"><span class="badge auto">${pctTxt(v.conf)}</span><b>Routing is ${pctTxt(v.conf)} sure this is hole ${v.no}.</b><button class="btn ghost" data-rtask="1">Not right?</button></div>`;
   else {
     const ch = pick === "green" ? lpGreenChoices(L, RT, v) : null;
@@ -338,8 +360,8 @@ function lpRouteBox(L, RT, v){
       ${ch ? `<span class="sub">Tap the letter of hole ${v.no}'s green on the sketch (red); the yellow line is what the routing has now.</span>${lpSchem(L, RT, v, ch)}
         <div class="row">${ch.map(([lab, , g]) => `<button class="btn" data-rtg="${g}">${lab}</button>`).join("")}<button class="btn ghost" data-rtnot="1">This green is a practice green</button></div>` : ""}</div>`;
   }
-  return `${h1}<section class="conf ${v.fixed || v.conf >= RT.thr ? "auto" : "check"} stack" id="rtBox">${q}${lowTxt}
-    <div class="sub" id="rtNote">Hole pairing from the course map, no scorecard (card-blind routing). Each answer re-solves every hole${RT.ms ? ` (${RT.ms} ms)` : ""} and is shared with the next golfer.</div>${syncLine({id: L.id}, null)}</section>`;
+  return `${h1}<section class="conf ${v.fixed || !v.ask ? "auto" : "check"} stack" id="rtBox">${q}${lowTxt}
+    <div class="sub" id="rtNote">Hole pairing from the course map, no scorecard (card-blind routing). A correction re-solves every hole${RT.ms ? ` (${RT.ms} ms)` : ""}; every answer is shared with the next golfer.</div>${syncLine({id: L.id}, null)}</section>`;
 }
 /* a decoded hole with no precomputed plan: geometry only */
 function lpPending(L, RT, i, v){
@@ -359,7 +381,7 @@ function lpStripRoute(L, RT, i){
   return RT.view.map((u, k) => { let txt = "…";
     if (u.plan) { const H = Object.assign({}, u.plan, {no: u.no}), rr = lpSolve(L, H, lpWind(L, H)); txt = rr.kind === "tee" ? `<span class="${cls(rr.club)}">${esc(lpShort(rr.club))}</span>` : `<span>${Math.round(rr.play)}</span>`; }
     else txt = `<span>plan?</span>`;
-    return `<button class="chip" data-lpi="${k}" aria-current="${k === i}" aria-label="Hole ${u.no}">${!u.fixed && u.conf < RT.thr ? "<i>?</i>" : ""}<b>${u.no}</b>${txt}</button>`; }).join("");
+    return `<button class="chip" data-lpi="${k}" aria-current="${k === i}" aria-label="Hole ${u.no}">${u.ask ? "<i>?</i>" : ""}<b>${u.no}</b>${txt}</button>`; }).join("");
 }
 function lpRouteClick(L, d){
   const RT = lpRoute(L); if (!RT) return false;

@@ -16,6 +16,10 @@ Policy string: name:key=value,...
   alpha, pin, pin_w, keep      resolve2.STICKY (alpha=0, pin>1, keep=0 = the old plain re-solve)
   num = 1 | 0                  a confirmation carries its hole number (pinned position) or is pair-only
   ask = low | voi              lowest confidence, or (1 - conf) * (1 + nb) with nb = unconfirmed tour neighbours
+  ng = solve | drop            "not a hole": re-solve (resolve=all) or drop the hole without a re-solve (the next
+                               answer's re-solve refills the route; resolve2.Session.drop_hole)
+Each state also records nfix (confirmed holes), nh (decoded holes) and the course kind for the course-level stop rule
+(stop4.py: P(all pairs right)).
 """
 from __future__ import annotations
 
@@ -47,11 +51,11 @@ _G = {}
 
 def parse_policy(s):
     name, _, kv = s.partition(":")
-    p = dict(name=name, resolve="all", ask="low", sticky=None, num=True)
+    p = dict(name=name, resolve="all", ask="low", sticky=None, num=True, ng="solve")
     st = dict(RS.STICKY)
     for item in filter(None, kv.split(",")):
         k, v = item.split("=")
-        if k in ("resolve", "ask"):
+        if k in ("resolve", "ask", "ng"):
             p[k] = v
         elif k == "num":
             p["num"] = bool(int(v))
@@ -115,7 +119,7 @@ def simulate(d, pr, cal, calf, pol):
         un = [c for h, c in zip(s.holes, s.conf) if (h["t"], h["g"]) not in fp]
         traj.append(dict(taps=n_taps, min_un=float(min(un)) if un else 1.0,
                          conf=[round(float(c), 4) for c in s.conf], y=y.tolist(), N=N, miss=miss, num=num,
-                         kept=list(getattr(s, "kept", None) or [])))
+                         kept=list(getattr(s, "kept", None) or []), nfix=len(fp), nh=len(s.holes)))
         if single and tees1 and not _G.get("no_h1"):
             r = numbering_h1(d, s, hand, tees1[0])
             if r:
@@ -145,7 +149,7 @@ def simulate(d, pr, cal, calf, pol):
                 hand[(t2, h["g"])] = j
             yes = t2 == h["t"]
             s.confirm_pair(num, t2, h["g"])
-        if j is None and pol["resolve"] == "fix":           # "not a hole": drop it, no re-solve (the golfer adds the
+        if j is None and (pol["resolve"] == "fix" or pol["ng"] == "drop"):           # "not a hole": drop it, no re-solve (the golfer adds the
             s.drop_hole(i)                                  # true hole if it is missing: one tap, sim2's `miss`)
         elif yes and pol["resolve"] in ("no", "never", "fix"):
             s.fix["pairs"] = s.fix["pairs"][:-1]

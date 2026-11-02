@@ -404,6 +404,11 @@
      once conf >= pin; a pair that survives keeps its confidence). R.sticky (exported) overrides; null = plain re-solve. */
   const STICKY = {alpha: 0.0, pin: 0.0, pin_w: 30.0, keep: true, cap: 1.0, boxes: false};
   const stickyW = (c, st) => c >= st.pin ? st.pin_w : st.alpha * c;
+  /* resolve2.POLICY: the shipped confirm-tap policy (zero_tap PATHROUTE.md "Every hole right"): plain full re-solve
+     (sticky null; an exported R.sticky is ignored unless R.policy names it), ask the lowest-confidence unconfirmed hole
+     (< cap) until P(every pair right) = product of the unconfirmed confidences >= target; yes / not_hole "keep" /
+     "drop" = no re-solve after a "yes" / "not a hole". R.policy (exported) overrides. */
+  const POLICY = {target: 0.9, cap: 0.999, yes: "keep", not_hole: "drop", sticky: null};
 
   /* resolve2.Session */
   class Session {
@@ -417,7 +422,8 @@
       this.fix = {pairs: [], not_green: [], first_tee: null, reject: []};
       if (fix) for (const k of Object.keys(this.fix)) if (fix[k] != null) this.fix[k] = Array.isArray(fix[k]) ? fix[k].map(x => Array.isArray(x) ? x.slice() : x) : fix[k];
       this.holes = []; this.conf = []; this.routeConf = 0; this.free = null;
-      this.sticky = sticky !== undefined ? sticky : (R.sticky !== undefined ? R.sticky : STICKY);
+      this.policy = Object.assign({}, POLICY, R.policy || {});
+      this.sticky = sticky !== undefined ? sticky : this.policy.sticky;
       this.prev = new Map();                                         /* "t,g" -> conf of the previous solve's unconfirmed holes */
     }
     confirmPair(number, tee, green) {
@@ -501,9 +507,12 @@
       this.X = r.X; this.job = null;
       const keep = this.keep || new Map(), st = this.sticky;
       const cap = (st && keep.size) ? (st.cap == null ? 1.0 : st.cap) : 1.0;      /* a pair the re-solve moved: at most cap */
-      this.conf = r.holes.map((h, i) => { const k = h.t + "," + h.g; return fp.has(k) ? 1.0 : (keep.has(k) ? keep.get(k) : Math.min(c[i], cap)); });
+      const cr = r.holes.map((h, i) => { const k = h.t + "," + h.g; return fp.has(k) ? 1.0 : (keep.has(k) ? keep.get(k) : Math.min(c[i], cap)); });
+      /* holes answered with "yes" / "not a hole" between begin() and the last step keep their answer (conf 1 / gone) */
+      const ck = new Map(r.holes.map((h, i) => [h.t + "," + h.g, cr[i]]));
+      this.conf = this.holes.map(h => { const k = h.t + "," + h.g; return fp.has(k) ? 1.0 : (ck.has(k) ? ck.get(k) : 0); });
       this.prev = new Map();
-      r.holes.forEach((h, i) => { const k = h.t + "," + h.g; if (!fp.has(k)) this.prev.set(k, this.conf[i]); });
+      r.holes.forEach((h, i) => { const k = h.t + "," + h.g; if (!fp.has(k)) this.prev.set(k, cr[i]); });
       this.prevBoxes = new Map(r.holes.map(h => [h.t + "," + h.g, h.boxes.slice()]));
       return true;
     }
@@ -511,6 +520,41 @@
       this.begin();
       while (!this.step()) { /* min-marginals */ }
       return {holes: this.holes, conf: this.conf};
+    }
+    /* resolve2.Session.p_all / need / ask_all / answer: the shipped policy (POLICY) */
+    pAll() {
+      if (!this.conf || !this.holes.length) return 0;
+      const fp = this.fixedPairs();
+      let p = 1;
+      this.holes.forEach((h, i) => { if (!fp.has(h.t + "," + h.g)) p *= Math.min(1, Math.max(0, this.conf[i])); });
+      return p;
+    }
+    need(target) {
+      target = target == null ? this.policy.target : target;
+      if (!this.conf) return [];
+      const fp = this.fixedPairs(), c = this.conf.map(x => Math.min(1, Math.max(0, x)));
+      const order = this.holes.map((h, i) => i).filter(i => !fp.has(this.holes[i].t + "," + this.holes[i].g)).sort((a, b) => c[a] - c[b] || a - b);
+      const out = [];
+      for (let k = 0; k < order.length; k++) {
+        let p = 1; for (let j = k; j < order.length; j++) p *= c[order[j]];
+        if (p >= target || c[order[k]] >= this.policy.cap) break;
+        out.push(order[k]);
+      }
+      return out;
+    }
+    askAll(target) { const n = this.need(target); return n.length ? n[0] : null; }
+    /* the golfer's answer about hole i: notHole, else "hole `number` is `tee` -> this green" (tee null / the decoded
+       tee = "yes"). -> true when the route needs a re-solve (the caller runs solve(), or begin() + step()s) */
+    answer(i, tee, number, notHole) {
+      const h = this.holes[i], pol = this.policy;
+      if (notHole) {
+        if (pol.not_hole === "drop") { this.dropHole(i); return false; }
+        this.notAHole(h.g);
+      } else if (tee == null || tee === h.t) {
+        if (pol.yes === "keep") { this.confirmYes(i, number); return false; }
+        this.confirmPair(number == null ? null : number, h.t, h.g);
+      } else this.confirmPair(number == null ? null : number, tee, h.g);
+      return true;
     }
     ask(thr) {
       thr = thr == null ? 1.0 : thr;
@@ -541,7 +585,7 @@
     }
   }
 
-  const api = {Session, STICKY, stickyW, decode2, decodeCourse, courseJob, jobStep, jobFinish, applyFix, calibrate, mats, boxSets, parFromLen, hasFix};
+  const api = {Session, STICKY, POLICY, stickyW, decode2, decodeCourse, courseJob, jobStep, jobFinish, applyFix, calibrate, mats, boxSets, parFromLen, hasFix};
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.PathRoute = api;
 })(typeof window !== "undefined" ? window : this);

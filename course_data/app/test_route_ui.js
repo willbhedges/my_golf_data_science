@@ -2,11 +2,12 @@
 //   node course_data/app/test_route_ui.js [out dir] [shots dir]
 // The library record of tomahawk_hills (out/lib) gets the card-blind route of fixtures/lib_route/tomahawk_hills.json
 // (built by build_library_play.py --route-cardblind: OSM hole ways ignored) through window.AIM_LIB_INLINE. The test
-// raises the route's ask threshold (conf_ok 0.999) so that every hole is "low confidence" and the questions show.
+// raises the route's ask target (policy target 0.99999: P(all pairs right) never reaches it, so every hole below the
+// policy cap 0.999 is asked) so that the questions show.
 // At 400 px and 1280 px, golfer A (shared mock db):
 //  1. hole 1 shows the plan (club / aim on the photo), "Is this hole 1?" with Yes / No / Pick the right green, and
 //     "Which tee is hole 1?"; no NaN, no horizontal scroll, no console errors;
-//  2. "Yes" -> re-solve -> hole 1 confirmed; the hole-1 tee answer hides that question;
+//  2. "Yes" -> hole 1 confirmed (no re-solve); the hole-1 tee answer hides that question;
 //  3. "No" on hole 2 -> re-solve -> hole 2's pairing changes; a hole without a precomputed plan shows "plan pending"
 //     (sketch, no club) and a golf_replan/1 request lands in requests/;
 //  4. "Pick the right green" on hole 3 -> letters on the sketch -> picking one confirms hole 3 with that green;
@@ -22,6 +23,7 @@ const SLUG = "tomahawk_hills";
 const rec = JSON.parse(fs.readFileSync(path.join(outDir, "lib", SLUG + ".json")));
 rec.route = JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", "lib_route", SLUG + ".json"))).route;
 rec.route.conf_ok = 0.999;
+rec.route.policy = Object.assign({}, rec.route.policy || {}, { target: 0.99999 });
 const problems = [], errors = [];
 const expect = (c, msg) => { if (!c) problems.push(msg); };
 
@@ -144,6 +146,7 @@ async function shot(page, name) { await page.evaluate(() => window.scrollTo(0, 0
     await pb.waitForFunction(() => STORE.mode !== "connecting", null, { timeout: 15000 }).catch(() => {});
     await open(pb, base);
     await pb.waitForFunction(s => LPR[s] && LPR[s].n === 4 && !LPR[s].pending, SLUG, { timeout: 20000 }).catch(() => problems.push(`${tag}: B did not get A's 4 answers`));
+    await pb.waitForFunction(a => { const el = document.getElementById("lpStrip"); return el && el.innerText.replace(/\s+/g, " ") === a; }, sA, { timeout: 5000 }).catch(() => {});   // the render after the last step
     expect(await strip(pb) === sA, `${tag}: B's strip differs from A's:\n  A ${sA}\n  B ${await strip(pb)}`);
     await goHole(pb, 1);
     expect(/Golfers confirmed hole 1/.test(await pb.$eval("#rtBox", el => el.innerText)), `${tag}: B does not see hole 1 confirmed`);

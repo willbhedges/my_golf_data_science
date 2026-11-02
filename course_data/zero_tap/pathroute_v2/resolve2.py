@@ -8,6 +8,11 @@
     s.hole_one(tee)                            # (b) "this tee is hole 1" (fixes the start and the direction)
     s.solve()                                  # re-solve with every fact fixed (decode2.decode2(fix=...))
 
+The shipped confirm-tap policy (POLICY, PATHROUTE.md "Every hole right"): ask the hole `s.ask_all()` names (lowest
+confidence first) until the course-level P(every pair right) = product of the unconfirmed holes' confidences reaches
+POLICY["target"]; answer with `s.answer(i, tee=..., number=..., not_hole=...)`, which re-solves the whole route
+(plain, not sticky) after a correction and applies a "yes" / "not a hole" without a re-solve (POLICY yes / not_hole).
+
 Facts are kept in `s.fix` (decode2.apply_fix format, JSON-able with tee / green indices); `to_ids` / `from_ids`
 convert them to OSM ids so an app can store them and re-solve later.
 """
@@ -33,16 +38,32 @@ import run2 as R2  # noqa: E402
 STICKY = dict(alpha=0.0, pin=0.0, pin_w=30.0, keep=True, cap=1.0, boxes=False)
 
 
+# Confirm-tap policy (PATHROUTE.md "Every hole right"): plain full re-solve (sticky None), stop when
+# P(all pairs right) >= target, ask the lowest-confidence unconfirmed hole (< cap); yes / not_hole: "keep" / "drop" =
+# no re-solve after a "yes" / "not a hole" (the next correction's re-solve includes them), "solve" = re-solve.
+POLICY = dict(target=0.9, cap=0.999, yes="keep", not_hole="drop", sticky=None)
+
+
+def p_all(conf, fixed=None):
+    """P(every decoded pair right) = product of the unconfirmed holes' calibrated confidences (fixed: bool mask)."""
+    c = np.asarray(conf, float)
+    if fixed is not None:
+        c = c[~np.asarray(fixed, bool)]
+    return float(np.prod(np.clip(c, 0.0, 1.0)))
+
+
 def sticky_w(c, st):
     return float(st["pin_w"]) if c >= st["pin"] else float(st["alpha"]) * float(c)
 
 
 class Session:
-    def __init__(self, d, pr, calib, cfg=None, fix=None, calib_fix=None, sticky="default"):
+    def __init__(self, d, pr, calib, cfg=None, fix=None, calib_fix=None, sticky="default", policy=None):
         """calib: confidence of the free decode; calib_fix (optional, confidence.Calib2 fitted on constrained
-        re-solves by calib_resolve.py): used once any fact is set. sticky: STICKY-like dict, None = plain re-solve."""
+        re-solves by calib_resolve.py): used once any fact is set. sticky: STICKY-like dict, None = plain re-solve
+        ("default" = the policy's, plain). policy: POLICY overrides."""
         self.d, self.pr, self.calib, self.calib_fix = d, pr, calib, calib_fix
-        self.sticky = STICKY if sticky == "default" else sticky
+        self.policy = dict(POLICY, **(policy or {}))
+        self.sticky = self.policy["sticky"] if sticky == "default" else sticky
         self.prev = {}                          # (tee, green) -> confidence of the previous solve's unconfirmed holes
         self.cfg = cfg or R2.CFG
         self.comp = CX.cluster(len(d["tees"]), d["tpp"], pr["tpair"], thr=self.cfg["comp_thr"])
@@ -171,6 +192,55 @@ class Session:
                 h = dict(h, boxes=bx, L=L)
             out.append(h)
         return out
+
+    # ------------------------------------------------------------------ the shipped policy (POLICY)
+    def fixed_mask(self):
+        fp = self.fixed_pairs()
+        return np.array([(h["t"], h["g"]) in fp for h in self.holes], bool)
+
+    def p_all(self):
+        """Course-level P(every decoded pair right): product of the unconfirmed holes' confidences."""
+        return p_all(self.conf, self.fixed_mask()) if self.conf is not None and len(self.holes) else 0.0
+
+    def need(self, target=None):
+        """Holes to ask, in ask order (lowest confidence first, ties by index), until P(all right) with them confirmed
+        reaches target; holes at >= cap are never asked (the route is as sure as it gets)."""
+        target = self.policy["target"] if target is None else target
+        if self.conf is None:
+            return []
+        fm = self.fixed_mask()
+        c = np.clip(np.asarray(self.conf, float), 0.0, 1.0)
+        order = sorted((i for i in range(len(self.holes)) if not fm[i]), key=lambda i: (c[i], i))
+        out = []
+        for k, i in enumerate(order):
+            if float(np.prod(c[order[k:]])) >= target or c[i] >= self.policy["cap"]:
+                break
+            out.append(i)
+        return out
+
+    def ask_all(self, target=None):
+        """The next hole to ask (index) under POLICY, or None when P(all right) >= target."""
+        n = self.need(target)
+        return n[0] if n else None
+
+    def answer(self, i, tee=None, number=None, not_hole=False):
+        """The golfer's answer about hole i under POLICY: not_hole (its green is a practice green), else "hole
+        `number` is `tee` -> this green" (tee None or the decoded tee = "yes"). -> True when it re-solved."""
+        h, pol = self.holes[i], self.policy
+        if not_hole:
+            if pol["not_hole"] == "drop":
+                self.drop_hole(i)
+                return False
+            self.not_a_hole(h["g"])
+        elif tee is None or int(tee) == h["t"]:
+            if pol["yes"] == "keep":
+                self.confirm_yes(i, number)
+                return False
+            self.confirm_pair(number, h["t"], h["g"])
+        else:
+            self.confirm_pair(number, tee, h["g"])
+        self.solve()
+        return True
 
     def ask(self, thr=1.0):
         """Index of the unconfirmed hole with the lowest confidence (< thr), or None."""
