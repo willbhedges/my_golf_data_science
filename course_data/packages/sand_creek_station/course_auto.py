@@ -1,5 +1,5 @@
 """Course module for Sand Creek Station (Championship tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T21:44:37Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-02T23:46:53Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_sand_creek_station.json
 

@@ -1,6 +1,6 @@
 # TPC Deere Run (Silvis, IL) - Gold tees
 
-Built 2026-11-02T21:46:13Z. OSM relation/12585470. Scorecard: file (course_data/library/tpc_deere_run/card_review.json). Tee set: name.
+Built 2026-11-02T23:48:33Z. OSM relation/12585470. Scorecard: file (course_data/library/tpc_deere_run/card_review.json). Tee set: name.
 
 ## Coverage
 
