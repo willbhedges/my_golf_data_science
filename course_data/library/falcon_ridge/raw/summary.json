@@ -19,9 +19,9 @@
   },
   "other_candidates": []
  },
- "n_features": 923,
+ "n_features": 925,
  "golf_tag_counts": {
-  "tee": 40,
+  "tee": 42,
   "bunker": 24,
   "pin": 18,
   "hole": 18,
@@ -34,7 +34,7 @@
   "clubhouse": 1
  },
  "golf_tag_counts_inside_course": {
-  "tee": 40,
+  "tee": 42,
   "bunker": 24,
   "pin": 18,
   "hole": 18,
@@ -296,8 +296,8 @@
  "holes_with_handicap": 18,
  "hole_centrelines": 18,
  "tees": {
-  "count": 40,
-  "with_colour_or_ref": 1,
+  "count": 42,
+  "with_colour_or_ref": 3,
   "items": [
    {
     "osm_id": 6239420901,
@@ -459,6 +459,18 @@
    {
     "osm_id": 1392245467,
     "geometry": "Polygon"
+   },
+   {
+    "osm_id": -1,
+    "geometry": "Polygon",
+    "ref": "11",
+    "colour": "blue"
+   },
+   {
+    "osm_id": -2,
+    "geometry": "Polygon",
+    "ref": "18",
+    "colour": "blue"
    }
   ]
  },
@@ -470,6 +482,26 @@
   38.964819,
   -94.81406
  ],
- "fetched_utc": "2026-10-30T03:16:47Z",
- "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0"
+ "fetched_utc": "2026-11-02T03:08:21Z",
+ "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
+ "osm_source": {
+  "source": "overpass",
+  "reason": "complete",
+  "mirror": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+  "osm_base": "2026-11-02T03:07:34Z",
+  "counts": {
+   "hole": 18,
+   "green": 11,
+   "tee": 40,
+   "pin": 18,
+   "bunker": 24,
+   "fairway": 12
+  },
+  "mirrors_tried": [
+   "https://overpass-api.de/api/interpreter",
+   "https://overpass.kumi.systems/api/interpreter",
+   "https://overpass.private.coffee/api/interpreter",
+   "https://maps.mail.ru/osm/tools/overpass/api/interpreter"
+  ]
+ }
 }
