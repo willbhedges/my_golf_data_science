@@ -7,7 +7,7 @@
  "group": "library",
  "status": "failed",
  "reasons": [
-  "package: resolve: not_found None None [] tpc_louisiana: not_found; see packages/tpc_louisiana/raw/course.json for the candidates "
+  "package: overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package at"
  ],
  "check_holes": [],
  "tee_sets": [],
@@ -15,8 +15,8 @@
  "page_bytes": null,
  "request": "course_data/requests/course_page_tpc_louisiana.json",
  "resolve": {
-  "status": "not_found",
+  "status": null,
   "candidates": []
  },
- "built": "2026-10-31T02:09Z"
+ "built": "2026-11-01T23:00Z"
 }
