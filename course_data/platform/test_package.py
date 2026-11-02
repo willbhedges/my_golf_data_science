@@ -524,7 +524,8 @@ def test_review_overrides(tmp_path, black):
                yardage_overrides={"2": {"*": 499}, "4": {"black": 530}}, par_overrides={"1": 5})
     p = pk.build_package(req, pkg, gapfill=False)
     h3 = p["holes"]["3"]["tees"]["Black"]
-    assert h3["tee_ll"] == pytest.approx(white3, abs=1.5e-4) and "Black review (snapped" in h3["tee_choice"]
+    assert h3["tee_ll"] == pytest.approx(white3, abs=1.5e-4)
+    assert "Black review (snapped" in h3["tee_choice"] or "Black review (inside" in h3["tee_choice"]
     h5 = p["holes"]["5"]["tees"]["Black"]
     assert h5["tee_ll"] == pytest.approx(far, abs=1e-6) and h5["tee_choice"] == "tee stage: Black review"
     assert p["holes"]["5"]["tees"]["Gold"]["tee_ll"] == p0["holes"]["5"]["tees"]["Gold"]["tee_ll"]
@@ -532,6 +533,31 @@ def test_review_overrides(tmp_path, black):
     assert p["holes"]["1"]["par"] == 5 and p["tee_sets"]["Black"]["total"] == sum(BLACK) - 507 + 499 - 532 + 530
     assert "review" in p["stages"]["card_overrides"] and "Black" in p["stages"]["tee_overrides"]
     assert pk.override_set("osm_back (= Championship)", {"Champ": dict(aliases=["championship"])}, "X") == "Champ"
+
+
+def test_review_tee_snap_keeps_point_on_long_box():
+    """hodge_park 3: two review points 23 yds apart on one long teeing ground stay where they are (not both on the
+    centroid); a point beside the box moves onto it along the long axis, keeping its along-axis position."""
+    lat0, lon0 = 39.25, -94.49
+    ky = 111320 / 0.9144
+    kx = math.cos(math.radians(lat0)) * ky
+
+    def ll(x, y):                                       # yds east / north of (lat0, lon0) -> (lat, lon)
+        return lat0 + y / ky, lon0 + x / kx
+    ring = [ll(-4, -20), ll(4, -20), ll(4, 20), ll(-4, 20), ll(-4, -20)]   # 8 x 40 yds, long axis north
+    tees = [dict(id=7, coords=ring), dict(id=8, coords=[ll(30, 0)])]
+    a, b = ll(0, 11.5), ll(1, -11.5)
+    for q in (a, b):
+        lat, lon, how = pk.snap_to_tee_box(*q, tees)
+        assert (lat, lon) == pytest.approx(q, abs=1e-9) and "inside OSM tee 7" in how
+    lat, lon, how = pk.snap_to_tee_box(*ll(-10, 15), tees)                  # 6 yds west of the box
+    x, y = (lon - lon0) * kx, (lat - lat0) * ky
+    assert abs(x) < 0.5 and y == pytest.approx(15, abs=0.5) and "along OSM tee 7" in how
+    lat, lon, how = pk.snap_to_tee_box(*ll(-6, 30), tees)                   # beyond the north end: clamped to it
+    assert (lat - lat0) * ky == pytest.approx(20, abs=0.5)
+    lat, lon, _ = pk.snap_to_tee_box(*ll(26, 0), tees)                      # an OSM node tee: its position
+    assert (lon - lon0) * kx == pytest.approx(30, abs=0.1)
+    assert pk.snap_to_tee_box(*ll(0, 60), tees) is None                      # nothing within 15 yds
 
 
 def test_renumber_and_green_override_helpers():

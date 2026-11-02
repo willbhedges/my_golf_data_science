@@ -33,8 +33,9 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
   S2n     request "hole_renumber" {old: new | {to, near_ll}} renames hole ways / routed holes after S2a (a review
           found OSM or the router numbered them unlike the card); "green_overrides" {ref: [lat, lon]} ends the hole
           line on a review green (re-drawn from the review tee when it moves > GREEN_MOVE_YD; a missed hole is added)
-  S2r     request "tee_overrides" {ref: {set: [lat, lon]}} (course reviews): that set's tee on that hole, snapped
-          to an OSM tee box within OVERRIDE_SNAP_YD (else the point as given); wins over S2 (method "review")
+  S2r     request "tee_overrides" {ref: {set: [lat, lon]}} (course reviews): that set's tee on that hole: kept
+          when inside an OSM tee box, else moved onto the nearest box within OVERRIDE_SNAP_YD along its long axis
+          (not to its centroid; else the point as given); wins over S2 (method "review")
   S3     geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
   S4c     course_data/ob/infer.py:apply_ob(package) when the course's OB evidence is fetched (call_ob)
@@ -532,9 +533,51 @@ def apply_cardless_overrides(fc, req):
     return fc, notes
 
 
+def snap_to_tee_box(lat, lon, tees, snap_yd=None):
+    """(lat, lon, how) for an approximate review tee point and the OSM tee boxes [{id, coords [(lat, lon)]}].
+
+    Inside a box: the point stays (a long teeing ground holds several sets; hodge_park 3 had two review points
+    11-12 yds apart on one box both jump to its centroid). Else, within snap_yd of a box's outline (nearest box):
+    the point moves onto the box along its long axis (projected onto the axis through the centroid, clamped to the
+    box's extent along it), not to the centroid. A point box (OSM node): its position. None: no box near."""
+    snap_yd = OVERRIDE_SNAP_YD if snap_yd is None else snap_yd
+    kx, ky = math.cos(math.radians(lat)) * 111320 / 0.9144, 111320 / 0.9144
+    best = None
+    for t in tees:
+        cs = np.array(t["coords"], float)
+        if len(cs) > 2 and np.allclose(cs[0], cs[-1]):
+            cs = cs[:-1]
+        xy = np.c_[(cs[:, 1] - lon) * kx, (cs[:, 0] - lat) * ky]          # yds, the review point at (0, 0)
+        if len(xy) >= 3:
+            from shapely.geometry import Point as SPt
+            from shapely.geometry import Polygon as SPoly
+            poly = SPoly(xy).buffer(0)
+            d = float(poly.distance(SPt(0.0, 0.0)))
+        else:
+            poly, d = None, float(np.hypot(*xy.mean(0)))
+        if d <= snap_yd and (best is None or d < best[0]):
+            best = (d, xy, poly, t["id"])
+    if best is None:
+        return None
+    d, xy, poly, tid = best
+    if poly is not None and d == 0.0:
+        return lat, lon, f"review (inside OSM tee {tid})"
+    c = np.array(poly.centroid.coords[0]) if poly is not None else xy.mean(0)
+    if poly is not None:
+        _, vec = np.linalg.eigh(np.cov((xy - c).T))
+        u = vec[:, -1]                                                   # long axis
+        s = (xy - c) @ u
+        q = c + float(np.clip(-c @ u, s.min(), s.max())) * u          # the point's projection, on the box
+        how = f"review (snapped {d:.0f} yds along OSM tee {tid})"
+    else:
+        q, how = c, f"review (snapped {d:.0f} yds to OSM tee {tid})"
+    return lat + q[1] / ky, lon + q[0] / kx, how
+
+
 def tee_overrides_for(req, set_key, card_sets, chosen, fc):
     """{ref: (lon, lat, how)} for one built set from request tee_overrides {ref: {set: [lat, lon]}}; each point is
-    snapped to the centroid of an OSM tee box within OVERRIDE_SNAP_YD (the reviews give approximate points)."""
+    kept when it is inside an OSM tee box, else moved onto the nearest box within OVERRIDE_SNAP_YD along the box's
+    long axis (snap_to_tee_box; the reviews give approximate points)."""
     out = {}
     tees = None
     for ref, by in (req.get("tee_overrides") or {}).items():
@@ -544,16 +587,9 @@ def tee_overrides_for(req, set_key, card_sets, chosen, fc):
             lat, lon = float(ll[0]), float(ll[1])
             if tees is None:
                 tees = osm_tee_inputs(fc)[1]
-            kx, ky = math.cos(math.radians(lat)) * 111320 / 0.9144, 111320 / 0.9144
-            best = None
-            for t in tees:
-                cs = np.array(t["coords"], float)
-                c = cs[:-1].mean(0) if len(cs) > 2 and np.allclose(cs[0], cs[-1]) else cs.mean(0)
-                d = math.hypot((c[1] - lon) * kx, (c[0] - lat) * ky)
-                if d <= OVERRIDE_SNAP_YD and (best is None or d < best[0]):
-                    best = (d, c, t["id"])
-            if best:
-                out[str(ref)] = (float(best[1][1]), float(best[1][0]), f"review (snapped {best[0]:.0f} yds to OSM tee {best[2]})")
+            snap = snap_to_tee_box(lat, lon, tees)
+            if snap:
+                out[str(ref)] = (float(snap[1]), float(snap[0]), snap[2])
             else:
                 out[str(ref)] = (lon, lat, "review")
     return out
@@ -805,23 +841,31 @@ def place_tees_v2(fc, per_hole_card, card_sets, pads=(), img_dir=None, slug=None
     res = lz.localize_course(lines, greens, yards, cands)
     pt = place_tee_mod()
     by_hole = pt.assign_tees_to_holes(lines, tees)
+    colours = {str(v).lower() for s in card_sets for v in (s, (card_sets.get(s) or {}).get("colour")) if v}
     for ref, hp in res.items():
         for s, r in hp["tees"].items():
             want = {str(s).lower(), str((card_sets.get(s) or {}).get("colour") or "").lower()} - {""}
             tagged = [t for t in by_hole.get(ref, []) if want & set(_tee_tags(t["tags"]))]
             if tagged:
                 # the tagged box wins; the point is on its axis at the card yardage (as a localizer pad), not
-                # its centroid (ERROR_BUDGET.md tees: tagged boxes are drawn short of the real back tee)
+                # its centroid (ERROR_BUDGET.md tees: tagged boxes are drawn short of the real back tee). A tagged
+                # box > tag_off_card_yd off the card loses to an untagged box of the hole that fits the card
+                # (localize.card_checked_point; sycamore_ridge 1 / 9)
                 g = hp.get("green")
                 y = (yards.get(ref) or {}).get(s)
-                tp = lz.tagged_point(lines[ref], (g["lat"], g["lon"]) if g else None, tagged, y) \
-                    if hasattr(lz, "tagged_point") else None
+                untagged = [t for t in by_hole.get(ref, []) if not (colours & set(_tee_tags(t["tags"])))]
+                tp = lz.card_checked_point(lines[ref], (g["lat"], g["lon"]) if g else None, tagged, untagged, y)
                 if tp is not None:
-                    lat, lon, tid, dist = tp
+                    lat, lon, tid, dist, how = tp
                 else:
-                    (lat, lon), tid, dist = pt.centroid_ll(tagged[0]["coords"]), tagged[0]["id"], None
-                hp["tees"][s] = dict(lat=lat, lon=lon, method="tagged", tee_id=tid, confidence="high",
-                                     error_yd=0.0, source="osm_tagged", sigma_yd=3.0, p_assign=1.0, dist_yd=dist)
+                    (lat, lon), tid, dist, how = pt.centroid_ll(tagged[0]["coords"]), tagged[0]["id"], None, "tagged"
+                if how == "card_box":
+                    hp["tees"][s] = dict(lat=lat, lon=lon, method="card_box", tee_id=tid, confidence="high",
+                                         error_yd=0.0, source="osm_untagged_card", sigma_yd=3.0, p_assign=1.0,
+                                         dist_yd=dist, tagged_box_off_card=[t["id"] for t in tagged])
+                else:
+                    hp["tees"][s] = dict(lat=lat, lon=lon, method="tagged", tee_id=tid, confidence="high",
+                                         error_yd=0.0, source="osm_tagged", sigma_yd=3.0, p_assign=1.0, dist_yd=dist)
     return dict(schema="tees/positions", method=f"{lz.VERSION} ({'+'.join(used)} pads, joint chain assignment)",
                 sources=used, holes=res)
 
