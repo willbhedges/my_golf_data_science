@@ -1,0 +1,11 @@
+{
+ "requests": [
+  "course_data/requests/course_page_sycamore_ridge.json",
+  "course_data/requests/course_page_hodge_park.json",
+  "course_data/requests/course_page_colbert_hills.json",
+  "course_data/requests/course_page_gustin.json",
+  "course_data/requests/course_page_la_nickell.json"
+ ],
+ "rev": 1,
+ "note": "Pipeline fixes: adaptive aim bound (library/v2_adaptive.py: +/-40 widened to 60/80 where the best aim sits on it), tee localizer card check (tagged box > 15 yds off the card loses to an untagged box within 5), review tee snap along the box axis. Sycamore OSM 10 Black tee + yards; Hodge 3 tee snap; Colbert 13, Gustin 16, Hodge 8/9/10/15/18, La Nickell 16 picks move off the +/-40 bound (local v2 check, 12 draws)"
+}
