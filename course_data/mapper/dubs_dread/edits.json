@@ -1,0 +1,1408 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "dubs_dread",
+ "corridor_set": "Championship",
+ "mapper": "mapper-dubs_dread",
+ "started": "2026-11-02T22:00Z",
+ "minutes": 58,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py dubs_dread. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none drawn: auto OSM native kept beyond the right tree belt (x > ~+45, outside play); mown rough between fairway and trees both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none drawn: auto OSM native kept beyond the right tree belt (x > ~+45, outside play); mown rough between fairway and trees both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-6-L1",
+      "area_yd2": 353,
+      "p": 0.55,
+      "along": [
+       330,
+       364
+      ],
+      "gap_yd": 31.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "L1 at x -40..-25, along 330-360 behind the left tree line: smooth uniform mown turf in 2021 and 2023, no second mowing line, no tufted texture (rough between holes 6 and 5)",
+      "shape": {
+       "poly": [
+        [
+         -20,
+         335
+        ],
+        [
+         -31,
+         330
+        ],
+        [
+         -40,
+         361
+        ],
+        [
+         -30,
+         364
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo; added 6 missed crown(s) near play",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        35.8,
+        164.0
+       ],
+       [
+        33.4,
+        164.9
+       ],
+       [
+        31.1,
+        164.0
+       ],
+       [
+        28.2,
+        165.4
+       ],
+       [
+        25.1,
+        170.5
+       ],
+       [
+        25.9,
+        177.8
+       ],
+       [
+        32.0,
+        181.0
+       ],
+       [
+        34.1,
+        180.4
+       ],
+       [
+        41.4,
+        172.5
+       ],
+       [
+        41.6,
+        165.6
+       ],
+       [
+        35.8,
+        164.0
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +33, along 172 (93 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -28.1,
+        257.5
+       ],
+       [
+        -30.4,
+        258.4
+       ],
+       [
+        -33.9,
+        264.0
+       ],
+       [
+        -29.9,
+        269.1
+       ],
+       [
+        -25.5,
+        269.5
+       ],
+       [
+        -22.1,
+        266.2
+       ],
+       [
+        -22.5,
+        260.0
+       ],
+       [
+        -24.0,
+        258.2
+       ],
+       [
+        -28.1,
+        257.5
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x -28, along 263 (37 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        55.7,
+        290.1
+       ],
+       [
+        54.2,
+        291.6
+       ],
+       [
+        51.8,
+        300.2
+       ],
+       [
+        56.3,
+        304.4
+       ],
+       [
+        59.7,
+        302.8
+       ],
+       [
+        62.7,
+        303.2
+       ],
+       [
+        65.8,
+        296.9
+       ],
+       [
+        65.7,
+        294.8
+       ],
+       [
+        59.2,
+        289.8
+       ],
+       [
+        55.7,
+        290.1
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +59, along 297 (55 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -33.2,
+        297.9
+       ],
+       [
+        -35.4,
+        297.7
+       ],
+       [
+        -38.9,
+        299.8
+       ],
+       [
+        -44.4,
+        298.5
+       ],
+       [
+        -46.2,
+        299.2
+       ],
+       [
+        -49.9,
+        307.4
+       ],
+       [
+        -48.8,
+        313.2
+       ],
+       [
+        -43.6,
+        314.4
+       ],
+       [
+        -40.0,
+        317.0
+       ],
+       [
+        -31.7,
+        312.7
+       ],
+       [
+        -26.5,
+        303.2
+       ],
+       [
+        -33.2,
+        297.9
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x -39, along 307 (174 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        20.8,
+        325.6
+       ],
+       [
+        17.3,
+        324.1
+       ],
+       [
+        14.4,
+        326.1
+       ],
+       [
+        14.1,
+        332.5
+       ],
+       [
+        18.2,
+        337.6
+       ],
+       [
+        18.7,
+        340.3
+       ],
+       [
+        24.0,
+        342.9
+       ],
+       [
+        29.3,
+        338.7
+       ],
+       [
+        29.9,
+        336.4
+       ],
+       [
+        27.5,
+        332.7
+       ],
+       [
+        26.9,
+        325.9
+       ],
+       [
+        24.0,
+        324.0
+       ],
+       [
+        20.8,
+        325.6
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +22, along 333 (92 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        36.9,
+        340.7
+       ],
+       [
+        34.3,
+        341.1
+       ],
+       [
+        28.7,
+        347.6
+       ],
+       [
+        28.8,
+        349.7
+       ],
+       [
+        32.2,
+        354.4
+       ],
+       [
+        37.7,
+        352.3
+       ],
+       [
+        40.8,
+        346.4
+       ],
+       [
+        40.6,
+        342.6
+       ],
+       [
+        36.9,
+        340.7
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +35, along 347 (37 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo; added 1 missed crown(s) near play",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        71.0,
+        290.4
+       ],
+       [
+        69.2,
+        288.1
+       ],
+       [
+        64.0,
+        288.1
+       ],
+       [
+        58.0,
+        293.0
+       ],
+       [
+        57.5,
+        300.0
+       ],
+       [
+        60.4,
+        303.4
+       ],
+       [
+        68.9,
+        305.0
+       ],
+       [
+        71.0,
+        304.0
+       ],
+       [
+        71.0,
+        290.4
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +65, along 297 (87 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; OB left on the house lots kept; added 1 missed crown(s) near play",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        28.3,
+        333.4
+       ],
+       [
+        18.0,
+        332.5
+       ],
+       [
+        10.5,
+        339.6
+       ],
+       [
+        10.0,
+        345.0
+       ],
+       [
+        11.3,
+        347.2
+       ],
+       [
+        20.7,
+        351.0
+       ],
+       [
+        26.4,
+        345.7
+       ],
+       [
+        31.1,
+        343.9
+       ],
+       [
+        33.0,
+        339.5
+       ],
+       [
+        28.3,
+        333.4
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +21, along 341 (152 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; OB left follows the back-yard line (within ~5 yds)",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo; added 2 missed crown(s) near play",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        42.8,
+        202.1
+       ],
+       [
+        40.5,
+        202.5
+       ],
+       [
+        37.5,
+        206.0
+       ],
+       [
+        37.8,
+        210.7
+       ],
+       [
+        42.3,
+        214.0
+       ],
+       [
+        44.2,
+        213.3
+       ],
+       [
+        50.5,
+        206.6
+       ],
+       [
+        49.2,
+        204.3
+       ],
+       [
+        42.8,
+        202.1
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +43, along 208 (33 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -37.4,
+        323.0
+       ],
+       [
+        -39.3,
+        324.5
+       ],
+       [
+        -39.5,
+        327.4
+       ],
+       [
+        -44.0,
+        332.1
+       ],
+       [
+        -42.8,
+        334.7
+       ],
+       [
+        -43.3,
+        337.6
+       ],
+       [
+        -39.9,
+        341.0
+       ],
+       [
+        -32.3,
+        338.7
+       ],
+       [
+        -27.5,
+        334.4
+       ],
+       [
+        -29.2,
+        330.0
+       ],
+       [
+        -29.1,
+        326.4
+       ],
+       [
+        -33.0,
+        322.7
+       ],
+       [
+        -37.4,
+        323.0
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x -36, along 332 (83 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; added the missed right-side crown group at 185-235 and one left crown",
+   "long_grass": {
+    "L": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line",
+    "R": "none: smooth mown rough to the trees / next hole in 2021 and 2023, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        34.1,
+        217.1
+       ],
+       [
+        31.1,
+        216.9
+       ],
+       [
+        29.0,
+        220.3
+       ],
+       [
+        32.7,
+        227.8
+       ],
+       [
+        35.0,
+        228.5
+       ],
+       [
+        37.4,
+        227.1
+       ],
+       [
+        39.8,
+        228.0
+       ],
+       [
+        44.3,
+        226.2
+       ],
+       [
+        45.0,
+        220.0
+       ],
+       [
+        44.1,
+        218.1
+       ],
+       [
+        42.0,
+        217.5
+       ],
+       [
+        40.0,
+        219.0
+       ],
+       [
+        36.6,
+        219.3
+       ],
+       [
+        34.1,
+        217.1
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +37, along 223 (42 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        27.9,
+        213.4
+       ],
+       [
+        25.8,
+        213.1
+       ],
+       [
+        24.0,
+        214.5
+       ],
+       [
+        21.0,
+        213.7
+       ],
+       [
+        17.5,
+        218.0
+       ],
+       [
+        18.5,
+        220.0
+       ],
+       [
+        21.8,
+        220.8
+       ],
+       [
+        23.6,
+        222.6
+       ],
+       [
+        23.8,
+        226.3
+       ],
+       [
+        28.1,
+        228.5
+       ],
+       [
+        32.8,
+        225.2
+       ],
+       [
+        33.5,
+        223.4
+       ],
+       [
+        29.4,
+        218.7
+       ],
+       [
+        30.4,
+        215.8
+       ],
+       [
+        27.9,
+        213.4
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +26, along 221 (40 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -71.5,
+        326.5
+       ],
+       [
+        -70.5,
+        328.5
+       ],
+       [
+        -68.7,
+        329.0
+       ],
+       [
+        -58.8,
+        324.4
+       ],
+       [
+        -58.0,
+        322.2
+       ],
+       [
+        -60.1,
+        316.4
+       ],
+       [
+        -63.5,
+        316.0
+       ],
+       [
+        -68.3,
+        313.1
+       ],
+       [
+        -70.6,
+        313.6
+       ],
+       [
+        -71.5,
+        315.3
+       ],
+       [
+        -71.5,
+        326.5
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x -66, along 321 (57 sq yd): dark crown on NAIP 2021 and 2023 and lidar HAG > 2.5 m, missing from the auto tree layer; traced from the photo/lidar mask; grown 2.5 yds to the visible crown edge (mask is the crown core)"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       28,
+       222,
+       12,
+       11
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown group right of the fairway at x +16..+40, along 211-233: dark crowns on NAIP 2021 and 2023, lidar HAG 5-8 m; not in the auto trees"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       32,
+       202,
+       9,
+       11
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at x +23..+41, along 191-213: dark crown on NAIP 2021 and 2023, lidar HAG ~8 m; not in the auto trees"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "2": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "3": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "4": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "5": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "6": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "7": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "8": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "9": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "10": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "11": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "12": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "13": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "14": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "15": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "16": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "17": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  },
+  "18": {
+   "Championship": {
+    "action": "keep"
+   },
+   "Back": {
+    "action": "keep"
+   },
+   "Middle": {
+    "action": "keep"
+   },
+   "Middle/Forward": {
+    "action": "keep"
+   },
+   "Forward": {
+    "action": "keep"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "13",
+   "what": "Championship tee (lidar_pad, card 420) sits under continuous canopy in both NAIP years, no pad visible; the OSM box at x -32, along +16 would measure 407 (13 short of the card), so not moved. Possibly a chute under overhanging crowns; verify on the ground"
+  },
+  {
+   "hole": "6",
+   "what": "Middle/Forward (walkback) and Forward tees: no clear box at the dots; kept"
+  },
+  {
+   "hole": "2",
+   "what": "right side OSM native beyond the tree belt kept unverified (outside play)"
+  },
+  {
+   "hole": "all",
+   "what": "crowns not in the 2010 lidar (planted after 2010) were not searched systematically; only lidar-confirmed crowns added"
+  }
+ ]
+}
