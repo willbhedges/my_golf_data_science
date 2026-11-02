@@ -110,3 +110,22 @@ def test_derived_urls():
     u = scm.derived_card_urls("A.L. Gustin Jr. Golf Course", "MO", "Columbia")
     assert "https://www.allsquaregolf.com/golf-courses/missouri/a-l-gustin-golf-course" in u["allsquare"][:2]
     assert scm.name_similarity("L A Nickell Golf Course", "L.A. Nickell Golf Course") == 1.0
+
+
+def test_shorter_set_never_moved_onto_a_longer_sets_tee():
+    # Gustin 15 Gold (qa_rebuild.md): golfify and AllSquare say 350, an inconsistent OpenGolfAPI card says 401 and
+    # 401 "fits" the Black box (399) on the ground; a Gold value on or behind Black is never taken
+    yards_g = [380, 160, 400, 390, 170, 360, 340, 380, 370, 150, 400, 500, 160, 380, 350, 370, 360, 400]
+    yards_b = [y + 30 for y in yards_g]
+    yards_b[14] = 399
+    def card(g, b, extra=0):
+        return dict(par=[4] * 18, tee_sets={"Black": dict(yards=b, total=sum(b)),
+                                             "Gold": dict(yards=g, total=sum(g) + extra)})
+    ogapi_g = list(yards_g); ogapi_g[14] = 401
+    cards = [("golfify", card(yards_g, yards_b), "g"), ("allsquare", card(yards_g, yards_b), "a"),
+             ("opengolfapi", card(ogapi_g, yards_b, extra=300), "o")]     # stated total off: inconsistent
+    ground = {str(i + 1): dict(tees=[yards_b[i], yards_g[i]] if i != 14 else [399], line=yards_b[i])
+              for i in range(18)}
+    assert not scm.consistency(scm.normalise(cards[2][1]))["ok"]
+    r = cc.consensus(cards, ground)
+    assert r["card"]["tee_sets"]["Gold"]["yards"][14] == 350

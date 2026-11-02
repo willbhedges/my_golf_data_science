@@ -330,6 +330,11 @@ def consensus(cards, ground):
                 if i >= len(ys) or not ys[i] or abs(ys[i] - (y or 0)) <= DISAGREE_YD:
                     continue
                 fa = fit(ys[i], g)
+                longer = [m["yards"][i] for m in merged.values()
+                          if m is not s and (m.get("total") or 0) > (s.get("total") or 0)
+                          and i < len(m["yards"]) and m["yards"][i]]
+                if longer and ys[i] >= min(longer) - 5:
+                    continue                                     # would put a shorter set on / behind a longer one
                 if corroborated and not (fa <= STRONG_ALT_YD and fy >= STRONG_BASE_YD):
                     continue                                     # two cards agree: only a clear ground misfit
                 if fa is not None and fa <= FIT_YD and fa + MARGIN_YD < fy and (best_alt is None or fa < best_alt[0]):
