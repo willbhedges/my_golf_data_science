@@ -1,6 +1,6 @@
 # St Andrews Golf Club (Overland Park, KS) - Black tees
 
-Built 2026-11-02T21:45:09Z. OSM way/68744841. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-02T23:40:49Z. OSM way/68744841. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
