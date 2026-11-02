@@ -699,13 +699,13 @@
   39.222487,
   -96.625692
  ],
- "fetched_utc": "2026-11-02T12:11:30Z",
+ "fetched_utc": "2026-11-02T16:57:05Z",
  "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
  "osm_source": {
-  "source": "overpass",
-  "reason": "complete",
-  "mirror": "https://overpass-api.de/api/interpreter",
-  "osm_base": "2026-11-02T12:10:22Z",
+  "source": "snapshot",
+  "reason": "no Overpass mirror answered: RuntimeError('HTTP 502 # 502 Gateway Timeout\\n\\nThis Overpass API server is currently at capacity. All query workers are busy\\nand the request queue is full.\\n\\n## What to do\\n\\nRetry your r'); ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")); ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")); RuntimeError('HTTP 504 <html>\\r\\n<head><title>504 Gateway Time-out</title></head>\\r\\n<body>\\r\\n<center><h1>504 Gateway Time-out</h1></center>\\r\\",
+  "snapshot": "course_data/packages/colbert_hills/raw/osm.geojson",
+  "snapshot_date": "2026-11-02T13:01:54Z",
   "counts": {
    "hole": 18,
    "green": 17,
@@ -715,7 +715,14 @@
    "fairway": 29
   },
   "mirrors_tried": [
-   "https://overpass-api.de/api/interpreter"
+   "https://overpass-api.de/api/interpreter",
+   "https://overpass.kumi.systems/api/interpreter",
+   "https://overpass.private.coffee/api/interpreter",
+   "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+   "https://overpass-api.de/api/interpreter",
+   "https://overpass.kumi.systems/api/interpreter",
+   "https://overpass.private.coffee/api/interpreter",
+   "https://maps.mail.ru/osm/tools/overpass/api/interpreter"
   ]
  }
 }
