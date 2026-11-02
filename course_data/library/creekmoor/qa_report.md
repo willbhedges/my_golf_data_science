@@ -2,7 +2,7 @@
 
 **Status: needs confirm** — confirm holes 1, 2, 3, 5, 6, 8, 9, 10, 11, 13, 14, 15, 16, 18
 
-* page: `course_data/library/creekmoor/page.html` (2.5 MB); request `course_data/requests/course_page_creekmoor.json`; built 2026-11-02T19:21Z
+* page: `course_data/library/creekmoor/page.html` (2.5 MB); request `course_data/requests/course_page_creekmoor.json`; built 2026-11-02T19:50Z
 * course: Creekmoor Golf Club (Raymore, MO), OSM relation/4249741; holes: osm (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Black, Green (the two longest sets on the card (combination sets skipped)); page sets: Black, Green
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws

@@ -1,13 +1,13 @@
 # Creekmoor Golf Club (Raymore, MO) - Black tees
 
-Built 2026-11-02T19:20:54Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T19:50:38Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
 | | |
 |---|---|
 | holes_built | 18 |
-| holes_mapped | 17 |
+| holes_mapped | 18 |
 | greens_found | 17 |
 | tee_boxes | 75 |
 | tees_with_colour | 0 |
@@ -15,9 +15,9 @@ Built 2026-11-02T19:20:54Z. OSM relation/4249741. Scorecard: golfify (golfify). 
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.05 |
 | mean_confidence | 0.732 |
-| osm_score | 0.616 |
+| osm_score | 0.63 |
 
-OSM features inside the course: buildings 3, golf=bunker 68, golf=cartpath 12, golf=driving_range 1, golf=green 19, golf=hole 17, golf=pin 18, golf=tee 75, golf=water_hazard 4, holes_with_handicap 17, holes_with_par 17, water_polygons 5
+OSM features inside the course: buildings 3, golf=bunker 68, golf=cartpath 12, golf=driving_range 1, golf=green 19, golf=hole 18, golf=pin 18, golf=tee 75, golf=water_hazard 4, holes_with_handicap 18, holes_with_par 18, water_polygons 5
 
 ## Holes
 
