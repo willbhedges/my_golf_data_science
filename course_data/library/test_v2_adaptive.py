@@ -35,9 +35,9 @@ def test_widens_where_the_curve_still_falls(ra):
     curve = 4.0 + 0.0005 * (aims - 52.0) ** 2                      # optimum 52 yds right
     r = f(aims, curve)
     assert r["aim"] == 52.0 and r["aim_bound"] == [-40.0, 60.0] and not r["at_bound"]
-    curve = 4.0 + 0.0005 * (aims + 75.0) ** 2                      # 75 left: two steps, to -80
+    curve = 4.0 + 0.0005 * (aims + 75.0) ** 2                      # 75 left: capped at one step (MAX_EXTRA 20)
     r = f(aims, curve)
-    assert r["aim"] == -75.0 and r["aim_bound"] == [-80.0, 40.0]
+    assert r["aim"] == -60.0 and r["aim_bound"] == [-60.0, 40.0] and r["at_bound"]
 
 
 def test_keeps_the_bound_when_not_better_or_guarded(ra):
