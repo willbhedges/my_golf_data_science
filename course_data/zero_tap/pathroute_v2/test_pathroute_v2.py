@@ -141,3 +141,11 @@ def test_calib2_export_matches_predict():
     z = CF.Calib2.transform(X) @ np.array(e["coef"]) + e["intercept"]
     assert np.allclose(1 / (1 + np.exp(-z)), cal.predict(X)) and len(e["coef"]) == 16
     assert np.allclose(cal.predict(X), cal.m.predict_proba((CF.Calib2.transform(X) - cal.mu) / cal.sd)[:, 1])
+
+
+def test_sticky_bonus_and_weights():
+    import resolve2 as RS
+    H = D2.apply_fix(np.zeros((3, 2)), np.arange(3), dict(pairs=[(1, 0, 0)], sticky=[(1, 1, 2.5), (2, 0, 9.0)]))
+    assert H[1, 1] == -2.5 and np.isinf(H[2, 0])          # a sticky pair on a blanked column stays forbidden
+    st = dict(alpha=4.0, pin=0.9, pin_w=30.0, keep=True)
+    assert RS.sticky_w(0.5, st) == 2.0 and RS.sticky_w(0.95, st) == 30.0

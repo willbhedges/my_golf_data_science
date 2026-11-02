@@ -254,6 +254,9 @@
       for (let c = 0; c < nt; c++) if (comp[c] === comp[t]) H[c * ng + g] = INF;
       H[t * ng + g] = INF;
     }
+    for (const [t, g, w] of (fix && fix.sticky) || []) {     /* sticky re-solve: the previous decode's pairs (solver state) */
+      if (isFinite(H[t * ng + g])) H[t * ng + g] = H[t * ng + g] - w;
+    }
     return H;
   }
 
@@ -276,6 +279,8 @@
     }
     const availG = new Uint8Array(M.ng).fill(1), availT = new Uint8Array(M.nt).fill(1);
     const tc = R.tc, gc = R.gc, bo = M.boxesOf;
+    const fixedT = new Uint8Array(M.nt);                       /* confirmed tees are never another hole's box */
+    for (const [, t] of (fix && fix.pairs) || []) fixedT[t] = 1;
     const out = [], confs = [], costs = [];
     for (let li = 0; li < loops; li++) {
       const r = beamLoop2(M, H, n, availG, availT, tc, gc, comp, bo, {
@@ -295,13 +300,13 @@
           if (comp[b] === comp[t] && availT[b]) box.add(b);
         }
         box.delete(t);
-        const boxes = Array.from(box).sort((a, b) => a - b);
+        const boxes = Array.from(box).filter(b => !fixedT[b]).sort((a, b) => a - b);
         let L = -INF;
         for (const b of boxes.concat([t])) L = Math.max(L, Math.hypot(gp[0] - tc[b][0], gp[1] - tc[b][1]));
         out.push({number: k + 1, g, t, boxes, L, loop: li});
         availG[g] = 0; availT[t] = 0;
         for (const b of boxes) availT[b] = 0;
-        for (let c2 = 0; c2 < M.nt; c2++) if (comp[c2] === comp[t]) availT[c2] = 0;
+        for (let c2 = 0; c2 < M.nt; c2++) if (comp[c2] === comp[t] && !fixedT[c2]) availT[c2] = 0;
       }
     }
     let conf = 0, cost = INF;
@@ -359,15 +364,16 @@
   /* run2.decode_course: decode + per-hole min-marginals + confidence features. As a job: courseJob() decodes the route,
      each jobStep() adds one hole's min-marginal (one smaller-beam re-decode), jobFinish() builds the features, so a
      page can show the re-solved pairing at once and fill the confidences in over the next frames. */
-  function courseJob(M, R, comp, fix, freePairs) {
+  function courseJob(M, R, comp, fix, freePairs, mmSkip) {
     const cfg = R.cfg, kw = {K: cfg.K, cross: cfg.cross, reuse: cfg.reuse, fix};
     const d = decode2(M, R, comp, Object.assign({beam: cfg.beam}, kw));
-    return {M, R, comp, fix, freePairs, kw, d, mm: [], fixed: new Set(((fix && fix.pairs) || []).map(p => p[1] + "," + p[2]))};
+    const fixed = new Set(((fix && fix.pairs) || []).map(p => p[1] + "," + p[2]));
+    return {M, R, comp, fix, freePairs, kw, d, mm: [], fixed, skip: mmSkip || new Set()};
   }
   function jobStep(J) {
     const {M, R, comp, d} = J, h = d.holes[J.mm.length];
     if (!h) return true;
-    if (J.fixed.has(h.t + "," + h.g)) J.mm.push(30.0);
+    if (J.fixed.has(h.t + "," + h.g) || J.skip.has(h.t + "," + h.g)) J.mm.push(30.0);
     else {
       const H2 = Float64Array.from(M.H);
       for (let c = 0; c < M.nt; c++) if (comp[c] === comp[h.t]) H2[c * M.ng + h.g] = INF;
@@ -386,17 +392,22 @@
     const Hf = hf ? applyFix(M, M.H, comp, fix) : M.H;
     return {holes: d.holes, conf: d.conf, X: confFeats(M, d.holes, d.conf, J.mm, fix, Hf, hf ? freePairs : null)};
   }
-  function decodeCourse(M, R, comp, fix, freePairs) {
-    const J = courseJob(M, R, comp, fix, freePairs);
+  function decodeCourse(M, R, comp, fix, freePairs, mmSkip) {
+    const J = courseJob(M, R, comp, fix, freePairs, mmSkip);
     while (!jobStep(J)) { /* every hole's min-marginal */ }
     return jobFinish(J);
   }
 
   const parFromLen = (L, c3, c4) => L <= (c3 || 225) ? 3 : (L <= (c4 || 450) ? 4 : 5);
 
+  /* resolve2.STICKY / sticky_w: sticky re-solve (the previous solve's unconfirmed pairs get alpha * conf nats, pin_w
+     once conf >= pin; a pair that survives keeps its confidence). R.sticky (exported) overrides; null = plain re-solve. */
+  const STICKY = {alpha: 0.0, pin: 0.0, pin_w: 30.0, keep: true, cap: 1.0, boxes: false};
+  const stickyW = (c, st) => c >= st.pin ? st.pin_w : st.alpha * c;
+
   /* resolve2.Session */
   class Session {
-    constructor(R, fix) {
+    constructor(R, fix, sticky) {
       if (!R || R.schema !== "pathroute_decoder/1") throw new Error("not a pathroute_decoder/1 record");
       this.R = R;
       this.M = mats(R);
@@ -406,11 +417,28 @@
       this.fix = {pairs: [], not_green: [], first_tee: null, reject: []};
       if (fix) for (const k of Object.keys(this.fix)) if (fix[k] != null) this.fix[k] = Array.isArray(fix[k]) ? fix[k].map(x => Array.isArray(x) ? x.slice() : x) : fix[k];
       this.holes = []; this.conf = []; this.routeConf = 0; this.free = null;
+      this.sticky = sticky !== undefined ? sticky : (R.sticky !== undefined ? R.sticky : STICKY);
+      this.prev = new Map();                                         /* "t,g" -> conf of the previous solve's unconfirmed holes */
     }
     confirmPair(number, tee, green) {
       this.fix.pairs = this.fix.pairs.filter(p => p[2] !== green && p[1] !== tee && (number == null || p[0] !== number));
       this.fix.pairs.push([number == null ? null : number, tee, green]);
       this.fix.reject = this.fix.reject.filter(r => !(r[0] === tee && r[1] === green));
+    }
+    /* resolve2.Session.confirm_yes: "yes, hole i is right as decoded" -> confirmed without a re-solve */
+    confirmYes(i, number) {
+      const h = this.holes[i];
+      this.confirmPair(number == null ? null : number, h.t, h.g);
+      if (this.conf) { this.conf = this.conf.slice(); this.conf[i] = 1.0; }
+      this.prev.delete(h.t + "," + h.g);
+    }
+    /* resolve2.Session.drop_hole: "not a hole" for hole i's green without a re-solve (the hole leaves the route) */
+    dropHole(i) {
+      const h = this.holes[i];
+      this.notAHole(h.g);
+      this.prev.delete(h.t + "," + h.g);
+      this.holes = this.holes.filter((x, k) => k !== i);
+      if (this.conf) this.conf = this.conf.filter((x, k) => k !== i);
     }
     rejectPair(tee, green) {
       if (!this.fix.reject.some(r => r[0] === tee && r[1] === green)) this.fix.reject.push([tee, green]);
@@ -428,14 +456,41 @@
       if (this.fix.reject.length) f.reject = this.fix.reject;
       return f;
     }
+    /* resolve2.Session.solve_fix: the facts + (sticky) the previous solve's unconfirmed pairs */
+    solveFix() {
+      const f = this.pyFix(), st = this.sticky;
+      if (!st || !this.prev.size || !hasFix(f)) return f;
+      const fp = this.fixedPairs();
+      const sk = Array.from(this.prev.entries()).map(([k, c]) => { const [t, g] = k.split(",").map(Number); return [t, g, c]; })
+        .filter(([t, g]) => !fp.has(t + "," + g)).sort((a, b) => a[0] - b[0] || a[1] - b[1])
+        .map(([t, g, c]) => [t, g, stickyW(c, st)]).filter(x => x[2] > 0);
+      return sk.length ? Object.assign({}, f, {sticky: sk}) : f;
+    }
     /* begin(): decode with every fact (holes available at once, conf null); step(): one more min-marginal, true when
        the confidences are in; solve() = begin + steps */
     begin() {
-      const fr = this.freePairs();
-      let J = courseJob(this.M, this.R, this.comp, this.pyFix(), fr);
-      if (!J.d.holes.length && this.fix.first_tee != null) { this.fix.first_tee = null; J = courseJob(this.M, this.R, this.comp, this.pyFix(), fr); }
+      const fr = this.freePairs(), st = this.sticky;
+      this.keep = (st && st.keep && hasFix(this.pyFix())) ? new Map(this.prev) : new Map();
+      const skip = new Set(this.keep.keys());
+      let J = courseJob(this.M, this.R, this.comp, this.solveFix(), fr, skip);
+      if (!J.d.holes.length && this.fix.first_tee != null) { this.fix.first_tee = null; J = courseJob(this.M, this.R, this.comp, this.solveFix(), fr, skip); }
+      if (this.keep.size && st.boxes) J.d.holes = this.keepBoxes(J.d.holes, this.keep);
       this.job = J; this.holes = J.d.holes; this.routeConf = J.d.conf; this.conf = null; this.X = null;
       return this.holes;
+    }
+    /* resolve2.Session.keep_boxes: a kept pair keeps its previous box set, minus tees now used by another hole */
+    keepBoxes(holes, keep) {
+      const pb = this.prevBoxes || new Map(), tc = this.R.tc, gc = this.R.gc;
+      const kept = holes.map(h => keep.has(h.t + "," + h.g) && pb.has(h.t + "," + h.g));
+      const taken = new Set(holes.map(h => h.t));
+      holes.forEach((h, i) => { if (!kept[i]) for (const b of h.boxes) taken.add(b); });
+      return holes.map((h, i) => {
+        if (!kept[i]) return h;
+        const bx = pb.get(h.t + "," + h.g).filter(b => !taken.has(b)).sort((a, b) => a - b);
+        let L = -INF;
+        for (const b of bx.concat([h.t])) L = Math.max(L, Math.hypot(gc[h.g][0] - tc[b][0], gc[h.g][1] - tc[b][1]));
+        return Object.assign({}, h, {boxes: bx, L});
+      });
     }
     step() {
       const J = this.job;
@@ -444,7 +499,12 @@
       const cal = hasFix(J.fix) && this.R.calib_fix ? this.R.calib_fix : this.R.calib;
       const r = jobFinish(J), c = r.holes.length ? calibrate(cal, r.X) : [], fp = this.fixedPairs();
       this.X = r.X; this.job = null;
-      this.conf = r.holes.map((h, i) => fp.has(h.t + "," + h.g) ? 1.0 : c[i]);
+      const keep = this.keep || new Map(), st = this.sticky;
+      const cap = (st && keep.size) ? (st.cap == null ? 1.0 : st.cap) : 1.0;      /* a pair the re-solve moved: at most cap */
+      this.conf = r.holes.map((h, i) => { const k = h.t + "," + h.g; return fp.has(k) ? 1.0 : (keep.has(k) ? keep.get(k) : Math.min(c[i], cap)); });
+      this.prev = new Map();
+      r.holes.forEach((h, i) => { const k = h.t + "," + h.g; if (!fp.has(k)) this.prev.set(k, this.conf[i]); });
+      this.prevBoxes = new Map(r.holes.map(h => [h.t + "," + h.g, h.boxes.slice()]));
       return true;
     }
     solve() {
@@ -481,7 +541,7 @@
     }
   }
 
-  const api = {Session, decode2, decodeCourse, courseJob, jobStep, jobFinish, applyFix, calibrate, mats, boxSets, parFromLen, hasFix};
+  const api = {Session, STICKY, stickyW, decode2, decodeCourse, courseJob, jobStep, jobFinish, applyFix, calibrate, mats, boxSets, parFromLen, hasFix};
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.PathRoute = api;
 })(typeof window !== "undefined" ? window : this);

@@ -206,3 +206,79 @@ reject facts), the min-marginals, the features and both calibrators; `export_js.
 93 decodes, holes identical, confidences within 1e-13. ~0.9 s per full solve in node (one 4000 beam + one 800 beam
 per hole); the page shows the new pairing after the first decode and fills the confidences in over the next frames.
 The final route argsort is now stable (ties -> first state) so both sides agree.
+
+## Sticky re-solve + confirm-tap policies (2026-11-02)
+
+**Goal**: a re-solve after a golfer answer should save pair taps vs no re-solve (test 4.7 at 98 % pair precision).
+**Not met.** The best re-solve policy ("local", below) is close to no re-solve on dev (4.94 vs 4.74 taps) but worse on
+test (6.12 vs 5.22 simulated / 4.78 step-0 estimate). It is better than the old re-solve everywhere (test 7.71 -> 6.12
+taps) and keeps part of the re-solve gains (all pairs right 53 -> 63 %, numbering 86.5 -> 88.7 %). Shipped as the
+re-solve default; for fewest pair taps, no re-solve is still best.
+
+**What changed** (`pathroute_v2/resolve2.py`, `decode2.py`, `run2.py`; JS `course_data/app/pathroute_engine.js`):
+- **Sticky re-solve** (`resolve2.STICKY`, default `pin=0, pin_w=30`): on each re-solve the previous solve's unconfirmed
+  pairs get a bonus `w` nats (`fix["sticky"] = [(tee, green, w)]`, applied last in `apply_fix`; `w = pin_w` once the
+  pair's confidence >= `pin`, else `alpha * conf`), so only the holes the new fact implicates move. A pair that
+  survives keeps its previous confidence and its min-marginal is skipped (`decode_course(mm_skip=...)`, faster);
+  moved pairs get the fix-aware calibrator (`calib_fix`). Options kept for experiments: `alpha`, `cap` (cap the
+  confidence of a moved pair), `boxes` (a kept pair keeps its previous box set; no effect on dev).
+- **Answer flow** (the shipped default): "yes" -> `Session.confirm_yes(i, number)` (confirmed, no re-solve);
+  "not a hole" -> `Session.drop_hole(i)` (the hole leaves the route, no re-solve); only a **correction** (a different
+  tee for the green) re-solves. Same API in JS: `confirmYes`, `dropHole`, `confirmPair` + `solve()` / `begin()`.
+- **Decoder bug fix** (`decode2.decode2`, JS `decode2`): a golfer-confirmed tee is never handed out as another hole's
+  box. Before, a confirmed tee swallowed into a neighbour's box set made its green (whose column is blanked for every
+  other tee) undecodable, so on 27 / 36-hole courses the last loop failed and 9 holes vanished (10 of 157 dev courses
+  under re-solve, +9 taps each).
+
+**Dev** (157 courses, out-of-fold hole / tee-pair models; calibrators of model_v2 are in-sample on dev; `sim3.py`,
+golfer = sim2's; "right->wrong" = steps where the count of wrong + missing holes went up):
+
+| policy (dev) | taps to 98 % mean (median, p90) | all pairs right at stop | taps to all pairs right (oracle) | right->wrong steps |
+|---|---|---|---|---|
+| no re-solve (confirm in confidence order) | **4.74** (3, 12) | 55 % | 8.0 | 0 |
+| re-solve after every answer (old) | 11.5 (10, 20) | 80 % | 4.9 | 160 / 2 596 |
+| sticky (alpha 3 / 10), every answer | never reaches 98 % (97.4 % at 0.999) | - | 5.1 / 4.9 | 111 / 107 |
+| sticky alpha 10, no re-solve after "yes" | 6.64 -> 6.45 with the box fix (4, 16) | 76 % | 4.7 | 62 |
+| same, ask by (1 - conf)(1 + 0.5 unconfirmed neighbours) | 6.09 (4, 16) | 76 % | 4.9 | 65 |
+| same, pinned pairs only (alpha 30) | 6.19 (4, 15) | 75 % | 4.9 | 66 |
+| **local: pin every previous pair, re-solve only on a correction** | 4.94 (3, 14) | **65 %** | 5.6 | 58 |
+| same, alpha 30 / alpha 10 | 4.93 / 5.07 | 64 / 63 % | 5.6 | 60 / 56 |
+| local, confirmations without the hole number (no position pins) | 5.11 | 64 % | 5.5 | 58 |
+
+Why re-solving costs taps: (1) after "not a hole" the re-solve has to fill the route again and usually picks another
+wrong green (low confidence -> asked again), where no re-solve just drops the hole and the golfer adds the missing one
+(one tap); (2) re-solves after a "yes" pin the number, re-order the tour and move right holes (the decoder hands box
+sets out in tour order, so even an unchanged pair can lose its true tee box); (3) on courses with a bad route
+(e.g. exmoor_il) one correction cascades. At the same stop threshold the old-style hybrid asked +84 questions to save
+53 golfer-added holes and still had +17 wrong pairs. Calibration of moved pairs was fine (0.98-1.0 bin: 99.9 % right).
+
+**Test, one run** (`sim3.py --split test`, 149 simulated + 4 no-result courses = 153, model_v2;
+`results/pathroute_v2/summary_sticky.json`):
+
+| policy (test) | taps to 98 % mean (median, p90) | stop threshold | all pairs right at stop | numbered at stop + hole-1 tap (holes / courses all numbered) | taps to all pairs right (oracle) | right->wrong steps |
+|---|---|---|---|---|---|---|
+| no re-solve, simulated (asks in confidence order) | **5.22** (3, 13) | 0.899 | 52.9 % | 86.5 % / 45.9 % | 8.22 | 0 / 2 679 |
+| no re-solve, step-0 estimate (`taps_to_precision`) | 4.78 (3, 11) | 0.899 | - | - | - | - |
+| re-solve after every answer (old, + box fix) | 7.71 (6, 18) | 0.954 | **77.1 %** | **95.0 % / 79.3 %** | **4.83** | 141 / 2 622 |
+| **local sticky, re-solve only on a correction (default)** | 6.12 (4, 14) | 0.910 | 63.4 % | 88.7 % / 57.0 % | 6.25 | 58 / 2 660 |
+
+The simulated no-resolve number (5.22) is above the step-0 estimate (4.78) because the simulated golfer's answers are
+counted step by step (a "not a hole" drops the hole and adds a miss tap; hand-placed tees); the brief's 4.7 is that
+estimate. Earlier Calib2 run of the old re-solve: 7.08 (same policy without the box fix; run-to-run difference from the
+sim changes, not re-run). Per-policy p90s are high (13-18) on all policies: the long tail is 27 / 36-hole courses and
+bad routes.
+
+**Parity** (`course_data/app/test_pathroute.js`, fixtures regenerated by `export_js.py`): 24 test courses, 93 decodes
+(with the box fix) + 140 sticky session solves (free -> `confirm_yes` -> correction -> `drop_hole` -> correction ->
+"not a hole" + re-solve): 0 failing, holes / boxes identical, confidences within 1.1e-13. `test_route_ui.js` OK.
+
+**Not done / caveats**: the app (`lib_play.js`) rebuilds a fresh `Session` from the answer log and solves once, so it
+gets the stateless (non-sticky) re-solve; to use the sticky flow it must keep the `Session` across answers and call
+`confirmYes` / `dropHole` / `confirmPair` + `begin()` (an app change, not made here). `live2.route(fix=...)` (server)
+is stateless too. The calibrators were not refit for the sticky flow. Dev numbers use in-sample calibrators.
+
+```bash
+python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split dev --folds FOLDS.pkl --no-h1 \
+    --policy local:resolve=fix --policy never:resolve=never --json dev.json --jobs 3   # FOLDS = calib_resolve fold models
+python course_data/zero_tap/pathroute_v2/sim3.py --c1 C1 --c2 C2 --split test --policy local:resolve=fix --json t.json
+```

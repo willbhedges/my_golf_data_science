@@ -34,6 +34,7 @@ import decode as DC  # noqa: E402
 import complexes as CX  # noqa: E402
 import confidence as CF  # noqa: E402
 import run2 as R2  # noqa: E402
+import resolve2 as RS  # noqa: E402
 
 CONF_OK = 0.95
 
@@ -74,7 +75,8 @@ def record(d, pr, model, comp=None, cfg=None, conf_ok=CONF_OK):
                 cfg=dict(K=int(cfg["K"]), beam=int(cfg["beam"]), mm_beam=int(cfg["mm_beam"]), cross=float(cfg["cross"]),
                          reuse=float(cfg["reuse"])),
                 calib=calib_export(model["calib"]),
-                calib_fix=calib_export(model["calib_fix"]) if model.get("calib_fix") is not None else None, par_cuts=[225.0, 450.0], conf_ok=conf_ok)
+                calib_fix=calib_export(model["calib_fix"]) if model.get("calib_fix") is not None else None, par_cuts=[225.0, 450.0], conf_ok=conf_ok,
+                sticky=dict(RS.STICKY) if RS.STICKY else None)
 
 
 def ref_solve(d, pr, model, comp, fix, free=None):
@@ -124,6 +126,53 @@ def cases(d, pr, model, comp, rng):
     return out
 
 
+def session_case(d, pr, model, comp):
+    """resolve2.Session (default sticky re-solve) over a golfer sequence: free solve; "yes" to the lowest-confidence
+    hole (confirm_yes, no re-solve); a correction of the next one (its second-best tee, sticky re-solve); "not a hole"
+    without a re-solve (drop_hole); another correction; "not a hole" + re-solve for the next -> holes + conf per solve."""
+    s = RS.Session(d, pr, model["calib"], cfg=model.get("cfg"), calib_fix=model.get("calib_fix"))
+    s.comp = comp
+    single = d["kind"] in (9, 18)
+    H = DC.cost_mats(d, pr, R2.W)[0]
+    steps = []
+
+    def rec(act):
+        steps.append(dict(act=act, holes=[[h["number"], h["loop"], h["t"], h["g"], h["boxes"]] for h in s.holes],
+                          conf=[float(c) for c in s.conf]))
+    s.solve()
+    rec(None)
+    for kind in ("yes", "fix", "drop", "fix", "not"):
+        i = s.ask()
+        if i is None:
+            break
+        h = s.holes[i]
+        num = h["number"] if single else None
+        if kind == "yes":
+            act = ["yes", i, num]
+        elif kind == "fix":
+            col = H[:, h["g"]].copy()
+            col[[h["t"]] + list(h["boxes"]) + [p[1] for p in s.fix["pairs"]]] = np.inf
+            t2 = int(np.argmin(col)) if np.isfinite(col.min()) else h["t"]
+            act = ["confirm", num, t2, h["g"]]
+        elif kind == "drop":
+            act = ["drop", i]
+        else:
+            act = ["not", h["g"]]
+        if act[0] in ("yes", "drop"):       # the shipped flow: no re-solve after a "yes" / "not a hole"
+            s.confirm_yes(i, num) if act[0] == "yes" else s.drop_hole(i)
+            rec(act)
+            continue
+        if act[0] == "confirm":
+            s.confirm_pair(*act[1:])
+        else:
+            s.not_a_hole(act[1])
+        s.solve()
+        rec(act)
+        if not s.holes:
+            break
+    return steps
+
+
 def _read(p):
     with (gzip.open if p.endswith(".gz") else open)(p, "rb") as fh:
         return pickle.load(fh)
@@ -152,7 +201,8 @@ def main():
         pr = m["models"].predict(d)
         comp = CX.cluster(len(d["tees"]), d["tpp"], pr["tpair"], thr=(m.get("cfg") or R2.CFG)["comp_thr"])
         R = record(d, pr, m, comp)
-        doc = dict(schema="pathroute_parity/1", slug=d["slug"], route=R, cases=cases(d, pr, m, comp, rng))
+        doc = dict(schema="pathroute_parity/1", slug=d["slug"], route=R, cases=cases(d, pr, m, comp, rng),
+                   session=session_case(d, pr, m, comp))
         with gzip.open(os.path.join(a.out, d["slug"] + ".json.gz"), "wt") as fh:
             json.dump(doc, fh)
         print(d["slug"], d["kind"], len(doc["cases"]), f"{time.time() - t0:.0f}s", flush=True)

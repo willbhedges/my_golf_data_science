@@ -63,10 +63,11 @@ class Models2:
         return pr
 
 
-def decode_course(d, pr, cfg=CFG, conf_feats=True, fix=None, comp=None, free=None):
+def decode_course(d, pr, cfg=CFG, conf_feats=True, fix=None, comp=None, free=None, mm_skip=None):
     """-> (holes, route conf, conf feature rows (confidence.CONF_F2)). fix: golfer-confirmed facts
     (decode2.apply_fix); holes whose (tee, green) is a confirmed pair get min-marginal 30 (they are not re-asked).
-    free: the (tee, green) pairs of the no-fact decode (for the `changed` feature; decoded here when needed)."""
+    free: the (tee, green) pairs of the no-fact decode (for the `changed` feature; decoded here when needed).
+    mm_skip: (tee, green) pairs whose min-marginal is not needed (sticky re-solve keeps their confidence): 30."""
     if comp is None:
         comp = CX.cluster(len(d["tees"]), d["tpp"], pr["tpair"], thr=cfg["comp_thr"])
     kw = dict(K=cfg["K"], cross=cfg["cross"], reuse=cfg["reuse"], box_mode=cfg["box_mode"], fix=fix)
@@ -77,7 +78,7 @@ def decode_course(d, pr, cfg=CFG, conf_feats=True, fix=None, comp=None, free=Non
     fixed = {(int(t), int(g)) for _, t, g in (fix or {}).get("pairs") or ()}
     mm = []
     for h in holes:
-        if (h["t"], h["g"]) in fixed:
+        if (h["t"], h["g"]) in fixed or (mm_skip and (h["t"], h["g"]) in mm_skip):
             mm.append(30.0)
             continue
         H2 = H.copy()

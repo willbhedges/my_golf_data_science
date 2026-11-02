@@ -11,7 +11,7 @@ const fs = require("fs"), path = require("path"), zlib = require("zlib");
 const PR = require("./pathroute_engine.js");
 const dir = process.argv[2] || path.join(__dirname, "fixtures", "pathroute");
 const files = fs.readdirSync(dir).filter(f => f.endsWith(".json.gz")).sort();
-let nCourse = 0, nCase = 0, nFix = 0, bad = 0, ms = 0, maxd = 0;
+let nCourse = 0, nCase = 0, nFix = 0, nSess = 0, bad = 0, ms = 0, maxd = 0;
 const close = (a, b, tol) => { const d = Math.abs(a - b); maxd = Math.max(maxd, d); return d <= tol * Math.max(1, Math.abs(a)); };
 for (const f of files) {
   const doc = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(dir, f))).toString());
@@ -43,6 +43,29 @@ for (const f of files) {
     }
     if (errs.length) { bad++; console.log(`FAIL ${doc.slug} fix=${JSON.stringify(c.fix)}\n  ` + errs.slice(0, 6).join("\n  ")); }
   }
+  /* resolve2.Session sequence (default sticky re-solve): yes / correction / not a hole, holes + conf after each solve */
+  if (doc.session) {
+    const S2 = new PR.Session(R);
+    for (const st of doc.session) {
+      const a = st.act;
+      if (a && a[0] === "confirm") S2.confirmPair(a[1], a[2], a[3]);
+      else if (a && a[0] === "not") S2.notAHole(a[1]);
+      else if (a && a[0] === "yes") S2.confirmYes(a[1], a[2]);
+      else if (a && a[0] === "drop") S2.dropHole(a[1]);
+      const t0 = Date.now();
+      if (!a || (a[0] !== "yes" && a[0] !== "drop")) S2.solve();
+      ms += Date.now() - t0; nCase++; nSess++;
+      const errs = [];
+      if (S2.holes.length !== st.holes.length) errs.push(`n holes ${S2.holes.length} vs ${st.holes.length}`);
+      else S2.holes.forEach((h, i) => {
+        const [n, loop, t, g, boxes] = st.holes[i];
+        if (h.number !== n || h.loop !== loop || h.t !== t || h.g !== g || JSON.stringify(h.boxes) !== JSON.stringify(boxes))
+          errs.push(`hole ${i}: js ${h.number}/${h.loop} t${h.t} g${h.g} vs py ${n}/${loop} t${t} g${g}`);
+        if (!close(S2.conf[i], st.conf[i], 1e-9)) errs.push(`hole ${i} conf ${S2.conf[i]} vs ${st.conf[i]}`);
+      });
+      if (errs.length) { bad++; console.log(`FAIL ${doc.slug} session act=${JSON.stringify(a)}\n  ` + errs.slice(0, 6).join("\n  ")); }
+    }
+  }
 }
-console.log(`pathroute parity: ${nCourse} courses, ${nCase} cases (${nFix} with facts), ${bad} failing; max |diff| ${maxd.toExponential(2)}; ${(ms / Math.max(nCase, 1)).toFixed(0)} ms / solve`);
+console.log(`pathroute parity: ${nCourse} courses, ${nCase} cases (${nFix} with facts, ${nSess} sticky session solves), ${bad} failing; max |diff| ${maxd.toExponential(2)}; ${(ms / Math.max(nCase, 1)).toFixed(0)} ms / solve`);
 if (nCourse < 1 || bad) process.exit(1);

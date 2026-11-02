@@ -166,7 +166,7 @@ FIX_BONUS = 30.0          # nats: a golfer-confirmed pair is always worth includ
 def apply_fix(H, comp, fix):
     """Golfer-confirmed facts -> hole-cost matrix. fix = {"pairs": [(number | None, tee, green)], "not_green": [g],
     "first_tee": t | None, "reject": [(tee, green)]}; a rejected pair (the golfer said "no" to it) is forbidden for
-    that tee's whole complex. A confirmed pair's tee complex serves only that green, the green only that tee, and the
+    that tee's whole complex; "sticky": [(tee, green, w)] lowers those pairs' cost by w nats (applied last). A confirmed pair's tee complex serves only that green, the green only that tee, and the
     pair gets FIX_BONUS so the tour always includes it; a "not a hole" green is removed."""
     H0, H = H, H.copy()
     comp = np.asarray(comp)
@@ -187,6 +187,10 @@ def apply_fix(H, comp, fix):
             continue
         H[comp == comp[t], g] = np.inf
         H[t, g] = np.inf
+    for t, g, w in (fix or {}).get("sticky") or ():     # solver state, not a golfer fact: the previous decode's pair
+        t, g = int(t), int(g)                           # (tee, green) gets a bonus of w nats so a re-solve keeps it
+        if np.isfinite(H[t, g]):                        # unless the new facts implicate it (resolve2.STICKY)
+            H[t, g] = H[t, g] - float(w)
     return H
 
 
@@ -216,6 +220,9 @@ def decode2(d, pr, w, comp, beam=4000, K=6, cross=1.5, reuse=4.0, box_mode="v1+c
     gcs = np.asarray(d["gc"], float)
     comp = np.asarray(comp)
     bo = box_sets(tc)
+    fixed_m = np.zeros(nt, bool)                 # golfer-confirmed tees are never another hole's box (else their
+    for _, t, _ in (fix or {}).get("pairs") or ():   # green, whose column is blanked for other tees, drops out)
+        fixed_m[int(t)] = True
     out, confs, costs = [], [], []
     for li in range(loops):
         r = beam_loop2(H, T, S, E, n, avail_g, avail_t, tc, gcs, comp, bo, K=K, beam=beam,
@@ -237,14 +244,14 @@ def decode2(d, pr, w, comp, beam=4000, K=6, cross=1.5, reuse=4.0, box_mode="v1+c
             if "comp" in box_mode:
                 box |= set(np.nonzero((comp == comp[t]) & avail_t)[0].tolist())
             box.discard(t)
-            box = sorted(int(b) for b in box)
+            box = sorted(int(b) for b in box if not fixed_m[b])
             L = max([float(np.hypot(*(gp - tc[b]))) for b in box + [t]])
             out.append(dict(number=k + 1, g=g, t=t, boxes=box, L=L, loop=li))
             avail_g[g] = False
             avail_t[t] = False
             for b in box:
                 avail_t[b] = False
-            avail_t[comp == comp[t]] = False
+            avail_t[(comp == comp[t]) & ~fixed_m] = False
     if return_cost:
         return out, float(np.prod(confs)) if confs else 0.0, float(np.sum(costs)) if costs else np.inf
     return out, float(np.prod(confs)) if confs else 0.0

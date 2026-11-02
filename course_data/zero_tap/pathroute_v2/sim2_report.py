@@ -49,11 +49,11 @@ def dist(v):
                 hist={str(a): int(np.sum(v == a)) for a in range(0, 8)} | {"8+": int(np.sum(v >= 8))})
 
 
-def summarise(sim, target=0.98, extra_thr=(0.9, 0.95, 0.98), add_missing=True):
+def summarise(sim, target=0.98, extra_thr=(0.9, 0.95, 0.98), add_missing=True, split="test"):
     have = {r["slug"] for r in sim}
     if add_missing:            # test courses without a result (no OSM tees): each true hole = one tap
         sim = list(sim) + [dict(slug=r["slug"], error="no result (no OSM tees / not simulated)", kind=r["kind"])
-                           for r in B.courses("test") if r["slug"] not in have]
+                           for r in B.courses(split) if r["slug"] not in have]
     grid = sorted({0.0} | {c for r in sim for st in r.get("traj") or [] for c in [st["min_un"]]} | {0.999})
     best = None
     for thr in grid:
