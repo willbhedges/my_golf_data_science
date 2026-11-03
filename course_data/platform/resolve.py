@@ -45,6 +45,13 @@ import osm_extract as ox  # noqa: E402
 
 AMBIGUOUS_MARGIN = 0.12        # second-best score this close to the best -> ask the golfer
 PARTIAL_OTHER_TOWN = 0.75      # below this name similarity, a candidate in another town than the request's is dropped
+# A candidate this far from the request's `near` point with a weak score is another course, whatever its town says
+# (or fails to say): Queenstown Harbor River Course (MD), run 41655811379 - Nominatim's reverse lookup timed out
+# (503), so "South River Golf Course" (Edgewater, 36 km away, matched only on the word "river") had no town, slipped
+# past the other-town filter and won with score 0.42; the 9-hole build was blocked by the publish gate. Dropping it
+# lets resolve fall back to the courses around `near` (the unnamed 36-hole Queenstown Harbor outline).
+FAR_KM = 15.0                  # same radius as the near bonus in `score` and `close` in `choose`
+FAR_MIN_SCORE = 0.5            # course_page.GATE_MIN_SCORE: the publish gate blocks a far match below this
 # OSM keeps closed courses as leisure=golf_course with the name prefixed ("Former Deer Creek Golf Club", Overland
 # Park KS, closed 2022) or lifecycle tags; the package then fails deep in the build with "no holes built" after
 # three retries, so resolve reports them as status "closed" instead. ("Old" is NOT a marker: Old Kinderhook.)
@@ -162,6 +169,12 @@ def choose(cands, want, town=None, osm=None, near=None):
                         pc.haversine_m(nr[0], nr[1], c["center"][1], c["center"][0]) < 15000)
         ranked = [c for c in ranked if close(c) or not (c.get("town") and pc.core_name(town) != pc.core_name(c["town"])
                                                         and name_similarity(want, c["name"]) < PARTIAL_OTHER_TOWN)]
+    nr = _near(near)
+    if nr and not osm:
+        # a far, low-score match is never the course (see FAR_KM): it does not depend on a town being known
+        ranked = [c for c in ranked if not (c.get("center") and c["score"] < FAR_MIN_SCORE and
+                                            pc.haversine_m(nr[0], nr[1], c["center"][1], c["center"][0]) / 1000
+                                            > FAR_KM)]
     if not osm and any(c.get("name") and name_similarity(want, c["name"]) >= 0.35 for c in ranked):
         # an unnamed course only wins when nothing named matches (The Oaks MO: the resort's unnamed
         # practice / par-3 polygon outscored "The Oaks" on the near + town bonuses)

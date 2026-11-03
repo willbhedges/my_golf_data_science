@@ -283,6 +283,48 @@ def test_unnamed_course_picked_by_near_keeps_the_request_name(monkeypatch):
     assert res["slug"] == pc.slugify("Queenstown Harbor River Course")
 
 
+def test_far_low_score_match_is_dropped_when_its_town_is_unknown(monkeypatch):
+    """Queenstown Harbor River Course (MD), run 41655811379: the one-word fallback "river" found South River Golf
+    Course 36 km away; Nominatim's reverse lookup 503'd so its town was None, the other-town filter let it through
+    and it won with score 0.42 (9 holes, blocked at the publish gate). A far, low-score match is never the course:
+    resolve falls back to the courses around `near` (the unnamed 36-hole outline)."""
+    def fake_overpass(q, **kw):
+        if "around:" in q:
+            return {"elements": [{"type": "way", "id": 1067525665, "tags": {"leisure": "golf_course"},
+                                  "center": {"lat": 38.98635, "lon": -76.17264},
+                                  "bounds": {"minlat": 38.97, "minlon": -76.19, "maxlat": 39.0, "maxlon": -76.15}}]}
+        if "out count" in q:
+            return {"elements": [{"type": "count", "tags": {"ways": "0" if "61239088" in q else "36"}}]}
+        if "out body geom" in q:
+            return {"elements": []}
+        if 'river"' in q.lower():
+            return {"elements": [el("way", 61239088, "South River Golf Course", 38.92139, -76.57978)]}
+        return {"elements": []}
+    monkeypatch.setattr(rs.pc, "overpass", fake_overpass)
+    monkeypatch.setattr(rs.pc, "nominatim", lambda *a, **k: None)       # search and reverse both down (503)
+    res = rs.resolve("Queenstown Harbor River Course", "MD", town="Queenstown", near="38.9850,-76.1700")
+    assert res["status"] == "ok" and res["osm"] == {"type": "way", "id": 1067525665}
+    assert res["name"] == "Queenstown Harbor River Course" and res["holes_mapped"] == 36
+    assert all(c["osm"]["id"] != 61239088 for c in res["candidates"])
+
+
+def test_choose_never_returns_a_far_low_score_match():
+    near = "38.9850,-76.1700"
+    far = rs.candidate(el("way", 61239088, "South River Golf Course", 38.92139, -76.57978), holes=0, town=None)
+    status, best, _ = rs.choose([dict(far)], "Queenstown Harbor River Course", town="Queenstown", near=near)
+    assert status == "not_found" and best is None
+    # no town in the request either: still dropped
+    status, best, _ = rs.choose([dict(far)], "Queenstown Harbor River Course", near=near)
+    assert status == "not_found"
+    # the full name far from `near` (a wrong pin) still resolves: its score is high
+    full = rs.candidate(el("way", 5, "Queenstown Harbor River Course", 38.6, -76.6), holes=18, town=None)
+    status, best, _ = rs.choose([dict(full)], "Queenstown Harbor River Course", near=near)
+    assert status == "ok" and best["osm"]["id"] == 5
+    # a pinned osm id is the golfer's word
+    status, best, _ = rs.choose([dict(far)], "Queenstown Harbor River Course", near=near, osm="way/61239088")
+    assert status == "ok"
+
+
 def test_fetch_imagery_command_never_holds_none(monkeypatch, tmp_path):
     import fetch_package as fp
     seen = []
