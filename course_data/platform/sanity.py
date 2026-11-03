@@ -31,6 +31,10 @@
                              card, else flagged (Ironhorse 18 on hole 4's green, Dub's Dread 4 = 13)
                            * a hole wildly beyond its par's length limit, or far off every card length, is
                              rejected (not built; Ironhorse 18 at 1607 yds)
+  card_order(fc, card)     OSM hole refs vs the card's order: renumber_holes when the OSM refs are incomplete or do
+                           not walk as a round (Swope), or for a whole-nine swap; refs 1..18 whose greens are a
+                           short walk from the next tee are never renumbered to fit a card, and a card far off them
+                           in that order is rejected (TPC Sawgrass: Dye's Valley's card on the Stadium holes)
 Pure functions on GeoJSON-ish dicts; shapely only.
 """
 import itertools
@@ -944,3 +948,117 @@ def renumber_holes(fc, card, prior=1.0):
             f = dict(f, properties=dict(p, ref=mapping[str(p["ref"])], osm_ref=p["ref"]))
         feats.append(f)
     return dict(fc, features=feats), mapping
+
+
+# ----------------------------------------------------------------------------- 4b. a chained OSM routing beats the card
+# TPC Sawgrass (library/tpc_sawgrass/qa_rebuild.md): OSM had all 18 Stadium holes, refs 1..18, each green a short
+# walk from the next tee. The matched card was Dye's Valley's, whose pars and lengths fit a permutation of the
+# Stadium holes, and renumber_holes moved the island-green 17th to hole 5 (green -> next tee walks up to 1,546 yds).
+# When the OSM refs are complete and walk as a round, the OSM order is the routing: the card is scored against it
+# and rejected when it disagrees on too many holes. Library pages (2026-11-03): every good page's longest
+# green -> next-tee walk is <= 672 yds with at most 2 over 500; the three renumbered pages (Sawgrass, Chambers Bay,
+# Memorial Park) walk 709-1,546 yds in page order and <= 353 in OSM order.
+ROUTE_MAX_GAP_YD = 800.0        # one green -> next-tee walk longer than this: the holes are out of order
+ROUTE_LONG_GAP_YD = 500.0
+ROUTE_MAX_LONG_GAPS = 3         # ... or more than this many walks over ROUTE_LONG_GAP_YD
+CARD_ORDER_MAX_BAD = 3          # card vs the OSM order: more holes than this far off (par / length) -> no card
+
+
+def routing_problem(gaps):
+    """green -> next-tee walks (yds) -> why the round is out of order, or None."""
+    gaps = [g for g in gaps or [] if g is not None]
+    if not gaps:
+        return None
+    big = max(gaps)
+    long_ = sum(g > ROUTE_LONG_GAP_YD for g in gaps)
+    if big > ROUTE_MAX_GAP_YD or long_ > ROUTE_MAX_LONG_GAPS:
+        return (f"green-to-next-tee walks up to {big:.0f} yds ({long_} over {ROUTE_LONG_GAP_YD:.0f}; a round in "
+                f"order walks under {ROUTE_MAX_GAP_YD:.0f}, at most {ROUTE_MAX_LONG_GAPS} over {ROUTE_LONG_GAP_YD:.0f})")
+    return None
+
+
+def _complete_ways(fc):
+    """{ref: LineString feature} when the hole ways' refs are exactly 1..9 or 1..18, once each; else None."""
+    ways = {}
+    for f in fc.get("features", []):
+        p = f["properties"]
+        if p.get("golf") == "hole" and (f.get("geometry") or {}).get("type") == "LineString" \
+                and str(p.get("ref", "")).isdigit():
+            if str(int(p["ref"])) in ways:
+                return None
+            ways[str(int(p["ref"]))] = f
+    n = len(ways)
+    if n not in (9, 18) or set(ways) != {str(i) for i in range(1, n + 1)}:
+        return None
+    return ways
+
+
+def osm_routing_gaps(fc):
+    """Green (line end) of hole n -> tee (line start) of hole n+1, yds, in OSM ref order; None unless the refs are
+    a complete 1..9 / 1..18 set."""
+    ways = _complete_ways(fc)
+    if not ways:
+        return None
+    c0 = ways["1"]["geometry"]["coordinates"][0]
+    P = _P(c0[0], c0[1])
+    out = []
+    for i in range(1, len(ways)):
+        a = P.fwd(*ways[str(i)]["geometry"]["coordinates"][-1][:2])
+        b = P.fwd(*ways[str(i + 1)]["geometry"]["coordinates"][0][:2])
+        out.append(round(math.hypot(b[0] - a[0], b[1] - a[1])))
+    return out
+
+
+def card_order(fc, card):
+    """How the card's hole order meets the OSM hole refs -> dict(action, mapping, bad, gaps, note, fc) (fc: the
+    features to build from, renumbered for "renumber"):
+    * "renumber": renumber_holes' mapping applies (the OSM refs are incomplete or do not walk as a round, or the
+      fix is a whole-nine swap, which still walks);
+    * "none": the card matches the OSM order (or renumber_holes finds nothing better);
+    * "keep": the OSM refs are complete and walk as a round, so the card does not renumber them; the card is off
+      on <= CARD_ORDER_MAX_BAD holes in that order (kept, flagged);
+    * "reject": as "keep" but the card is off on more holes than that: it is not this course's card."""
+    fc2, mapping = renumber_holes(fc, card)
+    gaps = osm_routing_gaps(fc)
+    out = dict(action="renumber" if mapping else "none", mapping=mapping, bad=[], gaps=gaps, note="", fc=fc2)
+    ways = _complete_ways(fc)
+    if not mapping or not ways or routing_problem(gaps):
+        return out              # nothing to renumber (a card shorter than OSM everywhere is no order question)
+    pars, ys = _card_rows(card)
+    if len(ys) != len(ways):
+        return out
+    lens = {r: _way_len(f["geometry"]["coordinates"]) for r, f in ways.items()}
+    opar = {r: int(f["properties"]["par"]) if str(f["properties"].get("par") or "").isdigit() else None
+            for r, f in ways.items()}
+
+    # a card of forward sets only reads shorter than the OSM lines throughout: scale it to them (median, 0.8-1.25)
+    rat = sorted(lens[str(i + 1)] / y for i, y in enumerate(ys) if y)
+    k = min(1.25, max(0.8, rat[len(rat) // 2])) if rat else 1.0
+
+    def bad_in(to):                                  # to: OSM ref -> card hole number
+        return [r for r in sorted(ways, key=int)
+                if _bad(lens[r], opar[r], pars[int(to(r)) - 1], (ys[int(to(r)) - 1] or 0) * k)]
+    bad = bad_in(lambda r: r)
+    n = len(ways)
+    if n == 18 and mapping and len(bad) > CARD_ORDER_MAX_BAD:        # swapped nines still walk as a round
+        swap = lambda r: str(int(r) + 9 if int(r) <= 9 else int(r) - 9)    # noqa: E731
+        if len(bad_in(swap)) <= CARD_ORDER_MAX_BAD:
+            m = {r: swap(r) for r in ways}
+            feats = [dict(f, properties=dict(f["properties"], ref=m[str(int(f["properties"]["ref"]))],
+                                             osm_ref=f["properties"]["ref"])) if any(f is w for w in ways.values())
+                     else f for f in fc["features"]]
+            out.update(mapping=m, bad=bad_in(swap), fc=dict(fc, features=feats), swap=True, note="the card's nines are OSM's "
+                       "the other way round: OSM holes 1-9 renumbered 10-18 and 10-18 renumbered 1-9")
+            return out
+    out.update(mapping={}, bad=bad, fc=fc)
+    walk = f"the OSM holes 1-{len(ways)} walk as a round (longest green-to-next-tee {max(gaps)} yds)"
+    if len(bad) > CARD_ORDER_MAX_BAD:
+        out.update(action="reject", note=(
+            f"card did not match the mapped holes: {walk}, and in that order the card's par or length is off on "
+            f"{len(bad)} holes ({', '.join(bad)}); card not used"))
+    else:
+        out.update(action="keep", note=(
+            f"OSM hole order kept: {walk}; the card's par or length differs on hole(s) {', '.join(bad)}"
+            + (" (the card's best order would renumber " + ", ".join(f"{a}->{b}" for a, b in sorted(
+                mapping.items(), key=lambda kv: int(kv[0]))) + ")" if mapping else "")))
+    return out

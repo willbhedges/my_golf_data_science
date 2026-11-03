@@ -73,7 +73,9 @@ Course status (`status.json`, `index.json`):
 * **blocked**: a page was built but is too wrong to publish (`course_page.py` `publish_gate`): the built hole
   count is not the card's (no card: not 18 or 9), the built pars sum more than 2 from the card's, or resolve took a
   weak name match (score < 0.5) more than 1.5 km from the request's `near` point (World Woods, 2026-11-03: 16
-  holes, par 64 vs 72, "Cabot Citrus Farms" 2.9 km away at score 0.38). `reasons` starts with the gate's reasons.
+  holes, par 64 vs 72, "Cabot Citrus Farms" 2.9 km away at score 0.38), or the holes are out of order: a green to
+  next-tee walk over 800 yds, or more than 3 over 500 (TPC Sawgrass 2026-11-03: the Stadium holes renumbered onto
+  Dye's Valley's card walked up to 1,546 yds). `reasons` starts with the gate's reasons.
   The page and its files stay in the folder for review; `index.json` lists it under `blocked`, not `courses`.
   `course_page.py regate [--apply]` runs the gate over the pages already on disk.
 * **failed**: no page (resolve ambiguous / not found, package or compute failure). `reasons` says where it

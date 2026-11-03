@@ -10,6 +10,8 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           best fit to the map); the others are kept as a per-hole cross-check;
           > a golfer-typed card (request "typed_card": {"yards": "391 175 ...", "pars": "..."}, typed_card.py);
           no card -> the OSM tee nearest each hole-line start (usually the back tee) + a warning
+          sanity.card_order: OSM refs 1..18 that walk as a round keep their order; a card far off them in that
+          order is dropped ("card did not match the mapped holes", CHECK); else renumber_holes as before
           request "card": "none" (CARD-BLIND, cardless_card): every web / local / request / typed card and the
           card-based review overrides are ignored; the card is synthetic: tees/cardless.py if present, else the
           OSM hole lines (back = line length, 2nd set = back x CARDLESS_SET2_RATIO, par = OSM tag > length).
@@ -1469,6 +1471,20 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         warnings.append(f"scorecard units: {cinfo['units']}")
     for f_ in ((cinfo.get("consensus") or {}).get("flags") or [])[:6]:
         warnings.append(f"card consensus: {f_}"[:240])
+    order = None
+    if card and not blind and req.get("auto_renumber", True) and not req.get("hole_renumber"):
+        # sanity.card_order: OSM refs 1..18 that walk as a round are never renumbered to fit a card (TPC Sawgrass:
+        # Dye's Valley's card renumbered the Stadium); a card far off them in that order is not this course's card
+        order = sanity.card_order(fc, card)
+        if order["note"]:
+            stages["card_order"] = f"{order['action']}: {order['note']}"[:600]
+        if order["action"] == "reject":
+            warnings.append(f"{order['note']} ({cinfo.get('kind')}: {cinfo.get('source')}) (CHECK)"[:400])
+            rejected = dict(source=cinfo.get("source"), ok=False, info=order["note"][:300])
+            card, cinfo = None, dict(kind=None, source=None, url=None, tried=(cinfo.get("tried") or []) + [rejected],
+                                     consistency=None, cross_check={})
+        elif order["action"] == "keep":
+            warnings.append(order["note"] + " (CHECK)")
     wanted = req.get("tee_set") or req.get("tees")
     chosen, how = scm.choose_tee_set(card, wanted) if card else (None, "no scorecard")
     substituted = None
@@ -1482,8 +1498,8 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         warnings.append(substituted)
         how = f"substitute: longest set ({how})"
     card, card_fixes = apply_card_overrides(card, req, chosen)
-    if card and req.get("auto_renumber", True) and not req.get("hole_renumber"):          # sanity.renumber_holes: OSM hole order != card order
-        fc, renum = sanity.renumber_holes(fc, card)
+    if card and order and order["action"] == "renumber":   # OSM hole order != card order (and OSM's does not walk)
+        fc, renum = (order["fc"], order["mapping"]) if order.get("swap") else sanity.renumber_holes(fc, card)
         if renum:
             stages["renumber"] = "ok: OSM hole refs -> card holes " + ", ".join(f"{a}->{b}" for a, b in sorted(
                 renum.items(), key=lambda kv: kv[0].zfill(3)))

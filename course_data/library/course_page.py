@@ -36,7 +36,8 @@ Stages (each a subcommand, run by the workflow; README.md in this folder has the
                           hole picture's crop to a wide aim's landing), picture checks + the wide-aim CHECK
                           (wide_aims.py: any printed tee-shot aim past +/-40 yds), native_reconcile, qa_page.js,
                           qa_report.md, status.json; publish_gate makes a page too wrong to publish "blocked" (hole
-                          count not the card's, pars off by more than 2, a weak resolve far from `near`): the page
+                          count not the card's, pars off by more than 2, a weak resolve far from `near`, holes out of
+                          order by the green -> next-tee walks): the page
                           stays in the folder, the index keeps it off the course list. No card: the page labels the
                           package's "osm_back" set "Back tees (from the map)" and drops "on the card" (label_no_card)
   index                -> course_data/library/index.json
@@ -269,6 +270,28 @@ def sharp_choice(pkg):
                        f"({cur_gsd} m): used for the hole pictures only")
 
 
+def page_name(pkg, q):
+    """The page's course name: the OSM course name, except on a multi-course facility whose split kept one course
+    the OSM name does not name ("TPC Sawgrass" kept 'stadium'): then the request's name when it names that course
+    ("TPC Sawgrass Stadium", "Troon North Monument"), else the OSM name + the kept course."""
+    name = (pkg.get("course") or {}).get("name") or q.get("name") or ""
+    kept = None
+    for w in pkg.get("warnings") or []:
+        m = re.search(r"multi-course facility:.*?; kept '([^']+)'", w) or re.search(r"hole refs: kept the '([^']+)' holes", w)
+        if m:
+            kept = m.group(1).strip()
+            break
+    if not kept:
+        return name
+    words = lambda t: set(re.findall(r"[a-z0-9]+", t.lower()))          # noqa: E731
+    key = words(kept) - {"course", "golf", "club", "the", "no", "links"}
+    if not key or key <= words(name):
+        return name
+    if q.get("name") and key <= words(q["name"]):
+        return q["name"]
+    return f"{name} {kept if kept != kept.lower() else kept.title()}"
+
+
 def configure(q):
     import weather as W
     slug = q["slug"]
@@ -301,7 +324,7 @@ def configure(q):
     lbl = [dt.date.fromisoformat(d).strftime("%a %-m/%-d") for d in days]
     tot = lambda s: (sets_info.get(s) or {}).get("total")         # noqa: E731
     cfg = dict(
-        name=name, title=f"{name} Caddie", auto=True, hand_checked=False, main_which="auto", slug=slug,
+        name=name, title=f"{page_name(pkg, q)} Caddie", auto=True, hand_checked=False, main_which="auto", slug=slug,
         sub=(f"{town}, {q['state']} · automatic page · {' / '.join(f'{s} {tot(s):,}' if tot(s) else s for s in bases)}"
              " · Driver 275/300 · 2-wood 265/280 · 4-wood 255/270 at 70°F"),
         event=q.get("event", ""), package=rel(out_dir(q, "package.json")), truth_package=rel(out_dir(q, "package.json")),
@@ -771,6 +794,12 @@ def course_gate(pkg, checks, qa, cfg):
 # card's 72, resolved to a course 2.9 km from `near` with match score 0.38). "blocked": the page and its files stay in
 # the folder (for the review), status.json says why, and the index keeps it off the course list.
 GATE_PAR_TOL = 2              # built pars vs the card's total
+# holes out of order (TPC Sawgrass: the Stadium holes renumbered onto Dye's Valley's card, 18 holes and the par total
+# equal; green n -> tee n+1 walked 237-1,546 yds). Library pages 2026-11-03: every page in order walks <= 672 yds with
+# at most 2 walks over 500; the renumbered Sawgrass, Chambers Bay (1,098) and Memorial Park (4 over 500) do not.
+GATE_ROUTE_MAX_YD = 800.0     # one green -> next-tee walk longer than this
+GATE_ROUTE_LONG_YD = 500.0
+GATE_ROUTE_MAX_LONG = 3       # ... or more walks than this over GATE_ROUTE_LONG_YD
 GATE_MIN_SCORE = 0.5          # resolve match score (library builds: 0.65 .. 11.6; world_woods 0.38)
 GATE_NEAR_KM = 1.5            # ... and the resolved course centre this far from the request's near point
 NO_CARD_SET_LABEL = "Back tees (from the map)"
@@ -804,10 +833,38 @@ def _km(a, b):
     return 2 * 6371.0 * math.asin(math.sqrt(h))
 
 
+def _yd_ll(a, b):
+    """[lon, lat] -> [lon, lat] yds (equirectangular; hole-to-hole distances)."""
+    kx = math.cos(math.radians((a[1] + b[1]) / 2)) * 111320 / 0.9144
+    return math.hypot((b[0] - a[0]) * kx, (b[1] - a[1]) * 111320 / 0.9144)
+
+
+def routing_gaps(pkg, cfg=None):
+    """Built holes -> [(n, green n -> tee n+1 walk in yds)] for each consecutive pair of numbered holes with a green and a
+    tee (the solved set's tee, else the hole line's start)."""
+    holes = pkg.get("holes") or {}
+    items = holes.items() if isinstance(holes, dict) else ((h.get("ref"), h) for h in holes)
+    by = {int(r): h for k, h in items for r in [h.get("ref", k)] if str(r or "").isdigit()}
+    s = (cfg or {}).get("tees") or pkg.get("tee_set")
+
+    def tee(h):
+        t = ((h.get("tees") or {}).get(s) or {}).get("tee_ll") if isinstance(h.get("tees"), dict) else None
+        return t or h.get("tee_ll") or (h.get("hole_line_ll") or [None])[0]
+    out = []
+    for r in sorted(by):
+        a, b = by[r], by.get(r + 1)
+        g, t = a.get("green_ll"), tee(b) if b else None
+        if g and t:
+            out.append((r, round(_yd_ll(g, t))))
+    return out
+
+
 def publish_gate(pkg, cfg, near=None):
     """-> the reasons this page must not be published (empty: publishable). Blocked when the built hole count is not
     the card's (no card: not 18 or 9), the built pars sum more than GATE_PAR_TOL from the card's, or resolve took a
-    weak name match (score < GATE_MIN_SCORE) more than GATE_NEAR_KM from the request's near point."""
+    weak name match (score < GATE_MIN_SCORE) more than GATE_NEAR_KM from the request's near point, or the holes are
+    out of order (a green -> next-tee walk over GATE_ROUTE_MAX_YD, or more than GATE_ROUTE_MAX_LONG over
+    GATE_ROUTE_LONG_YD)."""
     out = []
     holes = pkg.get("holes") or {}
     hs = list(holes.values()) if isinstance(holes, dict) else list(holes)
@@ -825,6 +882,15 @@ def publish_gate(pkg, cfg, near=None):
         if abs(built - card_par) > GATE_PAR_TOL:
             out.append(f"built pars sum to {built}, the card's to {card_par} (more than {GATE_PAR_TOL} apart): "
                        "holes or pars are wrong")
+    walks = routing_gaps(pkg, cfg)
+    gaps = [g for _, g in walks]
+    if gaps:
+        big, long_ = max(gaps), sum(g > GATE_ROUTE_LONG_YD for g in gaps)
+        if big > GATE_ROUTE_MAX_YD or long_ > GATE_ROUTE_MAX_LONG:
+            out.append(f"holes out of order: green-to-next-tee walks up to {big} yds, {long_} over "
+                       f"{GATE_ROUTE_LONG_YD:.0f} (in order: under {GATE_ROUTE_MAX_YD:.0f}, at most {GATE_ROUTE_MAX_LONG} "
+                       f"over {GATE_ROUTE_LONG_YD:.0f}); longest: " + ", ".join(
+                           f"{r}->{r + 1} {g}" for r, g in sorted(walks, key=lambda w: -w[1])[:3]))
     ll = _near_ll(near)
     c = pkg.get("course") or {}
     if ll and c.get("center"):

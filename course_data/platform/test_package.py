@@ -668,3 +668,43 @@ def test_review_tee_snap_still_snaps_when_card_agrees():
     assert m(got[1], got[0]) == pytest.approx(m(lon, lat), abs=2.5)
     # no measure / no card: the 11-02 rule (snap) stands
     assert "snapped" in pk.review_tee_point(*off, tees)[2]
+
+
+def _permuted_card(tmp_path, perm):
+    """The Spirit Hollow card with card hole i = the real hole perm[i] (pars, every set, handicaps)."""
+    c = json.load(open(CARD))
+    c["par"] = [c["par"][j] for j in perm]
+    for s in c["tee_sets"].values():
+        s["yards"] = [s["yards"][j] for j in perm]
+    c.pop("combo_sets", None)
+    p = tmp_path / "permuted_card.json"
+    p.write_text(json.dumps(c))
+    return str(p)
+
+
+def test_wrong_card_does_not_renumber_a_chained_course(tmp_path, black):
+    """TPC Sawgrass: a card whose holes fit a permutation of the OSM holes (Dye's Valley's card on the Stadium)
+    renumbered the course. OSM refs 1..18 walk as a round here, so the build keeps them and drops the card."""
+    p0, _ = black
+    perm = [8, 3, 12, 1, 16, 5, 10, 0, 14, 2, 6, 11, 4, 15, 9, 13, 7, 17]
+    pkg = seed(tmp_path)
+    req = dict(course="Spirit Hollow", state="IA", scorecard=_permuted_card(tmp_path, perm))
+    p = pk.build_package(req, pkg, gapfill=False)
+    assert "renumber" not in p["stages"]
+    assert not any("numbering differs" in w for w in p["warnings"])
+    assert any("card did not match the mapped holes" in w and "CHECK" in w for w in p["warnings"])
+    assert p["stages"]["scorecard"] == "missing" and "card did not match" in p["stages"]["card_order"]
+    for r in ("1", "9", "17"):                                       # the OSM holes, in the OSM order
+        assert p["holes"][r]["green_ll"] == pytest.approx(p0["holes"][r]["green_ll"], abs=1e-6)
+
+
+def test_swapped_nines_card_still_renumbers_in_build(tmp_path, black):
+    """A card listing the nines the other way round from OSM (Tournament Club of Iowa) still renumbers."""
+    p0, _ = black
+    pkg = seed(tmp_path)
+    req = dict(course="Spirit Hollow", state="IA", tee_set="Black",
+               scorecard=_permuted_card(tmp_path, list(range(9, 18)) + list(range(9))))
+    p = pk.build_package(req, pkg, gapfill=False)
+    assert "nines" in p["stages"]["card_order"]
+    assert p["holes"]["1"]["green_ll"] == pytest.approx(p0["holes"]["10"]["green_ll"], abs=1e-6)
+    assert p["holes"]["1"]["yards"]["Black"] == BLACK[9]

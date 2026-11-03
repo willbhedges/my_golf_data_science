@@ -6,6 +6,7 @@
 * st_andrews_op 15 Blue: the calm-day pick's note (4-wood stats) showed under the forecast play (Long iron).
 """
 import json
+import math
 import os
 import re
 import shutil
@@ -83,6 +84,68 @@ def test_resolve_check_skipped_without_coordinates():
     assert cp.request_near({"near": "28.6650,-82.4600"}) == "28.6650,-82.4600"
     assert cp.request_near({"near": "28.6650,-82.4600", "osm": "way/1"}) is None     # the request named the course
     assert cp.request_near({"near": [28.665, -82.46]}) == "28.665,-82.46"
+
+
+# TPC Sawgrass (tpc_sawgrass/qa_rebuild.md): the Stadium holes renumbered onto Dye's Valley's card; 18 holes and
+# the par total equal, so only the routing shows it: green n -> tee n+1 walked 237-1,546 yds.
+SAWGRASS_GAPS = [996, 1195, 940, 865, 743, 160, 993, 612, 610, 1178, 1061, 1546, 808, 1179, 534, 283, 237]
+
+
+def _routed(pkg, gaps, lat=30.19, lon=-81.39):
+    """Lay the package's holes out so green n -> tee n+1 walks gaps[n-1] yds (each hole 400 yds north-south)."""
+    ky, kx = 111320 / 0.9144, math.cos(math.radians(lat)) * 111320 / 0.9144
+    x = y = 0.0
+    for i in range(1, len(pkg["holes"]) + 1):
+        h = pkg["holes"][str(i)]
+        h["tee_ll"] = [lon + x / kx, lat + y / ky]
+        y += 400 if i % 2 else -400
+        h["green_ll"] = [lon + x / kx, lat + y / ky]
+        x += gaps[i - 1] if i - 1 < len(gaps) else 0
+    return pkg
+
+
+def test_holes_out_of_order_block():
+    b = cp.publish_gate(_routed(_pkg(), SAWGRASS_GAPS), _cfg(), near=None)
+    assert len(b) == 1 and b[0].startswith("holes out of order:") and "1546 yds" in b[0]
+    # four walks over 500 (Memorial Park, renumbered onto a mixed card): blocked too
+    b = cp.publish_gate(_routed(_pkg(), [65, 447, 405, 101, 72, 47, 130, 54, 177, 48, 87, 449, 265, 709, 516, 508,
+                                         617]), _cfg(), near=None)
+    assert b and b[0].startswith("holes out of order")
+
+
+def test_long_walks_of_good_pages_pass():
+    for gaps in ([69, 143, 39, 157, 140, 74, 114, 51, 672, 147, 73, 284, 58, 130, 96, 135, 73],     # buffalo_ridge
+                 [177, 88, 66, 71, 100, 649, 545, 82, 105, 116, 153, 60, 110, 52, 104, 47, 80],     # hawktree
+                 [100] * 14 + [600, 700, 790]):
+        assert cp.publish_gate(_routed(_pkg(), gaps), _cfg(), near=None) == [], gaps
+    # only consecutive holes that both have coordinates are judged
+    pkg = _routed(_pkg(), SAWGRASS_GAPS)
+    for h in pkg["holes"].values():
+        h.pop("green_ll")
+    assert cp.publish_gate(pkg, _cfg(), near=None) == []
+    pkg = _routed(_pkg(), SAWGRASS_GAPS)
+    assert [r for r, _ in cp.routing_gaps(dict(holes={k: v for k, v in pkg["holes"].items() if k != "5"}))] == \
+        [1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+
+
+def test_title_names_the_kept_course():
+    w = ["multi-course facility: 2 courses' hole ways in one outline (by hole way names: stadium 18, valley 18); "
+         "kept 'stadium' (named in the request)"]
+    assert cp.page_name(dict(course=dict(name="TPC Sawgrass"), warnings=w), dict(name="TPC Sawgrass Stadium")) \
+        == "TPC Sawgrass Stadium"
+    w2 = ["multi-course facility: 2 courses' hole ways in one outline (by hole way names: Pinnacle Course 18, "
+          "Monument Course 18); kept 'Monument Course' (named in the request), 18 ways"]
+    assert cp.page_name(dict(course=dict(name="Troon North Golf Club"), warnings=w2), dict(name="Troon North Monument")) \
+        == "Troon North Monument"
+    # no request name with the kept course in it: the OSM name + the kept group
+    assert cp.page_name(dict(course=dict(name="Troon North Golf Club"), warnings=w2), dict(name="Troon North")) \
+        == "Troon North Golf Club Monument Course"
+    # the kept course already in the OSM name, or a single course: the OSM name
+    w3 = ["hole refs: kept the '2' holes (named in the request) (18 ways, refs as plain numbers)"]
+    assert cp.page_name(dict(course=dict(name="Pinehurst No. 2"), warnings=w3), dict(name="Pinehurst No 2")) \
+        == "Pinehurst No. 2"
+    assert cp.page_name(dict(course=dict(name="Annbriar Golf Course"), warnings=[]), dict(name="Annbriar")) \
+        == "Annbriar Golf Course"
 
 
 def _status(tmp_path, slug, status="needs confirm", page=True):

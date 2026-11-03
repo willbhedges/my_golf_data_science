@@ -592,3 +592,96 @@ def test_grand_national_links_clean_18_from_live_osm():
     assert sorted(int(f["properties"]["ref"]) for f in holes) == list(range(1, 19)), notes
     assert not any(f["properties"].get("golf:course:name") for f in holes)
     assert any("17 unnumbered" in n for n in notes), notes
+
+
+# ----------------------------------------------------------------------------- card order vs a chained OSM routing
+# TPC Sawgrass (library/tpc_sawgrass/qa_rebuild.md): OSM had all 18 Stadium holes, refs 1..18, each green next to
+# the next tee. The matched card was Dye's Valley's (6,847), whose pars / lengths happen to fit a permutation of the
+# Stadium holes, so renumber_holes moved the island-green 17th to page hole 5.
+STADIUM_PAR = [4, 5, 3, 4, 4, 4, 4, 3, 5, 4, 5, 4, 3, 4, 4, 5, 3, 4]
+STADIUM_LEN = [362, 501, 185, 397, 436, 354, 409, 229, 553, 408, 557, 325, 170, 444, 401, 498, 158, 420]
+VALLEY_PAR = [5, 3, 4, 4, 3, 4, 4, 5, 4, 4, 3, 4, 4, 3, 4, 5, 5, 4]
+VALLEY_YDS = [558, 171, 354, 403, 158, 445, 326, 503, 436, 408, 229, 363, 409, 203, 402, 559, 499, 421]
+
+
+def _chained(lens, pars=None, gap=40):
+    """Hole ways laid out as a walkable round: each tee `gap` yds east of the last green, holes alternately north
+    and south (so every green -> next tee walk is `gap`)."""
+    feats, x, y = [], 0.0, 0.0
+    for i, L in enumerate(lens):
+        y2 = y + (L - 5 if i % 2 == 0 else -(L - 5))
+        props = dict(golf="hole", ref=str(i + 1), osm_id=5000 + i)
+        if pars:
+            props["par"] = str(pars[i])
+        feats.append(line([(x, y), (x, y2)], **props))
+        x, y = x + gap, y2
+    return dict(features=feats)
+
+
+def _card(pars, yds):
+    return dict(par=list(pars), tee_sets={"Tips": dict(yards=list(yds))})
+
+
+def test_routing_gaps_of_a_chained_round():
+    gaps = sanity.osm_routing_gaps(_chained(STADIUM_LEN, STADIUM_PAR))
+    assert len(gaps) == 17 and max(gaps) < 45
+    assert sanity.routing_problem(gaps) is None
+    # incomplete refs (no hole 7): no routing to judge
+    fc = _chained(STADIUM_LEN, STADIUM_PAR)
+    fc["features"] = [f for f in fc["features"] if f["properties"]["ref"] != "7"]
+    assert sanity.osm_routing_gaps(fc) is None
+    assert sanity.routing_problem([100] * 13 + [900, 120, 90, 80]) and sanity.routing_problem([600] * 4 + [90] * 13)
+    assert sanity.routing_problem([600] * 3 + [90] * 14) is None
+
+
+def test_wrong_card_never_renumbers_a_chained_course():
+    fc = _chained(STADIUM_LEN, STADIUM_PAR)
+    card = _card(VALLEY_PAR, VALLEY_YDS)
+    _, old = sanity.renumber_holes(fc, card)
+    assert len(old) >= 10                                      # what the build used to do: 17 -> 5, 9 -> 1, ...
+    dec = sanity.card_order(fc, card)
+    assert dec["action"] == "reject" and not dec["mapping"]
+    assert len(dec["bad"]) >= 10 and "card did not match the mapped holes" in dec["note"]
+    # the right card on the same holes: nothing to do
+    dec = sanity.card_order(fc, _card(STADIUM_PAR, [y + 10 for y in STADIUM_LEN]))
+    assert dec["action"] == "none" and dec["bad"] == []
+    # a card of a forward set only (every hole ~15% short) in the OSM order: no order question, nothing changes
+    dec = sanity.card_order(fc, _card(STADIUM_PAR, [round(y * 0.85) for y in STADIUM_LEN]))
+    assert dec["action"] == "none" and not dec["mapping"]
+
+
+def test_card_off_on_two_holes_is_kept_in_osm_order():
+    """Chambers Bay: the card's par for 1 and 13 is the other way round from OSM (lengths equal), so the matcher
+    swapped holes 1 and 13 (green 1 -> tee 2 became 1,047 yds). The OSM order stays; the card stays, flagged."""
+    lens = [486, 395, 167, 531, 466, 412, 483, 563, 227, 399, 447, 289, 495, 495, 139, 396, 159, 542]
+    pars = [4, 4, 3, 5, 4, 4, 4, 5, 3, 4, 4, 4, 5, 4, 3, 4, 3, 5]
+    cpar = list(pars)
+    cpar[0], cpar[12] = 5, 4
+    fc = _chained(lens, pars)
+    card = _card(cpar, [494, 395, 167, 530, 465, 418, 482, 557, 227, 398, 457, 281, 485, 496, 139, 396, 172, 541])
+    assert sanity.renumber_holes(fc, card)[1] == {"1": "13", "13": "1"}
+    dec = sanity.card_order(fc, card)
+    assert dec["action"] == "keep" and dec["bad"] == ["1", "13"] and not dec["mapping"]
+
+
+def test_swapped_nines_still_renumber_on_a_chained_course():
+    """Tournament Club of Iowa: OSM numbers the back nine 1-9. The round still chains (green 9 and tee 10 both by
+    the clubhouse), so a whole-nine swap is the one renumbering a chained course may take."""
+    fc = _chained(STADIUM_LEN, STADIUM_PAR)
+    card = _card(STADIUM_PAR[9:] + STADIUM_PAR[:9], STADIUM_LEN[9:] + STADIUM_LEN[:9])
+    dec = sanity.card_order(fc, card)
+    assert dec["action"] == "renumber"
+    assert dec["mapping"] == {str(i): str(i + 9 if i <= 9 else i - 9) for i in range(1, 19)}
+    assert [f["properties"]["ref"] for f in dec["fc"]["features"]] == [str(i) for i in list(range(10, 19)) + list(range(1, 10))]
+    assert dec["bad"] == []
+
+
+def test_scrambled_osm_refs_still_renumber():
+    """Swope: OSM refs out of play order (green 2 -> tee 3 is across the course): the card order still wins."""
+    card_pars = [4, 4, 4, 4, 5, 3, 4, 3, 5]
+    card_yds = [380, 400, 330, 368, 451, 170, 360, 150, 520]
+    osm_of = [1, 2, 8, 9, 6, 7, 3, 4, 5]
+    feats = [line([(i * 150, 0), (i * 150, card_yds[i] - 5)], golf="hole", ref=str(r), par=str(card_pars[i]))
+             for i, r in enumerate(osm_of)]
+    dec = sanity.card_order(dict(features=feats), dict(par=card_pars, tee_sets={"Blue": dict(yards=card_yds)}))
+    assert dec["action"] == "renumber" and dec["mapping"]["8"] == "3"
