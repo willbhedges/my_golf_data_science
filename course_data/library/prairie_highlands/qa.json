@@ -564,7 +564,7 @@
       },
       "aim": {
        "ok": false,
-       "why": "Driver -6 lands 308 yds out in sand (9 yds from fairway)"
+       "why": "Driver -5 lands 308 yds out in sand (9 yds from fairway)"
       },
       "oval": {
        "ok": true,
@@ -573,14 +573,14 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -5.5,
+      "aim": -5.0,
       "along": 308.3,
       "lie": "sand",
       "tie": false
      },
      "status": "CHECK",
      "reasons": [
-      "aim: Driver -6 lands 308 yds out in sand (9 yds from fairway)"
+      "aim: Driver -5 lands 308 yds out in sand (9 yds from fairway)"
      ]
     },
     "18": {
@@ -817,7 +817,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "4-wood -0 lands 288 yds out in fairway"
+       "why": "4-wood -1 lands 288 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -826,7 +826,7 @@
      },
      "pick": {
       "club": "4-wood",
-      "aim": -0.5,
+      "aim": -1.0,
       "along": 287.8,
       "lie": "fairway",
       "tie": true
@@ -957,6 +957,14 @@
       "oval": {
        "ok": true,
        "why": "landing pattern 16% trees / water / OB (water 12%, unverified 7%)"
+      },
+      "wide_aim": {
+       "ok": false,
+       "why": "2-wood aim +76 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "where": [
+        "calm-day",
+        "forecast"
+       ]
       }
      },
      "pick": {
@@ -966,8 +974,10 @@
       "lie": "rough",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "wide_aim: 2-wood aim +76 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+     ]
     },
     "11": {
      "par": 4,
@@ -1222,7 +1232,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -2 lands 305 yds out in fairway"
+       "why": "Driver -3 lands 305 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -1231,7 +1241,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -2.5,
+      "aim": -3.0,
       "along": 304.8,
       "lie": "fairway",
       "tie": false

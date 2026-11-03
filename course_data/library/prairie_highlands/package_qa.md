@@ -1,6 +1,6 @@
 # Prairie Highlands Golf Course (Olathe, KS) - Black tees
 
-Built 2026-11-02T16:38:15Z. OSM relation/11701165. Scorecard: file (course_data/library/prairie_highlands/card_review.json). Tee set: name.
+Built 2026-11-02T23:04:45Z. OSM relation/11701165. Scorecard: file (course_data/library/prairie_highlands/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -45,7 +45,7 @@ OSM features inside the course: buildings 9, golf=bunker 58, golf=cartpath 29, g
 ## Stages
 
 - **resolve**: ok: relation/11701165 Prairie Highlands Golf Course (Olathe, KS)
-- **osm**: ok: 720 features
+- **osm**: ok: 718 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: file (course_data/library/prairie_highlands/card_review.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)

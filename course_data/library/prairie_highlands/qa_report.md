@@ -1,8 +1,8 @@
 # Prairie Highlands Golf Course: automatic page QA
 
-**Status: needs confirm** — confirm holes 11, 17
+**Status: needs confirm** — confirm holes 10, 11, 17
 
-* page: `course_data/library/prairie_highlands/page.html` (4.7 MB); request `course_data/requests/course_page_prairie_highlands.json`; built 2026-11-02T16:38Z
+* page: `course_data/library/prairie_highlands/page.html` (4.7 MB); request `course_data/requests/course_page_prairie_highlands.json`; built 2026-11-02T23:04Z
 * course: Prairie Highlands Golf Course (Olathe, KS), OSM relation/11701165; holes: osm (tier mapped_card); card: course_data/library/prairie_highlands/card_review.json (file)
 * solved tee sets: Black, Blue (tee sets of interest); page sets: Black, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
@@ -13,9 +13,9 @@
 
 Course-level reasons:
 
-* 2 hole(s) with a CHECK
+* 3 hole(s) with a CHECK
 
-Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
+Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
 ## Black tees
 
@@ -37,7 +37,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 14 | 3 | PASS |  |  |
 | 15 | 5 | PASS | Driver +5 |  |
 | 16 | 3 | PASS |  |  |
-| 17 | 4 | CHECK | Driver -6 | aim: Driver -6 lands 308 yds out in sand (9 yds from fairway) |
+| 17 | 4 | CHECK | Driver -5 | aim: Driver -5 lands 308 yds out in sand (9 yds from fairway) |
 | 18 | 4 | PASS | Driver -10 |  |
 
 ## Blue tees
@@ -49,11 +49,11 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 3 | 4 | PASS | Driver -4 |  |
 | 4 | 5 | PASS | Driver +4 |  |
 | 5 | 3 | PASS |  |  |
-| 6 | 4 | PASS | 4-wood -0 (tie) |  |
+| 6 | 4 | PASS | 4-wood -1 (tie) |  |
 | 7 | 4 | PASS | Driver +13 |  |
 | 8 | 3 | PASS |  |  |
 | 9 | 5 | PASS | Driver +11 |  |
-| 10 | 4 | PASS | Driver +60 |  |
+| 10 | 4 | CHECK | Driver +60 | wide_aim: 2-wood aim +76 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 11 | 4 | PASS | Driver -0 |  |
 | 12 | 5 | PASS | Driver +0 |  |
 | 13 | 4 | PASS | Driver +12 |  |
@@ -61,5 +61,5 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 15 | 5 | PASS | Driver +6 |  |
 | 16 | 3 | PASS |  |  |
 | 17 | 4 | PASS | Driver -16 |  |
-| 18 | 4 | PASS | Driver -2 |  |
+| 18 | 4 | PASS | Driver -3 |  |
 
