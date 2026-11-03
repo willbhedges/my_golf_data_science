@@ -5,17 +5,21 @@
  "hand_checked": false,
  "main_which": "auto",
  "slug": "grand_national_links",
- "sub": "Opelika, AL \u00b7 automatic page \u00b7 osm_back \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
+ "sub": "Opelika, AL \u00b7 automatic page \u00b7 Purple 7,311 / Orange 6,574 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
  "event": "",
  "package": "course_data/library/grand_national_links/package.json",
  "truth_package": "course_data/library/grand_national_links/package.json",
- "tees": "osm_back",
- "alt_bases": {},
+ "tees": "Purple",
+ "alt_bases": {
+  "Orange": "auto_b"
+ },
  "sets": [
-  "osm_back"
+  "Purple",
+  "Orange"
  ],
  "colors": {
-  "osm_back": "#111"
+  "Purple": "#7b3fc4",
+  "Orange": "#e07a3a"
  },
  "days": [
   "2026-11-07",
@@ -43,13 +47,16 @@
   "source": "Open-Meteo hourly forecast"
  },
  "grid_prune": true,
- "bases_why": "no scorecard: the package's own tee set",
+ "bases_why": "the two longest sets on the card (combination sets skipped)",
  "request": "course_data/requests/course_page_grand_national_links.json",
- "rev": 2,
- "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from no card, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: osm_back. See qa_report.md for the hole-by-hole checks.",
- "built": "2026-11-03T06:20Z",
+ "rev": 3,
+ "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from course_data/library/grand_national_links/card_review.json, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Purple, Orange. See qa_report.md for the hole-by-hole checks.",
+ "built": "2026-11-03T09:19Z",
  "offsets": {
   "auto": [
+   0
+  ],
+  "auto_b": [
    0
   ]
  },
