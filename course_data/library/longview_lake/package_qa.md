@@ -1,8 +1,8 @@
 # Fred Arbanas Golf Course (Kansas City, MO) - Blue tees
 
-Built 2026-11-03T05:48:37Z. OSM way/913710102. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, Web, White, Gold, Red)).
+Built 2026-11-03T09:11:07Z. OSM way/913710102. Scorecard: file (course_data/library/longview_lake/card_golfify.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Gold, Red)).
 
-**WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Web, White, Gold, Red**
+**WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Gold, Red**
 
 ## Coverage
 
@@ -35,7 +35,7 @@ OSM features inside the course: buildings 2, golf=bunker 21, golf=cartpath 21, g
 | 8 | 4 | 388 / 387 | 355 | 0.82 | auto | 60% | 2% | 38% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 9 | 4 | 369 / 369 | 325 | 0.74 | check the flags | 33% | 2% | 66% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 10 | 5 | 548 / 549 | 238 | 0.82 | auto | 47% | 0% | 52% | tee stage: Blue tee_centroid |  |
-| 11 | 3 | 230 / 230 | 49 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 11 | 3 | 203 / 203 | 48 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 12 | 4 | 403 / 404 | 259 | 0.80 | check the flags | 46% | 8% | 46% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 13 | 4 | 457 / 457 | 42 | 0.77 | check the flags | 42% | 3% | 55% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 14 | 5 | 519 / 519 | 162 | 0.76 | check the flags | 34% | 9% | 57% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
@@ -49,10 +49,10 @@ OSM features inside the course: buildings 2, golf=bunker 21, golf=cartpath 21, g
 - **resolve**: ok: way/913710102 Fred Arbanas Golf Course (Kansas City, MO)
 - **osm**: ok: 520 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **scorecard**: ok: opengolfapi (opengolfapi)
+- **scorecard**: ok: file (course_data/library/longview_lake/card_golfify.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 60 candidate pads near hole starts
-- **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 60 candidate pads near hole starts
+- **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/longview_lake/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020
 - **elevation**: ok: course_data/packages/longview_lake/imagery/dem.tif (18/18 holes)
@@ -63,6 +63,4 @@ OSM features inside the course: buildings 2, golf=bunker 21, golf=cartpath 21, g
 ## Warnings
 
 - multi-course facility: 2 courses' hole ways in one outline (by hole chains (green -> next tee): #1 18, #2 9); kept the largest group (no name or near point decides: CHECK the course), 18 ways; ignored 9
-- requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Web, White, Gold, Red
-- scorecard (opengolfapi): Blue: holes sum to 6906 but the source says 6879 (+27): mixed card versions
-- scorecard (opengolfapi): White: holes sum to 6354 but the source says 6299 (+55): mixed card versions
+- requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Gold, Red

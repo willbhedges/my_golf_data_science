@@ -7,13 +7,15 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "scorecard not matched (source opengolfapi, flags ['Blue: holes sum to 6906 but the source says 6879 (+27): mixed card versions', 'White: holes sum to 6354 but the source says 6299 (+55): mixed card versions'])"
+  "1 hole(s) with a CHECK"
  ],
- "check_holes": [],
+ "check_holes": [
+  5
+ ],
  "tee_sets": [
   {
    "name": "Blue",
-   "yards": 6906,
+   "yards": 6879,
    "par": 72,
    "rating": 73.2,
    "slope": 131,
@@ -21,22 +23,13 @@
    "on_page": "solved"
   },
   {
-   "name": "Web",
-   "yards": 6851,
-   "par": 72,
-   "rating": null,
-   "slope": null,
-   "colour": "web",
-   "on_page": "solved"
-  },
-  {
    "name": "White",
-   "yards": 6354,
+   "yards": 6299,
    "par": 72,
    "rating": 70.7,
    "slope": 126,
    "colour": "white",
-   "on_page": null
+   "on_page": "solved"
   },
   {
    "name": "Gold",
@@ -59,10 +52,10 @@
  ],
  "solved_sets": [
   "Blue",
-  "Web"
+  "White"
  ],
  "page": "course_data/library/longview_lake/page.html",
- "page_bytes": 2470038,
+ "page_bytes": 2480474,
  "qa_report": "course_data/library/longview_lake/qa_report.md",
  "center": [
   38.91865155,
@@ -75,7 +68,7 @@
   "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-11-03T05:48Z",
+ "built": "2026-11-03T09:11Z",
  "request": "course_data/requests/course_page_longview_lake.json",
  "native": {
   "holes": [],
