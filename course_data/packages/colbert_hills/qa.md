@@ -1,6 +1,6 @@
 # Colbert Hills Golf Course (Manhattan, KS) - Black/Blue tees
 
-Built 2026-11-03T16:15:36Z. OSM relation/13772939. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-03T20:43:09Z. OSM relation/13772939. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-03T16:15:36Z. OSM relation/13772939. Scorecard: opengolfapi (openg
 | holes_with_trees_or_long_grass_in_landing_zone | 9 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.414 |
-| mean_confidence | 0.811 |
+| mean_confidence | 0.813 |
 | osm_score | 0.803 |
 
 OSM features inside the course: buildings 47, built_up_landuse 3, golf=bunker 90, golf=cartpath 41, golf=driving_range 1, golf=fairway 29, golf=green 17, golf=hole 18, golf=lateral_water_hazard 2, golf=pin 3, golf=rough 21, golf=tee 97, golf=water_hazard 1, holes_with_handicap 18, holes_with_par 18, trees_polygons 4, water_lines 3, water_polygons 3
@@ -40,7 +40,7 @@ OSM features inside the course: buildings 47, built_up_landuse 3, golf=bunker 90
 | 15 | 4 | 375 / 375 | 298 | 0.80 | check the flags | 45% | 11% | 44% | tee stage: Black/Blue tee_axis | tee: tee stage: Black/Blue tee_axis |
 | 16 | 5 | 513 / 514 | 288 | 0.81 | auto | 41% | 3% | 56% | tee stage: Black/Blue tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 17 | 3 | 237 / 237 | 211 | 0.86 | auto | 100% | 0% | 0% | tee stage: Black/Blue lidar_pad | tee: tee stage: Black/Blue lidar_pad; Black/Blue tee on a lidar pad (no OSM box at 237 yds) |
-| 18 | 4 | 453 / 453 | 124 | 0.74 | check the flags | 55% | 0% | 45% | tee stage: Black/Blue tee_axis | tee: tee stage: Black/Blue tee_axis; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 18 | 4 | 453 / 456 | 124 | 0.77 | check the flags | 55% | 0% | 45% | tee stage: Black/Blue tee_axis | tee: tee stage: Black/Blue tee_axis; green outline from the imagery detector (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 
 ## Stages
 
@@ -58,7 +58,9 @@ OSM features inside the course: buildings 47, built_up_landuse 3, golf=bunker 90
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -46 m2 {'cells': 43}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 37 polygons (outside 37); mode replace
+- **green_auto**: ok: 1 of 1 hole(s) without a mapped green got a detected green (score >= 0.40, centre moved <= 12 / 30 yds on OSM / routed lines)
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 38 polygons (outside 38); mode replace
+- **native_auto**: none: course gate shut: 4% of sides >= 0.675 (< 25%)
 
 ## Warnings
 
