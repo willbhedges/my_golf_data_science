@@ -1,0 +1,139 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "world_woods",
+ "course": "Cabot Citrus Farms",
+ "bbox_snwe": [
+  28.675051,
+  -82.49102,
+  28.696119,
+  -82.466264
+ ],
+ "grid": {
+  "crs": "EPSG:32617",
+  "res_m": 1.0,
+  "width": 2690,
+  "height": 2606,
+  "bounds": [
+   354192,
+   3172744,
+   356882,
+   3175350
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   354192.0,
+   0.0,
+   -1.0,
+   3175350.0
+  ],
+  "ll_bbox_wsen": [
+   -82.4925819235118,
+   28.67367793890391,
+   -82.46472554446729,
+   28.697493596265005
+  ]
+ },
+ "fetched_utc": "2026-11-02T23:38:37Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "FL_Peninsular_Hernando_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/FL_Peninsular_Hernando_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 32858585231
+   },
+   {
+    "name": "FL_Peninsular_Citrus_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/FL_Peninsular_Citrus_2018/ept.json",
+    "cov": 0.727,
+    "year": 2018,
+    "count": 37683160703
+   }
+  ],
+  "ept_resolution_m": 0.5,
+  "used": [
+   {
+    "name": "FL_Peninsular_Hernando_2019",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/FL_Peninsular_Hernando_2019/ept.json",
+    "cov": 1.0,
+    "year": 2019,
+    "count": 32858585231,
+    "cells": 5719807
+   },
+   {
+    "name": "FL_Peninsular_Citrus_2018",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/FL_Peninsular_Citrus_2018/ept.json",
+    "cov": 0.727,
+    "year": 2018,
+    "count": 37683160703,
+    "cells": 1265582
+   }
+  ],
+  "valid": 0.9964692573900094,
+  "hag_mb": 4.31,
+  "frac_gt_2_5m": 0.674854282510763,
+  "class_mb": 0.05
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032021212"
+  ],
+  "mb": 1.76,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N27W084",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 1752535,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 31.49,
+    "items": [
+     "fl_m_2808221_sw_17_030_20230111_20230530",
+     "fl_m_2808221_nw_17_030_20230111_20230530"
+    ],
+    "acquired": [
+     "2023-01-11"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 26.21,
+    "items": [
+     "fl_m_2808221_sw_17_060_20211130",
+     "fl_m_2808221_nw_17_060_20211130"
+    ],
+    "acquired": [
+     "2021-11-30"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
