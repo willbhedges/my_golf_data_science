@@ -40,6 +40,10 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           match (review_tee_point: the reviewer put it off the box on purpose); wins over S2 (method "review")
   S3     geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
+  S4f     course_data/vision_any/fairway_fill.py:fill_package(package, osm) for par-4/5 holes with no fairway in the
+          landing corridor after OSM + segment: NAIP mown-turf LDA self-supervised on the hole lines (no OSM fairway
+          used), course gate d' >= MIN_DPRIME, per-hole cover / width / share gates; src "fairway_fill:naip",
+          stages.fairway_fill; request "fairway_fill": false turns it off
   S4c     course_data/ob/infer.py:apply_ob(package) when the course's OB evidence is fetched (call_ob)
   S4b     course_data/segment/gapfill.py:segment_gapfill(package, segment.geojson) when the segment workflow
           has run for the slug (requests/segment_<slug>.json): NAIP U-Net fairway / bunker / green + NIR water
@@ -1227,6 +1231,29 @@ def call_segment_fill(package, warnings):
         return package
 
 
+def call_fairway_fill(package, fc, req, warnings):
+    """S4f: NAIP mown-fairway fill (course_data/vision_any/fairway_fill.py) for par-4/5 holes whose landing corridor
+    has no fairway after OSM / segment (Creekmoor: OSM maps no golf=fairway). Course-level separation gate and
+    per-hole gates; never over OSM. Request "fairway_fill": false turns it off. Never fatal."""
+    st = package["stages"]
+    if req.get("fairway_fill") is False:
+        st["fairway_fill"] = "off (request fairway_fill: false)"
+        return package
+    mod = load(os.path.join(CD, "vision_any", "fairway_fill.py"), "cdp_fairway_fill")
+    if mod is None:
+        st["fairway_fill"] = "missing (course_data/vision_any/fairway_fill.py not importable)"
+        return package
+    out, rep = mod.fill_package(package, osm_fc=fc)
+    st["fairway_fill"] = str(rep.get("status"))[:300]
+    if str(rep.get("status", "")).startswith("ok"):
+        out.setdefault("sources", {})["fairway_fill"] = dict(model=mod.VERSION, dprime=rep.get("dprime"),
+                                                            holes=rep.get("holes"))
+    elif str(rep.get("status", "")).startswith(("gated", "failed")):
+        warnings.append(f"no fairway mapped on {len(rep.get('wanted') or [])} hole(s) and the NAIP fairway fill "
+                        f"did not run: {rep['status']}"[:300])
+    return out
+
+
 VISION_PRODUCT = "vision_any/2"     # the product vision layer (course_data/vision_any/build_layers.py)
 
 
@@ -1719,6 +1746,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         package = call_gapfill(package, img_dir, warnings)
         package["warnings"] = warnings if package.get("warnings") is None else package["warnings"]
         package = call_segment_fill(package, warnings)
+        package = call_fairway_fill(package, fc, req, warnings)
         package = reframe(package)
     else:
         stages["vision"] = "not run (gapfill=False)"
