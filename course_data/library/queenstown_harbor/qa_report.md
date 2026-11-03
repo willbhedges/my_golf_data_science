@@ -1,5 +1,5 @@
 # Queenstown Harbor River Course: no page
 
-**Status: failed** at package:     pc.log("imagery:", " ".join(cmd))                        ^^^^^^^^^^^^^ TypeError: sequence item 5: expected str instance, NoneType found 
+**Status: failed** at package: package job ended without its course data (job result: failure; runner lost or out of memory? see the Actions log)
 
-Resolve: {"status": "ok", "candidates": [{"name": null, "town": "Queenstown", "holes": 36, "osm": {"type": "way", "id": 1067525665}}]}
+Resolve: {"status": null, "candidates": []}
