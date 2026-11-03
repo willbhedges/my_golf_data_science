@@ -1,0 +1,8 @@
+{
+ "requests": [
+  "course_data/requests/course_page_queenstown_harbor.json",
+  "course_data/requests/course_page_troon_north.json"
+ ],
+ "rev": 1,
+ "note": "Rebuild after run 41539188571. queenstown_harbor: OSM maps its 36-hole outline unnamed, so resolve (near) gave name=None and fetch_imagery's command crashed on it; resolve now keeps the request name (osm_name records OSM's). troon_north: the package runner was shut down (exit 143) in the PDAL EPT lidar read of its 10 km2 box despite the 0.5 m density cap; EPT reads are now tiled (<= 1.5 km edge) in fetch_any + v2_fetch, and finish records a lost package job instead of keeping the old status.json. osm_source geofabrik."
+}
