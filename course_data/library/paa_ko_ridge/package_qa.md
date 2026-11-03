@@ -1,6 +1,6 @@
-# Paa-Ko Ridge Golf Club (Sandia Park, NM) - osm_back tees
+# Paa-Ko Ridge Golf Club (Sandia Park, NM) - Black tees
 
-Built 2026-11-03T05:58:30Z. OSM relation/3585731. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-11-03T09:09:58Z. OSM relation/3585731. Scorecard: file (course_data/library/paa_ko_ridge/card_golfify.json). Tee set: name.
 
 ## Coverage
 
@@ -13,9 +13,9 @@ Built 2026-11-03T05:58:30Z. OSM relation/3585731. Scorecard: None (None). Tee se
 | tees_with_colour | 1 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.396 |
-| mean_confidence | 0.662 |
-| osm_score | 0.879 |
+| mean_landing_osm_share | 0.4 |
+| mean_confidence | 0.836 |
+| osm_score | 0.88 |
 
 OSM features inside the course: buildings 3, golf=bunker 119, golf=cartpath 27, golf=clubhouse 1, golf=fairway 34, golf=green 28, golf=hole 18, golf=pin 27, golf=rough 85, golf=tee 132, golf=water_hazard 4, holes_with_handicap 1, holes_with_par 18, tees_with_colour 1, water_polygons 4
 
@@ -23,33 +23,34 @@ OSM features inside the course: buildings 3, golf=bunker 119, golf=cartpath 27, 
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 428 / 428 | 266 | 0.61 | check the flags | 38% | 9% | 53% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 2 | 4 | 397 / 397 | 264 | 0.60 | check the flags | 30% | 14% | 56% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 3 | 5 | 603 / 603 | 250 | 0.65 | check the flags | 52% | 6% | 42% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 4 | 3 | 186 / 186 | 306 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 5 | 5 | 539 / 539 | 32 | 0.64 | check the flags | 32% | 28% | 39% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 6 | 4 | 326 / 326 | 36 | 0.63 | check the flags | 38% | 14% | 47% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 7 | 4 | 492 / 492 | 157 | 0.66 | check the flags | 47% | 18% | 35% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 8 | 3 | 271 / 271 | 108 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 9 | 4 | 474 / 474 | 74 | 0.62 | check the flags | 43% | 5% | 52% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 10 | 4 | 417 / 417 | 263 | 0.63 | check the flags | 38% | 15% | 47% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 11 | 4 | 446 / 446 | 234 | 0.62 | check the flags | 39% | 9% | 52% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 12 | 5 | 536 / 536 | 239 | 0.65 | check the flags | 39% | 24% | 36% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 13 | 4 | 380 / 380 | 246 | 0.62 | check the flags | 34% | 19% | 47% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 14 | 3 | 266 / 266 | 74 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 15 | 5 | 611 / 611 | 17 | 0.63 | check the flags | 40% | 16% | 44% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 16 | 3 | 224 / 224 | 53 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 17 | 4 | 417 / 417 | 66 | 0.64 | check the flags | 47% | 10% | 43% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 18 | 4 | 462 / 462 | 83 | 0.65 | check the flags | 37% | 26% | 38% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 1 | 4 | 429 / 430 | 266 | 0.81 | auto | 38% | 9% | 53% | tee stage: Black tee_centroid |  |
+| 2 | 4 | 394 / 395 | 264 | 0.80 | auto | 30% | 15% | 54% | tee stage: Black tee_centroid |  |
+| 3 | 5 | 604 / 604 | 250 | 0.84 | auto | 52% | 5% | 43% | tee stage: Black tee_centroid |  |
+| 4 | 3 | 183 / 183 | 306 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
+| 5 | 5 | 562 / 557 | 32 | 0.79 | check the flags | 35% | 22% | 42% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 6 | 4 | 327 / 327 | 36 | 0.82 | auto | 37% | 14% | 48% | tee stage: Black tee_centroid |  |
+| 7 | 4 | 496 / 496 | 157 | 0.82 | auto | 48% | 18% | 34% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 8 | 3 | 265 / 267 | 108 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 9 | 4 | 477 / 478 | 74 | 0.78 | check the flags | 44% | 4% | 52% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 10 | 4 | 416 / 417 | 263 | 0.82 | auto | 38% | 15% | 47% | tee stage: Black tee_centroid |  |
+| 11 | 4 | 449 / 449 | 234 | 0.82 | auto | 40% | 10% | 50% | tee stage: Black tee_centroid |  |
+| 12 | 5 | 541 / 541 | 239 | 0.81 | auto | 40% | 24% | 36% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 13 | 4 | 386 / 385 | 246 | 0.78 | check the flags | 34% | 18% | 47% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 14 | 3 | 272 / 272 | 74 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 15 | 5 | 640 / 639 | 18 | 0.79 | check the flags | 38% | 16% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 16 | 3 | 228 / 228 | 53 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 17 | 4 | 419 / 420 | 66 | 0.80 | auto | 46% | 10% | 44% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 18 | 4 | 474 / 470 | 83 | 0.81 | auto | 38% | 24% | 38% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 
 ## Stages
 
 - **resolve**: ok: relation/3585731 Paa-Ko Ridge Golf Club (Sandia Park, NM)
 - **osm**: ok: 620 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **scorecard**: missing
-- **tees**: fallback: OSM tee nearest the hole-line start (no yardages)
-- **geometry**: ok: geometry/build_holes.py (18 holes, 1 tee set(s))
+- **scorecard**: ok: file (course_data/library/paa_ko_ridge/card_golfify.json)
+- **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 104 candidate pads near hole starts
+- **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/paa_ko_ridge/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2018)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2018
 - **elevation**: ok: course_data/packages/paa_ko_ridge/imagery/dem.tif (18/18 holes)
@@ -60,4 +61,3 @@ OSM features inside the course: buildings 3, golf=bunker 119, golf=cartpath 27, 
 ## Warnings
 
 - multi-course facility of nines: 3 nine-hole groups (by sub-course outline: Paa-ko Ridge 10-18 9, Paa-ko Ridge 1-9 9, Paa-ko Ridge 19-27 9); kept the 'Paa-ko Ridge 1-9' nine as holes 1-9 + the 'Paa-ko Ridge 10-18' nine as holes 10-18 (the 1-9 nine, the 10-18 nine): CHECK the nines against the card, 18 ways; ignored 9
-- no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM tee box nearest each hole-line start (usually the back tee); lengths are measured
