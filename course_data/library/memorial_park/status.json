@@ -7,47 +7,59 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "scorecard not matched (source None, flags [])",
-  "18 holes built vs the card's 0",
-  "pars sum to 72, card None",
-  "18 hole(s) with a CHECK"
+  "5 hole(s) with a CHECK"
  ],
  "check_holes": [
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
   8,
-  9,
-  10,
-  11,
-  12,
   13,
   14,
-  15,
   16,
-  17,
-  18
+  17
  ],
  "tee_sets": [
   {
-   "name": "osm_back",
-   "yards": null,
-   "par": null,
-   "rating": null,
-   "slope": null,
-   "colour": null,
+   "name": "Blue",
+   "yards": 7464,
+   "par": 72,
+   "rating": 74.2,
+   "slope": 128,
+   "colour": "blue",
    "on_page": "solved"
+  },
+  {
+   "name": "White",
+   "yards": 6584,
+   "par": 72,
+   "rating": 71.1,
+   "slope": 121,
+   "colour": "white",
+   "on_page": "solved"
+  },
+  {
+   "name": "Gold",
+   "yards": 5930,
+   "par": 72,
+   "rating": 68,
+   "slope": 115,
+   "colour": "gold",
+   "on_page": null
+  },
+  {
+   "name": "Red",
+   "yards": 4851,
+   "par": 72,
+   "rating": 63.1,
+   "slope": 98,
+   "colour": "red",
+   "on_page": null
   }
  ],
  "solved_sets": [
-  "osm_back"
+  "Blue",
+  "White"
  ],
  "page": "course_data/library/memorial_park/page.html",
- "page_bytes": 1199839,
+ "page_bytes": 2364239,
  "qa_report": "course_data/library/memorial_park/qa_report.md",
  "center": [
   29.77135525,
@@ -60,11 +72,11 @@
   "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-11-03T09:42Z",
+ "built": "2026-11-03T11:06Z",
  "request": "course_data/requests/course_page_memorial_park.json",
  "native": {
   "holes": [],
-  "tee_set": "osm_back",
+  "tee_set": "Blue",
   "note": "not asked: no agent_layers in the request"
  }
 }
