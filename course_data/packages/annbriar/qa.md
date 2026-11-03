@@ -1,6 +1,6 @@
 # Annbriar Golf Course (Waterloo, IL) - Black tees
 
-Built 2026-11-03T09:21:04Z. OSM way/1466372251. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T15:00:13Z. OSM way/1466372251. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -57,6 +57,7 @@ OSM features inside the course: buildings 7, golf=bunker 67, golf=cartpath 48, g
 - **elevation**: ok: course_data/packages/annbriar/imagery/dem.tif (18/18 holes)
 - **vision**: missing: product layer vision_any/2 not built for 'annbriar' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 199 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py annbriar (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 4 polygons (outside 4); mode replace
 
 ## Warnings

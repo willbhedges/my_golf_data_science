@@ -1,6 +1,6 @@
 # Buffalo Ridge Springs Golf Course (Branson, MO) - Buffalo tees
 
-Built 2026-11-03T09:22:36Z. OSM way/399501608. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-11-03T15:01:46Z. OSM way/399501608. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
@@ -56,6 +56,7 @@ OSM features inside the course: buildings 2, golf=bunker 88, golf=cartpath 36, g
 - **elevation**: ok: course_data/packages/buffalo_ridge/imagery/dem.tif (18/18 holes)
 - **vision**: missing: product layer vision_any/2 not built for 'buffalo_ridge' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 186 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py buffalo_ridge (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 12 polygons (outside 12); mode replace
 
 ## Warnings

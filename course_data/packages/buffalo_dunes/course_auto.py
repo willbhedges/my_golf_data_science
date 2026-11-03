@@ -1,5 +1,5 @@
 """Course module for Buffalo Dunes (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T09:21:53Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T15:01:03Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_buffalo_dunes.json
 
