@@ -33,6 +33,21 @@ def test_two_osm_boxes_never_merge():
     assert len(m) == 2
 
 
+def test_pad_over_a_split_complex_does_not_chain_its_osm_boxes():
+    # one lidar pad covers a levelled complex with two OSM boxes 24 yds apart (coldwater 7): it used to union both
+    # boxes into one pad with one box's geometry, so the box at the card yardage vanished
+    big = cand(0, 12, "lidar", tid="L", w=14, h=44)
+    m = LZ.merge_candidates([cand(0, 0, "osm", tid="tips"), cand(0, 24, "osm", tid="fwd"), big,
+                             cand(0, 22, "texture", p=0.4, tid="T")])
+    ids = sorted(str(x["id"]) for x in m)
+    assert ids == ["fwd", "tips"]
+    assert "texture" in next(x for x in m if x["id"] == "fwd")["sources"]     # a detection joins the nearer box
+    assert all(sum(1 for i in x["members"] if i in ("tips", "fwd")) == 1 for x in m)
+    line = straight_hole(400)
+    out = LZ.localize_hole(line, None, m, (), {"Blue": 400, "White": 376})
+    assert out["Blue"]["tee_id"] == "tips" and out["White"]["tee_id"] == "fwd"
+
+
 def test_sets_back_to_front_with_uncertainty():
     line = straight_hole(400)
     pads = LZ.merge_candidates([cand(0, -30, "osm", tid="gold"), cand(2, 0, "osm", tid="black"),
@@ -125,3 +140,17 @@ def test_tag_far_off_card_loses_to_untagged_box_on_card():
     lat, lon, tid, dist, how = LZ.card_checked_point(line, None, [box(0, 15, w=10, h=10, tid="tag")], on_card, 400)
     assert (tid, how) == ("tag", "tagged")
     assert LZ.card_checked_point(line, None, tagged, [], 407)[2:] == LZ.tagged_point(line, None, tagged, 407)[2:] + ("tagged",)
+
+
+def test_far_cap_off_by_default_and_puts_a_far_walkback_on_the_back_box():
+    # card 465 on a hole whose back box ends ~405 yds out: the default walks back 60 yds; far_cap_yd (experimental,
+    # off: platform/ERROR_BUDGET.md "Tee positions") puts the set on the back box instead
+    line = straight_hole(400)
+    pads = LZ.merge_candidates([cand(0, 0, "osm", tid="back", w=10, h=10), cand(0, 40, "osm", tid="fwd", w=10, h=10)])
+    yds = {"Black": 465, "White": 360}
+    out = LZ.localize_hole(line, None, pads, (), yds)
+    assert out["Black"]["method"] == "walkback" and abs(d_green(out["Black"]) - 465) < 1.5
+    cap = LZ.localize_hole(line, None, pads, (), yds, params=dict(far_cap_yd=30.0))
+    assert cap["Black"]["tee_id"] == "back" and cap["Black"]["method"] == "tee_axis_far_cap"
+    assert abs(d_green(cap["Black"]) - 405) < 1.5
+    assert cap["White"]["tee_id"] == out["White"]["tee_id"] == "fwd"

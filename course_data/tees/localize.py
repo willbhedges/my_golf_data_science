@@ -92,6 +92,10 @@ PARAMS = dict(
     untagged_card_yd=5.0,  # loses to an untagged OSM box of the hole within this of the card (card_checked_point;
                            # sycamore_ridge 1: black / blue tags two boxes forward, 42 / 50 yds short of the card,
                            # untagged boxes at 463 / 447 for a 467 / 445 card)
+    far_cap_yd=None,       # EXPERIMENTAL, off: a set walked back / put on an unmapped pad more than this behind the
+                           # back edge of the hole's back-most own OSM box goes onto that box (_far_cap; far_cap_beyond
+                           # extends it by the beyond rule). Cuts truth-set regret but breaks 4-9 holes whose truth tee is
+                           # only "estimated" (platform/ERROR_BUDGET.md "Tee positions"): not adopted.
 )
 
 
@@ -246,6 +250,8 @@ def merge_candidates(cands, merge_yd=PARAMS["merge_yd"]):
             i = par[i]
         return i
     C = np.array(cents)
+    has_osm = [c["source"] == "osm" for c in cands]          # per union-find root: the group holds an OSM box
+    pairs = []
     for i in range(len(cands)):
         d = np.hypot(C[:, 0] - C[i, 0], C[:, 1] - C[i, 1])
         for j in np.nonzero(d <= max(merge_yd, 0) + 30)[0]:
@@ -255,7 +261,16 @@ def merge_candidates(cands, merge_yd=PARAMS["merge_yd"]):
                 continue                            # mapped boxes are never merged with each other
             if d[j] <= merge_yd or (len(rings[j]) >= 3 and pt._point_in_ring(cents[i], rings[j])) or \
                     (len(rings[i]) >= 3 and pt._point_in_ring(cents[j], rings[i])):
-                par[find(i)] = find(j)
+                pairs.append((float(d[j]), i, int(j)))
+    # closest pairs first, and never two OSM boxes in one group: a lidar / texture pad that covers a whole levelled
+    # complex used to chain every box on it into one pad with one box's geometry (coldwater 7: the line-start box at
+    # the card yardage vanished into the box 25 yds behind it; platform/ERROR_BUDGET.md "Tee positions")
+    for _, i, j in sorted(pairs):
+        ri, rj = find(i), find(j)
+        if ri == rj or (has_osm[ri] and has_osm[rj]):
+            continue
+        par[ri] = rj
+        has_osm[rj] = has_osm[rj] or has_osm[ri]
     groups = {}
     for i in range(len(cands)):
         groups.setdefault(find(i), []).append(i)
@@ -454,6 +469,8 @@ def localize_hole(line, green, own, borrow=(), yardages=None, params=None):
                  alternatives=[dict(tee_id=k, p=round(v, 3)) for k, v in sorted(alt.items(), key=lambda kv: -kv[1])[:3]],
                  localizer=VERSION)
         out[n] = r
+    if P.get("far_cap_yd") is not None:
+        _far_cap(fr, lop, cands, names, yardages, out, P)
     tol = P["order_tol"]
     if P["snap_yd"] > 0:
         for i, n in enumerate(names):
@@ -473,6 +490,27 @@ def localize_hole(line, green, own, borrow=(), yardages=None, params=None):
             all(r["dist_yd"] + tol >= out[m]["dist_yd"] for m in names[i + 1:])
         r["shared_with"] = sorted(m for m, o in out.items() if m != n and r["tee_id"] is not None and o["tee_id"] == r["tee_id"])
     return out
+
+
+def _far_cap(fr, lop, cands, names, yardages, out, P):
+    """A set walked back (or put on an unmapped pad) more than far_cap_yd behind the back edge of the hole's
+    back-most own OSM box on its line goes onto that box instead (card clamped / extended by the beyond rule)."""
+    own = [c for c in cands if not c["borrowed"] and "osm" in c["sources"] and abs(c["offset_yd"]) <= P["off_free_yd"]]
+    if not own:
+        return
+    bb = max(own, key=lambda c: c["d_back"])
+    for n in names:
+        r = out[n]
+        if r["source"] == "osm" or r["dist_yd"] - bb["d_back"] <= P["far_cap_yd"]:
+            continue
+        y = float(yardages[n])
+        p = _beyond(y, bb["d_front"], bb["d_back"], P) if P.get("far_cap_beyond") else min(max(y, bb["lo"]), bb["hi"])
+        q = pt._point_on_axis(lop, bb["centroid_xy"], p, min(bb["d_front"], p), max(bb["d_back"], p))
+        lat, lon = fr.inv(*q)
+        r.update(lat=lat, lon=lon, method="tee_axis_far_cap", tee_id=bb["tee_id"], source="osm", confidence="low",
+                 dist_yd=round(lop.dist_to_green(q), 1), error_yd=round(y - bb["d_back"], 1),
+                 d_centroid=round(bb["d_centroid"], 1), d_front=round(bb["d_front"], 1), d_back=round(bb["d_back"], 1),
+                 sources=bb["sources"], p_real=round(bb["p"], 3))
 
 
 def _point(fr, lop, cands, o, y):
