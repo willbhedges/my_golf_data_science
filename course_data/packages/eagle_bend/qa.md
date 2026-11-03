@@ -1,6 +1,6 @@
 # Eagle Bend Golf Course (Lawrence, KS) - Gold tees
 
-Built 2026-11-03T06:49:33Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
+Built 2026-11-03T09:22:23Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
 
 ## Coverage
 
