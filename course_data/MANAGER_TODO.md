@@ -105,3 +105,6 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - TCI: course_page rebuild with mapper layers pushed (rev 4); QA then publish
 - Open: national index still lists blocked courses (e.g. Bethpage) as NO PAGE YET; decide whether to strip
 - 11-03 14:30 check-in: TCI rev4 + Bandon title rebuilds landed (runs green) -> QA agent running; follow-ups agent on Queenstown 7 par, Chambers Navy 1, multi-course titles, old_works fairway (batch course_batch_followups_1103)
+- tournament_club_iowa published (mapper layers, QA PUBLISH): https://claude.ai/artifact/CCDcGYr4kgyqR1uZqj7YGT
+- bandon_dunes published (title fixed, QA PUBLISH): https://claude.ai/artifact/37FQAC3JN8Eu3SDXWkp6QV
+- QA gap: only default sets screenshotted (TCI Palmer, Bandon Black not); hole 14 TCI Legend tee unconfirmed (not on page)
