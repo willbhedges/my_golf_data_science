@@ -1,6 +1,6 @@
 # L.A. Nickell Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-11-02T22:52:05Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-03T04:26:04Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
@@ -15,7 +15,7 @@ Built 2026-11-02T22:52:05Z. OSM way/387047950. Scorecard: golfify (golfify). Tee
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.284 |
+| mean_landing_osm_share | 0.285 |
 | mean_confidence | 0.772 |
 | osm_score | 0.857 |
 
@@ -29,7 +29,7 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 | 2 | 4 | 369 / 364 | 131 | 0.76 | check the flags | 24% | 22% | 54% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 3 | 4 | 385 / 385 | 316 | 0.79 | check the flags | 41% | 14% | 46% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 4 | 3 | 224 / 227 | 276 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Blue texture_pad | tee: tee stage: Blue texture_pad; Blue tee on an imagery-detected pad (texture; no OSM box at 224 yds) |
-| 5 | 4 | 325 / 313 | 166 | 0.63 | check the flags | 20% | 31% | 50% | tee stage: Blue review (snapped 12 yds along OSM tee 552026435) | tee: tee stage: Blue review (snapped 12 yds along OSM tee 552026435) |
+| 5 | 4 | 325 / 325 | 167 | 0.63 | check the flags | 22% | 29% | 49% | tee stage: Blue review (kept: snap snapped 12 yds along OSM tee 552026435 would measure 313, another set's box, point 325, card 325) | tee: tee stage: Blue review (kept: snap snapped 12 yds along OSM tee 552026435 would measure 313, another set's box, point 325, card 325) |
 | 6 | 3 | 196 / 196 | 43 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
 | 7 | 5 | 500 / 495 | 146 | 0.79 | check the flags | 30% | 29% | 41% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 8 | 4 | 392 / 391 | 329 | 0.77 | check the flags | 30% | 17% | 53% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
@@ -51,13 +51,13 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tee_overrides**: ok: Blue 5 review (snapped 12 yds along OSM tee 552026435);
+- **tee_overrides**: ok: Blue 5 review (kept: snap snapped 12 yds along OSM tee 552026435 would measure 313, another set's box, point 325, card 325);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 28 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/la_nickell/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2022
 - **elevation**: ok: course_data/packages/la_nickell/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -5889 m2 {'road': 4785, 'cells': 981}
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -5757 m2 {'road': 4653, 'cells': 981}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 8 polygons (outside 8); mode replace
 - **agent_layers**: ok: course_data/mapper/la_nickell (153 zone edits on 14 holes, 0 tee(s) moved, 54 checked)

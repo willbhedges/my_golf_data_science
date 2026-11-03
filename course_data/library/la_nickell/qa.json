@@ -148,36 +148,37 @@
      "par": 4,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "0 yds from the nearest OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 12 yds along OSM tee 552026435 would measure 313, another set's box, point 325, card 325); 12 yds from the nearest OSM tee box)"
       },
       "yardage": {
-       "ok": false,
-       "why": "measured 313 vs card 325 (-12)"
+       "ok": true,
+       "why": "measured 325 vs card 325 (+0)"
       },
       "par": {
        "ok": true,
        "why": "par 4 vs card 4"
       },
       "aim": {
-       "ok": true,
-       "why": "2-wood -36 lands 283 yds out in fairway"
+       "ok": false,
+       "why": "Driver -40 lands 304 yds out in rough (8 yds from fairway)"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 12% trees / water / OB (recovery 12%)"
+       "why": "landing pattern 27% trees / water / OB (recovery 27%)"
       }
      },
      "pick": {
-      "club": "2-wood",
-      "aim": -35.5,
-      "along": 283.4,
-      "lie": "fairway",
-      "tie": true
+      "club": "Driver",
+      "aim": -39.5,
+      "along": 303.6,
+      "lie": "rough",
+      "tie": false
      },
      "status": "CHECK",
      "reasons": [
-      "yardage: measured 313 vs card 325 (-12)"
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 12 yds along OSM tee 552026435 would measure 313, another set's box, point 325, card 325); 12 yds from the nearest OSM tee box)",
+      "aim: Driver -40 lands 304 yds out in rough (8 yds from fairway)"
      ]
     },
     "6": {
@@ -510,7 +511,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "4-wood -6 lands 263 yds out in fairway"
+       "why": "4-wood -5 lands 263 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -519,7 +520,7 @@
      },
      "pick": {
       "club": "4-wood",
-      "aim": -5.5,
+      "aim": -5.0,
       "along": 263.2,
       "lie": "fairway",
       "tie": false
@@ -552,7 +553,7 @@
       },
       "wide_aim": {
        "ok": false,
-       "why": "Driver aim +63 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "why": "Driver aim +53 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
        "where": [
         "forecast"
        ]
@@ -567,7 +568,7 @@
      },
      "status": "CHECK",
      "reasons": [
-      "wide_aim: Driver aim +63 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+      "wide_aim: Driver aim +53 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
      ]
     },
     "17": {
@@ -595,7 +596,7 @@
       },
       "wide_aim": {
        "ok": false,
-       "why": "4-wood aim -57 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "why": "2-wood aim -47 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
        "where": [
         "forecast"
        ]
@@ -611,7 +612,7 @@
      "status": "CHECK",
      "reasons": [
       "tee: tee marker not on an OSM tee box (tee_axis; 6 yds from the nearest OSM tee box)",
-      "wide_aim: 4-wood aim -57 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+      "wide_aim: 2-wood aim -47 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
      ]
     },
     "18": {
@@ -1203,7 +1204,7 @@
       },
       "wide_aim": {
        "ok": false,
-       "why": "2-wood aim +58 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "why": "2-wood aim +51 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
        "where": [
         "calm-day",
         "forecast"
@@ -1219,7 +1220,7 @@
      },
      "status": "CHECK",
      "reasons": [
-      "wide_aim: 2-wood aim +58 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+      "wide_aim: 2-wood aim +51 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
      ]
     },
     "17": {
@@ -1247,7 +1248,7 @@
       },
       "wide_aim": {
        "ok": false,
-       "why": "4-wood aim -60 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "why": "4-wood aim -62 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
        "where": [
         "calm-day",
         "forecast"
@@ -1263,7 +1264,7 @@
      },
      "status": "CHECK",
      "reasons": [
-      "wide_aim: 4-wood aim -60 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+      "wide_aim: 4-wood aim -62 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
      ]
     },
     "18": {
