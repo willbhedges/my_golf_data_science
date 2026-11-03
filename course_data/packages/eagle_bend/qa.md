@@ -1,6 +1,6 @@
 # Eagle Bend Golf Course (Lawrence, KS) - Gold tees
 
-Built 2026-11-03T09:22:23Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
+Built 2026-11-03T15:02:57Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
 
 ## Coverage
 
@@ -56,6 +56,7 @@ OSM features inside the course: buildings 9, golf=bunker 23, golf=cartpath 24, g
 - **elevation**: ok: course_data/packages/eagle_bend/imagery/dem.tif (18/18 holes)
 - **vision**: missing: product layer vision_any/2 not built for 'eagle_bend' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 132 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py eagle_bend (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 0 polygons (); mode replace
 
 ## Warnings

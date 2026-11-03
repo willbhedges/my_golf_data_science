@@ -1,6 +1,6 @@
 # Eagle Knoll Golf Club (Hartsburg, MO) - Back tees
 
-Built 2026-11-03T09:22:55Z. OSM way/389825776. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-11-03T15:03:46Z. OSM way/389825776. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
@@ -56,4 +56,5 @@ OSM features inside the course: buildings 1, golf=bunker 41, golf=cartpath 14, g
 - **elevation**: ok: course_data/packages/eagle_knoll/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -32 m2 {'cells': 30}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 2 polygons (outside 2); mode replace

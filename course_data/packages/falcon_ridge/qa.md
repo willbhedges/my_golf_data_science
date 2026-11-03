@@ -1,6 +1,6 @@
 # Falcon Ridge Golf Course (Lenexa, KS) - Black tees
 
-Built 2026-11-03T09:23:08Z. OSM relation/3961566. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T15:04:05Z. OSM relation/3961566. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -57,4 +57,5 @@ OSM features inside the course: buildings 2, golf=bunker 24, golf=cartpath 8, go
 - **elevation**: ok: course_data/packages/falcon_ridge/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: ok: 5/5 hole(s) without a mapped fairway filled from NAIP (d' 2.95; gated: none)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 36 polygons (outside 36); mode replace

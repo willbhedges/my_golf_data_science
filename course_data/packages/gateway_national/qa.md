@@ -1,6 +1,6 @@
 # Gateway National Golf Links (Madison, IL) - Back tees
 
-Built 2026-11-03T09:23:26Z. OSM way/782435512. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Blue' not on the card (sets: Back, Champions, Forward, Middle, The Tips)).
+Built 2026-11-03T15:04:34Z. OSM way/782435512. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Blue' not on the card (sets: Back, Champions, Forward, Middle, The Tips)).
 
 **WARNING: requested tee set 'Blue' is not on the card; using 'Back' instead (allow_substitute). Sets on the card: Back, Champions, Forward, Middle, The Tips**
 
@@ -58,6 +58,7 @@ OSM features inside the course: buildings 4, golf=bunker 73, golf=cartpath 23, g
 - **elevation**: ok: course_data/packages/gateway_national/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -1034 m2 {'road': 1033, 'cells': 1}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 5 polygons (outside 5); mode replace
 
 ## Warnings
