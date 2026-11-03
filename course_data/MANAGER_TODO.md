@@ -96,3 +96,8 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - [ ] 10:30Z: rebuilt with cards: tpc_sawgrass, bandon_dunes (status not updated?), sand_hollow, longview_lake, grand_national_links, paa_ko_ridge, memorial_park -> QA agent. chambers_bay rebuild pending. TCI package LANDED -> tourn_truth + s2 requested (7c26d7609) -> then mapper -> page rebuild.
 - [x] Published 12:00Z: NEW tpc_sawgrass (Stadium) SK4ZDW6L6DpmaYHW5DWnEW, sand_hollow EwiKWMSk2wvvwQWiRhJTY8, longview_lake 3LR81UFsrXWN7yVMVQhRq4, grand_national_links JoUQgS936Xcg5C8jJszwCg, paa_ko_ridge F6p7tiAuZyeffzp5UA1oAE. bandon_dunes (runner out of disk; free-disk step added) + memorial_park (OGA card) rebuilding run 41620964363 -> QA.
 - [ ] 12:30Z: QA agent on bandon_dunes, memorial_park, chambers_bay; TCI mapper running; Aim Caddie app rebuild agent (D6sdGLhodo8DQ7Yz8PojNW) running -> republish when it reports.
+
+## 11-03 publish
+- memorial_park published: https://claude.ai/artifact/FNU5J379rttrQLA7r9xosR (QA PUBLISH, 5 CHECKs)
+- chambers_bay published: https://claude.ai/artifact/RWr1iLJgUVX5WSHJ5ZE9hC (QA PUBLISH, 9 CHECKs; Navy 1 yardage 494 vs card 559 still open)
+- bandon_dunes: title-fix rebuild pending (course_batch_qa_bmc rev 5), QA title then publish
