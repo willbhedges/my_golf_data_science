@@ -65,7 +65,7 @@ both: match % AND regret per round (target ≤ 0.15 strokes/round for M2, measur
 
 | milestone | target | confidence |
 |---|---|---|
-| M1 error budget (**done 11-01**) + real national coverage | 2026-11-08 | high (coverage waits on runners) |
+| M1 error budget (**done 11-01**) + real national coverage (**done 11-02**: 13,090 courses, all states) | 2026-11-08 | **done** |
 | M2 well-mapped, ≤ 5 taps → ≥ 95 % of holes right (≥ 15 truth courses) | 2026-12-06 | medium |
 | M3 well-mapped no taps ≥ 90 %; barely-mapped ≥ 75 % | 2027-02-28 | low–medium |
 | M4 unmapped courses usable with taps | 2027-04-30 | low |
