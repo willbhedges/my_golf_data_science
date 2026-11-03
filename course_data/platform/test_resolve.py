@@ -260,3 +260,35 @@ def test_overpass_partial_remark_is_a_failure(monkeypatch):
     assert pc.overpass("q", tries=1)["elements"] == [dict(type="way", id=1)]
     assert len(calls) == 2
     assert pc.overpass_remark_problem(dict(remark="note: nothing")) is None
+
+
+def test_unnamed_course_picked_by_near_keeps_the_request_name(monkeypatch):
+    """Queenstown Harbor (MD): OSM maps the 36-hole outline unnamed, so `near` picks it and course.json had
+    name=None; fetch_imagery's `--name None` then crashed the package (" ".join on a None)."""
+    def fake_overpass(q, **kw):
+        if "around:" in q:
+            return {"elements": [{"type": "way", "id": 7, "tags": {"leisure": "golf_course"},
+                                  "center": {"lat": 38.985, "lon": -76.17},
+                                  "bounds": {"minlat": 38.98, "minlon": -76.18, "maxlat": 38.99, "maxlon": -76.16}}]}
+        if "out count" in q:
+            return {"elements": [{"type": "count", "tags": {"ways": "36"}}]}
+        if "out body geom" in q:
+            return {"elements": []}
+        return {"elements": []}
+    monkeypatch.setattr(rs.pc, "overpass", fake_overpass)
+    monkeypatch.setattr(rs.pc, "nominatim", lambda *a, **k: [])
+    res = rs.resolve("Queenstown Harbor River Course", "MD", near="38.9850,-76.1700", with_towns=False)
+    assert res["status"] == "ok" and res["osm"]["id"] == 7
+    assert res["name"] == "Queenstown Harbor River Course" and res["osm_name"] is None
+    assert res["slug"] == pc.slugify("Queenstown Harbor River Course")
+
+
+def test_fetch_imagery_command_never_holds_none(monkeypatch, tmp_path):
+    import fetch_package as fp
+    seen = []
+    monkeypatch.setattr(fp.subprocess, "run", lambda cmd, **k: seen.append(cmd) or type("R", (), {"returncode": 0}))
+    course = dict(name=None, slug="queenstown_harbor", bbox=[-76.18, 38.98, -76.16, 38.99])
+    assert fp.fetch_imagery(course, str(tmp_path), year=None)
+    cmd = seen[0]
+    assert all(isinstance(x, str) for x in cmd)
+    assert cmd[cmd.index("--name") + 1] == "queenstown_harbor" and cmd[cmd.index("--year") + 1] == "auto"

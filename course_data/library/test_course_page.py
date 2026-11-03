@@ -293,3 +293,17 @@ def test_native_cards_capped_after_reconcile():
     rec = dict(items=[_item(str(k), dict(plans)) for k in range(1, 7)])
     cp.native_reconcile(rec, holes, cap=4)
     assert [it["hole"] for it in rec["items"]] == ["1", "2", "3", "4"] and len(rec["dropped"]) == 2
+
+
+def test_finish_records_a_lost_package_job():
+    """Troon North, run 41539188571: the package runner was shut down mid-job (exit 143), so no lib-<slug>-pkg
+    artifact; finish then saw the checkout's OLD status.json, skipped `failed` and committed nothing. The finish
+    step must key on whether this run's package artifact arrived, not on a status.json existing."""
+    import yaml
+    wf = yaml.safe_load(open(os.path.join(HERE, "..", "..", ".github", "workflows", "course_page_one.yml")))
+    steps = wf["jobs"]["finish"]["steps"]
+    pkg = [s for s in steps if (s.get("with") or {}).get("name") == "lib-${{ inputs.slug }}-pkg"]
+    assert len(pkg) == 1 and pkg[0].get("id"), "the package artifact download needs an id"
+    merge = next(s for s in steps if s.get("name") == "Merge, page, checks, report")
+    assert f"steps.{pkg[0]['id']}.outcome" in merge["run"]
+    assert "needs.package.result" in merge["run"]

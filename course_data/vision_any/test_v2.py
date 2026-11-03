@@ -144,11 +144,76 @@ def test_choose_trees_prefers_matching_buffer():
     assert best == (2.5, -2, 30) and all(v == best for v in sel.values())
 
 
-def test_ept_density_capped_for_big_boxes():
-    """Troon North: a 10 km2 EPT read at full density ran the runner out of memory (exit 143)."""
+def _troon_grid():
+    import types
+    from affine import Affine
+    # Troon North's package grid (run 41539188571): 3444 x 2884 m, EPSG:32612
+    g = types.SimpleNamespace(crs="EPSG:32612", res=1.0, x0=418490, y0=3732792, x1=421934, y1=3735676, W=3444, H=2884,
+                              ll_bbox=[-111.88014, 33.732028, -111.842701, 33.758296])
+    g.transform = Affine(1.0, 0, g.x0, 0, -1.0, g.y1)
+    return g
+
+
+def test_ept_tiles_bound_each_pdal_read():
+    """Troon North: one 10 km2 EPT read (even at a 0.5 m density cap) held every point in memory and the runner was
+    shut down (exit 143, twice: runs 41114849392 and 41539188571). Big boxes are read in tiles that cover the grid
+    exactly once, each no bigger than the boxes that always worked."""
     import fetch_any as FA
-    assert FA.ept_resolution(1.5e6) is None
-    assert FA.ept_resolution(9.9e6) == 0.5 and FA.ept_resolution(3e7) == 1.0
+    g = _troon_grid()
+    tiles = FA.ept_tiles(g)
+    assert len(tiles) >= 4
+    cover = np.zeros((g.H, g.W), np.int32)
+    for t in tiles:
+        assert (t["x1"] - t["x0"]) * (t["y1"] - t["y0"]) <= FA.EPT_TILE_M ** 2
+        assert all(float(v) % 2 == 0 for v in (t["x0"], t["y0"], t["x1"], t["y1"]))       # the 2 m DTM grid too
+        rx0, ry0, rx1, ry1 = t["read"]
+        assert rx0 < t["x0"] or t["x0"] == g.x0
+        assert rx0 <= t["x0"] and ry0 <= t["y0"] and rx1 >= t["x1"] and ry1 >= t["y1"]
+        r0, c0, h, w = FA.tile_window(g, t)
+        cover[r0:r0 + h, c0:c0 + w] += 1
+    assert (cover == 1).all()
+    small = _troon_grid()
+    small.x1, small.y1, small.W, small.H = small.x0 + 1200, small.y0 + 1000, 1200, 1000
+    assert len(FA.ept_tiles(small)) == 1
+
+
+def test_fetch_ept_reads_in_tiles(tmp_path, monkeypatch):
+    import json
+    import types
+    import rasterio
+    from affine import Affine
+    import fetch_any as FA
+    g1 = _troon_grid()
+    g2 = types.SimpleNamespace(**dict(vars(g1), res=2.0, W=g1.W // 2, H=g1.H // 2,
+                                      transform=Affine(2.0, 0, g1.x0, 0, -2.0, g1.y1)))
+    pdal = tmp_path / "pdal"
+    pdal.write_text("")
+    monkeypatch.setenv("PDAL_BIN", str(pdal))
+    ring = [[-112.0, 33.6], [-111.7, 33.6], [-111.7, 33.9], [-112.0, 33.9], [-112.0, 33.6]]
+    idx = dict(features=[dict(geometry=dict(type="Polygon", coordinates=[ring]),
+                              properties=dict(name="AZ_MaricopaPinal_1_2020", url="u", count=1))])
+    monkeypatch.setitem(sys.modules, "requests", types.SimpleNamespace(
+        get=lambda *a, **k: types.SimpleNamespace(json=lambda: idx)))
+    reads = []
+
+    def fake_run(cmd, **kw):
+        pipe = json.load(open(cmd[-1]))
+        reads.append(pipe[0]["bounds"])
+        for st in pipe:
+            if st["type"] == "writers.gdal":
+                r = st["resolution"]
+                tr = Affine(r, 0, st["origin_x"], 0, -r, st["origin_y"] + st["height"] * r)
+                with rasterio.open(st["filename"], "w", driver="GTiff", width=st["width"], height=st["height"],
+                                   count=1, dtype="float32", crs=g1.crs, transform=tr) as dst:
+                    dst.write(np.full((1, st["height"], st["width"]), 3.0, np.float32))
+        return types.SimpleNamespace(returncode=0, stderr="", stdout="")
+    import subprocess
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    meta = {}
+    hag = FA.fetch_ept(g1, g2, str(tmp_path), meta)
+    assert len(reads) == len(FA.ept_tiles(g1)) and len(reads) >= 4
+    assert hag is not None and np.isfinite(hag).all() and float(np.nanmax(hag)) == 3.0
+    assert meta["ept"]["tiles"] == len(reads) and meta["ept"]["valid"] == 1.0
 
 
 def test_native_threshold_none_must_be_explained():
@@ -173,3 +238,41 @@ def test_native_threshold_none_must_be_explained():
         assert how.startswith("no long grass")
     on = dict(meta, settings=dict(meta["settings"], native_thr=0.5))
     assert "P(native) >= 0.5" in VM.native_how(on, [2023])
+
+
+def test_lidar_v2_reads_in_tiles(tmp_path, monkeypatch):
+    """raw2 (v2_fetch.py) reads the same EPT box as fetch_any: tiled the same way."""
+    import json
+    import subprocess
+    import types
+    import rasterio
+    from affine import Affine
+    import fetch_any as FA
+    import v2_fetch as V2
+    g = _troon_grid()
+    pdal = tmp_path / "pdal"
+    pdal.write_text("")
+    monkeypatch.setenv("PDAL_BIN", str(pdal))
+    monkeypatch.setattr(V2, "ept_candidates", lambda g: ([dict(name="AZ", url="u", cov=1.0, year=2020, count=1)], None))
+    reads = []
+
+    def fake_run(cmd, **kw):
+        pipe = json.load(open(cmd[-1]))
+        if pipe[0]["type"] == "readers.ept":
+            reads.append(pipe[0]["bounds"])
+            open(pipe[-1]["filename"], "w").write("laz")
+        for st in pipe:
+            if st["type"] == "writers.gdal":
+                r = st["resolution"]
+                tr = Affine(r, 0, st["origin_x"], 0, -r, st["origin_y"] + st["height"] * r)
+                with rasterio.open(st["filename"], "w", driver="GTiff", width=st["width"], height=st["height"],
+                                   count=1, dtype="float32", crs=g.crs, transform=tr) as dst:
+                    dst.write(np.full((1, st["height"], st["width"]), 5.0, np.float32))
+        return types.SimpleNamespace(returncode=0, stderr="", stdout="")
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    written = {}
+    monkeypatch.setattr(FA, "write_tif", lambda path, arr, g, **k: written.update(arr=arr) or 1.0)
+    meta = {}
+    V2.fetch_lidar_v2(g, str(tmp_path), meta)
+    assert len(reads) == len(FA.ept_tiles(g)) >= 4
+    assert meta["lidar_v2"]["valid"] == 1.0 and np.isfinite(written["arr"]).all()

@@ -139,10 +139,11 @@ def ept_candidates(g):
 
 def pipelines(url, b3857, g, tmp):
     """PDAL runs only ONE branch of a multi-writer pipeline, so: (1) EPT -> noise out -> UTM -> HAG -> one
-    local LAZ with HeightAboveGround as an extra dimension; (2) one short linear pipeline per band."""
+    local LAZ with HeightAboveGround as an extra dimension; (2) one short linear pipeline per band.
+    b3857: (xmin, ymin, xmax, ymax) in EPSG:3857, or a readers.ept bounds string; g: the (tile) grid written."""
     laz = os.path.join(tmp, "pts.laz")
-    first = [dict(type="readers.ept", filename=url, bounds=f"([{b3857[0]},{b3857[2]}],[{b3857[1]},{b3857[3]}])",
-                  threads=8),
+    bounds = b3857 if isinstance(b3857, str) else f"([{b3857[0]},{b3857[2]}],[{b3857[1]},{b3857[3]}])"
+    first = [dict(type="readers.ept", filename=url, bounds=bounds, threads=8),
              dict(type="filters.range", limits="Classification![7:7],Classification![18:18]"),
              dict(type="filters.reprojection", out_srs=g.crs),
              dict(type="filters.hag_nn"),
@@ -175,56 +176,69 @@ def fetch_lidar_v2(g, out, meta, max_projects=2):
         info["error"] = "pdal CLI not installed"
         meta["lidar_v2"] = info
         return
-    cands, b3857 = ept_candidates(g)
+    cands, _ = ept_candidates(g)
     info["candidates"] = cands[:8]
     log("  EPT candidates:", cands[:8])
+    import types
+    import fetch_any as FA
     acc = {b[0]: np.full((g.H, g.W), np.nan, np.float32) for b in LIDAR_BANDS}
+    # one EPT read per tile (fetch_any.ept_tiles): a single 10 km2 read shut the runner down (Troon North)
+    tiles = FA.ept_tiles(g)
+    info["tiles"] = len(tiles)
     used = []
     for c in cands[:max_projects]:
         url = c["url"] or f"https://s3-us-west-2.amazonaws.com/usgs-lidar-public/{c['name']}/ept.json"
         tmp = os.path.join(out, "_ept2")
-        os.makedirs(tmp, exist_ok=True)
-        first, bands = pipelines(url, b3857, g, tmp)
-        log("  PDAL", c["name"])
+        log("  PDAL", c["name"], f"({len(tiles)} tile(s))")
         t0 = dt.datetime.now()
-        rc, err = run_pdal(pdal, first, os.path.join(tmp, "p0.json"))
-        laz = os.path.join(tmp, "pts.laz")
-        if rc != 0 or not os.path.exists(laz):
-            log("   PDAL read failed:", err)
-            info.setdefault("errors", []).append(dict(name=c["name"], err=err))
-            shutil.rmtree(tmp, ignore_errors=True)
-            continue
-        log(f"   points -> {os.path.getsize(laz) / 1e6:.0f} MB laz in {(dt.datetime.now() - t0).seconds}s")
-        for name, st in bands:
-            rc, err = run_pdal(pdal, st, os.path.join(tmp, f"p_{name}.json"))
-            if rc != 0:
-                log(f"   band {name} failed:", err)
-                info.setdefault("errors", []).append(dict(name=c["name"], band=name, err=err))
-        if not os.path.exists(os.path.join(tmp, "n_all.tif")):
-            shutil.rmtree(tmp, ignore_errors=True)
-            continue
-        # cells this project covers = cells with any return; counts stay 0 elsewhere inside its footprint
-        with rasterio.open(os.path.join(tmp, "n_all.tif")) as src:
-            nall = src.read(1).astype(np.float32)
-        cov = (nall > 0) & np.isnan(acc["n_all"])
-        for name, *_ in LIDAR_BANDS:
-            p = os.path.join(tmp, f"{name}.tif")
-            if not os.path.exists(p):
+        cells, ok_tiles = 0, 0
+        for k, t in enumerate(tiles):
+            r0, c0, h, w = FA.tile_window(g, t)
+            if not np.isnan(acc["n_all"][r0:r0 + h, c0:c0 + w]).any():
+                continue                                   # an earlier project covered this tile
+            os.makedirs(tmp, exist_ok=True)
+            tg = types.SimpleNamespace(crs=g.crs, x0=t["x0"], y0=t["y0"], W=w, H=h)
+            first, bands = pipelines(url, FA.bounds_3857(g.crs, t["read"]), tg, tmp)
+            rc, err = run_pdal(pdal, first, os.path.join(tmp, "p0.json"))
+            laz = os.path.join(tmp, "pts.laz")
+            if rc != 0 or not os.path.exists(laz):
+                log(f"   PDAL read failed (tile {k + 1}/{len(tiles)}):", err)
+                info.setdefault("errors", []).append(dict(name=c["name"], tile=k, err=err))
+                shutil.rmtree(tmp, ignore_errors=True)
                 continue
-            with rasterio.open(p) as src:
-                a = src.read(1).astype(np.float32)
-            if name.startswith("n_"):
-                a = np.where(a < 0, 0, a)
-            else:
-                a[a == -9999] = np.nan
-            acc[name][cov] = a[cov]
-        used.append(dict(c, cells=int(cov.sum()), seconds=(dt.datetime.now() - t0).seconds))
-        shutil.rmtree(tmp, ignore_errors=True)
+            log(f"   tile {k + 1}/{len(tiles)}: {os.path.getsize(laz) / 1e6:.0f} MB laz")
+            for name, st in bands:
+                rc, err = run_pdal(pdal, st, os.path.join(tmp, f"p_{name}.json"))
+                if rc != 0:
+                    log(f"   band {name} failed:", err)
+                    info.setdefault("errors", []).append(dict(name=c["name"], tile=k, band=name, err=err))
+            if not os.path.exists(os.path.join(tmp, "n_all.tif")):
+                shutil.rmtree(tmp, ignore_errors=True)
+                continue
+            # cells this project covers = cells with any return; counts stay 0 elsewhere inside its footprint
+            with rasterio.open(os.path.join(tmp, "n_all.tif")) as src:
+                nall = src.read(1).astype(np.float32)
+            cov = (nall > 0) & np.isnan(acc["n_all"][r0:r0 + h, c0:c0 + w])
+            for name, *_ in LIDAR_BANDS:
+                p = os.path.join(tmp, f"{name}.tif")
+                if not os.path.exists(p):
+                    continue
+                with rasterio.open(p) as src:
+                    a = src.read(1).astype(np.float32)
+                if name.startswith("n_"):
+                    a = np.where(a < 0, 0, a)
+                else:
+                    a[a == -9999] = np.nan
+                acc[name][r0:r0 + h, c0:c0 + w][cov] = a[cov]
+            cells += int(cov.sum())
+            ok_tiles += 1
+            shutil.rmtree(tmp, ignore_errors=True)
+        if ok_tiles:
+            used.append(dict(c, cells=cells, tiles=ok_tiles, seconds=(dt.datetime.now() - t0).seconds))
         if np.isfinite(acc["n_all"]).mean() > 0.97:
             break
     info["used"] = used
     if used:
-        import fetch_any as FA
         arr = np.stack([acc[b[0]] for b in LIDAR_BANDS]).astype(np.float32)
         info["mb"] = FA.write_tif(os.path.join(out, "lidar_v2.tif"), arr, g, nodata=float("nan"),
                                   tags=dict(bands=",".join(b[0] for b in LIDAR_BANDS)))

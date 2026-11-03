@@ -273,16 +273,42 @@ def fetch_lidar(cat, g1, g2, out, meta):
 EPT_INDEX = "https://raw.githubusercontent.com/hobuinc/usgs-lidar/master/boundaries/resources.geojson"
 
 
-EPT_FULL_AREA_M2 = 4.0e6       # above this bbox area the point cloud is read at a capped density
+EPT_TILE_M = 1500          # PDAL reads a big box in tiles of at most this edge (m); boxes <= 4 km2 always fit
+EPT_OVERLAP_M = 30         # read margin around each tile: filters.hag_nn needs ground points past the tile edge
 
 
-def ept_resolution(area_m2):
-    """readers.ept `resolution` (m) for a bbox of this area, or None (full density). PDAL's standard pipeline holds
-    every point in memory: Troon North's 10 km2 box of AZ_MaricopaPinal_1_2020 killed the runner (exit 143, the
-    package job never finished: "no prepared course"). 0.5 m still leaves >= 4 points per 1 m HAG cell."""
-    if area_m2 <= EPT_FULL_AREA_M2:
-        return None
-    return 0.5 if area_m2 <= 4 * EPT_FULL_AREA_M2 else 1.0
+def ept_tiles(g, tile_m=EPT_TILE_M, overlap_m=EPT_OVERLAP_M):
+    """Split the grid into near-equal tiles (edges on the 2 m DTM grid) of at most tile_m x tile_m; each dict is the
+    tile's own cells (x0, y0, x1, y1, grid CRS metres) plus `read`, that box grown by overlap_m. PDAL's standard
+    pipeline holds every point it reads in memory: Troon North's 10 km2 box of AZ_MaricopaPinal_1_2020 shut the
+    runner down (exit 143) at full density and again with a 0.5 m density cap, so no single read is bigger than this."""
+    def cuts(lo, hi):
+        n = max(1, math.ceil((hi - lo) / tile_m))
+        step = math.ceil((hi - lo) / n / 2) * 2
+        xs = [lo + i * step for i in range(n)] + [hi]
+        return [(xs[i], min(xs[i + 1], hi)) for i in range(n) if xs[i] < hi]
+    out = []
+    for ty0, ty1 in cuts(g.y0, g.y1):
+        for tx0, tx1 in cuts(g.x0, g.x1):
+            out.append(dict(x0=tx0, y0=ty0, x1=tx1, y1=ty1,
+                            read=(tx0 - overlap_m, ty0 - overlap_m, tx1 + overlap_m, ty1 + overlap_m)))
+    return out
+
+
+def tile_window(g, t):
+    """(row0, col0, height, width) of tile t in grid g (row 0 = the grid's north edge)."""
+    r = g.res
+    return (int(round((g.y1 - t["y1"]) / r)), int(round((t["x0"] - g.x0) / r)),
+            int(round((t["y1"] - t["y0"]) / r)), int(round((t["x1"] - t["x0"]) / r)))
+
+
+def bounds_3857(crs, box_xy, pad=0.0):
+    """readers.ept `bounds` string (EPSG:3857) enclosing a box in `crs` metres."""
+    from pyproj import Transformer
+    t = Transformer.from_crs(crs, "EPSG:3857", always_xy=True)
+    x0, y0, x1, y1 = box_xy
+    xs, ys = t.transform([x0, x1, x0, x1], [y0, y0, y1, y1])
+    return f"([{min(xs) - pad},{max(xs) + pad}],[{min(ys) - pad},{max(ys) + pad}])"
 
 
 def fetch_ept(g1, g2, out, meta, max_projects=3):
@@ -328,60 +354,69 @@ def fetch_ept(g1, g2, out, meta, max_projects=3):
     hag = np.full((g1.H, g1.W), np.nan, np.float32)
     dtm = np.full((g2.H, g2.W), np.nan, np.float32)
     bld = np.zeros((g1.H, g1.W), np.float32)
+    tiles = ept_tiles(g1)
+    info["tiles"] = len(tiles)
     used = []
     for c in cands[:max_projects]:
         url = c["url"] or f"https://s3-us-west-2.amazonaws.com/usgs-lidar-public/{c['name']}/ept.json"
         tmp = os.path.join(out, "_ept")
-        os.makedirs(tmp, exist_ok=True)
-        common = dict(origin_x=g1.x0, origin_y=g1.y0, width=g1.W, height=g1.H, resolution=1.0, nodata=-9999)
-        rd = dict(type="readers.ept", filename=url, bounds=f"([{b3857[0]},{b3857[2]}],[{b3857[1]},{b3857[3]}])",
-                  threads=8)
-        res = ept_resolution(g1.W * g1.H)
-        if res:
-            rd["resolution"] = res
-            info["ept_resolution_m"] = res
-        pipe = [
-            rd,
-            dict(type="filters.range", limits="Classification![7:7],Classification![18:18]"),
-            dict(type="filters.reprojection", out_srs=g1.crs, tag="pts"),
-            dict(type="filters.hag_nn", inputs=["pts"], tag="hag"),
-            dict(type="writers.gdal", inputs=["hag"], filename=os.path.join(tmp, "hag.tif"),
-                 dimension="HeightAboveGround", output_type="max", **common),
-            dict(type="filters.range", inputs=["pts"], limits="Classification[2:2]", tag="ground"),
-            dict(type="writers.gdal", inputs=["ground"], filename=os.path.join(tmp, "dtm.tif"), dimension="Z",
-                 output_type="mean", origin_x=g2.x0, origin_y=g2.y0, width=g2.W, height=g2.H, resolution=2.0,
-                 nodata=-9999, window_size=3),
-            dict(type="filters.range", inputs=["pts"], limits="Classification[6:6]", tag="bld"),
-            dict(type="writers.gdal", inputs=["bld"], filename=os.path.join(tmp, "bld.tif"), dimension="Z",
-                 output_type="count", **common),
-        ]
-        pj = os.path.join(tmp, "pipe.json")
-        json.dump(pipe, open(pj, "w"))
-        log("  PDAL", c["name"])
-        r = subprocess.run([pdal, "pipeline", pj], capture_output=True, text=True, timeout=2400)
-        if r.returncode != 0:
-            log("   PDAL failed:", r.stderr[-1500:])
-            info.setdefault("errors", []).append(dict(name=c["name"], err=r.stderr[-800:]))
-            continue
-        with rasterio.open(os.path.join(tmp, "hag.tif")) as src:
-            a = src.read(1).astype(np.float32)
-            a[a == -9999] = np.nan
-        f = np.isnan(hag) & np.isfinite(a)
-        hag[f] = a[f]
-        p = os.path.join(tmp, "dtm.tif")
-        if os.path.exists(p):
-            with rasterio.open(p) as src:
+        cells, ok_tiles = 0, 0
+        log("  PDAL", c["name"], f"({len(tiles)} tile(s))")
+        for k, t in enumerate(tiles):
+            r1, c1, h1, w1 = tile_window(g1, t)
+            r2, c2, h2, w2 = tile_window(g2, t)
+            if not np.isnan(hag[r1:r1 + h1, c1:c1 + w1]).any():
+                continue                                   # an earlier project covered this tile
+            os.makedirs(tmp, exist_ok=True)
+            common = dict(origin_x=t["x0"], origin_y=t["y0"], width=w1, height=h1, resolution=1.0, nodata=-9999)
+            pipe = [
+                dict(type="readers.ept", filename=url, bounds=bounds_3857(g1.crs, t["read"]), threads=8),
+                dict(type="filters.range", limits="Classification![7:7],Classification![18:18]"),
+                dict(type="filters.reprojection", out_srs=g1.crs, tag="pts"),
+                dict(type="filters.hag_nn", inputs=["pts"], tag="hag"),
+                dict(type="writers.gdal", inputs=["hag"], filename=os.path.join(tmp, "hag.tif"),
+                     dimension="HeightAboveGround", output_type="max", **common),
+                dict(type="filters.range", inputs=["pts"], limits="Classification[2:2]", tag="ground"),
+                dict(type="writers.gdal", inputs=["ground"], filename=os.path.join(tmp, "dtm.tif"), dimension="Z",
+                     output_type="mean", origin_x=t["x0"], origin_y=t["y0"], width=w2, height=h2, resolution=2.0,
+                     nodata=-9999, window_size=3),
+                dict(type="filters.range", inputs=["pts"], limits="Classification[6:6]", tag="bld"),
+                dict(type="writers.gdal", inputs=["bld"], filename=os.path.join(tmp, "bld.tif"), dimension="Z",
+                     output_type="count", **common),
+            ]
+            pj = os.path.join(tmp, "pipe.json")
+            json.dump(pipe, open(pj, "w"))
+            r = subprocess.run([pdal, "pipeline", pj], capture_output=True, text=True, timeout=2400)
+            if r.returncode != 0 or not os.path.exists(os.path.join(tmp, "hag.tif")):
+                log(f"   PDAL tile {k + 1}/{len(tiles)} failed:", (r.stderr or "")[-1500:])
+                info.setdefault("errors", []).append(dict(name=c["name"], tile=k, err=(r.stderr or "")[-800:]))
+                shutil.rmtree(tmp, ignore_errors=True)
+                continue
+            with rasterio.open(os.path.join(tmp, "hag.tif")) as src:
                 a = src.read(1).astype(np.float32)
                 a[a == -9999] = np.nan
-            f2 = np.isnan(dtm) & np.isfinite(a)
-            dtm[f2] = a[f2]
-        p = os.path.join(tmp, "bld.tif")
-        if os.path.exists(p):
-            with rasterio.open(p) as src:
-                a = src.read(1).astype(np.float32)
-            bld = np.maximum(bld, np.where(a > 0, a, 0))
-        used.append(dict(c, cells=int(f.sum())))
-        shutil.rmtree(tmp, ignore_errors=True)
+            win = hag[r1:r1 + h1, c1:c1 + w1]
+            f = np.isnan(win) & np.isfinite(a)
+            win[f] = a[f]
+            cells += int(f.sum())
+            ok_tiles += 1
+            p = os.path.join(tmp, "dtm.tif")
+            if os.path.exists(p):
+                with rasterio.open(p) as src:
+                    a = src.read(1).astype(np.float32)
+                    a[a == -9999] = np.nan
+                win = dtm[r2:r2 + h2, c2:c2 + w2]
+                f2 = np.isnan(win) & np.isfinite(a)
+                win[f2] = a[f2]
+            p = os.path.join(tmp, "bld.tif")
+            if os.path.exists(p):
+                with rasterio.open(p) as src:
+                    a = src.read(1).astype(np.float32)
+                win = bld[r1:r1 + h1, c1:c1 + w1]
+                np.maximum(win, np.where(a > 0, a, 0), out=win)
+            shutil.rmtree(tmp, ignore_errors=True)
+        if ok_tiles:
+            used.append(dict(c, cells=cells, tiles=ok_tiles))
         if np.isfinite(hag).mean() > 0.97:
             break
     info["used"] = used

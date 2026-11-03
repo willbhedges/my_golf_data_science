@@ -252,6 +252,7 @@ jobs:
             echo "hand_checked page at $OUT: refusing to overwrite"; exit 1
           fi
       - uses: actions/download-artifact@v4
+        id: pkgart
         continue-on-error: true
         with:
           name: lib-${{ inputs.slug }}-pkg
@@ -269,6 +270,12 @@ jobs:
             # the output is kept: a failure's last exception lines go in status.json "reasons"
             python3 course_data/library/course_page.py finish "${{ inputs.req }}" /tmp/parts 2>&1 | tee /tmp/finish.log || \
               python3 course_data/library/course_page.py failed --log /tmp/finish.log "${{ inputs.req }}" finish "merge / page / checks failed"
+          elif [ "${{ steps.pkgart.outcome }}" != success ]; then
+            # no package artifact: the package job died without recording anything (Troon North, run 41539188571:
+            # runner shut down, exit 143). The checkout's status.json is an OLD run's, so record this one
+            # (`failed` keeps a last good page and notes the attempt beside it)
+            python3 course_data/library/course_page.py failed "${{ inputs.req }}" package \
+              "package job ended without its course data (job result: ${{ needs.package.result }}; runner lost or out of memory? see the Actions log)"
           elif [ ! -f "$OUT/status.json" ]; then
             python3 course_data/library/course_page.py failed "${{ inputs.req }}" package "no prepared course (see the Actions log)"
           fi

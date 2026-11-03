@@ -392,7 +392,9 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
         best["center"] = [(b["minlon"] + b["maxlon"]) / 2, (b["minlat"] + b["maxlat"]) / 2]
     if with_towns and not best.get("town"):
         best["town"] = reverse_town(best["center"][1], best["center"][0])
-    out.update(name=best["name"], slug=pc.slugify(best["name"] or name), osm=best["osm"],
+    # an unnamed OSM outline (picked by `near`: Queenstown Harbor's 36 holes) keeps the request's name; every later
+    # stage (scorecard search, imagery --name, the page) needs one. osm_name is what OSM itself says.
+    out.update(name=best["name"] or name, osm_name=best["name"], slug=pc.slugify(best["name"] or name), osm=best["osm"],
                center=best["center"], bbox=[b["minlon"], b["minlat"], b["maxlon"], b["maxlat"]],
                address=", ".join(x for x in (best.get("town"), sc) if x), town=best.get("town"), state=sc,
                holes_mapped=best.get("holes"), website=best.get("website"), tags=best.get("tags"),

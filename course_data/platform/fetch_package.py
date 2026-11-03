@@ -167,8 +167,10 @@ def fetch_imagery(course, pkg, year="auto"):
     img = os.path.join(pkg, "imagery")
     w, s, e, n = course["bbox"]
     cmd = [sys.executable, os.path.join(pc.COURSE_DATA, "imagery", "fetch_imagery.py"),
-           "--bbox", f"{s},{w},{n},{e}", "--name", course["name"], "--margin", "100", "--max-mb", "45",
+           "--bbox", f"{s},{w},{n},{e}", "--name", course.get("name") or course.get("slug") or os.path.basename(pkg),
+           "--margin", "100", "--max-mb", "45",
            "--out", img, "--osm", os.path.join(pkg, "raw", "osm.geojson"), "--year", str(year or "auto")]
+    cmd = [str(x) for x in cmd]
     pc.log("imagery:", " ".join(cmd))
     r = subprocess.run(cmd, timeout=2400)
     return r.returncode == 0
