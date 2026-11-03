@@ -1,12 +1,12 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-03T05:33Z",
+ "updated": "2026-11-03T06:28Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 1,
-  "needs confirm": 89,
-  "failed": 6,
+  "needs confirm": 90,
+  "failed": 5,
   "unsupported": 2,
   "blocked": 9
  },
@@ -3845,6 +3845,69 @@
    "group": "library"
   },
   {
+   "slug": "queenstown_harbor",
+   "name": "Queenstown Harbor River Course",
+   "city": "Queenstown",
+   "state": "MD",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source None, flags [])",
+    "18 holes built vs the card's 0",
+    "pars sum to 72, card None",
+    "18 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "osm_back",
+     "yards": null,
+     "par": null,
+     "rating": null,
+     "slope": null,
+     "colour": null,
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "osm_back"
+   ],
+   "page": "course_data/library/queenstown_harbor/page.html",
+   "page_bytes": 2051184,
+   "qa_report": "course_data/library/queenstown_harbor/qa_report.md",
+   "center": [
+    38.986349700000005,
+    -76.1726362
+   ],
+   "osm": "way/1067525665",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-03T05:14Z",
+   "group": "library"
+  },
+  {
    "slug": "sugarloaf",
    "name": "Sugarloaf Golf Club",
    "city": "Carrabassett Valley",
@@ -5033,13 +5096,14 @@
    "state": "MO",
    "status": "needs confirm",
    "check_holes": [
+    1,
     2,
     5,
     12,
     13
    ],
    "reasons": [
-    "4 hole(s) with a CHECK"
+    "5 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -5084,7 +5148,7 @@
     "Bronze"
    ],
    "page": "course_data/library/swope_memorial/page.html",
-   "page_bytes": 2761559,
+   "page_bytes": 2761868,
    "qa_report": "course_data/library/swope_memorial/qa_report.md",
    "center": [
     38.998807150000005,
@@ -5097,7 +5161,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-03T01:41Z",
+   "built": "2026-11-03T05:12Z",
    "group": "library"
   },
   {
@@ -8009,29 +8073,6 @@
    "days": null,
    "weather": null,
    "built": "2026-10-30T03:46Z",
-   "group": "library"
-  },
-  {
-   "slug": "queenstown_harbor",
-   "name": "Queenstown Harbor River Course",
-   "city": "Queenstown",
-   "state": "MD",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package: package job ended without its course data (job result: failure; runner lost or out of memory? see the Actions log)"
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-11-03T03:15Z",
    "group": "library"
   },
   {
