@@ -22,3 +22,5 @@ Repo: /home/user/my_golf_data_science, branch claude/mozingo-lake-tee-strategy-e
 - Final report: short, honest numbers (say what was NOT verified), files and commits.
 
 - Scoring (error_budget.py, eval_mapper.py, eval_native_confirm.py, any planner numbers you report) must run in the FULL checkout or a full worktree. A sparse checkout missing course_data/elevation, library, vision_any/s2 or spirit_hollow/ silently changes planner scores (found 2026-11-02). Blind mapper worktrees stay sparse; the coordinator scores them in the full checkout.
+
+- Syncing: several agents share this checkout, so `git pull --rebase origin <branch>` can fail with "Cannot rebase onto multiple branches" (concurrent fetches write FETCH_HEAD). Use `git fetch origin <branch> && git rebase --autostash origin/<branch>` instead, and retry once after a few seconds if it fails.
