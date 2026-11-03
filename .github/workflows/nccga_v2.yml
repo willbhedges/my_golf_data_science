@@ -4,6 +4,9 @@ name: nccga-v2
 # Trigger: push course_data/requests/nccga_v2_<slug>.json
 #   {"slug": "pine_dunes", "which": "truth", "offsets": [0, -40, ...], "temps": [40, 55, 70],
 #    "decide_jobs": 3, "draws": 64, "rev": 1}
+#   optional "refine_swings": 16000 (+ "refine_offsets": [0], default [0]): the wind cells of those tee offsets get a
+#   second solve stage on aim +/-10 yds with that many fresh common swings (v2_course.refined_solver; MC SE of a
+#   club-vs-club margin ~0.004 -> ~0.0015 strokes)
 #   optional "holes": [3, 17] limits the decide jobs to those holes (e.g. a close call re-run with more draws; the
 #   merge keeps the other holes' decisions); "offsets": [] then skips the wind grids.
 # Jobs: one wind job per tee offset (all temperatures; holes split over the runner's cores), `decide_jobs` jobs
@@ -42,8 +45,9 @@ jobs:
           for r in reqs:
               q = json.load(open(r))
               for b in q.get("offsets", [0]):
+                  rf = int(q.get("refine_swings", 0)) if b in q.get("refine_offsets", [0]) else 0
                   inc.append(dict(kind="wind", slug=q["slug"], which=q.get("which", "truth"), back=b,
-                                  temps=",".join(str(t) for t in q["temps"]), part=str(b)))
+                                  temps=",".join(str(t) for t in q["temps"]), part=str(b), refine=rf))
               for j in range(int(q.get("decide_jobs", 3))):
                   inc.append(dict(kind="decide", slug=q["slug"], which=q.get("which", "truth"), back=0, temps="",
                                   part=f"{j}/{int(q.get('decide_jobs', 3))}", draws=int(q.get("draws", 64)),
@@ -92,7 +96,7 @@ jobs:
           g=[h[i::n] for i in range(n)]
           print(' '.join(','.join(x) for x in g if x))"); do
               WIND_ONLY=$grp python course_data/courses/v2_course.py wind --slug $S --which $W --back ${{ matrix.back }} \
-                --temps ${{ matrix.temps }} --out parts/v2wind_${{ matrix.back }}_$i.json > parts/log_$i.txt 2>&1 &
+                --temps ${{ matrix.temps }} --refine ${{ matrix.refine || 0 }} --out parts/v2wind_${{ matrix.back }}_$i.json > parts/log_$i.txt 2>&1 &
               pids="$pids $!"; i=$((i+1))
             done
             for p in $pids; do wait $p; done

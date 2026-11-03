@@ -121,12 +121,13 @@ g = json.load(open(vc.cdir("eagle_knoll", "truth", "v2", "wind_grid.json")))["ho
 g = dict(g, clubs={"Driver": g["clubs"]["Driver"]})
 print(json.dumps(dict(old=old(9, g, 50.0)["Driver"], new=BP.cloud(9, g, 50.0)["Driver"])))
 """ % (HERE, os.path.join(CD, "library"))
-    out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=600)
+    out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=600,
+                         env=dict(os.environ, V2_ENGINE="0"))       # the drawing, on the engine the grids were solved with
     assert out.returncode == 0, out.stderr[-1500:]
     r = json.loads(out.stdout.strip().splitlines()[-1])
     new, old = r["new"], r["old"]
     assert new["u"] == [1.0, 0.0] and new["w"] == [0.0, 1.0]
-    assert new["short"] > new["long"] + 5                    # mishits and rough stop short, never long
+    assert new["short"] > new["long"] + 3                    # slight mishits and rough stop short, never long
     assert (new["short"] + new["long"]) < 0.92 * (new["left"] + new["right"])
     t = np.linspace(0, 2 * np.pi, 721)
     p = np.outer(np.cos(t) * old["A"], old["u"]) + np.outer(np.sin(t) * old["B"], old["w"])

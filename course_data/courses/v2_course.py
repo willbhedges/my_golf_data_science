@@ -195,7 +195,7 @@ def prepare(slug, which):
 
 
 LANDING_TOTALS = {"Driver": 300, "2-wood": 280, "4-wood": 270, "Long iron": 220, "Mid iron": 192,
-                  "Hybrid ~235 (not in bag)": 248}
+                  "8-iron": 167, "Hybrid ~235 (not in bag)": 248}
 
 
 def dem_elevation(C, pkg_path, meta):
@@ -271,7 +271,179 @@ def activate(slug, which):
     # another course got the no-forecast fallback (48 F) in the decide runs and the page's calm temperature
     M.hole_temp.__defaults__ = (M.TEE_DAY, M.TEE_HOUR)
     import decide as D
+    eng = dict(cfg.get("engine") or {})
+    if eng.get("flight_trees"):
+        dem = os.path.join(ROOT, meta["dem"]) if meta.get("dem") else None
+        cache = {}
+        key_of = {id(hd): k for k, hd in course.HOLES.items()}
+
+        def drop_of(hd):
+            k = key_of.get(id(hd))
+            if k is None:
+                return None
+            ck = (k, tuple(np.round(np.asarray(hd["tee"], float), 1)))
+            if ck not in cache:
+                cache[ck] = ground_drop_grid(M, hd, course.FRAMES[k], dem)
+            return cache[ck]
+        eng["_drop_of"] = drop_of
+    install_engine(eng, M, D)
     return course, meta, M, D
+
+
+# ------------------------------------------------------------------------------------------------ engine options
+# config "engine" (per course, default off, so library pages and the other tournament pages keep the engine they were
+# solved with):
+#   "extra_clubs": {"8-iron": [carry, total, width95, depth95], ...}   short lay-up clubs (Eagle Knoll audit item 2:
+#                  the shortest club was the 185-carry "Mid iron", so a 170-yd lay-up on a 246-yd par 4 was never priced)
+#   "flight_trees": {"height_yds": 20, "p_hit": 0.7}   the ball's flight can hit trees before it lands (audit item 1:
+#                  the engine priced trees only where the ball finishes, so a drive over a corner of woods was free)
+EXTRA_WIDTH_OF = "Mid iron"        # an extra club's width scales with this club's width in every prior draw
+APEX_YDS = {"wood": 32.0, "iron": 30.0}          # TrackMan-style driver / long-iron apex at ~275 / ~200 carry
+LAND_DEG = {"wood": 38.0, "iron": 46.0}
+APEX_AT = 0.6                                    # apex at 60 % of the carry
+
+
+def install_engine(eng, M, D):
+    if getattr(M, "_engine_opts", None) is not None:
+        return
+    if os.environ.get("V2_ENGINE") == "0":       # A/B: the engine as solved before the options
+        eng = {}
+    for k in [k for k in os.environ.get("V2_ENGINE_OFF", "").split(",") if k]:
+        eng = {a: b for a, b in eng.items() if a != k}
+    M._engine_opts = eng
+    extra = eng.get("extra_clubs") or {}
+    for c, v in extra.items():
+        if c in M.CLUBS:
+            continue
+        M.CLUBS[c] = tuple(float(x) for x in v)
+        i = M.ALL_CLUBS.index(M.HYBRID) if M.HYBRID in M.ALL_CLUBS else len(M.ALL_CLUBS)
+        M.ALL_CLUBS.insert(i, c)
+        M.REAL_CLUBS.insert(M.REAL_CLUBS.index("Mid iron") + 1 if "Mid iron" in M.REAL_CLUBS else len(M.REAL_CLUBS), c)
+        for hd in M.HOLES.values():                       # DEM carry / roll: the mid iron's (closest landing)
+            e = hd.get("elev")
+            if e and "Mid iron" in e and c not in e:
+                e[c] = tuple(e["Mid iron"])
+        try:
+            import wind as W
+            W.SENSITIVITY.setdefault(c, 1.3)            # shorter, higher-spin iron: moved a bit more than the mid iron
+        except Exception:                                # noqa: BLE001
+            pass
+    if extra:
+        base_prior = D.prior_draws
+        ref = M.CLUBS[EXTRA_WIDTH_OF][2]
+
+        def prior_draws(s=64, seed=2026, hole=None):
+            out = base_prior(s, seed, hole)
+            for P in out:
+                for c in extra:
+                    P["width"][c] = P["width"][EXTRA_WIDTH_OF] * M.CLUBS[c][2] / ref
+                    P["c_club"][c] = P["c_club"].get(EXTRA_WIDTH_OF, 0.0)
+            return out
+        D.prior_draws = prior_draws
+        try:
+            import build_page_v2 as BP
+            for c in extra:
+                BP.SHORT.setdefault(c, c)
+        except Exception:                                # noqa: BLE001
+            pass
+    ft = eng.get("flight_trees")
+    if ft:
+        M.ev_curve = flight_tree_ev_curve(M, float(ft.get("height_yds", 20.0)), float(ft.get("p_hit", 0.7)),
+                                          drop_of=eng.get("_drop_of"))
+
+
+def flight_heights(f, kind="wood", carry=275.0):
+    """Ball height (yds) at fraction f of the carry: a parabola up to the apex (APEX_AT of the carry), then a
+    power-law descent whose slope at landing is LAND_DEG."""
+    ref = 275.0 if kind == "wood" else 200.0
+    H = APEX_YDS[kind] * float(np.clip(carry / ref, 0.6, 1.2))
+    f = np.asarray(f, float)
+    up = H * (1 - ((APEX_AT - f) / APEX_AT) ** 2)
+    p = math.tan(math.radians(LAND_DEG[kind])) * (1 - APEX_AT) * carry / H
+    dn = H * (1 - np.clip((f - APEX_AT) / (1 - APEX_AT), 0, 1) ** p)
+    return np.where(f < APEX_AT, up, dn)
+
+
+FLIGHT_F = np.array([0.6, 0.66, 0.72, 0.78, 0.83, 0.87, 0.9, 0.93, 0.955, 0.98])
+FLIGHT_MIN_ALONG = 140.0   # only where the hand map is checked (corridors 145-440): the woods round the tee chutes
+                           # are not traced to the yard (hole 5's chute is 5 yds wide on the map), and the climb
+                           # out of the chute is not modelled
+DROP_STEP = 4.0                                  # yds: ground-drop grid of a hole (DEM, tee frame)
+
+
+def ground_drop_grid(M, hd, frame_json, dem_path):
+    """(tee ground - ground) in yds on a DROP_STEP grid of the tee frame (+ = below the tee), from the package DEM;
+    None without a DEM. Lets the flight clear a wooded ravine below the tee (hole 3) and meet rising ground."""
+    if not dem_path or not os.path.exists(dem_path):
+        return None
+    PK = product_pk()
+    if os.path.join(CD, "imagery") not in sys.path:
+        sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as R
+    f = PK._platform_pkg().dem_sampler(dem_path)
+    fr = R.Frame.from_json(frame_json)
+    tee, fwd, right, ppy = M.frame(hd)
+    ga = np.arange(M.A0, M.A1 + DROP_STEP, DROP_STEP)
+    gl = np.arange(M.L0, M.L1 + DROP_STEP, DROP_STEP)
+    AA, LL = np.meshgrid(ga, gl, indexing="ij")
+    pts = tee + (AA.ravel()[:, None] * fwd + LL.ravel()[:, None] * right) * ppy
+    z = np.asarray(f(fr.px_to_ll(pts)), float).reshape(AA.shape)
+    zt = float(np.asarray(f(fr.px_to_ll(np.array([tee]))), float)[0])
+    if not np.isfinite(zt):
+        return None
+    d = (zt - z) / 0.9144
+    d[~np.isfinite(d)] = 0.0
+    return ga, gl, d
+
+
+def flight_tree_ev_curve(M, height, p_hit, drop_of=None):
+    """M.ev_curve with the flight checked against the trees: along the straight line from the tee to the landing
+    spot (FLIGHT_F fractions of it, the descent; from FLIGHT_MIN_ALONG yds out) the ball's clearance above the local
+    ground = flight height (flight_heights at the club's median carry) + the ground's drop below the tee - that
+    fraction of the landing spot's drop; where it
+    is under `height` over a tree cell the ball is stopped with probability p_hit (one uniform per swing, shared by
+    every aim and club: common random numbers) and finishes there (a tree cell: punch-out cost from there).
+    drop_of(hd) -> ground_drop_grid or None (flat ground)."""
+    base_shots, base_finish = M.shots, M.finish
+    TREE = M.CODE["recovery"]
+
+    def ev_curve(R, S, hd, club, P, z, aims, wind=None):
+        car, dev, roll = base_shots(hd, club, P, z, wind)
+        a, l, lie = base_finish(R, car[:, None], dev[:, None] + aims[None, :], roll[:, None], P["rough_roll"],
+                                P.get("v1_roll", False))
+        kind = "wood" if club in M.WOODS else "iron"
+        y = flight_heights(FLIGHT_F, kind, float(np.median(car)))
+        G = drop_of(hd) if drop_of else None
+        if G is not None:
+            ga, gl, dg = G
+
+            def drop(pa, pl):
+                ia = np.clip(np.rint((pa - ga[0]) / DROP_STEP).astype(np.int32), 0, len(ga) - 1)
+                il = np.clip(np.rint((pl - gl[0]) / DROP_STEP).astype(np.int32), 0, len(gl) - 1)
+                return dg[ia, il]
+        u = np.random.default_rng(int(z.shape[1]) * 7919 + 13).random(z.shape[1])[:, None]
+        lat0 = dev[:, None] + aims[None, :]
+        car2 = np.broadcast_to(car[:, None], a.shape)
+        d_land = drop(car2, lat0) if G is not None else 0.0
+        hit = np.zeros(a.shape, bool)
+        ha, hl = a.copy(), l.copy()
+        for f, yf in zip(FLIGHT_F, y):                 # first tree cell along the flight wins
+            pa, pl = car2 * f, lat0 * f
+            clear = yf + (drop(pa, pl) - f * d_land if G is not None else 0.0)
+            t = (clear < height) & (pa >= FLIGHT_MIN_ALONG) & (R.lie_at(pa, pl) == TREE) & ~hit
+            if not t.any():
+                continue
+            ha = np.where(t, pa, ha)
+            hl = np.where(t, pl, hl)
+            hit |= t
+        stop = hit & (u < p_hit) & (lie != TREE)        # landing in trees is priced already
+        a = np.where(stop, ha, a)
+        l = np.where(stop, hl, l)
+        lie = np.where(stop, TREE, lie)
+        s = S[R.idx(a, l)]
+        return 1.0 + s.mean(0), (a, l, lie, s)
+    ev_curve._flight_trees = (height, p_hit)
+    return ev_curve
 
 
 def forecast(slug):
@@ -302,7 +474,49 @@ def run_decide(slug, which, holes, out, draws=64, swings=3000, central=12000):
     D.main()
 
 
-def run_wind(slug, which, back, temps, out, swings=2500):
+REFINE_HALF = 10.0       # refine stage: +/- yds around the coarse aim (0.5-yd steps)
+REFINE_SEED = 32
+
+
+def refined_solver(M, D, WG2, n2, half=REFINE_HALF, seed=REFINE_SEED):
+    """wind_grid_v2.solve with a second, precise stage (Eagle Knoll MC audit 2026-11-03): the grid's single central
+    world uses N = 2,500 common swings for the whole +/-75-yd aim curve, so a club-vs-club margin has a Monte Carlo
+    SE of ~0.004-0.005 strokes and fresh swings flipped 3 of 13 cells of a 10-mph hole-15 grid (2-wood -> 4-wood).
+    Stage 1 is the original solve (coarse curve, aim window); stage 2 re-evaluates every club on aim +/- `half` yds
+    with n2 fresh common swings (seed `seed`, shared by every club, cell, temperature and hole: paired differences)
+    and takes the aim, EV and pick from that curve. The 0.005 window comes from the fine curve where it fits inside
+    the refined range, else that side keeps the coarse edge. Spirit Hollow's wind_grid_v2.py is not edited: this
+    replaces WG2.solve in the tournament wind job only (nccga_v2 request "refine_swings")."""
+    orig = WG2.solve
+    z2 = M.draws_z(int(n2), seed)
+
+    def solve(h, P, R, S, z, speed, rel):
+        res = orig(h, P, R, S, z, speed, rel)
+        hd = M.HOLES[h]
+        for c, v in res["clubs"].items():
+            hook = WG2.wind_hook(c, speed, rel) if speed else None
+            dr = hook(*M.club_numbers(hd, c, P))[4] if hook else 0.0
+            lo, hi = -D.AIM_LIMIT - dr, D.AIM_LIMIT - dr
+            a0 = min(max(v["aim"], lo), hi)
+            aims = np.arange(a0 - half, a0 + half + 1e-9, 0.5)
+            ev, _ = M.ev_curve(R, S, hd, c, P, z2, aims, wind=hook)
+            r = D.robust_aim(aims, ev, lo=max(lo, aims[0]), hi=min(hi, aims[-1]))
+            zl, zh = r["window"]
+            if zl <= aims[0] + 1e-9:
+                zl = min(zl, v["zone"][0])
+            if zh >= aims[-1] - 1e-9:
+                zh = max(zh, v["zone"][1])
+            v.update(aim=r["aim"], ev=r["ev"], zone=[zl, zh], at_bound=bool(v["at_bound"] or r["at_bound"]),
+                     ev_coarse=v["ev"], n_refine=int(n2))
+        real = [c for c in res["clubs"] if c not in M.HYPOTHETICAL]
+        best = min(real, key=lambda c: res["clubs"][c]["ev"])
+        runner = min((c for c in real if c != best), key=lambda c: res["clubs"][c]["ev"])
+        res.update(pick=best, runner=runner, margin=res["clubs"][runner]["ev"] - res["clubs"][best]["ev"])
+        return res
+    return solve
+
+
+def run_wind(slug, which, back, temps, out, swings=2500, refine=0):
     course, meta, M, D = activate(slug, which)
     os.environ.update(TEE_BACK=str(back), WIND_TEMPS=",".join(str(t) for t in temps), WIND_SWINGS=str(swings),
                       WIND_OUT=out, V2_GEOM="", WIND_HOLES=os.environ.get("WIND_ONLY", ""))
@@ -311,6 +525,8 @@ def run_wind(slug, which, back, temps, out, swings=2500):
     import wind_grid_v2 as WG2
     WG2.TEMPS = [float(t) for t in temps]
     WG2.N = swings
+    if refine:
+        WG2.solve = refined_solver(M, D, WG2, refine)
     WG2.main()
 
 
@@ -401,6 +617,72 @@ def install_landing_pattern(M, BP):
     BP._tee_frame_cloud = True
 
 
+HAZ_LIES = ("water", "ob")       # outlined on the page photo (the creek under the trees on 17, the OB on 18 ...)
+P3_PAD = 32.0                    # yds of ground shown round a par-3 green (was 14: the water short of 6 / 16 was cut off)
+BOX_MIN = 4.0                    # yds: a par-3 target box is never drawn thinner than this
+
+
+def _simplify(poly, tol=1.5):
+    """Drop vertices closer than tol px to the last kept one (page size), rounded to 0.1 px."""
+    out = []
+    for x, y in poly:
+        if not out or math.hypot(x - out[-1][0], y - out[-1][1]) >= tol:
+            out.append([round(float(x), 1), round(float(y), 1)])
+    return out if len(out) >= 3 else []
+
+
+def hazard_outlines(zones):
+    return [[lie, q] for lie, poly in zones if lie in HAZ_LIES for q in [_simplify(poly)] if q]
+
+
+def par3_zones(cfg, which):
+    """Each par 3's zones (render px), captured from the package load (the course module keeps only the green and
+    the edge-hazard summary)."""
+    PK = product_pk()
+    got = {}
+    orig = PK._par3
+
+    def cap(fr, green_ll, gpoly, zones, length, k):
+        got[k] = list(zones)
+        return orig(fr, green_ll, gpoly, zones, length, k)
+    PK._par3 = cap
+    try:
+        PK.load(os.path.join(ROOT, cfg["truth_package" if which.startswith("truth") else "package"]), base_tees(cfg, which))
+    except Exception as e:                       # noqa: BLE001
+        print("par-3 zones not read:", e)
+    finally:
+        PK._par3 = orig
+    return got
+
+
+def floored_plan(plan_fn, min_w=BOX_MIN):
+    """yardage_book.par3_plan with the box at least min_w yds each way. When the DECADE cushions do not fit the
+    worse side keeps its full cushion and the box is a single line (hole 16 Back: 159-159 in light wind); the floor
+    widens it AWAY from the worse side only (so the target moves up to min_w / 2 away from it), or both ways on a
+    split. Spirit Hollow's own book does not use this (patched in the v2_course page process only)."""
+    def plan(p, *a, **k):
+        r = dict(plan_fn(p, *a, **k))
+        for ax, how_k, i in (("lat", "how_lat", 0), ("dep", "how_dep", 1)):
+            lo, hi = r[ax]
+            if hi - lo >= min_w:
+                continue
+            how = r.get(how_k)
+            if how == "lo":
+                lo, hi = lo, lo + min_w
+            elif how == "hi":
+                lo, hi = hi - min_w, hi
+            else:
+                c = (lo + hi) / 2
+                lo, hi = c - min_w / 2, c + min_w / 2
+            r[ax] = (lo, hi)
+            aim = list(r["aim"])
+            aim[i] = (lo + hi) / 2
+            r["aim"] = tuple(aim)
+        return r
+    plan._floored = True
+    return plan
+
+
 def build_page(slug, which, out=None, data_out=None):
     """The wind page. With config "alt_bases" {set: which}, each alt base is built in its own process (the v2
     engine binds one course module per process) with data_out, and its holes ride along as D.alt[set]: the page
@@ -430,7 +712,28 @@ def build_page(slug, which, out=None, data_out=None):
     install_landing_pattern(M, BP)
     yb.use_course(course.NAME, cdir(slug, which), slug, course.HOLES, course.PAR3, course.NOTES, course.AIM_AT,
                   course.ORDER, course.LABELS)
-    BW.crop_jpeg = crop_factory(cdir(slug, which, "screenshots"))
+    crop = crop_factory(cdir(slug, which, "screenshots"))
+    p3_now = {}
+
+    def crop_jpeg(image, box, *a, **k):
+        pp = p3_now.get("ppy")
+        if pp:                                   # par 3: more ground round the green, most of it on the tee side
+            e = (P3_PAD - 14.0) * pp
+            box = (box[0] - e, box[1] - e, box[2] + e, box[3] + 1.6 * e)
+        return crop(image, box, *a, **k)
+    BW.crop_jpeg = crop_jpeg
+    par3_hole0 = BW.par3_hole
+
+    def par3_hole(h):
+        p = course.PAR3[h]
+        p3_now["ppy"] = BW.frame(p["tee"], p["flag"], p["center"])[3]
+        try:
+            return par3_hole0(h)
+        finally:
+            p3_now.clear()
+    if not getattr(yb.par3_plan, "_floored", False):
+        yb.par3_plan = floored_plan(yb.par3_plan)
+    p3z = par3_zones(cfg, which) if course.PAR3 else {}
     BW.FN = {}
     base = meta["tee_set"]
     sets = [s for s in (cfg.get("sets") or list(meta["tee_sets"])) if s in meta["tee_sets"]]
@@ -463,7 +766,8 @@ def build_page(slug, which, out=None, data_out=None):
     fc = forecast(slug)
     holes = []
     for h in course.ORDER:
-        d = BW.par3_hole(h) if h in course.PAR3 else BW.tee_hole(h)
+        d = par3_hole(h) if h in course.PAR3 else BW.tee_hole(h)
+        d["haz"] = hazard_outlines(p3z.get(h, []) if h in course.PAR3 else course.HOLES[h].get("zones", []))
         d["key"] = str(h)
         d["label"] = str(h)
         d["bearing"] = course.BEARINGS.get(h)
@@ -492,10 +796,12 @@ def build_page(slug, which, out=None, data_out=None):
                 d["note"] = BP.note_v2(h, r).replace(" of 64 what-if worlds", f" of {r.get('draws', 64)} what-if worlds")
                 d["calm"] = dict(pick=r["pick"], aim=r["aim"], tie=bool(r["tie"]), margin=r["margin"],
                                  flips=r.get("width_flips", []), temp=r.get("temp_f", M.hole_temp(h)),
-                                 window=r.get("window"))
+                                 window=r.get("window"), runner=r.get("runner"), se=r.get("margin_se"),
+                                 p=r.get("p_pick_beats_runner"))
             hn = (cfg.get("hole_notes") or {}).get(str(h))
             if hn:
                 d["note"] = (d["note"] + " " if d["note"] else "") + "Map: " + hn
+                d["map_note"] = hn
         if h in course.PAR3:
             hn = (cfg.get("hole_notes") or {}).get(str(h))
             if hn:
@@ -510,7 +816,8 @@ def build_page(slug, which, out=None, data_out=None):
                 speeds=grid["speeds"], dirs=grid["dirs"], temps=grid["temps"], holes=holes, offsets=sorted(grids),
                 forecast=[dict(date=r["date"], hour=r["hour"], mph=r["wind_mph"], gust=r["gust_mph"],
                                dir=r["wind_from_deg"], temp=r["temp_f"]) for r in fc["hourly"]],
-                fetched=fc.get("fetched_utc", ""), draws=int(cfg.get("draws", 64)))
+                fetched=fc.get("fetched_utc", ""), draws=int(cfg.get("draws", 64)),
+                temp_k=float(M.central()["temp_k"]))
     if data_out:
         json.dump(data, open(data_out, "w"), separators=(",", ":"))
         return
@@ -537,6 +844,7 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--draws", type=int, default=64)
     ap.add_argument("--swings", type=int, default=0)
+    ap.add_argument("--refine", type=int, default=0, help="wind: fresh common swings for the +/-10-yd aim refine stage")
     ap.add_argument("--data-out")
     a = ap.parse_intermixed_args()
     if a.cmd == "prepare":
@@ -546,7 +854,7 @@ def main():
                    swings=a.swings or 3000)
     elif a.cmd == "wind":
         temps = [float(t) for t in (a.temps or ",".join(str(t) for t in config(a.slug)["temps"])).split(",")]
-        run_wind(a.slug, a.which, a.back, temps, a.out, swings=a.swings or 2500)
+        run_wind(a.slug, a.which, a.back, temps, a.out, swings=a.swings or 2500, refine=a.refine)
     elif a.cmd == "merge":
         merge(a.slug, a.which, a.parts)
     elif a.cmd == "page":

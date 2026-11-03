@@ -112,7 +112,7 @@ tr.best td{font-weight:600}
       <div class="holehead"><span class="holeno" id="hNo"></span><span class="label" id="hPar"></span><span id="hBadges"></span></div>
       <div><div class="label" id="playLbl">Play</div><div class="play" id="hPlay"></div><div class="adj" id="hAdj" hidden></div><div class="sub" id="hAim"></div></div>
       <div id="hTable"></div>
-      <div class="row" id="adjRow"><span class="label">Move this tee</span><input type="range" id="adj" min="-60" max="60" step="10"><span id="adjLbl" class="sub"></span></div>
+      <div class="row" id="adjRow"><span class="label">Move this tee</span><input type="range" id="adj" min="-60" max="60" step="5"><span id="adjLbl" class="sub"></span></div>
       <div class="sub" id="hElev"></div>
       <div class="note" id="hNote"></div>
       <div class="row"><div class="seg"><button id="prev">◀ Prev</button><button id="next">Next ▶</button></div></div>
@@ -248,7 +248,9 @@ function solvePar3(h){
   const g = (sp,dd) => sp===0 ? S3.plays["0_0"] : S3.plays[sp+"_"+dd];
   const plays = (1-ws)*((1-wd)*g(s0,d0)+wd*g(s0,d1)) + ws*((1-wd)*g(s1,d0)+wd*g(s1,d1));
   const mod = windMod(st.mph); const b = S3.boxes[String(mod)];
-  return {rel, plays, mod, box:b, S3, setName, play: b.play * plays / S3.center};
+  /* temperature, as on the tee shots (carry x (1 - k (70 - T)), D.temp_k per F): a cold day plays longer */
+  const tF = tempFor(h), tk = D.temp_k || 0, tmul = 1 / (1 - tk * (70 - tF));
+  return {rel, plays, mod, box:b, S3, setName, tF, tmul, play: b.play * plays / S3.center * tmul};
 }
 const P = (h, p) => [(p[0]-h.x0)*h.s, (p[1]-h.y0)*h.s];
 const at = (h, along, lat) => [h.tee[0]+(along*h.f[0]+lat*h.r[0])*h.ppy, h.tee[1]+(along*h.f[1]+lat*h.r[1])*h.ppy];
@@ -292,7 +294,8 @@ function render(){
     vb = [0, y0, h.w, y1 - y0];
   }
   ov.setAttribute("viewBox", vb.join(" "));
-  const IMG = `<image href="${h.img}" x="0" y="0" width="${h.w}" height="${h.h}"/>`;
+  const HZ = (h.haz || []).map(([lie, pts]) => `<polygon points="${pts.map(p => P(h, p).join(",")).join(" ")}" fill="${lie === "water" ? "rgba(40,140,255,.18)" : "none"}" stroke="${lie === "water" ? "#4aa8ff" : "#ff5a5a"}" stroke-width="2" stroke-dasharray="${lie === "water" ? "2 3" : "8 4"}"/>`).join("");
+  const IMG = `<image href="${h.img}" x="0" y="0" width="${h.w}" height="${h.h}"/>` + HZ;
   document.getElementById("view").hidden = h.kind !== "tee";
   document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
   document.getElementById("hNo").textContent = "Hole " + h.label.replace(/ (Black|Gold) tee$/, "");
@@ -346,6 +349,8 @@ function render(){
     if(own){ const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${r.pick} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     const calm = solveTeeCalm(h);
     if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
+    else if(r.bayes && h.calm && h.calm.runner && (h.calm.margin < 0.03 || (h.calm.p != null && h.calm.p < 0.8)))
+      badges.push(`<span class="pill tie">Close call · ${h.calm.runner} +${h.calm.margin.toFixed(3)}${h.calm.p != null ? `, ${r.pick} better in ${Math.round(h.calm.p * 100)}% of what-if golfers` : ""}</span>`);
     if(calm !== r.pick && r.T.back === 0) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
     const mv = best.drift + best.kick + cL;
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
@@ -362,6 +367,9 @@ function render(){
     if(Math.abs(B - r.T.want) > 5) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B)} yds ${B >= 0 ? "back" : "up"}</span>`);
     document.getElementById("hElev").innerHTML = be ? (B ? `Elevation measured from the ${h.base_set} tee. ` : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
     let note = h.note || "";
+    if(r.T.back !== 0) note = `The calm-day book (club, aim, fairway / trouble shares, yards in) is for the ${h.base_set} tee, so it is not shown here: from this tee use the play and the club table above (solved ${Math.abs(r.T.back)} yds ${r.T.back > 0 ? "back" : "up"} the line).` +
+      (Math.abs(r.T.back) >= 100 ? " This tee is placed by moving the " + h.base_set + " tee along the line, not from its own box: a rough guide." : "") +
+      (h.map_note ? ` Map (yds from the ${h.base_set} tee): ${h.map_note}` : "");
     document.getElementById("hNote").textContent = note;
   } else {
     const r = P3;
@@ -373,16 +381,18 @@ function render(){
     const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
     /* breakdown: box target (calm, flat) + elevation + wind = plays like; rounded parts add up exactly */
     const T = Math.round(r.box.play), calmP = r.S3.plays["0_0"] / r.S3.center;
-    const eY = Math.round(r.box.play * calmP - r.box.play), wY = Math.round(r.play) - T - eY;
+    const eY = Math.round(r.box.play * calmP - r.box.play), tY = Math.round(r.play - r.play / r.tmul);
+    const wY = Math.round(r.play) - T - eY - tY;
     const sg = v => v > 0 ? "+" + v : v < 0 ? "−" + (-v) : "±0";
     const ae = document.getElementById("hAdj"); ae.hidden = false;
-    ae.innerHTML = `<span>${T} target</span><span class="${eY > 0 ? "up" : eY < 0 ? "dn" : ""}">${sg(eY)} elevation</span><span class="${wY > 0 ? "up" : wY < 0 ? "dn" : ""}">${sg(wY)} wind</span>`;
+    ae.innerHTML = `<span>${T} target</span><span class="${eY > 0 ? "up" : eY < 0 ? "dn" : ""}">${sg(eY)} elevation</span><span class="${wY > 0 ? "up" : wY < 0 ? "dn" : ""}">${sg(wY)} wind</span>` +
+      (D.temp_k ? `<span class="${tY > 0 ? "up" : tY < 0 ? "dn" : ""}">${sg(tY)} at ${Math.round(r.tF)}°F</span>` : "");
     if(Math.abs(r.play - r.S3.center) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center)} on the card</span>`);
     document.getElementById("hAim").textContent = `Land it in the blue box. ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front}</td><td>${Math.round(r.S3.center)}</td><td>${r.S3.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
     document.getElementById("hNote").textContent = h.note || "";
     const ge = h.elev;
-    document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds; "Play it like" includes this and the wind.` : "";
+    document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds; "Play it like" includes this, the wind${D.temp_k ? " and the temperature (your numbers are 70°F numbers)" : ""}.` : "";
   }
   document.getElementById("hBadges").innerHTML = badges.join(" ");
   renderStrip(); renderControls(); save();
