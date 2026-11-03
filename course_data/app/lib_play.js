@@ -25,6 +25,10 @@ function LP(){ if (!st.lp || typeof st.lp !== "object") st.lp = {slug: null};
   if (!st.lp.custom) st.lp.custom = {from: 180, mph: 10, temp: 65};
   return st.lp; }
 function lpSet(L){ const s = LP().set[L.id]; return L.sets.some(x => x.name === s) ? s : L.sets[0].name; }
+/* golfer-facing set names (the page's D.set_labels / D.tee_labels, e.g. "Back tees (from the map)" for a no-card
+   page's "osm_back" set); the set name stays the key for lookups, answers and the stored pick */
+const lpSetObj = (L, s) => L.sets.find(x => x.name === s) || {name: s};
+const lpTeesLabel = (L, s) => { const o = lpSetObj(L, s); return o.tee_label ? o.tee_label + " tees" : o.label || s + " tees"; };
 function lpIdx(L){ const lp = LP(), LS = lpList(L);
   if (lp.want && lp.want.slug === L.id) { const k = LS.findIndex(H => H.no === lp.want.h); if (k >= 0) lp.idx[L.id] = k; delete lp.want; }
   const i = lp.idx[L.id] || 0; return i < LS.length ? i : 0; }
@@ -154,12 +158,12 @@ function renderLib(){
   const strip = RT ? lpStripRoute(L, RT, i) : L.holes.map((Hh, k) => { const rr = lpSolve(L, Hh, lpWind(L, Hh)), c = (L.check_holes || []).includes(Hh.no) || (rr.V.qa || [])[0] === "CHECK";
     return `<button class="chip" data-lpi="${k}" aria-current="${k === i}" aria-label="Hole ${Hh.no}">${c ? "<i>⚠</i>" : ""}<b>${Hh.no}</b><span class="${rr.kind === "tee" ? cls(rr.club) : ""}">${rr.kind === "tee" ? esc(lpShort(rr.club)) : Math.round(rr.play)}</span></button>`; }).join("");
   const FC = {id: slug, confirm: null};
-  return `<div class="hhead" id="hhead">${top(`<span class="sub">${esc(r.setName)} tees · library course</span>`)}
+  return `<div class="hhead" id="hhead">${top(`<span class="sub">${esc(lpTeesLabel(L, r.setName))} · library course</span>`)}
     <div class="holehead"><button class="navbtn" id="lprev" data-lpnav="-1" aria-label="Previous hole">‹</button>
       <div style="text-align:center;min-width:0"><div class="holeno">Hole ${H.no}</div><div class="sub">Par ${H.par} · ${V.yds} yds</div>
       <div class="row" style="justify-content:center;margin-top:4px">${chk ? badge("check") : `<span class="badge auto">PASS</span>`}${STORE.reports(slug).some(x => x.hole === H.no) ? `<span class="badge check">reported</span>` : ""}</div></div>
       <button class="navbtn" id="lnext" data-lpnav="1" aria-label="Next hole">›</button></div></div>
-    <div class="seg" id="lpSets" role="group" aria-label="Tee set">${L.sets.map(s => `<button data-lpset="${esc(s.name)}" aria-pressed="${s.name === r.setName}">${esc(s.name)}${s.total ? " " + Number(s.total).toLocaleString() : ""}</button>`).join("")}</div>
+    <div class="seg" id="lpSets" role="group" aria-label="Tee set">${L.sets.map(s => `<button data-lpset="${esc(s.name)}" aria-pressed="${s.name === r.setName}">${esc(s.label || s.name)}${s.total ? " " + Number(s.total).toLocaleString() : ""}</button>`).join("")}</div>
     ${reviewBanner(L.review)}${L.review && L.review.holes && L.review.holes[String(PN)] ? `<div class="review bad" id="lpHoleReview">Reviewer, hole ${PN}: ${esc(L.review.holes[String(PN)][0])}${L.review.holes[String(PN)][1] ? ` — ${esc(L.review.holes[String(PN)][1])}` : ""}</div>` : ""}
     ${lpDraw(L, H, r, W)}
     <section class="panel stack">${play}<div class="cond"><span>${cond}</span><span class="windico">${windIcon(r.rel, W.mph)}${esc(relTxt)}</span></div>

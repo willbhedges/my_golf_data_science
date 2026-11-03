@@ -381,8 +381,11 @@ and the card says it is saved on this device only. Read back, every field is unt
 `build_library_play.py` (run by `build_app.py`) turns each built library page into one compact JSON file that the page
 fetches **by relative URL** (`lib/<slug>.json`) when a golfer opens the course (36 files, 21 MB; the page stays ~13.7 MB).
 Library entries carry `lib`, `checks` (CHECK holes) and a "Play this course" button. Record: `{id, name, town, state,
-status, check_holes, days, hourly[[day, hour, mph, dir, temp]], tee_hour, temps, sets[{name, colour, total}], clubs[],
+status, check_holes, days, hourly[[day, hour, mph, dir, temp]], tee_hour, temps, sets[{name, colour, total, label?, tee_label?}], clubs[],
 speeds [0,10,20], dirs [0,45..315], images {id: 300-px JPEG q42}, holes[{no, ref, par, green_ll, sets: {set: V}}]}`.
+Set names are keys (holes[].sets, checks[].tee_set, the stored pick); `label` / `tee_label` are the page's golfer-facing
+names (D.set_labels / D.tee_labels: a no-card page's "osm_back" set is "Back tees (from the map)" / "Back"), shown in the
+set picker, the header and the library list.
 V: `yds, img, w, h, bearing, kind, note, tee_ll, qa [PASS|CHECK, reasons]`; tee shots `tee, f, r, ppy, green_al,
 calm {pick, aim, win, tie}, wind[17]` = `[club idx, aim, total, drift]` at 0 mph, then 10 and 20 mph x 8 directions
 relative to the tee line (page grids at the middle temperature, elevation applied, the page's calm-pick rule); par 3s

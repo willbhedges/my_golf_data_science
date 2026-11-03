@@ -63,6 +63,16 @@ async function shot(page, name) { await page.screenshot({ path: path.join(shots,
 
 (async () => {
   expect(cards.length > 0 && cards.length <= 4, `${SLUG}: ${cards.length} native cards (want 1-4)`);
+  // stale build outputs fail here, not as a 30 s click timeout: the page must have lib_play.js's native cards and
+  // every card's hole must be a tee shot on its set in the record (a record older than the page's native.json can
+  // have a different hole there: eagle_bend 13 was a par 3 in the record committed before 4284b9e00)
+  const page0 = fs.readFileSync(path.join(outDir, "aim_caddie.html"), "utf8");
+  const stale = [];
+  if (!page0.includes("lpChecks")) stale.push("aim_caddie.html has no native check cards (built before lib_play.js had them)");
+  for (const c of cards) { const H = rec.holes.find(h => h.ref === String(c.hole)), V = H && H.sets[c.tee_set];
+    if (!V || V.kind !== "tee") stale.push(`${c.id}: hole ${c.hole} is ${V ? "a " + V.kind : "missing"} on ${c.tee_set} in lib/${SLUG}.json`); }
+  if (stale.length) { console.log("FAIL (stale build: python3 course_data/app/build_app.py, or build_library_play.py --only " + SLUG
+    + " + build_app.py --relink)\n" + stale.join("\n")); process.exit(1); }
   const srv = await serve(), base = `http://127.0.0.1:${srv.address().port}/`;
   const browser = await chromium.launch({ executablePath: fs.existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : undefined });
   const cardHoles = new Set(cards.map(c => String(c.hole)));

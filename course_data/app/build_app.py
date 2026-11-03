@@ -974,6 +974,8 @@ def main():
             e["lib"] = x["file"]
             e["checks"] = x["check_holes"]
             e["holes"] = x["holes"]
+            if x.get("labels"):                 # golfer set names (the page's D.set_labels), not keys like "osm_back"
+                e["tees"] = [[x["labels"].get(t[0], t[0])] + list(t[1:]) for t in e.get("tees") or []]
             if x.get("review"):
                 e["review"] = x["review"]
     log(f"  {len(played)} library courses playable, {sum(x['bytes'] for x in played.values()) / 1e6:.1f} MB in {os.path.relpath(lib_dir, ROOT)}")

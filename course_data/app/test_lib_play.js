@@ -4,7 +4,7 @@
 //  1. at 400 px and 1280 px: 10 random library courses (seeded; the seed is printed) are opened from the library
 //     card ("Play this course ›"), every hole is walked with the next arrow, and every tee set of the course is shown:
 //     a club or "plays like" yardage, an aim drawn on a loaded picture, the hole's PASS / CHECK result, the confirm
-//     question; no NaN / undefined, no horizontal scroll, no console errors. Hole 1 and the first par 3 are
+//     question; no NaN / undefined, no set key "osm_back" (a no-card course is always picked), no horizontal scroll, no console errors. Hole 1 and the first par 3 are
 //     screenshotted (out/test_lib/).
 //  2. custom wind changes the plan (a 20 mph wind moves the aim or the club on some hole) and the strip follows it;
 //  3. shared confirmations: golfer A answers "Yes" on hole 1 and "No" on hole 2 of a course, golfer B (fresh device,
@@ -48,9 +48,11 @@ function watch(page, tag) {
 }
 async function check(page, what) {
   const r = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth,
-    nan: /NaN|undefined|\[object Object\]|Infinity/.test(document.getElementById("app").innerText) }));
+    nan: /NaN|undefined|\[object Object\]|Infinity/.test(document.getElementById("app").innerText),
+    key: /\bosm_back\b/.test(document.getElementById("app").innerText) }));
   if (r.sw > r.cw + 1) problems.push(`${what}: horizontal scroll ${r.sw} > ${r.cw}`);
   if (r.nan) problems.push(`${what}: NaN/undefined in the page`);
+  if (r.key) problems.push(`${what}: the set key "osm_back" shown (want the page's set label)`);
 }
 async function sharedContext(browser, server, uid, viewport) {
   const ctx = await browser.newContext({ viewport, deviceScaleFactor: 1 });
@@ -97,6 +99,9 @@ async function holeState(page) {
   expect(counts >= libs.length + 5, `"Play here" counts ${counts}`);
   const pick = [], pool = libs.slice();
   while (pick.length < Math.min(N, pool.length)) pick.push(pool.splice(Math.floor(rnd() * pool.length), 1)[0]);
+  // always one no-card course (its set key "osm_back" must show as the page's label, "Back tees (from the map)")
+  const noCard = e => { try { return JSON.parse(fs.readFileSync(path.join(outDir, e.lib))).sets.some(x => x.name === "osm_back"); } catch (err) { return false; } };
+  if (pick.length && !pick.some(noCard)) { const k = pool.findIndex(noCard); if (k >= 0) pick[pick.length - 1] = pool[k]; }
   console.log("courses: " + pick.map(e => e.id).join(", "));
   const routed = e => /"route":\{/.test(fs.readFileSync(path.join(outDir, e.lib), "utf8"));
   const plain = pick.find(e => !routed(e)) || libs.find(e => !routed(e));

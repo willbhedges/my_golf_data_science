@@ -12,7 +12,9 @@ small JSON file, out/lib/<slug>.json, that the app fetches by relative URL when 
   plan precomputed as the hole's wind table.
 
   python3 course_data/app/build_library_play.py [--out course_data/app/out/lib] [--only slug,...]
-Returns (from build()) {slug: {"file": "lib/<slug>.json", "bytes": n, "check_holes": [...], "holes": n}}.
+Returns (from build()) {slug: {"file": "lib/<slug>.json", "bytes": n, "check_holes": [...], "holes": n, "sets": [...],
+"labels": {set: golfer label}}}. Set names stay keys; a set the page labels (D.set_labels, e.g. a no-card page's
+"osm_back" -> "Back tees (from the map)") carries `label` / `tee_label` for display.
 """
 import argparse
 import base64
@@ -343,8 +345,39 @@ def inputs_sig(slug, page):
     return h.hexdigest()[:16]
 
 
+def _labels(rec):
+    """{set: golfer label} of a built record's labelled sets (the library list shows these, not the keys)"""
+    return {s["name"]: s["label"] for s in rec["sets"] if s.get("label")}
+
+
 def _card_review(rv):
     return dict(safe=rv["safe"], why=rv["why"]) if rv else None
+
+
+def _CP():
+    if LIBDIR not in sys.path:
+        sys.path.insert(0, LIBDIR)
+    import course_page
+    return course_page
+
+
+NO_CARD_SET = "osm_back"      # the package's own set of a no-card page (course_page.has_card / label_no_card)
+
+
+def page_labels(D):
+    """The page's golfer-facing set names, {set: label} and {set: tee label} (D.set_labels / D.tee_labels, written by
+    course_page.label_no_card; the set keys stay keys). A no-card page built before those labels existed (its set is
+    still the "osm_back" key) is labelled here the same way, notes included."""
+    if not D.get("set_labels") and NO_CARD_SET in [D.get("base_set")] + list(D.get("sets") or []):
+        _CP().label_no_card(D, NO_CARD_SET)
+    return dict(D.get("set_labels") or {}), dict(D.get("tee_labels") or {})
+
+
+def relabel(o, labels):
+    """golfer text (qa reasons) with a labelled set's key replaced the page's way (course_page.label_no_card)"""
+    for s in labels:
+        o = _CP().label_no_card({"v": o}, s)["v"]
+    return o
 
 
 def build_one(slug, idx_row, out_dir):
@@ -352,6 +385,7 @@ def build_one(slug, idx_row, out_dir):
     D = load_page(page)
     if not D:
         return None
+    set_labels, tee_labels = page_labels(D)
     pkg = json.load(open(os.path.join(LIBDIR, slug, "package.json")))
     ph = pkg.get("holes") or {}
     if isinstance(ph, list):
@@ -434,7 +468,7 @@ def build_one(slug, idx_row, out_dir):
                          plays=par3_table(h, S3))
             q = (qa.get(s) or {}).get(str(key))
             if q:
-                V["qa"] = q
+                V["qa"] = relabel(q, set_labels)
             rec["sets"][s] = V
             V_of[(s, str(key))] = V
         if rec:
@@ -451,10 +485,12 @@ def build_one(slug, idx_row, out_dir):
                hourly=[[days.index(r["date"]) if r["date"] in days else 0, r["hour"], round(r["mph"], 1), r.get("dir") or 0,
                         round(r.get("temp") or 65)] for r in fc if r.get("date") in days],
                tee_hour=D.get("tee_hour") or 9, temps=D.get("temps"),
-               sets=[dict(name=s, colour=(D.get("colors") or {}).get(s, "#888"), total=(D.get("set_totals") or {}).get(s)) for s in sets],
+               sets=[dict(name=s, colour=(D.get("colors") or {}).get(s, "#888"), total=(D.get("set_totals") or {}).get(s),
+                          **({"label": set_labels[s]} if s in set_labels else {}),
+                          **({"tee_label": tee_labels[s]} if s in tee_labels else {})) for s in sets],
                card_sets=[[t.get("name"), t.get("yards"), t.get("on_page")] for t in (idx_row.get("tee_sets") or [])],
                clubs=clubs, speeds=SPEEDS, dirs=DIRS8, imagery=D.get("imagery"),
-               foot=D.get("foot_extra", ""), review=review_of(slug), inputs=inputs_sig(slug, page), images=images, holes=holes)
+               foot=D.get("foot_extra", ""), review=relabel(review_of(slug), set_labels), inputs=inputs_sig(slug, page), images=images, holes=holes)
     try:
         checks = native_cards(slug, by_set, V_of, D["temps"], clubs)
     except Exception as e:                              # noqa: BLE001  (a page without its questions, never no page)
@@ -467,7 +503,7 @@ def build_one(slug, idx_row, out_dir):
     with open(fn, "w") as fh:
         json.dump(rec, fh, separators=(",", ":"))
     return dict(file=f"lib/{slug}.json", bytes=os.path.getsize(fn), holes=len(holes), check_holes=rec["check_holes"],
-                sets=[s["name"] for s in rec["sets"]], review=_card_review(rec["review"]))
+                sets=[s["name"] for s in rec["sets"]], labels=_labels(rec), review=_card_review(rec["review"]))
 
 
 def _live2():
@@ -536,7 +572,8 @@ def build(out_dir=OUT, only=None, log=print):
                 d = None
         if d and d.get("inputs") == inputs_sig(slug, src):
             res[slug] = dict(file=f"lib/{slug}.json", bytes=os.path.getsize(fn), holes=len(d["holes"]),
-                             check_holes=d["check_holes"], sets=[s["name"] for s in d["sets"]], review=_card_review(d.get("review")))
+                             check_holes=d["check_holes"], sets=[s["name"] for s in d["sets"]], labels=_labels(d),
+                             review=_card_review(d.get("review")))
             continue
         try:
             x = build_one(slug, r, out_dir)
