@@ -1,6 +1,6 @@
 # Rivercut Golf Course (Springfield, MO) - Black tees
 
-Built 2026-11-02T19:39:05Z. OSM relation/5981089. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T22:45:29Z. OSM relation/5981089. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 

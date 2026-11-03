@@ -49,11 +49,12 @@
    },
    "value": 0.0539,
    "plans": {
-    "current": "Driver +15",
+    "current": "Driver +13",
     "L": "4-wood +10",
     "R": "4-wood +2",
     "both": "4-wood +5",
-    "none": "Driver +15"
+    "none": "Driver +15",
+    "planner": "Driver +15"
    },
    "geom": {
     "a0": 130.0,
@@ -190,12 +191,12 @@
     {
      "answer": "L",
      "label": "Left",
-     "text": "Re-planned: 4-wood, 10 yds right (now Driver, 15 yds right). Playing today's plan would cost 0.09 strokes.",
+     "text": "Re-planned: 4-wood, 10 yds right (now Driver, 13 yds right). Playing today's plan would cost 0.09 strokes.",
      "outcome": {
       "pick": "4-wood",
       "aim": 10.0,
       "club_changed": true,
-      "aim_shift": -5.0,
+      "aim_shift": -3.0,
       "d_ev": 0.0,
       "regret": 0.089,
       "severity": "red"
@@ -204,12 +205,12 @@
     {
      "answer": "R",
      "label": "Right",
-     "text": "Re-planned: 4-wood, on the line (now Driver, 15 yds right). Playing today's plan would cost 0.13 strokes.",
+     "text": "Re-planned: 4-wood, on the line (now Driver, 13 yds right). Playing today's plan would cost 0.13 strokes.",
      "outcome": {
       "pick": "4-wood",
       "aim": 2.0,
       "club_changed": true,
-      "aim_shift": -13.0,
+      "aim_shift": -11.0,
       "d_ev": 0.0,
       "regret": 0.1262,
       "severity": "red"
@@ -218,12 +219,12 @@
     {
      "answer": "both",
      "label": "Both",
-     "text": "Re-planned: 4-wood, 5 yds right (now Driver, 15 yds right). Playing today's plan would cost 0.22 strokes.",
+     "text": "Re-planned: 4-wood, 5 yds right (now Driver, 13 yds right). Playing today's plan would cost 0.22 strokes.",
      "outcome": {
       "pick": "4-wood",
       "aim": 5.0,
       "club_changed": true,
-      "aim_shift": -10.0,
+      "aim_shift": -8.0,
       "d_ev": 0.0,
       "regret": 0.2163,
       "severity": "red"
@@ -235,7 +236,7 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": 15.0,
+      "aim": 13.0,
       "club_changed": false,
       "aim_shift": 0.0,
       "d_ev": 0.0,
@@ -304,11 +305,12 @@
    },
    "value": 0.0337,
    "plans": {
-    "current": "Driver +22",
+    "current": "Driver +20",
     "L": "Driver +22",
     "R": "4-wood +8",
     "both": "4-wood +8",
-    "none": "Driver +22"
+    "none": "Driver +22",
+    "planner": "Driver +22"
    },
    "geom": {
     "a0": 130.0,
@@ -448,7 +450,7 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": 22.0,
+      "aim": 20.0,
       "club_changed": false,
       "aim_shift": 0.0,
       "d_ev": 0.0,
@@ -459,12 +461,12 @@
     {
      "answer": "R",
      "label": "Right",
-     "text": "Re-planned: 4-wood, 8 yds right (now Driver, 22 yds right). Playing today's plan would cost 0.14 strokes.",
+     "text": "Re-planned: 4-wood, 8 yds right (now Driver, 20 yds right). Playing today's plan would cost 0.14 strokes.",
      "outcome": {
       "pick": "4-wood",
       "aim": 8.0,
       "club_changed": true,
-      "aim_shift": -14.0,
+      "aim_shift": -12.0,
       "d_ev": 0.0,
       "regret": 0.135,
       "severity": "red"
@@ -473,12 +475,12 @@
     {
      "answer": "both",
      "label": "Both",
-     "text": "Re-planned: 4-wood, 8 yds right (now Driver, 22 yds right). Playing today's plan would cost 0.13 strokes.",
+     "text": "Re-planned: 4-wood, 8 yds right (now Driver, 20 yds right). Playing today's plan would cost 0.13 strokes.",
      "outcome": {
       "pick": "4-wood",
       "aim": 8.0,
       "club_changed": true,
-      "aim_shift": -14.0,
+      "aim_shift": -12.0,
       "d_ev": 0.0,
       "regret": 0.1348,
       "severity": "red"
@@ -490,7 +492,7 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": 22.0,
+      "aim": 20.0,
       "club_changed": false,
       "aim_shift": 0.0,
       "d_ev": 0.0,
@@ -559,11 +561,12 @@
    },
    "value": 0.0207,
    "plans": {
-    "current": "Driver +0",
+    "current": "Driver -0",
     "L": "4-wood +5",
     "R": "Driver -10",
     "both": "4-wood +2",
-    "none": "Driver +0"
+    "none": "Driver +0",
+    "planner": "Driver +0"
    },
    "geom": {
     "a0": 130.0,
@@ -705,7 +708,7 @@
       "pick": "4-wood",
       "aim": 5.0,
       "club_changed": true,
-      "aim_shift": 5.0,
+      "aim_shift": 5.5,
       "d_ev": 0.0,
       "regret": 0.0446,
       "severity": "red"
@@ -717,11 +720,11 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": -10.0,
+      "aim": -0.5,
       "club_changed": false,
-      "aim_shift": -10.0,
+      "aim_shift": 0.0,
       "d_ev": 0.0,
-      "regret": 0.0347,
+      "regret": 0.0,
       "severity": "green"
      }
     },
@@ -733,7 +736,7 @@
       "pick": "4-wood",
       "aim": 2.0,
       "club_changed": true,
-      "aim_shift": 2.0,
+      "aim_shift": 2.5,
       "d_ev": 0.0,
       "regret": 0.0932,
       "severity": "red"
@@ -745,7 +748,7 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": 0.0,
+      "aim": -0.5,
       "club_changed": false,
       "aim_shift": 0.0,
       "d_ev": 0.0,
@@ -814,11 +817,12 @@
    },
    "value": 0.0106,
    "plans": {
-    "current": "Driver +2",
+    "current": "Driver -0",
     "L": "4-wood +2",
     "R": "Driver -2",
     "both": "4-wood +2",
-    "none": "Driver +2"
+    "none": "Driver +2",
+    "planner": "Driver +2"
    },
    "geom": {
     "a0": 130.0,
@@ -960,7 +964,7 @@
       "pick": "4-wood",
       "aim": 2.0,
       "club_changed": true,
-      "aim_shift": 0.0,
+      "aim_shift": 2.0,
       "d_ev": 0.0,
       "regret": 0.0326,
       "severity": "red"
@@ -972,11 +976,11 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": -2.0,
+      "aim": -0.0,
       "club_changed": false,
-      "aim_shift": -4.0,
+      "aim_shift": 0.0,
       "d_ev": 0.0,
-      "regret": 0.0067,
+      "regret": 0.0,
       "severity": "green"
      }
     },
@@ -988,7 +992,7 @@
       "pick": "4-wood",
       "aim": 2.0,
       "club_changed": true,
-      "aim_shift": 0.0,
+      "aim_shift": 2.0,
       "d_ev": 0.0,
       "regret": 0.051,
       "severity": "red"
@@ -1000,7 +1004,7 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": 2.0,
+      "aim": -0.0,
       "club_changed": false,
       "aim_shift": 0.0,
       "d_ev": 0.0,
@@ -1026,7 +1030,9 @@
   }
  ],
  "mapper_sig": "76d2b84e9167b109",
- "note": "4 asked of 14 framed holes",
+ "note": "4 asked of 14 framed holes; 4 kept on the page's own picks",
  "n": 4000,
- "runtime_s": 63.1
+ "runtime_s": 45.0,
+ "dropped": [],
+ "baseline": "page calm-day pick"
 }

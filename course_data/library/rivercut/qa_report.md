@@ -2,20 +2,20 @@
 
 **Status: needs confirm** — confirm holes 15
 
-* page: `course_data/library/rivercut/page.html` (2.4 MB); request `course_data/requests/course_page_rivercut.json`; built 2026-11-02T19:39Z
+* page: `course_data/library/rivercut/page.html` (2.4 MB); request `course_data/requests/course_page_rivercut.json`; built 2026-11-02T22:45Z
 * course: Rivercut Golf Course (Springfield, MO), OSM relation/5981089; holes: osm (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Black, Blue (the two longest sets on the card (combination sets skipped)); page sets: Black, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
 * imagery on the page: 2018-09-17; package imagery 2018
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
 
-* native-grass questions (Black tees, library check cards): holes 1, 16, 8, 9 (4 asked of 14 framed holes)
+* native-grass questions (Black tees, library check cards): holes 1, 16, 8, 9 (4 asked of 14 framed holes; 4 kept on the page's own picks)
 
 Course-level reasons:
 
 * 1 hole(s) with a CHECK
 
-Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
+Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
 ## Black tees
 
