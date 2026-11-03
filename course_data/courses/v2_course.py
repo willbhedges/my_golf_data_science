@@ -656,28 +656,18 @@ def par3_zones(cfg, which):
 
 
 def floored_plan(plan_fn, min_w=BOX_MIN):
-    """yardage_book.par3_plan with the box at least min_w yds each way. When the DECADE cushions do not fit the
-    worse side keeps its full cushion and the box is a single line (hole 16 Back: 159-159 in light wind); the floor
-    widens it AWAY from the worse side only (so the target moves up to min_w / 2 away from it), or both ways on a
-    split. Spirit Hollow's own book does not use this (patched in the v2_course page process only)."""
+    """yardage_book.par3_plan with the box drawn at least min_w yds each way, centred on the DECADE target (which is
+    kept). When the DECADE cushions do not fit, the worse side keeps its full cushion and the box is a single line
+    (hole 16 Back: 159-159 in light wind), drawn as a point. The target is NOT moved: an expected-strokes check on
+    Will's iron pattern (eagle_knoll/opt/par3_ev.py) found moving it 2 yds long on 16, toward the trees, costs
+    ~0.03 strokes. Spirit Hollow's own book does not use this (patched in the v2_course page process only)."""
     def plan(p, *a, **k):
         r = dict(plan_fn(p, *a, **k))
-        for ax, how_k, i in (("lat", "how_lat", 0), ("dep", "how_dep", 1)):
+        for ax in ("lat", "dep"):
             lo, hi = r[ax]
-            if hi - lo >= min_w:
-                continue
-            how = r.get(how_k)
-            if how == "lo":
-                lo, hi = lo, lo + min_w
-            elif how == "hi":
-                lo, hi = hi - min_w, hi
-            else:
+            if hi - lo < min_w:
                 c = (lo + hi) / 2
-                lo, hi = c - min_w / 2, c + min_w / 2
-            r[ax] = (lo, hi)
-            aim = list(r["aim"])
-            aim[i] = (lo + hi) / 2
-            r["aim"] = tuple(aim)
+                r[ax] = (c - min_w / 2, c + min_w / 2)
         return r
     plan._floored = True
     return plan

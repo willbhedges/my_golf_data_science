@@ -151,10 +151,10 @@ def test_refined_solver_replaces_aim_and_pick():
 def test_floored_par3_box():
     one_line = lambda p: dict(lat=(-0.2, 1.0), dep=(2.0, 2.0), how_lat="fits", how_dep="lo", aim=(0.4, 2.0))
     r = vc.floored_plan(one_line)({})
-    assert r["dep"] == (2.0, 6.0) and r["aim"][1] == 4.0         # widened away from the short-side water
-    assert r["lat"][1] - r["lat"][0] == pytest.approx(4.0) and r["aim"][0] == pytest.approx(0.4)
-    hi = vc.floored_plan(lambda p: dict(lat=(-3.0, 3.0), dep=(1.0, 1.0), how_lat="fits", how_dep="hi", aim=(0.0, 1.0)))({})
-    assert hi["dep"] == (-3.0, 1.0)
+    assert r["dep"] == (0.0, 4.0) and r["aim"] == (0.4, 2.0)          # drawn 4 yds deep, the target kept
+    assert r["lat"][1] - r["lat"][0] == pytest.approx(4.0) and np.mean(r["lat"]) == pytest.approx(0.4)
+    wide = vc.floored_plan(lambda p: dict(lat=(-3.0, 3.0), dep=(-5.0, 5.0), aim=(0.0, 0.0)))({})
+    assert wide["lat"] == (-3.0, 3.0) and wide["dep"] == (-5.0, 5.0)
 
 
 def _js_par3(temp, tk):
