@@ -1,0 +1,1863 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "old_works",
+ "corridor_set": "Slag",
+ "mapper": "old_works mapper agent",
+ "started": "2026-11-03T19:05Z",
+ "minutes": 75,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py old_works. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "creek tree line left not in auto (no lidar); slag bunkers right of fairway 180-345; dryland native right beyond cart path",
+   "long_grass": {
+    "L": "none: creek + tree line (added as trees) to the left; nothing playable beyond it inside the window",
+    "R": "native: edit 5 (dryland beyond the irrigated edge at ~+45, both years)"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "fairway",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        120
+       ],
+       [
+        -24,
+        120
+       ],
+       [
+        -22,
+        180
+       ],
+       [
+        -23,
+        240
+       ],
+       [
+        -22,
+        300
+       ],
+       [
+        -26,
+        340
+       ],
+       [
+        -32,
+        380
+       ],
+       [
+        -40,
+        400
+       ],
+       [
+        -70,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto fairway fill runs under the creek crowns; crown edge -22..-26 on 2021 photo and CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -55,
+        120
+       ],
+       [
+        -24,
+        120
+       ],
+       [
+        -22,
+        180
+       ],
+       [
+        -23,
+        240
+       ],
+       [
+        -22,
+        300
+       ],
+       [
+        -26,
+        340
+       ],
+       [
+        -32,
+        380
+       ],
+       [
+        -40,
+        400
+       ],
+       [
+        -60,
+        400
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "continuous creek tree line, red crowns in CIR, same in Nov 2023; auto has no trees here (no lidar on this course)"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       43,
+       217,
+       8,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; right edge of fairway at 212-222"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        52,
+        250
+       ],
+       [
+        68,
+        250
+       ],
+       [
+        70,
+        268
+       ],
+       [
+        55,
+        266
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       62,
+       290,
+       8,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; ring-shaped bunker"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "R",
+       "a0": 150,
+       "a1": 360
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       63,
+       330,
+       7,
+       12
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; ring bunkers beside two crowns"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       64,
+       195,
+       6,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       24,
+       362,
+       3,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown, red in CIR, shadow in 2023"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       31,
+       350,
+       3,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown, red in CIR"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "row of small trees on the left fairway edge 225-320; slag bunker right 285-300; dryland left beyond cart path",
+   "long_grass": {
+    "L": "native: edit 7 (dryland beyond the cart path, ~15 yds off the fairway)",
+    "R": "none: irrigated turf (pink CIR) to the window edge at 140-260; beyond 260 the green complex + OSM bunkers"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -13,
+       322,
+       3,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown with long Nov-2023 shadow, red in CIR"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -12,
+       307,
+       2,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown, CIR red, shadow 2023"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -12,
+       279,
+       2,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown, CIR red, shadow 2023"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -11,
+       263,
+       2,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown, CIR red, shadow 2023"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -12,
+       245,
+       2,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown, CIR red, shadow 2023"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -12,
+       228,
+       2,
+       3
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown, CIR red, shadow 2023"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       51,
+       292,
+       5,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; in the fairway notch right of the landing area"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 15,
+       "side": "L",
+       "a0": 140,
+       "a1": 340
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years; cart path ~-25"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "OSM bunkers right are right; small crowns left 310-325; dryland both sides beyond the irrigated area",
+   "long_grass": {
+    "L": "native: edit 2 (beyond the cart path, ~15 off fairway)",
+    "R": "native: edit 3 (beyond the bunkers / cart path, ~15 off)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -30,
+       320,
+       4,
+       3
+      ]
+     },
+     "confidence": "low",
+     "evidence": "crowns + shadows, CIR red"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28,
+       262,
+       3,
+       4
+      ]
+     },
+     "confidence": "low",
+     "evidence": "crown, CIR red"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 15,
+       "side": "L",
+       "a0": 140,
+       "a1": 380
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 15,
+       "side": "R",
+       "a0": 130,
+       "a1": 340
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "OSM bunker right is only part of a large slag area 245-305; second slag patch right 185-235; carry area 140-205 is slag / dryland mix (left as is)",
+   "long_grass": {
+    "L": "none: irrigated turf of the neighbouring hole (pink CIR) and the mapped pond / sand",
+    "R": "native: edit 2 (beyond the cart path at ~+32)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        6,
+        300
+       ],
+       [
+        22,
+        305
+       ],
+       [
+        30,
+        290
+       ],
+       [
+        30,
+        250
+       ],
+       [
+        20,
+        243
+       ],
+       [
+        8,
+        250
+       ],
+       [
+        5,
+        275
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; extends the OSM bunker"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        18,
+        185
+       ],
+       [
+        40,
+        185
+       ],
+       [
+        42,
+        230
+       ],
+       [
+        22,
+        235
+       ],
+       [
+        18,
+        210
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; patchy"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "R",
+       "a0": 190,
+       "a1": 390
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "OSM bunker ok; scattered crowns right are 20+ yds off; dryland both sides",
+   "long_grass": {
+    "L": "native: edit 0 (beyond the cart path ~-45)",
+    "R": "native: edit 1 (from 260 on, beyond the irrigated edge; 140-260 is another hole's fairway)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 12,
+       "side": "L",
+       "a0": 140,
+       "a1": 340
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "R",
+       "a0": 262,
+       "a1": 400
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "large slag waste right 120-262 (only an OSM strip mapped); slag bunkers left 255-325",
+   "long_grass": {
+    "L": "native: edit 3 (dryland beyond the left fairway edge, mixed with slag)",
+    "R": "none: slag waste (added as sand) to the window edge"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        3,
+        120
+       ],
+       [
+        3,
+        185
+       ],
+       [
+        10,
+        203
+       ],
+       [
+        22,
+        222
+       ],
+       [
+        38,
+        245
+       ],
+       [
+        55,
+        258
+       ],
+       [
+        70,
+        262
+       ],
+       [
+        70,
+        120
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; part near 245-270 x +45 may be standing water (bluish in 2023)"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -32,
+        318
+       ],
+       [
+        -25,
+        327
+       ],
+       [
+        -5,
+        312
+       ],
+       [
+        -3,
+        303
+       ],
+       [
+        -12,
+        300
+       ],
+       [
+        -28,
+        306
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; elongated bunker on the left edge"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       -42,
+       265,
+       7,
+       8
+      ]
+     },
+     "confidence": "low",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; patch with a crown"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "L",
+       "a0": 200,
+       "a1": 380
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "large slag right 185-262 and a heart-shaped slag / pond left 272-300 unmapped (landing oval)",
+   "long_grass": {
+    "L": "none: cart path, small crowns, then the neighbouring hole's irrigated turf",
+    "R": "none: slag (added as sand) beyond the fairway"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        30,
+        262
+       ],
+       [
+        45,
+        262
+       ],
+       [
+        55,
+        258
+       ],
+       [
+        70,
+        250
+       ],
+       [
+        70,
+        185
+       ],
+       [
+        50,
+        190
+       ],
+       [
+        30,
+        195
+       ],
+       [
+        25,
+        215
+       ],
+       [
+        28,
+        240
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -17,
+        285
+       ],
+       [
+        -10,
+        298
+       ],
+       [
+        0,
+        300
+       ],
+       [
+        6,
+        292
+       ],
+       [
+        5,
+        277
+       ],
+       [
+        -5,
+        272
+       ],
+       [
+        -15,
+        275
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; could be a small pond (navy in 2023)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "creek tree line right not in auto; dark blobs left (slag or ponds) 225-250 and 140-170",
+   "long_grass": {
+    "L": "native: edit 3 (dryland beyond the left fairway edge 140-220)",
+    "R": "none: cart path then creek tree line (added as trees)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        43,
+        120
+       ],
+       [
+        45,
+        200
+       ],
+       [
+        43,
+        260
+       ],
+       [
+        42,
+        330
+       ],
+       [
+        40,
+        360
+       ],
+       [
+        45,
+        400
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        70,
+        120
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "continuous creek crowns, red in CIR, same in Nov 2023; no auto trees (no lidar)"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       -55,
+       238,
+       8,
+       12
+      ]
+     },
+     "confidence": "low",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; may be a pond"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       -58,
+       155,
+       8,
+       13
+      ]
+     },
+     "confidence": "low",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; may be a pond"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "L",
+       "a0": 140,
+       "a1": 220
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "long slag waste left of the fairway 120-340 unmapped; slag bunker right 272-300",
+   "long_grass": {
+    "L": "none: slag waste (added as sand) abuts the fairway",
+    "R": "native: edit 2 (beyond the cart path ~+45)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -4,
+        120
+       ],
+       [
+        -4,
+        150
+       ],
+       [
+        -10,
+        165
+       ],
+       [
+        -20,
+        200
+       ],
+       [
+        -30,
+        240
+       ],
+       [
+        -42,
+        262
+       ],
+       [
+        -42,
+        285
+       ],
+       [
+        -52,
+        302
+       ],
+       [
+        -62,
+        322
+       ],
+       [
+        -70,
+        340
+       ],
+       [
+        -70,
+        120
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; long serpentine slag with grass islands, both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        3,
+        282
+       ],
+       [
+        5,
+        297
+       ],
+       [
+        12,
+        300
+       ],
+       [
+        20,
+        292
+       ],
+       [
+        22,
+        280
+       ],
+       [
+        14,
+        272
+       ],
+       [
+        5,
+        274
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "R",
+       "a0": 140,
+       "a1": 380
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "bare pale ground right beyond the cart path with small slag pots",
+   "long_grass": {
+    "L": "none: irrigated turf (pink CIR) to ~-60 in the landing zone",
+    "R": "native: edit 3 (sparse dryland beyond the cart path)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       50,
+       340,
+       6,
+       3
+      ]
+     },
+     "confidence": "low",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       55,
+       260,
+       6,
+       4
+      ]
+     },
+     "confidence": "low",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       60,
+       380,
+       5,
+       3
+      ]
+     },
+     "confidence": "low",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "R",
+       "a0": 140,
+       "a1": 400
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years; very sparse, pale"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "slag in the landing oval: peanut left 262-336, strip right 256-288, cross slag 120-145",
+   "long_grass": {
+    "L": "native: edit 3",
+    "R": "native: edit 4"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -18,
+        262
+       ],
+       [
+        -20,
+        285
+       ],
+       [
+        -12,
+        305
+       ],
+       [
+        -12,
+        322
+       ],
+       [
+        -5,
+        336
+       ],
+       [
+        5,
+        336
+       ],
+       [
+        9,
+        322
+       ],
+       [
+        3,
+        308
+       ],
+       [
+        -2,
+        290
+       ],
+       [
+        -10,
+        272
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        24,
+        258
+       ],
+       [
+        29,
+        256
+       ],
+       [
+        37,
+        280
+       ],
+       [
+        33,
+        288
+       ],
+       [
+        27,
+        285
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -17,
+        120
+       ],
+       [
+        -15,
+        140
+       ],
+       [
+        0,
+        146
+       ],
+       [
+        20,
+        142
+       ],
+       [
+        40,
+        145
+       ],
+       [
+        70,
+        145
+       ],
+       [
+        70,
+        120
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; cross hazard short of the landing zone"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "L",
+       "a0": 150,
+       "a1": 280
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "R",
+       "a0": 150,
+       "a1": 380
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "large slag right 250-400 unmapped; creek tree line left mostly missing in auto",
+   "long_grass": {
+    "L": "none: cart path then the creek tree line (added as trees)",
+    "R": "native: edit 2 (130-250 only; beyond 250 slag)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        30,
+        255
+       ],
+       [
+        28,
+        280
+       ],
+       [
+        30,
+        300
+       ],
+       [
+        35,
+        325
+       ],
+       [
+        40,
+        345
+       ],
+       [
+        48,
+        370
+       ],
+       [
+        52,
+        395
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        70,
+        250
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "poly": [
+       [
+        -47,
+        120
+       ],
+       [
+        -43,
+        190
+       ],
+       [
+        -32,
+        200
+       ],
+       [
+        -31,
+        240
+       ],
+       [
+        -36,
+        265
+       ],
+       [
+        -40,
+        280
+       ],
+       [
+        -40,
+        330
+       ],
+       [
+        -45,
+        360
+       ],
+       [
+        -50,
+        400
+       ],
+       [
+        -70,
+        400
+       ],
+       [
+        -70,
+        120
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "continuous creek crowns, red in CIR, Nov 2023 same; auto only a small piece"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "R",
+       "a0": 130,
+       "a1": 250
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "lake right is mapped (water); slag bunker left 312-352 unmapped",
+   "long_grass": {
+    "L": "native: edit 1 (beyond the cart path ~-45)",
+    "R": "none: lake (auto water)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -5,
+        314
+       ],
+       [
+        -3,
+        325
+       ],
+       [
+        10,
+        340
+       ],
+       [
+        25,
+        352
+       ],
+       [
+        31,
+        350
+       ],
+       [
+        28,
+        338
+       ],
+       [
+        12,
+        322
+       ],
+       [
+        2,
+        312
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "L",
+       "a0": 140,
+       "a1": 300
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "long slag strip right 120-262 and 310-400 unmapped (no OSM water there); trefoil pots 285-305",
+   "long_grass": {
+    "L": "native: edit 3 (dryland beyond the cart path, small crowns)",
+    "R": "none: slag (added as sand)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        -20,
+        120
+       ],
+       [
+        -20,
+        170
+       ],
+       [
+        0,
+        180
+       ],
+       [
+        12,
+        200
+       ],
+       [
+        22,
+        220
+       ],
+       [
+        37,
+        240
+       ],
+       [
+        48,
+        252
+       ],
+       [
+        55,
+        262
+       ],
+       [
+        70,
+        262
+       ],
+       [
+        70,
+        120
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; could be water in part (no OSM water mapped here)"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "poly": [
+       [
+        40,
+        330
+       ],
+       [
+        42,
+        360
+       ],
+       [
+        45,
+        380
+       ],
+       [
+        55,
+        400
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        70,
+        320
+       ],
+       [
+        55,
+        315
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years"
+    },
+    {
+     "op": "add",
+     "lie": "sand",
+     "shape": {
+      "ell": [
+       37,
+       295,
+       8,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "black slag: dark in 2021 RGB, dark grey in Nov 2023, black in CIR (no NIR vegetation), same outline both years; cluster of round pots in a pale ring"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "beyond_fairway": {
+       "w": 10,
+       "side": "L",
+       "a0": 200,
+       "a1": 380
+      }
+     },
+     "confidence": "medium",
+     "evidence": "unirrigated dryland grass outside the irrigation / mowing line: tan and coarse in Jun 2021 and Nov 2023, cyan (no NIR) in CIR; same line both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Slag": {
+    "action": "move",
+    "to": [
+     0,
+     18
+    ],
+    "confidence": "medium",
+    "evidence": "auto Slag dot sits on a cart-path junction with no box; the narrow tee strip (pink CIR, green both years) starts 18 yds ahead on the line; card 451 vs ~434 measured after the move (no box behind the path)"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "2": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "3": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "4": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "5": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "6": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "7": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "8": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "9": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "10": {
+   "Slag": {
+    "action": "move",
+    "to": [
+     -2,
+     17
+    ],
+    "confidence": "medium",
+    "evidence": "auto Slag dot on tan unirrigated ground beside a white path; nearest box (green 2021, pink CIR) starts 17 yds ahead; card 442 vs ~425 after the move"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "11": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "12": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "13": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "14": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "15": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "16": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "17": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  },
+  "18": {
+   "Slag": {
+    "action": "keep"
+   },
+   "Gold": {
+    "action": "keep"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "6",
+   "what": "Slag tee: dot on dry ground beside the shelter; a long tee strip 20-25 yds left may be hole 6's back tee or hole 3's; not moved"
+  },
+  {
+   "hole": "16",
+   "what": "Gold tee at along 12 sits between two pads (6 yds short of the upper pad); kept"
+  },
+  {
+   "hole": "all",
+   "what": "slag vs standing water: both are black in RGB and NIR; ponds marked by OSM were kept as water, unmapped dark areas were drawn as slag (sand). Parts of 8 right, 9 left heart, 10 left blobs and 18 right could be water"
+  },
+  {
+   "hole": "all",
+   "what": "native: the dryland beyond the irrigation line is tan in June 2021 and Nov 2023 with the same edge; it is drawn 10-15 yds beyond the package fairway (which already includes the irrigated rough). Whether it is mown dry rough or unmown native is not certain at 0.6 m"
+  },
+  {
+   "hole": "all",
+   "what": "no lidar (3DEP has no coverage here; only the Meta canopy model): tree edges from the photo / CIR only"
+  },
+  {
+   "hole": "par 3s / greens",
+   "what": "greens are not in OSM (green = hole-line end point); write_layers has no green lie, so greens and green-side slag bunkers outside the 120-400 window were not drawn"
+  }
+ ]
+}
