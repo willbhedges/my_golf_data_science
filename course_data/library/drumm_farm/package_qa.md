@@ -1,6 +1,6 @@
 # Drumm Farm Golf Club (Independence, MO) - Tour tees
 
-Built 2026-11-02T19:52:28Z. OSM way/316101757. Scorecard: allsquare (allsquare). Tee set: colour.
+Built 2026-11-02T22:46:33Z. OSM way/316101757. Scorecard: allsquare (allsquare). Tee set: colour.
 
 ## Coverage
 
@@ -45,7 +45,7 @@ OSM features inside the course: buildings 7, golf=bunker 45, golf=cartpath 29, g
 ## Stages
 
 - **resolve**: ok: way/316101757 Drumm Farm Golf Club (Independence, MO)
-- **osm**: ok: 960 features
+- **osm**: ok: 945 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: allsquare (allsquare)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)

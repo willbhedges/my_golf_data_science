@@ -166,7 +166,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": 8.5,
+      "aim": 8.0,
       "along": 284.2,
       "lie": "fairway",
       "tie": false
@@ -785,7 +785,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver +3 lands 284 yds out in fairway"
+       "why": "Driver +2 lands 284 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -794,7 +794,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": 3.0,
+      "aim": 2.5,
       "along": 283.9,
       "lie": "fairway",
       "tie": false
@@ -891,6 +891,14 @@
       "oval": {
        "ok": true,
        "why": "landing pattern 22% trees / water / OB (recovery 22%)"
+      },
+      "wide_aim": {
+       "ok": false,
+       "why": "Driver aim -60 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "where": [
+        "calm-day",
+        "forecast"
+       ]
       }
      },
      "pick": {
@@ -900,8 +908,10 @@
       "lie": "fairway",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "wide_aim: Driver aim -60 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+     ]
     },
     "9": {
      "par": 5,
