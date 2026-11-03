@@ -25,9 +25,9 @@
   },
   "other_candidates": []
  },
- "n_features": 564,
+ "n_features": 566,
  "golf_tag_counts": {
-  "tee": 66,
+  "tee": 68,
   "bunker": 53,
   "cartpath": 45,
   "rough": 36,
@@ -39,7 +39,7 @@
   "lateral_water_hazard": 1
  },
  "golf_tag_counts_inside_course": {
-  "tee": 66,
+  "tee": 68,
   "bunker": 53,
   "cartpath": 42,
   "rough": 36,
@@ -299,8 +299,8 @@
  "holes_with_handicap": 18,
  "hole_centrelines": 18,
  "tees": {
-  "count": 66,
-  "with_colour_or_ref": 2,
+  "count": 68,
+  "with_colour_or_ref": 4,
   "items": [
    {
     "osm_id": 820513047,
@@ -569,6 +569,18 @@
     "geometry": "Polygon",
     "ref": "15",
     "tee": "Championship"
+   },
+   {
+    "osm_id": -1,
+    "geometry": "Polygon",
+    "ref": "9",
+    "tee": "Championship"
+   },
+   {
+    "osm_id": -2,
+    "geometry": "Polygon",
+    "ref": "15",
+    "tee": "Championship"
    }
   ]
  },
@@ -580,26 +592,26 @@
   38.009359,
   -92.791918
  ],
- "fetched_utc": "2026-11-02T03:07:21Z",
+ "fetched_utc": "2026-11-02T23:51:52Z",
  "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
  "osm_source": {
-  "source": "overpass",
-  "reason": "complete",
-  "mirror": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-  "osm_base": "2026-11-02T03:06:33Z",
+  "source": "geofabrik+snapshot",
+  "reason": "thin fetch on every mirror: mirror data as of 2026-11-01T21:21:36Z is older than the package snapshot of 2026-11-02",
+  "mirror": "geofabrik:MO",
+  "osm_base": "2026-11-01T21:21:36Z",
+  "snapshot": "course_data/packages/old_kinderhook/raw/osm.geojson",
+  "snapshot_date": "2026-11-02T17:13:47Z",
+  "merged_features": 2,
   "counts": {
    "hole": 18,
    "green": 20,
-   "tee": 64,
+   "tee": 66,
    "pin": 0,
    "bunker": 53,
    "fairway": 24
   },
   "mirrors_tried": [
-   "https://overpass-api.de/api/interpreter",
-   "https://overpass.kumi.systems/api/interpreter",
-   "https://overpass.private.coffee/api/interpreter",
-   "https://maps.mail.ru/osm/tools/overpass/api/interpreter"
+   "geofabrik:MO"
   ]
  }
 }
