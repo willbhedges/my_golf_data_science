@@ -1,6 +1,6 @@
 # A. L. Gustin Golf Course (Columbia, MO) - Black tees
 
-Built 2026-11-03T16:16:48Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T20:45:58Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -57,9 +57,10 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 - **vision**: missing: product layer vision_any/2 not built for 'gustin' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 115 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py gustin (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 8 polygons (outside 8); mode replace
+- **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)
 
 ## Warnings
 
 - hole 11 Black: CHECK, tee was on a road (OSM 278117436): moved 7 yds forward off it
-- CHECK vision: missing: product layer vision_any/2 not built for 'gustin' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 115 long-grass zones dro; trees / water come from OSM (or the fallback) only
