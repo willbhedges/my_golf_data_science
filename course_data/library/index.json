@@ -1,14 +1,14 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-03T06:28Z",
+ "updated": "2026-11-03T07:21Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 1,
-  "needs confirm": 90,
+  "needs confirm": 91,
   "failed": 5,
   "unsupported": 2,
-  "blocked": 9
+  "blocked": 8
  },
  "courses": [
   {
@@ -559,6 +559,69 @@
    "group": "library"
   },
   {
+   "slug": "grand_national_links",
+   "name": "RTJ Grand National Golf",
+   "city": "Opelika",
+   "state": "AL",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source None, flags [])",
+    "18 holes built vs the card's 0",
+    "pars sum to 72, card None",
+    "18 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "osm_back",
+     "yards": null,
+     "par": null,
+     "rating": null,
+     "slope": null,
+     "colour": null,
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "osm_back"
+   ],
+   "page": "course_data/library/grand_national_links/page.html",
+   "page_bytes": 1356441,
+   "qa_report": "course_data/library/grand_national_links/qa_report.md",
+   "center": [
+    32.680480349999996,
+    -85.4221614
+   ],
+   "osm": "way/328838760",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-03T06:20Z",
+   "group": "library"
+  },
+  {
    "slug": "oxmoor_valley",
    "name": "RTJ Oxmoor Valley Golf",
    "city": "Birmingham",
@@ -863,20 +926,10 @@
    "state": "AZ",
    "status": "needs confirm",
    "check_holes": [
-    3,
-    4,
-    5,
-    6,
-    7,
-    10,
-    13,
-    15,
-    16,
-    17,
-    18
+    3
    ],
    "reasons": [
-    "11 hole(s) with a CHECK"
+    "1 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -930,7 +983,7 @@
     "Gold"
    ],
    "page": "course_data/library/troon_north/page.html",
-   "page_bytes": 6568019,
+   "page_bytes": 6566483,
    "qa_report": "course_data/library/troon_north/qa_report.md",
    "center": [
     33.7464665,
@@ -943,7 +996,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-03T04:14Z",
+   "built": "2026-11-03T06:15Z",
    "group": "library"
   },
   {
@@ -1019,17 +1072,10 @@
    "state": "CA",
    "status": "needs confirm",
    "check_holes": [
-    2,
-    4,
-    5,
-    6,
-    8,
-    9,
-    12
+    5
    ],
    "reasons": [
-    "holes not all mapped in OSM (hole method: v2+structure)",
-    "7 hole(s) with a CHECK"
+    "1 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -1074,7 +1120,7 @@
     "Blue"
    ],
    "page": "course_data/library/tpc_harding_park/page.html",
-   "page_bytes": 2274109,
+   "page_bytes": 2240774,
    "qa_report": "course_data/library/tpc_harding_park/qa_report.md",
    "center": [
     37.7218116,
@@ -1087,7 +1133,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-01T22:24Z",
+   "built": "2026-11-03T05:53Z",
    "group": "library"
   },
   {
@@ -3453,19 +3499,15 @@
    "state": "KY",
    "status": "needs confirm",
    "check_holes": [
-    1,
-    2,
-    3,
-    5,
+    4,
     6,
     7,
-    8,
     9,
     10,
     17
    ],
    "reasons": [
-    "10 hole(s) with a CHECK"
+    "6 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -3488,7 +3530,7 @@
     },
     {
      "name": "Yellow",
-     "yards": 6010,
+     "yards": 6021,
      "par": 72,
      "rating": 68.8,
      "slope": 122,
@@ -3537,7 +3579,7 @@
     "White"
    ],
    "page": "course_data/library/seneca/page.html",
-   "page_bytes": 2860147,
+   "page_bytes": 2893256,
    "qa_report": "course_data/library/seneca/qa_report.md",
    "center": [
     38.2352597,
@@ -3550,7 +3592,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-01T22:01Z",
+   "built": "2026-11-03T05:55Z",
    "group": "library"
   },
   {
@@ -4514,20 +4556,9 @@
    "city": "Kansas City",
    "state": "MO",
    "status": "needs confirm",
-   "check_holes": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9
-   ],
+   "check_holes": [],
    "reasons": [
-    "scorecard not matched (source opengolfapi, flags ['Blue: holes sum to 6906 but the source says 6879 (+27): mixed card versions', 'White: holes sum to 6354 but the source says 6299 (+55): mixed card versions'])",
-    "9 hole(s) with a CHECK"
+    "scorecard not matched (source opengolfapi, flags ['Blue: holes sum to 6906 but the source says 6879 (+27): mixed card versions', 'White: holes sum to 6354 but the source says 6299 (+55): mixed card versions'])"
    ],
    "tee_sets": [
     {
@@ -4581,7 +4612,7 @@
     "Web"
    ],
    "page": "course_data/library/longview_lake/page.html",
-   "page_bytes": 2467261,
+   "page_bytes": 2470038,
    "qa_report": "course_data/library/longview_lake/qa_report.md",
    "center": [
     38.91865155,
@@ -4590,11 +4621,11 @@
    "osm": "way/913710102",
    "holes": 18,
    "days": [
-    "2026-10-31",
-    "2026-11-01"
+    "2026-11-07",
+    "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-10-30T20:56Z",
+   "built": "2026-11-03T05:48Z",
    "group": "library"
   },
   {
@@ -6145,7 +6176,7 @@
     "osm_back"
    ],
    "page": "course_data/library/paa_ko_ridge/page.html",
-   "page_bytes": 1565323,
+   "page_bytes": 1597660,
    "qa_report": "course_data/library/paa_ko_ridge/qa_report.md",
    "center": [
     35.2071984,
@@ -6158,7 +6189,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-10-31T02:03Z",
+   "built": "2026-11-03T05:58Z",
    "group": "library"
   },
   {
@@ -6671,7 +6702,7 @@
     "osm_back"
    ],
    "page": "course_data/library/bandon_dunes/page.html",
-   "page_bytes": 1854841,
+   "page_bytes": 1941818,
    "qa_report": "course_data/library/bandon_dunes/qa_report.md",
    "center": [
     43.198637399999996,
@@ -6684,7 +6715,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-10-31T03:57Z",
+   "built": "2026-11-03T06:00Z",
    "group": "library"
   },
   {
@@ -7306,7 +7337,7 @@
     "osm_back"
    ],
    "page": "course_data/library/sand_hollow/page.html",
-   "page_bytes": 1295423,
+   "page_bytes": 1334648,
    "qa_report": "course_data/library/sand_hollow/qa_report.md",
    "center": [
     37.117881249999996,
@@ -7319,7 +7350,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-10-31T04:34Z",
+   "built": "2026-11-03T06:00Z",
    "group": "library"
   },
   {
@@ -8293,25 +8324,6 @@
    "holes": 15,
    "osm": "way/284570622",
    "built": "2026-10-31T03:49Z"
-  },
-  {
-   "slug": "grand_national_links",
-   "name": "RTJ Grand National Golf",
-   "city": "Opelika",
-   "state": "AL",
-   "status": "blocked",
-   "reasons": [
-    "27 holes built with no card (expected 18 or 9): holes are missing, or two courses are mixed",
-    "scorecard not matched (source None, flags [])",
-    "27 holes built vs the card's 0",
-    "pars sum to 95, card None",
-    "27 hole(s) with a CHECK"
-   ],
-   "page": "course_data/library/grand_national_links/page.html",
-   "qa_report": "course_data/library/grand_national_links/qa_report.md",
-   "holes": 27,
-   "osm": "way/328838760",
-   "built": "2026-10-30T23:30Z"
   },
   {
    "slug": "jayhawk_club",
