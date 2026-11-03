@@ -1,6 +1,6 @@
 # Pevely Farms Golf Course (Saint Louis, MO) - Black tees
 
-Built 2026-11-01T21:04:49Z. OSM relation/5429230. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T23:41:55Z. OSM relation/5429230. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -11,11 +11,11 @@ Built 2026-11-01T21:04:49Z. OSM relation/5429230. Scorecard: golfify (golfify). 
 | greens_found | 18 |
 | tee_boxes | 59 |
 | tees_with_colour | 0 |
-| holes_with_trees_or_long_grass_in_landing_zone | 12 |
+| holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 15 |
 | mean_landing_osm_share | 0.329 |
-| mean_confidence | 0.78 |
-| osm_score | 0.826 |
+| mean_confidence | 0.784 |
+| osm_score | 0.839 |
 
 OSM features inside the course: buildings 1, built_up_landuse 1, golf=bunker 27, golf=cartpath 22, golf=fairway 23, golf=green 22, golf=hole 18, golf=pin 18, golf=tee 59, holes_with_par 18, trees_polygons 1, water_lines 6, water_polygons 4
 
@@ -24,9 +24,9 @@ OSM features inside the course: buildings 1, built_up_landuse 1, golf=bunker 27,
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 4 | 446 / 445 | 5 | 0.79 | check the flags | 29% | 12% | 59% | tee stage: Black tee_centroid |  |
-| 2 | 5 | 531 / 532 | 244 | 0.74 | check the flags | 34% | 0% | 66% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 3 | 4 | 277 / 277 | 356 | 0.65 | check the flags | 15% | 13% | 72% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 277 yds) |
-| 4 | 4 | 439 / 440 | 83 | 0.73 | check the flags | 29% | 2% | 69% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 2 | 5 | 531 / 532 | 244 | 0.79 | check the flags | 34% | 21% | 45% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 3 | 4 | 277 / 277 | 356 | 0.66 | check the flags | 15% | 20% | 65% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 277 yds) |
+| 4 | 4 | 439 / 440 | 83 | 0.74 | check the flags | 29% | 5% | 67% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 5 | 3 | 199 / 198 | 62 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 6 | 4 | 398 / 399 | 80 | 0.79 | check the flags | 49% | 2% | 49% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 7 | 4 | 397 / 398 | 282 | 0.82 | auto | 54% | 10% | 37% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
@@ -35,9 +35,9 @@ OSM features inside the course: buildings 1, built_up_landuse 1, golf=bunker 27,
 | 10 | 4 | 403 / 404 | 88 | 0.83 | auto | 46% | 6% | 47% | tee stage: Black tee_centroid |  |
 | 11 | 4 | 401 / 400 | 7 | 0.70 | check the flags | 34% | 29% | 37% | tee stage: Black walkback | tee: tee stage: Black walkback; Black tee walked back along the hole line (no box at 401 yds) |
 | 12 | 5 | 572 / 573 | 273 | 0.76 | check the flags | 29% | 12% | 59% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 13 | 4 | 389 / 385 | 18 | 0.80 | check the flags | 27% | 35% | 38% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 13 | 4 | 389 / 385 | 18 | 0.80 | auto | 27% | 38% | 35% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 14 | 3 | 145 / 145 | 234 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 15 | 4 | 358 / 357 | 188 | 0.74 | check the flags | 28% | 6% | 67% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 15 | 4 | 358 / 357 | 188 | 0.75 | check the flags | 28% | 10% | 62% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 16 | 4 | 443 / 441 | 293 | 0.73 | check the flags | 19% | 16% | 65% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 17 | 4 | 422 / 422 | 163 | 0.78 | check the flags | 30% | 4% | 66% | tee stage: Black tee_centroid |  |
 | 18 | 4 | 468 / 468 | 73 | 0.66 | check the flags | 41% | 2% | 57% | tee stage: Black walkback | tee: tee stage: Black walkback; Black tee walked back along the hole line (no box at 468 yds) |
@@ -54,9 +54,10 @@ OSM features inside the course: buildings 1, built_up_landuse 1, golf=bunker 27,
 - **imagery**: ok: course_data/packages/pevely_farms/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2022
 - **elevation**: ok: course_data/packages/pevely_farms/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -1039 m2 {'strip': 641, 'cells': 398}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 31 polygons (outside 31); mode replace
+- **agent_layers**: ok: course_data/mapper/pevely_farms (11 zone edits on 7 holes, 0 tee(s) moved, 72 checked)
 
 ## Warnings
 
