@@ -15,7 +15,8 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 | confirm taps to 98 % pairs | 4.7 / course (no re-solve); re-solve 7.1 (fix running) | summary_resolve_calib2.json |
 | tee yardage, no card | back within 10 yds 70 %; 2nd set 52 %; par 96 % | tees/CARDLESS.md |
 | plan, auto build with true card vs hand truth | **74 % same club + aim ≤ 10 yds** (138 tee shots, 10 courses) | platform/ERROR_BUDGET.md |
-| what causes the misses | tees 42 %, long grass 25 % (64 % of regret; layer off: detector can't tell native from mown rough), trees 14 %, fairway 11 % | ERROR_BUDGET.md |
+| plan, current build, all 24 card truth courses (11-03) | **70.7 % match (234 / 331), regret 0.41 strokes / 14-shot round** (v1 77.5 %, v2 65.8 %); tee merge fix: 70.7 %, 0.408, 0 courses broken | ERROR_BUDGET.md "Tee positions" |
+| what causes the misses | tees 42 % on 11-01 (today: truth tees fix 18 of 97 misses, break 10; 1.4 of 9.7 strokes), long grass 25 % (64 % of regret; layer off: detector can't tell native from mown rough), trees 14 %, fairway 11 % | ERROR_BUDGET.md |
 | long grass, no agent / no taps (held out, 18 truth courses, 250 tee shots) | **auto native sides: match 167 → 186, regret 8.79 → 4.34** (+ ≤ 2 classifier-ranked taps: 193 / 3.23; perfect sides 196 / 2.91); parkland controls unchanged | mapper/EVAL_BLIND.md "Automatic native sides" |
 | plan, no card, well-mapped | 80–85 % (vs card plan) | platform/CARDBLIND.md |
 | plan, barely-mapped | 17/33 holes (was 2/32) | CARDBLIND.md pathroute |
@@ -67,7 +68,7 @@ gate's yes side is still untested on a fresh course. Rebuild that would change: 
 
 ## Workstreams (re-ranked 2026-11-01 by measured payoff)
 
-1. **Tee positions** (42 % of wrong plans): back-set box choice on long / split tee complexes. Agent running.
+1. **Tee positions** (19 % of misses / 15 % of regret on 24 courses, 11-03; was 42 %): merge bug fixed (0 broken, -0.02 strokes). Biggest remaining case = back tee walked 40-70 yds past the mapped boxes (0.55 strokes); the fix (far cap) waits on hand-checking ~10 estimated back tees.
 2. **Long grass** (64 % of regret): **per-side classifier adopted 2026-11-03** (`product/native_auto.py`, behind a
    course gate; S2 phenology + open ground carry it, lidar HAG / NAIP texture add little). Next: wire
    `native_auto.build_layer` into the package build + an S2 fetch stage, feed its p to the confirm taps (**done

@@ -433,3 +433,106 @@ Town 1). The fill needs the vision_any raw stack (NAIP years + lidar HAG), which
 Not verified: the simulation removes OSM fairways but keeps every other OSM layer (a course with no fairway mapped
 often has fewer bunkers / tees too); the v2 truth fairways start from OSM, so C is scored against OSM's outline; the
 fill on Creekmoor was checked by eye, not against a hand map.
+
+## Tee positions (2026-11-03): where today's tee errors come from, one fix
+
+**Set-up.** All 24 card courses with hand truth (the 10 v1 card courses + the 14 `truth_sets_v2` courses; National KC
+left out: no card), 331 par-4/5 tee shots. Auto = the committed packages with the tee layer rebuilt by the current
+code (`rebuild_tees_trees.py --layers tees`; v2 also `trees`, the -1 m vision_any/2 layer the build makes when the
+lidar stack is present), scored by `error_budget.py --auto-dir ... --configs +tees,-tees` (n = 4000, seed 31).
+Cases: `platform/tee_cases.py` (case rules in its docstring). Per-shot results for every variant below:
+`error_budget_tee_cases.json`. Nothing here was tuned on a course: the adopted change has no parameter, so every
+course is held out.
+
+**Baseline (current code): 234 / 331 match (70.7 %), regret 9.667 strokes = 0.029 per tee shot, 0.41 per 14-shot
+round** (v1 107 / 138, 77.5 %, 2.747; v2 127 / 193, 65.8 %, 6.920). That is the 67-74 % in the roadmap; M2's
+0.15 strokes / round is 2.7x away.
+
+**Tees are now a minority of the misses.** Of the 97 misses, putting the truth tee in (+tees) fixes 18 (3 reference
+ties) and breaks 10: net +8 matches, regret 9.667 -> 9.413 (-0.25). The other way round, the truth map with only the
+auto tees (-tees) is wrong on 24 holes, 1.44 strokes (15 % of the regret). The "tees 42 %" share in the roadmap is
+the 11-01 v1 count before the 3f1a201d tee rule; on today's build and 24 courses it is 19 % of misses.
+
+**Breakdown of the 51 tees more than 10 yds from the truth tee** (280 are within 10 yds; "measured truth" = truth
+tee on a pad / by hand, the rest are "estimated": no box visible, moved along the line to the card length):
+
+| case | tees | measured truth | auto misses | fixed by +tees | broken by +tees | regret recovered by +tees | -tees: truth plans broken | -tees regret |
+|---|---|---|---|---|---|---|---|---|
+| wrong box in the complex | 16 | 13 | 9 | 4 | 1 | -0.075 | 6 | 0.099 |
+| lidar / texture pad (unmapped pad) | 15 | 6 | 11 | 3 | 0 | 0.295 | 4 | 0.207 |
+| no OSM tee at the truth tee | 14 | 5 | 5 | 0 | 1 | -0.027 | 1 | 0.058 |
+| walkback from card | 4 | 2 | 2 | 1 | 1 | 0.247 | 3 | **0.555** |
+| box right, point off | 2 | 2 | 1 | 1 | 0 | 0.012 | 1 | 0.003 |
+| wrong set mapping / card | 0 | | | | | | | |
+| review tee snap | 0 | | | | | | | |
+| *ok (<= 10 yds)* | 280 | 194 | 69 | 9 | 7 | -0.199 | 9 | 0.522 |
+
+* **Wrong box (most tees, least regret).** 9 of the 16 are lateral: the truth tee is on a box 14-70 yds across the
+  hole line at the same yardage (Gustin 3, 6, 17, 18, Osage 5, 18, Amana 10, Wakonda 1, 5, 15, Annbriar 3) and the
+  auto tee is on the box at the OSM hole way's start. On Gustin 3 / 6 / 17 the truth spec lists one shared pad set
+  for three holes and `build_holes_truth.py` takes the pad whose length is nearest the card, so the truth there is
+  not a per-hole check; these are truth noise as much as auto error. They cost 0.10 strokes.
+* **Walkback (fewest tees, most regret).** The card is 40-70 yds beyond the back-most mapped box and the tee is
+  walked back along the line: Gustin 15 (63 yds, CHECK.md "card 467 cannot be found on the ground", 0.49 strokes),
+  Tomahawk 4 (42, package tee kept: no OSM hole ways), and as an unmapped pad Osage 3 (lidar pad 47 yds back, "the
+  parking lot", 0.15). Every hand-checked truth says "on the back box"; every walkback that matches its truth
+  (La Nickell 9, 10, 12, 18, Amana 2, Osage 2) matches an *estimated* truth tee, i.e. the truth method's own walk.
+* **Unmapped lidar pads** off the line: Hot Springs 4, 9, Gustin 7, 11, Osage 7, La Nickell 13 (12-29 yds across);
+  truth on the line, but mostly estimated.
+* No case of a wrong set mapping (every scored set's card yardage agrees with the truth card) and no review tee
+  snap (only Annbriar 9 has a review tee, and it is right) on these courses.
+
+**Bug found and fixed (adopted): a lidar / texture pad chained separate OSM boxes into one pad.**
+`localize.merge_candidates` never merged two OSM boxes directly, but union-find merged box A with a lidar pad and
+the pad with box B, so a pad covering a levelled complex made one candidate with one box's geometry: the other
+box vanished. On the 17 truth courses checked, 27 of 1,177 OSM boxes were swallowed (Coldwater 10, Buffalo Ridge 4,
+Blue Hills 3).
+Coldwater 7: the line-start box at the card's 505 yds was merged into the box 25 yds in front of it. Fix: merge
+closest pairs first and never join two groups that each hold an OSM box (a detection joins its nearest box). Test:
+`tees/test_localize.py::test_pad_over_a_split_complex_does_not_chain_its_osm_boxes`.
+
+| variant (24 courses, 331 shots) | match | regret | per 14-shot round | tees > 10 yds off | -tees: wrong / regret | fixed / broken vs baseline |
+|---|---|---|---|---|---|---|
+| baseline (current code) | 234 (70.7 %) | 9.667 | 0.409 | 51 | 24 / 1.443 | |
+| **merge fix (adopted)** | **234 (70.7 %)** | **9.644** | **0.408** | **49** | 23 / 1.402 | 0 / 0 |
+| merge fix + unmapped-pad offset cost (> 8 yds off the line, 1 / yd) | 234 | 9.577 | 0.405 | | | 1 / 1 (HS 9 / Veenker 16) |
+| merge fix + far cap 30 yds (box + beyond rule) | 225 | 9.181 | 0.388 | | 32 / 1.415 | 0 / 9 |
+| merge fix + far cap 45 yds (box + beyond rule) | 230 | 9.493 | 0.402 | | 26 / 1.382 | 0 / 4 |
+| merge fix + far cap 30 yds (clamped to the box) | 226 | 9.524 | 0.403 | | 30 / 1.594 | 1 / 9 |
+| merge fix + far cap 45 yds (clamped to the box) | 230 | 9.468 | 0.400 | | 25 / 1.341 | 0 / 4 |
+
+The merge fix moves 7 scored tees (Eagle Knoll 4, Veenker 3, Coldwater 2, 6, 13, 17, Eagle Bend 3), every one
+closer to its truth tee (2-29 -> 0-4 yds); matches unchanged, regret -0.023 (Coldwater -0.013, Eagle Knoll -0.009,
+Veenker -0.008; Eagle Bend +0.007 on hole 3, whose tee moved from 8 to 2 yds off: decision noise). v1 107 / 138,
+2.717; v2 127 / 193, 6.927. **No course broken.** It is a bug fix, not a step toward M2: tee positions on today's
+build are not where the remaining misses are (+tees on top of it still only gets 9.41).
+
+**Not adopted.**
+* *Far cap* (`localize.PARAMS["far_cap_yd"]`, off; a set walked back / on an unmapped pad more than D yds behind
+  the back edge of the hole's back-most own OSM box goes onto that box): the only rule that moves the biggest
+  case. Regret falls 0.12-0.46 strokes (Gustin -0.22 to -0.39), but it breaks 4-9 holes, all against
+  estimated truth tees (Veenker 16, La Nickell 9, 18, Gustin 7, Sand Creek 1, Eagle Bend 14, 18, Buffalo Dunes 6,
+  11). Leave-one-course-out over {off, 30, 45} x {beyond, clamp}: chosen by matches every fold keeps it off (234,
+  9.644); chosen by regret alone 23 folds pick 30 yds and the held-out total is 226 matches, 9.607 strokes (-8
+  matches for -0.04). The truth set cannot decide it: where the card is 25-70 yds beyond the mapped tees the
+  tracers mostly found no box either. **Next step: hand-check those ~10 back tees on imagery / lidar** (Gustin 7
+  has a lidar chute-tee pad per CHECK.md, Gustin 15 and Osage 3 do not); if most are on the back box, turn the
+  cap on (45 yds keeps 4 breaks).
+* *Unmapped-pad offset cost*: fixes Hot Springs 9, breaks Veenker 16, Gustin regret +0.03; its gains are on
+  estimated truths. Code removed.
+* *Lateral cost on every candidate*: rejected 11-02 (breaks 4-6), not re-run.
+* *Set-length priors from national cards, a new review_tee_point*: no case here for them (0 wrong set mappings, 0
+  review snaps on the truth courses); the cardless numbers (CARDLESS.md) are a no-card problem, which these card
+  courses do not test.
+
+**What a library rebuild would change (not queued).** Any course where a lidar / texture pad covers two or more
+OSM boxes. On the truth courses tees move on 12 of 24: Blue Hills 10, Coldwater 8, Buffalo Ridge 6, Veenker 4, Eagle
+Bend 4, Gateway 3, Eagle Knoll 2, Ellis 2, Spirit Hollow 1, Amana 1, Gustin 1, La Nickell 1 (any set). The library
+packages carry no raw OSM / DEM in the repo, so which library courses change was not computed; expect about half
+of them, mostly 1-3 holes, mostly forward sets.
+
+Not verified: the v1 corridor courses (Veenker, Coldwater, Ellis) frame their hand corridors on an older package's
+tee, so their tee truth is not independent; the "measured" truth tees of build_holes_truth courses are the hand pad
+nearest the card, not a per-hole confirmation of the box; Tomahawk Hills and Mariah Hills have no OSM hole ways
+(tees kept as built) and Colbert Hills no raw OSM, so the tee stage is not re-run there. The newly committed S4n
+native_auto stage is not in these packages (it does not touch tees).
