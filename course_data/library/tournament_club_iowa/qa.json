@@ -22,19 +22,19 @@
       },
       "aim": {
        "ok": true,
-       "why": "2-wood -14 lands 304 yds out in rough (1 yds from fairway)"
+       "why": "2-wood -4 lands 304 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 4% trees / water / OB (water 4%)"
+       "why": "landing pattern 0% trees / water / OB (water 0%)"
       }
      },
      "pick": {
       "club": "2-wood",
-      "aim": -14.5,
+      "aim": -4.5,
       "along": 303.6,
-      "lie": "rough",
-      "tie": false
+      "lie": "fairway",
+      "tie": true
      },
      "status": "CHECK",
      "reasons": [
@@ -58,7 +58,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -8 lands 301 yds out in fairway"
+       "why": "Driver -9 lands 301 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -67,7 +67,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -8.5,
+      "aim": -9.0,
       "along": 300.9,
       "lie": "fairway",
       "tie": false
@@ -79,12 +79,12 @@
      "par": 3,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "on an OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 3 yds along OSM tee 674003243 would measure 180, another set's box, point 188, card 186); 3 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 180 vs card 186 (-6)"
+       "why": "measured 188 vs card 186 (+2)"
       },
       "par": {
        "ok": true,
@@ -97,16 +97,18 @@
      },
      "box": {
       "lat": [
-       -2.8,
-       -2.5
+       -3.5,
+       -3.5
       ],
       "dep": [
-       -11.0,
-       6.2
+       -10.8,
+       5.5
       ]
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 3 yds along OSM tee 674003243 would measure 180, another set's box, point 188, card 186); 3 yds from the nearest OSM tee box)"
+     ]
     },
     "4": {
      "par": 5,
@@ -125,7 +127,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -36 lands 320 yds out in fairway"
+       "why": "Driver -34 lands 320 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -134,7 +136,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -35.5,
+      "aim": -34.5,
       "along": 319.8,
       "lie": "fairway",
       "tie": false
@@ -217,12 +219,12 @@
      "par": 4,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "0 yds from the nearest OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 14 yds along OSM tee 676103845 would measure 374, point 383, card 386); 14 yds from the nearest OSM tee box)"
       },
       "yardage": {
-       "ok": false,
-       "why": "measured 374 vs card 386 (-12)"
+       "ok": true,
+       "why": "measured 383 vs card 386 (-3)"
       },
       "par": {
        "ok": true,
@@ -230,23 +232,31 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -40 lands 302 yds out in fairway"
+       "why": "Driver -38 lands 301 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 11% trees / water / OB (recovery 11%)"
+       "why": "landing pattern 8% trees / water / OB (recovery 8%)"
+      },
+      "wide_aim": {
+       "ok": false,
+       "why": "Driver aim -46 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "where": [
+        "forecast"
+       ]
       }
      },
      "pick": {
       "club": "Driver",
-      "aim": -40.0,
-      "along": 301.9,
+      "aim": -38.0,
+      "along": 301.3,
       "lie": "fairway",
-      "tie": true
+      "tie": false
      },
      "status": "CHECK",
      "reasons": [
-      "yardage: measured 374 vs card 386 (-12)"
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 14 yds along OSM tee 676103845 would measure 374, point 383, card 386); 14 yds from the nearest OSM tee box)",
+      "wide_aim: Driver aim -46 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
      ]
     },
     "8": {
@@ -299,7 +309,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -10 lands 299 yds out in fairway"
+       "why": "Driver -8 lands 299 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -308,7 +318,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -9.5,
+      "aim": -8.0,
       "along": 299.1,
       "lie": "fairway",
       "tie": false
@@ -333,7 +343,7 @@
       },
       "aim": {
        "ok": false,
-       "why": "Driver -27 lands 319 yds out in rough (9 yds from fairway)"
+       "why": "Driver -28 lands 319 yds out in rough (8 yds from fairway)"
       },
       "oval": {
        "ok": true,
@@ -342,14 +352,14 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -27.0,
+      "aim": -27.5,
       "along": 319.4,
       "lie": "rough",
       "tie": false
      },
      "status": "CHECK",
      "reasons": [
-      "aim: Driver -27 lands 319 yds out in rough (9 yds from fairway)"
+      "aim: Driver -28 lands 319 yds out in rough (8 yds from fairway)"
      ]
     },
     "11": {
@@ -392,12 +402,12 @@
      "par": 4,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "0 yds from the nearest OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 7 yds along OSM tee 676110861 would measure 433, point 441, card 442); 7 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 433 vs card 442 (-9)"
+       "why": "measured 441 vs card 442 (-1)"
       },
       "par": {
        "ok": true,
@@ -405,7 +415,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "4-wood +2 lands 267 yds out in fairway"
+       "why": "4-wood +6 lands 267 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -414,13 +424,15 @@
      },
      "pick": {
       "club": "4-wood",
-      "aim": 2.5,
-      "along": 267.1,
+      "aim": 5.5,
+      "along": 266.9,
       "lie": "fairway",
-      "tie": false
+      "tie": true
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 7 yds along OSM tee 676110861 would measure 433, point 441, card 442); 7 yds from the nearest OSM tee box)"
+     ]
     },
     "13": {
      "par": 5,
@@ -577,7 +589,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver +12 lands 327 yds out in fairway"
+       "why": "Driver +4 lands 327 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -586,7 +598,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": 11.5,
+      "aim": 4.5,
       "along": 326.9,
       "lie": "fairway",
       "tie": false
@@ -598,12 +610,12 @@
      "par": 4,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "0 yds from the nearest OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 11 yds along OSM tee 676119305 would measure 449, another set's box, point 459, card 459); 11 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 449 vs card 459 (-10)"
+       "why": "measured 459 vs card 459 (+0)"
       },
       "par": {
        "ok": true,
@@ -611,22 +623,24 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -4 lands 301 yds out in fairway"
+       "why": "Driver -6 lands 300 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 3% trees / water / OB (water 3%)"
+       "why": "landing pattern 1% trees / water / OB (water 1%)"
       }
      },
      "pick": {
       "club": "Driver",
-      "aim": -4.5,
-      "along": 300.9,
+      "aim": -6.0,
+      "along": 300.4,
       "lie": "fairway",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 11 yds along OSM tee 676119305 would measure 449, another set's box, point 459, card 459); 11 yds from the nearest OSM tee box)"
+     ]
     }
    },
    "course": {
@@ -646,12 +660,12 @@
      "par": 5,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "on an OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 7 yds along OSM tee 787286057 would measure 517, another set's box, point 523, card 527); 7 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 517 vs card 527 (-10)"
+       "why": "measured 523 vs card 527 (-4)"
       },
       "par": {
        "ok": true,
@@ -659,43 +673,36 @@
       },
       "aim": {
        "ok": false,
-       "why": "4-wood -2 lands 295 yds out in rough (18 yds from fairway)"
+       "why": "4-wood -0 lands 294 yds out in rough (10 yds from fairway)"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 29% trees / water / OB (water 29%)"
-      },
-      "wide_aim": {
-       "ok": false,
-       "why": "Driver aim -63 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
-       "where": [
-        "forecast"
-       ]
+       "why": "landing pattern 16% trees / water / OB (water 16%)"
       }
      },
      "pick": {
       "club": "4-wood",
-      "aim": -1.5,
-      "along": 294.9,
+      "aim": -0.5,
+      "along": 293.6,
       "lie": "rough",
       "tie": false
      },
      "status": "CHECK",
      "reasons": [
-      "aim: 4-wood -2 lands 295 yds out in rough (18 yds from fairway)",
-      "wide_aim: Driver aim -63 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 7 yds along OSM tee 787286057 would measure 517, another set's box, point 523, card 527); 7 yds from the nearest OSM tee box)",
+      "aim: 4-wood -0 lands 294 yds out in rough (10 yds from fairway)"
      ]
     },
     "2": {
      "par": 4,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "on an OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 10 yds along OSM tee 674003237 would measure 383, another set's box, point 386, card 386); 10 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 383 vs card 386 (-3)"
+       "why": "measured 386 vs card 386 (+0)"
       },
       "par": {
        "ok": true,
@@ -703,7 +710,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -4 lands 306 yds out in fairway"
+       "why": "Driver -1 lands 305 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -712,13 +719,15 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -4.5,
-      "along": 306.4,
+      "aim": -1.0,
+      "along": 305.1,
       "lie": "fairway",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 10 yds along OSM tee 674003237 would measure 383, another set's box, point 386, card 386); 10 yds from the nearest OSM tee box)"
+     ]
     },
     "3": {
      "par": 3,
@@ -742,7 +751,7 @@
      },
      "box": {
       "lat": [
-       -4.5,
+       -4.8,
        -2.2
       ],
       "dep": [
@@ -879,7 +888,7 @@
       },
       "wide_aim": {
        "ok": false,
-       "why": "2-wood aim -54 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "why": "2-wood aim -58 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
        "where": [
         "calm-day",
         "forecast"
@@ -895,7 +904,7 @@
      },
      "status": "CHECK",
      "reasons": [
-      "wide_aim: 2-wood aim -54 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+      "wide_aim: 2-wood aim -58 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
      ]
     },
     "8": {
@@ -960,7 +969,7 @@
       "aim": -2.5,
       "along": 304.5,
       "lie": "fairway",
-      "tie": false
+      "tie": true
      },
      "status": "PASS",
      "reasons": []
@@ -982,7 +991,7 @@
       },
       "aim": {
        "ok": false,
-       "why": "Driver -28 lands 317 yds out in rough (9 yds from fairway)"
+       "why": "Driver -29 lands 317 yds out in rough (8 yds from fairway)"
       },
       "oval": {
        "ok": true,
@@ -991,14 +1000,14 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -28.5,
+      "aim": -29.0,
       "along": 316.9,
       "lie": "rough",
       "tie": false
      },
      "status": "CHECK",
      "reasons": [
-      "aim: Driver -28 lands 317 yds out in rough (9 yds from fairway)"
+      "aim: Driver -29 lands 317 yds out in rough (8 yds from fairway)"
      ]
     },
     "11": {
@@ -1027,7 +1036,7 @@
      },
      "pick": {
       "club": "4-wood",
-      "aim": -0.0,
+      "aim": -0.5,
       "along": 264.6,
       "lie": "fairway",
       "tie": false
@@ -1041,12 +1050,12 @@
      "par": 4,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "0 yds from the nearest OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 4 yds along OSM tee 676110861 would measure 433, point 426, card 427); 4 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 433 vs card 427 (+6)"
+       "why": "measured 426 vs card 427 (-1)"
       },
       "par": {
        "ok": true,
@@ -1054,7 +1063,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "4-wood +2 lands 267 yds out in fairway"
+       "why": "4-wood +0 lands 267 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -1063,13 +1072,15 @@
      },
      "pick": {
       "club": "4-wood",
-      "aim": 2.5,
-      "along": 267.1,
+      "aim": 0.5,
+      "along": 266.6,
       "lie": "fairway",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 4 yds along OSM tee 676110861 would measure 433, point 426, card 427); 4 yds from the nearest OSM tee box)"
+     ]
     },
     "13": {
      "par": 5,
@@ -1146,11 +1157,11 @@
      "checks": {
       "tee": {
        "ok": true,
-       "why": "on an OSM tee box"
+       "why": "2 yds from the nearest OSM tee box"
       },
       "yardage": {
-       "ok": false,
-       "why": "measured 193 vs card 182 (+11)"
+       "ok": true,
+       "why": "measured 186 vs card 182 (+4)"
       },
       "par": {
        "ok": true,
@@ -1171,21 +1182,19 @@
        -6.5
       ]
      },
-     "status": "CHECK",
-     "reasons": [
-      "yardage: measured 193 vs card 182 (+11)"
-     ]
+     "status": "PASS",
+     "reasons": []
     },
     "16": {
      "par": 3,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "on an OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (review (kept: snap snapped 8 yds along OSM tee 676112669 would measure 192, another set's box, point 188, card 188); 8 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 192 vs card 188 (+4)"
+       "why": "measured 188 vs card 188 (+0)"
       },
       "par": {
        "ok": true,
@@ -1198,16 +1207,18 @@
      },
      "box": {
       "lat": [
-       -3.0,
-       2.0
+       -3.5,
+       3.2
       ],
       "dep": [
        -0.8,
-       12.5
+       10.2
       ]
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (review (kept: snap snapped 8 yds along OSM tee 676112669 would measure 192, another set's box, point 188, card 188); 8 yds from the nearest OSM tee box)"
+     ]
     },
     "17": {
      "par": 5,
@@ -1226,7 +1237,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver -6 lands 317 yds out in fairway"
+       "why": "Driver -9 lands 317 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -1235,7 +1246,7 @@
      },
      "pick": {
       "club": "Driver",
-      "aim": -6.5,
+      "aim": -9.0,
       "along": 316.8,
       "lie": "fairway",
       "tie": false
@@ -1260,16 +1271,16 @@
       },
       "aim": {
        "ok": true,
-       "why": "2-wood -5 lands 281 yds out in fairway"
+       "why": "2-wood -6 lands 281 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 0% trees / water / OB (none)"
+       "why": "landing pattern 0% trees / water / OB (water 0%)"
       }
      },
      "pick": {
       "club": "2-wood",
-      "aim": -5.0,
+      "aim": -6.0,
       "along": 281.4,
       "lie": "fairway",
       "tie": true

@@ -19,9 +19,9 @@
   },
   "other_candidates": []
  },
- "n_features": 1059,
+ "n_features": 1060,
  "golf_tag_counts": {
-  "tee": 73,
+  "tee": 74,
   "cartpath": 54,
   "green": 26,
   "bunker": 26,
@@ -291,8 +291,8 @@
  "holes_with_handicap": 18,
  "hole_centrelines": 18,
  "tees": {
-  "count": 73,
-  "with_colour_or_ref": 1,
+  "count": 74,
+  "with_colour_or_ref": 2,
   "items": [
    {
     "osm_id": 674002574,
@@ -587,6 +587,12 @@
     "geometry": "Polygon",
     "ref": "10",
     "tee": "King"
+   },
+   {
+    "osm_id": -19,
+    "geometry": "Polygon",
+    "ref": "10",
+    "tee": "King"
    }
   ]
  },
@@ -598,17 +604,20 @@
   41.796748,
   -93.708012
  ],
- "fetched_utc": "2026-11-02T23:30:47Z",
+ "fetched_utc": "2026-11-03T13:03:55Z",
  "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
  "osm_source": {
-  "source": "geofabrik",
-  "reason": "complete",
+  "source": "geofabrik+snapshot",
+  "reason": "thin fetch on every mirror: mirror data as of 2026-11-01T21:21:36Z is older than the package snapshot of 2026-11-03",
   "mirror": "geofabrik:IA",
   "osm_base": "2026-11-01T21:21:36Z",
+  "snapshot": "course_data/packages/tournament_club_iowa/raw/osm.geojson",
+  "snapshot_date": "2026-11-03T08:53:22Z",
+  "merged_features": 19,
   "counts": {
-   "hole": 18,
+   "hole": 36,
    "green": 26,
-   "tee": 72,
+   "tee": 73,
    "pin": 0,
    "bunker": 26,
    "fairway": 23
