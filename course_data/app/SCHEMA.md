@@ -224,7 +224,7 @@ Sources, merged by normalised name + state (first wins, later ones fill empty fi
 hand-checked tournament courses (`course_data/courses/<slug>/config.json` + `truth/package.json`, linked to their
 published wind page, `build_app.WIND_PAGES`); course packages with no plan yet; `course_data/library/index.json`
 (`course_library/1`, course_data/library/README.md) when it exists (its `blocked` rows, pages held back by the
-publish gate, are dropped from every source by slug and name + state: `build_app.blocked_courses`): `slug`, `name`, `city`, `state`, `holes`,
+publish gate, are dropped from every source by slug and name + state: `build_app.blocked_courses`; each library row is read from its page folder's own `status.json` when there is one, so a stale index row never lets a blocked page in, and a blocked page never overwrites its old `lib/<slug>.json`: `build_library_play.library_rows`): `slug`, `name`, `city`, `state`, `holes`,
 `status` (`hand-checked` / `auto-OK` / `needs confirm` / `failed` -> hand / auto / confirm / none), `tee_sets`
 (`{name, yards, colour, on_page}`: `on_page` null -> drawn dimmed with "*"), `check_holes` + `reasons` (the card's
 note), `page` (a built page with no published URL is noted "page built, not published yet"; a `url`/`link` field,
