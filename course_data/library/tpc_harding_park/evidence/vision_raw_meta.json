@@ -3,7 +3,7 @@
  "slug": "tpc_harding_park",
  "course": "TPC Harding Park",
  "bbox_snwe": [
-  37.7087276,
+  37.71278506647503,
   -122.5024559,
   37.7306694,
   -122.48288
@@ -11,12 +11,12 @@
  "grid": {
   "crs": "EPSG:32610",
   "res_m": 1.0,
-  "width": 1980,
-  "height": 2686,
+  "width": 1978,
+  "height": 2236,
   "bounds": [
    543722,
-   4173494,
-   545702,
+   4173944,
+   545700,
    4176180
   ],
   "transform": [
@@ -28,13 +28,13 @@
    4176180.0
   ],
   "ll_bbox_wsen": [
-   -122.5039764704487,
-   37.707546654899566,
-   -122.4813455532575,
+   -122.50394943556026,
+   37.71160259379097,
+   -122.48136824963571,
    37.73185218607069
   ]
  },
- "fetched_utc": "2026-11-01T21:58:00Z",
+ "fetched_utc": "2026-11-03T05:43:21Z",
  "lidar": {
   "hag": {
    "source": "planetary-computer 3dep-lidar-hag",
@@ -53,7 +53,7 @@
     {
      "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-hag-2m-21-43",
      "when": "2016-05-28T00:00:00.000000Z",
-     "cells": 521076,
+     "cells": 189384,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
@@ -62,7 +62,7 @@
      }
     }
    ],
-   "valid": 0.23612746978346383
+   "valid": 0.20893966005307035
   },
   "dtm": {
    "source": "planetary-computer 3dep-lidar-dtm",
@@ -81,7 +81,7 @@
     {
      "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-dtm-2m-21-43",
      "when": "2016-05-28T00:00:00.000000Z",
-     "cells": 130196,
+     "cells": 47346,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
@@ -90,7 +90,7 @@
      }
     }
    ],
-   "valid": 0.23578074114187295
+   "valid": 0.2085887517613245
   },
   "hag_dsm_dtm": {
    "items": [
@@ -108,7 +108,7 @@
     {
      "id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017-dsm-2m-21-43",
      "when": "2016-05-28T00:00:00.000000Z",
-     "cells": 523668,
+     "cells": 189420,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
@@ -118,11 +118,18 @@
     }
    ]
   },
-  "hag_note": "PC lidar covers 24% of the grid; trying EPT"
+  "hag_note": "PC lidar covers 21% of the grid; trying EPT"
  },
  "ept": {
   "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
   "candidates": [
+   {
+    "name": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017/ept.json",
+    "cov": 0.986,
+    "year": 2017,
+    "count": 34390196929
+   },
    {
     "name": "ARRA-CA_GoldenGate_2010",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ARRA-CA_GoldenGate_2010/ept.json",
@@ -133,7 +140,7 @@
    {
     "name": "ARRA-CA_SanFranCoast_2010",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ARRA-CA_SanFranCoast_2010/ept.json",
-    "cov": 0.967,
+    "cov": 0.961,
     "year": 2010,
     "count": 2215580200
    },
@@ -145,43 +152,47 @@
     "count": 13088433078
    },
    {
-    "name": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
-    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017/ept.json",
-    "cov": 0.515,
-    "year": 2017,
-    "count": 34390196929
-   },
-   {
     "name": "CA_CaliforniaGaps_3_B23",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/CA_CaliforniaGaps_3_B23/ept.json",
-    "cov": 0.343,
+    "cov": 0.211,
     "year": 0,
     "count": 55840054389
    }
   ],
-  "ept_resolution_m": 0.5,
+  "tiles": 4,
   "used": [
+   {
+    "name": "USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/USGS_LPC_CA_WestCoastElNinoUTM10_2016_LAS_2017/ept.json",
+    "cov": 0.986,
+    "year": 2017,
+    "count": 34390196929,
+    "cells": 882883,
+    "tiles": 4
+   },
    {
     "name": "ARRA-CA_GoldenGate_2010",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ARRA-CA_GoldenGate_2010/ept.json",
     "cov": 1.0,
     "year": 2010,
     "count": 8777987577,
-    "cells": 5080533
+    "cells": 3306117,
+    "tiles": 4
    },
    {
     "name": "ARRA-CA_SanFranCoast_2010",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/ARRA-CA_SanFranCoast_2010/ept.json",
-    "cov": 0.967,
+    "cov": 0.961,
     "year": 2010,
     "count": 2215580200,
-    "cells": 135718
+    "cells": 132303,
+    "tiles": 4
    }
   ],
-  "valid": 0.980815414006032,
-  "hag_mb": 1.95,
-  "frac_gt_2_5m": 0.2881281166091293,
-  "class_mb": 0.08
+  "valid": 0.9770496480968651,
+  "hag_mb": 1.59,
+  "frac_gt_2_5m": 0.29116660727754856,
+  "class_mb": 0.07
  },
  "meta_chm": {
   "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
@@ -189,7 +200,7 @@
    "023010203",
    "023010221"
   ],
-  "mb": 0.5,
+  "mb": 0.4,
   "file": "chm_meta.tif",
   "valid": 1.0
  },
@@ -199,7 +210,7 @@
    {
     "id": "ESA_WorldCover_10m_2021_v200_N36W123",
     "when": "2021-12-31T23:59:59.000000Z",
-    "cells": 1329570,
+    "cells": 1105702,
     "props": {
      "datetime": null,
      "end_datetime": "2021-12-31T23:59:59.000000Z",
@@ -208,14 +219,14 @@
    }
   ],
   "file": "worldcover.tif",
-  "mb": 0.04
+  "mb": 0.03
  },
  "naip": {
   "years": [
    {
     "year": 2022,
     "file": "naip_2022.tif",
-    "mb": 16.33,
+    "mb": 13.59,
     "items": [
      "ca_m_3712220_ne_10_060_20220519",
      "ca_m_3712221_nw_10_060_20220518"
@@ -230,7 +241,7 @@
    {
     "year": 2020,
     "file": "naip_2020.tif",
-    "mb": 19.09,
+    "mb": 15.99,
     "items": [
      "ca_m_3712221_nw_10_060_20200524",
      "ca_m_3712220_ne_10_060_20200524"
