@@ -19,7 +19,7 @@
   },
   "other_candidates": []
  },
- "n_features": 420,
+ "n_features": 433,
  "golf_tag_counts": {
   "tee": 77,
   "bunker": 68,
@@ -35,7 +35,7 @@
   "bunker": 68,
   "green": 19,
   "pin": 18,
-  "hole": 17,
+  "hole": 18,
   "cartpath": 12,
   "water_hazard": 4,
   "driving_range": 1
@@ -608,13 +608,13 @@
   38.841393,
   -94.454898
  ],
- "fetched_utc": "2026-11-02T13:40:43Z",
+ "fetched_utc": "2026-11-03T04:23:38Z",
  "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
  "osm_source": {
-  "source": "snapshot",
-  "reason": "no Overpass mirror answered: RuntimeError('HTTP 502 # 502 Gateway Timeout\\n\\nThis Overpass API server is currently at capacity. All query workers are busy\\nand the request queue is full.\\n\\n## What to do\\n\\nRetry your r'); ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")); RuntimeError('HTTP 504 <?xml version=\"1.0\" encoding=\"UTF-8\"?>\\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\\n    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\\n<html x'); RuntimeError('HTTP 504 <html>\\r\\n<head><title>504 Gateway Time-out</title></head>\\r\\n<",
-  "snapshot": "course_data/structure/data/creekmoor_mo/osm.geojson.gz",
-  "snapshot_date": "2026-10-31T06:11:24Z",
+  "source": "geofabrik",
+  "reason": "complete",
+  "mirror": "geofabrik:MO",
+  "osm_base": "2026-11-01T21:21:36Z",
   "counts": {
    "hole": 18,
    "green": 19,
@@ -624,16 +624,7 @@
    "fairway": 0
   },
   "mirrors_tried": [
-   "https://overpass-api.de/api/interpreter",
-   "https://overpass.kumi.systems/api/interpreter",
-   "https://overpass.private.coffee/api/interpreter",
-   "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-   "https://overpass-api.de/api/interpreter",
-   "https://overpass.kumi.systems/api/interpreter",
-   "https://overpass.private.coffee/api/interpreter",
-   "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-   "https://overpass-api.de/api/interpreter",
-   "https://overpass.kumi.systems/api/interpreter"
+   "geofabrik:MO"
   ]
  }
 }
