@@ -84,7 +84,7 @@ def prepare_osm(fc, pkg, course_name=None):
     import sanity
     names = [n for n in ((pkg.get("request") or {}).get("course"), course_name) if n]
     with contextlib.redirect_stdout(io.StringIO()):
-        fc, notes = sanity.clean_osm(fc, names=names)
+        fc, notes = sanity.clean_osm(fc, names=names, near=(pkg.get("request") or {}).get("near"))
     fc = copy.deepcopy(fc)
     notes = list(notes)
     lines = {k: h["hole_line_ll"] for k, h in pkg["holes"].items() if len(h.get("hole_line_ll") or []) >= 2}

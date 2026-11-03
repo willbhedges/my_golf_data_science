@@ -3,6 +3,6 @@
   "course_data/requests/course_page_queenstown_harbor.json",
   "course_data/requests/course_page_troon_north.json"
  ],
- "rev": 1,
- "note": "Rebuild after run 41539188571. queenstown_harbor: OSM maps its 36-hole outline unnamed, so resolve (near) gave name=None and fetch_imagery's command crashed on it; resolve now keeps the request name (osm_name records OSM's). troon_north: the package runner was shut down (exit 143) in the PDAL EPT lidar read of its 10 km2 box despite the 0.5 m density cap; EPT reads are now tiled (<= 1.5 km edge) in fetch_any + v2_fetch, and finish records a lost package job instead of keeping the old status.json. osm_source geofabrik."
+ "rev": 2,
+ "note": "rev 2, after run 41567617061. Both are 36-hole facilities with refs 1-18 twice in one OSM outline, and sanity.select_hole_ways' per-ref pick mixed the two courses (Queenstown River's 3, 6-9 have no ref at all, only names '#7 - par 4', 'River # 9 - par 4'). sanity.split_courses now groups the hole ways by course (sub-course outlines, golf:course:name / hole names, else green -> next tee chains) and keeps the one the request names (River; Monument), else the one nearest `near`. queenstown_harbor's package runner was lost ~12 s into the vision step (no log); fetch_any.py now caps the vision grid (play features set the bbox, other golf features add <= 300 m; > 40 km2 refuses) so a runaway box can never OOM the runner. osm_source geofabrik."
 }

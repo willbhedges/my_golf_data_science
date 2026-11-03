@@ -6,6 +6,7 @@ import os
 import sys
 
 import numpy as np
+import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -276,3 +277,47 @@ def test_lidar_v2_reads_in_tiles(tmp_path, monkeypatch):
     V2.fetch_lidar_v2(g, str(tmp_path), meta)
     assert len(reads) == len(FA.ept_tiles(g)) >= 4
     assert meta["lidar_v2"]["valid"] == 1.0 and np.isfinite(written["arr"]).all()
+
+
+def _course_dir(tmp_path, feats, bounds=None):
+    import json as _j
+    d = tmp_path / "raw"
+    d.mkdir()
+    sm = {"course": {"name": None}}
+    if bounds:
+        sm["course"]["bounds"] = bounds
+    (d / "summary.json").write_text(_j.dumps(sm))
+    (d / "osm.geojson").write_text(_j.dumps({"type": "FeatureCollection", "features": feats}))
+    return str(d)
+
+
+def _poly(golf, w, s, e, n):
+    return {"type": "Feature", "properties": {"golf": golf},
+            "geometry": {"type": "Polygon", "coordinates": [[[w, s], [e, s], [e, n], [w, n], [w, s]]]}}
+
+
+def test_course_bbox_ignores_a_huge_water_hazard(tmp_path):
+    """A golf=lateral_water_hazard way kept whole by the extract (a river shoreline running for km) must not grow
+    the 1 m vision grid past the course: play features + the outline set the box, others add <= 300 m."""
+    import fetch_any as FA
+    feats = [_poly("green", -76.180, 38.980, -76.179, 38.981), _poly("tee", -76.170, 38.990, -76.169, 38.991),
+             _poly("lateral_water_hazard", -76.40, 38.80, -75.90, 39.20)]
+    (s, w, n, e), _ = FA.bbox_from_course_dir(_course_dir(tmp_path, feats))
+    assert 38.976 < s < 38.980 and 38.991 < n < 38.995 and -76.184 < w < -76.180 and -76.169 < e < -76.165
+    g = FA.Grid((s, w, n, e), 120, 1.0)
+    assert g.W * g.H < 4e6
+
+
+def test_course_bbox_keeps_a_nearby_water_hazard(tmp_path):
+    import fetch_any as FA
+    feats = [_poly("green", -76.180, 38.980, -76.179, 38.981), _poly("tee", -76.170, 38.990, -76.169, 38.991),
+             _poly("water_hazard", -76.1815, 38.9795, -76.1805, 38.9805)]
+    (s, w, n, e), _ = FA.bbox_from_course_dir(_course_dir(tmp_path, feats))
+    assert abs(s - 38.9795) < 1e-6 and abs(w - -76.1815) < 1e-6
+
+
+def test_grid_guard_refuses_a_runaway_box():
+    import fetch_any as FA
+    with pytest.raises(SystemExit, match="too big"):
+        FA.check_grid(FA.Grid((38.8, -76.4, 39.2, -75.9), 120, 1.0))
+    FA.check_grid(FA.Grid((38.976, -76.185, 38.997, -76.160), 120, 1.0))

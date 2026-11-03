@@ -375,3 +375,104 @@ def test_hole_refs_only_qualified_largest_group_and_plain_untouched():
     assert same is plain and notes == []
     assert sanity.parse_hole_ref("tee_boxes") is None
     assert sanity.parse_hole_ref("Monument 3") == (("monument",), 3)
+
+
+# ----------------------------------------------------------------------------- 36-hole facilities (one OSM outline)
+def _two_courses(name_a=None, name_b=None, polys=False):
+    """Two 18-hole courses in ONE outline, refs 1-18 each, every way inside it: course A west (x -1800..-100),
+    course B east (x 3000..4700), holes alternating north / south so green n is by tee n+1. A per-ref pick
+    (select_hole_ways) can mix them."""
+    feats = []
+    for c, (x0, sgn, oid, nm) in enumerate(((-1800, -1, 1000, name_a), (3000, 1, 2000, name_b))):
+        for i in range(18):
+            x = x0 + i * 100
+            y0 = 0 if i % 2 == 0 else 450
+            pts = [(x, y0), (x, 450 - y0)]
+            pr = dict(golf="hole", ref=str(i + 1), osm_id=oid + i, inside_course=True)
+            feats.append(line(pts, **pr))
+            feats.append(poly(pts[-1][0], pts[-1][1], r=12, golf="green", osm_id=oid + 100 + i))
+            feats.append(poly(pts[0][0], pts[0][1], r=5, golf="tee", osm_id=oid + 200 + i))
+        if polys:
+            ring = [ll(x0 - 150, -200), ll(x0 + 1850, -200), ll(x0 + 1850, 700), ll(x0 - 150, 700), ll(x0 - 150, -200)]
+            feats.append(dict(type="Feature", geometry=dict(type="Polygon", coordinates=[ring]),
+                              properties=dict(leisure="golf_course", name=nm, osm_id=oid + 900)))
+    outer = [ll(-2500, -500), ll(5500, -500), ll(5500, 1000), ll(-2500, 1000), ll(-2500, -500)]
+    feats.append(dict(type="Feature", geometry=dict(type="Polygon", coordinates=[outer]),
+                      properties=dict(leisure="golf_course", osm_id=1)))
+    return feats
+
+
+def _hole_ids(fc):
+    return sorted(f["properties"]["osm_id"] for f in fc["features"] if f["properties"].get("golf") == "hole")
+
+
+def test_36_holes_in_one_outline_named_sub_courses_pick_the_request():
+    """Troon North: Monument + Pinnacle inside one club outline; the request names Monument."""
+    feats = _two_courses("Monument Course", "Pinnacle Course", polys=True)
+    out, notes = sanity.clean_osm(dict(features=feats), names=["Troon North Monument", "Troon North Golf Club"])
+    assert _hole_ids(out) == list(range(1000, 1018)), notes
+    assert any("Monument" in n for n in notes)
+    out, _ = sanity.clean_osm(dict(features=feats), names=["Troon North Pinnacle"])
+    assert _hole_ids(out) == list(range(2000, 2018))
+
+
+def test_36_holes_unnamed_outline_near_point_picks_the_nearest_course():
+    """Queenstown Harbor: River + Lakes, 36 plain-numbered hole ways in one unnamed outline: never a per-ref mix;
+    the request's near point picks the course whose hole lines are nearest."""
+    feats = _two_courses()
+    near = ll(3800, 200)[::-1]                           # (lat, lon) by course B
+    out, notes = sanity.clean_osm(dict(features=feats), names=["Queenstown Harbor River Course"], near=near)
+    assert _hole_ids(out) == list(range(2000, 2018)), notes
+    near = ll(-1000, 200)[::-1]
+    out, _ = sanity.clean_osm(dict(features=feats), names=["Queenstown Harbor River Course"], near=near)
+    assert _hole_ids(out) == list(range(1000, 1018))
+    # no near, no names: still one whole course (never a mix), and a CHECK note
+    out, notes = sanity.clean_osm(dict(features=feats), names=[])
+    assert _hole_ids(out) in (list(range(1000, 1018)), list(range(2000, 2018)))
+    assert any("CHECK" in n for n in notes)
+
+
+def test_split_courses_chains_follow_green_to_next_tee():
+    """No sub-course polygons: the holes are grouped by walking green n -> nearest tee n+1, so the two courses
+    come out whole even when they interleave by ref."""
+    groups = sanity.course_groups(dict(features=_two_courses()))
+    assert sorted(sorted(f["properties"]["osm_id"] for f in g["holes"]) for g in groups) == \
+        [list(range(1000, 1018)), list(range(2000, 2018))]
+
+
+def test_one_neighbour_duplicate_is_not_a_facility_split():
+    """Hodge Park / Pevely Farms: a few duplicated refs from a neighbour stay select_hole_ways' job."""
+    nb = [line([(5000, 0), (5000, 380)], golf="hole", ref="10", osm_id=898574075, inside_course=False)]
+    out, notes = sanity.split_courses(dict(features=_course18() + nb), names=["x"])
+    assert notes == [] and len(_hole_ids(out)) == 19
+
+
+FIX = os.path.join(HERE, "fixtures")
+QH_RIVER = {814359274, 814359293, 69343493, 69343494, 69343495, 69343496, 69343487, 69343488, 69343489,
+            885395002, 885395009, 885395018, 885398042, 885398043, 885398044, 885398045, 885398057, 885398071}
+
+
+def _fix(name):
+    import json
+    return json.load(open(os.path.join(FIX, name)))
+
+
+def test_queenstown_harbor_river_course_from_live_osm():
+    """Live OSM (2026-11-03): River + Lakes in one unnamed outline; River's 3, 6-9 have no ref, only names
+    ('#7 - par 4', 'River # 9 - par 4'). The request 'Queenstown Harbor River Course' keeps River's 18 whole,
+    numbered 1-18 (refs from the names), never a per-ref mix of the two courses."""
+    out, notes = sanity.clean_osm(_fix("queenstown_harbor_holes.geojson"), names=["Queenstown Harbor River Course"],
+                                  near="38.9850,-76.1700")
+    holes = [f for f in out["features"] if f["properties"].get("golf") == "hole"]
+    assert {f["properties"]["osm_id"] for f in holes} == QH_RIVER, notes
+    assert sorted(int(f["properties"]["ref"]) for f in holes) == list(range(1, 19))
+    assert any("river" in n for n in notes)
+
+
+def test_troon_north_monument_from_live_osm():
+    fc = _fix("troon_north_holes.geojson")
+    for want in ("Monument", "Pinnacle"):
+        out, notes = sanity.clean_osm(fc, names=[f"Troon North {want}", "Troon North Golf Club"])
+        holes = [f for f in out["features"] if f["properties"].get("golf") == "hole"]
+        assert len(holes) == 18 and {f["properties"]["golf:course:name"] for f in holes} == {f"{want} Course"}, notes
+        assert sorted(int(f["properties"]["ref"]) for f in holes) == list(range(1, 19))

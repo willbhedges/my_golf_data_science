@@ -29,8 +29,10 @@
                              rejected (not built; Ironhorse 18 at 1607 yds)
 Pure functions on GeoJSON-ish dicts; shapely only.
 """
+import itertools
 import math
 import re
+import statistics
 
 from shapely.geometry import Point, Polygon, shape
 from shapely.ops import unary_union
@@ -313,12 +315,200 @@ def normalize_hole_refs(fc, names=()):
     return dict(fc, features=out), notes
 
 
-def clean_osm(fc, names=()):
+# ----------------------------------------------------------------------------- 36-hole facilities
+SPLIT_MIN_DUP_REFS = 6        # this many repeated plain refs = two courses' holes, not a neighbour's stray way
+SUB_COURSE_MIN_HOLES = 6
+NAME_STOP = REF_STOP | {"course", "courses", "gc", "cc", "country", "resort", "par", "north", "south", "east",
+                         "west"}
+
+
+def _hole_no(f):
+    """A hole way's number: its plain ref, else the number in its name when the ref is missing ("#7 - par 4",
+    "River # 9 - par 4": Queenstown Harbor maps five River holes so), else None."""
+    p = f["properties"]
+    r = str(p.get("ref") or "").strip()
+    if re.fullmatch(r"\d{1,2}", r):
+        return int(r)
+    if r:
+        return None
+    nm = str(p.get("name") or "")
+    m = re.search(r"#\s*(\d{1,2})\b", nm) or re.match(r"\s*(?:hole\s*)?(\d{1,2})\b", nm, re.I)
+    return int(m.group(1)) if m else None
+
+
+def _plain_holes(fc):
+    """This course's numbered golf=hole lines (inside_course not False; a neighbour's stray ways stay
+    select_hole_ways' job)."""
+    return [f for f in fc.get("features", []) if f["properties"].get("golf") == "hole" and f.get("geometry")
+            and f["geometry"]["type"] == "LineString" and f["properties"].get("inside_course") is not False
+            and _hole_no(f) is not None]
+
+
+def _course_label(f):
+    """The course a hole way says it belongs to: golf:course:name (Troon North: 'Monument Course'), else its
+    name's words ('River # 9 - par 4' -> 'river')."""
+    p = f["properties"]
+    return p.get("golf:course:name") or " ".join(sorted(_name_tokens(re.sub(r"\d+", " ", str(p.get("name") or "")))))
+
+
+def _name_tokens(text):
+    return {t for t in re.findall(r"[a-z]+", str(text or "").lower()) if t not in NAME_STOP and len(t) > 1}
+
+
+def _chains(holes, P):
+    """Group hole ways into k courses (k = the most copies of one ref) by walking the round: each copy of ref n+1
+    joins the course whose hole n green (line end) is nearest its tee (line start); refs below the seed walk back."""
+    by = {}
+    for f in holes:
+        by.setdefault(_hole_no(f), []).append(f)
+    k = max(len(v) for v in by.values())
+    if k < 2 or k > 4:
+        return None
+    seed = min(r for r, v in by.items() if len(v) == k)
+    ends = lambda f: (P.fwd(*f["geometry"]["coordinates"][0][:2]), P.fwd(*f["geometry"]["coordinates"][-1][:2]))  # noqa: E731
+    d = lambda a, b: math.hypot(a[0] - b[0], a[1] - b[1])                                                        # noqa: E731
+    chains = [[f] for f in by[seed]]
+
+    def place(fs, key):
+        best = None
+        for perm in itertools.permutations(range(k), len(fs)):
+            c = sum(key(chains[ci], f) for ci, f in zip(perm, fs))
+            if best is None or c < best[0]:
+                best = (c, perm)
+        return best[1]
+    for r in sorted(x for x in by if x > seed):
+        fs = by[r]
+        if len(fs) > k:
+            return None
+        for ci, f in zip(place(fs, lambda ch, f: d(ends(ch[-1])[1], ends(f)[0])), fs):
+            chains[ci].append(f)
+    for r in sorted((x for x in by if x < seed), reverse=True):
+        fs = by[r]
+        if len(fs) > k:
+            return None
+        for ci, f in zip(place(fs, lambda ch, f: d(ends(f)[1], ends(ch[0])[0])), fs):
+            chains[ci].insert(0, f)
+    return chains
+
+
+def course_groups(fc):
+    """The hole ways of a multi-course facility, one group per course: [{holes, name, how}] or [] when the hole
+    ways are one course. Sub-course leisure=golf_course polygons first (each holding >= SUB_COURSE_MIN_HOLES hole
+    midpoints but not most of them: Troon North's Monument / Pinnacle inside the club outline), else the hole
+    ways' own names ("River 3" / "Lakes 3"), else chains walked green -> next tee (_chains)."""
+    holes = _plain_holes(fc)
+    refs = [_hole_no(f) for f in holes]
+    dup = sum(1 for r in set(refs) if refs.count(r) > 1)
+    if dup < SPLIT_MIN_DUP_REFS or any(_hand(f) for f in holes):
+        return []
+    mids = [shape(f["geometry"]).interpolate(0.5, normalized=True) for f in holes]
+    subs = []
+    for f in fc.get("features", []):
+        if f["properties"].get("leisure") != "golf_course" or (f.get("geometry") or {}).get("type") not in (
+                "Polygon", "MultiPolygon"):
+            continue
+        g = _shp(f)
+        if g is None:
+            continue
+        idx = [i for i, m in enumerate(mids) if g.contains(m)]
+        if SUB_COURSE_MIN_HOLES <= len(idx) <= 0.75 * len(holes):
+            subs.append((g.area, f["properties"].get("name"), idx))
+    if len(subs) >= 2:
+        taken, groups = set(), []
+        for _, nm, idx in sorted(subs, key=lambda t: t[0]):            # smallest polygon first
+            mine = [i for i in idx if i not in taken]
+            if len(mine) >= SUB_COURSE_MIN_HOLES:
+                taken |= set(mine)
+                groups.append(dict(holes=[holes[i] for i in mine], name=nm, how="sub-course outline"))
+        if len(groups) >= 2 and len(taken) >= 0.8 * len(holes):
+            return groups
+    named = {}
+    for f in holes:
+        named.setdefault(_course_label(f), []).append(f)
+    big = {k: v for k, v in named.items() if k and len(v) >= SUB_COURSE_MIN_HOLES}
+    if len(big) >= 2 and sum(len(v) for v in big.values()) >= 0.8 * len(holes):
+        return [dict(holes=v, name=k, how="hole way names") for k, v in big.items()]
+    ch = _chains(holes, _proj_for(fc))
+    if not ch:
+        return []
+    out = []
+    for c in ch:                                     # a chain is named by the words its hole ways carry
+        words = sorted({w for f in c for w in _name_tokens(_course_label(f))})
+        out.append(dict(holes=c, name=" ".join(words) or None, how="hole chains (green -> next tee)"))
+    return out
+
+
+def _parse_near(near):
+    if not near:
+        return None
+    try:
+        if isinstance(near, str):
+            a, b = (float(x) for x in near.split(",")[:2])
+        else:
+            a, b = float(near[0]), float(near[1])
+        return a, b                                                  # (lat, lon)
+    except Exception:                                                # noqa: BLE001
+        return None
+
+
+def split_courses(fc, names=(), near=None):
+    """-> (fc copy, [notes]). A 36-hole facility mapped as one OSM outline (Queenstown Harbor River + Lakes,
+    unnamed; Troon North Monument + Pinnacle) carries refs 1-18 twice, and the per-ref pick of select_hole_ways
+    mixed the two courses. Here the hole ways are grouped by course (course_groups) and ONE course is kept:
+    the group whose name (sub-course outline / hole way names, words the groups share ignored) is named in
+    `names` (request / OSM course name), else the group whose hole lines are nearest the request's `near` point
+    (lat, lon), else the largest (CHECK). Only golf=hole ways are dropped."""
+    groups = course_groups(fc)
+    if len(groups) < 2:
+        return fc, []
+    want = set()
+    for n in names or ():
+        want |= _name_tokens(n)
+    toks = [_name_tokens(g["name"]) for g in groups]
+    common = set.intersection(*toks) if toks else set()
+    score = [len((t - common) & want) for t in toks]
+    pick, why = None, None
+    if max(score) > 0 and score.count(max(score)) == 1:
+        pick = score.index(max(score))
+        why = f"'{groups[pick]['name']}' (named in the request)"
+    nr = _parse_near(near)
+    if pick is None and nr is not None:
+        P = _proj_for(fc)
+        q = P.fwd(nr[1], nr[0])
+
+        def dist(g):
+            ds = sorted(Point(q).distance(P.geom(shape(f["geometry"]))) for f in g["holes"])
+            return float(statistics.median(ds[: max(3, len(ds) // 3)]))      # the hole lines nearest the point
+        ds = [dist(g) for g in groups]
+        pick = min(range(len(ds)), key=ds.__getitem__)
+        why = f"the course nearest the request's near point ({ds[pick]:.0f} yds vs " + \
+              ", ".join(f"{x:.0f}" for i, x in enumerate(ds) if i != pick) + ")"
+    if pick is None:
+        pick = max(range(len(groups)), key=lambda i: len(groups[i]["holes"]))
+        why = "the largest group (no name or near point decides: CHECK the course)"
+    keep = {id(f) for f in groups[pick]["holes"]}
+    drop = {id(f) for g in groups for f in g["holes"] if id(f) not in keep}
+    out = []
+    for f in fc["features"]:
+        if id(f) in drop:
+            continue
+        if id(f) in keep and not str(f["properties"].get("ref") or "").strip():
+            f = dict(f, properties=dict(f["properties"], ref=str(_hole_no(f)), ref_from="name"))
+        out.append(f)
+    note = (f"multi-course facility: {len(groups)} courses' hole ways in one outline (by {groups[pick]['how']}: "
+            + ", ".join(f"{g['name'] or '#' + str(i + 1)} {len(g['holes'])}" for i, g in enumerate(groups))
+            + f"); kept {why}, {len(keep)} ways; ignored {len(drop)}")
+    return dict(fc, features=out), [note]
+
+
+def clean_osm(fc, names=(), near=None):
     """-> (fc, [notes]): drop_practice_tees + normalize_hole_refs + select_hole_ways. names = the request's and OSM's
     course names (pick the right course's holes on a multi-course site)."""
     notes = []
     fc, rn = normalize_hole_refs(fc, names)
     notes += rn
+    fc, sc = split_courses(fc, names, near)
+    notes += sc
     fc, t = drop_practice_tees(fc)
     if t:
         notes.append(f"ignored {len(t)} practice / driving-range tee box(es): OSM {', '.join(map(str, t[:6]))}")

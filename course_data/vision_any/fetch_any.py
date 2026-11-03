@@ -41,32 +41,55 @@ def log(*a):
     print(*a, flush=True)
 
 
+PLAY = {"hole", "green", "tee", "fairway", "bunker", "pin"}
+OTHER_REACH_M = 300.0       # other golf features (water hazards, rough, paths) may grow the box this far, no more
+MAX_GRID_KM2 = 40.0         # Troon North's 36-hole box is 10 km2; a bigger 1 m grid is a runaway bbox, not a course
+
+
 def bbox_from_course_dir(d):
+    """-> ((S, W, N, E), course name). The course outline, the package bbox and every PLAY feature set the box;
+    any other golf feature (lateral_water_hazard, rough, driving_range, ...) extends it by at most OTHER_REACH_M:
+    the Geofabrik extract (osmium smart strategy) keeps ways whole, so a hazard mapped on a river shoreline runs
+    for km and once grew the 1 m grid (and the arrays on it) far past the course."""
     sm = json.load(open(os.path.join(d, "summary.json")))
     b = (sm.get("course") or {}).get("bounds")
-    boxes = []
+    core, other = [], []
     if b:
-        boxes.append([b["minlat"], b["minlon"], b["maxlat"], b["maxlon"]])
+        core.append([b["minlat"], b["minlon"], b["maxlat"], b["maxlon"]])
     if sm.get("bbox_wgs84_snwe"):
-        boxes.append(sm["bbox_wgs84_snwe"])
+        core.append(sm["bbox_wgs84_snwe"])
     geo = os.path.join(d, "osm.geojson")
     if os.path.exists(geo):                                   # every feature inside the course
         fc = json.load(open(geo))
-        xy = []
         for f in fc["features"]:
             pr = f["properties"]
             if not pr.get("golf") or pr.get("golf") == "cartpath" or not f.get("geometry"):
                 continue                                  # golf features only (roads tagged inside run for km)
             c = np.array(_coords(f["geometry"]), float)
             if len(c):
-                xy.append([c[:, 1].min(), c[:, 0].min(), c[:, 1].max(), c[:, 0].max()])
-        if xy:
-            a = np.array(xy)
-            boxes.append([a[:, 0].min(), a[:, 1].min(), a[:, 2].max(), a[:, 3].max()])
-    if not boxes:
+                bx = [c[:, 1].min(), c[:, 0].min(), c[:, 1].max(), c[:, 0].max()]
+                (core if pr.get("golf") in PLAY else other).append(bx)
+    if not core:
+        core, other = other, []
+    if not core:
         raise SystemExit("no bbox in " + d)
-    a = np.array(boxes)
-    return (a[:, 0].min(), a[:, 1].min(), a[:, 2].max(), a[:, 3].max()), (sm.get("course") or {}).get("name")
+    a = np.array(core)
+    s, w, n, e = a[:, 0].min(), a[:, 1].min(), a[:, 2].max(), a[:, 3].max()
+    if other:
+        dlat = OTHER_REACH_M / 111320.0
+        dlon = OTHER_REACH_M / (111320.0 * max(0.1, math.cos(math.radians((s + n) / 2))))
+        o = np.array(other)
+        s, w = max(min(s, o[:, 0].min()), s - dlat), max(min(w, o[:, 1].min()), w - dlon)
+        n, e = min(max(n, o[:, 2].max()), n + dlat), min(max(e, o[:, 3].max()), e + dlon)
+    return (float(s), float(w), float(n), float(e)), (sm.get("course") or {}).get("name")
+
+
+def check_grid(g, max_km2=MAX_GRID_KM2):
+    """Refuse a runaway grid before any array is allocated on it (the runner is killed, nothing is recorded)."""
+    km2 = g.W * g.H * g.res * g.res / 1e6
+    if km2 > max_km2:
+        raise SystemExit(f"vision grid too big: {g.W} x {g.H} at {g.res} m = {km2:.0f} km2 > {max_km2:.0f} km2 "
+                         "(bbox from the course dir is not one course)")
 
 
 def _coords(g):
@@ -569,6 +592,7 @@ def main():
     else:
         bbox, name = bbox_from_course_dir(a.course_dir)
     g1 = Grid(bbox, a.margin, 1.0)
+    check_grid(g1)
     g2 = g1.at(2.0)
     log("course", name, "bbox", bbox, "grid", g1.json())
     meta = dict(schema="vision_any_raw/1", slug=a.slug, course=name, bbox_snwe=list(bbox), grid=g1.json(),
