@@ -1,6 +1,6 @@
 # Drumm Farm Golf Club (Independence, MO) - Tour tees
 
-Built 2026-11-03T09:24:50Z. OSM way/316101757. Scorecard: allsquare (allsquare). Tee set: colour.
+Built 2026-11-03T15:04:00Z. OSM way/316101757. Scorecard: allsquare (allsquare). Tee set: colour.
 
 ## Coverage
 
@@ -57,4 +57,5 @@ OSM features inside the course: buildings 7, golf=bunker 45, golf=cartpath 29, g
 - **elevation**: ok: course_data/packages/drumm_farm/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -62 m2 {'cells': 62}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 14 polygons (outside 14); mode replace
