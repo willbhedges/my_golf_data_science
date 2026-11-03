@@ -1,6 +1,6 @@
 # Creekmoor Golf Club (Raymore, MO) - Black tees
 
-Built 2026-11-03T09:21:54Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T15:02:11Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -57,6 +57,7 @@ OSM features inside the course: buildings 3, golf=bunker 68, golf=cartpath 12, g
 - **elevation**: ok: course_data/packages/creekmoor/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -82229 m2 {'raised': 67203, 'road': 3160, 'strip': 2309, 'cells': 9286}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.01; gated: none)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 41 polygons (outside 41); mode replace
 
 ## Warnings

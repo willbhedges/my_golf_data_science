@@ -1,6 +1,6 @@
 # Amana Colonies Golf Course (Amana, IA) - Black tees
 
-Built 2026-11-03T09:21:06Z. OSM way/731221353. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T15:00:59Z. OSM way/731221353. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -56,6 +56,7 @@ OSM features inside the course: buildings 1, golf=bunker 59, golf=cartpath 8, go
 - **elevation**: ok: course_data/packages/amana_colonies/imagery/dem.tif (18/18 holes)
 - **vision**: missing: product layer vision_any/2 not built for 'amana_colonies' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 82 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py amana_colonies (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 3 polygons (property_line 3); mode replace
 
 ## Warnings
