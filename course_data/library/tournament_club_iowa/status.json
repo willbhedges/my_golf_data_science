@@ -7,47 +7,63 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "scorecard not matched (source None, flags [])",
-  "18 holes built vs the card's 0",
-  "pars sum to 71, card None",
-  "18 hole(s) with a CHECK"
+  "9 hole(s) with a CHECK"
  ],
  "check_holes": [
   1,
-  2,
-  3,
-  4,
   5,
   6,
   7,
-  8,
-  9,
   10,
   11,
-  12,
-  13,
   14,
   15,
-  16,
-  17,
-  18
+  16
  ],
  "tee_sets": [
   {
-   "name": "osm_back",
-   "yards": null,
-   "par": null,
-   "rating": null,
-   "slope": null,
-   "colour": null,
+   "name": "King",
+   "yards": 7041,
+   "par": 71,
+   "rating": 73.9,
+   "slope": 145,
+   "colour": "blue",
    "on_page": "solved"
+  },
+  {
+   "name": "Palmer",
+   "yards": 6516,
+   "par": 71,
+   "rating": 71.5,
+   "slope": 140,
+   "colour": "green",
+   "on_page": "solved"
+  },
+  {
+   "name": "Deacon",
+   "yards": 6113,
+   "par": 71,
+   "rating": 69.6,
+   "slope": 132,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Legend",
+   "yards": 5039,
+   "par": 71,
+   "rating": 69.2,
+   "slope": 122,
+   "colour": "red",
+   "on_page": null
   }
  ],
  "solved_sets": [
-  "osm_back"
+  "King",
+  "Palmer"
  ],
  "page": "course_data/library/tournament_club_iowa/page.html",
- "page_bytes": 2593264,
+ "page_bytes": 5219508,
  "qa_report": "course_data/library/tournament_club_iowa/qa_report.md",
  "center": [
   41.78618085,
@@ -56,22 +72,15 @@
  "osm": "relation/1507320",
  "holes": 18,
  "days": [
-  "2026-10-31",
-  "2026-11-01"
+  "2026-11-07",
+  "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-10-30T12:33Z",
+ "built": "2026-11-02T23:41Z",
  "request": "course_data/requests/course_page_tournament_club_iowa.json",
- "last_attempt": {
-  "status": "failed",
-  "stage": "package",
-  "error": [
-   "package:     \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
-  ],
-  "when": "2026-11-02T20:23Z",
-  "resolve": {
-   "status": null,
-   "candidates": []
-  }
+ "native": {
+  "holes": [],
+  "tee_set": "King",
+  "note": "not asked: no agent_layers in the request"
  }
 }

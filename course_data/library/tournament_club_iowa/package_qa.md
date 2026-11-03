@@ -1,6 +1,8 @@
-# Tournament Club of Iowa (Polk City, IA) - osm_back tees
+# Tournament Club of Iowa (Polk City, IA) - King tees
 
-Built 2026-10-30T12:32:53Z. OSM relation/1507320. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-11-02T23:41:37Z. OSM relation/1507320. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: King, Palmer, Deacon, Legend)).
+
+**WARNING: requested tee set 'Black' is not on the card; using 'King' instead (allow_substitute). Sets on the card: King, Palmer, Deacon, Legend**
 
 ## Coverage
 
@@ -9,54 +11,57 @@ Built 2026-10-30T12:32:53Z. OSM relation/1507320. Scorecard: None (None). Tee se
 | holes_built | 18 |
 | holes_mapped | 18 |
 | greens_found | 18 |
-| tee_boxes | 72 |
+| tee_boxes | 70 |
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 11 |
 | of_par4_5 | 13 |
-| mean_landing_osm_share | 0.319 |
-| mean_confidence | 0.662 |
-| osm_score | 0.833 |
+| mean_landing_osm_share | 0.458 |
+| mean_confidence | 0.701 |
+| osm_score | 0.861 |
 
-OSM features inside the course: buildings 3, golf=bunker 26, golf=cartpath 53, golf=clubhouse 1, golf=driving_range 1, golf=fairway 23, golf=green 26, golf=hole 18, golf=tee 72, golf=water_hazard 4, holes_with_handicap 18, holes_with_par 18, single_trees 6, water_lines 4, water_polygons 4
+OSM features inside the course: buildings 3, golf=bunker 26, golf=cartpath 53, golf=clubhouse 1, golf=driving_range 1, golf=fairway 23, golf=green 26, golf=hole 18, golf=tee 70, golf=water_hazard 4, holes_with_handicap 18, holes_with_par 18, single_trees 6, water_lines 4, water_polygons 4
 
 ## Holes
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 270 / 270 | 343 | 0.61 | check the flags | 42% | 1% | 57% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 2 | 4 | 294 / 294 | 289 | 0.60 | needs review | 3% | 48% | 48% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 3 | 4 | 377 / 377 | 270 | 0.65 | check the flags | 14% | 58% | 28% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 4 | 5 | 473 / 473 | 104 | 0.63 | check the flags | 28% | 32% | 39% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 5 | 4 | 256 / 256 | 206 | 0.56 | needs review | 10% | 22% | 67% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 6 | 3 | 173 / 173 | 135 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 7 | 3 | 154 / 154 | 126 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 8 | 5 | 553 / 553 | 89 | 0.65 | check the flags | 57% | 0% | 43% | tee nearest the hole-line start | tee: tee nearest the hole-line start; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 9 | 4 | 396 / 396 | 276 | 0.65 | check the flags | 57% | 0% | 43% | tee nearest the hole-line start | tee: tee nearest the hole-line start; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 10 | 4 | 485 / 485 | 32 | 0.61 | check the flags | 30% | 17% | 53% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 11 | 4 | 322 / 322 | 344 | 0.58 | needs review | 27% | 7% | 66% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 12 | 3 | 142 / 142 | 247 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 13 | 5 | 547 / 547 | 315 | 0.66 | check the flags | 42% | 28% | 30% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 14 | 3 | 162 / 162 | 229 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 15 | 5 | 416 / 416 | 157 | 0.62 | check the flags | 29% | 27% | 44% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 16 | 4 | 357 / 357 | 161 | 0.61 | check the flags | 24% | 25% | 51% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 17 | 3 | 158 / 158 | 50 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 18 | 4 | 388 / 388 | 171 | 0.63 | check the flags | 50% | 0% | 49% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 1 | 5 | 553 / 549 | 37 | 0.66 | check the flags | 49% | 8% | 43% | tee stage: King review | tee: tee stage: King review |
+| 2 | 4 | 420 / 422 | 348 | 0.64 | check the flags | 35% | 16% | 49% | tee stage: King review (snapped 10 yds along OSM tee 787286062) | tee: tee stage: King review (snapped 10 yds along OSM tee 787286062) |
+| 3 | 3 | 186 / 180 | 250 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review (snapped 3 yds along OSM tee 674003243) | tee: tee stage: King review (snapped 3 yds along OSM tee 674003243) |
+| 4 | 5 | 593 / 599 | 316 | 0.70 | check the flags | 60% | 14% | 27% | tee stage: King review (snapped 2 yds along OSM tee 674004138) | tee: tee stage: King review (snapped 2 yds along OSM tee 674004138) |
+| 5 | 3 | 185 / 174 | 228 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review (inside OSM tee 676091866) | tee: tee stage: King review (inside OSM tee 676091866) |
+| 6 | 4 | 480 / 473 | 159 | 0.67 | check the flags | 50% | 10% | 41% | tee stage: King review | tee: tee stage: King review |
+| 7 | 4 | 386 / 374 | 157 | 0.65 | check the flags | 32% | 27% | 41% | tee stage: King review (snapped 14 yds along OSM tee 676103845) | tee: tee stage: King review (snapped 14 yds along OSM tee 676103845) |
+| 8 | 3 | 234 / 230 | 48 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review (snapped 7 yds along OSM tee 676103857) | tee: tee stage: King review (snapped 7 yds along OSM tee 676103857) |
+| 9 | 4 | 456 / 458 | 170 | 0.68 | check the flags | 57% | 3% | 39% | tee stage: King review (inside OSM tee 676103863) | tee: tee stage: King review (inside OSM tee 676103863) |
+| 10 | 4 | 356 / 354 | 344 | 0.69 | check the flags | 60% | 5% | 35% | tee stage: King review (inside OSM tee -19) | tee: tee stage: King review (inside OSM tee -19) |
+| 11 | 4 | 376 / 376 | 290 | 0.62 | check the flags | 18% | 31% | 52% | tee stage: King review | tee: tee stage: King review |
+| 12 | 4 | 442 / 433 | 274 | 0.68 | check the flags | 39% | 28% | 33% | tee stage: King review (snapped 7 yds along OSM tee 676110861) | tee: tee stage: King review (snapped 7 yds along OSM tee 676110861) |
+| 13 | 5 | 526 / 525 | 106 | 0.70 | check the flags | 48% | 26% | 26% | tee stage: King review (snapped 7 yds along OSM tee 676110869) | tee: tee stage: King review (snapped 7 yds along OSM tee 676110869) |
+| 14 | 4 | 325 / 324 | 206 | 0.66 | check the flags | 41% | 18% | 41% | tee stage: King review | tee: tee stage: King review |
+| 15 | 3 | 195 / 193 | 135 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review (snapped 2 yds along OSM tee 676112660) | tee: tee stage: King review (snapped 2 yds along OSM tee 676112660) |
+| 16 | 3 | 231 / 231 | 126 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review | tee: tee stage: King review |
+| 17 | 5 | 638 / 638 | 89 | 0.66 | check the flags | 52% | 0% | 48% | tee stage: King review (inside OSM tee 789471507) | tee: tee stage: King review (inside OSM tee 789471507); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 18 | 4 | 459 / 449 | 283 | 0.66 | check the flags | 54% | 0% | 46% | tee stage: King review (snapped 11 yds along OSM tee 676119305) | tee: tee stage: King review (snapped 11 yds along OSM tee 676119305); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 
 ## Stages
 
 - **resolve**: ok: relation/1507320 Tournament Club of Iowa (Polk City, IA)
-- **osm**: ok: 1058 features
+- **osm**: ok: 1059 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **scorecard**: missing
-- **tees**: fallback: OSM tee nearest the hole-line start (no yardages)
-- **geometry**: ok: geometry/build_holes.py (18 holes, 1 tee set(s))
+- **scorecard**: ok: golfify (golfify)
+- **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tee_overrides**: ok: King 1 review, 2 review (snapped 10 yds along OSM tee 787286062), 3 review (snapped 3 yds along OSM tee 674003243), 4 review (snapped 2 yds along OSM tee 674004138), 5 review (inside OSM tee 676091866), 6 review, 7 review (snapped 14 yds along OSM tee 676103845), 8 review (snapped 7 yds along OSM tee 676103857), 9 review (inside OSM tee 676103863), 10 review (inside OSM tee -19), 11 review, 12 review (snapped 7 yds along OSM tee 676110861), 13 review (snapped 7 yds along OSM tee 676110869), 14 review, 15 review (snapped 2 yds along OSM tee 676112660), 16 review, 17 review (inside OSM tee 789471507), 18 review (snapped 11 yds along OSM tee 676119305); Palmer 1 review (snapped 7 yds along OSM tee 787286057), 2 review (snapped 10 yds along OSM tee 674003237), 3 review (inside OSM tee 674003243), 4 review (inside OSM tee 674004138), 5 review (snapped 3 yds along OSM tee 676091867), 6 review (inside OSM tee 676091877), 7 review (inside OSM tee 676103846), 8 review (snapped 6 yds along OSM tee 676103856), 9 review (inside OSM tee 676103864), 10 review (snapped 4 yds along OSM tee -19), 11 review, 12 review (snapped 4 yds along OSM tee 676110861), 13 review (snapped 6 yds along OSM tee 676110869), 14 review, 15 review (snapped 2 yds along OSM tee 676112660), 16 review (snapped 8 yds along OSM tee 676112669), 17 review (inside OSM tee 789471509), 18 review (inside OSM tee 676119305);
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 100 candidate pads near hole starts
+- **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/tournament_club_iowa/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/tournament_club_iowa/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -699 m2 {'raised': 376, 'road': 281, 'cells': 42}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 22 polygons (property_line 22); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 26 polygons (property_line 26); mode replace
 
 ## Warnings
 
-- no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM tee box nearest each hole-line start (usually the back tee); lengths are measured
+- ignored 2 practice / driving-range tee box(es): OSM 789620555, 789620556
+- requested tee set 'Black' is not on the card; using 'King' instead (allow_substitute). Sets on the card: King, Palmer, Deacon, Legend
