@@ -1,40 +1,32 @@
-# Prairie Highlands GC (Olathe KS): rebuild QA (2026-11-02)
+# Prairie Highlands GC (Olathe KS): rebuild QA, wide-aim pass (2026-11-03)
 
-**Verdict: NEEDS FIX (wide aim on Blue 10, pipeline).** The build now completes, and the Blue 11 tee fix is in. All 36
-hole-sets match the card. But Blue 10's calm book line is Driver **60 yds right**, printed with no CHECK.
+**Verdict: PUBLISH.** Blue 10 now carries the wide-aim CHECK on its calm-day Driver line (60 yds right). With the
+Driver row tapped, the oval sits on the upper fairway short of the green, inside the picture. The forecast pick is a
+Long iron straight down the first fairway.
 
-Page checked: `course_data/library/prairie_highlands/page.html`, GitHub Actions run 41479479995 (committed 18:55Z).
-Both solved sets (Black 7,066, Blue 6,481, par 72) were run through `qa_page.js`: 18 holes each, phone and desktop,
-0 page problems. I looked at every phone hole picture, and at the desktop pictures of 10.
-
-## Review fixes
-
-| fix (review.md, 2026-10-30) | applied? |
-|---|---|
-| `card_review.json` (golfify, par 72) | **yes.** Pars 4 4 4 5 3 4 4 3 5 / 4 4 5 4 3 5 3 4 4; page = card on all 36 hole-sets |
-| Blue 11 off the lidar pad in the trees, onto the tee strip past the cart path (366 / 367) | **yes.** On an OSM box, 367 / 367; Driver on the line, fairway 70% |
-| Black 11 (uncertain) | now 394 / 400 (tee_axis, 6 yds off the box; was 388). CHECK on the page |
+Page checked: `course_data/library/prairie_highlands/page.html`, GitHub Actions run 41537321619 (committed 2026-11-03
+01:25Z). I ran both solved sets (Black, Blue) through `qa_page.js`, phone and desktop: 18 holes each, 0 page problems,
+no console errors. I looked at every phone hole picture, plus the desktop picture of Blue 10 with the Driver row
+tapped. Every landing oval was checked against the picture edge.
 
 ## Checks
 
 | check | result |
 |---|---|
-| Yardage | measured within 6 yds of the card everywhere |
-| Mapper / native cards | not used; `native.json` empty, as expected |
-| Water filter | ran; 766 m2 dropped (379 on roads). Water in the stats is the creek / ponds on 6, 7, 10, 15 |
-| Aims past ±40 | **Blue 10 Driver +60** (calm book), no CHECK |
+| Card / pars | page yardage = card on all 36 hole-sets; measured within 6 yds |
+| Wide-aim CHECK | Blue 10 (calm Driver +60; the CHECK text names the 2-wood row, +76) |
+| Ovals | 0 of 72 pick ovals outside; 0 club-row ovals outside. Blue 10 calm Driver is 18 px inside |
+| Native check cards | none asked |
 
 ## Holes
 
 | hole | Black | Blue | note |
 |---|---|---|---|
-| 1-5, 7-9, 12-16, 18 | OK | OK | tees on OSM boxes |
-| 6 | OK (marginal) | OK | Black Driver runs through the fairway end into rough at 325 (water 12% in the calm pattern). As reviewed |
-| 10 | OK | **wide aim, no CHECK** | 357-yd dog-leg right over the creek. The forecast play is Long iron, short of the creek (fine). But the note's book line is "Driver ... Aim 60.0 yds right", over the creek and trees (rough, water 11-12%, 16% trouble). Not flagged |
-| 11 | OK (CHECK) | **fixed** | |
-| 17 | OK (CHECK) | OK (marginal) | Black Driver -6 into the greenside bunker on a 340 (the page flags it); Blue -16.5, sand 17-23%. Model choice, as reviewed |
+| 1-9, 12-16, 18 | OK | OK | |
+| 10 | OK | **fixed** (CHECK) | calm Driver 60 right over the cart path and rough to the upper fairway (fairway 35%, water 12% for the pond right); forecast Long iron +0 |
+| 11 | OK (tee CHECK) | OK | Black tee_axis 6 yds; Blue review tee 367 = card |
+| 17 | OK (aim CHECK) | OK | Black Driver -5 ends by the greenside sand (sand 17%), flagged |
 
 ## Next fix
 
-1. **Pipeline (blocks the publish):** wide-aim CHECK on library pages (see gustin/qa_rebuild.md). Rebuild; PUBLISH if
-   Blue 10 comes back as a CHECK.
+None.

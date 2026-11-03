@@ -1,35 +1,33 @@
-# Osage National: rebuild QA, final pass (2026-11-02)
+# Osage National: rebuild QA, wide-aim pass (2026-11-03)
 
-**Verdict: NEEDS FIX (native check card 15 only).** The page itself is publishable, with the renovation caveat from
-the previous pass. But the hole-15 native-grass card describes a plan the page does not show.
+**Verdict: PUBLISH** (the renovation caveat from earlier passes still stands). The hole-15 native card is gone:
+`native.json` drops it with "planner's no-answer plan Driver +60 is not the page's Long iron -1.0". The two cards left,
+5 and 11, match the page's picks exactly.
 
-Page checked: `course_data/library/osage_national/page.html`, GitHub Actions run 41479479995 (committed 19:22Z). Both
-solved sets (Palmer 7,120, Tournament 6,681, par 72) were run through `qa_page.js`: 18 holes each, phone and desktop,
-0 page problems. I looked at every phone hole picture.
+Page checked: `course_data/library/osage_national/page.html`, GitHub Actions run 41537321619 (committed 2026-11-03
+01:42Z). I ran both solved sets (Palmer, Tournament) through `qa_page.js`, phone and desktop: 18 holes each, 0 page
+problems, no console errors. I looked at every Palmer phone hole picture, and checked every landing oval against the
+picture edge on both sets.
 
 ## Checks
 
 | check | result |
 |---|---|
-| Card | page yardage = OpenGolfAPI card on all 36 hole-sets; measured within 7 yds (Palmer 1: 370 / 377, 3: 376 / 370) |
-| Mapper layers (`course_data/mapper/osage_national/`) | in. The adds on 5, 6, 7, 9-12, 14, 17, 18 show in the landing stats (e.g. 7 long grass 5%, 12 long grass 3%, 6 water 6%). Tee shots land on fairway 38-83% |
-| Native check cards (`native.json`, Palmer) | 3 cards: 5, 15, 11. 5 and 11 match the page (5 Driver -18 / -18.5; 11 -8 / -7). **15 does not:** the card's "current" plan is **Driver +60** and its Right / Both texts read "now Driver, 60 yds right ... would cost 0.27 strokes". The page plays **Long iron -1** (calm and forecast, fairway 83%). The card was solved with a different aim grid (±60) than the page, and +60 is a wide aim with no CHECK |
-| Water filter | ran; 3,895 of 19,621 m2 of vision water dropped (3,485 on roads). The water left in the stats is the real ponds / lake (6, 10-12) |
-| Aims past ±40 | none on the page (only in card 15, above) |
+| Card / pars | page yardage = card on all 36 hole-sets; measured within 7 yds (Palmer 1: 370 / 377) |
+| Native check cards (Palmer) | 5 (Driver -18) and 11 (Driver -7). "current" equals the page pick. 15 dropped, which is consistent with the page (Long iron -1) |
+| Wide-aim CHECK | none needed: no pick or club row past ±40 on either set |
+| Ovals | all picks inside. Tapping the Driver / 2-wood row on 15 draws an oval 80-90 px off the picture: that is the planner's +60 line, which the page never picks. Tournament 6 Driver row is 3-7 px off |
 
 ## Holes
 
 | hole | Palmer | Tournament | note |
 |---|---|---|---|
-| 1, 4, 5, 8-18 | OK | OK | tees on OSM boxes |
-| 2 | OK (CHECK) | OK | Palmer walked back 22 yds, 456 / 455 |
-| 3 | OK (CHECK) | OK | Palmer on the lidar pad behind the pond by the parking lot, 376 / 370 (as reviewed) |
-| 6, 7 | OK (CHECK) | OK | Palmer lidar pads 18-27 yds behind the boxes; yardage = card ±3 |
-| 15 | OK | OK | page fine (Long iron to the fairway); **native card 15 wrong**, see above |
+| 1, 4, 5, 8-14, 16-18 | OK | OK | |
+| 2 | OK (tee CHECK) | OK | Palmer walked back 22 yds, 456 / 455 |
+| 3 | OK (tee CHECK) | OK | Palmer lidar pad behind the pond, 376 / 370 |
+| 6, 7 | OK (tee CHECK) | OK | Palmer lidar pads, yardage = card ±3 |
+| 15 | **fixed** (card gone) | OK | Long iron to the fairway, 83-88% |
 
 ## Next fix
 
-1. **Native card 15** (`course_data/library/osage_national/native.json`): drop or regenerate it from the page's own
-   plan (Long iron -1). **Pipeline:** the native-confirm step should take "current" from the page's calm pick, or use the
-   page's aim bound, so a card never names a plan the page does not show.
-2. As before (not blocking): get a post-renovation card and newer imagery.
+None blocking. As before: a post-renovation card and newer imagery.

@@ -1,32 +1,34 @@
-# Drumm Farm GC: rebuild QA (2026-11-02)
+# Drumm Farm GC: rebuild QA, wide-aim pass (2026-11-03)
 
-**Verdict: PUBLISH.** The reviewer's main fix (attach the card) is applied. The page now has Tour and Championship sets
-with the AllSquare card yardages and pars, and the hole 7 Tour tee is on the review spot. The Tour tees on 8 and 13 are
-still estimates, as the reviewer expected.
+**Verdict: PUBLISH.** The agent mapper layers are in, as `course_data/mapper/drumm_farm/review.md` describes. The
+wide-aim CHECK fires on Championship 8, and the native card is consistent with the page.
 
-Page checked: `course_data/library/drumm_farm/page.html`, built 2026-11-01T21:47Z. Both solved sets (Tour 7121,
-Championship 6564) were run through `qa_page.js`: 18 holes each, phone and desktop, 0 page problems. I looked at every
-phone hole picture. Pars 4 4 3 4 4 3 5 4 5 / 4 4 4 4 3 5 4 3 5 = 72, as in the review. Championship differs from the
-review card by 1 yd on 4 and 18 (metre rounding).
+Page checked: `course_data/library/drumm_farm/page.html`, GitHub Actions run 41537321619 (committed 2026-11-03
+00:58Z). I ran both solved sets (Tour, Championship) through `qa_page.js`, phone and desktop: 18 holes each, 0 page
+problems, no console errors. I looked at every Championship phone hole picture, plus Championship 8 with the Driver
+row tapped. Every landing oval was checked against the picture edge on both sets.
 
-## Review fixes
+## Checks
 
-| fix in review.md | applied? |
+| check | result |
 |---|---|
-| Rebuild with the card (Tour + Championship) | **yes.** The card source is AllSquare. The Tour per-hole overrides equal the card. The Championship values come from the card; the `"*"` overrides did not leak onto them. |
-| 7 Tour tee about 53 yds behind the 538 box (39.0632948, -94.3985147) | **yes.** Tee source `review`, 0 yds from the point. Page 598 / measured 591. Driver on the line, fairway 67%. |
-| 8, 13 Tour boxes not mapped | still estimates: 8 Tour is a lidar pad 27 yds from any OSM box (384 measured / 390), and 13 Tour is a walk-back (414). Neither changes the club. |
+| Mapper layers | applied 2026-11-02T22:46Z, 14 ops. The package carries agent native zones on 2 (2), 4, 7 (2), 8 (3), 12, 13 (2), 15 and 16, matching the review. The 10 OB erase took: no OB in the 10 landing. Landings now read "long grass 1-5%" on 4, 7, 8, 12, 13 and 15. 0 tees moved |
+| Native check cards (Tour) | 11: "current" Driver +26 = page. 2 dropped ("no answer changes the page's Driver +1.5") |
+| Wide-aim CHECK | Championship 8: calm Driver 60 left over the corner to the fairway. The forecast pick 4-wood is near the line |
+| Ovals | all picks inside. Only the Championship 11 Driver row goes off the picture (-19 to -31 px); the pick there is 2-wood +40 |
+| Card / pars | page yardage = card on all 36 hole-sets; measured within 7 yds (Tour 7: 591 / 598) |
 
 ## Holes
 
 | hole | Tour | Championship | note |
 |---|---|---|---|
-| 1-6, 9-12, 14, 15, 17, 18 | OK | OK | yardage within 8 of the card (box centre gap); par-3 boxes on the green |
-| 7 | **fixed** | OK | |
-| 8 | OK (tee uncertain) | OK | forecast Driver / calm 2-wood, aim 24 left; Champ 4-wood aim 32 left, fairway 56% |
-| 13 | OK (tee uncertain) | OK | Driver lands by the right fairway bunker, fairway 52% |
-| 16 | OK | OK (marginal) | Champ Driver to 42 yds short of a 320-yd green along the tree line (fairway 2%, trees 8%); 2-wood is 0.035 behind. Model choice |
+| 1-4, 6, 7, 9, 10, 12, 14, 15, 17, 18 | OK | OK | |
+| 5 | OK (tee CHECK) | OK | tee_axis 4 yds |
+| 8 | OK (tee CHECK) | OK (CHECK) | Tour on a lidar pad 28 yds behind the box (not photo-verified, as reviewed). Championship calm Driver -60, flagged |
+| 11 | OK | OK (marginal) | Championship 2-wood 40 right on the bound, fairway 71%; Tour Driver +26 |
+| 13 | OK (tee CHECK) | OK | Tour walked back 27 yds |
+| 16 | OK | OK (marginal) | Championship 4-wood (calm Driver) to the fairway start, fairway 2%, trees 7%, as before |
 
 ## Next fix
 
-None blocking. Optional: map the Tour boxes on 8 and 13 if imagery shows them.
+None.

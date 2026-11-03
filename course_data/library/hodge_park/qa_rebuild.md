@@ -1,39 +1,42 @@
-# Hodge Park GC: rebuild QA (2026-11-02)
+# Hodge Park GC: rebuild QA, wide-aim pass (2026-11-03)
 
-**Verdict: PUBLISH.** The reviewer's must-fix (17 White on a box behind Blue) and 1 White are fixed. Every Blue hole
-now measures within 6 yds of the card. One cosmetic tee issue is left on hole 3 (both sets share one box). It does
-not change the play, because par 3s play from the card yardage.
+**Verdict: PUBLISH.** Hole 10 is back on the OSM line. The page's line is `osm_supplement.geojson` way 1565676856
+vertex for vertex: from the tee NE over the cart path, 225 yds up the mown strip to the fairway bend, then NNW to the
+green. Blue measures 400 (card 405), White 373 (371), Red 331 (329). The Red review tees on 1, 3, 11, 12 and 16 are
+in the package at card distance. Red is not a page set, though, so they do not show on the page.
 
-Page checked: `course_data/library/hodge_park/page.html`, built 2026-11-02T04:47Z (GitHub Actions run 41388450661).
-Both solved sets (Blue, White, par 71) were run through `qa_page.js`: 18 holes each, phone and desktop, 0 page
-problems. I looked at every phone hole picture. Card: golfify, Blue 6,181 / White 5,707; page yardage = card on all
-36 hole-sets. The request still asks for "Black" and substitutes Blue (harmless).
+Page checked: `course_data/library/hodge_park/page.html`, GitHub Actions run 41537321619 (committed 2026-11-03 00:35Z).
+I ran both solved sets (Blue, White) through `qa_page.js`, phone and desktop: 18 holes each, 0 page problems, no
+console errors. I looked at every Blue phone hole picture and the White 10 desktop picture. I drew the OSM way onto
+the page's own hole-10 image: the first leg runs up the mown strip, and the bend is on the fairway. Every landing oval
+was checked against the picture edge on both sets.
 
-## Review fixes
+## Checks
 
-| fix in review.md | applied? |
+| check | result |
 |---|---|
-| 17 White: the 489 box, not the 598 box behind Blue | **yes.** Snapped 6 yds to OSM box 279487481, 489 measured / 485 card |
-| 1 White: the 373 box | **yes.** 372 measured / 380 card |
-| 3 Blue on the 167 box, White on the 144 box | **no (cosmetic).** Both review points (166.5 and 143.6 yds from the green) were snapped 11-12 yds to the same OSM box 279486929 at 155. Blue shows 168 and White 148 from one spot; Blue carries a "measured 155 vs card 168" CHECK. The play-it-like numbers use the card yardage (Blue 181, White 160), so the advice is right |
-| 6, 8, 10, 12, 13 Blue "16-30 yds short" (uncertain) | resolved: this build measures 304 / 407 / 400 / 188 / 383 against card 304 / 409 / 405 / 193 / 388 |
+| Hole 10 | on the OSM line. Blue tee at the review point in the mown strip (18 yds behind the blue-tag box, "review" tee CHECK, as the review expects); White inside OSM tee 279487450; Red inside 279487451. Blue 4-wood 16.5 left to the bend (fairway 60%). White 4-wood 60 left past the bend (fairway 38%, trees 12%), wide-aim CHECK. The green is 132 yds left of the tee line, so it is off this tee-shot picture; the landing ovals are inside |
+| Red tees 1 / 3 / 11 / 12 / 16 | 327 / 330, 124 / 123, 428 / 429, 148 / 149, 161 / 161 (measured / card), all "review (inside OSM tee)". Package only: Red is not a page set |
+| Hole 3 | fixed: Blue 167 / 168 and White 144 / 148, now on separate boxes (inside OSM tee), not one shared centroid |
+| Card / pars | page yardage = card on all 36 hole-sets; measured within 8 yds (White 1: 372 / 380) |
+| Wide-aim CHECK | Blue 9 (Driver +40; row +69), 15 (Mid iron pick; Driver row +62) and 18 (2-wood +51.5). White 9 (Driver +45), 10 (4-wood -60), 15 (Driver +51.5) and 18 (4-wood +40; row +55) |
+| Ovals | White 8 Driver 40 left clips the left edge by 11-12 px (about 3 yds), forecast and calm. The aim is on the ±40 bound, so the picture was not widened. Blue 10 calm Driver row is 8 px off. Everything else is inside |
+| Native check cards (Blue) | 2 (Driver +20) and 5 (Driver -8) = page |
+| Mapper layers | applied (62 ops); landings plausible |
 
 ## Holes
 
 | hole | Blue | White | note |
 |---|---|---|---|
-| 1 | OK | **fixed** | |
-| 2, 4, 5, 7, 9, 11-14, 16, 18 | OK | OK | |
-| 3 | tee shared (cosmetic) | tee shared (cosmetic) | see above |
-| 6 | OK (marginal) | OK | Blue Driver on the 304 par 4 to the green complex, trees 19% |
-| 8 | OK (marginal) | OK | Blue Driver aim 30 left over the dogleg corner, trees 15% |
-| 10 | OK | pick on the bound | White 4-wood aim 40.0 left, fairway 15%, trees 15% (as reviewed) |
-| 15 | OK (forecast mid iron; calm Driver +40) | pick on the bound | White 2-wood aim 40.0 right, trees 14% (as reviewed) |
-| 17 | OK | **fixed** | |
+| 1, 4-7, 11, 13, 14, 16, 17 | OK | OK | |
+| 2, 12 | OK (tee CHECK) | OK | tagged boxes 3 / 13 yds off |
+| 3 | **fixed** | **fixed** | separate boxes |
+| 8 | OK (marginal) | OK (oval clips 3 yds) | Driver 30 / 40 left over the dogleg trees |
+| 9 | OK (CHECK) | OK (CHECK) | Driver 40-45 right at the dogleg, trees 5-16% |
+| 10 | **fixed** (tee CHECK) | **fixed** (CHECK) | see above |
+| 15 | OK (CHECK) | OK (CHECK) | Blue mid iron to the fairway (forecast); White Driver 51.5 right, trees 12% |
+| 18 | OK (CHECK) | OK (CHECK) | 2-wood / 4-wood 40-51.5 right toward the green on a 277-302 par 4 |
 
-## Remaining (optional)
+## Next fix
 
-1. **Pipeline** (`review` tee snap): a review `tee_ll` that already lies on a long OSM teeing ground should stay
-   where it is (or snap along the box's axis), not jump 11-12 yds to the box centroid. On hole 3 two different sets
-   ended on the same point.
-2. Aim-bound picks on 10 / 15 (decide step clamp), as on other courses.
+None. Optional: widen the picture for aims on the ±40 bound too (White 8).

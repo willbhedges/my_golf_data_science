@@ -1,40 +1,43 @@
-# A. L. Gustin GC: rebuild QA, final pass (2026-11-02)
+# A. L. Gustin GC: rebuild QA, wide-aim pass (2026-11-03)
 
-**Verdict: NEEDS FIX (wide aims).** The card, the 15 Gold fix and the mapper trees all took. But the adaptive aim now
-prints Gold 6 at **60 yds left** with no CHECK, and Gold 3 at 52 right. The library pages do not carry the wide-aim
-CHECK (pipeline).
+**Verdict: PUBLISH.** The wide-aim CHECK now reaches the library page. Gold 6 (4-wood 59.5 yds left) carries a CHECK,
+and its landing oval sits fully inside the wider hole picture, on the fairway past the corner. Card, tees and mapper
+layers are unchanged from the last pass.
 
-Page checked: `course_data/library/gustin/page.html`, GitHub Actions run 41479479995 (committed 18:59Z). Both solved
-sets (Black 6,424, Gold 5,839, par 70) were run through `qa_page.js`: 18 holes each, phone and desktop, 0 page problems.
-I looked at every phone hole picture, and zoomed in on 3, 6 and 16.
+Page checked: `course_data/library/gustin/page.html`, GitHub Actions run 41537321619 (committed 2026-11-03 01:13Z).
+I ran both solved sets (Black, Gold) through `qa_page.js`, phone and desktop: 18 holes each, 0 page problems, no
+console errors. I looked at every phone hole picture. I also checked every landing oval against the picture edge, for
+the forecast pick, the calm pick and every club row (see "Ovals").
 
 ## Checks
 
 | check | result |
 |---|---|
-| Card | page yardage = card on all 36 hole-sets. 15 Gold 350 from its own box (340 measured), 15 Black 399 (400) |
-| Mapper layers (`course_data/mapper/gustin/`) | in. 103 tree adds/erases on 1, 3, 4, 6-9, 11, 12, 14-18. Tree readings rose where crowns were added (Black 9 trees 16%, 18 14%, Gold 18 25%, 1 10%); landings still on fairway |
-| Native check cards (`native.json`, Black) | 4 cards: 9, 1, 3, 12 (priors 0.25; no mapper native). 3 and 12 match the page (Driver +20 / +19.5; +5 / +7). 9 (+8 / page +2.5) and 1 (+10 / +3.5) are 5-7 yds off; acceptable. Re-plans are 4-wood near the line, or Driver -40 on 9 if right is long grass |
-| Water filter | ran; 853 m2 of small vision cells dropped. Water readings at most 4% (14) |
-| Aims past ±40 | **Gold 6 4-wood -60** (no CHECK, trees 19%), **Gold 3 2-wood +52.5** (CHECK only for the tee), **Black 16** 2-wood / 4-wood +59 (CHECK: calm landing in sand) |
+| Card / pars | page yardage = card on all 36 hole-sets. Measured within 5 yds except Gold 15 (340 / 350, review box, as before) and Black 11 (416 / 424, capped lidar pad) |
+| Wide-aim CHECK | present on Black 6, Black 16, Gold 3, Gold 6, Gold 7 and Gold 16. The page text reads "Auto-map CHECK: wide_aim ..." |
+| Ovals | the forecast and calm picks are inside the picture on all 36 hole-sets. Only taps on non-picked rows go outside: Black 6 2-wood (-6 px), Black 15 Driver (-13 px), Gold 3 Driver (-16 px), Gold 6 calm Driver (-2 px) |
+| Native check cards (Black) | 9, 1, 3, 12: each "current" plan equals the page pick (Driver +3 / +4 / +19 / +6) |
+| Mapper layers | in (tree adds/erases); landings on fairway, tree readings as in the last pass |
 
 ## Holes
 
 | hole | Black | Gold | note |
 |---|---|---|---|
 | 1, 2, 5, 8-10, 12, 13, 15, 17, 18 | OK | OK | |
-| 3 | OK | **wide aim** (CHECK) | Gold 2-wood +52.5 over the right-hand trees at the dogleg; trees 17-30%. The CHECK on the page is only about the tee (lidar pad 6 yds off) |
-| 4 | OK (CHECK) | OK | Black tee_axis 5 yds off the box |
-| 6 | OK (aim -40) | **wide aim, no CHECK** | Gold 4-wood -60 over the corner; the landing oval is half off the left edge of the hole picture; trees 19-35% |
-| 7 | OK (CHECK) | OK (marginal) | Black chute tee (lidar pad); Gold 4-wood / 2-wood -40 into the corner, sand 11% |
-| 11 | OK (CHECK) | OK | Black capped lidar pad, 416 / 424 |
-| 14 | OK (CHECK) | OK (CHECK) | lidar pads 150-183 yds from any OSM box (none mapped), yardage = card |
-| 16 | **wide aim** (CHECK) | OK | Black +59 toward the green on a 332 par 4 (fairway 7%, sand / trees). The page flags it |
+| 3 | OK | OK (CHECK) | Gold 2-wood 52 right over the right-hand trees at the dogleg; oval inside the picture |
+| 4, 11 | OK (tee CHECK) | OK | tee_axis 5 yds / capped lidar pad 11 yds |
+| 6 | OK (CHECK) | **fixed** (CHECK) | Gold 4-wood 59.5 left (calm) over the tree corner onto the fairway, trees 18%; oval fully in the picture. Black 4-wood 40 left; its CHECK is for the 2-wood row (-52) |
+| 7 | OK (tee CHECK) | OK (CHECK) | Gold 2-wood 39.5 left into the corner; the CHECK is for the 2-wood row at -62 |
+| 14 | OK (tee CHECK) | OK (tee CHECK) | lidar pads 150-183 yds from any mapped box; yardage = card |
+| 16 | OK (CHECK) | OK (CHECK) | Black 4-wood / calm 2-wood 58 right, flagged. Gold plays 4-wood +12; its CHECK is for the 2-wood row (+74) |
+
+## Notes (not blocking)
+
+- The CHECK text can quote a different number than the page. Gold 6: the CHECK says "4-wood aim -67", the page says
+  59.5 left. The auto-QA and the page seem to measure the aim differently.
+- The wide-aim rule fires on any club row, not only the pick (Gold 16, Gold 7, Black 6). That is defensible, since a
+  tapped row prints its aim. But it makes the CHECK list longer than the "pick" wording suggests.
 
 ## Next fix
 
-1. **Pipeline (blocks the publish):** carry the wide-aim CHECK onto library pages. `product/decide.py
-   wide_aim_flags` (commit 67fda313c) is only in the quick engine. `library/v2_adaptive.py` widens to ±60, but the
-   auto-map QA does not add a CHECK, so Gold 6 prints -60 silently. Then rebuild. Gold 3 / 6 and Black 16 become CHECKs;
-   the lines are plausible dog-leg lines, so PUBLISH after that.
-2. Optional: frame the hole picture so a wide landing stays inside it (Gold 6).
+None.
