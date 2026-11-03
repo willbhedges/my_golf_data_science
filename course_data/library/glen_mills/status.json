@@ -5,8 +5,10 @@
  "city": "Glen Mills",
  "state": "PA",
  "group": "library",
- "status": "needs confirm",
+ "status": "blocked",
  "reasons": [
+  "15 holes built, the card has 18: holes are missing or mis-routed",
+  "built pars sum to 59, the card's to 71 (more than 2 apart): holes or pars are wrong",
   "holes not all mapped in OSM (hole method: v2+structure)",
   "15 holes built vs the card's 18",
   "pars sum to 59, card 71",
@@ -112,5 +114,10 @@
  ],
  "weather": "forecast",
  "built": "2026-10-31T03:49Z",
- "request": "course_data/requests/course_page_glen_mills.json"
+ "request": "course_data/requests/course_page_glen_mills.json",
+ "blocked": {
+  "by": "course_page.py regate",
+  "when": "2026-11-03T02:52Z",
+  "was": "needs confirm"
+ }
 }

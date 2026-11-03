@@ -5,8 +5,10 @@
  "city": "Nashville",
  "state": "TN",
  "group": "library",
- "status": "needs confirm",
+ "status": "blocked",
  "reasons": [
+  "3 holes built, the card has 18: holes are missing or mis-routed",
+  "built pars sum to 12, the card's to 72 (more than 2 apart): holes or pars are wrong",
   "holes not all mapped in OSM (hole method: structure)",
   "3 holes built vs the card's 18",
   "pars sum to 12, card 72",
@@ -82,5 +84,10 @@
  ],
  "weather": "forecast",
  "built": "2026-11-01T20:48Z",
- "request": "course_data/requests/course_page_gaylord_springs.json"
+ "request": "course_data/requests/course_page_gaylord_springs.json",
+ "blocked": {
+  "by": "course_page.py regate",
+  "when": "2026-11-03T02:52Z",
+  "was": "needs confirm"
+ }
 }

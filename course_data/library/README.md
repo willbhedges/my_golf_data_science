@@ -70,6 +70,12 @@ Course status (`status.json`, `index.json`):
   above passes on every hole of every solved base.
 * **needs confirm**: anything else. `check_holes` lists the holes to confirm, and `reasons` gives the
   course-level causes. Each CHECK hole's note on the page starts "Auto-map CHECK:" with its reasons.
+* **blocked**: a page was built but is too wrong to publish (`course_page.py` `publish_gate`): the built hole
+  count is not the card's (no card: not 18 or 9), the built pars sum more than 2 from the card's, or resolve took a
+  weak name match (score < 0.5) more than 1.5 km from the request's `near` point (World Woods, 2026-11-03: 16
+  holes, par 64 vs 72, "Cabot Citrus Farms" 2.9 km away at score 0.38). `reasons` starts with the gate's reasons.
+  The page and its files stay in the folder for review; `index.json` lists it under `blocked`, not `courses`.
+  `course_page.py regate [--apply]` runs the gate over the pages already on disk.
 * **failed**: no page (resolve ambiguous / not found, package or compute failure). `reasons` says where it
   stopped. `qa_report.md` lists the OSM candidates for an ambiguous name, so the request can add `osm` or `near`.
   A re-run that fails for a course that already has a page does not make it failed: the last good page, its
@@ -118,6 +124,8 @@ The app reads this file. The fields are stable. New fields may be added, but non
 
 * `status`: `hand-checked` (tournament pages in `course_data/courses/<slug>/wind_page/index.html`, `group: "tournament"`),
   `auto-OK`, `needs confirm`, `failed` or `unsupported`. Rows are sorted in that order, then by state and name.
+  Blocked pages are not in `courses`: `blocked` lists them ({slug, name, city, state, status, reasons, page,
+  qa_report, holes, osm, built}) and `counts.blocked` counts them.
 * `last_attempt` (library rows, optional): the latest re-run's failure when the page shown is an earlier good build.
 * `tee_sets`: every set on the card, longest first. `on_page` is `solved` (its own tees, aims and calm-day picks),
   `offset` (the main base's tee moved along the line) or `null` (on the card but not on the page).

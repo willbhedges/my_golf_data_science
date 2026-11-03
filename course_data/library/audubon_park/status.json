@@ -5,8 +5,10 @@
  "city": "New Orleans",
  "state": "LA",
  "group": "library",
- "status": "needs confirm",
+ "status": "blocked",
  "reasons": [
+  "16 holes built, the card has 18: holes are missing or mis-routed",
+  "built pars sum to 56, the card's to 62 (more than 2 apart): holes or pars are wrong",
   "holes not all mapped in OSM (hole method: v2+structure)",
   "16 holes built vs the card's 18",
   "pars sum to 56, card 62",
@@ -72,5 +74,10 @@
  ],
  "weather": "forecast",
  "built": "2026-10-31T01:50Z",
- "request": "course_data/requests/course_page_audubon_park.json"
+ "request": "course_data/requests/course_page_audubon_park.json",
+ "blocked": {
+  "by": "course_page.py regate",
+  "when": "2026-11-03T02:52Z",
+  "was": "needs confirm"
+ }
 }

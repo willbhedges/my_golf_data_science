@@ -35,8 +35,12 @@ Stages (each a subcommand, run by the workflow; README.md in this folder has the
   finish REQ PARTS     -> merge, page (data gzip-inlined; the page stage runs through v2_adaptive.py, which widens a
                           hole picture's crop to a wide aim's landing), picture checks + the wide-aim CHECK
                           (wide_aims.py: any printed tee-shot aim past +/-40 yds), native_reconcile, qa_page.js,
-                          qa_report.md, status.json
+                          qa_report.md, status.json; publish_gate makes a page too wrong to publish "blocked" (hole
+                          count not the card's, pars off by more than 2, a weak resolve far from `near`): the page
+                          stays in the folder, the index keeps it off the course list. No card: the page labels the
+                          package's "osm_back" set "Back tees (from the map)" and drops "on the card" (label_no_card)
   index                -> course_data/library/index.json
+  regate [DIR...] [--apply]  -> publish_gate over the pages on disk; lists (or, --apply, writes) the blocked ones
 A failed re-run of a course that already has a page keeps that page's status.json (status, page, reasons, the good
 qa_report.md) and records the failure beside it as "last_attempt": {status, stage, error, when}; the index lists the
 page with that last_attempt. A package whose imagery is not USDA NAIP (Alaska, Hawaii, outside the US: the package
@@ -605,16 +609,55 @@ def split_page(html):
     return html[:s0], data, html[j:s1].lstrip(";"), html[s1 + len("</script>"):]
 
 
-def pack_page(head, data, code, tail):
-    code = code.replace("hand-checked against USGS 3DEP lidar", "mapped automatically (not hand checked) from OSM, "
-                        "NAIP and USGS 3DEP lidar")
+# Library-page edits of the shared wind-page template (course_data/courses/wind_page_template_course.html stays as the
+# tournament pages use it). Each (old, new) must occur in the template; test_publish_gate.py checks that they all do.
+PAGE_PATCHES = [
+    ("hand-checked against USGS 3DEP lidar", "mapped automatically (not hand checked) from OSM, NAIP and USGS 3DEP lidar"),
     # the template shows the tee picker only once offset grids exist; a page whose second set is a solved base
     # (D.alt) and has no offsets needs it too
-    old = 'document.getElementById("setRow").hidden = !multi; if(!multi) st.set = D.base_set;'
-    new = ('const multiSet = multi || !!(D.alt && Object.keys(D.alt).length); '
-           'document.getElementById("setRow").hidden = !multiSet; if(!multiSet) st.set = D.base_set;')
-    if old in code:
-        code = code.replace(old, new)
+    ('document.getElementById("setRow").hidden = !multi; if(!multi) st.set = D.base_set;',
+     'const multiSet = multi || !!(D.alt && Object.keys(D.alt).length); '
+     'document.getElementById("setRow").hidden = !multiSet; if(!multiSet) st.set = D.base_set;'),
+    # golfer-facing set names: D.set_labels (picker, footer) / D.tee_labels ("from the Back tee"); the set keys stay
+    # (a no-card page's set is "osm_back": label_no_card)
+    ("const SKEY", "const SETLBL = s => (D.set_labels || {})[s] || s, TEELBL = s => (D.tee_labels || {})[s] || s;\n"
+                   "const SKEY"),
+    ("from the ${T0.name.replace(", "from the ${TEELBL(T0.name).replace("),
+    ("from the ${String(P3.setName).replace(", "from the ${String(TEELBL(P3.setName)).replace("),
+    ('r.T.name + " tee"', 'TEELBL(r.T.name) + " tee"'),
+    ("Elevation measured from the ${h.base_set} tee", "Elevation measured from the ${TEELBL(h.base_set)} tee"),
+    (">${s}${D.set_totals", ">${SETLBL(s)}${D.set_totals"),
+    ("[D.base_set].concat(Object.keys(D.alt))", "[D.base_set].concat(Object.keys(D.alt)).map(SETLBL)"),
+    ("scorecard difference from ${D.base_set}", "scorecard difference from ${SETLBL(D.base_set)}"),
+    # no card: nothing is "on the card" (TPC Louisiana par 3s said "176 on the card")
+    ("on the card</span>", '${D.no_card ? "to the middle" : "on the card"}</span>'),
+    ('"at the card spot"', '(D.no_card ? "at the mapped tee" : "at the card spot")'),
+    ("<td>Card</td>", '<td>${D.no_card ? "Measured" : "Card"}</td>'),
+    # the hole note is the calm-day book's (club, aim, landing stats); when the forecast play (or the tee) differs it
+    # must say so, not sit under the forecast play's label (St Andrews 15 Blue: Long iron shown, 4-wood stats read)
+    ('let note = h.note || "";',
+     'let note = h.note || "";\n'
+     '    if(note && (calm !== r.pick || r.T.back !== 0)) note = `Calm-day pick (no wind'
+     '${r.T.back ? ", from the " + TEELBL(h.base_set) + " tee" : ""}): ${calm}. ${note}${/[.!?]$/.test(note) ? "" : "."} '
+     'In this wind the play is ${r.pick}: its numbers are in the club table.`;'),
+]
+
+
+def patch_code(code):
+    """-> (code with PAGE_PATCHES applied, the patches whose text was not found)."""
+    missed = []
+    for old, new in PAGE_PATCHES:
+        if old in code:
+            code = code.replace(old, new)
+        elif new not in code:
+            missed.append(old)
+    return code, missed
+
+
+def pack_page(head, data, code, tail):
+    code, missed = patch_code(code)
+    if missed:
+        log(f"page template changed: {len(missed)} library patch(es) not applied: {missed}")
     z = base64.b64encode(gzip.compress(json.dumps(data, separators=(",", ":")).encode(), 9)).decode()
     return (head + f'<script id="pg-data" type="application/octet-stream">{z}</script>\n'
             f'<script id="pg-main" type="text/plain">{code}</script>\n' + BOOT + tail)
@@ -724,6 +767,106 @@ def course_gate(pkg, checks, qa, cfg):
     return status, reasons, sorted(check_holes, key=lambda x: (isinstance(x, str), x)), page_bad
 
 
+# publish gate: a page this wrong is not a "needs confirm" page (world_woods 2026-11-03: 16 holes, par 64 vs the
+# card's 72, resolved to a course 2.9 km from `near` with match score 0.38). "blocked": the page and its files stay in
+# the folder (for the review), status.json says why, and the index keeps it off the course list.
+GATE_PAR_TOL = 2              # built pars vs the card's total
+GATE_MIN_SCORE = 0.5          # resolve match score (library builds: 0.65 .. 11.6; world_woods 0.38)
+GATE_NEAR_KM = 1.5            # ... and the resolved course centre this far from the request's near point
+NO_CARD_SET_LABEL = "Back tees (from the map)"
+NO_CARD_TEE_LABEL = "Back"
+
+
+def has_card(pkg, cfg):
+    """True when the solved set has card yardages (a no-card build solves the package's own "osm_back" set)."""
+    ts = (pkg.get("tee_sets") or {}).get(cfg.get("tees") or pkg.get("tee_set")) or {}
+    return bool(ts.get("yards"))
+
+
+def request_near(q):
+    """The request's near point as "lat,lon" (None when the request names the OSM course itself or gives none)."""
+    if q.get("osm"):
+        return None
+    n = q.get("near")
+    if isinstance(n, (list, tuple)) and len(n) >= 2:
+        return f"{n[0]},{n[1]}"
+    return n or None
+
+
+def _near_ll(near):
+    m = re.fullmatch(r"\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*", str(near or ""))
+    return (float(m.group(1)), float(m.group(2))) if m else None
+
+
+def _km(a, b):
+    la1, lo1, la2, lo2 = map(math.radians, (a[0], a[1], b[0], b[1]))
+    h = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2
+    return 2 * 6371.0 * math.asin(math.sqrt(h))
+
+
+def publish_gate(pkg, cfg, near=None):
+    """-> the reasons this page must not be published (empty: publishable). Blocked when the built hole count is not
+    the card's (no card: not 18 or 9), the built pars sum more than GATE_PAR_TOL from the card's, or resolve took a
+    weak name match (score < GATE_MIN_SCORE) more than GATE_NEAR_KM from the request's near point."""
+    out = []
+    holes = pkg.get("holes") or {}
+    hs = list(holes.values()) if isinstance(holes, dict) else list(holes)
+    n = len(hs)
+    ts = (pkg.get("tee_sets") or {}).get(cfg.get("tees") or pkg.get("tee_set")) or {}
+    card_n = len(ts.get("yards") or [])
+    if card_n:
+        if n != card_n:
+            out.append(f"{n} holes built, the card has {card_n}: holes are missing or mis-routed")
+    elif n not in (18, 9):
+        out.append(f"{n} holes built with no card (expected 18 or 9): holes are missing, or two courses are mixed")
+    card_par = sum(p for p in (ts.get("par") or []) if p) or None
+    if card_par:
+        built = sum(int(h.get("par") or 0) for h in hs)
+        if abs(built - card_par) > GATE_PAR_TOL:
+            out.append(f"built pars sum to {built}, the card's to {card_par} (more than {GATE_PAR_TOL} apart): "
+                       "holes or pars are wrong")
+    ll = _near_ll(near)
+    c = pkg.get("course") or {}
+    if ll and c.get("center"):
+        cand = [x for x in c.get("candidates") or [] if x.get("osm") == c.get("osm")]
+        score = cand[0].get("score") if cand else None
+        km = _km(ll, (c["center"][1], c["center"][0]))
+        if score is not None and score < GATE_MIN_SCORE and km > GATE_NEAR_KM:
+            out.append(f"resolved to '{c.get('name')}' {km:.1f} km from the request's near point with match score "
+                       f"{score:.2f} (< {GATE_MIN_SCORE}): probably not the requested course")
+    return out
+
+
+def label_no_card(data, set_name):
+    """A page with no card: golfers see NO_CARD_SET_LABEL / "Back tee", never the package's set key ("osm_back"),
+    and no "on the card" wording (the template patches read D.no_card / D.set_labels / D.tee_labels). Strings that
+    are exactly the set name are keys (base_set, sets, the app and qa.json use them) and stay."""
+    data["no_card"] = True
+    data["set_labels"] = {set_name: NO_CARD_SET_LABEL}
+    data["tee_labels"] = {set_name: NO_CARD_TEE_LABEL}
+
+    def txt(v):
+        v = v.replace(f"{set_name} tee", f"{NO_CARD_TEE_LABEL} tee")
+        v = v.replace(f"for {set_name}", "for the back tees (from the map)")
+        v = v.replace(set_name, NO_CARD_SET_LABEL)
+        return v.replace("on the card", "measured")
+
+    def walk(o):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k in ("img",):
+                    continue
+                o[k] = walk(v)
+            return o
+        if isinstance(o, list):
+            return [walk(v) for v in o]
+        if isinstance(o, str) and o != set_name and len(o) < 5000:
+            return txt(o)
+        return o
+    walk(data)
+    return data
+
+
 def report_md(q, cfg, pkg, checks, qa, status, reasons, check_holes, page_bad, page_rel, size):
     sc = pkg.get("scorecard") or {}
     pl = pkg.get("pipeline") or {}
@@ -795,6 +938,9 @@ def finish(q, parts):
     # the tee picker exists only with more than one set on the page; a single-set page is checked as it opens
     qa = run_qa_page(q, page, solved if len(solved) > 1 else [None], cfg_set=solved[0])
     status, reasons, check_holes, page_bad = course_gate(pkg, checks, qa, cfg)
+    blocks = publish_gate(pkg, cfg, request_near(q))
+    if blocks:                       # not published: the page stays in the folder, off the index list (index)
+        status, reasons = "blocked", blocks + [r for r in reasons if r not in blocks]
     # the page says what was checked: status in the subtitle, the reasons in each CHECK hole's note
     data["sub"] = cfg["sub"].replace("automatic page", f"automatic page: {status.upper()}" +
                                      (f" (confirm {', '.join(map(str, check_holes))})" if check_holes else ""))
@@ -806,6 +952,8 @@ def finish(q, parts):
             h = c["holes"].get(str(hd.get("key")))
             if h and h["status"] != "PASS":
                 hd["note"] = ((hd.get("note") or "") + " Auto-map CHECK: " + "; ".join(h["reasons"])).strip()
+    if not has_card(pkg, cfg):
+        label_no_card(data, cfg["tees"])
     open(page, "w").write(pack_page(head, data, code, tail))
     os.replace(page, final)
     page = final
@@ -940,6 +1088,7 @@ def check_imagery(q, pkg):
 INDEX_KEYS = ("slug", "name", "city", "state", "status", "check_holes", "reasons", "tee_sets", "solved_sets", "page",
               "page_bytes", "qa_report", "center", "osm", "holes", "days", "weather", "built")
 INDEX_ORDER = {"hand-checked": 0, "auto-OK": 1, "needs confirm": 2, "failed": 3, "unsupported": 4}
+BLOCKED_KEYS = ("slug", "name", "city", "state", "status", "reasons", "page", "qa_report", "holes", "osm", "built")
 
 
 def index_row(s):
@@ -950,9 +1099,12 @@ def index_row(s):
 
 def index():
     rows = []
+    blocked = []
     for p in sorted(glob.glob(os.path.join(HERE, "*", "status.json"))):
         s = rj(p)
-        if s:
+        if s and s.get("status") == "blocked":          # publish_gate: kept off the course list, files kept
+            blocked.append({k: s.get(k) for k in BLOCKED_KEYS})
+        elif s:
             rows.append(index_row(s))
     for d in sorted(glob.glob(os.path.join(TOURNAMENT, "*", "config.json"))):
         slug = os.path.basename(os.path.dirname(d))
@@ -995,22 +1147,55 @@ def index():
     rows.sort(key=lambda r: (order.get(r["status"], 9), r["state"] or "", r["name"] or ""))
     idx = dict(schema="course_library/1", doc="course_data/library/README.md",
                updated=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
-               counts={k: sum(1 for r in rows if r["status"] == k) for k in order}, courses=rows)
+               counts={k: sum(1 for r in rows if r["status"] == k) for k in order} | {"blocked": len(blocked)},
+               courses=rows, blocked=blocked)
     wj(os.path.join(HERE, "index.json"), idx)
     print(json.dumps(idx["counts"]))
 
 
+def regate(apply=False, dirs=None):
+    """Run publish_gate over built library pages on disk (status.json + package.json + config.json + the request's
+    near point) -> [(slug, old status, reasons)] of the pages it blocks; apply=True writes "blocked" into their
+    status.json (reasons first, the old ones kept, page and files untouched). The next index drops them."""
+    flips = []
+    for p in sorted(glob.glob(os.path.join(HERE, "*", "status.json")) if dirs is None else
+                    [os.path.join(d, "status.json") for d in dirs]):
+        st = rj(p)
+        if not st or st.get("status") in ("failed", "unsupported", "blocked", "hand-checked") or not st.get("page"):
+            continue
+        d = os.path.dirname(p)
+        pkg, cfg = rj(os.path.join(d, "package.json")), rj(os.path.join(d, "config.json")) or {}
+        if not pkg:
+            continue
+        q = rj(os.path.join(ROOT, st["request"])) if st.get("request") else None
+        b = publish_gate(pkg, cfg, request_near(q or {}))
+        if not b:
+            continue
+        flips.append((st["slug"], st["status"], b))
+        if apply:
+            st.update(status="blocked", reasons=b + [r for r in st.get("reasons") or [] if r not in b],
+                      blocked=dict(by="course_page.py regate", when=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
+                                   was=flips[-1][1]))
+            wj(p, st)
+    return flips
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["plan", "pkgreq", "configure", "prepare", "native", "compute", "finish", "failed", "index", "slug"])
+    ap.add_argument("cmd", choices=["plan", "pkgreq", "configure", "prepare", "native", "compute", "finish", "failed", "index", "slug",
+                                    "regate"])
     ap.add_argument("args", nargs="*")
     ap.add_argument("--imagery")
+    ap.add_argument("--apply", action="store_true", help="regate: write the blocked status (default: list only)")
     ap.add_argument("--log", help="failed: the stage's captured output; its last exception lines go in the reasons")
     a = ap.parse_intermixed_args()
     if a.cmd == "plan":
         print(json.dumps(plan(a.args)))
     elif a.cmd == "index":
         index()
+    elif a.cmd == "regate":
+        for slug, was, b in regate(apply=a.apply, dirs=a.args or None):
+            print(f"{slug}: {was} -> blocked{'' if a.apply else ' (dry run)'}: " + "; ".join(b))
     else:
         q = request(a.args[0])
         if a.cmd == "slug":

@@ -5,8 +5,11 @@
  "city": "Brooksville",
  "state": "FL",
  "group": "library",
- "status": "needs confirm",
+ "status": "blocked",
  "reasons": [
+  "16 holes built, the card has 18: holes are missing or mis-routed",
+  "built pars sum to 64, the card's to 72 (more than 2 apart): holes or pars are wrong",
+  "resolved to 'Cabot Citrus Farms' 2.9 km from the request's near point with match score 0.38 (< 0.5): probably not the requested course",
   "holes not all mapped in OSM (hole method: v2+structure)",
   "scorecard not matched (source golfify, flags ['1 hole(s) where a longer set is shorter than the next set: 1 Yellow(W) 300 < Green(M) 334'])",
   "16 holes built vs the card's 18",
@@ -124,5 +127,10 @@
   "holes": [],
   "tee_set": "Black",
   "note": "not asked: no agent_layers in the request"
+ },
+ "blocked": {
+  "by": "course_page.py regate",
+  "when": "2026-11-03T02:52Z",
+  "was": "needs confirm"
  }
 }
