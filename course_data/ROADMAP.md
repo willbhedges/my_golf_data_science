@@ -104,7 +104,7 @@ can't be produced fast enough (each truth course needs imagery renders on Action
 - Disk in the session container is watched; finished worktrees are removed once their work is pushed.
 
 **Quality gates (never skipped):**
-- A page is published only after a hole-by-hole check of its screenshots.
+- A course reaches the user only after a hole-by-hole check of its screenshots. Since 11-03, passing library courses go into the main Aim Caddie app (no individual per-course artifacts).
 - The live Spirit Hollow page is never modified; tournament pages change only through their own refreshes.
 - Every accuracy number in this file names its test set and size.
 

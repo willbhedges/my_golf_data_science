@@ -109,3 +109,8 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - bandon_dunes published (title fixed, QA PUBLISH): https://claude.ai/artifact/37FQAC3JN8Eu3SDXWkp6QV
 - QA gap: only default sets screenshotted (TCI Palmer, Bandon Black not); hole 14 TCI Legend tee unconfirmed (not on page)
 - 11-03 follow-ups fixed + queued (course_batch_followups_1103: queenstown_harbor, chambers_bay, tpc_sawgrass, sand_hollow, grand_national_links, troon_north, old_works). When built: QA titles, Chambers Navy 1 = 559 + tee CHECK, Queenstown golfify card + hole 7 par 5, old_works fairways; then republish to existing URLs
+
+## User direction 11-03
+- No individual artifacts for library courses any more: passing courses go into the main Aim Caddie app (D6sdGLhodo8DQ7Yz8PojNW). Existing per-course artifacts stay as they are and are no longer updated.
+- Blocked courses stay in the national search as "NO PAGE YET" (user OK).
+- Tee-shot dispersion looks circular; agent verifying the physics (lateral vs depth) and the drawing.
