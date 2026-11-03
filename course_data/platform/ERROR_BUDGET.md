@@ -379,3 +379,57 @@ independent (the edge convention, not the detection, is what's measured once the
 variant also changes the truth's lies outside the traced footprint (auto zones kept there), so its truth plans can
 differ slightly from the committed run's. The full 26-configuration table was run only on the committed packages.
 Tomahawk Hills' tees were not rebuilt (no OSM hole ways offline). Not checked against newer imagery for Osage.
+
+## Fairway fill where OSM has none (2026-11-03)
+
+**Cause.** Creekmoor's OSM has no golf=fairway (tees, greens, bunkers, holes only). Nothing else adds one:
+vision_any/2 makes trees and water only (`v2_model.py`; long grass is off), the segment U-Net gap-fill
+(`segment/gapfill.py`) runs only when `requests/segment_<slug>.json` was committed (it was not), and the mapper drew
+none. So every landing read "fairway 0 %", 14 holes got aim CHECKs and picks drifted into bunkers.
+
+**Fix.** `vision_any/fairway_fill.py` (package stage S4f, after the segment fill; request `fairway_fill: false` turns
+it off). Per course, a Fisher direction on every NAIP year (4 bands + 3x3 texture of green / NIR) between pixels on
+the par-4/5 hole lines (90 yds past the tee to 50 short of the green, <= 4 m off the line) and a rough band 32-55 m
+off the lines (away from every other hole line), both lidar HAG <= 1 m and off the OSM green / tee / bunker / water /
+buildings / roads; refined twice on its own score. Per hole: score >= 0.5 within 50 m of the line, opened / closed,
+the parts touching the line. It never reads the OSM fairway, so it behaves the same with or without one. Gates:
+course separation d' (line seeds vs rough band) >= 1.0, else nothing; per hole line cover >= 50 %, mean width
+14-75 yds, <= 85 % of the corridor. It fills only holes whose landing corridor (150-330 yds, +/-45) has < 400 yd2 of
+fairway (OSM, segment or mapper).
+
+**Layer quality** (OSM fairways removed, fill vs the OSM fairway in the 180-330 yd landing corridors, median IoU
+per course): La Nickell 0.90, Rivercut 0.88, Colbert 0.84, Osage 0.83, Annbriar 0.82, Gateway 0.81, Eagle Knoll
+0.79, Blue Hills 0.76, Veenker 0.75, Pine Dunes 0.74, Coldwater 0.73, Tomahawk 0.68, Sand Creek 0.61, Wakonda 0.59,
+Buffalo Dunes 0.58, Ellis 0.56, Eagle Bend 0.56; d' 1.0-1.5 (gate passes): Gustin 0.79, Buffalo Ridge 0.79, Amana
+0.66, Spirit Hollow 0.58. Gated (d' < 1.0; ungated IoU 0.42-0.56): National KC 0.68, Prairie Dunes 0.69, Mariah
+Hills 0.96 (links / prairie courses where fairway and rough look alike on NAIP). Creekmoor: d' 2.0, all 14 par-4/5
+holes pass, widths 24-42 yds; checked by eye on NAIP 2022 (follows the mown fairways).
+
+**Error budget** (`error_budget.py --set v1 / v2 --configs auto`, n 4000, seed 31, DECIDE_ADAPTIVE_AIM=0
+V2_ADAPTIVE_AIM=0, fresh decision cache, the same environment for every variant; per course:
+`error_budget_fairway_fill.json`). A = committed packages (OSM fairway); B = every fairway / first_cut zone
+removed (simulates "OSM has no fairway" on every course); C = B + the fill; D = A + the fill (the product setting:
+fires only where a corridor lacks fairway).
+
+| set | A: OSM fairway | B: no fairway | C: no fairway + fill | D: OSM + fill | recovered by the fill (C vs B, of A - B) |
+|---|---|---|---|---|---|
+| v1 (11 courses, 152 shots) | 107 match, regret 2.75 | 57, 10.26 | 87, 4.12 | 106, 2.76 | 30 / 50 matches, 6.1 / 7.5 strokes |
+| v2 (14 courses, 193 shots) | 133, 5.95 | 67, 31.58 | 108, 15.25 | 133, 5.95 | 41 / 66 matches, 16.3 / 25.6 strokes |
+| v2 without the 2 gated courses | 126, 3.75 | 64, 22.50 | 105, 6.17 | | 41 / 62, 16.3 / 18.8 |
+
+So the fill recovers about 60 % of the matches and 70-85 % of the regret the missing fairway costs. It does not
+reach OSM: missed holes are mostly ones where the fill is wider or offset on one side (Spirit Hollow, Wakonda, Eagle
+Bend, Buffalo Dunes). With OSM fairways present (D) it changes nothing except Hot Springs, the one scored course
+with no OSM fairway: 8 -> 7 matches, regret 0.13 -> 0.14. Its hand map has no fairway either ("dormant Bermuda,
+not separable on NAIP"), so the truth there counts any fairway as wrong; that hole (one shot) is the cost seen, not
+a measured fairway error. The gated courses (Prairie Dunes, Mariah Hills, National KC) keep no fairway.
+
+**Reach** (`library/us_courses.json.gz`, open courses): 488 of 6,271 tier A / B courses (complete OSM holes) map no
+golf=fairway (437 of 5,858 tier A); tier C 1,159 of 3,498; 4,909 of 13,090 overall (3,262 are tier D outlines). In the
+100-course library: Creekmoor and Old Works have no fairway in any par-4/5 corridor; 9 more have 1-4 such holes
+(Audubon Park 3, Brown Deer 4, Longview Lake 4, World Woods 3, Jayhawk 2, Seneca 2, Bethpage, Hawktree, Harbour
+Town 1). The fill needs the vision_any raw stack (NAIP years + lidar HAG), which the library build fetches.
+
+Not verified: the simulation removes OSM fairways but keeps every other OSM layer (a course with no fairway mapped
+often has fewer bunkers / tees too); the v2 truth fairways start from OSM, so C is scored against OSM's outline; the
+fill on Creekmoor was checked by eye, not against a hand map.

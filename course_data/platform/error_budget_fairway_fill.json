@@ -1,0 +1,660 @@
+{
+ "schema": "error_budget_fairway_fill/1",
+ "doc": "ERROR_BUDGET.md 'Fairway fill': auto match / regret per course, configs auto (+ truth), n 4000, seed 31, DECIDE_ADAPTIVE_AIM=0 V2_ADAPTIVE_AIM=0, fresh decision cache. A committed packages (OSM fairway), B OSM fairway + first_cut zones removed, C B + fairway_fill, D A + fairway_fill (fires only where a landing corridor has no fairway: Hot Springs; D = A elsewhere).",
+ "sets": {
+  "v1": {
+   "blue_hills": {
+    "A": {
+     "match": 14,
+     "n": 14,
+     "regret": 0.048
+    },
+    "B": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.542
+    },
+    "C": {
+     "match": 9,
+     "n": 14,
+     "regret": 0.156
+    },
+    "D": {
+     "match": 14,
+     "n": 14,
+     "regret": 0.048
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 1.61; gated: none)",
+     "dprime": 1.61
+    }
+   },
+   "eagle_knoll": {
+    "A": {
+     "match": 14,
+     "n": 14,
+     "regret": 0.026
+    },
+    "B": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.359
+    },
+    "C": {
+     "match": 13,
+     "n": 14,
+     "regret": 0.071
+    },
+    "D": {
+     "match": 14,
+     "n": 14,
+     "regret": 0.026
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 1.98; gated: none)",
+     "dprime": 1.98
+    }
+   },
+   "gateway_national": {
+    "A": {
+     "match": 9,
+     "n": 13,
+     "regret": 0.424
+    },
+    "B": {
+     "match": 3,
+     "n": 13,
+     "regret": 3.157
+    },
+    "C": {
+     "match": 6,
+     "n": 13,
+     "regret": 1.47
+    },
+    "D": {
+     "match": 9,
+     "n": 13,
+     "regret": 0.424
+    },
+    "fill": {
+     "status": "ok: 12/13 hole(s) without a mapped fairway filled from NAIP (d' 1.65; gated: 15)",
+     "dprime": 1.65
+    }
+   },
+   "national_kc": {
+    "A": {
+     "match": 1,
+     "n": 14,
+     "regret": 0.0
+    },
+    "B": {
+     "match": 1,
+     "n": 14,
+     "regret": -0.001
+    },
+    "C": {
+     "match": 1,
+     "n": 14,
+     "regret": -0.001
+    },
+    "D": {
+     "match": 1,
+     "n": 14,
+     "regret": 0.0
+    },
+    "fill": {
+     "status": "gated: mown / rough separation d' 0.68 < 1.0 (seeds 30862, rough 60294); no fairway filled",
+     "dprime": 0.68
+    }
+   },
+   "hot_springs_arlington": {
+    "A": {
+     "match": 8,
+     "n": 14,
+     "regret": 0.13
+    },
+    "B": {
+     "match": 8,
+     "n": 14,
+     "regret": 0.13
+    },
+    "C": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.138
+    },
+    "D": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.137
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.08; gated: none)",
+     "dprime": 2.08
+    }
+   },
+   "pine_dunes": {
+    "A": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.163
+    },
+    "B": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.437
+    },
+    "C": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.188
+    },
+    "D": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.163
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 1.76; gated: none)",
+     "dprime": 1.76
+    }
+   },
+   "veenker": {
+    "A": {
+     "match": 9,
+     "n": 13,
+     "regret": 0.201
+    },
+    "B": {
+     "match": 4,
+     "n": 13,
+     "regret": 0.391
+    },
+    "C": {
+     "match": 7,
+     "n": 13,
+     "regret": 0.207
+    },
+    "D": {
+     "match": 9,
+     "n": 13,
+     "regret": 0.201
+    },
+    "fill": {
+     "status": "ok: 12/13 hole(s) without a mapped fairway filled from NAIP (d' 2.31; gated: 5)",
+     "dprime": 2.31
+    }
+   },
+   "coldwater": {
+    "A": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.472
+    },
+    "B": {
+     "match": 4,
+     "n": 14,
+     "regret": 2.33
+    },
+    "C": {
+     "match": 9,
+     "n": 14,
+     "regret": 0.494
+    },
+    "D": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.472
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.37; gated: none)",
+     "dprime": 2.37
+    }
+   },
+   "ellis": {
+    "A": {
+     "match": 11,
+     "n": 14,
+     "regret": 0.375
+    },
+    "B": {
+     "match": 8,
+     "n": 14,
+     "regret": 0.774
+    },
+    "C": {
+     "match": 11,
+     "n": 14,
+     "regret": 0.32
+    },
+    "D": {
+     "match": 11,
+     "n": 14,
+     "regret": 0.375
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 3.14; gated: none)",
+     "dprime": 3.14
+    }
+   },
+   "spirit_hollow": {
+    "A": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.893
+    },
+    "B": {
+     "match": 3,
+     "n": 14,
+     "regret": 1.894
+    },
+    "C": {
+     "match": 4,
+     "n": 14,
+     "regret": 1.009
+    },
+    "D": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.893
+    },
+    "fill": {
+     "status": "ok: 13/14 hole(s) without a mapped fairway filled from NAIP (d' 1.30; gated: 14)",
+     "dprime": 1.3
+    }
+   },
+   "colbert_hills": {
+    "A": {
+     "match": 14,
+     "n": 14,
+     "regret": 0.017
+    },
+    "B": {
+     "match": 5,
+     "n": 14,
+     "regret": 0.245
+    },
+    "C": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.068
+    },
+    "D": {
+     "match": 14,
+     "n": 14,
+     "regret": 0.017
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 1.56; gated: none)",
+     "dprime": 1.56
+    }
+   }
+  },
+  "v2": {
+   "tomahawk_hills": {
+    "A": {
+     "match": 9,
+     "n": 12,
+     "regret": 0.081
+    },
+    "B": {
+     "match": 6,
+     "n": 12,
+     "regret": 0.168
+    },
+    "C": {
+     "match": 8,
+     "n": 12,
+     "regret": 0.08
+    },
+    "D": {
+     "match": 9,
+     "n": 12,
+     "regret": 0.081
+    },
+    "fill": {
+     "status": "ok: 10/12 hole(s) without a mapped fairway filled from NAIP (d' 1.77; gated: 12, 13)",
+     "dprime": 1.77
+    }
+   },
+   "la_nickell": {
+    "A": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.142
+    },
+    "B": {
+     "match": 6,
+     "n": 14,
+     "regret": 0.758
+    },
+    "C": {
+     "match": 8,
+     "n": 14,
+     "regret": 0.238
+    },
+    "D": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.142
+    },
+    "fill": {
+     "status": "ok: 13/14 hole(s) without a mapped fairway filled from NAIP (d' 1.78; gated: 1)",
+     "dprime": 1.78
+    }
+   },
+   "buffalo_ridge": {
+    "A": {
+     "match": 12,
+     "n": 13,
+     "regret": 0.121
+    },
+    "B": {
+     "match": 5,
+     "n": 13,
+     "regret": 1.976
+    },
+    "C": {
+     "match": 9,
+     "n": 13,
+     "regret": 0.29
+    },
+    "D": {
+     "match": 12,
+     "n": 13,
+     "regret": 0.121
+    },
+    "fill": {
+     "status": "ok: 11/13 hole(s) without a mapped fairway filled from NAIP (d' 1.13; gated: 5, 10)",
+     "dprime": 1.13
+    }
+   },
+   "rivercut": {
+    "A": {
+     "match": 13,
+     "n": 14,
+     "regret": 0.045
+    },
+    "B": {
+     "match": 6,
+     "n": 14,
+     "regret": 0.647
+    },
+    "C": {
+     "match": 13,
+     "n": 14,
+     "regret": 0.077
+    },
+    "D": {
+     "match": 13,
+     "n": 14,
+     "regret": 0.045
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.38; gated: none)",
+     "dprime": 2.38
+    }
+   },
+   "gustin": {
+    "A": {
+     "match": 9,
+     "n": 14,
+     "regret": 0.464
+    },
+    "B": {
+     "match": 4,
+     "n": 14,
+     "regret": 1.398
+    },
+    "C": {
+     "match": 9,
+     "n": 14,
+     "regret": 0.613
+    },
+    "D": {
+     "match": 9,
+     "n": 14,
+     "regret": 0.464
+    },
+    "fill": {
+     "status": "ok: 13/14 hole(s) without a mapped fairway filled from NAIP (d' 1.37; gated: 16)",
+     "dprime": 1.37
+    }
+   },
+   "amana_colonies": {
+    "A": {
+     "match": 12,
+     "n": 14,
+     "regret": 0.031
+    },
+    "B": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.383
+    },
+    "C": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.166
+    },
+    "D": {
+     "match": 12,
+     "n": 14,
+     "regret": 0.031
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 1.32; gated: none)",
+     "dprime": 1.32
+    }
+   },
+   "osage_national": {
+    "A": {
+     "match": 11,
+     "n": 14,
+     "regret": 0.216
+    },
+    "B": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.64
+    },
+    "C": {
+     "match": 11,
+     "n": 14,
+     "regret": 0.225
+    },
+    "D": {
+     "match": 11,
+     "n": 14,
+     "regret": 0.216
+    },
+    "fill": {
+     "status": "ok: 13/14 hole(s) without a mapped fairway filled from NAIP (d' 1.69; gated: 1)",
+     "dprime": 1.69
+    }
+   },
+   "annbriar": {
+    "A": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.418
+    },
+    "B": {
+     "match": 6,
+     "n": 14,
+     "regret": 1.104
+    },
+    "C": {
+     "match": 8,
+     "n": 14,
+     "regret": 0.421
+    },
+    "D": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.418
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.10; gated: none)",
+     "dprime": 2.1
+    }
+   },
+   "wakonda": {
+    "A": {
+     "match": 11,
+     "n": 14,
+     "regret": 0.312
+    },
+    "B": {
+     "match": 3,
+     "n": 14,
+     "regret": 1.685
+    },
+    "C": {
+     "match": 7,
+     "n": 14,
+     "regret": 0.601
+    },
+    "D": {
+     "match": 11,
+     "n": 14,
+     "regret": 0.312
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.12; gated: none)",
+     "dprime": 2.12
+    }
+   },
+   "sand_creek_station": {
+    "A": {
+     "match": 12,
+     "n": 14,
+     "regret": 0.277
+    },
+    "B": {
+     "match": 9,
+     "n": 14,
+     "regret": 1.453
+    },
+    "C": {
+     "match": 10,
+     "n": 14,
+     "regret": 0.5
+    },
+    "D": {
+     "match": 12,
+     "n": 14,
+     "regret": 0.277
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.52; gated: none)",
+     "dprime": 2.52
+    }
+   },
+   "eagle_bend": {
+    "A": {
+     "match": 9,
+     "n": 14,
+     "regret": 0.434
+    },
+    "B": {
+     "match": 4,
+     "n": 14,
+     "regret": 2.208
+    },
+    "C": {
+     "match": 6,
+     "n": 14,
+     "regret": 0.827
+    },
+    "D": {
+     "match": 9,
+     "n": 14,
+     "regret": 0.434
+    },
+    "fill": {
+     "status": "ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 1.65; gated: none)",
+     "dprime": 1.65
+    }
+   },
+   "prairie_dunes": {
+    "A": {
+     "match": 2,
+     "n": 14,
+     "regret": 1.437
+    },
+    "B": {
+     "match": 0,
+     "n": 14,
+     "regret": 7.394
+    },
+    "C": {
+     "match": 0,
+     "n": 14,
+     "regret": 7.394
+    },
+    "D": {
+     "match": 2,
+     "n": 14,
+     "regret": 1.437
+    },
+    "fill": {
+     "status": "gated: mown / rough separation d' 0.69 < 1.0 (seeds 30515, rough 132052); no fairway filled",
+     "dprime": 0.69
+    }
+   },
+   "buffalo_dunes": {
+    "A": {
+     "match": 8,
+     "n": 14,
+     "regret": 1.21
+    },
+    "B": {
+     "match": 1,
+     "n": 14,
+     "regret": 10.076
+    },
+    "C": {
+     "match": 6,
+     "n": 14,
+     "regret": 2.129
+    },
+    "D": {
+     "match": 8,
+     "n": 14,
+     "regret": 1.21
+    },
+    "fill": {
+     "status": "ok: 13/14 hole(s) without a mapped fairway filled from NAIP (d' 1.82; gated: 18)",
+     "dprime": 1.82
+    }
+   },
+   "mariah_hills": {
+    "A": {
+     "match": 5,
+     "n": 14,
+     "regret": 0.758
+    },
+    "B": {
+     "match": 3,
+     "n": 14,
+     "regret": 1.692
+    },
+    "C": {
+     "match": 3,
+     "n": 14,
+     "regret": 1.692
+    },
+    "D": {
+     "match": 5,
+     "n": 14,
+     "regret": 0.758
+    },
+    "fill": {
+     "status": "gated: mown / rough separation d' 0.96 < 1.0 (seeds 28163, rough 69102); no fairway filled",
+     "dprime": 0.96
+    }
+   }
+  }
+ }
+}
