@@ -1,6 +1,6 @@
 # L.A. Nickell Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-11-03T15:05:51Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-03T16:18:01Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 

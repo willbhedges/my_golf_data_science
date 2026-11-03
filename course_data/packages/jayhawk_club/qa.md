@@ -1,6 +1,6 @@
 # The Jayhawk Club (Lawrence, KS) - Black tees
 
-Built 2026-11-03T15:05:47Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-03T16:17:57Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
