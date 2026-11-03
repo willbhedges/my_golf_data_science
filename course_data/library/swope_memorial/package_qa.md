@@ -1,6 +1,6 @@
 # Swope Memorial Golf Course (Kansas City, MO) - Green tees
 
-Built 2026-11-03T01:41:31Z. OSM way/68196001. Scorecard: file (course_data/library/swope_memorial/card_review.json). Tee set: name.
+Built 2026-11-03T05:12:11Z. OSM way/68196001. Scorecard: file (course_data/library/swope_memorial/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -13,8 +13,8 @@ Built 2026-11-03T01:41:31Z. OSM way/68196001. Scorecard: file (course_data/libra
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.357 |
-| mean_confidence | 0.821 |
+| mean_landing_osm_share | 0.353 |
+| mean_confidence | 0.813 |
 | osm_score | 0.871 |
 
 OSM features inside the course: buildings 1, golf=bunker 42, golf=cartpath 8, golf=clubhouse 1, golf=fairway 21, golf=green 19, golf=hole 18, golf=pin 18, golf=tee 53, holes_with_par 18, tees_with_ref 50, trees_polygons 1
@@ -23,7 +23,7 @@ OSM features inside the course: buildings 1, golf=bunker 42, golf=cartpath 8, go
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 390 / 391 | 98 | 0.77 | check the flags | 37% | 7% | 56% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
+| 1 | 4 | 390 / 389 | 113 | 0.63 | check the flags | 31% | 14% | 54% | tee stage: Green review (kept: snap snapped 14 yds along OSM tee 284464464 would measure 374, another set's box, point 389, card 390) | tee: tee stage: Green review (kept: snap snapped 14 yds along OSM tee 284464464 would measure 374, another set's box, point 389, card 390) |
 | 2 | 4 | 321 / 320 | 172 | 0.75 | check the flags | 26% | 16% | 58% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
 | 3 | 4 | 339 / 338 | 245 | 0.77 | check the flags | 30% | 16% | 54% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
 | 4 | 3 | 176 / 175 | 68 | 0.93 | auto | 100% | 0% | 0% | tee stage: Green tee_axis | tee: tee stage: Green tee_axis |
@@ -45,10 +45,11 @@ OSM features inside the course: buildings 1, golf=bunker 42, golf=cartpath 8, go
 ## Stages
 
 - **resolve**: ok: way/68196001 Swope Memorial Golf Course (Kansas City, MO)
-- **osm**: ok: 251 features
+- **osm**: ok: 253 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: file (course_data/library/swope_memorial/card_review.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tee_overrides**: ok: Green 1 review (kept: snap snapped 14 yds along OSM tee 284464464 would measure 374, another set's box, point 389, card 390);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 46 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/swope_memorial/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)

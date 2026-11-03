@@ -1,8 +1,8 @@
 # Swope Memorial Golf Course: automatic page QA
 
-**Status: needs confirm** — confirm holes 2, 5, 12, 13
+**Status: needs confirm** — confirm holes 1, 2, 5, 12, 13
 
-* page: `course_data/library/swope_memorial/page.html` (2.8 MB); request `course_data/requests/course_page_swope_memorial.json`; built 2026-11-03T01:41Z
+* page: `course_data/library/swope_memorial/page.html` (2.8 MB); request `course_data/requests/course_page_swope_memorial.json`; built 2026-11-03T05:12Z
 * course: Swope Memorial Golf Course (Kansas City, MO), OSM way/68196001; holes: osm (tier mapped_card); card: course_data/library/swope_memorial/card_review.json (file)
 * solved tee sets: Green, Bronze (tee sets of interest); page sets: Green, Bronze
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 60, 70] F; calm-day picks with 48 prior draws
@@ -13,7 +13,7 @@
 
 Course-level reasons:
 
-* 4 hole(s) with a CHECK
+* 5 hole(s) with a CHECK
 
 Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
@@ -21,7 +21,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | PASS | Driver -8 |  |
+| 1 | 4 | CHECK | Driver +2 | tee: tee marker not on an OSM tee box (review (kept: snap snapped 14 yds along OSM tee 284464464 would measure 374, another set's box, point 389, card 390); 14 yds from the nearest OSM tee box) |
 | 2 | 4 | CHECK | Driver +8 | aim: Driver +8 lands 306 yds out in rough (11 yds from fairway) |
 | 3 | 4 | PASS | Driver +10 |  |
 | 4 | 3 | PASS |  |  |

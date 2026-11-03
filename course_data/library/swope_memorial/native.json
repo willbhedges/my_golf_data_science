@@ -559,14 +559,14 @@
      130.0
     ]
    },
-   "value": 0.0304,
+   "value": 0.029,
    "plans": {
-    "current": "Driver -8",
-    "L": "4-wood -12",
-    "R": "4-wood -20",
-    "both": "4-wood -20",
-    "none": "Driver -8",
-    "planner": "Driver -8"
+    "current": "Driver +2",
+    "L": "4-wood +2",
+    "R": "4-wood -2",
+    "both": "4-wood +0",
+    "none": "Driver +2",
+    "planner": "Driver +2"
    },
    "geom": {
     "a0": 130.0,
@@ -588,26 +588,26 @@
       44.9,
       41.3,
       37.6,
-      33.9,
+      34.0,
       29.4,
-      24.7,
-      19.5,
+      24.8,
+      19.6,
       14.3,
       9.1,
       8.5,
       8.7,
       8.9,
-      8.9,
-      3.8,
-      5.4,
-      9.5,
+      9.0,
+      3.9,
+      5.5,
+      9.6,
       11.6
      ],
      "R": [
       35.9,
       40.8,
       44.5,
-      48.3,
+      48.2,
       51.1,
       53.5,
       0.0,
@@ -617,7 +617,7 @@
       0.0,
       0.0,
       0.0,
-      1.9,
+      1.8,
       5.6,
       7.9,
       9.3,
@@ -625,11 +625,11 @@
       13.9,
       17.0,
       18.5,
+      18.5,
       18.4,
-      18.4,
-      15.2,
-      7.9,
-      12.0,
+      15.3,
+      8.0,
+      12.1,
       9.0
      ]
     },
@@ -703,42 +703,42 @@
     {
      "answer": "L",
      "label": "Left",
-     "text": "Re-planned: 4-wood, 12 yds left (now Driver, 8 yds left). Playing today's plan would cost 0.01 strokes.",
+     "text": "Re-planned: 4-wood, on the line (now Driver, on the line). Playing today's plan would cost 0.05 strokes.",
      "outcome": {
       "pick": "4-wood",
-      "aim": -12.0,
+      "aim": 2.0,
       "club_changed": true,
-      "aim_shift": -3.5,
+      "aim_shift": 0.5,
       "d_ev": 0.0,
-      "regret": 0.0096,
-      "severity": "amber"
+      "regret": 0.0507,
+      "severity": "red"
      }
     },
     {
      "answer": "R",
      "label": "Right",
-     "text": "Re-planned: 4-wood, 20 yds left (now Driver, 8 yds left). Playing today's plan would cost 0.11 strokes.",
+     "text": "Re-planned: 4-wood, on the line (now Driver, on the line). Playing today's plan would cost 0.06 strokes.",
      "outcome": {
       "pick": "4-wood",
-      "aim": -20.0,
+      "aim": -2.0,
       "club_changed": true,
-      "aim_shift": -11.5,
+      "aim_shift": -3.5,
       "d_ev": 0.0,
-      "regret": 0.1107,
+      "regret": 0.0638,
       "severity": "red"
      }
     },
     {
      "answer": "both",
      "label": "Both",
-     "text": "Re-planned: 4-wood, 20 yds left (now Driver, 8 yds left). Playing today's plan would cost 0.13 strokes.",
+     "text": "Re-planned: 4-wood, on the line (now Driver, on the line). Playing today's plan would cost 0.12 strokes.",
      "outcome": {
       "pick": "4-wood",
-      "aim": -20.0,
+      "aim": 0.0,
       "club_changed": true,
-      "aim_shift": -11.5,
+      "aim_shift": -1.5,
       "d_ev": 0.0,
-      "regret": 0.1251,
+      "regret": 0.1197,
       "severity": "red"
      }
     },
@@ -748,7 +748,7 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": -8.5,
+      "aim": 1.5,
       "club_changed": false,
       "aim_shift": 0.0,
       "d_ev": 0.0,
@@ -760,8 +760,8 @@
    "tested": false,
    "strict": "red",
    "prelim": "red",
-   "exp_regret": 0.0304,
-   "worst_regret": 0.1251,
+   "exp_regret": 0.029,
+   "worst_regret": 0.1197,
    "p_wrong": null,
    "lie": "native",
    "state_p": {
@@ -776,7 +776,7 @@
  "mapper_sig": "33234a30d2bc5ffc",
  "note": "3 asked of 14 framed holes; 3 kept on the page's own picks",
  "n": 4000,
- "runtime_s": 67.5,
+ "runtime_s": 48.7,
  "dropped": [],
  "baseline": "page calm-day pick"
 }
