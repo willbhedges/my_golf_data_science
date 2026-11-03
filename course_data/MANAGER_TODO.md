@@ -101,3 +101,6 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - memorial_park published: https://claude.ai/artifact/FNU5J379rttrQLA7r9xosR (QA PUBLISH, 5 CHECKs)
 - chambers_bay published: https://claude.ai/artifact/RWr1iLJgUVX5WSHJ5ZE9hC (QA PUBLISH, 9 CHECKs; Navy 1 yardage 494 vs card 559 still open)
 - bandon_dunes: title-fix rebuild pending (course_batch_qa_bmc rev 5), QA title then publish
+- Aim Caddie app republished (v8, 92 courses, 8 blocked excluded): https://claude.ai/artifact/D6sdGLhodo8DQ7Yz8PojNW
+- TCI: course_page rebuild with mapper layers pushed (rev 4); QA then publish
+- Open: national index still lists blocked courses (e.g. Bethpage) as NO PAGE YET; decide whether to strip
