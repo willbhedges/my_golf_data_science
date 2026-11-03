@@ -1,55 +1,45 @@
-# Sand Hollow Championship (UT): multi-course rebuild QA (2026-11-03)
+# Sand Hollow Championship (UT): card rebuild QA (2026-11-03)
 
-**Verdict: NEEDS FIX → card added, rebuild pushed.** The page is the Championship 18. No Links-nine hole is in it, the
-routing runs 1→18, and the pars match the card. **Hole 4** is wrong: it plays 345 yds from a forward OSM tee 122 yds
-ahead of the hole line's start, and the card has 463 from the Black tees. The page has no card. The GolfPass
-Championship card is now `card_review.json`, which gives the tee stage card yardages to walk back to.
+**Verdict: PUBLISH.** The page is the Championship 18 with the GolfPass card (Black 7,315 / Blue 6,893 solved; also
+White, Combo, Red). **Hole 4 is now 463** from the Black tee (was 345 from a forward OSM box). Page yardage equals the
+card on all 18 for both solved sets, the pars equal the card, and routing chains 1→18.
 
-Page checked: `course_data/library/sand_hollow/page.html`, GitHub Actions run 41583713847 (built 2026-11-03T05:59Z, on
-269de3c1d). One set (`osm_back`, 7,135 from the map). I ran it through `qa_page.js`, phone and desktop: 18 holes, 0
-page problems. I looked at every hole picture.
+Page checked: `course_data/library/sand_hollow/page.html`, GitHub Actions run 41604633702 (built 2026-11-03T09:04Z).
+`qa_page.js` phone + desktop, Black: 18 holes, 0 problems. The Blue run had the same result (page = card 6,893). I
+looked at all 18 hole pictures (montage in the QA scratch folder).
 
-## Championship, not Links
+## Checks
 
-- Package warning: "by hole chains (green -> next tee): champion 18, #2 9; kept the largest group (no name or near
-  point decides: CHECK the course)". The kept 18 are the OSM "Champion" ways; the 9 unnamed ways (the Links nine) are
-  dropped.
-- Chain green n → tee n+1: 48-214 yds on every link.
+- Split warning: "champion 18, #2 9; kept the largest group". The 9-hole Links course is dropped. The kept 18's pars
+  (4 5 3 4 4 4 5 3 4 / 5 3 4 4 4 3 4 5 4) equal the card.
+- Hole 4: a 463 tee walked back along the hole line (tee CHECK: 113 yds from the nearest OSM box; Blue 439 is also a
+  walkback). In the photo the tee is on the grass just past the 3rd green. The measured length is 462 and the line is
+  472. Driver 3.5 L, fairway 58%.
+- Chains run 47-214 yds. Status "needs confirm" is for CHECKs on 4 and 18 (tee, Black) and 13 and 17 on Blue (lidar-pad
+  tee 12 yds off a box; Driver -8 lands 8 yds into the rough). All are minor.
 
-## Card (added)
+## Holes (Black; page yds = card on all 18)
 
-The card is GolfPass's "The Championship Course" (`research/web/mc_cards/05.html`, web_fetch run 41603917727): par
-4-5-3-4-4-4-5-3-4 / 5-3-4-4-4-3-4-5-4 = 72. That equals the page's (OSM) pars on all 18, including 14 as a 525-yd par
-4. The sets are Black 7,315 (73.7 / 131), Blue 6,893, White 6,462, Combo 5,934 and Red 5,306. GolfPass's hole table
-labels those rows Red / Yellow / Green / Combo / Blue, but its rating table names the same totals Black / Blue / White
-/ Red. I used the rating-table names; this is not verified against the club's own card.
+| hole | par | page yds | measured | chain | pick | lie | note |
+|---|---|---|---|---|---|---|---|
+| 1 | 4 | 447 | 444 | - | Driver 13 R | fairway 87% |  |
+| 2 | 5 | 577 | 577 | 109 | Driver 17 R | fairway 76%, sand 6% |  |
+| 3 | 3 | 208 | 208 | 73 | plays 206 |  |  |
+| 4 | 4 | 463 | 462 | 66 | Driver 3.5 L | fairway 58% | tee CHECK (walkback; 113 yds from the nearest OSM tee box) |
+| 5 | 4 | 355 | 354 | 62 | Driver 2.5 L | fairway 79%, sand 5% |  |
+| 6 | 4 | 493 | 493 | 47 | Driver 4.5 L | fairway 85%, OB 1% |  |
+| 7 | 5 | 577 | 578 | 62 | Driver 10.5 R | fairway 79%, OB 1% |  |
+| 8 | 3 | 162 | 162 | 97 | plays 165 |  |  |
+| 9 | 4 | 433 | 434 | 214 | Driver 7.5 L | fairway 75%, sand 8% |  |
+| 10 | 5 | 565 | 566 | 133 | Driver 5 R | fairway 69%, sand 7% |  |
+| 11 | 3 | 190 | 190 | 96 | plays 192 |  |  |
+| 12 | 4 | 443 | 442 | 160 | Driver 1.5 L | fairway 57% |  |
+| 13 | 4 | 320 | 320 | 75 | Driver 5.5 L | fairway 40%, sand 4% |  |
+| 14 | 4 | 525 | 525 | 65 | Driver 1 R | fairway 74% |  |
+| 15 | 3 | 230 | 230 | 100 | plays 219 |  |  |
+| 16 | 4 | 369 | 367 | 91 | 4-wood 6 R | fairway 58%, sand 11% |  |
+| 17 | 5 | 523 | 522 | 157 | Driver 2.5 R | fairway 74%, sand 6% |  |
+| 18 | 4 | 435 | 435 | 97 | Driver 13.5 R | fairway 61%, sand 10% | tee CHECK (lidar_pad; 8 yds from the nearest OSM tee box) |
 
-## Holes (page as built vs card Black)
-
-| hole | par | page yds | card Black | pick | note |
-|---|---|---|---|---|---|
-| 1 | 4 | 439 | 447 | Driver 13 R | fairway 85% |
-| 2 | 5 | 571 | 577 | Driver 14.5 R | fairway 83% |
-| 3 | 3 | 205 | 208 | plays 203 | |
-| 4 | 4 | **345** | **463** | Driver 22.5 L | **wrong tee**: the OSM line starts 122 yds behind the chosen box (line 472); no OSM box at the back |
-| 5 | 4 | 350 | 355 | Driver | fairway 77% |
-| 6 | 4 | 492 | 493 | Driver 4.5 L | fairway 85% |
-| 7 | 5 | 573 | 577 | Driver 10 R | fairway 79% |
-| 8 | 3 | 156 | 162 | plays 160 | |
-| 9 | 4 | 434 | 433 | Driver 7.5 L | fairway 75% |
-| 10 | 5 | 562 | 565 | Driver | fairway 69% |
-| 11 | 3 | 187 | 190 | plays 186 | |
-| 12 | 4 | 441 | 443 | Driver | fairway 57% |
-| 13 | 4 | 318 | 320 | Driver 5 L | fairway 39%, 40 yds in |
-| 14 | 4 | 527 | 525 | Driver | fairway 74% |
-| 15 | 3 | 228 | 230 | plays 217 | the signature par 3 |
-| 16 | 4 | 361 | 369 | Driver 10 R (tie 4-wood) | fairway 54% |
-| 17 | 5 | 523 | 523 | Driver | fairway 74% |
-| 18 | 4 | 423 | 435 | Driver 7 R | fairway 59% |
-
-Apart from 4, every hole is within 12 yds of the card. No aim is past ±23 and nothing is off the course.
-
-## Check on the rebuild
-
-Hole 4 must be ~463 from a tee near the hole line's start (walkback or lidar pad, with a tee CHECK). The set should be
-Black 7,315. The title should name the Championship course (nit: it is "Sand Hollow Resort Caddie").
+No aim is past 17 yds and nothing is off the course. Nit: the title is "Sand Hollow Resort Caddie" (no
+"Championship").

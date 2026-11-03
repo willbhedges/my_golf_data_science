@@ -1,0 +1,8 @@
+{
+ "requests": [
+  "course_data/requests/course_page_bandon_dunes.json",
+  "course_data/requests/course_page_memorial_park.json"
+ ],
+ "rev": 1,
+ "note": "Card rebuild QA (library/<slug>/qa_rebuild.md). bandon_dunes: run 41604633702's package job died out of disk in the vision step, so the GolfPass card_review.json (Black 6,732) never reached a page; course_page_one.yml now frees runner disk first. memorial_park: the card-order fix rightly rejected golfify's pre-2019 card; the OpenGolfAPI card from the same build matches the OSM order 18/18 on par -> card_review.json (Blue 7,464)."
+}

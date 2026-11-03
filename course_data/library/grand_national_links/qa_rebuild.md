@@ -1,57 +1,63 @@
-# Grand National Links Course (RTJ Trail, Opelika AL): multi-course rebuild QA (2026-11-03)
+# Grand National Links (RTJ Trail, Opelika AL): card rebuild QA (2026-11-03)
 
-**Verdict: NEEDS FIX (card) — rebuild pushed. The publish gate no longer blocks it.** The page is now a clean Links 18:
-the Lake 18 and the 17 unnumbered Short Course ways are gone, the routing chains 1→18, and the pars equal the Links
-card 18/18. The status is "needs confirm", not "blocked" (18 holes with no card passes the gate; `course_page.py
-regate` lists nothing for it). What is still wrong is two tees with no card to place them: hole 1 is 367 on the page
-vs 423 on the card, hole 13 is 476 vs 418, and on both the tee-shot pick is poor (1: aim -51 into the tree corner; 13:
-Driver -37 into the rough left, fairway 5%). I found a Links card (golfingrecord, Purple 7,311, every set sums) and
-added it as `card_review.json`; rebuild pushed. Publish after that build is QA'd.
+**Verdict: PUBLISH (Purple), with the CHECKs below.** The Links card (golfingrecord, `card_review.json`) is matched:
+Purple 7,311 / Orange 6,574 solved, plus White and Teal. Page yardage equals the card on all 18 for both solved sets,
+and the pars equal the card. The tees on **hole 1 (423)** and **hole 13 (418)** are fixed: hole 1 has a walkback tee
+42 yds behind the nearest OSM box (measured 423), and hole 13 has a tee on the hole line 52 yds up from the line start
+(measured 423). **The gate passes**: status "needs confirm", not blocked. `course_page.py regate` blocks nothing, and
+the longest green → next-tee walk is 305 yds (1→2; Links has long cart rides along the lake). No other walk is over
+253.
 
-Page checked: `page.html` from GitHub Actions run 41583713847 (built 2026-11-03T06:20Z). `qa_page.js` phone + desktop:
-18 holes, 0 problems, 0 console errors. Montage of all 18 hole pictures and a routing plot (scratch).
+Page checked: `course_data/library/grand_national_links/page.html`, GitHub Actions run 41605206913 (built
+2026-11-03T09:19Z). `qa_page.js` phone + desktop, Purple: 18 holes, 0 problems. The Orange run had the same result
+(page = card 6,574). I looked at all 18 Purple hole pictures, plus Orange 2, 4, 5, 10 and 13 close up (montage and
+crops in the QA scratch folder).
 
-## Links, not Lake, and no Short Course
+## Hole 1 and hole 13
 
-- Package warning: "2 courses' hole ways in one outline (by hole chains: lake 18, #2 18); kept the course nearest the
-  request's near point (1848 yds vs 3421), 18 ways; ignored 18 + 17 unnumbered golf=hole way(s)".
-- The kept 18 is Links: its 15th is a par 5 (510) and 16th a par 3 (181). The dropped chain has the Lake's signature
-  par-3 15th over water (OSM 1098809331, 203 yds). Kept pars 4 5 3 4 4 5 4 4 3 / 4 3 5 4 4 5 3 4 4 = the Links card on
-  every hole; 12 = 575 and 16 = 181 equal the card exactly.
-- The AllSquare "Grand National Golf Course" card fetched with it is the **Lake** (par 3 on 3, 8, 15, 17), so it was
-  right that no card matched Links before.
-- Routing: green → next tee 50-253 yds (longest 1→2 304, 11→12 253, 8→9 226, 16→17 214: Links has long cart rides
-  between holes on the lake shore). 18 green → 1 tee 138. All 18 lines inside the Links area; none on Lake or Short.
+- **1** (Purple 423): Driver 10 L, fairway 46%, trees 9%. The pick is no longer the -51 aim into the tree corner. The
+  tee is on grass at the edge of the trees (tee CHECK, walkback).
+- **13** (Purple 418): 4-wood 40 L (a tie with 2-wood). It lands 270 out in what the map calls rough, 38 yds from the
+  fairway, with fairway 1% (CHECKed). The hole is a dogleg (the OSM line bends at ~245 yds from this tee). OSM maps
+  only a small fairway blob short of the corner. In the photo the landing spot is open light grass inside the corner,
+  not trees, so the cut is plausible but rests on unmapped fairway. The aim sits at the 40-yd search bound. Orange 13
+  does the same at -52 (long iron, fairway 0%, CHECKed). Left as a CHECK for the golfer, not a blocker.
 
-## Holes (Back tee = OSM box nearest each line start; card Purple for comparison)
+## Orange set: wide aims (CHECKed on the page)
 
-| hole | par | yds (page / Purple) | pick | note |
-|---|---|---|---|---|
-| 1 | 4 | **367 / 423** | Driver -40 (tie with 2-wood) | **wide-aim CHECK**: -51 calm, lands at the dogleg's tree corner (photo heavier than trees 7%). The card tee is ~56 yds farther back, which changes the play |
-| 2 | 5 | 556 / 556 | Driver -6 | trees in the oval left/right (7%) |
-| 3 | 3 | 201 / 206 | 191 to the box | |
-| 4 | 4 | 444 / 425 | Driver -33 | lands left near the creek/native, fairway 45% |
-| 5 | 4 | 451 / 456 | Driver +38 | aim right, trees 10%; plausible dogleg |
-| 6 | 5 | 556 / 544 | Driver -3 | fairway 65% |
-| 7 | 4 | 468 / 472 | Driver -10 | sand 21% (fairway bunkers left of the landing) |
-| 8 | 4 | 347 / 345 | 4-wood -1 | fairway 31%, sand 8% |
-| 9 | 3 | 206 / 204 | 198 to the box | |
-| 10 | 4 | 338 / 363 | 4-wood -40 (Driver calm) | trees 14% left; 25 yds short of the card |
-| 11 | 3 | 256 / 260 | 269 to the box (into the wind) | |
-| 12 | 5 | 575 / 575 | Driver +16 | sand 23% |
-| 13 | 4 | **476 / 418** | Driver -37 | **CHECK**: lands in the rough/native left, fairway 5%; the page tee is ~58 yds behind the card's |
-| 14 | 4 | 473 / 467 | Driver -8 | fairway 63% |
-| 15 | 5 | 510 / 516 | Driver -4 | fairway 61% |
-| 16 | 3 | 181 / 181 | 175 to the box | |
-| 17 | 4 | 426 / 429 | 2-wood (Driver -7 tie calm) | sand 6% |
-| 18 | 4 | 472 / 471 | Driver -2 | lake left, water 2% |
+- Orange 2 (par 5, 509): Driver 60 L over the dogleg corner. Trees 22%, and the landing oval sits partly on a tree
+  clump in the photo (CHECK wide_aim). This is the weakest plan on the page. Purple 2 plays Driver 6 L down the
+  fairway.
+- Orange 5 (375): 4-wood 49.5 R into the dogleg (CHECK wide_aim), fairway 62%, trees 13%. Plausible.
+- Orange 10 (326): Driver 40 L to 31 yds in, trees 16%, at the bound, not flagged. Orange 4: 2-wood 40 L, fairway
+  55%. Both cut a dogleg.
 
-Totals: page 7,303 (par 72) vs Purple 7,311; holes 1 and 13 cancel. All 18 carry the no-card yardage/par CHECK.
+The Orange aims are flagged and do not affect the default (Purple) set. If someone wants them gone, the fix is a
+planner or wide-aim change, not a card or tee fix, so nothing was pushed for them.
 
-## Fix pushed
+## Holes (Purple; page yds = card on all 18)
 
-`course_data/library/grand_national_links/card_review.json` (Links: Purple 7,311 / Orange 6,574 / White 6,015 / Teal
-4,843, men's ratings; from https://www.golfingrecord.com/golf-scorecard/64c8ad62-1d33-63a5-9a9e-da290ba768a4 via web_fetch
-`qa_mcb_cards2`); `course_page_grand_national_links.json` rev 3; batch `course_batch_qa_mcb_cards.json`. Expect Purple
-as the solved set with tees on 1 and 13 moved to the card lengths. Not verified: GolfPass lists Purple at 7,404 (a
-different tee version); the golfingrecord card is the only per-hole Links card found.
+| hole | par | page yds | measured | chain | pick | lie | note |
+|---|---|---|---|---|---|---|---|
+| 1 | 4 | 423 | 423 | - | Driver 10 L | fairway 46%, trees 9% | tee CHECK (walkback; 42 yds from the nearest OSM tee box) |
+| 2 | 5 | 556 | 555 | 305 | Driver 6 L | fairway 40%, trees 7% |  |
+| 3 | 3 | 206 | 206 | 169 | plays 202 |  |  |
+| 4 | 4 | 425 | 424 | 252 | Driver 32 L | fairway 55% |  |
+| 5 | 4 | 456 | 455 | 132 | Driver 31 R | fairway 49%, sand 3%, trees 12% |  |
+| 6 | 5 | 544 | 545 | 57 | Driver 2.5 R | fairway 64%, trees 9%, water 1% |  |
+| 7 | 4 | 472 | 473 | 88 | Driver 10 L | fairway 43%, sand 17%, trees 5% |  |
+| 8 | 4 | 345 | 345 | 115 | Long iron 3 L | fairway 86%, sand 2% |  |
+| 9 | 3 | 204 | 204 | 226 | plays 196 |  |  |
+| 10 | 4 | 363 | 362 | 76 | 2-wood 31 L | fairway 73%, trees 3% | tee CHECK (tee_axis; 8 yds from the nearest OSM tee box) |
+| 11 | 3 | 260 | 260 | 71 | plays 273 |  |  |
+| 12 | 5 | 575 | 574 | 253 | Driver 16 R | fairway 48%, sand 22%, trees 7% |  |
+| 13 | 4 | 418 | 423 | 133 | 4-wood 40 L | fairway 1% | aim: 4-wood -40 lands 270 yds out in rough (38 yds from fairway) |
+| 14 | 4 | 467 | 467 | 114 | Driver 7.5 L | fairway 65%, trees 5%, OB 1% |  |
+| 15 | 5 | 516 | 515 | 209 | Driver 2.5 L | fairway 60%, trees 9% |  |
+| 16 | 3 | 181 | 181 | 67 | plays 175 |  |  |
+| 17 | 4 | 429 | 428 | 214 | 2-wood 6.5 L | fairway 54%, sand 5%, trees 6% |  |
+| 18 | 4 | 471 | 472 | 119 | Driver 2.5 L | fairway 60%, sand 17%, trees 8%, water 2% |  |
+
+Totals: page 7,311 = card. The aims on 4 (-32), 5 (+31) and 10 (-31) follow doglegs on the photo. Nothing is off the
+course. No Lake or Short Course hole is on the page. Not verified: GolfPass lists Purple at 7,404 (another tee
+version). Nit: the title is "RTJ Grand National Golf Caddie" (it does not name the Links).
