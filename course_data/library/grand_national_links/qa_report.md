@@ -2,7 +2,7 @@
 
 **Status: needs confirm** — confirm holes 1, 2, 5, 10, 13, 17
 
-* page: `course_data/library/grand_national_links/page.html` (2.7 MB); request `course_data/requests/course_page_grand_national_links.json`; built 2026-11-03T09:19Z
+* page: `course_data/library/grand_national_links/page.html` (2.7 MB); request `course_data/requests/course_page_grand_national_links.json`; built 2026-11-03T15:14Z
 * course: RTJ Grand National Golf (Opelika, AL), OSM way/328838760; holes: osm (tier mapped_card); card: course_data/library/grand_national_links/card_review.json (file)
 * solved tee sets: Purple, Orange (the two longest sets on the card (combination sets skipped)); page sets: Purple, Orange
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [55, 65, 75] F; calm-day picks with 48 prior draws
@@ -25,10 +25,10 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 2 | 5 | PASS | Driver -6 |  |
 | 3 | 3 | PASS |  |  |
 | 4 | 4 | PASS | 2-wood -32 |  |
-| 5 | 4 | PASS | Driver +31 |  |
+| 5 | 4 | PASS | Driver +30 |  |
 | 6 | 5 | PASS | Driver +2 |  |
 | 7 | 4 | PASS | Driver -10 |  |
-| 8 | 4 | PASS | Long iron -3 (tie) |  |
+| 8 | 4 | PASS | 4-wood -0 (tie) |  |
 | 9 | 3 | PASS |  |  |
 | 10 | 4 | CHECK | 4-wood -31 (tie) | tee: tee marker not on an OSM tee box (tee_axis; 8 yds from the nearest OSM tee box) |
 | 11 | 3 | PASS |  |  |
@@ -45,10 +45,10 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
 | 1 | 4 | CHECK | Driver -32 | tee: tee marker not on an OSM tee box (tee_axis; 10 yds from the nearest OSM tee box) |
-| 2 | 5 | CHECK | Driver -60 | wide_aim: Driver aim -65 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
+| 2 | 5 | CHECK | Driver -60 | wide_aim: Driver aim -63 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 3 | 3 | PASS |  |  |
 | 4 | 4 | PASS | 4-wood -40 |  |
-| 5 | 4 | CHECK | 4-wood +50 | wide_aim: 4-wood aim +60 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
+| 5 | 4 | CHECK | 4-wood +50 | wide_aim: 4-wood aim +59 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 6 | 5 | PASS | Driver +2 |  |
 | 7 | 4 | PASS | Driver -7 |  |
 | 8 | 4 | PASS | Long iron -2 |  |
@@ -56,7 +56,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 10 | 4 | PASS | Driver -40 |  |
 | 11 | 3 | PASS |  |  |
 | 12 | 5 | PASS | Driver +8 |  |
-| 13 | 4 | CHECK | 4-wood -52 (tie) | aim: 4-wood -52 lands 270 yds out in rough (61 yds from fairway); wide_aim: 4-wood aim -52 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
+| 13 | 4 | CHECK | 4-wood -51 (tie) | aim: 4-wood -51 lands 270 yds out in rough (61 yds from fairway); wide_aim: 4-wood aim -51 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 14 | 4 | PASS | Driver +2 (tie) |  |
 | 15 | 5 | PASS | Driver -25 |  |
 | 16 | 3 | PASS |  |  |
