@@ -1,6 +1,6 @@
 # The Jayhawk Club (Lawrence, KS) - Black tees
 
-Built 2026-11-03T16:17:57Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-03T20:47:38Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -49,7 +49,9 @@ OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18
 - **vision**: missing: no vision_any layers for 'jayhawk_club' (FileNotFoundError: course_data/vision_any/jayhawk_club/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/vision_any.yml fetches and builds them; CHECK: build it with course_data/vision_any/build_layers.py jayhawk_club (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not run: no vision_any/jayhawk_club/raw NAIP stack
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: geometry only (OSM outline / buildings / roads): no OB evidence fetched for this course; list it in course_data/requests/ob_*.json
+- **native_auto**: none: no features: RasterioIOError: /home/runner/work/my_golf_data_science/my_golf_data_science/course_data/vision_any/jayhawk_club/raw/hag.tif: No such file or directory
 
 ## Warnings
 
@@ -77,4 +79,3 @@ OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18
 - hole 4: measured 538 vs card 208 yds for Black (no OSM tee box at that yardage?)
 - hole 6: measured 371 vs card 444 yds for Black (no OSM tee box at that yardage?)
 - hole 8: measured 443 vs card 512 yds for Black (no OSM tee box at that yardage?)
-- CHECK vision: missing: no vision_any layers for 'jayhawk_club' (FileNotFoundError: course_data/vision_any/jayhawk_club/raw (not fetched)); add the course to course_data/vision_any/courses.txt so .github/workflows/v; trees / water come from OSM (or the fallback) only

@@ -1,5 +1,5 @@
 """Course module for The Jayhawk Club (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T16:17:57Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T20:47:38Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_jayhawk_club.json
 
