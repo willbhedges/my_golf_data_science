@@ -5,10 +5,11 @@
  "state": "LA",
  "slug": "tpc_louisiana",
  "group": "library",
- "rev": 4,
+ "rev": 5,
  "note": "national batch us60 (well-known public / resort courses, every US region); default tee sets and dates. OSM completeness count: course_data/library/osm_check/us60.json",
  "near": "29.8900,-90.1900",
  "retry_note": "us60 retry: near: Avondale / Bayou Segnette (approximate)",
  "osm_source": "geofabrik",
- "osm_source_note": "2026-11-02: package stage failed repeatedly on Overpass ReadTimeouts; OSM from the Geofabrik state extract + osmium (course_data/platform/osm_extract.py)"
+ "osm_source_note": "2026-11-02: package stage failed repeatedly on Overpass ReadTimeouts; OSM from the Geofabrik state extract + osmium (course_data/platform/osm_extract.py)",
+ "card_note": "2026-11-03: the club's scorecard (tpc.com PDF, PGA TOUR 7,425 / Black 6,931 / Blue 6,610 / Grey 6,172 / Green 5,121, par 72) is in course_data/library/tpc_louisiana/card_review.json and reaches the build through review_fixes.py (\"scorecard\"); rebuild so the page matches a card"
 }
