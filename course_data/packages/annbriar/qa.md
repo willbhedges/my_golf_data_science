@@ -1,6 +1,6 @@
 # Annbriar Golf Course (Waterloo, IL) - Black tees
 
-Built 2026-11-03T06:47:01Z. OSM way/1466372251. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T09:21:04Z. OSM way/1466372251. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 

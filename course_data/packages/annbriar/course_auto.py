@@ -1,5 +1,5 @@
 """Course module for Annbriar Golf Course (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T06:47:01Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T09:21:04Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_annbriar.json
 
