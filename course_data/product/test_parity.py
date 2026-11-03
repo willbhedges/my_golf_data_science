@@ -13,7 +13,9 @@ import pytest
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-import package as PK                                # noqa: E402
+import parity as PA                                 # noqa: E402
+
+PK = PA.PK     # product/package.py, not platform/package.py when pytest loaded that first
 
 CD = os.path.dirname(HERE)
 SH = os.path.join(CD, "packages", "spirit_hollow", "package.json")
@@ -122,7 +124,6 @@ def test_soft_conditions():
 
 def test_parity_mapping_reproduces_hand_lies(sh):
     """Hand inputs mapped into the product frame give the hand's lies (the 'all hand' row checks the mapping)."""
-    import parity as PA
     hand = json.load(open(HAND))
     course = PA.load_hand_course()
     C, _ = PA.product_course(SH, "Black", hand)
