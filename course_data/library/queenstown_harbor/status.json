@@ -7,7 +7,7 @@
  "group": "library",
  "status": "failed",
  "reasons": [
-  "package: Retry your request using exponential backoff: wait a overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
+  "package:     pc.log(\"imagery:\", \" \".join(cmd))                        ^^^^^^^^^^^^^ TypeError: sequence item 5: expected str instance, NoneType found "
  ],
  "check_holes": [],
  "tee_sets": [],
@@ -15,8 +15,18 @@
  "page_bytes": null,
  "request": "course_data/requests/course_page_queenstown_harbor.json",
  "resolve": {
-  "status": null,
-  "candidates": []
+  "status": "ok",
+  "candidates": [
+   {
+    "name": null,
+    "town": "Queenstown",
+    "holes": 36,
+    "osm": {
+     "type": "way",
+     "id": 1067525665
+    }
+   }
+  ]
  },
- "built": "2026-11-02T20:24Z"
+ "built": "2026-11-02T23:41Z"
 }
