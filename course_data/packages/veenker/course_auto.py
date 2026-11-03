@@ -1,5 +1,5 @@
 """Course module for Veenker Memorial Golf Course (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T04:13:33Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T06:57:02Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_veenker.json
 
