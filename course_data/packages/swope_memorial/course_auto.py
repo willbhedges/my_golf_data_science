@@ -1,5 +1,5 @@
 """Course module for Swope Memorial Golf Course (Green tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T06:54:40Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T09:28:33Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_swope_memorial.json
 
