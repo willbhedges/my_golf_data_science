@@ -319,6 +319,10 @@ function render(){
     let pattern;
     if(cl){ const sc = best.width / cl.width, pts = [];
       for(let i = 0; i < 48; i++){ const a = i/48*2*Math.PI, ca = Math.cos(a)*cl.A*sc, sa = Math.sin(a)*cl.B*sc;
+        /* tee-frame pattern (course_data/library/landing_pattern.py): lateral left / right, depth short / long of the
+           median, tilt = yds deeper per yd right; clouds without it (old builds) keep the eigen ellipse */
+        if(cl.long != null){ const c = Math.cos(a), s = Math.sin(a), x = s*(s >= 0 ? cl.right : cl.left)*sc, y = c*(c >= 0 ? cl.long : cl.short)*sc + (cl.tilt || 0)*x;
+          pts.push(P(h, at(h, best.total - B + cA + y, aimC + best.drift + best.kick + cL + x)).join(",")); continue; }
         pts.push(P(h, at(h, best.total - B + cA + ca*cl.u[0] + sa*cl.w[0], aimC + best.drift + best.kick + cL + ca*cl.u[1] + sa*cl.w[1])).join(",")); }
       pattern = `<polygon points="${pts.join(" ")}" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>`;
     }

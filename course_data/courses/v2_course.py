@@ -383,6 +383,24 @@ def crop_factory(shots):
     return crop_jpeg
 
 
+def install_landing_pattern(M, BP):
+    """The dashed landing oval: build_page_v2.cloud (Spirit Hollow's, read-only) -> course_data/library/
+    landing_pattern.page_cloud, the same simulated finishes measured in the tee-line frame (lateral left / right,
+    depth short / long of the median after a linear tilt) instead of covariance eigen axes with a symmetric depth,
+    which drew the model's wider-than-long pattern as a near circle (Eagle Knoll 2026-11-03: drawn depth / width
+    0.75-1.06, axes up to 76 degrees off the lateral). The template draws the new shape (cloud fields long / short /
+    left / right / tilt); V2_LANDING_PATTERN=0 keeps the old cloud. Only this module's page stage is patched:
+    Spirit Hollow's own page (spirit_hollow/v2/build_page_v2.py main) is not built through here."""
+    if os.environ.get("V2_LANDING_PATTERN", "1") == "0" or getattr(BP, "_tee_frame_cloud", False):
+        return
+    lib = os.path.join(CD, "library")
+    if lib not in sys.path:
+        sys.path.insert(0, lib)
+    import landing_pattern as LP
+    BP.cloud = lambda h, grid0, temp_f: LP.page_cloud(M, h, grid0, temp_f)
+    BP._tee_frame_cloud = True
+
+
 def build_page(slug, which, out=None, data_out=None):
     """The wind page. With config "alt_bases" {set: which}, each alt base is built in its own process (the v2
     engine binds one course module per process) with data_out, and its holes ride along as D.alt[set]: the page
@@ -409,6 +427,7 @@ def build_page(slug, which, out=None, data_out=None):
     import build_wind_page as BW
     import build_page_v2 as BP
     import yardage_book as yb
+    install_landing_pattern(M, BP)
     yb.use_course(course.NAME, cdir(slug, which), slug, course.HOLES, course.PAR3, course.NOTES, course.AIM_AT,
                   course.ORDER, course.LABELS)
     BW.crop_jpeg = crop_factory(cdir(slug, which, "screenshots"))
