@@ -1,6 +1,6 @@
 # Troon North Golf Club (Scottsdale, AZ) - Black tees
 
-Built 2026-11-03T06:15:12Z. OSM relation/1389558. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-03T15:54:37Z. OSM relation/1389558. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -49,13 +49,14 @@ OSM features inside the course: golf=bunker 119, golf=cartpath 9, golf=fairway 4
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: opengolfapi (opengolfapi)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 0 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 146 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/troon_north/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/troon_north/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 34 polygons (outside 34); mode replace
 
 ## Warnings
