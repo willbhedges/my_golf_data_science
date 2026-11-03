@@ -1,6 +1,6 @@
 # Creekmoor Golf Club (Raymore, MO) - Black tees
 
-Built 2026-11-02T23:40:45Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T04:05:19Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-02T23:40:45Z. OSM relation/4249741. Scorecard: golfify (golfify). 
 | holes_with_trees_or_long_grass_in_landing_zone | 5 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.05 |
-| mean_confidence | 0.73 |
+| mean_confidence | 0.799 |
 | osm_score | 0.559 |
 
 OSM features inside the course: buildings 3, golf=bunker 68, golf=cartpath 12, golf=driving_range 1, golf=green 19, golf=hole 17, golf=pin 18, golf=tee 75, golf=water_hazard 4, holes_with_handicap 17, holes_with_par 17, water_polygons 5
@@ -23,24 +23,24 @@ OSM features inside the course: buildings 3, golf=bunker 68, golf=cartpath 12, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 404 / 404 | 292 | 0.67 | check the flags | 1% | 9% | 90% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no fairway in the landing zone |
-| 2 | 4 | 371 / 371 | 28 | 0.73 | check the flags | 4% | 16% | 79% | tee stage: Black tee_centroid | no fairway in the landing zone |
-| 3 | 4 | 440 / 441 | 236 | 0.62 | check the flags | 4% | 13% | 83% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; no fairway in the landing zone; Black tee on a lidar pad (no OSM box at 440 yds) |
+| 1 | 4 | 404 / 404 | 292 | 0.79 | check the flags | 1% | 66% | 33% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 2 | 4 | 371 / 371 | 28 | 0.80 | auto | 4% | 53% | 43% | tee stage: Black tee_centroid |  |
+| 3 | 4 | 440 / 441 | 236 | 0.69 | check the flags | 4% | 48% | 48% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 440 yds) |
 | 4 | 3 | 195 / 195 | 11 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
-| 5 | 5 | 537 / 537 | 41 | 0.69 | check the flags | 2% | 1% | 98% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
-| 6 | 4 | 451 / 451 | 225 | 0.71 | check the flags | 4% | 7% | 89% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
+| 5 | 5 | 537 / 537 | 41 | 0.80 | check the flags | 2% | 53% | 46% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 6 | 4 | 451 / 451 | 225 | 0.80 | check the flags | 4% | 50% | 46% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 7 | 3 | 170 / 170 | 166 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 8 | 4 | 441 / 442 | 75 | 0.74 | check the flags | 2% | 26% | 72% | tee stage: Black tee_centroid | no fairway in the landing zone |
-| 9 | 5 | 663 / 662 | 170 | 0.77 | check the flags | 24% | 8% | 68% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
-| 10 | 4 | 482 / 481 | 68 | 0.70 | check the flags | 2% | 20% | 78% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
-| 11 | 4 | 374 / 374 | 43 | 0.74 | check the flags | 4% | 20% | 75% | tee stage: Black tee_centroid | no fairway in the landing zone |
+| 8 | 4 | 441 / 442 | 75 | 0.81 | auto | 2% | 62% | 36% | tee stage: Black tee_centroid |  |
+| 9 | 5 | 663 / 662 | 170 | 0.84 | auto | 24% | 46% | 30% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 10 | 4 | 482 / 481 | 68 | 0.78 | check the flags | 2% | 60% | 37% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 11 | 4 | 374 / 374 | 43 | 0.81 | auto | 4% | 58% | 37% | tee stage: Black tee_centroid |  |
 | 12 | 3 | 240 / 240 | 57 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Black review (inside OSM tee 1490361208) | tee: tee stage: Black review (inside OSM tee 1490361208) |
-| 13 | 5 | 548 / 547 | 334 | 0.69 | check the flags | 3% | 0% | 97% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
-| 14 | 4 | 420 / 419 | 174 | 0.60 | needs review | 3% | 0% | 97% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
-| 15 | 4 | 460 / 460 | 264 | 0.68 | check the flags | 7% | 5% | 88% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
-| 16 | 4 | 455 / 454 | 354 | 0.67 | check the flags | 6% | 1% | 92% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
+| 13 | 5 | 548 / 547 | 334 | 0.79 | check the flags | 3% | 50% | 48% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 14 | 4 | 420 / 419 | 174 | 0.70 | check the flags | 3% | 51% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 15 | 4 | 460 / 460 | 264 | 0.78 | check the flags | 7% | 55% | 38% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 16 | 4 | 455 / 454 | 354 | 0.75 | check the flags | 6% | 42% | 51% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 17 | 3 | 214 / 216 | 163 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Black review (inside OSM tee 1490357722) | tee: tee stage: Black review (inside OSM tee 1490357722) |
-| 18 | 5 | 541 / 536 | 220 | 0.66 | check the flags | 3% | 2% | 95% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone |
+| 18 | 5 | 541 / 536 | 220 | 0.76 | check the flags | 3% | 53% | 44% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 
 ## Stages
 
