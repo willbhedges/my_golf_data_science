@@ -1,0 +1,287 @@
+{
+ "fetched_utc": "2026-11-03T03:00:07Z",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: troon-north-golf-club: HTTP 404; the-troon-north-golf-club: HTTP 404; troon-north-golf-course: HTTP 404; troon-north-country-club: HTTP 404"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 12 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/c9dcf35f-d753-4dc6-95b7-74c4971b9b9d"
+  }
+ ],
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/c9dcf35f-d753-4dc6-95b7-74c4971b9b9d",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/c9dcf35f-d753-4dc6-95b7-74c4971b9b9d",
+    "par": [
+     4,
+     3,
+     5,
+     4,
+     4,
+     4,
+     3,
+     4,
+     5,
+     4,
+     5,
+     4,
+     3,
+     5,
+     4,
+     3,
+     4,
+     4
+    ],
+    "handicap": [
+     5,
+     17,
+     3,
+     11,
+     1,
+     13,
+     15,
+     9,
+     7,
+     10,
+     6,
+     8,
+     18,
+     4,
+     14,
+     16,
+     2,
+     12
+    ],
+    "tee_sets": {
+     "Black": {
+      "colour": "black",
+      "aliases": [
+       "black"
+      ],
+      "yards": [
+       444,
+       172,
+       556,
+       420,
+       464,
+       306,
+       205,
+       408,
+       530,
+       396,
+       512,
+       426,
+       222,
+       570,
+       299,
+       244,
+       495,
+       370
+      ],
+      "total": 7039,
+      "total_stated": 7039,
+      "rating": 73.3,
+      "slope": 148,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Gold": {
+      "colour": "gold",
+      "aliases": [
+       "gold"
+      ],
+      "yards": [
+       411,
+       165,
+       544,
+       370,
+       435,
+       295,
+       190,
+       403,
+       520,
+       384,
+       504,
+       411,
+       206,
+       541,
+       283,
+       234,
+       455,
+       365
+      ],
+      "total": 6716,
+      "total_stated": 6716,
+      "rating": 72.1,
+      "slope": 139,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Silver": {
+      "colour": "silver",
+      "aliases": [
+       "silver"
+      ],
+      "yards": [
+       400,
+       154,
+       502,
+       340,
+       419,
+       285,
+       172,
+       352,
+       465,
+       375,
+       460,
+       338,
+       196,
+       495,
+       275,
+       222,
+       422,
+       348
+      ],
+      "total": 6220,
+      "total_stated": 6220,
+      "rating": 69.8,
+      "slope": 132,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Silver (Female)",
+        "rating": 75.2,
+        "slope": 136,
+        "total": 6220,
+        "par": 72
+       }
+      ]
+     },
+     "Copper": {
+      "colour": "copper",
+      "aliases": [
+       "copper"
+      ],
+      "yards": [
+       370,
+       150,
+       466,
+       328,
+       389,
+       275,
+       140,
+       314,
+       440,
+       337,
+       451,
+       331,
+       173,
+       475,
+       229,
+       213,
+       405,
+       335
+      ],
+      "total": 5821,
+      "total_stated": 5821,
+      "rating": 72.9,
+      "slope": 131,
+      "gender": "Female",
+      "source": "opengolfapi"
+     },
+     "Jade": {
+      "colour": "jade",
+      "aliases": [
+       "jade"
+      ],
+      "yards": [
+       300,
+       114,
+       456,
+       256,
+       335,
+       261,
+       105,
+       308,
+       415,
+       280,
+       402,
+       260,
+       144,
+       440,
+       221,
+       164,
+       370,
+       253
+      ],
+      "total": 5084,
+      "total_stated": 5084,
+      "rating": 65,
+      "slope": 119,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Jade (Female)",
+        "rating": 68.6,
+        "slope": 119,
+        "total": 5084,
+        "par": 72
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "c9dcf35f-d753-4dc6-95b7-74c4971b9b9d",
+     "course_name": "Troon North Golf Club",
+     "club_name": "Troon North Golf Club",
+     "city": "Scottsdale",
+     "state": "AZ",
+     "lat": 33.7464665,
+     "lng": -111.8614161,
+     "holes": 18,
+     "yardage": 7039,
+     "website": "http://www.troonnorthgolf.com/index.php"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/c9dcf35f-d753-4dc6-95b7-74c4971b9b9d",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/c9dcf35f-d753-4dc6-95b7-74c4971b9b9d": {
+    "holes": 18,
+    "fit": 15,
+    "share": 0.833,
+    "mean_err": 8.1,
+    "all_sets": 0.311,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
+}

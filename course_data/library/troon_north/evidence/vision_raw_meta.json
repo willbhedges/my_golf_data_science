@@ -1,0 +1,129 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "troon_north",
+ "course": "Troon North Golf Club",
+ "bbox_snwe": [
+  33.73336,
+  -111.878581,
+  33.756957,
+  -111.844251
+ ],
+ "grid": {
+  "crs": "EPSG:32612",
+  "res_m": 1.0,
+  "width": 3444,
+  "height": 2884,
+  "bounds": [
+   418490,
+   3732792,
+   421934,
+   3735676
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   418490.0,
+   0.0,
+   -1.0,
+   3735676.0
+  ],
+  "ll_bbox_wsen": [
+   -111.88014015820522,
+   33.732028136579046,
+   -111.84270121979002,
+   33.75829624442247
+  ]
+ },
+ "fetched_utc": "2026-11-03T03:07:34Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "AZ_MaricopaPinal_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/AZ_MaricopaPinal_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 249923645502
+   }
+  ],
+  "tiles": 6,
+  "used": [
+   {
+    "name": "AZ_MaricopaPinal_1_2020",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/AZ_MaricopaPinal_1_2020/ept.json",
+    "cov": 1.0,
+    "year": 2020,
+    "count": 249923645502,
+    "cells": 9920266,
+    "tiles": 6
+   }
+  ],
+  "valid": 0.9987686881525046,
+  "hag_mb": 5.22,
+  "frac_gt_2_5m": 0.3808029723847863,
+  "class_mb": 0.09
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023102200"
+  ],
+  "mb": 0.46,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N33W114",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 2483124,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.09
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 56.6,
+    "items": [
+     "az_m_3311118_nw_12_030_20230615_20240304",
+     "az_m_3311117_ne_12_030_20230615_20240304",
+     "az_m_3311110_sw_12_030_20230615_20240304",
+     "az_m_3311109_se_12_030_20230615_20240304"
+    ],
+    "acquired": [
+     "2023-06-15"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2021,
+    "file": "naip_2021.tif",
+    "mb": 37.97,
+    "items": [
+     "az_m_3311118_nw_12_060_20211014",
+     "az_m_3311117_ne_12_060_20211014",
+     "az_m_3311110_sw_12_060_20211014",
+     "az_m_3311109_se_12_060_20211014"
+    ],
+    "acquired": [
+     "2021-10-14"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
