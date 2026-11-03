@@ -1,6 +1,6 @@
 # Buffalo Dunes (Garden City, KS) - Blue tees
 
-Built 2026-11-03T15:01:03Z. OSM way/783368916. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T16:13:11Z. OSM way/783368916. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 

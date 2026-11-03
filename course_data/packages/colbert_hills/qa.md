@@ -1,6 +1,6 @@
 # Colbert Hills Golf Course (Manhattan, KS) - Black/Blue tees
 
-Built 2026-11-03T15:03:28Z. OSM relation/13772939. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-03T16:15:36Z. OSM relation/13772939. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
