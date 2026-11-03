@@ -53,7 +53,8 @@
     "L": "Driver +25",
     "R": "Driver +8",
     "both": "4-wood +8",
-    "none": "Driver +20"
+    "none": "Driver +20",
+    "planner": "Driver +20"
    },
    "geom": {
     "a0": 130.0,
@@ -193,11 +194,11 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": 25.0,
+      "aim": 20.0,
       "club_changed": false,
-      "aim_shift": 5.0,
+      "aim_shift": 0.0,
       "d_ev": 0.0,
-      "regret": 0.0063,
+      "regret": 0.0,
       "severity": "green"
      }
     },
@@ -308,7 +309,8 @@
     "L": "4-wood +0",
     "R": "Driver -10",
     "both": "4-wood +0",
-    "none": "Driver -8"
+    "none": "Driver -8",
+    "planner": "Driver -8"
    },
    "geom": {
     "a0": 130.0,
@@ -462,11 +464,11 @@
      "text": "No change to the plan.",
      "outcome": {
       "pick": "Driver",
-      "aim": -10.0,
+      "aim": -8.0,
       "club_changed": false,
-      "aim_shift": -2.0,
+      "aim_shift": 0.0,
       "d_ev": 0.0,
-      "regret": 0.0002,
+      "regret": 0.0,
       "severity": "green"
      }
     },
@@ -516,7 +518,9 @@
   }
  ],
  "mapper_sig": "912926a1703cfffe",
- "note": "2 asked of 14 framed holes",
+ "note": "2 asked of 14 framed holes; 2 kept on the page's own picks",
  "n": 4000,
- "runtime_s": 46.6
+ "runtime_s": 80.1,
+ "dropped": [],
+ "baseline": "page calm-day pick"
 }
