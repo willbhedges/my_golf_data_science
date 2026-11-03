@@ -2,10 +2,10 @@
 
 **Status: needs confirm** — confirm holes 1, 8, 10, 11
 
-* page: `course_data/library/bandon_dunes/page.html` (3.9 MB); request `course_data/requests/course_page_bandon_dunes.json`; built 2026-11-03T11:12Z
+* page: `course_data/library/bandon_dunes/page.html` (3.9 MB); request `course_data/requests/course_page_bandon_dunes.json`; built 2026-11-03T13:14Z
 * course: Bandon Dunes Golf Resort (Coos County, OR), OSM way/362513477; holes: osm (tier mapped_card); card: course_data/library/bandon_dunes/card_review.json (file)
 * solved tee sets: Tournament, Black (the two longest sets on the card (combination sets skipped)); page sets: Tournament, Black
-* weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
+* weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [40, 50, 65] F; calm-day picks with 48 prior draws
 * imagery on the page: 2022-06-23; package imagery 2022
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
 
@@ -23,7 +23,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 |---|---|---|---|---|
 | 1 | 4 | CHECK | Driver +8 | tee: tee marker not on an OSM tee box (lidar_pad; 19 yds from the nearest OSM tee box) |
 | 2 | 3 | PASS |  |  |
-| 3 | 5 | PASS | Driver +8 |  |
+| 3 | 5 | PASS | Driver +7 |  |
 | 4 | 4 | PASS | Driver +5 |  |
 | 5 | 4 | PASS | Driver -9 |  |
 | 6 | 3 | PASS |  |  |
@@ -47,11 +47,11 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 1 | 4 | CHECK | Driver +12 | tee: tee marker not on an OSM tee box (lidar_pad; 16 yds from the nearest OSM tee box) |
 | 2 | 3 | PASS |  |  |
 | 3 | 5 | PASS | Driver +3 |  |
-| 4 | 4 | PASS | Driver +25 |  |
+| 4 | 4 | PASS | Driver +26 |  |
 | 5 | 4 | PASS | Driver -10 |  |
 | 6 | 3 | PASS |  |  |
 | 7 | 4 | PASS | Driver -2 |  |
-| 8 | 4 | CHECK | Driver +50 | wide_aim: Driver aim +57 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
+| 8 | 4 | CHECK | Driver +50 | wide_aim: Driver aim +61 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 9 | 5 | PASS | Driver +38 |  |
 | 10 | 4 | PASS | Driver +12 |  |
 | 11 | 4 | CHECK | Driver -3 | tee: tee marker not on an OSM tee box (walkback; 54 yds from the nearest OSM tee box) |

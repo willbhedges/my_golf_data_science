@@ -1,6 +1,6 @@
 # Bandon Dunes Golf Resort (Coos County, OR) - Black tees
 
-Built 2026-11-03T11:12:05Z. OSM way/362513477. Scorecard: file (course_data/library/bandon_dunes/card_review.json). Tee set: name.
+Built 2026-11-03T13:14:31Z. OSM way/362513477. Scorecard: file (course_data/library/bandon_dunes/card_review.json). Tee set: name.
 
 ## Coverage
 
