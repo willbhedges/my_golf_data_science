@@ -511,6 +511,8 @@ def build_one(slug, idx_row, out_dir):
         if rec:
             holes.append(rec)
     holes.sort(key=lambda r: r["no"])
+    if idx_row.get("holes") and len(holes) != idx_row["holes"]:     # a page that is not the row's: keep the old record
+        raise ValueError(f"page has {len(holes)} holes, its status row {idx_row['holes']}: record not written")
     fc = D.get("forecast") or []
     days = D.get("days") or []
     rec = dict(schema="golf_lib_play/1", id=slug, name=idx_row.get("name") or D.get("title"),
@@ -590,10 +592,53 @@ def add_route(fn, cardblind=False, out=None, log=print):
     return R
 
 
-def build(out_dir=OUT, only=None, log=print):
-    idx = json.load(open(os.path.join(LIBDIR, "index.json")))
+STATUS_KEYS = ("slug", "name", "city", "state", "status", "check_holes", "reasons", "tee_sets", "solved_sets", "page",
+               "page_bytes", "qa_report", "center", "osm", "holes", "days", "weather", "built")   # course_page.INDEX_KEYS
+
+
+def library_rows(idx=None, libdir=None):
+    """library/index.json's (courses, blocked) rows, each library page's row taken from its own folder's status.json.
+
+    index.json is rewritten by a separate step (its own commit, often hours after the page commit), while a page's
+    status.json is written with page.html in the same commit (course_page.py finish / publish_gate). Reading only the
+    index lets a stale row stand for a newer page: on 2026-11-03 the index still listed queenstown_harbor as "needs
+    confirm" (its 18-hole 05:14Z build) when page.html was already the blocked 9-hole South River rebuild, so the
+    blocked filter passed it and that page replaced the record. Here status.json wins: "blocked" there blocks the
+    course even when the index does not (yet) say so, and a page rebuilt after a block is listed again once its
+    status.json passes. Rows without a status.json (tournament pages) are the index's own."""
+    libdir = libdir or LIBDIR
+    if idx is None:
+        idx = rj(os.path.join(libdir, "index.json"), {}) or {}
+    rows, blocked, seen = [], [], set()
+    for r, was_blocked in [(r, False) for r in idx.get("courses") or []] + [(r, True) for r in idx.get("blocked") or []]:
+        slug = r.get("slug") if isinstance(r, dict) else None
+        if not slug or slug in seen:
+            continue
+        seen.add(slug)
+        st = rj(os.path.join(libdir, slug, "status.json")) if r.get("group", "library") == "library" else None
+        if isinstance(st, dict) and st.get("status"):
+            if st["status"] == "blocked":
+                blocked.append({k: st.get(k) for k in STATUS_KEYS if k in st} | {"slug": slug})
+            else:
+                rows.append({k: st.get(k) for k in STATUS_KEYS} | {"slug": slug, "group": "library"}
+                            | ({"last_attempt": st["last_attempt"]} if st.get("last_attempt") else {}))
+        elif was_blocked:
+            blocked.append(r)
+        else:
+            rows.append(r)
+    return rows, blocked
+
+
+def build(out_dir=OUT, only=None, log=print, idx=None):
+    """Build (or reuse) out/lib/<slug>.json for every library page that is not blocked (library_rows). A blocked
+    page is never built: an existing record from an earlier, good page is left as it is (never overwritten), and
+    the app lists no blocked course (build_app.blocked_courses)."""
+    rows, blocked = library_rows(idx)
     res = {}
-    for r in idx["courses"]:
+    for r in blocked:
+        if os.path.exists(os.path.join(out_dir, f"{r.get('slug')}.json")):
+            log(f"  lib {r.get('slug')}: page blocked, record left untouched and not listed")
+    for r in rows:
         slug, pg = r.get("slug"), r.get("page")
         if not slug or not pg or r.get("group") != "library" or (only and slug not in only):
             continue

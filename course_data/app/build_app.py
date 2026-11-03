@@ -853,8 +853,9 @@ def _status_of(raw):
 def blocked_courses():
     """library/index.json `blocked` (pages too wrong to publish, course_page.py publish_gate): their slugs and
     name|state keys. The app lists none of them: no play record, no package / survey entry."""
+    import build_library_play                         # each page's own status.json over a stale index row
     try:
-        rows = json.load(open(LIBRARY_INDEX)).get("blocked") or []
+        rows = build_library_play.library_rows(json.load(open(LIBRARY_INDEX)), os.path.dirname(LIBRARY_INDEX))[1]
     except Exception:                                    # noqa: BLE001
         rows = []
     return dict(ids={r.get("slug") for r in rows if r.get("slug")},
@@ -921,7 +922,8 @@ def library(courses):
     if os.path.exists(LIBRARY_INDEX):                    # 4. the course library (course_library/1, library/README.md)
         try:
             li = json.load(open(LIBRARY_INDEX))
-            rows = li.get("courses", li) if isinstance(li, dict) else li
+            import build_library_play                     # rows corrected by each page's status.json
+            rows = build_library_play.library_rows(li, os.path.dirname(LIBRARY_INDEX))[0] if isinstance(li, dict) else li
             rows = list(rows.values()) if isinstance(rows, dict) else rows
             n0 = len(ents)
             for r in rows:
