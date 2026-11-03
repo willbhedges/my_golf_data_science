@@ -1,6 +1,6 @@
 # TPC Sawgrass (Ponte Vedra Beach, FL) - The Players tees
 
-Built 2026-11-03T09:27:58Z. OSM relation/1783123. Scorecard: file (course_data/library/tpc_sawgrass/card_review.json). Tee set: colour.
+Built 2026-11-03T15:30:38Z. OSM relation/1783123. Scorecard: file (course_data/library/tpc_sawgrass/card_review.json). Tee set: colour.
 
 ## Coverage
 
@@ -56,6 +56,7 @@ OSM features inside the course: buildings 4, golf=bunker 154, golf=cartpath 104,
 - **elevation**: ok: course_data/packages/tpc_sawgrass/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 13 polygons (outside 13); mode replace
 
 ## Warnings
