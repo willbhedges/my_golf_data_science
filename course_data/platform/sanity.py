@@ -4,6 +4,10 @@
                            * hole refs: a multi-course site's qualified refs ("Black - 13", "1 - #2", "L4",
                              "Practice 1") are reduced to the named course's holes, renumbered 1..18 (Bethpage,
                              Pinehurst, Neshanic Valley, Old Works: v2 hole_number crashed on int("Black - 13"))
+                           * multi-course facilities (split_courses): one course's hole ways are kept, never a
+                             per-ref mix (Troon North, Queenstown Harbor); a facility of nines (Paa-Ko Ridge
+                             1-9 / 10-18 / 19-27) keeps two nines as one 18; unnumbered hole ways of no kept course
+                             go (Grand National's short course)
                            * practice tees: a golf=tee whose name / description mentions range, practice or
                              driving, or that lies inside a golf=driving_range area, is dropped (Ironhorse 1: the
                              Black tee sat on "Driving Range Tee Box (Turf)")
@@ -399,7 +403,8 @@ def course_groups(fc):
     holes = _plain_holes(fc)
     refs = [_hole_no(f) for f in holes]
     dup = sum(1 for r in set(refs) if refs.count(r) > 1)
-    if dup < SPLIT_MIN_DUP_REFS or any(_hand(f) for f in holes):
+    high = sum(1 for r in refs if r > 18) >= SUB_COURSE_MIN_HOLES             # a 27-hole site numbered 1-27
+    if (dup < SPLIT_MIN_DUP_REFS and not high) or any(_hand(f) for f in holes):
         return []
     mids = [shape(f["geometry"]).interpolate(0.5, normalized=True) for f in holes]
     subs = []
@@ -428,7 +433,13 @@ def course_groups(fc):
     big = {k: v for k, v in named.items() if k and len(v) >= SUB_COURSE_MIN_HOLES}
     if len(big) >= 2 and sum(len(v) for v in big.values()) >= 0.8 * len(holes):
         return [dict(holes=v, name=k, how="hole way names") for k, v in big.items()]
-    ch = _chains(holes, _proj_for(fc))
+    ch = _chains(holes, _proj_for(fc)) if dup >= SPLIT_MIN_DUP_REFS else None
+    if not ch and high:
+        by = {}
+        for f in holes:
+            by.setdefault((_hole_no(f) - 1) // 9, []).append(f)
+        return [dict(holes=v, name=f"{9 * k + 1}-{9 * k + 9}", how="hole numbers (nines)")
+                for k, v in sorted(by.items()) if len(v) >= SUB_COURSE_MIN_HOLES]
     if not ch:
         return []
     out = []
@@ -457,10 +468,14 @@ def split_courses(fc, names=(), near=None):
     mixed the two courses. Here the hole ways are grouped by course (course_groups) and ONE course is kept:
     the group whose name (sub-course outline / hole way names, words the groups share ignored) is named in
     `names` (request / OSM course name), else the group whose hole lines are nearest the request's `near` point
-    (lat, lon), else the largest (CHECK). Only golf=hole ways are dropped."""
+    (lat, lon), else the largest (CHECK). When every group is a nine, two nines make the 18 (_combine_nines).
+    Unnumbered golf=hole ways (in no group) are dropped too. Only golf=hole ways are dropped."""
     groups = course_groups(fc)
     if len(groups) < 2:
         return fc, []
+    nine = _combine_nines(fc, groups, names, near)
+    if nine is not None:
+        return nine
     want = set()
     for n in names or ():
         want |= _name_tokens(n)
@@ -486,19 +501,138 @@ def split_courses(fc, names=(), near=None):
     if pick is None:
         pick = max(range(len(groups)), key=lambda i: len(groups[i]["holes"]))
         why = "the largest group (no name or near point decides: CHECK the course)"
-    keep = {id(f) for f in groups[pick]["holes"]}
+    keep = {id(f): _hole_no(f) for f in groups[pick]["holes"]}
+    note = (f"multi-course facility: {len(groups)} courses' hole ways in one outline (by {groups[pick]['how']}: "
+            + ", ".join(f"{g['name'] or '#' + str(i + 1)} {len(g['holes'])}" for i, g in enumerate(groups))
+            + f"); kept {why}, {len(keep)} ways")
+    return _keep_holes(fc, groups, keep, note)
+
+
+def _keep_holes(fc, groups, keep, note):
+    """fc with only the kept hole ways of `groups` (keep: id -> hole number; a changed number becomes the ref, the
+    OSM ref kept as ref_osm). Unnumbered golf=hole ways (no ref, no number in the name) are in no group: after a
+    split they are another course's (Grand National's short course) and go too; hand ways stay."""
     drop = {id(f) for g in groups for f in g["holes"] if id(f) not in keep}
+    stray = [f for f in fc["features"] if f["properties"].get("golf") == "hole" and id(f) not in keep
+             and id(f) not in drop and _hole_no(f) is None and not _hand(f)]
+    drop |= {id(f) for f in stray}
     out = []
     for f in fc["features"]:
         if id(f) in drop:
             continue
-        if id(f) in keep and not str(f["properties"].get("ref") or "").strip():
-            f = dict(f, properties=dict(f["properties"], ref=str(_hole_no(f)), ref_from="name"))
+        if id(f) in keep:
+            p, n = f["properties"], keep[id(f)]
+            r = str(p.get("ref") or "").strip()
+            if not r:
+                f = dict(f, properties=dict(p, ref=str(n), ref_from="name"))
+            elif r != str(n):
+                f = dict(f, properties=dict(p, ref=str(n), ref_osm=p.get("ref_osm", p["ref"])))
         out.append(f)
-    note = (f"multi-course facility: {len(groups)} courses' hole ways in one outline (by {groups[pick]['how']}: "
-            + ", ".join(f"{g['name'] or '#' + str(i + 1)} {len(g['holes'])}" for i, g in enumerate(groups))
-            + f"); kept {why}, {len(keep)} ways; ignored {len(drop)}")
+    note += f"; ignored {len(drop) - len(stray)}"
+    if stray:
+        note += (f" + {len(stray)} unnumbered golf=hole way(s) in no kept course: OSM "
+                 + ", ".join(str(f["properties"].get("osm_id")) for f in stray[:8]) + (" ..." if len(stray) > 8 else ""))
     return dict(fc, features=out), [note]
+
+
+SAME_NINE_YD = 30.0           # a green this close to another nine's line end: the same ground
+NINE_SPAN = re.compile(r"\b(\d{1,2})\s*[-\u2013]\s*(\d{1,2})\b")
+
+
+def _nine_base(g):
+    """(label base, ref base) of a nine-hole group: 0 / 9 / 18 for a 1-9 / 10-18 / 19-27 nine. The label comes from
+    the group's name when it spans nine holes (Paa-Ko's outline '19-27' holds refs 10-18), else from the refs."""
+    nos = [_hole_no(f) for f in g["holes"]]
+    ref_base = 9 * ((min(nos) - 1) // 9)
+    m = NINE_SPAN.search(str(g.get("name") or ""))
+    if m and int(m.group(2)) - int(m.group(1)) == 8 and (int(m.group(1)) - 1) % 9 == 0:
+        return int(m.group(1)) - 1, ref_base
+    return ref_base, ref_base
+
+
+def _is_nine(g):
+    nos = [_hole_no(f) for f in g["holes"]]
+    return len(nos) <= 10 and (min(nos) - 1) // 9 == (max(nos) - 1) // 9          # (a mis-tagged ref may repeat)
+
+
+def _same_ground(a, b, P):
+    """Two nines that are one nine-hole ground mapped twice: most of a's greens (line ends) sit on one of b's line
+    ends (Bobby Jones, a reversible nine mapped as two routings: 0.8-0.9; separate nines of a 27-hole site: 0)."""
+    ends = [P.fwd(*f["geometry"]["coordinates"][k][:2]) for f in b["holes"] for k in (0, -1)]
+    hit = 0
+    for f in a["holes"]:
+        e = P.fwd(*f["geometry"]["coordinates"][-1][:2])
+        hit += min(math.hypot(e[0] - q[0], e[1] - q[1]) for q in ends) <= SAME_NINE_YD
+    return hit >= 2 * len(a["holes"]) / 3
+
+
+def _combine_nines(fc, groups, names, near):
+    """A facility of nine-hole courses (Paa-Ko Ridge's outlines 1-9 / 10-18 / 19-27, Carillon's white / red / blue
+    hole names, chains of three refs 1-9) is not a set of 9-hole courses: two nines make the 18. The nines the
+    request names (in its order), else 1-9 + 10-18 when both are there, else the two nearest the request's near
+    point, else the two largest (CHECK). The front nine is numbered 1-9 and the back 10-18 (19-27 or a second 1-9
+    renumbered). -> (fc, [note]) | None (not all nines, or fewer than two distinct ones)."""
+    if not all(_is_nine(g) for g in groups):
+        return None
+    P = _proj_for(fc)
+    nines = []
+    for g in sorted(groups, key=lambda g: -len(g["holes"])):          # one nine mapped twice counts once
+        if not any(_same_ground(g, h, P) or _same_ground(h, g, P) for h in nines):
+            nines.append(g)
+    if len(nines) < 2:
+        return None
+    nines.sort(key=lambda g: groups.index(g))
+    label = lambda g: g["name"] or f"#{groups.index(g) + 1}"                                # noqa: E731
+    text = " ".join(names or ()).lower()
+    toks = [_name_tokens(g["name"]) for g in nines]
+    common = set.intersection(*toks)
+    want = set()
+    for n in names or ():
+        want |= _name_tokens(n)
+    pos = []
+    for i, t in enumerate(toks):
+        hit = (t - common) & want
+        if hit:
+            pos.append((min(text.find(w) for w in hit), i))
+    pick = [i for _, i in sorted(pos)][:2]
+    why = ["named in the request"] if pick else []
+    has = {b: [i for i in range(len(nines)) if _nine_base(nines[i])[0] == b] for b in (0, 9)}
+    if len(pick) < 2 and has[0] and has[9]:
+        for b in (0, 9):
+            c = [i for i in has[b] if i not in pick]
+            if len(pick) < 2 and c and not any(_nine_base(nines[i])[0] == b for i in pick):
+                pick.append(c[0])
+                why.append(f"the {b + 1}-{b + 9} nine")
+    nr = _parse_near(near)
+    if len(pick) < 2 and nr is not None:
+        q = P.fwd(nr[1], nr[0])
+
+        def dist(g):
+            ds = sorted(Point(q).distance(P.geom(shape(f["geometry"]))) for f in g["holes"])
+            return float(statistics.median(ds[: max(3, len(ds) // 3)]))
+        rest = sorted((i for i in range(len(nines)) if i not in pick), key=lambda i: dist(nines[i]))
+        while len(pick) < 2:
+            pick.append(rest.pop(0))
+        why.append("nearest the request's near point")
+    if len(pick) < 2:
+        rest = sorted((i for i in range(len(nines)) if i not in pick), key=lambda i: -len(nines[i]["holes"]))
+        while len(pick) < 2:
+            pick.append(rest.pop(0))
+        why.append("the largest; nothing decides")
+    front, back = sorted(pick, key=lambda i: (_nine_base(nines[i])[0], pick.index(i)))
+    front, back = nines[front], nines[back]
+    keep = {}
+    for g, off in ((front, 0), (back, 9)):
+        rb = _nine_base(g)[1]
+        for f in g["holes"]:
+            keep[id(f)] = _hole_no(f) - rb + off
+    renum = lambda g, off: ("" if _nine_base(g)[1] == off else                                # noqa: E731
+                            f", refs {_nine_base(g)[1] + 1}-{_nine_base(g)[1] + 9} renumbered {off + 1}-{off + 9}")
+    note = (f"multi-course facility of nines: {len(groups)} nine-hole groups (by {groups[0]['how']}: "
+            + ", ".join(f"{label(g)} {len(g['holes'])}" for g in groups)
+            + f"); kept the '{label(front)}' nine as holes 1-9{renum(front, 0)} + the '{label(back)}' nine as holes "
+            f"10-18{renum(back, 9)} ({', '.join(why)}): CHECK the nines against the card, {len(keep)} ways")
+    return _keep_holes(fc, groups, keep, note)
 
 
 def clean_osm(fc, names=(), near=None):

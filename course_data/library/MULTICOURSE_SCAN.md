@@ -95,3 +95,21 @@ library:
 - dismal_river_ne (two unnamed 18s, Red / White): 16 refs change and the largest group is kept with a CHECK note.
   tumble_brook_ct goes from 9 kept ways to 12. Small 1-2 hole swaps on chains (newcastle_wa, ponkapoag_ma,
   toscana_ca, isabella_ar, spurwing_id, greenbrier_meadows_wv) were not checked by hand.
+
+## Fix (sanity.split_courses, after this scan)
+
+- **Nines**: when every course group is a nine (sub-course outlines "1-9" / "10-18" / "19-27", hole-name nines, or
+  chains of refs 1-9), two nines are kept as one 18: the nines the request names (in its order), else 1-9 + 10-18,
+  else the two nearest the near point, else the two largest. The back nine is renumbered 10-18 (ref_osm keeps the OSM
+  ref) and a CHECK note names the nines. Refs 1-27 with no repeats are grouped into nines by number. Two nines on the
+  same ground (most greens on the other's line ends: Bobby Jones' reversible nine) stay one nine.
+- **Strays**: after a split, golf=hole ways with no ref and no number in their name (in no group) are dropped.
+- Replay on the scan OSM: paa_ko_ridge 9 -> 18 (1-9 + 10-18 outlines, CHECK); grand_national_links 35 -> 18 (Links
+  18 by near point, 17 unnumbered ways dropped); tpc_sawgrass, bandon_dunes, tpc_harding_park, sand_hollow,
+  longview_lake, seneca keep the same 18 as dab692c65; bobby_jones 10 -> 9 (its one unnumbered way dropped).
+- The "nines mapped twice" caches above are not 9-hole courses: their nines share no greens (0 of 9), so they are
+  27/36-hole sites of nines. carillon_il, willowbend_ma, boulder_creek_nv, tumble_brook_ct, fox_hills_mi, hunt_valley_md,
+  lake_venice_fl, mascoutin_wi (and the unchanged-before montclair_nj, cantigny_il, casper_municipal_wy,
+  cattail_crossing_sd, legends_massillon_oh, mccabe_tn, sunbrook_ut, willowbrook_ny) now keep 18 (two nines, CHECK:
+  none of these requests names a nine). del_rio_ca keeps 17 (River 8 + Bluff 9; the Oak nine has "Oak - N" refs).
+  The 18 + 9 and 18 + 18 caches keep the 18 as before; greenbrier_meadows_wv stays 12 (OSM lacks 10-15).

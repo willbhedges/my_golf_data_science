@@ -476,3 +476,119 @@ def test_troon_north_monument_from_live_osm():
         holes = [f for f in out["features"] if f["properties"].get("golf") == "hole"]
         assert len(holes) == 18 and {f["properties"]["golf:course:name"] for f in holes} == {f"{want} Course"}, notes
         assert sorted(int(f["properties"]["ref"]) for f in holes) == list(range(1, 19))
+
+
+# ----------------------------------------------------------------------------- nine-hole groups (27-hole facilities)
+def _nines(refs=((1, 9), (1, 9), (1, 9)), names=(None, None, None), outlines=None, same_greens=False):
+    """Three nines side by side (nine c at x = c*2000 ..), holes alternating north / south so green n is by tee
+    n+1; nine c's ways have osm_id 1000*(c+1)+n. refs: each nine's (first, last) number. names: a hole-name word
+    per nine ('Red 3'). outlines: a leisure=golf_course name per nine. same_greens: every nine on nine 0's ground
+    (a nine-hole course mapped twice)."""
+    feats = []
+    for c, ((lo, hi), nm) in enumerate(zip(refs, names)):
+        x0 = 0 if same_greens else c * 2000
+        for i, n in enumerate(range(lo, hi + 1)):
+            x = x0 + i * 100
+            y0 = 0 if i % 2 == 0 else 450
+            pr = dict(golf="hole", ref=str(n), osm_id=1000 * (c + 1) + n, inside_course=True)
+            if nm:
+                pr["name"] = f"{nm} {n}"
+            feats.append(line([(x, y0), (x + (3 if same_greens and c else 0), 450 - y0)], **pr))
+        if outlines:
+            ring = [ll(x0 - 150, -200), ll(x0 + 1000, -200), ll(x0 + 1000, 700), ll(x0 - 150, 700), ll(x0 - 150, -200)]
+            feats.append(dict(type="Feature", geometry=dict(type="Polygon", coordinates=[ring]),
+                              properties=dict(leisure="golf_course", name=outlines[c], osm_id=900 + c)))
+    outer = [ll(-500, -500), ll(6500, -500), ll(6500, 1000), ll(-500, 1000), ll(-500, -500)]
+    feats.append(dict(type="Feature", geometry=dict(type="Polygon", coordinates=[outer]),
+                      properties=dict(leisure="golf_course", osm_id=1)))
+    return feats
+
+
+def _holes(fc):
+    return {f["properties"]["osm_id"]: int(f["properties"]["ref"]) for f in fc["features"]
+            if f["properties"].get("golf") == "hole"}
+
+
+def test_nine_outlines_1_9_and_10_18_combined_into_one_18():
+    """Paa-Ko Ridge: outlines '1-9', '10-18', '19-27', refs 1-9 / 10-18 / 10-18: never just one nine; the 1-9 and
+    10-18 nines make the 18 when no name decides."""
+    feats = _nines(refs=((1, 9), (10, 18), (10, 18)), outlines=("Ridge 1-9", "Ridge 10-18", "Ridge 19-27"))
+    out, notes = sanity.clean_osm(dict(features=feats), names=["Ridge Golf Club"])
+    h = _holes(out)
+    assert sorted(h) == list(range(1001, 1010)) + list(range(2010, 2019)), notes
+    assert sorted(h.values()) == list(range(1, 19))
+    assert any("CHECK" in n and "1-9" in n and "10-18" in n for n in notes), notes
+
+
+def test_named_nines_kept_and_second_renumbered_10_18():
+    """Hole-name nines (Carillon white / red / blue, refs 1-9 each): the two nines the request names make the 18,
+    in the request's order, the second renumbered 10-18."""
+    feats = _nines(names=("Red", "White", "Blue"))
+    out, notes = sanity.clean_osm(dict(features=feats), names=["Carillon Blue / White"])
+    h = _holes(out)
+    assert h == {**{3000 + n: n for n in range(1, 10)}, **{2000 + n: n + 9 for n in range(1, 10)}}, notes
+    assert any("blue" in n and "white" in n for n in notes)
+
+
+def test_nines_19_27_numbering_split_and_renumbered():
+    """Refs 1-27 on one facility (no repeated ref): grouped into nines by number; 1-9 + 10-18 make the 18 unless
+    the request names other nines (then 19-27 is renumbered 10-18)."""
+    feats = _nines(refs=((1, 9), (10, 18), (19, 27)), names=("Lakes", "Hills", "Pines"))
+    out, notes = sanity.clean_osm(dict(features=feats), names=["Some Golf Club"])
+    assert sorted(_holes(out)) == list(range(1001, 1010)) + list(range(2010, 2019)), notes
+    out, notes = sanity.clean_osm(dict(features=feats), names=["Some Golf Club Lakes and Pines"])
+    h = _holes(out)
+    assert h == {**{1000 + n: n for n in range(1, 10)}, **{3000 + n: n - 9 for n in range(19, 28)}}, notes
+
+
+def test_unnamed_nines_near_point_picks_two():
+    feats = _nines()
+    near = ll(3000, 200)[::-1]                                  # between nine 1 (x 2000..2800) and nine 2 (4000..)
+    out, notes = sanity.clean_osm(dict(features=feats), names=["x"], near=near)
+    assert sorted(_holes(out)) == list(range(2001, 2010)) + list(range(3001, 3010)), notes
+    assert sorted(_holes(out).values()) == list(range(1, 19))
+    out, notes = sanity.clean_osm(dict(features=feats), names=["x"])          # nothing decides: still an 18
+    assert len(_holes(out)) == 18 and sorted(_holes(out).values()) == list(range(1, 19))
+    assert any("CHECK" in n for n in notes)
+
+
+def test_nine_mapped_twice_on_the_same_ground_stays_a_nine():
+    """A nine-hole course whose holes are mapped twice (same tees / greens: Bobby Jones' reversible nine) is not
+    two nines."""
+    feats = _nines(refs=((1, 9), (1, 9)), names=(None, None), same_greens=True)
+    out, notes = sanity.clean_osm(dict(features=feats), names=["x"])
+    assert len(_holes(out)) == 9, notes
+
+
+def test_unnumbered_hole_ways_dropped_after_a_split_only():
+    """Grand National: a short course's ref-less golf=hole ways belong to no kept course; without a split they
+    stay (a course's own unnumbered way is select_hole_ways' business)."""
+    stray = [line([(6000 + i * 60, 0), (6000 + i * 60, 120)], golf="hole", osm_id=5000 + i, inside_course=True)
+             for i in range(5)]
+    out, notes = sanity.clean_osm(dict(features=_two_courses() + stray), names=["x"], near=ll(-1000, 200)[::-1])
+    assert _hole_ids(out) == list(range(1000, 1018)), notes
+    assert any("unnumbered" in n for n in notes)
+    out, _ = sanity.clean_osm(dict(features=_course18() + stray), names=["x"])
+    assert len(_hole_ids(out)) == 23
+
+
+def test_paa_ko_ridge_three_nines_from_live_osm():
+    """Live OSM (2026-11-03): outlines 'Paa-ko Ridge 1-9' / '10-18' / '19-27', refs 1-9, 10-18, 10-18. Was 9 holes
+    (one nine kept as a course); now the 1-9 + 10-18 nines, refs 1-18, one way each."""
+    out, notes = sanity.clean_osm(_fix("paa_ko_ridge_holes.geojson"), names=["Paa-Ko Ridge Golf Club"])
+    holes = [f for f in out["features"] if f["properties"].get("golf") == "hole"]
+    assert sorted(int(f["properties"]["ref"]) for f in holes) == list(range(1, 19)), notes
+    ids = {f["properties"]["osm_id"] for f in holes}
+    assert 725227273 in ids and 799526077 in ids and 802547647 not in ids        # 1, 10 (10-18), not 10 (19-27)
+    assert any("1-9" in n and "10-18" in n and "CHECK" in n for n in notes), notes
+
+
+def test_grand_national_links_clean_18_from_live_osm():
+    """Live OSM: Links 18 (no course name), Lake 18 (golf:course:name=Lake) and 17 ref-less short-course ways.
+    The near point keeps the Links 18 and nothing else."""
+    out, notes = sanity.clean_osm(_fix("grand_national_holes.geojson"),
+                                  names=["Grand National Links Course", "RTJ Grand National Golf"], near="32.706,-85.418")
+    holes = [f for f in out["features"] if f["properties"].get("golf") == "hole"]
+    assert sorted(int(f["properties"]["ref"]) for f in holes) == list(range(1, 19)), notes
+    assert not any(f["properties"].get("golf:course:name") for f in holes)
+    assert any("17 unnumbered" in n for n in notes), notes
