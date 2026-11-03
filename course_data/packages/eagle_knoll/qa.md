@@ -1,6 +1,6 @@
 # Eagle Knoll Golf Club (Hartsburg, MO) - Back tees
 
-Built 2026-11-03T16:18:07Z. OSM way/389825776. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-11-03T21:29:43Z. OSM way/389825776. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
@@ -13,7 +13,7 @@ Built 2026-11-03T16:18:07Z. OSM way/389825776. Scorecard: golfify (golfify). Tee
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.426 |
+| mean_landing_osm_share | 0.428 |
 | mean_confidence | 0.845 |
 | osm_score | 0.857 |
 
@@ -26,7 +26,7 @@ OSM features inside the course: buildings 1, golf=bunker 41, golf=cartpath 14, g
 | 1 | 4 | 366 / 361 | 191 | 0.84 | auto | 58% | 13% | 29% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 2 | 3 | 151 / 150 | 288 | 0.93 | auto | 100% | 0% | 0% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 3 | 4 | 397 / 398 | 243 | 0.85 | auto | 49% | 13% | 38% | tee stage: Back tee_centroid |  |
-| 4 | 4 | 399 / 403 | 16 | 0.77 | check the flags | 37% | 6% | 57% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
+| 4 | 4 | 399 / 398 | 17 | 0.77 | check the flags | 39% | 6% | 55% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
 | 5 | 4 | 465 / 466 | 282 | 0.85 | auto | 39% | 26% | 35% | tee stage: Back tee_centroid |  |
 | 6 | 3 | 138 / 138 | 48 | 0.96 | auto | 100% | 0% | 0% | tee stage: Back tee_centroid |  |
 | 7 | 5 | 475 / 471 | 121 | 0.81 | auto | 40% | 24% | 36% | tee stage: Back tee_axis | tee: tee stage: Back tee_axis |
@@ -57,4 +57,6 @@ OSM features inside the course: buildings 1, golf=bunker 41, golf=cartpath 14, g
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -32 m2 {'cells': 30}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 2 polygons (outside 2); mode replace
+- **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)

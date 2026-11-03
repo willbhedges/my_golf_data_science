@@ -1,6 +1,6 @@
 # Eagle Bend Golf Course (Lawrence, KS) - Gold tees
 
-Built 2026-11-03T16:17:13Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
+Built 2026-11-03T21:28:46Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-03T16:17:13Z. OSM way/151983193. Scorecard: file (course_data/libr
 | holes_with_trees_or_long_grass_in_landing_zone | 10 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.362 |
-| mean_confidence | 0.791 |
+| mean_confidence | 0.793 |
 | osm_score | 0.815 |
 
 OSM features inside the course: buildings 9, golf=bunker 23, golf=cartpath 24, golf=clubhouse 1, golf=driving_range 1, golf=fairway 24, golf=green 20, golf=hole 18, golf=pin 18, golf=tee 74, golf=water_hazard 4, holes_with_par 18, water_lines 7, water_polygons 4
@@ -25,8 +25,8 @@ OSM features inside the course: buildings 9, golf=bunker 23, golf=cartpath 24, g
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 4 | 411 / 412 | 101 | 0.82 | auto | 40% | 11% | 49% | tee stage: Gold tee_centroid |  |
 | 2 | 4 | 362 / 360 | 82 | 0.73 | check the flags | 28% | 1% | 70% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
-| 3 | 5 | 574 / 573 | 358 | 0.79 | check the flags | 34% | 22% | 45% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
-| 4 | 3 | 163 / 163 | 274 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 3 | 5 | 574 / 573 | 355 | 0.79 | check the flags | 34% | 21% | 45% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 4 | 3 | 163 / 163 | 279 | 0.96 | auto | 100% | 0% | 0% | tee stage: Gold tee_centroid |  |
 | 5 | 4 | 383 / 382 | 186 | 0.81 | auto | 36% | 15% | 50% | tee stage: Gold tee_centroid |  |
 | 6 | 4 | 460 / 456 | 275 | 0.81 | auto | 50% | 10% | 39% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 7 | 5 | 560 / 561 | 295 | 0.65 | check the flags | 34% | 7% | 60% | tee stage: Gold walkback | tee: tee stage: Gold walkback; Gold tee walked back along the hole line (no box at 560 yds) |
@@ -57,8 +57,6 @@ OSM features inside the course: buildings 9, golf=bunker 23, golf=cartpath 24, g
 - **vision**: missing: product layer vision_any/2 not built for 'eagle_bend' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 132 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py eagle_bend (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 0 polygons (); mode replace
-
-## Warnings
-
-- CHECK vision: missing: product layer vision_any/2 not built for 'eagle_bend' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 132 long-grass zones; trees / water come from OSM (or the fallback) only
+- **native_auto**: none: course gate shut: 21% of sides >= 0.675 (< 25%)
