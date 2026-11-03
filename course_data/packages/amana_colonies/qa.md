@@ -1,6 +1,6 @@
 # Amana Colonies Golf Course (Amana, IA) - Black tees
 
-Built 2026-11-03T06:47:34Z. OSM way/731221353. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T09:21:06Z. OSM way/731221353. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
