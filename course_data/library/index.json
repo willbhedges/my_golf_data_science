@@ -1,14 +1,14 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-03T10:31Z",
+ "updated": "2026-11-03T10:58Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 1,
-  "needs confirm": 90,
+  "needs confirm": 91,
   "failed": 5,
   "unsupported": 2,
-  "blocked": 9
+  "blocked": 8
  },
  "courses": [
   {
@@ -7567,6 +7567,85 @@
    "group": "library"
   },
   {
+   "slug": "chambers_bay",
+   "name": "Chambers Bay Golf Course",
+   "city": "University Place",
+   "state": "WA",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    3,
+    7,
+    8,
+    11,
+    12,
+    13,
+    14,
+    17
+   ],
+   "reasons": [
+    "9 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Navy",
+     "yards": 7100,
+     "par": 72,
+     "rating": 75.6,
+     "slope": 139,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "Sand",
+     "yards": 6605,
+     "par": 72,
+     "rating": 71.9,
+     "slope": 130,
+     "colour": "gold",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 5828,
+     "par": 72,
+     "rating": 70.2,
+     "slope": 127,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Red",
+     "yards": 5226,
+     "par": 72,
+     "rating": 71.5,
+     "slope": 128,
+     "colour": "red",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Navy",
+    "Sand"
+   ],
+   "page": "course_data/library/chambers_bay/page.html",
+   "page_bytes": 2430058,
+   "qa_report": "course_data/library/chambers_bay/qa_report.md",
+   "center": [
+    47.206584500000005,
+    -122.57535535
+   ],
+   "osm": "way/26787026",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-03T09:38Z",
+   "group": "library"
+  },
+  {
    "slug": "gamble_sands",
    "name": "Gamble Sands Golf Course",
    "city": "Brewster",
@@ -8236,22 +8315,6 @@
    "holes": 17,
    "osm": "way/191258543",
    "built": "2026-10-30T12:11Z"
-  },
-  {
-   "slug": "chambers_bay",
-   "name": "Chambers Bay Golf Course",
-   "city": "University Place",
-   "state": "WA",
-   "status": "blocked",
-   "reasons": [
-    "holes out of order: green-to-next-tee walks up to 1106 yds, 3 over 500 (in order: under 800, at most 3 over 500); longest: 12->13 1106, 1->2 1050, 13->14 1003",
-    "8 hole(s) with a CHECK"
-   ],
-   "page": "course_data/library/chambers_bay/page.html",
-   "qa_report": "course_data/library/chambers_bay/qa_report.md",
-   "holes": 18,
-   "osm": "way/26787026",
-   "built": "2026-10-31T05:23Z"
   },
   {
    "slug": "gaylord_springs",
