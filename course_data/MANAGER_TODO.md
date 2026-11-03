@@ -138,3 +138,4 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - OPEN: 10 test_parity failures pre-existing in the main checkout -> investigate.
 - Disk: 3.3 GB free (worktrees wt-ek 2.2G, wt-budget 3.9G belong to running agents).
 - 20:30Z check-in: EK nccga-v2 run 41681285865: 15/26 jobs done, 7 in progress, 4 queued; ETA ~23:00Z. Old Works rev 3 + rev 4 page runs in progress; course-package 119 (green detector) in progress. qa-scoreboard keeps being cancelled by newer pushes (no full CI signal today) -> after EK, make it run to completion on the latest commit at least every few hours.
+- test_parity fixed (6797539a9): module-name clash, platform/package.py vs product/package.py both imported as "package" in one pytest run; no parity bug. Follow-up (after EK): product/plan.py has the same bare import.
