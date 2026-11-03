@@ -1,6 +1,6 @@
 # Mozingo Lake Golf Course (Maryville, MO) - App tees
 
-Built 2026-11-03T09:26:53Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
+Built 2026-11-03T15:06:04Z. OSM way/385067034. Scorecard: request (request file yardages). Tee set: name.
 
 ## Coverage
 
@@ -56,4 +56,5 @@ OSM features inside the course: buildings 4, golf=bunker 25, golf=cartpath 23, g
 - **elevation**: ok: course_data/packages/mozingo_lake/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -10042 m2 {'road': 9232, 'strip': 810}
 - **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+1 zones on 1 holes, +0 greens, 33 tee candidates)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 4 polygons (outside 4); mode replace
