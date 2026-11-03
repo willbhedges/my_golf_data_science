@@ -104,3 +104,4 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - Aim Caddie app republished (v8, 92 courses, 8 blocked excluded): https://claude.ai/artifact/D6sdGLhodo8DQ7Yz8PojNW
 - TCI: course_page rebuild with mapper layers pushed (rev 4); QA then publish
 - Open: national index still lists blocked courses (e.g. Bethpage) as NO PAGE YET; decide whether to strip
+- 11-03 14:30 check-in: TCI rev4 + Bandon title rebuilds landed (runs green) -> QA agent running; follow-ups agent on Queenstown 7 par, Chambers Navy 1, multi-course titles, old_works fairway (batch course_batch_followups_1103)
