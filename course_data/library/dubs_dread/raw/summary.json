@@ -24,9 +24,9 @@
   },
   "other_candidates": []
  },
- "n_features": 280,
+ "n_features": 282,
  "golf_tag_counts": {
-  "tee": 69,
+  "tee": 71,
   "fairway": 20,
   "green": 19,
   "hole": 19,
@@ -36,7 +36,7 @@
   "water_hazard": 8
  },
  "golf_tag_counts_inside_course": {
-  "tee": 69,
+  "tee": 71,
   "fairway": 20,
   "green": 19,
   "hole": 19,
@@ -309,7 +309,7 @@
  "holes_with_handicap": 0,
  "hole_centrelines": 19,
  "tees": {
-  "count": 69,
+  "count": 71,
   "with_colour_or_ref": 0,
   "items": [
    {
@@ -587,6 +587,14 @@
    {
     "osm_id": -3,
     "geometry": "Polygon"
+   },
+   {
+    "osm_id": -2,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": -3,
+    "geometry": "Polygon"
    }
   ]
  },
@@ -598,23 +606,30 @@
   39.173587,
   -94.866307
  ],
- "fetched_utc": "2026-11-02T03:18:39Z",
+ "fetched_utc": "2026-11-02T23:52:47Z",
  "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
  "osm_source": {
-  "source": "overpass",
-  "reason": "complete",
-  "mirror": "https://overpass-api.de/api/interpreter",
-  "osm_base": "2026-11-02T03:17:50Z",
+  "source": "overpass+snapshot",
+  "reason": "thin fetch on every mirror: mirror data as of 2026-07-28T02:16:18Z is older than the package snapshot of 2026-11-02",
+  "mirror": "https://overpass.kumi.systems/api/interpreter",
+  "osm_base": "2026-07-28T02:16:18Z",
+  "snapshot": "course_data/packages/dubs_dread/raw/osm.geojson",
+  "snapshot_date": "2026-11-02T16:48:19Z",
+  "merged_features": 3,
   "counts": {
-   "hole": 18,
+   "hole": 19,
    "green": 19,
-   "tee": 67,
+   "tee": 69,
    "pin": 18,
    "bunker": 12,
    "fairway": 20
   },
   "mirrors_tried": [
-   "https://overpass-api.de/api/interpreter"
+   "https://overpass-api.de/api/interpreter",
+   "https://overpass.kumi.systems/api/interpreter",
+   "https://overpass.private.coffee/api/interpreter",
+   "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+   "geofabrik:KS"
   ]
  }
 }
