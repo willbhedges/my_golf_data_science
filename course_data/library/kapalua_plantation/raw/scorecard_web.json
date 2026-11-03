@@ -1,0 +1,423 @@
+{
+ "fetched_utc": "2026-11-02T23:28:12Z",
+ "tried": [
+  {
+   "source": "golfify",
+   "ok": false,
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: the-plantation-course: HTTP 404; plantation-course: HTTP 404; plantation-golf-course: state CA != HI; plantation-golf-club: state MS != HI"
+  },
+  {
+   "source": "club_site",
+   "ok": false,
+   "info": "club site: no parsable scorecard in 20 pages"
+  },
+  {
+   "source": "opengolfapi",
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/75c130e2-f436-4947-875d-adeed7887319"
+  },
+  {
+   "source": "bluegolf",
+   "ok": false,
+   "info": "bluegolf: no course page found by search"
+  },
+  {
+   "source": "golfpass",
+   "ok": false,
+   "info": "golfpass: no course page found by search"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: no course page found by search"
+  }
+ ],
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/75c130e2-f436-4947-875d-adeed7887319",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/75c130e2-f436-4947-875d-adeed7887319",
+    "par": [
+     4,
+     3,
+     4,
+     4,
+     5,
+     4,
+     4,
+     3,
+     5,
+     4,
+     3,
+     4,
+     4,
+     4,
+     5,
+     4,
+     4,
+     5
+    ],
+    "handicap": [
+     1,
+     17,
+     3,
+     11,
+     13,
+     15,
+     5,
+     9,
+     7,
+     12,
+     16,
+     14,
+     4,
+     18,
+     6,
+     10,
+     2,
+     8
+    ],
+    "tee_sets": {
+     "Tour": {
+      "colour": "tour",
+      "aliases": [
+       "tour"
+      ],
+      "yards": [
+       520,
+       219,
+       424,
+       422,
+       526,
+       424,
+       522,
+       199,
+       550,
+       384,
+       161,
+       424,
+       383,
+       301,
+       541,
+       369,
+       550,
+       677
+      ],
+      "total": 7596,
+      "total_stated": 7596,
+      "rating": 77,
+      "slope": 144,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       520,
+       219,
+       424,
+       422,
+       526,
+       424,
+       522,
+       199,
+       550,
+       384,
+       161,
+       424,
+       383,
+       301,
+       541,
+       369,
+       550,
+       677
+      ],
+      "total": 7596,
+      "source": "opengolfapi"
+     },
+     "Championship": {
+      "colour": "championship",
+      "aliases": [
+       "championship"
+      ],
+      "yards": [
+       470,
+       219,
+       379,
+       382,
+       526,
+       397,
+       522,
+       199,
+       514,
+       348,
+       161,
+       424,
+       383,
+       301,
+       541,
+       369,
+       513,
+       636
+      ],
+      "total": 7284,
+      "total_stated": 7284,
+      "rating": 75.5,
+      "slope": 140,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Combo_Championship/Regular": {
+      "colour": "combo_championship/regular",
+      "aliases": [
+       "combo_championship/regular"
+      ],
+      "yards": [
+       470,
+       199,
+       363,
+       310,
+       526,
+       397,
+       491,
+       186,
+       492,
+       348,
+       161,
+       366,
+       347,
+       301,
+       500,
+       369,
+       513,
+       599
+      ],
+      "total": 6938,
+      "source": "opengolfapi"
+     },
+     "Regular": {
+      "colour": "regular",
+      "aliases": [
+       "regular"
+      ],
+      "yards": [
+       433,
+       199,
+       363,
+       310,
+       484,
+       375,
+       491,
+       186,
+       492,
+       308,
+       161,
+       366,
+       347,
+       271,
+       500,
+       354,
+       462,
+       599
+      ],
+      "total": 6701,
+      "total_stated": 6701,
+      "rating": 72.8,
+      "slope": 134,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Regular (Female)",
+        "rating": 80,
+        "slope": 146,
+        "total": 6701,
+        "par": 74
+       }
+      ]
+     },
+     "Combo_Regular/Resort": {
+      "colour": "combo_regular/resort",
+      "aliases": [
+       "combo_regular/resort"
+      ],
+      "yards": [
+       433,
+       173,
+       363,
+       310,
+       484,
+       375,
+       480,
+       170,
+       440,
+       277,
+       161,
+       321,
+       296,
+       271,
+       500,
+       302,
+       452,
+       599
+      ],
+      "total": 6407,
+      "source": "opengolfapi"
+     },
+     "Resort": {
+      "colour": "resort",
+      "aliases": [
+       "resort"
+      ],
+      "yards": [
+       433,
+       173,
+       345,
+       212,
+       445,
+       312,
+       480,
+       170,
+       440,
+       277,
+       144,
+       321,
+       296,
+       263,
+       464,
+       302,
+       452,
+       548
+      ],
+      "total": 6077,
+      "total_stated": 6077,
+      "rating": 70,
+      "slope": 127,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Resort (Female)",
+        "rating": 75.4,
+        "slope": 135,
+        "total": 6077,
+        "par": 74
+       }
+      ]
+     },
+     "Combo_Resort/Forward": {
+      "colour": "combo_resort/forward",
+      "aliases": [
+       "combo_resort/forward"
+      ],
+      "yards": [
+       380,
+       133,
+       258,
+       212,
+       445,
+       294,
+       460,
+       141,
+       430,
+       246,
+       121,
+       294,
+       296,
+       225,
+       464,
+       266,
+       423,
+       503
+      ],
+      "total": 5591,
+      "source": "opengolfapi"
+     },
+     "Forward": {
+      "colour": "forward",
+      "aliases": [
+       "forward"
+      ],
+      "yards": [
+       380,
+       133,
+       258,
+       212,
+       314,
+       294,
+       460,
+       141,
+       430,
+       246,
+       121,
+       294,
+       193,
+       225,
+       335,
+       266,
+       423,
+       503
+      ],
+      "total": 5228,
+      "total_stated": 5181,
+      "rating": 65.5,
+      "slope": 116,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Forward (Female)",
+        "rating": 70.2,
+        "slope": 124,
+        "total": 5181,
+        "par": 74
+       }
+      ]
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "75c130e2-f436-4947-875d-adeed7887319",
+     "course_name": "Kapalua Resort The Plantation Course",
+     "club_name": "Kapalua Resort The Plantation Course",
+     "city": "Kapalua",
+     "state": "HI",
+     "lat": 21.0070838,
+     "lng": -156.6403278,
+     "holes": 18,
+     "yardage": 7596,
+     "website": "http://www.golfatkapalua.com/"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/75c130e2-f436-4947-875d-adeed7887319",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/75c130e2-f436-4947-875d-adeed7887319": {
+    "holes": 18,
+    "fit": 11,
+    "share": 0.611,
+    "mean_err": 20.2,
+    "all_sets": 0.265,
+    "consistent": false,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
+}

@@ -5,18 +5,14 @@
  "city": "Lahaina",
  "state": "HI",
  "group": "library",
- "status": "failed",
+ "status": "unsupported",
  "reasons": [
-  "package: <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
+  "imagery: imagery is Sentinel-2 L2A via Planetary Computer at 10 m, not USDA NAIP (NAIP covers the lower 48 states only): hole pictures would be gray / unreadable"
  ],
  "check_holes": [],
  "tee_sets": [],
  "page": null,
  "page_bytes": null,
  "request": "course_data/requests/course_page_kapalua_plantation.json",
- "resolve": {
-  "status": null,
-  "candidates": []
- },
- "built": "2026-11-02T20:26Z"
+ "built": "2026-11-02T23:53Z"
 }

@@ -1,5 +1,3 @@
 # Kapalua Plantation Course: no page
 
-**Status: failed** at package: <html xmlns="http://www.w3.org/1999/xhtml" xml: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError("HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) 
-
-Resolve: {"status": null, "candidates": []}
+**Status: unsupported**: imagery is Sentinel-2 L2A via Planetary Computer at 10 m, not USDA NAIP (NAIP covers the lower 48 states only): hole pictures would be gray / unreadable
