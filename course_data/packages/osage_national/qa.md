@@ -1,6 +1,6 @@
 # Osage National Golf Club (Osage Beach, MO) - Palmer tees
 
-Built 2026-11-03T09:24:31Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
+Built 2026-11-03T15:06:17Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Palmer' instead (allow_substitute). Sets on the card: Palmer, Tournament, Middle, Members, Forward, Green**
 
@@ -58,6 +58,7 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 - **elevation**: ok: course_data/packages/osage_national/imagery/dem.tif (18/18 holes)
 - **vision**: missing: product layer vision_any/2 not built for 'osage_national' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 140 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py osage_national (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 8 polygons (outside 8); mode replace
 
 ## Warnings

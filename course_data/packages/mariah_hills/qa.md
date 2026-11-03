@@ -1,6 +1,6 @@
 # Mariah Hills Golf Course (Dodge City, KS) - Blue tees
 
-Built 2026-11-03T09:23:53Z. OSM way/329961222. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T15:05:19Z. OSM way/329961222. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -56,6 +56,7 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 23, g
 - **elevation**: ok: course_data/packages/mariah_hills/imagery/dem.tif (18/18 holes)
 - **vision**: missing: product layer vision_any/2 not built for 'mariah_hills' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 223 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py mariah_hills (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 5 polygons (outside 5); mode replace
 
 ## Warnings
