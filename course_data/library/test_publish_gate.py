@@ -146,6 +146,13 @@ def test_title_names_the_kept_course():
         == "Pinehurst No. 2"
     assert cp.page_name(dict(course=dict(name="Annbriar Golf Course"), warnings=[]), dict(name="Annbriar")) \
         == "Annbriar Golf Course"
+    # a resort named after its flagship course: the request's course name, not the resort
+    w4 = ["multi-course facility: 3 courses' hole ways in one outline (by hole way names: dunes pacific 18, "
+          "bandon dunes 18, Old Macdonald 18); kept 'bandon dunes' (named in the request), 18 ways"]
+    assert cp.page_name(dict(course=dict(name="Bandon Dunes Golf Resort"), warnings=w4), dict(name="Bandon Dunes")) \
+        == "Bandon Dunes"
+    assert cp.page_name(dict(course=dict(name="Bandon Dunes Golf Resort"), warnings=w4),
+                        dict(name="Bandon Dunes Golf Resort")) == "Bandon Dunes Golf Resort"
 
 
 def _status(tmp_path, slug, status="needs confirm", page=True):

@@ -286,6 +286,11 @@ def page_name(pkg, q):
     words = lambda t: set(re.findall(r"[a-z0-9]+", t.lower()))          # noqa: E731
     key = words(kept) - {"course", "golf", "club", "the", "no", "links"}
     if not key or key <= words(name):
+        # a resort named after its flagship ("Bandon Dunes Golf Resort", kept 'bandon dunes' of 3 courses): the OSM
+        # name is the facility, so the request's name when it names the kept course and not the resort
+        rq = words(q.get("name") or "")
+        if "resort" in words(name) and "resort" not in rq and key and key <= rq:
+            return q["name"]
         return name
     if q.get("name") and key <= words(q["name"]):
         return q["name"]

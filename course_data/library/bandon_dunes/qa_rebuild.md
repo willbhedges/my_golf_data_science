@@ -1,52 +1,64 @@
-# Bandon Dunes (OR): card rebuild QA (2026-11-03)
+# Bandon Dunes (OR): rebuild QA, GolfPass card (2026-11-03, run 41620964363)
 
-**Verdict: NEEDS FIX (build failure, not content) → fixed, rebuild pushed.** The card was **not** applied. Run
-41604633702's commit at 09:19Z for bandon_dunes only added a `last_attempt` block to `status.json`: "package job ended
-without its course data". The page, package and the `status` / `reasons` ("scorecard not matched") are still the
-06:00Z build (run 41583713847) from before `card_review.json` existed.
+**Verdict: NEEDS FIX (page title only), fix pushed and rebuild requested.** The content is right. The GolfPass card is
+matched (`card_review.json`, kind "file"). Both page sets equal the card hole by hole: Tournament 7,212 and Black
+6,732, pars 4 3 5 4 4 3 4 4 5 / 4 4 3 5 4 3 4 4 5. The routing is the Bandon Dunes course only, holes 1→18. The package
+kept the 18 'bandon dunes' ways and dropped 36 Pacific Dunes / Old Macdonald ways plus 24 neighbouring hole ways.
+Green-to-next-tee chains run 45-192 yds. What is wrong is the title: the page says **"Bandon Dunes Golf Resort Caddie"**,
+the OSM facility name, on a page that holds one of the resort's courses. It should read "Bandon Dunes Caddie".
 
-## Why
+Page checked: `course_data/library/bandon_dunes/page.html`, built 2026-11-03T11:12Z. `qa_page.js` ran on phone and
+desktop, for the opening set (Tournament) and for Black: 18 holes each, 0 problems. I looked at all 36 hole pictures in
+the montages. Status "needs confirm", 4 CHECK holes (1, 8, 10, 11). `regate` blocks nothing.
 
-The package job (job 125813987583, 08:43-09:05Z) passed "Resolve, package, scorecard" (step 7), so
-`card_review.json` was not the problem. The runner then died in step 10, "Vision layer + OB evidence". Its annotation
-reads `System.IO.IOException: No space left on device` (runner _diag log). The Bandon outline is the whole
-five-course resort, so the lidar and multi-year NAIP inputs are large. The 06:00Z run got through the same step, so
-this is a disk-margin failure, not a deterministic one. `card_review.json` is a valid scorecard/1 file, and
-`review_fixes.CARD_FILES` picks it up first, as it did for Sawgrass and Sand Hollow in the same run.
+## Why the title is wrong
+
+`course_page.page_name` keeps the OSM name whenever the kept course's words ({bandon, dunes}) are already in it.
+"Bandon Dunes Golf Resort" contains them, so the resort name survived. The fix: when the OSM name says "resort" and the
+request's name names the kept course without "resort", use the request's name. The new test in
+`test_publish_gate.py` covers this. Sawgrass, Troon North, Pinehurst and Queenstown keep their titles.
+
+## Holes (page as built)
+
+| hole | par page (card Tournament/Black) | Tournament page / card | Black page / card | OSM tee boxes (yds to green) | chain | Tournament pick, lie | Black pick, lie | CHECKs |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 4 (4/4) | 398 / 398 | 386 / 386 | 404 | - | Driver 8.5R (fairway 75%, sand 5%, OB 1%) | Driver 11.5R (fairway 77%, sand 4%) | Tournament: tee CHECK (lidar_pad; 19 yds from the nearest OSM tee box); Black: tee CHECK (lidar_pad; 16 yds from the nearest OSM tee box) |
+| 2 | 3 (3/3) | 220 / 220 | 189 / 189 | 153, 173, 215 | 124 | plays 227 | plays 194 |  |
+| 3 | 5 (5/5) | 563 / 563 | 543 / 543 | 419, 464, 488, 517, 540, 561 | 67 | Driver 7.5R (fairway 86%, about 244 yds in) | Driver 3R (fairway 88%, sand 3%) |  |
+| 4 | 4 (4/4) | 443 / 443 | 410 / 410 | 301, 335, 357, 401, 436 | 139 | Driver 5R (fairway 51%, sand 2%) | Driver 25R (fairway 40%, sand 4%) |  |
+| 5 | 4 (4/4) | 445 / 445 | 428 / 428 | 355, 385, 412, 432 | 68 | Driver 9L (fairway 80%, about 151 yds in) | Driver 10L (fairway 71%, about 140 yds in) |  |
+| 6 | 3 (3/3) | 217 / 217 | 161 / 161 | 111, 126, 128, 148, 162, 178, 217 | 86 | plays 216 | plays 160 |  |
+| 7 | 4 (4/4) | 411 / 411 | 383 / 383 | 372, 380, 405, 419, 437, 445, 453 | 166 | Driver 13.5L (fairway 96%, about 120 yds in) | Driver 2.5L (fairway 98%, about 96 yds in) |  |
+| 8 | 4 (4/4) | 385 / 385 | 359 / 359 | 292, 323, 345, 356, 387 | 48 | Driver 22.5R (fairway 86%, sand 9%) | Driver 49.5R (fairway 58%, sand 16%) | Black: wide_aim: Driver aim +57 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
+| 9 | 5 (5/5) | 585 / 585 | 558 / 558 | 452, 515, 535, 565, 593, 654, 681 | 192 | Driver 34R (fairway 70%, sand 8%) | Driver 38.5R (fairway 67%, sand 10%) |  |
+| 10 | 4 (4/4) | 380 / 380 | 362 / 362 | 268, 335 | 63 | Driver 2R (fairway 94%, about 88 yds in) | Driver 12R (fairway 91%, sand 1%) | Tournament: tee CHECK (lidar_pad; 25 yds from the nearest OSM tee box) |
+| 11 | 4 (4/4) | 452 / 452 | 384 / 384 | 445, 463 | 45 | Driver 2.5L (fairway 86%, sand 3%) | Driver 3L (fairway 82%, sand 7%) | Black: tee CHECK (walkback; 54 yds from the nearest OSM tee box) |
+| 12 | 3 (3/3) | 238 / 238 | 199 / 199 | 96, 136, 168, 199, 238 | 74 | plays 232 | plays 193 |  |
+| 13 | 5 (5/5) | 553 / 553 | 553 / 553 | 439, 477, 527, 570, 588, 606 | 110 | Driver 8.5L (fairway 96%, about 250 yds in) | Driver 8.5L (fairway 96%, about 250 yds in) |  |
+| 14 | 4 (4/4) | 390 / 390 | 359 / 359 | 261, 292, 305, 326, 359, 374, 381, 393 | 80 | 2-wood 17.5R (fairway 78%, sand 3%) | Driver 28R (fairway 46%, sand 19%) |  |
+| 15 | 3 (3/3) | 206 / 206 | 163 / 163 | 110, 133, 153, 176, 208 | 78 | plays 201 | plays 160 |  |
+| 16 | 4 (4/4) | 363 / 363 | 363 / 363 | 240, 273, 286, 309, 337, 354 | 47 | Driver 36.5R (fairway 65%, sand 15%) | Driver 36.5R (fairway 65%, sand 15%) |  |
+| 17 | 4 (4/4) | 405 / 405 | 389 / 389 | 328, 369, 389, 404 | 46 | 4-wood 8L (fairway 94%, sand 1%) | Driver 24.5L (fairway 48%, sand 10%) |  |
+| 18 | 5 (5/5) | 558 / 558 | 543 / 543 | 408, 456, 499, 522, 526, 546 | 52 | Driver 8R (fairway 81%, sand 2%) | Driver 3.5R (fairway 75%, sand 7%) |  |
+| total | | 7,212 / 7,212 | 6,732 / 6,732 | | | | | |
+
+The CHECKs:
+- **1** (both sets) and **10** (Tournament): the tee was placed on a lidar-flat pad 16-25 yds from the nearest OSM tee
+  box. OSM maps only one box on 1 (404) and two on 10 (268, 335), so the card's 398/386 and 380 tees are unmapped.
+  The pad placement is plausible, and the CHECK is right.
+- **8 Black**: the Driver aim is 49.5 yds right of the tee line (+57 bound). The picture shows the landing on the
+  right-hand fairway beyond the corner, all on the course (58% fairway, 16% sand). Tournament aims 22.5 R on the same
+  hole. Leave it for a human to confirm.
+- **11 Black**: walkback. OSM has only the two back boxes (445, 463), so Black 384 sits 54 yds ahead of them. That is
+  right for the card, and the box is unmapped.
+
+Other notes (no CHECK): Black 17 picks Driver 24.5 L (48% fairway, 10% sand) where Tournament picks 4-wood 8 L (94%).
+That is aggressive, but the shot stays on the course. No aim goes off the course, and the par-3 targets sit on the
+greens.
 
 ## Fix (pushed)
 
-- `.github/workflows/course_page_one.yml`: a first step in the package job, "Free runner disk" (continue-on-error).
-  It removes the unused .NET, Android, GHC and CodeQL toolchains (~20 GB) and logs `df` before and after.
-- `course_page_bandon_dunes.json` rev 4, in `course_batch_qa_cards.json`.
-
-## Page as it stands (06:00Z build, unchanged; the last pass's checks still hold)
-
-`qa_page.js` phone + desktop: 18 holes, 0 problems. The routing is the Bandon Dunes course 1→18 (chains 32-169 yds),
-and no Pacific, Old Mac or Trails hole is in it. The pars equal the card on all 18.
-
-| hole | par (card) | page yds (map) | Tournament (card_review) | chain | pick | lie | note |
-|---|---|---|---|---|---|---|---|
-| 1 | 4 (4) | 404 | 398 | - | Driver 7.5 R | fairway 77%, sand 7%, OB 1% |  |
-| 2 | 3 (3) | 215 | 220 | 118 | plays 222 |  |  |
-| 3 | 5 (5) | 561 | 563 | 66 | Driver 5.5 R | fairway 87% |  |
-| 4 | 4 (4) | 436 | 443 | 166 | Driver 8 R | fairway 47%, sand 3% |  |
-| 5 | 4 (4) | 432 | 445 | 64 | Driver 10 L | fairway 74% |  |
-| 6 | 3 (3) | 217 | 217 | 49 | plays 216 |  |  |
-| 7 | 4 (4) | 380 | 411 | 167 | Driver 1 L | fairway 98% |  |
-| 8 | 4 (4) | 387 | 385 | 88 | Driver 22.5 R | fairway 85%, sand 10% |  |
-| 9 | 5 (5) | 593 | 585 | 169 | Driver 32 R | fairway 69%, sand 6% |  |
-| 10 | 4 (4) | 335 | 380 | 62 | Driver 25.5 R | fairway 77%, sand 11% |  |
-| 11 | 4 (4) | 463 | 452 | 110 | Driver 2.5 L | fairway 86%, sand 2% |  |
-| 12 | 3 (3) | 238 | 238 | 84 | plays 232 |  |  |
-| 13 | 5 (5) | 527 | 553 | 114 | Driver 3 L | fairway 94% |  |
-| 14 | 4 (4) | 326 | 390 | 49 | Driver 49.5 R | fairway 63%, sand 15% | wide_aim: Driver aim +54 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
-| 15 | 3 (3) | 176 | 206 | 64 | plays 172 |  |  |
-| 16 | 4 (4) | 354 | 363 | 47 | Driver 40 R | fairway 64%, sand 15% |  |
-| 17 | 4 (4) | 404 | 405 | 32 | 4-wood 8.5 L | fairway 93%, sand 2% |  |
-| 18 | 5 (5) | 546 | 558 | 50 | Driver 5 R | fairway 76%, sand 5% |  |
-
-## Check on the rebuild
-
-Expect the card to be matched (no "scorecard not matched"), Black 6,732 chosen by name, card pars, and tee CHECKs
-where OSM has no Black box (10, 15). If the package job fails on disk again, look at the new step's `df` lines.
+- `course_data/library/course_page.py` `page_name`: a resort named after its flagship takes the request's course
+  name. A test is in `test_publish_gate.py`.
+- `course_page_bandon_dunes.json` rev 5, in `course_batch_qa_bmc.json`. Expect the same holes and yardages, and the
+  title "Bandon Dunes Caddie".
