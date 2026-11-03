@@ -1,6 +1,6 @@
 # Chambers Bay Golf Course (University Place, WA) - Navy tees
 
-Built 2026-11-03T09:38:14Z. OSM way/26787026. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Navy, Sand, White, Red)).
+Built 2026-11-03T15:10:28Z. OSM way/26787026. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Navy, Sand, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Navy' instead (allow_substitute). Sets on the card: Navy, Sand, White, Red**
 
@@ -15,9 +15,9 @@ Built 2026-11-03T09:38:14Z. OSM way/26787026. Scorecard: golfify (golfify). Tee 
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 11 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.607 |
-| mean_confidence | 0.858 |
-| osm_score | 0.878 |
+| mean_landing_osm_share | 0.609 |
+| mean_confidence | 0.854 |
+| osm_score | 0.879 |
 
 OSM features inside the course: buildings 3, golf=bunker 70, golf=cartpath 55, golf=fairway 19, golf=green 19, golf=hole 18, golf=path 4, golf=pin 18, golf=rough 6, golf=tee 63, holes_with_par 18, single_trees 1, tees_with_ref 61, water_polygons 1
 
@@ -25,7 +25,7 @@ OSM features inside the course: buildings 3, golf=bunker 70, golf=cartpath 55, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 5 | 494 / 495 | 287 | 0.85 | auto | 49% | 32% | 19% | tee stage: Navy tee_axis | tee: tee stage: Navy tee_axis |
+| 1 | 5 | 559 / 553 | 290 | 0.79 | check the flags | 52% | 32% | 16% | tee stage: Navy lidar_pad_capped | tee: tee stage: Navy lidar_pad_capped; Navy tee on a lidar pad (no OSM box at 559 yds) |
 | 2 | 4 | 395 / 395 | 20 | 0.87 | auto | 45% | 45% | 10% | tee stage: Navy tee_axis | tee: tee stage: Navy tee_axis |
 | 3 | 3 | 167 / 167 | 338 | 0.86 | auto | 100% | 0% | 0% | tee stage: Navy lidar_pad | tee: tee stage: Navy lidar_pad; Navy tee on a lidar pad (no OSM box at 167 yds) |
 | 4 | 5 | 530 / 531 | 105 | 0.85 | auto | 73% | 0% | 27% | tee stage: Navy tee_axis | tee: tee stage: Navy tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
@@ -59,6 +59,7 @@ OSM features inside the course: buildings 3, golf=bunker 70, golf=cartpath 55, g
 - **elevation**: ok: course_data/packages/chambers_bay/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 13 polygons (outside 13); mode replace
 
 ## Warnings
@@ -67,6 +68,7 @@ OSM features inside the course: buildings 3, golf=bunker 70, golf=cartpath 55, g
 - card consensus: opengolfapi: set order: 'Blue' is longer than 'White' on 16 of 16 holes with several OSM tees: names may be swapped
 - OSM hole order kept: the OSM holes 1-18 walk as a round (longest green-to-next-tee 236 yds); the card's par or length differs on hole(s) 1, 13, 15 (the card's best order would renumber 1->13, 13->1) (CHECK)
 - requested tee set 'Black' is not on the card; using 'Navy' instead (allow_substitute). Sets on the card: Navy, Sand, White, Red
+- hole 1 Navy: CHECK, tee was on a building (OSM 342409782): moved 7 yds forward off it
 - hole 11 Sand: CHECK, the hole's back tee was walked up the hole line: card hole may not be this OSM hole
 - hole 15 White: CHECK, the hole's back tee was walked up the hole line: card hole may not be this OSM hole
 - hole 15 Red: CHECK, the hole's back tee was walked up the hole line: card hole may not be this OSM hole

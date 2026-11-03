@@ -2,10 +2,10 @@
 
 **Status: needs confirm** — confirm holes 1, 3, 7, 8, 11, 12, 13, 14, 17
 
-* page: `course_data/library/chambers_bay/page.html` (2.4 MB); request `course_data/requests/course_page_chambers_bay.json`; built 2026-11-03T09:38Z
+* page: `course_data/library/chambers_bay/page.html` (2.4 MB); request `course_data/requests/course_page_chambers_bay.json`; built 2026-11-03T15:10Z
 * course: Chambers Bay Golf Course (University Place, WA), OSM way/26787026; holes: osm (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Navy, Sand (the two longest sets on the card (combination sets skipped)); page sets: Navy, Sand
-* weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
+* weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [40, 50, 60] F; calm-day picks with 48 prior draws
 * imagery on the page: 2023-08-02; package imagery 2023
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
 
@@ -21,7 +21,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 5 | PASS | Driver +6 |  |
+| 1 | 5 | CHECK | Driver +22 | tee: tee marker not on an OSM tee box (lidar_pad_capped; 58 yds from the nearest OSM tee box) |
 | 2 | 4 | PASS | 4-wood -3 |  |
 | 3 | 3 | CHECK |  | tee: tee marker not on an OSM tee box (lidar_pad; 29 yds from the nearest OSM tee box) |
 | 4 | 5 | PASS | Driver +16 |  |
@@ -50,7 +50,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 4 | 5 | PASS | Driver +20 |  |
 | 5 | 4 | PASS | Driver -2 |  |
 | 6 | 4 | PASS | 2-wood +14 |  |
-| 7 | 4 | CHECK | Driver +40 | wide_aim: Driver aim +51 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
+| 7 | 4 | CHECK | Driver +40 | wide_aim: Driver aim +49 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 8 | 5 | PASS | Driver -5 |  |
 | 9 | 3 | PASS |  |  |
 | 10 | 4 | PASS | 4-wood -12 |  |

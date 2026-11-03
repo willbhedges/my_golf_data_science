@@ -9,12 +9,12 @@
      "par": 5,
      "checks": {
       "tee": {
-       "ok": true,
-       "why": "on an OSM tee box"
+       "ok": false,
+       "why": "tee marker not on an OSM tee box (lidar_pad_capped; 58 yds from the nearest OSM tee box)"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 495 vs card 494 (+1)"
+       "why": "measured 553 vs card 559 (-6)"
       },
       "par": {
        "ok": true,
@@ -22,22 +22,24 @@
       },
       "aim": {
        "ok": true,
-       "why": "Driver +6 lands 312 yds out in fairway"
+       "why": "Driver +22 lands 314 yds out in fairway"
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 12% trees / water / OB (recovery 12%)"
+       "why": "landing pattern 1% trees / water / OB (recovery 1%)"
       }
      },
      "pick": {
       "club": "Driver",
-      "aim": 5.5,
-      "along": 311.8,
+      "aim": 21.5,
+      "along": 313.7,
       "lie": "fairway",
       "tie": false
      },
-     "status": "PASS",
-     "reasons": []
+     "status": "CHECK",
+     "reasons": [
+      "tee: tee marker not on an OSM tee box (lidar_pad_capped; 58 yds from the nearest OSM tee box)"
+     ]
     },
     "2": {
      "par": 4,
@@ -609,12 +611,12 @@
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 0% trees / water / OB (recovery 0%)"
+       "why": "landing pattern 1% trees / water / OB (recovery 1%)"
       }
      },
      "pick": {
       "club": "4-wood",
-      "aim": 6.5,
+      "aim": 6.0,
       "along": 270.3,
       "lie": "fairway",
       "tie": true
@@ -657,7 +659,7 @@
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 10% trees / water / OB (recovery 10%)"
+       "why": "landing pattern 11% trees / water / OB (recovery 11%)"
       }
      },
      "pick": {
@@ -868,7 +870,7 @@
       },
       "wide_aim": {
        "ok": false,
-       "why": "Driver aim +51 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
+       "why": "Driver aim +49 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map",
        "where": [
         "forecast"
        ]
@@ -883,7 +885,7 @@
      },
      "status": "CHECK",
      "reasons": [
-      "wide_aim: Driver aim +51 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
+      "wide_aim: Driver aim +49 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map"
      ]
     },
     "8": {
