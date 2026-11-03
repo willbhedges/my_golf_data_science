@@ -386,7 +386,8 @@ def sides_from_p(p, thr):
 
 def apply_sides(pkg, frames, sides, p=None):
     """Native band (native_confirm.set_side, beyond 10 yds of the fairway) on each listed side -> new package (input
-    untouched). Nothing is erased; zones carry src SRC and the side's p."""
+    untouched). Nothing is erased; zones carry src SRC and the side's p (lie / poly / src / p, the package zone
+    contract); the hole's verification.native_auto records the sides."""
     out = copy.deepcopy(pkg)
     for ref, ss in sides.items():
         if ref not in out["holes"] or ref not in frames or not ss:
@@ -395,8 +396,9 @@ def apply_sides(pkg, frames, sides, p=None):
         n0 = len(h.get("zones_ll") or [])
         for s in ss:
             NC.set_side(h, frames[ref], s, True, None, tag="auto")
-        for z in h["zones_ll"][n0:]:
-            z.update(src=SRC, verified="auto", p=(p or {}).get(ref, {}).get(z.get("side"), z.get("p")))
+        for i, z in enumerate(h["zones_ll"][n0:], n0):      # the package zone contract: lie, poly, src, p only
+            h["zones_ll"][i] = dict(lie=z["lie"], poly=z["poly"], src=SRC,
+                                    p=float((p or {}).get(ref, {}).get(z.get("side"), 1.0)))
         h.setdefault("verification", {})["native_auto"] = dict(sides=NC.answer_of({s: s in ss for s in NC.SIDES}),
                                                                p=(p or {}).get(ref))
     return out

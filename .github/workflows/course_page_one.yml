@@ -147,6 +147,26 @@ jobs:
         with:
           slugs: ${{ inputs.slug }}
           refresh: "true"
+      # Sentinel-2 seasonal stack, the input of the automatic native-sides classifier (product/native_auto.py, the
+      # package's S4n stage): fetched here only when the course has none committed (vision_any/s2/<slug>/), on the
+      # vision step's raw/ grid; ~30-90 s and 4-12 MB per course (s2_stack.yml runs 41619576831: 18 courses in one
+      # 16-min job). Carried to the finish job in the artifact and committed there, so later rebuilds reuse it.
+      # Never fails the build: no stack -> no automatic native, the same as before.
+      - name: S2 stack (automatic native sides)
+        if: steps.pkg.outputs.ok == '1'
+        continue-on-error: true
+        timeout-minutes: 20
+        run: |
+          D=course_data/vision_any/s2/$S
+          if [ -f "$D/s2_stack.npz" ]; then echo "S2 stack committed: $(du -h $D/s2_stack.npz | cut -f1)"; exit 0; fi
+          if [ ! -f course_data/vision_any/$S/raw/meta.json ]; then echo "no vision raw/ grid: no S2 stack"; exit 0; fi
+          T0=$SECONDS
+          python -u course_data/vision_any/s2/fetch_s2_stack.py --slugs "$S" --workers 12 2>&1 | grep -v "^  " | tail -n 5
+          if [ -f "$D/s2_stack.npz" ]; then
+            mkdir -p "$OUT/evidence/s2" && cp "$D/s2_stack.npz" "$D/s2_meta.json" "$OUT/evidence/s2/"
+            echo "S2 stack: $(du -h $D/s2_stack.npz | cut -f1) in $((SECONDS - T0)) s"
+          fi
+          df -h / | tail -1
       - name: Rebuild the package with vision + OB
         if: steps.pkg.outputs.ok == '1'
         run: |
@@ -271,6 +291,12 @@ jobs:
         with:
           pattern: lib-${{ inputs.slug }}-part-*
           path: /tmp/parts
+      - name: S2 stack fetched by the package job (commit it with the course data)
+        run: |
+          if [ -f "$OUT/evidence/s2/s2_stack.npz" ]; then
+            mkdir -p course_data/vision_any/s2/$S && mv "$OUT/evidence/s2/s2_stack.npz" "$OUT/evidence/s2/s2_meta.json" course_data/vision_any/s2/$S/
+            rmdir "$OUT/evidence/s2" 2>/dev/null || true
+          fi
       - name: Merge, page, checks, report
         run: |
           ls /tmp/parts || true
@@ -300,6 +326,9 @@ jobs:
                    raw/scorecard_web.json evidence/vision_any.geojson evidence/ob_sources.json evidence/vision_raw_meta.json \
                    native.json; do
             [ -f "$OUT/$f" ] && git add -f "$OUT/$f"
+          done
+          for f in course_data/vision_any/s2/$S/s2_stack.npz course_data/vision_any/s2/$S/s2_meta.json; do
+            [ -f "$f" ] && git add -f "$f"
           done
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git diff --cached --stat | tail -3

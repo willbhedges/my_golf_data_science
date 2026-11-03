@@ -18,6 +18,14 @@ import platform_common as pc  # noqa: E402
 import run_requests  # noqa: E402
 
 FIX = os.path.join(HERE, "fixtures")
+
+
+@pytest.fixture(autouse=True)
+def _no_native_auto(request, monkeypatch):
+    """The fixture builds use real slugs (spirit_hollow) whose rasters + S2 stack are in the repo: keep the S4n
+    automatic-native stage out of them (it has its own tests below and in product/test_native_auto.py)."""
+    if "native_auto_stage" not in request.node.name:
+        monkeypatch.setattr(pk, "call_native_auto", lambda req, package, warnings=None: package)
 CARD = os.path.join(FIX, "spirit_hollow_scorecard.json")
 BLACK = [391, 507, 148, 532, 384, 408, 154, 383, 365, 502, 338, 186, 409, 393, 145, 378, 445, 521]
 
@@ -728,3 +736,35 @@ def test_fairway_fill_stage_is_recorded_on_the_kept_package(monkeypatch):
     assert out["stages"]["fairway_fill"].startswith("gated") and "fairway fill did not run" in w[0]
     out = pk.call_fairway_fill(dict(stages={}, sources={}, holes={}), dict(features=[]), {"fairway_fill": False}, [])
     assert out["stages"]["fairway_fill"].startswith("off")
+
+
+def test_native_auto_stage_mapper_wins_and_never_fails(monkeypatch):
+    calls = []
+
+    class Fake:
+        @staticmethod
+        def build_layer(slug, package):
+            calls.append(slug)
+            if slug == "boom":
+                raise RuntimeError("no raster")
+            out = json.loads(json.dumps(package))
+            out["stages"]["native_auto"] = "ok: 1 holes, sides 1 L"
+            return out, dict(why="added", thr=0.7, share=0.5, usable=True, sides={"1": "L"}, p={"1": {"L": 0.9, "R": 0.1}})
+    monkeypatch.setattr(pk, "load", lambda path, name: Fake if name == "cdp_native_auto" else None)
+    monkeypatch.setattr(pk, "reframe", lambda p, tee_set=None: dict(p, reframed=True))
+    base = dict(slug="zz", stages={}, holes={})
+    out = pk.call_native_auto({"agent_layers": "course_data/mapper/zz/"}, json.loads(json.dumps(base)), [])
+    assert out["stages"]["native_auto"].startswith("skipped: the mapper layer") and not calls and "native_auto" not in out
+    out = pk.call_native_auto({"native_auto": False}, json.loads(json.dumps(base)), [])
+    assert out["stages"]["native_auto"].startswith("off") and not calls
+    out = pk.call_native_auto({}, json.loads(json.dumps(base)), [])
+    assert out.get("reframed") and out["native_auto"]["fires"] and out["native_auto"]["p"]["1"]["L"] == 0.9
+    w = []
+    out = pk.call_native_auto({}, dict(base, slug="boom"), w)
+    assert out["stages"]["native_auto"].startswith("failed") and w
+
+
+def test_native_auto_stage_runs_before_the_mapper_layer():
+    import inspect
+    src = inspect.getsource(pk.build_package)
+    assert src.index("call_native_auto(") < src.index("apply_agent_layers(")

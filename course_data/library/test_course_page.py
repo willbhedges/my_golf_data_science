@@ -93,7 +93,7 @@ def test_requested_set_matches_one_part_of_a_slash_name():
 
 def test_native_source_needs_agent_layers_and_the_three_mapper_files(tmp_path):
     q = _q(tmp_path)
-    assert cp.native_source(q) == (None, "no agent_layers in the request")
+    assert cp.native_source(q)[0] is None and cp.native_source(q)[1].startswith("no agent_layers in the request")
     m = tmp_path / "mapper_zz"
     m.mkdir()
     q["agent_layers"] = str(m)
@@ -307,3 +307,47 @@ def test_finish_records_a_lost_package_job():
     merge = next(s for s in steps if s.get("name") == "Merge, page, checks, report")
     assert f"steps.{pkg[0]['id']}.outcome" in merge["run"]
     assert "needs.package.result" in merge["run"]
+
+
+def test_native_source_auto_priors_when_no_mapper_layer_and_the_mapper_wins(tmp_path):
+    """product/native_auto.py (package S4n) leaves its per-side p in package.native_auto: a course with no mapper
+    layer gets native questions from it (cap NATIVE_AUTO_CAP); with agent_layers the mapper layer is the source."""
+    q = _q(tmp_path)
+    pkg = dict(native_auto=dict(p={"1": {"L": 0.8, "R": 0.1}}, usable=True, why="added", sides={"1": "L"}))
+    assert cp.native_source(q, pkg) == ("auto", None)
+    assert cp.native_source(q, dict(native_auto=dict(p={}, usable=True)))[0] is None
+    assert cp.native_source(q, dict(native_auto=dict(p={"1": {"L": 0.8}}, usable=False)))[0] is None
+    assert cp.native_source(dict(q, native=False), pkg)[0] is None
+    m = tmp_path / "mapper_zz"
+    m.mkdir()
+    for f in cp.NATIVE_FILES:
+        (m / f).write_text("{}")
+    assert cp.native_source(dict(q, agent_layers=str(m)), pkg) == (str(m), None)
+    os.makedirs(q["out"])
+    json.dump(pkg, open(os.path.join(q["out"], "package.json"), "w"))
+    r = cp.native(q)                                    # no config.json yet: skipped, recorded, source + cap kept
+    assert r["source"] == "native_auto" and r["cap"] == cp.NATIVE_AUTO_CAP and r["note"].startswith("skipped")
+
+
+def test_reconcile_uses_the_records_cap():
+    rec = dict(cap=2, items=[dict(hole=str(i), plans={"current": "Driver +0", "L": "4-wood +0"},
+                                  options=[dict(answer="L", outcome=dict(pick="4-wood", aim=0.0, regret=0.05))])
+                             for i in range(1, 5)])
+    holes = [dict(key=str(i), kind="tee", calm=dict(pick="Driver", aim=0.0)) for i in range(1, 5)]
+    sys.path.insert(0, os.path.join(HERE, "..", "product"))
+    import native_confirm
+    cp.native_reconcile(rec, holes, cap=int(rec.get("cap") or native_confirm.CAP))
+    assert len(rec["items"]) == 2
+
+
+def test_s2_stage_before_the_rebuild_and_committed():
+    import yaml
+    wf = yaml.safe_load(open(os.path.join(HERE, "..", "..", ".github", "workflows", "course_page_one.yml")))
+    names = [s.get("name") for s in wf["jobs"]["package"]["steps"]]
+    i = names.index("S2 stack (automatic native sides)")
+    assert names.index("Vision layer + OB evidence") < i < names.index("Rebuild the package with vision + OB")
+    s2 = wf["jobs"]["package"]["steps"][i]
+    assert s2.get("continue-on-error") and "fetch_s2_stack.py" in s2["run"] and "evidence/s2" in s2["run"]
+    fin = {s.get("name"): s for s in wf["jobs"]["finish"]["steps"]}
+    assert "vision_any/s2/$S/" in fin["S2 stack fetched by the package job (commit it with the course data)"]["run"]
+    assert "vision_any/s2/$S/s2_stack.npz" in fin["Commit"]["run"]

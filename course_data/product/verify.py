@@ -938,6 +938,25 @@ def native_for(pkg, slug, tee_set, n=4000, workers=1, cap=None, mapper_dir=None,
     return items, f"{len(items)} asked of {len(frames)} framed holes"
 
 
+def native_auto_for(pkg, tee_set, n=4000, workers=1, cap=None, cache_path=None):
+    """The native questions for a package with no mapper layer, priors = product/native_auto.py's per-side p
+    (package["native_auto"]["p"], the S4n stage of platform/package.py), frames = the package's own corridor frames
+    of tee_set. Answers apply on top of the package as built (its automatic band, if any: "no" erases that side's
+    native, the band included; "yes" adds the same band). -> (items, note)."""
+    na = pkg.get("native_auto") or {}
+    if not na.get("p"):
+        return [], "no native_auto p in the package"
+    import native_auto as NA
+    import native_confirm as NC
+    frames = NA.M.make_frames(pkg, tee_set)
+    pri = NA.confirm_priors({r: v for r, v in na["p"].items() if r in frames})
+    frames = {r: f for r, f in frames.items() if r in pri}
+    D = NC.EBDecider(tee_set, n=n, workers=workers, cache_path=cache_path)
+    items = native_review_items(pkg, frames, pri, D, cap=cap)
+    return items, (f"{len(items)} asked of {len(frames)} framed holes (priors: native_auto p; automatic band "
+                   f"{'on ' + str(len(na.get('sides') or {})) + ' holes' if na.get('why') == 'added' else 'off: ' + str(na.get('why'))[:80]})")
+
+
 # ----------------------------------------------------------------------------- book badges
 BADGE = {"auto": "\u2713", "checked": "\u25d0", "unverified": "\u26a0"}
 

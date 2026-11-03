@@ -50,6 +50,12 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
   S4b     course_data/segment/gapfill.py:segment_gapfill(package, segment.geojson) when the segment workflow
           has run for the slug (requests/segment_<slug>.json): NAIP U-Net fairway / bunker / green + NIR water
           ONLY where OSM lacks them (never overrides OSM), src "segment:*", p, flags, stages.segment
+  S4n     course_data/product/native_auto.py:build_layer(slug, package) (call_native_auto): automatic native
+          (long grass) on the hole sides the per-side classifier is sure of, only when the course has an S2 stack
+          (vision_any/s2/<slug>/s2_stack.npz) + vision_any/<slug>/raw and its course gate fires; src
+          "auto:native_side", package.native_auto {thr, share, fires, sides, p (the confirm-tap priors), why},
+          stages.native_auto. Skipped when the request has "agent_layers" (the mapper layer wins) or says
+          "native_auto": false. Never fails the build
   S5      request "agent_layers": "course_data/mapper/<slug>/" (course_data/mapper/BRIEF.md): the mapper agent's
           zone edits + tee checks (agent_zones.geojson, agent_tees.json) laid over the built package by
           course_data/mapper/apply.py after the vision / segment / OB layers; package.agent_layers, stages.agent_layers,
@@ -1770,6 +1776,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     else:
         stages["vision"] = "not run (gapfill=False)"
     package = call_ob(package, warnings)
+    package = call_native_auto(req, package, warnings)
     package = apply_agent_layers(req, package, warnings)
     package["coverage"] = osm_coverage.coverage(fc, package["holes"])
     if render:
@@ -2027,6 +2034,43 @@ def render_images(package, pkg_dir, img_dir):
         except Exception as e:                                   # noqa: BLE001
             pc.log("render", k, e)
     return f"ok: {n}/{len(package['holes'])} rendered from {os.path.relpath(img_dir, pc.ROOT)}"
+
+
+def call_native_auto(req, package, warnings=None):
+    """S4n: automatic native sides (course_data/product/native_auto.py build_layer). The mapper layer wins: with
+    request "agent_layers" nothing is added (its native edits and per-side verdicts are the long-grass layer, and the
+    confirm taps take their priors from it). Never fails the build: problems go to stages + warnings."""
+    warnings = package.setdefault("warnings", []) if warnings is None else warnings
+    stages = package.setdefault("stages", {})
+    req = req or {}
+    if req.get("native_auto") is False:
+        stages["native_auto"] = "off: request says \"native_auto\": false"
+        return package
+    if req.get("agent_layers"):
+        stages["native_auto"] = "skipped: the mapper layer (agent_layers) wins"
+        return package
+    mod = load(os.path.join(CD, "product", "native_auto.py"), "cdp_native_auto")
+    if mod is None:
+        stages["native_auto"] = "missing (course_data/product/native_auto.py not importable)"
+        return package
+    slug = package.get("slug") or (package.get("course") or {}).get("slug") or req.get("slug")
+    try:
+        out, info = mod.build_layer(slug, package)
+    except Exception as e:                                       # noqa: BLE001
+        stages["native_auto"] = f"failed: {type(e).__name__}: {e}"[:300]
+        warnings.append(f"native_auto not applied: {stages['native_auto']}")
+        return package
+    rec = {k: info.get(k) for k in ("thr", "share", "usable", "sides", "p", "why", "enabled") if k in info}
+    rec["fires"] = bool(info.get("sides"))
+    if info.get("why") == "added":
+        out = reframe(out)
+    else:
+        out = package
+        out["stages"]["native_auto"] = f"none: {info.get('why')}"[:300]
+    out["native_auto"] = rec
+    if out.get("warnings") is not warnings:
+        out["warnings"] = warnings
+    return out
 
 
 def apply_agent_layers(req, package, warnings=None):

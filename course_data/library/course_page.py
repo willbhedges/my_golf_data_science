@@ -27,7 +27,9 @@ Stages (each a subcommand, run by the workflow; README.md in this folder has the
   native REQ           -> <out>/native.json: the golfer native-grass taps ("Native grass along this hole's landing
                           area?" Left / Right / Both / None, product/native_confirm.py via verify.native_for) when the
                           request has "agent_layers" and that folder has the mapper's frames.json + edits.json +
-                          agent_zones.geojson ("native": false turns it off); up to NATIVE_SPARE x native_confirm.CAP
+                          agent_zones.geojson ("native": false turns it off), else (no mapper layer) when the package
+                          carries product/native_auto.py's per-side p (priors; cap NATIVE_AUTO_CAP = 2, the mapper
+                          layer always wins); up to NATIVE_SPARE x native_confirm.CAP
                           candidates by value, the four answers' plans precomputed. Run in the package job (the DEM and
                           lidar canopy the planner reads are on disk there); finish keeps at most CAP whose planner
                           plan is the page's own calm-day pick (native_reconcile); app/build_library_play.py turns
@@ -179,7 +181,7 @@ def pkgreq(q):
     for k in ("near", "address", "osm", "typed_card", "yardages", "pars", "scorecard", "website", "opengolfapi_id",
               "osm_supplement", "boundary_ll", "no_osm_ok", "no_osm_course", "near_radius_m", "ignore_osm_holes",
               "hole_method", "routing", "naip_year", "tee_overrides", "yardage_overrides", "par_overrides",
-              "green_overrides", "hole_renumber", "agent_layers"):
+              "green_overrides", "hole_renumber", "agent_layers", "native_auto"):
         if q.get(k) not in (None, "", [], {}):            # "routing": false passes too
             r[k] = q[k]
     if q.get("library_fixes"):
@@ -471,18 +473,26 @@ def compute(q, slot, kind, parts):
 # ------------------------------------------------------------------------------------------------ native
 NATIVE_FILES = ("frames.json", "edits.json", "agent_zones.geojson")
 NATIVE_SPARE = 2            # the native stage keeps CAP x this candidates: finish drops the ones the page contradicts
+NATIVE_AUTO_CAP = 2         # cards kept on a course whose priors are product/native_auto.py's p (no mapper layer):
+#                             mapper/EVAL_BLIND.md "Automatic native sides" measured <= 2 taps (GATED + TAP2)
 NATIVE_AIM_TOL = 10.0       # yds: native_confirm.AIM_TOL (a plan change)
 PAGE_AIM_MAX = 60.0         # yds: the widest aim a page can print (v2_adaptive: the +/-40 bound + MAX_EXTRA)
 NATIVE_LABELS = {"L": "Left", "R": "Right", "both": "Both", "none": "None"}
 
 
-def native_source(q):
-    """-> (mapper folder, None) when the course gets native questions, else (None, why)."""
+def native_source(q, pkg=None):
+    """-> (mapper folder, None) when the course gets native questions from its mapper layer; ("auto", None) when it
+    has no mapper layer but the package carries product/native_auto.py's per-side p (package.native_auto, the
+    S4n stage: those are the priors, and its automatic band, if any, is already in the package); else (None, why).
+    The mapper layer wins: with agent_layers the auto p is never used."""
     d = q.get("agent_layers")
-    if not d:
-        return None, "no agent_layers in the request"
     if q.get("native") is False:
         return None, "request says \"native\": false"
+    if not d:
+        na = (pkg or {}).get("native_auto") or {}
+        if na.get("p") and na.get("usable"):
+            return "auto", None
+        return None, "no agent_layers in the request and no native_auto p in the package"
     path = d if os.path.isabs(d) else os.path.join(ROOT, d)
     miss = [f for f in NATIVE_FILES if not os.path.exists(os.path.join(path, f))]
     if miss:
@@ -497,17 +507,31 @@ def native(q):
     import time
     t0 = time.time()
     cfg = rj(out_dir(q, "config.json")) or {}
-    path, why = native_source(q)
+    pkg = rj(out_dir(q, "package.json"))
+    path, why = native_source(q, pkg)
     rec = dict(schema="lib_native/1", slug=q["slug"], tee_set=cfg.get("tees"), mapper=q.get("agent_layers"), items=[])
     if path is None:
         rec["note"] = f"not asked: {why}"
+    elif path == "auto":
+        rec.update(source="native_auto", cap=NATIVE_AUTO_CAP)
+        try:
+            if not cfg.get("tees"):
+                raise RuntimeError("no config.json (configure first)")
+            sys.path[:0] = [p for p in (os.path.join(CD, "product"),) if p not in sys.path]
+            import verify
+            workers = os.cpu_count() if os.environ.get("GITHUB_ACTIONS") else int(os.environ.get("NATIVE_WORKERS", "1"))
+            n = int(q.get("native_n") or 4000)
+            items, note = verify.native_auto_for(pkg, cfg["tees"], n=n, workers=workers, cap=NATIVE_SPARE * NATIVE_AUTO_CAP,
+                                                 cache_path=os.environ.get("NATIVE_CACHE") or f"/tmp/native_cache_{q['slug']}.json")
+            rec.update(items=items, note=note, n=n)
+        except Exception as e:                                  # noqa: BLE001
+            rec["note"] = f"skipped ({type(e).__name__}: {e})"[:400]
     else:
         h = hashlib.sha1()
         for f in NATIVE_FILES:
             h.update(open(os.path.join(path, f), "rb").read())
         rec["mapper_sig"] = h.hexdigest()[:16]
         try:
-            pkg = rj(out_dir(q, "package.json"))
             if not pkg or not cfg.get("tees"):
                 raise RuntimeError("no package.json / config.json (configure first)")
             sys.path[:0] = [p for p in (os.path.join(CD, "product"),) if p not in sys.path]
@@ -609,7 +633,7 @@ def native_finish(q, data, cfg):
     holes = data["holes"] if S == data.get("base_set") else (data.get("alt") or {}).get(S)
     sys.path[:0] = [x for x in (os.path.join(CD, "product"),) if x not in sys.path]
     import native_confirm
-    native_reconcile(rec, holes or [], cap=native_confirm.CAP)
+    native_reconcile(rec, holes or [], cap=int(rec.get("cap") or native_confirm.CAP))
     rec["note"] = (rec.get("note") or "") + f"; {len(rec['items'])} kept on the page's own picks" + \
         (f" ({len(rec['dropped'])} dropped)" if rec["dropped"] else "")
     wj(p, rec)

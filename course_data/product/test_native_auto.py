@@ -159,7 +159,7 @@ def test_apply_sides_adds_band_without_erasing():
     assert len(pkg["holes"]["1"]["zones_ll"]) == 2           # input untouched
     zs = out["holes"]["1"]["zones_ll"]
     auto = [z for z in zs if z.get("src") == NA.SRC]
-    assert auto and all(z["side"] == "L" and z["p"] == 0.91 for z in auto)
+    assert auto and all(set(z) == {"lie", "poly", "src", "p"} and z["p"] == 0.91 for z in auto)
     assert any(z.get("src") == "osm" and z["lie"] == "native" for z in zs)    # the right-side native stays
     g = NC.native_xy(fj, out["holes"]["1"])
     from shapely.geometry import box
@@ -195,7 +195,8 @@ def test_build_layer_gate_and_enabled_flag(monkeypatch):
     assert info["why"].startswith("ENABLED is False")
     out, info = NA.build_layer("synthetic", pkg, frames={"1": fj}, model=sure, rs=_rasters(fj), force=True)
     assert info["why"] == "added" and out["stages"]["native_auto"].startswith("ok: 1 holes")
-    assert {z["side"] for z in out["holes"]["1"]["zones_ll"] if z.get("src") == NA.SRC} == {"L", "R"}
+    xs = [float(np.mean(M.ll_to_xy(fj, z["poly"])[:, 0])) for z in out["holes"]["1"]["zones_ll"] if z.get("src") == NA.SRC]
+    assert min(xs) < 0 < max(xs)                        # both sides
     unsure = dict(sure, intercept=-3.0)
     out, info = NA.build_layer("synthetic", pkg, frames={"1": fj}, model=unsure, rs=_rasters(fj), force=True)
     assert out is pkg and info["why"].startswith("course gate shut")
