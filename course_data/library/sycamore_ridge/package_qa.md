@@ -1,13 +1,13 @@
 # Sycamore Ridge Golf Club (Spring Hill, KS) - Black tees
 
-Built 2026-11-02T16:43:10Z. OSM way/151985223. Scorecard: file (course_data/library/sycamore_ridge/card_review.json). Tee set: name.
+Built 2026-11-02T23:15:54Z. OSM way/151985223. Scorecard: file (course_data/library/sycamore_ridge/card_review.json). Tee set: name.
 
 ## Coverage
 
 | | |
 |---|---|
 | holes_built | 18 |
-| holes_mapped | 17 |
+| holes_mapped | 18 |
 | greens_found | 18 |
 | tee_boxes | 99 |
 | tees_with_colour | 89 |
@@ -15,9 +15,9 @@ Built 2026-11-02T16:43:10Z. OSM way/151985223. Scorecard: file (course_data/libr
 | of_par4_5 | 13 |
 | mean_landing_osm_share | 0.421 |
 | mean_confidence | 0.872 |
-| osm_score | 0.84 |
+| osm_score | 0.854 |
 
-OSM features inside the course: buildings 4, golf=bunker 45, golf=cartpath 47, golf=driving_range 1, golf=fairway 30, golf=green 25, golf=hole 17, golf=pin 18, golf=rough 1, golf=tee 99, golf=water_hazard 5, holes_with_handicap 17, holes_with_par 17, tees_with_colour 89, trees_polygons 3, water_lines 5, water_polygons 5
+OSM features inside the course: buildings 4, golf=bunker 45, golf=cartpath 47, golf=driving_range 1, golf=fairway 30, golf=green 25, golf=hole 18, golf=pin 18, golf=rough 1, golf=tee 99, golf=water_hazard 5, holes_with_handicap 18, holes_with_par 18, tees_with_colour 89, trees_polygons 3, water_lines 5, water_polygons 5
 
 ## Holes
 

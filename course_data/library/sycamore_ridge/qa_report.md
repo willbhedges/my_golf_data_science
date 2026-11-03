@@ -1,8 +1,8 @@
 # Sycamore Ridge Golf Club: automatic page QA
 
-**Status: needs confirm** — confirm holes 9, 13, 18
+**Status: needs confirm** — confirm holes 5, 9, 13, 18
 
-* page: `course_data/library/sycamore_ridge/page.html` (5.0 MB); request `course_data/requests/course_page_sycamore_ridge.json`; built 2026-11-02T16:43Z
+* page: `course_data/library/sycamore_ridge/page.html` (4.9 MB); request `course_data/requests/course_page_sycamore_ridge.json`; built 2026-11-02T23:16Z
 * course: Sycamore Ridge Golf Club (Spring Hill, KS), OSM way/151985223; holes: osm (tier mapped_card); card: course_data/library/sycamore_ridge/card_review.json (file)
 * solved tee sets: Black, Blue (tee sets of interest); page sets: Black, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
@@ -13,9 +13,9 @@
 
 Course-level reasons:
 
-* 3 hole(s) with a CHECK
+* 4 hole(s) with a CHECK
 
-Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
+Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
 ## Black tees
 
@@ -38,7 +38,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 15 | 5 | PASS | Driver +12 |  |
 | 16 | 4 | PASS | Driver -12 |  |
 | 17 | 3 | PASS |  |  |
-| 18 | 5 | CHECK | Driver +58 | tee: tee marker not on an OSM tee box (tagged; 4 yds from the nearest OSM tee box) |
+| 18 | 5 | CHECK | Driver +58 | tee: tee marker not on an OSM tee box (tagged; 4 yds from the nearest OSM tee box); wide_aim: Driver aim +72 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 
 ## Blue tees
 
@@ -48,7 +48,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 2 | 5 | PASS | Driver -40 |  |
 | 3 | 4 | PASS | Driver -6 |  |
 | 4 | 3 | PASS |  |  |
-| 5 | 4 | PASS | Driver -32 |  |
+| 5 | 4 | CHECK | Driver -32 | wide_aim: Driver aim -44 yds is more than 40 yds left of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 6 | 4 | PASS | Driver +6 |  |
 | 7 | 5 | PASS | 4-wood -1 |  |
 | 8 | 3 | PASS |  |  |
@@ -61,5 +61,5 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 15 | 5 | PASS | Driver +8 |  |
 | 16 | 4 | PASS | Driver -12 (tie) |  |
 | 17 | 3 | PASS |  |  |
-| 18 | 5 | PASS | Driver +58 |  |
+| 18 | 5 | CHECK | Driver +58 | wide_aim: Driver aim +70 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 
