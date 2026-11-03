@@ -114,3 +114,5 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - No individual artifacts for library courses any more: passing courses go into the main Aim Caddie app (D6sdGLhodo8DQ7Yz8PojNW). Existing per-course artifacts stay as they are and are no longer updated.
 - Blocked courses stay in the national search as "NO PAGE YET" (user OK).
 - Tee-shot dispersion looks circular; agent verifying the physics (lateral vs depth) and the drawing.
+- Queenstown wrong course = Nominatim 503 let a far "river" match through; resolve now drops far (>15 km) low-score (<0.5) matches (67eaa820f); queenstown rev 8 pins way/1067525665. QA when built.
+- Open: library requests with no near point / osm pin are still exposed if Nominatim fails; add near points or pins.
