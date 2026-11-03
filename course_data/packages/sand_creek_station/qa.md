@@ -1,6 +1,6 @@
 # Sand Creek Station (Newton, KS) - Championship tees
 
-Built 2026-11-03T15:08:24Z. OSM relation/6702217. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Championship, Tournament, Medal, Ladies (L))).
+Built 2026-11-03T16:23:20Z. OSM relation/6702217. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Championship, Tournament, Medal, Ladies (L))).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Championship' instead (allow_substitute). Sets on the card: Championship, Tournament, Medal, Ladies (L)**
 

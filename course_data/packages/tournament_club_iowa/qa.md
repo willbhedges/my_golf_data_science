@@ -1,6 +1,6 @@
 # Tournament Club of Iowa (Polk City, IA) - King tees
 
-Built 2026-11-03T15:10:01Z. OSM relation/1507320. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: King, Palmer, Deacon, Legend)).
+Built 2026-11-03T16:25:11Z. OSM relation/1507320. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: King, Palmer, Deacon, Legend)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'King' instead (allow_substitute). Sets on the card: King, Palmer, Deacon, Legend**
 
