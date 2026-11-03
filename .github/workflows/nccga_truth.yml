@@ -36,6 +36,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
+          # gate job: commits + trees, file contents only for what it reads (not the 5.2 GB tree)
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/
       - id: p
         run: echo "slugs=$(python3 -c 'import json;print(json.dumps(json.load(open("course_data/requests/nccga_truth.json"))["slugs"]))')" >> "$GITHUB_OUTPUT"
 

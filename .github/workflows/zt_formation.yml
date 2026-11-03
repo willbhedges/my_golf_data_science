@@ -40,6 +40,11 @@ jobs:
         with:
           ref: ${{ github.sha }}
           fetch-depth: 50
+          # gate job: commits + trees, file contents only for what it reads (not the 5.2 GB tree)
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/
       - id: p
         run: |
           R=$(ls -t course_data/requests/zt_formation_*.json | head -1)

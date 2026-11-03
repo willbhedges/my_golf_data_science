@@ -37,6 +37,14 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 50
+          # gate job: commits + trees, file contents only for what it reads (not the 5.2 GB tree)
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/
+            /course_data/generalize/
+            /course_data/platform/
+            /course_data/structure/
       - id: p
         run: |
           BEFORE="${{ github.event.before }}"

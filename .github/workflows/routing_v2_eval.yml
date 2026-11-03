@@ -29,6 +29,11 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 20
+          # gate job: commits + trees, file contents only for what it reads (not the 5.2 GB tree)
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/
       - id: p
         run: |
           F=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'course_data/requests/routing_v2_eval_*.json' 2>/dev/null | tail -1)

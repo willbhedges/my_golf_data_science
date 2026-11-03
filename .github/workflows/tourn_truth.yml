@@ -41,6 +41,11 @@ jobs:
         with:
           ref: ${{ github.sha }}
           fetch-depth: 30
+          # gate job: commits + trees, file contents only for what it reads (not the 5.2 GB tree)
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/
       - id: p
         run: |
           R=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'course_data/requests/tourn_truth_*.json' 2>/dev/null | tail -1)
