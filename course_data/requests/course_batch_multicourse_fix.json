@@ -1,0 +1,14 @@
+{
+ "requests": [
+  "course_data/requests/course_page_tpc_sawgrass.json",
+  "course_data/requests/course_page_bandon_dunes.json",
+  "course_data/requests/course_page_tpc_harding_park.json",
+  "course_data/requests/course_page_sand_hollow.json",
+  "course_data/requests/course_page_longview_lake.json",
+  "course_data/requests/course_page_seneca.json",
+  "course_data/requests/course_page_grand_national_links.json",
+  "course_data/requests/course_page_paa_ko_ridge.json"
+ ],
+ "rev": 1,
+ "note": "Rebuild on 269de3c1d (sanity.split_courses: 36-hole facilities keep one course, dab692c65; a facility of nines keeps two nines as one 18; unnumbered hole ways dropped after a split). Pages built as a mix of courses (library/MULTICOURSE_SCAN.md): tpc_sawgrass -> Stadium, bandon_dunes -> Bandon Dunes, tpc_harding_park -> Harding, sand_hollow -> Championship, longview_lake + seneca -> the 18 (not the extra nine); grand_national_links -> Links 18 without the short course's 17 ref-less ways (was blocked: re-gate); paa_ko_ridge -> 1-9 + 10-18 nines (was 9 holes under dab692c65; old page 1-9 + 19-27). QA/publish these only from builds on this sha or later."
+}
