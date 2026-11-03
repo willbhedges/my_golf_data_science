@@ -678,6 +678,13 @@ PAGE_PATCHES = [
      '    if(note && (calm !== r.pick || r.T.back !== 0)) note = `Calm-day pick (no wind'
      '${r.T.back ? ", from the " + TEELBL(h.base_set) + " tee" : ""}): ${calm}. ${note}${/[.!?]$/.test(note) ? "" : "."} '
      'In this wind the play is ${r.pick}: its numbers are in the club table.`;'),
+    # the landing oval: library clouds (landing_pattern.page_cloud) carry the tee-frame shape (lateral left / right,
+    # depth short / long of the median, tilt in yds deeper per yd right); draw it as such, not as a rotated ellipse
+    ("const a = i/48*2*Math.PI, ca = Math.cos(a)*cl.A*sc, sa = Math.sin(a)*cl.B*sc;",
+     "const a = i/48*2*Math.PI, ca = Math.cos(a)*cl.A*sc, sa = Math.sin(a)*cl.B*sc;\n"
+     "        if(cl.long != null){ const c = Math.cos(a), s = Math.sin(a), x = s*(s >= 0 ? cl.right : cl.left)*sc,"
+     " y = c*(c >= 0 ? cl.long : cl.short)*sc + (cl.tilt || 0)*x;\n"
+     "          pts.push(P(h, at(h, best.total - B + cA + y, aimC + best.drift + best.kick + cL + x)).join(\",\")); continue; }"),
 ]
 
 

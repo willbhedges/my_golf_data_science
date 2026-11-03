@@ -26,6 +26,11 @@ oval fell off the picture (library QA 2026-11-02: Gustin Gold 6 4-wood -60, Syca
 the page prints a wide aim on a hole (wide_aims.wide: the calm book aim, or a forecast pick on a widened line, past
 +/-40), that side of the crop widens to the landing ovals (wide_aims.landing_extent). Other holes keep the crop.
 The alt-base subprocesses of the page stage run through here as well (v2_course re-runs its own __file__).
+
+The page stage also swaps build_page_v2.cloud (the dashed landing oval's numbers) for landing_pattern.page_cloud:
+the same simulated finishes measured in the tee-line frame (lateral and short / long depth extents, the tilt)
+instead of a covariance-eigen ellipse that drew the model's horizontal oval as a near circle. V2_LANDING_PATTERN=0
+keeps the v2 cloud.
 """
 import importlib.util
 import os
@@ -205,6 +210,20 @@ def install_page_crop(vc, slug, which, M):
     BW._wide_crop = True
 
 
+def install_page_cloud(M):
+    """Patch build_page_v2.cloud -> landing_pattern.page_cloud (tee-frame pattern, see the module docstring)."""
+    if os.environ.get("V2_LANDING_PATTERN", "1") == "0":
+        return
+    import build_page_v2 as BP
+    if getattr(BP, "_tee_frame_cloud", False):
+        return
+    if HERE not in sys.path:
+        sys.path.insert(0, HERE)
+    import landing_pattern as LP
+    BP.cloud = lambda h, grid0, temp_f: LP.page_cloud(M, h, grid0, temp_f)
+    BP._tee_frame_cloud = True
+
+
 def load_v2_course():
     spec = importlib.util.spec_from_file_location("v2_course", VC_PY)
     vc = importlib.util.module_from_spec(spec)
@@ -218,6 +237,7 @@ def load_v2_course():
         install(D, M)
         if CTX.get("page"):
             install_page_crop(vc, slug, which, M)
+            install_page_cloud(M)
         return course, meta, M, D
     vc.activate = activate
 

@@ -11,9 +11,12 @@ calm-day decisions, the package it was built from):
   par        the hole's par is the card's par (and, course level, the pars sum to the card's total)
   aim        tee shots: the calm-day pick's landing point (club total along the tee line, at the pick's aim) is on
              fairway, on first cut, or rough within FIRST_CUT yds of a fairway cell
-  oval       tee shots: the pick's landing pattern (an ellipse, the club's 95 % lateral width x carry window + roll
-             spread, as the model uses) is not more than OVAL_MAX trees / water / OB (unverified ground beyond the
-             mapped corridor counts half trees, as in the model)
+  oval       tee shots: the pick's landing pattern (the oval the page draws: landing_pattern.pattern of the v2
+             central world's simulated finishes at the pick's aim, lateral and short / long 95 % extents, tilt) is not
+             more than OVAL_MAX trees / water / OB (unverified ground beyond the mapped corridor counts half trees, as
+             in the model). Until 2026-11-03 this was an ellipse from the golfer's raw numbers (65 x 28 + ROLL_SPREAD
+             6 yds) centred on the calm total: ~4 yds too narrow, 15-20 yds too shallow on the short side and ~11 yds
+             long of where the model's shots finish.
   par3 box   par 3s: the calm target box (yardage_book.par3_plan, what the page draws) has its centre on the OSM
              green polygon and at least BOX_ON of its area on it; no OSM green outline is a CHECK
 A hole is PASS when every check passes, else CHECK with the reasons.
@@ -36,7 +39,7 @@ YARD_TOL = 10.0
 FIRST_CUT = 6.0
 OVAL_MAX = 0.40
 BOX_ON = 0.6
-ROLL_SPREAD = 6.0
+PATTERN_SWINGS = 6000
 YD = 0.9144
 
 
@@ -57,6 +60,21 @@ def _dist_to_poly(poly_xy, p):
     t = np.clip(((p - a) * ab).sum(1) / np.maximum((ab * ab).sum(1), 1e-9), 0, 1)
     q = a + ab * t[:, None]
     return float(np.min(np.hypot(*(q - p).T)))
+
+
+def pattern_mask(M, R, hd, club, aim, temp_f=None, hole=None):
+    """Raster cells inside the landing pattern the page draws (landing_pattern: the v2 central world's finishes)."""
+    from matplotlib.path import Path
+    sys.path.insert(0, HERE) if HERE not in sys.path else None
+    import landing_pattern as LP
+    if temp_f is None:
+        temp_f = M.hole_temp(hole) if hole is not None else 70.0
+    P = M.central(temp_f=float(temp_f))
+    car, dev, roll = M.shots(hd, club, P, M.draws_z(PATTERN_SWINGS, 17))
+    a, l, _ = M.finish(R, car, dev + float(aim), roll, P["rough_roll"])
+    poly = np.array(LP.outline(LP.pattern(a, l), n=96))
+    pts = np.c_[R.AA.ravel(), R.LL.ravel()]
+    return Path(poly).contains_points(pts).reshape(R.AA.shape)
 
 
 def osm_tees(osm_path):
@@ -177,8 +195,7 @@ def main():
                     why = f"{pick} {aim:+.0f} lands {along:.0f} yds out in {lie.replace('_', ' ')}" + \
                         ("" if lie == "fairway" else f" ({dfw:.0f} yds from fairway)")
                 C["aim"] = dict(ok=bool(ok), why=why)
-                sa, sl = depth / 2.0 + ROLL_SPREAD, width / 2.0
-                m = ((R.AA - along) / sa) ** 2 + ((R.LL - aim) / sl) ** 2 <= 1.0
+                m = pattern_mask(M, R, hd, pick, aim, r.get("temp_f"), k)
                 L = R.lie[m]
                 bad = np.isin(L, [M.CODE["recovery"], M.CODE["water"], M.CODE["ob"]]).sum() + 0.5 * (L == M.CODE["unverified"]).sum()
                 frac = float(bad / max(m.sum(), 1))
