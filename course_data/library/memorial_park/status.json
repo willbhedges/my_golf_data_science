@@ -5,8 +5,9 @@
  "city": "Houston",
  "state": "TX",
  "group": "library",
- "status": "needs confirm",
+ "status": "blocked",
  "reasons": [
+  "holes out of order: green-to-next-tee walks up to 710 yds, 4 over 500 (in order: under 800, at most 3 over 500); longest: 14->15 710, 17->18 621, 15->16 518",
   "scorecard not matched (source golfify, flags ['5 hole(s) where a longer set is shorter than the next set: 8 Blue 510 < White 554, 9 Blue 202 < White 378, 13 Blue 406 < White 480, 18 Blue 393 < White 410'])",
   "7 hole(s) with a CHECK"
  ],
@@ -76,5 +77,10 @@
  ],
  "weather": "forecast",
  "built": "2026-11-01T22:33Z",
- "request": "course_data/requests/course_page_memorial_park.json"
+ "request": "course_data/requests/course_page_memorial_park.json",
+ "blocked": {
+  "by": "course_page.py regate",
+  "when": "2026-11-03T08:59Z",
+  "was": "needs confirm"
+ }
 }
