@@ -1,6 +1,6 @@
 # Dub's Dread Golf Club (Kansas City, KS) - Championship tees
 
-Built 2026-11-03T15:02:38Z. OSM way/505160823. Scorecard: file (course_data/library/dubs_dread/card_golfify.json). Tee set: colour.
+Built 2026-11-03T16:16:49Z. OSM way/505160823. Scorecard: file (course_data/library/dubs_dread/card_golfify.json). Tee set: colour.
 
 ## Coverage
 
