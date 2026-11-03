@@ -1,65 +1,58 @@
-# Creekmoor GC: rebuild QA, wide-aim pass (2026-11-03)
+# Creekmoor GC: rebuild QA, NAIP fairway fill (2026-11-03)
 
-**Verdict: NEEDS FIX (no fairway layer).** The routing, tees, card and agent layers are all right. The 14 CHECKs are
-real, but they are not wide-aim or tee faults. Every one except the 3 Black tee is the aim rule "the calm pick lands
-on fairway". It fires because the page has no fairway at all. OSM maps no `golf=fairway` on this course: the
-2026-10-17 snapshot holds tees, greens, bunkers, holes and cart paths, and no fairway. The vision stage does not add
-fairway, and the mapper did not draw any. So every tee shot reads "fairway 0%", the planner cannot tell fairway from
-rough, and several picks aim at bunkers.
+**Verdict: PUBLISH.** The fairway-fill stage (S4f, ec1e61124) fixes the course-level gap. All 14 par-4/5 holes now
+have a fairway that sits on the mown fairway in the photo, and every tee-shot landing reads fairway 39-84%. The aim
+CHECKs are gone: only the 3 Black lidar-pad tee CHECK is left, down from 14. No pick aims into a bunker, and the one
+native card is sensible.
 
-Page checked: `course_data/library/creekmoor/page.html`, GitHub Actions run 41537321619 (committed 2026-11-03 01:24Z).
-I ran both solved sets (Black, Green) through `qa_page.js`, phone and desktop: 18 holes each, 0 page problems, no
-console errors. I looked at every Black phone hole picture, and checked every landing oval against the picture edge on
-both sets. The 14 CHECK holes were already there in the 2026-11-02 19:50Z build: the count did not change in this run.
+Page checked: `course_data/library/creekmoor/page.html`, GitHub Actions run 41574368966 (built 2026-11-03T04:35Z).
+I ran both solved sets (Black 7,406 and Green 6,806, par 72) through `qa_page.js`, phone and desktop: 18 holes each, 0
+page problems, no console errors. I looked at every Black and Green hole picture. I also drew the package fairway
+(`zones`, src `fairway_fill:naip`), sand, trees, water, OB and native outlines on the page's own hole images for all 18
+holes (scratch `creekmoor_zones.png`).
 
-## Why 14 CHECKs
+## Fairway fill
 
-| cause | holes |
+`sources.fairway_fill`: d' 2.01; all 14 holes pass the gate (line cover 0.57-0.84, width 24-42 yds, corridor share
+0.29-0.47).
+
+| hole | fill on the photo |
 |---|---|
-| "lands in rough (N yds from fairway)" / "no fairway mapped on this hole". The "fairway" it measures to is a few 60-900 yd2 OSM scraps by tees and greens, e.g. 1: 620 yd2 at 360-382 yds | 1, 2, 3, 5, 6, 8, 9, 10, 11, 13, 14, 15, 16, 18 (both sets) |
-| tee (lidar pad 25 yds from a box, 441 / 440 card) | 3 Black |
-| wide aim | none: no aim past ±40 |
+| 1, 2, 3, 6, 9, 11, 13, 15, 16, 18 | follows the mown fairway edge closely, around the fairway bunkers (sand stays sand) |
+| 5 | main fairway right; two small scraps (≈ 10 yds) in the rough short of the landing, 70-160 yds. Harmless |
+| 8 | right; a thin spur by the creek crossing ~100 yds and one near the forward tees. Harmless |
+| 10 | right; a narrow tail runs ~40 yds into the native/sandy area right of the fairway's start. No landing reaches it |
+| 14 | right; a small lobe by the tree clump at the fairway's start. Harmless |
 
-So the wide-aim rule is not over-firing here. The CHECKs are justified as a data flag, but they all point to one
-course-level gap, not to 14 separate hole problems.
+No fill on greens, tees, water or houses. The OSM fairway scraps (cyan) by tees and greens are unchanged.
 
-## What the gap does to the page
+## Picks (were bunker-blind)
 
-- Every landing reads "fairway 0%, first cut 0%". The ovals are wide and flat (rough everywhere), and the aims steer
-  only by sand, trees and OB. In the pictures the fairways are plainly visible. Black 14 Driver 28.5 left lands on the
-  left fairway-bunker cluster (sand 15%); Black 3, 13 and 18 land among the centre / side bunkers (sand 12-13%); Black
-  1 Driver 35 right (Green 39 right) heads for the right edge.
-- Native cards: 8 were asked and 7 dropped, because answering "both sides native" re-plans to Driver ±95-120 yds.
-  With no fairway, the planner sees no reason to stay in the corridor, so it aims into the next hole. Dropping them was
-  right. Only 13 is kept ("current" Driver +3 = page, priors 0.75 / 0.75 from the mapper's native).
-- One oval clips: Green 1 Driver 39 right is 1-9 px past the right edge (the aim is under 40, so the picture was not
-  widened).
+| hole | before (fairway 0%) | now |
+|---|---|---|
+| 14 Black | Driver 28.5 left into the left bunker cluster, sand 15% | Driver 10.5 left between the bunkers, fairway 64%, sand 11% |
+| 3 / 13 / 18 Black | among the bunkers, sand 12-13% | aim point on fairway beside the bunkers: fairway 51 / 65 / 62%, sand 12 / 13 / 10%. The oval edge takes in a bunker; the aim is not at one |
+| 1 Black / Green | Driver +35 / +39 to the right edge | Driver +31.5 / +40 to the far right of the dogleg-right fairway, fairway 72 / 60%. Green +40 is on the bound and gets no CHECK; the oval clips the right picture edge a little |
 
-## Mapper layers (`course_data/mapper/creekmoor/review.md`)
+## Native cards
 
-In, applied 2026-11-02T23:17Z, 21 ops. Native added on 6, 8, 13 and 14 (agent zones in the package; "long grass 2-3%"
-on 6 and 13). OB erased on 6, 8, 9, 10 and 11. OB added on 16 and 18 (an agent OB zone in each). Water erased on 8, 9,
-10, 11 and 18. On 1, 5 and 16 the water erase shows "0 yd2": the new water filter had already removed those cells.
-None of the 16 / 18 landings reads water now. The only landing water left is the real pond right of 9 (2-7%). Red 17
-tee moved 44 yds (off the page sets).
+One asked (14 Black, prior L 0.40 / R 0.75), kept. Every answer re-plans inside the corridor: L / both → 4-wood +2;
+R / current → Driver -10; none → Driver -8. The old ±95-120 yd re-plans are gone.
 
 ## Holes
 
 | hole | Black | Green | note |
 |---|---|---|---|
-| 4, 7, 12, 17 | OK | OK | par 3s; 12 / 17 review tees 0-1 yds from the boxes |
-| 1 | aim CHECK | aim CHECK | Driver +35 / +39 toward the right edge (fairway-blind); Green oval clips 1-9 px |
-| 2, 5, 6, 8, 9, 15, 16 | aim CHECK | aim CHECK | landings in the corridor; the picture shows them on or near fairway |
-| 3 | tee + aim CHECK | aim CHECK | Black lidar pad 441 / 440, among the fairway bunkers (sand 13%) |
-| 10 | aim CHECK | aim CHECK | supplement way, 481 / 482, still right |
-| 11 | aim CHECK | aim CHECK | Driver 25.5-35 left by the bunkers, sand 6-9%, trees 6-8% |
-| 13, 18 | aim CHECK | aim CHECK | Driver at the bunker line (sand 12-13%) |
-| 14 | aim CHECK (poor pick) | aim CHECK | Black Driver 28.5 left into the left bunker cluster, sand 15% |
+| 4, 7, 12, 17 | OK | OK | par 3s; 12 / 17 review tees inside the OSM boxes; yardage = card ±2 |
+| 1 | OK | OK (on the ±40 bound) | above |
+| 2, 5, 6, 9, 15 | OK | OK | fairway 41-84% |
+| 3 | OK (tee CHECK) | OK | Black lidar pad 25 yds from a box, 441 / 440 |
+| 8 | OK | OK (tie) | 22.5 / 27 left into the dogleg, fairway 63-75% |
+| 10 | OK | OK | 481 / 482; fairway 39-55%, sand 8% |
+| 11 | OK (tie) | OK | Driver 28 / 36.5 left around the left bunkers, fairway 57-58%, sand 7-9%, trees 7-9% |
+| 13, 14, 16, 18 | OK | OK | fairway 47-76% |
 
 ## Next fix
 
-1. **Course data:** give Creekmoor a fairway layer. Either the mapper draws fairway zones (`agent_zones.geojson`,
-   lie `fairway`) on the 14 par 4/5 landing areas from the NAIP picture, or a fairway class is taken from vision.
-   Then rebuild. The aim CHECKs should clear, and the native cards should stop re-planning out of the corridor.
-2. If the coordinator accepts fairway-blind plans, as the previous pass did, the page is otherwise publishable: no
-   routing, tee or card faults.
+None blocking. Optional: drop fill parts shorter than ~15 yds (holes 5, 8, 14), and clip the hole-10 tail at the
+native edge.

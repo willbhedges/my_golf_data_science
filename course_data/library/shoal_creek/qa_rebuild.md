@@ -1,33 +1,34 @@
-# Shoal Creek GC (Kansas City MO): rebuild QA, wide-aim pass (2026-11-03)
+# Shoal Creek GC (Kansas City MO): rebuild QA, tee-snap fix (2026-11-03)
 
-**Verdict: PUBLISH.** The hole-4 Gold tee is fixed. Gold 4 is now on the OSM box at the top of the hole line, at
-422 measured against the 418 card ("review, inside OSM tee"). The line runs straight up the fairway, not through the
-woods, and the pick is 4-wood 2 left (fairway 80%). The routing of 5 and 6 still holds.
+**Verdict: PUBLISH.** The tee-snap fix (1d77bfeb2) restores the off-page sets: Black 5 is 128 against the 130 card
+(it was 139), and White 6 is 308 against 306 (it was 320). Both are kept as review points. Gold 4 is still on the
+right box: 422 against the 418 card, "review (inside OSM tee 897736290)", with 4-wood -2 straight up the fairway. Nothing
+else moved. This rebuild is the same course as the published page ME9qwJtZ3Kp9M8Payhtgft, and it is fine to replace it.
 
-Page checked: `course_data/library/shoal_creek/page.html`, GitHub Actions run 41537321619 (committed 2026-11-03
-01:25Z). I ran both solved sets (Gold, Blue) through `qa_page.js`, phone and desktop: 18 holes each, 0 page problems,
-no console errors. I looked at every Gold phone hole picture, and checked every landing oval against the picture edge
-on both sets.
+Page checked: `course_data/library/shoal_creek/page.html`, GitHub Actions run 41574368966 (built 2026-11-03T04:31Z).
+I ran both solved sets (Gold 6,983 and Blue 6,363, par 71) through `qa_page.js`, phone and desktop: 18 holes each, 0
+page problems, no console errors. I looked at every Gold and Blue hole picture (montage).
 
-## Checks
+## Tee-snap holes (package `tees`)
 
-| check | result |
-|---|---|
-| Card / pars | page yardage = card on all 36 hole-sets; measured within 4 yds |
-| Wide-aim CHECK | none needed: no aim past ±40 |
-| Ovals | 0 outside, picks or club rows |
-| Native check cards | none asked (no agent layers) |
+| hole | set | measured / card | method |
+|---|---|---|---|
+| 4 | Gold | 422 / 418 | review, inside OSM tee 897736290 |
+| 5 | Gold / Blue / White / Black | 233/234, 178/179, 146/147, **128/130** | review; Black kept (snap would give 139) |
+| 6 | Gold / Blue / White / Black | 366/364, 335/333, **308/306**, 283/281 | review; White kept (snap would give 320) |
 
 ## Holes
 
 | hole | Gold | Blue | note |
 |---|---|---|---|
-| 1, 3, 5-11, 13-18 | OK | OK | |
-| 2 | OK (tee CHECK) | OK (tee CHECK) | Gold walked back 23 yds, Blue tee_axis 3 yds; yardage = card ±4 |
-| 4 | **fixed** | OK | Gold 422 / 418 from the OSM box at the line's start; 4-wood -2 |
-| 12 | OK | OK (marginal) | Blue 4-wood to short of the pond, fairway 24%, trees 15%. Model choice, as before |
+| 1, 3, 5, 7-11, 13-18 | OK | OK | yardage = card ±3 |
+| 2 | OK (tee CHECK) | OK (tee CHECK) | Gold walk-back 32 yds, Blue tee_axis 3 yds; yardage = card ±4. The only CHECK hole |
+| 4 | OK | OK | Gold 4-wood -2 (fairway 80%); Blue 4-wood +8.5 |
+| 6 | OK | OK (marginal) | Blue Driver 33.5 left into the dogleg-left corner, fairway 31%, 52 yds in |
+| 12 | OK | OK (marginal) | Blue 4-wood short of the pond, fairway 24%, trees 15% (as before) |
+
+No aim is past ±40. Every landing oval is inside the picture.
 
 ## Next fix
 
-None. Off-page, the same review-snap bug as la_nickell 5 Blue (see that file) moved Black 5 by 11 yds (139 / 130) and
-White 6 by 12 yds (320 / 306). Neither set is on the page.
+None.
