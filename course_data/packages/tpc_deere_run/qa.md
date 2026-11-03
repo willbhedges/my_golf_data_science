@@ -1,6 +1,6 @@
 # TPC Deere Run (Silvis, IL) - Gold tees
 
-Built 2026-11-03T09:27:00Z. OSM relation/12585470. Scorecard: file (course_data/library/tpc_deere_run/card_review.json). Tee set: name.
+Built 2026-11-03T15:10:35Z. OSM relation/12585470. Scorecard: file (course_data/library/tpc_deere_run/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -56,4 +56,5 @@ OSM features inside the course: buildings 14, built_up_landuse 1, golf=bunker 79
 - **elevation**: ok: course_data/packages/tpc_deere_run/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -57 m2 {'cells': 50}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 7 polygons (outside 7); mode replace

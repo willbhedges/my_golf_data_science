@@ -1,6 +1,6 @@
 # Tournament Club of Iowa (Polk City, IA) - King tees
 
-Built 2026-11-03T09:58:59Z. OSM relation/1507320. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: King, Palmer, Deacon, Legend)).
+Built 2026-11-03T15:10:01Z. OSM relation/1507320. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: King, Palmer, Deacon, Legend)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'King' instead (allow_substitute). Sets on the card: King, Palmer, Deacon, Legend**
 
@@ -59,6 +59,7 @@ OSM features inside the course: buildings 3, golf=bunker 26, golf=cartpath 53, g
 - **elevation**: ok: course_data/packages/tournament_club_iowa/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -698 m2 {'raised': 375, 'road': 281, 'cells': 42}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 26 polygons (property_line 26); mode replace
 
 ## Warnings
