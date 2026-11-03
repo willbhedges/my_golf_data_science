@@ -1,6 +1,6 @@
 # The Harvester Golf Club (Rhodes, IA) - Black tees
 
-Built 2026-11-02T17:00:31Z. OSM way/325314320. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T23:01:16Z. OSM way/325314320. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
