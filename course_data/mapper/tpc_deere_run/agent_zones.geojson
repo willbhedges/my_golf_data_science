@@ -1,0 +1,952 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "slug": "tpc_deere_run",
+  "mapper": "mapper-tpc_deere_run",
+  "made": "2026-11-03T00:40:27Z",
+  "corridor_set": "Gold",
+  "base_package": "course_data/mapper/tpc_deere_run/base/package.json",
+  "base_built": "2026-11-02T23:48:33Z",
+  "minutes": 55,
+  "edits_sha": "6ac9d9c6315f2c0b",
+  "schema": "agent_zones/1",
+  "reviewed": {
+   "1": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "parkland; auto trees match the lidar crown edges (dark areas fairway-side are shadow in CIR)",
+    "s2": [
+     {
+      "id": "S2-1-L1",
+      "side": "L",
+      "area_yd2": 184,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "beyond the cart path under trees at -65, 280-310: mown rough / shade in both years, no mowing line"
+     },
+     {
+      "id": "S2-1-L2",
+      "side": "L",
+      "area_yd2": 510,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "past the green-side trees at 360-390, mown rough / shade in both years"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line",
+     "R": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line"
+    }
+   },
+   "2": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "2023 is a drought year (all rough tan); 2021 is low-res. R side has a darker line ~+20 in 2023 that I cannot confirm in 2021: left as mown rough (uncertain)",
+    "s2": [
+     {
+      "id": "S2-2-L1",
+      "side": "L",
+      "area_yd2": 1084,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "left at -50..-70, 175-258 is rough under / beside the tree line beyond the cart path; smooth green in 2021, no mowing line"
+     },
+     {
+      "id": "S2-2-L2",
+      "side": "L",
+      "area_yd2": 1989,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "320-400 left: rough between the cart paths, mowing stripes visible in 2023, green in 2021"
+     },
+     {
+      "id": "S2-2-R1",
+      "side": "R",
+      "area_yd2": 1359,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "130-180 right: rough between tree clumps short of the landing, green under shade in 2021"
+     },
+     {
+      "id": "S2-2-R2",
+      "side": "R",
+      "area_yd2": 1136,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+25..+60, 220-290: tan coarse in drought 2023 with a faint line, but 2021 (blurry) shows green mottled rough / shade, no confirmed second mowing line; listed uncertain"
+     },
+     {
+      "id": "S2-2-R3",
+      "side": "R",
+      "area_yd2": 164,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+55..+70, 315-335: small patch beside trees, mown rough in both years"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line",
+     "R": "none: 2023 drought-tan rough with a faint line ~+20 at 230-300 and mown paths; 2021 too blurry to confirm a second mowing line (listed uncertain)"
+    }
+   },
+   "4": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "S2 candidates are at the panel edges beyond cart paths / trees or short of the landing zone",
+    "s2": [
+     {
+      "id": "S2-4-L1",
+      "side": "L",
+      "area_yd2": 237,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-70, 120-140 beyond the cart path: 2023 shows diagonal mowing lines"
+     },
+     {
+      "id": "S2-4-L2",
+      "side": "L",
+      "area_yd2": 156,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-70, 180-200 at the panel edge beside the cart path, mown rough 2023"
+     },
+     {
+      "id": "S2-4-L3",
+      "side": "L",
+      "area_yd2": 472,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-70..-60, 200-260 left of the cart path under tree edge: shade / mown rough in both years"
+     },
+     {
+      "id": "S2-4-L4",
+      "side": "L",
+      "area_yd2": 1322,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-60..-30, 340-380: mowing streaks in 2023, smooth green 2021"
+     },
+     {
+      "id": "S2-4-R1",
+      "side": "R",
+      "area_yd2": 1330,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+30..+60, 120-170 tan in 2021 but mower streaks in 2023; short of the Gold landing zone; uncertain"
+     },
+     {
+      "id": "S2-4-R2",
+      "side": "R",
+      "area_yd2": 225,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+55..+70, 310-330 tiny patch of rough at the edge, smooth in 2021"
+     }
+    ],
+    "long_grass": {
+     "L": "none: rough left of the fairway to the cart path is mown (stripes 2023, smooth green 2021)",
+     "R": "none in the landing zone; a tan patch at +35..+60, 120-170 (2021) is short of the landing zone and 2023 shows mower streaks there (uncertain)"
+    }
+   },
+   "5": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "native strip left of the cart path (brown in green 2021, coarse tan 2023); right trees: dark band fairway-side is shadow (CIR), lidar edge is the crown edge",
+    "s2": [
+     {
+      "id": "S2-5-L1",
+      "side": "L",
+      "area_yd2": 1980,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-70..-30, 120-200: short of the landing, 2023 shows diagonal mower lines (mown rough)"
+     },
+     {
+      "id": "S2-5-L2",
+      "side": "L",
+      "area_yd2": 1154,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "brown coarse strip left of the cart path (x<-35) 225-310 in 2021 while everything else is green; coarse streaky tan in 2023; cart path is the mowing edge in both years"
+     },
+     {
+      "id": "S2-5-L3",
+      "side": "L",
+      "area_yd2": 361,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "tan/brown coarse patch at -40..-20, 310-330 in both 2021 (green year) and 2023, continuation of the strip left of the path"
+     }
+    ],
+    "long_grass": {
+     "L": "native: S2-5-L2 and S2-5-L3 accepted (strip left of the cart path, 230-340)",
+     "R": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line"
+    }
+   },
+   "6": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "tree-lined dogleg right; lidar edge matches CIR crowns",
+    "s2": [],
+    "long_grass": {
+     "L": "none: trees / mown rough under the canopy, no open grass",
+     "R": "none: trees and mown rough"
+    }
+   },
+   "8": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "back Gold tee in a clearing 51 yds behind Black (OSM tee box, visible pad); trees match lidar (fairway-side dark band is shadow); auto OB left along the residential lots kept",
+    "s2": [
+     {
+      "id": "S2-8-L1",
+      "side": "L",
+      "area_yd2": 1043,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-50..-20, 310-390 between the trees and the cart path: vertical mowing stripes in 2023, green 2021"
+     },
+     {
+      "id": "S2-8-R1",
+      "side": "R",
+      "area_yd2": 314,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+60..+70, 340-370 at the panel edge: mown rough in both years"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line",
+     "R": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line"
+    }
+   },
+   "9": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "native strips: between the road and the cart path (120-212, short of the fairway) and left of the road; road itself not marked",
+    "s2": [
+     {
+      "id": "S2-9-L1",
+      "side": "L",
+      "area_yd2": 10786,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "real native only in two strips (road / cart path 120-212, and left of the road); S2 shape also covers the road and mown rough at 220-300 (stripes 2023, green 2021); traced as edits 0, 1"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edits 0, 1 (S2-9-L1 replaced: S2 covers the road and the mown rough at 220-300)",
+     "R": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line"
+    }
+   },
+   "10": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "native both sides behind a mowing line in the same place both years; review check (286 sq yds within 10 yds) is where the right fairway edge bulges near 260-330: the mowing line at ~+47 is in the same place in both years, kept as high",
+    "s2": [
+     {
+      "id": "S2-10-L1",
+      "side": "L",
+      "area_yd2": 9770,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native left of ~-47 confirmed; S2 edge comes in over the mown rough by the cart path; traced as edit 0"
+     },
+     {
+      "id": "S2-10-R1",
+      "side": "R",
+      "area_yd2": 525,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "part of the right native band traced as edit 1"
+     },
+     {
+      "id": "S2-10-R2",
+      "side": "R",
+      "area_yd2": 449,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "part of the right native band traced as edit 1 (S2 edge inside the mowing line in places)"
+     },
+     {
+      "id": "S2-10-R3",
+      "side": "R",
+      "area_yd2": 231,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "part of the right native band traced as edit 1"
+     }
+    ],
+    "long_grass": {
+     "L": "native: edit 0 (left of x~-47, brown in 2021, coarse 2023; mown rough between it and the cart path)",
+     "R": "native: edit 1 (mowing line ~+47, ~10 yds off the fairway edge, visible in 2023 as a dark curved line and in 2021 as green/tan edge)"
+    }
+   },
+   "11": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "native left of the cart path 120-240; tree-lined beyond",
+    "s2": [
+     {
+      "id": "S2-11-L1",
+      "side": "L",
+      "area_yd2": 3071,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "brown coarse band left of the cart path (x<-38) 120-240 in 2021 (green year) and coarse streaky in 2023; path is the mowing edge in both years"
+     }
+    ],
+    "long_grass": {
+     "L": "native: S2-11-L1 accepted",
+     "R": "none: trees to the fairway edge, mown rough strip"
+    }
+   },
+   "13": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "low",
+    "note": "bunkers renovated between 2021 and 2023 (2021 shows large waste bunkers): 2023 matches the auto sand; fairway left edge maybe ~8 yds narrower than OSM at 240-280 (left, uncertain)",
+    "s2": [
+     {
+      "id": "S2-13-R1",
+      "side": "R",
+      "area_yd2": 152,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+50..+60, 250-270 among trees beyond the cart path: shade / rough"
+     },
+     {
+      "id": "S2-13-R2",
+      "side": "R",
+      "area_yd2": 1574,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+35..+70, 280-370 beyond the cart path: 2023 tan with tyre tracks, 2021 tan near old waste bunkers; cannot confirm a mowing line, 30+ yds off the fairway; listed uncertain"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line",
+     "R": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line"
+    }
+   },
+   "14": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "renovated between 2021 and 2023 (bunkers differ); 2023 matches auto",
+    "s2": [
+     {
+      "id": "S2-14-R1",
+      "side": "R",
+      "area_yd2": 180,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+55..+70, 255-280 beside the hospitality tent: drought-tan rough 2023, smooth green 2021"
+     },
+     {
+      "id": "S2-14-R2",
+      "side": "R",
+      "area_yd2": 236,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+50..+70, 300-330 drought-tan rough 2023, smooth green 2021"
+     },
+     {
+      "id": "S2-14-R3",
+      "side": "R",
+      "area_yd2": 179,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+55..+70, 380-400 at the edge by tents, smooth green 2021"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line",
+     "R": "none: rough right of the cart path is drought-tan in 2023 but smooth green in 2021"
+    }
+   },
+   "15": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "candidates sit on the cart-path crossing / gravel area short of the fairway and under trees",
+    "s2": [
+     {
+      "id": "S2-15-L1",
+      "side": "L",
+      "area_yd2": 195,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-25..-15, 135-165 under trees beside the cart path"
+     },
+     {
+      "id": "S2-15-L2",
+      "side": "L",
+      "area_yd2": 286,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-50..-30, 155-170 on/beside the cart path crossing"
+     },
+     {
+      "id": "S2-15-L3",
+      "side": "L",
+      "area_yd2": 168,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-30..-15, 170-185 cart path edge, mown"
+     },
+     {
+      "id": "S2-15-L4",
+      "side": "L",
+      "area_yd2": 978,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-60..-30, 200-245 under the left tree line: shade / mown rough in both years"
+     },
+     {
+      "id": "S2-15-R1",
+      "side": "R",
+      "area_yd2": 282,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "+25..+50, 160-180 beside the cart path and bare work area, not grass"
+     }
+    ],
+    "long_grass": {
+     "L": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line",
+     "R": "none: smooth mown rough to the tree line in both years (2021 green, 2023 drought-tan with mower streaks), no second mowing line"
+    }
+   },
+   "17": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "tree-lined; dark band fairway-side of right trees is shadow (CIR crop), lidar edge correct",
+    "s2": [
+     {
+      "id": "S2-17-L1",
+      "side": "L",
+      "area_yd2": 279,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "-45..-30, 150-185 beside the grandstand: trampled / bare tournament ground, not native"
+     }
+    ],
+    "long_grass": {
+     "L": "none: trees and grandstand left",
+     "R": "none: trees and mown rough"
+    }
+   },
+   "18": {
+    "layers": [
+     "long_grass",
+     "trees",
+     "ob",
+     "water",
+     "fairway",
+     "bunkers"
+    ],
+    "confidence": "medium",
+    "note": "fairway left of the tee line; tree edge right matches lidar",
+    "s2": [
+     {
+      "id": "S2-18-R1",
+      "side": "R",
+      "area_yd2": 1079,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "0..+30, 120-180 between the cart path and the parking: tan coarse in 2023, green under shade 2021; short of the landing zone"
+     }
+    ],
+    "long_grass": {
+     "L": "none: water / fairway / mown rough",
+     "R": "none: trees then parking / maintenance lots"
+    }
+   }
+  },
+  "uncertain": [
+   {
+    "hole": "2",
+    "what": "right side +20..+60, 220-300: possible native behind a faint line in drought 2023; 2021 too blurry to confirm"
+   },
+   {
+    "hole": "4",
+    "what": "right +30..+60, 120-170: tan in 2021, mower streaks in 2023 (short of the landing zone)"
+   },
+   {
+    "hole": "13",
+    "what": "fairway left edge 240-280 may be ~8 yds inside the OSM edge; R2 area beyond the cart path"
+   },
+   {
+    "hole": "all",
+    "what": "NAIP 2021 is low-res and 2023 is a drought year, so the two-year mowing-line test is weak; only strips that are brown in the green 2021 photo and coarse in 2023 were marked"
+   }
+  ],
+  "doc": "Mapper agent zone edits (course_data/mapper/BRIEF.md), WGS84; applied in order by course_data/mapper/apply.py"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "5",
+    "op": "add",
+    "lie": "native",
+    "edit": "S2-5-L2",
+    "area_yd2": 1154,
+    "s2": "S2-5-L2",
+    "confidence": "medium",
+    "evidence": "S2-5-L2 accepted: brown coarse strip left of the cart path (x<-35) 225-310 in 2021 while everything else is green; coarse streaky tan in 2023; cart path is the mowing edge in both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.3964576,
+       41.4754381
+      ],
+      [
+       -90.3962254,
+       41.4754348
+      ],
+      [
+       -90.3962215,
+       41.475344
+      ],
+      [
+       -90.3961115,
+       41.4753459
+      ],
+      [
+       -90.3961076,
+       41.475255
+      ],
+      [
+       -90.3962284,
+       41.4752521
+      ],
+      [
+       -90.3962258,
+       41.4751694
+      ],
+      [
+       -90.3964688,
+       41.4751716
+      ],
+      [
+       -90.3965496,
+       41.4756618
+      ],
+      [
+       -90.3964462,
+       41.4757709
+      ],
+      [
+       -90.3964576,
+       41.4754381
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "5",
+    "op": "add",
+    "lie": "native",
+    "edit": "S2-5-L3",
+    "area_yd2": 361,
+    "s2": "S2-5-L3",
+    "confidence": "medium",
+    "evidence": "S2-5-L3 accepted: tan/brown coarse patch at -40..-20, 310-330 in both 2021 (green year) and 2023, continuation of the strip left of the path"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.395953,
+       41.4760574
+      ],
+      [
+       -90.3959613,
+       41.4759737
+      ],
+      [
+       -90.3960821,
+       41.4759707
+      ],
+      [
+       -90.3960781,
+       41.4758799
+      ],
+      [
+       -90.3962003,
+       41.4758851
+      ],
+      [
+       -90.3961973,
+       41.4760678
+      ],
+      [
+       -90.395953,
+       41.4760574
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "native",
+    "edit": "9.0",
+    "area_yd2": 1209,
+    "confidence": "medium",
+    "evidence": "brown coarse band between the road and the cart path in 2021 (green year), coarse tan with no mowing stripes in 2023; ends where the fairway starts at ~212"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.3953753,
+       41.4805977
+      ],
+      [
+       -90.3955125,
+       41.4805158
+      ],
+      [
+       -90.3960344,
+       41.4810241
+      ],
+      [
+       -90.3959057,
+       41.4811008
+      ],
+      [
+       -90.3953753,
+       41.4805977
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "9",
+    "op": "add",
+    "lie": "native",
+    "edit": "9.1",
+    "area_yd2": 2160,
+    "confidence": "medium",
+    "evidence": "brown band left of the road in 2021 and coarse tan in 2023, same edge both years; 60+ yds off the fairway"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.3955026,
+       41.4813411
+      ],
+      [
+       -90.3942785,
+       41.4801801
+      ],
+      [
+       -90.3943815,
+       41.4801187
+      ],
+      [
+       -90.3956055,
+       41.4812798
+      ],
+      [
+       -90.3955026,
+       41.4813411
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "native",
+    "edit": "10.0",
+    "area_yd2": 6700,
+    "confidence": "medium",
+    "evidence": "brown/red unmown band left of ~-46 along the whole window in 2021 (green year), coarse tufted 2023; mown green strip between it and the cart path in 2021"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.395852,
+       41.4813319
+      ],
+      [
+       -90.3956622,
+       41.4814563
+      ],
+      [
+       -90.3949432,
+       41.4808356
+      ],
+      [
+       -90.3942077,
+       41.4802257
+      ],
+      [
+       -90.3936326,
+       41.4797291
+      ],
+      [
+       -90.3938389,
+       41.479594
+      ],
+      [
+       -90.395852,
+       41.4813319
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "10",
+    "op": "add",
+    "lie": "native",
+    "edit": "10.1",
+    "area_yd2": 4610,
+    "confidence": "high",
+    "evidence": "tan coarse band from ~+47 out, 125-330, in 2021 (green year) behind a crisp edge; same edge visible in 2023 as a dark mowing line with streaky coarse grass outside, ~10 yds of mown rough inside"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.3938798,
+       41.4810956
+      ],
+      [
+       -90.3943583,
+       41.4815463
+      ],
+      [
+       -90.3941932,
+       41.4816544
+      ],
+      [
+       -90.3927193,
+       41.480382
+      ],
+      [
+       -90.3929092,
+       41.4802576
+      ],
+      [
+       -90.3938798,
+       41.4810956
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "hole": "11",
+    "op": "add",
+    "lie": "native",
+    "edit": "S2-11-L1",
+    "area_yd2": 3172,
+    "s2": "S2-11-L1",
+    "confidence": "medium",
+    "evidence": "S2-11-L1 accepted: brown coarse band left of the cart path (x<-38) 120-240 in 2021 (green year) and coarse streaky in 2023; path is the mowing edge in both years"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -90.3950611,
+       41.4836058
+      ],
+      [
+       -90.3950469,
+       41.4836878
+      ],
+      [
+       -90.3951108,
+       41.4836991
+      ],
+      [
+       -90.3954136,
+       41.4837015
+      ],
+      [
+       -90.3954197,
+       41.4836096
+      ],
+      [
+       -90.3955312,
+       41.4836123
+      ],
+      [
+       -90.3955252,
+       41.4837042
+      ],
+      [
+       -90.3955572,
+       41.4837098
+      ],
+      [
+       -90.3956474,
+       41.4837088
+      ],
+      [
+       -90.3956535,
+       41.4836169
+      ],
+      [
+       -90.3960095,
+       41.4836287
+      ],
+      [
+       -90.3960059,
+       41.4837126
+      ],
+      [
+       -90.3961495,
+       41.4837209
+      ],
+      [
+       -90.3960673,
+       41.4839854
+      ],
+      [
+       -90.3949267,
+       41.4837851
+      ],
+      [
+       -90.3949328,
+       41.4836931
+      ],
+      [
+       -90.3947203,
+       41.4836896
+      ],
+      [
+       -90.394806,
+       41.4835948
+      ],
+      [
+       -90.3950611,
+       41.4836058
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
