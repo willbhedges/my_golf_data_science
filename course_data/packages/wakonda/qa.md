@@ -1,6 +1,6 @@
 # Wakonda Club (Des Moines, IA) - Blue tees
 
-Built 2026-11-03T16:26:28Z. OSM way/102681377. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T21:42:25Z. OSM way/102681377. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -57,4 +57,6 @@ OSM features inside the course: buildings 9, golf=bunker 48, golf=cartpath 39, g
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -4364 m2 {'strip': 1667, 'road': 1842, 'cells': 818}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 9 polygons (property_line 9); mode replace
+- **native_auto**: none: no S2 native P for this course (vision_any/s2/<slug>/s2_stack.npz)
