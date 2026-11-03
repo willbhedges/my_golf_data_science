@@ -348,7 +348,8 @@ def install_engine(eng, M, D):
             pass
     ft = eng.get("flight_trees")
     if ft:
-        M.ev_curve = flight_tree_ev_curve(M, float(ft.get("height_yds", 20.0)), float(ft.get("p_hit", 0.7)),
+        M.ev_curve = flight_tree_ev_curve(M, float(os.environ.get("V2_FLIGHT_HEIGHT") or ft.get("height_yds", 20.0)),
+                                          float(os.environ.get("V2_FLIGHT_PHIT") or ft.get("p_hit", 0.7)),
                                           drop_of=eng.get("_drop_of"))
 
 
