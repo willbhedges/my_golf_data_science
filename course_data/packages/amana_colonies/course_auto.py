@@ -1,5 +1,5 @@
 """Course module for Amana Colonies Golf Course (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T16:14:59Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T21:25:12Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_amana_colonies.json
 

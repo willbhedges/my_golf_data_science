@@ -1,6 +1,6 @@
 # Creekmoor Golf Club (Raymore, MO) - Black tees
 
-Built 2026-11-03T16:16:21Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T21:26:42Z. OSM relation/4249741. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-03T16:16:21Z. OSM relation/4249741. Scorecard: golfify (golfify). 
 | holes_with_trees_or_long_grass_in_landing_zone | 5 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.05 |
-| mean_confidence | 0.799 |
+| mean_confidence | 0.8 |
 | osm_score | 0.559 |
 
 OSM features inside the course: buildings 3, golf=bunker 68, golf=cartpath 12, golf=driving_range 1, golf=green 19, golf=hole 17, golf=pin 18, golf=tee 75, golf=water_hazard 4, holes_with_handicap 17, holes_with_par 17, water_polygons 5
@@ -36,7 +36,7 @@ OSM features inside the course: buildings 3, golf=bunker 68, golf=cartpath 12, g
 | 11 | 4 | 374 / 374 | 43 | 0.81 | auto | 4% | 58% | 37% | tee stage: Black tee_centroid |  |
 | 12 | 3 | 240 / 240 | 57 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Black review (inside OSM tee 1490361208) | tee: tee stage: Black review (inside OSM tee 1490361208) |
 | 13 | 5 | 548 / 547 | 334 | 0.79 | check the flags | 3% | 50% | 48% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 14 | 4 | 420 / 419 | 174 | 0.70 | check the flags | 3% | 51% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 14 | 4 | 420 / 421 | 174 | 0.73 | check the flags | 3% | 51% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; green outline from the imagery detector (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 15 | 4 | 460 / 460 | 264 | 0.78 | check the flags | 7% | 55% | 38% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 16 | 4 | 455 / 454 | 354 | 0.75 | check the flags | 6% | 42% | 51% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 17 | 3 | 214 / 216 | 163 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Black review (inside OSM tee 1490357722) | tee: tee stage: Black review (inside OSM tee 1490357722) |
@@ -58,7 +58,9 @@ OSM features inside the course: buildings 3, golf=bunker 68, golf=cartpath 12, g
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -82229 m2 {'raised': 67203, 'road': 3160, 'strip': 2309, 'cells': 9286}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.01; gated: none)
+- **green_auto**: ok: 1 of 1 hole(s) without a mapped green got a detected green (score >= 0.40, centre moved <= 12 / 30 yds on OSM / routed lines)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 41 polygons (outside 41); mode replace
+- **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)
 
 ## Warnings
 
