@@ -15,3 +15,5 @@ Sandhill prairie (tan textured native) between all fairways, beyond a mown rough
 | 10 | maintenance yard right short of 240: excluded |
 | 14 | dirt lot right short of 250: excluded |
 | 18 | left: hayed native with windrows (2023), kept as native |
+| 6 | Blue tee (re-checked 2026-11-03) | moved by hand to the back end of the long mapped box (389 yds vs card 400); the estimate was 9 yds behind it in native grass. |
+| 11 | Blue tee (re-checked 2026-11-03) | **moved by hand to the back end of the mapped box: 380 yds vs card 423** (medium confidence). The +55 estimate is rough beside a cart path and trees next to the previous green: no box in NAIP 2021 / 2023, no lidar pad. |

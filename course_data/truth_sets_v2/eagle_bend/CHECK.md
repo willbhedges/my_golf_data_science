@@ -16,4 +16,6 @@ Numbering: the OSM / OpenGolfAPI order (library review rv06; the golfify card is
 | 3 | golfer: native left before the pond; agrees with NAIP 2017/2019/2023; drawn to the end of the footprint (the pond is beyond it) |
 | 11 13 15 16 18 | native from the 2021 photo only (mottled vs smooth turf): medium-low |
 | 1 7 9 10 14 | no native traced (mown / trees / water) |
+| 14 | Gold tee (re-checked 2026-11-03) | **moved by hand to the back edge of the back-most mapped box: 374 yds vs card 429.** The +62 estimate is open rough beside a tree line: no box in NAIP 2021 / 2023, flat DEM, no lidar pad. |
+| 18 | Gold tee (re-checked 2026-11-03) | moved by hand 23 yds right onto the small mown pad at the end of the cart path (raised in the DEM): 547 yds = the card. |
 | all | mown-rough width 10 yds: +/-5 |

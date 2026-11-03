@@ -92,10 +92,12 @@ PARAMS = dict(
     untagged_card_yd=5.0,  # loses to an untagged OSM box of the hole within this of the card (card_checked_point;
                            # sycamore_ridge 1: black / blue tags two boxes forward, 42 / 50 yds short of the card,
                            # untagged boxes at 463 / 447 for a 467 / 445 card)
-    far_cap_yd=None,       # EXPERIMENTAL, off: a set walked back / put on an unmapped pad more than this behind the
-                           # back edge of the hole's back-most own OSM box goes onto that box (_far_cap; far_cap_beyond
-                           # extends it by the beyond rule). Cuts truth-set regret but breaks 4-9 holes whose truth tee is
-                           # only "estimated" (platform/ERROR_BUDGET.md "Tee positions"): not adopted.
+    far_cap_yd=45.0,       # a set walked back / put on an unmapped pad more than this behind the back edge of the
+                           # hole's back-most own OSM box goes onto that box, clamped to it (_far_cap; far_cap_beyond
+                           # extends it by the beyond rule instead). Adopted 2026-11-03 after the back tees it moves
+                           # were hand-checked on NAIP + 3DEP and 5 estimated truth tees corrected: 24 truth courses
+                           # 249 -> 250 matches, regret 5.36 -> 5.11; leave-one-course-out picks 45 in every fold
+                           # over {off, 30, 45} (platform/ERROR_BUDGET.md "Far cap"). None = off.
 )
 
 

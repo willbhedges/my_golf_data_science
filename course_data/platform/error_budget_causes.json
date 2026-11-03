@@ -1,0 +1,6412 @@
+{
+ "n": 331,
+ "match": 250,
+ "regret": 5.106,
+ "near_tie": {
+  "misses": 81,
+  "under_tie": 16,
+  "under_cost": 24,
+  "over_cost": 57,
+  "regret_over_cost": 4.67
+ },
+ "match_if_cost_counted": 274,
+ "per_cause": {
+  "long_grass": {
+   "misses": 28,
+   "near_ties": 2,
+   "regret": 2.437,
+   "regret_misses": 1.968,
+   "holes": [
+    "gateway_national:3",
+    "gateway_national:9",
+    "gateway_national:13",
+    "veenker:15",
+    "coldwater:3",
+    "coldwater:10",
+    "coldwater:18",
+    "ellis:15",
+    "spirit_hollow:1",
+    "spirit_hollow:4",
+    "spirit_hollow:18",
+    "annbriar:2",
+    "annbriar:3",
+    "annbriar:8",
+    "annbriar:9",
+    "sand_creek_station:4",
+    "sand_creek_station:8",
+    "eagle_bend:2",
+    "eagle_bend:5",
+    "eagle_bend:11",
+    "eagle_bend:15",
+    "prairie_dunes:17",
+    "mariah_hills:1",
+    "mariah_hills:2",
+    "mariah_hills:7",
+    "mariah_hills:12",
+    "mariah_hills:13",
+    "mariah_hills:18"
+   ]
+  },
+  "tees": {
+   "misses": 21,
+   "near_ties": 4,
+   "regret": 0.931,
+   "regret_misses": 0.911,
+   "holes": [
+    "gateway_national:18",
+    "hot_springs_arlington:9",
+    "pine_dunes:15",
+    "veenker:7",
+    "veenker:10",
+    "veenker:16",
+    "spirit_hollow:13",
+    "spirit_hollow:14",
+    "spirit_hollow:16",
+    "tomahawk_hills:4",
+    "tomahawk_hills:17",
+    "la_nickell:2",
+    "gustin:6",
+    "gustin:15",
+    "osage_national:3",
+    "osage_national:5",
+    "osage_national:15",
+    "prairie_dunes:3",
+    "buffalo_dunes:5",
+    "buffalo_dunes:6",
+    "buffalo_dunes:11"
+   ]
+  },
+  "trees": {
+   "misses": 24,
+   "near_ties": 8,
+   "regret": 0.917,
+   "regret_misses": 0.72,
+   "holes": [
+    "hot_springs_arlington:1",
+    "hot_springs_arlington:4",
+    "hot_springs_arlington:13",
+    "hot_springs_arlington:18",
+    "pine_dunes:5",
+    "pine_dunes:13",
+    "veenker:3",
+    "veenker:12",
+    "tomahawk_hills:12",
+    "la_nickell:13",
+    "la_nickell:15",
+    "la_nickell:17",
+    "buffalo_ridge:13",
+    "rivercut:12",
+    "gustin:4",
+    "gustin:9",
+    "gustin:11",
+    "gustin:16",
+    "amana_colonies:12",
+    "osage_national:6",
+    "wakonda:3",
+    "eagle_bend:7",
+    "eagle_bend:9",
+    "eagle_bend:16"
+   ]
+  },
+  "fairway": {
+   "misses": 3,
+   "near_ties": 1,
+   "regret": 0.261,
+   "regret_misses": 0.147,
+   "holes": [
+    "ellis:13",
+    "ellis:18",
+    "spirit_hollow:17"
+   ]
+  },
+  "no layer": {
+   "misses": 0,
+   "near_ties": 0,
+   "regret": 0.142,
+   "regret_misses": 0.0,
+   "holes": []
+  },
+  "water": {
+   "misses": 1,
+   "near_ties": 0,
+   "regret": 0.131,
+   "regret_misses": 0.095,
+   "holes": [
+    "wakonda:7"
+   ]
+  },
+  "ob": {
+   "misses": 3,
+   "near_ties": 1,
+   "regret": 0.127,
+   "regret_misses": 0.041,
+   "holes": [
+    "hot_springs_arlington:10",
+    "amana_colonies:9",
+    "mariah_hills:10"
+   ]
+  },
+  "elevation": {
+   "misses": 1,
+   "near_ties": 0,
+   "regret": 0.118,
+   "regret_misses": 0.1,
+   "holes": [
+    "wakonda:5"
+   ]
+  },
+  "routing": {
+   "misses": 0,
+   "near_ties": 0,
+   "regret": 0.038,
+   "regret_misses": 0.0,
+   "holes": []
+  },
+  "greens": {
+   "misses": 0,
+   "near_ties": 0,
+   "regret": 0.003,
+   "regret_misses": 0.0,
+   "holes": []
+  }
+ },
+ "hole_causes": {
+  "blue_hills:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0038,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0015,
+    "trees": 0.0037,
+    "ob": 0.0037
+   }
+  },
+  "blue_hills:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0007,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0021
+   }
+  },
+  "blue_hills:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "blue_hills:4": {
+   "cause": "ob",
+   "miss": false,
+   "regret": 0.0156,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0103,
+    "trees": 0.011,
+    "ob": 0.0154
+   }
+  },
+  "blue_hills:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0029,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0014,
+    "trees": 0.0014,
+    "ob": 0.0029
+   }
+  },
+  "blue_hills:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.001
+   }
+  },
+  "blue_hills:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": -0.0013
+   }
+  },
+  "blue_hills:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0024,
+   "fixers": [
+    "card",
+    "greens",
+    "fairway",
+    "water",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.001,
+    "tees": -0.0026,
+    "trees": -0.0024,
+    "ob": -0.0073
+   }
+  },
+  "blue_hills:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0062,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "blue_hills:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0021,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0015,
+    "tees": 0.0022,
+    "elevation": 0.0019
+   }
+  },
+  "blue_hills:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "blue_hills:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "blue_hills:17": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0034,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "blue_hills:18": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0144,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0108,
+    "ob": 0.0108
+   }
+  },
+  "eagle_knoll:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:4": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0003,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:8": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0026,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0021,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0021
+   }
+  },
+  "eagle_knoll:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_knoll:17": {
+   "cause": "water",
+   "miss": false,
+   "regret": 0.0131,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "water": 0.0131
+   }
+  },
+  "eagle_knoll:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "gateway_national:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.002
+   }
+  },
+  "gateway_national:2": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0113,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.0113
+   }
+  },
+  "gateway_national:3": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0473,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "long_grass": 0.0473
+   }
+  },
+  "gateway_national:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "gateway_national:6": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0179,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0143,
+    "trees": 0.0143,
+    "long_grass": 0.0179
+   }
+  },
+  "gateway_national:8": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "elevation": -0.003
+   }
+  },
+  "gateway_national:9": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.1359,
+   "fixers": [
+    "trees",
+    "long_grass"
+   ],
+   "rec": {
+    "trees": 0.0984,
+    "long_grass": 0.1359
+   }
+  },
+  "gateway_national:10": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0276,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.0276
+   }
+  },
+  "gateway_national:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "gateway_national:13": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.045,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "long_grass": 0.045
+   }
+  },
+  "gateway_national:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "gateway_national:16": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.017,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.017
+   }
+  },
+  "gateway_national:18": {
+   "cause": "tees",
+   "miss": true,
+   "regret": -0.0001,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "tees": -0.0092
+   }
+  },
+  "hot_springs_arlington:1": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0063,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "tees": -0.0037,
+    "trees": 0.0067
+   }
+  },
+  "hot_springs_arlington:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0249,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0014,
+    "trees": -0.0234
+   }
+  },
+  "hot_springs_arlington:4": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0338,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "routing": -0.0034,
+    "tees": -0.0019,
+    "trees": 0.0318
+   }
+  },
+  "hot_springs_arlington:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "elevation": -0.004
+   }
+  },
+  "hot_springs_arlington:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0013,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0013
+   }
+  },
+  "hot_springs_arlington:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0691
+   }
+  },
+  "hot_springs_arlington:9": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0265,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "tees": 0.0265
+   }
+  },
+  "hot_springs_arlington:10": {
+   "cause": "ob",
+   "miss": true,
+   "regret": 0.0264,
+   "fixers": [
+    "ob"
+   ],
+   "rec": {
+    "trees": 0.0089,
+    "ob": 0.0263
+   }
+  },
+  "hot_springs_arlington:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0052,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0038,
+    "trees": 0.003,
+    "ob": 0.003
+   }
+  },
+  "hot_springs_arlington:13": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0131,
+   "fixers": [
+    "tees",
+    "trees"
+   ],
+   "rec": {
+    "tees": 0.0066,
+    "trees": 0.013
+   }
+  },
+  "hot_springs_arlington:14": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0082,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0026,
+    "trees": 0.0063
+   }
+  },
+  "hot_springs_arlington:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0026,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": -0.0022
+   }
+  },
+  "hot_springs_arlington:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "hot_springs_arlington:18": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0093,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "routing": 0.0025,
+    "trees": 0.0092
+   }
+  },
+  "pine_dunes:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0036,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0012,
+    "tees": 0.0034
+   }
+  },
+  "pine_dunes:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0003,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "pine_dunes:4": {
+   "cause": "tees",
+   "miss": false,
+   "regret": 0.0085,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0073
+   }
+  },
+  "pine_dunes:5": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0015,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {}
+  },
+  "pine_dunes:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0007,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0057,
+    "elevation": -0.0069
+   }
+  },
+  "pine_dunes:8": {
+   "cause": "tees",
+   "miss": false,
+   "regret": 0.0055,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.001,
+    "tees": 0.0053
+   }
+  },
+  "pine_dunes:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0005,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "pine_dunes:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "pine_dunes:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": -0.0026
+   }
+  },
+  "pine_dunes:13": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0052,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "routing": 0.0014,
+    "trees": 0.0049
+   }
+  },
+  "pine_dunes:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "pine_dunes:15": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0693,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "routing": 0.0014,
+    "tees": 0.068
+   }
+  },
+  "pine_dunes:17": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.003,
+    "trees": -0.0062
+   }
+  },
+  "pine_dunes:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0046,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0046
+   }
+  },
+  "veenker:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0014,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0014
+   }
+  },
+  "veenker:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0065,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "veenker:3": {
+   "cause": "trees (-layer)",
+   "miss": true,
+   "regret": 0.0373,
+   "fixers": [],
+   "rec": {
+    "tees": -0.0011,
+    "fairway": 0.0019,
+    "trees": 0.0163
+   }
+  },
+  "veenker:4": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0025,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0025
+   }
+  },
+  "veenker:5": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0087,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0089,
+    "water": -0.0047,
+    "ob": -0.0047
+   }
+  },
+  "veenker:7": {
+   "cause": "tees",
+   "miss": true,
+   "regret": -0.0004,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {}
+  },
+  "veenker:9": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.009,
+   "fixers": [
+    "card",
+    "routing",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0039,
+    "fairway": 0.0049,
+    "trees": 0.0052
+   }
+  },
+  "veenker:10": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0028,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "tees": 0.0017,
+    "fairway": 0.0018,
+    "trees": 0.0018
+   }
+  },
+  "veenker:12": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.1103,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "tees": 0.0715,
+    "fairway": 0.0068,
+    "trees": 0.1096
+   }
+  },
+  "veenker:14": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0183,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0183
+   }
+  },
+  "veenker:15": {
+   "cause": "long_grass (-layer)",
+   "miss": true,
+   "regret": 0.0553,
+   "fixers": [],
+   "rec": {}
+  },
+  "veenker:16": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0436,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "tees": 0.0428
+   }
+  },
+  "veenker:18": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0108,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0059,
+    "trees": 0.0108
+   }
+  },
+  "coldwater:1": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0254,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "ob": -0.0262,
+    "long_grass": 0.0254
+   }
+  },
+  "coldwater:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": -0.0041,
+    "trees": -0.0116
+   }
+  },
+  "coldwater:3": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0626,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "tees": -0.0248,
+    "fairway": -0.044,
+    "long_grass": 0.0627,
+    "bunkers": -0.0244
+   }
+  },
+  "coldwater:4": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0011,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0098,
+    "fairway": -0.0293,
+    "ob": -0.054,
+    "long_grass": -0.0103
+   }
+  },
+  "coldwater:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0029,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": -0.0074,
+    "long_grass": 0.0029
+   }
+  },
+  "coldwater:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0004,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "coldwater:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "coldwater:10": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.1924,
+   "fixers": [
+    "fairway",
+    "long_grass"
+   ],
+   "rec": {
+    "fairway": 0.1169,
+    "long_grass": 0.1924
+   }
+  },
+  "coldwater:12": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0242,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0144,
+    "water": 0.0144,
+    "long_grass": 0.0242
+   }
+  },
+  "coldwater:13": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.045,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.045,
+    "bunkers": 0.0252
+   }
+  },
+  "coldwater:14": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0203,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.0203
+   }
+  },
+  "coldwater:15": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0057,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.0057
+   }
+  },
+  "coldwater:17": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": -0.0045
+   }
+  },
+  "coldwater:18": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0331,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "long_grass": 0.033
+   }
+  },
+  "ellis:1": {
+   "cause": "fairway",
+   "miss": false,
+   "regret": 0.0105,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0091,
+    "fairway": 0.0068,
+    "trees": 0.0068
+   }
+  },
+  "ellis:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0025,
+    "trees": -0.0111
+   }
+  },
+  "ellis:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0016,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0016
+   }
+  },
+  "ellis:5": {
+   "cause": "fairway",
+   "miss": false,
+   "regret": 0.018,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0182,
+    "trees": 0.015
+   }
+  },
+  "ellis:6": {
+   "cause": "fairway",
+   "miss": false,
+   "regret": 0.0175,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0164
+   }
+  },
+  "ellis:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "ellis:9": {
+   "cause": "fairway",
+   "miss": false,
+   "regret": 0.029,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0224,
+    "trees": 0.0224
+   }
+  },
+  "ellis:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": -0.0041,
+    "trees": -0.0018
+   }
+  },
+  "ellis:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0044,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0044
+   }
+  },
+  "ellis:13": {
+   "cause": "fairway",
+   "miss": true,
+   "regret": 0.0,
+   "fixers": [
+    "fairway"
+   ],
+   "rec": {
+    "fairway": -0.0025
+   }
+  },
+  "ellis:15": {
+   "cause": "long_grass (-layer)",
+   "miss": true,
+   "regret": 0.1044,
+   "fixers": [],
+   "rec": {
+    "fairway": 0.0264,
+    "long_grass": 0.0469
+   }
+  },
+  "ellis:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": -0.008
+   }
+  },
+  "ellis:17": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0039,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0039
+   }
+  },
+  "ellis:18": {
+   "cause": "fairway",
+   "miss": true,
+   "regret": 0.1243,
+   "fixers": [],
+   "rec": {
+    "fairway": 0.1112,
+    "trees": 0.1059
+   }
+  },
+  "spirit_hollow:1": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.4591,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "tees": -0.1724,
+    "fairway": 0.3227,
+    "long_grass": 0.4589
+   }
+  },
+  "spirit_hollow:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0019,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0019,
+    "fairway": 0.0035
+   }
+  },
+  "spirit_hollow:4": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0982,
+   "fixers": [],
+   "rec": {
+    "tees": 0.0075,
+    "fairway": 0.0199,
+    "long_grass": 0.0978
+   }
+  },
+  "spirit_hollow:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0013,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "spirit_hollow:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0019,
+    "greens": -0.0049,
+    "elevation": -0.0049
+   }
+  },
+  "spirit_hollow:8": {
+   "cause": "fairway",
+   "miss": false,
+   "regret": 0.0173,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0076,
+    "fairway": 0.0108,
+    "ob": -0.0123,
+    "long_grass": 0.0108
+   }
+  },
+  "spirit_hollow:9": {
+   "cause": "fairway",
+   "miss": false,
+   "regret": 0.0089,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers"
+   ],
+   "rec": {
+    "tees": -0.0025,
+    "fairway": 0.0064,
+    "elevation": -0.0225
+   }
+  },
+  "spirit_hollow:10": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0361,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0365,
+    "water": -0.0916,
+    "long_grass": 0.0353
+   }
+  },
+  "spirit_hollow:11": {
+   "cause": "fairway",
+   "miss": false,
+   "regret": 0.0133,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "fairway": 0.0133
+   }
+  },
+  "spirit_hollow:13": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0101,
+   "fixers": [],
+   "rec": {
+    "tees": 0.0056,
+    "fairway": 0.003,
+    "long_grass": -0.0155
+   }
+  },
+  "spirit_hollow:14": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.1401,
+   "fixers": [],
+   "rec": {
+    "tees": 0.1156,
+    "greens": 0.064,
+    "fairway": 0.11,
+    "trees": 0.11,
+    "elevation": 0.11
+   }
+  },
+  "spirit_hollow:16": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0402,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "tees": -0.0135,
+    "fairway": 0.039,
+    "trees": 0.0204,
+    "long_grass": 0.0338,
+    "elevation": 0.0204
+   }
+  },
+  "spirit_hollow:17": {
+   "cause": "fairway",
+   "miss": true,
+   "regret": 0.0225,
+   "fixers": [
+    "fairway",
+    "long_grass",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0025,
+    "fairway": 0.0174,
+    "long_grass": 0.0174,
+    "elevation": 0.0129
+   }
+  },
+  "spirit_hollow:18": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.1484,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "tees": 0.0606,
+    "fairway": -0.0429,
+    "trees": -0.0429,
+    "water": 0.0654,
+    "long_grass": 0.1413
+   }
+  },
+  "colbert_hills:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0003,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:4": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0005,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "greens": -0.001
+   }
+  },
+  "colbert_hills:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:9": {
+   "cause": "water",
+   "miss": false,
+   "regret": 0.017,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "water": 0.017
+   }
+  },
+  "colbert_hills:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0005,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "colbert_hills:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "tomahawk_hills:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "tomahawk_hills:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0003,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "tomahawk_hills:4": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0235,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "tees": 0.0209,
+    "elevation": -0.003
+   }
+  },
+  "tomahawk_hills:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0004,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0024
+   }
+  },
+  "tomahawk_hills:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "tomahawk_hills:8": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "tomahawk_hills:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "tomahawk_hills:12": {
+   "cause": "trees (-layer)",
+   "miss": true,
+   "regret": 0.0168,
+   "fixers": [],
+   "rec": {
+    "routing": -0.0014,
+    "tees": -0.0051,
+    "trees": 0.004
+   }
+  },
+  "tomahawk_hills:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0106,
+   "fixers": [
+    "card",
+    "routing",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.001,
+    "tees": -0.0336,
+    "ob": 0.0015
+   }
+  },
+  "tomahawk_hills:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "tomahawk_hills:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0003,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "tomahawk_hills:17": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0228,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "tees": 0.0221
+   }
+  },
+  "la_nickell:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0036,
+    "tees": -0.0014
+   }
+  },
+  "la_nickell:2": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0315,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "routing": 0.0014,
+    "tees": 0.0316,
+    "trees": 0.0025,
+    "elevation": 0.0025
+   }
+  },
+  "la_nickell:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "la_nickell:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0053,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0052
+   }
+  },
+  "la_nickell:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0042,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.001,
+    "tees": -0.0017,
+    "trees": 0.0037
+   }
+  },
+  "la_nickell:8": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0011,
+   "fixers": [
+    "card",
+    "routing",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0865
+   }
+  },
+  "la_nickell:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0015
+   }
+  },
+  "la_nickell:10": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0113,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers"
+   ],
+   "rec": {
+    "greens": 0.0071,
+    "trees": 0.0104,
+    "elevation": -0.0124
+   }
+  },
+  "la_nickell:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0022,
+    "trees": 0.0017,
+    "ob": 0.0017
+   }
+  },
+  "la_nickell:13": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0305,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "trees": 0.0319
+   }
+  },
+  "la_nickell:15": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.1014,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "routing": 0.0042,
+    "tees": -0.0024,
+    "trees": 0.1027,
+    "elevation": 0.0045
+   }
+  },
+  "la_nickell:16": {
+   "cause": "tees",
+   "miss": false,
+   "regret": -0.0149,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0019,
+    "tees": 0.0058
+   }
+  },
+  "la_nickell:17": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0278,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "routing": 0.0024,
+    "tees": 0.0091,
+    "trees": 0.0244
+   }
+  },
+  "la_nickell:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "buffalo_ridge:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0007,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "buffalo_ridge:2": {
+   "cause": "ob",
+   "miss": false,
+   "regret": 0.0697,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0025,
+    "trees": -0.0548,
+    "ob": 0.0658
+   }
+  },
+  "buffalo_ridge:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "buffalo_ridge:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "buffalo_ridge:6": {
+   "cause": "tees",
+   "miss": false,
+   "regret": 0.005,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0052
+   }
+  },
+  "buffalo_ridge:8": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0091,
+    "trees": -0.0013
+   }
+  },
+  "buffalo_ridge:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "buffalo_ridge:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0044,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0049
+   }
+  },
+  "buffalo_ridge:13": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0265,
+   "fixers": [
+    "tees",
+    "trees"
+   ],
+   "rec": {
+    "routing": -0.007,
+    "tees": 0.0208,
+    "trees": 0.0262
+   }
+  },
+  "buffalo_ridge:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "buffalo_ridge:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.004,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0028,
+    "tees": 0.0046,
+    "fairway": 0.0031,
+    "trees": 0.0031,
+    "elevation": 0.0031
+   }
+  },
+  "buffalo_ridge:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0024
+   }
+  },
+  "buffalo_ridge:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0031,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "rivercut:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0014,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "rivercut:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0029
+   }
+  },
+  "rivercut:4": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0022,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0029
+   }
+  },
+  "rivercut:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0007,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "rivercut:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0007,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "rivercut:8": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.004
+   }
+  },
+  "rivercut:9": {
+   "cause": "water",
+   "miss": false,
+   "regret": 0.0059,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "water": 0.0058
+   }
+  },
+  "rivercut:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0017,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0014,
+    "tees": -0.0017
+   }
+  },
+  "rivercut:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "rivercut:12": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0203,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "tees": 0.0043,
+    "trees": 0.0179,
+    "long_grass": 0.005
+   }
+  },
+  "rivercut:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0018,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "rivercut:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0012,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "rivercut:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "rivercut:18": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0131,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0088,
+    "tees": 0.0083,
+    "trees": 0.0103,
+    "water": 0.0103,
+    "ob": 0.0095
+   }
+  },
+  "gustin:1": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0161,
+   "fixers": [
+    "card",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0081,
+    "tees": 0.0082,
+    "trees": 0.0142
+   }
+  },
+  "gustin:3": {
+   "cause": "elevation",
+   "miss": false,
+   "regret": 0.0182,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0051,
+    "tees": 0.0147,
+    "trees": 0.0121,
+    "elevation": 0.0175
+   }
+  },
+  "gustin:4": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0366,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "routing": 0.0057,
+    "tees": 0.0112,
+    "trees": 0.0391,
+    "elevation": 0.012
+   }
+  },
+  "gustin:6": {
+   "cause": "tees",
+   "miss": true,
+   "regret": -0.0582,
+   "fixers": [],
+   "rec": {
+    "routing": -0.088,
+    "tees": 0.0229
+   }
+  },
+  "gustin:7": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0093,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.003,
+    "tees": -0.0025,
+    "trees": 0.0085,
+    "elevation": -0.0122
+   }
+  },
+  "gustin:8": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "gustin:9": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0764,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "tees": 0.0031,
+    "trees": 0.0764
+   }
+  },
+  "gustin:11": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.1136,
+   "fixers": [],
+   "rec": {
+    "routing": -0.0058,
+    "tees": -0.0317,
+    "trees": 0.0663,
+    "ob": 0.0557
+   }
+  },
+  "gustin:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0039
+   }
+  },
+  "gustin:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": -0.0035
+   }
+  },
+  "gustin:15": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0186,
+   "fixers": [
+    "tees",
+    "trees"
+   ],
+   "rec": {
+    "tees": 0.0154,
+    "trees": 0.0106
+   }
+  },
+  "gustin:16": {
+   "cause": "trees",
+   "miss": true,
+   "regret": -0.0573,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "tees": -0.0323,
+    "trees": -0.051
+   }
+  },
+  "gustin:17": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0011,
+    "tees": 0.0014
+   }
+  },
+  "gustin:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0014,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0013,
+    "elevation": 0.0013
+   }
+  },
+  "amana_colonies:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0011,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0047
+   }
+  },
+  "amana_colonies:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0024,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0023,
+    "trees": 0.0021
+   }
+  },
+  "amana_colonies:3": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.003
+   }
+  },
+  "amana_colonies:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0015,
+    "fairway": 0.0018,
+    "elevation": 0.0018
+   }
+  },
+  "amana_colonies:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0005,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "amana_colonies:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0031,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0026,
+    "trees": 0.0038,
+    "ob": 0.0038
+   }
+  },
+  "amana_colonies:9": {
+   "cause": "ob",
+   "miss": true,
+   "regret": 0.0103,
+   "fixers": [
+    "ob"
+   ],
+   "rec": {
+    "trees": 0.0023,
+    "ob": 0.0056
+   }
+  },
+  "amana_colonies:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0052,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0047,
+    "tees": 0.0044
+   }
+  },
+  "amana_colonies:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0017
+   }
+  },
+  "amana_colonies:12": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0027,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "trees": 0.0037
+   }
+  },
+  "amana_colonies:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "amana_colonies:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0007,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "amana_colonies:16": {
+   "cause": "tees",
+   "miss": false,
+   "regret": 0.0064,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0052
+   }
+  },
+  "amana_colonies:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0018,
+    "tees": -0.0014,
+    "elevation": -0.0017
+   }
+  },
+  "osage_national:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "osage_national:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "osage_national:3": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.1837,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "routing": 0.0045,
+    "tees": 0.1852
+   }
+  },
+  "osage_national:5": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0194,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "routing": -0.0078,
+    "tees": 0.0023,
+    "trees": 0.01,
+    "ob": 0.0156
+   }
+  },
+  "osage_national:6": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.007,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "trees": 0.006,
+    "elevation": -0.0045
+   }
+  },
+  "osage_national:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "osage_national:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0003,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0029,
+    "water": -0.0014
+   }
+  },
+  "osage_national:10": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0083,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0086
+   }
+  },
+  "osage_national:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "osage_national:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0019,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.002,
+    "tees": 0.0019
+   }
+  },
+  "osage_national:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "osage_national:15": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.029,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "routing": -0.0113,
+    "tees": 0.0284
+   }
+  },
+  "osage_national:17": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "osage_national:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0043,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0018,
+    "tees": 0.0046
+   }
+  },
+  "annbriar:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0028,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0025
+   }
+  },
+  "annbriar:2": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0114,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "tees": -0.0041,
+    "long_grass": 0.0085
+   }
+  },
+  "annbriar:3": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0853,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "tees": -0.0025,
+    "long_grass": 0.0855
+   }
+  },
+  "annbriar:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": -0.0028
+   }
+  },
+  "annbriar:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0014,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0012
+   }
+  },
+  "annbriar:8": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0712,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "routing": 0.0014,
+    "tees": 0.0013,
+    "long_grass": 0.0712
+   }
+  },
+  "annbriar:9": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.2478,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "routing": -0.0032,
+    "tees": 0.0383,
+    "long_grass": 0.2481
+   }
+  },
+  "annbriar:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0003,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0014
+   }
+  },
+  "annbriar:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0005,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "annbriar:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0011
+   }
+  },
+  "annbriar:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "annbriar:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0004,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "annbriar:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0002,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0014,
+    "elevation": -0.0011
+   }
+  },
+  "annbriar:18": {
+   "cause": "greens",
+   "miss": false,
+   "regret": -0.0001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "trees",
+    "ob",
+    "long_grass"
+   ],
+   "rec": {
+    "greens": 0.0153,
+    "fairway": 0.0153,
+    "water": 0.0153,
+    "bunkers": 0.0153,
+    "elevation": 0.0153
+   }
+  },
+  "wakonda:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0018,
+   "fixers": [
+    "card",
+    "routing",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0114
+   }
+  },
+  "wakonda:3": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0425,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "tees": 0.0055,
+    "trees": 0.04
+   }
+  },
+  "wakonda:4": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0018,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0017
+   }
+  },
+  "wakonda:5": {
+   "cause": "elevation",
+   "miss": true,
+   "regret": 0.1001,
+   "fixers": [
+    "water",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0017,
+    "trees": 0.0114,
+    "water": 0.0936,
+    "ob": 0.0746,
+    "elevation": 0.0958
+   }
+  },
+  "wakonda:6": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0187,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0289,
+    "tees": -0.029,
+    "greens": -0.029,
+    "fairway": -0.029,
+    "trees": 0.0154
+   }
+  },
+  "wakonda:7": {
+   "cause": "water",
+   "miss": true,
+   "regret": 0.0948,
+   "fixers": [
+    "water"
+   ],
+   "rec": {
+    "water": 0.0947
+   }
+  },
+  "wakonda:8": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0108,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": 0.0076,
+    "trees": 0.0108
+   }
+  },
+  "wakonda:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0004,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "wakonda:11": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.01,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0044,
+    "tees": 0.0049,
+    "trees": 0.0105
+   }
+  },
+  "wakonda:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0005,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "wakonda:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0047,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0044
+   }
+  },
+  "wakonda:15": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0051,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0017,
+    "tees": 0.0054,
+    "trees": 0.0055,
+    "elevation": -0.0081
+   }
+  },
+  "wakonda:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0004,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "wakonda:18": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0214,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0029,
+    "tees": -0.0121,
+    "trees": 0.0223
+   }
+  },
+  "sand_creek_station:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0004,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0012,
+    "greens": 0.0012
+   }
+  },
+  "sand_creek_station:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0019,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0023,
+    "tees": 0.002,
+    "trees": 0.002
+   }
+  },
+  "sand_creek_station:4": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.1319,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "routing": -0.0021,
+    "tees": 0.0216,
+    "long_grass": 0.1299
+   }
+  },
+  "sand_creek_station:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0013
+   }
+  },
+  "sand_creek_station:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0031,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0062,
+    "trees": -0.0064
+   }
+  },
+  "sand_creek_station:8": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0507,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "tees": 0.0036,
+    "long_grass": 0.041,
+    "elevation": 0.0041
+   }
+  },
+  "sand_creek_station:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0011,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "sand_creek_station:10": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0303,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0067,
+    "tees": -0.0053,
+    "long_grass": 0.0304
+   }
+  },
+  "sand_creek_station:11": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.01,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0039,
+    "long_grass": 0.0102
+   }
+  },
+  "sand_creek_station:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0007,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "sand_creek_station:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0011,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.001,
+    "tees": 0.0014
+   }
+  },
+  "sand_creek_station:15": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0219,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0223,
+    "long_grass": 0.0227
+   }
+  },
+  "sand_creek_station:16": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0291,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0126,
+    "tees": -0.0045,
+    "long_grass": 0.0254
+   }
+  },
+  "sand_creek_station:18": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.015,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0015,
+    "long_grass": 0.0147
+   }
+  },
+  "eagle_bend:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_bend:2": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0973,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "routing": -0.0239,
+    "tees": -0.1059,
+    "trees": -0.0576,
+    "long_grass": 0.0893
+   }
+  },
+  "eagle_bend:3": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0234,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0051,
+    "tees": 0.0013,
+    "long_grass": 0.022
+   }
+  },
+  "eagle_bend:5": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.1025,
+   "fixers": [
+    "trees",
+    "long_grass"
+   ],
+   "rec": {
+    "routing": -0.0018,
+    "tees": -0.0394,
+    "trees": 0.093,
+    "long_grass": 0.1033
+   }
+  },
+  "eagle_bend:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0011,
+    "tees": 0.0016,
+    "long_grass": -0.0024
+   }
+  },
+  "eagle_bend:7": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0072,
+   "fixers": [
+    "tees",
+    "trees"
+   ],
+   "rec": {
+    "tees": 0.0059,
+    "trees": 0.0072
+   }
+  },
+  "eagle_bend:9": {
+   "cause": "trees",
+   "miss": true,
+   "regret": 0.0245,
+   "fixers": [
+    "trees"
+   ],
+   "rec": {
+    "routing": -0.0217,
+    "tees": 0.0156,
+    "trees": 0.0245
+   }
+  },
+  "eagle_bend:10": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0007,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_bend:11": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0646,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "routing": -0.002,
+    "tees": -0.002,
+    "long_grass": 0.0653
+   }
+  },
+  "eagle_bend:13": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0148,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0027,
+    "long_grass": 0.0156
+   }
+  },
+  "eagle_bend:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "eagle_bend:15": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.1571,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "routing": 0.015,
+    "tees": 0.0129,
+    "long_grass": 0.1583
+   }
+  },
+  "eagle_bend:16": {
+   "cause": "trees (-layer)",
+   "miss": true,
+   "regret": 0.027,
+   "fixers": [],
+   "rec": {
+    "trees": -0.0243,
+    "long_grass": -0.0041
+   }
+  },
+  "eagle_bend:18": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0046,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.0046
+   }
+  },
+  "prairie_dunes:1": {
+   "cause": "tees",
+   "miss": false,
+   "regret": 0.0101,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0047,
+    "tees": 0.0091
+   }
+  },
+  "prairie_dunes:3": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0688,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "routing": -0.0247,
+    "tees": 0.085
+   }
+  },
+  "prairie_dunes:5": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0036,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0022,
+    "tees": 0.0045,
+    "long_grass": 0.0022
+   }
+  },
+  "prairie_dunes:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0057,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0033,
+    "tees": 0.0031,
+    "long_grass": -0.0013
+   }
+  },
+  "prairie_dunes:7": {
+   "cause": "greens",
+   "miss": false,
+   "regret": 0.0035,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0035,
+    "greens": 0.0065,
+    "long_grass": 0.0065,
+    "elevation": 0.0065
+   }
+  },
+  "prairie_dunes:8": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "prairie_dunes:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0037,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.003
+   }
+  },
+  "prairie_dunes:11": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0045,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0019,
+    "tees": 0.0025,
+    "long_grass": -0.0119
+   }
+  },
+  "prairie_dunes:12": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0054,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0122
+   }
+  },
+  "prairie_dunes:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0009,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "prairie_dunes:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.0114,
+    "long_grass": -0.0343,
+    "elevation": -0.0343
+   }
+  },
+  "prairie_dunes:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0005,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "prairie_dunes:17": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.004,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "tees": 0.0031,
+    "long_grass": 0.0025
+   }
+  },
+  "prairie_dunes:18": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0172,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.002,
+    "long_grass": 0.016
+   }
+  },
+  "buffalo_dunes:1": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0008,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0016
+   }
+  },
+  "buffalo_dunes:2": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0022,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0022
+   }
+  },
+  "buffalo_dunes:3": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0287,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.0337
+   }
+  },
+  "buffalo_dunes:5": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0113,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "tees": 0.0113,
+    "trees": -0.0364
+   }
+  },
+  "buffalo_dunes:6": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.2005,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "routing": 0.0173,
+    "tees": 0.1939,
+    "long_grass": 0.0587
+   }
+  },
+  "buffalo_dunes:7": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0127,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0043,
+    "tees": 0.0017,
+    "trees": -0.0222
+   }
+  },
+  "buffalo_dunes:9": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0006,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0015,
+    "long_grass": -0.0018
+   }
+  },
+  "buffalo_dunes:10": {
+   "cause": "trees",
+   "miss": false,
+   "regret": 0.0029,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": 0.0067
+   }
+  },
+  "buffalo_dunes:11": {
+   "cause": "tees",
+   "miss": true,
+   "regret": 0.0277,
+   "fixers": [
+    "tees"
+   ],
+   "rec": {
+    "routing": -0.0185,
+    "tees": 0.0293
+   }
+  },
+  "buffalo_dunes:13": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0025,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0029,
+    "tees": -0.0016
+   }
+  },
+  "buffalo_dunes:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.0003,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.009
+   }
+  },
+  "buffalo_dunes:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "trees": -0.0012,
+    "elevation": -0.0012
+   }
+  },
+  "buffalo_dunes:16": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": -0.001,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "tees": -0.001
+   }
+  },
+  "buffalo_dunes:18": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0313,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0105,
+    "tees": -0.0069,
+    "long_grass": 0.0288
+   }
+  },
+  "mariah_hills:1": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.1292,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "routing": 0.0054,
+    "tees": 0.0011,
+    "long_grass": 0.1272
+   }
+  },
+  "mariah_hills:2": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0377,
+   "fixers": [],
+   "rec": {
+    "routing": 0.0047,
+    "tees": 0.0017,
+    "long_grass": 0.0359
+   }
+  },
+  "mariah_hills:3": {
+   "cause": "long_grass",
+   "miss": false,
+   "regret": 0.0168,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": -0.0075,
+    "long_grass": 0.0175
+   }
+  },
+  "mariah_hills:4": {
+   "cause": "routing",
+   "miss": false,
+   "regret": 0.0159,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.011,
+    "long_grass": 0.0084
+   }
+  },
+  "mariah_hills:6": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0014,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {}
+  },
+  "mariah_hills:7": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": -0.7328,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "long_grass": -0.7268
+   }
+  },
+  "mariah_hills:9": {
+   "cause": "routing",
+   "miss": false,
+   "regret": 0.0226,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "fairway",
+    "water",
+    "ob",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0145,
+    "tees": -0.0037
+   }
+  },
+  "mariah_hills:10": {
+   "cause": "ob (-layer)",
+   "miss": true,
+   "regret": 0.0046,
+   "fixers": [],
+   "rec": {
+    "ob": -0.0078
+   }
+  },
+  "mariah_hills:12": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0459,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "routing": 0.0038,
+    "tees": -0.019,
+    "long_grass": 0.0454
+   }
+  },
+  "mariah_hills:13": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.0219,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "long_grass": 0.021
+   }
+  },
+  "mariah_hills:14": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0047,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.0018,
+    "long_grass": -0.0054
+   }
+  },
+  "mariah_hills:15": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0046,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "long_grass",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "long_grass": 0.0048
+   }
+  },
+  "mariah_hills:17": {
+   "cause": "no layer",
+   "miss": false,
+   "regret": 0.0024,
+   "fixers": [
+    "card",
+    "routing",
+    "tees",
+    "greens",
+    "fairway",
+    "trees",
+    "water",
+    "ob",
+    "bunkers",
+    "elevation"
+   ],
+   "rec": {
+    "routing": 0.002,
+    "tees": -0.0077
+   }
+  },
+  "mariah_hills:18": {
+   "cause": "long_grass",
+   "miss": true,
+   "regret": 0.061,
+   "fixers": [
+    "long_grass"
+   ],
+   "rec": {
+    "long_grass": 0.06
+   }
+  }
+ },
+ "+card": {
+  "match": 250,
+  "regret": 5.106
+ },
+ "+routing": {
+  "match": 248,
+  "regret": 5.277
+ },
+ "+tees": {
+  "match": 265,
+  "regret": 4.612
+ },
+ "+greens": {
+  "match": 248,
+  "regret": 5.025
+ },
+ "+fairway": {
+  "match": 252,
+  "regret": 4.337
+ },
+ "+trees": {
+  "match": 268,
+  "regret": 3.962
+ },
+ "+water": {
+  "match": 250,
+  "regret": 4.874
+ },
+ "+ob": {
+  "match": 249,
+  "regret": 4.923
+ },
+ "+long_grass": {
+  "match": 271,
+  "regret": 2.725
+ },
+ "+bunkers": {
+  "match": 249,
+  "regret": 5.089
+ },
+ "+elevation": {
+  "match": 249,
+  "regret": 4.917
+ },
+ "+frame": {
+  "match": 264,
+  "regret": 4.586
+ },
+ "+hazards": {
+  "match": 303,
+  "regret": 1.176
+ },
+ "runs": {
+  "note": "error_budget.py --set v1/v2 --n 4000 (seed 31, all configs) on the tee layer rebuilt by rebuild_tees_trees.py (v1 tees, v2 tees+trees; localize far_cap_yd 45) + S4n native_auto held out (leave-one-course-out p + nested threshold + course gate from mapper/eval_native_auto.json; shipped model on the 6 courses it never saw); truth with the 5 back tees corrected 2026-11-03; DECIDE_ADAPTIVE_AIM default (on)",
+  "made": "2026-11-03"
+ }
+}

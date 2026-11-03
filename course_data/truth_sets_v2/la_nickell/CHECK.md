@@ -13,6 +13,7 @@ How it was checked: routing = the OSM golf=hole ways (draft_spec), greens = OSM 
 | hole | item | what |
 |---|---|---|
 | 1 2 4 5 7 9 10 12 13 14 17 18 | Blue tee | estimated at card length on the line, behind the mapped (White) box: 2 +22, 5 +30 (back end of a long box: fine), 9 +44, 10 +33 (next to a building / path), 12 +32, 13 +28, 17 +22, 18 +72 behind the pad centre. No separate Blue box visible at 0.6 m; the review could not confirm them either. Line and length are right; the box position along the line is +/-15 yds. |
+| 18 | Blue tee (re-checked 2026-11-03) | **moved by hand to the back end of the mapped box T40/T41: 379 yds vs card 427.** The +72 estimate sat at a cart-path junction between trees: no box in NAIP 2020 / 2022, no levelled pad in the 3DEP DEM (platform/ERROR_BUDGET.md "Far cap"). |
 | 5 7 8 13 16 17 18 | OB (not drawn) | the OSM course outline runs through park woods / rough (5: across the hole beyond 240); the 13 / 16 buildings are park / maintenance buildings, not house lots. Drawn as trees / rough. |
 | 12 | OB | the road left (x -50) taken as OB at the outline (x -45). |
 | 15 16 | water | OSM ponds kept as mapped (match the photo). |

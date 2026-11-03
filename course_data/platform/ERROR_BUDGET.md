@@ -507,7 +507,7 @@ Veenker -0.008; Eagle Bend +0.007 on hole 3, whose tee moved from 8 to 2 yds off
 2.717; v2 127 / 193, 6.927. **No course broken.** It is a bug fix, not a step toward M2: tee positions on today's
 build are not where the remaining misses are (+tees on top of it still only gets 9.41).
 
-**Not adopted.**
+**Not adopted (on 11-03 truth; see "Far cap" below: adopted at 45 yds after the hand check).**
 * *Far cap* (`localize.PARAMS["far_cap_yd"]`, off; a set walked back / on an unmapped pad more than D yds behind
   the back edge of the hole's back-most own OSM box goes onto that box): the only rule that moves the biggest
   case. Regret falls 0.12-0.46 strokes (Gustin -0.22 to -0.39), but it breaks 4-9 holes, all against
@@ -536,3 +536,124 @@ tee, so their tee truth is not independent; the "measured" truth tees of build_h
 nearest the card, not a per-hole confirmation of the box; Tomahawk Hills and Mariah Hills have no OSM hole ways
 (tees kept as built) and Colbert Hills no raw OSM, so the tee stage is not re-run there. The newly committed S4n
 native_auto stage is not in these packages (it does not touch tees).
+
+## Where the remaining strokes are (2026-11-03): native layer in, far cap on, one cause per miss
+
+**Set-up.** The same 24 card truth courses and 331 par-4/5 tee shots as "Tee positions" (National KC left out: no
+card). Auto = the committed packages with the tee layer rebuilt by today's code (`rebuild_tees_trees.py`, v1 tees,
+v2 tees + trees, `localize.far_cap_yd` 45) and then the S4n native layer (`product/native_auto.py`), **held out**:
+on the 18 courses the shipped model was trained on, the leave-one-course-out side p, nested threshold and course
+gate from `mapper/eval_native_auto.json` (the shipped model has seen them); on the 6 others the shipped model as the
+build runs it (gate shut on Tomahawk, Amana, Colbert; no S2 stack on Hot Springs, Wakonda, Buffalo Ridge). The gate
+fires on Gateway, Coldwater, Spirit Hollow, Sand Creek, Prairie Dunes, Buffalo Dunes, Mariah Hills. Scored by
+`error_budget.py --set v1 / v2` with every configuration (n 4000, seed 31, adaptive aim on as in the product). One
+cause per tee shot: `platform/budget_causes.py` (rule in its docstring: the single truth layer that fixes the miss
+and gives back the most strokes; else the one that gives back at least half; else the auto layer that alone breaks
+the truth plan). Per shot: `error_budget_causes.json`.
+
+**Headline: 250 / 331 match (75.5 %), regret 5.106 strokes = 0.216 per 14-shot round** (0.248 without Mariah 7,
+the known -0.73 artefact where the auto plan scores better than the truth plan on the truth map). Before the native
+layer (tee agent's baseline, same courses) 234 / 9.644 (0.408). M2 needs >= 95 % and <= 0.15.
+
+| step (24 courses, 331 shots) | match | regret | per round |
+|---|---|---|---|
+| tee merge fix (ERROR_BUDGET "Tee positions") | 234 (70.7 %) | 9.644 | 0.408 |
+| + S4n native sides, held out | 253 (76.4 %) | 5.227 | 0.221 |
+| same, 5 estimated back tees corrected in the truth (below) | 249 (75.2 %) | 5.362 | 0.227 |
+| **+ far cap 45 yds (adopted)** | **250 (75.5 %)** | **5.106** | **0.216** |
+
+**Ranked budget (adopted state).** Misses and regret by their one cause; "+L alone" = auto with only that truth
+layer (shares in the older tables can double count; these add up to 81 misses / 5.106 strokes).
+
+| cause | misses | of them near ties (< 0.01) | misses costing > 0.02 | regret (all holes) | regret in its misses | +L alone: match / regret |
+|---|---|---|---|---|---|---|
+| native / long grass | 28 | 2 | 25 | **2.437** (3.170 without Mariah 7) | 1.968 | 271 / 2.725 |
+| tees | 21 | 4 | 13 | 0.931 | 0.911 | 265 / 4.612 |
+| trees (edge 17, larger area 7) | 24 | 8 | 14 | 0.917 | 0.720 | 268 / 3.962 |
+| fairway outline | 3 | 1 | 2 | 0.261 | 0.147 | 252 / 4.337 |
+| water | 1 | 0 | 1 | 0.131 | 0.095 | 250 / 4.874 |
+| OB | 3 | 1 | 1 | 0.127 | 0.041 | 249 / 4.923 |
+| elevation table | 1 | 0 | 1 | 0.118 | 0.100 | 249 / 4.917 |
+| routing / hole line | 0 | | | 0.038 | 0 | 248 / 5.277 |
+| green position | 0 | | | 0.003 | 0 | 248 / 5.025 |
+| bunkers | 0 | | | 0 | 0 | 249 / 5.089 |
+| card | 0 | | | 0 | 0 | 250 / 5.106 |
+| no single layer (matched holes' small regret) | 0 | | | 0.142 | | |
+| *all hazards together* | | | | | | 303 / 1.176 |
+| *frame together (card, routing, tees, greens)* | | | | | | 264 / 4.586 |
+
+* **Long grass is still the biggest lever** (35 % of misses, 54 % of the regret without the Mariah 7 artefact) even
+  with the native layer on: Mariah Hills 6 misses, Eagle Bend 4 and Annbriar 4 (gate shut: green-in-summer native),
+  Spirit Hollow 3, Coldwater 3, Gateway 3, Sand Creek 2. Every one but 3 costs more than 0.02. Perfect long grass
+  alone would take the build to 271 / 2.73 (0.115 per round): the only single layer that reaches M2's regret bar.
+* **Trees: 24 misses, mostly cheap** (8 near ties, 0.92 strokes). In every one the auto tree layer is short of the
+  truth: 28,500 sq yds of truth canopy missing in their landing corridors against 1,800 extra. 17 are an edge band
+  (< 1,500 sq yds missing per corridor; the known ~5-yd-short edge), 7 a larger area (La Nickell 15, 17, Gustin 4,
+  9, 11, Buffalo Ridge 13, Amana 12: whole crowns missing, 0.39 strokes); recency (trees cut / planted since the
+  lidar) was not separated from canopy-threshold misses.
+* **Tees: 21 misses, 0.93 strokes, 13 cost > 0.02.** The two big ones are gone or shrunk by the far cap (Gustin 15
+  0.41 -> 0.02); what is left is Osage 3 (an unmapped lidar pad 49 yds behind the box, 0.18; hand truth on the box),
+  Spirit Hollow 14 (0.14), Buffalo Dunes 6 (0.20 with the cap: the auto hole line starts at a box 57-70 yds to the
+  side, a routing error the cap cannot fix) and 18 cheap ones.
+* Fairway, water, OB, elevation: 9 misses, 0.64 strokes together. Card, green position, bunkers: nothing. Routing
+  with the true card: nothing (its swap even costs 0.17: the truth line moves aims on holes that matched).
+* 6 misses are fixed by no single layer (`(-layer)` / group rule): Veenker 3, 15, Ellis 15, Tomahawk 12, Eagle Bend
+  16, Mariah 10.
+
+**Decision noise / near ties.** Of the 81 misses, **16 (20 %) cost under 0.01 strokes** on the true map (both plans
+within a hundredth of a stroke: the "same club + aim within 10 yds" metric counts them as wrong), 24 (30 %) under
+0.02, and 57 cost more than 0.02 (4.67 of the 5.11 strokes). 16 misses are reference ties (truth margin < 0.01) and
+20 have the truth's club with an aim more than 10 yds off. Counting only misses that cost more than 0.02, the build
+is at **274 / 331 (82.8 %)**.
+
+**Proposal for the user (not adopted: the milestone definition is unchanged).** Judge M2 on regret per round
+(<= 0.15 strokes on held-out truth courses) as the primary bar, and count match % only over misses that cost more
+than 0.02 strokes on the true map (today 82.8 % instead of 75.5 %). Reason: 30 % of today's misses are worth under
+0.02 strokes; they flip with n, seed or a 1-yd map change, and fixing them does not help the golfer. The 95 % bar
+would then mean "at most ~5 % of tee shots lose more than 0.02 strokes". Risk: a cost threshold depends on the
+decision model's EV scale, so it should be re-checked if decide.py's model changes.
+
+## Far cap (2026-11-03): back tees hand-checked, 5 truth tees corrected, cap on at 45 yds
+
+**Evidence.** Every back tee the cap moves (or that the tee agent listed) was rendered by `tees/back_tee_sheets.py`
+(NAIP of the package + two vision_any NAIP years, 3DEP DEM hillshade with the `tees/lidar_pads`
+pads, lidar HAG; truth tee, auto tee cap off / on and OSM boxes marked) and judged by eye:
+
+| hole (set, card) | truth before | what the imagery / lidar shows | verdict | truth file |
+|---|---|---|---|---|
+| Veenker 16 (Blue 544) | hand, on a lidar pad 75 yds behind the box | small levelled pad at the end of a cart path, mown patch in NAIP 2021 | back tee is real: cap wrong | kept |
+| La Nickell 9 (Blue 379) | est. +44 | clearing in the canopy at the estimate, no pad, no box | unsure | kept |
+| La Nickell 18 (Blue 427) | est. +72 | cart-path junction between trees, no box, flat DEM | **back box** (379) | **corrected** |
+| Gustin 7 (Black 369) | est. +44 | full canopy; a chain of lidar pads 18-21 yds left (the auto tee, 364 yds) | unsure (chute pads) | kept |
+| Sand Creek 1 (Champ. 474) | est. +54 | small lidar pad at the end of a cart path = the auto tee | back tee is real | kept |
+| Eagle Bend 14 (Gold 429) | est. +62 | open rough beside a tree line, no pad | **back box** (374) | **corrected** |
+| Eagle Bend 18 (Gold 547) | est. on the line | small mown pad at a cart-path end 23 yds right (the auto tee), raised in the DEM | **that pad** (547 = card) | **corrected** |
+| Buffalo Dunes 6 (Blue 400) | est. +31 | native grass 9 yds behind a long mown, raised box | **back end of the box** (389) | **corrected** |
+| Buffalo Dunes 11 (Blue 423) | est. +55 | rough by a cart path and trees next to the previous green, no pad | **back box** (380), medium | **corrected** |
+| Gustin 15 (Black 467) | hand, on the box | wooded hillside behind the box (CHECK.md) | back box | kept |
+| Osage 3, Tomahawk 4 | hand, on the box | (cap 45 does not move them) | | kept |
+
+So of the 8 estimated / disputed back tees, 5 were not where the truth put them (corrected in
+`truth_sets_v2/<slug>/holes_spec.json` as hand tees with the evidence in the hole note and CHECK.md, then
+`build_holes_truth.py` + `truth_sets.py build`), 2 are real tees behind the boxes (Veenker 16, Sand Creek 1) and 2
+stay unsure. Most back tees sit on the back box, but not all: the card yardage is often not on the ground.
+
+**Re-score on the corrected truth** (24 courses, native layer in, everything else as above):
+
+| far cap | old truth: match / regret | corrected truth: match / regret | per round | holes changed vs off (corrected truth) |
+|---|---|---|---|---|
+| off | 253 / 5.227 | 249 / 5.362 | 0.227 | |
+| 30 yds (clamp) | 244 / 5.567 | 247 / 5.322 | 0.225 | breaks La Nickell 9, Eagle Bend 18, Buffalo Dunes 6, 14, Veenker 16, Sand Creek 1, Gustin 7; fixes LN 18, EB 14, BD 11, Osage 3 |
+| **45 yds (clamp)** | 249 / 5.315 | **250 / 5.106** | **0.216** | fixes La Nickell 18, Eagle Bend 14; breaks Veenker 16, Buffalo Dunes 6; Gustin 15 0.41 -> 0.02 |
+
+Leave-one-course-out over {off, 30, 45} on the corrected truth: chosen by matches, every fold picks 45 (held out
+250 / 5.106); chosen by regret, 23 folds pick 45 and the Gustin fold off (250 / 5.498). **Adopted:
+`localize.PARAMS["far_cap_yd"] = 45.0`** (clamped to the box; test
+`tees/test_localize.py::test_far_cap_on_by_default_puts_a_far_walkback_on_the_back_box`). Gain is small (+1 match,
+-0.26 strokes on 24 courses); its two breaks are a real tee behind the box (Veenker 16) and a wrong auto hole line
+(Buffalo Dunes 6).
+
+Not verified: the corrections are by eye on 0.6 m NAIP and the 1 m DEM, one judge, after the truth set existed (I
+knew which way the cap would move each hole; Veenker 16 and Sand Creek 1 were kept against it). La Nickell 9 and
+Gustin 7 are unresolved. No library course was rebuilt; on any course where a card is > 45 yds beyond the mapped
+back box the back set now goes onto that box (expected: a few holes per course, back sets only).

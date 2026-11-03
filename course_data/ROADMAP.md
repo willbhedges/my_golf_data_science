@@ -15,13 +15,36 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 | confirm taps to 98 % pairs | 4.7 / course (no re-solve); re-solve 7.1 (fix running) | summary_resolve_calib2.json |
 | tee yardage, no card | back within 10 yds 70 %; 2nd set 52 %; par 96 % | tees/CARDLESS.md |
 | plan, auto build with true card vs hand truth | **74 % same club + aim ≤ 10 yds** (138 tee shots, 10 courses) | platform/ERROR_BUDGET.md |
-| plan, current build, all 24 card truth courses (11-03) | **70.7 % match (234 / 331), regret 0.41 strokes / 14-shot round** (v1 77.5 %, v2 65.8 %); tee merge fix: 70.7 %, 0.408, 0 courses broken | ERROR_BUDGET.md "Tee positions" |
-| what causes the misses | tees 42 % on 11-01 (today: truth tees fix 18 of 97 misses, break 10; 1.4 of 9.7 strokes), long grass 25 % (64 % of regret; layer off: detector can't tell native from mown rough), trees 14 %, fairway 11 % | ERROR_BUDGET.md |
+| plan, current build, all 24 card truth courses (11-03, native layer + far cap) | **75.5 % match (250 / 331), regret 0.216 strokes / 14-shot round** (11-03 morning 70.7 %, 0.408); 82.8 % if only misses costing > 0.02 count | ERROR_BUDGET.md "Where the remaining strokes are" |
+| what causes the misses (one cause each, 81 misses / 5.11 strokes) | long grass 28 misses / 2.44 strokes (3.17 without the Mariah 7 artefact), tees 21 / 0.93, trees 24 / 0.92 (8 near ties), fairway 3 / 0.26, water + OB + elevation 5 / 0.38; card, greens, bunkers 0; 16 misses (20 %) cost < 0.01 | ERROR_BUDGET.md |
 | long grass, no agent / no taps (held out, 18 truth courses, 250 tee shots) | **auto native sides: match 167 → 186, regret 8.79 → 4.34** (+ ≤ 2 classifier-ranked taps: 193 / 3.23; perfect sides 196 / 2.91); parkland controls unchanged | mapper/EVAL_BLIND.md "Automatic native sides" |
 | plan, no card, well-mapped | 80–85 % (vs card plan) | platform/CARDBLIND.md |
 | plan, barely-mapped | 17/33 holes (was 2/32) | CARDBLIND.md pathroute |
 | hand-truth courses | 13 (5 + 2 new truth_sets_v2 + error-budget set); 7 more being traced | truth_sets_v2 |
 | national OSM coverage | 13,090 US courses indexed, all states (2026-11-02, Geofabrik): tier A 5,858 (45 %: complete OSM holes + greens + tees + card), B 413, C 3,498 (partial OSM), D 3,321 (outline only); 74.6 % have some OSM golf mapping | library/us_readiness.json |
+
+## Where the remaining strokes are (error budget 2026-11-03, 24 card truth courses, 331 tee shots)
+
+Today's build (tee merge fix, far cap 45 yds, S4n native sides held out): **250 / 331 match (75.5 %), regret 5.11
+strokes = 0.216 per 14-shot round** (0.248 without the Mariah 7 artefact). M2: >= 95 %, <= 0.15.
+One cause per miss (`platform/budget_causes.py`, ERROR_BUDGET.md "Where the remaining strokes are"):
+
+| cause | misses | costing > 0.02 | regret | if this layer were perfect (alone) |
+|---|---|---|---|---|
+| long grass | 28 | 25 | 2.44 (3.17 w/o Mariah 7) | 271 / 2.73 strokes (0.115 / round) |
+| tees | 21 | 13 | 0.93 | 265 / 4.61 |
+| trees | 24 | 14 | 0.92 | 268 / 3.96 |
+| fairway outline | 3 | 2 | 0.26 | 252 / 4.34 |
+| water / OB / elevation | 5 | 3 | 0.38 | |
+| card / greens / bunkers / routing | 0 | | 0.04 | |
+
+* 16 of 81 misses (20 %) cost under 0.01 strokes and 24 (30 %) under 0.02: near ties the "same club + aim" metric
+  counts as wrong. **Proposal (for the user to decide; M2 is unchanged here):** judge M2 on regret per round
+  first and count match % only over misses costing > 0.02 strokes (today 82.8 %).
+* Only long grass, made perfect on its own, gets regret under M2's 0.15; every hazard layer perfect gives
+  303 / 1.18 (0.05 / round, 91.5 %). The frame (tees, card, greens, routing) perfect gives only 264 / 4.59.
+* Far cap: 5 of 8 estimated back tees were not on the ground where the truth put them (corrected); with the
+  corrected truth the cap at 45 yds is +1 match, -0.26 strokes, chosen in every leave-one-course-out fold: on.
 
 ## Agent mapper (adopted 2026-11-02)
 
@@ -76,20 +99,24 @@ estimate 10-25 yds off, par-3 aim within 5 yds 0 -> 79 %, box on the real green 
 greens where OSM has none (mapper/BRIEF.md step 3b; `greens` in edits.json, any hole / par). Old Works: 15 / 18
 detected (1 wrong, 2 partial by eye), rebuild queued.
 
-## Workstreams (re-ranked 2026-11-01 by measured payoff)
+## Workstreams (re-ranked 2026-11-03 by measured payoff: error budget "Where the remaining strokes are")
 
-1. **Tee positions** (19 % of misses / 15 % of regret on 24 courses, 11-03; was 42 %): merge bug fixed (0 broken, -0.02 strokes). Biggest remaining case = back tee walked 40-70 yds past the mapped boxes (0.55 strokes); the fix (far cap) waits on hand-checking ~10 estimated back tees.
-2. **Long grass** (64 % of regret): **per-side classifier adopted 2026-11-03** (`product/native_auto.py`, behind a
-   course gate; S2 phenology + open ground carry it, lidar HAG / NAIP texture add little). Next: wire
-   `native_auto.build_layer` into the package build + an S2 fetch stage, feed its p to the confirm taps (**done
-   11-03**); validate the gate on a fresh native truth course (the 5 unseen truth courses have no native). Misses left: green-in-summer native (Eagle Bend,
-   Annbriar) → taps.
-3. **Tree edge** (~5 yds short) and **fairway outline**: with the tee fix (they interact).
-4. **Build reliability + QA of rebuilt courses** → publish passes. QA agent running; consensus set-order bug fixed.
-5. **Confirm taps**: sticky re-solve so taps drop below 4.7. Agent running.
-6. **More hand truth**: 7 courses being traced (packages landed after the Overpass outage).
-7. **Unmapped courses**: leakage-free perception retrain on Actions, then false-tee re-scorer and pairing evidence.
-8. **National coverage**: full cell run queued.
+1. **Long grass** (28 of 81 misses, ~54 % of the regret even with the native layer; perfect long grass alone =
+   0.115 strokes / round): the gate-shut native courses (Eagle Bend, Annbriar: green-in-summer native) -> the <= 2
+   classifier-ranked confirm taps (EVAL_native_auto: +7 matches, -1.1 strokes on 18 courses); Mariah Hills (6
+   misses with the layer on) and Spirit Hollow / Coldwater / Gateway sides the classifier misses; validate the
+   gate's yes side on a fresh native truth course.
+2. **Trees** (24 misses, 0.92 strokes, 8 near ties): the auto canopy is short of the truth on every tree miss
+   (28,500 sq yds missing vs 1,800 extra); 17 an edge band, 7 whole crowns (La Nickell, Gustin, Amana, Buffalo
+   Ridge). Next: the tree buffer / canopy threshold, scored on all 24 courses.
+3. **Tees** (21 misses, 0.93 strokes; was 42 % of misses on 11-01): merge fix and far cap done (11-03). Left:
+   unmapped lidar pads far behind the box (Osage 3), a wrong auto hole line (Buffalo Dunes 6), 8 cheap ones.
+4. **Fairway outline, water, OB, elevation** (8 misses, 0.64 strokes): small; Ellis 13 / 18 fairway shape.
+5. **Build reliability + QA of rebuilt courses** -> publish passes.
+6. **Confirm taps**: sticky re-solve so taps drop below 4.7.
+7. **More hand truth**: the far-cap check found 5 of 8 estimated back tees wrong; estimated truth tees need the
+   same check before they judge a tee rule. Fresh native courses for the gate.
+8. **Unmapped courses** and **national coverage** as before.
 
 ## Milestones
 

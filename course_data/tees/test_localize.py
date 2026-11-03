@@ -142,15 +142,18 @@ def test_tag_far_off_card_loses_to_untagged_box_on_card():
     assert LZ.card_checked_point(line, None, tagged, [], 407)[2:] == LZ.tagged_point(line, None, tagged, 407)[2:] + ("tagged",)
 
 
-def test_far_cap_off_by_default_and_puts_a_far_walkback_on_the_back_box():
-    # card 465 on a hole whose back box ends ~405 yds out: the default walks back 60 yds; far_cap_yd (experimental,
-    # off: platform/ERROR_BUDGET.md "Tee positions") puts the set on the back box instead
+def test_far_cap_on_by_default_puts_a_far_walkback_on_the_back_box():
+    # card 465 on a hole whose back box ends ~405 yds out: with the cap off the set walks back 60 yds; the default
+    # far_cap_yd (45, platform/ERROR_BUDGET.md "Far cap") puts it on the back box; a walkback within 45 yds stays
     line = straight_hole(400)
     pads = LZ.merge_candidates([cand(0, 0, "osm", tid="back", w=10, h=10), cand(0, 40, "osm", tid="fwd", w=10, h=10)])
     yds = {"Black": 465, "White": 360}
-    out = LZ.localize_hole(line, None, pads, (), yds)
+    assert LZ.PARAMS["far_cap_yd"] == 45.0
+    out = LZ.localize_hole(line, None, pads, (), yds, params=dict(far_cap_yd=None))
     assert out["Black"]["method"] == "walkback" and abs(d_green(out["Black"]) - 465) < 1.5
-    cap = LZ.localize_hole(line, None, pads, (), yds, params=dict(far_cap_yd=30.0))
+    cap = LZ.localize_hole(line, None, pads, (), yds)
     assert cap["Black"]["tee_id"] == "back" and cap["Black"]["method"] == "tee_axis_far_cap"
     assert abs(d_green(cap["Black"]) - 405) < 1.5
+    near = LZ.localize_hole(line, None, pads, (), {"Black": 440, "White": 360})
+    assert near["Black"]["method"] == "walkback" and abs(d_green(near["Black"]) - 440) < 1.5
     assert cap["White"]["tee_id"] == out["White"]["tee_id"] == "fwd"
