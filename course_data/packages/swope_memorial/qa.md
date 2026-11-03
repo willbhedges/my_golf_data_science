@@ -1,6 +1,6 @@
 # Swope Memorial Golf Course (Kansas City, MO) - Green tees
 
-Built 2026-11-03T15:07:45Z. OSM way/68196001. Scorecard: file (course_data/library/swope_memorial/card_review.json). Tee set: name.
+Built 2026-11-03T16:19:55Z. OSM way/68196001. Scorecard: file (course_data/library/swope_memorial/card_review.json). Tee set: name.
 
 ## Coverage
 
