@@ -1,0 +1,162 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "tpc_louisiana",
+ "course": "Tournament Players Club of Louisiana",
+ "bbox_snwe": [
+  29.892054,
+  -90.201793,
+  29.906743,
+  -90.184779
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1926,
+  "height": 1910,
+  "bounds": [
+   770066,
+   3309994,
+   771992,
+   3311904
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   770066.0,
+   0.0,
+   -1.0,
+   3311904.0
+  ],
+  "ll_bbox_wsen": [
+   -90.20348514518965,
+   29.89058013653269,
+   -90.18307698437357,
+   29.908220920064796
+  ]
+ },
+ "fetched_utc": "2026-11-02T23:31:51Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018-hag-2m-15-5",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 3662500,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.995607096062153,
+   "file": "hag.tif",
+   "mb": 1.87,
+   "frac_gt_2_5m": 0.6972468235716266
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018-dtm-2m-15-5",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 915580,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9955581652014592,
+   "mb": 3.59
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018-classification-2m-15-5",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 3611970,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_LA_UpperDeltaPlain_2017_LAS_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.47,
+   "counts": {
+    "0": 66690,
+    "1": 1170995,
+    "2": 1734844,
+    "3": 690547,
+    "9": 12932,
+    "10": 2128,
+    "17": 524
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023131133"
+  ],
+  "mb": 0.73,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N27W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 919665,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 15.43,
+    "items": [
+     "la_m_2909007_sw_15_030_20230503_20240209",
+     "la_m_2909007_se_15_030_20230503_20240209"
+    ],
+    "acquired": [
+     "2023-05-03"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2019,
+    "file": "naip_2019.tif",
+    "mb": 10.96,
+    "items": [
+     "la_m_2909007_sw_15_060_20190707_20191001",
+     "la_m_2909007_se_15_060_20190707_20191001"
+    ],
+    "acquired": [
+     "2019-07-07"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
