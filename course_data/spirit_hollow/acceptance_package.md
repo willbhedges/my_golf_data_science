@@ -18,9 +18,9 @@ Holes passing every check: none
 | 6 | +0 | 13.1 | 8.2 (+/-2 along, +/-5 lat) | naip_registration (ecc 0.34) | Driver / Driver | - | - | 0.0 | 0.548 | tee, iou_recovery |
 | 8 | +8 | 24.5 | 16.3 (+/-2 along, +/-9 lat) | lie_raster_fit (dice 0.563) | 4-wood / Driver | - | 0.429 | - | 0.631 | tee, green, length, iou_ob, club |
 | 9B | +11 | 8.6 | 1.6 (+/-2 along, +/-2 lat) | naip_registration (ecc 0.382) | 2-wood / Driver | 0.693 | - | 0.529 | 0.636 | length, iou_recovery, club |
-| 9F | -8 | 9.0 | 2.9 (+/-2 along, +/-2 lat) | naip_registration (ecc 0.443) | 4-wood / 4-wood | 0.167 | - | 0.284 | 0.5 | length, iou_water, iou_recovery |
+| 9F | -8 | 9.0 | 2.9 (+/-2 along, +/-2 lat) | naip_registration (ecc 0.443) | 4-wood / 4-wood | 0.119 | - | 0.284 | 0.5 | length, iou_water, iou_recovery |
 | 10 | +0 | 5.4 | 7.8 (+/-4 along, +/-7 lat) | naip_registration (ecc 0.416) | 4-wood / 4-wood | 0.419 | - | 0.0 | 0.675 | iou_water, iou_recovery |
-| 11 | +0 | 2.0 | 5.2 (+/-1 along, +/-4 lat) | naip_registration (ecc 0.37) | 4-wood / 4-wood | 0.14 | - | 0.274 | 0.336 | iou_water, iou_recovery |
+| 11 | +0 | 2.0 | 5.2 (+/-1 along, +/-4 lat) | naip_registration (ecc 0.37) | 4-wood / 4-wood | 0.149 | - | 0.274 | 0.336 | iou_water, iou_recovery |
 | 13 | +2 | 6.4 | 4.4 (+/-2 along, +/-8 lat) | lie_raster_fit (dice 0.491) | Driver / 4-wood | 0.811 | - | 0.316 | 0.471 | iou_recovery, club |
 | 14 | +0 | 23.3 | 6.3 (+/-2 along, +/-6 lat) | naip_registration (ecc 0.352) | Driver / Driver | 0.316 | - | 0.673 | 0.469 | tee, iou_water |
 | 16 | +0 | 19.2 | 7.2 | lie_raster_fit (dice 0.454) | 4-wood / 4-wood | 0.0 | - | 0.287 | 0.683 | tee, iou_water, iou_recovery |
