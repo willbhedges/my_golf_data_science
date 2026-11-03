@@ -132,3 +132,76 @@ def test_old_cloud_still_draws_without_the_shape():
     got = _js_pattern(cl, 70.0)
     assert got[:, 1].max() == pytest.approx(35.0, abs=1e-6)
     assert got[:, 0].max() - 300 == pytest.approx(20.0, abs=0.1)
+
+
+# ------------------------------------------------------------------------------------- the Aim Caddie app
+APP = os.path.join(os.path.dirname(HERE), "app")
+
+
+def _node(js):
+    out = subprocess.run(["node", "-e", js], capture_output=True, text=True)
+    assert out.returncode == 0, out.stderr[-800:]
+    return json.loads(out.stdout)
+
+
+def test_app_library_draws_the_record_pattern():
+    """lib_play.js lpPattern: a record's V.pat row is drawn as landing_pattern.outline at the landing point."""
+    if not shutil.which("node"):
+        pytest.skip("no node")
+    src = open(os.path.join(APP, "lib_play.js")).read()
+    snippet = src[src.index("const LP_FALLBACK"):src.index("function lpDraw")]
+    row = [-11.5, -0.5, 22.4, 27.8, 35.6, 35.8, 0.165]
+    r = dict(total=298.0, aim=-8.5, drift=1.5)
+    got = np.array(_node(snippet + f"\nconsole.log(JSON.stringify(lpPattern({{pat: {{'0': {json.dumps(row)}}}}}, 0, {json.dumps(r)})));"))
+    p = dict(along=298.0 - 11.5, lat=-8.5 + 1.5 - 0.5, long=22.4, short=27.8, left=35.6, right=35.8, tilt=0.165)
+    assert np.allclose(got, np.array(LP.outline(p, n=48)), atol=1e-9)
+    # no pattern for this club: the generic oval (60 x 28) at the landing point
+    fb = np.array(_node(snippet + f"\nconsole.log(JSON.stringify(lpPattern({{}}, 3, {json.dumps(r)})));"))
+    assert fb[:, 1].max() == pytest.approx(-7.0 + 30) and fb[:, 0].max() == pytest.approx(298 + 14)
+
+
+def test_app_course_draws_the_cloud_pattern():
+    """app_template.html patternAt (app / Spirit Hollow clouds with the tee-frame shape) = landing_pattern.outline."""
+    if not shutil.which("node"):
+        pytest.skip("no node")
+    src = open(os.path.join(APP, "app_template.html")).read()
+    snippet = src[src.index("function patternAt"):src.index("function renderHole")]
+    p = dict(along=0.0, lat=0.0, long=20.0, short=30.0, left=33.0, right=36.0, tilt=-0.05)
+    js = (snippet + f"\nconst p = {json.dumps(p)}; const o = [];"
+          "for (let k = 0; k < 48; k++) o.push(patternAt(p, k / 48 * 2 * Math.PI, 1.1, 280, 4));"
+          "console.log(JSON.stringify(o));")
+    got = np.array(_node(js))
+    want = np.array(LP.outline(dict(p, along=280.0, lat=4.0), n=48, scale=1.1))
+    assert np.allclose(got, want, atol=1e-9)
+    assert "patternAt(cl, a, sc, landA, landL)" in src and "ov.pattern" in src
+
+
+def test_library_record_patterns():
+    sys.path.insert(0, APP)
+    import build_library_play as BL
+    clubs = ["Driver", "4-wood", "Long iron"]
+    new = {"Driver": dict(dA=-10, dL=0.5, A=30, B=36, u=[1, 0], w=[0, 1], width=70, long=22, short=38, left=35,
+                          right=37, tilt=-0.1)}
+    assert BL.tee_patterns({"cloud": new}, None, clubs) == {"0": [-10.0, 0.5, 22.0, 38.0, 35.0, 37.0, -0.1]}
+    old = {"Driver": dict(dA=-10, dL=0.5, A=35, B=33, u=[0.5, 0.86], w=[-0.86, 0.5], width=70)}
+    cache = {"4-wood": [-5, 0, 18, 26, 27, 28, 0.02], "Hybrid": [0] * 7}
+    assert BL.tee_patterns({"cloud": old}, cache, clubs) == {"1": [-5.0, 0.0, 18.0, 26.0, 27.0, 28.0, 0.02]}
+    assert BL.tee_patterns({"cloud": old}, None, clubs) is None
+
+
+def test_check_card_crop_pattern():
+    """build_app.crop_pattern: the hole's cloud in a verify crop's pixels (tee line up, s px per yd, target = aim pt)."""
+    sys.path.insert(0, APP)
+    try:
+        import build_app as BA
+        from verify import CROP
+    except Exception as e:                       # noqa: BLE001
+        pytest.skip(f"build_app not importable here: {e}")
+    cl = dict(long=20.0, short=30.0, left=35.0, right=35.0, tilt=0.0, off=[12.0, -1.0])
+    holes = [dict(no=4, variants={"Blue": {"cloud": {"Driver": cl}}})]
+    pat = BA.crop_pattern(dict(hole=4, type="hazard"), dict(target=[150.0, 150.0], pick="Driver"), holes, "Blue")
+    s = CROP["landing"]["s"]
+    xy = np.array(pat)
+    assert xy[:, 0].max() == pytest.approx(150 + (-1 + 35) * s, abs=0.1)
+    assert xy[:, 1].min() == pytest.approx(150 - (12 + 20) * s, abs=0.1)       # long = up the picture
+    assert BA.crop_pattern(dict(hole=4, type="hazard"), dict(target=[1, 1], pick="4-wood"), holes, "Blue") is None

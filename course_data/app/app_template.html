@@ -742,7 +742,8 @@ function cropFig(card){
   const cr = card.crop, ov = cr.overlay || {};
   const polys = (ov.polys || []).map(p => `<polygon points="${p.map(q => q.join(",")).join(" ")}" fill="rgba(255,120,60,.25)" stroke="#ff7a3c" stroke-width="2"/>`).join("");
   const line = ov.line ? `<polyline points="${ov.line.map(q => q.join(",")).join(" ")}" fill="none" stroke="#ffc928" stroke-width="2" stroke-dasharray="6 5"/>` : "";
-  const ell = ov.target && ov.ellipse ? `<ellipse cx="${ov.target[0]}" cy="${ov.target[1]}" rx="${ov.ellipse[0]}" ry="${ov.ellipse[1]}" fill="rgba(255,201,40,.15)" stroke="#ffc928" stroke-width="1.5" stroke-dasharray="5 4"/>` : "";
+  const ell = ov.pattern ? `<polygon points="${ov.pattern.map(q => q.join(",")).join(" ")}" fill="rgba(255,201,40,.15)" stroke="#ffc928" stroke-width="1.5" stroke-dasharray="5 4"/>`
+    : ov.target && ov.ellipse ? `<ellipse cx="${ov.target[0]}" cy="${ov.target[1]}" rx="${ov.ellipse[0]}" ry="${ov.ellipse[1]}" fill="rgba(255,201,40,.15)" stroke="#ffc928" stroke-width="1.5" stroke-dasharray="5 4"/>` : "";
   const tee = ov.tee ? `<circle cx="${ov.tee[0]}" cy="${ov.tee[1]}" r="8" fill="#fff" stroke="#111" stroke-width="2"/>` : "";
   return `<figure><img src="${cr.img}" alt="Aerial photo for hole ${card.hole}" width="${cr.w}" height="${cr.h}"><svg viewBox="0 0 ${cr.w} ${cr.h}" preserveAspectRatio="none" aria-hidden="true">${polys}${line}${ell}${tee}</svg></figure>`;
 }
@@ -859,6 +860,12 @@ function renderAppr(C, H, T, W, r){
     <p class="sub">Green ${A.green_size[0]} × ${A.green_size[1]} yds. No pin: the box is pin-free (DECADE), as on the par 3s. Green slope and elevation on the approach are not modelled.</p>`;
   return {map, vb, play: play + controls, aim: aim + info, table, badges, rel};
 }
+/* the drawn landing pattern (course_data/library/landing_pattern.py outline): lateral left / right, depth short / long
+   of the centre, tilt in yds deeper per yd right; angle a, scale sc -> [along, lateral] yds */
+function patternAt(p, a, sc, al, lat){
+  const c = Math.cos(a), s = Math.sin(a), x = s * (s >= 0 ? p.right : p.left) * sc;
+  return [al + c * (c >= 0 ? p.long : p.short) * sc + (p.tilt || 0) * x, lat + x];
+}
 function renderHole(){
   const C = cur(), i = holeIdx(C), H = C.holes[i], T = teeSpot(C, H), V = T.V, W = windFor(C, H);
   const src = source(C);
@@ -884,6 +891,7 @@ function renderHole(){
     let pattern;
     if (cl) { const sc = best.width / cl.width, pts = [];
       for (let k = 0; k < 48; k++) { const a = k / 48 * 2 * Math.PI, ca = Math.cos(a) * cl.A * sc, sa = Math.sin(a) * cl.B * sc;
+        if (cl.long != null) { pts.push(fmt(pt(V, ...patternAt(cl, a, sc, landA, landL)))); continue; }   /* tee-frame pattern */
         pts.push(fmt(pt(V, landA + ca * cl.u[0] + sa * cl.w[0], landL + ca * cl.u[1] + sa * cl.w[1]))); }
       pattern = `<polygon points="${pts.join(" ")}" fill="rgba(255,201,40,.14)" stroke="#ffc928" stroke-width="1.8" stroke-dasharray="6 5"/>`;
     } else { const pts = [];

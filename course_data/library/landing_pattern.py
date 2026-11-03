@@ -16,6 +16,12 @@ depth 95 % extents short / long of the median after taking out a linear tilt (yd
 push-slice-short correlation and any one-sided roll), so the drawn shape is the model's: wider than long, with its
 short tail and tilt.
 
+Heavy mishits (the v2 world's 2.5 % of swings at 65-85 % of carry: tops, big heel / toe strikes) are left out of
+the pattern, as DECADE / launch-monitor patterns leave out the "off-the-planet" shots and as the app's pattern is
+defined ("95 % of your good strikes"); the model still scores them. Kept in, the 2.5 % depth point sits exactly on
+the edge of that 2.5 % cluster and jumps 15-20 yds with the random draws (memorial_park 1 Driver: 37 short at 6000
+swings, 47 at 3000). Slight mishits (12 %, 92-95 % carry) stay in: they are most of the short side.
+
 page_cloud(...) returns the build_page_v2.cloud fields (dA, dL, A, B, u, w, width; u / w = the tee line and its
 right, so an unpatched template still draws an axis-aligned oval of the right overall size) plus the shape
 (long, short, left, right, tilt) that course_page.PAGE_PATCHES draws.
@@ -51,6 +57,12 @@ def outline(p, n=48, scale=1.0):
     return out
 
 
+def good_swings(M, P, z):
+    """Mask of the swings drawn (z = M.draws_z rows: z_lat, z_car, u_mishit, ...) that are not heavy mishits."""
+    u = np.asarray(z[2])
+    return ~((u >= P["mis_slight"]) & (u < P["mis_slight"] + P["mis_heavy"]))
+
+
 def page_cloud(M, h, grid0, temp_f, n=6000, seed=17):
     """build_page_v2.cloud on the v2 engine M (same swings, same central world), measured in the tee frame."""
     hd = M.HOLES[h]
@@ -62,7 +74,8 @@ def page_cloud(M, h, grid0, temp_f, n=6000, seed=17):
     out = {}
     for c, v in grid0["clubs"].items():
         _, (a, l, lie, s) = M.ev_curve(R, S, hd, c, P, z, np.array([v["aim"]]))
-        p = pattern(a[:, 0], l[:, 0])
+        keep = good_swings(M, P, z)
+        p = pattern(a[keep, 0], l[keep, 0])
         dc, rf, kick = elev.get(c, (0.0, 1.0, 0.0))
         page_total = (v["carry"] + dc) + (v["total"] - v["carry"]) * rf
         out[c] = dict(dA=round(p["along"] - page_total, 1), dL=round(p["lat"] - (v["aim"] + kick), 1),

@@ -333,12 +333,12 @@ def rj(p, d=None):
 
 
 def inputs_sig(slug, page):
-    """what a record is built from (the page, review.json, qa.json, config.json, this builder), by content: git checkouts
+    """what a record is built from (the page, review.json, qa.json, config.json, native.json, landing.json, this builder), by content: git checkouts
     reset mtimes, so a cached record is reused only when this matches its `inputs`"""
     h = hashlib.md5()
     for f in (page, os.path.join(LIBDIR, slug, "review.json"), os.path.join(LIBDIR, slug, "qa.json"),
               os.path.join(LIBDIR, slug, "config.json"), os.path.join(LIBDIR, slug, "native.json"),
-              os.path.abspath(__file__)):
+              os.path.join(LIBDIR, slug, "landing.json"), os.path.abspath(__file__)):
         h.update(f.encode())
         if os.path.exists(f):
             h.update(open(f, "rb").read())
@@ -378,6 +378,39 @@ def relabel(o, labels):
     for s in labels:
         o = _CP().label_no_card({"v": o}, s)["v"]
     return o
+
+
+PAT_FIELDS = ("dA", "dL", "long", "short", "left", "right", "tilt")
+
+
+def landing_patterns(slug, page):
+    """{set: {hole key: {club: [dA, dL, long, short, left, right, tilt]}}} from course_data/library/<slug>/landing.json
+    (library/landing_cache.py, offline) when it was made from this very page, else {}."""
+    p = os.path.join(LIBDIR, slug, "landing.json")
+    if not os.path.exists(p):
+        return {}
+    try:
+        rec = json.load(open(p))
+        m = re.search(r'<script id="pg-data"[^>]*>(.*?)</script>', open(page, encoding="utf-8").read(), re.S)
+        sig = hashlib.md5(m.group(1).strip().encode()).hexdigest() if m else None
+    except Exception:                                   # noqa: BLE001
+        return {}
+    if rec.get("schema") != "golf_landing/1" or rec.get("page") != sig or list(rec.get("fields") or []) != list(PAT_FIELDS):
+        return {}
+    return rec.get("sets") or {}
+
+
+def tee_patterns(h, cache, clubs):
+    """V["pat"]: {club index: [dA, dL, long, short, left, right, tilt]} (lib_play.js lpPattern): the page's own clouds
+    when they carry the tee-frame shape (library/landing_pattern.py; pages built since 2026-11-03), else the offline
+    cache for this set and hole, else None (the app draws its generic oval)."""
+    cl = h.get("cloud") or {}
+    rows = {c: [x[f] for f in PAT_FIELDS] for c, x in cl.items() if isinstance(x, dict) and x.get("long") is not None}
+    if not rows:
+        rows = cache or {}
+    out = {str(clubs.index(c)): [round(float(v), 3 if i == 6 else 1) for i, v in enumerate(r)]
+           for c, r in rows.items() if c in clubs and len(r) == len(PAT_FIELDS)}
+    return out or None
 
 
 def build_one(slug, idx_row, out_dir):
@@ -421,6 +454,7 @@ def build_one(slug, idx_row, out_dir):
     for s, w in (cfg.get("alt_bases") or {}).items():
         which_of[w] = s
     qa = qa_holes(slug, which_of)
+    pats = landing_patterns(slug, page)
     V_of = {}
     for key in keys:
         rec = None
@@ -458,6 +492,9 @@ def build_one(slug, idx_row, out_dir):
                 calm = h.get("calm") or {}
                 V["calm"] = dict(pick=calm.get("pick"), aim=calm.get("aim"), win=calm.get("window"), tie=bool(calm.get("tie")))
                 V["wind"] = tee_table(h, D["temps"], clubs)
+                pat = tee_patterns(h, (pats.get(s) or {}).get(str(key)), clubs)
+                if pat:
+                    V["pat"] = pat
             else:
                 S3 = (h.get("by_set") or {}).get(s) or dict(center=h["length"], boxes=h["boxes"], plays=h["plays"],
                                                           front=h.get("front"), back=h.get("back"))

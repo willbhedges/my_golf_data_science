@@ -107,6 +107,16 @@ function lpStatus(e){
   const k = e.status === "auto" ? "auto" : chk.length && yes >= chk.length ? "auto" : e.status === "none" ? "none" : "confirm";
   return {k, fixed: Object.values(ans.by).filter(v => v === "yes").length, golfers: ans.golfers, n: e.holes || 18, lib: true};
 }
+/* the tee shot's landing pattern, [along, lateral] yds: the club's tee-frame pattern on this set when the record has it
+   (V.pat[club index] = [dA, dL, long, short, left, right, tilt]: course_data/library/landing_pattern.py, centre relative
+   to the landing point the page computes), else a generic 60 x 28 yd oval at the landing point */
+const LP_FALLBACK = [0, 0, 14, 14, 30, 30, 0];
+function lpPattern(V, ci, r, n = 48){
+  const q = (V.pat && V.pat[ci]) || LP_FALLBACK, al = r.total + q[0], lat = r.aim + r.drift + q[1], out = [];
+  for (let k = 0; k < n; k++) { const a = k / n * 2 * Math.PI, c = Math.cos(a), s = Math.sin(a), x = s * (s >= 0 ? q[5] : q[4]);
+    out.push([al + c * (c >= 0 ? q[2] : q[3]) + q[6] * x, lat + x]); }
+  return out;
+}
 function lpDraw(L, H, r, W){
   const V = r.V, img = L.images[V.img], P = (a, l) => [V.tee[0] + (a * V.f[0] + l * V.r[0]) * V.ppy, V.tee[1] + (a * V.f[1] + l * V.r[1]) * V.ppy];
   const f1 = p => p[0].toFixed(1) + "," + p[1].toFixed(1);
@@ -118,7 +128,7 @@ function lpDraw(L, H, r, W){
   }
   if (r.kind === "tee") {
     const tee = P(0, 0), aim = P(r.total, r.aim), land = P(r.total, r.aim + r.drift), sw = V.w / 300;
-    const ell = []; for (let k = 0; k < 36; k++) { const a = k / 36 * 2 * Math.PI; ell.push(f1(P(r.total + Math.sin(a) * 14, r.aim + r.drift + Math.cos(a) * 30))); }
+    const ell = lpPattern(V, L.clubs.indexOf(r.club), r).map(([al, l]) => f1(P(al, l)));
     g += `<polygon points="${ell.join(" ")}" fill="rgba(255,201,40,.16)" stroke="#ffc928" stroke-width="${1.4 * sw}" stroke-dasharray="4 3"/>`
       + `<line x1="${tee[0]}" y1="${tee[1]}" x2="${aim[0]}" y2="${aim[1]}" stroke="#fff" stroke-width="${1.6 * sw}"/>`
       + (Math.abs(r.drift) > 2 ? `<line x1="${aim[0]}" y1="${aim[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="${1.4 * sw}" stroke-dasharray="3 3"/>` : "")

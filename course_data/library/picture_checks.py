@@ -70,9 +70,11 @@ def pattern_mask(M, R, hd, club, aim, temp_f=None, hole=None):
     if temp_f is None:
         temp_f = M.hole_temp(hole) if hole is not None else 70.0
     P = M.central(temp_f=float(temp_f))
-    car, dev, roll = M.shots(hd, club, P, M.draws_z(PATTERN_SWINGS, 17))
+    z = M.draws_z(PATTERN_SWINGS, 17)
+    car, dev, roll = M.shots(hd, club, P, z)
     a, l, _ = M.finish(R, car, dev + float(aim), roll, P["rough_roll"])
-    poly = np.array(LP.outline(LP.pattern(a, l), n=96))
+    keep = LP.good_swings(M, P, z)
+    poly = np.array(LP.outline(LP.pattern(a[keep], l[keep]), n=96))
     pts = np.c_[R.AA.ravel(), R.LL.ravel()]
     return Path(poly).contains_points(pts).reshape(R.AA.shape)
 

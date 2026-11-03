@@ -87,7 +87,7 @@ Spirit Hollow's holes 2 and 9 have two variants, one per screenshot (Gold box `B
 | `flight[club][cell]` | `[carry, total, width95, drift]` yds in that wind (no elevation and no temperature) |
 | `offsets[back][club]` | `[aim[61], ev[61], zone_lo[61], zone_hi[61]]`: best aim (yds right of the line), expected strokes to hole out from the tee, and the aim range within 0.02 strokes of the best, per cell, for a tee `back` yds behind the variant's tee |
 | `calm` | `{pick, aim, tie, margin, zone, flips[], source}`: the plan's calm-day decision (full Bayesian or quick). The client keeps it unless the wind changes the quick model's own pick, shifting its aim by the wind's aim change. |
-| `cloud[club]` | `{dA, dL, A, B, u, w, width}`: simulated finishing pattern at the calm aim (centre offset from the drawn total/aim, 95 % half-axes, axis vectors in (along, lat)). The client scales it by width-in-wind / `width`. |
+| `cloud[club]` | `{dA, dL, A, B, u, w, width, long, short, left, right, tilt, off}`: simulated finishing pattern at the calm aim, measured in the tee-line frame (build_app.tee_frame_cloud / course_data/library/landing_pattern.py): centre offset from the drawn total/aim, lateral 95 % extents left / right, depth short / long of the centre, tilt (yds deeper per yd right); `off` = the centre from the aim point (carry, aim), for check-card crops. `A, B, u, w` = the same pattern as an axis-aligned oval (older readers; a cloud without `long` is drawn from them). The client scales it by width-in-wind / `width`. |
 | `elev` | `{clubs: {club: {dc, rf, kick, drop}}}`: lidar carry change, roll factor, side kick (yds, + = right), landing drop (ft, + = below the tee), or `null` |
 | `check[]` | the product's CHECK reasons (the best aim was rejected by the safety guard) |
 | `mapped_along` | (verified) how far the hand-checked map reaches; landing past it shows a warning |
@@ -389,7 +389,11 @@ names (D.set_labels / D.tee_labels: a no-card page's "osm_back" set is "Back tee
 set picker, the header and the library list.
 V: `yds, img, w, h, bearing, kind, note, tee_ll, qa [PASS|CHECK, reasons]`; tee shots `tee, f, r, ppy, green_al,
 calm {pick, aim, win, tie}, wind[17]` = `[club idx, aim, total, drift]` at 0 mph, then 10 and 20 mph x 8 directions
-relative to the tee line (page grids at the middle temperature, elevation applied, the page's calm-pick rule); par 3s
+relative to the tee line (page grids at the middle temperature, elevation applied, the page's calm-pick rule),
+`pat {club idx: [dA, dL, long, short, left, right, tilt]}` (optional): each club's 95 % landing pattern in the tee-line
+frame (course_data/library/landing_pattern.py: centre dA / dL yds from the landing point, lateral left / right, depth
+short / long, tilt in yds deeper per yd right), from the page's clouds or library/landing_cache.py's landing.json;
+without it the app draws a generic 60 x 28 yd oval; par 3s
 `green, boxes, center, plays[17]`. Client: bilinear interpolation, pick = heaviest-weighted club.
 Confirm: "Is this hole N as drawn?" saves a canonical locate (yes) / reject (no) of the hole's tee_ll + green_ll in
 `maps/<slug>` (shared like the app courses); the card turns Auto-OK once every CHECK hole has a yes. Reports: `reports`.

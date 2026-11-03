@@ -69,6 +69,8 @@ for _p in (os.path.join(ROOT, "spirit_hollow"), os.path.join(ROOT, "mozingo"), o
         sys.path.append(_p)
 sys.path.insert(0, os.path.join(ROOT, "mozingo"))
 sys.path.insert(0, os.path.join(ROOT, "spirit_hollow"))
+if os.path.join(CD, "library") not in sys.path:
+    sys.path.append(os.path.join(CD, "library"))           # landing_pattern (the drawn tee-shot pattern)
 
 SPEEDS = [0, 5, 10, 15, 20, 25]
 DIRS = list(range(0, 360, 30))
@@ -352,7 +354,7 @@ def build_spirit_hollow():
             d["by_set"] = BW.par3_sets(h, opts, grid)
         else:
             d["grids"] = {str(b): BW.compact(g["holes"][key]) for b, g in sorted(grids.items()) if key in g.get("holes", {})}
-            d["cloud"] = BW.clouds(h, grid["holes"][key])
+            d["cloud"] = sh_clouds(h, grid["holes"][key])   # the live page keeps BW.clouds
             fd = final.get(key)
             if fd and fd.get("tie") is not None:
                 d["calm"] = dict(pick=fd["pick"], aim=fd["aim"], tie=bool(fd["tie"]), margin=fd["margin"],
@@ -454,6 +456,43 @@ def plan_dirs(slug):
     return res
 
 
+def tee_frame_cloud(h, club, aim, page_total, kick, width, n=4000):
+    """The drawn landing pattern of one club (course_data/library/landing_pattern.py): the v1 model's simulated
+    finishes at `aim` (tee_strategy.simulate, as yardage_book.shot_cloud), measured in the tee-line frame (lateral
+    left / right, depth short / long of the median, tilt) instead of shot_cloud's covariance-eigen ellipse, which
+    drew the horizontal oval near round and turned. dA / dL: the centre relative to the point the page computes
+    (calm total incl. elevation; aim + slope kick); `off`: the centre relative to the aim point (carry, aim), for
+    the check-card crops. A / B / u / w keep the old fields' meaning (an axis-aligned oval) for older readers."""
+    import landing_pattern as LP
+    import tee_strategy as t
+    pts = t.simulate(h, club, aim, n=n)[0]
+    tee, fwd, right, ppy = t.hole_frame(t.HOLES[h])
+    rel = (np.asarray(pts, float) - tee) / ppy
+    p = LP.pattern(rel @ fwd, rel @ right)
+    carry = {**t.CLUBS, **t.IRONS}[club][0]
+    return dict(dA=r1(p["along"] - page_total), dL=r1(p["lat"] - (aim + kick)),
+                A=r1((p["long"] + p["short"]) / 2), B=r1((p["left"] + p["right"]) / 2), u=[1.0, 0.0], w=[0.0, 1.0],
+                width=r1(width), long=r1(p["long"]), short=r1(p["short"]), left=r1(p["left"]), right=r1(p["right"]),
+                tilt=r4(p["tilt"]), off=[r1(p["along"] - carry), r1(p["lat"] - aim)])
+
+
+def sh_clouds(h, grid):
+    """spirit_hollow/build_wind_page.clouds (the live page's, unchanged there) with the tee-frame pattern."""
+    import build_wind_page as BW
+    import wind_grid as WG
+    WG.set_prior_means()
+    out = {}
+    elev = BW.course.HOLES[h].get("elev", {})
+    for c, v in grid["0_0"]["clubs"].items():
+        dc, rf, kick = elev.get(c, (0.0, 1.0, 0.0))
+        page_total = (v["carry"] + dc) + (v["total"] - v["carry"]) * rf
+        try:
+            out[c] = tee_frame_cloud(h, c, v["aim"], page_total, kick, v["width"])
+        except Exception as e:                                # noqa: BLE001
+            log(f"    cloud {h} {c}: {e}")
+    return out
+
+
 def clouds_for(mod, grid, holes):
     """Simulated finishing pattern per club at the calm aim (the live page's clouds(), course-agnostic)."""
     import decide
@@ -467,21 +506,34 @@ def clouds_for(mod, grid, holes):
         elev = mod.HOLES[h].get("elev", {}) or {}
         res = {}
         for c, v in hg["0_0"]["clubs"].items():
-            try:
-                cl = yb.shot_cloud(h, c, v["aim"], n=4000)
-            except Exception as e:                                # noqa: BLE001
-                log(f"    cloud {h} {c}: {e}")
-                cl = None
-            if not cl:
-                continue
             dc, rf, kick = elev.get(c, (0.0, 1.0, 0.0))
             page_total = (v["carry"] + dc) + (v["total"] - v["carry"]) * rf
-            (A, Bm), (u, w) = cl["axes"], cl["vec"]
-            res[c] = dict(dA=r1(cl["along"] - page_total), dL=r1(cl["lat"] - (v["aim"] + kick)), A=r1(A), B=r1(Bm),
-                          u=[r4(x) for x in u], w=[r4(x) for x in w], width=r1(v["width"]))
+            try:
+                res[c] = tee_frame_cloud(h, c, v["aim"], page_total, kick, v["width"])
+            except Exception as e:                                # noqa: BLE001
+                log(f"    cloud {h} {c}: {e}")
         out[h] = res
     t.HOLES = {}
     return out
+
+
+def crop_pattern(it, ov, holes, primary):
+    """A check card's landing pattern in its crop's pixels (product/verify.py crops: tee line straight up, CROP s px
+    per yd, `target` = the aim point at the pick's carry): the hole's tee-frame cloud for the crop's pick, or None."""
+    try:
+        from verify import CROP
+    except Exception:                                         # noqa: BLE001
+        return None
+    H = next((x for x in holes if x["no"] == int(it["hole"])), None)
+    v = (H or {}).get("variants", {}).get(primary) or {}
+    cl = (v.get("cloud") or {}).get(ov.get("pick"))
+    if not cl or "off" not in cl or not ov.get("target"):
+        return None
+    import landing_pattern as LP
+    s = CROP["tee" if it["type"] == "tee" else "landing"]["s"]
+    tx, ty = ov["target"]
+    p = dict(along=cl["off"][0], lat=cl["off"][1], **{k: cl[k] for k in ("long", "short", "left", "right", "tilt")})
+    return [[r1(tx + lat * s), r1(ty - al * s)] for al, lat in LP.outline(p, n=36)]
 
 
 def strip_badge(note, line):
@@ -706,6 +758,10 @@ def build_package(slug, entry):
                 card["crop"] = dict(img=cr["img"], w=cr["w"], h=cr["h"], overlay=dict(
                     polys=ov.get("polys", []), line=ov.get("line"), tee=ov.get("tee"), target=ov.get("target"),
                     ellipse=ov.get("ellipse"), pick=ov.get("pick")))
+                pat = crop_pattern(it, ov, holes, primary)
+                if pat:                                     # the hole's drawn pattern, not verify's raw-number ellipse
+                    card["crop"]["overlay"]["pattern"] = pat
+                    card["crop"]["overlay"]["ellipse"] = None
             checks.append(card)
     sev = {"red": 0, "amber": 1}
     checks.sort(key=lambda c: (sev[c["severity"]], -(c.get("worst_regret") or 0)))
