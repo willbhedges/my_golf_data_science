@@ -1,6 +1,6 @@
 # The Falls Golf Club (O'Fallon, MO) - Blue tees
 
-Built 2026-11-03T16:20:08Z. OSM relation/3939928. Scorecard: file (course_data/library/the_falls_ofallon/card_review.json). Tee set: name.
+Built 2026-11-03T20:51:16Z. OSM relation/3939928. Scorecard: file (course_data/library/the_falls_ofallon/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -13,9 +13,9 @@ Built 2026-11-03T16:20:08Z. OSM relation/3939928. Scorecard: file (course_data/l
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 13 |
-| mean_landing_osm_share | 0.328 |
+| mean_landing_osm_share | 0.327 |
 | mean_confidence | 0.824 |
-| osm_score | 0.866 |
+| osm_score | 0.865 |
 
 OSM features inside the course: buildings 34, golf=bunker 21, golf=cartpath 27, golf=fairway 23, golf=green 19, golf=hole 18, golf=pin 18, golf=rough 3, golf=tee 67, golf=water_hazard 10, holes_with_handicap 18, holes_with_par 18, trees_polygons 6, water_lines 16, water_polygons 10
 
@@ -23,7 +23,7 @@ OSM features inside the course: buildings 34, golf=bunker 21, golf=cartpath 27, 
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 386 / 387 | 94 | 0.78 | check the flags | 36% | 16% | 48% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 1 | 4 | 386 / 385 | 97 | 0.79 | check the flags | 36% | 17% | 46% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 2 | 4 | 379 / 380 | 70 | 0.78 | check the flags | 29% | 24% | 47% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 3 | 4 | 341 / 341 | 337 | 0.78 | check the flags | 18% | 39% | 43% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 4 | 3 | 149 / 149 | 269 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
@@ -32,7 +32,7 @@ OSM features inside the course: buildings 34, golf=bunker 21, golf=cartpath 27, 
 | 7 | 4 | 378 / 383 | 288 | 0.77 | check the flags | 29% | 20% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 8 | 3 | 170 / 170 | 232 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 9 | 5 | 449 / 445 | 97 | 0.80 | check the flags | 32% | 30% | 38% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 10 | 4 | 360 / 365 | 107 | 0.81 | auto | 38% | 24% | 38% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 10 | 4 | 360 / 361 | 106 | 0.80 | auto | 37% | 24% | 38% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 11 | 4 | 365 / 365 | 215 | 0.78 | check the flags | 31% | 19% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 12 | 3 | 165 / 165 | 278 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 13 | 4 | 345 / 344 | 190 | 0.77 | check the flags | 42% | 2% | 57% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
@@ -56,7 +56,9 @@ OSM features inside the course: buildings 34, golf=bunker 21, golf=cartpath 27, 
 - **imagery**: ok: course_data/packages/the_falls_ofallon/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2022
 - **elevation**: ok: course_data/packages/the_falls_ofallon/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -1899 m2 {'cells': 1708}
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -1895 m2 {'cells': 1704}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 51 polygons (outside 51); mode replace
+- **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)

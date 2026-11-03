@@ -1,6 +1,6 @@
 # Tomahawk Hills Golf Course (Shawnee, KS) - Blue tees
 
-Built 2026-11-03T16:21:05Z. OSM way/117417596. Scorecard: club_site (club_site). Tee set: name.
+Built 2026-11-03T20:52:50Z. OSM way/117417596. Scorecard: club_site (club_site). Tee set: name.
 
 ## Coverage
 
@@ -57,9 +57,10 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 26, g
 - **vision**: missing: product layer vision_any/2 not built for 'tomahawk_hills' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 120 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py tomahawk_hills (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 7 polygons (outside 7); mode replace
+- **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)
 
 ## Warnings
 
 - hole 1: placed by v2+structure inference, golfer check (ambiguous (57% of the posterior))
-- CHECK vision: missing: product layer vision_any/2 not built for 'tomahawk_hills' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 120 long-grass z; trees / water come from OSM (or the fallback) only
