@@ -1,40 +1,71 @@
-# Swope Memorial Golf Course: rebuild QA, second pass (2026-11-02)
+# Swope Memorial Golf Course: rebuild QA, mapper wave 2c (2026-11-03)
 
-**Verdict: PUBLISH** (with the imagery caveat below). The page now carries the club's 2026 card: Green 6,324 / Bronze
-6,079, par 71. The front nine follows the restored routing.
+**Verdict: NEEDS FIX (one tee).** The hole 1 **Green** tee sits on hole 6's tee box. Hole 1's line starts on the
+Bronze box, about 87 yds north. Everything else is clean: Bronze is right on all 18 holes, and Green is right on
+17. The fix is in `review.json` (hole 1 `fix.tee_ll` Green + `yards` Green 390). Rebuild with it, then publish.
 
-Page checked: `course_data/library/swope_memorial/page.html`, built 2026-11-02T06:23Z (GitHub Actions run
-41392580512). Both solved sets (Green, Bronze) were run through `qa_page.js`: 18 holes each, phone and desktop, 0 page
-problems. I looked at every phone hole picture. No build warnings.
+Page checked: `course_data/library/swope_memorial/page.html`, GitHub Actions run 41554623184 (package built
+2026-11-03T01:41Z). Mapper layers: `course_data/mapper/swope_memorial/` (19 zone edits on 6 holes, 0 tees moved, 72
+checked). Both solved sets (Green 6,324, Bronze 6,079, par 71, the 2026 club card) were run through `qa_page.js`: 18
+holes each, phone and desktop, 0 page problems, no console errors. I looked at every phone hole picture. I also
+re-rendered the mapper tee panels for holes 1, 5, 6 and 9 (NAIP 2020/2022 plus the DEM).
 
-## First-pass fix
+## Holes 1 and 6: same Green tee point
 
-| fix | applied? |
-|---|---|
-| Type the 2026 card (Scorecard-2026.pdf) into `card_review.json`, tees Green + Bronze | **yes.** Sets Green / Bronze, totals 6,324 / 6,079, par 35-36 = 71 |
-| Front nine on OSM's own refs 3-9 (restored Tillinghast order; 4 par 3 176, 5 par 5 475, 6 par 4 406, 7 par 3 177, 8 par 4 273, 9 par 4 371) | **yes.** Pars 4 4 4 3 5 4 3 4 4 / 4 4 5 3 4 4 3 5 4 = card. No two holes share a green. |
+| | hole 1 Green | hole 6 Green |
+|---|---|---|
+| tee point | -94.51655, 39.00066 (OSM tee 692649939, `tee_axis`) | -94.51651, 39.00065 (OSM tee 692649939, `tee_centroid`) |
+| measured / card | 391 / 390 | 406 / 406 |
+| distance to the hole's own line start | **88 yds** | 1 yd |
 
-Page yardage = the 2026 card on all 36 hole-sets. Measured length within 6 yds everywhere (largest: 12 Green 527 /
-533 on a lidar pad, 13 Bronze 220 / 215, 15 Bronze 339 / 333). The par-3 green polygons (4, 7, 13, 16) sit on the
-visible greens.
+**Finding: a tee-assignment error, not a routing or numbering error.** Routing and numbering are right. Hole 1's OSM
+line starts on the Bronze box (284464464). Hole 6's line starts on box 692649939. The two greens, the pars and the
+Bronze/Silver boxes are each on their own hole. The localizer put 1 Green on hole 6's box with p = 0.50, against
+0.35 for hole 1's own box. Its distance to the green happens to be 389, which matches the card, so no yardage CHECK
+fired. Why I do not think it is a real shared back tee:
+- On the other 17 holes the Green tee is 8-25 yds from the Bronze tee, and the card gap is 13-14 yds on every hole.
+  On hole 1 the two tees are 87 yds apart, almost side by side, not one behind the other.
+- The box is hole 6's own teeing ground. Holes 1 and 6 leave it heading east and southeast. A back tee for 1 there
+  would play across the trees between the two holes. On the tee panel, hole 1's complex (Bronze and Silver boxes,
+  OSM) is a separate strip by the clubhouse, north of the 9 green.
 
-## Imagery caveat
+**Fix applied** (`review.json`, hole 1): Green `tee_ll` [39.001355, -94.516316], which is 14 yds behind the Bronze box
+on hole 1's line, 388 straight to the green (card 390). Plus `yards` {Green: 390}. `review_fixes.library_request`
+gives `tee_overrides {1: {Green}}` and `yardage_overrides {1: {Green: 390}}`.
 
-The pictures are NAIP 2020, before the 2025-26 restoration (new tees, greens, bunkers and a pond). The 2026 card fits
-the OSM boxes to within 6 yds on every hole, and I saw no hole whose tee, fairway or green looks out of place. But
-bunkers and the new pond may differ from the pictures. The page does not say this anywhere; I would add a one-line
-course note ("aerial imagery predates the 2025-26 restoration") when the page template allows it. Not a blocker.
+Hole 6 Green is right as it stands: it is on its own line start, 406 = card.
+
+Not verified: the imagery is NAIP 2020/2022, before the 2025-26 restoration. A new 2026 back tee for 1 cannot be ruled
+out from the photos. The 13-14 yd card gap makes it unlikely.
+
+## Mapper layers
+
+| hole | mapper edit | on the page? |
+|---|---|---|
+| 2, 6, 8, 9, 11, 17 | crown groups added as recovery (77-278 sq yds each) | yes. The landing ovals show the extra trees (2: 12%, 8: 5%, 11: 12%). No crown is drawn on open fairway |
+| 1, 3, 5, 10, 12, 14, 15, 18 | checked, no change; no long grass on either side | as before |
 
 ## Holes
 
 | hole | Green | Bronze | note |
 |---|---|---|---|
-| 1, 3, 4, 6, 7, 9-14, 16, 17 | OK | OK | |
-| 2 | OK (uncertain) | OK (uncertain) | Driver on the 307-321 par 4 to about 40 yds short among trees (fairway 11-14%), as reviewed |
-| 5 | OK (marginal) | OK | Driver on the line, trees 20-23% (pre-restoration tree line) |
-| 8 | OK | OK | 259-273 par 4; 2-wood / 4-wood to the greenside bunkers (sand 24%). Plausible |
-| 15, 18 | OK (marginal) | OK (marginal) | Driver near the tree lines (trees 17-24%). Model choice |
+| 1 | **wrong tee** | OK | Green plays from hole 6's box (above). Driver -8.5, fairway 54%. The pick is plausible, but from the wrong spot |
+| 2 | OK (CHECK) | OK | Driver +8 to 42 yds short of the 321-yd green, fairway 14%. The aim CHECK (rough, 11 yds off the fairway) is printed |
+| 3, 4, 7, 10-13, 16, 17 | OK | OK | yardage = card ±6; par-3 boxes on the green. 12 Green is on a lidar pad (CHECK printed), 527 / 533 |
+| 5 | OK (marginal) | OK | Driver on the line, trees 21-23% (pre-restoration tree line). Tee CHECK (11 yds from an OSM box) is printed |
+| 6 | OK (tie) | OK (tie) | Driver ≈ long iron (tie badge), aim 8.5-12 right |
+| 8 | OK | OK | 273 / 259 par 4: 2-wood / 4-wood toward the greenside bunkers (sand 25-27%) |
+| 9 | OK (tie) | OK (tie) | Driver/4-wood tie, aim 19.5 / 23.5 right (inside ±40) |
+| 14, 15, 18 | OK (marginal) | OK (marginal) | Aims 12-24 off the line; trees 11-18%. Model choice |
 
-## Remaining (optional)
+No aim is wider than ±40, so no wide-aim CHECK is needed. Page yardage = the 2026 card on all 36 hole-sets.
 
-Re-check the hazard zones once post-restoration imagery is available.
+## Other
+
+- 16 Black (not solved) sits on hole 14's box, 87 vs 78. It is not on the page; worth a look if Black is ever built.
+- The imagery caveat from the 2026-11-02 pass still stands: the photos predate the restoration.
+
+## Next fix
+
+Rebuild with the updated `review.json` (hole 1 Green tee). After the rebuild, check that hole 1 Green measures about
+390 from behind the Bronze box, and that hole 6 is unchanged.

@@ -1,48 +1,37 @@
-# TPC Deere Run: rebuild QA (2026-11-02)
+# TPC Deere Run: rebuild QA, mapper wave 2c (2026-11-03)
 
-**Verdict: PUBLISH.** The page now carries the yard card (Gold 7,267 / Black 6,984, par 71). On every hole of both sets
-the tee localizer put the tee on a mapped teeing ground (or, on 7, a lidar pad) at the card yardage. Pars, routing and
-greens are as reviewed.
+**Verdict: PUBLISH.** The mapper's three tee moves are on the page. 9 Black is now 480 = card, on a visible box in the
+Gold complex, no longer on a green complex. 13 White and Red are on their pads (those sets are not solved). The native
+grass added on 5, 9, 10 and 11 is in the layers. One known caveat remains: the 6 Black Driver over the dogleg corner,
+which now carries an aim CHECK.
 
-Page checked: `course_data/library/tpc_deere_run/page.html`, built 2026-11-02T05:06Z (GitHub Actions run 41388450661).
-Both solved sets (Gold, Black) were run through `qa_page.js`: 18 holes each, phone and desktop, 0 page problems. I
-looked at every phone hole picture. No build warnings. The request has no per-hole fixes (the metre-based ones stay
-withdrawn).
+Page checked: `course_data/library/tpc_deere_run/page.html`, GitHub Actions run 41554623184 (package built
+2026-11-03T01:38Z). Mapper layers: `course_data/mapper/tpc_deere_run/` (7 zone edits on 4 holes, 3 tees moved, 90
+checked). Both solved sets (Gold 7,267, Black 6,984, par 71) were run through `qa_page.js`: 18 holes each, phone and
+desktop, 0 page problems, no console errors. I looked at every phone hole picture, plus 6, 9 and 13 Black closer up.
 
-## Tee vs card, every hole
+## Mapper edits
 
-Page yardage = card on all 36 hole-sets, and the measured length equals the card within 3 yds on every hole of
-both sets (largest: 17 Gold 566 / 569).
-
-| hole | Gold card / measured | Black card / measured | tee |
-|---|---|---|---|
-| 1 | 395 / 395 | 386 / 386 | OSM 680459607 (shared box, axis) |
-| 2 | 561 / 561 | 546 / 547 | OSM 680716217 |
-| 3 | 186 / 186 | 182 / 182 | OSM 680257926 |
-| 4 | 454 / 453 | 443 / 443 | OSM 680461909 |
-| 5 | 433 / 433 | 424 / 424 | OSM 680732161 |
-| 6 | 367 / 367 | 357 / 357 | OSM 680747611 |
-| 7 | 226 / 226 | 221 / 221 | **lidar pad** (21-26 yds from the nearest OSM box; CHECK) |
-| 8 | 428 / 428 | 377 / 377 | OSM 681502371 / 681502369 (separate boxes) |
-| 9 | 503 / 503 | 480 / 480 | Gold OSM 681505893 (p 0.57 vs a lidar pad); Black lidar pad |
-| 10 | 596 / 596 | 576 / 576 | OSM 681507345 (Gold p 0.52 vs a lidar pad) |
-| 11-18 | = card | = card | OSM boxes (one shared teeing ground per hole) |
-
-Uncertain: 7 (both sets on a lidar pad) and 9 / 10 Gold (the localizer is close to 50/50 between the OSM ground and
-a lidar pad just behind). In both cases the yardage is right either way.
+| edit | on the page? |
+|---|---|
+| 9 Black moved 47 yds onto the visible box (agent tee, 480) | **yes.** Measured 480 = card. The marker is on a tee pad at the start of the hole. Driver -1.5, fairway 58% |
+| 13 White / Red onto their pads (351 / 325) | in the package; those sets are not on the page. 13 Black (411) and Gold (424) are unchanged on OSM 681512536 |
+| native: 5 (1,506 sq yds), 9 (3,349), 10 (11,240), 11 (3,153) | yes. 10 shows long grass 2-3% in the Driver pattern. On 5, 9 and 11 the native sits outside the picked landing ovals (fairway 58-77%) |
 
 ## Holes
 
 | hole | Gold | Black | note |
 |---|---|---|---|
-| 1-3, 5, 9-14, 16, 18 | OK | OK | |
-| 4 | OK (marginal) | OK (marginal) | Driver aim 23-27 right, trees 22-31%. Model choice |
-| 6 | OK | **pick doubtful** | Black Driver aim 34 right over the dogleg corner, fairway 1%, trees 21%, 74 yds in (Gold plays 4-wood). Not on the aim bound; model choice, not blocking |
-| 7 | OK (uncertain tee) | OK (uncertain tee) | |
-| 8 | OK (marginal) | OK | Gold 4-wood, trees 15% |
-| 15, 17 | OK (marginal) | OK | Driver near the tree lines (trees 16-17%) |
+| 1-3, 5, 8, 10-12, 14, 16, 17 | OK | OK | measured = card ±1 on every hole-set; par-3 boxes on the green |
+| 4 | OK (marginal) | OK (marginal) | Driver +22 / +26.5, trees 24-32% (right tree line). Model choice |
+| 6 | OK | **pick doubtful (CHECK)** | Black Driver +33 over the corner, fairway 1%, trees 21%, 75 yds in. The aim CHECK ("lands 307 yds out in rough") is now printed. Gold plays 4-wood. Not blocking, as on 2026-11-02 |
+| 7 | OK (CHECK) | OK (CHECK) | lidar pad 21-26 yds from the OSM box; tee CHECK printed, as reviewed |
+| 9 | OK | OK (**fixed**) | Black 480 from the mapper's box |
+| 13, 15 | OK | OK | |
+| 18 | OK (tie) | OK | Gold Driver -40 (on the bound, not past it), fairway 53%. Black 4-wood -12 |
 
-## Remaining (optional)
+No aim is past ±40.
 
-Black 6 Driver pick (fairway 1%) is worth a look in the decide step. It is the only pick on this page that lands almost
-entirely off the fairway.
+## Next fix
+
+None blocking. Solver: 6 Black Driver over the corner (fairway 1%).
