@@ -24,8 +24,17 @@ Phases (the workflow runs them as separate jobs so new requests never wait behin
                      packages with crc32(slug) % N == K, so shards are stable whatever else is stale.
   --phase all        the old single-step behaviour (default)
   --plan-json out    write {"requests": [request paths the requests phase would build], "rebuild": n stale} and exit
+  --check-built <request>...  exit 1 (with ::error lines) unless each package request has a current package:
+                     packages/<slug>/package.json + a build_inputs.json whose hash matches the request and code on
+                     disk. The workflow's request job runs it after the commit, so a request that ran (and maybe
+                     swallowed an exception: the build step is continue-on-error) without producing its package
+                     fails the job instead of passing with "No package changes to commit".
   --commit-every N   with $COMMIT_CMD set: after every N built packages write _index.json and run
                      `$COMMIT_CMD <slug>...` (course_data/platform/commit_run.sh), so a job cap keeps the work done
+
+OSM source: a request's "osm_source" ("auto" | "overpass" | "geofabrik", osm_extract.mode) is OSM_SOURCE while that
+request is fetched and built (course_page_one.yml does the same from its step env), so "geofabrik" never waits
+on the public Overpass mirrors.
 
 Build hash (packages/<slug>/build_inputs.json, written after every successful build): sha256 over the request
 file and the code the build ran - every non-test course_data/platform/*.py, DEPS + DATA, and every course_data
@@ -34,6 +43,7 @@ module the build process imported (recorded as "files"). A package is stale when
 changes elsewhere (a re-committed vision layer, OB evidence) do not make a package stale - as before, when only
 a code change ever triggered an offline rebuild.
 """
+import contextlib
 import glob
 import hashlib
 import json
@@ -167,6 +177,54 @@ def plan(changed, requests=None, phase="all", shard=None):
     return out
 
 
+OSM_SOURCES = ("auto", "overpass", "geofabrik")
+
+
+@contextlib.contextmanager
+def request_osm_source(req):
+    """OSM_SOURCE = the request's "osm_source" for the duration of the block (restored after); no / unknown value
+    leaves the environment as it is. -> yields the value in force (or None)."""
+    src = str((req or {}).get("osm_source") or "").strip().lower()
+    if src not in OSM_SOURCES:
+        if src:
+            print(f"! unknown osm_source {src!r} (expected one of {', '.join(OSM_SOURCES)}): ignored", flush=True)
+        yield os.environ.get("OSM_SOURCE")
+        return
+    old = os.environ.get("OSM_SOURCE")
+    os.environ["OSM_SOURCE"] = src
+    print(f"== osm_source: {src}", flush=True)
+    try:
+        yield src
+    finally:
+        if old is None:
+            os.environ.pop("OSM_SOURCE", None)
+        else:
+            os.environ["OSM_SOURCE"] = old
+
+
+def check_built(request_paths):
+    """-> list of problems, one per package request without a current package (see --check-built)."""
+    import fetch_package as fp
+    out = []
+    for p in request_paths:
+        name = os.path.basename(p)
+        if not (name.startswith(pc.REQUEST_PREFIX) and name.endswith(".json")):
+            continue                                            # survey_*.json: nothing to package
+        ap = p if os.path.isabs(p) else os.path.join(pc.ROOT, p)
+        req = pc.read_json(ap, None)
+        if not isinstance(req, dict):
+            out.append(f"{_rel(ap)}: request file missing or not JSON")
+            continue
+        slug = fp.request_slug(req, ap)
+        pj = os.path.join(pc.PACKAGES, slug, "package.json")
+        if not os.path.exists(pj):
+            out.append(f"{_rel(ap)}: no course_data/packages/{slug}/package.json (the build produced no package)")
+        elif is_stale(slug, ap):
+            out.append(f"{_rel(ap)}: course_data/packages/{slug}/package.json was not built from this request and "
+                       f"code (no / stale {BUILD_INPUTS}): the build failed")
+    return out
+
+
 def vision_ok(package):
     """The package's vision stage is the product layer (vision_any/2) with zones."""
     return str((package.get("stages") or {}).get("vision", "")).startswith("ok: vision_any/2")
@@ -227,8 +285,10 @@ def main(changed, vision=False, phase="all", only=None, shard=None, commit_every
         print(f"== {name}: {action}", flush=True)
         if action == "skip":
             continue
+        osm_env = contextlib.ExitStack()                        # the request's osm_source, restored after it
         try:
             req = pc.read_json(p)
+            osm_env.enter_context(request_osm_source(req))
             if action == "survey":
                 for st in req.get("survey", []):
                     o = survey.survey(st)
@@ -275,6 +335,8 @@ def main(changed, vision=False, phase="all", only=None, shard=None, commit_every
             traceback.print_exc()
             lines.append(f"| {name} | {action} | **failed**: {type(e).__name__}: {str(e)[:200]} | | | | | | | | | |")
             bad += 1
+        finally:
+            osm_env.close()
     if commit_every:
         commit_chunk(pending, index)
     pc.write_json(os.path.join(pc.PACKAGES, "_index.json"), index)
@@ -310,6 +372,7 @@ def parse_args(argv):
     ap.add_argument("--shard", default=None, help="K/N")
     ap.add_argument("--commit-every", type=int, default=0)
     ap.add_argument("--plan-json", default=None)
+    ap.add_argument("--check-built", action="store_true")
     ap.add_argument("changed", nargs="*")
     a = ap.parse_args(argv)
     if a.shard:
@@ -325,5 +388,12 @@ if __name__ == "__main__":
     if a.plan_json:
         write_plan(a.changed, a.plan_json)
         sys.exit(0)
+    if a.check_built:
+        problems = check_built(a.changed)
+        for m in problems:
+            print(f"::error title=request built no package::{m}", flush=True)
+        if not problems:
+            print("every request has a current package:", " ".join(a.changed), flush=True)
+        sys.exit(1 if problems else 0)
     sys.exit(1 if main(a.changed, vision=a.vision, phase=a.phase, only=a.only, shard=a.shard,
                        commit_every=a.commit_every) else 0)

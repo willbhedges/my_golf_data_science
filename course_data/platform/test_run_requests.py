@@ -147,6 +147,82 @@ def test_main_commits_every_n(repo, monkeypatch, tmp_path):
     assert built == ["a"]
 
 
+def _summary_package(slug):
+    s = dict(holes_built=18, holes_mapped=18, greens_found=18, tee_boxes=1,
+             holes_with_trees_or_long_grass_in_landing_zone=1, of_par4_5=14, mean_landing_osm_share=0.5,
+             mean_confidence=0.5, osm_score=0.5)
+    return dict(slug=slug, stages=dict(vision="ok: vision_any/2"), coverage=dict(summary=s),
+                course=dict(name=slug), tee_set="White", built="now")
+
+
+def test_request_osm_source_sets_and_restores(monkeypatch):
+    monkeypatch.delenv("OSM_SOURCE", raising=False)
+    with rr.request_osm_source({"osm_source": "Geofabrik"}) as src:
+        assert src == "geofabrik" and os.environ["OSM_SOURCE"] == "geofabrik"
+    assert "OSM_SOURCE" not in os.environ
+    monkeypatch.setenv("OSM_SOURCE", "overpass")
+    with rr.request_osm_source({"osm_source": "auto"}):
+        assert os.environ["OSM_SOURCE"] == "auto"
+    assert os.environ["OSM_SOURCE"] == "overpass"
+    with rr.request_osm_source({}), rr.request_osm_source({"osm_source": "bogus"}):
+        assert os.environ["OSM_SOURCE"] == "overpass"                  # no / unknown value: untouched
+
+
+def test_main_fetches_with_the_request_osm_source(repo, monkeypatch, tmp_path):
+    """Run 41583681868: a "geofabrik" request was fetched with OSM_SOURCE unset (Overpass, 50 min, then a
+    RuntimeError). The fetch and build must see the request's osm_source, and a failed fetch must count as bad."""
+    import fetch_package as fp
+    import package as pk
+    monkeypatch.delenv("OSM_SOURCE", raising=False)
+    monkeypatch.setenv("VISION_GATE", str(tmp_path / "gate.txt"))
+    monkeypatch.delenv("GITHUB_STEP_SUMMARY", raising=False)
+    req = repo / "course_data" / "requests" / "package_a.json"
+    req.write_text(json.dumps(dict(course="A", osm_source="geofabrik")))
+    seen = {}
+
+    def fake_fetch(p):
+        seen["fetch"] = os.environ.get("OSM_SOURCE")
+        return "a", "ok"
+
+    def fake_build(p, render=False):
+        seen["build"] = os.environ.get("OSM_SOURCE")
+        return _summary_package("a")
+    monkeypatch.setattr(fp, "fetch", fake_fetch)
+    monkeypatch.setattr(pk, "build_request", fake_build)
+    only = ["course_data/requests/package_a.json"]
+    assert rr.main(only, phase="requests", only=only) == 0
+    assert seen == dict(fetch="geofabrik", build="geofabrik") and "OSM_SOURCE" not in os.environ
+
+    def dead_overpass(p):
+        raise RuntimeError("all Overpass endpoints failed")
+    monkeypatch.setattr(fp, "fetch", dead_overpass)
+    assert rr.main(only, phase="requests", only=only) == 1 and "OSM_SOURCE" not in os.environ
+
+
+def test_check_built(repo):
+    """--check-built: the request job's gate. No package.json, or one not built from this request + code, fails."""
+    rel = "course_data/requests/package_a.json"
+    req = str(repo / rel)
+    probs = rr.check_built([rel, "course_data/requests/survey_x.json"])
+    assert len(probs) == 1 and "no course_data/packages/a/package.json" in probs[0]
+    (repo / "course_data" / "packages" / "a").mkdir(parents=True)
+    (repo / "course_data" / "packages" / "a" / "package.json").write_text("{}")
+    assert "stale" in rr.check_built([rel])[0]                          # an old package, no build record
+    rr.record_build("a", req, files=[])
+    assert rr.check_built([rel]) == [] and rr.check_built([req]) == []
+    open(req, "w").write(json.dumps(dict(course="A", rev=2)))            # bumped request, build failed: stale
+    assert "stale" in rr.check_built([rel])[0]
+    assert "missing" in rr.check_built(["course_data/requests/package_zz.json"])[0]
+
+
+def test_request_job_gates_on_the_build():
+    """The request job's build step is continue-on-error; a later always() step must fail the job on it."""
+    wf = open(os.path.join(HERE, "..", "..", ".github", "workflows", "course_package.yml")).read()
+    job = wf.split("\n  request:\n", 1)[1].split("\n  rebuild:\n", 1)[0]
+    assert "id: build" in job and "steps.build.outcome" in job and "--check-built" in job
+    assert "OSM_PBF_DIR" in job and "osmium-tool" in job
+
+
 def test_merge_index():
     base = dict(a=1, b=1, c=1)
     tip = dict(a=1, b=2, c=1, d=9)                                     # another job changed b, added d

@@ -152,7 +152,19 @@ jobs:
           mkdir -p /tmp/before_spirit_hollow
           cp course_data/packages/spirit_hollow/package.json /tmp/before_spirit_hollow/package.json || true
 
+      # OSM without the public Overpass mirrors (course_data/platform/osm_extract.py): osmium + OSM_PBF_DIR let
+      # resolve / the features query answer from the state's Geofabrik extract - the only source for a request
+      # with "osm_source": "geofabrik" (run_requests.py sets OSM_SOURCE from it), the fallback after one failed
+      # Overpass pass in the default "auto" mode. Without them a geofabrik request waited ~50 min on dead mirrors.
+      - name: OSM source tools (osmium, Geofabrik extract dir)
+        run: |
+          (sudo apt-get update -qq && sudo apt-get install -y -qq osmium-tool && osmium --version | head -1) || \
+            echo "osmium-tool install failed: no Geofabrik fallback"
+          mkdir -p "$HOME/geofabrik"
+          echo "OSM_PBF_DIR=$HOME/geofabrik" >> "$GITHUB_ENV"
+
       - name: Build the request
+        id: build
         continue-on-error: true
         env:
           PYTHONWARNINGS: ignore
@@ -201,6 +213,20 @@ jobs:
             echo "::$level title=vision layer missing ($slug)::$why"
             [ "$level" = error ] && bad=1
           done < /tmp/vision_gate.txt
+          exit $bad
+
+      # loud, after the commit: the build step is continue-on-error (so the commit always runs), which made a
+      # failed fetch (run 41583681868: Overpass down, exit 1) a green job with "No package changes to commit".
+      # The job fails when the build step failed or the request has no current package.json.
+      - name: Request gate (the request produced its package)
+        if: always()
+        run: |
+          bad=0
+          if [ "${{ steps.build.outcome }}" != success ]; then
+            echo "::error title=build failed ($(basename '${{ matrix.request }}'))::run_requests.py: ${{ steps.build.outcome }} - see the Build the request step and its summary table"
+            bad=1
+          fi
+          python course_data/platform/run_requests.py --check-built "${{ matrix.request }}" || bad=1
           exit $bad
 
       - name: Keep the built packages if the commit failed
