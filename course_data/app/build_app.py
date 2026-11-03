@@ -771,11 +771,14 @@ def _norm(name):
     return re.sub(r"[^a-z0-9]", "", (name or "").lower().replace("&", "and"))
 
 
+NO_CARD_LABEL = "Back tees (from the map)"   # a no-card package's "osm_back" set (course_page.label_no_card)
+
+
 def _tees(tee_sets):
     """{name: {colour, total}} -> [[name, hex colour, total yds]], longest first."""
     out = []
     for name, ts in (tee_sets or {}).items():
-        out.append([name, COLOURS.get(str(ts.get("colour") or name).split()[0].lower(), "#888"), ts.get("total")])
+        out.append([NO_CARD_LABEL if name == "osm_back" else name, COLOURS.get(str(ts.get("colour") or name).split()[0].lower(), "#888"), ts.get("total")])
     return sorted(out, key=lambda t: -(t[2] or 0))
 
 
@@ -791,6 +794,17 @@ def _status_of(raw):
     return "none"
 
 
+def blocked_courses():
+    """library/index.json `blocked` (pages too wrong to publish, course_page.py publish_gate): their slugs and
+    name|state keys. The app lists none of them: no play record, no package / survey entry."""
+    try:
+        rows = json.load(open(LIBRARY_INDEX)).get("blocked") or []
+    except Exception:                                    # noqa: BLE001
+        rows = []
+    return dict(ids={r.get("slug") for r in rows if r.get("slug")},
+                keys={_norm(r.get("name")) + "|" + (r.get("state") or "") for r in rows if r.get("name")})
+
+
 def library(courses):
     """Every course the page knows, light (golf_library/1, SCHEMA.md "Library"): the courses playable in this page,
     the hand-checked tournament courses (a link to their wind page), the course packages without a plan yet, and the
@@ -800,9 +814,12 @@ def library(courses):
               hole-map confirm, shared confirmations included) | "confirm" (needs confirm, from the library index)
               | "none" (not built yet)"""
     ents, seen = [], {}
+    held = blocked_courses()
 
     def add(e):
         k = _norm(e["name"]) + "|" + (e.get("state") or "")
+        if e.get("id") in held["ids"] or k in held["keys"]:     # a blocked library page: not in the app at all
+            return dict(e)
         if k in seen:
             old = seen[k]
             for f, v in e.items():
@@ -836,8 +853,8 @@ def library(courses):
     idx = json.load(open(os.path.join(PKGS, "_index.json")))
     for slug, entry in sorted(idx.items()):              # 3. packages without a plan
         pj = os.path.join(PKGS, slug, "package.json")
-        if entry.get("status") != "ok" or not os.path.exists(pj):
-            continue
+        if entry.get("status") != "ok" or not os.path.exists(pj) or any(e.get("id") == slug for e in ents):
+            continue                                     # (a course already listed by its slug under another name)
         pk = json.load(open(pj))
         c = pk.get("course") or {}
         add(dict(id=slug, name=c.get("name") or entry.get("name"), town=c.get("town") or entry.get("town"),
@@ -954,7 +971,7 @@ def main():
     courses.append(build_spirit_hollow())
     idx = json.load(open(os.path.join(PKGS, "_index.json")))
     for slug, entry in sorted(idx.items()):
-        if slug == "spirit_hollow" or entry.get("status") != "ok":
+        if slug == "spirit_hollow" or entry.get("status") != "ok" or slug in blocked_courses()["ids"]:
             continue
         log(f"{slug} (auto package)")
         c = build_package(slug, entry)

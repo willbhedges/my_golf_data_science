@@ -223,7 +223,8 @@ Boltzmann posterior covers the union (~4-6 k routings, 0.2-0.5 MB).
 Sources, merged by normalised name + state (first wins, later ones fill empty fields): the app's courses; the
 hand-checked tournament courses (`course_data/courses/<slug>/config.json` + `truth/package.json`, linked to their
 published wind page, `build_app.WIND_PAGES`); course packages with no plan yet; `course_data/library/index.json`
-(`course_library/1`, course_data/library/README.md) when it exists: `slug`, `name`, `city`, `state`, `holes`,
+(`course_library/1`, course_data/library/README.md) when it exists (its `blocked` rows, pages held back by the
+publish gate, are dropped from every source by slug and name + state: `build_app.blocked_courses`): `slug`, `name`, `city`, `state`, `holes`,
 `status` (`hand-checked` / `auto-OK` / `needs confirm` / `failed` -> hand / auto / confirm / none), `tee_sets`
 (`{name, yards, colour, on_page}`: `on_page` null -> drawn dimmed with "*"), `check_holes` + `reasons` (the card's
 note), `page` (a built page with no published URL is noted "page built, not published yet"; a `url`/`link` field,
@@ -379,7 +380,7 @@ and the card says it is saved on this device only. Read back, every field is unt
 ## Library play records (`golf_lib_play/1`, `out/lib/<slug>.json`)
 
 `build_library_play.py` (run by `build_app.py`) turns each built library page into one compact JSON file that the page
-fetches **by relative URL** (`lib/<slug>.json`) when a golfer opens the course (36 files, 21 MB; the page stays ~13.7 MB).
+fetches **by relative URL** (`lib/<slug>.json`) when a golfer opens the course (92 files, 57 MB; the page stays ~14.2 MB).
 Library entries carry `lib`, `checks` (CHECK holes) and a "Play this course" button. Record: `{id, name, town, state,
 status, check_holes, days, hourly[[day, hour, mph, dir, temp]], tee_hour, temps, sets[{name, colour, total, label?, tee_label?}], clubs[],
 speeds [0,10,20], dirs [0,45..315], images {id: 300-px JPEG q42}, holes[{no, ref, par, green_ll, sets: {set: V}}]}`.
