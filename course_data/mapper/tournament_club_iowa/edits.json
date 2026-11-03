@@ -1,0 +1,4304 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "tournament_club_iowa",
+ "corridor_set": "King",
+ "mapper": "mapper-tci",
+ "started": "2026-11-03T10:00Z",
+ "minutes": 50,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py tournament_club_iowa. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "prairie left of the left cart path from 255 and all around the creek at 320-365; R2 beyond the right cart path",
+   "long_grass": {
+    "L": "native: edit 0 (left cart path is the mowing line from ~255 to the creek) and edit 1 past the creek",
+    "R": "native: edit 1 (creek band 325-365 beyond the right cart path) and S2-1-R2 beyond the right cart path at 160-265"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        250
+       ],
+       [
+        -67,
+        255
+       ],
+       [
+        -65,
+        262
+       ],
+       [
+        -58,
+        270
+       ],
+       [
+        -53,
+        280
+       ],
+       [
+        -50,
+        290
+       ],
+       [
+        -44,
+        300
+       ],
+       [
+        -36,
+        310
+       ],
+       [
+        -27,
+        320
+       ],
+       [
+        -18,
+        330
+       ],
+       [
+        -12,
+        338
+       ],
+       [
+        -12,
+        345
+       ],
+       [
+        -25,
+        358
+       ],
+       [
+        -40,
+        364
+       ],
+       [
+        -55,
+        358
+       ],
+       [
+        -70,
+        352
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "tufted coarse prairie left of the cart path in 2023, darker coarse in 2021; the cart path is a fixed mowing line (smooth striped turf inside it), 20-35 yds off the package fairway"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -8,
+        342
+       ],
+       [
+        0,
+        334
+       ],
+       [
+        10,
+        326
+       ],
+       [
+        20,
+        318
+       ],
+       [
+        30,
+        309
+       ],
+       [
+        38,
+        302
+       ],
+       [
+        45,
+        310
+       ],
+       [
+        60,
+        330
+       ],
+       [
+        70,
+        340
+       ],
+       [
+        70,
+        352
+       ],
+       [
+        55,
+        356
+       ],
+       [
+        40,
+        360
+       ],
+       [
+        25,
+        365
+       ],
+       [
+        10,
+        363
+       ],
+       [
+        -5,
+        358
+       ],
+       [
+        -12,
+        348
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "tall tufted grass with seed heads from the right cart path to the tree line around the creek, 2023; coarse in 2021; the cart path is the mowing line"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-1-L1",
+      "area_yd2": 2259,
+      "p": 0.7,
+      "along": [
+       120,
+       185
+      ],
+      "gap_yd": 13.3,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond / bare ground / trees and another hole's mown turf at 120-185 left; no mowing line with tall grass behind it",
+      "shape": {
+       "poly": [
+        [
+         -16,
+         181
+        ],
+        [
+         -11,
+         175
+        ],
+        [
+         -18,
+         168
+        ],
+        [
+         -4,
+         153
+        ],
+        [
+         0,
+         155
+        ],
+        [
+         0,
+         120
+        ],
+        [
+         -12,
+         120
+        ],
+        [
+         -13,
+         126
+        ],
+        [
+         -15,
+         120
+        ],
+        [
+         -59,
+         120
+        ],
+        [
+         -59,
+         127
+        ],
+        [
+         -55,
+         128
+        ],
+        [
+         -49,
+         122
+        ],
+        [
+         -42,
+         129
+        ],
+        [
+         -49,
+         144
+        ],
+        [
+         -40,
+         147
+        ],
+        [
+         -38,
+         143
+        ],
+        [
+         -35,
+         152
+        ],
+        [
+         -26,
+         161
+        ],
+        [
+         -34,
+         168
+        ],
+        [
+         -50,
+         152
+        ],
+        [
+         -56,
+         160
+        ],
+        [
+         -63,
+         154
+        ],
+        [
+         -70,
+         164
+        ],
+        [
+         -65,
+         168
+        ],
+        [
+         -59,
+         166
+        ],
+        [
+         -52,
+         185
+        ],
+        [
+         -44,
+         185
+        ],
+        [
+         -42,
+         171
+        ],
+        [
+         -48,
+         168
+        ],
+        [
+         -44,
+         162
+        ],
+        [
+         -29,
+         171
+        ],
+        [
+         -19,
+         174
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-1-L2",
+      "area_yd2": 209,
+      "p": 0.66,
+      "along": [
+       184,
+       220
+      ],
+      "gap_yd": 3.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "cart-path spur among trees at 185-220; shade and rough under crowns",
+      "shape": {
+       "poly": [
+        [
+         -23,
+         220
+        ],
+        [
+         -18,
+         214
+        ],
+        [
+         -25,
+         206
+        ],
+        [
+         -10,
+         192
+        ],
+        [
+         -17,
+         184
+        ],
+        [
+         -18,
+         196
+        ],
+        [
+         -26,
+         200
+        ],
+        [
+         -29,
+         210
+        ],
+        [
+         -29,
+         219
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-1-L3",
+      "area_yd2": 2294,
+      "p": 0.78,
+      "along": [
+       239,
+       355
+      ],
+      "gap_yd": 4.9,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "prairie is real but the S2 shape crosses the cart path onto the mown rough; traced as edit 0 on the cart path",
+      "shape": {
+       "poly": [
+        [
+         -1,
+         322
+        ],
+        [
+         -10,
+         330
+        ],
+        [
+         -48,
+         293
+        ],
+        [
+         -41,
+         285
+        ],
+        [
+         -48,
+         277
+        ],
+        [
+         -41,
+         270
+        ],
+        [
+         -48,
+         260
+        ],
+        [
+         -41,
+         253
+        ],
+        [
+         -55,
+         239
+        ],
+        [
+         -63,
+         245
+        ],
+        [
+         -70,
+         240
+        ],
+        [
+         -70,
+         306
+        ],
+        [
+         -56,
+         306
+        ],
+        [
+         -33,
+         320
+        ],
+        [
+         -18,
+         336
+        ],
+        [
+         -12,
+         337
+        ],
+        [
+         -10,
+         347
+        ],
+        [
+         -5,
+         344
+        ],
+        [
+         0,
+         355
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-1-L4",
+      "area_yd2": 1405,
+      "p": 0.69,
+      "along": [
+       323,
+       384
+      ],
+      "gap_yd": 8.0,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native around the creek, traced in edits 0/1 at the water line and tree edge",
+      "shape": {
+       "poly": [
+        [
+         -18,
+         347
+        ],
+        [
+         -19,
+         355
+        ],
+        [
+         -32,
+         347
+        ],
+        [
+         -40,
+         332
+        ],
+        [
+         -70,
+         323
+        ],
+        [
+         -70,
+         347
+        ],
+        [
+         -50,
+         348
+        ],
+        [
+         -49,
+         353
+        ],
+        [
+         -33,
+         369
+        ],
+        [
+         -24,
+         362
+        ],
+        [
+         -17,
+         369
+        ],
+        [
+         -24,
+         378
+        ],
+        [
+         -18,
+         384
+        ],
+        [
+         -3,
+         367
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-1-R1",
+      "area_yd2": 1466,
+      "p": 0.72,
+      "along": [
+       120,
+       168
+      ],
+      "gap_yd": 10.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "trees and the cart-path junction near the pond at 120-168; no open tall grass",
+      "shape": {
+       "poly": [
+        [
+         0,
+         156
+        ],
+        [
+         12,
+         168
+        ],
+        [
+         20,
+         160
+        ],
+        [
+         29,
+         168
+        ],
+        [
+         36,
+         161
+        ],
+        [
+         28,
+         153
+        ],
+        [
+         35,
+         145
+        ],
+        [
+         43,
+         152
+        ],
+        [
+         50,
+         145
+        ],
+        [
+         58,
+         152
+        ],
+        [
+         67,
+         145
+        ],
+        [
+         59,
+         137
+        ],
+        [
+         66,
+         128
+        ],
+        [
+         59,
+         121
+        ],
+        [
+         59,
+         131
+        ],
+        [
+         44,
+         148
+        ],
+        [
+         35,
+         144
+        ],
+        [
+         11,
+         120
+        ],
+        [
+         0,
+         120
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-1-R2",
+      "area_yd2": 1292,
+      "p": 0.7,
+      "along": [
+       158,
+       267
+      ],
+      "gap_yd": 3.9,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "coarse streaky grass beyond the right cart path at 160-265 in 2023, coarse in 2021; the cart path is the mowing line, 25+ yds off the fairway",
+      "shape": {
+       "poly": [
+        [
+         68,
+         158
+        ],
+        [
+         52,
+         174
+        ],
+        [
+         59,
+         182
+        ],
+        [
+         52,
+         190
+        ],
+        [
+         59,
+         200
+        ],
+        [
+         52,
+         207
+        ],
+        [
+         67,
+         223
+        ],
+        [
+         52,
+         237
+        ],
+        [
+         59,
+         246
+        ],
+        [
+         45,
+         259
+        ],
+        [
+         51,
+         263
+        ],
+        [
+         61,
+         260
+        ],
+        [
+         66,
+         267
+        ],
+        [
+         70,
+         266
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-1-R3",
+      "area_yd2": 1635,
+      "p": 0.75,
+      "along": [
+       292,
+       358
+      ],
+      "gap_yd": 4.0,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native beyond the right cart path around the creek, traced as edit 1 following the cart path",
+      "shape": {
+       "poly": [
+        [
+         0,
+         356
+        ],
+        [
+         10,
+         358
+        ],
+        [
+         21,
+         346
+        ],
+        [
+         29,
+         349
+        ],
+        [
+         36,
+         333
+        ],
+        [
+         48,
+         325
+        ],
+        [
+         45,
+         322
+        ],
+        [
+         52,
+         315
+        ],
+        [
+         42,
+         312
+        ],
+        [
+         47,
+         294
+        ],
+        [
+         44,
+         292
+        ],
+        [
+         15,
+         322
+        ],
+        [
+         7,
+         315
+        ],
+        [
+         0,
+         321
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "left of the cart path beyond 300 is prairie with scattered shrubs; right is mown rough to the tree line",
+   "long_grass": {
+    "L": "native: edit 0 (beyond the left cart path, 300-400)",
+    "R": "none: smooth mown rough to the tree line in both years, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        298
+       ],
+       [
+        -61,
+        300
+       ],
+       [
+        -58,
+        310
+       ],
+       [
+        -52,
+        320
+       ],
+       [
+        -43,
+        330
+       ],
+       [
+        -36,
+        340
+       ],
+       [
+        -29,
+        350
+       ],
+       [
+        -23,
+        360
+       ],
+       [
+        -19,
+        370
+       ],
+       [
+        -16,
+        380
+       ],
+       [
+        -12,
+        400
+       ],
+       [
+        -70,
+        400
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "mottled coarse grass with scattered shrubs (lidar yellow speckle) beyond the cart path, 2023; similar mottled in 2021; mown strip between path and fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-2-L1",
+      "area_yd2": 3436,
+      "p": 0.61,
+      "along": [
+       296,
+       400
+      ],
+      "gap_yd": 4.9,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native exists beyond the cart path but S2 shape crosses the path onto mown rough; traced as edit 0 on the path",
+      "shape": {
+       "poly": [
+        [
+         -21,
+         400
+        ],
+        [
+         -22,
+         389
+        ],
+        [
+         -12,
+         388
+        ],
+        [
+         -10,
+         400
+        ],
+        [
+         0,
+         400
+        ],
+        [
+         -4,
+         375
+        ],
+        [
+         -26,
+         379
+        ],
+        [
+         -32,
+         351
+        ],
+        [
+         -32,
+         347
+        ],
+        [
+         -22,
+         345
+        ],
+        [
+         -26,
+         323
+        ],
+        [
+         -37,
+         326
+        ],
+        [
+         -39,
+         315
+        ],
+        [
+         -50,
+         317
+        ],
+        [
+         -54,
+         296
+        ],
+        [
+         -65,
+         298
+        ],
+        [
+         -61,
+         320
+        ],
+        [
+         -70,
+         321
+        ],
+        [
+         -67,
+         339
+        ],
+        [
+         -70,
+         344
+        ],
+        [
+         -70,
+         377
+        ],
+        [
+         -60,
+         375
+        ],
+        [
+         -58,
+         386
+        ],
+        [
+         -47,
+         384
+        ],
+        [
+         -45,
+         394
+        ],
+        [
+         -34,
+         392
+        ],
+        [
+         -32,
+         400
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-2-R1",
+      "area_yd2": 676,
+      "p": 0.6,
+      "along": [
+       190,
+       222
+      ],
+      "gap_yd": 20.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough and shade at the tree line at 195-215, smooth in 2023",
+      "shape": {
+       "poly": [
+        [
+         24,
+         190
+        ],
+        [
+         2,
+         194
+        ],
+        [
+         7,
+         216
+        ],
+        [
+         17,
+         214
+        ],
+        [
+         16,
+         202
+        ],
+        [
+         26,
+         201
+        ],
+        [
+         30,
+         222
+        ],
+        [
+         42,
+         220
+        ],
+        [
+         41,
+         197
+        ],
+        [
+         26,
+         200
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-2-R2",
+      "area_yd2": 270,
+      "p": 0.66,
+      "along": [
+       194,
+       217
+      ],
+      "gap_yd": 39.7,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "under crowns at the right tree edge, 40 yds out",
+      "shape": {
+       "poly": [
+        [
+         51,
+         217
+        ],
+        [
+         62,
+         215
+        ],
+        [
+         58,
+         194
+        ],
+        [
+         47,
+         196
+        ],
+        [
+         45,
+         202
+        ],
+        [
+         50,
+         205
+        ],
+        [
+         46,
+         214
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-2-R3",
+      "area_yd2": 151,
+      "p": 0.67,
+      "along": [
+       373,
+       395
+      ],
+      "gap_yd": 5.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "green-side bunker surround, mown",
+      "shape": {
+       "poly": [
+        [
+         66,
+         391
+        ],
+        [
+         64,
+         378
+        ],
+        [
+         54,
+         373
+        ],
+        [
+         58,
+         392
+        ],
+        [
+         56,
+         395
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "4": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "native mounds left of the fairway around the big bunker at 180-235; right side tan strip between rough and trees",
+   "long_grass": {
+    "L": "native: edit 0 (tufted mounds 180-235 left, short of / around the bunker)",
+    "R": "native: edit 1 (tan coarse strip between the mown rough and the tree line 250-330, medium; inner part will be clipped by the keep-out)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        180
+       ],
+       [
+        -50,
+        183
+       ],
+       [
+        -35,
+        190
+       ],
+       [
+        -34,
+        200
+       ],
+       [
+        -33,
+        212
+       ],
+       [
+        -36,
+        222
+       ],
+       [
+        -45,
+        230
+       ],
+       [
+        -60,
+        236
+       ],
+       [
+        -70,
+        236
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "whitish tufted grass on mounds left of the fairway at 195-230 in 2023, mottled tan in 2021; a mown green band separates it from the fairway (edge ~8 yds off)"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        30,
+        255
+       ],
+       [
+        31,
+        265
+       ],
+       [
+        31,
+        280
+       ],
+       [
+        30,
+        295
+       ],
+       [
+        25,
+        310
+       ],
+       [
+        18,
+        325
+       ],
+       [
+        15,
+        335
+       ],
+       [
+        28,
+        335
+       ],
+       [
+        38,
+        310
+       ],
+       [
+        44,
+        290
+       ],
+       [
+        44,
+        262
+       ],
+       [
+        38,
+        252
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "tan streaky band 10-14 yds wide between the mown rough edge (~x+30) and the tree line at 255-330, tan in both 2023 and 2021"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-4-L1",
+      "area_yd2": 740,
+      "p": 0.63,
+      "along": [
+       139,
+       178
+      ],
+      "gap_yd": 32.9,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "rough and trees beside the cart path at 140-170, green and smooth",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         178
+        ],
+        [
+         -46,
+         155
+        ],
+        [
+         -36,
+         162
+        ],
+        [
+         -29,
+         154
+        ],
+        [
+         -47,
+         141
+        ],
+        [
+         -51,
+         146
+        ],
+        [
+         -58,
+         139
+        ],
+        [
+         -67,
+         146
+        ],
+        [
+         -70,
+         143
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-4-L2",
+      "area_yd2": 517,
+      "p": 0.57,
+      "along": [
+       185,
+       236
+      ],
+      "gap_yd": 26.7,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native mounds traced as edit 0 at the tufted edge",
+      "shape": {
+       "poly": [
+        [
+         -49,
+         230
+        ],
+        [
+         -62,
+         216
+        ],
+        [
+         -54,
+         209
+        ],
+        [
+         -61,
+         201
+        ],
+        [
+         -54,
+         192
+        ],
+        [
+         -62,
+         185
+        ],
+        [
+         -70,
+         192
+        ],
+        [
+         -62,
+         199
+        ],
+        [
+         -70,
+         208
+        ],
+        [
+         -70,
+         224
+        ],
+        [
+         -58,
+         236
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-4-L3",
+      "area_yd2": 301,
+      "p": 0.6,
+      "along": [
+       270,
+       298
+      ],
+      "gap_yd": 8.0,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown surround left of the bunker at 280-300; smooth green in 2023",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         298
+        ],
+        [
+         -49,
+         279
+        ],
+        [
+         -56,
+         270
+        ],
+        [
+         -63,
+         277
+        ],
+        [
+         -70,
+         272
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "carry 140-180 between the creek and the fairway is unmown; rest is mown rough to trees / waste sand",
+   "long_grass": {
+    "L": "native: S2-6-L1 (carry area between creek and fairway start)",
+    "R": "native: S2-6-R2 (carry area); beyond it waste sand then trees, no native"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-6-L1",
+      "area_yd2": 1022,
+      "p": 0.73,
+      "along": [
+       139,
+       187
+      ],
+      "gap_yd": 2.8,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "coarse tan unmown grass between the creek and the start of the fairway at 140-180 in 2023, mottled in 2021",
+      "shape": {
+       "poly": [
+        [
+         -23,
+         146
+        ],
+        [
+         -22,
+         174
+        ],
+        [
+         -32,
+         176
+        ],
+        [
+         -29,
+         187
+        ],
+        [
+         0,
+         179
+        ],
+        [
+         0,
+         139
+        ],
+        [
+         -18,
+         141
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-6-L2",
+      "area_yd2": 592,
+      "p": 0.68,
+      "along": [
+       224,
+       261
+      ],
+      "gap_yd": 9.7,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough at the left tree edge at 220-260, shade under crowns",
+      "shape": {
+       "poly": [
+        [
+         -42,
+         224
+        ],
+        [
+         -63,
+         230
+        ],
+        [
+         -55,
+         261
+        ],
+        [
+         -44,
+         259
+        ],
+        [
+         -47,
+         248
+        ],
+        [
+         -37,
+         246
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-6-L3",
+      "area_yd2": 155,
+      "p": 0.53,
+      "along": [
+       300,
+       315
+      ],
+      "gap_yd": 21.5,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "under the left tree line at 295-305",
+      "shape": {
+       "poly": [
+        [
+         -67,
+         301
+        ],
+        [
+         -63,
+         315
+        ],
+        [
+         -57,
+         310
+        ],
+        [
+         -51,
+         311
+        ],
+        [
+         -47,
+         304
+        ],
+        [
+         -53,
+         300
+        ],
+        [
+         -59,
+         304
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-6-R1",
+      "area_yd2": 514,
+      "p": 0.61,
+      "along": [
+       120,
+       149
+      ],
+      "gap_yd": 37.0,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "creek-bank trees and shrubs at 120-140",
+      "shape": {
+       "poly": [
+        [
+         28,
+         147
+        ],
+        [
+         23,
+         128
+        ],
+        [
+         32,
+         126
+        ],
+        [
+         32,
+         120
+        ],
+        [
+         10,
+         120
+        ],
+        [
+         10,
+         132
+        ],
+        [
+         2,
+         133
+        ],
+        [
+         0,
+         128
+        ],
+        [
+         0,
+         133
+        ],
+        [
+         7,
+         137
+        ],
+        [
+         13,
+         147
+        ],
+        [
+         19,
+         149
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-6-R2",
+      "area_yd2": 523,
+      "p": 0.81,
+      "along": [
+       139,
+       179
+      ],
+      "gap_yd": 3.3,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "same unmown carry strip on the right of the line at 150-175, coarse in 2023",
+      "shape": {
+       "poly": [
+        [
+         0,
+         179
+        ],
+        [
+         13,
+         176
+        ],
+        [
+         10,
+         165
+        ],
+        [
+         39,
+         156
+        ],
+        [
+         33,
+         152
+        ],
+        [
+         20,
+         155
+        ],
+        [
+         10,
+         153
+        ],
+        [
+         0,
+         139
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "creek left; tufted bank fringe along the creek (water wins); right trees; no native in the landing zone",
+   "long_grass": {
+    "L": "none: only a 3-6 yd tufted fringe on the creek bank (left in uncertain), beyond the creek is other holes' mown turf; mown rough to the creek in both years",
+    "R": "none: mown rough to the tree line in both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-7-L1",
+      "area_yd2": 2573,
+      "p": 0.7,
+      "along": [
+       120,
+       252
+      ],
+      "gap_yd": 17.3,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "beyond the creek at 120-240: smooth tan patches with straight mown edges (another hole's turf) and bank shrubs; any ball there is past the water",
+      "shape": {
+       "poly": [
+        [
+         -49,
+         217
+        ],
+        [
+         -60,
+         197
+        ],
+        [
+         -40,
+         189
+        ],
+        [
+         -45,
+         178
+        ],
+        [
+         -35,
+         173
+        ],
+        [
+         -44,
+         154
+        ],
+        [
+         -35,
+         150
+        ],
+        [
+         -39,
+         139
+        ],
+        [
+         -29,
+         135
+        ],
+        [
+         -34,
+         125
+        ],
+        [
+         -24,
+         120
+        ],
+        [
+         -70,
+         120
+        ],
+        [
+         -54,
+         158
+        ],
+        [
+         -64,
+         163
+        ],
+        [
+         -55,
+         184
+        ],
+        [
+         -70,
+         190
+        ],
+        [
+         -70,
+         231
+        ],
+        [
+         -63,
+         235
+        ],
+        [
+         -56,
+         232
+        ],
+        [
+         -47,
+         252
+        ],
+        [
+         -32,
+         230
+        ],
+        [
+         -47,
+         238
+        ],
+        [
+         -54,
+         231
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-7-L2",
+      "area_yd2": 180,
+      "p": 0.59,
+      "along": [
+       171,
+       209
+      ],
+      "gap_yd": 4.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "the fairway-side creek bank at 180-200: 3-5 yd fringe of shrubs on the water edge, the auto water covers it",
+      "shape": {
+       "poly": [
+        [
+         -7,
+         209
+        ],
+        [
+         0,
+         206
+        ],
+        [
+         -5,
+         198
+        ],
+        [
+         -2,
+         171
+        ],
+        [
+         -8,
+         173
+        ],
+        [
+         -6,
+         185
+        ],
+        [
+         -11,
+         200
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-7-L3",
+      "area_yd2": 190,
+      "p": 0.63,
+      "along": [
+       208,
+       230
+      ],
+      "gap_yd": 20.3,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "shrubs on the creek bank at 215-240 beside the water line",
+      "shape": {
+       "poly": [
+        [
+         -27,
+         216
+        ],
+        [
+         -31,
+         208
+        ],
+        [
+         -44,
+         215
+        ],
+        [
+         -32,
+         230
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-7-L4",
+      "area_yd2": 324,
+      "p": 0.63,
+      "along": [
+       214,
+       246
+      ],
+      "gap_yd": 1.5,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough between the creek bank and the fairway at 215-245, smooth green in 2023",
+      "shape": {
+       "poly": [
+        [
+         -35,
+         246
+        ],
+        [
+         -7,
+         233
+        ],
+        [
+         -16,
+         214
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-7-R1",
+      "area_yd2": 349,
+      "p": 0.63,
+      "along": [
+       146,
+       175
+      ],
+      "gap_yd": 7.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "right tree edge at 140-170, rough under crowns",
+      "shape": {
+       "poly": [
+        [
+         2,
+         168
+        ],
+        [
+         10,
+         166
+        ],
+        [
+         14,
+         175
+        ],
+        [
+         24,
+         171
+        ],
+        [
+         13,
+         146
+        ],
+        [
+         5,
+         149
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "auto water at 160-252 right of the line sits on grass and trees (pink in CIR, no water either year): erased",
+   "long_grass": {
+    "L": "none: mown rough to the cart path then trees, both years",
+    "R": "none: mown rough to the lake bank / tree line, both years"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "rect": [
+       -15,
+       33,
+       160,
+       252
+      ]
+     },
+     "confidence": "high",
+     "evidence": "grass and trees in 2023 and 2021, vegetation red in CIR, only a dry swale in the DEM; the lake edge starts at x+40 at 255"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-9-L1",
+      "area_yd2": 161,
+      "p": 0.65,
+      "along": [
+       186,
+       208
+      ],
+      "gap_yd": 18.6,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough right of the cart path at 180-200, smooth both years",
+      "shape": {
+       "poly": [
+        [
+         -2,
+         186
+        ],
+        [
+         -10,
+         186
+        ],
+        [
+         -7,
+         208
+        ],
+        [
+         0,
+         206
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-9-L2",
+      "area_yd2": 626,
+      "p": 0.61,
+      "along": [
+       356,
+       400
+      ],
+      "gap_yd": 7.5,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "under the left tree line beyond the cart path at 360-385",
+      "shape": {
+       "poly": [
+        [
+         -27,
+         400
+        ],
+        [
+         -31,
+         366
+        ],
+        [
+         -42,
+         367
+        ],
+        [
+         -44,
+         356
+        ],
+        [
+         -55,
+         357
+        ],
+        [
+         -52,
+         379
+        ],
+        [
+         -41,
+         378
+        ],
+        [
+         -38,
+         400
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-9-R1",
+      "area_yd2": 306,
+      "p": 0.56,
+      "along": [
+       369,
+       400
+      ],
+      "gap_yd": 8.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "lake bank fringe at 370-390",
+      "shape": {
+       "poly": [
+        [
+         27,
+         369
+        ],
+        [
+         25,
+         381
+        ],
+        [
+         15,
+         382
+        ],
+        [
+         16,
+         398
+        ],
+        [
+         33,
+         400
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "lake right, trees left; tan area between fairway end and the trees at 320-345 left unmarked (uncertain)",
+   "long_grass": {
+    "L": "none: mown rough to the trees; tan area at 320-345 under the tree edge is dormant rough / shade (uncertain), no second mowing line",
+    "R": "none: mown rough to the lake bank; only a thin bank fringe at the water line"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-10-L1",
+      "area_yd2": 1299,
+      "p": 0.67,
+      "along": [
+       320,
+       370
+      ],
+      "gap_yd": 8.4,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "320-370 left: tan smooth turf beside crown shade, no mowing line separating it from the rough in 2021; trees beyond 345",
+      "shape": {
+       "poly": [
+        [
+         -40,
+         370
+        ],
+        [
+         0,
+         360
+        ],
+        [
+         -3,
+         340
+        ],
+        [
+         0,
+         326
+        ],
+        [
+         -17,
+         331
+        ],
+        [
+         -19,
+         320
+        ],
+        [
+         -28,
+         322
+        ],
+        [
+         -27,
+         334
+        ],
+        [
+         -45,
+         339
+        ],
+        [
+         -34,
+         346
+        ],
+        [
+         -30,
+         345
+        ],
+        [
+         -34,
+         348
+        ],
+        [
+         -32,
+         358
+        ],
+        [
+         -42,
+         360
+        ],
+        [
+         -37,
+         363
+        ],
+        [
+         -42,
+         362
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-10-L2",
+      "area_yd2": 259,
+      "p": 0.57,
+      "along": [
+       373,
+       400
+      ],
+      "gap_yd": 59.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "beyond the window at the lake edge near 380-400",
+      "shape": {
+       "poly": [
+        [
+         0,
+         400
+        ],
+        [
+         -4,
+         373
+        ],
+        [
+         -14,
+         375
+        ],
+        [
+         -9,
+         397
+        ],
+        [
+         -19,
+         400
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-10-R1",
+      "area_yd2": 1534,
+      "p": 0.74,
+      "along": [
+       120,
+       173
+      ],
+      "gap_yd": 5.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "mown rough with visible mowing stripes at 120-165 right",
+      "shape": {
+       "poly": [
+        [
+         53,
+         173
+        ],
+        [
+         58,
+         150
+        ],
+        [
+         68,
+         148
+        ],
+        [
+         65,
+         137
+        ],
+        [
+         70,
+         136
+        ],
+        [
+         70,
+         120
+        ],
+        [
+         15,
+         120
+        ],
+        [
+         19,
+         137
+        ],
+        [
+         31,
+         136
+        ],
+        [
+         39,
+         167
+        ],
+        [
+         50,
+         164
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-10-R2",
+      "area_yd2": 154,
+      "p": 0.56,
+      "along": [
+       237,
+       270
+      ],
+      "gap_yd": 11.7,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "lake bank fringe beside the bunker at 240-265, 3 yds wide",
+      "shape": {
+       "poly": [
+        [
+         31,
+         238
+        ],
+        [
+         32,
+         263
+        ],
+        [
+         34,
+         270
+        ],
+        [
+         38,
+         270
+        ],
+        [
+         35,
+         237
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "wooded corridor; house right at 290-350 with auto OB; no native",
+   "long_grass": {
+    "L": "none: mown rough to the tree line in both years",
+    "R": "none: mown rough to the trees; house lot beyond"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-11-L1",
+      "area_yd2": 739,
+      "p": 0.61,
+      "along": [
+       120,
+       172
+      ],
+      "gap_yd": 12.4,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "creek / tree area at 130-165 near the tee",
+      "shape": {
+       "poly": [
+        [
+         -19,
+         172
+        ],
+        [
+         -10,
+         152
+        ],
+        [
+         0,
+         155
+        ],
+        [
+         0,
+         120
+        ],
+        [
+         -19,
+         120
+        ],
+        [
+         -10,
+         129
+        ],
+        [
+         -30,
+         167
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-11-L2",
+      "area_yd2": 470,
+      "p": 0.56,
+      "along": [
+       289,
+       318
+      ],
+      "gap_yd": 11.0,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "inside the left woods at 290-310",
+      "shape": {
+       "poly": [
+        [
+         -19,
+         318
+        ],
+        [
+         -9,
+         298
+        ],
+        [
+         -29,
+         289
+        ],
+        [
+         -38,
+         308
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-11-R1",
+      "area_yd2": 370,
+      "p": 0.57,
+      "along": [
+       137,
+       174
+      ],
+      "gap_yd": 6.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "trees right of the cart path at 140-165",
+      "shape": {
+       "poly": [
+        [
+         7,
+         159
+        ],
+        [
+         35,
+         174
+        ],
+        [
+         38,
+         173
+        ],
+        [
+         30,
+         159
+        ],
+        [
+         15,
+         152
+        ],
+        [
+         19,
+         143
+        ],
+        [
+         13,
+         142
+        ],
+        [
+         16,
+         139
+        ],
+        [
+         11,
+         137
+        ],
+        [
+         11,
+         149
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "houses right; strip between cart path and lots is rough (uncertain)",
+   "long_grass": {
+    "L": "none: mown rough to the tree line, both years",
+    "R": "none: mown rough to the cart path, back-yard lawns / auto OB beyond; streaky strip 240-310 right of the path left unmarked (uncertain)"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-12-R1",
+      "area_yd2": 724,
+      "p": 0.6,
+      "along": [
+       155,
+       202
+      ],
+      "gap_yd": 10.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "green back-yard lawns behind the houses at 150-200 (auto OB covers them)",
+      "shape": {
+       "poly": [
+        [
+         53,
+         202
+        ],
+        [
+         55,
+         180
+        ],
+        [
+         45,
+         179
+        ],
+        [
+         48,
+         157
+        ],
+        [
+         37,
+         155
+        ],
+        [
+         31,
+         199
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-12-R2",
+      "area_yd2": 1792,
+      "p": 0.6,
+      "along": [
+       212,
+       330
+      ],
+      "gap_yd": 9.7,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "strip along the right cart path at 210-320: streaky tan mown rough with mowing marks, lawns beyond; no clear second mowing line",
+      "shape": {
+       "poly": [
+        [
+         36,
+         321
+        ],
+        [
+         48,
+         322
+        ],
+        [
+         49,
+         312
+        ],
+        [
+         60,
+         313
+        ],
+        [
+         67,
+         262
+        ],
+        [
+         65,
+         258
+        ],
+        [
+         56,
+         257
+        ],
+        [
+         62,
+         214
+        ],
+        [
+         52,
+         212
+        ],
+        [
+         44,
+         262
+        ],
+        [
+         44,
+         267
+        ],
+        [
+         55,
+         268
+        ],
+        [
+         52,
+         290
+        ],
+        [
+         41,
+         288
+        ],
+        [
+         38,
+         310
+        ],
+        [
+         27,
+         309
+        ],
+        [
+         24,
+         328
+        ],
+        [
+         35,
+         330
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "wooded both sides; OB right through woods toward the houses (lot line not visible, kept)",
+   "long_grass": {
+    "L": "none: mown rough to the tree line, both years",
+    "R": "none: mown rough to the tree line, both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": [
+     {
+      "id": "S2-13-R1",
+      "area_yd2": 244,
+      "p": 0.7,
+      "along": [
+       266,
+       290
+      ],
+      "gap_yd": 28.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "house lot / driveway at 265-290 right",
+      "shape": {
+       "poly": [
+        [
+         59,
+         290
+        ],
+        [
+         65,
+         269
+        ],
+        [
+         54,
+         266
+        ],
+        [
+         48,
+         287
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "short par 4; area left of the cart path at 280-360 is tan mottled near houses (uncertain, left unmarked)",
+   "long_grass": {
+    "L": "none: mown rough to the cart path; tan mottled ground beyond it near the houses has no clear mowing line (uncertain)",
+    "R": "none: mown rough to the tree line, both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-14-L1",
+      "area_yd2": 207,
+      "p": 0.53,
+      "along": [
+       163,
+       192
+      ],
+      "gap_yd": 9.1,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "small patch at the left edge near the cart path at 280-300",
+      "shape": {
+       "poly": [
+        [
+         -8,
+         192
+        ],
+        [
+         -1,
+         183
+        ],
+        [
+         -9,
+         176
+        ],
+        [
+         -3,
+         168
+        ],
+        [
+         -13,
+         163
+        ],
+        [
+         -12,
+         169
+        ],
+        [
+         -16,
+         173
+        ],
+        [
+         -10,
+         179
+        ],
+        [
+         -16,
+         187
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-14-L2",
+      "area_yd2": 2022,
+      "p": 0.63,
+      "along": [
+       269,
+       361
+      ],
+      "gap_yd": 13.5,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "left of the cart path at 280-360: tan mottled with dark patches next to house lawns, no fixed second mowing line visible; beyond the green-side end of the landing zone (listed uncertain)",
+      "shape": {
+       "poly": [
+        [
+         -34,
+         361
+        ],
+        [
+         -26,
+         353
+        ],
+        [
+         -21,
+         357
+        ],
+        [
+         -15,
+         348
+        ],
+        [
+         -18,
+         341
+        ],
+        [
+         -20,
+         344
+        ],
+        [
+         -28,
+         338
+        ],
+        [
+         -24,
+         327
+        ],
+        [
+         -40,
+         317
+        ],
+        [
+         -34,
+         307
+        ],
+        [
+         -60,
+         289
+        ],
+        [
+         -54,
+         279
+        ],
+        [
+         -70,
+         269
+        ],
+        [
+         -70,
+         282
+        ],
+        [
+         -61,
+         288
+        ],
+        [
+         -66,
+         297
+        ],
+        [
+         -70,
+         296
+        ],
+        [
+         -70,
+         309
+        ],
+        [
+         -56,
+         318
+        ],
+        [
+         -61,
+         329
+        ],
+        [
+         -53,
+         333
+        ],
+        [
+         -58,
+         344
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-14-R1",
+      "area_yd2": 839,
+      "p": 0.59,
+      "along": [
+       120,
+       150
+      ],
+      "gap_yd": 11.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "trees and cart path near the tee at 120-150",
+      "shape": {
+       "poly": [
+        [
+         8,
+         150
+        ],
+        [
+         17,
+         142
+        ],
+        [
+         25,
+         148
+        ],
+        [
+         27,
+         139
+        ],
+        [
+         46,
+         134
+        ],
+        [
+         57,
+         120
+        ],
+        [
+         30,
+         120
+        ],
+        [
+         16,
+         141
+        ],
+        [
+         7,
+         134
+        ],
+        [
+         17,
+         120
+        ],
+        [
+         4,
+         120
+        ],
+        [
+         0,
+         125
+        ],
+        [
+         0,
+         144
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "open prairie: native right of the cart path the whole way; unmown carry left of the fairway start",
+   "long_grass": {
+    "L": "native: edit 1 (unmown carry 120-200 left of the line); 200-250 left is striped mown rough; pond edge fringe not marked",
+    "R": "native: edit 0 (right of the cart path, which is the mowing line, 120-400)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        3,
+        135
+       ],
+       [
+        17,
+        150
+       ],
+       [
+        29,
+        160
+       ],
+       [
+        39,
+        170
+       ],
+       [
+        46,
+        180
+       ],
+       [
+        47,
+        200
+       ],
+       [
+        45,
+        220
+       ],
+       [
+        43,
+        230
+       ],
+       [
+        44,
+        240
+       ],
+       [
+        45,
+        260
+       ],
+       [
+        41,
+        280
+       ],
+       [
+        40,
+        300
+       ],
+       [
+        39,
+        320
+       ],
+       [
+        39,
+        360
+       ],
+       [
+        37,
+        380
+       ],
+       [
+        36,
+        400
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        70,
+        135
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "tufted prairie with seed heads right of the cart path in 2023, tan prairie in 2021; smooth mown rough between fairway and path; edge 3 yds outside the cart path (measured from the photo), ~20 yds off the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        -70,
+        120
+       ],
+       [
+        -30,
+        120
+       ],
+       [
+        -30,
+        150
+       ],
+       [
+        -35,
+        175
+       ],
+       [
+        -40,
+        195
+       ],
+       [
+        -70,
+        200
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "coarse mottled unmown grass left of the line at 120-200 in 2023, tan in 2021; striped mown rough starts at ~200"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-17-L1",
+      "area_yd2": 5771,
+      "p": 0.73,
+      "along": [
+       120,
+       265
+      ],
+      "gap_yd": 4.4,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native at 120-200 traced as edit 1; 200-245 inside the S2 shape is striped mown rough",
+      "shape": {
+       "poly": [
+        [
+         -70,
+         200
+        ],
+        [
+         -61,
+         199
+        ],
+        [
+         -60,
+         205
+        ],
+        [
+         -60,
+         221
+        ],
+        [
+         -70,
+         221
+        ],
+        [
+         -70,
+         243
+        ],
+        [
+         -49,
+         243
+        ],
+        [
+         -49,
+         265
+        ],
+        [
+         -38,
+         265
+        ],
+        [
+         -38,
+         243
+        ],
+        [
+         -27,
+         243
+        ],
+        [
+         -28,
+         188
+        ],
+        [
+         -17,
+         188
+        ],
+        [
+         -17,
+         177
+        ],
+        [
+         -6,
+         177
+        ],
+        [
+         -6,
+         144
+        ],
+        [
+         -17,
+         144
+        ],
+        [
+         -18,
+         120
+        ],
+        [
+         -70,
+         123
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-17-L2",
+      "area_yd2": 225,
+      "p": 0.64,
+      "along": [
+       286,
+       308
+      ],
+      "gap_yd": 4.4,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "reed fringe on the pond edge at 280-300, water wins",
+      "shape": {
+       "poly": [
+        [
+         -27,
+         308
+        ],
+        [
+         -16,
+         308
+        ],
+        [
+         -16,
+         286
+        ],
+        [
+         -26,
+         287
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-17-L3",
+      "area_yd2": 172,
+      "p": 0.65,
+      "along": [
+       308,
+       331
+      ],
+      "gap_yd": 5.7,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "pond edge fringe at 310-325",
+      "shape": {
+       "poly": [
+        [
+         -48,
+         320
+        ],
+        [
+         -48,
+         331
+        ],
+        [
+         -37,
+         330
+        ],
+        [
+         -37,
+         319
+        ],
+        [
+         -27,
+         319
+        ],
+        [
+         -27,
+         308
+        ],
+        [
+         -38,
+         320
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-17-R1",
+      "area_yd2": 7308,
+      "p": 0.71,
+      "along": [
+       120,
+       400
+      ],
+      "gap_yd": 12.2,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native right of the cart path traced as edit 0 on the path line; S2 shape comes in over the mown rough",
+      "shape": {
+       "poly": [
+        [
+         48,
+         166
+        ],
+        [
+         59,
+         165
+        ],
+        [
+         60,
+         187
+        ],
+        [
+         49,
+         187
+        ],
+        [
+         50,
+         275
+        ],
+        [
+         39,
+         275
+        ],
+        [
+         40,
+         373
+        ],
+        [
+         29,
+         374
+        ],
+        [
+         29,
+         384
+        ],
+        [
+         40,
+         384
+        ],
+        [
+         40,
+         400
+        ],
+        [
+         70,
+         400
+        ],
+        [
+         70,
+         122
+        ],
+        [
+         15,
+         120
+        ],
+        [
+         26,
+         122
+        ],
+        [
+         26,
+         133
+        ],
+        [
+         37,
+         133
+        ],
+        [
+         37,
+         144
+        ],
+        [
+         48,
+         144
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "high",
+   "note": "prairie right of the cart path; lake left",
+   "long_grass": {
+    "L": "native: S2-18-L2/L3 beyond the fairway end left of the path (330-400, inner part clipped by the keep-out)",
+    "R": "native: edit 0 (right of the cart path, which is the mowing line, 120-400)"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "native",
+     "shape": {
+      "poly": [
+       [
+        37,
+        125
+       ],
+       [
+        33,
+        140
+       ],
+       [
+        35,
+        150
+       ],
+       [
+        35,
+        160
+       ],
+       [
+        36,
+        170
+       ],
+       [
+        39,
+        180
+       ],
+       [
+        45,
+        190
+       ],
+       [
+        49,
+        200
+       ],
+       [
+        49,
+        210
+       ],
+       [
+        47,
+        220
+       ],
+       [
+        40,
+        230
+       ],
+       [
+        37,
+        240
+       ],
+       [
+        35,
+        250
+       ],
+       [
+        33,
+        260
+       ],
+       [
+        34,
+        270
+       ],
+       [
+        33,
+        280
+       ],
+       [
+        31,
+        290
+       ],
+       [
+        27,
+        300
+       ],
+       [
+        18,
+        320
+       ],
+       [
+        13,
+        330
+       ],
+       [
+        5,
+        340
+       ],
+       [
+        1,
+        350
+       ],
+       [
+        -7,
+        360
+       ],
+       [
+        -15,
+        370
+       ],
+       [
+        -21,
+        380
+       ],
+       [
+        -27,
+        390
+       ],
+       [
+        -33,
+        400
+       ],
+       [
+        70,
+        400
+       ],
+       [
+        70,
+        125
+       ]
+      ]
+     },
+     "confidence": "high",
+     "evidence": "tufted prairie right of the cart path in 2023, tan prairie in 2021; smooth mown rough between fairway and path; edge 3 yds outside the cart path, 15-25 yds off the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-18-L1",
+      "area_yd2": 150,
+      "p": 0.62,
+      "along": [
+       224,
+       239
+      ],
+      "gap_yd": 3.9,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "lake-bank fringe 230-250 at the water edge, mown rough between it and the fairway",
+      "shape": {
+       "poly": [
+        [
+         -33,
+         239
+        ],
+        [
+         -29,
+         228
+        ],
+        [
+         -38,
+         224
+        ],
+        [
+         -47,
+         233
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-18-L2",
+      "area_yd2": 268,
+      "p": 0.53,
+      "along": [
+       330,
+       356
+      ],
+      "gap_yd": 4.5,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "coarse grass left of the path beyond the fairway end at 330-350, tan in 2021",
+      "shape": {
+       "poly": [
+        [
+         -1,
+         333
+        ],
+        [
+         -9,
+         330
+        ],
+        [
+         -16,
+         347
+        ],
+        [
+         -15,
+         351
+        ],
+        [
+         -2,
+         356
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-18-L3",
+      "area_yd2": 790,
+      "p": 0.64,
+      "along": [
+       375,
+       400
+      ],
+      "gap_yd": 11.8,
+      "decision": "accept",
+      "confidence": "medium",
+      "evidence": "coarse grass left of the path at 375-400, tan in 2021",
+      "shape": {
+       "poly": [
+        [
+         0,
+         400
+        ],
+        [
+         0,
+         380
+        ],
+        [
+         -11,
+         375
+        ],
+        [
+         -15,
+         375
+        ],
+        [
+         -18,
+         384
+        ],
+        [
+         -37,
+         377
+        ],
+        [
+         -42,
+         384
+        ],
+        [
+         -41,
+         388
+        ],
+        [
+         -33,
+         390
+        ],
+        [
+         -36,
+         400
+        ]
+       ]
+      }
+     }
+    ],
+    "R": [
+     {
+      "id": "S2-18-R1",
+      "area_yd2": 7498,
+      "p": 0.67,
+      "along": [
+       120,
+       376
+      ],
+      "gap_yd": 7.5,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "native right of the path traced as edit 0 on the path line",
+      "shape": {
+       "poly": [
+        [
+         19,
+         376
+        ],
+        [
+         43,
+         315
+        ],
+        [
+         54,
+         318
+        ],
+        [
+         61,
+         302
+        ],
+        [
+         62,
+         298
+        ],
+        [
+         52,
+         295
+        ],
+        [
+         59,
+         274
+        ],
+        [
+         69,
+         277
+        ],
+        [
+         66,
+         288
+        ],
+        [
+         70,
+         289
+        ],
+        [
+         70,
+         266
+        ],
+        [
+         63,
+         264
+        ],
+        [
+         67,
+         253
+        ],
+        [
+         70,
+         254
+        ],
+        [
+         70,
+         120
+        ],
+        [
+         25,
+         120
+        ],
+        [
+         21,
+         129
+        ],
+        [
+         31,
+         134
+        ],
+        [
+         28,
+         145
+        ],
+        [
+         37,
+         148
+        ],
+        [
+         30,
+         169
+        ],
+        [
+         40,
+         172
+        ],
+        [
+         36,
+         183
+        ],
+        [
+         46,
+         186
+        ],
+        [
+         42,
+         197
+        ],
+        [
+         52,
+         200
+        ],
+        [
+         45,
+         222
+        ],
+        [
+         55,
+         225
+        ],
+        [
+         51,
+         235
+        ],
+        [
+         40,
+         232
+        ],
+        [
+         29,
+         260
+        ],
+        [
+         39,
+         266
+        ],
+        [
+         31,
+         286
+        ],
+        [
+         41,
+         290
+        ],
+        [
+         38,
+         301
+        ],
+        [
+         27,
+         297
+        ],
+        [
+         12,
+         337
+        ],
+        [
+         0,
+         333
+        ],
+        [
+         0,
+         357
+        ],
+        [
+         4,
+         358
+        ],
+        [
+         0,
+         368
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-18-R2",
+      "area_yd2": 170,
+      "p": 0.52,
+      "along": [
+       148,
+       170
+      ],
+      "gap_yd": 14.3,
+      "decision": "replace",
+      "confidence": "",
+      "evidence": "covered by edit 0",
+      "shape": {
+       "poly": [
+        [
+         1,
+         169
+        ],
+        [
+         6,
+         170
+        ],
+        [
+         13,
+         150
+        ],
+        [
+         2,
+         148
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "2": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "3": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "4": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "5": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "6": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "7": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "8": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "9": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "10": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "11": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "12": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "13": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "14": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot in trees at along 185, no visible box where card 140 puts it; kept (uncertain)"
+   }
+  },
+  "15": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "move",
+    "to": [
+     30,
+     112
+    ],
+    "confidence": "medium",
+    "evidence": "walkback dot on open turf at along 103; OSM tee box with a cart-path spur at +30/112 measures ~88 vs card 92"
+   }
+  },
+  "16": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "17": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  },
+  "18": {
+   "King": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Palmer": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Deacon": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   },
+   "Legend": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on a visible box, measured = card"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "2",
+   "what": "smooth yellow-green area left at 140-250 (x -45..-15): algae-covered water or dormant turf? left as auto (no water layer there)"
+  },
+  {
+   "hole": "7",
+   "what": "3-6 yd tufted fringe on the fairway-side creek bank 140-280 not marked"
+  },
+  {
+   "hole": "10",
+   "what": "tan area between fairway end and trees at 320-345 left (+/- native)"
+  },
+  {
+   "hole": "12",
+   "what": "streaky strip right of the cart path 240-310 (native or rough), and OB lot line (auto kept)"
+  },
+  {
+   "hole": "13",
+   "what": "auto OB through the right woods; lot line not visible"
+  },
+  {
+   "hole": "14",
+   "what": "left of the cart path 280-360 near the houses: native or dormant rough; Legend tee not found"
+  },
+  {
+   "hole": "4",
+   "what": "right tan strip 255-330: native vs dry rough edge"
+  },
+  {
+   "hole": "5/8/16",
+   "what": "Legend walkback tees kept without a clear box check"
+  }
+ ]
+}
