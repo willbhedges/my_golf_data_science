@@ -1,0 +1,1078 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "swope_memorial",
+ "corridor_set": "Green",
+ "mapper": "mapper-swope_memorial",
+ "started": "2026-11-03T00:25Z",
+ "minutes": 50,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py swope_memorial. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland, auto trees match",
+   "long_grass": {
+    "L": "none: mown rough to the hole-6 cart path / scattered crowns, smooth in 2020 and 2022",
+    "R": "none: mown rough to the cart path and hole 8 fairway, no second mowing line either year"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "added crowns the auto tree layer dropped",
+   "long_grass": {
+    "L": "none: smooth rough between scattered crowns to the hole-6 fairway, both years",
+    "R": "none: rough to the tree line along the cart path, uniform in both years"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       28,
+       244,
+       5,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown right of the fairway at the landing zone, lidar 7.8 m, dark crown in 2020 and 2022; auto dropped it"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -28,
+       197,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown by the left cart path, lidar 9.5 m, dark in both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -31,
+       176,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown by the left cart path, lidar 14 m, dark in both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland: auto layers match the photo",
+   "long_grass": {
+    "L": "none: rough under the left tree row, shade only, smooth both years",
+    "R": "none: mown strip to the cart path and crowns, both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland: auto layers match the photo",
+   "long_grass": {
+    "L": "none: woods start ~15 yds off the fairway; mown rough between, both years",
+    "R": "none: rough to the cart path and crowns; smooth in 2020 and 2022"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "added crowns the auto tree layer dropped",
+   "long_grass": {
+    "L": "none: parkland rough between crowns to the hole-1 fairway, both years",
+    "R": "none: rough to the cart path; 2022 one smooth green sheet"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -22,
+       212,
+       9,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown 2 yds off the left fairway edge, lidar 8.8 m, dark in 2020 and 2022"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -57,
+       322,
+       9,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown left of the green approach, lidar 15 m, dark in both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "8": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "short par 4: newer crowns right of the fairway not in the 2006 lidar",
+   "long_grass": {
+    "L": "none: rough with crowns to the cart path, smooth both years",
+    "R": "none: rough to the cart path / hole-7 fairway, no second line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -22,
+       187,
+       6,
+       12
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crowns along the left cart path, lidar 9 m, dark in both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -19,
+       163,
+       8,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown along the left cart path, lidar 8.5 m, dark in both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       15,
+       243,
+       6,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown right of the fairway (no lidar: newer than the 2006 lidar), visible 2020 and 2022"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       15,
+       272,
+       6,
+       5
+      ]
+     },
+     "confidence": "low",
+     "evidence": "crown right of the green (no lidar: newer than 2006), visible 2020 and 2022"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "added crowns the auto tree layer dropped",
+   "long_grass": {
+    "L": "none: rough under scattered crowns to the cart path, both years",
+    "R": "none: rough to the tree belt, no coarse texture either year"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       2,
+       313,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown at the left fairway edge, lidar 7.8 m, dark in both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       4,
+       337,
+       6,
+       7
+      ]
+     },
+     "confidence": "low",
+     "evidence": "crown at the left fairway edge near the green (no lidar), visible 2020 and 2022"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland: auto layers match the photo",
+   "long_grass": {
+    "L": "none: narrow mown rough to the cart path and woods, both years",
+    "R": "none: rough to the wooded belt; uniform both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "added crowns the auto tree layer dropped",
+   "long_grass": {
+    "L": "none: rough to the wooded slope, smooth in both years",
+    "R": "none: rough to the cart path and crowns, no second mowing line"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29,
+       229,
+       9,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "two crowns right of the fairway by the cart path, lidar 6-8 m, dark in 2020 and 2022"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       22,
+       262,
+       8,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown edge 5-8 yds beyond the auto outline toward the fairway, both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -27,
+       331,
+       5,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown left, lidar 5 m, visible both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -26,
+       315,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "small crown left, lidar 5.8 m, visible both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "12": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "S2 left candidates are mown rough",
+   "long_grass": {
+    "L": "none: S2 L1/L2 rejected; uniform mown rough to the tree line at x -70 in 2022, mower streaks in 2020",
+    "R": "none: rough to the cart path / hole-11 side, smooth both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [
+     {
+      "id": "S2-12-L1",
+      "area_yd2": 604,
+      "p": 0.59,
+      "along": [
+       154,
+       195
+      ],
+      "gap_yd": 9.8,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "left of the fairway at 155-195 by the tree line: smooth mown rough in 2022 (one green sheet), straight mowing streaks / a mown strip in 2020, no coarse texture or second mowing line",
+      "shape": {
+       "poly": [
+        [
+         -56,
+         191
+        ],
+        [
+         -45,
+         195
+        ],
+        [
+         -35,
+         164
+        ],
+        [
+         -67,
+         154
+        ],
+        [
+         -69,
+         165
+        ],
+        [
+         -49,
+         171
+        ]
+       ]
+      }
+     },
+     {
+      "id": "S2-12-L2",
+      "area_yd2": 588,
+      "p": 0.58,
+      "along": [
+       202,
+       250
+      ],
+      "gap_yd": 10.7,
+      "decision": "reject",
+      "confidence": "",
+      "evidence": "left rough at 200-250 out to x -70: uniform mown turf in 2022, mower streaks in 2020, no tufted grass; fairway edge at x -40 is the only mowing line",
+      "shape": {
+       "poly": [
+        [
+         -59,
+         202
+        ],
+        [
+         -70,
+         233
+        ],
+        [
+         -70,
+         245
+        ],
+        [
+         -52,
+         250
+        ],
+        [
+         -49,
+         240
+        ],
+        [
+         -59,
+         235
+        ],
+        [
+         -49,
+         205
+        ]
+       ]
+      }
+     }
+    ],
+    "R": []
+   }
+  },
+  "14": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland: auto layers match the photo",
+   "long_grass": {
+    "L": "none: rough band to the woods edge at x -60..-70, smooth both years",
+    "R": "none: rough to the wooded hillside along the cart path"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland: auto layers match the photo",
+   "long_grass": {
+    "L": "none: rough among the left tree row, shade not grass, both years",
+    "R": "none: rough to the cart path and woods, smooth both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "17": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "added crowns the auto tree layer dropped",
+   "long_grass": {
+    "L": "none: rough between crowns to the hole-3 fairway, both years",
+    "R": "none: rough to the cart path; smooth in 2022, mown in 2020"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -39,
+       295,
+       8,
+       10
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown left, lidar 12 m, half outside the auto outline, dark both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -45,
+       315,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown left, lidar 9.5 m, dark both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -45,
+       337,
+       8,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown left, lidar 14 m, dark both years"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -44,
+       359,
+       7,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "crown left of the lay-up zone, lidar 13 m, dark both years"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway"
+   ],
+   "confidence": "medium",
+   "note": "parkland: auto layers match the photo",
+   "long_grass": {
+    "L": "none: rough to the left cart path and crowns, both years",
+    "R": "none: rough among crowns to the hole-10 side, smooth both years"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot (no box identified); no separate box visible at the card distance in 2020/2022, left as is"
+   }
+  },
+  "2": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "3": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "4": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "5": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "6": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot (no box identified); no separate box visible at the card distance in 2020/2022, left as is"
+   }
+  },
+  "7": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "8": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "9": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "10": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot (no box identified); no separate box visible at the card distance in 2020/2022, left as is"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "11": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "12": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "13": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "14": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "15": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "16": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   }
+  },
+  "17": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot (no box identified); no separate box visible at the card distance in 2020/2022, left as is"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot (no box identified); no separate box visible at the card distance in 2020/2022, left as is"
+   }
+  },
+  "18": {
+   "Green": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Bronze": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Silver": {
+    "action": "keep",
+    "confidence": "medium",
+    "evidence": "dot on / at the edge of a visible or OSM tee box; measured within ~6 yds of the 2026 card"
+   },
+   "Black": {
+    "action": "keep",
+    "confidence": "low",
+    "evidence": "walkback dot (no box identified); no separate box visible at the card distance in 2020/2022, left as is"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "all",
+   "what": "Imagery (NAIP 2020/2022) and lidar (2006) predate the recent restoration; the 2026 card is the post-restoration card. Fairway lines, bunkers, tree removals and new tees from the restoration are not visible; where they differ, the auto (OSM) layers were left unchanged."
+  },
+  {
+   "hole": "1/6",
+   "what": "Green tees of holes 1 and 6 are the same point (both on one OSM box behind the clubhouse); possibly a routing / numbering change from the restoration. Not changed (routing is automatic)."
+  },
+  {
+   "hole": "12",
+   "what": "Green 533 tee is a lidar_pad dot between the Bronze box and the railway embankment (measured 527); no clear box in either year."
+  },
+  {
+   "hole": "5,11,14,18",
+   "what": "Green tee measured 4-6 yds short of the 2026 card (470/475, 370/375, 421/426, 409/413); no separate box visible behind, possibly a new restoration tee."
+  },
+  {
+   "hole": "1,6,10,17,18",
+   "what": "forward-set walkback tees (Black 1/6/17/18, Silver 10/17) have no visible box; kept."
+  },
+  {
+   "hole": "8,9",
+   "what": "crowns not in the 2006 lidar placed from the photo (+/-5 yds; years disagree on lean / shadow)."
+  },
+  {
+   "hole": "2,18",
+   "what": "several 2006 lidar crowns (h2 left at 284/309, h18 centre-left at 310, h1 right at 263) appear gone in 2020/2022: not added."
+  }
+ ]
+}
