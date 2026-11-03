@@ -2,7 +2,7 @@
 
 **Status: needs confirm** — confirm holes 2
 
-* page: `course_data/library/shoal_creek/page.html` (2.4 MB); request `course_data/requests/course_page_shoal_creek.json`; built 2026-11-02T23:02Z
+* page: `course_data/library/shoal_creek/page.html` (2.4 MB); request `course_data/requests/course_page_shoal_creek.json`; built 2026-11-03T04:31Z
 * course: Shoal Creek Golf Course (Kansas City, MO), OSM way/195221881; holes: osm (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Gold, Blue (the two longest sets on the card (combination sets skipped)); page sets: Gold, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
@@ -22,7 +22,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
 | 1 | 4 | PASS | Driver -9 |  |
-| 2 | 4 | CHECK | Driver -5 | tee: tee marker not on an OSM tee box (walkback; 32 yds from the nearest OSM tee box) |
+| 2 | 4 | CHECK | Driver -6 | tee: tee marker not on an OSM tee box (walkback; 32 yds from the nearest OSM tee box) |
 | 3 | 3 | PASS |  |  |
 | 4 | 4 | PASS | 4-wood -2 |  |
 | 5 | 3 | PASS |  |  |
@@ -47,7 +47,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 1 | 4 | PASS | Driver -18 |  |
 | 2 | 4 | CHECK | Driver +6 | tee: tee marker not on an OSM tee box (tee_axis; 3 yds from the nearest OSM tee box) |
 | 3 | 3 | PASS |  |  |
-| 4 | 4 | PASS | 4-wood +9 |  |
+| 4 | 4 | PASS | 4-wood +8 |  |
 | 5 | 3 | PASS |  |  |
 | 6 | 4 | PASS | Driver -34 |  |
 | 7 | 5 | PASS | Driver +10 |  |

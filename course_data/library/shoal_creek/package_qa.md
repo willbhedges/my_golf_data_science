@@ -1,6 +1,6 @@
 # Shoal Creek Golf Course (Kansas City, MO) - Black tees
 
-Built 2026-11-02T23:02:13Z. OSM way/195221881. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T04:31:20Z. OSM way/195221881. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -27,7 +27,7 @@ OSM features inside the course: buildings 1, golf=bunker 39, golf=cartpath 19, g
 | 2 | 4 | 292 / 288 | 85 | 0.75 | check the flags | 32% | 5% | 64% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 3 | 3 | 112 / 112 | 164 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 4 | 4 | 299 / 299 | 136 | 0.77 | check the flags | 16% | 35% | 49% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 5 | 3 | 130 / 139 | 321 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Black review (snapped 11 yds along OSM tee 897738874) | tee: tee stage: Black review (snapped 11 yds along OSM tee 897738874) |
+| 5 | 3 | 130 / 128 | 318 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: Black review (kept: snap snapped 11 yds along OSM tee 897738874 would measure 139, another set's box, point 128, card 130) | tee: tee stage: Black review (kept: snap snapped 11 yds along OSM tee 897738874 would measure 139, another set's box, point 128, card 130) |
 | 6 | 4 | 281 / 283 | 309 | 0.56 | needs review | 17% | 0% | 83% | tee stage: Black review | tee: tee stage: Black review; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 7 | 5 | 448 / 447 | 163 | 0.79 | check the flags | 33% | 9% | 58% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 8 | 4 | 355 / 355 | 342 | 0.80 | check the flags | 27% | 19% | 54% | tee stage: Black tee_centroid |  |
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 1, golf=bunker 39, golf=cartpath 19, g
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tee_overrides**: ok: Gold 4 review (inside OSM tee 897736290), 5 review (inside OSM tee 897738876), 6 review (inside OSM tee 897746433); Blue 5 review (snapped 1 yds along OSM tee 897738875), 6 review (inside OSM tee 897746432); White 5 review (snapped 1 yds along OSM tee 897738874), 6 review (snapped 12 yds along OSM tee 897746432); Black 5 review (snapped 11 yds along OSM tee 897738874), 6 review;
+- **tee_overrides**: ok: Gold 4 review (inside OSM tee 897736290), 5 review (inside OSM tee 897738876), 6 review (inside OSM tee 897746433); Blue 5 review (snapped 1 yds along OSM tee 897738875), 6 review (inside OSM tee 897746432); White 5 review (snapped 1 yds along OSM tee 897738874), 6 review (kept: snap snapped 12 yds along OSM tee 897746432 would measure 320, another set's box, point 308, card 306); Black 5 review (kept: snap snapped 11 yds along OSM tee 897738874 would measure 139, another set's box, point 128, card 130), 6 review;
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 106 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/shoal_creek/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2018)
