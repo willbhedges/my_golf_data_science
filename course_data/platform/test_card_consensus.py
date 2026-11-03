@@ -153,3 +153,22 @@ def test_set_order_guard_sees_the_review_overrides():
     assert r["card"]["tee_sets"]["Gold"]["yards"][14] == 350
     r = cc.consensus(cards, ground, {"15": {"Gold": 350}})                  # a pinned set is left alone
     assert (15, "Gold") not in {(c["hole"], c["set"]) for c in r["changes"]}
+
+
+def test_other_par_layout_is_not_a_stale_yardage():
+    """Chambers Bay 1 (QA 2026-11-03): golfify + AllSquare list Navy 1 at 559 (par 5); OpenGolfAPI lists 494 on a
+    card that makes hole 1 a par 4. The OSM line (493) fits 494, but that is the par-4 layout of the hole, so the
+    par-5 card keeps 559. With the same par on both cards the ground still wins (the Finkbine rule)."""
+    rest = [400, 170, 520, 410, 380, 190, 540, 420, 400, 380, 175, 530, 410, 390, 185, 545, 420]
+    par_rest = [4, 3, 5, 4, 4, 3, 5, 4, 4, 4, 3, 5, 4, 4, 3, 5, 4]
+    ground = {str(i + 1): dict(line=y, tees=[]) for i, y in enumerate([493] + rest)}
+
+    def card(first, par1):
+        y = [first] + rest
+        return dict(par=[par1] + par_rest, tee_sets={"Navy": dict(yards=y, total=sum(y))})
+    cards = [("golfify", card(559, 5), "g"), ("allsquare", card(559, 5), "a"), ("opengolfapi", card(494, 4), "o")]
+    r = cc.consensus(cards, ground)
+    assert r["base"] in ("golfify", "allsquare") and changed(r) == {}
+    assert r["card"]["tee_sets"]["Navy"]["yards"][0] == 559
+    cards[2] = ("opengolfapi", card(494, 5), "o")
+    assert changed(cc.consensus(cards, ground)) == {(1, "Navy"): 494}

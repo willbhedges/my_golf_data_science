@@ -14,7 +14,9 @@ source reliability only; this module adds the ground:
   3. base card  the card that fits the ground on most holes (a value within FIT_YD of an OSM tee / the hole
                 line); among cards within 10% of the best, the most recent (card_date) then the most reliable
   4. per hole   for each set of the base card, when another card's matching set disagrees by > DISAGREE_YD on a
-                hole and fits the ground clearly better (by > MARGIN_YD, and within FIT_YD), its value is used
+                hole and fits the ground clearly better (by > MARGIN_YD, and within FIT_YD), its value is used,
+                unless two cards agree on the base value and the other card gives the hole another par (a par-4 /
+                par-5 layout of one hole)
 
 -> consensus(cards, ground) = {card, base, changes[], flags[], scores{}}. Pure functions; no network.
 """
@@ -266,6 +268,14 @@ def _hole_agrees(name, s, other, i, y):
     return bool(y and i < len(ys) and ys[i] and abs(ys[i] - y) <= 3)
 
 
+def _par(card, s, i):
+    """The par of hole index i for set s of a card (the set's own par row, else the card's); None when unknown."""
+    for row in (s.get("par"), card.get("par")):
+        if row and i < len(row) and row[i]:
+            return row[i]
+    return None
+
+
 def _rank(kind):
     if kind in ("request", "file", "review", "typed"):                 # a card a person typed or checked
         return -1
@@ -350,6 +360,12 @@ def consensus(cards, ground, overrides=None):
                 ys = o["yards"]
                 if i >= len(ys) or not ys[i] or abs(ys[i] - (y or 0)) <= DISAGREE_YD:
                     continue
+                pb, po = _par(base, s, i), _par(c, o, i)
+                if corroborated and pb and po and pb != po:
+                    continue                                     # two cards agree on a value for another par: the
+                    # other card is another layout of the hole, not a stale yardage (Chambers Bay 1: Navy 559 par 5
+                    # on golfify + AllSquare, 494 on OpenGolfAPI's par-4 card). A lone base card with another par
+                    # is more likely scrambled (Eagle Bend golfify, Memorial Park) and is still fixed on the ground.
                 fa = fit(ys[i], g)
                 longer = [pinned.get((mn, i), m["yards"][i]) for mn, m in merged.items()
                           if m is not s and (m.get("total") or 0) > (s.get("total") or 0)
