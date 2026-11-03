@@ -1,90 +1,53 @@
 {
  "schema": "vision_any_raw/1",
  "slug": "queenstown_harbor",
- "course": "Queenstown Harbor River Course",
+ "course": "South River Golf Course",
  "bbox_snwe": [
-  38.976036,
-  -76.185315,
-  38.996663,
-  -76.159957
+  38.9148145,
+  -76.5859,
+  38.927472,
+  -76.5713255
  ],
  "grid": {
   "crs": "EPSG:32618",
   "res_m": 1.0,
-  "width": 2468,
-  "height": 2560,
+  "width": 1530,
+  "height": 1668,
   "bounds": [
-   397204,
-   4314636,
-   399672,
-   4317196
+   362384,
+   4308376,
+   363914,
+   4310044
   ],
   "transform": [
    1.0,
    0.0,
-   397204.0,
+   362384.0,
    0.0,
    -1.0,
-   4317196.0
+   4310044.0
   ],
   "ll_bbox_wsen": [
-   -76.18707820662085,
-   38.97467616127297,
-   -76.1582075309896,
-   38.99802679294296
+   -76.58761151528516,
+   38.91350719680483,
+   -76.56963566503954,
+   38.9287712531773
   ]
  },
- "fetched_utc": "2026-11-03T05:04:40Z",
- "lidar": {
-  "hag": {
-   "source": "planetary-computer 3dep-lidar-hag",
-   "items": [],
-   "valid": 0.0
-  },
-  "dtm": {
-   "source": "planetary-computer 3dep-lidar-dtm",
-   "items": [],
-   "valid": 0.0
-  },
-  "hag_dsm_dtm": {
-   "items": []
-  },
-  "hag_note": "PC lidar covers 0% of the grid; trying EPT"
- },
+ "fetched_utc": "2026-11-03T15:02:32Z",
+ "lidar": {},
  "ept": {
   "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
-  "candidates": [
-   {
-    "name": "MD_VA_NCB_KGeorge_1_2020",
-    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MD_VA_NCB_KGeorge_1_2020/ept.json",
-    "cov": 0.912,
-    "year": 2020,
-    "count": 17315742804
-   }
-  ],
+  "candidates": [],
   "tiles": 4,
-  "used": [
-   {
-    "name": "MD_VA_NCB_KGeorge_1_2020",
-    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MD_VA_NCB_KGeorge_1_2020/ept.json",
-    "cov": 0.912,
-    "year": 2020,
-    "count": 17315742804,
-    "cells": 4338030,
-    "tiles": 4
-   }
-  ],
-  "valid": 0.6866057409846029,
-  "hag_mb": 2.28,
-  "frac_gt_2_5m": 0.3221244428687196,
-  "class_mb": 0.09
+  "used": []
  },
  "meta_chm": {
   "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
   "tiles": [
    "032010033"
   ],
-  "mb": 0.75,
+  "mb": 0.55,
   "file": "chm_meta.tif",
   "valid": 1.0
  },
@@ -94,7 +57,7 @@
    {
     "id": "ESA_WorldCover_10m_2021_v200_N36W078",
     "when": "2021-12-31T23:59:59.000000Z",
-    "cells": 1579520,
+    "cells": 638010,
     "props": {
      "datetime": null,
      "end_datetime": "2021-12-31T23:59:59.000000Z",
@@ -103,20 +66,19 @@
    }
   ],
   "file": "worldcover.tif",
-  "mb": 0.04
+  "mb": 0.02
  },
  "naip": {
   "years": [
    {
     "year": 2023,
     "file": "naip_2023.tif",
-    "mb": 24.94,
+    "mb": 9.47,
     "items": [
-     "md_m_3807607_nw_18_030_20230527_20231018",
-     "md_m_3807607_ne_18_030_20230527_20231018"
+     "md_m_3807604_sw_18_030_20230713_20231018"
     ],
     "acquired": [
-     "2023-05-27"
+     "2023-07-13"
     ],
     "gsd_m": 0.3,
     "res_m": 0.6
@@ -124,11 +86,9 @@
    {
     "year": 2021,
     "file": "naip_2021.tif",
-    "mb": 17.87,
+    "mb": 9.45,
     "items": [
-     "md_m_3907663_se_18_060_20211020",
-     "md_m_3807607_nw_18_060_20211020",
-     "md_m_3807607_ne_18_060_20211020"
+     "md_m_3807604_sw_18_060_20211020"
     ],
     "acquired": [
      "2021-10-20"

@@ -1,70 +1,118 @@
 {
  "slug": "queenstown_harbor",
- "name": "Queenstown Harbor River Course",
+ "name": "South River Golf Course",
  "request_name": "Queenstown Harbor River Course",
  "city": "Queenstown",
  "state": "MD",
  "group": "library",
- "status": "needs confirm",
+ "status": "blocked",
  "reasons": [
-  "scorecard not matched (source None, flags [])",
-  "18 holes built vs the card's 0",
-  "pars sum to 72, card None",
-  "18 hole(s) with a CHECK"
+  "9 holes built, the card has 18: holes are missing or mis-routed",
+  "built pars sum to 36, the card's to 71 (more than 2 apart): holes or pars are wrong",
+  "resolved to 'South River Golf Course' 36.1 km from the request's near point with match score 0.42 (< 0.5): probably not the requested course",
+  "holes not all mapped in OSM (hole method: structure)",
+  "OSM greens 7 of 9 holes",
+  "9 holes built vs the card's 18",
+  "pars sum to 36, card 71",
+  "7 hole(s) with a CHECK"
  ],
  "check_holes": [
   1,
   2,
-  3,
   4,
   5,
-  6,
   7,
   8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18
+  9
  ],
  "tee_sets": [
   {
-   "name": "osm_back",
-   "yards": null,
-   "par": null,
-   "rating": null,
-   "slope": null,
-   "colour": null,
+   "name": "Green",
+   "yards": 6523,
+   "par": 71,
+   "rating": 71.4,
+   "slope": 136,
+   "colour": "green",
    "on_page": "solved"
+  },
+  {
+   "name": "Blue",
+   "yards": 6017,
+   "par": 71,
+   "rating": 69.2,
+   "slope": 126,
+   "colour": "blue",
+   "on_page": "solved"
+  },
+  {
+   "name": "Gold",
+   "yards": 5532,
+   "par": 71,
+   "rating": 66.6,
+   "slope": 122,
+   "colour": "gold",
+   "on_page": null
+  },
+  {
+   "name": "Gold (L)",
+   "yards": 5532,
+   "par": 71,
+   "rating": 73.2,
+   "slope": 133,
+   "colour": "gold",
+   "on_page": null
+  },
+  {
+   "name": "White",
+   "yards": 5048,
+   "par": 71,
+   "rating": 64.5,
+   "slope": 117,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "White (L)",
+   "yards": 5048,
+   "par": 71,
+   "rating": 70.7,
+   "slope": 128,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Red (L)",
+   "yards": 4740,
+   "par": 71,
+   "rating": 69.5,
+   "slope": 121,
+   "colour": "red",
+   "on_page": null
   }
  ],
  "solved_sets": [
-  "osm_back"
+  "Green",
+  "Blue"
  ],
  "page": "course_data/library/queenstown_harbor/page.html",
- "page_bytes": 2051184,
+ "page_bytes": 1914393,
  "qa_report": "course_data/library/queenstown_harbor/qa_report.md",
  "center": [
-  38.986349700000005,
-  -76.1726362
+  38.921388699999994,
+  -76.5797801
  ],
- "osm": "way/1067525665",
- "holes": 18,
+ "osm": "way/61239088",
+ "holes": 9,
  "days": [
   "2026-11-07",
   "2026-11-08"
  ],
  "weather": "forecast",
- "built": "2026-11-03T05:14Z",
+ "built": "2026-11-03T15:03Z",
  "request": "course_data/requests/course_page_queenstown_harbor.json",
  "native": {
   "holes": [],
-  "tee_set": "osm_back",
+  "tee_set": "Green",
   "note": "not asked: no agent_layers in the request"
  }
 }
