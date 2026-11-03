@@ -1246,7 +1246,9 @@ def call_fairway_fill(package, fc, req, warnings):
         st["fairway_fill"] = "missing (course_data/vision_any/fairway_fill.py not importable)"
         return package
     out, rep = mod.fill_package(package, osm_fc=fc)
-    st["fairway_fill"] = str(rep.get("status"))[:300]
+    # fill_package returns a deep copy: the stage text goes on the package that is kept (it was written on the
+    # input, so no built package recorded stages.fairway_fill, e.g. creekmoor 2026-11-03)
+    out.setdefault("stages", {})["fairway_fill"] = str(rep.get("status"))[:300]
     if str(rep.get("status", "")).startswith("ok"):
         out.setdefault("sources", {})["fairway_fill"] = dict(model=mod.VERSION, dprime=rep.get("dprime"),
                                                             holes=rep.get("holes"))

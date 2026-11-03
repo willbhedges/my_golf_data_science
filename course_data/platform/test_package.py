@@ -708,3 +708,23 @@ def test_swapped_nines_card_still_renumbers_in_build(tmp_path, black):
     assert "nines" in p["stages"]["card_order"]
     assert p["holes"]["1"]["green_ll"] == pytest.approx(p0["holes"]["10"]["green_ll"], abs=1e-6)
     assert p["holes"]["1"]["yards"]["Black"] == BLACK[9]
+
+
+def test_fairway_fill_stage_is_recorded_on_the_kept_package(monkeypatch):
+    """S4f: fill_package returns a deep copy; the stage text must land on that copy (old_works / creekmoor builds
+    had sources.fairway_fill but no stages.fairway_fill)."""
+    import copy
+
+    fake = types.SimpleNamespace(VERSION="fairway_fill/test",
+                                 fill_package=lambda pkg, osm_fc=None: (copy.deepcopy(pkg), dict(
+                                     status="ok: 2 hole(s) filled", dprime=2.0, holes={"1": {}, "2": {}})))
+    monkeypatch.setattr(pk, "load", lambda path, name: fake)
+    out = pk.call_fairway_fill(dict(stages={}, sources={}, holes={}), dict(features=[]), {}, [])
+    assert out["stages"]["fairway_fill"].startswith("ok")
+    assert out["sources"]["fairway_fill"]["model"] == "fairway_fill/test"
+    fake.fill_package = lambda pkg, osm_fc=None: (copy.deepcopy(pkg), dict(status="gated: d' 0.4 < 1.0", wanted=["3"]))
+    w = []
+    out = pk.call_fairway_fill(dict(stages={}, sources={}, holes={}), dict(features=[]), {}, w)
+    assert out["stages"]["fairway_fill"].startswith("gated") and "fairway fill did not run" in w[0]
+    out = pk.call_fairway_fill(dict(stages={}, sources={}, holes={}), dict(features=[]), {"fairway_fill": False}, [])
+    assert out["stages"]["fairway_fill"].startswith("off")
