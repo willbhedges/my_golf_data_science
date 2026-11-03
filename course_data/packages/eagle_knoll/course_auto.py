@@ -1,5 +1,5 @@
 """Course module for Eagle Knoll Golf Club (Back tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T23:42:14Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T04:06:53Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_eagle_knoll.json
 
