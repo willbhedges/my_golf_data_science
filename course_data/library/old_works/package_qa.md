@@ -1,6 +1,6 @@
 # Old Works Golf Club (Anaconda, MT) - Slag tees
 
-Built 2026-11-01T22:00:26Z. OSM way/296526499. Scorecard: golfify (golfify). Tee set: colour.
+Built 2026-11-03T15:19:44Z. OSM way/296526499. Scorecard: golfify (golfify). Tee set: colour.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-01T22:00:26Z. OSM way/296526499. Scorecard: golfify (golfify). Tee
 | holes_with_trees_or_long_grass_in_landing_zone | 1 |
 | of_par4_5 | 14 |
 | mean_landing_osm_share | 0.022 |
-| mean_confidence | 0.491 |
+| mean_confidence | 0.583 |
 | osm_score | 0.269 |
 
 OSM features inside the course: buildings 4, golf=bunker 23, golf=cartpath 28, golf=clubhouse 1, golf=hole 18, golf=pin 21, holes_with_handicap 18, holes_with_par 18, single_trees 12, trees_polygons 4, water_polygons 2
@@ -23,24 +23,24 @@ OSM features inside the course: buildings 4, golf=bunker 23, golf=cartpath 28, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 451 / 452 | 269 | 0.50 | needs review | 5% | 0% | 95% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 451 yds) |
-| 2 | 4 | 361 / 362 | 262 | 0.49 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 361 yds) |
-| 3 | 5 | 587 / 588 | 10 | 0.50 | needs review | 6% | 0% | 94% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 587 yds) |
+| 1 | 4 | 451 / 452 | 269 | 0.64 | check the flags | 5% | 68% | 27% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 451 yds) |
+| 2 | 4 | 361 / 362 | 262 | 0.60 | check the flags | 0% | 58% | 42% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 361 yds) |
+| 3 | 5 | 587 / 588 | 10 | 0.63 | check the flags | 6% | 64% | 29% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 587 yds) |
 | 4 | 3 | 195 / 196 | 87 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); Slag tee walked back along the hole line (no box at 195 yds) |
-| 5 | 4 | 463 / 464 | 230 | 0.51 | needs review | 8% | 0% | 92% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 463 yds) |
-| 6 | 5 | 600 / 601 | 87 | 0.49 | needs review | 2% | 0% | 98% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 600 yds) |
+| 5 | 4 | 463 / 464 | 230 | 0.63 | check the flags | 8% | 61% | 31% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 463 yds) |
+| 6 | 5 | 600 / 601 | 87 | 0.63 | check the flags | 2% | 70% | 28% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 600 yds) |
 | 7 | 3 | 238 / 238 | 241 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); Slag tee walked back along the hole line (no box at 238 yds) |
-| 8 | 4 | 435 / 436 | 39 | 0.50 | needs review | 6% | 0% | 94% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 435 yds) |
-| 9 | 4 | 485 / 485 | 154 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 485 yds) |
-| 10 | 4 | 442 / 443 | 86 | 0.49 | needs review | 2% | 0% | 98% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 442 yds) |
-| 11 | 5 | 597 / 598 | 78 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 597 yds) |
-| 12 | 4 | 445 / 446 | 286 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 445 yds) |
+| 8 | 4 | 435 / 436 | 39 | 0.61 | check the flags | 6% | 54% | 40% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 435 yds) |
+| 9 | 4 | 485 / 485 | 154 | 0.58 | needs review | 0% | 50% | 50% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 485 yds) |
+| 10 | 4 | 442 / 443 | 86 | 0.63 | check the flags | 2% | 68% | 30% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 442 yds) |
+| 11 | 5 | 597 / 598 | 78 | 0.61 | check the flags | 0% | 65% | 35% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 597 yds) |
+| 12 | 4 | 445 / 446 | 286 | 0.62 | check the flags | 0% | 67% | 33% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 445 yds) |
 | 13 | 3 | 206 / 206 | 198 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); Slag tee walked back along the hole line (no box at 206 yds) |
-| 14 | 4 | 443 / 444 | 76 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 443 yds) |
-| 15 | 5 | 644 / 646 | 253 | 0.50 | needs review | 0% | 6% | 94% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 644 yds) |
-| 16 | 4 | 471 / 471 | 26 | 0.49 | needs review | 0% | 1% | 99% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 471 yds) |
+| 14 | 4 | 443 / 444 | 76 | 0.58 | needs review | 0% | 49% | 51% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 443 yds) |
+| 15 | 5 | 644 / 646 | 253 | 0.60 | needs review | 0% | 56% | 44% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); Slag tee walked back along the hole line (no box at 644 yds) |
+| 16 | 4 | 471 / 471 | 26 | 0.60 | check the flags | 0% | 59% | 41% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 471 yds) |
 | 17 | 3 | 202 / 203 | 279 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); Slag tee walked back along the hole line (no box at 202 yds) |
-| 18 | 4 | 440 / 440 | 195 | 0.48 | needs review | 0% | 0% | 100% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Slag tee walked back along the hole line (no box at 440 yds) |
+| 18 | 4 | 440 / 440 | 195 | 0.60 | needs review | 0% | 56% | 44% | tee stage: Slag walkback | tee: tee stage: Slag walkback; green from the hole-line end (no golf=green polygon); no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Slag tee walked back along the hole line (no box at 440 yds) |
 
 ## Stages
 
@@ -54,8 +54,9 @@ OSM features inside the course: buildings 4, golf=bunker 23, golf=cartpath 28, g
 - **imagery**: ok: course_data/packages/old_works/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: not run (no NIR band)
 - **elevation**: ok: course_data/packages/old_works/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -3 m2 {'cells': 3}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: ok: 14/14 hole(s) without a mapped fairway filled from NAIP (d' 2.36; gated: none)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 4 polygons (outside 4); mode replace
 
 ## Warnings
