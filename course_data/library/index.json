@@ -1,14 +1,14 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-03T17:36Z",
+ "updated": "2026-11-03T18:12Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 1,
-  "needs confirm": 90,
+  "needs confirm": 91,
   "failed": 5,
   "unsupported": 2,
-  "blocked": 9
+  "blocked": 8
  },
  "courses": [
   {
@@ -3890,6 +3890,95 @@
    ],
    "weather": "forecast",
    "built": "2026-10-31T01:46Z",
+   "group": "library"
+  },
+  {
+   "slug": "queenstown_harbor",
+   "name": "Queenstown Harbor River Course",
+   "city": "Queenstown",
+   "state": "MD",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    3,
+    4,
+    5,
+    7,
+    9,
+    10,
+    12,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source golfify, flags ['1 hole(s) where a longer set is shorter than the next set: 12 Blue/Gold 307 < Gold 340'])",
+    "9 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Green",
+     "yards": 7096,
+     "par": 72,
+     "rating": 74.2,
+     "slope": 141,
+     "colour": "green",
+     "on_page": "solved"
+    },
+    {
+     "name": "Blue/Gold",
+     "yards": 6136,
+     "par": 72,
+     "rating": 69.7,
+     "slope": 125,
+     "colour": "blue/gold",
+     "on_page": null
+    },
+    {
+     "name": "Gold",
+     "yards": 5861,
+     "par": 72,
+     "rating": 68.7,
+     "slope": 118,
+     "colour": "gold",
+     "on_page": "solved"
+    },
+    {
+     "name": "Gold (L)",
+     "yards": 5861,
+     "par": 72,
+     "rating": 75,
+     "slope": 140,
+     "colour": "gold",
+     "on_page": null
+    },
+    {
+     "name": "White",
+     "yards": 4978,
+     "par": 72,
+     "rating": 70.2,
+     "slope": 130,
+     "colour": "white",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Green",
+    "Gold"
+   ],
+   "page": "course_data/library/queenstown_harbor/page.html",
+   "page_bytes": 4164126,
+   "qa_report": "course_data/library/queenstown_harbor/qa_report.md",
+   "center": [
+    38.986349700000005,
+    -76.1726362
+   ],
+   "osm": "way/1067525665",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-03T16:14Z",
    "group": "library"
   },
   {
@@ -8364,28 +8453,6 @@
    "holes": 4,
    "osm": "relation/2053245",
    "built": "2026-10-30T03:59Z"
-  },
-  {
-   "slug": "queenstown_harbor",
-   "name": "South River Golf Course",
-   "city": "Queenstown",
-   "state": "MD",
-   "status": "blocked",
-   "reasons": [
-    "9 holes built, the card has 18: holes are missing or mis-routed",
-    "built pars sum to 36, the card's to 71 (more than 2 apart): holes or pars are wrong",
-    "resolved to 'South River Golf Course' 36.1 km from the request's near point with match score 0.42 (< 0.5): probably not the requested course",
-    "holes not all mapped in OSM (hole method: structure)",
-    "OSM greens 7 of 9 holes",
-    "9 holes built vs the card's 18",
-    "pars sum to 36, card 71",
-    "7 hole(s) with a CHECK"
-   ],
-   "page": "course_data/library/queenstown_harbor/page.html",
-   "qa_report": "course_data/library/queenstown_harbor/qa_report.md",
-   "holes": 9,
-   "osm": "way/61239088",
-   "built": "2026-11-03T15:03Z"
   },
   {
    "slug": "world_woods",
