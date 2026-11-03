@@ -63,7 +63,7 @@ MODEL_JSON = os.path.join(HERE, "native_auto_model.json")
 SRC = "auto:native_side"
 # Adopted 2026-11-03 behind the course gate (mapper/EVAL_BLIND.md "Automatic native sides": held out on 18 truth
 # courses 167 -> 186 matches / 250 tee shots, regret 8.79 -> 4.34, no parkland control broken). build_layer reads it;
-# the package build does not call build_layer yet.
+# the package build calls build_layer as stage S4n (platform/package.call_native_auto; the mapper layer wins).
 ENABLED = True
 COURSE_GATE = 0.25             # a course gets automatic native only when >= this share of its sides reach thr
 PREC = 0.9                     # threshold rule: lowest t with pooled LOCO side precision >= PREC on the training courses

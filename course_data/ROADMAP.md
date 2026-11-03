@@ -34,7 +34,7 @@ Prairie Dunes 1 → 7 matches, Buffalo Dunes 7 → 13; parkland controls not bro
 Native corridor area missing 296k → 151k sq yds. Gap: Eagle Bend mapper added no native (Will's holes 2/3/5/6) → brief fix for
 mixed parkland/native courses, then re-run.
 
-## Automatic native sides (adopted 2026-11-03, not yet in the build)
+## Automatic native sides (adopted 2026-11-03; in the package build as stage S4n)
 
 `product/native_auto.py` classifies each hole side (150-345 yds, 10-40 yds off the fairway) from the S2 native P,
 open ground, lidar HAG and NAIP texture, and draws the confirm tap's native band on the sides it is sure of, only
@@ -56,15 +56,22 @@ mapper + 4 taps (74 / 0.93 vs 72 / 1.64). M2's 0.15 strokes / round is not reach
 would add native on Sand Creek Station, Prairie Dunes, Mariah Hills, Buffalo Dunes, Gateway National, Coldwater,
 Annbriar (in-sample only: its held-out gate stayed shut), Spirit Hollow (package only; the live page is never
 modified) and Tournament Club of Iowa (the one non-truth course with an S2 stack whose gate fires, 9 holes); 14
-other S2 courses stay unchanged and courses without an S2 stack get nothing. No rebuild queued.
+other S2 courses stay unchanged and courses without an S2 stack get nothing.
+
+Wired 2026-11-03: `platform/package.py` S4n (skipped when the request has `agent_layers`: the mapper layer wins, so
+TCI keeps its mapper layer), confirm taps from the classifier p on courses without a mapper layer (≤ 2 cards), and
+an S2-stack step in `course_page_one.yml` (~1 runner-minute and 4–12 MB per course, only when none is committed).
+Frozen-model test on the 5 truth courses it never saw (Amana, Tomahawk Hills, National KC, Hot Springs, Wakonda):
+gate shut on all, plans identical to no layer (Amana's drought rough not called native). None has native, so the
+gate's yes side is still untested on a fresh course. Rebuild that would change: annbriar only (in-sample).
 
 ## Workstreams (re-ranked 2026-11-01 by measured payoff)
 
 1. **Tee positions** (42 % of wrong plans): back-set box choice on long / split tee complexes. Agent running.
 2. **Long grass** (64 % of regret): **per-side classifier adopted 2026-11-03** (`product/native_auto.py`, behind a
    course gate; S2 phenology + open ground carry it, lidar HAG / NAIP texture add little). Next: wire
-   `native_auto.build_layer` into the package build + an S2 fetch stage, feed its p to the confirm taps, validate on
-   the 7 courses being traced (the gate was set after seeing Ellis). Misses left: green-in-summer native (Eagle Bend,
+   `native_auto.build_layer` into the package build + an S2 fetch stage, feed its p to the confirm taps (**done
+   11-03**); validate the gate on a fresh native truth course (the 5 unseen truth courses have no native). Misses left: green-in-summer native (Eagle Bend,
    Annbriar) → taps.
 3. **Tree edge** (~5 yds short) and **fairway outline**: with the tee fix (they interact).
 4. **Build reliability + QA of rebuilt courses** → publish passes. QA agent running; consensus set-order bug fixed.

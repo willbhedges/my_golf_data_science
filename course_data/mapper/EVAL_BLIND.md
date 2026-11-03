@@ -628,7 +628,7 @@ ORACLE = the band on every truth "yes" side):**
 
 **Decision: adopted behind the course gate** (`native_auto.ENABLED = True`, `COURSE_GATE = 0.25`,
 `native_auto_model.json` = the fit on all 18 courses, thr 0.675). It beats "no layer" held out on matches and
-regret without breaking a parkland control. Not wired into the package build yet (no rebuild queued). With the shipped model a rebuild would
+regret without breaking a parkland control. Wired into the package build the same day (see "Shipping" below). With the shipped model a rebuild would
 add native on Sand Creek, Prairie Dunes, Mariah Hills, Buffalo Dunes, Gateway, Coldwater, Annbriar (in-sample: held
 out its gate stayed shut), Spirit Hollow (package only) and Tournament Club of Iowa (non-truth, share 0.46); National
 KC, Amana (the S2 drought false positive: share 0), Tomahawk Hills, Hot Springs (no fairway reference) and 12 other
@@ -644,3 +644,39 @@ the build step is `native_auto.build_layer(slug, pkg)` after tees / vision, and 
 * Taps are simulated from the truth; the band geometry (10 yds) is the confirm tap's, not tuned for islands.
 * Native outside the hand footprint is not penalised (eval_mapper caveat); approach shots and the app map are not
   scored.
+
+### Shipping: wired into the build; held-out test on truth courses outside the training set (2026-11-03)
+
+**Wiring.** `platform/package.py` stage S4n (`call_native_auto`, after vision + OB, before the mapper layer):
+`native_auto.build_layer` adds the band when the course has an S2 stack + `vision_any/<slug>/raw` and the gate
+fires; `package.native_auto` keeps thr / share / sides / p. With request `agent_layers` the stage is skipped (the
+mapper layer wins: its native edits and per-side verdicts are the layer, and the confirm taps keep its priors), and
+`"native_auto": false` turns it off. Confirm taps on a course with no mapper layer: `course_page.py native` ->
+`verify.native_auto_for` (priors = the classifier p, <= 2 cards, the GATED + TAP2 rule above); a "no" answer erases
+that side's native, the automatic band included, so a page never counts both. S2 stack: a step in
+`course_page_one.yml` after the vision layer fetches it when none is committed (~30-90 s and 4-12 MB per course;
+s2_stack.yml run 41619576831 did 18 courses in one 16-min job) and the finish job commits it.
+
+**Held-out test of the frozen model** (`eval_native_auto_frozen.py`, the shipped fit on the 18, n = 4000, seed 31,
+adaptive aim off). The "7 courses being traced" of the roadmap all landed on 11-02 (L.A. Nickell, Buffalo Ridge,
+Rivercut, Gustin, Amana, Osage National, Annbriar) and 5 of them are already among the 18 training courses, so the
+only truth courses the model has never seen are these five, none with truth native in its landing corridors:
+
+| course | tee shots | S2 stack | gate share | AUTO | GATED | GATED + TAP2 (taps) | ORACLE |
+|---|---|---|---|---|---|---|---|
+| amana_colonies (drought-tan rough: the S2 false positive) | 14 | yes | 0.00 (max side p 0.64) | 12 / 0.031 | 12 / 0.031 | 12 / 0.031 (2) | 12 / 0.031 |
+| tomahawk_hills | 12 | yes | 0.00 | 9 / 0.081 | 9 / 0.081 | 9 / 0.081 (2) | 9 / 0.081 |
+| national_kc (no card: numbering 1 / 14) | 14 | yes | 0.00 | 1 / 0.000 | 1 / 0.000 | 1 / 0.000 (1) | 1 / 0.000 |
+| hot_springs_arlington (no OSM fairway: S2 P undefined) | 14 | no P | - | 8 / 0.130 | 8 / 0.130 | - | 8 / 0.130 |
+| wakonda | 14 | no | - | 11 / 0.312 | 11 / 0.312 | - | 11 / 0.312 |
+
+The gate stays shut on all five and every plan is AUTO's: no false native, including Amana, which broke hole 14 as
+an S2 pixel layer. The 5 taps it would ask (answers "none") change nothing. **This tests restraint only:** no truth
+course with native has been held out from the shipped model, so the gate's yes side (and whether 25 % is right) is
+still untested. The next native truth course (any prairie / links course traced blind) is the test; until then the
+18-course leave-one-course-out numbers above are the evidence.
+
+**Rebuild.** Only one library course would change: annbriar (no mapper layer; in-sample: held out its gate
+stayed shut). Tournament Club of Iowa does not change because its request has `agent_layers` and the mapper layer
+wins. Amana and Tomahawk Hills are unchanged (gate shut). The ~80 library courses with no S2 stack and no committed
+raw cannot be judged offline (the features need the build's raw rasters); the S2 step decides on their next build.
