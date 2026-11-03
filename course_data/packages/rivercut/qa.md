@@ -1,6 +1,6 @@
 # Rivercut Golf Course (Springfield, MO) - Black tees
 
-Built 2026-11-03T09:28:04Z. OSM relation/5981089. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T15:07:15Z. OSM relation/5981089. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -56,4 +56,5 @@ OSM features inside the course: buildings 8, golf=bunker 59, golf=cartpath 16, g
 - **elevation**: ok: course_data/packages/rivercut/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -15146 m2 {'road': 14285, 'strip': 860, 'cells': 1}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 20 polygons (outside 20); mode replace

@@ -1,5 +1,5 @@
 """Course module for St Andrews Golf Club (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T09:28:21Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T15:07:33Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_st_andrews_op.json
 
