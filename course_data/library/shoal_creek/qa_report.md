@@ -1,8 +1,8 @@
 # Shoal Creek Golf Course: automatic page QA
 
-**Status: needs confirm** — confirm holes 2, 4
+**Status: needs confirm** — confirm holes 2
 
-* page: `course_data/library/shoal_creek/page.html` (2.4 MB); request `course_data/requests/course_page_shoal_creek.json`; built 2026-11-02T17:11Z
+* page: `course_data/library/shoal_creek/page.html` (2.4 MB); request `course_data/requests/course_page_shoal_creek.json`; built 2026-11-02T23:02Z
 * course: Shoal Creek Golf Course (Kansas City, MO), OSM way/195221881; holes: osm (tier mapped_card); card: golfify (golfify)
 * solved tee sets: Gold, Blue (the two longest sets on the card (combination sets skipped)); page sets: Gold, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 55, 65] F; calm-day picks with 48 prior draws
@@ -13,9 +13,9 @@
 
 Course-level reasons:
 
-* 2 hole(s) with a CHECK
+* 1 hole(s) with a CHECK
 
-Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
+Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
 ## Gold tees
 
@@ -24,7 +24,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 1 | 4 | PASS | Driver -9 |  |
 | 2 | 4 | CHECK | Driver -5 | tee: tee marker not on an OSM tee box (walkback; 32 yds from the nearest OSM tee box) |
 | 3 | 3 | PASS |  |  |
-| 4 | 4 | CHECK | 4-wood -58 | tee: tee marker not on an OSM tee box (lidar_pad; 57 yds from the nearest OSM tee box) |
+| 4 | 4 | PASS | 4-wood -2 |  |
 | 5 | 3 | PASS |  |  |
 | 6 | 4 | PASS | Driver -14 |  |
 | 7 | 5 | PASS | Driver +6 |  |
@@ -58,7 +58,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 12 | 4 | PASS | 4-wood +0 |  |
 | 13 | 5 | PASS | Driver +3 |  |
 | 14 | 4 | PASS | 4-wood +6 |  |
-| 15 | 4 | PASS | 2-wood +4 (tie) |  |
+| 15 | 4 | PASS | Driver +10 (tie) |  |
 | 16 | 4 | PASS | Driver -6 |  |
 | 17 | 3 | PASS |  |  |
 | 18 | 4 | PASS | Driver +2 |  |

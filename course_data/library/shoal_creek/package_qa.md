@@ -1,6 +1,6 @@
 # Shoal Creek Golf Course (Kansas City, MO) - Black tees
 
-Built 2026-11-02T17:11:03Z. OSM way/195221881. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-02T23:02:13Z. OSM way/195221881. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 1, golf=bunker 39, golf=cartpath 19, g
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tee_overrides**: ok: Gold 5 review (inside OSM tee 897738876), 6 review (inside OSM tee 897746433); Blue 5 review (snapped 1 yds along OSM tee 897738875), 6 review (inside OSM tee 897746432); White 5 review (snapped 1 yds along OSM tee 897738874), 6 review (snapped 12 yds along OSM tee 897746432); Black 5 review (snapped 11 yds along OSM tee 897738874), 6 review;
+- **tee_overrides**: ok: Gold 4 review (inside OSM tee 897736290), 5 review (inside OSM tee 897738876), 6 review (inside OSM tee 897746433); Blue 5 review (snapped 1 yds along OSM tee 897738875), 6 review (inside OSM tee 897746432); White 5 review (snapped 1 yds along OSM tee 897738874), 6 review (snapped 12 yds along OSM tee 897746432); Black 5 review (snapped 11 yds along OSM tee 897738874), 6 review;
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 106 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/shoal_creek/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2018)
