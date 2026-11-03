@@ -16,6 +16,7 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 | tee yardage, no card | back within 10 yds 70 %; 2nd set 52 %; par 96 % | tees/CARDLESS.md |
 | plan, auto build with true card vs hand truth | **74 % same club + aim ≤ 10 yds** (138 tee shots, 10 courses) | platform/ERROR_BUDGET.md |
 | what causes the misses | tees 42 %, long grass 25 % (64 % of regret; layer off: detector can't tell native from mown rough), trees 14 %, fairway 11 % | ERROR_BUDGET.md |
+| long grass, no agent / no taps (held out, 18 truth courses, 250 tee shots) | **auto native sides: match 167 → 186, regret 8.79 → 4.34** (+ ≤ 2 classifier-ranked taps: 193 / 3.23; perfect sides 196 / 2.91); parkland controls unchanged | mapper/EVAL_BLIND.md "Automatic native sides" |
 | plan, no card, well-mapped | 80–85 % (vs card plan) | platform/CARDBLIND.md |
 | plan, barely-mapped | 17/33 holes (was 2/32) | CARDBLIND.md pathroute |
 | hand-truth courses | 13 (5 + 2 new truth_sets_v2 + error-budget set); 7 more being traced | truth_sets_v2 |
@@ -33,11 +34,38 @@ Prairie Dunes 1 → 7 matches, Buffalo Dunes 7 → 13; parkland controls not bro
 Native corridor area missing 296k → 151k sq yds. Gap: Eagle Bend mapper added no native (Will's holes 2/3/5/6) → brief fix for
 mixed parkland/native courses, then re-run.
 
+## Automatic native sides (adopted 2026-11-03, not yet in the build)
+
+`product/native_auto.py` classifies each hole side (150-345 yds, 10-40 yds off the fairway) from the S2 native P,
+open ground, lidar HAG and NAIP texture, and draws the confirm tap's native band on the sides it is sure of, only
+on courses where >= 25 % of the sides fire. Leave-one-course-out on 18 truth courses (mapper/EVAL_native_auto.md):
+
+| | match (250 tee shots) | regret | regret / round (excl. Mariah 7 artefact) |
+|---|---|---|---|
+| no long grass (today's auto build) | 167 (67 %) | 8.79 | 0.46 |
+| auto native sides, 0 taps | 186 (74 %) | 4.34 | 0.28 |
+| + ≤ 2 taps ranked by the classifier (21 taps on 18 courses) | 193 (77 %) | 3.23 | 0.22 |
+| perfect side answers (ceiling of the band) | 196 (78 %) | 2.91 | 0.20 |
+
+Per course 0 taps: Prairie Dunes 1 → 12, Buffalo Dunes 7 → 13, Mariah Hills 5 → 7, Sand Creek 12 → 12, Gateway /
+Coldwater regret −0.12 / −0.06; Eagle Bend and Annbriar unchanged (gate shut; taps take Eagle Bend 7 → 9); parkland
+controls Ellis 11 → 11, Blue Hills 14 → 14, Spirit Hollow 7 → 7 (0.892 → 0.886), 7 no-native courses unchanged.
+On the 7 round-3 courses it beats the blind mapper with no agent (69 / 1.89 vs 66 / 2.25) and, with 2 taps,
+mapper + 4 taps (74 / 0.93 vs 72 / 1.64). M2's 0.15 strokes / round is not reached by long grass alone (ceiling
+0.20 with the band; the rest is tees, trees, fairway). A rebuild with the shipped model (all 18 courses)
+would add native on Sand Creek Station, Prairie Dunes, Mariah Hills, Buffalo Dunes, Gateway National, Coldwater,
+Annbriar (in-sample only: its held-out gate stayed shut), Spirit Hollow (package only; the live page is never
+modified) and Tournament Club of Iowa (the one non-truth course with an S2 stack whose gate fires, 9 holes); 14
+other S2 courses stay unchanged and courses without an S2 stack get nothing. No rebuild queued.
+
 ## Workstreams (re-ranked 2026-11-01 by measured payoff)
 
 1. **Tee positions** (42 % of wrong plans): back-set box choice on long / split tee complexes. Agent running.
-2. **Long grass** (64 % of regret): new native-vs-mown classifier (lidar height, fall colour, texture); stays off
-   until it beats "none" leave-one-course-out. Fallback: a golfer tap "native grass along this hole?". Agent running.
+2. **Long grass** (64 % of regret): **per-side classifier adopted 2026-11-03** (`product/native_auto.py`, behind a
+   course gate; S2 phenology + open ground carry it, lidar HAG / NAIP texture add little). Next: wire
+   `native_auto.build_layer` into the package build + an S2 fetch stage, feed its p to the confirm taps, validate on
+   the 7 courses being traced (the gate was set after seeing Ellis). Misses left: green-in-summer native (Eagle Bend,
+   Annbriar) → taps.
 3. **Tree edge** (~5 yds short) and **fairway outline**: with the tee fix (they interact).
 4. **Build reliability + QA of rebuilt courses** → publish passes. QA agent running; consensus set-order bug fixed.
 5. **Confirm taps**: sticky re-solve so taps drop below 4.7. Agent running.

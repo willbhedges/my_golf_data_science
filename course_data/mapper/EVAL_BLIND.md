@@ -534,3 +534,113 @@ eval (DECIDE_ADAPTIVE_AIM=0 V2_ADAPTIVE_AIM=0, n = 4000, seed 31), match / regre
   before / after is compared within one environment. In env B the plain band no longer costs Mariah Hills a match
   at <= 4 (8 / -0.509 vs AGENT 8 / -0.323); it still does at <= 6 (holes 18, 12: 4-wood / aim shifts the truth does
   not make). `EVAL_native_confirm.md` / `.json` are the env B plain-band run.
+
+## Automatic native sides: a classifier with no agent and no taps (2026-11-03)
+
+`product/native_auto.py` classifies hole **sides** (not pixels): per par-4/5 hole and side of the tee line, 150-345
+yds along, label-free features from the cached rasters and the package -> logistic regression -> on a "yes" side
+the same band the golfer's "yes" tap draws (`native_confirm.set_side`, beyond 10 yds of the fairway, 130-400 along).
+Nothing is erased. Scored by `mapper/eval_native_auto.py` (error_budget.score_course, n = 4000, seed 31,
+DECIDE_ADAPTIVE_AIM=0 V2_ADAPTIVE_AIM=0 as rounds 3-4; two `--score` halves merged, full checkout). Full table:
+`EVAL_native_auto.md` / `eval_native_auto.json` (truth-bearing).
+
+**Set-up.** 18 truth courses with mapper frames (Colbert Hills and Buffalo Ridge left out: their truth has no
+long grass traced), 500 sides, 193 with native (eval_native_confirm.truth_answers: >= 300 sq yds of truth native
+within 30 yds of the package fairway). Leave one course out: the held-out course's p comes from the fit on the
+other 17; its threshold is chosen on those 17 only (lowest t with inner LOCO side precision >= 0.9: 0.65-0.75).
+The S2 input is itself the LOCO grid of the 23-course S2 model (`native_model/loco/<slug>.npz`), so no truth of the
+held-out course enters anywhere.
+
+**Features and what carried the signal** (side AUC, LOCO, 500 sides):
+
+| feature group | what | AUC alone |
+|---|---|---|
+| S2 | mean P / share P >= 0.5 of the S2 native model, open ground 10-40 yds off the fairway (6-20, 20-50) | 0.88 |
+| geo | share of that band that is open (not trees, water, sand, OB, any fairway) | 0.86 |
+| HAG | 3DEP HAG >= 0.25 / 0.5 m share, band minus fairway / mown-rough reference | 0.61 |
+| NAIP / CIR | 3x3 m / 5x5 m texture of grey and NIR, NDVI, ExG, band minus the 1-6 yd mown rough, two years | 0.64 |
+| all + course context (course means of the side features, within-course z) | | **0.93** |
+
+* **Lidar height does not separate native from mown rough here.** Within a course the HAG excess of the band over
+  the fairway points the *wrong* way on most native courses (side AUC Gateway 0.12, Eagle Bend 0.16, Mariah Hills
+  0.32, Sand Creek 0.35) and the right way only on Ellis (0.95). The 3DEP product is 2 m, leaf-off / winter
+  (Sand Creek 2011-02, Mariah 2014-01, Eagle Bend 2006-05; Prairie Dunes / Spirit Hollow / Pine Dunes are a
+  DSM - DTM fallback), stored in 0.25 m steps: dormant or snow-flattened grass rarely lands above the first step, and
+  the steps that do fire are shrubs / tree edges, which sit on the parkland sides. The 0.3-1 m vs < 0.1 m contrast
+  needs leaf-on point statistics (`raw2`, Actions only) or a newer flight, not this raster.
+* NAIP texture is weak and course-dependent (Mariah 0.93 on NIR texture, Gateway 0.19); single-date summer NAIP
+  does not see the mowing line reliably.
+* The model leans on the course-level S2 share (coefficient +1.85: "is this a prairie course"), then open ground
+  (+1.19). Cart-path mowing lines were not used (no path layer in the packages).
+
+**Side level at the held-out threshold:** 145 TP / 13 FP / 48 FN (precision 0.92, recall 0.75). Misses are
+concentrated: Eagle Bend 0 / 12 (green-in-summer native, S2 silent; its native sides do rank highest on the
+course, p 0.21-0.37), Annbriar 2 / 16 (green prairie), Spirit Hollow 11 / 18. False sides: Ellis 2 (2 R, 7 R:
+drought-tan rough, the known S2 false hint), Spirit Hollow 4, Mariah Hills 4 (islands 25+ yds out: the 30-yd
+"near" label says no), Sand Creek 2, Gateway 1.
+
+**Course gate (added after the first held-out pass broke Ellis 2 and 7).** The classifier alone (CLS) broke Ellis
+2 (Driver +40 -> 4-wood +2, +0.17) and 7: two confident sides on a course whose other 26 sides are quiet. Rule:
+a course gets automatic native only when >= 25 % of its sides reach the threshold. Shares on the 18 courses are
+0-0.07 (all no-native and parkland courses, Annbriar, Eagle Bend) or 0.54-1.0 (the native courses), so every gate
+between 0.08 and 0.53 makes the same decisions, and a gate chosen inside the folds (lowest g giving inner precision
+>= 0.92) does too. Honest caveat: the gate's existence was prompted by the Ellis result; it has not yet met a course
+that played no part in its design (the 7 courses being traced are the test).
+
+**Plans, held out, per course (match / regret; AUTO = the package the mapper reviewed; GATED = the zero-tap
+product rule; +TAP2 = then <= 2 native-confirm taps ranked by the classifier p, answers simulated from the truth;
+ORACLE = the band on every truth "yes" side):**
+
+| course | AUTO | GATED (0 taps) | GATED + TAP2 | ORACLE | mapper AGENT (round 3) |
+|---|---|---|---|---|---|
+| sand_creek_station | 12 / 0.259 | 12 / 0.293 | 13 / 0.187 (2) | 14 / 0.095 | 12 / 0.258 |
+| prairie_dunes | 1 / 1.649 | **12 / 0.116** | 12 / 0.116 (0) | 12 / 0.116 | 7 / 0.720 |
+| mariah_hills | 5 / 0.852 | 7 / -0.380 | 7 / -0.380 (2) | 8 / -0.464 | 7 / -0.520 |
+| buffalo_dunes | 7 / 1.623 | **13 / 0.088** | 13 / 0.088 (2) | 13 / 0.062 | 13 / 0.208 |
+| eagle_bend | 7 / 0.515 | 7 / 0.515 (gate shut) | **9 / 0.254** (2) | 10 / 0.136 | 8 / 0.565 |
+| ellis (control) | 11 / 0.375 | 11 / 0.375 (gate shut) | 11 / 0.375 (2) | 11 / 0.428 | 11 / 0.293 |
+| spirit_hollow (control) | 7 / 0.892 | 7 / 0.886 | **9 / 0.290** (2) | 9 / 0.379 | 8 / 0.729 |
+| blue_hills (control) | 14 / 0.051 | 14 / 0.051 | 14 / 0.051 (0) | 14 / 0.051 | (round 1) |
+| gateway_national | 9 / 0.424 | 9 / 0.303 | 10 / 0.169 (1) | 10 / 0.158 | |
+| coldwater | 10 / 0.472 | 10 / 0.416 | 10 / 0.416 (2) | 9 / 0.383 | |
+| annbriar | 8 / 0.293 | 8 / 0.293 (gate shut) | 9 / 0.286 (2) | 10 / 0.180 | |
+| 7 no-native courses (eagle_knoll, pine_dunes, veenker, la_nickell, rivercut, gustin, osage_national) | 76 / 1.380 | 76 / 1.380 (unchanged, gate shut on all) | 76 / 1.380 (4) | 76 / 1.384 | |
+| **pooled, 18 courses, 250 tee shots** | **167 / 8.785** | **186 / 4.336** | **193 / 3.232** (21 taps) | 196 / 2.908 | |
+| the 7 round-3 courses (98 tee shots) | 50 / 6.165 | 69 / 1.893 | 74 / 0.930 (12) | 77 / 0.752 | 66 / 2.253; + ASK <= 4: 72 / 1.635 |
+
+* **Mariah Hills hole 7** is the reference artefact of round 3 (truth Driver +40 on the +/-40 aim bound; any
+  4-wood-round-the-island plan scores -0.73). Without it: AUTO 0.244 -> GATED 0.353 on Mariah, 18-course pooled
+  AUTO 8.18 -> GATED 5.07 -> GATED + TAP2 3.97 (ORACLE 3.64), per 14-tee-shot round 0.46 -> 0.28 -> 0.22 (ORACLE
+  0.20). The band at 10 yds is too close for Mariah's islands (12, 13 break); that is the band geometry, the ORACLE
+  has it too.
+* **Fixed / broken vs AUTO.** GATED fixes 26 holes and breaks 7: Sand Creek 8, Mariah Hills 10 (reference tie), 12,
+  13, Spirit Hollow 17 (reference tie, the S2-known hint), Gateway 3, Coldwater 18 (each 0.03-0.05 strokes).
+  GATED + TAP2 fixes 33, breaks the same 7.
+* **Parkland controls hold:** Ellis and Blue Hills identical to AUTO (gate shut), Spirit Hollow 7 -> 7 matches with
+  regret 0.892 -> 0.886 (fixes 6, flips the tie on 17), and all 7 no-native courses unchanged. Without the gate
+  Ellis loses 2 matches (11 -> 9, 0.375 -> 0.562).
+* **Against the agent path** on the same 7 courses: the zero-tap layer (69 / 1.893) beats the blind mapper
+  (66 / 2.253) and the classifier + 2 taps (74 / 0.930, 12 taps) beats mapper + <= 4 taps (72 / 1.635, 26 taps).
+  Classifier priors alone with 2 taps on AUTO (PRI + TAP2, no automatic native) reach only 176 / 5.777 pooled:
+  the automatic band is what moves the prairie courses (Prairie Dunes 2 / 1.492 with taps only).
+* Eagle Bend is the remaining native miss the layer cannot see (gate shut, S2 silent); the 2 taps recover most
+  of it (7 -> 9, 0.515 -> 0.254) because its native sides still rank highest on the course.
+
+**Decision: adopted behind the course gate** (`native_auto.ENABLED = True`, `COURSE_GATE = 0.25`,
+`native_auto_model.json` = the fit on all 18 courses, thr 0.675). It beats "no layer" held out on matches and
+regret without breaking a parkland control. Not wired into the package build yet (no rebuild queued). With the shipped model a rebuild would
+add native on Sand Creek, Prairie Dunes, Mariah Hills, Buffalo Dunes, Gateway, Coldwater, Annbriar (in-sample: held
+out its gate stayed shut), Spirit Hollow (package only) and Tournament Club of Iowa (non-truth, share 0.46); National
+KC, Amana (the S2 drought false positive: share 0), Tomahawk Hills, Hot Springs (no fairway reference) and 12 other
+S2 courses stay unchanged.
+the build step is `native_auto.build_layer(slug, pkg)` after tees / vision, and the confirm-tap priors are its
+`info["p"]` (`native_auto.confirm_priors`).
+
+**Not verified.**
+* The gate was introduced after seeing Ellis; the threshold rule and features were chosen at side level on these
+  18 courses (5 feature sets compared), plans were scored once. Fresh truth courses are the real test.
+* Only courses with an S2 stack and `vision_any/<slug>/raw` can use it (`course_usable`; Buffalo Ridge and Falcon
+  Ridge have no S2 stack and get nothing). The S2 stack is an Actions fetch (`s2_stack.yml`), not part of the build.
+* Taps are simulated from the truth; the band geometry (10 yds) is the confirm tap's, not tuned for islands.
+* Native outside the hand footprint is not penalised (eval_mapper caveat); approach shots and the app map are not
+  scored.
