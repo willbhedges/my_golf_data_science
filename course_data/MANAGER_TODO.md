@@ -117,3 +117,9 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - Queenstown wrong course = Nominatim 503 let a far "river" match through; resolve now drops far (>15 km) low-score (<0.5) matches (67eaa820f); queenstown rev 8 pins way/1067525665. QA when built.
 - Open: library requests with no near point / osm pin are still exposed if Nominatim fails; add near points or pins.
 - Dispersion: model is right (driver ~2:1 core, wider than long; finish 0.70-0.96 deep/wide, misses right come up short). Page drew a near-circle (eigen axes + symmetric depth) -> fixed in 32478554d (landing_pattern.py). Agent now carrying it into the Aim Caddie app + cheapest rebuild path.
+
+## 11-03 16:05 user priority: Eagle Knoll (Nov 7-8)
+- Optimizer agent: tournament-page ovals (Eagle Knoll, Gateway, Pine Dunes, Hot Springs; not Spirit Hollow) + Monte Carlo ties, player calibration, tees/hazards, temps, approach targets, sensitivity -> OPTIMIZE.md. Must land before the Nov 5 14:00Z forecast refresh.
+- Independent auditor (read-only) -> eagle_knoll/AUDIT.md; reconcile with OPTIMIZE.md, then QA + republish QQkFta99SEstd6Dv8wzgf8.
+- Generalization: tee-position agent + native/long-grass classifier agent (held-out evals).
+- Dispersion agent carrying landing_pattern into the Aim Caddie app.
