@@ -19,10 +19,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      # Blobless + sparse: full commit/tree history (so the diff against github.event.before still works), but file
+      # contents only for the two folders this job reads and writes (~150 MB instead of the 5.2 GB tree). The full
+      # checkout spent 2 min alone and 10-35 min when the runner pool was busy (nccga-v2 run 41681285865).
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/
+            /course_data/research/web/
       - name: Fetch
         run: |
           # every request changed by THIS push (not the branch tip: parallel pushes used to steal each other's run)
