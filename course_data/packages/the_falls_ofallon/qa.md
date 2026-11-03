@@ -1,6 +1,6 @@
 # The Falls Golf Club (O'Fallon, MO) - Blue tees
 
-Built 2026-11-02T23:41:08Z. OSM relation/3939928. Scorecard: file (course_data/library/the_falls_ofallon/card_review.json). Tee set: name.
+Built 2026-11-03T04:14:02Z. OSM relation/3939928. Scorecard: file (course_data/library/the_falls_ofallon/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -37,7 +37,7 @@ OSM features inside the course: buildings 34, golf=bunker 21, golf=cartpath 27, 
 | 12 | 3 | 165 / 165 | 278 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 13 | 4 | 345 / 344 | 190 | 0.77 | check the flags | 42% | 2% | 57% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 14 | 3 | 160 / 160 | 166 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 15 | 5 | 510 / 506 | 269 | 0.78 | check the flags | 36% | 14% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 15 | 5 | 510 / 506 | 269 | 0.78 | check the flags | 35% | 14% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 16 | 4 | 330 / 330 | 20 | 0.79 | check the flags | 22% | 38% | 40% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 17 | 3 | 144 / 144 | 335 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
 | 18 | 5 | 482 / 477 | 49 | 0.68 | check the flags | 40% | 28% | 32% | tee stage: Blue review (inside OSM tee 705147983) | tee: tee stage: Blue review (inside OSM tee 705147983) |
@@ -50,7 +50,7 @@ OSM features inside the course: buildings 34, golf=bunker 21, golf=cartpath 27, 
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: file (course_data/library/the_falls_ofallon/card_review.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tee_overrides**: ok: Gold 2 review (inside OSM tee 1241987977), 3 review (inside OSM tee 1241987984), 9 review (inside OSM tee 1243312604), 10 review (inside OSM tee 1243312612), 11 review (inside OSM tee 1243312620), 13 review (snapped 0 yds along OSM tee 705147986), 15 review (snapped 0 yds along OSM tee 705151251), 16 review (inside OSM tee 705151255), 18 review (inside OSM tee 705147983); Blue 18 review (inside OSM tee 705147983);
+- **tee_overrides**: ok: Gold 2 review (inside OSM tee 1241987977), 3 review (inside OSM tee 1241987984), 9 review (inside OSM tee 1243312604), 10 review (inside OSM tee 1243312612), 11 review (inside OSM tee 1243312620), 13 review (snapped 0 yds along OSM tee 705147986), 15 review (kept: snap snapped 0 yds along OSM tee 705151251 would measure 498, another set's box, point 506, card 506), 16 review (inside OSM tee 705151255), 18 review (inside OSM tee 705147983); Blue 18 review (inside OSM tee 705147983);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 103 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/the_falls_ofallon/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)

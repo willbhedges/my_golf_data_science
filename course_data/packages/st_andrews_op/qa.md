@@ -1,6 +1,6 @@
 # St Andrews Golf Club (Overland Park, KS) - Black tees
 
-Built 2026-11-02T23:40:49Z. OSM way/68744841. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-03T04:13:34Z. OSM way/68744841. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -38,7 +38,7 @@ OSM features inside the course: buildings 4, golf=bunker 18, golf=cartpath 20, g
 | 13 | 4 | 328 / 328 | 178 | 0.83 | auto | 26% | 53% | 20% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 14 | 3 | 178 / 178 | 342 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 15 | 5 | 498 / 498 | 71 | 0.83 | auto | 37% | 40% | 24% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
-| 16 | 4 | 393 / 389 | 332 | 0.61 | check the flags | 31% | 4% | 64% | tee stage: Black review (snapped 1 yds along OSM tee 277760440) | tee: tee stage: Black review (snapped 1 yds along OSM tee 277760440) |
+| 16 | 4 | 393 / 394 | 331 | 0.61 | check the flags | 32% | 4% | 64% | tee stage: Black review (kept: snap snapped 1 yds along OSM tee 277760440 would measure 389, another set's box, point 394, card 393) | tee: tee stage: Black review (kept: snap snapped 1 yds along OSM tee 277760440 would measure 389, another set's box, point 394, card 393) |
 | 17 | 3 | 193 / 193 | 117 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 18 | 4 | 397 / 398 | 279 | 0.78 | check the flags | 30% | 25% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 
@@ -50,7 +50,7 @@ OSM features inside the course: buildings 4, golf=bunker 18, golf=cartpath 20, g
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: opengolfapi (opengolfapi)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tee_overrides**: ok: Black 16 review (snapped 1 yds along OSM tee 277760440);
+- **tee_overrides**: ok: Black 16 review (kept: snap snapped 1 yds along OSM tee 277760440 would measure 389, another set's box, point 394, card 393);
 - **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 74 candidate pads near hole starts
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/st_andrews_op/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
