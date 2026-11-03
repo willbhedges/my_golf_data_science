@@ -2,7 +2,7 @@
 
 **Status: needs confirm** — confirm holes 4, 13, 17, 18
 
-* page: `course_data/library/sand_hollow/page.html` (2.6 MB); request `course_data/requests/course_page_sand_hollow.json`; built 2026-11-03T09:04Z
+* page: `course_data/library/sand_hollow/page.html` (2.6 MB); request `course_data/requests/course_page_sand_hollow.json`; built 2026-11-03T15:11Z
 * course: Sand Hollow Resort (Hurricane, UT), OSM relation/3580189; holes: osm (tier mapped_card); card: course_data/library/sand_hollow/card_review.json (file)
 * solved tee sets: Black, Blue (the two longest sets on the card (combination sets skipped)); page sets: Black, Blue
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [50, 60, 70] F; calm-day picks with 48 prior draws
