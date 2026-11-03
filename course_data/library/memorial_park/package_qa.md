@@ -1,8 +1,6 @@
-# Memorial Park Golf Course (Houston, TX) - Blue tees
+# Memorial Park Golf Course (Houston, TX) - osm_back tees
 
-Built 2026-11-01T22:32:53Z. OSM relation/13729803. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Gold, Red)).
-
-**WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Gold, Red**
+Built 2026-11-03T09:42:08Z. OSM relation/13729803. Scorecard: None (None). Tee set: no scorecard.
 
 ## Coverage
 
@@ -14,10 +12,10 @@ Built 2026-11-01T22:32:53Z. OSM relation/13729803. Scorecard: golfify (golfify).
 | tee_boxes | 51 |
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 12 |
-| of_par4_5 | 14 |
-| mean_landing_osm_share | 0.309 |
-| mean_confidence | 0.793 |
-| osm_score | 0.833 |
+| of_par4_5 | 13 |
+| mean_landing_osm_share | 0.338 |
+| mean_confidence | 0.653 |
+| osm_score | 0.852 |
 
 OSM features inside the course: buildings 10, golf=bunker 21, golf=cartpath 30, golf=clubhouse 1, golf=driving_range 1, golf=fairway 19, golf=green 23, golf=hole 18, golf=lateral_water_hazard 8, golf=path 3, golf=pin 18, golf=tee 51, holes_with_par 18, tees_with_ref 12, trees_polygons 8, water_lines 4, water_polygons 8
 
@@ -25,47 +23,42 @@ OSM features inside the course: buildings 10, golf=bunker 21, golf=cartpath 30, 
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 5 | 522 / 521 | 221 | 0.75 | check the flags | 28% | 12% | 59% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 2 | 3 | 182 / 174 | 174 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 3 | 4 | 587 / 586 | 339 | 0.74 | check the flags | 53% | 4% | 43% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 587 yds) |
-| 4 | 4 | 466 / 465 | 164 | 0.77 | check the flags | 32% | 14% | 54% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 5 | 4 | 440 / 440 | 323 | 0.83 | auto | 46% | 7% | 47% | tee stage: Blue tee_centroid |  |
-| 6 | 4 | 388 / 388 | 145 | 0.79 | check the flags | 40% | 12% | 48% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 7 | 3 | 223 / 219 | 70 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 8 | 5 | 510 / 505 | 21 | 0.78 | check the flags | 29% | 23% | 48% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 9 | 4 | 202 / 201 | 14 | 0.68 | check the flags | 4% | 11% | 85% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 10 | 4 | 453 / 453 | 303 | 0.76 | check the flags | 32% | 8% | 60% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 11 | 3 | 238 / 237 | 158 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 12 | 4 | 496 / 495 | 330 | 0.77 | check the flags | 29% | 19% | 52% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 13 | 5 | 406 / 405 | 171 | 0.74 | check the flags | 29% | 5% | 67% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 14 | 4 | 529 / 530 | 63 | 0.75 | check the flags | 12% | 15% | 73% | tee stage: Blue tee_centroid |  |
-| 15 | 3 | 155 / 155 | 153 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 16 | 5 | 613 / 610 | 352 | 0.59 | needs review | 16% | 20% | 64% | tee stage: Blue texture_pad | tee: tee stage: Blue texture_pad; Blue tee on an imagery-detected pad (texture; no OSM box at 613 yds) |
-| 17 | 4 | 414 / 413 | 171 | 0.80 | auto | 55% | 0% | 45% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 18 | 4 | 393 / 392 | 205 | 0.81 | auto | 28% | 26% | 47% | tee stage: Blue tee_centroid |  |
+| 1 | 5 | 499 / 499 | 221 | 0.59 | needs review | 29% | 9% | 62% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 2 | 3 | 151 / 151 | 179 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 3 | 5 | 580 / 580 | 344 | 0.58 | needs review | 23% | 14% | 63% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 4 | 4 | 483 / 483 | 167 | 0.59 | needs review | 27% | 14% | 59% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 5 | 4 | 440 / 440 | 323 | 0.63 | check the flags | 45% | 7% | 48% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 6 | 4 | 441 / 441 | 143 | 0.61 | check the flags | 38% | 8% | 53% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 7 | 3 | 206 / 206 | 70 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 8 | 5 | 591 / 591 | 16 | 0.59 | needs review | 25% | 14% | 61% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 9 | 3 | 180 / 180 | 13 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 10 | 4 | 433 / 433 | 303 | 0.60 | needs review | 32% | 9% | 59% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 11 | 3 | 217 / 217 | 158 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 12 | 4 | 486 / 486 | 330 | 0.61 | check the flags | 28% | 18% | 54% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 13 | 4 | 390 / 390 | 205 | 0.62 | check the flags | 27% | 26% | 46% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 14 | 5 | 517 / 517 | 190 | 0.60 | check the flags | 32% | 12% | 56% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 15 | 3 | 137 / 137 | 153 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 16 | 5 | 545 / 545 | 339 | 0.64 | check the flags | 46% | 8% | 46% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 17 | 4 | 403 / 403 | 171 | 0.64 | check the flags | 54% | 0% | 46% | tee nearest the hole-line start | tee: tee nearest the hole-line start; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 18 | 4 | 485 / 485 | 67 | 0.60 | check the flags | 31% | 14% | 55% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
 
 ## Stages
 
 - **resolve**: ok: relation/13729803 Memorial Park Golf Course (Houston, TX)
 - **osm**: ok: 832 features
-- **renumber**: ok: OSM hole refs -> card holes 3->16, 13->18, 14->13, 16->3, 18->14
+- **card_order**: reject: card did not match the mapped holes: the OSM holes 1-18 walk as a round (longest green-to-next-tee 186 yds), and in that order the card's par or length is off on 6 holes (3, 8, 9, 13, 14, 18); card not used
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **scorecard**: ok: golfify (golfify)
-- **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 42 candidate pads near hole starts
-- **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
+- **scorecard**: missing
+- **tees**: fallback: OSM tee nearest the hole-line start (no yardages)
+- **geometry**: ok: geometry/build_holes.py (18 holes, 1 tee set(s))
 - **imagery**: ok: course_data/packages/memorial_park/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020
 - **elevation**: ok: course_data/packages/memorial_park/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -1614 m2 {'road': 539, 'strip': 340, 'cells': 679}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 10 polygons (outside 10); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 9 polygons (outside 9); mode replace
 
 ## Warnings
 
-- requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Gold, Red
-- OSM hole numbering differs from the card: OSM hole refs -> card holes 3->16, 13->18, 14->13, 16->3, 18->14 (CHECK)
-- hole 9 White: CHECK, walk-back ran onto a building (OSM 778558182) 34 yds behind the line start: capped there (150 yds short of the card)
-- hole 9 Gold: CHECK, walk-back ran onto a building (OSM 778558182) 34 yds behind the line start: capped there (123 yds short of the card)
-- hole 9 Red: CHECK, walk-back ran onto a building (OSM 778558182) 34 yds behind the line start: capped there (96 yds short of the card)
-- scorecard (golfify): 5 hole(s) where a longer set is shorter than the next set: 8 Blue 510 < White 554, 9 Blue 202 < White 378, 13 Blue 406 < White 480, 18 Blue 393 < White 410
+- card did not match the mapped holes: the OSM holes 1-18 walk as a round (longest green-to-next-tee 186 yds), and in that order the card's par or length is off on 6 holes (3, 8, 9, 13, 14, 18); card not used (golfify: golfify) (CHECK)
+- no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM tee box nearest each hole-line start (usually the back tee); lengths are measured
