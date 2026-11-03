@@ -1,12 +1,12 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-03T04:30Z",
+ "updated": "2026-11-03T05:09Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 1,
-  "needs confirm": 88,
-  "failed": 7,
+  "needs confirm": 89,
+  "failed": 6,
   "unsupported": 2,
   "blocked": 9
  },
@@ -854,6 +854,96 @@
    ],
    "weather": "forecast",
    "built": "2026-10-30T21:43Z",
+   "group": "library"
+  },
+  {
+   "slug": "troon_north",
+   "name": "Troon North Golf Club",
+   "city": "Scottsdale",
+   "state": "AZ",
+   "status": "needs confirm",
+   "check_holes": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    10,
+    13,
+    15,
+    16,
+    17,
+    18
+   ],
+   "reasons": [
+    "11 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Black",
+     "yards": 7039,
+     "par": 72,
+     "rating": 73.3,
+     "slope": 148,
+     "colour": "black",
+     "on_page": "solved"
+    },
+    {
+     "name": "Gold",
+     "yards": 6716,
+     "par": 72,
+     "rating": 72.1,
+     "slope": 139,
+     "colour": "gold",
+     "on_page": "solved"
+    },
+    {
+     "name": "Silver",
+     "yards": 6220,
+     "par": 72,
+     "rating": 69.8,
+     "slope": 132,
+     "colour": "silver",
+     "on_page": null
+    },
+    {
+     "name": "Copper",
+     "yards": 5821,
+     "par": 72,
+     "rating": 72.9,
+     "slope": 131,
+     "colour": "copper",
+     "on_page": null
+    },
+    {
+     "name": "Jade",
+     "yards": 5084,
+     "par": 72,
+     "rating": 65,
+     "slope": 119,
+     "colour": "jade",
+     "on_page": null
+    }
+   ],
+   "solved_sets": [
+    "Black",
+    "Gold"
+   ],
+   "page": "course_data/library/troon_north/page.html",
+   "page_bytes": 6568019,
+   "qa_report": "course_data/library/troon_north/qa_report.md",
+   "center": [
+    33.7464665,
+    -111.86141605
+   ],
+   "osm": "relation/1389558",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-03T04:14Z",
    "group": "library"
   },
   {
@@ -7886,29 +7976,6 @@
    ],
    "weather": "forecast",
    "built": "2026-10-31T05:30Z",
-   "group": "library"
-  },
-  {
-   "slug": "troon_north",
-   "name": "Troon North Monument",
-   "city": "Scottsdale",
-   "state": "AZ",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package: Retry your request using exponential backoff: wait a overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-11-02T20:27Z",
    "group": "library"
   },
   {
