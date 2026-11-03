@@ -1,0 +1,23 @@
+{
+ "name": "qh_troon_osm2",
+ "rev": 1,
+ "note": "retry of qh_troon_osm (overpass-api.de 406, kumi timeouts): other Overpass mirrors + OSM API map in quarters",
+ "urls": [
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A90%5D%3B%28way%5B%22golf%22%3D%22hole%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3Bway%5B%22leisure%22%3D%22golf_course%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3Brelation%5B%22leisure%22%3D%22golf_course%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3B%29%3Bout%20tags%20geom%3B",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A90%5D%3B%28way%5B%22golf%22~%22water%7Chazard%7Crange%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3Brelation%5B%22golf%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3B%29%3Bout%20tags%20bb%3B",
+  "https://overpass.private.coffee/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A90%5D%3B%28way%5B%22golf%22%3D%22hole%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3Bway%5B%22leisure%22%3D%22golf_course%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3Brelation%5B%22leisure%22%3D%22golf_course%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3B%29%3Bout%20tags%20geom%3B",
+  "https://overpass.private.coffee/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A90%5D%3B%28way%5B%22golf%22~%22water%7Chazard%7Crange%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3Brelation%5B%22golf%22%5D%2838.972%2C-76.19%2C39.001%2C-76.155%29%3B%29%3Bout%20tags%20bb%3B",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A90%5D%3B%28way%5B%22golf%22%3D%22hole%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3Bway%5B%22leisure%22%3D%22golf_course%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3Brelation%5B%22leisure%22%3D%22golf_course%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3B%29%3Bout%20tags%20geom%3B",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A90%5D%3B%28way%5B%22golf%22~%22water%7Chazard%7Crange%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3Brelation%5B%22golf%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3B%29%3Bout%20tags%20bb%3B",
+  "https://overpass.private.coffee/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A90%5D%3B%28way%5B%22golf%22%3D%22hole%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3Bway%5B%22leisure%22%3D%22golf_course%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3Brelation%5B%22leisure%22%3D%22golf_course%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3B%29%3Bout%20tags%20geom%3B",
+  "https://overpass.private.coffee/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A90%5D%3B%28way%5B%22golf%22~%22water%7Chazard%7Crange%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3Brelation%5B%22golf%22%5D%2833.728%2C-111.884%2C33.762%2C-111.84%29%3B%29%3Bout%20tags%20bb%3B",
+  "https://api.openstreetmap.org/api/0.6/map?bbox=-76.1900,38.9720,-76.1725,38.9865",
+  "https://api.openstreetmap.org/api/0.6/map?bbox=-76.1725,38.9720,-76.1550,38.9865",
+  "https://api.openstreetmap.org/api/0.6/map?bbox=-76.1900,38.9865,-76.1725,39.0010",
+  "https://api.openstreetmap.org/api/0.6/map?bbox=-76.1725,38.9865,-76.1550,39.0010",
+  "https://api.openstreetmap.org/api/0.6/map?bbox=-111.8840,33.7280,-111.8620,33.7450",
+  "https://api.openstreetmap.org/api/0.6/map?bbox=-111.8620,33.7280,-111.8400,33.7450",
+  "https://api.openstreetmap.org/api/0.6/map?bbox=-111.8840,33.7450,-111.8620,33.7620",
+  "https://api.openstreetmap.org/api/0.6/map?bbox=-111.8620,33.7450,-111.8400,33.7620"
+ ]
+}
