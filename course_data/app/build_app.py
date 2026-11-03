@@ -907,24 +907,42 @@ def library(courses):
                  holes=len(pk.get("holes") or {}) or 18, status="hand", tees=_tees(pk.get("tee_sets")), app=None,
                  link=WIND_PAGES[slug], event=(cfg.get("event") or "") + (f" · {' & '.join(days)}" if days and "(" not in (cfg.get("event") or "") else ""),
                  note="Hand-checked map with its own wind page (club and aim in the event's forecast)", src="wind_page"))
+    lib_li, lib_rows, lib_err = None, [], None           # the library rows, read before the packages (step 4)
+    if os.path.exists(LIBRARY_INDEX):
+        try:
+            lib_li = json.load(open(LIBRARY_INDEX))
+            import build_library_play                     # rows corrected by each page's status.json
+            lib_rows = build_library_play.library_rows(lib_li, os.path.dirname(LIBRARY_INDEX))[0] if isinstance(lib_li, dict) else lib_li
+            lib_rows = list(lib_rows.values()) if isinstance(lib_rows, dict) else lib_rows
+        except Exception as e:                           # noqa: BLE001
+            lib_err = e
+    # a library course with a built page is listed from its library row (status, card note, on-page tee flags),
+    # never as a "plan not run yet" package, even though the packages come first in the merge
+    lib_built = {(r.get("id") or r.get("slug")) for r in lib_rows if isinstance(r, dict) and r.get("page")} - {None}
+    lib_built_keys = {_norm(r["name"]) + "|" + (r.get("state") or "") for r in lib_rows
+                      if isinstance(r, dict) and r.get("page") and r.get("name")}
     idx = json.load(open(os.path.join(PKGS, "_index.json")))
     for slug, entry in sorted(idx.items()):              # 3. packages without a plan
         pj = os.path.join(PKGS, slug, "package.json")
         if entry.get("status") != "ok" or not os.path.exists(pj) or any(e.get("id") == slug for e in ents):
             continue                                     # (a course already listed by its slug under another name)
+        if slug in lib_built:                             # its library page is built: the library row lists it
+            continue
         pk = json.load(open(pj))
         c = pk.get("course") or {}
-        add(dict(id=slug, name=c.get("name") or entry.get("name"), town=c.get("town") or entry.get("town"),
-                 state=c.get("state") or entry.get("state"), holes=len(pk.get("holes") or {}), status="none",
+        name, state = c.get("name") or entry.get("name"), c.get("state") or entry.get("state")
+        if _norm(name or "") + "|" + (state or "") in lib_built_keys:
+            continue
+        add(dict(id=slug, name=name, town=c.get("town") or entry.get("town"),
+                 state=state, holes=len(pk.get("holes") or {}), status="none",
                  tees=_tees(pk.get("tee_sets")), app=None, link=None, src="package",
                  note="Mapped automatically (course package built); the club-and-aim plan has not been run yet"))
     lib_src = None
     if os.path.exists(LIBRARY_INDEX):                    # 4. the course library (course_library/1, library/README.md)
         try:
-            li = json.load(open(LIBRARY_INDEX))
-            import build_library_play                     # rows corrected by each page's status.json
-            rows = build_library_play.library_rows(li, os.path.dirname(LIBRARY_INDEX))[0] if isinstance(li, dict) else li
-            rows = list(rows.values()) if isinstance(rows, dict) else rows
+            if lib_err is not None:
+                raise lib_err
+            li, rows = lib_li, lib_rows
             n0 = len(ents)
             for r in rows:
                 if not isinstance(r, dict) or not r.get("name"):

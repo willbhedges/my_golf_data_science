@@ -87,3 +87,29 @@ def test_build_app_blocked_courses_reads_status_json(tmp_path, monkeypatch):
     monkeypatch.setattr(A, "LIBRARY_INDEX", os.path.join(lib, "index.json"))
     held = A.blocked_courses()
     assert held["ids"] == {"qh"} and held["keys"] == {A._norm("South River Golf Course") + "|MD"}
+
+
+def test_library_course_with_a_built_page_uses_its_library_row(tmp_path, monkeypatch):
+    # 2026-11-03: the old_works course package (listed before the library rows) made Old Works show as "plan not
+    # run yet" (status none) and dropped its on-page tee flags; a built library page must win over its package
+    import build_app as A
+    row = dict(_row("ow", "needs confirm", name="Old Works Golf Club"), check_holes=[3, 4],
+               tee_sets=[dict(name="Slag", yards=7705, colour="black", on_page="solved"),
+                         dict(name="Copper", yards=6776, colour="blue", on_page=None)])
+    lib = _lib(tmp_path, dict(courses=[row], blocked=[]), {"ow": row})
+    pk = tmp_path / "packages"
+    _w(str(pk / "_index.json"), {"ow": dict(status="ok", name="Old Works Golf Club", state="MD"),
+                                 "pk_only": dict(status="ok", name="Package Only", state="MD")})
+    tees = {"Slag": dict(colour="black", total=7705), "Copper": dict(colour="blue", total=6776)}
+    for slug, nm in (("ow", "Old Works Golf Club"), ("pk_only", "Package Only")):
+        _w(str(pk / slug / "package.json"), dict(course=dict(name=nm, state="MD", town="Town"),
+                                                 holes={str(i): {} for i in range(1, 19)}, tee_sets=tees))
+    monkeypatch.setattr(A, "LIBRARY_INDEX", os.path.join(lib, "index.json"))
+    monkeypatch.setattr(A, "PKGS", str(pk))
+    monkeypatch.setattr(A, "COURSES_DIR", str(tmp_path / "no_courses"))
+    ents = {e.get("id"): e for e in A.library([])["entries"]}
+    ow = ents["ow"]
+    assert ow["src"] == "library" and ow["status"] == "confirm"
+    assert [t[3] for t in ow["tees"]] == [1, 0]
+    assert "confirm holes 3, 4" in ow["note"]
+    assert ents["pk_only"]["src"] == "package" and ents["pk_only"]["status"] == "none"   # no page: still listed

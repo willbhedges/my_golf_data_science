@@ -222,7 +222,7 @@ Boltzmann posterior covers the union (~4-6 k routings, 0.2-0.5 MB).
 
 Sources, merged by normalised name + state (first wins, later ones fill empty fields): the app's courses; the
 hand-checked tournament courses (`course_data/courses/<slug>/config.json` + `truth/package.json`, linked to their
-published wind page, `build_app.WIND_PAGES`); course packages with no plan yet; `course_data/library/index.json`
+published wind page, `build_app.WIND_PAGES`); course packages with no plan yet (a package whose course has a built library page, by slug or name + state, is skipped: the library row lists it, with its status, card note and on-page tee flags); `course_data/library/index.json`
 (`course_library/1`, course_data/library/README.md) when it exists (its `blocked` rows, pages held back by the
 publish gate, are dropped from every source by slug and name + state: `build_app.blocked_courses`; each library row is read from its page folder's own `status.json` when there is one, so a stale index row never lets a blocked page in, and a blocked page never overwrites its old `lib/<slug>.json`: `build_library_play.library_rows`): `slug`, `name`, `city`, `state`, `holes`,
 `status` (`hand-checked` / `auto-OK` / `needs confirm` / `failed` -> hand / auto / confirm / none), `tee_sets`
