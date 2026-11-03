@@ -100,6 +100,19 @@ def test_golfify_slugs():
     assert "spirit-hollow-golf-course-burlington" in s
 
 
+def test_golfify_urls_facility_course():
+    """Queenstown Harbor River: golfify files it as queenstown-harbor-golf-links-river (the facility slug + the
+    course word); the 10 name-derived URLs all 404'd, so the River page was built with no card."""
+    urls = scm.golfify_urls("Queenstown Harbor River Course", "Queenstown", limit=10)
+    assert "https://www.golfify.io/courses/queenstown-harbor-golf-links-river" in urls
+    assert urls[0] == "https://www.golfify.io/courses/queenstown-harbor-river-course"     # name forms still first
+    assert len(urls) == 14
+    # an ordinary '... Golf Course' name gets no facility forms
+    assert scm.facility_course_slugs("Spirit Hollow Golf Course") == []
+    assert scm.facility_course_slugs("Annbriar") == []
+    assert len(scm.golfify_urls("Spirit Hollow Golf Course", "Burlington", limit=10)) == 10
+
+
 def test_duplicate_set_names_are_folded():
     """QA P6 (Veenker): golfify gives 'Gold' and 'Gold (Gold)' (its other rating); 'Pink (Pink)' alone is renamed."""
     y = [400] * 18

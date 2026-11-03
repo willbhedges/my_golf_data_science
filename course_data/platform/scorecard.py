@@ -663,7 +663,25 @@ def golfify_urls(name, town=None, limit=10):
     for s in golfify_slugs(name, town):
         if s not in slugs:
             slugs.append(s)
-    return [f"https://www.golfify.io/courses/{s}" for s in slugs[:limit]]
+    slugs = slugs[:limit]
+    slugs += [s for s in facility_course_slugs(name) if s not in slugs]          # outside the limit: few, cheap
+    return [f"https://www.golfify.io/courses/{s}" for s in slugs]
+
+
+# words that end a course name without naming one course of a facility ("Spirit Hollow Golf Course")
+_NOT_A_COURSE_WORD = {"golf", "country", "municipal", "muni", "public", "the", "city", "memorial", "park"}
+
+
+def facility_course_slugs(name):
+    """One course of a multi-course facility, named '<facility> <Course word> Course' ('Queenstown Harbor River
+    Course'): golfify files it under the FACILITY's slug + the course word (queenstown-harbor-golf-links-river,
+    found 2026-11-03), which no form of the course name gives. -> [] for a name that is not of that shape."""
+    m = re.match(r"(?i)^(.+?)\s+(?:the\s+)?([a-z]+)\s+course$", str(name or "").strip())
+    if not m or m.group(2).lower() in _NOT_A_COURSE_WORD:
+        return []
+    fac, word = _slug(m.group(1)), _slug(m.group(2))
+    return [f"{fac}-golf-links-{word}", f"{fac}-golf-club-{word}", f"{fac}-golf-resort-{word}",
+            f"{fac}-golf-course-{word}"]
 
 
 def allsquare_urls(name, state, limit=4):
