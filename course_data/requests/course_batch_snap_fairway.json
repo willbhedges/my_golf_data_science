@@ -1,0 +1,9 @@
+{
+ "requests": [
+  "course_data/requests/course_page_la_nickell.json",
+  "course_data/requests/course_page_shoal_creek.json",
+  "course_data/requests/course_page_creekmoor.json"
+ ],
+ "rev": 1,
+ "note": "Rebuild after the review-tee and fairway fixes. la_nickell 5 Blue and shoal_creek 5 Black / 6 White: a review tee point now stays off the box when snapping it onto another set's box takes it off the card (package.review_tee_point; expected 325 / 128 / 308 vs card 325 / 130 / 306). creekmoor: OSM maps no golf=fairway; the new S4f NAIP fairway fill (vision_any/fairway_fill.py) adds fairway on the 14 par-4/5 holes (d' 2.0, every hole passes the gates), so landings stop reading fairway 0 %."
+}
