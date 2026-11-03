@@ -1,6 +1,6 @@
 # Pevely Farms Golf Course (Saint Louis, MO) - Black tees
 
-Built 2026-11-03T16:22:45Z. OSM relation/5429230. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T21:35:59Z. OSM relation/5429230. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -57,7 +57,9 @@ OSM features inside the course: buildings 1, built_up_landuse 1, golf=bunker 27,
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -1039 m2 {'strip': 641, 'cells': 398}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 31 polygons (outside 31); mode replace
+- **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)
 
 ## Warnings
 
