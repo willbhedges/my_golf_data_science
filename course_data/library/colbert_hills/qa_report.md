@@ -2,14 +2,14 @@
 
 **Status: needs confirm** — confirm holes 1, 3, 7, 13
 
-* page: `course_data/library/colbert_hills/page.html` (5.5 MB); request `course_data/requests/course_page_colbert_hills.json`; built 2026-11-02T19:30Z
+* page: `course_data/library/colbert_hills/page.html` (5.5 MB); request `course_data/requests/course_page_colbert_hills.json`; built 2026-11-02T23:00Z
 * course: Colbert Hills Golf Course (Manhattan, KS), OSM relation/13772939; holes: osm (tier mapped_card); card: opengolfapi (opengolfapi)
 * solved tee sets: Black/Blue, Silver (tee sets of interest); page sets: Black/Blue, Silver
 * weather: forecast for 2026-11-07, 2026-11-08; grid temperatures [45, 60, 70] F; calm-day picks with 48 prior draws
 * imagery on the page: 2023-05-20,2023-06-06; package imagery 2023
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
 
-* native-grass questions (Black/Blue tees, library check cards): holes 16, 3, 9, 14 (4 asked of 14 framed holes)
+* native-grass questions (Black/Blue tees, library check cards): holes 16, 9 (4 asked of 14 framed holes; 2 kept on the page's own picks (2 dropped))
 
 Course-level reasons:
 
@@ -17,7 +17,7 @@ Course-level reasons:
 * scorecard not matched (source opengolfapi, flags ['Purple: holes sum to 6432 but the source says 6452 (-20): mixed card versions'])
 * 4 hole(s) with a CHECK
 
-Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
+Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
 ## Black/Blue tees
 
@@ -35,7 +35,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 10 | 5 | PASS | Driver +1 |  |
 | 11 | 3 | PASS |  |  |
 | 12 | 4 | PASS | Driver -0 |  |
-| 13 | 4 | PASS | Driver +52 |  |
+| 13 | 4 | CHECK | Driver +52 | wide_aim: Driver aim +52 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 14 | 4 | PASS | Driver +0 |  |
 | 15 | 4 | PASS | Driver +8 |  |
 | 16 | 5 | PASS | Driver -21 |  |
@@ -58,7 +58,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 10 | 5 | PASS | Driver +3 |  |
 | 11 | 3 | PASS |  |  |
 | 12 | 4 | PASS | Driver +6 |  |
-| 13 | 4 | CHECK | Driver +50 | aim: Driver +50 lands 302 yds out in sand (6 yds from fairway) |
+| 13 | 4 | CHECK | Driver +50 | aim: Driver +50 lands 302 yds out in sand (6 yds from fairway); wide_aim: Driver aim +51 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
 | 14 | 4 | PASS | 4-wood -2 |  |
 | 15 | 4 | PASS | Driver +11 |  |
 | 16 | 5 | PASS | Driver -22 |  |
