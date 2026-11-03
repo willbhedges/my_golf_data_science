@@ -1,6 +1,6 @@
 # TPC Deere Run (Silvis, IL) - Gold tees
 
-Built 2026-11-02T05:06:26Z. OSM relation/12585470. Scorecard: file (course_data/library/tpc_deere_run/card_review.json). Tee set: name.
+Built 2026-11-03T01:38:03Z. OSM relation/12585470. Scorecard: file (course_data/library/tpc_deere_run/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -27,7 +27,7 @@ OSM features inside the course: buildings 14, built_up_landuse 1, golf=bunker 79
 | 2 | 5 | 561 / 561 | 214 | 0.80 | check the flags | 52% | 2% | 46% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 3 | 3 | 186 / 186 | 339 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 4 | 4 | 454 / 453 | 129 | 0.86 | auto | 70% | 8% | 22% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
-| 5 | 4 | 433 / 433 | 353 | 0.78 | check the flags | 40% | 7% | 54% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 5 | 4 | 433 / 433 | 353 | 0.78 | check the flags | 40% | 11% | 49% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 6 | 4 | 367 / 367 | 309 | 0.85 | auto | 64% | 13% | 24% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 7 | 3 | 226 / 226 | 182 | 0.86 | auto | 100% | 0% | 0% | tee stage: Gold lidar_pad | tee: tee stage: Gold lidar_pad; Gold tee on a lidar pad (no OSM box at 226 yds) |
 | 8 | 4 | 428 / 428 | 359 | 0.87 | auto | 42% | 32% | 26% | tee stage: Gold tee_centroid |  |
@@ -54,6 +54,7 @@ OSM features inside the course: buildings 14, built_up_landuse 1, golf=bunker 79
 - **imagery**: ok: course_data/packages/tpc_deere_run/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/tpc_deere_run/imagery/dem.tif (18/18 holes)
-- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
+- **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -57 m2 {'cells': 50}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 7 polygons (outside 7); mode replace
+- **agent_layers**: ok: course_data/mapper/tpc_deere_run (7 zone edits on 4 holes, 3 tee(s) moved, 90 checked)
