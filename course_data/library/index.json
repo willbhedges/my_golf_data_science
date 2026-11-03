@@ -1,13 +1,13 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-02T21:35Z",
+ "updated": "2026-11-03T01:49Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 1,
-  "needs confirm": 95,
-  "failed": 10,
-  "unsupported": 1
+  "needs confirm": 96,
+  "failed": 8,
+  "unsupported": 2
  },
  "courses": [
   {
@@ -2089,6 +2089,7 @@
    "state": "IA",
    "status": "needs confirm",
    "check_holes": [
+    2,
     6,
     7,
     8,
@@ -2098,7 +2099,7 @@
    ],
    "reasons": [
     "scorecard not matched (source golfify, flags ['1 hole(s) where a longer set is shorter than the next set: 14 Blue 155 < White 195'])",
-    "6 hole(s) with a CHECK"
+    "7 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -2152,7 +2153,7 @@
     "Blue"
    ],
    "page": "course_data/library/harvester/page.html",
-   "page_bytes": 4755648,
+   "page_bytes": 4726936,
    "qa_report": "course_data/library/harvester/qa_report.md",
    "center": [
     41.87053135,
@@ -2165,7 +2166,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T17:00Z",
+   "built": "2026-11-02T23:01Z",
    "group": "library"
   },
   {
@@ -2176,46 +2177,62 @@
    "status": "needs confirm",
    "check_holes": [
     1,
-    2,
-    3,
-    4,
     5,
     6,
     7,
-    8,
-    9,
     10,
     11,
-    12,
-    13,
     14,
     15,
-    16,
-    17,
-    18
+    16
    ],
    "reasons": [
-    "scorecard not matched (source None, flags [])",
-    "18 holes built vs the card's 0",
-    "pars sum to 71, card None",
-    "18 hole(s) with a CHECK"
+    "9 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
-     "name": "osm_back",
-     "yards": null,
-     "par": null,
-     "rating": null,
-     "slope": null,
-     "colour": null,
+     "name": "King",
+     "yards": 7041,
+     "par": 71,
+     "rating": 73.9,
+     "slope": 145,
+     "colour": "blue",
      "on_page": "solved"
+    },
+    {
+     "name": "Palmer",
+     "yards": 6516,
+     "par": 71,
+     "rating": 71.5,
+     "slope": 140,
+     "colour": "green",
+     "on_page": "solved"
+    },
+    {
+     "name": "Deacon",
+     "yards": 6113,
+     "par": 71,
+     "rating": 69.6,
+     "slope": 132,
+     "colour": "white",
+     "on_page": null
+    },
+    {
+     "name": "Legend",
+     "yards": 5039,
+     "par": 71,
+     "rating": 69.2,
+     "slope": 122,
+     "colour": "red",
+     "on_page": null
     }
    ],
    "solved_sets": [
-    "osm_back"
+    "King",
+    "Palmer"
    ],
    "page": "course_data/library/tournament_club_iowa/page.html",
-   "page_bytes": 2593264,
+   "page_bytes": 5219508,
    "qa_report": "course_data/library/tournament_club_iowa/qa_report.md",
    "center": [
     41.78618085,
@@ -2224,24 +2241,12 @@
    "osm": "relation/1507320",
    "holes": 18,
    "days": [
-    "2026-10-31",
-    "2026-11-01"
+    "2026-11-07",
+    "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-10-30T12:33Z",
-   "group": "library",
-   "last_attempt": {
-    "status": "failed",
-    "stage": "package",
-    "error": [
-     "package:     \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
-    ],
-    "when": "2026-11-02T20:23Z",
-    "resolve": {
-     "status": null,
-     "candidates": []
-    }
-   }
+   "built": "2026-11-02T23:41Z",
+   "group": "library"
   },
   {
    "slug": "circling_raven",
@@ -2661,7 +2666,7 @@
     "Silver"
    ],
    "page": "course_data/library/colbert_hills/page.html",
-   "page_bytes": 5515274,
+   "page_bytes": 5492290,
    "qa_report": "course_data/library/colbert_hills/qa_report.md",
    "center": [
     39.2124235,
@@ -2674,7 +2679,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T19:30Z",
+   "built": "2026-11-02T23:00Z",
    "group": "library"
   },
   {
@@ -3241,11 +3246,12 @@
    "state": "KS",
    "status": "needs confirm",
    "check_holes": [
+    10,
     11,
     17
    ],
    "reasons": [
-    "2 hole(s) with a CHECK"
+    "3 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -3290,7 +3296,7 @@
     "Blue"
    ],
    "page": "course_data/library/prairie_highlands/page.html",
-   "page_bytes": 4682914,
+   "page_bytes": 4666702,
    "qa_report": "course_data/library/prairie_highlands/qa_report.md",
    "center": [
     38.8617819,
@@ -3303,7 +3309,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T16:38Z",
+   "built": "2026-11-02T23:04Z",
    "group": "library"
   },
   {
@@ -3314,11 +3320,12 @@
    "status": "needs confirm",
    "check_holes": [
     5,
+    9,
     10,
     15
    ],
    "reasons": [
-    "3 hole(s) with a CHECK"
+    "4 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -3372,7 +3379,7 @@
     "Blue"
    ],
    "page": "course_data/library/st_andrews_op/page.html",
-   "page_bytes": 5206241,
+   "page_bytes": 5198425,
    "qa_report": "course_data/library/st_andrews_op/qa_report.md",
    "center": [
     38.87879315,
@@ -3385,7 +3392,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-01T20:43Z",
+   "built": "2026-11-02T23:47Z",
    "group": "library"
   },
   {
@@ -3395,12 +3402,13 @@
    "state": "KS",
    "status": "needs confirm",
    "check_holes": [
+    5,
     9,
     13,
     18
    ],
    "reasons": [
-    "3 hole(s) with a CHECK"
+    "4 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -3454,7 +3462,7 @@
     "Blue"
    ],
    "page": "course_data/library/sycamore_ridge/page.html",
-   "page_bytes": 4961609,
+   "page_bytes": 4921189,
    "qa_report": "course_data/library/sycamore_ridge/qa_report.md",
    "center": [
     38.75657895,
@@ -3467,7 +3475,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T16:43Z",
+   "built": "2026-11-02T23:16Z",
    "group": "library"
   },
   {
@@ -3849,6 +3857,69 @@
    ],
    "weather": "forecast",
    "built": "2026-10-31T01:50Z",
+   "group": "library"
+  },
+  {
+   "slug": "tpc_louisiana",
+   "name": "Tournament Players Club of Louisiana",
+   "city": "Avondale",
+   "state": "LA",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source None, flags [])",
+    "18 holes built vs the card's 0",
+    "pars sum to 72, card None",
+    "18 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "osm_back",
+     "yards": null,
+     "par": null,
+     "rating": null,
+     "slope": null,
+     "colour": null,
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "osm_back"
+   ],
+   "page": "course_data/library/tpc_louisiana/page.html",
+   "page_bytes": 2469805,
+   "qa_report": "course_data/library/tpc_louisiana/qa_report.md",
+   "center": [
+    29.8993981,
+    -90.19328585
+   ],
+   "osm": "relation/4260277",
+   "holes": 18,
+   "days": [
+    "2026-11-07",
+    "2026-11-08"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-02T23:44Z",
    "group": "library"
   },
   {
@@ -4278,13 +4349,14 @@
    "check_holes": [
     3,
     4,
+    6,
     7,
     11,
     14,
     16
    ],
    "reasons": [
-    "6 hole(s) with a CHECK"
+    "7 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -4320,7 +4392,7 @@
     "Gold"
    ],
    "page": "course_data/library/gustin/page.html",
-   "page_bytes": 2631761,
+   "page_bytes": 2622041,
    "qa_report": "course_data/library/gustin/qa_report.md",
    "center": [
     38.93243175,
@@ -4333,7 +4405,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T16:46Z",
+   "built": "2026-11-02T22:48Z",
    "group": "library"
   },
   {
@@ -4407,11 +4479,12 @@
    "status": "needs confirm",
    "check_holes": [
     1,
+    10,
     16
    ],
    "reasons": [
     "scorecard not matched (source golfify, flags ['1 hole(s) where a longer set is shorter than the next set: 3 Silver (L) 315 < Silver 333'])",
-    "2 hole(s) with a CHECK"
+    "3 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -4483,7 +4556,7 @@
     "Gold"
    ],
    "page": "course_data/library/buffalo_ridge/page.html",
-   "page_bytes": 2651710,
+   "page_bytes": 2649994,
    "qa_report": "course_data/library/buffalo_ridge/qa_report.md",
    "center": [
     36.57680115,
@@ -4496,7 +4569,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T19:35Z",
+   "built": "2026-11-02T23:18Z",
    "group": "library"
   },
   {
@@ -4567,7 +4640,7 @@
     "Green"
    ],
    "page": "course_data/library/creekmoor/page.html",
-   "page_bytes": 2545596,
+   "page_bytes": 2545880,
    "qa_report": "course_data/library/creekmoor/qa_report.md",
    "center": [
     38.833413699999994,
@@ -4580,7 +4653,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T19:50Z",
+   "built": "2026-11-02T23:17Z",
    "group": "library"
   },
   {
@@ -4640,7 +4713,7 @@
     "Championship"
    ],
    "page": "course_data/library/drumm_farm/page.html",
-   "page_bytes": 2227553,
+   "page_bytes": 2222545,
    "qa_report": "course_data/library/drumm_farm/qa_report.md",
    "center": [
     39.06208289999999,
@@ -4653,7 +4726,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T19:52Z",
+   "built": "2026-11-02T22:46Z",
    "group": "library"
   },
   {
@@ -4753,12 +4826,14 @@
    "status": "needs confirm",
    "check_holes": [
     2,
+    9,
     10,
     12,
+    15,
     18
    ],
    "reasons": [
-    "4 hole(s) with a CHECK"
+    "6 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -4794,7 +4869,7 @@
     "White"
    ],
    "page": "course_data/library/hodge_park/page.html",
-   "page_bytes": 2272727,
+   "page_bytes": 2260671,
    "qa_report": "course_data/library/hodge_park/qa_report.md",
    "center": [
     39.253293400000004,
@@ -4807,7 +4882,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T19:34Z",
+   "built": "2026-11-02T22:45Z",
    "group": "library"
   },
   {
@@ -4826,11 +4901,12 @@
     10,
     12,
     13,
+    16,
     17,
     18
    ],
    "reasons": [
-    "11 hole(s) with a CHECK"
+    "12 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -4866,7 +4942,7 @@
     "White"
    ],
    "page": "course_data/library/la_nickell/page.html",
-   "page_bytes": 2506365,
+   "page_bytes": 2497993,
    "qa_report": "course_data/library/la_nickell/qa_report.md",
    "center": [
     38.9764419,
@@ -4879,7 +4955,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T19:33Z",
+   "built": "2026-11-02T22:52Z",
    "group": "library"
   },
   {
@@ -5001,7 +5077,7 @@
     "Tournament"
    ],
    "page": "course_data/library/osage_national/page.html",
-   "page_bytes": 2497629,
+   "page_bytes": 2497649,
    "qa_report": "course_data/library/osage_national/qa_report.md",
    "center": [
     38.205093950000006,
@@ -5014,7 +5090,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T17:09Z",
+   "built": "2026-11-02T23:22Z",
    "group": "library"
   },
   {
@@ -5026,11 +5102,12 @@
    "check_holes": [
     3,
     11,
+    13,
     16,
     18
    ],
    "reasons": [
-    "4 hole(s) with a CHECK"
+    "5 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -5075,7 +5152,7 @@
     "Blue"
    ],
    "page": "course_data/library/pevely_farms/page.html",
-   "page_bytes": 2586325,
+   "page_bytes": 2586725,
    "qa_report": "course_data/library/pevely_farms/qa_report.md",
    "center": [
     38.52578145,
@@ -5088,7 +5165,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-01T21:04Z",
+   "built": "2026-11-02T23:42Z",
    "group": "library"
   },
   {
@@ -5159,7 +5236,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T19:39Z",
+   "built": "2026-11-02T22:45Z",
    "group": "library"
   },
   {
@@ -5169,11 +5246,10 @@
    "state": "MO",
    "status": "needs confirm",
    "check_holes": [
-    2,
-    4
+    2
    ],
    "reasons": [
-    "2 hole(s) with a CHECK"
+    "1 hole(s) with a CHECK"
    ],
    "tee_sets": [
     {
@@ -5218,7 +5294,7 @@
     "Blue"
    ],
    "page": "course_data/library/shoal_creek/page.html",
-   "page_bytes": 2365544,
+   "page_bytes": 2371576,
    "qa_report": "course_data/library/shoal_creek/qa_report.md",
    "center": [
     39.252797,
@@ -5231,7 +5307,7 @@
     "2026-11-08"
    ],
    "weather": "forecast",
-   "built": "2026-11-02T17:11Z",
+   "built": "2026-11-02T23:02Z",
    "group": "library"
   },
   {
@@ -8468,29 +8544,6 @@
    "group": "library"
   },
   {
-   "slug": "kapalua_plantation",
-   "name": "Kapalua Plantation Course",
-   "city": "Lahaina",
-   "state": "HI",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package: <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: overpass failed: https://overpass.private.coffee/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.private.coffee', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-11-02T20:26Z",
-   "group": "library"
-  },
-  {
    "slug": "kokopelli",
    "name": "Kokopelli Golf Club",
    "city": "Marion",
@@ -8537,29 +8590,6 @@
    "group": "library"
   },
   {
-   "slug": "tpc_louisiana",
-   "name": "TPC Louisiana",
-   "city": "Avondale",
-   "state": "LA",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package:     \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> <html xmlns=\"http://www.w3.org/1999/xhtml\" xml: package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-11-02T20:25Z",
-   "group": "library"
-  },
-  {
    "slug": "queenstown_harbor",
    "name": "Queenstown Harbor River Course",
    "city": "Queenstown",
@@ -8567,7 +8597,7 @@
    "status": "failed",
    "check_holes": [],
    "reasons": [
-    "package: Retry your request using exponential backoff: wait a overpass failed: https://overpass.kumi.systems/api/interpreter: ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Read timed out. (read timeout=200)\")) package attempt 2: timed out after 40 min (Overpass endpoints down or at capacity?) "
+    "package:     pc.log(\"imagery:\", \" \".join(cmd))                        ^^^^^^^^^^^^^ TypeError: sequence item 5: expected str instance, NoneType found "
    ],
    "tee_sets": [],
    "solved_sets": null,
@@ -8579,7 +8609,7 @@
    "holes": null,
    "days": null,
    "weather": null,
-   "built": "2026-11-02T20:24Z",
+   "built": "2026-11-02T23:41Z",
    "group": "library"
   },
   {
@@ -8673,6 +8703,29 @@
    "days": null,
    "weather": null,
    "built": "2026-11-02T15:05Z",
+   "group": "library"
+  },
+  {
+   "slug": "kapalua_plantation",
+   "name": "Kapalua Plantation Course",
+   "city": "Lahaina",
+   "state": "HI",
+   "status": "unsupported",
+   "check_holes": [],
+   "reasons": [
+    "imagery: imagery is Sentinel-2 L2A via Planetary Computer at 10 m, not USDA NAIP (NAIP covers the lower 48 states only): hole pictures would be gray / unreadable"
+   ],
+   "tee_sets": [],
+   "solved_sets": null,
+   "page": null,
+   "page_bytes": null,
+   "qa_report": null,
+   "center": null,
+   "osm": null,
+   "holes": null,
+   "days": null,
+   "weather": null,
+   "built": "2026-11-02T23:53Z",
    "group": "library"
   }
  ]
