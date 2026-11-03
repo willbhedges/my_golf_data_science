@@ -603,3 +603,68 @@ def test_review_renumber_and_green_in_build(tmp_path, black):
     assert "hole 1 -> 2" in p["stages"]["hole_renumber"]
     assert p["holes"]["4"]["green_ll"] == pytest.approx([g4[0], g4[1] + 60 / 111320], abs=2e-6)
     assert p["holes"]["4"]["provenance"]["green"] == "review" and "hole 4" in p["stages"]["green_overrides"]
+
+
+SNAP_FIX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures", "review_tee_snap.json")
+
+
+def _review_case(name):
+    """(review points {set: (lon, lat, how)}, measured yds {set: yds}) for one fixtures/review_tee_snap.json case,
+    through tee_overrides_for with the build's measure / card / other-set inputs."""
+    c = json.load(open(SNAP_FIX))["cases"][name]
+    fc = dict(type="FeatureCollection", features=c["features"])
+    bh = pk.geometry()
+    world = bh.World(fc)
+    measure = pk.review_measure(bh, world)
+    sets = {s: {} for s in set(c["card"]) | set(c["review"]) | set(c["others"])}
+    req = dict(tee_overrides={c["ref"]: c["review"]})
+    joint = dict(holes={c["ref"]: dict(tees={s: dict(lat=ll[0], lon=ll[1]) for s, ll in c["others"].items()})})
+    out, yds = {}, {}
+    for s in c["review"]:
+        ov = pk.tee_overrides_for(req, s, sets, s, fc, measure=measure, card={c["ref"]: c["card"][s]},
+                                  others=pk.review_others(req, s, sets, s, joint))
+        out[s] = ov[c["ref"]]
+        yds[s] = measure(c["ref"])(out[s][0], out[s][1])
+    return c, out, yds
+
+
+def test_review_tee_kept_off_box_when_snap_leaves_card():
+    """la_nickell 5 Blue (card 325): the review point 12 yds behind the White box measures 325; snapped onto
+    White's box it measured 313, so it stays. shoal_creek 5 Black (card 130; snapped 139) and 6 White (card 306;
+    snapped onto Blue's box, 320) the same."""
+    for name, s, card in (("la_nickell_5", "Blue", 325), ("shoal_creek_5", "Black", 130),
+                          ("shoal_creek_6", "White", 306)):
+        c, out, yds = _review_case(name)
+        lat, lon = c["review"][s]
+        assert out[s][:2] == pytest.approx((lon, lat), abs=1e-9), (name, out[s])
+        assert "kept" in out[s][2] and abs(yds[s] - card) <= 3, (name, yds[s], out[s][2])
+    _, out, _ = _review_case("la_nickell_5")
+    assert "another set's box" in out["Blue"][2]
+
+
+def test_review_tee_snap_still_snaps_when_card_agrees():
+    """hodge_park 3 (the case the box snap was built for): the three review points inside the long blue box /
+    the white box stay where they are, each within 5 yds of its card (White 144 / 148, as built); a point put 4 yds beside the box (14 yds
+    across the hole from White's point: off the teeing ground, the same distance to the green) still moves onto it, even though Blue holds that box, because the
+    card match does not get worse."""
+    c, out, yds = _review_case("hodge_park_3")
+    for s in ("Blue", "White", "Red"):
+        lat, lon = c["review"][s]
+        assert out[s][:2] == pytest.approx((lon, lat), abs=1e-9) and "inside OSM tee" in out[s][2]
+        assert abs(yds[s] - c["card"][s]) <= 5, (s, yds[s])
+    fc = dict(type="FeatureCollection", features=c["features"])
+    tees = pk.osm_tee_inputs(fc)[1]
+    lat, lon = c["review"]["White"]
+    line = next(f for f in c["features"] if f["properties"].get("golf") == "hole")["geometry"]["coordinates"]
+    kx, ky = math.cos(math.radians(lat)) * 111320 / 0.9144, 111320 / 0.9144
+    dx, dy = (line[-1][0] - line[0][0]) * kx, (line[-1][1] - line[0][1]) * ky
+    n = math.hypot(dx, dy)
+    off = (lat - 14 * dx / n / ky, lon + 14 * dy / n / kx)               # 14 yds right: 4 yds off the box
+    bh = pk.geometry()
+    m = pk.review_measure(bh, bh.World(fc))(c["ref"])
+    blue = [tuple(c["review"]["Blue"])]
+    got = pk.review_tee_point(*off, tees, m, c["card"]["White"], blue)
+    assert "snapped" in got[2] and "279486929" in got[2]
+    assert m(got[1], got[0]) == pytest.approx(m(lon, lat), abs=2.5)
+    # no measure / no card: the 11-02 rule (snap) stands
+    assert "snapped" in pk.review_tee_point(*off, tees)[2]

@@ -35,7 +35,9 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           line on a review green (re-drawn from the review tee when it moves > GREEN_MOVE_YD; a missed hole is added)
   S2r     request "tee_overrides" {ref: {set: [lat, lon]}} (course reviews): that set's tee on that hole: kept
           when inside an OSM tee box, else moved onto the nearest box within OVERRIDE_SNAP_YD along its long axis
-          (not to its centroid; else the point as given); wins over S2 (method "review")
+          (not to its centroid; else the point as given) unless the snapped point measures further from the set's
+          card yardage (and > SNAP_CARD_TOL_YD off), or lands on a box another set holds and worsens the card
+          match (review_tee_point: the reviewer put it off the box on purpose); wins over S2 (method "review")
   S3     geometry/build_holes.py: yard frame (package) + fitted pixel frame (images / the book)
   S4      course_data/vision_any/gapfill.py:gapfill(package, imagery_dir) if present (trees, long grass)
   S4c     course_data/ob/infer.py:apply_ob(package) when the course's OB evidence is fetched (call_ob)
@@ -533,14 +535,8 @@ def apply_cardless_overrides(fc, req):
     return fc, notes
 
 
-def snap_to_tee_box(lat, lon, tees, snap_yd=None):
-    """(lat, lon, how) for an approximate review tee point and the OSM tee boxes [{id, coords [(lat, lon)]}].
-
-    Inside a box: the point stays (a long teeing ground holds several sets; hodge_park 3 had two review points
-    11-12 yds apart on one box both jump to its centroid). Else, within snap_yd of a box's outline (nearest box):
-    the point moves onto the box along its long axis (projected onto the axis through the centroid, clamped to the
-    box's extent along it), not to the centroid. A point box (OSM node): its position. None: no box near."""
-    snap_yd = OVERRIDE_SNAP_YD if snap_yd is None else snap_yd
+def _nearest_tee_box(lat, lon, tees, snap_yd):
+    """(d, xy, poly, id) of the nearest OSM tee box within snap_yd of (lat, lon) (yds, the point at (0, 0)), or None."""
     kx, ky = math.cos(math.radians(lat)) * 111320 / 0.9144, 111320 / 0.9144
     best = None
     for t in tees:
@@ -557,6 +553,20 @@ def snap_to_tee_box(lat, lon, tees, snap_yd=None):
             poly, d = None, float(np.hypot(*xy.mean(0)))
         if d <= snap_yd and (best is None or d < best[0]):
             best = (d, xy, poly, t["id"])
+    return best
+
+
+def snap_to_tee_box(lat, lon, tees, snap_yd=None):
+    """(lat, lon, how) for an approximate review tee point and the OSM tee boxes [{id, coords [(lat, lon)]}].
+
+    Inside a box: the point stays (a long teeing ground holds several sets; hodge_park 3 had two review points
+    11-12 yds apart on one box both jump to its centroid). Else, within snap_yd of a box's outline (nearest box):
+    the point moves onto the box along its long axis (projected onto the axis through the centroid, clamped to the
+    box's extent along it), not to the centroid. A point box (OSM node): its position. None: no box near.
+    Whether the snapped point is used is review_tee_point's call (card yardage, boxes other sets hold)."""
+    snap_yd = OVERRIDE_SNAP_YD if snap_yd is None else snap_yd
+    kx, ky = math.cos(math.radians(lat)) * 111320 / 0.9144, 111320 / 0.9144
+    best = _nearest_tee_box(lat, lon, tees, snap_yd)
     if best is None:
         return None
     d, xy, poly, tid = best
@@ -574,10 +584,67 @@ def snap_to_tee_box(lat, lon, tees, snap_yd=None):
     return lat + q[1] / ky, lon + q[0] / kx, how
 
 
-def tee_overrides_for(req, set_key, card_sets, chosen, fc):
+SNAP_CARD_TOL_YD = 3.0        # a snapped review tee within this of the set's card yardage is always fine
+SNAP_WORSE_YD = 1.0           # ... onto a box another set holds: only if the card match is not worse than this
+OCCUPIED_YD = 3.0             # another set's tee this close to a box's outline holds that box
+
+
+def review_tee_point(lat, lon, tees, measure=None, card_yd=None, others=(), snap_yd=None):
+    """(lat, lon, how) for one review tee point: snap_to_tee_box, then the card check. The reviewer may put a
+    point off every box on purpose (la_nickell 5 Blue: 12 yds behind the White box, measuring the card's 325;
+    snapped onto White's box it measured 313). With measure (lon, lat -> yds along the hole, or None) and the set's
+    card yardage, the snapped point is used only when it measures closer to the card than the review point, or
+    within SNAP_CARD_TOL_YD of it; and never onto a box another set's tee holds (others [(lat, lon)], within
+    OCCUPIED_YD of its outline) when the card match gets worse by more than SNAP_WORSE_YD. Without a measure or a
+    card number the snap stands (the 11-02 rule). Kept points say why in `how`."""
+    snap_yd = OVERRIDE_SNAP_YD if snap_yd is None else snap_yd
+    snap = snap_to_tee_box(lat, lon, tees, snap_yd)
+    if snap is None:
+        return lat, lon, "review"
+    if "inside OSM tee" in snap[2] or measure is None or not card_yd:
+        return snap
+    l0, l1 = measure(lon, lat), measure(snap[1], snap[0])
+    if l0 is None or l1 is None:
+        return snap
+    e0, e1 = abs(l0 - card_yd), abs(l1 - card_yd)
+    held = False
+    best = _nearest_tee_box(lat, lon, tees, snap_yd)
+    if best is not None and best[2] is not None and others:
+        from shapely.geometry import Point as SPt
+        kx, ky = math.cos(math.radians(lat)) * 111320 / 0.9144, 111320 / 0.9144
+        held = any(best[2].distance(SPt((o[1] - lon) * kx, (o[0] - lat) * ky)) <= OCCUPIED_YD for o in others)
+    if e1 < e0 or (e1 <= SNAP_CARD_TOL_YD and not (held and e1 > e0 + SNAP_WORSE_YD)):
+        return snap
+    why = "another set's box, " if held else ""
+    return lat, lon, (f"review (kept: snap {snap[2][len('review ('):-1]} would measure {l1:.0f}, "
+                      f"{why}point {l0:.0f}, card {card_yd:.0f})")
+
+
+def review_measure(bh, world):
+    """(ref -> (lon, lat) -> playing yds from that tee point, as build_holes measures it; None when the hole has
+    no line in the world)."""
+    from shapely.geometry import Point as SPt
+    holes = {str(h["props"].get("ref")): h for h in (world.holes or [])}
+
+    def for_ref(ref):
+        h = holes.get(str(ref))
+        if h is None:
+            return None
+        g = bh.find_green(world, h["line"][-1])
+        gp = np.array(g["pt"].coords[0]) if g else h["line"][-1]
+
+        def m(lon, lat):
+            pt = np.array(world.proj(SPt(float(lon), float(lat))).coords[0])
+            return float(bh._tee_path(pt, h["line"], gp)[1])
+        return m
+    return for_ref
+
+
+def tee_overrides_for(req, set_key, card_sets, chosen, fc, measure=None, card=None, others=None):
     """{ref: (lon, lat, how)} for one built set from request tee_overrides {ref: {set: [lat, lon]}}; each point is
     kept when it is inside an OSM tee box, else moved onto the nearest box within OVERRIDE_SNAP_YD along the box's
-    long axis (snap_to_tee_box; the reviews give approximate points)."""
+    long axis when that does not take it off the card (review_tee_point). measure: ref -> (lon, lat) -> yds (or
+    None), card {ref: yds} for this set, others: ref -> [(lat, lon)] of the other sets' tees on that hole."""
     out = {}
     tees = None
     for ref, by in (req.get("tee_overrides") or {}).items():
@@ -587,12 +654,28 @@ def tee_overrides_for(req, set_key, card_sets, chosen, fc):
             lat, lon = float(ll[0]), float(ll[1])
             if tees is None:
                 tees = osm_tee_inputs(fc)[1]
-            snap = snap_to_tee_box(lat, lon, tees)
-            if snap:
-                out[str(ref)] = (float(snap[1]), float(snap[0]), snap[2])
-            else:
-                out[str(ref)] = (lon, lat, "review")
+            m = measure(str(ref)) if measure else None
+            pt = review_tee_point(lat, lon, tees, m, (card or {}).get(str(ref)),
+                                  (others(str(ref)) if others else ()) or ())
+            out[str(ref)] = (float(pt[1]), float(pt[0]), pt[2])
     return out
+
+
+def review_others(req, set_key, card_sets, chosen, joint):
+    """ref -> [(lat, lon)]: the other sets' tees on a hole (their review point when the review names one, else the
+    tee stage's point), for review_tee_point's occupied-box check."""
+    def f(ref):
+        pts, named = [], set()
+        for name, ll in ((req.get("tee_overrides") or {}).get(ref) or {}).items():
+            s = override_set(name, card_sets, chosen)
+            if s != set_key and ll and len(ll) >= 2:
+                pts.append((float(ll[0]), float(ll[1])))
+                named.add(s)
+        for s, r in ((((joint or {}).get("holes") or {}).get(ref) or {}).get("tees") or {}).items():
+            if s != set_key and s not in named and r.get("lat") is not None:
+                pts.append((float(r["lat"]), float(r["lon"])))
+        return pts
+    return f
 
 
 def with_tee_overrides(tp, set_key, ov):
@@ -1460,7 +1543,10 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
     for s in (card_sets or {None: None}):
         hc = per_hole_card.get(s, {})
         tp = joint if (s and hc and joint) else (place_tees(fc, hc, s, card_sets[s].get("colour")) if (s and hc) else None)
-        ov = tee_overrides_for(req, s, card_sets, chosen, fc) if req.get("tee_overrides") else {}
+        ov = tee_overrides_for(req, s, card_sets, chosen, fc, measure=review_measure(bh, world),
+                               card={r: float(c["yards"]) for r, c in hc.items() if c.get("yards")},
+                               others=review_others(req, s, card_sets, chosen, joint)) \
+            if req.get("tee_overrides") else {}
         if ov:
             tp = with_tee_overrides(tp, s, ov)
             stages["tee_overrides"] = (stages.get("tee_overrides") or "ok:") + f" {s or 'osm_back'} " + ", ".join(
