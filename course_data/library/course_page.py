@@ -789,8 +789,11 @@ def course_gate(pkg, checks, qa, cfg):
     n = len(pkg.get("holes") or {})
     if (pl.get("holes") or {}).get("method") != "osm":
         reasons.append(f"holes not all mapped in OSM (hole method: {(pl.get('holes') or {}).get('method')})")
-    if (prof.get("osm_greens") or 0) < n:
-        reasons.append(f"OSM greens {prof.get('osm_greens')} of {n} holes")
+    mapped = sum(1 for h in (pkg.get("holes") or {}).values() if h.get("green_polygon_ll") and str(
+        (h.get("provenance") or {}).get("green", "")).startswith(("osm", "review", "agent")))
+    if (prof.get("osm_greens") or 0) < n and mapped < n:
+        reasons.append(f"OSM greens {prof.get('osm_greens')} of {n} holes"
+                       + (f" (mapped incl. the mapper's: {mapped})" if mapped > (prof.get("osm_greens") or 0) else ""))
     sc = pkg.get("scorecard") or {}
     card_ok = bool(prof.get("card")) and sc.get("kind") not in (None, "none", "typed") and not sc.get("flags")
     if not card_ok:

@@ -29,6 +29,14 @@ LAYER_OF = {"fairway": "fairway", "first_cut": "fairway", "recovery": "trees", "
             "water": "water", "sand": "bunkers", "ob": "ob"}
 LAYERS = ("fairway", "trees", "long_grass", "water", "ob", "bunkers")
 OPS = ("add", "erase", "grow")
+# green edits (any hole, any par; BRIEF "Greens"): a window of +/-GREEN_WIN yds around the package green in the
+# hole's green frame (par 3: the corridor-set tee -> green, the tee sheet's frame; par 4/5: the hole-line point
+# GREEN_APPROACH yds before its end -> green), so x = yds right of the line of approach, along = yds from the frame
+# origin (the green sits at `green_along`)
+GREEN_WIN = 60.0
+GREEN_APPROACH = 100.0
+GREEN_AREA = (150.0, 2500.0)      # sq yds: a drawn green outside this is refused (a typo / a whole complex)
+GREEN_TYPICAL = (300.0, 1300.0)   # outside this: listed under Checks
 CONF = ("high", "medium", "low")
 SRC = "agent:mapper"
 
@@ -140,6 +148,60 @@ def make_frames(pkg, st):
                         tee_ll=tee, aim_ll=aim, green_ll=h.get("green_ll"), tee_method=t.get("method"),
                         tee_conf=t.get("confidence"), measured=t.get("measured_yards"), frame=fr.to_json())
     return out
+
+
+def _line_back(line_ll, green_ll, yds):
+    """The point `yds` back from the green along the hole line (walked from its end), else the line's start."""
+    import corridor as C
+    if not line_ll or len(line_ll) < 2:
+        return None
+    fr = C.corridor_frame(line_ll[0], green_ll, 1.0)
+    xy = fr.ll_to_yds(np.asarray([p[:2] for p in line_ll] + [green_ll], float))
+    pts = [xy[-1]]
+    for q in xy[-2::-1]:
+        if np.hypot(*(q - pts[-1])) > 0.5:
+            pts.append(q)
+    acc = 0.0
+    for a, b in zip(pts, pts[1:]):
+        d = float(np.hypot(*(b - a)))
+        if acc + d >= yds:
+            t = (yds - acc) / d
+            return fr.yds_to_ll(np.array([a + t * (b - a)]))[0].tolist()
+        acc += d
+    return [float(v) for v in line_ll[0][:2]]
+
+
+def green_frames(pkg, st):
+    """{ref: {ref, par, set, kind, frame, green_along, window {a0, a1, lat}, green_src}} for every hole with a green:
+    the frame a green edit is drawn in (par 3: corridor-set tee -> green; par 4/5: GREEN_APPROACH yds back along the
+    hole line -> green)."""
+    out = {}
+    for ref, h in sorted(pkg["holes"].items(), key=lambda kv: hole_key(kv[0])):
+        g = h.get("green_ll")
+        if not g:
+            continue
+        t = (h.get("tees") or {}).get(st) or {}
+        tee = t.get("tee_ll") or h.get("tee_ll")
+        par = int(h.get("par") or 0)
+        org, kind = None, "tee"
+        if par >= 4:
+            org, kind = _line_back(h.get("hole_line_ll"), g, GREEN_APPROACH), "approach"
+        if org is None or yd_between(org, g) < 20:
+            org, kind = tee, "tee"
+        if not org:
+            continue
+        fr = corridor_frame(org, g, 1.0)
+        ga = float(-fr.ll_to_yds(np.asarray([g], float))[0][1])
+        out[ref] = dict(ref=ref, par=par, set=st, kind=kind, frame=fr.to_json(), green_along=round(ga, 1),
+                        window=dict(a0=round(ga - GREEN_WIN, 1), a1=round(ga + GREEN_WIN, 1), lat=GREEN_WIN),
+                        green_src=(h.get("provenance") or {}).get("green"))
+    return out
+
+
+def has_mapped_green(h):
+    """The hole has a green outline someone mapped (OSM, a review, the mapper), not an estimate."""
+    src = str((h.get("provenance") or {}).get("green") or "")
+    return bool(h.get("green_polygon_ll")) and (src.startswith("osm") or src.startswith("review") or src.startswith("agent"))
 
 
 def frames(slug):

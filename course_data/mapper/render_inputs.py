@@ -17,6 +17,9 @@ Writes course_data/mapper/<slug>/:
     hNN_corridor_a.png          [photo + AUTO layers (filled, numbered)] [bare photo] [second NAIP year]
     hNN_corridor_b.png          [lidar canopy + AUTO tree outlines] [CIR + lidar edge] [third NAIP year | DEM hillshade]
     hNN_tees.png                tee complex: [photo + every set's auto tee + OSM tee boxes] [DEM hillshade] [2nd year]
+    hNN_green.png               holes without a mapped green: [photo + package green (dashed magenta = the assumed
+                                24-yd circle) + detector suggestion (yellow) + auto sand / water] [CIR] [2nd year]
+                                [DEM hillshade], +/-60 yds in the hole's green frame (frames.json green_frames)
     hNN_corridor_s2.png         Sentinel-2 native suggestion: [S2 native P (10 m) over the photo, 0.5 contour, AUTO
                                 fairway outline] [photo + "S2 suggested native" candidates, ids] [same on 2nd year]
 S2 (course_data/mapper/s2_suggest.py, vision_any/s2/native_model.py): LOCO-safe native P (a course in the S2
@@ -298,6 +301,63 @@ def tee_sheet(slug, ref, fj, h, S, boxes, out):
     return len(P)
 
 
+GREEN_PPY = 5.0
+
+
+def green_outline_xy(gf, h):
+    """The package green in the green frame: its polygon, else the 24-yd round green the page assumes."""
+    if h.get("green_polygon_ll") and len(h["green_polygon_ll"]) >= 3:
+        return M.ll_to_xy(gf, h["green_polygon_ll"]), True
+    t = np.linspace(0, 2 * np.pi, 24, endpoint=False)
+    return np.c_[12 * np.cos(t), gf["green_along"] + 12 * np.sin(t)], False
+
+
+def green_sheet(slug, ref, gf, h, S, out, drawn=None, suggested=None, name="green"):
+    """hNN_green.png: [photo + package green (magenta; dashed = the assumed 24-yd circle) + auto sand / water +
+    the detector's suggestion (yellow)] [CIR] [2nd NAIP year] [DEM hillshade], +/-GREEN_WIN yds around the package
+    green in the hole's green frame, 10-yd grid; drawn = a mapper green (cyan) for the review render."""
+    import cv2
+    w = gf["window"]
+    a0, a1, lat = w["a0"], w["a1"], w["lat"]
+    fr = C.corridor_frame(gf["frame"]["tee_ll"], gf["frame"]["aim_ll"], GREEN_PPY, a0=a0, a1=a1, lat=lat)
+    rgb = S["photo"].warp(fr)
+    photo = C._u8(rgb)
+
+    def px(xy):
+        xy = np.asarray(xy, float).reshape(-1, 2)
+        return np.round(np.c_[(xy[:, 0] + lat) * GREEN_PPY, (a1 - xy[:, 1]) * GREEN_PPY] * 8).astype(np.int32)
+
+    def outlines(img):
+        img = img.copy()
+        gxy, real = green_outline_xy(gf, h)
+        if real:
+            cv2.polylines(img, [px(gxy)], True, (255, 0, 255), 2, shift=3)
+        else:
+            q = px(gxy)
+            for i in range(0, len(q), 2):
+                cv2.line(img, tuple(q[i]), tuple(q[(i + 1) % len(q)]), (255, 0, 255), 2, shift=3)
+        if suggested is not None and len(suggested) >= 3:
+            cv2.polylines(img, [px(suggested)], True, (255, 230, 0), 2, shift=3)
+        if drawn is not None and len(drawn) >= 3:
+            cv2.polylines(img, [px(drawn)], True, (0, 0, 0), 4, shift=3)
+            cv2.polylines(img, [px(drawn)], True, (0, 255, 255), 2, shift=3)
+        return img
+    zl = [dict(lie=z["lie"], xy=z["xy"]) for z in M.auto_zones_xy(dict(gf), h, ("sand", "water"))]
+    head = (f"{slug} {ref} par {gf.get('par')} green ({gf['kind']} frame; package green "
+            f"{(h.get('provenance') or {}).get('green')} at [0, {gf['green_along']:g}])")
+    P = [C.title(gridw(outlines(draw(photo, fr, zl, a1, lat, fill=False)), fr, a0, a1, lat), head, 0.38),
+         C.title(gridw(photo, fr, a0, a1, lat), "bare photo", 0.4)]
+    if "nir" in S:
+        P.append(C.title(gridw(outlines(C.cir(S, fr, rgb)), fr, a0, a1, lat), "CIR (NIR,R,G): greens bright red, sand white", 0.4))
+    ys, _ = other_years(S)
+    if ys:
+        P.append(C.title(gridw(outlines(C._u8(S[ys[0]].warp(fr)[..., :3])), fr, a0, a1, lat), f"{S[ys[0]].label}", 0.4))
+    if "dem" in S:
+        P.append(C.title(gridw(hillshade(S["dem"], fr), fr, a0, a1, lat), "DEM hillshade: greens are smooth pads", 0.4))
+    C.save(os.path.join(out, f"h{int(ref):02d}_{name}.png"), C.stack(P, min(3, len(P))))
+    return len(P)
+
+
 # ----------------------------------------------------------------------------- summary files
 def landing_areas(fj, h):
     """sq yds per lie of the AUTO map in the landing zone (180-330 yds, +/-50), visible lie (later wins)."""
@@ -318,7 +378,7 @@ def landing_areas(fj, h):
     return {k: int(round(v)) for k, v in out.items() if v >= 1}
 
 
-def write_summary(slug, pkg, FJ, S, pg=None, CANDS=None):
+def write_summary(slug, pkg, FJ, S, pg=None, CANDS=None, GF=None):
     st = next(iter(FJ.values()))["set"] if FJ else pkg.get("tee_set")
     ys, py = other_years(S)
     L = [f"# Mapper inputs: {pkg['course']['name']} ({pkg['course'].get('town')}, {pkg['course'].get('state')})", "",
@@ -344,6 +404,17 @@ def write_summary(slug, pkg, FJ, S, pg=None, CANDS=None):
                  f"{', '.join(f'{k} {v}' for k, v in sorted(ar.items())) or 'all rough'} | "
                  f"{s2_cell(CANDS, ref, pg)} |")
     L += ["", "Par 3s are not corridors (their tees are still checked in edits.json `tees`)."]
+    nog = [(ref, h) for ref, h in sorted(pkg["holes"].items(), key=lambda kv: M.hole_key(kv[0]))
+           if ref in (GF or {}) and not M.has_mapped_green(h)]
+    if nog:
+        L += ["", f"## Greens to draw ({len(nog)} of {len(pkg['holes'])} holes have no mapped green)", "",
+              "The package green on these holes is an estimate (the hole-line end with a 24-yd round green, or the "
+              "imagery detector's outline): draw the putting surface (BRIEF 'Greens'; `render/hNN_green.png`).", "",
+              "| hole | par | frame | package green | green at [x, along] | window along |", "|---|---|---|---|---|---|"]
+        for ref, h in nog:
+            gf = GF[ref]
+            L.append(f"| {ref} | {gf['par']} | {gf['kind']} | {(h.get('provenance') or {}).get('green')} | "
+                     f"[0, {gf['green_along']:g}] | {gf['window']['a0']:g}-{gf['window']['a1']:g} |")
     open(M.mdir(slug, "inputs.md"), "w").write("\n".join(L) + "\n")
 
 
@@ -354,7 +425,17 @@ def s2_cell(CANDS, ref, pg):
     return ", ".join(f"{c['id'].split('-')[-1]}: {c['area_yd2']}, {c['gap_yd']}" for c in cs) or "none"
 
 
-def template(slug, pkg, FJ, CANDS=None):
+def suggested_green_xy(gf, h):
+    """The imagery detector's green (green_auto.py) for a hole without a mapped green, in the green frame, or None."""
+    cand = h.get("green_detected") or {}
+    if cand.get("poly_ll") and len(cand["poly_ll"]) >= 3:
+        return M.ll_to_xy(gf, cand["poly_ll"])
+    if h.get("green_polygon_ll") and str((h.get("provenance") or {}).get("green", "")).startswith("detector"):
+        return M.ll_to_xy(gf, h["green_polygon_ll"])
+    return None
+
+
+def template(slug, pkg, FJ, CANDS=None, GF=None):
     holes, tees = {}, {}
     for ref, h in sorted(pkg["holes"].items(), key=lambda kv: M.hole_key(kv[0])):
         if ref in FJ:
@@ -372,6 +453,14 @@ def template(slug, pkg, FJ, CANDS=None):
                   "10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in "
                   "`edits`, e.g. the traced edge); undecided ones are listed in review.md." if CANDS is not None else ""),
              holes=holes, tees=tees)
+    greens = {ref: dict(action="", shape=None, confidence="", evidence="")
+              for ref, h in sorted(pkg["holes"].items(), key=lambda kv: M.hole_key(kv[0]))
+              if ref in (GF or {}) and not M.has_mapped_green(h)}
+    if greens:
+        d["greens"] = greens
+        d["doc"] += (" greens: every hole without a mapped green (render/hNN_green.png): action 'draw' with the "
+                     "putting surface as a shape in that hole's green frame (frames.json green_frames; the package "
+                     "green sits at [0, green_along]) + confidence + evidence, or 'keep' when you cannot see it.")
     M.wj(M.mdir(slug, "edits.template.json"), d)
 
 
@@ -395,12 +484,15 @@ def run(slug, st=None, holes=None, rebuild="auto", course_map=True, fresh=False,
     st = M.tee_set_of(pkg, st)
     FJ = M.make_frames(pkg, st)
     TF = tee_frames(pkg, st, FJ)
+    GF = M.green_frames(pkg, st)
     M.wj(M.mdir(slug, "frames.json"), dict(
         slug=slug, set=st, window=M.WIN, base_package=os.path.relpath(M.mdir(slug, "base", "package.json"), M.ROOT),
         base_built=pkg.get("built"), doc="(x, along) yds: x right of the tee line, along from the corridor-set tee "
                                          "towards the package aim point (render.Frame UTM, 1 px = 1 yd); tee_frames: "
-                                         "the frame of every hole's tee sheet (par 3s: tee -> green)", holes=FJ,
-        tee_frames=TF))
+                                         "the frame of every hole's tee sheet (par 3s: tee -> green); green_frames: "
+                                         "the frame of every hole's green sheet (par 3: tee -> green; par 4/5: "
+                                         f"{M.GREEN_APPROACH:g} yds back along the hole line -> green)", holes=FJ,
+        tee_frames=TF, green_frames=GF))
     S = M.sources(slug)
     if "photo" not in S:
         raise SystemExit(f"{slug}: no course_data/packages/{slug}/imagery/naip_rgb.tif (the package request must "
@@ -428,10 +520,12 @@ def run(slug, st=None, holes=None, rebuild="auto", course_map=True, fresh=False,
             if pg is not None:
                 n += s2_sheet(slug, ref, fj, h, S, pg, CANDS[ref], out)
         n += tee_sheet(slug, ref, fj, h, S, boxes, out)
+        if ref in GF and not M.has_mapped_green(h):
+            n += green_sheet(slug, ref, GF[ref], h, S, out, suggested=suggested_green_xy(GF[ref], h))
         M.log(f"  {ref}: {n} panels")
-    write_summary(slug, pkg, FJ, S, pg, CANDS)
+    write_summary(slug, pkg, FJ, S, pg, CANDS, GF)
     if not os.path.exists(M.mdir(slug, "edits.json")):
-        template(slug, pkg, FJ, CANDS)
+        template(slug, pkg, FJ, CANDS, GF)
     M.log(f"-> {os.path.relpath(M.mdir(slug), M.ROOT)}/ (inputs.md, frames.json, edits.template.json, render/)")
 
 

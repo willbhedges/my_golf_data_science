@@ -17,8 +17,9 @@ calm-day decisions, the package it was built from):
              in the model). Until 2026-11-03 this was an ellipse from the golfer's raw numbers (65 x 28 + ROLL_SPREAD
              6 yds) centred on the calm total: ~4 yds too narrow, 15-20 yds too shallow on the short side and ~11 yds
              long of where the model's shots finish.
-  par3 box   par 3s: the calm target box (yardage_book.par3_plan, what the page draws) has its centre on the OSM
-             green polygon and at least BOX_ON of its area on it; no OSM green outline is a CHECK
+  par3 box   par 3s: the calm target box (yardage_book.par3_plan, what the page draws) has its centre on the mapped
+             green polygon (OSM, a review or the mapper agent's green edit) and at least BOX_ON of its area on it; no
+             mapped outline (the hole-line-end estimate or an imagery-detected green) is a CHECK
 A hole is PASS when every check passes, else CHECK with the reasons.
 """
 import argparse
@@ -39,6 +40,7 @@ YARD_TOL = 10.0
 FIRST_CUT = 6.0
 OVAL_MAX = 0.40
 BOX_ON = 0.6
+MAPPED_GREEN = ("osm", "review", "agent")    # provenance.green of an outline someone mapped (OSM, a review, the mapper)
 PATTERN_SWINGS = 6000
 YD = 0.9144
 
@@ -153,9 +155,13 @@ def main():
                         why=f"par {h.get('par')} vs card {cp}" if cp is not None else "no card par")
         if k in course.PAR3:
             p = course.PAR3[k]
-            outline = bool(h.get("green_polygon_ll")) and str((h.get("provenance") or {}).get("green", "")).startswith("osm")
+            gsrc = str((h.get("provenance") or {}).get("green", ""))
+            outline = bool(h.get("green_polygon_ll")) and gsrc.startswith(MAPPED_GREEN)
             if not outline:
-                C["par3_box"] = dict(ok=False, why="no OSM green outline (the target box is drawn on an estimated green)")
+                C["par3_box"] = dict(ok=False, why=(
+                    "green outline from the imagery detector, not mapped (the target box is drawn on a detected green)"
+                    if h.get("green_polygon_ll") and gsrc.startswith("detector") else
+                    "no OSM green outline (the target box is drawn on an estimated green)"))
             else:
                 import yardage_book as yb
                 yb.WIND_NOW = 0

@@ -2,7 +2,10 @@
 
 Product decision (user-approved): the layers the automatic build is bad at (long grass, tree edges, OB, water,
 fairway sides, the back tee on long complexes) are reviewed and marked by ONE Claude agent per course, looking at the
-course imagery the way the hand-truth agents did. Routing, greens, the card and the decision maths stay automatic.
+course imagery the way the hand-truth agents did. Routing, the card and the decision maths stay automatic; greens
+too where OSM maps them. Where OSM has no green for a hole (national tier C / D, e.g. Old Works: 0 of 18) the
+mapper draws it (step 3b): otherwise the page assumes a 24-yd round green at the hole line's end and every par-3
+target box and approach aim sits on that guess.
 
 Flow: course requested -> package built (with vision) -> coordinator spawns one mapper agent with the brief below
 -> the agent writes `course_data/mapper/<slug>/` -> the page is built from package + agent layers
@@ -92,7 +95,8 @@ Writes `course_data/mapper/$S/`: `inputs.md` (per hole: card, auto tee method, t
 `hNN_corridor_b.png` (lidar canopy + auto tree outlines | CIR + lidar edge | 3rd year or DEM hillshade),
 `hNN_tees.png` (every set's auto tee, OSM tee boxes, DEM hillshade, other year), and when the course has a Sentinel-2
 stack `hNN_corridor_s2.png` (S2 native probability over the photo | "S2 suggested native" candidates on the photo |
-the same on the 2nd year; see "S2 suggestions" below). Look at images with the Read tool.
+the same on the 2nd year; see "S2 suggestions" below), and for every hole without a mapped green `hNN_green.png`
+(step 3b). Look at images with the Read tool.
 For a closer look at an edge, crop: `python3 -c "from PIL import Image; im=Image.open('...'); im.crop((x0,y0,x1,y1)).resize(...).save('/tmp/...')"`.
 
 **Coordinates.** Each corridor panel has a 10-yd grid: `x` = yards right (+) / left (-) of the tee line (magenta 0
@@ -232,6 +236,32 @@ centre with evidence ("separate box 18 yds behind, on the line; card 463 vs auto
 or split complexes is the usual miss: the card sits 6-20 yds behind the mapped box. Never move to a spot with no
 box; never move more than ~60 yds without saying why. Par 3 tees are checked the same way.
 
+## 3b. Greens, only where OSM has none (~1 min per green)
+
+`inputs.md` "Greens to draw" lists every hole whose package green is not mapped (provenance `hole_line_end`: the
+hole line's end with an assumed 24-yd round green, or `detector:green_auto`: the imagery detector's outline);
+each has `render/hNN_green.png`: +/-60 yds around the package green in the hole's **green frame** (par 3: the
+corridor-set tee -> green, the tee sheet's frame; par 4/5: the point 100 yds back along the hole line -> green;
+`frames.json` `green_frames`, the package green at `[0, green_along]`, 10-yd grid). Panels: photo with the
+package green (magenta; dashed = the assumed circle), the detector's green when there is one (yellow), auto sand
+and water | bare photo | CIR | 2nd year | DEM hillshade. A green is the smooth, uniform putting surface (bright
+red in CIR, no mowing stripes of a fairway, often a slightly different shade from the collar), usually 400-900
+sq yds, at the end of the hole, often ringed by bunkers, a flat-topped pad on the hillshade. Draw the putting
+surface (not the collar or the whole complex) as a `poly` (best) or `ell` `[cx, ca, rx, ra]`; check the second
+year (a green does not move between years; a dark circle in one year only is not a green). Per hole in
+`edits.json` `greens` (from the template):
+
+* `{"action": "draw", "shape": {"poly": [[x, along], ...]}, "confidence": "high", "evidence": "smooth bright-red
+  CIR oval, 2 bunkers left, same on 2023"}`: the green becomes your polygon; its centre is the flag the par-3 box
+  and every approach aim use, the tee lengths are re-measured to it.
+* `{"action": "accept", "confidence": ..., "evidence": ...}`: the detector's yellow outline is right as drawn.
+* `{"action": "keep", "evidence": "..."}`: you cannot see the green (shadow, construction): the estimate stays.
+
+`write_layers.py` refuses a green outside its window or outside 150-2500 sq yds, lists one outside 300-1300 sq
+yds and every hole without a verdict under "Checks", and writes `render/hNN_green_review.png` (package green
+magenta, yours cyan) and a "Greens" table in `review.md` (sq yds, centre moved, length after vs card). A drawn
+green on a hole that OSM maps is listed too: only redraw a mapped green that is visibly wrong.
+
 ## 4. Write edits.json
 
 Copy `edits.template.json` to `edits.json` and fill it in:
@@ -251,6 +281,8 @@ Copy `edits.template.json` to `edits.json` and fill it in:
     "confidence": "medium", "evidence": "crown edge 4-6 yds beyond the auto outline on the right"},
    {"op": "erase", "lie": "ob", "shape": {"rect": [-70, -40, 120, 400]}, "evidence": "woods, no houses"},
    {"op": "add", "lie": "recovery", "shape": {"ell": [-22, 265, 6, 6]}, "evidence": "single oak, both years"}]}},
+ "greens": {"7": {"action": "draw", "shape": {"poly": [[-12, 171], [10, 168], [14, 186], [-8, 192]]},
+                 "confidence": "high", "evidence": "smooth CIR-red pad, bunker front left, same on 2023"}},
  "tees": {"4": {"Black": {"action": "move", "to": [1, -16], "confidence": "medium",
                           "evidence": "box visible 16 yds behind on the line; card 463, auto at 447"},
                 "Blue": {"action": "keep"}}},
@@ -295,7 +327,7 @@ Commit only: `course_data/mapper/$S/{edits.json,agent_zones.geojson,agent_tees.j
 edits.template.json,base/package.json}` (+ `plan.json`, `PLAN.md` if you ran build_plan). `render/` and `out/` are
 not committed (.gitignore). Push loop as in AGENT_RULES.md, then remove the worktree.
 
-Report (short): minutes spent; per layer what you changed (holes, sq yds, tee moves with yards); holes you could not
+Report (short): minutes spent; per layer what you changed (holes, sq yds, tee moves with yards, greens drawn); holes you could not
 judge and why (missing year / lidar, shadows, renovation); your confidence per layer; the commit.
 
 ---8<--- end of brief ---8<---
@@ -307,8 +339,9 @@ judge and why (missing year / lidar, shadows, renovation); your confidence per l
 | `render_inputs.py` | base package (+ offline lidar trees / tee rule when stale), frames, course map, corridor / tee / S2 sheets, `inputs.md`, template (with `s2_suggested`) |
 | `s2_suggest.py` | S2 native P in a corridor frame, candidate shapes per side, template block, `decision` -> `add native` (used by render_inputs / write_layers) |
 | `vision_any/s2/native_model.py`, `native_model/` | the 23-course S2 native model: `loco/<slug>.npz` fold grids (P of the model trained without that course), `full_model.txt` for new courses; `export` (evaluator) re-makes them from the s2_loco datasets |
-| `write_layers.py` | `edits.json` (yard frame) -> `agent_zones.geojson` + `agent_tees.json` (WGS84), `review.md`, review renders |
-| `apply.py` | apply the agent layers to any package, layer by layer (erase / add / grow per lie, tee moves with aim / length / elevation re-derived, `reframe`), recorded in `package.agent_layers`, `stages.agent_layers`, `holes[].provenance.agent` |
+| `write_layers.py` | `edits.json` (yard frame) -> `agent_zones.geojson` + `agent_tees.json` (WGS84), `review.md`, review renders; `greens` -> op "green" features (any hole / par, green frames) |
+| `apply.py` | apply the agent layers to any package, layer by layer (erase / add / grow per lie, `green_op`: a drawn green replaces the package green, provenance.green `agent:mapper`; tee moves with aim / length / elevation re-derived, `reframe`), recorded in `package.agent_layers`, `stages.agent_layers`, `holes[].provenance.agent` |
+| `product/green_auto.py` | the imagery green detector (package stage S4g, holes with only the estimated green); its outline is the yellow suggestion on `hNN_green.png` (`product/EVAL_green_auto.md`) |
 | `build_plan.py` | quick decision on AUTO and AUTO + AGENT -> `plan.json`, `PLAN.md` |
 | `eval_mapper.py` | error budget AUTO vs AUTO + AGENT vs truth (per course, pooled, per layer area, tee error) -> `eval_<set>.json`, `EVAL_<set>.md` (never shown to a mapper) |
 | `EVAL_BLIND.md` | evaluator's analysis of the first blind runs (why the agent layers helped / hurt; where the brief's rules come from). Truth-bearing: never shown to a mapper |

@@ -46,6 +46,12 @@ Pipeline (ARCHITECTURE.md stages; every stage is the existing team module, impor
           landing corridor after OSM + segment: NAIP mown-turf LDA self-supervised on the hole lines (no OSM fairway
           used), course gate d' >= MIN_DPRIME, per-hole cover / width / share gates; src "fairway_fill:naip",
           stages.fairway_fill; request "fairway_fill": false turns it off
+  S4g     course_data/product/green_auto.py:build_layer(slug, package) (call_green_auto): holes whose green is only
+          the hole-line-end estimate (no OSM / review / segment green) get the imagery detector's green (NAIP + CIR
+          texture / colour, lidar HAG, DEM; leave-one-course-out in product/EVAL_green_auto.md) when its score
+          clears the calibrated threshold: outline + centre (par-3 box, approach aims), provenance.green
+          "detector:green_auto", hole.green_detected (every detection, used or not), stages.green_auto. Request
+          "green_auto": false turns it off; a mapper green (S5) replaces it. Never fails the build
   S4c     course_data/ob/infer.py:apply_ob(package) when the course's OB evidence is fetched (call_ob)
   S4b     course_data/segment/gapfill.py:segment_gapfill(package, segment.geojson) when the segment workflow
           has run for the slug (requests/segment_<slug>.json): NAIP U-Net fairway / bunker / green + NIR water
@@ -1775,6 +1781,7 @@ def build_package(req, pkg_dir, render=False, gapfill=True):
         package = reframe(package)
     else:
         stages["vision"] = "not run (gapfill=False)"
+    package = call_green_auto(req, package, warnings)
     package = call_ob(package, warnings)
     package = call_native_auto(req, package, warnings)
     package = apply_agent_layers(req, package, warnings)
@@ -1909,9 +1916,11 @@ def finish(package):
     for k, h in package["holes"].items():
         src = h.get("zone_src") or ["osm"] * len(h["zones"])
         h_osm = dict(h, zones=[z for z, s_ in zip(h["zones"], src) if str(s_).startswith("osm")])
-        hh = dict(h, has_green_polygon=h["provenance"]["green"] == "osm_green")
+        gsrc = str(h["provenance"].get("green") or "")
+        hh = dict(h, has_green_polygon=bool(h.get("green_polygon_ll")) and (
+            gsrc == "osm_green" or gsrc.startswith("review") or gsrc.startswith("agent")))
         if not hh["has_green_polygon"]:
-            hh["green_from"] = "hole_line_end"
+            hh["green_from"] = "detector" if (h.get("green_polygon_ll") and gsrc.startswith("detector")) else "hole_line_end"
         card = dict(par=h["par"] if str(h["provenance"]["par"]).startswith("card") else None,
                     yards=h["length"] if str(h["provenance"]["length"]).startswith("card") else None)
         c = pl.confidence(hh, h_osm, {"par": h["par"]} if h["provenance"]["par"] == "osm" else {}, card, k)
@@ -2068,6 +2077,34 @@ def call_native_auto(req, package, warnings=None):
         out = package
         out["stages"]["native_auto"] = f"none: {info.get('why')}"[:300]
     out["native_auto"] = rec
+    if out.get("warnings") is not warnings:
+        out["warnings"] = warnings
+    return out
+
+
+def call_green_auto(req, package, warnings=None):
+    """S4g: automatic greens (course_data/product/green_auto.py build_layer) for the holes whose green is only the
+    hole-line-end estimate. Never fails the build: problems go to stages + warnings."""
+    warnings = package.setdefault("warnings", []) if warnings is None else warnings
+    stages = package.setdefault("stages", {})
+    if (req or {}).get("green_auto") is False:
+        stages["green_auto"] = "off: request says \"green_auto\": false"
+        return package
+    if not any(str((h.get("provenance") or {}).get("green", "")) == "hole_line_end" for h in package["holes"].values()):
+        stages["green_auto"] = "not needed: every hole has a mapped green"
+        return package
+    mod = load(os.path.join(CD, "product", "green_auto.py"), "cdp_green_auto")
+    if mod is None:
+        stages["green_auto"] = "missing (course_data/product/green_auto.py not importable)"
+        return package
+    slug = package.get("slug") or (package.get("course") or {}).get("slug") or (req or {}).get("slug")
+    try:
+        out, info = mod.build_layer(slug, package)
+    except Exception as e:                                       # noqa: BLE001
+        stages["green_auto"] = f"failed: {type(e).__name__}: {e}"[:300]
+        warnings.append(f"green_auto not applied: {stages['green_auto']}")
+        return package
+    out.setdefault("stages", {})["green_auto"] = str(info.get("status"))[:400]
     if out.get("warnings") is not warnings:
         out["warnings"] = warnings
     return out

@@ -318,3 +318,112 @@ def test_s2_native_model_is_loco_safe():
     assert np.nanmax(r["p"]) <= 1.0 and np.nanmin(r["p"]) >= 0.0
     assert NM.p_grid("no_such_course_xyz") is None
     assert NM._decode(NM._encode(np.array([0.0, 0.5, 1.0, np.nan]))).tolist()[:3] == [0.0, 0.5, 1.0]
+
+
+# ---- greens (any hole, any par): a mapper green replaces the assumed green
+def _no_green(h):
+    """An OSM-greenless hole as the build makes it: green at the hole-line end, no outline."""
+    h = copy.deepcopy(h)
+    h["green_ll"] = [float(v) for v in h["hole_line_ll"][-1][:2]]
+    h["green_polygon_ll"] = h["green_polygon"] = None
+    h["provenance"]["green"] = "hole_line_end"
+    h.pop("green_visibility", None)
+    return h
+
+
+@pytest.fixture(scope="module")
+def gpkg():
+    p = json.load(open(PKG))
+    p["holes"] = {k: _no_green(v) for k, v in p["holes"].items() if k in ("2", "4")}     # par 4 + par 3
+    return p
+
+
+def test_green_frames(gpkg):
+    GF = M.green_frames(gpkg, gpkg["tee_set"])
+    assert GF["4"]["kind"] == "tee" and GF["2"]["kind"] == "approach"
+    t = gpkg["holes"]["4"]["tees"][gpkg["tee_set"]]["tee_ll"]
+    assert abs(GF["4"]["green_along"] - M.yd_between(t, gpkg["holes"]["4"]["green_ll"])) < 1.0
+    assert 60 <= GF["2"]["green_along"] <= M.GREEN_APPROACH + 0.5
+    for ref, gf in GF.items():                     # the package green sits at [0, green_along]
+        xy = M.ll_to_xy(gf, [gpkg["holes"][ref]["green_ll"]])[0]
+        assert abs(xy[0]) < 0.05 and abs(xy[1] - gf["green_along"]) < 0.05
+        assert gf["window"]["a0"] == round(gf["green_along"] - M.GREEN_WIN, 1)
+
+
+def test_green_edit_replaces_assumed_green(gpkg, tmp_path):
+    """A drawn green on a par 3 and a par 4: new outline + centre, provenance agent, the par-3 box on it, lengths
+    re-measured, no 'hole-line end' flag; product/package draws the par-3 box on it (no 24-yd assumption)."""
+    import write_layers as WL
+    GF = M.green_frames(gpkg, gpkg["tee_set"])
+    FJ = M.make_frames(gpkg, gpkg["tee_set"])
+    g4, g2 = GF["4"]["green_along"], GF["2"]["green_along"]
+    ed = dict(greens={"4": dict(action="draw", shape={"ell": [8, g4 + 6, 13, 10]}, confidence="high",
+                                evidence="smooth bright-red CIR oval ringed by sand"),
+                      "2": dict(action="draw", shape={"ell": [-5, g2 - 4, 12, 15]}, confidence="medium", evidence="x")})
+    feats, tees, rev, probs = WL.build("t", ed, gpkg, FJ, FJ, GF)
+    gf = [f for f in feats if f["properties"]["op"] == "green"]
+    assert len(gf) == 2 and rev["greens"]["4"]["action"] == "draw"
+    assert abs(rev["greens"]["4"]["moved_yd"] - 10.0) < 0.5
+    assert abs(rev["greens"]["4"]["area_yd2"] - np.pi * 13 * 10) < 15
+    write_agent(str(tmp_path), feats)
+    out, rep = AP.apply(gpkg, str(tmp_path))
+    for ref, (dx, da) in (("4", (8, 6)), ("2", (-5, -4))):
+        h0, h = gpkg["holes"][ref], out["holes"][ref]
+        assert h["provenance"]["green"] == AP.SRC and len(h["green_polygon_ll"]) >= 20
+        xy = M.ll_to_xy(GF[ref], [h["green_ll"]])[0]
+        assert abs(xy[0] - dx) < 0.5 and abs(xy[1] - (GF[ref]["green_along"] + da)) < 0.5
+        assert h["green_replaced"]["from_src"] == "hole_line_end"
+        assert not any("hole-line end" in f for f in h["confidence"]["flags"])
+    p3 = out["holes"]["4"]["par3"]
+    assert p3 and abs(p3["front"] - (p3["center"] - 10)) <= 1.5 and abs(p3["back"] - (p3["center"] + 10)) <= 1.5
+    t0, t1 = gpkg["holes"]["4"]["tees"][gpkg["tee_set"]], out["holes"]["4"]["tees"][gpkg["tee_set"]]
+    assert t1["measured_yards"] != t0["measured_yards"]
+    assert "green drawn" in rep["holes"]["4"]["summary"] and rep["greens"] == 2
+    assert "2 green(s) drawn" in out["stages"]["agent_layers"]
+    sys.path.insert(0, os.path.join(M.CD, "product"))
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("product_package_t", os.path.join(M.CD, "product", "package.py"))
+    PP = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(PP)
+    pth = tmp_path / "package.json"
+    json.dump(out, open(pth, "w"))
+    C = PP.load(str(pth))
+    k = 4 if 4 in C.par3 else "4"
+    assert "24-yd round green" not in C.par3[k]["note"]
+    gpkg_path = tmp_path / "before.json"
+    json.dump(gpkg, open(gpkg_path, "w"))
+    C0 = PP.load(str(gpkg_path))
+    assert "24-yd round green" in C0.par3[k]["note"]
+
+
+def test_green_edit_validation(gpkg):
+    import write_layers as WL
+    GF = M.green_frames(gpkg, gpkg["tee_set"])
+    FJ = M.make_frames(gpkg, gpkg["tee_set"])
+    g4 = GF["4"]["green_along"]
+    for bad in (dict(action="draw", shape={"ell": [0, g4, 40, 30]}, evidence="x"),          # a whole complex
+                dict(action="draw", shape={"ell": [g4, 0, 12, 12]}, evidence="x"),          # [along, x] swapped
+                dict(action="draw", shape={"ell": [0, g4, 12, 12]}),                         # no evidence
+                dict(action="paint", shape={"ell": [0, g4, 12, 12]}, evidence="x")):
+        with pytest.raises(WL.EditError):
+            WL.build("t", dict(greens={"4": bad}), gpkg, FJ, FJ, GF)
+    probs = WL.build("t", dict(greens={"4": dict(action="draw", shape={"ell": [0, g4, 8, 8]}, evidence="x")}),
+                     gpkg, FJ, FJ, GF)[3]
+    assert any("typical" in p for p in probs) and any("greens 2: no mapped green" in p for p in probs)
+    assert not any("greens" in p for p in WL.build("t", dict(holes={}), gpkg, FJ, FJ, GF)[3])   # old edits: no check
+
+
+def test_green_accept_detector(gpkg):
+    """'accept' takes the detector's outline (hole.green_detected) as the mapper's green; without one it is refused."""
+    import write_layers as WL
+    GF = M.green_frames(gpkg, gpkg["tee_set"])
+    FJ = M.make_frames(gpkg, gpkg["tee_set"])
+    p = copy.deepcopy(gpkg)
+    t = np.linspace(0, 2 * np.pi, 20, endpoint=False)
+    ring = M.xy_to_ll(GF["4"], np.c_[3 + 12 * np.cos(t), GF["4"]["green_along"] + 10 * np.sin(t)]).tolist()
+    p["holes"]["4"]["green_detected"] = dict(poly_ll=ring, score=0.7)
+    ed = dict(greens={"4": dict(action="accept", confidence="high", evidence="yellow outline on the green's edge")})
+    feats, _, rev, _ = WL.build("t", ed, p, FJ, FJ, GF)
+    assert len(feats) == 1 and abs(rev["greens"]["4"]["moved_yd"] - 3.0) < 0.5
+    with pytest.raises(WL.EditError):
+        WL.build("t", ed, gpkg, FJ, FJ, GF)

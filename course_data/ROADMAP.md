@@ -66,6 +66,16 @@ Frozen-model test on the 5 truth courses it never saw (Amana, Tomahawk Hills, Na
 gate shut on all, plans identical to no layer (Amana's drought rough not called native). None has native, so the
 gate's yes side is still untested on a fresh course. Rebuild that would change: annbriar only (in-sample).
 
+## Greens where OSM has none (adopted 2026-11-03; package stage S4g + mapper green edit)
+
+Tier C / D courses (~6,800 of 13,090) often have no golf=green: the page assumed a 24-yd round green at the hole
+line's end. `product/green_auto.py` detects the putting surface from NAIP / CIR texture + colour, DEM and lidar
+(LightGBM pixel model + a component pick near the estimate). Leave-one-course-out on 40 courses / 688 OSM greens
+(product/EVAL_green_auto.md): found 92 %, centroid median 2.0 yds, 90-92 % within 5 yds, IoU 0.72; with the
+estimate 10-25 yds off, par-3 aim within 5 yds 0 -> 79 %, box on the real green 24 -> 91 %. Mapper agents now draw
+greens where OSM has none (mapper/BRIEF.md step 3b; `greens` in edits.json, any hole / par). Old Works: 15 / 18
+detected (1 wrong, 2 partial by eye), rebuild queued.
+
 ## Workstreams (re-ranked 2026-11-01 by measured payoff)
 
 1. **Tee positions** (19 % of misses / 15 % of regret on 24 courses, 11-03; was 42 %): merge bug fixed (0 broken, -0.02 strokes). Biggest remaining case = back tee walked 40-70 yds past the mapped boxes (0.55 strokes); the fix (far cap) waits on hand-checking ~10 estimated back tees.

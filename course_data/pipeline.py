@@ -291,6 +291,9 @@ def confidence(h, h_osm, osm_hole_props, card, ref):
     if h.get("green_from") == "hole_line_end":
         green_c = 0.6
         flags.append("green from the hole-line end (no golf=green polygon)")
+    elif h.get("green_from") == "detector":
+        green_c = 0.8
+        flags.append("green outline from the imagery detector (no golf=green polygon)")
     par_c = 1.0 if (card or {}).get("par") else (0.8 if str(osm_hole_props.get("par", "")).isdigit() else 0.5)
     len_c = 1.0 if (card or {}).get("yards") else 0.8
     if card and card.get("yards") and abs(h["length"] - float(card["yards"])) > 15:

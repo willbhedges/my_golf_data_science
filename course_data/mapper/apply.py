@@ -9,6 +9,9 @@ Inputs in the agent folder (course_data/mapper/<slug>/, written by write_layers.
                          op "add":   a new zone of properties.lie (src "agent:mapper")
                          op "grow":  the zones of properties.lie grown by properties.by yds (negative = shrunk),
                                      only inside the feature polygon (a tree edge that is a few yds short / long)
+                         op "green": the hole's green becomes the polygon (any hole and par): green_polygon_ll,
+                                     green_ll = its centroid (par-3 target box, approach aims), provenance.green
+                                     "agent:mapper"; tee lengths / aims / elevation re-derived (green_op)
   agent_tees.json      {"holes": {ref: {set: {"action": "move" | "keep", "tee_ll": [lon, lat], ...}}}}: moved tees
                          get the new point (method "agent"), their aim / bearing (tee_line rule), measured length and
                          elevation profile are re-derived; "keep" records that the auto tee was checked.
@@ -198,6 +201,58 @@ def zone_ops(h, feats):
     return done
 
 
+def green_op(h, f, PK=None, sample=None, src=SRC):
+    """Replace the hole's green with the feature's polygon (op "green"): green_polygon_ll / green_polygon, green_ll
+    (the polygon's centroid: the flag the par-3 box and every approach aims at), provenance.green = src; every
+    tee's measured length, aim (par 3: the green) and elevation are re-derived. -> summary dict."""
+    from shapely.ops import unary_union
+    p = f.get("properties") or {}
+    old = list(h.get("green_ll") or [])
+    t = old or (h.get("tee_ll") or f["geometry"]["coordinates"][0][0])
+    L = Local(float(t[0]), float(t[1]))
+    g = _feature_geom(L, f["geometry"])
+    ps = _polys(unary_union([g]))
+    if not ps:
+        return dict(op="green", yd2=0, moved_yd=0.0, skipped="empty polygon")
+    q = max(ps, key=lambda x: x.area)
+    ring = _to_ring(L, q)
+    c = L.inv(np.array([[q.centroid.x, q.centroid.y]]))[0]
+    new = [round(float(c[0]), 7), round(float(c[1]), 7)]
+    moved = float(np.hypot(*(L.fwd([new])[0] - L.fwd([old])[0]))) if old else 0.0
+    prov = h.setdefault("provenance", {})
+    h["green_replaced"] = dict(from_ll=old or None, from_src=prov.get("green"), had_polygon=bool(h.get("green_polygon_ll")),
+                               moved_yd=round(moved, 1), area_yd2=round(q.area), src=src,
+                               **{k: p[k] for k in ("confidence", "evidence", "edit", "score") if p.get(k) not in (None, "")})
+    h["green_polygon_ll"] = ring
+    h["green_polygon"] = ring
+    h["green_ll"] = new
+    prov["green"] = src
+    h.pop("green_visibility", None)
+    for tt in (h.get("tees") or {}).values():
+        if not tt.get("tee_ll"):
+            continue
+        try:
+            tt["measured_yards"] = _measure(h, tt["tee_ll"][0], tt["tee_ll"][1])
+        except Exception:                                          # noqa: BLE001
+            pass
+    if PK is not None:
+        PK.apply_tee_line(h)
+        if sample is not None:
+            for tt in (h.get("tees") or {}).values():
+                if not tt.get("tee_ll") or not tt.get("aim_ll"):
+                    continue
+                fr = PK._frame(tt["tee_ll"], tt["aim_ll"])
+                gy = fr.ll_to_yds(np.array([h["green_ll"]]))[0]
+                hh = dict(ref=h.get("ref"), par=h["par"], length=tt.get("card_yards") or tt.get("measured_yards"),
+                          measured_length=tt.get("measured_yards"), green=[float(gy[0]), float(gy[1])],
+                          bearing_deg=tt["bearing_deg"])
+                try:
+                    tt["elevation"] = PK.elevation_for_hole(hh, sample, fr.yds_to_ll)
+                except Exception:                                  # noqa: BLE001
+                    tt["elevation"] = None
+    return dict(op="green", yd2=round(q.area), moved_yd=round(moved, 1))
+
+
 def _measure(h, lon, lat):
     sys.path.insert(0, os.path.join(CD, "tees"))
     import place_tee as pt
@@ -254,7 +309,9 @@ def tee_ops(pkg, h, ref, entries, PK, sample):
 def _summary(ops, tees):
     parts = []
     for o in ops:
-        if o["op"] == "grow":
+        if o["op"] == "green":
+            parts.append(f"green drawn {o['yd2']} yd2 (centre moved {o['moved_yd']:.0f} yd)")
+        elif o["op"] == "grow":
             parts.append(f"grow {o['lie']} {o['by']:+g} yd ({o['yd2']:+d} yd2)")
         else:
             parts.append(f"{o['op']} {o['lie']} {o['yd2']} yd2")
@@ -279,18 +336,23 @@ def apply(pkg, agent_dir, pk=None, made_by=None):
     for f in fc.get("features") or []:
         by_hole.setdefault(str((f.get("properties") or {}).get("hole")), []).append(f)
     skipped, holes = [], {}
+    green_feats = {r: [f for f in fs if (f.get("properties") or {}).get("op") == "green"] for r, fs in by_hole.items()}
+    sample = None
+    if (any(e.get("action") == "move" for es in (tj.get("holes") or {}).values() for e in es.values())
+            or any(green_feats.values())) and p.get("elevation"):
+        try:
+            sample = PK.dem_sampler(os.path.join(ROOT, p["elevation"]["file"]))
+        except Exception:                                          # noqa: BLE001
+            sample = None
     for ref, feats in by_hole.items():
         h = p["holes"].get(ref)
         if h is None:
             skipped.append(f"hole {ref}: not in the package ({len(feats)} zone edits)")
             continue
-        holes.setdefault(ref, dict(ops=[], tees=[]))["ops"] = zone_ops(h, feats)
-    sample = None
-    if any(e.get("action") == "move" for es in (tj.get("holes") or {}).values() for e in es.values()) and p.get("elevation"):
-        try:
-            sample = PK.dem_sampler(os.path.join(ROOT, p["elevation"]["file"]))
-        except Exception:                                          # noqa: BLE001
-            sample = None
+        ops = zone_ops(h, [f for f in feats if (f.get("properties") or {}).get("op") != "green"])
+        for f in green_feats.get(ref) or []:
+            ops.append(green_op(h, f, PK, sample))
+        holes.setdefault(ref, dict(ops=[], tees=[]))["ops"] = ops
     for ref, es in (tj.get("holes") or {}).items():
         h = p["holes"].get(str(ref))
         if h is None:
@@ -302,6 +364,7 @@ def apply(pkg, agent_dir, pk=None, made_by=None):
     with contextlib.redirect_stdout(io.StringIO()):
         out = PK.reframe(p)
     n_ops = sum(len(v["ops"]) for v in holes.values())
+    n_greens = sum(1 for v in holes.values() for o in v["ops"] if o["op"] == "green" and o.get("yd2"))
     moved = sum(1 for v in holes.values() for t in v["tees"] if t["action"] == "move")
     checked = sum(1 for v in holes.values() for t in v["tees"] if t["action"] in ("move", "keep"))
     meta = (fc.get("properties") or {})
@@ -310,7 +373,7 @@ def apply(pkg, agent_dir, pk=None, made_by=None):
     rep = dict(dir=rel, files=files, mapper=meta.get("mapper") or tj.get("mapper"), edits_made=meta.get("made"),
                base_package=meta.get("base_package"), corridor_set=meta.get("corridor_set"),
                applied=made_by or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-               ops=n_ops, tees_moved=moved, tees_checked=checked,
+               ops=n_ops, greens=n_greens, tees_moved=moved, tees_checked=checked,
                holes={k: dict(v, summary=_summary(v["ops"], v["tees"])) for k, v in sorted(holes.items())},
                skipped=skipped)
     for ref, v in rep["holes"].items():
@@ -318,7 +381,8 @@ def apply(pkg, agent_dir, pk=None, made_by=None):
             out["holes"][ref].setdefault("provenance", {})["agent"] = v["summary"]
     out["agent_layers"] = rep
     out.setdefault("stages", {})["agent_layers"] = (
-        f"ok: {rel} ({n_ops} zone edits on {sum(1 for v in holes.values() if v['ops'])} holes, {moved} tee(s) moved, "
+        f"ok: {rel} ({n_ops} zone edits on {sum(1 for v in holes.values() if v['ops'])} holes, "
+        + (f"{n_greens} green(s) drawn, " if n_greens else "") + f"{moved} tee(s) moved, "
         f"{checked} checked" + (f"; skipped: {'; '.join(skipped)}" if skipped else "") + ")")
     return out, rep
 

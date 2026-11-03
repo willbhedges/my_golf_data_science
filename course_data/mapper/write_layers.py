@@ -8,6 +8,9 @@ edit, converts shapes to WGS84 polygons with the hole's corridor frame, and writ
   agent_tees.json       every tee the agent checked: keep, or move (to a point read off the tee sheet)
   review.md             per hole: AUTO -> AUTO+AGENT visible area per lie in the landing zone (180-330, +/-50),
                         tee moves (yds, measured length vs card)
+  greens                edits.json `greens` {ref: {action draw | keep, shape (green frame), confidence, evidence}}:
+                        a drawn green (any hole, any par) becomes an op "green" feature that replaces the package
+                        green (outline + centre); render/hNN_green_review.png shows it over the green sheet
   render/hNN_review.png [AUTO] [AUTO + AGENT] [the edits on the 2nd NAIP year: add = lie colour, erase = magenta,
                         grow region = cyan] (not committed)
 Fails loudly on a bad edit (unknown lie / op / shape, a shape outside the window, a move without evidence).
@@ -106,7 +109,7 @@ def same_evidence_checks(reviewed):
             for ev, ids in by.items() if len(ids) > SAME_EVIDENCE_MAX]
 
 
-def build(slug, ed, pkg, FJ, TF):
+def build(slug, ed, pkg, FJ, TF, GF=None):
     feats, tees, problems = [], {}, []
     reviewed = {}
     win = M.window(pad=10.0)
@@ -206,6 +209,11 @@ def build(slug, ed, pkg, FJ, TF):
             reviewed[ref]["long_grass"] = he.get("long_grass")
             problems += long_grass_checks(ref, he.get("long_grass"), nat_sides)
     problems += same_evidence_checks(reviewed)
+    g_feats, g_rev, g_prob = green_edits(ed, pkg, GF or {})
+    feats += g_feats
+    problems += g_prob
+    if g_rev:
+        reviewed["greens"] = g_rev
     for ref, by_set in sorted((ed.get("tees") or {}).items(), key=lambda kv: M.hole_key(kv[0])):
         h = pkg["holes"].get(ref)
         if h is None:
@@ -238,6 +246,76 @@ def build(slug, ed, pkg, FJ, TF):
                     raise EditError(f"tees {ref} {s}: moved {rec['moved_yd']:.0f} yds (> 120): wrong frame or hole?")
             tees.setdefault(ref, {})[s] = rec
     return feats, tees, reviewed, problems
+
+
+def green_edits(ed, pkg, GF):
+    """edits.json `greens` {ref: {"action": "draw" | "accept" | "keep", "shape": {...}, "confidence", "evidence"}} -> one
+    feature per drawn green (op "green", lie "green", in the hole's green frame), {ref: verdict}, checks.
+    A drawn green replaces the package green (outline + centre: the par-3 target box and every approach aim);
+    "accept" takes the imagery detector's green (hole.green_detected) as the mapper's; "keep" changes nothing."""
+    feats, rev, problems = [], {}, []
+    for ref, e in sorted((ed.get("greens") or {}).items(), key=lambda kv: M.hole_key(kv[0])):
+        act = (e or {}).get("action") or ""
+        if not act:
+            continue
+        where = f"greens {ref}"
+        if act not in ("draw", "keep", "accept"):
+            raise EditError(f"{where}: action {act!r} (draw | accept | keep)")
+        h = pkg["holes"].get(ref)
+        if h is None or ref not in GF:
+            raise EditError(f"{where}: no such hole with a green in the package")
+        if e.get("confidence") and e["confidence"] not in M.CONF:
+            raise EditError(f"{where}: confidence {e['confidence']!r} not in {M.CONF}")
+        rev[ref] = dict(action=act, confidence=e.get("confidence"), evidence=e.get("evidence"))
+        if act == "keep":
+            continue
+        if not e.get("evidence"):
+            raise EditError(f"{where}: a drawn / accepted green needs evidence (what the photo / CIR / DEM show)")
+        gf = GF[ref]
+        if act == "accept":                       # the detector's suggestion (yellow on the green sheet) as is
+            import render_inputs as RI
+            sug = RI.suggested_green_xy(gf, h)
+            if sug is None:
+                raise EditError(f"{where}: accept, but the package has no detector green for this hole (draw it)")
+            g = M._poly(sug)
+        else:
+            try:
+                g = M.shape_geom(e.get("shape"))
+            except (ValueError, KeyError, TypeError) as x:
+                raise EditError(f"{where}: {x}") from x
+        w = gf["window"]
+        from shapely.geometry import box as _box
+        win = _box(-w["lat"], w["a0"], w["lat"], w["a1"])
+        if g.is_empty or g.intersection(win).area < 0.8 * g.area:
+            raise EditError(f"{where}: green mostly outside its window (x +/-{w['lat']:g}, along {w['a0']:g}-"
+                            f"{w['a1']:g}; the package green is at [0, {gf['green_along']:g}]): check x / along order")
+        ps = M.polys_of(g, 1.0)
+        g = max(ps, key=lambda q: q.area)
+        if not (M.GREEN_AREA[0] <= g.area <= M.GREEN_AREA[1]):
+            raise EditError(f"{where}: green of {g.area:.0f} sq yds (allowed {M.GREEN_AREA[0]:g}-{M.GREEN_AREA[1]:g}): "
+                            f"draw the putting surface only")
+        if not (M.GREEN_TYPICAL[0] <= g.area <= M.GREEN_TYPICAL[1]):
+            problems.append(f"{where}: green of {g.area:.0f} sq yds (typical {M.GREEN_TYPICAL[0]:g}-"
+                            f"{M.GREEN_TYPICAL[1]:g}): check it is the putting surface, not the collar / complex")
+        c = g.centroid
+        moved = float(np.hypot(c.x, c.y - gf["green_along"]))
+        if M.has_mapped_green(h):
+            problems.append(f"{where}: replaces a mapped green ({(h.get('provenance') or {}).get('green')}); "
+                            f"only when the mapped outline is visibly wrong")
+        geo = _geo(g, gf)
+        props = dict(hole=ref, op="green", lie="green", edit=f"green.{ref}", area_yd2=round(g.area),
+                     moved_yd=round(moved, 1), par=gf.get("par"))
+        for k in ("note", "confidence", "evidence"):
+            if e.get(k):
+                props[k] = e[k]
+        rev[ref].update(area_yd2=round(g.area), moved_yd=round(moved, 1))
+        feats.append(dict(type="Feature", properties=props, geometry=geo))
+    for ref, h in sorted(pkg["holes"].items(), key=lambda kv: M.hole_key(kv[0])):
+        if ref in GF and not M.has_mapped_green(h) and "greens" in ed and ref not in rev:
+            problems.append(f"greens {ref}: no mapped green (package green: {(h.get('provenance') or {}).get('green')}) "
+                            f"and no verdict: draw it from the green sheet (h{int(ref) if str(ref).isdigit() else ref}"
+                            f"_green.png) or say keep")
+    return feats, rev, problems
 
 
 def native_gaps(pkg, out, FJ, a0=180, a1=330, step=5, reach=45):
@@ -319,6 +397,18 @@ def review_md(slug, pkg, out, FJ, rep, tees, problems, reviewed=None):
         for ref, r in s2:
             L.append(f"| {ref} | {r['id']} | {r['side']} | {r['area_yd2']} | {r['decision']} | {r['confidence']} | "
                      f"{r['evidence'][:90]} |")
+    gr = (reviewed or {}).get("greens") or {}
+    if gr:
+        L += ["", "## Greens (the mapper's; a drawn green replaces the package green: par-3 box, approach aims)", "",
+              "| hole | par | action | sq yds | centre moved yds | package green before | length after | evidence |",
+              "|---|---|---|---|---|---|---|---|"]
+        for ref, r in sorted(gr.items(), key=lambda kv: M.hole_key(kv[0])):
+            h0, h1 = pkg["holes"][ref], out["holes"][ref]
+            st = out.get("tee_set")
+            t = (h1.get("tees") or {}).get(st) or {}
+            L.append(f"| {ref} | {h0.get('par')} | {r['action']} | {r.get('area_yd2', '')} | {r.get('moved_yd', '')} | "
+                     f"{(h0.get('provenance') or {}).get('green')} | {t.get('measured_yards')} (card "
+                     f"{t.get('card_yards')}) | {(r.get('evidence') or '')[:80]} |")
     if problems:
         L += ["", "## Checks and problems", ""] + [f"- {p}" for p in problems]
     open(M.mdir(slug, "review.md"), "w").write("\n".join(L) + "\n")
@@ -331,7 +421,7 @@ def render_review(slug, pkg, out, FJ, feats, holes=None):
     S = M.sources(slug)
     a0, a1, lat = M.WIN["a0"], M.WIN["a1"], M.WIN["lat"]
     ys, py = RI.other_years(S)
-    edited = sorted({f["properties"]["hole"] for f in feats}, key=M.hole_key)
+    edited = sorted({f["properties"]["hole"] for f in feats if f["properties"]["op"] != "green"}, key=M.hole_key)
     for ref in edited:
         if holes and ref not in holes:
             continue
@@ -346,7 +436,7 @@ def render_review(slug, pkg, out, FJ, feats, holes=None):
         img = base.copy()
         for f in feats:
             p = f["properties"]
-            if p["hole"] != ref:
+            if p["hole"] != ref or p["op"] == "green":
                 continue
             g = f["geometry"]
             polys = [g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"]
@@ -365,6 +455,22 @@ def render_review(slug, pkg, out, FJ, feats, holes=None):
         M.log(f"  review render {ref}")
 
 
+def render_green_review(slug, pkg, GF, feats, holes=None):
+    """render/hNN_green_review.png: the green sheet with the package green (magenta) and the drawn green (cyan)."""
+    import render_inputs as RI
+    S = M.sources(slug)
+    for f in feats:
+        p = f["properties"]
+        if p["op"] != "green" or (holes and p["hole"] not in holes):
+            continue
+        ref = p["hole"]
+        g = f["geometry"]
+        ring = g["coordinates"][0] if g["type"] == "Polygon" else g["coordinates"][0][0]
+        RI.green_sheet(slug, ref, GF[ref], pkg["holes"][ref], S, M.mdir(slug, "render"),
+                       drawn=M.ll_to_xy(GF[ref], ring), name="green_review")
+        M.log(f"  green review render {ref}")
+
+
 def run(slug, render=True, holes=None):
     import apply as AP
     ed = M.rj(M.mdir(slug, "edits.json"))
@@ -376,7 +482,8 @@ def run(slug, render=True, holes=None):
     if pkg.get("built") != fjson.get("base_built"):
         M.log(f"! the base package was rebuilt after the renders ({fjson.get('base_built')} -> {pkg.get('built')}): "
               f"edits are in the old frames (still exact on the ground; check tees)")
-    feats, tees, reviewed, problems = build(slug, ed, pkg, FJ, TF)
+    GF = fjson.get("green_frames") or M.green_frames(pkg, fjson.get("set") or M.tee_set_of(pkg))
+    feats, tees, reviewed, problems = build(slug, ed, pkg, FJ, TF, GF)
     made = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     common = dict(slug=slug, mapper=ed.get("mapper"), made=made, corridor_set=fjson.get("set"),
                   base_package=fjson.get("base_package"), base_built=fjson.get("base_built"),
@@ -393,6 +500,7 @@ def run(slug, render=True, holes=None):
         M.log("  ! " + p)
     if render:
         render_review(slug, pkg, out, FJ, feats, holes)
+        render_green_review(slug, pkg, GF, feats, holes)
     M.log(f"-> {os.path.relpath(M.mdir(slug), M.ROOT)}/agent_zones.geojson ({len(feats)} edits), agent_tees.json "
           f"({sum(len(v) for v in tees.values())} tees), review.md")
     return out, rep
