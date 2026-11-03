@@ -1,6 +1,6 @@
 # Tournament Club of Iowa (Polk City, IA) - King tees
 
-Built 2026-11-03T16:25:11Z. OSM relation/1507320. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: King, Palmer, Deacon, Legend)).
+Built 2026-11-03T21:39:16Z. OSM relation/1507320. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: King, Palmer, Deacon, Legend)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'King' instead (allow_substitute). Sets on the card: King, Palmer, Deacon, Legend**
 
@@ -13,11 +13,11 @@ Built 2026-11-03T16:25:11Z. OSM relation/1507320. Scorecard: golfify (golfify). 
 | greens_found | 18 |
 | tee_boxes | 70 |
 | tees_with_colour | 0 |
-| holes_with_trees_or_long_grass_in_landing_zone | 11 |
+| holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 13 |
 | mean_landing_osm_share | 0.464 |
-| mean_confidence | 0.702 |
-| osm_score | 0.862 |
+| mean_confidence | 0.713 |
+| osm_score | 0.893 |
 
 OSM features inside the course: buildings 3, golf=bunker 26, golf=cartpath 53, golf=clubhouse 1, golf=driving_range 1, golf=fairway 23, golf=green 26, golf=hole 18, golf=tee 70, golf=water_hazard 4, holes_with_handicap 18, holes_with_par 18, single_trees 6, water_lines 4, water_polygons 4
 
@@ -25,24 +25,24 @@ OSM features inside the course: buildings 3, golf=bunker 26, golf=cartpath 53, g
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 5 | 553 / 549 | 37 | 0.66 | check the flags | 49% | 8% | 43% | tee stage: King review | tee: tee stage: King review |
+| 1 | 5 | 553 / 549 | 37 | 0.71 | check the flags | 49% | 33% | 18% | tee stage: King review | tee: tee stage: King review |
 | 2 | 4 | 420 / 422 | 348 | 0.64 | check the flags | 35% | 16% | 49% | tee stage: King review (snapped 10 yds along OSM tee 787286062) | tee: tee stage: King review (snapped 10 yds along OSM tee 787286062) |
 | 3 | 3 | 186 / 188 | 246 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review (kept: snap snapped 3 yds along OSM tee 674003243 would measure 180, another set's box, point 188, card 186) | tee: tee stage: King review (kept: snap snapped 3 yds along OSM tee 674003243 would measure 180, another set's box, point 188, card 186) |
-| 4 | 5 | 593 / 599 | 316 | 0.70 | check the flags | 60% | 14% | 27% | tee stage: King review (snapped 2 yds along OSM tee 674004138) | tee: tee stage: King review (snapped 2 yds along OSM tee 674004138) |
+| 4 | 5 | 593 / 599 | 316 | 0.71 | check the flags | 60% | 18% | 23% | tee stage: King review (snapped 2 yds along OSM tee 674004138) | tee: tee stage: King review (snapped 2 yds along OSM tee 674004138) |
 | 5 | 3 | 185 / 174 | 228 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review (inside OSM tee 676091866) | tee: tee stage: King review (inside OSM tee 676091866) |
-| 6 | 4 | 480 / 473 | 159 | 0.67 | check the flags | 50% | 10% | 41% | tee stage: King review | tee: tee stage: King review |
+| 6 | 4 | 480 / 473 | 159 | 0.69 | check the flags | 50% | 18% | 32% | tee stage: King review | tee: tee stage: King review |
 | 7 | 4 | 386 / 383 | 161 | 0.66 | check the flags | 34% | 26% | 41% | tee stage: King review (kept: snap snapped 14 yds along OSM tee 676103845 would measure 374, point 383, card 386) | tee: tee stage: King review (kept: snap snapped 14 yds along OSM tee 676103845 would measure 374, point 383, card 386) |
 | 8 | 3 | 234 / 230 | 48 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review (snapped 7 yds along OSM tee 676103857) | tee: tee stage: King review (snapped 7 yds along OSM tee 676103857) |
 | 9 | 4 | 456 / 458 | 170 | 0.68 | check the flags | 57% | 3% | 39% | tee stage: King review (inside OSM tee 676103863) | tee: tee stage: King review (inside OSM tee 676103863) |
-| 10 | 4 | 356 / 354 | 344 | 0.69 | check the flags | 60% | 5% | 35% | tee stage: King review (inside OSM tee -19) | tee: tee stage: King review (inside OSM tee -19) |
+| 10 | 4 | 356 / 354 | 344 | 0.70 | check the flags | 60% | 12% | 28% | tee stage: King review (inside OSM tee -19) | tee: tee stage: King review (inside OSM tee -19) |
 | 11 | 4 | 376 / 376 | 290 | 0.62 | check the flags | 18% | 31% | 52% | tee stage: King review | tee: tee stage: King review |
-| 12 | 4 | 442 / 441 | 273 | 0.68 | check the flags | 42% | 25% | 34% | tee stage: King review (kept: snap snapped 7 yds along OSM tee 676110861 would measure 433, point 441, card 442) | tee: tee stage: King review (kept: snap snapped 7 yds along OSM tee 676110861 would measure 433, point 441, card 442) |
-| 13 | 5 | 526 / 525 | 106 | 0.70 | check the flags | 48% | 26% | 26% | tee stage: King review (snapped 7 yds along OSM tee 676110869) | tee: tee stage: King review (snapped 7 yds along OSM tee 676110869) |
+| 12 | 4 | 442 / 441 | 273 | 0.69 | check the flags | 42% | 34% | 24% | tee stage: King review (kept: snap snapped 7 yds along OSM tee 676110861 would measure 433, point 441, card 442) | tee: tee stage: King review (kept: snap snapped 7 yds along OSM tee 676110861 would measure 433, point 441, card 442) |
+| 13 | 5 | 526 / 525 | 106 | 0.70 | check the flags | 48% | 28% | 24% | tee stage: King review (snapped 7 yds along OSM tee 676110869) | tee: tee stage: King review (snapped 7 yds along OSM tee 676110869) |
 | 14 | 4 | 325 / 324 | 206 | 0.66 | check the flags | 41% | 18% | 41% | tee stage: King review | tee: tee stage: King review |
 | 15 | 3 | 195 / 193 | 135 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review (snapped 2 yds along OSM tee 676112660) | tee: tee stage: King review (snapped 2 yds along OSM tee 676112660) |
 | 16 | 3 | 231 / 231 | 126 | 0.79 | check the flags | 100% | 0% | 0% | tee stage: King review | tee: tee stage: King review |
-| 17 | 5 | 638 / 638 | 89 | 0.66 | check the flags | 52% | 0% | 48% | tee stage: King review (inside OSM tee 789471507) | tee: tee stage: King review (inside OSM tee 789471507); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 18 | 4 | 459 / 459 | 280 | 0.67 | check the flags | 58% | 0% | 42% | tee stage: King review (kept: snap snapped 11 yds along OSM tee 676119305 would measure 449, another set's box, point 459, card 459) | tee: tee stage: King review (kept: snap snapped 11 yds along OSM tee 676119305 would measure 449, another set's box, point 459, card 459); no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
+| 17 | 5 | 638 / 638 | 89 | 0.71 | check the flags | 52% | 26% | 22% | tee stage: King review (inside OSM tee 789471507) | tee: tee stage: King review (inside OSM tee 789471507) |
+| 18 | 4 | 459 / 459 | 280 | 0.71 | check the flags | 58% | 19% | 23% | tee stage: King review (kept: snap snapped 11 yds along OSM tee 676119305 would measure 449, another set's box, point 459, card 459) | tee: tee stage: King review (kept: snap snapped 11 yds along OSM tee 676119305 would measure 449, another set's box, point 459, card 459) |
 
 ## Stages
 
@@ -60,7 +60,9 @@ OSM features inside the course: buildings 3, golf=bunker 26, golf=cartpath 53, g
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -698 m2 {'raised': 375, 'road': 281, 'cells': 42}
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 26 polygons (property_line 26); mode replace
+- **native_auto**: ok: 8 holes, sides 1 both, 4 L, 6 R, 10 R, 12 R, 13 R, 17 both, 18 both
 
 ## Warnings
 
