@@ -1,0 +1,1081 @@
+{
+ "schema": "mapper_edits/1",
+ "slug": "the_falls_ofallon",
+ "corridor_set": "Gold",
+ "mapper": "mapper-the_falls_ofallon",
+ "started": "2026-11-03T00:00Z",
+ "minutes": 50,
+ "doc": "Fill in, save as edits.json, then: python3 course_data/mapper/write_layers.py the_falls_ofallon. See course_data/mapper/BRIEF.md for ops, shapes and rules. long_grass: a verdict per side on every hole, 'native: <edits>' or 'none: <what both years show>' (S2 silence is not a verdict). s2_suggested: Sentinel-2 native candidates (hint, not a layer): per hole and side set every candidate's decision to accept (its shape becomes add native with your confidence + evidence; the 10-yd keep-out applies), reject (evidence = why) or replace (you drew your own native edit in `edits`, e.g. the traced edge); undecided ones are listed in review.md.",
+ "holes": {
+  "1": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 2 missed lidar crowns added",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       29,
+       298,
+       5,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +29, along 298: lidar canopy >2.5 m (82 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 11 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -9,
+       338,
+       9,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -9, along 338: lidar canopy >2.5 m (153 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 6 yds from the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "2": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 3 missed lidar crowns added",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -31,
+       201,
+       6,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -31, along 201: lidar canopy >2.5 m (91 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 11 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -17,
+       266,
+       8,
+       11
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -17, along 266: lidar canopy >2.5 m (172 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 7 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       13,
+       310,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +13, along 310: lidar canopy >2.5 m (103 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 5 yds from the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "3": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 2 missed lidar crowns added",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       38,
+       257,
+       6,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +38, along 257: lidar canopy >2.5 m (81 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 14 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       49,
+       283,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +49, along 283: lidar canopy >2.5 m (54 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 14 yds from the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "5": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 2 missed lidar crowns added",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -41,
+       284,
+       7,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -41, along 284: lidar canopy >2.5 m (49 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 18 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -21,
+       307,
+       5,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -21, along 307: lidar canopy >2.5 m (35 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 6 yds from the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "6": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 4 missed lidar crowns added",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -44,
+       179,
+       7,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -44, along 179: lidar canopy >2.5 m (96 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 24 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -61,
+       191,
+       9,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -61, along 191: lidar canopy >2.5 m (153 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 6 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       35,
+       239,
+       11,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +35, along 239: lidar canopy >2.5 m (146 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 17 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       23,
+       293,
+       6,
+       6
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +23, along 293: lidar canopy >2.5 m (80 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 8 yds from the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "7": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 2 missed lidar crowns added",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       35,
+       232,
+       6,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +35, along 232: lidar canopy >2.5 m (88 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 9 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       20,
+       301,
+       9,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +20, along 301: lidar canopy >2.5 m (178 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 7 yds from the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "9": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "10": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo; erased a duplicate creek band along the left fairway edge",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "erase",
+     "lie": "water",
+     "shape": {
+      "poly": [
+       [
+        -37,
+        300
+       ],
+       [
+        -12,
+        300
+       ],
+       [
+        -12,
+        120
+       ],
+       [
+        -29,
+        120
+       ],
+       [
+        -29,
+        160
+       ],
+       [
+        -37,
+        200
+       ]
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "vision water band hugging the left fairway edge (x -35..-15) duplicates the creek: DEM channel and OSM stream run at x -55..-40; NAIP 2022/2020 show mown rough and tree edge here, CIR not dark"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "11": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 6 missed lidar crowns added",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -43,
+       171,
+       4,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -43, along 171: lidar canopy >2.5 m (31 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 24 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       14,
+       186,
+       7,
+       8
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +14, along 186: lidar canopy >2.5 m (109 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 2 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -37,
+       190,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -37, along 190: lidar canopy >2.5 m (38 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 16 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -35,
+       206,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -35, along 206: lidar canopy >2.5 m (46 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 17 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -42,
+       215,
+       6,
+       9
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -42, along 215: lidar canopy >2.5 m (91 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 24 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       46,
+       310,
+       5,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +46, along 310: lidar canopy >2.5 m (39 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 11 yds from the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "13": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 5 missed lidar crowns added; erased tree polygon over open ground left 265-400",
+   "long_grass": {
+    "L": "none: tan patch at x -60..-35, along 280-340 is tan in both years but has no clear second mowing line or tufted texture; left as rough (uncertain)",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       40,
+       263,
+       5,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +40, along 263: lidar canopy >2.5 m (40 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 25 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       28,
+       266,
+       4,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +28, along 266: lidar canopy >2.5 m (26 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 15 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       19,
+       284,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +19, along 284: lidar canopy >2.5 m (107 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 11 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       9,
+       304,
+       6,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +9, along 304: lidar canopy >2.5 m (74 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 9 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       12,
+       318,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +12, along 318: lidar canopy >2.5 m (111 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 14 yds from the fairway"
+    },
+    {
+     "op": "erase",
+     "lie": "recovery",
+     "shape": {
+      "rect": [
+       -58,
+       -20,
+       262,
+       400
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "auto tree polygon left of the fairway (along 265-400) covers open grass: lidar HAG <0.5 m throughout, no crowns in NAIP 2022 or 2020"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "15": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 4 missed lidar crowns added",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -23,
+       175,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -23, along 175: lidar canopy >2.5 m (103 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 19 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       19,
+       326,
+       5,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +19, along 326: lidar canopy >2.5 m (37 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 12 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       -65,
+       332,
+       7,
+       7
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x -65, along 332: lidar canopy >2.5 m (110 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 8 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       24,
+       335,
+       5,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +24, along 335: lidar canopy >2.5 m (29 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 21 yds from the fairway"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "16": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; auto layers match the photo",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  },
+  "18": {
+   "reviewed": [
+    "long_grass",
+    "trees",
+    "ob",
+    "water",
+    "fairway",
+    "bunkers"
+   ],
+   "confidence": "medium",
+   "note": "parkland; 2 missed lidar crowns added; erased woods-only OB left 120-320",
+   "long_grass": {
+    "L": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates",
+    "R": "none: smooth mown parkland rough from the fairway to the tree line / lots in NAIP 2022 and 2020, no second mowing line; S2 no candidates"
+   },
+   "edits": [
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       42,
+       175,
+       7,
+       5
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +42, along 175: lidar canopy >2.5 m (79 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 9 yds from the fairway"
+    },
+    {
+     "op": "add",
+     "lie": "recovery",
+     "shape": {
+      "ell": [
+       28,
+       308,
+       5,
+       4
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "single crown at x +28, along 308: lidar canopy >2.5 m (27 sq yd), crown visible on NAIP 2022 and 2020; missing from auto trees, 9 yds from the fairway"
+    },
+    {
+     "op": "erase",
+     "lie": "ob",
+     "shape": {
+      "rect": [
+       -70,
+       -10,
+       120,
+       320
+      ]
+     },
+     "confidence": "medium",
+     "evidence": "outline OB in the woods / creek left of the fairway: no houses, fence or road within the panel in NAIP 2022 or 2020 (nearest housing ~80+ yds left)"
+    }
+   ],
+   "s2_suggested": {
+    "L": [],
+    "R": []
+   }
+  }
+ },
+ "tees": {
+  "1": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "2": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "3": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "4": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "5": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "6": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "7": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "8": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "9": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "10": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "11": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "12": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "13": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "14": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "15": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "16": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "17": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  },
+  "18": {
+   "Gold": {
+    "action": "keep"
+   },
+   "Blue": {
+    "action": "keep"
+   },
+   "White": {
+    "action": "keep"
+   },
+   "Red": {
+    "action": "keep"
+   }
+  }
+ },
+ "uncertain": [
+  {
+   "hole": "6",
+   "what": "Red tee (walkback, 410): no box visible at the auto spot ~108 yds ahead of Gold; kept"
+  },
+  {
+   "hole": "13",
+   "what": "left tan area x -60..-35, along 280-340: rough vs unmown grass not decidable; left unmarked"
+  },
+  {
+   "hole": "3",
+   "what": "left OB inner edge (x -25..-15 at 260-380) may sit 10-20 yds inside the real lot line (trees between houses and course); kept"
+  },
+  {
+   "hole": "16",
+   "what": "right OB inner edge at along 320-380 reaches ~15-25 yds beyond the houses into trees; lot line not visible; kept"
+  },
+  {
+   "hole": "all",
+   "what": "lidar is 2018; crowns added only where also visible in NAIP 2020 and 2022; ~3-5 yd lidar/photo offset possible"
+  }
+ ]
+}
