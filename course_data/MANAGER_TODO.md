@@ -123,3 +123,4 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - Independent auditor (read-only) -> eagle_knoll/AUDIT.md; reconcile with OPTIMIZE.md, then QA + republish QQkFta99SEstd6Dv8wzgf8.
 - Generalization: tee-position agent + native/long-grass classifier agent (held-out evals).
 - Dispersion agent carrying landing_pattern into the Aim Caddie app.
+- 16:30Z check-in: followups batch landed for chambers_bay, tpc_sawgrass, sand_hollow, grand_national_links, old_works (old_works ALL 18 CHECK -> investigate); troon_north + queenstown rev 8 pending -> QA agent. Passing courses go into the app after the dispersion agent lands the app oval fix. 6 agents running (EK optimizer, EK auditor, tees, native, app ovals, QA).
