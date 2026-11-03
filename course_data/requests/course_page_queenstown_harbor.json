@@ -5,9 +5,11 @@
  "state": "MD",
  "slug": "queenstown_harbor",
  "group": "library",
- "rev": 7,
+ "rev": 8,
  "note": "national batch us60 (well-known public / resort courses, every US region); default tee sets and dates. OSM completeness count: course_data/library/osm_check/us60.json",
  "near": "38.9850,-76.1700",
+ "osm": "way/1067525665",
+ "osm_note": "2026-11-03: pinned to the unnamed 36-hole Queenstown Harbor outline (River + Lakes; the builds up to rev 6 resolved it via near). Rev 7 (run 41655811379) resolved to South River Golf Course, 36 km away, after a Nominatim 503 left that candidate without a town",
  "retry_note": "us60 retry: near: Queenstown Harbor Golf Links (approximate)",
  "osm_source": "geofabrik",
  "osm_source_note": "2026-11-02: package stage failed repeatedly on Overpass ReadTimeouts; OSM from the Geofabrik state extract + osmium (course_data/platform/osm_extract.py)"
