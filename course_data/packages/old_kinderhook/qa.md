@@ -1,6 +1,6 @@
 # Old Kinderhook Resort, Golf, Club & Spa (Camdenton, MO) - Championship tees
 
-Built 2026-11-02T23:44:17Z. OSM way/393079215. Scorecard: request (request file yardages). Tee set: name.
+Built 2026-11-03T04:09:01Z. OSM way/393079215. Scorecard: request (request file yardages). Tee set: name.
 
 ## Coverage
 

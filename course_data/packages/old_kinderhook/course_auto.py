@@ -1,5 +1,5 @@
 """Course module for Old Kinderhook Resort, Golf, Club & Spa (Championship tees), generated from package.json by
-course_data/platform/package.py on 2026-11-02T23:44:17Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-03T04:09:01Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_old_kinderhook.json
 

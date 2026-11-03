@@ -1,6 +1,6 @@
 # Mariah Hills Golf Course (Dodge City, KS) - Blue tees
 
-Built 2026-11-02T23:43:38Z. OSM way/329961222. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-03T04:08:22Z. OSM way/329961222. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
