@@ -273,7 +273,8 @@ def sharp_choice(pkg):
 def page_name(pkg, q):
     """The page's course name: the OSM course name, except on a multi-course facility whose split kept one course
     the OSM name does not name ("TPC Sawgrass" kept 'stadium'): then the request's name when it names that course
-    ("TPC Sawgrass Stadium", "Troon North Monument"), else the OSM name + the kept course."""
+    ("TPC Sawgrass Stadium", "Troon North Monument"), else the OSM name + the kept course. A split that kept an
+    unnamed group (largest / nearest the near point) uses the request's name when it says more than the OSM name."""
     name = (pkg.get("course") or {}).get("name") or q.get("name") or ""
     kept = None
     for w in pkg.get("warnings") or []:
@@ -281,9 +282,18 @@ def page_name(pkg, q):
         if m:
             kept = m.group(1).strip()
             break
-    if not kept:
-        return name
     words = lambda t: set(re.findall(r"[a-z0-9]+", t.lower()))          # noqa: E731
+    if not kept:
+        # a split that kept a course by size or by the near point ("kept the largest group", "kept the course nearest
+        # the request's near point") does not name it: the request's name when it names more than the facility
+        # ("Sand Hollow Championship Course" on "Sand Hollow Resort", "Grand National Links Course" on "RTJ Grand
+        # National Golf"), since the request names the course the user plays
+        multi = any(re.search(r"multi-course facility:.*\bkept\b", w) for w in pkg.get("warnings") or [])
+        generic = {"course", "golf", "club", "the", "resort", "gc", "cc", "country", "and", "at", "of"}
+        rq = q.get("name") or ""
+        if multi and rq and words(rq) - words(name) - generic:
+            return rq
+        return name
     key = words(kept) - {"course", "golf", "club", "the", "no", "links"}
     if not key or key <= words(name):
         # a resort named after its flagship ("Bandon Dunes Golf Resort", kept 'bandon dunes' of 3 courses): the OSM

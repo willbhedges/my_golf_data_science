@@ -153,6 +153,21 @@ def test_title_names_the_kept_course():
         == "Bandon Dunes"
     assert cp.page_name(dict(course=dict(name="Bandon Dunes Golf Resort"), warnings=w4),
                         dict(name="Bandon Dunes Golf Resort")) == "Bandon Dunes Golf Resort"
+    # a split that kept an unnamed group (largest / nearest the near point): the request's name when it names more
+    # than the facility, else the OSM name
+    w5 = ["multi-course facility: 2 courses' hole ways in one outline (by hole chains (green -> next tee): champion 18,"
+          " #2 9); kept the largest group (no name or near point decides: CHECK the course), 18 ways; ignored 9"]
+    assert cp.page_name(dict(course=dict(name="Sand Hollow Resort"), warnings=w5),
+                        dict(name="Sand Hollow Championship Course")) == "Sand Hollow Championship Course"
+    assert cp.page_name(dict(course=dict(name="Sand Hollow Resort"), warnings=w5), dict(name="Sand Hollow")) \
+        == "Sand Hollow Resort"
+    w6 = ["multi-course facility: 2 courses' hole ways in one outline (by hole chains (green -> next tee): lake 18, "
+          "#2 18); kept the course nearest the request's near point (1848 yds vs 3421), 18 ways; ignored 18"]
+    assert cp.page_name(dict(course=dict(name="RTJ Grand National Golf"), warnings=w6),
+                        dict(name="Grand National Links Course")) == "Grand National Links Course"
+    # no split: the OSM name even when the request says more
+    assert cp.page_name(dict(course=dict(name="Chambers Bay Golf Course"), warnings=[]), dict(name="Chambers Bay Links")) \
+        == "Chambers Bay Golf Course"
 
 
 def _status(tmp_path, slug, status="needs confirm", page=True):
