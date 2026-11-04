@@ -15,7 +15,7 @@ Success = per hole, the plan's club matches and the aim is within 10 yds of the 
 | confirm taps to 98 % pairs | 4.7 / course (no re-solve); re-solve 7.1 (fix running) | summary_resolve_calib2.json |
 | tee yardage, no card | back within 10 yds 70 %; 2nd set 52 %; par 96 % | tees/CARDLESS.md |
 | plan, auto build with true card vs hand truth | **74 % same club + aim ≤ 10 yds** (138 tee shots, 10 courses) | platform/ERROR_BUDGET.md |
-| plan, current build, all 24 card truth courses (11-03, native layer + far cap) | **75.5 % match (250 / 331), regret 0.216 strokes / 14-shot round** (11-03 morning 70.7 %, 0.408); 82.8 % if only misses costing > 0.02 count | ERROR_BUDGET.md "Where the remaining strokes are" |
+| plan, current build, all 24 card truth courses (11-04, native layer + far cap + tree edge) | **77.3 % match (256 / 331), regret 0.188 strokes / 14-shot round** in sample; tree rule held out (leave-one-course-out) 254 / 0.200 (11-03 75.5 %, 0.216; 11-03 morning 70.7 %, 0.408); 84.9 % if only misses costing > 0.02 count | ERROR_BUDGET.md "Tree canopy edge" |
 | what causes the misses (one cause each, 81 misses / 5.11 strokes) | long grass 28 misses / 2.44 strokes (3.17 without the Mariah 7 artefact), tees 21 / 0.93, trees 24 / 0.92 (8 near ties), fairway 3 / 0.26, water + OB + elevation 5 / 0.38; card, greens, bunkers 0; 16 misses (20 %) cost < 0.01 | ERROR_BUDGET.md |
 | long grass, no agent / no taps (held out, 18 truth courses, 250 tee shots) | **auto native sides: match 167 → 186, regret 8.79 → 4.34** (+ ≤ 2 classifier-ranked taps: 193 / 3.23; perfect sides 196 / 2.91); parkland controls unchanged | mapper/EVAL_BLIND.md "Automatic native sides" |
 | plan, no card, well-mapped | 80–85 % (vs card plan) | platform/CARDBLIND.md |
@@ -33,7 +33,7 @@ One cause per miss (`platform/budget_causes.py`, ERROR_BUDGET.md "Where the rema
 |---|---|---|---|---|
 | long grass | 28 | 25 | 2.44 (3.17 w/o Mariah 7) | 271 / 2.73 strokes (0.115 / round) |
 | tees | 21 | 13 | 0.93 | 265 / 4.61 |
-| trees | 24 | 14 | 0.92 | 268 / 3.96 |
+| trees | 24 (11-04 tree edge fix: 11 left) | 14 | 0.92 (11-04: tree misses 0.72 -> 0.38) | 268 / 3.96 |
 | fairway outline | 3 | 2 | 0.26 | 252 / 4.34 |
 | water / OB / elevation | 5 | 3 | 0.38 | |
 | card / greens / bunkers / routing | 0 | | 0.04 | |
@@ -106,9 +106,12 @@ detected (1 wrong, 2 partial by eye), rebuild queued.
    classifier-ranked confirm taps (EVAL_native_auto: +7 matches, -1.1 strokes on 18 courses); Mariah Hills (6
    misses with the layer on) and Spirit Hollow / Coldwater / Gateway sides the classifier misses; validate the
    gate's yes side on a fresh native truth course.
-2. **Trees** (24 misses, 0.92 strokes, 8 near ties): the auto canopy is short of the truth on every tree miss
-   (28,500 sq yds missing vs 1,800 extra); 17 an edge band, 7 whole crowns (La Nickell, Gustin, Amana, Buffalo
-   Ridge). Next: the tree buffer / canopy threshold, scored on all 24 courses.
+2. **Trees** (done 11-04, ERROR_BUDGET "Tree canopy edge"): the auto edge was 1.6 yds (median) short of the hand crowns and
+   27 % of crowns >= 100 sq yds were missed; 2/3 of the missing canopy was lidar > 2.5 m lost by the rule (the -1 m
+   erosion, polygon tracing, and a first-NAIP-year 'tall but not green' test that dropped 14-32 % of the canopy on some
+   courses), not recency (worst on the newest lidar). Tree rule k +1 m + greenest-NAIP-year test: 250 -> 256 / 331,
+   5.106 -> 4.448 strokes (held out 254 / 4.738); tree misses 24 -> 11. Left: 11 tree misses (Meta / NAIP-only crowns
+   ~12 % of the missing area); library courses pick it up on their next build (99 with a vision_any/2 tree layer).
 3. **Tees** (21 misses, 0.93 strokes; was 42 % of misses on 11-01): merge fix and far cap done (11-03). Left:
    unmapped lidar pads far behind the box (Osage 3), a wrong auto hole line (Buffalo Dunes 6), 8 cheap ones.
 4. **Fairway outline, water, OB, elevation** (8 misses, 0.64 strokes): small; Ellis 13 / 18 fairway shape.

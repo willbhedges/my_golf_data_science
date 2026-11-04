@@ -229,7 +229,7 @@ def tree_fc(vslug, k):
     cdir = RA.course_dir_for(vslug)
     S = L.Stack.load(vslug, cdir)
     M, _ = L.osm_masks(S, json.load(open(os.path.join(cdir, "osm.geojson"))))
-    canopy = L.tree_mask(S, M, hag_min=tb["hag"], min_area_m2=10.0)[0]
+    canopy = L.tree_mask(S, M, hag_min=tb["hag"], min_area_m2=10.0, struct_ndvi=tb.get("struct_ndvi", "first"))[0]
     trees = VM.tree_rule(canopy, k, tb["min_area_m2"], S.res)
     p = next((f["properties"].get("p") for f in cur["features"] if f["properties"].get("lie") == "recovery"), 0.646)
     S.ll_to_rc([[0, 0]])

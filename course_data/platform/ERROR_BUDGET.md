@@ -657,3 +657,76 @@ Not verified: the corrections are by eye on 0.6 m NAIP and the 1 m DEM, one judg
 knew which way the cap would move each hole; Veenker 16 and Sand Creek 1 were kept against it). La Nickell 9 and
 Gustin 7 are unresolved. No library course was rebuilt; on any course where a card is > 45 yds beyond the mapped
 back box the back set now goes onto that box (expected: a few holes per course, back sets only).
+
+## Tree canopy edge (2026-11-04): k +1 m and the structure test on the greenest NAIP year (adopted)
+
+**Measurement** (`platform/tree_edge_bias.py`, `tree_edge_bias.json`). The error budget's auto packages (as "Where the
+remaining strokes are": tees rebuilt, S4n native held out) against the hand tree polygons, inside each hand footprint
+and the landing corridor 120-345 yds along the truth tee -> aim line, +/- 50 yds, on the course's 1 m vision_any grid:
+23 courses with hand trees (Colbert Hills has none, National KC no card), 317 corridors, 1.18 M sq yds of truth canopy.
+Before = the current tree rule (lidar HAG > 2.5 m, 3x3 median, minus buildings and "tall but not green", clumps >=
+100 m2, eroded 1 m, polygons >= 150 sq yds) on every course; its plans are the 11-03 budget's to the shot (250 / 5.106:
+re-making the v1 courses' older +3 m layers at -1 m changes no match).
+
+| | before (k -1, NDVI of the first NAIP year) | after (k +1, greenest NAIP year) |
+|---|---|---|
+| truth canopy missing / extra (sq yds, % of truth) | 415,800 (35 %) / 57,500 (5 %) | 207,300 (18 %) / 166,500 (14 %) |
+| signed edge offset at truth crown edges (yds, + = auto short), median / mean / IQR | **+1.6 / +2.1** / -0.5..+3.4 (72 % of edge cells short) | -0.5 / -0.0 / -1.9..+1.0 (39 % short) |
+| crowns >= 100 sq yds missed (auto covers < 20 %) | **323 of 1,191 (27 %)**, median 172 sq yds (~13 m across), 103,500 sq yds | 89 (7.5 %), 33,000 sq yds |
+
+Missing canopy (before) by what the data says on those cells: **lidar HAG over the threshold 67 %** (the rule lost
+it: 93,200 sq yds not in the canopy mask, 54,000 of them thrown out by the "tall but not green = a structure" test,
+1,000 by the building class; 77,600 cut by the clump / -1 m erosion rule; 111,500 in the rule's raster but not in the
+polygons: cv2 traces the boundary cells' corners, ~0.5 m inside every edge, plus the 2-yd simplify and the per-hole
+clip), lidar 1-2.5 m 6 %, **Meta CHM only 6 %, NAIP tree-like only 6 %** (the most that can be crowns grown or
+planted since the lidar flight, or lidar gaps), nothing 15 % (hand lines drawn wide, shadows). By distance from the
+auto canopy: 38 % within 3 yds (the edge band), 29 % 3-8 yds, 33 % further (whole crowns).
+
+* **By source.** Lidar HAG rule (vision_any/2, 93 % of the auto edge): median +1.6 / mean +2.1 yds short; OSM wood
+  rows +0.6 / +1.0. No corridor's auto trees come from the Meta CHM or NAIP alone (every course has lidar; Meta fills
+  lidar gaps only).
+* **By lidar age** (newest NAIP year minus lidar year): 0-2 yrs median +1.9 / mean +3.0 (8,800 edge cells), 3-5 yrs
+  +1.6 / +2.2, 6+ yrs +1.0 / +1.8. The short edge is not recency (it is worst on the newest lidar: Veenker, Coldwater,
+  Buffalo Ridge, Wakonda 2020); crowns only Meta / NAIP see are 12 % of the missing area at most.
+* **The structure test was the surprise.** It reads NDVI on `S.naip[0]` (the newest year). Over lidar canopy that
+  image has NDVI < 0.05 on 14 % (Veenker 2023), 20 % (Blue Hills), 29 % (Wakonda), 32 % (Ellis) of the cells (dark /
+  shaded crowns), so whole crown sides were dropped as "structures". Only 1 of 5 stacks checked has a lidar
+  building class (Gateway; Veenker, Wakonda, Buffalo Ridge, Gustin have none), so skipping the test where lidar classifies buildings does not
+  reach them; the greenest of the NAIP years does (a roof is green in no year).
+
+**Fix and validation.** Every tree rule re-made on all 24 courses by the same plumbing as `rebuild_tees_trees.py`
+(then S4n held out, `error_budget.py --configs +trees`, n 4000, seed 31; per shot: `error_budget_tree_edge.json`):
+
+| tree rule (24 courses, 331 shots) | match | regret | per round |
+|---|---|---|---|
+| k -1, NDVI first year (today) | 250 | 5.106 | 0.216 |
+| k 0 / +1 / +2 / +3 | 254 / 255 / 254 / 254 | 4.794 / 4.614 / 4.629 / 4.806 | |
+| k +1, test skipped where lidar has buildings | 256 | 4.516 | |
+| k 0 / **+1** / +2, greenest NAIP year | 258 / **256** / 256 | 4.604 / **4.448** / 4.468 | **0.188** |
+| k +1, greenest year, clumps >= 30 m2 (instead of 100) | 255 | 4.748 | |
+| k +1, greenest year, + HAG > 1.5 m within 3 m of the canopy | 256 | 4.444 | |
+
+**Leave-one-course-out over all 11 rules** (today's included; chosen on the other 23 courses, scored on the held-out
+one): chosen by regret **254 / 331, regret 4.738 (0.200 per round)**, k +1 + greenest year picked in 20 of 24 folds
+(with or without the edge step), k +2 in 3 (Buffalo Dunes, Ellis, Veenker), skip-test in 1; chosen by matches 252 /
+4.670 (k 0 + greenest year in 21 folds). Either way held out beats today (250 / 5.106): **+2 to +4 matches, -0.37 to
+-0.44 strokes**. Adopted: `vision_any/model_v2/model.json` settings.trees `k_m` -1 -> **+1**, `struct_ndvi` **"max"**
+(`layers.tree_mask(struct_ndvi=)`, `v2_model.line_canopy`, `rebuild_tees_trees.tree_fc`; the native features keep
+the first-year canopy). The edge step (+0.004) is not worth its two parameters.
+
+Against today, in sample: 16 fixed, 10 broken. **Tree-caused misses 24 -> 11** (13 fixed: Hot Springs 1, 4, 13, 18,
+La Nickell 13, 15, 17, Gustin 9, 16, Pine Dunes 5, 13, Amana 12, Eagle Bend 7; their regret 0.72 -> 0.38), plus
+Gustin 15, Osage 15 (tees) and Eagle Bend 5 (long grass). The 10 breaks are cheap: Buffalo Ridge 2 +0.055, Ellis 10
++0.036, Veenker 14 +0.032, Ellis 5 +0.024, Hot Springs 6 +0.021, five < 0.01 (Blue Hills 10, 18, Spirit Hollow 9,
+Annbriar 18, Wakonda 1). Worst course: Buffalo Ridge -1 / +0.047, Veenker -1 / +0.032; no course loses more than 2
+matches (Blue Hills -2 / +0.009, Ellis -2 / -0.063). Misses costing > 0.02: 57 -> 50 (match counted that way 281 / 331,
+84.9 %).
+
+Not verified / limits: the S4n sides were re-run on each rule's packages but OB and the vision long-grass layer were
+not re-inferred (the vision native is off in the shipped settings; `ob_infer` does not read trees). The 11 rules were
+all scored before choosing; the grid is mine and small (k in -1..+3). The hand tree lines are one tracer per course;
+on Spirit Hollow and Ellis the extra canopy after the fix (28-37 % of truth before already) is partly real trees the
+hand map leaves out. No package or library course was rebuilt here (no rebuild queued). **Library courses that change
+on their next build: all 99 with a vision_any/2 lidar tree layer** (every library package except Anchorage, Kapalua
+Plantation: OSM trees only, and Gamble Sands: no trees); their tree zones grow ~2 m at the edge and regain the
+crown cells the first-year NDVI test dropped.

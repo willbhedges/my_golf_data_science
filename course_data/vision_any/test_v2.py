@@ -321,3 +321,37 @@ def test_grid_guard_refuses_a_runaway_box():
     with pytest.raises(SystemExit, match="too big"):
         FA.check_grid(FA.Grid((38.8, -76.4, 39.2, -75.9), 120, 1.0))
     FA.check_grid(FA.Grid((38.976, -76.185, 38.997, -76.160), 120, 1.0))
+
+
+def test_tree_mask_structure_test_reads_the_greenest_naip_year():
+    """A crown dark in the first NAIP year but green in another stays canopy with struct_ndvi="max"; a tall
+    patch green in no year (a roof) is a structure either way."""
+    S = fake_stack(120, 80)
+    hag = np.zeros((80, 120), np.float32)
+    hag[20:40, 10:40] = 12.0               # crown
+    hag[20:40, 70:100] = 8.0               # roof
+    S.layers = {"hag": hag}
+    green = np.zeros((80, 120, 4), np.float32)
+    green[..., 0], green[..., 3] = 0.1, 0.5           # NDVI 0.67 everywhere
+    dark = green.copy()
+    dark[20:40, 10:40, 3] = 0.1                       # first year: crown NDVI 0
+    for img in (green, dark):
+        img[20:40, 70:100, 0], img[20:40, 70:100, 3] = 0.4, 0.4    # roof NDVI 0 in both years
+    S.naip = [(2023, dark), (2021, green)]
+    first = L.tree_mask(S, None, hag_min=2.5, min_area_m2=10.0)[0]
+    best = L.tree_mask(S, None, hag_min=2.5, min_area_m2=10.0, struct_ndvi="max")[0]
+    assert first[25:35, 15:35].mean() < 0.2 and best[25:35, 15:35].mean() > 0.95
+    assert not first[25:35, 75:95].any() and not best[25:35, 75:95].any()
+
+
+def test_line_canopy_follows_the_settings():
+    S = fake_stack(60, 60)
+    hag = np.zeros((60, 60), np.float32)
+    hag[10:30, 10:30] = 10.0
+    S.layers = {"hag": hag}
+    img = np.zeros((60, 60, 4), np.float32)
+    img[..., 0], img[..., 3] = 0.1, 0.5
+    S.naip = [(2023, img)]
+    D = dict(S=S, M=None, canopy={2.5: np.zeros((60, 60), bool)})
+    assert not VM.line_canopy(D, {"hag": 2.5}).any()                    # default: the prepared canopy
+    assert VM.line_canopy(D, {"hag": 2.5, "struct_ndvi": "max"})[15:25, 15:25].all()

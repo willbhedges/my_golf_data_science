@@ -266,8 +266,12 @@ def disk(r):
     return (x * x + y * y) <= r * r
 
 
-def tree_mask(S, osm=None, hag_min=TREE_HAG_M, min_area_m2=30.0):
-    """Canopy mask: lidar HAG > hag_min, minus buildings, cleaned. Returns (mask, how, height)."""
+def tree_mask(S, osm=None, hag_min=TREE_HAG_M, min_area_m2=30.0, struct_ndvi="first"):
+    """Canopy mask: lidar HAG > hag_min, minus buildings, cleaned. Returns (mask, how, height).
+    struct_ndvi: the 'tall but not green = a structure' test reads the NDVI of the first NAIP year ("first", as
+    built before 2026-11-04) or the greenest of the NAIP years ("max": a crown is green in at least one summer
+    image, a roof in none; the first year alone threw out 10-30 % of the lidar canopy on several courses whose
+    newest NAIP is dark over trees: platform/ERROR_BUDGET.md "Tree canopy edge")."""
     how = []
     h = S.layers.get("hag")
     if h is not None and np.isfinite(h).mean() > 0.6:
@@ -294,8 +298,11 @@ def tree_mask(S, osm=None, hag_min=TREE_HAG_M, min_area_m2=30.0):
         if osm is not None:
             bld |= osm.get("building", np.zeros_like(m))
         if S.naip:                                             # tall but not green = a structure
-            nd = ndvi(S.naip[0][1])
-            bld |= (hm > hag_min) & (ndimage.uniform_filter(nd, 5) < 0.05)
+            if struct_ndvi == "max":
+                nd5 = np.max([ndimage.uniform_filter(ndvi(b), 5) for _, b in S.naip], 0)
+            else:
+                nd5 = ndimage.uniform_filter(ndvi(S.naip[0][1]), 5)
+            bld |= (hm > hag_min) & (nd5 < 0.05)
         bld = ndimage.binary_dilation(bld, disk(2))
         m &= ~bld
         height = hm

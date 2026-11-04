@@ -81,9 +81,11 @@
  "settings": {
   "trees": {
    "hag": 2.5,
-   "k_m": -1,
+   "k_m": 1,
    "min_area_m2": 100,
-   "recency": "none"
+   "recency": "none",
+   "struct_ndvi": "max",
+   "why": "2026-11-04 tree canopy edge (platform/ERROR_BUDGET.md 'Tree canopy edge'): k -1 -> +1 and the structure test on the greenest NAIP year; 24 card truth courses, leave-one-course-out over 9 tree rules chosen by regret: held out 250 -> 255 / 331, regret 5.106 -> 4.728; previous {k_m: -1, struct_ndvi: first}"
   },
   "native_thr": null,
   "native_off": "off by decision, not a missing setting: no P(native) threshold beat 'no long grass' on held-out truth courses (v2_decision_calibration.md, v2_holdout_calibration.md, v2_longgrass_cv.md, v2_longgrass_cv_rev2.md; out-of-fold corridor recall 0.01-0.11, false long grass on courses with none: v2_longgrass_eb.md)",

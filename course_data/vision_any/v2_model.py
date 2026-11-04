@@ -214,6 +214,15 @@ def native_mask(p, elig, thr, res=1.0):
     return L.remove_small(m, 150 * YD * YD / res ** 2)
 
 
+def line_canopy(D, tb):
+    """The canopy the golfer's trees line is drawn from: D["canopy"][hag] (structure test on the first NAIP year,
+    as the native features use it) unless settings.trees.struct_ndvi asks for another structure test."""
+    sn = tb.get("struct_ndvi", "first")
+    if sn == "first":
+        return D["canopy"][tb["hag"]]
+    return L.tree_mask(D["S"], D["M"], hag_min=tb["hag"], min_area_m2=10.0, struct_ndvi=sn)[0]
+
+
 def tree_rule(canopy, k, min_area, res=1.0):
     """Canopy mask -> golfer's trees line: drop clumps < min_area m2, then buffer k m (negative = erode)."""
     m = L.remove_small(canopy, min_area / res ** 2)
@@ -781,7 +790,7 @@ def infer(slug, integrate=False):
     p = predict_grid(D, clf, names, region)
     p = np.where(np.isfinite(p), p, 0).astype(np.float32)
     tb = st["trees"]
-    trees = tree_rule(D["canopy"][tb["hag"]], tb["k_m"], tb["min_area_m2"], S.res)
+    trees = tree_rule(line_canopy(D, tb), tb["k_m"], tb["min_area_m2"], S.res)
     el = E & D["course"] & ~D["water0"] & (np.ones_like(trees) if relaxed else ~trees)
     if st.get("native_dmin_yd"):          # decision-level calibration (v2_calibrate.py): no long grass this close to OSM fairway
         el &= ndimage.distance_transform_edt(~M["fairway"]) * S.res >= st["native_dmin_yd"] * YD
@@ -882,7 +891,8 @@ def meta_v2(R, D, meta):
     return dict(schema="vision_any/2", model_id=meta["model_id"], slug=D["slug"],
                 built=time.strftime("%Y-%m-%dT%H:%MZ", time.gmtime()),
                 trees_how=f"{R['trees_how']}; golfer trees line = canopy (HAG > {tb['hag']} m, clumps >= "
-                          f"{tb['min_area_m2']} m2) buffered {tb['k_m']:+d} m (learned on the hand maps)",
+                          f"{tb['min_area_m2']} m2) buffered {tb['k_m']:+d} m (decision-calibrated on the truth courses), "
+                          f"structure test on the {tb.get('struct_ndvi', 'first')} NAIP NDVI",
                 native_how=native_how(meta, yrs),
                 water_how="OSM water + NDWI open water near OSM water/streams + DTM channel of OSM streams + unmown banks",
                 trained_on="hand maps of Spirit Hollow (hand_zones_ll.json) and Mozingo Lake (tee_strategy.HOLES)",
