@@ -1,6 +1,6 @@
 # Eagle Bend Golf Course (Lawrence, KS) - Gold tees
 
-Built 2026-11-03T21:28:46Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
+Built 2026-11-04T02:04:05Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
 
 ## Coverage
 
@@ -13,8 +13,8 @@ Built 2026-11-03T21:28:46Z. OSM way/151983193. Scorecard: file (course_data/libr
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 10 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.362 |
-| mean_confidence | 0.793 |
+| mean_landing_osm_share | 0.359 |
+| mean_confidence | 0.797 |
 | osm_score | 0.815 |
 
 OSM features inside the course: buildings 9, golf=bunker 23, golf=cartpath 24, golf=clubhouse 1, golf=driving_range 1, golf=fairway 24, golf=green 20, golf=hole 18, golf=pin 18, golf=tee 74, golf=water_hazard 4, holes_with_par 18, water_lines 7, water_polygons 4
@@ -36,7 +36,7 @@ OSM features inside the course: buildings 9, golf=bunker 23, golf=cartpath 24, g
 | 11 | 4 | 385 / 386 | 92 | 0.74 | check the flags | 34% | 0% | 66% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 12 | 3 | 165 / 165 | 161 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 13 | 5 | 610 / 611 | 285 | 0.73 | check the flags | 29% | 0% | 71% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
-| 14 | 4 | 429 / 430 | 250 | 0.70 | check the flags | 44% | 17% | 40% | tee stage: Gold walkback | tee: tee stage: Gold walkback; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); Gold tee walked back along the hole line (no box at 429 yds) |
+| 14 | 4 | 429 / 374 | 250 | 0.78 | check the flags | 39% | 9% | 52% | tee stage: Gold tee_axis_far_cap | tee: tee stage: Gold tee_axis_far_cap; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 15 | 4 | 340 / 341 | 81 | 0.73 | check the flags | 27% | 5% | 68% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 16 | 4 | 448 / 449 | 255 | 0.80 | check the flags | 38% | 20% | 42% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 17 | 3 | 196 / 196 | 185 | 0.96 | auto | 100% | 0% | 0% | tee stage: Gold tee_centroid |  |
@@ -54,9 +54,13 @@ OSM features inside the course: buildings 9, golf=bunker 23, golf=cartpath 24, g
 - **imagery**: ok: course_data/packages/eagle_bend/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
 - **elevation**: ok: course_data/packages/eagle_bend/imagery/dem.tif (18/18 holes)
-- **vision**: missing: product layer vision_any/2 not built for 'eagle_bend' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 132 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py eagle_bend (course_package.yml does on a fetch)
+- **vision**: missing: product layer vision_any/2 not built for 'eagle_bend' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 130 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py eagle_bend (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 0 polygons (); mode replace
-- **native_auto**: none: course gate shut: 21% of sides >= 0.675 (< 25%)
+- **native_auto**: none: course gate shut: 14% of sides >= 0.675 (< 25%)
+
+## Warnings
+
+- hole 14: measured 374 vs card 429 yds for Gold (no OSM tee box at that yardage?)

@@ -1,6 +1,6 @@
 # Falcon Ridge Golf Course (Lenexa, KS) - Black tees
 
-Built 2026-11-03T21:30:09Z. OSM relation/3961566. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-04T02:04:56Z. OSM relation/3961566. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 

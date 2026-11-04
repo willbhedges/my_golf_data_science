@@ -1,5 +1,5 @@
 """Course module for Eagle Bend Golf Course (Gold tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T21:28:46Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-04T02:04:05Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_eagle_bend.json
 
