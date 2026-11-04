@@ -1,6 +1,6 @@
 # L.A. Nickell Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-11-03T20:47:42Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-04T02:10:14Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
@@ -15,9 +15,9 @@ Built 2026-11-03T20:47:42Z. OSM way/387047950. Scorecard: golfify (golfify). Tee
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.278 |
-| mean_confidence | 0.774 |
-| osm_score | 0.842 |
+| mean_landing_osm_share | 0.275 |
+| mean_confidence | 0.78 |
+| osm_score | 0.841 |
 
 OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1, golf=fairway 22, golf=green 20, golf=hole 17, golf=tee 40, golf=water_hazard 3, holes_with_par 17, water_lines 1, water_polygons 4
 
@@ -42,7 +42,7 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 | 15 | 4 | 377 / 377 | 315 | 0.78 | check the flags | 32% | 18% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 16 | 4 | 328 / 329 | 73 | 0.81 | auto | 19% | 55% | 26% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 17 | 4 | 407 / 402 | 100 | 0.72 | check the flags | 18% | 8% | 74% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 18 | 4 | 427 / 426 | 207 | 0.67 | check the flags | 30% | 21% | 48% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 427 yds) |
+| 18 | 4 | 427 / 380 | 204 | 0.77 | check the flags | 26% | 25% | 48% | tee stage: Blue tee_axis_far_cap | tee: tee stage: Blue tee_axis_far_cap |
 
 ## Stages
 
@@ -67,3 +67,4 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 
 - card consensus: opengolfapi: set order: 'Web' is longer than 'White' on 11 of 11 holes with several OSM tees: names may be swapped
 - requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red
+- hole 18: measured 380 vs card 427 yds for Blue (no OSM tee box at that yardage?)

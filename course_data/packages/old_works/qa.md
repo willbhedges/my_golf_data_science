@@ -1,6 +1,6 @@
 # Old Works Golf Club (Anaconda, MT) - Slag tees
 
-Built 2026-11-03T20:48:13Z. OSM way/296526499. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-04T02:10:46Z. OSM way/296526499. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
