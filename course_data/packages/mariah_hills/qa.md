@@ -1,6 +1,6 @@
 # Mariah Hills Golf Course (Dodge City, KS) - Blue tees
 
-Built 2026-11-03T21:32:19Z. OSM way/329961222. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-04T02:05:52Z. OSM way/329961222. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -29,7 +29,7 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 23, g
 | 4 | 4 | 423 / 422 | 181 | 0.85 | auto | 31% | 37% | 32% | tee stage: Blue tee_centroid |  |
 | 5 | 3 | 165 / 165 | 158 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
 | 6 | 5 | 498 / 499 | 275 | 0.85 | auto | 43% | 39% | 18% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 7 | 4 | 372 / 372 | 59 | 0.73 | check the flags | 5% | 85% | 10% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 372 yds) |
+| 7 | 4 | 372 / 372 | 59 | 0.73 | check the flags | 5% | 85% | 10% | tee stage: Blue walkback | tee: tee stage: Blue walkback; Blue tee walked back along the hole line (no box at 372 yds); Blue tee out of order with the other sets |
 | 8 | 3 | 195 / 195 | 28 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
 | 9 | 4 | 375 / 375 | 232 | 0.86 | auto | 37% | 37% | 26% | tee stage: Blue tee_centroid |  |
 | 10 | 4 | 361 / 360 | 12 | 0.83 | auto | 31% | 50% | 20% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
@@ -54,7 +54,7 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 23, g
 - **imagery**: ok: course_data/packages/mariah_hills/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/mariah_hills/imagery/dem.tif (18/18 holes)
-- **vision**: missing: product layer vision_any/2 not built for 'mariah_hills' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 223 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py mariah_hills (course_package.yml does on a fetch)
+- **vision**: missing: product layer vision_any/2 not built for 'mariah_hills' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 222 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py mariah_hills (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **green_auto**: not needed: every hole has a mapped green
