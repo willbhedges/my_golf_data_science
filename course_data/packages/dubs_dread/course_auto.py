@@ -1,5 +1,5 @@
 """Course module for Dub's Dread Golf Club (Championship tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T21:27:49Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-04T02:03:38Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_dubs_dread.json
 

@@ -1,5 +1,5 @@
 """Course module for Creekmoor Golf Club (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T21:26:42Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-04T02:02:55Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_creekmoor.json
 
