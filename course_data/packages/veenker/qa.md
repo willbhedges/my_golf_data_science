@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-11-03T21:42:05Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
+Built 2026-11-04T02:11:44Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
 **WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
@@ -15,9 +15,9 @@ Built 2026-11-03T21:42:05Z. OSM way/44804299. Scorecard: golfify (golfify). Tee 
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 13 |
 | of_par4_5 | 13 |
-| mean_landing_osm_share | 0.301 |
-| mean_confidence | 0.809 |
-| osm_score | 0.86 |
+| mean_landing_osm_share | 0.291 |
+| mean_confidence | 0.811 |
+| osm_score | 0.858 |
 
 OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, golf=fairway 30, golf=green 26, golf=hole 18, golf=lateral_water_hazard 2, golf=path 38, golf=rough 1, golf=tee 43, holes_with_handicap 18, holes_with_par 18, water_lines 1, water_polygons 2
 
@@ -40,7 +40,7 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 | 13 | 3 | 160 / 160 | 56 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 14 | 4 | 416 / 416 | 339 | 0.76 | check the flags | 26% | 18% | 56% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 15 | 4 | 420 / 419 | 237 | 0.78 | check the flags | 35% | 15% | 50% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 16 | 5 | 544 / 549 | 140 | 0.75 | check the flags | 46% | 21% | 34% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 544 yds) |
+| 16 | 5 | 544 / 478 | 128 | 0.78 | check the flags | 32% | 20% | 48% | tee stage: Blue tee_axis_far_cap | tee: tee stage: Blue tee_axis_far_cap; Blue tee out of order with the other sets |
 | 17 | 3 | 190 / 185 | 109 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 18 | 5 | 534 / 533 | 335 | 0.75 | check the flags | 32% | 8% | 61% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 
@@ -57,7 +57,7 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
 - **elevation**: ok: course_data/packages/veenker/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer); water filter: false vision water -6867 m2 {'road': 6866, 'cells': 1}
-- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+3 zones on 2 holes, +0 greens, 20 tee candidates)
+- **segment**: ok: segment gap-fill ariadgolf-v4@43ee2944 (+4 zones on 3 holes, +0 greens, 20 tee candidates)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 12 polygons (property_line 12); mode replace
@@ -68,3 +68,4 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 - requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red
 - hole 7 Blue: CHECK, tee was on a road (OSM 16037399): moved 11 yds forward off it
 - hole 3: measured 314 vs card 333 yds for Blue (no OSM tee box at that yardage?)
+- hole 16: measured 478 vs card 544 yds for Blue (no OSM tee box at that yardage?)
