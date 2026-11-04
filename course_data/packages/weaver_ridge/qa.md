@@ -1,6 +1,6 @@
 # WeaverRidge Golf Club (Peoria, IL) - Black tees
 
-Built 2026-11-03T20:53:37Z. OSM way/749257217. Scorecard: file (course_data/library/weaver_ridge/card_review.json). Tee set: name.
+Built 2026-11-04T02:16:11Z. OSM way/749257217. Scorecard: file (course_data/library/weaver_ridge/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -65,5 +65,4 @@ OSM features inside the course: buildings 183, golf=bunker 78, golf=cartpath 46,
 
 ## Warnings
 
-- hole 5 Black: CHECK, walk-back ran onto a building (OSM 749315857) 40 yds behind the line start: capped there (62 yds short of the card)
 - hole 5: measured 363 vs card 387 yds for Black (no OSM tee box at that yardage?)
