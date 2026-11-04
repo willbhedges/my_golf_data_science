@@ -220,3 +220,44 @@ def test_heldout_set_v2_matches_truth_sets_package():
                         if str(z.get("src", "")).startswith("hand")]
                 st = E.truth_stack([], dict(td, extra=[]))
                 assert [(l, r) for l, r in st] == [(l, r) for l, r in hand if l]
+
+
+def _row(hole, match, regret, low=False):
+    r = dict(hole=hole, truth=dict(tie=False), configs=dict(auto=dict(match=match, club=match, same_or_tie=match,
+                                                                       regret=regret)))
+    if low:
+        r["tee_low_confidence"] = True
+    return r
+
+
+def test_headline_and_summary_with_and_without_low_confidence_tees(monkeypatch):
+    """Tee shots whose truth tee is flagged low confidence count in 'all' and drop out of 'no_low_conf'."""
+    monkeypatch.setattr(E, "ONLY", set())          # summarise: no swap configurations, only the auto headline
+    courses = [dict(slug="a", rows=[_row("1", True, 0.0), _row("2", False, 0.2, low=True)]),
+               dict(slug="b", rows=[_row("5", False, 0.05)]),
+               dict(slug="c", error="no package")]
+    H = E.headline(courses)
+    assert H["all"] == dict(holes=3, match=1, regret=0.25)
+    assert H["no_low_conf"] == dict(holes=2, match=1, regret=0.05)
+    assert H["low_conf_holes"] == ["a:2"]
+    assert E.headline(courses, skip=("a",))["low_conf_holes"] == []
+    monkeypatch.setattr(E, "configs", lambda: [("auto", "auto", ()), ("truth", "truth", ())])
+    monkeypatch.setattr(E, "LAYERS", [])
+    monkeypatch.setattr(E, "GROUPS", {})
+    S, N = E.summarise(courses), E.summarise(courses, drop_low_conf=True)
+    assert (S["holes"], S["auto_match"], S["auto_regret"]) == (3, 1, 0.25)
+    assert (N["holes"], N["auto_match"], N["auto_regret"]) == (2, 1, 0.05)
+    assert S["low_conf_holes"] == N["low_conf_holes"] == ["a:2"] and N["low_conf_dropped"]
+
+
+def test_truth_holes_reads_low_confidence_tees():
+    """holes_truth tee_confidence {set: 'low'} (truth_sets_v2 Buffalo Dunes 6 Blue, Eagle Bend 14 Gold) reaches
+    the harness truth for the scored set only."""
+    cfgs = {c["slug"]: c for c in E.courses_v2()}
+    if not {"buffalo_dunes", "eagle_bend"} <= set(cfgs):
+        pytest.skip("truth_sets_v2 courses not checked out")
+    for slug, hole in (("buffalo_dunes", "6"), ("eagle_bend", "14")):
+        tr = E.truth_holes(cfgs[slug])
+        assert tr[hole]["tee_confidence"] == "low"
+        assert [r for r, td in tr.items() if td.get("tee_confidence")] == [hole]
+        assert E.truth_holes(dict(cfgs[slug], tees="Red"))[hole]["tee_confidence"] is None

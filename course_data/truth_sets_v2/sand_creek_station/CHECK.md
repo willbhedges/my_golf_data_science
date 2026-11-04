@@ -13,6 +13,7 @@ Native on both sides of most holes (the golfer's description), beyond a mown rou
 | hole | item |
 |---|---|
 | 1 | native right only (tall grass on the creek bank under trees) |
+| 1 | Championship tee (re-checked 2026-11-04) | **moved by hand onto OSM tee T8 (way 868148202): 475 yds vs card 474**, 42 yds right of the old estimate (pad T1 at 420 walked back +54 yds along the line, onto the cart-path / bridge corner). T8 is a groomed box with a mown surround (blind re-check, `../TEE_RECHECK.md`); `tees/lidar_pads.detect_pads` finds a lidar pad 2 yds from its centre and none within 42 yds of the old point; DEM: T8 +0.86 m over its ring, std 0.07 m (flat), old point std 0.22 m (sloped bank). |
 | 4 | left = hayed native with windrows (2023); right = tall grass round the pond to 270 yds |
 | 8 10 | narrow bands before the wetlands; 10 left is the wetland fringe |
 | 15 | houses right beyond ~290: native stopped at 290, OB not drawn |

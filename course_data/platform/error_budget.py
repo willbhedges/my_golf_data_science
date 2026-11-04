@@ -321,7 +321,8 @@ def truth_holes(cfg):
                             tee_ll=(th.get("tees") or {}).get(S),
                             hand=dict(footprint=m["footprint_ll"], zones=m["zones"]) if m else None,
                             extra=th.get("extra_zones") or [],
-                            tee_method=(th.get("tee_method") or {}).get(S))
+                            tee_method=(th.get("tee_method") or {}).get(S),
+                            tee_confidence=(th.get("tee_confidence") or {}).get(S))
     elif cfg["kind"] == "corridor":
         HZ = rj(os.path.join(CD, "truth", cfg["slug"], "hand_zones_ll.json"))["holes"]
         for ref, m in HZ.items():
@@ -687,6 +688,8 @@ def score_course(cfg, n, workers, cache):
                    configs={})
         if truth[ref].get("tee_method"):
             row["tee_method"] = truth[ref]["tee_method"]
+        if truth[ref].get("tee_confidence") == "low":
+            row["tee_low_confidence"] = True     # holes_truth tee_confidence: a re-check disputes this truth tee
         for name, (C, holes, layers) in built.items():
             if k not in holes:
                 row["configs"][name] = dict(pick=None, aim=0.0, match=False, club=False, same_or_tie=False,
@@ -742,8 +745,27 @@ def score_course(cfg, n, workers, cache):
 NO_CARD = ("national_kc",)       # the build found no web card (tee set osm_back): hole numbering wrong
 
 
-def summarise(courses, skip=()):
-    rows = [(c["slug"], r) for c in courses if "rows" in c and c["slug"] not in skip for r in c["rows"]]
+def low_conf_holes(courses, skip=()):
+    """'slug:hole' of the scored rows whose truth tee is flagged low confidence (holes_truth tee_confidence)."""
+    return [f"{c['slug']}:{r['hole']}" for c in courses if "rows" in c and c["slug"] not in skip for r in c["rows"]
+            if r.get("tee_low_confidence")]
+
+
+def headline(courses, skip=()):
+    """Auto match / regret over the scored tee shots, with and without the low-confidence truth tees. Works on any
+    run (also --configs, which writes no summary)."""
+    def one(drop):
+        rows = [r for c in courses if "rows" in c and c["slug"] not in skip for r in c["rows"]
+                if not (drop and r.get("tee_low_confidence"))]
+        return dict(holes=len(rows), match=sum(bool(r["configs"]["auto"]["match"]) for r in rows),
+                    regret=round(sum(r["configs"]["auto"]["regret"] or 0 for r in rows), 3))
+    return {"all": one(False), "no_low_conf": one(True), "low_conf_holes": low_conf_holes(courses, skip)}
+
+
+def summarise(courses, skip=(), drop_low_conf=False):
+    """drop_low_conf: leave out the tee shots whose truth tee is flagged low confidence (row tee_low_confidence)."""
+    rows = [(c["slug"], r) for c in courses if "rows" in c and c["slug"] not in skip for r in c["rows"]
+            if not (drop_low_conf and r.get("tee_low_confidence"))]
     miss = [(s, r) for s, r in rows if not r["configs"]["auto"]["match"]]
     out = dict(holes=len(rows), auto_match=len(rows) - len(miss), auto_club=sum(r["configs"]["auto"]["club"] for _, r in rows),
                auto_same_or_tie=sum(r["configs"]["auto"]["same_or_tie"] for _, r in rows),
@@ -767,6 +789,8 @@ def summarise(courses, skip=()):
                            fixed_by_groups=[f"{s}:{r['hole']}" for s, r in resid
                                             if any(r["configs"][f"+{g}"]["match"] for g in GROUPS)])
     out["auto_regret_note"] = "regret summed where the aim point is on the same hole (<= SAME_PLACE yds)"
+    out["low_conf_holes"] = low_conf_holes(courses, skip)
+    out["low_conf_dropped"] = bool(drop_low_conf)
     return out
 
 
@@ -931,6 +955,12 @@ def heldout_report(res):
     L.append(f"| **pooled** | | {S['holes']} | **{S['auto_match']} ({pc(S['auto_match'], S['holes'])})** | "
              f"{S['auto_club']} ({pc(S['auto_club'], S['holes'])}) | {S['auto_same_or_tie']} | {S['auto_regret']} | "
              f"{S['ref_ties']} | {te['median']} ({te['n']}; {te['within_10']} within 10) | |")
+    lc = S.get("low_conf_holes") or low_conf_holes(courses)
+    if lc:
+        N = res.get("summary_no_low_conf") or summarise(courses, drop_low_conf=True)
+        L.append(f"| *pooled without the {len(lc)} low-confidence truth tees* ({', '.join(lc)}) | | {N['holes']} | "
+                 f"{N['auto_match']} ({pc(N['auto_match'], N['holes'])}) | {N['auto_club']} | {N['auto_same_or_tie']} | "
+                 f"{N['auto_regret']} | {N['ref_ties']} | | |")
     L += [""] + table(S, "Layer table (held-out, pooled)")
     return "\n".join(L)
 
@@ -1014,11 +1044,14 @@ def main():
     res = dict(schema="error_budget/1", made_utc=dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%MZ"), n=a.n,
                aim_tol=AIM_TOL, tie=TIE, layers=LAYERS, groups=GROUPS, not_scored=NOT_SCORED, courses=courses)
     res["set"] = a.set
+    res["headline"] = headline(courses, NO_CARD if a.set == "v1" else ())
+    print("headline:", json.dumps(res["headline"]), flush=True)
     if ONLY:
         json.dump(res, open(OUT_JSON, "w"), indent=1, default=float)
         return
     if a.set != "v1":                            # held-out set: summaries in the json, tables printed (no .md)
         res["summary"] = summarise(courses)
+        res["summary_no_low_conf"] = summarise(courses, drop_low_conf=True)
         res["per_course"] = {c["slug"]: summarise([c]) for c in courses if "rows" in c}
         res["tee_err"] = tee_err_summary(courses)
         json.dump(res, open(OUT_JSON, "w"), indent=1, default=float)
@@ -1026,6 +1059,7 @@ def main():
         return
     res["summary"] = summarise(courses, NO_CARD)
     res["summary_all"] = summarise(courses)
+    res["summary_no_low_conf"] = summarise(courses, NO_CARD, drop_low_conf=True)
     res["recommendation"] = old.get("recommendation")       # hand-written from the numbers (kept across runs)
     json.dump(res, open(OUT_JSON, "w"), indent=1, default=float)
     write_md(res)

@@ -17,5 +17,6 @@ Numbering: the OSM / OpenGolfAPI order (library review rv06; the golfify card is
 | 11 13 15 16 18 | native from the 2021 photo only (mottled vs smooth turf): medium-low |
 | 1 7 9 10 14 | no native traced (mown / trees / water) |
 | 14 | Gold tee (re-checked 2026-11-03) | **moved by hand to the back edge of the back-most mapped box: 374 yds vs card 429.** The +62 estimate is open rough beside a tree line: no box in NAIP 2021 / 2023, flat DEM, no lidar pad. |
+| 14 | Gold tee: **LOW CONFIDENCE** (blind re-check 2026-11-03, `../TEE_RECHECK.md`: unsure, lean disagree) | the re-check measures a raised, flat DEM pad (+0.47 m, std 0.03 m, like the mapped round box) on the 429 contour beside the tree line (~425 yds; faint mown patch in NAIP 2021 / 2023, no OSM box, no detected lidar pad). Neither check found a visible tee. Kept at 374, flagged `tee_confidence` low in `holes_spec.json`; `platform/error_budget.py` reports scores with and without it. |
 | 18 | Gold tee (re-checked 2026-11-03) | moved by hand 23 yds right onto the small mown pad at the end of the cart path (raised in the DEM): 547 yds = the card. |
 | all | mown-rough width 10 yds: +/-5 |

@@ -9,12 +9,14 @@ Spec: course_data/truth/<slug>/holes_spec.json, written by hand after checking t
    "features": "course_data/truth/<slug>/map/features.json",
    "holes": {"1": {"green": "G12" | [lon, lat], "line": [[lon, lat], ...] (tee area -> corner(s); optional),
                    "pads": ["T7", "T8", ...] | [[lon, lat], ...], "tees": {"Black": "T7" | [lon, lat]} (optional),
+                   "tee_confidence": {"Black": "low"} (optional: a tee a re-check disputes; the error budget reports
+                   its scores with and without these holes),
                    "note": "..."}}}
 Per set, the tee is (in order): the spec's explicit tee; else the pad whose measured length (tee -> line corners ->
 green centre) is closest to the card, when within TOL yds; else the nearest-length pad moved along the tee line by
 (card - measured), flagged "estimated". Green outline = the OSM polygon of a G id (else none).
 Writes holes_truth.json {holes: {ref: {par, card, tees {set: ll}, tee_method {set: ...}, green_ll, green_poly_ll,
-hole_line_ll, measured {set: yds}, note}}} and prints the table.
+hole_line_ll, measured {set: yds}, note[, tee_confidence {set: "low"}]}}} and prints the table.
 """
 import argparse
 import json
@@ -98,6 +100,8 @@ def build(slug):
         out[ref] = dict(par=card["par"][i], card={s: v[i] for s, v in card["sets"].items()}, tees=tees, tee_method=how,
                         measured=meas, green_ll=g, green_poly_ll=gpoly, hole_line_ll=line, note=hs.get("note", ""),
                         extra_zones=hs.get("extra_zones", []))
+        if hs.get("tee_confidence"):
+            out[ref]["tee_confidence"] = dict(hs["tee_confidence"])
     res = dict(slug=slug, source=spec.get("source", ""), card_source=card.get("source"), holes=out)
     json.dump(res, open(C.tdir(slug, "holes_truth.json"), "w"), indent=1)
     for ref, h in out.items():

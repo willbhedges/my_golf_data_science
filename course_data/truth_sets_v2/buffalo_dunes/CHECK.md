@@ -16,4 +16,5 @@ Sandhill prairie (tan textured native) between all fairways, beyond a mown rough
 | 14 | dirt lot right short of 250: excluded |
 | 18 | left: hayed native with windrows (2023), kept as native |
 | 6 | Blue tee (re-checked 2026-11-03) | moved by hand to the back end of the long mapped box (389 yds vs card 400); the estimate was 9 yds behind it in native grass. |
+| 6 | Blue tee: **LOW CONFIDENCE** (blind re-check 2026-11-03, `../TEE_RECHECK.md`: disagree) | the hand point is the west end of the long box 82 yds left of hole 6's line, which reads as hole 12's tee (OSM hole 12 starts at its east end). The re-check puts the Blue on the back of hole 6's own line-start box (~353 yds, card -47; medium confidence: a shared tee would explain the card better). Kept, flagged `tee_confidence` low in `holes_spec.json`; `platform/error_budget.py` reports scores with and without it. |
 | 11 | Blue tee (re-checked 2026-11-03) | **moved by hand to the back end of the mapped box: 380 yds vs card 423** (medium confidence). The +55 estimate is rough beside a cart path and trees next to the previous green: no box in NAIP 2021 / 2023, no lidar pad. |

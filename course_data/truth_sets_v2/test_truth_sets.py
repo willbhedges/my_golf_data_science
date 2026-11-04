@@ -31,6 +31,9 @@ def test_course(slug):
         d = abs(h["measured"][cs] - h["card"][cs])
         if d > 12:
             assert f"| {ref} |" in open(os.path.join(HERE, slug, "CHECK.md")).read(), (slug, ref, d)
+        for s, c in (h.get("tee_confidence") or {}).items():   # a re-check disputes this truth tee: say why
+            assert s in h["tees"] and c == "low", (slug, ref, s, c)
+            assert "LOW CONFIDENCE" in h["note"] and f"| {ref} |" in open(os.path.join(HERE, slug, "CHECK.md")).read()
     for ref, z in HZ.items():
         assert T["holes"][ref]["par"] >= 4
         assert z["footprint_ll"] and z["zones"]
