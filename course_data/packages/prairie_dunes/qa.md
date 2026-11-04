@@ -1,6 +1,6 @@
 # Prairie Dunes (Hutchinson, KS) - Blue tees
 
-Built 2026-11-03T20:48:42Z. OSM way/778336759. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-04T02:11:16Z. OSM way/778336759. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
