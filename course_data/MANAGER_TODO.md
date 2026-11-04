@@ -149,3 +149,4 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - PLAN: ONE library-wide rebuild (tee merge + far cap, native auto, green detector, tree edge) AFTER the Nov 6 evening EK refresh, so the runner pool stays free for EK; then QA in tranches into the app.
 - OPEN: 4 vision_any/test_water_filter failures pre-existing -> agent running.
 - water_filter tests fixed (85413e67a): tests read already-filtered packages after cd853cff6 put the filter in every build; test now rebuilds the unfiltered input. vision_any 45/45. No code change.
+- 02:30Z check-in: no failures. Scoreboard 141 running under the 240-min limit (142 cancelled as a superseded pending run, 143 pending - normal concurrency). course-package 121 + vision-any 17 succeeded on the tree-edge commit. Agents (local branches, push after Nov 7 03:00Z): native-summer, followups-1104.
