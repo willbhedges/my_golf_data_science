@@ -1,5 +1,5 @@
 """Course module for Buffalo Ridge Springs Golf Course (Buffalo tees), generated from package.json by
-course_data/platform/package.py on 2026-11-03T20:41:17Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-04T02:04:00Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_buffalo_ridge.json
 
