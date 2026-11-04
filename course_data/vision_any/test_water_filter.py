@@ -254,6 +254,25 @@ def _have(slug):
             and os.path.exists(os.path.join(ROOT, "course_data", "mapper", slug, "agent_zones.geojson")))
 
 
+_UNFILTERED = {}
+
+
+def _unfiltered_package(slug):
+    """The committed package with its vision zones rebuilt as they are BEFORE the water filter runs: the filter's
+    real input. Every package build since the filter landed (cd853cff6) runs it twice -- in layers.water_mask
+    (vision layers built on the fly, e.g. gustin) and in gapfill.water_filter -- so the committed package.json
+    already has the false water removed and cannot be the 'before' of a test of the filter. Here gapfill re-adds
+    the vision zones from the course's vision layers (the same step every build runs) with both hooks off."""
+    if slug not in _UNFILTERED:
+        import gapfill as G
+        pkg = json.load(open(os.path.join(ROOT, "course_data", "packages", slug, "package.json")))
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr(G, "water_filter", lambda *a, **k: "")
+            mp.setattr(WF, "false_water", lambda water, *a, **k: (water, []))
+            _UNFILTERED[slug] = G.gapfill(pkg, slug=slug, use_reframe=False)
+    return json.loads(json.dumps(_UNFILTERED[slug]))
+
+
 @pytest.fixture(scope="module")
 def filtered():
     """{slug: (S, erase mask, vision water before, after, OSM water mask)} for the labelled courses present.
@@ -270,7 +289,7 @@ def filtered():
         S = L.Stack.load(slug, cdir)
         fc = json.load(open(os.path.join(cdir, "osm.geojson")))
         M, _ = L.osm_masks(S, fc)
-        pkg = json.load(open(os.path.join(ROOT, "course_data", "packages", slug, "package.json")))
+        pkg = _unfiltered_package(slug)
         vz = [Polygon(z["poly"]).buffer(0) for h in pkg["holes"].values() for z in h["zones_ll"]
               if z["lie"] == "water" and str(z.get("src", "")).startswith("vision")]
         W = S.rasterize(vz) & ~M["water"]
@@ -347,7 +366,7 @@ def test_filter_package_on_rivercut():
     import copy
     from shapely.geometry import Polygon, shape
     from shapely.ops import unary_union
-    pkg = json.load(open(pp))
+    pkg = _unfiltered_package("rivercut")             # the committed package is already filtered
     new = copy.deepcopy(pkg)
     rep = WF.filter_package(new, slug="rivercut", piped=True)
     assert rep["piped"]["zones_cut"] >= 1 and rep["vision"]["removed_m2"] > 5000
