@@ -1,6 +1,6 @@
 # A. L. Gustin Golf Course (Columbia, MO) - Black tees
 
-Built 2026-11-03T20:45:58Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-04T02:08:29Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -13,9 +13,9 @@ Built 2026-11-03T20:45:58Z. OSM way/449108205. Scorecard: golfify (golfify). Tee
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.385 |
-| mean_confidence | 0.807 |
-| osm_score | 0.877 |
+| mean_landing_osm_share | 0.39 |
+| mean_confidence | 0.813 |
+| osm_score | 0.878 |
 
 OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, golf=clubhouse 1, golf=fairway 22, golf=green 19, golf=hole 18, golf=tee 52, golf=water_hazard 1, holes_with_par 18, trees_polygons 3, water_lines 5, water_polygons 1
 
@@ -37,7 +37,7 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 | 12 | 5 | 518 / 515 | 180 | 0.81 | auto | 53% | 6% | 41% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 13 | 3 | 205 / 205 | 200 | 0.96 | auto | 100% | 0% | 0% | tee stage: Black tee_centroid |  |
 | 14 | 4 | 378 / 380 | 352 | 0.74 | check the flags | 47% | 16% | 37% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 378 yds) |
-| 15 | 4 | 467 / 467 | 62 | 0.70 | check the flags | 38% | 24% | 38% | tee stage: Black walkback | tee: tee stage: Black walkback; Black tee walked back along the hole line (no box at 467 yds) |
+| 15 | 4 | 467 / 404 | 62 | 0.81 | auto | 45% | 16% | 39% | tee stage: Black tee_axis_far_cap | tee: tee stage: Black tee_axis_far_cap |
 | 16 | 4 | 332 / 329 | 224 | 0.77 | check the flags | 30% | 19% | 51% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 17 | 4 | 405 / 405 | 39 | 0.82 | auto | 42% | 10% | 48% | tee stage: Black tee_centroid |  |
 | 18 | 4 | 378 / 377 | 4 | 0.76 | check the flags | 23% | 20% | 57% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
@@ -54,7 +54,7 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 - **imagery**: ok: course_data/packages/gustin/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020
 - **elevation**: ok: course_data/packages/gustin/imagery/dem.tif (18/18 holes)
-- **vision**: missing: product layer vision_any/2 not built for 'gustin' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 115 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py gustin (course_package.yml does on a fetch)
+- **vision**: missing: product layer vision_any/2 not built for 'gustin' (fell back to vision_any/1 (lidar canopy + NAIP native, OSM-self-supervise from raw/ on the fly: trees / water kept, 113 long-grass zones dropped); CHECK: build it with course_data/vision_any/build_layers.py gustin (course_package.yml does on a fetch)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **green_auto**: not needed: every hole has a mapped green
@@ -64,3 +64,4 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 ## Warnings
 
 - hole 11 Black: CHECK, tee was on a road (OSM 278117436): moved 7 yds forward off it
+- hole 15: measured 404 vs card 467 yds for Black (no OSM tee box at that yardage?)
