@@ -150,3 +150,4 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - OPEN: 4 vision_any/test_water_filter failures pre-existing -> agent running.
 - water_filter tests fixed (85413e67a): tests read already-filtered packages after cd853cff6 put the filter in every build; test now rebuilds the unfiltered input. vision_any 45/45. No code change.
 - 02:30Z check-in: no failures. Scoreboard 141 running under the 240-min limit (142 cancelled as a superseded pending run, 143 pending - normal concurrency). course-package 121 + vision-any 17 succeeded on the tree-edge commit. Agents (local branches, push after Nov 7 03:00Z): native-summer, followups-1104.
+- 11-04 ~03:00Z: first full scoreboard run (141) FAILED the regression guard: Spirit Hollow AUTO package same club (full) 8/16 vs 11/16 at 7fb8612d (11-03 08:05). Live SH page untouched. Bisect agent running (push by Nov 5 10:00Z or hold).
