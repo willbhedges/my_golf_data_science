@@ -47,7 +47,7 @@ jobs:
   scoreboard:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: 240
     env:
       BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
     steps:
