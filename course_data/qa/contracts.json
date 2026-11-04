@@ -7044,7 +7044,7 @@
    "test_zones_match_zones_ll 2: AssertionError: zones vs zones_ll agree on only 90% of the 100-400 yd grid ([('native->recovery', 35), ('rough->native', 3), ('native->rough', 2)]); polygon counts zones_ll {'fairway': 5, 'sand': 4, 'recovery': 27, 'nati",
    "test_zones_match_zones_ll 3: AssertionError: zones vs zones_ll agree on only 83% of the 100-400 yd grid ([('native->recovery', 43), ('native->water', 18), ('native->rough', 3)]); polygon counts zones_ll {'fairway': 8, 'water': 1, 'sand': 6, 'recover",
    "test_zones_match_zones_ll 5: AssertionError: zones vs zones_ll agree on only 89% of the 100-400 yd grid ([('native->recovery', 26), ('native->rough', 12), ('rough->native', 5)]); polygon counts zones_ll {'fairway': 5, 'water': 1, 'sand': 2, 'recover",
-   "test_zones_match_zones_ll 6: AssertionError: zones vs zones_ll agree on only 88% of the 100-400 yd grid ([('native->recovery', 21), ('native->rough', 14), ('rough->native', 11)]); polygon counts zones_ll {'recovery': 39, 'fairway': 7, 'sand': 4, 'na",
+   "test_zones_match_zones_ll 6: AssertionError: zones vs zones_ll agree on only 85% of the 100-400 yd grid ([('native->rough', 29), ('native->recovery', 23), ('rough->native', 3)]); polygon counts zones_ll {'recovery': 42, 'fairway': 7, 'sand': 3, 'nat",
    "test_zones_match_zones_ll 7: AssertionError: zones vs zones_ll agree on only 85% of the 100-400 yd grid ([('native->recovery', 38), ('native->rough', 19), ('rough->native', 2)]); polygon counts zones_ll {'recovery': 60, 'fairway': 7, 'sand': 3, 'nat",
    "test_zones_match_zones_ll 9: AssertionError: zones vs zones_ll agree on only 88% of the 100-400 yd grid ([('native->recovery', 45), ('native->sand', 2), ('rough->native', 1)]); polygon counts zones_ll {'recovery': 33, 'fairway': 10, 'sand': 5, 'nati",
    "test_zones_match_zones_ll 10: AssertionError: zones vs zones_ll agree on only 89% of the 100-400 yd grid ([('native->recovery', 37), ('native->rough', 7)]); polygon counts zones_ll {'recovery': 34, 'fairway': 5, 'sand': 5, 'native': 5} vs zones {'nat",
@@ -7408,15 +7408,15 @@
   ]
  },
  "packages/gustin": {
-  "passed": 227,
-  "failed": 30,
+  "passed": 229,
+  "failed": 28,
   "skipped": 0,
   "holes": 18,
   "fail_summary": [
    "zones_match_zones_ll (4: 7,12,14,16)",
-   "every_tee_set (10: 3-Black,3-Gold,3-White,4-Black,7-Black,11-Black,14-Black,14-White,15-Black,16-Black)",
+   "every_tee_set (9: 3-Black,3-Gold,3-White,4-Black,7-Black,11-Black,14-Black,14-White,16-Black)",
    "tee_inside_course (1: 7)",
-   "tee_not_in_hazard (7: 3,4,7,11,14,15,16)",
+   "tee_not_in_hazard (6: 3,4,7,11,14,16)",
    "zones_valid_simple (8: 1,5,8,13,14,15,16,18)"
   ],
   "messages": [
@@ -7432,7 +7432,6 @@
    "test_every_tee_set 11-Black: AssertionError: tee in 'ob'",
    "test_every_tee_set 14-Black: AssertionError: tee in 'ob'",
    "test_every_tee_set 14-White: AssertionError: tee in 'water'",
-   "test_every_tee_set 15-Black: AssertionError: tee in 'recovery'",
    "test_every_tee_set 16-Black: AssertionError: tee in 'recovery'",
    "test_tee_inside_course 7: AssertionError: tee [-92.353852, 38.9322544] is 29 yds outside the course boundary",
    "test_tee_not_in_hazard 3: AssertionError: tee [-92.3481516, 38.9321343] sits in 'recovery'",
@@ -7440,14 +7439,13 @@
    "test_tee_not_in_hazard 7: AssertionError: tee [-92.353852, 38.9322544] sits in 'recovery'",
    "test_tee_not_in_hazard 11: AssertionError: tee [-92.3418907, 38.9369299] sits in 'ob'",
    "test_tee_not_in_hazard 14: AssertionError: tee [-92.3456809, 38.927394] sits in 'ob'",
-   "test_tee_not_in_hazard 15: AssertionError: tee [-92.3477229, 38.9303557] sits in 'recovery'",
    "test_tee_not_in_hazard 16: AssertionError: tee [-92.344691, 38.9329381] sits in 'recovery'",
    "test_zones_valid_simple 1: AssertionError: 1/58 bad zones: #26 recovery: Self-intersection[-92.3456578373983 38.9323968297227]",
    "test_zones_valid_simple 5: AssertionError: 1/35 bad zones: #34 recovery: Self-intersection[-92.3465111640956 38.9296668077213]",
    "test_zones_valid_simple 8: AssertionError: 1/35 bad zones: #28 recovery: Self-intersection[-92.3498800804656 38.9345780910898]",
    "test_zones_valid_simple 13: AssertionError: 4/32 bad zones: #9 water: Self-intersection[-92.3456878 38.9292526]; #23 recovery: Self-intersection[-92.3436709044455 38.9275034171852]; #24 recovery: Self-intersection[-92.3435570939139 38.9282810018494",
    "test_zones_valid_simple 14: AssertionError: 1/31 bad zones: #6 water: Self-intersection[-92.3459151 38.9304395]",
-   "test_zones_valid_simple 15: AssertionError: 2/42 bad zones: #14 water: Self-intersection[-92.3459839 38.9304858]; #37 recovery: Self-intersection[-92.3465112381339 38.9296670610908]",
+   "test_zones_valid_simple 15: AssertionError: 2/38 bad zones: #12 water: Self-intersection[-92.3459835 38.9304858]; #32 recovery: Self-intersection[-92.3465113702339 38.9296672802679]",
    "test_zones_valid_simple 16: AssertionError: 1/34 bad zones: #9 water: Self-intersection[-92.3459559 38.9304978]",
    "test_zones_valid_simple 18: AssertionError: 1/53 bad zones: #52 recovery: Self-intersection[-92.3435277513599 38.9327933244339]"
   ]
@@ -7573,47 +7571,60 @@
   ]
  },
  "packages/jayhawk_club": {
-  "passed": 149,
-  "failed": 16,
+  "passed": 136,
+  "failed": 29,
   "skipped": 0,
   "holes": 10,
   "fail_summary": [
    "hole_count (1: pkg)",
    "zones_match_zones_ll (1: 7)",
-   "every_tee_set (6: 4-Black,4-Rust,5-Combo,5-Rust,6-Black,7-Black)",
-   "length_vs_card (2: 4,6)",
+   "every_tee_set (14: 2-Black,2-Green,3-Black,3-Green,4-Black,4-Rust,5-Combo,5-Rust,6-Black,6-Green)",
+   "length_vs_card (6: 2,3,4,6,8,10)",
    "tee_inside_course (1: 7)",
    "tee_not_in_hazard (1: 7)",
-   "zones_valid_simple (4: 2,6,7,9)"
+   "zones_valid_simple (5: 2,6,7,8,9)"
   ],
   "messages": [
    "test_hole_count : AssertionError: 10 holes: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']",
    "test_zones_match_zones_ll 7: AssertionError: zones vs zones_ll agree on only 98% of the 100-400 yd grid ([('ob->rough', 9)]); polygon counts zones_ll {'ob': 5, 'recovery': 5, 'fairway': 5, 'water': 1, 'sand': 3} vs zones {'ob': 5, 'recovery': 5, 'fa",
+   "test_every_tee_set 2-Black: AssertionError: length 412 vs card 534 (-23%)",
+   "test_every_tee_set 2-Green: AssertionError: length 412 vs card 505 (-18%)",
+   "test_every_tee_set 3-Black: AssertionError: length 290 vs card 408 (-29%)",
+   "test_every_tee_set 3-Green: AssertionError: length 290 vs card 380 (-24%)",
    "test_every_tee_set 4-Black: AssertionError: length 539 vs card 208 (+159%)",
    "test_every_tee_set 4-Rust: AssertionError: tee in 'ob'",
    "test_every_tee_set 5-Combo: AssertionError: tee in 'water'",
    "test_every_tee_set 5-Rust: AssertionError: tee in 'water'",
-   "test_every_tee_set 6-Black: AssertionError: length 371 vs card 444 (-17%)",
+   "test_every_tee_set 6-Black: AssertionError: length 337 vs card 444 (-24%)",
+   "test_every_tee_set 6-Green: AssertionError: length 337 vs card 405 (-17%)",
    "test_every_tee_set 7-Black: AssertionError: tee in 'ob'",
+   "test_every_tee_set 8-Black: AssertionError: length 380 vs card 512 (-26%)",
+   "test_every_tee_set 10-Black: AssertionError: length 300 vs card 408 (-26%)",
+   "test_every_tee_set 10-Green: AssertionError: length 300 vs card 386 (-22%)",
+   "test_length_vs_card 2: AssertionError: tee->green 412 yds (along the hole line) vs card 534 (-23%)",
+   "test_length_vs_card 3: AssertionError: tee->green 290 yds (along the hole line) vs card 408 (-29%)",
    "test_length_vs_card 4: AssertionError: tee->green 539 yds (along the hole line) vs card 208 (+159%)",
-   "test_length_vs_card 6: AssertionError: tee->green 371 yds (along the hole line) vs card 444 (-17%)",
+   "test_length_vs_card 6: AssertionError: tee->green 337 yds (along the hole line) vs card 444 (-24%)",
+   "test_length_vs_card 8: AssertionError: tee->green 380 yds (along the hole line) vs card 512 (-26%)",
+   "test_length_vs_card 10: AssertionError: tee->green 300 yds (along the hole line) vs card 408 (-26%)",
    "test_tee_inside_course 7: AssertionError: tee [-95.2984727, 38.956738] is 26 yds outside the course boundary",
    "test_tee_not_in_hazard 7: AssertionError: tee [-95.2984727, 38.956738] sits in 'ob'",
-   "test_zones_valid_simple 2: AssertionError: 2/12 bad zones: #3 ob: Self-intersection[-95.2895951437986 38.9523222608269]; #4 ob: Self-intersection[-95.2893991798261 38.9525183905547]",
-   "test_zones_valid_simple 6: AssertionError: 1/31 bad zones: #25 water: Self-intersection[-95.2977839 38.9550315]",
+   "test_zones_valid_simple 2: AssertionError: 2/12 bad zones: #3 ob: Self-intersection[-95.2895953762996 38.9523218631601]; #4 ob: Self-intersection[-95.2893995827496 38.9525186887257]",
+   "test_zones_valid_simple 6: AssertionError: 1/31 bad zones: #25 water: Self-intersection[-95.2977843 38.9550315]",
    "test_zones_valid_simple 7: AssertionError: 1/19 bad zones: #15 water: Ring Self-intersection[-95.2998639 38.9561105]",
+   "test_zones_valid_simple 8: AssertionError: 1/38 bad zones: #30 water: Self-intersection[-95.2977841 38.9550316]",
    "test_zones_valid_simple 9: AssertionError: 1/10 bad zones: #2 ob: Self-intersection[-95.2895700577814 38.9523627818498]"
   ]
  },
  "packages/la_nickell": {
-  "passed": 236,
-  "failed": 21,
+  "passed": 238,
+  "failed": 19,
   "skipped": 0,
   "holes": 18,
   "fail_summary": [
    "zones_match_zones_ll (3: 15,16,17)",
-   "every_tee_set (8: 1-Red,5-Blue,5-White,9-Blue,9-White,12-Red,17-Red,18-Blue)",
-   "tee_not_in_hazard (3: 5,9,18)",
+   "every_tee_set (7: 1-Red,5-Blue,5-White,9-Blue,9-White,12-Red,17-Red)",
+   "tee_not_in_hazard (2: 5,9)",
    "zones_valid_simple (7: 8,10,11,12,16,17,18)"
   ],
   "messages": [
@@ -7627,27 +7638,25 @@
    "test_every_tee_set 9-White: AssertionError: tee in 'recovery'",
    "test_every_tee_set 12-Red: AssertionError: tee in 'ob'",
    "test_every_tee_set 17-Red: AssertionError: tee in 'recovery'",
-   "test_every_tee_set 18-Blue: AssertionError: tee in 'recovery'",
    "test_tee_not_in_hazard 5: AssertionError: tee [-92.3706962, 38.9746264] sits in 'ob'",
    "test_tee_not_in_hazard 9: AssertionError: tee [-92.3646707, 38.9747858] sits in 'recovery'",
-   "test_tee_not_in_hazard 18: AssertionError: tee [-92.36362, 38.9811378] sits in 'recovery'",
    "test_zones_valid_simple 8: AssertionError: 1/33 bad zones: #13 recovery: Self-intersection[-92.3642646734635 38.9717605896683]",
    "test_zones_valid_simple 10: AssertionError: 1/38 bad zones: #18 recovery: Self-intersection[-92.3659946037954 38.9759594714643]",
    "test_zones_valid_simple 11: AssertionError: 1/18 bad zones: #5 water: Self-intersection[-92.3704971160306 38.9757873992977]",
    "test_zones_valid_simple 12: AssertionError: 3/35 bad zones: #10 recovery: Self-intersection[-92.3710918546123 38.9756020505823]; #17 recovery: Self-intersection[-92.3712590891124 38.97752699302]; #30 recovery: Self-intersection[-92.3714064960506 38",
    "test_zones_valid_simple 16: AssertionError: 1/32 bad zones: #23 recovery: Self-intersection[-92.3672375216464 38.9825097152662]",
    "test_zones_valid_simple 17: AssertionError: 2/28 bad zones: #21 recovery: Self-intersection[-92.3650189663885 38.9808407438298]; #24 recovery: Self-intersection[-92.3637574903917 38.9805926451447]",
-   "test_zones_valid_simple 18: AssertionError: 4/39 bad zones: #28 recovery: Self-intersection[-92.3630511403352 38.9804051778854]; #31 recovery: Self-intersection[-92.3654059412625 38.9776403448718]; #34 recovery: Self-intersection[-92.3637802815152 "
+   "test_zones_valid_simple 18: AssertionError: 3/40 bad zones: #27 recovery: Self-intersection[-92.3630510911986 38.9804051233274]; #36 recovery: Self-intersection[-92.3638860116088 38.979958779681]; #38 recovery: Self-intersection[-92.3650189710811 3"
   ]
  },
  "packages/mariah_hills": {
-  "passed": 253,
-  "failed": 22,
+  "passed": 252,
+  "failed": 23,
   "skipped": 0,
   "holes": 18,
   "fail_summary": [
    "zones_match_zones_ll (12: 1,2,3,4,6,7,9,10,13,15)",
-   "every_tee_set (3: 7-White,9-Red,12-Black)",
+   "every_tee_set (4: 7-Black,7-White,9-Red,12-Black)",
    "zones_valid_simple (7: 1,6,10,14,16,17,18)"
   ],
   "messages": [
@@ -7656,13 +7665,14 @@
    "test_zones_match_zones_ll 3: AssertionError: zones vs zones_ll agree on only 97% of the 100-400 yd grid ([('native->recovery', 6), ('native->water', 4), ('native->rough', 2)]); polygon counts zones_ll {'recovery': 20, 'fairway': 9, 'water': 3, 'sand",
    "test_zones_match_zones_ll 4: AssertionError: zones vs zones_ll agree on only 97% of the 100-400 yd grid ([('native->recovery', 6), ('native->water', 4), ('rough->native', 3)]); polygon counts zones_ll {'recovery': 22, 'fairway': 11, 'water': 3, 'san",
    "test_zones_match_zones_ll 6: AssertionError: zones vs zones_ll agree on only 91% of the 100-400 yd grid ([('native->water', 15), ('rough->native', 9), ('native->recovery', 9)]); polygon counts zones_ll {'recovery': 51, 'fairway': 17, 'water': 6, 'sa",
-   "test_zones_match_zones_ll 7: AssertionError: zones vs zones_ll agree on only 90% of the 100-400 yd grid ([('native->rough', 19), ('native->recovery', 11), ('rough->native', 9)]); polygon counts zones_ll {'recovery': 43, 'fairway': 12, 'water': 2, 's",
+   "test_zones_match_zones_ll 7: AssertionError: zones vs zones_ll agree on only 90% of the 100-400 yd grid ([('native->rough', 19), ('native->recovery', 11), ('rough->native', 9)]); polygon counts zones_ll {'recovery': 36, 'fairway': 11, 'water': 2, 's",
    "test_zones_match_zones_ll 9: AssertionError: zones vs zones_ll agree on only 88% of the 100-400 yd grid ([('native->rough', 26), ('native->recovery', 17), ('rough->native', 2)]); polygon counts zones_ll {'recovery': 47, 'fairway': 15, 'sand': 3, 'na",
    "test_zones_match_zones_ll 10: AssertionError: zones vs zones_ll agree on only 78% of the 100-400 yd grid ([('native->ob', 68), ('native->recovery', 14), ('native->rough', 2)]); polygon counts zones_ll {'recovery': 49, 'fairway': 11, 'sand': 5, 'ob': ",
    "test_zones_match_zones_ll 13: AssertionError: zones vs zones_ll agree on only 97% of the 100-400 yd grid ([('native->recovery', 6), ('native->water', 3), ('rough->native', 2)]); polygon counts zones_ll {'recovery': 24, 'fairway': 13, 'water': 5, 'san",
    "test_zones_match_zones_ll 15: AssertionError: zones vs zones_ll agree on only 97% of the 100-400 yd grid ([('native->recovery', 12), ('native->rough', 1)]); polygon counts zones_ll {'recovery': 40, 'fairway': 11, 'native': 3} vs zones {'native': 3, '",
    "test_zones_match_zones_ll 17: AssertionError: zones vs zones_ll agree on only 90% of the 100-400 yd grid ([('native->recovery', 26), ('native->rough', 11), ('rough->native', 1)]); polygon counts zones_ll {'recovery': 45, 'fairway': 12, 'sand': 2, 'na",
    "test_zones_match_zones_ll 18: AssertionError: zones vs zones_ll agree on only 89% of the 100-400 yd grid ([('native->recovery', 30), ('rough->native', 11), ('native->rough', 2)]); polygon counts zones_ll {'recovery': 55, 'fairway': 15, 'sand': 4, 'na",
+   "test_every_tee_set 7-Black: AssertionError: tee in 'recovery'",
    "test_every_tee_set 7-White: AssertionError: tee in 'recovery'",
    "test_every_tee_set 9-Red: AssertionError: length 342 vs card 285 (+20%)",
    "test_every_tee_set 12-Black: AssertionError: tee in 'ob'",
@@ -8018,13 +8028,13 @@
   ]
  },
  "packages/spirit_hollow": {
-  "passed": 246,
-  "failed": 29,
+  "passed": 245,
+  "failed": 30,
   "skipped": 0,
   "holes": 18,
   "fail_summary": [
    "zones_match_zones_ll (12: 2,4,5,6,8,9,10,13,14,16)",
-   "every_tee_set (5: 3-Rust,5-Gold,8-Gold,12-White,12-Rust)",
+   "every_tee_set (6: 3-Rust,5-Gold,8-Gold,12-White,12-Rust,15-Gold)",
    "zones_valid_simple (12: 1,2,4,7,8,10,11,12,13,15)"
   ],
   "messages": [
@@ -8045,6 +8055,7 @@
    "test_every_tee_set 8-Gold: AssertionError: tee in 'ob'",
    "test_every_tee_set 12-White: AssertionError: length 188 vs card 163 (+15%)",
    "test_every_tee_set 12-Rust: AssertionError: length 145 vs card 120 (+20%)",
+   "test_every_tee_set 15-Gold: AssertionError: length 166 vs card 215 (-23%)",
    "test_zones_valid_simple 1: AssertionError: 1/29 bad zones: #18 recovery: Self-intersection[-91.1470341977739 40.7564376106093]",
    "test_zones_valid_simple 2: AssertionError: 1/39 bad zones: #35 ob: Self-intersection[-91.1459592790651 40.7558384852229]",
    "test_zones_valid_simple 4: AssertionError: 1/20 bad zones: #15 recovery: Self-intersection[-91.1494120339358 40.7603600175312]",
@@ -8054,7 +8065,7 @@
    "test_zones_valid_simple 11: AssertionError: 3/39 bad zones: #7 water: Self-intersection[-91.1417857 40.76632]; #33 water: Self-intersection[-91.1428754993494 40.7650229190916]; #36 water: Self-intersection[-91.1407750240393 40.7666542658558]",
    "test_zones_valid_simple 12: AssertionError: 1/26 bad zones: #21 water: Self-intersection[-91.1407749656285 40.7666544100431]",
    "test_zones_valid_simple 13: AssertionError: 2/37 bad zones: #6 water: Ring Self-intersection[-91.1430634 40.7628046]; #32 water: Self-intersection[-91.1428754993494 40.7650229190916]",
-   "test_zones_valid_simple 15: AssertionError: 1/23 bad zones: #20 recovery: Self-intersection[-91.1401783376103 40.7597731713363]",
+   "test_zones_valid_simple 15: AssertionError: 1/20 bad zones: #17 recovery: Self-intersection[-91.1401783376103 40.7597731713363]",
    "test_zones_valid_simple 16: AssertionError: 2/30 bad zones: #3 sand: Self-intersection[-91.141775457952 40.7619243488005]; #19 recovery: Self-intersection[-91.1383954185523 40.759931331702]",
    "test_zones_valid_simple 17: AssertionError: 1/26 bad zones: #14 recovery: Self-intersection[-91.1415359738974 40.7573123739005]"
   ]
@@ -8334,12 +8345,12 @@
   ]
  },
  "packages/veenker": {
-  "passed": 236,
-  "failed": 21,
+  "passed": 237,
+  "failed": 20,
   "skipped": 0,
   "holes": 18,
   "fail_summary": [
-   "zones_match_zones_ll (5: 3,7,13,15,16)",
+   "zones_match_zones_ll (4: 3,7,13,15)",
    "every_tee_set (4: 6-Red,7-Blue,8-Blue,8-Red)",
    "tee_not_in_hazard (2: 7,8)",
    "zones_valid_simple (10: 2,5,6,7,9,10,12,15,16,18)"
@@ -8348,8 +8359,7 @@
    "test_zones_match_zones_ll 3: AssertionError: zones vs zones_ll agree on only 92% of the 100-400 yd grid ([('recovery->rough', 31)]); polygon counts zones_ll {'recovery': 14, 'fairway': 9, 'water': 3, 'sand': 4, 'ob': 1} vs zones {'recovery': 15, 'ob",
    "test_zones_match_zones_ll 7: AssertionError: zones vs zones_ll agree on only 98% of the 100-400 yd grid ([('recovery->water', 8)]); polygon counts zones_ll {'recovery': 39, 'fairway': 11, 'water': 3, 'sand': 10, 'ob': 1} vs zones {'recovery': 42, 'o",
    "test_zones_match_zones_ll 13: AssertionError: zones vs zones_ll agree on only 98% of the 100-400 yd grid ([('recovery->rough', 7), ('fairway->rough', 2)]); polygon counts zones_ll {'fairway': 8, 'water': 1, 'sand': 7, 'recovery': 13} vs zones {'recov",
-   "test_zones_match_zones_ll 15: AssertionError: zones vs zones_ll agree on only 89% of the 100-400 yd grid ([('recovery->rough', 33), ('recovery->water', 11)]); polygon counts zones_ll {'native': 1, 'recovery': 31, 'fairway': 4, 'water': 1, 'sand': 1, ",
-   "test_zones_match_zones_ll 16: AssertionError: zones vs zones_ll agree on only 96% of the 100-400 yd grid ([('recovery->water', 15)]); polygon counts zones_ll {'recovery': 35, 'fairway': 9, 'water': 1, 'sand': 4} vs zones {'recovery': 36, 'fairway': 9",
+   "test_zones_match_zones_ll 15: AssertionError: zones vs zones_ll agree on only 89% of the 100-400 yd grid ([('recovery->rough', 33), ('recovery->water', 11)]); polygon counts zones_ll {'native': 1, 'recovery': 31, 'fairway': 4, 'water': 1, 'sand': 2, ",
    "test_every_tee_set 6-Red: AssertionError: length 161 vs card 132 (+22%)",
    "test_every_tee_set 7-Blue: AssertionError: tee in 'ob'",
    "test_every_tee_set 8-Blue: AssertionError: tee in 'water'",
@@ -8363,8 +8373,8 @@
    "test_zones_valid_simple 9: AssertionError: 1/48 bad zones: #23 recovery: Self-intersection[-93.6488701014894 42.0386928828211]",
    "test_zones_valid_simple 10: AssertionError: 2/60 bad zones: #2 fairway: Self-intersection[-93.6478279570708 42.0402408035408]; #32 recovery: Self-intersection[-93.6488701014894 42.0386928828211]",
    "test_zones_valid_simple 12: AssertionError: 2/37 bad zones: #9 water: Self-intersection[-93.6500534 42.0352157]; #20 recovery: Self-intersection[-93.6520160560834 42.034800014464]",
-   "test_zones_valid_simple 15: AssertionError: 2/39 bad zones: #18 recovery: Self-intersection[-93.6566514184427 42.0408852837543]; #24 recovery: Self-intersection[-93.6545721589282 42.0409508508742]",
-   "test_zones_valid_simple 16: AssertionError: 3/49 bad zones: #29 recovery: Self-intersection[-93.6534735893773 42.039987543449]; #35 recovery: Self-intersection[-93.6540117901518 42.0406621701162]; #44 recovery: Self-intersection[-93.6545654090266 4",
+   "test_zones_valid_simple 15: AssertionError: 2/40 bad zones: #18 recovery: Self-intersection[-93.6566514184427 42.0408852837543]; #24 recovery: Self-intersection[-93.6545721589282 42.0409508508742]",
+   "test_zones_valid_simple 16: AssertionError: 1/47 bad zones: #43 recovery: Self-intersection[-93.6554337635217 42.0395087169502]",
    "test_zones_valid_simple 18: AssertionError: 1/64 bad zones: #37 recovery: Self-intersection[-93.6488701014894 42.0386928828211]"
   ]
  },
