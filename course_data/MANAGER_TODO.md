@@ -148,3 +148,4 @@ Pending actions the coordinator owes; remove an item when done, with the commit 
 - Tree edge fix adopted (70d10209d): buffer -1 -> +1 m, structure test on the greenest NAIP year. Held out 254/331, regret 4.738 = 0.200/round (from 250 / 0.216); tree misses 24 -> 11; no course broken materially. 99 library courses change on next build. Display/weather workflows do not use this code (EK refresh safe).
 - PLAN: ONE library-wide rebuild (tee merge + far cap, native auto, green detector, tree edge) AFTER the Nov 6 evening EK refresh, so the runner pool stays free for EK; then QA in tranches into the app.
 - OPEN: 4 vision_any/test_water_filter failures pre-existing -> agent running.
+- water_filter tests fixed (85413e67a): tests read already-filtered packages after cd853cff6 put the filter in every build; test now rebuilds the unfiltered input. vision_any 45/45. No code change.
