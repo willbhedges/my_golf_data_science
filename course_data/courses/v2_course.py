@@ -877,8 +877,15 @@ def merge(slug, which, parts):
     grids = {}
     for p in sorted(glob.glob(os.path.join(parts, "**", "v2wind_*.json"), recursive=True)):
         d = json.load(open(p))
-        g = grids.setdefault(d["back"], dict(speeds=d["speeds"], dirs=d["dirs"], temps=[], bearings={}, holes={},
-                                             par3={}, tee_back=d["back"], model="v2"))
+        if d["back"] not in grids:                   # a holes-limited run keeps the stored grid's other holes
+            prev = os.path.join(out, "wind_grid.json" if not d["back"] else f"wind_grid_back{d['back']:+.0f}.json")
+            base = json.load(open(prev)) if os.path.exists(prev) else {}
+            same = base.get("speeds") == d["speeds"] and base.get("dirs") == d["dirs"]
+            grids[d["back"]] = dict(speeds=d["speeds"], dirs=d["dirs"], temps=list(base.get("temps", [])) if same else [],
+                                    bearings=dict(base.get("bearings", {})) if same else {},
+                                    holes=dict(base.get("holes", {})) if same else {},
+                                    par3=dict(base.get("par3", {})) if same else {}, tee_back=d["back"], model="v2")
+        g = grids[d["back"]]
         g["temps"] = sorted(set(g["temps"]) | set(d.get("temps", [])))
         for h, byT in d["holes"].items():
             g["holes"].setdefault(h, {}).update(byT)
