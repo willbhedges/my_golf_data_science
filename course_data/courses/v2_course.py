@@ -1138,6 +1138,9 @@ def build_page(slug, which, out=None, data_out=None):
             box = (min(box[0], b[0]), min(box[1], b[1]), max(box[2], b[2]), max(box[3], b[3]))
         return crop(image, box, *a, **k)
     BW.crop_jpeg = crop_jpeg
+    if cfg.get("par3_targets"):                  # expected-strokes par-3 box (course_data/courses/par3_targets.py)
+        import par3_targets
+        par3_targets.install(cfg, BW, meta["tee_set"])
     par3_hole0 = BW.par3_hole
 
     def par3_hole(h):

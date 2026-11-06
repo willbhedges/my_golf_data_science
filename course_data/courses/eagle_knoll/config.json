@@ -73,8 +73,10 @@
   "14": "the pond crosses the line ~200-260 yds out in front of the green: lay up short of ~200 or carry ~265.",
   "17": "the creek runs down the left at 140-240 and then crosses diagonally 240-345 yds from Back between the two fairways; woods right.",
   "18": "house lots / OB 45-70 yds left; trees right 240-340 beyond the cart path.",
-  "2": "trees left, right and long; open and short of the green. Expected-strokes check on your iron pattern (any pin; OPTIMIZE.md): the front third is the better miss, aiming about 8-9 yds short of the green centre saves ~0.07 strokes against the box (same with a tighter depth pattern or cheaper tree recoveries).",
-  "12": "fairway short of the green, trees long, a bunker right. Expected-strokes check on your iron pattern (any pin; OPTIMIZE.md): aiming about 10 yds short of the green centre (the front of the green, centre line) saves ~0.08-0.11 strokes against the box: long and right are the costly misses."
+  "2": "trees left, right and long; open and short of the green. The blue box is the best aim for any pin on your iron pattern (expected strokes, OPTIMIZE.md section 13): 1-2 yds short of the green centre on the centre line, ~0.02 strokes better than the centre; long is the costly miss. From Back a full PW (138) is the club (GW comes up ~10 short).",
+  "12": "fairway short of the green, trees long, a bunker right. Best aim for any pin: about 4 yds short of the green centre, ~0.04 strokes better than the centre or the old box; long is the costly miss. From Back: 7-iron (174).",
+  "6": "water short, left and right; trees long. Aim at the centre (the box: centre to 1 yd short); every other spot costs. From Back: GW (126).",
+  "16": "water right and short, trees left and long; the green tilts ~5 % back to front. Best aim for any pin: 1-2 yds short of the centre on the centre line (the old box, 2 yds long, cost ~0.07). From Back: 9-iron (150), also on Sunday."
  },
  "engine": {
   "extra_clubs": {
@@ -117,15 +119,19 @@
   "hide_hazards": true,
   "source": "golfer request 2026-11-06: no water / OB / hazard words or outlines on the page; hole_notes above stay the mapper's record",
   "map_notes": {
-   "2": "Favour the front: aiming 8-9 yds short of the green centre saves ~0.07 strokes against the box (any pin).",
+   "2": "Best aim for any pin: 1-2 yds short of the green centre on the centre line (the blue box); long is the costly miss. From Back: PW (138).",
    "3": "The fairway starts ~185 yds out from the Back tee and bends right toward the green.",
    "5": "",
    "9": "The shaded line along the right is the cart path.",
    "11": "",
-   "12": "Favour the front: aiming about 10 yds short of the green centre (front of the green, centre line) saves ~0.08-0.11 strokes against the box.",
+   "12": "Best aim for any pin: about 4 yds short of the green centre (the blue box), ~0.04 strokes better than the centre; long is the costly miss. From Back: 7-iron (174).",
    "14": "Landing target: inside ~200 yds from the Back tee, or past ~265.",
    "17": "Landing target: inside ~240 yds from the Back tee.",
-   "18": ""
+   "18": "",
+   "6": "Aim at the centre of the green (the blue box): every other spot costs. From Back: GW (126).",
+   "16": "Best aim for any pin: 1-2 yds short of the green centre on the centre line (the blue box); the green tilts ~5 % back to front. From Back: 9-iron (150)."
   }
- }
+ },
+ "par3_targets": "course_data/courses/eagle_knoll/par3_targets.json",
+ "par3_targets_source": "expected-strokes par-3 aim for an unknown pin (OPTIMIZE.md section 13, opt/par3_target.py); replaces the DECADE box on this page only"
 }

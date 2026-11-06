@@ -22,8 +22,11 @@ section; the local ones live in `opt/` or are described exactly enough to repeat
 * **Marginal holes** (where the pick flips under +/-5 yds carry, +/-10 % spread, +/-5 mph wind or soft turf): Back 1
   (helping wind, carry +5), Back 14 (carry +5, a tighter pattern, helping wind). Middle 5, 10 and 11 are ties. Back 15
   is a tie with the 2-wood into a 10 mph wind. Everything else holds.
-* **Par 3s:** "Play it like" now includes the temperature (+2 yds at ~50 F). On **2 and 12 the front of the green is
-  the better miss** (aim ~8-10 yds short of centre); on 6 and 16 the box is right.
+* **Par 3s:** "Play it like" now includes the temperature (+2 yds at ~50 F). **Superseded on Nov 6 (section 13):** the
+  page's box is now the expected-strokes aim for any pin on Will's engine iron pattern, and "Play it like" is the carry
+  to that aim. That puts 2 at 1.5 yds short of centre, 6 at 1 short, 12 at 4 short and 16 at 1.5 short (the old box was
+  2 long). The earlier "8-10 yds short" on 2 and 12 came from a deeper, mishit-free pattern; it does not survive
+  Will's own pattern.
 * **On the day:** check each tee plaque against the page and use Move this tee (5-yd steps). The NCCGA moved 10 of 18
   boxes in 2024 (5 at 420, 14 at 246).
 
@@ -192,7 +195,7 @@ All other picks (Back 3, 5, 7, 10, 11, 13, 15, 17, 18; Eagle 1, 3, 5, 7, 8, 10, 
 | 16 (158) | +0.4, +2.0 | 3.80 | 3.79 | +1, -3 | 3.77 | (-0.03) | -1, 0 (-0.01) |
 
   (depth + = long of centre; the 1.25x / half-cost columns give the best aim and its gain over the box.)
-* Accepted on 2 and 12: the front of the green is the better miss. Long is trees on both, and open grass or fairway
+* (Nov 6: superseded by section 13; the short side holds, the size does not.) Accepted on 2 and 12: the front of the green is the better miss. Long is trees on both, and open grass or fairway
   is short. The gain is 0.05-0.11 strokes under every setting tried. The hole notes now say "aim about 8-9 (2) / 10 (12)
   yds short of the green centre". The drawn box is unchanged, so Will has both.
 * 6 and 16: the box is within 0.01-0.03 of the best aim. No change.
@@ -313,3 +316,133 @@ before / after is in sections 2b and 7.
 * The par-3 EV model: pins are unknown, and the depth spread is from published amateur patterns, not Will's.
 * OB on 18 is +/- 8 yds; the creek width on 17 is uncertain; trees have grown since the 2015 lidar or NAIP 2022.
 * Forward set: still synthesized from the Back tee (not Will's set).
+
+## 13. Par-3 targets for an unknown pin (Nov 6 2026)
+
+The page's par-3 box was the DECADE box (`yardage_book.par3_plan`: edge cushions, worse side), drawn round the DECADE
+target, and "Play it like" was the carry to that target's depth. Both are now the **expected-strokes optimum for an
+unknown pin on Will's own iron pattern**, and they are switched on for this page only (config `par3_targets` ->
+`par3_targets.json`, read by `course_data/courses/par3_targets.py`; every other page keeps DECADE, a test checks this).
+Script: `opt/par3_target.py` (`solve`, `robust`); full results with surfaces and SEs: `opt/results/par3_target_<set>.json`,
+`opt/results/par3_robust.json`.
+
+**Model.**
+* **Ball:** the engine's `model.shots` at the central world. Lateral sigma = 95 % width / 4 x 70/65; carry sigma =
+  depth window x 1.25 / 4; rho 0.1; kappa 0.08; 12 % slight mishits (92-95 % carry); 2.5 % heavy (65-85 %); temperature
+  as on the tee shots. Long iron 210, Mid iron 185 and 8-iron 162 are the engine's clubs. **5-iron 198, 7-iron 174,
+  9-iron 150, PW 138 and GW 126 are assumed**, from the Spirit Hollow approach bag (~12-yd gaps); width and depth window
+  are scaled with carry the way the engine's 8-iron is. Wind: `wind.adjust` per club, including the gust scatter. The
+  box is the landing point, so the mean drift is aimed off.
+* **Terrain:** every ball lands where its flight meets the 3DEP 1 m DEM: x = flat carry + 0.839 x (tee height minus
+  ground height at x). 0.839 is the page's own elevation factor. The DEM tee-to-green drops are 60.1 / 46.5 / 12.2 /
+  38.9 ft (2 / 6 / 12 / 16), equal to the page's meta. Then the ball rolls its stated roll (+/-25 %) along the line,
+  x0.3 in rough, and stops in sand, trees or water.
+* **Green and pins:** the truth-map green polygon. Pins are uniform over the green at least 4 yds inside the edge
+  (140-192 pin spots per green on a 1-yd grid). The DEM plane fit (residual 0.2-0.3 ft) gives back-to-front tilts of
+  2.1 % (2, also 2.1 % up to the right), 2.1 % (6), 2.5 % (12) and **5.0 % (16)**. Putting: Broadie by feet + 0.06
+  (5-hcp). A slope term (**assumed size**) adds 0.02 strokes per 1 % of downhill grade along the putt, at full size from
+  15 ft, and takes the same off uphill.
+* **After the shot:** short game by lie + 0.15 within 40 yds, and the engine's amateur table beyond that. Trees use
+  Broadie's recovery row. Water costs 1 + rough from the drop. OB costs 1 + 3.2. Everything is pin-averaged on a
+  0.5-yd raster.
+* **Statistics:** common random numbers across aims and clubs. A 1-yd coarse grid (6,000 swings; Eagle and Middle
+  3,000) is followed by a 0.5-yd refine of +/-4 yds on fresh swings (40,000; Eagle and Middle 16,000). The centre and
+  DECADE aims are scored on the same fresh swings. Every margin below is a paired mean +/- its SE. The box is the
+  extent of aims within 0.02 strokes of the best, at least 4 yds each way. There is one box per page wind class:
+  calm, and 7 / 14 / 24 / 32 mph averaged over head, tail and both crosswinds.
+
+**Back, calm, 50 F** (depth: + = long of the green centre; strokes for the hole):
+
+| hole | best aim (lat, depth) | box lat / depth | EV best | gain vs centre aim | gain vs old DECADE aim (its lat, depth) | aim 4 / 8 long of centre | 4 / 8 short | 4 / 8 left, right |
+|---|---|---|---|---|---|---|---|---|
+| 2 (151) | -0.5, **-1.5** | -2.5..1.5 / -4..0 | 3.077 | +0.020 +/- 0.001 | +0.000 +/- 0.000 (-0.1, -1.5) | +0.24 / +0.55 | +0.03 / +0.16 | +0.04 / +0.18, +0.07 / +0.25 |
+| 6 (138) | 0, **-1** | -2..2 / -2.5..1.5 | 3.043 | +0.002 +/- 0.001 | +0.012 +/- 0.001 (+1.1, +0.5) | +0.13 / +0.35 | +0.06 / +0.22 | +0.04 / +0.19, +0.04 / +0.17 |
+| 12 (180) | +0.5, **-4** | -2..3 / -7..-2 | 3.255 | +0.042 +/- 0.001 | +0.042 +/- 0.001 (-2.2, -0.4) | +0.16 / +0.31 | +0.00 / +0.03 | +0.04 / +0.14, +0.03 / +0.13 |
+| 16 (158) | 0, **-1.5** | -2.5..1.5 / -4..0 | 3.385 | +0.015 +/- 0.002 | **+0.070 +/- 0.002** (+0.4, +2.0) | +0.16 / +0.41 | +0.04 / +0.26 | +0.06 / +0.24, +0.09 / +0.34 |
+
+(Surface columns: the coarse grid, strokes above the best, at aims 4 / 8 yds from the green centre on the best aim's line. Sunday, SW 5.5 mph with
+gusts to 12: the same aims within 0.5 yd, and the gains vs centre are 0.027 / 0.001 / 0.038 / 0.009.)
+
+**What changed against section 6.** Section 6's 8-10 yds short on 2 and 12 used a published amateur *finish* pattern
+(depth sigma 1.5 x lateral, about 14 yds at 150) with no mishits. Will's engine pattern is tighter in depth: carry
+sigma 4-6 yds, with mishits making a short tail. So a long miss into the trees is less likely, and a short aim
+throws away more good shots. The short side still holds on 12 (4 yds short, 0.04). On 2 it is 1.5 short and ties the
+DECADE target. Doubling the depth spread (the "depth x2" row below) moves 2 only to 3 short. On 16 the old box sat
+2 yds long (toward the trees and above a 5 % slope) and cost 0.07; the new aim is 1.5 short of centre. 6 is the centre.
+
+**Club (Back, stock carries, the lateral aim optimised; margin over the runner-up +/- SE):**
+
+| hole | Sat (47 F, calm) | Sun (54 F, SW 5.5 g12) | stock club lands (Sat) | cost of the stock club vs the ideal number |
+|---|---|---|---|---|
+| 2 | **PW** by 0.148 +/- 0.003 over GW | PW by 0.198 +/- 0.003 | +1.8 (aim -1.5) | 0.07-0.15: a full PW is ~3 yds past the ideal number; a touch easy if you can |
+| 6 | **GW** by 0.449 +/- 0.002 over PW | GW by 0.643 +/- 0.002 | -1.8 | 0.01 (Sun 0.06) |
+| 12 | **7-iron** by 0.134 +/- 0.002 over 6-iron | 7-iron by 0.139 +/- 0.002 over 8-iron | -7.0 (Sun -2.0) | 0.00-0.01 |
+| 16 | **9-iron** by 0.464 +/- 0.004 over PW | 9-iron by 0.050 +/- 0.004 over PW | +0.2 (Sun +4.4) | 0.02 (Sun 0.15: the 9-iron flies ~4 long; still better than PW) |
+
+All clubs are resolved (z >= 11); there is no TIE. The page shows the number, not the club. The club is in the hole
+note, and in `p3club` for a template that shows it.
+
+**Plays like, carry to the best aim** (the page: (wind plays-like + elevation) / temperature factor, at the hole time
+for a 9:00 shotgun on 1; numbers to the centre in brackets):
+
+| hole | Sat (44-55 F, calm) | Sun (49-62 F, SW 5-6) |
+|---|---|---|
+| 2 | 135-136 (137) | 137 (138) |
+| 6 | 126-127 (127-128) | 121-123 (122-124) |
+| 12 | 177 (181) | 172 (176) |
+| 16 | 146-147 (148-149) | 142-143 (144) |
+
+The page builds the number from the box, so the hook rescales the per-cell plays grid by card / aim distance. The
+template's own formula (box x plays / card x temperature) then gives the carry to the aim exactly, and its elevation
+chip is still the DEM drop. A test pins the template formula.
+
+**Robustness (Back; `robust`: 4,000-swing 1-yd grid, 20,000 fresh swings for the comparison).** Each cell gives the
+best aim under the variant, then the regret of keeping the page aim +/- SE, then the page aim's gain over the centre
+under that variant:
+
+| variant | 2 | 6 | 12 | 16 |
+|---|---|---|---|---|
+| carry +5 (you fly it 5 longer than the model) | -7; 0.181 +/- 0.003; +0.106 | -6; 0.102; +0.048 | -9; 0.052; +0.128 | -7; 0.138; +0.084 |
+| carry -5 | +3; 0.075; -0.042 | +4; 0.109; -0.035 | 0; 0.040; -0.040 | +2; 0.138; -0.082 |
+| dispersion +/-10 % | -2; <= 0.002; +0.018..0.025 | -1; 0.000; +0.002 | -4; <= 0.001; +0.042 | -1..-2; <= 0; +0.014..0.021 |
+| wind +3 mph (calm -> 3, any direction) | -2; 0.001; +0.023 | -1; 0.000; +0.002 | -4; 0.000; +0.042 | -2; 0.000; +0.018 |
+| Sunday wind +/-3 mph | -2; 0.000; +0.026..0.031 | -1; 0.000; +0.000 | -4; 0.000; +0.036..0.041 | -1..-2; 0.000; +0.013 |
+| roll x0.5 (soft greens) | -1; 0.003; +0.002 | 0; 0.005; -0.005 | -2; 0.008; -0.006 | -1; 0.002; -0.003 |
+| no slope term / slope x2 | -2; 0.000; +0.018 / +0.027 | -1; 0.000; 0.000 / +0.005 | -4..-5; 0.001; +0.037 / +0.047 | -2; <= 0.001; +0.013 / +0.025 |
+| trees half the cost | -2; 0.000; +0.016 | -1; 0.000; +0.002 | -4; 0.000; +0.041 | -2; 0.005; +0.008 |
+| no mishits | -3; 0.015; +0.047 | -2; 0.004; +0.017 | -5; 0.001; +0.063 | -3; 0.013; +0.048 |
+| pins 3 / 6 yds in | -2; <= 0.002; +0.021 / +0.027 | -1; 0.000; +0.001 / +0.005 | -4; 0.000; +0.041 / +0.038 | -2; 0.000; +0.018 / +0.024 |
+| depth spread x2 (section 6's kind of pattern) | -3; 0.006; +0.017 | 0; 0.005; -0.005 | -7; 0.006; +0.046 | 0; 0.011; -0.011 |
+
+* **The aim is robust.** Under every dispersion, wind (+/-3 mph), roll, slope, tree, pin and mishit variant, the page
+  aim is within 0.015 strokes of that variant's best (usually within 0.005), and the variant's best is within 1.5 yds
+  of the page aim (12 with a double depth spread: 3 yds). Averaging the surface over a carry error of sd 3 or 5 yds
+  gives the same aims within 1 yd (2: -2 / -3; 6: -1; 12: -4 / -5; 16: -1).
+* **The number is what matters.** If Will's real carry with that club is 5 yds off the model, he loses 0.04-0.18
+  strokes a hole at any aim (on 2 and 16, long is the dearer error). The 9-iron, PW and GW carries are assumed
+  gapping, so **confirm the wedge and short-iron carries with Will**: this is worth more than any aim change here.
+* Gains vs centre are significant on 2, 12 and 16 (z 10-38). On 6 the aim is the centre: gain 0.002 +/- 0.0005, and
+  it changes sign with soft greens or a deeper pattern.
+
+**Not verified / limits.** The pins are uniform, not the day's sheet. The slope term's size is assumed (±100 %
+shown). The DEM is the 2015 lidar (green surfaces may have been rebuilt since). The short-club carries are assumed.
+Lateral wind drift is aimed off, not modelled as a miss. Release does not depend on the green slope. The DECADE wind
+classes use direction-averaged wind; the page does not know whether the wind is into or across.
+
+**Eagle and Middle** (own boxes, from their own tees; quick mode: 3,000 / 16,000 swings, and the 14-32 mph boxes
+copied from the 7 mph box, which on Back differ by 0.5 yd or less):
+
+| set, hole | best aim (lat, depth) | gain vs centre | gain vs old DECADE aim | club Sat / Sun (margin +/- SE) |
+|---|---|---|---|---|
+| Eagle 2 (167) | -0.5, -3 | 0.051 +/- 0.003 | 0.010 +/- 0.002 | 9-iron by 0.11 +/- 0.005 / 9-iron by 0.17 |
+| Eagle 6 (149) | 0, -1 | 0.007 +/- 0.001 | 0.041 +/- 0.002 | PW by 0.42 / **GW** by 0.07 +/- 0.005 (SW wind helping: the PW flies long) |
+| Eagle 12 (198) | +0.5, -6 | 0.066 +/- 0.002 | 0.070 +/- 0.002 | 5-iron by 0.068 +/- 0.003 / 6-iron by 0.16; calm 50 F: **TIE** 6-iron / 5-iron (0.009 +/- 0.003) |
+| Eagle 16 (177) | -0.5, -2.5 | 0.023 +/- 0.003 | 0.114 +/- 0.005 | 8-iron by 0.13 +/- 0.007 / 8-iron by 0.37 |
+| Middle 2 (132) | 0, -1.5 | 0.013 +/- 0.001 | -0.001 +/- 0.001 (same) | GW, which lands ~6 long: **the model bag has no sand wedge** |
+| Middle 6 (120) | 0, -1 | 0.004 +/- 0.001 | 0.014 +/- 0.001 | GW lands ~14 long: **no sand wedge in the model** |
+| Middle 12 (162) | 0, -3 | 0.023 +/- 0.002 | 0.013 +/- 0.001 | 8-iron by 0.16 +/- 0.002 / 9-iron by 0.047 +/- 0.003 |
+| Middle 16 (136) | 0, -1 | 0.006 +/- 0.002 | 0.014 +/- 0.002 | GW by 0.33 / GW by 0.55 |
+
+The pattern is the same on every set: the centre line, a little short (1-3 yds; 12: 3-6 yds), and never long. On
+Middle 2 and 6 the club column is limited by the model bag (shortest GW 126). Add SW ~113 / LW ~100 before the club
+on those holes means anything. The aim and the number do not depend on it.
