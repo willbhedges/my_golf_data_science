@@ -296,7 +296,7 @@ function render(){
     vb = [0, y0, h.w, y1 - y0];
   }
   ov.setAttribute("viewBox", vb.join(" "));
-  const HZ = (h.haz || []).filter(([lie]) => lie !== "water").map(([lie, pts]) => `<polygon points="${pts.map(p => P(h, p).join(",")).join(" ")}" fill="${lie === "water" ? "rgba(40,140,255,.18)" : "none"}" stroke="${lie === "water" ? "#4aa8ff" : "#ff5a5a"}" stroke-width="2" stroke-dasharray="${lie === "water" ? "2 3" : "8 4"}"/>`).join("");
+  const HZ = (h.haz || []).filter(() => false).map(([lie, pts]) => `<polygon points="${pts.map(p => P(h, p).join(",")).join(" ")}" fill="${lie === "water" ? "rgba(40,140,255,.18)" : "none"}" stroke="${lie === "water" ? "#4aa8ff" : "#ff5a5a"}" stroke-width="2" stroke-dasharray="${lie === "water" ? "2 3" : "8 4"}"/>`).join("");
   const IMG = `<image href="${h.img}" x="0" y="0" width="${h.w}" height="${h.h}"/>` + HZ;
   document.getElementById("view").hidden = h.kind !== "tee";
   document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
