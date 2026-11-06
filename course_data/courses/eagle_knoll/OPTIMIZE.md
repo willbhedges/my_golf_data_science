@@ -10,6 +10,10 @@ section; the local ones live in `opt/` or are described exactly enough to repeat
 
 ## 0. Summary for Will (Back tees)
 
+> **Nov 6 update (section 12): read it first. It supersedes this summary on Back 9 (aim -14 becomes -2: a
+> phantom tree polygon removed) and Back / Eagle 14 (4-wood at the green, not Mid iron: the green had no putting
+> cost). Back 1 (Long iron) is confirmed on the real lidar crown heights.**
+
 * **Changed picks (calm-day book, Back):**
   * **1: Long iron +6.5** (was Driver 30 L over the corner), by 0.029 +/- 0.005. A close call: the page badges it,
     Driver is better in 39 % of what-if golfers, Driver comes back with any helping wind (Sunday's N wind is behind
@@ -316,6 +320,197 @@ before / after is in sections 2b and 7.
 * The par-3 EV model: pins are unknown, and the depth spread is from published amateur patterns, not Will's.
 * OB on 18 is +/- 8 yds; the creek width on 17 is uncertain; trees have grown since the 2015 lidar or NAIP 2022.
 * Forward set: still synthesized from the Back tee (not Will's set).
+
+## 12. Tee-shot re-check, Nov 6 (lidar flight trees, roll, aim search, Monte Carlo, the Nov 5 forecast)
+
+Work done on Nov 6 under a 2-hour deadline, on one shared CPU (load average ~23 while a read-only panel re-solved
+the course). No Actions run fits, so only results re-solved and verified locally are written to the data.
+Scripts: `opt/solve2.py` (two-stage central solve; new variants `roll1.2`, `cap1.0`), `opt/align_canopy.py`.
+
+### 12a. Trees in the flight path from the lidar (engine option `flight_trees.mode = "lidar"`)
+
+The Nov 3 check (section 7) used one crown height for every tree (20 yds) and a flat 70 % stop. It now uses the
+measured canopy (`v2_course.lidar_flight_ev_curve`, `canopy_grid`):
+
+* **Crown tops:** `course_data/vision_any/eagle_knoll/raw/hag.tif`, the USGS 3DEP Boone Co. lidar (Jan-Mar 2015,
+  leaf-off) height above ground, 0.25 m units, 1 m grid, nodata 255. Each hole's tee frame is sampled on a 1-yd
+  grid. Cells under 4 m are not crowns. OB cells (the house roofs on 18) are masked. +1.5 m growth since 2015 is added
+  (mature oak-hickory near its height asymptote grows ~0.1-0.2 m a year; sensitivity 0).
+* **Trees grown in since 2015** (5 left, 9 right; mapped from NAIP 2020): map tree cells with no lidar crown take
+  the Meta / WRI 1 m canopy-height map (`chm_meta.tif`, ~2018-20 imagery), else 10 m. Before the fill, 49 % of hole
+  9's mapped trees had no lidar crown, and 58 % of hole 13's.
+* **Alignment with the hand map** (landing area 150-340 yds, +/-55 yds, lidar only, before the fill): IoU 0.80-0.95
+  on 1, 3, 5, 7, 8, 10, 14, 15, 17 and 18; 0.71-0.76 on 4 and 11; 0.42-0.50 on 9 and 13 (young trees, the fill
+  above). Only 1-7 % of lidar crown cells lie over open lies (overhanging edges). The best shift is <= 2 yds on
+  every hole. Median crown tops in the mapped trees are 14-22 yds (p90 18-26), against the 20 yds assumed before.
+  Hole 1: median 21, p90 23.
+* **Crown base:** 0.35 x the tallest top within 7 yds (live-crown ratio ~65 % for edge-grown hardwoods). Below it
+  the ball is among the trunks and is not stopped (trunk hits are rare; sensitivity 0.5).
+* **Stop chance from the path length in crowns.** Each swing's descent (from 30 % of the carry and 100 yds out, in
+  3-yd steps, with the DEM ground drop as before) accumulates its 3-D path length L inside crowns, where
+  base < clearance < top. It stops when L passes its own exponential draw: P(stop) = 1 - exp(-k L). The draw is one
+  uniform per swing, shared by every aim and club. The ball then finishes where it stopped, on whatever the map says
+  is there: trees under the crown pay the punch-out cost, and rough under an overhanging edge pays rough (blocked
+  lines included).
+* **k = 0.10 per yd** (mean free path ~10 yds of crown), early November:
+  * Leaf-off woody area index of broadleaf crowns is 0.5-1.4 (Neumann et al. 1989: 0.5; Southampton NIR/visible
+    hemispherical photos: 1.38-1.53). Over ~11 m of crown that is a woody area density of ~0.05-0.13 m2/m3, a ray
+    extinction (G = 0.5) of ~0.03-0.06 per m. A 4.3 cm ball meets twigs and branches over a wider band than a ray
+    (x ~2 for stopping branches, more for twigs, which mostly deflect).
+  * Missouri Dept. of Conservation: oak colour fades and leaves drop in late October, and the season is finished by
+    mid-November. On Nov 7-8 most crowns are bare, with some marcescent oak leaves left.
+  * Leaf-on crowns (LAI ~4-5) stop about twice as often. That puts k at ~0.08-0.12 per yd in November and ~0.2 in
+    summer. The old flat 70 % stop corresponds to roughly k = 0.2 over a 6-yd path: a summer crown.
+  * Sensitivity: k 0.05 and 0.2.
+  * This is the least certain number here: no published golf-ball-through-crown measurement was found.
+* Tests: `test_v2_course_engine.py` (`test_lidar_flight_*`, `test_lidar_opts_env_and_legacy`,
+  `test_eagle_knoll_canopy_matches_the_map`). `V2_FLIGHT_MODE=legacy` runs the Nov 3 constant-height check;
+  `V2_LIDAR_K`, `V2_LIDAR_GROWTH`, `V2_LIDAR_BASE` and `V2_LIDAR_MIN` override the options for sensitivities.
+
+### 12b. Roll and turf
+
+* **What the x1.30 is.** The product's "soft" ground setting (`product/package.py CONDITIONS`) clips the DEM
+  slope roll factor to 0.7-1.3. The physical factor is Penner's rolling-resistance model, MU / (MU + s) times a
+  first-bounce term, with MU = 0.15 (`elevation/adjust.py`). The Driver sits on the cap on 1, 5, 10, 13 and 15, and
+  so does every club on 1 (a 61-ft drop). The cap is not a turf-firmness number: the Driver's level-ground roll is
+  Will's own 25 yds (300 total - 275 carry), times U(0.8, 1.2) per prior world and +/-25 % per swing.
+* **Published data.** No controlled carry-vs-total study on firm vs soft fairways was found. Launch-monitor and
+  forum sources give driver roll of ~0-15 yds on soft turf, 15-30 on firm, and a 9-degree driver rolling ~32 yds in
+  a Golf Digest TrackMan test.
+* **This week.** No rain all week (0 % both days), so the turf is dry. The fairways are probably dormant warm-season
+  grass, which is firm. Against that, 34-40 F at 7-8 am means dew or frost on the first holes. On balance Will's
+  stated 25 yds is a fair central value, with the prior's 0.8-1.2 as the range.
+* **The cap.** Lifting it (firm) or tightening it (x1.0) was tested where the pick could depend on it (results
+  below).
+
+### 12c. Aim search, blue bar, Monte Carlo (checked, no change)
+
+* **Aim grid.** The coarse grid is -60..+60 in 0.5-yd steps with picks bounded to +/-40 (`decide.AIMS`,
+  `AIM_LIMIT`). The page's wind grids add a second stage of 0.5-yd steps over +/-10 yds on 16,000 swings. I scanned
+  every stored prior-averaged curve (Back, Eagle, Middle; pick and runner) for a second basin within 0.01 strokes
+  of the best more than 8 yds away: there are none. No pick sits on the +/-40 bound (the widest is Middle 1, -33).
+  The only curve flat to the edge of the grid is the 2-wood on 8 (Back and Eagle; the open side is hole 4's
+  fairway), and that is a runner-up, not a pick. Both sides of every hazard are inside the search.
+* **Blue bar (0.005).** Back windows are 4-9 yds wide, and the paired MC SE of a curve difference is ~0.001-0.003.
+  The bar is a sensible "no practical difference" band (0.005 strokes on each of 14 tee shots is < 0.1 a round).
+  Unchanged.
+* **Monte Carlo.** In the calm book (stored, 256 draws), every Back and Eagle pick is resolved (z 6-65) except 14
+  (TIE, labelled); in Middle, 5, 10 and 11 are TIE-labelled. At the forecast conditions (stored refined card-tee
+  grids, 50 F), Sat ~calm is the 0 mph cell and Sun SW 5 mph is the 5 mph cell at that hole's relative direction.
+  Every Back pick there has a margin of 0.032-0.124 except Back / Eagle 14, where SW 5 gives 8-iron by 0.008 (TIE).
+  Middle 5, 10, 11 and 18 are close (0.011-0.018). These are the old-engine grids; see 12f for 9 and 14.
+
+### 12d. Bug: the green had no putting cost (drivable 14), engine option `green_putting`
+
+Found by the coordinator's review panel and verified here. The tee-shot raster has no green lie: the green is
+fairway. The scoring tables (`model._tour`) are also clipped at 20 yds. A tee ball finishing ON the 14th green
+therefore scored fairway-at-20 yds (about 2.60 for Will, even 3 yds from the hole), and a ball just over the green
+scored rough-at-20 (about 2.80). That biased the solve against going for the green by roughly 0.1-0.2 strokes per
+ball on the green.
+
+The new option (config `engine.green_putting`, Eagle Knoll only; `v2_course.install_green_putting`,
+`attach_greens`):
+
+* Cells inside the package's green polygon (`green_polygon_ll`, put in each tee frame) score Broadie's PGA Tour
+  expected putts by distance (Every Shot Counts: 1.61 at 10 ft, 1.98 at 30 ft, 2.21 at 60 ft) + 0.10 for a
+  5-handicap.
+* Fairway, first cut, rough and sand within 20 yds of the hole add Broadie's short-game change below 20 yds (tour
+  fairway 2.18 / rough 2.34 / sand 2.43 at 10 yds), with the amateur rough and sand multipliers.
+
+Measured on Back 14 (central world): 8 yds short of the hole on the green now scores 2.02 (was ~2.60); rough
+14 yds past the hole 2.60 (was ~2.80); the 70-yd lay-up spot 2.99 (unchanged). Holes where a tee ball can finish
+within 20 yds of the hole: 14 (all sets) and Middle 1 (Driver ~20 yds short). Everywhere else the option changes
+nothing. Tests: `test_putts_table`, `test_eagle_knoll_14_green_scores_putts`.
+
+### 12e. Map error: a tree polygon on 9 that is not there
+
+Found by the panel and verified here. Hole 9's hand map (third pass, `zones_ll[51]`, src "hand", the "2020 crown at
+250-275" in AUDIT.md) had a 16-point tree polygon at x +10..+24, 251-275 yds out. In that box:
+
+| source | that box | real crowns (x +28..+40) | open rough (x -60..-45) | fairway (x -5..+5) |
+|---|---|---|---|---|
+| 2015 lidar height | 0.0 m (p90 0.0) | p90 10.4 m | 0.0 | 0.0 |
+| Meta canopy height | 0.0 m (p90 0.0) | p90 3.0 m | 0.0 | 0.0 |
+| NAIP 2020 brightness / NDVI | 120 / 0.12 | 83 / 0.01 | 129 / 0.12 | 127 / 0.20 |
+| NAIP 2022 brightness / NDVI | 131 / 0.18 | 113 / 0.22 | 118 / 0.18 | 127 / 0.26 |
+
+It reads as open grass in both years and both height sources. The dark patch traced from NAIP 2020 is the shadow
+of the crowns beside the cart path. The polygon is removed from `truth/package.json` and from the three
+`course.py` modules (hole 9 only: 53 -> 52 zones; every other hole unchanged).
+
+### 12f. Results (Back central world at the Nov 5 forecast temperatures, two-stage solve, paired SE)
+
+Back, lidar flight trees + green putting + the 9 map fix, against the stored page (calm book):
+
+| hole | page now | re-solved | margin +/- SE | verdict |
+|---|---|---|---|---|
+| 1 | Long iron +6.5 (0.029) | Long iron +7 | 0.028 +/- 0.003 over Driver -26.5 | **same** |
+| 3 | Driver +11 | Driver +10 | 0.038 +/- 0.001 | same |
+| 4 | Driver -4 | Driver -5 | 0.038 +/- 0.001 | same |
+| 5 | Driver +3.5 | Driver +3 | 0.066 +/- 0.001 | same |
+| 7 | Driver -9.5 | Driver -9.5 | 0.077 +/- 0.001 | same |
+| 8 | Driver +13 | Driver +11.5 | 0.054 +/- 0.001 | same |
+| 9 | Driver -14 | **Driver -2** | 0.095 +/- 0.001 over 2-wood | **aim moves 12 yds right** (12e) |
+| 10 | 4-wood +1.5 | 4-wood +1.5 | 0.058 +/- 0.002 | same |
+| 11 | Driver -1 | Driver -1 | 0.030 +/- 0.001 | same |
+| 13 | Driver +12 | Driver +13 | 0.125 +/- 0.001 | same |
+| 14 | Mid iron +8, TIE 8-iron | **4-wood 0** (at the green) | 0.127 +/- 0.005 over Mid iron +7.5 | **club changes** (12d) |
+| 15 | 4-wood -11.5 | 4-wood -11.5 | 0.045 +/- 0.002 | same |
+| 17 | 4-wood +5 | 4-wood +5.5 | 0.072 +/- 0.004 | same |
+| 18 | Driver -1 | Driver -0.5 | 0.031 +/- 0.002 over 4-wood | same |
+
+Eagle and Middle (central):
+
+* **Eagle 9:** Driver -3.5 (page -14.5), by 0.077 +/- 0.001.
+* **Eagle 14:** the same box as Back 14, so the same result.
+* **Middle 9:** Driver -5.5 (page -13), by 0.092 +/- 0.001.
+* **Middle 14** (246, putting on): 8-iron +4 by 0.053 +/- 0.001 (page 8-iron +4.5), the same.
+* **Middle 1** (putting on): Driver -33 by 0.113 +/- 0.003, the same.
+
+**Back 1 sensitivity** (lidar engine, central; Long iron margin over Driver):
+
+| variant | margin +/- SE |
+|---|---|
+| central | 0.028 +/- 0.003 |
+| roll x1.2 (firm, dry week) | 0.033 |
+| roll x0.8 | 0.021 |
+| k = 0.05 (very bare crowns) | 0.009 |
+| carry +5 | 0.005 (tie) |
+| 5 mph helping | **Driver by 0.010** |
+| legacy 20-yd / 70 % check | 0.039 |
+
+Long iron is the pick in every case except a helping wind. Sunday's SW wind (from ~225) is slightly into the hole
+on 1 (bearing 191), which favours Long iron, and Saturday is calm. Keep Long iron both days. It is still a close
+call: if Will flushes it (carry +5) it is a tie.
+
+**Roll.** Back 1: roll x1.2 0.033, x0.8 0.021, so the pick holds. The x1.30 cap is the soft-ground clip of the DEM
+slope factor, and the turf this week (dry, dormant) is if anything firmer, which favours the pick on 1 slightly.
+No change to the cap or the roll prior.
+
+
+### 12g. What was written to the data, and what was not
+
+* **Calm-day book (`v2_decisions.json`): pending.** Reduced re-runs of Back 9 and 14 and Eagle / Middle 9
+  (`decide.bayes` on the contending clubs, 24 / 8 prior draws) were still running at the push deadline. If they are
+  not written in a later commit, the stored calm book for 9 and 14 is the old one: use the numbers in 12f.
+* **Wind grids: NOT recomputed** (`wind_grid*.json` are unchanged, old engine). One card-tee cell takes ~220 s on
+  this box today, so a hole's 183 cells do not fit. Until the nccga-v2 job is re-run (request files
+  `nccga_v2_eagle_knoll*.json`, holes 9 and 14 or all; ~3 h), the page's forecast view (Sat / Sun) still shows the
+  old 9 aim and the old 14 club. **On the course: 9 aim ~2 yds left of the line (not 14); 14 from the 265 box:
+  4-wood at the green, aim on the line.** The only grid cell recomputed (Back 14, 35 F, calm) gives 4-wood +0.5 by
+  0.099, which agrees.
+* **Engine:** `config.engine.flight_trees.mode = "lidar"` and `green_putting` are on for Eagle Knoll, so any rebuild
+  of decisions or grids uses them.
+
+### 12h. Still uncertain (Nov 6)
+
+* The stop extinction k (0.10 per yd) has no golf-specific measurement behind it. Back 1 goes from a tie (k 0.05)
+  to Long iron by 0.04 (the old summer-like check).
+* Back 14 on the new pick: the 4-wood needs ~255-265 carry over the pond at 50-55 F (Will's 255 at 70 F, +13 for
+  the drop). The 8-iron carry (162) is still an assumption, but it no longer decides 14 from the 265 box. From the
+  246 box (Middle) the 8-iron lay-up stays the pick (0.053).
+* The width-sweep line of the hole note ("same club for any driver pattern") is not re-checked for 9 and 14.
+* Not re-solved under the new engine: Eagle and Middle holes other than 1 (Middle), 9 and 14.
 
 ## 13. Par-3 targets for an unknown pin (Nov 6 2026)
 
