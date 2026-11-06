@@ -311,6 +311,8 @@ def activate(slug, which):
     M.hole_temp.__defaults__ = (M.TEE_DAY, M.TEE_HOUR)
     import decide as D
     eng = dict(cfg.get("engine") or {})
+    if eng.get("green_putting"):
+        attach_greens(cfg, which, course, M)
     if eng.get("flight_trees"):
         dem = os.path.join(ROOT, meta["dem"]) if meta.get("dem") else None
         cache = {}
@@ -325,6 +327,20 @@ def activate(slug, which):
                 cache[ck] = ground_drop_grid(M, hd, course.FRAMES[k], dem)
             return cache[ck]
         eng["_drop_of"] = drop_of
+        if eng["flight_trees"].get("mode") == "lidar" and lidar_opts(eng["flight_trees"]) is not None:
+            o = lidar_opts(eng["flight_trees"])
+            chm = os.path.join(ROOT, o["chm"]) if o.get("chm") else None
+            ccache = {}
+
+            def canopy_of(hd):
+                k = key_of.get(id(hd))
+                if k is None:
+                    return None
+                ck = (k, tuple(np.round(np.asarray(hd["tee"], float), 1)))
+                if ck not in ccache:
+                    ccache[ck] = canopy_grid(M, hd, course.FRAMES[k], chm, o, R=M.Raster(hd))
+                return ccache[ck]
+            eng["_canopy_of"] = canopy_of
     install_engine(eng, M, D)
     return course, meta, M, D
 
@@ -385,8 +401,14 @@ def install_engine(eng, M, D):
                 BP.SHORT.setdefault(c, c)
         except Exception:                                # noqa: BLE001
             pass
+    if eng.get("green_putting"):
+        install_green_putting(M, eng["green_putting"])
     ft = eng.get("flight_trees")
-    if ft:
+    if ft and ft.get("mode") == "lidar" and lidar_opts(ft) is not None:
+        o = lidar_opts(ft)
+        M.ev_curve = lidar_flight_ev_curve(M, o, eng.get("_canopy_of"), drop_of=eng.get("_drop_of"))
+        M._lidar_opts = o
+    elif ft:
         M.ev_curve = flight_tree_ev_curve(M, float(os.environ.get("V2_FLIGHT_HEIGHT") or ft.get("height_yds", 20.0)),
                                           float(os.environ.get("V2_FLIGHT_PHIT") or ft.get("p_hit", 0.7)),
                                           drop_of=eng.get("_drop_of"))
@@ -483,6 +505,259 @@ def flight_tree_ev_curve(M, height, p_hit, drop_of=None):
         s = S[R.idx(a, l)]
         return 1.0 + s.mean(0), (a, l, lie, s)
     ev_curve._flight_trees = (height, p_hit)
+    return ev_curve
+
+
+# ------------------------------------------------------------------------------------------------ green putting
+# config engine "green_putting": {"am_putt_off": 0.10} (Eagle Knoll panel finding, 2026-11-06). The tee-shot raster had
+# no green lie (the green was fairway) and the scoring tables are clipped at 20 yds, so a drive that finished ON the
+# drivable 14th green (10 yds from the hole) scored fairway-at-20 (~2.6 for Will) instead of ~2.1 putts, and a ball
+# just over the green scored rough-at-20. With the option: cells inside the mapped green polygon score Broadie's
+# PGA Tour expected putts by distance + am_putt_off (a 5-handicap putts ~0.1 more per hole), and fairway / rough /
+# sand within 20 yds of the hole use Broadie's short-game values below 20 yds instead of the 20-yd clip.
+PUTT_FT = [0, 3, 5, 8, 10, 15, 20, 30, 40, 50, 60, 90, 120]          # Broadie, Every Shot Counts (2014), tour putts
+PUTT_TOUR = [1.0, 1.04, 1.23, 1.50, 1.61, 1.78, 1.87, 1.98, 2.06, 2.14, 2.21, 2.40, 2.55]
+SHORT_YDS = [5.0, 10.0, 20.0]                                       # tour, off the green (Broadie): 20 = the table
+SHORT_TOUR = {"fairway": [2.10, 2.18, 2.40], "rough": [2.25, 2.34, 2.59], "sand": [2.40, 2.43, 2.53]}
+
+
+def attach_greens(cfg, which, course, M):
+    """hd["green_poly"]: each tee shot's green polygon (package green_polygon_ll) in its own tee frame (yds along,
+    yds right), as the Raster grid uses."""
+    pkg = json.load(open(os.path.join(ROOT, cfg["truth_package" if which.startswith("truth") else "package"])))
+    holes = pkg["holes"]
+    holes = holes if isinstance(holes, list) else [dict(v, ref=k) for k, v in holes.items()]
+    by = {str(h.get("ref")): h for h in holes}
+    if os.path.join(CD, "imagery") not in sys.path:
+        sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as RD
+    for k, hd in course.HOLES.items():
+        h = by.get(str(k))
+        if not h or not h.get("green_polygon_ll") or k not in course.FRAMES:
+            continue
+        fr = RD.Frame.from_json(course.FRAMES[k])
+        px = fr.ll_to_px(np.asarray(h["green_polygon_ll"], float))
+        tee, fwd, right, ppy = M.frame(hd)
+        d = (px - tee) / ppy
+        hd["green_poly"] = np.column_stack([d @ fwd, d @ right])
+
+
+def putts(d_yds, off=0.0):
+    return np.interp(np.asarray(d_yds, float) * 3.0, PUTT_FT, PUTT_TOUR) + off
+
+
+def install_green_putting(M, opts):
+    if getattr(M.Raster, "_green_putting", False):
+        return
+    from matplotlib.path import Path as _Path
+    base = M.Raster.strokes
+    off = float(opts.get("am_putt_off", 0.10))
+
+    def strokes(self, P, length):
+        S = base(self, P, length)
+        d, lie = self.dist, self.lie
+        near = d < SHORT_YDS[-1]
+        if near.any():
+            # the tables are clipped at 20 yds, so S = the 20-yd value there: add the tour short-game change below 20
+            # (rough / sand gaps over fairway scaled by the amateur multipliers, as table() does)
+            fw_d = lambda x: np.interp(x, SHORT_YDS, SHORT_TOUR["fairway"]) - SHORT_TOUR["fairway"][-1]  # noqa: E731
+            for kind in ("fairway", "first_cut", "rough", "sand"):
+                m = near & (lie == M.CODE[kind])
+                if not m.any():
+                    continue
+                x = d[m]
+                delta = fw_d(x)
+                if kind in ("rough", "sand", "first_cut"):
+                    k2 = "sand" if kind == "sand" else "rough"
+                    gap = (np.interp(x, SHORT_YDS, SHORT_TOUR[k2]) - np.interp(x, SHORT_YDS, SHORT_TOUR["fairway"])
+                           - (SHORT_TOUR[k2][-1] - SHORT_TOUR["fairway"][-1]))
+                    mult = 1.0 if P.get("table") != "am" else (P["m_sand"] if kind == "sand" else P["m_rough"])
+                    if kind == "first_cut":
+                        mult = mult * P["first_cut"]
+                    delta = delta + mult * gap
+                S[m] = S[m] + delta
+        gp = self.hd.get("green_poly")
+        if gp is not None:
+            AA, LL = np.meshgrid(self.a, self.l, indexing="ij")
+            g = _Path(np.asarray(gp, float)).contains_points(np.column_stack([AA.ravel(), LL.ravel()])).reshape(AA.shape)
+            g &= (lie == M.CODE["fairway"]) | (lie == M.CODE["first_cut"]) | (lie == M.CODE["rough"])
+            S[g] = putts(d[g], off if P.get("table") == "am" else 0.0)
+        return S
+    M.Raster.strokes = strokes
+    M.Raster._green_putting = True
+# ------------------------------------------------------------------------------------------------ lidar flight trees
+# config engine "flight_trees": {"mode": "lidar", ...} (Eagle Knoll, OPTIMIZE.md 2026-11-06). Replaces the constant
+# 20-yd crown and the flat 70 % stop with the measured canopy: every cell's crown top from the 3DEP lidar
+# height-above-ground (+ growth since the survey), a crown base at base_frac of the local tree height, and a stop
+# chance that grows with the length of the ball's path inside crowns: P(stop) = 1 - exp(-k L). k is the extinction of
+# ball-stopping contacts per yard of path (woody area index of leaf-off broadleaf crowns, ball size, the leaf share
+# left on the trees in early November); see OPTIMIZE.md section 12.
+LIDAR_DEFAULTS = dict(units_m=0.25, nodata=255, growth_m=1.5, min_tree_m=4.0, base_frac=0.35, base_window_yds=7,
+                      k_per_yd=0.10, step_yds=3.0, f0=0.3, min_along=100.0, exclude=("ob",), fill_chm=None,
+                      fill_units_m=1.0, fill_default_m=10.0)
+CANOPY_STEP = 1.0                                 # yds: canopy grid of a hole (tee frame)
+_RASTERS = {}
+LIDAR_ENV = dict(k_per_yd="V2_LIDAR_K", growth_m="V2_LIDAR_GROWTH", base_frac="V2_LIDAR_BASE",
+                 min_tree_m="V2_LIDAR_MIN")        # sensitivity runs (opt/solve2.py variants)
+
+
+def lidar_opts(ft):
+    """config flight_trees (mode lidar) + defaults + V2_LIDAR_* environment overrides (sensitivities)."""
+    if os.environ.get("V2_FLIGHT_MODE") == "legacy":          # A/B against the constant-height check
+        return None
+    o = dict(LIDAR_DEFAULTS)
+    o.update({k: v for k, v in ft.items() if k != "mode"})
+    for k, e in LIDAR_ENV.items():
+        if os.environ.get(e):
+            o[k] = float(os.environ[e])
+    o["exclude"] = tuple(o.get("exclude") or ())
+    return o
+
+
+def _raster_nearest(path):
+    """lonlat (N,2) -> raster value (nearest cell, the file's units; NaN outside / nodata kept as is)."""
+    if path not in _RASTERS:
+        import rasterio
+        from pyproj import Transformer
+        with rasterio.open(path) as src:
+            _RASTERS[path] = (src.read(1), ~src.transform,
+                              Transformer.from_crs("EPSG:4326", src.crs.to_string(), always_xy=True))
+    z, inv, to = _RASTERS[path]
+
+    def f(ll):
+        ll = np.atleast_2d(np.asarray(ll, float))
+        x, y = to.transform(ll[:, 0], ll[:, 1])
+        c = np.floor(inv.a * np.asarray(x) + inv.b * np.asarray(y) + inv.c).astype(np.int64)
+        r = np.floor(inv.d * np.asarray(x) + inv.e * np.asarray(y) + inv.f).astype(np.int64)
+        ok = (c >= 0) & (r >= 0) & (c < z.shape[1]) & (r < z.shape[0])
+        v = z[np.clip(r, 0, z.shape[0] - 1), np.clip(c, 0, z.shape[1] - 1)].astype(float)
+        return np.where(ok, v, np.nan)
+    return f
+
+
+def canopy_grid(M, hd, frame_json, chm_path, opts, R=None):
+    """(ga, gl, top, base) on a CANOPY_STEP grid of the tee frame, in yds above the ground: crown top from the lidar
+    height-above-ground (nodata / outside -> no tree) + growth, cells under min_tree_m -> no crown, cells on map lies in
+    opts["exclude"] (OB: the house lots on 18, whose roofs are in the lidar too) -> no crown; crown base = base_frac x
+    the tallest top within base_window_yds (the crown of that tree, not of its sloping edge). None without the file."""
+    if not chm_path or not os.path.exists(chm_path):
+        return None
+    if os.path.join(CD, "imagery") not in sys.path:
+        sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as RD
+    from scipy import ndimage
+    f = _raster_nearest(chm_path)
+    fr = RD.Frame.from_json(frame_json)
+    tee, fwd, right, ppy = M.frame(hd)
+    ga = np.arange(M.A0, M.A1 + CANOPY_STEP, CANOPY_STEP)
+    gl = np.arange(M.L0, M.L1 + CANOPY_STEP, CANOPY_STEP)
+    AA, LL = np.meshgrid(ga, gl, indexing="ij")
+    pts = tee + (AA.ravel()[:, None] * fwd + LL.ravel()[:, None] * right) * ppy
+    v = np.asarray(f(fr.px_to_ll(pts)), float).reshape(AA.shape)
+    v[~np.isfinite(v) | (v == opts["nodata"])] = 0.0
+    top_m = v * opts["units_m"]
+    tree = top_m >= opts["min_tree_m"]
+    top = np.where(tree, (top_m + opts["growth_m"]) / 0.9144, 0.0)
+    lie = R.lie_at(AA, LL) if R is not None else None
+    fill = opts.get("fill_chm")
+    if lie is not None and fill is not None:
+        # map trees with no 2015 lidar crown (grown in since: 5 left, 9 right on the NAIP 2020 pass): the newer
+        # canopy-height map (Meta / WRI, 1 m, ~2018-20 imagery) there, else fill_default_m; no growth added
+        miss = (lie == M.CODE["recovery"]) & ~tree
+        if miss.any():
+            fv = np.asarray(_raster_nearest(os.path.join(ROOT, fill) if not os.path.isabs(fill) else fill)(
+                fr.px_to_ll(pts)), float).reshape(AA.shape) * opts.get("fill_units_m", 1.0)
+            fv[~np.isfinite(fv) | (fv > 60)] = 0.0
+            fv = np.where(fv >= opts["min_tree_m"], fv, opts.get("fill_default_m", 10.0))
+            top = np.where(miss, fv / 0.9144, top)
+    if lie is not None and opts.get("exclude"):
+        for k in opts["exclude"]:
+            if k in M.CODE:
+                top = np.where(lie == M.CODE[k], 0.0, top)
+    w = max(1, int(round(opts["base_window_yds"] / CANOPY_STEP)))
+    base = np.where(top > 0, opts["base_frac"] * ndimage.maximum_filter(top, size=w, mode="nearest"), 0.0)
+    return ga, gl, top.astype(np.float32), base.astype(np.float32)
+
+
+def lidar_flight_ev_curve(M, opts, canopy_of, drop_of=None):
+    """M.ev_curve with the flight traced through the measured crowns. Each swing's descent (from f0 of its carry,
+    and min_along yds out, in step_yds steps along the straight tee-to-landing line) is at
+    clearance = flight height + the ground's drop below the tee - that fraction of the landing drop (as in
+    flight_tree_ev_curve). Where base < clearance < top the ball is inside a crown and its path length there (3-D,
+    the flight's own slope) accumulates. The ball stops at the first point where that length passes its own
+    exponential draw -ln(1 - u) / k (u: one uniform per swing shared by every aim and club, common random numbers),
+    i.e. P(stop) = 1 - exp(-k L) over the whole path, and drops there: it finishes at that spot on the map, whatever
+    the lie (trees under the crown: the punch-out cost; rough under an overhanging edge: rough). canopy_of(hd) ->
+    canopy_grid or None (no flight check on that hole); drop_of(hd) -> ground_drop_grid or None (flat ground)."""
+    base_shots, base_finish = M.shots, M.finish
+    k = float(opts["k_per_yd"])
+
+    def ev_curve(R, S, hd, club, P, z, aims, wind=None):
+        car, dev, roll = base_shots(hd, club, P, z, wind)
+        a, l, lie = base_finish(R, car[:, None], dev[:, None] + aims[None, :], roll[:, None], P["rough_roll"],
+                                P.get("v1_roll", False))
+        C = canopy_of(hd) if canopy_of else None
+        if C is None or k <= 0:
+            s = S[R.idx(a, l)]
+            return 1.0 + s.mean(0), (a, l, lie, s)
+        ga, gl, top, base = C
+        tmax = float(top.max())
+        kind = "wood" if club in M.WOODS else "iron"
+        cm = float(np.median(car))
+        n = max(4, int(np.ceil((1.0 - opts["f0"]) * cm / opts["step_yds"])))
+        F = np.linspace(opts["f0"], 1.0, n + 1)[:-1] + 0.5 * (1.0 - opts["f0"]) / n      # step mid-points
+        y = flight_heights(F, kind, cm)
+        dydx = np.gradient(flight_heights(np.linspace(0, 1, 401), kind, cm), np.linspace(0, cm, 401))
+        slope = np.interp(F, np.linspace(0, 1, 401), dydx)
+        G = drop_of(hd) if drop_of else None
+        if G is not None:
+            dga, dgl, dg = G
+
+            def drop(pa, pl):
+                ia = np.clip(np.rint((pa - dga[0]) / DROP_STEP).astype(np.int32), 0, len(dga) - 1)
+                il = np.clip(np.rint((pl - dgl[0]) / DROP_STEP).astype(np.int32), 0, len(dgl) - 1)
+                return dg[ia, il]
+        u = np.random.default_rng(int(z.shape[1]) * 7919 + 17).random(z.shape[1])
+        need = (-np.log1p(-np.minimum(u, 1 - 1e-12)) / k).astype(np.float32)   # yds of crown this swing survives
+        shp = a.shape
+        lat0 = (dev[:, None] + aims[None, :]).ravel()
+        car1 = np.broadcast_to(car[:, None], shp).ravel()
+        need1 = np.broadcast_to(need[:, None], shp).ravel()
+        sw = np.broadcast_to(np.arange(shp[0])[:, None], shp).ravel()
+        d_land = drop(car1, lat0) if G is not None else np.zeros_like(car1)
+        dmin = float(G[2].min()) if G is not None else 0.0          # the ground is never higher than this
+        acc = np.zeros(car1.shape, np.float32)
+        stop = np.zeros(car1.shape, bool)
+        ha, hl = np.zeros(car1.shape), np.zeros(car1.shape)
+        stepf = (1.0 - opts["f0"]) / n
+        for f, yf, sl in zip(F, y, slope):
+            # cheap lower bound of the clearance first, then only the balls that can be under a crown top
+            c = np.flatnonzero((yf - f * d_land + dmin < tmax) & ~stop & (car1 * f >= opts["min_along"]))
+            if not c.size:
+                continue
+            pa, pl = car1[c] * f, lat0[c] * f
+            clear = yf - f * d_land[c] + (drop(pa, pl) if G is not None else 0.0)
+            ia = np.clip(np.rint((pa - ga[0]) / CANOPY_STEP).astype(np.int32), 0, len(ga) - 1)
+            il = np.clip(np.rint((pl - gl[0]) / CANOPY_STEP).astype(np.int32), 0, len(gl) - 1)
+            ins = (clear < top[ia, il]) & (clear > base[ia, il])
+            if not ins.any():
+                continue
+            c, pa, pl = c[ins], pa[ins], pl[ins]
+            acc[c] += (car1[c] * stepf * math.sqrt(1.0 + sl * sl)).astype(np.float32)
+            s = acc[c] >= need1[c]
+            c, pa, pl = c[s], pa[s], pl[s]
+            ha[c], hl[c] = pa, pl
+            stop[c] = True
+        stop = stop.reshape(shp)
+        ha, hl = ha.reshape(shp), hl.reshape(shp)
+        if stop.any():
+            a = np.where(stop, ha, a)
+            l = np.where(stop, hl, l)
+            lie = np.where(stop, R.lie_at(a, l), lie)
+        s = S[R.idx(a, l)]
+        return 1.0 + s.mean(0), (a, l, lie, s)
+    ev_curve._flight_trees = ("lidar", k)
+    ev_curve._lidar_stop = True
     return ev_curve
 
 

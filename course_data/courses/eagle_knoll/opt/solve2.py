@@ -34,6 +34,10 @@ def solve(h, P, wind=None):
     return dict(pick=o[0], runner=o[1], third=o[2], aim=res[o[0]]["aim"], margin=float(res[o[1]]["ev"] - res[o[0]]["ev"]),
                 se=float(d.std(ddof=1) / np.sqrt(N2)), m3=float(res[o[2]]["ev"] - res[o[0]]["ev"]),
                 ev={c: round(res[c]["ev"], 4) for c in o}, aims={c: res[c]["aim"] for c in o}, trees=round(tr, 3))
+def _cap(h, c):
+    for k, v in list(M.HOLES[h].get("elev", {}).items()):
+        M.HOLES[h]["elev"][k] = (v[0], min(v[1], c)) + tuple(v[2:])
+    return D.central(h)
 def C(h, **kw):
     return D.central(h, **kw)
 VARS = {
@@ -43,6 +47,8 @@ VARS = {
   "width+10": lambda h: (C(h, width={c: v * 1.1 for c, v in C(h)["width"].items()}), None),
   "width-10": lambda h: (C(h, width={c: v * 0.9 for c, v in C(h)["width"].items()}), None),
   "roll0.8": lambda h: (C(h, roll_mult=0.8), None),
+  "roll1.2": lambda h: (C(h, roll_mult=1.2), None),
+  "cap1.0": lambda h: (_cap(h, 1.0), None),
   "head5": lambda h: (C(h), wind_hook(5, 0)), "tail5": lambda h: (C(h), wind_hook(5, 180)),
   "left5": lambda h: (C(h), wind_hook(5, 90)), "right5": lambda h: (C(h), wind_hook(5, 270)),
 }

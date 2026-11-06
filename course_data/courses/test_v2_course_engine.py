@@ -186,3 +186,128 @@ def test_template_moved_tee_note_and_hazards():
     assert "if(r.T.back !== 0) note = `The calm-day book" in html
     # golfer request 2026-11-06: no hazard outlines on the photo (h.haz is no longer drawn)
     assert "h.haz" not in html and 'id="adj" min="-60" max="60" step="5"' in html
+
+
+# ------------------------------------------------------------------ lidar flight trees (OPTIMIZE.md section 12)
+def _canopy(top_yds, a0=250, a1=262, l0=-40, l1=-10, base=0.0):
+    ga, gl = np.arange(-10, 431, 1.0), np.arange(-150, 151, 1.0)
+    AA, LL = np.meshgrid(ga, gl, indexing="ij")
+    t = np.where((AA >= a0) & (AA <= a1) & (LL >= l0) & (LL <= l1), top_yds, 0.0).astype(np.float32)
+    return ga, gl, t, np.where(t > 0, base, 0.0).astype(np.float32)
+
+
+def _lidar_opts(**kw):
+    o = dict(vc.LIDAR_DEFAULTS)
+    o.update(kw)
+    return o
+
+
+def test_lidar_flight_stops_with_path_length():
+    """A crown band the ball dives into: stop share = 1 - exp(-k L); a low crown under the flight: no stops."""
+    M, R = _fake_M(290.0), _R()
+    S = np.zeros((500, 200))
+    z = np.zeros((5, 20000))
+    aims = np.array([-28.0, 0.0])
+    C = _canopy(22.0)
+    ev = vc.lidar_flight_ev_curve(M, _lidar_opts(k_per_yd=0.1), lambda hd: C)
+    e, (a, l, lie, s) = ev(R, S, {}, "Driver", {"rough_roll": 0.3}, z, aims)
+    stopped = (a[:, 0] < 289).mean()
+    assert 0.2 < stopped < 0.95
+    assert (a[:, 1] == 290).all()                      # aim 0 never crosses the band
+    # path inside the band, as the model traces it: the share matches 1 - exp(-k L)
+    F = np.linspace(0.3, 1.0, 400)
+    y = vc.flight_heights(F, "wood", 290.0)
+    pa, pl = 290 * F, -28 * F
+    inside = (pa >= 250) & (pa <= 262) & (pl >= -40) & (pl <= -10) & (y < 22)
+    L = inside.sum() * (0.7 * 290 / 400) * 1.15     # ~descent slope factor
+    assert stopped == pytest.approx(1 - np.exp(-0.1 * L), abs=0.1)
+    # twice the extinction stops more; common random numbers: every stop at k=0.1 is also a stop at k=0.2
+    ev2 = vc.lidar_flight_ev_curve(M, _lidar_opts(k_per_yd=0.2), lambda hd: C)
+    _, (a2, *_r) = ev2(R, S, {}, "Driver", {"rough_roll": 0.3}, z, aims)
+    assert (a2[:, 0] < 289).mean() > stopped
+    assert ((a[:, 0] < 289) <= (a2[:, 0] < 289)).all()
+    # crowns only 8 yds tall: the ball is above them
+    ev3 = vc.lidar_flight_ev_curve(M, _lidar_opts(k_per_yd=0.2), lambda hd: _canopy(8.0))
+    _, (a3, *_r) = ev3(R, S, {}, "Driver", {"rough_roll": 0.3}, z, aims)
+    assert (a3[:, 0] == 290).all()
+    # a high crown base (the ball passes under the crown, among the trunks): no stops
+    ev4 = vc.lidar_flight_ev_curve(M, _lidar_opts(k_per_yd=0.2), lambda hd: _canopy(30.0, base=24.0))
+    _, (a4, *_r) = ev4(R, S, {}, "Driver", {"rough_roll": 0.3}, z, aims)
+    assert (a4[:, 0] < 289).mean() < 0.05
+
+
+def test_lidar_flight_stop_cost_and_ravine():
+    """A stopped ball finishes at the crown (that cell's stroke value); a ravine below the tee clears the band."""
+    M, R = _fake_M(290.0), _R()
+    S = np.zeros((500, 200))
+    S[250:263, 60:91] = 1.0
+    z = np.zeros((5, 4000))
+    C = _canopy(22.0)
+    ev = vc.lidar_flight_ev_curve(M, _lidar_opts(k_per_yd=10.0), lambda hd: C)
+    e, (a, l, lie, s) = ev(R, S, {}, "Driver", {"rough_roll": 0.3}, z, np.array([-28.0]))
+    assert e[0] == pytest.approx(2.0) and (lie[:, 0] == 4).all()
+    dg = np.zeros((111, 76))
+    dg[60:70, :] = 30.0
+    deep = (np.arange(-10, 434, 4.0), np.arange(-150, 154, 4.0), dg)
+    ev2 = vc.lidar_flight_ev_curve(M, _lidar_opts(k_per_yd=10.0), lambda hd: C, drop_of=lambda hd: deep)
+    e2, _ = ev2(R, S, {}, "Driver", {"rough_roll": 0.3}, z, np.array([-28.0]))
+    assert e2[0] == pytest.approx(1.0)
+
+
+def test_lidar_opts_env_and_legacy(monkeypatch):
+    ft = {"mode": "lidar", "chm": "x.tif", "k_per_yd": 0.1}
+    monkeypatch.setenv("V2_LIDAR_K", "0.2")
+    assert vc.lidar_opts(ft)["k_per_yd"] == 0.2 and vc.lidar_opts(ft)["base_frac"] == vc.LIDAR_DEFAULTS["base_frac"]
+    monkeypatch.setenv("V2_FLIGHT_MODE", "legacy")
+    assert vc.lidar_opts(ft) is None
+
+
+def test_eagle_knoll_canopy_matches_the_map():
+    """The real lidar crowns on Eagle Knoll 1 line up with the hand-map trees (IoU > 0.8 in the landing area)."""
+    cfg = json.load(open(os.path.join(HERE, "eagle_knoll", "config.json")))
+    ft = cfg["engine"]["flight_trees"]
+    if ft.get("mode") != "lidar" or not os.path.exists(os.path.join(vc.ROOT, ft["chm"])):
+        pytest.skip("no lidar")
+    course, meta, M, D = vc.activate("eagle_knoll", "truth")
+    hd = M.HOLES[1]
+    R = M.Raster(hd)
+    ga, gl, top, base = M._engine_opts["_canopy_of"](hd)
+    AA, LL = np.meshgrid(ga, gl, indexing="ij")
+    win = (AA >= 150) & (AA <= 340) & (np.abs(LL) <= 55)
+    mt = (R.lie_at(AA, LL) == M.CODE["recovery"]) & win
+    lt = (top > 0) & win
+    assert (lt & mt).sum() / (lt | mt).sum() > 0.8
+    assert 15 < np.median(top[mt]) < 28              # yds: mature hardwoods
+    assert (base[top > 0] < top[top > 0]).mean() > 0.9     # edge cells under the base: no crown there
+
+
+def test_putts_table():
+    assert vc.putts(0.0) == pytest.approx(1.0)
+    assert vc.putts(10.0) == pytest.approx(1.98)                  # 30 ft, Broadie tour
+    assert vc.putts(10.0, 0.1) == pytest.approx(2.08)
+    assert np.all(np.diff(vc.putts(np.linspace(0, 40, 50))) >= 0)
+
+
+def test_eagle_knoll_14_green_scores_putts():
+    """Drivable 14th (panel finding 2026-11-06): a tee ball on the green scores putts, not fairway-at-20 yds; just past
+    the green scores a short chip from rough, not rough-at-20."""
+    cfg = json.load(open(os.path.join(HERE, "eagle_knoll", "config.json")))
+    if not cfg["engine"].get("green_putting"):
+        pytest.skip("option off")
+    course, meta, M, D = vc.activate("eagle_knoll", "truth")
+    hd = M.HOLES[14]
+    assert "green_poly" in hd and 245 < hd["green_poly"][:, 0].mean() < 275
+    R = M.Raster(hd)
+    P = D.central(14)
+    S = R.strokes(P, hd["length"])
+    g = R.green
+
+    def at(a, l):
+        i = R.idx(np.array([a]), np.array([l]))
+        return float(S[i][0]), M.LIES[R.lie[i][0]]
+    s8, _ = at(g[0] - 8, g[1])                                     # on the green, 8 yds short of the hole
+    assert 1.9 < s8 < 2.15
+    s14, lie = at(g[0] + 14, g[1])                                 # just over the green
+    assert lie == "rough" and s14 < 2.7
+    s70, _ = at(190, 10)                                           # the lay-up: unchanged table value
+    assert 2.8 < s70 < 3.2
