@@ -113,7 +113,21 @@ def scan(slug, out=None):
 
 def fetch(slug, year, d, margin=150.0):
     if str(year).lower() == "naipplus":
-        return fetch_naipplus(slug, d, margin)
+        try:
+            return fetch_naipplus(slug, d, margin)
+        except Exception as ex:                              # noqa: BLE001
+            # the page must still build (its other fixes ship): fall back to the best Planetary Computer NAIP year
+            print("!! NAIP Plus fetch failed, falling back to a 0.6 m NAIP year:", repr(ex)[:300], flush=True)
+            for f in ("naip_rgb.tif", "georef.json"):
+                if os.path.exists(os.path.join(d, f)):
+                    os.remove(os.path.join(d, f))
+            # config display_imagery "fallback_year" (Eagle Knoll: 2022, registered on the truth map; 2020 is shifted
+            # 10-15 yds on 17), else the scan's best year
+            try:
+                cfgp = os.path.join(CD, "courses", slug, "config.json")
+                year = str((json.load(open(cfgp)).get("display_imagery") or {}).get("fallback_year") or "best")
+            except Exception:                                # noqa: BLE001
+                year = "best"
     if year == "best":
         p = os.path.join(HERE, "years", f"{slug}_display.json")
         doc = json.load(open(p)) if os.path.exists(p) else scan(slug)
@@ -137,12 +151,53 @@ def fetch(slug, year, d, margin=150.0):
 NAIPPLUS = "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPPlus/ImageServer"
 
 
-def fetch_naipplus(slug, d, margin=150.0, res=0.3, tile=3600, epsg=26915):
-    """USGS NAIP Plus (The National Map: NAIP + state high-resolution orthoimagery, public domain) at `res` m over the
-    package box + margin, mosaicked from exportImage tiles (service limit 4000 px) into d/naip_rgb.tif + georef.json,
-    the layout v2_course's display imagery reads. Missouri carries 0.3 m imagery here, twice the detail of the 0.6 m
-    Planetary Computer NAIP years (Eagle Knoll 2026-11-06: the page photos looked blurry)."""
+def _naipplus_tile(x0, y1, tw, th, res, epsg, log=print, depth=0):
+    """One exportImage tile (tw x th px, top-left corner x0, y1 in EPSG:epsg) -> uint8 (3, th, tw). PNG24 first (the
+    probe's 2000 px JPEG worked; 3600 px TIFFs timed out at the gateway, run 42246942328), TIFF as the second format;
+    retries back off; a tile that keeps failing is fetched as four quarters (down to ~400 px)."""
     import io
+    import time
+    from PIL import Image
+    bb = f"{x0},{y1 - th * res},{x0 + tw * res},{y1}"
+    last = None
+    for attempt in range(5):
+        fmt = "png24" if attempt % 2 == 0 else "tiff"
+        q = urllib.parse.urlencode(dict(bbox=bb, bboxSR=epsg, imageSR=epsg, size=f"{tw},{th}", format=fmt,
+                                        pixelType="U8", bandIds="0,1,2", interpolation="RSP_CubicConvolution",
+                                        f="image"))
+        try:
+            raw = urllib.request.urlopen(f"{NAIPPLUS}/exportImage?{q}", timeout=150).read()
+            if fmt == "tiff":
+                import rasterio
+                with rasterio.open(io.BytesIO(raw)) as t:
+                    a = t.read()[:3]
+            else:
+                a = np.moveaxis(np.asarray(Image.open(io.BytesIO(raw)).convert("RGB")), -1, 0)
+            if a.shape[1] < th or a.shape[2] < tw:
+                raise ValueError(f"tile came back {a.shape}, asked {th}x{tw}")
+            return a[:, :th, :tw]
+        except Exception as ex:                               # noqa: BLE001
+            last = ex
+            log(f"  tile {tw}x{th} at {x0:.0f},{y1:.0f} attempt {attempt} ({fmt}): {str(ex)[:160]}")
+            time.sleep(min(60, 8 * (attempt + 1)))
+    if min(tw, th) < 800:
+        raise RuntimeError(f"NAIP Plus tile failed: {last}")
+    out = np.zeros((3, th, tw), np.uint8)                     # split in four and try again
+    hw, hh = tw // 2, th // 2
+    for c0, cw in ((0, hw), (hw, tw - hw)):
+        for r0, rh in ((0, hh), (hh, th - hh)):
+            out[:, r0:r0 + rh, c0:c0 + cw] = _naipplus_tile(x0 + c0 * res, y1 - r0 * res, cw, rh, res, epsg, log,
+                                                            depth + 1)
+    return out
+
+
+def fetch_naipplus(slug, d, margin=150.0, res=0.3, tile=1500, epsg=26915, workers=3):
+    """USGS NAIP Plus (The National Map: NAIP + state high-resolution orthoimagery, public domain) at `res` m over the
+    package box + margin, mosaicked from exportImage tiles (service limit 4000 px; 1500 px tiles, 3 at a time) into
+    d/naip_rgb.tif + georef.json, the layout v2_course's display imagery reads. Missouri carries 0.3 m imagery here,
+    twice the detail of the 0.6 m Planetary Computer NAIP years (Eagle Knoll 2026-11-06: the page photos looked
+    blurry)."""
+    from concurrent.futures import ThreadPoolExecutor
     import rasterio
     from rasterio.transform import from_origin
     from pyproj import Transformer
@@ -153,30 +208,22 @@ def fetch_naipplus(slug, d, margin=150.0, res=0.3, tile=3600, epsg=26915):
     y0, y1 = math.floor(min(ys) - margin), math.ceil(max(ys) + margin)
     W, H = int(round((x1 - x0) / res)), int(round((y1 - y0) / res))
     out = np.zeros((3, H, W), np.uint8)
-    for r0 in range(0, H, tile):
-        for c0 in range(0, W, tile):
-            tw, th = min(tile, W - c0), min(tile, H - r0)
-            bx0, by1 = x0 + c0 * res, y1 - r0 * res
-            bb = f"{bx0},{by1 - th * res},{bx0 + tw * res},{by1}"
-            q = urllib.parse.urlencode(dict(bbox=bb, bboxSR=epsg, imageSR=epsg, size=f"{tw},{th}", format="tiff",
-                                            pixelType="U8", bandIds="0,1,2", interpolation="RSP_BilinearInterpolation",
-                                            f="image"))
-            for attempt in range(4):
-                try:
-                    raw = urllib.request.urlopen(f"{NAIPPLUS}/exportImage?{q}", timeout=180).read()
-                    with rasterio.open(io.BytesIO(raw)) as t:
-                        a = t.read()
-                    break
-                except Exception as ex:                       # noqa: BLE001
-                    print("tile retry", attempt, ex)
-                    if attempt == 3:
-                        raise
-            out[:, r0:r0 + a.shape[1], c0:c0 + a.shape[2]] = a[:3, :th, :tw]
-            print("tile", r0, c0, a.shape)
+    jobs = [(r0, c0, min(tile, W - c0), min(tile, H - r0)) for r0 in range(0, H, tile) for c0 in range(0, W, tile)]
+    print(f"NAIP Plus: {W} x {H} px at {res} m, {len(jobs)} tiles", flush=True)
+
+    def one(j):
+        r0, c0, tw, th = j
+        a = _naipplus_tile(x0 + c0 * res, y1 - r0 * res, tw, th, res, epsg)
+        out[:, r0:r0 + th, c0:c0 + tw] = a
+        print("tile", r0, c0, a.shape, flush=True)
+    with ThreadPoolExecutor(workers) as ex:
+        list(ex.map(one, jobs))
+    if (out.max(0) == 0).mean() > 0.02:
+        print(f"! {(out.max(0) == 0).mean():.1%} of the mosaic is empty (no data)")
     os.makedirs(d, exist_ok=True)
     tr = from_origin(x0, y1, res, res)
     prof = dict(driver="GTiff", width=W, height=H, count=3, dtype="uint8", crs=f"EPSG:{epsg}", transform=tr,
-                tiled=True, blockxsize=512, blockysize=512, compress="jpeg", jpeg_quality=92, photometric="YCBCR")
+                tiled=True, blockxsize=512, blockysize=512, compress="deflate", predictor=2)   # lossless: no extra JPEG pass
     with rasterio.open(os.path.join(d, "naip_rgb.tif"), "w", **prof) as dst:
         dst.write(out)
     acq, items = [], []
@@ -195,7 +242,7 @@ def fetch_naipplus(slug, d, margin=150.0, res=0.3, tile=3600, epsg=26915):
         print("identify failed:", ex)
     year = (items[0].get("Year") if items else None)
     meta = dict(course=slug, imagery=dict(source="USGS NAIP Plus (The National Map, public domain)", year=year,
-                acquired=acq or [str(year)], items=items, gsd_m=res, resolution_m=res, bands=["red", "green", "blue"],
+                acquired=acq or [f"NAIP Plus {year or ''}".strip()], items=items, gsd_m=res, resolution_m=res, bands=["red", "green", "blue"],
                 crs=f"EPSG:{epsg}", epsg=epsg, width=W, height=H, transform=list(tr)[:6],
                 files=dict(rgb="naip_rgb.tif")))
     json.dump(meta, open(os.path.join(d, "georef.json"), "w"), indent=1)

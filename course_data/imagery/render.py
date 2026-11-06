@@ -212,8 +212,9 @@ def sample_maps(fr, img, step=8):
     return cm, rm
 
 
-def render(fr, img, nir=False, pad=4):
-    """-> (H x W x 3|4 uint8 screen image, info dict)."""
+def render(fr, img, nir=False, pad=4, interp=None):
+    """-> (H x W x 3|4 uint8 screen image, info dict). interp: cv2 remap interpolation (default INTER_LINEAR, what
+    every analysis render uses); page photos only may pass cv2.INTER_LANCZOS4 (v2_course display render)."""
     import cv2
     cm, rm = sample_maps(fr, img)
     c0, c1 = math.floor(cm.min()) - pad, math.ceil(cm.max()) + pad
@@ -223,7 +224,7 @@ def render(fr, img, nir=False, pad=4):
     if src_per_out > 1.4:                                      # downsampling: pre-blur against aliasing
         s = 0.5 * src_per_out
         src = cv2.GaussianBlur(src, (0, 0), s)
-    out = cv2.remap(src, cm - c0, rm - r0, cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0)
+    out = cv2.remap(src, cm - c0, rm - r0, cv2.INTER_LINEAR if interp is None else interp, borderMode=cv2.BORDER_CONSTANT, borderValue=0)
     valid = (cm >= -0.5) & (cm <= img.width - 0.5) & (rm >= -0.5) & (rm <= img.height - 0.5)
     info = dict(frame=fr.to_json(), tee_px=[float(v) for v in fr.tee_px],
                 dot270_px=[float(v) for v in fr.point_px(270)],

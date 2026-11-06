@@ -162,7 +162,8 @@ def prepare(slug, which):
     os.makedirs(out, exist_ok=True)
     PK.write_module(C, os.path.join(out, "course.py"))
     shots = os.path.join(out, "screenshots")
-    idx = imagery.render_all(C, shots, log=print)
+    di = cfg.get("display_imagery") or {}
+    idx = render_display(C, shots, di) if disp and di.get("render_scale") else imagery.render_all(C, shots, log=print)
     pkg = C.package
     holes = pkg["holes"]
     holes = {str(h.get("ref")): h for h in holes} if isinstance(holes, list) else holes
@@ -192,6 +193,44 @@ def prepare(slug, which):
     dem_elevation(C, pkg_path, meta)
     json.dump(meta, open(os.path.join(out, "meta.json"), "w"), indent=1)
     print("prepared", out, len(C.holes), "tee shots,", len(C.par3), "par 3s")
+
+
+def render_display(C, out_dir, di, log=print):
+    """The page photos straight from the display imagery (config "display_imagery" {"render_scale": [tee, par3],
+    "render_back": px}): each hole rendered at `render_scale` x the 920 x 2000 frame (tee shots 2x, par 3s 3x: the
+    page crop is then a downsample) with Lanczos instead of bilinear, kept near-lossless (JPEG q95, 4:4:4), so the
+    900-px page crop is one resample from the 0.3 m source, not bilinear -> q82 JPEG -> 1.8-2.9x upscale (Eagle
+    Knoll 2026-11-06, blurry photos). `render_back` frame px more are rendered below the frame (behind the tee) so a
+    shared photo also covers a set whose tee is further back. Display only: the frames (FRAMES: px <-> WGS84),
+    zones and grids are unchanged; crop_factory reads the scale from the image width (k = width / 920)."""
+    import cv2
+    from PIL import Image
+    sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as R
+    sc = di.get("render_scale") or [2, 3]
+    sc = sc if isinstance(sc, list) else [sc, sc]
+    back = float(di.get("render_back", 0))
+    os.makedirs(out_dir, exist_ok=True)
+    img = R.Imagery(C.imagery_dir)
+    index = {}
+    for k in C.order:
+        hd = C.holes.get(k) or C.par3[k]
+        fr = R.Frame.from_json(C.frames[k])
+        m = sc[1] if k in C.par3 else sc[0]
+        big = R.Frame(fr.tee_ll, fr.aim_ll, fr.ppy * m, fr.tee_px * m, fr.proj,
+                      (int(fr.size[0] * m), int((fr.size[1] + back) * m)))
+        out, info = R.render(big, img, interp=cv2.INTER_LANCZOS4)
+        path = os.path.join(out_dir, hd["image"])
+        Image.fromarray(out[..., :3]).save(path, "JPEG", quality=95, subsampling=0)
+        info.update(frame=fr.to_json(), tee_px=[float(v) for v in fr.tee_px],
+                    dot270_px=[float(v) for v in fr.point_px(270)], yds_per_px=1 / fr.ppy, display_scale=m,
+                    image=hd["image"], bytes=os.path.getsize(path))
+        index[str(k)] = info
+        if info["no_imagery_frac"] > 0.05:
+            log(f"  ! hole {k}: {info['no_imagery_frac']:.0%} of the frame has no imagery")
+    json.dump(index, open(os.path.join(out_dir, "index.json"), "w"), indent=1, default=float)
+    log(f"display photos: {len(index)} holes at {sc}x, Lanczos, {img.res:.2f} m source")
+    return index
 
 
 LANDING_TOTALS = {"Driver": 300, "2-wood": 280, "4-wood": 270, "Long iron": 220, "Mid iron": 192,
@@ -577,29 +616,34 @@ def merge(slug, which, parts):
 
 
 # ------------------------------------------------------------------------------------------------ page
-def crop_factory(shots, img_w=None, quality=None, sharpen=False):
-    """img_w / quality / sharpen: config "display_imagery" {"img_w", "jpeg_q", "sharpen"} (page photos only)."""
+def crop_factory(shots, img_w=None, quality=None, sharpen=False, subsampling=None):
+    """img_w / quality / sharpen / subsampling: config "display_imagery" {"img_w", "jpeg_q", "sharpen" (true or
+    [radius, percent, threshold]), "jpeg_sub" (0 = 4:4:4, 2 = 4:2:0)} (page photos only). The source photo may be
+    rendered at a multiple of the 920 x 2000 frame and taller than it (render_display): k = width / 920."""
     from PIL import Image, ImageFilter
     img_w, quality = img_w or IMG_W, quality or JPEG_Q
+    usm = (1.6, 80, 2) if sharpen is True else tuple(sharpen) if sharpen else None
+    sub = subsampling if subsampling is not None else (0 if quality >= 85 else 2)
 
     def crop_jpeg(image, box, y_max=2000):
-        """box in the 920x2000 render frame -> (data URI, scale, (x0, y0), size); rows off the render padded."""
+        """box in the render frame (920 wide) -> (data URI, scale, (x0, y0), size); rows off the render padded."""
         im = Image.open(os.path.join(shots, image)).convert("RGB")
         k = im.width / 920
+        h_fr = im.height / k
         x0, y0, x1, y1 = box
         x0, x1 = max(0, x0), min(920, x1)
-        top, bot = max(0, y0), min(2000, y1)
-        c = im.crop((int(x0 * k), int(top * k), int(x1 * k), int(bot * k)))
-        if y1 > 2000 or y0 < 0:
-            pad = Image.new("RGB", (c.width, int((y1 - y0) * k)), (52, 66, 56))
-            pad.paste(c, (0, int((top - y0) * k)))
+        top, bot = max(0, y0), min(h_fr, y1)
+        c = im.crop((int(round(x0 * k)), int(round(top * k)), int(round(x1 * k)), int(round(bot * k))))
+        if y1 > h_fr or y0 < 0:
+            pad = Image.new("RGB", (c.width, int(round((y1 - y0) * k))), (52, 66, 56))
+            pad.paste(c, (0, int(round((top - y0) * k))))
             c = pad
         scale = img_w / c.width
-        c = c.resize((img_w, int(c.height * scale)), Image.LANCZOS)
-        if sharpen:                      # 0.6 m NAIP upsampled ~3x: a light unsharp mask restores edge contrast
-            c = c.filter(ImageFilter.UnsharpMask(radius=1.6, percent=80, threshold=2))
+        c = c.resize((img_w, int(round(c.height * scale))), Image.LANCZOS)
+        if usm:                          # the source is upsampled ~2x for the page: a light unsharp mask restores edges
+            c = c.filter(ImageFilter.UnsharpMask(radius=usm[0], percent=int(usm[1]), threshold=int(usm[2])))
         buf = io.BytesIO()
-        c.save(buf, "JPEG", quality=quality, optimize=True, subsampling=0 if quality >= 85 else 2)
+        c.save(buf, "JPEG", quality=quality, optimize=True, progressive=True, subsampling=sub)
         return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode(), scale * k, (x0, y0), c.size
     return crop_jpeg
 
@@ -678,6 +722,101 @@ def floored_plan(plan_fn, min_w=BOX_MIN):
     return plan
 
 
+def _frames(slug, which):
+    """FRAMES {hole key: frame json} (render px <-> WGS84) of a which's course module, read without importing it."""
+    import ast
+    for node in ast.parse(open(cdir(slug, which, "course.py")).read()).body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "FRAMES" for t in node.targets):
+            return {str(k): v for k, v in ast.literal_eval(node.value).items()}
+    return {}
+
+
+def share_plan(slug, cfg, which, alt):
+    """config "display_imagery" {"share_photos": true}: the alt bases (Eagle, Middle ...) show the main set's photo
+    of the same hole instead of carrying their own (page size: one photo per hole, not one per set). Every set's
+    overlays stay in its own frame; only the photo is drawn through an affine map (main crop px -> the set's view).
+    -> ({key: [boxes in main frame px]} to widen the main crop so it covers every set's view, {set: {key: (L, t)}}
+    main frame px -> alt frame px, fitted on WGS84 through both frames, residual < 0.05 px)."""
+    sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as R
+    fm = _frames(slug, which)
+    extra, maps = {}, {}
+    for s, holes in alt.items():
+        fa = _frames(slug, (cfg.get("alt_bases") or {})[s])
+        maps[s] = {}
+        for h in holes:
+            k = h["key"]
+            if k not in fm or k not in fa or not h.get("img"):
+                continue
+            Fm, Fa = R.Frame.from_json(fm[k]), R.Frame.from_json(fa[k])
+            gx, gy = np.meshgrid(np.linspace(0, 920, 5), np.linspace(0, 2200, 9))
+            P = np.c_[gx.ravel(), gy.ravel()]
+            Q = Fa.ll_to_px(Fm.px_to_ll(P))
+            A, *_ = np.linalg.lstsq(np.c_[P, np.ones(len(P))], Q, rcond=None)
+            res = float(np.abs(np.c_[P, np.ones(len(P))] @ A - Q).max())
+            if res > 0.5:
+                print(f"share photos: {s} hole {k} frames not affine ({res:.2f} px): own photo kept")
+                continue
+            L, t = A[:2].T, A[2]
+            x0, y0 = h["x0"], h["y0"]
+            x1, y1 = x0 + h["w"] / h["s"], y0 + h["h"] / h["s"]
+            C = Fm.ll_to_px(Fa.px_to_ll(np.array([[x0, y0], [x1, y0], [x1, y1], [x0, y1]])))
+            extra.setdefault(k, []).append((C[:, 0].min(), C[:, 1].min(), C[:, 0].max(), C[:, 1].max()))
+            maps[s][k] = (L, t)
+    return extra, maps
+
+
+def share_photos(holes, alt, maps):
+    """Point each alt hole at the main hole's photo: img_ref (the main key) + img_m, the SVG matrix from the main
+    photo's px to the alt view's px (template: <image transform="matrix(...)">)."""
+    main = {h["key"]: h for h in holes}
+    n = 0
+    for s, hs in alt.items():
+        for h in hs:
+            k = h["key"]
+            if k not in maps.get(s, {}) or k not in main:
+                continue
+            L, t = maps[s][k]
+            m = main[k]
+            om, oa = np.array([m["x0"], m["y0"]]), np.array([h["x0"], h["y0"]])
+            Lq = h["s"] / m["s"] * L
+            e = h["s"] * (L @ om + t - oa)
+            # the alt view (0..w, 0..h) must lie inside the main photo
+            inv = np.linalg.inv(Lq)
+            cz = (np.array([[0, 0], [h["w"], 0], [h["w"], h["h"]], [0, h["h"]]]) - e) @ inv.T
+            if cz[:, 0].min() < -2 or cz[:, 1].min() < -2 or cz[:, 0].max() > m["w"] + 2 or cz[:, 1].max() > m["h"] + 2:
+                print(f"share photos: {s} hole {k} view not inside the main photo: own photo kept")
+                continue
+            h["img"], h["img_ref"] = "", k
+            h["img_m"] = [round(float(v), 5) for v in (Lq[0, 0], Lq[1, 0], Lq[0, 1], Lq[1, 1], e[0], e[1])]
+            n += 1
+    print(f"share photos: {n} alt holes use the main photo")
+
+
+HAZ_WORDS = re.compile(r"water|pond|lake|creek|stream|ravine|hazard|penalt|\bOB\b|out of bounds|bunker|sand|"
+                       r"\btrees?\b|(?<![-\w])wood(s|ed)?\b|house lots", re.I)
+
+
+def golfer_text(t):
+    """Golfer-facing note without hazard words (config "page_text" {"hide_hazards": true}; golfer request 2026-11-06:
+    "I don't want my mind to think about water"): the finish shares keep fairway / first cut / yards in (the water,
+    OB, sand, trees and long-grass shares are dropped from the text only: the picks and numbers are unchanged), and
+    any other sentence naming a hazard is left out."""
+    t = re.sub(r",\s*(sand|trees|long grass|water|OB)\s+\d+%", "", t or "")
+    t = re.sub(r"\s*\(Edge hazards[^)]*\)", "", t)
+    parts = re.split(r"(?<=[.!?])\s+(?=[A-Z~])", t.strip())
+    return " ".join(x for x in parts if x and not HAZ_WORDS.search(x)).strip()
+
+
+def _photo_source(slug, which):
+    """'USGS NAIP Plus ... 0.25 m' from the rendered photos' index (the page footer names the photo it shows)."""
+    try:
+        i = next(iter(json.load(open(cdir(slug, which, "screenshots", "index.json"))).values()))
+        return f"{i.get('imagery_source') or 'aerial photo'}, {float(i['source_res_m']):.2g} m"
+    except Exception:                                          # noqa: BLE001
+        return ""
+
+
 def build_page(slug, which, out=None, data_out=None):
     """The wind page. With config "alt_bases" {set: which}, each alt base is built in its own process (the v2
     engine binds one course module per process) with data_out, and its holes ride along as D.alt[set]: the page
@@ -709,14 +848,19 @@ def build_page(slug, which, out=None, data_out=None):
                   course.ORDER, course.LABELS)
     di = config(slug).get("display_imagery") or {}
     crop = crop_factory(cdir(slug, which, "screenshots"), img_w=di.get("img_w"), quality=di.get("jpeg_q"),
-                        sharpen=bool(di.get("sharpen")))
+                        sharpen=di.get("sharpen") or False, subsampling=di.get("jpeg_sub"))
     p3_now = {}
+    share = bool(di.get("share_photos")) and bool(alt)
+    extra, maps = share_plan(slug, cfg, which, alt) if share else ({}, {})
+    cur = {}
 
     def crop_jpeg(image, box, *a, **k):
         pp = p3_now.get("ppy")
         if pp:                                   # par 3: more ground round the green, most of it on the tee side
             e = (P3_PAD - 14.0) * pp
             box = (box[0] - e, box[1] - e, box[2] + e, box[3] + 1.6 * e)
+        for b in extra.get(cur.get("key"), []):  # shared photo: cover every set's view of this hole
+            box = (min(box[0], b[0]), min(box[1], b[1]), max(box[2], b[2]), max(box[3], b[3]))
         return crop(image, box, *a, **k)
     BW.crop_jpeg = crop_jpeg
     par3_hole0 = BW.par3_hole
@@ -762,9 +906,21 @@ def build_page(slug, which, out=None, data_out=None):
     dec = json.load(open(dp)) if os.path.exists(dp) else {}
     fc = forecast(slug)
     holes = []
+    pt = cfg.get("page_text") or {}
+    calm = bool(pt.get("hide_hazards"))
+
+    def map_note(h):
+        """config hole_notes (the mapper's record, unchanged); with hide_hazards the golfer reads page_text
+        "map_notes" {hole: text} instead ("" = none), else the hole note without its hazard sentences."""
+        hn = (cfg.get("hole_notes") or {}).get(str(h))
+        if not calm:
+            return hn
+        own = pt.get("map_notes") or {}
+        return own[str(h)] if str(h) in own else golfer_text(hn)
     for h in course.ORDER:
+        cur["key"] = str(h)
         d = par3_hole(h) if h in course.PAR3 else BW.tee_hole(h)
-        d["haz"] = hazard_outlines(p3z.get(h, []) if h in course.PAR3 else course.HOLES[h].get("zones", []))
+        d["haz"] = [] if calm else hazard_outlines(p3z.get(h, []) if h in course.PAR3 else course.HOLES[h].get("zones", []))
         d["key"] = str(h)
         d["label"] = str(h)
         d["bearing"] = course.BEARINGS.get(h)
@@ -791,16 +947,20 @@ def build_page(slug, which, out=None, data_out=None):
             d["note"] = ""
             if r and "pick" in r:
                 d["note"] = BP.note_v2(h, r).replace(" of 64 what-if worlds", f" of {r.get('draws', 64)} what-if worlds")
+                if calm:
+                    d["note"] = golfer_text(d["note"])
                 d["calm"] = dict(pick=r["pick"], aim=r["aim"], tie=bool(r["tie"]), margin=r["margin"],
                                  flips=r.get("width_flips", []), temp=r.get("temp_f", M.hole_temp(h)),
                                  window=r.get("window"), runner=r.get("runner"), se=r.get("margin_se"),
                                  p=r.get("p_pick_beats_runner"))
-            hn = (cfg.get("hole_notes") or {}).get(str(h))
+            hn = map_note(h)
             if hn:
                 d["note"] = (d["note"] + " " if d["note"] else "") + "Map: " + hn
                 d["map_note"] = hn
         if h in course.PAR3:
-            hn = (cfg.get("hole_notes") or {}).get(str(h))
+            hn = map_note(h)
+            if calm:
+                d["note"], d["short"] = golfer_text(d.get("note")), golfer_text(d.get("short"))
             if hn:
                 d["note"] = (d["note"] + " " if d["note"] else "") + "Map: " + hn
         holes.append(d)
@@ -809,7 +969,7 @@ def build_page(slug, which, out=None, data_out=None):
                 colors=cfg.get("colors", {}), set_totals=tot, days=cfg["days"],
                 day_labels=cfg.get("day_labels") or cfg["days"], tee_hour=float(cfg.get("tee_hour", 9.0)),
                 sub=cfg.get("sub", ""), foot_extra=cfg.get("foot", ""), placeholder=bool(fc.get("placeholder")),
-                fc_note=fc.get("note", ""), imagery=meta.get("imagery_date"),
+                fc_note=fc.get("note", ""), imagery=meta.get("imagery_date"), imagery_src=_photo_source(slug, which),
                 speeds=grid["speeds"], dirs=grid["dirs"], temps=grid["temps"], holes=holes, offsets=sorted(grids),
                 forecast=[dict(date=r["date"], hour=r["hour"], mph=r["wind_mph"], gust=r["gust_mph"],
                                dir=r["wind_from_deg"], temp=r["temp_f"]) for r in fc["hourly"]],
@@ -819,6 +979,8 @@ def build_page(slug, which, out=None, data_out=None):
         json.dump(data, open(data_out, "w"), separators=(",", ":"))
         return
     if alt:
+        if share:
+            share_photos(holes, alt, maps)
         data["alt"] = alt
     html = open(TEMPLATE).read().replace("/*__DATA__*/null", json.dumps(data, separators=(",", ":")))
     html = html.replace("__TITLE__", data["title"])

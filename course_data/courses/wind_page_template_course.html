@@ -5,23 +5,21 @@
 <style>
 /* Layout: a caddie's card — controls band on top, hole map with the aim drawn on it, then the 18-hole strip. */
 :root{
-  --paper:#eef2ec; --card:#ffffff; --ink:#173326; --muted:#5b6f63; --line:#cfd9d1;
+  --paper:#eef2ec; --card:#ffffff; --ink:#10261b; --muted:#45584d; --line:#c3d0c6;
   --accent:#e0a800; --accent-ink:#3b2c00; --tie:#8a6bd1; --driver:#1f6b45; --wood2:#2f6fa8; --wood4:#b0612a;
   --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
   --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32;
-  --accent:#ffc928; --accent-ink:#2a2000; --tie:#b49cf0; --driver:#5cc48d; --wood2:#6fb0e8; --wood4:#e59a62; color-scheme:dark}}
+/* light theme by default (read in sunlight on the course); dark only when the host asks for it */
 :root[data-theme="dark"]{
   --paper:#0f1a14; --card:#16241c; --ink:#e6efe8; --muted:#9db3a6; --line:#2a3d32;
   --accent:#ffc928; --accent-ink:#2a2000; --tie:#b49cf0; --driver:#5cc48d; --wood2:#6fb0e8; --wood4:#e59a62; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 28px}
 .wrap{max-width:1080px;margin:0 auto;display:grid;gap:14px}
 h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.02em;margin:0;text-wrap:balance}
-.sub{color:var(--muted);font-size:13px}
+.sub{color:var(--muted);font-size:14px}
 .label{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
 .controls{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
@@ -33,11 +31,15 @@ h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.02e
 .seg button{font:600 14px var(--display);letter-spacing:.04em;border:1px solid var(--line);background:transparent;color:var(--ink);
   border-radius:999px;padding:5px 12px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
-.topnav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.topnav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;position:sticky;top:0;z-index:5;background:var(--card);padding:6px 0}
 .topnav button{font:700 22px var(--display);min-width:56px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--ink);color:var(--card);cursor:pointer}
-.topnav span{font:700 22px var(--display);color:var(--ink)}
-.topnav .toptitle{display:flex;flex-direction:column;align-items:center;line-height:1.05;text-align:center}
-.topnav #topClub{font:700 16px var(--display);color:var(--ink);opacity:.85;letter-spacing:.02em}
+.topnav span{font:700 20px var(--display);color:var(--ink)}
+.topnav .toptitle{display:flex;flex-direction:column;align-items:center;line-height:1.02;text-align:center;min-width:0}
+.topnav #topClub{font:700 36px var(--display);letter-spacing:.01em}
+.topnav #topNo{font:700 19px var(--display);color:var(--ink)}
+.topnav #topKey{font:700 19px var(--display);color:var(--ink);background:color-mix(in srgb, var(--accent) 30%, transparent);border-radius:6px;padding:0 6px;margin-top:2px}
+.setsum{font:600 14px var(--display);letter-spacing:.03em;color:var(--muted);margin:-2px 0 6px;text-align:center}
+.setsum a{color:var(--ink)}
 #start{font:600 15px var(--display);border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:6px 10px}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -68,10 +70,16 @@ tr.best td{font-weight:600}
 .strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
 .chip{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 4px;text-align:center;cursor:pointer;color:var(--ink)}
 .chip b{display:block;font:700 18px var(--display)}
-.chip span{font:600 13px var(--display);letter-spacing:.03em}
+.chip span{font:700 14px var(--display);letter-spacing:.03em}
 .chip[aria-current="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .c-Driver{color:var(--driver)} .c-2-wood{color:var(--wood2)} .c-4-wood{color:var(--wood4)} .c-iron{color:var(--muted)}
 [hidden]{display:none!important}
+@media (max-width:760px){
+  .wrap{gap:10px} h1{font-size:22px} header .sub{display:none}
+  .wrap>.hole{order:1} .wrap>.stripsec{order:2} .wrap>.controls{order:3} .wrap>.foot{order:4}
+  .panel.hole{padding:8px 10px}
+  .play{font-size:40px}
+}
 .foot{color:var(--muted);font-size:12.5px;max-width:80ch}
 </style>
 
@@ -81,7 +89,7 @@ tr.best td{font-weight:600}
     <div class="sub" id="subt"></div><div class="pill chg" id="phBanner" hidden style="margin-top:6px;display:inline-block"></div>
   </header>
 
-  <section class="panel controls" aria-label="Wind">
+  <section class="panel controls" id="settings" aria-label="Wind">
     <svg class="dial" id="dial" viewBox="-80 -80 160 160" role="slider" aria-label="Wind direction (from)" tabindex="0">
       <circle r="70" fill="none" stroke="var(--line)" stroke-width="2"/>
       <g id="ticks"></g>
@@ -106,8 +114,9 @@ tr.best td{font-weight:600}
 
   <section class="panel hole" aria-live="polite">
     <div class="mapcol">
-      <div class="topnav"><button id="prevTop" aria-label="Previous hole">◀</button><span class="toptitle"><span id="topClub"></span><span id="topNo"></span></span><button id="nextTop" aria-label="Next hole">▶</button></div>
-      <div class="seg" id="view"><button data-v="hole">Whole hole from the tee</button><button data-v="land">Landing area</button></div>
+      <div class="topnav"><button id="prevTop" aria-label="Previous hole">◀</button><span class="toptitle"><span id="topClub"></span><span id="topNo"></span><span id="topKey"></span></span><button id="nextTop" aria-label="Next hole">▶</button></div>
+      <div class="setsum" id="setSum"></div>
+      <div class="seg" id="view"><button data-v="hole">Whole hole</button><button data-v="land">Landing area</button></div>
       <div class="mapbox"><svg id="ov" role="img" aria-label="Overhead view of the hole"></svg></div>
     </div>
     <div class="info">
@@ -121,7 +130,7 @@ tr.best td{font-weight:600}
     </div>
   </section>
 
-  <section class="panel"><div class="label" style="margin-bottom:8px">All holes in this wind</div><div class="strip" id="strip"></div></section>
+  <section class="panel stripsec"><div class="label" style="margin-bottom:8px">All holes in this wind</div><div class="strip" id="strip"></div></section>
 
   <p class="foot" id="foot"></p>
 </div>
@@ -151,6 +160,9 @@ if(!st.start) st.start = 1;
 /* D.alt {set: holes}: extra fully solved base sets (own tees, aims, calm-day picks); picking that set swaps to them */
 const MAIN_HOLES = D.holes;
 const useSet = () => { D.holes = (D.alt && D.alt[st.set]) || MAIN_HOLES; };
+/* alt sets share the main set's photo of the hole (img_ref), drawn through img_m (main photo px -> this view's px) */
+for(const h of [].concat(...Object.values(D.alt || {}))){ if(!h.img_ref) continue;
+  const m = MAIN_HOLES.find(x => x.key === h.img_ref); if(m){ h.img = m.img; h.img_w = m.w; h.img_h = m.h; } }
 for(const h of [].concat(MAIN_HOLES, ...Object.values(D.alt || {}))){ if(h.kind !== "tee") continue; h.G = {};
   for(const [b, byT] of Object.entries(h.grids)){ h.G[b] = {};
     for(const [T, g] of Object.entries(byT)){ const G = {};
@@ -266,23 +278,24 @@ function relWords(rel, mph){
 }
 const setColor = name => { const n = String(name || "").replace(/ tee.*$/, ""); return (D.colors && D.colors[n]) || "#111"; };
 function teeMark(x, y, name){
-  const t = `<text x="${x + 16}" y="${y - 12}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="17" stroke="rgba(0,0,0,.75)" stroke-width="3.5" paint-order="stroke">${(name || "Tee").toUpperCase()}</text>`;
-  return `<rect x="${x-9}" y="${y-9}" width="18" height="18" rx="3" fill="${setColor(name)}" stroke="#fff" stroke-width="2.5"/>` + t;
+  const u = U, left = x > VB[0] + VB[2] * 0.55, t = `<text x="${x + (left ? -11 : 11)*u}" y="${y - 9*u}" text-anchor="${left ? "end" : "start"}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="${14*u}" stroke="rgba(0,0,0,.8)" stroke-width="${3*u}" paint-order="stroke">${(name || "Tee").toUpperCase()}</text>`;
+  return `<rect x="${x-6*u}" y="${y-6*u}" width="${12*u}" height="${12*u}" rx="${2*u}" fill="${setColor(name)}" stroke="#fff" stroke-width="${1.8*u}"/>` + t;
 }
 function windArrow(h, rel, vb){
   /* screen up = the hole's line; arrow shows where the wind blows TO */
-  const a = (rel + 180) * Math.PI/180, cx = vb[0] + vb[2] - 46, cy = vb[1] + 46, L = 26;
+  const u = U, a = (rel + 180) * Math.PI/180, cx = vb[0] + vb[2] - 30*u, cy = vb[1] + 30*u, L = 17*u;
   const dx = Math.sin(a)*L, dy = -Math.cos(a)*L;
-  return `<g opacity=".95"><circle cx="${cx}" cy="${cy}" r="34" fill="rgba(10,20,15,.55)"/>
-    <line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx*0.5}" y2="${cy+dy*0.5}" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-    <polygon points="${cx+dx},${cy+dy} ${cx+dx*0.42-dy*0.42},${cy+dy*0.42+dx*0.42} ${cx+dx*0.42+dy*0.42},${cy+dy*0.42-dx*0.42}" fill="#ffc928" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
-    <text x="${cx}" y="${cy+52}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="15" text-anchor="middle" stroke="rgba(0,0,0,.6)" stroke-width="3" paint-order="stroke">${Math.round(st.mph)} mph</text></g>`;
+  return `<g opacity=".95"><circle cx="${cx}" cy="${cy}" r="${23*u}" fill="rgba(10,20,15,.6)"/>
+    <line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx*0.5}" y2="${cy+dy*0.5}" stroke="#fff" stroke-width="${3*u}" stroke-linecap="round"/>
+    <polygon points="${cx+dx},${cy+dy} ${cx+dx*0.42-dy*0.42},${cy+dy*0.42+dx*0.42} ${cx+dx*0.42+dy*0.42},${cy+dy*0.42-dx*0.42}" fill="#ffc928" stroke="#fff" stroke-width="${1.2*u}" stroke-linejoin="round"/>
+    <text x="${cx}" y="${cy+37*u}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="${14*u}" text-anchor="middle" stroke="rgba(0,0,0,.75)" stroke-width="${3*u}" paint-order="stroke">${Math.round(st.mph)} mph</text></g>`;
 }
 /* holes 2 and 9 have two screenshots (Gold box "B", Black box "F"): show one per hole, by the chosen tees */
 const shown = (h) => !/^[29][FB]$/.test(h.key) || (h.key.endsWith("B") === (st.set === "Gold"));
 function sibling(i){ const h = D.holes[i]; if(shown(h)) return i;
   const k = h.key.slice(0, -1) + (h.key.endsWith("B") ? "F" : "B"); const j = D.holes.findIndex(x => x.key === k); return j < 0 ? i : j; }
 function step(d){ let i = st.idx; for(let n = 0; n < D.holes.length; n++){ i = (i + d + D.holes.length) % D.holes.length; if(shown(D.holes[i])) return i; } return st.idx; }
+let U = 1, VB = [0, 0, 900, 900];
 function render(){
   applySource();
   st.idx = sibling(st.idx);
@@ -296,12 +309,15 @@ function render(){
     vb = [0, y0, h.w, y1 - y0];
   }
   ov.setAttribute("viewBox", vb.join(" "));
-  const HZ = (h.haz || []).filter(() => false).map(([lie, pts]) => `<polygon points="${pts.map(p => P(h, p).join(",")).join(" ")}" fill="${lie === "water" ? "rgba(40,140,255,.18)" : "none"}" stroke="${lie === "water" ? "#4aa8ff" : "#ff5a5a"}" stroke-width="2" stroke-dasharray="${lie === "water" ? "2 3" : "8 4"}"/>`).join("");
-  const IMG = `<image href="${h.img}" x="0" y="0" width="${h.w}" height="${h.h}"/>` + HZ;
+  VB = vb;
+  /* overlay sizes in screen px: U = photo px per CSS px (the photos are 900 px wide, shown ~340-600 px wide) */
+  U = vb[2] / Math.max(200, ov.getBoundingClientRect().width || document.querySelector(".mapbox").clientWidth || 360);
+  const IMG = h.img_m ? `<image href="${h.img}" x="0" y="0" width="${h.img_w}" height="${h.img_h}" transform="matrix(${h.img_m.join(" ")})"/>`
+                      : `<image href="${h.img}" x="0" y="0" width="${h.w}" height="${h.h}"/>`;
   document.getElementById("view").hidden = h.kind !== "tee";
   document.querySelectorAll("#view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.view));
   document.getElementById("hNo").textContent = "Hole " + h.label.replace(/ (Black|Gold) tee$/, "");
-  document.getElementById("topNo").textContent = document.getElementById("hNo").textContent;
+  document.getElementById("topNo").textContent = document.getElementById("hNo").textContent + " · Par " + h.par;
   const T0 = h.kind === "tee" ? teeOf(h) : null, P3 = h.kind === "tee" ? null : solvePar3(h);
   document.getElementById("hPar").textContent = h.kind === "tee"
     ? `Par ${h.par} · ${T0.card + (st.adj[h.key] || 0)} yds · from the ${T0.name.replace(/^the /i, "")} tee` + (st.adj[h.key] ? ` (moved ${Math.abs(st.adj[h.key])} ${st.adj[h.key] > 0 ? "back" : "up"})` : "")
@@ -329,25 +345,26 @@ function render(){
         if(cl.long != null){ const c = Math.cos(a), s = Math.sin(a), x = s*(s >= 0 ? cl.right : cl.left)*sc, y = c*(c >= 0 ? cl.long : cl.short)*sc + (cl.tilt || 0)*x;
           pts.push(P(h, at(h, best.total - B + cA + y, aimC + best.drift + best.kick + cL + x)).join(",")); continue; }
         pts.push(P(h, at(h, best.total - B + cA + ca*cl.u[0] + sa*cl.w[0], aimC + best.drift + best.kick + cL + ca*cl.u[1] + sa*cl.w[1])).join(",")); }
-      pattern = `<polygon points="${pts.join(" ")}" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>`;
+      pattern = `<polygon points="${pts.join(" ")}" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="${1.5*U}" stroke-dasharray="${5*U} ${4*U}"/>`;
     }
     const ang = Math.atan2(h.f[0], -h.f[1]) * 180/Math.PI;
     let tp = P(h, at(h, -B, 0)); let below = 0;
-    if(tp[1] > vb[1] + vb[3] - 14){ below = Math.round((tp[1] - (vb[1] + vb[3] - 14)) / (h.ppy * h.s)); tp = [tp[0], vb[1] + vb[3] - 14]; }
+    if(tp[1] > vb[1] + vb[3] - 10*U){ below = Math.round((tp[1] - (vb[1] + vb[3] - 10*U)) / (h.ppy * h.s)); tp = [tp[0], vb[1] + vb[3] - 10*U]; }
     ov.innerHTML = IMG + `
-      <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#1a1a1a" stroke-width="4" opacity=".55"/>
-      <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#ffc928" stroke-width="2"/>
-      ${pattern || `<ellipse cx="${land[0]}" cy="${land[1]}" rx="${rx}" ry="${ry}" transform="rotate(${ang} ${land[0]} ${land[1]})" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="1.6" stroke-dasharray="6 5"/>`}
-      <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="9" stroke-linecap="round" opacity=".8"/>
-      ${Math.abs(best.drift + best.kick) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="2" stroke-dasharray="3 4"/>` : ""}
+      <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#1a1a1a" stroke-width="${3.2*U}" opacity=".55"/>
+      <line x1="${tp[0]}" y1="${tp[1]}" x2="${star[0]}" y2="${star[1]}" stroke="#ffc928" stroke-width="${1.6*U}"/>
+      ${pattern || `<ellipse cx="${land[0]}" cy="${land[1]}" rx="${rx}" ry="${ry}" transform="rotate(${ang} ${land[0]} ${land[1]})" fill="rgba(255,201,40,.13)" stroke="#ffc928" stroke-width="${1.5*U}" stroke-dasharray="${5*U} ${4*U}"/>`}
+      <line x1="${zl[0]}" y1="${zl[1]}" x2="${zh[0]}" y2="${zh[1]}" stroke="#25d0ff" stroke-width="${6*U}" stroke-linecap="round" opacity=".85"/>
+      ${Math.abs(best.drift + best.kick) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="${1.6*U}" stroke-dasharray="${2.5*U} ${3*U}"/>` : ""}
       ${aimMark(star[0], star[1])}
       ${h.tee_offimage && !below ? `<text x="${h.w/2}" y="${(2000 - h.y0) * h.s + 22}" fill="#d9e3dc" font-family="Source Sans 3,Arial,sans-serif" font-size="14" text-anchor="middle">Below here: past the bottom of your app screenshot</text>` : ""}
-      ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? ` · ${below} yds further back ↓` : ""))}
+      ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? ` ↓ ${below} yds` : ""))}
       ${windArrow(h, r.rel, vb)}`;
     const own = pickC !== r.pick;
     document.getElementById("playLbl").textContent = own ? "Your club" : "Play";
     const pe = document.getElementById("hPlay"); pe.textContent = pickC; pe.className = "play " + cls(pickC);
-    document.getElementById("topClub").textContent = pickC;
+    const tc = document.getElementById("topClub"); tc.textContent = pickC; tc.className = cls(pickC);
+    document.getElementById("topKey").textContent = `${Math.abs(aimC) < 0.5 ? "Aim on the line" : `Aim ${Math.abs(aimC).toFixed(0)} yds ${aimC < 0 ? "left" : "right"}`} · ${Math.round(best.total)} total`;
     document.getElementById("hAdj").hidden = true;
     if(own){ const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${r.pick} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     const calm = solveTeeCalm(h);
@@ -378,11 +395,13 @@ function render(){
     const r = P3;
     const g = h.green.map(p => P(h, p).join(",")).join(" ");
     const bp = r.box.poly.map(p => P(h, p).join(",")).join(" ");
-    ov.innerHTML = IMG + `<polygon points="${g}" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 4"/>
-      <polygon points="${bp}" fill="rgba(37,208,255,.5)" stroke="#25d0ff" stroke-width="2.5"/>${windArrow(h, r.rel, vb)}`;
+    ov.innerHTML = IMG + `<polygon points="${g}" fill="none" stroke="#fff" stroke-width="${1.3*U}" stroke-dasharray="${4*U} ${3*U}"/>
+      <polygon points="${bp}" fill="rgba(37,208,255,.45)" stroke="#25d0ff" stroke-width="${2*U}"/>${windArrow(h, r.rel, vb)}`;
     document.getElementById("playLbl").textContent = "Play it like";
     const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
-    document.getElementById("topClub").textContent = "Plays " + Math.round(r.play) + " yds";
+    const tc = document.getElementById("topClub"), p3c = h.p3club ? String(h.p3club).split(/[ (;]/)[0] : "";
+    tc.className = ""; tc.textContent = p3c || ("Plays " + Math.round(r.play));
+    document.getElementById("topKey").textContent = p3c ? `Plays ${Math.round(r.play)} yds` : `Box ${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds`;
     /* breakdown: box target (calm, flat) + elevation + wind = plays like; rounded parts add up exactly */
     const T = Math.round(r.box.play), calmP = r.S3.plays["0_0"] / r.S3.center;
     const eY = Math.round(r.box.play * calmP - r.box.play), tY = Math.round(r.play - r.play / r.tmul);
@@ -392,13 +411,15 @@ function render(){
     ae.innerHTML = `<span>${T} target</span><span class="${eY > 0 ? "up" : eY < 0 ? "dn" : ""}">${sg(eY)} elevation</span><span class="${wY > 0 ? "up" : wY < 0 ? "dn" : ""}">${sg(wY)} wind</span>` +
       (D.temp_k ? `<span class="${tY > 0 ? "up" : tY < 0 ? "dn" : ""}">${sg(tY)} at ${Math.round(r.tF)}°F</span>` : "");
     if(Math.abs(r.play - r.S3.center) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center)} on the card</span>`);
-    document.getElementById("hAim").textContent = `Land it in the blue box. ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
+    document.getElementById("hAim").textContent = `Aim at the blue box (best spot for any pin). ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front}</td><td>${Math.round(r.S3.center)}</td><td>${r.S3.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
     document.getElementById("hNote").textContent = h.note || "";
     const ge = h.elev;
     document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds; "Play it like" includes this, the wind${D.temp_k ? " and the temperature (your numbers are 70°F numbers)" : ""}.` : "";
   }
   document.getElementById("hBadges").innerHTML = badges.join(" ");
+  const fw = windFor(h);
+  document.getElementById("setSum").innerHTML = `${st.src === "custom" ? "Custom wind" : D.day_labels[st.src === "d1" ? 1 : 0] + " " + clock(holeHour(h))} · ${st.set} tees · ${st.mph < 1.5 ? "calm" : Math.round(st.mph) + " mph " + card(st.from)} · ${Math.round(fw ? fw.temp : st.temp)}°F · <a href="#settings">change</a>`;
   renderStrip(); renderControls(); save();
 }
 function renderTeeCtl(h){
@@ -410,7 +431,7 @@ function renderTeeCtl(h){
   document.getElementById("adjLbl").textContent = a === 0 ? "at the card spot" : `${Math.abs(a)} yds ${a > 0 ? "back" : "up"}`;
 }
 function solveTeeCalm(h){ if(h.calm) return h.calm.pick; const g = h.grid["0_0"].clubs; return Object.keys(g).filter(c => !HYPO(c)).sort((a,b) => g[a].ev - g[b].ev)[0]; }
-function aimMark(x, y){ const c = (w, col) => `<g stroke="${col}" stroke-width="${w}" fill="none"><line x1="${x-18}" y1="${y}" x2="${x+18}" y2="${y}"/><line x1="${x}" y1="${y-18}" x2="${x}" y2="${y+18}"/><circle cx="${x}" cy="${y}" r="7"/></g>`; return c(3.6, "#1a1a1a") + c(1.6, "#ffc928") + `<circle cx="${x}" cy="${y}" r="2.2" fill="#e5202a" stroke="#1a1a1a" stroke-width=".6"/>`; }
+function aimMark(x, y){ const u = U, c = (w, col) => `<g stroke="${col}" stroke-width="${w*u}" fill="none"><line x1="${x-13*u}" y1="${y}" x2="${x+13*u}" y2="${y}"/><line x1="${x}" y1="${y-13*u}" x2="${x}" y2="${y+13*u}"/><circle cx="${x}" cy="${y}" r="${5*u}"/></g>`; return c(3.4, "#1a1a1a") + c(1.6, "#ffc928") + `<circle cx="${x}" cy="${y}" r="${1.8*u}" fill="#e5202a" stroke="#1a1a1a" stroke-width="${.5*u}"/>`; }
 function starPts(cx, cy, R, r){ const p = []; for(let i = 0; i < 10; i++){ const a = -Math.PI/2 + i*Math.PI/5, rr = i%2 ? r : R; p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1)); } return p.join(" "); }
 function renderStrip(){
   const el = document.getElementById("strip");
@@ -476,7 +497,7 @@ document.getElementById("prev").addEventListener("click", () => { st.idx = step(
 document.getElementById("prevTop").addEventListener("click", () => { st.idx = step(-1); render(); });
 document.getElementById("nextTop").addEventListener("click", () => { st.idx = step(1); render(); });
 document.getElementById("next").addEventListener("click", () => { st.idx = step(1); render(); });
-document.getElementById("foot").textContent = `Weather: ${D.placeholder ? D.fc_note : "forecast fetched " + D.fetched}. Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Hole maps: USDA NAIP aerial photo (${D.imagery || "date unknown"}), hand-checked against USGS 3DEP lidar. ${D.alt ? [D.base_set].concat(Object.keys(D.alt)).join(" and ") + " are each solved from their own tee boxes. " : ""}Other tee sets move the tee back or up the line by the scorecard difference from ${D.base_set}; each is solved separately, to the nearest 20 yds. ${D.foot_extra} Model v2: each club rolls to your stated total on level fairway (slope changes roll by at most ±30%, no sideways kick), carry adjusted for the temperature when you reach each hole (about 2 yds per 10°F for driver, from 70°F), slight and heavy mishits, curving misses lose carry, lost balls and OB priced as stroke and distance, water relief from where the ball went in, trees as punch-outs, scratch-5 scoring. Picks in wind use v2 at its central settings (driver pattern 70 yds); the calm-day pick and aim come from the v2 Bayesian run (${D.draws || 64} prior draws, day-1 temperatures at the default tee time), aims to the half yard; the blue bar is every aim within 0.005 strokes. The ~235 hybrid is hypothetical. "≈" marks a tie (within 0.01 strokes).`;
+document.getElementById("foot").textContent = `Weather: ${D.placeholder ? D.fc_note : "forecast fetched " + D.fetched}. Wind effects on carry, roll, dispersion and drift from published TrackMan/Ping/Foresight figures and a ball-flight model. Photo: ${D.imagery_src || "USDA NAIP aerial photo"} (${D.imagery || "date unknown"}); hole maps hand-checked against USGS 3DEP lidar. ${D.alt ? [D.base_set].concat(Object.keys(D.alt)).join(" and ") + " are each solved from their own tee boxes. " : ""}Other tee sets move the tee back or up the line by the scorecard difference from ${D.base_set}; each is solved separately, to the nearest 20 yds. ${D.foot_extra} Model v2: each club rolls to your stated total on level fairway (slope changes roll by at most ±30%, no sideways kick), carry adjusted for the temperature when you reach each hole (about 2 yds per 10°F for driver, from 70°F), slight and heavy mishits, curving misses lose carry, every lie priced the way the rules play it, scratch-5 scoring. Picks in wind use v2 at its central settings (driver pattern 70 yds); the calm-day pick and aim come from the v2 Bayesian run (${D.draws || 64} prior draws, day-1 temperatures at the default tee time), aims to the half yard; the blue bar is every aim within 0.005 strokes. The ~235 hybrid is hypothetical. "≈" marks a tie (within 0.01 strokes).`;
 useSet();
 render();
 </script>

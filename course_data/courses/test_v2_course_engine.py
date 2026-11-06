@@ -184,4 +184,5 @@ def test_par3_plays_like_includes_temperature():
 def test_template_moved_tee_note_and_hazards():
     html = open(TEMPLATE).read()
     assert "if(r.T.back !== 0) note = `The calm-day book" in html
-    assert "h.haz || []" in html and 'id="adj" min="-60" max="60" step="5"' in html
+    # golfer request 2026-11-06: no hazard outlines on the photo (h.haz is no longer drawn)
+    assert "h.haz" not in html and 'id="adj" min="-60" max="60" step="5"' in html

@@ -49,10 +49,22 @@
   "year": "naipplus",
   "img_w": 900,
   "jpeg_q": 86,
-  "sharpen": true
+  "jpeg_sub": 2,
+  "sharpen": [
+   2.0,
+   70,
+   2
+  ],
+  "render_scale": [
+   2,
+   3
+  ],
+  "render_back": 120,
+  "share_photos": true,
+  "fallback_year": 2022
  },
  "grid_prune": true,
- "foot": "Tee sets: Back (blue, 6,667, 72.8/134; the NCCGA played the blue tees here in 2015 and 2024), Eagle (gold, back, 6,920, 73.8/141) and Middle (white, 6,186, 70.8/130) are each fully solved from their own boxes; Forward (red, 5,174) moves the Back tee along the line. Card: golfify / OpenGolfAPI (Back 6,667). The NCCGA Blue tee sheets differ: Fall 2015 = this card except 10 at 420 (6,682); Fall 2024 as set up that day 6,512 (1 379, 2 144, 5 420, 7 461, 8 395, 9 485, 11 430, 14 246, 17 465, 18 417). The Nov 7-8 tee sheet is not posted: check each tee plaque and use Move this tee (5-yd steps) to match it. Calm-day picks: 256 prior draws per hole; the wind grids at the card tee are refined on 16,000 common swings per club. Clubs: Driver to Mid iron plus an 8-iron (162 carry, assumed ~12-yd gapping below the 210 long iron) for lay-ups. Trees are checked along the ball's flight (descent below ~20 yds over a crown, 70 % stop) as well as where it finishes. Photo: USDA NAIP 2020 (0.6 m, the sharpest year available here; no 0.3 m year covers the course); the map was checked on NAIP 2020 / 2022 and the 2015 3DEP lidar. Start time and starting hole are adjustable (default 9:00 shotgun on hole 1; the NCCGA lists 9:00 am both days, tee sheet not yet posted).",
+ "foot": "Tee sets: Back (blue, 6,667, 72.8/134; the NCCGA played the blue tees here in 2015 and 2024), Eagle (gold, back, 6,920, 73.8/141) and Middle (white, 6,186, 70.8/130) are each fully solved from their own boxes; Forward (red, 5,174) moves the Back tee along the line. Card: golfify / OpenGolfAPI (Back 6,667). The NCCGA Blue tee sheets differ: Fall 2015 = this card except 10 at 420 (6,682); Fall 2024 as set up that day 6,512 (1 379, 2 144, 5 420, 7 461, 8 395, 9 485, 11 430, 14 246, 17 465, 18 417). The Nov 7-8 tee sheet is not posted: check each tee plaque and use Move this tee (5-yd steps) to match it. Calm-day picks: 256 prior draws per hole; the wind grids at the card tee are refined on 16,000 common swings per club. Clubs: Driver to Mid iron plus an 8-iron (162 carry, assumed ~12-yd gapping below the 210 long iron) for lay-ups. The map was checked on NAIP 2020 / 2022 and the 2015 3DEP lidar. Start time and starting hole are adjustable (default 9:00 shotgun on hole 1; the NCCGA lists 9:00 am both days, tee sheet not yet posted).",
  "hole_notes": {
   "3": "forced carry over the wooded ravine and the pond to a fairway that starts ~185 yds out (Back) and bends right toward the green; woods left all the way.",
   "5": "woods left beyond the cart path the whole way (grown in since the 2015 lidar); woods right 0-10 yds off the fairway.",
@@ -78,5 +90,20 @@
    "p_hit": 0.7
   },
   "source": "Eagle Knoll audit 2026-11-03 items 1-2 (OPTIMIZE.md): 8-iron = Will's 4-iron 210 carry with ~12-yd gapping (spirit_hollow/approach/REPORT.md bag); width 30 = the mid iron's 34 x 162/185; tree height 20 yds (18 m, mature hardwoods; sensitivity 14-24 m), 70 % of flights through a crown stop there"
+ },
+ "page_text": {
+  "hide_hazards": true,
+  "source": "golfer request 2026-11-06: no water / OB / hazard words or outlines on the page; hole_notes above stay the mapper's record",
+  "map_notes": {
+   "2": "Favour the front: aiming 8-9 yds short of the green centre saves ~0.07 strokes against the box (any pin).",
+   "3": "The fairway starts ~185 yds out from the Back tee and bends right toward the green.",
+   "5": "",
+   "9": "The shaded line along the right is the cart path.",
+   "11": "",
+   "12": "Favour the front: aiming about 10 yds short of the green centre (front of the green, centre line) saves ~0.08-0.11 strokes against the box.",
+   "14": "Landing target: inside ~200 yds from the Back tee, or past ~265.",
+   "17": "Landing target: inside ~240 yds from the Back tee.",
+   "18": ""
+  }
  }
 }
