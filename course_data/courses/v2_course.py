@@ -1092,6 +1092,42 @@ def _photo_source(slug, which):
         return ""
 
 
+def direct_factory(course, disp, di):
+    """config display_imagery "direct": each page photo rendered straight from the display imagery (0.3 m NAIP Plus)
+    at its page size (img_w px wide) with Lanczos: one resampling step, no 920 x 2000 render in between (golfer
+    2026-11-06: par 3s "really blurry", a tight crop of the render upscaled 3-4x). The crop box is in the hole's
+    frame px; the photo frame is the same frame scaled by m = img_w / box width and shifted to the box corner, so
+    page px = (frame px - box corner) x m exactly, as for a crop (overlays unchanged). None when no display imagery."""
+    if not disp:
+        return None
+    import cv2
+    from PIL import Image, ImageFilter
+    sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as R
+    img = R.Imagery(disp)
+    img_w, q = int(di.get("img_w") or IMG_W), int(di.get("jpeg_q") or JPEG_Q)
+    sh = di.get("sharpen")
+    usm = (1.6, 80, 2) if sh is True else tuple(sh) if sh else None
+    sub = di.get("jpeg_sub", 2)
+    frames = {str(k): v for k, v in course.FRAMES.items()}
+
+    def render_box(key, box):
+        fr = R.Frame.from_json(frames[str(key)])
+        x0, y0, x1, y1 = box
+        m = img_w / (x1 - x0)
+        H = int(round((y1 - y0) * m))
+        f2 = R.Frame(fr.tee_ll, fr.aim_ll, fr.ppy * m, (fr.tee_px - np.array([x0, y0])) * m, fr.proj, (img_w, H))
+        out, _ = R.render(f2, img, interp=cv2.INTER_LANCZOS4)
+        c = Image.fromarray(out[..., :3])
+        if usm:
+            c = c.filter(ImageFilter.UnsharpMask(radius=usm[0], percent=int(usm[1]), threshold=int(usm[2])))
+        buf = io.BytesIO()
+        c.save(buf, "JPEG", quality=q, optimize=True, progressive=True, subsampling=sub)
+        return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode(), m, (x0, y0), c.size
+    print("page photos rendered directly from", disp, f"({img.res:.2f} m)")
+    return render_box
+
+
 def build_page(slug, which, out=None, data_out=None):
     """The wind page. With config "alt_bases" {set: which}, each alt base is built in its own process (the v2
     engine binds one course module per process) with data_out, and its holes ride along as D.alt[set]: the page
@@ -1125,6 +1161,7 @@ def build_page(slug, which, out=None, data_out=None):
     crop = crop_factory(cdir(slug, which, "screenshots"), img_w=di.get("img_w"), quality=di.get("jpeg_q"),
                         sharpen=di.get("sharpen") or False, subsampling=di.get("jpeg_sub"))
     p3_now = {}
+    direct = direct_factory(course, display_dir(slug), di) if di.get("direct") else None
     share = bool(di.get("share_photos")) and bool(alt)
     extra, maps = share_plan(slug, cfg, which, alt) if share else ({}, {})
     cur = {}
@@ -1134,8 +1171,16 @@ def build_page(slug, which, out=None, data_out=None):
         if pp:                                   # par 3: more ground round the green, most of it on the tee side
             e = (P3_PAD - 14.0) * pp
             box = (box[0] - e, box[1] - e, box[2] + e, box[3] + 1.6 * e)
+            vw = float(di.get("p3_view_yds") or 0) * pp   # show more ground rather than magnify the 0.3 m source
+            if box[2] - box[0] < vw:
+                c = (box[0] + box[2]) / 2
+                box = (c - vw / 2, box[1], c + vw / 2, box[3])
+            if box[3] - box[1] < 1.1 * vw:              # the extra height on the tee side
+                box = (box[0], box[1], box[2], box[1] + 1.1 * vw)
         for b in extra.get(cur.get("key"), []):  # shared photo: cover every set's view of this hole
             box = (min(box[0], b[0]), min(box[1], b[1]), max(box[2], b[2]), max(box[3], b[3]))
+        if direct:
+            return direct(cur.get("key"), box)
         return crop(image, box, *a, **k)
     BW.crop_jpeg = crop_jpeg
     if cfg.get("par3_targets"):                  # expected-strokes par-3 box (course_data/courses/par3_targets.py)
