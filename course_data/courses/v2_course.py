@@ -577,8 +577,10 @@ def merge(slug, which, parts):
 
 
 # ------------------------------------------------------------------------------------------------ page
-def crop_factory(shots):
-    from PIL import Image
+def crop_factory(shots, img_w=None, quality=None, sharpen=False):
+    """img_w / quality / sharpen: config "display_imagery" {"img_w", "jpeg_q", "sharpen"} (page photos only)."""
+    from PIL import Image, ImageFilter
+    img_w, quality = img_w or IMG_W, quality or JPEG_Q
 
     def crop_jpeg(image, box, y_max=2000):
         """box in the 920x2000 render frame -> (data URI, scale, (x0, y0), size); rows off the render padded."""
@@ -592,10 +594,12 @@ def crop_factory(shots):
             pad = Image.new("RGB", (c.width, int((y1 - y0) * k)), (52, 66, 56))
             pad.paste(c, (0, int((top - y0) * k)))
             c = pad
-        scale = IMG_W / c.width
-        c = c.resize((IMG_W, int(c.height * scale)), Image.LANCZOS)
+        scale = img_w / c.width
+        c = c.resize((img_w, int(c.height * scale)), Image.LANCZOS)
+        if sharpen:                      # 0.6 m NAIP upsampled ~3x: a light unsharp mask restores edge contrast
+            c = c.filter(ImageFilter.UnsharpMask(radius=1.6, percent=80, threshold=2))
         buf = io.BytesIO()
-        c.save(buf, "JPEG", quality=JPEG_Q, optimize=True)
+        c.save(buf, "JPEG", quality=quality, optimize=True, subsampling=0 if quality >= 85 else 2)
         return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode(), scale * k, (x0, y0), c.size
     return crop_jpeg
 
@@ -703,7 +707,9 @@ def build_page(slug, which, out=None, data_out=None):
     install_landing_pattern(M, BP)
     yb.use_course(course.NAME, cdir(slug, which), slug, course.HOLES, course.PAR3, course.NOTES, course.AIM_AT,
                   course.ORDER, course.LABELS)
-    crop = crop_factory(cdir(slug, which, "screenshots"))
+    di = config(slug).get("display_imagery") or {}
+    crop = crop_factory(cdir(slug, which, "screenshots"), img_w=di.get("img_w"), quality=di.get("jpeg_q"),
+                        sharpen=bool(di.get("sharpen")))
     p3_now = {}
 
     def crop_jpeg(image, box, *a, **k):

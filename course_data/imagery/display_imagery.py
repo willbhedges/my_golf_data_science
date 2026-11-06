@@ -112,6 +112,8 @@ def scan(slug, out=None):
 
 
 def fetch(slug, year, d, margin=150.0):
+    if str(year).lower() == "naipplus":
+        return fetch_naipplus(slug, d, margin)
     if year == "best":
         p = os.path.join(HERE, "years", f"{slug}_display.json")
         doc = json.load(open(p)) if os.path.exists(p) else scan(slug)
@@ -129,6 +131,75 @@ def fetch(slug, year, d, margin=150.0):
                     "--name", slug, "--out", d], check=True)
     g = json.load(open(os.path.join(d, "georef.json")))["imagery"]
     print("display imagery:", d, g.get("year"), g.get("acquired"), g.get("resolution_m"))
+    return d
+
+
+NAIPPLUS = "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPPlus/ImageServer"
+
+
+def fetch_naipplus(slug, d, margin=150.0, res=0.3, tile=3600, epsg=26915):
+    """USGS NAIP Plus (The National Map: NAIP + state high-resolution orthoimagery, public domain) at `res` m over the
+    package box + margin, mosaicked from exportImage tiles (service limit 4000 px) into d/naip_rgb.tif + georef.json,
+    the layout v2_course's display imagery reads. Missouri carries 0.3 m imagery here, twice the detail of the 0.6 m
+    Planetary Computer NAIP years (Eagle Knoll 2026-11-06: the page photos looked blurry)."""
+    import io
+    import rasterio
+    from rasterio.transform import from_origin
+    from pyproj import Transformer
+    s, w, n, e = course_bbox(slug)
+    T = Transformer.from_crs("EPSG:4326", f"EPSG:{epsg}", always_xy=True)
+    xs, ys = zip(*[T.transform(x, y) for x, y in ((w, s), (w, n), (e, s), (e, n))])
+    x0, x1 = math.floor(min(xs) - margin), math.ceil(max(xs) + margin)
+    y0, y1 = math.floor(min(ys) - margin), math.ceil(max(ys) + margin)
+    W, H = int(round((x1 - x0) / res)), int(round((y1 - y0) / res))
+    out = np.zeros((3, H, W), np.uint8)
+    for r0 in range(0, H, tile):
+        for c0 in range(0, W, tile):
+            tw, th = min(tile, W - c0), min(tile, H - r0)
+            bx0, by1 = x0 + c0 * res, y1 - r0 * res
+            bb = f"{bx0},{by1 - th * res},{bx0 + tw * res},{by1}"
+            q = urllib.parse.urlencode(dict(bbox=bb, bboxSR=epsg, imageSR=epsg, size=f"{tw},{th}", format="tiff",
+                                            pixelType="U8", bandIds="0,1,2", interpolation="RSP_BilinearInterpolation",
+                                            f="image"))
+            for attempt in range(4):
+                try:
+                    raw = urllib.request.urlopen(f"{NAIPPLUS}/exportImage?{q}", timeout=180).read()
+                    with rasterio.open(io.BytesIO(raw)) as t:
+                        a = t.read()
+                    break
+                except Exception as ex:                       # noqa: BLE001
+                    print("tile retry", attempt, ex)
+                    if attempt == 3:
+                        raise
+            out[:, r0:r0 + a.shape[1], c0:c0 + a.shape[2]] = a[:3, :th, :tw]
+            print("tile", r0, c0, a.shape)
+    os.makedirs(d, exist_ok=True)
+    tr = from_origin(x0, y1, res, res)
+    prof = dict(driver="GTiff", width=W, height=H, count=3, dtype="uint8", crs=f"EPSG:{epsg}", transform=tr,
+                tiled=True, blockxsize=512, blockysize=512, compress="jpeg", jpeg_quality=92, photometric="YCBCR")
+    with rasterio.open(os.path.join(d, "naip_rgb.tif"), "w", **prof) as dst:
+        dst.write(out)
+    acq, items = [], []
+    try:                                                     # acquisition date of the mosaic item at the centre
+        cx, cy = T.transform((w + e) / 2, (s + n) / 2)
+        q = urllib.parse.urlencode(dict(geometry=f"{cx},{cy}", geometryType="esriGeometryPoint", sr=epsg,
+                                        returnCatalogItems="true", f="json"))
+        j = json.load(urllib.request.urlopen(f"{NAIPPLUS}/identify?{q}", timeout=60))
+        for f in (j.get("catalogItems") or {}).get("features", [])[:3]:
+            a = f.get("attributes", {})
+            items.append({k: a.get(k) for k in ("Name", "Year", "agency", "resolution_value", "resolution_units")})
+            if a.get("acquisition_date"):
+                import datetime
+                acq.append(datetime.datetime.utcfromtimestamp(a["acquisition_date"] / 1000).strftime("%Y-%m-%d"))
+    except Exception as ex:                                  # noqa: BLE001
+        print("identify failed:", ex)
+    year = (items[0].get("Year") if items else None)
+    meta = dict(course=slug, imagery=dict(source="USGS NAIP Plus (The National Map, public domain)", year=year,
+                acquired=acq or [str(year)], items=items, gsd_m=res, resolution_m=res, bands=["red", "green", "blue"],
+                crs=f"EPSG:{epsg}", epsg=epsg, width=W, height=H, transform=list(tr)[:6],
+                files=dict(rgb="naip_rgb.tif")))
+    json.dump(meta, open(os.path.join(d, "georef.json"), "w"), indent=1)
+    print("display imagery (NAIP Plus):", d, W, H, year, acq, items[:1])
     return d
 
 
