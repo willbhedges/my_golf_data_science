@@ -311,3 +311,19 @@ def test_eagle_knoll_14_green_scores_putts():
     assert lie == "rough" and s14 < 2.7
     s70, _ = at(190, 10)                                           # the lay-up: unchanged table value
     assert 2.8 < s70 < 3.2
+
+
+def test_eagle_knoll_nov6_calm_book():
+    """Nov 6 re-solves written to the calm book (OPTIMIZE.md 12g): records complete, picks resolved (> 2 SE)."""
+    base = os.path.join(HERE, "eagle_knoll")
+    need = ("pick", "runner", "aim", "window", "margin", "margin_se", "tie", "p_pick_beats_runner", "shares",
+            "temp_f", "hybrid", "draws", "clubs")
+    for which, hole in (("truth", "14"), ("truth_eagle", "14"), ("truth_eagle", "9"), ("truth_middle", "9")):
+        r = json.load(open(os.path.join(base, which, "v2", "v2_decisions.json")))[hole]
+        assert all(k in r for k in need) and r.get("replaced")
+        assert r["margin"] > 2 * r["margin_se"]
+        assert r["window"][0] <= r["aim"] <= r["window"][1]
+        if hole == "9":
+            assert r["pick"] == "Driver" and -10 < r["aim"] < 2      # the phantom tree right is gone
+        else:
+            assert r["pick"] == "4-wood"

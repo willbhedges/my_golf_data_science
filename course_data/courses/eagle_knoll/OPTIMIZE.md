@@ -490,9 +490,22 @@ No change to the cap or the roll prior.
 
 ### 12g. What was written to the data, and what was not
 
-* **Calm-day book (`v2_decisions.json`): pending.** Reduced re-runs of Back 9 and 14 and Eagle / Middle 9
-  (`decide.bayes` on the contending clubs, 24 / 8 prior draws) were still running at the push deadline. If they are
-  not written in a later commit, the stored calm book for 9 and 14 is the old one: use the numbers in 12f.
+* **Calm-day book (`v2_decisions.json`), replaced** with `decide.bayes` + shares on the new engine
+  (`opt/quickdec.py`, merged by `opt/merge_dec.py`). The runs use fewer prior draws and only the contending clubs
+  (plus the hybrid line), because the full decide (256 draws, every club) does not fit the deadline on the shared
+  CPU. The record says so (`reduced`, `draws`, `replaced`), and the old ladder / sensitivity / width-sweep extras of
+  those holes are dropped:
+
+  | set | hole | old | new | margin +/- SE | p | draws |
+  |---|---|---|---|---|---|---|
+  | Back | 14 | Mid iron +8 (TIE 8-iron) | **4-wood +0.5** (window -1.5..+2.5) | 0.067 +/- 0.015 over Mid iron | 0.79 | 24 |
+  | Eagle | 14 | Mid iron +8 | **4-wood +0.5** (the Back record, same box) | 0.067 +/- 0.015 | 0.79 | 24 |
+  | Eagle | 9 | Driver -14.5 | **Driver -4** (-7.5..+0.5) | 0.075 +/- 0.006 over 2-wood | 1.00 | 8 |
+  | Middle | 9 | Driver -13 | **Driver -4.5** (-10.5..0) | 0.089 +/- 0.006 over 2-wood | 1.00 | 8 |
+  | Back | 9 | Driver -14 | (decide still running at the deadline: the stored record is the old one) | central: Driver -2 by 0.095 +/- 0.001 | | |
+
+  Back 14 with 4-wood: water 13 %, trees 20 %, a median 16 yds from the hole. Every other hole's record is
+  unchanged, and the lidar re-solve above agrees with it.
 * **Wind grids: NOT recomputed** (`wind_grid*.json` are unchanged, old engine). One card-tee cell takes ~220 s on
   this box today, so a hole's 183 cells do not fit. Until the nccga-v2 job is re-run (request files
   `nccga_v2_eagle_knoll*.json`, holes 9 and 14 or all; ~3 h), the page's forecast view (Sat / Sun) still shows the
