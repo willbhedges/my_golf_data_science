@@ -250,6 +250,17 @@ function solveTee(h){
     order.splice(order.indexOf(pick), 1); order.unshift(pick); }
   return {rel, out, order, pick, aim, tie, bayes, T, tF, margin: out[order[1]].ev - out[order[0]].ev};
 }
+/* par-3 club from d.p3club: "Sat: PW; Sun: GW" (per forecast day) or "PW (138); 9-iron ties" -> the club */
+function p3clubFor(h){
+  if(!h.p3club) return "";
+  let s = String(h.p3club);
+  if(/^\s*[A-Za-z]{3}\w*\s*:/.test(s)){
+    const day = String(D.day_labels[st.src === "d1" ? 1 : 0] || "").split(" ")[0];
+    const parts = s.split(/;\s*/).map(x => x.split(/:\s*/));
+    const m = parts.find(p => p[0].trim() === day) || parts[0]; s = m[1] || "";
+  }
+  return s.trim().split(/[ (,;]/)[0];
+}
 function windMod(mph){ return mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3; }
 function solvePar3(h){
   const rel = ((st.from - h.bearing) % 360 + 360) % 360;
@@ -399,7 +410,7 @@ function render(){
       <polygon points="${bp}" fill="rgba(37,208,255,.45)" stroke="#25d0ff" stroke-width="${2*U}"/>${windArrow(h, r.rel, vb)}`;
     document.getElementById("playLbl").textContent = "Play it like";
     const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
-    const tc = document.getElementById("topClub"), p3c = h.p3club ? String(h.p3club).split(/[ (;]/)[0] : "";
+    const tc = document.getElementById("topClub"), p3c = p3clubFor(h);
     tc.className = ""; tc.textContent = p3c || ("Plays " + Math.round(r.play));
     document.getElementById("topKey").textContent = p3c ? `Plays ${Math.round(r.play)} yds` : `Box ${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds`;
     /* breakdown: box target (calm, flat) + elevation + wind = plays like; rounded parts add up exactly */
@@ -411,7 +422,7 @@ function render(){
     ae.innerHTML = `<span>${T} target</span><span class="${eY > 0 ? "up" : eY < 0 ? "dn" : ""}">${sg(eY)} elevation</span><span class="${wY > 0 ? "up" : wY < 0 ? "dn" : ""}">${sg(wY)} wind</span>` +
       (D.temp_k ? `<span class="${tY > 0 ? "up" : tY < 0 ? "dn" : ""}">${sg(tY)} at ${Math.round(r.tF)}°F</span>` : "");
     if(Math.abs(r.play - r.S3.center) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center)} on the card</span>`);
-    document.getElementById("hAim").textContent = `Aim at the blue box (best spot for any pin). ${relWords(r.rel, st.mph)}. DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`;
+    document.getElementById("hAim").textContent = `Aim at the blue box (best spot for any pin). ${relWords(r.rel, st.mph)}.` + (h.p3_source ? "" : ` DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`);
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front}</td><td>${Math.round(r.S3.center)}</td><td>${r.S3.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
     document.getElementById("hNote").textContent = h.note || "";
     const ge = h.elev;
