@@ -506,7 +506,10 @@ No change to the cap or the roll prior.
 
   Back 14 with 4-wood: water 13 %, trees 20 %, a median 16 yds from the hole. Every other hole's record is
   unchanged, and the lidar re-solve above agrees with it.
-* **Wind grids: NOT recomputed** (`wind_grid*.json` are unchanged, old engine). One card-tee cell takes ~220 s on
+* **Superseded by the Actions run requested in ce5d23833** (holes 9 and 14, all three bases, full 256-draw decide +
+  refined card-tee wind grids on this engine). When it merges, its records replace the reduced ones above and the
+  9 / 14 wind cells below; the reduced runs are the interim and a cross-check.
+* **Wind grids: NOT recomputed locally** (`wind_grid*.json` are unchanged, old engine). One card-tee cell takes ~220 s on
   this box today, so a hole's 183 cells do not fit. Until the nccga-v2 job is re-run (request files
   `nccga_v2_eagle_knoll*.json`, holes 9 and 14 or all; ~3 h), the page's forecast view (Sat / Sun) still shows the
   old 9 aim and the old 14 club. **On the course: 9 aim ~2 yds left of the line (not 14); 14 from the 265 box:
