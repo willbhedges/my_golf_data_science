@@ -1,0 +1,916 @@
+{
+ "hole": "Back 14 (265, drivable par 4)",
+ "world": "central, Nov 7 forecast temp, lidar flight trees k 0.10/yd, green putting on",
+ "swings": 40000,
+ "seed": 123,
+ "engine_reference": {
+  "4-wood +0.5": 3.916,
+  "Mid iron +7.5": 4.043
+ },
+ "crowns": {
+  "left of green / pond (a 225-280, l -60..-12)": {
+   "cells_yd2": 2744,
+   "crown_cover": 0.895,
+   "top_yds_p50": 21.9,
+   "top_yds_p90": 24.3,
+   "base_yds_p50": 8.2,
+   "understory_1_4m_share": 0.058,
+   "map_tree_share": 0.795,
+   "local_canopy_density_p50": 1.0,
+   "ground_slope_pct_p50": 20.2,
+   "ground_slope_pct_p90": 26.6
+  },
+  "right of green / pond (a 230-280, l +18..+60)": {
+   "cells_yd2": 2193,
+   "crown_cover": 0.799,
+   "top_yds_p50": 21.6,
+   "top_yds_p90": 25.4,
+   "base_yds_p50": 8.4,
+   "understory_1_4m_share": 0.091,
+   "map_tree_share": 0.782,
+   "local_canopy_density_p50": 1.0,
+   "ground_slope_pct_p50": 25.5,
+   "ground_slope_pct_p90": 39.5
+  },
+  "behind green (a 276-310, l -25..+25)": {
+   "cells_yd2": 1785,
+   "crown_cover": 0.626,
+   "top_yds_p50": 23.0,
+   "top_yds_p90": 25.2,
+   "base_yds_p50": 8.4,
+   "understory_1_4m_share": 0.044,
+   "map_tree_share": 0.61,
+   "local_canopy_density_p50": 0.94,
+   "ground_slope_pct_p50": 23.9,
+   "ground_slope_pct_p90": 30.2
+  },
+  "pond bank (6 yds round the water)": {
+   "slope_pct_p50": 17.8,
+   "slope_pct_p90": 29.8,
+   "water_level_yds_rel_green": -1.24,
+   "tree_ground_above_water_yds_p50": 1.47
+  }
+ },
+ "assumptions": {
+  "physics": {
+   "e_n": 0.4,
+   "e_t": 0.7,
+   "scatter": "central",
+   "v_land_wood": 22.0,
+   "v_land_iron": 20.0,
+   "vt": 32.0,
+   "k": 0.1,
+   "mu": {
+    "green": 0.06,
+    "fairway": 0.09,
+    "rough": 0.3,
+    "trees": 0.45
+   },
+   "bounce_h": 0.55,
+   "max_hits": 8
+  },
+  "escape": {
+   "delta": 0.05,
+   "trunk": 0.015,
+   "under": 0.1,
+   "crown_k": 0.1,
+   "sd0": 2.0,
+   "sd_rel": 0.2,
+   "punch_h": 3.0,
+   "p_unp": 0.03,
+   "p_lost": 0.02
+  },
+  "notes": [
+   "stop = engine path-length model (same per-swing draw); the stopped ball is deflected off a cylinder branch: isotropic branch axis, uniform impact parameter (forward-biased: ~70 % forward, median deflection ~66 deg), normal COR e_n, tangential retention e_t (central keeps ~34 % of energy, ~58 % of speed); no golf-ball/branch measurement found, range e_n 0.2-0.6, e_t 0.5-0.85",
+   "speed at the stop 22-33 m/s (4-wood landing ~22 m/s); flight on with quadratic drag (terminal 32 m/s) through the crowns, further contacts at k per yd, then lands on the 2015 lidar DTM (2 m, bilinear, smoothed 1 yd)",
+   "first bounce keeps 55 % of horizontal speed; roll on the DTM slope with rolling resistance mu green .06 / fairway .09 / rough .30 / trees .45; a ball that reaches a water cell is in the pond",
+   "escape: 37 low-punch rays (apex 3 yds) + 5 lofted pitch lines toward the hole (apex .22 x carry, may carry water, must pass under the crown base 0.35 x top); hazard per yd: crown entry k, trunk .015 in tree cells below the base, understory (1-4 m lidar returns) .10; landing spread sd 2 + .2 x dist (pitch 1.5x); value 1 + mean engine strokes over the spread + delta .05 (.10 pitch); a failed shot stays put (E = p V + (1-p)(1 + E))",
+   "unplayable 3 % (+1 stroke, same escape), lost in the leaf litter 2 % (stroke and distance); grass under a crown edge keeps the engine value when the line to the hole is >= 80 % clean, else max(engine, escape)",
+   "pond by ricochet: the engine water value at the entry cell (1 + rough table from the crossing on the tee line)"
+  ]
+ },
+ "central": {
+  "clubs": {
+   "4-wood": {
+    "best_aim": -3.0,
+    "avg": 3.7861,
+    "engine_avg_same_aim": 3.9291,
+    "tree_share": 0.2114,
+    "tree_avg": 3.984,
+    "crown_stop_share": 0.1123,
+    "pond_ricochet_share": 0.0261,
+    "curve": {
+     "-6": 3.7949,
+     "-5": 3.7886,
+     "-4": 3.7871,
+     "-3": 3.7861,
+     "-2": 3.7886,
+     "-1": 3.7935,
+     "+0": 3.7976,
+     "+1": 3.8056,
+     "+2": 3.8148,
+     "+3": 3.8275,
+     "+4": 3.8406,
+     "+5": 3.8558,
+     "+6": 3.8716,
+     "+7": 3.8851,
+     "+8": 3.9024,
+     "+9": 3.9221,
+     "+10": 3.9431
+    },
+    "outcomes": {
+     "green": {
+      "share": 0.1424,
+      "avg": 3.003
+     },
+     "rough/short grass": {
+      "share": 0.5007,
+      "avg": 3.611
+     },
+     "lay-up grass": {
+      "share": 0.0169,
+      "avg": 4.074
+     },
+     "trees left": {
+      "share": 0.1637,
+      "avg": 3.968
+     },
+     "trees right": {
+      "share": 0.0267,
+      "avg": 4.199
+     },
+     "trees behind": {
+      "share": 0.021,
+      "avg": 3.836
+     },
+     "pond direct": {
+      "share": 0.1025,
+      "avg": 4.943
+     },
+     "pond by ricochet": {
+      "share": 0.0261,
+      "avg": 5.085
+     }
+    }
+   },
+   "Mid iron": {
+    "best_aim": 8.0,
+    "avg": 4.0432,
+    "engine_avg_same_aim": 4.0435,
+    "tree_share": 0.0192,
+    "tree_avg": 5.226,
+    "crown_stop_share": 0.0149,
+    "pond_ricochet_share": 0.0024,
+    "curve": {
+     "+3": 4.059,
+     "+4": 4.0538,
+     "+5": 4.0494,
+     "+6": 4.0459,
+     "+7": 4.0437,
+     "+8": 4.0432,
+     "+9": 4.0443,
+     "+10": 4.0468,
+     "+11": 4.0519,
+     "+12": 4.0584
+    },
+    "outcomes": {
+     "lay-up grass": {
+      "share": 0.9715,
+      "avg": 4.01
+     },
+     "trees left": {
+      "share": 0.0006,
+      "avg": 5.244
+     },
+     "trees right": {
+      "share": 0.0186,
+      "avg": 5.226
+     },
+     "pond direct": {
+      "share": 0.0069,
+      "avg": 5.098
+     },
+     "pond by ricochet": {
+      "share": 0.0024,
+      "avg": 5.049
+     }
+    }
+   },
+   "8-iron": {
+    "best_aim": 1.0,
+    "avg": 4.0712,
+    "engine_avg_same_aim": 4.0721,
+    "tree_share": 0.0062,
+    "tree_avg": 5.243,
+    "crown_stop_share": 0.0056,
+    "pond_ricochet_share": 0.0,
+    "curve": {
+     "+0": 4.0724,
+     "+1": 4.0712,
+     "+2": 4.0712,
+     "+3": 4.072,
+     "+4": 4.0733,
+     "+5": 4.0758,
+     "+6": 4.0796,
+     "+7": 4.0845,
+     "+8": 4.0914,
+     "+9": 4.099,
+     "+10": 4.1091
+    },
+    "outcomes": {
+     "lay-up grass": {
+      "share": 0.9938,
+      "avg": 4.064
+     },
+     "trees left": {
+      "share": 0.0029,
+      "avg": 5.244
+     },
+     "trees right": {
+      "share": 0.0033,
+      "avg": 5.244
+     },
+     "trees short": {
+      "share": 0.0001,
+      "avg": 5.204
+     }
+    }
+   }
+  },
+  "margins": {
+   "Mid iron": {
+    "margin": 0.2572,
+    "se": 0.0026,
+    "breakeven_extra_per_tree_ball": 1.338
+   },
+   "8-iron": {
+    "margin": 0.2851,
+    "se": 0.0027,
+    "breakeven_extra_per_tree_ball": 1.389
+   }
+  },
+  "crown_stopped_4wood_fates": {
+   "green": 0.031,
+   "lay-up grass": 0.007,
+   "pond by ricochet": 0.233,
+   "rough/short grass": 0.143,
+   "trees behind": 0.007,
+   "trees left": 0.559,
+   "trees right": 0.02
+  },
+  "engine_margin_same_aims": {
+   "Mid iron": 0.1143,
+   "8-iron": 0.143
+  }
+ },
+ "ricochet_only_vs_escape": {
+  "ricochet + engine generic punch-out": {
+   "best_aim": 0.0,
+   "avg": 3.9075,
+   "curve": {
+    "-6": 3.9472,
+    "-5": 3.9328,
+    "-4": 3.9247,
+    "-3": 3.9166,
+    "-2": 3.9111,
+    "-1": 3.9088,
+    "+0": 3.9075,
+    "+1": 3.9094,
+    "+2": 3.9127,
+    "+3": 3.9208,
+    "+4": 3.9305,
+    "+5": 3.944,
+    "+6": 3.9581,
+    "+7": 3.971,
+    "+8": 3.9871,
+    "+9": 4.0066,
+    "+10": 4.0276
+   },
+   "margin_vs_mid8": 0.1295,
+   "se": 0.003,
+   "margin_at_aim_0to1": 0.1285,
+   "eng_curve": {
+    "-6": 3.9612,
+    "-5": 3.9469,
+    "-4": 3.9373,
+    "-3": 3.9291,
+    "-2": 3.9217,
+    "-1": 3.9185,
+    "+0": 3.9171,
+    "+1": 3.9173,
+    "+2": 3.9205,
+    "+3": 3.9272,
+    "+4": 3.9374,
+    "+5": 3.9495,
+    "+6": 3.9632,
+    "+7": 3.9764,
+    "+8": 3.9919,
+    "+9": 4.0113,
+    "+10": 4.0322
+   },
+   "outcomes": {
+    "green": {
+     "share": 0.1409,
+     "avg": 3.002
+    },
+    "rough/short grass": {
+     "share": 0.5163,
+     "avg": 3.616
+    },
+    "lay-up grass": {
+     "share": 0.0176,
+     "avg": 4.062
+    },
+    "trees left": {
+     "share": 0.122,
+     "avg": 4.602
+    },
+    "trees right": {
+     "share": 0.0411,
+     "avg": 4.618
+    },
+    "trees behind": {
+     "share": 0.0198,
+     "avg": 4.592
+    },
+    "pond direct": {
+     "share": 0.1243,
+     "avg": 4.929
+    },
+    "pond by ricochet": {
+     "share": 0.0181,
+     "avg": 5.073
+    }
+   },
+   "outcomes_aim0": {
+    "green": {
+     "share": 0.1409,
+     "avg": 3.002
+    },
+    "rough/short grass": {
+     "share": 0.5163,
+     "avg": 3.616
+    },
+    "lay-up grass": {
+     "share": 0.0176,
+     "avg": 4.062
+    },
+    "trees left": {
+     "share": 0.122,
+     "avg": 4.602
+    },
+    "trees right": {
+     "share": 0.0411,
+     "avg": 4.618
+    },
+    "trees behind": {
+     "share": 0.0198,
+     "avg": 4.592
+    },
+    "pond direct": {
+     "share": 0.1243,
+     "avg": 4.929
+    },
+    "pond by ricochet": {
+     "share": 0.0181,
+     "avg": 5.073
+    }
+   }
+  },
+  "ricochet + lidar escape (central)": {
+   "best_aim": -3.0,
+   "avg": 3.7861,
+   "curve": {
+    "-6": 3.7949,
+    "-5": 3.7886,
+    "-4": 3.7871,
+    "-3": 3.7861,
+    "-2": 3.7886,
+    "-1": 3.7935,
+    "+0": 3.7976,
+    "+1": 3.8056,
+    "+2": 3.8148,
+    "+3": 3.8275,
+    "+4": 3.8406,
+    "+5": 3.8558,
+    "+6": 3.8716,
+    "+7": 3.8851,
+    "+8": 3.9024,
+    "+9": 3.9221,
+    "+10": 3.9431
+   },
+   "margin_vs_mid8": 0.257,
+   "se": 0.0026,
+   "margin_at_aim_0to1": 0.2414,
+   "eng_curve": {
+    "-6": 3.9612,
+    "-5": 3.9469,
+    "-4": 3.9373,
+    "-3": 3.9291,
+    "-2": 3.9217,
+    "-1": 3.9185,
+    "+0": 3.9171,
+    "+1": 3.9173,
+    "+2": 3.9205,
+    "+3": 3.9272,
+    "+4": 3.9374,
+    "+5": 3.9495,
+    "+6": 3.9632,
+    "+7": 3.9764,
+    "+8": 3.9919,
+    "+9": 4.0113,
+    "+10": 4.0322
+   },
+   "outcomes": {
+    "green": {
+     "share": 0.1424,
+     "avg": 3.003
+    },
+    "rough/short grass": {
+     "share": 0.5007,
+     "avg": 3.611
+    },
+    "lay-up grass": {
+     "share": 0.0169,
+     "avg": 4.074
+    },
+    "trees left": {
+     "share": 0.1637,
+     "avg": 3.968
+    },
+    "trees right": {
+     "share": 0.0267,
+     "avg": 4.199
+    },
+    "trees behind": {
+     "share": 0.021,
+     "avg": 3.836
+    },
+    "pond direct": {
+     "share": 0.1025,
+     "avg": 4.943
+    },
+    "pond by ricochet": {
+     "share": 0.0261,
+     "avg": 5.085
+    }
+   },
+   "outcomes_aim0": {
+    "green": {
+     "share": 0.1409,
+     "avg": 3.002
+    },
+    "rough/short grass": {
+     "share": 0.5163,
+     "avg": 3.617
+    },
+    "lay-up grass": {
+     "share": 0.0176,
+     "avg": 4.064
+    },
+    "trees left": {
+     "share": 0.122,
+     "avg": 3.954
+    },
+    "trees right": {
+     "share": 0.0411,
+     "avg": 4.217
+    },
+    "trees behind": {
+     "share": 0.0198,
+     "avg": 3.837
+    },
+    "pond direct": {
+     "share": 0.1243,
+     "avg": 4.929
+    },
+    "pond by ricochet": {
+     "share": 0.0181,
+     "avg": 5.073
+    }
+   }
+  }
+ },
+ "sensitivity": {
+  "retention low (e_n .2, e_t .5)": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2754,
+     "se": 0.0025,
+     "breakeven_extra_per_tree_ball": 1.203
+    },
+    "8-iron": {
+     "margin": 0.3046,
+     "se": 0.0026,
+     "breakeven_extra_per_tree_ball": 1.261
+    }
+   },
+   "4-wood": {
+    "aim": -5.0,
+    "avg": 3.7668,
+    "tree_share": 0.2486,
+    "tree_avg": 3.959,
+    "pond_ricochet": 0.019
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.0422,
+    "tree_share": 0.0197,
+    "tree_avg": 5.221,
+    "pond_ricochet": 0.0009
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0714,
+    "tree_share": 0.007,
+    "tree_avg": 5.223,
+    "pond_ricochet": 0.0
+   }
+  },
+  "retention high (e_n .6, e_t .85)": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2414,
+     "se": 0.0027,
+     "breakeven_extra_per_tree_ball": 1.316
+    },
+    "8-iron": {
+     "margin": 0.2673,
+     "se": 0.0028,
+     "breakeven_extra_per_tree_ball": 1.353
+    }
+   },
+   "4-wood": {
+    "aim": -3.0,
+    "avg": 3.8033,
+    "tree_share": 0.2034,
+    "tree_avg": 4.014,
+    "pond_ricochet": 0.0352
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.0447,
+    "tree_share": 0.0199,
+    "tree_avg": 5.224,
+    "pond_ricochet": 0.003
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0706,
+    "tree_share": 0.0058,
+    "tree_avg": 5.267,
+    "pond_ricochet": 0.0001
+   }
+  },
+  "scatter low (glancing)": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2777,
+     "se": 0.0025,
+     "breakeven_extra_per_tree_ball": 1.228
+    },
+    "8-iron": {
+     "margin": 0.3049,
+     "se": 0.0026,
+     "breakeven_extra_per_tree_ball": 1.275
+    }
+   },
+   "4-wood": {
+    "aim": -5.0,
+    "avg": 3.7661,
+    "tree_share": 0.2455,
+    "tree_avg": 3.984,
+    "pond_ricochet": 0.0149
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.0439,
+    "tree_share": 0.0193,
+    "tree_avg": 5.23,
+    "pond_ricochet": 0.003
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0711,
+    "tree_share": 0.0064,
+    "tree_avg": 5.26,
+    "pond_ricochet": 0.0001
+   }
+  },
+  "scatter high (head-on)": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2482,
+     "se": 0.0027,
+     "breakeven_extra_per_tree_ball": 1.333
+    },
+    "8-iron": {
+     "margin": 0.2763,
+     "se": 0.0028,
+     "breakeven_extra_per_tree_ball": 1.388
+    }
+   },
+   "4-wood": {
+    "aim": -3.0,
+    "avg": 3.7948,
+    "tree_share": 0.2056,
+    "tree_avg": 3.981,
+    "pond_ricochet": 0.0331
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.043,
+    "tree_share": 0.0193,
+    "tree_avg": 5.23,
+    "pond_ricochet": 0.0019
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0712,
+    "tree_share": 0.0066,
+    "tree_avg": 5.252,
+    "pond_ricochet": 0.0
+   }
+  },
+  "bank roll: rough mu .2, trees .3": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2519,
+     "se": 0.0027,
+     "breakeven_extra_per_tree_ball": 1.347
+    },
+    "8-iron": {
+     "margin": 0.2759,
+     "se": 0.0028,
+     "breakeven_extra_per_tree_ball": 1.385
+    }
+   },
+   "4-wood": {
+    "aim": -3.0,
+    "avg": 3.7955,
+    "tree_share": 0.2057,
+    "tree_avg": 3.989,
+    "pond_ricochet": 0.0355
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.0474,
+    "tree_share": 0.0186,
+    "tree_avg": 5.238,
+    "pond_ricochet": 0.0072
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0714,
+    "tree_share": 0.0065,
+    "tree_avg": 5.284,
+    "pond_ricochet": 0.0001
+   }
+  },
+  "unplayable 0, lost 0": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2717,
+     "se": 0.0026,
+     "breakeven_extra_per_tree_ball": 1.413
+    },
+    "8-iron": {
+     "margin": 0.3004,
+     "se": 0.0027,
+     "breakeven_extra_per_tree_ball": 1.464
+    }
+   },
+   "4-wood": {
+    "aim": -3.0,
+    "avg": 3.7706,
+    "tree_share": 0.2114,
+    "tree_avg": 3.912,
+    "pond_ricochet": 0.0261
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.0423,
+    "tree_share": 0.0192,
+    "tree_avg": 5.182,
+    "pond_ricochet": 0.0024
+   },
+   "8-iron": {
+    "aim": 1.0,
+    "avg": 4.071,
+    "tree_share": 0.0062,
+    "tree_avg": 5.223,
+    "pond_ricochet": 0.0
+   }
+  },
+  "unplayable .08, lost .05": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2344,
+     "se": 0.0026,
+     "breakeven_extra_per_tree_ball": 1.219
+    },
+    "8-iron": {
+     "margin": 0.2611,
+     "se": 0.0028,
+     "breakeven_extra_per_tree_ball": 1.272
+    }
+   },
+   "4-wood": {
+    "aim": -3.0,
+    "avg": 3.8103,
+    "tree_share": 0.2114,
+    "tree_avg": 4.096,
+    "pond_ricochet": 0.0261
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.0446,
+    "tree_share": 0.0192,
+    "tree_avg": 5.298,
+    "pond_ricochet": 0.0024
+   },
+   "8-iron": {
+    "aim": 1.0,
+    "avg": 4.0714,
+    "tree_share": 0.0062,
+    "tree_avg": 5.277,
+    "pond_ricochet": 0.0
+   }
+  },
+  "escape easy": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.3055,
+     "se": 0.0025,
+     "breakeven_extra_per_tree_ball": 1.426
+    },
+    "8-iron": {
+     "margin": 0.3358,
+     "se": 0.0026,
+     "breakeven_extra_per_tree_ball": 1.48
+    }
+   },
+   "4-wood": {
+    "aim": -5.0,
+    "avg": 3.7349,
+    "tree_share": 0.2335,
+    "tree_avg": 3.757,
+    "pond_ricochet": 0.0319
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.0404,
+    "tree_share": 0.0192,
+    "tree_avg": 5.085,
+    "pond_ricochet": 0.0024
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0706,
+    "tree_share": 0.0066,
+    "tree_avg": 5.171,
+    "pond_ricochet": 0.0
+   }
+  },
+  "escape hard": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.1529,
+     "se": 0.0031,
+     "breakeven_extra_per_tree_ball": 0.922
+    },
+    "8-iron": {
+     "margin": 0.175,
+     "se": 0.0032,
+     "breakeven_extra_per_tree_ball": 0.99
+    }
+   },
+   "4-wood": {
+    "aim": 0.0,
+    "avg": 3.8977,
+    "tree_share": 0.1829,
+    "tree_avg": 4.531,
+    "pond_ricochet": 0.0181
+   },
+   "Mid iron": {
+    "aim": 7.0,
+    "avg": 4.0506,
+    "tree_share": 0.017,
+    "tree_avg": 5.627,
+    "pond_ricochet": 0.0018
+   },
+   "8-iron": {
+    "aim": 1.0,
+    "avg": 4.0727,
+    "tree_share": 0.0062,
+    "tree_avg": 5.49,
+    "pond_ricochet": 0.0
+   }
+  },
+  "crown k 0.05": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2669,
+     "se": 0.0025,
+     "breakeven_extra_per_tree_ball": 1.151
+    },
+    "8-iron": {
+     "margin": 0.294,
+     "se": 0.0026,
+     "breakeven_extra_per_tree_ball": 1.209
+    }
+   },
+   "4-wood": {
+    "aim": -5.0,
+    "avg": 3.7773,
+    "tree_share": 0.2499,
+    "tree_avg": 3.983,
+    "pond_ricochet": 0.0198
+   },
+   "Mid iron": {
+    "aim": 7.0,
+    "avg": 4.0441,
+    "tree_share": 0.018,
+    "tree_avg": 5.216,
+    "pond_ricochet": 0.0011
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0712,
+    "tree_share": 0.0067,
+    "tree_avg": 5.247,
+    "pond_ricochet": 0.0
+   }
+  },
+  "crown k 0.20 (leaf-on)": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.2447,
+     "se": 0.0027,
+     "breakeven_extra_per_tree_ball": 1.437
+    },
+    "8-iron": {
+     "margin": 0.2734,
+     "se": 0.0028,
+     "breakeven_extra_per_tree_ball": 1.506
+    }
+   },
+   "4-wood": {
+    "aim": -2.0,
+    "avg": 3.7977,
+    "tree_share": 0.1882,
+    "tree_avg": 3.985,
+    "pond_ricochet": 0.0338
+   },
+   "Mid iron": {
+    "aim": 8.0,
+    "avg": 4.0424,
+    "tree_share": 0.0179,
+    "tree_avg": 5.226,
+    "pond_ricochet": 0.0034
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0711,
+    "tree_share": 0.0066,
+    "tree_avg": 5.241,
+    "pond_ricochet": 0.0
+   }
+  },
+  "worst: hard escape + high retention + high scatter + unp .08 / lost .05 + k .2": {
+   "margins": {
+    "Mid iron": {
+     "margin": 0.123,
+     "se": 0.0032,
+     "breakeven_extra_per_tree_ball": 0.811
+    },
+    "8-iron": {
+     "margin": 0.1443,
+     "se": 0.0034,
+     "breakeven_extra_per_tree_ball": 0.893
+    }
+   },
+   "4-wood": {
+    "aim": -1.0,
+    "avg": 3.9279,
+    "tree_share": 0.168,
+    "tree_avg": 4.63,
+    "pond_ricochet": 0.0444
+   },
+   "Mid iron": {
+    "aim": 7.0,
+    "avg": 4.0509,
+    "tree_share": 0.0163,
+    "tree_avg": 5.687,
+    "pond_ricochet": 0.0021
+   },
+   "8-iron": {
+    "aim": 2.0,
+    "avg": 4.0722,
+    "tree_share": 0.0064,
+    "tree_avg": 5.43,
+    "pond_ricochet": 0.0
+   }
+  }
+ }
+}

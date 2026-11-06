@@ -528,6 +528,45 @@ No change to the cap or the roll prior.
 * The width-sweep line of the hole note ("same club for any driver pattern") is not re-checked for 9 and 14.
 * Not re-solved under the new engine: Eagle and Middle holes other than 1 (Middle), 9 and 14.
 
+### 12i. Back 14: crown ricochets and lidar escape shots (Nov 6, `opt/h14_ricochet.py`)
+
+The engine stops a ball in a crown and scores a generic punch-out. This check keeps the engine's swings and its
+path-length stop (same per-swing draw) and then deflects each stopped ball off a branch, flies it on through the
+crowns, drops it on the lidar DTM and rolls it out. Balls under trees take a lidar escape shot (low punch along 37
+rays, or a pitch under the crown base toward the hole; trunks, understory and the crown base from hag.tif). The
+assumptions are in the JSON. Results: `opt/results/h14_ricochet.json`, 40,000 common swings, central world.
+
+* **Crowns by the green** (lidar, +1.5 m growth): left of the green and pond, tops 22 yds (p90 24), base ~8 yds,
+  cover 0.90, understory 6 %. Right: 22 (p90 25), cover 0.80, understory 9 %. Behind: 23, cover 0.63. Ground under
+  the trees slopes 20-26 %. The pond bank slopes 18 % (p90 30 %), and the tree floor sits ~1.5 yds above the water.
+* **Results:**
+
+  | | 4-wood -3 | 4-wood 0 | Mid iron +8 | 8-iron +1 |
+  |---|---|---|---|---|
+  | average (ricochet + escape) | **3.786** | 3.798 | 4.043 | 4.071 |
+  | engine | 3.929 | 3.917 | 4.044 | 4.072 |
+
+  4-wood (-3) finishes: green 14.2 % (3.00), grass round the green 50.1 % (3.61), short grass 1.7 % (4.07), trees left
+  16.4 % (3.97), trees right 2.7 % (4.20), trees behind 2.1 % (3.84), pond direct 10.3 % (4.94), pond by ricochet
+  2.6 % (5.09). Margin over Mid iron **0.257 +/- 0.003**, over 8-iron 0.285 +/- 0.003.
+* **Ricochet into the pond:** 23 % of the crown-stopped 4-wood balls end in the pond, which is 1.8-2.6 % of all
+  swings (4.4 % in the worst case). Ricochets on their own (engine punch-out costs kept) change little: 4-wood at 0
+  scores 3.908, margin 0.130, and the aim stays at 0.
+* **The escape shot is the real change.** Under leaf-off crowns with an 8-yd base and little understory, a ball
+  10-25 yds from the hole has a clear punch or pitch. A tree finish costs ~0.35 more than greenside rough, against
+  ~1.0 in the generic punch-out.
+* **Sensitivity (margin over Mid iron):** retention low / high 0.275 / 0.241; scatter glancing / head-on 0.278 /
+  0.248; softer bank roll 0.252; unplayable 0 / 8 % (lost 0 / 5 %) 0.272 / 0.234; escape easy / hard 0.306 / 0.153;
+  k 0.05 / 0.20 0.267 / 0.245; everything bad at once 0.123 +/- 0.003. 4-wood wins in every case.
+* **Break-even:** laying up wins only if each 4-wood tree finish costs **~1.3 strokes more** than modelled (~5.3 on
+  the hole, against 3.98 here and 4.60 in the engine), or ~0.8 more than the worst case.
+* **Aim:** with the escape model, the best aim moves left to -3 (flat from -5 to -2, within 0.003; +0.5 costs 0.015).
+  With hard escapes or the worst case it goes back to 0 / -1. Ricochets alone keep it at 0. Nothing moves it right.
+  Keep "4-wood at the green, on the line to 2 yds left".
+* **Not verified:** no measured golf-ball/branch data (COR and scatter are assumed, with the range above). The 2015
+  DTM may differ from today's bank. Lie quality in November leaf litter is folded into delta, unplayable and lost.
+  The escape-value fixed point assumes a failed shot stays where it was.
+
 ## 13. Par-3 targets for an unknown pin (Nov 6 2026)
 
 The page's par-3 box was the DECADE box (`yardage_book.par3_plan`: edge cushions, worse side), drawn round the DECADE
