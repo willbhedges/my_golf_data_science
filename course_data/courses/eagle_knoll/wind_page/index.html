@@ -141,8 +141,8 @@ const CLUBS = ["Driver","2-wood","4-wood","Long iron","Mid iron"];
 const short = c => ({"Driver":"D","2-wood":"2W","4-wood":"4W","Long iron":"LI","Mid iron":"MI","Hybrid ~235 (not in bag)":"HY*"})[c] || c;
 const HYPO = c => /not in bag/.test(c);       /* hypothetical club: shown for comparison, never the pick */
 const cls = c => (c==="Driver"||c==="2-wood"||c==="4-wood") ? "c-"+c : "c-iron";
-const SKEY = "nccga_wind_" + D.slug;
-const st = {src:"d0", hour:D.tee_hour, start:1, from:180, mph:10, idx:0, view:"hole", set:D.base_set, adj:{}, club:{}};
+const SKEY = "nccga_wind_" + D.slug + "_sun";
+const st = {src:"d1", hour:D.tee_hour, start:1, from:180, mph:10, idx:0, view:"hole", set:D.base_set, adj:{}, club:{}};
 try{ const s = JSON.parse(localStorage.getItem(SKEY)||"null"); if(s) Object.assign(st, s);}catch(e){}
 if(!D.sets.includes(st.set)) st.set = D.base_set;
 if(st.src !== "custom" && !/^d[01]$/.test(st.src)) st.src = "d0";
